@@ -33,21 +33,23 @@ from dateutil.parser import parse as date_parse
 from flask.blueprints import Blueprint
 from flask import current_app
 from flask import flash
+from flask import jsonify
 from flask import make_response
 from flask import redirect
 from flask import render_template
+from flask import Response
 from flask import request
 from flask import send_from_directory
 from flask import session
-from flask import jsonify
-from flask import Response
+from flask import url_for
 from flask_influxdb import InfluxDB
 
 import flaskforms
 import flaskutils
 from flaskutils import clear_cookie_auth
-from flaskutils import flash_form_errors
 from flaskutils import gzipped
+
+from mycodo_flask.authentication.views import admin_exists
 
 from databases.utils import session_scope
 from databases.mycodo_db.models import CameraStill
@@ -67,15 +69,14 @@ from databases.mycodo_db.models import SMTP
 from databases.mycodo_db.models import Timer
 from databases.users_db.models import Users
 
+from devices.camera_pi import CameraStream
+
 from utils.camera import camera_record
 from utils.method import sine_wave_y_out, bezier_curve_y_out
 from utils.statistics import return_stat_file_dict
 from utils.system_pi import cmd_output
 from utils.system_pi import get_sec
 from utils.system_pi import internet
-
-from devices.camera_pi import CameraStream
-from scripts.utils import test_username, test_password
 
 from mycodo_client import DaemonControl
 
@@ -108,35 +109,13 @@ def before_blueprint_request():
     ca = current_app
     if (not os.path.isfile(current_app.config['SQL_DATABASE_MYCODO']) or
         not os.path.isfile(current_app.config['SQL_DATABASE_USER'])):
-        return "Error: Cannot find databases. Run \"init_databases.py --install_db all\" to generate them."
-    with session_scope(current_app.config['USER_DB_PATH']) as new_session:
-        user = new_session.query(Users).filter(
-            Users.user_restriction == 'admin').first()
-        if user == None:
-            flash("Unable to find an admin user in the user database. Create an admin user with the form below to access the login page.", "error")
-            form = flaskforms.CreateAdmin()
-            if request.method == 'POST':
-                if form.validate():
-                    new_user = Users()
-                    if test_username(form.username.data):
-                        new_user.user_name = form.username.data
-                    new_user.user_email = form.email.data
-                    if test_password(form.password.data):
-                        new_user.set_password(form.password.data)
-                    new_user.user_restriction = 'admin'
-                    new_user.user_theme = 'slate'
-                    try:
-                        with session_scope(current_app.config['USER_DB_PATH']) as db_session:
-                            db_session.add(new_user)
-                        flash("User '{}' successfully created. Please log in below.".format(
-                            form.username.data), "success")
-                        return redirect('/')
-                    except Exception as except_msg:
-                        flash("Failed to create user: {}".format(except_msg), "error")
-                else:
-                    flash_form_errors(form)
-            return render_template('create_admin.html',
-                                   form=form)
+        return ('Error: Cannot find databases. Run '
+                '"init_databases.py --install_db all" to generate them.')
+    if not admin_exists():
+        flash("Unable to find an admin user in the user database. "
+              "Create an admin user with the form below to access "
+              "the login page.", "error")
+        return redirect(url_for("authentication.create_admin"))
 blueprint.before_request(before_blueprint_request)
 
 
