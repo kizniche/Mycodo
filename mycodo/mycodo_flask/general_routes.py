@@ -462,8 +462,6 @@ def page(page):
                                formModPIDMethod=formModPIDMethod,
                                formOrderPID=formOrderPID,
                                formAddPID=formAddPID,
-                               formAddPIDSetpoint=formAddPIDSetpoint,
-                               formModPIDSetpoint=formModPIDSetpoint,
                                formModPID=formModPID,
                                formDelPID=formDelPID,
                                formActivatePID=formActivatePID,
@@ -1482,7 +1480,7 @@ def gpio_state():
     """Return the GPIO state, for relay page status"""
     if (not session.get('logged_in') and
             not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
-        return ('', 204)
+        return redirect('/')
 
     relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
     gpio_state = {}
