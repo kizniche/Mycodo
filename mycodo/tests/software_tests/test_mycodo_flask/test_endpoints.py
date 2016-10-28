@@ -44,11 +44,16 @@ def test_settings_general_for_non_logged_in_user(testapp):
     """ Verifies behavior of this endpoint for non-logged in users """
     redirects_to_login_page(app=testapp, endpoint='/settings/general')
 
+def test_sees_admin_creation_form(testapp_no_admin_user):
+    """ user sees the admin creation page when the database has no admin user """
+    expected_body_msg = "Mycodo was unable to find an admin user in the user database."
+    assert expected_body_msg in testapp_no_admin_user.get('/').maybe_follow()
+
 
 # -----------------------
 #   Logged In Tests
 # -----------------------
-@mock.patch('mycodo.flaskutils.login_log')  # the login_log writes to a system protected file
+@mock.patch('mycodo.mycodo_flask.authentication.views.login_log')  # the login_log writes to a system protected file
 def test_user_can_login(_, testapp, user_db):
     """ user logs in and sees a nav bar """
     # Build a user that we can login with
@@ -73,3 +78,9 @@ def test_user_can_login(_, testapp, user_db):
     assert 'Timer' in res
     assert 'Help' in res
     assert 'Admin' in res
+
+@mock.patch('mycodo.mycodo_flask.authentication.views.login_log')  # the login_log writes to a system protected file
+def test_does_not_see_admin_creation_form(testapp):
+    """ user sees the normal login page """
+    expected_body_msg = "Mycodo was unable to find an admin user in the user database."
+    assert expected_body_msg not in testapp.get('/').maybe_follow()

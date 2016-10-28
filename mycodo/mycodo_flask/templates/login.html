@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-  <head>
+<head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,7 +9,7 @@
   <meta name="author" content="">
   <link rel="icon" href="/static/img/favicon.png">
 
-  <title>Mycodo Login - {{host}}</title>
+  <title>Mycodo Login - {{ host }}</title>
 
   <!-- Bootstrap core CSS -->
   <link href="/static/css/bootstrap.min.css" rel="stylesheet">
@@ -30,60 +30,68 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
   <script src="/static/js/jquery-2.2.1.min.js"></script>
-  </head>
-  <body>
+</head>
+<body>
 
-    {% if session['logged_in'] %}
-      <p>You're logged in already!</p>
-    {% else %}
+{% if session['logged_in'] %}
+  <p>You're logged in already!</p>
+{% else %}
 
-      <div class="container">
-        {% include 'flash_messages.html' %}
+  <div class="container">
+    {% include 'flash_messages.html' %}
 
-        <form id='login_form' class="form-signin" name="login" action="/login" method="POST">
-          <input type="hidden" name="form-name" value="login">
-          <h2 class="form-signin-heading">Mycodo Login</h2>
-          {{form.hidden_tag()}}
-          {{form.username.label(class_='sr-only')}}
-          {{form.username(class_='form-control')}}
-          {{form.password.label(class_='sr-only')}}
-          {{form.password(class_='form-control')}}
-          <div class="checkbox">
-            {{form.remember()}} Remember me (90 days)
-          </div>
-          <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-        </form>
-
-        {% if not dismiss_notification %}
-          <div class="container text-center" style="padding-top: 2em; max-width: 40em; text-align: justify;">
-            <div style="padding-bottom: 0.3em; text-align: center; font-size: 1.5em; font-weight: bold;">
-              NO WARRANTY NOTICE
-            </div>
-            <div style="padding-bottom: 1.5em">
-              Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-              <br/>
-              Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-              <br/>
-              You should have received a copy of the GNU General Public License along with Mycodo. If not, see &lt;<a href="http://www.gnu.org/licenses/" target="_blank">http://www.gnu.org/licenses/</a>&gt;.
-              <br/>&nbsp;<br/>
-              Mycodo also collects anonymous usage statistics to aid with development of new features. These are used to determine what features are used most often, when systems run poorly, and other aspects that should help improve reliability, performance, and expand the featureset in a direction that the majority of users use the software for. You can opt-out at any time from the Admin panel.
-            </div>
-            <form class="form-inline text-center" method="post" action="/login">
-              <input type="hidden" name="form-name" value="acknowledge">
-              {{formNotice.csrf_token}}
-              {{formNotice.acknowledge(class_='form-control btn btn-default')}}
-            </form>
-          </div>
-        {% endif %}
-
+    <form id='login_form' class="form-signin" name="login" action="/login" method="POST">
+      <input type="hidden" name="form-name" value="login">
+      <h2 class="form-signin-heading">Mycodo Login</h2>
+      {{ form.hidden_tag() }}
+      {{ form.username.label(class_='sr-only') }}
+      {{ form.username(class_='form-control') }}
+      {{ form.password.label(class_='sr-only') }}
+      {{ form.password(class_='form-control') }}
+      <div class="checkbox">
+        {{ form.remember() }} Remember me (90 days)
       </div>
-   
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    </form>
+
+    {% if not dismiss_notification %}
+      <div class="container text-center" style="padding-top: 2em; max-width: 40em; text-align: justify;">
+        <div style="padding-bottom: 0.3em; text-align: center; font-size: 1.5em; font-weight: bold;">
+          NO WARRANTY NOTICE
+        </div>
+        <div style="padding-bottom: 1.5em">
+          Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+          License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any
+          later version.
+          <br/>
+          Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+          warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+          details.
+          <br/>
+          You should have received a copy of the GNU General Public License along with Mycodo. If not, see &lt;<a
+                href="http://www.gnu.org/licenses/" target="_blank">http://www.gnu.org/licenses/</a>&gt;.
+          <br/>&nbsp;<br/>
+          Mycodo also collects anonymous usage statistics to aid with development of new features. These are used to
+          determine what features are used most often, when systems run poorly, and other aspects that should help
+          improve reliability, performance, and expand the featureset in a direction that the majority of users use the
+          software for. You can opt-out at any time from the Admin panel.
+        </div>
+        <form class="form-inline text-center" method="post" action="/login">
+          <input type="hidden" name="form-name" value="acknowledge">
+          {{ formNotice.csrf_token }}
+          {{ formNotice.acknowledge(class_='form-control btn btn-default') }}
+        </form>
+      </div>
     {% endif %}
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <script src="/static/js/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="/static/js/ie10-viewport-bug-workaround.js"></script>
-  </body>
+  </div>
+
+{% endif %}
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<script src="/static/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="/static/js/ie10-viewport-bug-workaround.js"></script>
+</body>
 </html>
