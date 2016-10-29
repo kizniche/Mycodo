@@ -4,7 +4,7 @@ before_install:
   - sudo apt-get update
   - sudo apt-get install -y libav-tools libi2c-dev python-setuptools python-smbus
   - pip install --upgrade setuptools ez_setup
-  - cd && git clone git://git.drogon.net/wiringPi && cd ./wiringPi && ./build
-  - cd & wget abyz.co.uk/rpi/pigpio/pigpio.zip && unzip pigpio.zip && cd ./PIGPIO && make -j4 && sudo make install
+  - git clone git://git.drogon.net/wiringPi && cd ./wiringPi && ./build
+  - cd .. && wget abyz.co.uk/rpi/pigpio/pigpio.zip && unzip pigpio.zip && cd ./PIGPIO && make -j4 && sudo make install && cd ..
 install:
-  - cd ~/kizniche/Mycodo && pip install --upgrade -r requirements.txt
+  - pip install --upgrade -r requirements.txt
