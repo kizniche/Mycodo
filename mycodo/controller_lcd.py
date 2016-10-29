@@ -122,7 +122,7 @@ class LCDController(threading.Thread):
 
                 list_relays = ['duration_sec', 'relay_time', 'relay_state']
 
-                if self.lcd_y_lines == 2:
+                if self.lcd_y_lines in [2, 4]:
                     self.lcd_line[1]['id'] = lcd.line_1_sensor_id
                     self.lcd_line[1]['measurement'] = lcd.line_1_measurement
                     if lcd.line_1_sensor_id:
@@ -153,7 +153,7 @@ class LCDController(threading.Thread):
                         if 'time' in lcd.line_2_measurement:
                             self.lcd_line[2]['measurement'] = 'time'
 
-                elif self.lcd_y_lines == 4:
+                if self.lcd_y_lines == 4:
                     self.lcd_line[3]['id'] = lcd.line_3_sensor_id
                     self.lcd_line[3]['measurement'] = lcd.line_3_measurement
                     if lcd.line_3_sensor_id:
