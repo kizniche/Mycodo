@@ -124,7 +124,7 @@ class RelayController(threading.Thread):
         finally:
             self.all_relays_off()
             self.cleanup_gpio()
-            self.running = False    
+            self.running = False
             self.logger.info("[Relay] Relay controller deactivated in "
                              "{:.1f} ms".format((timeit.default_timer()-self.thread_shutdown_timer)*1000))
 

@@ -95,7 +95,7 @@ if __name__ == "__main__":
         sys.exit(1)
     logging.basicConfig(level='DEBUG')
     logger = logging.getLogger(__name__)
-    menu()
+    menu(logger)
 
 
 # bus = get_smbus()

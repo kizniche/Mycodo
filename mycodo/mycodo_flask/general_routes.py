@@ -668,10 +668,6 @@ def page(page):
         is_internet = True
         updating = 0
         update_available = False
-        backup_directories = []
-        list_only_commits = []
-        restore_commits_extended = []
-        commits_extended_messages = []
 
         formBackup = flaskforms.Backup()
         formUpdate = flaskforms.Update()

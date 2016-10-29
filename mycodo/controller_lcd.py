@@ -403,7 +403,7 @@ class LCDController(threading.Thread):
                     else:
                         self.lcd_string_line[i] = 'NO DATA < 5 MIN'
                 except Exception as except_msg:
-                    self.logger.exception("[LCD {}] Error ({}): {}".format(
+                    self.logger.exception("[LCD {}] Error: {}".format(
                         self.lcd_id, except_msg))
             else:
                 self.lcd_string_line[i] = ''

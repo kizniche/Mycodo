@@ -32,7 +32,7 @@ class CameraStream(object):
             return False
         return True
 
-    def terminate(self):
+    def terminate_controller(self):
         CameraStream.terminate = True
 
     def get_frame(self):

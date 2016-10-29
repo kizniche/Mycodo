@@ -109,6 +109,27 @@ class SensorController(threading.Thread):
         self.control = DaemonControl()
         self.pause_loop = False
         self.verify_pause_loop = True
+
+        self.cond_id = {}
+        self.cond_name = {}
+        self.cond_activated = {}
+        self.cond_period = {}
+        self.cond_measurement_type = {}
+        self.cond_edge_select = {}
+        self.cond_edge_detected = {}
+        self.cond_gpio_state = {}
+        self.cond_direction = {}
+        self.cond_setpoint = {}
+        self.cond_relay_id = {}
+        self.cond_relay_state = {}
+        self.cond_relay_on_duration = {}
+        self.cond_execute_command = {}
+        self.cond_email_notify = {}
+        self.cond_flash_lcd = {}
+        self.cond_camera_record = {}
+        self.cond_timer = {}
+        self.smtp_wait_timer = {}
+
         self.setup_sensor_conditionals()
 
         with session_scope(MYCODO_DB_PATH) as new_session:

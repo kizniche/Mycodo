@@ -24,9 +24,9 @@
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 DATABASE="$INSTALL_DIRECTORY/databases/mycodo.db"
-RELAYID=`sqlite3 $DATABASE "SELECT relay_id FROM camerastill;"`;
-EXTRA=`sqlite3 $DATABASE "SELECT extra_parameters FROM camerastill;"`;
-ADD_TIMESTAMP=`sqlite3 $DATABASE "SELECT timestamp FROM camerastill;"`;
+RELAYID=$(sqlite3 $DATABASE "SELECT relay_id FROM camerastill;");
+EXTRA=$(sqlite3 $DATABASE "SELECT extra_parameters FROM camerastill;");
+ADD_TIMESTAMP=$(sqlite3 $DATABASE "SELECT timestamp FROM camerastill;");
 IMG_TS_FMT="%Y-%m-%d %H:%M:%S"
 FILE_NAME=$(date +"%Y-%m-%d_%H%M%S")
 if [ -n "$RELAYID" ]; then
