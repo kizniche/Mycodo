@@ -96,7 +96,7 @@ def validate_method_data(form_data, this_method):
             if end_time <= start_time:
                 flash("The end time/date must be after the start time/date.", "error")
                 return 1
-        
+
         elif this_method.method_type == 'Daily':
             if (not form_data.startDailyTime.data or
                     not form_data.endDailyTime.data or
@@ -277,16 +277,6 @@ def method_add(formAddMethod, method):
             start_time = datetime.strptime(formAddMethod.relayTime.data, '%Y-%m-%d %H:%M:%S')
         elif this_method.method_type == 'Daily':
             start_time = datetime.strptime(formAddMethod.relayDailyTime.data, '%H:%M:%S')
-
-    # Check if this is the first entry of the method
-    method_exists = False
-    method_empty = True
-    for each_method in method:
-        if each_method.id == formAddMethod.method_id.data:
-            method_exists = True
-            break
-        if each_method.method_order > 0:
-            method_empty = False
 
     try:
         new_method = Method()
@@ -900,10 +890,10 @@ def lcd_add(formAddLCD, display_order):
         return redirect('/lcd')
 
     if formAddLCD.validate():
-        for x in range(0, formAddLCD.numberLCDs.data):
+        for _ in range(0, formAddLCD.numberLCDs.data):
             new_lcd = LCD()
             random_lcd_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for n in xrange(8)])
+                    string.ascii_letters + string.digits) for _ in xrange(8)])
             new_lcd.id = random_lcd_id
             new_lcd.name = 'LCD {}'.format(random_lcd_id)
             new_lcd.pin = "27"
@@ -1250,7 +1240,7 @@ def pid_add(formAddPID, display_order):
         return redirect('/pid')
 
     if formAddPID.validate():
-        for x in range(0, formAddPID.numberPIDs.data):
+        for _ in range(0, formAddPID.numberPIDs.data):
             new_pid = PID()
             random_pid_id = ''.join([random.choice(
                     string.ascii_letters + string.digits) for n in xrange(8)])
@@ -1503,7 +1493,7 @@ def relay_add(formAddRelay, display_order):
         return redirect('/relay')
 
     if formAddRelay.validate():
-        for x in range(0, formAddRelay.numberRelays.data):
+        for _ in range(0, formAddRelay.numberRelays.data):
             new_relay = Relay()
             random_relay_id = ''.join([random.choice(
                     string.ascii_letters + string.digits) for n in xrange(8)])
@@ -1637,10 +1627,10 @@ def relay_conditional_add(formAddRelayCond):
         return redirect('/relay')
 
     if formAddRelayCond.validate():
-        for x in range(0, formAddRelayCond.numberRelayConditionals.data):
+        for _ in range(0, formAddRelayCond.numberRelayConditionals.data):
             new_relay_cond = RelayConditional()
             random_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for n in xrange(8)])
+                    string.ascii_letters + string.digits) for _ in xrange(8)])
             new_relay_cond.id = random_id
             new_relay_cond.name = 'Relay Conditional'
             new_relay_cond.activated = False
@@ -1767,10 +1757,10 @@ def sensor_add(formAddSensor, display_order):
         return redirect('/sensor')
 
     if formAddSensor.validate():
-        for x in range(0, formAddSensor.numberSensors.data):
+        for _ in range(0, formAddSensor.numberSensors.data):
             new_sensor = Sensor()
             random_sensor_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for n in xrange(8)])
+                    string.ascii_letters + string.digits) for _ in xrange(8)])
             new_sensor.id = random_sensor_id
             new_sensor.device = formAddSensor.sensor.data
             new_sensor.name = '{} ({})'.format(formAddSensor.sensor.data,

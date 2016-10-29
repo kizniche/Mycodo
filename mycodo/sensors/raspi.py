@@ -14,7 +14,7 @@ class RaspberryPiCPUTemp(object):
     def read(self):
         temperature = []
         # create average of two readings
-        for x in range(2):
+        for _ in range(2):
             time.sleep(1)
             temperature.append(self.get_measurement())
         if (None in temperature or

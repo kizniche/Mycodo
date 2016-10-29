@@ -54,8 +54,8 @@ class CameraStream(object):
                 time.sleep(2)
 
                 stream = io.BytesIO()
-                for x in camera.capture_continuous(stream, 'jpeg',
-                                                     use_video_port=True):
+                for _ in camera.capture_continuous(stream, 'jpeg',
+                                                   use_video_port=True):
                     # store frame
                     stream.seek(0)
                     cls.frame = stream.read()
@@ -84,6 +84,7 @@ class CameraTimelapse(object):
         os.makedirs(timelapse_path)
     timelapse_file = timestamp+'-img-{counter:03d}.jpg'
     timelapse_pathfile = timelapse_path+timelapse_file
+    terminate = False
 
     def initialize(self):
         if CameraTimelapse.thread is None:
@@ -95,7 +96,7 @@ class CameraTimelapse(object):
             return False
         return True
 
-    def terminate(self):
+    def terminate_controller(self):
         CameraTimelapse.terminate = True
 
     def start_timelapse(self, interval_sec, run_time_sec):

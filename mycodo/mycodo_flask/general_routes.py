@@ -539,10 +539,7 @@ def page(page):
             fname = '{}/{}-{}.log'.format(LOG_PATH,
                                           each_log.sensor_id,
                                           each_log.measure_type)
-            if os.path.isfile(fname):
-                log_file_exists[each_log.id] = True
-            else:
-                log_file_exists[each_log.id] = False
+            log_file_exists[each_log.id] = bool(os.path.isfile(fname))
 
         if request.method == 'POST':
             form_name = request.form['form-name']
@@ -716,33 +713,33 @@ def page(page):
     elif page == 'info':
         uptime = subprocess.Popen(
             "uptime", stdout=subprocess.PIPE, shell=True)
-        (uptime_output, uptime_err) = uptime.communicate()
-        uptime_status = uptime.wait()
+        (uptime_output, _) = uptime.communicate()
+        uptime.wait()
 
         uname = subprocess.Popen(
             "uname -a", stdout=subprocess.PIPE, shell=True)
-        (uname_output, uname_err) = uname.communicate()
-        uname_status = uname.wait()
+        (uname_output, _) = uname.communicate()
+        uname.wait()
 
         gpio = subprocess.Popen(
             "gpio readall", stdout=subprocess.PIPE, shell=True)
-        (gpio_output, gpio_err) = gpio.communicate()
-        gpio_status = gpio.wait()
+        (gpio_output, _) = gpio.communicate()
+        gpio.wait()
 
         df = subprocess.Popen(
             "df -h", stdout=subprocess.PIPE, shell=True)
-        (df_output, df_err) = df.communicate()
-        df_status = df.wait()
+        (df_output, _) = df.communicate()
+        df.wait()
 
         free = subprocess.Popen(
             "free -h", stdout=subprocess.PIPE, shell=True)
-        (free_output, free_err) = free.communicate()
-        free_status = free.wait()
+        (free_output, _) = free.communicate()
+        free.wait()
 
         ifconfig = subprocess.Popen(
             "ifconfig -a", stdout=subprocess.PIPE, shell=True)
-        (ifconfig_output, ifconfig_err) = ifconfig.communicate()
-        ifconfig_status = ifconfig.wait()
+        (ifconfig_output, _) = ifconfig.communicate()
+        ifconfig.wait()
 
         return render_template('tools/info.html',
                                gpio_readall=gpio_output,
@@ -950,7 +947,6 @@ def page(page):
                     if not timelapse_locked:
                         open(LOCK_FILE_STREAM, 'a')
                         stream_locked = True
-                        stream = True
                     else:
                         flash("Cannot start stream if a timelapse is active. "
                               "If not active, delete {}.".format(LOCK_FILE_TIMELAPSE),
@@ -1143,11 +1139,6 @@ def method_data(method_type, method_id):
 
     return jsonify(method_list)
 
-    try:
-        return jsonify(method)
-    except:
-        return ('', 204)
-
 
 @blueprint.route('/method', methods=('GET', 'POST'))
 def method_list():
@@ -1184,7 +1175,7 @@ def method_builder(method_type, method_id):
         # Create new method
         if method_type == '0':
             random_id = ''.join([random.choice(
-                string.ascii_letters + string.digits) for n in xrange(8)])
+                string.ascii_letters + string.digits) for _ in xrange(8)])
             method_id = random_id
             method_type = formCreateMethod.method_type.data
             form_fail = flaskutils.method_create(formCreateMethod, method_id)

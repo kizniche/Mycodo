@@ -62,7 +62,7 @@ def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day=None):
     # using the formula for cubic Bezier curves
     y = (1-param_t)**3*P0[1] + 3*(1-param_t)**2*param_t*P1[1] + 3*(1-param_t)*param_t**2*P2[1] + param_t**3*P3[1]
     assert np.isreal(y)
-    # Typecast y from np.complex128 to float64   
+    # Typecast y from np.complex128 to float64
     y = y.real
     return y
 

@@ -27,9 +27,8 @@ class BME280(object):
             time.sleep(2)
             self.bus = smbus.SMBus(self.I2C_bus_number)
             self._temperature, self._humidity, self._pressure = self.readBME280All()
-        except Exception, err:
+        except Exception as err:
             raise Exception(err)
-            return 1
 
     @property
     def temperature(self):

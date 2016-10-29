@@ -137,7 +137,7 @@ def recreate_stat_file(id_file, stats_csv, stats_interval, mycodo_version):
     uid_gid = pwd.getpwnam('mycodo').pw_uid
     if not os.path.isfile(id_file):
         anonymous_id = ''.join([random.choice(
-            string.ascii_letters + string.digits) for n in xrange(12)])
+            string.ascii_letters + string.digits) for _ in xrange(12)])
         with open(id_file, 'w') as write_file:
             write_file.write('{}'.format(anonymous_id))
         os.chown(id_file, uid_gid, uid_gid)

@@ -51,7 +51,7 @@ class MCP342x_read(object):
 
 
 if __name__ == "__main__":
-    mcp = MCP342x_read(0, 0x68, 0, 18)
+    mcp = MCP342x_read(0x68, 1, 1, 0, 18)
 
     for measure in mcp:
         print("Voltage: {}".format(measure['voltage']))

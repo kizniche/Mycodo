@@ -29,7 +29,6 @@ import logging
 import resource
 import RPi.GPIO as GPIO
 import os
-import pwd
 import sys
 import threading
 import time

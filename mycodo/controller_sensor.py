@@ -466,7 +466,7 @@ class SensorController(threading.Thread):
         if self.cond_execute_command[cond_id]:
             message += "\nExecute '{}'. ".format(
                     self.cond_execute_command[cond_id])
-            cmd_out, cmd_err, cmd_status = cmd_output(self.cond_execute_command[cond_id])
+            _, _, cmd_status = cmd_output(self.cond_execute_command[cond_id])
             message += "Status: {}. ".format(cmd_status)
 
         if self.cond_camera_record[cond_id] in ['photo', 'photoemail']:

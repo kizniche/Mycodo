@@ -248,7 +248,7 @@ class LCDController(threading.Thread):
 
             self.I2C_ADDR = int(self.lcd_pin, 16)
             self.lcd_init()
-            self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION), self.LCD_LINE[1]) 
+            self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION), self.LCD_LINE[1])
             self.lcd_string_write('Start {}'.format(
                 self.lcd_name), self.LCD_LINE[2])
         except Exception as except_msg:
@@ -270,8 +270,8 @@ class LCDController(threading.Thread):
                     try:
                         self.output_lcds()
                     except IOError as msg:
-                        self.logger.exception("[LCD {}] IOError: Unable to output to LCD".format(
-                            self.lcd_id))
+                        self.logger.exception("[LCD {}] IOError: Unable to output to LCD: {}".format(
+                            self.lcd_id, msg))
                     self.timer = time.time() + self.lcd_period
 
                 if self.flash_lcd_on:

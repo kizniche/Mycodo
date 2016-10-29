@@ -40,7 +40,7 @@ start() {
 }
 
 stop() {
-    RELAYID=`sqlite3 $DATABASE "SELECT relay_id FROM camerastream;"`;
+    RELAYID=$(sqlite3 $DATABASE "SELECT relay_id FROM camerastream;");
     if [ -n "$RELAYID" ]; then
         $INSTALL_DIRECTORY/mycodo/mycodo_client.py --relayoff $RELAYID
     fi

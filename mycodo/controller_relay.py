@@ -332,7 +332,7 @@ class RelayController(threading.Thread):
                 # Execute command as user mycodo
                 message += "Execute: '{}'. ".format(
                     each_conditional.execute_command)
-                cmd_out, cmd_err, cmd_status = cmd_output(
+                _, _, cmd_status = cmd_output(
                     self.cond_execute_command[cond_id])
                 message += "Status: {}. ".format(cmd_status)
 
