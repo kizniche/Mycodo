@@ -1,10 +1,8 @@
 # coding=utf-8
 
 import argparse
-import os
 import smbus
 import time
-import timeit
 
 
 class TCA9548A(object):

@@ -1,6 +1,5 @@
 # coding=utf-8
 
-import smbus
 import time
 import Adafruit_ADS1x15
 
