@@ -7,4 +7,5 @@ before_install:
   - git clone git://git.drogon.net/wiringPi && cd ./wiringPi && ./build
   - cd .. && wget abyz.co.uk/rpi/pigpio/pigpio.zip && unzip pigpio.zip && cd ./PIGPIO && make -j4 && sudo make install && cd ..
 install:
+  - pip install --install-option="--force-pi" Adafruit_Python_DHT
   - pip install --upgrade -r requirements.txt
