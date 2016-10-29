@@ -33,7 +33,7 @@ class DHT(object):
             self._humidity = sum(humidity, 0.0) / len(humidity)
 
     def read_retry(self, sensor, pin, retries=25, delay_seconds=2):
-        for i in range(retries):
+        for _ in range(retries):
             if not self.running:
                 break
             humidity, temperature = Adafruit_DHT.read(sensor, pin)

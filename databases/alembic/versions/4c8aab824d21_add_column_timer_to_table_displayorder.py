@@ -1,7 +1,7 @@
 """Add column timer to table displayorder
 
 Revision ID: 4c8aab824d21
-Revises: 
+Revises:
 Create Date: 2016-04-14 17:26:47.050662
 
 """

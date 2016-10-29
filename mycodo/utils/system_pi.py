@@ -48,7 +48,7 @@ def cmd_output(command, su_mycodo=True):
 
 def get_git_commit():
     current_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    output, err, status = cmd_output('cd {} && git rev-parse --short HEAD'.format(current_path))
+    output, _, _ = cmd_output('cd {} && git rev-parse --short HEAD'.format(current_path))
     return output[:7]
 
 
@@ -63,7 +63,7 @@ def internet(host="8.8.8.8", port=53, timeout=3):
         socket.setdefaulttimeout(timeout)
         socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
         return True
-    except Exception as ex:
+    except Exception:
         pass
     return False
 

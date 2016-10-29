@@ -6,14 +6,11 @@
 #
 
 import calendar
-import logging
 import os
-import sys
 import threading
 import time
 import timeit
 from dateutil.parser import parse as date_parse
-from influxdb import InfluxDBClient
 
 from config import LOG_PATH
 from config import SQL_DATABASE_MYCODO
@@ -67,7 +64,7 @@ class LogController(threading.Thread):
             self.log_id,
             (timeit.default_timer()-self.thread_startup_timer)*1000))
         self.ready.set()
-        
+
         while (self.running):
             if time.time() > self.timer:
                 self.write_log()

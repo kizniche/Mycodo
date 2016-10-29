@@ -25,9 +25,9 @@ class i2c(object):
     def writeI2C(self, bytes):
         self.fw.write(bytes)
 
-    def readI2C(self, bytes):
+    def readI2C(self, read_bytes):
         try:
-            return self.fr.read(bytes)
+            return self.fr.read(read_bytes)
         except IOError:
             return 0
 

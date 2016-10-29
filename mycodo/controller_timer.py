@@ -7,8 +7,6 @@
 #
 
 import datetime
-import logging
-import RPi.GPIO as GPIO
 import threading
 import time
 import timeit

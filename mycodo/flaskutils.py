@@ -50,9 +50,6 @@ from mycodo_client import DaemonControl
 
 from config import DAEMON_PID_FILE
 from config import INSTALL_DIRECTORY
-from config import LOGIN_ATTEMPTS
-from config import LOGIN_BAN_TIME_SECONDS
-from config import LOGIN_LOG_FILE
 from config import SQL_DATABASE_USER
 from config import SQL_DATABASE_MYCODO
 from config import INFLUXDB_HOST
@@ -99,7 +96,7 @@ def validate_method_data(form_data, this_method):
             if end_time <= start_time:
                 flash("The end time/date must be after the start time/date.", "error")
                 return 1
-        
+
         elif this_method.method_type == 'Daily':
             if (not form_data.startDailyTime.data or
                     not form_data.endDailyTime.data or
@@ -280,16 +277,6 @@ def method_add(formAddMethod, method):
             start_time = datetime.strptime(formAddMethod.relayTime.data, '%Y-%m-%d %H:%M:%S')
         elif this_method.method_type == 'Daily':
             start_time = datetime.strptime(formAddMethod.relayDailyTime.data, '%H:%M:%S')
-
-    # Check if this is the first entry of the method
-    method_exists = False
-    method_empty = True
-    for each_method in method:
-        if each_method.id == formAddMethod.method_id.data:
-            method_exists = True
-            break
-        if each_method.method_order > 0:
-            method_empty = False
 
     try:
         new_method = Method()
@@ -903,10 +890,10 @@ def lcd_add(formAddLCD, display_order):
         return redirect('/lcd')
 
     if formAddLCD.validate():
-        for x in range(0, formAddLCD.numberLCDs.data):
+        for _ in range(0, formAddLCD.numberLCDs.data):
             new_lcd = LCD()
             random_lcd_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for n in xrange(8)])
+                    string.ascii_letters + string.digits) for _ in xrange(8)])
             new_lcd.id = random_lcd_id
             new_lcd.name = 'LCD {}'.format(random_lcd_id)
             new_lcd.pin = "27"
@@ -1253,7 +1240,7 @@ def pid_add(formAddPID, display_order):
         return redirect('/pid')
 
     if formAddPID.validate():
-        for x in range(0, formAddPID.numberPIDs.data):
+        for _ in range(0, formAddPID.numberPIDs.data):
             new_pid = PID()
             random_pid_id = ''.join([random.choice(
                     string.ascii_letters + string.digits) for n in xrange(8)])
@@ -1506,7 +1493,7 @@ def relay_add(formAddRelay, display_order):
         return redirect('/relay')
 
     if formAddRelay.validate():
-        for x in range(0, formAddRelay.numberRelays.data):
+        for _ in range(0, formAddRelay.numberRelays.data):
             new_relay = Relay()
             random_relay_id = ''.join([random.choice(
                     string.ascii_letters + string.digits) for n in xrange(8)])
@@ -1640,10 +1627,10 @@ def relay_conditional_add(formAddRelayCond):
         return redirect('/relay')
 
     if formAddRelayCond.validate():
-        for x in range(0, formAddRelayCond.numberRelayConditionals.data):
+        for _ in range(0, formAddRelayCond.numberRelayConditionals.data):
             new_relay_cond = RelayConditional()
             random_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for n in xrange(8)])
+                    string.ascii_letters + string.digits) for _ in xrange(8)])
             new_relay_cond.id = random_id
             new_relay_cond.name = 'Relay Conditional'
             new_relay_cond.activated = False
@@ -1770,10 +1757,10 @@ def sensor_add(formAddSensor, display_order):
         return redirect('/sensor')
 
     if formAddSensor.validate():
-        for x in range(0, formAddSensor.numberSensors.data):
+        for _ in range(0, formAddSensor.numberSensors.data):
             new_sensor = Sensor()
             random_sensor_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for n in xrange(8)])
+                    string.ascii_letters + string.digits) for _ in xrange(8)])
             new_sensor.id = random_sensor_id
             new_sensor.device = formAddSensor.sensor.data
             new_sensor.name = '{} ({})'.format(formAddSensor.sensor.data,
@@ -2585,29 +2572,6 @@ def daemonActive():
     return False
 
 
-# Check for cookies to authenticate Login
-def authenticate_cookies(db_path, users):
-    cookie_username = request.cookies.get('user_name')
-    cookie_password_hash = request.cookies.get('user_pass_hash')
-    if cookie_username is not None:
-        with session_scope(db_path) as new_session:
-            user = new_session.query(users).filter(
-                users.user_name == cookie_username).first()
-            new_session.expunge_all()
-            new_session.close()
-            if user == None:
-                return False
-            elif cookie_password_hash == user.user_password_hash:
-                session['logged_in'] = True
-                session['user_group'] = user.user_restriction
-                session['user_name'] = user.user_name
-                session['user_theme'] = user.user_theme
-                return True
-            else:
-                failed_login()
-    return False
-
-
 def reorderList(modified_list, item, direction):
     from_position = modified_list.index(item)
     if direction == "up":
@@ -2670,51 +2634,6 @@ def flash_form_errors(form):
                 getattr(form, field).label.text,
                 error
                 ), "error")
-
-
-def banned_from_login():
-    if not session.get('failed_login_ban_time'):
-        session['failed_login_ban_time'] = 0
-    elif session['failed_login_ban_time']:
-        ban_time_left = time.time() - session['failed_login_ban_time']
-        if ban_time_left < LOGIN_BAN_TIME_SECONDS:
-            flash('Wait {} more minutes before attempting to login'.format(
-                int(LOGIN_BAN_TIME_SECONDS - ban_time_left) / 60), "info")
-            return 1
-        else:
-            session['failed_login_ban_time'] = 0
-    return 0
-
-
-def failed_login():
-    try:
-        session['failed_login_count'] += 1
-    except KeyError:
-        session['failed_login_count'] = 1
-
-    if session['failed_login_count'] > LOGIN_ATTEMPTS - 1:
-        flash('{} failed login attempts, wait 10 minutes to try again'.format(
-            session['failed_login_count']), "error")
-        session['failed_login_ban_time'] = time.time()
-        session['failed_login_count'] = 0
-    else:
-        flash('Failed Login ({}/{})'.format(
-            session['failed_login_count'],LOGIN_ATTEMPTS), "error")
-
-
-def login_log(user, group, ip, status):
-    with open(LOGIN_LOG_FILE, 'a') as file:
-        file.write('{:%Y-%m-%d %H:%M:%S}: {} {} ({}), {}\n'.format(
-            datetime.now(), status, user, group, ip))
-
-
-def clear_cookie_auth():
-    """Delete authentication cookies"""
-    response = make_response(redirect('/login'))
-    session.clear()  # or session['logged_in'] = False
-    response.set_cookie('user_name', '', expires=0)
-    response.set_cookie('user_pass_hash', '', expires=0)
-    return response
 
 
 def gzipped(f):

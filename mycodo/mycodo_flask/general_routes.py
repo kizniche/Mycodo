@@ -12,6 +12,7 @@ being less error prone.
 from __future__ import print_function
 
 import os
+import socket
 import sys
 import calendar
 import csv
@@ -20,7 +21,6 @@ import glob
 
 import pwd
 import random
-import socket
 
 import string
 import subprocess
@@ -33,20 +33,25 @@ from dateutil.parser import parse as date_parse
 from flask.blueprints import Blueprint
 from flask import current_app
 from flask import flash
+from flask import jsonify
 from flask import make_response
 from flask import redirect
 from flask import render_template
+from flask import Response
 from flask import request
 from flask import send_from_directory
 from flask import session
-from flask import jsonify
-from flask import Response
+from flask import url_for
 from flask_influxdb import InfluxDB
 
 import flaskforms
 import flaskutils
-from flaskutils import clear_cookie_auth
+
 from flaskutils import gzipped
+from mycodo_flask.authentication.views import admin_exists
+from mycodo_flask.authentication.views import authenticate_cookies
+from mycodo_flask.authentication.views import clear_cookie_auth
+from mycodo_flask.authentication.views import logged_in
 
 from databases.utils import session_scope
 from databases.mycodo_db.models import CameraStill
@@ -66,14 +71,14 @@ from databases.mycodo_db.models import SMTP
 from databases.mycodo_db.models import Timer
 from databases.users_db.models import Users
 
+from devices.camera_pi import CameraStream
+
 from utils.camera import camera_record
 from utils.method import sine_wave_y_out, bezier_curve_y_out
 from utils.statistics import return_stat_file_dict
 from utils.system_pi import cmd_output
 from utils.system_pi import get_sec
 from utils.system_pi import internet
-
-from devices.camera_pi import CameraStream
 
 from mycodo_client import DaemonControl
 
@@ -106,12 +111,10 @@ def before_blueprint_request():
     ca = current_app
     if (not os.path.isfile(current_app.config['SQL_DATABASE_MYCODO']) or
         not os.path.isfile(current_app.config['SQL_DATABASE_USER'])):
-        return "Error: Cannot find databases. Run \"init_databases.py --install_db all\" to generate them."
-    with session_scope(current_app.config['USER_DB_PATH']) as new_session:
-        user = new_session.query(Users).filter(
-            Users.user_restriction == 'admin').first()
-        if user == None:
-            return "Error: No admin user found. Run \"sudo ~/Mycodo/init_databases.py --addadmin\" to add one"
+        return ('Error: Cannot find databases. Run '
+                '"init_databases.py --install_db all" to generate them.')
+    if not admin_exists():
+        return redirect(url_for("authentication.create_admin"))
 blueprint.before_request(before_blueprint_request)
 
 
@@ -119,7 +122,7 @@ blueprint.before_request(before_blueprint_request)
 def home():
     """Load the default landing page"""
     if logged_in():
-        return redirect('/live')
+        return redirect(url_for('general_routes.page', page='live'))
     return clear_cookie_auth()
 
 
@@ -129,7 +132,7 @@ def page(page):
     Load the main pages of the web-UI
     """
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     # Default 'settings' landing page
     elif page == 'settings':
@@ -421,8 +424,6 @@ def page(page):
         formModPIDMethod = flaskforms.ModPIDMethod()
         formActivatePID = flaskforms.ActivatePID()
         formAddPID = flaskforms.AddPID()
-        formAddPIDSetpoint = flaskforms.AddPIDsetpoint()
-        formModPIDSetpoint = flaskforms.ModPIDsetpoint()
         formDeactivatePID = flaskforms.DeactivatePID()
         formDelPID = flaskforms.DelPID()
         formModPID = flaskforms.ModPID()
@@ -442,10 +443,6 @@ def page(page):
                 flaskutils.pid_mod(formModPID)
             elif form_name == 'modPIDMethod':
                 flaskutils.pid_mod_method(formModPIDMethod)
-            elif form_name == 'addPIDSetpoint':
-                flaskutils.pid_add_setpoint(formAddPIDSetpoint)
-            elif form_name == 'modPIDSetpoint':
-                flaskutils.pid_mod_setpoint(formModPIDSetpoint)
             elif form_name == 'delPID':
                 flaskutils.pid_del(formDelPID, display_order)
             elif form_name == 'orderPID':
@@ -465,8 +462,6 @@ def page(page):
                                formModPIDMethod=formModPIDMethod,
                                formOrderPID=formOrderPID,
                                formAddPID=formAddPID,
-                               formAddPIDSetpoint=formAddPIDSetpoint,
-                               formModPIDSetpoint=formModPIDSetpoint,
                                formModPID=formModPID,
                                formDelPID=formDelPID,
                                formActivatePID=formActivatePID,
@@ -544,10 +539,7 @@ def page(page):
             fname = '{}/{}-{}.log'.format(LOG_PATH,
                                           each_log.sensor_id,
                                           each_log.measure_type)
-            if os.path.isfile(fname):
-                log_file_exists[each_log.id] = True
-            else:
-                log_file_exists[each_log.id] = False
+            log_file_exists[each_log.id] = bool(os.path.isfile(fname))
 
         if request.method == 'POST':
             form_name = request.form['form-name']
@@ -673,10 +665,6 @@ def page(page):
         is_internet = True
         updating = 0
         update_available = False
-        backup_directories = []
-        list_only_commits = []
-        restore_commits_extended = []
-        commits_extended_messages = []
 
         formBackup = flaskforms.Backup()
         formUpdate = flaskforms.Update()
@@ -725,33 +713,33 @@ def page(page):
     elif page == 'info':
         uptime = subprocess.Popen(
             "uptime", stdout=subprocess.PIPE, shell=True)
-        (uptime_output, uptime_err) = uptime.communicate()
-        uptime_status = uptime.wait()
+        (uptime_output, _) = uptime.communicate()
+        uptime.wait()
 
         uname = subprocess.Popen(
             "uname -a", stdout=subprocess.PIPE, shell=True)
-        (uname_output, uname_err) = uname.communicate()
-        uname_status = uname.wait()
+        (uname_output, _) = uname.communicate()
+        uname.wait()
 
         gpio = subprocess.Popen(
             "gpio readall", stdout=subprocess.PIPE, shell=True)
-        (gpio_output, gpio_err) = gpio.communicate()
-        gpio_status = gpio.wait()
+        (gpio_output, _) = gpio.communicate()
+        gpio.wait()
 
         df = subprocess.Popen(
             "df -h", stdout=subprocess.PIPE, shell=True)
-        (df_output, df_err) = df.communicate()
-        df_status = df.wait()
+        (df_output, _) = df.communicate()
+        df.wait()
 
         free = subprocess.Popen(
             "free -h", stdout=subprocess.PIPE, shell=True)
-        (free_output, free_err) = free.communicate()
-        free_status = free.wait()
+        (free_output, _) = free.communicate()
+        free.wait()
 
         ifconfig = subprocess.Popen(
             "ifconfig -a", stdout=subprocess.PIPE, shell=True)
-        (ifconfig_output, ifconfig_err) = ifconfig.communicate()
-        ifconfig_status = ifconfig.wait()
+        (ifconfig_output, _) = ifconfig.communicate()
+        ifconfig.wait()
 
         return render_template('tools/info.html',
                                gpio_readall=gpio_output,
@@ -959,7 +947,6 @@ def page(page):
                     if not timelapse_locked:
                         open(LOCK_FILE_STREAM, 'a')
                         stream_locked = True
-                        stream = True
                     else:
                         flash("Cannot start stream if a timelapse is active. "
                               "If not active, delete {}.".format(LOCK_FILE_TIMELAPSE),
@@ -1045,7 +1032,7 @@ def method_data(method_type, method_id):
     Return database settings for a particular method
     """
     if (not session.get('logged_in') and
-            not flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
         return ('', 204)
 
     with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
@@ -1152,11 +1139,6 @@ def method_data(method_type, method_id):
 
     return jsonify(method_list)
 
-    try:
-        return jsonify(method)
-    except:
-        return ('', 204)
-
 
 @blueprint.route('/method', methods=('GET', 'POST'))
 def method_list():
@@ -1193,7 +1175,7 @@ def method_builder(method_type, method_id):
         # Create new method
         if method_type == '0':
             random_id = ''.join([random.choice(
-                string.ascii_letters + string.digits) for n in xrange(8)])
+                string.ascii_letters + string.digits) for _ in xrange(8)])
             method_id = random_id
             method_type = formCreateMethod.method_type.data
             form_fail = flaskutils.method_create(formCreateMethod, method_id)
@@ -1286,7 +1268,7 @@ def method_delete(method_id):
 def remote_admin(page):
     """Return pages for remote administraion"""
     if (not session.get('logged_in') and
-            not flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
         return redirect('/')
     elif session['user_group'] == 'guest':
         flash("Guests are not permitted to view the romote systems panel.",
@@ -1331,7 +1313,7 @@ def remote_admin(page):
 def camera_img(img_type, filename):
     """Return an image from stills or timelapses"""
     if (not session.get('logged_in') and
-            not flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
         return redirect('/')
 
     still_path = INSTALL_DIRECTORY + '/camera-stills/'
@@ -1369,7 +1351,7 @@ def camera_img(img_type, filename):
 def settings(page):
     """Serve settings pages"""
     if (not session.get('logged_in') and
-            not flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
         return redirect('/')
 
     # Alert email notifification settings
@@ -1461,17 +1443,6 @@ def settings(page):
     return render_template('settings/{}.html'.format(page))
 
 
-def logged_in():
-    """Verify the user is logged in"""
-    if (not session.get('logged_in') and
-            not flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
-        return 0
-    elif (session.get('logged_in') or
-              (not session.get('logged_in') and
-                   flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users))):
-        return 1
-
-
 def gen(camera):
     """Video streaming generator function."""
     while True:
@@ -1484,7 +1455,7 @@ def gen(camera):
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
     if (not session.get('logged_in') and
-            not flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
         return redirect('/')
 
     return Response(gen(CameraStream()),
@@ -1495,8 +1466,8 @@ def video_feed():
 def gpio_state():
     """Return the GPIO state, for relay page status"""
     if (not session.get('logged_in') and
-            not flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
-        return ('', 204)
+            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+        return redirect('/')
 
     relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
     gpio_state = {}
@@ -1515,7 +1486,7 @@ def gpio_state():
 def download_file(dl_type, filename):
     """Serve log file to download"""
     if (not session.get('logged_in') and
-            not flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
         return ('', 204)
     elif dl_type == 'log':
         return send_from_directory(LOG_PATH, filename, as_attachment=True)
@@ -1527,7 +1498,7 @@ def download_file(dl_type, filename):
 def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
     """Return the most recent time and value from influxdb"""
     if (not session.get('logged_in') and
-            not flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
         return ('', 204)
 
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
@@ -1561,7 +1532,7 @@ def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
 def past_data(sensor_type, sensor_measure, sensor_id, past_seconds):
     """Return data from past_seconds until present from influxdb"""
     if (not session.get('logged_in') and
-            not flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
         return ('', 204)
 
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
@@ -1591,7 +1562,7 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
     Used for asyncronous graph display of many points (up to millions).
     """
     if (not session.get('logged_in') and
-            not flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
         return ('', 204)
 
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
@@ -1702,7 +1673,7 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
 def daemon_active():
     """Return 'alive' if the daemon is running"""
     if (not session.get('logged_in') and
-            not flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
         return ('', 204)
     try:
         control = DaemonControl()
@@ -1715,7 +1686,7 @@ def daemon_active():
 def computer_command(action):
     """Execute one of several commands, as root"""
     if (not session.get('logged_in') and
-            not flaskutils.authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
         return ('', 204)
     try:
         control = DaemonControl()

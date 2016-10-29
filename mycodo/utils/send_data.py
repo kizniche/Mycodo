@@ -1,10 +1,8 @@
 # coding=utf-8
 
-import logging
 import os
 import smtplib
 import socket
-from collections import OrderedDict
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage

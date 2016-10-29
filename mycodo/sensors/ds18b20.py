@@ -12,7 +12,7 @@ class DS18B20(object):
     def read(self):
         temperature = []
         # Check continuity of two readings and return average
-        for x in range(2):
+        for _ in range(2):
             time.sleep(1)
             try:
                 temperature.append(W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, self.pin).get_temperature())

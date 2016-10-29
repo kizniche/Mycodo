@@ -2,6 +2,11 @@
 """ Starts the mycodo flask UI """
 import os
 import argparse
+import sys
+import os.path
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+
 from mycodo.mycodo_flask.app import create_app
 
 app = create_app()  # required by the wsgi config and main()

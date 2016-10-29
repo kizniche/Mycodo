@@ -41,10 +41,10 @@ while 1:
     # Only record date of first fault after a successful read
     # Determines time since sensor became completely unresponsive
     if crc_check == 1:
-    	faultreset = True
+        faultreset = True
     elif crc_check != 1 and faultreset:
         count += 1
-    	faultreset = False
-    	fault = time.time()
-    
+        faultreset = False
+        fault = time.time()
+
     time.sleep(6)

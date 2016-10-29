@@ -27,9 +27,8 @@ class BME280(object):
             time.sleep(2)
             self.bus = smbus.SMBus(self.I2C_bus_number)
             self._temperature, self._humidity, self._pressure = self.readBME280All()
-        except Exception, err:
+        except Exception as err:
             raise Exception(err)
-            return 1
 
     @property
     def temperature(self):
@@ -97,10 +96,11 @@ class BME280(object):
         # Register self.i2c_address
         REG_DATA = 0xF7
         REG_CONTROL = 0xF4
-        REG_CONFIG  = 0xF5
 
-        REG_HUM_MSB = 0xFD
-        REG_HUM_LSB = 0xFE
+        # REG_CONFIG  = 0xF5
+        #
+        # REG_HUM_MSB = 0xFD
+        # REG_HUM_LSB = 0xFE
 
         # Oversample setting - page 27
         OVERSAMPLE_TEMP = 2

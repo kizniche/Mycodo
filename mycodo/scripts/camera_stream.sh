@@ -26,8 +26,8 @@ DATABASE="$INSTALL_DIRECTORY/databases/mycodo.db"
 
 start() {
 	mkdir /tmp/stream
-    RELAYID=`sqlite3 $DATABASE "SELECT relay_id FROM camerastream;"`;
-    EXTRA=`sqlite3 $DATABASE "SELECT extra_parameters FROM camerastream;"`;
+    RELAYID=$(sqlite3 $DATABASE "SELECT relay_id FROM camerastream;");
+    EXTRA=$(sqlite3 $DATABASE "SELECT extra_parameters FROM camerastream;");
     if [ -n "$RELAYID" ]; then
         $INSTALL_DIRECTORY/mycodo/mycodo_client.py --relayon $RELAYID
     fi
@@ -40,7 +40,7 @@ start() {
 }
 
 stop() {
-    RELAYID=`sqlite3 $DATABASE "SELECT relay_id FROM camerastream;"`;
+    RELAYID=$(sqlite3 $DATABASE "SELECT relay_id FROM camerastream;");
     if [ -n "$RELAYID" ]; then
         $INSTALL_DIRECTORY/mycodo/mycodo_client.py --relayoff $RELAYID
     fi
