@@ -10,3 +10,4 @@ install:
   - pip install --upgrade -r requirements.txt
 virtualenv:
     system_site_packages: true
+script: python -m pytest ./mycodo/tests/software_tests/test_mycodo_flask/test_endpoints.py
