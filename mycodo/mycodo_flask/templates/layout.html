@@ -98,7 +98,7 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/live">Live</a></li>
+            <li{% if active_page == 'live' %} class="active"{% endif %}><a href="/live">Live</a></li>
             <li class="dropdown{% if active_page == 'graph' %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Graph<span class="caret"></span></a>
               <ul class="dropdown-menu">
