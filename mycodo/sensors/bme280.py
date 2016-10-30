@@ -6,8 +6,6 @@
 import smbus
 import time
 from ctypes import c_short
-from ctypes import c_byte
-from ctypes import c_ubyte
 
 import RPi.GPIO as GPIO
 from sensorutils import dewpoint

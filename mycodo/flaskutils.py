@@ -43,7 +43,7 @@ from databases.mycodo_db.models import SensorConditional
 from databases.mycodo_db.models import Timer
 from databases.users_db.models import Users
 from databases.utils import session_scope
-from scripts.utils import test_username, test_password, is_email
+from scripts.utils import test_username, test_password
 from mycodo_client import DaemonControl
 
 from config import DAEMON_PID_FILE

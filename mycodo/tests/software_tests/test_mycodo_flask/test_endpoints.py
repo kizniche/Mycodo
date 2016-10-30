@@ -35,6 +35,46 @@ def test_video_feed_for_non_logged_in_user(testapp):
     redirects_to_login_page(app=testapp, endpoint='/video_feed')
 
 
+def test_method_data_for_non_logged_in_user(testapp):
+    """ Verifies behavior of this endpoint for non-logged in users """
+    redirects_to_login_page(app=testapp, endpoint='/method-data/0/0')
+
+
+def test_method_build_for_non_logged_in_user(testapp):
+    """ Verifies behavior of this endpoint for non-logged in users """
+    redirects_to_login_page(app=testapp, endpoint='/method-build/0/0')
+
+
+def test_method_delete_for_non_logged_in_user(testapp):
+    """ Verifies behavior of this endpoint for non-logged in users """
+    redirects_to_login_page(app=testapp, endpoint='/method-delete/0')
+
+
+def test_camera_image_for_non_logged_in_user(testapp):
+    """ Verifies behavior of this endpoint for non-logged in users """
+    redirects_to_login_page(app=testapp, endpoint='/camera/0/0')
+
+
+def test_download_file_for_non_logged_in_user(testapp):
+    """ Verifies behavior of this endpoint for non-logged in users """
+    redirects_to_login_page(app=testapp, endpoint='/dl/0/0')
+
+
+def test_last_influxdb_for_non_logged_in_user(testapp):
+    """ Verifies behavior of this endpoint for non-logged in users """
+    redirects_to_login_page(app=testapp, endpoint='/last/0/0/0/0')
+
+
+def test_past_influxdb_for_non_logged_in_user(testapp):
+    """ Verifies behavior of this endpoint for non-logged in users """
+    redirects_to_login_page(app=testapp, endpoint='/past/0/0/0/0')
+
+
+def test_async_influxdb_for_non_logged_in_user(testapp):
+    """ Verifies behavior of this endpoint for non-logged in users """
+    redirects_to_login_page(app=testapp, endpoint='/async/0/0/0/0')
+
+
 def test_page_live_for_non_logged_in_user(testapp):
     """ Verifies behavior of this endpoint for non-logged in users """
     redirects_to_login_page(app=testapp, endpoint='/live')

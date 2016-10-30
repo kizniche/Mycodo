@@ -1031,9 +1031,8 @@ def method_data(method_type, method_id):
     """
     Return database settings for a particular method
     """
-    if (not session.get('logged_in') and
-            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
-        return ('', 204)
+    if not logged_in():
+        return redirect('/')
 
     with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
         method = new_session.query(Method)
@@ -1253,14 +1252,14 @@ def method_delete(method_id):
     """Delete a method"""
     if not logged_in():
         return redirect('/')
+
     try:
         with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
             method = new_session.query(Method)
-            method = method.filter(Method.method_id == method_id).delete()
+            method.filter(Method.method_id == method_id).delete()
     except Exception as except_msg:
         flash("Error while deleting Method: "
               "{}".format(except_msg), "error")
-    # flaskutils.method_del(method_id)
     return redirect('/method')
 
 
@@ -1312,8 +1311,7 @@ def remote_admin(page):
 @blueprint.route('/camera/<img_type>/<filename>')
 def camera_img(img_type, filename):
     """Return an image from stills or timelapses"""
-    if (not session.get('logged_in') and
-            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+    if not logged_in():
         return redirect('/')
 
     still_path = INSTALL_DIRECTORY + '/camera-stills/'
@@ -1350,8 +1348,7 @@ def camera_img(img_type, filename):
 @blueprint.route('/settings/<page>', methods=('GET', 'POST'))
 def settings(page):
     """Serve settings pages"""
-    if (not session.get('logged_in') and
-            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+    if not logged_in():
         return redirect('/')
 
     # Alert email notifification settings
@@ -1454,8 +1451,7 @@ def gen(camera):
 @blueprint.route('/video_feed')
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
-    if (not session.get('logged_in') and
-            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+    if not logged_in():
         return redirect('/')
 
     return Response(gen(CameraStream()),
@@ -1465,8 +1461,7 @@ def video_feed():
 @blueprint.route('/gpiostate')
 def gpio_state():
     """Return the GPIO state, for relay page status"""
-    if (not session.get('logged_in') and
-            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+    if not logged_in():
         return redirect('/')
 
     relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
@@ -1485,9 +1480,9 @@ def gpio_state():
 @blueprint.route('/dl/<dl_type>/<path:filename>')
 def download_file(dl_type, filename):
     """Serve log file to download"""
-    if (not session.get('logged_in') and
-            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
-        return ('', 204)
+    if not logged_in():
+        return redirect('/')
+
     elif dl_type == 'log':
         return send_from_directory(LOG_PATH, filename, as_attachment=True)
 
@@ -1497,9 +1492,8 @@ def download_file(dl_type, filename):
 @blueprint.route('/last/<sensor_type>/<sensor_measure>/<sensor_id>/<sensor_period>')
 def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
     """Return the most recent time and value from influxdb"""
-    if (not session.get('logged_in') and
-            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
-        return ('', 204)
+    if not logged_in():
+        return redirect('/')
 
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
@@ -1531,9 +1525,8 @@ def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
 @gzipped
 def past_data(sensor_type, sensor_measure, sensor_id, past_seconds):
     """Return data from past_seconds until present from influxdb"""
-    if (not session.get('logged_in') and
-            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
-        return ('', 204)
+    if not logged_in():
+        return redirect('/')
 
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
@@ -1561,9 +1554,8 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
     Return data from start_seconds to end_seconds from influxdb.
     Used for asyncronous graph display of many points (up to millions).
     """
-    if (not session.get('logged_in') and
-            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
-        return ('', 204)
+    if not logged_in():
+        return redirect('/')
 
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
@@ -1672,9 +1664,9 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
 @blueprint.route('/daemonactive')
 def daemon_active():
     """Return 'alive' if the daemon is running"""
-    if (not session.get('logged_in') and
-            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
-        return ('', 204)
+    if not logged_in():
+        return redirect('/')
+
     try:
         control = DaemonControl()
         return control.daemon_status()
@@ -1685,9 +1677,9 @@ def daemon_active():
 @blueprint.route('/systemctl/<action>')
 def computer_command(action):
     """Execute one of several commands, as root"""
-    if (not session.get('logged_in') and
-            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
-        return ('', 204)
+    if not logged_in():
+        return redirect('/')
+
     try:
         control = DaemonControl()
         return control.system_control(action)
@@ -1705,6 +1697,8 @@ def newremote():
             Users.user_name == user).first()
         new_session.expunge_all()
         new_session.close()
+    # TODO: Change sleep() to max requests per duration of time
+    time.sleep(1)  # Slow down requests (hackish way to prevent brute force attack)
     if user:
         if Users().check_password(passw, user.user_password_hash) == user.user_password_hash:
             return jsonify(status=0, message="{}".format(user.user_password_hash))
@@ -1721,6 +1715,8 @@ def data():
             Users.user_name == user).first()
         new_session.expunge_all()
         new_session.close()
+    # TODO: Change sleep() to max requests per duration of time
+    time.sleep(1)  # Slow down requests (hackish way to prevent brute force attack)
     if (user and
                 user.user_restriction == 'admin' and
                 pw_hash == user.user_password_hash):
