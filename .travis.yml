@@ -1,8 +1,8 @@
 language: python
 os: linux
+dist: precise
 python:
-  - "2.7"
-  - "3.2"
+  - 2.7
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y libav-tools libi2c-dev python-setuptools python-smbus

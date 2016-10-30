@@ -1443,13 +1443,12 @@ def pid_activate(formActivatePID):
 
         # Signal the duration method can run because it's been
         # properly initiated (non-power failure)
-        with session_scope(MYCODO_DB_PATH) as db_session:
-            mod_method = db_session.query(Method).filter(
-                Method.method_id == pid.method_id)
-            mod_method = mod_method.filter(Method.method_order == 0).first()
-            if mod_method and mod_method.method_type == 'Duration':
-                    mod_method.start_time = 'Ready'
-                    db_session.commit()
+        mod_method = db_session.query(Method).filter(
+            Method.method_id == pid.method_id)
+        mod_method = mod_method.filter(Method.method_order == 0).first()
+        if mod_method and mod_method.method_type == 'Duration':
+            mod_method.start_time = 'Ready'
+            db_session.commit()
 
     activate_deactivate_controller('activate',
                                    'PID',

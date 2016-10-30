@@ -2,7 +2,7 @@
 #
 
 from flask_wtf import Form
-from wtforms import BooleanField, DecimalField, HiddenField, IntegerField, PasswordField, RadioField, SelectField, SelectMultipleField, SubmitField, TextField, validators
+from wtforms import BooleanField, DecimalField, HiddenField, IntegerField, PasswordField, RadioField, SelectField, SelectMultipleField, SubmitField, StringField, validators
 from wtforms.validators import DataRequired
 from wtforms.fields.html5 import EmailField
 
@@ -12,11 +12,11 @@ from wtforms.fields.html5 import EmailField
 #
 
 class CreateMethod(Form):
-    name = TextField(
+    name = StringField(
         u'Name',
         render_kw={"placeholder": "Name"}
     )
-    method_type = TextField(
+    method_type = StringField(
         u'Method Type',
         render_kw={"placeholder": ""}
     )
@@ -28,19 +28,19 @@ class AddMethod(Form):
     method_id = HiddenField(u'Method ID')
     method_type = HiddenField(u'Method Type')
     method_select = HiddenField(u'Method Select')
-    startDailyTime = TextField(
+    startDailyTime = StringField(
         u'Start HH:MM:SS',
         render_kw={"placeholder": "HH:MM:SS"}
     )
-    endDailyTime = TextField(
+    endDailyTime = StringField(
         u'End HH:MM:SS',
         render_kw={"placeholder": "HH:MM:SS"}
     )
-    startTime = TextField(
+    startTime = StringField(
         u'Start YYYY-MM-DD HH:MM:SS',
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    endTime = TextField(
+    endTime = StringField(
         u'End YYYY-MM-DD HH:MM:SS',
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
@@ -59,11 +59,11 @@ class AddMethod(Form):
     y2 = DecimalField(u'Y2')
     x3 = DecimalField(u'X3')
     y3 = DecimalField(u'Y3')
-    relayDailyTime = TextField(
+    relayDailyTime = StringField(
         u'Time HH:MM:SS',
         render_kw={"placeholder": "HH:MM:SS"}
     )
-    relayTime = TextField(
+    relayTime = StringField(
         u'Time YYYY-MM-DD HH:MM:SS',
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
@@ -71,7 +71,7 @@ class AddMethod(Form):
         u'Duration On (seconds)',
         render_kw={"placeholder": ""}
     )
-    relayID = TextField(
+    relayID = StringField(
         u'Relay ID',
         render_kw={"placeholder": ""}
     )
@@ -89,36 +89,36 @@ class ModMethod(Form):
     method_id = HiddenField(u'Method ID')
     method_type = HiddenField(u'Method Type')
     method_select = HiddenField(u'Method Select')
-    name = TextField(u'Name')
-    startDailyTime = TextField(
+    name = StringField(u'Name')
+    startDailyTime = StringField(
         u'Start HH:MM:SS',
         render_kw={"placeholder": "HH:MM:SS"}
     )
-    endDailyTime = TextField(
+    endDailyTime = StringField(
         u'End HH:MM:SS',
         render_kw={"placeholder": "HH:MM:SS"}
     )
-    startTime = TextField(
+    startTime = StringField(
         u'Start YYYY-MM-DD HH:MM:SS',
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    endTime = TextField(
+    endTime = StringField(
         u'End YYYY-MM-DD HH:MM:SS',
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    relayDailyTime = TextField(
+    relayDailyTime = StringField(
         u'Time HH:MM:SS',
         render_kw={"placeholder": "HH:MM:SS"}
     )
-    relayTime = TextField(
+    relayTime = StringField(
         u'Time YYYY-MM-DD HH:MM:SS',
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
     DurationSec = IntegerField(u'Duration (seconds)')
     startSetpoint = DecimalField(u'Start Setpoint')
     endSetpoint = DecimalField(u'End Setpoint (optional)')
-    relayID = TextField(u'Relay',)
-    relayState = TextField(u'Relay State')
+    relayID = StringField(u'Relay',)
+    relayState = StringField(u'Relay State')
     relayDurationSec = IntegerField(u'Relay On Duration (sec)')
     Submit = SubmitField(u'Save')
     Delete = SubmitField(u'Delete')
@@ -130,12 +130,12 @@ class ModMethod(Form):
 
 class RemoteSetup(Form):
     remote_id = HiddenField(u'Remote Host ID')
-    host = TextField(
+    host = StringField(
         u'Domain or IP Address',
         render_kw={"placeholder": "youraddress.com or 0.0.0.0"},
         validators=[DataRequired()]
     )
-    username = TextField(
+    username = StringField(
         u'Username',
         render_kw={"placeholder": "Username"},
         validators=[DataRequired()]
@@ -214,7 +214,7 @@ class Camera(Form):
 #
 
 class EmailAlert(Form):
-    smtpHost = TextField(
+    smtpHost = StringField(
         u'SMTP Host',
         render_kw={"placeholder": "SMTP Host"},
         validators=[DataRequired()]
@@ -229,7 +229,7 @@ class EmailAlert(Form):
         )]
     )
     sslEnable = BooleanField(u'Enable SSL')
-    smtpUser = TextField(
+    smtpUser = StringField(
         u'SMTP User',
         render_kw={"placeholder": "SMTP User"},
         validators=[DataRequired()]
@@ -277,8 +277,8 @@ class SettingsGeneral(Form):
     hideAlertInfo = BooleanField(u'Hide info messages')
     relayStatsVolts = IntegerField(u'Voltage')
     relayStatsCost = DecimalField(u'Cost per kWh')
-    relayStatsCurrency = TextField(u'Currency Unit')
-    relayStatsDayOfMonth = TextField(u'Billing Day of Month (1-30)')
+    relayStatsCurrency = StringField(u'Currency Unit')
+    relayStatsDayOfMonth = StringField(u'Billing Day of Month (1-30)')
     hideAlertWarning = BooleanField(u'Hide warning messages')
     stats_opt_out = BooleanField(u'Opt-out of sending statistics')
     Submit = SubmitField(u'Save')
@@ -289,7 +289,7 @@ class SettingsGeneral(Form):
 #
 
 class AddUser(Form):
-    addUsername = TextField(
+    addUsername = StringField(
         u'Username',
         render_kw={"placeholder": "Username"},
         validators=[DataRequired()]
@@ -364,7 +364,7 @@ class ModUser(Form):
         ],
         validators=[DataRequired()]
     )
-    modTheme = TextField(u'Theme')
+    modTheme = StringField(u'Theme')
     modSubmit = SubmitField(u'Submit')
 
 
@@ -389,7 +389,7 @@ class SettingsCamera(Form):
 #
 
 class AddGraph(Form):
-    name = TextField(
+    name = StringField(
         u'Graph Name',
         render_kw={"placeholder": "Graph Name"},
         validators=[DataRequired()]
@@ -445,7 +445,7 @@ class AddGraph(Form):
 
 class ModGraph(Form):
     graph_id = HiddenField(u'Graph ID')
-    name = TextField(
+    name = StringField(
         u'Graph Name',
         render_kw={"placeholder": "Graph Name"},
         validators=[DataRequired()]
@@ -527,17 +527,17 @@ class AddLCD(Form):
 
 class ModLCD(Form):
     modLCD_id = HiddenField(u'Relay')
-    modName = TextField(
+    modName = StringField(
         u'Name',
         render_kw={"placeholder": "Name"},
         validators=[DataRequired()]
     )
-    modPin = TextField(
+    modPin = StringField(
         u'I2C Address',
         render_kw={"placeholder": "I2C Address"},
         validators=[DataRequired()]
     )
-    modMultiplexAddress = TextField(
+    modMultiplexAddress = StringField(
         u'Multiplexer I2C Address',
         render_kw={"placeholder": "I2C Address"}
     )
@@ -567,16 +567,16 @@ class ModLCD(Form):
         ],
         validators=[DataRequired()]
     )
-    modLine1SensorIDMeasurement = TextField(
+    modLine1SensorIDMeasurement = StringField(
         u'Line 1 Sensor ID'
     )
-    modLine2SensorIDMeasurement = TextField(
+    modLine2SensorIDMeasurement = StringField(
         u'Line 2 Sensor ID'
     )
-    modLine3SensorIDMeasurement = TextField(
+    modLine3SensorIDMeasurement = StringField(
         u'Line 3 Sensor ID'
     )
-    modLine4SensorIDMeasurement = TextField(
+    modLine4SensorIDMeasurement = StringField(
         u'Line 4 Sensor ID'
     )
     modLCDSubmit = SubmitField(u'Save')
@@ -609,12 +609,12 @@ class ResetFlashingLCD(Form):
 #
 
 class CreateAdmin(Form):
-    username = TextField(
+    username = StringField(
         u'Username',
         render_kw={"placeholder": "Username"},
         validators=[DataRequired()]
     )
-    email = TextField(
+    email = StringField(
         u'Email',
         render_kw={"placeholder": "Email"},
         validators=[DataRequired()]
@@ -632,7 +632,7 @@ class CreateAdmin(Form):
 #
 
 class Login(Form):
-    username = TextField(
+    username = StringField(
         u'Username',
         render_kw={"placeholder": "Username"},
         validators=[DataRequired()]
@@ -655,12 +655,12 @@ class InstallNotice(Form):
 
 class Log(Form):
     log_id = HiddenField(u'Log ID')
-    name = TextField(
+    name = StringField(
         u'Name',
         render_kw={"placeholder": "Name"},
         validators=[DataRequired()]
     )
-    sensorMeasurement = TextField(u'Sensor and Measurement')
+    sensorMeasurement = StringField(u'Sensor and Measurement')
     period = IntegerField(u'Period (sec)')
     logCreate = SubmitField(u'Create Log Controller')
     logMod = SubmitField(u'Save')
@@ -697,17 +697,17 @@ class AddPID(Form):
 
 class ModPID(Form):
     modPID_id = HiddenField(u'Relay')
-    modName = TextField(
+    modName = StringField(
         u'Name',
         render_kw={"placeholder": "Name"},
         validators=[DataRequired()]
     )
-    modSensorID = TextField(
+    modSensorID = StringField(
         u'Sensor ID',
         render_kw={"placeholder": "Sensor ID"},
         validators=[DataRequired()]
     )
-    modMeasureType = TextField(
+    modMeasureType = StringField(
         u'Measure Type',
         validators=[DataRequired()]
     )
@@ -764,7 +764,7 @@ class ModPID(Form):
     )
     modIntegratorMin = DecimalField(u'Integrator Min')
     modIntegratorMax = DecimalField(u'Integrator Max')
-    modRaiseRelayID = TextField(
+    modRaiseRelayID = StringField(
         u'Raise Relay ID',
         render_kw={"placeholder": "Raise Relay ID"},
     )
@@ -786,7 +786,7 @@ class ModPID(Form):
             message="Raise maximum duration must be a non-negative value. (0 to disable)"
         )]
     )
-    modLowerRelayID = TextField(
+    modLowerRelayID = StringField(
         u'Lower Relay ID',
         render_kw={"placeholder": "Lower Relay ID"},
     )
@@ -851,7 +851,7 @@ class AddRelay(Form):
 
 class ModRelay(Form):
     modRelay_id = HiddenField(u'Relay')
-    modName = TextField(
+    modName = StringField(
         u'Name',
         render_kw={"placeholder": "Name"},
         validators=[DataRequired()]
@@ -926,39 +926,39 @@ class AddRelayConditional(Form):
 
 class ModRelayConditional(Form):
     Relay_id = HiddenField(u'Conditional ID')
-    modCondName = TextField(
+    modCondName = StringField(
         u'Name',
         render_kw={"placeholder": "Name"}
     )
-    IfRelayID = TextField(
+    IfRelayID = StringField(
         u'If Relay ID'
     )
-    IfRelayAction = TextField(
+    IfRelayAction = StringField(
         u'If Action'
     )
     IfRelayDuration = DecimalField(
         u'If Relay Duration',
         render_kw={"placeholder": "Duration"}
     )
-    DoRelayID = TextField(
+    DoRelayID = StringField(
         u'Do Relay ID'
     )
-    DoRelayAction = TextField(
+    DoRelayAction = StringField(
         u'Do Action'
     )
     DoRelayDuration = DecimalField(
         u'Do Relay Duration',
         render_kw={"placeholder": "Duration"}
     )
-    DoExecute = TextField(
+    DoExecute = StringField(
         u'Execute Command',
         render_kw={"placeholder": "Command"}
     )
-    DoNotify = TextField(
+    DoNotify = StringField(
         u'Botify by Email',
         render_kw={"placeholder": "Email"}
     )
-    DoFlashLCD = TextField(
+    DoFlashLCD = StringField(
         u'Flash LCD',
         render_kw={"placeholder": "LCD"}
     )
@@ -1010,28 +1010,28 @@ class AddSensor(Form):
 
 class ModSensor(Form):
     modSensor_id = HiddenField(u'Sensor')
-    modName = TextField(
+    modName = StringField(
         u'Name',
         validators=[DataRequired()]
     )
     modBus = IntegerField(u'I<sup>2</sup>C Bus')
-    modLocation = TextField(u'Location')
-    modMultiplexAddress = TextField(u'Multiplexer (MX)')
-    modMultiplexBus = TextField(u'Mx I<sup>2</sup>C Bus')
+    modLocation = StringField(u'Location')
+    modMultiplexAddress = StringField(u'Multiplexer (MX)')
+    modMultiplexBus = StringField(u'Mx I<sup>2</sup>C Bus')
     modMultiplexChannel = IntegerField(u'Mx Channel')
     modADCChannel = IntegerField(u'ADC Channel')
     modADCGain = IntegerField(u'ADC Gain')
     modADCResolution = IntegerField(u'ADC Resolution')
-    modADCMeasure = TextField(u'ADC Measurement Type')
-    modADCMeasureUnits = TextField(u'ADC Measurement Units')
+    modADCMeasure = StringField(u'ADC Measurement Type')
+    modADCMeasureUnits = StringField(u'ADC Measurement Units')
     modADCVoltsMin = DecimalField(u'Volts Min')
     modADCVoltsMax = DecimalField(u'Volts Max')
     modADCUnitsMin = DecimalField(u'Units Min')
     modADCUnitsMax = DecimalField(u'Units Max')
-    modSwitchEdge = TextField(u'Switch Edge Detected')
+    modSwitchEdge = StringField(u'Switch Edge Detected')
     modSwitchBounceTime = IntegerField(u'Bounce Time (ms)')
     modSwitchResetPeriod = IntegerField(u'Reset Period (sec)')
-    modPreRelayID = TextField(u'Pre Relay')
+    modPreRelayID = StringField(u'Pre Relay')
     modPreRelayDuration = DecimalField(
         u'Pre Relay Duration (sec)',
         validators=[validators.NumberRange(
@@ -1056,7 +1056,7 @@ class ModSensor(Form):
             message="If using a SHT sensor, enter the GPIO connected to the clock pin (using BCM numbering)."
         )]
     )
-    modSHTVoltage = TextField(u'SHT Input Voltage')
+    modSHTVoltage = StringField(u'SHT Input Voltage')
     modSensorSubmit = SubmitField(u'Save')
     delSensorSubmit = SubmitField(u'Delete')
     activateSensorSubmit = SubmitField(u'Activate')
@@ -1074,26 +1074,26 @@ class ModSensor(Form):
 class ModSensorConditional(Form):
     modCondSensor_id = HiddenField(u'Conditional ID')
     modSensor_id = HiddenField(u'Sensor ID')
-    modCondName = TextField(u'Name')
+    modCondName = StringField(u'Name')
     Period = IntegerField(
         u'Period (sec)',
         validators=[validators.NumberRange(
             min=0
         )]
     )
-    MeasureType = TextField(u'Measurement Type')
-    EdgeSelect = TextField(u'Edge or State')
-    EdgeDetected = TextField(u'Edge Detected')
+    MeasureType = StringField(u'Measurement Type')
+    EdgeSelect = StringField(u'Edge or State')
+    EdgeDetected = StringField(u'Edge Detected')
     GPIOState = IntegerField(u'GPIO State')
-    Direction = TextField( u'Direction')
+    Direction = StringField( u'Direction')
     Setpoint = DecimalField(u'Setpoint')
-    modCondRelayID = TextField(u'Relay ID')
-    RelayState = TextField(u'Relay State')
+    modCondRelayID = StringField(u'Relay ID')
+    RelayState = StringField(u'Relay State')
     RelayDuration = DecimalField(u'Relay Duration')
-    DoExecute = TextField(u'Execute Command')
-    DoNotify = TextField(u'Notify by Email')
-    DoFlashLCD = TextField(u'Flash LCD')
-    DoRecord = TextField(u'Record with Camera')
+    DoExecute = StringField(u'Execute Command')
+    DoNotify = StringField(u'Notify by Email')
+    DoFlashLCD = StringField(u'Flash LCD')
+    DoRecord = StringField(u'Record with Camera')
     modSubmit = SubmitField(u'Save')
     delSubmit = SubmitField(u'Delete')
     activateSubmit = SubmitField(u'Activate')
@@ -1127,12 +1127,12 @@ class Backup(Form):
 
 class Timer(Form):
     timer_id = HiddenField(u'Timer ID')
-    name = TextField(
+    name = StringField(
         u'Name',
         render_kw={"placeholder": "Name"},
         validators=[DataRequired()]
     )
-    relayID = TextField(
+    relayID = StringField(
         u'Relay ID',
         render_kw={"placeholder": "Relay ID"}
     )
@@ -1144,8 +1144,8 @@ class Timer(Form):
         ],
         validators=[DataRequired()]
     )
-    timeStart = TextField(u'Time of day')
-    timeEnd = TextField(u'Time of day')
+    timeStart = StringField(u'Time of day')
+    timeEnd = StringField(u'Time of day')
     timeOnDurationOn = DecimalField(
         u'On (sec)',
         render_kw={"placeholder": "On sec."},

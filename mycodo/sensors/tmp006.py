@@ -37,9 +37,6 @@ class TMP006_read(object):
         """
         return self
 
-    def c_to_f(c):
-        return c * 9.0 / 5.0 + 32.0
-
     def next(self):
         """
         Call the read method and return temperature information.

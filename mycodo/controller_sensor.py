@@ -7,7 +7,6 @@
 
 import datetime
 import pigpio
-import smbus
 import threading
 import time
 import timeit
@@ -44,6 +43,8 @@ from config import INFLUXDB_PASSWORD
 from config import INFLUXDB_DATABASE
 from config import INSTALL_DIRECTORY
 
+from databases.mycodo_db.models import CameraStill
+from databases.mycodo_db.models import CameraStream
 from databases.mycodo_db.models import Relay
 from databases.mycodo_db.models import Sensor
 from databases.mycodo_db.models import SensorConditional
@@ -469,10 +470,13 @@ class SensorController(threading.Thread):
             _, _, cmd_status = cmd_output(self.cond_execute_command[cond_id])
             message += "Status: {}. ".format(cmd_status)
 
-        if self.cond_camera_record[cond_id] in ['photo', 'photoemail']:
-            attachment_file = camera_record(INSTALL_DIRECTORY, 'photo')
-        elif self.cond_camera_record[cond_id] in ['video', 'videoemail']:
-            attachment_file = camera_record(INSTALL_DIRECTORY, 'video', duration_sec=5)
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            if self.cond_camera_record[cond_id] in ['photo', 'photoemail']:
+                camera_still = new_session.query(CameraStill).first()
+                attachment_file = camera_record(INSTALL_DIRECTORY, 'photo', camera_still)
+            elif self.cond_camera_record[cond_id] in ['video', 'videoemail']:
+                camera_stream = new_session.query(CameraStream).first()
+                attachment_file = camera_record(INSTALL_DIRECTORY, 'video', camera_stream, duration_sec=5)
 
         if self.cond_email_notify[cond_id]:
             if (self.email_count >= self.smtp_max_count and
