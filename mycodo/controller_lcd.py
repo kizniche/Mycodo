@@ -194,7 +194,7 @@ class LCDController(threading.Thread):
                 "duration_sec": "s",
                 "temperature_die": "C",
                 "temperature_object": "C",
-                "lux": "lux", 
+                "lux": "lux",
             }
             self.measurement_unit['standard'] = {
                 "temperature": "F",
@@ -205,31 +205,31 @@ class LCDController(threading.Thread):
                 "duration_sec": "s",
                 "temperature_die": "F",
                 "temperature_object": "F",
-                "lux": "lux", 
+                "lux": "lux",
             }
 
             self.timer = time.time() + self.lcd_period
             self.backlight_timer = time.time()
 
             self.lcd_string_line = {}
-            for i in range(1, self.lcd_y_lines+1):
+            for i in range(1, self.lcd_y_lines + 1):
                 self.lcd_string_line[i] = ''
 
-            self.LCD_WIDTH = self.lcd_x_characters # Maximum characters per line
+            self.LCD_WIDTH = self.lcd_x_characters  # Maximum characters per line
 
             self.LCD_LINE = {}
-            self.LCD_LINE[1] = 0x80 # LCD RAM address for the 1st line
-            self.LCD_LINE[2] = 0xC0 # LCD RAM address for the 2nd line
-            self.LCD_LINE[3] = 0x94 # LCD RAM address for the 3rd line
-            self.LCD_LINE[4] = 0xD4 # LCD RAM address for the 4th line
+            self.LCD_LINE[1] = 0x80  # LCD RAM address for the 1st line
+            self.LCD_LINE[2] = 0xC0  # LCD RAM address for the 2nd line
+            self.LCD_LINE[3] = 0x94  # LCD RAM address for the 3rd line
+            self.LCD_LINE[4] = 0xD4  # LCD RAM address for the 4th line
 
-            self.LCD_CHR = 1 # Mode - Sending data
-            self.LCD_CMD = 0 # Mode - SenLCDding command
+            self.LCD_CHR = 1  # Mode - Sending data
+            self.LCD_CMD = 0  # Mode - SenLCDding command
 
             self.LCD_BACKLIGHT = 0x08  # On
             self.LCD_BACKLIGHT_OFF = 0x00  # Off
 
-            self.ENABLE = 0b00000100 # Enable bit
+            self.ENABLE = 0b00000100  # Enable bit
 
             # Timing constants
             self.E_PULSE = 0.0005
@@ -255,13 +255,12 @@ class LCDController(threading.Thread):
             self.logger.exception("[LCD {}] Error: {}".format(
                 self.lcd_id, except_msg))
 
-
     def run(self):
         try:
             self.running = True
             self.logger.info("[LCD {}] Activated in {:.1f} ms".format(
                 self.lcd_id,
-                (timeit.default_timer()-self.thread_startup_timer)*1000))
+                (timeit.default_timer() - self.thread_startup_timer) * 1000))
             self.ready.set()
 
             while (self.running):
@@ -282,7 +281,7 @@ class LCDController(threading.Thread):
                         else:
                             self.output_lcds()
                             seconds = 1.1
-                        self.backlight_timer = time.time()+seconds
+                        self.backlight_timer = time.time() + seconds
 
                 time.sleep(1)
         except Exception as except_msg:
@@ -290,14 +289,13 @@ class LCDController(threading.Thread):
                 self.lcd_id, except_msg))
         finally:
             self.lcd_init()  # Blank LCD
-            self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION), self.LCD_LINE[1]) 
+            self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION), self.LCD_LINE[1])
             self.lcd_string_write('Stop {}'.format(
                 self.lcd_name), self.LCD_LINE[2])
             self.logger.info("[LCD {}] Deactivated in {:.1f} ms".format(
                 self.lcd_id,
-                (timeit.default_timer()-self.thread_shutdown_timer)*1000))
+                (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
             self.running = False
-
 
     def get_lcd_strings(self):
         """
@@ -305,7 +303,7 @@ class LCDController(threading.Thread):
         If no data is retrieveable, create string "NO DATA RETURNED".
         """
         # loop to acquire all measurements required to be displayed on the LCD
-        for i in range(1, self.lcd_y_lines+1):
+        for i in range(1, self.lcd_y_lines + 1):
             if self.lcd_line[i]['id']:
                 # Get latest measurement (from within the past minute) from influxdb
                 # FROM '/.*/' returns any measurement (for grabbing time of last measurement)
@@ -335,9 +333,10 @@ class LCDController(threading.Thread):
                                 self.lcd_line[i]['measurement']).raw
                         if last_measurement:
                             number = len(last_measurement['series'][0]['values'])
-                            self.lcd_line[i]['time'] = last_measurement['series'][0]['values'][number-1][0]
-                            self.lcd_line[i]['measurement_value'] = last_measurement['series'][0]['values'][number-1][1]
-                            utc_dt = datetime.datetime.strptime(self.lcd_line[i]['time'].split(".")[0], '%Y-%m-%dT%H:%M:%S')
+                            self.lcd_line[i]['time'] = last_measurement['series'][0]['values'][number - 1][0]
+                            self.lcd_line[i]['measurement_value'] = last_measurement['series'][0]['values'][number - 1][1]
+                            utc_dt = datetime.datetime.strptime(self.lcd_line[i]['time'].split(".")[0],
+                                                                '%Y-%m-%dT%H:%M:%S')
                             utc_timestamp = calendar.timegm(utc_dt.timetuple())
                             local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
                             self.logger.debug("[LCD {}] Latest {}: {} @ {}".format(
@@ -348,11 +347,11 @@ class LCDController(threading.Thread):
                             self.lcd_line[i]['time'] = None
                             self.lcd_line[i]['measurement_value'] = None
                             self.logger.debug("[LCD {}] No data returned "
-                                "from influxdb".format(self.lcd_id))
+                                              "from influxdb".format(self.lcd_id))
                 except Exception as except_msg:
                     self.logger.debug("[LCD {}] Failed to read "
-                        "measurement from the influxdb database: "
-                        "{}".format(self.lcd_id, except_msg))
+                                      "measurement from the influxdb database: "
+                                      "{}".format(self.lcd_id, except_msg))
 
                 try:
                     if last_measurement_success:
@@ -376,12 +375,13 @@ class LCDController(threading.Thread):
                             measurement = self.lcd_line[i]['measurement']
                         elif self.lcd_line[i]['measurement'] == 'duration_sec':
                             measurement = 'duration_sec'
-                        
+
                         # Produce the line that will be displayed on the LCD
                         number_characters = self.lcd_x_characters
                         if self.lcd_line[i]['measurement'] == 'time':
                             # Convert UTC timestamp to local timezone
-                            utc_dt = datetime.datetime.strptime(self.lcd_line[i]['time'].split(".")[0], '%Y-%m-%dT%H:%M:%S')
+                            utc_dt = datetime.datetime.strptime(self.lcd_line[i]['time'].split(".")[0],
+                                                                '%Y-%m-%dT%H:%M:%S')
                             utc_timestamp = calendar.timegm(utc_dt.timetuple())
                             self.lcd_string_line[i] = str(datetime.datetime.fromtimestamp(utc_timestamp))
                         elif measurement:
@@ -408,8 +408,8 @@ class LCDController(threading.Thread):
             else:
                 self.lcd_string_line[i] = ''
 
-
-    def relay_state(self, relay_id):
+    @staticmethod
+    def relay_state(relay_id):
         with session_scope(MYCODO_DB_PATH) as new_session:
             relay = new_session.query(Relay).filter(Relay.id == relay_id).first()
             gpio_state = ''
@@ -420,7 +420,6 @@ class LCDController(threading.Thread):
                 gpio_state = 'Off'
         return gpio_state
 
-
     def output_lcds(self):
         """Output to all LCDs all at once"""
         if self.multiplexer:
@@ -429,7 +428,8 @@ class LCDController(threading.Thread):
                               "{}".format(self.lcd_id,
                                           self.multiplexer_address_string,
                                           self.multiplexer_channel))
-            self.multiplexer_status, self.multiplexer_response = self.multiplexer.setup_lock(self.logger, self.multiplexer_channel)
+            self.multiplexer_status, self.multiplexer_response = self.multiplexer.setup_lock(self.logger,
+                                                                                             self.multiplexer_channel)
             if not self.multiplexer_status:
                 self.logger.warning("[LCD {}] Could not set channel "
                                     "with multiplexer at address {}. "
@@ -437,9 +437,8 @@ class LCDController(threading.Thread):
                                                        self.multiplexer_address_string,
                                                        self.multiplexer_response))
         self.lcd_init()
-        for i in range(1, self.lcd_y_lines+1):
+        for i in range(1, self.lcd_y_lines + 1):
             self.lcd_string_write(self.lcd_string_line[i], self.LCD_LINE[i])
-
 
     def flash_lcd(self, state):
         """Enable the LCD to begin or end flashing"""
@@ -452,7 +451,6 @@ class LCDController(threading.Thread):
             self.output_lcds()
             return 1, "LCD {} flashing turned off".format(self.lcd_id)
 
-
     def lcd_backlight(self, state):
         """Turn the backlight on or off"""
         if state == 1:
@@ -462,18 +460,16 @@ class LCDController(threading.Thread):
             self.lcd_is_on = False
             self.lcd_byte(0x01, self.LCD_CMD, self.LCD_BACKLIGHT_OFF)
 
-
     def lcd_init(self):
         """Initialize LCD display"""
-        self.lcd_byte(0x33, self.LCD_CMD) # 110011 Initialise
-        self.lcd_byte(0x32, self.LCD_CMD) # 110010 Initialise
-        self.lcd_byte(0x06, self.LCD_CMD) # 000110 Cursor move direction
-        self.lcd_byte(0x0C, self.LCD_CMD) # 001100 Display On,Cursor Off, Blink Off 
-        self.lcd_byte(0x28, self.LCD_CMD) # 101000 Data length, number of lines, font size
-        self.lcd_byte(0x01, self.LCD_CMD) # 000001 Clear display
+        self.lcd_byte(0x33, self.LCD_CMD)  # 110011 Initialise
+        self.lcd_byte(0x32, self.LCD_CMD)  # 110010 Initialise
+        self.lcd_byte(0x06, self.LCD_CMD)  # 000110 Cursor move direction
+        self.lcd_byte(0x0C, self.LCD_CMD)  # 001100 Display On,Cursor Off, Blink Off
+        self.lcd_byte(0x28, self.LCD_CMD)  # 101000 Data length, number of lines, font size
+        self.lcd_byte(0x01, self.LCD_CMD)  # 000001 Clear display
         time.sleep(self.E_DELAY)
         self.lcd_is_on = True
-
 
     def lcd_byte(self, bits, mode, backlight=None):
         """Send byte to data pins"""
@@ -483,7 +479,7 @@ class LCDController(threading.Thread):
         # mode = 1 for data
         #        0 for command
         bits_high = mode | (bits & 0xF0) | backlight
-        bits_low = mode | ((bits<<4) & 0xF0) | backlight
+        bits_low = mode | ((bits << 4) & 0xF0) | backlight
         # High bits
         self.bus.write_byte(self.I2C_ADDR, bits_high)
         self.lcd_toggle_enable(bits_high)
@@ -491,27 +487,23 @@ class LCDController(threading.Thread):
         self.bus.write_byte(self.I2C_ADDR, bits_low)
         self.lcd_toggle_enable(bits_low)
 
-
     def lcd_toggle_enable(self, bits):
         """Toggle enable"""
         time.sleep(self.E_DELAY)
         self.bus.write_byte(self.I2C_ADDR, (bits | self.ENABLE))
         time.sleep(self.E_PULSE)
-        self.bus.write_byte(self.I2C_ADDR,(bits & ~self.ENABLE))
+        self.bus.write_byte(self.I2C_ADDR, (bits & ~self.ENABLE))
         time.sleep(self.E_DELAY)
-
 
     def lcd_string_write(self, message, line):
         """Send string to display"""
-        message = message.ljust(self.LCD_WIDTH," ")
+        message = message.ljust(self.LCD_WIDTH, " ")
         self.lcd_byte(line, self.LCD_CMD)
         for i in range(self.LCD_WIDTH):
-          self.lcd_byte(ord(message[i]),self.LCD_CHR)
-
+            self.lcd_byte(ord(message[i]), self.LCD_CHR)
 
     def isRunning(self):
         return self.running
-
 
     def stopController(self):
         self.thread_shutdown_timer = timeit.default_timer()

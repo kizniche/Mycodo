@@ -314,7 +314,7 @@ def page(page):
         # Used in generating the correct options for each sensor/device
         sensor_template_list = []
         sensor_path = "{}/mycodo/mycodo_flask/templates/pages/sensor_options/".format(INSTALL_DIRECTORY)
-        for (dirpath, dirnames, filenames) in os.walk(sensor_path):
+        for (_, _, filenames) in os.walk(sensor_path):
             sensor_template_list.extend(filenames)
             break
         sensor_templates = []
@@ -850,8 +850,8 @@ def page(page):
                 log = subprocess.Popen('tail -n ' + str(lines) + ' ' + logfile,
                                        stdout=subprocess.PIPE,
                                        shell=True)
-                (log_output, log_err) = log.communicate()
-                log_status = log.wait()
+                (log_output, _) = log.communicate()
+                log.wait()
             else:
                 log_output = 404
 

@@ -25,7 +25,8 @@ class RaspberryPiCPUTemp(object):
             self._temperature = sum(temperature, 0.0) / len(temperature)
             return 0
 
-    def get_measurement(self):
+    @staticmethod
+    def get_measurement():
         with open('/sys/class/thermal/thermal_zone0/temp') as cpu_temp_file:
             raw_t = cpu_temp_file.read()
         return float(raw_t) / 1000

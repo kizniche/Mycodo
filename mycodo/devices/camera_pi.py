@@ -91,12 +91,14 @@ class CameraTimelapse(object):
             CameraTimelapse.thread = threading.Thread(target=self._thread)
             CameraTimelapse.thread.start()
 
-    def is_running(self):
+    @staticmethod
+    def is_running():
         if CameraTimelapse.thread is None:
             return False
         return True
 
-    def terminate_controller(self):
+    @staticmethod
+    def terminate_controller():
         CameraTimelapse.terminate = True
 
     def start_timelapse(self, interval_sec, run_time_sec):

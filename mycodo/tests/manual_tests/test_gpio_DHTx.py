@@ -39,7 +39,7 @@ def menu():
         print('Error: Invalid GPIO pin.\n')
         sys.exit(1)
 
-    for x in range(10):
+    for _ in range(10):
         humidity, temperature = Adafruit_DHT.read_retry(device, args.gpio)
         print("Temperature: %s" % temperature)
         print("Humidity: %s" % humidity)

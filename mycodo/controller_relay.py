@@ -97,7 +97,7 @@ class RelayController(threading.Thread):
                 current_time = datetime.datetime.now()
                 for relay_id in self.relay_id:
                     if (self.relay_on_until[relay_id] < current_time and
-                            self.relay_on_duration[relay_id] and 
+                            self.relay_on_duration[relay_id] and
                             self.relay_pin[relay_id]):
 
                         # Use threads to prevent a slow execution of a
@@ -503,7 +503,8 @@ class RelayController(threading.Thread):
         return amp_load
 
 
-    def setup_pin(self, pin):
+    @staticmethod
+    def setup_pin(pin):
         """
         Setup pin for this relay
         :rtype: None
@@ -538,8 +539,8 @@ class RelayController(threading.Thread):
         """
         return self.relay_trigger[relay_id] == GPIO.input(self.relay_pin[relay_id])
 
-
-    def _is_setup(self, pin):
+    @staticmethod
+    def _is_setup(pin):
         """
         This function checks to see if the GPIO pin is setup and ready
         to use. This is for safety and to make sure we don't blow anything.

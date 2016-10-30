@@ -66,22 +66,26 @@ class BME280(object):
     def stopSensor(self):
         self.running = False
 
-    def getShort(self, data, index):
+    @staticmethod
+    def getShort(data, index):
         # return two bytes from data as a signed 16-bit value
         return c_short((data[index+1] << 8) + data[index]).value
 
-    def getUShort(self, data, index):
+    @staticmethod
+    def getUShort(data, index):
         # return two bytes from data as an unsigned 16-bit value
         return (data[index+1] << 8) + data[index]
 
-    def getChar(self, data,index):
+    @staticmethod
+    def getChar(data, index):
         # return one byte from data as a signed char
         result = data[index]
         if result > 127:
             result -= 256
         return result
 
-    def getUChar(self, data, index):
+    @staticmethod
+    def getUChar(data, index):
         # return one byte from data as an unsigned char
         result =  data[index] & 0xFF
         return result

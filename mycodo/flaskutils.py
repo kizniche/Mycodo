@@ -1477,10 +1477,10 @@ def relay_on_off(formRelayOnOff):
             flash("Cannot modulate relay with a GPIO of 0", "error")
         elif formRelayOnOff.On.data:
             return_value = control.relay_on(formRelayOnOff.Relay_id.data, 0)
-            flash("Relay successfully turned on", "success")
+            flash("Relay successfully turned on: {rvalue}".format(rvalue=return_value), "success")
         elif formRelayOnOff.Off.data:
             return_value = control.relay_off(formRelayOnOff.Relay_id.data)
-            flash("Relay successfully turned off", "success")
+            flash("Relay successfully turned off: {rvalue}".format(rvalue=return_value), "success")
     except Exception as except_msg:
         flash("Relay was not able to be turned on or off: {}".format(
             except_msg), "error")
@@ -2236,8 +2236,7 @@ def check_refresh_conditional(sensor_id, cond_mod, cond_id):
                 Sensor.activated == 1)).first()
         if sensor:
             control = DaemonControl()
-            return_values = control.refresh_sensor_conditionals(
-                sensor_id, cond_mod, cond_id)
+            control.refresh_sensor_conditionals(sensor_id, cond_mod, cond_id)
 
 
 #
