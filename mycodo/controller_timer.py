@@ -76,7 +76,7 @@ class TimerController(threading.Thread):
             self.timer_id,
             (timeit.default_timer()-self.thread_startup_timer)*1000))
         self.ready.set()
-        while (self.running):
+        while self.running:
             # Timer is set to react at a specific hour and minute of the day
             if self.timer_type == 'time':
                 if (int(self.start_hour) == datetime.datetime.now().hour and    

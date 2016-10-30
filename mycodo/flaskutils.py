@@ -258,7 +258,7 @@ def method_add(formAddMethod, method):
                 last_method = last_method.filter(Method.method_order > 0)
                 last_method = last_method.filter(Method.relay_id == None)
                 last_method = last_method.order_by(Method.method_order.desc()).first()
-                if last_method != None:
+                if last_method is not None:
                     if this_method.method_type == 'Date':
                         last_method_end_time = datetime.strptime(last_method.end_time, '%Y-%m-%d %H:%M:%S')
                     elif this_method.method_type == 'Daily':
@@ -392,19 +392,19 @@ def method_mod(formModMethod, method):
                 next_method = method.order_by(Method.method_order.asc()).filter(
                     Method.method_order > this_method.method_order).first()
 
-                if previous_method != None and previous_method.end_time != None:
+                if previous_method is not None and previous_method.end_time is not None:
                     previous_end_time = datetime.strptime(previous_method.end_time,
                         '%Y-%m-%d %H:%M:%S')
-                    if previous_end_time != None and start_time < previous_end_time:
+                    if previous_end_time is not None and start_time < previous_end_time:
                         flash("The entry start time ({}) cannot overlap the previous "
                               "entry's end time ({})".format(start_time, previous_end_time),
                               "error")
                         return 1
 
-                if next_method != None and next_method.start_time != None:
+                if next_method is not None and next_method.start_time is not None:
                     next_start_time = datetime.strptime(next_method.start_time,
                         '%Y-%m-%d %H:%M:%S')
-                    if next_start_time != None and end_time > next_start_time:
+                    if next_start_time is not None and end_time > next_start_time:
                         flash("The entry end time ({}) cannot overlap the next entry's "
                               "start time ({})".format(end_time, next_start_time),
                               "error")
@@ -2132,7 +2132,7 @@ def sensor_conditional_mod(formModSensorCond):
             formModSensorCond.validate()):
         try:
             error = False
-            if ((formModSensorCond.DoRecord.data == 'photoemail' or formModSensorCond.DoRecord.data == 'videoemail') and not formModSensorCond.DoNotify.data):
+            if (formModSensorCond.DoRecord.data == 'photoemail' or formModSensorCond.DoRecord.data == 'videoemail') and not formModSensorCond.DoNotify.data:
                 flash("You must specify a notification email address if the "
                       "record and email option is selcted. ", "error")
                 error = True
@@ -2572,14 +2572,14 @@ def reorderList(modified_list, item, direction):
     from_position = modified_list.index(item)
     if direction == "up":
         if from_position == 0:
-            return('error','Cannot move above the first item in the list')
+            return 'error', 'Cannot move above the first item in the list'
         to_position = from_position - 1
     elif direction == 'down':
         if from_position == len(modified_list) - 1:
-            return('error','Cannot move below the last item in the list')
+            return 'error', 'Cannot move below the last item in the list'
         to_position = from_position + 1
     modified_list.insert(to_position, modified_list.pop(from_position))
-    return('success', modified_list)
+    return 'success', modified_list
 
 
 # return table data from database SQL query

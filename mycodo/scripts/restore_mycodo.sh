@@ -28,7 +28,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
-cd $INSTALL_DIRECTORY
+cd ${INSTALL_DIRECTORY}
 
 if [ ! -e $2 ]; then         
    echo "Directory does not exist"         
@@ -48,18 +48,18 @@ service mycodo stop
 CURCOMMIT=$(git rev-parse --short HEAD)
 printf "#### Creating backup /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT ####\n"
 mkdir -p /var/Mycodo-backups
-mkdir -p /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT
+mkdir -p /var/Mycodo-backups/Mycodo-${NOW}-${CURCOMMIT}
 
-if cp -a $INSTALL_DIRECTORY/. /var/Mycodo-backups/Mycodo-$NOW-$CURCOMMIT/
+if cp -a ${INSTALL_DIRECTORY}/. /var/Mycodo-backups/Mycodo-${NOW}-${CURCOMMIT}/
 then
     directory=$2
     commit=${directory:47}
     printf "#### Resetting to commit $commit ####\n"
-    git reset --hard $commit
+    git reset --hard ${commit}
 
     printf "#### Restoring all files from $2 ####\n"
-    rm -rf $INSTALL_DIRECTORY/*
-    cp -R $2/* $INSTALL_DIRECTORY/
+    rm -rf ${INSTALL_DIRECTORY}/*
+    cp -R $2/* ${INSTALL_DIRECTORY}/
 
     printf "#### Starting Daemon and HTTP server ####\n"
     service mycodo start

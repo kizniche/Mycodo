@@ -84,6 +84,7 @@ class LCDController(threading.Thread):
     def __init__(self, ready, logger, lcd_id):
         threading.Thread.__init__(self)
 
+        self.running = False
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
         self.ready = ready
@@ -184,28 +185,29 @@ class LCDController(threading.Thread):
                         if 'time' in lcd.line_4_measurement:
                             self.lcd_line[4]['measurement'] = 'time'
 
-            self.measurement_unit = {}
-            self.measurement_unit['metric'] = {
-                "temperature": "C",
-                "humidity": "%",
-                "co2": "ppmv",
-                "pressure": "Pa",
-                "altitude": "m",
-                "duration_sec": "s",
-                "temperature_die": "C",
-                "temperature_object": "C",
-                "lux": "lux",
-            }
-            self.measurement_unit['standard'] = {
-                "temperature": "F",
-                "humidity": "%",
-                "co2": "ppmv",
-                "pressure": "atm",
-                "altitude": "ft",
-                "duration_sec": "s",
-                "temperature_die": "F",
-                "temperature_object": "F",
-                "lux": "lux",
+            self.measurement_unit = {
+                'metric': {
+                    "temperature": "C",
+                    "humidity": "%",
+                    "co2": "ppmv",
+                    "pressure": "Pa",
+                    "altitude": "m",
+                    "duration_sec": "s",
+                    "temperature_die": "C",
+                    "temperature_object": "C",
+                    "lux": "lux",
+                },
+                'standard': {
+                    "temperature": "F",
+                    "humidity": "%",
+                    "co2": "ppmv",
+                    "pressure": "atm",
+                    "altitude": "ft",
+                    "duration_sec": "s",
+                    "temperature_die": "F",
+                    "temperature_object": "F",
+                    "lux": "lux",
+                }
             }
 
             self.timer = time.time() + self.lcd_period
@@ -217,11 +219,12 @@ class LCDController(threading.Thread):
 
             self.LCD_WIDTH = self.lcd_x_characters  # Maximum characters per line
 
-            self.LCD_LINE = {}
-            self.LCD_LINE[1] = 0x80  # LCD RAM address for the 1st line
-            self.LCD_LINE[2] = 0xC0  # LCD RAM address for the 2nd line
-            self.LCD_LINE[3] = 0x94  # LCD RAM address for the 3rd line
-            self.LCD_LINE[4] = 0xD4  # LCD RAM address for the 4th line
+            self.LCD_LINE = {
+                1: 0x80,
+                2: 0xC0,
+                3: 0x94,
+                4: 0xD4
+            }
 
             self.LCD_CHR = 1  # Mode - Sending data
             self.LCD_CMD = 0  # Mode - SenLCDding command
@@ -263,7 +266,7 @@ class LCDController(threading.Thread):
                 (timeit.default_timer() - self.thread_startup_timer) * 1000))
             self.ready.set()
 
-            while (self.running):
+            while self.running:
                 if time.time() > self.timer:
                     self.get_lcd_strings()
                     try:

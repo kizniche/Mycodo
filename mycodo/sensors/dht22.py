@@ -154,7 +154,7 @@ class DHT22(object):
                     self._humidity = ((self.hH << 8) + self.hL) * 0.1
                     if self.tH & 128:  # Negative temperature.
                         mult = -0.1
-                        self.tH = self.tH & 127
+                        self.tH &= 127
                     else:
                         mult = 0.1
                     self._temperature = ((self.tH << 8) + self.tL) * mult

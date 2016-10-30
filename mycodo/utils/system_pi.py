@@ -9,7 +9,6 @@ import subprocess
 import sys
 
 
-
 def time_between_range(start_time, end_time):
     """
     Check if the current time is between start_time and end_time
@@ -25,12 +24,12 @@ def time_between_range(start_time, end_time):
     now_time = now_time.replace(second=0, microsecond=0)
     if ((start_hour < end_hour) or
             (start_hour == end_hour and start_min < end_min)):
-        if now_time >= datetime.time(start_hour, start_min) and now_time <= datetime.time(end_hour, end_min):
+        if datetime.time(start_hour, start_min) <= now_time <= datetime.time(end_hour, end_min):
             return 1  # Yes now within range
     else:
         if now_time >= datetime.time(start_hour, start_min) or now_time <= datetime.time(end_hour, end_min):
             return 1  # Yes now within range
-    return 0 # No now not within range
+    return 0  # No now not within range
 
 
 def cmd_output(command, su_mycodo=True):

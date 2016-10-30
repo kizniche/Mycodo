@@ -109,28 +109,33 @@ class ComServer(rpyc.Service):
     (e.g. timers) communicate to the relay controller.
 
     """
-
-    def exposed_flash_lcd(self, lcd_id, state):
+    @staticmethod
+    def exposed_flash_lcd(lcd_id, state):
         """Starts or stops an LCD from flashing (alarm)"""
         return mycodo_daemon.flash_lcd(lcd_id, state)
 
-    def exposed_relay_state(self, relay_id):
+    @staticmethod
+    def exposed_relay_state(relay_id):
         """Return the relay state (not pin but whether relay is on or off"""
         return mycodo_daemon.relay_state(relay_id)
 
-    def exposed_relay_on(self, relay_id, duration):
+    @staticmethod
+    def exposed_relay_on(relay_id, duration):
         """Turns relay on from the client"""
         return mycodo_daemon.relay_on(relay_id, duration)
 
-    def exposed_relay_off(self, relay_id):
+    @staticmethod
+    def exposed_relay_off(relay_id):
         """Turns relay off from the client"""
         return mycodo_daemon.relay_off(relay_id)
 
-    def exposed_add_relay(self, relay_id):
+    @staticmethod
+    def exposed_add_relay(relay_id):
         """Add relay to the running relay controller"""
         return mycodo_daemon.add_relay(relay_id)
 
-    def exposed_mod_relay(self, relay_id):
+    @staticmethod
+    def exposed_mod_relay(relay_id):
         """
         Instructs the running relay controller to update the relay settings
         from the SQL database (instead of continually reading the database,
@@ -138,11 +143,13 @@ class ComServer(rpyc.Service):
         """
         return mycodo_daemon.mod_relay(relay_id)
 
-    def exposed_del_relay(self, relay_id):
+    @staticmethod
+    def exposed_del_relay(relay_id):
         """Instruct running relay controller to delete a relay"""
         return mycodo_daemon.del_relay(relay_id)
 
-    def exposed_activate_controller(self, cont_type, cont_id):
+    @staticmethod
+    def exposed_activate_controller(cont_type, cont_id):
         """
         Activates a controller
         This may be a Sensor, PID, Log, Timer, or LCD controllar
@@ -151,7 +158,8 @@ class ComServer(rpyc.Service):
         return mycodo_daemon.activateController(
             cont_type, cont_id)
 
-    def exposed_deactivate_controller(self, cont_type, cont_id):
+    @staticmethod
+    def exposed_deactivate_controller(cont_type, cont_id):
         """
         Deactivates a controller
         This may be a Sensor, PID, Log, Timer, or LCD controllar
@@ -160,7 +168,8 @@ class ComServer(rpyc.Service):
         return mycodo_daemon.deactivateController(
             cont_type, cont_id)
 
-    def exposed_refresh_sensor_conditionals(self, sensor_id,
+    @staticmethod
+    def exposed_refresh_sensor_conditionals(sensor_id,
                                             cond_mod, cond_id):
         """
         Instruct the sensor controller to refresh the settings of a
@@ -170,7 +179,8 @@ class ComServer(rpyc.Service):
                                                          cond_mod,
                                                          cond_id)
 
-    def exposed_daemon_status(self):
+    @staticmethod
+    def exposed_daemon_status():
         """
         Merely indicates if the daemon is running or not, with succesful
         response of 'alive'. This will perform checks in the future and return
@@ -180,11 +190,13 @@ class ComServer(rpyc.Service):
         """
         return 'alive'
 
-    def exposed_terminate_daemon(self):
+    @staticmethod
+    def exposed_terminate_daemon():
         """Instruct the daemon to shut down"""
         return mycodo_daemon.terminateDaemon()
 
-    def exposed_system_control(self, cmd):
+    @staticmethod
+    def exposed_system_control(cmd):
         """
         Execute a command as root. A list of commands are provded to prevent
         execution of arbitrary code.
@@ -223,13 +235,14 @@ class DaemonController(threading.Thread):
         self.logger = new_logger
         self.daemon_run = True
         self.terminated = False
-        self.controller = {}
-        self.controller['LCD'] = {}
-        self.controller['Log'] = {}
-        self.controller['PID'] = {}
-        self.controller['Relay'] = None
-        self.controller['Sensor'] = {}
-        self.controller['Timer'] = {}
+        self.controller = {
+            'LCD': {},
+            'Log': {},
+            'PID': {},
+            'Relay': None,
+            'Sensor': {},
+            'Timer': {}
+        }
         self.timer_ram_use = time.time()
         self.timer_stats = time.time()+120
         with session_scope(MYCODO_DB_PATH) as new_session:

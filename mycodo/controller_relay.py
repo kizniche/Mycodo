@@ -89,7 +89,7 @@ class RelayController(threading.Thread):
             self.running = True
             self.logger.info("[Relay] Relay controller activated in "
                              "{:.1f} ms".format((timeit.default_timer()-self.thread_startup_timer)*1000))
-            while (self.running):
+            while self.running:
                 current_time = datetime.datetime.now()
                 for relay_id in self.relay_id:
                     if (self.relay_on_until[relay_id] < current_time and
@@ -146,6 +146,8 @@ class RelayController(threading.Thread):
         :type duration: float
         :param trigger_conditionals: Whether to trigger condionals to act or not
         :type trigger_conditionals: bool
+        :param datetime_now: Time to add as the influxdb entry time
+        :type datetime_now: datetime object
         """
         # Check if relay exists
         if relay_id not in self.relay_id:
@@ -258,7 +260,7 @@ class RelayController(threading.Thread):
                         self.relay_id[relay_id],
                         self.relay_name[relay_id]))
 
-                if self.relay_time_turned_on[relay_id] != None:
+                if self.relay_time_turned_on[relay_id] is not None:
                     # Write the duration the relay was ON to the database
                     # at the timestamp it turned ON
                     duration = (datetime.datetime.now()-self.relay_time_turned_on[relay_id]).total_seconds()

@@ -53,7 +53,6 @@ class TMP006_read(object):
         self.running = False
 
 
-
 if __name__ == "__main__":
     if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
         I2C_bus_number = 1

@@ -3,6 +3,7 @@
 import time
 from w1thermsensor import W1ThermSensor
 
+
 class DS18B20(object):
     def __init__(self, pin):
         self._temperature = 0
@@ -19,7 +20,7 @@ class DS18B20(object):
             except:
                 return 1
         if (None in temperature or
-                max(temperature)-min(temperature) > 10):
+                        max(temperature) - min(temperature) > 10):
             self._temperature = None
         else:
             self._temperature = sum(temperature, 0.0) / len(temperature)

@@ -8,6 +8,9 @@ class RaspberryPiCPULoad(object):
     def __init__(self):
         self._cpu_load = 0
         self.running = True
+        self._cpu_load_1m = None
+        self._cpu_load_5m = None
+        self._cpu_load_15m = None
 
     def read(self):
         try:

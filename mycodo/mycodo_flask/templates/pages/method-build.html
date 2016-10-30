@@ -476,7 +476,7 @@
   $(document).ready(function() {
     // Retrieve intiial chart data set from the past (duration set by user)
     function getPastData(method_type, method_id) {
-      var url = '/method-data/' + method_type + '/' + method_id
+      var url = '/method-data/' + method_type + '/' + method_id;
       var units = '';
       if (method_type == "Duration") {
         units = 'seconds';

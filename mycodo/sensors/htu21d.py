@@ -25,6 +25,7 @@ import time
 import RPi.GPIO as GPIO
 from sensorutils import dewpoint
 
+
 class HTU21D_read(object):
     def __init__(self, bus):
         self.pi = pigpio.pi()
@@ -50,34 +51,34 @@ class HTU21D_read(object):
             return 1
 
     def htu_reset(self):
-        handle = self.pi.i2c_open(self.I2C_bus_number, self.address) # open i2c bus
-        self.pi.i2c_write_byte(handle, self.reset) # send reset command
-        self.pi.i2c_close(handle) # close i2c bus
-        time.sleep(0.2) # reset takes 15ms so let's give it some time
+        handle = self.pi.i2c_open(self.I2C_bus_number, self.address)  # open i2c bus
+        self.pi.i2c_write_byte(handle, self.reset)  # send reset command
+        self.pi.i2c_close(handle)  # close i2c bus
+        time.sleep(0.2)  # reset takes 15ms so let's give it some time
 
     def read_temperature(self):
-        handle = self.pi.i2c_open(self.I2C_bus_number, self.address) # open i2c bus
-        self.pi.i2c_write_byte(handle, self.rdtemp) # send read temp command
-        time.sleep(0.055) # readings take up to 50ms, lets give it some time
-        (_, byteArray) = self.pi.i2c_read_device(handle, 3) # vacuum up those bytes
-        self.pi.i2c_close(handle) # close the i2c bus
-        t1 = byteArray[0] # most significant byte msb
-        t2 = byteArray[1] # least significant byte lsb
-        temp_reading = (t1 * 256) + t2 # combine both bytes into one big integer
+        handle = self.pi.i2c_open(self.I2C_bus_number, self.address)  # open i2c bus
+        self.pi.i2c_write_byte(handle, self.rdtemp)  # send read temp command
+        time.sleep(0.055)  # readings take up to 50ms, lets give it some time
+        (_, byteArray) = self.pi.i2c_read_device(handle, 3)  # vacuum up those bytes
+        self.pi.i2c_close(handle)  # close the i2c bus
+        t1 = byteArray[0]  # most significant byte msb
+        t2 = byteArray[1]  # least significant byte lsb
+        temp_reading = (t1 * 256) + t2  # combine both bytes into one big integer
         temp_reading = float(temp_reading)
-        return ((temp_reading / 65536) * 175.72 ) - 46.85 # formula from datasheet
+        return ((temp_reading / 65536) * 175.72) - 46.85  # formula from datasheet
 
     def read_humidity(self):
-        handle = self.pi.i2c_open(self.I2C_bus_number, self.address) # open i2c bus
-        self.pi.i2c_write_byte(handle, self.rdhumi) # send read humi command
-        time.sleep(0.055) # readings take up to 50ms, lets give it some time
-        (_, byteArray) = self.pi.i2c_read_device(handle, 3) # vacuum up those bytes
-        self.pi.i2c_close(handle) # close the i2c bus
-        h1 = byteArray[0] # most significant byte msb
-        h2 = byteArray[1] # least significant byte lsb
-        humi_reading = (h1 * 256) + h2 # combine both bytes into one big integer
+        handle = self.pi.i2c_open(self.I2C_bus_number, self.address)  # open i2c bus
+        self.pi.i2c_write_byte(handle, self.rdhumi)  # send read humi command
+        time.sleep(0.055)  # readings take up to 50ms, lets give it some time
+        (_, byteArray) = self.pi.i2c_read_device(handle, 3)  # vacuum up those bytes
+        self.pi.i2c_close(handle)  # close the i2c bus
+        h1 = byteArray[0]  # most significant byte msb
+        h2 = byteArray[1]  # least significant byte lsb
+        humi_reading = (h1 * 256) + h2  # combine both bytes into one big integer
         humi_reading = float(humi_reading)
-        uncomp_humidity = ((humi_reading / 65536) * 125 ) - 6 # formula from datasheet
+        uncomp_humidity = ((humi_reading / 65536) * 125) - 6  # formula from datasheet
         return ((25 - self.temperature) * -0.15) + uncomp_humidity
 
     @property

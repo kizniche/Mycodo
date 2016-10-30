@@ -33,7 +33,7 @@ import sys
 # TODO: Move to logging printing to STDOUT (for line prefix)
 
 
-class DaemonControl():
+class DaemonControl:
     """
     Communicate with the daemon to execute commands or retrieve information.
 

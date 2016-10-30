@@ -65,7 +65,7 @@ class LogController(threading.Thread):
             (timeit.default_timer()-self.thread_startup_timer)*1000))
         self.ready.set()
 
-        while (self.running):
+        while self.running:
             if time.time() > self.timer:
                 self.write_log()
                 self.timer = time.time() + self.period

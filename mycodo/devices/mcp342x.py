@@ -9,17 +9,15 @@ class MCP342x_read(object):
     def __init__(self, address, bus, channel, gain, resolution):
         self._voltage = None
         self.i2c_address = address
-        self.i2c_bus = bus
+        self.bus = smbus.SMBus(bus)
         self.channel = channel
         self.gain = gain
         self.resolution = resolution
         self.running = True
 
-
     def read(self):
         try:
             time.sleep(1)
-            self.bus = smbus.SMBus(self.i2c_bus)
             adc = MCP342x(self.bus, self.i2c_address, channel=self.channel, gain=self.gain, resolution=self.resolution)
             self._voltage = adc.convert_and_read()
         except:

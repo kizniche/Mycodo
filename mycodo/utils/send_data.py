@@ -15,9 +15,9 @@ from email import Encoders
 #
 
 def send_email(logging, smtp_host, smtp_ssl,
-          smtp_port, smtp_user, smtp_pass,
-          smtp_email_from, email_to, message,
-          attachment_file=False, attachment_type=False):
+               smtp_port, smtp_user, smtp_pass,
+               smtp_email_from, email_to, message,
+               attachment_file=False, attachment_type=False):
     """
     Email a specific recipient or recipients a message.
 
@@ -51,13 +51,15 @@ def send_email(logging, smtp_host, smtp_ssl,
             msg.attach(image)
         elif attachment_file and attachment_type == 'video':
             out_filename = '{}-compressed.h264'.format(attachment_file)
-            cmd_output('avconv -i "{}" -vf scale=-1:768 -c:v libx264 -preset veryfast -crf 22 -c:a copy "{}"'.format(attachment_file, out_filename))
+            cmd_output('avconv -i "{}" -vf scale=-1:768 -c:v libx264 -preset veryfast -crf 22 -c:a copy "{}"'.format(
+                attachment_file, out_filename))
             set_user_grp(out_filename, 'mycodo', 'mycodo')
             f = open(attachment_file, 'rb').read()
             video = MIMEBase('application', 'octet-stream')
             video.set_payload(f)
             Encoders.encode_base64(video)
-            video.add_header('Content-Disposition', 'attachment; filename="{}"'.format(os.path.basename(attachment_file)))
+            video.add_header('Content-Disposition',
+                             'attachment; filename="{}"'.format(os.path.basename(attachment_file)))
             msg.attach(video)
 
         server.sendmail(msg['From'], msg['To'].split(","), msg.as_string())
@@ -66,5 +68,5 @@ def send_email(logging, smtp_host, smtp_ssl,
     except Exception as error:
         if logging:
             logging.exception("[Email Notification] Cound not send email to {} "
-                            "with message: {}. Error: {}".format(email_to, message, error))
+                              "with message: {}. Error: {}".format(email_to, message, error))
         return 1

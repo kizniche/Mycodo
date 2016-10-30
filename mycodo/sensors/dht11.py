@@ -180,7 +180,6 @@ class DHT11(object):
     def humidity(self):
         return self._humidity
 
-
     def __iter__(self):
         """
         Support the iterator protocol.

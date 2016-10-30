@@ -11,10 +11,11 @@ import RPi.GPIO as GPIO
 from sensorutils import dewpoint
 from sensorutils import altitude
 
+
 class BME280(object):
     def __init__(self, address, bus):
         self.i2c_address = address
-        self.I2C_bus_number = bus
+        self.bus = smbus.SMBus(bus)
         self._temperature = None
         self._humidity = None
         self._pressure = None
@@ -23,7 +24,6 @@ class BME280(object):
     def read(self):
         try:
             time.sleep(2)
-            self.bus = smbus.SMBus(self.I2C_bus_number)
             self._temperature, self._humidity, self._pressure = self.readBME280All()
         except Exception as err:
             raise Exception(err)
@@ -67,12 +67,12 @@ class BME280(object):
     @staticmethod
     def getShort(data, index):
         # return two bytes from data as a signed 16-bit value
-        return c_short((data[index+1] << 8) + data[index]).value
+        return c_short((data[index + 1] << 8) + data[index]).value
 
     @staticmethod
     def getUShort(data, index):
         # return two bytes from data as an unsigned 16-bit value
-        return (data[index+1] << 8) + data[index]
+        return (data[index + 1] << 8) + data[index]
 
     @staticmethod
     def getChar(data, index):
@@ -85,14 +85,14 @@ class BME280(object):
     @staticmethod
     def getUChar(data, index):
         # return one byte from data as an unsigned char
-        result =  data[index] & 0xFF
+        result = data[index] & 0xFF
         return result
 
     def readBME280ID(self):
         # Chip ID Register self.i2c_address
         REG_ID = 0xD0
         (chip_id, chip_version) = self.bus.read_i2c_block_data(self.i2c_address, REG_ID, 2)
-        return (chip_id, chip_version)
+        return chip_id, chip_version
 
     def readBME280All(self):
         # Register self.i2c_address
@@ -109,7 +109,7 @@ class BME280(object):
         OVERSAMPLE_PRES = 2
         MODE = 1
 
-        control = OVERSAMPLE_TEMP<<5 | OVERSAMPLE_PRES<<2 | MODE
+        control = OVERSAMPLE_TEMP << 5 | OVERSAMPLE_PRES << 2 | MODE
         self.bus.write_byte_data(self.i2c_address, REG_CONTROL, control)
 
         # Read blocks of calibration data from EEPROM
@@ -139,11 +139,11 @@ class BME280(object):
 
         dig_H4 = self.getChar(cal3, 3)
         dig_H4 = (dig_H4 << 24) >> 20
-        dig_H4 = dig_H4 | (self.getChar(cal3, 4) & 0x0F)
+        dig_H4 |= self.getChar(cal3, 4) & 0x0F
 
         dig_H5 = self.getChar(cal3, 5)
         dig_H5 = (dig_H5 << 24) >> 20
-        dig_H5 = dig_H5 | (self.getUChar(cal3, 4) >> 4 & 0x0F)
+        dig_H5 |= self.getUChar(cal3, 4) >> 4 & 0x0F
 
         dig_H6 = self.getChar(cal3, 6)
 
@@ -153,38 +153,39 @@ class BME280(object):
         temp_raw = (data[3] << 12) | (data[4] << 4) | (data[5] >> 4)
         hum_raw = (data[6] << 8) | data[7]
 
-        #Refine temperature
-        var1 = ((((temp_raw>>3)-(dig_T1<<1)))*(dig_T2)) >> 11
-        var2 = (((((temp_raw>>4) - (dig_T1)) * ((temp_raw>>4) - (dig_T1))) >> 12) * (dig_T3)) >> 14
-        t_fine = var1+var2
+        # Refine temperature
+        var1 = (((temp_raw >> 3) - (dig_T1 << 1)) * dig_T2) >> 11
+        var2 = (((((temp_raw >> 4) - dig_T1) * ((temp_raw >> 4) - dig_T1)) >> 12) * dig_T3) >> 14
+        t_fine = var1 + var2
         temperature = float(((t_fine * 5) + 128) >> 8)
 
         # Refine pressure and adjust for temperature
         var1 = t_fine / 2.0 - 64000.0
         var2 = var1 * var1 * dig_P6 / 32768.0
-        var2 = var2 + var1 * dig_P5 * 2.0
+        var2 += var1 * dig_P5 * 2.0
         var2 = var2 / 4.0 + dig_P4 * 65536.0
         var1 = (dig_P3 * var1 * var1 / 524288.0 + dig_P2 * var1) / 524288.0
         var1 = (1.0 + var1 / 32768.0) * dig_P1
         if var1 == 0:
-            pressure=0
+            pressure = 0
         else:
             pressure = 1048576.0 - pres_raw
             pressure = ((pressure - var2 / 4096.0) * 6250.0) / var1
             var1 = dig_P9 * pressure * pressure / 2147483648.0
             var2 = pressure * dig_P8 / 32768.0
-            pressure = pressure + (var1 + var2 + dig_P7) / 16.0
+            pressure += (var1 + var2 + dig_P7) / 16.0
 
         # Refine humidity
         humidity = t_fine - 76800.0
-        humidity = (hum_raw - (dig_H4 * 64.0 + dig_H5 / 16384.8 * humidity)) * (dig_H2 / 65536.0 * (1.0 + dig_H6 / 67108864.0 * humidity * (1.0 + dig_H3 / 67108864.0 * humidity)))
-        humidity = humidity * (1.0 - dig_H1 * humidity / 524288.0)
+        humidity = (hum_raw - (dig_H4 * 64.0 + dig_H5 / 16384.8 * humidity)) * (
+        dig_H2 / 65536.0 * (1.0 + dig_H6 / 67108864.0 * humidity * (1.0 + dig_H3 / 67108864.0 * humidity)))
+        humidity *= 1.0 - dig_H1 * humidity / 524288.0
         if humidity > 100:
             humidity = 100
         elif humidity < 0:
             humidity = 0
 
-        return temperature/100.0, humidity, pressure/100.0
+        return temperature / 100.0, humidity, pressure / 100.0
 
 
 if __name__ == "__main__":
@@ -200,5 +201,5 @@ if __name__ == "__main__":
         print("Dew Point: {} C".format(dewpoint(measure['temperature'], measure['humidity'])))
         print("Pressure: {} Pa".format(int(measure['pressure'])))
         print("Altitude: {} m".format(altitude(measure['pressure'])))
-        
+
         time.sleep(1)

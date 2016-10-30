@@ -106,7 +106,7 @@ def read_last_influxdb(host, port, user, password, dbname,
                               ORDER BY time
                               DESC LIMIT 1;
                 """.format(measure_type, device_id)
-        
+
     return client.query(query)
 
 
@@ -123,6 +123,8 @@ def write_influxdb_value(logger, host, port, user, password,
     :return: success (0) or failure (1)
     :rtype: bool
 
+    :param logger: Oject to log to
+    :type logger: logger object
     :param host: What influxdb address
     :type host: str
     :param port: What influxdb port
@@ -149,10 +151,10 @@ def write_influxdb_value(logger, host, port, user, password,
     """
     client = InfluxDBClient(host, port, user, password, dbname)
     data = [format_influxdb_data(device_type,
-                                device_id,
-                                measure_type,
-                                value,
-                                timestamp)]
+                                 device_id,
+                                 measure_type,
+                                 value,
+                                 timestamp)]
     try:
         client.write_points(data)
         # logger.debug('Write {} {} to {}, '
@@ -164,8 +166,8 @@ def write_influxdb_value(logger, host, port, user, password,
         return 0
     except Exception as except_msg:
         logger.debug('Failed to write measurement to influxdb (Device ID: '
-                         '{}). Data that was submitted for writing: {}. '
-                         'Exception: {}'.format(device_id, data, except_msg))
+                     '{}). Data that was submitted for writing: {}. '
+                     'Exception: {}'.format(device_id, data, except_msg))
         return 1
 
 
@@ -181,6 +183,8 @@ def write_influxdb_list(logger, host, port, user, password,
     :return: success (0) or failure (1)
     :rtype: bool
 
+    :param logger: Oject to log to
+    :type logger: logger object
     :param host: What influxdb address
     :type host: str
     :param port: What influxdb port
@@ -191,9 +195,8 @@ def write_influxdb_list(logger, host, port, user, password,
     :type password: str
     :param dbname: What Influxdb database name to write to
     :type dbname: str
-    :param data_list_of_dictionaries: The data being entered into the Influxdb
-        database. See controller_sensor.py function addMeasurementInfluxdb()
-    :type data_list_of_dictionaries: list of dictionaries
+    :param data: The data being entered into Influxdb
+    :type data: list of dictionaries
     """
     client = InfluxDBClient(host, port, user, password, dbname)
     try:
@@ -201,7 +204,6 @@ def write_influxdb_list(logger, host, port, user, password,
         return 0
     except Exception as except_msg:
         logger.debug('Failed to write measurements to influxdb (Device ID: '
-                         '{}). Data that was submitted for writing: {}. '
-                         'Exception: {}'.format(device_id, data, except_msg))
+                     '{}). Data that was submitted for writing: {}. '
+                     'Exception: {}'.format(device_id, data, except_msg))
         return 1
-

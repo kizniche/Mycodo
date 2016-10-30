@@ -26,13 +26,13 @@ DATABASE="$INSTALL_DIRECTORY/databases/mycodo.db"
 
 start() {
 	mkdir /tmp/stream
-    RELAYID=$(sqlite3 $DATABASE "SELECT relay_id FROM camerastream;");
-    EXTRA=$(sqlite3 $DATABASE "SELECT extra_parameters FROM camerastream;");
+    RELAYID=$(sqlite3 ${DATABASE} "SELECT relay_id FROM camerastream;");
+    EXTRA=$(sqlite3 ${DATABASE} "SELECT extra_parameters FROM camerastream;");
     if [ -n "$RELAYID" ]; then
-        $INSTALL_DIRECTORY/mycodo/mycodo_client.py --relayon $RELAYID
+        ${INSTALL_DIRECTORY}/mycodo/mycodo_client.py --relayon ${RELAYID}
     fi
     if [ ! -z "$EXTRA" ]; then
-        /usr/bin/nohup /usr/bin/raspistill $EXTRA --burst -o /tmp/stream/pic.jpg --timelapse 500 --timeout 9999999 --thumb 0:0:0 &
+        /usr/bin/nohup /usr/bin/raspistill ${EXTRA} --burst -o /tmp/stream/pic.jpg --timelapse 500 --timeout 9999999 --thumb 0:0:0 &
     else
         /usr/bin/nohup /usr/bin/raspistill --burst -o /tmp/stream/pic.jpg --timelapse 500 --timeout 9999999 --thumb 0:0:0 &
     fi
@@ -40,9 +40,9 @@ start() {
 }
 
 stop() {
-    RELAYID=$(sqlite3 $DATABASE "SELECT relay_id FROM camerastream;");
+    RELAYID=$(sqlite3 ${DATABASE} "SELECT relay_id FROM camerastream;");
     if [ -n "$RELAYID" ]; then
-        $INSTALL_DIRECTORY/mycodo/mycodo_client.py --relayoff $RELAYID
+        ${INSTALL_DIRECTORY}/mycodo/mycodo_client.py --relayoff ${RELAYID}
     fi
     pkill raspistill
     rm -rf /tmp/stream

@@ -37,6 +37,7 @@ class Notes(Base):
     title = Column(TEXT)
     note = Column(TEXT)
 
+
 class Uploads(Base):
     __tablename__ = "uploads"
 

@@ -22,16 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-# Can enable debug output by uncommenting:
-#import logging
-#logging.basicConfig(level=logging.DEBUG)
-
 import os
 import sys
 
 import Adafruit_BMP.BMP085 as BMP085
 import RPi.GPIO as GPIO
-
 
 if not os.geteuid() == 0:
     print("Error: Script must be executed as root.\n")
@@ -56,7 +51,7 @@ sensor = BMP085.BMP085(busnum=I2C_bus_number)
 # BMP085_STANDARD, BMP085_HIGHRES, or BMP085_ULTRAHIGHRES.  See the BMP085
 # datasheet for more details on the meanings of each mode (accuracy and power
 # consumption are primarily the differences).  The default mode is STANDARD.
-#sensor = BMP085.BMP085(mode=BMP085.BMP085_ULTRAHIGHRES)
+# sensor = BMP085.BMP085(mode=BMP085.BMP085_ULTRAHIGHRES)
 
 print('Temp = {0:0.2f} *C'.format(sensor.read_temperature()))
 print('Pressure = {0:0.2f} Pa'.format(sensor.read_pressure()))

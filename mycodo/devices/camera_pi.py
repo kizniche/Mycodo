@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function # In python 2.7
+from __future__ import print_function  # In python 2.7
 import sys
 
 import datetime
@@ -27,12 +27,14 @@ class CameraStream(object):
             while self.frame is None:
                 time.sleep(0)
 
-    def is_running(self):
+    @staticmethod
+    def is_running():
         if CameraStream.thread is None:
             return False
         return True
 
-    def terminate_controller(self):
+    @staticmethod
+    def terminate_controller():
         CameraStream.terminate = True
 
     def get_frame(self):
@@ -73,17 +75,16 @@ class CameraStream(object):
         cls.thread = None
 
 
-
 class CameraTimelapse(object):
     thread = None
     interval_sec = None
     run_time_sec = None
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    timelapse_path = os.path.dirname(os.path.realpath(__file__))+'/../../camera-timelapse/'
+    timelapse_path = os.path.dirname(os.path.realpath(__file__)) + '/../../camera-timelapse/'
     if not os.path.exists(timelapse_path):
         os.makedirs(timelapse_path)
-    timelapse_file = timestamp+'-img-{counter:03d}.jpg'
-    timelapse_pathfile = timelapse_path+timelapse_file
+    timelapse_file = timestamp + '-img-{counter:03d}.jpg'
+    timelapse_pathfile = timelapse_path + timelapse_file
     terminate = False
 
     def initialize(self):
@@ -104,7 +105,7 @@ class CameraTimelapse(object):
     def start_timelapse(self, interval_sec, run_time_sec):
         CameraTimelapse.terminate = False
         CameraTimelapse.interval_sec = float(interval_sec)
-        CameraTimelapse.run_time_sec = time.time()+float(run_time_sec)
+        CameraTimelapse.run_time_sec = time.time() + float(run_time_sec)
         self.initialize()
 
     @classmethod

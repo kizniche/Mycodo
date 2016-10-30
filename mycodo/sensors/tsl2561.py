@@ -15,7 +15,7 @@ class TSL2561_read(object):
 
     def read(self):
         try:
-            tsl = TSL2561(self.i2c_address, "/dev/i2c-"+str(self.i2c_bus))
+            tsl = TSL2561(self.i2c_address, "/dev/i2c-" + str(self.i2c_bus))
             tsl.enable_autogain()
             # tsl.set_gain(16)
             tsl.set_time(0x00)
@@ -26,7 +26,6 @@ class TSL2561_read(object):
     @property
     def lux(self):
         return self._lux
-
 
     def __iter__(self):
         """

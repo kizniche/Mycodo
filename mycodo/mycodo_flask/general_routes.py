@@ -29,7 +29,6 @@ from RPi import GPIO
 from collections import OrderedDict
 from dateutil.parser import parse as date_parse
 
-
 from flask.blueprints import Blueprint
 from flask import current_app
 from flask import flash
@@ -49,7 +48,6 @@ import flaskutils
 
 from flaskutils import gzipped
 from mycodo_flask.authentication.views import admin_exists
-from mycodo_flask.authentication.views import authenticate_cookies
 from mycodo_flask.authentication.views import clear_cookie_auth
 from mycodo_flask.authentication.views import logged_in
 
@@ -98,7 +96,6 @@ from config import RESTORE_LOG_FILE
 from config import STATS_CSV
 from config import UPDATE_LOG_FILE
 
-
 blueprint = Blueprint('general_routes', __name__, static_folder='../static', template_folder='../templates')
 
 influx_db = InfluxDB()
@@ -110,11 +107,13 @@ def before_blueprint_request():
     """
     ca = current_app
     if (not os.path.isfile(current_app.config['SQL_DATABASE_MYCODO']) or
-        not os.path.isfile(current_app.config['SQL_DATABASE_USER'])):
+            not os.path.isfile(current_app.config['SQL_DATABASE_USER'])):
         return ('Error: Cannot find databases. Run '
                 '"init_databases.py --install_db all" to generate them.')
     if not admin_exists():
         return redirect(url_for("authentication.create_admin"))
+
+
 blueprint.before_request(before_blueprint_request)
 
 
@@ -631,7 +630,6 @@ def page(page):
                                formBackup=formBackup,
                                backups_sorted=backup_dirs)
 
-
     elif page == 'upgrade':
         if session['user_group'] == 'guest':
             flash("Guests are not permitted to view the upgrade panel.",
@@ -1072,9 +1070,9 @@ def method_data(method_type, method_id):
             method_list.append(
                 [(int(start_time.strftime("%s")) - utc_offset_ms) * 1000, None])
 
-    if method_key.method_type == "Daily":
+    elif method_key.method_type == "Daily":
         for each_method in method:
-            if each_method.end_setpoint == None:
+            if each_method.end_setpoint is None:
                 end_setpoint = each_method.start_setpoint
             else:
                 end_setpoint = each_method.end_setpoint
@@ -1117,7 +1115,7 @@ def method_data(method_type, method_id):
         start_duration = 0
         end_duration = 0
         for each_method in method:
-            if each_method.end_setpoint == None:
+            if each_method.end_setpoint is None:
                 end_setpoint = each_method.start_setpoint
             else:
                 end_setpoint = each_method.end_setpoint
@@ -1208,12 +1206,12 @@ def method_builder(method_type, method_id):
             last_method = last_method.order_by(Method.method_order.desc()).first()
 
             # Get last entry end time and setpoint to populate the form
-            if last_method == None:
+            if last_method is None:
                 last_end_time = ''
                 last_setpoint = ''
             else:
                 last_end_time = last_method.end_time
-                if last_method.end_setpoint != None:
+                if last_method.end_setpoint is not None:
                     last_setpoint = last_method.end_setpoint
                 else:
                     last_setpoint = last_method.start_setpoint
@@ -1227,7 +1225,7 @@ def method_builder(method_type, method_id):
                 form_fail = flaskutils.method_add(formAddMethod, method)
             elif form_name in ['modMethod', 'renameMethod']:
                 form_fail = flaskutils.method_mod(formModMethod, method)
-            if (form_name in ['addMethod', 'modMethod', 'renameMethod'] and not form_fail):
+            if form_name in ['addMethod', 'modMethod', 'renameMethod'] and not form_fail:
                 return redirect('/method-build/{}/{}'.format(
                     method_type, method_id))
 
@@ -1266,9 +1264,9 @@ def method_delete(method_id):
 @blueprint.route('/remote/<page>', methods=('GET', 'POST'))
 def remote_admin(page):
     """Return pages for remote administraion"""
-    if (not session.get('logged_in') and
-            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+    if not logged_in():
         return redirect('/')
+
     elif session['user_group'] == 'guest':
         flash("Guests are not permitted to view the romote systems panel.",
               "error")
@@ -1319,14 +1317,14 @@ def camera_img(img_type, filename):
 
     # Get a list of files in each directory
     if os.path.isdir(still_path):
-        still_files = (file for file in os.listdir(still_path)
-                       if os.path.isfile(os.path.join(still_path, file)))
+        still_files = (files for files in os.listdir(still_path)
+                       if os.path.isfile(os.path.join(still_path, files)))
     else:
         still_files = []
 
     if os.path.isdir(timelapse_path):
-        timelapse_files = (file for file in os.listdir(timelapse_path)
-                           if os.path.isfile(os.path.join(timelapse_path, file)))
+        timelapse_files = (files for files in os.listdir(timelapse_path)
+                           if os.path.isfile(os.path.join(timelapse_path, files)))
     else:
         timelapse_files = []
 
@@ -1486,7 +1484,7 @@ def download_file(dl_type, filename):
     elif dl_type == 'log':
         return send_from_directory(LOG_PATH, filename, as_attachment=True)
 
-    return ('', 204)
+    return '', 204
 
 
 @blueprint.route('/last/<sensor_type>/<sensor_measure>/<sensor_id>/<sensor_period>')
@@ -1518,7 +1516,7 @@ def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
         live_data = '[{},{}]'.format(timestamp, value)
         return Response(live_data, mimetype='text/json')
     except:
-        return ('', 204)
+        return '', 204
 
 
 @blueprint.route('/past/<sensor_type>/<sensor_measure>/<sensor_id>/<past_seconds>')
@@ -1544,7 +1542,7 @@ def past_data(sensor_type, sensor_measure, sensor_id, past_seconds):
                                           past_seconds)).raw
         return jsonify(raw_data['series'][0]['values'])
     except:
-        return ('', 204)
+        return '', 204
 
 
 @blueprint.route('/async/<sensor_measure>/<sensor_id>/<start_seconds>/<end_seconds>')
@@ -1644,7 +1642,7 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
                                               group_seconds)).raw
             return jsonify(raw_data['series'][0]['values'])
         except:
-            return ('', 204)
+            return '', 204
     else:
         try:
             raw_data = dbcon.query("""SELECT value
@@ -1658,7 +1656,7 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
                                               end_str)).raw
             return jsonify(raw_data['series'][0]['values'])
         except:
-            return ('', 204)
+            return '', 204
 
 
 @blueprint.route('/daemonactive')
@@ -1717,8 +1715,7 @@ def data():
         new_session.close()
     # TODO: Change sleep() to max requests per duration of time
     time.sleep(1)  # Slow down requests (hackish way to prevent brute force attack)
-    if (user and
-                user.user_restriction == 'admin' and
+    if (user and user.user_restriction == 'admin' and
                 pw_hash == user.user_password_hash):
         return "0"
     return "1"

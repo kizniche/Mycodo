@@ -74,7 +74,6 @@ class K30(object):
         self.running = False
 
 
-
 if __name__ == "__main__":
     k30 = K30()
 

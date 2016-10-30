@@ -151,8 +151,10 @@ def do_login():
 def logout():
     """Log out of the web-ui"""
     if session.get('user_name'):
-        login_log(session['user_name'], session['user_group'],
-                             request.environ.get('REMOTE_ADDR', 'unknown address'), 'LOGOUT')
+        login_log(session['user_name'],
+                  session['user_group'],
+                  request.environ.get('REMOTE_ADDR', 'unknown address'),
+                  'LOGOUT')
     response = clear_cookie_auth()
     flash('Successfully logged out', 'success')
     return response
@@ -174,7 +176,7 @@ def authenticate_cookies(db_path, users):
                 users.user_name == cookie_username).first()
             new_session.expunge_all()
             new_session.close()
-            if user == None:
+            if user is None:
                 return False
             elif cookie_password_hash == user.user_password_hash:
                 session['logged_in'] = True
@@ -194,7 +196,7 @@ def logged_in():
         return 0
     elif (session.get('logged_in') or
               (not session.get('logged_in') and
-                   authenticate_cookies(current_app.config['USER_DB_PATH'], Users))):
+               authenticate_cookies(current_app.config['USER_DB_PATH'], Users))):
         return 1
 
 
@@ -225,13 +227,13 @@ def failed_login():
         session['failed_login_count'] = 0
     else:
         flash('Failed Login ({}/{})'.format(
-            session['failed_login_count'],LOGIN_ATTEMPTS), "error")
+            session['failed_login_count'], LOGIN_ATTEMPTS), "error")
 
 
 def login_log(user, group, ip, status):
     """Write to login log"""
-    with open(LOGIN_LOG_FILE, 'a') as file:
-        file.write('{:%Y-%m-%d %H:%M:%S}: {} {} ({}), {}\n'.format(
+    with open(LOGIN_LOG_FILE, 'a') as log_file:
+        log_file.write('{:%Y-%m-%d %H:%M:%S}: {} {} ({}), {}\n'.format(
             datetime.datetime.now(), status, user, group, ip))
 
 

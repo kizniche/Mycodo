@@ -326,7 +326,7 @@
     var chart = new Array();
     // Retrieve intiial chart data set from the past (duration set by user)
     function getPastData(chart_number, sensor, sensor_type, sensor_measurement, sensor_id, past_seconds) {
-      var url = '/past/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/' + past_seconds
+      var url = '/past/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/' + past_seconds;
       $.getJSON(url,
         function(data, responseText, jqXHR) {
           if (jqXHR.status != 204) {
@@ -337,7 +337,7 @@
               past_data.push([new_time, data[i][1]])
             }
             chart[chart_number].series[sensor].isDirty = true;
-            chart[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes()-(1*(past_seconds/60))), new Date().getTime());
+            chart[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes()-(past_seconds/60)), new Date().getTime());
             chart[chart_number].series[sensor].setData(past_data, true, false);
           }
         }

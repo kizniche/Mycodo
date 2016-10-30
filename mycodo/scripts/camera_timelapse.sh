@@ -25,36 +25,36 @@ INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 DATABASE="$INSTALL_DIRECTORY/databases/mycodo.db"
 
 start() {
-    RELAYID=$(sqlite3 $DATABASE "SELECT relay_id FROM cameratimelapse;");
-    DURATION=$(sqlite3 $DATABASE "SELECT tl_duration FROM cameratimelapse;");
-    EXTRA=$(sqlite3 $DATABASE "SELECT extra_parameters FROM cameratimelapse;");
-    PATH=$(sqlite3 $DATABASE "SELECT path FROM cameratimelapse;");
-    EXTRA=$(sqlite3 $DATABASE "SELECT extra_parameters FROM cameratimelapse;");
-    PREFIX=$(sqlite3 $DATABASE "SELECT prefix FROM cameratimelapse;");
-    ADD_TIMESTAMP=$(sqlite3 $DATABASE "SELECT file_timestamp FROM cameratimelapse;");
+    RELAYID=$(sqlite3 ${DATABASE} "SELECT relay_id FROM cameratimelapse;");
+    DURATION=$(sqlite3 ${DATABASE} "SELECT tl_duration FROM cameratimelapse;");
+    EXTRA=$(sqlite3 ${DATABASE} "SELECT extra_parameters FROM cameratimelapse;");
+    PATH=$(sqlite3 ${DATABASE} "SELECT path FROM cameratimelapse;");
+    EXTRA=$(sqlite3 ${DATABASE} "SELECT extra_parameters FROM cameratimelapse;");
+    PREFIX=$(sqlite3 ${DATABASE} "SELECT prefix FROM cameratimelapse;");
+    ADD_TIMESTAMP=$(sqlite3 ${DATABASE} "SELECT file_timestamp FROM cameratimelapse;");
     if [ -n "$RELAYID" ]; then
-        $INSTALL_DIRECTORY/mycodo/mycodo_client.py --relayon $RELAYID --duration $DURATION
+        ${INSTALL_DIRECTORY}/mycodo/mycodo_client.py --relayon ${RELAYID} --duration ${DURATION}
     fi
     if [ ! -n "$ADD_TIMESTAMP" ]; then
         TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
         if [ ! -z "$EXTRA" ]; then
-            /usr/bin/nohup /usr/bin/raspistill $EXTRA --timelapse $5 --timeout $6 --thumb none -o $INSTALL_DIRECTORY/camera-timelapse/$PREFIX$TIMESTAMP-%05d.jpg &
+            /usr/bin/nohup /usr/bin/raspistill ${EXTRA} --timelapse $5 --timeout $6 --thumb none -o ${INSTALL_DIRECTORY}/camera-timelapse/${PREFIX}${TIMESTAMP}-%05d.jpg &
         else
-            /usr/bin/nohup /usr/bin/raspistill --timelapse $5 --timeout $6 --thumb none -o $INSTALL_DIRECTORY/camera-timelapse/$PREFIX$TIMESTAMP-%05d.jpg &
+            /usr/bin/nohup /usr/bin/raspistill --timelapse $5 --timeout $6 --thumb none -o ${INSTALL_DIRECTORY}/camera-timelapse/${PREFIX}${TIMESTAMP}-%05d.jpg &
         fi
     else
         if [ ! -z "$EXTRA" ]; then
-            /usr/bin/nohup /usr/bin/raspistill $EXTRA --timelapse $5 --timeout $6 --thumb none -o $INSTALL_DIRECTORY/camera-timelapse/$PREFIX-%05d.jpg &
+            /usr/bin/nohup /usr/bin/raspistill ${EXTRA} --timelapse $5 --timeout $6 --thumb none -o ${INSTALL_DIRECTORY}/camera-timelapse/${PREFIX}-%05d.jpg &
         else
-            /usr/bin/nohup /usr/bin/raspistill --timelapse $5 --timeout $6 --thumb none -o $INSTALL_DIRECTORY/camera-timelapse/$PREFIX-%05d.jpg &
+            /usr/bin/nohup /usr/bin/raspistill --timelapse $5 --timeout $6 --thumb none -o ${INSTALL_DIRECTORY}/camera-timelapse/${PREFIX}-%05d.jpg &
         fi
     fi
 }
 
 stop() {
-    RELAYID=$(sqlite3 $DATABASE "SELECT relay_id FROM cameratimelapse;");
+    RELAYID=$(sqlite3 ${DATABASE} "SELECT relay_id FROM cameratimelapse;");
     if [ -n "$RELAYID" ]; then
-        $INSTALL_DIRECTORY/mycodo/mycodo_client.py --relayoff $RELAYID
+        ${INSTALL_DIRECTORY}/mycodo/mycodo_client.py --relayoff ${RELAYID}
     fi
     pkill raspistill
 }

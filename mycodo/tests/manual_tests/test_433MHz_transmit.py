@@ -12,6 +12,6 @@ sender.setProtocol(1)
 sender.setPulseLength(189)
 sender.enableTransmit(0)
 
-sender.sendDecimal(on, 24) # switch on
+sender.sendDecimal(on, 24)  # switch on
 time.sleep(3)
-sender.sendDecimal(off, 24) # switch off
+sender.sendDecimal(off, 24)  # switch off

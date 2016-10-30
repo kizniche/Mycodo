@@ -12,7 +12,6 @@ import time
 import Adafruit_ADS1x15
 import RPi.GPIO as GPIO
 
-
 if not os.geteuid() == 0:
     print("Error: Script must be executed as root.\n")
     sys.exit(1)
@@ -31,7 +30,7 @@ except Exception as except_msg:
 # adc = Adafruit_ADS1x15.ADS1115()
 
 # Or create an ADS1015 ADC (12-bit) instance.
-#adc = Adafruit_ADS1x15.ADS1015()
+# adc = Adafruit_ADS1x15.ADS1015()
 
 # Note you can change the I2C address from its default (0x48), and/or the I2C
 # bus by passing in these optional parameters:
@@ -55,7 +54,7 @@ print('-' * 37)
 # Main loop.
 while True:
     # Read all the ADC channel values in a list.
-    values = [0]*4
+    values = [0] * 4
     for i in range(4):
         # Read the specified ADC channel using the previously set gain value.
         values[i] = adc.read_adc(i, gain=GAIN)
@@ -63,11 +62,10 @@ while True:
         # the ADC conversion time (in samples/second). Each chip has a different
         # set of allowed data rate values, see datasheet Table 9 config register
         # DR bit values.
-        #values[i] = adc.read_adc(i, gain=GAIN, data_rate=128)
+        # values[i] = adc.read_adc(i, gain=GAIN, data_rate=128)
         # Each value will be a 12 or 16 bit signed integer value depending on the
         # ADC (ADS1015 = 12-bit, ADS1115 = 16-bit).
     # Print the ADC values.
     print('| {0:>6} | {1:>6} | {2:>6} | {3:>6} |'.format(*values))
     # Pause for half a second.
     time.sleep(0.5)
-

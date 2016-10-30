@@ -44,7 +44,7 @@ def add_update_csv(logger, csv_file, key, value):
 
     """
     try:
-        stats_dict = {key:value}
+        stats_dict = {key: value}
         tempfilename = os.path.splitext(csv_file)[0] + '.bak'
         try:
             os.remove(tempfilename)  # delete any existing temp file
@@ -60,7 +60,7 @@ def add_update_csv(logger, csv_file, key, value):
 
         # only add items from my_dict that weren't already present
         temp_dict.update({key: value for (key, value) in stats_dict.items()
-                              if key not in temp_dict})
+                          if key not in temp_dict})
 
         # only update items from my_dict that are already present
         temp_dict.update({key: value for (key, value) in stats_dict.items()})
@@ -77,7 +77,7 @@ def add_update_csv(logger, csv_file, key, value):
         os.remove(tempfilename)  # delete backed-up original
     except Exception as except_msg:
         logger.exception('[Statistics] Could not update stat csv: '
-            '{}'.format(except_msg))
+                         '{}'.format(except_msg))
         os.rename(tempfilename, csv_file)  # rename temp file to original
 
 
@@ -96,11 +96,11 @@ def get_pi_revision():
     # Extract board revision from cpuinfo file
     myrevision = "0000"
     try:
-        f = open('/proc/cpuinfo','r')
+        f = open('/proc/cpuinfo', 'r')
         for line in f:
-            if line[0:8]=='Revision':
-                length=len(line)
-                myrevision = line[11:length-1]
+            if line[0:8] == 'Revision':
+                length = len(line)
+                myrevision = line[11:length - 1]
         f.close()
     except:
         myrevision = "0000"
@@ -113,7 +113,7 @@ def increment_stat(logger, stats_csv, stat, amount):
 
     """
     stat_dict = return_stat_file_dict(stats_csv)
-    add_update_csv(logger, stats_csv, stat, int(stat_dict[stat])+amount)
+    add_update_csv(logger, stats_csv, stat, int(stat_dict[stat]) + amount)
 
 
 def return_stat_file_dict(stats_csv):
@@ -147,7 +147,7 @@ def recreate_stat_file(id_file, stats_csv, stats_interval, mycodo_version):
 
     new_stat_data = [['stat', 'value'],
                      ['id', stat_id],
-                     ['next_send', time.time()+stats_interval],
+                     ['next_send', time.time() + stats_interval],
                      ['RPi_revision', get_pi_revision()],
                      ['Mycodo_revision', mycodo_version],
                      ['git_commit', 'None'],
@@ -169,7 +169,7 @@ def recreate_stat_file(id_file, stats_csv, stats_interval, mycodo_version):
                      ['num_sensors_active', 0],
                      ['num_timers', 0],
                      ['num_timers_active', 0]]
-             
+
     with open(stats_csv, 'w') as csv_stat_file:
         write_csv = csv.writer(csv_stat_file)
         for row in new_stat_data:
@@ -220,7 +220,7 @@ def send_stats(logger, host, port, user, password, dbname,
                 Method.method_order == 0)))
             add_update_csv(logger, stats_csv, 'num_methods_in_pid', get_count(pids.filter(
                 PID.method_id != '')))
-            
+
             timers = new_session.query(Timer)
             add_update_csv(logger, stats_csv, 'num_timers', get_count(timers))
             add_update_csv(logger, stats_csv, 'num_timers_active', get_count(timers.filter(
@@ -229,7 +229,7 @@ def send_stats(logger, host, port, user, password, dbname,
         add_update_csv(logger, stats_csv, 'country', geocoder.ip('me').country)
         add_update_csv(logger, stats_csv, 'ram_use_mb', resource.getrusage(
             resource.RUSAGE_SELF).ru_maxrss / float(1000))
-        
+
         user_count = 0
         admin_count = 0
         with session_scope(user_db_path) as db_session:
@@ -239,7 +239,7 @@ def send_stats(logger, host, port, user, password, dbname,
                 if each_user.user_restriction == 'admin':
                     admin_count += 1
         add_update_csv(logger, stats_csv, 'num_users_admin', admin_count)
-        add_update_csv(logger, stats_csv, 'num_users_guest', user_count-admin_count)
+        add_update_csv(logger, stats_csv, 'num_users_guest', user_count - admin_count)
 
         add_update_csv(logger, stats_csv, 'Mycodo_revision', mycodo_version)
 
@@ -261,5 +261,5 @@ def send_stats(logger, host, port, user, password, dbname,
         return 0
     except Exception as except_msg:
         logger.exception('[Daemon] Could not send anonymous usage statictics: '
-            '{}'.format(except_msg))
+                         '{}'.format(except_msg))
         return 1

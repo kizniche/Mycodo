@@ -23,12 +23,11 @@ class ADS1x15_read(object):
         self.gain = gain
         self.running = True
 
-
     def read(self):
         try:
             time.sleep(1)
             adc = Adafruit_ADS1x15.ADS1115(address=self.i2c_address, busnum=self.i2c_bus)
-            self._voltage = adc.read_adc(self.channel, gain=self.gain)/10000.0
+            self._voltage = adc.read_adc(self.channel, gain=self.gain) / 10000.0
         except:
             return 1
 

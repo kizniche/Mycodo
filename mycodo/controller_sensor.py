@@ -60,7 +60,7 @@ from utils.system_pi import cmd_output
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
-class Measurement():
+class Measurement:
     """
     Class for holding all measurement values in a dictionary.
     The dictionary is formatted in the following way:
@@ -393,8 +393,8 @@ class SensorController(threading.Thread):
 
         :rtype: None
 
-        :param each_cond: Object of SQL table entries for a specific column
-        :type each_cond: sqlalchemy object
+        :param cond_id: ID of conditional to check
+        :type cond_id: str
         """
         attachment_file = False
         attachment_type = False

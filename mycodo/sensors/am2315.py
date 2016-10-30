@@ -12,6 +12,7 @@ class AM2315_read(object):
         self._humidity = 0
         self._crc_check = 0
         self.I2C_bus_number = str(bus)
+        self.am = None
         self.running = True
 
     def read(self):

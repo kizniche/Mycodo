@@ -84,7 +84,7 @@
     var chart = new Array();
     // Retrieve intiial chart data set from the past (duration set by user)
     function getPastData(chart_number, method_type, method_id) {
-      var url = '/method-data/' + method_type + '/' + method_id
+      var url = '/method-data/' + method_type + '/' + method_id;
       $.getJSON(url,
         function(data, responseText, jqXHR) {
           if (jqXHR.status != 204) {

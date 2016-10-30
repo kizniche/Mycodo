@@ -13,6 +13,8 @@ class Atlas_PT1000(object):
         self.address = address
         self.running = True
         self.I2C_bus_number = bus
+        self.file_read = None
+        self.file_write = None
 
     def read_pt1000(self):
         try:

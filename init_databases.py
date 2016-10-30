@@ -144,7 +144,7 @@ def create_dbs(db_name, create_all=False, config=None, exit_when_done=True):
     if not os.path.exists(os.path.dirname(user_db_path)):
         try:
             os.makedirs(os.path.dirname(user_db_path))
-        except OSError as exc: # Guard against race condition
+        except OSError as exc:  # Guard against race condition
             if exc.errno != errno.EEXIST:
                 raise
 

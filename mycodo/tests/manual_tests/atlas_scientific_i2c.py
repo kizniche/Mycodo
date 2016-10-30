@@ -84,17 +84,17 @@ def main():
 
     # main loop
     while True:
-        input = raw_input("Enter command: ")
+        cmd_input = raw_input("Enter command: ")
 
         # address command lets you change which address the Raspberry Pi will poll
-        if input.upper().startswith("ADDRESS"):
-            addr = int(string.split(input, ',')[1])
+        if cmd_input.upper().startswith("ADDRESS"):
+            addr = int(string.split(cmd_input, ',')[1])
             device.set_i2c_address(addr)
             print("I2C address set to " + str(addr))
 
         # continuous polling command automatically polls the board
-        elif input.upper().startswith("POLL"):
-            delaytime = float(string.split(input, ',')[1])
+        elif cmd_input.upper().startswith("POLL"):
+            delaytime = float(string.split(cmd_input, ',')[1])
 
             # check for polling time being too short, change it to the minimum timeout if too short
             if delaytime < AtlasI2C.long_timeout:
@@ -114,11 +114,11 @@ def main():
 
         # if not a special keyword, pass commands straight to board
         else:
-            if len(input) == 0:
+            if len(cmd_input) == 0:
                 print("Please input valid command.")
             else:
                 try:
-                    print(device.query(input))
+                    print(device.query(cmd_input))
                 except IOError:
                     print("Query failed")
 

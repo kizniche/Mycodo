@@ -39,9 +39,9 @@ class DHT(object):
             humidity, temperature = Adafruit_DHT.read(sensor, pin)
             if ((humidity is not None and temperature is not None) and
                     (humidity < 100)):
-                return (humidity, temperature)
+                return humidity, temperature
             time.sleep(delay_seconds)
-        return (None, None)
+        return None, None
 
     @property
     def temperature(self):
@@ -91,10 +91,16 @@ if __name__ == "__main__":
             total_diff += diff
             if diff > max_diff:
                 max_diff = diff
-            print("Temperature: {}".format(measurements['temperature']))
-            print("Humidity: {}".format(measurements['humidity']))
-            print("Dew Point: {}".format(dewpoint(measurements['temperature'], measurements['humidity'])))
-            print("No Resp. = {}, Avg Read Time: {:.2f}, Max Read Time: {:.2f}, Read Time: {:.2f}, Time Success: {:.2f}".format(none_count, total_diff/count, max_diff, diff, diff_success))
+            print("Temperature: {temp}".format(temp=measurements['temperature']))
+            print("Humidity: {hum}".format(hum=measurements['humidity']))
+            print("Dew Point: {dp}".format(dp=dewpoint(measurements['temperature'], measurements['humidity'])))
+            print("No Resp. = {cnt}, Avg Read Time: {avg_read:.2f}, "
+                  "Max Read Time: {max_read:.2f}, Read Time: {read:.2f}, "
+                  "Time Success: {success:.2f}".format(cnt=none_count,
+                                                       avg_read=total_diff/count,
+                                                       max_read=max_diff,
+                                                       read=diff,
+                                                       success=diff_success))
             time_diff = time.time()
             time_success = time.time()
         else:

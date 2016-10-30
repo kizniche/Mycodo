@@ -31,22 +31,22 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
-cd $INSTALL_DIRECTORY
+cd ${INSTALL_DIRECTORY}
 
-ln -snf $INSTALL_DIRECTORY /var/www/mycodo
-cp -f $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-available/
+ln -snf ${INSTALL_DIRECTORY} /var/www/mycodo
+cp -f ${INSTALL_DIRECTORY}/mycodo_flask_apache.conf /etc/apache2/sites-available/
 
 if [ -f "$INSTALL_DIRECTORY/mycodo_flask/ssl_certs/cert.pem" ] && [ ! -d "$INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs/" ]; then
-    mkdir -p $INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs/
-    cp $INSTALL_DIRECTORY/mycodo_flask/ssl_certs/* $INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs/
+    mkdir -p ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs/
+    cp ${INSTALL_DIRECTORY}/mycodo_flask/ssl_certs/* ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs/
 fi
 
-$INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh upgrade-packages
+${INSTALL_DIRECTORY}/mycodo/scripts/update_mycodo.sh upgrade-packages
 
 printf "#### Enable mycodo service ####\n"
 rm -rf /etc/systemd/system/mycodo.service
 rm -rf /etc/systemd/system/multi-user.target.wants/mycodo.service
-systemctl enable $INSTALL_DIRECTORY/mycodo/scripts/mycodo.service
+systemctl enable ${INSTALL_DIRECTORY}/mycodo/scripts/mycodo.service
 
 printf "#### Upgrade influxdb if out-of-date ####\n"
 INFLUX_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
@@ -58,22 +58,22 @@ fi
 
 printf "#### Move ssl certificates directory if not in correct directory\n"
 if [ -d "$INSTALL_DIRECTORY/mycodo/frontend/ssl_certs" ]; then
-    mv $INSTALL_DIRECTORY/mycodo/frontend/ssl_certs $INSTALL_DIRECTORY/mycodo/mycodo_flask/
+    mv ${INSTALL_DIRECTORY}/mycodo/frontend/ssl_certs ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/
 fi
 
 printf "#### Checking if python modules are up-to-date ####\n"
-pip install --upgrade -r $INSTALL_DIRECTORY/requirements.txt
+pip install --upgrade -r ${INSTALL_DIRECTORY}/requirements.txt
 
 printf "#### Upgrading database ####\n"
-cd $INSTALL_DIRECTORY/databases
+cd ${INSTALL_DIRECTORY}/databases
 alembic upgrade head
 
 printf "#### Removing statistics file ####\n"
-rm $INSTALL_DIRECTORY/databases/statistics.csv
+rm ${INSTALL_DIRECTORY}/databases/statistics.csv
 
 printf "#### Setting permissions ####\n"
-$INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh initialize
+${INSTALL_DIRECTORY}/mycodo/scripts/update_mycodo.sh initialize
 
 printf "#### Starting Mycodo daemon and reloading Apache ####\n"
 service mycodo start
-touch $INSTALL_DIRECTORY/mycodo_flask.wsgi
+touch ${INSTALL_DIRECTORY}/mycodo_flask.wsgi

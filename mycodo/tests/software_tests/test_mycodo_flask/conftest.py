@@ -35,7 +35,7 @@ def app(db_config):
     """
     Create a flask app test fixture
 
-    :param tmp_file: pytest fixture
+    :param db_config: database config object
     """
     config = build_single_use_config(db_config=db_config)
     _app = create_app(config=config)

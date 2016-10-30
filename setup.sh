@@ -11,10 +11,10 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/" && pwd -P )
-cd $INSTALL_DIRECTORY
+cd ${INSTALL_DIRECTORY}
 
-LOG_LOCATION=$INSTALL_DIRECTORY/setup.log
-exec > >(tee -i $LOG_LOCATION)
+LOG_LOCATION=${INSTALL_DIRECTORY}/setup.log
+exec > >(tee -i ${LOG_LOCATION})
 exec 2>&1
 
 abort()
@@ -55,21 +55,21 @@ pip install -U pip
 # pip uninstall -y MCP342x
 
 printf "#### Installing prerequisites\n"
-wget --quiet --show-progress -P $INSTALL_DIRECTORY/ abyz.co.uk/rpi/pigpio/pigpio.zip
+wget --quiet --show-progress -P ${INSTALL_DIRECTORY}/ abyz.co.uk/rpi/pigpio/pigpio.zip
 unzip pigpio.zip
-cd $INSTALL_DIRECTORY/PIGPIO
+cd ${INSTALL_DIRECTORY}/PIGPIO
 make -j4
 make install
 
-git clone git://git.drogon.net/wiringPi $INSTALL_DIRECTORY/wiringPi
-cd $INSTALL_DIRECTORY/wiringPi
+git clone git://git.drogon.net/wiringPi ${INSTALL_DIRECTORY}/wiringPi
+cd ${INSTALL_DIRECTORY}/wiringPi
 ./build
 
-wget --quiet --show-progress -P $INSTALL_DIRECTORY/ https://dl.influxdata.com/influxdb/releases/influxdb_1.0.0_armhf.deb
-dpkg -i $INSTALL_DIRECTORY/influxdb_1.0.0_armhf.deb
+wget --quiet --show-progress -P ${INSTALL_DIRECTORY}/ https://dl.influxdata.com/influxdb/releases/influxdb_1.0.0_armhf.deb
+dpkg -i ${INSTALL_DIRECTORY}/influxdb_1.0.0_armhf.deb
 service influxdb start
 
-cd $INSTALL_DIRECTORY
+cd ${INSTALL_DIRECTORY}
 pip install -r requirements.txt --upgrade
 
 rm -rf ./PIGPIO ./pigpio.zip ./wiringPi ./influxdb_0.13.0_armhf.deb
@@ -79,16 +79,16 @@ influx -execute "CREATE DATABASE mycodo_db"
 influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
 
 printf "#### Creating cron entry to start pigpiod at boot\n"
-$INSTALL_DIRECTORY/mycodo/scripts/crontab.sh mycodo
+${INSTALL_DIRECTORY}/mycodo/scripts/crontab.sh mycodo
 
 printf "#### Installing and configuring apache2 web server\n"
 apt-get install -y apache2 libapache2-mod-wsgi
 a2enmod wsgi ssl
-ln -sf $INSTALL_DIRECTORY/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
+ln -sf ${INSTALL_DIRECTORY}/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
 
 printf "#### Creating SSL certificates at $INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
-mkdir -p $INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs
-cd $INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs/
+mkdir -p ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs
+cd ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs/
 
 openssl req \
     -new \
@@ -118,12 +118,12 @@ openssl x509 -req \
 rm -f certificate.csr
 
 printf "#### Enabling mycodo startup script\n"
-systemctl enable $INSTALL_DIRECTORY/mycodo/scripts/mycodo.service
+systemctl enable ${INSTALL_DIRECTORY}/mycodo/scripts/mycodo.service
 
 printf "#### Creating SQLite databases\n"
-$INSTALL_DIRECTORY/init_databases.py -i all
+${INSTALL_DIRECTORY}/init_databases.py -i all
 
-$INSTALL_DIRECTORY/mycodo/scripts/update_mycodo.sh initialize
+${INSTALL_DIRECTORY}/mycodo/scripts/update_mycodo.sh initialize
 
 service mycodo start
 /etc/init.d/apache2 restart

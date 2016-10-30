@@ -67,7 +67,7 @@ $(function () {
     var chart = new Array();
 
     function getPastData(sensor_type, sensor_measurement, sensor_id) {
-      var url = '/async/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/0/0'
+      var url = '/async/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/0/0';
       $.getJSON(url,
         function(data, responseText, jqXHR) {
           if (jqXHR.status != 204) {
@@ -85,7 +85,7 @@ $(function () {
     }
 
     function afterSetExtremes(e) {
-      var url = '/async/{{selected_measure}}/{{selected_id}}/' + Math.round(e.min)/1000 + '/' + Math.round(e.max)/1000
+      var url = '/async/{{selected_measure}}/{{selected_id}}/' + Math.round(e.min)/1000 + '/' + Math.round(e.max)/1000;
       console.log(url);
       $.getJSON(url,
         function(data, responseText, jqXHR) {
@@ -103,7 +103,7 @@ $(function () {
       );
     }
 
-    var url = '/async/{{selected_measure}}/{{selected_id}}/0/0'
+    var url = '/async/{{selected_measure}}/{{selected_id}}/0/0';
     $.getJSON(url, function (data_raw) {
 
       var data = [];
