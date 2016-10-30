@@ -2,9 +2,7 @@ language: python
 os: linux
 python:
   - "2.7"
-  - "3.3"
-  - "3.4"
-  - "3.5"
+  - "3.2"
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y libav-tools libi2c-dev python-setuptools python-smbus
