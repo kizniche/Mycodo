@@ -2,10 +2,7 @@ language: python
 python: 2.7
 before_install:
   - sudo apt-get update
-  - sudo apt-get purge -y python-pip
-  - sudo apt-get install -y libav-tools libi2c-dev python-setuptools python-smbus
-  - sudo easy_install pip
-  - sudo pip install -U pip
+  - sudo apt-get install -y libav-tools libi2c-dev python-setuptools python-smbus i2c-tools
   - git clone git://git.drogon.net/wiringPi && cd ./wiringPi && ./build && cd ..
   - wget abyz.co.uk/rpi/pigpio/pigpio.zip && unzip pigpio.zip && cd ./PIGPIO && make -j4 && sudo make install && cd ..
 install:
