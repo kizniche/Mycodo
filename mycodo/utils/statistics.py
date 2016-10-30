@@ -10,7 +10,6 @@ import string
 import time
 from collections import OrderedDict
 from influxdb import InfluxDBClient
-from lockfile import LockFile
 from sqlalchemy import func
 
 from system_pi import get_git_commit

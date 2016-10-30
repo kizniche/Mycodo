@@ -1,6 +1,5 @@
 # coding=utf-8
 
-import os
 import serial
 import time
 from lockfile import LockFile

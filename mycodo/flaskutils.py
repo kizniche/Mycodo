@@ -10,14 +10,13 @@ from RPi import GPIO
 import sqlalchemy
 import string
 from collections import OrderedDict
-from datetime import datetime, time
+from datetime import datetime
 import functools
 
 import gzip
 from cStringIO import StringIO as IO
 
 from flask import flash
-from flask import make_response
 from flask import request
 from flask import session
 from flask import redirect
@@ -25,7 +24,6 @@ from flask import after_this_request
 
 from influxdb import InfluxDBClient
 from sqlalchemy import and_
-from sqlalchemy.orm import sessionmaker
 
 from utils.send_data import send_email
 from databases.mycodo_db.models import CameraStill

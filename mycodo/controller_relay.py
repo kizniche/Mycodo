@@ -7,14 +7,10 @@
 
 import datetime
 import RPi.GPIO as GPIO
-import logging
-import subprocess
 import threading
 import time
 import timeit
-from influxdb import InfluxDBClient
 
-from config import LOG_PATH
 from config import SQL_DATABASE_MYCODO
 from config import INFLUXDB_HOST
 from config import INFLUXDB_PORT

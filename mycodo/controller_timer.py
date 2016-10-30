@@ -12,7 +12,6 @@ import time
 import timeit
 
 from config import SQL_DATABASE_MYCODO
-from databases.mycodo_db.models import Relay
 from databases.mycodo_db.models import Timer
 from databases.utils import session_scope
 from mycodo_client import DaemonControl

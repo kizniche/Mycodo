@@ -22,6 +22,7 @@
 #  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
 #
 #  Contact at kylegabriel.com
+
 import logging
 import argparse
 import datetime

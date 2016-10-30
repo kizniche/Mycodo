@@ -14,7 +14,7 @@ from flask import url_for
 from flask import make_response
 from flask.blueprints import Blueprint
 
-from mycodo import flaskutils, flaskforms
+from mycodo import flaskforms
 from flaskutils import flash_form_errors
 
 from config import LOGIN_ATTEMPTS

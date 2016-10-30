@@ -116,7 +116,7 @@ class CameraTimelapse(object):
                 camera.vflip = True
                 camera.start_preview()
                 time.sleep(2)
-                for filename in camera.capture_continuous(cls.timelapse_pathfile):
+                for _ in camera.capture_continuous(cls.timelapse_pathfile):
                     if time.time() > cls.run_time_sec or cls.terminate:
                         break
                     time.sleep(cls.interval_sec)

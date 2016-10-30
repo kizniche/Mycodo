@@ -71,7 +71,7 @@ class HTU21D_read(object):
         handle = self.pi.i2c_open(self.I2C_bus_number, self.address) # open i2c bus
         self.pi.i2c_write_byte(handle, self.rdhumi) # send read humi command
         time.sleep(0.055) # readings take up to 50ms, lets give it some time
-        (count, byteArray) = self.pi.i2c_read_device(handle, 3) # vacuum up those bytes
+        (_, byteArray) = self.pi.i2c_read_device(handle, 3) # vacuum up those bytes
         self.pi.i2c_close(handle) # close the i2c bus
         h1 = byteArray[0] # most significant byte msb
         h2 = byteArray[1] # least significant byte lsb

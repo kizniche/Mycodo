@@ -3,7 +3,6 @@
 import io         # used to create file streams
 import fcntl      # used to access I2C parameters like addresses
 import time       # used for sleep delay and timestamps
-import string     # helps parse strings
 import RPi.GPIO as GPIO
 
 

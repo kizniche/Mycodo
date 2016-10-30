@@ -1,6 +1,5 @@
 # coding=utf-8
 """ Starts the mycodo flask UI """
-import os
 import argparse
 import sys
 import os.path

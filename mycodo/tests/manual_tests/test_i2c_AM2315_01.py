@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # coding=utf-8
 
-from datetime import datetime
 import RPi.GPIO as GPIO
 import os
 import sys

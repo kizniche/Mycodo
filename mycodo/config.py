@@ -39,22 +39,6 @@ HTTP_LOG_FILE = '/var/log/apache2/error.log'
 UPDATE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupdate.log')
 RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
 
-# Logs that are on the tempfs and are written to every sensor read
-# DAEMON_LOG_FILE_TMP = os.path.join(LOG_PATH, "daemon-tmp.log")
-# SENSOR_T_LOG_FILE_TMP = os.path.join(LOG_PATH, "sensor-t-tmp.log")
-# SENSOR_HT_LOG_FILE_TMP = os.path.join(LOG_PATH, "sensor-ht-tmp.log")
-# SENSOR_CO2_LOG_FILE_TMP = os.path.join(LOG_PATH, "sensor-co2-tmp.log")
-# SENSOR_PRESS_LOG_FILE_TMP = os.path.join(LOG_PATH, "sensor-press-tmp.log")
-# RELAY_LOG_FILE_TMP = os.path.join(LOG_PATH, "relay-tmp.log")
-
-# Logs that are periodically concatenated (every 6 hours) to the SD card
-# DAEMON_LOG_FILE = os.path.join(LOG_PATH, "daemon.log")
-# SENSOR_T_LOG_FILE = os.path.join(LOG_PATH, "sensor-t.log")
-# SENSOR_HT_LOG_FILE = os.path.join(LOG_PATH, "sensor-ht.log")
-# SENSOR_CO2_LOG_FILE = os.path.join(LOG_PATH, "sensor-co2.log")
-# SENSOR_PRESS_LOG_FILE = os.path.join(LOG_PATH, "sensor-press.log")
-# RELAY_LOG_FILE = os.path.join(LOG_PATH, "relay.log")
-
 DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
 SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
 SQL_DATABASE_USER = os.path.join(DATABASE_PATH, 'users.db')
