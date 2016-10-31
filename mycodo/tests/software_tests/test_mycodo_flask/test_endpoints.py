@@ -119,7 +119,7 @@ def test_routes_logged_in_as_admin(_, testapp, user_db):
     for route in routes:
         response = testapp.get('/{add}'.format(add=route[0])).maybe_follow()
         assert response.status_code == 200, "Endpoint Tested: {page}".format(page=route[0])
-        assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(resp=response.body)
+        assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
 
 
 def create_user_admin(user_db, name, password):
