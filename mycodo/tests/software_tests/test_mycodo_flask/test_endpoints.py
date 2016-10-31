@@ -186,7 +186,7 @@ def redirects_to_login_page(app, endpoint):
 #     redirects_to_login_page(app=testapp, endpoint='/settings/users')
 
 
-def test_redirect_to_login(testapp):
+def test_routes_not_logged_in(testapp):
     """ Verifies behavior of these endpoints for non-logged in user """
     routes = [
         'async',
@@ -230,16 +230,16 @@ def test_redirect_to_login(testapp):
                                 endpoint='/{add}'.format(add=route_add))
 
 
-    def test_sees_admin_creation_form(testapp_no_admin_user):
-        """ user sees the admin creation page when the database has no admin user """
-        expected_body_msg = "Mycodo was unable to find an admin user in the user database."
-        assert expected_body_msg in testapp_no_admin_user.get('/').maybe_follow()
+def test_sees_admin_creation_form(testapp_no_admin_user):
+    """ user sees the admin creation page when the database has no admin user """
+    expected_body_msg = "Mycodo was unable to find an admin user in the user database."
+    assert expected_body_msg in testapp_no_admin_user.get('/').maybe_follow()
 
 
-    def test_does_not_see_admin_creation_form(testapp):
-        """ user sees the normal login page """
-        expected_body_msg = "Mycodo was unable to find an admin user in the user database."
-        assert expected_body_msg not in testapp.get('/').maybe_follow()
+def test_does_not_see_admin_creation_form(testapp):
+    """ user sees the normal login page """
+    expected_body_msg = "Mycodo was unable to find an admin user in the user database."
+    assert expected_body_msg not in testapp.get('/').maybe_follow()
 
 
 # -----------------------
@@ -270,7 +270,7 @@ def test_user_can_login(_, testapp, user_db):
 
 
 @mock.patch('mycodo.mycodo_flask.authentication.views.login_log')  # the login_log writes to a system protected file
-def test_logged_in_pages(_, testapp, user_db):
+def test_routes_logged_in_as_admin(_, testapp, user_db):
     routes_pages = [
         'camera',
         'graph',

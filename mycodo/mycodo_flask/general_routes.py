@@ -862,12 +862,15 @@ def page(page):
     elif page == 'camera':
         formCamera = flaskforms.Camera()
 
-        if 'start_x=1' not in open('/boot/config.txt').read():
-            flash("Camera support doesn't appear to be enabled. Please "
-                  "enable it with 'sudo raspi-config'", "error")
-            camera_enabled = False
-        else:
-            camera_enabled = True
+        camera_enabled = False
+        try:
+            if 'start_x=1' in open('/boot/config.txt').read():
+                camera_enabled = True
+            else:
+                flash("Camera support doesn't appear to be enabled. Please "
+                      "enable it with 'sudo raspi-config'", "error")
+        except IOError:
+            pass
 
         # Check if a video stream is active
         stream_locked = os.path.isfile(LOCK_FILE_STREAM)
