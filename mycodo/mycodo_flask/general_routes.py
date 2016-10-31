@@ -1164,6 +1164,9 @@ def method_builder(method_type, method_id):
     if not logged_in():
         return redirect('/')
 
+    if method_type == '1':
+        return 'admin logged in'
+
     if method_type in ['Date', 'Duration', 'Daily', 'DailySine', 'DailyBezier', '0']:
         formCreateMethod = flaskforms.CreateMethod()
         formAddMethod = flaskforms.AddMethod()
