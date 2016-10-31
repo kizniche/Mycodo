@@ -1,8 +1,6 @@
 # coding=utf-8
 """ functional tests for flask endpoints """
 import mock
-from mycodo.tests.software_tests.factories import AdminFactory
-from mycodo.tests.software_tests.factories import GuestFactory
 from mycodo.tests.software_tests.factories import UserFactory
 from mycodo.tests.software_tests.test_mycodo_flask.conftest import login_user
 
@@ -23,8 +21,10 @@ def test_routes_not_logged_in(testapp):
     All endpoint requests should redirect to the login page.
     """
     routes = [
+        '',
+        'admin/backup',
+        'admin/upgrade',
         'async',
-        'backup',
         'camera',
         'dl',
         'daemon_active',
@@ -52,9 +52,9 @@ def test_routes_not_logged_in(testapp):
         'settings/camera',
         'settings/general',
         'settings/users',
+        'statistics',
         'systemctl',
         'timer',
-        'upgrade',
         'usage',
         'video_feed'
     ]
@@ -86,23 +86,13 @@ def test_routes_logged_in_as_admin(_, testapp, user_db):
     login_user(testapp, admin_user.user_name, 'secret_pass')
 
     # Test if the navigation bar is seen on the main page
-    response = testapp.get('/').maybe_follow()
-    assert response.status_code == 200
-    navbar_strings = [
-        'Live',
-        'Graph',
-        'Sensor',
-        'Relay',
-        'Method',
-        'PID',
-        'Timer',
-        'Help',
-        'Admin'
-    ]
-    assert all(x in response for x in navbar_strings), "Not all navbar strings found at '/' endpoint. Found: {body}".format(body=response.body)
+    sees_navbar(testapp)
 
     # Test all endpoints
     routes = [
+        ('admin/backup', '<!-- Route: /admin/backup -->'),
+        ('admin/statistics', '<!-- Route: /admin/statistics -->'),
+        ('admin/upgrade', '<!-- Route: /admin/upgrade -->'),
         ('camera', '<!-- Route: /camera -->'),
         ('graph', '<!-- Route: /graph -->'),
         ('graph-async', '<!-- Route: /graph-async -->'),
@@ -139,30 +129,18 @@ def test_routes_logged_in_as_guest(_, testapp, user_db):
     login_user(testapp, guest_user.user_name, 'secret_pass')
 
     # Test if the navigation bar is seen on the main page
-    response = testapp.get('/').maybe_follow()
-    assert response.status_code == 200
-    navbar_strings = [
-        'Live',
-        'Graph',
-        'Sensor',
-        'Relay',
-        'Method',
-        'PID',
-        'Timer',
-        'Help',
-        'Admin'
-    ]
-    assert all(x in response for x in navbar_strings), "Not all navbar strings found at '/' endpoint. Found: {body}".format(body=response.body)
+    sees_navbar(testapp)
 
     # Test all endpoints
     routes = [
-        ('backup', 'Guests are not permitted'),
+        ('admin/backup', 'Guests are not permitted'),
+        ('admin/upgrade', 'Guests are not permitted'),
+        ('admin/statistics', 'Guests are not permitted'),
         ('remote/setup', 'Guests are not permitted'),
         ('settings/users', 'Guests are not permitted'),
         ('settings/alerts', 'Guests are not permitted'),
         ('systemctl/restart', 'Guests are not permitted'),
-        ('systemctl/shutdown', 'Guests are not permitted'),
-        ('upgrade', 'Guests are not permitted')
+        ('systemctl/shutdown', 'Guests are not permitted')
     ]
     for route in routes:
         response = testapp.get('/{add}'.format(add=route[0])).maybe_follow()
@@ -179,3 +157,24 @@ def create_user(user_db, restriction, name, password):
     user_db.add(new_user)
     user_db.commit()
     return new_user
+
+
+def sees_navbar(testapp):
+    """ Test if the navbar is seen at the endpoint '/' """
+    # Test if the navigation bar is seen on the main page
+    response = testapp.get('/').maybe_follow()
+    assert response.status_code == 200
+    navbar_strings = [
+        'Live',
+        'Graph',
+        'Sensor',
+        'Relay',
+        'Method',
+        'PID',
+        'Timer',
+        'Help',
+        'Admin'
+    ]
+    assert all(
+        x in response for x in navbar_strings), "Not all navbar strings found at '/' endpoint. Found: {body}".format(
+        body=response.body)

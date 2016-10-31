@@ -603,109 +603,6 @@ def page(page):
                                relay_choices=relay_choices,
                                formTimer=formTimer)
 
-    elif page == 'backup':
-        if session['user_group'] == 'guest':
-            flash("Guests are not permitted to view backups.", "error")
-            return redirect('/')
-
-        formBackup = flaskforms.Backup()
-
-        backup_dirs = []
-        if not os.path.isdir('/var/Mycodo-backups'):
-            flash("Error: Backup directory doesn't exist.", "error")
-        else:
-            backup_dirs = sorted(next(os.walk('/var/Mycodo-backups'))[1])
-
-        if request.method == 'POST':
-            form_name = request.form['form-name']
-            if form_name == 'restore':
-                if formBackup.restore.data:
-                    flash("Restore functionality is not currently enabled.",
-                          "error")
-                    # formUpdate.restore.data
-                    # restore_command = INSTALL_DIRECTORY+'/mycodo/scripts/mycodo_wrapper restore '+ +'  >> /var/log/mycodo/mycodorestore.log 2>&1'
-                    # subprocess.Popen(restore_command, shell=True)
-
-        return render_template('settings/backup.html',
-                               formBackup=formBackup,
-                               backups_sorted=backup_dirs)
-
-    elif page == 'upgrade':
-        if session['user_group'] == 'guest':
-            flash("Guests are not permitted to view the upgrade panel.",
-                  "error")
-            return redirect('/')
-
-        if not internet():
-            flash("Upgrade functionality is disabled because an internet "
-                  "connection was unable to be detected.", "error")
-            return render_template('settings/upgrade.html',
-                                   is_internet=False)
-
-        # Read from the update status file created by the upgrade script
-        # to indicate if the update is running.
-        try:
-            with open(INSTALL_DIRECTORY + '/.updating') as f:
-                updating = int(f.read(1))
-        except IOError:
-            try:
-                with open(INSTALL_DIRECTORY + '/.updating', 'w') as f:
-                    f.write('0')
-            finally:
-                updating = 0
-
-        if updating:
-            flash("An upgrade is currently in progress. "
-                  "Please wait for it to finish.", "error")
-            return render_template('settings/upgrade.html',
-                                   updating=True)
-
-        is_internet = True
-        updating = 0
-        update_available = False
-
-        formBackup = flaskforms.Backup()
-        formUpdate = flaskforms.Update()
-
-        # Check for new commits of this repository on github
-        cmd_output("git fetch origin", su_mycodo=False)
-        current_commit, _, _ = cmd_output("git rev-parse --short HEAD", su_mycodo=False)
-        commits_behind, _, _ = cmd_output("git log --oneline | head -n 1", su_mycodo=False)
-        commits_behind_list = commits_behind.split('\n')
-        commits_ahead, commits_ahead_err, _ = cmd_output("git log --oneline master...origin/master", su_mycodo=False)
-        commits_ahead_list = commits_ahead.split('\n')
-        if commits_ahead and commits_ahead_err is None:
-            update_available = True
-
-        if request.method == 'POST':
-            if formUpdate.update.data and update_available:
-                subprocess.Popen(
-                    INSTALL_DIRECTORY + '/mycodo/scripts/mycodo_wrapper upgrade >> /var/log/mycodo/mycodoupdate.log 2>&1',
-                    shell=True)
-                updating = 1
-                flash("The upgrade has started. The daemon will be "
-                      "stopped during the upgrade. Give the "
-                      "process several minutes to complete "
-                      "before doing anything. It may seem "
-                      "unresponsive at times. When the update "
-                      "has successfully finished, the daemon "
-                      "status indicator at the top left will "
-                      "turn from red to green. You can monitor "
-                      "the update progress under Tools->Mycodo Logs"
-                      "->Update Log.", "success")
-            else:
-                flash("You cannot update if an update is not available",
-                      "error")
-
-        return render_template('settings/upgrade.html',
-                               formBackup=formBackup,
-                               formUpdate=formUpdate,
-                               current_commit=current_commit,
-                               commits_ahead=commits_ahead_list,
-                               commits_behind=commits_behind_list,
-                               update_available=update_available,
-                               updating=updating,
-                               is_internet=is_internet)
 
     # Display page with system information from command line tools
     elif page == 'info':
@@ -1022,6 +919,127 @@ def page(page):
 
     elif page == 'notes':
         return render_template('tools/notes.html')
+
+    else:
+        return render_template('404.html'), 404
+
+@blueprint.route('/admin/<page>', methods=('GET', 'POST'))
+def admin(page):
+    """
+    Load the main pages of the web-UI
+    """
+    if not logged_in():
+        return redirect(url_for('general_routes.home'))
+
+    if page == 'backup':
+        if session['user_group'] == 'guest':
+            flash("Guests are not permitted to view backups.", "error")
+            return redirect('/')
+
+        formBackup = flaskforms.Backup()
+
+        backup_dirs = []
+        if not os.path.isdir('/var/Mycodo-backups'):
+            flash("Error: Backup directory doesn't exist.", "error")
+        else:
+            backup_dirs = sorted(next(os.walk('/var/Mycodo-backups'))[1])
+
+        if request.method == 'POST':
+            form_name = request.form['form-name']
+            if form_name == 'restore':
+                if formBackup.restore.data:
+                    flash("Restore functionality is not currently enabled.",
+                          "error")
+                    # formUpdate.restore.data
+                    # restore_command = INSTALL_DIRECTORY+'/mycodo/scripts/mycodo_wrapper restore '+ +'  >> /var/log/mycodo/mycodorestore.log 2>&1'
+                    # subprocess.Popen(restore_command, shell=True)
+
+        return render_template('admin/backup.html',
+                               formBackup=formBackup,
+                               backups_sorted=backup_dirs)
+
+    # Display collected statistics
+    elif page == 'statistics':
+        statistics = return_stat_file_dict(STATS_CSV)
+        return render_template('admin/statistics.html',
+                               statistics=statistics)
+
+    elif page == 'upgrade':
+        if session['user_group'] == 'guest':
+            flash("Guests are not permitted to view the upgrade panel.",
+                  "error")
+            return redirect('/')
+
+        if not internet():
+            flash("Upgrade functionality is disabled because an internet "
+                  "connection was unable to be detected.", "error")
+            return render_template('admin/upgrade.html',
+                                   is_internet=False)
+
+        # Read from the update status file created by the upgrade script
+        # to indicate if the update is running.
+        try:
+            with open(INSTALL_DIRECTORY + '/.updating') as f:
+                updating = int(f.read(1))
+        except IOError:
+            try:
+                with open(INSTALL_DIRECTORY + '/.updating', 'w') as f:
+                    f.write('0')
+            finally:
+                updating = 0
+
+        if updating:
+            flash("An upgrade is currently in progress. "
+                  "Please wait for it to finish.", "error")
+            return render_template('admin/upgrade.html',
+                                   updating=True)
+
+        is_internet = True
+        updating = 0
+        update_available = False
+
+        formBackup = flaskforms.Backup()
+        formUpdate = flaskforms.Update()
+
+        # Check for new commits of this repository on github
+        cmd_output("git fetch origin", su_mycodo=False)
+        current_commit, _, _ = cmd_output("git rev-parse --short HEAD", su_mycodo=False)
+        commits_behind, _, _ = cmd_output("git log --oneline | head -n 1", su_mycodo=False)
+        commits_behind_list = commits_behind.split('\n')
+        commits_ahead, commits_ahead_err, _ = cmd_output("git log --oneline master...origin/master", su_mycodo=False)
+        commits_ahead_list = commits_ahead.split('\n')
+        if commits_ahead and commits_ahead_err is None:
+            update_available = True
+
+        if request.method == 'POST':
+            if formUpdate.update.data and update_available:
+                subprocess.Popen(
+                    INSTALL_DIRECTORY + '/mycodo/scripts/mycodo_wrapper upgrade >> /var/log/mycodo/mycodoupdate.log 2>&1',
+                    shell=True)
+                updating = 1
+                flash("The upgrade has started. The daemon will be "
+                      "stopped during the upgrade. Give the "
+                      "process several minutes to complete "
+                      "before doing anything. It may seem "
+                      "unresponsive at times. When the update "
+                      "has successfully finished, the daemon "
+                      "status indicator at the top left will "
+                      "turn from red to green. You can monitor "
+                      "the update progress under Tools->Mycodo Logs"
+                      "->Update Log.", "success")
+            else:
+                flash("You cannot update if an update is not available",
+                      "error")
+
+        return render_template('admin/upgrade.html',
+                               formBackup=formBackup,
+                               formUpdate=formUpdate,
+                               current_commit=current_commit,
+                               commits_ahead=commits_ahead_list,
+                               commits_behind=commits_behind_list,
+                               update_available=update_available,
+                               updating=updating,
+                               is_internet=is_internet)
 
     else:
         return render_template('404.html'), 404
@@ -1406,11 +1424,6 @@ def settings(page):
                                misc=misc,
                                formSettingsGeneral=formSettingsGeneral)
 
-    # Display collected statistics
-    elif page == 'statistics':
-        statistics = return_stat_file_dict(STATS_CSV)
-        return render_template('settings/statistics.html',
-                               statistics=statistics)
 
     # User management settings page
     elif page == 'users':

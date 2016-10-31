@@ -6,10 +6,10 @@
 {% block title %} - Statistics{% endblock %}
 
 {% block settings %}
-
-    <p><u>Collected Statistics</u></p>
-    {% for key, value in statistics.iteritems() if key != 'stat' %}
-      <div>{{key}}: {{value}}</div>
-    {% endfor %}
+  <!-- Route: /admin/statistics -->
+  <p><u>Collected Statistics</u></p>
+  {% for key, value in statistics.iteritems() if key != 'stat' %}
+    <div>{{ key }}: {{ value }}</div>
+  {% endfor %}
 
 {% endblock %}
