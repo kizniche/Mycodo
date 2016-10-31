@@ -960,7 +960,10 @@ def admin(page):
 
     # Display collected statistics
     elif page == 'statistics':
-        statistics = return_stat_file_dict(STATS_CSV)
+        try:
+            statistics = return_stat_file_dict(STATS_CSV)
+        except:
+            statistics = []
         return render_template('admin/statistics.html',
                                statistics=statistics)
 
