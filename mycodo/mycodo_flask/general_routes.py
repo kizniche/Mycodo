@@ -960,10 +960,14 @@ def admin(page):
 
     # Display collected statistics
     elif page == 'statistics':
+        if session['user_group'] == 'guest':
+            flash("Guests are not permitted to view statistics.", "error")
+            return redirect('/')
+
         try:
             statistics = return_stat_file_dict(STATS_CSV)
-        except:
-            statistics = []
+        except IOError:
+            statistics = {}
         return render_template('admin/statistics.html',
                                statistics=statistics)
 
