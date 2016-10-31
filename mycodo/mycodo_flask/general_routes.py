@@ -1684,6 +1684,10 @@ def computer_command(action):
     if not logged_in():
         return redirect('/')
 
+    if session['user_group'] == 'guest':
+        flash("Guests are not permitted to execute commands.", "error")
+        return redirect('/')
+
     try:
         control = DaemonControl()
         return control.system_control(action)

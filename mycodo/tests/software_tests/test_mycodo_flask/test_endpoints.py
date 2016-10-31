@@ -1,6 +1,8 @@
 # coding=utf-8
 """ functional tests for flask endpoints """
 import mock
+from mycodo.tests.software_tests.factories import AdminFactory
+from mycodo.tests.software_tests.factories import GuestFactory
 from mycodo.tests.software_tests.factories import UserFactory
 from mycodo.tests.software_tests.test_mycodo_flask.conftest import login_user
 
@@ -73,14 +75,14 @@ def test_does_not_see_admin_creation_form(testapp):
     assert expected_body_msg not in testapp.get('/').maybe_follow()
 
 
-# -----------------------
-#   Logged In Tests
-# -----------------------
+# ---------------------------
+#   Tests Logged in as Admin
+# ---------------------------
 @mock.patch('mycodo.mycodo_flask.authentication.views.login_log')
 def test_routes_logged_in_as_admin(_, testapp, user_db):
     """ Verifies behavior of these endpoints for a logged in admin user """
     # Create admin user and log in
-    admin_user = create_user_admin(user_db, 'admin', 'secret_pass')
+    admin_user = create_user(user_db, 'admin', 'name_admin', 'secret_pass')
     login_user(testapp, admin_user.user_name, 'secret_pass')
 
     # Test if the navigation bar is seen on the main page
@@ -113,6 +115,10 @@ def test_routes_logged_in_as_admin(_, testapp, user_db):
         ('relay', '<!-- Route: /relay -->'),
         ('remote/setup', '<!-- Route: /remote/setup -->'),
         ('sensor', '<!-- Route: /sensor -->'),
+        ('settings/alerts', '<!-- Route: /settings/alerts -->'),
+        ('settings/camera', '<!-- Route: /settings/camera -->'),
+        ('settings/general', '<!-- Route: /settings/general -->'),
+        ('settings/users', '<!-- Route: /settings/users -->'),
         ('timer', '<!-- Route: /timer -->'),
         ('method-build/1/0', 'admin logged in')
     ]
@@ -122,11 +128,54 @@ def test_routes_logged_in_as_admin(_, testapp, user_db):
         assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
 
 
-def create_user_admin(user_db, name, password):
+# ---------------------------
+#   Tests Logged in as Guest
+# ---------------------------
+@mock.patch('mycodo.mycodo_flask.authentication.views.login_log')
+def test_routes_logged_in_as_guest(_, testapp, user_db):
+    """ Verifies behavior of these endpoints for a logged in guest user """
+    # Create guest user and log in
+    guest_user = create_user(user_db, 'guest', 'name_guest', 'secret_pass')
+    login_user(testapp, guest_user.user_name, 'secret_pass')
+
+    # Test if the navigation bar is seen on the main page
+    response = testapp.get('/').maybe_follow()
+    assert response.status_code == 200
+    navbar_strings = [
+        'Live',
+        'Graph',
+        'Sensor',
+        'Relay',
+        'Method',
+        'PID',
+        'Timer',
+        'Help',
+        'Admin'
+    ]
+    assert all(x in response for x in navbar_strings), "Not all navbar strings found at '/' endpoint. Found: {body}".format(body=response.body)
+
+    # Test all endpoints
+    routes = [
+        ('backup', 'Guests are not permitted'),
+        ('remote/setup', 'Guests are not permitted'),
+        ('settings/users', 'Guests are not permitted'),
+        ('settings/alerts', 'Guests are not permitted'),
+        ('systemctl/restart', 'Guests are not permitted'),
+        ('systemctl/shutdown', 'Guests are not permitted'),
+        ('upgrade', 'Guests are not permitted')
+    ]
+    for route in routes:
+        response = testapp.get('/{add}'.format(add=route[0])).maybe_follow()
+        assert response.status_code == 200, "Endpoint Tested: {page}".format(page=route[0])
+        assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
+
+
+def create_user(user_db, restriction, name, password):
     """ Create fake admin user """
-    admin_user = UserFactory()
-    admin_user.user_name = name
-    admin_user.set_password(password)
-    user_db.add(admin_user)
+    new_user = UserFactory()
+    new_user.user_name = name
+    new_user.set_password(password)
+    new_user.user_restriction = restriction
+    user_db.add(new_user)
     user_db.commit()
-    return admin_user
+    return new_user
