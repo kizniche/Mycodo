@@ -36,6 +36,7 @@ from config import ProdConfig
 
 from mycodo.mycodo_flask import authentication
 from mycodo.mycodo_flask import general_routes
+from mycodo.mycodo_flask import methods
 from mycodo.mycodo_flask.general_routes import influx_db
 
 
@@ -77,3 +78,4 @@ def register_blueprints(_app):
     """ register blueprints to the app """
     _app.register_blueprint(authentication.views.blueprint)  # register our login/logout views
     _app.register_blueprint(general_routes.blueprint)  # register general routes
+    _app.register_blueprint(methods.views.blueprint)  # register method views
