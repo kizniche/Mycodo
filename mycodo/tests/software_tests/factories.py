@@ -19,8 +19,8 @@ class AdminFactory(factory.Factory):
     class Meta(object):
         model = models.Users
 
-    user_name = factory.Faker('admin_name')
-    user_email = factory.Faker('admin_email')
+    user_name = factory.Faker('name')
+    user_email = factory.Faker('email')
     user_restriction = "admin"
 
 
@@ -30,6 +30,6 @@ class GuestFactory(factory.Factory):
     class Meta(object):
         model = models.Users
 
-    user_name = factory.Faker('guest_name')
-    user_email = factory.Faker('guest_email')
+    user_name = factory.Faker('name')
+    user_email = factory.Faker('email')
     user_restriction = "guest"
