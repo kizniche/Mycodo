@@ -218,7 +218,7 @@ class DaemonController(threading.Thread):
     Signal each thread to shut down and wait for each thread to shut down.
 
     All relay operations (turning on/off) is operated by one relay controller.
-    
+
     Each connected sensor has its own controller to collect all measurements
     that particular sensor can produce and put then into an influxdb database.
 

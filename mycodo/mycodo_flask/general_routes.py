@@ -1172,6 +1172,7 @@ def method_list():
         return redirect('/')
 
     formCreateMethod = flaskforms.CreateMethod()
+
     with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
         method = new_session.query(Method)
         new_session.expunge_all()
@@ -1491,6 +1492,7 @@ def gpio_state():
     relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
     gpio_state = {}
     GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
     for each_relay in relay:
         if 0 < each_relay.pin < 40:
             GPIO.setup(each_relay.pin, GPIO.OUT)

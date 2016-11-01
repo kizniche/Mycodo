@@ -14,4 +14,4 @@ install:
 virtualenv:
     system_site_packages: true
 script:
-  - cd mycodo && python -m pytest tests/software_tests/test_mycodo_flask/test_endpoints.py -s
+  - cd mycodo && python -m pytest tests/software_tests -s
