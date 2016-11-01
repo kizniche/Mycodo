@@ -105,15 +105,8 @@ def before_blueprint_request():
     """
     Ensure databases exist and at least one user is in the user database.
     """
-    ca = current_app
-    if (not os.path.isfile(current_app.config['SQL_DATABASE_MYCODO']) or
-            not os.path.isfile(current_app.config['SQL_DATABASE_USER'])):
-        return ('Error: Cannot find databases. Run '
-                '"init_databases.py --install_db all" to generate them.')
     if not admin_exists():
         return redirect(url_for("authentication.create_admin"))
-
-
 blueprint.before_request(before_blueprint_request)
 
 
