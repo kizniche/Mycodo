@@ -42,7 +42,7 @@ def method_data(method_type, method_id):
     if not logged_in():
         return redirect('/')
 
-    with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
+    with session_scope(current_app) as new_session:
         method = new_session.query(Method)
         new_session.expunge_all()
         new_session.close()
