@@ -18,6 +18,7 @@ from databases.users_db.models import Users
 from mycodo import flaskforms
 from mycodo import flaskutils
 from mycodo.mycodo_flask.general_routes import (before_blueprint_request,
+                                                inject_mycodo_version,
                                                 logged_in)
 
 
@@ -25,6 +26,11 @@ logger = logging.getLogger('mycodo.mycodo_flask.settings')
 
 blueprint = Blueprint('settings_routes', __name__, static_folder='../static', template_folder='../templates')
 blueprint.before_request(before_blueprint_request)  # check if admin was created
+
+
+@blueprint.context_processor
+def inject_dictionary():
+    return inject_mycodo_version()
 
 
 @blueprint.route('/settings/alerts', methods=('GET', 'POST'))

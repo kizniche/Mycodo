@@ -24,6 +24,7 @@ from mycodo.databases.mycodo_db.models import Method, Relay
 from mycodo import flaskforms
 from mycodo import flaskutils
 from mycodo.mycodo_flask.general_routes import (before_blueprint_request,
+                                                inject_mycodo_version,
                                                 logged_in)
 
 
@@ -33,16 +34,22 @@ blueprint = Blueprint('method_routes', __name__, static_folder='../static', temp
 blueprint.before_request(before_blueprint_request)  # check if admin was created
 
 
+@blueprint.context_processor
+def inject_dictionary():
+    return inject_mycodo_version()
+
+
 @blueprint.route('/method-data/<method_type>/<method_id>')
 def method_data(method_type, method_id):
     """
-    Return database settings for a particular method
+    Returns options for a particular method
+    This includes sets of (time, setpoint) data.
     """
     logger.debug('called method_data(method_type={type}, method_id={id})'.format(type=method_type, id=method_id))
     if not logged_in():
         return redirect('/')
 
-    with session_scope(current_app) as new_session:
+    with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
         method = new_session.query(Method)
         new_session.expunge_all()
         new_session.close()
@@ -149,7 +156,7 @@ def method_data(method_type, method_id):
 
 @blueprint.route('/method', methods=('GET', 'POST'))
 def method_list():
-    """List all methods on one page"""
+    """ List all methods on one page with a graph for each """
     if not logged_in():
         return redirect('/')
 
@@ -171,7 +178,10 @@ def method_list():
 
 @blueprint.route('/method-build/<method_type>/<method_id>', methods=('GET', 'POST'))
 def method_builder(method_type, method_id):
-    """Page to edit the details of each method"""
+    """
+    Page to edit the details of each method
+    This includes the (time, setpoint) data sets
+    """
     logger.debug('called method_builder(method_type={type}, method_id={id})'.format(type=method_type, id=method_id))
     if not logged_in():
         return redirect('/')

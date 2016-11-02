@@ -52,6 +52,7 @@ from mycodo.databases.mycodo_db.models import Method, Relay
 from mycodo import flaskforms
 from mycodo import flaskutils
 from mycodo.mycodo_flask.general_routes import (before_blueprint_request,
+                                                inject_mycodo_version,
                                                 logged_in)
 
 
@@ -61,8 +62,17 @@ blueprint = Blueprint('page_routes', __name__, static_folder='../static', templa
 blueprint.before_request(before_blueprint_request)  # check if admin was created
 
 
+@blueprint.context_processor
+def inject_dictionary():
+    return inject_mycodo_version()
+
+
 @blueprint.route('/camera', methods=('GET', 'POST'))
 def page_camera():
+    """
+    Page to start/stop video stream or time-lapse, or capture a still image.
+    Displays most recent still image and time-lapse image.
+    """
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
@@ -119,10 +129,10 @@ def page_camera():
 
             elif formCamera.StartTimelapse.data:
                 if not stream_locked:
-                    # Create lockfile and file with timelapse parameters
+                    # Create lockfile and file with time-lapse parameters
                     open(LOCK_FILE_TIMELAPSE, 'a')
 
-                    # Save timelapse parapaters to a csv file to resume
+                    # Save time-lapse parameters to a csv file to resume
                     # if there is a power outage or reboot.
                     now = time.time()
                     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
@@ -139,15 +149,15 @@ def page_camera():
                     os.chown(FILE_TIMELAPSE_PARAM, uid_gid, uid_gid)
                     os.chmod(FILE_TIMELAPSE_PARAM, 0664)
                 else:
-                    flash("Cannot start timelapse if a stream is active. "
+                    flash("Cannot start time-lapse if a stream is active. "
                           "If it is not active, delete {}.".format(
-                        LOCK_FILE_STREAM), "error")
+                            LOCK_FILE_STREAM), "error")
 
             elif formCamera.StopTimelapse.data:
                 try:
                     os.remove(FILE_TIMELAPSE_PARAM)
                     os.remove(LOCK_FILE_TIMELAPSE)
-                except:
+                except IOError:
                     pass
 
             elif formCamera.StartStream.data:
@@ -226,7 +236,9 @@ def page_camera():
 
 @blueprint.route('/graph', methods=('GET', 'POST'))
 def page_graph():
-    """ Display custom graphs to display influxdb data """
+    """
+    Generate custom graphs to display sensor data retrieved from influxdb.
+    """
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
@@ -315,14 +327,14 @@ def page_graph():
 
 @blueprint.route('/graph-async', methods=('GET', 'POST'))
 def page_graph_async():
-    """ Display ascynchronous graph of data """
+    """ Generate graphs using ascynchronous data retrieval """
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
     sensor = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor)
     sensor_choices = flaskutils.choices_sensors(sensor)
     sensor_choices_split = OrderedDict()
-    for key, value in sensor_choices.iteritems():
+    for key, _ in sensor_choices.iteritems():
         order = key.split(",")
         # Separate sensor IDs and measurement types
         sensor_choices_split.update({order[0]: order[1]})
@@ -343,7 +355,7 @@ def page_graph_async():
 
 @blueprint.route('/help', methods=('GET', 'POST'))
 def page_help():
-    """ Display Mycodo manual """
+    """ Display Mycodo manual/help """
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
@@ -397,7 +409,7 @@ def page_info():
 
 @blueprint.route('/lcd', methods=('GET', 'POST'))
 def page_lcd():
-    """ DIsplay LCD settings """
+    """ Display LCD output settings """
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
@@ -456,7 +468,7 @@ def page_lcd():
 
 @blueprint.route('/live', methods=('GET', 'POST'))
 def page_live():
-    """ Load the Live data view """
+    """ Page of recent and updating sensor data """
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
@@ -508,7 +520,7 @@ def page_live():
 
 @blueprint.route('/log', methods=('GET', 'POST'))
 def page_log():
-    """ Display log settings (writing logs of data) """
+    """ Display log settings (writing logs of data from influxdb) """
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
@@ -808,7 +820,7 @@ def page_sensor():
 
 @blueprint.route('/timer', methods=('GET', 'POST'))
 def page_timer():
-    """ Diaplay Timer settings """
+    """ Display Timer settings """
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
@@ -929,7 +941,7 @@ def page_usage():
 
 
 def gen(camera):
-    """Video streaming generator function."""
+    """ Video streaming generator function """
     while True:
         frame = camera.get_frame()
         yield (b'--frame\r\n'
