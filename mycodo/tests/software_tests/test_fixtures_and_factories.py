@@ -1,6 +1,6 @@
 # coding=utf-8
 """ make sure the fixtures are behaving as expected """
-from mycodo.tests.software_tests.factories import AdminFactory, GuestFactory, UserFactory
+from mycodo.tests.software_tests.factories_user import AdminFactory, GuestFactory, UserFactory
 
 
 def test_db_config_creates_unique_uris(db_config):

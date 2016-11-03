@@ -1,7 +1,13 @@
 # coding=utf-8
 """ functional tests for flask endpoints """
 import mock
-from mycodo.tests.software_tests.factories import UserFactory
+from flask import (current_app,
+                   session)
+from mycodo import flaskforms
+from mycodo import flaskutils
+from mycodo.databases.mycodo_db.models import Sensor
+from mycodo.tests.software_tests.factories_user import UserFactory
+from mycodo.tests.software_tests.factories_mycodo import SensorFactory
 from mycodo.tests.software_tests.test_mycodo_flask.conftest import login_user
 
 
@@ -118,6 +124,40 @@ def test_routes_logged_in_as_admin(_, testapp, user_db):
         response = testapp.get('/{add}'.format(add=route[0])).maybe_follow()
         assert response.status_code == 200, "Endpoint Tested: {page}".format(page=route[0])
         assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
+
+
+@mock.patch('mycodo.mycodo_flask.authentication.views.login_log')
+def test_adding_sensor_logged_in_as_admin(_, testapp, user_db, mycodo_db):
+    """ Verifies behavior of these endpoints for a logged in admin user """
+    # Create admin user and log in
+    admin_user = create_user(user_db, 'admin', 'name_admin', 'secret_pass')
+    login_user(testapp, admin_user.user_name, 'secret_pass')
+    session['user_group'] = 'admin'
+
+    # Create WTForms form and populate data
+    formAddSensor = flaskforms.AddSensor()
+    formAddSensor.sensor.data = 'RPiCPULoad'
+    formAddSensor.numberSensors.data = 1
+
+    # Submit form data to create sensor in database
+    flaskutils.sensor_add(formAddSensor, display_order=[])
+    # Verify data was entered into database (doesn't work)
+    sensor = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor)
+    for each_sensor in sensor:
+        print("01 Testing return sensor name: {}".format(each_sensor.name))
+
+    # Alternate method to enter data into database
+    new_sensor = SensorFactory()
+    new_sensor.name = 'name'
+    mycodo_db.add(new_sensor)
+    mycodo_db.commit()
+    # Verify data was entered into database (does work)
+    sensor = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor)
+    for each_sensor in sensor:
+        print("02 Testing return sensor name: {}".format(each_sensor.name))
+
+
+
 
 
 # ---------------------------
