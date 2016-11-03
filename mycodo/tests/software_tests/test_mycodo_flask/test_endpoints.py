@@ -1,9 +1,7 @@
 # coding=utf-8
 """ functional tests for flask endpoints """
 import mock
-from flask import (current_app,
-                   session)
-from mycodo import flaskforms
+from flask import current_app
 from mycodo import flaskutils
 from mycodo.databases.mycodo_db.models import Sensor
 from mycodo.tests.software_tests.factories_user import UserFactory
@@ -127,35 +125,22 @@ def test_routes_logged_in_as_admin(_, testapp, user_db):
 
 
 @mock.patch('mycodo.mycodo_flask.authentication.views.login_log')
-def test_adding_sensor_logged_in_as_admin(_, testapp, user_db, mycodo_db):
+def test_add_sensor_logged_in_as_admin(_, testapp, user_db, mycodo_db):
     """ Verifies behavior of these endpoints for a logged in admin user """
     # Create admin user and log in
     admin_user = create_user(user_db, 'admin', 'name_admin', 'secret_pass')
     login_user(testapp, admin_user.user_name, 'secret_pass')
-    session['user_group'] = 'admin'
 
-    # Create WTForms form and populate data
-    formAddSensor = flaskforms.AddSensor()
-    formAddSensor.sensor.data = 'RPiCPULoad'
-    formAddSensor.numberSensors.data = 1
+    response = add_sensor(testapp)
 
-    # Submit form data to create sensor in database
-    flaskutils.sensor_add(formAddSensor, display_order=[])
-    # Verify data was entered into database (doesn't work)
+    # Verify success message flashed
+    assert "RPi Sensor with ID" in response
+    assert "successfully added" in response
+
+    # Verify data was entered into the database
     sensor = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor)
     for each_sensor in sensor:
-        print("01 Testing return sensor name: {}".format(each_sensor.name))
-
-    # Alternate method to enter data into database
-    new_sensor = SensorFactory()
-    new_sensor.name = 'name'
-    mycodo_db.add(new_sensor)
-    mycodo_db.commit()
-    # Verify data was entered into database (does work)
-    sensor = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor)
-    for each_sensor in sensor:
-        print("02 Testing return sensor name: {}".format(each_sensor.name))
-
+        assert 'RPi' in each_sensor.name, "Sensor name doesn't match: {}".format(each_sensor.name)
 
 
 # ---------------------------
@@ -197,6 +182,16 @@ def create_user(user_db, restriction, name, password):
     user_db.add(new_user)
     user_db.commit()
     return new_user
+
+
+def add_sensor(testapp, sensor_type='RPi', qty=1):
+    """ Go to the sensor page and create one or more sensors """
+    form = testapp.get('/sensor').maybe_follow().forms['new_sensor_form']
+    form['numberSensors'] = qty
+    form.select(name='sensor', value=sensor_type)
+    response = form.submit().maybe_follow()
+    # response.showbrowser()
+    return response
 
 
 def sees_navbar(testapp):

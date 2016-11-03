@@ -8,22 +8,13 @@ from itertools import izip
 
 class RaspberryPiCPUTemp(object):
     def __init__(self):
-        self._temperature = 0
-        self.running = True
+        self._temperature = None
 
     def read(self):
-        temperature = []
-        # create average of two readings
-        for _ in range(2):
-            time.sleep(1)
-            temperature.append(self.get_measurement())
-        if (None in temperature or
-                max(temperature)-min(temperature) > 10):
-            self._temperature = None
+        try:
+            self._temperature = self.get_measurement()
+        except IOError:
             return 1
-        else:
-            self._temperature = sum(temperature, 0.0) / len(temperature)
-            return 0
 
     @staticmethod
     def get_measurement():
@@ -52,19 +43,21 @@ class RaspberryPiCPUTemp(object):
         }
         return response
 
-    def stopSensor(self):
-        self.running = False
-
 
 class RaspberryPiGPUTemp(object):
     def __init__(self):
-        self._temperature = 0
-        self.running = True
+        self._temperature = None
 
     def read(self):
+        try:
+            self._temperature = self.get_measurement()
+        except IOError:
+            return 1
+
+    @staticmethod
+    def get_measurement():
         gputempstr = subprocess.check_output(('/opt/vc/bin/vcgencmd', 'measure_temp'))
-        gputempc = float(gputempstr.split('=')[1].split("'")[0])
-        self._temperature = gputempc
+        return float(gputempstr.split('=')[1].split("'")[0])
 
     @property
     def temperature(self):
@@ -80,14 +73,12 @@ class RaspberryPiGPUTemp(object):
         """
         Call the read method and return temperature information.
         """
-        self.read()
+        if self.read():
+            return None
         response = {
-            'temperature': self.temperature
+            'temperature': float("{0:.1f}".format(self.temperature))
         }
         return response
-
-    def stopSensor(self):
-        self.running = False
 
 
 if __name__ == "__main__":
@@ -97,4 +88,4 @@ if __name__ == "__main__":
     for cpu, gpu in izip(cpu_temp, gpu_temp):
         print("GPU: {}".format(gpu['temperature']))
         print("CPU: {}".format(cpu['temperature']))
-        time.sleep(.5)
+        time.sleep(1)

@@ -253,7 +253,6 @@ class DaemonController(threading.Thread):
         else:
             self.logger.info("[Daemon] Anonymous statistics enabled")
 
-
     def run(self):
         self.start_all_controllers()
         self.startup_stats()
@@ -263,10 +262,10 @@ class DaemonController(threading.Thread):
             while self.daemon_run:
                 now = time.time()
 
-                # If timelapse active, take photo at predefined periods
+                # If time-lapse active, take photo at predefined periods
                 if (os.path.isfile(FILE_TIMELAPSE_PARAM) and
                         os.path.isfile(LOCK_FILE_TIMELAPSE)):
-                    # Read user-defined timelapse parameters
+                    # Read user-defined time-lapse parameters
                     with open(FILE_TIMELAPSE_PARAM, mode='r') as infile:
                         reader = csv.reader(infile)
                         dict_timelapse_param = OrderedDict((row[0], row[1]) for row in reader)
@@ -280,18 +279,18 @@ class DaemonController(threading.Thread):
                         # Ensure next capture is greater than now (in case of power failure/reboot)
                         next_capture = float(dict_timelapse_param['next_capture'])
                         capture_number = int(dict_timelapse_param['capture_number'])
-                        while next_capture < now:
+                        while now > next_capture:
                             # Update last capture and image number to latest before capture
                             next_capture += float(dict_timelapse_param['interval'])
                             capture_number += 1
                         add_update_csv(logger,
-                                                   FILE_TIMELAPSE_PARAM,
-                                                   'next_capture',
-                                                   next_capture)
+                                       FILE_TIMELAPSE_PARAM,
+                                       'next_capture',
+                                       next_capture)
                         add_update_csv(logger,
-                                                   FILE_TIMELAPSE_PARAM,
-                                                   'capture_number',
-                                                   capture_number)
+                                       FILE_TIMELAPSE_PARAM,
+                                       'capture_number',
+                                       capture_number)
                         # Capture image
                         with session_scope(MYCODO_DB_PATH) as new_session:
                             camera = new_session.query(CameraStill).first()
@@ -333,7 +332,6 @@ class DaemonController(threading.Thread):
         finally:
             self.logger.debug("[Daemon] Stopping all running controllers")
             self.stop_all_controllers()
-            
 
         self.logger.info("[Daemon] Mycodo terminated in {:.3f} seconds".format(
             timeit.default_timer()-self.thread_shutdown_timer))
@@ -341,7 +339,6 @@ class DaemonController(threading.Thread):
 
         # Wait for the client to receive the response before it disconnects
         time.sleep(0.25)
-
 
     def activateController(self, cont_type, cont_id):
         """
@@ -406,7 +403,6 @@ class DaemonController(threading.Thread):
             return 1, "Could not activate {} controller with ID "\
                 "{}: {}".format(cont_type, cont_id, except_msg)
 
-
     def deactivateController(self, cont_type, cont_id):
         """
         Deactivate currently-active controller
@@ -441,7 +437,6 @@ class DaemonController(threading.Thread):
         else:
             return 1, "{} controller with ID {} not found".format(cont_type, cont_id)
 
-
     def flash_lcd(self, lcd_id, state):
         """
         Begin or end a repeated flashing of an LCD
@@ -460,7 +455,6 @@ class DaemonController(threading.Thread):
         else:
             return "LCD {} not running".format(lcd_id)
 
-
     def relay_state(self, relay_id):
         """
         Return the relay state, wither "on" or "off"
@@ -469,7 +463,6 @@ class DaemonController(threading.Thread):
         :type relay_id: str
         """
         return self.controller['Relay'].relay_state(relay_id)
-
 
     def relay_on(self, relay_id, duration):
         """
@@ -483,7 +476,6 @@ class DaemonController(threading.Thread):
         self.controller['Relay'].relay_on_off(relay_id, 'on', duration=duration)
         return "Relay turned on"
 
-
     def relay_off(self, relay_id):
         """
         Turn relay off using default relay controller
@@ -493,7 +485,6 @@ class DaemonController(threading.Thread):
         """
         self.controller['Relay'].relay_on_off(relay_id, 'off')
         return "Relay turned off"
-
 
     def add_relay(self, relay_id):
         """
@@ -507,7 +498,6 @@ class DaemonController(threading.Thread):
         """
         return self.controller['Relay'].add_mod_relay(relay_id)
 
-
     def del_relay(self, relay_id):
         """
         Delete relay from running relay controller
@@ -519,7 +509,6 @@ class DaemonController(threading.Thread):
         :type relay_id: str
         """
         return self.controller['Relay'].del_relay(relay_id)
-
 
     def mod_relay(self, relay_id):
         """
@@ -533,10 +522,8 @@ class DaemonController(threading.Thread):
         """
         return self.controller['Relay'].add_mod_relay(relay_id, do_setup_pin=True)
 
-
     def refresh_sensor_conditionals(self, sensor_id, cond_mod, cond_id):
         return self.controller['Sensor'][sensor_id].setup_sensor_conditionals(cond_mod, cond_id)
-
 
     def send_stats(self):
         """Collect and send statistics"""
@@ -563,7 +550,6 @@ class DaemonController(threading.Thread):
             self.logger.exception("Error: Cound not send statistics: "
                                   "{}".format(msg))
 
-
     def startup_stats(self):
         """Initial statistics collection and transmssion at startup"""
         try:
@@ -584,7 +570,6 @@ class DaemonController(threading.Thread):
         except Exception as msg:
             self.logger.exception(
                 "[Daemon] Statistics initilization Error: {}".format(msg))
-
 
     def start_all_controllers(self):
         """
@@ -636,7 +621,6 @@ class DaemonController(threading.Thread):
             if each_lcd.activated:
                 self.activateController('LCD', each_lcd.id)
         self.logger.info("[Daemon] All activated LCD controllers started")
-
 
     def stop_all_controllers(self):
         """Stop all running controllers"""
@@ -694,7 +678,6 @@ class DaemonController(threading.Thread):
 
         self.controller['Relay'].stopController()
         self.controller['Relay'].join()
-
 
     def terminateDaemon(self):
         """Instruct the daemon to shut down"""

@@ -18,7 +18,7 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <form class="form-inline" method="post" action="/sensor">
+    <form class="form-inline" id="new_sensor_form" method="post" action="/sensor">
       <input type="hidden" name="form-name" value="addSensor">
       {{formAddSensor.hidden_tag()}}
       <div class="form-group">
