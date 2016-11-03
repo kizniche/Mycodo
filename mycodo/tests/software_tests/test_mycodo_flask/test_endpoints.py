@@ -158,8 +158,6 @@ def test_adding_sensor_logged_in_as_admin(_, testapp, user_db, mycodo_db):
 
 
 
-
-
 # ---------------------------
 #   Tests Logged in as Guest
 # ---------------------------
