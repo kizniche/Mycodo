@@ -1,91 +1,121 @@
 # coding=utf-8
 from __future__ import division
 
+import logging
 import subprocess
-import time
-from itertools import izip
+from .base_sensor import AbstractSensor
 
 
-class RaspberryPiCPUTemp(object):
+class RaspberryPiCPUTemp(AbstractSensor):
+    """ A sensor support class that monitors the raspberry pi's cpu temperature """
+
     def __init__(self):
-        self._temperature = None
+        super(RaspberryPiCPUTemp, self).__init__()
+        self._temperature = 0
 
-    def read(self):
-        try:
-            self._temperature = self.get_measurement()
-        except IOError:
-            return 1
+    def __repr__(self):
+        """  Representation of object """
+        return "<{cls}(temperature={temp})>".format(cls=type(self).__name__, temp="{0:.2f}".format(self._temperature))
 
-    @staticmethod
-    def get_measurement():
-        with open('/sys/class/thermal/thermal_zone0/temp') as cpu_temp_file:
-            raw_t = cpu_temp_file.read()
-        return float(raw_t) / 1000
+    def __str__(self):
+        """ Return temperature information """
+        return "temperature: {}".format("{0:.2f}".format(self._temperature))
 
-    @property
-    def temperature(self):
-        return self._temperature
-
-    def __iter__(self):
-        """
-        Support the iterator protocol.
-        """
+    def __iter__(self):  # must return an iterator
+        """ RaspberryPiCPUTemp iterates through live temperature readings """
         return self
 
     def next(self):
-        """
-        Call the read method and return temperature information.
-        """
-        if self.read():
-            return None
-        response = {
-            'temperature': float("{0:.2f}".format(self.temperature))
-        }
-        return response
-
-
-class RaspberryPiGPUTemp(object):
-    def __init__(self):
-        self._temperature = None
-
-    def read(self):
-        try:
-            self._temperature = self.get_measurement()
-        except IOError:
-            return 1
+        """ Get next temperature reading """
+        if self.read():  # raised an error
+            raise StopIteration  # required
+        return dict(temperature=float('{0:.2f}'.format(self._temperature)))
 
     @staticmethod
     def get_measurement():
-        gputempstr = subprocess.check_output(('/opt/vc/bin/vcgencmd', 'measure_temp'))
+        """ Gets the Raspberry pi's temperature in celsius by reading the temp file and div by 1000"""
+        with open('/sys/class/thermal/thermal_zone0/temp') as cpu_temp_file:
+            return float(cpu_temp_file.read()) / 1000
+
+    @property
+    def temperature(self):
+        """ CPU temperature in celsius """
+        if not self._temperature:  # update if needed
+            self.read()
+        return self._temperature
+
+    def read(self):
+        """
+        Takes a reading from the CPU and updates the self._temperature value
+
+        :returns: None on success or 1 on error
+        """
+        try:
+            self._temperature = self.get_measurement()
+            return  # success - no errors
+        except StopIteration:
+            # expected behavior in tests.  Typically there is a finite list of measurements in a list so we re-raise
+            raise StopIteration
+        except IOError as e:
+            logging.error("CPU temperature reading returned IOError: {err}".format(err=e))
+        except Exception as e:
+            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+        return 1
+
+
+class RaspberryPiGPUTemp(AbstractSensor):
+    """ A sensor support class that monitors the raspberry pi's gpu temperature """
+
+    def __init__(self):
+        super(RaspberryPiGPUTemp, self).__init__()
+        self._temperature = 0
+
+    def __repr__(self):
+        """  Representation of object """
+        return "<{cls}(temperature={temp})>".format(cls=type(self).__name__, temp="{0:.2f}".format(self._temperature))
+
+    def __str__(self):
+        """ Return temperature information """
+        return "temperature: {}".format("{0:.2f}".format(self._temperature))
+
+    def __iter__(self):
+        """ Support the iterator protocol """
+        return self
+
+    def next(self):
+        """ Get next temperature reading """
+        if self.read():  # raised an error
+            raise StopIteration  # required
+        return dict(temperature=float('{0:.2f}'.format(self._temperature)))
+
+    def read(self):
+        """ updates the self._temperature """
+        try:
+            self._temperature = self.get_measurement()
+            return  # success - no errors
+        except StopIteration:
+            # expected behavior in tests.  Typically there is a finite list of measurements in a list so we re-raise
+            raise StopIteration
+        except subprocess.CalledProcessError as e:
+            logging.error("{cls}.get_measurement() subprocess call raised {err}".format(cls=type(self).__name__, err=e))
+        except IOError as e:
+            logging.error("{cls}.get_measurement() method raised IOError: {err}".format(cls=type(self).__name__, err=e))
+        except Exception as e:
+            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+
+        # After any error return 1
+        return 1
+
+    @staticmethod
+    def get_measurement():
+        """  Calls the vcgencmd in a subprocess and reads the GPU temperature """
+        gputempstr = subprocess.check_output(('/opt/vc/bin/vcgencmd', 'measure_temp'))  # example output: temp=42.8'C
         return float(gputempstr.split('=')[1].split("'")[0])
 
     @property
     def temperature(self):
+        """ returns the last temperature """
+        if not self._temperature:  # update if needed
+            self.read()
         return self._temperature
 
-    def __iter__(self):
-        """
-        Support the iterator protocol.
-        """
-        return self
-
-    def next(self):
-        """
-        Call the read method and return temperature information.
-        """
-        if self.read():
-            return None
-        response = {
-            'temperature': float("{0:.1f}".format(self.temperature))
-        }
-        return response
-
-
-if __name__ == "__main__":
-    cpu_temp = RaspberryPiCPUTemp()
-    gpu_temp = RaspberryPiGPUTemp()
-
-    for cpu, gpu in izip(cpu_temp, gpu_temp):
-        print("GPU: {}".format(gpu['temperature']))
-        print("CPU: {}".format(cpu['temperature']))
-        time.sleep(1)
