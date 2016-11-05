@@ -1,72 +1,90 @@
 # coding=utf-8
-
-import time
 import Adafruit_BMP.BMP085 as BMP085
-import RPi.GPIO as GPIO
+import logging
+import time
+from .base_sensor import AbstractSensor
 
 
-class BMP(object):
+class BMPSensor(AbstractSensor):
+    """
+    A sensor support class that measures the BMP 180/085's humidity,
+    temperature, and pressure, then calculates the altitude and dew point
+
+    """
+
     def __init__(self, bus):
+        super(BMPSensor, self).__init__()
         self.I2C_bus_number = bus
-        self._temperature = None
-        self._pressure = None
-        self._altitude = None
-        self.running = True
+        self._altitude = 0.0
+        self._pressure = 0
+        self._temperature = 0.0
 
-    def read(self):
-        try:
-            time.sleep(2)
-            bmp = BMP085.BMP085(busnum=self.I2C_bus_number)
-            self._temperature = bmp.read_temperature()
-            self._pressure = bmp.read_pressure()
-            self._altitude = bmp.read_altitude()
-        except:
-            return 1
+    def __repr__(self):
+        """  Representation of object """
+        return "<{cls}(altitude={alt})(pressure={press})" \
+               "(temperature={temp})>".format(
+            cls=type(self).__name__,
+            alt="{0:.2f}".format(self._altitude),
+            press=self._pressure,
+            temp="{0:.2f}".format(self._temperature))
 
-    @property
-    def temperature(self):
-        return self._temperature
+    def __str__(self):
+        """ Return measurement information """
+        return "Altitude: {alt}, Pressure: {press}, " \
+               "Temperature: {temp}".format(
+            alt="{0:.2f}".format(self._altitude),
+            press=self._pressure,
+            temp="{0:.2f}".format(self._temperature))
 
-    @property
-    def pressure(self):
-        return self._pressure
-
-    @property
-    def altitude(self):
-        return self._altitude
-
-    def __iter__(self):
-        """
-        Support the iterator protocol.
-        """
+    def __iter__(self):  # must return an iterator
+        """ SensorClass iterates through live measurement readings """
         return self
 
     def next(self):
+        """ Get next measurement reading """
+        if self.read():  # raised an error
+            raise StopIteration  # required
+        return dict(altitude=float('{0:.2f}'.format(self._altitude)),
+                    pressure=int(self._pressure),
+                    temperature=float('{0:.2f}'.format(self._temperature)))
+
+    def get_measurement(self):
+        """ Gets the measurement in units by reading the """
+        time.sleep(2)
+        bmp = BMP085.BMP085(busnum=self.I2C_bus_number)
+        return bmp.read_temperature(), bmp.read_pressure(), bmp.read_altitude()
+
+    @property
+    def altitude(self):
+        """ BMP dew point in Celsius """
+        if not self._altitude:  # update if needed
+            self.read()
+        return self._altitude
+
+    @property
+    def pressure(self):
+        """ BME280 pressure in Pescals """
+        if not self._pressure:  # update if needed
+            self.read()
+        return self._pressure
+
+    @property
+    def temperature(self):
+        """ BMP temperature in Celsius """
+        if not self._temperature:  # update if needed
+            self.read()
+        return self._temperature
+
+    def read(self):
         """
-        Call the read method and return temperature, pressure, and altitude information.
+        Takes a reading from the BME280 and updates the self._humidity and
+        self._temperature values
+
+        :returns: None on success or 1 on error
         """
-        if self.read():
-            return None
-        response = {
-            'temperature': float("{0:.2f}".format(self.temperature)),
-            'pressure': self.pressure,
-            'altitude': float("{0:.2f}".format(self.altitude))
-        }
-        return response
-
-    def stopSensor(self):
-        self.running = False
-
-
-if __name__ == "__main__":
-    if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-        I2C_bus_number = 1
-    else:
-        I2C_bus_number = 0
-    bmp = BMP(I2C_bus_number)
-
-    for measure in bmp:
-        print("Temperature: {}".format(measure['temperature']))
-        print("Pressure: {}".format(measure['pressure']))
-        print("Altitude: {}".format(measure['altitude']))
-        time.sleep(1)
+        try:
+            self._temperature, self._pressure, self._altitude = self.get_measurement()
+            return  # success - no errors
+        except Exception as e:
+            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+        return 1

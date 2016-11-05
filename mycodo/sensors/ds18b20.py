@@ -1,58 +1,56 @@
 # coding=utf-8
-
-import time
+import logging
 from w1thermsensor import W1ThermSensor
+from .base_sensor import AbstractSensor
 
 
-class DS18B20(object):
+class DS18B20Sensor(AbstractSensor):
+    """ A sensor support class that monitors the DS18B20's temperature """
+
     def __init__(self, pin):
-        self._temperature = 0
+        super(DS18B20Sensor, self).__init__()
         self.pin = pin
-        self.running = True
+        self._temperature = 0.0
 
-    def read(self):
-        temperature = []
-        # Check continuity of two readings and return average
-        for _ in range(2):
-            time.sleep(1)
-            try:
-                temperature.append(W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, self.pin).get_temperature())
-            except:
-                return 1
-        if (None in temperature or
-                        max(temperature) - min(temperature) > 10):
-            self._temperature = None
-        else:
-            self._temperature = sum(temperature, 0.0) / len(temperature)
+    def __repr__(self):
+        """  Representation of object """
+        return "<{cls}(temperature={temp})>".format(
+            cls=type(self).__name__, temp="{0:.2f}".format(self._temperature))
 
-    @property
-    def temperature(self):
-        return self._temperature
+    def __str__(self):
+        """ Return temperature information """
+        return "temperature: {}".format("{0:.2f}".format(self._temperature))
 
-    def __iter__(self):
-        """
-        Support the iterator protocol.
-        """
+    def __iter__(self):  # must return an iterator
+        """ DS18B20Sensor iterates through live temperature readings """
         return self
 
     def next(self):
+        """ Get next temperature reading """
+        if self.read():  # raised an error
+            raise StopIteration  # required
+        return dict(temperature=float('{0:.2f}'.format(self._temperature)))
+
+    def get_measurement(self):
+        """ Gets the DS18B20's temperature in Celsius by reading the temp file and div by 1000"""
+        return W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, self.pin).get_temperature()
+
+    @property
+    def temperature(self):
+        """ DS18B20 temperature in celsius """
+        if not self._temperature:  # update if needed
+            self.read()
+        return self._temperature
+
+    def read(self):
         """
-        Call the read method and return temperature information.
+        Takes a reading from the DS18B20 and updates the self._temperature value
+
+        :returns: None on success or 1 on error
         """
-        if self.read() or self.temperature is None:
-            return None
-        response = {
-            'temperature': float("{0:.2f}".format(self.temperature))
-        }
-        return response
-
-    def stopSensor(self):
-        self.running = False
-
-
-if __name__ == "__main__":
-    ds18b20 = DS18B20('00000531d23c')
-
-    for measurement in ds18b20:
-        print("Temperature: {}".format(measurement['temperature']))
-        time.sleep(1)
+        try:
+            self._temperature = self.get_measurement()
+            return  # success - no errors
+        except Exception as e:
+            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+        return 1

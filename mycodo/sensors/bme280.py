@@ -3,79 +3,136 @@
 # Used, in part, from:
 # http://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-pressure-sensor-in-python/
 
+import logging
 import smbus
 import time
 from ctypes import c_short
-
-import RPi.GPIO as GPIO
 from sensorutils import dewpoint
 from sensorutils import altitude
+from .base_sensor import AbstractSensor
 
 
-class BME280(object):
+class BME280Sensor(AbstractSensor):
+    """
+    A sensor support class that measures the BME280's humidity, temperature,
+    and pressure, them calculates the altitude and dew point
+
+    """
+
     def __init__(self, address, bus):
+        super(BME280Sensor, self).__init__()
         self.i2c_address = address
         self.bus = smbus.SMBus(bus)
-        self._temperature = None
-        self._humidity = None
-        self._pressure = None
-        self.running = True
+        self._altitude = 0.0
+        self._dew_point = 0.0
+        self._humidity = 0.0
+        self._pressure = 0
+        self._temperature = 0.0
 
-    def read(self):
-        try:
-            time.sleep(2)
-            self._temperature, self._humidity, self._pressure = self.readBME280All()
-        except Exception as err:
-            raise Exception(err)
+    def __repr__(self):
+        """  Representation of object """
+        return "<{cls}(altitude={alt})(dew_point={dpt})" \
+               "(humidity={hum})(temperature={temp})>".format(
+            cls=type(self).__name__,
+            alt="{0:.2f}".format(self._altitude),
+            dpt="{0:.2f}".format(self._dew_point),
+            hum="{0:.2f}".format(self._humidity),
+            press=self._pressure,
+            temp="{0:.2f}".format(self._temperature))
+
+    def __str__(self):
+        """ Return measurement information """
+        return "Altitude: {alt}, Dew Point: {dpt}, " \
+               "Humidity: {hum}, Pressure: {press}, " \
+               "Temperature: {temp}".format(
+            alt="{0:.2f}".format(self._altitude),
+            dpt="{0:.2f}".format(self._dew_point),
+            hum="{0:.2f}".format(self._humidity),
+            press=self._pressure,
+            temp="{0:.2f}".format(self._temperature))
+
+    def __iter__(self):  # must return an iterator
+        """ SensorClass iterates through live measurement readings """
+        return self
+
+    def next(self):
+        """ Get next measurement reading """
+        if self.read():  # raised an error
+            raise StopIteration  # required
+        return dict(altitude=float('{0:.2f}'.format(self._altitude)),
+                    dew_point=float('{0:.2f}'.format(self._dew_point)),
+                    humidity=float('{0:.2f}'.format(self._humidity)),
+                    pressure=int(self._pressure),
+                    temperature=float('{0:.2f}'.format(self._temperature)))
+
+    def get_measurement(self):
+        """ Gets the measurement in units by reading the """
+        time.sleep(2)
+        return self.read_bme280_all()
 
     @property
-    def temperature(self):
-        return self._temperature
+    def altitude(self):
+        """ BME280 altitude in meters """
+        if not self._altitude:  # update if needed
+            self.read()
+        return self._altitude
+
+    @property
+    def dew_point(self):
+        """ BME280 dew point in Celsius """
+        if not self._dew_point:  # update if needed
+            self.read()
+        return self._dew_point
 
     @property
     def humidity(self):
+        """ BME280 relative humidity in percent """
+        if not self._humidity:  # update if needed
+            self.read()
         return self._humidity
 
     @property
     def pressure(self):
+        """ BME280 pressure in Pescals """
+        if not self._pressure:  # update if needed
+            self.read()
         return self._pressure
 
-    def __iter__(self):
-        """
-        Support the iterator protocol.
-        """
-        return self
+    @property
+    def temperature(self):
+        """ BME280 temperature in Celsius """
+        if not self._temperature:  # update if needed
+            self.read()
+        return self._temperature
 
-    def next(self):
+    def read(self):
         """
-        Call the read method and return temperature, humidity, and pressure information.
-        """
-        if self.read():
-            return None
-        response = {
-            'temperature': float("{0:.2f}".format(self.temperature)),
-            'humidity': float("{0:.2f}".format(self.humidity)),
-            'dewpoint': float("{0:.2f}".format(dewpoint(self.temperature, self.humidity))),
-            'pressure': int(self.pressure),
-            'altitude': float("{0:.2f}".format(altitude(self.pressure)))
-        }
-        return response
+        Takes a reading from the BME280 and updates the self._humidity and
+        self._temperature values
 
-    def stopSensor(self):
-        self.running = False
+        :returns: None on success or 1 on error
+        """
+        try:
+            self._temperature, self._humidity, self._pressure = self.get_measurement()
+            self._altitude = altitude(self._pressure)
+            self._dew_point = dewpoint(self._temperature, self._humidity)
+            return  # success - no errors
+        except Exception as e:
+            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+        return 1
 
     @staticmethod
-    def getShort(data, index):
+    def get_short(data, index):
         # return two bytes from data as a signed 16-bit value
         return c_short((data[index + 1] << 8) + data[index]).value
 
     @staticmethod
-    def getUShort(data, index):
+    def get_ushort(data, index):
         # return two bytes from data as an unsigned 16-bit value
         return (data[index + 1] << 8) + data[index]
 
     @staticmethod
-    def getChar(data, index):
+    def get_char(data, index):
         # return one byte from data as a signed char
         result = data[index]
         if result > 127:
@@ -83,21 +140,21 @@ class BME280(object):
         return result
 
     @staticmethod
-    def getUChar(data, index):
+    def get_uchar(data, index):
         # return one byte from data as an unsigned char
         result = data[index] & 0xFF
         return result
 
-    def readBME280ID(self):
+    def read_bme280_id(self):
         # Chip ID Register self.i2c_address
-        REG_ID = 0xD0
-        (chip_id, chip_version) = self.bus.read_i2c_block_data(self.i2c_address, REG_ID, 2)
+        reg_id = 0xD0
+        (chip_id, chip_version) = self.bus.read_i2c_block_data(self.i2c_address, reg_id, 2)
         return chip_id, chip_version
 
-    def readBME280All(self):
+    def read_bme280_all(self):
         # Register self.i2c_address
-        REG_DATA = 0xF7
-        REG_CONTROL = 0xF4
+        reg_data = 0xF7
+        reg_control = 0xF4
 
         # REG_CONFIG  = 0xF5
         #
@@ -105,12 +162,12 @@ class BME280(object):
         # REG_HUM_LSB = 0xFE
 
         # Oversample setting - page 27
-        OVERSAMPLE_TEMP = 2
-        OVERSAMPLE_PRES = 2
-        MODE = 1
+        oversample_temp = 2
+        oversample_pres = 2
+        mode = 1
 
-        control = OVERSAMPLE_TEMP << 5 | OVERSAMPLE_PRES << 2 | MODE
-        self.bus.write_byte_data(self.i2c_address, REG_CONTROL, control)
+        control = oversample_temp << 5 | oversample_pres << 2 | mode
+        self.bus.write_byte_data(self.i2c_address, reg_control, control)
 
         # Read blocks of calibration data from EEPROM
         # See Page 22 data sheet
@@ -119,36 +176,36 @@ class BME280(object):
         cal3 = self.bus.read_i2c_block_data(self.i2c_address, 0xE1, 7)
 
         # Convert byte data to word values
-        dig_T1 = self.getUShort(cal1, 0)
-        dig_T2 = self.getShort(cal1, 2)
-        dig_T3 = self.getShort(cal1, 4)
+        dig_T1 = self.get_ushort(cal1, 0)
+        dig_T2 = self.get_short(cal1, 2)
+        dig_T3 = self.get_short(cal1, 4)
 
-        dig_P1 = self.getUShort(cal1, 6)
-        dig_P2 = self.getShort(cal1, 8)
-        dig_P3 = self.getShort(cal1, 10)
-        dig_P4 = self.getShort(cal1, 12)
-        dig_P5 = self.getShort(cal1, 14)
-        dig_P6 = self.getShort(cal1, 16)
-        dig_P7 = self.getShort(cal1, 18)
-        dig_P8 = self.getShort(cal1, 20)
-        dig_P9 = self.getShort(cal1, 22)
+        dig_P1 = self.get_ushort(cal1, 6)
+        dig_P2 = self.get_short(cal1, 8)
+        dig_P3 = self.get_short(cal1, 10)
+        dig_P4 = self.get_short(cal1, 12)
+        dig_P5 = self.get_short(cal1, 14)
+        dig_P6 = self.get_short(cal1, 16)
+        dig_P7 = self.get_short(cal1, 18)
+        dig_P8 = self.get_short(cal1, 20)
+        dig_P9 = self.get_short(cal1, 22)
 
-        dig_H1 = self.getUChar(cal2, 0)
-        dig_H2 = self.getShort(cal3, 0)
-        dig_H3 = self.getUChar(cal3, 2)
+        dig_H1 = self.get_uchar(cal2, 0)
+        dig_H2 = self.get_short(cal3, 0)
+        dig_H3 = self.get_uchar(cal3, 2)
 
-        dig_H4 = self.getChar(cal3, 3)
+        dig_H4 = self.get_char(cal3, 3)
         dig_H4 = (dig_H4 << 24) >> 20
-        dig_H4 |= self.getChar(cal3, 4) & 0x0F
+        dig_H4 |= self.get_char(cal3, 4) & 0x0F
 
-        dig_H5 = self.getChar(cal3, 5)
+        dig_H5 = self.get_char(cal3, 5)
         dig_H5 = (dig_H5 << 24) >> 20
-        dig_H5 |= self.getUChar(cal3, 4) >> 4 & 0x0F
+        dig_H5 |= self.get_uchar(cal3, 4) >> 4 & 0x0F
 
-        dig_H6 = self.getChar(cal3, 6)
+        dig_H6 = self.get_char(cal3, 6)
 
         # Read temperature/pressure/humidity
-        data = self.bus.read_i2c_block_data(self.i2c_address, REG_DATA, 8)
+        data = self.bus.read_i2c_block_data(self.i2c_address, reg_data, 8)
         pres_raw = (data[0] << 12) | (data[1] << 4) | (data[2] >> 4)
         temp_raw = (data[3] << 12) | (data[4] << 4) | (data[5] >> 4)
         hum_raw = (data[6] << 8) | data[7]
@@ -178,7 +235,7 @@ class BME280(object):
         # Refine humidity
         humidity = t_fine - 76800.0
         humidity = (hum_raw - (dig_H4 * 64.0 + dig_H5 / 16384.8 * humidity)) * (
-        dig_H2 / 65536.0 * (1.0 + dig_H6 / 67108864.0 * humidity * (1.0 + dig_H3 / 67108864.0 * humidity)))
+            dig_H2 / 65536.0 * (1.0 + dig_H6 / 67108864.0 * humidity * (1.0 + dig_H3 / 67108864.0 * humidity)))
         humidity *= 1.0 - dig_H1 * humidity / 524288.0
         if humidity > 100:
             humidity = 100
@@ -186,20 +243,3 @@ class BME280(object):
             humidity = 0
 
         return temperature / 100.0, humidity, pressure / 100.0
-
-
-if __name__ == "__main__":
-    if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-        I2C_bus_number = 1
-    else:
-        I2C_bus_number = 0
-    bme = BME280(int('0x77', 16), I2C_bus_number)
-
-    for measure in bme:
-        print("Temperature: {} C".format(measure['temperature']))
-        print("Humidity: {} %".format(measure['humidity']))
-        print("Dew Point: {} C".format(dewpoint(measure['temperature'], measure['humidity'])))
-        print("Pressure: {} Pa".format(int(measure['pressure'])))
-        print("Altitude: {} m".format(altitude(measure['pressure'])))
-
-        time.sleep(1)

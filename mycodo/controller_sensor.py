@@ -17,23 +17,23 @@ from lockfile import LockFile
 from devices.tca9548a import TCA9548A
 from devices.ads1x15 import ADS1x15_read
 from devices.mcp342x import MCP342x_read
-from sensors.atlas_pt1000 import Atlas_PT1000
-from sensors.am2315 import AM2315_read
-from sensors.bme280 import BME280
-from sensors.bmp import BMP
-from sensors.dht22 import DHT22
-from sensors.ds18b20 import DS18B20
-from sensors.htu21d import HTU21D_read
-from sensors.k30 import K30
+from sensors.atlas_pt1000 import AtlasPT1000Sensor
+from sensors.am2315 import AM2315Sensor
+from sensors.bme280 import BME280Sensor
+from sensors.bmp import BMPSensor
+from sensors.dht22 import DHT22Sensor
+from sensors.ds18b20 import DS18B20Sensor
+from sensors.htu21d import HTU21DSensor
+from sensors.k30 import K30Sensor
 from sensors.raspi import RaspberryPiCPUTemp
 from sensors.raspi_cpuload import RaspberryPiCPULoad
-from sensors.tmp006 import TMP006_read
-from sensors.tsl2561 import TSL2561_read
-from sensors.sht1x_7x import SHT1x_7x_read
-from sensors.sht2x import SHT2x_read
+from sensors.tmp006 import TMP006Sensor
+from sensors.tsl2561 import TSL2561Sensor
+from sensors.sht1x_7x import SHT1x7xSensor
+from sensors.sht2x import SHT2xSensor
 
 # Sensor modules that are untested (don't have these sensors to test)
-from sensors.dht11 import DHT11
+from sensors.dht11 import DHT11Sensor
 
 from config import SQL_DATABASE_MYCODO
 from config import INFLUXDB_HOST
@@ -227,33 +227,33 @@ class SensorController(threading.Thread):
         elif self.device_type == 'RPi':
             self.measure_sensor = RaspberryPiCPUTemp()
         elif self.device_type == 'DS18B20':
-            self.measure_sensor = DS18B20(self.location)
+            self.measure_sensor = DS18B20Sensor(self.location)
         elif self.device_type == 'DHT11':
-            self.measure_sensor = DHT11(pigpio.pi(), int(self.location))
+            self.measure_sensor = DHT11Sensor(pigpio.pi(), int(self.location))
         elif self.device_type in ['DHT22', 'AM2302']:
-            self.measure_sensor = DHT22(pigpio.pi(), int(self.location))
+            self.measure_sensor = DHT22Sensor(pigpio.pi(), int(self.location))
         elif self.device_type == 'HTU21D':
-            self.measure_sensor = HTU21D_read(self.i2c_bus)
+            self.measure_sensor = HTU21DSensor(self.i2c_bus)
         elif self.device_type == 'AM2315':
-            self.measure_sensor = AM2315_read(self.i2c_bus)
+            self.measure_sensor = AM2315Sensor(self.i2c_bus)
         elif self.device_type == 'ATLAS_PT1000':
-            self.measure_sensor = Atlas_PT1000(self.i2c_address, self.i2c_bus)
+            self.measure_sensor = AtlasPT1000Sensor(self.i2c_address, self.i2c_bus)
         elif self.device_type == 'K30':
-            self.measure_sensor = K30()
+            self.measure_sensor = K30Sensor()
         elif self.device_type == 'BME280':
-            self.measure_sensor = BME280(self.i2c_address, self.i2c_bus)
+            self.measure_sensor = BME280Sensor(self.i2c_address, self.i2c_bus)
         elif self.device_type == 'BMP':
-            self.measure_sensor = BMP(self.i2c_bus)
+            self.measure_sensor = BMPSensor(self.i2c_bus)
         elif self.device_type == 'SHT1x_7x':
-            self.measure_sensor = SHT1x_7x_read(self.location,
+            self.measure_sensor = SHT1x7xSensor(self.location,
                                                 self.sht_clock_pin,
                                                 self.sht_voltage)
         elif self.device_type == 'SHT2x':
-            self.measure_sensor = SHT2x_read(self.i2c_address, self.i2c_bus)
+            self.measure_sensor = SHT2xSensor(self.i2c_address, self.i2c_bus)
         elif self.device_type == 'TMP006':
-            self.measure_sensor = TMP006_read(self.i2c_address, self.i2c_bus)
+            self.measure_sensor = TMP006Sensor(self.i2c_address, self.i2c_bus)
         elif self.device_type == 'TSL2561':
-            self.measure_sensor = TSL2561_read(self.i2c_address, self.i2c_bus)
+            self.measure_sensor = TSL2561Sensor(self.i2c_address, self.i2c_bus)
         else:
             self.device_recognized = False
             self.logger.debug("[Sensor {}] Device '{}' not "

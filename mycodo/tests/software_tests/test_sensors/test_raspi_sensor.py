@@ -130,10 +130,17 @@ def test_raspberry_pi_cpu_temp_special_method_repr():
     assert "<RaspberryPiCPUTemp(temperature=0.00)>" in repr(RaspberryPiCPUTemp())
 
 
-def test_raspberry_pi_cpu_temp_raises_stop_iteration():
+def test_raspberry_pi_cpu_temp_raises_exception():
     """ stops iteration on read() error """
-    with pytest.raises(StopIteration):
-        RaspberryPiCPUTemp().next()
+    with mock.patch('mycodo.sensors.raspi.RaspberryPiCPUTemp.get_measurement', side_effect=IOError):
+        with pytest.raises(StopIteration):
+            RaspberryPiCPUTemp().next()
+
+
+def test_raspberry_pi_cpu_temp_read_returns_1_on_exception():
+    """ Verify the read() method returns true on error """
+    with mock.patch('mycodo.sensors.raspi.RaspberryPiCPUTemp.get_measurement', side_effect=Exception):
+        assert RaspberryPiCPUTemp().read()
 
 
 def test_raspberry_pi_cpu_temp_get_measurement_divs_by_1k():
@@ -258,10 +265,17 @@ def test_raspberry_pi_gpu_temp_special_method_repr():
         assert "<RaspberryPiGPUTemp(temperature=52.50)>" in repr(rpi_gpu)  # second reading
 
 
-def test_raspberry_pi_gpu_temp_raises_stop_iteration():
+def test_raspberry_pi_gpu_temp_raises_exception():
     """ stops iteration on read() error """
-    with pytest.raises(StopIteration):
-        RaspberryPiGPUTemp().next()
+    with mock.patch('mycodo.sensors.raspi.RaspberryPiGPUTemp.get_measurement', side_effect=IOError):
+        with pytest.raises(StopIteration):
+            RaspberryPiGPUTemp().next()
+
+
+def test_raspberry_pi_gpu_temp_read_returns_1_on_exception():
+    """ Verify the read() method returns true on error """
+    with mock.patch('mycodo.sensors.raspi.RaspberryPiGPUTemp.get_measurement', side_effect=Exception):
+        assert RaspberryPiGPUTemp().read()
 
 
 def test_raspberry_pi_gpu_temp_get_measurement_method_returns_float():

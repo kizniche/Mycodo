@@ -1,5 +1,5 @@
 # coding=utf-8
-
+# This module isn't currently used but still remains for reference
 import time
 import Adafruit_DHT
 from sensorutils import dewpoint

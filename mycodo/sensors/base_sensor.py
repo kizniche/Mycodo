@@ -33,6 +33,9 @@ class AbstractSensor(object):
         """ Support the iterator protocol """
         return self
 
+    def __next__(self):
+        return self.next()
+
     def next(self):
         """
         Get next temperature reading.  Required by iterators.  Must raise StopIterator

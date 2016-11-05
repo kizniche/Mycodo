@@ -15,7 +15,9 @@ class RaspberryPiCPUTemp(AbstractSensor):
 
     def __repr__(self):
         """  Representation of object """
-        return "<{cls}(temperature={temp})>".format(cls=type(self).__name__, temp="{0:.2f}".format(self._temperature))
+        return "<{cls}(temperature={temp})>".format(
+            cls=type(self).__name__,
+            temp="{0:.2f}".format(self._temperature))
 
     def __str__(self):
         """ Return temperature information """
@@ -33,7 +35,7 @@ class RaspberryPiCPUTemp(AbstractSensor):
 
     @staticmethod
     def get_measurement():
-        """ Gets the Raspberry pi's temperature in celsius by reading the temp file and div by 1000"""
+        """ Gets the Raspberry pi's temperature in Celsius by reading the temp file and div by 1000 """
         with open('/sys/class/thermal/thermal_zone0/temp') as cpu_temp_file:
             return float(cpu_temp_file.read()) / 1000
 
@@ -72,7 +74,9 @@ class RaspberryPiGPUTemp(AbstractSensor):
 
     def __repr__(self):
         """  Representation of object """
-        return "<{cls}(temperature={temp})>".format(cls=type(self).__name__, temp="{0:.2f}".format(self._temperature))
+        return "<{cls}(temperature={temp})>".format(
+            cls=type(self).__name__,
+            temp="{0:.2f}".format(self._temperature))
 
     def __str__(self):
         """ Return temperature information """
@@ -93,9 +97,6 @@ class RaspberryPiGPUTemp(AbstractSensor):
         try:
             self._temperature = self.get_measurement()
             return  # success - no errors
-        except StopIteration:
-            # expected behavior in tests.  Typically there is a finite list of measurements in a list so we re-raise
-            raise StopIteration
         except subprocess.CalledProcessError as e:
             logging.error("{cls}.get_measurement() subprocess call raised {err}".format(cls=type(self).__name__, err=e))
         except IOError as e:
@@ -108,7 +109,7 @@ class RaspberryPiGPUTemp(AbstractSensor):
 
     @staticmethod
     def get_measurement():
-        """  Calls the vcgencmd in a subprocess and reads the GPU temperature """
+        """ Calls the vcgencmd in a subprocess and reads the GPU temperature """
         gputempstr = subprocess.check_output(('/opt/vc/bin/vcgencmd', 'measure_temp'))  # example output: temp=42.8'C
         return float(gputempstr.split('=')[1].split("'")[0])
 

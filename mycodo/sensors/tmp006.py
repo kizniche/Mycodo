@@ -1,66 +1,73 @@
 # coding=utf-8
-
-
-import time
+import logging
 import Adafruit_TMP.TMP006 as TMP006
-import RPi.GPIO as GPIO
+from .base_sensor import AbstractSensor
 
 
-class TMP006_read(object):
+class TMP006Sensor(AbstractSensor):
+    """ A sensor support class that monitors the TMP006's die and object temperatures """
+
     def __init__(self, address, bus):
-        self._temperature_die = None
-        self._temperature_object = None
+        super(TMP006Sensor, self).__init__()
         self.i2c_address = address
         self.i2c_bus = bus
-        self.running = True
+        self._temperature_die = 0.0
+        self._temperature_object = 0.0
 
-    def read(self):
-        try:
-            sensor = TMP006.TMP006(address=self.i2c_address, busnum=self.i2c_bus)
-            sensor.begin()
-            self._temperature_object = sensor.readObjTempC()
-            self._temperature_die = sensor.readDieTempC()
-        except:
-            return 1
+    def __repr__(self):
+        """  Representation of object """
+        return "<{cls}(temperature_die={tdie})(temperature_object={tobj})>".format(
+            cls=type(self).__name__,
+            tdie="{0:.2f}".format(self._temperature_die),
+            tobj="{0:.2f}".format(self._temperature_object))
+
+    def __str__(self):
+        """ Return temperature information """
+        return "temperature_die: {tdie}, temperature_object: {tobj}".format(
+            tdie="{0:.2f}".format(self._temperature_die),
+            tobj="{0:.2f}".format(self._temperature_object))
+
+    def __iter__(self):  # must return an iterator
+        """ TMP006Sensor iterates through live temperature readings """
+        return self
+
+    def next(self):
+        """ Get next temperature reading """
+        if self.read():  # raised an error
+            raise StopIteration  # required
+        return dict(temperature_die=float('{0:.2f}'.format(self._temperature_die)),
+                    temperature_object=float('{0:.2f}'.format(self._temperature_object)))
+
+    def get_measurement(self):
+        """ Gets the TMP006's temperature in Celsius """
+        sensor = TMP006.TMP006(address=self.i2c_address, busnum=self.i2c_bus)
+        sensor.begin()
+        return sensor.readDieTempC(), sensor.readObjTempC()
 
     @property
     def temperature_die(self):
+        """ Die temperature in celsius """
+        if not self._temperature_die:  # update if needed
+            self.read()
         return self._temperature_die
 
     @property
     def temperature_object(self):
+        """ Object temperature in celsius """
+        if not self._temperature_object:  # update if needed
+            self.read()
         return self._temperature_object
 
-    def __iter__(self):
+    def read(self):
         """
-        Support the iterator protocol.
+        Takes a reading from the TMP006 and updates the self._temperature_die
+        and self._temperature_object values
+
+        :returns: None on success or 1 on error
         """
-        return self
-
-    def next(self):
-        """
-        Call the read method and return temperature information.
-        """
-        if self.read():
-            return None
-        response = {
-            'temperature_die': float("{0:.2f}".format(self.temperature_die)),
-            'temperature_object': float("{0:.2f}".format(self.temperature_object))
-        }
-        return response
-
-    def stopSensor(self):
-        self.running = False
-
-
-if __name__ == "__main__":
-    if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-        I2C_bus_number = 1
-    else:
-        I2C_bus_number = 0
-    tmp006 = TMP006_read('0x40', I2C_bus_number)
-
-    for measurement in tmp006:
-        print("Temperature (die): {} C".format(measurement['temperature_die']))
-        print("Temperature (object): {} C".format(measurement['temperature_object']))
-        time.sleep(2)
+        try:
+            self._temperature_die, self_temperature_object = self.get_measurement()
+            return  # success - no errors
+        except Exception as e:
+            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+        return 1

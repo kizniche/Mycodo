@@ -1,80 +1,92 @@
 # coding=utf-8
-
-import time
-import RPi.GPIO as GPIO
+import logging
 from tentacle_pi.AM2315 import AM2315
 from sensorutils import dewpoint
+from .base_sensor import AbstractSensor
 
 
-class AM2315_read(object):
+class AM2315Sensor(AbstractSensor):
+    """
+    A sensor support class that measures the AM2315's humidity and temperature
+    and calculates the dew point
+
+    """
+
     def __init__(self, bus):
-        self._temperature = 0
-        self._humidity = 0
-        self._crc_check = 0
+        super(AM2315Sensor, self).__init__()
         self.I2C_bus_number = str(bus)
+        self._dew_point = 0.0
+        self._humidity = 0.0
+        self._temperature = 0.0
         self.am = None
-        self.running = True
 
-    def read(self):
-        try:
-            self.am = AM2315(0x5c, "/dev/i2c-"+self.I2C_bus_number)
-            temperature, humidity, crc_check = self.am.sense()
-            if crc_check != 1:
-                self._temperature = self._humidity = self._crc_check = None
-                return 1
-            else:
-                self._temperature = temperature
-                self._humidity = humidity
-                self._crc_check = crc_check
-        except:
-            return 1
+    def __repr__(self):
+        """  Representation of object """
+        return "<{cls}(dew_point={dpt})(humidity={hum})(temperature={temp})>".format(
+            cls=type(self).__name__,
+            dpt="{0:.2f}".format(self._dew_point),
+            hum="{0:.2f}".format(self._humidity),
+            temp="{0:.2f}".format(self._temperature))
 
-    @property
-    def temperature(self):
-        return self._temperature
+    def __str__(self):
+        """ Return measurement information """
+        return "Dew Point: {dpt}, Humidity: {hum}, Temperature: {temp}".format(
+            dpt="{0:.2f}".format(self._dew_point),
+            hum="{0:.2f}".format(self._humidity),
+            temp="{0:.2f}".format(self._temperature))
 
-    @property
-    def humidity(self):
-        return self._humidity
-
-    @property
-    def crc_check(self):
-        return self._crc_check
-
-    def __iter__(self):
-        """
-        Support the iterator protocol.
-        """
+    def __iter__(self):  # must return an iterator
+        """ AM2315Sensor iterates through live measurement readings """
         return self
 
     def next(self):
+        """ Get next measurement reading """
+        if self.read():  # raised an error
+            raise StopIteration  # required
+        return dict(humidity=float('{0:.2f}'.format(self._humidity)),
+                    temperature=float('{0:.2f}'.format(self._temperature)))
+
+    def get_measurement(self):
+        """ Gets the humidity and temperature """
+        self.am = AM2315(0x5c, "/dev/i2c-" + self.I2C_bus_number)
+        temperature, humidity, crc_check = self.am.sense()
+        if crc_check != 1:
+            return 1
+        else:
+            return humidity, temperature
+
+    @property
+    def dew_point(self):
+        """ AM2315 dew point in Celsius """
+        if not self._dew_point:  # update if needed
+            self.read()
+        return self._dew_point
+
+    @property
+    def humidity(self):
+        """ AM2315 relative humidity in percent """
+        if not self._humidity:  # update if needed
+            self.read()
+        return self._humidity
+
+    @property
+    def temperature(self):
+        """ AM2315 temperature in Celsius """
+        if not self._temperature:  # update if needed
+            self.read()
+        return self._temperature
+
+    def read(self):
         """
-        Call the read method and return temperature and humidity information.
+        Takes a reading from the AM2315 and updates the self.dew_point,
+        self._humidity, and self._temperature values
+
+        :returns: None on success or 1 on error
         """
-        if self.read():
-            return None
-        response = {
-            'humidity': float("{0:.2f}".format(self.humidity)),
-            'temperature': float("{0:.2f}".format(self.temperature)),
-            'dewpoint': float("{0:.2f}".format(dewpoint(self.temperature, self.humidity))),
-            'crc_check': self.crc_check
-        }
-        return response
-
-    def stopSensor(self):
-        self.running = False
-
-
-if __name__ == "__main__":
-    if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-        I2C_bus_number = 1
-    else:
-        I2C_bus_number = 0
-    am2315 = AM2315_read(I2C_bus_number)
-
-    for measurements in am2315:
-        print("Temperature: {}".format(measurements['temperature']))
-        print("Humidity: {}".format(measurements['humidity']))
-        print("Dew Point: {}".format(dewpoint(measurements['temperature'], measurements['humidity'])))
-        print("CRC Check: {}".format(measurements['crc_check']))
-        time.sleep(4)
+        try:
+            self._humidity, self._temperature = self.get_measurement()
+            self._dew_point = dewpoint(self._temperature, self._humidity)
+            return  # success - no errors
+        except Exception as e:
+            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+        return 1
