@@ -66,7 +66,7 @@ class TMP006Sensor(AbstractSensor):
         :returns: None on success or 1 on error
         """
         try:
-            self._temperature_die, self_temperature_object = self.get_measurement()
+            self._temperature_die, self._temperature_object = self.get_measurement()
             return  # success - no errors
         except Exception as e:
             logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))

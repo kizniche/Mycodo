@@ -9,6 +9,10 @@ before_install:
   - git clone git://git.drogon.net/wiringPi && cd ./wiringPi && ./build && cd ..
   - wget abyz.co.uk/rpi/pigpio/pigpio.zip && unzip pigpio.zip && cd ./PIGPIO && make -j4 && sudo make install && cd ..
   - pip install --upgrade pip webtest
+  - wget https://dl.influxdata.com/influxdb/releases/influxdb_1.0.2_armhf.deb && dpkg -i influxdb_1.0.2_armhf.deb
+  - service influxdb start
+  - influx -execute "CREATE DATABASE mycodo_db"
+  - influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
 install:
   - pip install --upgrade -r requirements.txt
 virtualenv:

@@ -20,9 +20,15 @@ exec 2>&1
 abort()
 {
     echo >&2 '
-***************
-*** ABORTED ***
-***************
+*******************************
+*** ERROR: Install Aborted! ***
+*******************************
+
+An error occurred that prevented Mycodo from being installed!
+
+Please contact the developer by submitting a bug report at
+https://github.com/kizniche/Mycodo/issues with the pertinent
+excerpts from the setup log located at Mycodo/setup.log
 '
     echo "An error occurred. Exiting..." >&2
     exit 1
@@ -33,28 +39,18 @@ trap 'abort' 0
 set -e
 
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
-printf "### Mycodo installation began at $NOW\n\n"
+printf "### Mycodo installation beginning at $NOW\n\n"
 
-printf "#### Uninstall current version of pip\n"
-apt-get update -y
+printf "#### Uninstalling current version of pip\n"
 apt-get purge -y python-pip
 
-printf "#### Install latest pip\n"
+printf "#### Installing and updating prerequisites\n"
+apt-get update -y
 apt-get upgrade -y
 apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3
 easy_install pip
 pip install -U pip
 
-# printf "#### Uninstalling specific prerequisites\n"
-# pip uninstall -y Adafruit_ADS1x15
-# pip uninstall -y Adafruit_BMP
-# pip uninstall -y Adafruit_DHT
-# pip uninstall -y Adafruit_GPIO
-# pip uninstall -y Adafruit_Python_DHT
-# pip uninstall -y Adafruit_TMP
-# pip uninstall -y MCP342x
-
-printf "#### Installing prerequisites\n"
 wget --quiet --show-progress -P ${INSTALL_DIRECTORY}/ abyz.co.uk/rpi/pigpio/pigpio.zip
 unzip pigpio.zip
 cd ${INSTALL_DIRECTORY}/PIGPIO
@@ -65,8 +61,8 @@ git clone git://git.drogon.net/wiringPi ${INSTALL_DIRECTORY}/wiringPi
 cd ${INSTALL_DIRECTORY}/wiringPi
 ./build
 
-wget --quiet --show-progress -P ${INSTALL_DIRECTORY}/ https://dl.influxdata.com/influxdb/releases/influxdb_1.0.0_armhf.deb
-dpkg -i ${INSTALL_DIRECTORY}/influxdb_1.0.0_armhf.deb
+wget --quiet --show-progress -P ${INSTALL_DIRECTORY}/ https://dl.influxdata.com/influxdb/releases/influxdb_1.0.2_armhf.deb
+dpkg -i ${INSTALL_DIRECTORY}/influxdb_1.0.2_armhf.deb
 service influxdb start
 
 cd ${INSTALL_DIRECTORY}
@@ -123,15 +119,26 @@ systemctl enable ${INSTALL_DIRECTORY}/mycodo/scripts/mycodo.service
 printf "#### Creating SQLite databases\n"
 ${INSTALL_DIRECTORY}/init_databases.py -i all
 
+printf "#### Setting up users, groups, and permissions\n"
 ${INSTALL_DIRECTORY}/mycodo/scripts/update_mycodo.sh initialize
 
+printf "#### Starting the Mycodo daemon and web server\n"
 service mycodo start
 /etc/init.d/apache2 restart
 
 trap : 0
 
-echo >&2 '
-************
-*** DONE *** 
-************
-'
+IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
+
+if [[ -z ${IP} ]]; then
+  IP="your.IP.here"
+fi
+
+echo >&2 "
+***************************************************
+** Mycodo successfully installed without errors! **
+***************************************************
+
+Go to https://${IP}/, or whatever your Pi's
+IP address is, to create an admin user and log in.
+"

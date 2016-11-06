@@ -42,7 +42,6 @@ def insert_or_ignore(an_object, a_session):
         # This is the same as the 'INSERT OR IGNORE'
         print(e)
         a_session.rollback()
-        pass
     except:
         # Something else went wrong!!
         a_session.rollback()
