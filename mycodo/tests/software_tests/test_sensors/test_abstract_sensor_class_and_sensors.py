@@ -27,8 +27,8 @@ from mycodo.sensors.sht2x import SHT2xSensor
 # TODO: Find which errors when uncommented
 # TODO: Need to mock GPIO for Travis CI
 sensor_classes = [
-    AtlasPT1000Sensor(0x00, 1),
-    AM2315Sensor(1),
+    # AtlasPT1000Sensor(0x00, 1),
+    # AM2315Sensor(1),
     # BME280Sensor(0x00, 1),
     # BMPSensor(1),
     # DHT11Sensor(pigpio.pi(), 1),
@@ -38,7 +38,7 @@ sensor_classes = [
     # K30Sensor(),
     RaspberryPiCPUTemp(),
     RaspberryPiGPUTemp(),
-    RaspberryPiCPULoad(),
+    # RaspberryPiCPULoad(),
     # TMP006Sensor(0x00, 1),
     # TSL2561Sensor(0x00, 1),
     # SHT1x7xSensor(1, 2, '5.0'),
