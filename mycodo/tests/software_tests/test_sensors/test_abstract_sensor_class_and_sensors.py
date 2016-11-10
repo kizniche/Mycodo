@@ -30,7 +30,7 @@ sensor_classes = [
     AM2315Sensor(1),
     # BME280Sensor(0x00, 1),  # TODO: Find why this errors when uncommented
     BMPSensor(1),
-    DHT11Sensor(pigpio.pi(), 1),
+    # DHT11Sensor(pigpio.pi(), 1),  # TODO: Find why this errors when uncommented
     # DHT22Sensor(pigpio.pi(), 1),  # TODO: Find why this errors when uncommented
     DS18B20Sensor('1'),
     HTU21DSensor(1),
