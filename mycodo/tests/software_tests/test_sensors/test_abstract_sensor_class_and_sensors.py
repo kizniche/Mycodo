@@ -9,7 +9,7 @@ from collections import Iterator
 from mycodo.sensors.base_sensor import AbstractSensor
 from mycodo.sensors.atlas_pt1000 import AtlasPT1000Sensor
 from mycodo.sensors.am2315 import AM2315Sensor
-from mycodo.sensors.bme280 import BME280Sensor
+# from mycodo.sensors.bme280 import BME280Sensor
 from mycodo.sensors.bmp import BMPSensor
 # from mycodo.sensors.dht11 import DHT11Sensor
 # from mycodo.sensors.dht22 import DHT22Sensor
@@ -29,7 +29,7 @@ from mycodo.sensors.sht2x import SHT2xSensor
 sensor_classes = [
     AtlasPT1000Sensor(0x00, 1),
     AM2315Sensor(1),
-    BME280Sensor(0x00, 1),
+    # BME280Sensor(0x00, 1),
     BMPSensor(1),
     # DHT11Sensor(pigpio.pi(), 1),
     # DHT22Sensor(pigpio.pi(), 1),
