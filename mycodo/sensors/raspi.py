@@ -55,9 +55,6 @@ class RaspberryPiCPUTemp(AbstractSensor):
         try:
             self._temperature = self.get_measurement()
             return  # success - no errors
-        except StopIteration:
-            # expected behavior in tests.  Typically there is a finite list of measurements in a list so we re-raise
-            raise StopIteration
         except IOError as e:
             logging.error("CPU temperature reading returned IOError: {err}".format(err=e))
         except Exception as e:

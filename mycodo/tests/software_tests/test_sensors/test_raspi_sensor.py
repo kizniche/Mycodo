@@ -6,60 +6,13 @@ from testfixtures import LogCapture
 from subprocess import CalledProcessError
 
 from collections import Iterator
-from mycodo.sensors.base_sensor import AbstractSensor
 from mycodo.sensors.raspi import (RaspberryPiCPUTemp,
                                   RaspberryPiGPUTemp)
 
 
 # ----------------------------
-#   AbstractSensor
-# ----------------------------
-def test_abstract_sensor_deprecated_stopsensor_warns_use():
-    """ verify that the depreciated stopSensor() method warns it's use """
-    with LogCapture() as log_cap:
-        RaspberryPiGPUTemp().stopSensor()
-    expected_log = ('mycodo.sensors.base_sensor', 'WARNING', ('Old style `stopSensor()` called by '
-                                                              'RaspberryPiGPUTemp.  This is depreciated '
-                                                              'and will be deleted in future releases.  '
-                                                              'Switch to using `stop_sensor` instead.'))
-    assert expected_log in log_cap.actual()
-
-
-def test_abstract_sensor_read_method_logs_when_not_implemented():
-    """  verify that methods that are not overwritten log as errors"""
-    with LogCapture() as log_cap:
-        with pytest.raises(NotImplementedError):
-            AbstractSensor().read()
-    expected_error = ('mycodo.sensors.base_sensor', 'ERROR', ('AbstractSensor did not overwrite the read() '
-                                                              'method.  All subclasses of the AbstractSensor '
-                                                              'class are required to overwrite this method'))
-    assert expected_error in log_cap.actual()
-
-
-def test_abstract_sensor_next_method_logs_when_not_implemented():
-    """ verify that methods that are not overwritten log as errors"""
-    with LogCapture() as log_cap:
-        with pytest.raises(NotImplementedError):
-            AbstractSensor().next()
-    expected_error = ('mycodo.sensors.base_sensor', 'ERROR', ('AbstractSensor did not overwrite the next() '
-                                                              'method.  All subclasses of the AbstractSensor '
-                                                              'class are required to overwrite this method'))
-    assert expected_error in log_cap.actual()
-
-
-# ----------------------------
 #   RaspberryPiCPUTemp tests
 # ----------------------------
-def test_raspberry_pi_cpu_temp_has_depreciated_stop_sensor():
-    """ Verify that the RaspberryPICPUTemp object has the stopSensor() method """
-    assert hasattr(RaspberryPiCPUTemp(), 'stopSensor')
-
-
-def test_raspberry_pi_cpu_temp_is_iterator_instance():
-    """ Verify that a RaspberryPiCPUTemp object is and behaves like an iterator """
-    assert isinstance(RaspberryPiCPUTemp(), Iterator), "RaspberryPiGPUTemp is not and iterator instance"
-
-
 def test_raspberry_pi_cpu_temp_iterates_using_in():
     """ Verify that a RaspberryPiCPUTemp object can use the 'in' operator """
     with mock.patch('mycodo.sensors.raspi.RaspberryPiCPUTemp.get_measurement') as mock_measure:
