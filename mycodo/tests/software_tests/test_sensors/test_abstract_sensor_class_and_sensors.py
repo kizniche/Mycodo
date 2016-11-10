@@ -1,10 +1,9 @@
 # coding=utf-8
-""" Tests for the raspberry pi CPU and GPU temp classes """
+""" Tests for the abstract class and sensor classes """
 import mock
 import pigpio
 import pytest
 from testfixtures import LogCapture
-from subprocess import CalledProcessError
 
 from collections import Iterator
 from mycodo.sensors.base_sensor import AbstractSensor
@@ -29,7 +28,7 @@ sensor_classes = [
     AtlasPT1000Sensor(0x00, 1),
     AM2315Sensor(1),
     # BME280Sensor(0x00, 1),  # TODO: Find why this errors when uncommented
-    BMPSensor(1),
+    # BMPSensor(1),
     # DHT11Sensor(pigpio.pi(), 1),  # TODO: Find why this errors when uncommented
     # DHT22Sensor(pigpio.pi(), 1),  # TODO: Find why this errors when uncommented
     DS18B20Sensor('1'),
@@ -40,7 +39,7 @@ sensor_classes = [
     RaspberryPiCPULoad(),
     TMP006Sensor(0x00, 1),
     TSL2561Sensor(0x00, 1),
-    SHT1x7xSensor(1, 2, '5.0'),
+    # SHT1x7xSensor(1, 2, '5.0'),
     SHT2xSensor(0x00, 1)
 ]
 
