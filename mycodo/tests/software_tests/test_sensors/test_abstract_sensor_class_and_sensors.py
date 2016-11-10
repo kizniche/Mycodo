@@ -34,7 +34,7 @@ sensor_classes = [
     # DHT22Sensor(pigpio.pi(), 1),  # TODO: Find why this errors when uncommented
     DS18B20Sensor('1'),
     HTU21DSensor(1),
-    K30Sensor(),
+    # K30Sensor(),  # TODO: Need to mock GPIO for Travis CI
     RaspberryPiCPUTemp(),
     RaspberryPiGPUTemp(),
     RaspberryPiCPULoad(),
