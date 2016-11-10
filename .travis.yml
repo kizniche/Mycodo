@@ -10,7 +10,7 @@ before_install:
   - wget abyz.co.uk/rpi/pigpio/pigpio.zip && unzip pigpio.zip && cd ./PIGPIO && make -j4 && sudo make install && cd ..
   - pip install --upgrade pip webtest
   - wget https://dl.influxdata.com/influxdb/releases/influxdb_1.0.2_amd64.deb && sudo dpkg -i influxdb_1.0.2_amd64.deb
-  - service influxdb start
+  - sudo service influxdb start
   - influx -execute "CREATE DATABASE mycodo_db"
   - influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
 install:
