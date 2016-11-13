@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 4.0.24 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=mycodo_dev)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80?branch=mycodo_dev)](https://www.codacy.com/app/kyletgabriel/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
+### Latest version: 4.0.25 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=mycodo_dev)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80?branch=mycodo_dev)](https://www.codacy.com/app/kyletgabriel/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
 
 Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.
 
@@ -183,6 +183,10 @@ Find the line "enable_uart=0" and change it to "enable_uart=1", then reboot.
 ### Luminosity
 
 > [TSL2561](https://www.sparkfun.com/products/12055) (I<sup>2</sup>C): A light sensor with a flat response across most of the visible spectrum. Light range from 0.1 - 40k+ Lux. Contains two integrating analog-to-digital converters (ADC) that integrate currents from two photodiodes to measure both infrared and visible light to better approximate the response of the human eye.
+
+### Moisture
+
+> [Chirp](https://wemakethings.net/chirp/) (I<sup>2</sup>C): A moisture, light, and temperature sensor
 
 ### Edge Detection
 

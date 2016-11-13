@@ -659,9 +659,14 @@ def choices_sensors(sensor):
             display = '{} ({}) CPU Load (15m)'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value:display})
-        if each_sensor.device in ['AM2315', 'ATLAS_PT1000', 'BME280', 'BMP', 'DHT11',
-                                  'DHT22', 'DS18B20', 'HTU21D', 'RPi',
-                                  'SHT1x_7x', 'SHT2x']:
+        if each_sensor.device == 'CHIRP':
+            value = '{},moisture'.format(each_sensor.id)
+            display = '{} ({}) Moisture'.format(
+                each_sensor.id, each_sensor.name)
+            choices.update({value:display})
+        if each_sensor.device in ['AM2315', 'ATLAS_PT1000', 'BME280', 'BMP',
+                                  'CHIRP', 'DHT11', 'DHT22', 'DS18B20',
+                                  'HTU21D', 'RPi', 'SHT1x_7x', 'SHT2x']:
             value = '{},temperature'.format(each_sensor.id)
             display = '{} ({}) Temperature'.format(
                 each_sensor.id, each_sensor.name)
@@ -713,7 +718,7 @@ def choices_sensors(sensor):
             display = '{} ({}) {}'.format(
                 each_sensor.id, each_sensor.name, each_sensor.adc_measure)
             choices.update({value:display})
-        if each_sensor.device == 'TSL2561':
+        if each_sensor.device in ['CHIRP', 'TSL2561']:
             value = '{},lux'.format(each_sensor.id)
             display = '{} ({}) Lux'.format(
                 each_sensor.id, each_sensor.name)
@@ -1311,6 +1316,11 @@ def pid_mod(formModPID):
 
                     (sensor.device_type == 'luxsensor' and
                     formModPID.modMeasureType.data not in ['lux']) or
+
+                    (sensor.device_type == 'moistsensor' and
+                    formModPID.modMeasureType.data not in ['temperature',
+                                                           'lux',
+                                                           'moisture']) or
                     
                     (sensor.device_type == 'presssensor' and
                     formModPID.modMeasureType.data not in ['temperature',
@@ -1811,6 +1821,11 @@ def sensor_add(formAddSensor, display_order):
                     new_sensor.location = '0x40'
                 elif formAddSensor.sensor.data == 'SHT2x':
                     new_sensor.location = '0x40'
+
+            # Chirp moisture sensor
+            elif formAddSensor.sensor.data == 'CHIRP':
+                new_sensor.device_type = 'moistsensor'
+                new_sensor.location = '0x20'
 
             # CO2
             elif formAddSensor.sensor.data == 'K30':

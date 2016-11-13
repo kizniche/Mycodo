@@ -31,7 +31,7 @@
       {% if count_measurements.append(count_measurements.pop() + 1) %}{% endif %}
     {%- elif each_sensor.device_type in ['tmpsensor', 'analogsensor'] -%}
       {% if count_measurements.append(count_measurements.pop() + 2) %}{% endif %}
-    {%- elif each_sensor.device_type in ['htsensor', 'presssensor', 'cpu_load'] -%}
+    {%- elif each_sensor.device_type in ['htsensor', 'moistsensor', 'presssensor', 'cpu_load'] -%}
       {% if count_measurements.append(count_measurements.pop() + 3) %}{% endif %}
     {%- endif -%}
   {%- endfor %}

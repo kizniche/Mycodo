@@ -992,6 +992,7 @@ class AddSensor(Form):
             ('EDGE', 'Edge Detection: Simple Switch'),
             ('K30', 'CO2: K30'),
             ('TSL2561', 'Luminance: TSL2561'),
+            ('CHIRP', 'Moisture: Chirp'),
             ('BME280', 'Pressure: BME 280'),
             ('BMP', 'Pressure: BMP 180/085'),
             ('DS18B20', 'Temperature: DS18B20'),

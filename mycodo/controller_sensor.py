@@ -21,6 +21,7 @@ from sensors.atlas_pt1000 import AtlasPT1000Sensor
 from sensors.am2315 import AM2315Sensor
 from sensors.bme280 import BME280Sensor
 from sensors.bmp import BMPSensor
+from sensors.chirp import ChirpSensor
 from sensors.dht22 import DHT22Sensor
 from sensors.ds18b20 import DS18B20Sensor
 from sensors.htu21d import HTU21DSensor
@@ -95,6 +96,7 @@ class SensorController(threading.Thread):
                             'ATLAS_PT1000',
                             'BME280',
                             'BMP',
+                            'CHIRP',
                             'HTU21D',
                             'MCP342x',
                             'SHT2x',
@@ -226,6 +228,8 @@ class SensorController(threading.Thread):
             self.measure_sensor = RaspberryPiCPULoad()
         elif self.device_type == 'RPi':
             self.measure_sensor = RaspberryPiCPUTemp()
+        elif self.device_type == 'CHIRP':
+            self.measure_sensor = ChirpSensor(self.i2c_address, self.i2c_bus)
         elif self.device_type == 'DS18B20':
             self.measure_sensor = DS18B20Sensor(self.location)
         elif self.device_type == 'DHT11':
