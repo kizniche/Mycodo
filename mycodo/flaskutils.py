@@ -1331,6 +1331,11 @@ def pid_mod(formModPID):
 
                     (sensor.device_type == 'luxsensor' and
                     formModPID.modMeasureType.data not in ['lux']) or
+
+                    (sensor.device_type == 'moistsensor' and
+                    formModPID.modMeasureType.data not in ['temperature',
+                                                           'humidity',
+                                                           'dewpoint']) or
                     
                     (sensor.device_type == 'presssensor' and
                     formModPID.modMeasureType.data not in ['temperature',
@@ -1837,6 +1842,11 @@ def sensor_add(formAddSensor, display_order):
             elif formAddSensor.sensor.data == 'K30':
                 new_sensor.device_type = 'co2sensor'
                 new_sensor.location = 'Tx/Rx'
+
+            # Moisture
+            elif formAddSensor.sensor.data == 'CHIRP':
+                new_sensor.device_type = 'moistsensor'
+                new_sensor.location = '0x20'
             
             # Pressure
             elif formAddSensor.sensor.data in ['BME280', 'BMP']:
