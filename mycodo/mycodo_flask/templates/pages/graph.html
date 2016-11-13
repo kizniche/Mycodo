@@ -29,7 +29,7 @@
       {% if count_measurements.append(count_measurements.pop() + 1) %}{% endif %}
     {%- elif each_sensor.device_type in ['tmpsensor', 'analogsensor'] -%}
       {% if count_measurements.append(count_measurements.pop() + 2) %}{% endif %}
-    {%- elif each_sensor.device_type in ['htsensor', 'presssensor', 'cpu_load'] -%}
+    {%- elif each_sensor.device_type in ['htsensor', 'moistsensor', 'presssensor', 'cpu_load'] -%}
       {% if count_measurements.append(count_measurements.pop() + 3) %}{% endif %}
     {%- endif -%}
   {%- endfor %}
@@ -388,6 +388,7 @@
         {%- set yaxis_hum = [] -%}
         {%- set yaxis_co2 = [] -%}
         {%- set yaxis_lux = [] -%}
+        {%- set yaxis_moisture = [] -%}
         {%- set yaxis_press = [] -%}
         {%- set yaxis_alt = [] -%}
         {%- set yaxis_volts = [] -%}
@@ -410,6 +411,8 @@
               {%- do yaxis_co2.append(1) -%}
             {%- elif 'lux' in each_sensor_and_measure -%}
               {%- do yaxis_lux.append(1) -%}
+            {%- elif 'moisture' in each_sensor_and_measure -%}
+              {%- do yaxis_moisture.append(1) -%}
             {%- elif 'pressure' in each_sensor_and_measure -%}
               {%- do yaxis_press.append(1) -%}
             {%- elif 'altitude' in each_sensor_and_measure -%}
@@ -438,6 +441,8 @@
                 {%- do yaxis_co2.append(1) -%}
               {%- elif each_pid.measure_type == 'lux' -%}
                 {%- do yaxis_lux.append(1) -%}
+              {%- elif each_pid.measure_type == 'moisture' -%}
+                {%- do yaxis_moisture.append(1) -%}
               {%- elif each_pid.measure_type == 'pressure' -%}
                 {%- do yaxis_press.append(1) -%}
               {%- elif each_pid.measure_type == 'altitude' -%}
@@ -546,6 +551,20 @@
             getPastData({{chart_number}}, {{count_series|count}}, 'luxsensor', 'lux', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
             getLiveData({{chart_number}}, {{count_series|count}}, 'luxsensor', 'lux', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                   {%- do count_series.append(1) -%}
+                {%- elif each_sensor.device_type == 'moistsensor' %}
+                  {% if 'lux' in each_sensor_and_measure %}
+            getPastData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'lux', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'lux', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+                    {%- do count_series.append(1) -%}
+                  {% elif 'moisture' in each_sensor_and_measure %}
+            getPastData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'moisture', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'moisture', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+                    {%- do count_series.append(1) -%}
+                  {% elif 'temperature' in each_sensor_and_measure %}
+            getPastData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+                    {%- do count_series.append(1) -%}
+                  {%- endif -%}
                 {%- elif each_sensor.device_type == 'presssensor' %}
                   {% if 'temperature' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'presssensor', 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
@@ -692,6 +711,18 @@
           },
           opposite: false,
           id: 'lux'
+        },
+      {%- endif -%}
+      {%- if yaxis_moisture -%}
+        {
+          title: {
+            text: 'Moisture',
+          },
+          labels: {
+            format: '{value}',
+          },
+          opposite: false,
+          id: 'moisture'
         },
       {%- endif -%}
       {%- if yaxis_press -%}
@@ -977,6 +1008,41 @@
             {%- elif 'dewpoint' in each_sensor_and_measure -%}
               {
                 name: '{{each_sensor.name}} Dew Point',
+                tooltip: {
+                  pointFormatter: function () {
+                    return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
+                  }
+                },
+                yAxis: 'temperature',
+                data: []
+              },
+            {%- endif -%}
+          {%- elif each_sensor.device_type == 'moistsensor' -%}
+            {% if 'lux' in each_sensor_and_measure -%}
+              {
+                name: '{{each_sensor.name}} Light',
+                type: 'line',
+                tooltip: {
+                  valueSuffix: '',
+                  valueDecimals: 0
+                },
+                yAxis: 'lux',
+                data: []
+              },
+            {%- elif 'moisture' in each_sensor_and_measure -%}
+              {
+                name: '{{each_sensor.name}} Moisture',
+                type: 'line',
+                tooltip: {
+                  valueSuffix: '',
+                  valueDecimals: 0
+                },
+                yAxis: 'moisture',
+                data: []
+              },
+            {%- elif 'temperature' in each_sensor_and_measure -%}
+              {
+                name: '{{each_sensor.name}} Temperature',
                 tooltip: {
                   pointFormatter: function () {
                     return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';

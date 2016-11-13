@@ -66,6 +66,11 @@
       {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'luxsensor' -%}
         liveTextData('{{each_sensor.name}}', 'luxsensor', 'lux', '{{each_sensor.id}}', '30');
       {%- endfor -%}
+      {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'moistsensor' -%}
+        liveTextData('{{each_sensor.name}}', 'moistsensor', 'lux', '{{each_sensor.id}}', '30');
+        liveTextData('{{each_sensor.name}}', 'moistsensor', 'moisture', '{{each_sensor.id}}', '30');
+        liveTextData('{{each_sensor.name}}', 'moistsensor', 'temperature', '{{each_sensor.id}}', '30');
+      {%- endfor -%}
       {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'presssensor' -%}
         liveTextData('{{each_sensor.name}}', 'presssensor', 'temperature', '{{each_sensor.id}}', '30');
         liveTextData('{{each_sensor.name}}', 'presssensor', 'pressure', '{{each_sensor.id}}', '30');
@@ -167,6 +172,15 @@
                 Measurement | Timestamp
                 <div>
                   <b><span id="{{each_sensor.id}}-lux-value">0</span> lx</b> | <span id="{{each_sensor.id}}-lux-time">&lt;please wait&gt;</span>
+                </div>
+              </div>
+            {%- elif each_sensor.device_type == 'moistsensor' %}
+              <div class="inline-right text-right" style="padding: 0.3em;">
+                Measurement | Timestamp
+                <div>
+                  <b><span id="{{each_sensor.id}}-lux-value">0.0</span> light</b> | <span id="{{each_sensor.id}}-lux-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.id}}-moisture-value">0.0</span> moisture</b> | <span id="{{each_sensor.id}}-moisture-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.id}}-temperature-value">0.0</span> &deg;C</b> | <span id="{{each_sensor.id}}-temperature-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'presssensor' %}
