@@ -17,7 +17,7 @@
 {% block title %} - Asynchronous Graph{% endblock %}
 
 {% block body %}
-
+  <!-- Route: /graph-async -->
   <div class="container">
   {% include 'flash_messages.html' %}
   </div>
@@ -31,7 +31,7 @@
       {% if count_measurements.append(count_measurements.pop() + 1) %}{% endif %}
     {%- elif each_sensor.device_type in ['tmpsensor', 'analogsensor'] -%}
       {% if count_measurements.append(count_measurements.pop() + 2) %}{% endif %}
-    {%- elif each_sensor.device_type in ['htsensor', 'presssensor', 'cpu_load'] -%}
+    {%- elif each_sensor.device_type in ['htsensor', 'moistsensor', 'presssensor', 'cpu_load'] -%}
       {% if count_measurements.append(count_measurements.pop() + 3) %}{% endif %}
     {%- endif -%}
   {%- endfor %}
@@ -60,14 +60,14 @@
   {% endif %}
 
   </div>
-  
+
   {% if selected_measure %}
   <script>
 $(function () {
     var chart = new Array();
 
     function getPastData(sensor_type, sensor_measurement, sensor_id) {
-      var url = '/async/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/0/0'
+      var url = '/async/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/0/0';
       $.getJSON(url,
         function(data, responseText, jqXHR) {
           if (jqXHR.status != 204) {
@@ -85,7 +85,7 @@ $(function () {
     }
 
     function afterSetExtremes(e) {
-      var url = '/async/{{selected_measure}}/{{selected_id}}/' + Math.round(e.min)/1000 + '/' + Math.round(e.max)/1000
+      var url = '/async/{{selected_measure}}/{{selected_id}}/' + Math.round(e.min)/1000 + '/' + Math.round(e.max)/1000;
       console.log(url);
       $.getJSON(url,
         function(data, responseText, jqXHR) {
@@ -103,7 +103,7 @@ $(function () {
       );
     }
 
-    var url = '/async/{{selected_measure}}/{{selected_id}}/0/0'
+    var url = '/async/{{selected_measure}}/{{selected_id}}/0/0';
     $.getJSON(url, function (data_raw) {
 
       var data = [];

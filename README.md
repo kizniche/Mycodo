@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 4.0.24
+### Latest version: 4.0.25
 
 Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.
 
@@ -30,8 +30,9 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
     - [Temperature](#temperature)
     - [Humidity](#humidity)
     - [CO<sub>2</sub>](#co2)
-    - [Pressure](#pressure)
     - [Luminosity](#luminosity)
+    - [Moisture](#moisture)
+    - [Pressure](#pressure)
     - [Devices](#devices)
 - [Notes](#notes)
 - [HTTP Server](#http-server-security)
@@ -176,13 +177,17 @@ Go to Advanced Options->Serial and disable. Then edit /boot/config.txt
 
 Find the line "enable_uart=0" and change it to "enable_uart=1", then reboot.
 
-### Pressure
-
-> [BMP085, BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi) (I<sup>2</sup>C): Measures barometric pressure and temperature
-
 ### Luminosity
 
 > [TSL2561](https://www.sparkfun.com/products/12055) (I<sup>2</sup>C): A light sensor with a flat response across most of the visible spectrum. Light range from 0.1 - 40k+ Lux. Contains two integrating analog-to-digital converters (ADC) that integrate currents from two photodiodes to measure both infrared and visible light to better approximate the response of the human eye.
+
+### Moisture
+
+> [Chirp](https://wemakethings.net/chirp/) (I<sup>2</sup>C): A moisture, light, and temperature sensor
+
+### Pressure
+
+> [BMP085, BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi) (I<sup>2</sup>C): Measures barometric pressure and temperature
 
 ### Edge Detection
 
