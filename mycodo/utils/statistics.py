@@ -107,7 +107,9 @@ def get_pi_revision():
                 length = len(line)
                 myrevision = line[11:length - 1]
         f.close()
-    except:
+    except Exception as e:
+        logger.error("Exception in 'get_pi_revision' call.  Error: "
+                     "{err}".format(err=e))
         myrevision = "0000"
     return myrevision
 

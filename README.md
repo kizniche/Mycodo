@@ -32,6 +32,7 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
     - [CO<sub>2</sub>](#co2)
     - [Pressure](#pressure)
     - [Luminosity](#luminosity)
+    - [Moisture](#moisture)
     - [Devices](#devices)
 - [Notes](#notes)
 - [HTTP Server](#http-server-security)

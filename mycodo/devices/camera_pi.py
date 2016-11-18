@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
-
 from __future__ import print_function  # In python 2.7
 import sys
 
+import logging
 import datetime
 import time
 import io
 import os
 import threading
 import picamera
+
+logger = logging.getLogger(__name__)
 
 
 class CameraStream(object):
@@ -70,8 +72,9 @@ class CameraStream(object):
                     # the last 10 seconds stop the thread
                     if time.time() - cls.last_access > 10 or cls.terminate:
                         break
-        except:
-            pass
+        except Exception as e:
+            logger.error("{cls} raised an error during read() call: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         cls.thread = None
 
 

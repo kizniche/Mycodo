@@ -78,7 +78,11 @@ class K30Sensor(AbstractSensor):
             while not lock.i_am_locking():
                 try:
                     lock.acquire(timeout=60)  # wait up to 60 seconds before breaking lock
-                except:
+                except Exception as e:
+                    logger.error("{cls} 60 second timeout, {lock} lock broken: "
+                                 "{err}".format(cls=type(self).__name__,
+                                                lock=K30_LOCK_FILE,
+                                                err=e))
                     lock.break_lock()
                     lock.acquire()
             self._co2 = self.get_measurement()
