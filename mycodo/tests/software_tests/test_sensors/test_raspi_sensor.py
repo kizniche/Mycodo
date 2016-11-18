@@ -244,7 +244,7 @@ def test_raspberry_pi_gpu_temp_read_logs_called_process_error():
         with mock.patch('mycodo.sensors.raspi.RaspberryPiGPUTemp.get_measurement',
                         side_effect=CalledProcessError(cmd='cmd', returncode=0)):
             RaspberryPiGPUTemp().read()
-    expected_log = ('mycodo.sensors.raspi', 'ERROR', "RaspberryPiGPUTemp.get_measurement() subprocess call raised: cmd")
+    expected_log = ('mycodo.sensors.raspi', 'ERROR', "RaspberryPiGPUTemp.get_measurement() subprocess call raised: Command 'cmd' returned non-zero exit status 0")
     assert expected_log in log_cap.actual()
 
 
