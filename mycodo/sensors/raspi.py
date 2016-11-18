@@ -56,10 +56,11 @@ class RaspberryPiCPUTemp(AbstractSensor):
         """
         try:
             self._temperature = self.get_measurement()
+            raise
             return  # success - no errors
         except IOError as e:
-            logger.error("CPU temperature reading returned IOError: "
-                         "{err}".format(err=e))
+            logger.error("{cls}.get_measurement() method raised IOError: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         except Exception as e:
             logger.error("{cls} raised an exception when taking a reading: "
                          "{err}".format(cls=type(self).__name__, err=e))
