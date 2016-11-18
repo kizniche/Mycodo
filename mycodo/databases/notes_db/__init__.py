@@ -22,10 +22,13 @@
 #
 #  Contact at kylegabriel.com
 
+import logging
 import sqlalchemy
 from sqlalchemy import create_engine
 
 from .models import Base
+
+logger = logging.getLogger(__name__)
 
 
 def insert_or_ignore(an_object, a_session):
@@ -40,20 +43,33 @@ def insert_or_ignore(an_object, a_session):
     except sqlalchemy.exc.IntegrityError as e:
         # Ignore duplicate primary key
         # This is the same as the 'INSERT OR IGNORE'
-        print(e)
+        logger.debug("An error occurred when committing changes to a database: "
+                     "{err}".format(err=e))
         a_session.rollback()
-        pass
-    except:
+    except Exception as e:
+        logger.error("Exception in 'insert_or_ignore'' call.  Error: '{err}'".format(err=e))
         # Something else went wrong!!
         a_session.rollback()
         raise
 
 
-def init_db(db_path):
-    engine = create_engine(db_path)
+def init_db(db_uri):
+    """
+    Binds the database to the specific class tables
+    and creates them if needed
+
+    :param db_uri:  URI to the database
+    :return: None
+    """
+    engine = create_engine(db_uri)
     Base.metadata.create_all(engine)
 
 
-def drop_db(db_path):
-    engine = create_engine(db_path)
+def drop_db(db_uri):
+    """
+    Remove all entries in the database
+    :param db_uri: URI to the database
+    :return: None
+    """
+    engine = create_engine(db_uri)
     Base.metadata.drop_all(engine)

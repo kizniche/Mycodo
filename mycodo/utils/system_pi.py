@@ -1,5 +1,5 @@
 # coding=utf-8
-
+import logging
 import datetime
 import grp
 import os
@@ -7,6 +7,8 @@ import pwd
 import socket
 import subprocess
 import sys
+
+logger = logging.getLogger(__name__)
 
 
 def time_between_range(start_time, end_time):
@@ -62,8 +64,9 @@ def internet(host="8.8.8.8", port=53, timeout=3):
         socket.setdefaulttimeout(timeout)
         socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
         return True
-    except Exception:
-        pass
+    except Exception as e:
+        logger.error("Function 'internet()' raised exception: "
+                     "{err}".format(err=e))
     return False
 
 

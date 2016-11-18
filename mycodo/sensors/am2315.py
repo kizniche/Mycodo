@@ -4,6 +4,8 @@ from tentacle_pi.AM2315 import AM2315
 from sensorutils import dewpoint
 from .base_sensor import AbstractSensor
 
+logger = logging.getLogger(__name__)
+
 
 class AM2315Sensor(AbstractSensor):
     """
@@ -88,5 +90,6 @@ class AM2315Sensor(AbstractSensor):
             self._dew_point = dewpoint(self._temperature, self._humidity)
             return  # success - no errors
         except Exception as e:
-            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         return 1

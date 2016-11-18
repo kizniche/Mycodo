@@ -6,6 +6,8 @@ import pigpio
 from sensorutils import dewpoint
 from .base_sensor import AbstractSensor
 
+logger = logging.getLogger(__name__)
+
 
 class DHT11Sensor(AbstractSensor):
     """
@@ -125,7 +127,8 @@ class DHT11Sensor(AbstractSensor):
             self._dew_point = dewpoint(self._temperature, self._humidity)
             return  # success - no errors
         except Exception as e:
-            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         return 1
 
     def setup(self):
@@ -179,13 +182,11 @@ class DHT11Sensor(AbstractSensor):
                 total = self._humidity + self._temperature
                 # is checksum ok ?
                 if not (total & 255) == self.checksum:
-                    raise
+                    raise Exception
         elif 16 <= self.bit < 24:  # in temperature byte
             self._temperature = (self._temperature << 1) + val
         elif 0 <= self.bit < 8:  # in humidity byte
             self._humidity = (self._humidity << 1) + val
-        else:  # skip header bits
-            pass
         self.bit += 1
 
     def _edge_fall(self, tick, diff):

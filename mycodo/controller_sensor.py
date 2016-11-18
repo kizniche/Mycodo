@@ -648,7 +648,9 @@ class SensorController(threading.Thread):
                                       "Lock: {}".format(i2c_bus, i2c_address,
                                                         self.lock[lockfile].path))
                     self.lock[lockfile].acquire(timeout=60)    # wait up to 60 seconds
-                except:
+                except Exception as e:
+                    self.logger.error("{cls} raised an exception: "
+                                      "{err}".format(cls=type(self).__name__, err=e))
                     self.logger.exception("[Locking bus-{} 0x{:02X}] Waited 60 "
                                           "seconds. Breaking lock to acquire "
                                           "{}".format(i2c_bus, i2c_address,

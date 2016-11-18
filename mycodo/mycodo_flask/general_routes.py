@@ -10,7 +10,7 @@ endpoints is the ultimate goal because it will be easier to test, read, and modi
 being less error prone.
 """
 from __future__ import print_function
-
+import logging
 import os
 import socket
 import sys
@@ -62,6 +62,7 @@ from config import MYCODO_VERSION
 
 blueprint = Blueprint('general_routes', __name__, static_folder='../static', template_folder='../templates')
 
+logger = logging.getLogger(__name__)
 influx_db = InfluxDB()
 
 
@@ -247,7 +248,9 @@ def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
         timestamp = calendar.timegm(dt.timetuple()) * 1000
         live_data = '[{},{}]'.format(timestamp, value)
         return Response(live_data, mimetype='text/json')
-    except:
+    except Exception as e:
+        logger.error("URL for 'last_data' raised and error: "
+                     "{err}".format(err=e))
         return '', 204
 
 
@@ -273,7 +276,9 @@ def past_data(sensor_type, sensor_measure, sensor_id, past_seconds):
                                           sensor_id,
                                           past_seconds)).raw
         return jsonify(raw_data['series'][0]['values'])
-    except:
+    except Exception as e:
+        logger.error("URL for 'past_data' raised and error: "
+                     "{err}".format(err=e))
         return '', 204
 
 
@@ -373,7 +378,9 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
                                               end_str,
                                               group_seconds)).raw
             return jsonify(raw_data['series'][0]['values'])
-        except:
+        except Exception as e:
+            logger.error("URL for 'async_data' raised and error: "
+                         "{err}".format(err=e))
             return '', 204
     else:
         try:
@@ -387,7 +394,9 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
                                               start_str,
                                               end_str)).raw
             return jsonify(raw_data['series'][0]['values'])
-        except:
+        except Exception as e:
+            logger.error("URL for 'async_data' raised and error: "
+                         "{err}".format(err=e))
             return '', 204
 
 
@@ -400,7 +409,9 @@ def daemon_active():
     try:
         control = DaemonControl()
         return control.daemon_status()
-    except:
+    except Exception as e:
+        logger.error("URL for 'daemon_active' raised and error: "
+                     "{err}".format(err=e))
         return '0'
 
 
@@ -417,7 +428,9 @@ def computer_command(action):
     try:
         control = DaemonControl()
         return control.system_control(action)
-    except:
+    except Exception as e:
+        logger.error("URL for 'computer_command' raised and error: "
+                     "{err}".format(err=e))
         return '0'
 
 
@@ -469,7 +482,9 @@ def inject_mycodo_version():
     try:
         control = DaemonControl()
         daemon_status = control.daemon_status()
-    except:
+    except Exception as e:
+        logger.error("URL for 'inject_mycodo_version' raised and error: "
+                     "{err}".format(err=e))
         daemon_status = '0'
 
     with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:

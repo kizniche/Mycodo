@@ -5,6 +5,8 @@ import logging
 import subprocess
 from .base_sensor import AbstractSensor
 
+logger = logging.getLogger(__name__)
+
 
 class RaspberryPiCPUTemp(AbstractSensor):
     """ A sensor support class that monitors the raspberry pi's cpu temperature """
@@ -56,9 +58,11 @@ class RaspberryPiCPUTemp(AbstractSensor):
             self._temperature = self.get_measurement()
             return  # success - no errors
         except IOError as e:
-            logging.error("CPU temperature reading returned IOError: {err}".format(err=e))
+            logger.error("CPU temperature reading returned IOError: "
+                         "{err}".format(err=e))
         except Exception as e:
-            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         return 1
 
 
@@ -95,11 +99,14 @@ class RaspberryPiGPUTemp(AbstractSensor):
             self._temperature = self.get_measurement()
             return  # success - no errors
         except subprocess.CalledProcessError as e:
-            logging.error("{cls}.get_measurement() subprocess call raised {err}".format(cls=type(self).__name__, err=e))
+            logger.error("{cls}.get_measurement() subprocess call raised: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         except IOError as e:
-            logging.error("{cls}.get_measurement() method raised IOError: {err}".format(cls=type(self).__name__, err=e))
+            logger.error("{cls}.get_measurement() method raised IOError: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         except Exception as e:
-            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
 
         # After any error return 1
         return 1
@@ -116,4 +123,3 @@ class RaspberryPiGPUTemp(AbstractSensor):
         if not self._temperature:  # update if needed
             self.read()
         return self._temperature
-

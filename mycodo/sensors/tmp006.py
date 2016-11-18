@@ -3,6 +3,8 @@ import logging
 import Adafruit_TMP.TMP006 as TMP006
 from .base_sensor import AbstractSensor
 
+logger = logging.getLogger(__name__)
+
 
 class TMP006Sensor(AbstractSensor):
     """ A sensor support class that monitors the TMP006's die and object temperatures """
@@ -69,5 +71,6 @@ class TMP006Sensor(AbstractSensor):
             self._temperature_die, self._temperature_object = self.get_measurement()
             return  # success - no errors
         except Exception as e:
-            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         return 1

@@ -6,6 +6,8 @@ import pigpio
 from sensorutils import dewpoint
 from .base_sensor import AbstractSensor
 
+logger = logging.getLogger(__name__)
+
 
 class DHT22Sensor(AbstractSensor):
     """
@@ -32,9 +34,6 @@ class DHT22Sensor(AbstractSensor):
         """
         Instantiate with the Pi and gpio to which the DHT22 output
         pin is connected.
-
-        Optionally a LED may be specified.  This will be blinked for
-        each successful reading.
 
         Optionally a gpio used to power the sensor may be specified.
         This gpio will be set high to power the sensor.  If the sensor
@@ -143,7 +142,8 @@ class DHT22Sensor(AbstractSensor):
             self._dew_point = dewpoint(self._temperature, self._humidity)
             return  # success - no errors
         except Exception as e:
-            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         return 1
 
     def setup(self):
@@ -212,8 +212,6 @@ class DHT22Sensor(AbstractSensor):
                         mult = 0.1
                     self._temperature = ((self.tH << 8) + self.tL) * mult
                     self.tov = time.time()
-                    if self.LED is not None:
-                        self.pi.write(self.LED, 0)
                 else:
                     self.bad_CS += 1
         elif self.bit >= 24:  # in temp low byte
@@ -224,8 +222,6 @@ class DHT22Sensor(AbstractSensor):
             self.hL = (self.hL << 1) + val
         elif self.bit >= 0:  # in humidity high byte
             self.hH = (self.hH << 1) + val
-        else:  # header bits
-            pass
         self.bit += 1
 
     def _edge_fall(self, tick, diff):

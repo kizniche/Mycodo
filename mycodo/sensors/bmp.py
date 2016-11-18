@@ -4,6 +4,8 @@ import logging
 import time
 from .base_sensor import AbstractSensor
 
+logger = logging.getLogger(__name__)
+
 
 class BMPSensor(AbstractSensor):
     """
@@ -23,18 +25,18 @@ class BMPSensor(AbstractSensor):
         """  Representation of object """
         return "<{cls}(altitude={alt})(pressure={press})" \
                "(temperature={temp})>".format(
-            cls=type(self).__name__,
-            alt="{0:.2f}".format(self._altitude),
-            press=self._pressure,
-            temp="{0:.2f}".format(self._temperature))
+                cls=type(self).__name__,
+                alt="{0:.2f}".format(self._altitude),
+                press=self._pressure,
+                temp="{0:.2f}".format(self._temperature))
 
     def __str__(self):
         """ Return measurement information """
         return "Altitude: {alt}, Pressure: {press}, " \
                "Temperature: {temp}".format(
-            alt="{0:.2f}".format(self._altitude),
-            press=self._pressure,
-            temp="{0:.2f}".format(self._temperature))
+                alt="{0:.2f}".format(self._altitude),
+                press=self._pressure,
+                temp="{0:.2f}".format(self._temperature))
 
     def __iter__(self):  # must return an iterator
         """ SensorClass iterates through live measurement readings """
@@ -86,5 +88,6 @@ class BMPSensor(AbstractSensor):
             self._temperature, self._pressure, self._altitude = self.get_measurement()
             return  # success - no errors
         except Exception as e:
-            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         return 1

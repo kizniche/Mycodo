@@ -34,6 +34,8 @@ import threading
 import time
 import timeit
 import rpyc
+# Don't remove the next line. It's required to not crash strptime
+# that's used in the controllers. I've tested with and without this line.
 from time import strptime  # Fix multithread bug in strptime
 from collections import OrderedDict
 from daemonize import Daemonize
@@ -273,8 +275,9 @@ class DaemonController(threading.Thread):
                         try:
                             os.remove(FILE_TIMELAPSE_PARAM)
                             os.remove(LOCK_FILE_TIMELAPSE)
-                        except:
-                            pass
+                        except Exception as e:
+                            self.logger.error("{cls} raised an exception: "
+                                              "{err}".format(cls=type(self).__name__, err=e))
                     elif now > float(dict_timelapse_param['next_capture']):
                         # Ensure next capture is greater than now (in case of power failure/reboot)
                         next_capture = float(dict_timelapse_param['next_capture'])
@@ -306,8 +309,9 @@ class DaemonController(threading.Thread):
                     try:
                         os.remove(FILE_TIMELAPSE_PARAM)
                         os.remove(LOCK_FILE_TIMELAPSE)
-                    except:
-                        pass
+                    except Exception as e:
+                        self.logger.error("{cls} raised an exception: "
+                                          "{err}".format(cls=type(self).__name__, err=e))
 
                 # Log ram usage every 24 hours
                 if now > self.timer_ram_use:

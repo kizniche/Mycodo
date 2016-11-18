@@ -4,6 +4,8 @@ import os
 import logging
 from .base_sensor import AbstractSensor
 
+logger = logging.getLogger(__name__)
+
 
 class RaspberryPiCPULoad(AbstractSensor):
     """ A sensor support class that monitors the raspberry pi's cpu load """
@@ -80,5 +82,6 @@ class RaspberryPiCPULoad(AbstractSensor):
              self._cpu_load_15m) = self.get_measurement()
             return  # success - no errors
         except Exception as e:
-            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         return 1

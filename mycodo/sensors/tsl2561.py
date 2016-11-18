@@ -3,6 +3,8 @@ import logging
 from tentacle_pi.TSL2561 import TSL2561
 from .base_sensor import AbstractSensor
 
+logger = logging.getLogger(__name__)
+
 
 class TSL2561Sensor(AbstractSensor):
     """ A sensor support class that monitors the DS18B20's lux """
@@ -57,5 +59,6 @@ class TSL2561Sensor(AbstractSensor):
             self._lux = self.get_measurement()
             return  # success - no errors
         except Exception as e:
-            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         return 1

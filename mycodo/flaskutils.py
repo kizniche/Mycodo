@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-
+import logging
 import bcrypt
 import os
 import random
@@ -54,6 +54,8 @@ from config import INFLUXDB_PORT
 from config import INFLUXDB_USER
 from config import INFLUXDB_PASSWORD
 from config import INFLUXDB_DATABASE
+
+logger = logging.getLogger(__name__)
 
 
 #
@@ -262,8 +264,8 @@ def method_add(formAddMethod, method):
                     if start_time < last_method_end_time:
                         flash("The new entry start time ({}) cannot overlap the last entry's end time ({}). Note: They may be the same time.".format(last_method_end_time, start_time), "error")
                         return 1
-            except ValueError:
-                pass
+            except ValueError as e:
+                logger.error("{err}".format(err=e))
 
     elif formAddMethod.method_select.data == 'relay':
         if this_method.method_type == 'Date':
@@ -479,7 +481,9 @@ def auth_credentials(address, user, password_hash):
     try:
         r = requests.get(url, params=credentials, verify=False)
         return int(r.text)
-    except:
+    except Exception as e:
+        logger.error("'auth_credentials' raised an exception: "
+                     "{err}".format(err=e))
         return 1
 
 

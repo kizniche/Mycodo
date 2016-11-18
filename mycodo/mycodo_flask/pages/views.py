@@ -85,8 +85,8 @@ def page_camera():
         else:
             flash("Camera support doesn't appear to be enabled. Please "
                   "enable it with 'sudo raspi-config'", "error")
-    except IOError:
-        pass
+    except IOError as e:
+        logger.error("Camera IOError raised in '/camera' endpoint: {err}".format(err=e))
 
     # Check if a video stream is active
     stream_locked = os.path.isfile(LOCK_FILE_STREAM)
@@ -157,8 +157,8 @@ def page_camera():
                 try:
                     os.remove(FILE_TIMELAPSE_PARAM)
                     os.remove(LOCK_FILE_TIMELAPSE)
-                except IOError:
-                    pass
+                except IOError as e:
+                    logger.error("Camera IOError raised in '/camera' endpoint: {err}".format(err=e))
 
             elif formCamera.StartStream.data:
                 if not timelapse_locked:
@@ -191,7 +191,8 @@ def page_camera():
         ts = os.path.getmtime(latest_still_img_fullpath)
         latest_still_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%c")
         latest_still_img = os.path.basename(latest_still_img_fullpath)
-    except:
+    except Exception as e:
+        logger.error("Exception raised in '/camera' endpoint: {err}".format(err=e))
         latest_still_img_ts = None
         latest_still_img = None
 
@@ -202,7 +203,8 @@ def page_camera():
         ts = os.path.getmtime(latest_timelapse_img_fullpath)
         latest_timelapse_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%c")
         latest_timelapse_img = os.path.basename(latest_timelapse_img_fullpath)
-    except:
+    except Exception as e:
+        logger.error("Exception raised in '/camera' endpoint: {err}".format(err=e))
         latest_timelapse_img_ts = None
         latest_timelapse_img = None
 

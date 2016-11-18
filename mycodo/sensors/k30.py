@@ -7,6 +7,7 @@ import time
 import RPi.GPIO as GPIO
 from .base_sensor import AbstractSensor
 
+logger = logging.getLogger(__name__)
 K30_LOCK_FILE = "/var/lock/sensor-k30"
 
 
@@ -70,23 +71,21 @@ class K30Sensor(AbstractSensor):
 
         :returns: None on success or 1 on error
         """
+        lock = LockFile(K30_LOCK_FILE)
         try:
-            lock = LockFile(K30_LOCK_FILE)
-            try:
-                # Acquire lock on K30 to ensure more than one read isn't
-                # being attempted at once.
-                while not lock.i_am_locking():
-                    try:
-                        lock.acquire(timeout=60)  # wait up to 60 seconds before breaking lock
-                    except:
-                        lock.break_lock()
-                        lock.acquire()
-                self._co2 = self.get_measurement()
-                lock.release()
-            except:
-                lock.release()
-                return 1
+            # Acquire lock on K30 to ensure more than one read isn't
+            # being attempted at once.
+            while not lock.i_am_locking():
+                try:
+                    lock.acquire(timeout=60)  # wait up to 60 seconds before breaking lock
+                except:
+                    lock.break_lock()
+                    lock.acquire()
+            self._co2 = self.get_measurement()
+            lock.release()
             return  # success - no errors
         except Exception as e:
-            logging.error("Unknown error in {cls}.get_measurement(): {err}".format(cls=type(self).__name__, err=e))
-        return 1
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
+            lock.release()
+            return 1

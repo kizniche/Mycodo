@@ -37,7 +37,9 @@ class MCP342x_read(object):
                                       "Acquiring Lock: {}".format(self.i2c_address,
                                                                   self.lock.path))
                     self.lock.acquire(timeout=60)  # wait up to 60 seconds
-                except:
+                except Exception as e:
+                    self.logger.error("{cls} exception in read call.  Error: "
+                                      "{err}".format(cls=type(self).__name__, err=e))
                     self.logger.warning(
                         "[Analog->Digital Converter 0x{:02X}] Waited 60 "
                         "seconds. Breaking lock to acquire {}".format(
