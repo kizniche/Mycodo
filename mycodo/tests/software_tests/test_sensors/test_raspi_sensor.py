@@ -108,7 +108,7 @@ def test_raspberry_pi_cpu_read_logs_ioerrors():
     with LogCapture() as log_cap:
         with mock.patch('mycodo.sensors.raspi.RaspberryPiCPUTemp.get_measurement', side_effect=IOError('msg')):
             RaspberryPiCPUTemp().read()
-    expected_logs = ('root', 'ERROR', "RaspberryPiCPUTemp.get_measurement() method raised IOError: msg")
+    expected_logs = ('mycodo.sensors.raspi', 'ERROR', "RaspberryPiCPUTemp.get_measurement() method raised IOError: msg")
     assert expected_logs in log_cap.actual()
 
 
@@ -118,7 +118,7 @@ def test_raspberry_pi_cpu_read_logs_unknown_errors():
         # force an Exception to be raised when get_measurement is called
         with mock.patch('mycodo.sensors.raspi.RaspberryPiCPUTemp.get_measurement', side_effect=Exception('msg')):
             RaspberryPiCPUTemp().read()
-    expected_logs = ('root', 'ERROR', 'RaspberryPiCPUTemp raised an exception when taking a reading: msg')
+    expected_logs = ('mycodo.sensors.raspi', 'ERROR', 'RaspberryPiCPUTemp raised an exception when taking a reading: msg')
     assert expected_logs in log_cap.actual()
 
 
@@ -244,7 +244,7 @@ def test_raspberry_pi_gpu_temp_read_logs_called_process_error():
         with mock.patch('mycodo.sensors.raspi.RaspberryPiGPUTemp.get_measurement',
                         side_effect=CalledProcessError(cmd='cmd', returncode=0)):
             RaspberryPiGPUTemp().read()
-    expected_log = ('root', 'ERROR', "RaspberryPiGPUTemp.get_measurement() subprocess call raised: cmd")
+    expected_log = ('mycodo.sensors.raspi', 'ERROR', "RaspberryPiGPUTemp.get_measurement() subprocess call raised: cmd")
     assert expected_log in log_cap.actual()
 
 
@@ -253,7 +253,7 @@ def test_raspberry_pi_gpu_temp_read_logs_ioerror():
     with LogCapture() as log_cap:
         with mock.patch('mycodo.sensors.raspi.RaspberryPiGPUTemp.get_measurement', side_effect=IOError('msg')):
             RaspberryPiGPUTemp().read()
-    expected_log = ('root', 'ERROR', "RaspberryPiGPUTemp.get_measurement() method raised IOError: msg")
+    expected_log = ('mycodo.sensors.raspi', 'ERROR', "RaspberryPiGPUTemp.get_measurement() method raised IOError: msg")
     assert expected_log in log_cap.actual()
 
 
@@ -262,5 +262,5 @@ def test_raspberry_pi_gpu_temp_read_logs_unknown_errors():
     with LogCapture() as log_cap:
         with mock.patch('mycodo.sensors.raspi.RaspberryPiGPUTemp.get_measurement', side_effect=Exception('msg')):
             RaspberryPiGPUTemp().read()
-    expected_log = ('root', 'ERROR', "RaspberryPiGPUTemp raised an exception when taking a reading:: msg")
+    expected_log = ('mycodo.sensors.raspi', 'ERROR', "RaspberryPiGPUTemp raised an exception when taking a reading: msg")
     assert expected_log in log_cap.actual()

@@ -107,8 +107,6 @@ class RaspberryPiGPUTemp(AbstractSensor):
         except Exception as e:
             logger.error("{cls} raised an exception when taking a reading: "
                          "{err}".format(cls=type(self).__name__, err=e))
-
-        # After any error return 1
         return 1
 
     @staticmethod

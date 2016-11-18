@@ -1,6 +1,6 @@
 # coding=utf-8
 import logging
-from tentacle_pi.AM2315 import AM2315
+from tentacle_pi import AM2315
 from sensorutils import dewpoint
 from .base_sensor import AbstractSensor
 
@@ -50,7 +50,7 @@ class AM2315Sensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        self.am = AM2315(0x5c, "/dev/i2c-" + self.I2C_bus_number)
+        self.am = AM2315.AM2315(0x5c, "/dev/i2c-" + self.I2C_bus_number)
         temperature, humidity, crc_check = self.am.sense()
         if crc_check != 1:
             return 1
