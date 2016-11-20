@@ -74,26 +74,22 @@ def test_sensor_class_iterates_using_in():
             # Create mock_measure.side_effect
             list_cond = conditions_list(sensor_conditions, 4)
             mock_measure.side_effect = list_cond
-
             # Build expected results list
             expected_result_list = []
             for index in range(4):
                 dict_build = {}
-                index_cond = 0
                 if len(sensor_conditions) == 1:
                     if sensor_conditions[0][2] == 'float':
                         dict_build[sensor_conditions[0][1]] = float(list_cond[index])
                     else:
                         dict_build[sensor_conditions[0][1]] = list_cond[index]
                 else:
-                    for each_cond in sensor_conditions:
+                    for index_cond, each_cond in enumerate(sensor_conditions):
                         if each_cond[2] == 'float':
                             dict_build[each_cond[1]] = float(list_cond[index][index_cond])
                         else:
                             dict_build[each_cond[1]] = list_cond[index][index_cond]
-                        index_cond += 1
                 expected_result_list.append(dict_build)
-
             assert expected_result_list == [cond for cond in each_class]
 
 
@@ -105,7 +101,6 @@ def test_sensor_class__iter__returns_iterator():
         with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__, name=each_class.__class__.__name__)) as mock_measure:
             # Create mock_measure.side_effect
             mock_measure.side_effect = conditions_list(sensor_conditions, 4)
-
             # check __iter__ method return
             assert isinstance(each_class.__iter__(), Iterator)
 
@@ -119,7 +114,6 @@ def test_sensor_class_read_updates_condition():
             # Create mock_measure.side_effect
             list_cond = conditions_list(sensor_conditions, 2)
             mock_measure.side_effect = list_cond
-
             # test read() function
             if len(sensor_conditions) == 1:
                 for each_condition in sensor_conditions:
@@ -154,23 +148,19 @@ def test_sensor_class_next_returns_dict():
             # Create mock_measure.side_effect
             list_cond = conditions_list(sensor_conditions, 4)
             mock_measure.side_effect = list_cond
-
             # Build expected results list
             dict_build = {}
-            index_cond = 0
             if len(sensor_conditions) == 1:
                 if sensor_conditions[0][2] == 'float':
                     dict_build[sensor_conditions[0][1]] = float(list_cond[0])
                 else:
                     dict_build[sensor_conditions[0][1]] = list_cond[0]
             else:
-                for each_cond in sensor_conditions:
+                for index_cond, each_cond in enumerate(sensor_conditions):
                     if each_cond[2] == 'float':
                         dict_build[each_cond[1]] = float(list_cond[0][index_cond])
                     else:
                         dict_build[each_cond[1]] = list_cond[0][index_cond]
-                    index_cond += 1
-
             assert each_class.next() == dict_build
 
 
@@ -179,12 +169,10 @@ def test_sensor_class_condition_properties():
     sensor_classes = return_classes()
     for each_class in sensor_classes:
         sensor_conditions = each_class.info()
-        with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__,
-                                                              name=each_class.__class__.__name__)) as mock_measure:
+        with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__, name=each_class.__class__.__name__)) as mock_measure:
             # Create mock_measure.side_effect
             list_cond = conditions_list(sensor_conditions, 2)
             mock_measure.side_effect = list_cond
-
             # test read() function
             if len(sensor_conditions) == 1:
                 for each_condition in sensor_conditions:
