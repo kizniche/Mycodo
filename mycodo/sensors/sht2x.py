@@ -51,6 +51,27 @@ class SHT2xSensor(AbstractSensor):
                     humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
+    @property
+    def dew_point(self):
+        """ SHT2x dew point in Celsius """
+        if not self._dew_point:  # update if needed
+            self.read()
+        return self._dew_point
+
+    @property
+    def humidity(self):
+        """ SHT2x relative humidity in percent """
+        if not self._humidity:  # update if needed
+            self.read()
+        return self._humidity
+
+    @property
+    def temperature(self):
+        """ SHT2x temperature in Celsius """
+        if not self._temperature:  # update if needed
+            self.read()
+        return self._temperature
+
     def get_measurement(self):
         """ Gets the humidity and temperature """
         bus = smbus.SMBus(self.i2c_bus)
@@ -74,27 +95,6 @@ class SHT2xSensor(AbstractSensor):
         humidity = -6 + (((data0 * 256 + data1) * 125.0) / 65536.0)
         dew_point = dewpoint(temperature, humidity)
         return dew_point, humidity, temperature
-
-    @property
-    def dew_point(self):
-        """ SHT2x dew point in Celsius """
-        if not self._dew_point:  # update if needed
-            self.read()
-        return self._dew_point
-
-    @property
-    def humidity(self):
-        """ SHT2x relative humidity in percent """
-        if not self._humidity:  # update if needed
-            self.read()
-        return self._humidity
-
-    @property
-    def temperature(self):
-        """ SHT2x temperature in Celsius """
-        if not self._temperature:  # update if needed
-            self.read()
-        return self._temperature
 
     def read(self):
         """

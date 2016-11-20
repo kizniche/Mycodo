@@ -35,18 +35,18 @@ class RaspberryPiCPUTemp(AbstractSensor):
             raise StopIteration  # required
         return dict(temperature=float('{0:.2f}'.format(self._temperature)))
 
-    @staticmethod
-    def get_measurement():
-        """ Gets the Raspberry pi's temperature in Celsius by reading the temp file and div by 1000 """
-        with open('/sys/class/thermal/thermal_zone0/temp') as cpu_temp_file:
-            return float(cpu_temp_file.read()) / 1000
-
     @property
     def temperature(self):
         """ CPU temperature in celsius """
         if not self._temperature:  # update if needed
             self.read()
         return self._temperature
+
+    @staticmethod
+    def get_measurement():
+        """ Gets the Raspberry pi's temperature in Celsius by reading the temp file and div by 1000 """
+        with open('/sys/class/thermal/thermal_zone0/temp') as cpu_temp_file:
+            return float(cpu_temp_file.read()) / 1000
 
     def read(self):
         """
@@ -93,6 +93,19 @@ class RaspberryPiGPUTemp(AbstractSensor):
             raise StopIteration  # required
         return dict(temperature=float('{0:.2f}'.format(self._temperature)))
 
+    @property
+    def temperature(self):
+        """ returns the last temperature """
+        if not self._temperature:  # update if needed
+            self.read()
+        return self._temperature
+
+    @staticmethod
+    def get_measurement():
+        """ Calls the vcgencmd in a subprocess and reads the GPU temperature """
+        gputempstr = subprocess.check_output(('/opt/vc/bin/vcgencmd', 'measure_temp'))  # example output: temp=42.8'C
+        return float(gputempstr.split('=')[1].split("'")[0])
+
     def read(self):
         """ updates the self._temperature """
         try:
@@ -108,16 +121,3 @@ class RaspberryPiGPUTemp(AbstractSensor):
             logger.error("{cls} raised an exception when taking a reading: "
                          "{err}".format(cls=type(self).__name__, err=e))
         return 1
-
-    @staticmethod
-    def get_measurement():
-        """ Calls the vcgencmd in a subprocess and reads the GPU temperature """
-        gputempstr = subprocess.check_output(('/opt/vc/bin/vcgencmd', 'measure_temp'))  # example output: temp=42.8'C
-        return float(gputempstr.split('=')[1].split("'")[0])
-
-    @property
-    def temperature(self):
-        """ returns the last temperature """
-        if not self._temperature:  # update if needed
-            self.read()
-        return self._temperature

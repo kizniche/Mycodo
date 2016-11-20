@@ -72,6 +72,27 @@ class HTU21DSensor(AbstractSensor):
                     humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
+    @property
+    def dew_point(self):
+        """ HTU21D dew point in Celsius """
+        if not self._dew_point:  # update if needed
+            self.read()
+        return self._dew_point
+
+    @property
+    def humidity(self):
+        """ HTU21D relative humidity in percent """
+        if not self._humidity:  # update if needed
+            self.read()
+        return self._humidity
+
+    @property
+    def temperature(self):
+        """ HTU21D temperature in Celsius """
+        if not self._temperature:  # update if needed
+            self.read()
+        return self._temperature
+
     def get_measurement(self):
         """ Gets the humidity and temperature """
         # wtreg = 0xE6
@@ -103,27 +124,6 @@ class HTU21DSensor(AbstractSensor):
         humidity = ((25 - self.temperature) * -0.15) + uncomp_humidity
         dew_pt = dewpoint(temperature, humidity)
         return dew_pt, humidity, temperature
-
-    @property
-    def dew_point(self):
-        """ HTU21D dew point in Celsius """
-        if not self._dew_point:  # update if needed
-            self.read()
-        return self._dew_point
-
-    @property
-    def humidity(self):
-        """ HTU21D relative humidity in percent """
-        if not self._humidity:  # update if needed
-            self.read()
-        return self._humidity
-
-    @property
-    def temperature(self):
-        """ HTU21D temperature in Celsius """
-        if not self._temperature:  # update if needed
-            self.read()
-        return self._temperature
 
     def read(self):
         """

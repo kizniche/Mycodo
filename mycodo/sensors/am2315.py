@@ -49,15 +49,13 @@ class AM2315Sensor(AbstractSensor):
                     humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
-    def get_measurement(self):
-        """ Gets the humidity and temperature """
-        self.am = AM2315.AM2315(0x5c, "/dev/i2c-" + self.I2C_bus_number)
-        temperature, humidity, crc_check = self.am.sense()
-        if crc_check != 1:
-            return 1
-        else:
-            dew_pt = dewpoint(temperature, humidity)
-            return dew_pt, humidity, temperature
+    def info(self):
+        conditions_measured = [
+            ("Dew Point", "dew_point", "float", "0.00", self._dew_point, self.dew_point),
+            ("Humidity", "humidity", "float", "0.00", self._humidity, self.humidity),
+            ("Temperature", "temperature", "float", "0.00", self._temperature, self.temperature)
+        ]
+        return conditions_measured
 
     @property
     def dew_point(self):
@@ -80,6 +78,16 @@ class AM2315Sensor(AbstractSensor):
             self.read()
         return self._temperature
 
+    def get_measurement(self):
+        """ Gets the humidity and temperature """
+        self.am = AM2315.AM2315(0x5c, "/dev/i2c-" + self.I2C_bus_number)
+        temperature, humidity, crc_check = self.am.sense()
+        if crc_check != 1:
+            return 1
+        else:
+            dew_pt = dewpoint(temperature, humidity)
+            return dew_pt, humidity, temperature
+
     def read(self):
         """
         Takes a reading from the AM2315 and updates the self.dew_point,
@@ -94,11 +102,3 @@ class AM2315Sensor(AbstractSensor):
             logger.error("{cls} raised an exception when taking a reading: "
                          "{err}".format(cls=type(self).__name__, err=e))
         return 1
-
-    def info(self):
-        conditions_measured = [
-            ("Dew Point", "dew_point", "float", "0.00", self._dew_point, self.dew_point),
-            ("Humidity", "humidity", "float", "0.00", self._humidity, self.humidity),
-            ("Temperature", "temperature", "float", "0.00", self._temperature, self.temperature)
-        ]
-        return conditions_measured

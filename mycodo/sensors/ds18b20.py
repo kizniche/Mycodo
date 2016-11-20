@@ -33,16 +33,16 @@ class DS18B20Sensor(AbstractSensor):
             raise StopIteration  # required
         return dict(temperature=float('{0:.2f}'.format(self._temperature)))
 
-    def get_measurement(self):
-        """ Gets the DS18B20's temperature in Celsius by reading the temp file and div by 1000"""
-        return W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, self.pin).get_temperature()
-
     @property
     def temperature(self):
         """ DS18B20 temperature in celsius """
         if not self._temperature:  # update if needed
             self.read()
         return self._temperature
+
+    def get_measurement(self):
+        """ Gets the DS18B20's temperature in Celsius by reading the temp file and div by 1000"""
+        return W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, self.pin).get_temperature()
 
     def read(self):
         """

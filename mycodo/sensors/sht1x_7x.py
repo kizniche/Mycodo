@@ -49,14 +49,6 @@ class SHT1x7xSensor(AbstractSensor):
                     humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
-    def get_measurement(self):
-        """ Gets the humidity and temperature """
-        sht_sensor = Sht(self.clock_pin, self.pin, voltage=self.voltage)
-        temperature = sht_sensor.read_t()
-        humidity = sht_sensor.read_rh()
-        dew_point = sht_sensor.read_dew_point(self.temperature, self.humidity)
-        return dew_point, humidity, temperature
-
     @property
     def dew_point(self):
         """ SHT1x7x dew point in Celsius """
@@ -77,6 +69,14 @@ class SHT1x7xSensor(AbstractSensor):
         if not self._temperature:  # update if needed
             self.read()
         return self._temperature
+
+    def get_measurement(self):
+        """ Gets the humidity and temperature """
+        sht_sensor = Sht(self.clock_pin, self.pin, voltage=self.voltage)
+        temperature = sht_sensor.read_t()
+        humidity = sht_sensor.read_rh()
+        dew_point = sht_sensor.read_dew_point(self.temperature, self.humidity)
+        return dew_point, humidity, temperature
 
     def read(self):
         """

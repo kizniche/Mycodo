@@ -22,7 +22,7 @@ class TSL2561Sensor(AbstractSensor):
 
     def __str__(self):
         """ Return lux information """
-        return "lux: {}".format("{0:.2f}".format(self._lux))
+        return "Lux: {lux}".format(lux="{0:.2f}".format(self._lux))
 
     def __iter__(self):  # must return an iterator
         """ TSL2561Sensor iterates through live lux readings """
@@ -34,6 +34,13 @@ class TSL2561Sensor(AbstractSensor):
             raise StopIteration  # required
         return dict(lux=float('{0:.2f}'.format(self._lux)))
 
+    @property
+    def lux(self):
+        """ TSL2561 luminosity in lux """
+        if not self._lux:  # update if needed
+            self.read()
+        return self._lux
+
     def get_measurement(self):
         """ Gets the DS18B20's lux in Celsius by reading the temp file and div by 1000"""
         tsl = TSL2561(self.i2c_address, "/dev/i2c-" + str(self.i2c_bus))
@@ -41,13 +48,6 @@ class TSL2561Sensor(AbstractSensor):
         # tsl.set_gain(16)
         tsl.set_time(0x00)
         return tsl.lux()
-
-    @property
-    def lux(self):
-        """ TSL2561 luminosity in lux """
-        if not self._lux:  # update if needed
-            self.read()
-        return self._lux
 
     def read(self):
         """

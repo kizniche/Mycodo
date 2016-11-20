@@ -80,21 +80,6 @@ class DHT11Sensor(AbstractSensor):
                     humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
-    def get_measurement(self):
-        """ Gets the humidity and temperature """
-        if self.power is not None:
-            print("Turning on sensor at GPIO {}...".format(self.gpio))
-            self.pi.write(self.power, 1)  # Switch sensor on.
-            time.sleep(2)
-        atexit.register(self.close)
-        self.setup()
-        self.pi.write(self.gpio, pigpio.LOW)
-        time.sleep(0.017)  # 17 ms
-        self.pi.set_mode(self.gpio, pigpio.INPUT)
-        self.pi.set_watchdog(self.gpio, 200)
-        time.sleep(0.2)
-        self._dew_point = dewpoint(self._temperature, self._humidity)
-
     @property
     def dew_point(self):
         """ AM2315 dew point in Celsius """
@@ -115,6 +100,21 @@ class DHT11Sensor(AbstractSensor):
         if not self._temperature:  # update if needed
             self.read()
         return self._temperature
+
+    def get_measurement(self):
+        """ Gets the humidity and temperature """
+        if self.power is not None:
+            print("Turning on sensor at GPIO {}...".format(self.gpio))
+            self.pi.write(self.power, 1)  # Switch sensor on.
+            time.sleep(2)
+        atexit.register(self.close)
+        self.setup()
+        self.pi.write(self.gpio, pigpio.LOW)
+        time.sleep(0.017)  # 17 ms
+        self.pi.set_mode(self.gpio, pigpio.INPUT)
+        self.pi.set_watchdog(self.gpio, 200)
+        time.sleep(0.2)
+        self._dew_point = dewpoint(self._temperature, self._humidity)
 
     def read(self):
         """

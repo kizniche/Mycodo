@@ -42,6 +42,13 @@ class K30Sensor(AbstractSensor):
             raise StopIteration  # required
         return dict(co2=float('{0:.2f}'.format(self._co2)))
 
+    @property
+    def co2(self):
+        """ CO2 concentration in ppmv """
+        if not self._co2:  # update if needed
+            self.read()
+        return self._co2
+
     def get_measurement(self):
         """ Gets the K30's CO2 concentration in ppmv via UART"""
         ser = serial.Serial(self.serial_device, timeout=1)  # Wait 1 second for reply
@@ -57,13 +64,6 @@ class K30Sensor(AbstractSensor):
             low = ord(resp[4])
             co2 = (high * 256) + low
         return co2
-
-    @property
-    def co2(self):
-        """ CO2 concentration in ppmv """
-        if not self._co2:  # update if needed
-            self.read()
-        return self._co2
 
     def read(self):
         """

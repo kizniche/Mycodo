@@ -1,5 +1,5 @@
 # coding=utf-8
-""" Tests for the AtlasPT1000 sensor class """
+""" Tests for all sensor classes """
 import mock
 import pytest
 from testfixtures import LogCapture
@@ -7,20 +7,20 @@ from testfixtures import LogCapture
 from collections import Iterator
 from mycodo.sensors.atlas_pt1000 import AtlasPT1000Sensor
 from mycodo.sensors.am2315 import AM2315Sensor
-# from mycodo.sensors.bme280 import BME280Sensor
-from mycodo.sensors.bmp import BMPSensor
-# from mycodo.sensors.dht11 import DHT11Sensor
-# from mycodo.sensors.dht22 import DHT22Sensor
-from mycodo.sensors.ds18b20 import DS18B20Sensor
-from mycodo.sensors.htu21d import HTU21DSensor
-# from mycodo.sensors.k30 import K30Sensor
-from mycodo.sensors.raspi import (RaspberryPiCPUTemp,
-                                  RaspberryPiGPUTemp)
-from mycodo.sensors.raspi_cpuload import RaspberryPiCPULoad
-from mycodo.sensors.tmp006 import TMP006Sensor
-from mycodo.sensors.tsl2561 import TSL2561Sensor
-from mycodo.sensors.sht1x_7x import SHT1x7xSensor
-from mycodo.sensors.sht2x import SHT2xSensor
+# # from mycodo.sensors.bme280 import BME280Sensor
+# from mycodo.sensors.bmp import BMPSensor
+# # from mycodo.sensors.dht11 import DHT11Sensor
+# # from mycodo.sensors.dht22 import DHT22Sensor
+# from mycodo.sensors.ds18b20 import DS18B20Sensor
+# from mycodo.sensors.htu21d import HTU21DSensor
+# # from mycodo.sensors.k30 import K30Sensor
+# from mycodo.sensors.raspi import (RaspberryPiCPUTemp,
+#                                   RaspberryPiGPUTemp)
+# from mycodo.sensors.raspi_cpuload import RaspberryPiCPULoad
+# from mycodo.sensors.tmp006 import TMP006Sensor
+# from mycodo.sensors.tsl2561 import TSL2561Sensor
+# from mycodo.sensors.sht1x_7x import SHT1x7xSensor
+# from mycodo.sensors.sht2x import SHT2xSensor
 
 
 # ----------------------------
@@ -48,13 +48,13 @@ def return_classes():
     return sensor_classes
 
 
-def conditions_list(sensor_conditions, range_num):
+def conditions_list(sensor_measurements, range_num):
     list_cond = []
     number = 20
     number_mod = 5
     for _ in range(range_num):
         tuple_conditions = []
-        for _ in sensor_conditions:
+        for _ in sensor_measurements:
             tuple_conditions.append(number)
             number += number_mod
         if len(tuple_conditions) > 1:
@@ -69,22 +69,24 @@ def test_sensor_class_iterates_using_in():
     """ Verify that a class object can use the 'in' operator """
     sensor_classes = return_classes()
     for each_class in sensor_classes:
-        sensor_conditions = each_class.info()
-        with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__, name=each_class.__class__.__name__)) as mock_measure:
+        sensor_measurements = each_class.info()
+        with mock.patch('{mod}.{name}.get_measurement'.format(
+                mod=each_class.__module__,
+                name=each_class.__class__.__name__)) as mock_measure:
             # Create mock_measure.side_effect
-            list_cond = conditions_list(sensor_conditions, 4)
+            list_cond = conditions_list(sensor_measurements, 4)
             mock_measure.side_effect = list_cond
             # Build expected results list
             expected_result_list = []
             for index in range(4):
                 dict_build = {}
-                if len(sensor_conditions) == 1:
-                    if sensor_conditions[0][2] == 'float':
-                        dict_build[sensor_conditions[0][1]] = float(list_cond[index])
+                if len(sensor_measurements) == 1:
+                    if sensor_measurements[0][2] == 'float':
+                        dict_build[sensor_measurements[0][1]] = float(list_cond[index])
                     else:
-                        dict_build[sensor_conditions[0][1]] = list_cond[index]
+                        dict_build[sensor_measurements[0][1]] = list_cond[index]
                 else:
-                    for index_cond, each_cond in enumerate(sensor_conditions):
+                    for index_cond, each_cond in enumerate(sensor_measurements):
                         if each_cond[2] == 'float':
                             dict_build[each_cond[1]] = float(list_cond[index][index_cond])
                         else:
@@ -97,10 +99,12 @@ def test_sensor_class__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
     sensor_classes = return_classes()
     for each_class in sensor_classes:
-        sensor_conditions = each_class.info()
-        with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__, name=each_class.__class__.__name__)) as mock_measure:
+        sensor_measurements = each_class.info()
+        with mock.patch('{mod}.{name}.get_measurement'.format(
+                mod=each_class.__module__,
+                name=each_class.__class__.__name__)) as mock_measure:
             # Create mock_measure.side_effect
-            mock_measure.side_effect = conditions_list(sensor_conditions, 4)
+            mock_measure.side_effect = conditions_list(sensor_measurements, 4)
             # check __iter__ method return
             assert isinstance(each_class.__iter__(), Iterator)
 
@@ -109,54 +113,58 @@ def test_sensor_class_read_updates_condition():
     """  Verify that Class.read() gets the condition """
     sensor_classes = return_classes()
     for each_class in sensor_classes:
-        sensor_conditions = each_class.info()
-        with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__, name=each_class.__class__.__name__)) as mock_measure:
+        sensor_measurements = each_class.info()
+        with mock.patch('{mod}.{name}.get_measurement'.format(
+                mod=each_class.__module__,
+                name=each_class.__class__.__name__)) as mock_measure:
             # Create mock_measure.side_effect
-            list_cond = conditions_list(sensor_conditions, 2)
+            list_cond = conditions_list(sensor_measurements, 2)
             mock_measure.side_effect = list_cond
             # test read() function
-            if len(sensor_conditions) == 1:
-                for each_condition in sensor_conditions:
-                    assert each_condition[4] == 0  # init value
+            if len(sensor_measurements) == 1:
+                for each_measurement in sensor_measurements:
+                    assert each_measurement[4] == 0  # init value
                 assert not each_class.read()  # updating the value using our mock_measure side effect has no error
-                sensor_conditions = each_class.info()
-                for each_condition in sensor_conditions:
-                    assert each_condition[4] == list_cond[0]  # first value
+                sensor_measurements = each_class.info()
+                for each_measurement in sensor_measurements:
+                    assert each_measurement[4] == list_cond[0]  # first value
                 assert not each_class.read()  # updating the value using our mock_measure side effect has no error
-                sensor_conditions = each_class.info()
-                for each_condition in sensor_conditions:
-                    assert each_condition[4] == list_cond[1]
+                sensor_measurements = each_class.info()
+                for each_measurement in sensor_measurements:
+                    assert each_measurement[4] == list_cond[1]
             else:
-                for each_condition in sensor_conditions:
-                    assert each_condition[4] == 0  # init value
+                for each_measurement in sensor_measurements:
+                    assert each_measurement[4] == 0  # init value
                 assert not each_class.read()  # updating the value using our mock_measure side effect has no error
-                sensor_conditions = each_class.info()
-                for index, each_condition in enumerate(sensor_conditions):
-                    assert each_condition[4] == list_cond[0][index]  # first value
+                sensor_measurements = each_class.info()
+                for index, each_measurement in enumerate(sensor_measurements):
+                    assert each_measurement[4] == list_cond[0][index]  # first value
                 assert not each_class.read()  # updating the value using our mock_measure side effect has no error
-                sensor_conditions = each_class.info()
-                for index, each_condition in enumerate(sensor_conditions):
-                    assert each_condition[4] == list_cond[1][index]  # second value
+                sensor_measurements = each_class.info()
+                for index, each_measurement in enumerate(sensor_measurements):
+                    assert each_measurement[4] == list_cond[1][index]  # second value
 
 
 def test_sensor_class_next_returns_dict():
     """ next returns dict(condition=type) """
     sensor_classes = return_classes()
     for each_class in sensor_classes:
-        sensor_conditions = each_class.info()
-        with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__, name=each_class.__class__.__name__)) as mock_measure:
+        sensor_measurements = each_class.info()
+        with mock.patch('{mod}.{name}.get_measurement'.format(
+                mod=each_class.__module__,
+                name=each_class.__class__.__name__)) as mock_measure:
             # Create mock_measure.side_effect
-            list_cond = conditions_list(sensor_conditions, 4)
+            list_cond = conditions_list(sensor_measurements, 4)
             mock_measure.side_effect = list_cond
             # Build expected results list
             dict_build = {}
-            if len(sensor_conditions) == 1:
-                if sensor_conditions[0][2] == 'float':
-                    dict_build[sensor_conditions[0][1]] = float(list_cond[0])
+            if len(sensor_measurements) == 1:
+                if sensor_measurements[0][2] == 'float':
+                    dict_build[sensor_measurements[0][1]] = float(list_cond[0])
                 else:
-                    dict_build[sensor_conditions[0][1]] = list_cond[0]
+                    dict_build[sensor_measurements[0][1]] = list_cond[0]
             else:
-                for index_cond, each_cond in enumerate(sensor_conditions):
+                for index_cond, each_cond in enumerate(sensor_measurements):
                     if each_cond[2] == 'float':
                         dict_build[each_cond[1]] = float(list_cond[0][index_cond])
                     else:
@@ -168,47 +176,51 @@ def test_sensor_class_condition_properties():
     """ verify condition property """
     sensor_classes = return_classes()
     for each_class in sensor_classes:
-        sensor_conditions = each_class.info()
-        with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__, name=each_class.__class__.__name__)) as mock_measure:
+        sensor_measurements = each_class.info()
+        with mock.patch('{mod}.{name}.get_measurement'.format(
+                mod=each_class.__module__,
+                name=each_class.__class__.__name__)) as mock_measure:
             # Create mock_measure.side_effect
-            list_cond = conditions_list(sensor_conditions, 2)
+            list_cond = conditions_list(sensor_measurements, 2)
             mock_measure.side_effect = list_cond
             # test read() function
-            if len(sensor_conditions) == 1:
-                for each_condition in sensor_conditions:
-                    assert each_condition[4] == 0  # init value
-                sensor_conditions = each_class.info()
-                for each_condition in sensor_conditions:
-                    assert each_condition[5] == list_cond[0]  # first reading with auto update
-                sensor_conditions = each_class.info()
-                for each_condition in sensor_conditions:
-                    assert each_condition[5] == list_cond[0]  # same first reading, not updated yet
+            if len(sensor_measurements) == 1:
+                for each_measurement in sensor_measurements:
+                    assert each_measurement[4] == 0  # init value
+                sensor_measurements = each_class.info()
+                for each_measurement in sensor_measurements:
+                    assert each_measurement[5] == list_cond[0]  # first reading with auto update
+                sensor_measurements = each_class.info()
+                for each_measurement in sensor_measurements:
+                    assert each_measurement[5] == list_cond[0]  # same first reading, not updated yet
                 assert not each_class.read()  # update (no errors)
-                sensor_conditions = each_class.info()
-                for each_condition in sensor_conditions:
-                    assert each_condition[5] == list_cond[1]  # next reading
+                sensor_measurements = each_class.info()
+                for each_measurement in sensor_measurements:
+                    assert each_measurement[5] == list_cond[1]  # next reading
             else:
-                for each_condition in sensor_conditions:
-                    assert each_condition[4] == 0  # init value
-                sensor_conditions = each_class.info()
-                for index, each_condition in enumerate(sensor_conditions):
-                    assert each_condition[5] == list_cond[0][index]  # first reading with auto update
-                sensor_conditions = each_class.info()
-                for index, each_condition in enumerate(sensor_conditions):
-                    assert each_condition[5] == list_cond[0][index]  # same first reading with auto update
+                for each_measurement in sensor_measurements:
+                    assert each_measurement[4] == 0  # init value
+                sensor_measurements = each_class.info()
+                for index, each_measurement in enumerate(sensor_measurements):
+                    assert each_measurement[5] == list_cond[0][index]  # first reading with auto update
+                sensor_measurements = each_class.info()
+                for index, each_measurement in enumerate(sensor_measurements):
+                    assert each_measurement[5] == list_cond[0][index]  # same first reading with auto update
                 assert not each_class.read()  # update (no errors)
-                sensor_conditions = each_class.info()
-                for index, each_condition in enumerate(sensor_conditions):
-                    assert each_condition[5] == list_cond[1][index]  # next reading
+                sensor_measurements = each_class.info()
+                for index, each_measurement in enumerate(sensor_measurements):
+                    assert each_measurement[5] == list_cond[1][index]  # next reading
 
 
 def test_sensor_class_special_method_str():
     """ expect a __str__ format """
     sensor_classes = return_classes()
     for each_class in sensor_classes:
-        sensor_conditions = each_class.info()
-        for each_cond in sensor_conditions:
-            assert "{cond}: {num}".format(cond=each_cond[0], num=each_cond[3]) in str(each_class)
+        sensor_measurements = each_class.info()
+        for each_cond in sensor_measurements:
+            assert "{cond}: {num}".format(
+                cond=each_cond[0],
+                num=each_cond[3]) in str(each_class)
 
 
 def test_sensor_class_special_method_repr():
@@ -216,20 +228,23 @@ def test_sensor_class_special_method_repr():
     sensor_classes = return_classes()
     for each_class in sensor_classes:
         str_class = ''
-        sensor_conditions = each_class.info()
-        for each_cond in sensor_conditions:
+        sensor_measurements = each_class.info()
+        for each_cond in sensor_measurements:
             str_class += "({cond}={num})".format(cond=each_cond[1],
                                                  num=each_cond[3])
-        assert "<{c_name}{str}>".format(c_name=each_class.__class__.__name__,str=str_class) in repr(each_class)
+        assert "<{c_name}{str}>".format(
+            c_name=each_class.__class__.__name__,
+            str=str_class) in repr(each_class)
 
 
 def test_sensor_class_raises_exception():
     """ stops iteration on read() error """
     sensor_classes = return_classes()
     for each_class in sensor_classes:
-        with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__,
-                                                              name=each_class.__class__.__name__),
-                        side_effect=IOError):
+        with mock.patch('{mod}.{name}.get_measurement'.format(
+                mod=each_class.__module__,
+                name=each_class.__class__.__name__),
+                    side_effect=IOError):
             with pytest.raises(StopIteration):
                 each_class.next()
 
@@ -238,9 +253,10 @@ def test_sensor_class_read_returns_1_on_exception():
     """ Verify the read() method returns true on error """
     sensor_classes = return_classes()
     for each_class in sensor_classes:
-        with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__,
-                                                              name=each_class.__class__.__name__),
-                        side_effect=Exception):
+        with mock.patch('{mod}.{name}.get_measurement'.format(
+                mod=each_class.__module__,
+                name=each_class.__class__.__name__),
+                    side_effect=Exception):
             assert each_class.read()
 
 
@@ -257,11 +273,13 @@ def test_sensor_class_read_logs_unknown_errors():
     for each_class in sensor_classes:
         with LogCapture() as log_cap:
             # force an Exception to be raised when get_measurement is called
-            with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__,
-                                                                  name=each_class.__class__.__name__),
-                            side_effect=Exception('msg')):
+            with mock.patch('{mod}.{name}.get_measurement'.format(
+                    mod=each_class.__module__,
+                    name=each_class.__class__.__name__),
+                        side_effect=Exception('msg')):
                 each_class.read()
         expected_logs = ('{mod}'.format(mod=each_class.__module__),
                          'ERROR',
-                         '{name} raised an exception when taking a reading: msg'.format(name=each_class.__class__.__name__))
+                         '{name} raised an exception when taking a reading: msg'.format(
+                             name=each_class.__class__.__name__))
         assert expected_logs in log_cap.actual()

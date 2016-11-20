@@ -49,13 +49,6 @@ class ChirpSensor(AbstractSensor):
                     moisture=float('{0}'.format(self._moisture)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
-    def get_measurement(self):
-        """ Gets the light, moisture, and temperature """
-        lux = self.light()
-        moisture = self.moist()
-        temperature = self.temp() / 10.0
-        return lux, moisture, temperature
-
     @property
     def lux(self):
         """ Chirp light measurement """
@@ -76,6 +69,13 @@ class ChirpSensor(AbstractSensor):
         if not self._temperature:  # update if needed
             self.read()
         return self._temperature
+
+    def get_measurement(self):
+        """ Gets the light, moisture, and temperature """
+        lux = self.light()
+        moisture = self.moist()
+        temperature = self.temp() / 10.0
+        return lux, moisture, temperature
 
     def read(self):
         """

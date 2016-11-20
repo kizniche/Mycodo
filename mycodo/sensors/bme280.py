@@ -67,14 +67,6 @@ class BME280Sensor(AbstractSensor):
                     pressure=int(self._pressure),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
-    def get_measurement(self):
-        """ Gets the measurement in units by reading the """
-        time.sleep(2)
-        temperature, humidity, pressure = self.read_bme280_all()
-        alt = altitude(pressure)
-        dew_pt = dewpoint(temperature, humidity)
-        return alt, dew_pt, humidity, pressure, temperature
-
     @property
     def altitude(self):
         """ BME280 altitude in meters """
@@ -109,6 +101,14 @@ class BME280Sensor(AbstractSensor):
         if not self._temperature:  # update if needed
             self.read()
         return self._temperature
+
+    def get_measurement(self):
+        """ Gets the measurement in units by reading the """
+        time.sleep(2)
+        temperature, humidity, pressure = self.read_bme280_all()
+        alt = altitude(pressure)
+        dew_pt = dewpoint(temperature, humidity)
+        return alt, dew_pt, humidity, pressure, temperature
 
     def read(self):
         """

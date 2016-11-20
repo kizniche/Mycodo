@@ -40,12 +40,6 @@ class TMP006Sensor(AbstractSensor):
         return dict(temperature_die=float('{0:.2f}'.format(self._temperature_die)),
                     temperature_object=float('{0:.2f}'.format(self._temperature_object)))
 
-    def get_measurement(self):
-        """ Gets the TMP006's temperature in Celsius """
-        sensor = TMP006.TMP006(address=self.i2c_address, busnum=self.i2c_bus)
-        sensor.begin()
-        return sensor.readDieTempC(), sensor.readObjTempC()
-
     @property
     def temperature_die(self):
         """ Die temperature in celsius """
@@ -59,6 +53,12 @@ class TMP006Sensor(AbstractSensor):
         if not self._temperature_object:  # update if needed
             self.read()
         return self._temperature_object
+
+    def get_measurement(self):
+        """ Gets the TMP006's temperature in Celsius """
+        sensor = TMP006.TMP006(address=self.i2c_address, busnum=self.i2c_bus)
+        sensor.begin()
+        return sensor.readDieTempC(), sensor.readObjTempC()
 
     def read(self):
         """

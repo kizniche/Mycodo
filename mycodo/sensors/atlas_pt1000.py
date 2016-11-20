@@ -43,6 +43,19 @@ class AtlasPT1000Sensor(AbstractSensor):
             raise StopIteration  # required
         return dict(temperature=float('{0:.3f}'.format(self._temperature)))
 
+    def info(self):
+        conditions_measured = [
+            ("Temperature", "temperature", "float", "0.00", self._temperature, self.temperature)
+        ]
+        return conditions_measured
+
+    @property
+    def temperature(self):
+        """ CPU temperature in celsius """
+        if not self._temperature:  # update if needed
+            self.read()
+        return self._temperature
+
     def get_measurement(self):
         """ Gets the Atlas PT1000's temperature in Celsius """
         self.file_read = io.open("/dev/i2c-" + str(self.I2C_bus_number), "rb", buffering=0)
@@ -57,13 +70,6 @@ class AtlasPT1000Sensor(AbstractSensor):
         else:
             return float(temperature_string[18:])
 
-    @property
-    def temperature(self):
-        """ CPU temperature in celsius """
-        if not self._temperature:  # update if needed
-            self.read()
-        return self._temperature
-
     def read(self):
         """
         Takes a reading from the PT1000 and updates the self._temperature value
@@ -77,12 +83,6 @@ class AtlasPT1000Sensor(AbstractSensor):
             logger.error("{cls} raised an exception when taking a reading: "
                          "{err}".format(cls=type(self).__name__, err=e))
         return 1
-
-    def info(self):
-        conditions_measured = [
-            ("Temperature", "temperature", "float", "0.00", self._temperature, self.temperature)
-        ]
-        return conditions_measured
 
     def set_i2c_address(self, address):
         # set the I2C communications to the slave specified by the address

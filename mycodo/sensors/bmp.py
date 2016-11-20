@@ -50,12 +50,6 @@ class BMPSensor(AbstractSensor):
                     pressure=int(self._pressure),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
-    def get_measurement(self):
-        """ Gets the measurement in units by reading the """
-        time.sleep(2)
-        bmp = BMP085.BMP085(busnum=self.I2C_bus_number)
-        return bmp.read_temperature(), bmp.read_pressure(), bmp.read_altitude()
-
     @property
     def altitude(self):
         """ BMP dew point in Celsius """
@@ -76,6 +70,12 @@ class BMPSensor(AbstractSensor):
         if not self._temperature:  # update if needed
             self.read()
         return self._temperature
+
+    def get_measurement(self):
+        """ Gets the measurement in units by reading the """
+        time.sleep(2)
+        bmp = BMP085.BMP085(busnum=self.I2C_bus_number)
+        return bmp.read_temperature(), bmp.read_pressure(), bmp.read_altitude()
 
     def read(self):
         """

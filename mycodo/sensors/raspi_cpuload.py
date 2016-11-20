@@ -43,11 +43,6 @@ class RaspberryPiCPULoad(AbstractSensor):
                     cpu_load_5m=float('{0:.2f}'.format(self._cpu_load_5m)),
                     cpu_load_15m=float('{0:.2f}'.format(self._cpu_load_15m)))
 
-    @staticmethod
-    def get_measurement():
-        """ Gets the cpu load averages """
-        return os.getloadavg()
-
     @property
     def cpu_load_1m(self):
         """ CPU load for the past 1 minute """
@@ -68,6 +63,11 @@ class RaspberryPiCPULoad(AbstractSensor):
         if not self._cpu_load_15m:  # update if needed
             self.read()
         return self._cpu_load_15m
+
+    @staticmethod
+    def get_measurement():
+        """ Gets the cpu load averages """
+        return os.getloadavg()
 
     def read(self):
         """
