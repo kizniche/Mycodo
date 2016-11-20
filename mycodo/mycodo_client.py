@@ -133,7 +133,7 @@ if __name__ == "__main__":
 
     if args.duration and args.relayon is None:
         parser.error("--duration requires --relayon")
-    
+
     if args.relayon:
         duration = 0
         if args.duration:

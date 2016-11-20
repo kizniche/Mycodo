@@ -380,7 +380,7 @@ def method_mod(formModMethod, method):
                 # Ensure the start time comes after the previous entry's end time
                 # and the end time comes before the next entry's start time
                 # method_id_set is the id given to all method entries, 'method_id', not 'id'
-                
+
                 method_filtered = method.filter(Method.method_order > 0)
                 method_filtered = method_filtered.filter(Method.method_id == this_method.method_id)
 
@@ -2478,7 +2478,7 @@ def user_del(formDelUser):
 
 #
 # Settings modifications
-# 
+#
 
 #
 # General

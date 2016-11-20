@@ -4,7 +4,7 @@ This module is a temporary holding area for the mycodo_flask routes while they a
 their own logical packages and modules.  See https://github.com/kizniche/Mycodo/issues/129
 
 If you are looking for something to do then breaking up these routes is a great start.  You
-will see that many of the routes accept a range of variable rules and return one of multiple 
+will see that many of the routes accept a range of variable rules and return one of multiple
 pages based on the variable for the route.  Moving towards smaller sections of code for specific
 endpoints is the ultimate goal because it will be easier to test, read, and modify along with
 being less error prone.

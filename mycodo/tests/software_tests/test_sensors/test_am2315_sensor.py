@@ -1,5 +1,5 @@
 # coding=utf-8
-""" Tests for the raspberry pi CPU and GPU temp classes """
+""" Tests for the AM2315 sensor class """
 import mock
 import pytest
 from testfixtures import LogCapture
@@ -14,7 +14,10 @@ from mycodo.sensors.am2315 import AM2315Sensor
 def test_am2315_iterates_using_in():
     """ Verify that a AM2315Sensor object can use the 'in' operator """
     with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement') as mock_measure:
-        mock_measure.side_effect = [(23, 67), (25, 52), (27, 37), (30, 45)]  # first reading, second reading
+        mock_measure.side_effect = [(23, 67),
+                                    (25, 52),
+                                    (27, 37),
+                                    (30, 45)]  # first reading, second reading
 
         am2315 = AM2315Sensor(1)
         expected_result_list = [dict(humidity=23, temperature=67.00),
@@ -61,7 +64,7 @@ def test_am2315_next_returns_dict():
         assert am2315.next() == dict(humidity=44, temperature=67.00)
 
 
-def test_am2315_humidity_temperature_properties():
+def test_am2315_condition_properties():
     """ verify temperature property """
     with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement') as mock_measure:
         # create our object

@@ -70,7 +70,7 @@ def add_update_csv(_logger, csv_file, key, value):
         # only update items from my_dict that are already present
         temp_dict.update({key: value for (key, value) in stats_dict.items()})
 
-        # create updated version of file    
+        # create updated version of file
         with open(csv_file, mode='w') as outfile:
             writer = csv.writer(outfile)
             writer.writerow(header)

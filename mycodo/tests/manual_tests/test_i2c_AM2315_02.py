@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
         time.sleep(0.1)
 
-        # send read command starting at zero (0) (0x00) and get four (4) (0x04) 
+        # send read command starting at zero (0) (0x00) and get four (4) (0x04)
         # registers. Which returns 8 bytes total.
         try:
             am.writeI2C(CMD_READ + '\x00\x04')

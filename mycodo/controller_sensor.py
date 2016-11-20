@@ -108,6 +108,8 @@ class SensorController(threading.Thread):
         self.ready = ready
         self.logger = logger
         self.lock = {}
+        self.measurement = None
+        self.updateSuccess = False
         self.sensor_id = sensor_id
         self.control = DaemonControl()
         self.pause_loop = False
@@ -365,7 +367,6 @@ class SensorController(threading.Thread):
             self.logger.exception("[Sensor {}] Error: {}".format(
                 self.sensor_id, msg))
 
-
     def addMeasurementInfluxdb(self):
         """
         Add a measurement entries to InfluxDB
@@ -386,7 +387,6 @@ class SensorController(threading.Thread):
                       INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
                       data,))
             write_db.start()
-
 
     def checkConditionals(self, cond_id):
         """
@@ -418,7 +418,7 @@ class SensorController(threading.Thread):
             if (last_measurement and
                 ((self.cond_direction[cond_id] == 'above' and
                     last_measurement > self.cond_setpoint[cond_id]) or
-                (self.cond_direction[cond_id] == 'below' and
+                 (self.cond_direction[cond_id] == 'below' and
                     last_measurement < self.cond_setpoint[cond_id]))):
 
                 message = "{}\n[Sensor Conditional {}] {}\n{} {} ".format(
@@ -485,7 +485,7 @@ class SensorController(threading.Thread):
         if self.cond_email_notify[cond_id]:
             if (self.email_count >= self.smtp_max_count and
                     time.time() < self.smtp_wait_timer[cond_id]):
-                 self.allowed_to_send_notice = False
+                self.allowed_to_send_notice = False
             else:
                 if time.time() > self.smtp_wait_timer[cond_id]:
                     self.email_count = 0
@@ -508,9 +508,9 @@ class SensorController(threading.Thread):
                 with session_scope(MYCODO_DB_PATH) as new_session:
                     smtp = new_session.query(SMTP).first()
                     send_email(self.logger, smtp.host, smtp.ssl, smtp.port,
-                          smtp.user, smtp.passw, smtp.email_from,
-                          self.cond_email_notify[cond_id], message,
-                          attachment_file, attachment_type)
+                               smtp.user, smtp.passw, smtp.email_from,
+                               self.cond_email_notify[cond_id], message,
+                               attachment_file, attachment_type)
             else:
                 self.logger.debug("[Sensor Conditional {}] "
                                   "{:.0f} seconds left to be "
@@ -521,12 +521,10 @@ class SensorController(threading.Thread):
         if self.cond_flash_lcd[cond_id]:
             start_flashing = threading.Thread(
                 target=self.control.flash_lcd,
-                args=(self.cond_flash_lcd[cond_id],
-                      1,))
+                args=(self.cond_flash_lcd[cond_id], 1,))
             start_flashing.start()
 
         self.logger.debug(message)
-
 
     def updateMeasurement(self):
         """
@@ -544,15 +542,15 @@ class SensorController(threading.Thread):
 
         if self.multiplexer:
             # Acquire a lock for multiplexer
-            (self.lock_status,
-            self.lock_response) = self.setup_lock(self.multiplexer_address,
-                                                  self.multiplexer_bus,
-                                                  self.multiplexer_lock_file)
-            if not self.lock_status:
+            (lock_status,
+             lock_response) = self.setup_lock(self.multiplexer_address,
+                                              self.multiplexer_bus,
+                                              self.multiplexer_lock_file)
+            if not lock_status:
                 self.logger.warning("[Sensor {}] Could not acquire lock "
                                     "for multiplexer. Error:"
                                     " {}".format(self.sensor_id,
-                                                 self.lock_response))
+                                                 lock_response))
                 self.updateSuccess = False
                 return 1
             self.logger.debug("[Sensor {}] Setting multiplexer at address {} to "
@@ -560,31 +558,32 @@ class SensorController(threading.Thread):
                                                   self.multiplexer_address_string,
                                                   self.multiplexer_channel))
             # Set multiplexer channel
-            (self.multiplexer_status,
-            self.multiplexer_response) = self.multiplexer.setup(self.multiplexer_channel)
-            if not self.multiplexer_status:
+            (multiplexer_status,
+             multiplexer_response) = self.multiplexer.setup(self.multiplexer_channel)
+            if not multiplexer_status:
                 self.logger.warning("[Sensor {}] Could not set channel "
                                     "with multiplexer at address {}. Error:"
                                     " {}".format(self.sensor_id,
                                                  self.multiplexer_address_string,
-                                                 self.multiplexer_response))
+                                                 multiplexer_response))
                 self.updateSuccess = False
                 return 1
 
         if self.adc:
             try:
                 # Acquire a lock for ADC
-                (self.lock_status,
-                self.lock_response) = self.setup_lock(self.i2c_address,
-                                                      self.i2c_bus,
-                                                      self.adc_lock_file)
-                if not self.lock_status:
+                (lock_status,
+                 lock_response) = self.setup_lock(self.i2c_address,
+                                                  self.i2c_bus,
+                                                  self.adc_lock_file)
+                if not lock_status:
                     self.logger.warning("[Sensor {}] Could not acquire lock "
                                         "for multiplexer. Error:"
                                         " {}".format(self.sensor_id,
-                                                     self.lock_response))
+                                                     lock_response))
                     self.updateSuccess = False
                     return 1
+
                 # Get measurement from ADC
                 measurements = self.adc.next()
                 if measurements is not None:
@@ -611,7 +610,7 @@ class SensorController(threading.Thread):
                         measurements[self.adc_measure] = converted_units
             except Exception as msg:
                 self.logger.exception("[Sensor {}] Error while attempting to read "
-                                    "adc: {}".format(self.sensor_id, msg))
+                                      "adc: {}".format(self.sensor_id, msg))
             finally:
                 self.release_lock(self.i2c_address,
                                   self.i2c_bus,
@@ -622,7 +621,7 @@ class SensorController(threading.Thread):
                 measurements = self.measure_sensor.next()
             except Exception as msg:
                 self.logger.exception("[Sensor {}] Error while attempting to read "
-                                    "sensor: {}".format(self.sensor_id, msg))
+                                      "sensor: {}".format(self.sensor_id, msg))
 
         if self.multiplexer:
             self.release_lock(self.multiplexer_address,
@@ -637,9 +636,8 @@ class SensorController(threading.Thread):
 
         self.lastUpdate = time.time()
 
-
     def setup_lock(self, i2c_address, i2c_bus, lockfile):
-        self.execution_timer = timeit.default_timer()
+        execution_timer = timeit.default_timer()
         try:
             self.lock[lockfile] = LockFile(lockfile)
             while not self.lock[lockfile].i_am_locking():
@@ -660,16 +658,14 @@ class SensorController(threading.Thread):
             self.logger.debug("[Locking bus-{} 0x{:02X}] Acquired Lock: {}".format(
                 i2c_bus, i2c_address, self.lock[lockfile].path))
             self.logger.debug("[Locking bus-{} 0x{:02X}] Executed in {:.1f} ms".format(
-                i2c_bus, i2c_address, (timeit.default_timer()-self.execution_timer)*1000))
+                i2c_bus, i2c_address, (timeit.default_timer()-execution_timer)*1000))
             return 1, "Success"
         except Exception as msg:
             return 0, "Multiplexer Fail: {}".format(msg)
 
-
     def release_lock(self, i2c_address, i2c_bus, lockfile):
         self.logger.debug("[Locking bus-{} 0x{:02X}] Releasing Lock: {}".format(i2c_bus, i2c_address, lockfile))
         self.lock[lockfile].release()
-
 
     def getLastMeasurement(self, measurement_type):
         """
@@ -697,7 +693,6 @@ class SensorController(threading.Thread):
         else:
             return None
 
-
     def edge_detected(self, pin):
         gpio_state = GPIO.input(int(self.location))
         if time.time() > self.edge_reset_timer:
@@ -720,12 +715,11 @@ class SensorController(threading.Thread):
             for each_cond_id in self.cond_id:
                 if ((self.cond_activated[each_cond_id] and self.cond_edge_select[each_cond_id] == 'edge') and
                         ((self.cond_edge_detected[each_cond_id] == 'rising' and
-                        rising_or_falling == 1) or
-                        (self.cond_edge_detected[each_cond_id] == 'falling' and
-                        rising_or_falling == -1) or
-                        self.cond_edge_detected[each_cond_id] == 'both')):
+                          rising_or_falling == 1) or
+                         (self.cond_edge_detected[each_cond_id] == 'falling' and
+                          rising_or_falling == -1) or
+                         self.cond_edge_detected[each_cond_id] == 'both')):
                     self.checkConditionals(each_cond_id)
-
 
     def setup_sensor_conditionals(self, cond_mod='setup', cond_id=None):
         # Signal to pause the main loop and wait for verification
@@ -833,13 +827,11 @@ class SensorController(threading.Thread):
         self.pause_loop = False
         self.verify_pause_loop = False
 
-
     def isRunning(self):
         return self.running
 
-
     def stopController(self):
         self.thread_shutdown_timer = timeit.default_timer()
-        if self.device_type not in  ['EDGE', 'ADS1x15', 'MCP342x']:
+        if self.device_type not in ['EDGE', 'ADS1x15', 'MCP342x']:
             self.measure_sensor.stopSensor()
         self.running = False

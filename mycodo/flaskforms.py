@@ -304,7 +304,7 @@ class AddUser(Form):
     )
     addPassword = PasswordField(
         u'Password',
-        render_kw={"placeholder": "Password"}, 
+        render_kw={"placeholder": "Password"},
         validators=[
             DataRequired(),
             validators.EqualTo('addPassword_repeat', message='Passwords must match'),

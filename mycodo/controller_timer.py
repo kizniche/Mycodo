@@ -79,7 +79,7 @@ class TimerController(threading.Thread):
         while self.running:
             # Timer is set to react at a specific hour and minute of the day
             if self.timer_type == 'time':
-                if (int(self.start_hour) == datetime.datetime.now().hour and    
+                if (int(self.start_hour) == datetime.datetime.now().hour and
                         int(self.start_minute) == datetime.datetime.now().minute):
                     # Ensure this is triggered only once at this specific time
                     if self.date_timer_not_executed:
@@ -104,7 +104,7 @@ class TimerController(threading.Thread):
 
             # Timer is set to react at a specific time duration of the day
             elif self.timer_type == 'timespan':
-                if time_between_range(self.time_start, self.time_end): 
+                if time_between_range(self.time_start, self.time_end):
                     current_relay_state = self.control.relay_state(self.relay_id)
                     if self.state != current_relay_state:
                         message = "[Timer {}] Relay {} should be {}, but is {}. Turning {}.".format(

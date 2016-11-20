@@ -100,11 +100,19 @@
                   {%- for address in range(0, 8) %}
                     <option value="2{{address}}"{% if each_lcd.pin == (20 + address)|string %} selected{% endif %}>0x2{{address}}</option>
                   {%- endfor %}
+                  <option value="0x38"{% if each_lcd.pin == '0x38' %} selected{% endif %}>0x38</option>
+                  <option value="0x39"{% if each_lcd.pin == '0x39' %} selected{% endif %}>0x39</option>
+                  <option value="0x3A"{% if each_lcd.pin == '0x3A' %} selected{% endif %}>0x3A</option>
+                  <option value="0x3B"{% if each_lcd.pin == '0x3B' %} selected{% endif %}>0x3B</option>
+                  <option value="0x3C"{% if each_lcd.pin == '0x3C' %} selected{% endif %}>0x3C</option>
+                  <option value="0x3D"{% if each_lcd.pin == '0x3D' %} selected{% endif %}>0x3D</option>
+                  <option value="0x3E"{% if each_lcd.pin == '0x3E' %} selected{% endif %}>0x3E</option>
+                  <option value="0x3F"{% if each_lcd.pin == '0x3F' %} selected{% endif %}>0x3F</option>
                 </select>
               </td>
               <td>
                 <select class="form-control" id="modMultiplexAddress" name="modMultiplexAddress">
-                  <option value=""{% if each_lcd.multiplexer_address == '0' %} selected{% endif %}></option>
+                  <option value=""{% if each_lcd.multiplexer_address == '0' %} selected{% endif %}>Disabled</option>
                   <option value="0x70"{% if each_lcd.multiplexer_address == '0x70' %} selected{% endif %}>0x70</option>
                   <option value="0x71"{% if each_lcd.multiplexer_address == '0x71' %} selected{% endif %}>0x71</option>
                   <option value="0x72"{% if each_lcd.multiplexer_address == '0x72' %} selected{% endif %}>0x72</option>
@@ -117,7 +125,7 @@
               </td>
               <td>
                 <select class="form-control" id="modMultiplexChannel" name="modMultiplexChannel">
-                  <option value="0"{% if each_lcd.multiplexer_channel == 0 %} selected{% endif %}></option>
+                  <option value="0"{% if each_lcd.multiplexer_channel == 0 %} selected{% endif %}>None</option>
                   <option value="1"{% if each_lcd.multiplexer_channel == 1 %} selected{% endif %}>1</option>
                   <option value="2"{% if each_lcd.multiplexer_channel == 2 %} selected{% endif %}>2</option>
                   <option value="3"{% if each_lcd.multiplexer_channel == 3 %} selected{% endif %}>3</option>

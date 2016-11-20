@@ -74,7 +74,7 @@
 
 #     cosH = (cos(zenith) - (sinDec * sin(latitude))) / (cosDec * cos(latitude))
 
-#     if (cosH >  1) 
+#     if (cosH >  1)
 #       the sun never rises on this location (on the specified date)
 #     if (cosH < -1)
 #       the sun never sets on this location (on the specified date)
@@ -106,12 +106,8 @@
 #
 
 def calculate_sunrise():
-    """
-    
-    """
+    """Calculate sunrise"""
 
 
 def calculate_sunset():
-    """
-    
-    """
+    """Calculate sunset"""

@@ -185,7 +185,7 @@ class PIDController(threading.Thread):
 
         # Calculate I-value
         self.Integrator += self.error
-        
+
         # First method for managing Integrator
         if self.Integrator > self.Integrator_max:
             self.Integrator = self.Integrator_max
@@ -193,7 +193,7 @@ class PIDController(threading.Thread):
             self.Integrator = self.Integrator_min
         
         # Second method for regulating Integrator
-        # if self.measure_interval is not None:  
+        # if self.measure_interval is not None:
         #     if self.Integrator * self.Ki > self.measure_interval:
         #         self.Integrator = self.measure_interval / self.Ki
         #     elif self.Integrator * self.Ki < -self.measure_interval:
