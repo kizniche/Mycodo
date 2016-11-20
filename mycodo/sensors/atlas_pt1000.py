@@ -78,10 +78,9 @@ class AtlasPT1000Sensor(AbstractSensor):
                          "{err}".format(cls=type(self).__name__, err=e))
         return 1
 
-    @staticmethod
-    def info():
+    def info(self):
         conditions_measured = [
-            ("Temperature", "temperature", "float", "0.00")
+            ("Temperature", "temperature", "float", "0.00", self._temperature, self.temperature)
         ]
         return conditions_measured
 

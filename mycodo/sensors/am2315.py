@@ -95,11 +95,10 @@ class AM2315Sensor(AbstractSensor):
                          "{err}".format(cls=type(self).__name__, err=e))
         return 1
 
-    @staticmethod
-    def info():
+    def info(self):
         conditions_measured = [
-            ("Dew Point", "dew_point", "float", "0.00"),
-            ("Humidity", "humidity", "float", "0.00"),
-            ("Temperature", "temperature", "float", "0.00")
+            ("Dew Point", "dew_point", "float", "0.00", self._dew_point, self.dew_point),
+            ("Humidity", "humidity", "float", "0.00", self._humidity, self.humidity),
+            ("Temperature", "temperature", "float", "0.00", self._temperature, self.temperature)
         ]
         return conditions_measured

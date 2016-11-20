@@ -48,6 +48,23 @@ def return_classes():
     return sensor_classes
 
 
+def conditions_list(sensor_conditions, range_num):
+    list_cond = []
+    number = 20
+    number_mod = 5
+    for _ in range(range_num):
+        tuple_conditions = []
+        for _ in sensor_conditions:
+            tuple_conditions.append(number)
+            number += number_mod
+        if len(tuple_conditions) > 1:
+            tuple_conditions = tuple(tuple_conditions)
+        else:
+            tuple_conditions = tuple_conditions[0]
+        list_cond.append(tuple_conditions)
+    return list_cond
+
+
 def test_sensor_class_iterates_using_in():
     """ Verify that a class object can use the 'in' operator """
     sensor_classes = return_classes()
@@ -55,19 +72,7 @@ def test_sensor_class_iterates_using_in():
         sensor_conditions = each_class.info()
         with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__, name=each_class.__class__.__name__)) as mock_measure:
             # Create mock_measure.side_effect
-            list_cond = []
-            number = 20
-            number_mod = 5
-            for _ in range(4):
-                tuple_conditions = []
-                for _ in sensor_conditions:
-                    tuple_conditions.append(number)
-                    number += number_mod
-                if len(tuple_conditions) > 1:
-                    tuple_conditions = tuple(tuple_conditions)
-                else:
-                    tuple_conditions = tuple_conditions[0]
-                list_cond.append(tuple_conditions)
+            list_cond = conditions_list(sensor_conditions, 4)
             mock_measure.side_effect = list_cond
 
             # Build expected results list
@@ -99,38 +104,46 @@ def test_sensor_class__iter__returns_iterator():
         sensor_conditions = each_class.info()
         with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__, name=each_class.__class__.__name__)) as mock_measure:
             # Create mock_measure.side_effect
-            list_cond = []
-            number = 20
-            number_mod = 5
-            for _ in range(4):
-                tuple_conditions = []
-                for _ in sensor_conditions:
-                    tuple_conditions.append(number)
-                    number += number_mod
-                if len(tuple_conditions) > 1:
-                    tuple_conditions = tuple(tuple_conditions)
-                else:
-                    tuple_conditions = tuple_conditions[0]
-                list_cond.append(tuple_conditions)
-            mock_measure.side_effect = list_cond
+            mock_measure.side_effect = conditions_list(sensor_conditions, 4)
 
             # check __iter__ method return
             assert isinstance(each_class.__iter__(), Iterator)
 
 
-# def test_sensor_class_read_updates_temp():
-#     """  Verify that AtlasPT1000Sensor(0x99, 1).read() gets the average temp """
-#     with mock.patch('mycodo.sensors.sensor_class.AtlasPT1000Sensor.get_measurement') as mock_measure:
-#         # create our object
-#         mock_measure.side_effect = [67, 52]  # first reading, second reading
-#         sensor_class = AtlasPT1000Sensor(0x99, 1)
-#         # test our read() function
-#         assert sensor_class._temperature == 0  # init value
-#         assert not sensor_class.read()  # updating the value using our mock_measure side effect has no error
-#         assert sensor_class._temperature == 67.0  # first value
-#         assert not sensor_class.read()  # updating the value using our mock_measure side effect has no error
-#         assert sensor_class._temperature == 52.0  # second value
-#
+def test_sensor_class_read_updates_condition():
+    """  Verify that Class.read() gets the condition """
+    sensor_classes = return_classes()
+    for each_class in sensor_classes:
+        sensor_conditions = each_class.info()
+        with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__, name=each_class.__class__.__name__)) as mock_measure:
+            # Create mock_measure.side_effect
+            list_cond = conditions_list(sensor_conditions, 2)
+            mock_measure.side_effect = list_cond
+
+            # test read() function
+            if len(sensor_conditions) == 1:
+                for each_condition in sensor_conditions:
+                    assert each_condition[4] == 0  # init value
+                assert not each_class.read()  # updating the value using our mock_measure side effect has no error
+                sensor_conditions = each_class.info()
+                for each_condition in sensor_conditions:
+                    assert each_condition[4] == list_cond[0]  # first value
+                assert not each_class.read()  # updating the value using our mock_measure side effect has no error
+                sensor_conditions = each_class.info()
+                for each_condition in sensor_conditions:
+                    assert each_condition[4] == list_cond[1]
+            else:
+                for each_condition in sensor_conditions:
+                    assert each_condition[4] == 0  # init value
+                assert not each_class.read()  # updating the value using our mock_measure side effect has no error
+                sensor_conditions = each_class.info()
+                for index, each_condition in enumerate(sensor_conditions):
+                    assert each_condition[4] == list_cond[0][index]  # first value
+                assert not each_class.read()  # updating the value using our mock_measure side effect has no error
+                sensor_conditions = each_class.info()
+                for index, each_condition in enumerate(sensor_conditions):
+                    assert each_condition[4] == list_cond[1][index]  # second value
+
 
 def test_sensor_class_next_returns_dict():
     """ next returns dict(condition=type) """
@@ -139,18 +152,7 @@ def test_sensor_class_next_returns_dict():
         sensor_conditions = each_class.info()
         with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__, name=each_class.__class__.__name__)) as mock_measure:
             # Create mock_measure.side_effect
-            list_cond = []
-            number = 20
-            number_mod = 5
-            tuple_conditions = []
-            for _ in sensor_conditions:
-                tuple_conditions.append(number)
-                number += number_mod
-            if len(tuple_conditions) > 1:
-                tuple_conditions = tuple(tuple_conditions)
-            else:
-                tuple_conditions = tuple_conditions[0]
-            list_cond.append(tuple_conditions)
+            list_cond = conditions_list(sensor_conditions, 4)
             mock_measure.side_effect = list_cond
 
             # Build expected results list
@@ -171,19 +173,46 @@ def test_sensor_class_next_returns_dict():
 
             assert each_class.next() == dict_build
 
-#
-# def test_sensor_class_condition_properties():
-#     """ verify temperature property """
-#     with mock.patch('mycodo.sensors.sensor_class.AtlasPT1000Sensor.get_measurement') as mock_measure:
-#         # create our object
-#         mock_measure.side_effect = [67, 52]  # first reading, second reading
-#         sensor_class = AtlasPT1000Sensor(0x99, 1)
-#         assert sensor_class._temperature == 0  # initial value
-#         assert sensor_class.temperature == 67.00  # first reading with auto update
-#         assert sensor_class.temperature == 67.00  # same first reading, not updated yet
-#         assert not sensor_class.read()  # update (no errors)
-#         assert sensor_class.temperature == 52.00  # next reading
-#
+
+def test_sensor_class_condition_properties():
+    """ verify condition property """
+    sensor_classes = return_classes()
+    for each_class in sensor_classes:
+        sensor_conditions = each_class.info()
+        with mock.patch('{mod}.{name}.get_measurement'.format(mod=each_class.__module__,
+                                                              name=each_class.__class__.__name__)) as mock_measure:
+            # Create mock_measure.side_effect
+            list_cond = conditions_list(sensor_conditions, 2)
+            mock_measure.side_effect = list_cond
+
+            # test read() function
+            if len(sensor_conditions) == 1:
+                for each_condition in sensor_conditions:
+                    assert each_condition[4] == 0  # init value
+                sensor_conditions = each_class.info()
+                for each_condition in sensor_conditions:
+                    assert each_condition[5] == list_cond[0]  # first reading with auto update
+                sensor_conditions = each_class.info()
+                for each_condition in sensor_conditions:
+                    assert each_condition[5] == list_cond[0]  # same first reading, not updated yet
+                assert not each_class.read()  # update (no errors)
+                sensor_conditions = each_class.info()
+                for each_condition in sensor_conditions:
+                    assert each_condition[5] == list_cond[1]  # next reading
+            else:
+                for each_condition in sensor_conditions:
+                    assert each_condition[4] == 0  # init value
+                sensor_conditions = each_class.info()
+                for index, each_condition in enumerate(sensor_conditions):
+                    assert each_condition[5] == list_cond[0][index]  # first reading with auto update
+                sensor_conditions = each_class.info()
+                for index, each_condition in enumerate(sensor_conditions):
+                    assert each_condition[5] == list_cond[0][index]  # same first reading with auto update
+                assert not each_class.read()  # update (no errors)
+                sensor_conditions = each_class.info()
+                for index, each_condition in enumerate(sensor_conditions):
+                    assert each_condition[5] == list_cond[1][index]  # next reading
+
 
 def test_sensor_class_special_method_str():
     """ expect a __str__ format """
