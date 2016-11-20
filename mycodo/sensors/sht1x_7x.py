@@ -45,7 +45,8 @@ class SHT1x7xSensor(AbstractSensor):
         """ Get next measurement reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(humidity=float('{0:.2f}'.format(self._humidity)),
+        return dict(dew_point=float('{0:.2f}'.format(self._dew_point)),
+                    humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
     def get_measurement(self):

@@ -70,7 +70,10 @@ class BME280Sensor(AbstractSensor):
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
         time.sleep(2)
-        return self.read_bme280_all()
+        temperature, humidity, pressure = self.read_bme280_all()
+        alt = altitude(pressure)
+        dew_pt = dewpoint(temperature, humidity)
+        return alt, dew_pt, humidity, pressure, temperature
 
     @property
     def altitude(self):
@@ -115,9 +118,11 @@ class BME280Sensor(AbstractSensor):
         :returns: None on success or 1 on error
         """
         try:
-            self._temperature, self._humidity, self._pressure = self.get_measurement()
-            self._altitude = altitude(self._pressure)
-            self._dew_point = dewpoint(self._temperature, self._humidity)
+            (self._altitude,
+             self._dew_point,
+             self._humidity,
+             self._pressure,
+             self._temperature) = self.get_measurement()
             return  # success - no errors
         except Exception as e:
             logger.error("{cls} raised an exception when taking a reading: "

@@ -47,7 +47,8 @@ class SHT2xSensor(AbstractSensor):
         """ Get next measurement reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(humidity=float('{0:.2f}'.format(self._humidity)),
+        return dict(dew_point=float('{0:.2f}'.format(self._dew_point)),
+                    humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
     def get_measurement(self):
@@ -71,8 +72,8 @@ class SHT2xSensor(AbstractSensor):
         data0 = bus.read_byte(self.i2c_address)
         data1 = bus.read_byte(self.i2c_address)
         humidity = -6 + (((data0 * 256 + data1) * 125.0) / 65536.0)
-
-        return humidity, temperature
+        dew_point = dewpoint(temperature, humidity)
+        return dew_point, humidity, temperature
 
     @property
     def dew_point(self):
@@ -103,8 +104,7 @@ class SHT2xSensor(AbstractSensor):
         :returns: None on success or 1 on error
         """
         try:
-            self._humidity, self._temperature = self.get_measurement()
-            self._dew_point = dewpoint(self._temperature, self._humidity)
+            self._dew_point, self._humidity, self._temperature = self.get_measurement()
             return  # success - no errors
         except Exception as e:
             logger.error("{cls} raised an exception when taking a reading: "

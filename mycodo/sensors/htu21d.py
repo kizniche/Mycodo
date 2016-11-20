@@ -68,7 +68,8 @@ class HTU21DSensor(AbstractSensor):
         """ Get next measurement reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(humidity=float('{0:.2f}'.format(self._humidity)),
+        return dict(dew_point=float('{0:.2f}'.format(self._dew_point)),
+                    humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
     def get_measurement(self):
@@ -100,8 +101,8 @@ class HTU21DSensor(AbstractSensor):
         humi_reading = float(humi_reading)
         uncomp_humidity = ((humi_reading / 65536) * 125) - 6  # formula from datasheet
         humidity = ((25 - self.temperature) * -0.15) + uncomp_humidity
-
-        return humidity, temperature
+        dew_pt = dewpoint(temperature, humidity)
+        return dew_pt, humidity, temperature
 
     @property
     def dew_point(self):
@@ -133,8 +134,9 @@ class HTU21DSensor(AbstractSensor):
         """
         try:
             self.htu_reset()
-            self._humidity, self._temperature = self.get_measurement()
-            self._dew_point = dewpoint(self._temperature, self._humidity)
+            (self._dew_point,
+             self._humidity,
+             self._temperature) = self.get_measurement()
             return  # success - no errors
         except Exception as e:
             logger.error("{cls} raised an exception when taking a reading: "

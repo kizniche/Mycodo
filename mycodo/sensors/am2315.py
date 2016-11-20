@@ -56,8 +56,8 @@ class AM2315Sensor(AbstractSensor):
         if crc_check != 1:
             return 1
         else:
-            dew_point = dewpoint(temperature, humidity)
-            return dew_point, humidity, temperature
+            dew_pt = dewpoint(temperature, humidity)
+            return dew_pt, humidity, temperature
 
     @property
     def dew_point(self):

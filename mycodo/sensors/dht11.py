@@ -76,7 +76,8 @@ class DHT11Sensor(AbstractSensor):
         """ Get next measurement reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(humidity=float('{0:.2f}'.format(self._humidity)),
+        return dict(dew_point=float('{0:.2f}'.format(self._dew_point)),
+                    humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
     def get_measurement(self):
@@ -92,6 +93,7 @@ class DHT11Sensor(AbstractSensor):
         self.pi.set_mode(self.gpio, pigpio.INPUT)
         self.pi.set_watchdog(self.gpio, 200)
         time.sleep(0.2)
+        self._dew_point = dewpoint(self._temperature, self._humidity)
 
     @property
     def dew_point(self):
@@ -124,7 +126,6 @@ class DHT11Sensor(AbstractSensor):
         try:
             self.get_measurement()
             # self_humidity and self._temperature are set in self._edge_rise()
-            self._dew_point = dewpoint(self._temperature, self._humidity)
             return  # success - no errors
         except Exception as e:
             logger.error("{cls} raised an exception when taking a reading: "
