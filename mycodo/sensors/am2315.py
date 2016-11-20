@@ -45,7 +45,8 @@ class AM2315Sensor(AbstractSensor):
         """ Get next measurement reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(humidity=float('{0:.2f}'.format(self._humidity)),
+        return dict(dew_point=float('{0:.2f}'.format(self._dew_point)),
+                    humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
     def get_measurement(self):
@@ -55,7 +56,8 @@ class AM2315Sensor(AbstractSensor):
         if crc_check != 1:
             return 1
         else:
-            return humidity, temperature
+            dew_point = dewpoint(temperature, humidity)
+            return dew_point, humidity, temperature
 
     @property
     def dew_point(self):
@@ -86,10 +88,18 @@ class AM2315Sensor(AbstractSensor):
         :returns: None on success or 1 on error
         """
         try:
-            self._humidity, self._temperature = self.get_measurement()
-            self._dew_point = dewpoint(self._temperature, self._humidity)
+            self._dew_point, self._humidity, self._temperature = self.get_measurement()
             return  # success - no errors
         except Exception as e:
             logger.error("{cls} raised an exception when taking a reading: "
                          "{err}".format(cls=type(self).__name__, err=e))
         return 1
+
+    @staticmethod
+    def info():
+        conditions_measured = [
+            ("Dew Point", "dew_point", "float", "0.00"),
+            ("Humidity", "humidity", "float", "0.00"),
+            ("Temperature", "temperature", "float", "0.00")
+        ]
+        return conditions_measured

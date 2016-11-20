@@ -1,7 +1,7 @@
 # coding=utf-8
+import logging
 import io         # used to create file streams
 import fcntl      # used to access I2C parameters like addresses
-import logging
 import time       # used for sleep delay and timestamps
 from .base_sensor import AbstractSensor
 
@@ -30,7 +30,7 @@ class AtlasPT1000Sensor(AbstractSensor):
 
     def __str__(self):
         """ Return temperature information """
-        return "temperature: {temp}".format(
+        return "Temperature: {temp}".format(
             temp="{0:.2f}".format(self._temperature))
 
     def __iter__(self):  # must return an iterator
@@ -77,6 +77,13 @@ class AtlasPT1000Sensor(AbstractSensor):
             logger.error("{cls} raised an exception when taking a reading: "
                          "{err}".format(cls=type(self).__name__, err=e))
         return 1
+
+    @staticmethod
+    def info():
+        conditions_measured = [
+            ("Temperature", "temperature", "float", "0.00")
+        ]
+        return conditions_measured
 
     def set_i2c_address(self, address):
         # set the I2C communications to the slave specified by the address

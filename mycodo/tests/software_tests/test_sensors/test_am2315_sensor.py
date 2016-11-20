@@ -14,16 +14,16 @@ from mycodo.sensors.am2315 import AM2315Sensor
 def test_am2315_iterates_using_in():
     """ Verify that a AM2315Sensor object can use the 'in' operator """
     with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement') as mock_measure:
-        mock_measure.side_effect = [(23, 67),
-                                    (25, 52),
-                                    (27, 37),
-                                    (30, 45)]  # first reading, second reading
+        mock_measure.side_effect = [(15, 23, 67),
+                                    (16, 25, 52),
+                                    (17, 27, 37),
+                                    (18, 30, 45)]  # first reading, second reading
 
         am2315 = AM2315Sensor(1)
-        expected_result_list = [dict(humidity=23, temperature=67.00),
-                                dict(humidity=25, temperature=52.00),
-                                dict(humidity=27, temperature=37.00),
-                                dict(humidity=30, temperature=45.00)]
+        expected_result_list = [dict(dew_point=15, humidity=23, temperature=67.00),
+                                dict(dew_point=16, humidity=25, temperature=52.00),
+                                dict(dew_point=17, humidity=27, temperature=37.00),
+                                dict(dew_point=18, humidity=30, temperature=45.00)]
         assert expected_result_list == [temp for temp in am2315]
 
 
@@ -31,7 +31,8 @@ def test_am2315__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
     with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement') as mock_measure:
         # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [(23, 67),  # first reading
+                                    (25, 52)]  # second reading
         am2315 = AM2315Sensor(1)
         # check __iter__ method return
         assert isinstance(am2315.__iter__(), Iterator)
@@ -41,16 +42,20 @@ def test_am2315_read_updates_temp():
     """  Verify that AM2315Sensor(1).read() gets the average temp """
     with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement') as mock_measure:
         # create our object
-        mock_measure.side_effect = [(33, 67), (59, 52)]  # first reading, second reading
+        mock_measure.side_effect = [(20, 33, 67),  # first reading
+                                    (22, 59, 52)]  # second reading
         am2315 = AM2315Sensor(1)
 
         # test our read() function
+        assert am2315._dew_point == 0  # init value
         assert am2315._humidity == 0  # init value
         assert am2315._temperature == 0  # init value
         assert not am2315.read()  # updating the value using our mock_measure side effect has no error
+        assert am2315._dew_point == 20.0  # init value
         assert am2315._humidity == 33.0  # init value
         assert am2315._temperature == 67.0  # first value
         assert not am2315.read()  # updating the value using our mock_measure side effect has no error
+        assert am2315._dew_point == 22.0  # init value
         assert am2315._humidity == 59.0  # init value
         assert am2315._temperature == 52.0  # second value
 
@@ -59,24 +64,32 @@ def test_am2315_next_returns_dict():
     """ next returns dict(temperature=float) """
     with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement') as mock_measure:
         # create our object
-        mock_measure.side_effect = [(44, 67), (64, 52)]  # first reading, second reading
+        mock_measure.side_effect = [(20, 44, 67),  # first reading
+                                    (22, 64, 52)]  # second reading
         am2315 = AM2315Sensor(1)
-        assert am2315.next() == dict(humidity=44, temperature=67.00)
+        assert am2315.next() == dict(dew_point=20,
+                                     humidity=44,
+                                     temperature=67.00)
 
 
 def test_am2315_condition_properties():
     """ verify temperature property """
     with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement') as mock_measure:
         # create our object
-        mock_measure.side_effect = [(50, 67), (55, 52)]  # first reading, second reading
+        mock_measure.side_effect = [(20, 50, 67),  # first reading
+                                    (22, 55, 52)]  # second reading
         am2315 = AM2315Sensor(1)
+        assert am2315._dew_point == 0  # initial value
         assert am2315._humidity == 0  # initial value
         assert am2315._temperature == 0  # initial value
+        assert am2315.dew_point == 20.00  # first reading with auto update
+        assert am2315.dew_point == 20.00  # same first reading, not updated yet
         assert am2315.humidity == 50.00  # first reading with auto update
         assert am2315.humidity == 50.00  # same first reading, not updated yet
         assert am2315.temperature == 67.00  # first reading with auto update
         assert am2315.temperature == 67.00  # same first reading, not updated yet
         assert not am2315.read()  # update (no errors)
+        assert am2315.dew_point == 22.00  # next reading
         assert am2315.humidity == 55.00  # next reading
         assert am2315.temperature == 52.00  # next reading
 
