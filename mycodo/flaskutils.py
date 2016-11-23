@@ -436,7 +436,7 @@ def method_mod(formModMethod, method):
                 mod_method.relay_id = formModMethod.relayID.data
                 mod_method.relay_state = formModMethod.relayState.data
                 mod_method.relay_duration = formModMethod.relayDurationSec.data
-    
+
         db_session.commit()
         flash("Method settings successfully modified.", "success")
 

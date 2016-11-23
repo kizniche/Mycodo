@@ -191,7 +191,7 @@ class PIDController(threading.Thread):
             self.Integrator = self.Integrator_max
         elif self.Integrator < self.Integrator_min:
             self.Integrator = self.Integrator_min
-        
+
         # Second method for regulating Integrator
         # if self.measure_interval is not None:
         #     if self.Integrator * self.Ki > self.measure_interval:
