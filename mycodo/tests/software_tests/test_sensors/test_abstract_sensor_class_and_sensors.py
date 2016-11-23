@@ -1,7 +1,5 @@
 # coding=utf-8
 """ Tests for the abstract class and sensor classes """
-import mock
-import pigpio
 import pytest
 from testfixtures import LogCapture
 

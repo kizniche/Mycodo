@@ -1309,7 +1309,7 @@ def pid_mod(formModPID):
                     (sensor.device_type == 'tmpsensor' and
                     formModPID.modMeasureType.data not in ['temperature_object',
                                                            'temperature_die']) or
-                    
+
                     (sensor.device_type == 'htsensor' and
                     formModPID.modMeasureType.data not in ['temperature',
                                                            'humidity',

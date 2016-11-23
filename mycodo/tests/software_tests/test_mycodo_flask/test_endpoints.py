@@ -5,7 +5,7 @@ from flask import current_app
 from mycodo import flaskutils
 from mycodo.databases.mycodo_db.models import Sensor
 from mycodo.tests.software_tests.factories_user import UserFactory
-from mycodo.tests.software_tests.factories_mycodo import SensorFactory
+# from mycodo.tests.software_tests.factories_mycodo import SensorFactory
 from mycodo.tests.software_tests.test_mycodo_flask.conftest import login_user
 
 
@@ -125,7 +125,7 @@ def test_routes_logged_in_as_admin(_, testapp, user_db):
 
 
 @mock.patch('mycodo.mycodo_flask.authentication.views.login_log')
-def test_add_sensor_logged_in_as_admin(_, testapp, user_db, mycodo_db):
+def test_add_sensor_logged_in_as_admin(_, testapp, user_db):
     """ Verifies behavior of these endpoints for a logged in admin user """
     # Create admin user and log in
     admin_user = create_user(user_db, 'admin', 'name_admin', 'secret_pass')
