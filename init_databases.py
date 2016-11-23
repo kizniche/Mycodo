@@ -24,6 +24,7 @@
 
 import argparse
 import getpass
+import logging
 import os
 import sys
 import errno
@@ -144,12 +145,12 @@ def create_dbs(db_name, create_all=False, config=None, exit_when_done=True):
     if not os.path.exists(os.path.dirname(user_db_path)):
         try:
             os.makedirs(os.path.dirname(user_db_path))
-        except OSError as exc: # Guard against race condition
+        except OSError as exc:  # Guard against race condition
             if exc.errno != errno.EEXIST:
                 raise
 
     if db_name == 'mycodo' or create_all:
-        print("Creating/verifying {} at {} ...".format(db_name, mycodo_db_uri))
+        logging.debug("Creating/verifying mycodo.db at {} ...".format(mycodo_db_uri))
 
         from mycodo.databases.mycodo_db import init_db
         from mycodo.databases.mycodo_db import populate_db
@@ -157,13 +158,13 @@ def create_dbs(db_name, create_all=False, config=None, exit_when_done=True):
         populate_db(mycodo_db_uri)
 
     if db_name == 'notes' or create_all:
-        print("Creating/verifying {} at {} ...".format(db_name, notes_db_uri))
+        logging.debug("Creating/verifying notes.db at {} ...".format(notes_db_uri))
 
         from mycodo.databases.notes_db import init_db
         init_db(notes_db_uri)
 
     if db_name == 'users' or create_all:
-        print("Creating/verifying {} at {} ...".format(db_name, user_db_uri))
+        logging.debug("Creating/verifying users.db at {} ...".format(user_db_uri))
 
         from mycodo.databases.users_db import init_db
         init_db(user_db_uri)

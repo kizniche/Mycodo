@@ -50,6 +50,7 @@ class Users(Base):
     def set_password(self, new_password):
         self.user_password_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
 
-    def check_password(self, password, hashed_password):
+    @staticmethod
+    def check_password(password, hashed_password):
         hashes_match = bcrypt.hashpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
         return hashes_match

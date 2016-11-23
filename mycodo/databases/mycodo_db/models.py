@@ -27,7 +27,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from RPi import GPIO
 import datetime
 
-
 Base = declarative_base()
 
 
@@ -81,7 +80,8 @@ class Relay(Base):
     last_duration = Column(REAL)
     on_duration = Column(BOOLEAN)
 
-    def _is_setup(self):
+    @staticmethod
+    def _is_setup():
         """
         This function checks to see if the GPIO pin is setup and ready to use.  This is for safety
         and to make sure we don't blow anything.
@@ -153,7 +153,7 @@ class Sensor(Base):
     id = Column(TEXT, unique=True, primary_key=True)
     name = Column(TEXT)
     activated = Column(INT)
-    device = Column(TEXT) 
+    device = Column(TEXT)
     device_type = Column(TEXT)
     i2c_bus = Column(INT)
     location = Column(TEXT)
@@ -192,7 +192,7 @@ class SensorPreset(Base):
 
     id = Column(TEXT, unique=True, primary_key=True)
     name = Column(TEXT)
-    device = Column(TEXT) 
+    device = Column(TEXT)
     device_type = Column(TEXT)
     location = Column(TEXT)
     multiplex = Column(TEXT)
@@ -216,10 +216,10 @@ class SensorConditional(Base):
     edge_select = Column(TEXT)
     gpio_state = Column(INT)
     edge_detected = Column(TEXT)
-    direction = Column(TEXT) # 'above' or 'below' setpoint
+    direction = Column(TEXT)  # 'above' or 'below' setpoint
     setpoint = Column(REAL)
     relay_id = Column(TEXT)
-    relay_state = Column(TEXT) # 'on' or 'off'
+    relay_state = Column(TEXT)  # 'on' or 'off'
     relay_on_duration = Column(REAL)
     execute_command = Column(TEXT)
     email_notify = Column(TEXT)
@@ -368,7 +368,7 @@ class Timer(Base):
     name = Column(TEXT)
     activated = Column(INT)
     relay_id = Column(TEXT)
-    state = Column(TEXT) # 'on' or 'off'
+    state = Column(TEXT)  # 'on' or 'off'
     time_start = Column(TEXT)
     time_end = Column(TEXT)
     duration_on = Column(REAL)
@@ -442,6 +442,7 @@ class Misc(Base):
     relay_stats_cost = Column(REAL)
     relay_stats_currency = Column(TEXT)
     relay_stats_dayofmonth = Column(INT)
+
 
 class Remote(Base):
     __tablename__ = "remote"

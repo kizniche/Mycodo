@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-
+import logging
 import bcrypt
 import os
 import random
@@ -10,22 +10,21 @@ from RPi import GPIO
 import sqlalchemy
 import string
 from collections import OrderedDict
-from datetime import datetime, time
+from datetime import datetime
 import functools
 
 import gzip
 from cStringIO import StringIO as IO
 
-from flask import flash
-from flask import make_response
-from flask import request
-from flask import session
-from flask import redirect
-from flask import after_this_request
+from flask import (current_app,
+                   flash,
+                   request,
+                   session,
+                   redirect,
+                   after_this_request)
 
 from influxdb import InfluxDBClient
 from sqlalchemy import and_
-from sqlalchemy.orm import sessionmaker
 
 from utils.send_data import send_email
 from databases.mycodo_db.models import CameraStill
@@ -45,25 +44,18 @@ from databases.mycodo_db.models import SensorConditional
 from databases.mycodo_db.models import Timer
 from databases.users_db.models import Users
 from databases.utils import session_scope
-from scripts.utils import test_username, test_password, is_email
+from scripts.utils import test_username, test_password
 from mycodo_client import DaemonControl
 
 from config import DAEMON_PID_FILE
 from config import INSTALL_DIRECTORY
-from config import LOGIN_ATTEMPTS
-from config import LOGIN_BAN_TIME_SECONDS
-from config import LOGIN_LOG_FILE
-from config import SQL_DATABASE_USER
-from config import SQL_DATABASE_MYCODO
 from config import INFLUXDB_HOST
 from config import INFLUXDB_PORT
 from config import INFLUXDB_USER
 from config import INFLUXDB_PASSWORD
 from config import INFLUXDB_DATABASE
 
-
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
-USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
+logger = logging.getLogger(__name__)
 
 
 #
@@ -99,7 +91,7 @@ def validate_method_data(form_data, this_method):
             if end_time <= start_time:
                 flash("The end time/date must be after the start time/date.", "error")
                 return 1
-        
+
         elif this_method.method_type == 'Daily':
             if (not form_data.startDailyTime.data or
                     not form_data.endDailyTime.data or
@@ -195,7 +187,7 @@ def method_create(formCreateMethod, method_id):
             new_method.y3 = 20.0
         new_method.method_order = 0
         new_method.controller_type = formCreateMethod.controller_type.data
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             db_session.add(new_method)
     except Exception as msg:
         flash("ER00 {}".format(msg), "error")
@@ -213,7 +205,7 @@ def method_add(formAddMethod, method):
         return 1
 
     if this_method.method_type == 'DailySine':
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             mod_method = db_session.query(Method).filter(
                 Method.method_id == formAddMethod.method_id.data).first()
             mod_method.amplitude = formAddMethod.amplitude.data
@@ -231,7 +223,7 @@ def method_add(formAddMethod, method):
         if formAddMethod.x0.data <= formAddMethod.x3.data:
             flash("Error: X0 must be greater than X3.", "error")
             return 1
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             mod_method = db_session.query(Method).filter(
                 Method.method_id == formAddMethod.method_id.data).first()
             mod_method.shift_angle = formAddMethod.shiftAngle.data
@@ -263,7 +255,7 @@ def method_add(formAddMethod, method):
                 last_method = last_method.filter(Method.method_order > 0)
                 last_method = last_method.filter(Method.relay_id == None)
                 last_method = last_method.order_by(Method.method_order.desc()).first()
-                if last_method != None:
+                if last_method is not None:
                     if this_method.method_type == 'Date':
                         last_method_end_time = datetime.strptime(last_method.end_time, '%Y-%m-%d %H:%M:%S')
                     elif this_method.method_type == 'Daily':
@@ -272,24 +264,14 @@ def method_add(formAddMethod, method):
                     if start_time < last_method_end_time:
                         flash("The new entry start time ({}) cannot overlap the last entry's end time ({}). Note: They may be the same time.".format(last_method_end_time, start_time), "error")
                         return 1
-            except ValueError:
-                pass
+            except ValueError as e:
+                logger.error("{err}".format(err=e))
 
     elif formAddMethod.method_select.data == 'relay':
         if this_method.method_type == 'Date':
             start_time = datetime.strptime(formAddMethod.relayTime.data, '%Y-%m-%d %H:%M:%S')
         elif this_method.method_type == 'Daily':
             start_time = datetime.strptime(formAddMethod.relayDailyTime.data, '%H:%M:%S')
-
-    # Check if this is the first entry of the method
-    method_exists = False
-    method_empty = True
-    for each_method in method:
-        if each_method.id == formAddMethod.method_id.data:
-            method_exists = True
-            break
-        if each_method.method_order > 0:
-            method_empty = False
 
     try:
         new_method = Method()
@@ -330,7 +312,7 @@ def method_add(formAddMethod, method):
         new_method.repeat_units = ''
         new_method.total_runs = ''
 
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             db_session.add(new_method)
 
         if formAddMethod.method_select.data == 'setpoint':
@@ -364,13 +346,13 @@ def method_mod(formModMethod, method):
         return redirect('/')
 
     if formModMethod.Delete.data:
-        delete_entry_with_id(MYCODO_DB_PATH,
+        delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                              Method,
                              formModMethod.method_id.data)
         return 0
 
     if formModMethod.name.data:
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             mod_method = db_session.query(Method).filter(
                 Method.method_id == formModMethod.method_id.data)
             mod_method = mod_method.filter(Method.method_order == 0).first()
@@ -386,7 +368,7 @@ def method_mod(formModMethod, method):
     if validate_method_data(formModMethod, method_set):
         return 1
 
-    with session_scope(MYCODO_DB_PATH) as db_session:
+    with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
         mod_method = db_session.query(Method).filter(
             Method.id == formModMethod.method_id.data).first()
 
@@ -398,7 +380,7 @@ def method_mod(formModMethod, method):
                 # Ensure the start time comes after the previous entry's end time
                 # and the end time comes before the next entry's start time
                 # method_id_set is the id given to all method entries, 'method_id', not 'id'
-                
+
                 method_filtered = method.filter(Method.method_order > 0)
                 method_filtered = method_filtered.filter(Method.method_id == this_method.method_id)
 
@@ -407,19 +389,19 @@ def method_mod(formModMethod, method):
                 next_method = method.order_by(Method.method_order.asc()).filter(
                     Method.method_order > this_method.method_order).first()
 
-                if previous_method != None and previous_method.end_time != None:
+                if previous_method is not None and previous_method.end_time is not None:
                     previous_end_time = datetime.strptime(previous_method.end_time,
                         '%Y-%m-%d %H:%M:%S')
-                    if previous_end_time != None and start_time < previous_end_time:
+                    if previous_end_time is not None and start_time < previous_end_time:
                         flash("The entry start time ({}) cannot overlap the previous "
                               "entry's end time ({})".format(start_time, previous_end_time),
                               "error")
                         return 1
 
-                if next_method != None and next_method.start_time != None:
+                if next_method is not None and next_method.start_time is not None:
                     next_start_time = datetime.strptime(next_method.start_time,
                         '%Y-%m-%d %H:%M:%S')
-                    if next_start_time != None and end_time > next_start_time:
+                    if next_start_time is not None and end_time > next_start_time:
                         flash("The entry end time ({}) cannot overlap the next entry's "
                               "start time ({})".format(end_time, next_start_time),
                               "error")
@@ -454,14 +436,14 @@ def method_mod(formModMethod, method):
                 mod_method.relay_id = formModMethod.relayID.data
                 mod_method.relay_state = formModMethod.relayState.data
                 mod_method.relay_duration = formModMethod.relayDurationSec.data
-    
+
         db_session.commit()
         flash("Method settings successfully modified.", "success")
 
 
 def method_del(method_id):
     try:
-        delete_entry_with_id(MYCODO_DB_PATH,
+        delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                              Method,
                              method_id)
     except Exception as except_msg:
@@ -499,7 +481,9 @@ def auth_credentials(address, user, password_hash):
     try:
         r = requests.get(url, params=credentials, verify=False)
         return int(r.text)
-    except:
+    except Exception as e:
+        logger.error("'auth_credentials' raised an exception: "
+                     "{err}".format(err=e))
         return 1
 
 
@@ -523,12 +507,12 @@ def remote_host_add(formSetup, display_order):
             new_remote_host.username = formSetup.username.data
             new_remote_host.password_hash = pw_check['message']
             try:
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     db_session.add(new_remote_host)
                 flash("Remote Host {} with ID {} successfully added".format(
                       formSetup.host.data, random_id),
                       "success")
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     order_remote = db_session.query(DisplayOrder).first()
                     display_order.append(random_id)
                     order_remote.remote_host = ','.join(display_order)
@@ -549,12 +533,12 @@ def remote_host_del(formSetup, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to delete remote hosts", "error")
         return redirect('/')
-    
+
     try:
-        delete_entry_with_id(MYCODO_DB_PATH,
+        delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                              Remote,
                              formSetup.remote_id.data)
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             order_remote = db_session.query(DisplayOrder).first()
             display_order.remove(formSetup.remote_id.data)
             order_remote.remote_host = ','.join(display_order)
@@ -630,7 +614,7 @@ def activate_deactivate_controller(controller_action,
         flash("Could not communicate with daemon: {}".format(except_msg),
                                                              "error")
     try:
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             if controller_type == 'LCD':
                 mod_controller = db_session.query(LCD).filter(
                     LCD.id == controller_id).first()
@@ -679,9 +663,14 @@ def choices_sensors(sensor):
             display = '{} ({}) CPU Load (15m)'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value:display})
-        if each_sensor.device in ['AM2315', 'ATLAS_PT1000', 'BME280', 'BMP', 'DHT11',
-                                  'DHT22', 'DS18B20', 'HTU21D', 'RPi',
-                                  'SHT1x_7x', 'SHT2x']:
+        if each_sensor.device == 'CHIRP':
+            value = '{},moisture'.format(each_sensor.id)
+            display = '{} ({}) Moisture'.format(
+                each_sensor.id, each_sensor.name)
+            choices.update({value:display})
+        if each_sensor.device in ['AM2315', 'ATLAS_PT1000', 'BME280', 'BMP',
+                                  'CHIRP', 'DHT11', 'DHT22', 'DS18B20',
+                                  'HTU21D', 'RPi', 'SHT1x_7x', 'SHT2x']:
             value = '{},temperature'.format(each_sensor.id)
             display = '{} ({}) Temperature'.format(
                 each_sensor.id, each_sensor.name)
@@ -733,7 +722,7 @@ def choices_sensors(sensor):
             display = '{} ({}) {}'.format(
                 each_sensor.id, each_sensor.name, each_sensor.adc_measure)
             choices.update({value:display})
-        if each_sensor.device == 'TSL2561':
+        if each_sensor.device in ['CHIRP', 'TSL2561']:
             value = '{},lux'.format(each_sensor.id)
             display = '{} ({}) Lux'.format(
                 each_sensor.id, each_sensor.name)
@@ -785,12 +774,12 @@ def graph_add(formAddGraph, display_order):
         new_graph.enable_rangeselect = formAddGraph.enableRangeSelect.data
         new_graph.enable_export = formAddGraph.enableExport.data
         try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 db_session.add(new_graph)
             flash("Graph with ID {} successfully created".format(
                   random_id),
                   "success")
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 order_graph = db_session.query(DisplayOrder).first()
                 display_order.append(random_id)
                 order_graph.graph = ','.join(display_order)
@@ -811,7 +800,7 @@ def graph_mod(formModGraph):
 
     if formModGraph.validate():
         try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 mod_graph = db_session.query(Graph).filter(
                     Graph.id == formModGraph.graph_id.data).first()
                 mod_graph.name = formModGraph.name.data
@@ -845,10 +834,10 @@ def graph_del(formDelGraph, display_order):
 
     if formDelGraph.validate():
         try:
-            delete_entry_with_id(MYCODO_DB_PATH,
+            delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                                  Graph,
                                  formDelGraph.graph_id.data)
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 order_graph = db_session.query(DisplayOrder).first()
                 display_order.remove(formDelGraph.graph_id.data)
                 order_graph.graph = ','.join(display_order)
@@ -878,7 +867,7 @@ def graph_reorder(formOrderGraph, display_order):
                     formOrderGraph.orderGraph_id.data,
                     'down')
             if status == 'success':
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     order_graph = db_session.query(DisplayOrder).first()
                     order_graph.graph = ','.join(reordered_list)
                     db_session.commit()
@@ -903,10 +892,10 @@ def lcd_add(formAddLCD, display_order):
         return redirect('/lcd')
 
     if formAddLCD.validate():
-        for x in range(0, formAddLCD.numberLCDs.data):
+        for _ in range(0, formAddLCD.numberLCDs.data):
             new_lcd = LCD()
             random_lcd_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for n in xrange(8)])
+                    string.ascii_letters + string.digits) for _ in xrange(8)])
             new_lcd.id = random_lcd_id
             new_lcd.name = 'LCD {}'.format(random_lcd_id)
             new_lcd.pin = "27"
@@ -925,12 +914,12 @@ def lcd_add(formAddLCD, display_order):
             new_lcd.line_4_sensor_id = ''
             new_lcd.line_4_measurement = ''
             try:
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     db_session.add(new_lcd)
                 flash("LCD with ID {} successfully added".format(
                       random_lcd_id),
                       "success")
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     order_lcd = db_session.query(DisplayOrder).first()
                     display_order.append(random_lcd_id)
                     order_lcd.lcd = ','.join(display_order)
@@ -950,14 +939,14 @@ def lcd_mod(formModLCD):
 
     if formModLCD.validate():
         try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 mod_lcd = db_session.query(LCD).filter(
                     LCD.id == formModLCD.modLCD_id.data).first()
                 if mod_lcd.activated:
                     flash("Deactivate LCD controller before modifying its "
                           "settings.", "error")
                     return redirect('/lcd')
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 mod_lcd = db_session.query(LCD).filter(
                     LCD.id == formModLCD.modLCD_id.data).first()
                 mod_lcd.name = formModLCD.modName.data
@@ -1007,10 +996,10 @@ def lcd_del(formDelLCD, display_order):
 
     if formDelLCD.validate():
         try:
-            delete_entry_with_id(MYCODO_DB_PATH,
+            delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                                  LCD,
                                  formDelLCD.delLCD_id.data)
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 order_lcd = db_session.query(DisplayOrder).first()
                 display_order.remove(formDelLCD.delLCD_id.data)
                 order_lcd.lcd = ','.join(display_order)
@@ -1040,7 +1029,7 @@ def lcd_reorder(formOrderLCD, display_order):
                     formOrderLCD.orderLCD_id.data,
                     'down')
             if status == 'success':
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     order_lcd = db_session.query(DisplayOrder).first()
                     order_lcd.lcd = ','.join(reordered_list)
                     db_session.commit()
@@ -1057,7 +1046,7 @@ def lcd_reorder(formOrderLCD, display_order):
 def lcd_activate(formActivateLCD):
     if formActivateLCD.validate():
         # All sensors the LCD depends on must be active to activate the LCD
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             lcd = db_session.query(LCD).filter(
                 LCD.id == formActivateLCD.activateLCD_id.data).first()
             if lcd.y_lines == 2:
@@ -1135,12 +1124,12 @@ def log_add(formAddLog, display_order):
         new_log.measure_type = sensor_and_measurement_split[1]
         new_log.period = formAddLog.period.data
         try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 db_session.add(new_log)
             flash("Log with ID {} successfully added".format(
                   random_log_id),
                   "success")
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     order_log = db_session.query(DisplayOrder).first()
                     display_order.append(random_log_id)
                     order_log.log = ','.join(display_order)
@@ -1159,7 +1148,7 @@ def log_mod(formLog):
         return redirect('/log')
 
     try:
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             mod_log = db_session.query(Log).filter(
                 Log.id == formLog.log_id.data).first()
             if mod_log.activated:
@@ -1183,10 +1172,10 @@ def log_del(formLog, display_order):
         return redirect('/log')
 
     try:
-        delete_entry_with_id(MYCODO_DB_PATH,
+        delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                              Log,
                              formLog.log_id.data)
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 order_sensor = db_session.query(DisplayOrder).first()
                 display_order.remove(formLog.log_id.data)
                 order_sensor.log = ','.join(display_order)
@@ -1212,7 +1201,7 @@ def log_reorder(formLog, display_order):
                     formLog.log_id.data,
                     'down')
         if status == 'success':
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 order_log = db_session.query(DisplayOrder).first()
                 order_log.log = ','.join(reordered_list)
                 db_session.commit()
@@ -1226,7 +1215,7 @@ def log_reorder(formLog, display_order):
 
 def log_activate(formLog):
     # Check if associated sensor is activated
-    with session_scope(MYCODO_DB_PATH) as db_session:
+    with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
         log = db_session.query(Log).filter(
             Log.id == formLog.log_id.data).first()
         sensor = db_session.query(Sensor).filter(
@@ -1253,7 +1242,7 @@ def pid_add(formAddPID, display_order):
         return redirect('/pid')
 
     if formAddPID.validate():
-        for x in range(0, formAddPID.numberPIDs.data):
+        for _ in range(0, formAddPID.numberPIDs.data):
             new_pid = PID()
             random_pid_id = ''.join([random.choice(
                     string.ascii_letters + string.digits) for n in xrange(8)])
@@ -1277,12 +1266,12 @@ def pid_add(formAddPID, display_order):
             new_pid.lower_min_duration = 0
             new_pid.lower_max_duration = 0
             try:
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     db_session.add(new_pid)
                 flash("PID with ID {} successfully added".format(
                       random_pid_id),
                       "success")
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     order_pid = db_session.query(DisplayOrder).first()
                     display_order.append(random_pid_id)
                     order_pid.pid = ','.join(display_order)
@@ -1304,7 +1293,7 @@ def pid_mod(formModPID):
 
     if formModPID.validate():
         try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 mod_pid = db_session.query(PID).filter(
                     PID.id == formModPID.modPID_id.data).first()
                 if mod_pid.activated:
@@ -1334,8 +1323,8 @@ def pid_mod(formModPID):
 
                     (sensor.device_type == 'moistsensor' and
                     formModPID.modMeasureType.data not in ['temperature',
-                                                           'humidity',
-                                                           'dewpoint']) or
+                                                           'lux',
+                                                           'moisture']) or
                     
                     (sensor.device_type == 'presssensor' and
                     formModPID.modMeasureType.data not in ['temperature',
@@ -1377,7 +1366,7 @@ def pid_mod_method(formModPIDMethod):
               "error")
         return redirect('/pid')
     try:
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             mod_pid = db_session.query(PID).filter(
                 PID.id == formModPIDMethod.pid_id.data).first()
             if mod_pid.activated:
@@ -1400,10 +1389,10 @@ def pid_del(formDelPID, display_order):
 
     if formDelPID.validate():
         try:
-            delete_entry_with_id(MYCODO_DB_PATH,
+            delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                                  PID,
                                  formDelPID.delPID_id.data)
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 order_pid = db_session.query(DisplayOrder).first()
                 display_order.remove(formDelPID.delPID_id.data)
                 order_pid.pid = ','.join(display_order)
@@ -1433,7 +1422,7 @@ def pid_reorder(formOrderPID, display_order):
                     formOrderPID.orderPID_id.data,
                     'down')
             if status == 'success':
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     order_pid = db_session.query(DisplayOrder).first()
                     order_pid.pid = ','.join(reordered_list)
                     db_session.commit()
@@ -1449,7 +1438,7 @@ def pid_reorder(formOrderPID, display_order):
 
 def pid_activate(formActivatePID):
     # Check if associated sensor is activated
-    with session_scope(MYCODO_DB_PATH) as db_session:
+    with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
         pid = db_session.query(PID).filter(
             PID.id == formActivatePID.activatePID_id.data).first()
         sensor = db_session.query(Sensor).filter(
@@ -1461,13 +1450,12 @@ def pid_activate(formActivatePID):
 
         # Signal the duration method can run because it's been
         # properly initiated (non-power failure)
-        with session_scope(MYCODO_DB_PATH) as db_session:
-            mod_method = db_session.query(Method).filter(
-                Method.method_id == pid.method_id)
-            mod_method = mod_method.filter(Method.method_order == 0).first()
-            if mod_method and mod_method.method_type == 'Duration':
-                    mod_method.start_time = 'Ready'
-                    db_session.commit()
+        mod_method = db_session.query(Method).filter(
+            Method.method_id == pid.method_id)
+        mod_method = mod_method.filter(Method.method_order == 0).first()
+        if mod_method and mod_method.method_type == 'Duration':
+            mod_method.start_time = 'Ready'
+            db_session.commit()
 
     activate_deactivate_controller('activate',
                                    'PID',
@@ -1496,10 +1484,10 @@ def relay_on_off(formRelayOnOff):
             flash("Cannot modulate relay with a GPIO of 0", "error")
         elif formRelayOnOff.On.data:
             return_value = control.relay_on(formRelayOnOff.Relay_id.data, 0)
-            flash("Relay successfully turned on", "success")
+            flash("Relay successfully turned on: {rvalue}".format(rvalue=return_value), "success")
         elif formRelayOnOff.Off.data:
             return_value = control.relay_off(formRelayOnOff.Relay_id.data)
-            flash("Relay successfully turned off", "success")
+            flash("Relay successfully turned off: {rvalue}".format(rvalue=return_value), "success")
     except Exception as except_msg:
         flash("Relay was not able to be turned on or off: {}".format(
             except_msg), "error")
@@ -1511,7 +1499,7 @@ def relay_add(formAddRelay, display_order):
         return redirect('/relay')
 
     if formAddRelay.validate():
-        for x in range(0, formAddRelay.numberRelays.data):
+        for _ in range(0, formAddRelay.numberRelays.data):
             new_relay = Relay()
             random_relay_id = ''.join([random.choice(
                     string.ascii_letters + string.digits) for n in xrange(8)])
@@ -1522,12 +1510,12 @@ def relay_add(formAddRelay, display_order):
             new_relay.trigger = 1
             new_relay.start_state = 0
             try:
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     db_session.add(new_relay)
                 flash("Relay with ID {} successfully added".format(
                       random_relay_id),
                       "success")
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     order_relay = db_session.query(DisplayOrder).first()
                     display_order.append(random_relay_id)
                     order_relay.relay = ','.join(display_order)
@@ -1548,7 +1536,7 @@ def relay_mod(formModRelay):
 
     if formModRelay.validate():
         try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 sensor = db_session.query(Sensor).filter(
                     Sensor.location == str(formModRelay.modGpio.data)).first()
                 if sensor is not None:
@@ -1588,10 +1576,10 @@ def relay_del(formDelRelay, display_order):
 
     if formDelRelay.validate():
         try:
-            delete_entry_with_id(MYCODO_DB_PATH,
+            delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                                  Relay,
                                  formDelRelay.delRelay_id.data)
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 order_relay = db_session.query(DisplayOrder).first()
                 display_order.remove(formDelRelay.delRelay_id.data)
                 order_relay.relay = ','.join(display_order)
@@ -1621,7 +1609,7 @@ def relay_reorder(formOrderRelay, display_order):
                     formOrderRelay.orderRelay_id.data,
                     'down')
             if status == 'success':
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     order_relay = db_session.query(DisplayOrder).first()
                     order_relay.relay = ','.join(reordered_list)
                     db_session.commit()
@@ -1645,10 +1633,10 @@ def relay_conditional_add(formAddRelayCond):
         return redirect('/relay')
 
     if formAddRelayCond.validate():
-        for x in range(0, formAddRelayCond.numberRelayConditionals.data):
+        for _ in range(0, formAddRelayCond.numberRelayConditionals.data):
             new_relay_cond = RelayConditional()
             random_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for n in xrange(8)])
+                    string.ascii_letters + string.digits) for _ in xrange(8)])
             new_relay_cond.id = random_id
             new_relay_cond.name = 'Relay Conditional'
             new_relay_cond.activated = False
@@ -1662,7 +1650,7 @@ def relay_conditional_add(formAddRelayCond):
             new_relay_cond.email_notify = ''
             new_relay_cond.flash_lcd = ''
             try:
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     db_session.add(new_relay_cond)
                 flash("Relay Conditional with ID {} successfully added".format(
                     random_id),
@@ -1686,7 +1674,7 @@ def relay_conditional_mod(formModRelayCond):
 
     if formModRelayCond.activate.data:
         try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 relay_cond = db_session.query(RelayConditional)
                 relay_cond = relay_cond.filter(
                     RelayConditional.id == formModRelayCond.Relay_id.data).first()
@@ -1699,7 +1687,7 @@ def relay_conditional_mod(formModRelayCond):
                   "{}".format(except_msg), "error")
     elif formModRelayCond.deactivate.data:
         try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 relay_cond = db_session.query(RelayConditional).filter(
                     RelayConditional.id == formModRelayCond.Relay_id.data).first()
                 relay_cond.activated = 0
@@ -1711,7 +1699,7 @@ def relay_conditional_mod(formModRelayCond):
                   "{}".format(except_msg), "error")
     elif formModRelayCond.delCondRelaySubmit.data:
         try:
-            delete_entry_with_id(MYCODO_DB_PATH,
+            delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                                  RelayConditional,
                                  formModRelayCond.Relay_id.data)
         except Exception as except_msg:
@@ -1720,7 +1708,7 @@ def relay_conditional_mod(formModRelayCond):
     elif (formModRelayCond.modCondRelaySubmit.data and
             formModRelayCond.validate()):
         try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 mod_relay = db_session.query(RelayConditional).filter(
                     RelayConditional.id == formModRelayCond.Relay_id.data).first()
                 mod_relay.name = formModRelayCond.modCondName.data
@@ -1775,10 +1763,10 @@ def sensor_add(formAddSensor, display_order):
         return redirect('/sensor')
 
     if formAddSensor.validate():
-        for x in range(0, formAddSensor.numberSensors.data):
+        for _ in range(0, formAddSensor.numberSensors.data):
             new_sensor = Sensor()
             random_sensor_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for n in xrange(8)])
+                    string.ascii_letters + string.digits) for _ in xrange(8)])
             new_sensor.id = random_sensor_id
             new_sensor.device = formAddSensor.sensor.data
             new_sensor.name = '{} ({})'.format(formAddSensor.sensor.data,
@@ -1838,15 +1826,15 @@ def sensor_add(formAddSensor, display_order):
                 elif formAddSensor.sensor.data == 'SHT2x':
                     new_sensor.location = '0x40'
 
+            # Chirp moisture sensor
+            elif formAddSensor.sensor.data == 'CHIRP':
+                new_sensor.device_type = 'moistsensor'
+                new_sensor.location = '0x20'
+
             # CO2
             elif formAddSensor.sensor.data == 'K30':
                 new_sensor.device_type = 'co2sensor'
                 new_sensor.location = 'Tx/Rx'
-
-            # Moisture
-            elif formAddSensor.sensor.data == 'CHIRP':
-                new_sensor.device_type = 'moistsensor'
-                new_sensor.location = '0x20'
             
             # Pressure
             elif formAddSensor.sensor.data in ['BME280', 'BMP']:
@@ -1874,12 +1862,12 @@ def sensor_add(formAddSensor, display_order):
                     new_sensor.adc_volts_max = 2.048
 
             try:
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     db_session.add(new_sensor)
                 flash("{} Sensor with ID {} successfully added".format(
                         formAddSensor.sensor.data,random_sensor_id),
                         "success")
-                with session_scope(MYCODO_DB_PATH) as db_session:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     order_sensor = db_session.query(DisplayOrder).first()
                     display_order.append(random_sensor_id)
                     order_sensor.sensor = ','.join(display_order)
@@ -1900,7 +1888,7 @@ def sensor_mod(formModSensor):
         return redirect('/sensor')
 
     try:
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             mod_sensor = db_session.query(Sensor).filter(
                 Sensor.id == formModSensor.modSensor_id.data).first()
 
@@ -1980,7 +1968,7 @@ def sensor_del(formModSensor, display_order):
         return redirect('/sensor')
 
     try:
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             sensor = db_session.query(Sensor).filter(
                 Sensor.id == formModSensor.modSensor_id.data).first()
             if sensor.activated:
@@ -1994,14 +1982,14 @@ def sensor_del(formModSensor, display_order):
             for each_sensor_cond in sensor_cond:
                 if each_sensor_cond.sensor_id == formModSensor.modSensor_id.data:
                     delete_entry_with_id(
-                        MYCODO_DB_PATH,
+                        current_app.config['MYCODO_DB_PATH'],
                         SensorConditional,
                         each_sensor_cond.id)
 
-        delete_entry_with_id(MYCODO_DB_PATH,
+        delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                              Sensor,
                              formModSensor.modSensor_id.data)
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             order_sensor = db_session.query(DisplayOrder).first()
             display_order.remove(formModSensor.modSensor_id.data)
             order_sensor.sensor = ','.join(display_order)
@@ -2028,7 +2016,7 @@ def sensor_reorder(formModSensor, display_order):
                     formModSensor.modSensor_id.data,
                     'down')
         if status == 'success':
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 order_sensor = db_session.query(DisplayOrder).first()
                 order_sensor.sensor = ','.join(reordered_list)
                 db_session.commit()
@@ -2041,7 +2029,7 @@ def sensor_reorder(formModSensor, display_order):
 
 
 def sensor_activate(formModSensor):
-    with session_scope(MYCODO_DB_PATH) as db_session:
+    with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
         sensor = db_session.query(Sensor).filter(
             Sensor.id == formModSensor.modSensor_id.data).first()
         if not sensor.location:
@@ -2068,7 +2056,7 @@ def sensor_deactivate_associated_controllers(sensor_id):
         flash("Guests are not permitted to deactivate sensors", "error")
         return redirect('/sensor')
 
-    with session_scope(MYCODO_DB_PATH) as db_session:
+    with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
         pid = db_session.query(PID).filter(and_(
                 PID.sensor_id == sensor_id,
                 PID.activated == 1)).all()
@@ -2120,7 +2108,7 @@ def sensor_conditional_add(formModSensor):
     new_sensor_cond.flash_lcd = ''
     new_sensor_cond.camera_record = ''
     try:
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             db_session.add(new_sensor_cond)
         flash("Sensor Conditional with ID {} successfully added".format(
               random_id),
@@ -2145,7 +2133,7 @@ def sensor_conditional_mod(formModSensorCond):
     if formModSensorCond.delSubmit.data:
         try:
             delete_entry_with_id(
-                MYCODO_DB_PATH,
+                current_app.config['MYCODO_DB_PATH'],
                 SensorConditional,
                 formModSensorCond.modCondSensor_id.data)
             check_refresh_conditional(formModSensorCond.modSensor_id.data,
@@ -2158,13 +2146,13 @@ def sensor_conditional_mod(formModSensorCond):
             formModSensorCond.validate()):
         try:
             error = False
-            if ((formModSensorCond.DoRecord.data == 'photoemail' or formModSensorCond.DoRecord.data == 'videoemail') and not formModSensorCond.DoNotify.data):
+            if (formModSensorCond.DoRecord.data == 'photoemail' or formModSensorCond.DoRecord.data == 'videoemail') and not formModSensorCond.DoNotify.data:
                 flash("You must specify a notification email address if the "
                       "record and email option is selcted. ", "error")
                 error = True
             if error:
                 return redirect('/sensor')
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 mod_sensor = db_session.query(SensorConditional).filter(
                     SensorConditional.id == formModSensorCond.modCondSensor_id.data).first()
                 mod_sensor.name = formModSensorCond.modCondName.data
@@ -2193,7 +2181,7 @@ def sensor_conditional_mod(formModSensorCond):
                   "{}".format(except_msg), "error")
     elif formModSensorCond.activateSubmit.data:
         try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 mod_sensor = db_session.query(SensorConditional).filter(
                     SensorConditional.id == formModSensorCond.modCondSensor_id.data).first()
                 sensor = db_session.query(Sensor).filter(
@@ -2236,7 +2224,7 @@ def sensor_conditional_mod(formModSensorCond):
                   "{}".format(except_msg), "error")
     elif formModSensorCond.deactivateSubmit.data:
         try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 mod_sensor = db_session.query(SensorConditional).filter(
                     SensorConditional.id == formModSensorCond.modCondSensor_id.data).first()
                 mod_sensor.activated = 0
@@ -2254,14 +2242,13 @@ def sensor_conditional_mod(formModSensorCond):
 
 
 def check_refresh_conditional(sensor_id, cond_mod, cond_id):
-    with session_scope(MYCODO_DB_PATH) as db_session:
+    with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
         sensor = db_session.query(Sensor).filter(and_(
                 Sensor.id == sensor_id,
                 Sensor.activated == 1)).first()
         if sensor:
             control = DaemonControl()
-            return_values = control.refresh_sensor_conditionals(
-                sensor_id, cond_mod, cond_id)
+            control.refresh_sensor_conditionals(sensor_id, cond_mod, cond_id)
 
 
 #
@@ -2302,12 +2289,12 @@ def timer_add(formAddTimer, timerType, display_order):
             new_timer.duration_on = formAddTimer.durationOn.data
             new_timer.duration_off = formAddTimer.durationOff.data
         try:
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 db_session.add(new_timer)
             flash("Timer with ID {} successfully added".format(
                   random_timer_id),
                   "success")
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     order_timer = db_session.query(DisplayOrder).first()
                     display_order.append(random_timer_id)
                     order_timer.timer = ','.join(display_order)
@@ -2326,7 +2313,7 @@ def timer_mod(formTimer, timerType):
         return redirect('/timer')
 
     try:
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             mod_timer = db_session.query(Timer).filter(
                 Timer.id == formTimer.timer_id.data).first()
             if mod_timer.activated:
@@ -2358,10 +2345,10 @@ def timer_del(formTimer, display_order):
         return redirect('/timer')
 
     try:
-        delete_entry_with_id(MYCODO_DB_PATH,
+        delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                              Timer,
                              formTimer.timer_id.data)
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 order_sensor = db_session.query(DisplayOrder).first()
                 display_order.remove(formTimer.timer_id.data)
                 order_sensor.timer = ','.join(display_order)
@@ -2387,7 +2374,7 @@ def timer_reorder(formTimer, display_order):
                     formTimer.timer_id.data,
                     'down')
         if status == 'success':
-            with session_scope(MYCODO_DB_PATH) as db_session:
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 order_timer = db_session.query(DisplayOrder).first()
                 order_timer.timer = ','.join(reordered_list)
                 db_session.commit()
@@ -2431,7 +2418,7 @@ def user_add(formAddUser):
         new_user.user_restriction = formAddUser.addGroup.data
         new_user.user_theme = 'slate'
         try:
-            with session_scope(USER_DB_PATH) as db_session:
+            with session_scope(current_app.config['USER_DB_PATH']) as db_session:
                 db_session.add(new_user)
             flash("User '{}' successfully added".format(
                 formAddUser.addUsername.data), "success")
@@ -2449,7 +2436,7 @@ def user_mod(formModUser):
         return redirect('/')
     if formModUser.validate():
         try:
-            with session_scope(USER_DB_PATH) as db_session:
+            with session_scope(current_app.config['USER_DB_PATH']) as db_session:
                 mod_user = db_session.query(Users).filter(
                     Users.user_name == formModUser.modUsername.data).first()
                 mod_user.user_email = formModUser.modEmail.data
@@ -2482,7 +2469,7 @@ def user_del(formDelUser):
         return redirect('/')
 
     if formDelUser.validate():
-        delete_user(USER_DB_PATH, Users, formDelUser.delUsername.data)
+        delete_user(current_app.config['USER_DB_PATH'], Users, formDelUser.delUsername.data)
         if formDelUser.delUsername.data == session['user_name']:
             return 'logout'
     else:
@@ -2491,7 +2478,7 @@ def user_del(formDelUser):
 
 #
 # Settings modifications
-# 
+#
 
 #
 # General
@@ -2503,7 +2490,7 @@ def settings_general_mod(formModGeneral):
         return redirect('/settings')
 
     if formModGeneral.validate():
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             mod_misc = db_session.query(Misc).one()
             force_https = mod_misc.force_https
             mod_misc.force_https = formModGeneral.forceHTTPS.data
@@ -2538,7 +2525,7 @@ def settings_camera_mod(formModCamera):
         return redirect('/settings')
 
     if formModCamera.validate():
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             mod_camera = db_session.query(CameraStill).one()
             mod_camera.hflip = formModCamera.hflip.data
             mod_camera.vflip = formModCamera.vflip.data
@@ -2559,7 +2546,7 @@ def settings_alert_mod(formModAlert):
         return redirect('/alert')
 
     if formModAlert.validate():
-        with session_scope(MYCODO_DB_PATH) as db_session:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             mod_smtp = db_session.query(SMTP).one()
             if formModAlert.sendTestEmail.data:
                 send_email(False, mod_smtp.host,
@@ -2595,41 +2582,18 @@ def daemonActive():
     return False
 
 
-# Check for cookies to authenticate Login
-def authenticate_cookies(db_path, users):
-    cookie_username = request.cookies.get('user_name')
-    cookie_password_hash = request.cookies.get('user_pass_hash')
-    if cookie_username is not None:
-        with session_scope(db_path) as new_session:
-            user = new_session.query(users).filter(
-                users.user_name == cookie_username).first()
-            new_session.expunge_all()
-            new_session.close()
-            if user == None:
-                return False
-            elif cookie_password_hash == user.user_password_hash:
-                session['logged_in'] = True
-                session['user_group'] = user.user_restriction
-                session['user_name'] = user.user_name
-                session['user_theme'] = user.user_theme
-                return True
-            else:
-                failed_login()
-    return False
-
-
 def reorderList(modified_list, item, direction):
     from_position = modified_list.index(item)
     if direction == "up":
         if from_position == 0:
-            return('error','Cannot move above the first item in the list')
+            return 'error', 'Cannot move above the first item in the list'
         to_position = from_position - 1
     elif direction == 'down':
         if from_position == len(modified_list) - 1:
-            return('error','Cannot move below the last item in the list')
+            return 'error', 'Cannot move below the last item in the list'
         to_position = from_position + 1
     modified_list.insert(to_position, modified_list.pop(from_position))
-    return('success', modified_list)
+    return 'success', modified_list
 
 
 # return table data from database SQL query
@@ -2680,51 +2644,6 @@ def flash_form_errors(form):
                 getattr(form, field).label.text,
                 error
                 ), "error")
-
-
-def banned_from_login():
-    if not session.get('failed_login_ban_time'):
-        session['failed_login_ban_time'] = 0
-    elif session['failed_login_ban_time']:
-        ban_time_left = time.time() - session['failed_login_ban_time']
-        if ban_time_left < LOGIN_BAN_TIME_SECONDS:
-            flash('Wait {} more minutes before attempting to login'.format(
-                int(LOGIN_BAN_TIME_SECONDS - ban_time_left) / 60), "info")
-            return 1
-        else:
-            session['failed_login_ban_time'] = 0
-    return 0
-
-
-def failed_login():
-    try:
-        session['failed_login_count'] += 1
-    except KeyError:
-        session['failed_login_count'] = 1
-
-    if session['failed_login_count'] > LOGIN_ATTEMPTS - 1:
-        flash('{} failed login attempts, wait 10 minutes to try again'.format(
-            session['failed_login_count']), "error")
-        session['failed_login_ban_time'] = time.time()
-        session['failed_login_count'] = 0
-    else:
-        flash('Failed Login ({}/{})'.format(
-            session['failed_login_count'],LOGIN_ATTEMPTS), "error")
-
-
-def login_log(user, group, ip, status):
-    with open(LOGIN_LOG_FILE, 'a') as file:
-        file.write('{:%Y-%m-%d %H:%M:%S}: {} {} ({}), {}\n'.format(
-            datetime.now(), status, user, group, ip))
-
-
-def clear_cookie_auth():
-    """Delete authentication cookies"""
-    response = make_response(redirect('/login'))
-    session.clear()  # or session['logged_in'] = False
-    response.set_cookie('user_name', '', expires=0)
-    response.set_cookie('user_pass_hash', '', expires=0)
-    return response
 
 
 def gzipped(f):

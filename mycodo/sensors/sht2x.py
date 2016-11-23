@@ -1,98 +1,112 @@
 # coding=utf-8
-#
 # From https://github.com/ControlEverythingCommunity/SHT25/blob/master/Python/SHT25.py
-
+import logging
 import smbus
 import time
-import RPi.GPIO as GPIO
-
 from sensorutils import dewpoint
+from .base_sensor import AbstractSensor
+
+logger = logging.getLogger(__name__)
 
 
-class SHT2x_read(object):
+class SHT2xSensor(AbstractSensor):
+    """
+    A sensor support class that measures the SHT2x's humidity and temperature
+    and calculates the dew point
+
+    """
+
     def __init__(self, address, bus):
-        self._temperature = 0
-        self._humidity = 0
-        self._dewpoint = 0
+        super(SHT2xSensor, self).__init__()
         self.i2c_address = address
         self.i2c_bus = bus
-        self.running = True
+        self._dew_point = 0.0
+        self._humidity = 0.0
+        self._temperature = 0.0
 
-    def read(self):
-        try:
-            bus = smbus.SMBus(self.i2c_bus)
-            # SHT25 address, 0x40(64)
-            # Send temperature measurement command
-            #       0xF3(243)   NO HOLD master
-            bus.write_byte(self.i2c_address, 0xF3)
-            time.sleep(0.5)
-            # SHT25 address, 0x40(64)
-            # Read data back, 2 bytes
-            # Temp MSB, Temp LSB
-            data0 = bus.read_byte(self.i2c_address)
-            data1 = bus.read_byte(self.i2c_address)
-            self._temperature = -46.85 + (((data0 * 256 + data1) * 175.72) / 65536.0)
+    def __repr__(self):
+        """  Representation of object """
+        return "<{cls}(dew_point={dpt})(humidity={hum})(temperature={temp})>".format(
+            cls=type(self).__name__,
+            dpt="{0:.2f}".format(self._dew_point),
+            hum="{0:.2f}".format(self._humidity),
+            temp="{0:.2f}".format(self._temperature))
 
-            # SHT25 address, 0x40(64)
-            # Send humidity measurement command
-            #       0xF5(245)   NO HOLD master
-            bus.write_byte(self.i2c_address, 0xF5)
-            time.sleep(0.5)
-            # SHT25 address, 0x40(64)
-            # Read data back, 2 bytes
-            # Humidity MSB, Humidity LSB
-            data0 = bus.read_byte(self.i2c_address)
-            data1 = bus.read_byte(self.i2c_address)
-            self._humidity = -6 + (((data0 * 256 + data1) * 125.0) / 65536.0)
+    def __str__(self):
+        """ Return measurement information """
+        return "Dew Point: {dpt}, Humidity: {hum}, Temperature: {temp}".format(
+            dpt="{0:.2f}".format(self._dew_point),
+            hum="{0:.2f}".format(self._humidity),
+            temp="{0:.2f}".format(self._temperature))
 
-            self._dewpoint = dewpoint(self.temperature, self.humidity)
-        except:
-            return 1
-
-    @property
-    def temperature(self):
-        return self._temperature
-
-    @property
-    def humidity(self):
-        return self._humidity
-
-    @property
-    def dewpoint(self):
-        return self._dewpoint
-
-    def __iter__(self):
-        """
-        Support the iterator protocol.
-        """
+    def __iter__(self):  # must return an iterator
+        """ SHT2xSensor iterates through live measurement readings """
         return self
 
     def next(self):
+        """ Get next measurement reading """
+        if self.read():  # raised an error
+            raise StopIteration  # required
+        return dict(dew_point=float('{0:.2f}'.format(self._dew_point)),
+                    humidity=float('{0:.2f}'.format(self._humidity)),
+                    temperature=float('{0:.2f}'.format(self._temperature)))
+
+    @property
+    def dew_point(self):
+        """ SHT2x dew point in Celsius """
+        if not self._dew_point:  # update if needed
+            self.read()
+        return self._dew_point
+
+    @property
+    def humidity(self):
+        """ SHT2x relative humidity in percent """
+        if not self._humidity:  # update if needed
+            self.read()
+        return self._humidity
+
+    @property
+    def temperature(self):
+        """ SHT2x temperature in Celsius """
+        if not self._temperature:  # update if needed
+            self.read()
+        return self._temperature
+
+    def get_measurement(self):
+        """ Gets the humidity and temperature """
+        bus = smbus.SMBus(self.i2c_bus)
+        # Send temperature measurement command
+        #       0xF3(243)   NO HOLD master
+        bus.write_byte(self.i2c_address, 0xF3)
+        time.sleep(0.5)
+        # Read data back, 2 bytes
+        # Temp MSB, Temp LSB
+        data0 = bus.read_byte(self.i2c_address)
+        data1 = bus.read_byte(self.i2c_address)
+        temperature = -46.85 + (((data0 * 256 + data1) * 175.72) / 65536.0)
+        # Send humidity measurement command
+        #       0xF5(245)   NO HOLD master
+        bus.write_byte(self.i2c_address, 0xF5)
+        time.sleep(0.5)
+        # Read data back, 2 bytes
+        # Humidity MSB, Humidity LSB
+        data0 = bus.read_byte(self.i2c_address)
+        data1 = bus.read_byte(self.i2c_address)
+        humidity = -6 + (((data0 * 256 + data1) * 125.0) / 65536.0)
+        dew_point = dewpoint(temperature, humidity)
+        return dew_point, humidity, temperature
+
+    def read(self):
         """
-        Call the read method and return temperature and humidity information.
+        Takes a reading from the SHT2x and updates the self.dew_point,
+        self._humidity, and self._temperature values
+
+        :returns: None on success or 1 on error
         """
-        if self.read():
-            return None
-        response = {
-            'humidity': float("{0:.2f}".format(self.humidity)),
-            'temperature': float("{0:.2f}".format(self.temperature)),
-            'dewpoint': float("{0:.2f}".format(self.dewpoint))
-        }
-        return response
-
-    def stopSensor(self):
-        self.running = False
-
-
-if __name__ == "__main__":
-    if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-        I2C_bus_number = 1
-    else:
-        I2C_bus_number = 0
-    sht = SHT2x_read(0x40, I2C_bus_number)
-
-    for measurements in sht:
-        print("Temperature: {}".format(measurements['temperature']))
-        print("Humidity: {}".format(measurements['humidity']))
-        print("Dew Point: {}".format(measurements['dewpoint']))
-        time.sleep(1)
+        try:
+            self._dew_point, self._humidity, self._temperature = self.get_measurement()
+            return  # success - no errors
+        except Exception as e:
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
+        return 1

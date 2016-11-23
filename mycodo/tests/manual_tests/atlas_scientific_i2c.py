@@ -1,28 +1,28 @@
 #!/usr/bin/python
 # coding=utf-8
 
-#!/usr/bin/python
+# !/usr/bin/python
 
-import io         # used to create file streams
-import fcntl      # used to access I2C parameters like addresses
+import io  # used to create file streams
+import fcntl  # used to access I2C parameters like addresses
 
-import time       # used for sleep delay and timestamps
-import string     # helps parse strings
+import time  # used for sleep delay and timestamps
+import string  # helps parse strings
 
 
 class AtlasI2C:
-    long_timeout = 1.5          # the timeout needed to query readings and calibrations
-    short_timeout = .5          # timeout for regular commands
-    default_bus = 1           # the default bus for I2C on the newer Raspberry Pis, certain older boards use bus 0
-    default_address = 98      # the default address for the sensor
+    long_timeout = 1.5  # the timeout needed to query readings and calibrations
+    short_timeout = 0.5  # timeout for regular commands
+    default_bus = 1  # the default bus for I2C on the newer Raspberry Pis, certain older boards use bus 0
+    default_address = 98  # the default address for the sensor
 
     def __init__(self, address=default_address, bus=default_bus):
         # open two file streams, one for reading and one for writing
         # the specific I2C channel is selected with bus
         # it is usually 1, except for older revisions where its 0
         # wb and rb indicate binary read and write
-        self.file_read = io.open("/dev/i2c-"+str(bus), "rb", buffering=0)
-        self.file_write = io.open("/dev/i2c-"+str(bus), "wb", buffering=0)
+        self.file_read = io.open("/dev/i2c-" + str(bus), "rb", buffering=0)
+        self.file_write = io.open("/dev/i2c-" + str(bus), "wb", buffering=0)
 
         # initializes I2C to either a user specified or default address
         self.set_i2c_address(address)
@@ -42,13 +42,13 @@ class AtlasI2C:
 
     def read(self, num_of_bytes=31):
         # reads a specified number of bytes from I2C, then parses and displays the result
-        res = self.file_read.read(num_of_bytes)         # read from the board
-        response = filter(lambda x: x != '\x00', res)     # remove the null characters to get the response
-        if ord(response[0]) == 1:             # if the response isn't an error
+        res = self.file_read.read(num_of_bytes)  # read from the board
+        response = filter(lambda x: x != '\x00', res)  # remove the null characters to get the response
+        if ord(response[0]) == 1:  # if the response isn't an error
             # change MSB to 0 for all received characters except the first and get a list of characters
             char_list = map(lambda x: chr(ord(x) & ~0x80), list(response[1:]))
             # NOTE: having to change the MSB to 0 is a glitch in the raspberry pi, and you shouldn't have to do this!
-            return "Command succeeded " + ''.join(char_list)     # convert the char list to a string and returns it
+            return "Command succeeded " + ''.join(char_list)  # convert the char list to a string and returns it
         else:
             return "Error " + str(ord(response[0]))
 
@@ -57,8 +57,8 @@ class AtlasI2C:
         self.write(string)
 
         # the read and calibration commands require a longer timeout
-        if((string.upper().startswith("R")) or
-           (string.upper().startswith("CAL"))):
+        if ((string.upper().startswith("R")) or
+                (string.upper().startswith("CAL"))):
             time.sleep(self.long_timeout)
         elif string.upper().startswith("SLEEP"):
             return "sleep mode"
@@ -73,7 +73,7 @@ class AtlasI2C:
 
 
 def main():
-    device = AtlasI2C()   # creates the I2C port object, specify the address or bus if necessary
+    device = AtlasI2C()  # creates the I2C port object, specify the address or bus if necessary
 
     print(">> Atlas Scientific sample code")
     print(">> Any commands entered are passed to the board via I2C except:")
@@ -84,17 +84,17 @@ def main():
 
     # main loop
     while True:
-        input = raw_input("Enter command: ")
+        cmd_input = raw_input("Enter command: ")
 
         # address command lets you change which address the Raspberry Pi will poll
-        if input.upper().startswith("ADDRESS"):
-            addr = int(string.split(input, ',')[1])
+        if cmd_input.upper().startswith("ADDRESS"):
+            addr = int(string.split(cmd_input, ',')[1])
             device.set_i2c_address(addr)
             print("I2C address set to " + str(addr))
 
         # continuous polling command automatically polls the board
-        elif input.upper().startswith("POLL"):
-            delaytime = float(string.split(input, ',')[1])
+        elif cmd_input.upper().startswith("POLL"):
+            delaytime = float(string.split(cmd_input, ',')[1])
 
             # check for polling time being too short, change it to the minimum timeout if too short
             if delaytime < AtlasI2C.long_timeout:
@@ -109,20 +109,19 @@ def main():
                 while True:
                     print(device.query("R"))
                     time.sleep(delaytime - AtlasI2C.long_timeout)
-            except KeyboardInterrupt:     # catches the ctrl-c command, which breaks the loop above
+            except KeyboardInterrupt:  # catches the ctrl-c command, which breaks the loop above
                 print("Continuous polling stopped")
 
         # if not a special keyword, pass commands straight to board
         else:
-            if len(input) == 0:
-                print "Please input valid command."
+            if len(cmd_input) == 0:
+                print("Please input valid command.")
             else:
                 try:
-                    print(device.query(input))
+                    print(device.query(cmd_input))
                 except IOError:
                     print("Query failed")
 
 
 if __name__ == '__main__':
     main()
-

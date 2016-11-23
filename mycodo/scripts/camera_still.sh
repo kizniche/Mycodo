@@ -24,28 +24,28 @@
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 DATABASE="$INSTALL_DIRECTORY/databases/mycodo.db"
-RELAYID=`sqlite3 $DATABASE "SELECT relay_id FROM camerastill;"`;
-EXTRA=`sqlite3 $DATABASE "SELECT extra_parameters FROM camerastill;"`;
-ADD_TIMESTAMP=`sqlite3 $DATABASE "SELECT timestamp FROM camerastill;"`;
+RELAYID=$(sqlite3 ${DATABASE} "SELECT relay_id FROM camerastill;");
+EXTRA=$(sqlite3 ${DATABASE} "SELECT extra_parameters FROM camerastill;");
+ADD_TIMESTAMP=$(sqlite3 ${DATABASE} "SELECT timestamp FROM camerastill;");
 IMG_TS_FMT="%Y-%m-%d %H:%M:%S"
 FILE_NAME=$(date +"%Y-%m-%d_%H%M%S")
 if [ -n "$RELAYID" ]; then
-    $INSTALL_DIRECTORY/mycodo/mycodo_client.py --relayon $RELAYID
+    ${INSTALL_DIRECTORY}/mycodo/mycodo_client.py --relayon ${RELAYID}
 fi
 sleep 1
 if [ -n "$ADD_TIMESTAMP" ]; then
     if [ ! -z "$EXTRA" ]; then
-        /usr/bin/raspistill $EXTRA -a 8 -a "$IMG_TS_FMT" -o $INSTALL_DIRECTORY/camera-stills/$FILE_NAME.jpg
+        /usr/bin/raspistill ${EXTRA} -a 8 -a "$IMG_TS_FMT" -o ${INSTALL_DIRECTORY}/camera-stills/${FILE_NAME}.jpg
     else
-        /usr/bin/raspistill -a 8 -a "$IMG_TS_FMT" -o $INSTALL_DIRECTORY/camera-stills/$FILE_NAME.jpg
+        /usr/bin/raspistill -a 8 -a "$IMG_TS_FMT" -o ${INSTALL_DIRECTORY}/camera-stills/${FILE_NAME}.jpg
     fi
 else
     if [ ! -z "$EXTRA" ]; then
-        /usr/bin/raspistill $EXTRA -o $INSTALL_DIRECTORY/camera-stills/$FILE_NAME.jpg
+        /usr/bin/raspistill ${EXTRA} -o ${INSTALL_DIRECTORY}/camera-stills/${FILE_NAME}.jpg
     else
-        /usr/bin/raspistill -o $INSTALL_DIRECTORY/camera-stills/$FILE_NAME.jpg
+        /usr/bin/raspistill -o ${INSTALL_DIRECTORY}/camera-stills/${FILE_NAME}.jpg
     fi
 fi
 if [ -n "$RELAYID" ]; then
-    $INSTALL_DIRECTORY/mycodo/mycodo_client.py --relayoff $RELAYID
+    ${INSTALL_DIRECTORY}/mycodo/mycodo_client.py --relayoff ${RELAYID}
 fi

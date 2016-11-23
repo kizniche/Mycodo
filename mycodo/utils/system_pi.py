@@ -1,5 +1,5 @@
 # coding=utf-8
-
+import logging
 import datetime
 import grp
 import os
@@ -8,6 +8,7 @@ import socket
 import subprocess
 import sys
 
+logger = logging.getLogger(__name__)
 
 
 def time_between_range(start_time, end_time):
@@ -25,12 +26,12 @@ def time_between_range(start_time, end_time):
     now_time = now_time.replace(second=0, microsecond=0)
     if ((start_hour < end_hour) or
             (start_hour == end_hour and start_min < end_min)):
-        if now_time >= datetime.time(start_hour, start_min) and now_time <= datetime.time(end_hour, end_min):
+        if datetime.time(start_hour, start_min) <= now_time <= datetime.time(end_hour, end_min):
             return 1  # Yes now within range
     else:
         if now_time >= datetime.time(start_hour, start_min) or now_time <= datetime.time(end_hour, end_min):
             return 1  # Yes now within range
-    return 0 # No now not within range
+    return 0  # No now not within range
 
 
 def cmd_output(command, su_mycodo=True):
@@ -48,7 +49,7 @@ def cmd_output(command, su_mycodo=True):
 
 def get_git_commit():
     current_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    output, err, status = cmd_output('cd {} && git rev-parse --short HEAD'.format(current_path))
+    output, _, _ = cmd_output('cd {} && git rev-parse --short HEAD'.format(current_path))
     return output[:7]
 
 
@@ -63,8 +64,9 @@ def internet(host="8.8.8.8", port=53, timeout=3):
         socket.setdefaulttimeout(timeout)
         socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
         return True
-    except Exception as ex:
-        pass
+    except Exception as e:
+        logger.error("Function 'internet()' raised exception: "
+                     "{err}".format(err=e))
     return False
 
 

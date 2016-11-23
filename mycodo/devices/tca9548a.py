@@ -1,14 +1,12 @@
 # coding=utf-8
 
 import argparse
-import os
 import smbus
 import time
-import timeit
 
 
 class TCA9548A(object):
-    def __init__(self, bus, address=0x70,):
+    def __init__(self, bus, address=0x70, ):
         self.i2c_address = address
         self.i2c_bus = bus
         self.bus = smbus.SMBus(self.i2c_bus)
@@ -35,9 +33,9 @@ def menu():
                         required=True)
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-c', '--channel', metavar='CHANNEL', type=int,
-                        help='Channel to be activated with the multiplexer')
+                       help='Channel to be activated with the multiplexer')
     group.add_argument('-r', '--read', action='store_true',
-                        help='Only read multiplexer and return channel number')
+                       help='Only read multiplexer and return channel number')
 
     args = parser.parse_args()
 
@@ -47,6 +45,7 @@ def menu():
         multiplexer.setup(args.channel)
     read_response = multiplexer.read()
     print("TCA9548A I2C channel status: {} (channel {})".format(bin(read_response), read_response))
+
 
 if __name__ == "__main__":
     menu()

@@ -1,6 +1,5 @@
 # coding=utf-8
 """ Starts the mycodo flask UI """
-import os
 import argparse
 import sys
 import os.path
@@ -24,10 +23,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.debug:
-        debug = True
-    else:
-        debug = False
+    debug = args.debug
 
     if args.ssl:
         app.run(host='0.0.0.0', port=80, debug=debug)
@@ -38,6 +34,6 @@ if __name__ == '__main__':
         dir_path = os.path.dirname(file_path)
         cert = os.path.join(dir_path, "mycodo_flask/ssl_certs/cert.pem")
         privkey = os.path.join(dir_path, "mycodo_flask/ssl_certs/privkey.pem")
-        # chain = os.path.join(dir_path, "ssl_certs/chain.pem")
+        # chain = os.path.join(dir_path, "mycodo_flask/ssl_certs/chain.pem")
         context = (cert, privkey)
         app.run(host='0.0.0.0', port=443, ssl_context=context, debug=debug)

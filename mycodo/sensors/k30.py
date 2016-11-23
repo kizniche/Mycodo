@@ -1,41 +1,56 @@
 # coding=utf-8
 
-import os
+from lockfile import LockFile
+import logging
 import serial
 import time
-from lockfile import LockFile
 import RPi.GPIO as GPIO
+from .base_sensor import AbstractSensor
 
+logger = logging.getLogger(__name__)
 K30_LOCK_FILE = "/var/lock/sensor-k30"
 
 
-class K30(object):
+class K30Sensor(AbstractSensor):
+    """ A sensor support class that monitors the K30's CO2 concentration """
+
     def __init__(self):
-        self._co2 = None
-        self.running = True
+        super(K30Sensor, self).__init__()
+        self._co2 = 0
         if GPIO.RPI_INFO['P1_REVISION'] == 3:
             self.serial_device = "/dev/ttyS0"
         else:
             self.serial_device = "/dev/ttyAMA0"
 
-    def read(self):
-        lock = LockFile(K30_LOCK_FILE)
-        try:
-            # Acquire lock on K30 to ensure more than one read isn't
-            # being attempted at once.
-            while not lock.i_am_locking():
-                try:
-                    lock.acquire(timeout=60)  # wait up to 60 seconds before breaking lock
-                except:
-                    lock.break_lock()
-                    lock.acquire()
-            self._co2 = self.get_measurement()
-            lock.release()
-        except:
-            lock.release()
-            return 1
+    def __repr__(self):
+        """  Representation of object """
+        return "<{cls}(co2={co2})>".format(
+            cls=type(self).__name__,
+            co2="{0:.2f}".format(self._co2))
+
+    def __str__(self):
+        """ Return CO2 information """
+        return "co2: {co2}".format(co2="{0:.2f}".format(self._co2))
+
+    def __iter__(self):  # must return an iterator
+        """ K30 iterates through live CO2 readings """
+        return self
+
+    def next(self):
+        """ Get next CO2 reading """
+        if self.read():  # raised an error
+            raise StopIteration  # required
+        return dict(co2=float('{0:.2f}'.format(self._co2)))
+
+    @property
+    def co2(self):
+        """ CO2 concentration in ppmv """
+        if not self._co2:  # update if needed
+            self.read()
+        return self._co2
 
     def get_measurement(self):
+        """ Gets the K30's CO2 concentration in ppmv via UART"""
         ser = serial.Serial(self.serial_device, timeout=1)  # Wait 1 second for reply
         ser.flushInput()
         time.sleep(1)
@@ -50,35 +65,31 @@ class K30(object):
             co2 = (high * 256) + low
         return co2
 
-    @property
-    def co2(self):
-        return self._co2
-
-    def __iter__(self):
+    def read(self):
         """
-        Support the iterator protocol.
+        Takes a reading from the K30 and updates the self._co2 value
+
+        :returns: None on success or 1 on error
         """
-        return self
-
-    def next(self):
-        """
-        Call the read method and return co2 information.
-        """
-        if self.read():
-            return None
-        response = {
-            'co2': self.co2
-        }
-        return response
-
-    def stopSensor(self):
-        self.running = False
-
-
-
-if __name__ == "__main__":
-    k30 = K30()
-
-    for measurement in k30:
-        print("CO2: {} ppmv".format(measurement['co2']))
-        time.sleep(2)
+        lock = LockFile(K30_LOCK_FILE)
+        try:
+            # Acquire lock on K30 to ensure more than one read isn't
+            # being attempted at once.
+            while not lock.i_am_locking():
+                try:
+                    lock.acquire(timeout=60)  # wait up to 60 seconds before breaking lock
+                except Exception as e:
+                    logger.error("{cls} 60 second timeout, {lock} lock broken: "
+                                 "{err}".format(cls=type(self).__name__,
+                                                lock=K30_LOCK_FILE,
+                                                err=e))
+                    lock.break_lock()
+                    lock.acquire()
+            self._co2 = self.get_measurement()
+            lock.release()
+            return  # success - no errors
+        except Exception as e:
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
+            lock.release()
+            return 1

@@ -7,27 +7,27 @@ import time
 import io
 import fcntl
 
-
-I2C_SLAVE=0x0703
-I2C_BUS=1
+I2C_SLAVE = 0x0703
+I2C_BUS = 1
 AM2315_ADDR = 0x5c
 CMD_READ = '\x03'
 
 AM2315_READREG = 0x03
 
+
 class i2c(object):
     def __init__(self, device, bus):
-        self.fr = io.open('/dev/i2c-'+str(bus), 'rb', buffering=0)
-        self.fw = io.open('/dev/i2c-'+str(bus), 'wb', buffering=0)
+        self.fr = io.open('/dev/i2c-' + str(bus), 'rb', buffering=0)
+        self.fw = io.open('/dev/i2c-' + str(bus), 'wb', buffering=0)
         fcntl.ioctl(self.fr, I2C_SLAVE, device)
         fcntl.ioctl(self.fw, I2C_SLAVE, device)
 
-    def writeI2C(self, bytes):
-        self.fw.write(bytes)
+    def writeI2C(self, wbytes):
+        self.fw.write(wbytes)
 
-    def readI2C(self, bytes):
+    def readI2C(self, read_bytes):
         try:
-            return self.fr.read(bytes)
+            return self.fr.read(read_bytes)
         except IOError:
             return 0
 
@@ -44,16 +44,16 @@ if __name__ == '__main__':
     while True:
         am = i2c(AM2315_ADDR, I2C_BUS)
         try:
-            am.writeI2C(CMD_READ) # Send a read command to wake up
+            am.writeI2C(CMD_READ)  # Send a read command to wake up
         except IOError:
-            pass # Wake generates ioError, ignore that error
+            pass  # Wake generates ioError, ignore that error
 
         time.sleep(0.1)
 
-        # send read command starting at zero (0) (0x00) and get four (4) (0x04) 
+        # send read command starting at zero (0) (0x00) and get four (4) (0x04)
         # registers. Which returns 8 bytes total.
         try:
-            am.writeI2C(CMD_READ+'\x00\x04')
+            am.writeI2C(CMD_READ + '\x00\x04')
         except IOError:
             print('I/O Error 0')
 
@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
         # read 8 bytes into data. Just read it. Normal smbus has some protocol
         # for waiting that the AM2315 doesnt follow.
-        data = am.readI2C(8) 
+        data = am.readI2C(8)
         am.closeI2C()
 
         if not data:

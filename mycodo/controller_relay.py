@@ -7,14 +7,10 @@
 
 import datetime
 import RPi.GPIO as GPIO
-import logging
-import subprocess
 import threading
 import time
 import timeit
-from influxdb import InfluxDBClient
 
-from config import LOG_PATH
 from config import SQL_DATABASE_MYCODO
 from config import INFLUXDB_HOST
 from config import INFLUXDB_PORT
@@ -93,11 +89,11 @@ class RelayController(threading.Thread):
             self.running = True
             self.logger.info("[Relay] Relay controller activated in "
                              "{:.1f} ms".format((timeit.default_timer()-self.thread_startup_timer)*1000))
-            while (self.running):
+            while self.running:
                 current_time = datetime.datetime.now()
                 for relay_id in self.relay_id:
                     if (self.relay_on_until[relay_id] < current_time and
-                            self.relay_on_duration[relay_id] and 
+                            self.relay_on_duration[relay_id] and
                             self.relay_pin[relay_id]):
 
                         # Use threads to prevent a slow execution of a
@@ -124,7 +120,7 @@ class RelayController(threading.Thread):
         finally:
             self.all_relays_off()
             self.cleanup_gpio()
-            self.running = False    
+            self.running = False
             self.logger.info("[Relay] Relay controller deactivated in "
                              "{:.1f} ms".format((timeit.default_timer()-self.thread_shutdown_timer)*1000))
 
@@ -150,6 +146,8 @@ class RelayController(threading.Thread):
         :type duration: float
         :param trigger_conditionals: Whether to trigger condionals to act or not
         :type trigger_conditionals: bool
+        :param datetime_now: Time to add as the influxdb entry time
+        :type datetime_now: datetime object
         """
         # Check if relay exists
         if relay_id not in self.relay_id:
@@ -262,7 +260,7 @@ class RelayController(threading.Thread):
                         self.relay_id[relay_id],
                         self.relay_name[relay_id]))
 
-                if self.relay_time_turned_on[relay_id] != None:
+                if self.relay_time_turned_on[relay_id] is not None:
                     # Write the duration the relay was ON to the database
                     # at the timestamp it turned ON
                     duration = (datetime.datetime.now()-self.relay_time_turned_on[relay_id]).total_seconds()
@@ -332,7 +330,7 @@ class RelayController(threading.Thread):
                 # Execute command as user mycodo
                 message += "Execute: '{}'. ".format(
                     each_conditional.execute_command)
-                cmd_out, cmd_err, cmd_status = cmd_output(
+                _, _, cmd_status = cmd_output(
                     self.cond_execute_command[cond_id])
                 message += "Status: {}. ".format(cmd_status)
 
@@ -503,7 +501,8 @@ class RelayController(threading.Thread):
         return amp_load
 
 
-    def setup_pin(self, pin):
+    @staticmethod
+    def setup_pin(pin):
         """
         Setup pin for this relay
         :rtype: None
@@ -538,8 +537,8 @@ class RelayController(threading.Thread):
         """
         return self.relay_trigger[relay_id] == GPIO.input(self.relay_pin[relay_id])
 
-
-    def _is_setup(self, pin):
+    @staticmethod
+    def _is_setup(pin):
         """
         This function checks to see if the GPIO pin is setup and ready
         to use. This is for safety and to make sure we don't blow anything.

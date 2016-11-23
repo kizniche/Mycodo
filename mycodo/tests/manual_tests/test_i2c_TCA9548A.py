@@ -28,6 +28,7 @@ def I2C_setup(multiplexer_i2c_address, i2c_channel_setup):
     time.sleep(0.1)
     print("TCA9548A I2C channel status:{}".format(bin(bus.read_byte(I2C_address))))
 
+
 def menu():
     parser = argparse.ArgumentParser(description='Select channel of TCA9548A I2C multiplexer')
     parser.add_argument('-a', '--address', metavar='ADDRESS', type=int,
@@ -39,7 +40,8 @@ def menu():
 
     args = parser.parse_args()
 
-    I2C_setup(args.address, args.channel-1)
+    I2C_setup(args.address, args.channel - 1)
+
 
 if __name__ == "__main__":
     if not os.geteuid() == 0:

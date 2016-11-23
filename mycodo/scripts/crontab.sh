@@ -17,8 +17,8 @@ test "$2" = --remove && mode=remove || mode=add
 cron_unique_label="# cmID:$PWD|$1#"
 
 crontab="$1".crontab
-crontab_bak=$crontab.bak
-test -f $crontab || cp $crontab.sample $crontab
+crontab_bak=${crontab}.bak
+test -f ${crontab} || cp ${crontab}.sample ${crontab}
 
 crontab_exists() {
     crontab -l 2>/dev/null | grep -x "$cron_unique_label" >/dev/null 2>/dev/null
@@ -26,13 +26,13 @@ crontab_exists() {
 
 # if crontab is executable
 if type crontab >/dev/null 2>/dev/null; then
-    if test $mode = add; then
+    if test ${mode} = add; then
         if ! crontab_exists; then
-            crontab -l > $crontab_bak
+            crontab -l > ${crontab_bak}
             echo 'Appending to crontab:'
             echo '-----------------------------------------------'
-            cat $crontab
-            crontab -l 2>/dev/null | { cat; echo; echo $cron_unique_label; cat $crontab; echo "# cm #"; } | crontab -
+            cat ${crontab}
+            crontab -l 2>/dev/null | { cat; echo; echo ${cron_unique_label}; cat ${crontab}; echo "# cm #"; } | crontab -
         else
             echo 'Crontab entry already exists, skipping ...'
             echo
@@ -40,7 +40,7 @@ if type crontab >/dev/null 2>/dev/null; then
         echo '-----------------------------------------------'
         echo "To remove previously added crontab entry, run: $0 $1 --remove"
         echo
-    elif test $mode = remove; then
+    elif test ${mode} = remove; then
         if crontab_exists; then
             echo 'Removing crontab entry ...'
             crontab -l 2>/dev/null | sed -e "\?^$cron_unique_label\$?,/^# cm #\$/ d" | crontab -

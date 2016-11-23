@@ -35,7 +35,7 @@ def app(db_config):
     """
     Create a flask app test fixture
 
-    :param tmp_file: pytest fixture
+    :param db_config: database config object
     """
     config = build_single_use_config(db_config=db_config)
     _app = create_app(config=config)
@@ -91,4 +91,11 @@ def login_user(app, username, password):
 def user_db(app):
     """ creates a session to the user db """
     with session_scope(app.config['USER_DB_PATH']) as session:
+        yield session
+
+
+@pytest.yield_fixture()
+def mycodo_db(app):
+    """ creates a session to the mycodo db """
+    with session_scope(app.config['MYCODO_DB_PATH']) as session:
         yield session

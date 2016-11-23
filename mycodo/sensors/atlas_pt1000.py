@@ -1,51 +1,103 @@
 # coding=utf-8
-
+import logging
 import io         # used to create file streams
 import fcntl      # used to access I2C parameters like addresses
 import time       # used for sleep delay and timestamps
-import string     # helps parse strings
-import RPi.GPIO as GPIO
+from .base_sensor import AbstractSensor
+
+logger = logging.getLogger(__name__)
 
 
-class Atlas_PT1000(object):
+class AtlasPT1000Sensor(AbstractSensor):
+    """ A sensor support class that monitors the PT1000's temperature """
+
     def __init__(self, address, bus):
+        super(AtlasPT1000Sensor, self).__init__()
+        self.short_timeout = 0.5
         self.long_timeout = 1.5
-        self._temperature = 0
+        self._temperature = 0.0
         self.address = address
         self.running = True
         self.I2C_bus_number = bus
+        self.file_read = None
+        self.file_write = None
 
-    def read_pt1000(self):
+    def __repr__(self):
+        """  Representation of object """
+        return "<{cls}(temperature={temp})>".format(
+            cls=type(self).__name__,
+            temp="{0:.2f}".format(self._temperature))
+
+    def __str__(self):
+        """ Return temperature information """
+        return "Temperature: {temp}".format(
+            temp="{0:.2f}".format(self._temperature))
+
+    def __iter__(self):  # must return an iterator
+        """ Atlas_PT1000Sensor iterates through live temperature readings """
+        return self
+
+    def next(self):
+        """ Get next temperature reading """
+        if self.read():  # raised an error
+            raise StopIteration  # required
+        return dict(temperature=float('{0:.3f}'.format(self._temperature)))
+
+    def info(self):
+        conditions_measured = [
+            ("Temperature", "temperature", "float", "0.00", self._temperature, self.temperature)
+        ]
+        return conditions_measured
+
+    @property
+    def temperature(self):
+        """ CPU temperature in celsius """
+        if not self._temperature:  # update if needed
+            self.read()
+        return self._temperature
+
+    def get_measurement(self):
+        """ Gets the Atlas PT1000's temperature in Celsius """
+        self.file_read = io.open("/dev/i2c-" + str(self.I2C_bus_number), "rb", buffering=0)
+        self.file_write = io.open("/dev/i2c-" + str(self.I2C_bus_number), "wb", buffering=0)
+        self.set_i2c_address(self.address)
+        temperature_string = self.query("R")
+        self.close()
+        # the temperature return string, if successfully read, will be
+        # "Command succeeded X.XX", where X denotes the temperature
+        if temperature_string[:17] != 'Command succeeded':
+            raise Exception("Sensor read failed")
+        else:
+            return float(temperature_string[18:])
+
+    def read(self):
+        """
+        Takes a reading from the PT1000 and updates the self._temperature value
+
+        :returns: None on success or 1 on error
+        """
         try:
-            self.file_read = io.open("/dev/i2c-"+str(self.I2C_bus_number), "rb", buffering=0)
-            self.file_write = io.open("/dev/i2c-"+str(self.I2C_bus_number), "wb", buffering=0)
-            self.set_i2c_address(self.address)
-            temperature_string = self.query("R")
-            self.close()
-            # the temperature return string, if successfully read, will be
-            # "Command succeeded X.XX", where X denotes the temperature
-            if temperature_string[:17] != 'Command succeeded':
-                return 1
-            else:
-                self._temperature = float(temperature_string[18:])
-        except Exception as msg:
-            print(msg)
-            return 1
+            self._temperature = self.get_measurement()
+            return  # success - no errors
+        except Exception as e:
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
+        return 1
 
-    def set_i2c_address(self, addr):
+    def set_i2c_address(self, address):
         # set the I2C communications to the slave specified by the address
         # The commands for I2C dev using the ioctl functions are specified in
         # the i2c-dev.h file from i2c-tools
-        I2C_SLAVE = 0x703
-        fcntl.ioctl(self.file_read, I2C_SLAVE, addr)
-        fcntl.ioctl(self.file_write, I2C_SLAVE, addr)
+        i2c_slave = 0x703
+        fcntl.ioctl(self.file_read, i2c_slave, address)
+        fcntl.ioctl(self.file_write, i2c_slave, address)
 
     def write(self, cmd):
         # appends the null character and sends the string over I2C
         cmd += "\00"
         self.file_write.write(cmd)
 
-    def read(self, num_of_bytes=31):
+    def read_pt1000(self, num_of_bytes=31):
         # reads a specified number of bytes from I2C, then parses and displays the result
         res = self.file_read.read(num_of_bytes)         # read from the board
         response = filter(lambda x: x != '\x00', res)     # remove the null characters to get the response
@@ -60,7 +112,6 @@ class Atlas_PT1000(object):
     def query(self, string):
         # write a command to the board, wait the correct timeout, and read the response
         self.write(string)
-
         # the read and calibration commands require a longer timeout
         if((string.upper().startswith("R")) or
            (string.upper().startswith("CAL"))):
@@ -69,45 +120,8 @@ class Atlas_PT1000(object):
             return "sleep mode"
         else:
             time.sleep(self.short_timeout)
-
-        return self.read()
+        return self.read_pt1000()
 
     def close(self):
         self.file_read.close()
         self.file_write.close()
-
-    @property
-    def temperature(self):
-        return self._temperature
-
-    def __iter__(self):
-        """
-        Support the iterator protocol.
-        """
-        return self
-
-    def next(self):
-        """
-        Call the read method and return temperature information.
-        """
-        if self.read_pt1000():
-            return None
-        response = {
-            'temperature': float("{0:.3f}".format(self.temperature))
-        }
-        return response
-
-    def stopSensor(self):
-        self.running = False
-
-
-if __name__ == "__main__":
-    if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-        I2C_bus_number = 1
-    else:
-        I2C_bus_number = 0
-    pt1000 = Atlas_PT1000(102, I2C_bus_number)
-
-    for measurement in pt1000:
-        print("Temperature: {}".format(measurement['temperature']))
-        time.sleep(3)

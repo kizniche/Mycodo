@@ -35,6 +35,7 @@
 
 <div class="container">
   {% include 'flash_messages.html' %}
+    Mycodo was unable to find an admin user in the user database. This is expected with a new install of Mycodo. Use the form below to create an admin user and you will be redirected to the login page. If this is not a new install and this is unexpected behavior, please create an <a href="https://github.com/kizniche/Mycodo/issues/new" target="_blank">issue on Github</a>.
   <form id='create_admin_form' class="form-signin" name="create_admin" action="/create_admin" method="POST">
     <input type="hidden" name="form-name" value="create_admin">
     <h2 class="form-signin-heading">Create Admin</h2>

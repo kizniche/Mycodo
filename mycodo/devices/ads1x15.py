@@ -1,11 +1,14 @@
 # coding=utf-8
 
-import smbus
+import logging
 import time
 import Adafruit_ADS1x15
 
+logger = logging.getLogger(__name__)
+
 
 class ADS1x15_read(object):
+    """ Sensor  """
     def __init__(self, address, bus, channel, gain):
         self._voltage = None
         self.i2c_address = address
@@ -24,13 +27,15 @@ class ADS1x15_read(object):
         self.gain = gain
         self.running = True
 
-
     def read(self):
+        """ Take measurement """
         try:
             time.sleep(1)
             adc = Adafruit_ADS1x15.ADS1115(address=self.i2c_address, busnum=self.i2c_bus)
-            self._voltage = adc.read_adc(self.channel, gain=self.gain)/10000.0
-        except:
+            self._voltage = adc.read_adc(self.channel, gain=self.gain) / 10000.0
+        except Exception as e:
+            logger.error("{cls} raised an error during read() call: "
+                         "{err}".format(cls=type(self).__name__, err=e))
             return 1
 
     @property

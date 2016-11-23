@@ -22,6 +22,7 @@
 #  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
 #
 #  Contact at kylegabriel.com
+
 import logging
 import argparse
 import datetime
@@ -32,7 +33,7 @@ import sys
 # TODO: Move to logging printing to STDOUT (for line prefix)
 
 
-class DaemonControl():
+class DaemonControl:
     """
     Communicate with the daemon to execute commands or retrieve information.
 
@@ -132,7 +133,7 @@ if __name__ == "__main__":
 
     if args.duration and args.relayon is None:
         parser.error("--duration requires --relayon")
-    
+
     if args.relayon:
         duration = 0
         if args.duration:

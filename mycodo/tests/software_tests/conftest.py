@@ -33,6 +33,7 @@ def tmp_file():
 @pytest.fixture()
 def db_config(tmp_file, mycodo_db_uri, user_db_uri, notes_db_uri):
     """ Creates a config object to setup and databases during tests """
+
     class Config(object):
         SQL_DATABASE_USER = tmp_file
         SQL_DATABASE_MYCODO = uri_to_path(mycodo_db_uri)

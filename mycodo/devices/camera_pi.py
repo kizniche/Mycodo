@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
-
-from __future__ import print_function # In python 2.7
+from __future__ import print_function  # In python 2.7
 import sys
 
+import logging
 import datetime
 import time
 import io
 import os
 import threading
 import picamera
+
+logger = logging.getLogger(__name__)
 
 
 class CameraStream(object):
@@ -27,12 +29,14 @@ class CameraStream(object):
             while self.frame is None:
                 time.sleep(0)
 
-    def is_running(self):
+    @staticmethod
+    def is_running():
         if CameraStream.thread is None:
             return False
         return True
 
-    def terminate(self):
+    @staticmethod
+    def terminate_controller():
         CameraStream.terminate = True
 
     def get_frame(self):
@@ -54,8 +58,8 @@ class CameraStream(object):
                 time.sleep(2)
 
                 stream = io.BytesIO()
-                for x in camera.capture_continuous(stream, 'jpeg',
-                                                     use_video_port=True):
+                for _ in camera.capture_continuous(stream, 'jpeg',
+                                                   use_video_port=True):
                     # store frame
                     stream.seek(0)
                     cls.frame = stream.read()
@@ -68,10 +72,10 @@ class CameraStream(object):
                     # the last 10 seconds stop the thread
                     if time.time() - cls.last_access > 10 or cls.terminate:
                         break
-        except:
-            pass
+        except Exception as e:
+            logger.error("{cls} raised an error during read() call: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         cls.thread = None
-
 
 
 class CameraTimelapse(object):
@@ -79,29 +83,32 @@ class CameraTimelapse(object):
     interval_sec = None
     run_time_sec = None
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    timelapse_path = os.path.dirname(os.path.realpath(__file__))+'/../../camera-timelapse/'
+    timelapse_path = os.path.dirname(os.path.realpath(__file__)) + '/../../camera-timelapse/'
     if not os.path.exists(timelapse_path):
         os.makedirs(timelapse_path)
-    timelapse_file = timestamp+'-img-{counter:03d}.jpg'
-    timelapse_pathfile = timelapse_path+timelapse_file
+    timelapse_file = timestamp + '-img-{counter:03d}.jpg'
+    timelapse_pathfile = timelapse_path + timelapse_file
+    terminate = False
 
     def initialize(self):
         if CameraTimelapse.thread is None:
             CameraTimelapse.thread = threading.Thread(target=self._thread)
             CameraTimelapse.thread.start()
 
-    def is_running(self):
+    @staticmethod
+    def is_running():
         if CameraTimelapse.thread is None:
             return False
         return True
 
-    def terminate(self):
+    @staticmethod
+    def terminate_controller():
         CameraTimelapse.terminate = True
 
     def start_timelapse(self, interval_sec, run_time_sec):
         CameraTimelapse.terminate = False
         CameraTimelapse.interval_sec = float(interval_sec)
-        CameraTimelapse.run_time_sec = time.time()+float(run_time_sec)
+        CameraTimelapse.run_time_sec = time.time() + float(run_time_sec)
         self.initialize()
 
     @classmethod
@@ -113,7 +120,7 @@ class CameraTimelapse(object):
                 camera.vflip = True
                 camera.start_preview()
                 time.sleep(2)
-                for filename in camera.capture_continuous(cls.timelapse_pathfile):
+                for _ in camera.capture_continuous(cls.timelapse_pathfile):
                     if time.time() > cls.run_time_sec or cls.terminate:
                         break
                     time.sleep(cls.interval_sec)

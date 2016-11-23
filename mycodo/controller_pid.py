@@ -63,6 +63,7 @@ class PIDController(threading.Thread):
     def __init__(self, ready, logger, pid_id):
         threading.Thread.__init__(self)
 
+        self.running = False
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
         self.ready = ready
@@ -115,7 +116,7 @@ class PIDController(threading.Thread):
                 if self.method_start_time == 'Ended':
                     # Method has ended and hasn't been instructed to begin again
                     pass
-                elif self.method_start_time == 'Ready' or self.method_start_time == None:
+                elif self.method_start_time == 'Ready' or self.method_start_time is None:
                     # Method has been instructed to begin
                     with session_scope(MYCODO_DB_PATH) as db_session:
                         mod_method = db_session.query(Method)
@@ -142,7 +143,7 @@ class PIDController(threading.Thread):
                 (timeit.default_timer()-self.thread_startup_timer)*1000))
             self.ready.set()
 
-            while (self.running):
+            while self.running:
                 if t.time() > self.timer:
                     self.timer = self.timer+self.measure_interval
                     self.get_last_measurement()
@@ -184,15 +185,15 @@ class PIDController(threading.Thread):
 
         # Calculate I-value
         self.Integrator += self.error
-        
+
         # First method for managing Integrator
         if self.Integrator > self.Integrator_max:
             self.Integrator = self.Integrator_max
         elif self.Integrator < self.Integrator_min:
             self.Integrator = self.Integrator_min
-        
+
         # Second method for regulating Integrator
-        # if self.measure_interval is not None:  
+        # if self.measure_interval is not None:
         #     if self.Integrator * self.Ki > self.measure_interval:
         #         self.Integrator = self.measure_interval / self.Ki
         #     elif self.Integrator * self.Ki < -self.measure_interval:
@@ -205,9 +206,9 @@ class PIDController(threading.Thread):
         self.Derivator = self.error
 
         # Produce output form P, I, and D values
-        PID = self.P_value + self.I_value + self.D_value
+        PID_value = self.P_value + self.I_value + self.D_value
 
-        return PID
+        return PID_value
 
 
     def get_last_measurement(self):
@@ -472,7 +473,7 @@ class PIDController(threading.Thread):
                         new_setpoint = start_setpoint+(setpoint_diff*percent_row)
                     else:
                         new_setpoint = start_setpoint-(setpoint_diff*percent_row)
-                    
+
                     self.logger.debug("[Method] Start: {} Seconds Since: {}".format(
                         self.method_start_time, seconds_from_start))
                     self.logger.debug("[Method] Start time of row: {}".format(

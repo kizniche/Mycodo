@@ -1,55 +1,96 @@
 # coding=utf-8
+import logging
 import smbus
 import time
+from .base_sensor import AbstractSensor
+
+logger = logging.getLogger(__name__)
 
 
-class ChirpSensor(object):
+class ChirpSensor(AbstractSensor):
+    """
+    A sensor support class that measures the Chirp's moisture, temperature
+    and light
+
+    """
+
     def __init__(self, address, bus):
+        super(ChirpSensor, self).__init__()
         self.address = address
         self.bus = smbus.SMBus(bus)
         self._lux = 0
         self._moisture = 0
         self._temperature = 0.0
 
-    def read(self):
-        try:
-            self._lux = self.light()
-            self._moisture = self.moist()
-            self._temperature = self.temp() / 10.0
-        except:
-            return 1
+    def __repr__(self):
+        """  Representation of object """
+        return "<{cls}(lux={lux})(moisture={moist})(temperature={temp})>".format(
+            cls=type(self).__name__,
+            lux="{0}".format(self._lux),
+            moist="{0}".format(self._moisture),
+            temp="{0:.2f}".format(self._temperature))
 
-    @property
-    def lux(self):
-        return self._lux
-
-    @property
-    def moisture(self):
-        return self._moisture
-
-    @property
-    def temperature(self):
-        return self._temperature
+    def __str__(self):
+        """ Return measurement information """
+        return "Light: {lux}, Moisture: {moist}, Temperature: {temp}".format(
+            lux="{0}".format(self._lux),
+            moist="{0}".format(self._moisture),
+            temp="{0:.2f}".format(self._temperature))
 
     def __iter__(self):  # must return an iterator
         """ ChirpSensor iterates through live measurement readings """
         return self
 
     def next(self):
-        """
-        Call the read method and return temperature, pressure, and altitude information.
-        """
-        if self.read():
-            return None
-        response = {
-            'temperature': float("{0:.2f}".format(self.temperature)),
-            'lux': self.lux,
-            'moisture': self.moisture
-        }
-        return response
+        """ Get next measurement reading """
+        if self.read():  # raised an error
+            raise StopIteration  # required
+        return dict(lux=float('{0}'.format(self._lux)),
+                    moisture=float('{0}'.format(self._moisture)),
+                    temperature=float('{0:.2f}'.format(self._temperature)))
 
-    def stopSensor(self):
-        self.running = False
+    @property
+    def lux(self):
+        """ Chirp light measurement """
+        if not self._lux:  # update if needed
+            self.read()
+        return self._lux
+
+    @property
+    def moisture(self):
+        """ Chirp moisture measurement """
+        if not self._moisture:  # update if needed
+            self.read()
+        return self._moisture
+
+    @property
+    def temperature(self):
+        """ Chirp temperature in Celsius """
+        if not self._temperature:  # update if needed
+            self.read()
+        return self._temperature
+
+    def get_measurement(self):
+        """ Gets the light, moisture, and temperature """
+        lux = self.light()
+        moisture = self.moist()
+        temperature = self.temp() / 10.0
+        return lux, moisture, temperature
+
+    def read(self):
+        """
+        Takes a reading from the AM2315 and updates the self.dew_point,
+        self._humidity, and self._temperature values
+
+        :returns: None on success or 1 on error
+        """
+        try:
+            self._lux, self._moisture, self._temperature = self.get_measurement()
+            return  # success - no errors
+        except Exception as e:
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
+        return 1
 
     def get_reg(self, reg):
         # read 2 bytes from register

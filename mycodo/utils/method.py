@@ -6,12 +6,12 @@ from math import sin, radians
 
 
 def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day=None):
-    '''
+    """
     For a cubic Bezier segment described by the 2-tuples P0, ..., P3, return
     the y-value associated with the given x-value.
 
     Ex: getYfromXforBezSegment((10,0), (5,-5), (5,5), (0,0), 3.2)
-    '''
+    """
     seconds_per_day = 24*60*60
 
     # Check if the second of the day is provided.
@@ -62,7 +62,7 @@ def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day=None):
     # using the formula for cubic Bezier curves
     y = (1-param_t)**3*P0[1] + 3*(1-param_t)**2*param_t*P1[1] + 3*(1-param_t)*param_t**2*P2[1] + param_t**3*P3[1]
     assert np.isreal(y)
-    # Typecast y from np.complex128 to float64   
+    # Typecast y from np.complex128 to float64
     y = y.real
     return y
 

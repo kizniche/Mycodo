@@ -1,27 +1,26 @@
 # coding=utf-8
-
 import atexit
+import logging
 import time
 import pigpio
 from sensorutils import dewpoint
+from .base_sensor import AbstractSensor
+
+logger = logging.getLogger(__name__)
 
 
-class DHT22(object):
+class DHT22Sensor(AbstractSensor):
     """
-    A class to read relative humidity and temperature from the
-    DHT22 sensor.  The sensor is also known as the AM2302.
+    A sensor support class that measures the DHT22's humidity and temperature
+    and calculates the dew point
 
+    The sensor is also known as the AM2302.
     The sensor can be powered from the Pi 3V3 or the Pi 5V rail.
-
     Powering from the 3V3 rail is simpler and safer.  You may need
     to power from 5V if the sensor is connected via a long cable.
-
     For 3V3 operation connect pin 1 to 3V3 and pin 4 to ground.
-
     Connect pin 2 to a gpio.
-
     For 5V operation connect pin 1 to 5V and pin 4 to ground.
-
     The following pin 2 connection works for me.  Use at YOUR OWN RISK.
 
     5V--5K_resistor--+--10K_resistor--Ground
@@ -31,13 +30,10 @@ class DHT22(object):
     gpio ------------+
     """
 
-    def __init__(self, pi, gpio, LED=None, power=None):
+    def __init__(self, pi, gpio, power=None):
         """
         Instantiate with the Pi and gpio to which the DHT22 output
         pin is connected.
-
-        Optionally a LED may be specified.  This will be blinked for
-        each successful reading.
 
         Optionally a gpio used to power the sensor may be specified.
         This gpio will be set high to power the sensor.  If the sensor
@@ -46,46 +42,110 @@ class DHT22(object):
         Taking readings more often than about once every two seconds will
         eventually cause the DHT22 to hang.  A 3 second interval seems OK.
         """
-
+        super(DHT22Sensor, self).__init__()
         self.pi = pi
         self.gpio = gpio
-        self.LED = LED
         self.power = power
+        self.bad_CS = 0  # Bad checksum count
+        self.bad_SM = 0  # Short message count
+        self.bad_MM = 0  # Missing message count
+        self.bad_SR = 0  # Sensor reset count
 
-        if power is not None:
-            print("Turning sensor at GPIO {}...".format(self.gpio))
-            pi.write(power, 1)  # Switch sensor on.
-            time.sleep(2)
-
-        self.powered = True
-        atexit.register(self.close)
-
-        self.bad_CS = 0  # Bad checksum count.
-        self.bad_SM = 0  # Short message count.
-        self.bad_MM = 0  # Missing message count.
-        self.bad_SR = 0  # Sensor reset count.
-
-        # Power cycle if timeout > MAX_TIMEOUTS.
+        # Power cycle if timeout > MAX_TIMEOUTS
         self.no_response = 0
         self.MAX_NO_RESPONSE = 2
 
-        self._temperature = 0
-        self._humidity = 0
-
         self.tov = None
-
         self.high_tick = 0
         self.bit = 40
-
         self.either_edge_cb = None
+        self._dew_point = 0.0
+        self._humidity = 0.0
+        self._temperature = 0.0
 
-        self.running = True
-        
         # Prevent from crashing the mycodo daemon if pigpiod isn't running
         try:
             self.setup()
         except:
             raise Exception('DHT22 could not initialize. Check if gpiod is running.')
+
+    def __repr__(self):
+        """  Representation of object """
+        return "<{cls}(dew_point={dpt})(humidity={hum})(temperature={temp})>".format(
+            cls=type(self).__name__,
+            dpt="{0:.2f}".format(self._dew_point),
+            hum="{0:.2f}".format(self._humidity),
+            temp="{0:.2f}".format(self._temperature))
+
+    def __str__(self):
+        """ Return measurement information """
+        return "Dew Point: {dpt}, Humidity: {hum}, Temperature: {temp}".format(
+            dpt="{0:.2f}".format(self._dew_point),
+            hum="{0:.2f}".format(self._humidity),
+            temp="{0:.2f}".format(self._temperature))
+
+    def __iter__(self):  # must return an iterator
+        """ DHT22Sensor iterates through live measurement readings """
+        return self
+
+    def next(self):
+        """ Get next measurement reading """
+        if self.read():  # raised an error
+            raise StopIteration  # required
+        return dict(dew_point=float('{0:.2f}'.format(self._dew_point)),
+                    humidity=float('{0:.2f}'.format(self._humidity)),
+                    temperature=float('{0:.2f}'.format(self._temperature)))
+
+    @property
+    def dew_point(self):
+        """ DHT22 dew point in Celsius """
+        if not self._dew_point:  # update if needed
+            self.read()
+        return self._dew_point
+
+    @property
+    def humidity(self):
+        """ DHT22 relative humidity in percent """
+        if not self._humidity:  # update if needed
+            self.read()
+        return self._humidity
+
+    @property
+    def temperature(self):
+        """ DHT22 temperature in Celsius """
+        if not self._temperature:  # update if needed
+            self.read()
+        return self._temperature
+
+    def get_measurement(self):
+        """ Gets the humidity and temperature """
+        if self.power is not None:
+            print("Turning sensor at GPIO {}...".format(self.gpio))
+            self.pi.write(self.power, 1)  # Switch sensor on.
+            time.sleep(2)
+        atexit.register(self.close)
+        self.pi.write(self.gpio, pigpio.LOW)
+        time.sleep(0.017)  # 17 ms
+        self.pi.set_mode(self.gpio, pigpio.INPUT)
+        self.pi.set_watchdog(self.gpio, 200)
+        time.sleep(0.2)
+        self._dew_point = dewpoint(self._temperature, self._humidity)
+
+    def read(self):
+        """
+        Takes a reading from the DHT22 and updates the self.dew_point,
+        self._humidity, and self._temperature values
+
+        :returns: None on success or 1 on error
+        """
+        try:
+            self.get_measurement()
+            # self_humidity and self._temperature are set in self._edge_rise()
+            return  # success - no errors
+        except Exception as e:
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
+        return 1
 
     def setup(self):
         """
@@ -114,23 +174,20 @@ class DHT22(object):
         Format into 5 bytes, humidity high,
         humidity low, temperature high, temperature low, checksum.
         """
-
         level_handlers = {
-            pigpio.FALLING_EDGE: self._edge_FALL,
-            pigpio.RISING_EDGE: self._edge_RISE,
-            pigpio.EITHER_EDGE: self._edge_EITHER
+            pigpio.FALLING_EDGE: self._edge_fall,
+            pigpio.RISING_EDGE: self._edge_rise,
+            pigpio.EITHER_EDGE: self._edge_either
         }
         handler = level_handlers[level]
         diff = pigpio.tickDiff(self.high_tick, tick)
         handler(tick, diff)
 
-    def _edge_RISE(self, tick, diff):
+    def _edge_rise(self, tick, diff):
         """
         Handle Rise signal.
         """
-
         # Edge length determines if bit is 1 or 0.
-
         if diff >= 50:
             val = 1
             if diff >= 200:  # Bad bit?
@@ -140,54 +197,39 @@ class DHT22(object):
 
         if self.bit >= 40:  # Message complete.
             self.bit = 40
-
         elif self.bit >= 32:  # In checksum byte.
             self.CS = (self.CS << 1) + val
-
             if self.bit == 39:
                 # 40th bit received.
                 self.pi.set_watchdog(self.gpio, 0)
                 self.no_response = 0
                 total = self.hH + self.hL + self.tH + self.tL
-
                 if (total & 255) == self.CS:  # Is checksum ok?
                     self._humidity = ((self.hH << 8) + self.hL) * 0.1
                     if self.tH & 128:  # Negative temperature.
                         mult = -0.1
-                        self.tH = self.tH & 127
+                        self.tH &= 127
                     else:
                         mult = 0.1
                     self._temperature = ((self.tH << 8) + self.tL) * mult
                     self.tov = time.time()
-                    if self.LED is not None:
-                        self.pi.write(self.LED, 0)
                 else:
                     self.bad_CS += 1
-
         elif self.bit >= 24:  # in temp low byte
             self.tL = (self.tL << 1) + val
-
         elif self.bit >= 16:  # in temp high byte
             self.tH = (self.tH << 1) + val
-
         elif self.bit >= 8:  # in humidity low byte
             self.hL = (self.hL << 1) + val
-
         elif self.bit >= 0:  # in humidity high byte
             self.hH = (self.hH << 1) + val
-
-        else:  # header bits
-            pass
-
         self.bit += 1
 
-    def _edge_FALL(self, tick, diff):
+    def _edge_fall(self, tick, diff):
         """
         Handle Fall signal.
         """
-
         # Edge length determines if bit is 1 or 0.
-
         self.high_tick = tick
         if diff <= 250000:
             return
@@ -198,7 +240,7 @@ class DHT22(object):
         self.tL = 0
         self.CS = 0
 
-    def _edge_EITHER(self, tick, diff):
+    def _edge_either(self, tick, diff):
         """
         Handle Either signal or Timeout
         """
@@ -219,7 +261,6 @@ class DHT22(object):
         elif self.bit < 39:  # Short message receieved.
             self.bad_SM += 1  # Bump short message count.
             self.no_response = 0
-
         else:  # Full message received.
             self.no_response = 0
 
@@ -246,73 +287,11 @@ class DHT22(object):
         """Return count of power cycles because of sensor hangs."""
         return self.bad_SR
 
-    def read(self):
-        """Trigger a new relative humidity and temperature reading."""
-        if self.powered:
-            if self.LED is not None:
-                self.pi.write(self.LED, 1)
-            try:
-                self.pi.write(self.gpio, pigpio.LOW)
-                time.sleep(0.017)  # 17 ms
-                self.pi.set_mode(self.gpio, pigpio.INPUT)
-                self.pi.set_watchdog(self.gpio, 200)
-                time.sleep(0.2)
-            except:
-                return 1
-
     def close(self):
         """
         Stop reading sensor, remove callbacks.
         """
         self.pi.set_watchdog(self.gpio, 0)
-
         if self.either_edge_cb:
             self.either_edge_cb.cancel()
             self.either_edge_cb = None
-
-    @property
-    def temperature(self):
-        return self._temperature
-
-    @property
-    def humidity(self):
-        return self._humidity
-
-    def __iter__(self):
-        """
-        Support the iterator protocol.
-        """
-        return self
-
-    def next(self):
-        """
-        Call the read method and return temperature and humidity information.
-        """
-        if (self.read() or
-                (self.humidity == 0 and self.temperature == 0)):
-            return None
-        response = {
-            'humidity': float("{0:.2f}".format(self.humidity)),
-            'temperature': float("{0:.2f}".format(self.temperature)),
-            'dewpoint': float("{0:.2f}".format(dewpoint(self.temperature, self.humidity)))
-        }
-        return response
-
-    def stopSensor(self):
-        self.running = False
-
-
-if __name__ == '__main__':
-    pi = pigpio.pi()
-    # Intervals of about 2 seconds or less will eventually hang the DHT22.
-    INTERVAL = 3
-    sensor = DHT22(pi, 17)
-    try:
-        for measurements in sensor:
-            print("Temperature: {}".format(measurements['temperature']))
-            print("Humidity: {}".format(measurements['humidity']))
-            print("Dew Point: {}".format(dewpoint(measurements['temperature'], measurements['humidity'])))
-            time.sleep(INTERVAL)
-    except KeyboardInterrupt:
-        sensor.close()
-        pi.stop()

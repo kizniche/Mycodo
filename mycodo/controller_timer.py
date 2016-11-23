@@ -7,14 +7,11 @@
 #
 
 import datetime
-import logging
-import RPi.GPIO as GPIO
 import threading
 import time
 import timeit
 
 from config import SQL_DATABASE_MYCODO
-from databases.mycodo_db.models import Relay
 from databases.mycodo_db.models import Timer
 from databases.utils import session_scope
 from mycodo_client import DaemonControl
@@ -79,10 +76,10 @@ class TimerController(threading.Thread):
             self.timer_id,
             (timeit.default_timer()-self.thread_startup_timer)*1000))
         self.ready.set()
-        while (self.running):
+        while self.running:
             # Timer is set to react at a specific hour and minute of the day
             if self.timer_type == 'time':
-                if (int(self.start_hour) == datetime.datetime.now().hour and    
+                if (int(self.start_hour) == datetime.datetime.now().hour and
                         int(self.start_minute) == datetime.datetime.now().minute):
                     # Ensure this is triggered only once at this specific time
                     if self.date_timer_not_executed:
@@ -107,7 +104,7 @@ class TimerController(threading.Thread):
 
             # Timer is set to react at a specific time duration of the day
             elif self.timer_type == 'timespan':
-                if time_between_range(self.time_start, self.time_end): 
+                if time_between_range(self.time_start, self.time_end):
                     current_relay_state = self.control.relay_state(self.relay_id)
                     if self.state != current_relay_state:
                         message = "[Timer {}] Relay {} should be {}, but is {}. Turning {}.".format(
