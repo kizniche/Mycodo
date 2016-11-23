@@ -38,7 +38,7 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 - [HTTP Server](#http-server-security)
 - [Daemon Info](#daemon-info)
 - [Upgrading](#upgrading)
-- [Restoring Backups](#restoring-backups)
+- [Backup and Restore](#backup-and-restore)
 - [Directory Structure](#directory-structure)
 - [License](#license)
 - [Screenshots](#screenshots)
@@ -263,16 +263,68 @@ Refer to the [alembic documentation](http://alembic.readthedocs.org/en/latest/tu
 
 
 
-### Restoring Backups
+### Backup and Restore
 
-A backup is made when the system is upgraded. If you need to restore a backup, do the following, changing the appropriate directory names:
+Currently only the Mycodo settings are backed up when the system is upgraded from the Admin/Upgrade menu of the web UI.
 
+If you would like to create a full backup that includes all the sensor data, which can be used to set up Mycodo on a new system as it was on the old, you can follow these steps:
+
+Backup the influx databases:
+
+```bash
+influxd backup <path-to-metastore-backup>
+influxd backup -database mycodo_db <path-to-database-backup>
 ```
-sudo mv ~/Mycodo ~/Mycodo_old
-sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT ~/Mycodo
-sudo service mycodo restart
-sudo /etc/init.d/apache2 restart
+ 
+Backup the Mycodo databases:
+
+```bash
+cd ~/Mycodo/databases
+tar zcf ~/Mycodo-databases.tar.gz users.db mycodo.db
 ```
+
+Then, on the new system, assign the same IP as the old system (if using the remote admin).
+
+Clone the latest Mycodo from github (ensure [prerequisites](#install-notes) are taken care of first):
+
+```bash
+cd ~
+clone git clone https://github.com/kizniche/Mycodo
+```
+
+Extract the Mycodo databases back to Mycodo/databases:
+
+```bash
+tar zxvf ~/Mycodo-databases.tar.gz -C ~/Mycodo/databases
+```
+
+To ensure your databases are up-to-date and compatible with the latest version of Mycodo, run:
+
+```bash
+cd ~/Mycodo/databases
+alembic upgrade head
+```
+
+Execute the Mycodo setup.sh script:
+
+```bash
+cd ~/Mycodo
+sudo setup.sh
+```
+
+Restore the influx databases:
+
+```bash
+service influxdb stop
+influxd restore -metadir /var/lib/influxdb/meta <path-to-metastore-backup>
+influxd restore -datadir /var/lib/influxdb/data <path-to-database-backup>
+sudo chown -R influxdb:influxdb /var/lib/influxdb
+service influxdb start
+```
+
+The order of these events are important, because databases will be created and services started while the setup.sh script is running, so certain commands need to be done before this happens.
+
+You could also copy the influx databases and just copy the entire Mycodo directory (archive to preserve permissions) to a new system, but I was going from the perspective of backing up the most minimal set of data, so if a system became corrupt somewhere, the backups could be restored to a new system.
 
 
 
