@@ -533,7 +533,7 @@ def remote_host_del(formSetup, display_order):
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to delete remote hosts", "error")
         return redirect('/')
-    
+
     try:
         delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                              Remote,

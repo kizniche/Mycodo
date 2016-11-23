@@ -473,7 +473,7 @@ class PIDController(threading.Thread):
                         new_setpoint = start_setpoint+(setpoint_diff*percent_row)
                     else:
                         new_setpoint = start_setpoint-(setpoint_diff*percent_row)
-                    
+
                     self.logger.debug("[Method] Start: {} Seconds Since: {}".format(
                         self.method_start_time, seconds_from_start))
                     self.logger.debug("[Method] Start time of row: {}".format(
