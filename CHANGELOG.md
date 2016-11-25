@@ -4,7 +4,7 @@ Features:
 
   - Add more I2C LCD address options (again)
   - Add Fahrenheit conversion for temperatures on /live page
-  - Add github issue template
+  - Add github issue template (fixes #150)
   - Add information to the README about performing manual backup/restore
   - Add universal sensor tests
 
@@ -25,7 +25,7 @@ Features:
 
 Bugfixes:
 
-  - Fix controller crash when using a 20x4 LCD
+  - Fix controller crash when using a 20x4 LCD (fixes #136)
   - Add short sleep() to login to reduce chance of brute-force success
   - Fix code warnings and errors
 
@@ -34,9 +34,9 @@ Bugfixes:
 Features:
 
   - Setup flask app using new create_app() factory
-  - Create application factory and moved view implementation into a general blueprint
+  - Create application factory and moved view implementation into a general blueprint (fixes #129)
   - Update to use new flask application factory. Added support fixtures
-  - Addd initial fixture tests
+  - Add initial fixture tests
 
 ## 4.0.23 (2016-10-18)
 
@@ -47,7 +47,7 @@ Performance:
 Features:
 
   - Add BME280 sensor
-  - Create basic tests for flask app
+  - Create basic tests for flask app (fixes #112)
   - Relocated Flask UI into its own package
   - Add DB session fixtures; create model factories
   - Add logging of relay durations that are turned on and off, without a known duration
@@ -57,8 +57,8 @@ Features:
 
 Bugfixes:
 
-  - Fix relay conditionals when relays turn on for durations of time
+  - Fix relay conditionals when relays turn on for durations of time (fixes #123)
   - Exclude photo/video directories from being backed up during upgrade
   - Removed unused imports
   - Changed print statements to logging statements
-  - Fix inability to save sensor settings
+  - Fix inability to save sensor settings (fixes #120 #134)
