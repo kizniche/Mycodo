@@ -11,6 +11,7 @@ import json
 import re
 
 mycodo_release_url = "https://api.github.com/repos/kizniche/Mycodo/tags"
+major_ver = 4
 
 
 def json_to_dict(url):
@@ -28,32 +29,55 @@ def json_to_dict(url):
     return json.loads(data)
 
 
-ret_dict = json_to_dict(mycodo_release_url)
+mycodo_releases = json_to_dict(mycodo_release_url)
 
-print("List of Mycodo Releases:")
+print("List of all Mycodo Releases:")
 
-versions = []
-for each_release in ret_dict:
+all_versions = []
+maj_versions =[]
+for each_release in mycodo_releases:
+    if re.match('v{maj}.*(\d\.\d)'.format(maj=major_ver),
+                each_release['name']):
+        maj_versions.append(each_release['name'][1:])
     if re.match('v.*(\d\.\d\.\d)', each_release['name']):
-        versions.append(each_release['name'][1:])
-    print("\nRelease Version: {ver}"
-          "\nRelease URL (tar): {rel_url}"
-          "\nCommit URL: {com_url}\n".format(
-                ver=each_release['name'],
-                rel_url=each_release['tarball_url'],
-                com_url=each_release['commit']['url']))
+        all_versions.append(each_release['name'][1:])
+    print("{ver} ".format(ver=each_release['name']))
 
-versions_sorted = []
-for each_version in versions:
-    versions_sorted.append(each_version)
-versions_sorted.sort(key=lambda s: list(map(int, s.split('.'))))
-versions_sorted.reverse()
+all_versions_sorted = []
+for each_version in all_versions:
+    all_versions_sorted.append(each_version)
+all_versions_sorted.sort(key=lambda s: list(map(int, s.split('.'))))
+all_versions_sorted.reverse()
 
-release_url = ''
-for each_release in ret_dict:
+maj_versions_sorted = []
+for each_version in maj_versions:
+    maj_versions_sorted.append(each_version)
+maj_versions_sorted.sort(key=lambda s: list(map(int, s.split('.'))))
+maj_versions_sorted.reverse()
+
+tar_url_latest = ''
+for each_release in mycodo_releases:
     if (re.match('v.*(\d\.\d\.\d)', each_release['name']) and
-            each_release['name'][1:] == versions_sorted[0]):
-        release_url = each_release['tarball_url']
+            each_release['name'][1:] == all_versions_sorted[0]):
+        tar_url_latest = each_release['tarball_url']
 
-print("Latest Mycodo Version: v{ver}\nRelease URL (tar): {rel_url}".format(
-    ver=versions_sorted[0], rel_url=release_url))
+tar_url_maj = ''
+for each_release in mycodo_releases:
+    if (re.match('v.*(\d\.\d\.\d)', each_release['name']) and
+            each_release['name'][1:] == maj_versions_sorted[0]):
+        tar_url_maj = each_release['tarball_url']
+
+for each_release in mycodo_releases:
+    if (re.match('v.*(\d\.\d\.\d)', each_release['name']) and
+            each_release['name'][1:] == all_versions_sorted[0]):
+        print("\nLatest Version: {ver}"
+              "\nTar URL: {url}".format(ver=each_release['name'],
+                                        url=tar_url_latest))
+
+for each_release in mycodo_releases:
+    if (re.match('v.*(\d\.\d\.\d)', each_release['name']) and
+            each_release['name'][1:] == maj_versions_sorted[0]):
+        print("\nLatest v{maj} Version: {ver}"
+              "\nTar URL: {url}".format(maj=major_ver,
+                                        ver=each_release['name'],
+                                        url=tar_url_maj))
