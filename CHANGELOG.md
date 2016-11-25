@@ -1,10 +1,18 @@
-## 4.0.26 (2016-11-24)
+## 4.0.27 (Unreleased)
+
+Performance:
+
+Features:
+  
+Bugfixes:
+
+## 4.0.26 (2016-11-23)
 
 Features:
 
   - Add more I2C LCD address options (again)
   - Add Fahrenheit conversion for temperatures on /live page
-  - Add github issue template (fixes #150)
+  - Add github issue template (#150)
   - Add information to the README about performing manual backup/restore
   - Add universal sensor tests
 
