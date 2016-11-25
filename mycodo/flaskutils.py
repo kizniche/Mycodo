@@ -1314,7 +1314,7 @@ def pid_mod(formModPID):
                     formModPID.modMeasureType.data not in ['temperature',
                                                            'humidity',
                                                            'dewpoint']) or
-                    
+
                     (sensor.device_type == 'co2sensor' and
                     formModPID.modMeasureType.data not in ['co2']) or
 
@@ -1325,7 +1325,7 @@ def pid_mod(formModPID):
                     formModPID.modMeasureType.data not in ['temperature',
                                                            'lux',
                                                            'moisture']) or
-                    
+
                     (sensor.device_type == 'presssensor' and
                     formModPID.modMeasureType.data not in ['temperature',
                                                            'pressure',
