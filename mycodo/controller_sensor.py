@@ -533,6 +533,8 @@ class SensorController(threading.Thread):
         :return: None if success, 0 if fail
         :rtype: int or None
         """
+        measurements = None
+
         if not self.device_recognized:
             self.logger.debug(
                 "[Sensor {}] Device not recognized: {}".format(self.sensor_id,
