@@ -6,7 +6,9 @@
   <!-- Route: /admin/upgrade -->
   <div class="container"> 
     {% include 'flash_messages.html' %}
-
+      <div style="padding-bottom: 1em">
+        Mycodo may be upgraded to the latest version on github. An attempt will be made to detect your internet connection, and if one is found, the option to upgrade will be made available, below. Additionally, a manual upgrade may be performed by issuing the following command in a terminal: <code>sudo ~/Mycodo/mycodo/scripts/update_mycodo.sh upgrade</code>
+      </div>
     {% if updating %}
       <div style="padding-bottom: 1em">
         Mycodo is currently in the process of an update. If this is in error, you may delete the ~/Mycodo/.updating file to be able to reinitiate the update process.
@@ -24,7 +26,7 @@
         An newer version of Mycodo is available. Below is your current version (highlighted in red) and all updates ahead.
       </div>
       <div class="form-inline" style="padding-bottom: 1em">
-        <form method="post" action="/upgrade">
+        <form method="post" action="/admin/upgrade">
           <input type="hidden" name="form-name" value="update">
           {{formUpdate.csrf_token}}
           <div>

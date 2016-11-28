@@ -229,7 +229,7 @@ Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the s
 
 SSL certificates will be generated and stored at ~/Mycodo/mycodo/mycodo_flask/ssl_certs/ during the install process. If you want to use your own SSL certificates, replace them as they are named in this directory. [letsencrypt.org](https://letsencrypt.org) provides free verified SSL certificates.
 
-If using the auto-generated certificate, be aware that they will not be verified when visiting the https:// version of the WEB UI. You will receive warning messages about the security of your site unless you add the certificate to your browser's trusted list). 
+If using the auto-generated certificate, be aware that they will not be verified when visiting the https:// version of the WEB UI. You will receive warning messages about the security of your site unless you add the certificate to your browser's trusted list. 
 
 
 ### Daemon info
@@ -249,15 +249,16 @@ Also, use '-d' to log all debug messages to /var/log/mycodo/mycodo.log
 
 ### Upgrading
 
-If you already have Mycodo installed (>=4.0.0), you can perform an upgrade to the latest version on github by either using the Admin/Update menu in the web UI (recommended) or by issuing the following command at the terminal. Note: You must be a member of the group 'mycodo', else you will have to execute the following command as root. A log of the update process can be found at /var/log/mycodo/mycodoupdate.log
+If you already have Mycodo installed (>=4.0.0), you can perform an upgrade to the latest version on github by either using the Admin/Upgrade menu in the web UI (recommended) or by issuing the following command at the terminal. A log of the upgrade process is created at /var/log/mycodo/mycodoupdate.log
 
-```~/Mycodo/mycodo/scripts/mycodo_wrapper upgrade```
+```sudo ~/Mycodo/mycodo/scripts/update_mycodo.sh upgrade```
 
 Upgrading the mycodo database is performed automatically during the upgrade process, however it can also be performed manually with the following commands (Note: This does not create the database, only upgrade them. You must already have a database created in order to upgrade):
 
-```cd ~/Mycodo/databases```
-
-```alembic upgrade head```
+```bash
+cd ~/Mycodo/databases
+alembic upgrade head
+```
 
 Refer to the [alembic documentation](http://alembic.readthedocs.org/en/latest/tutorial.html) for other functions.
 

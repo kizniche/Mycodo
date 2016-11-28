@@ -95,14 +95,6 @@ def page_camera():
         stream_locked = False
     stream_locked = os.path.isfile(LOCK_FILE_STREAM)
 
-    # Check if a timelapse is active
-    timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
-    if timelapse_locked and not os.path.isfile(FILE_TIMELAPSE_PARAM):
-        os.remove(LOCK_FILE_TIMELAPSE)
-    elif not timelapse_locked and os.path.isfile(FILE_TIMELAPSE_PARAM):
-        os.remove(FILE_TIMELAPSE_PARAM)
-    timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
-
     if request.method == 'POST':
         form_name = request.form['form-name']
         if session['user_group'] == 'guest':
@@ -161,7 +153,7 @@ def page_camera():
                     logger.error("Camera IOError raised in '/camera' endpoint: {err}".format(err=e))
 
             elif formCamera.StartStream.data:
-                if not timelapse_locked:
+                if not is_timelapse_locked():
                     open(LOCK_FILE_STREAM, 'a')
                     stream_locked = True
                 else:
@@ -175,14 +167,6 @@ def page_camera():
                 if os.path.isfile(LOCK_FILE_STREAM):
                     os.remove(LOCK_FILE_STREAM)
                 stream_locked = False
-
-    # Check again if timelapse is active to catch if it started
-    timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
-    if timelapse_locked and not os.path.isfile(FILE_TIMELAPSE_PARAM):
-        os.remove(LOCK_FILE_TIMELAPSE)
-    elif not timelapse_locked and os.path.isfile(FILE_TIMELAPSE_PARAM):
-        os.remove(FILE_TIMELAPSE_PARAM)
-    timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
 
     # Get the full path of latest still image
     try:
@@ -231,7 +215,7 @@ def page_camera():
                            latest_timelapse_img_ts=latest_timelapse_img_ts,
                            latest_timelapse_img=latest_timelapse_img,
                            stream_locked=stream_locked,
-                           timelapse_locked=timelapse_locked,
+                           timelapse_locked=is_timelapse_locked(),
                            time_now=time_now,
                            tl_parameters_dict=dict_timelapse)
 
@@ -948,3 +932,13 @@ def gen(camera):
         frame = camera.get_frame()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+
+def is_timelapse_locked():
+    """Check if a timelapse is active"""
+    timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
+    if timelapse_locked and not os.path.isfile(FILE_TIMELAPSE_PARAM):
+        os.remove(LOCK_FILE_TIMELAPSE)
+    elif not timelapse_locked and os.path.isfile(FILE_TIMELAPSE_PARAM):
+        os.remove(FILE_TIMELAPSE_PARAM)
+    return os.path.isfile(LOCK_FILE_TIMELAPSE)

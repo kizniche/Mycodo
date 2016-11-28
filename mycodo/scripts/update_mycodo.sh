@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  update_mycodo.sh - Update Mycodo to the lastest version on GitHub
+#  update_mycodo.sh - Update Mycodo to the latest version on GitHub
 #
 #  Copyright (C) 2015  Kyle T. Gabriel
 #
