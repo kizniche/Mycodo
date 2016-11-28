@@ -24,7 +24,7 @@ class AM2315Sensor(AbstractSensor):
 
     def __repr__(self):
         """  Representation of object """
-        return "<{cls}(dew_point={dpt})(humidity={hum})(temperature={temp})>".format(
+        return "<{cls}(dewpoint={dpt})(humidity={hum})(temperature={temp})>".format(
             cls=type(self).__name__,
             dpt="{0:.2f}".format(self._dew_point),
             hum="{0:.2f}".format(self._humidity),
@@ -45,13 +45,13 @@ class AM2315Sensor(AbstractSensor):
         """ Get next measurement reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(dew_point=float('{0:.2f}'.format(self._dew_point)),
+        return dict(dewpoint=float('{0:.2f}'.format(self._dew_point)),
                     humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
     def info(self):
         conditions_measured = [
-            ("Dew Point", "dew_point", "float", "0.00", self._dew_point, self.dew_point),
+            ("Dew Point", "dewpoint", "float", "0.00", self._dew_point, self.dew_point),
             ("Humidity", "humidity", "float", "0.00", self._humidity, self.humidity),
             ("Temperature", "temperature", "float", "0.00", self._temperature, self.temperature)
         ]
