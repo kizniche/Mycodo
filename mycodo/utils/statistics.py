@@ -82,7 +82,7 @@ def add_update_csv(_logger, csv_file, key, value):
         os.remove(tempfilename)  # delete backed-up original
     except Exception as except_msg:
         _logger.exception('[Statistics] Could not update stat csv: '
-                         '{}'.format(except_msg))
+                          '{}'.format(except_msg))
         os.rename(tempfilename, csv_file)  # rename temp file to original
 
 
@@ -186,8 +186,9 @@ def recreate_stat_file(id_file, stats_csv, stats_interval, mycodo_version):
 
 
 def send_stats(_logger, host, port, user, password, dbname,
-               mycodo_db_path, user_db_path, stats_csv, mycodo_version,
-               session_scope, LCD, Log, Method, PID, Relay, Sensor, Timer, Users):
+               mycodo_db_path, user_db_path, stats_csv,
+               mycodo_version, session_scope, LCD, Log,
+               Method, PID, Relay, Sensor, Timer, Users):
     """
     Send anonymous usage statistics
 
@@ -200,42 +201,51 @@ def send_stats(_logger, host, port, user, password, dbname,
         # Prepare stats before sending
         with session_scope(mycodo_db_path) as new_session:
             relays = new_session.query(Relay)
-            add_update_csv(_logger, stats_csv, 'num_relays', get_count(relays))
+            add_update_csv(_logger, stats_csv, 'num_relays',
+                           get_count(relays))
 
             sensors = new_session.query(Sensor)
-            add_update_csv(_logger, stats_csv, 'num_sensors', get_count(sensors))
-            add_update_csv(_logger, stats_csv, 'num_sensors_active', get_count(sensors.filter(
-                Sensor.activated == True)))
+            add_update_csv(_logger, stats_csv, 'num_sensors',
+                           get_count(sensors))
+            add_update_csv(_logger, stats_csv, 'num_sensors_active',
+                           get_count(
+                               sensors.filter(Sensor.activated == True)))
 
             pids = new_session.query(PID)
             add_update_csv(_logger, stats_csv, 'num_pids', get_count(pids))
-            add_update_csv(_logger, stats_csv, 'num_pids_active', get_count(pids.filter(
-                PID.activated == True)))
+            add_update_csv(_logger, stats_csv, 'num_pids_active',
+                           get_count(pids.filter(PID.activated == True)))
 
             lcds = new_session.query(LCD)
-            add_update_csv(_logger, stats_csv, 'num_lcds', get_count(lcds))
-            add_update_csv(_logger, stats_csv, 'num_lcds_active', get_count(lcds.filter(
-                LCD.activated == True)))
+            add_update_csv(_logger, stats_csv,
+                           'num_lcds', get_count(lcds))
+            add_update_csv(_logger, stats_csv, 'num_lcds_active',
+                           get_count(lcds.filter(LCD.activated == True)))
 
             logs = new_session.query(Log)
             add_update_csv(_logger, stats_csv, 'num_logs', get_count(logs))
-            add_update_csv(_logger, stats_csv, 'num_logs_active', get_count(logs.filter(
-                Log.activated == True)))
+            add_update_csv(_logger, stats_csv, 'num_logs_active',
+                           get_count(logs.filter(Log.activated == True)))
 
             methods = new_session.query(Method)
-            add_update_csv(_logger, stats_csv, 'num_methods', get_count(methods.filter(
-                Method.method_order == 0)))
-            add_update_csv(_logger, stats_csv, 'num_methods_in_pid', get_count(pids.filter(
-                PID.method_id != '')))
+            add_update_csv(_logger, stats_csv, 'num_methods',
+                           get_count(methods.filter(
+                               Method.method_order == 0)))
+            add_update_csv(_logger, stats_csv, 'num_methods_in_pid',
+                           get_count(pids.filter(PID.method_id != '')))
 
             timers = new_session.query(Timer)
-            add_update_csv(_logger, stats_csv, 'num_timers', get_count(timers))
-            add_update_csv(_logger, stats_csv, 'num_timers_active', get_count(timers.filter(
-                Timer.activated == True)))
+            add_update_csv(_logger, stats_csv, 'num_timers',
+                           get_count(timers))
+            add_update_csv(_logger, stats_csv, 'num_timers_active',
+                           get_count(timers.filter(
+                               Timer.activated == True)))
 
-        add_update_csv(_logger, stats_csv, 'country', geocoder.ip('me').country)
-        add_update_csv(_logger, stats_csv, 'ram_use_mb', resource.getrusage(
-            resource.RUSAGE_SELF).ru_maxrss / float(1000))
+        add_update_csv(_logger, stats_csv, 'country',
+                       geocoder.ip('me').country)
+        add_update_csv(_logger, stats_csv, 'ram_use_mb',
+                       resource.getrusage(
+                           resource.RUSAGE_SELF).ru_maxrss / float(1000))
 
         user_count = 0
         admin_count = 0
@@ -246,13 +256,14 @@ def send_stats(_logger, host, port, user, password, dbname,
                 if each_user.user_restriction == 'admin':
                     admin_count += 1
         add_update_csv(_logger, stats_csv, 'num_users_admin', admin_count)
-        add_update_csv(_logger, stats_csv, 'num_users_guest', user_count - admin_count)
+        add_update_csv(_logger, stats_csv, 'num_users_guest',
+                       user_count - admin_count)
 
         add_update_csv(_logger, stats_csv, 'Mycodo_revision', mycodo_version)
 
         add_update_csv(_logger, stats_csv, 'git_commit', get_git_commit())
 
-        # Combine stats into list of dictionaries to be pushed to influxdb
+        # Combine stats into list of dictionaries
         new_stats_dict = return_stat_file_dict(stats_csv)
         formatted_stat_dict = []
         for each_key, each_value in new_stats_dict.iteritems():
@@ -262,11 +273,11 @@ def send_stats(_logger, host, port, user, password, dbname,
                                                     each_key,
                                                     each_value)
 
-        # Send stats to influxdb
+        # Send stats to secure, remote influxdb server
         client.write_points(formatted_stat_dict)
         _logger.debug("[Daemon] Sent anonymous usage statistics")
         return 0
     except Exception as except_msg:
-        _logger.exception('[Daemon] Could not send anonymous usage statistics: '
-                          '{}'.format(except_msg))
+        _logger.exception('[Daemon] Could not send anonymous usage '
+                          'statistics: {}'.format(except_msg))
         return 1
