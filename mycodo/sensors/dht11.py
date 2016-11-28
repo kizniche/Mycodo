@@ -19,11 +19,8 @@ class DHT11Sensor(AbstractSensor):
     - https://github.com/srounet/pigpio/tree/master/EXAMPLES/Python/DHT22_AM2302_SENSOR
 
     example code:
-    >>> pi = pigpio.pi()
-    >>> sensor = DHT11Sensor(pi, 4) # 4 is the data GPIO pin connected to your sensor
-    >>> for response in sensor:
-    ....    print("Temperature: {}".format(response['temperature']))
-    ....    print("Humidity: {}".format(response['humidity']))
+    pi = pigpio.pi()
+    sensor = DHT11Sensor(pi, 4)  # 4 is the data GPIO pin connected to your sensor
     """
 
     def __init__(self, pi, gpio, power=None):
@@ -55,7 +52,7 @@ class DHT11Sensor(AbstractSensor):
 
     def __repr__(self):
         """  Representation of object """
-        return "<{cls}(dew_point={dpt})(humidity={hum})(temperature={temp})>".format(
+        return "<{cls}(dewpoint={dpt})(humidity={hum})(temperature={temp})>".format(
             cls=type(self).__name__,
             dpt="{0:.2f}".format(self._dew_point),
             hum="{0:.2f}".format(self._humidity),
@@ -76,7 +73,7 @@ class DHT11Sensor(AbstractSensor):
         """ Get next measurement reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(dew_point=float('{0:.2f}'.format(self._dew_point)),
+        return dict(dewpoint=float('{0:.2f}'.format(self._dew_point)),
                     humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 

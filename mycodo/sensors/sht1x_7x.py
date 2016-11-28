@@ -24,7 +24,7 @@ class SHT1x7xSensor(AbstractSensor):
 
     def __repr__(self):
         """  Representation of object """
-        return "<{cls}(dew_point={dpt})(humidity={hum})(temperature={temp})>".format(
+        return "<{cls}(dewpoint={dpt})(humidity={hum})(temperature={temp})>".format(
             cls=type(self).__name__,
             dpt="{0:.2f}".format(self._dew_point),
             hum="{0:.2f}".format(self._humidity),
@@ -45,7 +45,7 @@ class SHT1x7xSensor(AbstractSensor):
         """ Get next measurement reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(dew_point=float('{0:.2f}'.format(self._dew_point)),
+        return dict(dewpoint=float('{0:.2f}'.format(self._dew_point)),
                     humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 

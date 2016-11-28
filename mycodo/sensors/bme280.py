@@ -33,7 +33,7 @@ class BME280Sensor(AbstractSensor):
 
     def __repr__(self):
         """  Representation of object """
-        return "<{cls}(altitude={alt})(dew_point={dpt})" \
+        return "<{cls}(altitude={alt})(dewpoint={dpt})" \
                "(humidity={hum})(temperature={temp})>".format(
                 cls=type(self).__name__,
                 alt="{0:.2f}".format(self._altitude),
@@ -62,7 +62,7 @@ class BME280Sensor(AbstractSensor):
         if self.read():  # raised an error
             raise StopIteration  # required
         return dict(altitude=float('{0:.2f}'.format(self._altitude)),
-                    dew_point=float('{0:.2f}'.format(self._dew_point)),
+                    dewpoint=float('{0:.2f}'.format(self._dew_point)),
                     humidity=float('{0:.2f}'.format(self._humidity)),
                     pressure=int(self._pressure),
                     temperature=float('{0:.2f}'.format(self._temperature)))
