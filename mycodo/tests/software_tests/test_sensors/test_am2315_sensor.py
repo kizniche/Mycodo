@@ -20,10 +20,10 @@ def test_am2315_iterates_using_in():
                                     (18, 30, 45)]  # first reading, second reading
 
         am2315 = AM2315Sensor(1)
-        expected_result_list = [dict(dew_point=15, humidity=23, temperature=67.00),
-                                dict(dew_point=16, humidity=25, temperature=52.00),
-                                dict(dew_point=17, humidity=27, temperature=37.00),
-                                dict(dew_point=18, humidity=30, temperature=45.00)]
+        expected_result_list = [dict(dewpoint=15, humidity=23, temperature=67.00),
+                                dict(dewpoint=16, humidity=25, temperature=52.00),
+                                dict(dewpoint=17, humidity=27, temperature=37.00),
+                                dict(dewpoint=18, humidity=30, temperature=45.00)]
         assert expected_result_list == [temp for temp in am2315]
 
 
@@ -67,7 +67,7 @@ def test_am2315_next_returns_dict():
         mock_measure.side_effect = [(20, 44, 67),  # first reading
                                     (22, 64, 52)]  # second reading
         am2315 = AM2315Sensor(1)
-        assert am2315.next() == dict(dew_point=20,
+        assert am2315.next() == dict(dewpoint=20,
                                      humidity=44,
                                      temperature=67.00)
 
@@ -103,7 +103,7 @@ def test_am2315_special_method_str():
 
 def test_am2315_special_method_repr():
     """ expect a __repr__ format """
-    assert "<AM2315Sensor(dew_point=0.00)(humidity=0.00)(temperature=0.00)>" in repr(AM2315Sensor(1))
+    assert "<AM2315Sensor(dewpoint=0.00)(humidity=0.00)(temperature=0.00)>" in repr(AM2315Sensor(1))
 
 
 def test_am2315_raises_exception():
