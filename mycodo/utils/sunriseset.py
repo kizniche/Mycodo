@@ -7,14 +7,14 @@
 #    Washington, DC 20392
 
 # Inputs:
-#     self.latitude, self.longitude: location for sunrise/sunset
-#     self.zenith: Sun's self.zenith for sunrise/sunset
+#     latitude, longitude: location for sunrise/sunset
+#     zenith: Sun's zenith for sunrise/sunset
 #       official     = 90 degrees 50'
 #       civil        = 96 degrees
 #       nautical     = 102 degrees
 #       astronomical = 108 degrees
 
-#   NOTE: self.longitude is positive for East and negative for West
+#   NOTE: longitude is positive for East and negative for West
 #   NOTE: the algorithm assumes the use of a calculator with the
 #         trig functions in "degree" (rather than "radian") mode. Most
 #         programming languages assume radian arguments, requiring back
