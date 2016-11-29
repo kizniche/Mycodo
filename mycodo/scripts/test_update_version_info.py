@@ -7,6 +7,7 @@ except ImportError:
     # Fall back to Python 2's urllib2
     from urllib2 import urlopen
 
+import argparse
 import json
 import re
 
@@ -58,10 +59,11 @@ def return_latest_version_url():
     for each_release in mycodo_releases:
         if (re.match('v.*(\d\.\d\.\d)', each_release['name']) and
                 each_release['name'][1:] == sort_reverse_list(all_versions)[0]):
-            print("\nLatest Version: {ver}"
-                  "\nTar URL: {url}".format(ver=each_release['name'],
-                                            url=each_release['tarball_url']))
-            return each_release['name'][1:], each_release['tarball_url']
+            # print("\nLatest Version: {ver}"
+            #       "\nTar URL: {url}".format(ver=each_release['name'],
+            #                                 url=each_release['tarball_url']))
+            # return each_release['name'][1:], each_release['tarball_url']
+            return each_release['tarball_url']
 
 
 def return_maj_version_url(major_version):
@@ -76,11 +78,12 @@ def return_maj_version_url(major_version):
     for each_release in mycodo_releases:
         if (re.match('v{maj}.*(\d\.\d)'.format(maj=major_version), each_release['name']) and
                 each_release['name'][1:] == sort_reverse_list(maj_versions)[0]):
-            print("\nLatest v{maj} Version: {ver}"
-                  "\nTar URL: {url}".format(maj=major_version,
-                                            ver=each_release['name'],
-                                            url=each_release['tarball_url']))
-            return each_release['name'][1:], each_release['tarball_url']
+            # print("\nLatest v{maj} Version: {ver}"
+            #       "\nTar URL: {url}".format(maj=major_version,
+            #                                 ver=each_release['name'],
+            #                                 url=each_release['tarball_url']))
+            # return each_release['name'][1:], each_release['tarball_url']
+            return each_release['tarball_url']
 
 
 def version_information(major_version):
@@ -95,4 +98,23 @@ def version_information(major_version):
     print(return_maj_version_url(major_version))
 
 
-version_information(major_version=4)
+def parseargs(parser):
+    parser.add_argument('-m', '--majorversion', type=int,
+                        help='Return the latest version URL with major version'
+                             ' number x in x.y.z.',
+                        required=False)
+    parser.add_argument('-l', '--latest', action='store_true',
+                        help='Return the latest version URL.')
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Returns a github release URL'
+                                                 ' to download Mycodo.')
+    args = parseargs(parser)
+    if args.latest:
+        print(return_latest_version_url())
+    elif args.majorversion:
+        print(return_maj_version_url(args.majorversion))
+    else:
+        parser.print_help()

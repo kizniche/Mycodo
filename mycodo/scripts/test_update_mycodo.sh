@@ -4,7 +4,8 @@ runSelfUpdate() {
   NOW=$(date +"%Y-%m-%d_%H-%M-%S")
   INSTALL_DIRECTORY=$( cd -P /var/www/mycodo/.. && pwd -P )
   MYCODO_NEW_TMP_DIR='/tmp/Mycodo-latest'
-  UPDATE_FILE='https://api.github.com/repos/kizniche/Mycodo/tarball'
+#  UPDATE_URL=$(python test_update_version_info.py -l 2>&1)
+  UPDATE_URL='https://api.github.com/repos/kizniche/Mycodo/tarball'
   FILE_NAME='mycodo-latest'
 
   cd ${INSTALL_DIRECTORY}
@@ -19,9 +20,9 @@ runSelfUpdate() {
   printf "Done.\n"
 
   printf "Downloading latest Mycodo version to ${INSTALL_DIRECTORY}/${FILE_NAME}.tar.gz..."
-  if ! wget --quiet -O ${INSTALL_DIRECTORY}/${FILE_NAME}.tar.gz ${UPDATE_FILE} ; then
+  if ! wget --quiet -O ${INSTALL_DIRECTORY}/${FILE_NAME}.tar.gz ${UPDATE_URL} ; then
     printf "Failed: Error while trying to wget new version.\n"
-    printf "File requested: ${UPDATE_FILE} -> ${INSTALL_DIRECTORY}/${FILE_NAME}.tar.gz\n"
+    printf "File requested: ${UPDATE_URL} -> ${INSTALL_DIRECTORY}/${FILE_NAME}.tar.gz\n"
     exit 1
   fi
   printf "Done.\n"
