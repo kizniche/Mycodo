@@ -1,10 +1,20 @@
-## 4.0.27 (Unreleased)
+## 4.1.0 (Unreleased)
+
+This release introduces a new method for upgrading Mycodo to the latest version. Upgrades will now be performed from github releases instead of commits.
 
 Performance:
 
+  - Reduced bandwidth usage and processing of new data on live graphs
+
 Features:
-  
+
+  - New upgrade system to perform upgrades from github releases
+  - Introduce changelog (CHANGELOG.md)
+
 Bugfixes:
+
+  - Fix inability to update long-duration relay times on live graphs
+  - Fix dew point being incorrectly inserted into the database
 
 ## 4.0.26 (2016-11-23)
 

@@ -341,8 +341,6 @@
               // Store the epoch time of the last data point received
               if (i == data.length - 1) {
                 last_relay_time_mil[chart_number+"-"+sensor_id] = new_time;
-                console.log("Past: ");
-                console.log(last_relay_time_mil);
               }
             }
             chart[chart_number].series[sensor].isDirty = true;
@@ -362,8 +360,6 @@
           var epoch_mil = (new Date).getTime();
           var past_seconds = Math.floor((epoch_mil - last_relay_time_mil[chart_number+"-"+sensor_id]) / 1000);
           url = '/past/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/' + past_seconds;
-          console.log("URL: "+url);
-          console.log("past_seconds: "+past_seconds);
         } else {
           url = '/past/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/' + refresh_seconds;
         }
@@ -376,8 +372,6 @@
                 chart[chart_number].series[sensor].addPoint([new_time, data[i][1]], false, false);
                 if (i == data.length - 1) {
                   last_relay_time_mil[chart_number+"-"+sensor_id] = new_time;
-                  console.log("Live: ");
-                  console.log(last_relay_time_mil);
                 }
               }
             }

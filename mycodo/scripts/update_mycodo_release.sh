@@ -3,10 +3,12 @@
 runSelfUpdate() {
   NOW=$(date +"%Y-%m-%d_%H-%M-%S")
   INSTALL_DIRECTORY=$( cd -P /var/www/mycodo/.. && pwd -P )
-  MYCODO_NEW_TMP_DIR='/tmp/Mycodo-latest'
-#  UPDATE_URL=$(python test_update_version_info.py -l 2>&1)
-  UPDATE_URL='https://api.github.com/repos/kizniche/Mycodo/tarball'
-  FILE_NAME='mycodo-latest'
+  CURRENT_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
+  UPDATE_URL=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -u kizniche -r Mycodo -m 4 2>&1)
+  UPDATE_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -u kizniche -r Mycodo -m 4 -v 2>&1)
+  MYCODO_OLD_TMP_DIR="${INSTALL_DIRECTORY}/Mycodo-${CURRENT_VERSION}"
+  MYCODO_NEW_TMP_DIR="/tmp/Mycodo-${UPDATE_VERSION}"
+  TARBALL_FILE="mycodo-${UPDATE_VERSION}"
 
   cd ${INSTALL_DIRECTORY}
 
@@ -19,10 +21,10 @@ runSelfUpdate() {
   fi
   printf "Done.\n"
 
-  printf "Downloading latest Mycodo version to ${INSTALL_DIRECTORY}/${FILE_NAME}.tar.gz..."
-  if ! wget --quiet -O ${INSTALL_DIRECTORY}/${FILE_NAME}.tar.gz ${UPDATE_URL} ; then
+  printf "Downloading latest Mycodo version to ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz..."
+  if ! wget --quiet -O ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz ${UPDATE_URL} ; then
     printf "Failed: Error while trying to wget new version.\n"
-    printf "File requested: ${UPDATE_URL} -> ${INSTALL_DIRECTORY}/${FILE_NAME}.tar.gz\n"
+    printf "File requested: ${UPDATE_URL} -> ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz\n"
     exit 1
   fi
   printf "Done.\n"
@@ -37,11 +39,23 @@ runSelfUpdate() {
     printf "Done.\n"
   fi
 
-  mkdir ${MYCODO_NEW_TMP_DIR}
+  printf "Creating ${MYCODO_NEW_TMP_DIR}..."
+  if ! mkdir ${MYCODO_NEW_TMP_DIR} ; then
+    printf "Failed: Error while trying to create ${MYCODO_NEW_TMP_DIR}.\n"
+    exit 1
+  fi
+  printf "Done.\n"
 
   printf "Extracting files..."
-  if ! tar xzf ${INSTALL_DIRECTORY}/${FILE_NAME}.tar.gz -C ${MYCODO_NEW_TMP_DIR} --strip-components=1 ; then
-    printf "Failed: Error while trying to extract files from ${INSTALL_DIRECTORY}/${FILE_NAME}.tar.gz to ${MYCODO_NEW_TMP_DIR}.\n"
+  if ! tar xzf ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz -C ${MYCODO_NEW_TMP_DIR} --strip-components=1 ; then
+    printf "Failed: Error while trying to extract files from ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz to ${MYCODO_NEW_TMP_DIR}.\n"
+    exit 1
+  fi
+  printf "Done.\n"
+  
+  printf "Removing ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz..."
+  if ! rm -rf ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz ; then
+    printf "Failed: Error while removing ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz.\n"
     exit 1
   fi
   printf "Done.\n"
@@ -60,12 +74,23 @@ runSelfUpdate() {
   fi
   printf "Done.\n"
 
-  printf "Moving statistics ID..."
+  printf "Copying statistics ID..."
   if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/statistics.id ${MYCODO_NEW_TMP_DIR}/databases ; then
     printf "Failed: Error while trying to copy statistics ID."
     exit 1
   fi
   printf "Done.\n"
+
+  if [ -d ${INSTALL_DIRECTORY}/Mycodo/mycodo_flask/ssl_certs ] ; then
+    printf "Copying SSL certificates..."
+    if ! cp -R ${INSTALL_DIRECTORY}/Mycodo/mycodo_flask/ssl_certs ${MYCODO_NEW_TMP_DIR}/mycodo/mycodo_flask/ssl_certs ; then
+      printf "Failed: Error while trying to copy SSL certificates."
+      exit 1
+    fi
+    printf "Done.\n"
+  fi
+
+  mycodo_flask/ssl_certs
 
   if [ -d ${INSTALL_DIRECTORY}/Mycodo/camera-stills ] ; then
     printf "Moving Camera stills directory..."
@@ -98,18 +123,13 @@ runSelfUpdate() {
   cat > /tmp/update_mycodo.sh << EOF
 #!/bin/bash
 
-NOW=$(date +"%Y-%m-%d_%H-%M-%S")
-INSTALL_DIRECTORY=$( cd -P /var/www/mycodo/.. && pwd -P )
-MYCODO_OLD_TMP_DIR="${INSTALL_DIRECTORY}/Mycodo-old"
-MYCODO_NEW_TMP_DIR='/tmp/Mycodo-latest'
-
 revertInstall() {
   printf "The upgrade has failed: Attempting to revert moving the old Mycodo install.\n"
-  if ! mv /var/Mycodo-backups/Mycodo-backup-${NOW} ${INSTALL_DIRECTORY}/Mycodo ; then
-    printf "Failed: Error while trying to revert moving. Could not move /var/Mycodo-backups/Mycodo-backup-${NOW} to ${INSTALL_DIRECTORY}/Mycodo.\n"
+  if ! mv /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW} ${INSTALL_DIRECTORY}/Mycodo ; then
+    printf "Failed: Error while trying to revert moving. Could not move /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW} to ${INSTALL_DIRECTORY}/Mycodo.\n"
     exit 1
   fi
-  printf "Successfully reverted moving the old Mycodo install directory. Moved /var/Mycodo-backups/Mycodo-backup-${NOW} to ${INSTALL_DIRECTORY}/Mycodo\n"
+  printf "Successfully reverted moving the old Mycodo install directory. Moved /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW} to ${INSTALL_DIRECTORY}/Mycodo\n"
 
   printf "Setting permissions...\n"
   if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/update_mycodo.sh initialize ; then
@@ -125,15 +145,15 @@ if [ ! -d "/var/Mycodo-backups" ] ; then
   mkdir /var/Mycodo-backups
 fi
 
-printf "Moving old Mycodo install to /var/Mycodo-backups/Mycodo-backup-${NOW}..."
-if ! mv ${INSTALL_DIRECTORY}/Mycodo /var/Mycodo-backups/Mycodo-backup-${NOW} ; then
-  printf "Failed: Error while trying to move old Mycodo install from ${INSTALL_DIRECTORY}/Mycodo to /var/Mycodo-backups/Mycodo-backup-${NOW}.\n"
+printf "Moving old Mycodo from ${INSTALL_DIRECTORY}/Mycodo to /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW}..."
+if ! mv ${INSTALL_DIRECTORY}/Mycodo /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW} ; then
+  printf "Failed: Error while trying to move old Mycodo install from ${INSTALL_DIRECTORY}/Mycodo to /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW}.\n"
   revertInstall
   exit 1
 fi
 printf "Done.\n"
 
-printf "Moving new Mycodo install to install directory..."
+printf "Moving new Mycodo from ${MYCODO_NEW_TMP_DIR} to ${INSTALL_DIRECTORY}/Mycodo..."
 if ! mv ${MYCODO_NEW_TMP_DIR} ${INSTALL_DIRECTORY}/Mycodo ; then
   printf "Failed: Error while trying to move new Mycodo install from ${MYCODO_NEW_TMP_DIR} to ${INSTALL_DIRECTORY}/Mycodo.\n"
   revertInstall

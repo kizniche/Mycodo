@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 			char updateScript[255];
 			strncpy(updateScript, argv[0], sizeof(updateScript));
 			dirname(updateScript);
-			strncat(updateScript, "/update_mycodo.sh upgrade", sizeof(updateScript));
+			strncat(updateScript, "/update_mycodo_release.sh", sizeof(updateScript));
 			system(updateScript);
 
 		} else if (strcmp(argv[1], "updatecheck") == 0) {
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
 		printf("   debug:                  Restart the mycodo daemon in debug mode\n");
 		printf("   backup:                 Create a backup of Mycodo\n");
 		printf("   delete-backup [folder]: Delete Mycodo backup folder named [folder]\n");
-		printf("   upgrade:                Upgrade Mycodo to the latest version on github\n");
+		printf("   upgrade:                Upgrade Mycodo to the latest release on github\n");
 		printf("   restore [commit]:       Restore Mycodo to a backed up version\n");
 		printf("   updatecheck:            Check for a newer version of Mycodo on github\n\n");
 	}

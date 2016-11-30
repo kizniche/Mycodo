@@ -11,10 +11,12 @@ from flask import (Blueprint,
                    request,
                    session,
                    url_for)
+from pkg_resources import parse_version
 
 from utils.statistics import return_stat_file_dict
 from utils.system_pi import cmd_output
 from utils.system_pi import internet
+from utils.github_release_info import github_releases
 
 from mycodo import flaskforms
 from mycodo.mycodo_flask.general_routes import (before_blueprint_request,
@@ -22,6 +24,7 @@ from mycodo.mycodo_flask.general_routes import (before_blueprint_request,
                                                 logged_in)
 
 from config import INSTALL_DIRECTORY
+from config import MYCODO_VERSION
 from config import STATS_CSV
 
 logger = logging.getLogger('mycodo.mycodo_flask.admin')
@@ -121,22 +124,35 @@ def admin_upgrade():
         return render_template('admin/upgrade.html',
                                updating=True)
 
+    formBackup = flaskforms.Backup()
+    formUpdate = flaskforms.Update()
+
     is_internet = True
     updating = 0
     update_available = False
 
-    formBackup = flaskforms.Backup()
-    formUpdate = flaskforms.Update()
+    # Check for any new Mycodo releases on github
+    releases = github_releases('kizniche', 'Mycodo', 4)
+    latest_release = releases[0]
+    current_releases = []
+    releases_behind = None
+    for index, each_release in enumerate(releases):
+        if parse_version(each_release) >= parse_version(MYCODO_VERSION):
+            current_releases.append(each_release)
+        if parse_version(each_release) == parse_version(MYCODO_VERSION):
+            releases_behind = index
+    if parse_version(releases[0]) > parse_version(MYCODO_VERSION):
+        update_available = True
 
     # Check for new commits of this repository on github
-    cmd_output("git fetch origin", su_mycodo=False)
-    current_commit, _, _ = cmd_output("git rev-parse --short HEAD", su_mycodo=False)
-    commits_behind, _, _ = cmd_output("git log --oneline | head -n 1", su_mycodo=False)
-    commits_behind_list = commits_behind.split('\n')
-    commits_ahead, commits_ahead_err, _ = cmd_output("git log --oneline master...origin/master", su_mycodo=False)
-    commits_ahead_list = commits_ahead.split('\n')
-    if commits_ahead and commits_ahead_err is None:
-        update_available = True
+    # cmd_output("git fetch origin", su_mycodo=False)
+    # current_commit, _, _ = cmd_output("git rev-parse --short HEAD", su_mycodo=False)
+    # commits_behind, _, _ = cmd_output("git log --oneline | head -n 1", su_mycodo=False)
+    # commits_behind_list = commits_behind.split('\n')
+    # commits_ahead, commits_ahead_err, _ = cmd_output("git log --oneline master...origin/master", su_mycodo=False)
+    # commits_ahead_list = commits_ahead.split('\n')
+    # if commits_ahead and commits_ahead_err is None:
+    #     update_available = True
 
     if request.method == 'POST':
         if formUpdate.update.data and update_available:
@@ -161,9 +177,13 @@ def admin_upgrade():
     return render_template('admin/upgrade.html',
                            formBackup=formBackup,
                            formUpdate=formUpdate,
-                           current_commit=current_commit,
-                           commits_ahead=commits_ahead_list,
-                           commits_behind=commits_behind_list,
+                           # current_commit=current_commit,
+                           # commits_ahead=commits_ahead_list,
+                           # commits_behind=commits_behind_list,
+                           current_release=MYCODO_VERSION,
+                           current_releases=current_releases,
+                           latest_release=latest_release,
+                           releases_behind=releases_behind,
                            update_available=update_available,
                            updating=updating,
                            is_internet=is_internet)
