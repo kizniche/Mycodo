@@ -17,6 +17,8 @@ sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from config import MYCODO_VERSION
 
+release_url = 'https://api.github.com/repos/kizniche/Mycodo/tags'
+
 
 def json_to_dict(url):
     """
@@ -33,10 +35,8 @@ def json_to_dict(url):
     return json.loads(data)
 
 
-def github_releases(username, repository, major_version):
+def github_releases(major_version):
     """Return the tarball URL for the latest version"""
-    release_url = 'https://api.github.com/repos/{uname}/{repo}/tags'.format(
-        uname=username, repo=repository)
     mycodo_releases = json_to_dict(release_url)
     all_versions = []
     for each_release in mycodo_releases:
@@ -65,10 +65,8 @@ def sort_reverse_list(versions_unsorted):
     return versions_sorted
 
 
-def return_latest_version_url(username, repository, version_only):
+def return_latest_version_url(version_only):
     """Return the tarball URL for the latest version"""
-    release_url = 'https://api.github.com/repos/{uname}/{repo}/tags'.format(
-        uname=username, repo=repository)
     mycodo_releases = json_to_dict(release_url)
     all_versions = []
     for each_release in mycodo_releases:
@@ -88,10 +86,8 @@ def return_latest_version_url(username, repository, version_only):
                 return each_release['tarball_url']
 
 
-def return_maj_version_url(username, repository, version_only, major_version):
+def return_maj_version_url(version_only, major_version):
     """Return the tarball URL for the version with the specified major number"""
-    release_url = 'https://api.github.com/repos/{uname}/{repo}/tags'.format(
-        uname=username, repo=repository)
     mycodo_releases = json_to_dict(release_url)
     maj_versions = []
     for each_release in mycodo_releases:
@@ -113,18 +109,16 @@ def return_maj_version_url(username, repository, version_only, major_version):
                 return each_release['tarball_url']
 
 
-def version_information(username, repository, version_only, major_version):
+def version_information(version_only, major_version):
     """Print all releases, and specific info about latest and major releases"""
-    release_url = 'https://api.github.com/repos/{uname}/{repo}/tags'.format(
-        uname=username, repo=repository)
     mycodo_releases = json_to_dict(release_url)
     print("List of all Mycodo Releases:")
 
     for each_release in mycodo_releases:
         print("{ver} ".format(ver=each_release['name']))
 
-    print(return_latest_version_url(username, repository, version_only))
-    print(return_maj_version_url(username, repository, version_only, major_version))
+    print(return_latest_version_url(version_only))
+    print(return_maj_version_url(version_only, major_version))
 
 
 def parseargs(parser):
@@ -135,10 +129,6 @@ def parseargs(parser):
     parser.add_argument('-m', '--majornumber', type=int,
                         help='Return the latest version URL with major version'
                              ' number x in x.y.z.')
-    parser.add_argument('-r', '--repository', type=str,
-                        help='Github repository name.')
-    parser.add_argument('-u', '--username', type=str,
-                        help='Github user name.')
     parser.add_argument('-v', '--version', action='store_true',
                         help='Return the latest version number.')
     return parser.parse_args()
@@ -146,8 +136,7 @@ def parseargs(parser):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description='Returns a github release tarball URL of the latest '
-                    'current release or latest major version number release.')
+        description='Returns information about Mycodo releases.')
     args = parseargs(parser)
     if args.currentversion:
         print(MYCODO_VERSION)
@@ -157,8 +146,8 @@ if __name__ == "__main__":
             parser.print_help()
         else:
             if args.latest:
-                print(return_latest_version_url(args.username, args.repository, args.version))
+                print(return_latest_version_url(args.version))
             elif args.majornumber:
-                print(return_maj_version_url(args.username, args.repository, args.version, args.majornumber))
+                print(return_maj_version_url(args.version, args.majornumber))
     else:
         parser.print_help()

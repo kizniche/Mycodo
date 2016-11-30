@@ -1,18 +1,36 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ] ; then
+  printf "Please run as root.\n"
+  exit 1
+fi
+
 runSelfUpdate() {
   NOW=$(date +"%Y-%m-%d_%H-%M-%S")
   INSTALL_DIRECTORY=$( cd -P /var/www/mycodo/.. && pwd -P )
   CURRENT_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
-  UPDATE_URL=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -u kizniche -r Mycodo -m 4 2>&1)
-  UPDATE_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -u kizniche -r Mycodo -m 4 -v 2>&1)
+  UPDATE_URL=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 4 2>&1)
+  UPDATE_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 4 -v 2>&1)
   MYCODO_OLD_TMP_DIR="${INSTALL_DIRECTORY}/Mycodo-${CURRENT_VERSION}"
   MYCODO_NEW_TMP_DIR="/tmp/Mycodo-${UPDATE_VERSION}"
   TARBALL_FILE="mycodo-${UPDATE_VERSION}"
 
   cd ${INSTALL_DIRECTORY}
 
-  printf "#### Update Initiated $NOW ####\n"
+  if [ "${CURRENT_VERSION}" == "${UPDATE_VERSION}" ] ; then
+    printf "Unable to update. You currently have the latest release installed.\n"
+    exit 1
+  else
+    printf "Installed version: ${CURRENT_VERSION}\n"
+    printf "Latest version: ${UPDATE_VERSION}\n"
+  fi
+
+  if [ "${UPDATE_URL}" == "None" ] ; then
+    printf "Unable to update. A URL of the latest release was not able to be obtained.\n"
+    exit 1
+  fi
+
+  printf "#### Update to v${UPDATE_VERSION} initiated $NOW ####\n"
   printf "#### Beginning Upgrade: Stage 1 of 2 ####\n"
 
   printf "Stopping web UI and daemon..."
@@ -29,7 +47,6 @@ runSelfUpdate() {
   fi
   printf "Done.\n"
 
-  # Check if the tmp directory exists and delete it if it does
   if [ -d "${MYCODO_NEW_TMP_DIR}" ] ; then
     printf "The tmp directory ${MYCODO_NEW_TMP_DIR} already exists. Removing..."
     if ! rm -Rf ${MYCODO_NEW_TMP_DIR} ; then
@@ -46,7 +63,7 @@ runSelfUpdate() {
   fi
   printf "Done.\n"
 
-  printf "Extracting files..."
+  printf "Extracting ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz to ${MYCODO_NEW_TMP_DIR}..."
   if ! tar xzf ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz -C ${MYCODO_NEW_TMP_DIR} --strip-components=1 ; then
     printf "Failed: Error while trying to extract files from ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz to ${MYCODO_NEW_TMP_DIR}.\n"
     exit 1
@@ -60,7 +77,7 @@ runSelfUpdate() {
   fi
   printf "Done.\n"
 
-  printf "Moving databases..."
+  printf "Moving databases from ${INSTALL_DIRECTORY}/Mycodo/databases/ to ${MYCODO_NEW_TMP_DIR}/databases..."
   if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/*.db ${MYCODO_NEW_TMP_DIR}/databases ; then
     printf "Failed: Error while trying to copy databases."
     exit 1
@@ -81,16 +98,14 @@ runSelfUpdate() {
   fi
   printf "Done.\n"
 
-  if [ -d ${INSTALL_DIRECTORY}/Mycodo/mycodo_flask/ssl_certs ] ; then
+  if [ -d ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs ] ; then
     printf "Copying SSL certificates..."
-    if ! cp -R ${INSTALL_DIRECTORY}/Mycodo/mycodo_flask/ssl_certs ${MYCODO_NEW_TMP_DIR}/mycodo/mycodo_flask/ssl_certs ; then
+    if ! cp -R ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs ${MYCODO_NEW_TMP_DIR}/mycodo/mycodo_flask/ssl_certs ; then
       printf "Failed: Error while trying to copy SSL certificates."
       exit 1
     fi
     printf "Done.\n"
   fi
-
-  mycodo_flask/ssl_certs
 
   if [ -d ${INSTALL_DIRECTORY}/Mycodo/camera-stills ] ; then
     printf "Moving Camera stills directory..."
