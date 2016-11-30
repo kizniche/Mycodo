@@ -109,26 +109,29 @@ def admin_upgrade():
     # Read from the upgrade status file created by the upgrade script
     # to indicate if the upgrade is running.
     try:
-        with open(INSTALL_DIRECTORY + '/.updating') as f:
-            updating = int(f.read(1))
+        with open(INSTALL_DIRECTORY + '/.upgrade') as f:
+            upgrade = int(f.read(1))
     except IOError:
         try:
-            with open(INSTALL_DIRECTORY + '/.updating', 'w') as f:
+            with open(INSTALL_DIRECTORY + '/.upgrade', 'w') as f:
                 f.write('0')
         finally:
-            updating = 0
+            upgrade = 0
 
-    if updating:
-        flash("An upgrade is currently in progress. "
-              "Please wait for it to finish.", "error")
+    if upgrade:
+        if upgrade == 1:
+            flash("An upgrade is currently in progress. Please wait for it to"
+                  " finish.", "error")
+        elif upgrade == 2:
+            flash("There was an error encountered during the upgrade process."
+                  " Check the upgrade log for details.", "error")
         return render_template('admin/upgrade.html',
-                               updating=True)
+                               upgrade=upgrade)
 
     formBackup = flaskforms.Backup()
     formUpgrade = flaskforms.Upgrade()
 
     is_internet = True
-    updating = 0
     upgrade_available = False
 
     # Check for any new Mycodo releases on github
@@ -149,7 +152,7 @@ def admin_upgrade():
             subprocess.Popen(
                 INSTALL_DIRECTORY + '/mycodo/scripts/mycodo_wrapper upgrade >> /var/log/mycodo/mycodoupgrade.log 2>&1',
                 shell=True)
-            updating = 1
+            upgrade = 1
             flash("The upgrade has started. The daemon will be "
                   "stopped during the upgrade.", "success")
         else:
@@ -164,5 +167,5 @@ def admin_upgrade():
                            latest_release=latest_release,
                            releases_behind=releases_behind,
                            upgrade_available=upgrade_available,
-                           updating=updating,
+                           upgrade=upgrade,
                            is_internet=is_internet)

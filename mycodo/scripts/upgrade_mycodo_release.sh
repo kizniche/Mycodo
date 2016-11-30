@@ -2,10 +2,10 @@
 
 runSelfUpgrade() {
   INSTALL_DIRECTORY=$( cd -P /var/www/mycodo/.. && pwd -P )
-  echo '1' > ${INSTALL_DIRECTORY}/.upgrade
+  echo '1' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
 
   function finish {
-    echo '2' > ${INSTALL_DIRECTORY}/.upgrade
+    echo '2' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
   }
   trap finish EXIT
 
@@ -84,6 +84,13 @@ runSelfUpgrade() {
   fi
   printf "Done.\n"
 
+  printf "Copying ${MYCODO_NEW_TMP_DIR}/.upgrade status file to ${MYCODO_NEW_TMP_DIR}..."
+  if ! cp ${INSTALL_DIRECTORY}/Mycodo/.upgrade ${MYCODO_NEW_TMP_DIR} ; then
+    printf "Failed: Error while trying to copy .upgrade status file.\n"
+    exit 1
+  fi
+  printf "Done.\n"
+
   printf "Moving databases from ${INSTALL_DIRECTORY}/Mycodo/databases/ to ${MYCODO_NEW_TMP_DIR}/databases..."
   if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/*.db ${MYCODO_NEW_TMP_DIR}/databases ; then
     printf "Failed: Error while trying to copy databases."
@@ -145,12 +152,12 @@ runSelfUpgrade() {
   cat > /tmp/upgrade_mycodo.sh << EOF
 #!/bin/bash
 
-revertInstall() {
-  function finish {
-    echo '2' > ${INSTALL_DIRECTORY}/.upgrade
-  }
-  trap finish EXIT
+function finish {
+  echo '2' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
+}
+trap finish EXIT
 
+revertInstall() {
   printf "The upgrade has failed: Attempting to revert moving the old Mycodo install.\n"
   if ! mv /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW} ${INSTALL_DIRECTORY}/Mycodo ; then
     printf "Failed: Error while trying to revert moving. Could not move /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW} to ${INSTALL_DIRECTORY}/Mycodo.\n"
@@ -205,7 +212,7 @@ fi
 printf "Done.\n"
 
 printf "Upgrade completed successfully without errors.\n"
-echo '0' > ${INSTALL_DIRECTORY}/.upgrade
+echo '0' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
 rm \$0
 EOF
 

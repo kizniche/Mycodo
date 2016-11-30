@@ -6,20 +6,16 @@
   <!-- Route: /admin/upgrade -->
   <div class="container">
     {% include 'flash_messages.html' %}
-    <div style="padding: 0.5em 0">
-      Installed version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{ current_release }}" target="_blank">{{ current_release }}</a>
-      <br>Latest version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{ latest_release }}" target="_blank">{{ latest_release }}</a>
-    </div>
-    {% if updating == 1 %}
+    {% if upgrade == 1 %}
       <div style="padding: 0.5em 0">
         <p>Mycodo is currently in the process of an upgrade.</p>
         <p>This often takes several minutes, and in rare cases hours, to complete. Give the process ample time to complete before doing anything. When the upgrade has successfully finished, the daemon status indicator at the top left will turn from red to green. You can monitor the upgrade progress by going to Tools->Mycodo Logs->Upgrade Log or by opening /var/log/mycodo/mycodoupgrade.log.
-        <p>If this is in error, you may delete the ~/Mycodo/.upgrade file to be able to reinitiate the upgrade process.</p>
+        <p>If this is in error, you may delete the ~/.mycodo-upgrade file to be able to reinitiate the upgrade process.</p>
       </div>
-    {% elif updating == 2 %}
+    {% elif upgrade == 2 %}
       <div style="padding: 0.5em 0">
         <p>There was an error that occurred during the upgrade.</p>
-        <p>View log at /var/log/mycodo/mycodoupgrade.log and review the upgrade process.</p>
+        <p>View the upgrade log at /var/log/mycodo/mycodoupgrade.log.</p>
       </div>
     {% elif not is_internet %}
       <div style="padding: 0.5em 0">
@@ -27,9 +23,13 @@
       </div>
     {% elif not upgrade_available %}
       <div style="padding: 0.5em 0">
-        No upgrade is available. You are running the latest version.
+        No upgrade is available. You are running the latest release, version <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{ current_release }}" target="_blank">{{ current_release }}</a>
       </div>
     {% elif upgrade_available %}
+      <div style="padding: 0.5em 0">
+        Installed version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{ current_release }}" target="_blank">{{ current_release }}</a>
+        <br>Latest version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{ latest_release }}" target="_blank">{{ latest_release }}</a>
+      </div>
       <div style="padding: 0.5em 0">
         You are {{ releases_behind }} release{% if releases_behind > 1 %}s{% endif %} behind the latest version.
         <br>Refer to the <a href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md" target="_blank">Changelog</a> for a list of all changes.
