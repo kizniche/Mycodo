@@ -320,11 +320,12 @@
     }
   });
 
-  var now = new Date();
+  // Store the time (epoch) of the last data point received, for every condition of every graph
+  var last_relay_time_mil = {};
 
   $(document).ready(function() {
     var chart = new Array();
-    // Retrieve intiial chart data set from the past (duration set by user)
+    // Retrieve initial chart data set from the past (duration set by user)
     function getPastData(chart_number, sensor, sensor_type, sensor_measurement, sensor_id, past_seconds) {
       var url = '/past/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/' + past_seconds;
       $.getJSON(url,
@@ -332,9 +333,17 @@
           if (jqXHR.status != 204) {
             var past_data = [];
             for (i = 0; i < data.length; i++){
+              // Push the received data to the graph
               var new_date = new Date(data[i][0]);
               var new_time = new_date.getTime();
               past_data.push([new_time, data[i][1]])
+
+              // Store the epoch time of the last data point received
+              if (i == data.length - 1) {
+                last_relay_time_mil[chart_number+"-"+sensor_id] = new_time;
+                console.log("Past: ");
+                console.log(last_relay_time_mil);
+              }
             }
             chart[chart_number].series[sensor].isDirty = true;
             chart[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes()-(past_seconds/60)), new Date().getTime());
@@ -344,9 +353,20 @@
       );
     }
     // Retrieve chart data for the period since the last data acquisition (refresh period set by user)
-    function getLiveData(chart_number, sensor, sensor_type, sensor_measurement, sensor_id, past_seconds, xaxis_duration_min, refresh_seconds) {
+    function getLiveData(chart_number, sensor, sensor_type, sensor_measurement, sensor_id, xaxis_duration_min, refresh_seconds) {
       setInterval(function () {
-        var url = '/past/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/' + past_seconds;
+        // Build the URL
+        // Instruct only to return data since the time of the last received data point
+        var url = '';
+        if (chart_number+"-"+sensor_id in last_relay_time_mil) {
+          var epoch_mil = (new Date).getTime();
+          var past_seconds = Math.floor((epoch_mil - last_relay_time_mil[chart_number+"-"+sensor_id]) / 1000);
+          url = '/past/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/' + past_seconds;
+          console.log("URL: "+url);
+          console.log("past_seconds: "+past_seconds);
+        } else {
+          url = '/past/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/' + refresh_seconds;
+        }
         $.getJSON(url,
           function(data, responseText, jqXHR) {
             if (jqXHR.status != 204) {
@@ -354,6 +374,11 @@
                 var new_date = new Date(data[i][0]);
                 var new_time = new_date.getTime();
                 chart[chart_number].series[sensor].addPoint([new_time, data[i][1]], false, false);
+                if (i == data.length - 1) {
+                  last_relay_time_mil[chart_number+"-"+sensor_id] = new_time;
+                  console.log("Live: ");
+                  console.log(last_relay_time_mil);
+                }
               }
             }
             // Ensure Reset Zoom button resets to the proper start and end times
@@ -478,11 +503,7 @@
             {%- for each_relay in relay -%}
               {%- for each_graph_relay in graph_relay_ids if each_relay.id in each_graph_relay %}
             getPastData({{chart_number}}, {{count_series|count}}, 'relay', 'duration_sec', '{{each_relay.id}}', {{each_graph.x_axis_duration*60}});
-                {%- for each_pid in pid -%}
-                  {%- if each_pid.activated and (each_pid.raise_relay_id == each_relay.id or each_pid.lower_relay_id == each_relay.id) %}
-            getLiveData({{chart_number}}, {{count_series|count}}, 'relay', 'duration_sec', '{{each_relay.id}}', {{each_graph.refresh_duration+each_pid.period+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
-                  {%- endif -%}
-                {% endfor %}
+            getLiveData({{chart_number}}, {{count_series|count}}, 'relay', 'duration_sec', '{{each_relay.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                 {%- do count_series.append(1) %}
               {%- endfor -%}
             {%- endfor -%}
@@ -490,7 +511,7 @@
             {%- for each_pid in pid -%}
               {%- for each_graph_pid in graph_pid_ids if each_pid.id in each_graph_pid %}
             getPastData({{chart_number}}, {{count_series|count}}, 'pid', 'setpoint', '{{each_pid.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'pid', 'setpoint', '{{each_pid.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'pid', 'setpoint', '{{each_pid.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                 {%- do count_series.append(1) %}
               {%- endfor -%}
             {%- endfor -%}
@@ -500,105 +521,105 @@
                 {%- if each_sensor.device_type == 'cpu_load' %}
                   {% if 'cpu_load_1m' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'cpu_load', 'cpu_load_1m', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'cpu_load', 'cpu_load_1m', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'cpu_load', 'cpu_load_1m', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% endif %}
                   {% if 'cpu_load_5m' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'cpu_load', 'cpu_load_5m', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'cpu_load', 'cpu_load_5m', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'cpu_load', 'cpu_load_5m', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% endif %}
                   {% if 'cpu_load_15m' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'cpu_load', 'cpu_load_15m', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'cpu_load', 'cpu_load_15m', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'cpu_load', 'cpu_load_15m', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% endif %}
                 {%- elif each_sensor.device_type == 'tsensor' %}
                   {% if 'temperature' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'tsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'tsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'tsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% endif %}
                 {%- elif each_sensor.device_type == 'tmpsensor' %}
                   {% if 'temperature_object' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'tmpsensor', 'temperature_object', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'tmpsensor', 'temperature_object', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'tmpsensor', 'temperature_object', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% elif 'temperature_die' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'tmpsensor', 'temperature_die', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'tmpsensor', 'temperature_die', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'tmpsensor', 'temperature_die', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% endif %}
                 {%- elif each_sensor.device_type == 'htsensor' %}
                   {% if 'temperature' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'htsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'htsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'htsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) %}
                   {% elif 'humidity' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'htsensor', 'humidity', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'htsensor', 'humidity', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'htsensor', 'humidity', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% elif 'dewpoint' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'htsensor', 'dewpoint', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'htsensor', 'dewpoint', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'htsensor', 'dewpoint', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {%- endif -%}
                 {%- elif each_sensor.device_type == 'co2sensor' %}
             getPastData({{chart_number}}, {{count_series|count}}, 'co2sensor', 'co2', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'co2sensor', 'co2', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'co2sensor', 'co2', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                   {%- do count_series.append(1) -%}
                 {%- elif each_sensor.device_type == 'luxsensor' %}
             getPastData({{chart_number}}, {{count_series|count}}, 'luxsensor', 'lux', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'luxsensor', 'lux', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'luxsensor', 'lux', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                   {%- do count_series.append(1) -%}
                 {%- elif each_sensor.device_type == 'moistsensor' %}
                   {% if 'lux' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'lux', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'lux', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'lux', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% elif 'moisture' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'moisture', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'moisture', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'moisture', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% elif 'temperature' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {%- endif -%}
                 {%- elif each_sensor.device_type == 'presssensor' %}
                   {% if 'temperature' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'presssensor', 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'temperature', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) %}
                   {% elif 'humidity' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'presssensor', 'humidity', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'humidity', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'humidity', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% elif 'dewpoint' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'presssensor', 'dewpoint', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'dewpoint', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'dewpoint', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% elif 'pressure' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'presssensor', 'pressure', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'pressure', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'pressure', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) %}
                   {% elif 'altitude' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'presssensor', 'altitude', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'altitude', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'altitude', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) %}
                   {%- endif -%}
                 {%- elif each_sensor.device_type == 'edgedetect' %}
             getPastData({{chart_number}}, {{count_series|count}}, 'edgedetect', 'edge', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'edgedetect', 'edge', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'edgedetect', 'edge', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                   {%- do count_series.append(1) -%}
                 {%- elif each_sensor.device_type == 'analogsensor' %}
                   {% if 'voltage' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'analogsensor', 'voltage', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'analogsensor', 'voltage', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'analogsensor', 'voltage', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% elif each_sensor.adc_measure in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'analogsensor', '{{each_sensor.adc_measure}}', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'analogsensor', '{{each_sensor.adc_measure}}', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'analogsensor', '{{each_sensor.adc_measure}}', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {%- endif -%}
                 {%- endif -%}
