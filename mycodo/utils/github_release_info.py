@@ -46,6 +46,14 @@ def github_releases(major_version):
     return sort_reverse_list(all_versions)
 
 
+def is_latest_installed(major_number):
+    """Check if the latest release is installed. Return True if yes, Flase if no."""
+    latest_version = return_maj_version_url(True, major_number)
+    if latest_version == MYCODO_VERSION:
+        return True
+    return False
+
+
 def sort_reverse_list(versions_unsorted):
     """
     Sort and reverse a list of strings representing version numbers in
@@ -124,6 +132,8 @@ def version_information(version_only, major_version):
 def parseargs(parser):
     parser.add_argument('-c', '--currentversion', action='store_true',
                         help='Return the currently-installed version.')
+    parser.add_argument('-i', '--islatest', action='store_true',
+                        help='Return True if the currently-installed version is the latest.')
     parser.add_argument('-l', '--latest', action='store_true',
                         help='Return the latest version URL.')
     parser.add_argument('-m', '--majornumber', type=int,
@@ -138,7 +148,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Returns information about Mycodo releases.')
     args = parseargs(parser)
-    if args.currentversion:
+    if args.islatest:
+        print(is_latest_installed(args.majornumber))
+    elif args.currentversion:
         print(MYCODO_VERSION)
     elif args.latest or args.majornumber:
         if args.latest and args.majornumber:

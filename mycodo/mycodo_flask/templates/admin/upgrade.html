@@ -1,52 +1,72 @@
 {% extends "layout.html" %}
-{% set active_page = "update" %}
-{% block title %} - Update{% endblock %}
+{% set active_page = "upgrade" %}
+{% block title %} - Upgrade{% endblock %}
 
 {% block body %}
   <!-- Route: /admin/upgrade -->
   <div class="container">
     {% include 'flash_messages.html' %}
-    <div style="padding-bottom: 1em">
-      Mycodo may be upgraded to the latest release on github. An attempt will be made to detect your internet connection, and if one is found, the option to upgrade will be made available.
+    <div style="padding: 0.5em 0">
+      Installed version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{ current_release }}" target="_blank">{{ current_release }}</a>
+      <br>Latest version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{ latest_release }}" target="_blank">{{ latest_release }}</a>
     </div>
-    {% if updating %}
-      <div style="padding-bottom: 1em">
-        Mycodo is currently in the process of an update. If this is in error, you may delete the ~/Mycodo/.updating file to be able to reinitiate the update process.
+    {% if updating == 1 %}
+      <div style="padding: 0.5em 0">
+        <p>Mycodo is currently in the process of an upgrade.</p>
+        <p>This often takes several minutes, and in rare cases hours, to complete. Give the process ample time to complete before doing anything. When the upgrade has successfully finished, the daemon status indicator at the top left will turn from red to green. You can monitor the upgrade progress by going to Tools->Mycodo Logs->Upgrade Log or by opening /var/log/mycodo/mycodoupgrade.log.
+        <p>If this is in error, you may delete the ~/Mycodo/.upgrade file to be able to reinitiate the upgrade process.</p>
+      </div>
+    {% elif updating == 2 %}
+      <div style="padding: 0.5em 0">
+        <p>There was an error that occurred during the upgrade.</p>
+        <p>View log at /var/log/mycodo/mycodoupgrade.log and review the upgrade process.</p>
       </div>
     {% elif not is_internet %}
-      <div style="padding-bottom: 1em">
-        No internet connection detected.
+      <div style="padding: 0.5em 0">
+        No internet connection detected. To upgrade Mycodo automatically, you will need an internet connection. Refresh the page when one is connected.
       </div>
-    {% elif not update_available %}
-      <div style="padding-bottom: 1em">
-        No upgrade is available. You are running the latest version of Mycodo, version <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{ current_release }}" target="_blank">{{ current_release }}</a>.
+    {% elif not upgrade_available %}
+      <div style="padding: 0.5em 0">
+        No upgrade is available. You are running the latest version.
       </div>
-    {% elif update_available %}
-      <div style="padding-bottom: 1em">
-        An newer version of Mycodo is available. You are running version <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{ current_release }}" target="_blank">{{ current_release }}</a>, which is currently {{ releases_behind }} releases behind the latest version, <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{ latest_release }}" target="_blank">{{ latest_release }}</a>. Refer to the <a href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md" target="_blank">Changelog</a> for what has been changed. Click the button below to begin the upgrade process.
+    {% elif upgrade_available %}
+      <div style="padding: 0.5em 0">
+        You are {{ releases_behind }} release{% if releases_behind > 1 %}s{% endif %} behind the latest version.
+        <br>Refer to the <a href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md" target="_blank">Changelog</a> for a list of all changes.
+      </div>
+      <div style="padding: 1em 0 1.5em 0">
+        Click the button below to begin the upgrade process. Note: An upgrade often takes several minutes, and in rare cases hours, to complete. During that time, the Mycodo web interface and server recording sensors and manipulating relays (among other services) will be completely shut down. It is not recommended not perform an upgrade on a production machine (i.e. trust buy verify: treat the new version as unstable until you have verified it works as expected).
       </div>
       <div class="form-inline" style="padding-bottom: 1em">
         <form method="post" action="/admin/upgrade">
-          <input type="hidden" name="form-name" value="update">
-          {{formUpdate.csrf_token}}
+          <input type="hidden" name="form-name" value="upgrade">
+          {{formUpgrade.csrf_token}}
           <div>
             <div class="form-group">
-              {{formUpdate.update(class_='form-control')}}
+              {{formUpgrade.upgrade(class_='form-control')}}
             </div>
           </div>
         </form>
       </div>
+      {% if releases_behind > 1 %}
       <div style="font-family: 'Courier New', monospace;">
-        <table class="table">
+        <table class="table" style="width: auto">
+          <tr>
+            <th>Current to latest versions</th>
+          </tr>
           {% for each_release in current_releases %}
             <tr>
               <td>
                 <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{ each_release }}" target="_blank" {% if current_release == each_release %}style="color: red"{% endif %}>v{{ each_release }}</a>
               </td>
+              <td>
+                {% if each_release == current_release %}current{% elif each_release == latest_release %}latest{% endif %}
+              </td>
             </tr>
           {% endfor %}
         </table>
       </div>
+      {% endif %}
     {% endif %}
   </div>
 

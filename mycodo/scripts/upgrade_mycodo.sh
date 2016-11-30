@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  update_mycodo.sh - Update Mycodo to the latest version on GitHub
+#  upgrade_mycodo.sh - Upgrade Mycodo to the latest version on GitHub
 #
 #  Copyright (C) 2015  Kyle T. Gabriel
 #
@@ -49,14 +49,14 @@ case "${1:-''}" in
     'upgrade')
         echo "1" > ${INSTALL_DIRECTORY}/.updating
         NOW=$(date +"%m-%d-%Y %H:%M:%S")
-        printf "#### Update Initiated $NOW ####\n"
+        printf "#### Upgrade Initiated $NOW ####\n"
 
-        printf "#### Checking for Update ####\n"
+        printf "#### Checking for Upgrade ####\n"
         git fetch origin
 
         if git status -uno | grep 'Your branch is behind' > /dev/null; then
             git status -uno | grep 'Your branch is behind'
-            printf "The remote git repository is newer than yours. This could mean there is an update to Mycodo.\n"
+            printf "The remote git repository is newer than yours. This could mean there is an upgrade to Mycodo.\n"
 
             if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
                 echo '1' > ${INSTALL_DIRECTORY}/.updating
@@ -65,27 +65,27 @@ case "${1:-''}" in
                 service mycodo stop
 
                 # Create backup
-                ${INSTALL_DIRECTORY}/mycodo/scripts/update_mycodo.sh backup
+                ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo.sh backup
 
                 printf "#### Updating From GitHub ####\n"
                 git fetch
                 git reset --hard origin/master
 
                 printf "#### Executing Post-Upgrade Commands ####\n"
-                if [ -f ${INSTALL_DIRECTORY}/mycodo/scripts/update_post.sh ]; then
-                    ${INSTALL_DIRECTORY}/mycodo/scripts/update_post.sh
+                if [ -f ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_post.sh ]; then
+                    ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_post.sh
                     printf "#### End Post-Upgrade Commands ####\n"
                 else
-                    printf "Error: update_post.sh not found\n"
+                    printf "Error: upgrade_post.sh not found\n"
                 fi
                 
                 END=$(date +"%m-%d-%Y %H:%M:%S")
-                printf "#### Update Finished $END ####\n\n"
+                printf "#### Upgrade Finished $END ####\n\n"
 
                 echo '0' > ${INSTALL_DIRECTORY}/.updating
                 exit 0
             else
-                printf "Error: No git repository found. Update stopped.\n\n"
+                printf "Error: No git repository found. Upgrade stopped.\n\n"
                 echo '0' > ${INSTALL_DIRECTORY}/.updating
                 exit 1
             fi
@@ -119,8 +119,8 @@ case "${1:-''}" in
             touch /var/log/mycodo/mycodo.log
         fi
         
-        if [ ! -e /var/log/mycodo/mycodoupdate.log ]; then
-            touch /var/log/mycodo/mycodoupdate.log
+        if [ ! -e /var/log/mycodo/mycodoupgrade.log ]; then
+            touch /var/log/mycodo/mycodoupgrade.log
         fi
 
         if [ ! -e /var/log/mycodo/mycodorestore.log ]; then

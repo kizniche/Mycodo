@@ -165,7 +165,7 @@ class LogView(Form):
     loglogin = SubmitField(u'Login Log')
     loghttp = SubmitField(u'HTTP Log')
     logdaemon = SubmitField(u'Daemon Log')
-    logupdate = SubmitField(u'Update Log')
+    logupgrade = SubmitField(u'Upgrade Log')
     logrestore = SubmitField(u'Restore Log')
 
 
@@ -1103,11 +1103,11 @@ class ModSensorConditional(Form):
 
 
 #
-# Update
+# Upgrade
 #
 
-class Update(Form):
-    update = SubmitField(u'Update Mycodo')
+class Upgrade(Form):
+    upgrade = SubmitField(u'Upgrade Mycodo')
 
 
 

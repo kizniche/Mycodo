@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-#  update_post.sh - Extra commands to execute for the update process.
+#  upgrade_post.sh - Extra commands to execute for the upgrade process.
 #                   Used as a way to provide additional commands to
 #                   execute that wouldn't be possible from the running
-#                   update script.
+#                   upgrade script.
 #
 #  Copyright (C) 2015  Kyle T. Gabriel
 #
@@ -41,7 +41,7 @@ if [ -f "$INSTALL_DIRECTORY/mycodo_flask/ssl_certs/cert.pem" ] && [ ! -d "$INSTA
     cp ${INSTALL_DIRECTORY}/mycodo_flask/ssl_certs/* ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs/
 fi
 
-${INSTALL_DIRECTORY}/mycodo/scripts/update_mycodo.sh upgrade-packages
+${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo.sh upgrade-packages
 
 printf "#### Enable mycodo service ####\n"
 rm -rf /etc/systemd/system/mycodo.service
@@ -73,7 +73,7 @@ printf "#### Removing statistics file ####\n"
 rm ${INSTALL_DIRECTORY}/databases/statistics.csv
 
 printf "#### Setting permissions ####\n"
-${INSTALL_DIRECTORY}/mycodo/scripts/update_mycodo.sh initialize
+${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo.sh initialize
 
 printf "#### Starting Mycodo daemon and reloading Apache ####\n"
 service mycodo start

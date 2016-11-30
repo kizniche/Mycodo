@@ -44,7 +44,7 @@ from config import LOGIN_LOG_FILE
 from config import LOCK_FILE_STREAM
 from config import LOCK_FILE_TIMELAPSE
 from config import RESTORE_LOG_FILE
-from config import UPDATE_LOG_FILE
+from config import UPGRADE_LOG_FILE
 
 from mycodo.databases.utils import session_scope
 from mycodo.databases.mycodo_db.models import Method, Relay
@@ -578,8 +578,8 @@ def page_logview():
             logfile = HTTP_LOG_FILE
         elif formLogView.logdaemon.data:
             logfile = DAEMON_LOG_FILE
-        elif formLogView.logupdate.data:
-            logfile = UPDATE_LOG_FILE
+        elif formLogView.logupgrade.data:
+            logfile = UPGRADE_LOG_FILE
         elif formLogView.logrestore.data:
             logfile = RESTORE_LOG_FILE
 

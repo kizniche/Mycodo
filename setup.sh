@@ -120,7 +120,7 @@ printf "#### Creating SQLite databases\n"
 ${INSTALL_DIRECTORY}/init_databases.py -i all
 
 printf "#### Setting up users, groups, and permissions\n"
-${INSTALL_DIRECTORY}/mycodo/scripts/update_mycodo.sh initialize
+${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo.sh initialize
 
 printf "#### Starting the Mycodo daemon and web server\n"
 service mycodo start
