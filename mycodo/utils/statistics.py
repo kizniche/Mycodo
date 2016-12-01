@@ -13,8 +13,6 @@ from collections import OrderedDict
 from influxdb import InfluxDBClient
 from sqlalchemy import func
 
-from system_pi import get_git_commit
-
 logger = logging.getLogger(__name__)
 
 
@@ -157,7 +155,6 @@ def recreate_stat_file(id_file, stats_csv, stats_interval, mycodo_version):
                      ['next_send', time.time() + stats_interval],
                      ['RPi_revision', get_pi_revision()],
                      ['Mycodo_revision', mycodo_version],
-                     ['git_commit', 'None'],
                      ['country', 'None'],
                      ['daemon_startup_seconds', 0.0],
                      ['ram_use_mb', 0.0],
@@ -260,8 +257,6 @@ def send_stats(_logger, host, port, user, password, dbname,
                        user_count - admin_count)
 
         add_update_csv(_logger, stats_csv, 'Mycodo_revision', mycodo_version)
-
-        add_update_csv(_logger, stats_csv, 'git_commit', get_git_commit())
 
         # Combine stats into list of dictionaries
         new_stats_dict = return_stat_file_dict(stats_csv)
