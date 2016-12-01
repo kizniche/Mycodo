@@ -7,21 +7,22 @@
   <div class="container"> 
     {% include 'flash_messages.html' %}
 
-    {% if not backups_sorted %}
+    {% if not backup_dirs %}
       <div style="padding-bottom: 1em">
         No backups found
       </div>
     {% else %}
-      {%- for each_backup in backups_sorted -%}
-        <form method="post" action="/backup">
+      {%- for each_backup in backup_dirs -%}
+        <form method="post" action="/admin/backup">
         <input type="hidden" name="form-name" value="restore">
         <div class="form-inline" style="padding: 0.3em">
           <div class="form-group">
-            {{formBackup.restore(class_='form-control btn btn-default',value='Restore Backup '+each_backup[7:17]+' '+each_backup[18:26])}}
+            {{formBackup.restore(class_='form-control btn btn-default',value='Restore Backup from '+each_backup[14:33]+' v'+each_backup[34:])}}
             {{formBackup.restore_dir(class_='form-control',value=each_backup)}}
           </div>
           <div class="form-group" style="font-family: 'Courier New', monospace;">
-            (<a href="https://github.com/kizniche/Mycodo/commit/{{each_backup[27:33]}}" target="_blank">github commit {{each_backup[27:33]}}</a>)
+            {% set split_version = each_backup.split('-') %}
+            (<a href="https://github.com/kizniche/Mycodo/releases/tag/v{{each_backup[34:]}}" target="_blank">v{{each_backup[34:]}} Changelog</a>)
           </div>
         </div>
         </form>

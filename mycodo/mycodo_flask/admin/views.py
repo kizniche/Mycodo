@@ -55,6 +55,12 @@ def admin_backup():
         flash("Error: Backup directory doesn't exist.", "error")
     else:
         backup_dirs = sorted(next(os.walk('/var/Mycodo-backups'))[1])
+        backup_dirs.reverse()
+
+    backup_dirs_filtered = []
+    for each_dir in backup_dirs:
+        if each_dir.startswith("Mycodo-backup-"):
+            backup_dirs_filtered.append(each_dir)
 
     if request.method == 'POST':
         form_name = request.form['form-name']
@@ -68,7 +74,7 @@ def admin_backup():
 
     return render_template('admin/backup.html',
                            formBackup=formBackup,
-                           backups_sorted=backup_dirs)
+                           backup_dirs=backup_dirs_filtered)
 
 
 @blueprint.route('/admin/statistics', methods=('GET', 'POST'))

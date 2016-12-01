@@ -162,11 +162,11 @@ function error_found {
 
 revertInstall() {
   printf "The upgrade has failed: Attempting to revert moving the old Mycodo install.\n"
-  if ! mv /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW} ${INSTALL_DIRECTORY}/Mycodo ; then
-    printf "Failed: Error while trying to revert moving. Could not move /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW} to ${INSTALL_DIRECTORY}/Mycodo.\n"
+  if ! mv /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION} ${INSTALL_DIRECTORY}/Mycodo ; then
+    printf "Failed: Error while trying to revert moving. Could not move /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION} to ${INSTALL_DIRECTORY}/Mycodo.\n"
     error_occurred
   fi
-  printf "Successfully reverted moving the old Mycodo install directory. Moved /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW} to ${INSTALL_DIRECTORY}/Mycodo\n"
+  printf "Successfully reverted moving the old Mycodo install directory. Moved /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION} to ${INSTALL_DIRECTORY}/Mycodo\n"
 
   printf "Setting permissions...\n"
   if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh initialize ; then
@@ -182,9 +182,9 @@ if [ ! -d "/var/Mycodo-backups" ] ; then
   mkdir /var/Mycodo-backups
 fi
 
-printf "Moving old Mycodo from ${INSTALL_DIRECTORY}/Mycodo to /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW}..."
-if ! mv ${INSTALL_DIRECTORY}/Mycodo /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW} ; then
-  printf "Failed: Error while trying to move old Mycodo install from ${INSTALL_DIRECTORY}/Mycodo to /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW}.\n"
+printf "Moving old Mycodo from ${INSTALL_DIRECTORY}/Mycodo to /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}..."
+if ! mv ${INSTALL_DIRECTORY}/Mycodo /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION} ; then
+  printf "Failed: Error while trying to move old Mycodo install from ${INSTALL_DIRECTORY}/Mycodo to /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}.\n"
   revertInstall
   error_found
 fi
