@@ -8,7 +8,6 @@ src/
 *.pem
 *.bak
 .upgrade
-.updatecheck
 statistics.csv
 statistics.id
 

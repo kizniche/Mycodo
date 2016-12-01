@@ -73,7 +73,7 @@ printf "#### Removing statistics file ####\n"
 rm ${INSTALL_DIRECTORY}/databases/statistics.csv
 
 printf "#### Setting permissions ####\n"
-${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo.sh initialize
+${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh initialize
 
 printf "#### Starting Mycodo daemon and reloading Apache ####\n"
 service mycodo start
