@@ -540,9 +540,12 @@ class DaemonController(threading.Thread):
             else:
                 self.timer_stats = float(stat_dict['next_send'])
         except Exception as msg:
-            self.logger.exception("Error: Cound not read stats file. "
+            self.logger.exception("Error: Could not read stats file. "
                                   "Regenerating. Error msg: {}".format(msg))
-            os.remove(STATS_CSV)
+            try:
+                os.remove(STATS_CSV)
+            except OSError:
+                pass
             recreate_stat_file(ID_FILE, STATS_CSV,
                                STATS_INTERVAL, MYCODO_VERSION)
         try:
