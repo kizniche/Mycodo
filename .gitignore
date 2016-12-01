@@ -7,7 +7,7 @@ src/
 *.db
 *.pem
 *.bak
-.updating
+.upgrade
 .updatecheck
 statistics.csv
 statistics.id

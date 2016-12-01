@@ -10,12 +10,13 @@
       <div style="padding: 0.5em 0">
         <p>Mycodo is currently in the process of an upgrade.</p>
         <p>This often takes several minutes, and in rare cases hours, to complete. Give the process ample time to complete before doing anything. When the upgrade has successfully finished, the daemon status indicator at the top left will turn from red to green. You can monitor the upgrade progress by going to Tools->Mycodo Logs->Upgrade Log or by opening /var/log/mycodo/mycodoupgrade.log.
-        <p>If this is in error, you may delete the ~/.mycodo-upgrade file to be able to reinitiate the upgrade process.</p>
+        <p>If this is in error, you may delete the ~/Mycoco/.upgrade file to be able to reinitiate the upgrade process.</p>
       </div>
     {% elif upgrade == 2 %}
       <div style="padding: 0.5em 0">
         <p>There was an error that occurred during the upgrade.</p>
         <p>View the upgrade log at /var/log/mycodo/mycodoupgrade.log.</p>
+        <p>Delete ~/Mycoco/.upgrade to acknowledge this message and restore upgrade functionality.</p>
       </div>
     {% elif not is_internet %}
       <div style="padding: 0.5em 0">

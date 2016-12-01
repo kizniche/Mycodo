@@ -4,10 +4,10 @@ runSelfUpgrade() {
   INSTALL_DIRECTORY=$( cd -P /var/www/mycodo/.. && pwd -P )
   echo '1' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
 
-  function finish {
+  function error_found {
     echo '2' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
+    exit 1
   }
-  trap finish EXIT
 
   if [ "$EUID" -ne 0 ] ; then
     printf "Please run as root.\n"
@@ -26,7 +26,7 @@ runSelfUpgrade() {
 
   if [ "${CURRENT_VERSION}" == "${UPDATE_VERSION}" ] ; then
     printf "Unable to upgrade. You currently have the latest release installed.\n"
-    exit 1
+    error_found
   else
     printf "Installed version: ${CURRENT_VERSION}\n"
     printf "Latest version: ${UPDATE_VERSION}\n"
@@ -34,7 +34,7 @@ runSelfUpgrade() {
 
   if [ "${UPDATE_URL}" == "None" ] ; then
     printf "Unable to upgrade. A URL of the latest release was not able to be obtained.\n"
-    exit 1
+    error_found
   fi
 
   printf "#### Upgrade to v${UPDATE_VERSION} initiated $NOW ####\n"
@@ -50,7 +50,7 @@ runSelfUpgrade() {
   if ! wget --quiet -O ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz ${UPDATE_URL} ; then
     printf "Failed: Error while trying to wget new version.\n"
     printf "File requested: ${UPDATE_URL} -> ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz\n"
-    exit 1
+    error_found
   fi
   printf "Done.\n"
 
@@ -58,7 +58,7 @@ runSelfUpgrade() {
     printf "The tmp directory ${MYCODO_NEW_TMP_DIR} already exists. Removing..."
     if ! rm -Rf ${MYCODO_NEW_TMP_DIR} ; then
       printf "Failed: Error while trying to delete tmp directory ${MYCODO_NEW_TMP_DIR}.\n"
-      exit 1
+      error_found
     fi
     printf "Done.\n"
   fi
@@ -66,49 +66,49 @@ runSelfUpgrade() {
   printf "Creating ${MYCODO_NEW_TMP_DIR}..."
   if ! mkdir ${MYCODO_NEW_TMP_DIR} ; then
     printf "Failed: Error while trying to create ${MYCODO_NEW_TMP_DIR}.\n"
-    exit 1
+    error_found
   fi
   printf "Done.\n"
 
   printf "Extracting ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz to ${MYCODO_NEW_TMP_DIR}..."
   if ! tar xzf ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz -C ${MYCODO_NEW_TMP_DIR} --strip-components=1 ; then
     printf "Failed: Error while trying to extract files from ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz to ${MYCODO_NEW_TMP_DIR}.\n"
-    exit 1
+    error_found
   fi
   printf "Done.\n"
   
   printf "Removing ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz..."
   if ! rm -rf ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz ; then
     printf "Failed: Error while removing ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz.\n"
-    exit 1
+    error_found
   fi
   printf "Done.\n"
 
   printf "Copying ${MYCODO_NEW_TMP_DIR}/.upgrade status file to ${MYCODO_NEW_TMP_DIR}..."
   if ! cp ${INSTALL_DIRECTORY}/Mycodo/.upgrade ${MYCODO_NEW_TMP_DIR} ; then
     printf "Failed: Error while trying to copy .upgrade status file.\n"
-    exit 1
+    error_found
   fi
   printf "Done.\n"
 
   printf "Moving databases from ${INSTALL_DIRECTORY}/Mycodo/databases/ to ${MYCODO_NEW_TMP_DIR}/databases..."
   if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/*.db ${MYCODO_NEW_TMP_DIR}/databases ; then
     printf "Failed: Error while trying to copy databases."
-    exit 1
+    error_found
   fi
   printf "Done.\n"
 
   printf "Upgrading databases..."
   if ! cd ${MYCODO_NEW_TMP_DIR}/databases && alembic upgrade head ; then
     printf "Failed: Error while trying to upgrade databases."
-    exit 1
+    error_found
   fi
   printf "Done.\n"
 
   printf "Copying statistics ID..."
   if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/statistics.id ${MYCODO_NEW_TMP_DIR}/databases ; then
     printf "Failed: Error while trying to copy statistics ID."
-    exit 1
+    error_found
   fi
   printf "Done.\n"
 
@@ -116,7 +116,7 @@ runSelfUpgrade() {
     printf "Copying SSL certificates..."
     if ! cp -R ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs ${MYCODO_NEW_TMP_DIR}/mycodo/mycodo_flask/ssl_certs ; then
       printf "Failed: Error while trying to copy SSL certificates."
-      exit 1
+      error_found
     fi
     printf "Done.\n"
   fi
@@ -125,7 +125,7 @@ runSelfUpgrade() {
     printf "Moving Camera stills directory..."
     if ! mv ${INSTALL_DIRECTORY}/Mycodo/camera-stills ${MYCODO_NEW_TMP_DIR} ; then
       printf "Failed: Error while trying to move camera stills directory.\n"
-      exit 1
+      error_found
     fi
     printf "Done.\n"
   fi
@@ -134,7 +134,7 @@ runSelfUpgrade() {
     printf "Moving Camera timelapse directory..."
     if ! mv ${INSTALL_DIRECTORY}/Mycodo/camera-timelapse ${MYCODO_NEW_TMP_DIR} ; then
       printf "Failed: Error while trying to move camera timelapse directory.\n"
-      exit 1
+      error_found
     fi
     printf "Done.\n"
   fi
@@ -143,7 +143,7 @@ runSelfUpgrade() {
     printf "Moving Camera video directory..."
     if ! mv ${INSTALL_DIRECTORY}/Mycodo/camera-video ${MYCODO_NEW_TMP_DIR} ; then
       printf "Failed: Error while trying to move camera video directory.\n"
-      exit 1
+      error_found
     fi
     printf "Done.\n"
   fi
@@ -152,23 +152,23 @@ runSelfUpgrade() {
   cat > /tmp/upgrade_mycodo.sh << EOF
 #!/bin/bash
 
-function finish {
+function error_found {
   echo '2' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
+  exit 1
 }
-trap finish EXIT
 
 revertInstall() {
   printf "The upgrade has failed: Attempting to revert moving the old Mycodo install.\n"
   if ! mv /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW} ${INSTALL_DIRECTORY}/Mycodo ; then
     printf "Failed: Error while trying to revert moving. Could not move /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW} to ${INSTALL_DIRECTORY}/Mycodo.\n"
-    exit 1
+    error_occurred
   fi
   printf "Successfully reverted moving the old Mycodo install directory. Moved /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW} to ${INSTALL_DIRECTORY}/Mycodo\n"
 
   printf "Setting permissions...\n"
   if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_mycodo.sh initialize ; then
     printf "Failed: Error while running initialization script.\n"
-    exit 1
+    error_occurred
   fi
   printf "Done.\n"
 }
@@ -183,7 +183,7 @@ printf "Moving old Mycodo from ${INSTALL_DIRECTORY}/Mycodo to /var/Mycodo-backup
 if ! mv ${INSTALL_DIRECTORY}/Mycodo /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW} ; then
   printf "Failed: Error while trying to move old Mycodo install from ${INSTALL_DIRECTORY}/Mycodo to /var/Mycodo-backups/Mycodo-backup-${CURRENT_VERSION}-${NOW}.\n"
   revertInstall
-  exit 1
+  error_found
 fi
 printf "Done.\n"
 
@@ -191,7 +191,7 @@ printf "Moving new Mycodo from ${MYCODO_NEW_TMP_DIR} to ${INSTALL_DIRECTORY}/Myc
 if ! mv ${MYCODO_NEW_TMP_DIR} ${INSTALL_DIRECTORY}/Mycodo ; then
   printf "Failed: Error while trying to move new Mycodo install from ${MYCODO_NEW_TMP_DIR} to ${INSTALL_DIRECTORY}/Mycodo.\n"
   revertInstall
-  exit 1
+  error_found
 fi
 printf "Done.\n"
 
@@ -199,7 +199,7 @@ printf "Setting permissions for new Mycodo install...\n"
 if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_mycodo.sh initialize ; then
   printf "Failed: Error while running initialization script.\n"
   revertInstall
-  exit 1
+  error_found
 fi
 printf "Done.\n"
 
@@ -207,7 +207,7 @@ printf "Running post-upgrade script...\n"
 if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_post.sh ; then
   printf "Failed: Error while running post-upgrade script.\n"
   revertInstall
-  exit 1
+  error_found
 fi
 printf "Done.\n"
 

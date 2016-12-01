@@ -136,16 +136,21 @@ def admin_upgrade():
 
     # Check for any new Mycodo releases on github
     releases = github_releases(4)
-    latest_release = releases[0]
-    current_releases = []
-    releases_behind = None
-    for index, each_release in enumerate(releases):
-        if parse_version(each_release) >= parse_version(MYCODO_VERSION):
-            current_releases.append(each_release)
-        if parse_version(each_release) == parse_version(MYCODO_VERSION):
-            releases_behind = index
-    if parse_version(releases[0]) > parse_version(MYCODO_VERSION):
-        upgrade_available = True
+    if len(releases) > 0:
+        latest_release = releases[0]
+        current_releases = []
+        releases_behind = None
+        for index, each_release in enumerate(releases):
+            if parse_version(each_release) >= parse_version(MYCODO_VERSION):
+                current_releases.append(each_release)
+            if parse_version(each_release) == parse_version(MYCODO_VERSION):
+                releases_behind = index
+        if parse_version(releases[0]) > parse_version(MYCODO_VERSION):
+            upgrade_available = True
+    else:
+        current_releases = []
+        latest_release = '0.0.0'
+        releases_behind = 0
 
     if request.method == 'POST':
         if formUpgrade.upgrade.data and upgrade_available:

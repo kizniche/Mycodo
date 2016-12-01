@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 			char updateScript[255];
 			strncpy(updateScript, argv[0], sizeof(updateScript));
 			dirname(updateScript);
-			strncat(updateScript, "/update_mycodo.sh upgrade", sizeof(updateScript));
+			strncat(updateScript, "/upgrade_mycodo_release.sh", sizeof(updateScript));
 			system(updateScript);
 
 		} else if (strcmp(argv[1], "updatecheck") == 0) {
