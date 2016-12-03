@@ -5,6 +5,7 @@ This release introduces a new method for upgrading Mycodo to the latest version.
 Performance:
 
   - Reduced bandwidth usage and processing of new data on live graphs
+  - Update to InfluxDB 1.1.0
 
 Features:
 
