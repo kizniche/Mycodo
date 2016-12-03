@@ -75,7 +75,7 @@ class SHT1x7xSensor(AbstractSensor):
         sht_sensor = Sht(self.clock_pin, self.pin, voltage=self.voltage)
         temperature = sht_sensor.read_t()
         humidity = sht_sensor.read_rh()
-        dew_point = sht_sensor.read_dew_point(self.temperature, self.humidity)
+        dew_point = sht_sensor.read_dew_point(temperature, humidity)
         return dew_point, humidity, temperature
 
     def read(self):

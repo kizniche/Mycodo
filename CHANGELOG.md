@@ -15,6 +15,8 @@ Bugfixes:
 
   - Fix inability to update long-duration relay times on live graphs
   - Fix dew point being incorrectly inserted into the database
+  - Fix inability to start video stream (#155)
+  - Fix SHT1x7x sensor module not returning values (#159)
 
 ## 4.0.26 (2016-11-23)
 
