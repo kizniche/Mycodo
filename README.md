@@ -27,12 +27,10 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 - [Install](#install)
 - [Install Notes](#install-notes)
 - [Supported Devices and Sensors](#supported-devices-and-sensors)
-    - [Temperature](#temperature)
-    - [Humidity](#humidity)
-    - [CO<sub>2</sub>](#co2)
-    - [Luminosity](#luminosity)
-    - [Moisture](#moisture)
-    - [Pressure](#pressure)
+    - [1-Wire](#1-wire)
+    - [GPIO](#gpio)
+    - [UART](#uart)
+    - [I<sub>2</sub>C](#i2c)
     - [Devices](#devices)
 - [Notes](#notes)
 - [HTTP Server](#http-server-security)
@@ -93,11 +91,11 @@ Set up the initial settings with raspi-config. **It's very important that you do
  + Internationalisation Options -> Change Locale (set and select en_US.UTF-8 if US)
  + Internationalisation Options -> Change Timezone
  + Enable Camera
- + Advanced Options -> Enable I<sup>2</sup>C (required)
+ + Advanced Options -> Enable I<sup>2</sup>C (required if using certain sensors)
  + **Reboot (required)**
 
 
-Mycodo will be installed with the following install script (setup.sh). As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web UI. If you require a custom setup, examine and modify this script accordingly. If you do not require a custom setup, just run the install script with the following commands.
+Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web UI. If you require a custom setup, examine and modify this script accordingly. If you do not require a custom setup, just run the install script with the following commands.
 
 ```
 sudo apt-get update && sudo apt-get install -y git
@@ -107,16 +105,13 @@ cd Mycodo
 sudo ./setup.sh
 ```
 
-Create an administrator user for the web UI:
+Make sure the setup.sh finishes without error. A log of the setup.sh script output will be created at ~/Mycodo/setup.log.
+
+If the install is successful, the web user interface should be accessible with your PI's IP address https://IPaddress/. The first time you visit this page, you will be prompted to create an admin user. Alternatively, an admin user can be created from the command line with this command:
 
 ```sudo ~/Mycodo/init_databases.py --addadmin```
 
-Make sure the setup.sh and init_databases.py scripts run without error. A log of the setup.sh script output will be created at ~/Mycodo/setup.log.
-
-Follow the on-screen prompts to create an administrator user for the web interface.
-
-That's it. You should be able to use the user you just created to log into the Mycodo web UI at https://localhost with localhost changed to your Raspberry Pi's hostname or IP address. Once logged in, make sure the Mycodo logo and version number at the top left is green, indicating the daemon is running. Red indicates the daemon is inactive or unresponsive. Ensure any java-blocking plugins are disabled for all the web UI features to work.
-
+That's it. You should be redirected to the login page to use the credentials just created to log in. Once logged in, make sure the host name and version number at the top left is green, indicating the daemon is running. Red indicates the daemon is inactive or unresponsive. Ensure any java-blocking plugins are disabled for all the web UI features to work.
 
 
 ## Install Notes
@@ -141,27 +136,21 @@ If you receive an unresolvable error during the install, please [create an issue
 
 Certain sensors will require extra steps to be taken in order to set up the interface for communication. This includes I<sup>2</sup>C, one-wire, and UART.
 
-### Temperature
+### 1-Wire
 
-> [Atlas Scientific PT-1000](http://www.atlas-scientific.com/product_pages/kits/temp_kit.html) (I<sup>2</sup>C): Industrial-grade temperature probe that can be indefinitely submersed in liquid and sustain extreme temperatures (-200˚C to 850˚C, with the use of a thermowell).
+The 1-wire interface should be configured with [these instructions](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing).
 
-> [DS18B20](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf) (1-wire): Once the one-wire interface has been configured with [these instructions](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing), it may be used with Mycodo.
+> [DS18B20](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf) Temperature
 
-> [TMP006, TMP007](https://www.sparkfun.com/products/11859) (I<sup>2</sup>C): Can measure the temperature of an object without making contact with it, by using a thermopile to detect and absorb the infrared energy an object is emitting. This sensor also measures the temperature of the die (physical sensor).
+### GPIO
 
-### Humidity
+> [DHT11, DHT22, AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring) Relative humidity and temperature.
 
-> [AM2315](https://github.com/lexruee/tentacle_pi) (I<sup>2</sup>C): Measures relative humidity and temperature.
+> [SHT1x, SHT2x, SHT7x](https://github.com/mk-fg/sht-sensor) Relative humidity and temperature.
 
-> [DHT11, DHT22, AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring) (GPIO): Measures relative humidity and temperature.
+### UART
 
-> [HTU21D](http://www.te.com/usa-en/product-CAT-HSC0004.html) (I<sup>2</sup>C): Measures relative humidity and temperature.
-
-> [SHT1x, SHT2x, SHT7x](https://github.com/mk-fg/sht-sensor) (GPIO): Measures relative humidity and temperature.
-
-### Carbon Dioxide (CO<sub>2</sub>)
-
-> [K30](http://www.co2meter.com/products/k-30-co2-sensor-module) (UART): Measures carbon dioxide in ppmv
+> [K30](http://www.co2meter.com/products/k-30-co2-sensor-module) Carbon dioxide (CO<sub>2</sub>) in ppmv
 
 [This documentation](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip) provides specific installation procedures for the K30 with the Raspberry Pi version 1 or 2. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing ~/Mycodo/mycodo/tests/test_uart_K30.py
 
@@ -177,17 +166,25 @@ Go to Advanced Options->Serial and disable. Then edit /boot/config.txt
 
 Find the line "enable_uart=0" and change it to "enable_uart=1", then reboot.
 
-### Luminosity
+### I<sup>2</sup>C
 
-> [TSL2561](https://www.sparkfun.com/products/12055) (I<sup>2</sup>C): A light sensor with a flat response across most of the visible spectrum. Light range from 0.1 - 40k+ Lux. Contains two integrating analog-to-digital converters (ADC) that integrate currents from two photodiodes to measure both infrared and visible light to better approximate the response of the human eye.
+The I<sup>2</sup>C interface should be enabled with `raspi-config`.
 
-### Moisture
+> [AM2315](https://github.com/lexruee/tentacle_pi) Relative humidity and temperature.
 
-> [Chirp](https://wemakethings.net/chirp/) (I<sup>2</sup>C): A moisture, light, and temperature sensor
+> [Atlas Scientific PT-1000](http://www.atlas-scientific.com/product_pages/kits/temp_kit.html) Temperature
 
-### Pressure
+> [BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Barometric pressure, humidity, and temperature
 
-> [BMP085, BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi) (I<sup>2</sup>C): Measures barometric pressure and temperature
+> [BMP085, BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi) Barometric pressure and temperature
+
+> [HTU21D](http://www.te.com/usa-en/product-CAT-HSC0004.html) Relative humidity and temperature
+
+> [TMP006, TMP007](https://www.sparkfun.com/products/11859) Contactless temperature
+
+> [TSL2561](https://www.sparkfun.com/products/12055) Light
+
+> [Chirp](https://wemakethings.net/chirp/) Moisture, light, and temperature
 
 ### Edge Detection
 
@@ -249,9 +246,9 @@ Also, use '-d' to log all debug messages to /var/log/mycodo/mycodo.log
 
 ### Upgrading
 
-If you already have Mycodo installed (>=4.0.0), you can perform an upgrade to the latest version on github by either using the Admin/Upgrade menu in the web UI (recommended) or by issuing the following command at the terminal. A log of the upgrade process is created at /var/log/mycodo/mycodoupdate.log
+If you already have Mycodo installed (>=4.0.0), you can perform an upgrade to the latest version on github by either using the Admin/Upgrade menu in the web UI (recommended) or by issuing the following command at the terminal. A log of the upgrade process is created at /var/log/mycodo/mycodoupgrade.log
 
-```sudo ~/Mycodo/mycodo/scripts/update_mycodo.sh upgrade```
+```sudo ~/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh upgrade```
 
 Upgrading the mycodo database is performed automatically during the upgrade process, however it can also be performed manually with the following commands (Note: This does not create the database, only upgrade them. You must already have a database created in order to upgrade):
 
@@ -364,6 +361,16 @@ Mycodo/
 │   ├── flaskforms.py - Flask form classes
 │   ├── flaskutils.py - Various functions to assist the flask UI
 │   ├── mycodo_flask - HTTP server files (Flask)
+│   │   ├── admin - Admin page routes
+│   │   │   └── views.py
+│   │   ├── authentication - Authentication routes
+│   │   │   └── views.py
+│   │   ├── methods - Method routes
+│   │   │   └── views.py
+│   │   ├── pages - General page routes
+│   │   │   └── views.py
+│   │   ├── settings - Settings page routes
+│   │   │   └── views.py
 │   │   ├── ssl_certs - Location of HTTP SSL certificates
 │   │   ├── static - Static files reside (images, css, js, etc.)
 │   │   └── templates - Flask HTML templates
@@ -397,7 +404,7 @@ Mycodo/
 │   │   ├── mycodo.service - Systemd script
 │   │   ├── mycodo_wrapper.c - Source to binary that's setuid, for upgrades 
 │   │   ├── restore_mycodo.sh - Script to restore a backed up Mycodo version
-│   │   ├── update_mycodo.sh - Update script to bring the git repository to HEAD
+│   │   ├── upgrade_mycodo_release.sh - Updates Mycodo to the latest release
 │   │   ├── update_post.sh - Post update script (commands from the latest version)
 │   │   └── ...
 │   ├── sensors - Python modules for sensors
