@@ -28,7 +28,7 @@ from mycodo.databases.mycodo_db.models import Misc
 from scripts.utils import test_username, test_password
 
 
-blueprint = Blueprint('authentication', __name__, static_folder='../static', template_folder='../templates')
+blueprint = Blueprint('authentication_routes', __name__, static_folder='../static', template_folder='../templates')
 
 
 @blueprint.context_processor
@@ -59,7 +59,7 @@ def create_admin():
                     db_session.add(new_user)
                 flash("User '{}' successfully created. Please log in below.".format(
                     form.username.data), "success")
-                return redirect(url_for('authentication.do_login'))
+                return redirect(url_for('authentication_routes.do_login'))
             except Exception as except_msg:
                 flash("Failed to create user: {}".format(except_msg), "error")
         else:

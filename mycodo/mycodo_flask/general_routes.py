@@ -71,7 +71,7 @@ def before_blueprint_request():
     Ensure databases exist and at least one user is in the user database.
     """
     if not admin_exists():
-        return redirect(url_for("authentication.create_admin"))
+        return redirect(url_for("authentication_routes.create_admin"))
 blueprint.before_request(before_blueprint_request)
 
 
