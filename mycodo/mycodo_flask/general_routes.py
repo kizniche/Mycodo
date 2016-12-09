@@ -38,9 +38,9 @@ import flaskforms
 import flaskutils
 
 from flaskutils import gzipped
-from mycodo_flask.authentication.views import admin_exists
-from mycodo_flask.authentication.views import clear_cookie_auth
-from mycodo_flask.authentication.views import logged_in
+from mycodo_flask.authentication_routes import admin_exists
+from mycodo_flask.authentication_routes import clear_cookie_auth
+from mycodo_flask.authentication_routes import logged_in
 
 from databases.utils import session_scope
 from databases.mycodo_db.models import DisplayOrder

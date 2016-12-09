@@ -39,14 +39,14 @@ Bugfixes:
 Features:
 
   - New create admin user page if no admin user exists
-  - Add Chirp soil moisture sensor (https://wemakethings.net/chirp/)
+  - Add support for [Chirp soil moisture sensor](https://wemakethings.net/chirp/)
   - Add more I2C LCD address options
   - Add endpoint tests
-  - Add use of Travis CI and Codacy
+  - Add use of [Travis CI](https://travis-ci.org/) and [Codacy](https://www.codacy.com/)
 
 Bugfixes:
 
-  - Fix controller crash when using a 20x4 LCD (fixes [#136](https://github.com/kizniche/mycodo/issues/136))
+  - Fix controller crash when using a 20x4 LCD ([#136](https://github.com/kizniche/mycodo/issues/136))
   - Add short sleep() to login to reduce chance of brute-force success
   - Fix code warnings and errors
 
@@ -67,8 +67,8 @@ Performance:
 Features:
 
   - Add BME280 sensor
-  - Create basic tests for flask app (fixes [#112](https://github.com/kizniche/mycodo/issues/122))
-  - Relocated Flask UI into its own package [#116](https://github.com/kizniche/Mycodo/pull/116)
+  - Create basic tests for flask app ([#112](https://github.com/kizniche/mycodo/issues/122))
+  - Relocated Flask UI into its own package ([#116](https://github.com/kizniche/Mycodo/pull/116))
   - Add DB session fixtures; create model factories
   - Add logging of relay durations that are turned on and off, without a known duration
   - Add ability to define power billing cycle day, AC voltage, cost per kWh, and currency unit for relay usage statistics
@@ -77,8 +77,8 @@ Features:
 
 Bugfixes:
 
-  - Fix relay conditionals when relays turn on for durations of time (fixes [#123](https://github.com/kizniche/mycodo/issues/123))
+  - Fix relay conditionals when relays turn on for durations of time ([#123](https://github.com/kizniche/mycodo/issues/123))
   - Exclude photo/video directories from being backed up during upgrade
   - Removed unused imports
   - Changed print statements to logging statements
-  - Fix inability to save sensor settings (fixes [#120](https://github.com/kizniche/mycodo/issues/120) [#134](https://github.com/kizniche/mycodo/issues/134))
+  - Fix inability to save sensor settings ([#120](https://github.com/kizniche/mycodo/issues/120) [#134](https://github.com/kizniche/mycodo/issues/134))

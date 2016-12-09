@@ -14,7 +14,6 @@ from flask import (Blueprint,
 from pkg_resources import parse_version
 
 from utils.statistics import return_stat_file_dict
-from utils.system_pi import cmd_output
 from utils.system_pi import internet
 from utils.github_release_info import github_releases
 
