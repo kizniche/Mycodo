@@ -107,16 +107,20 @@ def test_routes_logged_in_as_admin(_, testapp, user_db):
         ('graph', '<!-- Route: /graph -->'),
         ('graph-async', '<!-- Route: /graph-async -->'),
         ('help', '<!-- Route: /help -->'),
+        ('info', '<!-- Route: /info -->'),
         ('lcd', '<!-- Route: /lcd -->'),
         ('live', '<!-- Route: /live -->'),
         ('log', '<!-- Route: /log -->'),
+        ('logview', '<!-- Route: /logview -->'),
         ('method', '<!-- Route: /method -->'),
         ('method-build/1/0', 'admin logged in'),
+        ('notes', '<!-- Route: /notes -->'),
         ('pid', '<!-- Route: /pid -->'),
         ('relay', '<!-- Route: /relay -->'),
         ('remote/setup', '<!-- Route: /remote/setup -->'),
         ('sensor', '<!-- Route: /sensor -->'),
-        ('timer', '<!-- Route: /timer -->')
+        ('timer', '<!-- Route: /timer -->'),
+        ('usage', '<!-- Route: /usage -->')
     ]
     for route in routes:
         response = testapp.get('/{add}'.format(add=route[0])).maybe_follow()

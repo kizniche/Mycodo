@@ -51,16 +51,16 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
   * Analog to digital converter support for reading any analog sensor or signal.
 * Event triggers: When certain conditions are met, activate relays, camera recording, email notification, and more.
 * Discrete PID control: Regulate environmental conditions with prediction and precision.
-* Method creation for dynamic PID setpoints for changing conditions over time .
+* Method creation for dynamic PID setpoints for changing conditions over time (setpoint tracking).
   * Time/Date: Change the setpoint based on specific times and dates (ideal for long-duration changes).
   * Duration: Change the setpoint at durations form when it was activated (examples: reflow oven, thermal cycler).
   * Daily: Change the setpoint on a daily, repeatable schedule.
   * Daily Sine Wave: Change the setpoint on a daily, repeatable schedule that follows a configurable sinusoidal wave.
   * Daily Bezier Curve: Change the setpoint on a daily, repeatable schedule that follows a configurable Bezier curve.
 * 16x2 and 20x4 I<sup>2</sup>C LCD support: Create a physical display of conditions or status of the system.
-* I<sup>2</sup>C multiplexer support to allow using multiple devices/sensors with the same address.
-* Pi Camera support: Streaming live video, capture still images, or create time-lapses.
-* Automated system upgrade: When a new feature is pushed to github, one click will update the entire system.
+* I<sup>2</sup>C multiplexer support to allow using multiple devices/sensors with the same I<sup>2</sup>C address.
+* Pi Camera support: Stream live video, capture still images, or create time-lapses.
+* Automated system upgrade: When there's new release on github, an upgrade can be initiated from the web UI.
 
 
 
@@ -95,19 +95,20 @@ Set up the initial settings with raspi-config. **It's very important that you do
  + **Reboot (required)**
 
 
-Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web UI. If you require a custom setup, examine and modify this script accordingly. If you do not require a custom setup, just run the install script with the following commands.
+Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web UI. If you require a custom setup, examine and modify this script accordingly. If you do not require a custom setup, just run the install script with the following commands:
 
 ```
-sudo apt-get update && sudo apt-get install -y git
-cd
-git clone https://github.com/kizniche/Mycodo
+cd ~
+wget -O mycodo-latest.tar.gz https://api.github.com/repos/kizniche/mycodo/tarball
+mkdir Mycodo
+tar xzf mycodo-latest.tar.gz -C Mycodo --strip-components=1
 cd Mycodo
 sudo ./setup.sh
 ```
 
 Make sure the setup.sh finishes without error. A log of the setup.sh script output will be created at ~/Mycodo/setup.log.
 
-If the install is successful, the web user interface should be accessible with your PI's IP address https://IPaddress/. The first time you visit this page, you will be prompted to create an admin user. Alternatively, an admin user can be created from the command line with this command:
+If the install is successful, the web user interface should be accessible with your PI's IP address https://IPaddress/. The first time you visit this page, you will be prompted to create an admin user. Alternatively, an admin user may also be created with the following command:
 
 ```sudo ~/Mycodo/init_databases.py --addadmin```
 
