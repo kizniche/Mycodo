@@ -11,18 +11,24 @@ src/
 statistics.csv
 statistics.id
 
+### C template
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
 ### C++ template
 # Compiled Object files
 *.slo
 *.lo
-*.o
-*.obj
 
 # Precompiled Headers
 *.gch
 *.pch
 
 # Compiled Dynamic libraries
+*.so.*
 *.so
 *.dylib
 *.dll
@@ -36,10 +42,6 @@ statistics.id
 *.a
 *.lib
 
-# Executables
-*.exe
-*.out
-*.app
 ### Linux template
 *~
 
@@ -48,28 +50,6 @@ statistics.id
 
 # Linux trash folder which might appear on any partition or disk
 .Trash-*
-### C template
-# Object files
-*.o
-*.ko
-*.obj
-*.elf
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
 
 # Executables
 *.exe
@@ -81,6 +61,7 @@ statistics.id
 
 # Debug files
 *.dSYM/
+
 ### VirtualEnv template
 # Virtualenv
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
@@ -90,6 +71,7 @@ statistics.id
 [Ll]ib
 pyvenv.cfg
 pip-selfcheck.json
+
 ### OSX template
 .DS_Store
 .AppleDouble
@@ -115,6 +97,7 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
 ### Xcode template
 # Xcode
 #
@@ -139,6 +122,7 @@ xcuserdata
 *.xccheckout
 *.moved-aside
 *.xcuserstate
+
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio
 
@@ -186,19 +170,15 @@ atlassian-ide-plugin.xml
 com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
+
 ### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
-*.so
-
 # Distribution / packaging
-.Python
 env/
-build/
 develop-eggs/
 dist/
 downloads/

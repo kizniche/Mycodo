@@ -19,7 +19,7 @@ Bugfixes:
   - Fix inability to start video stream ([#155](https://github.com/kizniche/mycodo/issues/155))
   - Fix SHT1x7x sensor module not returning values ([#159](https://github.com/kizniche/mycodo/issues/159))
 
-Miscelaneous:
+Miscellaneous:
 
   - Move install files to Mycodo/install
 
