@@ -65,7 +65,7 @@ case "${1:-''}" in
                 service mycodo stop
 
                 # Create backup
-                ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo.sh backup
+                /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo.sh backup
 
                 printf "#### Updating From GitHub ####\n"
                 git fetch

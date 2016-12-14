@@ -102,11 +102,11 @@ cd ~
 wget -O mycodo-latest.tar.gz https://api.github.com/repos/kizniche/mycodo/tarball
 mkdir Mycodo
 tar xzf mycodo-latest.tar.gz -C Mycodo --strip-components=1
-cd Mycodo
-sudo ./setup.sh
+cd Mycodo/install
+sudo /bin/bash ./setup.sh
 ```
 
-Make sure the setup.sh finishes without error. A log of the setup.sh script output will be created at ~/Mycodo/setup.log.
+Make sure the setup.sh script finishes without errors. A log of the setup.sh script output will be created at ~/Mycodo/install/setup.log.
 
 If the install is successful, the web user interface should be accessible with your PI's IP address https://IPaddress/. The first time you visit this page, you will be prompted to create an admin user. Alternatively, an admin user may also be created with the following command:
 
@@ -123,7 +123,7 @@ If you want write access to the mycodo files, add your user to the mycodo group,
 
 In certain circumstances after the initial install, the mycodo service will not be able to start because of a missing or corrupt package. I'm still trying to understand why this happens and how to prevent it. If you cannot start the daemon, try to reinstall the required modules with the following command:
 
-```sudo pip install -r ~/Mycodo/requirements.txt --upgrade --force-reinstall --no-deps```
+```sudo pip install -r ~/Mycodo/install/requirements.txt --upgrade --force-reinstall --no-deps```
 
 Then reboot
 
@@ -307,8 +307,8 @@ alembic upgrade head
 Execute the Mycodo setup.sh script:
 
 ```bash
-cd ~/Mycodo
-sudo setup.sh
+cd ~/Mycodo/install
+sudo /bin/bash setup.sh
 ```
 
 Restore the influx databases:
@@ -333,6 +333,7 @@ This is the file structure of Mycodo, so it may assist anyone to understand or m
 
 ```
 Mycodo/
+├── CHANGELOG.md - Mycodo version changelog
 ├── databases - SQLite databases (for configuration)
 │   ├── alembic - Alembic SQL database migration tool
 │   │   └── versions - Scripts to upgrade/downgrade databases
@@ -343,7 +344,13 @@ Mycodo/
 │   ├── notes.db
 │   ├── statistics.csv - Anonymous statistics data
 │   └── users.db - User settings
-├── init_databases.py - Create SQLite databases and add users
+├── init_databases.py - Script to create SQLite databases and users
+├── install
+│   ├── crontab.sh - Ensures proper line is in crontab
+│   ├── mycodo.service - Systemd script
+│   ├── mycodo_flask_apache.conf - Apache2 configuration file
+│   ├── requirements.txt - Python module requirements
+│   └── setup.sh - Mycodo install script
 ├── mycodo
 │   ├── config.py - Global configuration file
 │   ├── controller_lcd.py - LCD controller class
@@ -362,16 +369,12 @@ Mycodo/
 │   ├── flaskforms.py - Flask form classes
 │   ├── flaskutils.py - Various functions to assist the flask UI
 │   ├── mycodo_flask - HTTP server files (Flask)
-│   │   ├── admin - Admin page routes
-│   │   │   └── views.py
-│   │   ├── authentication - Authentication routes
-│   │   │   └── views.py
-│   │   ├── methods - Method routes
-│   │   │   └── views.py
-│   │   ├── pages - General page routes
-│   │   │   └── views.py
-│   │   ├── settings - Settings page routes
-│   │   │   └── views.py
+│   │   ├── admin_routes.py - Admin page routes
+│   │   ├── authentication_routes.py - Authentication routes
+│   │   ├── general_routes.py - General routes
+│   │   ├── method_routes.py - Method routes
+│   │   ├── page_routes.py - General page routes
+│   │   ├── settings_routes.py - Settings page routes
 │   │   ├── ssl_certs - Location of HTTP SSL certificates
 │   │   ├── static - Static files reside (images, css, js, etc.)
 │   │   └── templates - Flask HTML templates
@@ -402,11 +405,10 @@ Mycodo/
 │   ├── mycodo_daemon.py - Mycodo daemon (core of the system)
 │   ├── start_flask_ui.py - Flask startup script
 │   ├── scripts - Miscellaneous helper and test scripts and functions
-│   │   ├── mycodo.service - Systemd script
 │   │   ├── mycodo_wrapper.c - Source to binary that's setuid, for upgrades 
-│   │   ├── restore_mycodo.sh - Script to restore a backed up Mycodo version
+│   │   ├── restore_mycodo.sh - Script to restore a backed-up Mycodo version
 │   │   ├── upgrade_mycodo_release.sh - Updates Mycodo to the latest release
-│   │   ├── update_post.sh - Post update script (commands from the latest version)
+│   │   ├── update_post.sh - Post update commands (from the latest release)
 │   │   └── ...
 │   ├── sensors - Python modules for sensors
 │   │   ├── am2315.py
@@ -420,11 +422,9 @@ Mycodo/
 │       │   ├── Test_I2C_Multiplexer.py
 │       │   └──...
 │       └── software_tests - Automated Tests for Software
-├── mycodo_flask_apache.conf - Apache2 configuration file
 ├── mycodo_flask.wsgi - Start script for Apache2 mod_wsgi
 ├── old - Archived milestone versions of Mycodo
-├── requirements.txt - Python module requirements
-└── setup.sh - Install script
+└──
 ```
 
 

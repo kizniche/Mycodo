@@ -229,6 +229,16 @@ EOF
         apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3 gawk
         easy_install pip
     ;;
+    'upgrade-influxdb')
+        printf "#### Upgrade influxdb if out-of-date or not installed ####\n"
+        INFLUX_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
+        if [ "$INFLUX_VERSION" != "1.1.0-1" ]; then
+            echo "Incorrect version of InfluxDB installed: ($INFLUX_VERSION). Downloading and installing version 1.1.0."
+            wget https://dl.influxdata.com/influxdb/releases/influxdb_1.1.0_armhf.deb
+            dpkg -i influxdb_1.1.0_armhf.deb
+            rm -rf influxdb_1.1.0_armhf.deb
+        fi
+    ;;
     'initialize')
         useradd -M mycodo
         adduser mycodo gpio
