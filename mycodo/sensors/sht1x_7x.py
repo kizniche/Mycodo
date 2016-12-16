@@ -21,7 +21,7 @@ class SHT1x7xSensor(AbstractSensor):
         self.pin = pin
         self.clock_pin = clock_pin
         if float(voltage).is_integer():
-            self.voltage = "{}V".format(int(voltage))
+            self.voltage = "{}V".format(int(float(voltage)))
         else:
             self.voltage = "{}V".format(voltage)
 
