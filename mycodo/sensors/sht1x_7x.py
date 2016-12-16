@@ -20,7 +20,10 @@ class SHT1x7xSensor(AbstractSensor):
         self._temperature = 0.0
         self.pin = pin
         self.clock_pin = clock_pin
-        self.voltage = "{}V".format(voltage)
+        if voltage.is_integer():
+            self.voltage = "{}V".format(int(voltage))
+        else:
+            self.voltage = "{}V".format(voltage)
 
     def __repr__(self):
         """  Representation of object """

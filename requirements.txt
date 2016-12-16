@@ -23,7 +23,7 @@ WTForms == 2.1
 
 # Devices/sensors
 picamera == 1.10
-sht-sensor == 16.2.0
+sht-sensor == 16.12.0
 tentacle_pi == 0.6.2
 w1thermsensor == 0.3.1
 Adafruit_ADS1x15

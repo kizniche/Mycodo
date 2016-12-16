@@ -96,7 +96,6 @@ Set up the initial settings with raspi-config. **It's very important that you do
  + Advanced Options -> Enable I<sup>2</sup>C (required)
  + **Reboot (required)**
 
-
 Mycodo will be installed with the following install script (setup.sh). As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web UI. If you require a custom setup, examine and modify this script accordingly. If you do not require a custom setup, just run the install script with the following commands.
 
 ```

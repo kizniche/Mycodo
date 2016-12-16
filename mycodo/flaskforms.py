@@ -1057,7 +1057,7 @@ class ModSensor(Form):
             message="If using a SHT sensor, enter the GPIO connected to the clock pin (using BCM numbering)."
         )]
     )
-    modSHTVoltage = StringField(u'SHT Input Voltage')
+    modSHTVoltage = StringField(u'Voltage')
     modSensorSubmit = SubmitField(u'Save')
     delSensorSubmit = SubmitField(u'Delete')
     activateSensorSubmit = SubmitField(u'Activate')
