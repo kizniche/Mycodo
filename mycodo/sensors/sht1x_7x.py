@@ -1,7 +1,7 @@
 # coding=utf-8
 import logging
 from sht_sensor import Sht
-from sht_sensor.sensor import ShtVDDLevel
+from sht_sensor import ShtVDDLevel
 from .base_sensor import AbstractSensor
 
 logger = logging.getLogger(__name__)
