@@ -1,6 +1,7 @@
 # coding=utf-8
 import logging
 from sht_sensor import Sht
+from sht_sensor.sensor import ShtVDDLevel
 from .base_sensor import AbstractSensor
 
 logger = logging.getLogger(__name__)
@@ -20,10 +21,15 @@ class SHT1x7xSensor(AbstractSensor):
         self._temperature = 0.0
         self.pin = pin
         self.clock_pin = clock_pin
-        if float(voltage).is_integer():
-            self.voltage = "{}V".format(int(float(voltage)))
-        else:
-            self.voltage = "{}V".format(voltage)
+
+        sht_sensor_vdd_value = {
+            2.5: ShtVDDLevel.vdd_2_5,
+            3.0: ShtVDDLevel.vdd_3,
+            3.5: ShtVDDLevel.vdd_3_5,
+            4.0: ShtVDDLevel.vdd_4,
+            5.0: ShtVDDLevel.vdd_5
+        }
+        self.voltage = sht_sensor_vdd_value[round(float(voltage), 1)]
 
     def __repr__(self):
         """  Representation of object """
