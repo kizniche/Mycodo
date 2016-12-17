@@ -71,14 +71,14 @@ def test_routes_not_logged_in(testapp):
 
 def test_sees_admin_creation_form(testapp_no_admin_user):
     """ No Admin user exists: user sees the admin creation page """
-    expected_body_msg = "Mycodo was unable to find an admin user in the user database."
+    expected_body_msg = "<!-- Route: /create_admin -->"
     assert expected_body_msg in testapp_no_admin_user.get('/').maybe_follow()
 
 
 def test_does_not_see_admin_creation_form(testapp):
     """ Admin user exists: user sees the normal login page """
-    expected_body_msg = "Mycodo was unable to find an admin user in the user database."
-    assert expected_body_msg not in testapp.get('/').maybe_follow()
+    expected_body_msg = "<!-- Route: /login -->"
+    assert expected_body_msg in testapp.get('/').maybe_follow()
 
 
 # ---------------------------
@@ -200,15 +200,26 @@ def sees_navbar(testapp):
     response = testapp.get('/').maybe_follow()
     assert response.status_code == 200
     navbar_strings = [
-        'Live',
+        'Admin',
+        'Camera',
+        'Configure',
         'Graph',
-        'Sensor',
-        'Relay',
-        'Method',
-        'PID',
-        'Timer',
         'Help',
-        'Admin'
+        'LCDs',
+        'Live',
+        'Logout',
+        'Method',
+        'Mycodo Logs',
+        'Notes',
+        'PID',
+        'Relay',
+        'Relay Usage',
+        'Remote Admin',
+        'Sensor',
+        'Sensor Logs',
+        'System Info',
+        'Timer',
+        'Upgrade'
     ]
     assert all(
         x in response for x in navbar_strings), "Not all navbar strings found at '/' endpoint. Found: {body}".format(
