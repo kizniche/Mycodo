@@ -15,6 +15,7 @@ before_install:
   - influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
 install:
   - pip install --upgrade -r install/requirements.txt
+  - pip install RPi.GPIO
 virtualenv:
     system_site_packages: true
 script:

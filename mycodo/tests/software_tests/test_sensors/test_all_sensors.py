@@ -13,7 +13,7 @@ from mycodo.sensors.bmp import BMPSensor
 # from mycodo.sensors.dht22 import DHT22Sensor
 from mycodo.sensors.ds18b20 import DS18B20Sensor
 # from mycodo.sensors.htu21d import HTU21DSensor
-# from mycodo.sensors.k30 import K30Sensor
+from mycodo.sensors.k30 import K30Sensor
 # from mycodo.sensors.raspi import RaspberryPiCPUTemp
 # from mycodo.sensors.raspi import RaspberryPiGPUTemp
 # from mycodo.sensors.raspi_cpuload import RaspberryPiCPULoad
@@ -37,7 +37,7 @@ def return_classes():
         # DHT22Sensor(pigpio.pi(), 1),
         DS18B20Sensor('1'),
         # HTU21DSensor(1),
-        # K30Sensor(),
+        K30Sensor(),
         # RaspberryPiCPUTemp(),
         # RaspberryPiGPUTemp(),
         # RaspberryPiCPULoad(),
