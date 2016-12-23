@@ -5,12 +5,12 @@
 # Usage: sudo /bin/bash Mycodo/install/setup.sh
 #
 
+INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P )
+
 if [ "$EUID" -ne 0 ]; then
-    printf "Please run as root: \"sudo /bin/bash Mycodo/install/setup.sh\"\n";
+    printf "Please run as root: \"sudo /bin/bash ${INSTALL_DIRECTORY}/install/setup.sh\"\n";
     exit
 fi
-
-INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P )
 
 LOG_LOCATION=${INSTALL_DIRECTORY}/install/setup.log
 exec > >(tee -i ${LOG_LOCATION})
@@ -81,7 +81,7 @@ apt-get install -y apache2 libapache2-mod-wsgi
 a2enmod wsgi ssl
 ln -sf ${INSTALL_DIRECTORY}/install/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
 
-printf "#### Creating SSL certificates at $INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
+printf "#### Generating SSL certificates at ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
 mkdir -p ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs
 cd ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs/
 

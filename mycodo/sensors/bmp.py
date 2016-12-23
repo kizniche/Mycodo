@@ -23,8 +23,8 @@ class BMPSensor(AbstractSensor):
 
     def __repr__(self):
         """  Representation of object """
-        return "<{cls}(altitude={alt})(pressure={press})" \
-               "(temperature={temp})>".format(
+        return "<{cls}(temperature={temp})(pressure={press})" \
+               "(altitude={alt})>".format(
                 cls=type(self).__name__,
                 alt="{0:.2f}".format(self._altitude),
                 press=self._pressure,
@@ -32,10 +32,10 @@ class BMPSensor(AbstractSensor):
 
     def __str__(self):
         """ Return measurement information """
-        return "Altitude: {alt}, Pressure: {press}, " \
-               "Temperature: {temp}".format(
+        return "Temperature: {temp}, Pressure: {press}, " \
+               "Altitude: {alt}".format(
                 alt="{0:.2f}".format(self._altitude),
-                press=self._pressure,
+                press="{0}".format(self._pressure),
                 temp="{0:.2f}".format(self._temperature))
 
     def __iter__(self):  # must return an iterator
@@ -49,6 +49,14 @@ class BMPSensor(AbstractSensor):
         return dict(altitude=float('{0:.2f}'.format(self._altitude)),
                     pressure=int(self._pressure),
                     temperature=float('{0:.2f}'.format(self._temperature)))
+
+    def info(self):
+        conditions_measured = [
+            ("Temperature", "temperature", "float", "0.00", self._temperature, self.temperature),
+            ("Pressure", "pressure", "int", "0", self._pressure, self.pressure),
+            ("Altitude", "altitude", "float", "0.00", self._altitude, self.altitude)
+        ]
+        return conditions_measured
 
     @property
     def altitude(self):
