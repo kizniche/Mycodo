@@ -41,7 +41,7 @@ class AtlasPT1000Sensor(AbstractSensor):
         """ Get next temperature reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(temperature=float('{0:.3f}'.format(self._temperature)))
+        return dict(temperature=float('{0:.2f}'.format(self._temperature)))
 
     def info(self):
         conditions_measured = [

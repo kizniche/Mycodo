@@ -1,6 +1,7 @@
 # coding=utf-8
 import logging
 from sht_sensor import Sht
+from sht_sensor import ShtVDDLevel
 from .base_sensor import AbstractSensor
 
 logger = logging.getLogger(__name__)
@@ -20,7 +21,15 @@ class SHT1x7xSensor(AbstractSensor):
         self._temperature = 0.0
         self.pin = pin
         self.clock_pin = clock_pin
-        self.voltage = "{}V".format(voltage)
+
+        sht_sensor_vdd_value = {
+            2.5: ShtVDDLevel.vdd_2_5,
+            3.0: ShtVDDLevel.vdd_3,
+            3.5: ShtVDDLevel.vdd_3_5,
+            4.0: ShtVDDLevel.vdd_4,
+            5.0: ShtVDDLevel.vdd_5
+        }
+        self.voltage = sht_sensor_vdd_value[round(float(voltage), 1)]
 
     def __repr__(self):
         """  Representation of object """
@@ -48,6 +57,14 @@ class SHT1x7xSensor(AbstractSensor):
         return dict(dewpoint=float('{0:.2f}'.format(self._dew_point)),
                     humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
+
+    def info(self):
+        conditions_measured = [
+            ("Dew Point", "dewpoint", "float", "0.00", self._dew_point, self.dew_point),
+            ("Humidity", "humidity", "float", "0.00", self._humidity, self.humidity),
+            ("Temperature", "temperature", "float", "0.00", self._temperature, self.temperature)
+        ]
+        return conditions_measured
 
     @property
     def dew_point(self):

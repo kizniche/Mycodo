@@ -24,6 +24,7 @@ Miscellaneous:
   - Update Flask to v0.12
   - Update InfluxDB to v1.1.1
   - Update factory_boy to v2.8.1
+  - Update sht_sensor to v16.12.1
   - Move install files to Mycodo/install
 
 ## 4.0.26 (2016-11-23)

@@ -34,6 +34,12 @@ class TSL2561Sensor(AbstractSensor):
             raise StopIteration  # required
         return dict(lux=float('{0:.2f}'.format(self._lux)))
 
+    def info(self):
+        conditions_measured = [
+            ("Lux", "lux", "float", "0.00", self._lux, self.lux)
+        ]
+        return conditions_measured
+
     @property
     def lux(self):
         """ TSL2561 luminosity in lux """

@@ -51,6 +51,14 @@ class SHT2xSensor(AbstractSensor):
                     humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
+    def info(self):
+        conditions_measured = [
+            ("Dew Point", "dewpoint", "float", "0.00", self._dew_point, self.dew_point),
+            ("Humidity", "humidity", "float", "0.00", self._humidity, self.humidity),
+            ("Temperature", "temperature", "float", "0.00", self._temperature, self.temperature)
+        ]
+        return conditions_measured
+
     @property
     def dew_point(self):
         """ SHT2x dew point in Celsius """
