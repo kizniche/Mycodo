@@ -80,7 +80,13 @@ ${INSTALL_DIRECTORY}/mycodo/scripts/crontab.sh mycodo
 printf "#### Installing and configuring apache2 web server\n"
 apt-get install -y apache2 libapache2-mod-wsgi
 a2enmod wsgi ssl
-ln -sf ${INSTALL_DIRECTORY}/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
+
+# original version #
+# ln -sf ${INSTALL_DIRECTORY}/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
+#########"
+# Myke974 modified # To avoid replacing the configuration 000-default.conf of the apache server in case someone already set his.
+a2ensite ${INSTALL_DIRECTORY}/mycodo_flask_apache.conf
+#######
 
 printf "#### Creating SSL certificates at $INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
 mkdir -p ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs
