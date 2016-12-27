@@ -239,7 +239,6 @@ def method_add(formAddMethod, method):
             flash("Bezier method settings successfully modified", "success")
         return 0
 
-
     if formAddMethod.method_select.data == 'setpoint':
         if this_method.method_type == 'Date':
             start_time = datetime.strptime(formAddMethod.startTime.data, '%Y-%m-%d %H:%M:%S')
@@ -451,7 +450,6 @@ def method_del(method_id):
               "{}".format(except_msg), "error")
 
 
-
 #
 # Authenticate remote hosts
 #
@@ -594,24 +592,11 @@ def activate_deactivate_controller(controller_action,
               "controllers".format(controller_type), "error")
         return redirect('/')
 
-    activated_integer = None
-    try:
-        control = DaemonControl()
-        if controller_action == 'activate':
-            activated_integer = 1
-            return_values = control.activate_controller(controller_type,
-                                                        controller_id)
-        else:
-            activated_integer = 0
-            return_values = control.deactivate_controller(controller_type,
-                                                          controller_id)
-        if return_values[0]:
-            flash("{}".format(return_values[1]), "error")
-        else:
-            flash("{}".format(return_values[1]), "success")
-    except Exception as except_msg:
-        flash("Could not communicate with daemon: {}".format(except_msg),
-                                                             "error")
+    if controller_action == 'activate':
+        activated_integer = 1
+    else:
+        activated_integer = 0
+
     try:
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             if controller_type == 'LCD':
@@ -637,6 +622,21 @@ def activate_deactivate_controller(controller_action,
         flash("{} settings were not able to be modified: {}".format(
             controller_type, except_msg), "error")
 
+    try:
+        control = DaemonControl()
+        if controller_action == 'activate':
+            return_values = control.activate_controller(controller_type,
+                                                        controller_id)
+        else:
+            return_values = control.deactivate_controller(controller_type,
+                                                          controller_id)
+        if return_values[0]:
+            flash("{}".format(return_values[1]), "error")
+        else:
+            flash("{}".format(return_values[1]), "success")
+    except Exception as except_msg:
+        flash("Could not communicate with daemon: {}".format(except_msg),
+                                                             "error")
 
 
 #
@@ -1454,6 +1454,11 @@ def pid_activate(formModPID):
 
 
 def pid_deactivate(formModPID):
+    with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
+        pid = db_session.query(PID).filter(
+            PID.id == formModPID.modPID_id.data).first()
+        pid.activated = 0
+        db_session.commit()
     activate_deactivate_controller('deactivate',
                                    'PID',
                                    formModPID.modPID_id.data)
