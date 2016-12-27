@@ -1417,7 +1417,7 @@ def has_required_pid_values(formModPID):
         if not pid.measure_type:
             flash("You must select a valid Measure Type.", "error")
             error = True
-        if not pid.raise_relay_id or not pid.lower_relay_id:
+        if not pid.raise_relay_id and not pid.lower_relay_id:
             flash("You must select a Raise Relay ID and/or a Lower Relay ID.", "error")
             error = True
         if error:
