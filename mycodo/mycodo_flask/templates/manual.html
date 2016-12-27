@@ -174,8 +174,13 @@
 		<h2>PIDs</h2>
 
 		<dl class="dl-horizontal">
-      <dt>Activate</dt>
+      PID settings may be changed while the PID is activated and the new settings will take effect immediately. If settings are changed wile the controller is paused, the values will be used once the controller is resumed.
+
+      <dt>Activate/Deactivate</dt>
       <dd>Turn a particular PID controller on or off.</dd>
+
+      <dt>Pause/Resume</dt>
+      <dd>Pause or resume a particular PID controller. Useful for not losing current PID values while tuning.</dd>
 
       <dt>Setpoint</dt>
       <dd>This is the specific point you would like the environment to be regaulted at. For example, if you would like the humidity regulated to 60%, enter 60.</dd>

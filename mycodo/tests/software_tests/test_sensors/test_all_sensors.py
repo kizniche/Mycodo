@@ -23,7 +23,6 @@ from mycodo.sensors.tmp006 import TMP006Sensor
 from mycodo.sensors.tsl2561 import TSL2561Sensor
 
 
-
 # ----------------------------
 #   Sensor tests
 # ----------------------------

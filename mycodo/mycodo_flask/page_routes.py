@@ -626,13 +626,8 @@ def page_pid():
     else:
         display_order = []
 
-    formModPIDMethod = flaskforms.ModPIDMethod()
-    formActivatePID = flaskforms.ActivatePID()
     formAddPID = flaskforms.AddPID()
-    formDeactivatePID = flaskforms.DeactivatePID()
-    formDelPID = flaskforms.DelPID()
     formModPID = flaskforms.ModPID()
-    formOrderPID = flaskforms.OrderPID()
 
     with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
         method = new_session.query(Method)
@@ -641,21 +636,28 @@ def page_pid():
         new_session.close()
 
     if request.method == 'POST':
+        if session['user_group'] == 'guest':
+            flash("Guests are not permitted to reorder pids", "error")
+            return redirect('/pid')
         form_name = request.form['form-name']
         if form_name == 'addPID':
             flaskutils.pid_add(formAddPID, display_order)
         elif form_name == 'modPID':
-            flaskutils.pid_mod(formModPID)
-        elif form_name == 'modPIDMethod':
-            flaskutils.pid_mod_method(formModPIDMethod)
-        elif form_name == 'delPID':
-            flaskutils.pid_del(formDelPID, display_order)
-        elif form_name == 'orderPID':
-            flaskutils.pid_reorder(formOrderPID, display_order)
-        elif form_name == 'activatePID':
-            flaskutils.pid_activate(formActivatePID)
-        elif form_name == 'deactivatePID':
-            flaskutils.pid_deactivate(formDeactivatePID)
+            if formModPID.mod_pid_del.data:
+                flaskutils.pid_del(formModPID, display_order)
+            elif formModPID.mod_pid_order_up.data or formModPID.mod_pid_order_up.data:
+                flaskutils.pid_reorder(formModPID, display_order)
+            elif formModPID.mod_pid_activate.data:
+                flaskutils.pid_activate(formModPID.modPID_id.data)
+            elif formModPID.mod_pid_deactivate.data:
+                flaskutils.pid_deactivate(formModPID.modPID_id.data)
+            elif formModPID.mod_pid_pause.data:
+                flaskutils.pid_pause(formModPID.modPID_id.data)
+            elif formModPID.mod_pid_resume.data:
+                flaskutils.pid_resume(formModPID.modPID_id.data)
+            else:
+                flaskutils.pid_mod(formModPID)
+
         return redirect('/pid')
 
     return render_template('pages/pid.html',
@@ -664,13 +666,8 @@ def page_pid():
                            relay=relay,
                            sensor=sensor,
                            displayOrder=display_order,
-                           formModPIDMethod=formModPIDMethod,
-                           formOrderPID=formOrderPID,
                            formAddPID=formAddPID,
-                           formModPID=formModPID,
-                           formDelPID=formDelPID,
-                           formActivatePID=formActivatePID,
-                           formDeactivatePID=formDeactivatePID)
+                           formModPID=formModPID)
 
 
 @blueprint.route('/relay', methods=('GET', 'POST'))

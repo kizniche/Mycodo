@@ -193,9 +193,19 @@ class ComServer(rpyc.Service):
         return 'alive'
 
     @staticmethod
-    def exposed_terminate_daemon():
-        """Instruct the daemon to shut down"""
-        return mycodo_daemon.terminateDaemon()
+    def exposed_pid_mod(pid_id):
+        """Set new PID Controller settings"""
+        return mycodo_daemon.pid_mod(pid_id)
+
+    @staticmethod
+    def exposed_pid_pause(pid_id):
+        """Pause PID Controller operation"""
+        return mycodo_daemon.pid_pause(pid_id)
+
+    @staticmethod
+    def exposed_pid_resume(pid_id):
+        """Resume PID controller operation"""
+        return mycodo_daemon.pid_resume(pid_id)
 
     @staticmethod
     def exposed_system_control(cmd):
@@ -208,6 +218,11 @@ class ComServer(rpyc.Service):
         elif cmd == 'shutdown':
             return cmd_output('shutdown now -h')
         return 1
+
+    @staticmethod
+    def exposed_terminate_daemon():
+        """Instruct the daemon to shut down"""
+        return mycodo_daemon.terminateDaemon()
 
 
 class DaemonController(threading.Thread):
@@ -525,6 +540,15 @@ class DaemonController(threading.Thread):
         :type relay_id: str
         """
         return self.controller['Relay'].add_mod_relay(relay_id, do_setup_pin=True)
+
+    def pid_mod(self, pid_id):
+        return self.controller['PID'][pid_id].pid_mod()
+
+    def pid_pause(self, pid_id):
+        return self.controller['PID'][pid_id].pid_pause()
+
+    def pid_resume(self, pid_id):
+        return self.controller['PID'][pid_id].pid_resume()
 
     def refresh_sensor_conditionals(self, sensor_id, cond_mod, cond_id):
         return self.controller['Sensor'][sensor_id].setup_sensor_conditionals(cond_mod, cond_id)

@@ -89,6 +89,15 @@ class DaemonControl:
     def daemon_status(self):
         return self.rpyc_client.root.daemon_status()
 
+    def pid_mod(self, pid_id):
+        return self.rpyc_client.root.pid_mod(pid_id)
+
+    def pid_pause(self, pid_id):
+        return self.rpyc_client.root.pid_pause(pid_id)
+
+    def pid_resume(self, pid_id):
+        return self.rpyc_client.root.pid_resume(pid_id)
+
     def system_control(self, command):
         return self.rpyc_client.root.system_control(command)
 

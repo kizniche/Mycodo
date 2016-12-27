@@ -85,6 +85,7 @@ class AddMethod(Form):
     )
     Submit = SubmitField(u'Add to Method')
 
+
 class ModMethod(Form):
     method_id = HiddenField(u'Method ID')
     method_type = HiddenField(u'Method Type')
@@ -179,7 +180,6 @@ class DaemonControl(Form):
     restart = SubmitField(u'Restart Daemon')
 
 
-
 #
 # Camera Use
 #
@@ -206,7 +206,6 @@ class Camera(Form):
     )
     StartStream = SubmitField(u'Start Stream')
     StopStream = SubmitField(u'Stop Stream')
-
 
 
 #
@@ -264,7 +263,6 @@ class EmailAlert(Form):
         ]
     )
     smtpSubmit = SubmitField(u'Save')
-
 
 
 #
@@ -509,7 +507,6 @@ class OrderGraph(Form):
     orderGraphDown = SubmitField(u'Down')
 
 
-
 #
 # LCDs
 #
@@ -626,7 +623,6 @@ class CreateAdmin(Form):
     )
 
 
-
 #
 # Login
 #
@@ -646,7 +642,6 @@ class Login(Form):
 
 class InstallNotice(Form):
     acknowledge = SubmitField(u'I Understand')
-
 
 
 #
@@ -677,7 +672,6 @@ class ActivateLog(Form):
 class DeactivateLog(Form):
     deactivateLog_id = HiddenField(u'Log')
     deactivateLogSubmit = SubmitField(u'Deactivate')
-
 
 
 #
@@ -808,30 +802,15 @@ class ModPID(Form):
             message="Lower maximum duration must be a non-negative value. (0 to disable)"
         )]
     )
-    modPIDSubmit = SubmitField(u'Save')
-
-class ModPIDMethod(Form):
-    pid_id = HiddenField(u'PID ID')
-    method_id = HiddenField(u'Selected Method')
-    Submit = SubmitField(u'Select Method')
-
-class DelPID(Form):
-    delPID_id = HiddenField(u'PID')
-    delPIDSubmit = SubmitField(u'Delete')
-
-class ActivatePID(Form):
-    activatePID_id = HiddenField(u'PID')
-    activatePIDSubmit = SubmitField(u'Activate')
-
-class DeactivatePID(Form):
-    deactivatePID_id = HiddenField(u'PID')
-    deactivatePIDSubmit = SubmitField(u'Deactivate')
-
-class OrderPID(Form):
-    orderPID_id = HiddenField(u'PID')
-    orderPIDUp = SubmitField(u'Up')
-    orderPIDDown = SubmitField(u'Down')
-
+    mod_method_id = HiddenField(u'Setpoint Tracking Method')
+    mod_pid_save = SubmitField(u'Save Settings')
+    mod_pid_pause = SubmitField(u'Pause PID')
+    mod_pid_resume = SubmitField(u'Resume PID')
+    mod_pid_del = SubmitField(u'Delete PID')
+    mod_pid_activate = SubmitField(u'Activate PID')
+    mod_pid_deactivate = SubmitField(u'Deactivate PID')
+    mod_pid_order_up = SubmitField(u'Order Up')
+    mod_pid_order_down = SubmitField(u'Order Down')
 
 
 #

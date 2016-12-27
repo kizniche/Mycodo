@@ -572,7 +572,6 @@ def manipulate_relay(relay_id, action):
         flash("{}".format(return_values[1]), "error")
 
 
-
 #
 # Activate/deactivate controller
 #
@@ -1231,16 +1230,11 @@ def log_deactivate(formLog):
     activate_deactivate_controller('deactivate', 'Log', formLog.log_id.data)
 
 
-
 #
 # PID manipulation
 #
 
 def pid_add(formAddPID, display_order):
-    if session['user_group'] == 'guest':
-        flash("Guests are not permitted to add pids", "error")
-        return redirect('/pid')
-
     if formAddPID.validate():
         for _ in range(0, formAddPID.numberPIDs.data):
             new_pid = PID()
@@ -1287,19 +1281,11 @@ def pid_add(formAddPID, display_order):
 
 
 def pid_mod(formModPID):
-    if session['user_group'] == 'guest':
-        flash("Guests are not permitted to modify PIDs", "error")
-        return redirect('/pid')
-
     if formModPID.validate():
         try:
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 mod_pid = db_session.query(PID).filter(
                     PID.id == formModPID.modPID_id.data).first()
-                if mod_pid.activated:
-                    flash("Deactivate PID controller before modifying its "
-                          "settings.", "error")
-                    return redirect('/pid')
                 sensor = db_session.query(Sensor).filter(
                     Sensor.id == formModPID.modSensorID.data).first()
                 if (
@@ -1351,8 +1337,12 @@ def pid_mod(formModPID):
                 mod_pid.lower_relay_id = formModPID.modLowerRelayID.data
                 mod_pid.lower_min_duration = formModPID.modLowerMinDuration.data
                 mod_pid.lower_max_duration = formModPID.modLowerMaxDuration.data
+                mod_pid.method_id = formModPID.mod_method_id.data
                 db_session.commit()
                 flash("PID settings successfully modified", "success")
+                control = DaemonControl()
+                return_value = control.pid_mod(formModPID.modPID_id.data)
+                flash("PID Controller refresh: {rvalue}".format(rvalue=return_value), "success")
         except Exception as except_msg:
             flash("PID settings were not able to be modified: {}".format(
                 except_msg), "error")
@@ -1360,33 +1350,7 @@ def pid_mod(formModPID):
         flash_form_errors(formModPID)
 
 
-def pid_mod_method(formModPIDMethod):
-    if session['user_group'] == 'guest':
-        flash("Guests are not permitted to modify PID Methods",
-              "error")
-        return redirect('/pid')
-    try:
-        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-            mod_pid = db_session.query(PID).filter(
-                PID.id == formModPIDMethod.pid_id.data).first()
-            if mod_pid.activated:
-                flash("Deactivate PID controller before modifying its "
-                      "settings.", "error")
-                return redirect('/pid')
-            mod_pid.method_id = formModPIDMethod.method_id.data
-            db_session.commit()
-            flash("PID method successfully modified.", "success")
-    except Exception as except_msg:
-        flash("PID method was not able to be modified: {}".format(
-            except_msg), "error")
-
-
 def pid_del(formDelPID, display_order):
-    if session['user_group'] == 'guest':
-        flash("Guests are not permitted to delete PID controllers",
-              "error")
-        return redirect('/pid')
-
     if formDelPID.validate():
         try:
             delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
@@ -1404,22 +1368,18 @@ def pid_del(formDelPID, display_order):
         flash_form_errors(formDelPID)
 
 
-def pid_reorder(formOrderPID, display_order):
-    if session['user_group'] == 'guest':
-        flash("Guests are not permitted to reorder pids", "error")
-        return redirect('/pid')
-
-    if formOrderPID.validate():
+def pid_reorder(formModPID, display_order):
+    if formModPID.validate():
         try:
-            if formOrderPID.orderPIDUp.data:
+            if formModPID.mod_pid_order_up.data:
                 status, reordered_list = reorderList(
                     display_order,
-                    formOrderPID.orderPID_id.data,
+                    formModPID.modPID_id.data,
                     'up')
-            elif formOrderPID.orderPIDDown.data:
+            elif formModPID.mod_pid_order_down.data:
                 status, reordered_list = reorderList(
                     display_order,
-                    formOrderPID.orderPID_id.data,
+                    formModPID.modPID_id.data,
                     'down')
             if status == 'success':
                 with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
@@ -1433,14 +1393,14 @@ def pid_reorder(formOrderPID, display_order):
             flash("PID display was not able to be reordered: {}".format(
                 except_msg), "error")
     else:
-        flash_form_errors(formOrderPID)
+        flash_form_errors(formModPID)
 
 
-def pid_activate(formActivatePID):
+def pid_activate(pid_id):
     # Check if associated sensor is activated
     with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
         pid = db_session.query(PID).filter(
-            PID.id == formActivatePID.activatePID_id.data).first()
+            PID.id == pid_id).first()
         sensor = db_session.query(Sensor).filter(
             Sensor.id == pid.sensor_id).first()
         if not sensor.is_activated():
@@ -1459,14 +1419,37 @@ def pid_activate(formActivatePID):
 
     activate_deactivate_controller('activate',
                                    'PID',
-                                   formActivatePID.activatePID_id.data)
+                                   pid_id)
 
 
-def pid_deactivate(formDeactivatePID):
+def pid_deactivate(pid_id):
     activate_deactivate_controller('deactivate',
                                    'PID',
-                                    formDeactivatePID.deactivatePID_id.data)
+                                   pid_id)
 
+
+def pid_pause(pid_id):
+    control = DaemonControl()
+    return_value = control.pid_pause(pid_id)
+    flash("PID Pause: {rvalue}".format(rvalue=return_value), "success")
+    if return_value == "success":
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
+            mod_pid = db_session.query(PID).filter(
+                PID.id == pid_id).first()
+            mod_pid.activated = 2
+            db_session.commit()
+
+
+def pid_resume(pid_id):
+    control = DaemonControl()
+    return_value = control.pid_resume(pid_id)
+    flash("PID Resume: {rvalue}".format(rvalue=return_value), "success")
+    if return_value == "success":
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
+            mod_pid = db_session.query(PID).filter(
+                PID.id == pid_id).first()
+            mod_pid.activated = 1
+            db_session.commit()
 
 
 #

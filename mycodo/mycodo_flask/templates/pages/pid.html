@@ -36,53 +36,38 @@
       {%- for each_pid in pids if each_pid.id in order -%}
 
         <div class="table-responsive" style="border: 2px solid #ddd; border-radius: 5px;">
-
-          <table class="table {% if each_pid.activated -%}active-background{%- else -%}inactive-background{% endif -%}">
+          <form method="post" action="/pid">
+          <input type="hidden" name="form-name" value="modPID">
+          {{formModPID.csrf_token}}
+          {{formModPID.modPID_id(value=each_pid.id)}}
+          <table class="table {% if each_pid.activated == 1 -%}active-background{% elif each_pid.activated == 2 -%}paused-background{%- else -%}inactive-background{% endif -%}">
             <tr>
               <th rowspan="2" class="col-sm-2">
                 {%- if each_pid.activated %}
-                  <form method="post" action="/pid">
-                    <input type="hidden" name="form-name" value="deactivatePID">
-                    {{formDeactivatePID.csrf_token}}
-                    {{formDeactivatePID.deactivatePID_id(value=each_pid.id)}}
-                    {{formDeactivatePID.deactivatePIDSubmit(class_='form-control btn btn-default')}}
-                  </form>
+                  {{formModPID.mod_pid_deactivate(class_='form-control btn btn-default')}}
+                  {%- if each_pid.activated == 2 %}
+                    {{formModPID.mod_pid_resume(class_='form-control btn btn-default')}}
+                  {%- else %}
+                    {{formModPID.mod_pid_pause(class_='form-control btn btn-default')}}
+                  {%- endif -%}
                 {%- else %}
-                  <form method="post" action="/pid">
-                    <input type="hidden" name="form-name" value="activatePID">
-                    {{formActivatePID.csrf_token}}
-                    {{formActivatePID.activatePID_id(value=each_pid.id)}}
-                    {{formActivatePID.activatePIDSubmit(class_='form-control btn btn-default')}}
-                  </form>
+                  {{formModPID.mod_pid_activate(class_='form-control btn btn-default')}}
                 {%- endif -%}
-                <form method="post" action="/pid">
-                  <input type="hidden" name="form-name" value="delPID">
-                  {{formDelPID.csrf_token}}
-                  {{formDelPID.delPID_id(value=each_pid.id)}}
-                  {{formDelPID.delPIDSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this PID controller?")'})}}
-                </form>
-              <th rowspan="2" class="col-sm-2">
-                <form method="post" action="/pid">
-                  <input type="hidden" name="form-name" value="orderPID">
-                  {{formOrderPID.csrf_token}}
-                  {{formOrderPID.orderPID_id(value=each_pid.id)}}
-                  {{formOrderPID.orderPIDUp(class_='form-control btn btn-default')}}
-                  {{formOrderPID.orderPIDDown(class_='form-control btn btn-default')}}
-                </form>
               </th>
               <th rowspan="2" class="col-sm-2">
-                <form method="post" action="/pid">
-                <input type="hidden" name="form-name" value="modPID">
-                {{formModPID.csrf_token}}
-                {{formModPID.modPID_id(value=each_pid.id)}}
-                {{formModPID.modPIDSubmit(class_='form-control btn btn-default')}}
+                {{formModPID.mod_pid_save(class_='form-control btn btn-default')}}
+                {{formModPID.mod_pid_del(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this PID controller?")'})}}
+              </th>
+              <th rowspan="2" class="col-sm-2">
+                {{formModPID.mod_pid_order_up(class_='form-control btn btn-default')}}
+                {{formModPID.mod_pid_order_down(class_='form-control btn btn-default')}}
               </th>
               <th class="col-sm-6">
                 {{formModPID.modName(class_='form-control', value=each_pid.name)}}
               </th>
             </tr>
             <tr>
-              <td>ID {{each_pid.id}}</td>
+              <td>ID: {{each_pid.id}}, State: {% if each_pid.activated == 1 %}Active{% elif each_pid.activated == 2 %}Paused{% else %}Inactive{%- endif %}</td>
             </tr>
           </table>
 
@@ -227,48 +212,39 @@
             </div>
           </div>
 
-          </form>
-
           <div class="form-inline" style="margin: 0.5em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
-            <strong>Setpoint Tracking: Select a method to enable setpoint tracking.</strong>
-            <form method="post" action="/pid" style="padding: 0.5em 0 0   0">
-              <input type="hidden" name="form-name" value="modPIDMethod">
-              {{formModPIDMethod.csrf_token}}
-              {{formModPIDMethod.pid_id(class_='form-control', value=each_pid.id)}}
-              <div class="form-group">
-                {{formModPIDMethod.method_id.label(class_='control-label')}}
-                <div>
-                  <select class="form-control" id="method_id" name="method_id">
-                    {%- if method == [] -%}
-                      <option value="">No methods exist. Create one with this button -></option>
-                    {%- else -%}
-                      <option value="">Disabled</option>
-                    {%- endif-%}
-
-                    {%- set valid_saved_method = [] -%}
-                    {%- for each_method in method -%}
-                      {%- if each_method.method_id == each_pid.method_id -%}
-                        {%- do valid_saved_method.append(1) -%}
-                      {%- endif -%}
-                      <option value="{{each_method.method_id}}"{% if each_pid.method_id == each_method.method_id %} selected{% endif %}>{{each_method.name}} ({{each_method.method_id}})</option>
-                    {%- endfor -%}
-                    {%- if not valid_saved_method and each_pid.method_id != '' -%}
-                      <option value="" selected>Invalid saved method. Save another method from this list.</option>
-                    {%- endif -%}
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class='control-label'></label>
-                <div>
-                  {%- if method != [] -%}
-                    {{formModPIDMethod.Submit(class_='form-control btn btn-default')}}
+            <div class="form-group">
+              {{formModPID.mod_method_id.label(class_='control-label')}}
+              <div>
+                <select class="form-control" id="mod_method_id" name="mod_method_id">
+                  {%- if method == [] -%}
+                    <option value="">No methods exist. Create one with this button -></option>
+                  {%- else -%}
+                    <option value="">Disabled</option>
                   {%- endif-%}
-                  <a href="/method" class="btn btn-default" role="button">Manage Methods</a>
-                </div>
+
+                  {%- set valid_saved_method = [] -%}
+                  {%- for each_method in method -%}
+                    {%- if each_method.method_id == each_pid.method_id -%}
+                      {%- do valid_saved_method.append(1) -%}
+                    {%- endif -%}
+                    <option value="{{each_method.method_id}}"{% if each_pid.method_id == each_method.method_id %} selected{% endif %}>{{each_method.name}} ({{each_method.method_id}})</option>
+                  {%- endfor -%}
+                  {%- if not valid_saved_method and each_pid.method_id != '' -%}
+                    <option value="" selected>Invalid saved method. Save another method from this list.</option>
+                  {%- endif -%}
+                </select>
               </div>
-            </form>
+            </div>
+            <div class="form-group">
+              <label class='control-label'></label>
+              <div>
+                <a href="/method" class="btn btn-default" role="button">Manage Methods</a>
+              </div>
+            </div>
           </div>
+
+        </form>
 
         </div>
 
