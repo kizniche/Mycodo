@@ -4,8 +4,8 @@ This release introduces a new method for upgrading Mycodo to the latest version.
 
 Performance:
 
-  - Add ability to pause and resume PID controllers
-  - Add ability to modify PID controller parameters while activated or paused
+  - Add ability to hold, pause and resume PID controllers
+  - Add ability to modify PID controller parameters while active, held, or paused
   - New method of processing data on live graphs that is more accurate and reduced bandwidth
 
 Features:

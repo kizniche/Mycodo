@@ -651,10 +651,13 @@ def page_pid():
                 flaskutils.pid_activate(formModPID)
             elif formModPID.mod_pid_deactivate.data:
                 flaskutils.pid_deactivate(formModPID)
+            elif formModPID.mod_pid_hold.data:
+                flaskutils.pid_manipulate('Hold', formModPID.modPID_id.data)
             elif formModPID.mod_pid_pause.data:
-                flaskutils.pid_pause(formModPID.modPID_id.data)
+                flaskutils.pid_manipulate('Pause', formModPID.modPID_id.data)
             elif formModPID.mod_pid_resume.data:
-                flaskutils.pid_resume(formModPID.modPID_id.data)
+                flaskutils.pid_manipulate('Resume', formModPID.modPID_id.data)
+            # TODO: Add option to hold PID (sustain output duty cycle, don't update setpoint)
             else:
                 flaskutils.pid_mod(formModPID)
 

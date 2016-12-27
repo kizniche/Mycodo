@@ -198,6 +198,11 @@ class ComServer(rpyc.Service):
         return mycodo_daemon.pid_mod(pid_id)
 
     @staticmethod
+    def exposed_pid_hold(pid_id):
+        """Hold PID Controller operation"""
+        return mycodo_daemon.pid_hold(pid_id)
+
+    @staticmethod
     def exposed_pid_pause(pid_id):
         """Pause PID Controller operation"""
         return mycodo_daemon.pid_pause(pid_id)
@@ -543,6 +548,9 @@ class DaemonController(threading.Thread):
 
     def pid_mod(self, pid_id):
         return self.controller['PID'][pid_id].pid_mod()
+
+    def pid_hold(self, pid_id):
+        return self.controller['PID'][pid_id].pid_hold()
 
     def pid_pause(self, pid_id):
         return self.controller['PID'][pid_id].pid_pause()

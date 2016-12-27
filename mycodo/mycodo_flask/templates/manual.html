@@ -179,8 +179,14 @@
       <dt>Activate/Deactivate</dt>
       <dd>Turn a particular PID controller on or off.</dd>
 
-      <dt>Pause/Resume</dt>
-      <dd>Pause or resume a particular PID controller. Useful for not losing current PID values while tuning.</dd>
+      <dt>Pause</dt>
+      <dd>When paused, the PID will not turn on the associated relays, and settings can be changed without losing current PID output values.</dd>
+
+      <dt>Hold</dt>
+      <dd>When held, the PID will turn on the associated relays, and settings can be changed without losing current PID output values.</dd>
+
+      <dt>Resume</dt>
+      <dd>Resume a PID controller from being held or paused.</dd>
 
       <dt>Setpoint</dt>
       <dd>This is the specific point you would like the environment to be regaulted at. For example, if you would like the humidity regulated to 60%, enter 60.</dd>

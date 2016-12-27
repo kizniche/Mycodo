@@ -92,6 +92,9 @@ class DaemonControl:
     def pid_mod(self, pid_id):
         return self.rpyc_client.root.pid_mod(pid_id)
 
+    def pid_hold(self, pid_id):
+        return self.rpyc_client.root.pid_hold(pid_id)
+
     def pid_pause(self, pid_id):
         return self.rpyc_client.root.pid_pause(pid_id)
 

@@ -9,6 +9,7 @@ import requests
 from RPi import GPIO
 import sqlalchemy
 import string
+import time
 from collections import OrderedDict
 from datetime import datetime
 import functools
@@ -408,7 +409,6 @@ def method_mod(formModMethod, method):
 
                 mod_method.start_time = start_time.strftime('%Y-%m-%d %H:%M:%S')
                 mod_method.end_time = end_time.strftime('%Y-%m-%d %H:%M:%S')
-
 
             elif method_set.method_type == 'Duration':
                 mod_method.duration_sec = formModMethod.DurationSec.data
@@ -1447,7 +1447,7 @@ def pid_activate(formModPID):
         if mod_method and mod_method.method_type == 'Duration':
             mod_method.start_time = 'Ready'
             db_session.commit()
-
+    time.sleep(1)
     activate_deactivate_controller('activate',
                                    'PID',
                                    formModPID.modPID_id.data)
@@ -1459,33 +1459,41 @@ def pid_deactivate(formModPID):
             PID.id == formModPID.modPID_id.data).first()
         pid.activated = 0
         db_session.commit()
+    time.sleep(1)
     activate_deactivate_controller('deactivate',
                                    'PID',
                                    formModPID.modPID_id.data)
 
 
-def pid_pause(pid_id):
-    control = DaemonControl()
-    return_value = control.pid_pause(pid_id)
-    flash("PID Pause: {rvalue}".format(rvalue=return_value), "success")
-    if return_value == "success":
+def pid_manipulate(action, pid_id):
+    if action not in ['Hold', 'Pause', 'Resume']:
+        flash("Invalid PID action: {act}".format(act=action), "error")
+
+    try:
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             mod_pid = db_session.query(PID).filter(
                 PID.id == pid_id).first()
-            mod_pid.activated = 2
+            if action == 'Hold':
+                mod_pid.activated = 3
+            elif action == 'Pause':
+                mod_pid.activated = 2
+            elif action == 'Resume':
+                mod_pid.activated = 1
             db_session.commit()
 
-
-def pid_resume(pid_id):
-    control = DaemonControl()
-    return_value = control.pid_resume(pid_id)
-    flash("PID Resume: {rvalue}".format(rvalue=return_value), "success")
-    if return_value == "success":
-        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-            mod_pid = db_session.query(PID).filter(
-                PID.id == pid_id).first()
-            mod_pid.activated = 1
-            db_session.commit()
+        control = DaemonControl()
+        if action == 'Hold':
+            return_value = control.pid_hold(pid_id)
+        elif action == 'Pause':
+            return_value = control.pid_pause(pid_id)
+        elif action == 'Resume':
+            return_value = control.pid_resume(pid_id)
+        flash("Daemon PID controller response to {act} command: "
+              "{rvalue}".format(act=action, rvalue=return_value),
+              "success")
+    except Exception as err:
+        flash("Daemon PID controller error: Action command: {action}, "
+              "Error: {err}".format(action=action, err=err), "error")
 
 
 #
@@ -2095,7 +2103,6 @@ def sensor_deactivate_associated_controllers(sensor_id):
                                                each_lcd.id)
 
 
-
 #
 # Sensor conditional manipulation
 #
@@ -2415,7 +2422,6 @@ def timer_deactivate(formTimer):
     activate_deactivate_controller('deactivate',
                                    'Timer',
                                    formTimer.timer_id.data)
-
 
 
 #

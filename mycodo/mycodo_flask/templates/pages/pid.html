@@ -35,41 +35,57 @@
     {%- for order in displayOrder -%}
       {%- for each_pid in pids if each_pid.id in order -%}
 
-        <div class="table-responsive" style="border: 2px solid #ddd; border-radius: 5px;">
+        <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
           <form method="post" action="/pid">
           <input type="hidden" name="form-name" value="modPID">
           {{formModPID.csrf_token}}
           {{formModPID.modPID_id(value=each_pid.id)}}
-          <table class="table {% if each_pid.activated == 1 -%}active-background{% elif each_pid.activated == 2 -%}paused-background{%- else -%}inactive-background{% endif -%}">
-            <tr>
-              <th rowspan="2" class="col-sm-2">
-                {%- if each_pid.activated %}
-                  {{formModPID.mod_pid_deactivate(class_='form-control btn btn-default')}}
-                  {%- if each_pid.activated == 2 %}
-                    {{formModPID.mod_pid_resume(class_='form-control btn btn-default')}}
-                  {%- else %}
-                    {{formModPID.mod_pid_pause(class_='form-control btn btn-default')}}
-                  {%- endif -%}
-                {%- else %}
-                  {{formModPID.mod_pid_activate(class_='form-control btn btn-default')}}
-                {%- endif -%}
-              </th>
-              <th rowspan="2" class="col-sm-2">
-                {{formModPID.mod_pid_save(class_='form-control btn btn-default')}}
-                {{formModPID.mod_pid_del(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this PID controller?")'})}}
-              </th>
-              <th rowspan="2" class="col-sm-2">
-                {{formModPID.mod_pid_order_up(class_='form-control btn btn-default')}}
-                {{formModPID.mod_pid_order_down(class_='form-control btn btn-default')}}
-              </th>
-              <th class="col-sm-6">
+          <div class="row {% if each_pid.activated == 1 -%}active-background
+                          {% elif each_pid.activated == 2 -%}pause-background
+                          {% elif each_pid.activated == 3 -%}hold-background
+                          {%- else -%}inactive-background
+                          {% endif -%}" style="border: 2px solid #ddd; padding-top: 1em;">
+            <div class="col-xs-12 col-sm-3">
+              <div class="form-group">
                 {{formModPID.modName(class_='form-control', value=each_pid.name)}}
-              </th>
-            </tr>
-            <tr>
-              <td>ID: {{each_pid.id}}, State: {% if each_pid.activated == 1 %}Active{% elif each_pid.activated == 2 %}Paused{% else %}Inactive{%- endif %}</td>
-            </tr>
-          </table>
+              </div>
+              <div class="form-group">
+                ID: {{each_pid.id}}, State:
+                {%- if each_pid.activated == 1 -%} Active
+                {%- elif each_pid.activated == 2 -%} Paused
+                {%- elif each_pid.activated == 3 -%} On Hold
+                {%- else -%} Inactive
+                {%-endif -%}
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-3">
+              {%- if each_pid.activated %}
+                {{formModPID.mod_pid_deactivate(class_='form-control btn btn-default')}}
+                {%- if each_pid.activated == 2 or each_pid.activated == 3 %}
+                  {{formModPID.mod_pid_resume(class_='form-control btn btn-default')}}
+                {%- else %}
+                  <div class="row no-gutters">
+                      <div class="col-xs-6">
+                        {{formModPID.mod_pid_pause(class_='form-control btn btn-default')}}
+                      </div>
+                      <div class="col-xs-6">
+                        {{formModPID.mod_pid_hold(class_='form-control btn btn-default')}}
+                      </div>
+                  </div>
+                {%- endif -%}
+              {%- else %}
+                {{formModPID.mod_pid_activate(class_='form-control btn btn-default')}}
+              {%- endif -%}
+            </div>
+            <div class="col-xs-12 col-sm-3">
+              {{formModPID.mod_pid_save(class_='form-control btn btn-default')}}
+              {{formModPID.mod_pid_del(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this PID controller?")'})}}
+            </div>
+            <div class="col-xs-12 col-sm-3">
+              {{formModPID.mod_pid_order_up(class_='form-control btn btn-default')}}
+              {{formModPID.mod_pid_order_down(class_='form-control btn btn-default')}}
+            </div>
+          </div>
 
           <div style="padding: 0.5em" class="form-inline">
             <div class="form-group">

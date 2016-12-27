@@ -10,6 +10,10 @@
     background-color: #FFCBCA !important
 }
 
-.paused-background {
+.pause-background {
     background-color: #d7cd9b !important
+}
+
+.hold-background {
+    background-color: #8d9fd8 !important
 }
