@@ -1242,6 +1242,7 @@ def pid_add(formAddPID, display_order):
                     string.ascii_letters + string.digits) for n in xrange(8)])
             new_pid.id = random_pid_id
             new_pid.name = 'PID {}'.format(random_pid_id)
+            new_pid.activated = 0
             new_pid.sensor_id = ''
             new_pid.measure_type = ''
             new_pid.direction = 'raise'
@@ -1284,42 +1285,48 @@ def pid_mod(formModPID):
     if formModPID.validate():
         try:
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-                mod_pid = db_session.query(PID).filter(
-                    PID.id == formModPID.modPID_id.data).first()
+                error = False
                 sensor = db_session.query(Sensor).filter(
                     Sensor.id == formModPID.modSensorID.data).first()
-                if (
-                    (sensor.device_type == 'tsensor' and
-                    formModPID.modMeasureType.data not in ['temperature']) or
+                if not sensor:
+                    flash("You must select a valid sensor ID.", "error")
+                    error = True
+                elif (
+                      (sensor.device_type == 'tsensor' and
+                       formModPID.modMeasureType.data not in ['temperature']) or
 
-                    (sensor.device_type == 'tmpsensor' and
-                    formModPID.modMeasureType.data not in ['temperature_object',
-                                                           'temperature_die']) or
+                      (sensor.device_type == 'tmpsensor' and
+                       formModPID.modMeasureType.data not in ['temperature_object',
+                                                              'temperature_die']) or
 
-                    (sensor.device_type == 'htsensor' and
-                    formModPID.modMeasureType.data not in ['temperature',
-                                                           'humidity',
-                                                           'dewpoint']) or
+                      (sensor.device_type == 'htsensor' and
+                       formModPID.modMeasureType.data not in ['temperature',
+                                                              'humidity',
+                                                              'dewpoint']) or
 
-                    (sensor.device_type == 'co2sensor' and
-                    formModPID.modMeasureType.data not in ['co2']) or
+                      (sensor.device_type == 'co2sensor' and
+                       formModPID.modMeasureType.data not in ['co2']) or
 
-                    (sensor.device_type == 'luxsensor' and
-                    formModPID.modMeasureType.data not in ['lux']) or
+                      (sensor.device_type == 'luxsensor' and
+                       formModPID.modMeasureType.data not in ['lux']) or
 
-                    (sensor.device_type == 'moistsensor' and
-                    formModPID.modMeasureType.data not in ['temperature',
-                                                           'lux',
-                                                           'moisture']) or
+                      (sensor.device_type == 'moistsensor' and
+                       formModPID.modMeasureType.data not in ['temperature',
+                                                              'lux',
+                                                              'moisture']) or
 
-                    (sensor.device_type == 'presssensor' and
-                    formModPID.modMeasureType.data not in ['temperature',
-                                                           'pressure',
-                                                           'altitude'])
-                    ):
+                      (sensor.device_type == 'presssensor' and
+                       formModPID.modMeasureType.data not in ['temperature',
+                                                              'pressure',
+                                                              'altitude'])
+                ):
                     flash("You must select a Measure Type that is "
                           "compatible with the chosen sensor.", "error")
+                    error = True
+                if error:
                     return redirect('/pid')
+                mod_pid = db_session.query(PID).filter(
+                    PID.id == formModPID.modPID_id.data).first()
                 mod_pid.name = formModPID.modName.data
                 mod_pid.sensor_id = formModPID.modSensorID.data
                 mod_pid.measure_type = formModPID.modMeasureType.data
@@ -1340,9 +1347,11 @@ def pid_mod(formModPID):
                 mod_pid.method_id = formModPID.mod_method_id.data
                 db_session.commit()
                 flash("PID settings successfully modified", "success")
-                control = DaemonControl()
-                return_value = control.pid_mod(formModPID.modPID_id.data)
-                flash("PID Controller refresh: {rvalue}".format(rvalue=return_value), "success")
+                # If the controller is active or paused, refresh variables in thread
+                if mod_pid.activated:
+                    control = DaemonControl()
+                    return_value = control.pid_mod(formModPID.modPID_id.data)
+                    flash("PID Controller settings refresh: {rvalue}".format(rvalue=return_value), "success")
         except Exception as except_msg:
             flash("PID settings were not able to be modified: {}".format(
                 except_msg), "error")
@@ -1350,57 +1359,79 @@ def pid_mod(formModPID):
         flash_form_errors(formModPID)
 
 
-def pid_del(formDelPID, display_order):
-    if formDelPID.validate():
-        try:
-            delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
-                                 PID,
-                                 formDelPID.delPID_id.data)
-            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-                order_pid = db_session.query(DisplayOrder).first()
-                display_order.remove(formDelPID.delPID_id.data)
-                order_pid.pid = ','.join(display_order)
-                db_session.commit()
-        except Exception as except_msg:
-            flash("Error while deleting pid controller and reordering "
-                  "list: {}".format(except_msg), "error")
-    else:
-        flash_form_errors(formDelPID)
+def pid_del(pid_id, display_order):
+    try:
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
+            pid = db_session.query(PID).filter(
+                PID.id == pid_id).first()
+            if pid.activated:
+                pid_deactivate(pid_id)
+
+        delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
+                             PID,
+                             pid_id)
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
+            order_pid = db_session.query(DisplayOrder).first()
+            display_order.remove(pid_id)
+            order_pid.pid = ','.join(display_order)
+            db_session.commit()
+    except Exception as except_msg:
+        flash("Error while deleting pid controller and reordering "
+              "list: {}".format(except_msg), "error")
 
 
 def pid_reorder(formModPID, display_order):
-    if formModPID.validate():
-        try:
-            if formModPID.mod_pid_order_up.data:
-                status, reordered_list = reorderList(
-                    display_order,
-                    formModPID.modPID_id.data,
-                    'up')
-            elif formModPID.mod_pid_order_down.data:
-                status, reordered_list = reorderList(
-                    display_order,
-                    formModPID.modPID_id.data,
-                    'down')
-            if status == 'success':
-                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-                    order_pid = db_session.query(DisplayOrder).first()
-                    order_pid.pid = ','.join(reordered_list)
-                    db_session.commit()
-                flash("PID display successfully reordered", status)
-            else:
-                flash(reordered_list, status)
-        except Exception as except_msg:
-            flash("PID display was not able to be reordered: {}".format(
-                except_msg), "error")
-    else:
-        flash_form_errors(formModPID)
+    try:
+        if formModPID.mod_pid_order_up.data:
+            status, reordered_list = reorderList(
+                display_order,
+                formModPID.modPID_id.data,
+                'up')
+        elif formModPID.mod_pid_order_down.data:
+            status, reordered_list = reorderList(
+                display_order,
+                formModPID.modPID_id.data,
+                'down')
+        if status == 'success':
+            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
+                order_pid = db_session.query(DisplayOrder).first()
+                order_pid.pid = ','.join(reordered_list)
+                db_session.commit()
+            flash("PID display successfully reordered", status)
+        else:
+            flash(reordered_list, status)
+    except Exception as except_msg:
+        flash("PID display was not able to be reordered: {}".format(
+            except_msg), "error")
 
 
-def pid_activate(pid_id):
+def has_required_pid_values(formModPID):
+    with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
+        pid = db_session.query(PID).filter(
+            PID.id == formModPID.modPID_id.data).first()
+        error = False
+        # TODO: Add more settings-checks before allowing controller to be activated
+        if not pid.sensor_id:
+            flash("You must select a valid sensor ID.", "error")
+            error = True
+        if not pid.measure_type:
+            flash("You must select a valid Measure Type.", "error")
+            error = True
+        if not pid.raise_relay_id or not pid.lower_relay_id:
+            flash("You must select a Raise Relay ID and/or a Lower Relay ID.", "error")
+            error = True
+        if error:
+            return redirect('/pid')
+
+
+def pid_activate(formModPID):
+    if has_required_pid_values(formModPID):
+        return redirect('/pid')
+
     # Check if associated sensor is activated
     with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
         pid = db_session.query(PID).filter(
-            PID.id == pid_id).first()
+            PID.id == formModPID.modPID_id.data).first()
         sensor = db_session.query(Sensor).filter(
             Sensor.id == pid.sensor_id).first()
         if not sensor.is_activated():
@@ -1419,13 +1450,13 @@ def pid_activate(pid_id):
 
     activate_deactivate_controller('activate',
                                    'PID',
-                                   pid_id)
+                                   formModPID.modPID_id.data)
 
 
-def pid_deactivate(pid_id):
+def pid_deactivate(formModPID):
     activate_deactivate_controller('deactivate',
                                    'PID',
-                                   pid_id)
+                                   formModPID.modPID_id.data)
 
 
 def pid_pause(pid_id):

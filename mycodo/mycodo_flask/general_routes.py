@@ -275,7 +275,10 @@ def past_data(sensor_type, sensor_measure, sensor_id, past_seconds):
                                           sensor_type,
                                           sensor_id,
                                           past_seconds)).raw
-        return jsonify(raw_data['series'][0]['values'])
+        if raw_data:
+            return jsonify(raw_data['series'][0]['values'])
+        else:
+            return '', 204
     except Exception as e:
         logger.error("URL for 'past_data' raised and error: "
                      "{err}".format(err=e))

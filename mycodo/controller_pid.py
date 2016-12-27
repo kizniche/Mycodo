@@ -69,7 +69,6 @@ class PIDController(threading.Thread):
         self.ready = ready
         self.logger = logger
         self.pid_id = pid_id
-        self.paused = False
         self.control = DaemonControl()
 
         self.initialize_values()
@@ -123,10 +122,12 @@ class PIDController(threading.Thread):
             self.ready.set()
 
             while self.running:
-                if t.time() > self.timer and self.activated == 1:
+                if t.time() > self.timer:
                     self.timer = self.timer+self.measure_interval
-                    self.get_last_measurement()
-                    self.manipulate_relays()
+                    # self.activated: 0=inactive, 1=active, 2=paused
+                    if self.activated == 1:
+                        self.get_last_measurement()
+                        self.manipulate_relays()
                 t.sleep(0.1)
 
             if self.raise_relay_id:

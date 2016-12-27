@@ -109,7 +109,6 @@
               {{formModPID.modDirection.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="modDirection" name="modDirection">
-                  <option value=""></option>
                   <option value="raise"{% if each_pid.direction == 'raise' %} selected{% endif %}>Raise</option>
                   <option value="lower"{% if each_pid.direction == 'lower' %} selected{% endif %}>Lower</option>
                   <option value="both"{% if each_pid.direction == 'both' %} selected{% endif %}>Both</option>
