@@ -1239,7 +1239,7 @@ def pid_add(formAddPID, display_order):
         for _ in range(0, formAddPID.numberPIDs.data):
             new_pid = PID()
             random_pid_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for n in xrange(8)])
+                    string.ascii_letters + string.digits) for _ in xrange(8)])
             new_pid.id = random_pid_id
             new_pid.name = 'PID {}'.format(random_pid_id)
             new_pid.activated = 0
@@ -1380,17 +1380,17 @@ def pid_del(pid_id, display_order):
               "list: {}".format(except_msg), "error")
 
 
-def pid_reorder(formModPID, display_order):
+def pid_reorder(pid_id, display_order, direction):
     try:
-        if formModPID.mod_pid_order_up.data:
+        if direction == 'up':
             status, reordered_list = reorderList(
                 display_order,
-                formModPID.modPID_id.data,
+                pid_id,
                 'up')
-        elif formModPID.mod_pid_order_down.data:
+        elif direction == 'down':
             status, reordered_list = reorderList(
                 display_order,
-                formModPID.modPID_id.data,
+                pid_id,
                 'down')
         if status == 'success':
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:

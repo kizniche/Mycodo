@@ -637,7 +637,7 @@ def page_pid():
 
     if request.method == 'POST':
         if session['user_group'] == 'guest':
-            flash("Guests are not permitted to reorder pids", "error")
+            flash("Guests are not permitted to modify PID controllers", "error")
             return redirect('/pid')
         form_name = request.form['form-name']
         if form_name == 'addPID':
@@ -645,8 +645,10 @@ def page_pid():
         elif form_name == 'modPID':
             if formModPID.mod_pid_del.data:
                 flaskutils.pid_del(formModPID.modPID_id.data, display_order)
-            elif formModPID.mod_pid_order_up.data or formModPID.mod_pid_order_down.data:
-                flaskutils.pid_reorder(formModPID, display_order)
+            elif formModPID.mod_pid_order_up.data:
+                flaskutils.pid_reorder(formModPID.modPID_id.data, display_order, 'up')
+            elif formModPID.mod_pid_order_down.data:
+                flaskutils.pid_reorder(formModPID.modPID_id.data, display_order, 'down')
             elif formModPID.mod_pid_activate.data:
                 flaskutils.pid_activate(formModPID.modPID_id.data)
             elif formModPID.mod_pid_deactivate.data:
