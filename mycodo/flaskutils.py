@@ -1363,7 +1363,7 @@ def pid_del(pid_id, display_order):
     try:
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             pid = db_session.query(PID).filter(
-                PID.id == pid_id.data).first()
+                PID.id == pid_id).first()
             if pid.activated:
                 pid_deactivate(pid_id)
 
