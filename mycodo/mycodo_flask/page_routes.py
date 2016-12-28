@@ -644,7 +644,7 @@ def page_pid():
             flaskutils.pid_add(formAddPID, display_order)
         elif form_name == 'modPID':
             if formModPID.mod_pid_del.data:
-                flaskutils.pid_del(formModPID.modPID_id.data, display_order)
+                flaskutils.pid_del(formModPID, display_order)
             elif formModPID.mod_pid_order_up.data or formModPID.mod_pid_order_up.data:
                 flaskutils.pid_reorder(formModPID, display_order)
             elif formModPID.mod_pid_activate.data:
@@ -657,7 +657,6 @@ def page_pid():
                 flaskutils.pid_manipulate('Pause', formModPID.modPID_id.data)
             elif formModPID.mod_pid_resume.data:
                 flaskutils.pid_manipulate('Resume', formModPID.modPID_id.data)
-            # TODO: Add option to hold PID (sustain output duty cycle, don't update setpoint)
             else:
                 flaskutils.pid_mod(formModPID)
 

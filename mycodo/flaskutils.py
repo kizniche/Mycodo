@@ -1359,20 +1359,20 @@ def pid_mod(formModPID):
         flash_form_errors(formModPID)
 
 
-def pid_del(pid_id, display_order):
+def pid_del(formModPID, display_order):
     try:
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             pid = db_session.query(PID).filter(
-                PID.id == pid_id).first()
+                PID.id == formModPID.modPID_id.data).first()
             if pid.activated:
-                pid_deactivate(pid_id)
+                pid_deactivate(formModPID)
 
         delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                              PID,
-                             pid_id)
+                             formModPID.modPID_id.data)
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             order_pid = db_session.query(DisplayOrder).first()
-            display_order.remove(pid_id)
+            display_order.remove(formModPID.modPID_id.data)
             order_pid.pid = ','.join(display_order)
             db_session.commit()
     except Exception as except_msg:

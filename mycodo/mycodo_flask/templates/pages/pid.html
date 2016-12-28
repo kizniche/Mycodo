@@ -44,7 +44,7 @@
                           {% elif each_pid.activated == 2 -%}pause-background
                           {% elif each_pid.activated == 3 -%}hold-background
                           {%- else -%}inactive-background
-                          {% endif -%}" style="border: 2px solid #ddd; padding-top: 1em;">
+                          {% endif -%}" style="border-bottom: 2px solid #ddd; padding-top: 1em;">
             <div class="col-xs-12 col-sm-3">
               <div class="form-group">
                 {{formModPID.modName(class_='form-control', value=each_pid.name)}}
@@ -65,10 +65,10 @@
                   {{formModPID.mod_pid_resume(class_='form-control btn btn-default')}}
                 {%- else %}
                   <div class="row no-gutters">
-                      <div class="col-xs-6">
+                      <div class="col-xs-12 col-sm-6">
                         {{formModPID.mod_pid_pause(class_='form-control btn btn-default')}}
                       </div>
-                      <div class="col-xs-6">
+                      <div class="col-xs-12 col-sm-6">
                         {{formModPID.mod_pid_hold(class_='form-control btn btn-default')}}
                       </div>
                   </div>
@@ -87,7 +87,7 @@
             </div>
           </div>
 
-          <div style="padding: 0.5em" class="form-inline">
+          <div style="padding-top: 0.5em" class="form-inline">
             <div class="form-group">
               {{formModPID.modSensorID.label(class_='control-label')}}
               <div>
@@ -175,7 +175,7 @@
             </div>
           </div>
 
-          <div style="padding: 0.5em" class="form-inline">
+          <div style="padding-top: 0.5em" class="form-inline">
             <div class="form-group">
               {{formModPID.modRaiseRelayID.label(class_='control-label')}}
               <div>
@@ -201,7 +201,7 @@
             </div>
           </div>
 
-          <div style="padding: 0.5em" class="form-inline">
+          <div style="padding-top: 0.5em" class="form-inline">
             <div class="form-group">
               {{formModPID.modLowerRelayID.label(class_='control-label')}}
               <div>
@@ -227,7 +227,7 @@
             </div>
           </div>
 
-          <div class="form-inline" style="margin: 0.5em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
+          <div style="padding: 0.5em 0 1em 0" class="form-inline">
             <div class="form-group">
               {{formModPID.mod_method_id.label(class_='control-label')}}
               <div>
