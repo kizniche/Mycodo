@@ -1359,20 +1359,20 @@ def pid_mod(formModPID):
         flash_form_errors(formModPID)
 
 
-def pid_del(formModPID, display_order):
+def pid_del(pid_id, display_order):
     try:
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             pid = db_session.query(PID).filter(
-                PID.id == formModPID.modPID_id.data).first()
+                PID.id == pid_id.data).first()
             if pid.activated:
-                pid_deactivate(formModPID)
+                pid_deactivate(pid_id)
 
         delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                              PID,
-                             formModPID.modPID_id.data)
+                             pid_id)
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             order_pid = db_session.query(DisplayOrder).first()
-            display_order.remove(formModPID.modPID_id.data)
+            display_order.remove(pid_id)
             order_pid.pid = ','.join(display_order)
             db_session.commit()
     except Exception as except_msg:
@@ -1405,10 +1405,10 @@ def pid_reorder(formModPID, display_order):
             except_msg), "error")
 
 
-def has_required_pid_values(formModPID):
+def has_required_pid_values(pid_id):
     with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
         pid = db_session.query(PID).filter(
-            PID.id == formModPID.modPID_id.data).first()
+            PID.id == pid_id).first()
         error = False
         # TODO: Add more settings-checks before allowing controller to be activated
         if not pid.sensor_id:
@@ -1424,14 +1424,14 @@ def has_required_pid_values(formModPID):
             return redirect('/pid')
 
 
-def pid_activate(formModPID):
-    if has_required_pid_values(formModPID):
+def pid_activate(pid_id):
+    if has_required_pid_values(pid_id):
         return redirect('/pid')
 
     # Check if associated sensor is activated
     with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
         pid = db_session.query(PID).filter(
-            PID.id == formModPID.modPID_id.data).first()
+            PID.id == pid_id).first()
         sensor = db_session.query(Sensor).filter(
             Sensor.id == pid.sensor_id).first()
         if not sensor.is_activated():
@@ -1450,22 +1450,22 @@ def pid_activate(formModPID):
     time.sleep(1)
     activate_deactivate_controller('activate',
                                    'PID',
-                                   formModPID.modPID_id.data)
+                                   pid_id)
 
 
-def pid_deactivate(formModPID):
+def pid_deactivate(pid_id):
     with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
         pid = db_session.query(PID).filter(
-            PID.id == formModPID.modPID_id.data).first()
+            PID.id == pid_id).first()
         pid.activated = 0
         db_session.commit()
     time.sleep(1)
     activate_deactivate_controller('deactivate',
                                    'PID',
-                                   formModPID.modPID_id.data)
+                                   pid_id)
 
 
-def pid_manipulate(action, pid_id):
+def pid_manipulate(pid_id, action):
     if action not in ['Hold', 'Pause', 'Resume']:
         flash("Invalid PID action: {act}".format(act=action), "error")
 

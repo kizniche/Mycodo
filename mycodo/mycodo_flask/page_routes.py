@@ -644,13 +644,13 @@ def page_pid():
             flaskutils.pid_add(formAddPID, display_order)
         elif form_name == 'modPID':
             if formModPID.mod_pid_del.data:
-                flaskutils.pid_del(formModPID, display_order)
-            elif formModPID.mod_pid_order_up.data or formModPID.mod_pid_order_up.data:
+                flaskutils.pid_del(formModPID.modPID_id.data, display_order)
+            elif formModPID.mod_pid_order_up.data or formModPID.mod_pid_order_down.data:
                 flaskutils.pid_reorder(formModPID, display_order)
             elif formModPID.mod_pid_activate.data:
-                flaskutils.pid_activate(formModPID)
+                flaskutils.pid_activate(formModPID.modPID_id.data)
             elif formModPID.mod_pid_deactivate.data:
-                flaskutils.pid_deactivate(formModPID)
+                flaskutils.pid_deactivate(formModPID.modPID_id.data)
             elif formModPID.mod_pid_hold.data:
                 flaskutils.pid_manipulate('Hold', formModPID.modPID_id.data)
             elif formModPID.mod_pid_pause.data:
