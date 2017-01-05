@@ -47,16 +47,16 @@
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status == 204) {
           document.getElementById("daemon-status").style.color = "#F70D1A";
-          $('#daemon-status').tooltip('hide').attr('data-original-title', 'Daemon is Not Running');
+          $('#daemon-status').tooltip('hide').attr('data-original-title', {{_('Daemon is Not Running')}}');
         }
         else {
           if (data == 'alive') {
             document.getElementById("daemon-status").style.color = "#4E9258";
-            $('#daemon-status').tooltip('hide').attr('data-original-title', 'Daemon is Running');
+            $('#daemon-status').tooltip('hide').attr('data-original-title', {{_('Daemon is Running')}});
           }
           else {
             document.getElementById("daemon-status").style.color = "#F70D1A";
-            $('#daemon-status').tooltip('hide').attr('data-original-title', 'Daemon is Not Running');
+            $('#daemon-status').tooltip('hide').attr('data-original-title', {{_('Daemon is Not Running')}});
           }
         }
       },

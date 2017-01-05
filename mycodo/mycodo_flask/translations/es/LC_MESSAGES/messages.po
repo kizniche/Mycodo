@@ -7,46 +7,572 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-01-05 00:10-0500\n"
-"PO-Revision-Date: 2017-01-05 00:15-0500\n"
+"POT-Creation-Date: 2017-01-05 11:28-0500\n"
+"PO-Revision-Date: 2017-01-05 11:05-0500\n"
 "Last-Translator: \n"
 "Language: es\n"
 "Language-Team: es <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.3.4\n"
-"X-Generator: Poedit 1.8.11\n"
+
+#: flaskforms.py:25
+msgid "Create New Method"
+msgstr "Crear nuevo método"
+
+#: flaskforms.py:33 flaskforms.py:96
+msgid "Start HH:MM:SS"
+msgstr ""
+
+#: flaskforms.py:37 flaskforms.py:100
+msgid "End HH:MM:SS"
+msgstr ""
+
+#: flaskforms.py:41 flaskforms.py:104
+msgid "Start YYYY-MM-DD HH:MM:SS"
+msgstr ""
+
+#: flaskforms.py:45 flaskforms.py:108
+msgid "End YYYY-MM-DD HH:MM:SS"
+msgstr ""
+
+#: flaskforms.py:48 flaskforms.py:120
+msgid "Start Setpoint"
+msgstr ""
+
+#: flaskforms.py:49 flaskforms.py:121
+msgid "End Setpoint (optional)"
+msgstr ""
+
+#: flaskforms.py:50 flaskforms.py:119
+msgid "Duration (seconds)"
+msgstr ""
+
+#: flaskforms.py:51
+msgid "Amplitude"
+msgstr ""
+
+#: flaskforms.py:52
+msgid "Frequency"
+msgstr ""
+
+#: flaskforms.py:53
+msgid "Angle Shift (0 to 360)"
+msgstr ""
+
+#: flaskforms.py:54
+msgid "Y-Axis Shift"
+msgstr ""
+
+#: flaskforms.py:64 flaskforms.py:112
+msgid "Time HH:MM:SS"
+msgstr ""
+
+#: flaskforms.py:68 flaskforms.py:116
+msgid "Time YYYY-MM-DD HH:MM:SS"
+msgstr ""
+
+#: flaskforms.py:72
+msgid "Duration On (seconds)"
+msgstr ""
+
+#: flaskforms.py:76
+msgid "Relay ID"
+msgstr ""
+
+#: flaskforms.py:80 flaskforms.py:123
+msgid "Relay State"
+msgstr ""
+
+#: flaskforms.py:83
+msgid "Turn On"
+msgstr ""
+
+#: flaskforms.py:84
+msgid "Turn Off"
+msgstr ""
+
+#: flaskforms.py:87
+msgid "Add to Method"
+msgstr ""
+
+#: flaskforms.py:94
+msgid "Name"
+msgstr ""
+
+#: flaskforms.py:122 mycodo_flask/templates/layout.html:80
+msgid "Relay"
+msgstr "Relé"
+
+#: flaskforms.py:124
+msgid "Relay On Duration (sec)"
+msgstr ""
+
+#: flaskforms.py:125 flaskforms.py:281
+msgid "Save"
+msgstr ""
+
+#: flaskforms.py:126
+msgid "Delete"
+msgstr ""
+
+#: flaskforms.py:136
+msgid "Domain or IP Address"
+msgstr ""
+
+#: flaskforms.py:141
+msgid "Username"
+msgstr ""
+
+#: flaskforms.py:146 flaskforms.py:237
+msgid "Password"
+msgstr ""
+
+#: flaskforms.py:150
+msgid "Add Host"
+msgstr ""
+
+#: flaskforms.py:151
+msgid "Delete Host"
+msgstr ""
+
+#: flaskforms.py:160
+msgid "Number of Lines"
+msgstr ""
+
+#: flaskforms.py:161
+msgid "Lines"
+msgstr ""
+
+#: flaskforms.py:164
+msgid "Number of lines should be greater than 0."
+msgstr ""
+
+#: flaskforms.py:167
+msgid "Login Log"
+msgstr ""
+
+#: flaskforms.py:168
+msgid "HTTP Log"
+msgstr ""
+
+#: flaskforms.py:169
+msgid "Daemon Log"
+msgstr ""
+
+#: flaskforms.py:170
+msgid "Upgrade Log"
+msgstr ""
+
+#: flaskforms.py:171
+msgid "Restore Log"
+msgstr ""
+
+#: flaskforms.py:179
+msgid "Stop Daemon"
+msgstr ""
+
+#: flaskforms.py:180
+msgid "Start Daemon"
+msgstr ""
+
+#: flaskforms.py:181
+msgid "Restart Daemon"
+msgstr ""
+
+#: flaskforms.py:189
+msgid "Capture Still"
+msgstr ""
+
+#: flaskforms.py:190
+msgid "Start Timelapse"
+msgstr ""
+
+#: flaskforms.py:191
+msgid "Stop Timelapse"
+msgstr ""
+
+#: flaskforms.py:193
+msgid "Photo Interval (sec)"
+msgstr ""
+
+#: flaskforms.py:196
+msgid "Photo Interval must be a positive value."
+msgstr ""
+
+#: flaskforms.py:200
+msgid "Total Run Time (sec)"
+msgstr ""
+
+#: flaskforms.py:203
+msgid "Total Run Time must be a positive value."
+msgstr ""
+
+#: flaskforms.py:206
+msgid "Start Stream"
+msgstr ""
+
+#: flaskforms.py:207
+msgid "Stop Stream"
+msgstr ""
+
+#: flaskforms.py:216 flaskforms.py:217
+msgid "SMTP Host"
+msgstr ""
+
+#: flaskforms.py:221 flaskforms.py:222
+msgid "SMTP Port"
+msgstr ""
+
+#: flaskforms.py:226
+msgid "Port should be between 1 and 65535"
+msgstr ""
+
+#: flaskforms.py:231 flaskforms.py:232
+msgid "SMTP User"
+msgstr ""
+
+#: flaskforms.py:236
+msgid "SMTP Password"
+msgstr ""
+
+#: flaskforms.py:240
+msgid "From Email"
+msgstr ""
+
+#: flaskforms.py:241
+msgid "Email"
+msgstr ""
+
+#: flaskforms.py:248
+msgid "Max emails (per hour)"
+msgstr ""
+
+#: flaskforms.py:249
+msgid "Max emails per hour"
+msgstr ""
+
+#: flaskforms.py:252
+msgid "Must have at least one message able to be sent per hour."
+msgstr ""
+
+#: flaskforms.py:257
+msgid "Test Email To"
+msgstr ""
+
+#: flaskforms.py:258
+msgid "Email address to send test email"
+msgstr ""
+
+#: flaskforms.py:272
+msgid "Force HTTPS"
+msgstr ""
+
+#: flaskforms.py:273
+msgid "Hide success messages"
+msgstr ""
+
+#: flaskforms.py:274
+msgid "Hide info messages"
+msgstr ""
+
+#: flaskforms.py:275
+msgid "Voltage"
+msgstr ""
+
+#: flaskforms.py:276
+msgid "Cost per kWh"
+msgstr ""
+
+#: flaskforms.py:277
+msgid "Currency Unit"
+msgstr ""
+
+#: flaskforms.py:278
+msgid "Billing Day of Month (1-30)"
+msgstr ""
+
+#: flaskforms.py:279
+msgid "Hide warning messages"
+msgstr ""
+
+#: flaskforms.py:280
+msgid "Opt-out of sending statistics"
+msgstr ""
+
+#: flaskutils.py:70
+msgid "Duration must be a positive integer"
+msgstr ""
+
+#: flaskutils.py:73
+msgid "Duration must be a valid integer"
+msgstr ""
+
+#: flaskutils.py:84
+msgid "Required: Start date/time, end date/time, start setpoint"
+msgstr ""
+
+#: flaskutils.py:91
+msgid "Invalid Date/Time format. Correct format: DD/MM/YYYY HH:MM:SS"
+msgstr ""
+
+#: flaskutils.py:95
+msgid "The end time/date must be after the start time/date."
+msgstr ""
+
+#: flaskutils.py:103
+msgid "Required: Start time, end time, start setpoint"
+msgstr ""
+
+#: flaskutils.py:110 flaskutils.py:160
+msgid "Invalid Date/Time format. Correct format: HH:MM:SS"
+msgstr ""
+
+#: flaskutils.py:114
+msgid "The end time must be after the start time."
+msgstr ""
+
+#: flaskutils.py:121
+msgid "Required: Duration, start setpoint"
+msgstr ""
+
+#: flaskutils.py:132
+msgid "Required: Date/Time, Relay ID, and Relay State"
+msgstr ""
+
+#: flaskutils.py:138
+msgid "Invalid Date/Time format. Correct format: DD-MM-YYYY HH:MM:SS"
+msgstr ""
+
+#: flaskutils.py:154
+msgid "Required: Time, Relay ID, and Relay State"
+msgstr ""
+
+#: flaskutils.py:167
+msgid "Guests are not permitted to create methods"
+msgstr ""
+
+#: flaskutils.py:206
+msgid "Guests are not permitted to add to methods"
+msgstr ""
+
+#: flaskutils.py:224
+msgid "Sine method settings successfully modified"
+msgstr ""
+
+#: flaskutils.py:230
+msgid "Error: Angle Shift is out of range. It must be <= 0 and <= 360."
+msgstr ""
+
+#: flaskutils.py:234
+msgid "Error: X0 must be greater than X3."
+msgstr ""
+
+#: flaskutils.py:249
+msgid "Bezier method settings successfully modified"
+msgstr ""
+
+#: flaskutils.py:275
+#, python-format
+msgid ""
+"The new entry start time (%(st)s) cannot overlap the last entry's end "
+"time (%(et)s). Note: They may be the same time."
+msgstr ""
+
+#: flaskutils.py:336 flaskutils.py:343
+#, python-format
+msgid "Added duration to method from %(st)s to %(end)s."
+msgstr ""
+
+#: flaskutils.py:346
+#, python-format
+msgid "Added duration to method for %(sec)s seconds"
+msgstr ""
+
+#: flaskutils.py:350 flaskutils.py:354
+#, python-format
+msgid "Added relay modulation to method at %(tm)s"
+msgstr ""
+
+#: flaskutils.py:356
+#, python-format
+msgid "Added relay modulation to method at %(sec)s seconds"
+msgstr ""
+
+#: flaskutils.py:361
+#, python-format
+msgid "Add Method Error: %(err)s"
+msgstr ""
+
+#: flaskutils.py:366
+msgid "Guests are not permitted to modify methods"
+msgstr ""
+
+#: flaskutils.py:382
+msgid "Method successfully renamed."
+msgstr ""
+
+#: flaskutils.py:461
+msgid "Method settings successfully modified."
+msgstr ""
+
+#: flaskutils.py:511
+msgid "Guests are not permitted to add remote hosts"
+msgstr ""
+
+#: flaskutils.py:543
+msgid "A remote host with that ID already exists"
+msgstr ""
+
+#: flaskutils.py:555
+msgid "Guests are not permitted to delete remote hosts"
+msgstr ""
+
+#: flaskutils.py:615
+msgid "Guests are not permitted to activate/deactivate controllers"
+msgstr "Los huéspedes no se les permite activar / desactivar los controladores"
+
+#: flaskutils.py:625 mycodo_flask/templates/layout.html:115
+msgid "LCD"
+msgstr ""
+
+#: flaskutils.py:626
+msgid "Log"
+msgstr ""
+
+#: flaskutils.py:627 mycodo_flask/templates/layout.html:82
+msgid "PID"
+msgstr ""
+
+#: flaskutils.py:628 mycodo_flask/templates/layout.html:79
+msgid "Sensor"
+msgstr "Sensor"
+
+#: flaskutils.py:629 mycodo_flask/templates/layout.html:83
+msgid "Timer"
+msgstr "Avisador"
+
+#: flaskutils.py:652
+#, python-format
+msgid "%(cont)s controller activated in SQL database"
+msgstr "Controlador de %(cont)s activado en base de datos SQL"
+
+#: flaskutils.py:655
+#, python-format
+msgid "%(cont)s controller deactivated in SQL database"
+msgstr "Controlador de %(cont)s desactivado en la base de datos SQL"
+
+#: flaskutils.py:658
+#, python-format
+msgid "%(cont)s settings were not able to be modified: %(err)s"
+msgstr ""
+
+#: flaskutils.py:789
+msgid "Guests are not permitted to add graphs"
+msgstr ""
+
+#: flaskutils.py:835
+msgid "Guests are not permitted to modify graphs"
+msgstr ""
+
+#: flaskutils.py:858
+msgid "Graph settings successfully modified"
+msgstr ""
+
+#: flaskutils.py:863
+msgid "A graph with that ID already exists"
+msgstr ""
+
+#: flaskutils.py:870
+msgid "Guests are not permitted to delete graphs"
+msgstr ""
+
+#: flaskutils.py:2023
+msgid "Guests are not permitted to delete sensors"
+msgstr ""
+
+#: flaskutils.py:2086
+msgid "Guests are not permitted to activate sensors"
+msgstr ""
+
+#: flaskutils.py:2103
+msgid "Guests are not permitted to deactivate sensors"
+msgstr "Los huéspedes no se les permite desactivar los controladores"
+
+#: flaskutils.py:2142
+msgid "Guests are not permitted to add sensor conditionals"
+msgstr ""
+
+#: flaskutils.py:2180
+msgid "A sensor conditional with that ID already exists"
+msgstr ""
+
+#: flaskutils.py:2186
+msgid "Guests are not permitted to modify sensor conditionals"
+msgstr ""
+
+#: flaskutils.py:2208
+msgid ""
+"You must specify a notification email address if the record and email "
+"option is selected"
+msgstr ""
+
+#: flaskutils.py:2233
+msgid "Sensor Conditional settings successfully modified"
+msgstr ""
+
+#: flaskutils.py:2272
+msgid "Sensor Conditional activated in SQL database."
+msgstr ""
+
+#: flaskutils.py:2291
+msgid "Sensor Conditional deactivated in SQL database."
+msgstr ""
+
+#: flaskutils.py:2319
+msgid "Guests are not permitted to add timers"
+msgstr ""
 
 #: mycodo_flask/templates/404.html:3 mycodo_flask/templates/404.html:5
 msgid "Error 404: Page Not Found"
 msgstr "Error 404 - Página No Encontrada"
 
 #: mycodo_flask/templates/create_admin.html:12
-#: mycodo_flask/templates/create_admin.html:49
+#: mycodo_flask/templates/create_admin.html:43
+#: mycodo_flask/templates/create_admin.html:51
 msgid "Create Admin"
 msgstr "Crear Administrador"
 
-#: mycodo_flask/templates/layout.html:79
-msgid "Sensor"
-msgstr "Sensor"
+#: mycodo_flask/templates/create_admin.html:39
+#, python-format
+msgid ""
+"Mycodo was unable to find an admin user in the user database. This is "
+"expected with a new install of Mycodo. Use the form below to create an "
+"admin user and you will be redirected to the login page. If this is not a"
+" new install and this is unexpected behavior, please create an %(hrefo)s "
+"Issue on Github %(hrefc)s"
+msgstr ""
+"Mycodo no pudo encontrar un usuario administrador en la base de datos de "
+"usuarios. Esto se espera con una nueva instalación de Mycodo. Utilice el "
+"siguiente formulario para crear un usuario administrador y se le "
+"redirigirá a la página de inicio de sesión. Si no se trata de una "
+"instalación nueva y se trata de un comportamiento inesperado, cree un "
+"%(hrefo)s problema en Github %(hrefc)s"
 
-#: mycodo_flask/templates/layout.html:80
-msgid "Relay"
-msgstr "Relé"
+#: mycodo_flask/templates/layout.html:50 mycodo_flask/templates/layout.html:59
+#: mycodo_flask/templates/layout.html:97
+msgid "Daemon is Not Running"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:55 mycodo_flask/templates/layout.html:97
+msgid "Daemon is Running"
+msgstr ""
 
 #: mycodo_flask/templates/layout.html:81
 msgid "Method"
 msgstr "Método"
-
-#: mycodo_flask/templates/layout.html:82
-msgid "PID"
-msgstr ""
-
-#: mycodo_flask/templates/layout.html:83
-msgid "Timer"
-msgstr "Avisador"
 
 #: mycodo_flask/templates/layout.html:101
 msgid "Live"
@@ -56,13 +582,17 @@ msgstr "Vivo"
 msgid "Graph"
 msgstr "Gráfico"
 
+#: mycodo_flask/templates/layout.html:105
+msgid "General Graph"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:106
+msgid "Asynchronous Graph"
+msgstr ""
+
 #: mycodo_flask/templates/layout.html:113
 msgid "Tools"
 msgstr "Útiles"
-
-#: mycodo_flask/templates/layout.html:115
-msgid "LCDs"
-msgstr ""
 
 #: mycodo_flask/templates/layout.html:116
 msgid "Camera"
@@ -172,3 +702,7 @@ msgstr "Medición"
 #: mycodo_flask/templates/pages/live.html:208
 msgid "Timestamp"
 msgstr "Marca de tiempo"
+
+#~ msgid "%(cont)s controller %(act)sd in SQL database."
+#~ msgstr "Controlador de %(cont)s %(act)s en la base de datos SQL."
+

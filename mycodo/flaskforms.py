@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 
+from flask_babel import lazy_gettext
 from flask_wtf import Form
 from wtforms import BooleanField, DecimalField, HiddenField, IntegerField, PasswordField, SelectField, SelectMultipleField, SubmitField, StringField, validators
 from wtforms.validators import DataRequired
@@ -21,7 +22,7 @@ class CreateMethod(Form):
         render_kw={"placeholder": ""}
     )
     controller_type = HiddenField(u'Controller Type')
-    Submit = SubmitField(u'Create New Method')
+    Submit = SubmitField(lazy_gettext(u'Create New Method'))
 
 
 class AddMethod(Form):
@@ -29,28 +30,28 @@ class AddMethod(Form):
     method_type = HiddenField(u'Method Type')
     method_select = HiddenField(u'Method Select')
     startDailyTime = StringField(
-        u'Start HH:MM:SS',
+        lazy_gettext('Start HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
     )
     endDailyTime = StringField(
-        u'End HH:MM:SS',
+        lazy_gettext('End HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
     )
     startTime = StringField(
-        u'Start YYYY-MM-DD HH:MM:SS',
+        lazy_gettext('Start YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
     endTime = StringField(
-        u'End YYYY-MM-DD HH:MM:SS',
+        lazy_gettext('End YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    startSetpoint = DecimalField(u'Start Setpoint')
-    endSetpoint = DecimalField(u'End Setpoint (optional)')
-    DurationSec = IntegerField(u'Duration (seconds)')
-    amplitude = DecimalField(u'Amplitude')
-    frequency = DecimalField(u'Frequency')
-    shiftAngle = DecimalField(u'Angle Shift (0 to 360)')
-    shiftY = DecimalField(u'Y-Axis Shift')
+    startSetpoint = DecimalField(lazy_gettext('Start Setpoint'))
+    endSetpoint = DecimalField(lazy_gettext('End Setpoint (optional)'))
+    DurationSec = IntegerField(lazy_gettext('Duration (seconds)'))
+    amplitude = DecimalField(lazy_gettext('Amplitude'))
+    frequency = DecimalField(lazy_gettext('Frequency'))
+    shiftAngle = DecimalField(lazy_gettext('Angle Shift (0 to 360)'))
+    shiftY = DecimalField(lazy_gettext('Y-Axis Shift'))
     x0 = DecimalField(u'X0')
     y0 = DecimalField(u'Y0')
     x1 = DecimalField(u'X1')
@@ -60,69 +61,69 @@ class AddMethod(Form):
     x3 = DecimalField(u'X3')
     y3 = DecimalField(u'Y3')
     relayDailyTime = StringField(
-        u'Time HH:MM:SS',
+        lazy_gettext('Time HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
     )
     relayTime = StringField(
-        u'Time YYYY-MM-DD HH:MM:SS',
+        lazy_gettext('Time YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
     relayDurationSec = IntegerField(
-        u'Duration On (seconds)',
+        lazy_gettext('Duration On (seconds)'),
         render_kw={"placeholder": ""}
     )
     relayID = StringField(
-        u'Relay ID',
+        lazy_gettext('Relay ID'),
         render_kw={"placeholder": ""}
     )
     relayState = SelectField(
-        u'Relay State',
+        lazy_gettext('Relay State'),
         choices=[
             ('', ''),
-            ('On', 'Turn On'),
-            ('Off', 'Turn Off')
+            ('On', lazy_gettext('Turn On')),
+            ('Off', lazy_gettext('Turn Off'))
         ]
     )
-    Submit = SubmitField(u'Add to Method')
+    Submit = SubmitField(lazy_gettext('Add to Method'))
 
 
 class ModMethod(Form):
     method_id = HiddenField(u'Method ID')
     method_type = HiddenField(u'Method Type')
     method_select = HiddenField(u'Method Select')
-    name = StringField(u'Name')
+    name = StringField(lazy_gettext('Name'))
     startDailyTime = StringField(
-        u'Start HH:MM:SS',
+        lazy_gettext('Start HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
     )
     endDailyTime = StringField(
-        u'End HH:MM:SS',
+        lazy_gettext('End HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
     )
     startTime = StringField(
-        u'Start YYYY-MM-DD HH:MM:SS',
+        lazy_gettext('Start YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
     endTime = StringField(
-        u'End YYYY-MM-DD HH:MM:SS',
+        lazy_gettext('End YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
     relayDailyTime = StringField(
-        u'Time HH:MM:SS',
+        lazy_gettext('Time HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
     )
     relayTime = StringField(
-        u'Time YYYY-MM-DD HH:MM:SS',
+        lazy_gettext('Time YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    DurationSec = IntegerField(u'Duration (seconds)')
-    startSetpoint = DecimalField(u'Start Setpoint')
-    endSetpoint = DecimalField(u'End Setpoint (optional)')
-    relayID = StringField(u'Relay',)
-    relayState = StringField(u'Relay State')
-    relayDurationSec = IntegerField(u'Relay On Duration (sec)')
-    Submit = SubmitField(u'Save')
-    Delete = SubmitField(u'Delete')
+    DurationSec = IntegerField(lazy_gettext('Duration (seconds)'))
+    startSetpoint = DecimalField(lazy_gettext('Start Setpoint'))
+    endSetpoint = DecimalField(lazy_gettext('End Setpoint (optional)'))
+    relayID = StringField(lazy_gettext('Relay'))
+    relayState = StringField(lazy_gettext('Relay State'))
+    relayDurationSec = IntegerField(lazy_gettext('Relay On Duration (sec)'))
+    Submit = SubmitField(lazy_gettext('Save'))
+    Delete = SubmitField(lazy_gettext('Delete'))
 
 
 #
@@ -132,22 +133,22 @@ class ModMethod(Form):
 class RemoteSetup(Form):
     remote_id = HiddenField(u'Remote Host ID')
     host = StringField(
-        u'Domain or IP Address',
+        lazy_gettext('Domain or IP Address'),
         render_kw={"placeholder": "youraddress.com or 0.0.0.0"},
         validators=[DataRequired()]
     )
     username = StringField(
-        u'Username',
+        lazy_gettext('Username'),
         render_kw={"placeholder": "Username"},
         validators=[DataRequired()]
     )
     password = PasswordField(
-        u'Password',
-         render_kw={"placeholder": "Password"},
-         validators=[DataRequired()]
+        lazy_gettext('Password'),
+        render_kw={"placeholder": "Password"},
+        validators=[DataRequired()]
     )
-    add = SubmitField(u'Add Host')
-    delete = SubmitField(u'Delete Host')
+    add = SubmitField(lazy_gettext('Add Host'))
+    delete = SubmitField(lazy_gettext('Delete Host'))
 
 
 #
@@ -156,18 +157,18 @@ class RemoteSetup(Form):
 
 class LogView(Form):
     lines = IntegerField(
-        u'Number of Lines',
-        render_kw={"placeholder": "Lines"},
+        lazy_gettext('Number of Lines'),
+        render_kw={'placeholder': lazy_gettext('Lines')},
         validators=[validators.NumberRange(
             min=1,
-            message="Number of lines should be greater than 0."
+            message=lazy_gettext('Number of lines should be greater than 0.')
         )]
     )
-    loglogin = SubmitField(u'Login Log')
-    loghttp = SubmitField(u'HTTP Log')
-    logdaemon = SubmitField(u'Daemon Log')
-    logupgrade = SubmitField(u'Upgrade Log')
-    logrestore = SubmitField(u'Restore Log')
+    loglogin = SubmitField(lazy_gettext('Login Log'))
+    loghttp = SubmitField(lazy_gettext('HTTP Log'))
+    logdaemon = SubmitField(lazy_gettext('Daemon Log'))
+    logupgrade = SubmitField(lazy_gettext('Upgrade Log'))
+    logrestore = SubmitField(lazy_gettext('Restore Log'))
 
 
 #
@@ -175,9 +176,9 @@ class LogView(Form):
 #
 
 class DaemonControl(Form):
-    stop = SubmitField(u'Stop Daemon')
-    start = SubmitField(u'Start Daemon')
-    restart = SubmitField(u'Restart Daemon')
+    stop = SubmitField(lazy_gettext('Stop Daemon'))
+    start = SubmitField(lazy_gettext('Start Daemon'))
+    restart = SubmitField(lazy_gettext('Restart Daemon'))
 
 
 #
@@ -185,27 +186,25 @@ class DaemonControl(Form):
 #
 
 class Camera(Form):
-    Still = SubmitField(u'Capture Still')
-    StartTimelapse = SubmitField(u'Start Timelapse')
-    StopTimelapse = SubmitField(u'Stop Timelapse')
+    Still = SubmitField(lazy_gettext('Capture Still'))
+    StartTimelapse = SubmitField(lazy_gettext('Start Timelapse'))
+    StopTimelapse = SubmitField(lazy_gettext('Stop Timelapse'))
     TimelapseInterval = DecimalField(
-        u'Photo Interval (sec)',
-        render_kw={"placeholder": ""},
+        lazy_gettext('Photo Interval (sec)'),
         validators=[validators.NumberRange(
             min=0,
-            message="Photo Interval must be a positive value."
+            message=lazy_gettext('Photo Interval must be a positive value.')
         )]
     )
     TimelapseRunTime = DecimalField(
-        u'Total Run Time (sec)',
-        render_kw={"placeholder": ""},
+        lazy_gettext('Total Run Time (sec)'),
         validators=[validators.NumberRange(
             min=0,
-            message="Total Run Time must be a positive value."
+            message=lazy_gettext('Total Run Time must be a positive value.')
         )]
     )
-    StartStream = SubmitField(u'Start Stream')
-    StopStream = SubmitField(u'Stop Stream')
+    StartStream = SubmitField(lazy_gettext('Start Stream'))
+    StopStream = SubmitField(lazy_gettext('Stop Stream'))
 
 
 #
@@ -214,49 +213,49 @@ class Camera(Form):
 
 class EmailAlert(Form):
     smtpHost = StringField(
-        u'SMTP Host',
-        render_kw={"placeholder": "SMTP Host"},
+        lazy_gettext('SMTP Host'),
+        render_kw={"placeholder": lazy_gettext('SMTP Host')},
         validators=[DataRequired()]
     )
     smtpPort = IntegerField(
-        u'SMTP Port',
-        render_kw={"placeholder": "SMTP Port"},
+        lazy_gettext('SMTP Port'),
+        render_kw={"placeholder": lazy_gettext('SMTP Port')},
         validators=[validators.NumberRange(
             min=1,
             max=65535,
-            message="Port should be between 1 and 65535"
+            message=lazy_gettext('Port should be between 1 and 65535')
         )]
     )
     sslEnable = BooleanField(u'Enable SSL')
     smtpUser = StringField(
-        u'SMTP User',
-        render_kw={"placeholder": "SMTP User"},
+        lazy_gettext('SMTP User'),
+        render_kw={"placeholder": lazy_gettext('SMTP User')},
         validators=[DataRequired()]
     )
     smtpPassword = PasswordField(
-        u'SMTP Password',
-        render_kw={"placeholder": "Password"}
+        lazy_gettext('SMTP Password'),
+        render_kw={"placeholder": lazy_gettext('Password')}
     )
     smtpFromEmail = EmailField(
-        u'From Email',
-        render_kw={"placeholder": "Email"},
+        lazy_gettext('From Email'),
+        render_kw={"placeholder": lazy_gettext('Email')},
         validators=[
             DataRequired(),
             validators.Email()
         ]
     )
     smtpMaxPerHour = IntegerField(
-        u'Max emails (per hour)',
-        render_kw={"placeholder": "Max emails per hour"},
+        lazy_gettext('Max emails (per hour)'),
+        render_kw={"placeholder": lazy_gettext('Max emails per hour')},
         validators=[validators.NumberRange(
             min=1,
-            message="Must have at least one message able to be sent per hour."
+            message=lazy_gettext('Must have at least one message able to be sent per hour.')
         )]
     )
     sendTestEmail = SubmitField(u'Send Test Email')
     testEmailTo = EmailField(
-        u'Test Email To',
-        render_kw={"placeholder": "Email address to send test email"},
+        lazy_gettext('Test Email To'),
+        render_kw={"placeholder": lazy_gettext('Email address to send test email')},
         validators=[
             validators.Email(),
             validators.Optional()
@@ -270,16 +269,16 @@ class EmailAlert(Form):
 #
 
 class SettingsGeneral(Form):
-    forceHTTPS = BooleanField(u'Force HTTPS')
-    hideAlertSuccess = BooleanField(u'Hide success messages')
-    hideAlertInfo = BooleanField(u'Hide info messages')
-    relayStatsVolts = IntegerField(u'Voltage')
-    relayStatsCost = DecimalField(u'Cost per kWh')
-    relayStatsCurrency = StringField(u'Currency Unit')
-    relayStatsDayOfMonth = StringField(u'Billing Day of Month (1-30)')
-    hideAlertWarning = BooleanField(u'Hide warning messages')
-    stats_opt_out = BooleanField(u'Opt-out of sending statistics')
-    Submit = SubmitField(u'Save')
+    forceHTTPS = BooleanField(lazy_gettext('Force HTTPS'))
+    hideAlertSuccess = BooleanField(lazy_gettext('Hide success messages'))
+    hideAlertInfo = BooleanField(lazy_gettext('Hide info messages'))
+    relayStatsVolts = IntegerField(lazy_gettext('Voltage'))
+    relayStatsCost = DecimalField(lazy_gettext('Cost per kWh'))
+    relayStatsCurrency = StringField(lazy_gettext('Currency Unit'))
+    relayStatsDayOfMonth = StringField(lazy_gettext('Billing Day of Month (1-30)'))
+    hideAlertWarning = BooleanField(lazy_gettext('Hide warning messages'))
+    stats_opt_out = BooleanField(lazy_gettext('Opt-out of sending statistics'))
+    Submit = SubmitField(lazy_gettext('Save'))
 
 
 #
