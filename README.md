@@ -37,6 +37,7 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 - [Daemon Info](#daemon-info)
 - [Upgrading](#upgrading)
 - [Backup and Restore](#backup-and-restore)
+- [Translations](#translations)
 - [Directory Structure](#directory-structure)
 - [License](#license)
 - [Screenshots](#screenshots)
@@ -61,6 +62,7 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 * I<sup>2</sup>C multiplexer support to allow using multiple devices/sensors with the same I<sup>2</sup>C address.
 * Pi Camera support: Stream live video, capture still images, or create time-lapses.
 * Automated system upgrade: When there's new release on github, an upgrade can be initiated from the web UI.
+* Languages: English and Spanish.
 
 
 
@@ -324,6 +326,41 @@ service influxdb start
 The order of these events are important, because databases will be created and services started while the setup.sh script is running, so certain commands need to be done before this happens.
 
 You could also copy the influx databases and just copy the entire Mycodo directory (archive to preserve permissions) to a new system, but I was going from the perspective of backing up the most minimal set of data, so if a system became corrupt somewhere, the backups could be restored to a new system.
+
+
+
+### Translations
+
+Translation support has been added but there is currently a lack of translations. If you know another language and would like to create translations, follow the steps below.
+
+To create your own translation, use the following commands.
+
+```cd ~/Mycodo/mycodo```
+
+Create a messages.pot file from searching all files that contain translatable text.
+
+```pybabel extract -F babel.cfg -o messages.pot mycodo_flask```
+
+Create the translation for the new language (in this case it is 'es' for Spanish).
+
+```pybabel init -i messages.pot -d mycodo_flask/translations -l es```
+
+There will now be the file 'messages.po' created in ~/Mycodo/mycodo/mycodo_flask/translations/es/LC_MESSAGES/
+
+Edit messages.po (I used [poedit](https://poedit.net/)) to edit and save the translation for each translatable word or phrase.
+
+Finally, compile the new translation.
+
+```pybabel compile -d mycodo_flask/translations```
+
+If you would like to rescan for translatable text and update your messages.po file without losing your previous translation work, use the following commands instead of the above commands, then edit with poedit and compile.
+
+'''
+pybabel extract -F babel.cfg -o messages.pot mycodo_flask
+pybabel update -i messages.pot -d mycodo_flask/translations
+'''
+
+Refer to [The Flask Mega-Tutorial, Part XIV: I18n and L10n](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xiv-i18n-and-l10n) for more details of this process.
 
 
 

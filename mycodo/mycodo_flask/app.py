@@ -27,6 +27,8 @@ from __future__ import print_function  # In python 2.7
 import os
 
 from flask import Flask
+from flask import request
+from flask_babel import Babel
 from flask_sslify import SSLify
 
 import flaskutils
@@ -34,6 +36,7 @@ from init_databases import create_dbs
 from databases.mycodo_db.models import Misc
 from config import ProdConfig
 
+from mycodo.config import LANGUAGES
 from mycodo.mycodo_flask import admin_routes
 from mycodo.mycodo_flask import authentication_routes
 from mycodo.mycodo_flask import general_routes
@@ -55,8 +58,14 @@ def create_app(config=ProdConfig):
     app.config.from_object(config)
     app.secret_key = os.urandom(24)
 
+    babel = Babel(app)
+
     register_extensions(app, config)
     register_blueprints(app)
+
+    @babel.localeselector
+    def get_locale():
+        return 'es'  # request.accept_languages.best_match(LANGUAGES.keys())
 
     return app
 

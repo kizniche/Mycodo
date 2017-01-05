@@ -76,11 +76,11 @@
   <body>
 
     {% set navigation_bar_top = [
-      ('/sensor', 'sensor', 'Sensor'),
-      ('/relay', 'relay', 'Relay'),
-      ('/method', 'method_list', 'Method'),
-      ('/pid', 'pid', 'PID'),
-      ('/timer', 'timer', 'Timer')
+      (url_for('page_routes.page_sensor'), 'sensor', _('Sensor')),
+      (url_for('page_routes.page_relay'), 'relay', _('Relay')),
+      (url_for('method_routes.method_list'), 'method_list', _('Method')),
+      (url_for('page_routes.page_pid'), 'pid', _('PID')),
+      (url_for('page_routes.page_timer'), 'timer', _('Timer'))
     ] -%}
     
     {% set active_page = active_page|default('graph') -%}
@@ -98,12 +98,12 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li{% if active_page == 'live' %} class="active"{% endif %}><a href="/live">Live</a></li>
+            <li{% if active_page == 'live' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_live')}}">{{_('Live')}}</a></li>
             <li class="dropdown{% if active_page == 'graph' %} active{% endif %}">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Graph<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Graph')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="/graph">General Graph</a></li>
-                <li><a href="/graph-async">Asynchronous Graph</a></li>
+                <li><a href="{{url_for('page_routes.page_graph')}}">General Graph</a></li>
+                <li><a href="{{url_for('page_routes.page_graph_async')}}">Asynchronous Graph</a></li>
               </ul>
             </li>
           {% for href, id, caption in navigation_bar_top %}
@@ -112,13 +112,13 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Tools<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="/lcd">LCDs</a></li>
-                <li><a href="/camera">Camera</a></li>
-                <li><a href="/usage">Relay Usage</a></li>
-                <li><a href="/log">Sensor Logs</a></li>
-                <li><a href="/logview">Mycodo Logs</a></li>
-                <li><a href="/info">System Info</a></li>
-                <li><a href="/notes">Notes</a></li>
+                <li><a href="{{url_for('page_routes.page_lcd')}}">{{_('LCDs')}}</a></li>
+                <li><a href="{{url_for('page_routes.page_camera')}}">{{_('Camera')}}</a></li>
+                <li><a href="{{url_for('page_routes.page_usage')}}">{{_('Relay Usage')}}</a></li>
+                <li><a href="{{url_for('page_routes.page_log')}}">{{_('Sensor Logs')}}</a></li>
+                <li><a href="{{url_for('page_routes.page_logview')}}">{{_('Mycodo Logs')}}</a></li>
+                <li><a href="{{url_for('page_routes.page_info')}}">{{_('System Info')}}</a></li>
+                <li><a href="{{url_for('page_routes.page_notes')}}">{{_('Notes')}}</a></li>
               </ul>
             </li>
           </ul>
@@ -127,7 +127,7 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="/settings">Configure</a></li>
+                <li><a href="{{url_for('settings_routes.settings_general')}}">Configure</a></li>
                 <li><a href="/admin/upgrade">Upgrade</a></li>
                 <li><a href="/admin/backup">Backup/Restore</a></li>
                 <li role="separator" class="divider"></li>

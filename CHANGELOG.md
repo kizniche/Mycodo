@@ -10,6 +10,7 @@ Performance:
 
 Features:
 
+  - Add text translation ability (with Spanish as the first translation)
   - New upgrade system to perform upgrades from github releases instead of commits
   - Introduce changelog (CHANGELOG.md)
 

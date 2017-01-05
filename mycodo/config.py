@@ -26,6 +26,11 @@ import os
 
 MYCODO_VERSION = '4.0.26'
 
+LANGUAGES = {
+    'en': 'English',
+    'es': 'Español'
+}
+
 INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
 
 LOCK_PATH = '/var/lock'

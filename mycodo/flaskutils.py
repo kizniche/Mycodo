@@ -856,29 +856,28 @@ def graph_reorder(formOrderGraph, display_order):
     if formOrderGraph.validate():
         try:
             if formOrderGraph.orderGraphUp.data:
-                status, reordered_list = reorderList(
+                status, reord_list = reorderList(
                     display_order,
                     formOrderGraph.orderGraph_id.data,
                     'up')
             elif formOrderGraph.orderGraphDown.data:
-                status, reordered_list = reorderList(
+                status, reord_list = reorderList(
                     display_order,
                     formOrderGraph.orderGraph_id.data,
                     'down')
             if status == 'success':
                 with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     order_graph = db_session.query(DisplayOrder).first()
-                    order_graph.graph = ','.join(reordered_list)
+                    order_graph.graph = ','.join(reord_list)
                     db_session.commit()
                 flash("Graph display successfully reordered", status)
             else:
-                flash(reordered_list, status)
+                flash(reord_list, status)
         except Exception as except_msg:
             flash("Graph display was not able to be reordered: {}".format(
                 except_msg), "error")
     else:
         flash_form_errors(formOrderGraph)
-
 
 
 #
@@ -1018,23 +1017,23 @@ def lcd_reorder(formOrderLCD, display_order):
     if formOrderLCD.validate():
         try:
             if formOrderLCD.orderLCDUp.data:
-                status, reordered_list = reorderList(
+                status, reord_list = reorderList(
                     display_order,
                     formOrderLCD.orderLCD_id.data,
                     'up')
             elif formOrderLCD.orderLCDDown.data:
-                status, reordered_list = reorderList(
+                status, reord_list = reorderList(
                     display_order,
                     formOrderLCD.orderLCD_id.data,
                     'down')
             if status == 'success':
                 with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     order_lcd = db_session.query(DisplayOrder).first()
-                    order_lcd.lcd = ','.join(reordered_list)
+                    order_lcd.lcd = ','.join(reord_list)
                     db_session.commit()
                 flash("LCD display successfully reordered", status)
             else:
-                flash(reordered_list, status)
+                flash(reord_list, status)
         except Exception as except_msg:
             flash("LCD display was not able to be reordered: {}".format(
                 except_msg), "error")
@@ -1190,23 +1189,21 @@ def log_reorder(formLog, display_order):
 
     try:
         if formLog.orderLogUp.data:
-            status, reordered_list = reorderList(
-                    display_order,
-                    formLog.log_id.data,
-                    'up')
+            status, reord_list = reorderList(display_order,
+                                             formLog.log_id.data,
+                                             'up')
         elif formLog.orderLogDown.data:
-            status, reordered_list = reorderList(
-                    display_order,
-                    formLog.log_id.data,
-                    'down')
+            status, reord_list = reorderList(display_order,
+                                             formLog.log_id.data,
+                                             'down')
         if status == 'success':
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 order_log = db_session.query(DisplayOrder).first()
-                order_log.log = ','.join(reordered_list)
+                order_log.log = ','.join(reord_list)
                 db_session.commit()
             flash("Log display successfully reordered", status)
         else:
-            flash(reordered_list, status)
+            flash(reord_list, status)
     except Exception as except_msg:
         flash("Log display was not able to be reordered: {}".format(
             except_msg), "error")
@@ -1383,23 +1380,17 @@ def pid_del(pid_id, display_order):
 def pid_reorder(pid_id, display_order, direction):
     try:
         if direction == 'up':
-            status, reordered_list = reorderList(
-                display_order,
-                pid_id,
-                'up')
+            status, reord_list = reorderList(display_order, pid_id, 'up')
         elif direction == 'down':
-            status, reordered_list = reorderList(
-                display_order,
-                pid_id,
-                'down')
+            status, reord_list = reorderList(display_order, pid_id, 'down')
         if status == 'success':
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 order_pid = db_session.query(DisplayOrder).first()
-                order_pid.pid = ','.join(reordered_list)
+                order_pid.pid = ','.join(reord_list)
                 db_session.commit()
             flash("PID display successfully reordered", status)
         else:
-            flash(reordered_list, status)
+            flash(reord_list, status)
     except Exception as except_msg:
         flash("PID display was not able to be reordered: {}".format(
             except_msg), "error")
@@ -1626,23 +1617,23 @@ def relay_reorder(formOrderRelay, display_order):
     if formOrderRelay.validate():
         try:
             if formOrderRelay.orderRelayUp.data:
-                status, reordered_list = reorderList(
+                status, reord_list = reorderList(
                     display_order,
                     formOrderRelay.orderRelay_id.data,
                     'up')
             elif formOrderRelay.orderRelayDown.data:
-                status, reordered_list = reorderList(
+                status, reord_list = reorderList(
                     display_order,
                     formOrderRelay.orderRelay_id.data,
                     'down')
             if status == 'success':
                 with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     order_relay = db_session.query(DisplayOrder).first()
-                    order_relay.relay = ','.join(reordered_list)
+                    order_relay.relay = ','.join(reord_list)
                     db_session.commit()
                 flash("Relay display successfully reordered", status)
             else:
-                flash(reordered_list, status)
+                flash(reord_list, status)
         except Exception as except_msg:
             flash("Relay display was not able to be reordered: {}".format(
                 except_msg), "error")
@@ -1777,7 +1768,6 @@ def sum_relay_usage(relay_id, past_seconds):
         return output.raw['series'][0]['values'][0][1]
     else:
         return 0
-
 
 
 #
@@ -2022,8 +2012,7 @@ def sensor_del(formModSensor, display_order):
             order_sensor.sensor = ','.join(display_order)
             db_session.commit()
     except Exception as except_msg:
-        flash("Error while deleting sensor: {}".format(except_msg),
-                                                       "error")
+        flash("Error while deleting sensor: {}".format(except_msg), "error")
 
 
 def sensor_reorder(formModSensor, display_order):
@@ -2033,23 +2022,21 @@ def sensor_reorder(formModSensor, display_order):
 
     try:
         if formModSensor.orderSensorUp.data:
-            status, reordered_list = reorderList(
-                    display_order,
-                    formModSensor.modSensor_id.data,
-                    'up')
+            status, reord_list = reorderList(display_order,
+                                             formModSensor.modSensor_id.data,
+                                             'up')
         elif formModSensor.orderSensorDown.data:
-            status, reordered_list = reorderList(
-                    display_order,
-                    formModSensor.modSensor_id.data,
-                    'down')
+            status, reord_list = reorderList(display_order,
+                                             formModSensor.modSensor_id.data,
+                                             'down')
         if status == 'success':
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 order_sensor = db_session.query(DisplayOrder).first()
-                order_sensor.sensor = ','.join(reordered_list)
+                order_sensor.sensor = ','.join(reord_list)
                 db_session.commit()
             flash("Sensor display successfully reordered", status)
         else:
-            flash(reordered_list, status)
+            flash(reord_list, status)
     except Exception as except_msg:
         flash("Sensor display was not able to be reordered: {}".format(
             except_msg), "error")
@@ -2060,21 +2047,20 @@ def sensor_activate(formModSensor):
         sensor = db_session.query(Sensor).filter(
             Sensor.id == formModSensor.modSensor_id.data).first()
         if not sensor.location:
-            flash("Cannot activate sensor without the GPIO/I2C Address/Port to communicate with it set.", "error")
+            flash("Cannot activate sensor without the GPIO/I2C Address/Port "
+                  "to communicate with it set.", "error")
             return redirect('/sensor')
-    activate_deactivate_controller(
-        'activate',
-        'Sensor',
-        formModSensor.modSensor_id.data)
+    activate_deactivate_controller('activate',
+                                   'Sensor',
+                                   formModSensor.modSensor_id.data)
 
 
 def sensor_deactivate(formModSensor):
     sensor_deactivate_associated_controllers(
         formModSensor.modSensor_id.data)
-    activate_deactivate_controller(
-        'deactivate',
-        'Sensor',
-        formModSensor.modSensor_id.data)
+    activate_deactivate_controller('deactivate',
+                                   'Sensor',
+                                   formModSensor.modSensor_id.data)
 
 
 # Deactivate any active PID or LCD controllers using this sensor
@@ -2390,23 +2376,21 @@ def timer_reorder(formTimer, display_order):
 
     try:
         if formTimer.orderTimerUp.data:
-            status, reordered_list = reorderList(
-                    display_order,
-                    formTimer.timer_id.data,
-                    'up')
+            status, reord_list = reorderList(display_order,
+                                             formTimer.timer_id.data,
+                                             'up')
         elif formTimer.orderTimerDown.data:
-            status, reordered_list = reorderList(
-                    display_order,
-                    formTimer.timer_id.data,
-                    'down')
+            status, reord_list = reorderList(display_order,
+                                             formTimer.timer_id.data,
+                                             'down')
         if status == 'success':
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 order_timer = db_session.query(DisplayOrder).first()
-                order_timer.timer = ','.join(reordered_list)
+                order_timer.timer = ','.join(reord_list)
                 db_session.commit()
             flash("Timer display successfully reordered", status)
         else:
-            flash(reordered_list, status)
+            flash(reord_list, status)
     except Exception as except_msg:
         flash("Timer display was not able to be reordered: {}".format(
             except_msg), "error")
@@ -2575,11 +2559,13 @@ def settings_alert_mod(formModAlert):
             mod_smtp = db_session.query(SMTP).one()
             if formModAlert.sendTestEmail.data:
                 send_email(False, mod_smtp.host,
-                      mod_smtp.ssl, mod_smtp.port,
-                      mod_smtp.user, mod_smtp.passw,
-                      mod_smtp.email_from, formModAlert.testEmailTo.data,
-                      "This is a test email from Mycodo")
-                flash("Test email sent to {}. Check your inbox to see if it was successful.".format(formModAlert.testEmailTo.data), "success")
+                           mod_smtp.ssl, mod_smtp.port,
+                           mod_smtp.user, mod_smtp.passw,
+                           mod_smtp.email_from, formModAlert.testEmailTo.data,
+                           "This is a test email from Mycodo")
+                flash("Test email sent to {}. Check your inbox to see if it "
+                      "was successful.".format(formModAlert.testEmailTo.data),
+                      "success")
             else:
                 mod_smtp.host = formModAlert.smtpHost.data
                 mod_smtp.port = formModAlert.smtpPort.data
@@ -2595,19 +2581,19 @@ def settings_alert_mod(formModAlert):
         flash_form_errors(formModAlert)
 
 
-
 #
-# Miscelaneous
+# Miscellaneous
 #
 
-# Check for daemon lock file
 def daemonActive():
+    """Check for daemon lock file and return True if exists"""
     if os.path.isfile(DAEMON_PID_FILE):
         return True
     return False
 
 
 def reorderList(modified_list, item, direction):
+    """Reorder entry in a comma-separated list either up or down"""
     from_position = modified_list.index(item)
     if direction == "up":
         if from_position == 0:
@@ -2617,12 +2603,14 @@ def reorderList(modified_list, item, direction):
         if from_position == len(modified_list) - 1:
             return 'error', 'Cannot move below the last item in the list'
         to_position = from_position + 1
+    else:
+        return 'error', []
     modified_list.insert(to_position, modified_list.pop(from_position))
     return 'success', modified_list
 
 
-# return table data from database SQL query
 def db_retrieve_table(database, table, first=False, device_id=''):
+    """Return table data from database SQL query"""
     with session_scope(database) as new_session:
         if first:
             return_table = new_session.query(table).first()
@@ -2636,6 +2624,7 @@ def db_retrieve_table(database, table, first=False, device_id=''):
 
 
 def delete_user(db_path, users, username):
+    """Delete user from SQL database"""
     try:
         with session_scope(db_path) as db_session:
             user = db_session.query(users).filter(
@@ -2649,6 +2638,7 @@ def delete_user(db_path, users, username):
 
 
 def delete_entry_with_id(db_path, table, entry_id):
+    """Delete SQL database entry with specific id"""
     try:
         with session_scope(db_path) as db_session:
             entries = db_session.query(table).filter(
@@ -2661,8 +2651,8 @@ def delete_entry_with_id(db_path, table, entry_id):
         return 0
 
 
-# Flashes form errors for easier display
 def flash_form_errors(form):
+    """Flashes form errors for easier display"""
     for field, errors in form.errors.items():
         for error in errors:
             flash(u"Error in the {} field - {}".format(
