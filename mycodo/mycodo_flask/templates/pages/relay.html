@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "relay" %}
-{% block title %} - Relays{% endblock %}
+{% block title %} - {{_('Relays')}}{% endblock %}
 
 {% block head %}
 <script>
@@ -56,7 +56,7 @@
           <input type="hidden" name="form-name" value="addRelay">
           {{formAddRelay.hidden_tag()}}
           <div class="form-group">
-            {{formAddRelay.numberRelays(class_='form-control',type="number",**{'rel':'tooltip','title':'How many relays to add'})}}
+            {{formAddRelay.numberRelays(class_='form-control',type="number",**{'rel':'tooltip','title':_('How many relays to add')})}}
           </div>
           <div class="form-group">
             {{formAddRelay.relayAddSubmit(class_='form-control btn btn-default')}}
@@ -68,7 +68,7 @@
           <input type="hidden" name="form-name" value="addRelayConditional">
           {{formAddRelayCond.hidden_tag()}}
           <div class="form-group">
-            {{formAddRelayCond.numberRelayConditionals(class_='form-control',type="number",**{'rel':'tooltip','title':'How many relay conditionals to add'})}}
+            {{formAddRelayCond.numberRelayConditionals(class_='form-control',type="number",**{'rel':'tooltip','title':_('How many relay conditionals to add')})}}
           </div>
           <div class="form-group">
             {{formAddRelayCond.relayCondAddSubmit(class_='form-control btn btn-default')}}
@@ -84,18 +84,18 @@
       <div class="table-responsive">
         <table class="table">
           <tr>
-            <th colspan="9">Relays</th>
+            <th colspan="9">{{_('Relays')}}</th>
           </tr>
             <td class="col-sm-1">ID</td>
             <td style="white-space: nowrap; width: 1%;"></td>
-            <td class="col-sm-2">Name</td>
+            <td class="col-sm-2">{{_('Name')}}</td>
             <td class="col-sm-1">GPIO</td>
-            <td class="col-sm-1">Amps</td>
-            <td class="col-sm-1">On Trigger</td>
-            <td class="col-sm-1">Start State</td>
-            <td class="col-sm-1">Edit</td>
-            <td class="col-sm-1">Power</td>
-            <td class="col-sm-1">Order</td>
+            <td class="col-sm-1">{{_('Amps')}}</td>
+            <td class="col-sm-1">{{_('On Trigger')}}</td>
+            <td class="col-sm-1">{{_('Start State')}}</td>
+            <td class="col-sm-1">{{_('Edit')}}</td>
+            <td class="col-sm-1">{{_('Power')}}</td>
+            <td class="col-sm-1">{{_('Order')}}</td>
           </tr>
         {%- for order in displayOrder -%}
           {%- for each_relay in relay if each_relay.id in order -%}
@@ -121,14 +121,14 @@
               </td>
               <td>
                 <select class="form-control" id="modTrigger" name="modTrigger">
-                  <option value="1"{% if each_relay.trigger %} selected{% endif %}>High</option>
-                  <option value="0"{% if not each_relay.trigger %} selected{% endif %}>Low</option>
+                  <option value="1"{% if each_relay.trigger %} selected{% endif %}>{{_('High')}}</option>
+                  <option value="0"{% if not each_relay.trigger %} selected{% endif %}>{{_('Low')}}</option>
                 </select>
               </td>
               <td>
                 <select class="form-control" id="modStartState" name="modStartState">
-                  <option value="1"{% if each_relay.start_state %} selected{% endif %}>On</option>
-                  <option value="0"{% if not each_relay.start_state %} selected{% endif %}>Off</option>
+                  <option value="1"{% if each_relay.start_state %} selected{% endif %}>{{_('On')}}</option>
+                  <option value="0"{% if not each_relay.start_state %} selected{% endif %}>{{_('Off')}}</option>
                 </select>
               </td>
               <td>
@@ -213,8 +213,8 @@
             <div class="form-group">
               <select class="form-control" id="IfRelayAction" name="IfRelayAction">
                 <option value=""></option>
-                <option value="on"{% if each_relaycond.if_action == 'on' %} selected{% endif %}>On</option>
-                <option value="off"{% if each_relaycond.if_action == 'off' %} selected{% endif %}>Off</option>
+                <option value="on"{% if each_relaycond.if_action == 'on' %} selected{% endif %}>{{_('On')}}</option>
+                <option value="off"{% if each_relaycond.if_action == 'off' %} selected{% endif %}>{{_('Off')}}</option>
               </select>
             </div>
             <div class="form-group">
@@ -236,8 +236,8 @@
             <div class="form-group">
               <select class="form-control" id="DoRelayAction" name="DoRelayAction">
                 <option value=""></option>
-                <option value="on"{% if each_relaycond.do_action == 'on' %} selected{% endif %}>On</option>
-                <option value="off"{% if each_relaycond.do_action == 'off' %} selected{% endif %}>Off</option>
+                <option value="on"{% if each_relaycond.do_action == 'on' %} selected{% endif %}>{{_('On')}}</option>
+                <option value="off"{% if each_relaycond.do_action == 'off' %} selected{% endif %}>{{_('Off')}}</option>
               </select>
             </div>
             <div class="form-group">

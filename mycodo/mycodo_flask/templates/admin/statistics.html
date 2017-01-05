@@ -3,11 +3,11 @@
 {% set active_page = "admin" %}
 {% set active_settings = "general" %}
 
-{% block title %} - Statistics{% endblock %}
+{% block title %} - {{_('Statistics')}}{% endblock %}
 
 {% block settings %}
   <!-- Route: /admin/statistics -->
-  <p><u>Collected Statistics</u></p>
+  <p><u>{{_('Collected Statistics')}}</u></p>
   {% for key, value in statistics.iteritems() if key != 'stat' %}
     <div>{{ key }}: {{ value }}</div>
   {% endfor %}

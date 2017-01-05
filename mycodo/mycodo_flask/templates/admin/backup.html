@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "backups" %}
-{% block title %} - Backup / Restore{% endblock %}
+{% block title %} - {{_('Backup/Restore')}}{% endblock %}
 
 {% block body %}
   <!-- Route: /admin/backup -->
@@ -22,7 +22,7 @@
           </div>
           <div class="form-group" style="font-family: 'Courier New', monospace;">
             {% set split_version = each_backup.split('-') %}
-            (<a href="https://github.com/kizniche/Mycodo/releases/tag/v{{each_backup[34:]}}" target="_blank">v{{each_backup[34:]}} Changelog</a>)
+            (<a href="https://github.com/kizniche/Mycodo/releases/tag/v{{each_backup[34:]}}" target="_blank">v{{each_backup[34:]}} {{_('Changelog')}}</a>)
           </div>
         </div>
         </form>

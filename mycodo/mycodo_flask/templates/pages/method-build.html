@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "method_build" %}
-{% block title %} - Method Builder{% endblock %}
+{% block title %} - {{_('Method-Builder')}}{% endblock %}
 
 {% block head %}
   <script src="/static/js/highcharts.js"></script>
@@ -19,11 +19,11 @@
       {%- do method_setpoint.append(1) -%}
     {%- endfor -%}
 
-    <a href="/method" class="btn btn-default" role="button">&lt;&lt; Back to Method Management</a>
+    <a href="/method" class="btn btn-default" role="button">&lt;&lt; {{_('Back to Method Management')}}</a>
     <div style="clear: both; padding:0.5em 0;"></div>
     <div class="form-inline" style="margin: 0.5em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
       <div>
-        Method-Builder (Method ID: {{method_key['method_id']}})
+        {{_('Method-Builder')}} ({{_('Method ID')}}: {{method_key['method_id']}})
       </div>
 
       <form method="post" action="/method-build/{{method_type}}/{{method_id}}" style="padding: 0.7em 0">
@@ -61,8 +61,8 @@
 
         {%- if method_type == "Date" -%}
           <div>
-            <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint over a period of time based on specific times/dates.
-            <br>The new entry's start time may be equal to the last entry's end time, but it cannot overlap. The default setpoint for the PID will be used if there is any unaccounted time.
+            <input type="radio" name="method_select" value="setpoint" checked="checked"> {{_('Define the setpoint over a period of time based on specific times/dates.')}}
+            <br>{{_("The new entry's start time may be equal to the last entry's end time, but it cannot overlap. The default setpoint for the PID will be used if there is any unaccounted time.")}}
           </div>
           <div class="form-group">
             {{formAddMethod.startTime.label(class_='control-label')}}
@@ -79,8 +79,8 @@
 
         {%- elif method_type == "Daily" -%}
           <div>
-            <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint over a period of time based on specific times of the day. This method will repeat daily. Start the firat entry at midnight 00:00 if you wish to fill the entire day.
-            <br>The new entry's start time may be equal to the last entry's end time, but it cannot overlap. The default setpoint for the PID will be used if there is any unaccounted time.
+            <input type="radio" name="method_select" value="setpoint" checked="checked"> {{_('Define the setpoint over a period of time based on specific times of the day. This method will repeat daily. Start the firat entry at midnight 00:00 if you wish to fill the entire day.')}}
+            <br>{{_("The new entry's start time may be equal to the last entry's end time, but it cannot overlap. The default setpoint for the PID will be used if there is any unaccounted time.")}}
           </div>
           <div class="form-group">
             {{formAddMethod.startDailyTime.label(class_='control-label')}}
@@ -126,7 +126,7 @@
 
         {%- elif method_type == "DailyBezier" -%}
           <div>
-            <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">Define the setpoint over the day based on a cubic Bezier curve. If unfamiliar with a Bezier curve, it is recommended you use the <a href="https://www.desmos.com/calculator/cahqdxeshd" target="_blank">graphical Bezier curve generator</a> and use the 8 variables it creates for 4 points (each a set of x and y). The x-axis start (x3) and end (x0) will be automatically stretched or skewed to fit within a 24-hour period and this method will repeat daily.
+            <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">{{_('Define the setpoint over the day based on a cubic Bezier curve. If unfamiliar with a Bezier curve, it is recommended you use the <a href="https://www.desmos.com/calculator/cahqdxeshd" target="_blank">graphical Bezier curve generator</a> and use the 8 variables it creates for 4 points (each a set of x and y). The x-axis start (x3) and end (x0) will be automatically stretched or skewed to fit within a 24-hour period and this method will repeat daily.')}}
           </div>
           
           <div>
@@ -194,8 +194,8 @@
 
         {%- elif method_type == "Duration" -%}
           <div>
-            <input type="radio" name="method_select" value="setpoint" checked="checked"> Define the setpoint over a period of time, based on specific durations of time.
-            <br>Duration here is defined as the amount of time after the previous duration. If this is the first duration added, this will be the beginning of the method. If this is not the first duration added, it will execute after the last duration already in the method.
+            <input type="radio" name="method_select" value="setpoint" checked="checked"> {{_('Define the setpoint over a period of time, based on specific durations of time.')}}
+            <br>{{_('Duration here is defined as the amount of time after the previous duration. If this is the first duration added, this will be the beginning of the method. If this is not the first duration added, it will execute after the last duration already in the method.')}}
           </div>
         {%- endif -%}
 
@@ -223,7 +223,7 @@
 
           {%- if method_type == "Date" -%}
             <div>
-              <input type="radio" name="method_select" value="relay"> Activate or deactivate a relay within this method at a specific time/date.
+              <input type="radio" name="method_select" value="relay"> {{_('Activate or deactivate a relay within this method at a specific time/date.')}}
             </div>
             <div class="form-group">
               {{formAddMethod.relayTime.label(class_='control-label')}}
@@ -233,8 +233,8 @@
             </div>
           {%- elif method_type == 'Daily' -%}
             <div>
-              <input type="radio" name="method_select" value="relay"> Activate or deactivate a relay at a specific time of day.
-              <br>Hour and minute (HH:MM) here is defined as the time of day. For example, 3:05 PM would be "15:05".
+              <input type="radio" name="method_select" value="relay"> {{_('Activate or deactivate a relay at a specific time of day.')}}
+              <br>{{_('Hour and minute (HH:MM) here is defined as the time of day. For example, 3:05 PM would be "15:05".')}}
             </div>
             <div class="form-group">
               {{formAddMethod.relayDailyTime.label(class_='control-label')}}
@@ -244,8 +244,8 @@
             </div>
           {%- elif method_type == "Duration" -%}
             <div>
-              <input type="radio" name="method_select" value="relay"> Activate or deactivate a relay within this method at a specific duration.
-              <br>Duration here is defined as the amount of time since the beginning of the method. For example, 60 seconds would execute the relay modulation 60 seconds after the start of the method.
+              <input type="radio" name="method_select" value="relay"> {{_('Activate or deactivate a relay within this method at a specific duration.')}}
+              <br>{{_('Duration here is defined as the amount of time since the beginning of the method. For example, 60 seconds would execute the relay modulation 60 seconds after the start of the method.')}}
             </div>
           {%- endif -%}
 
@@ -255,7 +255,7 @@
             <div class="form-group">
               {{formAddMethod.relayID.label(class_='control-label')}}
               <div>
-                <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relayID" name="relayID" title="Modulate the selected relay.">
+                <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relayID" name="relayID" title="{{_('Modulate the selected relay')}}.">
                   <option value=""></option>
                   {% for rel in relay -%}
                     <option value="{{rel.id}}">{{rel.id}} ({{rel.name}})</option>
@@ -390,7 +390,7 @@
     {%- if method_relay -%}
       <div class="form-inline" style="margin: 0.5em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
         <div>
-          Relay Modulation <span style="font-weight: bold; color: red">(Note: This feature is currently not implemented. These relays will NOT be modulated if applied to a PID. This will be implemented soon.)</span>
+          {{_('Relay Modulation')}} <span style="font-weight: bold; color: red">({{_('Note: This feature is currently not implemented. These relays will NOT be modulated if applied to a PID. This will be implemented soon.')}})</span>
         </div>
     {%- endif -%}
 

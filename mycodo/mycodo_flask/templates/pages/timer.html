@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "timer" %}
-{% block title %} - Timers{% endblock %}
+{% block title %} - {{_('Timers')}}{% endblock %}
 
 {% block head %}
 <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-clockpicker.min.css">
@@ -72,8 +72,8 @@
             {{formTimer.state.label(class_='control-label')}}
             <div>
               <select class="form-control" id="state" name="state">
-                <option value="on">ON</option>
-                <option value="off">OFF</option>
+                <option value="on">{{_('On')}}</option>
+                <option value="off">{{_('Off')}}</option>
               </select>
             </div>
           </div>
@@ -188,8 +188,8 @@
               {{formTimer.state.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="state" name="state">
-                  <option value="on"{% if each_timer.state == 'on' %} selected{% endif %}>ON</option>
-                  <option value="off"{% if each_timer.state == 'off' %} selected{% endif %}>OFF</option>
+                  <option value="on"{% if each_timer.state == 'on' %} selected{% endif %}>{{_('On')}}</option>
+                  <option value="off"{% if each_timer.state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
                 </select>
               </div>
             </div>
@@ -216,8 +216,8 @@
               {{formTimer.state.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="state" name="state">
-                  <option value="on"{% if each_timer.state == 'on' %} selected{% endif %}>ON</option>
-                  <option value="off"{% if each_timer.state == 'off' %} selected{% endif %}>OFF</option>
+                  <option value="on"{% if each_timer.state == 'on' %} selected{% endif %}>{{_('On')}}</option>
+                  <option value="off"{% if each_timer.state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
                 </select>
               </div>
             </div>

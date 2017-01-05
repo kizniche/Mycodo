@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "pid" %}
-{% block title %} - PID{% endblock %}
+{% block title %} - {{_('PID')}}{% endblock %}
 
 {% block head %}
   <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-clockpicker.min.css">
@@ -27,7 +27,7 @@
       <input type="hidden" name="form-name" value="addPID">
       {{formAddPID.hidden_tag()}}
       <div class="form-group">
-        {{formAddPID.numberPIDs(class_='form-control',type="number",**{'rel':'tooltip','title':'How many PID controllers to add'})}}
+        {{formAddPID.numberPIDs(class_='form-control',type="number",**{'rel':'tooltip','title':_('How many PID controllers to add')})}}
       </div>
       <div class="form-group">
         {{formAddPID.pidAddSubmit(class_='form-control btn btn-default')}}
@@ -52,14 +52,14 @@
                           {% endif -%}" style="border-bottom: 2px solid #ddd; padding-top: 1em;">
             <div class="col-xs-12 col-sm-3">
               <div class="form-group">
-                {{formModPID.modName(class_='form-control', value=each_pid.name, **{'title':'Name for this controller.'})}}
+                {{formModPID.modName(class_='form-control', value=each_pid.name, **{'title':_('Name for this PID controller.')})}}
               </div>
               <div class="form-group">
                 ID: {{each_pid.id}}, State:
-                {%- if each_pid.activated == 1 -%} Active
-                {%- elif each_pid.activated == 2 -%} Paused
-                {%- elif each_pid.activated == 3 -%} On Hold
-                {%- else -%} Inactive
+                {%- if each_pid.activated == 1 -%} {{_('Active')}}
+                {%- elif each_pid.activated == 2 -%} {{_('Paused')}}
+                {%- elif each_pid.activated == 3 -%} {{_('On Hold')}}
+                {%- else -%} {{_('Inactive')}}
                 {%-endif -%}
               </div>
             </div>
@@ -107,7 +107,7 @@
             <div class="form-group">
               {{formModPID.modMeasureType.label(class_='control-label')}}
               <div>
-                <select class="form-control" id="modMeasureType" name="modMeasureType" title="" data-original-title="Select the environmental condition to regulate.">
+                <select class="form-control" id="modMeasureType" name="modMeasureType" title="" data-original-title="{{_('Select the environmental condition to regulate')}}.">
                   <option value=""></option>
                   <option value="temperature"{% if each_pid.measure_type == 'temperature' %} selected{% endif %}>Temperature</option>
                   <option value="temperature_object"{% if each_pid.measure_type == 'temperature_object' %} selected{% endif %}>Temperature (Object)</option>
@@ -129,7 +129,7 @@
             <div class="form-group">
               {{formModPID.modDirection.label(class_='control-label')}}
               <div>
-                <select class="form-control" id="modDirection" name="modDirection" title="" data-original-title="What direction to regulate the chosen environmental condition?">
+                <select class="form-control" id="modDirection" name="modDirection" title="" data-original-title="{{_('What direction to regulate the chosen environmental condition?')}}">
                   <option value="raise"{% if each_pid.direction == 'raise' %} selected{% endif %}>Raise</option>
                   <option value="lower"{% if each_pid.direction == 'lower' %} selected{% endif %}>Lower</option>
                   <option value="both"{% if each_pid.direction == 'both' %} selected{% endif %}>Both</option>
@@ -139,43 +139,43 @@
             <div class="form-group">
               {{formModPID.modPeriod.label(class_='control-label')}}
               <div>
-                {{formModPID.modPeriod(class_='form-control', value=each_pid.period, **{'title':'The duration between calculating a new PID output to power the raise and lower relays.'})}}
+                {{formModPID.modPeriod(class_='form-control', value=each_pid.period, **{'title':_('The duration between calculating a new PID output to power the raise and lower relays.')})}}
               </div>
             </div>
             <div class="form-group">
               {{formModPID.modSetpoint.label(class_='control-label')}}
               <div>
-                {{formModPID.modSetpoint(class_='form-control', value=each_pid.setpoint, **{'title':'This is the desired state of a perticular environmental condition. For instance, this could be the desired temperature in Celsius.'})}}
+                {{formModPID.modSetpoint(class_='form-control', value=each_pid.setpoint, **{'title':_('This is the desired state of a perticular environmental condition. For instance, this could be the desired temperature in Celsius.')})}}
               </div>
             </div>
             <div class="form-group">
               {{formModPID.modKp.label(class_='control-label')}}
               <div>
-                {{formModPID.modKp(class_='form-control', value=each_pid.p, **{'title':'Proportional gain'})}}
+                {{formModPID.modKp(class_='form-control', value=each_pid.p, **{'title':_('Proportional gain')})}}
               </div>
             </div>
             <div class="form-group">
               {{formModPID.modKi.label(class_='control-label')}}
               <div>
-                {{formModPID.modKi(class_='form-control', value=each_pid.i, **{'title':'Integral gain'})}}
+                {{formModPID.modKi(class_='form-control', value=each_pid.i, **{'title':_('Integral gain')})}}
               </div>
             </div>
             <div class="form-group">
               {{formModPID.modKd.label(class_='control-label')}}
               <div>
-                {{formModPID.modKd(class_='form-control', value=each_pid.d, **{'title':'Derivative gain'})}}
+                {{formModPID.modKd(class_='form-control', value=each_pid.d, **{'title':_('Derivative gain')})}}
               </div>
             </div>
             <div class="form-group">
               {{formModPID.modIntegratorMin.label(class_='control-label')}}
               <div>
-                {{formModPID.modIntegratorMin(class_='form-control', value=each_pid.integrator_min, **{'title':'Limit the integrator minimum, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)'})}}
+                {{formModPID.modIntegratorMin(class_='form-control', value=each_pid.integrator_min, **{'title':_('Limit the integrator minimum, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)')})}}
               </div>
             </div>
             <div class="form-group">
               {{formModPID.modIntegratorMax.label(class_='control-label')}}
               <div>
-                {{formModPID.modIntegratorMax(class_='form-control', value=each_pid.integrator_max, **{'title':'Limit the integrator maximum, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)'})}}
+                {{formModPID.modIntegratorMax(class_='form-control', value=each_pid.integrator_max, **{'title':_('Limit the integrator maximum, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)')})}}
               </div>
             </div>
           </div>
@@ -184,7 +184,7 @@
             <div class="form-group">
               {{formModPID.modRaiseRelayID.label(class_='control-label')}}
               <div>
-                <select class="form-control" id="modRaiseRelayID" name="modRaiseRelayID" title="" data-original-title="The Relay that will raise the selected environmental condition (Measure Type).">
+                <select class="form-control" id="modRaiseRelayID" name="modRaiseRelayID" title="" data-original-title="{{_('The Relay that will raise the selected environmental condition (Measure Type)')}}.">
                   <option value=""></option>
                   {%- for each_relay in relay -%}
                     <option value="{{each_relay.id}}"{% if each_pid.raise_relay_id == each_relay.id %} selected{% endif %}>{{each_relay.id}} ({{each_relay.name}})</option>
@@ -195,13 +195,13 @@
             <div class="form-group">
               {{formModPID.modRaiseMinDuration.label(class_='control-label')}}
               <div>
-                {{formModPID.modRaiseMinDuration(class_='form-control', value=each_pid.raise_min_duration, **{'title':'The minimum duration required for the Raise Relay to activate. If an ON duration is below this value, the Raise Relay will not turn on.'})}}
+                {{formModPID.modRaiseMinDuration(class_='form-control', value=each_pid.raise_min_duration, **{'title':_('The minimum duration required for the Raise Relay to activate. If an ON duration is below this value, the Raise Relay will not turn on.')})}}
               </div>
             </div>
             <div class="form-group">
               {{formModPID.modRaiseMaxDuration.label(class_='control-label')}}
               <div>
-                {{formModPID.modRaiseMaxDuration(class_='form-control', value=each_pid.raise_max_duration, **{'title':'The maximum duration allowed for the Raise Relay to be on for, per period. If an ON duration is above this value, the Raise Relay will turn on for this set duration.'})}}
+                {{formModPID.modRaiseMaxDuration(class_='form-control', value=each_pid.raise_max_duration, **{'title':_('The maximum duration allowed for the Raise Relay to be on for, per period. If an ON duration is above this value, the Raise Relay will turn on for this set duration.')})}}
               </div>
             </div>
           </div>
@@ -210,7 +210,7 @@
             <div class="form-group">
               {{formModPID.modLowerRelayID.label(class_='control-label')}}
               <div>
-                <select class="form-control" id="modLowerRelayID" name="modLowerRelayID" title="" data-original-title="The relay that will lower the selected environmental condition (Measure Type).">
+                <select class="form-control" id="modLowerRelayID" name="modLowerRelayID" title="" data-original-title="{{_('The relay that will lower the selected environmental condition (Measure Type)')}}.">
                   <option value=""></option>
                   {%- for each_relay in relay -%}
                     <option value="{{each_relay.id}}"{% if each_pid.lower_relay_id == each_relay.id %} selected{% endif %}>{{each_relay.id}} ({{each_relay.name}})</option>
@@ -221,13 +221,13 @@
             <div class="form-group">
               {{formModPID.modLowerMinDuration.label(class_='control-label')}}
               <div>
-                {{formModPID.modLowerMinDuration(class_='form-control', value=each_pid.lower_min_duration, **{'title':'The minimum duration required for the Lower Relay to activate. If an ON duration is below this value, the Lower Relay will not turn on.'})}}
+                {{formModPID.modLowerMinDuration(class_='form-control', value=each_pid.lower_min_duration, **{'title':_('The minimum duration required for the Lower Relay to activate. If an ON duration is below this value, the Lower Relay will not turn on.')})}}
               </div>
             </div>
             <div class="form-group">
               {{formModPID.modLowerMaxDuration.label(class_='control-label')}}
               <div>
-                {{formModPID.modLowerMaxDuration(class_='form-control', value=each_pid.lower_max_duration, **{'title':'The maximum duration allowed for the Lower Relay to be on for, per period. If an ON duration is above this value, the Lower Relay will turn on for this set duration.'})}}
+                {{formModPID.modLowerMaxDuration(class_='form-control', value=each_pid.lower_max_duration, **{'title':_('The maximum duration allowed for the Lower Relay to be on for, per period. If an ON duration is above this value, the Lower Relay will turn on for this set duration.')})}}
               </div>
             </div>
           </div>
@@ -236,11 +236,11 @@
             <div class="form-group">
               {{formModPID.mod_method_id.label(class_='control-label')}}
               <div>
-                <select class="form-control" id="mod_method_id" name="mod_method_id" title="" data-original-title="Select the method to use when calculating the setpoint. When enabled, the setpoint(s) of the method override the PID setpoint above.">
+                <select class="form-control" id="mod_method_id" name="mod_method_id" title="" data-original-title="{{_('Select the method to use when calculating the setpoint. When enabled, the setpoint(s) of the method override the PID setpoint above.')}}">
                   {%- if method == [] -%}
-                    <option value="">No methods exist. Create one with this button -></option>
+                    <option value="">{{_('No methods exist. Create one with this button')}} -></option>
                   {%- else -%}
-                    <option value="">Disabled</option>
+                    <option value="">{{_('Disabled')}}</option>
                   {%- endif-%}
 
                   {%- set valid_saved_method = [] -%}
@@ -251,7 +251,7 @@
                     <option value="{{each_method.method_id}}"{% if each_pid.method_id == each_method.method_id %} selected{% endif %}>{{each_method.name}} ({{each_method.method_id}})</option>
                   {%- endfor -%}
                   {%- if not valid_saved_method and each_pid.method_id != '' -%}
-                    <option value="" selected>Invalid saved method. Save another method from this list.</option>
+                    <option value="" selected>{{_('Invalid saved method. Save another method from this list.')}}</option>
                   {%- endif -%}
                 </select>
               </div>
@@ -259,7 +259,7 @@
             <div class="form-group">
               <label class='control-label'></label>
               <div>
-                <a href="/method" class="btn btn-default" role="button">Manage Methods</a>
+                <a href="/method" class="btn btn-default" role="button">{{_('Manage Methods')}}</a>
               </div>
             </div>
           </div>

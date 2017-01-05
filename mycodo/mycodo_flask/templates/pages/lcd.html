@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "lcd" %}
-{% block title %} - LCD{% endblock %}
+{% block title %} - {{_('LCD')}}{% endblock %}
 
 {% block body %}
   <!-- Route: /lcd -->
@@ -11,7 +11,7 @@
     <input type="hidden" name="form-name" value="addLCD">
     {{formAddLCD.hidden_tag()}}
     <div class="form-group">
-      {{formAddLCD.numberLCDs(class_='form-control',type="number",**{'rel':'tooltip','title':'How many LCD controllers to add'})}}
+      {{formAddLCD.numberLCDs(class_='form-control',type="number",**{'rel':'tooltip','title':_('How many LCD controllers to add')})}}
     </div>
     <div class="form-group">
       {{formAddLCD.lcdAddSubmit(class_='form-control btn btn-default')}}
@@ -82,11 +82,11 @@
           </table>
           <table class="table">
             <tr>
-              <td class="col-sm-1">LCD Type</td>
-              <td class="col-sm-1">LCD I<sup>2</sup>C Address</td>
-              <td class="col-sm-1">Multiplexer I<sup>2</sup>C Address</td>
-              <td class="col-sm-1">Multiplexer Channel</td>
-              <td class="col-sm-1">Period (sec)</td>
+              <td class="col-sm-1">{{_('LCD Type')}}</td>
+              <td class="col-sm-1">{{_('LCD I<sup>2</sup>C Address')}}</td>
+              <td class="col-sm-1">{{_('Multiplexer I<sup>2</sup>C Address')}}</td>
+              <td class="col-sm-1">{{_('Multiplexer Channel')}}</td>
+              <td class="col-sm-1">{{_('Period (sec)')}}</td>
             </tr>
             <tr>
               <td>
@@ -144,13 +144,13 @@
           <table class="table">
             <tr>
               {%- if each_lcd.y_lines == 4 -%}
-                <td class="col-sm-1">Display Line 1</td>
-                <td class="col-sm-1">Display Line 2</td>
-                <td class="col-sm-1">Display Line 3</td>
-                <td class="col-sm-1">Display Line 4</td>
+                <td class="col-sm-1">{{_('Display Line 1')}}</td>
+                <td class="col-sm-1">{{_('Display Line 2')}}</td>
+                <td class="col-sm-1">{{_('Display Line 3')}}</td>
+                <td class="col-sm-1">{{_('Display Line 4')}}</td>
               {%- else -%}
-                <td class="col-sm-1">Display Line 1</td>
-                <td class="col-sm-1">Display Line 2</td>
+                <td class="col-sm-1">{{_('Display Line 1')}}</td>
+                <td class="col-sm-1">{{_('Display Line 2')}}</td>
               {%- endif -%}
             </tr>
             <tr>

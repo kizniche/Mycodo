@@ -14,7 +14,7 @@
 
 {% endblock %}  
 
-{% block title %} - Graph{% endblock %}
+{% block title %} - {{_('Graph')}}{% endblock %}
 
 {% block body %}
   <!-- Route: /graph -->
@@ -144,7 +144,7 @@
           </div>
 
           <div style="clear: both"></div>
-          Hold down the <kbd>Ctrl</kbd> key to select more than one option.</br>
+          {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.</br>
 
           <div class="checkbox" style="padding-right: 1em">
             <label>
@@ -197,7 +197,7 @@
   </div>
 
   <div class="container" style="padding-bottom: 1em;">
-    <a data-toggle="collapse" href="#collapseContainerGraphAdd" aria-expanded="false" aria-controls="collapseContainerGraphAdd" class="btn btn-default" role="button">New Graph</a>
+    <a data-toggle="collapse" href="#collapseContainerGraphAdd" aria-expanded="false" aria-controls="collapseContainerGraphAdd" class="btn btn-default" role="button">{{_('New Graph')}}</a>
 
     <div class="collapse" id="collapseContainerGraphAdd" style="padding-top: 1em">
       <form method="post" action="/graph">
@@ -270,7 +270,7 @@
 
         <div style="clear: both"></div>
 
-        Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one.</br>
+        {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.</br>
 
         <div class="checkbox" style="padding-right: 1em">
           <label>
@@ -659,10 +659,10 @@
       {%- if yaxis_relay -%}
         {
           title: {
-            text: 'Relay Duration (sec)',
+            text: '{{_('Relay Duration')}} (sec)'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'relay'
@@ -671,10 +671,10 @@
       {%- if yaxis_cpu_load -%}
         {
           title: {
-            text: 'CPU Load',
+            text: '{{_('CPU Load')}}'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'cpu_load'
@@ -683,10 +683,10 @@
       {%- if yaxis_temp -%}
         {
           title: {
-            text: 'Temperature (°C)',
+            text: '{{_('Temperature')}} (°C)'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'temperature'
@@ -695,10 +695,10 @@
       {%- if yaxis_hum -%}
         {
           title: {
-            text: 'Relative Humidity (%)',
+            text: '{{_('Relative Humidity')}} (%)'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'humidity'
@@ -707,10 +707,10 @@
       {%- if yaxis_co2 -%}
         {
           title: {
-            text: 'CO<sub>2</sub> (ppmv)',
+            text: 'CO<sub>2</sub> (ppmv)'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'co2'
@@ -719,10 +719,10 @@
       {%- if yaxis_lux -%}
         {
           title: {
-            text: 'Luminosity (lx)',
+            text: '{{_('Luminosity')}} (lx)'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'lux'
@@ -731,10 +731,10 @@
       {%- if yaxis_moisture -%}
         {
           title: {
-            text: 'Moisture',
+            text: '{{_('Moisture')}}',
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'moisture'
@@ -743,10 +743,10 @@
       {%- if yaxis_press -%}
         {
           title: {
-            text: 'Pressure (Pa)',
+            text: '{{_('Pressure')}} (Pa)'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'pressure'
@@ -755,10 +755,10 @@
       {%- if yaxis_alt -%}
         {
           title: {
-            text: 'Altitude (m)',
+            text: '{{_('Altitude')}} (m)'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'altitude'
@@ -767,10 +767,10 @@
       {%- if yaxis_edge -%}
         {
           title: {
-            text: 'Edge',
+            text: '{{_('Edge')}}'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'edge'
@@ -779,10 +779,10 @@
       {%- if yaxis_volts -%}
         {
           title: {
-            text: 'Voltage',
+            text: '{{_('Voltage')}}'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'voltage'
@@ -791,10 +791,10 @@
       {%- for each_adc_measure in yaxis_adc -%}
         {
           title: {
-            text: '{{each_adc_measure}}',
+            text: '{{each_adc_measure}}'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: '{{each_adc_measure}}'
@@ -912,7 +912,7 @@
       {%- for each_pid in pid -%}
         {%- for each_graph_pid_ids in graph_pid_ids if each_pid.id in each_graph_pid_ids -%}
           {
-            name: '{{each_pid.name}} Setpoint',
+            name: '{{each_pid.name}} {{_('Setpoint')}}',
             type: 'line',
             tooltip: {
               valueSuffix: '{{measurement_units[each_pid.measure_type]|safe}}',
@@ -929,7 +929,7 @@
           {%- if each_sensor.device_type == 'cpu_load' -%}
             {% if 'cpu_load_1m' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} CPU Load (1m)',
+                name: '{{each_sensor.name}} {{_('CPU Load')}} (1m)',
                 type: 'line',
                 tooltip: {
                   valueDecimals: 2
@@ -939,7 +939,7 @@
               },
             {% elif 'cpu_load_5m' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} CPU Load (5m)',
+                name: '{{each_sensor.name}} {{_('CPU Load')}} (5m)',
                 type: 'line',
                 tooltip: {
                   valueDecimals: 2
@@ -949,7 +949,7 @@
               },
             {% elif 'cpu_load_15m' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} CPU Load (15m)',
+                name: '{{each_sensor.name}} {{_('CPU Load')}} (15m)',
                 type: 'line',
                 tooltip: {
                   valueDecimals: 2
@@ -960,7 +960,7 @@
             {% endif %}
           {%- elif each_sensor.device_type == 'tsensor' -%}
             {
-              name: '{{each_sensor.name}} Temperature',
+              name: '{{each_sensor.name}} {{_('Temperature')}}',
               type: 'line',
               tooltip: {
                 pointFormatter: function () {
@@ -973,7 +973,7 @@
           {%- elif each_sensor.device_type == 'tmpsensor' -%}
             {% if 'temperature_object' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Temperature (Object)',
+                name: '{{each_sensor.name}} {{_('Temperature (Object)')}}',
                 type: 'line',
                   tooltip: {
                   pointFormatter: function () {
@@ -985,7 +985,7 @@
               },
             {% elif 'temperature_die' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Temperature (Die)',
+                name: '{{each_sensor.name}} {{_('Temperature (Die)')}}',
                 type: 'line',
                 tooltip: {
                   pointFormatter: function () {
@@ -999,7 +999,7 @@
           {%- elif each_sensor.device_type == 'htsensor' -%}
             {% if 'temperature' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Temperature',
+                name: '{{each_sensor.name}} {{_('Temperature')}}',
                 type: 'line',
                 tooltip: {
                   pointFormatter: function () {
@@ -1011,7 +1011,7 @@
               },
             {%- elif 'humidity' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Humidity',
+                name: '{{each_sensor.name}} {{_('Humidity')}}',
                 type: 'line',
                 tooltip: {
                   valueSuffix: ' %',
@@ -1022,7 +1022,7 @@
               },
             {%- elif 'dewpoint' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Dew Point',
+                name: '{{each_sensor.name}} {{_('Dew Point')}}',
                 tooltip: {
                   pointFormatter: function () {
                     return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
@@ -1035,7 +1035,7 @@
           {%- elif each_sensor.device_type == 'moistsensor' -%}
             {% if 'lux' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Light',
+                name: '{{each_sensor.name}} {{_('Light')}}',
                 type: 'line',
                 tooltip: {
                   valueSuffix: '',
@@ -1046,7 +1046,7 @@
               },
             {%- elif 'moisture' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Moisture',
+                name: '{{each_sensor.name}} {{_('Moisture')}}',
                 type: 'line',
                 tooltip: {
                   valueSuffix: '',
@@ -1057,7 +1057,7 @@
               },
             {%- elif 'temperature' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Temperature',
+                name: '{{each_sensor.name}} {{_('Temperature')}}',
                 tooltip: {
                   pointFormatter: function () {
                     return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
@@ -1080,7 +1080,7 @@
             },
           {%- elif each_sensor.device_type == 'luxsensor' -%}
             {
-              name: '{{each_sensor.name}} Lux',
+              name: '{{each_sensor.name}} {{_('Lux')}}',
               type: 'line',
               tooltip: {
                 valueSuffix: ' lx',
@@ -1092,7 +1092,7 @@
           {%- elif each_sensor.device_type == 'presssensor' -%}
             {%- if 'temperature' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Temperature',
+                name: '{{each_sensor.name}} {{_('Temperature')}}',
                 type: 'line',
                 tooltip: {
                   pointFormatter: function () {
@@ -1104,7 +1104,7 @@
               },
             {%- elif 'humidity' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Humidity',
+                name: '{{each_sensor.name}} {{_('Humidity')}}',
                 type: 'line',
                 tooltip: {
                   valueSuffix: ' %',
@@ -1115,7 +1115,7 @@
               },
             {%- elif 'dewpoint' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Dew Point',
+                name: '{{each_sensor.name}} {{_('Dew Point')}}',
                 tooltip: {
                   pointFormatter: function () {
                     return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
@@ -1126,7 +1126,7 @@
               },
             {%- elif 'pressure' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Pressure',
+                name: '{{each_sensor.name}} {{_('Pressure')}}',
                 type: 'line',
                 tooltip: {
                   valueSuffix: ' Pa',
@@ -1137,7 +1137,7 @@
               },
             {%- elif 'altitude' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Altitude',
+                name: '{{each_sensor.name}} {{_('Altitude')}}',
                 type: 'line',
                 tooltip: {
                   valueSuffix: ' m',
@@ -1149,7 +1149,7 @@
             {%- endif -%}
           {%- elif each_sensor.device_type == 'edgedetect' -%}
             {
-              name: '{{each_sensor.name}} Edge',
+              name: '{{each_sensor.name}} {{_('Edge')}}',
               type: 'line',
               type: 'column',
               tooltip: {
@@ -1162,7 +1162,7 @@
           {%- elif each_sensor.device_type == 'analogsensor' -%}
             {%- if 'voltage' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Voltage',
+                name: '{{each_sensor.name}} {{_('Voltage')}}',
                 type: 'line',
                 tooltip: {
                   valueSuffix: ' volts',

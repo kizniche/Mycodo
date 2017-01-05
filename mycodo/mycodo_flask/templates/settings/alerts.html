@@ -3,7 +3,7 @@
 {% set active_page = "settings" %}
 {% set active_settings = "alerts" %}
 
-{% block title %} - Alerts Settings{% endblock %}
+{% block title %} - {{_('Alerts Settings')}}{% endblock %}
 
 {% block settings %}
   <!-- Route: /settings/alerts -->
@@ -22,7 +22,7 @@
       <div class="form-group">
         {{formEmailAlert.smtpPort.label(class_='col-sm-4 control-label')}}
         <div class="col-sm-8">
-          {{formEmailAlert.smtpPort(class_='form-control',type="number", value=smtp_set.port,**{'title':'465 for SSL, 587 for TSL'})}}
+          {{formEmailAlert.smtpPort(class_='form-control',type="number", value=smtp_set.port,**{'title':_('465 for SSL, 587 for TSL')})}}
         </div>
       </div>
       <div class="form-group">
@@ -39,13 +39,13 @@
       <div class="form-group">
         {{formEmailAlert.smtpUser.label(class_='col-sm-4 control-label')}}
         <div class="col-sm-8">
-          {{formEmailAlert.smtpUser(class_='form-control', value=smtp_set.user,**{'title':'Usually your full email address'})}}
+          {{formEmailAlert.smtpUser(class_='form-control', value=smtp_set.user,**{'title':_('Usually your full email address')})}}
         </div>
       </div>
       <div class="form-group">
         {{formEmailAlert.smtpPassword.label(class_='col-sm-4 control-label')}}
         <div class="col-sm-8">
-          {{formEmailAlert.smtpPassword(class_='form-control',**{'title':'Only enter a password here if you wish to change it'})}} 
+          {{formEmailAlert.smtpPassword(class_='form-control',**{'title':_('Only enter a password here if you wish to change it')})}}
         </div>
       </div>
       <div class="form-group">
@@ -57,7 +57,7 @@
       <div class="form-group">
         {{formEmailAlert.smtpMaxPerHour.label(class_='col-sm-4 control-label')}}
         <div class="col-sm-8">
-          {{formEmailAlert.smtpMaxPerHour(class_='form-control',type="number", value=smtp_set.hourly_max,**{'title':'Maximum number of alerts that can be emailed per hour.'})}}
+          {{formEmailAlert.smtpMaxPerHour(class_='form-control',type="number", value=smtp_set.hourly_max,**{'title':_('Maximum number of alerts that can be emailed per hour.')})}}
         </div>
       </div>
       <div class="form-group">
