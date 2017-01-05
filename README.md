@@ -355,10 +355,10 @@ Finally, compile the new translation.
 
 If you would like to rescan for translatable text and update your messages.po file without losing your previous translation work, use the following commands instead of the above commands, then edit with poedit and compile.
 
-'''
+```
 pybabel extract -F babel.cfg -o messages.pot .
 pybabel update -i messages.pot -d mycodo_flask/translations
-'''
+```
 
 Refer to [The Flask Mega-Tutorial, Part XIV: I18n and L10n](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xiv-i18n-and-l10n) for more details of this process.
 
