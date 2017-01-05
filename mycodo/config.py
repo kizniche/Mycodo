@@ -28,7 +28,8 @@ MYCODO_VERSION = '4.0.26'
 
 LANGUAGES = {
     'en': 'English',
-    'es': 'Español'
+    'es': 'Español',
+    'fr': 'Français'
 }
 
 INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'

@@ -353,7 +353,7 @@ Finally, compile the new translation.
 
 ```pybabel compile -d mycodo_flask/translations```
 
-If you would like to rescan for translatable text and update your messages.po file without losing your previous translation work, use the following commands instead of the above commands, then edit with poedit and compile.
+If you would like to rescan for translatable text and update your language's messages.po file without losing your previous translation work, use the following commands instead of the above commands. Then edit with poedit and compile for it to take effect.
 
 ```
 pybabel extract -F babel.cfg -o messages.pot .

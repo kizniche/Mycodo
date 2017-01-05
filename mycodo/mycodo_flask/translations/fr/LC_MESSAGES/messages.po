@@ -1,0 +1,174 @@
+# French translations for PROJECT.
+# Copyright (C) 2017 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2017-01-05 00:43-0500\n"
+"PO-Revision-Date: 2017-01-05 00:55-0500\n"
+"Language: fr\n"
+"Language-Team: fr <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.3.4\n"
+"Last-Translator: \n"
+"X-Generator: Poedit 1.8.11\n"
+
+#: mycodo_flask/templates/404.html:3 mycodo_flask/templates/404.html:5
+msgid "Error 404: Page Not Found"
+msgstr "Erreur 404 - Page non trouvée"
+
+#: mycodo_flask/templates/create_admin.html:12
+#: mycodo_flask/templates/create_admin.html:49
+msgid "Create Admin"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:79
+msgid "Sensor"
+msgstr "Capteur"
+
+#: mycodo_flask/templates/layout.html:80
+msgid "Relay"
+msgstr "Relais"
+
+#: mycodo_flask/templates/layout.html:81
+msgid "Method"
+msgstr "Méthode"
+
+#: mycodo_flask/templates/layout.html:82
+msgid "PID"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:83
+msgid "Timer"
+msgstr "Minuteur"
+
+#: mycodo_flask/templates/layout.html:101
+msgid "Live"
+msgstr "Vivant"
+
+#: mycodo_flask/templates/layout.html:103
+msgid "Graph"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:113
+msgid "Tools"
+msgstr "Outils"
+
+#: mycodo_flask/templates/layout.html:115
+msgid "LCDs"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:116
+msgid "Camera"
+msgstr "Caméra"
+
+#: mycodo_flask/templates/layout.html:117
+msgid "Relay Usage"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:118
+msgid "Sensor Logs"
+msgstr "Registres des capteurs"
+
+#: mycodo_flask/templates/layout.html:119
+msgid "Mycodo Logs"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:120
+msgid "System Info"
+msgstr "Information Système"
+
+#: mycodo_flask/templates/layout.html:121
+msgid "Notes"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:126
+msgid "Help"
+msgstr "Aidez-moi"
+
+#: mycodo_flask/templates/layout.html:128
+msgid "Admin"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:130
+msgid "Configure"
+msgstr "Configurer"
+
+#: mycodo_flask/templates/layout.html:131
+msgid "Upgrade"
+msgstr "Surclassement"
+
+#: mycodo_flask/templates/layout.html:132
+msgid "Backup/Restore"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:134
+msgid "Restart Computer"
+msgstr "Redémarrer l'ordinateur"
+
+#: mycodo_flask/templates/layout.html:135
+msgid "Shutdown Computer"
+msgstr "Éteindre l'ordinateur"
+
+#: mycodo_flask/templates/layout.html:137
+msgid "Remote Admin"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:139
+msgid "Logout"
+msgstr "Se déconnecter"
+
+#: mycodo_flask/templates/login.html:12
+msgid "Login"
+msgstr "S'identifier"
+
+#: mycodo_flask/templates/login.html:37
+msgid "You're logged in already!"
+msgstr "Vous êtes déjà connecté!"
+
+#: mycodo_flask/templates/login.html:45
+msgid "Mycodo Login"
+msgstr ""
+
+#: mycodo_flask/templates/login.html:52
+msgid "Remember me (90 days)"
+msgstr "Se souvenir de moi (90 jours)"
+
+#: mycodo_flask/templates/login.html:54
+msgid "Sign in"
+msgstr "S'identifier"
+
+#: mycodo_flask/templates/pages/live.html:8
+#: mycodo_flask/templates/pages/live.html:41
+#: mycodo_flask/templates/pages/live.html:44
+#: mycodo_flask/templates/pages/live.html:135
+#: mycodo_flask/templates/pages/live.html:144
+#: mycodo_flask/templates/pages/live.html:151
+#: mycodo_flask/templates/pages/live.html:159
+#: mycodo_flask/templates/pages/live.html:168
+#: mycodo_flask/templates/pages/live.html:175
+#: mycodo_flask/templates/pages/live.html:182
+#: mycodo_flask/templates/pages/live.html:191
+#: mycodo_flask/templates/pages/live.html:200
+#: mycodo_flask/templates/pages/live.html:208
+msgid "Measurement"
+msgstr "Mesure"
+
+#: mycodo_flask/templates/pages/live.html:135
+#: mycodo_flask/templates/pages/live.html:144
+#: mycodo_flask/templates/pages/live.html:151
+#: mycodo_flask/templates/pages/live.html:159
+#: mycodo_flask/templates/pages/live.html:168
+#: mycodo_flask/templates/pages/live.html:175
+#: mycodo_flask/templates/pages/live.html:182
+#: mycodo_flask/templates/pages/live.html:191
+#: mycodo_flask/templates/pages/live.html:200
+#: mycodo_flask/templates/pages/live.html:208
+msgid "Timestamp"
+msgstr ""
