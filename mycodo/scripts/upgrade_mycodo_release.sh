@@ -229,6 +229,10 @@ EOF
         apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3 gawk
         easy_install pip
     ;;
+    'compile-translations')
+        printf "#### Compiling Translations ####\n"
+        pybabel compile -d ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/translations
+    ;;
     'upgrade-influxdb')
         printf "#### Upgrade influxdb if out-of-date or not installed ####\n"
         INFLUX_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')

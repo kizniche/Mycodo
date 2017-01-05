@@ -69,6 +69,8 @@ pip install -r requirements.txt --upgrade
 
 rm -rf ./PIGPIO ./pigpio.zip ./wiringPi
 
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh compile-translations
+
 printf "#### Creating InfluxDB database and user\n"
 influx -execute "CREATE DATABASE mycodo_db"
 influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"

@@ -62,6 +62,8 @@ printf "#### Upgrading database ####\n"
 cd ${INSTALL_DIRECTORY}/databases
 alembic upgrade head
 
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh compile-translations
+
 printf "#### Removing statistics file ####\n"
 rm ${INSTALL_DIRECTORY}/databases/statistics.csv
 

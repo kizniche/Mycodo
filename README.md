@@ -339,7 +339,7 @@ To create your own translation, use the following commands.
 
 Create a messages.pot file from searching all files that contain translatable text.
 
-```pybabel extract -F babel.cfg -o messages.pot mycodo_flask```
+```pybabel extract -F babel.cfg -o messages.pot .```
 
 Create the translation for the new language (in this case it is 'es' for Spanish).
 
@@ -356,7 +356,7 @@ Finally, compile the new translation.
 If you would like to rescan for translatable text and update your messages.po file without losing your previous translation work, use the following commands instead of the above commands, then edit with poedit and compile.
 
 '''
-pybabel extract -F babel.cfg -o messages.pot mycodo_flask
+pybabel extract -F babel.cfg -o messages.pot .
 pybabel update -i messages.pot -d mycodo_flask/translations
 '''
 
