@@ -23,7 +23,6 @@ case "${1:-''}" in
           CURRENT_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
           UPDATE_URL=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 4 2>&1)
           UPDATE_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 4 -v 2>&1)
-          MYCODO_OLD_TMP_DIR="${INSTALL_DIRECTORY}/Mycodo-${CURRENT_VERSION}"
           MYCODO_NEW_TMP_DIR="/tmp/Mycodo-${UPDATE_VERSION}"
           TARBALL_FILE="mycodo-${UPDATE_VERSION}"
 

@@ -23,6 +23,7 @@ from flask import (current_app,
                    session,
                    redirect,
                    after_this_request)
+from flask_babel import gettext
 
 from influxdb import InfluxDBClient
 from sqlalchemy import and_
@@ -66,10 +67,10 @@ logger = logging.getLogger(__name__)
 def is_positive_integer(number_string):
     try:
         if int(number_string) < 0:
-            flash("Duration must be a positive integer", "error")
+            flash(gettext("Duration must be a positive integer"), "error")
             return False
     except ValueError:
-        flash("Duration must be a valid integer", "error")
+        flash(gettext("Duration must be a valid integer"), "error")
         return False
     return True
 
@@ -80,40 +81,44 @@ def validate_method_data(form_data, this_method):
             if (not form_data.startTime.data or
                     not form_data.endTime.data or
                     form_data.startSetpoint.data == ''):
-                flash("Required: Start date/time, end date/time, start setpoint",
-                      "error")
+                flash(gettext("Required: Start date/time, end date/time, "
+                              "start setpoint"), "error")
                 return 1
             try:
                 start_time = datetime.strptime(form_data.startTime.data, '%Y-%m-%d %H:%M:%S')
                 end_time = datetime.strptime(form_data.endTime.data, '%Y-%m-%d %H:%M:%S')
             except ValueError:
-                flash("Invalid Date/Time format. Correct format: DD/MM/YYYY HH:MM:SS", "error")
+                flash(gettext("Invalid Date/Time format. Correct format: "
+                              "DD/MM/YYYY HH:MM:SS"), "error")
                 return 1
             if end_time <= start_time:
-                flash("The end time/date must be after the start time/date.", "error")
+                flash(gettext("The end time/date must be after the start "
+                              "time/date."), "error")
                 return 1
 
         elif this_method.method_type == 'Daily':
             if (not form_data.startDailyTime.data or
                     not form_data.endDailyTime.data or
                     form_data.startSetpoint.data == ''):
-                flash("Required: Start time, end time, start setpoint",
-                      "error")
+                flash(gettext("Required: Start time, end time, start "
+                              "setpoint"), "error")
                 return 1
             try:
                 start_time = datetime.strptime(form_data.startDailyTime.data, '%H:%M:%S')
                 end_time = datetime.strptime(form_data.endDailyTime.data, '%H:%M:%S')
             except ValueError:
-                flash("Invalid Date/Time format. Correct format: HH:MM:SS", "error")
+                flash(gettext("Invalid Date/Time format. Correct format: "
+                              "HH:MM:SS"), "error")
                 return 1
             if end_time <= start_time:
-                flash("The end time must be after the start time.", "error")
+                flash(gettext("The end time must be after the start time."),
+                      "error")
                 return 1
 
         elif this_method.method_type == 'Duration':
             if (not form_data.DurationSec.data or
                     form_data.startSetpoint.data == ''):
-                flash("Required: Duration, start setpoint",
+                flash(gettext("Required: Duration, start setpoint"),
                       "error")
                 return 1
             if not is_positive_integer(form_data.DurationSec.data):
@@ -124,13 +129,14 @@ def validate_method_data(form_data, this_method):
             if (not form_data.relayTime.data or
                     not form_data.relayID.data or
                     not form_data.relayState.data):
-                flash("Required: Date/Time, Relay ID, and Relay State",
-                      "error")
+                flash(gettext("Required: Date/Time, Relay ID, and Relay "
+                              "State"), "error")
                 return 1
             try:
                 start_time = datetime.strptime(form_data.relayTime.data, '%Y-%m-%d %H:%M:%S')
             except ValueError:
-                flash("Invalid Date/Time format. Correct format: DD-MM-YYYY HH:MM:SS", "error")
+                flash(gettext("Invalid Date/Time format. Correct format: "
+                              "DD-MM-YYYY HH:MM:SS"), "error")
                 return 1
         elif this_method.method_type == 'Duration':
             if (not form_data.DurationSec.data or
@@ -145,19 +151,20 @@ def validate_method_data(form_data, this_method):
             if (not form_data.relayDailyTime.data or
                     not form_data.relayID.data or
                     not form_data.relayState.data):
-                flash("Required: Time, Relay ID, and Relay State",
+                flash(gettext("Required: Time, Relay ID, and Relay State"),
                       "error")
                 return 1
             try:
                 start_time = datetime.strptime(form_data.relayDailyTime.data, '%H:%M:%S')
             except ValueError:
-                flash("Invalid Date/Time format. Correct format: HH:MM:SS", "error")
+                flash(gettext("Invalid Date/Time format. Correct format: "
+                              "HH:MM:SS"), "error")
                 return 1
 
 
 def method_create(formCreateMethod, method_id):
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to create methods", "error")
+        flash(gettext("Guests are not permitted to create methods"), "error")
         return redirect('/')
 
     try:
@@ -196,7 +203,7 @@ def method_create(formCreateMethod, method_id):
 
 def method_add(formAddMethod, method):
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to add to methods", "error")
+        flash(gettext("Guests are not permitted to add to methods"), "error")
         return redirect('/')
 
     # Validate input time data
@@ -214,15 +221,17 @@ def method_add(formAddMethod, method):
             mod_method.shift_angle = formAddMethod.shiftAngle.data
             mod_method.shift_y = formAddMethod.shiftY.data
             db_session.commit()
-            flash("Sine method settings successfully modified", "success")
+            flash(gettext("Sine method settings successfully modified"),
+                  "success")
         return 0
 
     if this_method.method_type == 'DailyBezier':
         if not 0 <= formAddMethod.shiftAngle.data <= 360:
-            flash("Error: Angle Shift is out of range. It must be <= 0 and <= 360.", "error")
+            flash(gettext("Error: Angle Shift is out of range. It must be "
+                          "<= 0 and <= 360."), "error")
             return 1
         if formAddMethod.x0.data <= formAddMethod.x3.data:
-            flash("Error: X0 must be greater than X3.", "error")
+            flash(gettext("Error: X0 must be greater than X3."), "error")
             return 1
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             mod_method = db_session.query(Method).filter(
@@ -237,7 +246,8 @@ def method_add(formAddMethod, method):
             mod_method.x3 = formAddMethod.x3.data
             mod_method.y3 = formAddMethod.y3.data
             db_session.commit()
-            flash("Bezier method settings successfully modified", "success")
+            flash(gettext("Bezier method settings successfully modified"),
+                  "success")
         return 0
 
     if formAddMethod.method_select.data == 'setpoint':
@@ -262,7 +272,13 @@ def method_add(formAddMethod, method):
                         last_method_end_time = datetime.strptime(last_method.end_time, '%H:%M:%S')
 
                     if start_time < last_method_end_time:
-                        flash("The new entry start time ({}) cannot overlap the last entry's end time ({}). Note: They may be the same time.".format(last_method_end_time, start_time), "error")
+                        flash(gettext("The new entry start time (%(st)s) "
+                                      "cannot overlap the last entry's end "
+                                      "time (%(et)s). Note: They may be the "
+                                      "same time.",
+                                      st=last_method_end_time,
+                                      et=start_time),
+                              "error")
                         return 1
             except ValueError as e:
                 logger.error("{err}".format(err=e))
@@ -317,32 +333,37 @@ def method_add(formAddMethod, method):
 
         if formAddMethod.method_select.data == 'setpoint':
             if this_method.method_type == 'Date':
-                flash("Added duration to method from {} to {}.".format(
-                    start_time, end_time), "success")
+                flash(gettext("Added duration to method from %(st)s to "
+                              "%(end)s.", st=start_time, end=end_time),
+                      "success")
             elif this_method.method_type == 'Daily':
-                flash("Added duration to method from {} to {}.".format(
-                    start_time.strftime('%H:%M:%S'), end_time.strftime('%H:%M:%S')), "success")
+                flash(gettext("Added duration to method from %(st)s to "
+                              "%(end)s.",
+                              st=start_time.strftime('%H:%M:%S'),
+                              end=end_time.strftime('%H:%M:%S')),
+                      "success")
             elif this_method.method_type == 'Duration':
-                flash("Added duration to method for {} seconds".format(
-                    formAddMethod.DurationSec.data), "success")
+                flash(gettext("Added duration to method for %(sec)s seconds",
+                              sec=formAddMethod.DurationSec.data), "success")
         elif formAddMethod.method_select.data == 'relay':
             if this_method.method_type == 'Date':
-                flash("Added relay modulation to method at {}".format(
-                    start_time), "success")
+                flash(gettext("Added relay modulation to method at %(tm)s",
+                              tm=start_time), "success")
             elif this_method.method_type == 'Daily':
-                flash("Added relay modulation to method at {}".format(
-                    start_time.strftime('%H:%M:%S')), "success")
+                flash(gettext("Added relay modulation to method at %(tm)s",
+                              tm=start_time.strftime('%H:%M:%S')), "success")
             elif this_method.method_type == 'Duration':
-                flash("Added relay modulation to method at {} seconds".format(
-                    formAddMethod.DurationSec.data), "success")
+                flash(gettext("Added relay modulation to method at %(sec)s "
+                              "seconds", sec=formAddMethod.DurationSec.data),
+                      "success")
 
-    except Exception as msg:
-        flash("Add Method Error: {}".format(msg), "error")
+    except Exception as err:
+        flash(gettext("Add Method Error: %(err)s", err=err), "error")
 
 
 def method_mod(formModMethod, method):
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to modify methods", "error")
+        flash(gettext("Guests are not permitted to modify methods"), "error")
         return redirect('/')
 
     if formModMethod.Delete.data:
@@ -358,7 +379,7 @@ def method_mod(formModMethod, method):
             mod_method = mod_method.filter(Method.method_order == 0).first()
             mod_method.name = formModMethod.name.data
             db_session.commit()
-            flash("Method successfully renamed.", "success")
+            flash(gettext("Method successfully renamed."), "success")
             return 0
 
     # Ensure data data is valid
@@ -437,7 +458,7 @@ def method_mod(formModMethod, method):
                 mod_method.relay_duration = formModMethod.relayDurationSec.data
 
         db_session.commit()
-        flash("Method settings successfully modified.", "success")
+        flash(gettext("Method settings successfully modified."), "success")
 
 
 def method_del(method_id):
@@ -487,7 +508,8 @@ def auth_credentials(address, user, password_hash):
 
 def remote_host_add(formSetup, display_order):
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to add remote hosts", "error")
+        flash(gettext("Guests are not permitted to add remote hosts"),
+              "error")
         return redirect('/')
 
     if formSetup.validate():
@@ -518,18 +540,20 @@ def remote_host_add(formSetup, display_order):
             except sqlalchemy.exc.OperationalError as except_msg:
                 flash("Failed to add remote host: {}".format(except_msg), "error")
             except sqlalchemy.exc.IntegrityError:
-                flash("A remote host with that ID already exists", "error")
+                flash(gettext("A remote host with that ID already exists"),
+                      "error")
         except Exception as msg:
             flash("Error adding a new remote host. Ensure the remote host "
-                 "is running the same Mycodo version as this system. Error: "
-                 "{}".format(msg), "error")
+                  "is running the same Mycodo version as this system. Error: "
+                  "{}".format(msg), "error")
     else:
         flash_form_errors(formSetup)
 
 
 def remote_host_del(formSetup, display_order):
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to delete remote hosts", "error")
+        flash(gettext("Guests are not permitted to delete remote hosts"),
+              "error")
         return redirect('/')
 
     try:
@@ -588,14 +612,22 @@ def activate_deactivate_controller(controller_action,
     :type controller_id: str
     """
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to activate/deactivate {} "
-              "controllers".format(controller_type), "error")
+        flash(gettext("Guests are not permitted to activate/deactivate "
+              "controllers"), "error")
         return redirect('/')
 
     if controller_action == 'activate':
         activated_integer = 1
     else:
         activated_integer = 0
+
+    translated_names = {
+        "LCD": gettext("LCD"),
+        "Log": gettext("Log"),
+        "PID": gettext("PID"),
+        "Sensor": gettext("Sensor"),
+        "Timer": gettext("Timer")
+    }
 
     try:
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
@@ -616,11 +648,18 @@ def activate_deactivate_controller(controller_action,
                     Timer.id == controller_id).first()
             mod_controller.activated = activated_integer
             db_session.commit()
-        flash("{} controller {}d in SQL database.".format(
-            controller_type, controller_action), "success")
+        if activated_integer:
+            flash(gettext("%(cont)s controller activated in SQL database",
+                          cont=translated_names[controller_type]),"success")
+        else:
+            flash(gettext("%(cont)s controller deactivated in SQL database",
+                          cont=translated_names[controller_type]), "success")
     except Exception as except_msg:
-        flash("{} settings were not able to be modified: {}".format(
-            controller_type, except_msg), "error")
+        flash(gettext("%(cont)s settings were not able to be modified: "
+                      "%(err)s",
+                      cont=translated_names[controller_type],
+                      err=except_msg),
+              "error")
 
     try:
         control = DaemonControl()
@@ -636,7 +675,7 @@ def activate_deactivate_controller(controller_action,
             flash("{}".format(return_values[1]), "success")
     except Exception as except_msg:
         flash("Could not communicate with daemon: {}".format(except_msg),
-                                                             "error")
+              "error")
 
 
 #
@@ -741,14 +780,13 @@ def choices_id_name(table):
     return choices
 
 
-
 #
 # Graph
 #
 
 def graph_add(formAddGraph, display_order):
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to add graphs", "error")
+        flash(gettext("Guests are not permitted to add graphs"), "error")
         return redirect('/graph')
 
     if (formAddGraph.name.data and formAddGraph.width.data and
@@ -794,7 +832,7 @@ def graph_add(formAddGraph, display_order):
 
 def graph_mod(formModGraph):
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to modify graphs", "error")
+        flash(gettext("Guests are not permitted to modify graphs"), "error")
         return redirect('/graph')
 
     if formModGraph.validate():
@@ -817,18 +855,19 @@ def graph_mod(formModGraph):
                 mod_graph.enable_export = formModGraph.enableExport.data
                 mod_graph.enable_rangeselect = formModGraph.enableRangeSelect.data
                 db_session.commit()
-                flash("Graph settings successfully modified", "success")
+                flash(gettext("Graph settings successfully modified"),
+                      "success")
         except sqlalchemy.exc.OperationalError as except_msg:
             flash("Failed to modify graph: {}".format(except_msg), "error")
         except sqlalchemy.exc.IntegrityError:
-            flash("A graph with that ID already exists", "error")
+            flash(gettext("A graph with that ID already exists"), "error")
     else:
         flash_form_errors(formModGraph)
 
 
 def graph_del(formDelGraph, display_order):
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to delete graphs", "error")
+        flash(gettext("Guests are not permitted to delete graphs"), "error")
         return redirect('/graph')
 
     if formDelGraph.validate():
@@ -1981,7 +2020,7 @@ def sensor_mod(formModSensor):
 
 def sensor_del(formModSensor, display_order):
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to delete sensors", "error")
+        flash(gettext("Guests are not permitted to delete sensors"), "error")
         return redirect('/sensor')
 
     try:
@@ -2043,6 +2082,10 @@ def sensor_reorder(formModSensor, display_order):
 
 
 def sensor_activate(formModSensor):
+    if session['user_group'] == 'guest':
+        flash(gettext("Guests are not permitted to activate sensors"),
+              "error")
+        return redirect('/sensor')
     with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
         sensor = db_session.query(Sensor).filter(
             Sensor.id == formModSensor.modSensor_id.data).first()
@@ -2056,6 +2099,11 @@ def sensor_activate(formModSensor):
 
 
 def sensor_deactivate(formModSensor):
+    if session['user_group'] == 'guest':
+        flash(gettext("Guests are not permitted to deactivate sensors"),
+              "error")
+        return redirect('/sensor')
+
     sensor_deactivate_associated_controllers(
         formModSensor.modSensor_id.data)
     activate_deactivate_controller('deactivate',
@@ -2065,10 +2113,6 @@ def sensor_deactivate(formModSensor):
 
 # Deactivate any active PID or LCD controllers using this sensor
 def sensor_deactivate_associated_controllers(sensor_id):
-    if session['user_group'] == 'guest':
-        flash("Guests are not permitted to deactivate sensors", "error")
-        return redirect('/sensor')
-
     with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
         pid = db_session.query(PID).filter(and_(
                 PID.sensor_id == sensor_id,
@@ -2095,7 +2139,8 @@ def sensor_deactivate_associated_controllers(sensor_id):
 
 def sensor_conditional_add(formModSensor):
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to add sensor conditionals", "error")
+        flash(gettext("Guests are not permitted to add sensor conditionals"),
+              "error")
         return redirect('/sensor')
 
     new_sensor_cond = SensorConditional()
@@ -2132,13 +2177,14 @@ def sensor_conditional_add(formModSensor):
         flash("Failed to add sensor conditional: {}".format(except_msg),
               "error")
     except sqlalchemy.exc.IntegrityError:
-        flash("A sensor conditional with that ID already exists",
+        flash(gettext("A sensor conditional with that ID already exists"),
               "error")
 
 
 def sensor_conditional_mod(formModSensorCond):
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to modify sensor conditionals",
+        flash(gettext("Guests are not permitted to modify sensor "
+                      "conditionals"),
               "error")
         return redirect('/sensor')
 
@@ -2159,8 +2205,9 @@ def sensor_conditional_mod(formModSensorCond):
         try:
             error = False
             if (formModSensorCond.DoRecord.data == 'photoemail' or formModSensorCond.DoRecord.data == 'videoemail') and not formModSensorCond.DoNotify.data:
-                flash("You must specify a notification email address if the "
-                      "record and email option is selcted. ", "error")
+                flash(gettext("You must specify a notification email address "
+                              "if the record and email option is selected"),
+                      "error")
                 error = True
             if error:
                 return redirect('/sensor')
@@ -2183,8 +2230,8 @@ def sensor_conditional_mod(formModSensorCond):
                 mod_sensor.flash_lcd = formModSensorCond.DoFlashLCD.data
                 mod_sensor.camera_record = formModSensorCond.DoRecord.data
                 db_session.commit()
-                flash("Sensor Conditional settings successfully "
-                      "modified", "success")
+                flash(gettext("Sensor Conditional settings successfully "
+                              "modified"), "success")
                 check_refresh_conditional(formModSensorCond.modSensor_id.data,
                                           'mod',
                                           formModSensorCond.modCondSensor_id.data)
@@ -2222,8 +2269,8 @@ def sensor_conditional_mod(formModSensorCond):
                 if device_specific_configured and cond_configured:
                     mod_sensor.activated = 1
                     db_session.commit()
-                    flash("Sensor Conditional activated in SQL "
-                          "database.", "success")
+                    flash(gettext("Sensor Conditional activated in SQL "
+                                  "database."), "success")
                     check_refresh_conditional(formModSensorCond.modSensor_id.data,
                                               'mod',
                                               formModSensorCond.modCondSensor_id.data)
@@ -2241,8 +2288,8 @@ def sensor_conditional_mod(formModSensorCond):
                     SensorConditional.id == formModSensorCond.modCondSensor_id.data).first()
                 mod_sensor.activated = 0
                 db_session.commit()
-                flash("Sensor Conditional deactivated in SQL database.",
-                      "success")
+                flash(gettext("Sensor Conditional deactivated in SQL "
+                              "database."), "success")
                 check_refresh_conditional(formModSensorCond.modSensor_id.data,
                                           'mod',
                                           formModSensorCond.modCondSensor_id.data)
@@ -2269,7 +2316,7 @@ def check_refresh_conditional(sensor_id, cond_mod, cond_id):
 
 def timer_add(formAddTimer, timerType, display_order):
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to add timers", "error")
+        flash(gettext("Guests are not permitted to add timers"), "error")
         return redirect('/timer')
     
     if formAddTimer.validate():

@@ -94,7 +94,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" id="daemon-status" data-toggle="tooltip" data-placement="bottom" href="https://github.com/kizniche/Mycodo" target="_blank" style="text-align: center; padding: 4px 15px; font-size: 14px; font-weight: bold;{%- if daemon_status == "alive" -%} /*noinspection CssOverwrittenProperties*/color: #4E9258{%- else -%} /*noinspection CssOverwrittenProperties*/color: #F70D1A{%- endif -%}" title="{%- if daemon_status == "alive" -%}Daemon is Running{%- else -%}Daemon is Not Running{%- endif -%}">{{host}}<br>Mycodo {{mycodo_version}}</a>
+          <a class="navbar-brand" id="daemon-status" data-toggle="tooltip" data-placement="bottom" href="https://github.com/kizniche/Mycodo" target="_blank" style="text-align: center; padding: 4px 15px; font-size: 14px; font-weight: bold;{%- if daemon_status == "alive" -%} /*noinspection CssOverwrittenProperties*/color: #4E9258{%- else -%} /*noinspection CssOverwrittenProperties*/color: #F70D1A{%- endif -%}" title="{%- if daemon_status == "alive" -%}{{_('Daemon is Running')}}{%- else -%}{{_('Daemon is Not Running')}}{%- endif -%}">{{host}}<br>Mycodo {{mycodo_version}}</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -102,8 +102,8 @@
             <li class="dropdown{% if active_page == 'graph' %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Graph')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="{{url_for('page_routes.page_graph')}}">General Graph</a></li>
-                <li><a href="{{url_for('page_routes.page_graph_async')}}">Asynchronous Graph</a></li>
+                <li><a href="{{url_for('page_routes.page_graph')}}">{{_('General Graph')}}</a></li>
+                <li><a href="{{url_for('page_routes.page_graph_async')}}">{{_('Asynchronous Graph')}}</a></li>
               </ul>
             </li>
           {% for href, id, caption in navigation_bar_top %}
@@ -112,7 +112,7 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Tools')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="{{url_for('page_routes.page_lcd')}}">{{_('LCDs')}}</a></li>
+                <li><a href="{{url_for('page_routes.page_lcd')}}">{{_('LCD')}}</a></li>
                 <li><a href="{{url_for('page_routes.page_camera')}}">{{_('Camera')}}</a></li>
                 <li><a href="{{url_for('page_routes.page_usage')}}">{{_('Relay Usage')}}</a></li>
                 <li><a href="{{url_for('page_routes.page_log')}}">{{_('Sensor Logs')}}</a></li>

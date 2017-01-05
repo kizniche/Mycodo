@@ -58,10 +58,11 @@ def create_app(config=ProdConfig):
     app.config.from_object(config)
     app.secret_key = os.urandom(24)
 
-    babel = Babel(app)
-
     register_extensions(app, config)
     register_blueprints(app)
+
+    # Translations
+    babel = Babel(app)
 
     @babel.localeselector
     def get_locale():

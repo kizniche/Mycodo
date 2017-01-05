@@ -6,7 +6,6 @@ import os
 import pwd
 import socket
 import subprocess
-import sys
 
 logger = logging.getLogger(__name__)
 
