@@ -47,7 +47,7 @@
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status == 204) {
           document.getElementById("daemon-status").style.color = "#F70D1A";
-          $('#daemon-status').tooltip('hide').attr('data-original-title', {{_('Daemon is Not Running')}}');
+          $('#daemon-status').tooltip('hide').attr('data-original-title', {{_('Daemon is Not Running')}});
         }
         else {
           if (data == 'alive') {
