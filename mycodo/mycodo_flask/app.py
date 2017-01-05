@@ -65,7 +65,7 @@ def create_app(config=ProdConfig):
 
     @babel.localeselector
     def get_locale():
-        return 'es'  # request.accept_languages.best_match(LANGUAGES.keys())
+        return request.accept_languages.best_match(LANGUAGES.keys())
 
     return app
 
