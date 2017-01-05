@@ -158,7 +158,7 @@ def test_password(pw, addl_tests=None, test_defaults=True):
     tests = []
 
     if test_defaults:
-        tests += [characters, pass_length_min]
+        tests += [pass_length_min]
 
     if addl_tests:
         tests += addl_tests

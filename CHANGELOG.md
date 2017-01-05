@@ -12,6 +12,7 @@ Features:
 
   - Add text translation ability (with Spanish as the first translation)
   - New upgrade system to perform upgrades from github releases instead of commits
+  - Allow symbols to be used in a user password
   - Introduce changelog (CHANGELOG.md)
 
 Bugfixes:
