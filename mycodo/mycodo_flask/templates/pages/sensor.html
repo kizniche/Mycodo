@@ -140,7 +140,7 @@
                   <div class="form-group">
                     {{formModSensor.modPreRelayID.label(class_='control-label')}}
                     <div>
-                      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modPreRelayID" name="modPreRelayID" title="{{_('Turn the selected relay on before taking a measurement')}}.">
+                      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modPreRelayID" name="modPreRelayID" title="{{_('Turn the selected relay on before taking every measurement')}}.">
                         <option value="">Disabled</option>
                         {% for rel in relay -%}
                           <option value="{{rel.id}}"{% if each_sensor.pre_relay_id == rel.id %} selected{% endif %}>{{rel.id}} ({{rel.name}})</option>
@@ -151,7 +151,7 @@
                   <div class="form-group">
                     {{formModSensor.modPreRelayDuration.label(class_='control-label')}}
                     <div>
-                      {{formModSensor.modPreRelayDuration(class_='form-control', value=each_sensor.pre_relay_duration, **{'title':_('If a Pre Relay is selected, set the duration to turn the Pre Relay on, in seconds.')})}}
+                      {{formModSensor.modPreRelayDuration(class_='form-control', value=each_sensor.pre_relay_duration, **{'title':_('If a Pre Relay is selected, set the duration (in seconds) to turn the Pre Relay on for before every measurement is acquired.')})}}
                     </div>
                   </div>
                 {% endif -%}
@@ -326,7 +326,7 @@
                           <option value="{{each_user.user_email}}"{% if each_sensorcond.email_notify == each_user.user_email %} selected{% endif %}>{{each_user.user_email}}</option>
                         {%- endfor -%}
                       </select>, Record
-                      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="DoRecord" name="DoRecord" title="{{_('Activte camera if the condition is true.')}}">
+                      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="DoRecord" name="DoRecord" title="{{_('Activate camera if the condition is true.')}}">
                         <option value=""></option>
                         <option value="photo"{% if each_sensorcond.camera_record == 'photo' %} selected{% endif %}>{{_('Save Photo')}}</option>
                         <option value="photoemail"{% if each_sensorcond.camera_record == 'photoemail' %} selected{% endif %}>{{_('Email Photo')}}</option>

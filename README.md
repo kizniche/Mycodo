@@ -104,6 +104,7 @@ cd ~
 wget -O mycodo-latest.tar.gz https://api.github.com/repos/kizniche/mycodo/tarball
 mkdir Mycodo
 tar xzf mycodo-latest.tar.gz -C Mycodo --strip-components=1
+rm -f mycodo-latest.tar.gz
 cd Mycodo/install
 sudo /bin/bash ./setup.sh
 ```
@@ -358,6 +359,7 @@ If you would like to rescan for translatable text and update your language's mes
 ```
 pybabel extract -F babel.cfg -k lazy_gettext -o messages.pot .
 pybabel update -i messages.pot -d mycodo_flask/translations
+pybabel compile -d mycodo_flask/translations
 ```
 
 Refer to [The Flask Mega-Tutorial, Part XIV: I18n and L10n](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xiv-i18n-and-l10n) for more details of this process.
@@ -414,30 +416,32 @@ Mycodo/
 │   │   ├── settings_routes.py - Settings page routes
 │   │   ├── ssl_certs - Location of HTTP SSL certificates
 │   │   ├── static - Static files reside (images, css, js, etc.)
-│   │   └── templates - Flask HTML templates
-│   │       ├── 404.html
-│   │       ├── flash_messages.html - Error message handler
-│   │       ├── layout.html - Template for pages/, settings/, /tools
-│   │       ├── layout-remote.html - Template for /remote
-│   │       ├── layout-settings.html - Template for /settings
-│   │       ├── login.html - Login page
-│   │       ├── manual.html - Mycodo usage manual
-│   │       ├── pages - Flask general pages
-│   │       │   ├── graph.html - Graph display age
-│   │       │   ├── live.html - Live data display page
-│   │       │   ├── sensor.html - Sensor configuration page
-│   │       │   └── ...
-│   │       ├── remote - Future remote administration panel
-│   │       │   └── setup.html - Add or check the status of remote systems
-│   │       ├── settings - Flask settings pages
-│   │       │   ├── alerts.html - Alerts settings page
-│   │       │   ├── users.html - Users settings page
-│   │       │   └── ...
-│   │       └── tools - Various tools for Mycodo
-│   │           ├── info.html - Information about your system
-│   │           ├── logview.html - Display log files
-│   │           ├── usage.html - Calculate relay usage/power consumtion
-│   │           └── ...
+│   │   ├── templates - Flask HTML templates
+│   │   │   ├── 404.html
+│   │   │   ├── flash_messages.html - Error message handler
+│   │   │   ├── layout.html - Template for pages/, settings/, /tools
+│   │   │   ├── layout-remote.html - Template for /remote
+│   │   │   ├── layout-settings.html - Template for /settings
+│   │   │   ├── login.html - Login page
+│   │   │   ├── manual.html - Mycodo usage manual
+│   │   │   ├── admin - Flask admin pages
+│   │   │   ├── pages - Flask general pages
+│   │   │   │   ├── graph.html - Graph display age
+│   │   │   │   ├── live.html - Live data display page
+│   │   │   │   ├── sensor.html - Sensor configuration page
+│   │   │   │   └── ...
+│   │   │   ├── remote - Future remote administration panel
+│   │   │   │   └── setup.html - Add or check the status of remote systems
+│   │   │   ├── settings - Flask settings pages
+│   │   │   │   ├── alerts.html - Alerts settings page
+│   │   │   │   ├── users.html - Users settings page
+│   │   │   │   └── ...
+│   │   │   └── tools - Various tools for Mycodo
+│   │   │       ├── info.html - Information about your system
+│   │   │       ├── logview.html - Display log files
+│   │   │       ├── usage.html - Calculate relay usage/power consumtion
+│   │   │       └── ...
+│   │   └── translations - Language translations
 │   ├── mycodo_client.py - Communicates with the running daemon
 │   ├── mycodo_daemon.py - Mycodo daemon (core of the system)
 │   ├── start_flask_ui.py - Flask startup script

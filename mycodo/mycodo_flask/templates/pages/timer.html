@@ -41,8 +41,8 @@
             {{formTimer.state.label(class_='control-label')}}
             <div>
               <select class="form-control" id="state" name="state">
-                <option value="on">ON</option>
-                <option value="off">OFF</option>
+                <option value="on">{{_('On')}}</option>
+                <option value="off">{{_('Off')}}</option>
               </select>
             </div>
           </div>
@@ -60,7 +60,9 @@
           <div class="form-group">
             <label class='control-label'></label>
             <div>
-              (Optional: If ON, for {{formTimer.timeOnDurationOn(class_='form-control', value=0.0, **{'size':'6'})}} seconds)
+              {% autoescape false %}
+              ({{_('Optional: If On, for %(sec)s seconds', sec=formTimer.timeOnDurationOn(class_='form-control', value=0.0, **{'size':'6'}))}})
+              {% endautoescape %}
             </div>
           </div>
         </div>

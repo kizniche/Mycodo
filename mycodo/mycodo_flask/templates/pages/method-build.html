@@ -79,7 +79,7 @@
 
         {%- elif method_type == "Daily" -%}
           <div>
-            <input type="radio" name="method_select" value="setpoint" checked="checked"> {{_('Define the setpoint over a period of time based on specific times of the day. This method will repeat daily. Start the firat entry at midnight 00:00 if you wish to fill the entire day.')}}
+            <input type="radio" name="method_select" value="setpoint" checked="checked"> {{_('Define the setpoint over a period of time based on specific times of the day. This method will repeat daily. Start the first entry at midnight (00:00) if you wish to fill the entire day.')}}
             <br>{{_("The new entry's start time may be equal to the last entry's end time, but it cannot overlap. The default setpoint for the PID will be used if there is any unaccounted time.")}}
           </div>
           <div class="form-group">
@@ -97,7 +97,7 @@
 
         {%- elif method_type == "DailySine" -%}
           <div>
-            <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">Define the setpoint over the day based on a sinusoidal wave defined by y = [A * sin(B * x + C)] + D, where A is amplitude, B is frequency, C is the angle shift, and D is the y-axis shift. This method will repeat daily.
+            <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">{{_('Define the setpoint over the day based on a sinusoidal wave defined by y = [A * sin(B * x + C)] + D, where A is amplitude, B is frequency, C is the angle shift, and D is the y-axis shift. This method will repeat daily.')}}
           </div>
           <div class="form-group">
             {{formAddMethod.amplitude.label(class_='control-label')}}
@@ -425,7 +425,7 @@
       <div class="form-group">
         {{formModMethod.relayID.label(class_='control-label')}}
         <div>
-          <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relayID" name="relayID" title="Modulate the selected relay.">
+          <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relayID" name="relayID" title="{{_('Modulate the selected relay.')}}">
             <option value="">Disabled</option>
             {% for each_relay in relay -%}
               <option value="{{each_relay.id}}"{%- if each_relay.id == each_method.relay_id -%} selected{%- endif -%}>{{each_relay.id}} ({{each_relay.name}})</option>
@@ -436,10 +436,10 @@
       <div class="form-group">
         {{formModMethod.relayState.label(class_='control-label')}}
         <div>
-          <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relayState" name="relayState" title="Modulate the selected relay.">
+          <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relayState" name="relayState" title="{{_('Modulate the selected relay.')}}">
             <option value=""></option>
-            <option value="On"{%- if each_method.relay_state == "On" -%} selected{%- endif -%}>Turn On</option>
-            <option value="Off"{%- if each_method.relay_state == "Off" -%} selected{%- endif -%}>Turn Off</option>
+            <option value="On"{%- if each_method.relay_state == "On" -%} selected{%- endif -%}>{{_('Turn On')}}</option>
+            <option value="Off"{%- if each_method.relay_state == "Off" -%} selected{%- endif -%}>{{_('Turn Off')}}</option>
           </select>
         </div>
       </div>

@@ -5,7 +5,7 @@ python:
   - 2.7
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -y libav-tools libi2c-dev python-setuptools python-smbus
+  - sudo apt-get install -y libav-tools libi2c-dev python-numpy python-setuptools python-smbus
   - git clone git://git.drogon.net/wiringPi && cd ./wiringPi && ./build && cd ..
   - wget abyz.co.uk/rpi/pigpio/pigpio.zip && unzip pigpio.zip && cd ./PIGPIO && make -j4 && sudo make install && cd ..
   - pip install --upgrade pip webtest

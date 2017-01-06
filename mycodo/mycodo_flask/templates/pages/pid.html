@@ -195,13 +195,13 @@
             <div class="form-group">
               {{formModPID.modRaiseMinDuration.label(class_='control-label')}}
               <div>
-                {{formModPID.modRaiseMinDuration(class_='form-control', value=each_pid.raise_min_duration, **{'title':_('The minimum duration required for the Raise Relay to activate. If an ON duration is below this value, the Raise Relay will not turn on.')})}}
+                {{formModPID.modRaiseMinDuration(class_='form-control', value=each_pid.raise_min_duration, **{'title':_('The minimum duration (in seconds) required for the Raise Relay to activate. If an On duration is below this value, the Raise Relay will not turn on.')})}}
               </div>
             </div>
             <div class="form-group">
               {{formModPID.modRaiseMaxDuration.label(class_='control-label')}}
               <div>
-                {{formModPID.modRaiseMaxDuration(class_='form-control', value=each_pid.raise_max_duration, **{'title':_('The maximum duration allowed for the Raise Relay to be on for, per period. If an ON duration is above this value, the Raise Relay will turn on for this set duration.')})}}
+                {{formModPID.modRaiseMaxDuration(class_='form-control', value=each_pid.raise_max_duration, **{'title':_('The maximum duration (in seconds) allowed for the Raise Relay to be on for, per period. If an On duration is above this value, the Raise Relay will turn on for this set duration.')})}}
               </div>
             </div>
           </div>
@@ -221,13 +221,13 @@
             <div class="form-group">
               {{formModPID.modLowerMinDuration.label(class_='control-label')}}
               <div>
-                {{formModPID.modLowerMinDuration(class_='form-control', value=each_pid.lower_min_duration, **{'title':_('The minimum duration required for the Lower Relay to activate. If an ON duration is below this value, the Lower Relay will not turn on.')})}}
+                {{formModPID.modLowerMinDuration(class_='form-control', value=each_pid.lower_min_duration, **{'title':_('The minimum duration (in seconds) required for the Lower Relay to activate. If an On duration is below this value, the Lower Relay will not turn on.')})}}
               </div>
             </div>
             <div class="form-group">
               {{formModPID.modLowerMaxDuration.label(class_='control-label')}}
               <div>
-                {{formModPID.modLowerMaxDuration(class_='form-control', value=each_pid.lower_max_duration, **{'title':_('The maximum duration allowed for the Lower Relay to be on for, per period. If an ON duration is above this value, the Lower Relay will turn on for this set duration.')})}}
+                {{formModPID.modLowerMaxDuration(class_='form-control', value=each_pid.lower_max_duration, **{'title':_('The maximum duration (in seconds) allowed for the Lower Relay to be on for, per period. If an ON duration is above this value, the Lower Relay will turn on for this set duration.')})}}
               </div>
             </div>
           </div>

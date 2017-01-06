@@ -3,7 +3,16 @@
 
 from flask_babel import lazy_gettext
 from flask_wtf import Form
-from wtforms import BooleanField, DecimalField, HiddenField, IntegerField, PasswordField, SelectField, SelectMultipleField, SubmitField, StringField, validators
+from wtforms import (BooleanField,
+                     DecimalField,
+                     HiddenField,
+                     IntegerField,
+                     PasswordField,
+                     SelectField,
+                     SelectMultipleField,
+                     SubmitField,
+                     StringField,
+                     validators)
 from wtforms.validators import DataRequired
 from wtforms.fields.html5 import EmailField
 
@@ -246,16 +255,18 @@ class EmailAlert(Form):
     )
     smtpMaxPerHour = IntegerField(
         lazy_gettext('Max emails (per hour)'),
-        render_kw={"placeholder": lazy_gettext('Max emails per hour')},
+        render_kw={"placeholder": lazy_gettext('Max emails (per hour)')},
         validators=[validators.NumberRange(
             min=1,
-            message=lazy_gettext('Must have at least one message able to be sent per hour.')
+            message=lazy_gettext('Must have at least one message able to be '
+                                 'sent per hour.')
         )]
     )
     sendTestEmail = SubmitField(u'Send Test Email')
     testEmailTo = EmailField(
         lazy_gettext('Test Email To'),
-        render_kw={"placeholder": lazy_gettext('Email address to send test email')},
+        render_kw={"placeholder": lazy_gettext('Email address to send test '
+                                               'email')},
         validators=[
             validators.Email(),
             validators.Optional()
@@ -304,7 +315,8 @@ class AddUser(Form):
         render_kw={"placeholder": lazy_gettext("Password")},
         validators=[
             DataRequired(),
-            validators.EqualTo('addPassword_repeat', message=lazy_gettext('Passwords must match')),
+            validators.EqualTo('addPassword_repeat',
+                               message=lazy_gettext('Passwords must match')),
             validators.Length(
                 min=6,
                 message=lazy_gettext('Password must be 6 or more characters')
@@ -418,19 +430,21 @@ class AddGraph(Form):
         )]
     )
     xAxisDuration = IntegerField(
-        lazy_gettext('x-Axis (min)'),
+        lazy_gettext('x-Axis (minutes)'),
         render_kw={"placeholder": lazy_gettext("X-Axis Duration")},
         validators=[validators.NumberRange(
             min=1,
-            message=lazy_gettext("Number of minutes to display of past measurements.")
+            message=lazy_gettext("Number of minutes to display of past "
+                                 "measurements.")
         )]
     )
     refreshDuration = IntegerField(
-        lazy_gettext('Refresh (sec)'),
+        lazy_gettext('Refresh (seconds)'),
         render_kw={"placeholder": lazy_gettext("Refresh duration")},
         validators=[validators.NumberRange(
             min=1,
-            message=lazy_gettext("Number of seconds to wait between acquiring any new measurements.")
+            message=lazy_gettext("Number of seconds to wait between acquiring"
+                                 " any new measurements.")
         )]
     )
     enableNavbar = BooleanField(lazy_gettext('Enable Navbar'))
@@ -476,15 +490,17 @@ class ModGraph(Form):
         render_kw={"placeholder": lazy_gettext("X-Axis Duration")},
         validators=[validators.NumberRange(
             min=1,
-            message=lazy_gettext("Number of minutes to display of past measurements.")
+            message=lazy_gettext("Number of minutes to display of past "
+                                 "measurements.")
         )]
     )
     refreshDuration = IntegerField(
-        lazy_gettext('Refresh (sec)'),
+        lazy_gettext('Refresh (seconds)'),
         render_kw={"placeholder": lazy_gettext("Refresh duration")},
         validators=[validators.NumberRange(
             min=1,
-            message=lazy_gettext("Number of seconds to wait between acquiring any new measurements.")
+            message=lazy_gettext("Number of seconds to wait between acquiring"
+                                 " any new measurements.")
         )]
     )
     enableNavbar = BooleanField(lazy_gettext('Enable Navbar'))
@@ -546,7 +562,7 @@ class ModLCD(Form):
             )]
     )
     modPeriod = IntegerField(
-        lazy_gettext('Period (sec)'),
+        lazy_gettext('Period (seconds)'),
         render_kw={"placeholder": lazy_gettext("Period")},
         validators=[validators.NumberRange(
             min=5,
@@ -661,7 +677,7 @@ class Log(Form):
         validators=[DataRequired()]
     )
     sensorMeasurement = StringField(lazy_gettext('Sensor and Measurement'))
-    period = IntegerField(lazy_gettext('Period (sec)'))
+    period = IntegerField(lazy_gettext('Period (seconds)'))
     logCreate = SubmitField(lazy_gettext('Create Log Controller'))
     logMod = SubmitField(lazy_gettext('Save'))
     logDel = SubmitField(lazy_gettext('Delete'))
@@ -723,7 +739,7 @@ class ModPID(Form):
         validators=[DataRequired()]
     )
     modPeriod = IntegerField(
-        lazy_gettext('Period (sec)'),
+        lazy_gettext('Period (seconds)'),
         render_kw={"placeholder": lazy_gettext("Period")},
         validators=[validators.NumberRange(
             min=5,
@@ -739,7 +755,8 @@ class ModPID(Form):
         validators=[validators.NumberRange(
             min=-1000000,
             max=1000000,
-            message=lazy_gettext("Setpoint range must be between -1,000,000 and 1,000,000.")
+            message=lazy_gettext("Setpoint range must be between -1,000,000 "
+                                 "and 1,000,000.")
         )]
     )
     modKp = DecimalField(
@@ -778,7 +795,8 @@ class ModPID(Form):
         validators=[validators.NumberRange(
             min=0,
             max=86400,
-            message=lazy_gettext("Raise minimum duration must be a non-negative value. (0 to disable)")
+            message=lazy_gettext("Raise minimum duration must be a "
+                                 "non-negative value. (0 to disable)")
         )]
     )
     modRaiseMaxDuration = IntegerField(
@@ -787,7 +805,8 @@ class ModPID(Form):
         validators=[validators.NumberRange(
             min=0,
             max=86400,
-            message=lazy_gettext("Raise maximum duration must be a non-negative value. (0 to disable)")
+            message=lazy_gettext("Raise maximum duration must be a "
+                                 "non-negative value. (0 to disable)")
         )]
     )
     modLowerRelayID = StringField(
@@ -800,7 +819,8 @@ class ModPID(Form):
         validators=[validators.NumberRange(
             min=0,
             max=86400,
-            message=lazy_gettext("Lower minimum duration must be a non-negative value. (0 to disable)")
+            message=lazy_gettext("Lower minimum duration must be a "
+                                 "non-negative value. (0 to disable)")
         )]
     )
     modLowerMaxDuration = IntegerField(
@@ -809,7 +829,8 @@ class ModPID(Form):
         validators=[validators.NumberRange(
             min=0,
             max=86400,
-            message=lazy_gettext("Lower maximum duration must be a non-negative value. (0 to disable)")
+            message=lazy_gettext("Lower maximum duration must be a "
+                                 "non-negative value. (0 to disable)")
         )]
     )
     mod_method_id = HiddenField(u'Setpoint Tracking Method')
@@ -853,7 +874,8 @@ class ModRelay(Form):
         validators=[validators.NumberRange(
             min=0,
             max=27,
-            message=lazy_gettext("GPIO (BCM numbering) is between 1 and 27 (0 to disable)")
+            message=lazy_gettext("GPIO (BCM numbering) is between 1 and 27 "
+                                 "(0 to disable)")
         )]
     )
     modAmps = DecimalField(
@@ -862,7 +884,8 @@ class ModRelay(Form):
         validators=[validators.NumberRange(
             min=0,
             max=50,
-            message=lazy_gettext("The current draw of the device connected to this relay, in amps.")
+            message=lazy_gettext("The current draw of the device connected "
+                                 "to this relay, in amps.")
         )]
     )
     modTrigger = SelectField(
@@ -949,7 +972,7 @@ class ModRelayConditional(Form):
         render_kw={"placeholder": lazy_gettext("Command")}
     )
     DoNotify = StringField(
-        lazy_gettext('Botify by Email'),
+        lazy_gettext('Notify by Email'),
         render_kw={"placeholder": lazy_gettext("Email")}
     )
     DoFlashLCD = StringField(
@@ -1023,9 +1046,9 @@ class ModSensor(Form):
     modADCVoltsMax = DecimalField(lazy_gettext('Volts Max'))
     modADCUnitsMin = DecimalField(lazy_gettext('Units Min'))
     modADCUnitsMax = DecimalField(lazy_gettext('Units Max'))
-    modSwitchEdge = StringField(lazy_gettext('Switch Edge Detected'))
-    modSwitchBounceTime = IntegerField(lazy_gettext('Bounce Time (ms)'))
-    modSwitchResetPeriod = IntegerField(lazy_gettext('Reset Period (sec)'))
+    modSwitchEdge = StringField(lazy_gettext('Edge'))
+    modSwitchBounceTime = IntegerField(lazy_gettext('Bounce Time (milliseconds)'))
+    modSwitchResetPeriod = IntegerField(lazy_gettext('Reset Period (seconds)'))
     modPreRelayID = StringField(lazy_gettext('Pre Relay'))
     modPreRelayDuration = DecimalField(
         lazy_gettext('Pre Relay Duration (sec)'),
@@ -1035,7 +1058,7 @@ class ModSensor(Form):
         )]
     )
     modPeriod = IntegerField(
-        lazy_gettext('Read Period (sec)'),
+        lazy_gettext('Read Period (seconds)'),
         validators=[DataRequired(),
                     validators.NumberRange(
             min=5,
@@ -1140,7 +1163,7 @@ class Timer(Form):
     timeEnd = StringField(lazy_gettext('Time of day'))
     timeOnDurationOn = DecimalField(
         lazy_gettext('On (sec)'),
-        render_kw={"placeholder": lazy_gettext("On sec.")},
+        render_kw={"placeholder": lazy_gettext("On (sec)")},
         validators=[validators.NumberRange(
             min=0,
             max=86400
