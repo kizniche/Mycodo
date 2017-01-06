@@ -1,7 +1,6 @@
 # coding=utf-8
 
 import datetime
-import numpy as np
 from math import sin, radians
 
 
@@ -12,6 +11,14 @@ def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day=None):
 
     Ex: getYfromXforBezSegment((10,0), (5,-5), (5,5), (0,0), 3.2)
     """
+    try:
+        import numpy as np
+    except ImportError:
+        np = None
+
+    if not np:
+        return 0
+
     seconds_per_day = 24*60*60
 
     # Check if the second of the day is provided.
@@ -57,6 +64,7 @@ def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day=None):
     if correct_root is None:
         print('Error, no valid root found. Are you sure your Bezier curve '
               'represents a valid function when projected into the xy-plane?')
+        return 0
     param_t = correct_root
     # From the value for the t parameter, find the corresponding y-value
     # using the formula for cubic Bezier curves

@@ -29,6 +29,7 @@ Miscellaneous:
   - Update InfluxDB to v1.1.1
   - Update factory_boy to v2.8.1
   - Update sht_sensor to v16.12.1
+  - Change numpy from required to optional (install to use Bezier curve methods)
   - Move install files to Mycodo/install
 
 ## 4.0.26 (2016-11-23)

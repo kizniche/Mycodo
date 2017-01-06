@@ -225,7 +225,7 @@ EOF
     'upgrade-packages')
         printf "#### Installing prerequisite apt packages.\n"
         apt-get update -y
-        apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3 gawk
+        apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-numpy python-setuptools python-smbus sqlite3 gawk
         easy_install pip
     ;;
     'compile-translations')

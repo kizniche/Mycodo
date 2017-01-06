@@ -43,11 +43,7 @@ printf "### Mycodo installation beginning at $NOW\n\n"
 printf "#### Uninstalling current version of pip\n"
 apt-get purge -y python-pip
 
-printf "#### Installing and updating prerequisites\n"
-apt-get update -y
-apt-get upgrade -y
-apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-setuptools python-smbus sqlite3
-easy_install pip
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh upgrade-packages
 pip install -U pip
 
 cd ${INSTALL_DIRECTORY}/install

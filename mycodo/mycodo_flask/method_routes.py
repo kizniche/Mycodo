@@ -4,6 +4,7 @@ import logging
 import datetime
 import random
 import string
+import sys
 import time
 
 from flask import (Blueprint,
@@ -13,6 +14,7 @@ from flask import (Blueprint,
                    render_template,
                    flash,
                    request)
+from flask_babel import gettext
 
 from mycodo.utils.system_pi import get_sec
 from mycodo.utils.method import (sine_wave_y_out,
@@ -186,6 +188,7 @@ def method_builder(method_type, method_id):
     if not logged_in():
         return redirect('/')
 
+    # Used in software tests to verify function is executing as adminl
     if method_type == '1':
         return 'admin logged in'
 
@@ -196,6 +199,13 @@ def method_builder(method_type, method_id):
 
         # Create new method
         if method_type == '0':
+            numpy_installed = True if 'numpy' in sys.modules else False
+            if method_type in ['DailyBezier', '0'] and not numpy_installed:
+                flash(gettext("The python module 'numpy' is required to calculate"
+                              " a Bezier curve, but this does not appear to be"
+                              " installed. Use the command 'sudo pip install "
+                              "numpy' to install numpy."), 'error')
+                return redirect('/method')
             random_id = ''.join([random.choice(
                 string.ascii_letters + string.digits) for _ in xrange(8)])
             method_id = random_id
