@@ -126,6 +126,7 @@ def populate_db(db_path):
         insert_or_ignore(initial_camerastream, session)
 
         initial_misc = Misc(id='0',
+                            language=None,
                             force_https=True,
                             dismiss_notification=0,
                             hide_alert_success=False,

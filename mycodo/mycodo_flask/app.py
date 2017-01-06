@@ -66,6 +66,11 @@ def create_app(config=ProdConfig):
 
     @babel.localeselector
     def get_locale():
+        misc = flaskutils.db_retrieve_table(app.config['MYCODO_DB_PATH'], Misc, first=True)
+        if misc.language != '':
+            for key, value in LANGUAGES.iteritems():
+                if key == misc.language:
+                    return key
         return request.accept_languages.best_match(LANGUAGES.keys())
 
     return app

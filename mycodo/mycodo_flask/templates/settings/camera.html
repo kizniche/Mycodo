@@ -3,11 +3,11 @@
 {% set active_page = "settings" %}
 {% set active_settings = "camera" %}
 
-{% block title %} - Camera Settings{% endblock %}
+{% block title %} - {{_('Camera Settings')}}{% endblock %}
 
 {% block settings %}
   <!-- Route: /settings/camera -->
-  <h3 style="text-align: right; padding-bottom: 1.3em;">Camera</h3>
+  <h3 style="text-align: right; padding-bottom: 1.3em;">{{_('Camera Settings')}}</h3>
 
   <form class="form-horizontal" method="post" action="/settings/camera">
     <input type="hidden" name="form-name" value="Camera">

@@ -280,6 +280,7 @@ class EmailAlert(Form):
 #
 
 class SettingsGeneral(Form):
+    language = StringField(lazy_gettext('Language'))
     forceHTTPS = BooleanField(lazy_gettext('Force HTTPS'))
     hideAlertSuccess = BooleanField(lazy_gettext('Hide success messages'))
     hideAlertInfo = BooleanField(lazy_gettext('Hide info messages'))

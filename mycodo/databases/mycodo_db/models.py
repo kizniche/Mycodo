@@ -431,17 +431,18 @@ class Misc(Base):
     __tablename__ = "misc"
 
     id = Column(TEXT, unique=True, primary_key=True)
-    force_https = Column(BOOLEAN)
     dismiss_notification = Column(INT)
-    hide_alert_success = Column(BOOLEAN)
+    force_https = Column(BOOLEAN)
     hide_alert_info = Column(BOOLEAN)
+    hide_alert_success = Column(BOOLEAN)
     hide_alert_warning = Column(BOOLEAN)
-    stats_opt_out = Column(BOOLEAN)
+    language = Column(TEXT)
     login_message = Column(TEXT)
-    relay_stats_volts = Column(INT)
     relay_stats_cost = Column(REAL)
     relay_stats_currency = Column(TEXT)
     relay_stats_dayofmonth = Column(INT)
+    relay_stats_volts = Column(INT)
+    stats_opt_out = Column(BOOLEAN)
 
 
 class Remote(Base):

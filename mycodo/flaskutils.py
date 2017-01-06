@@ -2549,6 +2549,7 @@ def settings_general_mod(formModGeneral):
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             mod_misc = db_session.query(Misc).one()
             force_https = mod_misc.force_https
+            mod_misc.language = formModGeneral.language.data
             mod_misc.force_https = formModGeneral.forceHTTPS.data
             mod_misc.hide_alert_success = formModGeneral.hideAlertSuccess.data
             mod_misc.hide_alert_info = formModGeneral.hideAlertInfo.data
