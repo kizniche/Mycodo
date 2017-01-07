@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-01-06 21:42-0500\n"
+"POT-Creation-Date: 2017-01-06 21:52-0500\n"
 "PO-Revision-Date: 2017-01-06 10:00-0300\n"
 "Last-Translator: \n"
 "Language: es\n"
@@ -1068,14 +1068,9 @@ msgstr ""
 msgid "Added duration to method for %(sec)s seconds"
 msgstr ""
 
-#: flaskutils.py:355 flaskutils.py:360
+#: flaskutils.py:355 flaskutils.py:360 flaskutils.py:362
 #, python-format
 msgid "Added relay modulation to method at start time: %(tm)s"
-msgstr ""
-
-#: flaskutils.py:362
-#, python-format
-msgid "Added relay modulation to method at start time: %(sec)s"
 msgstr ""
 
 #: flaskutils.py:422
@@ -1157,10 +1152,8 @@ msgstr ""
 msgid "Deactivate LCD controller before modifying its settings."
 msgstr ""
 
-#: flaskutils.py:1088
-msgid ""
-"Cannot activate LCD controller if the associated sensor controller is "
-"inactive"
+#: flaskutils.py:1088 flaskutils.py:1234 flaskutils.py:1437
+msgid "Cannot activate controller if the associated sensor controller is inactive"
 msgstr ""
 
 #: flaskutils.py:1134
@@ -1171,20 +1164,14 @@ msgstr ""
 msgid "Deactivate log controller before modifying its settings"
 msgstr ""
 
-#: flaskutils.py:1234
-msgid ""
-"Cannot activate Log controller if the associated sensor controller is "
-"inactive"
-msgstr ""
-
 #: flaskutils.py:1283 flaskutils.py:1285 flaskutils.py:1364 flaskutils.py:1386
 #: flaskutils.py:1403 flaskutils.py:1494
 #, python-format
 msgid "PID Error: %(err)s"
 msgstr ""
 
-#: flaskutils.py:1298 flaskutils.py:1413
-msgid "You must select a valid sensor ID"
+#: flaskutils.py:1298
+msgid "A valid sensor ID is required"
 msgstr ""
 
 #: flaskutils.py:1330
@@ -1196,18 +1183,16 @@ msgstr ""
 msgid "PID Controller settings refresh response: %(resp)s"
 msgstr ""
 
+#: flaskutils.py:1413
+msgid "A valid sensor  is required"
+msgstr ""
+
 #: flaskutils.py:1416
-msgid "You must select a valid Measure Type"
+msgid "A valid Measure Type is required"
 msgstr ""
 
 #: flaskutils.py:1419
-msgid "You must select a Raise Relay ID and/or a Lower Relay ID"
-msgstr ""
-
-#: flaskutils.py:1437
-msgid ""
-"Cannot activate PID controller if the associated sensor controller is "
-"inactive"
+msgid "A Raise Relay ID and/or a Lower Relay ID is required"
 msgstr ""
 
 #: flaskutils.py:1469
@@ -1225,11 +1210,13 @@ msgid "Cannot modulate relay with a GPIO of 0"
 msgstr ""
 
 #: flaskutils.py:1511
-msgid "Relay successfully turned on: {rvalue}"
+#, python-format
+msgid "Relay successfully turned on: %(rvalue)s"
 msgstr ""
 
 #: flaskutils.py:1515
-msgid "Relay successfully turned off: {rvalue}"
+#, python-format
+msgid "Relay successfully turned off: %(rvalue)s"
 msgstr ""
 
 #: flaskutils.py:1518 flaskutils.py:1546 flaskutils.py:1548 flaskutils.py:1570
@@ -1266,8 +1253,8 @@ msgstr ""
 
 #: flaskutils.py:2079
 msgid ""
-"You must specify a notification email address if the record and email "
-"option is selected"
+"A notification email address is required if the record and email option "
+"is selected"
 msgstr ""
 
 #: flaskutils.py:2144
@@ -2638,5 +2625,29 @@ msgstr "Costo"
 #~ msgstr ""
 
 #~ msgid "Guests are not permitted to add timers"
+#~ msgstr ""
+
+#~ msgid "Added relay modulation to method at start time: %(sec)s"
+#~ msgstr ""
+
+#~ msgid "You must select a valid sensor ID"
+#~ msgstr ""
+
+#~ msgid "You must select a valid Measure Type"
+#~ msgstr ""
+
+#~ msgid "You must select a Raise Relay ID and/or a Lower Relay ID"
+#~ msgstr ""
+
+#~ msgid "Relay successfully turned on: {rvalue}"
+#~ msgstr ""
+
+#~ msgid "Relay successfully turned off: {rvalue}"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "You must specify a notification email"
+#~ " address if the record and email "
+#~ "option is selected"
 #~ msgstr ""
 

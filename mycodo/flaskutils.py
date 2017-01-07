@@ -360,8 +360,8 @@ def method_add(formAddMethod, method):
                               tm=start_time.strftime('%H:%M:%S')), "success")
             elif this_method.method_type == 'Duration':
                 flash(gettext("Added relay modulation to method at start "
-                              "time: %(sec)s",
-                              sec=formAddMethod.DurationSec.data), "success")
+                              "time: %(tm)s",
+                              tm=formAddMethod.DurationSec.data), "success")
 
     except Exception as err:
         flash(gettext("Method Error: %(err)s", err=err), "error")
@@ -1085,7 +1085,7 @@ def lcd_activate(formActivateLCD):
                 # Check if any sensors are not active
                 for each_sensor in sensor:
                     if not each_sensor.is_activated():
-                        flash(gettext("Cannot activate LCD controller if the "
+                        flash(gettext("Cannot activate controller if the "
                                       "associated sensor controller is inactive"),
                               "error")
                         return redirect('/lcd')
@@ -1231,7 +1231,7 @@ def log_activate(formLog):
         sensor = db_session.query(Sensor).filter(
             Sensor.id == log.sensor_id).first()
         if not sensor.is_activated():
-            flash(gettext("Cannot activate Log controller if the associated "
+            flash(gettext("Cannot activate controller if the associated "
                           "sensor controller is inactive"), "error")
             return redirect('/log')
     activate_deactivate_controller('activate', 'Log', formLog.log_id.data)
@@ -1295,7 +1295,7 @@ def pid_mod(formModPID):
                 sensor = db_session.query(Sensor).filter(
                     Sensor.id == formModPID.modSensorID.data).first()
                 if not sensor:
-                    flash(gettext("You must select a valid sensor ID"),
+                    flash(gettext("A valid sensor ID is required"),
                           "error")
                     error = True
                 elif (
@@ -1410,14 +1410,14 @@ def has_required_pid_values(pid_id):
         error = False
         # TODO: Add more settings-checks before allowing controller to be activated
         if not pid.sensor_id:
-            flash(gettext("You must select a valid sensor ID"), "error")
+            flash(gettext("A valid sensor  is required"), "error")
             error = True
         if not pid.measure_type:
-            flash(gettext("You must select a valid Measure Type"), "error")
+            flash(gettext("A valid Measure Type is required"), "error")
             error = True
         if not pid.raise_relay_id and not pid.lower_relay_id:
-            flash(gettext("You must select a Raise Relay ID and/or a Lower "
-                          "Relay ID"), "error")
+            flash(gettext("A Raise Relay ID and/or a Lower Relay ID is "
+                          "required"), "error")
             error = True
         if error:
             return redirect('/pid')
@@ -1434,7 +1434,7 @@ def pid_activate(pid_id):
         sensor = db_session.query(Sensor).filter(
             Sensor.id == pid.sensor_id).first()
         if not sensor.is_activated():
-            flash(gettext("Cannot activate PID controller if the associated "
+            flash(gettext("Cannot activate controller if the associated "
                           "sensor controller is inactive"), "error")
             return redirect('/pid')
 
@@ -1508,11 +1508,11 @@ def relay_on_off(formRelayOnOff):
             flash(gettext("Cannot modulate relay with a GPIO of 0"), "error")
         elif formRelayOnOff.On.data:
             return_value = control.relay_on(formRelayOnOff.Relay_id.data, 0)
-            flash(gettext("Relay successfully turned on: {rvalue}",
+            flash(gettext("Relay successfully turned on: %(rvalue)s",
                           rvalue=return_value), "success")
         elif formRelayOnOff.Off.data:
             return_value = control.relay_off(formRelayOnOff.Relay_id.data)
-            flash(gettext("Relay successfully turned off: {rvalue}",
+            flash(gettext("Relay successfully turned off: %(rvalue)s",
                           rvalue=return_value), "success")
     except Exception as except_msg:
         flash(gettext("Relay Error: %(err)s", err=except_msg), "error")
@@ -2076,7 +2076,7 @@ def sensor_conditional_mod(formModSensorCond):
         try:
             error = False
             if (formModSensorCond.DoRecord.data == 'photoemail' or formModSensorCond.DoRecord.data == 'videoemail') and not formModSensorCond.DoNotify.data:
-                flash(gettext("You must specify a notification email address "
+                flash(gettext("A notification email address is required "
                               "if the record and email option is selected"),
                       "error")
                 error = True
