@@ -230,7 +230,7 @@ EOF
     ;;
     'compile-translations')
         printf "#### Compiling Translations ####\n"
-        pybabel compile -d ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/translations
+        pybabel compile -d ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/translations
     ;;
     'upgrade-influxdb')
         printf "#### Upgrade influxdb if out-of-date or not installed ####\n"
@@ -249,7 +249,7 @@ EOF
         adduser mycodo video
 
         chown -LR mycodo.mycodo ${INSTALL_DIRECTORY}/Mycodo
-        ln -sf ${INSTALL_DIRECTORY}/Mycodo/ /var/www/mycodo
+        ln -sf ${INSTALL_DIRECTORY}/Mycodo /var/www/mycodo
 
         mkdir -p /var/log/mycodo
 

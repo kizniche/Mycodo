@@ -41,6 +41,7 @@ NOW=$(date +"%m-%d-%Y %H:%M:%S")
 printf "### Mycodo installation beginning at $NOW\n\n"
 
 printf "#### Uninstalling current version of pip\n"
+apt-get update
 apt-get purge -y python-pip
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh upgrade-packages
