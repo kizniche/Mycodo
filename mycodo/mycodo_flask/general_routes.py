@@ -432,9 +432,11 @@ def computer_command(action):
         control = DaemonControl()
         return control.system_control(action)
     except Exception as e:
-        logger.error("URL for 'computer_command' raised and error: "
-                     "{err}".format(err=e))
-        return '0'
+        logger.error("System command '{cmd}' raised and error: "
+                     "{err}".format(cmd=action, err=e))
+        flash("System command '{cmd}' raised and error: "
+              "{err}".format(cmd=action, err=e), "error")
+        return redirect('/')
 
 
 @blueprint.route('/newremote/')

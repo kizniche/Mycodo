@@ -1,5 +1,4 @@
 # coding=utf-8
-import atexit
 import logging
 import time
 import pigpio
@@ -104,14 +103,19 @@ class DHT11Sensor(AbstractSensor):
             print("Turning on sensor at GPIO {}...".format(self.gpio))
             self.pi.write(self.power, 1)  # Switch sensor on.
             time.sleep(2)
-        atexit.register(self.close)
-        self.setup()
-        self.pi.write(self.gpio, pigpio.LOW)
-        time.sleep(0.017)  # 17 ms
-        self.pi.set_mode(self.gpio, pigpio.INPUT)
-        self.pi.set_watchdog(self.gpio, 200)
-        time.sleep(0.2)
-        self._dew_point = dewpoint(self._temperature, self._humidity)
+        try:
+            self.setup()
+            self.pi.write(self.gpio, pigpio.LOW)
+            time.sleep(0.017)  # 17 ms
+            self.pi.set_mode(self.gpio, pigpio.INPUT)
+            self.pi.set_watchdog(self.gpio, 200)
+            time.sleep(0.2)
+            self._dew_point = dewpoint(self._temperature, self._humidity)
+        except Exception as e:
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
+        finally:
+            self.close()
 
     def read(self):
         """
@@ -127,7 +131,7 @@ class DHT11Sensor(AbstractSensor):
         except Exception as e:
             logger.error("{cls} raised an exception when taking a reading: "
                          "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+            return 1
 
     def setup(self):
         """

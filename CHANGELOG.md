@@ -1,3 +1,10 @@
+## 4.1.5 (2017-01-14)
+
+Bugfixes:
+
+  - Fix DHT11 sensor module not returning values ([#159](https://github.com/kizniche/mycodo/issues/171))
+  - Fix HTU21D sensor module not returning values ([#159](https://github.com/kizniche/mycodo/issues/172))
+
 ## 4.1.4 (2017-01-13)
 
 This release introduces a new method for upgrading Mycodo to the latest version. Upgrades will now be performed from github releases instead of commits, which should prevent unintended upgrades to the public, facilitate bug-tracking, and enable easier management of a changelog.

@@ -4,7 +4,6 @@ import logging
 import datetime
 import random
 import string
-import sys
 import time
 
 from flask import (Blueprint,
@@ -14,7 +13,6 @@ from flask import (Blueprint,
                    render_template,
                    flash,
                    request)
-from flask_babel import gettext
 
 from mycodo.utils.system_pi import get_sec
 from mycodo.utils.method import (sine_wave_y_out,
