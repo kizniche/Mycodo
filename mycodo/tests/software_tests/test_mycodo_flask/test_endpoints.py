@@ -209,7 +209,7 @@ def sees_navbar(testapp):
         'Configure',
         'Graph',
         'Help',
-        'LCDs',
+        'LCD',
         'Live',
         'Logout',
         'Method',
