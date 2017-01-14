@@ -5,7 +5,7 @@ if [ "$EUID" -ne 0 ] ; then
   exit 1
 fi
 
-INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd -P )
+INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../.." && pwd -P )
 cd ${INSTALL_DIRECTORY}
 
 case "${1:-''}" in
@@ -271,8 +271,8 @@ EOF
 
         chown -R mycodo.mycodo /var/log/mycodo
 
-        find ${INSTALL_DIRECTORY}/Mycodo/ -type d -exec chmod u+wx,g+wx {} +
-        find ${INSTALL_DIRECTORY}/Mycodo/ -type f -exec chmod u+w,g+w,o+r {} +
+        find ${INSTALL_DIRECTORY}/ -type d -exec chmod u+wx,g+wx {} +
+        find ${INSTALL_DIRECTORY}/ -type f -exec chmod u+w,g+w,o+r {} +
         # find $INSTALL_DIRECTORY/Mycodo/mycodo -type f -name '.?*' -prune -o -exec chmod 770 {} +
         chown root:mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
         chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
