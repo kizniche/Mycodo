@@ -1,4 +1,4 @@
-## 4.1.0 (Unreleased)
+## 4.1.1 (2017-01-13)
 
 This release introduces a new method for upgrading Mycodo to the latest version. Upgrades will now be performed from github releases instead of commits, which should prevent unintended upgrades to the public, facilitate bug-tracking, and enable easier management of a changelog.
 
