@@ -67,6 +67,10 @@ alembic upgrade head
 printf "#### Removing statistics file ####\n"
 rm ${INSTALL_DIRECTORY}/databases/statistics.csv
 
+printf "#### Updating crontab entries ####\n"
+/bin/bash ${INSTALL_DIRECTORY}/install/crontab.sh mycodo --remove
+/bin/bash ${INSTALL_DIRECTORY}/install/crontab.sh mycodo
+
 printf "#### Setting permissions ####\n"
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh initialize
 

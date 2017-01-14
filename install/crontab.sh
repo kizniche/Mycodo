@@ -14,7 +14,7 @@ cd $(dirname "$0")
 
 test "$2" = --remove && mode=remove || mode=add
 
-cron_unique_label="# cmID:$PWD|$1#"
+cron_unique_label="# cmID:$1#"
 
 crontab="$1".crontab
 crontab_bak=${crontab}.bak

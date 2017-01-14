@@ -71,9 +71,6 @@ printf "#### Creating InfluxDB database and user\n"
 influx -execute "CREATE DATABASE mycodo_db"
 influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
 
-printf "#### Creating cron entry to start pigpiod at boot\n"
-/bin/bash ${INSTALL_DIRECTORY}/install/crontab.sh mycodo
-
 printf "#### Installing and configuring apache2 web server\n"
 apt-get install -y apache2 libapache2-mod-wsgi
 a2enmod wsgi ssl
