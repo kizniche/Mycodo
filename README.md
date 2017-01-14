@@ -84,6 +84,8 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 
 These install procedures have been tested to work with a Raspberry Pi following a fresh install of [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/) (Full or Lite version), with an active internet connection.
 
+It appears that with the current version of Raspbian, SSH is not enabled by default. This necessitates the use of a keyboard and monitor to run raspi-config and enable SSH.
+
 Set up the initial settings with raspi-config. **It's very important that you don't skip the file system expansion and reboot! This needs to be done before continuing or there won't be any free disk space.**
 
 ```sudo raspi-config```
@@ -93,6 +95,7 @@ Set up the initial settings with raspi-config. **It's very important that you do
  + Internationalisation Options -> Change Locale (set and select en_US.UTF-8 if US)
  + Internationalisation Options -> Change Timezone
  + Enable Camera
+ + Advanced Options -> Enable SSH
  + Advanced Options -> Enable I<sup>2</sup>C (required if using certain sensors)
  + **Reboot (required)**
 

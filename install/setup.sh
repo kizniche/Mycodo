@@ -111,7 +111,9 @@ openssl x509 -req \
 rm -f certificate.csr
 
 printf "#### Enabling mycodo startup script\n"
-systemctl enable ${INSTALL_DIRECTORY}/install/mycodo.service
+#systemctl enable ${INSTALL_DIRECTORY}/install/mycodo.service
+ln -sf ${INSTALL_DIRECTORY}/install/mycodo.service /etc/systemd/system/
+systemctl daemon-reload
 
 printf "#### Creating SQLite databases\n"
 python ${INSTALL_DIRECTORY}/init_databases.py -i all

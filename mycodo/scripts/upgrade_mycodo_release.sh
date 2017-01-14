@@ -5,7 +5,7 @@ if [ "$EUID" -ne 0 ] ; then
   exit 1
 fi
 
-INSTALL_DIRECTORY=$( cd -P /var/www/mycodo/.. && pwd -P )
+INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd -P )
 cd ${INSTALL_DIRECTORY}
 
 case "${1:-''}" in
@@ -225,7 +225,7 @@ EOF
     'upgrade-packages')
         printf "#### Installing prerequisite apt packages.\n"
         apt-get update -y
-        apt-get install -y libav-tools libffi-dev libi2c-dev python-dev python-numpy python-setuptools python-smbus sqlite3 gawk
+        apt-get install -y apache2 libav-tools libffi-dev libi2c-dev python-dev python-numpy python-setuptools python-smbus sqlite3 gawk
         easy_install pip
     ;;
     'compile-translations')

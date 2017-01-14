@@ -7,12 +7,14 @@ Performance:
   - Add ability to hold, pause and resume PID controllers
   - Add ability to modify PID controller parameters while active, held, or paused
   - New method of processing data on live graphs that is more accurate and reduced bandwidth
+  - Install numpy binary from apt instead of compiling with pip
 
 Features:
 
-  - Add text translation ability (with Spanish as the first translation)
+  - Add ability to set the language of the web user interface ([#167](https://github.com/kizniche/mycodo/issues/167))
+  - Add Spanish language translation
   - New upgrade system to perform upgrades from github releases instead of commits
-  - Allow symbols to be used in a user password
+  - Allow symbols to be used in a user password ([#76](https://github.com/kizniche/mycodo/issues/76))
   - Introduce changelog (CHANGELOG.md)
 
 Bugfixes:
@@ -29,7 +31,6 @@ Miscellaneous:
   - Update InfluxDB to v1.1.1
   - Update factory_boy to v2.8.1
   - Update sht_sensor to v16.12.1
-  - Change numpy from required to optional (install to use Bezier curve methods)
   - Move install files to Mycodo/install
 
 ## 4.0.26 (2016-11-23)

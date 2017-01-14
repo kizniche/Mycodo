@@ -24,7 +24,7 @@
 
 import os
 
-MYCODO_VERSION = '4.0.26'
+MYCODO_VERSION = '4.1.0'
 
 LANGUAGES = {
     'en': 'English',
