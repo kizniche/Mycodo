@@ -75,5 +75,5 @@ printf "#### Setting permissions ####\n"
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh initialize
 
 printf "#### Starting Mycodo daemon and reloading Apache ####\n"
-service mycodo start
-touch ${INSTALL_DIRECTORY}/mycodo_flask.wsgi
+service mycodo restart
+/etc/init.d/apache2 restart
