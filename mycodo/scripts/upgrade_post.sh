@@ -34,7 +34,7 @@ INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 cd ${INSTALL_DIRECTORY}
 
 ln -sf ${INSTALL_DIRECTORY} /var/www/mycodo
-cp -f ${INSTALL_DIRECTORY}/install/mycodo_flask_apache.conf /etc/apache2/sites-available/
+ln -sf ${INSTALL_DIRECTORY}/install/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
 
 if [ -f "$INSTALL_DIRECTORY/mycodo_flask/ssl_certs/cert.pem" ] && [ ! -d "$INSTALL_DIRECTORY/mycodo/mycodo_flask/ssl_certs/" ]; then
     mkdir -p ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs/
