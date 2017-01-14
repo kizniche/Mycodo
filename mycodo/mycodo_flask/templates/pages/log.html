@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "log" %}
-{% block title %} - Logs{% endblock %}
+{% block title %} - {{_('Logs')}}{% endblock %}
 
 {% block body %}
   <!-- Route: /log -->
@@ -123,7 +123,7 @@
               <label></label>
               <div style="padding-left:0.5em">
                 {%- if log_file_exists[each_log.id] -%}
-                  <a href="/dl/log/{{each_log.sensor_id}}-{{each_log.measure_type}}.log">Download Log</a>
+                  <a href="/dl/log/{{each_log.sensor_id}}-{{each_log.measure_type}}.log">{{_('Download Log')}}</a>
                 {%- else -%}
                   No File to Download
                 {%- endif -%}

@@ -1,6 +1,5 @@
 ## Mycodo Issue Report:
   - Specific Mycodo Version:
-  - git commit hash:
  
 #### Problem Description
 Please list:

@@ -18,13 +18,13 @@
 {% block body %}
 
   {% set navigation_bar_left1 = [
-    ('/settings/general', 'general', 'General'),
-    ('/settings/users', 'users', 'Users'),
-    ('/settings/alerts', 'alerts', 'Alerts')
+    (url_for('settings_routes.settings_general'), 'general', _('General')),
+    (url_for('settings_routes.settings_users'), 'users', _('Users')),
+    (url_for('settings_routes.settings_alerts'), 'alerts', _('Alerts'))
   ] -%}
 
   {% set navigation_bar_left2 = [
-    ('/settings/camera', 'camera', 'Camera')
+    (url_for('settings_routes.settings_camera'), 'camera', _('Camera'))
   ] -%}
 
   {% set active_settings = active_settings|default('users') -%}

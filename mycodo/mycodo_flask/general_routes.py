@@ -38,9 +38,9 @@ import flaskforms
 import flaskutils
 
 from flaskutils import gzipped
-from mycodo_flask.authentication.views import admin_exists
-from mycodo_flask.authentication.views import clear_cookie_auth
-from mycodo_flask.authentication.views import logged_in
+from mycodo_flask.authentication_routes import admin_exists
+from mycodo_flask.authentication_routes import clear_cookie_auth
+from mycodo_flask.authentication_routes import logged_in
 
 from databases.utils import session_scope
 from databases.mycodo_db.models import DisplayOrder
@@ -71,7 +71,7 @@ def before_blueprint_request():
     Ensure databases exist and at least one user is in the user database.
     """
     if not admin_exists():
-        return redirect(url_for("authentication.create_admin"))
+        return redirect(url_for("authentication_routes.create_admin"))
 blueprint.before_request(before_blueprint_request)
 
 
@@ -275,7 +275,10 @@ def past_data(sensor_type, sensor_measure, sensor_id, past_seconds):
                                           sensor_type,
                                           sensor_id,
                                           past_seconds)).raw
-        return jsonify(raw_data['series'][0]['values'])
+        if raw_data:
+            return jsonify(raw_data['series'][0]['values'])
+        else:
+            return '', 204
     except Exception as e:
         logger.error("URL for 'past_data' raised and error: "
                      "{err}".format(err=e))

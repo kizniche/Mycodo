@@ -83,7 +83,6 @@ class RelayController(threading.Thread):
 
         self.running = False
 
-
     def run(self):
         try:
             self.running = True
@@ -124,10 +123,8 @@ class RelayController(threading.Thread):
             self.logger.info("[Relay] Relay controller deactivated in "
                              "{:.1f} ms".format((timeit.default_timer()-self.thread_shutdown_timer)*1000))
 
-
-    def relay_on_off(self, relay_id, state,
-                     duration=0.0, trigger_conditionals=True,
-                     datetime_now=datetime.datetime.now()):
+    def relay_on_off(self, relay_id, state, duration=0.0,
+                     trigger_conditionals=True):
         """
         Turn a relay on or off
         The GPIO may be either HIGH or LOW to activate a relay. This trigger
@@ -146,8 +143,6 @@ class RelayController(threading.Thread):
         :type duration: float
         :param trigger_conditionals: Whether to trigger condionals to act or not
         :type trigger_conditionals: bool
-        :param datetime_now: Time to add as the influxdb entry time
-        :type datetime_now: datetime object
         """
         # Check if relay exists
         if relay_id not in self.relay_id:
@@ -183,16 +178,16 @@ class RelayController(threading.Thread):
                             remaining_time = 0
                         time_on = self.relay_last_duration[relay_id] - remaining_time
                         self.logger.debug("[Relay] Relay {} ({}) is already "
-                                            "on for a duration of {:.1f} seconds (with "
-                                            "{:.1f} seconds remaining). Recording the "
-                                            "amount of time the relay has been on ({:.1f} "
-                                            "sec) and updating the on duration to {:.1f} "
-                                            "seconds.".format(self.relay_id[relay_id],
-                                                              self.relay_name[relay_id],
-                                                              self.relay_last_duration[relay_id],
-                                                              remaining_time,
-                                                              time_on,
-                                                              duration))
+                                          "on for a duration of {:.1f} seconds (with "
+                                          "{:.1f} seconds remaining). Recording the "
+                                          "amount of time the relay has been on ({:.1f} "
+                                          "sec) and updating the on duration to {:.1f} "
+                                          "seconds.".format(self.relay_id[relay_id],
+                                                            self.relay_name[relay_id],
+                                                            self.relay_last_duration[relay_id],
+                                                            remaining_time,
+                                                            time_on,
+                                                            duration))
                         if time_on > 0:
                             # Write the duration the relay was ON to the
                             # database at the timestamp it turned ON
@@ -228,25 +223,25 @@ class RelayController(threading.Thread):
                         self.relay_last_duration[relay_id] = duration
                         self.logger.debug("[Relay] Relay {} ({}) on for {:.1f} "
                                           "seconds.".format(self.relay_id[relay_id],
-                                                             self.relay_name[relay_id],
-                                                             duration))
+                                                            self.relay_name[relay_id],
+                                                            duration))
                         GPIO.output(self.relay_pin[relay_id], self.relay_trigger[relay_id])
 
                 else:
                     if self.is_on(relay_id):
-                        self.logger.warning("[Relay] Relay {} ({}) is already on.".format(
-                                self.relay_id[relay_id],
-                                self.relay_name[relay_id]))
+                        self.logger.warning("[Relay] Relay {} ({}) is already"
+                                            " on.".format(self.relay_id[relay_id],
+                                                          self.relay_name[relay_id]))
                         return 1
                     else:
                         # Record the time the relay was turned on in order to
                         # calculate and log the total duration is was on, when
-                        # it evetually turns off.
+                        # it eventually turns off.
                         self.relay_time_turned_on[relay_id] = datetime.datetime.now()
                         self.logger.debug("[Relay] Relay {rid} ({rname}) ON "
-                            "at {timeon}.".format(rid=self.relay_id[relay_id],
-                                                  rname=self.relay_name[relay_id],
-                                                  timeon=self.relay_time_turned_on[relay_id]))
+                                          "at {timeon}.".format(rid=self.relay_id[relay_id],
+                                                                rname=self.relay_name[relay_id],
+                                                                timeon=self.relay_time_turned_on[relay_id]))
                         GPIO.output(self.relay_pin[relay_id],
                                     self.relay_trigger[relay_id])
 
@@ -279,7 +274,6 @@ class RelayController(threading.Thread):
             if state == 'on' and duration != 0:
                 self.checkConditionals(relay_id, 0)
             self.checkConditionals(relay_id, duration)
-
 
     def checkConditionals(self, relay_id, on_duration):
         with session_scope(MYCODO_DB_PATH) as new_session:
@@ -373,7 +367,6 @@ class RelayController(threading.Thread):
                     each_conditional.email_notify):
                 self.logger.debug("{}".format(message))
 
-
     def all_relays_initialize(self, relays):
         for each_relay in relays:
             self.relay_id[each_relay.id] = each_relay.id
@@ -389,12 +382,10 @@ class RelayController(threading.Thread):
             self.setup_pin(each_relay.pin)
             self.logger.debug("[Relay] {} ({}) Initialized".format(each_relay.id, each_relay.name))
 
-
     def all_relays_off(self):
         """Turn all relays off"""
         for each_relay_id in self.relay_id:
             self.relay_on_off(each_relay_id, 'off', 0, False)
-
 
     def all_relays_on(self):
         """Turn all relays on that are set to be on at startup"""
@@ -402,11 +393,9 @@ class RelayController(threading.Thread):
             if self.relay_start_state[each_relay_id]:
                 self.relay_on_off(each_relay_id, 'on', 0, False)
 
-
     def cleanup_gpio(self):
         for each_relay_pin in self.relay_pin:
             GPIO.cleanup(each_relay_pin)
-
 
     def add_mod_relay(self, relay_id, do_setup_pin=False):
         """
@@ -450,7 +439,6 @@ class RelayController(threading.Thread):
         except Exception as msg:
             return 1, "Add_Mod_Relay Error: ID {}: {}".format(relay_id, msg)
 
-
     def del_relay(self, relay_id):
         """
         Delete local variables
@@ -485,7 +473,6 @@ class RelayController(threading.Thread):
         except Exception as msg:
             return 1, "Del_Relay Error: ID {}: {}".format(relay_id, msg)
 
-
     def current_amp_load(self):
         """
         Calculate the current amp draw from all the devices connected to
@@ -500,7 +487,6 @@ class RelayController(threading.Thread):
                 amp_load += each_relay_amps
         return amp_load
 
-
     @staticmethod
     def setup_pin(pin):
         """
@@ -511,7 +497,6 @@ class RelayController(threading.Thread):
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(True)
         GPIO.setup(pin, GPIO.OUT)
-
 
     def relay_state(self, relay_id):
         """
@@ -525,7 +510,6 @@ class RelayController(threading.Thread):
             return 'on'
         else:
             return 'off'
-
 
     def is_on(self, relay_id):
         """
@@ -552,10 +536,8 @@ class RelayController(threading.Thread):
         GPIO.setup(pin, GPIO.OUT)
         return True
 
-
     def isRunning(self):
         return self.running
-
 
     def stopController(self):
         """Signal to stop the controller"""

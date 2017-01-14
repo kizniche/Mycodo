@@ -30,7 +30,7 @@ class K30Sensor(AbstractSensor):
 
     def __str__(self):
         """ Return CO2 information """
-        return "co2: {co2}".format(co2="{0:.2f}".format(self._co2))
+        return "CO2: {co2}".format(co2="{0:.2f}".format(self._co2))
 
     def __iter__(self):  # must return an iterator
         """ K30 iterates through live CO2 readings """
@@ -41,6 +41,12 @@ class K30Sensor(AbstractSensor):
         if self.read():  # raised an error
             raise StopIteration  # required
         return dict(co2=float('{0:.2f}'.format(self._co2)))
+
+    def info(self):
+        conditions_measured = [
+            ("CO2", "co2", "float", "0.00", self._co2, self.co2)
+        ]
+        return conditions_measured
 
     @property
     def co2(self):

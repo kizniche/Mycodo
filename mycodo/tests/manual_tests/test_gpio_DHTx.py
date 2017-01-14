@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # coding=utf-8
 #
-# Test-Sensor-HT-DHT.py - Read from the DHT sensor
+# Read from a DHT sensor
 #
 # Usage:
-# ./Test-Sensor-HT-DHT.py [sensor] [pin]
+# ./test_gpio_DHTx.py [sensor] [pin]
 #
 # Where sensor can be DHT11, DHT22, or AM2302
 # Where pin is the GPIO (BCM numbering) connected to the sensor data pin

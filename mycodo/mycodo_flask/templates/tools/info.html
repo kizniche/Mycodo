@@ -1,19 +1,19 @@
 {% extends "layout.html" %}
 {% set active_page = "info" %}
-{% block title %} - Info{% endblock %}
+{% block title %} - {{_('Info')}}{% endblock %}
 
 {% block body %}
-
+  <!-- Route: /info -->
   <div class="container"> 
     {% include 'flash_messages.html' %}
 
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em; font-size: 1.3em">
-        Daemon is currently 
+        {{_('Daemon is currently')}}
         {%- if daemon_status == "alive" %}
-          <span style="color: #4E9258; font-weight: bold;">Running</span>
+          <span style="color: #4E9258; font-weight: bold;">{{_('Running')}}</span>
         {%- else %}
-          <span style="color: #F70D1A; font-weight: bold;">Not Running</span>
+          <span style="color: #F70D1A; font-weight: bold;">{{_('Not Running')}}</span>
         {% endif %}
       </div>
     </div>
@@ -44,7 +44,7 @@
         {%- if gpio_readall != "" -%}
           <pre>{{gpio_readall}}</pre>
         {%- else -%}
-Command 'gpio' not found. Install gpio from the terminal with the following commands:
+{{_('Command "gpio" not found. Install gpio from the terminal with the following commands')}}:
 <pre>cd &amp;&amp; git clone git://git.drogon.net/wiringPi &amp;&amp; cd wiringPi &amp;&amp; ./build</pre>
         {%- endif -%}
       </div>

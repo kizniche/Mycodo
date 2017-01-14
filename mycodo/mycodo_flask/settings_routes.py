@@ -1,6 +1,7 @@
 # coding=utf-8
 """ collection of Page endpoints """
 import logging
+import operator
 
 from flask.blueprints import Blueprint
 from flask import current_app
@@ -10,6 +11,7 @@ from flask import render_template
 from flask import request
 from flask import session
 
+from config import LANGUAGES
 from databases.mycodo_db.models import CameraStill
 from databases.mycodo_db.models import Misc
 from databases.mycodo_db.models import SMTP
@@ -88,6 +90,8 @@ def settings_general():
     misc = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Misc, first=True)
     formSettingsGeneral = flaskforms.SettingsGeneral()
 
+    languages_sorted = sorted(LANGUAGES.items(), key=operator.itemgetter(1))
+
     if request.method == 'POST':
         form_name = request.form['form-name']
         if form_name == 'General':
@@ -96,6 +100,7 @@ def settings_general():
 
     return render_template('settings/general.html',
                            misc=misc,
+                           languages=languages_sorted,
                            formSettingsGeneral=formSettingsGeneral)
 
 

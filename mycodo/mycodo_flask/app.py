@@ -27,6 +27,8 @@ from __future__ import print_function  # In python 2.7
 import os
 
 from flask import Flask
+from flask import request
+from flask_babel import Babel
 from flask_sslify import SSLify
 
 import flaskutils
@@ -34,12 +36,13 @@ from init_databases import create_dbs
 from databases.mycodo_db.models import Misc
 from config import ProdConfig
 
-from mycodo.mycodo_flask import admin
-from mycodo.mycodo_flask import authentication
+from mycodo.config import LANGUAGES
+from mycodo.mycodo_flask import admin_routes
+from mycodo.mycodo_flask import authentication_routes
 from mycodo.mycodo_flask import general_routes
-from mycodo.mycodo_flask import methods
-from mycodo.mycodo_flask import pages
-from mycodo.mycodo_flask import settings
+from mycodo.mycodo_flask import method_routes
+from mycodo.mycodo_flask import page_routes
+from mycodo.mycodo_flask import settings_routes
 from mycodo.mycodo_flask.general_routes import influx_db
 
 
@@ -57,6 +60,18 @@ def create_app(config=ProdConfig):
 
     register_extensions(app, config)
     register_blueprints(app)
+
+    # Translations
+    babel = Babel(app)
+
+    @babel.localeselector
+    def get_locale():
+        misc = flaskutils.db_retrieve_table(app.config['MYCODO_DB_PATH'], Misc, first=True)
+        if misc.language != '':
+            for key, value in LANGUAGES.iteritems():
+                if key == misc.language:
+                    return key
+        return request.accept_languages.best_match(LANGUAGES.keys())
 
     return app
 
@@ -79,9 +94,9 @@ def register_extensions(_app, config):
 
 def register_blueprints(_app):
     """ register blueprints to the app """
-    _app.register_blueprint(admin.views.blueprint)  # register admin views
-    _app.register_blueprint(authentication.views.blueprint)  # register our login/logout views
+    _app.register_blueprint(admin_routes.blueprint)  # register admin views
+    _app.register_blueprint(authentication_routes.blueprint)  # register our login/logout views
     _app.register_blueprint(general_routes.blueprint)  # register general routes
-    _app.register_blueprint(methods.views.blueprint)  # register method views
-    _app.register_blueprint(pages.views.blueprint)  # register page views
-    _app.register_blueprint(settings.views.blueprint)  # register settings views
+    _app.register_blueprint(method_routes.blueprint)  # register method views
+    _app.register_blueprint(page_routes.blueprint)  # register page views
+    _app.register_blueprint(settings_routes.blueprint)  # register settings views

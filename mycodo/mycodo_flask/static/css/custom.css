@@ -2,6 +2,16 @@
  * Custom CSS
  */
 
+.row.no-gutters {
+  margin-right: 0;
+  margin-left: 0;
+}
+.row.no-gutters > [class^="col-"],
+.row.no-gutters > [class*=" col-"] {
+  padding-right: 0;
+  padding-left: 0;
+}
+
 .checkbox-nopad {
   padding-top: 0 !important;
 }

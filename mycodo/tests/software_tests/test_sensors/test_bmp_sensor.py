@@ -100,7 +100,7 @@ def test_bmp_special_method_str():
 
 def test_bmp_special_method_repr():
     """ expect a __repr__ format """
-    assert "<BMPSensor(altitude=0.00)(pressure=0)(temperature=0.00)>" in repr(BMPSensor(1))
+    assert "<BMPSensor(temperature=0.00)(pressure=0)(altitude=0.00)>" in repr(BMPSensor(1))
 
 
 def test_bmp_raises_exception():

@@ -3,11 +3,11 @@
 {% set active_page = "settings" %}
 {% set active_settings = "users" %}
 
-{% block title %} - Users Settings{% endblock %}
+{% block title %} - {{_('User Settings')}}{% endblock %}
 
 {% block settings %}
   <!-- Route: /settings/users -->
-  <h3 style="text-align: right; padding-bottom: 1.3em;">User Management</h3>
+  <h3 style="text-align: right; padding-bottom: 1.3em;">{{_('User Settings')}}</h3>
 
   <form class="form-horizontal" method="post" action="/settings/users">
     <input type="hidden" name="form-name" value="addUser">
@@ -56,12 +56,12 @@
       <thead>
         <tr>
           <td class="col-sm-1"></td>
-          <td class="col-sm-1">User</td>
-          <td class="col-sm-2">Email</td>
-          <td class="col-sm-2">New Password</td>
-          <td class="col-sm-2">Repeat Password</td>
-          <td class="col-sm-2">Group</td>
-          <td class="col-sm-2">Theme</td>
+          <td class="col-sm-1">{{_('User')}}</td>
+          <td class="col-sm-2">{{_('Email')}}</td>
+          <td class="col-sm-2">{{_('New Password')}}</td>
+          <td class="col-sm-2">{{_('Repeat Password')}}</td>
+          <td class="col-sm-2">{{_('Group')}}</td>
+          <td class="col-sm-2">{{_('Theme')}}</td>
           <td class="col-sm-1"></td>
         </tr>
       </thead>

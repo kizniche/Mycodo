@@ -5,7 +5,7 @@
   </div>
 </div>
 <div class="form-group">
-  <label class="control-label">Edge</label>
+  {{formModSensor.modSwitchEdge.label(class_='control-label')}}
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modSwitchEdge" name="modSwitchEdge" title="Detect low to high (rising), high to low (falling), or both?">
       <option value="rising"{% if each_sensor.switch_edge == "rising" %} selected{% endif %}>Rising</option>
@@ -15,13 +15,13 @@
   </div>
 </div>
 <div class="form-group">
-  <label class="control-label">Bounce Time (ms)</label>
+  {{formModSensor.modSwitchBounceTime.label(class_='control-label')}}
   <div>
     {{formModSensor.modSwitchBounceTime(class_='form-control', value=each_sensor.switch_bouncetime, **{'title':'The amount of time to bounce the input signal, in miliseconds.'})}}
   </div>
 </div>
 <div class="form-group">
-  <label class="control-label">Refractory Period (sec)</label>
+  {{formModSensor.modSwitchResetPeriod.label(class_='control-label')}}
   <div>
     {{formModSensor.modSwitchResetPeriod(class_='form-control', value=each_sensor.switch_reset_period, **{'title':'How long to wait after the first edge detection to begin detecting again, in seconds.'})}}
   </div>

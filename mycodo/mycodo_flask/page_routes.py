@@ -44,7 +44,7 @@ from config import LOGIN_LOG_FILE
 from config import LOCK_FILE_STREAM
 from config import LOCK_FILE_TIMELAPSE
 from config import RESTORE_LOG_FILE
-from config import UPDATE_LOG_FILE
+from config import UPGRADE_LOG_FILE
 
 from mycodo.databases.utils import session_scope
 from mycodo.databases.mycodo_db.models import Method, Relay
@@ -94,14 +94,6 @@ def page_camera():
         os.remove(LOCK_FILE_STREAM)
         stream_locked = False
     stream_locked = os.path.isfile(LOCK_FILE_STREAM)
-
-    # Check if a timelapse is active
-    timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
-    if timelapse_locked and not os.path.isfile(FILE_TIMELAPSE_PARAM):
-        os.remove(LOCK_FILE_TIMELAPSE)
-    elif not timelapse_locked and os.path.isfile(FILE_TIMELAPSE_PARAM):
-        os.remove(FILE_TIMELAPSE_PARAM)
-    timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
 
     if request.method == 'POST':
         form_name = request.form['form-name']
@@ -161,7 +153,7 @@ def page_camera():
                     logger.error("Camera IOError raised in '/camera' endpoint: {err}".format(err=e))
 
             elif formCamera.StartStream.data:
-                if not timelapse_locked:
+                if not is_timelapse_locked():
                     open(LOCK_FILE_STREAM, 'a')
                     stream_locked = True
                 else:
@@ -175,14 +167,6 @@ def page_camera():
                 if os.path.isfile(LOCK_FILE_STREAM):
                     os.remove(LOCK_FILE_STREAM)
                 stream_locked = False
-
-    # Check again if timelapse is active to catch if it started
-    timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
-    if timelapse_locked and not os.path.isfile(FILE_TIMELAPSE_PARAM):
-        os.remove(LOCK_FILE_TIMELAPSE)
-    elif not timelapse_locked and os.path.isfile(FILE_TIMELAPSE_PARAM):
-        os.remove(FILE_TIMELAPSE_PARAM)
-    timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
 
     # Get the full path of latest still image
     try:
@@ -231,7 +215,7 @@ def page_camera():
                            latest_timelapse_img_ts=latest_timelapse_img_ts,
                            latest_timelapse_img=latest_timelapse_img,
                            stream_locked=stream_locked,
-                           timelapse_locked=timelapse_locked,
+                           timelapse_locked=is_timelapse_locked(),
                            time_now=time_now,
                            tl_parameters_dict=dict_timelapse)
 
@@ -594,8 +578,8 @@ def page_logview():
             logfile = HTTP_LOG_FILE
         elif formLogView.logdaemon.data:
             logfile = DAEMON_LOG_FILE
-        elif formLogView.logupdate.data:
-            logfile = UPDATE_LOG_FILE
+        elif formLogView.logupgrade.data:
+            logfile = UPGRADE_LOG_FILE
         elif formLogView.logrestore.data:
             logfile = RESTORE_LOG_FILE
 
@@ -642,13 +626,8 @@ def page_pid():
     else:
         display_order = []
 
-    formModPIDMethod = flaskforms.ModPIDMethod()
-    formActivatePID = flaskforms.ActivatePID()
     formAddPID = flaskforms.AddPID()
-    formDeactivatePID = flaskforms.DeactivatePID()
-    formDelPID = flaskforms.DelPID()
     formModPID = flaskforms.ModPID()
-    formOrderPID = flaskforms.OrderPID()
 
     with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
         method = new_session.query(Method)
@@ -657,21 +636,32 @@ def page_pid():
         new_session.close()
 
     if request.method == 'POST':
+        if session['user_group'] == 'guest':
+            flash("Guests are not permitted to modify PID controllers", "error")
+            return redirect('/pid')
         form_name = request.form['form-name']
         if form_name == 'addPID':
             flaskutils.pid_add(formAddPID, display_order)
         elif form_name == 'modPID':
-            flaskutils.pid_mod(formModPID)
-        elif form_name == 'modPIDMethod':
-            flaskutils.pid_mod_method(formModPIDMethod)
-        elif form_name == 'delPID':
-            flaskutils.pid_del(formDelPID, display_order)
-        elif form_name == 'orderPID':
-            flaskutils.pid_reorder(formOrderPID, display_order)
-        elif form_name == 'activatePID':
-            flaskutils.pid_activate(formActivatePID)
-        elif form_name == 'deactivatePID':
-            flaskutils.pid_deactivate(formDeactivatePID)
+            if formModPID.mod_pid_del.data:
+                flaskutils.pid_del(formModPID.modPID_id.data, display_order)
+            elif formModPID.mod_pid_order_up.data:
+                flaskutils.pid_reorder(formModPID.modPID_id.data, display_order, 'up')
+            elif formModPID.mod_pid_order_down.data:
+                flaskutils.pid_reorder(formModPID.modPID_id.data, display_order, 'down')
+            elif formModPID.mod_pid_activate.data:
+                flaskutils.pid_activate(formModPID.modPID_id.data)
+            elif formModPID.mod_pid_deactivate.data:
+                flaskutils.pid_deactivate(formModPID.modPID_id.data)
+            elif formModPID.mod_pid_hold.data:
+                flaskutils.pid_manipulate('Hold', formModPID.modPID_id.data)
+            elif formModPID.mod_pid_pause.data:
+                flaskutils.pid_manipulate('Pause', formModPID.modPID_id.data)
+            elif formModPID.mod_pid_resume.data:
+                flaskutils.pid_manipulate('Resume', formModPID.modPID_id.data)
+            else:
+                flaskutils.pid_mod(formModPID)
+
         return redirect('/pid')
 
     return render_template('pages/pid.html',
@@ -680,13 +670,8 @@ def page_pid():
                            relay=relay,
                            sensor=sensor,
                            displayOrder=display_order,
-                           formModPIDMethod=formModPIDMethod,
-                           formOrderPID=formOrderPID,
                            formAddPID=formAddPID,
-                           formModPID=formModPID,
-                           formDelPID=formDelPID,
-                           formActivatePID=formActivatePID,
-                           formDeactivatePID=formDeactivatePID)
+                           formModPID=formModPID)
 
 
 @blueprint.route('/relay', methods=('GET', 'POST'))
@@ -948,3 +933,13 @@ def gen(camera):
         frame = camera.get_frame()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+
+def is_timelapse_locked():
+    """Check if a timelapse is active"""
+    timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
+    if timelapse_locked and not os.path.isfile(FILE_TIMELAPSE_PARAM):
+        os.remove(LOCK_FILE_TIMELAPSE)
+    elif not timelapse_locked and os.path.isfile(FILE_TIMELAPSE_PARAM):
+        os.remove(FILE_TIMELAPSE_PARAM)
+    return os.path.isfile(LOCK_FILE_TIMELAPSE)

@@ -75,7 +75,7 @@ def test_raspberry_pi_cpu_temp_temperature_property():
 
 def test_raspberry_pi_cpu_temp_special_method_str():
     """ expect a __str__ format """
-    assert "temperature: 0.00" in str(RaspberryPiCPUTemp())
+    assert "Temperature: 0.00" in str(RaspberryPiCPUTemp())
 
 
 def test_raspberry_pi_cpu_temp_special_method_repr():
@@ -198,11 +198,11 @@ def test_raspberry_pi_gpu_temp_special_method_str():
         # create our object
         mock_measure.side_effect = [67.2, 52.5]  # first reading, second reading
         rpi_gpu = RaspberryPiGPUTemp()
-        assert "temperature: 0.00" in str(rpi_gpu)  # initial value
+        assert "Temperature: 0.00" in str(rpi_gpu)  # initial value
         assert not rpi_gpu.read()  # update 1 (no errors)
-        assert "temperature: 67.20" in str(rpi_gpu)  # first reading
+        assert "Temperature: 67.20" in str(rpi_gpu)  # first reading
         assert not rpi_gpu.read()  # update 2 (no errors)
-        assert "temperature: 52.50" in str(rpi_gpu)  # second reading
+        assert "Temperature: 52.50" in str(rpi_gpu)  # second reading
 
 
 def test_raspberry_pi_gpu_temp_special_method_repr():

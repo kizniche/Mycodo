@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 4.0.26 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
+### Latest version: 4.1.0 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=mycodo_dev)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80?branch=mycodo_dev)](https://www.codacy.com/app/kyletgabriel/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
 
 Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.
 
@@ -27,18 +27,17 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 - [Install](#install)
 - [Install Notes](#install-notes)
 - [Supported Devices and Sensors](#supported-devices-and-sensors)
-    - [Temperature](#temperature)
-    - [Humidity](#humidity)
-    - [CO<sub>2</sub>](#co2)
-    - [Luminosity](#luminosity)
-    - [Moisture](#moisture)
-    - [Pressure](#pressure)
+    - [1-Wire](#1-wire)
+    - [GPIO](#gpio)
+    - [UART](#uart)
+    - [I<sub>2</sub>C](#i2c)
     - [Devices](#devices)
 - [Notes](#notes)
 - [HTTP Server](#http-server-security)
 - [Daemon Info](#daemon-info)
 - [Upgrading](#upgrading)
 - [Backup and Restore](#backup-and-restore)
+- [Translations](#translations)
 - [Directory Structure](#directory-structure)
 - [License](#license)
 - [Screenshots](#screenshots)
@@ -53,16 +52,17 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
   * Analog to digital converter support for reading any analog sensor or signal.
 * Event triggers: When certain conditions are met, activate relays, camera recording, email notification, and more.
 * Discrete PID control: Regulate environmental conditions with prediction and precision.
-* Method creation for dynamic PID setpoints for changing conditions over time .
+* Method creation for dynamic PID setpoints for changing conditions over time (setpoint tracking).
   * Time/Date: Change the setpoint based on specific times and dates (ideal for long-duration changes).
   * Duration: Change the setpoint at durations form when it was activated (examples: reflow oven, thermal cycler).
   * Daily: Change the setpoint on a daily, repeatable schedule.
   * Daily Sine Wave: Change the setpoint on a daily, repeatable schedule that follows a configurable sinusoidal wave.
   * Daily Bezier Curve: Change the setpoint on a daily, repeatable schedule that follows a configurable Bezier curve.
 * 16x2 and 20x4 I<sup>2</sup>C LCD support: Create a physical display of conditions or status of the system.
-* I<sup>2</sup>C multiplexer support to allow using multiple devices/sensors with the same address.
-* Pi Camera support: Streaming live video, capture still images, or create time-lapses.
-* Automated system upgrade: When a new feature is pushed to github, one click will update the entire system.
+* I<sup>2</sup>C multiplexer support to allow using multiple devices/sensors with the same I<sup>2</sup>C address.
+* Pi Camera support: Stream live video, capture still images, or create time-lapses.
+* Automated system upgrade: When there's new release on github, an upgrade can be initiated from the web UI.
+* Languages: English and Spanish.
 
 
 
@@ -84,6 +84,8 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 
 These install procedures have been tested to work with a Raspberry Pi following a fresh install of [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/) (Full or Lite version), with an active internet connection.
 
+It appears that with the current version of Raspbian, SSH is not enabled by default. This necessitates the use of a keyboard and monitor to run raspi-config and enable SSH.
+
 Set up the initial settings with raspi-config. **It's very important that you don't skip the file system expansion and reboot! This needs to be done before continuing or there won't be any free disk space.**
 
 ```sudo raspi-config```
@@ -93,29 +95,30 @@ Set up the initial settings with raspi-config. **It's very important that you do
  + Internationalisation Options -> Change Locale (set and select en_US.UTF-8 if US)
  + Internationalisation Options -> Change Timezone
  + Enable Camera
- + Advanced Options -> Enable I<sup>2</sup>C (required)
+ + Advanced Options -> Enable SSH
+ + Advanced Options -> Enable I<sup>2</sup>C (required if using certain sensors)
  + **Reboot (required)**
 
-Mycodo will be installed with the following install script (setup.sh). As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web UI. If you require a custom setup, examine and modify this script accordingly. If you do not require a custom setup, just run the install script with the following commands.
+
+Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web UI. If you require a custom setup, examine and modify this script accordingly. If you do not require a custom setup, just run the install script with the following commands:
 
 ```
-sudo apt-get update && sudo apt-get install -y git
-cd
-git clone https://github.com/kizniche/Mycodo
-cd Mycodo
-sudo ./setup.sh
+cd ~
+wget -O mycodo-latest.tar.gz https://api.github.com/repos/kizniche/mycodo/tarball
+mkdir Mycodo
+tar xzf mycodo-latest.tar.gz -C Mycodo --strip-components=1
+rm -f mycodo-latest.tar.gz
+cd Mycodo/install
+sudo /bin/bash ./setup.sh
 ```
 
-Create an administrator user for the web UI:
+Make sure the setup.sh script finishes without errors. A log of the setup.sh script output will be created at ~/Mycodo/install/setup.log.
+
+If the install is successful, the web user interface should be accessible with your PI's IP address https://IPaddress/. The first time you visit this page, you will be prompted to create an admin user. Alternatively, an admin user may also be created with the following command:
 
 ```sudo ~/Mycodo/init_databases.py --addadmin```
 
-Make sure the setup.sh and init_databases.py scripts run without error. A log of the setup.sh script output will be created at ~/Mycodo/setup.log.
-
-Follow the on-screen prompts to create an administrator user for the web interface.
-
-That's it. You should be able to use the user you just created to log into the Mycodo web UI at https://localhost with localhost changed to your Raspberry Pi's hostname or IP address. Once logged in, make sure the Mycodo logo and version number at the top left is green, indicating the daemon is running. Red indicates the daemon is inactive or unresponsive. Ensure any java-blocking plugins are disabled for all the web UI features to work.
-
+That's it. You should be redirected to the login page to use the credentials just created to log in. Once logged in, make sure the host name and version number at the top left is green, indicating the daemon is running. Red indicates the daemon is inactive or unresponsive. Ensure any java-blocking plugins are disabled for all the web UI features to work.
 
 
 ## Install Notes
@@ -126,7 +129,7 @@ If you want write access to the mycodo files, add your user to the mycodo group,
 
 In certain circumstances after the initial install, the mycodo service will not be able to start because of a missing or corrupt package. I'm still trying to understand why this happens and how to prevent it. If you cannot start the daemon, try to reinstall the required modules with the following command:
 
-```sudo pip install -r ~/Mycodo/requirements.txt --upgrade --force-reinstall --no-deps```
+```sudo pip install -r ~/Mycodo/install/requirements.txt --upgrade --force-reinstall --no-deps```
 
 Then reboot
 
@@ -140,27 +143,21 @@ If you receive an unresolvable error during the install, please [create an issue
 
 Certain sensors will require extra steps to be taken in order to set up the interface for communication. This includes I<sup>2</sup>C, one-wire, and UART.
 
-### Temperature
+### 1-Wire
 
-> [Atlas Scientific PT-1000](http://www.atlas-scientific.com/product_pages/kits/temp_kit.html) (I<sup>2</sup>C): Industrial-grade temperature probe that can be indefinitely submersed in liquid and sustain extreme temperatures (-200˚C to 850˚C, with the use of a thermowell).
+The 1-wire interface should be configured with [these instructions](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing).
 
-> [DS18B20](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf) (1-wire): Once the one-wire interface has been configured with [these instructions](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing), it may be used with Mycodo.
+> [DS18B20](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf) Temperature
 
-> [TMP006, TMP007](https://www.sparkfun.com/products/11859) (I<sup>2</sup>C): Can measure the temperature of an object without making contact with it, by using a thermopile to detect and absorb the infrared energy an object is emitting. This sensor also measures the temperature of the die (physical sensor).
+### GPIO
 
-### Humidity
+> [DHT11, DHT22, AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring) Relative humidity and temperature.
 
-> [AM2315](https://github.com/lexruee/tentacle_pi) (I<sup>2</sup>C): Measures relative humidity and temperature.
+> [SHT1x, SHT2x, SHT7x](https://github.com/mk-fg/sht-sensor) Relative humidity and temperature.
 
-> [DHT11, DHT22, AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring) (GPIO): Measures relative humidity and temperature.
+### UART
 
-> [HTU21D](http://www.te.com/usa-en/product-CAT-HSC0004.html) (I<sup>2</sup>C): Measures relative humidity and temperature.
-
-> [SHT1x, SHT2x, SHT7x](https://github.com/mk-fg/sht-sensor) (GPIO): Measures relative humidity and temperature.
-
-### Carbon Dioxide (CO<sub>2</sub>)
-
-> [K30](http://www.co2meter.com/products/k-30-co2-sensor-module) (UART): Measures carbon dioxide in ppmv
+> [K30](http://www.co2meter.com/products/k-30-co2-sensor-module) Carbon dioxide (CO<sub>2</sub>) in ppmv
 
 [This documentation](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip) provides specific installation procedures for the K30 with the Raspberry Pi version 1 or 2. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing ~/Mycodo/mycodo/tests/test_uart_K30.py
 
@@ -176,17 +173,25 @@ Go to Advanced Options->Serial and disable. Then edit /boot/config.txt
 
 Find the line "enable_uart=0" and change it to "enable_uart=1", then reboot.
 
-### Luminosity
+### I<sup>2</sup>C
 
-> [TSL2561](https://www.sparkfun.com/products/12055) (I<sup>2</sup>C): A light sensor with a flat response across most of the visible spectrum. Light range from 0.1 - 40k+ Lux. Contains two integrating analog-to-digital converters (ADC) that integrate currents from two photodiodes to measure both infrared and visible light to better approximate the response of the human eye.
+The I<sup>2</sup>C interface should be enabled with `raspi-config`.
 
-### Moisture
+> [AM2315](https://github.com/lexruee/tentacle_pi) Relative humidity and temperature.
 
-> [Chirp](https://wemakethings.net/chirp/) (I<sup>2</sup>C): A moisture, light, and temperature sensor
+> [Atlas Scientific PT-1000](http://www.atlas-scientific.com/product_pages/kits/temp_kit.html) Temperature
 
-### Pressure
+> [BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Barometric pressure, humidity, and temperature
 
-> [BMP085, BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi) (I<sup>2</sup>C): Measures barometric pressure and temperature
+> [BMP085, BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi) Barometric pressure and temperature
+
+> [HTU21D](http://www.te.com/usa-en/product-CAT-HSC0004.html) Relative humidity and temperature
+
+> [TMP006, TMP007](https://www.sparkfun.com/products/11859) Contactless temperature
+
+> [TSL2561](https://www.sparkfun.com/products/12055) Light
+
+> [Chirp](https://wemakethings.net/chirp/) Moisture, light, and temperature
 
 ### Edge Detection
 
@@ -228,7 +233,7 @@ Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the s
 
 SSL certificates will be generated and stored at ~/Mycodo/mycodo/mycodo_flask/ssl_certs/ during the install process. If you want to use your own SSL certificates, replace them as they are named in this directory. [letsencrypt.org](https://letsencrypt.org) provides free verified SSL certificates.
 
-If using the auto-generated certificate, be aware that they will not be verified when visiting the https:// version of the WEB UI. You will receive warning messages about the security of your site unless you add the certificate to your browser's trusted list). 
+If using the auto-generated certificate, be aware that they will not be verified when visiting the https:// version of the WEB UI. You will receive warning messages about the security of your site unless you add the certificate to your browser's trusted list.
 
 
 ### Daemon info
@@ -248,15 +253,16 @@ Also, use '-d' to log all debug messages to /var/log/mycodo/mycodo.log
 
 ### Upgrading
 
-If you already have Mycodo installed (>=4.0.0), you can perform an upgrade to the latest version on github by either using the Admin/Update menu in the web UI (recommended) or by issuing the following command at the terminal. Note: You must be a member of the group 'mycodo', else you will have to execute the following command as root. A log of the update process can be found at /var/log/mycodo/mycodoupdate.log
+If you already have Mycodo installed (>=4.0.0), you can perform an upgrade to the latest version on github by either using the Admin/Upgrade menu in the web UI (recommended) or by issuing the following command at the terminal. A log of the upgrade process is created at /var/log/mycodo/mycodoupgrade.log
 
-```~/Mycodo/mycodo/scripts/mycodo_wrapper upgrade```
+```sudo ~/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh upgrade```
 
 Upgrading the mycodo database is performed automatically during the upgrade process, however it can also be performed manually with the following commands (Note: This does not create the database, only upgrade them. You must already have a database created in order to upgrade):
 
-```cd ~/Mycodo/databases```
-
-```alembic upgrade head```
+```bash
+cd ~/Mycodo/databases
+alembic upgrade head
+```
 
 Refer to the [alembic documentation](http://alembic.readthedocs.org/en/latest/tutorial.html) for other functions.
 
@@ -307,8 +313,8 @@ alembic upgrade head
 Execute the Mycodo setup.sh script:
 
 ```bash
-cd ~/Mycodo
-sudo setup.sh
+cd ~/Mycodo/install
+sudo /bin/bash setup.sh
 ```
 
 Restore the influx databases:
@@ -327,12 +333,49 @@ You could also copy the influx databases and just copy the entire Mycodo directo
 
 
 
+### Translations
+
+Translation support has been added but there is currently a lack of translations. If you know another language and would like to create translations, follow the steps below.
+
+To create your own translation, use the following commands.
+
+```cd ~/Mycodo/mycodo```
+
+Create a messages.pot file from searching all files that contain translatable text.
+
+```pybabel extract -F babel.cfg -k lazy_gettext -o messages.pot .```
+
+Create the translation for the new language (in this case it is 'es' for Spanish).
+
+```pybabel init -i messages.pot -d mycodo_flask/translations -l es```
+
+There will now be the file 'messages.po' created in ~/Mycodo/mycodo/mycodo_flask/translations/es/LC_MESSAGES/
+
+Edit messages.po (I used [poedit](https://poedit.net/)) to edit and save the translation for each translatable word or phrase.
+
+Finally, compile the new translation.
+
+```pybabel compile -d mycodo_flask/translations```
+
+If you would like to rescan for translatable text and update your language's messages.po file without losing your previous translation work, use the following commands instead of the above commands. Then edit with poedit and compile for it to take effect.
+
+```
+pybabel extract -F babel.cfg -k lazy_gettext -o messages.pot .
+pybabel update -i messages.pot -d mycodo_flask/translations
+pybabel compile -d mycodo_flask/translations
+```
+
+Refer to [The Flask Mega-Tutorial, Part XIV: I18n and L10n](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xiv-i18n-and-l10n) for more details of this process.
+
+
+
 ### Directory Structure
 
 This is the file structure of Mycodo, so it may assist anyone to understand or modify the system. I'll try to keep this current.
 
 ```
 Mycodo/
+├── CHANGELOG.md - Mycodo version changelog
 ├── databases - SQLite databases (for configuration)
 │   ├── alembic - Alembic SQL database migration tool
 │   │   └── versions - Scripts to upgrade/downgrade databases
@@ -343,7 +386,13 @@ Mycodo/
 │   ├── notes.db
 │   ├── statistics.csv - Anonymous statistics data
 │   └── users.db - User settings
-├── init_databases.py - Create SQLite databases and add users
+├── init_databases.py - Script to create SQLite databases and users
+├── install
+│   ├── crontab.sh - Ensures proper line is in crontab
+│   ├── mycodo.service - Systemd script
+│   ├── mycodo_flask_apache.conf - Apache2 configuration file
+│   ├── requirements.txt - Python module requirements
+│   └── setup.sh - Mycodo install script
 ├── mycodo
 │   ├── config.py - Global configuration file
 │   ├── controller_lcd.py - LCD controller class
@@ -362,41 +411,48 @@ Mycodo/
 │   ├── flaskforms.py - Flask form classes
 │   ├── flaskutils.py - Various functions to assist the flask UI
 │   ├── mycodo_flask - HTTP server files (Flask)
+│   │   ├── admin_routes.py - Admin page routes
+│   │   ├── authentication_routes.py - Authentication routes
+│   │   ├── general_routes.py - General routes
+│   │   ├── method_routes.py - Method routes
+│   │   ├── page_routes.py - General page routes
+│   │   ├── settings_routes.py - Settings page routes
 │   │   ├── ssl_certs - Location of HTTP SSL certificates
 │   │   ├── static - Static files reside (images, css, js, etc.)
-│   │   └── templates - Flask HTML templates
-│   │       ├── 404.html
-│   │       ├── flash_messages.html - Error message handler
-│   │       ├── layout.html - Template for pages/, settings/, /tools
-│   │       ├── layout-remote.html - Template for /remote
-│   │       ├── layout-settings.html - Template for /settings
-│   │       ├── login.html - Login page
-│   │       ├── manual.html - Mycodo usage manual
-│   │       ├── pages - Flask general pages
-│   │       │   ├── graph.html - Graph display age
-│   │       │   ├── live.html - Live data display page
-│   │       │   ├── sensor.html - Sensor configuration page
-│   │       │   └── ...
-│   │       ├── remote - Future remote administration panel
-│   │       │   └── setup.html - Add or check the status of remote systems
-│   │       ├── settings - Flask settings pages
-│   │       │   ├── alerts.html - Alerts settings page
-│   │       │   ├── users.html - Users settings page
-│   │       │   └── ...
-│   │       └── tools - Various tools for Mycodo
-│   │           ├── info.html - Information about your system
-│   │           ├── logview.html - Display log files
-│   │           ├── usage.html - Calculate relay usage/power consumtion
-│   │           └── ...
+│   │   ├── templates - Flask HTML templates
+│   │   │   ├── 404.html
+│   │   │   ├── flash_messages.html - Error message handler
+│   │   │   ├── layout.html - Template for pages/, settings/, /tools
+│   │   │   ├── layout-remote.html - Template for /remote
+│   │   │   ├── layout-settings.html - Template for /settings
+│   │   │   ├── login.html - Login page
+│   │   │   ├── manual.html - Mycodo usage manual
+│   │   │   ├── admin - Flask admin pages
+│   │   │   ├── pages - Flask general pages
+│   │   │   │   ├── graph.html - Graph display age
+│   │   │   │   ├── live.html - Live data display page
+│   │   │   │   ├── sensor.html - Sensor configuration page
+│   │   │   │   └── ...
+│   │   │   ├── remote - Future remote administration panel
+│   │   │   │   └── setup.html - Add or check the status of remote systems
+│   │   │   ├── settings - Flask settings pages
+│   │   │   │   ├── alerts.html - Alerts settings page
+│   │   │   │   ├── users.html - Users settings page
+│   │   │   │   └── ...
+│   │   │   └── tools - Various tools for Mycodo
+│   │   │       ├── info.html - Information about your system
+│   │   │       ├── logview.html - Display log files
+│   │   │       ├── usage.html - Calculate relay usage/power consumtion
+│   │   │       └── ...
+│   │   └── translations - Language translations
 │   ├── mycodo_client.py - Communicates with the running daemon
 │   ├── mycodo_daemon.py - Mycodo daemon (core of the system)
 │   ├── start_flask_ui.py - Flask startup script
 │   ├── scripts - Miscellaneous helper and test scripts and functions
-│   │   ├── mycodo.service - Systemd script
 │   │   ├── mycodo_wrapper.c - Source to binary that's setuid, for upgrades 
-│   │   ├── restore_mycodo.sh - Script to restore a backed up Mycodo version
-│   │   ├── update_mycodo.sh - Update script to bring the git repository to HEAD
-│   │   ├── update_post.sh - Post update script (commands from the latest version)
+│   │   ├── restore_mycodo.sh - Script to restore a backed-up Mycodo version
+│   │   ├── upgrade_mycodo_release.sh - Updates Mycodo to the latest release
+│   │   ├── update_post.sh - Post update commands (from the latest release)
 │   │   └── ...
 │   ├── sensors - Python modules for sensors
 │   │   ├── am2315.py
@@ -410,11 +466,9 @@ Mycodo/
 │       │   ├── Test_I2C_Multiplexer.py
 │       │   └──...
 │       └── software_tests - Automated Tests for Software
-├── mycodo_flask_apache.conf - Apache2 configuration file
 ├── mycodo_flask.wsgi - Start script for Apache2 mod_wsgi
 ├── old - Archived milestone versions of Mycodo
-├── requirements.txt - Python module requirements
-└── setup.sh - Install script
+└──
 ```
 
 

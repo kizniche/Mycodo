@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "method_list" %}
-{% block title %} - Method List{% endblock %}
+{% block title %} - {{_('Method List')}}{% endblock %}
 
 {% block head %}
   <script src="/static/js/highcharts.js"></script>
@@ -14,7 +14,7 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <h4>Method Management</h4>
+    <h4>{{_('Method Management')}}</h4>
 
     <div class="form-inline">
       <form method="post" action="/method-build/0/0" style="padding: 0.7em 0">
@@ -30,11 +30,11 @@
           {{formCreateMethod.method_type.label(class_='control-label')}}
           <div>
             <select class="form-control" id="method_type" name="method_type">
-              <option value="Date">Time/Date</option>
-              <option value="Duration">Duration</option>
-              <option value="Daily">Daily (Time-Based)</option>
-              <option value="DailySine">Daily (Sine Wave)</option>
-              <option value="DailyBezier">Daily (Bezier Curve)</option>
+              <option value="Date">{{_('Time/Date')}}</option>
+              <option value="Duration">{{_('Duration')}}</option>
+              <option value="Daily">{{_('Daily (Time-Based)')}}</option>
+              <option value="DailySine">{{_('Daily (Sine Wave)')}}</option>
+              <option value="DailyBezier">{{_('Daily (Bezier Curve)')}}</option>
             </select>
           </div>
         </div>
@@ -49,9 +49,9 @@
 
     <div style="clear: both; padding: 0.5em 0 0.5em 0.5em;"><h4>
       {%- if method == [] -%}
-        No Saved Methods Exist
+        {{_('No Saved Methods Exist')}}
       {%- else -%}
-        Saved Methods
+        {{_('Saved Methods')}}
       {%- endif -%}
     </h4></div>
 

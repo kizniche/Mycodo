@@ -3,11 +3,11 @@
 {% set active_page = "settings" %}
 {% set active_settings = "camera" %}
 
-{% block title %} - Camera Settings{% endblock %}
+{% block title %} - {{_('Camera Settings')}}{% endblock %}
 
 {% block settings %}
   <!-- Route: /settings/camera -->
-  <h3 style="text-align: right; padding-bottom: 1.3em;">Camera</h3>
+  <h3 style="text-align: right; padding-bottom: 1.3em;">{{_('Camera Settings')}}</h3>
 
   <form class="form-horizontal" method="post" action="/settings/camera">
     <input type="hidden" name="form-name" value="Camera">
@@ -20,7 +20,7 @@
         {%- else -%}
           {{formSettingsCamera.hflip()}}
         {%- endif -%}
-        &nbsp;&nbsp;Check to flip the camera image on the horizontal axis.
+        &nbsp;&nbsp;{{_('Check to flip the camera image on the horizontal axis.')}}
       </div>
     </div>
     <div class="form-group">
@@ -31,17 +31,17 @@
         {%- else -%}
           {{formSettingsCamera.vflip()}}
         {%- endif -%}
-        &nbsp;&nbsp;Check to flip the camera image on the veritcal axis.
+        &nbsp;&nbsp;{{_('Check to flip the camera image on the vertical axis.')}}
       </div>
     </div>
     <div class="form-group">
       {{formSettingsCamera.rotation.label(class_='col-sm-4 control-label')}}
       <div class="col-sm-8">
-        <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="rotation" name="rotation" title="Rotate the camera image.">
+        <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="rotation" name="rotation" title="{{_('Rotate the camera image')}}.">
           <option value="0">No Rotation</option>
-          <option value="90"{% if camera.rotation == 90 %} selected{% endif %}>90 Degrees Clockwise</option>
-          <option value="180"{% if camera.rotation == 180 %} selected{% endif %}>180 Degrees Clockwise</option>
-          <option value="270"{% if camera.rotation == 270 %} selected{% endif %}>270 Degrees Clockwise</option>
+          <option value="90"{% if camera.rotation == 90 %} selected{% endif %}>{{_('90 Degrees Clockwise')}}</option>
+          <option value="180"{% if camera.rotation == 180 %} selected{% endif %}>{{_('180 Degrees Clockwise')}}</option>
+          <option value="270"{% if camera.rotation == 270 %} selected{% endif %}>{{_('270 Degrees Clockwise')}}</option>
         </select>
       </div>
     </div>

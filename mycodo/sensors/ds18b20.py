@@ -21,7 +21,7 @@ class DS18B20Sensor(AbstractSensor):
 
     def __str__(self):
         """ Return temperature information """
-        return "temperature: {}".format("{0:.2f}".format(self._temperature))
+        return "Temperature: {}".format("{0:.2f}".format(self._temperature))
 
     def __iter__(self):  # must return an iterator
         """ DS18B20Sensor iterates through live temperature readings """
@@ -32,6 +32,12 @@ class DS18B20Sensor(AbstractSensor):
         if self.read():  # raised an error
             raise StopIteration  # required
         return dict(temperature=float('{0:.2f}'.format(self._temperature)))
+
+    def info(self):
+        conditions_measured = [
+            ("Temperature", "temperature", "float", "0.00", self._temperature, self.temperature)
+        ]
+        return conditions_measured
 
     @property
     def temperature(self):
