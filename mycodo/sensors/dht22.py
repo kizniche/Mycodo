@@ -123,13 +123,18 @@ class DHT22Sensor(AbstractSensor):
             print("Turning sensor at GPIO {}...".format(self.gpio))
             self.pi.write(self.power, 1)  # Switch sensor on.
             time.sleep(2)
-        atexit.register(self.close)
-        self.pi.write(self.gpio, pigpio.LOW)
-        time.sleep(0.017)  # 17 ms
-        self.pi.set_mode(self.gpio, pigpio.INPUT)
-        self.pi.set_watchdog(self.gpio, 200)
-        time.sleep(0.2)
-        self._dew_point = dewpoint(self._temperature, self._humidity)
+        try:
+            self.setup()
+            self.pi.write(self.gpio, pigpio.LOW)
+            time.sleep(0.017)  # 17 ms
+            self.pi.set_mode(self.gpio, pigpio.INPUT)
+            self.pi.set_watchdog(self.gpio, 200)
+            time.sleep(0.2)
+            self._dew_point = dewpoint(self._temperature, self._humidity)
+        except Exception as e:
+            logger.error("Exception while reading sensor: {}".format(e))
+        finally:
+            self.close()
 
     def read(self):
         """

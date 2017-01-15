@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
 			char updateScript[255];
 			strncpy(updateScript, argv[0], sizeof(updateScript));
 			dirname(updateScript);
-			strncat(updateScript, "/upgrade_mycodo_release.sh upgrade", sizeof(updateScript));
+			strncat(updateScript, "bash /upgrade_mycodo_release.sh upgrade", sizeof(updateScript));
 			system(updateScript);
 
 		}

@@ -53,6 +53,7 @@ unzip pigpio.zip
 cd ${INSTALL_DIRECTORY}/install/PIGPIO
 make -j4
 make install
+/usr/local/bin/pigpiod &
 
 git clone git://git.drogon.net/wiringPi ${INSTALL_DIRECTORY}/install/wiringPi
 cd ${INSTALL_DIRECTORY}/install/wiringPi
@@ -117,7 +118,7 @@ printf "#### Creating SQLite databases\n"
 python ${INSTALL_DIRECTORY}/init_databases.py -i all
 
 printf "#### Setting up users, groups, and permissions\n"
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo.sh initialize
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh initialize
 
 printf "#### Starting the Mycodo daemon and web server\n"
 service mycodo start

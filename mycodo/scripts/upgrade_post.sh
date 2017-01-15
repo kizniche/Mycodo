@@ -74,6 +74,6 @@ printf "#### Updating crontab entries ####\n"
 printf "#### Setting permissions ####\n"
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh initialize
 
-printf "#### Starting Mycodo daemon and reloading Apache ####\n"
+printf "#### Reloading Mycodo daemon and Apache ####\n"
 service mycodo restart
 /etc/init.d/apache2 restart

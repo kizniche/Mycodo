@@ -99,11 +99,11 @@ class DHT11Sensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        if self.power is not None:
-            print("Turning on sensor at GPIO {}...".format(self.gpio))
-            self.pi.write(self.power, 1)  # Switch sensor on.
-            time.sleep(2)
         try:
+            if self.power is not None:
+                logger.debug("Turning on sensor at GPIO {}...".format(self.gpio))
+                self.pi.write(self.power, 1)  # Switch sensor on.
+                time.sleep(2)
             self.setup()
             self.pi.write(self.gpio, pigpio.LOW)
             time.sleep(0.017)  # 17 ms
@@ -128,9 +128,7 @@ class DHT11Sensor(AbstractSensor):
             self.get_measurement()
             # self_humidity and self._temperature are set in self._edge_rise()
             return  # success - no errors
-        except Exception as e:
-            logger.error("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=e))
+        except:
             return 1
 
     def setup(self):

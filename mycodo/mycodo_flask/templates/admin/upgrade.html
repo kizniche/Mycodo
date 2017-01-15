@@ -9,7 +9,7 @@
     {% if upgrade == 1 %}
       <div style="padding: 0.5em 0">
         <p>{{_('Mycodo is currently in the process of an upgrade.')}}</p>
-        <p>{{_('This often takes several minutes, and in rare cases hours, to complete. Give the process ample time to complete before doing anything. When the upgrade has successfully finished, the daemon status indicator at the top left will turn from red to green. You can monitor the upgrade progress by going to Tools->Mycodo Logs->Upgrade Log or by opening /var/log/mycodo/mycodoupgrade.log.')}}
+        <p>{{_('This often takes several minutes, and in some cases longer, to complete. Give the process ample time to complete before doing anything. When the upgrade has successfully finished, the daemon status indicator at the top left will turn from red to green. You can monitor the upgrade progress by going to Tools->Mycodo Logs->Upgrade Log or by opening /var/log/mycodo/mycodoupgrade.log.')}}
         <p>{{_('If this is in error, you may delete the ~/Mycoco/.upgrade file to be able to reinitiate the upgrade process.')}}</p>
       </div>
     {% elif upgrade == 2 %}
