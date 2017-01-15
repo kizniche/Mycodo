@@ -876,7 +876,8 @@ def page_usage():
     else:
         date_suffix = ['st', 'nd', 'rd'][day % 10 - 1]
     if misc.relay_stats_dayofmonth == datetime.datetime.today().day:
-        past_month_seconds = (now - now.replace(
+        dt_now = datetime.datetime.now()
+        past_month_seconds = (dt_now - dt_now.replace(
             hour=0, minute=0, second=0, microsecond=0)).total_seconds()
     elif misc.relay_stats_dayofmonth > datetime.datetime.today().day:
         first_day = now.replace(day=1)
