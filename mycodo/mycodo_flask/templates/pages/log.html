@@ -7,7 +7,7 @@
   <div class="container">
    {% include 'flash_messages.html' %}
 
-    <div class="form-inline" style="padding-bottom:1em">
+    <div class="form-inline" style="padding-bottom: 1em">
       <form method="post" action="/log">
         <input type="hidden" name="form-name" value="addLog">
         {{formLog.csrf_token}}

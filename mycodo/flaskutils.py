@@ -17,12 +17,13 @@ import functools
 import gzip
 from cStringIO import StringIO as IO
 
-from flask import (current_app,
+from flask import (after_this_request,
+                   current_app,
                    flash,
+                   redirect,
                    request,
                    session,
-                   redirect,
-                   after_this_request)
+                   url_for)
 from flask_babel import gettext
 
 from influxdb import InfluxDBClient
@@ -170,7 +171,7 @@ def validate_method_data(form_data, this_method):
 
 def method_create(formCreateMethod, method_id):
     if deny_guest_user():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     try:
         new_method = Method()
@@ -208,7 +209,7 @@ def method_create(formCreateMethod, method_id):
 
 def method_add(formAddMethod, method):
     if deny_guest_user():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     try:
         # Validate input time data
@@ -369,7 +370,7 @@ def method_add(formAddMethod, method):
 
 def method_mod(formModMethod, method):
     if deny_guest_user():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     try:
         if formModMethod.Delete.data:
@@ -517,7 +518,7 @@ def auth_credentials(address, user, password_hash):
 
 def remote_host_add(formSetup, display_order):
     if deny_guest_user():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     if formSetup.validate():
         try:
@@ -560,7 +561,7 @@ def remote_host_add(formSetup, display_order):
 
 def remote_host_del(formSetup, display_order):
     if deny_guest_user():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     try:
         delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
@@ -617,7 +618,7 @@ def activate_deactivate_controller(controller_action,
     :type controller_id: str
     """
     if deny_guest_user():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     if controller_action == 'activate':
         activated_integer = 1
@@ -2316,7 +2317,7 @@ def timer_deactivate(formTimer):
 
 def user_add(formAddUser):
     if deny_guest_user():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     if formAddUser.validate():
         new_user = Users()
@@ -2340,7 +2341,7 @@ def user_add(formAddUser):
 
 def user_mod(formModUser):
     if deny_guest_user():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     try:
         if formModUser.validate():
@@ -2372,7 +2373,7 @@ def user_mod(formModUser):
 
 def user_del(formDelUser):
     if deny_guest_user():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     if formDelUser.validate():
         delete_user(current_app.config['USER_DB_PATH'], Users, formDelUser.delUsername.data)

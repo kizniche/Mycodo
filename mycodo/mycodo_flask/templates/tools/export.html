@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% set active_page = "export" %}
+{% block title %} - {{_('Export Measurements')}}{% endblock %}
+
+{% block head %}
+<script type="text/javascript" src="/static/js/moment.min.js"></script>
+<script type="text/javascript" src="/static/js/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/daterangepicker.css" />
+{% endblock %}
+
+{% block body %}
+  <!-- Route: /export -->
+  <div class="container"> 
+    {% include 'flash_messages.html' %}
+
+    <p>This is an experimental log generator (work-in-progress). It will export any data found within the date/time range in comma-separated value (CSV) format. If a download doesn't start when the Export button is pressed, that means no data was available for the selected range.</p>
+
+    <div class="row" style="padding-top: 1em">
+      <form method="post" action="/export">
+      <div class="col-sm-6">
+        {{exportOptions.measurement.label(class_='control-label')}}
+        <div>
+          <select class="form-control" id="measurement" name="measurement">
+          {% for each_choice, value in sensor_choices.iteritems() -%}
+            <option value="{{each_choice}}">{{value}}</option>
+          {% endfor -%}
+          {% for each_choice, value in relay_choices.iteritems() -%}
+            <option value="{{each_choice}}">{{value}}</option>
+          {% endfor -%}
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        {{exportOptions.date_range.label(class_='control-label')}}
+        <div>
+          <input class="form-control" type="text" name="date_range" value="{{start_picker}} - {{end_picker}}" />
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <label class='control-label'></label>
+        <div>
+          {{exportOptions.Export(class_='form-control btn btn-default')}}
+        </div>
+      </div>
+      </form>
+    </div>
+
+    <script type="text/javascript">
+    $(function() {
+        $('input[name="date_range"]').daterangepicker({
+            timePicker: true,
+            timePicker24Hour: true,
+            timePickerIncrement: 1,
+            locale: {
+                format: 'MM/DD/YYYY HH:mm'
+            }
+        });
+    });
+    </script>
+
+  </div>
+
+{% endblock %}

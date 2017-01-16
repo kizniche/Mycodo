@@ -14,6 +14,7 @@ from wtforms import (BooleanField,
                      StringField,
                      validators)
 from wtforms.validators import DataRequired
+from wtforms.fields.html5 import DateField
 from wtforms.fields.html5 import EmailField
 
 
@@ -393,6 +394,16 @@ class SettingsCamera(Form):
     vflip = BooleanField(lazy_gettext('Flip Vertically'))
     rotation = IntegerField(lazy_gettext('Rotate Image'))
     Submit = SubmitField(lazy_gettext('Save'))
+
+
+#
+# Export Options
+#
+
+class ExportOptions(Form):
+    measurement = StringField(lazy_gettext('Measurement to Export'))
+    date_range = StringField(lazy_gettext('Date/Time Range'))
+    Export = SubmitField(lazy_gettext('Export'))
 
 
 #

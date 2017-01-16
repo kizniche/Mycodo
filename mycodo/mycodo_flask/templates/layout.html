@@ -39,7 +39,7 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
-  <script src="/static/js/jquery-2.2.1.min.js"></script>
+  <script src="/static/js/jquery-3.1.1.min.js"></script>
   <script>
   function check_daemon_active() {
     var url = '/daemonactive';
@@ -47,16 +47,16 @@
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status == 204) {
           document.getElementById("daemon-status").style.color = "#F70D1A";
-          $('#daemon-status').tooltip('hide').attr('data-original-title', {{_('Daemon is Not Running')}});
+          $('#daemon-status').tooltip('hide').attr('data-original-title', '{{_('Daemon is Not Running')}}');
         }
         else {
           if (data == 'alive') {
             document.getElementById("daemon-status").style.color = "#4E9258";
-            $('#daemon-status').tooltip('hide').attr('data-original-title', {{_('Daemon is Running')}});
+            $('#daemon-status').tooltip('hide').attr('data-original-title', '{{_('Daemon is Running')}}');
           }
           else {
             document.getElementById("daemon-status").style.color = "#F70D1A";
-            $('#daemon-status').tooltip('hide').attr('data-original-title', {{_('Daemon is Not Running')}});
+            $('#daemon-status').tooltip('hide').attr('data-original-title', '{{_('Daemon is Not Running')}}');
           }
         }
       },
@@ -115,6 +115,7 @@
                 <li><a href="{{url_for('page_routes.page_lcd')}}">{{_('LCD')}}</a></li>
                 <li><a href="{{url_for('page_routes.page_camera')}}">{{_('Camera')}}</a></li>
                 <li><a href="{{url_for('page_routes.page_usage')}}">{{_('Relay Usage')}}</a></li>
+                <li><a href="{{url_for('page_routes.page_export')}}">{{_('Export Measurements')}}</a></li>
                 <li><a href="{{url_for('page_routes.page_log')}}">{{_('Sensor Logs')}}</a></li>
                 <li><a href="{{url_for('page_routes.page_logview')}}">{{_('Mycodo Logs')}}</a></li>
                 <li><a href="{{url_for('page_routes.page_info')}}">{{_('System Info')}}</a></li>

@@ -220,6 +220,45 @@ def page_camera():
                            tl_parameters_dict=dict_timelapse)
 
 
+@blueprint.route('/export', methods=('GET', 'POST'))
+def page_export():
+    """
+    Export measurement data in CSV format
+    """
+    if not logged_in():
+        return redirect(url_for('general_routes.home'))
+
+    exportOptions = flaskforms.ExportOptions()
+    relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
+    sensor = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor)
+    relay_choices = flaskutils.choices_id_name(relay)
+    sensor_choices = flaskutils.choices_sensors(sensor)
+
+    if request.method == 'POST':
+        start_time = exportOptions.date_range.data.split(' - ')[0]
+        start_seconds = int(time.mktime(time.strptime(start_time, '%m/%d/%Y %H:%M')))
+        end_time = exportOptions.date_range.data.split(' - ')[1]
+        end_seconds = int(time.mktime(time.strptime(end_time, '%m/%d/%Y %H:%M')))
+        url = '/export_data/{meas}/{id}/{start}/{end}'.format(
+            meas=exportOptions.measurement.data.split(',')[1],
+            id=exportOptions.measurement.data.split(',')[0],
+            start=start_seconds, end=end_seconds)
+        flash("TEST {}".format(url), "success")
+        return redirect(url)
+
+    # Generate start end end times for date/time picker
+    end_picker = datetime.datetime.now().strftime('%m/%d/%Y %H:%M')
+    start_picker = datetime.datetime.now() - datetime.timedelta(hours=6)
+    start_picker = start_picker.strftime('%m/%d/%Y %H:%M')
+
+    return render_template('tools/export.html',
+                           start_picker=start_picker,
+                           end_picker=end_picker,
+                           exportOptions=exportOptions,
+                           relay_choices=relay_choices,
+                           sensor_choices=sensor_choices)
+
+
 @blueprint.route('/graph', methods=('GET', 'POST'))
 def page_graph():
     """

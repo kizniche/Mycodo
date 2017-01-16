@@ -10,6 +10,7 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import session
+from flask import url_for
 
 from config import LANGUAGES
 from databases.mycodo_db.models import CameraStill
@@ -39,7 +40,7 @@ def inject_dictionary():
 def settings_alerts():
     """ Display alert settings """
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to view alert settings.", "error")
@@ -64,7 +65,7 @@ def settings_alerts():
 def settings_camera():
     """ Display camera settings """
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     camera = flaskutils.db_retrieve_table(
         current_app.config['MYCODO_DB_PATH'], CameraStill, first=True)
@@ -85,7 +86,7 @@ def settings_camera():
 def settings_general():
     """ Display general settings """
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     misc = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Misc, first=True)
     formSettingsGeneral = flaskforms.SettingsGeneral()
@@ -108,11 +109,11 @@ def settings_general():
 def settings_users():
     """ Display user settings """
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to view user settings.", "error")
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     users = flaskutils.db_retrieve_table(current_app.config['USER_DB_PATH'], Users)
     formAddUser = flaskforms.AddUser()

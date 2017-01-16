@@ -8,11 +8,12 @@ import time
 
 from flask import (Blueprint,
                    current_app,
-                   redirect,
-                   jsonify,
-                   render_template,
                    flash,
-                   request)
+                   jsonify,
+                   redirect,
+                   render_template,
+                   request,
+                   url_for)
 
 from mycodo.utils.system_pi import get_sec
 from mycodo.utils.method import (sine_wave_y_out,
@@ -47,7 +48,7 @@ def method_data(method_type, method_id):
     """
     logger.debug('called method_data(method_type={type}, method_id={id})'.format(type=method_type, id=method_id))
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
         method = new_session.query(Method)
@@ -158,7 +159,7 @@ def method_data(method_type, method_id):
 def method_list():
     """ List all methods on one page with a graph for each """
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     formCreateMethod = flaskforms.CreateMethod()
 
@@ -167,7 +168,7 @@ def method_list():
         new_session.expunge_all()
         new_session.close()
     method_all = method.filter(Method.method_order > 0)
-    method_all = method.filter(Method.relay_id == None).all()
+    method_all = method_all.filter(Method.relay_id == None).all()
     method = method.filter(Method.method_order == 0).all()
 
     return render_template('pages/method-list.html',
@@ -184,7 +185,7 @@ def method_builder(method_type, method_id):
     """
     logger.debug('called method_builder(method_type={type}, method_id={id})'.format(type=method_type, id=method_id))
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     # Used in software tests to verify function is executing as adminl
     if method_type == '1':
@@ -276,7 +277,7 @@ def method_delete(method_id):
     """Delete a method"""
     logger.debug('called method_delete(method_id={id})'.format(id=method_id))
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     try:
         with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:

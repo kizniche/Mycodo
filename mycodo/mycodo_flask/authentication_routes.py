@@ -128,7 +128,7 @@ def do_login():
                                             user.user_password_hash,
                                             expires=expire_date)
                         return response
-                    return redirect('/')
+                    return redirect(url_for('general_routes.home'))
                 else:
                     login_log(user.user_name, user.user_restriction,
                               request.environ.get('REMOTE_ADDR', 'unknown address'), 'FAIL')

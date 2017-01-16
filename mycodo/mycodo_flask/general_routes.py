@@ -10,13 +10,15 @@ endpoints is the ultimate goal because it will be easier to test, read, and modi
 being less error prone.
 """
 from __future__ import print_function
+import calendar
+import csv
+import datetime
 import logging
 import os
 import socket
 import subprocess
 import sys
-import calendar
-import datetime
+import StringIO
 import time
 from RPi import GPIO
 from dateutil.parser import parse as date_parse
@@ -32,6 +34,7 @@ from flask import Response
 from flask import request
 from flask import send_from_directory
 from flask import session
+from flask import stream_with_context
 from flask import url_for
 from flask_influxdb import InfluxDB
 
@@ -91,12 +94,12 @@ def page_settings():
 def remote_admin(page):
     """Return pages for remote administraion"""
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     elif session['user_group'] == 'guest':
         flash("Guests are not permitted to view the romote systems panel.",
               "error")
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     remote_hosts = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Remote)
     display_order_unsplit = flaskutils.db_retrieve_table(
@@ -136,7 +139,7 @@ def remote_admin(page):
 def camera_img(img_type, filename):
     """Return an image from stills or timelapses"""
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     still_path = INSTALL_DIRECTORY + '/camera-stills/'
     timelapse_path = INSTALL_DIRECTORY + '/camera-timelapse/'
@@ -181,7 +184,7 @@ def gen(camera):
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     return Response(gen(CameraStream()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
@@ -191,7 +194,7 @@ def video_feed():
 def gpio_state():
     """Return the GPIO state, for relay page status"""
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
     gpio_state = {}
@@ -211,7 +214,7 @@ def gpio_state():
 def download_file(dl_type, filename):
     """Serve log file to download"""
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     elif dl_type == 'log':
         return send_from_directory(LOG_PATH, filename, as_attachment=True)
@@ -223,7 +226,7 @@ def download_file(dl_type, filename):
 def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
     """Return the most recent time and value from influxdb"""
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
@@ -258,7 +261,7 @@ def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
 def past_data(sensor_type, sensor_measure, sensor_id, past_seconds):
     """Return data from past_seconds until present from influxdb"""
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
@@ -284,6 +287,54 @@ def past_data(sensor_type, sensor_measure, sensor_id, past_seconds):
         return '', 204
 
 
+@blueprint.route('/export_data/<sensor_measure>/<sensor_id>/<start_seconds>/<end_seconds>')
+@gzipped
+def export_data(sensor_measure, sensor_id, start_seconds, end_seconds):
+    """
+    Return data from start_seconds to end_seconds from influxdb.
+    Used for exporting data.
+    """
+    if not logged_in():
+        return redirect(url_for('general_routes.home'))
+
+    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
+    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
+    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
+    dbcon = influx_db.connection
+
+    start = datetime.datetime.fromtimestamp(float(start_seconds))
+    start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+    end = datetime.datetime.fromtimestamp(float(end_seconds))
+    end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+    raw_data = dbcon.query("""SELECT value
+                              FROM {}
+                              WHERE device_id='{}'
+                                    AND time >= '{}'
+                                    AND time <= '{}'
+                           """.format(sensor_measure,
+                                      sensor_id,
+                                      start_str,
+                                      end_str)).raw
+    if not raw_data:
+        return '', 204
+
+    def iter_csv(data):
+        line = StringIO.StringIO()
+        writer = csv.writer(line)
+        writer.writerow(('timestamp', '{id}-{meas}'.format(
+            id=sensor_id, meas=sensor_measure)))
+        for csv_line in data:
+            writer.writerow((csv_line[0][:-4], csv_line[1]))
+            line.seek(0)
+            yield line.read()
+            line.truncate(0)
+
+    response = Response(iter_csv(raw_data['series'][0]['values']), mimetype='text/csv')
+    response.headers['Content-Disposition'] = 'attachment; filename={id}_{meas}.csv'.format(
+        id=sensor_id, meas=sensor_measure)
+    return response
+
+
 @blueprint.route('/async/<sensor_measure>/<sensor_id>/<start_seconds>/<end_seconds>')
 @gzipped
 def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
@@ -292,7 +343,7 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
     Used for asyncronous graph display of many points (up to millions).
     """
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
@@ -406,7 +457,7 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
 def daemon_active():
     """Return 'alive' if the daemon is running"""
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     try:
         control = DaemonControl()
@@ -421,11 +472,11 @@ def daemon_active():
 def computer_command(action):
     """Execute one of several commands, as root"""
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to execute commands.", "error")
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     try:
         if action not in ['restart', 'shutdown']:
@@ -443,7 +494,7 @@ def computer_command(action):
                      "{err}".format(cmd=action, err=e))
         flash("System command '{cmd}' raised and error: "
               "{err}".format(cmd=action, err=e), "error")
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
 
 @blueprint.route('/newremote/')

@@ -45,7 +45,7 @@ def admin_backup():
 
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to view backups.", "error")
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     formBackup = flaskforms.Backup()
 
@@ -84,7 +84,7 @@ def admin_statistics():
 
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to view statistics.", "error")
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     try:
         statistics = return_stat_file_dict(STATS_CSV)
@@ -103,7 +103,7 @@ def admin_upgrade():
     if session['user_group'] == 'guest':
         flash("Guests are not permitted to view the upgrade panel.",
               "error")
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     if not internet():
         flash("Upgrade functionality is disabled because an internet "

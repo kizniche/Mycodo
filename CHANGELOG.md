@@ -1,5 +1,9 @@
 ## 4.1.6 (Unreleased)
 
+Features:
+
+  - Add ability to export measurement data from a date/time span to download in CSV format
+
 Bugfixes:
 
   - Fix error when calculating rely usage if it's currently the day of the month set in settings
