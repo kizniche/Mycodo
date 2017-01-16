@@ -108,11 +108,11 @@ class DaemonControl:
 def parseargs(parser):
     parser.add_argument('--activatecontroller', nargs=2,
                         metavar=('CONTROLLER', 'ID'), type=str,
-                        help='Activate controller. Options: LCD, Log, PID, Sensor, Timer',
+                        help='Activate controller. Options: LCD, PID, Sensor, Timer',
                         required=False)
     parser.add_argument('--deactivatecontroller', nargs=2,
                         metavar=('CONTROLLER', 'ID'), type=str,
-                        help='Deactivate controller. Options: LCD, Log, PID, Sensor, Timer',
+                        help='Deactivate controller. Options: LCD, PID, Sensor, Timer',
                         required=False)
     parser.add_argument('--relayoff', metavar='RELAYID', type=str,
                         help='Turn off relay with relay ID',

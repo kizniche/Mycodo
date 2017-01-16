@@ -2,11 +2,15 @@
 
 Features:
 
-  - Add ability to export measurement data from a date/time span to download in CSV format
+  - Add ability to export all measurement data (in CSV format) from a date/time span
 
 Bugfixes:
 
-  - Fix error when calculating rely usage if it's currently the day of the month set in settings
+  - Fix error calculating rely usage when it's currently the billing day of the month
+
+Miscellaneous:
+
+  - Remove Sensor Logs (Tools/Sensor Logs). The addition of the measurement export feature in this release deprecates Sensor Logs. Note that by the very nature of how the Sensor Log controllers were designed, there was a high probability of missing measurements. The new measurement export feature ensures all measurements are exported.
 
 ## 4.1.5 (2017-01-14)
 

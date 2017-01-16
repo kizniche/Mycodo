@@ -184,7 +184,7 @@ def recreate_stat_file(id_file, stats_csv, stats_interval, mycodo_version):
 
 def send_stats(_logger, host, port, user, password, dbname,
                mycodo_db_path, user_db_path, stats_csv,
-               mycodo_version, session_scope, LCD, Log,
+               mycodo_version, session_scope, LCD,
                Method, PID, Relay, Sensor, Timer, Users):
     """
     Send anonymous usage statistics
@@ -218,11 +218,6 @@ def send_stats(_logger, host, port, user, password, dbname,
                            'num_lcds', get_count(lcds))
             add_update_csv(_logger, stats_csv, 'num_lcds_active',
                            get_count(lcds.filter(LCD.activated == True)))
-
-            logs = new_session.query(Log)
-            add_update_csv(_logger, stats_csv, 'num_logs', get_count(logs))
-            add_update_csv(_logger, stats_csv, 'num_logs_active',
-                           get_count(logs.filter(Log.activated == True)))
 
             methods = new_session.query(Method)
             add_update_csv(_logger, stats_csv, 'num_methods',

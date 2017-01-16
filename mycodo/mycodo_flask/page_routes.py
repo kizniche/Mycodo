@@ -23,7 +23,6 @@ from databases.mycodo_db.models import CameraStill
 from databases.mycodo_db.models import DisplayOrder
 from databases.mycodo_db.models import Graph
 from databases.mycodo_db.models import LCD
-from databases.mycodo_db.models import Log
 from databases.mycodo_db.models import Misc
 from databases.mycodo_db.models import PID
 from databases.mycodo_db.models import RelayConditional
@@ -541,57 +540,6 @@ def page_live():
                            timer=timer,
                            pidDisplayOrder=pid_display_order,
                            sensorDisplayOrderSorted=sensor_order_sorted)
-
-
-@blueprint.route('/log', methods=('GET', 'POST'))
-def page_log():
-    """ Display log settings (writing logs of data from influxdb) """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    log = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Log)
-    sensor = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor)
-
-    display_order_unsplit = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).log
-    if display_order_unsplit:
-        display_order = display_order_unsplit.split(",")
-    else:
-        display_order = []
-
-    formLog = flaskforms.Log()
-
-    # Determine if a log file exists for each log controller
-    log_file_exists = {}
-    for each_log in log:
-        fname = '{}/{}-{}.log'.format(LOG_PATH,
-                                      each_log.sensor_id,
-                                      each_log.measure_type)
-        log_file_exists[each_log.id] = bool(os.path.isfile(fname))
-
-    if request.method == 'POST':
-        form_name = request.form['form-name']
-        if form_name == 'addLog':
-            flaskutils.log_add(formLog, display_order)
-        elif form_name == 'modLog':
-            if formLog.logDel.data:
-                flaskutils.log_del(formLog, display_order)
-            elif formLog.orderLogUp.data or formLog.orderLogDown.data:
-                flaskutils.log_reorder(formLog, display_order)
-            elif formLog.activate.data:
-                flaskutils.log_activate(formLog)
-            elif formLog.deactivate.data:
-                flaskutils.log_deactivate(formLog)
-            elif formLog.logMod.data:
-                flaskutils.log_mod(formLog)
-        return redirect('/log')
-
-    return render_template('pages/log.html',
-                           log=log,
-                           sensor=sensor,
-                           displayOrder=display_order,
-                           log_file_exists=log_file_exists,
-                           formLog=formLog)
 
 
 @blueprint.route('/logview', methods=('GET', 'POST'))

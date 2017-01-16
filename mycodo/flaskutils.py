@@ -34,7 +34,6 @@ from databases.mycodo_db.models import CameraStill
 from databases.mycodo_db.models import DisplayOrder
 from databases.mycodo_db.models import Graph
 from databases.mycodo_db.models import LCD
-from databases.mycodo_db.models import Log
 from databases.mycodo_db.models import Method
 from databases.mycodo_db.models import Misc
 from databases.mycodo_db.models import PID
@@ -612,7 +611,7 @@ def activate_deactivate_controller(controller_action,
 
     :param controller_action: Activate or deactivate
     :type controller_action: str
-    :param controller_type: The controller type (LCD, Log, PID, Sensor, Timer)
+    :param controller_type: The controller type (LCD, PID, Sensor, Timer)
     :type controller_type: str
     :param controller_id: Controller with ID to activate or deactivate
     :type controller_id: str
@@ -627,7 +626,6 @@ def activate_deactivate_controller(controller_action,
 
     translated_names = {
         "LCD": gettext("LCD"),
-        "Log": gettext("Log"),
         "PID": gettext("PID"),
         "Sensor": gettext("Sensor"),
         "Timer": gettext("Timer")
@@ -638,9 +636,6 @@ def activate_deactivate_controller(controller_action,
             if controller_type == 'LCD':
                 mod_controller = db_session.query(LCD).filter(
                     LCD.id == controller_id).first()
-            elif controller_type == 'Log':
-                mod_controller = db_session.query(Log).filter(
-                    Log.id == controller_id).first()
             elif controller_type == 'PID':
                 mod_controller = db_session.query(PID).filter(
                     PID.id == controller_id).first()
@@ -1119,127 +1114,6 @@ def lcd_reset_flashing(formResetFlashingLCD):
             flash(gettext("LCD Error: %(err)s", err=return_msg), "error")
     else:
         flash_form_errors(formResetFlashingLCD)
-
-
-#
-# Logs
-#
-
-
-def log_add(formAddLog, display_order):
-    if deny_guest_user():
-        return redirect('/log')
-
-    if formAddLog.validate():
-        if formAddLog.period.data <= 0:
-            flash(gettext("Error in the period field: Durations must be "
-                          "greater than 0"), "error")
-            return 1
-        new_log = Log()
-        random_log_id = ''.join([random.choice(
-                string.ascii_letters + string.digits) for n in xrange(8)])
-        new_log.id = random_log_id
-        new_log.name = formAddLog.name.data
-        new_log.activated = 0
-        sensor_and_measurement_split = formAddLog.sensorMeasurement.data.split(",")
-        new_log.sensor_id = sensor_and_measurement_split[0]
-        new_log.measure_type = sensor_and_measurement_split[1]
-        new_log.period = formAddLog.period.data
-        try:
-            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-                db_session.add(new_log)
-            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-                    order_log = db_session.query(DisplayOrder).first()
-                    display_order.append(random_log_id)
-                    order_log.log = ','.join(display_order)
-                    db_session.commit()
-        except sqlalchemy.exc.OperationalError as except_msg:
-            flash(gettext("LCD Error: %(err)s", err=except_msg), "error")
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            flash(gettext("LCD Error: %(err)s", err=except_msg), "error")
-    else:
-        flash_form_errors(formAddLog)
-
-
-def log_mod(formLog):
-    if deny_guest_user():
-        return redirect('/log')
-
-    try:
-        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-            mod_log = db_session.query(Log).filter(
-                Log.id == formLog.log_id.data).first()
-            if mod_log.activated:
-                flash(gettext("Deactivate log controller before modifying its"
-                              " settings"), "error")
-                return redirect('/log')
-            mod_log.name = formLog.name.data
-            sensor_and_measurement_split = formLog.sensorMeasurement.data.split(",")
-            mod_log.sensor_id = sensor_and_measurement_split[0]
-            mod_log.measure_type = sensor_and_measurement_split[1]
-            mod_log.period = formLog.period.data
-            db_session.commit()
-    except Exception as except_msg:
-        flash(gettext("LCD Error: %(err)s", err=except_msg), "error")
-
-
-def log_del(formLog, display_order):
-    if deny_guest_user():
-        return redirect('/log')
-
-    try:
-        delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
-                             Log,
-                             formLog.log_id.data)
-        with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-                order_sensor = db_session.query(DisplayOrder).first()
-                display_order.remove(formLog.log_id.data)
-                order_sensor.log = ','.join(display_order)
-                db_session.commit()
-    except Exception as except_msg:
-        flash(gettext("LCD Error: %(err)s", err=except_msg), "error")
-
-
-def log_reorder(formLog, display_order):
-    if deny_guest_user():
-        return redirect('/log')
-
-    try:
-        if formLog.orderLogUp.data:
-            status, reord_list = reorderList(display_order,
-                                             formLog.log_id.data,
-                                             'up')
-        elif formLog.orderLogDown.data:
-            status, reord_list = reorderList(display_order,
-                                             formLog.log_id.data,
-                                             'down')
-        if status == 'success':
-            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-                order_log = db_session.query(DisplayOrder).first()
-                order_log.log = ','.join(reord_list)
-                db_session.commit()
-        else:
-            flash(reord_list, status)
-    except Exception as except_msg:
-        flash(gettext("LCD Error: %(err)s", err=except_msg), "error")
-
-
-def log_activate(formLog):
-    # Check if associated sensor is activated
-    with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-        log = db_session.query(Log).filter(
-            Log.id == formLog.log_id.data).first()
-        sensor = db_session.query(Sensor).filter(
-            Sensor.id == log.sensor_id).first()
-        if not sensor.is_activated():
-            flash(gettext("Cannot activate controller if the associated "
-                          "sensor controller is inactive"), "error")
-            return redirect('/log')
-    activate_deactivate_controller('activate', 'Log', formLog.log_id.data)
-
-
-def log_deactivate(formLog):
-    activate_deactivate_controller('deactivate', 'Log', formLog.log_id.data)
 
 
 #

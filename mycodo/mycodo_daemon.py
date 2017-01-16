@@ -65,7 +65,6 @@ from config import STATS_PASSWORD
 from config import STATS_DATABASE
 
 from controller_lcd import LCDController
-from controller_log import LogController
 from controller_pid import PIDController
 from controller_relay import RelayController
 from controller_sensor import SensorController
@@ -73,7 +72,6 @@ from controller_timer import TimerController
 
 from databases.mycodo_db.models import CameraStill
 from databases.mycodo_db.models import LCD
-from databases.mycodo_db.models import Log
 from databases.mycodo_db.models import Method
 from databases.mycodo_db.models import Misc
 from databases.mycodo_db.models import PID
@@ -153,7 +151,7 @@ class ComServer(rpyc.Service):
     def exposed_activate_controller(cont_type, cont_id):
         """
         Activates a controller
-        This may be a Sensor, PID, Log, Timer, or LCD controllar
+        This may be a Sensor, PID, Timer, or LCD controllar
 
         """
         return mycodo_daemon.activateController(
@@ -163,7 +161,7 @@ class ComServer(rpyc.Service):
     def exposed_deactivate_controller(cont_type, cont_id):
         """
         Deactivates a controller
-        This may be a Sensor, PID, Log, Timer, or LCD controllar
+        This may be a Sensor, PID, Timer, or LCD controllar
 
         """
         return mycodo_daemon.deactivateController(
@@ -246,7 +244,6 @@ class DaemonController(threading.Thread):
         self.terminated = False
         self.controller = {
             'LCD': {},
-            'Log': {},
             'PID': {},
             'Relay': None,
             'Sensor': {},
@@ -378,9 +375,6 @@ class DaemonController(threading.Thread):
             if cont_type == 'LCD':
                 controller_manage['type'] = LCD
                 controller_manage['function'] = LCDController
-            elif cont_type == 'Log':
-                controller_manage['type'] = Log
-                controller_manage['function'] = LogController
             elif cont_type == 'PID':
                 controller_manage['type'] = PID
                 controller_manage['function'] = PIDController
@@ -571,7 +565,7 @@ class DaemonController(threading.Thread):
             send_stats(self.logger, STATS_HOST, STATS_PORT, STATS_USER,
                        STATS_PASSWORD, STATS_DATABASE, MYCODO_DB_PATH,
                        USER_DB_PATH, STATS_CSV, MYCODO_VERSION, session_scope,
-                       LCD, Log, Method, PID, Relay, Sensor, Timer, Users)
+                       LCD, Method, PID, Relay, Sensor, Timer, Users)
         except Exception as msg:
             self.logger.exception("Error: Cound not send statistics: "
                                   "{}".format(msg))
@@ -607,7 +601,6 @@ class DaemonController(threading.Thread):
         # Obtain database configuration options
         with session_scope(MYCODO_DB_PATH) as new_session:
             lcd = new_session.query(LCD).all()
-            log = new_session.query(Log).all()
             pid = new_session.query(PID).all()
             sensor = new_session.query(Sensor).all()
             timer = new_session.query(Timer).all()
@@ -630,12 +623,6 @@ class DaemonController(threading.Thread):
                 self.activateController('Sensor', each_sensor.id)
         self.logger.info("[Daemon] All activated sensor controllers started")
 
-        self.logger.debug("[Daemon] Starting all activated log controllers")
-        for each_log in log:
-            if each_log.activated:
-                self.activateController('Log', each_log.id)
-        self.logger.info("[Daemon] All activated log controllers started")
-
         self.logger.debug("[Daemon] Starting all activated PID controllers")
         for each_pid in pid:
             if each_pid.activated:
@@ -651,7 +638,6 @@ class DaemonController(threading.Thread):
     def stop_all_controllers(self):
         """Stop all running controllers"""
         lcd_controller_running = []
-        log_controller_running = []
         pid_controller_running = []
         sensor_controller_running = []
         timer_controller_running = []
@@ -665,11 +651,6 @@ class DaemonController(threading.Thread):
             if self.controller['PID'][pid_id].isRunning():
                 self.controller['PID'][pid_id].stopController()
                 pid_controller_running.append(pid_id)
-
-        for log_id in self.controller['Log']:
-            if self.controller['Log'][log_id].isRunning():
-                self.controller['Log'][log_id].stopController()
-                log_controller_running.append(log_id)
 
         for sensor_id in self.controller['Sensor']:
             if self.controller['Sensor'][sensor_id].isRunning():
@@ -693,10 +674,6 @@ class DaemonController(threading.Thread):
         for sensor_id in sensor_controller_running:
             self.controller['Sensor'][sensor_id].join()
         self.logger.info("[Daemon] All Sensor controllers stopped")
-
-        for log_id in log_controller_running:
-            self.controller['Log'][log_id].join()
-        self.logger.info("[Daemon] All Log controllers stopped")
 
         for pid_id in pid_controller_running:
             self.controller['PID'][pid_id].join()

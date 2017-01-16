@@ -402,7 +402,7 @@ class SettingsCamera(Form):
 
 class ExportOptions(Form):
     measurement = StringField(lazy_gettext('Measurement to Export'))
-    date_range = StringField(lazy_gettext('Date/Time Range'))
+    date_range = StringField(lazy_gettext('Time Range DD/MM/YYYY HH:MM'))
     Export = SubmitField(lazy_gettext('Export'))
 
 
@@ -675,38 +675,6 @@ class Login(Form):
 
 class InstallNotice(Form):
     acknowledge = SubmitField(lazy_gettext('I Understand'))
-
-
-#
-# Logs
-#
-
-class Log(Form):
-    log_id = HiddenField(u'Log ID')
-    name = StringField(
-        lazy_gettext('Name'),
-        render_kw={"placeholder": lazy_gettext("Name")},
-        validators=[DataRequired()]
-    )
-    sensorMeasurement = StringField(lazy_gettext('Sensor and Measurement'))
-    period = IntegerField(lazy_gettext('Period (seconds)'))
-    logCreate = SubmitField(lazy_gettext('Create Log Controller'))
-    logMod = SubmitField(lazy_gettext('Save'))
-    logDel = SubmitField(lazy_gettext('Delete'))
-    activate = SubmitField(lazy_gettext('Activate'))
-    deactivate = SubmitField(lazy_gettext('Deactivate'))
-    orderLogUp = SubmitField(lazy_gettext('Up'))
-    orderLogDown = SubmitField(lazy_gettext('Down'))
-
-
-class ActivateLog(Form):
-    activateLog_id = HiddenField(u'Log')
-    activateLogSubmit = SubmitField(lazy_gettext('Activate'))
-
-
-class DeactivateLog(Form):
-    deactivateLog_id = HiddenField(u'Log')
-    deactivateLogSubmit = SubmitField(lazy_gettext('Deactivate'))
 
 
 #
