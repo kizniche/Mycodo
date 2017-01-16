@@ -253,9 +253,9 @@ Also, use '-d' to log all debug messages to /var/log/mycodo/mycodo.log
 
 ### Upgrading
 
-If you already have Mycodo installed (>=4.0.0), you can perform an upgrade to the latest version on github by either using the Admin/Upgrade menu in the web UI (recommended) or by issuing the following command at the terminal. A log of the upgrade process is created at /var/log/mycodo/mycodoupgrade.log
+If you already have Mycodo installed (>=4.0.0), you can perform an upgrade to the latest [release](https://github.com/kizniche/Mycodo/releases) on github by either using the Admin/Upgrade menu in the web UI (recommended) or by issuing the following command at the terminal. A log of the upgrade process is created at /var/log/mycodo/mycodoupgrade.log
 
-```sudo ~/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh upgrade```
+```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh upgrade```
 
 Upgrading the mycodo database is performed automatically during the upgrade process, however it can also be performed manually with the following commands (Note: This does not create the database, only upgrade them. You must already have a database created in order to upgrade):
 

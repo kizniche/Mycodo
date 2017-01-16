@@ -13,6 +13,7 @@ from __future__ import print_function
 import logging
 import os
 import socket
+import subprocess
 import sys
 import calendar
 import datetime
@@ -48,9 +49,7 @@ from databases.mycodo_db.models import Misc
 from databases.mycodo_db.models import Relay
 from databases.mycodo_db.models import Remote
 from databases.users_db.models import Users
-
 from devices.camera_pi import CameraStream
-
 from mycodo_client import DaemonControl
 
 from config import INFLUXDB_USER
@@ -429,8 +428,16 @@ def computer_command(action):
         return redirect('/')
 
     try:
-        control = DaemonControl()
-        return control.system_control(action)
+        if action not in ['restart', 'shutdown']:
+            flash("Unrecognized command: {action}".format(
+                action=action), "success")
+            return redirect('/settings')
+        cmd = '{path}/mycodo/scripts/mycodo_wrapper {action} 2>&1'.format(
+                path=INSTALL_DIRECTORY, action=action)
+        subprocess.Popen(cmd, shell=True)
+        flash("System going down for {action} in 10 seconds".format(
+            action=action), "success")
+        return redirect('/settings')
     except Exception as e:
         logger.error("System command '{cmd}' raised and error: "
                      "{err}".format(cmd=action, err=e))

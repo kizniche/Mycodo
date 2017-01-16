@@ -101,9 +101,6 @@ class DaemonControl:
     def pid_resume(self, pid_id):
         return self.rpyc_client.root.pid_resume(pid_id)
 
-    def system_control(self, command):
-        return self.rpyc_client.root.system_control(command)
-
     def terminate_daemon(self):
         return self.rpyc_client.root.terminate_daemon()
 

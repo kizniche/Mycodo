@@ -159,9 +159,10 @@ def admin_upgrade():
 
     if request.method == 'POST':
         if formUpgrade.upgrade.data and upgrade_available:
-            subprocess.Popen(
-                INSTALL_DIRECTORY + '/mycodo/scripts/mycodo_wrapper upgrade >> /var/log/mycodo/mycodoupgrade.log 2>&1',
-                shell=True)
+            subprocess.Popen('{path}/mycodo/scripts/mycodo_wrapper upgrade >>'
+                             ' /var/log/mycodo/mycodoupgrade.log 2>&1'.format(
+                                path=INSTALL_DIRECTORY),
+                             shell=True)
             upgrade = 1
             flash("The upgrade has started. The daemon will be "
                   "stopped during the upgrade.", "success")

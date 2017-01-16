@@ -1,3 +1,9 @@
+## 4.1.6 (Unreleased)
+
+Bugfixes:
+
+  - Fix error when calculating rely usage if it's currently the day of the month set in settings
+
 ## 4.1.5 (2017-01-14)
 
 Bugfixes:

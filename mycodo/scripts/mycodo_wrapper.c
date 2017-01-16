@@ -11,12 +11,27 @@ int main(int argc, char *argv[]) {
 	char cmd[255];
 
 	if (argc > 1) {
-		if (strcmp(argv[1], "start") == 0) {
+		if (strcmp(argv[1], "restart") == 0) {
+
+			sprintf(cmd, "sleep 10 && shutdown now -r");
+			system(cmd);
+
+		} else if (strcmp(argv[1], "shutdown") == 0) {
+
+			sprintf(cmd, "sleep 10 && shutdown now -h");
+			system(cmd);
+
+		} else if (strcmp(argv[1], "start_mycodo") == 0) {
 
 			sprintf(cmd, "service mycodo start");
 			system(cmd);
 
-		} else if (strcmp(argv[1], "restart") == 0) {
+		} else if (strcmp(argv[1], "stop_mycodo") == 0) {
+
+			sprintf(cmd, "service mycodo stop");
+			system(cmd);
+
+		} else if (strcmp(argv[1], "restart_mycodo") == 0) {
 
 			sprintf(cmd, "service mycodo restart");
 			system(cmd);
@@ -38,7 +53,7 @@ int main(int argc, char *argv[]) {
 			char updateScript[255];
 			strncpy(updateScript, argv[0], sizeof(updateScript));
 			dirname(updateScript);
-			strncat(updateScript, "bash /upgrade_mycodo_release.sh upgrade", sizeof(updateScript));
+			strncat(updateScript, "/bin/bash /upgrade_mycodo_release.sh upgrade", sizeof(updateScript));
 			system(updateScript);
 
 		}
