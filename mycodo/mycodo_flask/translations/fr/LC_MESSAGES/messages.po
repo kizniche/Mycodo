@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-01-17 15:40-0500\n"
+"POT-Creation-Date: 2017-01-17 16:24-0500\n"
 "PO-Revision-Date: 2017-01-05 00:55-0500\n"
 "Last-Translator: \n"
 "Language: fr\n"
@@ -1580,7 +1580,7 @@ msgstr ""
 
 #: mycodo_flask/templates/admin/upgrade.html:13
 msgid ""
-"If this is in error, you may delete the ~/Mycoco/.upgrade file to be able"
+"If this is in error, you may delete the ~/Mycodo/.upgrade file to be able"
 " to reinitiate the upgrade process."
 msgstr ""
 
@@ -2702,5 +2702,12 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Download Log"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "If this is in error, you may "
+#~ "delete the ~/Mycoco/.upgrade file to be"
+#~ " able to reinitiate the upgrade "
+#~ "process."
 #~ msgstr ""
 

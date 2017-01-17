@@ -2,7 +2,7 @@
 
 Features:
 
-  - Add ability to export all measurement data (in CSV format) from a date/time span
+  - Add ability to export selected measurement data (in CSV format) from a date/time span
 
 Bugfixes:
 
