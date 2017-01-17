@@ -245,7 +245,6 @@ def page_export():
             meas=exportOptions.measurement.data.split(',')[1],
             id=exportOptions.measurement.data.split(',')[0],
             start=start_seconds, end=end_seconds)
-        flash("TEST {}".format(url), "success")
         return redirect(url)
 
     # Generate start end end times for date/time picker
