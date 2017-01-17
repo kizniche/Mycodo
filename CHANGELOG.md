@@ -6,6 +6,7 @@ Features:
 
 Bugfixes:
 
+  - Fix issue with command in setup.sh when the version of wget < 1.16
   - Fix error calculating rely usage when it's currently the billing day of the month
 
 Miscellaneous:

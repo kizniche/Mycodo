@@ -128,7 +128,7 @@ class DHT11Sensor(AbstractSensor):
             self.get_measurement()
             # self_humidity and self._temperature are set in self._edge_rise()
             return  # success - no errors
-        except:
+        except Exception:
             return 1
 
     def setup(self):

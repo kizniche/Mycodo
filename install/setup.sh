@@ -38,9 +38,9 @@ trap 'abort' 0
 set -e
 
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
-printf "### Mycodo installation beginning at $NOW\n\n"
+printf "### Mycodo installation beginning at $NOW\n"
 
-printf "#### Uninstalling current version of pip\n"
+printf "\n#### Uninstalling current version of pip\n"
 apt-get update
 apt-get purge -y python-pip
 
@@ -48,7 +48,10 @@ apt-get purge -y python-pip
 pip install -U pip
 
 cd ${INSTALL_DIRECTORY}/install
-wget --quiet --show-progress -P ${INSTALL_DIRECTORY}/install abyz.co.uk/rpi/pigpio/pigpio.zip
+# Check if wget supports --show-progress, set progress option accordingly
+wget --help | grep -q '\--show-progress' && \
+  _PROGRESS_OPT="--quiet --show-progress" || _PROGRESS_OPT=""
+wget ${_PROGRESS_OPT} -P ${INSTALL_DIRECTORY}/install abyz.co.uk/rpi/pigpio/pigpio.zip
 unzip pigpio.zip
 cd ${INSTALL_DIRECTORY}/install/PIGPIO
 make -j4
@@ -69,16 +72,16 @@ rm -rf ./PIGPIO ./pigpio.zip ./wiringPi
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh compile-translations
 
-printf "#### Creating InfluxDB database and user\n"
+printf "\n#### Creating InfluxDB database and user\n"
 influx -execute "CREATE DATABASE mycodo_db"
 influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
 
-printf "#### Installing and configuring apache2 web server\n"
+printf "\n#### Installing and configuring apache2 web server\n"
 apt-get install -y apache2 libapache2-mod-wsgi
 a2enmod wsgi ssl
 ln -sf ${INSTALL_DIRECTORY}/install/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
 
-printf "#### Generating SSL certificates at ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
+printf "\n#### Generating SSL certificates at ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
 mkdir -p ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs
 cd ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs/
 
@@ -109,18 +112,18 @@ openssl x509 -req \
 
 rm -f certificate.csr
 
-printf "#### Enabling mycodo startup script\n"
+printf "\n#### Enabling mycodo startup script\n"
 #systemctl enable ${INSTALL_DIRECTORY}/install/mycodo.service
 ln -sf ${INSTALL_DIRECTORY}/install/mycodo.service /etc/systemd/system/
 systemctl daemon-reload
 
-printf "#### Creating SQLite databases\n"
+printf "\n#### Creating SQLite databases\n"
 python ${INSTALL_DIRECTORY}/init_databases.py -i all
 
-printf "#### Setting up users, groups, and permissions\n"
+printf "\n#### Setting up users, groups, and permissions\n"
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh initialize
 
-printf "#### Starting the Mycodo daemon and web server\n"
+printf "\n#### Starting the Mycodo daemon and web server\n"
 service mycodo start
 /etc/init.d/apache2 restart
 
