@@ -14,6 +14,7 @@ from flask import (Blueprint,
                    render_template,
                    request,
                    url_for)
+from flask_babel import gettext
 
 from mycodo.utils.system_pi import get_sec
 from mycodo.utils.method import (sine_wave_y_out,
@@ -204,12 +205,12 @@ def method_builder(method_type, method_id):
             method_type = formCreateMethod.method_type.data
             form_fail = flaskutils.method_create(formCreateMethod, method_id)
             if not form_fail:
-                flash("New Method successfully created. It may now have time "
-                      "points added.", "success")
+                flash(gettext("New Method successfully created. You may now "
+                              "add time points"), "success")
                 return redirect('/method-build/{}/{}'.format(
                     method_type, method_id))
             else:
-                flash("Could not create method.", "error")
+                flash(gettext("Could not create method"), "error")
 
         with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
             method = new_session.query(Method)
@@ -275,7 +276,6 @@ def method_builder(method_type, method_id):
 @blueprint.route('/method-delete/<method_id>')
 def method_delete(method_id):
     """Delete a method"""
-    logger.debug('called method_delete(method_id={id})'.format(id=method_id))
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 

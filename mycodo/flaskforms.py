@@ -14,7 +14,6 @@ from wtforms import (BooleanField,
                      StringField,
                      validators)
 from wtforms.validators import DataRequired
-from wtforms.fields.html5 import DateField
 from wtforms.fields.html5 import EmailField
 
 
@@ -651,6 +650,11 @@ class CreateAdmin(Form):
     password = PasswordField(
         lazy_gettext('Password'),
         render_kw={"placeholder": lazy_gettext("Password")},
+        validators=[DataRequired()]
+    )
+    password_repeat = PasswordField(
+        lazy_gettext('Repeat Password'),
+        render_kw={"placeholder": lazy_gettext("Repeat Password")},
         validators=[DataRequired()]
     )
 

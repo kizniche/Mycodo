@@ -34,14 +34,14 @@ from flask import Response
 from flask import request
 from flask import send_from_directory
 from flask import session
-from flask import stream_with_context
 from flask import url_for
+from flask_babel import gettext
 from flask_influxdb import InfluxDB
 
-import flaskforms
-import flaskutils
+from mycodo import flaskforms
+from mycodo import flaskutils
 
-from flaskutils import gzipped
+from mycodo.flaskutils import gzipped
 from mycodo_flask.authentication_routes import admin_exists
 from mycodo_flask.authentication_routes import clear_cookie_auth
 from mycodo_flask.authentication_routes import logged_in
@@ -97,8 +97,7 @@ def remote_admin(page):
         return redirect(url_for('general_routes.home'))
 
     elif session['user_group'] == 'guest':
-        flash("Guests are not permitted to view the romote systems panel.",
-              "error")
+        flaskutils.deny_guest_user()
         return redirect(url_for('general_routes.home'))
 
     remote_hosts = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Remote)
@@ -475,7 +474,7 @@ def computer_command(action):
         return redirect(url_for('general_routes.home'))
 
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to execute commands.", "error")
+        flaskutils.deny_guest_user()
         return redirect(url_for('general_routes.home'))
 
     try:
@@ -486,8 +485,10 @@ def computer_command(action):
         cmd = '{path}/mycodo/scripts/mycodo_wrapper {action} 2>&1'.format(
                 path=INSTALL_DIRECTORY, action=action)
         subprocess.Popen(cmd, shell=True)
-        flash("System going down for {action} in 10 seconds".format(
-            action=action), "success")
+        if action == 'reboot':
+            flash(gettext("System rebooting in 10 seconds"), "success")
+        elif action == 'shutdown':
+            flash(gettext("System shutting down in 10 seconds"), "success")
         return redirect('/settings')
     except Exception as e:
         logger.error("System command '{cmd}' raised and error: "
@@ -546,8 +547,8 @@ def inject_mycodo_version():
         control = DaemonControl()
         daemon_status = control.daemon_status()
     except Exception as e:
-        logger.error("URL for 'inject_mycodo_version' raised and error: "
-                     "{err}".format(err=e))
+        logger.error(gettext("URL for 'inject_mycodo_version' raised and error: "
+                     "%(err)s", err=e))
         daemon_status = '0'
 
     with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:

@@ -3,14 +3,15 @@
 import logging
 import operator
 
+from flask import (current_app,
+                   flash,
+                   redirect,
+                   render_template,
+                   request,
+                   session,
+                   url_for)
+from flask_babel import gettext
 from flask.blueprints import Blueprint
-from flask import current_app
-from flask import flash
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import session
-from flask import url_for
 
 from config import LANGUAGES
 from databases.mycodo_db.models import CameraStill
@@ -43,7 +44,7 @@ def settings_alerts():
         return redirect(url_for('general_routes.home'))
 
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to view alert settings.", "error")
+        flaskutils.deny_guest_user()
         return redirect('/settings')
 
     smtp = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], SMTP)
@@ -112,7 +113,7 @@ def settings_users():
         return redirect(url_for('general_routes.home'))
 
     if session['user_group'] == 'guest':
-        flash("Guests are not permitted to view user settings.", "error")
+        flaskutils.deny_guest_user()
         return redirect(url_for('general_routes.home'))
 
     users = flaskutils.db_retrieve_table(current_app.config['USER_DB_PATH'], Users)

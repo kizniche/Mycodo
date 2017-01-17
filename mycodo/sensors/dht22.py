@@ -1,5 +1,4 @@
 # coding=utf-8
-import atexit
 import logging
 import time
 import pigpio

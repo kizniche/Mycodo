@@ -10,14 +10,15 @@ import subprocess
 import time
 from collections import OrderedDict
 
+from flask import (current_app,
+                   flash,
+                   redirect,
+                   render_template,
+                   request,
+                   session,
+                   url_for)
+from flask_babel import gettext
 from flask.blueprints import Blueprint
-from flask import current_app
-from flask import flash
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import session
-from flask import url_for
 
 from databases.mycodo_db.models import CameraStill
 from databases.mycodo_db.models import DisplayOrder
@@ -38,7 +39,6 @@ from config import DAEMON_LOG_FILE
 from config import FILE_TIMELAPSE_PARAM
 from config import HTTP_LOG_FILE
 from config import INSTALL_DIRECTORY
-from config import LOG_PATH
 from config import LOGIN_LOG_FILE
 from config import LOCK_FILE_STREAM
 from config import LOCK_FILE_TIMELAPSE
@@ -82,8 +82,9 @@ def page_camera():
         if 'start_x=1' in open('/boot/config.txt').read():
             camera_enabled = True
         else:
-            flash("Camera support doesn't appear to be enabled. Please "
-                  "enable it with 'sudo raspi-config'", "error")
+            flash(gettext("Camera support doesn't appear to be enabled. "
+                          "Please enable it with 'sudo raspi-config'"),
+                  "error")
     except IOError as e:
         logger.error("Camera IOError raised in '/camera' endpoint: {err}".format(err=e))
 
@@ -97,8 +98,7 @@ def page_camera():
     if request.method == 'POST':
         form_name = request.form['form-name']
         if session['user_group'] == 'guest':
-            flash("Guests are not permitted to use camera options.",
-                  "error")
+            flaskutils.deny_guest_user()
             return redirect('/camera')
         elif form_name == 'camera':
             if formCamera.Still.data:
@@ -113,9 +113,9 @@ def page_camera():
                     except Exception as msg:
                         flash("Camera Error: {}".format(msg), "error")
                 else:
-                    flash("Cannot capture still if stream is"
-                          " active. If it is not active, delete "
-                          "{sfile}.".format(sfile=LOCK_FILE_STREAM),
+                    flash(gettext("Cannot capture still if stream is active. "
+                                  "If it is not active, delete %(file)s.",
+                                  file=LOCK_FILE_STREAM),
                           "error")
 
             elif formCamera.StartTimelapse.data:
@@ -140,24 +140,27 @@ def page_camera():
                     os.chown(FILE_TIMELAPSE_PARAM, uid_gid, uid_gid)
                     os.chmod(FILE_TIMELAPSE_PARAM, 0664)
                 else:
-                    flash("Cannot start time-lapse if a stream is active. "
-                          "If it is not active, delete {}.".format(
-                            LOCK_FILE_STREAM), "error")
+                    flash(gettext("Cannot start time-lapse if a video stream "
+                                  "is active. If it is not active, delete "
+                                  "%(file)s.", file=LOCK_FILE_STREAM),
+                          "error")
 
             elif formCamera.StopTimelapse.data:
                 try:
                     os.remove(FILE_TIMELAPSE_PARAM)
                     os.remove(LOCK_FILE_TIMELAPSE)
                 except IOError as e:
-                    logger.error("Camera IOError raised in '/camera' endpoint: {err}".format(err=e))
+                    logger.error("Camera IOError raised in '/camera' "
+                                 "endpoint: {err}".format(err=e))
 
             elif formCamera.StartStream.data:
                 if not is_timelapse_locked():
                     open(LOCK_FILE_STREAM, 'a')
                     stream_locked = True
                 else:
-                    flash("Cannot start stream if a timelapse is active. "
-                          "If not active, delete {}.".format(LOCK_FILE_TIMELAPSE),
+                    flash(gettext("Cannot start stream if a time-lapse is "
+                                  "active. If not active, delete %(file)s.",
+                                  file=LOCK_FILE_TIMELAPSE),
                           "error")
 
             elif formCamera.StopStream.data:
@@ -351,7 +354,7 @@ def page_graph():
 
 @blueprint.route('/graph-async', methods=('GET', 'POST'))
 def page_graph_async():
-    """ Generate graphs using ascynchronous data retrieval """
+    """ Generate graphs using asynchronous data retrieval """
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
@@ -555,7 +558,7 @@ def page_logview():
     logfile = ''
     if request.method == 'POST':
         if session['user_group'] == 'guest':
-            flash('Guests are not permitted to view logs.', 'error')
+            flaskutils.deny_guest_user()
             return redirect('/logview')
         if formLogView.lines.data:
             lines = formLogView.lines.data
@@ -624,7 +627,7 @@ def page_pid():
 
     if request.method == 'POST':
         if session['user_group'] == 'guest':
-            flash("Guests are not permitted to modify PID controllers", "error")
+            flaskutils.deny_guest_user()
             return redirect('/pid')
         form_name = request.form['form-name']
         if form_name == 'addPID':

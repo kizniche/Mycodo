@@ -6,12 +6,14 @@ Features:
 
 Bugfixes:
 
-  - Fix issue with command in setup.sh when the version of wget < 1.16
+  - Fix issue with setup.sh when the version of wget<1.16
   - Fix error calculating rely usage when it's currently the billing day of the month
 
 Miscellaneous:
 
   - Remove Sensor Logs (Tools/Sensor Logs). The addition of the measurement export feature in this release deprecates Sensor Logs. Note that by the very nature of how the Sensor Log controllers were designed, there was a high probability of missing measurements. The new measurement export feature ensures all measurements are exported.
+  - Add more translatable text
+  - Add password repeat input when creating new admin user
 
 ## 4.1.5 (2017-01-14)
 

@@ -12,6 +12,7 @@ from flask import flash
 from flask import session
 from flask import url_for
 from flask import make_response
+from flask_babel import gettext
 from flask.blueprints import Blueprint
 
 from mycodo import flaskforms
@@ -40,12 +41,15 @@ def inject_hostname():
 @blueprint.route('/create_admin', methods=('GET', 'POST'))
 def create_admin():
     if admin_exists():
-        flash("Cannot access admin creation form if an admin user "
-              "already exists.", "error")
+        flash(gettext("Cannot access admin creation form if an admin user "
+              "already exists."), "error")
         return redirect(url_for('general_routes.home'))
     form = flaskforms.CreateAdmin()
     if request.method == 'POST':
         if form.validate():
+            if form.password.data != form.password_repeat.data:
+                flash(gettext("Passwords do not match. Please try again."), "error")
+                return redirect(url_for('general_routes.home'))
             new_user = Users()
             if test_username(form.username.data):
                 new_user.user_name = form.username.data
@@ -57,11 +61,14 @@ def create_admin():
             try:
                 with session_scope(current_app.config['USER_DB_PATH']) as db_session:
                     db_session.add(new_user)
-                flash("User '{}' successfully created. Please log in below.".format(
-                    form.username.data), "success")
+                flash(gettext("User '%(user)s' successfully created. Please "
+                              "log in below.", user=form.username.data),
+                      "success")
                 return redirect(url_for('authentication_routes.do_login'))
             except Exception as except_msg:
-                flash("Failed to create user: {}".format(except_msg), "error")
+                flash(gettext("Failed to create user '%(user)s': %(err)s",
+                              user=form.username.data,
+                              err=except_msg), "error")
         else:
             flash_form_errors(form)
     return render_template('create_admin.html',
@@ -75,7 +82,7 @@ def do_login():
         return redirect('/create_admin')
 
     if logged_in():
-        flash("Cannot access login page if you're already logged in.", "error")
+        flash(gettext("Cannot access login page if you're already logged in"), "error")
         return redirect(url_for('general_routes.home'))
 
     form = flaskforms.Login()
@@ -88,8 +95,10 @@ def do_login():
 
     # Check if the user is banned from logging in (too many incorrect attempts)
     if banned_from_login():
-        flash('Too many failed login attempts. Please wait {} minutes before attempting to log in again.'.format(
-            (int(LOGIN_BAN_TIME_SECONDS - session['ban_time_left']) / 60) + 1), "info")
+        flash(gettext("Too many failed login attempts. Please wait %(min)s "
+                      "minutes before attempting to log in again",
+                      min=(int(LOGIN_BAN_TIME_SECONDS - session['ban_time_left']) / 60) + 1),
+              "info")
     else:
         if request.method == 'POST':
             form_name = request.form['form-name']
@@ -100,7 +109,8 @@ def do_login():
                         mod_misc.dismiss_notification = 1
                         db_session.commit()
                 except Exception as except_msg:
-                    flash("Acknowledgement not saved: {}".format(except_msg), "error")
+                    flash(gettext("Acknowledgement unable to be saved: "
+                                  "%(err)s", err=except_msg), "error")
             elif form_name == 'login' and form.validate_on_submit():
                 with session_scope(current_app.config['USER_DB_PATH']) as new_session:
                     user = new_session.query(Users).filter(Users.user_name == form.username.data).first()
@@ -156,7 +166,7 @@ def logout():
                   request.environ.get('REMOTE_ADDR', 'unknown address'),
                   'LOGOUT')
     response = clear_cookie_auth()
-    flash('Successfully logged out', 'success')
+    flash(gettext("Successfully logged out"), 'success')
     return response
 
 
@@ -195,8 +205,8 @@ def logged_in():
             not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
         return 0
     elif (session.get('logged_in') or
-              (not session.get('logged_in') and
-               authenticate_cookies(current_app.config['USER_DB_PATH'], Users))):
+            (not session.get('logged_in') and
+                authenticate_cookies(current_app.config['USER_DB_PATH'], Users))):
         return 1
 
 

@@ -69,7 +69,7 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 ## TODO:
 
 * Support Serial Port Expander
-* Support [more] Atlas Scientific sensors
+* Support more Atlas Scientific sensors
 * Add PID filters (of input or output) and alternate PID functions.
 * Add support for wireless communication (z-wave, xbee, or other).
 * Support for PWM and servo/stepper motors
@@ -114,11 +114,12 @@ sudo /bin/bash ./setup.sh
 
 Make sure the setup.sh script finishes without errors. A log of the setup.sh script output will be created at ~/Mycodo/install/setup.log.
 
-If the install is successful, the web user interface should be accessible with your PI's IP address https://IPaddress/. The first time you visit this page, you will be prompted to create an admin user. Alternatively, an admin user may also be created with the following command:
+If the install is successful, the web user interface should be accessible with your PI's IP address https://IPaddress/. The first time you visit this page, you will be prompted to create an admin user. After creating an admin user, you should be redirected to the login page to use the credentials just created to log in. Once logged in, make sure the host name and version number at the top left is green, indicating the daemon is running. Red indicates the daemon is inactive or unresponsive. Ensure any java-blocking plugins are disabled for all the web UI features to work.
+
+Alternatively, an admin user may also be created with the following command:
 
 ```sudo ~/Mycodo/init_databases.py --addadmin```
 
-That's it. You should be redirected to the login page to use the credentials just created to log in. Once logged in, make sure the host name and version number at the top left is green, indicating the daemon is running. Red indicates the daemon is inactive or unresponsive. Ensure any java-blocking plugins are disabled for all the web UI features to work.
 
 
 ## Install Notes
@@ -127,7 +128,7 @@ If you want write access to the mycodo files, add your user to the mycodo group,
 
 ```sudo usermod -a -G mycodo username```
 
-In certain circumstances after the initial install, the mycodo service will not be able to start because of a missing or corrupt package. I'm still trying to understand why this happens and how to prevent it. If you cannot start the daemon, try to reinstall the required modules with the following command:
+In certain circumstances after the initial install, the mycodo service will not be able to start because of a missing or corrupt package. I'm still trying to understand why this happens and how to prevent it. If you cannot start the daemon, try to reinstall the required python modules with the following command:
 
 ```sudo pip install -r ~/Mycodo/install/requirements.txt --upgrade --force-reinstall --no-deps```
 
@@ -224,16 +225,16 @@ An analog to digital converter (ADC) allows the use of any analog sensor that ou
 
 A minimal set of anonymous usage statistics are collected to help improve development. No identifying information is saved from the information that is collected and it is only used to improve Mycodo. No other sources will have access to this information. The data collected is mainly how much specific features are used, how often errors occur, and other similar statistics. The data that's collected can be viewed from the 'View collected statistics' link in the Settings/General panel of the UI or in the file Mycodo/databases/statistics.csv. You may opt out from transmitting this information from the General settings in the Admin panel.
 
-Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the system from the web interface. It has the setuid bit to permit it to be executed as root ('sudo update_mycodo.sh initialize' sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), the mycodo_wrapper binary permits these operations to be executed as root by a non-root user (in this case, members of the group 'mycodo'). You can audit the source code of Mycodo/mycodo/scripts/mycodo_wrapper.c and if you want to ensure the binary is indeed compiled from that source, you may compile it yourself with the following command. Otherwise, the compiled binary is already included and no further action is needed.
+Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the system from the web interface. It has the setuid bit to permit it to be executed as root ('sudo bash ~/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh initialize' sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), the mycodo_wrapper binary permits these operations to be executed as root by a non-root user (in this case, members of the group 'mycodo'). You can audit the source code of Mycodo/mycodo/scripts/mycodo_wrapper.c and if you want to ensure the binary is indeed compiled from that source, you may compile it yourself with the following command. Otherwise, the compiled binary is already included and no further action is needed.
 
 ```sudo gcc ~/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ~/Mycodo/mycodo/scripts/mycodo_wrapper```
 
 
 ### HTTP Server Security
 
-SSL certificates will be generated and stored at ~/Mycodo/mycodo/mycodo_flask/ssl_certs/ during the install process. If you want to use your own SSL certificates, replace them as they are named in this directory. [letsencrypt.org](https://letsencrypt.org) provides free verified SSL certificates.
+An SSL certificate will be generated and stored at ~/Mycodo/mycodo/mycodo_flask/ssl_certs/ during the install process. If you want to use your own SSL certificates, replace them with your own. [letsencrypt.org](https://letsencrypt.org) provides free verified SSL certificates if you have your own domain.
 
-If using the auto-generated certificate, be aware that they will not be verified when visiting the https:// version of the WEB UI. You will receive warning messages about the security of your site unless you add the certificate to your browser's trusted list.
+If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the 'https://' version (opposed to 'http://')of the web UI. You may receive a warning message about the security of your site, unless you add the certificate to your browser's trusted list.
 
 
 ### Daemon info
@@ -249,6 +250,10 @@ The daemon can also be started manually if the systemd method above isn't used o
 Also, use '-d' to log all debug messages to /var/log/mycodo/mycodo.log
 
 ```sudo ~/Mycodo/mycodo/mycodo_daemon.py -d```
+
+To terminate the daemon, you can use two methods. If the daemon was started with ```sudo service mycodo start```, please use ```sudo service mycodo stop``` to stop it. If the daemon was started from either of the two commands above, then the following command may be used to terminate the daemon:
+
+```python ~/Mycodo/mycodo/mycodo_client.py -t```
 
 
 ### Upgrading
@@ -329,13 +334,13 @@ service influxdb start
 
 The order of these events are important, because databases will be created and services started while the setup.sh script is running, so certain commands need to be done before this happens.
 
-You could also copy the influx databases and just copy the entire Mycodo directory (archive to preserve permissions) to a new system, but I was going from the perspective of backing up the most minimal set of data, so if a system became corrupt somewhere, the backups could be restored to a new system.
+You could also copy the influx databases and just copy the entire Mycodo directory (archive to preserve permissions) to a new system, but I was writing from the perspective of backing up the most minimal set of data, so if a system became corrupt somewhere, the backups could be restored to a new system.
 
 
 
 ### Translations
 
-Translation support has been added but there is currently a lack of translations. If you know another language and would like to create translations, follow the steps below.
+Translation support has been added but there is currently a lack of translation languages. If you know another language and would like to create translations, follow the steps below.
 
 To create your own translation, use the following commands.
 
@@ -357,13 +362,15 @@ Finally, compile the new translation.
 
 ```pybabel compile -d mycodo_flask/translations```
 
-If you would like to rescan for translatable text and update your language's messages.po file without losing your previous translation work, use the following commands instead of the above commands. Then edit with poedit and compile for it to take effect.
+If you would like to rescan for translatable text and update your language's messages.po file (or add translations to an already-created messages.po) without losing your previous translation work, use the following commands instead of the above commands. Then edit with poedit (or similar app) and compile for it to take effect.
 
 ```
 pybabel extract -F babel.cfg -k lazy_gettext -o messages.pot .
 pybabel update -i messages.pot -d mycodo_flask/translations
 pybabel compile -d mycodo_flask/translations
 ```
+
+The important file is ~/Mycodo/mycodo/mycodo_flask/translations/##/LC_MESSAGES/messages.po that should either be sent to me or added to a pull request. This is how the new translations can be incorporated into Mycodo.
 
 Refer to [The Flask Mega-Tutorial, Part XIV: I18n and L10n](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xiv-i18n-and-l10n) for more details of this process.
 
