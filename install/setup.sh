@@ -48,10 +48,7 @@ apt-get purge -y python-pip
 pip install -U pip
 
 cd ${INSTALL_DIRECTORY}/install
-# Check if wget supports --show-progress, set progress option accordingly
-wget --help | grep -q '\--show-progress' && \
-  _PROGRESS_OPT="--quiet --show-progress" || _PROGRESS_OPT=""
-wget ${_PROGRESS_OPT} -P ${INSTALL_DIRECTORY}/install abyz.co.uk/rpi/pigpio/pigpio.zip
+wget --quiet -P ${INSTALL_DIRECTORY}/install abyz.co.uk/rpi/pigpio/pigpio.zip
 unzip pigpio.zip
 cd ${INSTALL_DIRECTORY}/install/PIGPIO
 make -j4
