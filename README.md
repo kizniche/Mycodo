@@ -370,7 +370,7 @@ pybabel update -i messages.pot -d mycodo_flask/translations
 pybabel compile -d mycodo_flask/translations
 ```
 
-The important file is ~/Mycodo/mycodo/mycodo_flask/translations/##/LC_MESSAGES/messages.po that should either be sent to me or added to a pull request. This is how the new translations can be incorporated into Mycodo.
+The important file is ~/Mycodo/mycodo/mycodo_flask/translations/##/LC_MESSAGES/messages.po (with '##' representing the language code, e.g. 'es' for spanish, 'fr' for French) that should either be sent to me or added to a pull request. This is how the new translations can be incorporated into Mycodo.
 
 Refer to [The Flask Mega-Tutorial, Part XIV: I18n and L10n](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xiv-i18n-and-l10n) for more details of this process.
 
