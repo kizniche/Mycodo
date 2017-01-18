@@ -50,6 +50,7 @@
 # <http://code.activestate.com/recipes/577231-discrete-lcd-controller/>
 
 import calendar
+import logging
 import smbus
 import threading
 import time
@@ -80,15 +81,15 @@ class LCDController(threading.Thread):
     Class to operate LCD controller
 
     """
-
-    def __init__(self, ready, logger, lcd_id):
+    def __init__(self, ready, lcd_id):
         threading.Thread.__init__(self)
+
+        self.logger = logging.getLogger("Mycodo.LCD-{id}".format(id=lcd_id))
 
         self.running = False
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
         self.ready = ready
-        self.logger = logger
         self.flash_lcd_on = False
         self.lcd_is_on = False
 
@@ -255,14 +256,12 @@ class LCDController(threading.Thread):
             self.lcd_string_write('Start {}'.format(
                 self.lcd_name), self.LCD_LINE[2])
         except Exception as except_msg:
-            self.logger.exception("[LCD {}] Error: {}".format(
-                self.lcd_id, except_msg))
+            self.logger.exception("Error: {err}".format(err=except_msg))
 
     def run(self):
         try:
             self.running = True
-            self.logger.info("[LCD {}] Activated in {:.1f} ms".format(
-                self.lcd_id,
+            self.logger.info("Activated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_startup_timer) * 1000))
             self.ready.set()
 
@@ -271,9 +270,10 @@ class LCDController(threading.Thread):
                     self.get_lcd_strings()
                     try:
                         self.output_lcds()
-                    except IOError as msg:
-                        self.logger.exception("[LCD {}] IOError: Unable to output to LCD: {}".format(
-                            self.lcd_id, msg))
+                    except IOError as except_msg:
+                        self.logger.exception("IOError: Unable to output to "
+                                              "LCD: {err}".format(
+                            err=except_msg))
                     self.timer = time.time() + self.lcd_period
 
                 if self.flash_lcd_on:
@@ -288,15 +288,13 @@ class LCDController(threading.Thread):
 
                 time.sleep(1)
         except Exception as except_msg:
-            self.logger.exception("[LCD {}] Exception: {}".format(
-                self.lcd_id, except_msg))
+            self.logger.exception("Exception: {err}".format(err=except_msg))
         finally:
             self.lcd_init()  # Blank LCD
             self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION), self.LCD_LINE[1])
             self.lcd_string_write('Stop {}'.format(
                 self.lcd_name), self.LCD_LINE[2])
-            self.logger.info("[LCD {}] Deactivated in {:.1f} ms".format(
-                self.lcd_id,
+            self.logger.info("Deactivated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
             self.running = False
 
@@ -342,19 +340,19 @@ class LCDController(threading.Thread):
                                                                 '%Y-%m-%dT%H:%M:%S')
                             utc_timestamp = calendar.timegm(utc_dt.timetuple())
                             local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
-                            self.logger.debug("[LCD {}] Latest {}: {} @ {}".format(
-                                self.lcd_id, self.lcd_line[i]['measurement'],
+                            self.logger.debug("Latest {}: {} @ {}".format(
+                                self.lcd_line[i]['measurement'],
                                 self.lcd_line[i]['measurement_value'], local_timestamp))
                             last_measurement_success = True
                         else:
                             self.lcd_line[i]['time'] = None
                             self.lcd_line[i]['measurement_value'] = None
-                            self.logger.debug("[LCD {}] No data returned "
-                                              "from influxdb".format(self.lcd_id))
+                            self.logger.debug("No data returned from "
+                                              "influxdb")
                 except Exception as except_msg:
-                    self.logger.debug("[LCD {}] Failed to read "
-                                      "measurement from the influxdb database: "
-                                      "{}".format(self.lcd_id, except_msg))
+                    self.logger.debug("Failed to read measurement from the "
+                                      "influxdb database: {err}".format(
+                        err=except_msg))
 
                 try:
                     if last_measurement_success:
@@ -406,8 +404,8 @@ class LCDController(threading.Thread):
                     else:
                         self.lcd_string_line[i] = 'NO DATA < 5 MIN'
                 except Exception as except_msg:
-                    self.logger.exception("[LCD {}] Error: {}".format(
-                        self.lcd_id, except_msg))
+                    self.logger.exception("Error: {err}".format(
+                        err=except_msg))
             else:
                 self.lcd_string_line[i] = ''
 
@@ -426,19 +424,19 @@ class LCDController(threading.Thread):
     def output_lcds(self):
         """Output to all LCDs all at once"""
         if self.multiplexer:
-            self.logger.debug("[LCD {}] Setting multiplexer at "
-                              "address {} to channel "
-                              "{}".format(self.lcd_id,
-                                          self.multiplexer_address_string,
-                                          self.multiplexer_channel))
+            self.logger.debug(
+                "Setting multiplexer at address {add} to channel "
+                "{chan}".format(
+                    add=self.multiplexer_address_string,
+                    chan=self.multiplexer_channel))
             self.multiplexer_status, self.multiplexer_response = self.multiplexer.setup_lock(self.logger,
                                                                                              self.multiplexer_channel)
             if not self.multiplexer_status:
-                self.logger.warning("[LCD {}] Could not set channel "
-                                    "with multiplexer at address {}. "
-                                    "Error: {}".format(self.lcd_id,
-                                                       self.multiplexer_address_string,
-                                                       self.multiplexer_response))
+                self.logger.warning(
+                    "Could not set channel with multiplexer at address {add}."
+                    " Error: {err}".format(
+                        add=self.multiplexer_address_string,
+                        err=self.multiplexer_response))
         self.lcd_init()
         for i in range(1, self.lcd_y_lines + 1):
             self.lcd_string_write(self.lcd_string_line[i], self.LCD_LINE[i])

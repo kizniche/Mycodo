@@ -107,6 +107,15 @@ case "${1:-''}" in
           fi
           printf "Done.\n"
 
+          if [ -e ${INSTALL_DIRECTORY}/Mycodo/databases/timelapse.pid ] && [ -e ${INSTALL_DIRECTORY}/Mycodo/databases/timelapse.csv ]; then
+            printf "Moving time-lapse files from ${INSTALL_DIRECTORY}/Mycodo/databases/ to ${MYCODO_NEW_TMP_DIR}/databases..."
+            if ! mv ${INSTALL_DIRECTORY}/Mycodo/databases/timelapse.* ${MYCODO_NEW_TMP_DIR}/databases ; then
+              printf "Failed: Error while trying to copy time-lapse files."
+              error_found
+            fi
+            printf "Done.\n"
+          fi
+
           printf "Copying statistics ID..."
           if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/statistics.id ${MYCODO_NEW_TMP_DIR}/databases ; then
             printf "Failed: Error while trying to copy statistics ID."

@@ -6,6 +6,7 @@
 #
 
 import datetime
+import logging
 import pigpio
 import threading
 import time
@@ -87,9 +88,10 @@ class SensorController(threading.Thread):
     Class for controlling the sensor
 
     """
-
-    def __init__(self, ready, logger, sensor_id):
+    def __init__(self, ready, sensor_id):
         threading.Thread.__init__(self)
+
+        self.logger = logging.getLogger("Mycodo.Sensor-{id}".format(id=sensor_id))
 
         list_devices_i2c = ['ADS1x15',
                             'AM2315',
@@ -106,7 +108,6 @@ class SensorController(threading.Thread):
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
         self.ready = ready
-        self.logger = logger
         self.lock = {}
         self.measurement = None
         self.updateSuccess = False
@@ -262,11 +263,10 @@ class SensorController(threading.Thread):
             self.measure_sensor = TSL2561Sensor(self.i2c_address, self.i2c_bus)
         else:
             self.device_recognized = False
-            self.logger.debug("[Sensor {}] Device '{}' not "
-                              "recognized:".format(self.sensor_id,
-                                                   self.device_type))
-            raise Exception("{} is not a valid device type.".format(
-                self.device_type))
+            self.logger.debug("Device '{device}' not recognized".format(
+                device=self.device_type))
+            raise Exception("{device} is not a valid device type.".format(
+                device=self.device_type))
 
         self.edge_reset_timer = time.time()
         self.sensor_timer = time.time()
@@ -276,8 +276,7 @@ class SensorController(threading.Thread):
     def run(self):
         try:
             self.running = True
-            self.logger.info("[Sensor {}] Activated in {:.1f} ms".format(
-                self.sensor_id,
+            self.logger.info("Activated in {:.1f} ms".format(
                 (timeit.default_timer()-self.thread_startup_timer)*1000))
             self.ready.set()
 
@@ -360,12 +359,11 @@ class SensorController(threading.Thread):
                 GPIO.setmode(GPIO.BCM)
                 GPIO.cleanup(int(self.location))
 
-            self.logger.info("[Sensor {}] Deactivated in {:.1f} ms".format(
-                self.sensor_id,
+            self.logger.info("Deactivated in {:.1f} ms".format(
                 (timeit.default_timer()-self.thread_shutdown_timer)*1000))
-        except Exception as msg:
-            self.logger.exception("[Sensor {}] Error: {}".format(
-                self.sensor_id, msg))
+        except Exception as except_msg:
+            self.logger.exception("Error: {err}".format(
+                err=except_msg))
 
     def addMeasurementInfluxdb(self):
         """
@@ -400,6 +398,8 @@ class SensorController(threading.Thread):
         :param cond_id: ID of conditional to check
         :type cond_id: str
         """
+        loggerCond = logging.getLogger("Mycodo.SensorCond-{id}".format(
+            id=cond_id))
         attachment_file = False
         attachment_type = False
         message = ""
@@ -432,8 +432,7 @@ class SensorController(threading.Thread):
                     message += "<"
                 message += " {} setpoint.".format(self.cond_setpoint[cond_id])
             else:
-                self.logger.debug("[Sensor Conditional {}] Last measurement "
-                                  "not found".format(cond_id))
+                loggerCond.debug("Last measurement not found")
                 return 1
 
         elif conditional == 'edge':
@@ -512,11 +511,10 @@ class SensorController(threading.Thread):
                                self.cond_email_notify[cond_id], message,
                                attachment_file, attachment_type)
             else:
-                self.logger.debug("[Sensor Conditional {}] "
-                                  "{:.0f} seconds left to be "
-                                  "allowed to email again.".format(
-                                  cond_id,
-                                  (self.smtp_wait_timer[cond_id]-time.time())))
+                loggerCond.debug(
+                    "{:.0f} seconds left to be allowed to email "
+                    "again.".format(
+                        self.smtp_wait_timer[cond_id]-time.time()))
 
         if self.cond_flash_lcd[cond_id]:
             start_flashing = threading.Thread(
@@ -524,7 +522,7 @@ class SensorController(threading.Thread):
                 args=(self.cond_flash_lcd[cond_id], 1,))
             start_flashing.start()
 
-        self.logger.debug(message)
+        loggerCond.debug(message)
 
     def updateMeasurement(self):
         """
@@ -536,9 +534,8 @@ class SensorController(threading.Thread):
         measurements = None
 
         if not self.device_recognized:
-            self.logger.debug(
-                "[Sensor {}] Device not recognized: {}".format(self.sensor_id,
-                                                               self.device_type))
+            self.logger.debug("Device not recognized: {device}".format(
+                device=self.device_type))
             self.updateSuccess = False
             return 1
 
@@ -549,25 +546,23 @@ class SensorController(threading.Thread):
                                               self.multiplexer_bus,
                                               self.multiplexer_lock_file)
             if not lock_status:
-                self.logger.warning("[Sensor {}] Could not acquire lock "
-                                    "for multiplexer. Error:"
-                                    " {}".format(self.sensor_id,
-                                                 lock_response))
+                self.logger.warning("Could not acquire lock for multiplexer. "
+                                    "Error: {err}".format(err=lock_response))
                 self.updateSuccess = False
                 return 1
-            self.logger.debug("[Sensor {}] Setting multiplexer at address {} to "
-                              "channel {}".format(self.sensor_id,
-                                                  self.multiplexer_address_string,
-                                                  self.multiplexer_channel))
+            self.logger.debug(
+                "Setting multiplexer at address {add} to channel "
+                "{chan}".format(add=self.multiplexer_address_string,
+                                chan=self.multiplexer_channel))
             # Set multiplexer channel
             (multiplexer_status,
              multiplexer_response) = self.multiplexer.setup(self.multiplexer_channel)
             if not multiplexer_status:
-                self.logger.warning("[Sensor {}] Could not set channel "
-                                    "with multiplexer at address {}. Error:"
-                                    " {}".format(self.sensor_id,
-                                                 self.multiplexer_address_string,
-                                                 multiplexer_response))
+                self.logger.warning(
+                    "Could not set channel with multiplexer at address {add}."
+                    " Error: {err}".format(
+                        add=self.multiplexer_address_string,
+                        err=multiplexer_response))
                 self.updateSuccess = False
                 return 1
 
@@ -579,10 +574,9 @@ class SensorController(threading.Thread):
                                                   self.i2c_bus,
                                                   self.adc_lock_file)
                 if not lock_status:
-                    self.logger.warning("[Sensor {}] Could not acquire lock "
-                                        "for multiplexer. Error:"
-                                        " {}".format(self.sensor_id,
-                                                     lock_response))
+                    self.logger.warning(
+                        "Could not acquire lock for multiplexer. "
+                        "Error: {err}".format(err=lock_response))
                     self.updateSuccess = False
                     return 1
 
@@ -610,9 +604,10 @@ class SensorController(threading.Thread):
                         measurements[self.adc_measure] = self.adc_units_max
                     else:
                         measurements[self.adc_measure] = converted_units
-            except Exception as msg:
-                self.logger.exception("[Sensor {}] Error while attempting to read "
-                                      "adc: {}".format(self.sensor_id, msg))
+            except Exception as except_msg:
+                self.logger.exception(
+                    "Error while attempting to read adc: {err}".format(
+                        err=except_msg))
             finally:
                 self.release_lock(self.i2c_address,
                                   self.i2c_bus,
@@ -621,9 +616,10 @@ class SensorController(threading.Thread):
             try:
                 # Get measurement from sensor
                 measurements = self.measure_sensor.next()
-            except Exception as msg:
-                self.logger.exception("[Sensor {}] Error while attempting to read "
-                                      "sensor: {}".format(self.sensor_id, msg))
+            except Exception as except_msg:
+                self.logger.exception(
+                    "Error while attempting to read sensor: {err}".format(
+                        err=except_msg))
 
         if self.multiplexer:
             self.release_lock(self.multiplexer_address,
@@ -724,6 +720,8 @@ class SensorController(threading.Thread):
                     self.checkConditionals(each_cond_id)
 
     def setup_sensor_conditionals(self, cond_mod='setup', cond_id=None):
+        loggerCond = logging.getLogger("Mycodo.SensorCond-{id}".format(
+            id=cond_id))
         # Signal to pause the main loop and wait for verification
         self.pause_loop = True
         while not self.verify_pause_loop:
@@ -749,8 +747,8 @@ class SensorController(threading.Thread):
             self.cond_camera_record.pop(cond_id, None)
             self.cond_timer.pop(cond_id, None)
             self.smtp_wait_timer.pop(cond_id, None)
-            self.logger.debug("[Sensor Conditional {}] Deleted Conditional "
-                              "from Sensor {}".format(cond_id, self.sensor_id))
+            loggerCond.debug("Deleted Conditional from Sensor {sen}".format(
+                sen=self.sensor_id))
         else:
             with session_scope(MYCODO_DB_PATH) as new_session:
                 if cond_mod == 'setup':
@@ -786,26 +784,26 @@ class SensorController(threading.Thread):
                         SensorConditional.activated == 1)
                     self.sensor_conditional = self.sensor_conditional.filter(
                         SensorConditional.id == cond_id)
-                    self.logger.debug("[Sensor Conditional {}] Added "
-                                      "Conditional to Sensor {}".format(
-                                            cond_id, self.sensor_id))
+                    loggerCond.debug(
+                        "Added Conditional to Sensor {sen}".format(
+                            sen=self.sensor_id))
                 elif cond_mod == 'mod':
                     self.sensor_conditional = new_session.query(
                         SensorConditional).filter(
                             SensorConditional.sensor_id == self.sensor_id)
                     self.sensor_conditional = self.sensor_conditional.filter(
                         SensorConditional.id == cond_id)
-                    self.logger.debug("[Sensor Conditional {}] Modified "
-                                      "Conditional from Sensor {}".format(
-                                            cond_id, self.sensor_id))
+                    loggerCond.debug(
+                        "Modified Conditional from Sensor {sen}".format(
+                            sen=self.sensor_id))
                 else:
                     return 1
 
                 for each_cond in self.sensor_conditional.all():
                     if cond_mod == 'setup':
-                        self.logger.debug("[Sensor Conditional {}] Activated "
-                                          "Conditional from Sensor {}".format(
-                                                each_cond.id, self.sensor_id))
+                        loggerCond.debug(
+                            "Activated Conditional from Sensor {sen}".format(
+                                sen=self.sensor_id))
                     self.cond_id[each_cond.id] = each_cond.id
                     self.cond_name[each_cond.id] = each_cond.name
                     self.cond_activated[each_cond.id] = each_cond.activated

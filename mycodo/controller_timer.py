@@ -7,6 +7,7 @@
 #
 
 import datetime
+import logging
 import threading
 import time
 import timeit
@@ -25,14 +26,14 @@ class TimerController(threading.Thread):
     class for controlling timers
 
     """
-
-    def __init__(self, ready, logger, timer_id):
+    def __init__(self, ready, timer_id):
         threading.Thread.__init__(self)
+
+        selflogger = logging.getLogger("Mycodo.Timer-{id}".format(id=timer_id))
 
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
         self.ready = ready
-        self.logger = logger
         self.timer_id = timer_id
         self.control = DaemonControl()
 
@@ -69,11 +70,9 @@ class TimerController(threading.Thread):
         self.date_timer_not_executed = True
         self.running = False
 
-
     def run(self):
         self.running = True
-        self.logger.info("[Timer {}] Activated in {:.1f} ms".format(
-            self.timer_id,
+        self.logger.info("Activated in {:.1f} ms".format(
             (timeit.default_timer()-self.thread_startup_timer)*1000))
         self.ready.set()
         while self.running:
@@ -83,11 +82,10 @@ class TimerController(threading.Thread):
                         int(self.start_minute) == datetime.datetime.now().minute):
                     # Ensure this is triggered only once at this specific time
                     if self.date_timer_not_executed:
-                        message = "[Timer {}] At {}, turn relay {} {}".format(
-                            self.timer_id,
-                            self.time_start,
-                            self.relay_id,
-                            self.state)
+                        message = "At {st}, turn relay {relay} {state}".format(
+                            st=self.time_start,
+                            relay=self.relay_id,
+                            state=self.state)
                         if self.state == 'on' and self.duration_on:
                             message += " for {} seconds".format(
                                 self.duration_on)
@@ -107,12 +105,11 @@ class TimerController(threading.Thread):
                 if time_between_range(self.time_start, self.time_end):
                     current_relay_state = self.control.relay_state(self.relay_id)
                     if self.state != current_relay_state:
-                        message = "[Timer {}] Relay {} should be {}, but is {}. Turning {}.".format(
-                            self.timer_id,
-                            self.relay_id,
-                            self.state,
-                            current_relay_state,
-                            self.state)
+                        message = "Relay {relay} should be {state}, but is " \
+                                  "{cstate}. Turning {state}.".format(
+                                    relay=self.relay_id,
+                                    state=self.state,
+                                    cstate=current_relay_state)
                         modulate_relay = threading.Thread(
                             target=self.control.relay_on_off,
                             args=(self.relay_id,
@@ -125,12 +122,12 @@ class TimerController(threading.Thread):
             elif self.timer_type == 'duration':
                 if time.time() > self.duration_timer:
                     self.duration_timer = time.time()+self.duration_on+self.duration_off
-                    self.logger.debug("[Timer {}] Turn relay {} on "
-                                      "for {} seconds, then off for "
-                                      "{} seconds".format(self.timer_id,
-                                                          self.relay_id,
-                                                          self.duration_on,
-                                                          self.duration_off))
+                    self.logger.debug("Turn relay {relay} on for {onsec} "
+                                      "seconds, then off for {offsec} "
+                                      "seconds".format(
+                                        relay=self.relay_id,
+                                        onsec=self.duration_on,
+                                        offsec=self.duration_off))
                     relay_on = threading.Thread(target=self.control.relay_on,
                                                 args=(self.relay_id,
                                                       self.duration_on,))
@@ -140,14 +137,11 @@ class TimerController(threading.Thread):
 
         self.control.relay_off(self.relay_id)
         self.running = False
-        self.logger.info("[Timer {}] Deactivated in {:.1f} ms".format(
-            self.timer_id,
+        self.logger.info("Deactivated in {:.1f} ms".format(
             (timeit.default_timer()-self.thread_shutdown_timer)*1000))
-
 
     def isRunning(self):
         return self.running
-
 
     def stopController(self):
         self.thread_shutdown_timer = timeit.default_timer()

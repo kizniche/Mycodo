@@ -38,7 +38,6 @@ class DaemonControl:
     Communicate with the daemon to execute commands or retrieve information.
 
     """
-
     def __init__(self):
         try:
             self.rpyc_client = rpyc.connect("localhost", 18813)

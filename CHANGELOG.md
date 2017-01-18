@@ -1,3 +1,13 @@
+## 4.1.7 (Unreleased)
+
+Bugfixes:
+
+  - Fix an inability to resume a time-lapse after an upgrade
+
+Miscellaneous:
+
+  - Modify the daemon logging behavior to include the name
+
 ## 4.1.6 (2017-01-17)
 
 Features:

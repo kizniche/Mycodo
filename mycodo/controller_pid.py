@@ -31,6 +31,7 @@
 # <http://code.activestate.com/recipes/577231-discrete-pid-controller/>
 
 import calendar
+import logging
 import datetime
 import threading
 import time as t
@@ -59,15 +60,15 @@ class PIDController(threading.Thread):
     Class to operate discrete PID controller
 
     """
-
-    def __init__(self, ready, logger, pid_id):
+    def __init__(self, ready, pid_id):
         threading.Thread.__init__(self)
+
+        self.logger = logging.getLogger("Mycodo.PID-{id}".format(id=pid_id))
 
         self.running = False
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
         self.ready = ready
-        self.logger = logger
         self.pid_id = pid_id
         self.control = DaemonControl()
 
@@ -111,19 +112,18 @@ class PIDController(threading.Thread):
                     # Resume method with saved start_time
                     self.method_start_time = datetime.datetime.strptime(
                         self.method_start_time, '%Y-%m-%d %H:%M:%S.%f')
-                    self.logger.warning("[PID {}] Resuming method {} started at {}".format(
-                        self.pid_id, self.method_id, self.method_start_time))
+                    self.logger.warning("Resuming method {} started at {}".format(
+                        self.method_id, self.method_start_time))
 
     def run(self):
         try:
             self.running = True
-            self.logger.info("[PID {}] Activated in {:.1f} ms".format(
-                self.pid_id,
+            self.logger.info("Activated in {:.1f} ms".format(
                 (timeit.default_timer()-self.thread_startup_timer)*1000))
             if self.activated == 2:
-                self.logger.info("[PID {pidid}] Paused".format(pidid=self.pid_id))
+                self.logger.info("Paused")
             elif self.activated == 3:
-                self.logger.info("[PID {pidid}] Held".format(pidid=self.pid_id))
+                self.logger.info("Held")
             self.ready.set()
 
             while self.running:
@@ -154,13 +154,11 @@ class PIDController(threading.Thread):
                 self.control.relay_off(self.lower_relay_id)
 
             self.running = False
-            self.logger.info("[PID {}] Deactivated in {:.1f} ms".format(
-                self.pid_id,
+            self.logger.info("Deactivated in {:.1f} ms".format(
                 (timeit.default_timer()-self.thread_shutdown_timer)*1000))
         except Exception as except_msg:
-                self.logger.exception("[PID {pidid}] Run Error: "
-                                      ": {err}".format(pidid=self.pid_id,
-                                                       err=except_msg))
+                self.logger.exception("Run Error: {err}".format(
+                    err=except_msg))
 
     def initialize_values(self):
         """Set PID parameters"""
@@ -262,18 +260,16 @@ class PIDController(threading.Thread):
                 utc_dt = datetime.datetime.strptime(self.last_time.split(".")[0], '%Y-%m-%dT%H:%M:%S')
                 utc_timestamp = calendar.timegm(utc_dt.timetuple())
                 local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
-                self.logger.debug("[PID {}] Latest {}: {} @ {}".format(
-                    self.pid_id, self.measure_type,
-                    self.last_measurement, local_timestamp))
+                self.logger.debug("Latest {}: {} @ {}".format(
+                    self.measure_type, self.last_measurement,
+                    local_timestamp))
                 self.last_measurement_success = True
             else:
-                self.logger.warning("[PID {}] No data returned "
-                                    "from influxdb".format(self.pid_id))
+                self.logger.warning("No data returned from influxdb")
         except Exception as except_msg:
-            self.logger.exception("[PID {}] Failed to read "
-                                "measurement from the influxdb "
-                                "database: {}".format(self.pid_id,
-                                                      except_msg))
+            self.logger.exception("Failed to read measurement from the "
+                                  "influxdb database: {err}".format(
+                err=except_msg))
 
     def manipulate_relays(self):
         """
@@ -307,14 +303,13 @@ class PIDController(threading.Thread):
 
                     if self.raise_seconds_on > self.raise_min_duration:
                         # Activate raise_relay for a duration
-                        self.logger.debug("[PID {}] Setpoint: {} "
-                            "Output: {} to relay {}".format(
-                                self.pid_id,
-                                self.set_point,
-                                self.control_variable,
-                                self.raise_relay_id))
+                        self.logger.debug("Setpoint: {sp} Output: {op} to "
+                                          "relay {relay}".format(
+                                sp=self.set_point,
+                                op=self.control_variable,
+                                relay=self.raise_relay_id))
                         self.control.relay_on(self.raise_relay_id,
-                                         self.raise_seconds_on)
+                                              self.raise_seconds_on)
                 else:
                     self.control.relay_off(self.raise_relay_id)
 
@@ -340,12 +335,11 @@ class PIDController(threading.Thread):
 
                     if self.lower_seconds_on > self.lower_min_duration:
                         # Activate lower_relay for a duration
-                        self.logger.debug("[PID {}] Setpoint: {} "
-                            "Output: {} to relay {}".format(
-                                self.pid_id,
-                                self.set_point,
-                                self.control_variable,
-                                self.lower_relay_id))
+                        self.logger.debug("Setpoint: {sp} Output: {op} to "
+                                          "relay {relay}".format(
+                                sp=self.set_point,
+                                op=self.control_variable,
+                                relay=self.lower_relay_id))
                         self.control.relay_on(self.lower_relay_id,
                                               self.lower_seconds_on)
                 else:
@@ -532,17 +526,17 @@ class PIDController(threading.Thread):
 
     def pid_hold(self):
         self.activated = 3
-        self.logger.info("[PID {pidid}] Hold".format(pidid=self.pid_id))
+        self.logger.info("Hold")
         return "success"
 
     def pid_pause(self):
         self.activated = 2
-        self.logger.info("[PID {pidid}] Pause".format(pidid=self.pid_id))
+        self.logger.info("Pause")
         return "success"
 
     def pid_resume(self):
         self.activated = 1
-        self.logger.info("[PID {pidid}] Resume".format(pidid=self.pid_id))
+        self.logger.info("Resume")
         return "success"
 
     def setPoint(self, set_point):

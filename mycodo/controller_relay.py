@@ -6,6 +6,7 @@
 #
 
 import datetime
+import logging
 import RPi.GPIO as GPIO
 import threading
 import time
@@ -38,13 +39,13 @@ class RelayController(threading.Thread):
     class for controlling relays
 
     """
-
-    def __init__(self, logger):
+    def __init__(self):
         threading.Thread.__init__(self)
+
+        self.logger = logging.getLogger("Mycodo.Relay")
 
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
-        self.logger = logger
         self.control = DaemonControl()
 
         self.relay_id = {}
@@ -59,7 +60,7 @@ class RelayController(threading.Thread):
 
         self.relay_time_turned_on = {}
 
-        self.logger.debug("[Relay] Initializing Relays")
+        self.logger.debug("Initializing Relays")
         try:
             with session_scope(MYCODO_DB_PATH) as new_session:
                 smtp = new_session.query(SMTP).first()
@@ -75,10 +76,10 @@ class RelayController(threading.Thread):
             self.all_relays_off()
             # Turn relays on that are set to be on at start
             self.all_relays_on()
-            self.logger.info("[Relay] Relays Initialized")
+            self.logger.info("Relays Initialized")
 
         except Exception as except_msg:
-            self.logger.exception("[Relay] Problem initializing "
+            self.logger.exception("Problem initializing "
                                   "relays: {}", except_msg)
 
         self.running = False
@@ -86,7 +87,7 @@ class RelayController(threading.Thread):
     def run(self):
         try:
             self.running = True
-            self.logger.info("[Relay] Relay controller activated in "
+            self.logger.info("Relay controller activated in "
                              "{:.1f} ms".format((timeit.default_timer()-self.thread_startup_timer)*1000))
             while self.running:
                 current_time = datetime.datetime.now()
@@ -120,7 +121,7 @@ class RelayController(threading.Thread):
             self.all_relays_off()
             self.cleanup_gpio()
             self.running = False
-            self.logger.info("[Relay] Relay controller deactivated in "
+            self.logger.info("Relay controller deactivated in "
                              "{:.1f} ms".format((timeit.default_timer()-self.thread_shutdown_timer)*1000))
 
     def relay_on_off(self, relay_id, state, duration=0.0,
@@ -146,19 +147,19 @@ class RelayController(threading.Thread):
         """
         # Check if relay exists
         if relay_id not in self.relay_id:
-            self.logger.warning("[Relay] Cannot turn {} Relay with ID {}. It "
+            self.logger.warning("Cannot turn {} Relay with ID {}. It "
                                 "doesn't exist".format(state, relay_id))
             return 1
         if state == 'on':
             if not self.relay_pin[relay_id]:
-                self.logger.warning("[Relay] Invalid pin for relay "
+                self.logger.warning("Invalid pin for relay "
                                     "{} ({}).".format(self.relay_id[relay_id],
                                                       self.relay_name[relay_id]))
                 return 1
 
             current_amps = self.current_amp_load()
             if current_amps+self.relay_amps[relay_id] > MAX_AMPS:
-                self.logger.warning("[Relay] Cannot turn relay {} "
+                self.logger.warning("Cannot turn relay {} "
                                     "({}) On. If this relay turns on, "
                                     "there will be {} amps being drawn, "
                                     "which exceeds the maximum set draw of {}"
@@ -177,7 +178,7 @@ class RelayController(threading.Thread):
                         else:
                             remaining_time = 0
                         time_on = self.relay_last_duration[relay_id] - remaining_time
-                        self.logger.debug("[Relay] Relay {} ({}) is already "
+                        self.logger.debug("Relay {} ({}) is already "
                                           "on for a duration of {:.1f} seconds (with "
                                           "{:.1f} seconds remaining). Recording the "
                                           "amount of time the relay has been on ({:.1f} "
@@ -210,7 +211,7 @@ class RelayController(threading.Thread):
                         self.relay_on_until[relay_id] = time_now+datetime.timedelta(seconds=duration)
                         self.relay_last_duration[relay_id] = duration
 
-                        self.logger.debug("[Relay] Relay {} ({}) is currently"
+                        self.logger.debug("Relay {} ({}) is currently"
                                           " on without a duration. Turning "
                                           "into a duration  of {:.1f} "
                                           "seconds.".format(self.relay_id[relay_id],
@@ -221,7 +222,7 @@ class RelayController(threading.Thread):
                         self.relay_on_until[relay_id] = time_now+datetime.timedelta(seconds=duration)
                         self.relay_on_duration[relay_id] = True
                         self.relay_last_duration[relay_id] = duration
-                        self.logger.debug("[Relay] Relay {} ({}) on for {:.1f} "
+                        self.logger.debug("Relay {} ({}) on for {:.1f} "
                                           "seconds.".format(self.relay_id[relay_id],
                                                             self.relay_name[relay_id],
                                                             duration))
@@ -229,7 +230,7 @@ class RelayController(threading.Thread):
 
                 else:
                     if self.is_on(relay_id):
-                        self.logger.warning("[Relay] Relay {} ({}) is already"
+                        self.logger.warning("Relay {} ({}) is already"
                                             " on.".format(self.relay_id[relay_id],
                                                           self.relay_name[relay_id]))
                         return 1
@@ -238,7 +239,7 @@ class RelayController(threading.Thread):
                         # calculate and log the total duration is was on, when
                         # it eventually turns off.
                         self.relay_time_turned_on[relay_id] = datetime.datetime.now()
-                        self.logger.debug("[Relay] Relay {rid} ({rname}) ON "
+                        self.logger.debug("Relay {rid} ({rname}) ON "
                                           "at {timeon}.".format(rid=self.relay_id[relay_id],
                                                                 rname=self.relay_name[relay_id],
                                                                 timeon=self.relay_time_turned_on[relay_id]))
@@ -251,7 +252,7 @@ class RelayController(threading.Thread):
                 self.relay_on_duration[relay_id] = False
                 self.relay_on_until[relay_id] = datetime.datetime.now()
                 GPIO.output(self.relay_pin[relay_id], not self.relay_trigger[relay_id])
-                self.logger.debug("[Relay] Relay {} ({}) turned off.".format(
+                self.logger.debug("Relay {} ({}) turned off.".format(
                         self.relay_id[relay_id],
                         self.relay_name[relay_id]))
 
@@ -380,7 +381,7 @@ class RelayController(threading.Thread):
             self.relay_on_duration[each_relay.id] = False
             self.relay_time_turned_on[each_relay.id] = None
             self.setup_pin(each_relay.pin)
-            self.logger.debug("[Relay] {} ({}) Initialized".format(each_relay.id, each_relay.name))
+            self.logger.debug("{} ({}) Initialized".format(each_relay.id, each_relay.name))
 
     def all_relays_off(self):
         """Turn all relays off"""
@@ -427,11 +428,11 @@ class RelayController(threading.Thread):
                 self.relay_time_turned_on[relay_id] = None
                 self.relay_last_duration[relay_id] = 0
                 self.relay_on_duration[relay_id] = False
-                message = "[Relay] Relay {} ({}) ".format(
+                message = "Relay {} ({}) ".format(
                     self.relay_id[relay_id], self.relay_name[relay_id])
                 if do_setup_pin:
                     self.setup_pin(relay.pin)
-                    message += "initiliazed"
+                    message += "initialized"
                 else:
                     message += "added"
                 self.logger.debug(message)
@@ -454,7 +455,7 @@ class RelayController(threading.Thread):
         :type relay_id: str
         """
         try:
-            self.logger.debug("[Relay] Relay {} ({}) Deleted.".format(
+            self.logger.debug("Relay {} ({}) Deleted.".format(
                 self.relay_id[relay_id], self.relay_name[relay_id]))
             # Ensure relay is off before removing it, to prevent
             # it from being stuck on

@@ -65,8 +65,8 @@ ID_FILE = os.path.join(DATABASE_PATH, 'statistics.id')
 
 # Camera
 LOCK_FILE_STREAM = os.path.join(DATABASE_PATH, 'mycodo-camera-stream.pid')
-LOCK_FILE_TIMELAPSE = os.path.join(DATABASE_PATH, 'mycodo-camera-timelapse.pid')
-FILE_TIMELAPSE_PARAM = os.path.join(DATABASE_PATH, 'timelapse_parameters.csv')
+LOCK_FILE_TIMELAPSE = os.path.join(DATABASE_PATH, 'timelapse.pid')
+FILE_TIMELAPSE_PARAM = os.path.join(DATABASE_PATH, 'timelapse.csv')
 
 # Anonymous statistics
 STATS_INTERVAL = 86400  # 1 day

@@ -13,7 +13,7 @@ from collections import OrderedDict
 from influxdb import InfluxDBClient
 from sqlalchemy import func
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Mycodo.stats")
 
 
 #
@@ -37,7 +37,7 @@ def add_stat_dict(stats_dict, anonymous_id, measurement, value):
     return stats_dict
 
 
-def add_update_csv(_logger, csv_file, key, value):
+def add_update_csv(csv_file, key, value):
     """
     Either add or update the value in the statistics file with the new value.
     If the key exists, update the value.
@@ -47,12 +47,13 @@ def add_update_csv(_logger, csv_file, key, value):
     try:
         stats_dict = {key: value}
         tempfilename = os.path.splitext(csv_file)[0] + '.bak'
-        try:
-            os.remove(tempfilename)  # delete any existing temp file
-        except OSError as e:
-            _logger.debug("OS error raised in 'add_update_csv' "
-                          "(no file to delete is normal): "
-                          "{err}".format(err=e))
+        if os.path.isfile(tempfilename):
+            try:
+                os.remove(tempfilename)  # delete any existing temp file
+            except OSError as e:
+                logger.debug(
+                    "OS error raised in 'add_update_csv' (no file to delete "
+                    "is normal): {err}".format(err=e))
         os.rename(csv_file, tempfilename)
 
         # create a temporary dictionary from the input file
@@ -79,7 +80,7 @@ def add_update_csv(_logger, csv_file, key, value):
         os.chmod(csv_file, 0664)
         os.remove(tempfilename)  # delete backed-up original
     except Exception as except_msg:
-        _logger.exception('[Statistics] Could not update stat csv: '
+        logger.exception('[Statistics] Could not update stat csv: '
                           '{}'.format(except_msg))
         os.rename(tempfilename, csv_file)  # rename temp file to original
 
@@ -93,7 +94,7 @@ def get_count(q):
 
 def get_pi_revision():
     """
-    Return the Raspbery Pi board revision ID from /proc/cpuinfo
+    Return the Raspberry Pi board revision ID from /proc/cpuinfo
 
     """
     # Extract board revision from cpuinfo file
@@ -112,13 +113,13 @@ def get_pi_revision():
     return myrevision
 
 
-def increment_stat(_logger, stats_csv, stat, amount):
+def increment_stat(stats_csv, stat, amount):
     """
     Increment the value in the statistics file by amount
 
     """
     stat_dict = return_stat_file_dict(stats_csv)
-    add_update_csv(_logger, stats_csv, stat, int(stat_dict[stat]) + amount)
+    add_update_csv(stats_csv, stat, int(stat_dict[stat]) + amount)
 
 
 def return_stat_file_dict(stats_csv):
@@ -182,7 +183,7 @@ def recreate_stat_file(id_file, stats_csv, stats_interval, mycodo_version):
     os.chmod(stats_csv, 0664)
 
 
-def send_stats(_logger, host, port, user, password, dbname,
+def send_stats(host, port, user, password, dbname,
                mycodo_db_path, user_db_path, stats_csv,
                mycodo_version, session_scope, LCD,
                Method, PID, Relay, Sensor, Timer, Users):
@@ -191,51 +192,46 @@ def send_stats(_logger, host, port, user, password, dbname,
 
     Example use:
         current_stat = return_stat_file_dict()
-        add_update_csv(logger, csv_file, 'stat', current_stat['stat'] + 5)
+        add_update_csv(csv_file, 'stat', current_stat['stat'] + 5)
     """
     try:
         client = InfluxDBClient(host, port, user, password, dbname)
         # Prepare stats before sending
         with session_scope(mycodo_db_path) as new_session:
             relays = new_session.query(Relay)
-            add_update_csv(_logger, stats_csv, 'num_relays',
-                           get_count(relays))
+            add_update_csv(stats_csv, 'num_relays', get_count(relays))
 
             sensors = new_session.query(Sensor)
-            add_update_csv(_logger, stats_csv, 'num_sensors',
-                           get_count(sensors))
-            add_update_csv(_logger, stats_csv, 'num_sensors_active',
+            add_update_csv(stats_csv, 'num_sensors', get_count(sensors))
+            add_update_csv(stats_csv, 'num_sensors_active',
                            get_count(
                                sensors.filter(Sensor.activated == True)))
 
             pids = new_session.query(PID)
-            add_update_csv(_logger, stats_csv, 'num_pids', get_count(pids))
-            add_update_csv(_logger, stats_csv, 'num_pids_active',
+            add_update_csv(stats_csv, 'num_pids', get_count(pids))
+            add_update_csv(stats_csv, 'num_pids_active',
                            get_count(pids.filter(PID.activated == True)))
 
             lcds = new_session.query(LCD)
-            add_update_csv(_logger, stats_csv,
-                           'num_lcds', get_count(lcds))
-            add_update_csv(_logger, stats_csv, 'num_lcds_active',
+            add_update_csv(stats_csv, 'num_lcds', get_count(lcds))
+            add_update_csv(stats_csv, 'num_lcds_active',
                            get_count(lcds.filter(LCD.activated == True)))
 
             methods = new_session.query(Method)
-            add_update_csv(_logger, stats_csv, 'num_methods',
+            add_update_csv(stats_csv, 'num_methods',
                            get_count(methods.filter(
                                Method.method_order == 0)))
-            add_update_csv(_logger, stats_csv, 'num_methods_in_pid',
+            add_update_csv(stats_csv, 'num_methods_in_pid',
                            get_count(pids.filter(PID.method_id != '')))
 
             timers = new_session.query(Timer)
-            add_update_csv(_logger, stats_csv, 'num_timers',
-                           get_count(timers))
-            add_update_csv(_logger, stats_csv, 'num_timers_active',
+            add_update_csv(stats_csv, 'num_timers', get_count(timers))
+            add_update_csv(stats_csv, 'num_timers_active',
                            get_count(timers.filter(
                                Timer.activated == True)))
 
-        add_update_csv(_logger, stats_csv, 'country',
-                       geocoder.ip('me').country)
-        add_update_csv(_logger, stats_csv, 'ram_use_mb',
+        add_update_csv(stats_csv, 'country', geocoder.ip('me').country)
+        add_update_csv(stats_csv, 'ram_use_mb',
                        resource.getrusage(
                            resource.RUSAGE_SELF).ru_maxrss / float(1000))
 
@@ -247,11 +243,11 @@ def send_stats(_logger, host, port, user, password, dbname,
                 user_count += 1
                 if each_user.user_restriction == 'admin':
                     admin_count += 1
-        add_update_csv(_logger, stats_csv, 'num_users_admin', admin_count)
-        add_update_csv(_logger, stats_csv, 'num_users_guest',
+        add_update_csv(stats_csv, 'num_users_admin', admin_count)
+        add_update_csv(stats_csv, 'num_users_guest',
                        user_count - admin_count)
 
-        add_update_csv(_logger, stats_csv, 'Mycodo_revision', mycodo_version)
+        add_update_csv(stats_csv, 'Mycodo_revision', mycodo_version)
 
         # Combine stats into list of dictionaries
         new_stats_dict = return_stat_file_dict(stats_csv)
@@ -265,9 +261,10 @@ def send_stats(_logger, host, port, user, password, dbname,
 
         # Send stats to secure, remote influxdb server
         client.write_points(formatted_stat_dict)
-        _logger.debug("[Daemon] Sent anonymous usage statistics")
+        logger.debug("Sent anonymous usage statistics")
         return 0
     except Exception as except_msg:
-        _logger.exception('[Daemon] Could not send anonymous usage '
-                          'statistics: {}'.format(except_msg))
+        logger.exception(
+            "Could not send anonymous usage statistics: {err}".format(
+                err=except_msg))
         return 1
