@@ -79,8 +79,8 @@ class RelayController(threading.Thread):
             self.logger.info("Relays Initialized")
 
         except Exception as except_msg:
-            self.logger.exception("Problem initializing "
-                                  "relays: {}", except_msg)
+            self.logger.exception(
+                "Problem initializing relays: {err}", err=except_msg)
 
         self.running = False
 

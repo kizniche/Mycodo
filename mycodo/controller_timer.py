@@ -29,7 +29,7 @@ class TimerController(threading.Thread):
     def __init__(self, ready, timer_id):
         threading.Thread.__init__(self)
 
-        selflogger = logging.getLogger("mycodo.timer-{id}".format(id=timer_id))
+        self.logger = logging.getLogger("mycodo.timer-{id}".format(id=timer_id))
 
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
