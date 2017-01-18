@@ -4,13 +4,11 @@ import logging
 import operator
 
 from flask import (current_app,
-                   flash,
                    redirect,
                    render_template,
                    request,
                    session,
                    url_for)
-from flask_babel import gettext
 from flask.blueprints import Blueprint
 
 from config import LANGUAGES
