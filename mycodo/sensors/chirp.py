@@ -4,7 +4,7 @@ import smbus
 import time
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger("mycodo.chirp")
+logger = logging.getLogger("mycodo.sensors.chirp")
 
 
 class ChirpSensor(AbstractSensor):

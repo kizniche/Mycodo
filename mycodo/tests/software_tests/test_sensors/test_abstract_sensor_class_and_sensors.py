@@ -47,18 +47,6 @@ sensor_classes = [
 # ----------------------------
 #   AbstractSensor
 # ----------------------------
-def test_abstract_sensor_deprecated_stopsensor_warns_use():
-    """ verify that the depreciated stop_sensor() method warns it's use """
-    for each_class in sensor_classes:
-        with LogCapture() as log_cap:
-            each_class.stop_sensor()
-        expected_log = ('mycodo.sensors.base_sensor', 'WARNING', ('Old style `stop_sensor()` called by '
-                                                                  '{cls}.  This is depreciated '
-                                                                  'and will be deleted in future releases.  '
-                                                                  'Switch to using `stop_sensor` instead.'.format(cls=each_class.__class__.__name__)))
-        assert expected_log in log_cap.actual()
-
-
 def test_abstract_sensor_read_method_logs_when_not_implemented():
     """  verify that methods that are not overwritten log as errors"""
     with LogCapture() as log_cap:

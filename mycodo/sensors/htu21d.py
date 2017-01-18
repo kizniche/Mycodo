@@ -26,7 +26,7 @@ import time
 from sensorutils import dewpoint
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger("mycodo.htu21d")
+logger = logging.getLogger("mycodo.sensors.htu21d")
 
 
 class HTU21DSensor(AbstractSensor):

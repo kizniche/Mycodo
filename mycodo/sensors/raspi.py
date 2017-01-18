@@ -5,7 +5,7 @@ import logging
 import subprocess
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger("mycodo.raspiTemp")
+logger = logging.getLogger("mycodo.sensors.raspi")
 
 
 class RaspberryPiCPUTemp(AbstractSensor):

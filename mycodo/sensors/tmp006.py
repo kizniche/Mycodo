@@ -3,7 +3,7 @@ import logging
 import Adafruit_TMP.TMP006 as TMP006
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger("mycodo.tmp006")
+logger = logging.getLogger("mycodo.sensors.tmp006")
 
 
 class TMP006Sensor(AbstractSensor):

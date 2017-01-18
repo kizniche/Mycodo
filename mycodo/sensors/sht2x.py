@@ -6,7 +6,7 @@ import time
 from sensorutils import dewpoint
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger("mycodo.sht2x")
+logger = logging.getLogger("mycodo.sensors.sht2x")
 
 
 class SHT2xSensor(AbstractSensor):

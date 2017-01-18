@@ -3,7 +3,7 @@ import logging
 from w1thermsensor import W1ThermSensor
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger("mycodo.ds18b20")
+logger = logging.getLogger("mycodo.sensors.ds18b20")
 
 
 class DS18B20Sensor(AbstractSensor):

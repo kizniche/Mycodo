@@ -5,7 +5,7 @@ import pigpio
 from sensorutils import dewpoint
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger("mycodo.dht22")
+logger = logging.getLogger("mycodo.sensors.dht22")
 
 
 class DHT22Sensor(AbstractSensor):

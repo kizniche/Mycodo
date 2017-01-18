@@ -4,7 +4,7 @@ from sht_sensor import Sht
 from sht_sensor import ShtVDDLevel
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger("mycodo.sht1x_7x")
+logger = logging.getLogger("mycodo.sensors.sht1x_7x")
 
 
 class SHT1x7xSensor(AbstractSensor):

@@ -4,7 +4,7 @@ import logging
 import time
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger("mycodo.bmp")
+logger = logging.getLogger("mycodo.sensors.bmp")
 
 
 class BMPSensor(AbstractSensor):
