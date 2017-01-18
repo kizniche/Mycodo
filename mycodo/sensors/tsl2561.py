@@ -3,7 +3,7 @@ import logging
 from tentacle_pi.TSL2561 import TSL2561
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("mycodo.tsl2561")
 
 
 class TSL2561Sensor(AbstractSensor):

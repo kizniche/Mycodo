@@ -7,7 +7,7 @@ import time
 from system_pi import assure_path_exists
 from system_pi import set_user_grp
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("mycodo.camera")
 
 
 #
@@ -16,6 +16,8 @@ logger = logging.getLogger(__name__)
 
 def camera_record(install_directory, record_type, settings, duration_sec=None, start_time=None, capture_number=None):
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    path = ''
+    path_file = ''
     if record_type == 'photo':
         path = '{}/camera-stills'.format(install_directory)
         filename = 'Still-{}.jpg'.format(timestamp)
@@ -29,7 +31,6 @@ def camera_record(install_directory, record_type, settings, duration_sec=None, s
         filename = 'Video-{}.h264'.format(timestamp)
         path_file = '{}/{}'.format(path, filename)
 
-    logging.debug("Camera path is: {path}".format(path=path))
     assure_path_exists(path)
 
     with picamera.PiCamera() as camera:

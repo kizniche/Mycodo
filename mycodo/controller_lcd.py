@@ -84,7 +84,7 @@ class LCDController(threading.Thread):
     def __init__(self, ready, lcd_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("Mycodo.LCD-{id}".format(id=lcd_id))
+        self.logger = logging.getLogger("mycodo.lcd-{id}".format(id=lcd_id))
 
         self.running = False
         self.thread_startup_timer = timeit.default_timer()
@@ -503,9 +503,9 @@ class LCDController(threading.Thread):
         for i in range(self.LCD_WIDTH):
             self.lcd_byte(ord(message[i]), self.LCD_CHR)
 
-    def isRunning(self):
+    def is_running(self):
         return self.running
 
-    def stopController(self):
+    def stop_controller(self):
         self.thread_shutdown_timer = timeit.default_timer()
         self.running = False

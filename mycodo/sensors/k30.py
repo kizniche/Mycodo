@@ -7,7 +7,7 @@ import time
 import RPi.GPIO as GPIO
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("mycodo.k30")
 K30_LOCK_FILE = "/var/lock/sensor-k30"
 
 

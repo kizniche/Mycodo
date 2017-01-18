@@ -29,7 +29,7 @@ class TimerController(threading.Thread):
     def __init__(self, ready, timer_id):
         threading.Thread.__init__(self)
 
-        selflogger = logging.getLogger("Mycodo.Timer-{id}".format(id=timer_id))
+        selflogger = logging.getLogger("mycodo.timer-{id}".format(id=timer_id))
 
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
@@ -140,9 +140,9 @@ class TimerController(threading.Thread):
         self.logger.info("Deactivated in {:.1f} ms".format(
             (timeit.default_timer()-self.thread_shutdown_timer)*1000))
 
-    def isRunning(self):
+    def is_running(self):
         return self.running
 
-    def stopController(self):
+    def stop_controller(self):
         self.thread_shutdown_timer = timeit.default_timer()
         self.running = False

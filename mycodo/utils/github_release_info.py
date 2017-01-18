@@ -9,6 +9,7 @@ except ImportError:
 
 import argparse
 import json
+import logging
 import os
 import re
 import sys
@@ -16,6 +17,8 @@ import sys
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from config import MYCODO_VERSION
+
+logger = logging.getLogger("mycodo.release_info")
 
 release_url = 'https://api.github.com/repos/kizniche/Mycodo/tags'
 

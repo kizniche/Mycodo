@@ -3,7 +3,7 @@ import logging
 import Adafruit_TMP.TMP006 as TMP006
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("mycodo.tmp006")
 
 
 class TMP006Sensor(AbstractSensor):
@@ -42,8 +42,10 @@ class TMP006Sensor(AbstractSensor):
 
     def info(self):
         conditions_measured = [
-            ("Temperature (Die)", "temperature_die", "float", "0.00", self._temperature_die, self.temperature_die),
-            ("Temperature (Object)", "temperature_object", "float", "0.00", self._temperature_object, self.temperature_object)
+            ("Temperature (Die)", "temperature_die", "float", "0.00",
+             self._temperature_die, self.temperature_die),
+            ("Temperature (Object)", "temperature_object", "float", "0.00",
+             self._temperature_object, self.temperature_object)
         ]
         return conditions_measured
 

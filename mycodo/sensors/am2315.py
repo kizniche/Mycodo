@@ -4,7 +4,7 @@ from tentacle_pi import AM2315
 from sensorutils import dewpoint
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("mycodo.am2315")
 
 
 class AM2315Sensor(AbstractSensor):

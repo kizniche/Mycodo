@@ -4,7 +4,7 @@ import os
 import logging
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("mycodo.raspiCPU")
 
 
 class RaspberryPiCPULoad(AbstractSensor):

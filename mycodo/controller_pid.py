@@ -63,7 +63,7 @@ class PIDController(threading.Thread):
     def __init__(self, ready, pid_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("Mycodo.PID-{id}".format(id=pid_id))
+        self.logger = logging.getLogger("mycodo.pid-{id}".format(id=pid_id))
 
         self.running = False
         self.thread_startup_timer = timeit.default_timer()
@@ -512,8 +512,7 @@ class PIDController(threading.Thread):
         """
         write_db = threading.Thread(
             target=write_influxdb_value,
-            args=(self.logger, INFLUXDB_HOST,
-                  INFLUXDB_PORT, INFLUXDB_USER,
+            args=(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                   INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
                   'pid', pid_id, 'setpoint', setpoint,))
         write_db.start()
@@ -578,10 +577,10 @@ class PIDController(threading.Thread):
     def getDerivator(self):
         return self.Derivator
 
-    def isRunning(self):
+    def is_running(self):
         return self.running
 
-    def stopController(self):
+    def stop_controller(self):
         self.thread_shutdown_timer = timeit.default_timer()
         self.running = False
         # Unset method start time

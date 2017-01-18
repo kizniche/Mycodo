@@ -48,11 +48,11 @@ sensor_classes = [
 #   AbstractSensor
 # ----------------------------
 def test_abstract_sensor_deprecated_stopsensor_warns_use():
-    """ verify that the depreciated stopSensor() method warns it's use """
+    """ verify that the depreciated stop_sensor() method warns it's use """
     for each_class in sensor_classes:
         with LogCapture() as log_cap:
-            each_class.stopSensor()
-        expected_log = ('mycodo.sensors.base_sensor', 'WARNING', ('Old style `stopSensor()` called by '
+            each_class.stop_sensor()
+        expected_log = ('mycodo.sensors.base_sensor', 'WARNING', ('Old style `stop_sensor()` called by '
                                                                   '{cls}.  This is depreciated '
                                                                   'and will be deleted in future releases.  '
                                                                   'Switch to using `stop_sensor` instead.'.format(cls=each_class.__class__.__name__)))
@@ -85,9 +85,9 @@ def test_abstract_sensor_next_method_logs_when_not_implemented():
 #   General class tests
 # ----------------------------
 def test_sensors_have_depreciated_stop_sensor():
-    """ Verify that the sensor objects have the stopSensor() method """
+    """ Verify that the sensor objects have the stop_sensor() method """
     for each_class in sensor_classes:
-        assert hasattr(each_class, 'stopSensor')
+        assert hasattr(each_class, 'stop_sensor')
 
 
 def test_sensors_are_iterator_instance():

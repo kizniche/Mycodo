@@ -1,5 +1,6 @@
 # coding=utf-8
 
+import logging
 import os
 import smtplib
 import socket
@@ -9,13 +10,17 @@ from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
 from email import Encoders
 
+from utils.system_pi import cmd_output
+from utils.system_pi import set_user_grp
+
+logger = logging.getLogger("mycodo.notification")
+
 
 #
 # Email notification
 #
 
-def send_email(logging, smtp_host, smtp_ssl,
-               smtp_port, smtp_user, smtp_pass,
+def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
                smtp_email_from, email_to, message,
                attachment_file=False, attachment_type=False):
     """
@@ -67,6 +72,7 @@ def send_email(logging, smtp_host, smtp_ssl,
         return 0
     except Exception as error:
         if logging:
-            logging.exception("[Email Notification] Cound not send email to {} "
-                              "with message: {}. Error: {}".format(email_to, message, error))
+            logging.exception(
+                "Could not send email to {add} with message: {msg}. Error: "
+                "{err}".format(add=email_to, msg=message, err=error))
         return 1

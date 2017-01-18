@@ -13,7 +13,7 @@ from collections import OrderedDict
 from influxdb import InfluxDBClient
 from sqlalchemy import func
 
-logger = logging.getLogger("Mycodo.stats")
+logger = logging.getLogger("mycodo.stats")
 
 
 #

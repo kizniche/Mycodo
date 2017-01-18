@@ -11,7 +11,7 @@ from sensorutils import dewpoint
 from sensorutils import altitude
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("mycodo.bm3280")
 
 
 class BME280Sensor(AbstractSensor):

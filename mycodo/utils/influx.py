@@ -1,6 +1,8 @@
 # coding=utf-8
-
+import logging
 from influxdb import InfluxDBClient
+
+logger = logging.getLogger("mycodo.influxdb")
 
 
 #
@@ -110,21 +112,18 @@ def read_last_influxdb(host, port, user, password, dbname,
     return client.query(query)
 
 
-def write_influxdb_value(logger, host, port, user, password,
-                         dbname, device_type, device_id,
-                         measure_type, value, timestamp=None):
+def write_influxdb_value(host, port, user, password, dbname, device_type,
+                         device_id,  measure_type, value, timestamp=None):
     """
     Write a value into an Influxdb database
 
     example:
-        write_influxdb(logger, 'localhost', 8086, 'mycodo', 'password123',
+        write_influxdb('localhost', 8086, 'mycodo', 'password123',
                        'mycodo_db', 'tsensor', 00000001', 'temperature', 37.5)
 
     :return: success (0) or failure (1)
     :rtype: bool
 
-    :param logger: Oject to log to
-    :type logger: logger object
     :param host: What influxdb address
     :type host: str
     :param port: What influxdb port
@@ -165,14 +164,14 @@ def write_influxdb_value(logger, host, port, user, password,
         #                                            device_type))
         return 0
     except Exception as except_msg:
-        logger.debug('Failed to write measurement to influxdb (Device ID: '
-                     '{}). Data that was submitted for writing: {}. '
-                     'Exception: {}'.format(device_id, data, except_msg))
+        logger.debug(
+            "Failed to write measurement to influxdb (Device ID: {id}). Data "
+            "that was submitted for writing: {data}. Exception: {err}".format(
+                id=device_id, data=data, err=except_msg))
         return 1
 
 
-def write_influxdb_list(logger, host, port, user, password,
-                        dbname, data):
+def write_influxdb_list(host, port, user, password, dbname, data):
     """
     Write an entry into an Influxdb database
 
@@ -183,8 +182,6 @@ def write_influxdb_list(logger, host, port, user, password,
     :return: success (0) or failure (1)
     :rtype: bool
 
-    :param logger: Oject to log to
-    :type logger: logger object
     :param host: What influxdb address
     :type host: str
     :param port: What influxdb port
@@ -203,7 +200,8 @@ def write_influxdb_list(logger, host, port, user, password,
         client.write_points(data)
         return 0
     except Exception as except_msg:
-        logger.debug('Failed to write measurements to influxdb (Device ID: '
-                     '{}). Data that was submitted for writing: {}. '
-                     'Exception: {}'.format(device_id, data, except_msg))
+        logger.debug(
+            "Failed to write measurements to influxdb. Data that was "
+            "submitted for writing: {data}. Exception: {err}".format(
+                data=data, err=except_msg))
         return 1

@@ -5,7 +5,7 @@ import fcntl      # used to access I2C parameters like addresses
 import time       # used for sleep delay and timestamps
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("mycodo.pt1000")
 
 
 class AtlasPT1000Sensor(AbstractSensor):

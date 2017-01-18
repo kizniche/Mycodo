@@ -91,7 +91,7 @@ class SensorController(threading.Thread):
     def __init__(self, ready, sensor_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("Mycodo.Sensor-{id}".format(id=sensor_id))
+        self.logger = logging.getLogger("mycodo.sensor-{id}".format(id=sensor_id))
 
         list_devices_i2c = ['ADS1x15',
                             'AM2315',
@@ -380,10 +380,8 @@ class SensorController(threading.Thread):
                                                  each_value))
             write_db = threading.Thread(
                 target=write_influxdb_list,
-                args=(self.logger, INFLUXDB_HOST,
-                      INFLUXDB_PORT, INFLUXDB_USER,
-                      INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
-                      data,))
+                args=(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
+                      INFLUXDB_PASSWORD, INFLUXDB_DATABASE, data,))
             write_db.start()
 
     def checkConditionals(self, cond_id):
@@ -398,7 +396,7 @@ class SensorController(threading.Thread):
         :param cond_id: ID of conditional to check
         :type cond_id: str
         """
-        loggerCond = logging.getLogger("Mycodo.SensorCond-{id}".format(
+        loggerCond = logging.getLogger("mycodo.SensorCond-{id}".format(
             id=cond_id))
         attachment_file = False
         attachment_type = False
@@ -506,7 +504,7 @@ class SensorController(threading.Thread):
                     attachment_type = 'video'
                 with session_scope(MYCODO_DB_PATH) as new_session:
                     smtp = new_session.query(SMTP).first()
-                    send_email(self.logger, smtp.host, smtp.ssl, smtp.port,
+                    send_email(smtp.host, smtp.ssl, smtp.port,
                                smtp.user, smtp.passw, smtp.email_from,
                                self.cond_email_notify[cond_id], message,
                                attachment_file, attachment_type)
@@ -702,8 +700,7 @@ class SensorController(threading.Thread):
                 rising_or_falling = -1  # Falling edge detected
             write_db = threading.Thread(
                 target=write_influxdb_value,
-                args=(self.logger, INFLUXDB_HOST,
-                      INFLUXDB_PORT, INFLUXDB_USER,
+                args=(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                       INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
                       self.sensor_type, self.sensor_id,
                       'edge', rising_or_falling,))
@@ -720,7 +717,7 @@ class SensorController(threading.Thread):
                     self.checkConditionals(each_cond_id)
 
     def setup_sensor_conditionals(self, cond_mod='setup', cond_id=None):
-        loggerCond = logging.getLogger("Mycodo.SensorCond-{id}".format(
+        loggerCond = logging.getLogger("mycodo.SensorCond-{id}".format(
             id=cond_id))
         # Signal to pause the main loop and wait for verification
         self.pause_loop = True
@@ -827,11 +824,11 @@ class SensorController(threading.Thread):
         self.pause_loop = False
         self.verify_pause_loop = False
 
-    def isRunning(self):
+    def is_running(self):
         return self.running
 
-    def stopController(self):
+    def stop_controller(self):
         self.thread_shutdown_timer = timeit.default_timer()
         if self.device_type not in ['EDGE', 'ADS1x15', 'MCP342x']:
-            self.measure_sensor.stopSensor()
+            self.measure_sensor.stop_sensor()
         self.running = False

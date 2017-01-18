@@ -42,7 +42,7 @@ class RelayController(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("Mycodo.Relay")
+        self.logger = logging.getLogger("mycodo.relay")
 
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
@@ -108,8 +108,7 @@ class RelayController(threading.Thread):
                             timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
                             write_db = threading.Thread(
                                 target=write_influxdb_value,
-                                args=(self.logger, INFLUXDB_HOST,
-                                      INFLUXDB_PORT, INFLUXDB_USER,
+                                args=(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                                       INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
                                       'relay', relay_id, 'duration_sec',
                                       duration,
@@ -196,8 +195,7 @@ class RelayController(threading.Thread):
                             timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
                             write_db = threading.Thread(
                                 target=write_influxdb_value,
-                                args=(self.logger, INFLUXDB_HOST,
-                                      INFLUXDB_PORT, INFLUXDB_USER,
+                                args=(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                                       INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
                                       'relay', relay_id, 'duration_sec',
                                       duration, timestamp,))
@@ -263,8 +261,7 @@ class RelayController(threading.Thread):
                     timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
                     write_db = threading.Thread(
                         target=write_influxdb_value,
-                        args=(self.logger, INFLUXDB_HOST,
-                              INFLUXDB_PORT, INFLUXDB_USER,
+                        args=(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                               INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
                               'relay', relay_id, 'duration_sec',
                               duration, timestamp,))
@@ -346,9 +343,10 @@ class RelayController(threading.Thread):
 
                     with session_scope(MYCODO_DB_PATH) as new_session:
                         smtp = new_session.query(SMTP).first()
-                        send_email(self.logger, smtp.host, smtp.ssl, smtp.port,
-                              smtp.user, smtp.passw, smtp.email_from,
-                              each_conditional.email_notify, message)
+                        send_email(
+                            smtp.host, smtp.ssl, smtp.port, smtp.user,
+                            smtp.passw, smtp.email_from,
+                            each_conditional.email_notify, message)
                 else:
                     self.logger.debug("[Relay Conditional {}] True: "
                                       "{:.0f} seconds left to be "
@@ -537,10 +535,10 @@ class RelayController(threading.Thread):
         GPIO.setup(pin, GPIO.OUT)
         return True
 
-    def isRunning(self):
+    def is_running(self):
         return self.running
 
-    def stopController(self):
+    def stop_controller(self):
         """Signal to stop the controller"""
         self.thread_shutdown_timer = timeit.default_timer()
         self.running = False

@@ -59,7 +59,7 @@ class ADS1x15_read(object):
         }
         return response
 
-    def stopSensor(self):
+    def stop_sensor(self):
         self.running = False
 
 

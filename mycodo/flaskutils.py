@@ -2333,11 +2333,11 @@ def settings_alert_mod(formModAlert):
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 mod_smtp = db_session.query(SMTP).one()
                 if formModAlert.sendTestEmail.data:
-                    send_email(False, mod_smtp.host,
-                               mod_smtp.ssl, mod_smtp.port,
-                               mod_smtp.user, mod_smtp.passw,
-                               mod_smtp.email_from, formModAlert.testEmailTo.data,
-                               "This is a test email from Mycodo")
+                    send_email(
+                        mod_smtp.host, mod_smtp.ssl, mod_smtp.port,
+                        mod_smtp.user, mod_smtp.passw, mod_smtp.email_from,
+                        formModAlert.testEmailTo.data,
+                        "This is a test email from Mycodo")
                     flash(gettext("Test email sent to %(recip)s. Check your "
                                   "inbox to see if it was successful.",
                                   recip=formModAlert.testEmailTo.data),

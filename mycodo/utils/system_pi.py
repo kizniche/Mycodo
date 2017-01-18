@@ -7,7 +7,7 @@ import pwd
 import socket
 import subprocess
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("mycodo.system_pi")
 
 
 def time_between_range(start_time, end_time):
@@ -41,9 +41,9 @@ def cmd_output(command, su_mycodo=True):
     if su_mycodo:
         full_cmd = 'su mycodo && {}'.format(command)
     cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
-    cmd_output, cmd_err = cmd.communicate()
+    cmd_out, cmd_err = cmd.communicate()
     cmd_status = cmd.wait()
-    return cmd_output, cmd_err, cmd_status
+    return cmd_out, cmd_err, cmd_status
 
 
 def internet(host="8.8.8.8", port=53, timeout=3):
@@ -58,8 +58,8 @@ def internet(host="8.8.8.8", port=53, timeout=3):
         socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
         return True
     except Exception as e:
-        logger.error("Function 'internet()' raised exception: "
-                     "{err}".format(err=e))
+        logger.error(
+            "Function 'internet()' raised exception: {err}".format(err=e))
     return False
 
 
