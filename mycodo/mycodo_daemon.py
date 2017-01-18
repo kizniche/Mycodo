@@ -556,13 +556,14 @@ class DaemonController(threading.Thread):
                 os.remove(STATS_CSV)
             except OSError:
                 pass
-            recreate_stat_file(ID_FILE, STATS_CSV,
-                               STATS_INTERVAL, MYCODO_VERSION)
+            recreate_stat_file(
+                ID_FILE, STATS_CSV, STATS_INTERVAL, MYCODO_VERSION)
         try:
-            send_stats(self.logger, STATS_HOST, STATS_PORT, STATS_USER,
-                       STATS_PASSWORD, STATS_DATABASE, MYCODO_DB_PATH,
-                       USER_DB_PATH, STATS_CSV, MYCODO_VERSION, session_scope,
-                       LCD, Method, PID, Relay, Sensor, Timer, Users)
+            send_stats(
+                STATS_HOST, STATS_PORT, STATS_USER, STATS_PASSWORD,
+                STATS_DATABASE, MYCODO_DB_PATH, USER_DB_PATH, STATS_CSV,
+                MYCODO_VERSION, session_scope, LCD, Method, PID, Relay,
+                Sensor, Timer, Users)
         except Exception as except_msg:
             self.logger.exception("Error: Could not send statistics: "
                                   "{err}".format(err=except_msg))
