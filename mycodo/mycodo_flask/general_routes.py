@@ -485,7 +485,7 @@ def computer_command(action):
         cmd = '{path}/mycodo/scripts/mycodo_wrapper {action} 2>&1'.format(
                 path=INSTALL_DIRECTORY, action=action)
         subprocess.Popen(cmd, shell=True)
-        if action == 'reboot':
+        if action == 'restart':
             flash(gettext("System rebooting in 10 seconds"), "success")
         elif action == 'shutdown':
             flash(gettext("System shutting down in 10 seconds"), "success")
