@@ -116,12 +116,14 @@ case "${1:-''}" in
             printf "Done.\n"
           fi
 
-          printf "Copying statistics ID..."
-          if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/statistics.id ${MYCODO_NEW_TMP_DIR}/databases ; then
-            printf "Failed: Error while trying to copy statistics ID."
-            error_found
+          if [ -e ${INSTALL_DIRECTORY}/Mycodo/databases/statistics.id ]; then
+            printf "Copying statistics ID..."
+            if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/statistics.id ${MYCODO_NEW_TMP_DIR}/databases ; then
+              printf "Failed: Error while trying to copy statistics ID."
+              error_found
+            fi
+            printf "Done.\n"
           fi
-          printf "Done.\n"
 
           if [ -d ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs ] ; then
             printf "Copying SSL certificates..."
