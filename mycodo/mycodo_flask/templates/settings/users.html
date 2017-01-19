@@ -11,40 +11,40 @@
 
   <form class="form-horizontal" method="post" action="/settings/users">
     <input type="hidden" name="form-name" value="addUser">
-    {{formAddUser.hidden_tag()}}
+    {{form_add_user.hidden_tag()}}
     <div class="form-group">
-      {{formAddUser.addUsername.label(class_='col-sm-4 control-label')}}
+      {{form_add_user.addUsername.label(class_='col-sm-4 control-label')}}
       <div class="col-sm-8">
-        {{formAddUser.addUsername(class_='form-control')}}
+        {{form_add_user.addUsername(class_='form-control')}}
       </div>
     </div>
     <div class="form-group">
-      {{formAddUser.addEmail.label(class_='col-sm-4 control-label')}}
+      {{form_add_user.addEmail.label(class_='col-sm-4 control-label')}}
       <div class="col-sm-8">
-        {{formAddUser.addEmail(class_='form-control')}}
+        {{form_add_user.addEmail(class_='form-control')}}
       </div>
     </div>
     <div class="form-group">
-      {{formAddUser.addPassword.label(class_='col-sm-4 control-label')}}
+      {{form_add_user.addPassword.label(class_='col-sm-4 control-label')}}
       <div class="col-sm-8">
-        {{formAddUser.addPassword(class_='form-control')}}
+        {{form_add_user.addPassword(class_='form-control')}}
       </div>
     </div>
     <div class="form-group">
-      {{formAddUser.addPassword_repeat.label(class_='col-sm-4 control-label')}}
+      {{form_add_user.addPassword_repeat.label(class_='col-sm-4 control-label')}}
       <div class="col-sm-8">
-        {{formAddUser.addPassword_repeat(class_='form-control')}}
+        {{form_add_user.addPassword_repeat(class_='form-control')}}
       </div>
     </div>
     <div class="form-group">
-      {{formAddUser.addGroup.label(class_='col-sm-4 control-label')}}
+      {{form_add_user.addGroup.label(class_='col-sm-4 control-label')}}
       <div class="col-sm-8">
-        {{formAddUser.addGroup(class_='form-control')}}
+        {{form_add_user.addGroup(class_='form-control')}}
       </div>
     </div>
     <div class="form-group">
       <div class="col-sm-offset-4 col-sm-8">
-        {{formAddUser.addSubmit(class_='btn btn-default', value="Create New User")}}
+        {{form_add_user.addSubmit(class_='btn btn-default', value="Create New User")}}
       </div>
     </div>
   </form>
@@ -71,23 +71,23 @@
           <td>
           <form method="post" action="/settings/users" onsubmit="return confirm('Confirm the deletion of user {{user.user_name}}. This cannot be undone. To keep this user, click Cancel.')">
             <input type="hidden" name="form-name" value="delUser">
-            {{formDelUser.csrf_token}}
-            {{formDelUser.delUsername(value=user.user_name)}}
-            {{formDelUser.delUserSubmit(class_='btn btn-default')}}
+            {{form_del_user.csrf_token}}
+            {{form_del_user.delUsername(value=user.user_name)}}
+            {{form_del_user.delUserSubmit(class_='btn btn-default')}}
           </form>
           </td>
           <form method="post" action="/settings/users">
-          {{formModUser.csrf_token}}
+          {{form_mod_user.csrf_token}}
           <input type="hidden" name="form-name" value="modUser">
-          <td>{{user.user_name}}{{formModUser.modUsername(value=user.user_name)}}</td>
+          <td>{{user.user_name}}{{form_mod_user.modUsername(value=user.user_name)}}</td>
           <td>
-            {{formModUser.modEmail(class_='form-control', value=user.user_email)}}
+            {{form_mod_user.modEmail(class_='form-control', value=user.user_email)}}
           </td>
           <td>
-            {{formModUser.modPassword(class_='form-control')}}
+            {{form_mod_user.modPassword(class_='form-control')}}
           </td>
           <td>
-            {{formModUser.modPassword_repeat(class_='form-control')}}
+            {{form_mod_user.modPassword_repeat(class_='form-control')}}
           </td>
           <td>
             <select class="form-control" id="modGroup" name="modGroup">
@@ -122,7 +122,7 @@
             </select>
           </td>
           <td>
-            {{formModUser.modSubmit(class_='btn btn-default', value="Save")}}
+            {{form_mod_user.modSubmit(class_='btn btn-default', value="Save")}}
           </td>
           </form>
         </tr>

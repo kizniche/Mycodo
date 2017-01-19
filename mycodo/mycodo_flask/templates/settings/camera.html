@@ -11,31 +11,31 @@
 
   <form class="form-horizontal" method="post" action="/settings/camera">
     <input type="hidden" name="form-name" value="Camera">
-    {{formSettingsCamera.csrf_token}}
+    {{form_settings_camera.csrf_token}}
     <div class="form-group">
-      {{formSettingsCamera.hflip.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_camera.hflip.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
         {%- if camera.hflip == true -%}
-          {{formSettingsCamera.hflip(checked=True)}}
+          {{form_settings_camera.hflip(checked=True)}}
         {%- else -%}
-          {{formSettingsCamera.hflip()}}
+          {{form_settings_camera.hflip()}}
         {%- endif -%}
         &nbsp;&nbsp;{{_('Check to flip the camera image on the horizontal axis.')}}
       </div>
     </div>
     <div class="form-group">
-      {{formSettingsCamera.vflip.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_camera.vflip.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
         {%- if camera.vflip == true -%}
-          {{formSettingsCamera.vflip(checked=True)}}
+          {{form_settings_camera.vflip(checked=True)}}
         {%- else -%}
-          {{formSettingsCamera.vflip()}}
+          {{form_settings_camera.vflip()}}
         {%- endif -%}
         &nbsp;&nbsp;{{_('Check to flip the camera image on the vertical axis.')}}
       </div>
     </div>
     <div class="form-group">
-      {{formSettingsCamera.rotation.label(class_='col-sm-4 control-label')}}
+      {{form_settings_camera.rotation.label(class_='col-sm-4 control-label')}}
       <div class="col-sm-8">
         <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="rotation" name="rotation" title="{{_('Rotate the camera image')}}.">
           <option value="0">No Rotation</option>
@@ -47,7 +47,7 @@
     </div>
     <div class="form-group">
       <div class="col-sm-offset-4 col-sm-8">
-        {{formSettingsCamera.Submit(class_='btn btn-default')}}
+        {{form_settings_camera.Submit(class_='btn btn-default')}}
       </div>
     </div>
   </form>

@@ -2,11 +2,9 @@
 
 Bugfixes:
 
-  - Fix an inability to resume a time-lapse after an upgrade
-
-Miscellaneous:
-
-  - Modify the daemon logging behavior to include the name
+  - Fix time-lapses not resuming after an upgrade
+  - Fix calculation of total 1-month relay usage and cost
+  - Fix (and modify) the logging behavior in modules
 
 ## 4.1.6 (2017-01-17)
 

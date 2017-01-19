@@ -11,10 +11,10 @@
     <form class="form-inline" method="post" action="/camera">
       <div style="padding-bottom: 1.5em">
         <input type="hidden" name="form-name" value="camera">
-        {{formCamera.hidden_tag()}}
+        {{form_camera.hidden_tag()}}
 
         <div class="form-group">
-          {{formCamera.Still(class_='form-control btn btn-default')}}
+          {{form_camera.Still(class_='form-control btn btn-default')}}
         </div>
 
         {% if not stream_locked -%}
@@ -24,7 +24,7 @@
             </div>
           {% else %}
             <div class="form-group">
-              {{formCamera.StopTimelapse(class_='form-control btn btn-default')}}
+              {{form_camera.StopTimelapse(class_='form-control btn btn-default')}}
             </div>
           {% endif %}
         {%- endif %}
@@ -32,9 +32,9 @@
         {% if not timelapse_locked %}
           <div class="form-group">
             {% if stream_locked -%}
-              {{formCamera.StopStream(class_='form-control btn btn-default')}}
+              {{form_camera.StopStream(class_='form-control btn btn-default')}}
             {% else %}
-              {{formCamera.StartStream(class_='form-control btn btn-default')}}
+              {{form_camera.StartStream(class_='form-control btn btn-default')}}
             {%- endif %}
           </div>
         {%- endif %}
@@ -43,21 +43,21 @@
       <div class="collapse" id="collapseContainerTimelapse" style="padding: 0.5em 0 3em 1em">
         <div class="form-inline">
           <div class="form-group">
-            {{formCamera.TimelapseInterval.label(class_='control-label')}}
+            {{form_camera.TimelapseInterval.label(class_='control-label')}}
             <div>
-              {{formCamera.TimelapseInterval(class_='form-control')}}
+              {{form_camera.TimelapseInterval(class_='form-control')}}
             </div>
           </div>
           <div class="form-group">
-            {{formCamera.TimelapseRunTime.label(class_='control-label')}}
+            {{form_camera.TimelapseRunTime.label(class_='control-label')}}
             <div>
-              {{formCamera.TimelapseRunTime(class_='form-control')}}
+              {{form_camera.TimelapseRunTime(class_='form-control')}}
             </div>
           </div>
           <div class="form-group">
             <label></label>
             <div>
-              {{formCamera.StartTimelapse(class_='form-control btn btn-default')}}
+              {{form_camera.StartTimelapse(class_='form-control btn btn-default')}}
             </div>
           </div>
         </div>

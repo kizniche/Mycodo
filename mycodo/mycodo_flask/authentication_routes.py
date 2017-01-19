@@ -19,7 +19,7 @@ from mycodo import flaskforms
 from flaskutils import flash_form_errors
 
 from config import LOGIN_ATTEMPTS
-from config import LOGIN_BAN_TIME_SECONDS
+from config import LOGIN_BAN_SECONDS
 from config import LOGIN_LOG_FILE
 
 from mycodo.databases.utils import session_scope
@@ -28,8 +28,10 @@ from mycodo.databases.mycodo_db.models import Misc
 
 from scripts.utils import test_username, test_password
 
-
-blueprint = Blueprint('authentication_routes', __name__, static_folder='../static', template_folder='../templates')
+blueprint = Blueprint('authentication_routes',
+                      __name__,
+                      static_folder='../static',
+                      template_folder='../templates')
 
 
 @blueprint.context_processor
@@ -48,7 +50,8 @@ def create_admin():
     if request.method == 'POST':
         if form.validate():
             if form.password.data != form.password_repeat.data:
-                flash(gettext("Passwords do not match. Please try again."), "error")
+                flash(gettext("Passwords do not match. Please try again."),
+                      "error")
                 return redirect(url_for('general_routes.home'))
             new_user = Users()
             if test_username(form.username.data):
@@ -82,7 +85,8 @@ def do_login():
         return redirect('/create_admin')
 
     if logged_in():
-        flash(gettext("Cannot access login page if you're already logged in"), "error")
+        flash(gettext("Cannot access login page if you're already logged in"),
+              "error")
         return redirect(url_for('general_routes.home'))
 
     form = flaskforms.Login()
@@ -95,10 +99,11 @@ def do_login():
 
     # Check if the user is banned from logging in (too many incorrect attempts)
     if banned_from_login():
-        flash(gettext("Too many failed login attempts. Please wait %(min)s "
-                      "minutes before attempting to log in again",
-                      min=(int(LOGIN_BAN_TIME_SECONDS - session['ban_time_left']) / 60) + 1),
-              "info")
+        flash(gettext(
+            "Too many failed login attempts. Please wait %(min)s "
+            "minutes before attempting to log in again",
+            min=(int(LOGIN_BAN_SECONDS - session['ban_time_left']) / 60) + 1),
+                "info")
     else:
         if request.method == 'POST':
             form_name = request.form['form-name']
@@ -113,16 +118,25 @@ def do_login():
                                   "%(err)s", err=except_msg), "error")
             elif form_name == 'login' and form.validate_on_submit():
                 with session_scope(current_app.config['USER_DB_PATH']) as new_session:
-                    user = new_session.query(Users).filter(Users.user_name == form.username.data).first()
+                    user = new_session.query(Users).filter(
+                        Users.user_name == form.username.data).first()
                     new_session.expunge_all()
                     new_session.close()
                 if not user:
-                    login_log(form.username.data, 'NA',
-                              request.environ.get('REMOTE_ADDR', 'unknown address'), 'NOUSER')
+                    login_log(form.username.data,
+                              'NA',
+                              request.environ.get(
+                                  'REMOTE_ADDR', 'unknown address'),
+                              'NOUSER')
                     failed_login()
-                elif Users().check_password(form.password.data, user.user_password_hash) == user.user_password_hash:
-                    login_log(user.user_name, user.user_restriction,
-                              request.environ.get('REMOTE_ADDR', 'unknown address'), 'LOGIN')
+                elif Users().check_password(
+                        form.password.data,
+                        user.user_password_hash) == user.user_password_hash:
+                    login_log(user.user_name,
+                              user.user_restriction,
+                              request.environ.get('REMOTE_ADDR',
+                                                  'unknown address'),
+                              'LOGIN')
                     session['logged_in'] = True
                     session['user_group'] = user.user_restriction
                     session['user_name'] = user.user_name
@@ -140,12 +154,18 @@ def do_login():
                         return response
                     return redirect(url_for('general_routes.home'))
                 else:
-                    login_log(user.user_name, user.user_restriction,
-                              request.environ.get('REMOTE_ADDR', 'unknown address'), 'FAIL')
+                    login_log(user.user_name,
+                              user.user_restriction,
+                              request.environ.get('REMOTE_ADDR',
+                                                  'unknown address'),
+                              'FAIL')
                     failed_login()
             else:
-                login_log(form.username.data, 'NA',
-                          request.environ.get('REMOTE_ADDR', 'unknown address'), 'FAIL')
+                login_log(form.username.data,
+                          'NA',
+                          request.environ.get('REMOTE_ADDR',
+                                              'unknown address'),
+                          'FAIL')
                 failed_login()
 
             return redirect('/login')
@@ -173,7 +193,8 @@ def logout():
 def admin_exists():
     """Verify that at least one admin user exists"""
     with session_scope(current_app.config['USER_DB_PATH']) as new_session:
-        return new_session.query(Users).filter(Users.user_restriction == 'admin').count()
+        return new_session.query(Users).filter(
+            Users.user_restriction == 'admin').count()
 
 
 def authenticate_cookies(db_path, users):
@@ -202,11 +223,13 @@ def authenticate_cookies(db_path, users):
 def logged_in():
     """Verify the user is logged in"""
     if (not session.get('logged_in') and
-            not authenticate_cookies(current_app.config['USER_DB_PATH'], Users)):
+            not authenticate_cookies(
+                current_app.config['USER_DB_PATH'], Users)):
         return 0
     elif (session.get('logged_in') or
             (not session.get('logged_in') and
-                authenticate_cookies(current_app.config['USER_DB_PATH'], Users))):
+                authenticate_cookies(
+                    current_app.config['USER_DB_PATH'], Users))):
         return 1
 
 
@@ -218,7 +241,7 @@ def banned_from_login():
         session['failed_login_ban_time'] = 0
     elif session['failed_login_ban_time']:
         session['ban_time_left'] = time.time() - session['failed_login_ban_time']
-        if session['ban_time_left'] < LOGIN_BAN_TIME_SECONDS:
+        if session['ban_time_left'] < LOGIN_BAN_SECONDS:
             return 1
         else:
             session['failed_login_ban_time'] = 0
@@ -243,8 +266,10 @@ def failed_login():
 def login_log(user, group, ip, status):
     """Write to login log"""
     with open(LOGIN_LOG_FILE, 'a') as log_file:
-        log_file.write('{:%Y-%m-%d %H:%M:%S}: {} {} ({}), {}\n'.format(
-            datetime.datetime.now(), status, user, group, ip))
+        log_file.write(
+            '{dt:%Y-%m-%d %H:%M:%S}: {stat} {user} ({grp}), {ip}\n'.format(
+                dt=datetime.datetime.now(), stat=status,
+                user=user, grp=group, ip=ip))
 
 
 def clear_cookie_auth():

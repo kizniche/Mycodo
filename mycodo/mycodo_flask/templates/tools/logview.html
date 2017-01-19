@@ -9,24 +9,24 @@
 
     <form class="form-inline" method="post" action="/logview">
       <input type="hidden" name="form-name" value="logview">
-      {{formLogView.hidden_tag()}}
+      {{form_log_view.hidden_tag()}}
       <div class="form-group">
-        Display last {{formLogView.lines(class_='form-control',type="number",value=lines)}} lines from
+        Display last {{form_log_view.lines(class_='form-control',type="number",value=lines)}} lines from
       </div>
       <div class="form-group">
-        {{formLogView.loglogin(class_='form-control btn btn-default')}}
+        {{form_log_view.loglogin(class_='form-control btn btn-default')}}
       </div>
       <div class="form-group">
-        {{formLogView.loghttp(class_='form-control btn btn-default')}}
+        {{form_log_view.loghttp(class_='form-control btn btn-default')}}
       </div>
       <div class="form-group">
-        {{formLogView.logdaemon(class_='form-control btn btn-default')}}
+        {{form_log_view.logdaemon(class_='form-control btn btn-default')}}
       </div>
       <div class="form-group">
-        {{formLogView.logupgrade(class_='form-control btn btn-default')}}
+        {{form_log_view.logupgrade(class_='form-control btn btn-default')}}
       </div>
       <div class="form-group">
-        {{formLogView.logrestore(class_='form-control btn btn-default')}}
+        {{form_log_view.logrestore(class_='form-control btn btn-default')}}
       </div>
     </form>
 

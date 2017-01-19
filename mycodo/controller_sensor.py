@@ -75,8 +75,8 @@ class Measurement:
     Measurement value: The actual measurement of the condition.
     """
 
-    def __init__(self, rawData):
-        self.rawData = rawData
+    def __init__(self, raw_data):
+        self.rawData = raw_data
 
     @property
     def values(self):

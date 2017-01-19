@@ -21,29 +21,29 @@
     <div class="form-inline">
       <form method="post" action="/remote/setup">
       <input type="hidden" name="form-name" value="setup">
-      {{formSetup.csrf_token}}
+      {{form_setup.csrf_token}}
       <div class="form-group">
-        {{formSetup.host.label(class_='control-label')}}
+        {{form_setup.host.label(class_='control-label')}}
         <div>
-          {{formSetup.host(class_='form-control')}}
+          {{form_setup.host(class_='form-control')}}
         </div>
       </div>
       <div class="form-group">
-        {{formSetup.username.label(class_='control-label')}}
+        {{form_setup.username.label(class_='control-label')}}
         <div>
-          {{formSetup.username(class_='form-control')}}
+          {{form_setup.username(class_='form-control')}}
         </div>
       </div>
       <div class="form-group">
-        {{formSetup.password.label(class_='control-label')}}
+        {{form_setup.password.label(class_='control-label')}}
         <div>
-          {{formSetup.password(class_='form-control')}}
+          {{form_setup.password(class_='form-control')}}
         </div>
       </div>
       <div class="form-group">
         <label class='control-label'></label>
         <div>
-          {{formSetup.add(class_='form-control btn btn-default')}}
+          {{form_setup.add(class_='form-control btn btn-default')}}
         </div>
       </div>
       </form>
@@ -53,8 +53,8 @@
       <div class="form-inline" style="padding: 2em 0">
         <form method="post" action="/remote/setup">
         <input type="hidden" name="form-name" value="mod_remote">
-        {{formSetup.csrf_token}}
-        {{formSetup.remote_id(value=each_host.id)}}
+        {{form_setup.csrf_token}}
+        {{form_setup.remote_id(value=each_host.id)}}
         <div class="form-group">
           <label class='control-label'>ID</label>
           <div>
@@ -62,21 +62,21 @@
           </div>
         </div>
         <div class="form-group">
-          {{formSetup.host.label(class_='control-label')}}
+          {{form_setup.host.label(class_='control-label')}}
           <div>
-            {{formSetup.host(class_='form-control', value=each_host.host)}}
+            {{form_setup.host(class_='form-control', value=each_host.host)}}
           </div>
         </div>
         <div class="form-group">
-          {{formSetup.username.label(class_='control-label')}}
+          {{form_setup.username.label(class_='control-label')}}
           <div>
-            {{formSetup.username(class_='form-control', value=each_host.username)}}
+            {{form_setup.username(class_='form-control', value=each_host.username)}}
           </div>
         </div>
         <div class="form-group">
-          {{formSetup.password.label(class_='control-label')}}
+          {{form_setup.password.label(class_='control-label')}}
           <div>
-            {{formSetup.password(class_='form-control')}}
+            {{form_setup.password(class_='form-control')}}
           </div>
         </div>
         <div class="form-group">
@@ -92,7 +92,7 @@
         <div class="form-group">
           <label class='control-label'></label>
           <div>
-            {{formSetup.delete(class_='form-control btn btn-default')}}
+            {{form_setup.delete(class_='form-control btn btn-default')}}
           </div>
         </div>
         </form>

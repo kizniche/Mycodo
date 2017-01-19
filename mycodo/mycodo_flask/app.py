@@ -66,7 +66,8 @@ def create_app(config=ProdConfig):
 
     @babel.localeselector
     def get_locale():
-        misc = flaskutils.db_retrieve_table(app.config['MYCODO_DB_PATH'], Misc, first=True)
+        misc = flaskutils.db_retrieve_table(
+            app.config['MYCODO_DB_PATH'], Misc, first=True)
         if misc.language != '':
             for key, _ in LANGUAGES.iteritems():
                 if key == misc.language:
@@ -87,7 +88,8 @@ def register_extensions(_app, config):
     influx_db.init_app(_app)
 
     # Check user option to force all web connections to use SSL
-    misc = flaskutils.db_retrieve_table(_app.config['MYCODO_DB_PATH'], Misc, first=True)
+    misc = flaskutils.db_retrieve_table(
+        _app.config['MYCODO_DB_PATH'], Misc, first=True)
     if misc.force_https:
         SSLify(_app)
 
@@ -95,7 +97,7 @@ def register_extensions(_app, config):
 def register_blueprints(_app):
     """ register blueprints to the app """
     _app.register_blueprint(admin_routes.blueprint)  # register admin views
-    _app.register_blueprint(authentication_routes.blueprint)  # register our login/logout views
+    _app.register_blueprint(authentication_routes.blueprint)  # register login/logout views
     _app.register_blueprint(general_routes.blueprint)  # register general routes
     _app.register_blueprint(method_routes.blueprint)  # register method views
     _app.register_blueprint(page_routes.blueprint)  # register page views

@@ -30,7 +30,10 @@ from config import STATS_CSV
 
 logger = logging.getLogger('mycodo.mycodo_flask.admin')
 
-blueprint = Blueprint('admin_routes', __name__, static_folder='../static', template_folder='../templates')
+blueprint = Blueprint('admin_routes',
+                      __name__,
+                      static_folder='../static',
+                      template_folder='../templates')
 blueprint.before_request(before_blueprint_request)  # check if admin was created
 
 
@@ -49,7 +52,7 @@ def admin_backup():
         flaskutils.deny_guest_user()
         return redirect(url_for('general_routes.home'))
 
-    formBackup = flaskforms.Backup()
+    form_backup = flaskforms.Backup()
 
     backup_dirs = []
     if not os.path.isdir('/var/Mycodo-backups'):
@@ -66,15 +69,17 @@ def admin_backup():
     if request.method == 'POST':
         form_name = request.form['form-name']
         if form_name == 'restore':
-            if formBackup.restore.data:
+            if form_backup.restore.data:
                 flash("Restore functionality is not currently enabled.",
                       "error")
                 # formUpdate.restore.data
-                # restore_command = INSTALL_DIRECTORY+'/mycodo/scripts/mycodo_wrapper restore '+ +'  >> /var/log/mycodo/mycodorestore.log 2>&1'
+                # restore_command = '{path}/mycodo/scripts/mycodo_wrapper ' \
+                #                   'restore >> /var/log/mycodo/mycodorestore.log 2>&1'.format(
+                #                     path=INSTALL_DIRECTORY)
                 # subprocess.Popen(restore_command, shell=True)
 
     return render_template('admin/backup.html',
-                           formBackup=formBackup,
+                           form_backup=form_backup,
                            backup_dirs=backup_dirs_filtered)
 
 
@@ -135,8 +140,8 @@ def admin_upgrade():
         return render_template('admin/upgrade.html',
                                upgrade=upgrade)
 
-    formBackup = flaskforms.Backup()
-    formUpgrade = flaskforms.Upgrade()
+    form_backup = flaskforms.Backup()
+    form_upgrade = flaskforms.Upgrade()
 
     is_internet = True
     upgrade_available = False
@@ -160,7 +165,7 @@ def admin_upgrade():
         releases_behind = 0
 
     if request.method == 'POST':
-        if formUpgrade.upgrade.data and upgrade_available:
+        if form_upgrade.upgrade.data and upgrade_available:
             subprocess.Popen('{path}/mycodo/scripts/mycodo_wrapper upgrade >>'
                              ' /var/log/mycodo/mycodoupgrade.log 2>&1'.format(
                                 path=INSTALL_DIRECTORY),
@@ -173,8 +178,8 @@ def admin_upgrade():
                   "error")
 
     return render_template('admin/upgrade.html',
-                           formBackup=formBackup,
-                           formUpgrade=formUpgrade,
+                           form_backup=form_backup,
+                           form_upgrade=form_upgrade,
                            current_release=MYCODO_VERSION,
                            current_releases=current_releases,
                            latest_release=latest_release,

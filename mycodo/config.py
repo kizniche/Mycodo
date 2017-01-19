@@ -78,7 +78,7 @@ STATS_DATABASE = 'mycodo_stats'
 
 # Login
 LOGIN_ATTEMPTS = 5
-LOGIN_BAN_TIME_SECONDS = 600 # 10 minutes
+LOGIN_BAN_SECONDS = 600  # 10 minutes
 
 # Relay
 MAX_AMPS = 15

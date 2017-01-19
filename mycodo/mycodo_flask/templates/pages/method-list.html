@@ -19,15 +19,15 @@
     <div class="form-inline">
       <form method="post" action="/method-build/0/0" style="padding: 0.7em 0">
         <input type="hidden" name="form-name" value="createMethod">
-        {{formCreateMethod.csrf_token}}
+        {{form_create_method.csrf_token}}
         <div class="form-group">
-          {{formCreateMethod.name.label(class_='control-label')}}
+          {{form_create_method.name.label(class_='control-label')}}
           <div>
-            {{formCreateMethod.name(class_='form-control')}}
+            {{form_create_method.name(class_='form-control')}}
           </div>
         </div>
         <div class="form-group">
-          {{formCreateMethod.method_type.label(class_='control-label')}}
+          {{form_create_method.method_type.label(class_='control-label')}}
           <div>
             <select class="form-control" id="method_type" name="method_type">
               <option value="Date">{{_('Time/Date')}}</option>
@@ -41,7 +41,7 @@
         <div class="form-group">
           <label class='control-label'></label>
           <div>
-            {{formCreateMethod.Submit(class_='form-control btn btn-default')}}
+            {{form_create_method.Submit(class_='form-control btn btn-default')}}
           </div>
         </div>
       </form>
@@ -82,7 +82,7 @@
   <script>
   $(document).ready(function() {
     var chart = new Array();
-    // Retrieve intiial chart data set from the past (duration set by user)
+    // Retrieve initial chart data set from the past (duration set by user)
     function getPastData(chart_number, method_type, method_id) {
       var url = '/method-data/' + method_type + '/' + method_id;
       $.getJSON(url,
@@ -152,10 +152,10 @@
           yAxis: [
           {   
             title: {
-              text: null,
+              text: null
             },
             labels: {
-              format: '{value}',
+              format: '{value}'
             },
             opposite: false
           }],

@@ -54,24 +54,24 @@
       <div class="col-xs-5">
         <form class="form-inline" method="post" action="/relay">
           <input type="hidden" name="form-name" value="addRelay">
-          {{formAddRelay.hidden_tag()}}
+          {{form_add_relay.hidden_tag()}}
           <div class="form-group">
-            {{formAddRelay.numberRelays(class_='form-control',type="number",**{'rel':'tooltip','title':_('How many relays to add')})}}
+            {{form_add_relay.numberRelays(class_='form-control',type="number",**{'rel':'tooltip','title':_('How many relays to add')})}}
           </div>
           <div class="form-group">
-            {{formAddRelay.relayAddSubmit(class_='form-control btn btn-default')}}
+            {{form_add_relay.relayAddSubmit(class_='form-control btn btn-default')}}
           </div>
         </form>
       </div>
       <div class="col-xs-5">
         <form class="form-inline" method="post" action="/relay">
           <input type="hidden" name="form-name" value="addRelayConditional">
-          {{formAddRelayCond.hidden_tag()}}
+          {{form_add_relay_cond.hidden_tag()}}
           <div class="form-group">
-            {{formAddRelayCond.numberRelayConditionals(class_='form-control',type="number",**{'rel':'tooltip','title':_('How many relay conditionals to add')})}}
+            {{form_add_relay_cond.numberRelayConditionals(class_='form-control',type="number",**{'rel':'tooltip','title':_('How many relay conditionals to add')})}}
           </div>
           <div class="form-group">
-            {{formAddRelayCond.relayCondAddSubmit(class_='form-control btn btn-default')}}
+            {{form_add_relay_cond.relayCondAddSubmit(class_='form-control btn btn-default')}}
           </div>
         </form>
       </div>
@@ -102,8 +102,8 @@
             <tr>
               <form method="post" action="/relay">
               <input type="hidden" name="form-name" value="modRelay">
-              {{formModRelay.csrf_token}}
-              {{formModRelay.modRelay_id(value=each_relay.id)}}
+              {{form_mod_relay.csrf_token}}
+              {{form_mod_relay.modRelay_id(value=each_relay.id)}}
               <td>
                 {{each_relay.id}}
               </td>
@@ -111,13 +111,13 @@
                 <img id="{{each_relay.id}}-image-state" src="/static/img/off.png" style="width: 30px">
               </td>
               <td>
-                {{formModRelay.modName(class_='form-control', value=each_relay.name)}}
+                {{form_mod_relay.modName(class_='form-control', value=each_relay.name)}}
               </td>
               <td>
-                {{formModRelay.modGpio(class_='form-control', value=each_relay.pin)}}
+                {{form_mod_relay.modGpio(class_='form-control', value=each_relay.pin)}}
               </td>
               <td>
-                {{formModRelay.modAmps(class_='form-control', value=each_relay.amps)}}
+                {{form_mod_relay.modAmps(class_='form-control', value=each_relay.amps)}}
               </td>
               <td>
                 <select class="form-control" id="modTrigger" name="modTrigger">
@@ -132,30 +132,30 @@
                 </select>
               </td>
               <td>
-                {{formModRelay.modRelaySubmit(class_='form-control btn btn-default')}}
+                {{form_mod_relay.modRelaySubmit(class_='form-control btn btn-default')}}
                 </form>
                 <form method="post" action="/relay">
                   <input type="hidden" name="form-name" value="delRelay">
-                  {{formDelRelay.csrf_token}}
-                  {{formDelRelay.delRelay_id(value=each_relay.id)}}
-                  {{formDelRelay.delRelaySubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this relay?")'})}}
+                  {{form_del_relay.csrf_token}}
+                  {{form_del_relay.delRelay_id(value=each_relay.id)}}
+                  {{form_del_relay.delRelaySubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this relay?")'})}}
                 </form>
               </td>
               <td>
                 <form method="post" action="/relay">
                   <input type="hidden" name="form-name" value="RelayOnOff">
-                  {{formRelayOnOff.csrf_token}}
-                  {{formRelayOnOff.Relay_id(value=each_relay.id)}}
-                  {{formRelayOnOff.Relay_pin(value=each_relay.pin)}}
-                  {{formRelayOnOff.On(class_='form-control btn btn-default')}}{{formRelayOnOff.Off(class_='form-control btn btn-default')}}
+                  {{form_relay_on_off.csrf_token}}
+                  {{form_relay_on_off.Relay_id(value=each_relay.id)}}
+                  {{form_relay_on_off.Relay_pin(value=each_relay.pin)}}
+                  {{form_relay_on_off.On(class_='form-control btn btn-default')}}{{form_relay_on_off.Off(class_='form-control btn btn-default')}}
                 </form>
               </td>
               <td>
                 <form method="post" action="/relay">
                   <input type="hidden" name="form-name" value="orderRelay">
-                  {{formOrderRelay.csrf_token}}
-                  {{formOrderRelay.orderRelay_id(value=each_relay.id)}}
-                  {{formOrderRelay.orderRelayUp(class_='form-control btn btn-default')}}{{formOrderRelay.orderRelayDown(class_='form-control btn btn-default')}}
+                  {{form_order_relay.csrf_token}}
+                  {{form_order_relay.orderRelay_id(value=each_relay.id)}}
+                  {{form_order_relay.orderRelayUp(class_='form-control btn btn-default')}}{{form_order_relay.orderRelayDown(class_='form-control btn btn-default')}}
                 </form>
               </td>
             </tr>
@@ -171,30 +171,30 @@
       <div class="form-inline {% if each_relaycond.activated -%}active-background{%- else -%}inactive-background{% endif -%}" style="margin-top: 1em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
         <form method="post" action="/relay">
           <input type="hidden" name="form-name" value="modRelayConditional">
-          {{formModRelayCond.csrf_token}}
-          {{formModRelayCond.Relay_id(value=each_relaycond.id)}}
+          {{form_mod_relay_cond.csrf_token}}
+          {{form_mod_relay_cond.Relay_id(value=each_relaycond.id)}}
           <div style="padding: 0.15em 0">
             {%- if each_relaycond.activated %}
               <div class="form-group">
-                {{formModRelayCond.deactivate(class_='form-control btn btn-default')}}
+                {{form_mod_relay_cond.deactivate(class_='form-control btn btn-default')}}
               </div>
             {%- else %}
               <div class="form-group">
-                {{formModRelayCond.activate(class_='form-control btn btn-default')}}
+                {{form_mod_relay_cond.activate(class_='form-control btn btn-default')}}
               </div>
             {%- endif %}
             <div class="form-group">
-              {{formModRelayCond.modCondName(class_='form-control', value=each_relaycond.name)}}
+              {{form_mod_relay_cond.modCondName(class_='form-control', value=each_relaycond.name)}}
             </div>
             <div class="form-group pull-right">
               <div class="form-group">
                 ID {{each_relaycond.id}}
               </div>
               <div class="form-group">
-                {{formModRelayCond.modCondRelaySubmit(class_='form-control btn btn-default')}}
+                {{form_mod_relay_cond.modCondRelaySubmit(class_='form-control btn btn-default')}}
               </div>
               <div class="form-group">
-                {{formModRelayCond.delCondRelaySubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this relay conditional?")'})}}
+                {{form_mod_relay_cond.delCondRelaySubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this relay conditional?")'})}}
               </div>
             </div>
           </div>
@@ -218,7 +218,7 @@
               </select>
             </div>
             <div class="form-group">
-              (for {{formModRelayCond.IfRelayDuration(class_='form-control', value=each_relaycond.if_duration, **{'size':'3'})}} sec.)
+              (for {{form_mod_relay_cond.IfRelayDuration(class_='form-control', value=each_relaycond.if_duration, **{'size':'3'})}} sec.)
             </div>
           </div>
           <div style="padding: 0.15em 0">
@@ -241,12 +241,12 @@
               </select>
             </div>
             <div class="form-group">
-              (for {{formModRelayCond.DoRelayDuration(class_='form-control', value=each_relaycond.do_duration, **{'size':'3'})}} sec.)
+              (for {{form_mod_relay_cond.DoRelayDuration(class_='form-control', value=each_relaycond.do_duration, **{'size':'3'})}} sec.)
             </div>
           </div>
           <div style="padding: 0.15em 0">
             <div class="form-group">
-              and Execute {{formModRelayCond.DoExecute(class_='form-control', value=each_relaycond.execute_command)}}
+              and Execute {{form_mod_relay_cond.DoExecute(class_='form-control', value=each_relaycond.execute_command)}}
             </div>
             <div class="form-group">
               , Notify

@@ -71,43 +71,43 @@
         <div class="form-inline">
           <form method="post" action="/graph">
           <input type="hidden" name="form-name" value="modGraph">
-          {{formModGraph.csrf_token}}
-          {{formModGraph.graph_id(value=each_graph.id)}}
+          {{form_mod_graph.csrf_token}}
+          {{form_mod_graph.graph_id(value=each_graph.id)}}
           <div class="form-group">
-            {{formModGraph.name.label(class_='control-label')}}
+            {{form_mod_graph.name.label(class_='control-label')}}
             <div>
-              {{formModGraph.name(class_='form-control', value=each_graph.name)}}
+              {{form_mod_graph.name(class_='form-control', value=each_graph.name)}}
             </div>
           </div>
           <div class="form-group">
-            {{formModGraph.width.label(class_='control-label')}}
+            {{form_mod_graph.width.label(class_='control-label')}}
             <div>
-              {{formModGraph.width(class_='form-control', value=each_graph.width)}}
+              {{form_mod_graph.width(class_='form-control', value=each_graph.width)}}
             </div>
           </div>
           <div class="form-group">
-            {{formModGraph.height.label(class_='control-label')}}
+            {{form_mod_graph.height.label(class_='control-label')}}
             <div>
-              {{formModGraph.height(class_='form-control', value=each_graph.height)}}
+              {{form_mod_graph.height(class_='form-control', value=each_graph.height)}}
             </div>
           </div>
           <div class="form-group">
-            {{formModGraph.xAxisDuration.label(class_='control-label')}}
+            {{form_mod_graph.xAxisDuration.label(class_='control-label')}}
             <div>
-              {{formModGraph.xAxisDuration(class_='form-control', value=each_graph.x_axis_duration)}}
+              {{form_mod_graph.xAxisDuration(class_='form-control', value=each_graph.x_axis_duration)}}
             </div>
           </div>
           <div class="form-group">
-            {{formModGraph.refreshDuration.label(class_='control-label')}}
+            {{form_mod_graph.refreshDuration.label(class_='control-label')}}
             <div>
-              {{formModGraph.refreshDuration(class_='form-control', value=each_graph.refresh_duration)}}
+              {{form_mod_graph.refreshDuration(class_='form-control', value=each_graph.refresh_duration)}}
             </div>
           </div>
 
           <div style="clear: both"></div>
 
           <div class="form-group">
-            {{formModGraph.sensorIDs.label(class_='control-label')}}
+            {{form_mod_graph.sensorIDs.label(class_='control-label')}}
             <div>
               <select class="form-control" id="sensorIDs" name="sensorIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
               {% if sensor_choices %}
@@ -119,7 +119,7 @@
             </div>
           </div>
           <div class="form-group">
-            {{formModGraph.relayIDs.label(class_='control-label')}}
+            {{form_mod_graph.relayIDs.label(class_='control-label')}}
             <div>
               <select class="form-control" id="relayIDs" name="relayIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
               {% if relay_choices %}
@@ -131,7 +131,7 @@
             </div>
           </div>
           <div class="form-group">
-            {{formModGraph.pidIDs.label(class_='control-label')}}
+            {{form_mod_graph.pidIDs.label(class_='control-label')}}
             <div>
               <select class="form-control" id="pidIDs" name="pidIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
               {% if pid_choices %}
@@ -148,19 +148,19 @@
 
           <div class="checkbox" style="padding-right: 1em">
             <label>
-              {{formModGraph.enableNavbar.label.text}}
+              {{form_mod_graph.enableNavbar.label.text}}
             </label>
             <input class="form-control" id="enableNavbar" name="enableNavbar" type="checkbox" value="y"{% if each_graph.enable_navbar %} checked{% endif %}>
           </div>
           <div class="checkbox" style="padding-right: 1em">
             <label>
-              {{formModGraph.enableExport.label.text}}
+              {{form_mod_graph.enableExport.label.text}}
             </label>
             <input class="form-control" id="enableExport" name="enableExport" type="checkbox" value="y"{% if each_graph.enable_export %} checked{% endif %}>
           </div>
           <div class="checkbox">
             <label>
-              {{formModGraph.enableRangeSelect.label.text}}
+              {{form_mod_graph.enableRangeSelect.label.text}}
             </label>
             <input class="form-control" id="enableRangeSelect" name="enableRangeSelect" type="checkbox" value="y"{% if each_graph.enable_rangeselect %} checked{% endif %}>
           </div>
@@ -168,24 +168,24 @@
 
         <div class="form-inline btn-group">
           <div class="form-group">
-            {{formModGraph.Submit(class_='form-control btn btn-default')}}
+            {{form_mod_graph.Submit(class_='form-control btn btn-default')}}
             </form>
           </div>
           <div class="form-group">
             <form method="post" action="/graph">
               <input type="hidden" name="form-name" value="delGraph">
-              {{formDelGraph.csrf_token}}
-              {{formDelGraph.graph_id(value=each_graph.id)}}
-              {{formDelGraph.Submit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this graph?")'})}}
+              {{form_del_graph.csrf_token}}
+              {{form_del_graph.graph_id(value=each_graph.id)}}
+              {{form_del_graph.Submit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this graph?")'})}}
             </form>
           </div>
           <div class="form-group">
             <form method="post" action="/graph">
               Reorder: <input type="hidden" name="form-name" value="orderGraph">
-              {{formOrderGraph.csrf_token}}
-              {{formOrderGraph.orderGraph_id(value=each_graph.id)}}
-              {{formOrderGraph.orderGraphUp(class_='form-control btn btn-default')}}
-              {{formOrderGraph.orderGraphDown(class_='form-control btn btn-default')}}
+              {{form_order_graph.csrf_token}}
+              {{form_order_graph.orderGraph_id(value=each_graph.id)}}
+              {{form_order_graph.orderGraphUp(class_='form-control btn btn-default')}}
+              {{form_order_graph.orderGraphDown(class_='form-control btn btn-default')}}
             </form>
           </div>
         </div>
@@ -203,42 +203,42 @@
       <form method="post" action="/graph">
       <div class="form-inline">
         <input type="hidden" name="form-name" value="addGraph">
-        {{formAddGraph.csrf_token}}
+        {{form_add_graph.csrf_token}}
         <div class="form-group">
-          {{formAddGraph.name.label(class_='control-label')}}
+          {{form_add_graph.name.label(class_='control-label')}}
           <div>
-            {{formAddGraph.name(class_='form-control')}}
+            {{form_add_graph.name(class_='form-control')}}
           </div>
         </div>
         <div class="form-group">
-          {{formAddGraph.width.label(class_='control-label')}}
+          {{form_add_graph.width.label(class_='control-label')}}
           <div>
-            {{formAddGraph.width(class_='form-control', value=100)}}
+            {{form_add_graph.width(class_='form-control', value=100)}}
           </div>
         </div>
         <div class="form-group">
-          {{formAddGraph.height.label(class_='control-label')}}
+          {{form_add_graph.height.label(class_='control-label')}}
           <div>
-            {{formAddGraph.height(class_='form-control', value=400)}}
+            {{form_add_graph.height(class_='form-control', value=400)}}
           </div>
         </div>
         <div class="form-group">
-          {{formAddGraph.xAxisDuration.label(class_='control-label')}}
+          {{form_add_graph.xAxisDuration.label(class_='control-label')}}
           <div>
-            {{formAddGraph.xAxisDuration(class_='form-control', value=1440)}}
+            {{form_add_graph.xAxisDuration(class_='form-control', value=1440)}}
           </div>
         </div>
         <div class="form-group">
-          {{formAddGraph.refreshDuration.label(class_='control-label')}}
+          {{form_add_graph.refreshDuration.label(class_='control-label')}}
           <div>
-            {{formAddGraph.refreshDuration(class_='form-control', value=60)}}
+            {{form_add_graph.refreshDuration(class_='form-control', value=60)}}
           </div>
         </div>
 
         <div style="clear: both"></div>
 
         <div class="form-group">
-          {{formAddGraph.sensorIDs.label(class_='control-label')}}
+          {{form_add_graph.sensorIDs.label(class_='control-label')}}
           <div>
             <select class="form-control" id="sensorIDs" name="sensorIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
             {% for each_choice, value in sensor_choices.iteritems() -%}
@@ -248,7 +248,7 @@
           </div>
         </div>
         <div class="form-group">
-          {{formAddGraph.relayIDs.label(class_='control-label')}}
+          {{form_add_graph.relayIDs.label(class_='control-label')}}
           <div>
             <select class="form-control" id="relayIDs" name="relayIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
             {% for each_choice, value in relay_choices.iteritems() -%}
@@ -258,7 +258,7 @@
           </div>
         </div>
         <div class="form-group">
-          {{formAddGraph.pidIDs.label(class_='control-label')}}
+          {{form_add_graph.pidIDs.label(class_='control-label')}}
           <div>
             <select class="form-control" id="pidIDs" name="pidIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
             {% for each_choice, value in pid_choices.iteritems() -%}
@@ -274,26 +274,26 @@
 
         <div class="checkbox" style="padding-right: 1em">
           <label>
-            {{formAddGraph.enableNavbar(class_='form-control')}}
-            {{formAddGraph.enableNavbar.label.text}}
+            {{form_add_graph.enableNavbar(class_='form-control')}}
+            {{form_add_graph.enableNavbar.label.text}}
           </label>
         </div>
         <div class="checkbox" style="padding-right: 1em">
           <label>
-            {{formAddGraph.enableExport(class_='form-control')}}
-            {{formAddGraph.enableExport.label.text}}
+            {{form_add_graph.enableExport(class_='form-control')}}
+            {{form_add_graph.enableExport.label.text}}
           </label>
         </div>
         <div class="checkbox">
           <label>
-            {{formAddGraph.enableRangeSelect(class_='form-control')}}
-            {{formAddGraph.enableRangeSelect.label.text}}
+            {{form_add_graph.enableRangeSelect(class_='form-control')}}
+            {{form_add_graph.enableRangeSelect.label.text}}
           </label>
         </div>
       </div>
       <div class="form-inline btn-group">
         <div class="form-group">
-          {{formAddGraph.Submit(class_='form-control btn btn-default')}}
+          {{form_add_graph.Submit(class_='form-control btn btn-default')}}
         </div>
       </div>
       </form>

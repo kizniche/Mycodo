@@ -17,8 +17,8 @@
         <input type="hidden" name="form-name" value="restore">
         <div class="form-inline" style="padding: 0.3em">
           <div class="form-group">
-            {{formBackup.restore(class_='form-control btn btn-default',value='Restore Backup from '+each_backup[14:33]+' v'+each_backup[34:])}}
-            {{formBackup.restore_dir(class_='form-control',value=each_backup)}}
+            {{form_backup.restore(class_='form-control btn btn-default',value='Restore Backup from '+each_backup[14:33]+' v'+each_backup[34:])}}
+            {{form_backup.restore_dir(class_='form-control',value=each_backup)}}
           </div>
           <div class="form-group" style="font-family: 'Courier New', monospace;">
             {% set split_version = each_backup.split('-') %}

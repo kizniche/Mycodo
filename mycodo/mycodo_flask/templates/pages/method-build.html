@@ -28,33 +28,33 @@
 
       <form method="post" action="/method-build/{{method_type}}/{{method_id}}" style="padding: 0.7em 0">
         <input type="hidden" name="form-name" value="renameMethod">
-        {{formModMethod.csrf_token}}
-        {{formModMethod.method_id(class_='form-control', value=method_key['method_id'])}}
+        {{form_mod_method.csrf_token}}
+        {{form_mod_method.method_id(class_='form-control', value=method_key['method_id'])}}
         <div class="form-group">
-          {{formModMethod.name.label(class_='control-label')}}
+          {{form_mod_method.name.label(class_='control-label')}}
           <div>
-            {{formModMethod.name(class_='form-control', value=method_key['name'])}}
+            {{form_mod_method.name(class_='form-control', value=method_key['name'])}}
           </div>
         </div>
         <div class="form-group">
           <label class='control-label'></label>
           <div>
-            {{formModMethod.Submit(class_='form-control btn btn-default', **{'value':'Rename'})}}
+            {{form_mod_method.Submit(class_='form-control btn btn-default', **{'value':'Rename'})}}
           </div>
         </div>
       </form>
 
       <form method="post" action="/method-build/{{method_type}}/{{method_id}}" style="padding: 0.7em 0">
         <input type="hidden" name="form-name" value="addMethod">
-        {{formAddMethod.csrf_token}}
-        {{formAddMethod.method_id(class_='form-control', value=method_key['method_id'])}}
+        {{form_add_method.csrf_token}}
+        {{form_add_method.method_id(class_='form-control', value=method_key['method_id'])}}
         <div>
 
         {%- if method_type == "Duration" -%}
           <div class="form-group" style="padding-bottom: 1.5em">
-            {{formAddMethod.DurationSec.label(class_='control-label')}}
+            {{form_add_method.DurationSec.label(class_='control-label')}}
             <div>
-              {{formAddMethod.DurationSec(class_='form-control')}}
+              {{form_add_method.DurationSec(class_='form-control')}}
             </div>
           </div>
         {%- endif -%}
@@ -65,15 +65,15 @@
             <br>{{_("The new entry's start time may be equal to the last entry's end time, but it cannot overlap. The default setpoint for the PID will be used if there is any unaccounted time.")}}
           </div>
           <div class="form-group">
-            {{formAddMethod.startTime.label(class_='control-label')}}
+            {{form_add_method.startTime.label(class_='control-label')}}
             <div>
-              {{formAddMethod.startTime(class_='form-control', value=last_end_time)}}
+              {{form_add_method.startTime(class_='form-control', value=last_end_time)}}
             </div>
           </div>
           <div class="form-group">
-            {{formAddMethod.endTime.label(class_='control-label')}}
+            {{form_add_method.endTime.label(class_='control-label')}}
             <div>
-              {{formAddMethod.endTime(class_='form-control')}}
+              {{form_add_method.endTime(class_='form-control')}}
             </div>
           </div>
 
@@ -83,15 +83,15 @@
             <br>{{_("The new entry's start time may be equal to the last entry's end time, but it cannot overlap. The default setpoint for the PID will be used if there is any unaccounted time.")}}
           </div>
           <div class="form-group">
-            {{formAddMethod.startDailyTime.label(class_='control-label')}}
+            {{form_add_method.startDailyTime.label(class_='control-label')}}
             <div>
-              {{formAddMethod.startDailyTime(class_='form-control', value=last_end_time)}}
+              {{form_add_method.startDailyTime(class_='form-control', value=last_end_time)}}
             </div>
           </div>
           <div class="form-group">
-            {{formAddMethod.endDailyTime.label(class_='control-label')}}
+            {{form_add_method.endDailyTime.label(class_='control-label')}}
             <div>
-              {{formAddMethod.endDailyTime(class_='form-control')}}
+              {{form_add_method.endDailyTime(class_='form-control')}}
             </div>
           </div>
 
@@ -100,27 +100,27 @@
             <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">{{_('Define the setpoint over the day based on a sinusoidal wave defined by y = [A * sin(B * x + C)] + D, where A is amplitude, B is frequency, C is the angle shift, and D is the y-axis shift. This method will repeat daily.')}}
           </div>
           <div class="form-group">
-            {{formAddMethod.amplitude.label(class_='control-label')}}
+            {{form_add_method.amplitude.label(class_='control-label')}}
             <div>
-              {{formAddMethod.amplitude(class_='form-control', value=method_key['amplitude'])}}
+              {{form_add_method.amplitude(class_='form-control', value=method_key['amplitude'])}}
             </div>
           </div>
           <div class="form-group">
-            {{formAddMethod.frequency.label(class_='control-label')}}
+            {{form_add_method.frequency.label(class_='control-label')}}
             <div>
-              {{formAddMethod.frequency(class_='form-control', value=method_key['frequency'])}}
+              {{form_add_method.frequency(class_='form-control', value=method_key['frequency'])}}
             </div>
           </div>
           <div class="form-group">
-            {{formAddMethod.shiftAngle.label(class_='control-label')}}
+            {{form_add_method.shiftAngle.label(class_='control-label')}}
             <div>
-              {{formAddMethod.shiftAngle(class_='form-control', value=method_key['shift_angle'])}}
+              {{form_add_method.shiftAngle(class_='form-control', value=method_key['shift_angle'])}}
             </div>
           </div>
           <div class="form-group">
-            {{formAddMethod.shiftY.label(class_='control-label')}}
+            {{form_add_method.shiftY.label(class_='control-label')}}
             <div>
-              {{formAddMethod.shiftY(class_='form-control', value=method_key['shift_y'])}}
+              {{form_add_method.shiftY(class_='form-control', value=method_key['shift_y'])}}
             </div>
           </div>
 
@@ -131,64 +131,64 @@
           
           <div>
             <div class="form-group">
-              {{formAddMethod.x0.label(class_='control-label')}}
+              {{form_add_method.x0.label(class_='control-label')}}
               <div>
-                {{formAddMethod.x0(class_='form-control', value=method_key['x0'])}}
+                {{form_add_method.x0(class_='form-control', value=method_key['x0'])}}
               </div>
             </div>
             <div class="form-group">
-              {{formAddMethod.y0.label(class_='control-label')}}
+              {{form_add_method.y0.label(class_='control-label')}}
               <div>
-                {{formAddMethod.y0(class_='form-control', value=method_key['y0'])}}
+                {{form_add_method.y0(class_='form-control', value=method_key['y0'])}}
               </div>
             </div>
           </div>
           <div>
           <div class="form-group">
-            {{formAddMethod.x1.label(class_='control-label')}}
+            {{form_add_method.x1.label(class_='control-label')}}
             <div>
-              {{formAddMethod.x1(class_='form-control', value=method_key['x1'])}}
+              {{form_add_method.x1(class_='form-control', value=method_key['x1'])}}
             </div>
           </div>
           <div class="form-group">
-            {{formAddMethod.y1.label(class_='control-label')}}
+            {{form_add_method.y1.label(class_='control-label')}}
             <div>
-              {{formAddMethod.y1(class_='form-control', value=method_key['y1'])}}
-            </div>
-          </div>
-        </div>
-        <div>
-          <div class="form-group">
-            {{formAddMethod.x2.label(class_='control-label')}}
-            <div>
-              {{formAddMethod.x2(class_='form-control', value=method_key['x2'])}}
-            </div>
-          </div>
-          <div class="form-group">
-            {{formAddMethod.y2.label(class_='control-label')}}
-            <div>
-              {{formAddMethod.y2(class_='form-control', value=method_key['y2'])}}
+              {{form_add_method.y1(class_='form-control', value=method_key['y1'])}}
             </div>
           </div>
         </div>
         <div>
           <div class="form-group">
-            {{formAddMethod.x3.label(class_='control-label')}}
+            {{form_add_method.x2.label(class_='control-label')}}
             <div>
-              {{formAddMethod.x3(class_='form-control', value=method_key['x3'])}}
+              {{form_add_method.x2(class_='form-control', value=method_key['x2'])}}
             </div>
           </div>
           <div class="form-group">
-            {{formAddMethod.y3.label(class_='control-label')}}
+            {{form_add_method.y2.label(class_='control-label')}}
             <div>
-              {{formAddMethod.y3(class_='form-control', value=method_key['y3'])}}
+              {{form_add_method.y2(class_='form-control', value=method_key['y2'])}}
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="form-group">
+            {{form_add_method.x3.label(class_='control-label')}}
+            <div>
+              {{form_add_method.x3(class_='form-control', value=method_key['x3'])}}
+            </div>
+          </div>
+          <div class="form-group">
+            {{form_add_method.y3.label(class_='control-label')}}
+            <div>
+              {{form_add_method.y3(class_='form-control', value=method_key['y3'])}}
             </div>
           </div>
         </div>
           <div class="form-group">
-            {{formAddMethod.shiftAngle.label(class_='control-label')}}
+            {{form_add_method.shiftAngle.label(class_='control-label')}}
             <div>
-              {{formAddMethod.shiftAngle(class_='form-control', value=method_key['shift_angle'])}}
+              {{form_add_method.shiftAngle(class_='form-control', value=method_key['shift_angle'])}}
             </div>
           </div>
 
@@ -203,15 +203,15 @@
         {%- if method_type in ['Date', 'Duration', 'Daily'] -%}
           <div>
             <div class="form-group">
-              {{formAddMethod.startSetpoint.label(class_='control-label')}}
+              {{form_add_method.startSetpoint.label(class_='control-label')}}
               <div>
-                {{formAddMethod.startSetpoint(class_='form-control', value=last_setpoint)}}
+                {{form_add_method.startSetpoint(class_='form-control', value=last_setpoint)}}
               </div>
             </div>
             <div class="form-group">
-              {{formAddMethod.endSetpoint.label(class_='control-label')}}
+              {{form_add_method.endSetpoint.label(class_='control-label')}}
               <div>
-                {{formAddMethod.endSetpoint(class_='form-control')}}
+                {{form_add_method.endSetpoint(class_='form-control')}}
               </div>
             </div>
           </div>
@@ -226,9 +226,9 @@
               <input type="radio" name="method_select" value="relay"> {{_('Activate or deactivate a relay within this method at a specific time/date.')}}
             </div>
             <div class="form-group">
-              {{formAddMethod.relayTime.label(class_='control-label')}}
+              {{form_add_method.relayTime.label(class_='control-label')}}
               <div>
-                {{formAddMethod.relayTime(class_='form-control')}}
+                {{form_add_method.relayTime(class_='form-control')}}
               </div>
             </div>
           {%- elif method_type == 'Daily' -%}
@@ -237,9 +237,9 @@
               <br>{{_('Hour and minute (HH:MM) here is defined as the time of day. For example, 3:05 PM would be "15:05".')}}
             </div>
             <div class="form-group">
-              {{formAddMethod.relayDailyTime.label(class_='control-label')}}
+              {{form_add_method.relayDailyTime.label(class_='control-label')}}
               <div>
-                {{formAddMethod.relayDailyTime(class_='form-control')}}
+                {{form_add_method.relayDailyTime(class_='form-control')}}
               </div>
             </div>
           {%- elif method_type == "Duration" -%}
@@ -253,7 +253,7 @@
 
           <div>
             <div class="form-group">
-              {{formAddMethod.relayID.label(class_='control-label')}}
+              {{form_add_method.relayID.label(class_='control-label')}}
               <div>
                 <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relayID" name="relayID" title="{{_('Modulate the selected relay')}}.">
                   <option value=""></option>
@@ -264,15 +264,15 @@
               </div>
             </div>
             <div class="form-group">
-              {{formAddMethod.relayState.label(class_='control-label')}}
+              {{form_add_method.relayState.label(class_='control-label')}}
               <div>
-                {{formAddMethod.relayState(class_='form-control')}}
+                {{form_add_method.relayState(class_='form-control')}}
               </div>
             </div>
             <div class="form-group">
-              {{formAddMethod.relayDurationSec.label(class_='control-label')}}
+              {{form_add_method.relayDurationSec.label(class_='control-label')}}
               <div>
-                {{formAddMethod.relayDurationSec(class_='form-control')}}
+                {{form_add_method.relayDurationSec(class_='form-control')}}
               </div>
             </div>
           </div>
@@ -280,7 +280,7 @@
             <div class="form-group">
               <label class='control-label'></label>
               <div>
-                {{formAddMethod.Submit(class_='form-control btn btn-default')}}
+                {{form_add_method.Submit(class_='form-control btn btn-default')}}
               </div>
             </div>
           </div>
@@ -290,7 +290,7 @@
             <div class="form-group">
               <label class='control-label'></label>
               <div>
-                {{formAddMethod.Submit(class_='form-control btn btn-default', **{'value':'Save'})}}
+                {{form_add_method.Submit(class_='form-control btn btn-default', **{'value':'Save'})}}
               </div>
             </div>
           </div>
@@ -314,65 +314,65 @@
       {%- for each_method in method_list if each_method.method_id == method_key['method_id'] and not each_method.relay_id -%}
         <form method="post" action="/method-build/{{method_type}}/{{method_id}}" style="padding: 0.7em 0">
         <input type="hidden" name="form-name" value="modMethod">
-        {{formModMethod.csrf_token}}
-        {{formModMethod.method_id(class_='form-control', value=each_method.id)}}
+        {{form_mod_method.csrf_token}}
+        {{form_mod_method.method_id(class_='form-control', value=each_method.id)}}
         <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">
         {% if method_type == "Date" -%}
           <div class="form-group">
-            {{formModMethod.startTime.label(class_='control-label')}}
+            {{form_mod_method.startTime.label(class_='control-label')}}
             <div>
-              {{formModMethod.startTime(class_='form-control', value=each_method.start_time)}}
+              {{form_mod_method.startTime(class_='form-control', value=each_method.start_time)}}
             </div>
           </div>
           <div class="form-group">
-            {{formModMethod.endTime.label(class_='control-label')}}
+            {{form_mod_method.endTime.label(class_='control-label')}}
             <div>
-              {{formModMethod.endTime(class_='form-control', value=each_method.end_time)}}
+              {{form_mod_method.endTime(class_='form-control', value=each_method.end_time)}}
             </div>
           </div>
         {% elif method_type == "Daily" -%}
           <div class="form-group">
-            {{formModMethod.startDailyTime.label(class_='control-label')}}
+            {{form_mod_method.startDailyTime.label(class_='control-label')}}
             <div>
-              {{formModMethod.startDailyTime(class_='form-control', value=each_method.start_time)}}
+              {{form_mod_method.startDailyTime(class_='form-control', value=each_method.start_time)}}
             </div>
           </div>
           <div class="form-group">
-            {{formModMethod.endDailyTime.label(class_='control-label')}}
+            {{form_mod_method.endDailyTime.label(class_='control-label')}}
             <div>
-              {{formModMethod.endDailyTime(class_='form-control', value=each_method.end_time)}}
+              {{form_mod_method.endDailyTime(class_='form-control', value=each_method.end_time)}}
             </div>
           </div>
         {% elif method_type == "Duration" -%}
           <div class="form-group">
-            {{formModMethod.DurationSec.label(class_='control-label')}}
+            {{form_mod_method.DurationSec.label(class_='control-label')}}
             <div>
-              {{formModMethod.DurationSec(class_='form-control', value=each_method.duration_sec)}}
+              {{form_mod_method.DurationSec(class_='form-control', value=each_method.duration_sec)}}
             </div>
           </div>
         {% endif -%}
         <div class="form-group">
-          {{formModMethod.startSetpoint.label(class_='control-label')}}
+          {{form_mod_method.startSetpoint.label(class_='control-label')}}
           <div>
-            {{formModMethod.startSetpoint(class_='form-control', value=each_method.start_setpoint)}}
+            {{form_mod_method.startSetpoint(class_='form-control', value=each_method.start_setpoint)}}
           </div>
         </div>
         <div class="form-group">
-          {{formModMethod.endSetpoint.label(class_='control-label')}}
+          {{form_mod_method.endSetpoint.label(class_='control-label')}}
           <div>
-            {{formModMethod.endSetpoint(class_='form-control', value=each_method.end_setpoint)}}
-          </div>
-        </div>
-        <div class="form-group">
-          <label class='control-label'></label>
-          <div>
-            {{formModMethod.Submit(class_='form-control btn btn-default')}}
+            {{form_mod_method.endSetpoint(class_='form-control', value=each_method.end_setpoint)}}
           </div>
         </div>
         <div class="form-group">
           <label class='control-label'></label>
           <div>
-            {{formModMethod.Delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this method line?")'})}}
+            {{form_mod_method.Submit(class_='form-control btn btn-default')}}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class='control-label'></label>
+          <div>
+            {{form_mod_method.Delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this method line?")'})}}
           </div>
         </div>
         </form>
@@ -397,33 +397,33 @@
     {%- for each_method in method_list if each_method.method_id == method_key['method_id'] and each_method.relay_id -%}
       <form method="post" action="/method-build/{{method_type}}/{{method_id}}" style="padding: 0.7em 0">
       <input type="hidden" name="form-name" value="modMethod">
-      {{formModMethod.csrf_token}}
-      {{formModMethod.method_id(class_='form-control', value=each_method.id)}}
+      {{form_mod_method.csrf_token}}
+      {{form_mod_method.method_id(class_='form-control', value=each_method.id)}}
       <input class="form-control" id="method_select" name="method_select" type="hidden" value="relay">
       {% if method_type == "Date" -%}
         <div class="form-group">
-          {{formModMethod.relayTime.label(class_='control-label')}}
+          {{form_mod_method.relayTime.label(class_='control-label')}}
           <div>
-            {{formModMethod.relayTime(class_='form-control', value=each_method.start_time)}}
+            {{form_mod_method.relayTime(class_='form-control', value=each_method.start_time)}}
           </div>
         </div>
       {% elif method_type == "Daily" -%}
         <div class="form-group">
-          {{formModMethod.relayDailyTime.label(class_='control-label')}}
+          {{form_mod_method.relayDailyTime.label(class_='control-label')}}
           <div>
-            {{formModMethod.relayDailyTime(class_='form-control', value=each_method.start_time)}}
+            {{form_mod_method.relayDailyTime(class_='form-control', value=each_method.start_time)}}
           </div>
         </div>
       {% elif method_type == "Duration" -%}
         <div class="form-group">
-          {{formModMethod.DurationSec.label(class_='control-label')}}
+          {{form_mod_method.DurationSec.label(class_='control-label')}}
           <div>
-            {{formModMethod.DurationSec(class_='form-control', value=each_method.duration_sec)}}
+            {{form_mod_method.DurationSec(class_='form-control', value=each_method.duration_sec)}}
           </div>
         </div>
       {% endif -%}
       <div class="form-group">
-        {{formModMethod.relayID.label(class_='control-label')}}
+        {{form_mod_method.relayID.label(class_='control-label')}}
         <div>
           <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relayID" name="relayID" title="{{_('Modulate the selected relay.')}}">
             <option value="">Disabled</option>
@@ -434,7 +434,7 @@
         </div>
       </div>
       <div class="form-group">
-        {{formModMethod.relayState.label(class_='control-label')}}
+        {{form_mod_method.relayState.label(class_='control-label')}}
         <div>
           <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relayState" name="relayState" title="{{_('Modulate the selected relay.')}}">
             <option value=""></option>
@@ -444,21 +444,21 @@
         </div>
       </div>
       <div class="form-group">
-        {{formModMethod.relayDurationSec.label(class_='control-label')}}
+        {{form_mod_method.relayDurationSec.label(class_='control-label')}}
         <div>
-          {{formModMethod.relayDurationSec(class_='form-control', value=each_method.relay_duration)}}
+          {{form_mod_method.relayDurationSec(class_='form-control', value=each_method.relay_duration)}}
         </div>
       </div>
       <div class="form-group">
         <label class='control-label'></label>
         <div>
-          {{formModMethod.Submit(class_='form-control btn btn-default')}}
+          {{form_mod_method.Submit(class_='form-control btn btn-default')}}
         </div>
       </div>
       <div class="form-group">
         <label class='control-label'></label>
         <div>
-          {{formModMethod.Delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this method line?")'})}}
+          {{form_mod_method.Delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this method line?")'})}}
         </div>
       </div>
       </form>

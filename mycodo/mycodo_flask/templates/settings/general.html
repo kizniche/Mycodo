@@ -11,9 +11,9 @@
 
   <form class="form-horizontal" method="post" action="/settings/general">
     <input type="hidden" name="form-name" value="General">
-    {{formSettingsGeneral.csrf_token}}
+    {{form_settings_general.csrf_token}}
     <div class="form-group">
-      {{formSettingsGeneral.language.label(class_='col-sm-4 control-label')}}
+      {{form_settings_general.language.label(class_='col-sm-4 control-label')}}
       <div class="col-sm-8">
         <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="language" name="language" title="{{_('Selecting a language will override the web browser\'s language.')}}">
           <option value="">Browser Default</option>
@@ -24,56 +24,56 @@
       </div>
     </div>
     <div class="form-group">
-      {{formSettingsGeneral.forceHTTPS.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.forceHTTPS.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
         {%- if misc.force_https == true -%}
-          {{formSettingsGeneral.forceHTTPS(checked=True)}}
+          {{form_settings_general.forceHTTPS(checked=True)}}
         {%- else -%}
-          {{formSettingsGeneral.forceHTTPS()}}
+          {{form_settings_general.forceHTTPS()}}
         {%- endif -%}
         &nbsp;&nbsp;{{_('Check to force all web connections to use SSL (port 443) for greater security.')}}
       </div>
     </div>
     <div class="form-group">
-      {{formSettingsGeneral.hideAlertSuccess.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.hideAlertSuccess.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
         {%- if misc.hide_alert_success == true -%}
-          {{formSettingsGeneral.hideAlertSuccess(checked=True)}}
+          {{form_settings_general.hideAlertSuccess(checked=True)}}
         {%- else -%}
-          {{formSettingsGeneral.hideAlertSuccess()}}
+          {{form_settings_general.hideAlertSuccess()}}
         {%- endif -%}
         &nbsp;&nbsp;{{_('Check to prevent Success alert messages from appearing at the top of the page.')}}
       </div>
     </div>
     <div class="form-group">
-      {{formSettingsGeneral.hideAlertInfo.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.hideAlertInfo.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
         {%- if misc.hide_alert_info == true -%}
-          {{formSettingsGeneral.hideAlertInfo(checked=True)}}
+          {{form_settings_general.hideAlertInfo(checked=True)}}
         {%- else -%}
-          {{formSettingsGeneral.hideAlertInfo()}}
+          {{form_settings_general.hideAlertInfo()}}
         {%- endif -%}
         &nbsp;&nbsp;{{_('Check to prevent Info alert messages from appearing at the top of the page.')}}
       </div>
     </div>
     <div class="form-group">
-      {{formSettingsGeneral.hideAlertWarning.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.hideAlertWarning.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
         {%- if misc.hide_alert_warning == true -%}
-          {{formSettingsGeneral.hideAlertWarning(checked=True)}}
+          {{form_settings_general.hideAlertWarning(checked=True)}}
         {%- else -%}
-          {{formSettingsGeneral.hideAlertWarning()}}
+          {{form_settings_general.hideAlertWarning()}}
         {%- endif -%}
         &nbsp;&nbsp;{{_('Check to prevent Warning alert messages from appearing at the top of the page.')}}
       </div>
     </div>
     <div class="form-group">
-      {{formSettingsGeneral.stats_opt_out.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.stats_opt_out.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
         {%- if misc.stats_opt_out == true -%}
-          {{formSettingsGeneral.stats_opt_out(checked=True)}}
+          {{form_settings_general.stats_opt_out(checked=True)}}
         {%- else -%}
-          {{formSettingsGeneral.stats_opt_out()}}
+          {{form_settings_general.stats_opt_out()}}
         {%- endif -%}
         &nbsp;&nbsp;{{_('Check if you do not wish to send anonymous usage statistics.')}} <a href="/admin/statistics">{{_('View collected statistics')}}</a>
       </div>
@@ -85,32 +85,32 @@
       </div>
     </div>
     <div class="form-group">
-      {{formSettingsGeneral.relayStatsVolts.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.relayStatsVolts.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{formSettingsGeneral.relayStatsVolts(class_='form-control', value=misc.relay_stats_volts)}}
+        {{form_settings_general.relayStatsVolts(class_='form-control', value=misc.relay_stats_volts)}}
       </div>
     </div>
     <div class="form-group">
-      {{formSettingsGeneral.relayStatsCost.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.relayStatsCost.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{formSettingsGeneral.relayStatsCost(class_='form-control', value=misc.relay_stats_cost)}}
+        {{form_settings_general.relayStatsCost(class_='form-control', value=misc.relay_stats_cost)}}
       </div>
     </div>
     <div class="form-group">
-      {{formSettingsGeneral.relayStatsCurrency.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.relayStatsCurrency.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{formSettingsGeneral.relayStatsCurrency(class_='form-control', value=misc.relay_stats_currency)}}
+        {{form_settings_general.relayStatsCurrency(class_='form-control', value=misc.relay_stats_currency)}}
       </div>
     </div>
     <div class="form-group">
-      {{formSettingsGeneral.relayStatsDayOfMonth.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.relayStatsDayOfMonth.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{formSettingsGeneral.relayStatsDayOfMonth(class_='form-control', value=misc.relay_stats_dayofmonth)}}
+        {{form_settings_general.relayStatsDayOfMonth(class_='form-control', value=misc.relay_stats_dayofmonth)}}
       </div>
     </div>
     <div class="form-group">
       <div class="col-sm-offset-4 col-sm-8">
-        {{formSettingsGeneral.Submit(class_='btn btn-default')}}
+        {{form_settings_general.Submit(class_='btn btn-default')}}
       </div>
     </div>
   </form>

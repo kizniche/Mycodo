@@ -62,7 +62,10 @@ from config import INSTALL_DIRECTORY
 from config import LOG_PATH
 from config import MYCODO_VERSION
 
-blueprint = Blueprint('general_routes', __name__, static_folder='../static', template_folder='../templates')
+blueprint = Blueprint('general_routes',
+                      __name__,
+                      static_folder='../static',
+                      template_folder='../templates')
 
 logger = logging.getLogger(__name__)
 influx_db = InfluxDB()
@@ -100,16 +103,19 @@ def remote_admin(page):
         flaskutils.deny_guest_user()
         return redirect(url_for('general_routes.home'))
 
-    remote_hosts = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Remote)
+    remote_hosts = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Remote)
     display_order_unsplit = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).remote_host
+        current_app.config['MYCODO_DB_PATH'],
+        DisplayOrder,
+        first=True).remote_host
     if display_order_unsplit:
         display_order = display_order_unsplit.split(",")
     else:
         display_order = []
 
     if page == 'setup':
-        formSetup = flaskforms.RemoteSetup()
+        form_setup = flaskforms.RemoteSetup()
         host_auth = {}
         for each_host in remote_hosts:
             host_auth[each_host.host] = flaskutils.auth_credentials(
@@ -118,15 +124,15 @@ def remote_admin(page):
         if request.method == 'POST':
             form_name = request.form['form-name']
             if form_name == 'setup':
-                if formSetup.add.data:
-                    flaskutils.remote_host_add(formSetup, display_order)
+                if form_setup.add.data:
+                    flaskutils.remote_host_add(form_setup, display_order)
             if form_name == 'mod_remote':
-                if formSetup.delete.data:
-                    flaskutils.remote_host_del(formSetup, display_order)
+                if form_setup.delete.data:
+                    flaskutils.remote_host_del(form_setup, display_order)
             return redirect('/remote/setup')
 
         return render_template('remote/setup.html',
-                               formSetup=formSetup,
+                               form_setup=form_setup,
                                display_order=display_order,
                                remote_hosts=remote_hosts,
                                host_auth=host_auth)
@@ -195,7 +201,8 @@ def gpio_state():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
+    relay = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay)
     gpio_state = {}
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
@@ -242,10 +249,10 @@ def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
                                           sensor_id,
                                           sensor_period)).raw
         number = len(raw_data['series'][0]['values'])
-        time = raw_data['series'][0]['values'][number - 1][0]
+        time_raw = raw_data['series'][0]['values'][number - 1][0]
         value = raw_data['series'][0]['values'][number - 1][1]
         # Convert date-time to epoch (potential bottleneck for data)
-        dt = date_parse(time)
+        dt = date_parse(time_raw)
         timestamp = calendar.timegm(dt.timetuple()) * 1000
         live_data = '[{},{}]'.format(timestamp, value)
         return Response(live_data, mimetype='text/json')
@@ -317,12 +324,12 @@ def export_data(sensor_measure, sensor_id, start_seconds, end_seconds):
     if not raw_data:
         return '', 204
 
-    def iter_csv(data):
+    def iter_csv(data_in):
         line = StringIO.StringIO()
         writer = csv.writer(line)
         writer.writerow(('timestamp', '{id}-{meas}'.format(
             id=sensor_id, meas=sensor_measure)))
-        for csv_line in data:
+        for csv_line in data_in:
             writer.writerow((csv_line[0][:-4], csv_line[1]))
             line.seek(0)
             yield line.read()
@@ -339,7 +346,7 @@ def export_data(sensor_measure, sensor_id, start_seconds, end_seconds):
 def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
     """
     Return data from start_seconds to end_seconds from influxdb.
-    Used for asyncronous graph display of many points (up to millions).
+    Used for asynchronous graph display of many points (up to millions).
     """
     if not logged_in():
         return redirect(url_for('general_routes.home'))
@@ -396,27 +403,31 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
                                           end_str)).raw
         first_point = raw_data['series'][0]['values'][0][0]
 
-    start = datetime.datetime.strptime(first_point[:26], "%Y-%m-%dT%H:%M:%S.%f")
+    start = datetime.datetime.strptime(first_point[:26],
+                                       '%Y-%m-%dT%H:%M:%S.%f')
     start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-    print('Count = {}'.format(count_points), file=sys.stderr)
-    print('Start = {}'.format(start), file=sys.stderr)
-    print('End   = {}'.format(end), file=sys.stderr)
+    logger.debug('Count = {}'.format(count_points), file=sys.stderr)
+    logger.debug('Start = {}'.format(start), file=sys.stderr)
+    logger.debug('End   = {}'.format(end), file=sys.stderr)
 
     # How many seconds between the start and end period
     time_difference_seconds = (end - start).total_seconds()
-    print('Difference seconds = {}'.format(time_difference_seconds), file=sys.stderr)
+    logger.debug('Difference seconds = {}'.format(time_difference_seconds),
+                 file=sys.stderr)
 
     # If there are more than 700 points in the time frame, we need to group
     # data points into 700 groups with points averaged in each group.
     if count_points > 700:
         # Average period between sensor reads
         seconds_per_point = time_difference_seconds / count_points
-        print('Seconds per point = {}'.format(seconds_per_point), file=sys.stderr)
+        logger.debug('Seconds per point = {}'.format(seconds_per_point),
+                     file=sys.stderr)
 
         # How many seconds to group data points in
         group_seconds = int(time_difference_seconds / 700)
-        print('Group seconds = {}'.format(group_seconds), file=sys.stderr)
+        logger.debug('Group seconds = {}'.format(group_seconds),
+                     file=sys.stderr)
 
         try:
             raw_data = dbcon.query("""SELECT MEAN(value)
@@ -469,7 +480,7 @@ def daemon_active():
 
 @blueprint.route('/systemctl/<action>')
 def computer_command(action):
-    """Execute one of several commands, as root"""
+    """Execute one of several commands as root"""
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
@@ -502,34 +513,38 @@ def computer_command(action):
 def newremote():
     """Verify authentication as a client computer to the remote admin"""
     user = request.args.get('user')
-    passw = request.args.get('passw')
+    pass_word = request.args.get('passw')
     with session_scope(current_app.config['USER_DB_PATH']) as new_session:
         user = new_session.query(Users).filter(
             Users.user_name == user).first()
         new_session.expunge_all()
         new_session.close()
     # TODO: Change sleep() to max requests per duration of time
-    time.sleep(1)  # Slow down requests (hackish way to prevent brute force attack)
+    time.sleep(1)  # Slow down requests (hackish, prevent brute force attack)
     if user:
-        if Users().check_password(passw, user.user_password_hash) == user.user_password_hash:
-            return jsonify(status=0, message="{}".format(user.user_password_hash))
-    return jsonify(status=1, message="Unable to authenticate with user and password.")
+        if Users().check_password(pass_word, user.user_password_hash) == user.user_password_hash:
+            return jsonify(status=0,
+                           message="{hash}".format(
+                               hash=user.user_password_hash))
+    return jsonify(status=1,
+                   message="Unable to authenticate with user and password.")
 
 
 @blueprint.route('/auth/')
 def data():
     """Checks authentication for remote admin"""
     user = request.args.get('user')
-    pw_hash = request.args.get('pw_hash')
+    password_hash = request.args.get('pw_hash')
     with session_scope(current_app.config['USER_DB_PATH']) as new_session:
         user = new_session.query(Users).filter(
             Users.user_name == user).first()
         new_session.expunge_all()
         new_session.close()
     # TODO: Change sleep() to max requests per duration of time
-    time.sleep(1)  # Slow down requests (hackish way to prevent brute force attack)
-    if (user and user.user_restriction == 'admin' and
-                pw_hash == user.user_password_hash):
+    time.sleep(1)  # Slow down requests (hackish, prevents brute force attack)
+    if (user and
+            user.user_restriction == 'admin' and
+            password_hash == user.user_password_hash):
         return "0"
     return "1"
 
@@ -547,8 +562,8 @@ def inject_mycodo_version():
         control = DaemonControl()
         daemon_status = control.daemon_status()
     except Exception as e:
-        logger.error(gettext("URL for 'inject_mycodo_version' raised and error: "
-                     "%(err)s", err=e))
+        logger.error(gettext("URL for 'inject_mycodo_version' raised and "
+                             "error: %(err)s", err=e))
         daemon_status = '0'
 
     with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
@@ -563,4 +578,4 @@ def inject_mycodo_version():
 
 @blueprint.errorhandler(404)
 def not_found(error):
-    return render_template('404.html'), 404
+    return render_template('404.html', error=error), 404

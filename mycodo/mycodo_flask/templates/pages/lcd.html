@@ -9,12 +9,12 @@
 
   <form class="form-inline" method="post" action="/lcd">
     <input type="hidden" name="form-name" value="addLCD">
-    {{formAddLCD.hidden_tag()}}
+    {{form_add_lcd.hidden_tag()}}
     <div class="form-group">
-      {{formAddLCD.numberLCDs(class_='form-control',type="number",**{'rel':'tooltip','title':_('How many LCD controllers to add')})}}
+      {{form_add_lcd.numberLCDs(class_='form-control',type="number",**{'rel':'tooltip','title':_('How many LCD controllers to add')})}}
     </div>
     <div class="form-group">
-      {{formAddLCD.lcdAddSubmit(class_='form-control btn btn-default')}}
+      {{form_add_lcd.lcdAddSubmit(class_='form-control btn btn-default')}}
     </div>
   </form>
 
@@ -31,49 +31,49 @@
                 {%- if each_lcd.activated %}
                   <form method="post" action="/lcd">
                     <input type="hidden" name="form-name" value="deactivateLCD">
-                    {{formDeactivateLCD.csrf_token}}
-                    {{formDeactivateLCD.deactivateLCD_id(value=each_lcd.id)}}
-                    {{formDeactivateLCD.deactivateLCDSubmit(class_='form-control btn btn-default')}}
+                    {{form_deactivate_lcd.csrf_token}}
+                    {{form_deactivate_lcd.deactivateLCD_id(value=each_lcd.id)}}
+                    {{form_deactivate_lcd.deactivateLCDSubmit(class_='form-control btn btn-default')}}
                   </form>
                 {%- else %}
                   <form method="post" action="/lcd">
                     <input type="hidden" name="form-name" value="activateLCD">
-                    {{formActivateLCD.csrf_token}}
-                    {{formActivateLCD.activateLCD_id(value=each_lcd.id)}}
-                    {{formActivateLCD.activateLCDSubmit(class_='form-control btn btn-default')}}
+                    {{form_activate_lcd.csrf_token}}
+                    {{form_activate_lcd.activateLCD_id(value=each_lcd.id)}}
+                    {{form_activate_lcd.activateLCDSubmit(class_='form-control btn btn-default')}}
                   </form>
                 {%- endif -%}
                 <form method="post" action="/lcd">
                   <input type="hidden" name="form-name" value="delLCD">
-                  {{formDelLCD.csrf_token}}
-                  {{formDelLCD.delLCD_id(value=each_lcd.id)}}
-                  {{formDelLCD.delLCDSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this LCD controller?")'})}}
+                  {{form_del_lcd.csrf_token}}
+                  {{form_del_lcd.delLCD_id(value=each_lcd.id)}}
+                  {{form_del_lcd.delLCDSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this LCD controller?")'})}}
                 </form>
               </th>
               <th rowspan="2" class="col-sm-2">
                 <form method="post" action="/lcd">
                   <input type="hidden" name="form-name" value="orderLCD">
-                  {{formOrderLCD.csrf_token}}
-                  {{formOrderLCD.orderLCD_id(value=each_lcd.id)}}
-                  {{formOrderLCD.orderLCDUp(class_='form-control btn btn-default')}}
-                  {{formOrderLCD.orderLCDDown(class_='form-control btn btn-default')}}
+                  {{form_order_lcd.csrf_token}}
+                  {{form_order_lcd.orderLCD_id(value=each_lcd.id)}}
+                  {{form_order_lcd.orderLCDUp(class_='form-control btn btn-default')}}
+                  {{form_order_lcd.orderLCDDown(class_='form-control btn btn-default')}}
                 </form>
               </th>
               <th rowspan="2" class="col-sm-2">
                 <form method="post" action="/lcd">
                   <input type="hidden" name="form-name" value="resetFlashingLCD">
-                  {{formResetFlashingLCD.csrf_token}}
-                  {{formResetFlashingLCD.flashLCD_id(value=each_lcd.id)}}
-                  {{formResetFlashingLCD.Submit(class_='form-control btn btn-default')}}
+                  {{form_reset_flashing_lcd.csrf_token}}
+                  {{form_reset_flashing_lcd.flashLCD_id(value=each_lcd.id)}}
+                  {{form_reset_flashing_lcd.Submit(class_='form-control btn btn-default')}}
                 </form>
                 <form method="post" action="/lcd">
                 <input type="hidden" name="form-name" value="modLCD">
-                {{formModLCD.csrf_token}}
-                {{formModLCD.modLCD_id(value=each_lcd.id)}}
-                {{formModLCD.modLCDSubmit(class_='form-control btn btn-default')}}
+                {{form_mod_lcd.csrf_token}}
+                {{form_mod_lcd.modLCD_id(value=each_lcd.id)}}
+                {{form_mod_lcd.modLCDSubmit(class_='form-control btn btn-default')}}
               </th>
               <th class="col-sm-6">
-                {{formModLCD.modName(class_='form-control', value=each_lcd.name)}}
+                {{form_mod_lcd.modName(class_='form-control', value=each_lcd.name)}}
               </th>
             </tr>
             <tr>
@@ -137,7 +137,7 @@
                 </select>
               </td>
               <td>
-                {{formModLCD.modPeriod(class_='form-control', value=each_lcd.period)}}
+                {{form_mod_lcd.modPeriod(class_='form-control', value=each_lcd.period)}}
               </td>
             </tr>
           </table>

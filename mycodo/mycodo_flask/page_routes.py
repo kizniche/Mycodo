@@ -54,10 +54,12 @@ from mycodo.mycodo_flask.general_routes import (before_blueprint_request,
                                                 inject_mycodo_version,
                                                 logged_in)
 
-
 logger = logging.getLogger('mycodo.mycodo_flask.pages')
 
-blueprint = Blueprint('page_routes', __name__, static_folder='../static', template_folder='../templates')
+blueprint = Blueprint('page_routes',
+                      __name__,
+                      static_folder='../static',
+                      template_folder='../templates')
 blueprint.before_request(before_blueprint_request)  # check if admin was created
 
 
@@ -75,7 +77,7 @@ def page_camera():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    formCamera = flaskforms.Camera()
+    form_camera = flaskforms.Camera()
 
     camera_enabled = False
     try:
@@ -86,13 +88,13 @@ def page_camera():
                           "Please enable it with 'sudo raspi-config'"),
                   "error")
     except IOError as e:
-        logger.error("Camera IOError raised in '/camera' endpoint: {err}".format(err=e))
+        logger.error("Camera IOError raised in '/camera' endpoint: "
+                     "{err}".format(err=e))
 
     # Check if a video stream is active
     stream_locked = os.path.isfile(LOCK_FILE_STREAM)
     if stream_locked and not CameraStream().is_running():
         os.remove(LOCK_FILE_STREAM)
-        stream_locked = False
     stream_locked = os.path.isfile(LOCK_FILE_STREAM)
 
     if request.method == 'POST':
@@ -101,14 +103,15 @@ def page_camera():
             flaskutils.deny_guest_user()
             return redirect('/camera')
         elif form_name == 'camera':
-            if formCamera.Still.data:
+            if form_camera.Still.data:
                 if not stream_locked:
                     try:
                         if CameraStream().is_running():
                             CameraStream().terminate()  # Stop camera stream
                             time.sleep(2)
                         camera = flaskutils.db_retrieve_table(
-                            current_app.config['MYCODO_DB_PATH'], CameraStill, first=True)
+                            current_app.config['MYCODO_DB_PATH'],
+                            CameraStill, first=True)
                         camera_record(INSTALL_DIRECTORY, 'photo', camera)
                     except Exception as msg:
                         flash("Camera Error: {}".format(msg), "error")
@@ -118,23 +121,25 @@ def page_camera():
                                   file=LOCK_FILE_STREAM),
                           "error")
 
-            elif formCamera.StartTimelapse.data:
+            elif form_camera.StartTimelapse.data:
                 if not stream_locked:
-                    # Create lockfile and file with time-lapse parameters
+                    # Create lock file and file with time-lapse parameters
                     open(LOCK_FILE_TIMELAPSE, 'a')
 
                     # Save time-lapse parameters to a csv file to resume
                     # if there is a power outage or reboot.
                     now = time.time()
-                    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+                    timestamp = datetime.datetime.now().strftime(
+                        '%Y-%m-%d_%H-%M-%S')
                     uid_gid = pwd.getpwnam('mycodo').pw_uid
-                    timelapse_data = [['start_time', timestamp],
-                                      ['end_time', now + float(formCamera.TimelapseRunTime.data)],
-                                      ['interval', formCamera.TimelapseInterval.data],
-                                      ['next_capture', now],
-                                      ['capture_number', 0]]
-                    with open(FILE_TIMELAPSE_PARAM, 'w') as timelapse_file:
-                        write_csv = csv.writer(timelapse_file)
+                    timelapse_data = [
+                        ['start_time', timestamp],
+                        ['end_time', now + float(form_camera.TimelapseRunTime.data)],
+                        ['interval', form_camera.TimelapseInterval.data],
+                        ['next_capture', now],
+                        ['capture_number', 0]]
+                    with open(FILE_TIMELAPSE_PARAM, 'w') as time_lapse_file:
+                        write_csv = csv.writer(time_lapse_file)
                         for row in timelapse_data:
                             write_csv.writerow(row)
                     os.chown(FILE_TIMELAPSE_PARAM, uid_gid, uid_gid)
@@ -145,7 +150,7 @@ def page_camera():
                                   "%(file)s.", file=LOCK_FILE_STREAM),
                           "error")
 
-            elif formCamera.StopTimelapse.data:
+            elif form_camera.StopTimelapse.data:
                 try:
                     os.remove(FILE_TIMELAPSE_PARAM)
                     os.remove(LOCK_FILE_TIMELAPSE)
@@ -153,8 +158,8 @@ def page_camera():
                     logger.error("Camera IOError raised in '/camera' "
                                  "endpoint: {err}".format(err=e))
 
-            elif formCamera.StartStream.data:
-                if not is_timelapse_locked():
+            elif form_camera.StartStream.data:
+                if not is_time_lapse_locked():
                     open(LOCK_FILE_STREAM, 'a')
                     stream_locked = True
                 else:
@@ -163,7 +168,7 @@ def page_camera():
                                   file=LOCK_FILE_TIMELAPSE),
                           "error")
 
-            elif formCamera.StopStream.data:
+            elif form_camera.StopStream.data:
                 if CameraStream().is_running():
                     CameraStream().terminate()
                 if os.path.isfile(LOCK_FILE_STREAM):
@@ -172,54 +177,60 @@ def page_camera():
 
     # Get the full path of latest still image
     try:
-        latest_still_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY + '/camera-stills/*.jpg'),
-                                        key=os.path.getmtime)
-        ts = os.path.getmtime(latest_still_img_fullpath)
+        latest_still_img_full_path = max(glob.iglob(
+            INSTALL_DIRECTORY + '/camera-stills/*.jpg'),
+            key=os.path.getmtime)
+        ts = os.path.getmtime(latest_still_img_full_path)
         latest_still_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%c")
-        latest_still_img = os.path.basename(latest_still_img_fullpath)
+        latest_still_img = os.path.basename(latest_still_img_full_path)
     except Exception as e:
-        logger.error("Exception raised in '/camera' endpoint: {err}".format(err=e))
+        logger.error(
+            "Exception raised in '/camera' endpoint: {err}".format(err=e))
         latest_still_img_ts = None
         latest_still_img = None
 
     # Get the full path of latest timelapse image
     try:
-        latest_timelapse_img_fullpath = max(glob.iglob(INSTALL_DIRECTORY + '/camera-timelapse/*.jpg'),
-                                            key=os.path.getmtime)
-        ts = os.path.getmtime(latest_timelapse_img_fullpath)
-        latest_timelapse_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%c")
-        latest_timelapse_img = os.path.basename(latest_timelapse_img_fullpath)
+        latest_time_lapse_img_full_path = max(
+            glob.iglob(INSTALL_DIRECTORY + '/camera-timelapse/*.jpg'),
+            key=os.path.getmtime)
+        ts = os.path.getmtime(latest_time_lapse_img_full_path)
+        latest_time_lapse_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%c")
+        latest_time_lapse_img = os.path.basename(
+            latest_time_lapse_img_full_path)
     except Exception as e:
-        logger.error("Exception raised in '/camera' endpoint: {err}".format(err=e))
-        latest_timelapse_img_ts = None
-        latest_timelapse_img = None
+        logger.error(
+            "Exception raised in '/camera' endpoint: {err}".format(err=e))
+        latest_time_lapse_img_ts = None
+        latest_time_lapse_img = None
 
-    # If timelapse active, retrieve parameters for display
-    dict_timelapse = {}
+    # If time-lapse active, retrieve parameters for display
+    dict_time_lapse = {}
     time_now = datetime.datetime.now().strftime('%c')
     if (os.path.isfile(FILE_TIMELAPSE_PARAM) and
             os.path.isfile(LOCK_FILE_TIMELAPSE)):
         with open(FILE_TIMELAPSE_PARAM, mode='r') as infile:
             reader = csv.reader(infile)
-            dict_timelapse = OrderedDict((row[0], row[1]) for row in reader)
-        dict_timelapse['start_time'] = datetime.datetime.strptime(dict_timelapse['start_time'], "%Y-%m-%d_%H-%M-%S")
-        dict_timelapse['start_time'] = dict_timelapse['start_time'].strftime('%c')
-        dict_timelapse['end_time'] = datetime.datetime.fromtimestamp(float(dict_timelapse['end_time'])).strftime(
-            '%c')
-        dict_timelapse['next_capture'] = datetime.datetime.fromtimestamp(
-            float(dict_timelapse['next_capture'])).strftime('%c')
+            dict_time_lapse = OrderedDict((row[0], row[1]) for row in reader)
+        dict_time_lapse['start_time'] = datetime.datetime.strptime(
+            dict_time_lapse['start_time'], "%Y-%m-%d_%H-%M-%S")
+        dict_time_lapse['start_time'] = dict_time_lapse['start_time'].strftime('%c')
+        dict_time_lapse['end_time'] = datetime.datetime.fromtimestamp(
+            float(dict_time_lapse['end_time'])).strftime('%c')
+        dict_time_lapse['next_capture'] = datetime.datetime.fromtimestamp(
+            float(dict_time_lapse['next_capture'])).strftime('%c')
 
     return render_template('pages/camera.html',
                            camera_enabled=camera_enabled,
-                           formCamera=formCamera,
+                           form_camera=form_camera,
                            latest_still_img_ts=latest_still_img_ts,
                            latest_still_img=latest_still_img,
-                           latest_timelapse_img_ts=latest_timelapse_img_ts,
-                           latest_timelapse_img=latest_timelapse_img,
+                           latest_time_lapse_img_ts=latest_time_lapse_img_ts,
+                           latest_time_lapse_img=latest_time_lapse_img,
                            stream_locked=stream_locked,
-                           timelapse_locked=is_timelapse_locked(),
+                           timelapse_locked=is_time_lapse_locked(),
                            time_now=time_now,
-                           tl_parameters_dict=dict_timelapse)
+                           tl_parameters_dict=dict_time_lapse)
 
 
 @blueprint.route('/export', methods=('GET', 'POST'))
@@ -230,20 +241,24 @@ def page_export():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    exportOptions = flaskforms.ExportOptions()
-    relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
-    sensor = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor)
+    export_options = flaskforms.ExportOptions()
+    relay = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay)
+    sensor = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Sensor)
     relay_choices = flaskutils.choices_id_name(relay)
     sensor_choices = flaskutils.choices_sensors(sensor)
 
     if request.method == 'POST':
-        start_time = exportOptions.date_range.data.split(' - ')[0]
-        start_seconds = int(time.mktime(time.strptime(start_time, '%m/%d/%Y %H:%M')))
-        end_time = exportOptions.date_range.data.split(' - ')[1]
-        end_seconds = int(time.mktime(time.strptime(end_time, '%m/%d/%Y %H:%M')))
+        start_time = export_options.date_range.data.split(' - ')[0]
+        start_seconds = int(time.mktime(
+            time.strptime(start_time, '%m/%d/%Y %H:%M')))
+        end_time = export_options.date_range.data.split(' - ')[1]
+        end_seconds = int(time.mktime(
+            time.strptime(end_time, '%m/%d/%Y %H:%M')))
         url = '/export_data/{meas}/{id}/{start}/{end}'.format(
-            meas=exportOptions.measurement.data.split(',')[1],
-            id=exportOptions.measurement.data.split(',')[0],
+            meas=export_options.measurement.data.split(',')[1],
+            id=export_options.measurement.data.split(',')[0],
             start=start_seconds, end=end_seconds)
         return redirect(url)
 
@@ -255,7 +270,7 @@ def page_export():
     return render_template('tools/export.html',
                            start_picker=start_picker,
                            end_picker=end_picker,
-                           exportOptions=exportOptions,
+                           exportOptions=export_options,
                            relay_choices=relay_choices,
                            sensor_choices=sensor_choices)
 
@@ -268,10 +283,14 @@ def page_graph():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    graph = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Graph)
-    pid = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], PID)
-    relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
-    sensor = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor)
+    graph = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Graph)
+    pid = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], PID)
+    relay = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay)
+    sensor = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Sensor)
 
     display_order_unsplit = flaskutils.db_retrieve_table(
         current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).graph
@@ -281,10 +300,10 @@ def page_graph():
         display_order = []
 
     # Create form objects
-    formModGraph = flaskforms.ModGraph()
-    formDelGraph = flaskforms.DelGraph()
-    formOrderGraph = flaskforms.OrderGraph()
-    formAddGraph = flaskforms.AddGraph()
+    form_mod_graph = flaskforms.ModGraph()
+    form_del_graph = flaskforms.DelGraph()
+    form_order_graph = flaskforms.OrderGraph()
+    form_add_graph = flaskforms.AddGraph()
 
     # Units to display for each measurement in the graph legend
     measurement_units = {'cpu_load_1m': '',
@@ -300,23 +319,23 @@ def page_graph():
                          'pressure': ' Pa',
                          'altitude': ' m'}
 
-    # Retrieve all choices to populate form dropdowns
+    # Retrieve all choices to populate form drop-down menu
     pid_choices = flaskutils.choices_id_name(pid)
     relay_choices = flaskutils.choices_id_name(relay)
     sensor_choices = flaskutils.choices_sensors(sensor)
 
-    formModGraph.pidIDs.choices = []
-    formModGraph.relayIDs.choices = []
-    formModGraph.sensorIDs.choices = []
+    form_mod_graph.pidIDs.choices = []
+    form_mod_graph.relayIDs.choices = []
+    form_mod_graph.sensorIDs.choices = []
 
     for key, value in pid_choices.iteritems():
-        formModGraph.pidIDs.choices.append((key, value))
+        form_mod_graph.pidIDs.choices.append((key, value))
     for key, value in relay_choices.iteritems():
-        formModGraph.relayIDs.choices.append((key, value))
+        form_mod_graph.relayIDs.choices.append((key, value))
     sensor_choices_split = OrderedDict()
     for key, value in sensor_choices.iteritems():
-        # Add miltiselect values as form choices, for validation
-        formModGraph.sensorIDs.choices.append((key, value))
+        # Add multi-select values as form choices, for validation
+        form_mod_graph.sensorIDs.choices.append((key, value))
         order = key.split(",")
         # Separate sensor IDs and measurement types
         sensor_choices_split.update({order[0]: order[1]})
@@ -325,13 +344,13 @@ def page_graph():
     if request.method == 'POST':
         form_name = request.form['form-name']
         if form_name == 'modGraph':
-            flaskutils.graph_mod(formModGraph)
+            flaskutils.graph_mod(form_mod_graph)
         elif form_name == 'delGraph':
-            flaskutils.graph_del(formDelGraph, display_order)
+            flaskutils.graph_del(form_del_graph, display_order)
         elif form_name == 'orderGraph':
-            flaskutils.graph_reorder(formOrderGraph, display_order)
+            flaskutils.graph_reorder(form_order_graph, display_order)
         elif form_name == 'addGraph':
-            flaskutils.graph_add(formAddGraph, display_order)
+            flaskutils.graph_add(form_add_graph, display_order)
         return redirect('/graph')
 
     return render_template('pages/graph.html',
@@ -345,10 +364,10 @@ def page_graph():
                            sensor_choices_split=sensor_choices_split,
                            measurement_units=measurement_units,
                            displayOrder=display_order,
-                           formModGraph=formModGraph,
-                           formDelGraph=formDelGraph,
-                           formOrderGraph=formOrderGraph,
-                           formAddGraph=formAddGraph)
+                           form_mod_graph=form_mod_graph,
+                           form_del_graph=form_del_graph,
+                           form_order_graph=form_order_graph,
+                           form_add_graph=form_add_graph)
 
 
 @blueprint.route('/graph-async', methods=('GET', 'POST'))
@@ -357,7 +376,8 @@ def page_graph_async():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    sensor = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor)
+    sensor = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Sensor)
     sensor_choices = flaskutils.choices_sensors(sensor)
     sensor_choices_split = OrderedDict()
     for key, _ in sensor_choices.iteritems():
@@ -439,10 +459,14 @@ def page_lcd():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    lcd = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], LCD)
-    pid = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], PID)
-    relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
-    sensor = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor)
+    lcd = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], LCD)
+    pid = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], PID)
+    relay = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay)
+    sensor = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Sensor)
 
     display_order_unsplit = flaskutils.db_retrieve_table(
         current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).lcd
@@ -451,30 +475,30 @@ def page_lcd():
     else:
         display_order = []
 
-    formActivateLCD = flaskforms.ActivateLCD()
-    formAddLCD = flaskforms.AddLCD()
-    formDeactivateLCD = flaskforms.DeactivateLCD()
-    formDelLCD = flaskforms.DelLCD()
-    formModLCD = flaskforms.ModLCD()
-    formOrderLCD = flaskforms.OrderLCD()
-    formResetFlashingLCD = flaskforms.ResetFlashingLCD()
+    form_activate_lcd = flaskforms.ActivateLCD()
+    form_add_lcd = flaskforms.AddLCD()
+    form_deactivate_lcd = flaskforms.DeactivateLCD()
+    form_del_lcd = flaskforms.DelLCD()
+    form_mod_lcd = flaskforms.ModLCD()
+    form_order_lcd = flaskforms.OrderLCD()
+    form_reset_flashing_lcd = flaskforms.ResetFlashingLCD()
 
     if request.method == 'POST':
         form_name = request.form['form-name']
         if form_name == 'orderLCD':
-            flaskutils.lcd_reorder(formOrderLCD, display_order)
+            flaskutils.lcd_reorder(form_order_lcd, display_order)
         elif form_name == 'addLCD':
-            flaskutils.lcd_add(formAddLCD, display_order)
+            flaskutils.lcd_add(form_add_lcd, display_order)
         elif form_name == 'modLCD':
-            flaskutils.lcd_mod(formModLCD)
+            flaskutils.lcd_mod(form_mod_lcd)
         elif form_name == 'delLCD':
-            flaskutils.lcd_del(formDelLCD, display_order)
+            flaskutils.lcd_del(form_del_lcd, display_order)
         elif form_name == 'activateLCD':
-            flaskutils.lcd_activate(formActivateLCD)
+            flaskutils.lcd_activate(form_activate_lcd)
         elif form_name == 'deactivateLCD':
-            flaskutils.lcd_deactivate(formDeactivateLCD)
+            flaskutils.lcd_deactivate(form_deactivate_lcd)
         elif form_name == 'resetFlashingLCD':
-            flaskutils.lcd_reset_flashing(formResetFlashingLCD)
+            flaskutils.lcd_reset_flashing(form_reset_flashing_lcd)
         return redirect('/lcd')
 
     return render_template('pages/lcd.html',
@@ -483,13 +507,13 @@ def page_lcd():
                            relay=relay,
                            sensor=sensor,
                            displayOrder=display_order,
-                           formOrderLCD=formOrderLCD,
-                           formAddLCD=formAddLCD,
-                           formModLCD=formModLCD,
-                           formDelLCD=formDelLCD,
-                           formActivateLCD=formActivateLCD,
-                           formDeactivateLCD=formDeactivateLCD,
-                           formResetFlashingLCD=formResetFlashingLCD)
+                           form_order_lcd=form_order_lcd,
+                           form_add_lcd=form_add_lcd,
+                           form_mod_lcd=form_mod_lcd,
+                           form_del_lcd=form_del_lcd,
+                           form_activate_lcd=form_activate_lcd,
+                           form_deactivate_lcd=form_deactivate_lcd,
+                           form_reset_flashing_lcd=form_reset_flashing_lcd)
 
 
 @blueprint.route('/live', methods=('GET', 'POST'))
@@ -499,10 +523,14 @@ def page_live():
         return redirect(url_for('general_routes.home'))
 
     # Retrieve tables for the data displayed on the live page
-    pid = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], PID)
-    relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
-    sensor = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor)
-    timer = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Timer)
+    pid = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], PID)
+    relay = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay)
+    sensor = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Sensor)
+    timer = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Timer)
 
     # Retrieve the display order of the controllers
     pid_display_order_unsplit = flaskutils.db_retrieve_table(
@@ -550,8 +578,7 @@ def page_logview():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    formLogView = flaskforms.LogView()
-
+    form_log_view = flaskforms.LogView()
     log_output = None
     lines = 30
     logfile = ''
@@ -559,17 +586,17 @@ def page_logview():
         if session['user_group'] == 'guest':
             flaskutils.deny_guest_user()
             return redirect('/logview')
-        if formLogView.lines.data:
-            lines = formLogView.lines.data
-        if formLogView.loglogin.data:
+        if form_log_view.lines.data:
+            lines = form_log_view.lines.data
+        if form_log_view.loglogin.data:
             logfile = LOGIN_LOG_FILE
-        elif formLogView.loghttp.data:
+        elif form_log_view.loghttp.data:
             logfile = HTTP_LOG_FILE
-        elif formLogView.logdaemon.data:
+        elif form_log_view.logdaemon.data:
             logfile = DAEMON_LOG_FILE
-        elif formLogView.logupgrade.data:
+        elif form_log_view.logupgrade.data:
             logfile = UPGRADE_LOG_FILE
-        elif formLogView.logrestore.data:
+        elif form_log_view.logrestore.data:
             logfile = RESTORE_LOG_FILE
 
         # Get contents from file
@@ -583,7 +610,7 @@ def page_logview():
             log_output = 404
 
     return render_template('tools/logview.html',
-                           formLogView=formLogView,
+                           form_log_view=form_log_view,
                            lines=lines,
                            logfile=logfile,
                            log_output=log_output)
@@ -604,9 +631,12 @@ def page_pid():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    pids = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], PID)
-    relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
-    sensor = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor)
+    pids = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], PID)
+    relay = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay)
+    sensor = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Sensor)
 
     display_order_unsplit = flaskutils.db_retrieve_table(
         current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).pid
@@ -615,8 +645,8 @@ def page_pid():
     else:
         display_order = []
 
-    formAddPID = flaskforms.AddPID()
-    formModPID = flaskforms.ModPID()
+    form_add_pid = flaskforms.AddPID()
+    form_mod_pid = flaskforms.ModPID()
 
     with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
         method = new_session.query(Method)
@@ -630,26 +660,34 @@ def page_pid():
             return redirect('/pid')
         form_name = request.form['form-name']
         if form_name == 'addPID':
-            flaskutils.pid_add(formAddPID, display_order)
+            flaskutils.pid_add(form_add_pid, display_order)
         elif form_name == 'modPID':
-            if formModPID.mod_pid_del.data:
-                flaskutils.pid_del(formModPID.modPID_id.data, display_order)
-            elif formModPID.mod_pid_order_up.data:
-                flaskutils.pid_reorder(formModPID.modPID_id.data, display_order, 'up')
-            elif formModPID.mod_pid_order_down.data:
-                flaskutils.pid_reorder(formModPID.modPID_id.data, display_order, 'down')
-            elif formModPID.mod_pid_activate.data:
-                flaskutils.pid_activate(formModPID.modPID_id.data)
-            elif formModPID.mod_pid_deactivate.data:
-                flaskutils.pid_deactivate(formModPID.modPID_id.data)
-            elif formModPID.mod_pid_hold.data:
-                flaskutils.pid_manipulate('Hold', formModPID.modPID_id.data)
-            elif formModPID.mod_pid_pause.data:
-                flaskutils.pid_manipulate('Pause', formModPID.modPID_id.data)
-            elif formModPID.mod_pid_resume.data:
-                flaskutils.pid_manipulate('Resume', formModPID.modPID_id.data)
+            if form_mod_pid.mod_pid_del.data:
+                flaskutils.pid_del(
+                    form_mod_pid.modPID_id.data, display_order)
+            elif form_mod_pid.mod_pid_order_up.data:
+                flaskutils.pid_reorder(
+                    form_mod_pid.modPID_id.data, display_order, 'up')
+            elif form_mod_pid.mod_pid_order_down.data:
+                flaskutils.pid_reorder(
+                    form_mod_pid.modPID_id.data, display_order, 'down')
+            elif form_mod_pid.mod_pid_activate.data:
+                flaskutils.pid_activate(
+                    form_mod_pid.modPID_id.data)
+            elif form_mod_pid.mod_pid_deactivate.data:
+                flaskutils.pid_deactivate(
+                    form_mod_pid.modPID_id.data)
+            elif form_mod_pid.mod_pid_hold.data:
+                flaskutils.pid_manipulate(
+                    'Hold', form_mod_pid.modPID_id.data)
+            elif form_mod_pid.mod_pid_pause.data:
+                flaskutils.pid_manipulate(
+                    'Pause', form_mod_pid.modPID_id.data)
+            elif form_mod_pid.mod_pid_resume.data:
+                flaskutils.pid_manipulate(
+                    'Resume', form_mod_pid.modPID_id.data)
             else:
-                flaskutils.pid_mod(formModPID)
+                flaskutils.pid_mod(form_mod_pid)
 
         return redirect('/pid')
 
@@ -659,8 +697,8 @@ def page_pid():
                            relay=relay,
                            sensor=sensor,
                            displayOrder=display_order,
-                           formAddPID=formAddPID,
-                           formModPID=formModPID)
+                           form_add_pid=form_add_pid,
+                           form_mod_pid=form_mod_pid)
 
 
 @blueprint.route('/relay', methods=('GET', 'POST'))
@@ -669,11 +707,14 @@ def page_relay():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    lcd = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], LCD)
-    relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
+    lcd = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], LCD)
+    relay = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay)
     relayconditional = flaskutils.db_retrieve_table(
         current_app.config['MYCODO_DB_PATH'], RelayConditional)
-    users = flaskutils.db_retrieve_table(current_app.config['USER_DB_PATH'], Users)
+    users = flaskutils.db_retrieve_table(
+        current_app.config['USER_DB_PATH'], Users)
 
     display_order_unsplit = flaskutils.db_retrieve_table(
         current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).relay
@@ -682,30 +723,30 @@ def page_relay():
     else:
         display_order = []
 
-    formAddRelay = flaskforms.AddRelay()
-    formDelRelay = flaskforms.DelRelay()
-    formModRelay = flaskforms.ModRelay()
-    formOrderRelay = flaskforms.OrderRelay()
-    formRelayOnOff = flaskforms.RelayOnOff()
-    formAddRelayCond = flaskforms.AddRelayConditional()
-    formModRelayCond = flaskforms.ModRelayConditional()
+    form_add_relay = flaskforms.AddRelay()
+    form_del_relay = flaskforms.DelRelay()
+    form_mod_relay = flaskforms.ModRelay()
+    form_order_relay = flaskforms.OrderRelay()
+    form_relay_on_off = flaskforms.RelayOnOff()
+    form_add_relay_cond = flaskforms.AddRelayConditional()
+    form_mod_relay_cond = flaskforms.ModRelayConditional()
 
     if request.method == 'POST':
         form_name = request.form['form-name']
         if form_name == 'RelayOnOff':
-            flaskutils.relay_on_off(formRelayOnOff)
+            flaskutils.relay_on_off(form_relay_on_off)
         elif form_name == 'addRelay':
-            flaskutils.relay_add(formAddRelay, display_order)
+            flaskutils.relay_add(form_add_relay, display_order)
         elif form_name == 'modRelay':
-            flaskutils.relay_mod(formModRelay)
+            flaskutils.relay_mod(form_mod_relay)
         elif form_name == 'delRelay':
-            flaskutils.relay_del(formDelRelay, display_order)
+            flaskutils.relay_del(form_del_relay, display_order)
         elif form_name == 'orderRelay':
-            flaskutils.relay_reorder(formOrderRelay, display_order)
+            flaskutils.relay_reorder(form_order_relay, display_order)
         elif form_name == 'addRelayConditional':
-            flaskutils.relay_conditional_add(formAddRelayCond)
+            flaskutils.relay_conditional_add(form_add_relay_cond)
         elif form_name == 'modRelayConditional':
-            flaskutils.relay_conditional_mod(formModRelayCond)
+            flaskutils.relay_conditional_mod(form_mod_relay_cond)
         return redirect('/relay')
 
     return render_template('pages/relay.html',
@@ -714,13 +755,13 @@ def page_relay():
                            relayconditional=relayconditional,
                            users=users,
                            displayOrder=display_order,
-                           formOrderRelay=formOrderRelay,
-                           formAddRelay=formAddRelay,
-                           formModRelay=formModRelay,
-                           formDelRelay=formDelRelay,
-                           formRelayOnOff=formRelayOnOff,
-                           formAddRelayCond=formAddRelayCond,
-                           formModRelayCond=formModRelayCond)
+                           form_order_relay=form_order_relay,
+                           form_add_relay=form_add_relay,
+                           form_mod_relay=form_mod_relay,
+                           form_del_relay=form_del_relay,
+                           form_relay_on_off=form_relay_on_off,
+                           form_add_relay_cond=form_add_relay_cond,
+                           form_mod_relay_cond=form_mod_relay_cond)
 
 
 @blueprint.route('/sensor', methods=('GET', 'POST'))
@@ -729,13 +770,18 @@ def page_sensor():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    lcd = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], LCD)
-    pid = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], PID)
-    relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
-    sensor = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor)
+    lcd = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], LCD)
+    pid = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], PID)
+    relay = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay)
+    sensor = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Sensor)
     sensor_conditional = flaskutils.db_retrieve_table(
         current_app.config['MYCODO_DB_PATH'], SensorConditional)
-    users = flaskutils.db_retrieve_table(current_app.config['USER_DB_PATH'], Users)
+    users = flaskutils.db_retrieve_table(
+        current_app.config['USER_DB_PATH'], Users)
 
     display_order_unsplit = flaskutils.db_retrieve_table(
         current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).sensor
@@ -744,40 +790,42 @@ def page_sensor():
     else:
         display_order = []
 
-    formAddSensor = flaskforms.AddSensor()
-    formModSensor = flaskforms.ModSensor()
-    formModSensorCond = flaskforms.ModSensorConditional()
+    form_add_sensor = flaskforms.AddSensor()
+    form_mod_sensor = flaskforms.ModSensor()
+    form_mod_sensor_cond = flaskforms.ModSensorConditional()
 
     # Create list of file names from the sensor_options directory
     # Used in generating the correct options for each sensor/device
     sensor_template_list = []
-    sensor_path = "{}/mycodo/mycodo_flask/templates/pages/sensor_options/".format(INSTALL_DIRECTORY)
-    for (_, _, filenames) in os.walk(sensor_path):
-        sensor_template_list.extend(filenames)
+    sensor_path = "{path}/mycodo/mycodo_flask/templates/pages/sensor_options/".format(
+        path=INSTALL_DIRECTORY)
+    for (_, _, file_names) in os.walk(sensor_path):
+        sensor_template_list.extend(file_names)
         break
     sensor_templates = []
-    for each_fname in sensor_template_list:
-        sensor_templates.append(each_fname.split(".")[0])
+    for each_file_name in sensor_template_list:
+        sensor_templates.append(each_file_name.split(".")[0])
 
     if request.method == 'POST':
         form_name = request.form['form-name']
         if form_name == 'addSensor':
-            flaskutils.sensor_add(formAddSensor, display_order)
+            flaskutils.sensor_add(form_add_sensor, display_order)
         elif form_name == 'modSensor':
-            if formModSensor.modSensorSubmit.data:
-                flaskutils.sensor_mod(formModSensor)
-            elif formModSensor.delSensorSubmit.data:
-                flaskutils.sensor_del(formModSensor, display_order)
-            elif formModSensor.orderSensorUp.data or formModSensor.orderSensorDown.data:
-                flaskutils.sensor_reorder(formModSensor, display_order)
-            elif formModSensor.activateSensorSubmit.data:
-                flaskutils.sensor_activate(formModSensor)
-            elif formModSensor.deactivateSensorSubmit.data:
-                flaskutils.sensor_deactivate(formModSensor)
-            elif formModSensor.sensorCondAddSubmit.data:
-                flaskutils.sensor_conditional_add(formModSensor)
+            if form_mod_sensor.modSensorSubmit.data:
+                flaskutils.sensor_mod(form_mod_sensor)
+            elif form_mod_sensor.delSensorSubmit.data:
+                flaskutils.sensor_del(form_mod_sensor, display_order)
+            elif (form_mod_sensor.orderSensorUp.data or
+                    form_mod_sensor.orderSensorDown.data):
+                flaskutils.sensor_reorder(form_mod_sensor, display_order)
+            elif form_mod_sensor.activateSensorSubmit.data:
+                flaskutils.sensor_activate(form_mod_sensor)
+            elif form_mod_sensor.deactivateSensorSubmit.data:
+                flaskutils.sensor_deactivate(form_mod_sensor)
+            elif form_mod_sensor.sensorCondAddSubmit.data:
+                flaskutils.sensor_conditional_add(form_mod_sensor)
         elif form_name == 'modSensorConditional':
-            flaskutils.sensor_conditional_mod(formModSensorCond)
+            flaskutils.sensor_conditional_mod(form_mod_sensor_cond)
         return redirect('/sensor')
 
     return render_template('pages/sensor.html',
@@ -789,9 +837,9 @@ def page_sensor():
                            sensor_templates=sensor_templates,
                            users=users,
                            displayOrder=display_order,
-                           formAddSensor=formAddSensor,
-                           formModSensor=formModSensor,
-                           formModSensorCond=formModSensorCond)
+                           form_add_sensor=form_add_sensor,
+                           form_mod_sensor=form_mod_sensor,
+                           form_mod_sensor_cond=form_mod_sensor_cond)
 
 
 @blueprint.route('/timer', methods=('GET', 'POST'))
@@ -800,8 +848,10 @@ def page_timer():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    timer = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Timer)
-    relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
+    timer = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Timer)
+    relay = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay)
     relay_choices = flaskutils.choices_id_name(relay)
 
     display_order_unsplit = flaskutils.db_retrieve_table(
@@ -811,32 +861,33 @@ def page_timer():
     else:
         display_order = []
 
-    formTimer = flaskforms.Timer()
+    form_timer = flaskforms.Timer()
 
     if request.method == 'POST':
         form_name = request.form['form-name']
         if form_name == 'addTimer':
-            flaskutils.timer_add(formTimer,
-                                 request.form['timerType'],
+            flaskutils.timer_add(form_timer,
+                                 request.form['timer_type'],
                                  display_order)
         elif form_name == 'modTimer':
-            if formTimer.timerDel.data:
-                flaskutils.timer_del(formTimer, display_order)
-            elif formTimer.orderTimerUp.data or formTimer.orderTimerDown.data:
-                flaskutils.timer_reorder(formTimer, display_order)
-            elif formTimer.activate.data:
-                flaskutils.timer_activate(formTimer)
-            elif formTimer.deactivate.data:
-                flaskutils.timer_deactivate(formTimer)
-            elif formTimer.timerMod.data:
-                flaskutils.timer_mod(formTimer, request.form['timerType'])
+            if form_timer.timerDel.data:
+                flaskutils.timer_del(form_timer, display_order)
+            elif (form_timer.orderTimerUp.data or
+                    form_timer.orderTimerDown.data):
+                flaskutils.timer_reorder(form_timer, display_order)
+            elif form_timer.activate.data:
+                flaskutils.timer_activate(form_timer)
+            elif form_timer.deactivate.data:
+                flaskutils.timer_deactivate(form_timer)
+            elif form_timer.timerMod.data:
+                flaskutils.timer_mod(form_timer)
         return redirect('/timer')
 
     return render_template('pages/timer.html',
                            timer=timer,
                            displayOrder=display_order,
                            relay_choices=relay_choices,
-                           formTimer=formTimer)
+                           form_timer=form_timer)
 
 
 @blueprint.route('/usage', methods=('GET', 'POST'))
@@ -845,8 +896,10 @@ def page_usage():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    misc = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Misc, first=True)
-    relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
+    misc = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Misc, first=True)
+    relay = flaskutils.db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay)
 
     display_order_unsplit = flaskutils.db_retrieve_table(
         current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).relay
@@ -870,8 +923,8 @@ def page_usage():
             hour=0, minute=0, second=0, microsecond=0)).total_seconds()
     elif misc.relay_stats_dayofmonth > datetime.datetime.today().day:
         first_day = now.replace(day=1)
-        last_Month = first_day - datetime.timedelta(days=1)
-        past_month = last_Month.replace(day=misc.relay_stats_dayofmonth)
+        last_month = first_day - datetime.timedelta(days=1)
+        past_month = last_month.replace(day=misc.relay_stats_dayofmonth)
         past_month_seconds = (now - past_month).total_seconds()
     elif misc.relay_stats_dayofmonth < datetime.datetime.today().day:
         past_month = now.replace(day=misc.relay_stats_dayofmonth)
@@ -885,27 +938,41 @@ def page_usage():
         ['1d', '1w', '1m', '1m-date', '1y'], 0)
     for each_relay in relay:
         relay_each_duration[each_relay.id] = {}
-        relay_each_duration[each_relay.id]['1d'] = flaskutils.sum_relay_usage(each_relay.id, 86400) / 3600
-        relay_each_duration[each_relay.id]['1w'] = flaskutils.sum_relay_usage(each_relay.id, 604800) / 3600
-        relay_each_duration[each_relay.id]['1m'] = flaskutils.sum_relay_usage(each_relay.id, 2629743) / 3600
-        relay_each_duration[each_relay.id]['1m-date'] = flaskutils.sum_relay_usage(each_relay.id,
-                                                                                   int(past_month_seconds)) / 3600
-        relay_each_duration[each_relay.id]['1y'] = flaskutils.sum_relay_usage(each_relay.id, 31556926) / 3600
+        relay_each_duration[each_relay.id]['1d'] = flaskutils.sum_relay_usage(
+            each_relay.id, 86400) / 3600
+        relay_each_duration[each_relay.id]['1w'] = flaskutils.sum_relay_usage(
+            each_relay.id, 604800) / 3600
+        relay_each_duration[each_relay.id]['1m'] = flaskutils.sum_relay_usage(
+            each_relay.id, 2629743) / 3600
+        relay_each_duration[each_relay.id]['1m-date'] = flaskutils.sum_relay_usage(
+            each_relay.id, int(past_month_seconds)) / 3600
+        relay_each_duration[each_relay.id]['1y'] = flaskutils.sum_relay_usage(
+            each_relay.id, 31556926) / 3600
         relay_sum_duration['1d'] += relay_each_duration[each_relay.id]['1d']
         relay_sum_duration['1w'] += relay_each_duration[each_relay.id]['1w']
         relay_sum_duration['1m'] += relay_each_duration[each_relay.id]['1m']
         relay_sum_duration['1m-date'] += relay_each_duration[each_relay.id]['1m-date']
         relay_sum_duration['1y'] += relay_each_duration[each_relay.id]['1y']
-        relay_sum_kwh['1d'] += misc.relay_stats_volts * each_relay.amps * relay_each_duration[each_relay.id][
-            '1d'] / 1000
-        relay_sum_kwh['1w'] += misc.relay_stats_volts * each_relay.amps * relay_each_duration[each_relay.id][
-            '1w'] / 1000
-        relay_sum_kwh['1m'] += misc.relay_stats_volts * each_relay.amps * relay_each_duration[each_relay.id][
-            '1m'] / 1000
-        relay_sum_kwh['1m-date'] += misc.relay_stats_volts * each_relay.amps * relay_each_duration[each_relay.id][
-            '1m'] / 1000
-        relay_sum_kwh['1y'] += misc.relay_stats_volts * each_relay.amps * relay_each_duration[each_relay.id][
-            '1y'] / 1000
+        relay_sum_kwh['1d'] += (misc.relay_stats_volts *
+                                each_relay.amps *
+                                relay_each_duration[each_relay.id]['1d'] /
+                                1000)
+        relay_sum_kwh['1w'] += (misc.relay_stats_volts *
+                                each_relay.amps *
+                                relay_each_duration[each_relay.id]['1w'] /
+                                1000)
+        relay_sum_kwh['1m'] += (misc.relay_stats_volts *
+                                each_relay.amps *
+                                relay_each_duration[each_relay.id]['1m'] /
+                                1000)
+        relay_sum_kwh['1m-date'] += (misc.relay_stats_volts *
+                                     each_relay.amps *
+                                     relay_each_duration[each_relay.id]['1m-date'] /
+                                     1000)
+        relay_sum_kwh['1y'] += (misc.relay_stats_volts *
+                                each_relay.amps *
+                                relay_each_duration[each_relay.id]['1y'] /
+                                1000)
 
     return render_template('tools/usage.html',
                            display_order=display_order,
@@ -925,11 +992,11 @@ def gen(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-def is_timelapse_locked():
-    """Check if a timelapse is active"""
-    timelapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
-    if timelapse_locked and not os.path.isfile(FILE_TIMELAPSE_PARAM):
+def is_time_lapse_locked():
+    """Check if a time-lapse is active"""
+    time_lapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
+    if time_lapse_locked and not os.path.isfile(FILE_TIMELAPSE_PARAM):
         os.remove(LOCK_FILE_TIMELAPSE)
-    elif not timelapse_locked and os.path.isfile(FILE_TIMELAPSE_PARAM):
+    elif not time_lapse_locked and os.path.isfile(FILE_TIMELAPSE_PARAM):
         os.remove(FILE_TIMELAPSE_PARAM)
     return os.path.isfile(LOCK_FILE_TIMELAPSE)

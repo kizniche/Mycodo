@@ -41,10 +41,10 @@
       <div class="form-inline" style="padding-bottom: 1em">
         <form method="post" action="/admin/upgrade">
           <input type="hidden" name="form-name" value="upgrade">
-          {{formUpgrade.csrf_token}}
+          {{form_upgrade.csrf_token}}
           <div>
             <div class="form-group">
-              {{formUpgrade.upgrade(class_='form-control')}}
+              {{form_upgrade.upgrade(class_='form-control')}}
             </div>
           </div>
         </form>
