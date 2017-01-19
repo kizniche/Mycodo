@@ -1,3 +1,9 @@
+## 4.1.8 (Unreleased)
+
+Bugfixes:
+
+  - Fix inability to show latest time-lapse image on the camera page (images are still being captured)
+
 ## 4.1.7 (2017-01-19)
 
 This update fixes an error in the upgrade system, but it may mean that you cannot upgrade from the web interface (only for this version). If you cannot upgrade, execute the following command from the terminal to manually upgrade:
