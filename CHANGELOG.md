@@ -6,7 +6,7 @@ Bugfixes:
   - Fix calculation of total 1-month relay usage and cost
   - Fix (and modify) the logging behavior in modules
   - Fix K30 sensor module returning None as a measurement value
-  - Fix gpiod being added to crontab during install from setup.sh
+  - Fix gpiod being added to crontab during install from setup.sh ([#159](https://github.com/kizniche/mycodo/issues/174))
 
 ## 4.1.6 (2017-01-17)
 
@@ -16,7 +16,7 @@ Features:
 
 Bugfixes:
 
-  - Fix issue with setup.sh when the version of wget<1.16
+  - Fix issue with setup.sh when the version of wget<1.16 ([#159](https://github.com/kizniche/mycodo/issues/173))
   - Fix error calculating rely usage when it's currently the billing day of the month
 
 Miscellaneous:
