@@ -178,7 +178,7 @@ def page_camera():
     # Get the full path of latest still image
     try:
         latest_still_img_full_path = max(glob.iglob(
-            INSTALL_DIRECTORY + '/camera-stills/*.jpg'),
+            '{path}/camera-stills/*.jpg'.format(path=INSTALL_DIRECTORY)),
             key=os.path.getmtime)
         ts = os.path.getmtime(latest_still_img_full_path)
         latest_still_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%c")
@@ -191,8 +191,8 @@ def page_camera():
 
     # Get the full path of latest timelapse image
     try:
-        latest_time_lapse_img_full_path = max(
-            glob.iglob(INSTALL_DIRECTORY + '/camera-timelapse/*.jpg'),
+        latest_time_lapse_img_full_path = max(glob.iglob(
+            '{path}/camera-timelapse/*.jpg'.format(path=INSTALL_DIRECTORY)),
             key=os.path.getmtime)
         ts = os.path.getmtime(latest_time_lapse_img_full_path)
         latest_time_lapse_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%c")
@@ -228,7 +228,7 @@ def page_camera():
                            latest_time_lapse_img_ts=latest_time_lapse_img_ts,
                            latest_time_lapse_img=latest_time_lapse_img,
                            stream_locked=stream_locked,
-                           timelapse_locked=is_time_lapse_locked(),
+                           time_lapse_locked=is_time_lapse_locked(),
                            time_now=time_now,
                            tl_parameters_dict=dict_time_lapse)
 

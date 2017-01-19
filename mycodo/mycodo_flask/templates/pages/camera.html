@@ -18,7 +18,7 @@
         </div>
 
         {% if not stream_locked -%}
-          {% if not timelapse_locked %}
+          {% if not time_lapse_locked %}
             <div class="form-group">
               <a data-toggle="collapse" href="#collapseContainerTimelapse" aria-expanded="false" aria-controls="collapseContainerTimelapse" class="btn btn-default" role="button">{{_('Create Timelapse')}}</a>
             </div>
@@ -29,7 +29,7 @@
           {% endif %}
         {%- endif %}
 
-        {% if not timelapse_locked %}
+        {% if not time_lapse_locked %}
           <div class="form-group">
             {% if stream_locked -%}
               {{form_camera.StopStream(class_='form-control btn btn-default')}}
@@ -72,7 +72,7 @@
       </div>
     {%- endif -%}
 
-    {% if timelapse_locked %}
+    {% if time_lapse_locked %}
       <div style="padding-bottom: 1em">
         {{_('Timelapse Parameters')}}:
         <br>{{_('Now')}}: {{time_now}}
@@ -84,10 +84,10 @@
           {% if key == 'capture_number' %}<br>{{_('Next Capture Number')}}: {{value}}{% endif %}
         {% endfor %}
       </div>
-      {% if latest_timelapse_img %}
+      {% if latest_time_lapse_img %}
         <div style="padding-bottom: 1.5em">
-          {{_('Last Timelapse')}}: {{latest_timelapse_img_ts}}
-          <a href="/camera/timelapse/{{latest_timelapse_img}}" target="_blank"><img style="max-width: 100%" src="/camera/timelapse/{{latest_timelapse_img}}"></a>
+          {{_('Last Timelapse')}}: {{latest_time_lapse_img_ts}}
+          <a href="/camera/timelapse/{{latest_time_lapse_img}}" target="_blank"><img style="max-width: 100%" src="/camera/timelapse/{{latest_time_lapse_img}}"></a>
         </div>
       {% endif %}
     {% endif %}
