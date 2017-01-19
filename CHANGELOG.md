@@ -1,4 +1,4 @@
-## 4.1.7 (Unreleased)
+## 4.1.7 (2017-01-19)
 
 Bugfixes:
 
@@ -6,6 +6,7 @@ Bugfixes:
   - Fix calculation of total 1-month relay usage and cost
   - Fix (and modify) the logging behavior in modules
   - Fix K30 sensor module returning None as a measurement value
+  - Fix gpiod being added to crontab during install from setup.sh
 
 ## 4.1.6 (2017-01-17)
 

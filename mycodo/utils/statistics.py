@@ -6,6 +6,7 @@ import logging
 import os
 import pwd
 import random
+import requests
 import resource
 import string
 import time
@@ -44,20 +45,21 @@ def add_update_csv(csv_file, key, value):
     If the key doesn't exist, add the key and value.
 
     """
+    temp_file_name = ''
     try:
         stats_dict = {key: value}
-        tempfilename = os.path.splitext(csv_file)[0] + '.bak'
-        if os.path.isfile(tempfilename):
+        temp_file_name = os.path.splitext(csv_file)[0] + '.bak'
+        if os.path.isfile(temp_file_name):
             try:
-                os.remove(tempfilename)  # delete any existing temp file
+                os.remove(temp_file_name)  # delete any existing temp file
             except OSError as e:
                 logger.debug(
                     "OS error raised in 'add_update_csv' (no file to delete "
                     "is normal): {err}".format(err=e))
-        os.rename(csv_file, tempfilename)
+        os.rename(csv_file, temp_file_name)
 
         # create a temporary dictionary from the input file
-        with open(tempfilename, mode='r') as infile:
+        with open(temp_file_name, mode='r') as infile:
             reader = csv.reader(infile)
             header = next(reader)  # skip and save header
             temp_dict = OrderedDict((row[0], row[1]) for row in reader)
@@ -78,11 +80,11 @@ def add_update_csv(csv_file, key, value):
         uid_gid = pwd.getpwnam('mycodo').pw_uid
         os.chown(csv_file, uid_gid, uid_gid)
         os.chmod(csv_file, 0664)
-        os.remove(tempfilename)  # delete backed-up original
+        os.remove(temp_file_name)  # delete backed-up original
     except Exception as except_msg:
         logger.exception('[Statistics] Could not update stat csv: '
-                          '{}'.format(except_msg))
-        os.rename(tempfilename, csv_file)  # rename temp file to original
+                         '{}'.format(except_msg))
+        os.rename(temp_file_name, csv_file)  # rename temp file to original
 
 
 def get_count(q):
@@ -98,19 +100,19 @@ def get_pi_revision():
 
     """
     # Extract board revision from cpuinfo file
-    myrevision = "0000"
+    revision = "0000"
     try:
         f = open('/proc/cpuinfo', 'r')
         for line in f:
             if line[0:8] == 'Revision':
                 length = len(line)
-                myrevision = line[11:length - 1]
+                revision = line[11:length - 1]
         f.close()
     except Exception as e:
-        logger.error("Exception in 'get_pi_revision' call.  Error: "
+        logger.error("Exception in 'get_pi_revision' call. Error: "
                      "{err}".format(err=e))
-        myrevision = "0000"
-    return myrevision
+        revision = "0000"
+    return revision
 
 
 def increment_stat(stats_csv, stat, amount):
@@ -163,8 +165,6 @@ def recreate_stat_file(id_file, stats_csv, stats_interval, mycodo_version):
                      ['num_users_guest', 0],
                      ['num_lcds', 0],
                      ['num_lcds_active', 0],
-                     ['num_logs', 0],
-                     ['num_logs_active', 0],
                      ['num_methods', 0],
                      ['num_methods_in_pid', 0],
                      ['num_pids', 0],
@@ -183,10 +183,9 @@ def recreate_stat_file(id_file, stats_csv, stats_interval, mycodo_version):
     os.chmod(stats_csv, 0664)
 
 
-def send_stats(host, port, user, password, dbname,
-               mycodo_db_path, user_db_path, stats_csv,
-               mycodo_version, session_scope, LCD,
-               Method, PID, Relay, Sensor, Timer, Users):
+def send_stats(host, port, user, password, dbname, mycodo_db_path,
+               user_db_path, stats_csv, mycodo_version, session_scope,
+               LCD, Method, PID, Relay, Sensor, Timer, Users):
     """
     Send anonymous usage statistics
 
@@ -263,8 +262,11 @@ def send_stats(host, port, user, password, dbname,
         client.write_points(formatted_stat_dict)
         logger.debug("Sent anonymous usage statistics")
         return 0
+    except requests.ConnectionError:
+        logger.error("Could not send anonymous usage statistics: Connection "
+                     "timed out (expected if there's no internet)")
     except Exception as except_msg:
         logger.exception(
             "Could not send anonymous usage statistics: {err}".format(
                 err=except_msg))
-        return 1
+    return 1

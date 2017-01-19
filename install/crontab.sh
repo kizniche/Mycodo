@@ -14,7 +14,7 @@ cd $(dirname "$0")
 
 test "$2" = --remove && mode=remove || mode=add
 
-cron_unique_label="# cmID:$1#"
+cron_unique_label="# cmID:$1 #"
 
 crontab="$1".crontab
 crontab_bak=${crontab}.bak
@@ -32,7 +32,7 @@ if type crontab >/dev/null 2>/dev/null; then
             echo 'Appending to crontab:'
             echo '-----------------------------------------------'
             cat ${crontab}
-            crontab -l 2>/dev/null | { cat; echo; echo ${cron_unique_label}; cat ${crontab}; echo "# cm #"; } | crontab -
+            crontab -l 2>/dev/null | { cat; echo ${cron_unique_label}; cat ${crontab}; echo "# cm #"; } | crontab -
         else
             echo 'Crontab entry already exists, skipping ...'
             echo

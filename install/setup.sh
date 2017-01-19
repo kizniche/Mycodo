@@ -47,6 +47,7 @@ apt-get purge -y python-pip
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh upgrade-packages
 pip install -U pip
 
+printf "#### Installing gpiod ####\n"
 cd ${INSTALL_DIRECTORY}/install
 wget --quiet -P ${INSTALL_DIRECTORY}/install abyz.co.uk/rpi/pigpio/pigpio.zip
 unzip pigpio.zip
@@ -55,6 +56,11 @@ make -j4
 make install
 /usr/local/bin/pigpiod &
 
+printf "#### Updating crontab entry ####\n"
+/bin/bash ${INSTALL_DIRECTORY}/install/crontab.sh mycodo --remove
+/bin/bash ${INSTALL_DIRECTORY}/install/crontab.sh mycodo
+
+printf "#### Installing wiringpi ####\n"
 git clone git://git.drogon.net/wiringPi ${INSTALL_DIRECTORY}/install/wiringPi
 cd ${INSTALL_DIRECTORY}/install/wiringPi
 ./build
@@ -62,6 +68,7 @@ cd ${INSTALL_DIRECTORY}/install/wiringPi
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh upgrade-influxdb
 service influxdb start
 
+printf "#### Installing pip requirements from requirements.txt ####\n"
 cd ${INSTALL_DIRECTORY}/install
 pip install -r requirements.txt --upgrade
 
