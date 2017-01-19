@@ -5,6 +5,7 @@ Bugfixes:
   - Fix time-lapses not resuming after an upgrade
   - Fix calculation of total 1-month relay usage and cost
   - Fix (and modify) the logging behavior in modules
+  - Fix K30 sensor module returning None as a measurement value
 
 ## 4.1.6 (2017-01-17)
 

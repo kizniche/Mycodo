@@ -93,6 +93,8 @@ class K30Sensor(AbstractSensor):
                     lock.acquire()
             self._co2 = self.get_measurement()
             lock.release()
+            if self._co2 is None:
+                return 1
             return  # success - no errors
         except Exception as e:
             logger.error("{cls} raised an exception when taking a reading: "

@@ -614,6 +614,9 @@ class SensorController(threading.Thread):
             try:
                 # Get measurement from sensor
                 measurements = self.measure_sensor.next()
+            except StopIteration:
+                self.logger.error("Could not read sensor. Ensure it's "
+                                  "connected properly and detected.")
             except Exception as except_msg:
                 self.logger.exception(
                     "Error while attempting to read sensor: {err}".format(
