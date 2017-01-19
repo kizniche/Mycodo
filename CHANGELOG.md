@@ -1,7 +1,12 @@
 ## 4.1.7 (2017-01-19)
 
+This update fixes an error in the upgrade system, but it may mean that you cannot upgrade from the web interface (only for this version). If you cannot upgrade, execute the following command from the terminal to manually upgrade:
+
+```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh upgrade```
+
 Bugfixes:
 
+  - Fix upgrade system (mycodo_wrapper). This may have broke the upgrade system (if so, use the manual method in the README)
   - Fix time-lapses not resuming after an upgrade
   - Fix calculation of total 1-month relay usage and cost
   - Fix (and modify) the logging behavior in modules

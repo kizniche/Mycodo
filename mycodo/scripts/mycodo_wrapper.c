@@ -50,10 +50,14 @@ int main(int argc, char *argv[]) {
 
 		} else if (strcmp(argv[1], "upgrade") == 0) {
 
+            char path[255];
+            strncpy(path, argv[0], sizeof(path));
+            dirname(path);
+
 			char updateScript[255];
-			strncpy(updateScript, argv[0], sizeof(updateScript));
-			dirname(updateScript);
-			strncat(updateScript, "/bin/bash /upgrade_mycodo_release.sh upgrade", sizeof(updateScript));
+			strncpy(updateScript, "/bin/bash ", sizeof(updateScript));
+			strncat(updateScript, path, sizeof(updateScript));
+			strncat(updateScript, "/upgrade_mycodo_release.sh upgrade", sizeof(updateScript));
 			system(updateScript);
 
 		}
