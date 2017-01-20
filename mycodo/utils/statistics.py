@@ -14,6 +14,16 @@ from collections import OrderedDict
 from influxdb import InfluxDBClient
 from sqlalchemy import func
 
+from databases.mycodo_db.models import AlembicVersion
+from databases.mycodo_db.models import LCD
+from databases.mycodo_db.models import Method
+from databases.mycodo_db.models import PID
+from databases.mycodo_db.models import Relay
+from databases.mycodo_db.models import Sensor
+from databases.mycodo_db.models import Timer
+from databases.users_db.models import Users
+from databases.utils import session_scope
+
 logger = logging.getLogger("mycodo.stats")
 
 
@@ -158,6 +168,7 @@ def recreate_stat_file(id_file, stats_csv, stats_interval, mycodo_version):
                      ['next_send', time.time() + stats_interval],
                      ['RPi_revision', get_pi_revision()],
                      ['Mycodo_revision', mycodo_version],
+                     ['alembic_version', 0],
                      ['country', 'None'],
                      ['daemon_startup_seconds', 0.0],
                      ['ram_use_mb', 0.0],
@@ -184,8 +195,7 @@ def recreate_stat_file(id_file, stats_csv, stats_interval, mycodo_version):
 
 
 def send_stats(host, port, user, password, dbname, mycodo_db_path,
-               user_db_path, stats_csv, mycodo_version, session_scope,
-               LCD, Method, PID, Relay, Sensor, Timer, Users):
+               user_db_path, stats_csv, mycodo_version):
     """
     Send anonymous usage statistics
 
@@ -197,6 +207,10 @@ def send_stats(host, port, user, password, dbname, mycodo_db_path,
         client = InfluxDBClient(host, port, user, password, dbname)
         # Prepare stats before sending
         with session_scope(mycodo_db_path) as new_session:
+            alembic = new_session.query(AlembicVersion).first()
+            add_update_csv(stats_csv, 'alembic_version',
+                           alembic.version_num)
+
             relays = new_session.query(Relay)
             add_update_csv(stats_csv, 'num_relays', get_count(relays))
 

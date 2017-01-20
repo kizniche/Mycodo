@@ -72,13 +72,10 @@ from controller_timer import TimerController
 
 from databases.mycodo_db.models import CameraStill
 from databases.mycodo_db.models import LCD
-from databases.mycodo_db.models import Method
 from databases.mycodo_db.models import Misc
 from databases.mycodo_db.models import PID
-from databases.mycodo_db.models import Relay
 from databases.mycodo_db.models import Sensor
 from databases.mycodo_db.models import Timer
-from databases.users_db.models import Users
 from databases.utils import session_scope
 
 
@@ -566,8 +563,7 @@ class DaemonController(threading.Thread):
             send_stats(
                 STATS_HOST, STATS_PORT, STATS_USER, STATS_PASSWORD,
                 STATS_DATABASE, MYCODO_DB_PATH, USER_DB_PATH, STATS_CSV,
-                MYCODO_VERSION, session_scope, LCD, Method, PID, Relay,
-                Sensor, Timer, Users)
+                MYCODO_VERSION)
         except Exception as except_msg:
             self.logger.exception(
                 "Error: Could not send statistics: {err}".format(
