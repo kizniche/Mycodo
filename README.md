@@ -148,7 +148,7 @@ Certain sensors will require extra steps to be taken in order to set up the inte
 
 The 1-wire interface should be configured with [these instructions](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing).
 
-> [DS18B20](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf) Temperature
+> [DS18B20](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf), [DS18S20](https://datasheets.maximintegrated.com/en/ds/DS18S20.pdf), [DS1822](https://datasheets.maximintegrated.com/en/ds/DS1822.pdf), [DS28EA00](https://datasheets.maximintegrated.com/en/ds/DS28EA00.pdf), [DS1825](https://datasheets.maximintegrated.com/en/ds/DS1825.pdf)/[MAX31850K](https://datasheets.maximintegrated.com/en/ds/MAX31850-MAX31851.pdf) Temperature
 
 ### GPIO
 
