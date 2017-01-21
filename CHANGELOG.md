@@ -1,7 +1,12 @@
 ## 4.1.8 (2017-01-21)
 
+This update fixes an error in the upgrade system, but it may mean that you cannot upgrade from the web interface (only for this version). If you cannot upgrade, execute the following command from the terminal to manually upgrade:
+
+```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh upgrade```
+
 Bugfixes:
 
+  - Actually fix the upgrade system (mycodo_wrapper)
   - Fix bug in DHT22 sensor module preventing measurements
   - Fix inability to show latest time-lapse image on the camera page (images are still being captured)
 
