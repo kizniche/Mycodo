@@ -62,12 +62,6 @@ class DHT22Sensor(AbstractSensor):
         self._humidity = 0.0
         self._temperature = 0.0
 
-        # Prevent from crashing the mycodo daemon if pigpiod isn't running
-        try:
-            self.setup()
-        except:
-            raise Exception('DHT22 could not initialize. Check if gpiod is running.')
-
     def __repr__(self):
         """  Representation of object """
         return "<{cls}(dewpoint={dpt})(humidity={hum})(temperature={temp})>".format(
@@ -123,7 +117,11 @@ class DHT22Sensor(AbstractSensor):
             self.pi.write(self.power, 1)  # Switch sensor on.
             time.sleep(2)
         try:
-            self.setup()
+            try:
+                self.setup()
+            except:
+                logger.error(
+                    'DHT22 could not initialize. Check if gpiod is running.')
             self.pi.write(self.gpio, pigpio.LOW)
             time.sleep(0.017)  # 17 ms
             self.pi.set_mode(self.gpio, pigpio.INPUT)
@@ -131,7 +129,8 @@ class DHT22Sensor(AbstractSensor):
             time.sleep(0.2)
             self._dew_point = dewpoint(self._temperature, self._humidity)
         except Exception as e:
-            logger.error("Exception while reading sensor: {}".format(e))
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         finally:
             self.close()
 
@@ -145,7 +144,10 @@ class DHT22Sensor(AbstractSensor):
         try:
             self.get_measurement()
             # self_humidity and self._temperature are set in self._edge_rise()
-            return  # success - no errors
+            if self._humidity != 0 and self._temperature != 0:
+                logger.error("{cls}: Could not acquire a measurement".format(
+                    cls=type(self).__name__))
+                return  # success - no errors
         except Exception as e:
             logger.error("{cls} raised an exception when taking a reading: "
                          "{err}".format(cls=type(self).__name__, err=e))

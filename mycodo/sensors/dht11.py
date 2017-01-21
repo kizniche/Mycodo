@@ -104,7 +104,11 @@ class DHT11Sensor(AbstractSensor):
                 logger.debug("Turning on sensor at GPIO {}...".format(self.gpio))
                 self.pi.write(self.power, 1)  # Switch sensor on.
                 time.sleep(2)
-            self.setup()
+            try:
+                self.setup()
+            except:
+                logger.error(
+                    'DHT22 could not initialize. Check if gpiod is running.')
             self.pi.write(self.gpio, pigpio.LOW)
             time.sleep(0.017)  # 17 ms
             self.pi.set_mode(self.gpio, pigpio.INPUT)
@@ -127,9 +131,14 @@ class DHT11Sensor(AbstractSensor):
         try:
             self.get_measurement()
             # self_humidity and self._temperature are set in self._edge_rise()
+            if self._humidity != 0 and self._temperature != 0:
+                logger.error("{cls}: Could not acquire a measurement".format(
+                    cls=type(self).__name__))
             return  # success - no errors
-        except Exception:
-            return 1
+        except Exception as e:
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
+        return 1
 
     def setup(self):
         """

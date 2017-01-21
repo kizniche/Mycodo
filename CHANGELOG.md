@@ -1,7 +1,8 @@
-## 4.1.8 (Unreleased)
+## 4.1.8 (2017-01-21)
 
 Bugfixes:
 
+  - Fix bug in DHT22 sensor module preventing measurements
   - Fix inability to show latest time-lapse image on the camera page (images are still being captured)
 
 Miscellaneous:
