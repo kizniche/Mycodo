@@ -38,29 +38,38 @@ from flask import url_for
 from flask_babel import gettext
 from flask_influxdb import InfluxDB
 
+# Classes
+from mycodo.databases.mycodo_db.models import (
+    DisplayOrder,
+    Misc,
+    Relay,
+    Remote
+)
+from mycodo.databases.users_db.models import Users
+from mycodo.devices.camera_pi import CameraStream
+from mycodo.mycodo_client import DaemonControl
+
+# Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
-
+from mycodo.databases.utils import session_scope
 from mycodo.flaskutils import gzipped
-from mycodo_flask.authentication_routes import admin_exists
-from mycodo_flask.authentication_routes import clear_cookie_auth
-from mycodo_flask.authentication_routes import logged_in
+from mycodo.mycodo_flask.authentication_routes import (
+    admin_exists,
+    clear_cookie_auth,
+    logged_in
+)
+from mycodo.utils.database import db_retrieve_table
 
-from databases.utils import session_scope
-from databases.mycodo_db.models import DisplayOrder
-from databases.mycodo_db.models import Misc
-from databases.mycodo_db.models import Relay
-from databases.mycodo_db.models import Remote
-from databases.users_db.models import Users
-from devices.camera_pi import CameraStream
-from mycodo_client import DaemonControl
-
-from config import INFLUXDB_USER
-from config import INFLUXDB_PASSWORD
-from config import INFLUXDB_DATABASE
-from config import INSTALL_DIRECTORY
-from config import LOG_PATH
-from config import MYCODO_VERSION
+# Config
+from config import (
+    INFLUXDB_USER,
+    INFLUXDB_PASSWORD,
+    INFLUXDB_DATABASE,
+    INSTALL_DIRECTORY,
+    LOG_PATH,
+    MYCODO_VERSION
+)
 
 blueprint = Blueprint('general_routes',
                       __name__,
@@ -103,12 +112,12 @@ def remote_admin(page):
         flaskutils.deny_guest_user()
         return redirect(url_for('general_routes.home'))
 
-    remote_hosts = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Remote)
-    display_order_unsplit = flaskutils.db_retrieve_table(
+    remote_hosts = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Remote, entry='all')
+    display_order_unsplit = db_retrieve_table(
         current_app.config['MYCODO_DB_PATH'],
         DisplayOrder,
-        first=True).remote_host
+        entry='first').remote_host
     if display_order_unsplit:
         display_order = display_order_unsplit.split(",")
     else:
@@ -201,8 +210,8 @@ def gpio_state():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    relay = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Relay)
+    relay = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
     gpio_state = {}
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
@@ -512,13 +521,14 @@ def computer_command(action):
 @blueprint.route('/newremote/')
 def newremote():
     """Verify authentication as a client computer to the remote admin"""
-    user = request.args.get('user')
+    username = request.args.get('user')
     pass_word = request.args.get('passw')
-    with session_scope(current_app.config['USER_DB_PATH']) as new_session:
-        user = new_session.query(Users).filter(
-            Users.user_name == user).first()
-        new_session.expunge_all()
-        new_session.close()
+
+    user = db_retrieve_table(
+        current_app.config['USER_DB_PATH'], Users)
+    user = user.filter(
+        Users.user_name == username).first()
+
     # TODO: Change sleep() to max requests per duration of time
     time.sleep(1)  # Slow down requests (hackish, prevent brute force attack)
     if user:
@@ -533,13 +543,14 @@ def newremote():
 @blueprint.route('/auth/')
 def data():
     """Checks authentication for remote admin"""
-    user = request.args.get('user')
+    username = request.args.get('user')
     password_hash = request.args.get('pw_hash')
-    with session_scope(current_app.config['USER_DB_PATH']) as new_session:
-        user = new_session.query(Users).filter(
-            Users.user_name == user).first()
-        new_session.expunge_all()
-        new_session.close()
+
+    user = db_retrieve_table(
+        current_app.config['USER_DB_PATH'], Users)
+    user = user.filter(
+        Users.user_name == username).first()
+
     # TODO: Change sleep() to max requests per duration of time
     time.sleep(1)  # Slow down requests (hackish, prevents brute force attack)
     if (user and
@@ -566,14 +577,14 @@ def inject_mycodo_version():
                              "error: %(err)s", err=e))
         daemon_status = '0'
 
-    with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-        misc = db_session.query(Misc).first()
-        return dict(daemon_status=daemon_status,
-                    mycodo_version=MYCODO_VERSION,
-                    host=socket.gethostname(),
-                    hide_alert_success=misc.hide_alert_success,
-                    hide_alert_info=misc.hide_alert_info,
-                    hide_alert_warning=misc.hide_alert_warning)
+    misc = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Misc, entry='first')
+    return dict(daemon_status=daemon_status,
+                mycodo_version=MYCODO_VERSION,
+                host=socket.gethostname(),
+                hide_alert_success=misc.hide_alert_success,
+                hide_alert_info=misc.hide_alert_info,
+                hide_alert_warning=misc.hide_alert_warning)
 
 
 @blueprint.errorhandler(404)

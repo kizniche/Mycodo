@@ -12,11 +12,17 @@ import threading
 import time
 import timeit
 
-from config import SQL_DATABASE_MYCODO
+# Classes
 from databases.mycodo_db.models import Timer
-from databases.utils import session_scope
 from mycodo_client import DaemonControl
+
+# Functions
+from databases.utils import session_scope
+from utils.database import db_retrieve_table
 from utils.system_pi import time_between_range
+
+# Config
+from config import SQL_DATABASE_MYCODO
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -29,7 +35,8 @@ class TimerController(threading.Thread):
     def __init__(self, ready, timer_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("mycodo.timer-{id}".format(id=timer_id))
+        self.logger = logging.getLogger(
+            "mycodo.timer_{id}".format(id=timer_id))
 
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
@@ -37,17 +44,16 @@ class TimerController(threading.Thread):
         self.timer_id = timer_id
         self.control = DaemonControl()
 
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            timer = new_session.query(Timer).filter(
-                Timer.id == self.timer_id).first()
-            self.timer_type = timer.timer_type
-            self.name = timer.name
-            self.relay_id = timer.relay_id
-            self.state = timer.state
-            self.time_start = timer.time_start
-            self.time_end = timer.time_end
-            self.duration_on = timer.duration_on
-            self.duration_off = timer.duration_off
+        timer = db_retrieve_table(
+            MYCODO_DB_PATH, Timer, device_id=self.timer_id)
+        self.timer_type = timer.timer_type
+        self.name = timer.name
+        self.relay_id = timer.relay_id
+        self.state = timer.state
+        self.time_start = timer.time_start
+        self.time_end = timer.time_end
+        self.duration_on = timer.duration_on
+        self.duration_off = timer.duration_off
 
         # Time of day split into hour and minute
         if self.time_start:

@@ -11,17 +11,27 @@ from flask import (current_app,
                    url_for)
 from flask.blueprints import Blueprint
 
-from config import LANGUAGES
-from databases.mycodo_db.models import CameraStill
-from databases.mycodo_db.models import Misc
-from databases.mycodo_db.models import SMTP
-from databases.users_db.models import Users
+# Classes
+from mycodo.databases.mycodo_db.models import (
+    CameraStill,
+    Misc,
+    SMTP
+)
+from mycodo.databases.users_db.models import Users
 
+# Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
-from mycodo.mycodo_flask.general_routes import (before_blueprint_request,
-                                                inject_mycodo_version,
-                                                logged_in)
+from mycodo.utils.database import db_retrieve_table
+
+# Config
+from config import LANGUAGES
+
+from mycodo.mycodo_flask.general_routes import (
+    before_blueprint_request,
+    inject_mycodo_version,
+    logged_in
+)
 
 logger = logging.getLogger('mycodo.mycodo_flask.settings')
 
@@ -47,8 +57,8 @@ def settings_alerts():
         flaskutils.deny_guest_user()
         return redirect('/settings')
 
-    smtp = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], SMTP)
+    smtp = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], SMTP, entry='first')
     form_email_alert = flaskforms.EmailAlert()
 
     if request.method == 'POST':
@@ -69,8 +79,8 @@ def settings_camera():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    camera = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], CameraStill, first=True)
+    camera = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], CameraStill, entry='first')
     form_settings_camera = flaskforms.SettingsCamera()
 
     if request.method == 'POST':
@@ -90,8 +100,8 @@ def settings_general():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    misc = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Misc, first=True)
+    misc = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Misc, entry='first')
     form_settings_general = flaskforms.SettingsGeneral()
 
     languages_sorted = sorted(LANGUAGES.items(), key=operator.itemgetter(1))
@@ -118,8 +128,8 @@ def settings_users():
         flaskutils.deny_guest_user()
         return redirect(url_for('general_routes.home'))
 
-    users = flaskutils.db_retrieve_table(
-        current_app.config['USER_DB_PATH'], Users)
+    users = db_retrieve_table(
+        current_app.config['USER_DB_PATH'], Users, entry='all')
     form_add_user = flaskforms.AddUser()
     form_mod_user = flaskforms.ModUser()
     form_del_user = flaskforms.DelUser()

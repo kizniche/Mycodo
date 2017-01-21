@@ -58,20 +58,29 @@ import timeit
 import RPi.GPIO as GPIO
 import datetime
 
-from config import INFLUXDB_HOST
-from config import INFLUXDB_PORT
-from config import INFLUXDB_USER
-from config import INFLUXDB_PASSWORD
-from config import INFLUXDB_DATABASE
-from config import SQL_DATABASE_MYCODO
-from config import MYCODO_VERSION
-from databases.mycodo_db.models import LCD
-from databases.mycodo_db.models import PID
-from databases.mycodo_db.models import Relay
-from databases.mycodo_db.models import Sensor
-from databases.utils import session_scope
+# Classes
+from databases.mycodo_db.models import (
+    LCD,
+    PID,
+    Relay,
+    Sensor,
+)
 from devices.tca9548a import TCA9548A
+
+# Functions
+from utils.database import db_retrieve_table
 from utils.influx import read_last_influxdb
+
+# Config
+from config import (
+    INFLUXDB_HOST,
+    INFLUXDB_PORT,
+    INFLUXDB_USER,
+    INFLUXDB_PASSWORD,
+    INFLUXDB_DATABASE,
+    SQL_DATABASE_MYCODO,
+    MYCODO_VERSION
+)
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -84,7 +93,7 @@ class LCDController(threading.Thread):
     def __init__(self, ready, lcd_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("mycodo.lcd-{id}".format(id=lcd_id))
+        self.logger = logging.getLogger("mycodo.lcd_{id}".format(id=lcd_id))
 
         self.running = False
         self.thread_startup_timer = timeit.default_timer()
@@ -92,99 +101,109 @@ class LCDController(threading.Thread):
         self.ready = ready
         self.flash_lcd_on = False
         self.lcd_is_on = False
+        self.lcd_id = lcd_id
 
         try:
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                lcd = new_session.query(LCD).filter(LCD.id == lcd_id).first()
-                self.lcd_id = lcd_id
-                self.lcd_name = lcd.name
-                self.lcd_pin = lcd.pin
-                self.lcd_period = lcd.period
-                self.lcd_x_characters = lcd.x_characters
-                self.lcd_y_lines = lcd.y_lines
+            lcd = db_retrieve_table(MYCODO_DB_PATH,
+                                    LCD,
+                                    device_id=self.lcd_id)
 
-                if lcd.multiplexer_address:
-                    self.multiplexer_address_string = lcd.multiplexer_address
-                    self.multiplexer_address = int(str(lcd.multiplexer_address), 16)
-                    self.multiplexer_channel = lcd.multiplexer_channel
-                    self.multiplexer = TCA9548A(self.multiplexer_address)
-                else:
-                    self.multiplexer = None
+            self.lcd_name = lcd.name
+            self.lcd_pin = lcd.pin
+            self.lcd_period = lcd.period
+            self.lcd_x_characters = lcd.x_characters
+            self.lcd_y_lines = lcd.y_lines
 
-                self.lcd_line = {}
-                for i in range(1, 5):
-                    self.lcd_line[i] = {}
+            if lcd.multiplexer_address:
+                self.multiplexer_address_string = lcd.multiplexer_address
+                self.multiplexer_address = int(str(lcd.multiplexer_address), 16)
+                self.multiplexer_channel = lcd.multiplexer_channel
+                self.multiplexer = TCA9548A(self.multiplexer_address)
+            else:
+                self.multiplexer = None
 
-                list_sensors = ['sensor_time', 'temperature',
-                                'humidity', 'co2', 'pressure',
-                                'altitude', 'temperature_die',
-                                'temperature_object', 'lux']
+            self.lcd_line = {}
+            for i in range(1, 5):
+                self.lcd_line[i] = {}
 
-                list_PIDs = ['setpoint', 'pid_time']
+            list_sensors = ['sensor_time', 'temperature',
+                            'humidity', 'co2', 'pressure',
+                            'altitude', 'temperature_die',
+                            'temperature_object', 'lux']
 
-                list_relays = ['duration_sec', 'relay_time', 'relay_state']
+            list_pids = ['setpoint', 'pid_time']
 
-                if self.lcd_y_lines in [2, 4]:
-                    self.lcd_line[1]['id'] = lcd.line_1_sensor_id
-                    self.lcd_line[1]['measurement'] = lcd.line_1_measurement
-                    if lcd.line_1_sensor_id:
-                        if lcd.line_1_measurement in list_sensors:
-                            table = Sensor
-                        elif lcd.line_1_measurement in list_PIDs:
-                            table = PID
-                        elif lcd.line_1_measurement in list_relays:
-                            table = Relay
-                        sensor_line_1 = new_session.query(table).filter(
-                            table.id == lcd.line_1_sensor_id).first()
-                        self.lcd_line[1]['name'] = sensor_line_1.name
-                        if 'time' in lcd.line_1_measurement:
-                            self.lcd_line[1]['measurement'] = 'time'
+            list_relays = ['duration_sec', 'relay_time', 'relay_state']
 
-                    self.lcd_line[2]['id'] = lcd.line_2_sensor_id
-                    self.lcd_line[2]['measurement'] = lcd.line_2_measurement
-                    if lcd.line_2_sensor_id:
-                        if lcd.line_2_measurement in list_sensors:
-                            table = Sensor
-                        elif lcd.line_2_measurement in list_PIDs:
-                            table = PID
-                        elif lcd.line_2_measurement in list_relays:
-                            table = Relay
-                        sensor_line_2 = new_session.query(table).filter(
-                            table.id == lcd.line_2_sensor_id).first()
-                        self.lcd_line[2]['name'] = sensor_line_2.name
-                        if 'time' in lcd.line_2_measurement:
-                            self.lcd_line[2]['measurement'] = 'time'
+            if self.lcd_y_lines in [2, 4]:
+                self.lcd_line[1]['id'] = lcd.line_1_sensor_id
+                self.lcd_line[1]['measurement'] = lcd.line_1_measurement
+                if lcd.line_1_sensor_id:
+                    if lcd.line_1_measurement in list_sensors:
+                        table = Sensor
+                    elif lcd.line_1_measurement in list_pids:
+                        table = PID
+                    elif lcd.line_1_measurement in list_relays:
+                        table = Relay
+                    sensor_line_1 = db_retrieve_table(
+                        MYCODO_DB_PATH,
+                        table,
+                        device_id=lcd.line_1_sensor_id)
+                    self.lcd_line[1]['name'] = sensor_line_1.name
+                    if 'time' in lcd.line_1_measurement:
+                        self.lcd_line[1]['measurement'] = 'time'
 
-                if self.lcd_y_lines == 4:
-                    self.lcd_line[3]['id'] = lcd.line_3_sensor_id
-                    self.lcd_line[3]['measurement'] = lcd.line_3_measurement
-                    if lcd.line_3_sensor_id:
-                        if lcd.line_3_measurement in list_sensors:
-                            table = Sensor
-                        elif lcd.line_3_measurement in list_PIDs:
-                            table = PID
-                        elif lcd.line_3_measurement in list_relays:
-                            table = Relay
-                        sensor_line_3 = new_session.query(table).filter(
-                            table.id == lcd.line_3_sensor_id).first()
-                        self.lcd_line[3]['name'] = sensor_line_3.name
-                        if 'time' in lcd.line_3_measurement:
-                            self.lcd_line[3]['measurement'] = 'time'
+                self.lcd_line[2]['id'] = lcd.line_2_sensor_id
+                self.lcd_line[2]['measurement'] = lcd.line_2_measurement
+                if lcd.line_2_sensor_id:
+                    if lcd.line_2_measurement in list_sensors:
+                        table = Sensor
+                    elif lcd.line_2_measurement in list_pids:
+                        table = PID
+                    elif lcd.line_2_measurement in list_relays:
+                        table = Relay
+                    sensor_line_2 = db_retrieve_table(
+                        MYCODO_DB_PATH,
+                        table,
+                        device_id=lcd.line_2_sensor_id)
+                    self.lcd_line[2]['name'] = sensor_line_2.name
+                    if 'time' in lcd.line_2_measurement:
+                        self.lcd_line[2]['measurement'] = 'time'
 
-                    self.lcd_line[4]['id'] = lcd.line_4_sensor_id
-                    self.lcd_line[4]['measurement'] = lcd.line_4_measurement
-                    if lcd.line_4_sensor_id:
-                        if lcd.line_4_measurement in list_sensors:
-                            table = Sensor
-                        elif lcd.line_4_measurement in list_PIDs:
-                            table = PID
-                        elif lcd.line_4_measurement in list_relays:
-                            table = Relay
-                        sensor_line_4 = new_session.query(table).filter(
-                            table.id == lcd.line_4_sensor_id).first()
-                        self.lcd_line[4]['name'] = sensor_line_4.name
-                        if 'time' in lcd.line_4_measurement:
-                            self.lcd_line[4]['measurement'] = 'time'
+            if self.lcd_y_lines == 4:
+                self.lcd_line[3]['id'] = lcd.line_3_sensor_id
+                self.lcd_line[3]['measurement'] = lcd.line_3_measurement
+                if lcd.line_3_sensor_id:
+                    if lcd.line_3_measurement in list_sensors:
+                        table = Sensor
+                    elif lcd.line_3_measurement in list_pids:
+                        table = PID
+                    elif lcd.line_3_measurement in list_relays:
+                        table = Relay
+                    sensor_line_3 = db_retrieve_table(
+                        MYCODO_DB_PATH,
+                        table,
+                        device_id=lcd.line_3_sensor_id)
+                    self.lcd_line[3]['name'] = sensor_line_3.name
+                    if 'time' in lcd.line_3_measurement:
+                        self.lcd_line[3]['measurement'] = 'time'
+
+                self.lcd_line[4]['id'] = lcd.line_4_sensor_id
+                self.lcd_line[4]['measurement'] = lcd.line_4_measurement
+                if lcd.line_4_sensor_id:
+                    if lcd.line_4_measurement in list_sensors:
+                        table = Sensor
+                    elif lcd.line_4_measurement in list_pids:
+                        table = PID
+                    elif lcd.line_4_measurement in list_relays:
+                        table = Relay
+                    sensor_line_4 = db_retrieve_table(
+                        MYCODO_DB_PATH,
+                        table,
+                        device_id=lcd.line_4_sensor_id)
+                    self.lcd_line[4]['name'] = sensor_line_4.name
+                    if 'time' in lcd.line_4_measurement:
+                        self.lcd_line[4]['measurement'] = 'time'
 
             self.measurement_unit = {
                 'metric': {
@@ -242,10 +261,10 @@ class LCDController(threading.Thread):
             # Setup I2C bus
             try:
                 if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
-                    I2C_bus_number = 1
+                    i2c_bus_number = 1
                 else:
-                    I2C_bus_number = 0
-                self.bus = smbus.SMBus(I2C_bus_number)
+                    i2c_bus_number = 0
+                self.bus = smbus.SMBus(i2c_bus_number)
             except Exception as except_msg:
                 self.logger.exception("Could not initialize I2C bus: {}".format(
                     except_msg))
@@ -271,9 +290,9 @@ class LCDController(threading.Thread):
                     try:
                         self.output_lcds()
                     except IOError as except_msg:
-                        self.logger.exception("IOError: Unable to output to "
-                                              "LCD: {err}".format(
-                            err=except_msg))
+                        self.logger.exception(
+                            "IOError: Unable to output to LCD: {err}".format(
+                                err=except_msg))
                     self.timer = time.time() + self.lcd_period
 
                 if self.flash_lcd_on:
@@ -359,12 +378,11 @@ class LCDController(threading.Thread):
                         # Determine if the LCD output will have a value unit
                         measurement = ''
                         if self.lcd_line[i]['measurement'] == 'setpoint':
-                            with session_scope(MYCODO_DB_PATH) as new_session:
-                                pid = new_session.query(PID).filter(
-                                    PID.id == self.lcd_line[i]['id']).first()
-                                new_session.expunge_all()
-                                new_session.close()
-                                measurement = pid.measure_type
+                            pid = db_retrieve_table(
+                                MYCODO_DB_PATH,
+                                PID,
+                                device_id=self.lcd_line[i]['id'])
+                            measurement = pid.measure_type
                         elif self.lcd_line[i]['measurement'] in ['temperature',
                                                                  'temperature_die',
                                                                  'temperature_object',
@@ -411,14 +429,12 @@ class LCDController(threading.Thread):
 
     @staticmethod
     def relay_state(relay_id):
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            relay = new_session.query(Relay).filter(Relay.id == relay_id).first()
-            gpio_state = ''
-            GPIO.setmode(GPIO.BCM)
-            if GPIO.input(relay.pin) == relay.trigger:
-                gpio_state = 'On'
-            else:
-                gpio_state = 'Off'
+        relay = db_retrieve_table(MYCODO_DB_PATH, Relay, device_id=relay_id)
+        GPIO.setmode(GPIO.BCM)
+        if GPIO.input(relay.pin) == relay.trigger:
+            gpio_state = 'On'
+        else:
+            gpio_state = 'Off'
         return gpio_state
 
     def output_lcds(self):

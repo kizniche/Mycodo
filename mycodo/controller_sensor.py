@@ -14,7 +14,17 @@ import timeit
 import RPi.GPIO as GPIO
 from lockfile import LockFile
 
-# Sensor/device modules tested and working
+# Classes
+from databases.mycodo_db.models import (
+    CameraStill,
+    CameraStream,
+    Relay,
+    Sensor,
+    SensorConditional,
+    SMTP
+)
+from mycodo_client import DaemonControl
+# Sensor/device modules
 from devices.tca9548a import TCA9548A
 from devices.ads1x15 import ADS1x15_read
 from devices.mcp342x import MCP342x_read
@@ -23,6 +33,7 @@ from sensors.am2315 import AM2315Sensor
 from sensors.bme280 import BME280Sensor
 from sensors.bmp import BMPSensor
 from sensors.chirp import ChirpSensor
+from sensors.dht11 import DHT11Sensor
 from sensors.dht22 import DHT22Sensor
 from sensors.ds18b20 import DS18B20Sensor
 from sensors.htu21d import HTU21DSensor
@@ -34,30 +45,29 @@ from sensors.tsl2561 import TSL2561Sensor
 from sensors.sht1x_7x import SHT1x7xSensor
 from sensors.sht2x import SHT2xSensor
 
-# Sensor modules that are untested (don't have these sensors to test)
-from sensors.dht11 import DHT11Sensor
-
-from config import SQL_DATABASE_MYCODO
-from config import INFLUXDB_HOST
-from config import INFLUXDB_PORT
-from config import INFLUXDB_USER
-from config import INFLUXDB_PASSWORD
-from config import INFLUXDB_DATABASE
-from config import INSTALL_DIRECTORY
-
-from databases.mycodo_db.models import CameraStill
-from databases.mycodo_db.models import CameraStream
-from databases.mycodo_db.models import Relay
-from databases.mycodo_db.models import Sensor
-from databases.mycodo_db.models import SensorConditional
-from databases.mycodo_db.models import SMTP
+# Functions
 from databases.utils import session_scope
-
-from mycodo_client import DaemonControl
 from utils.camera import camera_record
-from utils.influx import format_influxdb_data, read_last_influxdb, write_influxdb_value, write_influxdb_list
+from utils.database import db_retrieve_table
+from utils.influx import (
+    format_influxdb_data,
+    read_last_influxdb,
+    write_influxdb_list,
+    write_influxdb_value
+)
 from utils.send_data import send_email
 from utils.system_pi import cmd_output
+
+# Config
+from config import (
+    SQL_DATABASE_MYCODO,
+    INFLUXDB_HOST,
+    INFLUXDB_PORT,
+    INFLUXDB_USER,
+    INFLUXDB_PASSWORD,
+    INFLUXDB_DATABASE,
+    INSTALL_DIRECTORY
+)
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -91,7 +101,7 @@ class SensorController(threading.Thread):
     def __init__(self, ready, sensor_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("mycodo.sensor-{id}".format(id=sensor_id))
+        self.logger = logging.getLogger("mycodo.sensor_{id}".format(id=sensor_id))
 
         list_devices_i2c = ['ADS1x15',
                             'AM2315',
@@ -138,52 +148,51 @@ class SensorController(threading.Thread):
 
         self.setup_sensor_conditionals()
 
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            sensor = new_session.query(Sensor)
-            sensor = sensor.filter(Sensor.id == self.sensor_id).first()
-            self.i2c_bus = sensor.i2c_bus
-            self.location = sensor.location
-            self.device_type = sensor.device
-            self.sensor_type = sensor.device_type
-            self.period = sensor.period
-            self.multiplexer_address_raw = sensor.multiplexer_address
-            self.multiplexer_bus = sensor.multiplexer_bus
-            self.multiplexer_channel = sensor.multiplexer_channel
-            self.adc_channel = sensor.adc_channel
-            self.adc_gain = sensor.adc_gain
-            self.adc_resolution = sensor.adc_resolution
-            self.adc_measure = sensor.adc_measure
-            self.adc_measure_units = sensor.adc_measure_units
-            self.adc_volts_min = sensor.adc_volts_min
-            self.adc_volts_max = sensor.adc_volts_max
-            self.adc_units_min = sensor.adc_units_min
-            self.adc_units_max = sensor.adc_units_max
-            self.sht_clock_pin = sensor.sht_clock_pin
-            self.sht_voltage = sensor.sht_voltage
+        sensor = db_retrieve_table(MYCODO_DB_PATH, Sensor, device_id=self.sensor_id)
+        self.i2c_bus = sensor.i2c_bus
+        self.location = sensor.location
+        self.device_type = sensor.device
+        self.sensor_type = sensor.device_type
+        self.period = sensor.period
+        self.multiplexer_address_raw = sensor.multiplexer_address
+        self.multiplexer_bus = sensor.multiplexer_bus
+        self.multiplexer_channel = sensor.multiplexer_channel
+        self.adc_channel = sensor.adc_channel
+        self.adc_gain = sensor.adc_gain
+        self.adc_resolution = sensor.adc_resolution
+        self.adc_measure = sensor.adc_measure
+        self.adc_measure_units = sensor.adc_measure_units
+        self.adc_volts_min = sensor.adc_volts_min
+        self.adc_volts_max = sensor.adc_volts_max
+        self.adc_units_min = sensor.adc_units_min
+        self.adc_units_max = sensor.adc_units_max
+        self.sht_clock_pin = sensor.sht_clock_pin
+        self.sht_voltage = sensor.sht_voltage
 
-            # Edge detection
-            self.switch_edge = sensor.switch_edge
-            self.switch_bouncetime = sensor.switch_bouncetime
-            self.switch_reset_period = sensor.switch_reset_period
+        # Edge detection
+        self.switch_edge = sensor.switch_edge
+        self.switch_bouncetime = sensor.switch_bouncetime
+        self.switch_reset_period = sensor.switch_reset_period
 
-            # Relay that will activate prior to sensor read
-            self.pre_relay_id = sensor.pre_relay_id
-            self.pre_relay_duration = sensor.pre_relay_duration
-            self.pre_relay_setup = False
-            self.next_measurement = time.time()
-            self.get_new_measurement = False
-            self.measurement_acquired = False
-            self.pre_relay_activated = False
-            self.pre_relay_timer = time.time()
-            relay = new_session.query(Relay).all()
-            for each_relay in relay:  # Check if relay ID actually exists
-                if each_relay.id == self.pre_relay_id and self.pre_relay_duration:
-                    self.pre_relay_setup = True
+        # Relay that will activate prior to sensor read
+        self.pre_relay_id = sensor.pre_relay_id
+        self.pre_relay_duration = sensor.pre_relay_duration
+        self.pre_relay_setup = False
+        self.next_measurement = time.time()
+        self.get_new_measurement = False
+        self.measurement_acquired = False
+        self.pre_relay_activated = False
+        self.pre_relay_timer = time.time()
 
-            smtp = new_session.query(SMTP).first()
-            self.smtp_max_count = smtp.hourly_max
-            self.email_count = 0
-            self.allowed_to_send_notice = True
+        relay = db_retrieve_table(MYCODO_DB_PATH, Relay, entry='all')
+        for each_relay in relay:  # Check if relay ID actually exists
+            if each_relay.id == self.pre_relay_id and self.pre_relay_duration:
+                self.pre_relay_setup = True
+
+        smtp = db_retrieve_table(MYCODO_DB_PATH, SMTP, entry='first')
+        self.smtp_max_count = smtp.hourly_max
+        self.email_count = 0
+        self.allowed_to_send_notice = True
 
         # Convert string I2C address to base-16 int
         if self.device_type in list_devices_i2c:
@@ -471,13 +480,16 @@ class SensorController(threading.Thread):
             _, _, cmd_status = cmd_output(self.cond_execute_command[cond_id])
             message += "Status: {}. ".format(cmd_status)
 
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            if self.cond_camera_record[cond_id] in ['photo', 'photoemail']:
-                camera_still = new_session.query(CameraStill).first()
-                attachment_file = camera_record(INSTALL_DIRECTORY, 'photo', camera_still)
-            elif self.cond_camera_record[cond_id] in ['video', 'videoemail']:
-                camera_stream = new_session.query(CameraStream).first()
-                attachment_file = camera_record(INSTALL_DIRECTORY, 'video', camera_stream, duration_sec=5)
+        if self.cond_camera_record[cond_id] in ['photo', 'photoemail']:
+            camera_still = db_retrieve_table(
+                MYCODO_DB_PATH, CameraStill, entry='first')
+            attachment_file = camera_record(
+                INSTALL_DIRECTORY, 'photo', camera_still)
+        elif self.cond_camera_record[cond_id] in ['video', 'videoemail']:
+            camera_stream = db_retrieve_table(
+                MYCODO_DB_PATH, CameraStream, entry='first')
+            attachment_file = camera_record(
+                INSTALL_DIRECTORY, 'video', camera_stream, duration_sec=5)
 
         if self.cond_email_notify[cond_id]:
             if (self.email_count >= self.smtp_max_count and
@@ -502,12 +514,12 @@ class SensorController(threading.Thread):
                 elif self.cond_camera_record[cond_id] == 'videoemail':
                     message += "\nVideo attached."
                     attachment_type = 'video'
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    smtp = new_session.query(SMTP).first()
-                    send_email(smtp.host, smtp.ssl, smtp.port,
-                               smtp.user, smtp.passw, smtp.email_from,
-                               self.cond_email_notify[cond_id], message,
-                               attachment_file, attachment_type)
+
+                smtp = db_retrieve_table(MYCODO_DB_PATH, SMTP, entry='first')
+                send_email(smtp.host, smtp.ssl, smtp.port,
+                           smtp.user, smtp.passw, smtp.email_from,
+                           self.cond_email_notify[cond_id], message,
+                           attachment_file, attachment_type)
             else:
                 loggerCond.debug(
                     "{:.0f} seconds left to be allowed to email "
@@ -750,79 +762,80 @@ class SensorController(threading.Thread):
             loggerCond.debug("Deleted Conditional from Sensor {sen}".format(
                 sen=self.sensor_id))
         else:
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                if cond_mod == 'setup':
-                    self.cond_id = {}
-                    self.cond_name = {}
-                    self.cond_activated = {}
-                    self.cond_period = {}
-                    self.cond_measurement_type = {}
-                    self.cond_edge_select = {}
-                    self.cond_edge_detected = {}
-                    self.cond_gpio_state = {}
-                    self.cond_direction = {}
-                    self.cond_setpoint = {}
-                    self.cond_relay_id = {}
-                    self.cond_relay_state = {}
-                    self.cond_relay_on_duration = {}
-                    self.cond_execute_command = {}
-                    self.cond_email_notify = {}
-                    self.cond_flash_lcd = {}
-                    self.cond_camera_record = {}
-                    self.cond_timer = {}
-                    self.smtp_wait_timer = {}
-                    self.sensor_conditional = new_session.query(
-                        SensorConditional).filter(
-                            SensorConditional.sensor_id == self.sensor_id)
-                    self.sensor_conditional = self.sensor_conditional.filter(
-                        SensorConditional.activated == 1)
-                elif cond_mod == 'add':
-                    self.sensor_conditional = new_session.query(
-                        SensorConditional).filter(
-                            SensorConditional.sensor_id == self.sensor_id)
-                    self.sensor_conditional = self.sensor_conditional.filter(
-                        SensorConditional.activated == 1)
-                    self.sensor_conditional = self.sensor_conditional.filter(
-                        SensorConditional.id == cond_id)
-                    loggerCond.debug(
-                        "Added Conditional to Sensor {sen}".format(
-                            sen=self.sensor_id))
-                elif cond_mod == 'mod':
-                    self.sensor_conditional = new_session.query(
-                        SensorConditional).filter(
-                            SensorConditional.sensor_id == self.sensor_id)
-                    self.sensor_conditional = self.sensor_conditional.filter(
-                        SensorConditional.id == cond_id)
-                    loggerCond.debug(
-                        "Modified Conditional from Sensor {sen}".format(
-                            sen=self.sensor_id))
-                else:
-                    return 1
+            if cond_mod == 'setup':
+                self.cond_id = {}
+                self.cond_name = {}
+                self.cond_activated = {}
+                self.cond_period = {}
+                self.cond_measurement_type = {}
+                self.cond_edge_select = {}
+                self.cond_edge_detected = {}
+                self.cond_gpio_state = {}
+                self.cond_direction = {}
+                self.cond_setpoint = {}
+                self.cond_relay_id = {}
+                self.cond_relay_state = {}
+                self.cond_relay_on_duration = {}
+                self.cond_execute_command = {}
+                self.cond_email_notify = {}
+                self.cond_flash_lcd = {}
+                self.cond_camera_record = {}
+                self.cond_timer = {}
+                self.smtp_wait_timer = {}
 
-                for each_cond in self.sensor_conditional.all():
-                    if cond_mod == 'setup':
-                        loggerCond.debug(
-                            "Activated Conditional from Sensor {sen}".format(
-                                sen=self.sensor_id))
-                    self.cond_id[each_cond.id] = each_cond.id
-                    self.cond_name[each_cond.id] = each_cond.name
-                    self.cond_activated[each_cond.id] = each_cond.activated
-                    self.cond_period[each_cond.id] = each_cond.period
-                    self.cond_measurement_type[each_cond.id] = each_cond.measurement_type
-                    self.cond_edge_select[each_cond.id] = each_cond.edge_select
-                    self.cond_edge_detected[each_cond.id] = each_cond.edge_detected
-                    self.cond_gpio_state[each_cond.id] = each_cond.gpio_state
-                    self.cond_direction[each_cond.id] = each_cond.direction
-                    self.cond_setpoint[each_cond.id] = each_cond.setpoint
-                    self.cond_relay_id[each_cond.id] = each_cond.relay_id
-                    self.cond_relay_state[each_cond.id] = each_cond.relay_state
-                    self.cond_relay_on_duration[each_cond.id] = each_cond.relay_on_duration
-                    self.cond_execute_command[each_cond.id] = each_cond.execute_command
-                    self.cond_email_notify[each_cond.id] = each_cond.email_notify
-                    self.cond_flash_lcd[each_cond.id] = each_cond.email_notify
-                    self.cond_camera_record[each_cond.id] = each_cond.camera_record
-                    self.cond_timer[each_cond.id] = time.time()+self.cond_period[each_cond.id]
-                    self.smtp_wait_timer[each_cond.id] = time.time()+3600
+                self.sensor_conditional = db_retrieve_table(
+                    MYCODO_DB_PATH, SensorConditional)
+                self.sensor_conditional = self.sensor_conditional.filter(
+                    SensorConditional.activated == 1)
+            elif cond_mod == 'add':
+                self.sensor_conditional = db_retrieve_table(
+                    MYCODO_DB_PATH, SensorConditional)
+                self.sensor_conditional = self.sensor_conditional.filter(
+                        SensorConditional.sensor_id == self.sensor_id)
+                self.sensor_conditional = self.sensor_conditional.filter(
+                    SensorConditional.activated == 1)
+                self.sensor_conditional = self.sensor_conditional.filter(
+                    SensorConditional.id == cond_id)
+                loggerCond.debug(
+                    "Added Conditional to Sensor {sen}".format(
+                        sen=self.sensor_id))
+            elif cond_mod == 'mod':
+                self.sensor_conditional = db_retrieve_table(
+                    MYCODO_DB_PATH, SensorConditional)
+                self.sensor_conditional = self.sensor_conditional.filter(
+                        SensorConditional.sensor_id == self.sensor_id)
+                self.sensor_conditional = self.sensor_conditional.filter(
+                    SensorConditional.id == cond_id)
+                loggerCond.debug(
+                    "Modified Conditional from Sensor {sen}".format(
+                        sen=self.sensor_id))
+            else:
+                return 1
+
+            for each_cond in self.sensor_conditional.all():
+                if cond_mod == 'setup':
+                    loggerCond.debug(
+                        "Activated Conditional from Sensor {sen}".format(
+                            sen=self.sensor_id))
+                self.cond_id[each_cond.id] = each_cond.id
+                self.cond_name[each_cond.id] = each_cond.name
+                self.cond_activated[each_cond.id] = each_cond.activated
+                self.cond_period[each_cond.id] = each_cond.period
+                self.cond_measurement_type[each_cond.id] = each_cond.measurement_type
+                self.cond_edge_select[each_cond.id] = each_cond.edge_select
+                self.cond_edge_detected[each_cond.id] = each_cond.edge_detected
+                self.cond_gpio_state[each_cond.id] = each_cond.gpio_state
+                self.cond_direction[each_cond.id] = each_cond.direction
+                self.cond_setpoint[each_cond.id] = each_cond.setpoint
+                self.cond_relay_id[each_cond.id] = each_cond.relay_id
+                self.cond_relay_state[each_cond.id] = each_cond.relay_state
+                self.cond_relay_on_duration[each_cond.id] = each_cond.relay_on_duration
+                self.cond_execute_command[each_cond.id] = each_cond.execute_command
+                self.cond_email_notify[each_cond.id] = each_cond.email_notify
+                self.cond_flash_lcd[each_cond.id] = each_cond.email_notify
+                self.cond_camera_record[each_cond.id] = each_cond.camera_record
+                self.cond_timer[each_cond.id] = time.time()+self.cond_period[each_cond.id]
+                self.smtp_wait_timer[each_cond.id] = time.time()+3600
 
         self.pause_loop = False
         self.verify_pause_loop = False

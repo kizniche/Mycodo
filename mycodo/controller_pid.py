@@ -6,6 +6,7 @@
 #
 # PID controller code was used from the source below, with modifications.
 #
+# <http://code.activestate.com/recipes/577231-discrete-pid-controller/>
 # Copyright (c) 2010 cnr437@gmail.com
 #
 # Licensed under the MIT License <http://opensource.org/licenses/MIT>
@@ -27,8 +28,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-#
-# <http://code.activestate.com/recipes/577231-discrete-pid-controller/>
 
 import calendar
 import logging
@@ -37,20 +36,36 @@ import threading
 import time as t
 import timeit
 
-from config import INFLUXDB_HOST
-from config import INFLUXDB_PORT
-from config import INFLUXDB_USER
-from config import INFLUXDB_PASSWORD
-from config import INFLUXDB_DATABASE
-from config import SQL_DATABASE_MYCODO
-from databases.mycodo_db.models import Method
-from databases.mycodo_db.models import PID
-from databases.mycodo_db.models import Relay
-from databases.mycodo_db.models import Sensor
-from databases.utils import session_scope
+# Classes
+from databases.mycodo_db.models import (
+    Method,
+    PID,
+    Relay,
+    Sensor
+)
 from mycodo_client import DaemonControl
-from utils.influx import read_last_influxdb, write_influxdb_value
-from utils.method import sine_wave_y_out, bezier_curve_y_out
+
+# Functions
+from databases.utils import session_scope
+from utils.database import db_retrieve_table
+from utils.influx import (
+    read_last_influxdb,
+    write_influxdb_value
+)
+from utils.method import (
+    bezier_curve_y_out,
+    sine_wave_y_out
+)
+
+# Config
+from config import (
+    INFLUXDB_HOST,
+    INFLUXDB_PORT,
+    INFLUXDB_USER,
+    INFLUXDB_PASSWORD,
+    INFLUXDB_DATABASE,
+    SQL_DATABASE_MYCODO
+)
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -63,7 +78,7 @@ class PIDController(threading.Thread):
     def __init__(self, ready, pid_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("mycodo.pid-{id}".format(id=pid_id))
+        self.logger = logging.getLogger("mycodo.pid_{id}".format(id=pid_id))
 
         self.running = False
         self.thread_startup_timer = timeit.default_timer()
@@ -86,12 +101,11 @@ class PIDController(threading.Thread):
 
         # Check if a method is set for this PID
         if self.method_id:
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                method = new_session.query(Method)
-                method = method.filter(Method.method_id == self.method_id)
-                method = method.filter(Method.method_order == 0).first()
-                self.method_type = method.method_type
-                self.method_start_time = method.start_time
+            method = db_retrieve_table(MYCODO_DB_PATH, Method)
+            method = method.filter(Method.method_id == self.method_id)
+            method = method.filter(Method.method_order == 0).first()
+            self.method_type = method.method_type
+            self.method_start_time = method.start_time
 
             if self.method_type == 'Duration':
                 if self.method_start_time == 'Ended':
@@ -139,7 +153,7 @@ class PIDController(threading.Thread):
                             # Update setpoint if a method is selected
                             if self.method_id != '':
                                 self.calculate_method_setpoint(self.method_id)
-                            self.addSetpointInfluxdb(self.pid_id, self.set_point)
+                            self.add_setpoint_Influxdb(self.pid_id, self.set_point)
                             # Update PID and get control variable
                             self.control_variable = self.update(self.last_measurement)
 
@@ -162,30 +176,29 @@ class PIDController(threading.Thread):
 
     def initialize_values(self):
         """Set PID parameters"""
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            pid = new_session.query(PID).filter(PID.id == self.pid_id).first()
-            sensor = new_session.query(Sensor).filter(Sensor.id == pid.sensor_id).first()
-            self.activated = pid.activated  # 0=inactive, 1=active, 2=paused
-            self.sensor_id = pid.sensor_id
-            self.measure_type = pid.measure_type
-            self.method_id = pid.method_id
-            self.direction = pid.direction
-            self.raise_relay_id = pid.raise_relay_id
-            self.raise_min_duration = pid.raise_min_duration
-            self.raise_max_duration = pid.raise_max_duration
-            self.lower_relay_id = pid.lower_relay_id
-            self.lower_min_duration = pid.lower_min_duration
-            self.lower_max_duration = pid.lower_max_duration
-            self.Kp = pid.p
-            self.Ki = pid.i
-            self.Kd = pid.d
-            self.Integrator_min = pid.integrator_min
-            self.Integrator_max = pid.integrator_max
-            self.measure_interval = pid.period
-            self.default_set_point = pid.setpoint
-            self.set_point = pid.setpoint
-            self.sensor_duration = sensor.period
-            return "success"
+        pid = db_retrieve_table(MYCODO_DB_PATH, PID, device_id=self.pid_id)
+        sensor = db_retrieve_table(MYCODO_DB_PATH, Sensor, device_id=pid.sensor_id)
+        self.activated = pid.activated  # 0=inactive, 1=active, 2=paused
+        self.sensor_id = pid.sensor_id
+        self.measure_type = pid.measure_type
+        self.method_id = pid.method_id
+        self.direction = pid.direction
+        self.raise_relay_id = pid.raise_relay_id
+        self.raise_min_duration = pid.raise_min_duration
+        self.raise_max_duration = pid.raise_max_duration
+        self.lower_relay_id = pid.lower_relay_id
+        self.lower_min_duration = pid.lower_min_duration
+        self.lower_max_duration = pid.lower_max_duration
+        self.Kp = pid.p
+        self.Ki = pid.i
+        self.Kd = pid.d
+        self.Integrator_min = pid.integrator_min
+        self.Integrator_max = pid.integrator_max
+        self.measure_interval = pid.period
+        self.default_set_point = pid.setpoint
+        self.set_point = pid.setpoint
+        self.sensor_duration = sensor.period
+        return "success"
 
     def update(self, current_value):
         """
@@ -295,11 +308,12 @@ class PIDController(threading.Thread):
 
                     # Turn off lower_relay if active, because we're now raising
                     if self.lower_relay_id:
-                        with session_scope(MYCODO_DB_PATH) as new_session:
-                            relay = new_session.query(Relay).filter(
-                                Relay.id == self.lower_relay_id).first()
-                            if relay.is_on():
-                                self.control.relay_off(self.lower_relay_id)
+                        relay = db_retrieve_table(
+                            MYCODO_DB_PATH,
+                            Relay,
+                            device_id=self.lower_relay_id)
+                        if relay.is_on():
+                            self.control.relay_off(self.lower_relay_id)
 
                     if self.raise_seconds_on > self.raise_min_duration:
                         # Activate raise_relay for a duration
@@ -327,19 +341,20 @@ class PIDController(threading.Thread):
 
                     # Turn off raise_relay if active, because we're now lowering
                     if self.raise_relay_id:
-                        with session_scope(MYCODO_DB_PATH) as new_session:
-                            relay = new_session.query(Relay).filter(
-                                Relay.id == self.raise_relay_id).first()
-                            if relay.is_on():
-                                self.control.relay_off(self.raise_relay_id)
+                        relay = db_retrieve_table(
+                            MYCODO_DB_PATH,
+                            Relay,
+                            device_id=self.raise_relay_id)
+                        if relay.is_on():
+                            self.control.relay_off(self.raise_relay_id)
 
                     if self.lower_seconds_on > self.lower_min_duration:
                         # Activate lower_relay for a duration
                         self.logger.debug("Setpoint: {sp} Output: {op} to "
                                           "relay {relay}".format(
-                                sp=self.set_point,
-                                op=self.control_variable,
-                                relay=self.lower_relay_id))
+                                            sp=self.set_point,
+                                            op=self.control_variable,
+                                            relay=self.lower_relay_id))
                         self.control.relay_on(self.lower_relay_id,
                                               self.lower_seconds_on)
                 else:
@@ -352,10 +367,7 @@ class PIDController(threading.Thread):
                 self.control.relay_off(self.lower_relay_id)
 
     def calculate_method_setpoint(self, method_id):
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            method = new_session.query(Method)
-            new_session.expunge_all()
-            new_session.close()
+        method = db_retrieve_table(MYCODO_DB_PATH, Method)
 
         method_key = method.filter(Method.method_id == method_id)
         method_key = method_key.filter(Method.method_order == 0).first()
@@ -504,7 +516,7 @@ class PIDController(threading.Thread):
         # Setpoint not needing to be calculated, use default setpoint
         self.set_point = self.default_set_point
 
-    def addSetpointInfluxdb(self, pid_id, setpoint):
+    def add_setpoint_Influxdb(self, pid_id, setpoint):
         """
         Add a setpoint entry to InfluxDB
 
@@ -538,43 +550,42 @@ class PIDController(threading.Thread):
         self.logger.info("Resume")
         return "success"
 
-    def setPoint(self, set_point):
+    def set_setpoint(self, set_point):
         """Initilize the setpoint of PID"""
         self.set_point = set_point
         self.Integrator = 0
         self.Derivator = 0
 
-    def setIntegrator(self, Integrator):
+    def set_integrator(self, Integrator):
         """Set the Integrator of the controller"""
         self.Integrator = Integrator
 
-    def setDerivator(self, Derivator):
+    def set_derivator(self, Derivator):
         """Set the Derivator of the controller"""
         self.Derivator = Derivator
 
-    def setKp(self, P):
+    def set_kp(self, P):
         """Set Kp gain of the controller"""
         self.Kp = P
 
-
-    def setKi(self, I):
+    def set_ki(self, I):
         """Set Ki gain of the controller"""
         self.Ki = I
 
-    def setKd(self, D):
+    def set_kd(self, D):
         """Set Kd gain of the controller"""
         self.Kd = D
 
-    def getPoint(self):
+    def get_setpoint(self):
         return self.set_point
 
-    def getError(self):
+    def get_error(self):
         return self.error
 
-    def getIntegrator(self):
+    def get_integrator(self):
         return self.Integrator
 
-    def getDerivator(self):
+    def get_derivator(self):
         return self.Derivator
 
     def is_running(self):

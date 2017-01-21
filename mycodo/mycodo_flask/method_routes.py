@@ -6,29 +6,39 @@ import random
 import string
 import time
 
-from flask import (Blueprint,
-                   current_app,
-                   flash,
-                   jsonify,
-                   redirect,
-                   render_template,
-                   request,
-                   url_for)
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for
+)
 from flask_babel import gettext
 
-from mycodo.utils.system_pi import get_sec
-from mycodo.utils.method import (sine_wave_y_out,
-                                 bezier_curve_y_out)
+# Classes
+from mycodo.databases.mycodo_db.models import (
+    Method,
+    Relay
+)
 
-from databases.utils import session_scope
-from databases.mycodo_db.models import Method
-from databases.mycodo_db.models import Relay
-
+# Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
-from mycodo.mycodo_flask.general_routes import (before_blueprint_request,
-                                                inject_mycodo_version,
-                                                logged_in)
+from mycodo.databases.utils import session_scope
+from mycodo.mycodo_flask.general_routes import (
+    before_blueprint_request,
+    inject_mycodo_version,
+    logged_in
+)
+from mycodo.utils.database import db_retrieve_table
+from mycodo.utils.system_pi import get_sec
+from mycodo.utils.method import (
+    sine_wave_y_out,
+    bezier_curve_y_out
+)
 
 logger = logging.getLogger('mycodo.mycodo_flask.methods')
 
@@ -55,10 +65,8 @@ def method_data(method_type, method_id):
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
-        method = new_session.query(Method)
-        new_session.expunge_all()
-        new_session.close()
+    method = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Method)
 
     # First method column with general information about method
     method_key = method.filter(Method.method_id == method_id)
@@ -173,10 +181,9 @@ def method_list():
     form_create_method = flaskforms.CreateMethod()
 
     # TODO: Move to Flask-SQLAlchemy. This creates errors in the HTTP log: "SQLite objects created in a thread can only be used in that same thread"
-    with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
-        method = new_session.query(Method)
-        new_session.expunge_all()
-        new_session.close()
+    method = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Method)
+
     method_all = method.filter(Method.method_order > 0)
     method_all = method_all.filter(Method.relay_id == None).all()
     method = method.filter(Method.method_order == 0).all()
@@ -224,10 +231,8 @@ def method_builder(method_type, method_id):
             else:
                 flash(gettext("Could not create method"), "error")
 
-        with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
-            method = new_session.query(Method)
-            new_session.expunge_all()
-            new_session.close()
+        method = db_retrieve_table(
+            current_app.config['MYCODO_DB_PATH'], Method)
 
         # The single table entry that holds the method type information
         method_key = method.filter(Method.method_id == method_id)
@@ -256,10 +261,10 @@ def method_builder(method_type, method_id):
                 else:
                     last_setpoint = last_method.start_setpoint
 
-        # method = flaskutils.db_retrieve_table(
+        # method = db_retrieve_table(
         #     current_app.config['MYCODO_DB_PATH'], Method)
-        relay = flaskutils.db_retrieve_table(
-            current_app.config['MYCODO_DB_PATH'], Relay)
+        relay = db_retrieve_table(
+            current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
 
         if request.method == 'POST':
             form_name = request.form['form-name']
@@ -295,9 +300,9 @@ def method_delete(method_id):
         return redirect(url_for('general_routes.home'))
 
     try:
-        with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
-            method = new_session.query(Method)
-            method.filter(Method.method_id == method_id).delete()
+        method = db_retrieve_table(
+            current_app.config['MYCODO_DB_PATH'], Method)
+        method.filter(Method.method_id == method_id).delete()
     except Exception as except_msg:
         flash("Error while deleting Method: "
               "{}".format(except_msg), "error")

@@ -4,34 +4,46 @@ import datetime
 import socket
 import time
 
-from flask import current_app
-from flask import redirect
-from flask import request
-from flask import render_template
-from flask import flash
-from flask import session
-from flask import url_for
-from flask import make_response
+from flask import (
+    current_app,
+    redirect,
+    request,
+    render_template,
+    flash,
+    session,
+    url_for,
+    make_response
+)
 from flask_babel import gettext
 from flask.blueprints import Blueprint
 
-from mycodo import flaskforms
-from flaskutils import flash_form_errors
-
-from config import LOGIN_ATTEMPTS
-from config import LOGIN_BAN_SECONDS
-from config import LOGIN_LOG_FILE
-
-from mycodo.databases.utils import session_scope
-from mycodo.databases.users_db.models import Users
+# Classes
 from mycodo.databases.mycodo_db.models import Misc
+from mycodo.databases.users_db.models import Users
 
-from scripts.utils import test_username, test_password
+# Functions
+from mycodo import flaskforms
+from mycodo.databases.utils import session_scope
+from mycodo.flaskutils import flash_form_errors
+from mycodo.scripts.utils import (
+    test_username,
+    test_password
+)
+from mycodo.utils.database import db_retrieve_table
 
-blueprint = Blueprint('authentication_routes',
-                      __name__,
-                      static_folder='../static',
-                      template_folder='../templates')
+# Config
+from config import (
+    LOGIN_ATTEMPTS,
+    LOGIN_BAN_SECONDS,
+    LOGIN_LOG_FILE
+)
+
+blueprint = Blueprint(
+    'authentication_routes',
+    __name__,
+    static_folder='../static',
+    template_folder='../templates'
+)
 
 
 @blueprint.context_processor
@@ -92,10 +104,10 @@ def do_login():
     form = flaskforms.Login()
     form_notice = flaskforms.InstallNotice()
 
-    with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-        misc = db_session.query(Misc).first()
-        dismiss_notification = misc.dismiss_notification
-        stats_opt_out = misc.stats_opt_out
+    misc = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Misc, entry='first')
+    dismiss_notification = misc.dismiss_notification
+    stats_opt_out = misc.stats_opt_out
 
     # Check if the user is banned from logging in (too many incorrect attempts)
     if banned_from_login():
@@ -202,21 +214,21 @@ def authenticate_cookies(db_path, users):
     cookie_username = request.cookies.get('user_name')
     cookie_password_hash = request.cookies.get('user_pass_hash')
     if cookie_username is not None:
-        with session_scope(db_path) as new_session:
-            user = new_session.query(users).filter(
-                users.user_name == cookie_username).first()
-            new_session.expunge_all()
-            new_session.close()
-            if user is None:
-                return False
-            elif cookie_password_hash == user.user_password_hash:
-                session['logged_in'] = True
-                session['user_group'] = user.user_restriction
-                session['user_name'] = user.user_name
-                session['user_theme'] = user.user_theme
-                return True
-            else:
-                failed_login()
+        user = db_retrieve_table(
+            db_path, users)
+        user = user.filter(
+            Users.user_name == cookie_username).first()
+
+        if user is None:
+            return False
+        elif cookie_password_hash == user.user_password_hash:
+            session['logged_in'] = True
+            session['user_group'] = user.user_restriction
+            session['user_name'] = user.user_name
+            session['user_theme'] = user.user_theme
+            return True
+        else:
+            failed_login()
     return False
 
 

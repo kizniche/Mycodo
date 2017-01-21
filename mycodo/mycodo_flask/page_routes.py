@@ -20,39 +20,49 @@ from flask import (current_app,
 from flask_babel import gettext
 from flask.blueprints import Blueprint
 
-from databases.mycodo_db.models import CameraStill
-from databases.mycodo_db.models import DisplayOrder
-from databases.mycodo_db.models import Graph
-from databases.mycodo_db.models import LCD
-from databases.mycodo_db.models import Misc
-from databases.mycodo_db.models import PID
-from databases.mycodo_db.models import RelayConditional
-from databases.mycodo_db.models import Sensor
-from databases.mycodo_db.models import SensorConditional
-from databases.mycodo_db.models import Timer
-from databases.users_db.models import Users
-
-from devices.camera_pi import CameraStream
-from utils.camera import camera_record
-
-from config import DAEMON_LOG_FILE
-from config import FILE_TIMELAPSE_PARAM
-from config import HTTP_LOG_FILE
-from config import INSTALL_DIRECTORY
-from config import LOGIN_LOG_FILE
-from config import LOCK_FILE_STREAM
-from config import LOCK_FILE_TIMELAPSE
-from config import RESTORE_LOG_FILE
-from config import UPGRADE_LOG_FILE
-
+# Classes
 from mycodo.databases.utils import session_scope
-from mycodo.databases.mycodo_db.models import Method, Relay
+from mycodo.databases.mycodo_db.models import (
+    CameraStill,
+    DisplayOrder,
+    Graph,
+    LCD,
+    Method,
+    Misc,
+    PID,
+    Relay,
+    RelayConditional,
+    Sensor,
+    SensorConditional,
+    Timer
+)
+from databases.users_db.models import Users
+from mycodo.devices.camera_pi import CameraStream
 
+# Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
-from mycodo.mycodo_flask.general_routes import (before_blueprint_request,
-                                                inject_mycodo_version,
-                                                logged_in)
+from mycodo.mycodo_flask.general_routes import (
+    before_blueprint_request,
+    inject_mycodo_version,
+    logged_in
+)
+from mycodo.utils.camera import camera_record
+from mycodo.utils.database import db_retrieve_table
+
+
+# Config
+from config import (
+    DAEMON_LOG_FILE,
+    FILE_TIMELAPSE_PARAM,
+    HTTP_LOG_FILE,
+    INSTALL_DIRECTORY,
+    LOGIN_LOG_FILE,
+    LOCK_FILE_STREAM,
+    LOCK_FILE_TIMELAPSE,
+    RESTORE_LOG_FILE,
+    UPGRADE_LOG_FILE,
+)
 
 logger = logging.getLogger('mycodo.mycodo_flask.pages')
 
@@ -109,9 +119,9 @@ def page_camera():
                         if CameraStream().is_running():
                             CameraStream().terminate()  # Stop camera stream
                             time.sleep(2)
-                        camera = flaskutils.db_retrieve_table(
+                        camera = db_retrieve_table(
                             current_app.config['MYCODO_DB_PATH'],
-                            CameraStill, first=True)
+                            CameraStill, entry='first')
                         camera_record(INSTALL_DIRECTORY, 'photo', camera)
                     except Exception as msg:
                         flash("Camera Error: {}".format(msg), "error")
@@ -242,10 +252,10 @@ def page_export():
         return redirect(url_for('general_routes.home'))
 
     export_options = flaskforms.ExportOptions()
-    relay = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Relay)
-    sensor = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Sensor)
+    relay = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
+    sensor = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Sensor, entry='all')
     relay_choices = flaskutils.choices_id_name(relay)
     sensor_choices = flaskutils.choices_sensors(sensor)
 
@@ -283,17 +293,17 @@ def page_graph():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    graph = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Graph)
-    pid = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], PID)
-    relay = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Relay)
-    sensor = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Sensor)
+    graph = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Graph, entry='all')
+    pid = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], PID, entry='all')
+    relay = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
+    sensor = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Sensor, entry='all')
 
-    display_order_unsplit = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).graph
+    display_order_unsplit = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], DisplayOrder, entry='first').graph
     if display_order_unsplit:
         display_order = display_order_unsplit.split(",")
     else:
@@ -376,8 +386,8 @@ def page_graph_async():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    sensor = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Sensor)
+    sensor = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Sensor, entry='all')
     sensor_choices = flaskutils.choices_sensors(sensor)
     sensor_choices_split = OrderedDict()
     for key, _ in sensor_choices.iteritems():
@@ -459,17 +469,17 @@ def page_lcd():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    lcd = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], LCD)
-    pid = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], PID)
-    relay = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Relay)
-    sensor = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Sensor)
+    lcd = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], LCD, entry='all')
+    pid = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], PID, entry='all')
+    relay = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
+    sensor = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Sensor, entry='all')
 
-    display_order_unsplit = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).lcd
+    display_order_unsplit = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], DisplayOrder, entry='first').lcd
     if display_order_unsplit:
         display_order = display_order_unsplit.split(",")
     else:
@@ -523,25 +533,25 @@ def page_live():
         return redirect(url_for('general_routes.home'))
 
     # Retrieve tables for the data displayed on the live page
-    pid = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], PID)
-    relay = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Relay)
-    sensor = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Sensor)
-    timer = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Timer)
+    pid = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], PID, entry='all')
+    relay = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
+    sensor = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Sensor, entry='all')
+    timer = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Timer, entry='all')
 
     # Retrieve the display order of the controllers
-    pid_display_order_unsplit = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).pid
+    pid_display_order_unsplit = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], DisplayOrder, entry='first').pid
     if pid_display_order_unsplit:
         pid_display_order = pid_display_order_unsplit.split(",")
     else:
         pid_display_order = []
 
-    sensor_display_order_unsplit = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).sensor
+    sensor_display_order_unsplit = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], DisplayOrder, entry='first').sensor
     if sensor_display_order_unsplit:
         sensor_display_order = sensor_display_order_unsplit.split(",")
     else:
@@ -556,11 +566,10 @@ def page_live():
                 sensor_order_sorted.append(each_sensor.id)
 
     # Retrieve only parent method columns
-    with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
-        method = new_session.query(Method).filter(
-            Method.method_order == 0).all()
-        new_session.expunge_all()
-        new_session.close()
+    method = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Method)
+    method = method.filter(
+        Method.method_order == 0).all()
 
     return render_template('pages/live.html',
                            method=method,
@@ -631,15 +640,15 @@ def page_pid():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    pids = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], PID)
-    relay = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Relay)
-    sensor = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Sensor)
+    pids = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], PID, entry='all')
+    relay = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
+    sensor = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Sensor, entry='all')
 
-    display_order_unsplit = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).pid
+    display_order_unsplit = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], DisplayOrder, entry='first').pid
     if display_order_unsplit:
         display_order = display_order_unsplit.split(",")
     else:
@@ -648,11 +657,10 @@ def page_pid():
     form_add_pid = flaskforms.AddPID()
     form_mod_pid = flaskforms.ModPID()
 
-    with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
-        method = new_session.query(Method)
-        method = method.filter(Method.method_order == 0).all()
-        new_session.expunge_all()
-        new_session.close()
+    method = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Method)
+    method = method.filter(
+        Method.method_order == 0).all()
 
     if request.method == 'POST':
         if session['user_group'] == 'guest':
@@ -707,17 +715,17 @@ def page_relay():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    lcd = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], LCD)
-    relay = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Relay)
-    relayconditional = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], RelayConditional)
-    users = flaskutils.db_retrieve_table(
-        current_app.config['USER_DB_PATH'], Users)
+    lcd = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], LCD, entry='all')
+    relay = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
+    relayconditional = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], RelayConditional, entry='all')
+    users = db_retrieve_table(
+        current_app.config['USER_DB_PATH'], Users, entry='all')
 
-    display_order_unsplit = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).relay
+    display_order_unsplit = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], DisplayOrder, entry='first').relay
     if display_order_unsplit:
         display_order = display_order_unsplit.split(",")
     else:
@@ -770,21 +778,21 @@ def page_sensor():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    lcd = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], LCD)
-    pid = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], PID)
-    relay = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Relay)
-    sensor = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Sensor)
-    sensor_conditional = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], SensorConditional)
-    users = flaskutils.db_retrieve_table(
-        current_app.config['USER_DB_PATH'], Users)
+    lcd = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], LCD, entry='all')
+    pid = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], PID, entry='all')
+    relay = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
+    sensor = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Sensor, entry='all')
+    sensor_conditional = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], SensorConditional, entry='all')
+    users = db_retrieve_table(
+        current_app.config['USER_DB_PATH'], Users, entry='all')
 
-    display_order_unsplit = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).sensor
+    display_order_unsplit = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], DisplayOrder, entry='first').sensor
     if display_order_unsplit:
         display_order = display_order_unsplit.split(",")
     else:
@@ -848,14 +856,14 @@ def page_timer():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    timer = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Timer)
-    relay = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Relay)
+    timer = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Timer, entry='all')
+    relay = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
     relay_choices = flaskutils.choices_id_name(relay)
 
-    display_order_unsplit = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).timer
+    display_order_unsplit = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], DisplayOrder, entry='first').timer
     if display_order_unsplit:
         display_order = display_order_unsplit.split(",")
     else:
@@ -896,13 +904,13 @@ def page_usage():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    misc = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Misc, first=True)
-    relay = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Relay)
+    misc = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Misc, entry='first')
+    relay = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
 
-    display_order_unsplit = flaskutils.db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], DisplayOrder, first=True).relay
+    display_order_unsplit = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], DisplayOrder, entry='first').relay
     if display_order_unsplit:
         display_order = display_order_unsplit.split(",")
     else:

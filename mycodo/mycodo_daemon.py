@@ -41,43 +41,50 @@ from collections import OrderedDict
 from daemonize import Daemonize
 from rpyc.utils.server import ThreadedServer
 
-from utils.camera import camera_record
-from utils.statistics import add_update_csv
-from utils.statistics import recreate_stat_file
-from utils.statistics import return_stat_file_dict
-from utils.statistics import send_stats
-
-from config import DAEMON_PID_FILE
-from config import DAEMON_LOG_FILE
-from config import FILE_TIMELAPSE_PARAM
-from config import ID_FILE
-from config import INSTALL_DIRECTORY
-from config import LOCK_FILE_TIMELAPSE
-from config import MYCODO_VERSION
-from config import SQL_DATABASE_MYCODO
-from config import SQL_DATABASE_USER
-from config import STATS_INTERVAL
-from config import STATS_CSV
-from config import STATS_HOST
-from config import STATS_PORT
-from config import STATS_USER
-from config import STATS_PASSWORD
-from config import STATS_DATABASE
-
+# Classes
 from controller_lcd import LCDController
 from controller_pid import PIDController
 from controller_relay import RelayController
 from controller_sensor import SensorController
 from controller_timer import TimerController
+from databases.mycodo_db.models import (
+    CameraStill,
+    LCD,
+    Misc,
+    PID,
+    Sensor,
+    Timer,
+)
 
-from databases.mycodo_db.models import CameraStill
-from databases.mycodo_db.models import LCD
-from databases.mycodo_db.models import Misc
-from databases.mycodo_db.models import PID
-from databases.mycodo_db.models import Sensor
-from databases.mycodo_db.models import Timer
-from databases.utils import session_scope
+# Functions
+from utils.camera import camera_record
+from utils.database import db_retrieve_table
+from utils.statistics import (
+    add_update_csv,
+    recreate_stat_file,
+    return_stat_file_dict,
+    send_stats
+)
 
+# Config
+from config import (
+    DAEMON_PID_FILE,
+    DAEMON_LOG_FILE,
+    FILE_TIMELAPSE_PARAM,
+    ID_FILE,
+    INSTALL_DIRECTORY,
+    LOCK_FILE_TIMELAPSE,
+    MYCODO_VERSION,
+    SQL_DATABASE_MYCODO,
+    SQL_DATABASE_USER,
+    STATS_INTERVAL,
+    STATS_CSV,
+    STATS_HOST,
+    STATS_PORT,
+    STATS_USER,
+    STATS_PASSWORD,
+    STATS_DATABASE
+)
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
@@ -249,9 +256,9 @@ class DaemonController(threading.Thread):
         }
         self.timer_ram_use = time.time()
         self.timer_stats = time.time()+120
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            misc = new_session.query(Misc).first()
-            self.opt_out_statistics = misc.stats_opt_out
+
+        misc = db_retrieve_table(MYCODO_DB_PATH, Misc, entry='first')
+        self.opt_out_statistics = misc.stats_opt_out
         if self.opt_out_statistics:
             self.logger.info("Anonymous statistics disabled")
         else:
@@ -295,14 +302,14 @@ class DaemonController(threading.Thread):
                                        'capture_number',
                                        capture_number)
                         # Capture image
-                        with session_scope(MYCODO_DB_PATH) as new_session:
-                            camera = new_session.query(CameraStill).first()
-                            camera_record(
-                                INSTALL_DIRECTORY,
-                                'timelapse',
-                                camera,
-                                start_time=dict_timelapse_param['start_time'],
-                                capture_number=capture_number)
+                        camera = db_retrieve_table(
+                            MYCODO_DB_PATH, CameraStill, entry='first')
+                        camera_record(
+                            INSTALL_DIRECTORY,
+                            'timelapse',
+                            camera,
+                            start_time=dict_timelapse_param['start_time'],
+                            capture_number=capture_number)
 
                 elif (os.path.isfile(FILE_TIMELAPSE_PARAM) or
                         os.path.isfile(LOCK_FILE_TIMELAPSE)):
@@ -383,18 +390,18 @@ class DaemonController(threading.Thread):
                     cont_type, cont_id)
 
             # Check if the controller ID actually exists and start it
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                if new_session.query(controller_manage['type']).filter(
-                        controller_manage['type'].id == cont_id).first():
-                    self.controller[cont_type][cont_id] = controller_manage['function'](
-                        ready, cont_id)
-                    self.controller[cont_type][cont_id].start()
-                    ready.wait()  # wait for thread to return ready
-                    return 0, "{type} controller with ID {id} " \
-                        "activated.".format(type=cont_type, id=cont_id)
-                else:
-                    return 1, "{type} controller with ID {id} not found.".format(
-                        type=cont_type, id=cont_id)
+            controller = db_retrieve_table(
+                MYCODO_DB_PATH, controller_manage['type'], device_id=cont_id)
+            if controller:
+                self.controller[cont_type][cont_id] = controller_manage['function'](
+                    ready, cont_id)
+                self.controller[cont_type][cont_id].start()
+                ready.wait()  # wait for thread to return ready
+                return 0, "{type} controller with ID {id} " \
+                    "activated.".format(type=cont_type, id=cont_id)
+            else:
+                return 1, "{type} controller with ID {id} not found.".format(
+                    type=cont_type, id=cont_id)
         except Exception as except_msg:
             message = "Could not activate {type} controller with ID {id}: " \
                       "{err}".format(type=cont_type, id=cont_id,
@@ -598,13 +605,10 @@ class DaemonController(threading.Thread):
         controller does.
         """
         # Obtain database configuration options
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            lcd = new_session.query(LCD).all()
-            pid = new_session.query(PID).all()
-            sensor = new_session.query(Sensor).all()
-            timer = new_session.query(Timer).all()
-            new_session.expunge_all()
-            new_session.close()
+        lcd = db_retrieve_table(MYCODO_DB_PATH, LCD, entry='all')
+        pid = db_retrieve_table(MYCODO_DB_PATH, PID, entry='all')
+        sensor = db_retrieve_table(MYCODO_DB_PATH, Sensor, entry='all')
+        timer = db_retrieve_table(MYCODO_DB_PATH, Timer, entry='all')
 
         self.logger.debug("Starting relay controller")
         self.controller['Relay'] = RelayController()

@@ -12,24 +12,31 @@ import threading
 import time
 import timeit
 
-from config import SQL_DATABASE_MYCODO
-from config import INFLUXDB_HOST
-from config import INFLUXDB_PORT
-from config import INFLUXDB_USER
-from config import INFLUXDB_PASSWORD
-from config import INFLUXDB_DATABASE
-from config import MAX_AMPS
-
-from databases.mycodo_db.models import Relay
-from databases.mycodo_db.models import RelayConditional
-from databases.mycodo_db.models import SMTP
+# Classes
+from databases.mycodo_db.models import (
+    Relay,
+    RelayConditional,
+    SMTP
+)
 from databases.utils import session_scope
-
 from mycodo_client import DaemonControl
 
+# Functions
+from utils.database import db_retrieve_table
 from utils.influx import write_influxdb_value
 from utils.send_data import send_email
 from utils.system_pi import cmd_output
+
+# Config
+from config import (
+    SQL_DATABASE_MYCODO,
+    INFLUXDB_HOST,
+    INFLUXDB_PORT,
+    INFLUXDB_USER,
+    INFLUXDB_PASSWORD,
+    INFLUXDB_DATABASE,
+    MAX_AMPS
+)
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -62,16 +69,15 @@ class RelayController(threading.Thread):
 
         self.logger.debug("Initializing Relays")
         try:
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                smtp = new_session.query(SMTP).first()
-                self.smtp_max_count = smtp.hourly_max
-                self.smtp_wait_time = time.time() + 3600
-                self.smtp_timer = time.time()
-                self.email_count = 0
-                self.allowed_to_send_notice = True
+            smtp = db_retrieve_table(MYCODO_DB_PATH, SMTP, entry='first')
+            self.smtp_max_count = smtp.hourly_max
+            self.smtp_wait_time = time.time() + 3600
+            self.smtp_timer = time.time()
+            self.email_count = 0
+            self.allowed_to_send_notice = True
 
-                relays = new_session.query(Relay).all()
-                self.all_relays_initialize(relays)
+            relays = db_retrieve_table(MYCODO_DB_PATH, Relay, entry='all')
+            self.all_relays_initialize(relays)
             # Turn all relays off
             self.all_relays_off()
             # Turn relays on that are set to be on at start
@@ -270,14 +276,11 @@ class RelayController(threading.Thread):
 
         if trigger_conditionals:
             if state == 'on' and duration != 0:
-                self.checkConditionals(relay_id, 0)
-            self.checkConditionals(relay_id, duration)
+                self.check_conditionals(relay_id, 0)
+            self.check_conditionals(relay_id, duration)
 
-    def checkConditionals(self, relay_id, on_duration):
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            conditionals = new_session.query(RelayConditional)
-            new_session.expunge_all()
-            new_session.close()
+    def check_conditionals(self, relay_id, on_duration):
+        conditionals = db_retrieve_table(MYCODO_DB_PATH, RelayConditional)
 
         conditionals = conditionals.filter(RelayConditional.if_relay_id == relay_id)
         conditionals = conditionals.filter(RelayConditional.activated == True)
@@ -323,13 +326,13 @@ class RelayController(threading.Thread):
                 message += "Execute: '{}'. ".format(
                     each_conditional.execute_command)
                 _, _, cmd_status = cmd_output(
-                    self.cond_execute_command[cond_id])
+                    each_conditional.execute_command)
                 message += "Status: {}. ".format(cmd_status)
 
             if each_conditional.email_notify:
                 if (self.email_count >= self.smtp_max_count and
                         time.time() < self.smtp_wait_time):
-                     self.allowed_to_send_notice = False
+                    self.allowed_to_send_notice = False
                 else:
                     if time.time() > self.smtp_wait_time:
                         self.email_count = 0
@@ -341,18 +344,18 @@ class RelayController(threading.Thread):
                     message += "Notify {}.".format(
                         each_conditional.email_notify)
 
-                    with session_scope(MYCODO_DB_PATH) as new_session:
-                        smtp = new_session.query(SMTP).first()
-                        send_email(
-                            smtp.host, smtp.ssl, smtp.port, smtp.user,
-                            smtp.passw, smtp.email_from,
-                            each_conditional.email_notify, message)
+                    smtp = db_retrieve_table(
+                        MYCODO_DB_PATH,SMTP, entry='first')
+                    send_email(
+                        smtp.host, smtp.ssl, smtp.port, smtp.user,
+                        smtp.passw, smtp.email_from,
+                        each_conditional.email_notify, message)
                 else:
                     self.logger.debug("[Relay Conditional {}] True: "
                                       "{:.0f} seconds left to be "
                                       "allowed to email again.".format(
-                                      each_cond.id,
-                                      (self.smtp_wait_time-time.time())))
+                                        each_conditional.id,
+                                        (self.smtp_wait_time-time.time())))
 
             if each_conditional.flash_lcd:
                 start_flashing = threading.Thread(
@@ -379,7 +382,8 @@ class RelayController(threading.Thread):
             self.relay_on_duration[each_relay.id] = False
             self.relay_time_turned_on[each_relay.id] = None
             self.setup_pin(each_relay.pin)
-            self.logger.debug("{} ({}) Initialized".format(each_relay.id, each_relay.name))
+            self.logger.debug("{} ({}) Initialized".format(
+                each_relay.id, each_relay.name))
 
     def all_relays_off(self):
         """Turn all relays off"""
@@ -413,27 +417,26 @@ class RelayController(threading.Thread):
         :type do_setup_pin: bool
         """
         try:
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                relay = new_session.query(Relay).filter(
-                    Relay.id == relay_id).first()
-                self.relay_id[relay_id] = relay.id
-                self.relay_name[relay_id] = relay.name
-                self.relay_pin[relay_id] = relay.pin
-                self.relay_amps[relay_id] = relay.amps
-                self.relay_trigger[relay_id] = relay.trigger
-                self.relay_start_state[relay_id] = relay.start_state
-                self.relay_on_until[relay_id] = datetime.datetime.now()
-                self.relay_time_turned_on[relay_id] = None
-                self.relay_last_duration[relay_id] = 0
-                self.relay_on_duration[relay_id] = False
-                message = "Relay {} ({}) ".format(
-                    self.relay_id[relay_id], self.relay_name[relay_id])
-                if do_setup_pin:
-                    self.setup_pin(relay.pin)
-                    message += "initialized"
-                else:
-                    message += "added"
-                self.logger.debug(message)
+            relay = db_retrieve_table(
+                MYCODO_DB_PATH, Relay, device_id=relay_id)
+            self.relay_id[relay_id] = relay.id
+            self.relay_name[relay_id] = relay.name
+            self.relay_pin[relay_id] = relay.pin
+            self.relay_amps[relay_id] = relay.amps
+            self.relay_trigger[relay_id] = relay.trigger
+            self.relay_start_state[relay_id] = relay.start_state
+            self.relay_on_until[relay_id] = datetime.datetime.now()
+            self.relay_time_turned_on[relay_id] = None
+            self.relay_last_duration[relay_id] = 0
+            self.relay_on_duration[relay_id] = False
+            message = "Relay {} ({}) ".format(
+                self.relay_id[relay_id], self.relay_name[relay_id])
+            if do_setup_pin:
+                self.setup_pin(relay.pin)
+                message += "initialized"
+            else:
+                message += "added"
+            self.logger.debug(message)
             return 0, "success"
         except Exception as msg:
             return 1, "Add_Mod_Relay Error: ID {}: {}".format(relay_id, msg)
