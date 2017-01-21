@@ -99,6 +99,8 @@ class DHT11Sensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
+        self._humidity = 0.0
+        self._temperature = 0.0
         try:
             if self.power is not None:
                 logger.debug("Turning on sensor at GPIO {}...".format(self.gpio))
@@ -132,9 +134,9 @@ class DHT11Sensor(AbstractSensor):
             self.get_measurement()
             # self_humidity and self._temperature are set in self._edge_rise()
             if self._humidity != 0 and self._temperature != 0:
-                logger.error("{cls}: Could not acquire a measurement".format(
-                    cls=type(self).__name__))
-            return  # success - no errors
+                return  # success - no errors
+            logger.error("{cls}: Could not acquire a measurement".format(
+                cls=type(self).__name__))
         except Exception as e:
             logger.error("{cls} raised an exception when taking a reading: "
                          "{err}".format(cls=type(self).__name__, err=e))

@@ -112,11 +112,14 @@ class DHT22Sensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        if self.power is not None:
-            print("Turning sensor at GPIO {}...".format(self.gpio))
-            self.pi.write(self.power, 1)  # Switch sensor on.
-            time.sleep(2)
+        self._humidity = 0.0
+        self._temperature = 0.0
         try:
+            if self.power is not None:
+                logger.debug("Turning on sensor at GPIO {pin}...".format(
+                    pin=self.gpio))
+                self.pi.write(self.power, 1)  # Switch sensor on.
+                time.sleep(2)
             try:
                 self.setup()
             except:
@@ -145,9 +148,9 @@ class DHT22Sensor(AbstractSensor):
             self.get_measurement()
             # self_humidity and self._temperature are set in self._edge_rise()
             if self._humidity != 0 and self._temperature != 0:
-                logger.error("{cls}: Could not acquire a measurement".format(
-                    cls=type(self).__name__))
                 return  # success - no errors
+            logger.error("{cls}: Could not acquire a measurement".format(
+                cls=type(self).__name__))
         except Exception as e:
             logger.error("{cls} raised an exception when taking a reading: "
                          "{err}".format(cls=type(self).__name__, err=e))
