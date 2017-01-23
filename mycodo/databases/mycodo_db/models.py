@@ -300,6 +300,8 @@ class PIDConditional(Base):
 class Graph(Base):
     __tablename__ = "graph"
     id = Column(TEXT, unique=True, primary_key=True)
+    colors_custom = Column(BOOLEAN)
+    colors = Column(TEXT)
     name = Column(TEXT)
     pid_ids = Column(TEXT)
     relay_ids = Column(TEXT)

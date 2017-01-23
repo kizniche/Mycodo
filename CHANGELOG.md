@@ -1,8 +1,13 @@
 ## 4.1.9 (Unreleased)
 
+Features:
+
+  - Add ability to define the colors of lines on general graphs ([#161](https://github.com/kizniche/mycodo/issues/161))
+
 Bugfixes:
 
   - Fix Atlas PT100 sensor module 'invalid literal for float()' error
+  - Fix camera termination bug ([#178](https://github.com/kizniche/mycodo/issues/178))
 
 Miscellaneous
 
@@ -37,7 +42,7 @@ Bugfixes:
   - Fix calculation of total 1-month relay usage and cost
   - Fix (and modify) the logging behavior in modules
   - Fix K30 sensor module returning None as a measurement value
-  - Fix gpiod being added to crontab during install from setup.sh ([#159](https://github.com/kizniche/mycodo/issues/174))
+  - Fix gpiod being added to crontab during install from setup.sh ([#174](https://github.com/kizniche/mycodo/issues/174))
 
 ## 4.1.6 (2017-01-17)
 
@@ -47,7 +52,7 @@ Features:
 
 Bugfixes:
 
-  - Fix issue with setup.sh when the version of wget<1.16 ([#159](https://github.com/kizniche/mycodo/issues/173))
+  - Fix issue with setup.sh when the version of wget<1.16 ([#173](https://github.com/kizniche/mycodo/issues/173))
   - Fix error calculating rely usage when it's currently the billing day of the month
 
 Miscellaneous:
@@ -60,8 +65,8 @@ Miscellaneous:
 
 Bugfixes:
 
-  - Fix DHT11 sensor module not returning values ([#159](https://github.com/kizniche/mycodo/issues/171))
-  - Fix HTU21D sensor module not returning values ([#159](https://github.com/kizniche/mycodo/issues/172))
+  - Fix DHT11 sensor module not returning values ([#171](https://github.com/kizniche/mycodo/issues/171))
+  - Fix HTU21D sensor module not returning values ([#172](https://github.com/kizniche/mycodo/issues/172))
 
 ## 4.1.4 (2017-01-13)
 

@@ -8,7 +8,7 @@
   <script src="/static/js/modules/export-csv.js"></script>
   <script src="/static/js/modules/jspdf.min.js"></script>
   <script src="/static/js/modules/highcharts-export-clientside.js"></script>
-  {% if session.user_theme in ['cyborg', 'darkly', 'slate', 'superhero'] %}
+  {% if session.user_theme in ['cyborg', 'darkly', 'slate', 'sun', 'superhero'] %}
     <script src="/static/js/dark-unica.js"></script>
   {% endif %}
 
@@ -146,27 +146,44 @@
           <div style="clear: both"></div>
           {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.</br>
 
-          <div class="checkbox" style="padding-right: 1em">
-            <label>
+          <div class="form-check" style="padding-top: 1em">
+            <label class="form-check-label">
+              <input class="form-check-input" id="enableNavbar" name="enableNavbar" type="checkbox" value="y"{% if each_graph.enable_navbar %} checked{% endif %}>
               {{form_mod_graph.enableNavbar.label.text}}
             </label>
-            <input class="form-control" id="enableNavbar" name="enableNavbar" type="checkbox" value="y"{% if each_graph.enable_navbar %} checked{% endif %}>
           </div>
-          <div class="checkbox" style="padding-right: 1em">
-            <label>
+          <div class="form-check disabled">
+            <label class="form-check-label">
+              <input class="form-check-input" id="enableExport" name="enableExport" type="checkbox" value="y"{% if each_graph.enable_export %} checked{% endif %}>
               {{form_mod_graph.enableExport.label.text}}
             </label>
-            <input class="form-control" id="enableExport" name="enableExport" type="checkbox" value="y"{% if each_graph.enable_export %} checked{% endif %}>
           </div>
-          <div class="checkbox">
-            <label>
+          <div class="form-check">
+            <label class="form-check-label">
+              <input class="form-check-input" id="enableRangeSelect" name="enableRangeSelect" type="checkbox" value="y"{% if each_graph.enable_rangeselect %} checked{% endif %}>
               {{form_mod_graph.enableRangeSelect.label.text}}
             </label>
-            <input class="form-control" id="enableRangeSelect" name="enableRangeSelect" type="checkbox" value="y"{% if each_graph.enable_rangeselect %} checked{% endif %}>
           </div>
+          <div class="form-check disabled" style="padding-top: 1em">
+            <label class="form-check-label">
+              <input class="form-check-input" id="colors_custom" name="colors_custom" type="checkbox" value="y"{% if each_graph.colors_custom %} checked{% endif %}>
+              {{form_mod_graph.colors_custom.label.text}}
+            </label>
+          </div>
+
+          {% for n in range(color_count[each_graph.id]|length) %}
+          <div class="form-check">
+            {% set index = '{0:0>2}'.format(n) %}
+            <label class="form-check-label" for="color_number{{index}}">
+              <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{color_count[each_graph.id][n][1]}}">
+              {{color_count[each_graph.id][n][0]}}
+            </label>
+          </div>
+          {% endfor %}
+
         </div>
 
-        <div class="form-inline btn-group">
+        <div class="form-inline btn-group" style="padding-top: 1em;">
           <div class="form-group">
             {{form_mod_graph.Submit(class_='form-control btn btn-default')}}
             </form>
@@ -622,11 +639,17 @@
           }
         }
       },
+      {% if each_graph.colors_custom and each_graph.colors -%}
+        {% set color_list = each_graph.colors.split(',') %}
+        colors: [{%- for each_color in color_list -%}
+                  "{{each_color}}",
+                 {%- endfor -%}],
+      {%- endif -%}
       // title: {
       //   text: "{{each_graph.name}}"
       // },
       legend: {
-        enabled: true,
+        enabled: true
         // layout: 'vertical',
         // align: 'right',
         // verticalAlign: 'top',
@@ -890,40 +913,6 @@
         text: "Mycodo"
       },
       series: [
-      {%- for each_relay in relay -%}
-        {%- for each_graph_relay in graph_relay_ids if each_relay.id in each_graph_relay -%}
-          {
-            name: '{{each_relay.name}}',
-            type: 'column',
-            dataGrouping: {
-              approximation: 'low',
-              groupPixelWidth: 3,
-            },
-            tooltip: {
-              valueSuffix: ' sec',
-              valueDecimals: 2,
-            },
-            yAxis: 'relay',
-            data: []
-          },
-        {%- endfor -%}
-      {%- endfor -%}
-
-      {%- for each_pid in pid -%}
-        {%- for each_graph_pid_ids in graph_pid_ids if each_pid.id in each_graph_pid_ids -%}
-          {
-            name: '{{each_pid.name}} {{_('Setpoint')}}',
-            type: 'line',
-            tooltip: {
-              valueSuffix: '{{measurement_units[each_pid.measure_type]|safe}}',
-              valueDecimals: 2,
-            },
-            yAxis: '{{each_pid.measure_type}}',
-            data: []
-          },
-        {%- endfor -%}
-      {%- endfor -%}
-
       {%- for each_sensor in sensor -%}
         {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id in each_sensor_and_measure -%}
           {%- if each_sensor.device_type == 'cpu_load' -%}
@@ -1184,6 +1173,40 @@
               },
             {%- endif -%}
           {%- endif -%}
+        {%- endfor -%}
+      {%- endfor -%}
+
+      {%- for each_relay in relay -%}
+        {%- for each_graph_relay in graph_relay_ids if each_relay.id in each_graph_relay -%}
+          {
+            name: '{{each_relay.name}}',
+            type: 'column',
+            dataGrouping: {
+              approximation: 'low',
+              groupPixelWidth: 3,
+            },
+            tooltip: {
+              valueSuffix: ' sec',
+              valueDecimals: 2,
+            },
+            yAxis: 'relay',
+            data: []
+          },
+        {%- endfor -%}
+      {%- endfor -%}
+
+      {%- for each_pid in pid -%}
+        {%- for each_graph_pid_ids in graph_pid_ids if each_pid.id in each_graph_pid_ids -%}
+          {
+            name: '{{each_pid.name}} {{_('Setpoint')}}',
+            type: 'line',
+            tooltip: {
+              valueSuffix: '{{measurement_units[each_pid.measure_type]|safe}}',
+              valueDecimals: 2,
+            },
+            yAxis: '{{each_pid.measure_type}}',
+            data: []
+          },
         {%- endfor -%}
       {%- endfor -%}
       ]

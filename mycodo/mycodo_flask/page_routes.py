@@ -119,7 +119,7 @@ def page_camera():
                 if not stream_locked:
                     try:
                         if CameraStream().is_running():
-                            CameraStream().terminate()  # Stop camera stream
+                            CameraStream().terminate_controller()  # Stop camera stream
                             time.sleep(2)
                         camera = db_retrieve_table(
                             current_app.config['MYCODO_DB_PATH'],
@@ -295,15 +295,6 @@ def page_graph():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    graph = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Graph, entry='all')
-    pid = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], PID, entry='all')
-    relay = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
-    sensor = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Sensor, entry='all')
-
     display_order_unsplit = db_retrieve_table(
         current_app.config['MYCODO_DB_PATH'], DisplayOrder, entry='first').graph
     if display_order_unsplit:
@@ -331,6 +322,15 @@ def page_graph():
                          'pressure': ' Pa',
                          'altitude': ' m'}
 
+    graph = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Graph, entry='all')
+    pid = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], PID, entry='all')
+    relay = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
+    sensor = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Sensor, entry='all')
+
     # Retrieve all choices to populate form drop-down menu
     pid_choices = flaskutils.choices_id_name(pid)
     relay_choices = flaskutils.choices_id_name(relay)
@@ -340,23 +340,96 @@ def page_graph():
     form_mod_graph.relayIDs.choices = []
     form_mod_graph.sensorIDs.choices = []
 
+    # Count how many lines will need a custom color input
+    if session['user_theme'] in ['cyborg', 'darkly', 'slate',
+                                 'sun', 'superhero']:
+        default_colors = ['#2b908f', '#90ee7e', '#f45b5b', '#7798BF',
+                          '#aaeeee', '#ff0066', '#eeaaee', '#55BF3B',
+                          '#DF5353', '#7798BF', '#aaeeee']
+    else:
+        default_colors = ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c',
+                          '#8085e9', '#f15c80', '#e4d354', '#2b908f',
+                          '#f45b5b', '#91e8e1']
+    color_count = OrderedDict()
+    for each_graph in graph:
+        # Get current saved colors
+        if each_graph.colors:  # Split into list
+            colors = each_graph.colors.split(',')
+        else:  # Create empty list
+            colors = []
+        # Fill end of list with empty strings
+        while len(colors) < len(default_colors):
+            colors.append('')
+
+        # Populate empty strings with default colors
+        for index, val in enumerate(default_colors):
+            if colors[index] == '':
+                colors[index] = default_colors[index]
+
+        index_sum = 0
+        total = []
+        index = 0
+        if each_graph.sensor_ids:
+            for each_set in each_graph.sensor_ids.split(';'):
+                if index < len(each_graph.sensor_ids.split(';')) and len(colors) > index:
+                    total.append([
+                        '{id} {measure}'.format(id=each_set.split(',')[0],
+                                                measure=each_set.split(',')[1]),
+                        colors[index]])
+                else:
+                    total.append([
+                        '{id} {measure}'.format(id=each_set.split(',')[0],
+                                                measure=each_set.split(',')[1]),
+                        '#FF00AA'])
+                index += 1
+        index_sum += index
+        if each_graph.relay_ids:
+            index = 0
+            for each_set in each_graph.relay_ids.split(','):
+                if index < len(each_graph.relay_ids.split(',')) and len(colors) > index_sum+index:
+                    total.append([
+                        '{id} Relay'.format(id=each_set.split(',')[0]),
+                        colors[index_sum+index]])
+                else:
+                    total.append([
+                        '{id} Relay'.format(id=each_set.split(',')[0]),
+                        '#FF00AA'])
+                index += 1
+        index_sum += index
+        if each_graph.pid_ids:
+            index = 0
+            for each_set in each_graph.pid_ids.split(','):
+                if index < len(each_graph.pid_ids.split(',')) and len(colors) > index_sum+index:
+                    total.append([
+                        '{id} PID Setpoint'.format(id=each_set.split(',')[0]),
+                        colors[index_sum+index]])
+                else:
+                    total.append([
+                        '{id} PID Setpoint'.format(id=each_set.split(',')[0]),
+                        '#FF00AA'])
+                index += 1
+
+        color_count.update({each_graph.id: total})
+
+    # split custom colors into dictionary of lists
+    colors_saved = {}
+    for each_graph in graph:
+        if each_graph.colors:
+            colors_saved[each_graph.id] = each_graph.colors.split(',')
+
+    # Add multi-select values as form choices, for validation
     for key, value in pid_choices.iteritems():
         form_mod_graph.pidIDs.choices.append((key, value))
     for key, value in relay_choices.iteritems():
         form_mod_graph.relayIDs.choices.append((key, value))
-    sensor_choices_split = OrderedDict()
     for key, value in sensor_choices.iteritems():
-        # Add multi-select values as form choices, for validation
         form_mod_graph.sensorIDs.choices.append((key, value))
-        order = key.split(",")
-        # Separate sensor IDs and measurement types
-        sensor_choices_split.update({order[0]: order[1]})
 
     # Detect which form on the page was submitted
     if request.method == 'POST':
         form_name = request.form['form-name']
         if form_name == 'modGraph':
-            flaskutils.graph_mod(form_mod_graph)
+            flaskutils.graph_mod(form_mod_graph, request.form)
         elif form_name == 'delGraph':
             flaskutils.graph_del(form_del_graph, display_order)
         elif form_name == 'orderGraph':
@@ -373,7 +446,8 @@ def page_graph():
                            pid_choices=pid_choices,
                            relay_choices=relay_choices,
                            sensor_choices=sensor_choices,
-                           sensor_choices_split=sensor_choices_split,
+                           color_count=color_count,
+                           colors_saved=colors_saved,
                            measurement_units=measurement_units,
                            displayOrder=display_order,
                            form_mod_graph=form_mod_graph,

@@ -7,6 +7,7 @@ import functools
 import gzip
 import os
 import random
+import re
 import requests
 import sqlalchemy
 import string
@@ -796,6 +797,8 @@ def graph_add(form_add_graph, display_order):
         random_id = ''.join([random.choice(
                 string.ascii_letters + string.digits) for _ in xrange(8)])
         new_graph.id = random_id
+        new_graph.colors = ''
+        new_graph.colors_custom = False
         new_graph.name = form_add_graph.name.data
         pid_ids_joined = ",".join(form_add_graph.pidIDs.data)
         new_graph.pid_ids = pid_ids_joined
@@ -830,15 +833,39 @@ def graph_add(form_add_graph, display_order):
         flash_form_errors(form_add_graph)
 
 
-def graph_mod(form_mod_graph):
+def graph_mod(form_mod_graph, request_form):
     if deny_guest_user():
         return redirect('/graph')
 
     if form_mod_graph.validate():
+
+        def is_rgb_color(color_hex):
+            return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
+
+        # Get variable number of color inputs, turn into CSV string
+        colors = {}
+        f = request_form
+        for key in f.keys():
+            if 'color_number' in key:
+                for value in f.getlist(key):
+                    if not is_rgb_color(value):
+                        flash(gettext("Invalid hex color value"), "error")
+                        return redirect('/graph')
+                    colors[key[12:]] = value
+
+        sorted_list = [(k, colors[k]) for k in sorted(colors)]
+
+        short_list = []
+        for each_color in sorted_list:
+            short_list.append(each_color[1])
+        sorted_colors_string = ",".join(short_list)
+
         try:
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 mod_graph = db_session.query(Graph).filter(
                     Graph.id == form_mod_graph.graph_id.data).first()
+                mod_graph.colors = sorted_colors_string
+                mod_graph.colors_custom = form_mod_graph.colors_custom.data
                 mod_graph.name = form_mod_graph.name.data
                 pid_ids_joined = ",".join(form_mod_graph.pidIDs.data)
                 mod_graph.pid_ids = pid_ids_joined
