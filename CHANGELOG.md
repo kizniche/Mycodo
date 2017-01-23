@@ -1,3 +1,9 @@
+## 4.1.9 (Unreleased)
+
+Bugfixes:
+
+  - Fix Atlas PT100 sensor module 'invalid literal for float()' error
+
 ## 4.1.8 (2017-01-21)
 
 This update fixes an error in the upgrade system, but it may mean that you cannot upgrade from the web interface (only for this version). If you cannot upgrade, execute the following command from the terminal to manually upgrade:
