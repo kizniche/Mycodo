@@ -7,7 +7,6 @@
 
 import datetime
 import logging
-import pigpio
 import threading
 import time
 import timeit
@@ -46,7 +45,6 @@ from sensors.sht1x_7x import SHT1x7xSensor
 from sensors.sht2x import SHT2xSensor
 
 # Functions
-from databases.utils import session_scope
 from utils.camera import camera_record
 from utils.database import db_retrieve_table
 from utils.influx import (
@@ -61,11 +59,6 @@ from utils.system_pi import cmd_output
 # Config
 from config import (
     SQL_DATABASE_MYCODO,
-    INFLUXDB_HOST,
-    INFLUXDB_PORT,
-    INFLUXDB_USER,
-    INFLUXDB_PASSWORD,
-    INFLUXDB_DATABASE,
     INSTALL_DIRECTORY
 )
 
@@ -245,9 +238,9 @@ class SensorController(threading.Thread):
         elif self.device_type == 'DS18B20':
             self.measure_sensor = DS18B20Sensor(self.location)
         elif self.device_type == 'DHT11':
-            self.measure_sensor = DHT11Sensor(pigpio.pi(), int(self.location))
+            self.measure_sensor = DHT11Sensor(int(self.location))
         elif self.device_type in ['DHT22', 'AM2302']:
-            self.measure_sensor = DHT22Sensor(pigpio.pi(), int(self.location))
+            self.measure_sensor = DHT22Sensor(int(self.location))
         elif self.device_type == 'HTU21D':
             self.measure_sensor = HTU21DSensor(self.i2c_bus)
         elif self.device_type == 'AM2315':
@@ -316,7 +309,7 @@ class SensorController(threading.Thread):
                                 self.cond_edge_select[each_cond_id] == 'state'):
                             if time.time() > self.cond_timer[each_cond_id]:
                                 self.cond_timer[each_cond_id] = time.time()+self.cond_period[each_cond_id]
-                                self.checkConditionals(each_cond_id)
+                                self.check_conditionals(each_cond_id)
 
                 else:
                     # Sensors that are read at a regular period
@@ -347,9 +340,9 @@ class SensorController(threading.Thread):
                                 time.time() < self.pre_relay_timer) or
                                 not self.pre_relay_setup):
                             # Get measurement(s) from sensor
-                            self.updateMeasurement()
+                            self.update_measure()
                             # Add measurement(s) to influxdb
-                            self.addMeasurementInfluxdb()
+                            self.add_measure_influxdb()
                             self.pre_relay_activated = False
                             self.get_new_measurement = False
 
@@ -358,7 +351,7 @@ class SensorController(threading.Thread):
                         if self.cond_activated[each_cond_id]:
                             if time.time() > self.cond_timer[each_cond_id]:
                                 self.cond_timer[each_cond_id] = time.time()+self.cond_period[each_cond_id]
-                                self.checkConditionals(each_cond_id)
+                                self.check_conditionals(each_cond_id)
 
                 time.sleep(0.1)
 
@@ -374,7 +367,7 @@ class SensorController(threading.Thread):
             self.logger.exception("Error: {err}".format(
                 err=except_msg))
 
-    def addMeasurementInfluxdb(self):
+    def add_measure_influxdb(self):
         """
         Add a measurement entries to InfluxDB
 
@@ -383,17 +376,15 @@ class SensorController(threading.Thread):
         if self.updateSuccess:
             data = []
             for each_measurement, each_value in self.measurement.values.iteritems():
-                data.append(format_influxdb_data(self.sensor_type,
-                                                 self.sensor_id,
+                data.append(format_influxdb_data(self.sensor_id,
                                                  each_measurement,
                                                  each_value))
             write_db = threading.Thread(
                 target=write_influxdb_list,
-                args=(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                      INFLUXDB_PASSWORD, INFLUXDB_DATABASE, data,))
+                args=(data,))
             write_db.start()
 
-    def checkConditionals(self, cond_id):
+    def check_conditionals(self, cond_id):
         """
         Check if any sensor conditional statements are activated and
         execute their actions if the conditional is true.
@@ -534,7 +525,7 @@ class SensorController(threading.Thread):
 
         loggerCond.debug(message)
 
-    def updateMeasurement(self):
+    def update_measure(self):
         """
         Retrieve measurement from sensor
 
@@ -689,14 +680,8 @@ class SensorController(threading.Thread):
             temperature, humidity, pressure, etc.)
         :type measurement_type: str
         """
-        last_measurement = read_last_influxdb(INFLUXDB_HOST,
-                                              INFLUXDB_PORT,
-                                              INFLUXDB_USER,
-                                              INFLUXDB_PASSWORD,
-                                              INFLUXDB_DATABASE,
-                                              self.sensor_id,
-                                              measurement_type,
-                                              int(self.period*1.5)).raw
+        last_measurement = read_last_influxdb(
+            self.sensor_id, measurement_type, int(self.period*1.5)).raw
         if last_measurement:
             number = len(last_measurement['series'][0]['values'])
             last_value = last_measurement['series'][0]['values'][number-1][1]
@@ -715,10 +700,7 @@ class SensorController(threading.Thread):
                 rising_or_falling = -1  # Falling edge detected
             write_db = threading.Thread(
                 target=write_influxdb_value,
-                args=(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                      INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
-                      self.sensor_type, self.sensor_id,
-                      'edge', rising_or_falling,))
+                args=(self.sensor_id, 'edge', rising_or_falling,))
             write_db.start()
 
             # Check sensor conditionals
@@ -729,7 +711,7 @@ class SensorController(threading.Thread):
                          (self.cond_edge_detected[each_cond_id] == 'falling' and
                           rising_or_falling == -1) or
                          self.cond_edge_detected[each_cond_id] == 'both')):
-                    self.checkConditionals(each_cond_id)
+                    self.check_conditionals(each_cond_id)
 
     def setup_sensor_conditionals(self, cond_mod='setup', cond_id=None):
         loggerCond = logging.getLogger("mycodo.SensorCond-{id}".format(

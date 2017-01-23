@@ -335,20 +335,10 @@ class LCDController(threading.Thread):
                     else:
                         if self.lcd_line[i]['measurement'] == 'time':
                             last_measurement = read_last_influxdb(
-                                INFLUXDB_HOST,
-                                INFLUXDB_PORT,
-                                INFLUXDB_USER,
-                                INFLUXDB_PASSWORD,
-                                INFLUXDB_DATABASE,
                                 self.lcd_line[i]['id'],
                                 '/.*/').raw
                         else:
                             last_measurement = read_last_influxdb(
-                                INFLUXDB_HOST,
-                                INFLUXDB_PORT,
-                                INFLUXDB_USER,
-                                INFLUXDB_PASSWORD,
-                                INFLUXDB_DATABASE,
                                 self.lcd_line[i]['id'],
                                 self.lcd_line[i]['measurement']).raw
                         if last_measurement:

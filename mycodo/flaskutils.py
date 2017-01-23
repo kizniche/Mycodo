@@ -3,58 +3,59 @@
 #
 import logging
 import bcrypt
+import functools
+import gzip
 import os
 import random
 import requests
-from RPi import GPIO
 import sqlalchemy
 import string
 import time
 from collections import OrderedDict
 from datetime import datetime
-import functools
-
-import gzip
 from cStringIO import StringIO as IO
-
-from flask import (after_this_request,
-                   current_app,
-                   flash,
-                   redirect,
-                   request,
-                   session,
-                   url_for)
+from flask import (
+    after_this_request,
+    current_app,
+    flash,
+    redirect,
+    request,
+    session,
+    url_for
+)
 from flask_babel import gettext
+from RPi import GPIO
 
-from influxdb import InfluxDBClient
-from sqlalchemy import and_
-
-from utils.send_data import send_email
-from databases.mycodo_db.models import CameraStill
-from databases.mycodo_db.models import DisplayOrder
-from databases.mycodo_db.models import Graph
-from databases.mycodo_db.models import LCD
-from databases.mycodo_db.models import Method
-from databases.mycodo_db.models import Misc
-from databases.mycodo_db.models import PID
-from databases.mycodo_db.models import Relay
-from databases.mycodo_db.models import RelayConditional
-from databases.mycodo_db.models import Remote
-from databases.mycodo_db.models import SMTP
-from databases.mycodo_db.models import Sensor
-from databases.mycodo_db.models import SensorConditional
-from databases.mycodo_db.models import Timer
-from databases.users_db.models import Users
-from databases.utils import session_scope
-from scripts.utils import test_username, test_password
+# Classes
+from databases.mycodo_db.models import (
+    CameraStill,
+    DisplayOrder,
+    Graph,
+    LCD,
+    Method,
+    Misc,
+    PID,
+    Relay,
+    RelayConditional,
+    Remote,
+    SMTP,
+    Sensor,
+    SensorConditional,
+    Timer
+)
 from mycodo_client import DaemonControl
 
+# Functions
+from databases.users_db.models import Users
+from databases.utils import session_scope
+from scripts.utils import (
+    test_username,
+    test_password
+)
+from utils.send_data import send_email
+
+# Config
 from config import INSTALL_DIRECTORY
-from config import INFLUXDB_HOST
-from config import INFLUXDB_PORT
-from config import INFLUXDB_USER
-from config import INFLUXDB_PASSWORD
-from config import INFLUXDB_DATABASE
 
 logger = logging.getLogger(__name__)
 
@@ -1576,27 +1577,6 @@ def relay_conditional_mod(form_mod_relay_cond):
         flash(gettext("Relay Error: %(err)s", err=except_msg), "error")
 
 
-def sum_relay_usage(relay_id, past_seconds):
-    client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE)
-    if relay_id:
-        query = """SELECT sum(value)
-                       FROM   duration_sec
-                       WHERE  device_id = '{}'
-                              AND TIME > Now() - {}s;
-                """.format(relay_id, past_seconds)
-    else:
-        query = """SELECT sum(value)
-                       FROM   duration_sec
-                       WHERE  TIME > Now() - {}s;
-                """.format(past_seconds)
-    output = client.query(query)
-    if output:
-        return output.raw['series'][0]['values'][0][1]
-    else:
-        return 0
-
-
 #
 # Sensor manipulation
 #
@@ -1873,7 +1853,7 @@ def sensor_deactivate(form_mod_sensor):
 # Deactivate any active PID or LCD controllers using this sensor
 def sensor_deactivate_associated_controllers(sensor_id):
     with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-        pid = db_session.query(PID).filter(and_(
+        pid = db_session.query(PID).filter(sqlalchemy.and_(
                 PID.sensor_id == sensor_id,
                 PID.activated == 1)).all()
         if pid:
@@ -2048,7 +2028,7 @@ def sensor_conditional_mod(form_mod_sensor_cond):
 
 def check_refresh_conditional(sensor_id, cond_mod, cond_id):
     with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-        sensor = db_session.query(Sensor).filter(and_(
+        sensor = db_session.query(Sensor).filter(sqlalchemy.and_(
                 Sensor.id == sensor_id,
                 Sensor.activated == 1)).first()
         if sensor:

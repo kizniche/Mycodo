@@ -3,16 +3,18 @@
 
 from flask_babel import lazy_gettext
 from flask_wtf import Form
-from wtforms import (BooleanField,
-                     DecimalField,
-                     HiddenField,
-                     IntegerField,
-                     PasswordField,
-                     SelectField,
-                     SelectMultipleField,
-                     SubmitField,
-                     StringField,
-                     validators)
+from wtforms import (
+    BooleanField,
+    DecimalField,
+    HiddenField,
+    IntegerField,
+    PasswordField,
+    SelectField,
+    SelectMultipleField,
+    SubmitField,
+    StringField,
+    validators
+)
 from wtforms.validators import DataRequired
 from wtforms.fields.html5 import EmailField
 

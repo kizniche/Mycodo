@@ -14,13 +14,15 @@ from collections import OrderedDict
 from influxdb import InfluxDBClient
 from sqlalchemy import func
 
-from databases.mycodo_db.models import AlembicVersion
-from databases.mycodo_db.models import LCD
-from databases.mycodo_db.models import Method
-from databases.mycodo_db.models import PID
-from databases.mycodo_db.models import Relay
-from databases.mycodo_db.models import Sensor
-from databases.mycodo_db.models import Timer
+from databases.mycodo_db.models import (
+    AlembicVersion,
+    LCD,
+    Method,
+    PID,
+    Relay,
+    Sensor,
+    Timer
+)
 from databases.users_db.models import Users
 from databases.utils import session_scope
 

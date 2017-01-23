@@ -50,7 +50,7 @@ from databases.utils import session_scope
 from utils.database import db_retrieve_table
 from utils.influx import (
     read_last_influxdb,
-    write_influxdb_value
+    write_influxdb_setpoint
 )
 from utils.method import (
     bezier_curve_y_out,
@@ -59,11 +59,6 @@ from utils.method import (
 
 # Config
 from config import (
-    INFLUXDB_HOST,
-    INFLUXDB_PORT,
-    INFLUXDB_USER,
-    INFLUXDB_PASSWORD,
-    INFLUXDB_DATABASE,
     SQL_DATABASE_MYCODO
 )
 
@@ -153,7 +148,7 @@ class PIDController(threading.Thread):
                             # Update setpoint if a method is selected
                             if self.method_id != '':
                                 self.calculate_method_setpoint(self.method_id)
-                            self.add_setpoint_Influxdb(self.pid_id, self.set_point)
+                            write_influxdb_setpoint(self.pid_id, self.set_point)
                             # Update PID and get control variable
                             self.control_variable = self.update(self.last_measurement)
 
@@ -257,11 +252,6 @@ class PIDController(threading.Thread):
             else:
                 duration = int(self.sensor_duration*1.5)
             self.last_measurement = read_last_influxdb(
-                INFLUXDB_HOST,
-                INFLUXDB_PORT,
-                INFLUXDB_USER,
-                INFLUXDB_PASSWORD,
-                INFLUXDB_DATABASE,
                 self.sensor_id,
                 self.measure_type,
                 duration)
@@ -515,19 +505,6 @@ class PIDController(threading.Thread):
 
         # Setpoint not needing to be calculated, use default setpoint
         self.set_point = self.default_set_point
-
-    def add_setpoint_Influxdb(self, pid_id, setpoint):
-        """
-        Add a setpoint entry to InfluxDB
-
-        :rtype: None
-        """
-        write_db = threading.Thread(
-            target=write_influxdb_value,
-            args=(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                  INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
-                  'pid', pid_id, 'setpoint', setpoint,))
-        write_db.start()
 
     def pid_mod(self):
         if self.initialize_values():

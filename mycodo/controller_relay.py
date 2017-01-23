@@ -18,7 +18,6 @@ from databases.mycodo_db.models import (
     RelayConditional,
     SMTP
 )
-from databases.utils import session_scope
 from mycodo_client import DaemonControl
 
 # Functions
@@ -30,11 +29,6 @@ from utils.system_pi import cmd_output
 # Config
 from config import (
     SQL_DATABASE_MYCODO,
-    INFLUXDB_HOST,
-    INFLUXDB_PORT,
-    INFLUXDB_USER,
-    INFLUXDB_PASSWORD,
-    INFLUXDB_DATABASE,
     MAX_AMPS
 )
 
@@ -114,11 +108,7 @@ class RelayController(threading.Thread):
                             timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
                             write_db = threading.Thread(
                                 target=write_influxdb_value,
-                                args=(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                                      INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
-                                      'relay', relay_id, 'duration_sec',
-                                      duration,
-                                      timestamp,))
+                                args=(relay_id, 'duration_sec', duration, timestamp,))
                             write_db.start()
 
                 time.sleep(0.01)
@@ -201,10 +191,7 @@ class RelayController(threading.Thread):
                             timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
                             write_db = threading.Thread(
                                 target=write_influxdb_value,
-                                args=(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                                      INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
-                                      'relay', relay_id, 'duration_sec',
-                                      duration, timestamp,))
+                                args=(relay_id, 'duration_sec', duration, timestamp,))
                             write_db.start()
 
                         self.relay_on_until[relay_id] = time_now+datetime.timedelta(seconds=duration)
@@ -267,10 +254,7 @@ class RelayController(threading.Thread):
                     timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
                     write_db = threading.Thread(
                         target=write_influxdb_value,
-                        args=(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                              INFLUXDB_PASSWORD, INFLUXDB_DATABASE,
-                              'relay', relay_id, 'duration_sec',
-                              duration, timestamp,))
+                        args=(relay_id, 'duration_sec', duration, timestamp,))
                     write_db.start()
                     self.relay_time_turned_on[relay_id] = None
 

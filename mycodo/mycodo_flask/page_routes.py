@@ -10,18 +10,19 @@ import subprocess
 import time
 from collections import OrderedDict
 
-from flask import (current_app,
-                   flash,
-                   redirect,
-                   render_template,
-                   request,
-                   session,
-                   url_for)
+from flask import (
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for
+)
 from flask_babel import gettext
 from flask.blueprints import Blueprint
 
 # Classes
-from mycodo.databases.utils import session_scope
 from mycodo.databases.mycodo_db.models import (
     CameraStill,
     DisplayOrder,
@@ -49,6 +50,7 @@ from mycodo.mycodo_flask.general_routes import (
 )
 from mycodo.utils.camera import camera_record
 from mycodo.utils.database import db_retrieve_table
+from mycodo.utils.influx import sum_relay_usage
 
 
 # Config
@@ -946,15 +948,15 @@ def page_usage():
         ['1d', '1w', '1m', '1m-date', '1y'], 0)
     for each_relay in relay:
         relay_each_duration[each_relay.id] = {}
-        relay_each_duration[each_relay.id]['1d'] = flaskutils.sum_relay_usage(
+        relay_each_duration[each_relay.id]['1d'] = sum_relay_usage(
             each_relay.id, 86400) / 3600
-        relay_each_duration[each_relay.id]['1w'] = flaskutils.sum_relay_usage(
+        relay_each_duration[each_relay.id]['1w'] = sum_relay_usage(
             each_relay.id, 604800) / 3600
-        relay_each_duration[each_relay.id]['1m'] = flaskutils.sum_relay_usage(
+        relay_each_duration[each_relay.id]['1m'] = sum_relay_usage(
             each_relay.id, 2629743) / 3600
-        relay_each_duration[each_relay.id]['1m-date'] = flaskutils.sum_relay_usage(
+        relay_each_duration[each_relay.id]['1m-date'] = sum_relay_usage(
             each_relay.id, int(past_month_seconds)) / 3600
-        relay_each_duration[each_relay.id]['1y'] = flaskutils.sum_relay_usage(
+        relay_each_duration[each_relay.id]['1y'] = sum_relay_usage(
             each_relay.id, 31556926) / 3600
         relay_sum_duration['1d'] += relay_each_duration[each_relay.id]['1d']
         relay_sum_duration['1w'] += relay_each_duration[each_relay.id]['1w']

@@ -17,7 +17,6 @@ from databases.mycodo_db.models import Timer
 from mycodo_client import DaemonControl
 
 # Functions
-from databases.utils import session_scope
 from utils.database import db_retrieve_table
 from utils.system_pi import time_between_range
 

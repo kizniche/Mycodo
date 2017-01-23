@@ -68,8 +68,8 @@ from utils.statistics import (
 
 # Config
 from config import (
-    DAEMON_PID_FILE,
     DAEMON_LOG_FILE,
+    DAEMON_PID_FILE,
     FILE_TIMELAPSE_PARAM,
     ID_FILE,
     INSTALL_DIRECTORY,
@@ -97,7 +97,6 @@ class ComThread(threading.Thread):
     ComServer will handle execution of commands from the web UI or other
     controllers. It allows the client (mycodo_client.py, excuted as non-root
     user) to communicate with the daemon (mycodo_daemon.py, executed as root).
-
 
     """
     def run(self):

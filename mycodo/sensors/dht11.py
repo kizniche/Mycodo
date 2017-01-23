@@ -10,22 +10,16 @@ logger = logging.getLogger("mycodo.sensors.dht11")
 
 class DHT11Sensor(AbstractSensor):
     """
-    A sensor support class that measures the AM2315's humidity and temperature
+    A sensor support class that measures the DHT11's humidity and temperature
     and calculates the dew point
 
     The DHT11 class is a stripped version of the DHT22 sensor code by joan2937.
     You can find the initial implementation here:
     - https://github.com/srounet/pigpio/tree/master/EXAMPLES/Python/DHT22_AM2302_SENSOR
 
-    example code:
-    pi = pigpio.pi()
-    sensor = DHT11Sensor(pi, 4)  # 4 is the data GPIO pin connected to your sensor
     """
-
-    def __init__(self, pi, gpio, power=None):
+    def __init__(self, gpio, power=None):
         """
-        :param pi: an instance of pigpio
-        :type pi: pigpio
         :param gpio: gpio pin number
         :type gpio: int
         :param power: Power pin number
@@ -39,7 +33,7 @@ class DHT11Sensor(AbstractSensor):
 
         """
         super(DHT11Sensor, self).__init__()
-        self.pi = pi
+        self.pi = pigpio.pi()
         self.gpio = gpio
         self.power = power
         self.high_tick = 0
@@ -65,7 +59,7 @@ class DHT11Sensor(AbstractSensor):
             temp="{0:.2f}".format(self._temperature))
 
     def __iter__(self):  # must return an iterator
-        """ AM2315Sensor iterates through live measurement readings """
+        """ DHT11Sensor iterates through live measurement readings """
         return self
 
     def next(self):
@@ -78,21 +72,21 @@ class DHT11Sensor(AbstractSensor):
 
     @property
     def dew_point(self):
-        """ AM2315 dew point in Celsius """
+        """ DHT11 dew point in Celsius """
         if not self._dew_point:  # update if needed
             self.read()
         return self._dew_point
 
     @property
     def humidity(self):
-        """ AM2315 relative humidity in percent """
+        """ DHT11 relative humidity in percent """
         if not self._humidity:  # update if needed
             self.read()
         return self._humidity
 
     @property
     def temperature(self):
-        """ AM2315 temperature in Celsius """
+        """ DHT11 temperature in Celsius """
         if not self._temperature:  # update if needed
             self.read()
         return self._temperature
@@ -103,14 +97,16 @@ class DHT11Sensor(AbstractSensor):
         self._temperature = 0.0
         try:
             if self.power is not None:
-                logger.debug("Turning on sensor at GPIO {}...".format(self.gpio))
+                logger.debug("Turning on sensor at GPIO {pin}...".format(
+                    pin=self.gpio))
                 self.pi.write(self.power, 1)  # Switch sensor on.
                 time.sleep(2)
             try:
                 self.setup()
-            except:
+            except Exception as except_msg:
                 logger.error(
-                    'DHT22 could not initialize. Check if gpiod is running.')
+                    'DHT11 could not initialize. Check if gpiod is running. '
+                    'Error: {msg}'.format(msg=except_msg))
             self.pi.write(self.gpio, pigpio.LOW)
             time.sleep(0.017)  # 17 ms
             self.pi.set_mode(self.gpio, pigpio.INPUT)
@@ -125,7 +121,7 @@ class DHT11Sensor(AbstractSensor):
 
     def read(self):
         """
-        Takes a reading from the AM2315 and updates the self.dew_point,
+        Takes a reading from the DHT11 and updates the self.dew_point,
         self._humidity, and self._temperature values
 
         :returns: None on success or 1 on error
@@ -133,7 +129,7 @@ class DHT11Sensor(AbstractSensor):
         try:
             self.get_measurement()
             # self_humidity and self._temperature are set in self._edge_rise()
-            if self._humidity != 0 and self._temperature != 0:
+            if self._humidity != 0 or self._temperature != 0:
                 return  # success - no errors
             logger.error("{cls}: Could not acquire a measurement".format(
                 cls=type(self).__name__))
@@ -153,17 +149,16 @@ class DHT11Sensor(AbstractSensor):
         self.register_callbacks()
 
     def register_callbacks(self):
-        """
-        Monitors RISING_EDGE changes using callback.
-        """
-        self.either_edge_cb = self.pi.callback(self.gpio,
-                                               pigpio.EITHER_EDGE,
-                                               self.either_edge_callback)
+        """ Monitors RISING_EDGE changes using callback """
+        self.either_edge_cb = self.pi.callback(
+            self.gpio,
+            pigpio.EITHER_EDGE,
+            self.either_edge_callback)
 
     def either_edge_callback(self, gpio, level, tick):
         """
         Either Edge callbacks, called each time the gpio edge changes.
-        Accumulate the 40 data bits from the dht11 sensor.
+        Accumulate the 40 data bits from the DHT11 sensor.
         """
         level_handlers = {
             pigpio.FALLING_EDGE: self._edge_fall,
@@ -175,9 +170,7 @@ class DHT11Sensor(AbstractSensor):
         handler(tick, diff)
 
     def _edge_rise(self, tick, diff):
-        """
-        Handle Rise signal.
-        """
+        """ Handle Rise signal """
         val = 0
         if diff >= 50:
             val = 1
@@ -201,27 +194,19 @@ class DHT11Sensor(AbstractSensor):
         self.bit += 1
 
     def _edge_fall(self, tick, diff):
-        """
-        Handle Fall signal.
-        """
+        """ Handle Fall signal """
         self.high_tick = tick
         if diff <= 250000:
             return
         self.bit = -2
         self.checksum = 0
-        self._temperature = 0
-        self._humidity = 0
 
     def _edge_either(self, tick, diff):
-        """
-        Handle Either signal.
-        """
+        """ Handle Either signal """
         self.pi.set_watchdog(self.gpio, 0)
 
     def close(self):
-        """
-        Stop reading sensor, remove callbacks.
-        """
+        """ Stop reading sensor, remove callbacks """
         self.pi.set_watchdog(self.gpio, 0)
         if self.either_edge_cb:
             self.either_edge_cb.cancel()

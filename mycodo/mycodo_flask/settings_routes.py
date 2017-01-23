@@ -3,12 +3,14 @@
 import logging
 import operator
 
-from flask import (current_app,
-                   redirect,
-                   render_template,
-                   request,
-                   session,
-                   url_for)
+from flask import (
+    current_app,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for
+)
 from flask.blueprints import Blueprint
 
 # Classes

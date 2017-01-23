@@ -30,7 +30,12 @@ import rpyc
 import socket
 import sys
 
-# TODO: Move to logging printing to STDOUT (for line prefix)
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.INFO,
+    format='%(asctime)s %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 
 class DaemonControl:
@@ -42,7 +47,7 @@ class DaemonControl:
         try:
             self.rpyc_client = rpyc.connect("localhost", 18813)
         except socket.error:
-            logging.debug("Connection refused. Is the daemon running?")
+            logger.info("Connection refused. Is the daemon running?")
             raise Exception("Connection refused. Is the daemon running?")
 
     def flash_lcd(self, lcd_id, state):
@@ -73,17 +78,16 @@ class DaemonControl:
         return self.rpyc_client.root.del_relay(relay_id)
 
     def activate_controller(self, controller_type, controller_id):
-        return self.rpyc_client.root.activate_controller(controller_type,
-                                                         controller_id)
+        return self.rpyc_client.root.activate_controller(
+            controller_type, controller_id)
 
     def deactivate_controller(self, controller_type, controller_id):
-        return self.rpyc_client.root.deactivate_controller(controller_type,
-                                                           controller_id)
+        return self.rpyc_client.root.deactivate_controller(
+            controller_type, controller_id)
 
     def refresh_sensor_conditionals(self, sensor_id, cond_mod, cond_id):
-        return self.rpyc_client.root.refresh_sensor_conditionals(sensor_id,
-                                                                 cond_mod,
-                                                                 cond_id)
+        return self.rpyc_client.root.refresh_sensor_conditionals(
+            sensor_id, cond_mod, cond_id)
 
     def daemon_status(self):
         return self.rpyc_client.root.daemon_status()
@@ -135,9 +139,11 @@ if __name__ == "__main__":
     daemon_control = DaemonControl()
 
     if args.relayoff:
-        print("{} [Remote command] Turn off relay with relay ID of {}: "
-              "Server returned:".format(now(), args.relayoff))
-        print("{}".format(daemon_control.relay_off(args.relayoff)))
+        return_msg = daemon_control.relay_off(args.relayoff)
+        logger.info("[Remote command] Turn off relay with ID '{id}': "
+                    "Server returned: {msg}".format(
+                        id=args.relayoff,
+                        msg=return_msg))
 
     if args.duration and args.relayon is None:
         parser.error("--duration requires --relayon")
@@ -146,42 +152,45 @@ if __name__ == "__main__":
         duration = 0
         if args.duration:
             duration = args.duration
-        print("{} [Remote command] Turn on relay with relay ID of {}: "
-              "Server returned:".format(now(), args.relayon))
-        print("{}".format(daemon_control.relay_on(args.relayon, duration)))
+        return_msg = daemon_control.relay_on(args.relayon, duration)
+        logger.info("[Remote command] Turn on relay with ID '{id}': "
+                    "Server returned:".format(
+                        id=args.relayon,
+                        msg=return_msg))
 
     if args.activatecontroller:
         if args.activatecontroller[0] not in ['LCD', 'Log', 'PID',
                                               'Sensor', 'Timer']:
-            print("Invalid controller type. Options are LCD, Log, PID, Sensor,"
-                  " and Timer.")
+            logger.info("Invalid controller type. Options are LCD, Log, PID, "
+                        "Sensor, and Timer.")
         else:
-            print("{} [Remote command] Activate {} controller with ID of {}"
-                  ": Server returned:".format(now(),
-                                            args.activatecontroller[0],
-                                            args.activatecontroller[1]))
-            print("{}".format(daemon_control.activate_controller(
-                args.activatecontroller[0], args.activatecontroller[1])))
+            return_msg = daemon_control.activate_controller(
+                args.activatecontroller[0], args.activatecontroller[1])
+            logger.info("[Remote command] Activate {type} controller with "
+                        "ID '{id}': Server returned: {msg}".format(
+                            type=args.activatecontroller[0],
+                            id=args.activatecontroller[1],
+                            msg=return_msg))
 
     if args.deactivatecontroller:
         if args.deactivatecontroller[0] not in ['LCD', 'Log', 'PID',
-                                              'Sensor', 'Timer']:
-            print("Invalid controller type. Options are LCD, Log, PID, Sensor,"
-                  " and Timer.")
+                                                'Sensor', 'Timer']:
+            logger.info("Invalid controller type. Options are LCD, Log, PID, "
+                        "Sensor, and Timer.")
         else:
-            print("{} [Remote command] Deactivate {} controller with ID of {}"
-                  ": Server returned:".format(now(),
-                                              args.deactivatecontroller[0],
-                                              args.deactivatecontroller[1]))
-            print("{}".format(daemon_control.deactivate_controller(
-                args.deactivatecontroller[0], args.deactivatecontroller[1])))
+            return_msg = daemon_control.deactivate_controller(
+                args.deactivatecontroller[0], args.deactivatecontroller[1])
+            logger.info("[Remote command] Deactivate {type} controller with "
+                        "ID '{id}': Server returned: {msg}".format(
+                            type=args.deactivatecontroller[0],
+                            id=args.deactivatecontroller[1],
+                            msg=return_msg))
 
     if args.terminate:
-        print("{} [Remote command] Terminate daemon. Server:".format(now()))
+        logger.info("[Remote command] Terminate daemon...")
         if daemon_control.terminate_daemon():
-            print("Daemon Terminated.")
+            logger.info("Daemon response: Terminated.")
         else:
-            print("Unknown response.")
-
+            logger.info("Unknown daemon response.")
 
     sys.exit(0)

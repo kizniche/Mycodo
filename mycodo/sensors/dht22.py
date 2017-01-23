@@ -27,10 +27,15 @@ class DHT22Sensor(AbstractSensor):
     DHT22 pin 2 -----+
                      |
     gpio ------------+
-    """
 
-    def __init__(self, pi, gpio, power=None):
+    """
+    def __init__(self, gpio, power=None):
         """
+        :param gpio: gpio pin number
+        :type gpio: int
+        :param power: Power pin number
+        :type power: int
+
         Instantiate with the Pi and gpio to which the DHT22 output
         pin is connected.
 
@@ -42,7 +47,7 @@ class DHT22Sensor(AbstractSensor):
         eventually cause the DHT22 to hang.  A 3 second interval seems OK.
         """
         super(DHT22Sensor, self).__init__()
-        self.pi = pi
+        self.pi = pigpio.pi()
         self.gpio = gpio
         self.power = power
         self.bad_CS = 0  # Bad checksum count
@@ -122,9 +127,10 @@ class DHT22Sensor(AbstractSensor):
                 time.sleep(2)
             try:
                 self.setup()
-            except:
+            except Exception as except_msg:
                 logger.error(
-                    'DHT22 could not initialize. Check if gpiod is running.')
+                    'DHT22 could not initialize. Check if gpiod is running. '
+                    'Error: {msg}'.format(msg=except_msg))
             self.pi.write(self.gpio, pigpio.LOW)
             time.sleep(0.017)  # 17 ms
             self.pi.set_mode(self.gpio, pigpio.INPUT)
@@ -147,7 +153,7 @@ class DHT22Sensor(AbstractSensor):
         try:
             self.get_measurement()
             # self_humidity and self._temperature are set in self._edge_rise()
-            if self._humidity != 0 and self._temperature != 0:
+            if self._humidity != 0 or self._temperature != 0:
                 return  # success - no errors
             logger.error("{cls}: Could not acquire a measurement".format(
                 cls=type(self).__name__))
@@ -167,9 +173,7 @@ class DHT22Sensor(AbstractSensor):
         self.register_callbacks()
 
     def register_callbacks(self):
-        """
-        Monitors RISING_EDGE changes using callback.
-        """
+        """ Monitors RISING_EDGE changes using callback """
         self.either_edge_cb = self.pi.callback(self.gpio,
                                                pigpio.EITHER_EDGE,
                                                self.either_edge_callback)
@@ -177,8 +181,7 @@ class DHT22Sensor(AbstractSensor):
     def either_edge_callback(self, gpio, level, tick):
         """
         Either Edge callbacks, called each time the gpio edge changes.
-
-        Accumulate the 40 data bits from the dht22 sensor.
+        Accumulate the 40 data bits from the DHT22 sensor.
 
         Format into 5 bytes, humidity high,
         humidity low, temperature high, temperature low, checksum.
@@ -193,9 +196,7 @@ class DHT22Sensor(AbstractSensor):
         handler(tick, diff)
 
     def _edge_rise(self, tick, diff):
-        """
-        Handle Rise signal.
-        """
+        """ Handle Rise signal """
         # Edge length determines if bit is 1 or 0.
         if diff >= 50:
             val = 1
@@ -235,9 +236,7 @@ class DHT22Sensor(AbstractSensor):
         self.bit += 1
 
     def _edge_fall(self, tick, diff):
-        """
-        Handle Fall signal.
-        """
+        """ Handle Fall signal """
         # Edge length determines if bit is 1 or 0.
         self.high_tick = tick
         if diff <= 250000:
@@ -250,9 +249,7 @@ class DHT22Sensor(AbstractSensor):
         self.CS = 0
 
     def _edge_either(self, tick, diff):
-        """
-        Handle Either signal or Timeout
-        """
+        """ Handle Either signal or Timeout """
         self.pi.set_watchdog(self.gpio, 0)
         if self.bit < 8:  # Too few data bits received.
             self.bad_MM += 1  # Bump missing message count.
@@ -274,32 +271,30 @@ class DHT22Sensor(AbstractSensor):
             self.no_response = 0
 
     def staleness(self):
-        """Return time since measurement made."""
+        """ Return time since measurement made """
         if self.tov is not None:
             return time.time() - self.tov
         else:
             return -999
 
     def bad_checksum(self):
-        """Return count of messages received with bad checksums."""
+        """ Return count of messages received with bad checksums """
         return self.bad_CS
 
     def short_message(self):
-        """Return count of short messages."""
+        """ Return count of short messages """
         return self.bad_SM
 
     def missing_message(self):
-        """Return count of missing messages."""
+        """ Return count of missing messages """
         return self.bad_MM
 
     def sensor_resets(self):
-        """Return count of power cycles because of sensor hangs."""
+        """ Return count of power cycles because of sensor hangs """
         return self.bad_SR
 
     def close(self):
-        """
-        Stop reading sensor, remove callbacks.
-        """
+        """ Stop reading sensor, remove callbacks """
         self.pi.set_watchdog(self.gpio, 0)
         if self.either_edge_cb:
             self.either_edge_cb.cancel()

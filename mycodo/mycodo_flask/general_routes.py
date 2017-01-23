@@ -24,17 +24,19 @@ from RPi import GPIO
 from dateutil.parser import parse as date_parse
 
 from flask.blueprints import Blueprint
-from flask import current_app
-from flask import flash
-from flask import jsonify
-from flask import make_response
-from flask import redirect
-from flask import render_template
-from flask import Response
-from flask import request
-from flask import send_from_directory
-from flask import session
-from flask import url_for
+from flask import (
+    current_app,
+    flash,
+    jsonify,
+    make_response,
+    redirect,
+    render_template,
+    Response,
+    request,
+    send_from_directory,
+    session,
+    url_for
+)
 from flask_babel import gettext
 from flask_influxdb import InfluxDB
 
@@ -52,7 +54,6 @@ from mycodo.mycodo_client import DaemonControl
 # Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
-from mycodo.databases.utils import session_scope
 from mycodo.flaskutils import gzipped
 from mycodo.mycodo_flask.authentication_routes import (
     admin_exists,
@@ -237,8 +238,8 @@ def download_file(dl_type, filename):
     return '', 204
 
 
-@blueprint.route('/last/<sensor_type>/<sensor_measure>/<sensor_id>/<sensor_period>')
-def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
+@blueprint.route('/last/<sensor_measure>/<sensor_id>/<sensor_period>')
+def last_data(sensor_measure, sensor_id, sensor_period):
     """Return the most recent time and value from influxdb"""
     if not logged_in():
         return redirect(url_for('general_routes.home'))
@@ -250,11 +251,9 @@ def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
     try:
         raw_data = dbcon.query("""SELECT last(value)
                                   FROM {}
-                                  WHERE device_type='{}'
-                                        AND device_id='{}'
+                                  WHERE device_id='{}'
                                         AND time > now() - {}m
                                """.format(sensor_measure,
-                                          sensor_type,
                                           sensor_id,
                                           sensor_period)).raw
         number = len(raw_data['series'][0]['values'])
@@ -271,9 +270,9 @@ def last_data(sensor_type, sensor_measure, sensor_id, sensor_period):
         return '', 204
 
 
-@blueprint.route('/past/<sensor_type>/<sensor_measure>/<sensor_id>/<past_seconds>')
+@blueprint.route('/past/<sensor_measure>/<sensor_id>/<past_seconds>')
 @gzipped
-def past_data(sensor_type, sensor_measure, sensor_id, past_seconds):
+def past_data(sensor_measure, sensor_id, past_seconds):
     """Return data from past_seconds until present from influxdb"""
     if not logged_in():
         return redirect(url_for('general_routes.home'))
@@ -284,14 +283,12 @@ def past_data(sensor_type, sensor_measure, sensor_id, past_seconds):
     dbcon = influx_db.connection
     try:
         raw_data = dbcon.query("""SELECT value
-                                  FROM {}
-                                  WHERE device_type='{}'
-                                        AND device_id='{}'
-                                        AND time > now() - {}s;
-                               """.format(sensor_measure,
-                                          sensor_type,
-                                          sensor_id,
-                                          past_seconds)).raw
+                                  FROM {meas}
+                                  WHERE device_id='{id}'
+                                        AND time > now() - {sec}s;
+                               """.format(meas=sensor_measure,
+                                          id=sensor_id,
+                                          sec=past_seconds)).raw
         if raw_data:
             return jsonify(raw_data['series'][0]['values'])
         else:

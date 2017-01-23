@@ -5,8 +5,8 @@
 
 {% block head %}
   <script>
-    function update{{_('Measurement')}}s(sensor_id, sensor_type, sensor_measurement, period, convert_c) {
-      var url = '/last/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/' + period.toString();
+    function update{{_('Measurement')}}s(sensor_id, sensor_measurement, period, convert_c) {
+      var url = '/last/' + sensor_measurement + '/' + sensor_id + '/' + period.toString();
       $.ajax(url, {
         success: function(data, responseText, jqXHR) {
           if (jqXHR.status == 204) {
@@ -36,55 +36,55 @@
       });
     }
 
-    function liveTextData(sensor_name, sensor_type, sensor_measurement, sensor_id, period) {
+    function liveTextData(sensor_name, sensor_measurement, sensor_id, period) {
       // Update when page first loads
-      update{{_('Measurement')}}s(sensor_name, sensor_type, sensor_measurement, sensor_id, period);
+      update{{_('Measurement')}}s(sensor_name, sensor_measurement, sensor_id, period);
       setInterval(function () {
         // Update after every 30 seconds
-        update{{_('Measurement')}}s(sensor_name, sensor_type, sensor_measurement, sensor_id, period);
+        update{{_('Measurement')}}s(sensor_name, sensor_measurement, sensor_id, period);
       }, 30000);
     }
 
     $(function() {
       {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'cpu_load' -%}
-        liveTextData('{{each_sensor.id}}', 'cpu_load', 'cpu_load_1m', 30, false);
-        liveTextData('{{each_sensor.id}}', 'cpu_load', 'cpu_load_5m', 30, false);
-        liveTextData('{{each_sensor.id}}', 'cpu_load', 'cpu_load_15m', 30, false);
+        liveTextData('{{each_sensor.id}}', 'cpu_load_1m', 30, false);
+        liveTextData('{{each_sensor.id}}', 'cpu_load_5m', 30, false);
+        liveTextData('{{each_sensor.id}}', 'cpu_load_15m', 30, false);
       {%- endfor -%}
       {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'tsensor' -%}
-        liveTextData('{{each_sensor.id}}', 'tsensor', 'temperature', 30, true);
+        liveTextData('{{each_sensor.id}}', 'temperature', 30, true);
       {%- endfor -%}
       {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'tmpsensor' -%}
-        liveTextData('{{each_sensor.id}}', 'tmpsensor', 'temperature_object', 30, true);
-        liveTextData('{{each_sensor.id}}', 'tmpsensor', 'temperature_die', 30, true);
+        liveTextData('{{each_sensor.id}}', 'temperature_object', 30, true);
+        liveTextData('{{each_sensor.id}}', 'temperature_die', 30, true);
       {%- endfor -%}
       {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'htsensor' -%}
-        liveTextData('{{each_sensor.id}}', 'htsensor', 'temperature', 30, true);
-        liveTextData('{{each_sensor.id}}', 'htsensor', 'humidity', 30, false);
-        liveTextData('{{each_sensor.id}}', 'htsensor', 'dewpoint', 30, true);
+        liveTextData('{{each_sensor.id}}', 'temperature', 30, true);
+        liveTextData('{{each_sensor.id}}', 'humidity', 30, false);
+        liveTextData('{{each_sensor.id}}', 'dewpoint', 30, true);
       {%- endfor -%}
       {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'co2sensor' -%}
-        liveTextData('{{each_sensor.id}}', 'co2sensor', 'co2', 30, false);
+        liveTextData('{{each_sensor.id}}', 'co2', 30, false);
       {%- endfor -%}
       {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'luxsensor' -%}
-        liveTextData('{{each_sensor.id}}', 'luxsensor', 'lux', 30, false);
+        liveTextData('{{each_sensor.id}}', 'lux', 30, false);
       {%- endfor -%}
       {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'moistsensor' -%}
-        liveTextData('{{each_sensor.id}}', 'moistsensor', 'lux', 30, false);
-        liveTextData('{{each_sensor.id}}', 'moistsensor', 'moisture', 30, false);
-        liveTextData('{{each_sensor.id}}', 'moistsensor', 'temperature', 30, true);
+        liveTextData('{{each_sensor.id}}', 'lux', 30, false);
+        liveTextData('{{each_sensor.id}}', 'moisture', 30, false);
+        liveTextData('{{each_sensor.id}}', 'temperature', 30, true);
       {%- endfor -%}
       {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'presssensor' -%}
-        liveTextData('{{each_sensor.id}}', 'presssensor', 'temperature', 30, true);
-        liveTextData('{{each_sensor.id}}', 'presssensor', 'pressure', 30, false);
-        liveTextData('{{each_sensor.id}}', 'presssensor', 'altitude', 30, false);
+        liveTextData('{{each_sensor.id}}', 'temperature', 30, true);
+        liveTextData('{{each_sensor.id}}', 'pressure', 30, false);
+        liveTextData('{{each_sensor.id}}', 'altitude', 30, false);
       {%- endfor -%}
       {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'analogsensor' -%}
-        liveTextData('{{each_sensor.id}}', 'analogsensor', 'voltage', 30, false);
-        liveTextData('{{each_sensor.id}}', 'analogsensor', '{{each_sensor.adc_measure}}', 30, false);
+        liveTextData('{{each_sensor.id}}', 'voltage', 30, false);
+        liveTextData('{{each_sensor.id}}', '{{each_sensor.adc_measure}}', 30, false);
       {%- endfor -%}
       {%- for each_sensor in sensor if each_sensor.activated and each_sensor.device_type == 'edgedetect' -%}
-        liveTextData('{{each_sensor.id}}', 'edgedetect', 'edge', 30, false);
+        liveTextData('{{each_sensor.id}}', 'edge', 30, false);
       {%- endfor -%}
     });
   </script>
