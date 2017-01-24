@@ -73,12 +73,8 @@ from utils.influx import read_last_influxdb
 
 # Config
 from config import (
-    INFLUXDB_HOST,
-    INFLUXDB_PORT,
-    INFLUXDB_USER,
-    INFLUXDB_PASSWORD,
-    INFLUXDB_DATABASE,
     SQL_DATABASE_MYCODO,
+    MEASUREMENT_UNITS,
     MYCODO_VERSION
 )
 
@@ -116,7 +112,8 @@ class LCDController(threading.Thread):
 
             if lcd.multiplexer_address:
                 self.multiplexer_address_string = lcd.multiplexer_address
-                self.multiplexer_address = int(str(lcd.multiplexer_address), 16)
+                self.multiplexer_address = int(str(lcd.multiplexer_address),
+                                               16)
                 self.multiplexer_channel = lcd.multiplexer_channel
                 self.multiplexer = TCA9548A(self.multiplexer_address)
             else:
@@ -126,10 +123,10 @@ class LCDController(threading.Thread):
             for i in range(1, 5):
                 self.lcd_line[i] = {}
 
-            list_sensors = ['sensor_time', 'temperature',
-                            'humidity', 'co2', 'pressure',
-                            'altitude', 'temperature_die',
-                            'temperature_object', 'lux']
+            list_sensors = [
+                'sensor_time', 'temperature', 'humidity', 'co2', 'pressure',
+                'altitude', 'temperature_die', 'temperature_object', 'lux'
+            ]
 
             list_pids = ['setpoint', 'pid_time']
 
@@ -205,31 +202,6 @@ class LCDController(threading.Thread):
                     if 'time' in lcd.line_4_measurement:
                         self.lcd_line[4]['measurement'] = 'time'
 
-            self.measurement_unit = {
-                'metric': {
-                    "temperature": "C",
-                    "humidity": "%",
-                    "co2": "ppmv",
-                    "pressure": "Pa",
-                    "altitude": "m",
-                    "duration_sec": "s",
-                    "temperature_die": "C",
-                    "temperature_object": "C",
-                    "lux": "lux",
-                },
-                'standard': {
-                    "temperature": "F",
-                    "humidity": "%",
-                    "co2": "ppmv",
-                    "pressure": "atm",
-                    "altitude": "ft",
-                    "duration_sec": "s",
-                    "temperature_die": "F",
-                    "temperature_object": "F",
-                    "lux": "lux",
-                }
-            }
-
             self.timer = time.time() + self.lcd_period
             self.backlight_timer = time.time()
 
@@ -237,7 +209,7 @@ class LCDController(threading.Thread):
             for i in range(1, self.lcd_y_lines + 1):
                 self.lcd_string_line[i] = ''
 
-            self.LCD_WIDTH = self.lcd_x_characters  # Maximum characters per line
+            self.LCD_WIDTH = self.lcd_x_characters  # Max characters per line
 
             self.LCD_LINE = {
                 1: 0x80,
@@ -266,12 +238,14 @@ class LCDController(threading.Thread):
                     i2c_bus_number = 0
                 self.bus = smbus.SMBus(i2c_bus_number)
             except Exception as except_msg:
-                self.logger.exception("Could not initialize I2C bus: {}".format(
-                    except_msg))
+                self.logger.exception(
+                    "Could not initialize I2C bus: {err}".format(
+                        err=except_msg))
 
             self.I2C_ADDR = int(self.lcd_pin, 16)
             self.lcd_init()
-            self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION), self.LCD_LINE[1])
+            self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION),
+                                  self.LCD_LINE[1])
             self.lcd_string_write('Start {}'.format(
                 self.lcd_name), self.LCD_LINE[2])
         except Exception as except_msg:
@@ -310,7 +284,8 @@ class LCDController(threading.Thread):
             self.logger.exception("Exception: {err}".format(err=except_msg))
         finally:
             self.lcd_init()  # Blank LCD
-            self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION), self.LCD_LINE[1])
+            self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION),
+                                  self.LCD_LINE[1])
             self.lcd_string_write('Stop {}'.format(
                 self.lcd_name), self.LCD_LINE[2])
             self.logger.info("Deactivated in {:.1f} ms".format(
@@ -325,7 +300,7 @@ class LCDController(threading.Thread):
         # loop to acquire all measurements required to be displayed on the LCD
         for i in range(1, self.lcd_y_lines + 1):
             if self.lcd_line[i]['id']:
-                # Get latest measurement (from within the past minute) from influxdb
+                # Get latest measurement (within past minute) from influxdb
                 # FROM '/.*/' returns any measurement (for grabbing time of last measurement)
                 last_measurement_success = False
                 try:
@@ -345,8 +320,9 @@ class LCDController(threading.Thread):
                             number = len(last_measurement['series'][0]['values'])
                             self.lcd_line[i]['time'] = last_measurement['series'][0]['values'][number - 1][0]
                             self.lcd_line[i]['measurement_value'] = last_measurement['series'][0]['values'][number - 1][1]
-                            utc_dt = datetime.datetime.strptime(self.lcd_line[i]['time'].split(".")[0],
-                                                                '%Y-%m-%dT%H:%M:%S')
+                            utc_dt = datetime.datetime.strptime(
+                                self.lcd_line[i]['time'].split(".")[0],
+                                '%Y-%m-%dT%H:%M:%S')
                             utc_timestamp = calendar.timegm(utc_dt.timetuple())
                             local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
                             self.logger.debug("Latest {}: {} @ {}".format(
@@ -361,7 +337,7 @@ class LCDController(threading.Thread):
                 except Exception as except_msg:
                     self.logger.debug("Failed to read measurement from the "
                                       "influxdb database: {err}".format(
-                        err=except_msg))
+                                        err=except_msg))
 
                 try:
                     if last_measurement_success:
@@ -373,14 +349,15 @@ class LCDController(threading.Thread):
                                 PID,
                                 device_id=self.lcd_line[i]['id'])
                             measurement = pid.measure_type
-                        elif self.lcd_line[i]['measurement'] in ['temperature',
-                                                                 'temperature_die',
-                                                                 'temperature_object',
-                                                                 'humidity',
-                                                                 'co2',
-                                                                 'lux',
-                                                                 'pressure',
-                                                                 'altitude']:
+                        elif self.lcd_line[i]['measurement'] in [
+                                'temperature',
+                                'temperature_die',
+                                'temperature_object',
+                                'humidity',
+                                'co2',
+                                'lux',
+                                'pressure',
+                                'altitude']:
                             measurement = self.lcd_line[i]['measurement']
                         elif self.lcd_line[i]['measurement'] == 'duration_sec':
                             measurement = 'duration_sec'
@@ -389,21 +366,25 @@ class LCDController(threading.Thread):
                         number_characters = self.lcd_x_characters
                         if self.lcd_line[i]['measurement'] == 'time':
                             # Convert UTC timestamp to local timezone
-                            utc_dt = datetime.datetime.strptime(self.lcd_line[i]['time'].split(".")[0],
-                                                                '%Y-%m-%dT%H:%M:%S')
+                            utc_dt = datetime.datetime.strptime(
+                                self.lcd_line[i]['time'].split(".")[0],
+                                '%Y-%m-%dT%H:%M:%S')
                             utc_timestamp = calendar.timegm(utc_dt.timetuple())
-                            self.lcd_string_line[i] = str(datetime.datetime.fromtimestamp(utc_timestamp))
+                            self.lcd_string_line[i] = str(
+                                datetime.datetime.fromtimestamp(utc_timestamp))
                         elif measurement:
-                            value_length = len(str(self.lcd_line[i]['measurement_value']))
-                            unit_length = len(self.measurement_unit['metric'][measurement])
+                            value_length = len(str(
+                                self.lcd_line[i]['measurement_value']))
+                            unit_length = len(MEASUREMENT_UNITS[measurement])
                             name_length = number_characters - value_length - unit_length - 2
                             name_cropped = self.lcd_line[i]['name'].ljust(name_length)[:name_length]
                             self.lcd_string_line[i] = '{} {} {}'.format(
                                 name_cropped,
                                 self.lcd_line[i]['measurement_value'],
-                                self.measurement_unit['metric'][measurement])
+                                MEASUREMENT_UNITS[measurement])
                         else:
-                            value_length = len(str(self.lcd_line[i]['measurement_value']))
+                            value_length = len(str(
+                                self.lcd_line[i]['measurement_value']))
                             name_length = number_characters - value_length - 1
                             name_cropped = self.lcd_line[i]['name'][:name_length]
                             self.lcd_string_line[i] = '{} {}'.format(

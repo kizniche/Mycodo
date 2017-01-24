@@ -125,7 +125,7 @@ def page_camera():
                         camera = db_retrieve_table(
                             current_app.config['MYCODO_DB_PATH'],
                             CameraStill, entry='first')
-                        camera_record(INSTALL_DIRECTORY, 'photo', camera)
+                        camera_record('photo', camera)
                     except Exception as msg:
                         flash("Camera Error: {}".format(msg), "error")
                 else:

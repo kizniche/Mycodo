@@ -94,19 +94,22 @@ class SensorController(threading.Thread):
     def __init__(self, ready, sensor_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("mycodo.sensor_{id}".format(id=sensor_id))
+        self.logger = logging.getLogger(
+            "mycodo.sensor_{id}".format(id=sensor_id))
 
-        list_devices_i2c = ['ADS1x15',
-                            'AM2315',
-                            'ATLAS_PT1000',
-                            'BME280',
-                            'BMP',
-                            'CHIRP',
-                            'HTU21D',
-                            'MCP342x',
-                            'SHT2x',
-                            'TMP006',
-                            'TSL2561']
+        list_devices_i2c = [
+            'ADS1x15',
+            'AM2315',
+            'ATLAS_PT1000',
+            'BME280',
+            'BMP',
+            'CHIRP',
+            'HTU21D',
+            'MCP342x',
+            'SHT2x',
+            'TMP006',
+            'TSL2561'
+        ]
 
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
@@ -141,10 +144,11 @@ class SensorController(threading.Thread):
 
         self.setup_sensor_conditionals()
 
-        sensor = db_retrieve_table(MYCODO_DB_PATH, Sensor, device_id=self.sensor_id)
+        sensor = db_retrieve_table(
+            MYCODO_DB_PATH, Sensor, device_id=self.sensor_id)
         self.i2c_bus = sensor.i2c_bus
         self.location = sensor.location
-        self.device_type = sensor.device
+        self.device = sensor.device
         self.sensor_type = sensor.device_type
         self.period = sensor.period
         self.multiplexer_address_raw = sensor.multiplexer_address
@@ -188,11 +192,11 @@ class SensorController(threading.Thread):
         self.allowed_to_send_notice = True
 
         # Convert string I2C address to base-16 int
-        if self.device_type in list_devices_i2c:
+        if self.device in list_devices_i2c:
             self.i2c_address = int(str(self.location), 16)
 
         # Set up multiplexer if enabled
-        if self.device_type in list_devices_i2c and self.multiplexer_address_raw:
+        if self.device in list_devices_i2c and self.multiplexer_address_raw:
             self.multiplexer_address_string = self.multiplexer_address_raw
             self.multiplexer_address = int(str(self.multiplexer_address_raw), 16)
             self.multiplexer_lock_file = "/var/lock/mycodo_multiplexer_0x{:02X}.pid".format(self.multiplexer_address)
@@ -201,11 +205,11 @@ class SensorController(threading.Thread):
         else:
             self.multiplexer = None
 
-        if self.device_type in ['ADS1x15', 'MCP342x'] and self.location:
+        if self.device in ['ADS1x15', 'MCP342x'] and self.location:
             self.adc_lock_file = "/var/lock/mycodo_adc_bus{}_0x{:02X}.pid".format(self.i2c_bus, self.i2c_address)
 
         # Set up edge detection of a GPIO pin
-        if self.device_type == 'EDGE':
+        if self.device == 'EDGE':
             if self.switch_edge == 'rising':
                 self.switch_edge_gpio = GPIO.RISING
             elif self.switch_edge == 'falling':
@@ -214,10 +218,10 @@ class SensorController(threading.Thread):
                 self.switch_edge_gpio = GPIO.BOTH
 
         # Set up analog-to-digital converter
-        elif self.device_type == 'ADS1x15':
+        elif self.device == 'ADS1x15':
             self.adc = ADS1x15_read(self.i2c_address, self.i2c_bus,
                                     self.adc_channel, self.adc_gain)
-        elif self.device_type == 'MCP342x':
+        elif self.device == 'MCP342x':
             self.adc = MCP342x_read(self.i2c_address, self.i2c_bus,
                                     self.adc_channel, self.adc_gain,
                                     self.adc_resolution)
@@ -227,48 +231,54 @@ class SensorController(threading.Thread):
         self.device_recognized = True
 
         # Set up sensor
-        if self.device_type in ['EDGE', 'ADS1x15', 'MCP342x']:
+        if self.device in ['EDGE', 'ADS1x15', 'MCP342x']:
             self.measure_sensor = None
-        elif self.device_type == 'RPiCPULoad':
+        elif self.device == 'RPiCPULoad':
             self.measure_sensor = RaspberryPiCPULoad()
-        elif self.device_type == 'RPi':
+        elif self.device == 'RPi':
             self.measure_sensor = RaspberryPiCPUTemp()
-        elif self.device_type == 'CHIRP':
-            self.measure_sensor = ChirpSensor(self.i2c_address, self.i2c_bus)
-        elif self.device_type == 'DS18B20':
+        elif self.device == 'CHIRP':
+            self.measure_sensor = ChirpSensor(self.i2c_address,
+                                              self.i2c_bus)
+        elif self.device == 'DS18B20':
             self.measure_sensor = DS18B20Sensor(self.location)
-        elif self.device_type == 'DHT11':
+        elif self.device == 'DHT11':
             self.measure_sensor = DHT11Sensor(int(self.location))
-        elif self.device_type in ['DHT22', 'AM2302']:
+        elif self.device in ['DHT22', 'AM2302']:
             self.measure_sensor = DHT22Sensor(int(self.location))
-        elif self.device_type == 'HTU21D':
+        elif self.device == 'HTU21D':
             self.measure_sensor = HTU21DSensor(self.i2c_bus)
-        elif self.device_type == 'AM2315':
+        elif self.device == 'AM2315':
             self.measure_sensor = AM2315Sensor(self.i2c_bus)
-        elif self.device_type == 'ATLAS_PT1000':
-            self.measure_sensor = AtlasPT1000Sensor(self.i2c_address, self.i2c_bus)
-        elif self.device_type == 'K30':
+        elif self.device == 'ATLAS_PT1000':
+            self.measure_sensor = AtlasPT1000Sensor(self.i2c_address,
+                                                    self.i2c_bus)
+        elif self.device == 'K30':
             self.measure_sensor = K30Sensor()
-        elif self.device_type == 'BME280':
-            self.measure_sensor = BME280Sensor(self.i2c_address, self.i2c_bus)
-        elif self.device_type == 'BMP':
+        elif self.device == 'BME280':
+            self.measure_sensor = BME280Sensor(self.i2c_address,
+                                               self.i2c_bus)
+        elif self.device == 'BMP':
             self.measure_sensor = BMPSensor(self.i2c_bus)
-        elif self.device_type == 'SHT1x_7x':
+        elif self.device == 'SHT1x_7x':
             self.measure_sensor = SHT1x7xSensor(self.location,
                                                 self.sht_clock_pin,
                                                 self.sht_voltage)
-        elif self.device_type == 'SHT2x':
-            self.measure_sensor = SHT2xSensor(self.i2c_address, self.i2c_bus)
-        elif self.device_type == 'TMP006':
-            self.measure_sensor = TMP006Sensor(self.i2c_address, self.i2c_bus)
-        elif self.device_type == 'TSL2561':
-            self.measure_sensor = TSL2561Sensor(self.i2c_address, self.i2c_bus)
+        elif self.device == 'SHT2x':
+            self.measure_sensor = SHT2xSensor(self.i2c_address,
+                                              self.i2c_bus)
+        elif self.device == 'TMP006':
+            self.measure_sensor = TMP006Sensor(self.i2c_address,
+                                               self.i2c_bus)
+        elif self.device == 'TSL2561':
+            self.measure_sensor = TSL2561Sensor(self.i2c_address,
+                                                self.i2c_bus)
         else:
             self.device_recognized = False
             self.logger.debug("Device '{device}' not recognized".format(
-                device=self.device_type))
+                device=self.device))
             raise Exception("{device} is not a valid device type.".format(
-                device=self.device_type))
+                device=self.device))
 
         self.edge_reset_timer = time.time()
         self.sensor_timer = time.time()
@@ -283,7 +293,7 @@ class SensorController(threading.Thread):
             self.ready.set()
 
             # Set up edge detection
-            if self.device_type == 'EDGE':
+            if self.device == 'EDGE':
                 GPIO.setmode(GPIO.BCM)
                 GPIO.setup(int(self.location), GPIO.IN)
                 GPIO.add_event_detect(int(self.location),
@@ -300,7 +310,7 @@ class SensorController(threading.Thread):
                     while self.pause_loop:
                         time.sleep(0.1)
 
-                if self.device_type in ['EDGE']:
+                if self.device in ['EDGE']:
                     # Sensors that are triggered (simple switch,
                     # PIR motion, reed, hall, etc.)
                     # Check sensor conditionals if their timers have expired
@@ -357,7 +367,7 @@ class SensorController(threading.Thread):
 
             self.running = False
 
-            if self.device_type == 'EDGE':
+            if self.device == 'EDGE':
                 GPIO.setmode(GPIO.BCM)
                 GPIO.cleanup(int(self.location))
 
@@ -396,7 +406,7 @@ class SensorController(threading.Thread):
         :param cond_id: ID of conditional to check
         :type cond_id: str
         """
-        loggerCond = logging.getLogger("mycodo.SensorCond-{id}".format(
+        logger_cond = logging.getLogger("mycodo.SensorCond-{id}".format(
             id=cond_id))
         attachment_file = False
         attachment_type = False
@@ -412,7 +422,7 @@ class SensorController(threading.Thread):
         timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
 
         if conditional == 'measurement':
-            last_measurement = self.getLastMeasurement(self.cond_measurement_type[cond_id])
+            last_measurement = self.get_last_measurement(self.cond_measurement_type[cond_id])
             if (last_measurement and
                 ((self.cond_direction[cond_id] == 'above' and
                     last_measurement > self.cond_setpoint[cond_id]) or
@@ -430,7 +440,7 @@ class SensorController(threading.Thread):
                     message += "<"
                 message += " {} setpoint.".format(self.cond_setpoint[cond_id])
             else:
-                loggerCond.debug("Last measurement not found")
+                logger_cond.debug("Last measurement not found")
                 return 1
 
         elif conditional == 'edge':
@@ -475,12 +485,12 @@ class SensorController(threading.Thread):
             camera_still = db_retrieve_table(
                 MYCODO_DB_PATH, CameraStill, entry='first')
             attachment_file = camera_record(
-                INSTALL_DIRECTORY, 'photo', camera_still)
+                'photo', camera_still)
         elif self.cond_camera_record[cond_id] in ['video', 'videoemail']:
             camera_stream = db_retrieve_table(
                 MYCODO_DB_PATH, CameraStream, entry='first')
             attachment_file = camera_record(
-                INSTALL_DIRECTORY, 'video', camera_stream, duration_sec=5)
+                'video', camera_stream, duration_sec=5)
 
         if self.cond_email_notify[cond_id]:
             if (self.email_count >= self.smtp_max_count and
@@ -512,7 +522,7 @@ class SensorController(threading.Thread):
                            self.cond_email_notify[cond_id], message,
                            attachment_file, attachment_type)
             else:
-                loggerCond.debug(
+                logger_cond.debug(
                     "{:.0f} seconds left to be allowed to email "
                     "again.".format(
                         self.smtp_wait_timer[cond_id]-time.time()))
@@ -523,7 +533,7 @@ class SensorController(threading.Thread):
                 args=(self.cond_flash_lcd[cond_id], 1,))
             start_flashing.start()
 
-        loggerCond.debug(message)
+        logger_cond.debug(message)
 
     def update_measure(self):
         """
@@ -536,7 +546,7 @@ class SensorController(threading.Thread):
 
         if not self.device_recognized:
             self.logger.debug("Device not recognized: {device}".format(
-                device=self.device_type))
+                device=self.device))
             self.updateSuccess = False
             return 1
 
@@ -557,7 +567,8 @@ class SensorController(threading.Thread):
                                 chan=self.multiplexer_channel))
             # Set multiplexer channel
             (multiplexer_status,
-             multiplexer_response) = self.multiplexer.setup(self.multiplexer_channel)
+             multiplexer_response) = self.multiplexer.setup(
+                self.multiplexer_channel)
             if not multiplexer_status:
                 self.logger.warning(
                     "Could not set channel with multiplexer at address {add}."
@@ -670,7 +681,7 @@ class SensorController(threading.Thread):
         self.logger.debug("[Locking bus-{} 0x{:02X}] Releasing Lock: {}".format(i2c_bus, i2c_address, lockfile))
         self.lock[lockfile].release()
 
-    def getLastMeasurement(self, measurement_type):
+    def get_last_measurement(self, measurement_type):
         """
         Retrieve the latest sensor measurement
 
@@ -715,7 +726,7 @@ class SensorController(threading.Thread):
                     self.check_conditionals(each_cond_id)
 
     def setup_sensor_conditionals(self, cond_mod='setup', cond_id=None):
-        loggerCond = logging.getLogger("mycodo.SensorCond-{id}".format(
+        logger_cond = logging.getLogger("mycodo.SensorCond-{id}".format(
             id=cond_id))
         # Signal to pause the main loop and wait for verification
         self.pause_loop = True
@@ -742,7 +753,7 @@ class SensorController(threading.Thread):
             self.cond_camera_record.pop(cond_id, None)
             self.cond_timer.pop(cond_id, None)
             self.smtp_wait_timer.pop(cond_id, None)
-            loggerCond.debug("Deleted Conditional from Sensor {sen}".format(
+            logger_cond.debug("Deleted Conditional from Sensor {sen}".format(
                 sen=self.sensor_id))
         else:
             if cond_mod == 'setup':
@@ -779,7 +790,7 @@ class SensorController(threading.Thread):
                     SensorConditional.activated == 1)
                 self.sensor_conditional = self.sensor_conditional.filter(
                     SensorConditional.id == cond_id)
-                loggerCond.debug(
+                logger_cond.debug(
                     "Added Conditional to Sensor {sen}".format(
                         sen=self.sensor_id))
             elif cond_mod == 'mod':
@@ -789,7 +800,7 @@ class SensorController(threading.Thread):
                         SensorConditional.sensor_id == self.sensor_id)
                 self.sensor_conditional = self.sensor_conditional.filter(
                     SensorConditional.id == cond_id)
-                loggerCond.debug(
+                logger_cond.debug(
                     "Modified Conditional from Sensor {sen}".format(
                         sen=self.sensor_id))
             else:
@@ -797,9 +808,8 @@ class SensorController(threading.Thread):
 
             for each_cond in self.sensor_conditional.all():
                 if cond_mod == 'setup':
-                    loggerCond.debug(
-                        "Activated Conditional from Sensor {sen}".format(
-                            sen=self.sensor_id))
+                    logger_cond.debug("Activated Conditional from Sensor "
+                                      "{sen}".format(sen=self.sensor_id))
                 self.cond_id[each_cond.id] = each_cond.id
                 self.cond_name[each_cond.id] = each_cond.name
                 self.cond_activated[each_cond.id] = each_cond.activated
@@ -828,6 +838,6 @@ class SensorController(threading.Thread):
 
     def stop_controller(self):
         self.thread_shutdown_timer = timeit.default_timer()
-        if self.device_type not in ['EDGE', 'ADS1x15', 'MCP342x']:
+        if self.device not in ['EDGE', 'ADS1x15', 'MCP342x']:
             self.measure_sensor.stop_sensor()
         self.running = False

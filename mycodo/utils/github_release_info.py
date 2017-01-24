@@ -39,7 +39,7 @@ def json_to_dict(url):
 
 
 def github_releases(major_version):
-    """Return the tarball URL for the latest version"""
+    """ Return the tarball URL for the latest version """
     mycodo_releases = json_to_dict(release_url)
     all_versions = []
     for each_release in mycodo_releases:
@@ -50,7 +50,10 @@ def github_releases(major_version):
 
 
 def is_latest_installed(major_number):
-    """Check if the latest release is installed. Return True if yes, Flase if no."""
+    """
+    Check if the latest release is installed.
+    Return True if yes, Flase if no.
+    """
     latest_version = return_maj_version_url(True, major_number)
     if latest_version == MYCODO_VERSION:
         return True
@@ -77,7 +80,7 @@ def sort_reverse_list(versions_unsorted):
 
 
 def return_latest_version_url(version_only):
-    """Return the tarball URL for the latest version"""
+    """ Return the tarball URL for the latest version """
     mycodo_releases = json_to_dict(release_url)
     all_versions = []
     for each_release in mycodo_releases:
@@ -98,7 +101,10 @@ def return_latest_version_url(version_only):
 
 
 def return_maj_version_url(version_only, major_version):
-    """Return the tarball URL for the version with the specified major number"""
+    """
+    Return the tarball URL for the version with the
+    specified major number
+    """
     mycodo_releases = json_to_dict(release_url)
     maj_versions = []
     for each_release in mycodo_releases:
@@ -121,7 +127,10 @@ def return_maj_version_url(version_only, major_version):
 
 
 def version_information(version_only, major_version):
-    """Print all releases, and specific info about latest and major releases"""
+    """
+    Print all releases, and specific info about
+    latest and major releases
+    """
     mycodo_releases = json_to_dict(release_url)
     print("List of all Mycodo Releases:")
 
@@ -136,11 +145,13 @@ def parseargs(parser):
     parser.add_argument('-c', '--currentversion', action='store_true',
                         help='Return the currently-installed version.')
     parser.add_argument('-i', '--islatest', action='store_true',
-                        help='Return True if the currently-installed version is the latest.')
+                        help='Return True if the currently-installed '
+                             'version is the latest.')
     parser.add_argument('-l', '--latest', action='store_true',
                         help='Return the latest version URL.')
     parser.add_argument('-m', '--majornumber', type=int,
-                        help='Return the latest version URL with major version'
+                        help='Return the latest version URL with major '
+                             'version'
                              ' number x in x.y.z.')
     parser.add_argument('-v', '--version', action='store_true',
                         help='Return the latest version number.')

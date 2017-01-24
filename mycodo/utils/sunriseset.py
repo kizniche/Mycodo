@@ -117,11 +117,13 @@ class Sun:
                  (cos_dec * math.cos(to_rad*self.latitude)))
 
         if cos_h > 1:
-            return {'status': False, 'msg': 'the sun never rises on this '
-                                            'location (on the specified date)'}
+            return {'status': False,
+                    'msg': 'the sun never rises on this '
+                           'location (on the specified date)'}
         elif cos_h < -1:
-            return {'status': False, 'msg': 'the sun never sets on this '
-                                            'location (on the specified date)'}
+            return {'status': False,
+                    'msg': 'the sun never sets on this '
+                           'location (on the specified date)'}
 
         # 7b. finish calculating H and convert into hours
 
@@ -161,7 +163,9 @@ if __name__ == '__main__':
     sun = Sun(latitude=33.749249, longitude=-84.387314, zenith=90.8)
 
     sunrise = sun.get_sunrise_time()
-    print("Sunrise: {hour}:{min}".format(hour=sunrise['hr'], min=sunrise['min']))
+    print("Sunrise: {hour}:{min}".format(hour=sunrise['hr'],
+                                         min=sunrise['min']))
 
     sunset = sun.get_sunset_time()
-    print("Sunset: {hour}:{min}".format(hour=sunset['hr'], min=sunset['min']))
+    print("Sunset: {hour}:{min}".format(hour=sunset['hr'],
+                                        min=sunset['min']))

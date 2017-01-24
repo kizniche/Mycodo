@@ -36,15 +36,15 @@ MEASUREMENT_UNITS = {
     'cpu_load_1m': '',
     'cpu_load_5m': '',
     'cpu_load_15m': '',
-    'temperature': '°C'.decode('utf-8'),
-    'temperature_object': '°C'.decode('utf-8'),
-    'temperature_die': '°C'.decode('utf-8'),
-    'humidity': ' %',
-    'dewpoint': '°C'.decode('utf-8'),
-    'co2': ' ppmv',
+    'temperature': 'C',
+    'temperature_object': 'C',
+    'temperature_die': 'C',
+    'humidity': '%',
+    'dewpoint': 'C',
+    'co2': 'ppmv',
     'lux': 'lx',
-    'pressure': ' Pa',
-    'altitude': ' m'
+    'pressure': 'Pa',
+    'altitude': 'm'
 }
 
 INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'

@@ -53,7 +53,7 @@ from databases.mycodo_db.models import (
     Misc,
     PID,
     Sensor,
-    Timer,
+    Timer
 )
 
 # Functions
@@ -71,19 +71,13 @@ from config import (
     DAEMON_LOG_FILE,
     DAEMON_PID_FILE,
     FILE_TIMELAPSE_PARAM,
-    ID_FILE,
     INSTALL_DIRECTORY,
     LOCK_FILE_TIMELAPSE,
     MYCODO_VERSION,
     SQL_DATABASE_MYCODO,
     SQL_DATABASE_USER,
-    STATS_INTERVAL,
     STATS_CSV,
-    STATS_HOST,
-    STATS_PORT,
-    STATS_USER,
-    STATS_PASSWORD,
-    STATS_DATABASE
+    STATS_INTERVAL
 )
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -304,7 +298,6 @@ class DaemonController(threading.Thread):
                         camera = db_retrieve_table(
                             MYCODO_DB_PATH, CameraStill, entry='first')
                         camera_record(
-                            INSTALL_DIRECTORY,
                             'timelapse',
                             camera,
                             start_time=dict_timelapse_param['start_time'],
@@ -563,13 +556,9 @@ class DaemonController(threading.Thread):
                 os.remove(STATS_CSV)
             except OSError:
                 pass
-            recreate_stat_file(
-                ID_FILE, STATS_CSV, STATS_INTERVAL, MYCODO_VERSION)
+            recreate_stat_file()
         try:
-            send_stats(
-                STATS_HOST, STATS_PORT, STATS_USER, STATS_PASSWORD,
-                STATS_DATABASE, MYCODO_DB_PATH, USER_DB_PATH, STATS_CSV,
-                MYCODO_VERSION)
+            send_stats()
         except Exception as except_msg:
             self.logger.exception(
                 "Error: Could not send statistics: {err}".format(
@@ -583,8 +572,7 @@ class DaemonController(threading.Thread):
                 self.logger.debug(
                     "Statistics file doesn't exist, creating {file}".format(
                         file=STATS_CSV))
-                recreate_stat_file(ID_FILE, STATS_CSV,
-                                   STATS_INTERVAL, MYCODO_VERSION)
+                recreate_stat_file()
 
             daemon_startup_time = timeit.default_timer()-self.startup_timer
             self.logger.info("Mycodo v{ver} started in {time:.3f}"

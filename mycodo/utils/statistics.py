@@ -1,5 +1,4 @@
 # coding=utf-8
-
 import csv
 import geocoder
 import logging
@@ -14,6 +13,7 @@ from collections import OrderedDict
 from influxdb import InfluxDBClient
 from sqlalchemy import func
 
+# Classes
 from databases.mycodo_db.models import (
     AlembicVersion,
     LCD,
@@ -24,7 +24,27 @@ from databases.mycodo_db.models import (
     Timer
 )
 from databases.users_db.models import Users
+
+# Functions
 from databases.utils import session_scope
+
+# Config
+from config import (
+    ID_FILE,
+    MYCODO_VERSION,
+    SQL_DATABASE_MYCODO,
+    SQL_DATABASE_USER,
+    STATS_CSV,
+    STATS_DATABASE,
+    STATS_HOST,
+    STATS_INTERVAL,
+    STATS_PORT,
+    STATS_PASSWORD,
+    STATS_USER
+)
+
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
 
 logger = logging.getLogger("mycodo.stats")
 
@@ -127,26 +147,26 @@ def get_pi_revision():
     return revision
 
 
-def increment_stat(stats_csv, stat, amount):
+def increment_stat(stat, amount):
     """
     Increment the value in the statistics file by amount
 
     """
-    stat_dict = return_stat_file_dict(stats_csv)
-    add_update_csv(stats_csv, stat, int(stat_dict[stat]) + amount)
+    stat_dict = return_stat_file_dict(STATS_CSV)
+    add_update_csv(STATS_CSV, stat, int(stat_dict[stat]) + amount)
 
 
-def return_stat_file_dict(stats_csv):
+def return_stat_file_dict(csv_file):
     """
     Read the statistics file and return as keys and values in a dictionary
 
     """
-    with open(stats_csv, mode='r') as infile:
+    with open(csv_file, mode='r') as infile:
         reader = csv.reader(infile)
         return OrderedDict((row[0], row[1]) for row in reader)
 
 
-def recreate_stat_file(id_file, stats_csv, stats_interval, mycodo_version):
+def recreate_stat_file():
     """
     Create a statistics file with basic stats
 
@@ -154,118 +174,119 @@ def recreate_stat_file(id_file, stats_csv, stats_interval, mycodo_version):
 
     """
     uid_gid = pwd.getpwnam('mycodo').pw_uid
-    if not os.path.isfile(id_file):
+    if not os.path.isfile(ID_FILE):
         anonymous_id = ''.join([random.choice(
             string.ascii_letters + string.digits) for _ in xrange(12)])
-        with open(id_file, 'w') as write_file:
+        with open(ID_FILE, 'w') as write_file:
             write_file.write('{}'.format(anonymous_id))
-        os.chown(id_file, uid_gid, uid_gid)
-        os.chmod(id_file, 0664)
+        os.chown(ID_FILE, uid_gid, uid_gid)
+        os.chmod(ID_FILE, 0664)
 
-    with open(id_file, 'r') as read_file:
+    with open(ID_FILE, 'r') as read_file:
         stat_id = read_file.read()
 
-    new_stat_data = [['stat', 'value'],
-                     ['id', stat_id],
-                     ['next_send', time.time() + stats_interval],
-                     ['RPi_revision', get_pi_revision()],
-                     ['Mycodo_revision', mycodo_version],
-                     ['alembic_version', 0],
-                     ['country', 'None'],
-                     ['daemon_startup_seconds', 0.0],
-                     ['ram_use_mb', 0.0],
-                     ['num_users_admin', 0],
-                     ['num_users_guest', 0],
-                     ['num_lcds', 0],
-                     ['num_lcds_active', 0],
-                     ['num_methods', 0],
-                     ['num_methods_in_pid', 0],
-                     ['num_pids', 0],
-                     ['num_pids_active', 0],
-                     ['num_relays', 0],
-                     ['num_sensors', 0],
-                     ['num_sensors_active', 0],
-                     ['num_timers', 0],
-                     ['num_timers_active', 0]]
+    new_stat_data = [
+        ['stat', 'value'],
+        ['id', stat_id],
+        ['next_send', time.time() + STATS_INTERVAL],
+        ['RPi_revision', get_pi_revision()],
+        ['Mycodo_revision', MYCODO_VERSION],
+        ['alembic_version', 0],
+        ['country', 'None'],
+        ['daemon_startup_seconds', 0.0],
+        ['ram_use_mb', 0.0],
+        ['num_users_admin', 0],
+        ['num_users_guest', 0],
+        ['num_lcds', 0],
+        ['num_lcds_active', 0],
+        ['num_methods', 0],
+        ['num_methods_in_pid', 0],
+        ['num_pids', 0],
+        ['num_pids_active', 0],
+        ['num_relays', 0],
+        ['num_sensors', 0],
+        ['num_sensors_active', 0],
+        ['num_timers', 0],
+        ['num_timers_active', 0]
+    ]
 
-    with open(stats_csv, 'w') as csv_stat_file:
+    with open(STATS_CSV, 'w') as csv_stat_file:
         write_csv = csv.writer(csv_stat_file)
         for row in new_stat_data:
             write_csv.writerow(row)
-    os.chown(stats_csv, uid_gid, uid_gid)
-    os.chmod(stats_csv, 0664)
+    os.chown(STATS_CSV, uid_gid, uid_gid)
+    os.chmod(STATS_CSV, 0664)
 
 
-def send_stats(host, port, user, password, dbname, mycodo_db_path,
-               user_db_path, stats_csv, mycodo_version):
+def send_stats():
     """
     Send anonymous usage statistics
 
     Example use:
-        current_stat = return_stat_file_dict()
+        current_stat = return_stat_file_dict(csv_file)
         add_update_csv(csv_file, 'stat', current_stat['stat'] + 5)
     """
     try:
-        client = InfluxDBClient(host, port, user, password, dbname)
+        client = InfluxDBClient(STATS_HOST, STATS_PORT, STATS_USER, STATS_PASSWORD, STATS_DATABASE)
         # Prepare stats before sending
-        with session_scope(mycodo_db_path) as new_session:
+        with session_scope(MYCODO_DB_PATH) as new_session:
             alembic = new_session.query(AlembicVersion).first()
-            add_update_csv(stats_csv, 'alembic_version',
+            add_update_csv(STATS_CSV, 'alembic_version',
                            alembic.version_num)
 
             relays = new_session.query(Relay)
-            add_update_csv(stats_csv, 'num_relays', get_count(relays))
+            add_update_csv(STATS_CSV, 'num_relays', get_count(relays))
 
             sensors = new_session.query(Sensor)
-            add_update_csv(stats_csv, 'num_sensors', get_count(sensors))
-            add_update_csv(stats_csv, 'num_sensors_active',
+            add_update_csv(STATS_CSV, 'num_sensors', get_count(sensors))
+            add_update_csv(STATS_CSV, 'num_sensors_active',
                            get_count(
                                sensors.filter(Sensor.activated == True)))
 
             pids = new_session.query(PID)
-            add_update_csv(stats_csv, 'num_pids', get_count(pids))
-            add_update_csv(stats_csv, 'num_pids_active',
+            add_update_csv(STATS_CSV, 'num_pids', get_count(pids))
+            add_update_csv(STATS_CSV, 'num_pids_active',
                            get_count(pids.filter(PID.activated == True)))
 
             lcds = new_session.query(LCD)
-            add_update_csv(stats_csv, 'num_lcds', get_count(lcds))
-            add_update_csv(stats_csv, 'num_lcds_active',
+            add_update_csv(STATS_CSV, 'num_lcds', get_count(lcds))
+            add_update_csv(STATS_CSV, 'num_lcds_active',
                            get_count(lcds.filter(LCD.activated == True)))
 
             methods = new_session.query(Method)
-            add_update_csv(stats_csv, 'num_methods',
+            add_update_csv(STATS_CSV, 'num_methods',
                            get_count(methods.filter(
                                Method.method_order == 0)))
-            add_update_csv(stats_csv, 'num_methods_in_pid',
+            add_update_csv(STATS_CSV, 'num_methods_in_pid',
                            get_count(pids.filter(PID.method_id != '')))
 
             timers = new_session.query(Timer)
-            add_update_csv(stats_csv, 'num_timers', get_count(timers))
-            add_update_csv(stats_csv, 'num_timers_active',
+            add_update_csv(STATS_CSV, 'num_timers', get_count(timers))
+            add_update_csv(STATS_CSV, 'num_timers_active',
                            get_count(timers.filter(
                                Timer.activated == True)))
 
-        add_update_csv(stats_csv, 'country', geocoder.ip('me').country)
-        add_update_csv(stats_csv, 'ram_use_mb',
+        add_update_csv(STATS_CSV, 'country', geocoder.ip('me').country)
+        add_update_csv(STATS_CSV, 'ram_use_mb',
                        resource.getrusage(
                            resource.RUSAGE_SELF).ru_maxrss / float(1000))
 
         user_count = 0
         admin_count = 0
-        with session_scope(user_db_path) as db_session:
+        with session_scope(USER_DB_PATH) as db_session:
             users = db_session.query(Users).all()
             for each_user in users:
                 user_count += 1
                 if each_user.user_restriction == 'admin':
                     admin_count += 1
-        add_update_csv(stats_csv, 'num_users_admin', admin_count)
-        add_update_csv(stats_csv, 'num_users_guest',
+        add_update_csv(STATS_CSV, 'num_users_admin', admin_count)
+        add_update_csv(STATS_CSV, 'num_users_guest',
                        user_count - admin_count)
 
-        add_update_csv(stats_csv, 'Mycodo_revision', mycodo_version)
+        add_update_csv(STATS_CSV, 'Mycodo_revision', MYCODO_VERSION)
 
         # Combine stats into list of dictionaries
-        new_stats_dict = return_stat_file_dict(stats_csv)
+        new_stats_dict = return_stat_file_dict(STATS_CSV)
         formatted_stat_dict = []
         for each_key, each_value in new_stats_dict.iteritems():
             if each_key != 'stat':  # Do not send header row

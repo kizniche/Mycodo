@@ -58,9 +58,7 @@ from utils.method import (
 )
 
 # Config
-from config import (
-    SQL_DATABASE_MYCODO
-)
+from config import SQL_DATABASE_MYCODO
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -84,12 +82,15 @@ class PIDController(threading.Thread):
 
         self.initialize_values()
 
+        self.control_variable = 0
         self.Derivator = 0
         self.Integrator = 0
         self.error = 0.0
         self.P_value = None
         self.I_value = None
         self.D_value = None
+        self.set_point = 0
+        self.lower_seconds_on = 0
         self.raise_seconds_on = 0
         self.last_measurement_success = False
         self.timer = t.time()+self.measure_interval
@@ -120,9 +121,10 @@ class PIDController(threading.Thread):
                     # Likely there was a daemon restart ot power failure
                     # Resume method with saved start_time
                     self.method_start_time = datetime.datetime.strptime(
-                        self.method_start_time, '%Y-%m-%d %H:%M:%S.%f')
-                    self.logger.warning("Resuming method {} started at {}".format(
-                        self.method_id, self.method_start_time))
+                        str(self.method_start_time), '%Y-%m-%d %H:%M:%S.%f')
+                    self.logger.warning(
+                        "Resuming method {id} started at {time}".format(
+                            id=self.method_id, time=self.method_start_time))
 
     def run(self):
         try:
@@ -234,9 +236,9 @@ class PIDController(threading.Thread):
         self.Derivator = self.error
 
         # Produce output form P, I, and D values
-        PID_value = self.P_value + self.I_value + self.D_value
+        pid_value = self.P_value + self.I_value + self.D_value
 
-        return PID_value
+        return pid_value
 
     def get_last_measurement(self):
         """
@@ -260,7 +262,9 @@ class PIDController(threading.Thread):
                     measurement=self.measure_type))
                 self.last_time = measurement_list[0]['time']
                 self.last_measurement = measurement_list[0]['value']
-                utc_dt = datetime.datetime.strptime(self.last_time.split(".")[0], '%Y-%m-%dT%H:%M:%S')
+                utc_dt = datetime.datetime.strptime(
+                    self.last_time.split(".")[0],
+                    '%Y-%m-%dT%H:%M:%S')
                 utc_timestamp = calendar.timegm(utc_dt.timetuple())
                 local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
                 self.logger.debug("Latest {}: {} @ {}".format(
@@ -270,9 +274,9 @@ class PIDController(threading.Thread):
             else:
                 self.logger.warning("No data returned from influxdb")
         except Exception as except_msg:
-            self.logger.exception("Failed to read measurement from the "
-                                  "influxdb database: {err}".format(
-                err=except_msg))
+            self.logger.exception(
+                "Failed to read measurement from the influxdb database: "
+                "{err}".format(err=except_msg))
 
     def manipulate_relays(self):
         """
@@ -294,7 +298,8 @@ class PIDController(threading.Thread):
                             self.control_variable > self.raise_max_duration):
                         self.raise_seconds_on = self.raise_max_duration
                     else:
-                        self.raise_seconds_on = float("{0:.2f}".format(self.control_variable))
+                        self.raise_seconds_on = float("{0:.2f}".format(
+                            self.control_variable))
 
                     # Turn off lower_relay if active, because we're now raising
                     if self.lower_relay_id:
@@ -307,8 +312,9 @@ class PIDController(threading.Thread):
 
                     if self.raise_seconds_on > self.raise_min_duration:
                         # Activate raise_relay for a duration
-                        self.logger.debug("Setpoint: {sp} Output: {op} to "
-                                          "relay {relay}".format(
+                        self.logger.debug(
+                            "Setpoint: {sp} Output: {op} to relay "
+                            "{relay}".format(
                                 sp=self.set_point,
                                 op=self.control_variable,
                                 relay=self.raise_relay_id))
@@ -327,7 +333,8 @@ class PIDController(threading.Thread):
                             abs(self.control_variable) > self.lower_max_duration):
                         self.lower_seconds_on = self.lower_max_duration
                     else:
-                        self.lower_seconds_on = abs(float("{0:.2f}".format(self.control_variable)))
+                        self.lower_seconds_on = abs(float("{0:.2f}".format(
+                            self.control_variable)))
 
                     # Turn off raise_relay if active, because we're now lowering
                     if self.raise_relay_id:
@@ -479,16 +486,21 @@ class PIDController(threading.Thread):
                     else:
                         new_setpoint = start_setpoint-(setpoint_diff*percent_row)
 
-                    self.logger.debug("[Method] Start: {} Seconds Since: {}".format(
-                        self.method_start_time, seconds_from_start))
-                    self.logger.debug("[Method] Start time of row: {}".format(
-                        datetime.datetime.fromtimestamp(row_start_time)))
-                    self.logger.debug("[Method] Sec since start of row: {}".format(
-                        row_since_start_sec))
-                    self.logger.debug("[Method] Percent of row: {}".format(
-                        percent_row))
-                    self.logger.debug("[Method] New Setpoint: {}".format(
-                        new_setpoint))
+                    self.logger.debug(
+                        "[Method] Start: {} Seconds Since: {}".format(
+                            self.method_start_time, seconds_from_start))
+                    self.logger.debug(
+                        "[Method] Start time of row: {}".format(
+                            datetime.datetime.fromtimestamp(row_start_time)))
+                    self.logger.debug(
+                        "[Method] Sec since start of row: {}".format(
+                            row_since_start_sec))
+                    self.logger.debug(
+                        "[Method] Percent of row: {}".format(
+                            percent_row))
+                    self.logger.debug(
+                        "[Method] New Setpoint: {}".format(
+                            new_setpoint))
                     self.set_point = new_setpoint
                     return 0
                 previous_total_sec = total_sec
@@ -498,7 +510,8 @@ class PIDController(threading.Thread):
                 with session_scope(MYCODO_DB_PATH) as db_session:
                     mod_method = db_session.query(Method).filter(
                         Method.method_id == self.method_id)
-                    mod_method = mod_method.filter(Method.method_order == 0).first()
+                    mod_method = mod_method.filter(
+                        Method.method_order == 0).first()
                     mod_method.start_time = 'Ended'
                     db_session.commit()
                 self.method_start_time = 'Ended'
@@ -528,29 +541,29 @@ class PIDController(threading.Thread):
         return "success"
 
     def set_setpoint(self, set_point):
-        """Initilize the setpoint of PID"""
+        """ Initilize the setpoint of PID """
         self.set_point = set_point
         self.Integrator = 0
         self.Derivator = 0
 
     def set_integrator(self, Integrator):
-        """Set the Integrator of the controller"""
+        """ Set the Integrator of the controller """
         self.Integrator = Integrator
 
     def set_derivator(self, Derivator):
-        """Set the Derivator of the controller"""
+        """ Set the Derivator of the controller """
         self.Derivator = Derivator
 
     def set_kp(self, P):
-        """Set Kp gain of the controller"""
+        """ Set Kp gain of the controller """
         self.Kp = P
 
     def set_ki(self, I):
-        """Set Ki gain of the controller"""
+        """ Set Ki gain of the controller """
         self.Ki = I
 
     def set_kd(self, D):
-        """Set Kd gain of the controller"""
+        """ Set Kd gain of the controller """
         self.Kd = D
 
     def get_setpoint(self):
@@ -575,7 +588,9 @@ class PIDController(threading.Thread):
         if self.method_id:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_method = db_session.query(Method)
-                mod_method = mod_method.filter(Method.method_id == self.method_id)
-                mod_method = mod_method.filter(Method.method_order == 0).first()
+                mod_method = mod_method.filter(
+                    Method.method_id == self.method_id)
+                mod_method = mod_method.filter(
+                    Method.method_order == 0).first()
                 mod_method.start_time = 'Ended'
                 db_session.commit()

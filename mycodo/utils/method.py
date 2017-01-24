@@ -26,7 +26,9 @@ def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day=None):
     # Otherwise, use the current second of the day
     if second_of_day is None:
         now = datetime.datetime.now()
-        dt = datetime.timedelta(hours=now.hour, minutes=now.minute, seconds=now.second)
+        dt = datetime.timedelta(hours=now.hour,
+                                minutes=now.minute,
+                                seconds=now.second)
         seconds = dt.total_seconds()
     else:
         seconds = second_of_day
@@ -75,10 +77,13 @@ def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day=None):
     return y
 
 
-def sine_wave_y_out(amplitude, frequency, shift_angle, shift_y, angle_in=None):
+def sine_wave_y_out(amplitude, frequency, shift_angle,
+                    shift_y, angle_in=None):
     if angle_in is None:
         now = datetime.datetime.now()
-        dt = datetime.timedelta(hours=now.hour, minutes=now.minute, seconds=now.second)
+        dt = datetime.timedelta(hours=now.hour,
+                                minutes=now.minute,
+                                seconds=now.second)
         secs_per_day = 24*60*60
         angle = dt.total_seconds()/secs_per_day*360
     else:
@@ -86,5 +91,3 @@ def sine_wave_y_out(amplitude, frequency, shift_angle, shift_y, angle_in=None):
 
     y = (amplitude*sin(radians(frequency*(angle-shift_angle))))+shift_y
     return y
-
-print(sine_wave_y_out(5.0, 5.0, 200.0, 33.0))

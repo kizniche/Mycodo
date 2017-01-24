@@ -10,8 +10,10 @@ from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
 from email import Encoders
 
-from utils.system_pi import cmd_output
-from utils.system_pi import set_user_grp
+from utils.system_pi import (
+    cmd_output,
+    set_user_grp
+)
 
 logger = logging.getLogger("mycodo.notification")
 
@@ -44,7 +46,8 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
             server.starttls()
         server.login(smtp_user, smtp_pass)
         msg = MIMEMultipart()
-        msg['Subject'] = "Mycodo Notification ({})".format(socket.gethostname())
+        msg['Subject'] = "Mycodo Notification ({})".format(
+            socket.gethostname())
         msg['From'] = smtp_email_from
         msg['To'] = email_to
         msg_body = MIMEText(message.decode('utf-8'), 'plain', 'utf-8')
@@ -52,19 +55,23 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
 
         if attachment_file and attachment_type == 'still':
             img_data = open(attachment_file, 'rb').read()
-            image = MIMEImage(img_data, name=os.path.basename(attachment_file))
+            image = MIMEImage(img_data,
+                              name=os.path.basename(attachment_file))
             msg.attach(image)
         elif attachment_file and attachment_type == 'video':
             out_filename = '{}-compressed.h264'.format(attachment_file)
-            cmd_output('avconv -i "{}" -vf scale=-1:768 -c:v libx264 -preset veryfast -crf 22 -c:a copy "{}"'.format(
-                attachment_file, out_filename))
+            cmd_output(
+                'avconv -i "{}" -vf scale=-1:768 -c:v libx264 -preset '
+                'veryfast -crf 22 -c:a copy "{}"'.format(
+                    attachment_file, out_filename))
             set_user_grp(out_filename, 'mycodo', 'mycodo')
             f = open(attachment_file, 'rb').read()
             video = MIMEBase('application', 'octet-stream')
             video.set_payload(f)
             Encoders.encode_base64(video)
             video.add_header('Content-Disposition',
-                             'attachment; filename="{}"'.format(os.path.basename(attachment_file)))
+                             'attachment; filename="{}"'.format(
+                                 os.path.basename(attachment_file)))
             msg.attach(video)
 
         server.sendmail(msg['From'], msg['To'].split(","), msg.as_string())

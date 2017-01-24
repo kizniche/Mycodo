@@ -87,13 +87,13 @@ class TimerController(threading.Thread):
                         int(self.start_minute) == datetime.datetime.now().minute):
                     # Ensure this is triggered only once at this specific time
                     if self.date_timer_not_executed:
-                        message = "At {st}, turn relay {relay} {state}".format(
+                        message = "At {st}, turn relay {id} {state}".format(
                             st=self.time_start,
-                            relay=self.relay_id,
+                            id=self.relay_id,
                             state=self.state)
                         if self.state == 'on' and self.duration_on:
-                            message += " for {} seconds".format(
-                                self.duration_on)
+                            message += " for {sec} seconds".format(
+                                sec=self.duration_on)
                         self.logger.debug(message)
                         modulate_relay = threading.Thread(
                             target=self.control.relay_on_off,

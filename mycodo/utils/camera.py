@@ -4,8 +4,12 @@ import datetime
 import picamera
 import time
 
-from system_pi import assure_path_exists
-from system_pi import set_user_grp
+from system_pi import (
+    assure_path_exists,
+    set_user_grp
+)
+
+from config import INSTALL_DIRECTORY
 
 logger = logging.getLogger("mycodo.camera")
 
@@ -14,20 +18,21 @@ logger = logging.getLogger("mycodo.camera")
 # Camera record
 #
 
-def camera_record(install_directory, record_type, settings, duration_sec=None, start_time=None, capture_number=None):
+def camera_record(record_type, settings, duration_sec=None,
+                  start_time=None, capture_number=None):
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     path = ''
     path_file = ''
     if record_type == 'photo':
-        path = '{}/camera-stills'.format(install_directory)
+        path = '{}/camera-stills'.format(INSTALL_DIRECTORY)
         filename = 'Still-{}.jpg'.format(timestamp)
         path_file = '{}/{}'.format(path, filename)
     elif record_type == 'timelapse':
-        path = '{}/camera-timelapse'.format(install_directory)
+        path = '{}/camera-timelapse'.format(INSTALL_DIRECTORY)
         filename = '{}-img-{:05d}.jpg'.format(start_time, capture_number)
         path_file = '{}/{}'.format(path, filename)
     elif record_type == 'video':
-        path = '{}/camera-video'.format(install_directory)
+        path = '{}/camera-video'.format(INSTALL_DIRECTORY)
         filename = 'Video-{}.h264'.format(timestamp)
         path_file = '{}/{}'.format(path, filename)
 
@@ -51,5 +56,6 @@ def camera_record(install_directory, record_type, settings, duration_sec=None, s
     try:
         set_user_grp(path_file, 'mycodo', 'mycodo')
     except Exception as e:
-        logger.error("Exception raised in 'camera_record' when setting user grp: "
-                     "{err}".format(err=e))
+        logger.error(
+            "Exception raised in 'camera_record' when setting user grp: "
+            "{err}".format(err=e))
