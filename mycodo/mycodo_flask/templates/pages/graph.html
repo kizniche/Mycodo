@@ -43,7 +43,7 @@
 
   <div style="padding: 0 0.5em 0.5em 0.5em">
 
-  {%- if displayOrder -%}
+  {% if displayOrder -%}
   {%- for order in displayOrder -%}
     {%- set chart_number = loop.index -%}
     {%- for each_graph in graph if each_graph.id in order -%}
@@ -171,12 +171,12 @@
             </label>
           </div>
 
-          {% for n in range(color_count[each_graph.id]|length) %}
+          {% for n in range(dict_colors[each_graph.id]|length) %}
           <div class="form-check">
             {% set index = '{0:0>2}'.format(n) %}
             <label class="form-check-label" for="color_number{{index}}">
-              <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{color_count[each_graph.id][n][1]}}">
-              {{color_count[each_graph.id][n][0]}}
+              <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{dict_colors[each_graph.id][n][1]}}">
+              {{dict_colors[each_graph.id][n][0]}}
             </label>
           </div>
           {% endfor %}
@@ -401,9 +401,6 @@
           }
         );
       }, refresh_seconds * 1000);
-    }
-    function myCallback(){
-      alert("button clicked");
     }
 
     // Change opacity of all chart colors
@@ -754,7 +751,7 @@
       {%- if yaxis_moisture -%}
         {
           title: {
-            text: '{{_('Moisture')}}',
+            text: '{{_('Moisture')}}'
           },
           labels: {
             format: '{value}'
@@ -905,7 +902,7 @@
           type: 'all',
           text: 'Full'
         }],
-        selected: 15,
+        selected: 15
       },
       credits: {
         enabled: false,
@@ -1139,7 +1136,6 @@
           {%- elif each_sensor.device_type == 'edgedetect' -%}
             {
               name: '{{each_sensor.name}} {{_('Edge')}}',
-              type: 'line',
               type: 'column',
               tooltip: {
                 valueSuffix: ' edge',
@@ -1183,11 +1179,11 @@
             type: 'column',
             dataGrouping: {
               approximation: 'low',
-              groupPixelWidth: 3,
+              groupPixelWidth: 3
             },
             tooltip: {
               valueSuffix: ' sec',
-              valueDecimals: 2,
+              valueDecimals: 2
             },
             yAxis: 'relay',
             data: []
@@ -1202,7 +1198,7 @@
             type: 'line',
             tooltip: {
               valueSuffix: '{{measurement_units[each_pid.measure_type]|safe}}',
-              valueDecimals: 2,
+              valueDecimals: 2
             },
             yAxis: '{{each_pid.measure_type}}',
             data: []

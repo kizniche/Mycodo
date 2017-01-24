@@ -62,6 +62,7 @@ from config import (
     LOGIN_LOG_FILE,
     LOCK_FILE_STREAM,
     LOCK_FILE_TIMELAPSE,
+    MEASUREMENT_UNITS,
     RESTORE_LOG_FILE,
     UPGRADE_LOG_FILE,
 )
@@ -295,6 +296,13 @@ def page_graph():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
+    # Create form objects
+    form_mod_graph = flaskforms.ModGraph()
+    form_del_graph = flaskforms.DelGraph()
+    form_order_graph = flaskforms.OrderGraph()
+    form_add_graph = flaskforms.AddGraph()
+
+    # Retrieve the order to display graphs
     display_order_unsplit = db_retrieve_table(
         current_app.config['MYCODO_DB_PATH'], DisplayOrder, entry='first').graph
     if display_order_unsplit:
@@ -302,26 +310,7 @@ def page_graph():
     else:
         display_order = []
 
-    # Create form objects
-    form_mod_graph = flaskforms.ModGraph()
-    form_del_graph = flaskforms.DelGraph()
-    form_order_graph = flaskforms.OrderGraph()
-    form_add_graph = flaskforms.AddGraph()
-
-    # Units to display for each measurement in the graph legend
-    measurement_units = {'cpu_load_1m': '',
-                         'cpu_load_5m': '',
-                         'cpu_load_15m': '',
-                         'temperature': '°C'.decode('utf-8'),
-                         'temperature_object': '°C'.decode('utf-8'),
-                         'temperature_die': '°C'.decode('utf-8'),
-                         'humidity': ' %',
-                         'dewpoint': '°C'.decode('utf-8'),
-                         'co2': ' ppmv',
-                         'lux': 'lx',
-                         'pressure': ' Pa',
-                         'altitude': ' m'}
-
+    # Retrieve tables from SQL database
     graph = db_retrieve_table(
         current_app.config['MYCODO_DB_PATH'], Graph, entry='all')
     pid = db_retrieve_table(
@@ -336,94 +325,19 @@ def page_graph():
     relay_choices = flaskutils.choices_id_name(relay)
     sensor_choices = flaskutils.choices_sensors(sensor)
 
+    # Add multi-select values as form choices, for validation
     form_mod_graph.pidIDs.choices = []
     form_mod_graph.relayIDs.choices = []
     form_mod_graph.sensorIDs.choices = []
-
-    # Count how many lines will need a custom color input
-    if session['user_theme'] in ['cyborg', 'darkly', 'slate',
-                                 'sun', 'superhero']:
-        default_colors = ['#2b908f', '#90ee7e', '#f45b5b', '#7798BF',
-                          '#aaeeee', '#ff0066', '#eeaaee', '#55BF3B',
-                          '#DF5353', '#7798BF', '#aaeeee']
-    else:
-        default_colors = ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c',
-                          '#8085e9', '#f15c80', '#e4d354', '#2b908f',
-                          '#f45b5b', '#91e8e1']
-    color_count = OrderedDict()
-    for each_graph in graph:
-        # Get current saved colors
-        if each_graph.colors:  # Split into list
-            colors = each_graph.colors.split(',')
-        else:  # Create empty list
-            colors = []
-        # Fill end of list with empty strings
-        while len(colors) < len(default_colors):
-            colors.append('')
-
-        # Populate empty strings with default colors
-        for index, val in enumerate(default_colors):
-            if colors[index] == '':
-                colors[index] = default_colors[index]
-
-        index_sum = 0
-        total = []
-        index = 0
-        if each_graph.sensor_ids:
-            for each_set in each_graph.sensor_ids.split(';'):
-                if index < len(each_graph.sensor_ids.split(';')) and len(colors) > index:
-                    total.append([
-                        '{id} {measure}'.format(id=each_set.split(',')[0],
-                                                measure=each_set.split(',')[1]),
-                        colors[index]])
-                else:
-                    total.append([
-                        '{id} {measure}'.format(id=each_set.split(',')[0],
-                                                measure=each_set.split(',')[1]),
-                        '#FF00AA'])
-                index += 1
-        index_sum += index
-        if each_graph.relay_ids:
-            index = 0
-            for each_set in each_graph.relay_ids.split(','):
-                if index < len(each_graph.relay_ids.split(',')) and len(colors) > index_sum+index:
-                    total.append([
-                        '{id} Relay'.format(id=each_set.split(',')[0]),
-                        colors[index_sum+index]])
-                else:
-                    total.append([
-                        '{id} Relay'.format(id=each_set.split(',')[0]),
-                        '#FF00AA'])
-                index += 1
-        index_sum += index
-        if each_graph.pid_ids:
-            index = 0
-            for each_set in each_graph.pid_ids.split(','):
-                if index < len(each_graph.pid_ids.split(',')) and len(colors) > index_sum+index:
-                    total.append([
-                        '{id} PID Setpoint'.format(id=each_set.split(',')[0]),
-                        colors[index_sum+index]])
-                else:
-                    total.append([
-                        '{id} PID Setpoint'.format(id=each_set.split(',')[0]),
-                        '#FF00AA'])
-                index += 1
-
-        color_count.update({each_graph.id: total})
-
-    # split custom colors into dictionary of lists
-    colors_saved = {}
-    for each_graph in graph:
-        if each_graph.colors:
-            colors_saved[each_graph.id] = each_graph.colors.split(',')
-
-    # Add multi-select values as form choices, for validation
     for key, value in pid_choices.iteritems():
         form_mod_graph.pidIDs.choices.append((key, value))
     for key, value in relay_choices.iteritems():
         form_mod_graph.relayIDs.choices.append((key, value))
     for key, value in sensor_choices.iteritems():
         form_mod_graph.sensorIDs.choices.append((key, value))
+
+    # Generate dictionary of custom colors for each graph
+    dict_colors = dict_custom_colors(graph)
 
     # Detect which form on the page was submitted
     if request.method == 'POST':
@@ -446,9 +360,8 @@ def page_graph():
                            pid_choices=pid_choices,
                            relay_choices=relay_choices,
                            sensor_choices=sensor_choices,
-                           color_count=color_count,
-                           colors_saved=colors_saved,
-                           measurement_units=measurement_units,
+                           dict_colors=dict_colors,
+                           measurement_units=MEASUREMENT_UNITS,
                            displayOrder=display_order,
                            form_mod_graph=form_mod_graph,
                            form_del_graph=form_del_graph,
@@ -1037,26 +950,21 @@ def page_usage():
         relay_sum_duration['1m'] += relay_each_duration[each_relay.id]['1m']
         relay_sum_duration['1m-date'] += relay_each_duration[each_relay.id]['1m-date']
         relay_sum_duration['1y'] += relay_each_duration[each_relay.id]['1y']
-        relay_sum_kwh['1d'] += (misc.relay_stats_volts *
-                                each_relay.amps *
-                                relay_each_duration[each_relay.id]['1d'] /
-                                1000)
-        relay_sum_kwh['1w'] += (misc.relay_stats_volts *
-                                each_relay.amps *
-                                relay_each_duration[each_relay.id]['1w'] /
-                                1000)
-        relay_sum_kwh['1m'] += (misc.relay_stats_volts *
-                                each_relay.amps *
-                                relay_each_duration[each_relay.id]['1m'] /
-                                1000)
-        relay_sum_kwh['1m-date'] += (misc.relay_stats_volts *
-                                     each_relay.amps *
-                                     relay_each_duration[each_relay.id]['1m-date'] /
-                                     1000)
-        relay_sum_kwh['1y'] += (misc.relay_stats_volts *
-                                each_relay.amps *
-                                relay_each_duration[each_relay.id]['1y'] /
-                                1000)
+        relay_sum_kwh['1d'] += (
+            misc.relay_stats_volts * each_relay.amps *
+            relay_each_duration[each_relay.id]['1d'] / 1000)
+        relay_sum_kwh['1w'] += (
+            misc.relay_stats_volts * each_relay.amps *
+            relay_each_duration[each_relay.id]['1w'] / 1000)
+        relay_sum_kwh['1m'] += (
+            misc.relay_stats_volts * each_relay.amps *
+            relay_each_duration[each_relay.id]['1m'] / 1000)
+        relay_sum_kwh['1m-date'] += (
+            misc.relay_stats_volts * each_relay.amps *
+            relay_each_duration[each_relay.id]['1m-date'] / 1000)
+        relay_sum_kwh['1y'] += (
+            misc.relay_stats_volts * each_relay.amps *
+            relay_each_duration[each_relay.id]['1y'] / 1000)
 
     return render_template('tools/usage.html',
                            display_order=display_order,
@@ -1066,6 +974,98 @@ def page_usage():
                            relay_sum_duration=relay_sum_duration,
                            relay_sum_kwh=relay_sum_kwh,
                            date_suffix=date_suffix)
+
+
+def dict_custom_colors(graph):
+    """
+    Generate lists of custom colors from CSV strings saved in the database.
+    If custom colors aren't already saved, fill in with a default palette.
+
+    :param graph: graph SQL object
+    :return: dictionary of graph_ids and lists of custom colors
+    """
+    # Count how many lines will need a custom color input
+    dark_themes = ['cyborg', 'darkly', 'slate', 'sun', 'superhero']
+    if session['user_theme'] in dark_themes:
+        default_palette = [
+            '#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066',
+            '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'
+        ]
+    else:
+        default_palette = [
+            '#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80',
+            '#e4d354', '#2b908f', '#f45b5b', '#91e8e1'
+        ]
+
+    color_count = OrderedDict()
+    for each_graph in graph:
+        # Get current saved colors
+        if each_graph.colors:  # Split into list
+            colors = each_graph.colors.split(',')
+        else:  # Create empty list
+            colors = []
+        # Fill end of list with empty strings
+        while len(colors) < len(default_palette):
+            colors.append('')
+
+        # Populate empty strings with default colors
+        for x in range(len(default_palette)):
+            if colors[x] == '':
+                colors[x] = default_palette[x]
+
+        index = 0
+        index_sum = 0
+        total = []
+        if each_graph.sensor_ids:
+            for each_set in each_graph.sensor_ids.split(';'):
+                if (index < len(each_graph.sensor_ids.split(';')) and
+                        len(colors) > index):
+                    total.append([
+                        '{id} {measure}'.format(
+                            id=each_set.split(',')[0],
+                            measure=each_set.split(',')[1]),
+                        colors[index]])
+                else:
+                    total.append([
+                        '{id} {measure}'.format(
+                            id=each_set.split(',')[0],
+                            measure=each_set.split(',')[1]),
+                        '#FF00AA'])
+                index += 1
+            index_sum += index
+
+        if each_graph.relay_ids:
+            index = 0
+            for each_set in each_graph.relay_ids.split(','):
+                if (index < len(each_graph.relay_ids.split(',')) and
+                        len(colors) > index_sum + index):
+                    total.append([
+                        '{id} Relay'.format(id=each_set.split(',')[0]),
+                        colors[index_sum+index]])
+                else:
+                    total.append([
+                        '{id} Relay'.format(id=each_set.split(',')[0]),
+                        '#FF00AA'])
+                index += 1
+            index_sum += index
+
+        if each_graph.pid_ids:
+            index = 0
+            for each_set in each_graph.pid_ids.split(','):
+                if (index < len(each_graph.pid_ids.split(',')) and
+                        len(colors) > index_sum + index):
+                    total.append([
+                        '{id} PID Setpoint'.format(id=each_set.split(',')[0]),
+                        colors[index_sum+index]])
+                else:
+                    total.append([
+                        '{id} PID Setpoint'.format(id=each_set.split(',')[0]),
+                        '#FF00AA'])
+                index += 1
+
+        color_count.update({each_graph.id: total})
+
+    return color_count
 
 
 def gen(camera):

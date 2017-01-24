@@ -26,7 +26,7 @@
 import RPi.GPIO as GPIO
 
 from mycodo.config import SQL_DATABASE_MYCODO
-from mycodo.databases.mycodo_db.models import Relays
+from mycodo.databases.mycodo_db.models import Relay
 from mycodo.databases.utils import session_scope
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -37,7 +37,7 @@ GPIO.setwarnings(False)
 # Start the session
 with session_scope(MYCODO_DB_PATH) as the_session:
     # Get all them relays
-    relays = the_session.query(Relays).all()
+    relays = the_session.query(Relay).all()
 
     for each_relay in relays:
         # Setup all the pins as an output

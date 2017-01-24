@@ -76,7 +76,7 @@ class RelayController(threading.Thread):
             self.all_relays_off()
             # Turn relays on that are set to be on at start
             self.all_relays_on()
-            self.logger.info("Relays Initialized")
+            self.logger.debug("Relays Initialized")
 
         except Exception as except_msg:
             self.logger.exception(
@@ -365,9 +365,9 @@ class RelayController(threading.Thread):
             self.relay_last_duration[each_relay.id] = 0
             self.relay_on_duration[each_relay.id] = False
             self.relay_time_turned_on[each_relay.id] = None
-            self.setup_pin(each_relay.pin)
-            self.logger.debug("{} ({}) Initialized".format(
-                each_relay.id, each_relay.name))
+            self.setup_pin(each_relay.id, each_relay.pin, each_relay.trigger)
+            self.logger.debug("{id} ({name}) Initialized".format(
+                id=each_relay.id, name=each_relay.name))
 
     def all_relays_off(self):
         """Turn all relays off"""
@@ -413,17 +413,18 @@ class RelayController(threading.Thread):
             self.relay_time_turned_on[relay_id] = None
             self.relay_last_duration[relay_id] = 0
             self.relay_on_duration[relay_id] = False
-            message = "Relay {} ({}) ".format(
-                self.relay_id[relay_id], self.relay_name[relay_id])
-            if do_setup_pin:
-                self.setup_pin(relay.pin)
+            message = "Relay {id} ({name}) ".format(
+                id=self.relay_id[relay_id], name=self.relay_name[relay_id])
+            if do_setup_pin and relay.pin:
+                self.setup_pin(relay.id, relay.pin, relay.trigger)
                 message += "initialized"
             else:
                 message += "added"
             self.logger.debug(message)
             return 0, "success"
-        except Exception as msg:
-            return 1, "Add_Mod_Relay Error: ID {}: {}".format(relay_id, msg)
+        except Exception as except_msg:
+            return 1, "Add_Mod_Relay Error: ID {id}: {err}".format(
+                id=relay_id, err=except_msg)
 
     def del_relay(self, relay_id):
         """
@@ -473,16 +474,26 @@ class RelayController(threading.Thread):
                 amp_load += each_relay_amps
         return amp_load
 
-    @staticmethod
-    def setup_pin(pin):
+    def setup_pin(self, relay_id, pin, trigger):
         """
         Setup pin for this relay
         :rtype: None
         """
         # Setup GPIO (BCM numbering) and initialize relay pin as output
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setwarnings(True)
-        GPIO.setup(pin, GPIO.OUT)
+        try:
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setwarnings(True)
+            GPIO.setup(pin, GPIO.OUT)
+            GPIO.output(pin, not trigger)
+            state = 'LOW' if trigger else 'HIGH'
+            self.logger.info(
+                "Relay {id} setup on pin {pin} and turned OFF "
+                "(OFF={state})".format(id=relay_id, pin=pin, state=state))
+        except Exception as except_msg:
+            self.logger.error(
+                "Relay {id} was unable to be setup on pin {pin} with "
+                "trigger={trigger}: {err}".format(
+                    id=relay_id, pin=pin, trigger=trigger, err=except_msg))
 
     def relay_state(self, relay_id):
         """
