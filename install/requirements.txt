@@ -6,14 +6,14 @@ alembic
 argparse
 bcrypt
 daemonize == 2.4.6
-Flask == 0.11
+Flask == 0.12
+Flask_Babel
 Flask_InfluxDB == 0.1
 Flask_SSLify
 Flask_WTF == 0.12
 geocoder == 1.15.0
 influxdb == 2.12.0
 lockfile == 0.12.2
-numpy == 1.11.2
 pyserial == 3.1
 python-dateutil
 RPi.GPIO

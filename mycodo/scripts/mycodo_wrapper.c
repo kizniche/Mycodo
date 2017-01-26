@@ -11,65 +11,54 @@ int main(int argc, char *argv[]) {
 	char cmd[255];
 
 	if (argc > 1) {
-		if (strcmp(argv[1], "start") == 0) {
+		if (strcmp(argv[1], "restart") == 0) {
 
-			sprintf(cmd, "/../mycodo_daemon.py");
+			sprintf(cmd, "sleep 10 && shutdown now -r");
 			system(cmd);
 
-		} else if (strcmp(argv[1], "restart") == 0) {
+		} else if (strcmp(argv[1], "shutdown") == 0) {
 
-			sprintf(cmd, "/../mycodo_client.py -t");
+			sprintf(cmd, "sleep 10 && shutdown now -h");
 			system(cmd);
-			sprintf(cmd, "/../mycodo_daemon.py");
+
+		} else if (strcmp(argv[1], "start_mycodo") == 0) {
+
+			sprintf(cmd, "service mycodo start");
+			system(cmd);
+
+		} else if (strcmp(argv[1], "stop_mycodo") == 0) {
+
+			sprintf(cmd, "service mycodo stop");
+			system(cmd);
+
+		} else if (strcmp(argv[1], "restart_mycodo") == 0) {
+
+			sprintf(cmd, "service mycodo restart");
 			system(cmd);
 
 		} else if (strcmp(argv[1], "debug") == 0) {
 
-			sprintf(cmd, "/../mycodo_client.py -t");
+			sprintf(cmd, "service mycodo stop");
 			system(cmd);
 			sprintf(cmd, "/../mycodo_daemon.py -d");
 			system(cmd);
-
-		} else if (strcmp(argv[1], "restore") == 0 && (argc > 2)) {
-
-			char updateScript[255];
-			strncpy(updateScript, argv[0], sizeof(updateScript));
-			dirname(updateScript);
-			sprintf(cmd, "/restore_mycodo.sh %s", argv[2]);
-			strncat(updateScript, cmd, sizeof(updateScript));
-			system(updateScript);
 
 		} else if (strcmp(argv[1], "delete-backup") == 0 && (argc > 2)) {
 
 			sprintf(cmd, "rm -rf /var/Mycodo-backups/%s", argv[2]);
 			system(cmd);
 
-		} else if (strcmp(argv[1], "backup") == 0) {
-
-			char updateScript[255];
-			strncpy(updateScript, argv[0], sizeof(updateScript));
-			dirname(updateScript);
-			strncat(updateScript, "/update_mycodo.sh backup", sizeof(updateScript));
-			system(updateScript);
-
 		} else if (strcmp(argv[1], "upgrade") == 0) {
 
+            char path[255];
+            strncpy(path, argv[0], sizeof(path));
+            dirname(path);
+
 			char updateScript[255];
-			strncpy(updateScript, argv[0], sizeof(updateScript));
-			dirname(updateScript);
-			strncat(updateScript, "/update_mycodo.sh upgrade", sizeof(updateScript));
+			strncpy(updateScript, "/bin/bash ", sizeof(updateScript));
+			strncat(updateScript, path, sizeof(updateScript));
+			strncat(updateScript, "/upgrade_mycodo_release.sh upgrade", sizeof(updateScript));
 			system(updateScript);
-
-		} else if (strcmp(argv[1], "updatecheck") == 0) {
-
-			char updateScript[255];
-			strncpy(updateScript, argv[0], sizeof(updateScript));
-			dirname(updateScript);
-			strncat(updateScript, "/update_mycodo.sh updatecheck", sizeof(updateScript));
-			int status;
-			if((status = system(updateScript)) != -1) {
-                return WEXITSTATUS(status);
-        	}
 
 		}
 	} else {
@@ -82,11 +71,8 @@ int main(int argc, char *argv[]) {
 		printf("   start:                  Start the mycodo daemon\n");
 		printf("   restart:                Restart the mycodo daemon in normal mode\n");
 		printf("   debug:                  Restart the mycodo daemon in debug mode\n");
-		printf("   backup:                 Create a backup of Mycodo\n");
 		printf("   delete-backup [folder]: Delete Mycodo backup folder named [folder]\n");
 		printf("   upgrade:                Upgrade Mycodo to the latest version on github\n");
-		printf("   restore [commit]:       Restore Mycodo to a backed up version\n");
-		printf("   updatecheck:            Check for a newer version of Mycodo on github\n\n");
 	}
 
 	return 0;

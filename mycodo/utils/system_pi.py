@@ -6,9 +6,8 @@ import os
 import pwd
 import socket
 import subprocess
-import sys
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("mycodo.system_pi")
 
 
 def time_between_range(start_time, end_time):
@@ -42,15 +41,9 @@ def cmd_output(command, su_mycodo=True):
     if su_mycodo:
         full_cmd = 'su mycodo && {}'.format(command)
     cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
-    cmd_output, cmd_err = cmd.communicate()
+    cmd_out, cmd_err = cmd.communicate()
     cmd_status = cmd.wait()
-    return cmd_output, cmd_err, cmd_status
-
-
-def get_git_commit():
-    current_path = os.path.dirname(os.path.realpath(sys.argv[0]))
-    output, _, _ = cmd_output('cd {} && git rev-parse --short HEAD'.format(current_path))
-    return output[:7]
+    return cmd_out, cmd_err, cmd_status
 
 
 def internet(host="8.8.8.8", port=53, timeout=3):
@@ -62,34 +55,35 @@ def internet(host="8.8.8.8", port=53, timeout=3):
     """
     try:
         socket.setdefaulttimeout(timeout)
-        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
+        socket.socket(socket.AF_INET,
+                      socket.SOCK_STREAM).connect((host, port))
         return True
     except Exception as e:
-        logger.error("Function 'internet()' raised exception: "
-                     "{err}".format(err=e))
+        logger.error(
+            "Function 'internet()' raised exception: {err}".format(err=e))
     return False
 
 
 def assure_path_exists(new_dir):
-    """Create path if it doesn't exist"""
+    """ Create path if it doesn't exist """
     if not os.path.exists(new_dir):
         os.makedirs(new_dir)
         set_user_grp(new_dir, 'mycodo', 'mycodo')
 
 
 def find_owner(filename):
-    """Return the owner of a file"""
+    """ Return the owner of a file """
     return pwd.getpwuid(os.stat(filename).st_uid).pw_name
 
 
 def get_sec(time_str):
-    """Convert HH:MM:SS string into number of seconds"""
+    """ Convert HH:MM:SS string into number of seconds """
     h, m, s = time_str.split(':')
     return int(h) * 3600 + int(m) * 60 + int(s)
 
 
 def set_user_grp(filepath, user, group):
-    """Set the UID and GUID of a file"""
+    """ Set the UID and GUID of a file """
     uid = pwd.getpwnam(user).pw_uid
     gid = grp.getgrnam(group).gr_gid
     os.chown(filepath, uid, gid)

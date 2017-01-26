@@ -26,7 +26,7 @@ import time
 from sensorutils import dewpoint
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("mycodo.sensors.htu21d")
 
 
 class HTU21DSensor(AbstractSensor):
@@ -121,7 +121,7 @@ class HTU21DSensor(AbstractSensor):
         humi_reading = (h1 * 256) + h2  # combine both bytes into one big integer
         humi_reading = float(humi_reading)
         uncomp_humidity = ((humi_reading / 65536) * 125) - 6  # formula from datasheet
-        humidity = ((25 - self.temperature) * -0.15) + uncomp_humidity
+        humidity = ((25 - temperature) * -0.15) + uncomp_humidity
         dew_pt = dewpoint(temperature, humidity)
         return dew_pt, humidity, temperature
 

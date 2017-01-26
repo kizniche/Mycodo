@@ -17,7 +17,6 @@ class MCP342x_read(object):
         self.channel = channel
         self.gain = gain
         self.resolution = resolution
-        self.running = True
 
     def read(self):
         """ Take a measurement """
@@ -51,7 +50,7 @@ class MCP342x_read(object):
         }
         return response
 
-    def stopSensor(self):
+    def stop_sensor(self):
         self.running = False
 
 

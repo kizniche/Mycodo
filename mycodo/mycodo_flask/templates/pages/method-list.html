@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "method_list" %}
-{% block title %} - Method List{% endblock %}
+{% block title %} - {{_('Method List')}}{% endblock %}
 
 {% block head %}
   <script src="/static/js/highcharts.js"></script>
@@ -14,34 +14,34 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <h4>Method Management</h4>
+    <h4>{{_('Method Management')}}</h4>
 
     <div class="form-inline">
       <form method="post" action="/method-build/0/0" style="padding: 0.7em 0">
         <input type="hidden" name="form-name" value="createMethod">
-        {{formCreateMethod.csrf_token}}
+        {{form_create_method.csrf_token}}
         <div class="form-group">
-          {{formCreateMethod.name.label(class_='control-label')}}
+          {{form_create_method.name.label(class_='control-label')}}
           <div>
-            {{formCreateMethod.name(class_='form-control')}}
+            {{form_create_method.name(class_='form-control')}}
           </div>
         </div>
         <div class="form-group">
-          {{formCreateMethod.method_type.label(class_='control-label')}}
+          {{form_create_method.method_type.label(class_='control-label')}}
           <div>
             <select class="form-control" id="method_type" name="method_type">
-              <option value="Date">Time/Date</option>
-              <option value="Duration">Duration</option>
-              <option value="Daily">Daily (Time-Based)</option>
-              <option value="DailySine">Daily (Sine Wave)</option>
-              <option value="DailyBezier">Daily (Bezier Curve)</option>
+              <option value="Date">{{_('Time/Date')}}</option>
+              <option value="Duration">{{_('Duration')}}</option>
+              <option value="Daily">{{_('Daily (Time-Based)')}}</option>
+              <option value="DailySine">{{_('Daily (Sine Wave)')}}</option>
+              <option value="DailyBezier">{{_('Daily (Bezier Curve)')}}</option>
             </select>
           </div>
         </div>
         <div class="form-group">
           <label class='control-label'></label>
           <div>
-            {{formCreateMethod.Submit(class_='form-control btn btn-default')}}
+            {{form_create_method.Submit(class_='form-control btn btn-default')}}
           </div>
         </div>
       </form>
@@ -49,9 +49,9 @@
 
     <div style="clear: both; padding: 0.5em 0 0.5em 0.5em;"><h4>
       {%- if method == [] -%}
-        No Saved Methods Exist
+        {{_('No Saved Methods Exist')}}
       {%- else -%}
-        Saved Methods
+        {{_('Saved Methods')}}
       {%- endif -%}
     </h4></div>
 
@@ -82,7 +82,7 @@
   <script>
   $(document).ready(function() {
     var chart = new Array();
-    // Retrieve intiial chart data set from the past (duration set by user)
+    // Retrieve initial chart data set from the past (duration set by user)
     function getPastData(chart_number, method_type, method_id) {
       var url = '/method-data/' + method_type + '/' + method_id;
       $.getJSON(url,
@@ -152,10 +152,10 @@
           yAxis: [
           {   
             title: {
-              text: null,
+              text: null
             },
             labels: {
-              format: '{value}',
+              format: '{value}'
             },
             opposite: false
           }],

@@ -50,6 +50,7 @@
 # <http://code.activestate.com/recipes/577231-discrete-lcd-controller/>
 
 import calendar
+import logging
 import smbus
 import threading
 import time
@@ -57,20 +58,25 @@ import timeit
 import RPi.GPIO as GPIO
 import datetime
 
-from config import INFLUXDB_HOST
-from config import INFLUXDB_PORT
-from config import INFLUXDB_USER
-from config import INFLUXDB_PASSWORD
-from config import INFLUXDB_DATABASE
-from config import SQL_DATABASE_MYCODO
-from config import MYCODO_VERSION
-from databases.mycodo_db.models import LCD
-from databases.mycodo_db.models import PID
-from databases.mycodo_db.models import Relay
-from databases.mycodo_db.models import Sensor
-from databases.utils import session_scope
+# Classes
+from databases.mycodo_db.models import (
+    LCD,
+    PID,
+    Relay,
+    Sensor,
+)
 from devices.tca9548a import TCA9548A
+
+# Functions
+from utils.database import db_retrieve_table
 from utils.influx import read_last_influxdb
+
+# Config
+from config import (
+    SQL_DATABASE_MYCODO,
+    MEASUREMENT_UNITS,
+    MYCODO_VERSION
+)
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -80,135 +86,121 @@ class LCDController(threading.Thread):
     Class to operate LCD controller
 
     """
-
-    def __init__(self, ready, logger, lcd_id):
+    def __init__(self, ready, lcd_id):
         threading.Thread.__init__(self)
+
+        self.logger = logging.getLogger("mycodo.lcd_{id}".format(id=lcd_id))
 
         self.running = False
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
         self.ready = ready
-        self.logger = logger
         self.flash_lcd_on = False
         self.lcd_is_on = False
+        self.lcd_id = lcd_id
 
         try:
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                lcd = new_session.query(LCD).filter(LCD.id == lcd_id).first()
-                self.lcd_id = lcd_id
-                self.lcd_name = lcd.name
-                self.lcd_pin = lcd.pin
-                self.lcd_period = lcd.period
-                self.lcd_x_characters = lcd.x_characters
-                self.lcd_y_lines = lcd.y_lines
+            lcd = db_retrieve_table(MYCODO_DB_PATH,
+                                    LCD,
+                                    device_id=self.lcd_id)
 
-                if lcd.multiplexer_address:
-                    self.multiplexer_address_string = lcd.multiplexer_address
-                    self.multiplexer_address = int(str(lcd.multiplexer_address), 16)
-                    self.multiplexer_channel = lcd.multiplexer_channel
-                    self.multiplexer = TCA9548A(self.multiplexer_address)
-                else:
-                    self.multiplexer = None
+            self.lcd_name = lcd.name
+            self.lcd_pin = lcd.pin
+            self.lcd_period = lcd.period
+            self.lcd_x_characters = lcd.x_characters
+            self.lcd_y_lines = lcd.y_lines
 
-                self.lcd_line = {}
-                for i in range(1, 5):
-                    self.lcd_line[i] = {}
+            if lcd.multiplexer_address:
+                self.multiplexer_address_string = lcd.multiplexer_address
+                self.multiplexer_address = int(str(lcd.multiplexer_address),
+                                               16)
+                self.multiplexer_channel = lcd.multiplexer_channel
+                self.multiplexer = TCA9548A(self.multiplexer_address)
+            else:
+                self.multiplexer = None
 
-                list_sensors = ['sensor_time', 'temperature',
-                                'humidity', 'co2', 'pressure',
-                                'altitude', 'temperature_die',
-                                'temperature_object', 'lux']
+            self.lcd_line = {}
+            for i in range(1, 5):
+                self.lcd_line[i] = {}
 
-                list_PIDs = ['setpoint', 'pid_time']
+            list_sensors = [
+                'sensor_time', 'temperature', 'humidity', 'co2', 'pressure',
+                'altitude', 'temperature_die', 'temperature_object', 'lux'
+            ]
 
-                list_relays = ['duration_sec', 'relay_time', 'relay_state']
+            list_pids = ['setpoint', 'pid_time']
 
-                if self.lcd_y_lines in [2, 4]:
-                    self.lcd_line[1]['id'] = lcd.line_1_sensor_id
-                    self.lcd_line[1]['measurement'] = lcd.line_1_measurement
-                    if lcd.line_1_sensor_id:
-                        if lcd.line_1_measurement in list_sensors:
-                            table = Sensor
-                        elif lcd.line_1_measurement in list_PIDs:
-                            table = PID
-                        elif lcd.line_1_measurement in list_relays:
-                            table = Relay
-                        sensor_line_1 = new_session.query(table).filter(
-                            table.id == lcd.line_1_sensor_id).first()
-                        self.lcd_line[1]['name'] = sensor_line_1.name
-                        if 'time' in lcd.line_1_measurement:
-                            self.lcd_line[1]['measurement'] = 'time'
+            list_relays = ['duration_sec', 'relay_time', 'relay_state']
 
-                    self.lcd_line[2]['id'] = lcd.line_2_sensor_id
-                    self.lcd_line[2]['measurement'] = lcd.line_2_measurement
-                    if lcd.line_2_sensor_id:
-                        if lcd.line_2_measurement in list_sensors:
-                            table = Sensor
-                        elif lcd.line_2_measurement in list_PIDs:
-                            table = PID
-                        elif lcd.line_2_measurement in list_relays:
-                            table = Relay
-                        sensor_line_2 = new_session.query(table).filter(
-                            table.id == lcd.line_2_sensor_id).first()
-                        self.lcd_line[2]['name'] = sensor_line_2.name
-                        if 'time' in lcd.line_2_measurement:
-                            self.lcd_line[2]['measurement'] = 'time'
+            if self.lcd_y_lines in [2, 4]:
+                self.lcd_line[1]['id'] = lcd.line_1_sensor_id
+                self.lcd_line[1]['measurement'] = lcd.line_1_measurement
+                if lcd.line_1_sensor_id:
+                    if lcd.line_1_measurement in list_sensors:
+                        table = Sensor
+                    elif lcd.line_1_measurement in list_pids:
+                        table = PID
+                    elif lcd.line_1_measurement in list_relays:
+                        table = Relay
+                    sensor_line_1 = db_retrieve_table(
+                        MYCODO_DB_PATH,
+                        table,
+                        device_id=lcd.line_1_sensor_id)
+                    self.lcd_line[1]['name'] = sensor_line_1.name
+                    if 'time' in lcd.line_1_measurement:
+                        self.lcd_line[1]['measurement'] = 'time'
 
-                if self.lcd_y_lines == 4:
-                    self.lcd_line[3]['id'] = lcd.line_3_sensor_id
-                    self.lcd_line[3]['measurement'] = lcd.line_3_measurement
-                    if lcd.line_3_sensor_id:
-                        if lcd.line_3_measurement in list_sensors:
-                            table = Sensor
-                        elif lcd.line_3_measurement in list_PIDs:
-                            table = PID
-                        elif lcd.line_3_measurement in list_relays:
-                            table = Relay
-                        sensor_line_3 = new_session.query(table).filter(
-                            table.id == lcd.line_3_sensor_id).first()
-                        self.lcd_line[3]['name'] = sensor_line_3.name
-                        if 'time' in lcd.line_3_measurement:
-                            self.lcd_line[3]['measurement'] = 'time'
+                self.lcd_line[2]['id'] = lcd.line_2_sensor_id
+                self.lcd_line[2]['measurement'] = lcd.line_2_measurement
+                if lcd.line_2_sensor_id:
+                    if lcd.line_2_measurement in list_sensors:
+                        table = Sensor
+                    elif lcd.line_2_measurement in list_pids:
+                        table = PID
+                    elif lcd.line_2_measurement in list_relays:
+                        table = Relay
+                    sensor_line_2 = db_retrieve_table(
+                        MYCODO_DB_PATH,
+                        table,
+                        device_id=lcd.line_2_sensor_id)
+                    self.lcd_line[2]['name'] = sensor_line_2.name
+                    if 'time' in lcd.line_2_measurement:
+                        self.lcd_line[2]['measurement'] = 'time'
 
-                    self.lcd_line[4]['id'] = lcd.line_4_sensor_id
-                    self.lcd_line[4]['measurement'] = lcd.line_4_measurement
-                    if lcd.line_4_sensor_id:
-                        if lcd.line_4_measurement in list_sensors:
-                            table = Sensor
-                        elif lcd.line_4_measurement in list_PIDs:
-                            table = PID
-                        elif lcd.line_4_measurement in list_relays:
-                            table = Relay
-                        sensor_line_4 = new_session.query(table).filter(
-                            table.id == lcd.line_4_sensor_id).first()
-                        self.lcd_line[4]['name'] = sensor_line_4.name
-                        if 'time' in lcd.line_4_measurement:
-                            self.lcd_line[4]['measurement'] = 'time'
+            if self.lcd_y_lines == 4:
+                self.lcd_line[3]['id'] = lcd.line_3_sensor_id
+                self.lcd_line[3]['measurement'] = lcd.line_3_measurement
+                if lcd.line_3_sensor_id:
+                    if lcd.line_3_measurement in list_sensors:
+                        table = Sensor
+                    elif lcd.line_3_measurement in list_pids:
+                        table = PID
+                    elif lcd.line_3_measurement in list_relays:
+                        table = Relay
+                    sensor_line_3 = db_retrieve_table(
+                        MYCODO_DB_PATH,
+                        table,
+                        device_id=lcd.line_3_sensor_id)
+                    self.lcd_line[3]['name'] = sensor_line_3.name
+                    if 'time' in lcd.line_3_measurement:
+                        self.lcd_line[3]['measurement'] = 'time'
 
-            self.measurement_unit = {
-                'metric': {
-                    "temperature": "C",
-                    "humidity": "%",
-                    "co2": "ppmv",
-                    "pressure": "Pa",
-                    "altitude": "m",
-                    "duration_sec": "s",
-                    "temperature_die": "C",
-                    "temperature_object": "C",
-                    "lux": "lux",
-                },
-                'standard': {
-                    "temperature": "F",
-                    "humidity": "%",
-                    "co2": "ppmv",
-                    "pressure": "atm",
-                    "altitude": "ft",
-                    "duration_sec": "s",
-                    "temperature_die": "F",
-                    "temperature_object": "F",
-                    "lux": "lux",
-                }
-            }
+                self.lcd_line[4]['id'] = lcd.line_4_sensor_id
+                self.lcd_line[4]['measurement'] = lcd.line_4_measurement
+                if lcd.line_4_sensor_id:
+                    if lcd.line_4_measurement in list_sensors:
+                        table = Sensor
+                    elif lcd.line_4_measurement in list_pids:
+                        table = PID
+                    elif lcd.line_4_measurement in list_relays:
+                        table = Relay
+                    sensor_line_4 = db_retrieve_table(
+                        MYCODO_DB_PATH,
+                        table,
+                        device_id=lcd.line_4_sensor_id)
+                    self.lcd_line[4]['name'] = sensor_line_4.name
+                    if 'time' in lcd.line_4_measurement:
+                        self.lcd_line[4]['measurement'] = 'time'
 
             self.timer = time.time() + self.lcd_period
             self.backlight_timer = time.time()
@@ -217,7 +209,7 @@ class LCDController(threading.Thread):
             for i in range(1, self.lcd_y_lines + 1):
                 self.lcd_string_line[i] = ''
 
-            self.LCD_WIDTH = self.lcd_x_characters  # Maximum characters per line
+            self.LCD_WIDTH = self.lcd_x_characters  # Max characters per line
 
             self.LCD_LINE = {
                 1: 0x80,
@@ -241,28 +233,28 @@ class LCDController(threading.Thread):
             # Setup I2C bus
             try:
                 if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
-                    I2C_bus_number = 1
+                    i2c_bus_number = 1
                 else:
-                    I2C_bus_number = 0
-                self.bus = smbus.SMBus(I2C_bus_number)
+                    i2c_bus_number = 0
+                self.bus = smbus.SMBus(i2c_bus_number)
             except Exception as except_msg:
-                self.logger.exception("Could not initialize I2C bus: {}".format(
-                    except_msg))
+                self.logger.exception(
+                    "Could not initialize I2C bus: {err}".format(
+                        err=except_msg))
 
             self.I2C_ADDR = int(self.lcd_pin, 16)
             self.lcd_init()
-            self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION), self.LCD_LINE[1])
+            self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION),
+                                  self.LCD_LINE[1])
             self.lcd_string_write('Start {}'.format(
                 self.lcd_name), self.LCD_LINE[2])
         except Exception as except_msg:
-            self.logger.exception("[LCD {}] Error: {}".format(
-                self.lcd_id, except_msg))
+            self.logger.exception("Error: {err}".format(err=except_msg))
 
     def run(self):
         try:
             self.running = True
-            self.logger.info("[LCD {}] Activated in {:.1f} ms".format(
-                self.lcd_id,
+            self.logger.info("Activated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_startup_timer) * 1000))
             self.ready.set()
 
@@ -271,9 +263,10 @@ class LCDController(threading.Thread):
                     self.get_lcd_strings()
                     try:
                         self.output_lcds()
-                    except IOError as msg:
-                        self.logger.exception("[LCD {}] IOError: Unable to output to LCD: {}".format(
-                            self.lcd_id, msg))
+                    except IOError as except_msg:
+                        self.logger.exception(
+                            "IOError: Unable to output to LCD: {err}".format(
+                                err=except_msg))
                     self.timer = time.time() + self.lcd_period
 
                 if self.flash_lcd_on:
@@ -288,15 +281,14 @@ class LCDController(threading.Thread):
 
                 time.sleep(1)
         except Exception as except_msg:
-            self.logger.exception("[LCD {}] Exception: {}".format(
-                self.lcd_id, except_msg))
+            self.logger.exception("Exception: {err}".format(err=except_msg))
         finally:
             self.lcd_init()  # Blank LCD
-            self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION), self.LCD_LINE[1])
+            self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION),
+                                  self.LCD_LINE[1])
             self.lcd_string_write('Stop {}'.format(
                 self.lcd_name), self.LCD_LINE[2])
-            self.logger.info("[LCD {}] Deactivated in {:.1f} ms".format(
-                self.lcd_id,
+            self.logger.info("Deactivated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
             self.running = False
 
@@ -308,7 +300,7 @@ class LCDController(threading.Thread):
         # loop to acquire all measurements required to be displayed on the LCD
         for i in range(1, self.lcd_y_lines + 1):
             if self.lcd_line[i]['id']:
-                # Get latest measurement (from within the past minute) from influxdb
+                # Get latest measurement (within past minute) from influxdb
                 # FROM '/.*/' returns any measurement (for grabbing time of last measurement)
                 last_measurement_success = False
                 try:
@@ -318,63 +310,54 @@ class LCDController(threading.Thread):
                     else:
                         if self.lcd_line[i]['measurement'] == 'time':
                             last_measurement = read_last_influxdb(
-                                INFLUXDB_HOST,
-                                INFLUXDB_PORT,
-                                INFLUXDB_USER,
-                                INFLUXDB_PASSWORD,
-                                INFLUXDB_DATABASE,
                                 self.lcd_line[i]['id'],
                                 '/.*/').raw
                         else:
                             last_measurement = read_last_influxdb(
-                                INFLUXDB_HOST,
-                                INFLUXDB_PORT,
-                                INFLUXDB_USER,
-                                INFLUXDB_PASSWORD,
-                                INFLUXDB_DATABASE,
                                 self.lcd_line[i]['id'],
                                 self.lcd_line[i]['measurement']).raw
                         if last_measurement:
                             number = len(last_measurement['series'][0]['values'])
                             self.lcd_line[i]['time'] = last_measurement['series'][0]['values'][number - 1][0]
                             self.lcd_line[i]['measurement_value'] = last_measurement['series'][0]['values'][number - 1][1]
-                            utc_dt = datetime.datetime.strptime(self.lcd_line[i]['time'].split(".")[0],
-                                                                '%Y-%m-%dT%H:%M:%S')
+                            utc_dt = datetime.datetime.strptime(
+                                self.lcd_line[i]['time'].split(".")[0],
+                                '%Y-%m-%dT%H:%M:%S')
                             utc_timestamp = calendar.timegm(utc_dt.timetuple())
                             local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
-                            self.logger.debug("[LCD {}] Latest {}: {} @ {}".format(
-                                self.lcd_id, self.lcd_line[i]['measurement'],
+                            self.logger.debug("Latest {}: {} @ {}".format(
+                                self.lcd_line[i]['measurement'],
                                 self.lcd_line[i]['measurement_value'], local_timestamp))
                             last_measurement_success = True
                         else:
                             self.lcd_line[i]['time'] = None
                             self.lcd_line[i]['measurement_value'] = None
-                            self.logger.debug("[LCD {}] No data returned "
-                                              "from influxdb".format(self.lcd_id))
+                            self.logger.debug("No data returned from "
+                                              "influxdb")
                 except Exception as except_msg:
-                    self.logger.debug("[LCD {}] Failed to read "
-                                      "measurement from the influxdb database: "
-                                      "{}".format(self.lcd_id, except_msg))
+                    self.logger.debug("Failed to read measurement from the "
+                                      "influxdb database: {err}".format(
+                                        err=except_msg))
 
                 try:
                     if last_measurement_success:
                         # Determine if the LCD output will have a value unit
                         measurement = ''
                         if self.lcd_line[i]['measurement'] == 'setpoint':
-                            with session_scope(MYCODO_DB_PATH) as new_session:
-                                pid = new_session.query(PID).filter(
-                                    PID.id == self.lcd_line[i]['id']).first()
-                                new_session.expunge_all()
-                                new_session.close()
-                                measurement = pid.measure_type
-                        elif self.lcd_line[i]['measurement'] in ['temperature',
-                                                                 'temperature_die',
-                                                                 'temperature_object',
-                                                                 'humidity',
-                                                                 'co2',
-                                                                 'lux',
-                                                                 'pressure',
-                                                                 'altitude']:
+                            pid = db_retrieve_table(
+                                MYCODO_DB_PATH,
+                                PID,
+                                device_id=self.lcd_line[i]['id'])
+                            measurement = pid.measure_type
+                        elif self.lcd_line[i]['measurement'] in [
+                                'temperature',
+                                'temperature_die',
+                                'temperature_object',
+                                'humidity',
+                                'co2',
+                                'lux',
+                                'pressure',
+                                'altitude']:
                             measurement = self.lcd_line[i]['measurement']
                         elif self.lcd_line[i]['measurement'] == 'duration_sec':
                             measurement = 'duration_sec'
@@ -383,21 +366,25 @@ class LCDController(threading.Thread):
                         number_characters = self.lcd_x_characters
                         if self.lcd_line[i]['measurement'] == 'time':
                             # Convert UTC timestamp to local timezone
-                            utc_dt = datetime.datetime.strptime(self.lcd_line[i]['time'].split(".")[0],
-                                                                '%Y-%m-%dT%H:%M:%S')
+                            utc_dt = datetime.datetime.strptime(
+                                self.lcd_line[i]['time'].split(".")[0],
+                                '%Y-%m-%dT%H:%M:%S')
                             utc_timestamp = calendar.timegm(utc_dt.timetuple())
-                            self.lcd_string_line[i] = str(datetime.datetime.fromtimestamp(utc_timestamp))
+                            self.lcd_string_line[i] = str(
+                                datetime.datetime.fromtimestamp(utc_timestamp))
                         elif measurement:
-                            value_length = len(str(self.lcd_line[i]['measurement_value']))
-                            unit_length = len(self.measurement_unit['metric'][measurement])
+                            value_length = len(str(
+                                self.lcd_line[i]['measurement_value']))
+                            unit_length = len(MEASUREMENT_UNITS[measurement])
                             name_length = number_characters - value_length - unit_length - 2
                             name_cropped = self.lcd_line[i]['name'].ljust(name_length)[:name_length]
                             self.lcd_string_line[i] = '{} {} {}'.format(
                                 name_cropped,
                                 self.lcd_line[i]['measurement_value'],
-                                self.measurement_unit['metric'][measurement])
+                                MEASUREMENT_UNITS[measurement])
                         else:
-                            value_length = len(str(self.lcd_line[i]['measurement_value']))
+                            value_length = len(str(
+                                self.lcd_line[i]['measurement_value']))
                             name_length = number_characters - value_length - 1
                             name_cropped = self.lcd_line[i]['name'][:name_length]
                             self.lcd_string_line[i] = '{} {}'.format(
@@ -406,39 +393,37 @@ class LCDController(threading.Thread):
                     else:
                         self.lcd_string_line[i] = 'NO DATA < 5 MIN'
                 except Exception as except_msg:
-                    self.logger.exception("[LCD {}] Error: {}".format(
-                        self.lcd_id, except_msg))
+                    self.logger.exception("Error: {err}".format(
+                        err=except_msg))
             else:
                 self.lcd_string_line[i] = ''
 
     @staticmethod
     def relay_state(relay_id):
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            relay = new_session.query(Relay).filter(Relay.id == relay_id).first()
-            gpio_state = ''
-            GPIO.setmode(GPIO.BCM)
-            if GPIO.input(relay.pin) == relay.trigger:
-                gpio_state = 'On'
-            else:
-                gpio_state = 'Off'
+        relay = db_retrieve_table(MYCODO_DB_PATH, Relay, device_id=relay_id)
+        GPIO.setmode(GPIO.BCM)
+        if GPIO.input(relay.pin) == relay.trigger:
+            gpio_state = 'On'
+        else:
+            gpio_state = 'Off'
         return gpio_state
 
     def output_lcds(self):
         """Output to all LCDs all at once"""
         if self.multiplexer:
-            self.logger.debug("[LCD {}] Setting multiplexer at "
-                              "address {} to channel "
-                              "{}".format(self.lcd_id,
-                                          self.multiplexer_address_string,
-                                          self.multiplexer_channel))
+            self.logger.debug(
+                "Setting multiplexer at address {add} to channel "
+                "{chan}".format(
+                    add=self.multiplexer_address_string,
+                    chan=self.multiplexer_channel))
             self.multiplexer_status, self.multiplexer_response = self.multiplexer.setup_lock(self.logger,
                                                                                              self.multiplexer_channel)
             if not self.multiplexer_status:
-                self.logger.warning("[LCD {}] Could not set channel "
-                                    "with multiplexer at address {}. "
-                                    "Error: {}".format(self.lcd_id,
-                                                       self.multiplexer_address_string,
-                                                       self.multiplexer_response))
+                self.logger.warning(
+                    "Could not set channel with multiplexer at address {add}."
+                    " Error: {err}".format(
+                        add=self.multiplexer_address_string,
+                        err=self.multiplexer_response))
         self.lcd_init()
         for i in range(1, self.lcd_y_lines + 1):
             self.lcd_string_write(self.lcd_string_line[i], self.LCD_LINE[i])
@@ -505,9 +490,9 @@ class LCDController(threading.Thread):
         for i in range(self.LCD_WIDTH):
             self.lcd_byte(ord(message[i]), self.LCD_CHR)
 
-    def isRunning(self):
+    def is_running(self):
         return self.running
 
-    def stopController(self):
+    def stop_controller(self):
         self.thread_shutdown_timer = timeit.default_timer()
         self.running = False

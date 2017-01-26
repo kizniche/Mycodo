@@ -2,17 +2,17 @@
 <div class="form-group">
   <label class="control-label">GPIO</label>
   <div>
-    {{formModSensor.modLocation(class_='form-control', value=each_sensor.location, **{'title':'Where to access the device/sensor?'})}}
+    {{form_mod_sensor.modLocation(class_='form-control', value=each_sensor.location, **{'title':'Where to access the device/sensor?'})}}
   </div>
 </div>
 <div class="form-group">
-  {{formModSensor.modSHTClockPin.label(class_='control-label')}}
+  {{form_mod_sensor.modSHTClockPin.label(class_='control-label')}}
   <div>
-    {{formModSensor.modSHTClockPin(class_='form-control', value=each_sensor.sht_clock_pin, **{'title':'The GPIO pin of the Raspberry Pi connected to the SHT sensor clock pin.'})}}
+    {{form_mod_sensor.modSHTClockPin(class_='form-control', value=each_sensor.sht_clock_pin, **{'title':'The GPIO pin of the Raspberry Pi connected to the SHT sensor clock pin.'})}}
   </div>
 </div>
 <div class="form-group">
-  {{formModSensor.modSHTVoltage.label(class_='control-label')}}
+  {{form_mod_sensor.modSHTVoltage.label(class_='control-label')}}
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modSHTVoltage" name="modSHTVoltage" title="The input voltage to the SHT sensor.">
       <option value="0"></option>

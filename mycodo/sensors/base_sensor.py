@@ -58,12 +58,6 @@ class AbstractSensor(object):
                      " are required to overwrite this method".format(cls=type(self).__name__))
         raise NotImplementedError
 
-    def stopSensor(self):
-        """ temporary.  used by old implementation and the camel case needs to change"""
-        logger.warning("Old style `stopSensor()` called by {cls}.  This is depreciated and will be deleted in "
-                       "future releases.  Switch to using `stop_sensor` instead.".format(cls=type(self).__name__))
-        self.stop_sensor()
-
     def stop_sensor(self):  # camel case needs to change
         """ Called by SensorController class when sensors are deactivated """
         self.running = False

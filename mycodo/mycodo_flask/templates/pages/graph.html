@@ -8,13 +8,13 @@
   <script src="/static/js/modules/export-csv.js"></script>
   <script src="/static/js/modules/jspdf.min.js"></script>
   <script src="/static/js/modules/highcharts-export-clientside.js"></script>
-  {% if session.user_theme in ['cyborg', 'darkly', 'slate', 'superhero'] %}
+  {% if session.user_theme in ['cyborg', 'darkly', 'slate', 'sun', 'superhero'] %}
     <script src="/static/js/dark-unica.js"></script>
   {% endif %}
 
 {% endblock %}  
 
-{% block title %} - Graph{% endblock %}
+{% block title %} - {{_('Graph')}}{% endblock %}
 
 {% block body %}
   <!-- Route: /graph -->
@@ -43,7 +43,7 @@
 
   <div style="padding: 0 0.5em 0.5em 0.5em">
 
-  {%- if displayOrder -%}
+  {% if displayOrder -%}
   {%- for order in displayOrder -%}
     {%- set chart_number = loop.index -%}
     {%- for each_graph in graph if each_graph.id in order -%}
@@ -71,43 +71,43 @@
         <div class="form-inline">
           <form method="post" action="/graph">
           <input type="hidden" name="form-name" value="modGraph">
-          {{formModGraph.csrf_token}}
-          {{formModGraph.graph_id(value=each_graph.id)}}
+          {{form_mod_graph.csrf_token}}
+          {{form_mod_graph.graph_id(value=each_graph.id)}}
           <div class="form-group">
-            {{formModGraph.name.label(class_='control-label')}}
+            {{form_mod_graph.name.label(class_='control-label')}}
             <div>
-              {{formModGraph.name(class_='form-control', value=each_graph.name)}}
+              {{form_mod_graph.name(class_='form-control', value=each_graph.name)}}
             </div>
           </div>
           <div class="form-group">
-            {{formModGraph.width.label(class_='control-label')}}
+            {{form_mod_graph.width.label(class_='control-label')}}
             <div>
-              {{formModGraph.width(class_='form-control', value=each_graph.width)}}
+              {{form_mod_graph.width(class_='form-control', value=each_graph.width)}}
             </div>
           </div>
           <div class="form-group">
-            {{formModGraph.height.label(class_='control-label')}}
+            {{form_mod_graph.height.label(class_='control-label')}}
             <div>
-              {{formModGraph.height(class_='form-control', value=each_graph.height)}}
+              {{form_mod_graph.height(class_='form-control', value=each_graph.height)}}
             </div>
           </div>
           <div class="form-group">
-            {{formModGraph.xAxisDuration.label(class_='control-label')}}
+            {{form_mod_graph.xAxisDuration.label(class_='control-label')}}
             <div>
-              {{formModGraph.xAxisDuration(class_='form-control', value=each_graph.x_axis_duration)}}
+              {{form_mod_graph.xAxisDuration(class_='form-control', value=each_graph.x_axis_duration)}}
             </div>
           </div>
           <div class="form-group">
-            {{formModGraph.refreshDuration.label(class_='control-label')}}
+            {{form_mod_graph.refreshDuration.label(class_='control-label')}}
             <div>
-              {{formModGraph.refreshDuration(class_='form-control', value=each_graph.refresh_duration)}}
+              {{form_mod_graph.refreshDuration(class_='form-control', value=each_graph.refresh_duration)}}
             </div>
           </div>
 
           <div style="clear: both"></div>
 
           <div class="form-group">
-            {{formModGraph.sensorIDs.label(class_='control-label')}}
+            {{form_mod_graph.sensorIDs.label(class_='control-label')}}
             <div>
               <select class="form-control" id="sensorIDs" name="sensorIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
               {% if sensor_choices %}
@@ -119,7 +119,7 @@
             </div>
           </div>
           <div class="form-group">
-            {{formModGraph.relayIDs.label(class_='control-label')}}
+            {{form_mod_graph.relayIDs.label(class_='control-label')}}
             <div>
               <select class="form-control" id="relayIDs" name="relayIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
               {% if relay_choices %}
@@ -131,7 +131,7 @@
             </div>
           </div>
           <div class="form-group">
-            {{formModGraph.pidIDs.label(class_='control-label')}}
+            {{form_mod_graph.pidIDs.label(class_='control-label')}}
             <div>
               <select class="form-control" id="pidIDs" name="pidIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
               {% if pid_choices %}
@@ -144,48 +144,65 @@
           </div>
 
           <div style="clear: both"></div>
-          Hold down the <kbd>Ctrl</kbd> key to select more than one option.</br>
+          {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.</br>
 
-          <div class="checkbox" style="padding-right: 1em">
-            <label>
-              {{formModGraph.enableNavbar.label.text}}
+          <div class="form-check" style="padding-top: 1em">
+            <label class="form-check-label">
+              <input class="form-check-input" id="enableNavbar" name="enableNavbar" type="checkbox" value="y"{% if each_graph.enable_navbar %} checked{% endif %}>
+              {{form_mod_graph.enableNavbar.label.text}}
             </label>
-            <input class="form-control" id="enableNavbar" name="enableNavbar" type="checkbox" value="y"{% if each_graph.enable_navbar %} checked{% endif %}>
           </div>
-          <div class="checkbox" style="padding-right: 1em">
-            <label>
-              {{formModGraph.enableExport.label.text}}
+          <div class="form-check disabled">
+            <label class="form-check-label">
+              <input class="form-check-input" id="enableExport" name="enableExport" type="checkbox" value="y"{% if each_graph.enable_export %} checked{% endif %}>
+              {{form_mod_graph.enableExport.label.text}}
             </label>
-            <input class="form-control" id="enableExport" name="enableExport" type="checkbox" value="y"{% if each_graph.enable_export %} checked{% endif %}>
           </div>
-          <div class="checkbox">
-            <label>
-              {{formModGraph.enableRangeSelect.label.text}}
+          <div class="form-check">
+            <label class="form-check-label">
+              <input class="form-check-input" id="enableRangeSelect" name="enableRangeSelect" type="checkbox" value="y"{% if each_graph.enable_rangeselect %} checked{% endif %}>
+              {{form_mod_graph.enableRangeSelect.label.text}}
             </label>
-            <input class="form-control" id="enableRangeSelect" name="enableRangeSelect" type="checkbox" value="y"{% if each_graph.enable_rangeselect %} checked{% endif %}>
           </div>
+          <div class="form-check disabled" style="padding-top: 1em">
+            <label class="form-check-label">
+              <input class="form-check-input" id="colors_custom" name="colors_custom" type="checkbox" value="y"{% if each_graph.colors_custom %} checked{% endif %}>
+              {{form_mod_graph.colors_custom.label.text}}
+            </label>
+          </div>
+
+          {% for n in range(dict_colors[each_graph.id]|length) %}
+          <div class="form-check">
+            {% set index = '{0:0>2}'.format(n) %}
+            <label class="form-check-label" for="color_number{{index}}">
+              <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{dict_colors[each_graph.id][n][1]}}">
+              {{dict_colors[each_graph.id][n][0]}}
+            </label>
+          </div>
+          {% endfor %}
+
         </div>
 
-        <div class="form-inline btn-group">
+        <div class="form-inline btn-group" style="padding-top: 1em;">
           <div class="form-group">
-            {{formModGraph.Submit(class_='form-control btn btn-default')}}
+            {{form_mod_graph.Submit(class_='form-control btn btn-default')}}
             </form>
           </div>
           <div class="form-group">
             <form method="post" action="/graph">
               <input type="hidden" name="form-name" value="delGraph">
-              {{formDelGraph.csrf_token}}
-              {{formDelGraph.graph_id(value=each_graph.id)}}
-              {{formDelGraph.Submit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this graph?")'})}}
+              {{form_del_graph.csrf_token}}
+              {{form_del_graph.graph_id(value=each_graph.id)}}
+              {{form_del_graph.Submit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this graph?")'})}}
             </form>
           </div>
           <div class="form-group">
             <form method="post" action="/graph">
               Reorder: <input type="hidden" name="form-name" value="orderGraph">
-              {{formOrderGraph.csrf_token}}
-              {{formOrderGraph.orderGraph_id(value=each_graph.id)}}
-              {{formOrderGraph.orderGraphUp(class_='form-control btn btn-default')}}
-              {{formOrderGraph.orderGraphDown(class_='form-control btn btn-default')}}
+              {{form_order_graph.csrf_token}}
+              {{form_order_graph.orderGraph_id(value=each_graph.id)}}
+              {{form_order_graph.orderGraphUp(class_='form-control btn btn-default')}}
+              {{form_order_graph.orderGraphDown(class_='form-control btn btn-default')}}
             </form>
           </div>
         </div>
@@ -197,48 +214,48 @@
   </div>
 
   <div class="container" style="padding-bottom: 1em;">
-    <a data-toggle="collapse" href="#collapseContainerGraphAdd" aria-expanded="false" aria-controls="collapseContainerGraphAdd" class="btn btn-default" role="button">New Graph</a>
+    <a data-toggle="collapse" href="#collapseContainerGraphAdd" aria-expanded="false" aria-controls="collapseContainerGraphAdd" class="btn btn-default" role="button">{{_('New Graph')}}</a>
 
     <div class="collapse" id="collapseContainerGraphAdd" style="padding-top: 1em">
       <form method="post" action="/graph">
       <div class="form-inline">
         <input type="hidden" name="form-name" value="addGraph">
-        {{formAddGraph.csrf_token}}
+        {{form_add_graph.csrf_token}}
         <div class="form-group">
-          {{formAddGraph.name.label(class_='control-label')}}
+          {{form_add_graph.name.label(class_='control-label')}}
           <div>
-            {{formAddGraph.name(class_='form-control')}}
+            {{form_add_graph.name(class_='form-control')}}
           </div>
         </div>
         <div class="form-group">
-          {{formAddGraph.width.label(class_='control-label')}}
+          {{form_add_graph.width.label(class_='control-label')}}
           <div>
-            {{formAddGraph.width(class_='form-control', value=100)}}
+            {{form_add_graph.width(class_='form-control', value=100)}}
           </div>
         </div>
         <div class="form-group">
-          {{formAddGraph.height.label(class_='control-label')}}
+          {{form_add_graph.height.label(class_='control-label')}}
           <div>
-            {{formAddGraph.height(class_='form-control', value=400)}}
+            {{form_add_graph.height(class_='form-control', value=400)}}
           </div>
         </div>
         <div class="form-group">
-          {{formAddGraph.xAxisDuration.label(class_='control-label')}}
+          {{form_add_graph.xAxisDuration.label(class_='control-label')}}
           <div>
-            {{formAddGraph.xAxisDuration(class_='form-control', value=1440)}}
+            {{form_add_graph.xAxisDuration(class_='form-control', value=1440)}}
           </div>
         </div>
         <div class="form-group">
-          {{formAddGraph.refreshDuration.label(class_='control-label')}}
+          {{form_add_graph.refreshDuration.label(class_='control-label')}}
           <div>
-            {{formAddGraph.refreshDuration(class_='form-control', value=60)}}
+            {{form_add_graph.refreshDuration(class_='form-control', value=60)}}
           </div>
         </div>
 
         <div style="clear: both"></div>
 
         <div class="form-group">
-          {{formAddGraph.sensorIDs.label(class_='control-label')}}
+          {{form_add_graph.sensorIDs.label(class_='control-label')}}
           <div>
             <select class="form-control" id="sensorIDs" name="sensorIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
             {% for each_choice, value in sensor_choices.iteritems() -%}
@@ -248,7 +265,7 @@
           </div>
         </div>
         <div class="form-group">
-          {{formAddGraph.relayIDs.label(class_='control-label')}}
+          {{form_add_graph.relayIDs.label(class_='control-label')}}
           <div>
             <select class="form-control" id="relayIDs" name="relayIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
             {% for each_choice, value in relay_choices.iteritems() -%}
@@ -258,7 +275,7 @@
           </div>
         </div>
         <div class="form-group">
-          {{formAddGraph.pidIDs.label(class_='control-label')}}
+          {{form_add_graph.pidIDs.label(class_='control-label')}}
           <div>
             <select class="form-control" id="pidIDs" name="pidIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
             {% for each_choice, value in pid_choices.iteritems() -%}
@@ -270,30 +287,30 @@
 
         <div style="clear: both"></div>
 
-        Hold down the <kbd>Ctrl</kbd> key to select more than one.</br>
+        {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.</br>
 
         <div class="checkbox" style="padding-right: 1em">
           <label>
-            {{formAddGraph.enableNavbar(class_='form-control')}}
-            {{formAddGraph.enableNavbar.label.text}}
+            {{form_add_graph.enableNavbar(class_='form-control')}}
+            {{form_add_graph.enableNavbar.label.text}}
           </label>
         </div>
         <div class="checkbox" style="padding-right: 1em">
           <label>
-            {{formAddGraph.enableExport(class_='form-control')}}
-            {{formAddGraph.enableExport.label.text}}
+            {{form_add_graph.enableExport(class_='form-control')}}
+            {{form_add_graph.enableExport.label.text}}
           </label>
         </div>
         <div class="checkbox">
           <label>
-            {{formAddGraph.enableRangeSelect(class_='form-control')}}
-            {{formAddGraph.enableRangeSelect.label.text}}
+            {{form_add_graph.enableRangeSelect(class_='form-control')}}
+            {{form_add_graph.enableRangeSelect.label.text}}
           </label>
         </div>
       </div>
       <div class="form-inline btn-group">
         <div class="form-group">
-          {{formAddGraph.Submit(class_='form-control btn btn-default')}}
+          {{form_add_graph.Submit(class_='form-control btn btn-default')}}
         </div>
       </div>
       </form>
@@ -320,21 +337,28 @@
     }
   });
 
-  var now = new Date();
+  // Store the time (epoch) of the last data point received, for every condition of every graph
+  var last_relay_time_mil = {};
 
   $(document).ready(function() {
     var chart = new Array();
-    // Retrieve intiial chart data set from the past (duration set by user)
-    function getPastData(chart_number, sensor, sensor_type, sensor_measurement, sensor_id, past_seconds) {
-      var url = '/past/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/' + past_seconds;
+    // Retrieve initial chart data set from the past (duration set by user)
+    function getPastData(chart_number, sensor, sensor_measurement, sensor_id, past_seconds) {
+      var url = '/past/' + sensor_measurement + '/' + sensor_id + '/' + past_seconds;
       $.getJSON(url,
         function(data, responseText, jqXHR) {
           if (jqXHR.status != 204) {
             var past_data = [];
             for (i = 0; i < data.length; i++){
+              // Push the received data to the graph
               var new_date = new Date(data[i][0]);
               var new_time = new_date.getTime();
               past_data.push([new_time, data[i][1]])
+
+              // Store the epoch time of the last data point received
+              if (i == data.length - 1) {
+                last_relay_time_mil[chart_number+"-"+sensor_id] = new_time;
+              }
             }
             chart[chart_number].series[sensor].isDirty = true;
             chart[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes()-(past_seconds/60)), new Date().getTime());
@@ -344,9 +368,18 @@
       );
     }
     // Retrieve chart data for the period since the last data acquisition (refresh period set by user)
-    function getLiveData(chart_number, sensor, sensor_type, sensor_measurement, sensor_id, past_seconds, xaxis_duration_min, refresh_seconds) {
+    function getLiveData(chart_number, sensor, sensor_measurement, sensor_id, xaxis_duration_min, refresh_seconds) {
       setInterval(function () {
-        var url = '/past/' + sensor_type + '/' + sensor_measurement + '/' + sensor_id + '/' + past_seconds;
+        // Build the URL
+        // Instruct only to return data since the time of the last received data point
+        var url = '';
+        if (chart_number+"-"+sensor_id in last_relay_time_mil) {
+          var epoch_mil = (new Date).getTime();
+          var past_seconds = Math.floor((epoch_mil - last_relay_time_mil[chart_number+"-"+sensor_id]) / 1000);
+          url = '/past/' + sensor_measurement + '/' + sensor_id + '/' + past_seconds;
+        } else {
+          url = '/past/' + sensor_measurement + '/' + sensor_id + '/' + refresh_seconds;
+        }
         $.getJSON(url,
           function(data, responseText, jqXHR) {
             if (jqXHR.status != 204) {
@@ -354,6 +387,9 @@
                 var new_date = new Date(data[i][0]);
                 var new_time = new_date.getTime();
                 chart[chart_number].series[sensor].addPoint([new_time, data[i][1]], false, false);
+                if (i == data.length - 1) {
+                  last_relay_time_mil[chart_number+"-"+sensor_id] = new_time;
+                }
               }
             }
             // Ensure Reset Zoom button resets to the proper start and end times
@@ -365,9 +401,6 @@
           }
         );
       }, refresh_seconds * 1000);
-    }
-    function myCallback(){
-      alert("button clicked");
     }
 
     // Change opacity of all chart colors
@@ -477,20 +510,16 @@
 
             {%- for each_relay in relay -%}
               {%- for each_graph_relay in graph_relay_ids if each_relay.id in each_graph_relay %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'relay', 'duration_sec', '{{each_relay.id}}', {{each_graph.x_axis_duration*60}});
-                {%- for each_pid in pid -%}
-                  {%- if each_pid.activated and (each_pid.raise_relay_id == each_relay.id or each_pid.lower_relay_id == each_relay.id) %}
-            getLiveData({{chart_number}}, {{count_series|count}}, 'relay', 'duration_sec', '{{each_relay.id}}', {{each_graph.refresh_duration+each_pid.period+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
-                  {%- endif -%}
-                {% endfor %}
+            getPastData({{chart_number}}, {{count_series|count}}, 'duration_sec', '{{each_relay.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'duration_sec', '{{each_relay.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                 {%- do count_series.append(1) %}
               {%- endfor -%}
             {%- endfor -%}
 
             {%- for each_pid in pid -%}
               {%- for each_graph_pid in graph_pid_ids if each_pid.id in each_graph_pid %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'pid', 'setpoint', '{{each_pid.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'pid', 'setpoint', '{{each_pid.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'setpoint', '{{each_pid.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'setpoint', '{{each_pid.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                 {%- do count_series.append(1) %}
               {%- endfor -%}
             {%- endfor -%}
@@ -499,106 +528,106 @@
               {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id in each_sensor_and_measure -%}
                 {%- if each_sensor.device_type == 'cpu_load' %}
                   {% if 'cpu_load_1m' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'cpu_load', 'cpu_load_1m', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'cpu_load', 'cpu_load_1m', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'cpu_load_1m', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'cpu_load_1m', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% endif %}
                   {% if 'cpu_load_5m' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'cpu_load', 'cpu_load_5m', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'cpu_load', 'cpu_load_5m', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'cpu_load_5m', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'cpu_load_5m', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% endif %}
                   {% if 'cpu_load_15m' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'cpu_load', 'cpu_load_15m', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'cpu_load', 'cpu_load_15m', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'cpu_load_15m', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'cpu_load_15m', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% endif %}
                 {%- elif each_sensor.device_type == 'tsensor' %}
                   {% if 'temperature' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'tsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'tsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% endif %}
                 {%- elif each_sensor.device_type == 'tmpsensor' %}
                   {% if 'temperature_object' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'tmpsensor', 'temperature_object', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'tmpsensor', 'temperature_object', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'temperature_object', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'temperature_object', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% elif 'temperature_die' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'tmpsensor', 'temperature_die', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'tmpsensor', 'temperature_die', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'temperature_die', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'temperature_die', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% endif %}
                 {%- elif each_sensor.device_type == 'htsensor' %}
                   {% if 'temperature' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'htsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'htsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) %}
                   {% elif 'humidity' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'htsensor', 'humidity', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'htsensor', 'humidity', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'humidity', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'humidity', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% elif 'dewpoint' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'htsensor', 'dewpoint', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'htsensor', 'dewpoint', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'dewpoint', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'dewpoint', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {%- endif -%}
                 {%- elif each_sensor.device_type == 'co2sensor' %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'co2sensor', 'co2', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'co2sensor', 'co2', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'co2', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'co2', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                   {%- do count_series.append(1) -%}
                 {%- elif each_sensor.device_type == 'luxsensor' %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'luxsensor', 'lux', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'luxsensor', 'lux', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'lux', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'lux', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                   {%- do count_series.append(1) -%}
                 {%- elif each_sensor.device_type == 'moistsensor' %}
                   {% if 'lux' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'lux', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'lux', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'lux', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'lux', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% elif 'moisture' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'moisture', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'moisture', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'moisture', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'moisture', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% elif 'temperature' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'moistsensor', 'temperature', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {%- endif -%}
                 {%- elif each_sensor.device_type == 'presssensor' %}
                   {% if 'temperature' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'presssensor', 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'temperature', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'temperature', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) %}
                   {% elif 'humidity' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'presssensor', 'humidity', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'humidity', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'humidity', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'humidity', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% elif 'dewpoint' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'presssensor', 'dewpoint', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'dewpoint', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'dewpoint', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'dewpoint', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% elif 'pressure' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'presssensor', 'pressure', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'pressure', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'pressure', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'pressure', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) %}
                   {% elif 'altitude' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'presssensor', 'altitude', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'presssensor', 'altitude', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'altitude', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'altitude', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) %}
                   {%- endif -%}
                 {%- elif each_sensor.device_type == 'edgedetect' %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'edgedetect', 'edge', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'edgedetect', 'edge', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'edge', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'edge', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                   {%- do count_series.append(1) -%}
                 {%- elif each_sensor.device_type == 'analogsensor' %}
                   {% if 'voltage' in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'analogsensor', 'voltage', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'analogsensor', 'voltage', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, 'voltage', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'voltage', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% elif each_sensor.adc_measure in each_sensor_and_measure %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'analogsensor', '{{each_sensor.adc_measure}}', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'analogsensor', '{{each_sensor.adc_measure}}', '{{each_sensor.id}}', {{each_graph.refresh_duration+10}}, {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getPastData({{chart_number}}, {{count_series|count}}, '{{each_sensor.adc_measure}}', '{{each_sensor.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_sensor.adc_measure}}', '{{each_sensor.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {%- endif -%}
                 {%- endif -%}
@@ -607,11 +636,17 @@
           }
         }
       },
+      {% if each_graph.colors_custom and each_graph.colors -%}
+        {% set color_list = each_graph.colors.split(',') %}
+        colors: [{%- for each_color in color_list -%}
+                  "{{each_color}}",
+                 {%- endfor -%}],
+      {%- endif -%}
       // title: {
       //   text: "{{each_graph.name}}"
       // },
       legend: {
-        enabled: true,
+        enabled: true
         // layout: 'vertical',
         // align: 'right',
         // verticalAlign: 'top',
@@ -644,10 +679,10 @@
       {%- if yaxis_relay -%}
         {
           title: {
-            text: 'Relay Duration (sec)',
+            text: '{{_('Relay Duration')}} (sec)'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'relay'
@@ -656,10 +691,10 @@
       {%- if yaxis_cpu_load -%}
         {
           title: {
-            text: 'CPU Load',
+            text: '{{_('CPU Load')}}'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'cpu_load'
@@ -668,10 +703,10 @@
       {%- if yaxis_temp -%}
         {
           title: {
-            text: 'Temperature (°C)',
+            text: '{{_('Temperature')}} (°C)'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'temperature'
@@ -680,10 +715,10 @@
       {%- if yaxis_hum -%}
         {
           title: {
-            text: 'Relative Humidity (%)',
+            text: '{{_('Relative Humidity')}} (%)'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'humidity'
@@ -692,10 +727,10 @@
       {%- if yaxis_co2 -%}
         {
           title: {
-            text: 'CO<sub>2</sub> (ppmv)',
+            text: 'CO<sub>2</sub> (ppmv)'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'co2'
@@ -704,10 +739,10 @@
       {%- if yaxis_lux -%}
         {
           title: {
-            text: 'Luminosity (lx)',
+            text: '{{_('Luminosity')}} (lx)'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'lux'
@@ -716,10 +751,10 @@
       {%- if yaxis_moisture -%}
         {
           title: {
-            text: 'Moisture',
+            text: '{{_('Moisture')}}'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'moisture'
@@ -728,10 +763,10 @@
       {%- if yaxis_press -%}
         {
           title: {
-            text: 'Pressure (Pa)',
+            text: '{{_('Pressure')}} (Pa)'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'pressure'
@@ -740,10 +775,10 @@
       {%- if yaxis_alt -%}
         {
           title: {
-            text: 'Altitude (m)',
+            text: '{{_('Altitude')}} (m)'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'altitude'
@@ -752,10 +787,10 @@
       {%- if yaxis_edge -%}
         {
           title: {
-            text: 'Edge',
+            text: '{{_('Edge')}}'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'edge'
@@ -764,10 +799,10 @@
       {%- if yaxis_volts -%}
         {
           title: {
-            text: 'Voltage',
+            text: '{{_('Voltage')}}'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: 'voltage'
@@ -776,10 +811,10 @@
       {%- for each_adc_measure in yaxis_adc -%}
         {
           title: {
-            text: '{{each_adc_measure}}',
+            text: '{{each_adc_measure}}'
           },
           labels: {
-            format: '{value}',
+            format: '{value}'
           },
           opposite: false,
           id: '{{each_adc_measure}}'
@@ -867,7 +902,7 @@
           type: 'all',
           text: 'Full'
         }],
-        selected: 15,
+        selected: 15
       },
       credits: {
         enabled: false,
@@ -875,46 +910,12 @@
         text: "Mycodo"
       },
       series: [
-      {%- for each_relay in relay -%}
-        {%- for each_graph_relay in graph_relay_ids if each_relay.id in each_graph_relay -%}
-          {
-            name: '{{each_relay.name}}',
-            type: 'column',
-            dataGrouping: {
-              approximation: 'low',
-              groupPixelWidth: 3,
-            },
-            tooltip: {
-              valueSuffix: ' sec',
-              valueDecimals: 2,
-            },
-            yAxis: 'relay',
-            data: []
-          },
-        {%- endfor -%}
-      {%- endfor -%}
-
-      {%- for each_pid in pid -%}
-        {%- for each_graph_pid_ids in graph_pid_ids if each_pid.id in each_graph_pid_ids -%}
-          {
-            name: '{{each_pid.name}} Setpoint',
-            type: 'line',
-            tooltip: {
-              valueSuffix: '{{measurement_units[each_pid.measure_type]|safe}}',
-              valueDecimals: 2,
-            },
-            yAxis: '{{each_pid.measure_type}}',
-            data: []
-          },
-        {%- endfor -%}
-      {%- endfor -%}
-
       {%- for each_sensor in sensor -%}
         {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id in each_sensor_and_measure -%}
           {%- if each_sensor.device_type == 'cpu_load' -%}
             {% if 'cpu_load_1m' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} CPU Load (1m)',
+                name: '{{each_sensor.name}} {{_('CPU Load')}} (1m)',
                 type: 'line',
                 tooltip: {
                   valueDecimals: 2
@@ -924,7 +925,7 @@
               },
             {% elif 'cpu_load_5m' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} CPU Load (5m)',
+                name: '{{each_sensor.name}} {{_('CPU Load')}} (5m)',
                 type: 'line',
                 tooltip: {
                   valueDecimals: 2
@@ -934,7 +935,7 @@
               },
             {% elif 'cpu_load_15m' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} CPU Load (15m)',
+                name: '{{each_sensor.name}} {{_('CPU Load')}} (15m)',
                 type: 'line',
                 tooltip: {
                   valueDecimals: 2
@@ -945,7 +946,7 @@
             {% endif %}
           {%- elif each_sensor.device_type == 'tsensor' -%}
             {
-              name: '{{each_sensor.name}} Temperature',
+              name: '{{each_sensor.name}} {{_('Temperature')}}',
               type: 'line',
               tooltip: {
                 pointFormatter: function () {
@@ -958,7 +959,7 @@
           {%- elif each_sensor.device_type == 'tmpsensor' -%}
             {% if 'temperature_object' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Temperature (Object)',
+                name: '{{each_sensor.name}} {{_('Temperature (Object)')}}',
                 type: 'line',
                   tooltip: {
                   pointFormatter: function () {
@@ -970,7 +971,7 @@
               },
             {% elif 'temperature_die' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Temperature (Die)',
+                name: '{{each_sensor.name}} {{_('Temperature (Die)')}}',
                 type: 'line',
                 tooltip: {
                   pointFormatter: function () {
@@ -984,7 +985,7 @@
           {%- elif each_sensor.device_type == 'htsensor' -%}
             {% if 'temperature' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Temperature',
+                name: '{{each_sensor.name}} {{_('Temperature')}}',
                 type: 'line',
                 tooltip: {
                   pointFormatter: function () {
@@ -996,7 +997,7 @@
               },
             {%- elif 'humidity' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Humidity',
+                name: '{{each_sensor.name}} {{_('Humidity')}}',
                 type: 'line',
                 tooltip: {
                   valueSuffix: ' %',
@@ -1007,7 +1008,7 @@
               },
             {%- elif 'dewpoint' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Dew Point',
+                name: '{{each_sensor.name}} {{_('Dew Point')}}',
                 tooltip: {
                   pointFormatter: function () {
                     return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
@@ -1020,7 +1021,7 @@
           {%- elif each_sensor.device_type == 'moistsensor' -%}
             {% if 'lux' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Light',
+                name: '{{each_sensor.name}} {{_('Light')}}',
                 type: 'line',
                 tooltip: {
                   valueSuffix: '',
@@ -1031,7 +1032,7 @@
               },
             {%- elif 'moisture' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Moisture',
+                name: '{{each_sensor.name}} {{_('Moisture')}}',
                 type: 'line',
                 tooltip: {
                   valueSuffix: '',
@@ -1042,7 +1043,7 @@
               },
             {%- elif 'temperature' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Temperature',
+                name: '{{each_sensor.name}} {{_('Temperature')}}',
                 tooltip: {
                   pointFormatter: function () {
                     return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
@@ -1065,7 +1066,7 @@
             },
           {%- elif each_sensor.device_type == 'luxsensor' -%}
             {
-              name: '{{each_sensor.name}} Lux',
+              name: '{{each_sensor.name}} {{_('Lux')}}',
               type: 'line',
               tooltip: {
                 valueSuffix: ' lx',
@@ -1077,7 +1078,7 @@
           {%- elif each_sensor.device_type == 'presssensor' -%}
             {%- if 'temperature' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Temperature',
+                name: '{{each_sensor.name}} {{_('Temperature')}}',
                 type: 'line',
                 tooltip: {
                   pointFormatter: function () {
@@ -1089,7 +1090,7 @@
               },
             {%- elif 'humidity' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Humidity',
+                name: '{{each_sensor.name}} {{_('Humidity')}}',
                 type: 'line',
                 tooltip: {
                   valueSuffix: ' %',
@@ -1100,7 +1101,7 @@
               },
             {%- elif 'dewpoint' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Dew Point',
+                name: '{{each_sensor.name}} {{_('Dew Point')}}',
                 tooltip: {
                   pointFormatter: function () {
                     return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
@@ -1111,7 +1112,7 @@
               },
             {%- elif 'pressure' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Pressure',
+                name: '{{each_sensor.name}} {{_('Pressure')}}',
                 type: 'line',
                 tooltip: {
                   valueSuffix: ' Pa',
@@ -1122,7 +1123,7 @@
               },
             {%- elif 'altitude' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Altitude',
+                name: '{{each_sensor.name}} {{_('Altitude')}}',
                 type: 'line',
                 tooltip: {
                   valueSuffix: ' m',
@@ -1134,8 +1135,7 @@
             {%- endif -%}
           {%- elif each_sensor.device_type == 'edgedetect' -%}
             {
-              name: '{{each_sensor.name}} Edge',
-              type: 'line',
+              name: '{{each_sensor.name}} {{_('Edge')}}',
               type: 'column',
               tooltip: {
                 valueSuffix: ' edge',
@@ -1147,7 +1147,7 @@
           {%- elif each_sensor.device_type == 'analogsensor' -%}
             {%- if 'voltage' in each_sensor_and_measure -%}
               {
-                name: '{{each_sensor.name}} Voltage',
+                name: '{{each_sensor.name}} {{_('Voltage')}}',
                 type: 'line',
                 tooltip: {
                   valueSuffix: ' volts',
@@ -1169,6 +1169,40 @@
               },
             {%- endif -%}
           {%- endif -%}
+        {%- endfor -%}
+      {%- endfor -%}
+
+      {%- for each_relay in relay -%}
+        {%- for each_graph_relay in graph_relay_ids if each_relay.id in each_graph_relay -%}
+          {
+            name: '{{each_relay.name}}',
+            type: 'column',
+            dataGrouping: {
+              approximation: 'low',
+              groupPixelWidth: 3
+            },
+            tooltip: {
+              valueSuffix: ' sec',
+              valueDecimals: 2
+            },
+            yAxis: 'relay',
+            data: []
+          },
+        {%- endfor -%}
+      {%- endfor -%}
+
+      {%- for each_pid in pid -%}
+        {%- for each_graph_pid_ids in graph_pid_ids if each_pid.id in each_graph_pid_ids -%}
+          {
+            name: '{{each_pid.name}} {{_('Setpoint')}}',
+            type: 'line',
+            tooltip: {
+              valueSuffix: '{{measurement_units[each_pid.measure_type]|safe}}',
+              valueDecimals: 2
+            },
+            yAxis: '{{each_pid.measure_type}}',
+            data: []
+          },
         {%- endfor -%}
       {%- endfor -%}
       ]

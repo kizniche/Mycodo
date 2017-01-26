@@ -5,7 +5,7 @@ import fcntl      # used to access I2C parameters like addresses
 import time       # used for sleep delay and timestamps
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("mycodo.sensors.atlas_pt1000")
 
 
 class AtlasPT1000Sensor(AbstractSensor):
@@ -41,7 +41,7 @@ class AtlasPT1000Sensor(AbstractSensor):
         """ Get next temperature reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(temperature=float('{0:.3f}'.format(self._temperature)))
+        return dict(temperature=float('{0:.2f}'.format(self._temperature)))
 
     def info(self):
         conditions_measured = [
@@ -68,7 +68,7 @@ class AtlasPT1000Sensor(AbstractSensor):
         if temperature_string[:17] != 'Command succeeded':
             raise Exception("Sensor read failed")
         else:
-            return float(temperature_string[18:])
+            return float(temperature_string[18:24])
 
     def read(self):
         """

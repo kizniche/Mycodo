@@ -3,7 +3,7 @@ import logging
 from tentacle_pi.TSL2561 import TSL2561
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("mycodo.sensors.tsl2561")
 
 
 class TSL2561Sensor(AbstractSensor):
@@ -33,6 +33,12 @@ class TSL2561Sensor(AbstractSensor):
         if self.read():  # raised an error
             raise StopIteration  # required
         return dict(lux=float('{0:.2f}'.format(self._lux)))
+
+    def info(self):
+        conditions_measured = [
+            ("Lux", "lux", "float", "0.00", self._lux, self.lux)
+        ]
+        return conditions_measured
 
     @property
     def lux(self):

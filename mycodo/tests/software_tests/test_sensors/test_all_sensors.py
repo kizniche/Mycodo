@@ -8,19 +8,19 @@ from collections import Iterator
 from mycodo.sensors.am2315 import AM2315Sensor
 from mycodo.sensors.atlas_pt1000 import AtlasPT1000Sensor
 # from mycodo.sensors.bme280 import BME280Sensor
-# from mycodo.sensors.bmp import BMPSensor
+from mycodo.sensors.bmp import BMPSensor
 # from mycodo.sensors.dht11 import DHT11Sensor
 # from mycodo.sensors.dht22 import DHT22Sensor
-# from mycodo.sensors.ds18b20 import DS18B20Sensor
+from mycodo.sensors.ds18b20 import DS18B20Sensor
 # from mycodo.sensors.htu21d import HTU21DSensor
 # from mycodo.sensors.k30 import K30Sensor
-# from mycodo.sensors.raspi import (RaspberryPiCPUTemp,
-#                                   RaspberryPiGPUTemp)
+# from mycodo.sensors.raspi import RaspberryPiCPUTemp
+# from mycodo.sensors.raspi import RaspberryPiGPUTemp
 # from mycodo.sensors.raspi_cpuload import RaspberryPiCPULoad
-# from mycodo.sensors.tmp006 import TMP006Sensor
-# from mycodo.sensors.tsl2561 import TSL2561Sensor
-# from mycodo.sensors.sht1x_7x import SHT1x7xSensor
-# from mycodo.sensors.sht2x import SHT2xSensor
+from mycodo.sensors.sht1x_7x import SHT1x7xSensor
+from mycodo.sensors.sht2x import SHT2xSensor
+from mycodo.sensors.tmp006 import TMP006Sensor
+from mycodo.sensors.tsl2561 import TSL2561Sensor
 
 
 # ----------------------------
@@ -31,19 +31,19 @@ def return_classes():
         AtlasPT1000Sensor(0x00, 1),
         AM2315Sensor(1),
         # BME280Sensor(0x00, 1),
-        # BMPSensor(1),
+        BMPSensor(1),
         # DHT11Sensor(pigpio.pi(), 1),
         # DHT22Sensor(pigpio.pi(), 1),
-        # DS18B20Sensor('1'),
+        DS18B20Sensor('1'),
         # HTU21DSensor(1),
         # K30Sensor(),
         # RaspberryPiCPUTemp(),
         # RaspberryPiGPUTemp(),
         # RaspberryPiCPULoad(),
-        # TMP006Sensor(0x00, 1),
-        # TSL2561Sensor(0x00, 1),
-        # SHT1x7xSensor(1, 2, '5.0'),
-        # SHT2xSensor(0x00, 1)
+        SHT1x7xSensor(1, 2, '5.0'),
+        SHT2xSensor(0x00, 1),
+        TMP006Sensor(0x00, 1),
+        TSL2561Sensor(0x00, 1)
     ]
     return sensor_classes
 

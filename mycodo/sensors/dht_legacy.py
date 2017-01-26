@@ -71,7 +71,7 @@ class DHT(object):
         }
         return response
 
-    def stopSensor(self):
+    def stop_sensor(self):
         self.running = False
 
 

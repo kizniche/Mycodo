@@ -300,6 +300,8 @@ class PIDConditional(Base):
 class Graph(Base):
     __tablename__ = "graph"
     id = Column(TEXT, unique=True, primary_key=True)
+    colors_custom = Column(BOOLEAN)
+    colors = Column(TEXT)
     name = Column(TEXT)
     pid_ids = Column(TEXT)
     relay_ids = Column(TEXT)
@@ -319,7 +321,6 @@ class DisplayOrder(Base):
     id = Column(TEXT, unique=True, primary_key=True)
     graph = Column(TEXT)
     lcd = Column(TEXT)
-    log = Column(TEXT)
     pid = Column(TEXT)
     relay = Column(TEXT)
     remote_host = Column(TEXT)
@@ -347,17 +348,6 @@ class LCD(Base):
     line_3_measurement = Column(TEXT)
     line_4_sensor_id = Column(TEXT)
     line_4_measurement = Column(TEXT)
-
-
-class Log(Base):
-    __tablename__ = "log"
-
-    id = Column(TEXT, unique=True, primary_key=True)
-    name = Column(TEXT)
-    sensor_id = Column(TEXT)
-    measure_type = Column(TEXT)
-    activated = Column(INT)
-    period = Column(INT)
 
 
 class Timer(Base):
@@ -431,17 +421,18 @@ class Misc(Base):
     __tablename__ = "misc"
 
     id = Column(TEXT, unique=True, primary_key=True)
-    force_https = Column(BOOLEAN)
     dismiss_notification = Column(INT)
-    hide_alert_success = Column(BOOLEAN)
+    force_https = Column(BOOLEAN)
     hide_alert_info = Column(BOOLEAN)
+    hide_alert_success = Column(BOOLEAN)
     hide_alert_warning = Column(BOOLEAN)
-    stats_opt_out = Column(BOOLEAN)
+    language = Column(TEXT)
     login_message = Column(TEXT)
-    relay_stats_volts = Column(INT)
     relay_stats_cost = Column(REAL)
     relay_stats_currency = Column(TEXT)
     relay_stats_dayofmonth = Column(INT)
+    relay_stats_volts = Column(INT)
+    stats_opt_out = Column(BOOLEAN)
 
 
 class Remote(Base):

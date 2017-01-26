@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 {% set active_page = "notes" %}
-{% block title %} - Notes{% endblock %}
+{% block title %} - {{_('Notes')}}{% endblock %}
 
 {% block body %}
-
-  <div class="container"> 
+  <!-- Route: /notes -->
+  <div class="container">
     {% include 'flash_messages.html' %}
 
     

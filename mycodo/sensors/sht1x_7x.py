@@ -4,7 +4,7 @@ from sht_sensor import Sht
 from sht_sensor import ShtVDDLevel
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("mycodo.sensors.sht1x_7x")
 
 
 class SHT1x7xSensor(AbstractSensor):
@@ -57,6 +57,14 @@ class SHT1x7xSensor(AbstractSensor):
         return dict(dewpoint=float('{0:.2f}'.format(self._dew_point)),
                     humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
+
+    def info(self):
+        conditions_measured = [
+            ("Dew Point", "dewpoint", "float", "0.00", self._dew_point, self.dew_point),
+            ("Humidity", "humidity", "float", "0.00", self._humidity, self.humidity),
+            ("Temperature", "temperature", "float", "0.00", self._temperature, self.temperature)
+        ]
+        return conditions_measured
 
     @property
     def dew_point(self):

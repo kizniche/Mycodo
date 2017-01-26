@@ -6,31 +6,46 @@ import random
 import string
 import time
 
-from flask import (Blueprint,
-                   current_app,
-                   redirect,
-                   jsonify,
-                   render_template,
-                   flash,
-                   request)
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for
+)
+from flask_babel import gettext
 
-from mycodo.utils.system_pi import get_sec
-from mycodo.utils.method import (sine_wave_y_out,
-                                 bezier_curve_y_out)
+# Classes
+from mycodo.databases.mycodo_db.models import (
+    Method,
+    Relay
+)
 
-from mycodo.databases.utils import session_scope
-from mycodo.databases.mycodo_db.models import Method, Relay
-
+# Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
-from mycodo.mycodo_flask.general_routes import (before_blueprint_request,
-                                                inject_mycodo_version,
-                                                logged_in)
-
+from mycodo.databases.utils import session_scope
+from mycodo.mycodo_flask.general_routes import (
+    before_blueprint_request,
+    inject_mycodo_version,
+    logged_in
+)
+from mycodo.utils.database import db_retrieve_table
+from mycodo.utils.system_pi import get_sec
+from mycodo.utils.method import (
+    sine_wave_y_out,
+    bezier_curve_y_out
+)
 
 logger = logging.getLogger('mycodo.mycodo_flask.methods')
 
-blueprint = Blueprint('method_routes', __name__, static_folder='../static', template_folder='../templates')
+blueprint = Blueprint('method_routes',
+                      __name__,
+                      static_folder='../static',
+                      template_folder='../templates')
 blueprint.before_request(before_blueprint_request)  # check if admin was created
 
 
@@ -45,14 +60,13 @@ def method_data(method_type, method_id):
     Returns options for a particular method
     This includes sets of (time, setpoint) data.
     """
-    logger.debug('called method_data(method_type={type}, method_id={id})'.format(type=method_type, id=method_id))
+    logger.debug('called method_data(method_type={type}, '
+                 'method_id={id})'.format(type=method_type, id=method_id))
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
-    with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
-        method = new_session.query(Method)
-        new_session.expunge_all()
-        new_session.close()
+    method = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Method)
 
     # First method column with general information about method
     method_key = method.filter(Method.method_id == method_id)
@@ -79,13 +93,15 @@ def method_data(method_type, method_id):
 
             is_dst = time.daylight and time.localtime().tm_isdst > 0
             utc_offset_ms = (time.altzone if is_dst else time.timezone)
-
             method_list.append(
-                [(int(start_time.strftime("%s")) - utc_offset_ms) * 1000, each_method.start_setpoint])
+                [(int(start_time.strftime("%s")) - utc_offset_ms) * 1000,
+                 each_method.start_setpoint])
             method_list.append(
-                [(int(end_time.strftime("%s")) - utc_offset_ms) * 1000, end_setpoint])
+                [(int(end_time.strftime("%s")) - utc_offset_ms) * 1000,
+                 end_setpoint])
             method_list.append(
-                [(int(start_time.strftime("%s")) - utc_offset_ms) * 1000, None])
+                [(int(start_time.strftime("%s")) - utc_offset_ms) * 1000,
+                 None])
 
     elif method_key.method_type == "Daily":
         for each_method in method:
@@ -93,13 +109,15 @@ def method_data(method_type, method_id):
                 end_setpoint = each_method.start_setpoint
             else:
                 end_setpoint = each_method.end_setpoint
-
             method_list.append(
-                [get_sec(each_method.start_time) * 1000, each_method.start_setpoint])
+                [get_sec(each_method.start_time) * 1000,
+                 each_method.start_setpoint])
             method_list.append(
-                [get_sec(each_method.end_time) * 1000, end_setpoint])
+                [get_sec(each_method.end_time) * 1000,
+                 end_setpoint])
             method_list.append(
-                [get_sec(each_method.start_time) * 1000, None])
+                [get_sec(each_method.start_time) * 1000,
+                 None])
 
     elif method_key.method_type == "DailyBezier":
         points_x = 700
@@ -158,22 +176,22 @@ def method_data(method_type, method_id):
 def method_list():
     """ List all methods on one page with a graph for each """
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
-    formCreateMethod = flaskforms.CreateMethod()
+    form_create_method = flaskforms.CreateMethod()
 
-    with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
-        method = new_session.query(Method)
-        new_session.expunge_all()
-        new_session.close()
+    # TODO: Move to Flask-SQLAlchemy. This creates errors in the HTTP log: "SQLite objects created in a thread can only be used in that same thread"
+    method = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], Method)
+
     method_all = method.filter(Method.method_order > 0)
-    method_all = method.filter(Method.relay_id == None).all()
+    method_all = method_all.filter(Method.relay_id == None).all()
     method = method.filter(Method.method_order == 0).all()
 
     return render_template('pages/method-list.html',
                            method=method,
                            method_all=method_all,
-                           formCreateMethod=formCreateMethod)
+                           form_create_method=form_create_method)
 
 
 @blueprint.route('/method-build/<method_type>/<method_id>', methods=('GET', 'POST'))
@@ -182,37 +200,39 @@ def method_builder(method_type, method_id):
     Page to edit the details of each method
     This includes the (time, setpoint) data sets
     """
-    logger.debug('called method_builder(method_type={type}, method_id={id})'.format(type=method_type, id=method_id))
+    logger.debug('called method_builder(method_type={type}, '
+                 'method_id={id})'.format(type=method_type, id=method_id))
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
+    # Used in software tests to verify function is executing as admin
     if method_type == '1':
         return 'admin logged in'
 
-    if method_type in ['Date', 'Duration', 'Daily', 'DailySine', 'DailyBezier', '0']:
-        formCreateMethod = flaskforms.CreateMethod()
-        formAddMethod = flaskforms.AddMethod()
-        formModMethod = flaskforms.ModMethod()
+    if method_type in ['Date', 'Duration', 'Daily',
+                       'DailySine', 'DailyBezier', '0']:
+        form_create_method = flaskforms.CreateMethod()
+        form_add_method = flaskforms.AddMethod()
+        form_mod_method = flaskforms.ModMethod()
 
         # Create new method
         if method_type == '0':
             random_id = ''.join([random.choice(
                 string.ascii_letters + string.digits) for _ in xrange(8)])
             method_id = random_id
-            method_type = formCreateMethod.method_type.data
-            form_fail = flaskutils.method_create(formCreateMethod, method_id)
+            method_type = form_create_method.method_type.data
+            form_fail = flaskutils.method_create(form_create_method,
+                                                 method_id)
             if not form_fail:
-                flash("New Method successfully created. It may now have time "
-                      "points added.", "success")
+                flash(gettext("New Method successfully created. You may now "
+                              "add time points"), "success")
                 return redirect('/method-build/{}/{}'.format(
                     method_type, method_id))
             else:
-                flash("Could not create method.", "error")
+                flash(gettext("Could not create method"), "error")
 
-        with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
-            method = new_session.query(Method)
-            new_session.expunge_all()
-            new_session.close()
+        method = db_retrieve_table(
+            current_app.config['MYCODO_DB_PATH'], Method)
 
         # The single table entry that holds the method type information
         method_key = method.filter(Method.method_id == method_id)
@@ -241,16 +261,19 @@ def method_builder(method_type, method_id):
                 else:
                     last_setpoint = last_method.start_setpoint
 
-        # method = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Method)
-        relay = flaskutils.db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Relay)
+        # method = db_retrieve_table(
+        #     current_app.config['MYCODO_DB_PATH'], Method)
+        relay = db_retrieve_table(
+            current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
 
         if request.method == 'POST':
             form_name = request.form['form-name']
             if form_name == 'addMethod':
-                form_fail = flaskutils.method_add(formAddMethod, method)
+                form_fail = flaskutils.method_add(form_add_method, method)
             elif form_name in ['modMethod', 'renameMethod']:
-                form_fail = flaskutils.method_mod(formModMethod, method)
-            if form_name in ['addMethod', 'modMethod', 'renameMethod'] and not form_fail:
+                form_fail = flaskutils.method_mod(form_mod_method, method)
+            if (form_name in ['addMethod', 'modMethod', 'renameMethod'] and
+                    not form_fail):
                 return redirect('/method-build/{}/{}'.format(
                     method_type, method_id))
 
@@ -263,9 +286,9 @@ def method_builder(method_type, method_id):
                                method_type=method_type,
                                last_end_time=last_end_time,
                                last_setpoint=last_setpoint,
-                               formCreateMethod=formCreateMethod,
-                               formAddMethod=formAddMethod,
-                               formModMethod=formModMethod)
+                               form_create_method=form_create_method,
+                               form_add_method=form_add_method,
+                               form_mod_method=form_mod_method)
 
     return redirect('/method')
 
@@ -273,9 +296,8 @@ def method_builder(method_type, method_id):
 @blueprint.route('/method-delete/<method_id>')
 def method_delete(method_id):
     """Delete a method"""
-    logger.debug('called method_delete(method_id={id})'.format(id=method_id))
     if not logged_in():
-        return redirect('/')
+        return redirect(url_for('general_routes.home'))
 
     try:
         with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
@@ -284,4 +306,4 @@ def method_delete(method_id):
     except Exception as except_msg:
         flash("Error while deleting Method: "
               "{}".format(except_msg), "error")
-    return redirect('/method')
+    return redirect(url_for('method_routes.method_list'))

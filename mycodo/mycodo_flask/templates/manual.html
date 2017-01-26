@@ -88,6 +88,7 @@
           <li><a href="#MCP342x">MCP342x</a></li>
         </ul>
 			</ul>
+    </ul>
 
 		<div style="padding-bottom: 2em"></div>
 
@@ -172,9 +173,20 @@
 		<a name="pid"></a>
 		<h2>PIDs</h2>
 
+    <p>PID settings may be changed while the PID is activated and the new settings will take effect immediately. If settings are changed while the controller is paused, the values will be used once the controller resumes operation.</p>
+
 		<dl class="dl-horizontal">
-      <dt>Activate</dt>
+      <dt>Activate/Deactivate</dt>
       <dd>Turn a particular PID controller on or off.</dd>
+
+      <dt>Pause</dt>
+      <dd>When paused, the PID will not turn on the associated relays, and settings can be changed without losing current PID output values.</dd>
+
+      <dt>Hold</dt>
+      <dd>When held, the PID will turn on the associated relays, and settings can be changed without losing current PID output values.</dd>
+
+      <dt>Resume</dt>
+      <dd>Resume a PID controller from being held or paused.</dd>
 
       <dt>Setpoint</dt>
       <dd>This is the specific point you would like the environment to be regaulted at. For example, if you would like the humidity regulated to 60%, enter 60.</dd>

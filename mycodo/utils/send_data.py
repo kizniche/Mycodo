@@ -1,5 +1,6 @@
 # coding=utf-8
 
+import logging
 import os
 import smtplib
 import socket
@@ -9,13 +10,19 @@ from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
 from email import Encoders
 
+from utils.system_pi import (
+    cmd_output,
+    set_user_grp
+)
+
+logger = logging.getLogger("mycodo.notification")
+
 
 #
 # Email notification
 #
 
-def send_email(logging, smtp_host, smtp_ssl,
-               smtp_port, smtp_user, smtp_pass,
+def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
                smtp_email_from, email_to, message,
                attachment_file=False, attachment_type=False):
     """
@@ -39,7 +46,8 @@ def send_email(logging, smtp_host, smtp_ssl,
             server.starttls()
         server.login(smtp_user, smtp_pass)
         msg = MIMEMultipart()
-        msg['Subject'] = "Mycodo Notification ({})".format(socket.gethostname())
+        msg['Subject'] = "Mycodo Notification ({})".format(
+            socket.gethostname())
         msg['From'] = smtp_email_from
         msg['To'] = email_to
         msg_body = MIMEText(message.decode('utf-8'), 'plain', 'utf-8')
@@ -47,19 +55,23 @@ def send_email(logging, smtp_host, smtp_ssl,
 
         if attachment_file and attachment_type == 'still':
             img_data = open(attachment_file, 'rb').read()
-            image = MIMEImage(img_data, name=os.path.basename(attachment_file))
+            image = MIMEImage(img_data,
+                              name=os.path.basename(attachment_file))
             msg.attach(image)
         elif attachment_file and attachment_type == 'video':
             out_filename = '{}-compressed.h264'.format(attachment_file)
-            cmd_output('avconv -i "{}" -vf scale=-1:768 -c:v libx264 -preset veryfast -crf 22 -c:a copy "{}"'.format(
-                attachment_file, out_filename))
+            cmd_output(
+                'avconv -i "{}" -vf scale=-1:768 -c:v libx264 -preset '
+                'veryfast -crf 22 -c:a copy "{}"'.format(
+                    attachment_file, out_filename))
             set_user_grp(out_filename, 'mycodo', 'mycodo')
             f = open(attachment_file, 'rb').read()
             video = MIMEBase('application', 'octet-stream')
             video.set_payload(f)
             Encoders.encode_base64(video)
             video.add_header('Content-Disposition',
-                             'attachment; filename="{}"'.format(os.path.basename(attachment_file)))
+                             'attachment; filename="{}"'.format(
+                                 os.path.basename(attachment_file)))
             msg.attach(video)
 
         server.sendmail(msg['From'], msg['To'].split(","), msg.as_string())
@@ -67,6 +79,7 @@ def send_email(logging, smtp_host, smtp_ssl,
         return 0
     except Exception as error:
         if logging:
-            logging.exception("[Email Notification] Cound not send email to {} "
-                              "with message: {}. Error: {}".format(email_to, message, error))
+            logging.exception(
+                "Could not send email to {add} with message: {msg}. Error: "
+                "{err}".format(add=email_to, msg=message, err=error))
         return 1

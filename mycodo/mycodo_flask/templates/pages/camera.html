@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "camera" %}
-{% block title %} - Camera{% endblock %}
+{% block title %} - {{_('Camera')}}{% endblock %}
 
 {% block body %}
   <!-- Route: /camera -->
@@ -11,30 +11,30 @@
     <form class="form-inline" method="post" action="/camera">
       <div style="padding-bottom: 1.5em">
         <input type="hidden" name="form-name" value="camera">
-        {{formCamera.hidden_tag()}}
+        {{form_camera.hidden_tag()}}
 
         <div class="form-group">
-          {{formCamera.Still(class_='form-control btn btn-default')}}
+          {{form_camera.Still(class_='form-control btn btn-default')}}
         </div>
 
         {% if not stream_locked -%}
-          {% if not timelapse_locked %}
+          {% if not time_lapse_locked %}
             <div class="form-group">
-              <a data-toggle="collapse" href="#collapseContainerTimelapse" aria-expanded="false" aria-controls="collapseContainerTimelapse" class="btn btn-default" role="button">Create Timelapse</a>
+              <a data-toggle="collapse" href="#collapseContainerTimelapse" aria-expanded="false" aria-controls="collapseContainerTimelapse" class="btn btn-default" role="button">{{_('Create Timelapse')}}</a>
             </div>
           {% else %}
             <div class="form-group">
-              {{formCamera.StopTimelapse(class_='form-control btn btn-default')}}
+              {{form_camera.StopTimelapse(class_='form-control btn btn-default')}}
             </div>
           {% endif %}
         {%- endif %}
 
-        {% if not timelapse_locked %}
+        {% if not time_lapse_locked %}
           <div class="form-group">
             {% if stream_locked -%}
-              {{formCamera.StopStream(class_='form-control btn btn-default')}}
+              {{form_camera.StopStream(class_='form-control btn btn-default')}}
             {% else %}
-              {{formCamera.StartStream(class_='form-control btn btn-default')}}
+              {{form_camera.StartStream(class_='form-control btn btn-default')}}
             {%- endif %}
           </div>
         {%- endif %}
@@ -43,21 +43,21 @@
       <div class="collapse" id="collapseContainerTimelapse" style="padding: 0.5em 0 3em 1em">
         <div class="form-inline">
           <div class="form-group">
-            {{formCamera.TimelapseInterval.label(class_='control-label')}}
+            {{form_camera.TimelapseInterval.label(class_='control-label')}}
             <div>
-              {{formCamera.TimelapseInterval(class_='form-control')}}
+              {{form_camera.TimelapseInterval(class_='form-control')}}
             </div>
           </div>
           <div class="form-group">
-            {{formCamera.TimelapseRunTime.label(class_='control-label')}}
+            {{form_camera.TimelapseRunTime.label(class_='control-label')}}
             <div>
-              {{formCamera.TimelapseRunTime(class_='form-control')}}
+              {{form_camera.TimelapseRunTime(class_='form-control')}}
             </div>
           </div>
           <div class="form-group">
             <label></label>
             <div>
-              {{formCamera.StartTimelapse(class_='form-control btn btn-default')}}
+              {{form_camera.StartTimelapse(class_='form-control btn btn-default')}}
             </div>
           </div>
         </div>
@@ -67,34 +67,34 @@
 
     {%- if stream_locked -%}
       <div style="padding-bottom: 1.5em">
-        Video Stream:
+        {{_('Video Stream')}}:
         <img style="max-width: 100%" src="{{url_for('general_routes.video_feed')}}">
       </div>
     {%- endif -%}
 
-    {% if timelapse_locked %}
+    {% if time_lapse_locked %}
       <div style="padding-bottom: 1em">
-        Timelapse Parameters:
-        <br>Now: {{time_now}}
+        {{_('Timelapse Parameters')}}:
+        <br>{{_('Now')}}: {{time_now}}
         {% for key, value in tl_parameters_dict.iteritems() %}
-          {% if key == 'start_time' %}<br>Start: {{value}}{% endif %}
-          {% if key == 'end_time' %}<br>End: {{value}}{% endif %}
-          {% if key == 'interval' %}<br>Interval: {{value}} seconds{% endif %}
-          {% if key == 'next_capture' %}<br>Next Capture: {{value}}{% endif %}
-          {% if key == 'capture_number' %}<br>Next Capture Number: {{value}}{% endif %}
+          {% if key == 'start_time' %}<br>{{_('Start')}}: {{value}}{% endif %}
+          {% if key == 'end_time' %}<br>{{_('End')}}: {{value}}{% endif %}
+          {% if key == 'interval' %}<br>{{_('Interval')}}: {{value}} seconds{% endif %}
+          {% if key == 'next_capture' %}<br>{{_('Next Capture')}}: {{value}}{% endif %}
+          {% if key == 'capture_number' %}<br>{{_('Next Capture Number')}}: {{value}}{% endif %}
         {% endfor %}
       </div>
-      {% if latest_timelapse_img %}
+      {% if latest_time_lapse_img %}
         <div style="padding-bottom: 1.5em">
-          Last Timelapse: {{latest_timelapse_img_ts}}
-          <a href="/camera/timelapse/{{latest_timelapse_img}}" target="_blank"><img style="max-width: 100%" src="/camera/timelapse/{{latest_timelapse_img}}"></a>
+          {{_('Last Timelapse')}}: {{latest_time_lapse_img_ts}}
+          <a href="/camera/timelapse/{{latest_time_lapse_img}}" target="_blank"><img style="max-width: 100%" src="/camera/timelapse/{{latest_time_lapse_img}}"></a>
         </div>
       {% endif %}
     {% endif %}
 
     {% if latest_still_img %}
       <div style="padding-bottom: 1.5em">
-        Last Still: {{latest_still_img_ts}}
+        {{_('Last Still')}}: {{latest_still_img_ts}}
         <a href="/camera/still/{{latest_still_img}}" target="_blank"><img style="max-width: 100%" src="/camera/still/{{latest_still_img}}"></a>
       </div>
     {% endif %}

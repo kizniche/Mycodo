@@ -1,7 +1,6 @@
 # coding=utf-8
 
 import datetime
-import numpy as np
 from math import sin, radians
 
 
@@ -12,6 +11,14 @@ def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day=None):
 
     Ex: getYfromXforBezSegment((10,0), (5,-5), (5,5), (0,0), 3.2)
     """
+    try:
+        import numpy as np
+    except ImportError:
+        np = None
+
+    if not np:
+        return 0
+
     seconds_per_day = 24*60*60
 
     # Check if the second of the day is provided.
@@ -19,7 +26,9 @@ def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day=None):
     # Otherwise, use the current second of the day
     if second_of_day is None:
         now = datetime.datetime.now()
-        dt = datetime.timedelta(hours=now.hour, minutes=now.minute, seconds=now.second)
+        dt = datetime.timedelta(hours=now.hour,
+                                minutes=now.minute,
+                                seconds=now.second)
         seconds = dt.total_seconds()
     else:
         seconds = second_of_day
@@ -57,6 +66,7 @@ def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day=None):
     if correct_root is None:
         print('Error, no valid root found. Are you sure your Bezier curve '
               'represents a valid function when projected into the xy-plane?')
+        return 0
     param_t = correct_root
     # From the value for the t parameter, find the corresponding y-value
     # using the formula for cubic Bezier curves
@@ -67,10 +77,13 @@ def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day=None):
     return y
 
 
-def sine_wave_y_out(amplitude, frequency, shift_angle, shift_y, angle_in=None):
+def sine_wave_y_out(amplitude, frequency, shift_angle,
+                    shift_y, angle_in=None):
     if angle_in is None:
         now = datetime.datetime.now()
-        dt = datetime.timedelta(hours=now.hour, minutes=now.minute, seconds=now.second)
+        dt = datetime.timedelta(hours=now.hour,
+                                minutes=now.minute,
+                                seconds=now.second)
         secs_per_day = 24*60*60
         angle = dt.total_seconds()/secs_per_day*360
     else:
@@ -78,5 +91,3 @@ def sine_wave_y_out(amplitude, frequency, shift_angle, shift_y, angle_in=None):
 
     y = (amplitude*sin(radians(frequency*(angle-shift_angle))))+shift_y
     return y
-
-print(sine_wave_y_out(5.0, 5.0, 200.0, 33.0))

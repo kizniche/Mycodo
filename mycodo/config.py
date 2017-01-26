@@ -24,21 +24,43 @@
 
 import os
 
-MYCODO_VERSION = '4.0.26'
+MYCODO_VERSION = '4.1.8'
+
+LANGUAGES = {
+    'en': 'English',
+    'es': 'Español',
+    'fr': 'Français'
+}
+
+MEASUREMENT_UNITS = {
+    'cpu_load_1m': '',
+    'cpu_load_5m': '',
+    'cpu_load_15m': '',
+    'temperature': 'C',
+    'temperature_object': 'C',
+    'temperature_die': 'C',
+    'humidity': '%',
+    'dewpoint': 'C',
+    'co2': 'ppmv',
+    'lux': 'lx',
+    'pressure': 'Pa',
+    'altitude': 'm'
+}
 
 INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
 
 LOCK_PATH = '/var/lock'
 DAEMON_PID_FILE = os.path.join(LOCK_PATH, 'mycodo.pid')
 
-LOG_PATH = '/var/log/mycodo' # Where generated logs are stored
-
+# Logging
+LOG_PATH = '/var/log/mycodo'  # Where generated logs are stored
 LOGIN_LOG_FILE = os.path.join(LOG_PATH, 'login.log')
 DAEMON_LOG_FILE = os.path.join(LOG_PATH, 'mycodo.log')
-HTTP_LOG_FILE = '/var/log/apache2/error.log'
-UPDATE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupdate.log')
+UPGRADE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupgrade.log')
 RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
+HTTP_LOG_FILE = '/var/log/apache2/error.log'
 
+# SQLite3 databases that hold users and settings
 DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
 SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
 SQL_DATABASE_USER = os.path.join(DATABASE_PATH, 'users.db')
@@ -46,7 +68,7 @@ SQL_DATABASE_NOTE = os.path.join(DATABASE_PATH, 'notes.db')
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
 
-# Influxdb
+# Influxdb sensor/device measurement database
 INFLUXDB_HOST = 'localhost'
 INFLUXDB_PORT = 8086
 INFLUXDB_USER = 'mycodo'
@@ -59,8 +81,8 @@ ID_FILE = os.path.join(DATABASE_PATH, 'statistics.id')
 
 # Camera
 LOCK_FILE_STREAM = os.path.join(DATABASE_PATH, 'mycodo-camera-stream.pid')
-LOCK_FILE_TIMELAPSE = os.path.join(DATABASE_PATH, 'mycodo-camera-timelapse.pid')
-FILE_TIMELAPSE_PARAM = os.path.join(DATABASE_PATH, 'timelapse_parameters.csv')
+LOCK_FILE_TIMELAPSE = os.path.join(DATABASE_PATH, 'timelapse.pid')
+FILE_TIMELAPSE_PARAM = os.path.join(DATABASE_PATH, 'timelapse.csv')
 
 # Anonymous statistics
 STATS_INTERVAL = 86400  # 1 day
@@ -72,7 +94,7 @@ STATS_DATABASE = 'mycodo_stats'
 
 # Login
 LOGIN_ATTEMPTS = 5
-LOGIN_BAN_TIME_SECONDS = 600 # 10 minutes
+LOGIN_BAN_SECONDS = 600  # 10 minutes
 
 # Relay
 MAX_AMPS = 15
@@ -91,8 +113,8 @@ class ProdConfig(object):
 class TestConfig(object):
     """ Testing Configuration """
     SQL_DATABASE_USER = ''  # defined later when tests run
-    SQL_DATABASE_MYCODO = '' # defined later when tests run
-    SQL_DATABASE_NOTE = '' # defined later when tests run
+    SQL_DATABASE_MYCODO = ''  # defined later when tests run
+    SQL_DATABASE_NOTE = ''  # defined later when tests run
     MYCODO_DB_PATH = ''  # defined later when tests run
     NOTES_DB_PATH = ''  # defined later when tests run
     USER_DB_PATH = ''  # defined later when tests run
