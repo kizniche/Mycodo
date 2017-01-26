@@ -1,7 +1,7 @@
-# French translations for PROJECT.
-# Copyright (C) 2017 ORGANIZATION
+# French translations for Mycodo.
+# Copyright (C) 2017 
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+# Proud Translation by myke974@gmail.com, 2017.
 #
 msgid ""
 msgstr ""
@@ -20,31 +20,31 @@ msgstr ""
 
 #: flaskforms.py:34
 msgid "Create New Method"
-msgstr ""
+msgstr "Créer Nouvelle Méthode"
 
 #: flaskforms.py:42 flaskforms.py:105
 msgid "Start HH:MM:SS"
-msgstr ""
+msgstr "Début HH:MM:SS"
 
 #: flaskforms.py:46 flaskforms.py:109
 msgid "End HH:MM:SS"
-msgstr ""
+msgstr "Fin HH:MM:SS"
 
 #: flaskforms.py:50 flaskforms.py:113
 msgid "Start YYYY-MM-DD HH:MM:SS"
-msgstr ""
+msgstr "Début YYYY-MM-DD HH:MM:SS"
 
 #: flaskforms.py:54 flaskforms.py:117
 msgid "End YYYY-MM-DD HH:MM:SS"
-msgstr ""
+msgstr "Fin YYYY-MM-DD HH:MM:SS"
 
 #: flaskforms.py:57 flaskforms.py:129
 msgid "Start Setpoint"
-msgstr ""
+msgstr "Début Point"
 
 #: flaskforms.py:58 flaskforms.py:130
 msgid "End Setpoint (optional)"
-msgstr ""
+msgstr "Fin Point"
 
 #: flaskforms.py:59 flaskforms.py:128
 msgid "Duration (seconds)"
