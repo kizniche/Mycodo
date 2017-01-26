@@ -300,10 +300,10 @@ def method_delete(method_id):
         return redirect(url_for('general_routes.home'))
 
     try:
-        method = db_retrieve_table(
-            current_app.config['MYCODO_DB_PATH'], Method)
-        method.filter(Method.method_id == method_id).delete()
+        with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
+            method = new_session.query(Method)
+            method.filter(Method.method_id == method_id).delete()
     except Exception as except_msg:
         flash("Error while deleting Method: "
               "{}".format(except_msg), "error")
-    return redirect('/method')
+    return redirect(url_for('method_routes.method_list'))

@@ -6,6 +6,7 @@ Features:
 
 Bugfixes:
 
+  - Fix inability to delete methods
   - Fix Atlas PT100 sensor module 'invalid literal for float()' error
   - Fix camera termination bug ([#178](https://github.com/kizniche/mycodo/issues/178))
 
