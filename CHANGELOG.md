@@ -1,11 +1,27 @@
 ## 4.1.9 (2017-01-26)
 
+This update fixes two major bugs: Sometimes admin users not being created properly form the web UI and the daemon not being set to automatically start during install.
+
+If your daemon doesn't automatically start because you installed it with a botched previous version, issue the following commands to add it to systemctl's autostart:
+
+***Important***: Make sure you rename 'user' below to your actual user where you installed Mycodo, and make sure the Mycodo install directory is correct and points to the correct mycodo.service file.
+
+```
+sudo service mycodo stop
+sudo systemctl disable mycodo.service
+sudo rm -rf /etc/systemd/system/mycodo.service
+ln -sf /home/user/Mycodo/install/mycodo.service /etc/systemd/system/multi-user.target.wants/
+systemctl enable mycodo.service
+sudo service mycodo start
+```
+
 Features:
 
   - Add ability to define the colors of lines on general graphs ([#161](https://github.com/kizniche/mycodo/issues/161))
 
 Bugfixes:
 
+  - Fix mycodo daemon not automatically starting after install
   - Fix inability to create admin user from the web interface
   - Fix inability to delete methods
   - Fix Atlas PT100 sensor module 'invalid literal for float()' error
