@@ -48,7 +48,7 @@ from mycodo.mycodo_flask.general_routes import (
     inject_mycodo_version,
     logged_in
 )
-from mycodo.utils.camera import camera_record
+from mycodo.devices.camera_pi import camera_record
 from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.influx import sum_relay_usage
 
@@ -1009,7 +1009,7 @@ def dict_custom_colors(graph):
             colors.append('')
 
         # Populate empty strings with default colors
-        for x in range(len(default_palette)):
+        for x, _ in enumerate(default_palette):
             if colors[x] == '':
                 colors[x] = default_palette[x]
 

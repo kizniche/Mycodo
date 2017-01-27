@@ -45,7 +45,8 @@ class AtlasPT1000Sensor(AbstractSensor):
 
     def info(self):
         conditions_measured = [
-            ("Temperature", "temperature", "float", "0.00", self._temperature, self.temperature)
+            ("Temperature", "temperature", "float", "0.00",
+             self._temperature, self.temperature)
         ]
         return conditions_measured
 

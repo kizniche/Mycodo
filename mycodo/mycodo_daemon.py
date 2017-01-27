@@ -57,7 +57,7 @@ from databases.mycodo_db.models import (
 )
 
 # Functions
-from utils.camera import camera_record
+from devices.camera_pi import camera_record
 from utils.database import db_retrieve_table
 from utils.statistics import (
     add_update_csv,
@@ -71,7 +71,6 @@ from config import (
     DAEMON_LOG_FILE,
     DAEMON_PID_FILE,
     FILE_TIMELAPSE_PARAM,
-    INSTALL_DIRECTORY,
     LOCK_FILE_TIMELAPSE,
     MYCODO_VERSION,
     SQL_DATABASE_MYCODO,

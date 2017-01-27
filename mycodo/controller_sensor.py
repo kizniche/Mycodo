@@ -25,8 +25,8 @@ from databases.mycodo_db.models import (
 from mycodo_client import DaemonControl
 # Sensor/device modules
 from devices.tca9548a import TCA9548A
-from devices.ads1x15 import ADS1x15_read
-from devices.mcp342x import MCP342x_read
+from devices.ads1x15 import ADS1x15Read
+from devices.mcp342x import MCP342xRead
 from sensors.atlas_pt1000 import AtlasPT1000Sensor
 from sensors.am2315 import AM2315Sensor
 from sensors.bme280 import BME280Sensor
@@ -45,7 +45,7 @@ from sensors.sht1x_7x import SHT1x7xSensor
 from sensors.sht2x import SHT2xSensor
 
 # Functions
-from utils.camera import camera_record
+from devices.camera_pi import camera_record
 from utils.database import db_retrieve_table
 from utils.influx import (
     format_influxdb_data,
@@ -219,12 +219,12 @@ class SensorController(threading.Thread):
 
         # Set up analog-to-digital converter
         elif self.device == 'ADS1x15':
-            self.adc = ADS1x15_read(self.i2c_address, self.i2c_bus,
-                                    self.adc_channel, self.adc_gain)
+            self.adc = ADS1x15Read(self.i2c_address, self.i2c_bus,
+                                   self.adc_channel, self.adc_gain)
         elif self.device == 'MCP342x':
-            self.adc = MCP342x_read(self.i2c_address, self.i2c_bus,
-                                    self.adc_channel, self.adc_gain,
-                                    self.adc_resolution)
+            self.adc = MCP342xRead(self.i2c_address, self.i2c_bus,
+                                   self.adc_channel, self.adc_gain,
+                                   self.adc_resolution)
         else:
             self.adc = None
 
@@ -243,9 +243,11 @@ class SensorController(threading.Thread):
         elif self.device == 'DS18B20':
             self.measure_sensor = DS18B20Sensor(self.location)
         elif self.device == 'DHT11':
-            self.measure_sensor = DHT11Sensor(int(self.location))
+            self.measure_sensor = DHT11Sensor(self.sensor_id,
+                                              int(self.location))
         elif self.device in ['DHT22', 'AM2302']:
-            self.measure_sensor = DHT22Sensor(int(self.location))
+            self.measure_sensor = DHT22Sensor(self.sensor_id,
+                                              int(self.location))
         elif self.device == 'HTU21D':
             self.measure_sensor = HTU21DSensor(self.i2c_bus)
         elif self.device == 'AM2315':
@@ -629,8 +631,8 @@ class SensorController(threading.Thread):
                 # Get measurement from sensor
                 measurements = self.measure_sensor.next()
             except StopIteration:
-                self.logger.debug(
-                    "StopIteration raised. Could not read sensor possibly. "
+                self.logger.info(
+                    "StopIteration raised. Possibly could not read sensor. "
                     "Ensure it's connected properly and detected.")
             except Exception as except_msg:
                 self.logger.exception(
