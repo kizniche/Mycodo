@@ -18,6 +18,7 @@ sudo service mycodo start
 
 Features:
 
+  - Add check for problematic database and notify user how to fix it
   - Add ability to define the colors of lines on general graphs ([#161](https://github.com/kizniche/mycodo/issues/161))
 
 Bugfixes:
