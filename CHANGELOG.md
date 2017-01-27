@@ -20,6 +20,7 @@ Features:
 
 Bugfixes:
 
+  - Fix relay turning off when saving relay settings and GPIO pin doesn't change
   - Fix bug that crashes the daemon if the user database is empty
   - Fix Spanish translation file errors
   - Fix mycodo daemon not automatically starting after install

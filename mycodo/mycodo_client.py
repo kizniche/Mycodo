@@ -71,8 +71,8 @@ class DaemonControl:
     def add_relay(self, relay_id):
         return self.rpyc_client.root.add_relay(relay_id)
 
-    def mod_relay(self, relay_id):
-        return self.rpyc_client.root.mod_relay(relay_id)
+    def mod_relay(self, relay_id, setup_pin):
+        return self.rpyc_client.root.mod_relay(relay_id, setup_pin)
 
     def del_relay(self, relay_id):
         return self.rpyc_client.root.del_relay(relay_id)
