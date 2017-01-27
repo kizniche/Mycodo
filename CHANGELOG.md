@@ -1,6 +1,6 @@
 ## 4.1.9 (2017-01-26)
 
-This update fixes two major bugs: Sometimes admin users not being created properly form the web UI and the daemon not being set to automatically start during install.
+This update fixes two major bugs: Sometimes admin users not being created properly from the web UI and the daemon not being set to automatically start during install.
 
 If your daemon doesn't automatically start because you installed it with a botched previous version, issue the following commands to add it to systemctl's autostart:
 
@@ -20,6 +20,7 @@ Features:
 
 Bugfixes:
 
+  - Fix incorrect displaying of graphs with relay or PID data
   - Fix relay turning off when saving relay settings and GPIO pin doesn't change
   - Fix bug that crashes the daemon if the user database is empty
   - Fix Spanish translation file errors

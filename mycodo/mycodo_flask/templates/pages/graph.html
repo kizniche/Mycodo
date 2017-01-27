@@ -508,22 +508,6 @@
           load: function () {
             {%- set count_series = [] -%}
 
-            {%- for each_relay in relay -%}
-              {%- for each_graph_relay in graph_relay_ids if each_relay.id in each_graph_relay %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'duration_sec', '{{each_relay.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'duration_sec', '{{each_relay.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
-                {%- do count_series.append(1) %}
-              {%- endfor -%}
-            {%- endfor -%}
-
-            {%- for each_pid in pid -%}
-              {%- for each_graph_pid in graph_pid_ids if each_pid.id in each_graph_pid %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'setpoint', '{{each_pid.id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'setpoint', '{{each_pid.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
-                {%- do count_series.append(1) %}
-              {%- endfor -%}
-            {%- endfor -%}
-
             {%- for each_sensor in sensor -%}
               {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id in each_sensor_and_measure -%}
                 {%- if each_sensor.device_type == 'cpu_load' %}
@@ -631,6 +615,22 @@
                     {%- do count_series.append(1) -%}
                   {%- endif -%}
                 {%- endif -%}
+              {%- endfor -%}
+            {%- endfor -%}
+
+            {%- for each_relay in relay -%}
+              {%- for each_graph_relay in graph_relay_ids if each_relay.id in each_graph_relay %}
+            getPastData({{chart_number}}, {{count_series|count}}, 'duration_sec', '{{each_relay.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'duration_sec', '{{each_relay.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+                {%- do count_series.append(1) %}
+              {%- endfor -%}
+            {%- endfor -%}
+
+            {%- for each_pid in pid -%}
+              {%- for each_graph_pid in graph_pid_ids if each_pid.id in each_graph_pid %}
+            getPastData({{chart_number}}, {{count_series|count}}, 'setpoint', '{{each_pid.id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'setpoint', '{{each_pid.id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+                {%- do count_series.append(1) %}
               {%- endfor -%}
             {%- endfor -%}
           }
