@@ -21,6 +21,7 @@ Features:
 
 Bugfixes:
 
+  - Fix bug that crashes the daemon if the user database is empty
   - Fix Spanish translation file errors
   - Fix mycodo daemon not automatically starting after install
   - Fix inability to create admin user from the web interface

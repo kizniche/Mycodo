@@ -274,11 +274,14 @@ def send_stats():
         user_count = 0
         admin_count = 0
         with session_scope(USER_DB_PATH) as db_session:
-            users = db_session.query(Users).all()
-            for each_user in users:
-                user_count += 1
-                if each_user.user_restriction == 'admin':
-                    admin_count += 1
+            try:
+                users = db_session.query(Users).all()
+                for each_user in users:
+                    user_count += 1
+                    if each_user.user_restriction == 'admin':
+                        admin_count += 1
+            except Exception:
+                pass
         add_update_csv(STATS_CSV, 'num_users_admin', admin_count)
         add_update_csv(STATS_CSV, 'num_users_guest',
                        user_count - admin_count)
