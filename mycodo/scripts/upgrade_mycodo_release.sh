@@ -27,10 +27,10 @@ case "${1:-''}" in
           TARBALL_FILE="mycodo-${UPDATE_VERSION}"
 
           if [ "${CURRENT_VERSION}" == "${UPDATE_VERSION}" ] ; then
-            printf "Unable to upgrade. You currently have the latest release installed.\n"
+            printf "\nUnable to upgrade. You currently have the latest release installed.\n"
             error_found
           else
-            printf "Installed version: ${CURRENT_VERSION}\n"
+            printf "\nInstalled version: ${CURRENT_VERSION}\n"
             printf "Latest version: ${UPDATE_VERSION}\n"
           fi
 
@@ -100,12 +100,12 @@ case "${1:-''}" in
           fi
           printf "Done.\n"
 
-          printf "Upgrading databases..."
-          if ! cd ${MYCODO_NEW_TMP_DIR}/databases && alembic upgrade head ; then
-            printf "Failed: Error while trying to upgrade databases."
-            error_found
-          fi
-          printf "Done.\n"
+#          printf "Upgrading databases..."
+#          if ! cd ${MYCODO_NEW_TMP_DIR}/databases && alembic upgrade head ; then
+#            printf "Failed: Error while trying to upgrade databases."
+#            error_found
+#          fi
+#          printf "Done.\n"
 
           if [ -e ${INSTALL_DIRECTORY}/Mycodo/databases/timelapse.pid ] && [ -e ${INSTALL_DIRECTORY}/Mycodo/databases/timelapse.csv ]; then
             printf "Moving time-lapse files from ${INSTALL_DIRECTORY}/Mycodo/databases/ to ${MYCODO_NEW_TMP_DIR}/databases..."
