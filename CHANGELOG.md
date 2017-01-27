@@ -23,6 +23,7 @@ Features:
 
 Bugfixes:
 
+  - Update install instructions to correct downloading the latest release tarball
   - Fix for database upgrade bug that has been plaguing Mycodo for the past few releases
   - Fix incorrect displaying of graphs with relay or PID data
   - Fix relay turning off when saving relay settings and GPIO pin doesn't change

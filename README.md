@@ -103,8 +103,10 @@ Set up the initial settings with raspi-config. **It's very important that you do
 Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web UI. If you require a custom setup, examine and modify this script accordingly. If you do not require a custom setup, just run the install script with the following commands:
 
 ```
+sudo apt-get install jq
 cd ~
-wget -O mycodo-latest.tar.gz https://api.github.com/repos/kizniche/mycodo/tarball
+curl -s https://api.github.com/repos/kizniche/Mycodo/releases/latest | \
+jq --raw-output '.tarball_url' | wget -i - -O mycodo-latest.tar.gz
 mkdir Mycodo
 tar xzf mycodo-latest.tar.gz -C Mycodo --strip-components=1
 rm -f mycodo-latest.tar.gz
