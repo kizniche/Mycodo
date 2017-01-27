@@ -1054,14 +1054,14 @@ msgid ""
 "The new entry start time (%(st)s) cannot overlap the last entry's end "
 "time (%(et)s). Note: They may be the same time."
 msgstr ""
-"La hora de inicio de la nueva entrada (% (st) s) no puede superponerse a "
-"la hora de finalización de la última entrada (% (et) s). Nota: Pueden ser"
+"La hora de inicio de la nueva entrada (%(st)s) no puede superponerse a "
+"la hora de finalización de la última entrada (%(et)s). Nota: Pueden ser"
 " al mismo tiempo."
 
 #: flaskutils.py:340 flaskutils.py:347
 #, python-format
 msgid "Added duration to method from %(st)s to %(end)s"
-msgstr "Se agregó la duración al método de% (st) s a% (end) s"
+msgstr "Se agregó la duración al método de %(st)s a %(end)s"
 
 #: flaskutils.py:350
 #, python-format
@@ -1196,7 +1196,7 @@ msgstr "Acción PID no válida: %(act)s"
 #: flaskutils.py:1365
 #, python-format
 msgid "Daemon response to PID controller %(act)s command: %(rval)s"
-msgstr "La respuesta del Daemon al controlador PID% (act) s comando:% (rval) s"
+msgstr "La respuesta del Daemon al controlador PID %(act)s comando: %(rval)s"
 
 #: flaskutils.py:1382
 msgid "Cannot modulate relay with a GPIO of 0"
@@ -1265,7 +1265,7 @@ msgid ""
 "Cannot activate sensor conditional %(cond)s because of an incomplete "
 "configuration"
 msgstr ""
-"No se puede activar el condicional del sensor% (cond) debido a una "
+"No se puede activar el condicional del sensor %(cond)s debido a una "
 "configuración incompleta"
 
 #: flaskutils.py:2089
@@ -1302,7 +1302,7 @@ msgid ""
 "Test email sent to %(recip)s. Check your inbox to see if it was "
 "successful."
 msgstr ""
-"Correo electrónico de prueba enviado a% (recip) s. Revisa tu bandeja de "
+"Correo electrónico de prueba enviado a %(recip)s. Revisa tu bandeja de "
 "entrada para ver si tuvo éxito."
 
 #: flaskutils.py:2413
@@ -2440,7 +2440,7 @@ msgstr "Temporizadores"
 #: mycodo_flask/templates/pages/timer.html:64
 #, python-format
 msgid "Optional: If On, for %(sec)s seconds"
-msgstr "Opcional: Si se encuentra encendido por % segundos"
+msgstr "Opcional: Si se encuentra encendido por %(sec)s segundos"
 
 #: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:4
 msgid "The I2C address of the analog to digital converter."

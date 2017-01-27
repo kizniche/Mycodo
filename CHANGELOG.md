@@ -21,6 +21,7 @@ Features:
 
 Bugfixes:
 
+  - Fix Spanish translation file errors
   - Fix mycodo daemon not automatically starting after install
   - Fix inability to create admin user from the web interface
   - Fix inability to delete methods
