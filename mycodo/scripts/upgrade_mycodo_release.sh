@@ -100,12 +100,12 @@ case "${1:-''}" in
           fi
           printf "Done.\n"
 
-#          printf "Upgrading databases..."
-#          if ! cd ${MYCODO_NEW_TMP_DIR}/databases && alembic upgrade head ; then
-#            printf "Failed: Error while trying to upgrade databases."
-#            error_found
-#          fi
-#          printf "Done.\n"
+          printf "Upgrading databases..."
+          if ! cd ${MYCODO_NEW_TMP_DIR}/databases && alembic upgrade head >> /var/log/mycodo/mycodoupgrade.log ; then
+            printf "Failed: Error while trying to upgrade databases."
+            error_found
+          fi
+          printf "Done.\n"
 
           if [ -e ${INSTALL_DIRECTORY}/Mycodo/databases/timelapse.pid ] && [ -e ${INSTALL_DIRECTORY}/Mycodo/databases/timelapse.csv ]; then
             printf "Moving time-lapse files from ${INSTALL_DIRECTORY}/Mycodo/databases/ to ${MYCODO_NEW_TMP_DIR}/databases..."
