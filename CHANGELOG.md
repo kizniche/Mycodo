@@ -2,7 +2,7 @@
 
 This update fixes two major bugs: Sometimes admin users not being created properly from the web UI and the daemon not being set to automatically start during install.
 
-And this update may fix an even more severe bug affecting the database upgrade system. If you installed a system before this upgrade, you are probably affected. If you upgrade, and cannot view the graph page, this indicates your database scheme is incorrect. Deleting ~/Mycodo/databases/mycodo.db and restarting the web server (or reboot) will regenerate the database.
+This update also fixes an even more severe bug affecting the database upgrade system. If you installed a system before this upgrade, you are probably affected. This release will display a message indicating if your database has na issue. Deleting ~/Mycodo/databases/mycodo.db and restarting the web server (or reboot) will regenerate the database.
 
 If your daemon doesn't automatically start because you installed it with a botched previous version, issue the following commands to add it to systemctl's autostart:
 
@@ -22,7 +22,7 @@ Features:
 
 Bugfixes:
 
-  - Potential fix for database upgrade bug that has been plaguing Mycodo for the past few releases
+  - Fix for database upgrade bug that has been plaguing Mycodo for the past few releases
   - Fix incorrect displaying of graphs with relay or PID data
   - Fix relay turning off when saving relay settings and GPIO pin doesn't change
   - Fix bug that crashes the daemon if the user database is empty
