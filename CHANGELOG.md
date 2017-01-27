@@ -1,4 +1,4 @@
-## 4.1.9 (Unreleased)
+## 4.1.9 (2017-01-26)
 
 Features:
 
@@ -6,6 +6,7 @@ Features:
 
 Bugfixes:
 
+  - Fix inability to create admin user from the web interface
   - Fix inability to delete methods
   - Fix Atlas PT100 sensor module 'invalid literal for float()' error
   - Fix camera termination bug ([#178](https://github.com/kizniche/mycodo/issues/178))

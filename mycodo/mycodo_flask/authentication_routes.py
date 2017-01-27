@@ -61,16 +61,30 @@ def create_admin():
     form = flaskforms.CreateAdmin()
     if request.method == 'POST':
         if form.validate():
+            error = False
             if form.password.data != form.password_repeat.data:
                 flash(gettext("Passwords do not match. Please try again."),
                       "error")
+                error = True
+            if not test_username(form.username.data):
+                flash(gettext(
+                    "Invalid user name. Must be between 2 and 64 characters "
+                    "and only contain letters and numbers."),
+                    "error")
+                error = True
+            if not test_password(form.password.data):
+                flash(gettext(
+                    "Invalid password. Must be between 6 and 64 characters "
+                    "and only contain letters, numbers, and symbols."),
+                      "error")
+                error = True
+            if error:
                 return redirect(url_for('general_routes.home'))
+
             new_user = Users()
-            if test_username(form.username.data):
-                new_user.user_name = form.username.data
+            new_user.user_name = form.username.data
             new_user.user_email = form.email.data
-            if test_password(form.password.data):
-                new_user.set_password(form.password.data)
+            new_user.set_password(form.password.data)
             new_user.user_restriction = 'admin'
             new_user.user_theme = 'slate'
             try:
