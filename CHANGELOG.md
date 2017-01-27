@@ -10,8 +10,7 @@ If your daemon doesn't automatically start because you installed it with a botch
 sudo service mycodo stop
 sudo systemctl disable mycodo.service
 sudo rm -rf /etc/systemd/system/mycodo.service
-ln -sf /home/user/Mycodo/install/mycodo.service /etc/systemd/system/multi-user.target.wants/
-systemctl enable mycodo.service
+sudo systemctl enable /home/user/Mycodo/install/mycodo.service
 sudo service mycodo start
 ```
 
