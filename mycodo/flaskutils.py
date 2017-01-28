@@ -579,7 +579,7 @@ def remote_host_del(form_setup, display_order):
 # Manipulate relay settings while daemon is running
 #
 
-def manipulate_relay(relay_id, action):
+def manipulate_relay(relay_id, action, setup_pin=False):
     """
     Add, delete, and modify relay settings while the daemon is active
 
@@ -587,12 +587,14 @@ def manipulate_relay(relay_id, action):
     :type relay_id: str
     :param action: add, del, or mod
     :type action: str
+    :param setup_pin: Initialize new pin (if changed)
+    :type setup_pin: bool
     """
     control = DaemonControl()
     if action == 'add':
         return_values = control.add_relay(relay_id)
     elif action == 'mod':
-        return_values = control.mod_relay(relay_id)
+        return_values = control.mod_relay(relay_id, setup_pin)
     elif action == 'del':
         return_values = control.del_relay(relay_id)
     if return_values[0]:
@@ -1462,12 +1464,15 @@ def relay_mod(form_mod_relay):
                 mod_relay = db_session.query(Relay).filter(
                     Relay.id == form_mod_relay.modRelay_id.data).first()
                 mod_relay.name = form_mod_relay.modName.data
+                setup_pin = False
+                if mod_relay.pin is not form_mod_relay.modGpio.data:
+                    setup_pin = True
                 mod_relay.pin = form_mod_relay.modGpio.data
                 mod_relay.amps = form_mod_relay.modAmps.data
                 mod_relay.trigger = form_mod_relay.modTrigger.data
                 mod_relay.start_state = form_mod_relay.modStartState.data
                 db_session.commit()
-                manipulate_relay(form_mod_relay.modRelay_id.data, 'mod')
+                manipulate_relay(form_mod_relay.modRelay_id.data, 'mod', setup_pin)
         except Exception as except_msg:
             flash(gettext("Relay Error: %(err)s", err=except_msg), "error")
     else:

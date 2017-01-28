@@ -5,8 +5,6 @@ import pigpio
 from sensorutils import dewpoint
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger("mycodo.sensors.dht11")
-
 
 class DHT11Sensor(AbstractSensor):
     """
@@ -18,7 +16,7 @@ class DHT11Sensor(AbstractSensor):
     - https://github.com/srounet/pigpio/tree/master/EXAMPLES/Python/DHT22_AM2302_SENSOR
 
     """
-    def __init__(self, gpio, power=None):
+    def __init__(self, sensor_id, gpio, power=None):
         """
         :param gpio: gpio pin number
         :type gpio: int
@@ -33,15 +31,22 @@ class DHT11Sensor(AbstractSensor):
 
         """
         super(DHT11Sensor, self).__init__()
+        self.logger = logging.getLogger(
+            'mycodo.sensor_{id}'.format(id=sensor_id))
+
         self.pi = pigpio.pi()
         self.gpio = gpio
         self.power = power
-        self.high_tick = 0
-        self.bit = 40
+        self.powered = False
+        self.high_tick = None
+        self.bit = None
         self.either_edge_cb = None
         self._dew_point = 0.0
         self._humidity = 0.0
         self._temperature = 0.0
+
+        self.start_sensor()
+        time.sleep(2)
 
     def __repr__(self):
         """  Representation of object """
@@ -96,16 +101,11 @@ class DHT11Sensor(AbstractSensor):
         self._humidity = 0.0
         self._temperature = 0.0
         try:
-            if self.power is not None:
-                logger.debug("Turning on sensor at GPIO {pin}...".format(
-                    pin=self.gpio))
-                self.pi.write(self.power, 1)  # Switch sensor on.
-                time.sleep(2)
             try:
                 self.setup()
             except Exception as except_msg:
-                logger.error(
-                    'DHT11 could not initialize. Check if gpiod is running. '
+                self.logger.error(
+                    'Could not initialize sensor. Check if gpiod is running. '
                     'Error: {msg}'.format(msg=except_msg))
             self.pi.write(self.gpio, pigpio.LOW)
             time.sleep(0.017)  # 17 ms
@@ -114,8 +114,9 @@ class DHT11Sensor(AbstractSensor):
             time.sleep(0.2)
             self._dew_point = dewpoint(self._temperature, self._humidity)
         except Exception as e:
-            logger.error("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=e))
+            self.logger.error(
+                "Exception raised when taking a reading: {err}".format(
+                    err=e))
         finally:
             self.close()
 
@@ -128,14 +129,13 @@ class DHT11Sensor(AbstractSensor):
         """
         try:
             self.get_measurement()
-            # self_humidity and self._temperature are set in self._edge_rise()
             if self._humidity != 0 or self._temperature != 0:
                 return  # success - no errors
-            logger.error("{cls}: Could not acquire a measurement".format(
-                cls=type(self).__name__))
+            self.logger.error("Could not acquire a measurement")
         except Exception as e:
-            logger.error("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=e))
+            self.logger.error(
+                "Exception raised when taking a reading: {err}".format(
+                    err=e))
         return 1
 
     def setup(self):
@@ -144,6 +144,9 @@ class DHT11Sensor(AbstractSensor):
         Kills any watchdogs.
         Setup callbacks
         """
+        self.high_tick = 0
+        self.bit = 40
+        self.either_edge_cb = None
         self.pi.set_pull_up_down(self.gpio, pigpio.PUD_OFF)
         self.pi.set_watchdog(self.gpio, 0)
         self.register_callbacks()
@@ -186,7 +189,9 @@ class DHT11Sensor(AbstractSensor):
                 total = self._humidity + self._temperature
                 # is checksum ok ?
                 if not (total & 255) == self.checksum:
-                    raise Exception
+                    self.logger.error(
+                        "Exception raised when taking a reading: "
+                        "Bad Checksum.")
         elif 16 <= self.bit < 24:  # in temperature byte
             self._temperature = (self._temperature << 1) + val
         elif 0 <= self.bit < 8:  # in humidity byte
@@ -211,3 +216,21 @@ class DHT11Sensor(AbstractSensor):
         if self.either_edge_cb:
             self.either_edge_cb.cancel()
             self.either_edge_cb = None
+
+    def start_sensor(self):
+        """ Power the sensor """
+        if self.power:
+            self.logger.info(
+                "Turning on sensor by powering pin {pin}".format(
+                    pin=self.power))
+            self.pi.write(self.power, 1)
+            self.powered = True
+
+    def stop_sensor(self):
+        """ Depower the sensor """
+        if self.power:
+            self.logger.info(
+                "Turning off sensor by depowering pin {pin}".format(
+                    pin=self.power))
+            self.pi.write(self.power, 0)
+            self.powered = False

@@ -5,8 +5,6 @@ import pigpio
 from sensorutils import dewpoint
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger("mycodo.sensors.dht22")
-
 
 class DHT22Sensor(AbstractSensor):
     """
@@ -29,7 +27,7 @@ class DHT22Sensor(AbstractSensor):
     gpio ------------+
 
     """
-    def __init__(self, gpio, power=None):
+    def __init__(self, sensor_id, gpio, power=None):
         """
         :param gpio: gpio pin number
         :type gpio: int
@@ -47,25 +45,32 @@ class DHT22Sensor(AbstractSensor):
         eventually cause the DHT22 to hang.  A 3 second interval seems OK.
         """
         super(DHT22Sensor, self).__init__()
+        self.logger = logging.getLogger(
+            'mycodo.sensor_{id}'.format(id=sensor_id))
+
         self.pi = pigpio.pi()
         self.gpio = gpio
         self.power = power
+        self.powered = False
+
         self.bad_CS = 0  # Bad checksum count
         self.bad_SM = 0  # Short message count
         self.bad_MM = 0  # Missing message count
         self.bad_SR = 0  # Sensor reset count
 
-        # Power cycle if timeout > MAX_TIMEOUTS
-        self.no_response = 0
-        self.MAX_NO_RESPONSE = 2
-
+        # Power cycle if timeout > MAX_NO_RESPONSE
+        self.MAX_NO_RESPONSE = 3
+        self.no_response = None
         self.tov = None
-        self.high_tick = 0
-        self.bit = 40
+        self.high_tick = None
+        self.bit = None
         self.either_edge_cb = None
         self._dew_point = 0.0
         self._humidity = 0.0
         self._temperature = 0.0
+
+        self.start_sensor()
+        time.sleep(2)
 
     def __repr__(self):
         """  Representation of object """
@@ -119,17 +124,21 @@ class DHT22Sensor(AbstractSensor):
         """ Gets the humidity and temperature """
         self._humidity = 0.0
         self._temperature = 0.0
+
+        # Ensure if the power pin turns off, it is turned back on
+        if self.power and not self.pi.read(self.power):
+            self.logger.error(
+                'Sensor power pin {pin} detected as being off. '
+                'Turning on.'.format(pin=self.power))
+            self.start_sensor()
+            time.sleep(2)
+
         try:
-            if self.power is not None:
-                logger.debug("Turning on sensor at GPIO {pin}...".format(
-                    pin=self.gpio))
-                self.pi.write(self.power, 1)  # Switch sensor on.
-                time.sleep(2)
             try:
                 self.setup()
             except Exception as except_msg:
-                logger.error(
-                    'DHT22 could not initialize. Check if gpiod is running. '
+                self.logger.error(
+                    'Could not initialize sensor. Check if gpiod is running. '
                     'Error: {msg}'.format(msg=except_msg))
             self.pi.write(self.gpio, pigpio.LOW)
             time.sleep(0.017)  # 17 ms
@@ -138,8 +147,9 @@ class DHT22Sensor(AbstractSensor):
             time.sleep(0.2)
             self._dew_point = dewpoint(self._temperature, self._humidity)
         except Exception as e:
-            logger.error("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=e))
+            self.logger.exception(
+                "Exception when taking a reading: {err}".format(
+                    err=e))
         finally:
             self.close()
 
@@ -151,15 +161,21 @@ class DHT22Sensor(AbstractSensor):
         :returns: None on success or 1 on error
         """
         try:
-            self.get_measurement()
-            # self_humidity and self._temperature are set in self._edge_rise()
-            if self._humidity != 0 or self._temperature != 0:
-                return  # success - no errors
-            logger.error("{cls}: Could not acquire a measurement".format(
-                cls=type(self).__name__))
+            # Try twice to get measurement before failing.
+            # This prevents a bug where the first measurement fails if
+            # the sensor has just been powered for the first time.
+            # This is here mainly to keep the logs clean.
+            for _ in range(2):
+                self.get_measurement()
+                if self._humidity != 0 or self._temperature != 0:
+                    return  # success - no errors
+                time.sleep(2)
+
+            self.logger.error("Could not acquire a measurement")
         except Exception as e:
-            logger.error("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=e))
+            self.logger.error(
+                "Exception raised when taking a reading: {err}".format(
+                    err=e))
         return 1
 
     def setup(self):
@@ -168,8 +184,13 @@ class DHT22Sensor(AbstractSensor):
         Kills any watchdogs.
         Setup callbacks
         """
+        self.no_response = 0
+        self.tov = None
+        self.high_tick = 0
+        self.bit = 40
+        self.either_edge_cb = None
         self.pi.set_pull_up_down(self.gpio, pigpio.PUD_OFF)
-        self.pi.set_watchdog(self.gpio, 0)  # Kill any watchdogs.
+        self.pi.set_watchdog(self.gpio, 0)  # Kill any watchdogs
         self.register_callbacks()
 
     def register_callbacks(self):
@@ -258,13 +279,13 @@ class DHT22Sensor(AbstractSensor):
                 self.no_response = 0
                 self.bad_SR += 1  # Bump sensor reset count.
                 if self.power is not None:
-                    self.powered = False
-                    self.pi.write(self.power, 0)
+                    self.logger.error(
+                        "Invalid data, power cycling sensor.")
+                    self.stop_sensor()
                     time.sleep(2)
-                    self.pi.write(self.power, 1)
+                    self.start_sensor()
                     time.sleep(2)
-                    self.powered = True
-        elif self.bit < 39:  # Short message receieved.
+        elif self.bit < 39:  # Short message received.
             self.bad_SM += 1  # Bump short message count.
             self.no_response = 0
         else:  # Full message received.
@@ -299,3 +320,21 @@ class DHT22Sensor(AbstractSensor):
         if self.either_edge_cb:
             self.either_edge_cb.cancel()
             self.either_edge_cb = None
+
+    def start_sensor(self):
+        """ Power the sensor """
+        if self.power:
+            self.logger.info(
+                "Turning on sensor by powering pin {pin}".format(
+                    pin=self.power))
+            self.pi.write(self.power, 1)
+            self.powered = True
+
+    def stop_sensor(self):
+        """ Depower the sensor """
+        if self.power:
+            self.logger.info(
+                "Turning off sensor by depowering pin {pin}".format(
+                    pin=self.power))
+            self.pi.write(self.power, 0)
+            self.powered = False

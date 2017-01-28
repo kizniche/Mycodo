@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 4.1.8 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
+### Latest version: 4.1.9 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
 
 Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.
 
@@ -103,8 +103,10 @@ Set up the initial settings with raspi-config. **It's very important that you do
 Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web UI. If you require a custom setup, examine and modify this script accordingly. If you do not require a custom setup, just run the install script with the following commands:
 
 ```
+sudo apt-get install jq
 cd ~
-wget -O mycodo-latest.tar.gz https://api.github.com/repos/kizniche/mycodo/tarball
+curl -s https://api.github.com/repos/kizniche/Mycodo/releases/latest | \
+jq --raw-output '.tarball_url' | wget -i - -O mycodo-latest.tar.gz
 mkdir Mycodo
 tar xzf mycodo-latest.tar.gz -C Mycodo --strip-components=1
 rm -f mycodo-latest.tar.gz

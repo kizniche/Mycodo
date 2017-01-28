@@ -5,10 +5,10 @@ import smbus
 import time
 from MCP342x import MCP342x
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('mycodo.devices.mcp342x')
 
 
-class MCP342x_read(object):
+class MCP342xRead(object):
     """ Sensor """
     def __init__(self, address, bus, channel, gain, resolution):
         self._voltage = None
@@ -22,7 +22,11 @@ class MCP342x_read(object):
         """ Take a measurement """
         try:
             time.sleep(1)
-            adc = MCP342x(self.bus, self.i2c_address, channel=self.channel, gain=self.gain, resolution=self.resolution)
+            adc = MCP342x(self.bus,
+                          self.i2c_address,
+                          channel=self.channel,
+                          gain=self.gain,
+                          resolution=self.resolution)
             self._voltage = adc.convert_and_read()
         except Exception as e:
             logger.error("{cls} raised exception during read(): "
@@ -50,12 +54,9 @@ class MCP342x_read(object):
         }
         return response
 
-    def stop_sensor(self):
-        self.running = False
-
 
 if __name__ == "__main__":
-    mcp = MCP342x_read(0x68, 1, 1, 0, 18)
+    mcp = MCP342xRead(0x68, 1, 1, 0, 18)
 
     for measure in mcp:
         print("Voltage: {}".format(measure['voltage']))

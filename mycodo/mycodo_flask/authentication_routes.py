@@ -18,7 +18,10 @@ from flask_babel import gettext
 from flask.blueprints import Blueprint
 
 # Classes
-from mycodo.databases.mycodo_db.models import Misc
+from mycodo.databases.mycodo_db.models import (
+    AlembicVersion,
+    Misc
+)
 from mycodo.databases.users_db.models import Users
 
 # Functions
@@ -61,16 +64,30 @@ def create_admin():
     form = flaskforms.CreateAdmin()
     if request.method == 'POST':
         if form.validate():
+            error = False
             if form.password.data != form.password_repeat.data:
                 flash(gettext("Passwords do not match. Please try again."),
                       "error")
+                error = True
+            if not test_username(form.username.data):
+                flash(gettext(
+                    "Invalid user name. Must be between 2 and 64 characters "
+                    "and only contain letters and numbers."),
+                    "error")
+                error = True
+            if not test_password(form.password.data):
+                flash(gettext(
+                    "Invalid password. Must be between 6 and 64 characters "
+                    "and only contain letters, numbers, and symbols."),
+                      "error")
+                error = True
+            if error:
                 return redirect(url_for('general_routes.home'))
+
             new_user = Users()
-            if test_username(form.username.data):
-                new_user.user_name = form.username.data
+            new_user.user_name = form.username.data
             new_user.user_email = form.email.data
-            if test_password(form.password.data):
-                new_user.set_password(form.password.data)
+            new_user.set_password(form.password.data)
             new_user.user_restriction = 'admin'
             new_user.user_theme = 'slate'
             try:
@@ -232,8 +249,28 @@ def authenticate_cookies(db_path, users):
     return False
 
 
+def check_database_version_issue():
+    alembic_version = db_retrieve_table(
+        current_app.config['MYCODO_DB_PATH'], AlembicVersion, entry='all')
+    if len(alembic_version) > 1:
+        flash("A check of your database indicates there is an issue with your"
+              " database version number. This issue first appeared in early "
+              "4.1.x versions of Mycodo and has since been resolved. However,"
+              " even though things may seem okay, this issue prevents your "
+              "database from being upgraded properly. Therefore, if you "
+              "continue to use Mycodo without regenerating your database, you"
+              " will assuredly experience issues. To resolve this issue, move"
+              " your mycodo.db from ~/Mycodo/databases/mycodo.db to a "
+              "different location (or delete it) and a new database will be "
+              "generated in its place. You will need to configure Mycodo from"
+              " scratch, but this is the only way to ensure your database is "
+              "able to be upgraded when the time comes. Sorry for the "
+              "inconvenience.", "error")
+
+
 def logged_in():
     """Verify the user is logged in"""
+    check_database_version_issue()
     if (not session.get('logged_in') and
             not authenticate_cookies(
                 current_app.config['USER_DB_PATH'], Users)):

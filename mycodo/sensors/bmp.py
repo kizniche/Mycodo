@@ -52,9 +52,12 @@ class BMPSensor(AbstractSensor):
 
     def info(self):
         conditions_measured = [
-            ("Temperature", "temperature", "float", "0.00", self._temperature, self.temperature),
-            ("Pressure", "pressure", "int", "0", self._pressure, self.pressure),
-            ("Altitude", "altitude", "float", "0.00", self._altitude, self.altitude)
+            ("Temperature", "temperature", "float", "0.00",
+             self._temperature, self.temperature),
+            ("Pressure", "pressure", "int", "0",
+             self._pressure, self.pressure),
+            ("Altitude", "altitude", "float", "0.00",
+             self._altitude, self.altitude)
         ]
         return conditions_measured
 

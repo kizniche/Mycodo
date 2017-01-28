@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function  # In python 2.7
-import sys
-
 import logging
 import datetime
 import time
@@ -10,7 +8,14 @@ import os
 import threading
 import picamera
 
-logger = logging.getLogger(__name__)
+from utils.system_pi import (
+    assure_path_exists,
+    set_user_grp
+)
+
+from config import INSTALL_DIRECTORY
+
+logger = logging.getLogger('mycodo.devices.picamera')
 
 
 class CameraStream(object):
@@ -74,56 +79,65 @@ class CameraStream(object):
                         break
         except Exception as e:
             logger.error("{cls} raised an error during read() call: "
-                         "{err}".format(cls=type(self).__name__, err=e))
+                         "{err}".format(cls=type(cls).__name__, err=e))
         cls.thread = None
 
 
-class CameraTimelapse(object):
-    thread = None
-    interval_sec = None
-    run_time_sec = None
+#
+# Camera record
+#
+
+def camera_record(record_type, settings, duration_sec=None,
+                  start_time=None, capture_number=None):
+    """
+    Record still/timelapse images, and video
+
+    :param record_type: 'photo', 'timelapse', or 'video'
+    :param settings: picamera settings object
+    :param duration_sec: video duration
+    :param start_time: timelapse start time (for filename)
+    :param capture_number: timelapse capture number (for filename)
+    :return:
+    """
+
+    path = ''
+    filename = ''
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    timelapse_path = os.path.dirname(os.path.realpath(__file__)) + '/../../camera-timelapse/'
-    if not os.path.exists(timelapse_path):
-        os.makedirs(timelapse_path)
-    timelapse_file = timestamp + '-img-{counter:03d}.jpg'
-    timelapse_pathfile = timelapse_path + timelapse_file
-    terminate = False
 
-    def initialize(self):
-        if CameraTimelapse.thread is None:
-            CameraTimelapse.thread = threading.Thread(target=self._thread)
-            CameraTimelapse.thread.start()
+    if record_type == 'photo':
+        path = os.path.join(INSTALL_DIRECTORY, 'camera-stills')
+        filename = 'Still-{ts}.jpg'.format(ts=timestamp)
+    elif record_type == 'timelapse':
+        path = os.path.join(INSTALL_DIRECTORY, 'camera-timelapse')
+        filename = '{st}-img-{cn:05d}.jpg'.format(st=start_time,
+                                                  cn=capture_number)
+    elif record_type == 'video':
+        path = os.path.join(INSTALL_DIRECTORY, 'camera-video')
+        filename = 'Video-{ts}.h264'.format(ts=timestamp)
+    path_file = os.path.join(path, filename)
 
-    @staticmethod
-    def is_running():
-        if CameraTimelapse.thread is None:
-            return False
-        return True
+    assure_path_exists(path)
 
-    @staticmethod
-    def terminate_controller():
-        CameraTimelapse.terminate = True
+    with picamera.PiCamera() as camera:
+        camera.resolution = (1296, 972)
+        camera.hflip = settings.hflip
+        camera.vflip = settings.vflip
+        camera.rotation = settings.rotation
+        camera.start_preview()
+        time.sleep(2)  # Camera warm-up time
 
-    def start_timelapse(self, interval_sec, run_time_sec):
-        CameraTimelapse.terminate = False
-        CameraTimelapse.interval_sec = float(interval_sec)
-        CameraTimelapse.run_time_sec = time.time() + float(run_time_sec)
-        self.initialize()
+        if record_type in ['photo', 'timelapse']:
+            camera.capture(path_file, use_video_port=True)
+        elif record_type == 'video':
+            camera.start_recording(path_file, format='h264', quality=20)
+            camera.wait_recording(duration_sec)
+            camera.stop_recording()
+        else:
+            return
 
-    @classmethod
-    def _thread(cls):
-        try:
-            with picamera.PiCamera() as camera:
-                camera.resolution = (1296, 972)
-                camera.hflip = True
-                camera.vflip = True
-                camera.start_preview()
-                time.sleep(2)
-                for _ in camera.capture_continuous(cls.timelapse_pathfile):
-                    if time.time() > cls.run_time_sec or cls.terminate:
-                        break
-                    time.sleep(cls.interval_sec)
-        except Exception as msg:
-            print('Timelapse Error: {}'.format(msg), file=sys.stderr)
-        cls.thread = None
+    try:
+        set_user_grp(path_file, 'mycodo', 'mycodo')
+    except Exception as e:
+        logger.error(
+            "Exception raised in 'camera_record' when setting user grp: "
+            "{err}".format(err=e))

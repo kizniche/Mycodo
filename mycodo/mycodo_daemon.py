@@ -57,7 +57,7 @@ from databases.mycodo_db.models import (
 )
 
 # Functions
-from utils.camera import camera_record
+from devices.camera_pi import camera_record
 from utils.database import db_retrieve_table
 from utils.statistics import (
     add_update_csv,
@@ -71,7 +71,6 @@ from config import (
     DAEMON_LOG_FILE,
     DAEMON_PID_FILE,
     FILE_TIMELAPSE_PARAM,
-    INSTALL_DIRECTORY,
     LOCK_FILE_TIMELAPSE,
     MYCODO_VERSION,
     SQL_DATABASE_MYCODO,
@@ -131,13 +130,13 @@ class ComServer(rpyc.Service):
         return mycodo_daemon.add_relay(relay_id)
 
     @staticmethod
-    def exposed_mod_relay(relay_id):
+    def exposed_mod_relay(relay_id, setup_pin):
         """
         Instructs the running relay controller to update the relay settings
         from the SQL database (instead of continually reading the database,
         only update it when there's a reconfiguration from the web-UI.
         """
-        return mycodo_daemon.mod_relay(relay_id)
+        return mycodo_daemon.mod_relay(relay_id, setup_pin)
 
     @staticmethod
     def exposed_del_relay(relay_id):
@@ -512,7 +511,7 @@ class DaemonController(threading.Thread):
         """
         return self.controller['Relay'].del_relay(relay_id)
 
-    def mod_relay(self, relay_id):
+    def mod_relay(self, relay_id, setup_pin):
         """
         Modify relay settings in running relay controller
 
@@ -521,8 +520,10 @@ class DaemonController(threading.Thread):
 
         :param relay_id: Unique ID for relay
         :type relay_id: str
+        :param setup_pin: Initialize new pin (if changed)
+        :type setup_pin: bool
         """
-        return self.controller['Relay'].add_mod_relay(relay_id, do_setup_pin=True)
+        return self.controller['Relay'].add_mod_relay(relay_id, do_setup_pin=setup_pin)
 
     def pid_mod(self, pid_id):
         return self.controller['PID'][pid_id].pid_mod()

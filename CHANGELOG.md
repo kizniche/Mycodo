@@ -1,11 +1,36 @@
-## 4.1.9 (Unreleased)
+## 4.1.9 (2017-01-26)
+
+This update fixes two major bugs: Sometimes admin users not being created properly from the web UI and the daemon not being set to automatically start during install.
+
+This update also fixes an even more severe bug affecting the database upgrade system. If you installed a system before this upgrade, you are probably affected. This release will display a message indicating if your database has na issue. Deleting ~/Mycodo/databases/mycodo.db and restarting the web server (or reboot) will regenerate the database.
+
+If your daemon doesn't automatically start because you installed it with a botched previous version, issue the following commands to add it to systemctl's autostart:
+
+***Important***: Make sure you rename 'user' below to your actual user where you installed Mycodo, and make sure the Mycodo install directory is correct and points to the correct mycodo.service file.
+
+```
+sudo service mycodo stop
+sudo systemctl disable mycodo.service
+sudo rm -rf /etc/systemd/system/mycodo.service
+sudo systemctl enable /home/user/Mycodo/install/mycodo.service
+sudo service mycodo start
+```
 
 Features:
 
+  - Add check for problematic database and notify user how to fix it
   - Add ability to define the colors of lines on general graphs ([#161](https://github.com/kizniche/mycodo/issues/161))
 
 Bugfixes:
 
+  - Update install instructions to correct downloading the latest release tarball
+  - Fix for database upgrade bug that has been plaguing Mycodo for the past few releases
+  - Fix incorrect displaying of graphs with relay or PID data
+  - Fix relay turning off when saving relay settings and GPIO pin doesn't change
+  - Fix bug that crashes the daemon if the user database is empty
+  - Fix Spanish translation file errors
+  - Fix mycodo daemon not automatically starting after install
+  - Fix inability to create admin user from the web interface
   - Fix inability to delete methods
   - Fix Atlas PT100 sensor module 'invalid literal for float()' error
   - Fix camera termination bug ([#178](https://github.com/kizniche/mycodo/issues/178))

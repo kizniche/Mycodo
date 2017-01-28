@@ -45,9 +45,12 @@ class RaspberryPiCPULoad(AbstractSensor):
 
     def info(self):
         conditions_measured = [
-            ("CPU Load (1m)", "cpu_load_1m", "float", "0.00", self._cpu_load_1m, self.cpu_load_1m),
-            ("CPU Load (5m)", "cpu_load_5m", "float", "0.00", self._cpu_load_5m, self.cpu_load_5m),
-            ("CPU Load (15m)", "cpu_load_15m", "float", "0.00", self._cpu_load_15m, self.cpu_load_15m),
+            ("CPU Load (1m)", "cpu_load_1m", "float", "0.00",
+             self._cpu_load_1m, self.cpu_load_1m),
+            ("CPU Load (5m)", "cpu_load_5m", "float", "0.00",
+             self._cpu_load_5m, self.cpu_load_5m),
+            ("CPU Load (15m)", "cpu_load_15m", "float", "0.00",
+             self._cpu_load_15m, self.cpu_load_15m),
         ]
         return conditions_measured
 

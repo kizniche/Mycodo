@@ -4,36 +4,45 @@ import logging
 import os
 import subprocess
 
-from flask import (Blueprint,
-                   redirect,
-                   render_template,
-                   flash,
-                   request,
-                   session,
-                   url_for)
+from flask import (
+    Blueprint,
+    redirect,
+    render_template,
+    flash,
+    request,
+    session,
+    url_for
+)
 from flask_babel import gettext
 from pkg_resources import parse_version
 
+# Functions
+from mycodo import flaskforms
+from mycodo import flaskutils
+from mycodo.mycodo_flask.general_routes import (
+    before_blueprint_request,
+    inject_mycodo_version,
+    logged_in
+)
 from utils.statistics import return_stat_file_dict
 from utils.system_pi import internet
 from utils.github_release_info import github_releases
 
-from mycodo import flaskforms
-from mycodo import flaskutils
-from mycodo.mycodo_flask.general_routes import (before_blueprint_request,
-                                                inject_mycodo_version,
-                                                logged_in)
-
-from config import INSTALL_DIRECTORY
-from config import MYCODO_VERSION
-from config import STATS_CSV
+# Config
+from config import (
+    INSTALL_DIRECTORY,
+    MYCODO_VERSION,
+    STATS_CSV
+)
 
 logger = logging.getLogger('mycodo.mycodo_flask.admin')
 
-blueprint = Blueprint('admin_routes',
-                      __name__,
-                      static_folder='../static',
-                      template_folder='../templates')
+blueprint = Blueprint(
+    'admin_routes',
+    __name__,
+    static_folder='../static',
+    template_folder='../templates'
+)
 blueprint.before_request(before_blueprint_request)  # check if admin was created
 
 

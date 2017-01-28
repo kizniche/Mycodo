@@ -1,8 +1,10 @@
 # coding=utf-8
-
 import argparse
+import logging
 import smbus
 import time
+
+logger = logging.getLogger('mycodo.devices.tca9548a')
 
 
 class TCA9548A(object):
@@ -24,9 +26,12 @@ class TCA9548A(object):
 
 
 def menu():
-    parser = argparse.ArgumentParser(description='Select I2C address and channel of TCA9548A I2C multiplexer')
+    parser = argparse.ArgumentParser(
+        description='Select I2C address and channel '
+                    'of TCA9548A I2C multiplexer')
     parser.add_argument('-a', '--address', metavar='ADDRESS', type=int,
-                        help='I2C address of the multiplexer, only last two digits, (ex. enter "70" if 0x70)',
+                        help='I2C address of the multiplexer, only last '
+                             'two digits, (ex. enter "70" if 0x70)',
                         required=True)
     parser.add_argument('-b', '--bus', metavar='BUS', type=int,
                         help='I2C bus of the multiplexer',
@@ -44,7 +49,8 @@ def menu():
     if args.channel:
         multiplexer.setup(args.channel)
     read_response = multiplexer.read()
-    print("TCA9548A I2C channel status: {} (channel {})".format(bin(read_response), read_response))
+    print("TCA9548A I2C channel status: {bin} (channel {chan})".format(
+        bin=bin(read_response), chan=read_response))
 
 
 if __name__ == "__main__":

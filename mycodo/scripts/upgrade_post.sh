@@ -43,11 +43,6 @@ fi
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh upgrade-packages
 
-printf "#### Enable mycodo service ####\n"
-rm -rf /etc/systemd/system/mycodo.service
-rm -rf /etc/systemd/system/multi-user.target.wants/mycodo.service
-systemctl enable ${INSTALL_DIRECTORY}/install/mycodo.service
-
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh upgrade-influxdb
 
 printf "#### Move ssl certificates directory if not in correct directory\n"

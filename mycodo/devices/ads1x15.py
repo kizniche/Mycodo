@@ -4,10 +4,10 @@ import logging
 import time
 import Adafruit_ADS1x15
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('mycodo.devices.ads1x15')
 
 
-class ADS1x15_read(object):
+class ADS1x15Read(object):
     """ Sensor  """
     def __init__(self, address, bus, channel, gain):
         self._voltage = None
@@ -31,8 +31,10 @@ class ADS1x15_read(object):
         """ Take measurement """
         try:
             time.sleep(1)
-            adc = Adafruit_ADS1x15.ADS1115(address=self.i2c_address, busnum=self.i2c_bus)
-            self._voltage = adc.read_adc(self.channel, gain=self.gain) / 10000.0
+            adc = Adafruit_ADS1x15.ADS1115(address=self.i2c_address,
+                                           busnum=self.i2c_bus)
+            self._voltage = adc.read_adc(
+                self.channel, gain=self.gain) / 10000.0
         except Exception as e:
             logger.error("{cls} raised an error during read() call: "
                          "{err}".format(cls=type(self).__name__, err=e))
@@ -64,11 +66,11 @@ class ADS1x15_read(object):
 
 
 if __name__ == "__main__":
-    ads = ADS1x15_read(0, 0x48, 0, 1)
+    ads = ADS1x15Read(0, 0x48, 0, 1)
     print("Channel 0: {}".format(ads.next()))
-    ads = ADS1x15_read(0, 0x48, 1, 1)
+    ads = ADS1x15Read(0, 0x48, 1, 1)
     print("Channel 1: {}".format(ads.next()))
-    ads = ADS1x15_read(0, 0x48, 2, 1)
+    ads = ADS1x15Read(0, 0x48, 2, 1)
     print("Channel 2: {}".format(ads.next()))
-    ads = ADS1x15_read(0, 0x48, 3, 1)
+    ads = ADS1x15Read(0, 0x48, 3, 1)
     print("Channel 3: {}".format(ads.next()))
