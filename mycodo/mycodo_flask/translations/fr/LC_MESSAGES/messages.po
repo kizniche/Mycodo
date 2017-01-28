@@ -1,7 +1,7 @@
 # French translations for Mycodo.
 # Copyright (C) 2017 
 # This file is distributed under the same license as the PROJECT project.
-# Proud Translation by myke974@gmail.com, 2017.
+# Proud Translation by myke974@gmail.com, 01/28/2017.
 #
 msgid ""
 msgstr ""
@@ -11,7 +11,7 @@ msgstr ""
 "PO-Revision-Date: 2017-01-05 00:55-0500\n"
 "Last-Translator: \n"
 "Language: fr\n"
-"Language-Team: fr <LL@li.org>\n"
+"Language-Team: fr <www.myke974.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -40,31 +40,31 @@ msgstr "Fin YYYY-MM-DD HH:MM:SS"
 
 #: flaskforms.py:57 flaskforms.py:129
 msgid "Start Setpoint"
-msgstr "Début Point"
+msgstr "Début Objectif Visé"
 
 #: flaskforms.py:58 flaskforms.py:130
 msgid "End Setpoint (optional)"
-msgstr "Fin Point"
+msgstr "Fin Objectif Visé"
 
 #: flaskforms.py:59 flaskforms.py:128
 msgid "Duration (seconds)"
-msgstr ""
+msgstr "Durée (secondes)"
 
 #: flaskforms.py:60
 msgid "Amplitude"
-msgstr ""
+msgstr "Amplitude"
 
 #: flaskforms.py:61
 msgid "Frequency"
-msgstr ""
+msgstr "Fréquence"
 
 #: flaskforms.py:62
 msgid "Angle Shift (0 to 360)"
-msgstr ""
+msgstr "Dérivation d' Angle (0 à 360)"
 
 #: flaskforms.py:63
 msgid "Y-Axis Shift"
-msgstr ""
+msgstr "Dérivation Axe-Y"
 
 #: flaskforms.py:73 flaskforms.py:121
 msgid "Time HH:MM:SS"
