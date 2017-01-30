@@ -167,6 +167,12 @@
 
     <div style="clear: both; padding:0.5em 0;"></div>
 
+    {% if relayconditional %}
+      A conditional statement is a way to perform certain actions based on whether a condition is true. The "If" relay is the relay that is watched for a state change, such as turning Off or turning On. WHen this happens, the "Then" relay can be configured to be manipulated. Additionally, other actions may be performed, such as sending a notification email, executing a command (as user "mycodo"), or flashing an LCD. See the <a href="/help#conditional-statements">manual</a> for more information.</a>
+    {% endif %}
+
+    <div style="clear: both; padding:0.25em 0;"></div>
+
     {%- for each_relaycond in relayconditional -%}
       <div class="form-inline {% if each_relaycond.activated -%}active-background{%- else -%}inactive-background{% endif -%}" style="margin-top: 1em; padding: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
         <form method="post" action="/relay">

@@ -5,6 +5,10 @@ Bugfixes:
   - Fix camera termination bug ([#178](https://github.com/kizniche/mycodo/issues/178))
   - Fix inability to pause/hold/resume PID controllers
 
+Miscellaneous
+
+  - Add help text for conditional statements to relay page ([#181](https://github.com/kizniche/mycodo/issues/181))
+
 ## 4.1.9 (2017-01-27)
 
 This update fixes two major bugs: Sometimes admin users not being created properly from the web UI and the daemon not being set to automatically start during install.

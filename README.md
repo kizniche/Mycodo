@@ -106,7 +106,7 @@ Mycodo will be installed by executing setup.sh. As a part of the installation, i
 sudo apt-get install jq
 cd ~
 curl -s https://api.github.com/repos/kizniche/Mycodo/releases/latest | \
-jq --raw-output '.tarball_url' | wget -i - -O mycodo-latest.tar.gz
+jq -r '.tarball_url' | wget -i - -O mycodo-latest.tar.gz
 mkdir Mycodo
 tar xzf mycodo-latest.tar.gz -C Mycodo --strip-components=1
 rm -f mycodo-latest.tar.gz
