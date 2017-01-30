@@ -2,6 +2,7 @@
 
 Bugfixes:
 
+  - Fix KeyError in controller_lcd.py
   - Fix camera termination bug ([#178](https://github.com/kizniche/mycodo/issues/178))
   - Fix inability to pause/hold/resume PID controllers
 
