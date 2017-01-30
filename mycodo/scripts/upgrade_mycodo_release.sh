@@ -35,12 +35,12 @@ case "${1:-''}" in
           fi
 
           if [ "${UPDATE_URL}" == "None" ] ; then
-            printf "Unable to upgrade. A URL of the latest release was not able to be obtained.\n"
+            printf "\nUnable to upgrade. A URL of the latest release was not able to be obtained.\n"
             error_found
           fi
 
-          printf "#### Upgrade to v${UPDATE_VERSION} initiated $NOW ####\n"
-          printf "#### Beginning Upgrade: Stage 1 of 2 ####\n"
+          printf "\n#### Upgrade to v${UPDATE_VERSION} initiated $NOW ####\n"
+          printf "\n#### Beginning Upgrade: Stage 1 of 2 ####\n"
 
           printf "Stopping the Mycodo daemon..."
           if ! service mycodo stop ; then
@@ -154,6 +154,8 @@ case "${1:-''}" in
             printf "Done.\n"
           fi
 
+          printf "#### Stage 1 of 2 Complete ####\n"
+
           # Spawn upgrade script
           cat > /tmp/upgrade_mycodo_stagetwo.sh << EOF
 #!/bin/bash
@@ -164,14 +166,13 @@ function error_found {
 }
 
 revertInstall() {
-  printf "The upgrade has failed: Attempting to revert moving the old Mycodo install.\n"
+  printf "\n\nThe upgrade has failed: Attempting to revert moving the old Mycodo install.\n"
   if ! mv /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION} ${INSTALL_DIRECTORY}/Mycodo ; then
-    printf "Failed: Error while trying to revert moving. Could not move /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION} to ${INSTALL_DIRECTORY}/Mycodo.\n"
+    printf "\nFailed: Error while trying to revert moving. Could not move /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION} to ${INSTALL_DIRECTORY}/Mycodo.\n"
     error_occurred
   fi
-  printf "Successfully reverted moving the old Mycodo install directory. Moved /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION} to ${INSTALL_DIRECTORY}/Mycodo\n"
+  printf "\nSuccessfully reverted moving the old Mycodo install directory. Moved /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION} to ${INSTALL_DIRECTORY}/Mycodo\n"
 
-  printf "Setting permissions...\n"
   if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh initialize ; then
     printf "Failed: Error while running initialization script.\n"
     error_occurred
@@ -179,13 +180,13 @@ revertInstall() {
   printf "Done.\n"
 }
 
-printf "#### Continuing Upgrade: Stage 2 of 2 ####\n"
+printf "\n#### Continuing Upgrade: Stage 2 of 2 ####\n"
 
 if [ ! -d "/var/Mycodo-backups" ] ; then
   mkdir /var/Mycodo-backups
 fi
 
-printf "Moving old Mycodo from ${INSTALL_DIRECTORY}/Mycodo to /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}..."
+printf "\nMoving old Mycodo from ${INSTALL_DIRECTORY}/Mycodo to /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}..."
 if ! mv ${INSTALL_DIRECTORY}/Mycodo /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION} ; then
   printf "Failed: Error while trying to move old Mycodo install from ${INSTALL_DIRECTORY}/Mycodo to /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}.\n"
   revertInstall
@@ -217,7 +218,7 @@ if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_post.sh ; then
 fi
 printf "Done.\n"
 
-printf "Upgrade completed successfully without errors.\n"
+printf "\nUpgrade completed successfully without errors.\n"
 echo '0' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
 rm \$0
 EOF
@@ -227,17 +228,17 @@ EOF
         runSelfUpgrade
     ;;
     'upgrade-packages')
-        printf "#### Installing prerequisite apt packages.\n"
+        printf "\n#### Installing prerequisite apt packages.\n"
         apt-get update -y
         apt-get install -y apache2 libav-tools libffi-dev libi2c-dev python-dev python-numpy python-setuptools python-smbus sqlite3 gawk
         easy_install pip
     ;;
     'compile-translations')
-        printf "#### Compiling Translations ####\n"
+        printf "\n#### Compiling Translations ####\n"
         pybabel compile -d ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/translations
     ;;
     'upgrade-influxdb')
-        printf "#### Upgrade influxdb if out-of-date or not installed ####\n"
+        printf "\n#### Upgrade influxdb if out-of-date or not installed ####\n"
         INFLUX_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
         if [ "$INFLUX_VERSION" != "1.1.1-1" ]; then
             echo "Outdated version of InfluxDB installed: v${INFLUX_VERSION}. Installing v1.1.1."
@@ -247,6 +248,7 @@ EOF
         fi
     ;;
     'initialize')
+        printf "\n#### Setting permissions ####\n"
         useradd -M mycodo
         adduser mycodo gpio
         adduser mycodo adm
@@ -275,8 +277,8 @@ EOF
 
         chown -R mycodo.mycodo /var/log/mycodo
 
-        find ${INSTALL_DIRECTORY}/ -type d -exec chmod u+wx,g+wx {} +
-        find ${INSTALL_DIRECTORY}/ -type f -exec chmod u+w,g+w,o+r {} +
+        find ${INSTALL_DIRECTORY}/Mycodo -type d -exec chmod u+wx,g+wx {} +
+        find ${INSTALL_DIRECTORY}/Mycodo -type f -exec chmod u+w,g+w,o+r {} +
         # find $INSTALL_DIRECTORY/Mycodo/mycodo -type f -name '.?*' -prune -o -exec chmod 770 {} +
         chown root:mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
         chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper

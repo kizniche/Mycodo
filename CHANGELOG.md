@@ -1,3 +1,9 @@
+## 4.1.11 (Unreleased)
+
+Bugfixes:
+
+  - Fix initialization script executed during install and upgrade
+
 ## 4.1.10 (2017-01-29)
 
 Bugfixes:
