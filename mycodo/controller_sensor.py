@@ -810,8 +810,8 @@ class SensorController(threading.Thread):
 
             for each_cond in self.sensor_conditional.all():
                 if cond_mod == 'setup':
-                    logger_cond.debug("Activated Conditional from Sensor "
-                                      "{sen}".format(sen=self.sensor_id))
+                    self.logger.debug("Activated Conditional {cond}".format(
+                        cond=each_cond, sen=self.sensor_id))
                 self.cond_id[each_cond.id] = each_cond.id
                 self.cond_name[each_cond.id] = each_cond.name
                 self.cond_activated[each_cond.id] = each_cond.activated
