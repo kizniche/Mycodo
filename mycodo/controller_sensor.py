@@ -728,8 +728,10 @@ class SensorController(threading.Thread):
                     self.check_conditionals(each_cond_id)
 
     def setup_sensor_conditionals(self, cond_mod='setup', cond_id=None):
-        logger_cond = logging.getLogger("mycodo.SensorCond-{id}".format(
-            id=cond_id))
+        logger_cond = logging.getLogger(
+            "mycodo.sensor_{id}_cond_{cond}".format(id=self.sensor_id,
+                                                    cond=cond_id))
+
         # Signal to pause the main loop and wait for verification
         self.pause_loop = True
         while not self.verify_pause_loop:
@@ -755,7 +757,7 @@ class SensorController(threading.Thread):
             self.cond_camera_record.pop(cond_id, None)
             self.cond_timer.pop(cond_id, None)
             self.smtp_wait_timer.pop(cond_id, None)
-            logger_cond.debug("Deleted Conditional from Sensor {sen}".format(
+            logger_cond.debug("Deleted Conditional".format(
                 sen=self.sensor_id))
         else:
             if cond_mod == 'setup':
@@ -792,9 +794,8 @@ class SensorController(threading.Thread):
                     SensorConditional.activated == 1)
                 self.sensor_conditional = self.sensor_conditional.filter(
                     SensorConditional.id == cond_id)
-                logger_cond.debug(
-                    "Added Conditional to Sensor {sen}".format(
-                        sen=self.sensor_id))
+                logger_cond.debug("Added Conditional".format(
+                    sen=self.sensor_id))
             elif cond_mod == 'mod':
                 self.sensor_conditional = db_retrieve_table(
                     MYCODO_DB_PATH, SensorConditional)
@@ -802,16 +803,15 @@ class SensorController(threading.Thread):
                         SensorConditional.sensor_id == self.sensor_id)
                 self.sensor_conditional = self.sensor_conditional.filter(
                     SensorConditional.id == cond_id)
-                logger_cond.debug(
-                    "Modified Conditional from Sensor {sen}".format(
-                        sen=self.sensor_id))
+                logger_cond.debug("Modified Conditional".format(
+                    sen=self.sensor_id))
             else:
                 return 1
 
             for each_cond in self.sensor_conditional.all():
                 if cond_mod == 'setup':
                     self.logger.debug("Activated Conditional {cond}".format(
-                        cond=each_cond, sen=self.sensor_id))
+                        cond=each_cond))
                 self.cond_id[each_cond.id] = each_cond.id
                 self.cond_name[each_cond.id] = each_cond.name
                 self.cond_activated[each_cond.id] = each_cond.activated
