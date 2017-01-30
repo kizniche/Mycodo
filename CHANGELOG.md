@@ -1,4 +1,4 @@
-## 4.1.11 (2017-01-29)
+## 4.1.11 (2017-01-30)
 
 This is a small update, mainly to fix the install script. It also *should* fix the DHT11 sensor module from stopping at the first bad checksum.
 
