@@ -80,8 +80,6 @@ class PIDController(threading.Thread):
         self.pid_id = pid_id
         self.control = DaemonControl()
 
-        self.initialize_values()
-
         self.control_variable = 0
         self.Derivator = 0
         self.Integrator = 0
@@ -94,6 +92,8 @@ class PIDController(threading.Thread):
         self.raise_seconds_on = 0
         self.last_measurement_success = False
         self.timer = t.time()+self.measure_interval
+
+        self.initialize_values()
 
         # Check if a method is set for this PID
         if self.method_id:
