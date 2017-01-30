@@ -183,7 +183,7 @@ def page_camera():
 
             elif form_camera.StopStream.data:
                 if CameraStream().is_running():
-                    CameraStream().terminate()
+                    CameraStream().terminate_controller()
                 if os.path.isfile(LOCK_FILE_STREAM):
                     os.remove(LOCK_FILE_STREAM)
                 stream_locked = False

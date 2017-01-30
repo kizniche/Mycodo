@@ -2,6 +2,7 @@
 
 Bugfixes:
 
+  - Fix camera termination bug ([#178](https://github.com/kizniche/mycodo/issues/178))
   - Fix inability to pause/hold/resume PID controllers
 
 ## 4.1.9 (2017-01-27)
