@@ -1,7 +1,11 @@
-## 4.1.11 (Unreleased)
+## 4.1.11 (2017-01-29)
+
+This is a small update, mainly to fix the install script. It also *should* fix the DHT11 sensor module from stopping at the first bad checksum.
 
 Bugfixes:
 
+  - Fix DHT11 sensor module, removing exception preventing acquisition of future measurements ([#176](https://github.com/kizniche/mycodo/issues/176))
+  - Fix setup.sh install script by adding git as a dependency ([#183](https://github.com/kizniche/mycodo/issues/183))
   - Fix initialization script executed during install and upgrade
 
 ## 4.1.10 (2017-01-29)

@@ -98,8 +98,6 @@ class DHT11Sensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        self._humidity = 0.0
-        self._temperature = 0.0
         try:
             try:
                 self.setup()
@@ -144,6 +142,8 @@ class DHT11Sensor(AbstractSensor):
         Kills any watchdogs.
         Setup callbacks
         """
+        self._humidity = 0.0
+        self._temperature = 0.0
         self.high_tick = 0
         self.bit = 40
         self.either_edge_cb = None
