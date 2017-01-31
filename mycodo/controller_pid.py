@@ -32,6 +32,7 @@
 import calendar
 import logging
 import datetime
+import requests
 import threading
 import time as t
 import timeit
@@ -274,10 +275,13 @@ class PIDController(threading.Thread):
                 self.last_measurement_success = True
             else:
                 self.logger.warning("No data returned from influxdb")
+        except requests.ConnectionError:
+            self.logger.exception("Failed to read measurement from the "
+                                  "influxdb database: Could not connect.")
         except Exception as except_msg:
             self.logger.exception(
-                "Failed to read measurement from the influxdb database: "
-                "{err}".format(err=except_msg))
+                "Exception while reading measurement from the influxdb "
+                "database: {err}".format(err=except_msg))
 
     def manipulate_relays(self):
         """
