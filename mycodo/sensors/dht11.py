@@ -53,15 +53,15 @@ class DHT11Sensor(AbstractSensor):
         return "<{cls}(dewpoint={dpt})(humidity={hum})(temperature={temp})>".format(
             cls=type(self).__name__,
             dpt="{0:.2f}".format(self._dew_point),
-            hum=self._humidity,
-            temp=self._temperature)
+            hum="{0:.2f}".format(float(self._humidity)),
+            temp="{0:.2f}".format(float(self._temperature)))
 
     def __str__(self):
         """ Return measurement information """
         return "Dew Point: {dpt}, Humidity: {hum}, Temperature: {temp}".format(
             dpt="{0:.2f}".format(self._dew_point),
-            hum=self._humidity,
-            temp=self._temperature)
+            hum="{0:.2f}".format(float(self._humidity)),
+            temp="{0:.2f}".format(float(self._temperature)))
 
     def __iter__(self):  # must return an iterator
         """ DHT11Sensor iterates through live measurement readings """
@@ -72,8 +72,8 @@ class DHT11Sensor(AbstractSensor):
         if self.read():  # raised an error
             raise StopIteration  # required
         return dict(dewpoint=float('{0:.2f}'.format(self._dew_point)),
-                    humidity=self._humidity,
-                    temperature=self._temperature)
+                    humidity=float("{0:.2f}".format(float(self._humidity))),
+                    temperature=float("{0:.2f}".format(float(self._temperature))))
 
     @property
     def dew_point(self):

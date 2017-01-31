@@ -240,11 +240,11 @@ EOF
     'upgrade-influxdb')
         printf "\n#### Upgrade influxdb if out-of-date or not installed ####\n"
         INFLUX_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
-        if [ "$INFLUX_VERSION" != "1.1.1-1" ]; then
-            echo "Outdated version of InfluxDB installed: v${INFLUX_VERSION}. Installing v1.1.1."
-            wget --quiet https://dl.influxdata.com/influxdb/releases/influxdb_1.1.1_armhf.deb
-            dpkg -i influxdb_1.1.1_armhf.deb
-            rm -rf influxdb_1.1.1_armhf.deb
+        if [ "$INFLUX_VERSION" != "1.2.0-1" ]; then
+            echo "Outdated version of InfluxDB installed: v${INFLUX_VERSION}. Installing v1.2.0."
+            wget --quiet https://dl.influxdata.com/influxdb/releases/influxdb_1.2.0_armhf.deb
+            dpkg -i influxdb_1.2.0_armhf.deb
+            rm -rf influxdb_1.2.0_armhf.deb
         fi
     ;;
     'initialize')

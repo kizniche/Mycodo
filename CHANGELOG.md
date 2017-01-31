@@ -1,3 +1,13 @@
+## 4.1.14 (2017-01-30)
+
+Bugfixes:
+
+  - Fix DHT11 sensor module ([#176](https://github.com/kizniche/mycodo/issues/176))
+
+Miscellaneous:
+
+  - Update influxdb to 1.2.0
+
 ## 4.1.13 (2017-01-30)
 
 Bugfixes:
