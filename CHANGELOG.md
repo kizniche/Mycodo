@@ -1,3 +1,9 @@
+## 4.1.12 (2017-01-30)
+
+Bugfixes:
+
+  - Fix PID controller crash
+
 ## 4.1.11 (2017-01-30)
 
 This is a small update, mainly to fix the install script. It also *should* fix the DHT11 sensor module from stopping at the first bad checksum.

@@ -91,9 +91,10 @@ class PIDController(threading.Thread):
         self.lower_seconds_on = 0
         self.raise_seconds_on = 0
         self.last_measurement_success = False
-        self.timer = t.time()+self.measure_interval
 
         self.initialize_values()
+
+        self.timer = t.time()+self.measure_interval
 
         # Check if a method is set for this PID
         if self.method_id:
