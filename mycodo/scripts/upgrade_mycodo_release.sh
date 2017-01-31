@@ -79,6 +79,15 @@ case "${1:-''}" in
           fi
           printf "Done.\n"
 
+          if [ -d "${MYCODO_NEW_TMP_DIR}/old" ] ; then
+            printf "The archive directory ${MYCODO_NEW_TMP_DIR}/old exists. Removing..."
+            if ! rm -Rf ${MYCODO_NEW_TMP_DIR}/old ; then
+              printf "Failed: Error while trying to delete archive directory ${MYCODO_NEW_TMP_DIR}/old.\n"
+              error_found
+            fi
+            printf "Done.\n"
+          fi
+
           printf "Removing ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz..."
           if ! rm -rf ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz ; then
             printf "Failed: Error while removing ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz.\n"

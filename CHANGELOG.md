@@ -1,3 +1,9 @@
+## 4.1.16 (Unreleased)
+
+Miscellaneous:
+
+  - Remove archived versions of Mycodo (Mycodo/old) during upgrade (saves space during backup)
+
 ## 4.1.15 (2017-01-31)
 
 Bugfixes:
