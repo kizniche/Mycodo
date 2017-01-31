@@ -1,3 +1,9 @@
+## 4.1.15 (Unreleased)
+
+Bugfixes:
+
+  - Fix LCD KeyError from missing measurement unit for durations_sec
+
 ## 4.1.14 (2017-01-30)
 
 Bugfixes:

@@ -180,7 +180,7 @@ revertInstall() {
   printf "Done.\n"
 }
 
-printf "\n#### Continuing Upgrade: Stage 2 of 2 ####\n"
+printf "#### Continuing Upgrade: Stage 2 of 2 ####\n"
 
 if [ ! -d "/var/Mycodo-backups" ] ; then
   mkdir /var/Mycodo-backups
@@ -202,15 +202,13 @@ if ! mv ${MYCODO_NEW_TMP_DIR} ${INSTALL_DIRECTORY}/Mycodo ; then
 fi
 printf "Done.\n"
 
-printf "Setting permissions for new Mycodo install...\n"
 if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh initialize ; then
   printf "Failed: Error while running initialization script.\n"
   revertInstall
   error_found
 fi
-printf "Done.\n"
 
-printf "Running post-upgrade script...\n"
+printf "\n\nRunning post-upgrade script...\n"
 if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_post.sh ; then
   printf "Failed: Error while running post-upgrade script.\n"
   revertInstall
