@@ -1,7 +1,7 @@
 # French translations for Mycodo.
 # Copyright (C) 2017
 # This file is distributed under the same license as the PROJECT project.
-# Proud Translation by myke974@gmail.com, 01/28/2017.
+# Proud Translation by myke974@gmail.com and Jade, 02/02/2017 : 17% complete
 #
 msgid ""
 msgstr ""
@@ -61,7 +61,7 @@ msgstr "Fréquence"
 
 #: flaskforms.py:62
 msgid "Angle Shift (0 to 360)"
-msgstr "Dérivation d' Angle (0 à 360)"
+msgstr "Dérivation d'Angle (0 à 360)"
 
 #: flaskforms.py:63
 msgid "Y-Axis Shift"
@@ -89,7 +89,7 @@ msgstr "Relais Statut"
 
 #: flaskforms.py:96
 msgid "Add to Method"
-msgstr "Ajoutter à Méthode"
+msgstr "Ajouter à Méthode"
 
 #: flaskforms.py:103 flaskforms.py:553 flaskforms.py:554 flaskforms.py:703
 #: flaskforms.py:704 flaskforms.py:851 flaskforms.py:852 flaskforms.py:931
@@ -125,7 +125,7 @@ msgstr "Domaine ou Adresse IP"
 #: flaskforms.py:150 flaskforms.py:302 flaskforms.py:303 flaskforms.py:641
 #: flaskforms.py:642 flaskforms.py:668 flaskforms.py:669
 msgid "Username"
-msgstr "Nom Utilisateur"
+msgstr "Nom d'Utilisateur"
 
 #: flaskforms.py:155 flaskforms.py:246 flaskforms.py:315 flaskforms.py:316
 #: flaskforms.py:352 flaskforms.py:651 flaskforms.py:652 flaskforms.py:673
@@ -147,11 +147,11 @@ msgstr "Nombre de Lignes"
 
 #: flaskforms.py:170
 msgid "Lines"
-msgstr "Ligne"
+msgstr "Lignes"
 
 #: flaskforms.py:173
 msgid "Number of lines should be greater than 0."
-msgstr "Nombre de lignes doit être supérieur à 0."
+msgstr "Le Nombre de lignes doit être supérieur à 0."
 
 #: flaskforms.py:176
 msgid "Login Log"
@@ -171,19 +171,19 @@ msgstr "Log de Mise a jour"
 
 #: flaskforms.py:180
 msgid "Restore Log"
-msgstr "Log de Réstauration"
+msgstr "Log de Restauration"
 
 #: flaskforms.py:188
 msgid "Stop Daemon"
-msgstr "Daemon arrêt"
+msgstr "Arrêt du Daemon"
 
 #: flaskforms.py:189
 msgid "Start Daemon"
-msgstr "Démarage du Daemon"
+msgstr "Démarrage du Daemon"
 
 #: flaskforms.py:190
 msgid "Restart Daemon"
-msgstr "Redémarage du Daemon"
+msgstr "Redémarrage du Daemon"
 
 #: flaskforms.py:198
 msgid "Capture Still"
@@ -312,11 +312,11 @@ msgstr "Envoi Statistique"
 
 #: flaskforms.py:320 flaskforms.py:358
 msgid "Passwords must match"
-msgstr "Les mot de passe doivent être identiques"
+msgstr "Les mots de passe doivent être identiques"
 
 #: flaskforms.py:323 flaskforms.py:362
 msgid "Password must be 6 or more characters"
-msgstr "Le mots de passe doit faire au moins 6 charactères"
+msgstr "Le mot de passe doit faire au moins 6 charactères"
 
 #: flaskforms.py:328 flaskforms.py:329 flaskforms.py:367 flaskforms.py:368
 #: flaskforms.py:656 flaskforms.py:657
@@ -339,19 +339,19 @@ msgstr "Nouveau Mot de Passe"
 
 #: flaskforms.py:378 mycodo_flask/templates/settings/users.html:64
 msgid "Theme"
-msgstr "Theme"
+msgstr "Thème"
 
 #: flaskforms.py:392
 msgid "Flip Horizontally"
-msgstr "Horizontalle Tournée"
+msgstr "Retourner Horizontalement"
 
 #: flaskforms.py:393
 msgid "Flip Vertically"
-msgstr "Verticalment"
+msgstr "Retourner Verticalement"
 
 #: flaskforms.py:394
 msgid "Rotate Image"
-msgstr ""
+msgstr "Tourner l'Image"
 
 #: flaskforms.py:403
 msgid "Measurement to Export"
