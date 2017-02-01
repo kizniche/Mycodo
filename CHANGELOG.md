@@ -1,5 +1,9 @@
 ## 4.1.16 (Unreleased)
 
+Bugfixes:
+
+  - Fix asynchronous graph to use local timezone rather than UTC ([#185](https://github.com/kizniche/mycodo/issues/185))
+
 Miscellaneous:
 
   - Remove archived versions of Mycodo (Mycodo/old) during upgrade (saves space during backup)

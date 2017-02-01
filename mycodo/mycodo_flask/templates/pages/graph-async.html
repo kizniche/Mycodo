@@ -63,6 +63,16 @@
 
   {% if selected_measure %}
   <script>
+
+Highcharts.setOptions({
+  global: {
+    useUTC: false
+  },
+  lang: {
+    thousandsSep: ','
+  }
+});
+
 $(function () {
     var chart = new Array();
 
