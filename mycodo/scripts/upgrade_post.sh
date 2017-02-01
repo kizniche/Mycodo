@@ -45,31 +45,30 @@ fi
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh upgrade-influxdb
 
-printf "#### Move ssl certificates directory if not in correct directory\n"
+printf "\n#### Move ssl certificates directory if not in correct directory\n"
 if [ -d "$INSTALL_DIRECTORY/mycodo/frontend/ssl_certs" ]; then
     mv ${INSTALL_DIRECTORY}/mycodo/frontend/ssl_certs ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/
 fi
 
-printf "#### Checking if python modules are up-to-date ####\n"
+printf "\n#### Checking if python modules are up-to-date ####\n"
 pip install --upgrade -r ${INSTALL_DIRECTORY}/install/requirements.txt
 
-printf "#### Upgrading database ####\n"
+printf "\n#### Upgrading database ####\n"
 cd ${INSTALL_DIRECTORY}/databases
 alembic upgrade head
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh compile-translations
 
-printf "#### Removing statistics file ####\n"
+printf "\n#### Removing statistics file ####\n"
 rm ${INSTALL_DIRECTORY}/databases/statistics.csv
 
-printf "#### Updating crontab entry ####\n"
+printf "\n#### Updating crontab entry ####\n"
 /bin/bash ${INSTALL_DIRECTORY}/install/crontab.sh mycodo --remove
 /bin/bash ${INSTALL_DIRECTORY}/install/crontab.sh mycodo
 
-printf "#### Setting permissions ####\n"
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh initialize
 
-printf "#### Reloading systemctl, Mycodo daemon, and apache2 ####\n"
+printf "\n#### Reloading systemctl, Mycodo daemon, and apache2 ####\n"
 systemctl daemon-reload
 service mycodo restart
 /etc/init.d/apache2 restart

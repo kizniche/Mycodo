@@ -1,8 +1,69 @@
-## 4.1.9 (2017-01-26)
+## 4.1.16 (Unreleased)
+
+Bugfixes:
+
+  - Fix asynchronous graph to use local timezone rather than UTC ([#185](https://github.com/kizniche/mycodo/issues/185))
+
+Miscellaneous:
+
+  - Remove archived versions of Mycodo (Mycodo/old) during upgrade (saves space during backup)
+
+## 4.1.15 (2017-01-31)
+
+Bugfixes:
+
+  - Fix LCD KeyError from missing measurement unit for durations_sec
+
+## 4.1.14 (2017-01-30)
+
+Bugfixes:
+
+  - Fix DHT11 sensor module ([#176](https://github.com/kizniche/mycodo/issues/176))
+
+Miscellaneous:
+
+  - Update influxdb to 1.2.0
+
+## 4.1.13 (2017-01-30)
+
+Bugfixes:
+
+  - Fix DHT11 sensor module ([#176](https://github.com/kizniche/mycodo/issues/176))
+
+## 4.1.12 (2017-01-30)
+
+Bugfixes:
+
+  - Fix PID controller crash
+
+## 4.1.11 (2017-01-30)
+
+This is a small update, mainly to fix the install script. It also *should* fix the DHT11 sensor module from stopping at the first bad checksum.
+
+Bugfixes:
+
+  - Fix DHT11 sensor module, removing exception preventing acquisition of future measurements ([#176](https://github.com/kizniche/mycodo/issues/176))
+  - Fix setup.sh install script by adding git as a dependency ([#183](https://github.com/kizniche/mycodo/issues/183))
+  - Fix initialization script executed during install and upgrade
+
+## 4.1.10 (2017-01-29)
+
+Bugfixes:
+
+  - Fix PID variable initializations
+  - Fix KeyError in controller_lcd.py
+  - Fix camera termination bug ([#178](https://github.com/kizniche/mycodo/issues/178))
+  - Fix inability to pause/hold/resume PID controllers
+
+Miscellaneous
+
+  - Add help text for conditional statements to relay page ([#181](https://github.com/kizniche/mycodo/issues/181))
+
+## 4.1.9 (2017-01-27)
 
 This update fixes two major bugs: Sometimes admin users not being created properly from the web UI and the daemon not being set to automatically start during install.
 
-This update also fixes an even more severe bug affecting the database upgrade system. If you installed a system before this upgrade, you are probably affected. This release will display a message indicating if your database has na issue. Deleting ~/Mycodo/databases/mycodo.db and restarting the web server (or reboot) will regenerate the database.
+This update also fixes an even more severe bug affecting the database upgrade system. If you installed a system before this upgrade, you are probably affected. This release will display a message indicating if your database has an issue. Deleting ~/Mycodo/databases/mycodo.db and restarting the web server (or reboot) will regenerate the database.
 
 If your daemon doesn't automatically start because you installed it with a botched previous version, issue the following commands to add it to systemctl's autostart:
 

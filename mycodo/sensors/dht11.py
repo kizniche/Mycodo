@@ -42,8 +42,8 @@ class DHT11Sensor(AbstractSensor):
         self.bit = None
         self.either_edge_cb = None
         self._dew_point = 0.0
-        self._humidity = 0.0
-        self._temperature = 0.0
+        self._humidity = 0
+        self._temperature = 0
 
         self.start_sensor()
         time.sleep(2)
@@ -53,15 +53,15 @@ class DHT11Sensor(AbstractSensor):
         return "<{cls}(dewpoint={dpt})(humidity={hum})(temperature={temp})>".format(
             cls=type(self).__name__,
             dpt="{0:.2f}".format(self._dew_point),
-            hum="{0:.2f}".format(self._humidity),
-            temp="{0:.2f}".format(self._temperature))
+            hum="{0:.2f}".format(float(self._humidity)),
+            temp="{0:.2f}".format(float(self._temperature)))
 
     def __str__(self):
         """ Return measurement information """
         return "Dew Point: {dpt}, Humidity: {hum}, Temperature: {temp}".format(
             dpt="{0:.2f}".format(self._dew_point),
-            hum="{0:.2f}".format(self._humidity),
-            temp="{0:.2f}".format(self._temperature))
+            hum="{0:.2f}".format(float(self._humidity)),
+            temp="{0:.2f}".format(float(self._temperature)))
 
     def __iter__(self):  # must return an iterator
         """ DHT11Sensor iterates through live measurement readings """
@@ -72,8 +72,8 @@ class DHT11Sensor(AbstractSensor):
         if self.read():  # raised an error
             raise StopIteration  # required
         return dict(dewpoint=float('{0:.2f}'.format(self._dew_point)),
-                    humidity=float('{0:.2f}'.format(self._humidity)),
-                    temperature=float('{0:.2f}'.format(self._temperature)))
+                    humidity=float("{0:.2f}".format(float(self._humidity))),
+                    temperature=float("{0:.2f}".format(float(self._temperature))))
 
     @property
     def dew_point(self):
@@ -98,8 +98,6 @@ class DHT11Sensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        self._humidity = 0.0
-        self._temperature = 0.0
         try:
             try:
                 self.setup()
@@ -144,6 +142,8 @@ class DHT11Sensor(AbstractSensor):
         Kills any watchdogs.
         Setup callbacks
         """
+        self._humidity = 0
+        self._temperature = 0
         self.high_tick = 0
         self.bit = 40
         self.either_edge_cb = None

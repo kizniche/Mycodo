@@ -122,7 +122,6 @@ systemctl enable ${INSTALL_DIRECTORY}/install/mycodo.service
 printf "\n#### Creating SQLite databases\n"
 python ${INSTALL_DIRECTORY}/init_databases.py -i all
 
-printf "\n#### Setting up users, groups, and permissions\n"
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh initialize
 
 printf "\n#### Starting the Mycodo daemon and web server\n"

@@ -183,7 +183,7 @@ def page_camera():
 
             elif form_camera.StopStream.data:
                 if CameraStream().is_running():
-                    CameraStream().terminate()
+                    CameraStream().terminate_controller()
                 if os.path.isfile(LOCK_FILE_STREAM):
                     os.remove(LOCK_FILE_STREAM)
                 stream_locked = False
@@ -676,13 +676,13 @@ def page_pid():
                     form_mod_pid.modPID_id.data)
             elif form_mod_pid.mod_pid_hold.data:
                 flaskutils.pid_manipulate(
-                    'Hold', form_mod_pid.modPID_id.data)
+                    form_mod_pid.modPID_id.data, 'Hold')
             elif form_mod_pid.mod_pid_pause.data:
                 flaskutils.pid_manipulate(
-                    'Pause', form_mod_pid.modPID_id.data)
+                    form_mod_pid.modPID_id.data, 'Pause')
             elif form_mod_pid.mod_pid_resume.data:
                 flaskutils.pid_manipulate(
-                    'Resume', form_mod_pid.modPID_id.data)
+                    form_mod_pid.modPID_id.data, 'Resume')
             else:
                 flaskutils.pid_mod(form_mod_pid)
 
