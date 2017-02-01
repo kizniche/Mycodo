@@ -1,7 +1,7 @@
 # French translations for Mycodo.
 # Copyright (C) 2017
 # This file is distributed under the same license as the PROJECT project.
-# Proud Translation by myke974@gmail.com and Jade, 02/02/2017 : 17% complete
+# Proud Translation by myke974@gmail.com and Jade, 17% complete @ 02/02/2017
 #
 msgid ""
 msgstr ""
