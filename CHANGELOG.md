@@ -2,6 +2,7 @@
 
 Bugfixes:
 
+  - Fix issue with relay conditionals being triggered upon shutdown
   - Fix asynchronous graph to use local timezone rather than UTC ([#185](https://github.com/kizniche/mycodo/issues/185))
 
 Miscellaneous:

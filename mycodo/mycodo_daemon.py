@@ -120,9 +120,9 @@ class ComServer(rpyc.Service):
         return mycodo_daemon.relay_on(relay_id, duration)
 
     @staticmethod
-    def exposed_relay_off(relay_id):
+    def exposed_relay_off(relay_id, trigger_conditionals=True):
         """Turns relay off from the client"""
-        return mycodo_daemon.relay_off(relay_id)
+        return mycodo_daemon.relay_off(relay_id, trigger_conditionals)
 
     @staticmethod
     def exposed_add_relay(relay_id):
@@ -477,14 +477,16 @@ class DaemonController(threading.Thread):
         self.controller['Relay'].relay_on_off(relay_id, 'on', duration=duration)
         return "Relay turned on"
 
-    def relay_off(self, relay_id):
+    def relay_off(self, relay_id, trigger_conditionals=True):
         """
         Turn relay off using default relay controller
 
         :param relay_id: Unique ID for relay
         :type relay_id: str
+        :param trigger_conditionals: Whether to trigger relay conditionals or not
+        :type trigger_conditionals: bool
         """
-        self.controller['Relay'].relay_on_off(relay_id, 'off')
+        self.controller['Relay'].relay_on_off(relay_id, 'off', trigger_conditionals=trigger_conditionals)
         return "Relay turned off"
 
     def add_relay(self, relay_id):

@@ -65,8 +65,8 @@ class DaemonControl:
     def relay_on(self, relay_id, duration):
         return self.rpyc_client.root.relay_on(relay_id, duration)
 
-    def relay_off(self, relay_id):
-        return self.rpyc_client.root.relay_off(relay_id)
+    def relay_off(self, relay_id, trigger_conditionals=True):
+        return self.rpyc_client.root.relay_off(relay_id, trigger_conditionals)
 
     def add_relay(self, relay_id):
         return self.rpyc_client.root.add_relay(relay_id)

@@ -162,9 +162,9 @@ class PIDController(threading.Thread):
                 t.sleep(0.1)
 
             if self.raise_relay_id:
-                self.control.relay_off(self.raise_relay_id)
+                self.control.relay_off(self.raise_relay_id, trigger_conditionals=False)
             if self.lower_relay_id:
-                self.control.relay_off(self.lower_relay_id)
+                self.control.relay_off(self.lower_relay_id, trigger_conditionals=False)
 
             self.running = False
             self.logger.info("Deactivated in {:.1f} ms".format(
