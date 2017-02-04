@@ -89,19 +89,22 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
 
     if duration_sec:
         query = """SELECT value
-                       FROM   {}
-                       WHERE  device_id = '{}'
-                              AND TIME > Now() - {}s
+                       FROM   {measurement}
+                       WHERE  device_id = '{device}'
+                              AND TIME > Now() - {dur}s
                               ORDER BY time
                               DESC LIMIT 1;
-                """.format(measure_type, device_id, duration_sec)
+                """.format(measurement=measure_type,
+                           device=device_id,
+                           dur=duration_sec)
     else:
         query = """SELECT value
-                       FROM   {}
-                       WHERE  device_id = '{}'
+                       FROM   {measurement}
+                       WHERE  device_id = '{device}'
                               ORDER BY time
                               DESC LIMIT 1;
-                """.format(measure_type, device_id)
+                """.format(measurement=measure_type,
+                           device=device_id)
 
     return client.query(query)
 

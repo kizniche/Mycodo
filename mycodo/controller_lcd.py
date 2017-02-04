@@ -397,7 +397,7 @@ class LCDController(threading.Thread):
                                 name_cropped,
                                 self.lcd_line[i]['measurement_value'])
                     else:
-                        self.lcd_string_line[i] = 'NO DATA < 5 MIN'
+                        self.lcd_string_line[i] = 'ERROR: NO DATA'
                 except Exception as except_msg:
                     self.logger.exception("Error: {err}".format(
                         err=except_msg))

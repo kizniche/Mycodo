@@ -276,7 +276,7 @@ class PIDController(threading.Thread):
             else:
                 self.logger.warning("No data returned from influxdb")
         except requests.ConnectionError:
-            self.logger.exception("Failed to read measurement from the "
+            self.logger.error("Failed to read measurement from the "
                                   "influxdb database: Could not connect.")
         except Exception as except_msg:
             self.logger.exception(

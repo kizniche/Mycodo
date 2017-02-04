@@ -7,6 +7,7 @@
 
 import datetime
 import logging
+import requests
 import threading
 import time
 import timeit
@@ -375,6 +376,9 @@ class SensorController(threading.Thread):
 
             self.logger.info("Deactivated in {:.1f} ms".format(
                 (timeit.default_timer()-self.thread_shutdown_timer)*1000))
+        except requests.ConnectionError:
+            self.logger.error("Could not connect to influxdb. Check that it "
+                              "is running and accepting connections")
         except Exception as except_msg:
             self.logger.exception("Error: {err}".format(
                 err=except_msg))
@@ -829,7 +833,7 @@ class SensorController(threading.Thread):
                 self.cond_email_notify[each_cond.id] = each_cond.email_notify
                 self.cond_flash_lcd[each_cond.id] = each_cond.email_notify
                 self.cond_camera_record[each_cond.id] = each_cond.camera_record
-                self.cond_timer[each_cond.id] = time.time()+self.cond_period[each_cond.id]
+                self.cond_timer[each_cond.id] = time.time()+each_cond.period
                 self.smtp_wait_timer[each_cond.id] = time.time()+3600
 
         self.pause_loop = False
