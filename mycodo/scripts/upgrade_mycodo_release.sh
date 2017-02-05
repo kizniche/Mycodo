@@ -245,13 +245,16 @@ EOF
         pybabel compile -d ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/translations
     ;;
     'upgrade-influxdb')
-        printf "\n#### Upgrade influxdb if out-of-date or not installed ####\n"
-        INFLUX_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
-        if [ "$INFLUX_VERSION" != "1.1.1-1" ]; then
-            echo "Outdated version of InfluxDB installed: v${INFLUX_VERSION}. Installing v1.1.1."
-            wget --quiet https://dl.influxdata.com/influxdb/releases/influxdb_1.1.1_armhf.deb
-            dpkg -i influxdb_1.1.1_armhf.deb
-            rm -rf influxdb_1.1.1_armhf.deb
+        printf "\n#### Ensure compatible version of influxdb is installed ####\n"
+        INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
+        INSTALL_FILE="influxdb_1.1.1_armhf.deb"
+        CORRECT_VERSION="1.1.1-1"
+        CURRENT_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
+        if [ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]; then
+            echo "Incorrect version of InfluxDB installed: v${CURRENT_VERSION}. Installing ${CORRECT_VERSION}"
+            wget --quiet ${INSTALL_ADDRESS}${INSTALL_FILE}
+            dpkg -i ${INSTALL_FILE}
+            rm -rf ${INSTALL_FILE}
         fi
     ;;
     'initialize')
