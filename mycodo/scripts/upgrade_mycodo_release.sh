@@ -255,6 +255,7 @@ EOF
             wget --quiet ${INSTALL_ADDRESS}${INSTALL_FILE}
             dpkg -i ${INSTALL_FILE}
             rm -rf ${INSTALL_FILE}
+            service influxdb restart
         fi
     ;;
     'initialize')

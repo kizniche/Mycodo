@@ -7,7 +7,7 @@
 
 ### Miscellaneous
 
-  - Revert back to influxdb 1.1.1 (until the influxdb regex bug is fixed)
+  - Revert back to influxdb 1.1.1 (until the regex bug fix is released)
   - Remove archived versions of Mycodo (Mycodo/old) during upgrade (saves space during backup)
 
 ## 4.1.15 (2017-01-31)
