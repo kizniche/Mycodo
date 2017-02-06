@@ -204,7 +204,7 @@ def method_create(form_create_method, method_id):
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             db_session.add(new_method)
     except Exception as except_msg:
-        flash(gettext("Method Error: %(err)s", err=except_msg), "error")
+        flash(gettext("Method Error: %(msg)s", msg=except_msg), "error")
 
 
 def method_add(form_add_method, method):
@@ -365,7 +365,7 @@ def method_add(form_add_method, method):
                               tm=form_add_method.DurationSec.data), "success")
 
     except Exception as err:
-        flash(gettext("Method Error: %(err)s", err=err), "error")
+        flash(gettext("Method Error: %(msg)s", msg=err), "error")
 
 
 def method_mod(form_mod_method, method):
@@ -466,7 +466,7 @@ def method_mod(form_mod_method, method):
             db_session.commit()
 
     except Exception as err:
-        flash(gettext("Method Error: %(err)s", err=err), "error")
+        flash(gettext("Method Error: %(msg)s", msg=err), "error")
 
 
 def method_del(method_id):
@@ -475,7 +475,7 @@ def method_del(method_id):
                              Method,
                              method_id)
     except Exception as err:
-        flash(gettext("Method Error: %(err)s", err=err), "error")
+        flash(gettext("Method Error: %(msg)s", msg=err), "error")
 
 
 #
@@ -546,13 +546,13 @@ def remote_host_add(form_setup, display_order):
                     order_remote.remote_host = ','.join(display_order)
                     db_session.commit()
             except sqlalchemy.exc.OperationalError as except_msg:
-                flash(gettext("Remote Host Error: %(err)s", err=except_msg),
+                flash(gettext("Remote Host Error: %(msg)s", msg=except_msg),
                       "error")
             except sqlalchemy.exc.IntegrityError as except_msg:
-                flash(gettext("Remote Host Error: %(err)s", err=except_msg),
+                flash(gettext("Remote Host Error: %(msg)s", msg=except_msg),
                       "error")
         except Exception as except_msg:
-            flash(gettext("Remote Host Error: %(err)s", err=except_msg),
+            flash(gettext("Remote Host Error: %(msg)s", msg=except_msg),
                   "error")
     else:
         flash_form_errors(form_setup)
@@ -572,14 +572,14 @@ def remote_host_del(form_setup, display_order):
             order_remote.remote_host = ','.join(display_order)
             db_session.commit()
     except Exception as except_msg:
-        flash(gettext("Remote Host Error: %(err)s", err=except_msg), "error")
+        flash(gettext("Remote Host Error: %(msg)s", msg=except_msg), "error")
 
 
 #
 # Manipulate relay settings while daemon is running
 #
 
-def manipulate_relay(relay_id, action, setup_pin=False):
+def manipulate_relay(action, relay_id, setup_pin=False):
     """
     Add, delete, and modify relay settings while the daemon is active
 
@@ -591,14 +591,19 @@ def manipulate_relay(relay_id, action, setup_pin=False):
     :type setup_pin: bool
     """
     control = DaemonControl()
-    if action == 'add':
-        return_values = control.add_relay(relay_id)
-    elif action == 'mod':
-        return_values = control.mod_relay(relay_id, setup_pin)
-    elif action == 'del':
-        return_values = control.del_relay(relay_id)
+    return_values = control.relay_setup(action, relay_id, setup_pin)
     if return_values[0]:
-        flash("{err}".format(err=return_values[1]), "error")
+        flash(gettext("Error: %(err)s",
+                      err='{action} Relay: Daemon response: {msg}'.format(
+                          action=action,
+                          msg=return_values[1])),
+              "error")
+    else:
+        flash(gettext("Success: %(err)s",
+                      err='{action} Relay: Daemon response: {msg}'.format(
+                          action=action,
+                          msg=return_values[1])),
+              "success")
 
 
 #
@@ -622,9 +627,9 @@ def activate_deactivate_controller(controller_action,
         return redirect(url_for('general_routes.home'))
 
     if controller_action == 'activate':
-        activated_integer = 1
+        activated = True
     else:
-        activated_integer = 0
+        activated = False
 
     translated_names = {
         "LCD": gettext("LCD"),
@@ -647,9 +652,9 @@ def activate_deactivate_controller(controller_action,
             elif controller_type == 'Timer':
                 mod_controller = db_session.query(Timer).filter(
                     Timer.id == controller_id).first()
-            mod_controller.activated = activated_integer
+            mod_controller.activated = activated
             db_session.commit()
-        if activated_integer:
+        if activated:
             flash(gettext("%(cont)s controller activated in SQL database",
                           cont=translated_names[controller_type]),
                   "success")
@@ -658,9 +663,8 @@ def activate_deactivate_controller(controller_action,
                           cont=translated_names[controller_type]),
                   "success")
     except Exception as except_msg:
-        flash(gettext("%(cont)s controller settings were not able to be "
-                      "modified: %(err)s",
-                      cont=translated_names[controller_type], err=except_msg),
+        flash(gettext("Error: %(err)s",
+                      err='SQL: {msg}'.format(msg=except_msg)),
               "error")
 
     try:
@@ -676,9 +680,9 @@ def activate_deactivate_controller(controller_action,
         else:
             flash("{err}".format(err=return_values[1]), "success")
     except Exception as except_msg:
-        flash(gettext(
-            "Could not communicate with daemon: %(err)s", err=except_msg),
-            "error")
+        flash(gettext("Error: %(err)s",
+                      err='Daemon: {msg}'.format(msg=except_msg)),
+              "error")
 
 
 #
@@ -789,8 +793,10 @@ def choices_id_name(table):
 #
 
 def graph_add(form_add_graph, display_order):
-    if deny_guest_user():
-        return redirect('/graph')
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Graph"))
+    error = []
 
     if (form_add_graph.name.data and form_add_graph.width.data and
             form_add_graph.height.data and form_add_graph.xAxisDuration.data and
@@ -826,21 +832,22 @@ def graph_add(form_add_graph, display_order):
                 display_order.append(random_id)
                 order_graph.graph = ','.join(display_order)
                 db_session.commit()
-                return 1
         except sqlalchemy.exc.OperationalError as except_msg:
-            flash(gettext("Graph Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
-            flash(gettext("Graph Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_graph'))
     else:
         flash_form_errors(form_add_graph)
 
 
 def graph_mod(form_mod_graph, request_form):
-    if deny_guest_user():
-        return redirect('/graph')
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Graph"))
+    error = []
 
     if form_mod_graph.validate():
-
         def is_rgb_color(color_hex):
             return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
 
@@ -852,7 +859,7 @@ def graph_mod(form_mod_graph, request_form):
                 for value in f.getlist(key):
                     if not is_rgb_color(value):
                         flash(gettext("Invalid hex color value"), "error")
-                        return redirect('/graph')
+                        return redirect(url_for('page_routes.page_graph'))
                     colors[key[12:]] = value
 
         sorted_list = [(k, colors[k]) for k in sorted(colors)]
@@ -884,16 +891,19 @@ def graph_mod(form_mod_graph, request_form):
                 mod_graph.enable_rangeselect = form_mod_graph.enableRangeSelect.data
                 db_session.commit()
         except sqlalchemy.exc.OperationalError as except_msg:
-            flash(gettext("Graph Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
-            flash(gettext("Graph Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_graph'))
     else:
         flash_form_errors(form_mod_graph)
 
 
 def graph_del(form_del_graph, display_order):
-    if deny_guest_user():
-        return redirect('/graph')
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Graph"))
+    error = []
 
     if form_del_graph.validate():
         try:
@@ -906,14 +916,17 @@ def graph_del(form_del_graph, display_order):
                 order_graph.graph = ','.join(display_order)
                 db_session.commit()
         except Exception as except_msg:
-            flash(gettext("Graph Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_graph'))
     else:
         flash_form_errors(form_del_graph)
 
 
 def graph_reorder(form_order_graph, display_order):
-    if deny_guest_user():
-        return redirect('/graph')
+    action = '{action} {controller}'.format(
+        action=gettext("Reorder"),
+        controller=gettext("Graph"))
+    error = []
 
     if form_order_graph.validate():
         try:
@@ -933,9 +946,10 @@ def graph_reorder(form_order_graph, display_order):
                     order_graph.graph = ','.join(reord_list)
                     db_session.commit()
             else:
-                flash(reord_list, status)
+                error.append(reord_list)
         except Exception as except_msg:
-            flash(gettext("Graph Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_graph'))
     else:
         flash_form_errors(form_order_graph)
 
@@ -945,8 +959,10 @@ def graph_reorder(form_order_graph, display_order):
 #
 
 def lcd_add(form_add_lcd, display_order):
-    if deny_guest_user():
-        return redirect('/lcd')
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("LCD"))
+    error = []
 
     if form_add_lcd.validate():
         for _ in range(0, form_add_lcd.numberLCDs.data):
@@ -979,16 +995,19 @@ def lcd_add(form_add_lcd, display_order):
                     order_lcd.lcd = ','.join(display_order)
                     db_session.commit()
             except sqlalchemy.exc.OperationalError as except_msg:
-                flash(gettext("LCD Error: %(err)s", err=except_msg), "error")
+                error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
-                flash(gettext("LCD Error: %(err)s", err=except_msg), "error")
+                error.append(except_msg)
+            flash_success_errors(error, action, url_for('page_routes.page_lcd'))
     else:
         flash_form_errors(form_add_lcd)
 
 
 def lcd_mod(form_mod_lcd):
-    if deny_guest_user():
-        return redirect('/lcd')
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("LCD"))
+    error = []
 
     if form_mod_lcd.validate():
         try:
@@ -1035,14 +1054,17 @@ def lcd_mod(form_mod_lcd):
                     mod_lcd.line_4_measurement = ''
                 db_session.commit()
         except Exception as except_msg:
-            flash(gettext("LCD Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_lcd'))
     else:
         flash_form_errors(form_mod_lcd)
 
 
 def lcd_del(form_del_lcd, display_order):
-    if deny_guest_user():
-        return redirect('/lcd')
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("LCD"))
+    error = []
 
     if form_del_lcd.validate():
         try:
@@ -1055,14 +1077,17 @@ def lcd_del(form_del_lcd, display_order):
                 order_lcd.lcd = ','.join(display_order)
                 db_session.commit()
         except Exception as except_msg:
-            flash(gettext("LCD Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_lcd'))
     else:
         flash_form_errors(form_del_lcd)
 
 
 def lcd_reorder(form_order_lcd, display_order):
-    if deny_guest_user():
-        return redirect('/lcd')
+    action = '{action} {controller}'.format(
+        action=gettext("Reorder"),
+        controller=gettext("LCD"))
+    error = []
 
     if form_order_lcd.validate():
         try:
@@ -1082,14 +1107,20 @@ def lcd_reorder(form_order_lcd, display_order):
                     order_lcd.lcd = ','.join(reord_list)
                     db_session.commit()
             else:
-                flash(reord_list, status)
+                error.append(reord_list)
         except Exception as except_msg:
-            flash(gettext("LCD Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_lcd'))
     else:
         flash_form_errors(form_order_lcd)
 
 
 def lcd_activate(form_activate_lcd):
+    action = '{action} {controller}'.format(
+        action=gettext("Activate"),
+        controller=gettext("LCD"))
+    error = []
+
     if form_activate_lcd.validate():
         try:
             # All sensors the LCD depends on must be active to activate the LCD
@@ -1117,7 +1148,8 @@ def lcd_activate(form_activate_lcd):
             activate_deactivate_controller(
                 'activate', 'LCD', form_activate_lcd.activateLCD_id.data)
         except Exception as except_msg:
-            flash(gettext("LCD Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_lcd'))
     else:
         flash_form_errors(form_activate_lcd)
 
@@ -1131,15 +1163,12 @@ def lcd_deactivate(form_deactivate_lcd):
 
 
 def lcd_reset_flashing(form_reset_flashing_lcd):
-    if deny_guest_user():
-        return redirect('/lcd')
-
     if form_reset_flashing_lcd.validate():
         control = DaemonControl()
         return_value, return_msg = control.flash_lcd(
             form_reset_flashing_lcd.flashLCD_id.data, 0)
         if not return_value:
-            flash(gettext("LCD Error: %(err)s", err=return_msg), "error")
+            flash(gettext("Error: %(msg)s", msg=return_msg), "error")
     else:
         flash_form_errors(form_reset_flashing_lcd)
 
@@ -1149,6 +1178,11 @@ def lcd_reset_flashing(form_reset_flashing_lcd):
 #
 
 def pid_add(form_add_pid, display_order):
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("PID"))
+    error = []
+
     if form_add_pid.validate():
         for _ in range(0, form_add_pid.numberPIDs.data):
             new_pid = PID()
@@ -1183,24 +1217,27 @@ def pid_add(form_add_pid, display_order):
                     order_pid.pid = ','.join(display_order)
                     db_session.commit()
             except sqlalchemy.exc.OperationalError as except_msg:
-                flash(gettext("PID Error: %(err)s", err=except_msg), "error")
+                error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
-                flash(gettext("PID Error: %(err)s", err=except_msg), "error")
+                error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_pid'))
     else:
         flash_form_errors(form_add_pid)
 
 
 def pid_mod(form_mod_pid):
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("PID"))
+    error = []
+
     if form_mod_pid.validate():
         try:
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-                error = False
                 sensor = db_session.query(Sensor).filter(
                     Sensor.id == form_mod_pid.modSensorID.data).first()
                 if not sensor:
-                    flash(gettext("A valid sensor ID is required"),
-                          "error")
-                    error = True
+                    error.append(gettext("A valid sensor ID is required"))
                 elif (
                       (sensor.device_type == 'tsensor' and
                        form_mod_pid.modMeasureType.data not in ['temperature']) or
@@ -1230,47 +1267,51 @@ def pid_mod(form_mod_pid):
                                                                 'pressure',
                                                                 'altitude'])
                 ):
-                    flash(gettext("Select a Measure Type that is compatible "
-                                  "with the chosen sensor"), "error")
-                    error = True
-                if error:
-                    return redirect('/pid')
-
-                mod_pid = db_session.query(PID).filter(
-                    PID.id == form_mod_pid.modPID_id.data).first()
-                mod_pid.name = form_mod_pid.modName.data
-                mod_pid.sensor_id = form_mod_pid.modSensorID.data
-                mod_pid.measure_type = form_mod_pid.modMeasureType.data
-                mod_pid.direction = form_mod_pid.modDirection.data
-                mod_pid.period = form_mod_pid.modPeriod.data
-                mod_pid.setpoint = form_mod_pid.modSetpoint.data
-                mod_pid.p = form_mod_pid.modKp.data
-                mod_pid.i = form_mod_pid.modKi.data
-                mod_pid.d = form_mod_pid.modKd.data
-                mod_pid.integrator_min = form_mod_pid.modIntegratorMin.data
-                mod_pid.integrator_max = form_mod_pid.modIntegratorMax.data
-                mod_pid.raise_relay_id = form_mod_pid.modRaiseRelayID.data
-                mod_pid.raise_min_duration = form_mod_pid.modRaiseMinDuration.data
-                mod_pid.raise_max_duration = form_mod_pid.modRaiseMaxDuration.data
-                mod_pid.lower_relay_id = form_mod_pid.modLowerRelayID.data
-                mod_pid.lower_min_duration = form_mod_pid.modLowerMinDuration.data
-                mod_pid.lower_max_duration = form_mod_pid.modLowerMaxDuration.data
-                mod_pid.method_id = form_mod_pid.mod_method_id.data
-                db_session.commit()
-                # If the controller is active or paused, refresh variables in thread
-                if mod_pid.activated:
-                    control = DaemonControl()
-                    return_value = control.pid_mod(form_mod_pid.modPID_id.data)
-                    flash(gettext(
-                        "PID Controller settings refresh response: %(resp)s",
-                        resp=return_value), "success")
+                    error.append(gettext(
+                        "Select a Measure Type that is compatible with the "
+                        "chosen sensor"))
+                if not error:
+                    mod_pid = db_session.query(PID).filter(
+                        PID.id == form_mod_pid.modPID_id.data).first()
+                    mod_pid.name = form_mod_pid.modName.data
+                    mod_pid.sensor_id = form_mod_pid.modSensorID.data
+                    mod_pid.measure_type = form_mod_pid.modMeasureType.data
+                    mod_pid.direction = form_mod_pid.modDirection.data
+                    mod_pid.period = form_mod_pid.modPeriod.data
+                    mod_pid.setpoint = form_mod_pid.modSetpoint.data
+                    mod_pid.p = form_mod_pid.modKp.data
+                    mod_pid.i = form_mod_pid.modKi.data
+                    mod_pid.d = form_mod_pid.modKd.data
+                    mod_pid.integrator_min = form_mod_pid.modIntegratorMin.data
+                    mod_pid.integrator_max = form_mod_pid.modIntegratorMax.data
+                    mod_pid.raise_relay_id = form_mod_pid.modRaiseRelayID.data
+                    mod_pid.raise_min_duration = form_mod_pid.modRaiseMinDuration.data
+                    mod_pid.raise_max_duration = form_mod_pid.modRaiseMaxDuration.data
+                    mod_pid.lower_relay_id = form_mod_pid.modLowerRelayID.data
+                    mod_pid.lower_min_duration = form_mod_pid.modLowerMinDuration.data
+                    mod_pid.lower_max_duration = form_mod_pid.modLowerMaxDuration.data
+                    mod_pid.method_id = form_mod_pid.mod_method_id.data
+                    db_session.commit()
+                    # If the controller is active or paused, refresh variables in thread
+                    if mod_pid.activated:
+                        control = DaemonControl()
+                        return_value = control.pid_mod(form_mod_pid.modPID_id.data)
+                        flash(gettext(
+                            "PID Controller settings refresh response: %(resp)s",
+                            resp=return_value), "success")
         except Exception as except_msg:
-            flash(gettext("PID Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_pid'))
     else:
         flash_form_errors(form_mod_pid)
 
 
 def pid_del(pid_id, display_order):
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("PID"))
+    error = []
+
     try:
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             pid = db_session.query(PID).filter(
@@ -1287,10 +1328,17 @@ def pid_del(pid_id, display_order):
             order_pid.pid = ','.join(display_order)
             db_session.commit()
     except Exception as except_msg:
-        flash(gettext("PID Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('page_routes.page_pid'))
 
 
 def pid_reorder(pid_id, display_order, direction):
+    action = '{action} {controller}'.format(
+        action=gettext("Reorder"),
+        controller=gettext("PID"))
+    error = []
+
     try:
         if direction == 'up':
             status, reord_list = reorder_list(display_order, pid_id, 'up')
@@ -1302,9 +1350,11 @@ def pid_reorder(pid_id, display_order, direction):
                 order_pid.pid = ','.join(reord_list)
                 db_session.commit()
         else:
-            flash(reord_list, status)
+            error.append(reord_list)
     except Exception as except_msg:
-        flash(gettext("PID Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('page_routes.page_pid'))
 
 
 def has_required_pid_values(pid_id):
@@ -1329,7 +1379,12 @@ def has_required_pid_values(pid_id):
 
 def pid_activate(pid_id):
     if has_required_pid_values(pid_id):
-        return redirect('/pid')
+        return redirect(url_for('page_routes.page_pid'))
+
+    action = '{action} {controller}'.format(
+        action=gettext("Actuate"),
+        controller=gettext("PID"))
+    error = []
 
     # Check if associated sensor is activated
     with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
@@ -1337,23 +1392,27 @@ def pid_activate(pid_id):
             PID.id == pid_id).first()
         sensor = db_session.query(Sensor).filter(
             Sensor.id == pid.sensor_id).first()
-        if not sensor.is_activated():
-            flash(gettext("Cannot activate controller if the associated "
-                          "sensor controller is inactive"), "error")
-            return redirect('/pid')
 
-        # Signal the duration method can run because it's been
-        # properly initiated (non-power failure)
-        mod_method = db_session.query(Method).filter(
-            Method.method_id == pid.method_id)
-        mod_method = mod_method.filter(Method.method_order == 0).first()
-        if mod_method and mod_method.method_type == 'Duration':
-            mod_method.start_time = 'Ready'
-            db_session.commit()
-    time.sleep(1)
-    activate_deactivate_controller('activate',
-                                   'PID',
-                                   pid_id)
+        if not sensor.is_activated():
+            error.append(gettext(
+                "Cannot activate PID controller if the associated sensor "
+                "controller is inactive"))
+        else:
+            # Signal the duration method can run because it's been
+            # properly initiated (non-power failure)
+            mod_method = db_session.query(Method).filter(
+                Method.method_id == pid.method_id)
+            mod_method = mod_method.filter(Method.method_order == 0).first()
+            if mod_method and mod_method.method_type == 'Duration':
+                mod_method.start_time = 'Ready'
+                db_session.commit()
+
+            time.sleep(1)
+            activate_deactivate_controller('activate',
+                                           'PID',
+                                           pid_id)
+
+    flash_success_errors(error, action, url_for('page_routes.page_pid'))
 
 
 def pid_deactivate(pid_id):
@@ -1395,7 +1454,7 @@ def pid_manipulate(pid_id, action):
         flash(gettext("Daemon response to PID controller %(act)s command: "
                       "%(rval)s", act=action, rval=return_value), "success")
     except Exception as err:
-        flash(gettext("PID Error: %(err)s", err=err), "error")
+        flash(gettext("PID Error: %(msg)s", msg=err), "error")
 
 
 #
@@ -1403,13 +1462,15 @@ def pid_manipulate(pid_id, action):
 #
 
 def relay_on_off(form_relay_on_off):
-    if deny_guest_user():
-        return redirect('/relay')
+    action = '{action} {controller}'.format(
+        action=gettext("Actuate"),
+        controller=gettext("Relay"))
+    error = []
 
     try:
         control = DaemonControl()
         if int(form_relay_on_off.Relay_pin.data) <= 0:
-            flash(gettext("Cannot modulate relay with a GPIO of 0"), "error")
+            error.append(gettext("Cannot modulate relay with a GPIO of 0"))
         elif form_relay_on_off.On.data:
             return_value = control.relay_on(form_relay_on_off.Relay_id.data, 0)
             flash(gettext("Relay successfully turned on: %(rvalue)s",
@@ -1419,12 +1480,15 @@ def relay_on_off(form_relay_on_off):
             flash(gettext("Relay successfully turned off: %(rvalue)s",
                           rvalue=return_value), "success")
     except Exception as except_msg:
-        flash(gettext("Relay Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
 def relay_add(form_add_relay, display_order):
-    if deny_guest_user():
-        return redirect('/relay')
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Relay"))
+    error = []
 
     if form_add_relay.validate():
         for _ in range(0, form_add_relay.numberRelays.data):
@@ -1445,18 +1509,21 @@ def relay_add(form_add_relay, display_order):
                     display_order.append(random_relay_id)
                     order_relay.relay = ','.join(display_order)
                     db_session.commit()
-                manipulate_relay(random_relay_id, 'add')
+                manipulate_relay(gettext('Add'), random_relay_id)
             except sqlalchemy.exc.OperationalError as except_msg:
-                flash(gettext("Relay Error: %(err)s", err=except_msg), "error")
+                error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
-                flash(gettext("Relay Error: %(err)s", err=except_msg), "error")
+                error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_relay'))
     else:
         flash_form_errors(form_add_relay)
 
 
 def relay_mod(form_mod_relay):
-    if deny_guest_user():
-        return redirect('/relay')
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Relay"))
+    error = []
 
     if form_mod_relay.validate():
         try:
@@ -1472,16 +1539,19 @@ def relay_mod(form_mod_relay):
                 mod_relay.trigger = form_mod_relay.modTrigger.data
                 mod_relay.start_state = form_mod_relay.modStartState.data
                 db_session.commit()
-                manipulate_relay(form_mod_relay.modRelay_id.data, 'mod', setup_pin)
+                manipulate_relay(gettext('Modify'), form_mod_relay.modRelay_id.data, setup_pin)
         except Exception as except_msg:
-            flash(gettext("Relay Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_relay'))
     else:
         flash_form_errors(form_mod_relay)
 
 
 def relay_del(form_del_relay, display_order):
-    if deny_guest_user():
-        return redirect('/relay')
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Relay"))
+    error = []
 
     if form_del_relay.validate():
         try:
@@ -1493,16 +1563,19 @@ def relay_del(form_del_relay, display_order):
                 display_order.remove(form_del_relay.delRelay_id.data)
                 order_relay.relay = ','.join(display_order)
                 db_session.commit()
-            manipulate_relay(form_del_relay.delRelay_id.data, 'del')
+            manipulate_relay(gettext('Delete'), form_del_relay.delRelay_id.data)
         except Exception as except_msg:
-            flash(gettext("Relay Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_relay'))
     else:
         flash_form_errors(form_del_relay)
 
 
 def relay_reorder(form_order_relay, display_order):
-    if deny_guest_user():
-        return redirect('/relay')
+    action = '{action} {controller}'.format(
+        action=gettext("Reorder"),
+        controller=gettext("Relay"))
+    error = []
 
     if form_order_relay.validate():
         try:
@@ -1522,9 +1595,10 @@ def relay_reorder(form_order_relay, display_order):
                     order_relay.relay = ','.join(reord_list)
                     db_session.commit()
             else:
-                flash(reord_list, status)
+                error.append(reord_list)
         except Exception as except_msg:
-            flash(gettext("Relay Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_relay'))
     else:
         flash_form_errors(form_order_relay)
 
@@ -1534,8 +1608,10 @@ def relay_reorder(form_order_relay, display_order):
 #
 
 def relay_conditional_add(form_add_relay_cond):
-    if deny_guest_user():
-        return redirect('/relay')
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Relay Conditional"))
+    error = []
 
     if form_add_relay_cond.validate():
         for _ in range(0, form_add_relay_cond.numberRelayConditionals.data):
@@ -1558,19 +1634,23 @@ def relay_conditional_add(form_add_relay_cond):
                 with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     db_session.add(new_relay_cond)
             except sqlalchemy.exc.OperationalError as except_msg:
-                flash(gettext("Relay Error: %(err)s", err=except_msg), "error")
+                error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
-                flash(gettext("Relay Error: %(err)s", err=except_msg), "error")
+                error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_sensor'))
     else:
         flash_form_errors(form_add_relay_cond)
 
 
 def relay_conditional_mod(form_mod_relay_cond):
-    if deny_guest_user():
-        return redirect('/relay')
+    action = None
+    error = []
 
     try:
         if form_mod_relay_cond.activate.data:
+            action = '{action} {controller}'.format(
+                action=gettext("Activate"),
+                controller=gettext("Relay Conditional"))
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 relay_cond = db_session.query(RelayConditional)
                 relay_cond = relay_cond.filter(
@@ -1578,12 +1658,18 @@ def relay_conditional_mod(form_mod_relay_cond):
                 relay_cond.activated = True
                 db_session.commit()
         elif form_mod_relay_cond.deactivate.data:
+            action = '{action} {controller}'.format(
+                action=gettext("Deactivate"),
+                controller=gettext("Relay Conditional"))
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 relay_cond = db_session.query(RelayConditional).filter(
                     RelayConditional.id == form_mod_relay_cond.Relay_id.data).first()
                 relay_cond.activated = 0
                 db_session.commit()
         elif form_mod_relay_cond.delCondRelaySubmit.data:
+            action = '{action} {controller}'.format(
+                action=gettext("Delete"),
+                controller=gettext("Relay Conditional"))
             delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                                  RelayConditional,
                                  form_mod_relay_cond.Relay_id.data)
@@ -1605,8 +1691,11 @@ def relay_conditional_mod(form_mod_relay_cond):
                 db_session.commit()
         else:
             flash_form_errors(form_mod_relay_cond)
+            return redirect(url_for('page_routes.page_relay'))
     except Exception as except_msg:
-        flash(gettext("Relay Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('page_routes.page_sensor'))
 
 
 #
@@ -1614,8 +1703,10 @@ def relay_conditional_mod(form_mod_relay_cond):
 #
 
 def sensor_add(form_add_sensor, display_order):
-    if deny_guest_user():
-        return redirect('/sensor')
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Sensor"))
+    error = []
 
     if form_add_sensor.validate():
         for _ in range(0, form_add_sensor.numberSensors.data):
@@ -1731,76 +1822,79 @@ def sensor_add(form_add_sensor, display_order):
                     type=form_add_sensor.sensor.data, id=random_sensor_id),
                     "success")
             except sqlalchemy.exc.OperationalError as except_msg:
-                flash(gettext("Sensor Error: %(err)s", err=except_msg), "error")
+                error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
-                flash(gettext("Sensor Error: %(err)s", err=except_msg), "error")
+                error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_sensor'))
     else:
         flash_form_errors(form_add_sensor)
 
 
 def sensor_mod(form_mod_sensor):
-    if deny_guest_user():
-        return redirect('/sensor')
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Sensor"))
+    error = []
 
     try:
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             mod_sensor = db_session.query(Sensor).filter(
                 Sensor.id == form_mod_sensor.modSensor_id.data).first()
 
-            error = False
             if not form_mod_sensor.modLocation.data:
-                flash(gettext("Invalid device GPIO/I2C address/location"),
-                      "error")
-                error = True
+                error.append(gettext(
+                    "Invalid device GPIO/I2C address/location"))
             if mod_sensor.activated:
-                flash(gettext("Deactivate sensor controller before modifying "
-                              "its settings"), "error")
-                error = True
+                error.append(gettext(
+                    "Deactivate sensor controller before modifying its "
+                    "settings"))
             if (mod_sensor.device == 'AM2315' and
                     form_mod_sensor.modPeriod.data < 7):
-                flash(gettext("Choose a Read Period equal to or greater than "
-                              "7. The AM2315 may become unresponsive if the "
-                              "period is below 7."), "error")
-                error = True
+                error.append(gettext(
+                    "Choose a Read Period equal to or greater than 7. The "
+                    "AM2315 may become unresponsive if the period is "
+                    "below 7."))
             if form_mod_sensor.modPeriod.data < mod_sensor.pre_relay_duration:
-                flash(gettext("The Read Period cannot be less than the "
-                              "Pre-Relay Duration"), "error")
-                error = True
+                error.append(gettext(
+                    "The Read Period cannot be less than the Pre-Relay "
+                    "Duration"))
 
-            if error:
-                return redirect('/sensor')
-
-            mod_sensor.name = form_mod_sensor.modName.data
-            mod_sensor.i2c_bus = form_mod_sensor.modBus.data
-            mod_sensor.location = form_mod_sensor.modLocation.data
-            mod_sensor.multiplexer_address = form_mod_sensor.modMultiplexAddress.data
-            mod_sensor.multiplexer_bus = form_mod_sensor.modMultiplexBus.data
-            mod_sensor.multiplexer_channel = form_mod_sensor.modMultiplexChannel.data
-            mod_sensor.adc_channel = form_mod_sensor.modADCChannel.data
-            mod_sensor.adc_gain = form_mod_sensor.modADCGain.data
-            mod_sensor.adc_resolution = form_mod_sensor.modADCResolution.data
-            mod_sensor.adc_measure = form_mod_sensor.modADCMeasure.data.replace(" ", "_")
-            mod_sensor.adc_measure_units = form_mod_sensor.modADCMeasureUnits.data
-            mod_sensor.adc_volts_min = form_mod_sensor.modADCVoltsMin.data
-            mod_sensor.adc_volts_max = form_mod_sensor.modADCVoltsMax.data
-            mod_sensor.adc_units_min = form_mod_sensor.modADCUnitsMin.data
-            mod_sensor.adc_units_max = form_mod_sensor.modADCUnitsMax.data
-            mod_sensor.switch_edge = form_mod_sensor.modSwitchEdge.data
-            mod_sensor.switch_bouncetime = form_mod_sensor.modSwitchBounceTime.data
-            mod_sensor.switch_reset_period = form_mod_sensor.modSwitchResetPeriod.data
-            mod_sensor.pre_relay_id = form_mod_sensor.modPreRelayID.data
-            mod_sensor.pre_relay_duration = form_mod_sensor.modPreRelayDuration.data
-            mod_sensor.period = form_mod_sensor.modPeriod.data
-            mod_sensor.sht_clock_pin = form_mod_sensor.modSHTClockPin.data
-            mod_sensor.sht_voltage = float(form_mod_sensor.modSHTVoltage.data)
-            db_session.commit()
+            if not error:
+                mod_sensor.name = form_mod_sensor.modName.data
+                mod_sensor.i2c_bus = form_mod_sensor.modBus.data
+                mod_sensor.location = form_mod_sensor.modLocation.data
+                mod_sensor.multiplexer_address = form_mod_sensor.modMultiplexAddress.data
+                mod_sensor.multiplexer_bus = form_mod_sensor.modMultiplexBus.data
+                mod_sensor.multiplexer_channel = form_mod_sensor.modMultiplexChannel.data
+                mod_sensor.adc_channel = form_mod_sensor.modADCChannel.data
+                mod_sensor.adc_gain = form_mod_sensor.modADCGain.data
+                mod_sensor.adc_resolution = form_mod_sensor.modADCResolution.data
+                mod_sensor.adc_measure = form_mod_sensor.modADCMeasure.data.replace(" ", "_")
+                mod_sensor.adc_measure_units = form_mod_sensor.modADCMeasureUnits.data
+                mod_sensor.adc_volts_min = form_mod_sensor.modADCVoltsMin.data
+                mod_sensor.adc_volts_max = form_mod_sensor.modADCVoltsMax.data
+                mod_sensor.adc_units_min = form_mod_sensor.modADCUnitsMin.data
+                mod_sensor.adc_units_max = form_mod_sensor.modADCUnitsMax.data
+                mod_sensor.switch_edge = form_mod_sensor.modSwitchEdge.data
+                mod_sensor.switch_bouncetime = form_mod_sensor.modSwitchBounceTime.data
+                mod_sensor.switch_reset_period = form_mod_sensor.modSwitchResetPeriod.data
+                mod_sensor.pre_relay_id = form_mod_sensor.modPreRelayID.data
+                mod_sensor.pre_relay_duration = form_mod_sensor.modPreRelayDuration.data
+                mod_sensor.period = form_mod_sensor.modPeriod.data
+                mod_sensor.sht_clock_pin = form_mod_sensor.modSHTClockPin.data
+                mod_sensor.sht_voltage = float(form_mod_sensor.modSHTVoltage.data)
+                db_session.commit()
     except Exception as except_msg:
-        flash(gettext("Sensor Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('page_routes.page_sensor'))
 
 
 def sensor_del(form_mod_sensor, display_order):
-    if deny_guest_user():
-        return redirect('/sensor')
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Sensor"))
+    error = []
 
     try:
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
@@ -1830,14 +1924,19 @@ def sensor_del(form_mod_sensor, display_order):
             order_sensor.sensor = ','.join(display_order)
             db_session.commit()
     except Exception as except_msg:
-        flash(gettext("Sensor Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('page_routes.page_sensor'))
 
 
 def sensor_reorder(form_mod_sensor, display_order):
-    if deny_guest_user():
-        return redirect('/sensor')
+    action = '{action} {controller}'.format(
+        action=gettext("Reorder"),
+        controller=gettext("Sensor"))
+    error = []
 
     try:
+        status = None
         if form_mod_sensor.orderSensorUp.data:
             status, reord_list = reorder_list(
                 display_order, form_mod_sensor.modSensor_id.data, 'up')
@@ -1849,16 +1948,15 @@ def sensor_reorder(form_mod_sensor, display_order):
                 order_sensor = db_session.query(DisplayOrder).first()
                 order_sensor.sensor = ','.join(reord_list)
                 db_session.commit()
-        else:
-            flash(reord_list, status)
+        elif status == 'error':
+            error.append(reord_list)
     except Exception as except_msg:
-        flash(gettext("Sensor Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('page_routes.page_sensor'))
 
 
 def sensor_activate(form_mod_sensor):
-    if deny_guest_user():
-        return redirect('/sensor')
-
     with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
         sensor = db_session.query(Sensor).filter(
             Sensor.id == form_mod_sensor.modSensor_id.data).first()
@@ -1872,9 +1970,6 @@ def sensor_activate(form_mod_sensor):
 
 
 def sensor_deactivate(form_mod_sensor):
-    if deny_guest_user():
-        return redirect('/sensor')
-
     sensor_deactivate_associated_controllers(
         form_mod_sensor.modSensor_id.data)
     activate_deactivate_controller('deactivate',
@@ -1909,8 +2004,10 @@ def sensor_deactivate_associated_controllers(sensor_id):
 #
 
 def sensor_conditional_add(form_mod_sensor):
-    if deny_guest_user():
-        return redirect('/sensor')
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Sensor Conditional"))
+    error = []
 
     new_sensor_cond = SensorConditional()
     random_id = ''.join([random.choice(
@@ -1940,16 +2037,21 @@ def sensor_conditional_add(form_mod_sensor):
                                   'add',
                                   random_id)
     except sqlalchemy.exc.OperationalError as except_msg:
-        flash(gettext("Sensor Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
     except sqlalchemy.exc.IntegrityError as except_msg:
-        flash(gettext("Sensor Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('page_routes.page_sensor'))
 
 
 def sensor_conditional_mod(form_mod_sensor_cond):
-    if deny_guest_user():
-        return redirect('/sensor')
+    action = None
+    error = []
 
     if form_mod_sensor_cond.delSubmit.data:
+        action = '{action} {controller}'.format(
+            action=gettext("Delete"),
+            controller=gettext("Sensor Conditional"))
         try:
             delete_entry_with_id(
                 current_app.config['MYCODO_DB_PATH'],
@@ -1960,44 +2062,47 @@ def sensor_conditional_mod(form_mod_sensor_cond):
                 'del',
                 form_mod_sensor_cond.modCondSensor_id.data)
         except Exception as except_msg:
-            flash(gettext("Sensor Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
     elif (form_mod_sensor_cond.modSubmit.data and
             form_mod_sensor_cond.validate()):
+        action = '{action} {controller}'.format(
+            action=gettext("Modify"),
+            controller=gettext("Sensor Conditional"))
         try:
-            error = False
             if (form_mod_sensor_cond.DoRecord.data == 'photoemail' or form_mod_sensor_cond.DoRecord.data == 'videoemail') and not form_mod_sensor_cond.DoNotify.data:
-                flash(gettext("A notification email address is required "
-                              "if the record and email option is selected"),
-                      "error")
-                error = True
-            if error:
-                return redirect('/sensor')
-            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-                mod_sensor = db_session.query(SensorConditional).filter(
-                    SensorConditional.id == form_mod_sensor_cond.modCondSensor_id.data).first()
-                mod_sensor.name = form_mod_sensor_cond.modCondName.data
-                mod_sensor.period = form_mod_sensor_cond.Period.data
-                mod_sensor.measurement_type = form_mod_sensor_cond.MeasureType.data
-                mod_sensor.edge_select = form_mod_sensor_cond.EdgeSelect.data
-                mod_sensor.edge_detected = form_mod_sensor_cond.EdgeDetected.data
-                mod_sensor.gpio_state = form_mod_sensor_cond.GPIOState.data
-                mod_sensor.direction = form_mod_sensor_cond.Direction.data
-                mod_sensor.setpoint = form_mod_sensor_cond.Setpoint.data
-                mod_sensor.relay_id = form_mod_sensor_cond.modCondRelayID.data
-                mod_sensor.relay_state = form_mod_sensor_cond.RelayState.data
-                mod_sensor.relay_on_duration = form_mod_sensor_cond.RelayDuration.data
-                mod_sensor.execute_command = form_mod_sensor_cond.DoExecute.data
-                mod_sensor.email_notify = form_mod_sensor_cond.DoNotify.data
-                mod_sensor.flash_lcd = form_mod_sensor_cond.DoFlashLCD.data
-                mod_sensor.camera_record = form_mod_sensor_cond.DoRecord.data
-                db_session.commit()
-                check_refresh_conditional(
-                    form_mod_sensor_cond.modSensor_id.data,
-                    'mod',
-                    form_mod_sensor_cond.modCondSensor_id.data)
+                error.append(gettext("A notification email address is "
+                                     "required if the record and email "
+                                     "option is selected"))
+            else:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
+                    mod_sensor = db_session.query(SensorConditional).filter(
+                        SensorConditional.id == form_mod_sensor_cond.modCondSensor_id.data).first()
+                    mod_sensor.name = form_mod_sensor_cond.modCondName.data
+                    mod_sensor.period = form_mod_sensor_cond.Period.data
+                    mod_sensor.measurement_type = form_mod_sensor_cond.MeasureType.data
+                    mod_sensor.edge_select = form_mod_sensor_cond.EdgeSelect.data
+                    mod_sensor.edge_detected = form_mod_sensor_cond.EdgeDetected.data
+                    mod_sensor.gpio_state = form_mod_sensor_cond.GPIOState.data
+                    mod_sensor.direction = form_mod_sensor_cond.Direction.data
+                    mod_sensor.setpoint = form_mod_sensor_cond.Setpoint.data
+                    mod_sensor.relay_id = form_mod_sensor_cond.modCondRelayID.data
+                    mod_sensor.relay_state = form_mod_sensor_cond.RelayState.data
+                    mod_sensor.relay_on_duration = form_mod_sensor_cond.RelayDuration.data
+                    mod_sensor.execute_command = form_mod_sensor_cond.DoExecute.data
+                    mod_sensor.email_notify = form_mod_sensor_cond.DoNotify.data
+                    mod_sensor.flash_lcd = form_mod_sensor_cond.DoFlashLCD.data
+                    mod_sensor.camera_record = form_mod_sensor_cond.DoRecord.data
+                    db_session.commit()
+                    check_refresh_conditional(
+                        form_mod_sensor_cond.modSensor_id.data,
+                        'mod',
+                        form_mod_sensor_cond.modCondSensor_id.data)
         except Exception as except_msg:
-            flash(gettext("Sensor Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
     elif form_mod_sensor_cond.activateSubmit.data:
+        action = '{action} {controller}'.format(
+            action=gettext("Activate"),
+            controller=gettext("Sensor Conditional"))
         try:
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 mod_sensor = db_session.query(SensorConditional).filter(
@@ -2033,15 +2138,16 @@ def sensor_conditional_mod(form_mod_sensor_cond):
                         'mod',
                         form_mod_sensor_cond.modCondSensor_id.data)
                 else:
-                    flash(gettext(
+                    error.append(gettext(
                         "Cannot activate sensor conditional %(cond)s because "
                         "of an incomplete configuration",
-                        cond=form_mod_sensor_cond.modCondSensor_id.data),
-                          "error")
-                return redirect('/sensor')
+                        cond=form_mod_sensor_cond.modCondSensor_id.data))
         except Exception as except_msg:
-            flash(gettext("Sensor Error: %(err)s", err=except_msg), "error")
+            error.append(except_msg)
     elif form_mod_sensor_cond.deactivateSubmit.data:
+        action = '{action} {controller}'.format(
+            action=gettext("Deactivate"),
+            controller=gettext("Sensor Conditional"))
         try:
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 mod_sensor = db_session.query(SensorConditional).filter(
@@ -2053,9 +2159,9 @@ def sensor_conditional_mod(form_mod_sensor_cond):
                     'mod',
                     form_mod_sensor_cond.modCondSensor_id.data)
         except Exception as except_msg:
-            flash(gettext("Sensor Error: %(err)s", err=except_msg), "error")
-    else:
-        flash_form_errors(form_mod_sensor_cond)
+            error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('page_routes.page_sensor'))
 
 
 def check_refresh_conditional(sensor_id, cond_mod, cond_id):
@@ -2073,8 +2179,10 @@ def check_refresh_conditional(sensor_id, cond_mod, cond_id):
 #
 
 def timer_add(form_add_timer, timer_type, display_order):
-    if deny_guest_user():
-        return redirect('/timer')
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Timer"))
+    error = []
 
     if form_add_timer.validate():
         new_timer = Timer()
@@ -2098,78 +2206,93 @@ def timer_add(form_add_timer, timer_type, display_order):
         elif timer_type == 'duration':
             if (form_add_timer.durationOn.data <= 0 or
                     form_add_timer.durationOff.data <= 0):
-                flash(gettext("Error in the Duration field(s): Durations "
-                              "must be greater than 0"), "error")
-                return 1
-            new_timer.timer_type = 'duration'
-            new_timer.duration_on = form_add_timer.durationOn.data
-            new_timer.duration_off = form_add_timer.durationOff.data
-        try:
-            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-                db_session.add(new_timer)
-            with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
+                error.append(gettext("Durations must be greater than 0"),
+                             "error")
+            else:
+                new_timer.timer_type = 'duration'
+                new_timer.duration_on = form_add_timer.durationOn.data
+                new_timer.duration_off = form_add_timer.durationOff.data
+
+        if not error:
+            try:
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
+                    db_session.add(new_timer)
+                with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                     order_timer = db_session.query(DisplayOrder).first()
                     display_order.append(random_timer_id)
                     order_timer.timer = ','.join(display_order)
                     db_session.commit()
-        except sqlalchemy.exc.OperationalError as except_msg:
-            flash(gettext("Timer Error: %(err)s", err=except_msg), "error")
-        except sqlalchemy.exc.IntegrityError  as except_msg:
-            flash(gettext("Timer Error: %(err)s", err=except_msg), "error")
+            except sqlalchemy.exc.OperationalError as except_msg:
+                error.append(except_msg)
+            except sqlalchemy.exc.IntegrityError  as except_msg:
+                error.append(except_msg)
+
+        flash_success_errors(error, action, url_for('page_routes.page_timer'))
     else:
         flash_form_errors(form_add_timer)
 
 
 def timer_mod(form_timer):
-    if deny_guest_user():
-        return redirect('/timer')
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Timer"))
+    error = []
 
     try:
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             mod_timer = db_session.query(Timer).filter(
                 Timer.id == form_timer.timer_id.data).first()
             if mod_timer.activated:
-                flash(gettext("Deactivate timer controller before modifying "
-                              "its settings"), "error")
-                return redirect('/timer')
-            mod_timer.name = form_timer.name.data
-            mod_timer.relay_id = form_timer.relayID.data
-            if mod_timer.timer_type == 'time':
-                mod_timer.state = form_timer.state.data
-                mod_timer.time_start = form_timer.timeStart.data
-                mod_timer.duration_on = form_timer.timeOnDurationOn.data
-            elif mod_timer.timer_type == 'timespan':
-                mod_timer.state = form_timer.state.data
-                mod_timer.time_start = form_timer.timeStart.data
-                mod_timer.time_end = form_timer.timeEnd.data
-            elif mod_timer.timer_type == 'duration':
-                mod_timer.duration_on = form_timer.durationOn.data
-                mod_timer.duration_off = form_timer.durationOff.data
-            db_session.commit()
+                error.append(gettext("Deactivate timer controller before "
+                                     "modifying its settings"))
+                return redirect(url_for('page_routes.page_timer'))
+            else:
+                mod_timer.name = form_timer.name.data
+                mod_timer.relay_id = form_timer.relayID.data
+                if mod_timer.timer_type == 'time':
+                    mod_timer.state = form_timer.state.data
+                    mod_timer.time_start = form_timer.timeStart.data
+                    mod_timer.duration_on = form_timer.timeOnDurationOn.data
+                elif mod_timer.timer_type == 'timespan':
+                    mod_timer.state = form_timer.state.data
+                    mod_timer.time_start = form_timer.timeStart.data
+                    mod_timer.time_end = form_timer.timeEnd.data
+                elif mod_timer.timer_type == 'duration':
+                    mod_timer.duration_on = form_timer.durationOn.data
+                    mod_timer.duration_off = form_timer.durationOff.data
+                db_session.commit()
     except Exception as except_msg:
-        flash(gettext("Timer Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('page_routes.page_timer'))
 
 
 def timer_del(form_timer, display_order):
-    if deny_guest_user():
-        return redirect('/timer')
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Timer"))
+    error = []
 
     try:
         delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                              Timer,
                              form_timer.timer_id.data)
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-                order_sensor = db_session.query(DisplayOrder).first()
-                display_order.remove(form_timer.timer_id.data)
-                order_sensor.timer = ','.join(display_order)
-                db_session.commit()
+            order_sensor = db_session.query(DisplayOrder).first()
+            display_order.remove(form_timer.timer_id.data)
+            order_sensor.timer = ','.join(display_order)
+            db_session.commit()
     except Exception as except_msg:
-        flash(gettext("Timer Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('page_routes.page_timer'))
 
 
 def timer_reorder(form_timer, display_order):
-    if deny_guest_user():
-        return redirect('/timer')
+    action = '{action} {controller}'.format(
+        action=gettext("Reorder"),
+        controller=gettext("Timer"))
+    error = []
 
     try:
         status = ''
@@ -2188,9 +2311,11 @@ def timer_reorder(form_timer, display_order):
                 order_timer.timer = ','.join(reord_list)
                 db_session.commit()
         else:
-            flash(reord_list, status)
+            error.append(reord_list)
     except Exception as except_msg:
-        flash(gettext("Timer Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('page_routes.page_timer'))
 
 
 def timer_activate(form_timer):
@@ -2208,49 +2333,72 @@ def timer_deactivate(form_timer):
 #
 
 def user_add(form_add_user):
-    if deny_guest_user():
-        return redirect(url_for('general_routes.home'))
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("User"))
+    error = []
 
     if form_add_user.validate():
         new_user = Users()
-        if test_username(form_add_user.addUsername.data):
+        if not test_username(form_add_user.addUsername.data):
+            error.append(gettext(
+                "Invalid user name. Must be between 2 and 64 characters "
+                "and only contain letters and numbers."))
+
+        if not test_password(form_add_user.addPassword.data):
+            error.append(gettext(
+                "Invalid password. Must be between 6 and 64 characters "
+                "and only contain letters, numbers, and symbols."))
+
+        if form_add_user.addPassword.data != form_add_user.addPassword_repeat.data:
+            error.append(gettext("Passwords do not match. Please try again."))
+
+        if not error:
             new_user.user_name = form_add_user.addUsername.data
-        new_user.user_email = form_add_user.addEmail.data
-        if test_password(form_add_user.addPassword.data):
+            new_user.user_email = form_add_user.addEmail.data
             new_user.set_password(form_add_user.addPassword.data)
-        new_user.user_restriction = form_add_user.addGroup.data
-        new_user.user_theme = 'slate'
-        try:
-            with session_scope(current_app.config['USER_DB_PATH']) as db_session:
-                db_session.add(new_user)
-        except sqlalchemy.exc.OperationalError as except_msg:
-            flash(gettext("User Error: %(err)s", err=except_msg), "error")
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            flash(gettext("User Error: %(err)s", err=except_msg), "error")
+            new_user.user_restriction = form_add_user.addGroup.data
+            new_user.user_theme = 'slate'
+            try:
+                with session_scope(current_app.config['USER_DB_PATH']) as db_session:
+                    db_session.add(new_user)
+
+            except sqlalchemy.exc.OperationalError as except_msg:
+                error.append(except_msg)
+            except sqlalchemy.exc.IntegrityError as except_msg:
+                error.append(except_msg)
+
+        flash_success_errors(error, action, url_for('settings_routes.settings_users'))
     else:
         flash_form_errors(form_add_user)
 
 
 def user_mod(form_mod_user):
-    if deny_guest_user():
-        return redirect(url_for('general_routes.home'))
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("User"))
+    error = []
 
     try:
-        if form_mod_user.validate():
-            with session_scope(current_app.config['USER_DB_PATH']) as db_session:
-                mod_user = db_session.query(Users).filter(
-                    Users.user_name == form_mod_user.modUsername.data).first()
-                mod_user.user_email = form_mod_user.modEmail.data
-                # Only change the password if it's entered in the form
-                logout_user = False
-                if form_mod_user.modPassword.data is not '':
-                    if (test_password(form_mod_user.modPassword.data) and
-                            form_mod_user.modPassword.data == form_mod_user.modPassword_repeat.data):
-                        mod_user.user_password_hash = bcrypt.hashpw(
-                            form_mod_user.modPassword.data.encode('utf-8'),
-                            bcrypt.gensalt())
-                        if session['user_name'] == form_mod_user.modUsername.data:
-                            logout_user = True
+        with session_scope(current_app.config['USER_DB_PATH']) as db_session:
+            mod_user = db_session.query(Users).filter(
+                Users.user_name == form_mod_user.modUsername.data).first()
+            mod_user.user_email = form_mod_user.modEmail.data
+            # Only change the password if it's entered in the form
+            logout_user = False
+            if form_mod_user.modPassword.data != '':
+                if not test_password(form_mod_user.modPassword.data):
+                    error.append(gettext("Invalid password"))
+                if form_mod_user.modPassword.data == form_mod_user.modPassword_repeat.data:
+                    mod_user.user_password_hash = bcrypt.hashpw(
+                        form_mod_user.modPassword.data.encode('utf-8'),
+                        bcrypt.gensalt())
+                    if session['user_name'] == form_mod_user.modUsername.data:
+                        logout_user = True
+                else:
+                    error.append(gettext("Passwords do not match. Please try again."))
+
+            if not error:
                 mod_user.user_restriction = form_mod_user.modGroup.data
                 mod_user.user_theme = form_mod_user.modTheme.data
                 if session['user_name'] == form_mod_user.modUsername.data:
@@ -2258,37 +2406,41 @@ def user_mod(form_mod_user):
                 db_session.commit()
                 if logout_user:
                     return 'logout'
-        else:
-            flash_form_errors(form_mod_user)
     except Exception as except_msg:
-        flash(gettext("Settings Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('settings_routes.settings_users'))
 
 
 def user_del(form_del_user):
-    if deny_guest_user():
-        return redirect(url_for('general_routes.home'))
-
-    if form_del_user.validate():
-        delete_user(current_app.config['USER_DB_PATH'],
-                    Users,
-                    form_del_user.delUsername.data)
-        if form_del_user.delUsername.data == session['user_name']:
-            return 'logout'
-    else:
-        flash_form_errors(form_del_user)
+    try:
+        if form_del_user.validate():
+            delete_user(current_app.config['USER_DB_PATH'],
+                        Users,
+                        form_del_user.delUsername.data)
+            if form_del_user.delUsername.data == session['user_name']:
+                return 'logout'
+        else:
+            flash_form_errors(form_del_user)
+    except Exception as except_msg:
+        flash(gettext("Error: %(msg)s",
+                      msg='{action} {user}: {err}'.format(
+                          action=gettext("Delete"),
+                          user=form_del_user.delUsername.data,
+                          err=except_msg)),
+              "error")
 
 
 #
 # Settings modifications
 #
 
-#
-# General
-#
-
 def settings_general_mod(form_mod_general):
-    if deny_guest_user():
-        return redirect('/settings')
+    """ Modify General settings """
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("General Settings"))
+    error = []
 
     try:
         if form_mod_general.validate():
@@ -2316,16 +2468,17 @@ def settings_general_mod(form_mod_general):
         else:
             flash_form_errors(form_mod_general)
     except Exception as except_msg:
-        flash(gettext("Settings Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
 
+    flash_success_errors(error, action, url_for('settings_routes.settings_general'))
 
-#
-# Camera
-#
 
 def settings_camera_mod(form_mod_camera):
-    if deny_guest_user():
-        return redirect('/settings')
+    """ Modify Camera settings """
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Camera Settings"))
+    error = []
 
     try:
         if form_mod_camera.validate():
@@ -2338,16 +2491,20 @@ def settings_camera_mod(form_mod_camera):
         else:
             flash_form_errors(form_mod_camera)
     except Exception as except_msg:
-        flash(gettext("Settings Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
 
+    flash_success_errors(error, action, url_for('settings_routes.settings_camera'))
 
-#
-# Alerts
-#
 
 def settings_alert_mod(form_mod_alert):
+    """ Modify Alert settings """
     if deny_guest_user():
-        return redirect('/alert')
+        return redirect(url_for('general_routes.home'))
+
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Alert Settings"))
+    error = []
 
     try:
         if form_mod_alert.validate():
@@ -2363,6 +2520,7 @@ def settings_alert_mod(form_mod_alert):
                                   "inbox to see if it was successful.",
                                   recip=form_mod_alert.testEmailTo.data),
                           "success")
+                    return redirect(url_for('settings_routes.settings_alerts'))
                 else:
                     mod_smtp.host = form_mod_alert.smtpHost.data
                     mod_smtp.port = form_mod_alert.smtpPort.data
@@ -2376,32 +2534,18 @@ def settings_alert_mod(form_mod_alert):
         else:
             flash_form_errors(form_mod_alert)
     except Exception as except_msg:
-        flash(gettext("Settings Error: %(err)s", err=except_msg), "error")
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('settings_routes.settings_alerts'))
 
 
 #
 # Miscellaneous
 #
 
-def reorder_list(modified_list, item, direction):
-    """Reorder entry in a comma-separated list either up or down"""
-    from_position = modified_list.index(item)
-    if direction == "up":
-        if from_position == 0:
-            return 'error', 'Cannot move above the first item in the list'
-        to_position = from_position - 1
-    elif direction == 'down':
-        if from_position == len(modified_list) - 1:
-            return 'error', 'Cannot move below the last item in the list'
-        to_position = from_position + 1
-    else:
-        return 'error', []
-    modified_list.insert(to_position, modified_list.pop(from_position))
-    return 'success', modified_list
-
 
 def db_retrieve_table(database, table, first=False, device_id=''):
-    """Return table data from database SQL query"""
+    """ Return table data from database SQL query """
     with session_scope(database) as new_session:
         if first:
             return_table = new_session.query(table).first()
@@ -2416,36 +2560,61 @@ def db_retrieve_table(database, table, first=False, device_id=''):
 
 
 def delete_user(db_path, users, username):
-    """Delete user from SQL database"""
+    """ Delete user from SQL database """
     try:
         with session_scope(db_path) as db_session:
             user = db_session.query(users).filter(
                 users.user_name == username).first()
             db_session.delete(user)
-            flash(gettext("User %(user)s deleted", user=username), "success")
+            flash(gettext("Success: %(msg)s",
+                          msg='{action} {user}'.format(
+                              action=gettext("Delete"),
+                              user=username)),
+                  "success")
             return 1
     except sqlalchemy.orm.exc.NoResultFound:
-        flash(gettext("User %(user)s not found", user=username), "success")
+        flash(gettext("Error: %(err)s",
+                      err=gettext("User not found")),
+              "error")
         return 0
 
 
 def delete_entry_with_id(db_path, table, entry_id):
-    """Delete SQL database entry with specific id"""
+    """ Delete SQL database entry with specific id """
     try:
         with session_scope(db_path) as db_session:
             entries = db_session.query(table).filter(
                 table.id == entry_id).first()
             db_session.delete(entries)
-            flash(gettext("Entry with ID %(id)s deleted", id=entry_id),
+            flash(gettext("Success: %(msg)s",
+                          msg='{action} {id}'.format(
+                              action=gettext("Delete"),
+                              id=entry_id)),
                   "success")
             return 1
     except sqlalchemy.orm.exc.NoResultFound:
-        flash(gettext("Entry with ID %(id)s not found", id=entry_id), "error")
+        flash(gettext("Error: %(err)s",
+                      err=gettext("Entry with ID %(id)s not found",
+                                  id=entry_id)),
+              "error")
+        flash(gettext("Error: %(msg)s",
+                      msg='{action} {id}: {err}'.format(
+                          action=gettext("Delete"),
+                          id=entry_id,
+                          err=gettext("Entry with ID %(id)s not found",
+                                      id=entry_id))),
+              "success")
         return 0
 
 
+def deny_guest_user():
+    if session['user_group'] == 'guest':
+        flash(gettext("Guests are not permitted to do that"), "error")
+        return True
+
+
 def flash_form_errors(form):
-    """Flashes form errors for easier display"""
+    """ Flashes form errors for easier display """
     for field, errors in form.errors.items():
         for error in errors:
             flash(gettext(u"Error in the %(field)s field - %(err)s",
@@ -2454,10 +2623,19 @@ def flash_form_errors(form):
                   "error")
 
 
-def deny_guest_user():
-    if session['user_group'] == 'guest':
-        flash(gettext("Guests are not permitted to do that"), "error")
-        return True
+def flash_success_errors(error, action, redirect_url):
+    if error:
+        for each_error in error:
+            flash(gettext("Error: %(msg)s",
+                          msg='{action}: {err}'.format(
+                              action=action,
+                              err=each_error)),
+                  "error")
+        return redirect(redirect_url)
+    else:
+        flash(gettext("Success: %(msg)s",
+                      msg=action),
+              "success")
 
 
 def gzipped(f):
@@ -2498,3 +2676,20 @@ def gzipped(f):
         return f(*args, **kwargs)
 
     return view_func
+
+
+def reorder_list(modified_list, item, direction):
+    """ Reorder entry in a comma-separated list either up or down """
+    from_position = modified_list.index(item)
+    if direction == "up":
+        if from_position == 0:
+            return 'error', gettext('Cannot move above the first item in the list')
+        to_position = from_position - 1
+    elif direction == 'down':
+        if from_position == len(modified_list) - 1:
+            return 'error', gettext('Cannot move below the last item in the list')
+        to_position = from_position + 1
+    else:
+        return 'error', []
+    modified_list.insert(to_position, modified_list.pop(from_position))
+    return 'success', modified_list

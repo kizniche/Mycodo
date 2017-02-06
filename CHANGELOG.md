@@ -2,13 +2,13 @@
 
 ### Bugfixes
 
+  - Revert back to influxdb 1.1.1 to fix LCD time display (influxdata/influxdb#7877 will fix, when released)
   - Fix influxdb not restarting after a new version is installed
   - Fix issue with relay conditionals being triggered upon shutdown
   - Fix asynchronous graph to use local timezone rather than UTC ([#185](https://github.com/kizniche/mycodo/issues/185))
 
 ### Miscellaneous
 
-  - Revert back to influxdb 1.1.1 (until the regex bug fix is released)
   - Remove archived versions of Mycodo (Mycodo/old) during upgrade (saves space during backup)
 
 ## 4.1.15 (2017-01-31)

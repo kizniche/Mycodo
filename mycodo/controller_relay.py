@@ -460,6 +460,15 @@ class RelayController(threading.Thread):
         except Exception as msg:
             return 1, "Del_Relay Error: ID {}: {}".format(relay_id, msg)
 
+    def relay_setup(self, action, relay_id, setup_pin):
+        """ Add, delete, or modify a specific relay """
+        if action == 'Add':
+            return self.add_mod_relay(relay_id)
+        elif action == 'Modify':
+            return self.add_mod_relay(relay_id, do_setup_pin=setup_pin)
+        elif action == 'Delete':
+            return self.del_relay(relay_id)
+
     def current_amp_load(self):
         """
         Calculate the current amp draw from all the devices connected to

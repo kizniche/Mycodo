@@ -125,23 +125,9 @@ class ComServer(rpyc.Service):
         return mycodo_daemon.relay_off(relay_id, trigger_conditionals)
 
     @staticmethod
-    def exposed_add_relay(relay_id):
-        """Add relay to the running relay controller"""
-        return mycodo_daemon.add_relay(relay_id)
-
-    @staticmethod
-    def exposed_mod_relay(relay_id, setup_pin):
-        """
-        Instructs the running relay controller to update the relay settings
-        from the SQL database (instead of continually reading the database,
-        only update it when there's a reconfiguration from the web-UI.
-        """
-        return mycodo_daemon.mod_relay(relay_id, setup_pin)
-
-    @staticmethod
-    def exposed_del_relay(relay_id):
-        """Instruct running relay controller to delete a relay"""
-        return mycodo_daemon.del_relay(relay_id)
+    def exposed_relay_setup(action, relay_id, setup_pin):
+        """Add, delete, or modify a relay in the running relay controller"""
+        return mycodo_daemon.relay_setup(action, relay_id, setup_pin)
 
     @staticmethod
     def exposed_activate_controller(cont_type, cont_id):
@@ -489,43 +475,21 @@ class DaemonController(threading.Thread):
         self.controller['Relay'].relay_on_off(relay_id, 'off', trigger_conditionals=trigger_conditionals)
         return "Relay turned off"
 
-    def add_relay(self, relay_id):
+    def relay_setup(self, action, relay_id, setup_pin=False):
         """
-        Add relay to running relay controller
+        Setup relay in running relay controller
 
         :return: 0 for success, 1 for fail, with success for fail message
         :rtype: int, str
 
+        :param action: What action to perform on a specific relay ID
+        :type action: str
         :param relay_id: Unique ID for relay
         :type relay_id: str
-        """
-        return self.controller['Relay'].add_mod_relay(relay_id)
-
-    def del_relay(self, relay_id):
-        """
-        Delete relay from running relay controller
-
-        :return: 0 for success, 1 for fail, with success for fail message
-        :rtype: int, str
-
-        :param relay_id: Unique ID for relay
-        :type relay_id: str
-        """
-        return self.controller['Relay'].del_relay(relay_id)
-
-    def mod_relay(self, relay_id, setup_pin):
-        """
-        Modify relay settings in running relay controller
-
-        :return: 0 for success, 1 for fail, with success for fail message
-        :rtype: int, str
-
-        :param relay_id: Unique ID for relay
-        :type relay_id: str
-        :param setup_pin: Initialize new pin (if changed)
+        :param setup_pin: Whether or not to setup the GPIO pin as output
         :type setup_pin: bool
         """
-        return self.controller['Relay'].add_mod_relay(relay_id, do_setup_pin=setup_pin)
+        return self.controller['Relay'].relay_setup(action, relay_id, setup_pin)
 
     def pid_mod(self, pid_id):
         return self.controller['PID'][pid_id].pid_mod()

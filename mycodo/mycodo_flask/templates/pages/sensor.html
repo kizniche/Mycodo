@@ -161,15 +161,10 @@
                     {{form_mod_sensor.modMultiplexAddress.label(class_='control-label')}}
                     <div>
                       <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modMultiplexAddress" name="modMultiplexAddress" title="{{_('The I2C address of the multiplexer (if used)')}}.">
-                        <option value=""{% if each_sensor.multiplexer_address == '' %} selected{% endif %}>Disabled</option>
-                        <option value="0x70"{% if each_sensor.multiplexer_address == '0x70' %} selected{% endif %}>Address 0x70</option>
-                        <option value="0x71"{% if each_sensor.multiplexer_address == '0x71' %} selected{% endif %}>Address 0x71</option>
-                        <option value="0x72"{% if each_sensor.multiplexer_address == '0x72' %} selected{% endif %}>Address 0x72</option>
-                        <option value="0x73"{% if each_sensor.multiplexer_address == '0x73' %} selected{% endif %}>Address 0x73</option>
-                        <option value="0x74"{% if each_sensor.multiplexer_address == '0x74' %} selected{% endif %}>Address 0x74</option>
-                        <option value="0x75"{% if each_sensor.multiplexer_address == '0x75' %} selected{% endif %}>Address 0x75</option>
-                        <option value="0x76"{% if each_sensor.multiplexer_address == '0x76' %} selected{% endif %}>Address 0x76</option>
-                        <option value="0x77"{% if each_sensor.multiplexer_address == '0x77' %} selected{% endif %}>Address 0x77</option>
+                        <option value=""{% if each_sensor.multiplexer_address == '' %} selected{% endif %}>{{_('Disabled')}}</option>
+                      {% for each_mp_add in multiplexer_addresses %}
+                        <option value="{{each_mp_add}}"{% if each_sensor.multiplexer_address == each_mp_add %} selected{% endif %}>{{_('I2C Address %(address)s', address=each_mp_add)}}</option>
+                      {% endfor %}
                       </select>
                     </div>
                   </div>
@@ -183,15 +178,10 @@
                     {{form_mod_sensor.modMultiplexChannel.label(class_='control-label')}}
                     <div>
                       <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modMultiplexChannel" name="modMultiplexChannel" rel="tooltip" title="{{_('If a multiplexer address is selected, select the channel connected to your target device')}}.">
-                        <option value="0"{% if each_sensor.multiplexer_channel == 0 %} selected{% endif %}>Disabled</option>
-                        <option value="1"{% if each_sensor.multiplexer_channel == 1 %} selected{% endif %}>Channel 1</option>
-                        <option value="2"{% if each_sensor.multiplexer_channel == 2 %} selected{% endif %}>Channel 2</option>
-                        <option value="3"{% if each_sensor.multiplexer_channel == 3 %} selected{% endif %}>Channel 3</option>
-                        <option value="4"{% if each_sensor.multiplexer_channel == 4 %} selected{% endif %}>Channel 4</option>
-                        <option value="5"{% if each_sensor.multiplexer_channel == 5 %} selected{% endif %}>Channel 5</option>
-                        <option value="6"{% if each_sensor.multiplexer_channel == 6 %} selected{% endif %}>Channel 6</option>
-                        <option value="7"{% if each_sensor.multiplexer_channel == 7 %} selected{% endif %}>Channel 7</option>
-                        <option value="8"{% if each_sensor.multiplexer_channel == 8 %} selected{% endif %}>Channel 8</option>
+                        <option value="0"{% if each_sensor.multiplexer_channel == 0 %} selected{% endif %}>{{_('Disabled')}}</option>
+                      {% for each_mp_chan in multiplexer_channels %}
+                        <option value="{{each_mp_chan}}"{% if each_sensor.multiplexer_channel == each_mp_chan %} selected{% endif %}>{{_('Channel %(channel)s', channel=each_mp_chan)}}</option>
+                      {% endfor %}
                       </select>
                     </div>
                   </div>
@@ -236,11 +226,11 @@
                     <td>If</td>
                     {% if each_sensor.device_type == 'edgedetect' %}
                       <td class="text-left">
-                        <input id="EdgeSelect-0" name="EdgeSelect" type="radio" value="edge" {% if each_sensorcond.edge_select == 'edge' %} checked{% endif %}> Edge Detected, Direction of change:
+                        <input id="EdgeSelect-0" name="EdgeSelect" type="radio" value="edge" {% if each_sensorcond.edge_select == 'edge' %} checked{% endif %}> {{_('Edge Detected, Direction of change:')}}
                         <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="EdgeDetected" name="EdgeDetected" title="{{_('Detect low to high (rising), high to low (falling), or both?')}}">
-                          <option value="rising"{% if each_sensorcond.edge_detected == 'rising' %} selected{% endif %}>Rising</option>
-                          <option value="falling"{% if each_sensorcond.edge_detected == 'falling' %} selected{% endif %}>Falling</option>
-                          <option value="both"{% if each_sensorcond.edge_detected == 'both' %} selected{% endif %}>Both</option>
+                          <option value="rising"{% if each_sensorcond.edge_detected == 'rising' %} selected{% endif %}>{{_('Rising')}}</option>
+                          <option value="falling"{% if each_sensorcond.edge_detected == 'falling' %} selected{% endif %}>{{_('Falling')}}</option>
+                          <option value="both"{% if each_sensorcond.edge_detected == 'both' %} selected{% endif %}>{{_('Both')}}</option>
                         </select>
                       </td>
                     </tr>
@@ -250,8 +240,8 @@
                       <td>
                         <input id="EdgeSelect-1" name="EdgeSelect" type="radio" value="state" {% if each_sensorcond.edge_select == 'state' %} checked{% endif %}> GPIO state is:
                         <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="GPIOState" name="GPIOState">
-                          <option value="1"{% if each_sensorcond.gpio_state == 1 %} selected{% endif %}>HIGH (3.3 volts)</option>
-                          <option value="0"{% if each_sensorcond.gpio_state == 0 %} selected{% endif %}>LOW (0 volts)</option>
+                          <option value="1"{% if each_sensorcond.gpio_state == 1 %} selected{% endif %}>{{_('HIGH (3.3 volts)')}}</option>
+                          <option value="0"{% if each_sensorcond.gpio_state == 0 %} selected{% endif %}>{{_('LOW (0 volts)')}}</option>
                         </select>
                         (check every {{form_mod_sensor_cond.Period(class_='form-control', value=each_sensorcond.period, **{'title':_('The duration between checking whether the conditional is true (in seconds).'), 'size':'3'})}} seconds)
                       </td>
@@ -284,8 +274,8 @@
                         is
                         <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="Direction" name="Direction" title="{{_('The conditional is true when the measured condition is "Above" or "Below" the set value.')}}">
                           <option value=""></option>
-                          <option value="above"{% if each_sensorcond.direction == 'above' %} selected{% endif %}>Above</option>
-                          <option value="below"{% if each_sensorcond.direction == 'below' %} selected{% endif %}>Below</option>
+                          <option value="above"{% if each_sensorcond.direction == 'above' %} selected{% endif %}>{{_('Greater Than')}}</option>
+                          <option value="below"{% if each_sensorcond.direction == 'below' %} selected{% endif %}>{{_('Less Than')}}</option>
                         </select>
                         the setpoint of 
                         {{form_mod_sensor_cond.Setpoint(class_='form-control', value=each_sensorcond.setpoint, **{'title':_('What value to check the measurement against.'), 'size':'3'})}}
@@ -302,7 +292,7 @@
                           <option value="{{each_relay.id}}"{% if each_sensorcond.relay_id == each_relay.id %} selected{% endif %}>{{each_relay.id}} ({{each_relay.name}})</option>
                         {%- endfor -%}
                       </select>
-                      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="RelayState" name="RelayState" title="If a relay is selected, choose whether it turns on or off.">
+                      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="RelayState" name="RelayState" title="{{_('If a relay is selected, choose whether it turns on or off.')}}">
                         <option value=""></option>
                         <option value="on"{% if each_sensorcond.relay_state == 'on' %} selected{% endif %}>On</option>
                         <option value="off"{% if each_sensorcond.relay_state == 'off' %} selected{% endif %}>Off</option>

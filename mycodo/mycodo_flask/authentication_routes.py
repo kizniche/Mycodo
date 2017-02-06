@@ -58,8 +58,9 @@ def inject_hostname():
 @blueprint.route('/create_admin', methods=('GET', 'POST'))
 def create_admin():
     if admin_exists():
-        flash(gettext("Cannot access admin creation form if an admin user "
-              "already exists."), "error")
+        flash(gettext(
+            "Cannot access admin creation form if an admin user "
+            "already exists."), "error")
         return redirect(url_for('general_routes.home'))
     form = flaskforms.CreateAdmin()
     if request.method == 'POST':

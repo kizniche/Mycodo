@@ -342,7 +342,10 @@ def page_graph():
     # Detect which form on the page was submitted
     if request.method == 'POST':
         form_name = request.form['form-name']
-        if form_name == 'modGraph':
+        if session['user_group'] == 'guest':
+            flaskutils.deny_guest_user()
+            return redirect('/graph')
+        elif form_name == 'modGraph':
             flaskutils.graph_mod(form_mod_graph, request.form)
         elif form_name == 'delGraph':
             flaskutils.graph_del(form_del_graph, display_order)
@@ -484,7 +487,9 @@ def page_lcd():
 
     if request.method == 'POST':
         form_name = request.form['form-name']
-        if form_name == 'orderLCD':
+        if session['user_group'] == 'guest':
+            flaskutils.deny_guest_user()
+        elif form_name == 'orderLCD':
             flaskutils.lcd_reorder(form_order_lcd, display_order)
         elif form_name == 'addLCD':
             flaskutils.lcd_add(form_add_lcd, display_order)
@@ -652,11 +657,10 @@ def page_pid():
         Method.method_order == 0).all()
 
     if request.method == 'POST':
+        form_name = request.form['form-name']
         if session['user_group'] == 'guest':
             flaskutils.deny_guest_user()
-            return redirect('/pid')
-        form_name = request.form['form-name']
-        if form_name == 'addPID':
+        elif form_name == 'addPID':
             flaskutils.pid_add(form_add_pid, display_order)
         elif form_name == 'modPID':
             if form_mod_pid.mod_pid_del.data:
@@ -730,7 +734,9 @@ def page_relay():
 
     if request.method == 'POST':
         form_name = request.form['form-name']
-        if form_name == 'RelayOnOff':
+        if session['user_group'] == 'guest':
+            flaskutils.deny_guest_user()
+        elif form_name == 'RelayOnOff':
             flaskutils.relay_on_off(form_relay_on_off)
         elif form_name == 'addRelay':
             flaskutils.relay_add(form_add_relay, display_order)
@@ -766,6 +772,21 @@ def page_sensor():
     """ Display sensor settings """
     if not logged_in():
         return redirect(url_for('general_routes.home'))
+
+    # TCA9548A I2C multiplexer I2C addresses
+    multiplexer_addresses = [
+        '0x70',
+        '0x71',
+        '0x72',
+        '0x73',
+        '0x74',
+        '0x75',
+        '0x76',
+        '0x77'
+    ]
+
+    # TCA9548A I2C multiplexer channels (0 - 8)
+    multiplexer_channels = list(range(0, 9))
 
     lcd = db_retrieve_table(
         current_app.config['MYCODO_DB_PATH'], LCD, entry='all')
@@ -805,7 +826,9 @@ def page_sensor():
 
     if request.method == 'POST':
         form_name = request.form['form-name']
-        if form_name == 'addSensor':
+        if session['user_group'] == 'guest':
+            flaskutils.deny_guest_user()
+        elif form_name == 'addSensor':
             flaskutils.sensor_add(form_add_sensor, display_order)
         elif form_name == 'modSensor':
             if form_mod_sensor.modSensorSubmit.data:
@@ -826,17 +849,19 @@ def page_sensor():
         return redirect('/sensor')
 
     return render_template('pages/sensor.html',
+                           displayOrder=display_order,
+                           form_add_sensor=form_add_sensor,
+                           form_mod_sensor=form_mod_sensor,
+                           form_mod_sensor_cond=form_mod_sensor_cond,
                            lcd=lcd,
+                           multiplexer_addresses=multiplexer_addresses,
+                           multiplexer_channels=multiplexer_channels,
                            pid=pid,
                            relay=relay,
                            sensor=sensor,
                            sensor_conditional=sensor_conditional,
                            sensor_templates=sensor_templates,
-                           users=users,
-                           displayOrder=display_order,
-                           form_add_sensor=form_add_sensor,
-                           form_mod_sensor=form_mod_sensor,
-                           form_mod_sensor_cond=form_mod_sensor_cond)
+                           users=users)
 
 
 @blueprint.route('/timer', methods=('GET', 'POST'))
@@ -862,7 +887,9 @@ def page_timer():
 
     if request.method == 'POST':
         form_name = request.form['form-name']
-        if form_name == 'addTimer':
+        if session['user_group'] == 'guest':
+            flaskutils.deny_guest_user()
+        elif form_name == 'addTimer':
             flaskutils.timer_add(form_timer,
                                  request.form['timer_type'],
                                  display_order)
