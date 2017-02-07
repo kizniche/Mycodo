@@ -857,17 +857,17 @@ class ModRelay(Form):
         validators=[DataRequired()]
     )
     gpio = IntegerField(
-        lazy_gettext('GPIO'),
+        lazy_gettext('GPIO Pin (BCM)'),
         render_kw={"placeholder": lazy_gettext("GPIO")},
         validators=[validators.NumberRange(
             min=0,
             max=27,
-            message=lazy_gettext("GPIO (BCM numbering) is between 1 and 27 "
+            message=lazy_gettext("GPIO pin, using BCM numbering, between 1 and 27 "
                                  "(0 to disable)")
         )]
     )
     amps = DecimalField(
-        lazy_gettext('Current Draw'),
+        lazy_gettext('Current Draw (amps)'),
         render_kw={"placeholder": lazy_gettext("Amps")},
         validators=[validators.NumberRange(
             min=0,

@@ -125,7 +125,7 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="control-label">ID</label>
+            <label class="control-label">Relay ID</label>
             <div>
               <input class="form-control" disabled="" value="{{each_relay.id}}" type="text">
             </div>
@@ -225,7 +225,7 @@
           </div>
         </div>
 
-        <div style="padding: 0.5em 0 1em 0" class="form-inline">
+        <div style="padding: 0.5em 0" class="form-inline">
           <div class="form-group" style="width: 2.5em">
             If
           </div>
@@ -248,7 +248,7 @@
             (for {{form_mod_relay_cond.if_relay_duration(class_='form-control', value=each_relaycond.if_duration, **{'title':_('Set this to a soecific duration of time if the conditional should trigger when the relay On duration equals this amount'), 'size':'3'})}} sec.)
           </div>
         </div>
-        <div style="padding: 0.5em 0 1em 0" class="form-inline">
+        <div style="padding: 0.5em 0" class="form-inline">
           <div class="form-group" style="width: 2.5em">
             Then
           </div>
@@ -271,7 +271,7 @@
             (for {{form_mod_relay_cond.do_relay_duration(class_='form-control', value=each_relaycond.do_duration, **{'title':_('If this conditional triggers, how long should the activated relay turn on for?'), 'size':'3'})}} sec.)
           </div>
         </div>
-        <div style="padding: 0.5em 0 1em 0" class="form-inline">
+        <div style="padding: 0.5em 0" class="form-inline">
           <div class="form-group">
             and Execute {{form_mod_relay_cond.do_execute(class_='form-control form-tooltip form-dropdown', value=each_relaycond.execute_command, **{'data-original-title':_('If this conditional triggers, should a command be executed? (leave blank to disable)'), 'data-placement':"top"})}}
           </div>

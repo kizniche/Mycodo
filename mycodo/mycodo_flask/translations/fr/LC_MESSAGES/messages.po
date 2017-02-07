@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-02-06 22:47-0500\n"
+"POT-Creation-Date: 2017-02-07 14:40-0500\n"
 "PO-Revision-Date: 2017-01-05 00:55-0500\n"
 "Last-Translator: \n"
 "Language: fr\n"
@@ -703,17 +703,20 @@ msgstr ""
 msgid "Add Relays"
 msgstr ""
 
-#: flaskforms.py:860 flaskforms.py:861
+#: flaskforms.py:860
+msgid "GPIO Pin (BCM)"
+msgstr ""
+
+#: flaskforms.py:861
 msgid "GPIO"
 msgstr ""
 
 #: flaskforms.py:865
-msgid "GPIO (BCM numbering) is between 1 and 27 (0 to disable)"
+msgid "GPIO pin, using BCM numbering, between 1 and 27 (0 to disable)"
 msgstr ""
 
-#: flaskforms.py:870 mycodo_flask/templates/pages/live.html:253
-#: mycodo_flask/templates/pages/live.html:276
-msgid "Current Draw"
+#: flaskforms.py:870
+msgid "Current Draw (amps)"
 msgstr ""
 
 #: flaskforms.py:871
@@ -1922,6 +1925,11 @@ msgstr ""
 msgid "Max"
 msgstr ""
 
+#: mycodo_flask/templates/pages/live.html:253
+#: mycodo_flask/templates/pages/live.html:276
+msgid "Current Draw"
+msgstr ""
+
 #: mycodo_flask/templates/pages/live.html:255
 #: mycodo_flask/templates/pages/live.html:278
 msgid "amps"
@@ -2941,5 +2949,8 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Order"
+#~ msgstr ""
+
+#~ msgid "GPIO (BCM numbering) is between 1 and 27 (0 to disable)"
 #~ msgstr ""
 

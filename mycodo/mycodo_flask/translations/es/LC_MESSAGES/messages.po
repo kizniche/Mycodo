@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-02-06 22:47-0500\n"
+"POT-Creation-Date: 2017-02-07 14:40-0500\n"
 "PO-Revision-Date: 2017-01-19 13:50-0300\n"
 "Last-Translator: \n"
 "Language: es\n"
@@ -711,18 +711,21 @@ msgstr "Ordenar hacia Abajo"
 msgid "Add Relays"
 msgstr "Agregar Reles"
 
-#: flaskforms.py:860 flaskforms.py:861
+#: flaskforms.py:860
+msgid "GPIO Pin (BCM)"
+msgstr ""
+
+#: flaskforms.py:861
 msgid "GPIO"
 msgstr "GPIO"
 
 #: flaskforms.py:865
-msgid "GPIO (BCM numbering) is between 1 and 27 (0 to disable)"
-msgstr "GPIO (numeración BCM) es entre 1 y 27 (0 para deshabilitar)"
+msgid "GPIO pin, using BCM numbering, between 1 and 27 (0 to disable)"
+msgstr ""
 
-#: flaskforms.py:870 mycodo_flask/templates/pages/live.html:253
-#: mycodo_flask/templates/pages/live.html:276
-msgid "Current Draw"
-msgstr "Consumo corriente"
+#: flaskforms.py:870
+msgid "Current Draw (amps)"
+msgstr ""
 
 #: flaskforms.py:871
 msgid "Amps"
@@ -1985,6 +1988,11 @@ msgstr "seg."
 msgid "Max"
 msgstr "Máximo"
 
+#: mycodo_flask/templates/pages/live.html:253
+#: mycodo_flask/templates/pages/live.html:276
+msgid "Current Draw"
+msgstr "Consumo corriente"
+
 #: mycodo_flask/templates/pages/live.html:255
 #: mycodo_flask/templates/pages/live.html:278
 msgid "amps"
@@ -3019,8 +3027,6 @@ msgstr "Costo"
 
 #~ msgid "%(cont)s controller settings were not able to be modified: %(err)s"
 #~ msgstr ""
-#~ "%(cont)s la configuración del controlador "
-#~ "no pudo ser modificada: %(err)s"
 
 #~ msgid "Could not communicate with daemon: %(err)s"
 #~ msgstr "No se pudo comunicar con el Daemon: %(err)s"
@@ -3048,9 +3054,6 @@ msgstr "Costo"
 
 #~ msgid "Error in the Duration field(s): Durations must be greater than 0"
 #~ msgstr ""
-#~ "Error en el/los campo(s) de duración:"
-#~ " Las duraciones deben ser mayores que"
-#~ " 0"
 
 #~ msgid "Timer Error: %(err)s"
 #~ msgstr "Error de Tiempo: %(err)s"
@@ -3084,4 +3087,7 @@ msgstr "Costo"
 
 #~ msgid "Order"
 #~ msgstr "Ordenar"
+
+#~ msgid "GPIO (BCM numbering) is between 1 and 27 (0 to disable)"
+#~ msgstr "GPIO (numeración BCM) es entre 1 y 27 (0 para deshabilitar)"
 
