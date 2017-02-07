@@ -193,27 +193,24 @@
         {{form_mod_relay_cond.relay_id(class_='form-control', value=each_relaycond.id)}}
         <div class="row {% if each_relaycond.activated -%}active-background
                           {% else -%}inactive-background
-                          {% endif -%}" style="border-bottom: 2px solid #ddd; padding-top: 1em;">
+                          {% endif -%}" style="border-bottom: 2px solid #ddd; padding: 1em 0;">
           <div class="col-xs-12 col-sm-3">
-            <div class="form-group">
-              {{form_mod_relay_cond.name(class_='form-control', value=each_relaycond.name, **{'title':_('Name for this Relay Conditional')})}}
-            </div>
-            <div class="form-group">
-              ID: {{each_relaycond.id}}, State:
-              {%- if each_relaycond.activated -%} {{_('Active')}}
-              {%- else -%} {{_('Inactive')}}
-              {%-endif -%}
-            </div>
+            {{form_mod_relay_cond.name(class_='form-control', value=each_relaycond.name, **{'title':_('Name for this Relay Conditional')})}}
           </div>
-          <div class="col-xs-12 col-sm-3">
+          <div class="col-xs-12 col-sm-2">
+            <input class="form-control" disabled="" value="ID: {{each_relaycond.id}}" type="text">
+          </div>
+          <div class="col-xs-12 col-sm-2">
             {%- if each_relaycond.activated %}
               {{form_mod_relay_cond.deactivate(class_='form-control btn btn-default')}}
             {%- else %}
               {{form_mod_relay_cond.activate(class_='form-control btn btn-default')}}
             {%- endif -%}
           </div>
-          <div class="col-xs-12 col-sm-3">
+          <div class="col-xs-12 col-sm-2">
             {{form_mod_relay_cond.save(class_='form-control btn btn-default')}}
+          </div>
+          <div class="col-xs-12 col-sm-2">
             {{form_mod_relay_cond.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Relay Conditional?")'})}}
           </div>
         </div>
@@ -266,7 +263,7 @@
         </div>
         <div style="padding: 0.5em 0 1em 0" class="form-inline">
           <div class="form-group">
-            and Execute {{form_mod_relay_cond.do_execute(class_='form-control', value=each_relaycond.execute_command, **{'title':_('If this conditional triggers, should a command be executed? (leave blank to disable)')})}}
+            and Execute {{form_mod_relay_cond.do_execute(class_='form-control form-tooltip form-dropdown', value=each_relaycond.execute_command, **{'data-original-title':_('If this conditional triggers, should a command be executed? (leave blank to disable)'), 'data-placement':"top"})}}
           </div>
           <div class="form-group">
             , Notify
