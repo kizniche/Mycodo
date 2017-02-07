@@ -4,6 +4,12 @@
 
 {% block head %}
 <script>
+  $(document).ready(function(){
+    $('input[title]').tooltip({placement:'bottom'});
+    $('.form-dropdown').dropdown();
+    $('.form-dropdown').tooltip();
+  })
+
   function gpioState() {
     var url = '/gpiostate';
     $.getJSON(url,
@@ -117,19 +123,19 @@
           <div class="form-group">
             {{form_mod_relay.gpio.label(class_='control-label')}}
             <div>
-              {{form_mod_relay.gpio(class_='form-control', value=each_relay.pin)}}
+              {{form_mod_relay.gpio(class_='form-control', value=each_relay.pin, **{'title':_('The GPIO pin (using BCM numbering) connected to the relay')})}}
              </div>
           </div>
           <div class="form-group">
             {{form_mod_relay.amps.label(class_='control-label')}}
             <div>
-              {{form_mod_relay.amps(class_='form-control', value=each_relay.amps)}}
+              {{form_mod_relay.amps(class_='form-control', value=each_relay.amps, **{'title':_('The number of amps the device connected to the relay draws (at 120/240 VAC)')})}}
              </div>
           </div>
           <div class="form-group">
             {{form_mod_relay.trigger.label(class_='control-label')}}
             <div>
-              <select class="form-control" id="trigger" name="trigger">
+              <select class="form-control form-tooltip form-dropdown" id="trigger" name="trigger" data-placement="bottom" title="{{_('What state triggers the relay to turn on? High or Low?')}}">
                 <option value="1"{% if each_relay.trigger %} selected{% endif %}>{{_('High')}}</option>
                 <option value="0"{% if not each_relay.trigger %} selected{% endif %}>{{_('Low')}}</option>
               </select>
@@ -138,7 +144,7 @@
           <div class="form-group">
             {{form_mod_relay.start_state.label(class_='control-label')}}
             <div>
-              <select class="form-control" id="start_state" name="start_state">
+              <select class="form-control form-tooltip form-dropdown" id="start_state" name="start_state" data-placement="bottom" title="{{_('When Mycodo starts, turn the relay On or Off?')}}">
                 <option value="1"{% if each_relay.start_state %} selected{% endif %}>{{_('On')}}</option>
                 <option value="0"{% if not each_relay.start_state %} selected{% endif %}>{{_('Off')}}</option>
               </select>
@@ -150,7 +156,7 @@
           <div class="form-group">
             {{form_mod_relay.sec_on.label(class_='control-label')}}
             <div>
-              {{form_mod_relay.sec_on(class_='form-control')}}
+              {{form_mod_relay.sec_on(class_='form-control', **{'title':_('Turn this relay on for a specific number of seconds (used to test relay)')})}}
             </div>
           </div>
           <div class="form-group">
@@ -190,7 +196,7 @@
                           {% endif -%}" style="border-bottom: 2px solid #ddd; padding-top: 1em;">
           <div class="col-xs-12 col-sm-3">
             <div class="form-group">
-              {{form_mod_relay_cond.name(class_='form-control', value=each_relaycond.name, **{'title':_('Name for this Relay')})}}
+              {{form_mod_relay_cond.name(class_='form-control', value=each_relaycond.name, **{'title':_('Name for this Relay Conditional')})}}
             </div>
             <div class="form-group">
               ID: {{each_relaycond.id}}, State:
@@ -217,7 +223,7 @@
             If
           </div>
           <div class="form-group">
-            <select class="form-control" id="if_relay_id" name="if_relay_id">
+            <select class="form-control form-tooltip form-dropdown" id="if_relay_id" name="if_relay_id" data-placement="bottom" title="{{_('Trigger this conditional to act when this relay turns on or off')}}">
               <option value=""></option>
               {%- for each_relay in relay -%}
                 <option value="{{each_relay.id}}"{% if each_relaycond.if_relay_id == each_relay.id %} selected{% endif %}>{{each_relay.id}} ({{each_relay.name}})</option>
@@ -225,14 +231,14 @@
             </select>
           </div>
           <div class="form-group">
-            <select class="form-control" id="if_relay_action" name="if_relay_action">
+            <select class="form-control form-tooltip form-dropdown" id="if_relay_action" name="if_relay_action" data-placement="bottom" title="{{_('What action will trigger this conditional statement, on or off?')}}">
               <option value=""></option>
               <option value="on"{% if each_relaycond.if_action == 'on' %} selected{% endif %}>{{_('On')}}</option>
               <option value="off"{% if each_relaycond.if_action == 'off' %} selected{% endif %}>{{_('Off')}}</option>
             </select>
           </div>
           <div class="form-group">
-            (for {{form_mod_relay_cond.if_relay_duration(class_='form-control', value=each_relaycond.if_duration, **{'size':'3'})}} sec.)
+            (for {{form_mod_relay_cond.if_relay_duration(class_='form-control', value=each_relaycond.if_duration, **{'title':_('Set this to a soecific duration of time if the conditional should trigger when the relay On duration equals this amount'), 'size':'3'})}} sec.)
           </div>
         </div>
         <div style="padding: 0.5em 0 1em 0" class="form-inline">
@@ -240,7 +246,7 @@
             Then
           </div>
           <div class="form-group">
-            <select class="form-control" id="do_relay_id" name="do_relay_id">
+            <select class="form-control form-tooltip form-dropdown" id="do_relay_id" name="do_relay_id" data-placement="bottom" title="{{_('If this conditional triggers, then actuate this relay')}}">
               <option value=""></option>
               {%- for each_relay in relay -%}
                 <option value="{{each_relay.id}}"{% if each_relaycond.do_relay_id == each_relay.id %} selected{% endif %}>{{each_relay.id}} ({{each_relay.name}})</option>
@@ -248,29 +254,29 @@
             </select>
           </div>
           <div class="form-group">
-            <select class="form-control" id="do_relay_action" name="do_relay_action">
+            <select class="form-control form-tooltip form-dropdown" id="do_relay_action" name="do_relay_action" data-placement="bottom" title="{{_('If this conditional triggers, what state should the relay actuate to?')}}">
               <option value=""></option>
               <option value="on"{% if each_relaycond.do_action == 'on' %} selected{% endif %}>{{_('On')}}</option>
               <option value="off"{% if each_relaycond.do_action == 'off' %} selected{% endif %}>{{_('Off')}}</option>
             </select>
           </div>
           <div class="form-group">
-            (for {{form_mod_relay_cond.do_relay_duration(class_='form-control', value=each_relaycond.do_duration, **{'size':'3'})}} sec.)
+            (for {{form_mod_relay_cond.do_relay_duration(class_='form-control', value=each_relaycond.do_duration, **{'title':_('If this conditional triggers, how long should the activated relay turn on for?'), 'size':'3'})}} sec.)
           </div>
         </div>
         <div style="padding: 0.5em 0 1em 0" class="form-inline">
           <div class="form-group">
-            and Execute {{form_mod_relay_cond.do_execute(class_='form-control', value=each_relaycond.execute_command)}}
+            and Execute {{form_mod_relay_cond.do_execute(class_='form-control', value=each_relaycond.execute_command, **{'title':_('If this conditional triggers, should a command be executed? (leave blank to disable)')})}}
           </div>
           <div class="form-group">
             , Notify
-            <select class="form-control" id="do_notify" name="do_notify">
+            <select class="form-control form-tooltip form-dropdown" id="do_notify" name="do_notify" data-placement="top" title="{{_('If this conditional triggers, should an email be sent?')}}">
               <option value=""></option>
               {%- for each_user in users -%}
                 <option value="{{each_user.user_email}}"{% if each_relaycond.email_notify == each_user.user_email %} selected{% endif %}>{{each_user.user_email}}</option>
               {%- endfor -%}
             </select>, Flash LCD
-            <select class="form-control" id="do_flash_lcd" name="do_flash_lcd">
+            <select class="form-control form-tooltip form-dropdown" id="do_flash_lcd" name="do_flash_lcd" data-placement="top" title="{{_('If this conditional triggers, should an LCD flash?')}}">
               <option value=""></option>
               {%- for each_lcd in lcd -%}
                 <option value="{{each_lcd.id}}"{% if each_relaycond.flash_lcd == each_lcd.id %} selected{% endif %}>{{each_lcd.id}} ({{each_lcd.name}})</option>
@@ -278,13 +284,10 @@
             </select>
           </div>
         </div>
-
         </form>
       </div>
 
-
     {%- endfor -%}
-
   </div>
 
   <div style="clear: both; padding:1em 0;"></div>

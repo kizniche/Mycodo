@@ -3,6 +3,13 @@
 {% block title %} - {{_('Timers')}}{% endblock %}
 
 {% block head %}
+  <script>
+    $(document).ready(function(){
+      $('input[title]').tooltip({placement:'bottom'});
+      $('.form-dropdown').dropdown();
+      $('.form-dropdown').tooltip();
+    })
+  </script>
 <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-clockpicker.min.css">
 {% endblock %}
 
@@ -11,7 +18,7 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <div class="form-inline" style="padding-bottom:1em">
+    <div class="form-inline" style="padding-bottom: 2em">
       <form method="post" action="/timer">
         <input type="hidden" name="form-name" value="addTimer">
         {{form_timer.csrf_token}}
@@ -272,7 +279,7 @@
           </div>
         </form>
         </div>
-        
+
         <div style="clear: both; padding:1em 0;"></div>
 
       {%- endfor -%}
