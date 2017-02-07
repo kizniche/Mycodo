@@ -849,13 +849,14 @@ class AddRelay(Form):
 
 
 class ModRelay(Form):
-    modRelay_id = HiddenField(u'Relay')
-    modName = StringField(
+    relay_id = HiddenField(u'Relay')
+    relay_pin = HiddenField(u'Relay Pin')
+    name = StringField(
         lazy_gettext('Name'),
         render_kw={"placeholder": lazy_gettext("Name")},
         validators=[DataRequired()]
     )
-    modGpio = IntegerField(
+    gpio = IntegerField(
         lazy_gettext('GPIO'),
         render_kw={"placeholder": lazy_gettext("GPIO")},
         validators=[validators.NumberRange(
@@ -865,7 +866,7 @@ class ModRelay(Form):
                                  "(0 to disable)")
         )]
     )
-    modAmps = DecimalField(
+    amps = DecimalField(
         lazy_gettext('Current Draw'),
         render_kw={"placeholder": lazy_gettext("Amps")},
         validators=[validators.NumberRange(
@@ -875,7 +876,7 @@ class ModRelay(Form):
                                  "to this relay, in amps.")
         )]
     )
-    modTrigger = SelectField(
+    trigger = SelectField(
         lazy_gettext('On Trigger'),
         choices=[
             ("1", 'High'),
@@ -883,7 +884,7 @@ class ModRelay(Form):
         ],
         validators=[DataRequired()]
     )
-    modStartState = SelectField(
+    start_state = SelectField(
         lazy_gettext('Start State'),
         choices=[
             ("1", 'On'),
@@ -891,25 +892,14 @@ class ModRelay(Form):
         ],
         validators=[DataRequired()]
     )
-    modRelaySubmit = SubmitField(lazy_gettext('Save'))
-
-
-class DelRelay(Form):
-    delRelay_id = HiddenField(u'Relay')
-    delRelaySubmit = SubmitField(lazy_gettext('Delete'))
-
-
-class OrderRelay(Form):
-    orderRelay_id = HiddenField(u'Relay')
-    orderRelayUp = SubmitField(lazy_gettext('Up'))
-    orderRelayDown = SubmitField(lazy_gettext('Down'))
-
-
-class RelayOnOff(Form):
-    Relay_id = HiddenField(u'Relay ID')
-    Relay_pin = HiddenField(u'Relay Pin')
-    On = SubmitField(lazy_gettext('On'))
-    Off = SubmitField(lazy_gettext('Off'))
+    save = SubmitField(lazy_gettext('Save'))
+    delete = SubmitField(lazy_gettext('Delete'))
+    order_up = SubmitField(lazy_gettext('Up'))
+    order_down = SubmitField(lazy_gettext('Down'))
+    turn_on = SubmitField(lazy_gettext('On'))
+    turn_off = SubmitField(lazy_gettext('Off'))
+    sec_on = DecimalField(lazy_gettext('Seconds to turn on'))
+    sec_on_submit = SubmitField(lazy_gettext('Turn On'))
 
 
 #
@@ -929,47 +919,47 @@ class AddRelayConditional(Form):
 
 
 class ModRelayConditional(Form):
-    Relay_id = HiddenField(u'Conditional ID')
-    modCondName = StringField(
+    relay_id = HiddenField(u'Conditional ID')
+    name = StringField(
         lazy_gettext('Name'),
         render_kw={"placeholder": lazy_gettext("Name")}
     )
-    IfRelayID = StringField(
+    if_relay_id = StringField(
         lazy_gettext('If Relay ID')
     )
-    IfRelayAction = StringField(
+    if_relay_action = StringField(
         lazy_gettext('If Action')
     )
-    IfRelayDuration = DecimalField(
+    if_relay_duration = DecimalField(
         lazy_gettext('If Relay Duration'),
         render_kw={"placeholder": lazy_gettext("Duration")}
     )
-    DoRelayID = StringField(
+    do_relay_id = StringField(
         lazy_gettext('Do Relay ID')
     )
-    DoRelayAction = StringField(
+    do_relay_action = StringField(
         lazy_gettext('Do Action')
     )
-    DoRelayDuration = DecimalField(
+    do_relay_duration = DecimalField(
         lazy_gettext('Do Relay Duration'),
         render_kw={"placeholder": lazy_gettext("Duration")}
     )
-    DoExecute = StringField(
+    do_execute = StringField(
         lazy_gettext('Execute Command'),
         render_kw={"placeholder": lazy_gettext("Command")}
     )
-    DoNotify = StringField(
+    do_notify = StringField(
         lazy_gettext('Notify by Email'),
         render_kw={"placeholder": lazy_gettext("Email")}
     )
-    DoFlashLCD = StringField(
+    do_flash_lcd = StringField(
         lazy_gettext('Flash LCD'),
         render_kw={"placeholder": lazy_gettext("LCD")}
     )
     activate = SubmitField(lazy_gettext('Activate'))
     deactivate = SubmitField(lazy_gettext('Deactivate'))
-    modCondRelaySubmit = SubmitField(lazy_gettext('Save'))
-    delCondRelaySubmit = SubmitField(lazy_gettext('Delete'))
+    save = SubmitField(lazy_gettext('Save'))
+    delete = SubmitField(lazy_gettext('Delete'))
 
 
 #

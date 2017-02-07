@@ -14,6 +14,7 @@ from flask import (
     redirect,
     render_template,
     request,
+    session,
     url_for
 )
 from flask_babel import gettext
@@ -200,10 +201,12 @@ def method_builder(method_type, method_id):
     Page to edit the details of each method
     This includes the (time, setpoint) data sets
     """
-    logger.debug('called method_builder(method_type={type}, '
-                 'method_id={id})'.format(type=method_type, id=method_id))
     if not logged_in():
         return redirect(url_for('general_routes.home'))
+
+    if session['user_group'] == 'guest':
+        flaskutils.deny_guest_user()
+        return redirect('/method')
 
     # Used in software tests to verify function is executing as admin
     if method_type == '1':
@@ -224,8 +227,6 @@ def method_builder(method_type, method_id):
             form_fail = flaskutils.method_create(form_create_method,
                                                  method_id)
             if not form_fail:
-                flash(gettext("New Method successfully created. You may now "
-                              "add time points"), "success")
                 return redirect('/method-build/{}/{}'.format(
                     method_type, method_id))
             else:
@@ -296,14 +297,24 @@ def method_builder(method_type, method_id):
 @blueprint.route('/method-delete/<method_id>')
 def method_delete(method_id):
     """Delete a method"""
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Method"))
+
     if not logged_in():
         return redirect(url_for('general_routes.home'))
+
+    if session['user_group'] == 'guest':
+        flaskutils.deny_guest_user()
+        return redirect('/method')
 
     try:
         with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
             method = new_session.query(Method)
             method.filter(Method.method_id == method_id).delete()
+            flash("Success: {action}".format(action=action), "success")
     except Exception as except_msg:
-        flash("Error while deleting Method: "
-              "{}".format(except_msg), "error")
+        flash("Error: {action}: {err}".format(action=action,
+                                              err=except_msg),
+              "error")
     return redirect(url_for('method_routes.method_list'))

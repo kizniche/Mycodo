@@ -725,10 +725,7 @@ def page_relay():
         display_order = []
 
     form_add_relay = flaskforms.AddRelay()
-    form_del_relay = flaskforms.DelRelay()
     form_mod_relay = flaskforms.ModRelay()
-    form_order_relay = flaskforms.OrderRelay()
-    form_relay_on_off = flaskforms.RelayOnOff()
     form_add_relay_cond = flaskforms.AddRelayConditional()
     form_mod_relay_cond = flaskforms.ModRelayConditional()
 
@@ -736,16 +733,19 @@ def page_relay():
         form_name = request.form['form-name']
         if session['user_group'] == 'guest':
             flaskutils.deny_guest_user()
-        elif form_name == 'RelayOnOff':
-            flaskutils.relay_on_off(form_relay_on_off)
         elif form_name == 'addRelay':
             flaskutils.relay_add(form_add_relay, display_order)
         elif form_name == 'modRelay':
-            flaskutils.relay_mod(form_mod_relay)
-        elif form_name == 'delRelay':
-            flaskutils.relay_del(form_del_relay, display_order)
-        elif form_name == 'orderRelay':
-            flaskutils.relay_reorder(form_order_relay, display_order)
+            if (form_mod_relay.turn_on.data or
+                    form_mod_relay.turn_off.data or
+                    form_mod_relay.sec_on_submit.data):
+                flaskutils.relay_on_off(form_mod_relay)
+            elif form_mod_relay.save.data:
+                flaskutils.relay_mod(form_mod_relay)
+            elif form_mod_relay.delete.data:
+                flaskutils.relay_del(form_mod_relay, display_order)
+            elif form_mod_relay.order_up.data or form_mod_relay.order_down.data:
+                flaskutils.relay_reorder(form_mod_relay, display_order)
         elif form_name == 'addRelayConditional':
             flaskutils.relay_conditional_add(form_add_relay_cond)
         elif form_name == 'modRelayConditional':
@@ -758,11 +758,8 @@ def page_relay():
                            relayconditional=relayconditional,
                            users=users,
                            displayOrder=display_order,
-                           form_order_relay=form_order_relay,
                            form_add_relay=form_add_relay,
                            form_mod_relay=form_mod_relay,
-                           form_del_relay=form_del_relay,
-                           form_relay_on_off=form_relay_on_off,
                            form_add_relay_cond=form_add_relay_cond,
                            form_mod_relay_cond=form_mod_relay_cond)
 

@@ -170,8 +170,10 @@ def validate_method_data(form_data, this_method):
 
 
 def method_create(form_create_method, method_id):
-    if deny_guest_user():
-        return redirect(url_for('general_routes.home'))
+    action = '{action} {controller}'.format(
+        action=gettext("Create"),
+        controller=gettext("Method"))
+    error = []
 
     try:
         new_method = Method()
@@ -204,12 +206,15 @@ def method_create(form_create_method, method_id):
         with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
             db_session.add(new_method)
     except Exception as except_msg:
-        flash(gettext("Method Error: %(msg)s", msg=except_msg), "error")
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('method_routes.method_list'))
 
 
 def method_add(form_add_method, method):
-    if deny_guest_user():
-        return redirect(url_for('general_routes.home'))
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Method"))
+    error = []
 
     try:
         # Validate input time data
@@ -364,13 +369,16 @@ def method_add(form_add_method, method):
                               "time: %(tm)s",
                               tm=form_add_method.DurationSec.data), "success")
 
-    except Exception as err:
-        flash(gettext("Method Error: %(msg)s", msg=err), "error")
+    except Exception as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('method_routes.method_list'))
 
 
 def method_mod(form_mod_method, method):
-    if deny_guest_user():
-        return redirect(url_for('general_routes.home'))
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Method"))
+    error = []
 
     try:
         if form_mod_method.Delete.data:
@@ -417,22 +425,21 @@ def method_mod(form_mod_method, method):
                         previous_end_time = datetime.strptime(
                             previous_method.end_time, '%Y-%m-%d %H:%M:%S')
                         if previous_end_time is not None and start_time < previous_end_time:
-                            flash(gettext("The entry start time (%(st)s) cannot "
-                                          "overlap the previous entry's end time "
-                                          "(%(et)s)",
-                                          st=start_time, et=previous_end_time),
-                                  "error")
-                            return 1
+                            error.append(
+                                gettext("The entry start time (%(st)s) cannot "
+                                        "overlap the previous entry's end time "
+                                        "(%(et)s)",
+                                        st=start_time, et=previous_end_time))
 
                     if next_method is not None and next_method.start_time is not None:
                         next_start_time = datetime.strptime(
                             next_method.start_time, '%Y-%m-%d %H:%M:%S')
                         if next_start_time is not None and end_time > next_start_time:
-                            flash(gettext("The entry end time (%(et)s) cannot overlap "
-                                          "the next entry's start time (%(st)s)",
-                                          et=end_time, st=next_start_time),
-                                  "error")
-                            return 1
+                            error.append(
+                                gettext("The entry end time (%(et)s) cannot "
+                                        "overlap the next entry's start time "
+                                        "(%(st)s)",
+                                        et=end_time, st=next_start_time))
 
                     mod_method.start_time = start_time.strftime('%Y-%m-%d %H:%M:%S')
                     mod_method.end_time = end_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -463,19 +470,27 @@ def method_mod(form_mod_method, method):
                     mod_method.relay_state = form_mod_method.relayState.data
                     mod_method.relay_duration = form_mod_method.relayDurationSec.data
 
-            db_session.commit()
+            if not error:
+                db_session.commit()
 
-    except Exception as err:
-        flash(gettext("Method Error: %(msg)s", msg=err), "error")
+    except Exception as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('method_routes.method_list'))
 
 
 def method_del(method_id):
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Method"))
+    error = []
+
     try:
         delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                              Method,
                              method_id)
-    except Exception as err:
-        flash(gettext("Method Error: %(msg)s", msg=err), "error")
+    except Exception as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('method_routes.method_list'))
 
 
 #
@@ -1461,7 +1476,7 @@ def pid_manipulate(pid_id, action):
 # Relay manipulation
 #
 
-def relay_on_off(form_relay_on_off):
+def relay_on_off(form_relay):
     action = '{action} {controller}'.format(
         action=gettext("Actuate"),
         controller=gettext("Relay"))
@@ -1469,19 +1484,34 @@ def relay_on_off(form_relay_on_off):
 
     try:
         control = DaemonControl()
-        if int(form_relay_on_off.Relay_pin.data) <= 0:
+        if int(form_relay.relay_pin.data) <= 0:
             error.append(gettext("Cannot modulate relay with a GPIO of 0"))
-        elif form_relay_on_off.On.data:
-            return_value = control.relay_on(form_relay_on_off.Relay_id.data, 0)
-            flash(gettext("Relay successfully turned on: %(rvalue)s",
+        elif form_relay.sec_on_submit.data:
+            if float(form_relay.sec_on.data) <= 0:
+                error.append(gettext("Value must be greater than 0"))
+            else:
+                return_value = control.relay_on(form_relay.relay_id.data,
+                                                float(form_relay.sec_on.data))
+                flash(gettext("Relay turned on for %(sec)s seconds: %(rvalue)s",
+                              sec=form_relay.sec_on.data,
+                              rvalue=return_value),
+                      "success")
+        elif form_relay.turn_on.data:
+            return_value = control.relay_on(form_relay.relay_id.data, 0)
+            flash(gettext("Relay turned on: %(rvalue)s",
                           rvalue=return_value), "success")
-        elif form_relay_on_off.Off.data:
-            return_value = control.relay_off(form_relay_on_off.Relay_id.data)
-            flash(gettext("Relay successfully turned off: %(rvalue)s",
+        elif form_relay.turn_off.data:
+            return_value = control.relay_off(form_relay.relay_id.data)
+            flash(gettext("Relay turned off: %(rvalue)s",
                           rvalue=return_value), "success")
+    except ValueError as except_msg:
+        error.append('{err}: {msg}'.format(
+            err=gettext("Invalid value"),
+            msg=except_msg))
     except Exception as except_msg:
         error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_relay'))
+
+    flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
 def relay_add(form_add_relay, display_order):
@@ -1519,75 +1549,77 @@ def relay_add(form_add_relay, display_order):
         flash_form_errors(form_add_relay)
 
 
-def relay_mod(form_mod_relay):
+def relay_mod(form_relay):
     action = '{action} {controller}'.format(
         action=gettext("Modify"),
         controller=gettext("Relay"))
     error = []
 
-    if form_mod_relay.validate():
+    if form_relay.validate():
         try:
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 mod_relay = db_session.query(Relay).filter(
-                    Relay.id == form_mod_relay.modRelay_id.data).first()
-                mod_relay.name = form_mod_relay.modName.data
+                    Relay.id == form_relay.relay_id.data).first()
+                mod_relay.name = form_relay.name.data
                 setup_pin = False
-                if mod_relay.pin is not form_mod_relay.modGpio.data:
+                if mod_relay.pin is not form_relay.gpio.data:
                     setup_pin = True
-                mod_relay.pin = form_mod_relay.modGpio.data
-                mod_relay.amps = form_mod_relay.modAmps.data
-                mod_relay.trigger = form_mod_relay.modTrigger.data
-                mod_relay.start_state = form_mod_relay.modStartState.data
+                mod_relay.pin = form_relay.gpio.data
+                mod_relay.amps = form_relay.amps.data
+                mod_relay.trigger = form_relay.trigger.data
+                mod_relay.start_state = form_relay.start_state.data
                 db_session.commit()
-                manipulate_relay(gettext('Modify'), form_mod_relay.modRelay_id.data, setup_pin)
+                manipulate_relay(gettext('Modify'),
+                                 form_relay.relay_id.data,
+                                 setup_pin)
         except Exception as except_msg:
             error.append(except_msg)
         flash_success_errors(error, action, url_for('page_routes.page_relay'))
     else:
-        flash_form_errors(form_mod_relay)
+        flash_form_errors(form_relay)
 
 
-def relay_del(form_del_relay, display_order):
+def relay_del(form_relay, display_order):
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
         controller=gettext("Relay"))
     error = []
 
-    if form_del_relay.validate():
+    if form_relay.validate():
         try:
             delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                                  Relay,
-                                 form_del_relay.delRelay_id.data)
+                                 form_relay.relay_id.data)
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 order_relay = db_session.query(DisplayOrder).first()
-                display_order.remove(form_del_relay.delRelay_id.data)
+                display_order.remove(form_relay.relay_id.data)
                 order_relay.relay = ','.join(display_order)
                 db_session.commit()
-            manipulate_relay(gettext('Delete'), form_del_relay.delRelay_id.data)
+            manipulate_relay(gettext('Delete'), form_relay.relay_id.data)
         except Exception as except_msg:
             error.append(except_msg)
         flash_success_errors(error, action, url_for('page_routes.page_relay'))
     else:
-        flash_form_errors(form_del_relay)
+        flash_form_errors(form_relay)
 
 
-def relay_reorder(form_order_relay, display_order):
+def relay_reorder(form_relay, display_order):
     action = '{action} {controller}'.format(
         action=gettext("Reorder"),
         controller=gettext("Relay"))
     error = []
 
-    if form_order_relay.validate():
+    if form_relay.validate():
         try:
-            if form_order_relay.orderRelayUp.data:
+            if form_relay.order_up.data:
                 status, reord_list = reorder_list(
                     display_order,
-                    form_order_relay.orderRelay_id.data,
+                    form_relay.relay_id.data,
                     'up')
-            elif form_order_relay.orderRelayDown.data:
+            elif form_relay.order_down.data:
                 status, reord_list = reorder_list(
                     display_order,
-                    form_order_relay.orderRelay_id.data,
+                    form_relay.relay_id.data,
                     'down')
             if status == 'success':
                 with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
@@ -1600,7 +1632,7 @@ def relay_reorder(form_order_relay, display_order):
             error.append(except_msg)
         flash_success_errors(error, action, url_for('page_routes.page_relay'))
     else:
-        flash_form_errors(form_order_relay)
+        flash_form_errors(form_relay)
 
 
 #
@@ -1642,55 +1674,58 @@ def relay_conditional_add(form_add_relay_cond):
         flash_form_errors(form_add_relay_cond)
 
 
-def relay_conditional_mod(form_mod_relay_cond):
+def relay_conditional_mod(form_relay_cond):
     action = None
     error = []
 
     try:
-        if form_mod_relay_cond.activate.data:
+        if form_relay_cond.activate.data:
             action = '{action} {controller}'.format(
                 action=gettext("Activate"),
                 controller=gettext("Relay Conditional"))
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 relay_cond = db_session.query(RelayConditional)
                 relay_cond = relay_cond.filter(
-                    RelayConditional.id == form_mod_relay_cond.Relay_id.data).first()
+                    RelayConditional.id == form_relay_cond.relay_id.data).first()
                 relay_cond.activated = True
                 db_session.commit()
-        elif form_mod_relay_cond.deactivate.data:
+        elif form_relay_cond.deactivate.data:
             action = '{action} {controller}'.format(
                 action=gettext("Deactivate"),
                 controller=gettext("Relay Conditional"))
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 relay_cond = db_session.query(RelayConditional).filter(
-                    RelayConditional.id == form_mod_relay_cond.Relay_id.data).first()
+                    RelayConditional.id == form_relay_cond.relay_id.data).first()
                 relay_cond.activated = 0
                 db_session.commit()
-        elif form_mod_relay_cond.delCondRelaySubmit.data:
+        elif form_relay_cond.delete.data:
             action = '{action} {controller}'.format(
                 action=gettext("Delete"),
                 controller=gettext("Relay Conditional"))
             delete_entry_with_id(current_app.config['MYCODO_DB_PATH'],
                                  RelayConditional,
-                                 form_mod_relay_cond.Relay_id.data)
-        elif (form_mod_relay_cond.modCondRelaySubmit.data and
-                form_mod_relay_cond.validate()):
+                                 form_relay_cond.relay_id.data)
+        elif (form_relay_cond.save.data and
+                form_relay_cond.validate()):
+            action = '{action} {controller}'.format(
+                action=gettext("Modify"),
+                controller=gettext("Relay Conditional"))
             with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
                 mod_relay = db_session.query(RelayConditional).filter(
-                    RelayConditional.id == form_mod_relay_cond.Relay_id.data).first()
-                mod_relay.name = form_mod_relay_cond.modCondName.data
-                mod_relay.if_relay_id = form_mod_relay_cond.IfRelayID.data
-                mod_relay.if_action = form_mod_relay_cond.IfRelayAction.data
-                mod_relay.if_duration = form_mod_relay_cond.IfRelayDuration.data
-                mod_relay.do_relay_id = form_mod_relay_cond.DoRelayID.data
-                mod_relay.do_action = form_mod_relay_cond.DoRelayAction.data
-                mod_relay.do_duration = form_mod_relay_cond.DoRelayDuration.data
-                mod_relay.execute_command = form_mod_relay_cond.DoExecute.data
-                mod_relay.email_notify = form_mod_relay_cond.DoNotify.data
-                mod_relay.flash_lcd = form_mod_relay_cond.DoFlashLCD.data
+                    RelayConditional.id == form_relay_cond.relay_id.data).first()
+                mod_relay.name = form_relay_cond.name.data
+                mod_relay.if_relay_id = form_relay_cond.if_relay_id.data
+                mod_relay.if_action = form_relay_cond.if_relay_action.data
+                mod_relay.if_duration = form_relay_cond.if_relay_duration.data
+                mod_relay.do_relay_id = form_relay_cond.do_relay_id.data
+                mod_relay.do_action = form_relay_cond.do_relay_action.data
+                mod_relay.do_duration = form_relay_cond.do_relay_duration.data
+                mod_relay.execute_command = form_relay_cond.do_execute.data
+                mod_relay.email_notify = form_relay_cond.do_notify.data
+                mod_relay.flash_lcd = form_relay_cond.do_flash_lcd.data
                 db_session.commit()
         else:
-            flash_form_errors(form_mod_relay_cond)
+            flash_form_errors(form_relay_cond)
             return redirect(url_for('page_routes.page_relay'))
     except Exception as except_msg:
         error.append(except_msg)
@@ -2498,9 +2533,6 @@ def settings_camera_mod(form_mod_camera):
 
 def settings_alert_mod(form_mod_alert):
     """ Modify Alert settings """
-    if deny_guest_user():
-        return redirect(url_for('general_routes.home'))
-
     action = '{action} {controller}'.format(
         action=gettext("Modify"),
         controller=gettext("Alert Settings"))

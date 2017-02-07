@@ -57,7 +57,7 @@ def settings_alerts():
 
     if session['user_group'] == 'guest':
         flaskutils.deny_guest_user()
-        return redirect('/settings')
+        return redirect(url_for('settings_routes.settings_general'))
 
     smtp = db_retrieve_table(
         current_app.config['MYCODO_DB_PATH'], SMTP, entry='first')
@@ -68,7 +68,7 @@ def settings_alerts():
         # Update smtp settings table in mycodo SQL database
         if form_name == 'EmailAlert':
             flaskutils.settings_alert_mod(form_email_alert)
-        return redirect('/settings/alerts')
+        return redirect(url_for('settings_routes.settings_alerts'))
 
     return render_template('settings/alerts.html',
                            smtp=smtp,
@@ -89,7 +89,7 @@ def settings_camera():
         form_name = request.form['form-name']
         if form_name == 'Camera':
             flaskutils.settings_camera_mod(form_settings_camera)
-        return redirect('/settings/camera')
+        return redirect(url_for('settings_routes.settings_camera'))
 
     return render_template('settings/camera.html',
                            camera=camera,
@@ -112,7 +112,7 @@ def settings_general():
         form_name = request.form['form-name']
         if form_name == 'General':
             flaskutils.settings_general_mod(form_settings_general)
-        return redirect('/settings/general')
+        return redirect(url_for('settings_routes.settings_general'))
 
     return render_template('settings/general.html',
                            misc=misc,
@@ -128,7 +128,7 @@ def settings_users():
 
     if session['user_group'] == 'guest':
         flaskutils.deny_guest_user()
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('settings_routes.settings_general'))
 
     users = db_retrieve_table(
         current_app.config['USER_DB_PATH'], Users, entry='all')
@@ -146,7 +146,7 @@ def settings_users():
         elif form_name == 'modUser':
             if flaskutils.user_mod(form_mod_user) == 'logout':
                 return redirect('/logout')
-        return redirect('/settings/users')
+        return redirect(url_for('settings_routes.settings_users'))
 
     return render_template('settings/users.html',
                            users=users,

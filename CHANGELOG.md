@@ -1,8 +1,15 @@
+## 4.1.17 (Unreleased)
+
+### Features
+
+  - Add ability to turn a relay on for a specific duration of time
+  - Update style of Timer and Relay pages (mobile-compatibility)
+
 ## 4.1.16 (2017-02-05)
 
 ### Bugfixes
 
-  - Revert back to influxdb 1.1.1 to fix LCD time display (influxdata/influxdb#7877 will fix, when released)
+  - Revert back to influxdb 1.1.1 to fix LCD time display ([#7877](https://github.com/influxdata/influxdb/issues/7877) will fix, when released)
   - Fix influxdb not restarting after a new version is installed
   - Fix issue with relay conditionals being triggered upon shutdown
   - Fix asynchronous graph to use local timezone rather than UTC ([#185](https://github.com/kizniche/mycodo/issues/185))
