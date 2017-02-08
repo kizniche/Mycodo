@@ -518,13 +518,13 @@ def page_live():
     # Retrieve the display order of the controllers
     pid_display_order_unsplit = DisplayOrder.query.first().pid
     if pid_display_order_unsplit:
-        pid_display_order = pid_display_order_unsplit.split(",")
+        pid_display_order = [int(x) for x in pid_display_order_unsplit.split(',')]
     else:
         pid_display_order = []
 
     sensor_display_order_unsplit = DisplayOrder.query.first().sensor
     if sensor_display_order_unsplit:
-        sensor_display_order = sensor_display_order_unsplit.split(",")
+        sensor_display_order = [int(x) for x in sensor_display_order_unsplit.split(',')]
     else:
         sensor_display_order = []
 
@@ -533,7 +533,7 @@ def page_live():
     for each_sensor_order in sensor_display_order:
         for each_sensor in sensor:
             if (each_sensor_order == each_sensor.id and
-                    each_sensor.activated):
+                    each_sensor.is_activated):
                 sensor_order_sorted.append(each_sensor.id)
 
     # Retrieve only parent method columns
@@ -758,7 +758,7 @@ def page_sensor():
 
     display_order_unsplit = DisplayOrder.query.first().sensor
     if display_order_unsplit:
-        display_order = display_order_unsplit.split(",")
+        display_order = [int(x) for x in display_order_unsplit.split(',')]
     else:
         display_order = []
 

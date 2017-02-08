@@ -314,6 +314,7 @@ class Sensor(db.Model):
     is_preset = db.Column(db.Boolean, default=False)  # Is config saved as a preset?
     preset_name = db.Column(db.Text, default=None)  # Name for preset
     device = db.Column(db.Text, default='')  # Device name, such as DHT11, DHT22, DS18B20
+    device_type = db.Column(db.Text, default='')
     period = db.Column(db.Float, default=15.0)  # Duration between readings
     i2c_bus = db.Column(db.Integer, default='')  # I2C bus the sensor is connected to
     location = db.Column(db.Text, default='')  # GPIO pin or i2c address to communicate with sensor

@@ -149,7 +149,6 @@ class SensorController(threading.Thread):
         self.i2c_bus = sensor.i2c_bus
         self.location = sensor.location
         self.device = sensor.device
-        self.sensor_type = sensor.device_type
         self.period = sensor.period
         self.multiplexer_address_raw = sensor.multiplexer_address
         self.multiplexer_bus = sensor.multiplexer_bus
@@ -181,12 +180,12 @@ class SensorController(threading.Thread):
         self.pre_relay_activated = False
         self.pre_relay_timer = time.time()
 
-        relay = Relay.query.all()
+        relay = db_retrieve_table_daemon(Relay, entry='all')
         for each_relay in relay:  # Check if relay ID actually exists
             if each_relay.id == self.pre_relay_id and self.pre_relay_duration:
                 self.pre_relay_setup = True
 
-        smtp = SMTP.query.first()
+        smtp = db_retrieve_table_daemon(SMTP, entry='first')
         self.smtp_max_count = smtp.hourly_max
         self.email_count = 0
         self.allowed_to_send_notice = True
@@ -487,11 +486,11 @@ class SensorController(threading.Thread):
             message += "Status: {}. ".format(cmd_status)
 
         if self.cond_camera_record[cond_id] in ['photo', 'photoemail']:
-            camera_still = CameraStill.query.first()
+            camera_still = db_retrieve_table_daemon(CameraStill, entry='first')
             attachment_file = camera_record(
                 'photo', camera_still)
         elif self.cond_camera_record[cond_id] in ['video', 'videoemail']:
-            camera_stream = CameraStream.query.first()
+            camera_stream = db_retrieve_table_daemon(CameraStream, entry='first')
             attachment_file = camera_record(
                 'video', camera_stream, duration_sec=5)
 
@@ -519,7 +518,7 @@ class SensorController(threading.Thread):
                     message += "\nVideo attached."
                     attachment_type = 'video'
 
-                smtp = SMTP.query.first()
+                smtp = db_retrieve_table_daemon(SMTP, entry='first')
                 send_email(smtp.host, smtp.ssl, smtp.port,
                            smtp.user, smtp.passw, smtp.email_from,
                            self.cond_email_notify[cond_id], message,
@@ -782,22 +781,28 @@ class SensorController(threading.Thread):
                 self.cond_timer = {}
                 self.smtp_wait_timer = {}
 
-                self.sensor_conditional = SensorConditional.query.filter(
-                    SensorConditional.activated == 1)
-            elif cond_mod == 'add':
-                self.sensor_conditional = SensorConditional.query.filter(
-                        SensorConditional.sensor_id == self.sensor_id)
+                self.sensor_conditional = db_retrieve_table_daemon(
+                    SensorConditional)
                 self.sensor_conditional = self.sensor_conditional.filter(
-                    SensorConditional.activated == 1)
+                    SensorConditional.is_activated == True)
+            elif cond_mod == 'add':
+                self.sensor_conditional = db_retrieve_table_daemon(
+                    SensorConditional)
+                self.sensor_conditional = self.sensor_conditional.filter(
+                    SensorConditional.sensor_id == self.sensor_id)
+                self.sensor_conditional = self.sensor_conditional.filter(
+                    SensorConditional.is_activated == True)
                 self.sensor_conditional = self.sensor_conditional.filter(
                     SensorConditional.id == cond_id)
                 logger_cond.debug("Added Conditional".format(
                     sen=self.sensor_id))
             elif cond_mod == 'mod':
-                self.sensor_conditional = (
-                    SensorConditional.query
-                    .filter(SensorConditional.sensor_id == self.sensor_id)
-                    .filter(SensorConditional.id == cond_id))
+                self.sensor_conditional = db_retrieve_table_daemon(
+                    SensorConditional)
+                self.sensor_conditional = self.sensor_conditional.filter(
+                    SensorConditional.sensor_id == self.sensor_id)
+                self.sensor_conditional = self.sensor_conditional.filter(
+                    SensorConditional.id == cond_id)
                 logger_cond.debug("Modified Conditional".format(
                     sen=self.sensor_id))
             else:
@@ -809,7 +814,7 @@ class SensorController(threading.Thread):
                         cond=each_cond))
                 self.cond_id[each_cond.id] = each_cond.id
                 self.cond_name[each_cond.id] = each_cond.name
-                self.cond_activated[each_cond.id] = each_cond.activated
+                self.cond_activated[each_cond.id] = each_cond.is_activated
                 self.cond_period[each_cond.id] = each_cond.period
                 self.cond_measurement_type[each_cond.id] = each_cond.measurement_type
                 self.cond_edge_select[each_cond.id] = each_cond.edge_select

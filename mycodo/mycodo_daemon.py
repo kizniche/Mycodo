@@ -574,25 +574,25 @@ class DaemonController(threading.Thread):
 
         self.logger.debug("Starting all activated timer controllers")
         for each_timer in timer:
-            if each_timer.activated:
+            if each_timer.is_activated:
                 self.activate_controller('Timer', each_timer.id)
         self.logger.info("All activated timer controllers started")
 
         self.logger.debug("Starting all activated sensor controllers")
         for each_sensor in sensor:
-            if each_sensor.activated:
+            if each_sensor.is_activated:
                 self.activate_controller('Sensor', each_sensor.id)
         self.logger.info("All activated sensor controllers started")
 
         self.logger.debug("Starting all activated PID controllers")
         for each_pid in pid:
-            if each_pid.activated:
+            if each_pid.is_activated:
                 self.activate_controller('PID', each_pid.id)
         self.logger.info("All activated PID controllers started")
 
         self.logger.debug("Starting all activated LCD controllers")
         for each_lcd in lcd:
-            if each_lcd.activated:
+            if each_lcd.is_activated:
                 self.activate_controller('LCD', each_lcd.id)
         self.logger.info("All activated LCD controllers started")
 

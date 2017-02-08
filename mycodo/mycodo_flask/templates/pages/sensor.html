@@ -36,10 +36,10 @@
 
     {%- if displayOrder -%}
     {%- for order in displayOrder -%}
-      {%- for each_sensor in sensor if each_sensor.id in order -%}
+      {%- for each_sensor in sensor if each_sensor.id == order -%}
         <div class="table-responsive" style="border: 2px solid #ddd; border-radius: 5px;">
           <form method="post" action="/sensor">
-            <div style="padding: 0.5em;" class="form-inline {% if each_sensor.activated -%}active-background{%- else -%}inactive-background{% endif -%}">
+            <div style="padding: 0.5em;" class="form-inline {% if each_sensor.is_activated -%}active-background{%- else -%}inactive-background{% endif -%}">
               <div class="form-group">
                 <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{each_sensor.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_sensor.id}}">
                   <span class='collapse-button{{each_sensor.id}} glyphicon glyphicon-plus' style="font-size: 1.3em;"></span>
@@ -57,13 +57,13 @@
                   {{form_mod_sensor.modName(class_='form-control', value=each_sensor.name, **{'title':_('A common name to distinguish this sensor from others')})}}
                 </div>
               </div>
-              {% if each_sensor.activated -%}
+              {% if each_sensor.is_activated -%}
                 {%- set has_active_pid = [] -%}
-                {%- for each_pid in pid if each_pid.sensor_id == each_sensor.id and each_pid.activated -%}
+                {%- for each_pid in pid if each_pid.sensor_id == each_sensor.id and each_pid.is_activated -%}
                   {%- do has_active_pid.append(1) -%}
                 {%- endfor -%}
                 {%- set has_active_lcd = [] -%}
-                {%- for each_lcd in lcd if each_lcd.activated and (each_lcd.line_1_sensor_id == each_sensor.id or each_lcd.line_2_sensor_id == each_sensor.id or each_lcd.line_3_sensor_id == each_sensor.id or each_lcd.line_4_sensor_id == each_sensor.id) -%}
+                {%- for each_lcd in lcd if each_lcd.is_activated and (each_lcd.line_1_sensor_id == each_sensor.id or each_lcd.line_2_sensor_id == each_sensor.id or each_lcd.line_3_sensor_id == each_sensor.id or each_lcd.line_4_sensor_id == each_sensor.id) -%}
                   {%- do has_active_lcd.append(1) -%}
                 {%- endfor -%}
                 <div class="form-group">
@@ -205,13 +205,13 @@
                 {{form_mod_sensor_cond.csrf_token}}
                 {{form_mod_sensor_cond.modCondSensor_id(value=each_sensorcond.id)}}
                 {{form_mod_sensor_cond.modSensor_id(value=each_sensor.id)}}
-                <table class="table {% if each_sensorcond.activated -%}active-background{%- else -%}inactive-background{% endif -%}">
+                <table class="table {% if each_sensorcond.is_activated -%}active-background{%- else -%}inactive-background{% endif -%}">
                   <tr>
                     <td class="col-sm-2">{{form_mod_sensor_cond.modCondName(class_='form-control', value=each_sensorcond.name, **{'title':'A common name to distinguish this conditional from others.'})}}</td>
                     <td class="col-sm-1" style="vertical-align: bottom">{{each_sensorcond.id}}</td>
                     <td class="col-sm-5"></td>
                     <td class="col-sm-4 text-right">
-                      {%- if each_sensorcond.activated %}
+                      {%- if each_sensorcond.is_activated %}
                         {{form_mod_sensor_cond.deactivateSubmit(class_='form-control btn btn-default')}}
                       {%- else -%}
                         {{form_mod_sensor_cond.activateSubmit(class_='form-control btn btn-default')}}

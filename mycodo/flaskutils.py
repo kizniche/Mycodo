@@ -656,7 +656,7 @@ def activate_deactivate_controller(controller_action,
         elif controller_type == 'Timer':
             mod_controller = Timer.query.filter(
                 Timer.id == controller_id).first()
-        mod_controller.activated = activated
+        mod_controller.is_activated = activated
         db.session.commit()
 
         if activated:
@@ -1771,7 +1771,7 @@ def sensor_add(form_add_sensor, display_order):
                 db.session.commit()
 
                 display_order.append(str(new_sensor.id))
-                DisplayOrder.query.first().sensor = ','.join(str(display_order))
+                DisplayOrder.query.first().sensor = ','.join(display_order)
                 db.session.commit()
                 flash(gettext(
                     "%(type)s Sensor with ID %(id)s successfully added",
