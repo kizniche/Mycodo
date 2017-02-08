@@ -21,6 +21,7 @@ from flask_babel import gettext
 # Classes
 from mycodo.databases.mycodo_db.models_5 import (
     Method,
+    MethodData,
     Relay
 )
 
@@ -177,12 +178,12 @@ def method_list():
 
     form_create_method = flaskforms.CreateMethod()
 
-    # TODO: Move to Flask-SQLAlchemy. This creates errors in the HTTP log: "SQLite objects created in a thread can only be used in that same thread"
-    method = Method.query
+    method = Method.query.all()
+    method_all = MethodData.query.all()
 
-    method_all = method.filter(Method.method_order > 0)
-    method_all = method_all.filter(Method.relay_id == None).all()
-    method = method.filter(Method.method_order == 0).all()
+    # method_all = method.filter(Method.method_order > 0)
+    # method_all = method_all.filter(Method.relay_id == None).all()
+    # method = method.filter(Method.method_order == 0).all()
 
     return render_template('pages/method-list.html',
                            method=method,

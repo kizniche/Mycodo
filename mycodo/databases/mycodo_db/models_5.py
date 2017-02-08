@@ -323,24 +323,24 @@ class Sensor(db.Model):
     multiplexer_address = db.Column(db.Text, default=None)
     multiplexer_bus = db.Column(db.Integer, default=1)
     multiplexer_channel = db.Column(db.Integer, default=0)
-    switch_edge = db.Column(db.Text, default=None)
-    switch_bouncetime = db.Column(db.Integer, default=100)
-    switch_reset_period = db.Column(db.Integer, default=5)
+    switch_edge = db.Column(db.Text, default='rising')
+    switch_bouncetime = db.Column(db.Integer, default=50)
+    switch_reset_period = db.Column(db.Integer, default=10)
     pre_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=False)  # Relay to turn on before sensor read
     pre_relay_duration = db.Column(db.Float, default=0.0)  # Duration to turn relay on before sensor read
     sht_clock_pin = db.Column(db.Integer, default=None)
-    sht_voltage = db.Column(db.Text, default=None)
+    sht_voltage = db.Column(db.Text, default='3.5')
 
     # Analog to digital converter options
-    adc_channel = db.Column(db.Integer, default=None)
-    adc_gain = db.Column(db.Integer, default=None)
-    adc_resolution = db.Column(db.Integer, default=None)
-    adc_measure = db.Column(db.Text, default=None)
-    adc_measure_units = db.Column(db.Text, default=None)
+    adc_channel = db.Column(db.Integer, default=0)
+    adc_gain = db.Column(db.Integer, default=1)
+    adc_resolution = db.Column(db.Integer, default=18)
+    adc_measure = db.Column(db.Text, default='Condition')
+    adc_measure_units = db.Column(db.Text, default='unit')
     adc_volts_min = db.Column(db.Float, default=None)
     adc_volts_max = db.Column(db.Float, default=None)
-    adc_units_min = db.Column(db.Float, default=None)
-    adc_units_max = db.Column(db.Float, default=None)
+    adc_units_min = db.Column(db.Float, default=0)
+    adc_units_max = db.Column(db.Float, default=10)
 
     def is_active(self):
         """

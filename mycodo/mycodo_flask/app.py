@@ -48,8 +48,7 @@ from mycodo.mycodo_flask import (
     general_routes,
     method_routes,
     page_routes,
-    settings_routes,
-    test_5_routes
+    settings_routes
 )
 from mycodo.mycodo_flask.general_routes import influx_db
 
@@ -60,7 +59,7 @@ from mycodo.config import (
 )
 
 
-def create_app(config=ProdConfig, inside=True):
+def create_app(config=ProdConfig):
     """
     Applicaiton factory:
         http://flask.pocoo.org/docs/0.11/patterns/appfactories/
@@ -75,21 +74,20 @@ def create_app(config=ProdConfig, inside=True):
 
     db.init_app(app)
 
-    if inside:
-        register_extensions(app, config)
-        register_blueprints(app)
+    register_extensions(app, config)
+    register_blueprints(app)
 
-        # Translations
-        babel = Babel(app)
+    # Translations
+    babel = Babel(app)
 
-        @babel.localeselector
-        def get_locale():
-            misc = Misc.query.first()
-            if misc.language != '':
-                for key, _ in LANGUAGES.iteritems():
-                    if key == misc.language:
-                        return key
-            return request.accept_languages.best_match(LANGUAGES.keys())
+    @babel.localeselector
+    def get_locale():
+        misc = Misc.query.first()
+        if misc.language != '':
+            for key, _ in LANGUAGES.iteritems():
+                if key == misc.language:
+                    return key
+        return request.accept_languages.best_match(LANGUAGES.keys())
 
     return app
 

@@ -1,3 +1,9 @@
+## 5.0.0 (Unreleased)
+
+### Miscellaneous
+
+  - Move to using flask sqlalchemy in flask app (frontend)
+
 ## 4.1.17 (Unreleased)
 
 ### Features

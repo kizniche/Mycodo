@@ -1691,37 +1691,14 @@ def sensor_add(form_add_sensor, display_order):
     if form_add_sensor.validate():
         for _ in range(0, form_add_sensor.numberSensors.data):
             new_sensor = Sensor()
-            random_sensor_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for _ in xrange(8)])
-            new_sensor.id = random_sensor_id
             new_sensor.device = form_add_sensor.sensor.data
-            new_sensor.name = '{} ({})'.format(form_add_sensor.sensor.data,
-                                               random_sensor_id)
+            new_sensor.name = '{}'.format(form_add_sensor.sensor.data)
             if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
                 new_sensor.i2c_bus = 1
                 new_sensor.multiplexer_bus = 1
             else:
                 new_sensor.i2c_bus = 0
                 new_sensor.multiplexer_bus = 0
-            new_sensor.location = ''
-            new_sensor.multiplexer_address = ''
-            new_sensor.multiplexer_channel = 0
-            new_sensor.adc_channel = 0
-            new_sensor.adc_gain = 1
-            new_sensor.adc_resolution = 18
-            new_sensor.adc_measure = 'Condition'
-            new_sensor.adc_measure_units = 'Unit'
-            new_sensor.adc_units_min = 0.0
-            new_sensor.adc_units_max = 10.0
-            new_sensor.switch_edge = 'rising'
-            new_sensor.switch_bouncetime = 50
-            new_sensor.switch_reset_period = 10
-            new_sensor.pre_relay_duration = 0
-            new_sensor.activated = 0
-            new_sensor.graph = 0
-            new_sensor.period = 15
-            new_sensor.sht_clock_pin = 0
-            new_sensor.sht_voltage = 3.5
 
             # Process monitors
             if form_add_sensor.sensor.data == 'RPiCPULoad':
@@ -1791,12 +1768,14 @@ def sensor_add(form_add_sensor, display_order):
 
             try:
                 db.session.add(new_sensor)
-                display_order.append(random_sensor_id)
-                DisplayOrder.query.first().sensor = ','.join(display_order)
+                db.session.commit()
+
+                display_order.append(str(new_sensor.id))
+                DisplayOrder.query.first().sensor = ','.join(str(display_order))
                 db.session.commit()
                 flash(gettext(
                     "%(type)s Sensor with ID %(id)s successfully added",
-                    type=form_add_sensor.sensor.data, id=random_sensor_id),
+                    type=form_add_sensor.sensor.data, id=new_sensor.id),
                     "success")
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
