@@ -15,7 +15,7 @@ import RPi.GPIO as GPIO
 from lockfile import LockFile
 
 # Classes
-from databases.mycodo_db.models import (
+from databases.mycodo_db.models_5 import (
     CameraStill,
     CameraStream,
     Relay,
@@ -47,7 +47,7 @@ from sensors.sht2x import SHT2xSensor
 
 # Functions
 from devices.camera_pi import camera_record
-from utils.database import db_retrieve_table
+from utils.database import db_retrieve_table_daemon
 from utils.influx import (
     format_influxdb_data,
     read_last_influxdb,
@@ -59,11 +59,11 @@ from utils.system_pi import cmd_output
 
 # Config
 from config import (
-    SQL_DATABASE_MYCODO,
+    SQL_DATABASE_MYCODO_5,
     INSTALL_DIRECTORY
 )
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
 
 
 class Measurement:
@@ -145,8 +145,7 @@ class SensorController(threading.Thread):
 
         self.setup_sensor_conditionals()
 
-        sensor = db_retrieve_table(
-            MYCODO_DB_PATH, Sensor, device_id=self.sensor_id)
+        sensor = db_retrieve_table_daemon(Sensor, device_id=self.sensor_id)
         self.i2c_bus = sensor.i2c_bus
         self.location = sensor.location
         self.device = sensor.device
@@ -182,12 +181,12 @@ class SensorController(threading.Thread):
         self.pre_relay_activated = False
         self.pre_relay_timer = time.time()
 
-        relay = db_retrieve_table(MYCODO_DB_PATH, Relay, entry='all')
+        relay = Relay.query.all()
         for each_relay in relay:  # Check if relay ID actually exists
             if each_relay.id == self.pre_relay_id and self.pre_relay_duration:
                 self.pre_relay_setup = True
 
-        smtp = db_retrieve_table(MYCODO_DB_PATH, SMTP, entry='first')
+        smtp = SMTP.query.first()
         self.smtp_max_count = smtp.hourly_max
         self.email_count = 0
         self.allowed_to_send_notice = True
@@ -488,13 +487,11 @@ class SensorController(threading.Thread):
             message += "Status: {}. ".format(cmd_status)
 
         if self.cond_camera_record[cond_id] in ['photo', 'photoemail']:
-            camera_still = db_retrieve_table(
-                MYCODO_DB_PATH, CameraStill, entry='first')
+            camera_still = CameraStill.query.first()
             attachment_file = camera_record(
                 'photo', camera_still)
         elif self.cond_camera_record[cond_id] in ['video', 'videoemail']:
-            camera_stream = db_retrieve_table(
-                MYCODO_DB_PATH, CameraStream, entry='first')
+            camera_stream = CameraStream.query.first()
             attachment_file = camera_record(
                 'video', camera_stream, duration_sec=5)
 
@@ -522,7 +519,7 @@ class SensorController(threading.Thread):
                     message += "\nVideo attached."
                     attachment_type = 'video'
 
-                smtp = db_retrieve_table(MYCODO_DB_PATH, SMTP, entry='first')
+                smtp = SMTP.query.first()
                 send_email(smtp.host, smtp.ssl, smtp.port,
                            smtp.user, smtp.passw, smtp.email_from,
                            self.cond_email_notify[cond_id], message,
@@ -785,14 +782,10 @@ class SensorController(threading.Thread):
                 self.cond_timer = {}
                 self.smtp_wait_timer = {}
 
-                self.sensor_conditional = db_retrieve_table(
-                    MYCODO_DB_PATH, SensorConditional)
-                self.sensor_conditional = self.sensor_conditional.filter(
+                self.sensor_conditional = SensorConditional.query.filter(
                     SensorConditional.activated == 1)
             elif cond_mod == 'add':
-                self.sensor_conditional = db_retrieve_table(
-                    MYCODO_DB_PATH, SensorConditional)
-                self.sensor_conditional = self.sensor_conditional.filter(
+                self.sensor_conditional = SensorConditional.query.filter(
                         SensorConditional.sensor_id == self.sensor_id)
                 self.sensor_conditional = self.sensor_conditional.filter(
                     SensorConditional.activated == 1)
@@ -801,12 +794,10 @@ class SensorController(threading.Thread):
                 logger_cond.debug("Added Conditional".format(
                     sen=self.sensor_id))
             elif cond_mod == 'mod':
-                self.sensor_conditional = db_retrieve_table(
-                    MYCODO_DB_PATH, SensorConditional)
-                self.sensor_conditional = self.sensor_conditional.filter(
-                        SensorConditional.sensor_id == self.sensor_id)
-                self.sensor_conditional = self.sensor_conditional.filter(
-                    SensorConditional.id == cond_id)
+                self.sensor_conditional = (
+                    SensorConditional.query
+                    .filter(SensorConditional.sensor_id == self.sensor_id)
+                    .filter(SensorConditional.id == cond_id))
                 logger_cond.debug("Modified Conditional".format(
                     sen=self.sensor_id))
             else:

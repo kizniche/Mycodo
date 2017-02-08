@@ -4,7 +4,6 @@ import logging
 import operator
 
 from flask import (
-    current_app,
     redirect,
     render_template,
     request,
@@ -14,17 +13,16 @@ from flask import (
 from flask.blueprints import Blueprint
 
 # Classes
-from mycodo.databases.mycodo_db.models import (
+from mycodo.databases.mycodo_db.models_5 import (
     CameraStill,
     Misc,
-    SMTP
+    SMTP,
+    Users
 )
-from mycodo.databases.users_db.models import Users
 
 # Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
-from mycodo.utils.database import db_retrieve_table
 
 # Config
 from config import LANGUAGES
@@ -59,8 +57,7 @@ def settings_alerts():
         flaskutils.deny_guest_user()
         return redirect(url_for('settings_routes.settings_general'))
 
-    smtp = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], SMTP, entry='first')
+    smtp = SMTP.query.first()
     form_email_alert = flaskforms.EmailAlert()
 
     if request.method == 'POST':
@@ -81,8 +78,7 @@ def settings_camera():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    camera = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], CameraStill, entry='first')
+    camera = CameraStill.query.first()
     form_settings_camera = flaskforms.SettingsCamera()
 
     if request.method == 'POST':
@@ -102,8 +98,7 @@ def settings_general():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    misc = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Misc, entry='first')
+    misc = Misc.query.first()
     form_settings_general = flaskforms.SettingsGeneral()
 
     languages_sorted = sorted(LANGUAGES.items(), key=operator.itemgetter(1))
@@ -130,8 +125,7 @@ def settings_users():
         flaskutils.deny_guest_user()
         return redirect(url_for('settings_routes.settings_general'))
 
-    users = db_retrieve_table(
-        current_app.config['USER_DB_PATH'], Users, entry='all')
+    users = Users.query.all()
     form_add_user = flaskforms.AddUser()
     form_mod_user = flaskforms.ModUser()
     form_del_user = flaskforms.DelUser()

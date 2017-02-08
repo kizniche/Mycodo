@@ -23,12 +23,15 @@
 #
 #  Contact at kylegabriel.com
 
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import argparse
 import csv
 import logging
 import resource
 import RPi.GPIO as GPIO
-import os
 import sys
 import threading
 import time
@@ -42,12 +45,12 @@ from daemonize import Daemonize
 from rpyc.utils.server import ThreadedServer
 
 # Classes
-from controller_lcd import LCDController
-from controller_pid import PIDController
-from controller_relay import RelayController
-from controller_sensor import SensorController
-from controller_timer import TimerController
-from databases.mycodo_db.models import (
+from mycodo.controller_lcd import LCDController
+from mycodo.controller_pid import PIDController
+from mycodo.controller_relay import RelayController
+from mycodo.controller_sensor import SensorController
+from mycodo.controller_timer import TimerController
+from mycodo.databases.mycodo_db.models_5 import (
     CameraStill,
     LCD,
     Misc,
@@ -57,9 +60,9 @@ from databases.mycodo_db.models import (
 )
 
 # Functions
-from devices.camera_pi import camera_record
-from utils.database import db_retrieve_table
-from utils.statistics import (
+from mycodo.devices.camera_pi import camera_record
+from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.statistics import (
     add_update_csv,
     recreate_stat_file,
     return_stat_file_dict,
@@ -67,19 +70,20 @@ from utils.statistics import (
 )
 
 # Config
-from config import (
+from mycodo.config import (
     DAEMON_LOG_FILE,
     DAEMON_PID_FILE,
     FILE_TIMELAPSE_PARAM,
     LOCK_FILE_TIMELAPSE,
     MYCODO_VERSION,
+    SQL_DATABASE_MYCODO_5,
     SQL_DATABASE_MYCODO,
     SQL_DATABASE_USER,
     STATS_CSV,
     STATS_INTERVAL
 )
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
 USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
 
 
@@ -235,7 +239,8 @@ class DaemonController(threading.Thread):
         self.timer_ram_use = time.time()
         self.timer_stats = time.time()+120
 
-        misc = db_retrieve_table(MYCODO_DB_PATH, Misc, entry='first')
+        misc = db_retrieve_table_daemon(Misc, entry='first')
+
         self.opt_out_statistics = misc.stats_opt_out
         if self.opt_out_statistics:
             self.logger.info("Anonymous statistics disabled")
@@ -280,8 +285,7 @@ class DaemonController(threading.Thread):
                                        'capture_number',
                                        capture_number)
                         # Capture image
-                        camera = db_retrieve_table(
-                            MYCODO_DB_PATH, CameraStill, entry='first')
+                        camera = db_retrieve_table_daemon(CameraStill, entry='first')
                         camera_record(
                             'timelapse',
                             camera,
@@ -367,8 +371,8 @@ class DaemonController(threading.Thread):
                     cont_type, cont_id)
 
             # Check if the controller ID actually exists and start it
-            controller = db_retrieve_table(
-                MYCODO_DB_PATH, controller_manage['type'], device_id=cont_id)
+            controller = db_retrieve_table_daemon(controller_manage['type'],
+                                           device_id=cont_id)
             if controller:
                 self.controller[cont_type][cont_id] = controller_manage['function'](
                     ready, cont_id)
@@ -559,10 +563,10 @@ class DaemonController(threading.Thread):
         controller does.
         """
         # Obtain database configuration options
-        lcd = db_retrieve_table(MYCODO_DB_PATH, LCD, entry='all')
-        pid = db_retrieve_table(MYCODO_DB_PATH, PID, entry='all')
-        sensor = db_retrieve_table(MYCODO_DB_PATH, Sensor, entry='all')
-        timer = db_retrieve_table(MYCODO_DB_PATH, Timer, entry='all')
+        lcd = db_retrieve_table_daemon(LCD, entry='all')
+        pid = db_retrieve_table_daemon(PID, entry='all')
+        sensor = db_retrieve_table_daemon(Sensor, entry='all')
+        timer = db_retrieve_table_daemon(Timer, entry='all')
 
         self.logger.debug("Starting relay controller")
         self.controller['Relay'] = RelayController()

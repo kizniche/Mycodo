@@ -13,17 +13,17 @@ import time
 import timeit
 
 # Classes
-from databases.mycodo_db.models import Timer
+from databases.mycodo_db.models_5 import Timer
 from mycodo_client import DaemonControl
 
 # Functions
-from utils.database import db_retrieve_table
+from utils.database import db_retrieve_table_daemon
 from utils.system_pi import time_between_range
 
 # Config
-from config import SQL_DATABASE_MYCODO
+from config import SQL_DATABASE_MYCODO_5
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
 
 
 class TimerController(threading.Thread):
@@ -31,11 +31,12 @@ class TimerController(threading.Thread):
     class for controlling timers
 
     """
-    def __init__(self, ready, timer_id):
+    def __init__(self, ready, timer_id, db):
         threading.Thread.__init__(self)
 
         self.logger = logging.getLogger(
             "mycodo.timer_{id}".format(id=timer_id))
+        self.db = db
 
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
@@ -43,8 +44,7 @@ class TimerController(threading.Thread):
         self.timer_id = timer_id
         self.control = DaemonControl()
 
-        timer = db_retrieve_table(
-            MYCODO_DB_PATH, Timer, device_id=self.timer_id)
+        timer = db_retrieve_table_daemon(Timer, device_id=self.timer_id)
         self.timer_type = timer.timer_type
         self.name = timer.name
         self.relay_id = timer.relay_id

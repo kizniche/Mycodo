@@ -14,24 +14,26 @@ from influxdb import InfluxDBClient
 from sqlalchemy import func
 
 # Classes
-from databases.mycodo_db.models import (
+from databases.mycodo_db.models_5 import (
     AlembicVersion,
     LCD,
     Method,
     PID,
     Relay,
     Sensor,
-    Timer
+    Timer,
+    Users
 )
-from databases.users_db.models import Users
 
 # Functions
 from databases.utils import session_scope
+from utils.database import db_retrieve_table_daemon
 
 # Config
 from config import (
     ID_FILE,
     MYCODO_VERSION,
+    SQL_DATABASE_MYCODO_5,
     SQL_DATABASE_MYCODO,
     SQL_DATABASE_USER,
     STATS_CSV,
@@ -43,7 +45,7 @@ from config import (
     STATS_USER
 )
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
 USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
 
 logger = logging.getLogger("mycodo.stats")
@@ -230,41 +232,41 @@ def send_stats():
         client = InfluxDBClient(STATS_HOST, STATS_PORT, STATS_USER, STATS_PASSWORD, STATS_DATABASE)
         # Prepare stats before sending
         with session_scope(MYCODO_DB_PATH) as new_session:
-            alembic = new_session.query(AlembicVersion).first()
+            alembic = db_retrieve_table_daemon(AlembicVersion, entry='first')
             add_update_csv(STATS_CSV, 'alembic_version',
                            alembic.version_num)
 
-            relays = new_session.query(Relay)
+            relays = db_retrieve_table_daemon(Relay)
             add_update_csv(STATS_CSV, 'num_relays', get_count(relays))
 
-            sensors = new_session.query(Sensor)
+            sensors = db_retrieve_table_daemon(Sensor)
             add_update_csv(STATS_CSV, 'num_sensors', get_count(sensors))
             add_update_csv(STATS_CSV, 'num_sensors_active',
                            get_count(
-                               sensors.filter(Sensor.activated == True)))
+                               sensors.filter(Sensor.is_activated == True)))
 
-            pids = new_session.query(PID)
+            pids = db_retrieve_table_daemon(PID)
             add_update_csv(STATS_CSV, 'num_pids', get_count(pids))
             add_update_csv(STATS_CSV, 'num_pids_active',
-                           get_count(pids.filter(PID.activated == True)))
+                           get_count(pids.filter(PID.is_activated == True)))
 
-            lcds = new_session.query(LCD)
+            lcds = db_retrieve_table_daemon(LCD)
             add_update_csv(STATS_CSV, 'num_lcds', get_count(lcds))
             add_update_csv(STATS_CSV, 'num_lcds_active',
-                           get_count(lcds.filter(LCD.activated == True)))
+                           get_count(lcds.filter(LCD.is_activated == True)))
 
-            methods = new_session.query(Method)
+            methods = db_retrieve_table_daemon(Method)
             add_update_csv(STATS_CSV, 'num_methods',
                            get_count(methods.filter(
                                Method.method_order == 0)))
             add_update_csv(STATS_CSV, 'num_methods_in_pid',
                            get_count(pids.filter(PID.method_id != '')))
 
-            timers = new_session.query(Timer)
+            timers = db_retrieve_table_daemon(Timer)
             add_update_csv(STATS_CSV, 'num_timers', get_count(timers))
             add_update_csv(STATS_CSV, 'num_timers_active',
                            get_count(timers.filter(
-                               Timer.activated == True)))
+                               Timer.is_activated == True)))
 
         add_update_csv(STATS_CSV, 'country', geocoder.ip('me').country)
         add_update_csv(STATS_CSV, 'ram_use_mb',
@@ -273,9 +275,9 @@ def send_stats():
 
         user_count = 0
         admin_count = 0
-        with session_scope(USER_DB_PATH) as db_session:
+        with session_scope(MYCODO_DB_PATH) as db_session:
             try:
-                users = db_session.query(Users).all()
+                users = db_retrieve_table_daemon(Users, entry='all')
                 for each_user in users:
                     user_count += 1
                     if each_user.user_restriction == 'admin':

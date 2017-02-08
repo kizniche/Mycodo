@@ -41,13 +41,13 @@ from flask_babel import gettext
 from flask_influxdb import InfluxDB
 
 # Classes
-from mycodo.databases.mycodo_db.models import (
+from mycodo.databases.mycodo_db.models_5 import (
     DisplayOrder,
     Misc,
     Relay,
-    Remote
+    Remote,
+    Users
 )
-from mycodo.databases.users_db.models import Users
 from mycodo.devices.camera_pi import CameraStream
 from mycodo.mycodo_client import DaemonControl
 
@@ -60,7 +60,6 @@ from mycodo.mycodo_flask.authentication_routes import (
     clear_cookie_auth,
     logged_in
 )
-from mycodo.utils.database import db_retrieve_table
 
 # Config
 from config import (
@@ -113,12 +112,8 @@ def remote_admin(page):
         flaskutils.deny_guest_user()
         return redirect(url_for('general_routes.home'))
 
-    remote_hosts = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Remote, entry='all')
-    display_order_unsplit = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'],
-        DisplayOrder,
-        entry='first').remote_host
+    remote_hosts = Remote.query.all()
+    display_order_unsplit = DisplayOrder.query.first().remote_host
     if display_order_unsplit:
         display_order = display_order_unsplit.split(",")
     else:
@@ -211,8 +206,7 @@ def gpio_state():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    relay = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
+    relay = Relay.query.all()
     gpio_state = {}
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
@@ -521,9 +515,7 @@ def newremote():
     username = request.args.get('user')
     pass_word = request.args.get('passw')
 
-    user = db_retrieve_table(
-        current_app.config['USER_DB_PATH'], Users)
-    user = user.filter(
+    user = Users.query.filter(
         Users.user_name == username).first()
 
     # TODO: Change sleep() to max requests per duration of time
@@ -543,9 +535,7 @@ def data():
     username = request.args.get('user')
     password_hash = request.args.get('pw_hash')
 
-    user = db_retrieve_table(
-        current_app.config['USER_DB_PATH'], Users)
-    user = user.filter(
+    user = Users.query.filter(
         Users.user_name == username).first()
 
     # TODO: Change sleep() to max requests per duration of time
@@ -574,8 +564,7 @@ def inject_mycodo_version():
                              "error: %(err)s", err=e))
         daemon_status = '0'
 
-    misc = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Misc, entry='first')
+    misc = Misc.query.first()
     return dict(daemon_status=daemon_status,
                 mycodo_version=MYCODO_VERSION,
                 host=socket.gethostname(),

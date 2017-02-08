@@ -31,10 +31,14 @@ from flask import (
     request
 )
 from flask_babel import Babel
+# from flask_sqlalchemy import SQLAlchemy
 from flask_sslify import SSLify
 
 # Classes
-from mycodo.databases.mycodo_db.models import Misc
+from mycodo.databases.mycodo_db.models_5 import (
+    db,
+    Misc
+)
 
 # Functions
 from init_databases import create_dbs
@@ -45,9 +49,9 @@ from mycodo.mycodo_flask import (
     method_routes,
     page_routes,
     settings_routes,
+    test_5_routes
 )
 from mycodo.mycodo_flask.general_routes import influx_db
-from mycodo.utils.database import db_retrieve_table
 
 # Config
 from mycodo.config import (
@@ -56,7 +60,7 @@ from mycodo.config import (
 )
 
 
-def create_app(config=ProdConfig):
+def create_app(config=ProdConfig, inside=True):
     """
     Applicaiton factory:
         http://flask.pocoo.org/docs/0.11/patterns/appfactories/
@@ -65,24 +69,27 @@ def create_app(config=ProdConfig):
     :returns: Flask
     """
     app = Flask(__name__)
+
     app.config.from_object(config)
     app.secret_key = os.urandom(24)
 
-    register_extensions(app, config)
-    register_blueprints(app)
+    db.init_app(app)
 
-    # Translations
-    babel = Babel(app)
+    if inside:
+        register_extensions(app, config)
+        register_blueprints(app)
 
-    @babel.localeselector
-    def get_locale():
-        misc = db_retrieve_table(
-            app.config['MYCODO_DB_PATH'], Misc, entry='first')
-        if misc.language != '':
-            for key, _ in LANGUAGES.iteritems():
-                if key == misc.language:
-                    return key
-        return request.accept_languages.best_match(LANGUAGES.keys())
+        # Translations
+        babel = Babel(app)
+
+        @babel.localeselector
+        def get_locale():
+            misc = Misc.query.first()
+            if misc.language != '':
+                for key, _ in LANGUAGES.iteritems():
+                    if key == misc.language:
+                        return key
+            return request.accept_languages.best_match(LANGUAGES.keys())
 
     return app
 
@@ -98,9 +105,16 @@ def register_extensions(_app, config):
     influx_db.init_app(_app)
 
     # Check user option to force all web connections to use SSL
-    misc = db_retrieve_table(
-        _app.config['MYCODO_DB_PATH'], Misc, entry='first')
-    if misc.force_https:
+    force_https = True
+    from databases.utils import session_scope
+    with session_scope(_app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
+        try:
+            misc = new_session.query(Misc).first()
+            force_https = misc.force_https
+        except:
+            pass
+
+    if force_https:
         SSLify(_app)
 
 

@@ -6,7 +6,7 @@ import tempfile
 import shutil
 import os
 from mycodo.databases.utils import session_scope
-from mycodo.databases.users_db.models import Users
+from mycodo.databases.mycodo_db.models_5 import Users
 
 
 def uri_to_path(uri):

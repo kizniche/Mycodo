@@ -38,7 +38,7 @@ import time as t
 import timeit
 
 # Classes
-from databases.mycodo_db.models import (
+from databases.mycodo_db.models_5 import (
     Method,
     PID,
     Relay,
@@ -48,7 +48,7 @@ from mycodo_client import DaemonControl
 
 # Functions
 from databases.utils import session_scope
-from utils.database import db_retrieve_table
+from utils.database import db_retrieve_table_daemon
 from utils.influx import (
     read_last_influxdb,
     write_influxdb_setpoint
@@ -59,9 +59,9 @@ from utils.method import (
 )
 
 # Config
-from config import SQL_DATABASE_MYCODO
+from config import SQL_DATABASE_MYCODO_5
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
 
 
 class PIDController(threading.Thread):
@@ -99,7 +99,7 @@ class PIDController(threading.Thread):
 
         # Check if a method is set for this PID
         if self.method_id:
-            method = db_retrieve_table(MYCODO_DB_PATH, Method)
+            method = Method.query
             method = method.filter(Method.method_id == self.method_id)
             method = method.filter(Method.method_order == 0).first()
             self.method_type = method.method_type
@@ -175,8 +175,8 @@ class PIDController(threading.Thread):
 
     def initialize_values(self):
         """Set PID parameters"""
-        pid = db_retrieve_table(MYCODO_DB_PATH, PID, device_id=self.pid_id)
-        sensor = db_retrieve_table(MYCODO_DB_PATH, Sensor, device_id=pid.sensor_id)
+        pid = db_retrieve_table_daemon(PID, device_id=self.pid_id)
+        sensor = db_retrieve_table_daemon(Sensor, device_id=pid.sensor_id)
         self.activated = pid.activated  # 0=inactive, 1=active, 2=paused
         self.sensor_id = pid.sensor_id
         self.measure_type = pid.measure_type
@@ -308,10 +308,8 @@ class PIDController(threading.Thread):
 
                     # Turn off lower_relay if active, because we're now raising
                     if self.lower_relay_id:
-                        relay = db_retrieve_table(
-                            MYCODO_DB_PATH,
-                            Relay,
-                            device_id=self.lower_relay_id)
+                        relay = db_retrieve_table_daemon(
+                            Relay, device_id=self.lower_relay_id)
                         if relay.is_on():
                             self.control.relay_off(self.lower_relay_id)
 
@@ -343,10 +341,8 @@ class PIDController(threading.Thread):
 
                     # Turn off raise_relay if active, because we're now lowering
                     if self.raise_relay_id:
-                        relay = db_retrieve_table(
-                            MYCODO_DB_PATH,
-                            Relay,
-                            device_id=self.raise_relay_id)
+                        relay = db_retrieve_table_daemon(
+                            Relay, device_id=self.raise_relay_id)
                         if relay.is_on():
                             self.control.relay_off(self.raise_relay_id)
 
@@ -369,7 +365,7 @@ class PIDController(threading.Thread):
                 self.control.relay_off(self.lower_relay_id)
 
     def calculate_method_setpoint(self, method_id):
-        method = db_retrieve_table(MYCODO_DB_PATH, Method)
+        method = Method.query
 
         method_key = method.filter(Method.method_id == method_id)
         method_key = method_key.filter(Method.method_order == 0).first()

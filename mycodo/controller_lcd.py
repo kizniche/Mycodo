@@ -59,7 +59,7 @@ import RPi.GPIO as GPIO
 import datetime
 
 # Classes
-from databases.mycodo_db.models import (
+from databases.mycodo_db.models_5 import (
     LCD,
     PID,
     Relay,
@@ -68,17 +68,18 @@ from databases.mycodo_db.models import (
 from devices.tca9548a import TCA9548A
 
 # Functions
-from utils.database import db_retrieve_table
+from utils.database import db_retrieve_table_daemon
 from utils.influx import read_last_influxdb
 
 # Config
 from config import (
+    SQL_DATABASE_MYCODO_5,
     SQL_DATABASE_MYCODO,
     MEASUREMENT_UNITS,
     MYCODO_VERSION
 )
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
 
 
 class LCDController(threading.Thread):
@@ -100,8 +101,7 @@ class LCDController(threading.Thread):
         self.lcd_id = lcd_id
 
         try:
-            lcd = db_retrieve_table(MYCODO_DB_PATH,
-                                    LCD,
+            lcd = db_retrieve_table_daemon(LCD,
                                     device_id=self.lcd_id)
 
             self.lcd_name = lcd.name
@@ -143,10 +143,8 @@ class LCDController(threading.Thread):
                         table = PID
                     elif lcd.line_1_measurement in list_relays:
                         table = Relay
-                    sensor_line_1 = db_retrieve_table(
-                        MYCODO_DB_PATH,
-                        table,
-                        device_id=lcd.line_1_sensor_id)
+                    sensor_line_1 = db_retrieve_table_daemon(
+                        table, device_id=lcd.line_1_sensor_id)
                     self.lcd_line[1]['name'] = sensor_line_1.name
                     if 'time' in lcd.line_1_measurement:
                         self.lcd_line[1]['measurement'] = 'time'
@@ -161,10 +159,8 @@ class LCDController(threading.Thread):
                         table = PID
                     elif lcd.line_2_measurement in list_relays:
                         table = Relay
-                    sensor_line_2 = db_retrieve_table(
-                        MYCODO_DB_PATH,
-                        table,
-                        device_id=lcd.line_2_sensor_id)
+                    sensor_line_2 = db_retrieve_table_daemon(
+                        table, device_id=lcd.line_2_sensor_id)
                     self.lcd_line[2]['name'] = sensor_line_2.name
                     if 'time' in lcd.line_2_measurement:
                         self.lcd_line[2]['measurement'] = 'time'
@@ -180,10 +176,8 @@ class LCDController(threading.Thread):
                         table = PID
                     elif lcd.line_3_measurement in list_relays:
                         table = Relay
-                    sensor_line_3 = db_retrieve_table(
-                        MYCODO_DB_PATH,
-                        table,
-                        device_id=lcd.line_3_sensor_id)
+                    sensor_line_3 = db_retrieve_table_daemon(
+                        table, device_id=lcd.line_3_sensor_id)
                     self.lcd_line[3]['name'] = sensor_line_3.name
                     if 'time' in lcd.line_3_measurement:
                         self.lcd_line[3]['measurement'] = 'time'
@@ -198,10 +192,8 @@ class LCDController(threading.Thread):
                         table = PID
                     elif lcd.line_4_measurement in list_relays:
                         table = Relay
-                    sensor_line_4 = db_retrieve_table(
-                        MYCODO_DB_PATH,
-                        table,
-                        device_id=lcd.line_4_sensor_id)
+                    sensor_line_4 = db_retrieve_table_daemon(
+                        table, device_id=lcd.line_4_sensor_id)
                     self.lcd_line[4]['name'] = sensor_line_4.name
                     if 'time' in lcd.line_4_measurement:
                         self.lcd_line[4]['measurement'] = 'time'
@@ -350,10 +342,8 @@ class LCDController(threading.Thread):
                         # Determine if the LCD output will have a value unit
                         measurement = ''
                         if self.lcd_line[i]['measurement'] == 'setpoint':
-                            pid = db_retrieve_table(
-                                MYCODO_DB_PATH,
-                                PID,
-                                device_id=self.lcd_line[i]['id'])
+                            pid = db_retrieve_table_daemon(
+                                PID, device_id=self.lcd_line[i]['id'])
                             measurement = pid.measure_type
                         elif self.lcd_line[i]['measurement'] in [
                                 'temperature',
@@ -406,7 +396,7 @@ class LCDController(threading.Thread):
 
     @staticmethod
     def relay_state(relay_id):
-        relay = db_retrieve_table(MYCODO_DB_PATH, Relay, device_id=relay_id)
+        relay = db_retrieve_table_daemon(Relay, device_id=relay_id)
         GPIO.setmode(GPIO.BCM)
         if GPIO.input(relay.pin) == relay.trigger:
             gpio_state = 'On'

@@ -16,6 +16,18 @@ from flask import (
 from flask_babel import gettext
 from pkg_resources import parse_version
 
+# Classes
+from mycodo.databases.mycodo_db.models_5 import (
+    db,
+    AlembicVersion,
+    CameraStream,
+    CameraStill,
+    CameraTimelapse,
+    DisplayOrder,
+    Misc,
+    SMTP
+)
+
 # Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
@@ -44,6 +56,27 @@ blueprint = Blueprint(
     template_folder='../templates'
 )
 blueprint.before_request(before_blueprint_request)  # check if admin was created
+
+
+@blueprint.before_app_first_request
+def create_database():
+    """ Ensure database exists and default tables created """
+    db.create_all()
+    if not AlembicVersion.query.count():
+        db.session.add(AlembicVersion())
+    if not CameraStream.query.count():
+        db.session.add(CameraStream())
+    if not CameraStill.query.count():
+        db.session.add(CameraStill())
+    if not CameraTimelapse.query.count():
+        db.session.add(CameraTimelapse())
+    if not DisplayOrder.query.count():
+        db.session.add(DisplayOrder())
+    if not Misc.query.count():
+        db.session.add(Misc())
+    if not SMTP.query.count():
+        db.session.add(SMTP())
+    db.session.commit()
 
 
 @blueprint.context_processor

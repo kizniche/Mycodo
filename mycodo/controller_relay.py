@@ -13,7 +13,7 @@ import time
 import timeit
 
 # Classes
-from databases.mycodo_db.models import (
+from databases.mycodo_db.models_5 import (
     Relay,
     RelayConditional,
     SMTP
@@ -21,7 +21,7 @@ from databases.mycodo_db.models import (
 from mycodo_client import DaemonControl
 
 # Functions
-from utils.database import db_retrieve_table
+from utils.database import db_retrieve_table_daemon
 from utils.influx import write_influxdb_value
 from utils.send_data import send_email
 from utils.system_pi import cmd_output
@@ -63,14 +63,15 @@ class RelayController(threading.Thread):
 
         self.logger.debug("Initializing Relays")
         try:
-            smtp = db_retrieve_table(MYCODO_DB_PATH, SMTP, entry='first')
+
+            smtp = db_retrieve_table_daemon(SMTP, entry='first')
             self.smtp_max_count = smtp.hourly_max
             self.smtp_wait_time = time.time() + 3600
             self.smtp_timer = time.time()
             self.email_count = 0
             self.allowed_to_send_notice = True
 
-            relays = db_retrieve_table(MYCODO_DB_PATH, Relay, entry='all')
+            relays = db_retrieve_table_daemon(Relay, entry='all')
             self.all_relays_initialize(relays)
             # Turn all relays off
             self.all_relays_off()
@@ -264,7 +265,7 @@ class RelayController(threading.Thread):
             self.check_conditionals(relay_id, duration)
 
     def check_conditionals(self, relay_id, on_duration):
-        conditionals = db_retrieve_table(MYCODO_DB_PATH, RelayConditional)
+        conditionals = db_retrieve_table_daemon(RelayConditional)
 
         conditionals = conditionals.filter(RelayConditional.if_relay_id == relay_id)
         conditionals = conditionals.filter(RelayConditional.activated == True)
@@ -328,8 +329,7 @@ class RelayController(threading.Thread):
                     message += "Notify {}.".format(
                         each_conditional.email_notify)
 
-                    smtp = db_retrieve_table(
-                        MYCODO_DB_PATH,SMTP, entry='first')
+                    smtp = db_retrieve_table_daemon(SMTP, entry='first')
                     send_email(
                         smtp.host, smtp.ssl, smtp.port, smtp.user,
                         smtp.passw, smtp.email_from,
@@ -401,8 +401,7 @@ class RelayController(threading.Thread):
         :type do_setup_pin: bool
         """
         try:
-            relay = db_retrieve_table(
-                MYCODO_DB_PATH, Relay, device_id=relay_id)
+            relay = db_retrieve_table(Relay, device_id=relay_id)
             self.relay_id[relay_id] = relay.id
             self.relay_name[relay_id] = relay.name
             self.relay_pin[relay_id] = relay.pin

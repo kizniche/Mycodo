@@ -1,13 +1,13 @@
 # coding=utf-8
 """ functional tests for flask endpoints """
 import mock
-from flask import current_app
+# from flask import current_app
 
-from mycodo.databases.mycodo_db.models import Sensor
+from mycodo.databases.mycodo_db.models_5 import Sensor
 from mycodo.tests.software_tests.factories_user import UserFactory
 # from mycodo.tests.software_tests.factories_mycodo import SensorFactory
 from mycodo.tests.software_tests.test_mycodo_flask.conftest import login_user
-from mycodo.utils.database import db_retrieve_table
+# from mycodo.utils.database import db_retrieve_table
 
 
 # ----------------------
@@ -143,8 +143,7 @@ def test_add_sensor_logged_in_as_admin(_, testapp, user_db):
     assert "successfully added" in response
 
     # Verify data was entered into the database
-    sensor = db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor, entry='all')
-    for each_sensor in sensor:
+    for each_sensor in Sensor.query.all():
         assert 'RPi' in each_sensor.name, "Sensor name doesn't match: {}".format(each_sensor.name)
 
 

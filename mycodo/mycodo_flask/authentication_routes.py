@@ -5,7 +5,6 @@ import socket
 import time
 
 from flask import (
-    current_app,
     redirect,
     request,
     render_template,
@@ -18,21 +17,20 @@ from flask_babel import gettext
 from flask.blueprints import Blueprint
 
 # Classes
-from mycodo.databases.mycodo_db.models import (
+from mycodo.databases.mycodo_db.models_5 import (
+    db,
     AlembicVersion,
-    Misc
+    Misc,
+    Users
 )
-from mycodo.databases.users_db.models import Users
 
 # Functions
 from mycodo import flaskforms
-from mycodo.databases.utils import session_scope
 from mycodo.flaskutils import flash_form_errors
 from mycodo.scripts.utils import (
     test_username,
     test_password
 )
-from mycodo.utils.database import db_retrieve_table
 
 # Config
 from config import (
@@ -92,8 +90,8 @@ def create_admin():
             new_user.user_restriction = 'admin'
             new_user.user_theme = 'slate'
             try:
-                with session_scope(current_app.config['USER_DB_PATH']) as db_session:
-                    db_session.add(new_user)
+                db.session.add(new_user)
+                db.session.commit()
                 flash(gettext("User '%(user)s' successfully created. Please "
                               "log in below.", user=form.username.data),
                       "success")
@@ -122,8 +120,7 @@ def do_login():
     form = flaskforms.Login()
     form_notice = flaskforms.InstallNotice()
 
-    misc = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Misc, entry='first')
+    misc = Misc.query.first()
     dismiss_notification = misc.dismiss_notification
     stats_opt_out = misc.stats_opt_out
 
@@ -139,19 +136,15 @@ def do_login():
             form_name = request.form['form-name']
             if form_name == 'acknowledge':
                 try:
-                    with session_scope(current_app.config['MYCODO_DB_PATH']) as db_session:
-                        mod_misc = db_session.query(Misc).first()
-                        mod_misc.dismiss_notification = 1
-                        db_session.commit()
+                    mod_misc = Misc.query.first()
+                    mod_misc.dismiss_notification = 1
+                    db.session.commit()
                 except Exception as except_msg:
                     flash(gettext("Acknowledgement unable to be saved: "
                                   "%(err)s", err=except_msg), "error")
             elif form_name == 'login' and form.validate_on_submit():
-                with session_scope(current_app.config['USER_DB_PATH']) as new_session:
-                    user = new_session.query(Users).filter(
-                        Users.user_name == form.username.data).first()
-                    new_session.expunge_all()
-                    new_session.close()
+                user = Users.query.filter(
+                    Users.user_name == form.username.data).first()
                 if not user:
                     login_log(form.username.data,
                               'NA',
@@ -222,19 +215,15 @@ def logout():
 
 def admin_exists():
     """Verify that at least one admin user exists"""
-    with session_scope(current_app.config['USER_DB_PATH']) as new_session:
-        return new_session.query(Users).filter(
-            Users.user_restriction == 'admin').count()
+    return Users.query.filter(Users.user_restriction == 'admin').count()
 
 
-def authenticate_cookies(db_path, users):
+def authenticate_cookies():
     """Check for cookies to authenticate Login"""
     cookie_username = request.cookies.get('user_name')
     cookie_password_hash = request.cookies.get('user_pass_hash')
     if cookie_username is not None:
-        user = db_retrieve_table(
-            db_path, users)
-        user = user.filter(
+        user = Users.query.filter(
             Users.user_name == cookie_username).first()
 
         if user is None:
@@ -251,9 +240,7 @@ def authenticate_cookies(db_path, users):
 
 
 def check_database_version_issue():
-    alembic_version = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], AlembicVersion, entry='all')
-    if len(alembic_version) > 1:
+    if len(AlembicVersion.query.all()) > 1:
         flash("A check of your database indicates there is an issue with your"
               " database version number. This issue first appeared in early "
               "4.1.x versions of Mycodo and has since been resolved. However,"
@@ -273,13 +260,11 @@ def logged_in():
     """Verify the user is logged in"""
     check_database_version_issue()
     if (not session.get('logged_in') and
-            not authenticate_cookies(
-                current_app.config['USER_DB_PATH'], Users)):
+            not authenticate_cookies()):
         return 0
     elif (session.get('logged_in') or
             (not session.get('logged_in') and
-                authenticate_cookies(
-                    current_app.config['USER_DB_PATH'], Users))):
+                authenticate_cookies())):
         return 1
 
 

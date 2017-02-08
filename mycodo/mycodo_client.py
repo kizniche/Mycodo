@@ -47,7 +47,6 @@ class DaemonControl:
         try:
             self.rpyc_client = rpyc.connect("localhost", 18813)
         except socket.error:
-            logger.info("Connection refused. Is the daemon running?")
             raise Exception("Connection refused. Is the daemon running?")
 
     def flash_lcd(self, lcd_id, state):
