@@ -5,7 +5,7 @@
 
 {% block head %}
   <script>
-    function update{{_('Measurement')}}s(sensor_id, sensor_measurement, period, convert_c) {
+    function updateMeasurements(sensor_id, sensor_measurement, period, convert_c) {
       var url = '/last/' + sensor_measurement + '/' + sensor_id + '/' + period.toString();
       $.ajax(url, {
         success: function(data, responseText, jqXHR) {
@@ -36,55 +36,24 @@
       });
     }
 
-    function liveTextData(sensor_name, sensor_measurement, sensor_id, period) {
+    function liveTextData(sensor_id, sensor_measurement, period, convert_c) {
       // Update when page first loads
-      update{{_('Measurement')}}s(sensor_name, sensor_measurement, sensor_id, period);
+      updateMeasurements(sensor_id, sensor_measurement, period, convert_c);
       setInterval(function () {
         // Update after every 30 seconds
-        update{{_('Measurement')}}s(sensor_name, sensor_measurement, sensor_id, period);
+        updateMeasurements(sensor_id, sensor_measurement, period, convert_c);
       }, 30000);
     }
 
     $(function() {
-      {%- for each_sensor in sensor if each_sensor.is_activated and each_sensor.device_type == 'cpu_load' -%}
-        liveTextData('{{each_sensor.id}}', 'cpu_load_1m', 30, false);
-        liveTextData('{{each_sensor.id}}', 'cpu_load_5m', 30, false);
-        liveTextData('{{each_sensor.id}}', 'cpu_load_15m', 30, false);
-      {%- endfor -%}
-      {%- for each_sensor in sensor if each_sensor.is_activated and each_sensor.device_type == 'tsensor' -%}
-        liveTextData('{{each_sensor.id}}', 'temperature', 30, true);
-      {%- endfor -%}
-      {%- for each_sensor in sensor if each_sensor.is_activated and each_sensor.device_type == 'tmpsensor' -%}
-        liveTextData('{{each_sensor.id}}', 'temperature_object', 30, true);
-        liveTextData('{{each_sensor.id}}', 'temperature_die', 30, true);
-      {%- endfor -%}
-      {%- for each_sensor in sensor if each_sensor.is_activated and each_sensor.device_type == 'htsensor' -%}
-        liveTextData('{{each_sensor.id}}', 'temperature', 30, true);
-        liveTextData('{{each_sensor.id}}', 'humidity', 30, false);
-        liveTextData('{{each_sensor.id}}', 'dewpoint', 30, true);
-      {%- endfor -%}
-      {%- for each_sensor in sensor if each_sensor.is_activated and each_sensor.device_type == 'co2sensor' -%}
-        liveTextData('{{each_sensor.id}}', 'co2', 30, false);
-      {%- endfor -%}
-      {%- for each_sensor in sensor if each_sensor.is_activated and each_sensor.device_type == 'luxsensor' -%}
-        liveTextData('{{each_sensor.id}}', 'lux', 30, false);
-      {%- endfor -%}
-      {%- for each_sensor in sensor if each_sensor.is_activated and each_sensor.device_type == 'moistsensor' -%}
-        liveTextData('{{each_sensor.id}}', 'lux', 30, false);
-        liveTextData('{{each_sensor.id}}', 'moisture', 30, false);
-        liveTextData('{{each_sensor.id}}', 'temperature', 30, true);
-      {%- endfor -%}
-      {%- for each_sensor in sensor if each_sensor.is_activated and each_sensor.device_type == 'presssensor' -%}
-        liveTextData('{{each_sensor.id}}', 'temperature', 30, true);
-        liveTextData('{{each_sensor.id}}', 'pressure', 30, false);
-        liveTextData('{{each_sensor.id}}', 'altitude', 30, false);
-      {%- endfor -%}
-      {%- for each_sensor in sensor if each_sensor.is_activated and each_sensor.device_type == 'analogsensor' -%}
-        liveTextData('{{each_sensor.id}}', 'voltage', 30, false);
-        liveTextData('{{each_sensor.id}}', '{{each_sensor.adc_measure}}', 30, false);
-      {%- endfor -%}
-      {%- for each_sensor in sensor if each_sensor.is_activated and each_sensor.device_type == 'edgedetect' -%}
-        liveTextData('{{each_sensor.id}}', 'edge', 30, false);
+      {%- for each_sensor in sensor if each_sensor.is_activated -%}
+        {% set measurement_list = each_sensor.measurements.split(',') %}
+        {% for each_measurement in measurement_list %}
+          liveTextData('{{each_sensor.unique_id}}', '{{each_measurement}}', 30, false);
+          {% if each_measurement == 'voltage' %}
+            liveTextData('{{each_sensor.unique_id}}', '{{each_sensor.adc_measure}}', 30, false);
+          {% endif %}
+        {% endfor %}
       {%- endfor -%}
     });
   </script>
@@ -134,80 +103,80 @@
               <div class="inline-right text-right" style="padding: 0.3em;">
                 {{_('Measurement')}} | {{_('Timestamp')}}
                 <div>
-                  <b><span id="{{each_sensor.id}}-cpu_load_1m-value">0.0</span> (1m)</b> | <span id="{{each_sensor.id}}-cpu_load_1m-time">&lt;please wait&gt;</span>
-                  <br><b><span id="{{each_sensor.id}}-cpu_load_5m-value">0.0</span> (5m)</b> | <span id="{{each_sensor.id}}-cpu_load_5m-time">&lt;please wait&gt;</span>
-                  <br><b><span id="{{each_sensor.id}}-cpu_load_15m-value">0.0</span> (15m)</b> | <span id="{{each_sensor.id}}-cpu_load_15m-time">&lt;please wait&gt;</span>
+                  <b><span id="{{each_sensor.unique_id}}-cpu_load_1m-value">0.0</span> (1m)</b> | <span id="{{each_sensor.unique_id}}-cpu_load_1m-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.unique_id}}-cpu_load_5m-value">0.0</span> (5m)</b> | <span id="{{each_sensor.unique_id}}-cpu_load_5m-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.unique_id}}-cpu_load_15m-value">0.0</span> (15m)</b> | <span id="{{each_sensor.unique_id}}-cpu_load_15m-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'tsensor' %}
               <div class="inline-right text-right" style="padding: 0.3em;">
                 {{_('Measurement')}} | {{_('Timestamp')}}
                 <div>
-                  <b><span id="{{each_sensor.id}}-temperature-value">0.0</span> &deg;C (<span id="{{each_sensor.id}}-temperature-value-F">0.0</span> &deg;F)</b> | <span id="{{each_sensor.id}}-temperature-time">&lt;please wait&gt;</span>
+                  <b><span id="{{each_sensor.unique_id}}-temperature-value">0.0</span> &deg;C (<span id="{{each_sensor.unique_id}}-temperature-value-F">0.0</span> &deg;F)</b> | <span id="{{each_sensor.unique_id}}-temperature-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'tmpsensor' %}
               <div class="inline-right text-right" style="padding: 0.3em;">
                 {{_('Measurement')}} | {{_('Timestamp')}}
                 <div>
-                  <b><span id="{{each_sensor.id}}-temperature_object-value">0.0</span> &deg;C (<span id="{{each_sensor.id}}-temperature_object-value-F">0.0</span> &deg;F)</b> | <span id="{{each_sensor.id}}-temperature_object-time">&lt;please wait&gt;</span>
-                  <br><b><span id="{{each_sensor.id}}-temperature_die-value">0.0</span> &deg;C (<span id="{{each_sensor.id}}-temperature_die-value-F">0.0</span> &deg;F)</b> | <span id="{{each_sensor.id}}-temperature_die-time">&lt;please wait&gt;</span>
+                  <b><span id="{{each_sensor.unique_id}}-temperature_object-value">0.0</span> &deg;C (<span id="{{each_sensor.unique_id}}-temperature_object-value-F">0.0</span> &deg;F)</b> | <span id="{{each_sensor.unique_id}}-temperature_object-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.unique_id}}-temperature_die-value">0.0</span> &deg;C (<span id="{{each_sensor.unique_id}}-temperature_die-value-F">0.0</span> &deg;F)</b> | <span id="{{each_sensor.unique_id}}-temperature_die-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'htsensor' %}
               <div class="inline-right text-right" style="padding: 0.3em;">
                 {{_('Measurement')}} | {{_('Timestamp')}}
                 <div>
-                  <b><span id="{{each_sensor.id}}-temperature-value">0.0</span> &deg;C (<span id="{{each_sensor.id}}-temperature-value-F">0.0</span> &deg;F)</b> | <span id="{{each_sensor.id}}-temperature-time">&lt;please wait&gt;</span>
-                  <br><b><span id="{{each_sensor.id}}-humidity-value">0.0</span> %</b> | <span id="{{each_sensor.id}}-humidity-time">&lt;please wait&gt;</span>
-                  <br><b><span id="{{each_sensor.id}}-dewpoint-value">0.0</span> &deg;C  (<span id="{{each_sensor.id}}-dewpoint-value-F">0.0</span> &deg;F) DP</b> | <span id="{{each_sensor.id}}-dewpoint-time">&lt;please wait&gt;</span>
+                  <b><span id="{{each_sensor.unique_id}}-temperature-value">0.0</span> &deg;C (<span id="{{each_sensor.unique_id}}-temperature-value-F">0.0</span> &deg;F)</b> | <span id="{{each_sensor.unique_id}}-temperature-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.unique_id}}-humidity-value">0.0</span> %</b> | <span id="{{each_sensor.unique_id}}-humidity-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.unique_id}}-dewpoint-value">0.0</span> &deg;C  (<span id="{{each_sensor.unique_id}}-dewpoint-value-F">0.0</span> &deg;F) DP</b> | <span id="{{each_sensor.unique_id}}-dewpoint-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'co2sensor' %}
               <div class="inline-right text-right" style="padding: 0.3em;">
                 {{_('Measurement')}} | {{_('Timestamp')}}
                 <div>
-                  <b><span id="{{each_sensor.id}}-co2-value">0</span> ppmv</b> | <span id="{{each_sensor.id}}-co2-time">&lt;please wait&gt;</span>
+                  <b><span id="{{each_sensor.unique_id}}-co2-value">0</span> ppmv</b> | <span id="{{each_sensor.unique_id}}-co2-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'luxsensor' %}
               <div class="inline-right text-right" style="padding: 0.3em;">
                 {{_('Measurement')}} | {{_('Timestamp')}}
                 <div>
-                  <b><span id="{{each_sensor.id}}-lux-value">0</span> lx</b> | <span id="{{each_sensor.id}}-lux-time">&lt;please wait&gt;</span>
+                  <b><span id="{{each_sensor.unique_id}}-lux-value">0</span> lx</b> | <span id="{{each_sensor.unique_id}}-lux-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'moistsensor' %}
               <div class="inline-right text-right" style="padding: 0.3em;">
                 {{_('Measurement')}} | {{_('Timestamp')}}
                 <div>
-                  <b><span id="{{each_sensor.id}}-lux-value">0.0</span> light</b> | <span id="{{each_sensor.id}}-lux-time">&lt;please wait&gt;</span>
-                  <br><b><span id="{{each_sensor.id}}-moisture-value">0.0</span> moisture</b> | <span id="{{each_sensor.id}}-moisture-time">&lt;please wait&gt;</span>
-                  <br><b><span id="{{each_sensor.id}}-temperature-value">0.0</span> &deg;C (<span id="{{each_sensor.id}}-temperature-value-F">0.0</span> &deg;F)</b> | <span id="{{each_sensor.id}}-temperature-time">&lt;please wait&gt;</span>
+                  <b><span id="{{each_sensor.unique_id}}-lux-value">0.0</span> light</b> | <span id="{{each_sensor.unique_id}}-lux-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.unique_id}}-moisture-value">0.0</span> moisture</b> | <span id="{{each_sensor.unique_id}}-moisture-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.unique_id}}-temperature-value">0.0</span> &deg;C (<span id="{{each_sensor.unique_id}}-temperature-value-F">0.0</span> &deg;F)</b> | <span id="{{each_sensor.unique_id}}-temperature-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'presssensor' %}
               <div class="inline-right text-right" style="padding: 0.3em;">
                 {{_('Measurement')}} | {{_('Timestamp')}}
                 <div>
-                  <b><span id="{{each_sensor.id}}-temperature-value">0.0</span> &deg;C (<span id="{{each_sensor.id}}-temperature-value-F">0.0</span> &deg;F)</b> | <span id="{{each_sensor.id}}-temperature-time">&lt;please wait&gt;</span>
-                  <br><b><span id="{{each_sensor.id}}-pressure-value">0</span> Pa</b> | <span id="{{each_sensor.id}}-pressure-time">&lt;please wait&gt;</span>
-                  <br><b><span id="{{each_sensor.id}}-altitude-value">0.0</span> m</b> | <span id="{{each_sensor.id}}-altitude-time">&lt;please wait&gt;</span>
+                  <b><span id="{{each_sensor.unique_id}}-temperature-value">0.0</span> &deg;C (<span id="{{each_sensor.unique_id}}-temperature-value-F">0.0</span> &deg;F)</b> | <span id="{{each_sensor.unique_id}}-temperature-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.unique_id}}-pressure-value">0</span> Pa</b> | <span id="{{each_sensor.unique_id}}-pressure-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.unique_id}}-altitude-value">0.0</span> m</b> | <span id="{{each_sensor.unique_id}}-altitude-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'analogsensor' %}
               <div class="inline-right text-right" style="padding: 0.3em;">
                 {{_('Measurement')}} | {{_('Timestamp')}}
                 <div>
-                  <b><span id="{{each_sensor.id}}-voltage-value">0.0</span> volts</b> | <span id="{{each_sensor.id}}-voltage-time">&lt;please wait&gt;</span>
-                  <br><b><span id="{{each_sensor.id}}-{{each_sensor.adc_measure}}-value">0.0</span> {{each_sensor.adc_measure_units}} {{each_sensor.adc_measure}}</b> | <span id="{{each_sensor.id}}-{{each_sensor.adc_measure}}-time">&lt;please wait&gt;</span>
+                  <b><span id="{{each_sensor.unique_id}}-voltage-value">0.0</span> volts</b> | <span id="{{each_sensor.unique_id}}-voltage-time">&lt;please wait&gt;</span>
+                  <br><b><span id="{{each_sensor.unique_id}}-{{each_sensor.adc_measure}}-value">0.0</span> {{each_sensor.adc_measure_units}} {{each_sensor.adc_measure}}</b> | <span id="{{each_sensor.unique_id}}-{{each_sensor.adc_measure}}-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- elif each_sensor.device_type == 'edgedetect' %}
               <div class="inline-right text-right" style="padding: 0.3em;">
                 {{_('Measurement')}} | {{_('Timestamp')}}
                 <div>
-                  <b><span id="{{each_sensor.id}}-edge-value">0</span></b> | <span id="{{each_sensor.id}}-edge-time">&lt;please wait&gt;</span>
+                  <b><span id="{{each_sensor.unique_id}}-edge-value">0</span></b> | <span id="{{each_sensor.unique_id}}-edge-time">&lt;please wait&gt;</span>
                 </div>
               </div>
             {%- endif -%}
@@ -224,7 +193,7 @@
                     <div class="inline-left" style="padding: 0.3em;">
                       {{each_pid.name}} ({{each_pid.id}})
                       <div>
-                        Every {{each_pid.period}} seconds, apply PID to {% if each_pid.direction == 'both' -%}raise or lower{%- else -%}{{each_pid.direction}}{%- endif %} {{each_pid.measure_type}} to {{each_pid.setpoint}}
+                        Every {{each_pid.period}} seconds, apply PID to {% if each_pid.direction == 'both' -%}raise or lower{%- else -%}{{each_pid.direction}}{%- endif %} {{each_pid.measurement}} to {{each_pid.setpoint}}
                       </div>
                     </div>
                     <div class="inline-right" style="padding: 0.3em;">

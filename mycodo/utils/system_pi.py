@@ -71,6 +71,15 @@ def assure_path_exists(new_dir):
         set_user_grp(new_dir, 'mycodo', 'mycodo')
 
 
+def csv_to_list_of_int(str_csv):
+    """ return a list of integers from a string of csv integers """
+    if str_csv:
+        list_int = []
+        for x in str_csv.split(','):
+            list_int.append(int(x))
+        return list_int
+
+
 def find_owner(filename):
     """ Return the owner of a file """
     return pwd.getpwuid(os.stat(filename).st_uid).pw_name

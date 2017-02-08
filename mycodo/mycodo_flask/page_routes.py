@@ -49,6 +49,7 @@ from mycodo.mycodo_flask.general_routes import (
 )
 from mycodo.devices.camera_pi import camera_record
 from mycodo.utils.influx import sum_relay_usage
+from mycodo.utils.system_pi import csv_to_list_of_int
 
 
 # Config
@@ -297,11 +298,7 @@ def page_graph():
     form_add_graph = flaskforms.AddGraph()
 
     # Retrieve the order to display graphs
-    display_order_unsplit = DisplayOrder.query.first().graph
-    if display_order_unsplit:
-        display_order = display_order_unsplit.split(",")
-    else:
-        display_order = []
+    display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
 
     # Retrieve tables from SQL database
     graph = Graph.query.all()
@@ -337,7 +334,7 @@ def page_graph():
         elif form_name == 'modGraph':
             flaskutils.graph_mod(form_mod_graph, request.form)
         elif form_name == 'delGraph':
-            flaskutils.graph_del(form_del_graph, display_order)
+            flaskutils.graph_del(form_del_graph)
         elif form_name == 'orderGraph':
             flaskutils.graph_reorder(form_order_graph, display_order)
         elif form_name == 'addGraph':
@@ -454,11 +451,7 @@ def page_lcd():
     relay = Relay.query.all()
     sensor = Sensor.query.all()
 
-    display_order_unsplit = DisplayOrder.query.first().lcd
-    if display_order_unsplit:
-        display_order = display_order_unsplit.split(",")
-    else:
-        display_order = []
+    display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
 
     form_activate_lcd = flaskforms.ActivateLCD()
     form_add_lcd = flaskforms.AddLCD()
@@ -475,11 +468,11 @@ def page_lcd():
         elif form_name == 'orderLCD':
             flaskutils.lcd_reorder(form_order_lcd, display_order)
         elif form_name == 'addLCD':
-            flaskutils.lcd_add(form_add_lcd, display_order)
+            flaskutils.lcd_add(form_add_lcd)
         elif form_name == 'modLCD':
             flaskutils.lcd_mod(form_mod_lcd)
         elif form_name == 'delLCD':
-            flaskutils.lcd_del(form_del_lcd, display_order)
+            flaskutils.lcd_del(form_del_lcd)
         elif form_name == 'activateLCD':
             flaskutils.lcd_activate(form_activate_lcd)
         elif form_name == 'deactivateLCD':
@@ -515,26 +508,18 @@ def page_live():
     sensor = Sensor.query.all()
     timer = Timer.query.all()
 
-    # Retrieve the display order of the controllers
-    pid_display_order_unsplit = DisplayOrder.query.first().pid
-    if pid_display_order_unsplit:
-        pid_display_order = [int(x) for x in pid_display_order_unsplit.split(',')]
-    else:
-        pid_display_order = []
-
-    sensor_display_order_unsplit = DisplayOrder.query.first().sensor
-    if sensor_display_order_unsplit:
-        sensor_display_order = [int(x) for x in sensor_display_order_unsplit.split(',')]
-    else:
-        sensor_display_order = []
+    # Display orders
+    pid_display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
+    sensor_display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
 
     # Filter only activated sensors
     sensor_order_sorted = []
-    for each_sensor_order in sensor_display_order:
-        for each_sensor in sensor:
-            if (each_sensor_order == each_sensor.id and
-                    each_sensor.is_activated):
-                sensor_order_sorted.append(each_sensor.id)
+    if sensor_display_order:
+        for each_sensor_order in sensor_display_order:
+            for each_sensor in sensor:
+                if (each_sensor_order == each_sensor.id and
+                        each_sensor.is_activated):
+                    sensor_order_sorted.append(each_sensor.id)
 
     # Retrieve only parent method columns
     method = Method.query.filter(
@@ -613,11 +598,7 @@ def page_pid():
     relay = Relay.query.all()
     sensor = Sensor.query.all()
 
-    display_order_unsplit = DisplayOrder.query.first().pid
-    if display_order_unsplit:
-        display_order = display_order_unsplit.split(",")
-    else:
-        display_order = []
+    display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
 
     form_add_pid = flaskforms.AddPID()
     form_mod_pid = flaskforms.ModPID()
@@ -630,11 +611,11 @@ def page_pid():
         if session['user_group'] == 'guest':
             flaskutils.deny_guest_user()
         elif form_name == 'addPID':
-            flaskutils.pid_add(form_add_pid, display_order)
+            flaskutils.pid_add(form_add_pid)
         elif form_name == 'modPID':
             if form_mod_pid.mod_pid_del.data:
                 flaskutils.pid_del(
-                    form_mod_pid.modPID_id.data, display_order)
+                    form_mod_pid.modPID_id.data)
             elif form_mod_pid.mod_pid_order_up.data:
                 flaskutils.pid_reorder(
                     form_mod_pid.modPID_id.data, display_order, 'up')
@@ -682,11 +663,7 @@ def page_relay():
     relayconditional = RelayConditional.query.all()
     users = Users.query.all()
 
-    display_order_unsplit = DisplayOrder.query.first().relay
-    if display_order_unsplit:
-        display_order = display_order_unsplit.split(",")
-    else:
-        display_order = []
+    display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
 
     form_add_relay = flaskforms.AddRelay()
     form_mod_relay = flaskforms.ModRelay()
@@ -698,7 +675,7 @@ def page_relay():
         if session['user_group'] == 'guest':
             flaskutils.deny_guest_user()
         elif form_name == 'addRelay':
-            flaskutils.relay_add(form_add_relay, display_order)
+            flaskutils.relay_add(form_add_relay)
         elif form_name == 'modRelay':
             if (form_mod_relay.turn_on.data or
                     form_mod_relay.turn_off.data or
@@ -707,7 +684,7 @@ def page_relay():
             elif form_mod_relay.save.data:
                 flaskutils.relay_mod(form_mod_relay)
             elif form_mod_relay.delete.data:
-                flaskutils.relay_del(form_mod_relay, display_order)
+                flaskutils.relay_del(form_mod_relay)
             elif form_mod_relay.order_up.data or form_mod_relay.order_down.data:
                 flaskutils.relay_reorder(form_mod_relay, display_order)
         elif form_name == 'addRelayConditional':
@@ -756,11 +733,7 @@ def page_sensor():
     sensor_conditional = SensorConditional.query.all()
     users = Users.query.all()
 
-    display_order_unsplit = DisplayOrder.query.first().sensor
-    if display_order_unsplit:
-        display_order = [int(x) for x in display_order_unsplit.split(',')]
-    else:
-        display_order = []
+    display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
 
     form_add_sensor = flaskforms.AddSensor()
     form_mod_sensor = flaskforms.ModSensor()
@@ -783,12 +756,12 @@ def page_sensor():
         if session['user_group'] == 'guest':
             flaskutils.deny_guest_user()
         elif form_name == 'addSensor':
-            flaskutils.sensor_add(form_add_sensor, display_order)
+            flaskutils.sensor_add(form_add_sensor)
         elif form_name == 'modSensor':
             if form_mod_sensor.modSensorSubmit.data:
                 flaskutils.sensor_mod(form_mod_sensor)
             elif form_mod_sensor.delSensorSubmit.data:
-                flaskutils.sensor_del(form_mod_sensor, display_order)
+                flaskutils.sensor_del(form_mod_sensor)
             elif (form_mod_sensor.orderSensorUp.data or
                     form_mod_sensor.orderSensorDown.data):
                 flaskutils.sensor_reorder(form_mod_sensor, display_order)
@@ -828,11 +801,7 @@ def page_timer():
     relay = Relay.query.all()
     relay_choices = flaskutils.choices_id_name(relay)
 
-    display_order_unsplit = DisplayOrder.query.first().timer
-    if display_order_unsplit:
-        display_order = display_order_unsplit.split(",")
-    else:
-        display_order = []
+    display_order = csv_to_list_of_int(DisplayOrder.query.first().timer)
 
     form_timer = flaskforms.Timer()
 
@@ -846,7 +815,7 @@ def page_timer():
                                  display_order)
         elif form_name == 'modTimer':
             if form_timer.timerDel.data:
-                flaskutils.timer_del(form_timer, display_order)
+                flaskutils.timer_del(form_timer)
             elif (form_timer.orderTimerUp.data or
                     form_timer.orderTimerDown.data):
                 flaskutils.timer_reorder(form_timer, display_order)
@@ -874,11 +843,7 @@ def page_usage():
     misc = Misc.query.first()
     relay = Relay.query.all()
 
-    display_order_unsplit = DisplayOrder.query.first().relay
-    if display_order_unsplit:
-        display_order = display_order_unsplit.split(",")
-    else:
-        display_order = []
+    display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
 
     # Calculate the number of seconds since the (n)th day of tyhe month
     # Enables usage/cost assessments to align with a power bill cycle

@@ -1,19 +1,51 @@
 # -*- coding: utf-8 -*-
 import bcrypt
 import datetime
+import uuid
 from flask_sqlalchemy import SQLAlchemy
 from RPi import GPIO
+
+from sqlalchemy import types
+from sqlalchemy.dialects.mysql.base import MSBinary
+
+from mycodo.config import ALEMBIC_VERSION
 
 db = SQLAlchemy()
 
 # TODO Build a BaseConditional that all the conditionals inherit from
 
 
+class UUID(types.TypeDecorator):
+    impl = MSBinary
+
+    def __init__(self):
+        self.impl.length = 16
+        types.TypeDecorator.__init__(self,length=self.impl.length)
+
+    def process_bind_param(self,value,dialect=None):
+        if value and isinstance(value,uuid.UUID):
+            return value.bytes
+        elif value and not isinstance(value,uuid.UUID):
+            raise ValueError('value {val} is not a valid uuid.UUID'.format(val=value))
+        else:
+            return None
+
+    def process_result_value(self, value, dialect=None):
+        if value:
+            return uuid.UUID(bytes=value)
+        else:
+            return None
+
+    @staticmethod
+    def is_mutable():
+        return False
+
+
 class AlembicVersion(db.Model):
     __tablename__ = "alembic_version"
     version_num = db.Column(db.String(32),
                             primary_key=True, nullable=False,
-                            default='6a5508a5f078')
+                            default=ALEMBIC_VERSION)
 
 
 #
@@ -101,7 +133,7 @@ class DisplayOrder(db.Model):
 class Graph(db.Model):
     __tablename__ = "graph"
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    name = db.Column(db.Text, default='')
+    name = db.Column(db.Text, default='Graph')
     pid_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
     relay_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
     sensor_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
@@ -120,10 +152,10 @@ class LCD(db.Model):
     __tablename__ = "lcd"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    name = db.Column(db.Text, default='')
+    name = db.Column(db.Text, default='LCD')
     is_activated = db.Column(db.Boolean, default=False)
     period = db.Column(db.Integer, default=30)
-    location = db.Column(db.Text, default='')
+    location = db.Column(db.Text, default='27')
     multiplexer_address = db.Column(db.Text, default='')
     multiplexer_channel = db.Column(db.Integer, default=0)
     x_characters = db.Column(db.Integer, default=16)
@@ -142,9 +174,10 @@ class Method(db.Model):
     __tablename__ = "method"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    name = db.Column(db.Text, default='')
+    name = db.Column(db.Text, default='Method')
     method_type = db.Column(db.Text, default='')
     method_order = db.Column(db.Text, default='')
+    start_time = db.Column(db.Text, default=None)
 
 
 class MethodData(db.Model):
@@ -195,7 +228,8 @@ class PID(db.Model):
     __tablename__ = "pid"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    name = db.Column(db.Text)
+    unique_id = db.Column(UUID, nullable=False, unique=True, default=uuid.uuid4)  # ID for influxdb entries
+    name = db.Column(db.Text, default='PID')
     is_activated = db.Column(db.Boolean, default=False)
     is_held = db.Column(db.Boolean, default=False)
     is_paused = db.Column(db.Boolean, default=False)
@@ -224,7 +258,8 @@ class Relay(db.Model):
     __tablename__ = "relay"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    name = db.Column(db.Text, default='')
+    unique_id = db.Column(UUID, nullable=False, unique=True, default=uuid.uuid4)  # ID for influxdb entries
+    name = db.Column(db.Text, default='Relay')
     pin = db.Column(db.Integer, default=0)
     amps = db.Column(db.Float, default=0.0)  # The current drawn by the device connected to the relay
     trigger = db.Column(db.Boolean, default=True)  # GPIO output to turn relay on (True=HIGH, False=LOW)
@@ -287,7 +322,7 @@ class RelayConditional(db.Model):
     __tablename__ = "relayconditional"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    name = db.Column(db.Text, default='')
+    name = db.Column(db.Text, default='Relay Cond')
     is_activated = db.Column(db.Boolean, default=False)
     if_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Watch this relay for action
     if_action = db.Column(db.Text, default='')  # What action to watch relay for
@@ -311,7 +346,8 @@ class Sensor(db.Model):
     __tablename__ = "sensor"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    name = db.Column(db.Text, default='')
+    unique_id = db.Column(UUID, nullable=False, unique=True, default=uuid.uuid4)  # ID for influxdb entries
+    name = db.Column(db.Text, default='Sensor')
     is_activated = db.Column(db.Boolean, default=False)
     is_preset = db.Column(db.Boolean, default=False)  # Is config saved as a preset?
     preset_name = db.Column(db.Text, default=None)  # Name for preset
@@ -357,16 +393,16 @@ class SensorConditional(db.Model):
     __tablename__ = "sensorconditional"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    name = db.Column(db.Text, default='')
+    name = db.Column(db.Text, default='Sensor Cond')
     is_activated = db.Column(db.Integer, default=False)
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'), default=None)
-    period = db.Column(db.Integer, default=30)
+    period = db.Column(db.Integer, default=60)
     measurement = db.Column(db.Text, default='')  # which measurement to monitor
-    edge_select = db.Column(db.Text, default='')  # monitor Rising, Falling, or Both switch edges
-    gpio_state = db.Column(db.Boolean, default=False)
-    edge_detected = db.Column(db.Text, default='')
+    edge_select = db.Column(db.Text, default='edge')  # monitor Rising, Falling, or Both switch edges
+    edge_detected = db.Column(db.Text, default='rising')
+    gpio_state = db.Column(db.Boolean, default=True)
     direction = db.Column(db.Text, default='')  # 'above' or 'below' setpoint
-    setpoint = db.Column(db.Float, default=30)
+    setpoint = db.Column(db.Float, default=0.0)
     relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)
     relay_state = db.Column(db.Text, default='')  # 'on' or 'off'
     relay_on_duration = db.Column(db.Float, default=0.0)
@@ -393,7 +429,7 @@ class Timer(db.Model):
     __tablename__ = "timer"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    name = db.Column(db.Text, default='')
+    name = db.Column(db.Text, default='Timer')
     is_activated = db.Column(db.Boolean, default=False)
     timer_type = db.Column(db.Text, default=None)
     relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)

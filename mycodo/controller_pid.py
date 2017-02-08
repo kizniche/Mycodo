@@ -103,7 +103,7 @@ class PIDController(threading.Thread):
             method = method.filter(Method.method_id == self.method_id)
             method = method.filter(Method.method_order == 0).first()
             self.method_type = method.method_type
-            self.method_start_time = method.start_time
+            self.method_start_time = method.time_start
 
             if self.method_type == 'Duration':
                 if self.method_start_time == 'Ended':
@@ -115,8 +115,8 @@ class PIDController(threading.Thread):
                         mod_method = db_session.query(Method)
                         mod_method = mod_method.filter(Method.method_id == self.method_id)
                         mod_method = mod_method.filter(Method.method_order == 0).first()
-                        mod_method.start_time = datetime.datetime.now()
-                        self.method_start_time = mod_method.start_time
+                        mod_method.time_start = datetime.datetime.now()
+                        self.method_start_time = mod_method.time_start
                         db_session.commit()
                 else:
                     # Method neither instructed to begin or not to
@@ -133,19 +133,18 @@ class PIDController(threading.Thread):
             self.running = True
             self.logger.info("Activated in {:.1f} ms".format(
                 (timeit.default_timer()-self.thread_startup_timer)*1000))
-            if self.activated == 2:
+            if self.is_paused:
                 self.logger.info("Paused")
-            elif self.activated == 3:
+            elif self.is_held:
                 self.logger.info("Held")
             self.ready.set()
 
             while self.running:
                 if t.time() > self.timer:
                     self.timer = self.timer+self.measure_interval
-                    # self.activated: 0=inactive, 1=active, 2=pause, 3=hold
 
                     # If active, retrieve sensor measurement and update PID output
-                    if self.activated == 1:
+                    if self.is_activated and not self.is_paused:
                         self.get_last_measurement()
 
                         if self.last_measurement_success:
@@ -157,7 +156,8 @@ class PIDController(threading.Thread):
                             self.control_variable = self.update(self.last_measurement)
 
                     # If active or on hold, activate relays
-                    if self.activated in [1, 3]:
+                    if ((self.is_activated and not self.is_paused) or
+                            (self.is_activated and self.is_held)):
                         self.manipulate_relays()
                 t.sleep(0.1)
 
@@ -177,9 +177,11 @@ class PIDController(threading.Thread):
         """Set PID parameters"""
         pid = db_retrieve_table_daemon(PID, device_id=self.pid_id)
         sensor = db_retrieve_table_daemon(Sensor, device_id=pid.sensor_id)
-        self.activated = pid.activated  # 0=inactive, 1=active, 2=paused
+        self.is_activated = pid.is_activated
+        self.is_held = pid.is_held
+        self.is_paused = pid.is_paused
         self.sensor_id = pid.sensor_id
-        self.measure_type = pid.measure_type
+        self.measurement = pid.measurement
         self.method_id = pid.method_id
         self.direction = pid.direction
         self.raise_relay_id = pid.raise_relay_id
@@ -257,11 +259,11 @@ class PIDController(threading.Thread):
                 duration = int(self.sensor_duration*1.5)
             self.last_measurement = read_last_influxdb(
                 self.sensor_id,
-                self.measure_type,
+                self.measurement,
                 duration)
             if self.last_measurement:
                 measurement_list = list(self.last_measurement.get_points(
-                    measurement=self.measure_type))
+                    measurement=self.measurement))
                 self.last_time = measurement_list[0]['time']
                 self.last_measurement = measurement_list[0]['value']
                 utc_dt = datetime.datetime.strptime(
@@ -270,7 +272,7 @@ class PIDController(threading.Thread):
                 utc_timestamp = calendar.timegm(utc_dt.timetuple())
                 local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
                 self.logger.debug("Latest {}: {} @ {}".format(
-                    self.measure_type, self.last_measurement,
+                    self.measurement, self.last_measurement,
                     local_timestamp))
                 self.last_measurement_success = True
             else:
@@ -380,29 +382,29 @@ class PIDController(threading.Thread):
         # Calculate where the current time/date is within the time/date method
         if method_key.method_type == 'Date':
             for each_method in method:
-                start_time = datetime.datetime.strptime(each_method.start_time, '%Y-%m-%d %H:%M:%S')
-                end_time = datetime.datetime.strptime(each_method.end_time, '%Y-%m-%d %H:%M:%S')
+                start_time = datetime.datetime.strptime(each_method.time_start, '%Y-%m-%d %H:%M:%S')
+                end_time = datetime.datetime.strptime(each_method.time_end, '%Y-%m-%d %H:%M:%S')
                 if start_time < now < end_time:
-                    start_setpoint = each_method.start_setpoint
-                    if each_method.end_setpoint:
-                        end_setpoint = each_method.end_setpoint
+                    setpoint_start = each_method.setpoint_start
+                    if each_method.setpoint_end:
+                        setpoint_end = each_method.setpoint_end
                     else:
-                        end_setpoint = each_method.start_setpoint
+                        setpoint_end = each_method.setpoint_start
 
-                    setpoint_diff = abs(end_setpoint-start_setpoint)
+                    setpoint_diff = abs(setpoint_end-setpoint_start)
                     total_seconds = (end_time-start_time).total_seconds()
                     part_seconds = (now-start_time).total_seconds()
                     percent_total = part_seconds/total_seconds
 
-                    if start_setpoint < end_setpoint:
-                        new_setpoint = start_setpoint+(setpoint_diff*percent_total)
+                    if setpoint_start < setpoint_end:
+                        new_setpoint = setpoint_start+(setpoint_diff*percent_total)
                     else:
-                        new_setpoint = start_setpoint-(setpoint_diff*percent_total)
+                        new_setpoint = setpoint_start-(setpoint_diff*percent_total)
 
                     self.logger.debug("[Method] Start: {} End: {}".format(
                         start_time, end_time))
                     self.logger.debug("[Method] Start: {} End: {}".format(
-                        start_setpoint, end_setpoint))
+                        setpoint_start, setpoint_end))
                     self.logger.debug("[Method] Total: {} Part total: {} ({}%)".format(
                         total_seconds, part_seconds, percent_total))
                     self.logger.debug("[Method] New Setpoint: {}".format(
@@ -415,29 +417,29 @@ class PIDController(threading.Thread):
             daily_now = datetime.datetime.now().strftime('%H:%M:%S')
             daily_now = datetime.datetime.strptime(str(daily_now), '%H:%M:%S')
             for each_method in method:
-                start_time = datetime.datetime.strptime(each_method.start_time, '%H:%M:%S')
-                end_time = datetime.datetime.strptime(each_method.end_time, '%H:%M:%S')
+                start_time = datetime.datetime.strptime(each_method.time_start, '%H:%M:%S')
+                end_time = datetime.datetime.strptime(each_method.time_end, '%H:%M:%S')
                 if start_time < daily_now < end_time:
-                    start_setpoint = each_method.start_setpoint
-                    if each_method.end_setpoint:
-                        end_setpoint = each_method.end_setpoint
+                    setpoint_start = each_method.setpoint_start
+                    if each_method.setpoint_end:
+                        setpoint_end = each_method.setpoint_end
                     else:
-                        end_setpoint = each_method.start_setpoint
+                        setpoint_end = each_method.setpoint_start
 
-                    setpoint_diff = abs(end_setpoint-start_setpoint)
+                    setpoint_diff = abs(setpoint_end-setpoint_start)
                     total_seconds = (end_time-start_time).total_seconds()
                     part_seconds = (daily_now-start_time).total_seconds()
                     percent_total = part_seconds/total_seconds
 
-                    if start_setpoint < end_setpoint:
-                        new_setpoint = start_setpoint+(setpoint_diff*percent_total)
+                    if setpoint_start < setpoint_end:
+                        new_setpoint = setpoint_start+(setpoint_diff*percent_total)
                     else:
-                        new_setpoint = start_setpoint-(setpoint_diff*percent_total)
+                        new_setpoint = setpoint_start-(setpoint_diff*percent_total)
 
                     self.logger.debug("[Method] Start: {} End: {}".format(
                         start_time.strftime('%H:%M:%S'), end_time.strftime('%H:%M:%S')))
                     self.logger.debug("[Method] Start: {} End: {}".format(
-                        start_setpoint, end_setpoint))
+                        setpoint_start, setpoint_end))
                     self.logger.debug("[Method] Total: {} Part total: {} ({}%)".format(
                         total_seconds, part_seconds, percent_total))
                     self.logger.debug("[Method] New Setpoint: {}".format(
@@ -476,16 +478,16 @@ class PIDController(threading.Thread):
                     row_since_start_sec = (now-(self.method_start_time+datetime.timedelta(0, previous_total_sec))).total_seconds()
                     percent_row = row_since_start_sec/each_method.duration_sec
 
-                    start_setpoint = each_method.start_setpoint
-                    if each_method.end_setpoint:
-                        end_setpoint = each_method.end_setpoint
+                    setpoint_start = each_method.setpoint_start
+                    if each_method.setpoint_end:
+                        setpoint_end = each_method.setpoint_end
                     else:
-                        end_setpoint = each_method.start_setpoint
-                    setpoint_diff = abs(end_setpoint-start_setpoint)
-                    if start_setpoint < end_setpoint:
-                        new_setpoint = start_setpoint+(setpoint_diff*percent_row)
+                        setpoint_end = each_method.setpoint_start
+                    setpoint_diff = abs(setpoint_end-setpoint_start)
+                    if setpoint_start < setpoint_end:
+                        new_setpoint = setpoint_start+(setpoint_diff*percent_row)
                     else:
-                        new_setpoint = start_setpoint-(setpoint_diff*percent_row)
+                        new_setpoint = setpoint_start-(setpoint_diff*percent_row)
 
                     self.logger.debug(
                         "[Method] Start: {} Seconds Since: {}".format(
@@ -506,14 +508,12 @@ class PIDController(threading.Thread):
                     return 0
                 previous_total_sec = total_sec
 
-            # Duration method has ended, reset start_time locally and in DB
+            # Duration method has ended, reset method_start_time locally and in DB
             if self.method_start_time:
                 with session_scope(MYCODO_DB_PATH) as db_session:
                     mod_method = db_session.query(Method).filter(
-                        Method.method_id == self.method_id)
-                    mod_method = mod_method.filter(
-                        Method.method_order == 0).first()
-                    mod_method.start_time = 'Ended'
+                        Method.id == self.method_id).first()
+                    mod_method.method_start_time = 'Ended'
                     db_session.commit()
                 self.method_start_time = 'Ended'
 
@@ -527,17 +527,19 @@ class PIDController(threading.Thread):
             return "error"
 
     def pid_hold(self):
-        self.activated = 3
+        self.is_held = True
         self.logger.info("Hold")
         return "success"
 
     def pid_pause(self):
-        self.activated = 2
+        self.is_paused = True
         self.logger.info("Pause")
         return "success"
 
     def pid_resume(self):
-        self.activated = 1
+        self.is_activated = True
+        self.is_held = False
+        self.is_paused = False
         self.logger.info("Resume")
         return "success"
 
@@ -588,10 +590,7 @@ class PIDController(threading.Thread):
         # Unset method start time
         if self.method_id:
             with session_scope(MYCODO_DB_PATH) as db_session:
-                mod_method = db_session.query(Method)
-                mod_method = mod_method.filter(
-                    Method.method_id == self.method_id)
-                mod_method = mod_method.filter(
-                    Method.method_order == 0).first()
-                mod_method.start_time = 'Ended'
+                mod_method = db_session.query(Method).filter(
+                    Method.id == self.method_id).first()
+                mod_method.method_start_time = 'Ended'
                 db_session.commit()

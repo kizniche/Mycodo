@@ -22,13 +22,13 @@
 
     {%- if displayOrder -%}
     {%- for order in displayOrder -%}
-      {%- for each_lcd in lcd if each_lcd.id in order-%}
+      {%- for each_lcd in lcd if each_lcd.id == order-%}
 
         <div class="table-responsive" style="border: 2px solid #ddd; border-radius: 5px;">
-          <table class="table {% if each_lcd.activated -%}active-background{%- else -%}inactive-background{% endif -%}">
+          <table class="table {% if each_lcd.is_activated -%}active-background{%- else -%}inactive-background{% endif -%}">
             <tr>
               <th rowspan="2" class="col-sm-2">
-                {%- if each_lcd.activated %}
+                {%- if each_lcd.is_activated %}
                   <form method="post" action="/lcd">
                     <input type="hidden" name="form-name" value="deactivateLCD">
                     {{form_deactivate_lcd.csrf_token}}

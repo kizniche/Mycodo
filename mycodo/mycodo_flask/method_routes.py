@@ -79,42 +79,42 @@ def method_data(method_type, method_id):
     method_list = []
     if method_key.method_type == "Date":
         for each_method in method:
-            if each_method.end_setpoint == None:
-                end_setpoint = each_method.start_setpoint
+            if each_method.setpoint_end == None:
+                setpoint_end = each_method.setpoint_start
             else:
-                end_setpoint = each_method.end_setpoint
+                setpoint_end = each_method.setpoint_end
 
             start_time = datetime.datetime.strptime(
-                each_method.start_time, '%Y-%m-%d %H:%M:%S')
+                each_method.time_start, '%Y-%m-%d %H:%M:%S')
             end_time = datetime.datetime.strptime(
-                each_method.end_time, '%Y-%m-%d %H:%M:%S')
+                each_method.time_end, '%Y-%m-%d %H:%M:%S')
 
             is_dst = time.daylight and time.localtime().tm_isdst > 0
             utc_offset_ms = (time.altzone if is_dst else time.timezone)
             method_list.append(
                 [(int(start_time.strftime("%s")) - utc_offset_ms) * 1000,
-                 each_method.start_setpoint])
+                 each_method.setpoint_start])
             method_list.append(
                 [(int(end_time.strftime("%s")) - utc_offset_ms) * 1000,
-                 end_setpoint])
+                 setpoint_end])
             method_list.append(
                 [(int(start_time.strftime("%s")) - utc_offset_ms) * 1000,
                  None])
 
     elif method_key.method_type == "Daily":
         for each_method in method:
-            if each_method.end_setpoint is None:
-                end_setpoint = each_method.start_setpoint
+            if each_method.setpoint_end is None:
+                setpoint_end = each_method.setpoint_start
             else:
-                end_setpoint = each_method.end_setpoint
+                setpoint_end = each_method.setpoint_end
             method_list.append(
-                [get_sec(each_method.start_time) * 1000,
-                 each_method.start_setpoint])
+                [get_sec(each_method.time_start) * 1000,
+                 each_method.setpoint_start])
             method_list.append(
-                [get_sec(each_method.end_time) * 1000,
-                 end_setpoint])
+                [get_sec(each_method.time_end) * 1000,
+                 setpoint_end])
             method_list.append(
-                [get_sec(each_method.start_time) * 1000,
+                [get_sec(each_method.time_start) * 1000,
                  None])
 
     elif method_key.method_type == "DailyBezier":
@@ -148,22 +148,22 @@ def method_data(method_type, method_id):
         start_duration = 0
         end_duration = 0
         for each_method in method:
-            if each_method.end_setpoint is None:
-                end_setpoint = each_method.start_setpoint
+            if each_method.setpoint_end is None:
+                setpoint_end = each_method.setpoint_start
             else:
-                end_setpoint = each_method.end_setpoint
+                setpoint_end = each_method.setpoint_end
             if first_entry:
-                method_list.append([0, each_method.start_setpoint])
-                method_list.append([each_method.duration_sec, end_setpoint])
+                method_list.append([0, each_method.setpoint_start])
+                method_list.append([each_method.duration_sec, setpoint_end])
                 start_duration += each_method.duration_sec
                 first_entry = False
             else:
                 end_duration = start_duration + each_method.duration_sec
 
                 method_list.append(
-                    [start_duration, each_method.start_setpoint])
+                    [start_duration, each_method.setpoint_start])
                 method_list.append(
-                    [end_duration, end_setpoint])
+                    [end_duration, setpoint_end])
 
                 start_duration += each_method.duration_sec
 
@@ -249,11 +249,11 @@ def method_builder(method_type, method_id):
                 last_end_time = ''
                 last_setpoint = ''
             else:
-                last_end_time = last_method.end_time
-                if last_method.end_setpoint is not None:
-                    last_setpoint = last_method.end_setpoint
+                last_end_time = last_method.time_end
+                if last_method.setpoint_end is not None:
+                    last_setpoint = last_method.setpoint_end
                 else:
-                    last_setpoint = last_method.start_setpoint
+                    last_setpoint = last_method.setpoint_start
 
         # method = Method.query
         relay = Relay.query.all()

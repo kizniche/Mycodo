@@ -143,8 +143,10 @@ class SensorController(threading.Thread):
         self.setup_sensor_conditionals()
 
         sensor = db_retrieve_table_daemon(Sensor, device_id=self.sensor_id)
+        self.unique_id = sensor.unique_id
         self.i2c_bus = sensor.i2c_bus
         self.location = sensor.location
+        self.measurements = sensor.measurements
         self.device = sensor.device
         self.period = sensor.period
         self.multiplexer_address_raw = sensor.multiplexer_address
@@ -387,7 +389,7 @@ class SensorController(threading.Thread):
         if self.updateSuccess:
             data = []
             for each_measurement, each_value in self.measurement.values.iteritems():
-                data.append(format_influxdb_data(self.sensor_id,
+                data.append(format_influxdb_data(self.unique_id,
                                                  each_measurement,
                                                  each_value))
             write_db = threading.Thread(

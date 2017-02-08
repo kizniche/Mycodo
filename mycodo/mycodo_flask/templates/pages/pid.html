@@ -38,16 +38,16 @@
 
     {%- if displayOrder -%}
     {%- for order in displayOrder -%}
-      {%- for each_pid in pids if each_pid.id in order -%}
+      {%- for each_pid in pids if each_pid.id == order -%}
 
         <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
           <form method="post" action="/pid">
           <input type="hidden" name="form-name" value="modPID">
           {{form_mod_pid.csrf_token}}
           {{form_mod_pid.modPID_id(value=each_pid.id)}}
-          <div class="row {% if each_pid.activated == 1 -%}active-background
-                          {% elif each_pid.activated == 2 -%}pause-background
-                          {% elif each_pid.activated == 3 -%}hold-background
+          <div class="row {% if each_pid.is_activated and not each_pid.is_paused -%}active-background
+                          {% elif each_pid.is_activated and each_pid.is_paused -%}pause-background
+                          {% elif each_pid.is_held -%}hold-background
                           {% else -%}inactive-background
                           {% endif -%}" style="border-bottom: 2px solid #ddd; padding-top: 1em;">
             <div class="col-xs-12 col-sm-3">
@@ -56,17 +56,17 @@
               </div>
               <div class="form-group">
                 ID: {{each_pid.id}}, State:
-                {%- if each_pid.activated == 1 -%} {{_('Active')}}
-                {%- elif each_pid.activated == 2 -%} {{_('Paused')}}
-                {%- elif each_pid.activated == 3 -%} {{_('On Hold')}}
+                {%- if each_pid.is_activated and not each_pid.is_paused -%} {{_('Active')}}
+                {%- elif each_pid.is_activated and each_pid.is_paused -%} {{_('Paused')}}
+                {%- elif each_pid.is_held -%} {{_('On Hold')}}
                 {%- else -%} {{_('Inactive')}}
                 {%-endif -%}
               </div>
             </div>
             <div class="col-xs-12 col-sm-3">
-              {%- if each_pid.activated %}
+              {%- if each_pid.is_activated %}
                 {{form_mod_pid.mod_pid_deactivate(class_='form-control btn btn-default')}}
-                {%- if each_pid.activated == 2 or each_pid.activated == 3 %}
+                {%- if each_pid.is_paused or each_pid.is_held %}
                   {{form_mod_pid.mod_pid_resume(class_='form-control btn btn-default')}}
                 {%- else %}
                   <div class="row no-gutters">
@@ -105,23 +105,23 @@
               </div>
             </div>
             <div class="form-group">
-              {{form_mod_pid.modMeasureType.label(class_='control-label')}}
+              {{form_mod_pid.modMeasurement.label(class_='control-label')}}
               <div>
-                <select class="form-control" id="modMeasureType" name="modMeasureType" title="" data-original-title="{{_('Select the environmental condition to regulate')}}.">
+                <select class="form-control" id="modMeasurement" name="modMeasurement" title="" data-original-title="{{_('Select the environmental condition to regulate')}}.">
                   <option value=""></option>
-                  <option value="temperature"{% if each_pid.measure_type == 'temperature' %} selected{% endif %}>Temperature</option>
-                  <option value="temperature_object"{% if each_pid.measure_type == 'temperature_object' %} selected{% endif %}>Temperature (Object)</option>
-                  <option value="temperature_die"{% if each_pid.measure_type == 'temperature_die' %} selected{% endif %}>Temperature (Die)</option>
-                  <option value="humidity"{% if each_pid.measure_type == 'humidity' %} selected{% endif %}>Humidity</option>
-                  <option value="dewpoint"{% if each_pid.measure_type == 'dewpoint' %} selected{% endif %}>Dew Point</option>
-                  <option value="co2"{% if each_pid.measure_type == 'co2' %} selected{% endif %}>CO2</option>
-                  <option value="lux"{% if each_pid.measure_type == 'lux' %} selected{% endif %}>Luminosity</option>
-                  <option value="moisture"{% if each_pid.measure_type == 'moisture' %} selected{% endif %}>Moisture</option>
-                  <option value="pressure"{% if each_pid.measure_type == 'pressure' %} selected{% endif %}>Pressure</option>
-                  <option value="altitude"{% if each_pid.measure_type == 'altitude' %} selected{% endif %}>Altitude</option>
-                  <option value="voltage"{% if each_pid.measure_type == 'voltage' %} selected{% endif %}>Voltage (ADC)</option>
+                  <option value="temperature"{% if each_pid.measurement == 'temperature' %} selected{% endif %}>Temperature</option>
+                  <option value="temperature_object"{% if each_pid.measurement == 'temperature_object' %} selected{% endif %}>Temperature (Object)</option>
+                  <option value="temperature_die"{% if each_pid.measurement == 'temperature_die' %} selected{% endif %}>Temperature (Die)</option>
+                  <option value="humidity"{% if each_pid.measurement == 'humidity' %} selected{% endif %}>Humidity</option>
+                  <option value="dewpoint"{% if each_pid.measurement == 'dewpoint' %} selected{% endif %}>Dew Point</option>
+                  <option value="co2"{% if each_pid.measurement == 'co2' %} selected{% endif %}>CO2</option>
+                  <option value="lux"{% if each_pid.measurement == 'lux' %} selected{% endif %}>Luminosity</option>
+                  <option value="moisture"{% if each_pid.measurement == 'moisture' %} selected{% endif %}>Moisture</option>
+                  <option value="pressure"{% if each_pid.measurement == 'pressure' %} selected{% endif %}>Pressure</option>
+                  <option value="altitude"{% if each_pid.measurement == 'altitude' %} selected{% endif %}>Altitude</option>
+                  <option value="voltage"{% if each_pid.measurement == 'voltage' %} selected{% endif %}>Voltage (ADC)</option>
                   {% for each_sensor in sensor if each_sensor.adc_measure %}
-                    <option value="{{each_sensor.adc_measure}}"{% if each_pid.measure_type == each_sensor.adc_measure %} selected{% endif %}>{{each_sensor.adc_measure}} (ADC)</option>
+                    <option value="{{each_sensor.adc_measure}}"{% if each_pid.measurement == each_sensor.adc_measure %} selected{% endif %}>{{each_sensor.adc_measure}} (ADC)</option>
                   {% endfor %}
                 </select>
               </div>

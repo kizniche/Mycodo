@@ -45,11 +45,12 @@ class RelayController(threading.Thread):
         self.control = DaemonControl()
 
         self.relay_id = {}
+        self.relay_unique_id = {}
         self.relay_name = {}
         self.relay_pin = {}
         self.relay_amps = {}
         self.relay_trigger = {}
-        self.relay_start_state = {}
+        self.relay_on_at_start = {}
         self.relay_on_until = {}
         self.relay_last_duration = {}
         self.relay_on_duration = {}
@@ -104,7 +105,10 @@ class RelayController(threading.Thread):
                             timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
                             write_db = threading.Thread(
                                 target=write_influxdb_value,
-                                args=(relay_id, 'duration_sec', duration, timestamp,))
+                                args=(self.relay_unique_id[relay_id],
+                                      'duration_sec',
+                                      duration,
+                                      timestamp,))
                             write_db.start()
 
                 time.sleep(0.01)
@@ -137,15 +141,18 @@ class RelayController(threading.Thread):
         :type trigger_conditionals: bool
         """
         # Check if relay exists
+        relay_id = int(relay_id)
         if relay_id not in self.relay_id:
             self.logger.warning("Cannot turn {} Relay with ID {}. It "
                                 "doesn't exist".format(state, relay_id))
             return 1
         if state == 'on':
             if not self.relay_pin[relay_id]:
-                self.logger.warning("Invalid pin for relay "
-                                    "{} ({}).".format(self.relay_id[relay_id],
-                                                      self.relay_name[relay_id]))
+                self.logger.warning(
+                    "Invalid pin for relay {id} ({name}): {pin}.".format(
+                        id=self.relay_id[relay_id],
+                        name=self.relay_name[relay_id],
+                        pin=self.relay_pin[relay_id]))
                 return 1
 
             current_amps = self.current_amp_load()
@@ -187,7 +194,10 @@ class RelayController(threading.Thread):
                             timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
                             write_db = threading.Thread(
                                 target=write_influxdb_value,
-                                args=(relay_id, 'duration_sec', duration, timestamp,))
+                                args=(self.relay_unique_id[relay_id],
+                                      'duration_sec',
+                                      duration,
+                                      timestamp,))
                             write_db.start()
 
                         self.relay_on_until[relay_id] = time_now+datetime.timedelta(seconds=duration)
@@ -250,7 +260,10 @@ class RelayController(threading.Thread):
                     timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
                     write_db = threading.Thread(
                         target=write_influxdb_value,
-                        args=(relay_id, 'duration_sec', duration, timestamp,))
+                        args=(self.relay_unique_id[relay_id],
+                              'duration_sec',
+                              duration,
+                              timestamp,))
                     write_db.start()
                     self.relay_time_turned_on[relay_id] = None
 
@@ -263,7 +276,7 @@ class RelayController(threading.Thread):
         conditionals = db_retrieve_table_daemon(RelayConditional)
 
         conditionals = conditionals.filter(RelayConditional.if_relay_id == relay_id)
-        conditionals = conditionals.filter(RelayConditional.activated == True)
+        conditionals = conditionals.filter(RelayConditional.is_activated == True)
 
         if self.is_on(relay_id):
             conditionals = conditionals.filter(RelayConditional.if_action == 'on')
@@ -351,11 +364,12 @@ class RelayController(threading.Thread):
     def all_relays_initialize(self, relays):
         for each_relay in relays:
             self.relay_id[each_relay.id] = each_relay.id
+            self.relay_unique_id[each_relay.id] = each_relay.unique_id
             self.relay_name[each_relay.id] = each_relay.name
             self.relay_pin[each_relay.id] = each_relay.pin
             self.relay_amps[each_relay.id] = each_relay.amps
             self.relay_trigger[each_relay.id] = each_relay.trigger
-            self.relay_start_state[each_relay.id] = each_relay.start_state
+            self.relay_on_at_start[each_relay.id] = each_relay.on_at_start
             self.relay_on_until[each_relay.id] = datetime.datetime.now()
             self.relay_last_duration[each_relay.id] = 0
             self.relay_on_duration[each_relay.id] = False
@@ -372,7 +386,7 @@ class RelayController(threading.Thread):
     def all_relays_on(self):
         """Turn all relays on that are set to be on at startup"""
         for each_relay_id in self.relay_id:
-            if self.relay_start_state[each_relay_id]:
+            if self.relay_on_at_start[each_relay_id]:
                 self.relay_on_off(each_relay_id, 'on', 0, False)
 
     def cleanup_gpio(self):
@@ -395,14 +409,16 @@ class RelayController(threading.Thread):
         :param do_setup_pin: If True, initialize GPIO (when adding new relay)
         :type do_setup_pin: bool
         """
+        relay_id = int(relay_id)
         try:
-            relay = db_retrieve_table(Relay, device_id=relay_id)
+            relay = db_retrieve_table_daemon(Relay, device_id=relay_id)
             self.relay_id[relay_id] = relay.id
+            self.relay_unique_id[relay_id] = relay.unique_id
             self.relay_name[relay_id] = relay.name
             self.relay_pin[relay_id] = relay.pin
             self.relay_amps[relay_id] = relay.amps
             self.relay_trigger[relay_id] = relay.trigger
-            self.relay_start_state[relay_id] = relay.start_state
+            self.relay_on_at_start[relay_id] = relay.on_at_start
             self.relay_on_until[relay_id] = datetime.datetime.now()
             self.relay_time_turned_on[relay_id] = None
             self.relay_last_duration[relay_id] = 0
@@ -434,19 +450,20 @@ class RelayController(threading.Thread):
         :param relay_id: Unique ID for each relay
         :type relay_id: str
         """
+        relay_id = int(relay_id)
         try:
             self.logger.debug("Relay {} ({}) Deleted.".format(
                 self.relay_id[relay_id], self.relay_name[relay_id]))
             # Ensure relay is off before removing it, to prevent
             # it from being stuck on
             self.relay_on_off(relay_id, 'off')
-
             self.relay_id.pop(relay_id, None)
+            self.relay_unique_id.pop(relay_id, None)
             self.relay_name.pop(relay_id, None)
             self.relay_pin.pop(relay_id, None)
             self.relay_amps.pop(relay_id, None)
             self.relay_trigger.pop(relay_id, None)
-            self.relay_start_state.pop(relay_id, None)
+            self.relay_on_at_start.pop(relay_id, None)
             self.relay_on_until.pop(relay_id, None)
             self.relay_last_duration.pop(relay_id, None)
             self.relay_on_duration.pop(relay_id, None)
@@ -519,7 +536,8 @@ class RelayController(threading.Thread):
         :param relay_id: Unique ID for each relay
         :type relay_id: str
         """
-        return self.relay_trigger[relay_id] == GPIO.input(self.relay_pin[relay_id])
+        if self._is_setup(self.relay_pin[relay_id]):
+            return self.relay_trigger[relay_id] == GPIO.input(self.relay_pin[relay_id])
 
     @staticmethod
     def _is_setup(pin):

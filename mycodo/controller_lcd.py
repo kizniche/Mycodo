@@ -343,7 +343,7 @@ class LCDController(threading.Thread):
                         if self.lcd_line[i]['measurement'] == 'setpoint':
                             pid = db_retrieve_table_daemon(
                                 PID, device_id=self.lcd_line[i]['id'])
-                            measurement = pid.measure_type
+                            measurement = pid.measurement
                         elif self.lcd_line[i]['measurement'] in [
                                 'temperature',
                                 'temperature_die',

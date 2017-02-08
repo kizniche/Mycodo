@@ -321,26 +321,26 @@
           <div class="form-group">
             {{form_mod_method.startTime.label(class_='control-label')}}
             <div>
-              {{form_mod_method.startTime(class_='form-control', value=each_method.start_time)}}
+              {{form_mod_method.startTime(class_='form-control', value=each_method.time_start)}}
             </div>
           </div>
           <div class="form-group">
             {{form_mod_method.endTime.label(class_='control-label')}}
             <div>
-              {{form_mod_method.endTime(class_='form-control', value=each_method.end_time)}}
+              {{form_mod_method.endTime(class_='form-control', value=each_method.time_end)}}
             </div>
           </div>
         {% elif method_type == "Daily" -%}
           <div class="form-group">
             {{form_mod_method.startDailyTime.label(class_='control-label')}}
             <div>
-              {{form_mod_method.startDailyTime(class_='form-control', value=each_method.start_time)}}
+              {{form_mod_method.startDailyTime(class_='form-control', value=each_method.time_start)}}
             </div>
           </div>
           <div class="form-group">
             {{form_mod_method.endDailyTime.label(class_='control-label')}}
             <div>
-              {{form_mod_method.endDailyTime(class_='form-control', value=each_method.end_time)}}
+              {{form_mod_method.endDailyTime(class_='form-control', value=each_method.time_end)}}
             </div>
           </div>
         {% elif method_type == "Duration" -%}
@@ -354,13 +354,13 @@
         <div class="form-group">
           {{form_mod_method.startSetpoint.label(class_='control-label')}}
           <div>
-            {{form_mod_method.startSetpoint(class_='form-control', value=each_method.start_setpoint)}}
+            {{form_mod_method.startSetpoint(class_='form-control', value=each_method.setpoint_start)}}
           </div>
         </div>
         <div class="form-group">
           {{form_mod_method.endSetpoint.label(class_='control-label')}}
           <div>
-            {{form_mod_method.endSetpoint(class_='form-control', value=each_method.end_setpoint)}}
+            {{form_mod_method.endSetpoint(class_='form-control', value=each_method.setpoint_end)}}
           </div>
         </div>
         <div class="form-group">
@@ -404,14 +404,14 @@
         <div class="form-group">
           {{form_mod_method.relayTime.label(class_='control-label')}}
           <div>
-            {{form_mod_method.relayTime(class_='form-control', value=each_method.start_time)}}
+            {{form_mod_method.relayTime(class_='form-control', value=each_method.time_start)}}
           </div>
         </div>
       {% elif method_type == "Daily" -%}
         <div class="form-group">
           {{form_mod_method.relayDailyTime.label(class_='control-label')}}
           <div>
-            {{form_mod_method.relayDailyTime(class_='form-control', value=each_method.start_time)}}
+            {{form_mod_method.relayDailyTime(class_='form-control', value=each_method.time_start)}}
           </div>
         </div>
       {% elif method_type == "Duration" -%}

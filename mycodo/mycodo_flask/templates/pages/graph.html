@@ -46,7 +46,7 @@
   {% if displayOrder -%}
   {%- for order in displayOrder -%}
     {%- set chart_number = loop.index -%}
-    {%- for each_graph in graph if each_graph.id in order -%}
+    {%- for each_graph in graph if each_graph.id == order -%}
 
     <div style="display: inline-block; margin: 0 0.3em 0.6em 0.3em; border: 2px solid #ddd; border-radius: 5px; width: calc({{each_graph.width}}% - 0.7em); min-width: 350px">
 
@@ -464,25 +464,25 @@
         {%- for each_pid in pid -%}
           {%- for each_graph_pid_ids in graph_pid_ids if each_pid.id in each_graph_pid_ids -%}
             {%- for each_sensor in sensor if each_sensor.id == each_pid.sensor_id -%}
-              {%- if each_pid.measure_type in ['temperature', 'temperature_object', 'temperature_die'] -%}
+              {%- if each_pid.measurement in ['temperature', 'temperature_object', 'temperature_die'] -%}
                 {%- do yaxis_temp.append(1) -%}
-              {%- elif each_pid.measure_type == 'humidity' -%}
+              {%- elif each_pid.measurement == 'humidity' -%}
                 {%- do yaxis_hum.append(1) -%}
-              {%- elif each_pid.measure_type == 'dewpoint' -%}
+              {%- elif each_pid.measurement == 'dewpoint' -%}
                 {%- do yaxis_temp.append(1) -%}
-              {%- elif each_pid.measure_type == 'co2' -%}
+              {%- elif each_pid.measurement == 'co2' -%}
                 {%- do yaxis_co2.append(1) -%}
-              {%- elif each_pid.measure_type == 'lux' -%}
+              {%- elif each_pid.measurement == 'lux' -%}
                 {%- do yaxis_lux.append(1) -%}
-              {%- elif each_pid.measure_type == 'moisture' -%}
+              {%- elif each_pid.measurement == 'moisture' -%}
                 {%- do yaxis_moisture.append(1) -%}
-              {%- elif each_pid.measure_type == 'pressure' -%}
+              {%- elif each_pid.measurement == 'pressure' -%}
                 {%- do yaxis_press.append(1) -%}
-              {%- elif each_pid.measure_type == 'altitude' -%}
+              {%- elif each_pid.measurement == 'altitude' -%}
                 {%- do yaxis_alt.append(1) -%}
-              {%- elif each_pid.measure_type == 'voltage' -%}
+              {%- elif each_pid.measurement == 'voltage' -%}
                 {%- do yaxis_volts.append(1) -%}
-              {%- elif each_pid.measure_type == each_sensor.adc_measure -%}
+              {%- elif each_pid.measurement == each_sensor.adc_measure -%}
                 {%- do yaxis_adc.append(each_sensor.adc_measure) -%}
               {%- endif -%}
             {%- endfor -%}
@@ -1197,10 +1197,10 @@
             name: '{{each_pid.name}} {{_('Setpoint')}}',
             type: 'line',
             tooltip: {
-              valueSuffix: '{{measurement_units[each_pid.measure_type]|safe}}',
+              valueSuffix: '{{measurement_units[each_pid.measurement]|safe}}',
               valueDecimals: 2
             },
-            yAxis: '{{each_pid.measure_type}}',
+            yAxis: '{{each_pid.measurement}}',
             data: []
           },
         {%- endfor -%}

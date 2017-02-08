@@ -6,11 +6,9 @@ import bcrypt
 import functools
 import gzip
 import os
-import random
 import re
 import requests
 import sqlalchemy
-import string
 import time
 from collections import OrderedDict
 from datetime import datetime
@@ -34,6 +32,7 @@ from databases.mycodo_db.models_5 import (
     Graph,
     LCD,
     Method,
+    MethodData,
     Misc,
     PID,
     Relay,
@@ -54,6 +53,7 @@ from scripts.utils import (
     test_password
 )
 from utils.send_data import send_email
+from utils.system_pi import csv_to_list_of_int
 
 # Config
 from config import INSTALL_DIRECTORY
@@ -177,13 +177,8 @@ def method_create(form_create_method, method_id):
 
     try:
         new_method = Method()
-        random_id = ''.join([random.choice(
-            string.ascii_letters + string.digits) for _ in xrange(8)])
-        new_method.id = random_id
         new_method.method_id = method_id
-        if not form_create_method.name.data:
-            new_method.name = "New Method"
-        else:
+        if form_create_method.name.data:
             new_method.name = form_create_method.name.data
         new_method.method_type = form_create_method.method_type.data
         if form_create_method.method_type.data == 'DailySine':
@@ -276,10 +271,10 @@ def method_add(form_add_method, method):
                 last_method = last_method.order_by(Method.method_order.desc()).first()
                 if last_method is not None:
                     if this_method.method_type == 'Date':
-                        last_method_end_time = datetime.strptime(last_method.end_time,
+                        last_method_end_time = datetime.strptime(last_method.time_end,
                                                                  '%Y-%m-%d %H:%M:%S')
                     elif this_method.method_type == 'Daily':
-                        last_method_end_time = datetime.strptime(last_method.end_time,
+                        last_method_end_time = datetime.strptime(last_method.time_end,
                                                                  '%H:%M:%S')
 
                     if start_time < last_method_end_time:
@@ -301,9 +296,6 @@ def method_add(form_add_method, method):
                                                '%H:%M:%S')
 
         new_method = Method()
-        random_id = ''.join([random.choice(
-            string.ascii_letters + string.digits) for _ in xrange(8)])
-        new_method.id = random_id
         new_method.method_id = form_add_method.method_id.data
 
         # Get last number in ordered list, increment for new entry
@@ -312,31 +304,26 @@ def method_add(form_add_method, method):
 
         if this_method.method_type == 'Date':
             if form_add_method.method_select.data == 'setpoint':
-                new_method.start_time = start_time.strftime('%Y-%m-%d %H:%M:%S')
-                new_method.end_time = end_time.strftime('%Y-%m-%d %H:%M:%S')
+                new_method.time_start = start_time.strftime('%Y-%m-%d %H:%M:%S')
+                new_method.time_end = end_time.strftime('%Y-%m-%d %H:%M:%S')
             if form_add_method.method_select.data == 'relay':
-                new_method.start_time = form_add_method.relayTime.data
+                new_method.time_start = form_add_method.relayTime.data
         elif this_method.method_type == 'Daily':
             if form_add_method.method_select.data == 'setpoint':
-                new_method.start_time = start_time.strftime('%H:%M:%S')
-                new_method.end_time = end_time.strftime('%H:%M:%S')
+                new_method.time_start = start_time.strftime('%H:%M:%S')
+                new_method.time_end = end_time.strftime('%H:%M:%S')
             if form_add_method.method_select.data == 'relay':
-                new_method.start_time = form_add_method.relayDailyTime.data
+                new_method.time_start = form_add_method.relayDailyTime.data
         elif this_method.method_type == 'Duration':
             new_method.duration_sec = form_add_method.DurationSec.data
 
         if form_add_method.method_select.data == 'setpoint':
-            new_method.start_setpoint = form_add_method.startSetpoint.data
-            new_method.end_setpoint = form_add_method.endSetpoint.data
+            new_method.setpoint_start = form_add_method.startSetpoint.data
+            new_method.setpoint_end = form_add_method.endSetpoint.data
         elif form_add_method.method_select.data == 'relay':
             new_method.relay_id = form_add_method.relayID.data
             new_method.relay_state = form_add_method.relayState.data
             new_method.relay_duration = form_add_method.relayDurationSec.data
-
-        new_method.repeat = ''
-        new_method.repeat_duration = ''
-        new_method.repeat_units = ''
-        new_method.total_runs = ''
 
         db.session.add(new_method)
         db.session.commit()
@@ -417,9 +404,9 @@ def method_mod(form_mod_method, method):
                 next_method = method.order_by(Method.method_order.asc()).filter(
                     Method.method_order > this_method.method_order).first()
 
-                if previous_method is not None and previous_method.end_time is not None:
+                if previous_method is not None and previous_method.time_end is not None:
                     previous_end_time = datetime.strptime(
-                        previous_method.end_time, '%Y-%m-%d %H:%M:%S')
+                        previous_method.time_end, '%Y-%m-%d %H:%M:%S')
                     if previous_end_time is not None and start_time < previous_end_time:
                         error.append(
                             gettext("The entry start time (%(st)s) cannot "
@@ -427,9 +414,9 @@ def method_mod(form_mod_method, method):
                                     "(%(et)s)",
                                     st=start_time, et=previous_end_time))
 
-                if next_method is not None and next_method.start_time is not None:
+                if next_method is not None and next_method.time_start is not None:
                     next_start_time = datetime.strptime(
-                        next_method.start_time, '%Y-%m-%d %H:%M:%S')
+                        next_method.time_start, '%Y-%m-%d %H:%M:%S')
                     if next_start_time is not None and end_time > next_start_time:
                         error.append(
                             gettext("The entry end time (%(et)s) cannot "
@@ -437,22 +424,22 @@ def method_mod(form_mod_method, method):
                                     "(%(st)s)",
                                     et=end_time, st=next_start_time))
 
-                mod_method.start_time = start_time.strftime('%Y-%m-%d %H:%M:%S')
-                mod_method.end_time = end_time.strftime('%Y-%m-%d %H:%M:%S')
+                mod_method.time_start = start_time.strftime('%Y-%m-%d %H:%M:%S')
+                mod_method.time_end = end_time.strftime('%Y-%m-%d %H:%M:%S')
 
             elif method_set.method_type == 'Duration':
                 mod_method.duration_sec = form_mod_method.DurationSec.data
 
             elif method_set.method_type == 'Daily':
-                mod_method.start_time = form_mod_method.startDailyTime.data
-                mod_method.end_time = form_mod_method.endDailyTime.data
+                mod_method.time_start = form_mod_method.startDailyTime.data
+                mod_method.time_end = form_mod_method.endDailyTime.data
 
-            mod_method.start_setpoint = form_mod_method.startSetpoint.data
-            mod_method.end_setpoint = form_mod_method.endSetpoint.data
+            mod_method.setpoint_start = form_mod_method.startSetpoint.data
+            mod_method.setpoint_end = form_mod_method.endSetpoint.data
 
         elif form_mod_method.method_select.data == 'relay':
             if method_set.method_type == 'Date':
-                mod_method.start_time = form_mod_method.relayTime.data
+                mod_method.time_start = form_mod_method.relayTime.data
             elif method_set.method_type == 'Duration':
                 mod_method.duration_sec = form_mod_method.DurationSec.data
             mod_method.relay_id = form_mod_method.relayID.data
@@ -461,7 +448,7 @@ def method_mod(form_mod_method, method):
 
         elif method_set.method_type == 'DailySine':
             if form_mod_method.method_select.data == 'relay':
-                mod_method.start_time = form_mod_method.relayTime.data
+                mod_method.time_start = form_mod_method.relayTime.data
                 mod_method.relay_id = form_mod_method.relayID.data
                 mod_method.relay_state = form_mod_method.relayState.data
                 mod_method.relay_duration = form_mod_method.relayDurationSec.data
@@ -536,22 +523,21 @@ def remote_host_add(form_setup, display_order):
                 flash(pw_check['message'], "error")
                 return 1
             new_remote_host = Remote()
-            random_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for _ in xrange(8)])
-            new_remote_host.id = random_id
-            new_remote_host.activated = 0
             new_remote_host.host = form_setup.host.data
             new_remote_host.username = form_setup.username.data
             new_remote_host.password_hash = pw_check['message']
             try:
                 db.session.add(new_remote_host)
-                flash(gettext("Remote Host %(host)s with ID %(id)s "
-                              "successfully added",
-                              host=form_setup.host.data, id=random_id),
+                db.session.commit()
+                flash(gettext("Remote Host %(host)s with ID %(id)s (%(uuid)s)"
+                              " successfully added",
+                              host=form_setup.host.data,
+                              id=new_remote_host.id,
+                              uuid=new_remote_host.unique_id),
                       "success")
-                order_remote = DisplayOrder.query.first()
-                display_order.append(random_id)
-                order_remote.remote_host = ','.join(display_order)
+
+                DisplayOrder.query.first().remote_host = add_display_order(
+                    display_order, new_remote_host.id)
                 db.session.commit()
             except sqlalchemy.exc.OperationalError as except_msg:
                 flash(gettext("Remote Host Error: %(msg)s", msg=except_msg),
@@ -566,16 +552,16 @@ def remote_host_add(form_setup, display_order):
         flash_form_errors(form_setup)
 
 
-def remote_host_del(form_setup, display_order):
+def remote_host_del(form_setup):
     if deny_guest_user():
         return redirect(url_for('general_routes.home'))
 
     try:
         delete_entry_with_id(Remote,
                              form_setup.remote_id.data)
-        order_remote = DisplayOrder.query.first()
-        display_order.remove(form_setup.remote_id.data)
-        order_remote.remote_host = ','.join(display_order)
+        display_order = csv_to_list_of_int(DisplayOrder.query.first().remote_host)
+        display_order.remove(int(form_setup.remote_id.data))
+        DisplayOrder.query.first().remote_host = list_to_csv(display_order)
         db.session.commit()
     except Exception as except_msg:
         flash(gettext("Remote Host Error: %(msg)s", msg=except_msg), "error")
@@ -808,11 +794,6 @@ def graph_add(form_add_graph, display_order):
             form_add_graph.height.data and form_add_graph.xAxisDuration.data and
             form_add_graph.refreshDuration.data):
         new_graph = Graph()
-        random_id = ''.join([random.choice(
-                string.ascii_letters + string.digits) for _ in xrange(8)])
-        new_graph.id = random_id
-        new_graph.colors = ''
-        new_graph.colors_custom = False
         new_graph.name = form_add_graph.name.data
         pid_ids_joined = ",".join(form_add_graph.pidIDs.data)
         new_graph.pid_ids = pid_ids_joined
@@ -829,12 +810,15 @@ def graph_add(form_add_graph, display_order):
         new_graph.enable_export = form_add_graph.enableExport.data
         try:
             db.session.add(new_graph)
+            db.session.commit()
             flash(gettext(
-                "Graph with ID %(id)s successfully created", id=random_id),
+                "Graph with ID %(id)s (%(uuid)s) successfully added",
+                id=new_graph.id,
+                uuid=new_graph.unique_id),
                 "success")
-            order_graph = DisplayOrder.query.first()
-            display_order.append(random_id)
-            order_graph.graph = ','.join(display_order)
+
+            DisplayOrder.query.first().graph = add_display_order(
+                display_order, new_graph.id)
             db.session.commit()
         except sqlalchemy.exc.OperationalError as except_msg:
             error.append(except_msg)
@@ -902,7 +886,7 @@ def graph_mod(form_mod_graph, request_form):
         flash_form_errors(form_mod_graph)
 
 
-def graph_del(form_del_graph, display_order):
+def graph_del(form_del_graph):
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
         controller=gettext("Graph"))
@@ -912,9 +896,9 @@ def graph_del(form_del_graph, display_order):
         try:
             delete_entry_with_id(Graph,
                                  form_del_graph.graph_id.data)
-            order_graph = DisplayOrder.query().first()
-            display_order.remove(form_del_graph.graph_id.data)
-            order_graph.graph = ','.join(display_order)
+            display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
+            display_order.remove(int(form_del_graph.graph_id.data))
+            DisplayOrder.query.first().graph = list_to_csv(display_order)
             db.session.commit()
         except Exception as except_msg:
             error.append(except_msg)
@@ -958,7 +942,7 @@ def graph_reorder(form_order_graph, display_order):
 # LCD Manipulation
 #
 
-def lcd_add(form_add_lcd, display_order):
+def lcd_add(form_add_lcd):
     action = '{action} {controller}'.format(
         action=gettext("Add"),
         controller=gettext("LCD"))
@@ -966,31 +950,14 @@ def lcd_add(form_add_lcd, display_order):
 
     if form_add_lcd.validate():
         for _ in range(0, form_add_lcd.numberLCDs.data):
-            new_lcd = LCD()
-            random_lcd_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for _ in xrange(8)])
-            new_lcd.id = random_lcd_id
-            new_lcd.name = 'LCD {}'.format(random_lcd_id)
-            new_lcd.pin = "27"
-            new_lcd.multiplexer_address = ''
-            new_lcd.multiplexer_channel = 0
-            new_lcd.period = 30
-            new_lcd.activated = 0
-            new_lcd.x_characters = 16
-            new_lcd.y_lines = 2
-            new_lcd.line_1_sensor_id = ''
-            new_lcd.line_1_measurement = ''
-            new_lcd.line_2_sensor_id = ''
-            new_lcd.line_2_measurement = ''
-            new_lcd.line_3_sensor_id = ''
-            new_lcd.line_3_measurement = ''
-            new_lcd.line_4_sensor_id = ''
-            new_lcd.line_4_measurement = ''
             try:
+                display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
+                new_lcd = LCD()
                 db.session.add(new_lcd)
+                db.session.commit()
 
-                display_order.append(random_lcd_id)
-                DisplayOrder.query.first().lcd = ','.join(display_order)
+                DisplayOrder.query.first().lcd = add_display_order(
+                    display_order, new_lcd.id)
                 db.session.commit()
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
@@ -1011,7 +978,7 @@ def lcd_mod(form_mod_lcd):
         try:
             mod_lcd = LCD.query.filter(
                 LCD.id == form_mod_lcd.modLCD_id.data).first()
-            if mod_lcd.activated:
+            if mod_lcd.is_activated:
                 flash(gettext("Deactivate LCD controller before modifying"
                               " its settings."), "error")
                 return redirect('/lcd')
@@ -1056,7 +1023,7 @@ def lcd_mod(form_mod_lcd):
         flash_form_errors(form_mod_lcd)
 
 
-def lcd_del(form_del_lcd, display_order):
+def lcd_del(form_del_lcd):
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
         controller=gettext("LCD"))
@@ -1066,8 +1033,9 @@ def lcd_del(form_del_lcd, display_order):
         try:
             delete_entry_with_id(LCD,
                                  form_del_lcd.delLCD_id.data)
-            display_order.remove(form_del_lcd.delLCD_id.data)
-            DisplayOrder.query.first().lcd = ','.join(display_order)
+            display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
+            display_order.remove(int(form_del_lcd.delLCD_id.data))
+            DisplayOrder.query.first().lcd = list_to_csv(display_order)
             db.session.commit()
         except Exception as except_msg:
             error.append(except_msg)
@@ -1130,7 +1098,7 @@ def lcd_activate(form_activate_lcd):
                 Sensor.id.in_(lcd_lines)).all()
             # Check if any sensors are not active
             for each_sensor in sensor:
-                if not each_sensor.is_activated():
+                if not each_sensor.is_activated:
                     flash(gettext(
                         "Cannot activate controller if the associated "
                         "sensor controller is inactive"), "error")
@@ -1167,7 +1135,7 @@ def lcd_reset_flashing(form_reset_flashing_lcd):
 # PID manipulation
 #
 
-def pid_add(form_add_pid, display_order):
+def pid_add(form_add_pid):
     action = '{action} {controller}'.format(
         action=gettext("Add"),
         controller=gettext("PID"))
@@ -1175,33 +1143,14 @@ def pid_add(form_add_pid, display_order):
 
     if form_add_pid.validate():
         for _ in range(0, form_add_pid.numberPIDs.data):
-            new_pid = PID()
-            random_pid_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for _ in xrange(8)])
-            new_pid.id = random_pid_id
-            new_pid.name = 'PID {}'.format(random_pid_id)
-            new_pid.activated = 0
-            new_pid.sensor_id = ''
-            new_pid.measure_type = ''
-            new_pid.direction = 'raise'
-            new_pid.period = 60
-            new_pid.setpoint = 0.0
-            new_pid.method_id = ''
-            new_pid.p = 1.0
-            new_pid.i = 0.0
-            new_pid.d = 0.0
-            new_pid.integrator_min = -100.0
-            new_pid.integrator_max = 100.0
-            new_pid.raise_relay_id = ''
-            new_pid.raise_min_duration = 0
-            new_pid.raise_max_duration = 0
-            new_pid.lower_relay_id = ''
-            new_pid.lower_min_duration = 0
-            new_pid.lower_max_duration = 0
             try:
+                display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
+                new_pid = PID()
                 db.session.add(new_pid)
-                display_order.append(random_pid_id)
-                DisplayOrder.query.first().pid = ','.join(display_order)
+                db.session.commit()
+
+                DisplayOrder.query.first().pid = add_display_order(
+                    display_order, new_pid.id)
                 db.session.commit()
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
@@ -1226,30 +1175,30 @@ def pid_mod(form_mod_pid):
                 error.append(gettext("A valid sensor ID is required"))
             elif (
                   (sensor.device_type == 'tsensor' and
-                   form_mod_pid.modMeasureType.data not in ['temperature']) or
+                   form_mod_pid.modMeasurement.data not in ['temperature']) or
 
                   (sensor.device_type == 'tmpsensor' and
-                   form_mod_pid.modMeasureType.data not in ['temperature_object',
+                   form_mod_pid.modMeasurement.data not in ['temperature_object',
                                                             'temperature_die']) or
 
                   (sensor.device_type == 'htsensor' and
-                   form_mod_pid.modMeasureType.data not in ['temperature',
+                   form_mod_pid.modMeasurement.data not in ['temperature',
                                                             'humidity',
                                                             'dewpoint']) or
 
                   (sensor.device_type == 'co2sensor' and
-                   form_mod_pid.modMeasureType.data not in ['co2']) or
+                   form_mod_pid.modMeasurement.data not in ['co2']) or
 
                   (sensor.device_type == 'luxsensor' and
-                   form_mod_pid.modMeasureType.data not in ['lux']) or
+                   form_mod_pid.modMeasurement.data not in ['lux']) or
 
                   (sensor.device_type == 'moistsensor' and
-                   form_mod_pid.modMeasureType.data not in ['temperature',
+                   form_mod_pid.modMeasurement.data not in ['temperature',
                                                             'lux',
                                                             'moisture']) or
 
                   (sensor.device_type == 'presssensor' and
-                   form_mod_pid.modMeasureType.data not in ['temperature',
+                   form_mod_pid.modMeasurement.data not in ['temperature',
                                                             'pressure',
                                                             'altitude'])
             ):
@@ -1261,7 +1210,7 @@ def pid_mod(form_mod_pid):
                     PID.id == form_mod_pid.modPID_id.data).first()
                 mod_pid.name = form_mod_pid.modName.data
                 mod_pid.sensor_id = form_mod_pid.modSensorID.data
-                mod_pid.measure_type = form_mod_pid.modMeasureType.data
+                mod_pid.measurement = form_mod_pid.modMeasurement.data
                 mod_pid.direction = form_mod_pid.modDirection.data
                 mod_pid.period = form_mod_pid.modPeriod.data
                 mod_pid.setpoint = form_mod_pid.modSetpoint.data
@@ -1279,7 +1228,7 @@ def pid_mod(form_mod_pid):
                 mod_pid.method_id = form_mod_pid.mod_method_id.data
                 db.session.commit()
                 # If the controller is active or paused, refresh variables in thread
-                if mod_pid.activated:
+                if mod_pid.is_activated:
                     control = DaemonControl()
                     return_value = control.pid_mod(form_mod_pid.modPID_id.data)
                     flash(gettext(
@@ -1292,7 +1241,7 @@ def pid_mod(form_mod_pid):
         flash_form_errors(form_mod_pid)
 
 
-def pid_del(pid_id, display_order):
+def pid_del(pid_id):
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
         controller=gettext("PID"))
@@ -1301,13 +1250,14 @@ def pid_del(pid_id, display_order):
     try:
         pid = PID.query.filter(
             PID.id == pid_id).first()
-        if pid.activated:
+        if pid.is_activated:
             pid_deactivate(pid_id)
 
         delete_entry_with_id(PID,
                              pid_id)
-        display_order.remove(pid_id)
-        DisplayOrder.query.first().pid = ','.join(display_order)
+        display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
+        display_order.remove(int(pid_id))
+        DisplayOrder.query.first().pid = list_to_csv(display_order)
         db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
@@ -1345,7 +1295,7 @@ def has_required_pid_values(pid_id):
     if not pid.sensor_id:
         flash(gettext("A valid sensor is required"), "error")
         error = True
-    if not pid.measure_type:
+    if not pid.measurement:
         flash(gettext("A valid Measure Type is required"), "error")
         error = True
     if not pid.raise_relay_id and not pid.lower_relay_id:
@@ -1371,7 +1321,7 @@ def pid_activate(pid_id):
     sensor = Sensor.query.filter(
         Sensor.id == pid.sensor_id).first()
 
-    if not sensor.is_activated():
+    if not sensor.is_activated:
         error.append(gettext(
             "Cannot activate PID controller if the associated sensor "
             "controller is inactive"))
@@ -1379,10 +1329,9 @@ def pid_activate(pid_id):
         # Signal the duration method can run because it's been
         # properly initiated (non-power failure)
         mod_method = Method.query.filter(
-            Method.method_id == pid.method_id)
-        mod_method = mod_method.filter(Method.method_order == 0).first()
+            Method.id == pid.method_id).first()
         if mod_method and mod_method.method_type == 'Duration':
-            mod_method.start_time = 'Ready'
+            mod_method.method_start_time = 'Ready'
             db.session.commit()
 
         time.sleep(1)
@@ -1396,7 +1345,7 @@ def pid_activate(pid_id):
 def pid_deactivate(pid_id):
     pid = PID.query.filter(
         PID.id == pid_id).first()
-    pid.activated = 0
+    pid.is_activated = False
     db.session.commit()
     time.sleep(1)
     activate_deactivate_controller('deactivate',
@@ -1413,11 +1362,15 @@ def pid_manipulate(pid_id, action):
         mod_pid = PID.query.filter(
             PID.id == pid_id).first()
         if action == 'Hold':
-            mod_pid.activated = 3
+            mod_pid.is_held = True
+            mod_pid.is_paused = False
         elif action == 'Pause':
-            mod_pid.activated = 2
+            mod_pid.is_paused = True
+            mod_pid.is_held = False
         elif action == 'Resume':
-            mod_pid.activated = 1
+            mod_pid.is_activated = True
+            mod_pid.is_held = False
+            mod_pid.is_paused = False
         db.session.commit()
 
         control = DaemonControl()
@@ -1475,7 +1428,7 @@ def relay_on_off(form_relay):
     flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
-def relay_add(form_add_relay, display_order):
+def relay_add(form_add_relay):
     action = '{action} {controller}'.format(
         action=gettext("Add"),
         controller=gettext("Relay"))
@@ -1483,21 +1436,16 @@ def relay_add(form_add_relay, display_order):
 
     if form_add_relay.validate():
         for _ in range(0, form_add_relay.numberRelays.data):
-            new_relay = Relay()
-            random_relay_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for _ in xrange(8)])
-            new_relay.id = random_relay_id
-            new_relay.name = 'Relay'
-            new_relay.pin = 0
-            new_relay.amps = 0
-            new_relay.trigger = 1
-            new_relay.start_state = 0
             try:
+                display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
+                new_relay = Relay()
                 db.session.add(new_relay)
-                display_order.append(random_relay_id)
-                DisplayOrder.query.first().relay = ','.join(display_order)
                 db.session.commit()
-                manipulate_relay(gettext('Add'), random_relay_id)
+
+                DisplayOrder.query.first().relay = add_display_order(
+                    display_order, new_relay.id)
+                db.session.commit()
+                manipulate_relay(gettext('Add'), new_relay.id)
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
@@ -1524,7 +1472,7 @@ def relay_mod(form_relay):
             mod_relay.pin = form_relay.gpio.data
             mod_relay.amps = form_relay.amps.data
             mod_relay.trigger = form_relay.trigger.data
-            mod_relay.start_state = form_relay.start_state.data
+            mod_relay.on_at_start = form_relay.on_at_start.data
             db.session.commit()
             manipulate_relay(gettext('Modify'),
                              form_relay.relay_id.data,
@@ -1536,7 +1484,7 @@ def relay_mod(form_relay):
         flash_form_errors(form_relay)
 
 
-def relay_del(form_relay, display_order):
+def relay_del(form_relay):
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
         controller=gettext("Relay"))
@@ -1546,8 +1494,9 @@ def relay_del(form_relay, display_order):
         try:
             delete_entry_with_id(Relay,
                                  form_relay.relay_id.data)
-            display_order.remove(form_relay.relay_id.data)
-            DisplayOrder.query.first().relay = ','.join(display_order)
+            display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
+            display_order.remove(int(form_relay.relay_id.data))
+            DisplayOrder.query.first().relay = list_to_csv(display_order)
             db.session.commit()
             manipulate_relay(gettext('Delete'), form_relay.relay_id.data)
         except Exception as except_msg:
@@ -1599,23 +1548,9 @@ def relay_conditional_add(form_add_relay_cond):
 
     if form_add_relay_cond.validate():
         for _ in range(0, form_add_relay_cond.numberRelayConditionals.data):
-            new_relay_cond = RelayConditional()
-            random_id = ''.join([random.choice(
-                    string.ascii_letters + string.digits) for _ in xrange(8)])
-            new_relay_cond.id = random_id
-            new_relay_cond.name = 'Relay Conditional'
-            new_relay_cond.activated = False
-            new_relay_cond.if_relay_id = ''
-            new_relay_cond.if_action = ''
-            new_relay_cond.if_duration = 0
-            new_relay_cond.do_relay_id = ''
-            new_relay_cond.do_action = ''
-            new_relay_cond.do_duration = 0
-            new_relay_cond.execute_command = ''
-            new_relay_cond.email_notify = ''
-            new_relay_cond.flash_lcd = ''
             try:
-                db.session.add(new_relay_cond)
+                db.session.add(RelayConditional())
+                db.session.commit()
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
@@ -1636,7 +1571,7 @@ def relay_conditional_mod(form_relay_cond):
                 controller=gettext("Relay Conditional"))
             relay_cond = RelayConditional.query.filter(
                 RelayConditional.id == form_relay_cond.relay_id.data).first()
-            relay_cond.activated = True
+            relay_cond.is_activated = True
             db.session.commit()
         elif form_relay_cond.deactivate.data:
             action = '{action} {controller}'.format(
@@ -1644,7 +1579,7 @@ def relay_conditional_mod(form_relay_cond):
                 controller=gettext("Relay Conditional"))
             relay_cond = RelayConditional.query.filter(
                 RelayConditional.id == form_relay_cond.relay_id.data).first()
-            relay_cond.activated = 0
+            relay_cond.is_activated = False
             db.session.commit()
         elif form_relay_cond.delete.data:
             action = '{action} {controller}'.format(
@@ -1683,7 +1618,7 @@ def relay_conditional_mod(form_relay_cond):
 # Sensor manipulation
 #
 
-def sensor_add(form_add_sensor, display_order):
+def sensor_add(form_add_sensor):
     action = '{action} {controller}'.format(
         action=gettext("Add"),
         controller=gettext("Sensor"))
@@ -1691,6 +1626,7 @@ def sensor_add(form_add_sensor, display_order):
 
     if form_add_sensor.validate():
         for _ in range(0, form_add_sensor.numberSensors.data):
+            display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
             new_sensor = Sensor()
             new_sensor.device = form_add_sensor.sensor.data
             new_sensor.name = '{}'.format(form_add_sensor.sensor.data)
@@ -1704,15 +1640,18 @@ def sensor_add(form_add_sensor, display_order):
             # Process monitors
             if form_add_sensor.sensor.data == 'RPiCPULoad':
                 new_sensor.device_type = 'cpu_load'
+                new_sensor.measurements = 'cpu_load_1m,cpu_load_5m,cpu_load_15m'
                 new_sensor.location = 'RPi'
             elif form_add_sensor.sensor.data == 'EDGE':
                 new_sensor.device_type = 'edgedetect'
+                new_sensor.measurements = 'edge'
 
             # Environmental Sensors
             # Temperature
             elif form_add_sensor.sensor.data in ['ATLAS_PT1000', 'DS18B20',
                                                  'RPi', 'TMP006']:
                 new_sensor.device_type = 'tsensor'
+                new_sensor.measurements = 'temperature'
                 if form_add_sensor.sensor.data == 'ATLAS_PT1000':
                     new_sensor.location = '0x66'
                 elif form_add_sensor.sensor.data == 'RPi':
@@ -1725,6 +1664,7 @@ def sensor_add(form_add_sensor, display_order):
                                                  'HTU21D', 'SHT1x_7x',
                                                  'SHT2x']:
                 new_sensor.device_type = 'htsensor'
+                new_sensor.measurements = 'humidity,temperature'
                 if form_add_sensor.sensor.data == 'AM2315':
                     new_sensor.location = '0x5c'
                 elif form_add_sensor.sensor.data == 'HTU21D':
@@ -1735,16 +1675,19 @@ def sensor_add(form_add_sensor, display_order):
             # Chirp moisture sensor
             elif form_add_sensor.sensor.data == 'CHIRP':
                 new_sensor.device_type = 'moistsensor'
+                new_sensor.measurements = 'moisture'
                 new_sensor.location = '0x20'
 
             # CO2
             elif form_add_sensor.sensor.data == 'K30':
                 new_sensor.device_type = 'co2sensor'
+                new_sensor.measurements = 'co2'
                 new_sensor.location = 'Tx/Rx'
 
             # Pressure
             elif form_add_sensor.sensor.data in ['BME280', 'BMP']:
                 new_sensor.device_type = 'presssensor'
+                new_sensor.measurements = 'altitude,pressure,temperature'
                 if form_add_sensor.sensor.data == 'BME280':
                     new_sensor.location = '0x76'
                 elif form_add_sensor.sensor.data == 'BMP':
@@ -1753,11 +1696,13 @@ def sensor_add(form_add_sensor, display_order):
             # Light
             elif form_add_sensor.sensor.data == 'TSL2561':
                 new_sensor.device_type = 'luxsensor'
+                new_sensor.measurements = 'lux'
                 new_sensor.location = '0x39'
 
             # Analog to Digital Converters
             elif form_add_sensor.sensor.data in ['ADS1x15', 'MCP342x']:
                 new_sensor.device_type = 'analogsensor'
+                new_sensor.measurements = 'voltage'
                 if form_add_sensor.sensor.data == 'ADS1x15':
                     new_sensor.location = '0x48'
                     new_sensor.adc_volts_min = -4.096
@@ -1771,13 +1716,16 @@ def sensor_add(form_add_sensor, display_order):
                 db.session.add(new_sensor)
                 db.session.commit()
 
-                display_order.append(str(new_sensor.id))
-                DisplayOrder.query.first().sensor = ','.join(display_order)
+                DisplayOrder.query.first().sensor = add_display_order(
+                    display_order, new_sensor.id)
                 db.session.commit()
+
                 flash(gettext(
-                    "%(type)s Sensor with ID %(id)s successfully added",
-                    type=form_add_sensor.sensor.data, id=new_sensor.id),
-                    "success")
+                    "%(type)s Sensor with ID %(id)s (%(uuid)s) successfully added",
+                    type=form_add_sensor.sensor.data,
+                    id=new_sensor.id,
+                    uuid=new_sensor.unique_id),
+                      "success")
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
@@ -1800,7 +1748,7 @@ def sensor_mod(form_mod_sensor):
         if not form_mod_sensor.modLocation.data:
             error.append(gettext(
                 "Invalid device GPIO/I2C address/location"))
-        if mod_sensor.activated:
+        if mod_sensor.is_activated:
             error.append(gettext(
                 "Deactivate sensor controller before modifying its "
                 "settings"))
@@ -1846,7 +1794,7 @@ def sensor_mod(form_mod_sensor):
     flash_success_errors(error, action, url_for('page_routes.page_sensor'))
 
 
-def sensor_del(form_mod_sensor, display_order):
+def sensor_del(form_mod_sensor):
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
         controller=gettext("Sensor"))
@@ -1855,7 +1803,7 @@ def sensor_del(form_mod_sensor, display_order):
     try:
         sensor = Sensor.query.filter(
             Sensor.id == form_mod_sensor.modSensor_id.data).first()
-        if sensor.activated:
+        if sensor.is_activated:
             sensor_deactivate_associated_controllers(
                 form_mod_sensor.modSensor_id.data)
             activate_deactivate_controller(
@@ -1870,8 +1818,12 @@ def sensor_del(form_mod_sensor, display_order):
 
         delete_entry_with_id(Sensor,
                              form_mod_sensor.modSensor_id.data)
-        display_order.remove(form_mod_sensor.modSensor_id.data)
-        DisplayOrder.query.first().sensor = ','.join(display_order)
+        try:
+            display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
+            display_order.remove(int(form_mod_sensor.modSensor_id.data))
+            DisplayOrder.query.first().sensor = list_to_csv(display_order)
+        except:  # id not in list
+            pass
         db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
@@ -1929,14 +1881,14 @@ def sensor_deactivate(form_mod_sensor):
 def sensor_deactivate_associated_controllers(sensor_id):
     pid = (PID.query
            .filter(PID.sensor_id == sensor_id)
-           .filter(PID.activated == 1)
+           .filter(PID.is_activated == True)
            ).all()
     if pid:
         for each_pid in pid:
             activate_deactivate_controller('deactivate',
                                            'PID',
                                            each_pid.id)
-    lcd = LCD.query.filter(LCD.activated)
+    lcd = LCD.query.filter(LCD.is_activated)
     for each_lcd in lcd:
         if sensor_id in [each_lcd.line_1_sensor_id,
                          each_lcd.line_2_sensor_id,
@@ -1957,32 +1909,14 @@ def sensor_conditional_add(form_mod_sensor):
         controller=gettext("Sensor Conditional"))
     error = []
 
-    new_sensor_cond = SensorConditional()
-    random_id = ''.join([random.choice(
-            string.ascii_letters + string.digits) for _ in xrange(8)])
-    new_sensor_cond.id = random_id
-    new_sensor_cond.name = 'Sensor Conditional'
-    new_sensor_cond.activated = 0
-    new_sensor_cond.sensor_id = form_mod_sensor.modSensor_id.data
-    new_sensor_cond.period = 60
-    new_sensor_cond.measurement_type = ''
-    new_sensor_cond.edge_select = 'edge'
-    new_sensor_cond.edge_detected = 'rising'
-    new_sensor_cond.gpio_state = 1
-    new_sensor_cond.direction = ''
-    new_sensor_cond.setpoint = 0.0
-    new_sensor_cond.relay_id = ''
-    new_sensor_cond.relay_state = ''
-    new_sensor_cond.relay_on_duration = 0.0
-    new_sensor_cond.execute_command = ''
-    new_sensor_cond.email_notify = ''
-    new_sensor_cond.flash_lcd = ''
-    new_sensor_cond.camera_record = ''
     try:
+        new_sensor_cond = SensorConditional()
+        new_sensor_cond.sensor_id = form_mod_sensor.modSensor_id.data
         db.session.add(new_sensor_cond)
+        db.session.commit()
         check_refresh_conditional(form_mod_sensor.modSensor_id.data,
                                   'add',
-                                  random_id)
+                                  new_sensor_cond.id)
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)
     except sqlalchemy.exc.IntegrityError as except_msg:
@@ -2074,7 +2008,7 @@ def sensor_conditional_mod(form_mod_sensor_cond):
                 cond_configured = True
 
             if device_specific_configured and cond_configured:
-                mod_sensor.activated = 1
+                mod_sensor.is_activated = True
                 db.session.commit()
                 check_refresh_conditional(
                     form_mod_sensor_cond.modSensor_id.data,
@@ -2094,7 +2028,7 @@ def sensor_conditional_mod(form_mod_sensor_cond):
         try:
             mod_sensor = SensorConditional.query.filter(
                 SensorConditional.id == form_mod_sensor_cond.modCondSensor_id.data).first()
-            mod_sensor.activated = 0
+            mod_sensor.is_activated = False
             db.session.commit()
             check_refresh_conditional(
                 form_mod_sensor_cond.modSensor_id.data,
@@ -2109,7 +2043,7 @@ def sensor_conditional_mod(form_mod_sensor_cond):
 def check_refresh_conditional(sensor_id, cond_mod, cond_id):
     sensor = (Sensor.query
               .filter(Sensor.id == sensor_id)
-              .filter(Sensor.activated == 1)
+              .filter(Sensor.is_activated == True)
               ).first()
     if sensor:
         control = DaemonControl()
@@ -2128,11 +2062,7 @@ def timer_add(form_add_timer, timer_type, display_order):
 
     if form_add_timer.validate():
         new_timer = Timer()
-        random_timer_id = ''.join([random.choice(
-                string.ascii_letters + string.digits) for _ in xrange(8)])
-        new_timer.id = random_timer_id
         new_timer.name = form_add_timer.name.data
-        new_timer.activated = 0
         new_timer.relay_id = form_add_timer.relayID.data
         if timer_type == 'time':
             new_timer.timer_type = 'time'
@@ -2148,8 +2078,7 @@ def timer_add(form_add_timer, timer_type, display_order):
         elif timer_type == 'duration':
             if (form_add_timer.durationOn.data <= 0 or
                     form_add_timer.durationOff.data <= 0):
-                error.append(gettext("Durations must be greater than 0"),
-                             "error")
+                error.append(gettext("Durations must be greater than 0"))
             else:
                 new_timer.timer_type = 'duration'
                 new_timer.duration_on = form_add_timer.durationOn.data
@@ -2158,8 +2087,10 @@ def timer_add(form_add_timer, timer_type, display_order):
         if not error:
             try:
                 db.session.add(new_timer)
-                display_order.append(random_timer_id)
-                DisplayOrder.query.first().timer = ','.join(display_order)
+                db.session.commit()
+
+                DisplayOrder.query.first().timer = add_display_order(
+                    display_order, new_timer.id)
                 db.session.commit()
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
@@ -2180,7 +2111,7 @@ def timer_mod(form_timer):
     try:
         mod_timer = Timer.query.filter(
             Timer.id == form_timer.timer_id.data).first()
-        if mod_timer.activated:
+        if mod_timer.is_activated:
             error.append(gettext("Deactivate timer controller before "
                                  "modifying its settings"))
             return redirect(url_for('page_routes.page_timer'))
@@ -2205,7 +2136,7 @@ def timer_mod(form_timer):
     flash_success_errors(error, action, url_for('page_routes.page_timer'))
 
 
-def timer_del(form_timer, display_order):
+def timer_del(form_timer):
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
         controller=gettext("Timer"))
@@ -2214,8 +2145,9 @@ def timer_del(form_timer, display_order):
     try:
         delete_entry_with_id(Timer,
                              form_timer.timer_id.data)
-        display_order.remove(form_timer.timer_id.data)
-        DisplayOrder.query.first().timer = ','.join(display_order)
+        display_order = csv_to_list_of_int(DisplayOrder.query.first().timer)
+        display_order.remove(int(form_timer.timer_id.data))
+        DisplayOrder.query.first().timer = list_to_csv(display_order)
         db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
@@ -2597,6 +2529,21 @@ def gzipped(f):
         return f(*args, **kwargs)
 
     return view_func
+
+
+def add_display_order(display_order, device_id):
+    """ Add integer ID to list of string IDs """
+    logger.error("ERR0: {} - {}".format(display_order, device_id))
+    if display_order:
+        display_order.append(device_id)
+        display_order = [str(i) for i in display_order]
+        return ','.join(display_order)
+    return str(device_id)
+
+
+def list_to_csv(display_order):
+    str_csv = [str(i) for i in display_order]
+    return ','.join(str_csv)
 
 
 def reorder_list(modified_list, item, direction):

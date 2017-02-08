@@ -712,7 +712,7 @@ class ModPID(Form):
         render_kw={"placeholder": lazy_gettext("Sensor ID")},
         validators=[DataRequired()]
     )
-    modMeasureType = StringField(
+    modMeasurement = StringField(
         lazy_gettext('Measure Type'),
         validators=[DataRequired()]
     )
@@ -884,7 +884,7 @@ class ModRelay(Form):
         ],
         validators=[DataRequired()]
     )
-    start_state = SelectField(
+    on_at_start = SelectField(
         lazy_gettext('Start State'),
         choices=[
             ("1", 'On'),

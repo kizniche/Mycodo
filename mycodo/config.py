@@ -25,6 +25,7 @@
 import os
 
 MYCODO_VERSION = '5.0.0'
+ALEMBIC_VERSION = '6a5508a5f078'
 
 LANGUAGES = {
     'en': 'English',
