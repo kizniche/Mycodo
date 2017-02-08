@@ -25,11 +25,11 @@
 
 import RPi.GPIO as GPIO
 
-from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.config import SQL_DATABASE_MYCODO_5
 from mycodo.databases.mycodo_db.models_5 import Relay
 from mycodo.databases.utils import session_scope
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)

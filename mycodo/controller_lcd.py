@@ -74,7 +74,6 @@ from utils.influx import read_last_influxdb
 # Config
 from config import (
     SQL_DATABASE_MYCODO_5,
-    SQL_DATABASE_MYCODO,
     MEASUREMENT_UNITS,
     MYCODO_VERSION
 )

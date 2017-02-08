@@ -197,6 +197,8 @@ class PID(db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     name = db.Column(db.Text)
     is_activated = db.Column(db.Boolean, default=False)
+    is_held = db.Column(db.Boolean, default=False)
+    is_paused = db.Column(db.Boolean, default=False)
     is_preset = db.Column(db.Boolean, default=False)  # Is config saved as a preset?
     preset_name = db.Column(db.Text, default='')  # Name for preset
     period = db.Column(db.Integer, default=30)

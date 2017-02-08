@@ -205,6 +205,7 @@ def method_create(form_create_method, method_id):
         new_method.controller_type = form_create_method.controller_type.data
         db.session.add(new_method)
         db.session.commit()
+        return 0
     except Exception as except_msg:
         error.append(except_msg)
     flash_success_errors(error, action, url_for('method_routes.method_list'))
@@ -1718,7 +1719,7 @@ def sensor_add(form_add_sensor, display_order):
                     new_sensor.location = 'RPi'
                 elif form_add_sensor.sensor.data == 'TMP006':
                     new_sensor.location = '0x40'
-            
+
             # Temperature/Humidity
             elif form_add_sensor.sensor.data in ['AM2315', 'DHT11', 'DHT22',
                                                  'HTU21D', 'SHT1x_7x',
@@ -1740,7 +1741,7 @@ def sensor_add(form_add_sensor, display_order):
             elif form_add_sensor.sensor.data == 'K30':
                 new_sensor.device_type = 'co2sensor'
                 new_sensor.location = 'Tx/Rx'
-            
+
             # Pressure
             elif form_add_sensor.sensor.data in ['BME280', 'BMP']:
                 new_sensor.device_type = 'presssensor'

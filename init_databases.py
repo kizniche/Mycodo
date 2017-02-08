@@ -31,7 +31,7 @@ import errno
 
 import sqlalchemy
 
-from mycodo.config import SQL_DATABASE_USER, SQL_DATABASE_NOTE, SQL_DATABASE_MYCODO
+from mycodo.config import SQL_DATABASE_MYCODO_5
 from mycodo.databases.users_db.models import Users
 from mycodo.databases.utils import session_scope
 from mycodo.scripts.utils import test_username, test_password, is_email, query_yes_no
@@ -39,9 +39,7 @@ from mycodo.scripts.utils import test_username, test_password, is_email, query_y
 if sys.version[0] == "3":
     raw_input = input  # Make sure this works in PY3
 
-USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
-NOTES_DB_PATH = 'sqlite:///' + SQL_DATABASE_NOTE
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
 
 
 def add_user(admin=False):
@@ -78,7 +76,7 @@ def add_user(admin=False):
 
     new_user.user_theme = 'slate'
     try:
-        with session_scope(USER_DB_PATH) as db_session:
+        with session_scope(MYCODO_DB_PATH) as db_session:
             db_session.add(new_user)
         sys.exit(0)
     except sqlalchemy.exc.OperationalError:
@@ -93,7 +91,7 @@ def add_user(admin=False):
 def delete_user(username):
     if query_yes_no("Confirm delete user '{}' from user database.".format(username)):
         try:
-            with session_scope(USER_DB_PATH) as db_session:
+            with session_scope(MYCODO_DB_PATH) as db_session:
                 user = db_session.query(Users).filter(Users.user_name == username).one()
                 db_session.delete(user)
                 print("User deleted.")
@@ -106,7 +104,7 @@ def delete_user(username):
 def change_password(username):
     print('Changing password for {}'.format(username))
 
-    with session_scope(USER_DB_PATH) as db_session:
+    with session_scope(MYCODO_DB_PATH) as db_session:
         user = db_session.query(Users).filter(Users.user_name == username).one()
 
         while True:
@@ -137,37 +135,25 @@ def create_dbs(db_name, create_all=False, config=None, exit_when_done=True):
 
     :return: None
     """
-    user_db_path = config.SQL_DATABASE_USER if config and hasattr(config, 'SQL_DATABASE_USER') else SQL_DATABASE_USER
+    db_path = config.SQL_DATABASE_MYCODO_5 if config and hasattr(config, 'SQL_DATABASE_MYCODO_5') else SQL_DATABASE_MYCODO_5
     mycodo_db_uri = config.MYCODO_DB_PATH if config and hasattr(config, 'MYCODO_DB_PATH') else MYCODO_DB_PATH
-    notes_db_uri = config.NOTES_DB_PATH if config and hasattr(config, 'NOTES_DB_PATH') else NOTES_DB_PATH
-    user_db_uri = config.USER_DB_PATH if config and hasattr(config, 'USER_DB_PATH') else USER_DB_PATH
+    # notes_db_uri = config.NOTES_DB_PATH if config and hasattr(config, 'NOTES_DB_PATH') else NOTES_DB_PATH
+    # user_db_uri = config.USER_DB_PATH if config and hasattr(config, 'USER_DB_PATH') else USER_DB_PATH
 
-    if not os.path.exists(os.path.dirname(user_db_path)):
+    if not os.path.exists(os.path.dirname(db_path)):
         try:
-            os.makedirs(os.path.dirname(user_db_path))
+            os.makedirs(os.path.dirname(db_path))
         except OSError as exc:  # Guard against race condition
             if exc.errno != errno.EEXIST:
                 raise
 
-    if db_name == 'mycodo' or create_all:
-        logging.debug("Creating/verifying mycodo.db at {} ...".format(mycodo_db_uri))
-
-        from mycodo.databases.mycodo_db import init_db
-        from mycodo.databases.mycodo_db import populate_db
-        init_db(mycodo_db_uri)
-        populate_db(mycodo_db_uri)
-
-    if db_name == 'notes' or create_all:
-        logging.debug("Creating/verifying notes.db at {} ...".format(notes_db_uri))
-
-        from mycodo.databases.notes_db import init_db
-        init_db(notes_db_uri)
-
-    if db_name == 'users' or create_all:
-        logging.debug("Creating/verifying users.db at {} ...".format(user_db_uri))
-
-        from mycodo.databases.users_db import init_db
-        init_db(user_db_uri)
+    # if db_name == 'mycodo' or create_all:
+    #     logging.debug("Creating/verifying mycodo_5.db at {} ...".format(mycodo_db_uri))
+    #
+    #     from mycodo.databases.mycodo_db import init_db
+    #     from mycodo.databases.mycodo_db import populate_db
+    #     init_db(mycodo_db_uri)
+    #     populate_db(mycodo_db_uri)
 
     if exit_when_done:
         sys.exit(0)

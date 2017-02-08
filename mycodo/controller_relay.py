@@ -27,12 +27,7 @@ from utils.send_data import send_email
 from utils.system_pi import cmd_output
 
 # Config
-from config import (
-    SQL_DATABASE_MYCODO,
-    MAX_AMPS
-)
-
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+from config import MAX_AMPS
 
 
 class RelayController(threading.Thread):

@@ -27,12 +27,6 @@ def test_create_dbs_mycodo_db(db_config):
     assert os.path.isfile(uri_to_path(db_config.MYCODO_DB_PATH)), "Mycodo Database File does not exist"
     assert os.path.getsize(uri_to_path(db_config.MYCODO_DB_PATH)) > 0, "Mycodo Database File was not set up (It is empty)"
 
-    # Expect to be empty
-    assert not os.path.isfile(uri_to_path(db_config.NOTES_DB_PATH)), "Notes Database File exists"
-
-    # Expect to be empty
-    assert not os.path.isfile(uri_to_path(db_config.USER_DB_PATH)), "Users Database File exists"
-
 
 def test_create_dbs_notes_db(db_config):
     """ only create the notes_db """
@@ -41,12 +35,6 @@ def test_create_dbs_notes_db(db_config):
     assert os.path.isfile(uri_to_path(db_config.NOTES_DB_PATH)), "Database File does not exist"
     assert os.path.getsize(uri_to_path(db_config.NOTES_DB_PATH)) > 0, "Database File was not set up (It is empty)"
 
-    # Expect to be empty
-    assert not os.path.isfile(uri_to_path(db_config.MYCODO_DB_PATH)), "Notes Database File exist"
-
-    # Expect to be empty
-    assert not os.path.isfile(uri_to_path(db_config.USER_DB_PATH)), "Users Database File exists"
-
 
 def test_create_dbs_users_db(db_config):
     """ only create the mycodo_db """
@@ -54,9 +42,3 @@ def test_create_dbs_users_db(db_config):
     create_dbs('users', config=db_config, exit_when_done=False)
     assert os.path.isfile(uri_to_path(db_config.USER_DB_PATH)), "Users Database File does not exist"
     assert os.path.getsize(uri_to_path(db_config.USER_DB_PATH)) > 0, "Users Database File was not set up (It is empty)"
-
-    # Expect to be empty
-    assert not os.path.isfile(uri_to_path(db_config.MYCODO_DB_PATH)), "Mycodo Database File exist"
-
-    # Expect to be empty
-    assert not os.path.isfile(uri_to_path(db_config.NOTES_DB_PATH)), "Notes Database File exists"

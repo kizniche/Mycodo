@@ -32,7 +32,6 @@ import csv
 import logging
 import resource
 import RPi.GPIO as GPIO
-import sys
 import threading
 import time
 import timeit
@@ -77,14 +76,11 @@ from mycodo.config import (
     LOCK_FILE_TIMELAPSE,
     MYCODO_VERSION,
     SQL_DATABASE_MYCODO_5,
-    SQL_DATABASE_MYCODO,
-    SQL_DATABASE_USER,
     STATS_CSV,
     STATS_INTERVAL
 )
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
-USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
 
 
 class ComThread(threading.Thread):

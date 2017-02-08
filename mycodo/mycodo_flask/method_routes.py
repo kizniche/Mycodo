@@ -225,8 +225,6 @@ def method_builder(method_type, method_id):
             if not form_fail:
                 return redirect('/method-build/{}/{}'.format(
                     method_type, method_id))
-            else:
-                flash(gettext("Could not create method"), "error")
 
         method = Method.query
 

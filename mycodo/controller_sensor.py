@@ -58,10 +58,7 @@ from utils.send_data import send_email
 from utils.system_pi import cmd_output
 
 # Config
-from config import (
-    SQL_DATABASE_MYCODO_5,
-    INSTALL_DIRECTORY
-)
+from config import SQL_DATABASE_MYCODO_5
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
 

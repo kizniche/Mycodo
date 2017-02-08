@@ -106,6 +106,7 @@ def register_extensions(_app, config):
     force_https = True
     from databases.utils import session_scope
     with session_scope(_app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
+        # TODO: More specific exception or remove try
         try:
             misc = new_session.query(Misc).first()
             force_https = misc.force_https
