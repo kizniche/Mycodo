@@ -117,12 +117,8 @@ class ProdConfig(object):
 
 class TestConfig(object):
     """ Testing Configuration """
-    SQL_DATABASE_USER = ''  # defined later when tests run
     SQL_DATABASE_MYCODO = ''  # defined later when tests run
-    SQL_DATABASE_NOTE = ''  # defined later when tests run
     MYCODO_DB_PATH = ''  # defined later when tests run
-    NOTES_DB_PATH = ''  # defined later when tests run
-    USER_DB_PATH = ''  # defined later when tests run
 
     TESTING = True
     DEBUG = True

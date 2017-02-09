@@ -1077,7 +1077,7 @@ class ModSensorConditional(Form):
     Period = DecimalField(
         lazy_gettext('Period (sec)'),
         validators=[validators.NumberRange(
-            min=0
+            min=0.0
         )]
     )
     MeasureType = StringField(lazy_gettext('Measurement Type'))

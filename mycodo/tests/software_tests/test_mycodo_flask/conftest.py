@@ -51,7 +51,7 @@ def testapp(app):
     :param app: flask app
     :return: webtest.TestApp
     """
-    create_admin_user(app.config['USER_DB_PATH'])
+    create_admin_user(app.config['MYCODO_DB_PATH'])
     return TestApp(app)
 
 
@@ -86,7 +86,7 @@ def login_user(app, username, password):
 @pytest.yield_fixture()
 def user_db(app):
     """ creates a session to the user db """
-    with session_scope(app.config['USER_DB_PATH']) as session:
+    with session_scope(app.config['MYCODO_DB_PATH']) as session:
         yield session
 
 

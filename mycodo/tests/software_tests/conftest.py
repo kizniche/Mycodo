@@ -47,10 +47,10 @@ def mycodo_db_uri(tmp_file):
     return ''.join(['sqlite:///', tmp_file, '_mycodo_db'])
 
 
-def create_admin_user(user_db_uri):
+def create_admin_user(mycodo_db_uri):
     """ mycodo_flask exits if there is no user called admin. So we create one """
 
-    with session_scope(user_db_uri) as db_session:
+    with session_scope(mycodo_db_uri) as db_session:
         if not db_session.query(Users).filter_by(user_restriction='admin').count():
             logging.info("--> Creating new 'test' user as an admin")
             db_session.add(Users(user_name='test', user_restriction='admin'))
