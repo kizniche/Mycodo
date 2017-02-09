@@ -79,6 +79,8 @@ class PIDController(threading.Thread):
         self.thread_shutdown_timer = 0
         self.ready = ready
         self.pid_id = pid_id
+        self.pid_unique_id = db_retrieve_table_daemon(
+            PID, device_id=self.pid_id).unique_id
         self.control = DaemonControl()
 
         self.control_variable = 0
@@ -151,7 +153,7 @@ class PIDController(threading.Thread):
                             # Update setpoint if a method is selected
                             if self.method_id != '':
                                 self.calculate_method_setpoint(self.method_id)
-                            write_influxdb_setpoint(self.pid_id, self.set_point)
+                            write_influxdb_setpoint(self.pid_unique_id, self.set_point)
                             # Update PID and get control variable
                             self.control_variable = self.update(self.last_measurement)
 
@@ -181,6 +183,8 @@ class PIDController(threading.Thread):
         self.is_held = pid.is_held
         self.is_paused = pid.is_paused
         self.sensor_id = pid.sensor_id
+        self.sensor_unique_id = db_retrieve_table_daemon(
+            Sensor, device_id=self.sensor_id).unique_id
         self.measurement = pid.measurement
         self.method_id = pid.method_id
         self.direction = pid.direction
@@ -258,7 +262,7 @@ class PIDController(threading.Thread):
             else:
                 duration = int(self.sensor_duration*1.5)
             self.last_measurement = read_last_influxdb(
-                self.sensor_id,
+                self.sensor_unique_id,
                 self.measurement,
                 duration)
             if self.last_measurement:

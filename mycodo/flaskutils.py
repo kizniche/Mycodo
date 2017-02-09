@@ -633,16 +633,16 @@ def activate_deactivate_controller(controller_action,
     try:
         if controller_type == 'LCD':
             mod_controller = LCD.query.filter(
-                LCD.id == controller_id).first()
+                LCD.id == int(controller_id)).first()
         elif controller_type == 'PID':
             mod_controller = PID.query.filter(
-                PID.id == controller_id).first()
+                PID.id == int(controller_id)).first()
         elif controller_type == 'Sensor':
             mod_controller = Sensor.query.filter(
-                Sensor.id == controller_id).first()
+                Sensor.id == int(controller_id)).first()
         elif controller_type == 'Timer':
             mod_controller = Timer.query.filter(
-                Timer.id == controller_id).first()
+                Timer.id == int(controller_id)).first()
         mod_controller.is_activated = activated
         db.session.commit()
 
@@ -663,10 +663,10 @@ def activate_deactivate_controller(controller_action,
         control = DaemonControl()
         if controller_action == 'activate':
             return_values = control.activate_controller(controller_type,
-                                                        controller_id)
+                                                        int(controller_id))
         else:
             return_values = control.deactivate_controller(controller_type,
-                                                          controller_id)
+                                                          int(controller_id))
         if return_values[0]:
             flash("{err}".format(err=return_values[1]), "error")
         else:
