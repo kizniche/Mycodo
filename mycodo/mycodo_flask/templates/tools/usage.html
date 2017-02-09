@@ -21,7 +21,7 @@
         </tr>
         {% if display_order -%}
           {%- for order in display_order -%}
-            {%- for each_relay in relay if each_relay.id in order -%}
+            {%- for each_relay in relay if each_relay.id == order -%}
               {% for key, value in relay_each_duration.iteritems() if key == each_relay.id -%}
                 <tr>
                   <td>{{each_relay.id}}</td>

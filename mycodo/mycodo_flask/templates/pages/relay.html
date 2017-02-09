@@ -119,15 +119,15 @@
 
         <div style="padding: 0.5em 0 0.25em 0" class="form-inline">
           <div class="form-group">
-            {{form_mod_relay.name.label(class_='control-label')}}
+            <label class="control-label">Relay ID</label>
             <div>
-              {{form_mod_relay.name(class_='form-control', value=each_relay.name, **{'title':_('Name for this Relay')})}}
+              <input class="form-control" title="UUID: {{each_relay.unique_id}}" disabled="" value="{{each_relay.id}}" type="text">
             </div>
           </div>
           <div class="form-group">
-            <label class="control-label">Relay ID</label>
+            {{form_mod_relay.name.label(class_='control-label')}}
             <div>
-              <input class="form-control" disabled="" value="{{each_relay.id}}" type="text">
+              {{form_mod_relay.name(class_='form-control', value=each_relay.name, **{'title':_('Name for this Relay')})}}
             </div>
           </div>
           <div class="form-group">

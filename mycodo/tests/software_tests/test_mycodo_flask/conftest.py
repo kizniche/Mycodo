@@ -21,12 +21,8 @@ def build_single_use_config(db_config):
     that get deleted when test ends
     """
     config = TestConfig
-    config.SQL_DATABASE_USER = db_config.SQL_DATABASE_USER
     config.SQL_DATABASE_MYCODO = db_config.SQL_DATABASE_MYCODO
-    config.SQL_DATABASE_NOTE = db_config.SQL_DATABASE_NOTE
     config.MYCODO_DB_PATH = db_config.MYCODO_DB_PATH
-    config.NOTES_DB_PATH = db_config.NOTES_DB_PATH
-    config.USER_DB_PATH = db_config.USER_DB_PATH
     return config
 
 

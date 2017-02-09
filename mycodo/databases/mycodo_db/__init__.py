@@ -25,7 +25,18 @@ import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from .models import Base, AlembicVersion, DisplayOrder, Method, Misc, CameraTimelapse, CameraStream, CameraStill, SMTP, Remote
+from .models_5 import (
+    db,
+    AlembicVersion,
+    DisplayOrder,
+    Method,
+    Misc,
+    CameraTimelapse,
+    CameraStream,
+    CameraStill,
+    SMTP,
+    Remote
+)
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +72,7 @@ def init_db(db_uri):
     :return: None
     """
     engine = create_engine(db_uri)
-    Base.metadata.create_all(engine)
+    db.Model.metadata.create_all(engine)
 
 
 def drop_db(db_uri):
@@ -71,7 +82,7 @@ def drop_db(db_uri):
     :return: None
     """
     engine = create_engine(db_uri)
-    Base.metadata.drop_all(engine)
+    db.Model.metadata.drop_all(engine)
 
 
 def populate_db(db_path):
@@ -84,69 +95,12 @@ def populate_db(db_path):
     Session = sessionmaker(bind=engine)
     session = Session()
     try:
-        alembic_version = AlembicVersion(version_num='6a5508a5f078')
-        insert_or_ignore(alembic_version, session)
-
-        initial_displayorder = DisplayOrder(id='0',
-                                            graph='',
-                                            pid='',
-                                            relay='',
-                                            sensor='')
-        insert_or_ignore(initial_displayorder, session)
-
-        initial_cameratimelapse = CameraTimelapse(id='0',
-                                                  relay_id='',
-                                                  path='/var/www/mycodo/camera-timelapse',
-                                                  prefix='Timelapse',
-                                                  file_timestamp=1,
-                                                  display_last=1,
-                                                  cmd_pre_camera='',
-                                                  cmd_post_camera='',
-                                                  extra_parameters='--nopreview --contrast 20 --sharpness 60 --awb auto --quality 20 --vflip --hflip --width 800 --height 600')
-        insert_or_ignore(initial_cameratimelapse, session)
-
-        initial_camerastill = CameraStill(id='0',
-                                          hflip=False,
-                                          vflip=False,
-                                          rotation=0,
-                                          relay_id='',
-                                          timestamp=1,
-                                          display_last=1,
-                                          cmd_pre_camera='',
-                                          cmd_post_camera='',
-                                          extra_parameters='--vflip --hflip --width 800 --height 600')
-        insert_or_ignore(initial_camerastill, session)
-
-        initial_camerastream = CameraStream(id='0',
-                                            relay_id='',
-                                            cmd_pre_camera='',
-                                            cmd_post_camera='',
-                                            extra_parameters='--contrast 20 --sharpness 60 --awb auto --quality 20 --vflip --hflip --nopreview --width 800 --height 600')
-        insert_or_ignore(initial_camerastream, session)
-
-        initial_misc = Misc(id='0',
-                            language=None,
-                            force_https=True,
-                            dismiss_notification=0,
-                            hide_alert_success=False,
-                            hide_alert_info=False,
-                            hide_alert_warning=False,
-                            stats_opt_out=False,
-                            login_message='',
-                            relay_stats_volts=120,
-                            relay_stats_cost=0.05,
-                            relay_stats_currency="$",
-                            relay_stats_dayofmonth=15)
-        insert_or_ignore(initial_misc, session)
-
-        initial_smtp_values = SMTP(id='0',
-                                   host='smtp.gmail.com',
-                                   ssl=1,
-                                   port=465,
-                                   user='email@gmail.com',
-                                   passw='password',
-                                   email_from='email@gmail.com',
-                                   hourly_max=2)
-        insert_or_ignore(initial_smtp_values, session)
+        insert_or_ignore(AlembicVersion(), session)
+        insert_or_ignore(DisplayOrder(id=1), session)
+        insert_or_ignore(CameraTimelapse(id=1), session)
+        insert_or_ignore(CameraStill(id=1), session)
+        insert_or_ignore(CameraStream(id=1), session)
+        insert_or_ignore(Misc(id=1), session)
+        insert_or_ignore(SMTP(id=1), session)
     finally:
         session.close()

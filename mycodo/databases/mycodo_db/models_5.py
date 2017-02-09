@@ -5,9 +5,6 @@ import uuid
 from flask_sqlalchemy import SQLAlchemy
 from RPi import GPIO
 
-from sqlalchemy import types
-from sqlalchemy.dialects.mysql.base import MSBinary
-
 from mycodo.config import ALEMBIC_VERSION
 
 db = SQLAlchemy()
@@ -164,7 +161,7 @@ class MethodData(db.Model):
     method_id = db.Column(db.Integer, db.ForeignKey('method.id'), default=None)
     time_start = db.Column(db.Text, default=None)
     time_end = db.Column(db.Text, default=None)
-    duration_sec = db.Column(db.Integer, default=None)
+    duration_sec = db.Column(db.Float, default=None)
     relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)
     relay_state = db.Column(db.Text, default=None)
     relay_duration = db.Column(db.Float, default=None)
@@ -225,11 +222,11 @@ class PID(db.Model):
     integrator_min = db.Column(db.Float, default=-100.0)
     integrator_max = db.Column(db.Float, default=100.0)
     raise_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to raise the condition
-    raise_min_duration = db.Column(db.Integer, default=0)
-    raise_max_duration = db.Column(db.Integer, default=0)
+    raise_min_duration = db.Column(db.Float, default=0.0)
+    raise_max_duration = db.Column(db.Float, default=0.0)
     lower_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to lower the condition
-    lower_min_duration = db.Column(db.Integer, default=0)
-    lower_max_duration = db.Column(db.Integer, default=0)
+    lower_min_duration = db.Column(db.Float, default=0.0)
+    lower_max_duration = db.Column(db.Float, default=0.0)
 
 
 class Relay(db.Model):
@@ -374,7 +371,7 @@ class SensorConditional(db.Model):
     name = db.Column(db.Text, default='Sensor Cond')
     is_activated = db.Column(db.Integer, default=False)
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'), default=None)
-    period = db.Column(db.Integer, default=60)
+    period = db.Column(db.Float, default=60.0)
     measurement = db.Column(db.Text, default='')  # which measurement to monitor
     edge_select = db.Column(db.Text, default='edge')  # monitor Rising, Falling, or Both switch edges
     edge_detected = db.Column(db.Text, default='rising')

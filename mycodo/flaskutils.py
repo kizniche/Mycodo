@@ -1657,6 +1657,7 @@ def sensor_add(form_add_sensor):
                 elif form_add_sensor.sensor.data == 'RPi':
                     new_sensor.location = 'RPi'
                 elif form_add_sensor.sensor.data == 'TMP006':
+                    new_sensor.measurements = 'temperature_object,temperature_die'
                     new_sensor.location = '0x40'
 
             # Temperature/Humidity
@@ -1664,7 +1665,7 @@ def sensor_add(form_add_sensor):
                                                  'HTU21D', 'SHT1x_7x',
                                                  'SHT2x']:
                 new_sensor.device_type = 'htsensor'
-                new_sensor.measurements = 'humidity,temperature'
+                new_sensor.measurements = 'dewpoint,humidity,temperature'
                 if form_add_sensor.sensor.data == 'AM2315':
                     new_sensor.location = '0x5c'
                 elif form_add_sensor.sensor.data == 'HTU21D':
@@ -1675,7 +1676,7 @@ def sensor_add(form_add_sensor):
             # Chirp moisture sensor
             elif form_add_sensor.sensor.data == 'CHIRP':
                 new_sensor.device_type = 'moistsensor'
-                new_sensor.measurements = 'moisture'
+                new_sensor.measurements = 'lux,moisture,temperature'
                 new_sensor.location = '0x20'
 
             # CO2
@@ -1687,10 +1688,11 @@ def sensor_add(form_add_sensor):
             # Pressure
             elif form_add_sensor.sensor.data in ['BME280', 'BMP']:
                 new_sensor.device_type = 'presssensor'
-                new_sensor.measurements = 'altitude,pressure,temperature'
                 if form_add_sensor.sensor.data == 'BME280':
+                    new_sensor.measurements = 'altitude,humidity,pressure,temperature'
                     new_sensor.location = '0x76'
                 elif form_add_sensor.sensor.data == 'BMP':
+                    new_sensor.measurements = 'altitude,pressure,temperature'
                     new_sensor.location = '0x77'
 
             # Light
@@ -1758,7 +1760,8 @@ def sensor_mod(form_mod_sensor):
                 "Choose a Read Period equal to or greater than 7. The "
                 "AM2315 may become unresponsive if the period is "
                 "below 7."))
-        if form_mod_sensor.modPeriod.data < mod_sensor.pre_relay_duration:
+        if ((form_mod_sensor.modPeriod.data < mod_sensor.pre_relay_duration) and
+                mod_sensor.pre_relay_duration):
             error.append(gettext(
                 "The Read Period cannot be less than the Pre-Relay "
                 "Duration"))
@@ -1786,7 +1789,7 @@ def sensor_mod(form_mod_sensor):
             mod_sensor.pre_relay_duration = form_mod_sensor.modPreRelayDuration.data
             mod_sensor.period = form_mod_sensor.modPeriod.data
             mod_sensor.sht_clock_pin = form_mod_sensor.modSHTClockPin.data
-            mod_sensor.sht_voltage = float(form_mod_sensor.modSHTVoltage.data)
+            mod_sensor.sht_voltage = form_mod_sensor.modSHTVoltage.data
             db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
@@ -2561,3 +2564,40 @@ def reorder_list(modified_list, item, direction):
         return 'error', []
     modified_list.insert(to_position, modified_list.pop(from_position))
     return 'success', modified_list
+
+
+def test_sql():
+    try:
+        num_entries = 1000000
+        factor_info = 25000
+        PID.query.delete()
+        db.session.commit()
+        logger.error("Starting SQL uuid generation test: "
+                     "{n} entries...".format(n=num_entries))
+        before_count = PID.query.count()
+        run_times = []
+        a = datetime.now()
+        for x in xrange(1, num_entries + 1):
+            db.session.add(PID())
+            if x % factor_info == 0:
+                db.session.commit()
+                after_count = PID.query.count()
+                b = datetime.now()
+                run_times.append(float((b - a).total_seconds()))
+                logger.error("Run Time: {time:.2f} sec, "
+                             "New entries: {new}, "
+                             "Total entries: {tot}".format(
+                                time=run_times[-1],
+                                new=after_count - before_count,
+                                tot=PID.query.count()))
+                before_count = PID.query.count()
+                a = datetime.now()
+        avg_run_time = sum(run_times) / float(len(run_times))
+        logger.error("Finished. Total: {tot} entries. "
+                     "Averages: {avg:.2f} sec, "
+                     "{epm:.2f} entries/min".format(
+                        tot=PID.query.count(),
+                        avg=avg_run_time,
+                        epm=(factor_info / avg_run_time) * 60.0))
+    except Exception as msg:
+        logger.error("Error creating entries: {err}".format(err=msg))

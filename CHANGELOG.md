@@ -2,7 +2,8 @@
 
 ### Miscellaneous
 
-  - Move to using flask sqlalchemy in flask app (frontend)
+  - Database restructuring
+  - Move from using sqlalchemy to flask sqlalchemy
 
 ## 4.1.17 (Unreleased)
 

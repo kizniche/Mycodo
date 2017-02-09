@@ -22,8 +22,6 @@
 #
 #  Contact at kylegabriel.com
 
-# Debug messages to debug console
-from __future__ import print_function  # In python 2.7
 import os
 
 from flask import (
@@ -31,7 +29,6 @@ from flask import (
     request
 )
 from flask_babel import Babel
-# from flask_sqlalchemy import SQLAlchemy
 from flask_sslify import SSLify
 
 # Classes

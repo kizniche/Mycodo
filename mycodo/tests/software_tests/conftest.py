@@ -31,17 +31,12 @@ def tmp_file():
 
 
 @pytest.fixture()
-def db_config(tmp_file, mycodo_db_uri, user_db_uri, notes_db_uri):
+def db_config(mycodo_db_uri):
     """ Creates a config object to setup and databases during tests """
 
     class Config(object):
-        SQL_DATABASE_USER = tmp_file
         SQL_DATABASE_MYCODO = uri_to_path(mycodo_db_uri)
-        SQL_DATABASE_NOTE = uri_to_path(notes_db_uri)
-
         MYCODO_DB_PATH = mycodo_db_uri
-        NOTES_DB_PATH = notes_db_uri
-        USER_DB_PATH = user_db_uri
 
     return Config
 
@@ -50,18 +45,6 @@ def db_config(tmp_file, mycodo_db_uri, user_db_uri, notes_db_uri):
 def mycodo_db_uri(tmp_file):
     """ returns the sqlalchemy URI as the MYCODO_DB_PATH """
     return ''.join(['sqlite:///', tmp_file, '_mycodo_db'])
-
-
-@pytest.fixture()
-def user_db_uri(tmp_file):
-    """ returns the sqlalchemy URI as the USER_DB_PATH """
-    return ''.join(['sqlite:///', tmp_file, '_user_db'])
-
-
-@pytest.fixture()
-def notes_db_uri(tmp_file):
-    """ returns the sqlalchemy URI as the USER_DB_PATH """
-    return ''.join(['sqlite:///', tmp_file, '_notes_db'])
 
 
 def create_admin_user(user_db_uri):

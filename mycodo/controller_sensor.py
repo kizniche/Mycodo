@@ -713,7 +713,7 @@ class SensorController(threading.Thread):
                 rising_or_falling = -1  # Falling edge detected
             write_db = threading.Thread(
                 target=write_influxdb_value,
-                args=(self.sensor_id, 'edge', rising_or_falling,))
+                args=(self.unique_id, 'edge', rising_or_falling,))
             write_db.start()
 
             # Check sensor conditionals

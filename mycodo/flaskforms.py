@@ -579,7 +579,7 @@ class ModLCD(Form):
                 max=8
             )]
     )
-    modPeriod = IntegerField(
+    modPeriod = DecimalField(
         lazy_gettext('Period (seconds)'),
         render_kw={"placeholder": lazy_gettext("Period")},
         validators=[validators.NumberRange(
@@ -729,12 +729,12 @@ class ModPID(Form):
         ],
         validators=[DataRequired()]
     )
-    modPeriod = IntegerField(
+    modPeriod = DecimalField(
         lazy_gettext('Period (seconds)'),
         render_kw={"placeholder": lazy_gettext("Period")},
         validators=[validators.NumberRange(
-            min=5,
-            max=86400,
+            min=5.0,
+            max=86400.0,
             message=lazy_gettext("Duration between calculating PID output "
                                  "and applying to regulation must be between "
                                  "5 and 86400 seconds.")
@@ -1038,12 +1038,12 @@ class ModSensor(Form):
             max=86400
         )]
     )
-    modPeriod = IntegerField(
+    modPeriod = DecimalField(
         lazy_gettext('Read Period (seconds)'),
         validators=[DataRequired(),
                     validators.NumberRange(
-            min=5,
-            max=86400
+            min=5.0,
+            max=86400.0
         )]
     )
     modSHTClockPin = IntegerField(
@@ -1074,7 +1074,7 @@ class ModSensorConditional(Form):
     modCondSensor_id = HiddenField(u'Conditional ID')
     modSensor_id = HiddenField(lazy_gettext('Sensor ID'))
     modCondName = StringField(lazy_gettext('Name'))
-    Period = IntegerField(
+    Period = DecimalField(
         lazy_gettext('Period (sec)'),
         validators=[validators.NumberRange(
             min=0

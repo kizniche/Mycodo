@@ -32,7 +32,7 @@ import errno
 import sqlalchemy
 
 from mycodo.config import SQL_DATABASE_MYCODO_5
-from mycodo.databases.users_db.models import Users
+from mycodo.databases.mycodo_db.models_5 import Users
 from mycodo.databases.utils import session_scope
 from mycodo.scripts.utils import test_username, test_password, is_email, query_yes_no
 
@@ -137,8 +137,6 @@ def create_dbs(db_name, create_all=False, config=None, exit_when_done=True):
     """
     db_path = config.SQL_DATABASE_MYCODO_5 if config and hasattr(config, 'SQL_DATABASE_MYCODO_5') else SQL_DATABASE_MYCODO_5
     mycodo_db_uri = config.MYCODO_DB_PATH if config and hasattr(config, 'MYCODO_DB_PATH') else MYCODO_DB_PATH
-    # notes_db_uri = config.NOTES_DB_PATH if config and hasattr(config, 'NOTES_DB_PATH') else NOTES_DB_PATH
-    # user_db_uri = config.USER_DB_PATH if config and hasattr(config, 'USER_DB_PATH') else USER_DB_PATH
 
     if not os.path.exists(os.path.dirname(db_path)):
         try:
@@ -147,13 +145,12 @@ def create_dbs(db_name, create_all=False, config=None, exit_when_done=True):
             if exc.errno != errno.EEXIST:
                 raise
 
-    # if db_name == 'mycodo' or create_all:
-    #     logging.debug("Creating/verifying mycodo_5.db at {} ...".format(mycodo_db_uri))
-    #
-    #     from mycodo.databases.mycodo_db import init_db
-    #     from mycodo.databases.mycodo_db import populate_db
-    #     init_db(mycodo_db_uri)
-    #     populate_db(mycodo_db_uri)
+    if db_name == 'mycodo' or create_all:
+        logging.debug("Creating/verifying mycodo_5.db at {} ...".format(mycodo_db_uri))
+        from mycodo.databases.mycodo_db import init_db
+        from mycodo.databases.mycodo_db import populate_db
+        init_db(mycodo_db_uri)
+        populate_db(mycodo_db_uri)
 
     if exit_when_done:
         sys.exit(0)
