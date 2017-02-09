@@ -985,7 +985,7 @@ def lcd_mod(form_mod_lcd):
             mod_lcd = LCD.query.filter(
                 LCD.id == form_mod_lcd.modLCD_id.data).first()
             mod_lcd.name = form_mod_lcd.modName.data
-            mod_lcd.pin = form_mod_lcd.modPin.data
+            mod_lcd.location = form_mod_lcd.modLocation.data
             mod_lcd.multiplexer_address = form_mod_lcd.modMultiplexAddress.data
             mod_lcd.multiplexer_channel = form_mod_lcd.modMultiplexChannel.data
             mod_lcd.period = form_mod_lcd.modPeriod.data

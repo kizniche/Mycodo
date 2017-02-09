@@ -32,7 +32,7 @@ def db_retrieve_table(table, entry=None, device_id=None):
     return return_table
 
 
-def db_retrieve_table_daemon(table, entry=None, device_id=None):
+def db_retrieve_table_daemon(table, entry=None, device_id=None, unique_id=None):
     """
     Return SQL database query object with optional filtering
     If entry='first', only the first table entry is returned.
@@ -43,11 +43,14 @@ def db_retrieve_table_daemon(table, entry=None, device_id=None):
     with session_scope(MYCODO_DB_PATH) as new_session:
         if device_id:
             return_table = new_session.query(table).filter(
-                table.id == device_id)
+                table.id == int(device_id))
+        elif unique_id:
+            return_table = new_session.query(table).filter(
+                table.unique_id == unique_id)
         else:
             return_table = new_session.query(table)
 
-        if entry == 'first' or device_id:
+        if entry == 'first' or device_id or unique_id:
             return_table = return_table.first()
         elif entry == 'all':
             return_table = return_table.all()

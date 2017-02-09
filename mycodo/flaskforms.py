@@ -561,7 +561,7 @@ class ModLCD(Form):
         render_kw={"placeholder": lazy_gettext("Name")},
         validators=[DataRequired()]
     )
-    modPin = StringField(
+    modLocation = StringField(
         lazy_gettext('I2C Address'),
         render_kw={"placeholder": lazy_gettext("I2C Address")},
         validators=[DataRequired()]

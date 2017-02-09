@@ -100,11 +100,10 @@ class LCDController(threading.Thread):
         self.lcd_id = lcd_id
 
         try:
-            lcd = db_retrieve_table_daemon(LCD,
-                                    device_id=self.lcd_id)
+            lcd = db_retrieve_table_daemon(LCD, device_id=self.lcd_id)
 
             self.lcd_name = lcd.name
-            self.lcd_pin = lcd.pin
+            self.lcd_location = lcd.location
             self.lcd_period = lcd.period
             self.lcd_x_characters = lcd.x_characters
             self.lcd_y_lines = lcd.y_lines
@@ -143,7 +142,7 @@ class LCDController(threading.Thread):
                     elif lcd.line_1_measurement in list_relays:
                         table = Relay
                     sensor_line_1 = db_retrieve_table_daemon(
-                        table, device_id=lcd.line_1_sensor_id)
+                        table, unique_id=lcd.line_1_sensor_id)
                     self.lcd_line[1]['name'] = sensor_line_1.name
                     if 'time' in lcd.line_1_measurement:
                         self.lcd_line[1]['measurement'] = 'time'
@@ -159,7 +158,7 @@ class LCDController(threading.Thread):
                     elif lcd.line_2_measurement in list_relays:
                         table = Relay
                     sensor_line_2 = db_retrieve_table_daemon(
-                        table, device_id=lcd.line_2_sensor_id)
+                        table, unique_id=lcd.line_2_sensor_id)
                     self.lcd_line[2]['name'] = sensor_line_2.name
                     if 'time' in lcd.line_2_measurement:
                         self.lcd_line[2]['measurement'] = 'time'
@@ -176,7 +175,7 @@ class LCDController(threading.Thread):
                     elif lcd.line_3_measurement in list_relays:
                         table = Relay
                     sensor_line_3 = db_retrieve_table_daemon(
-                        table, device_id=lcd.line_3_sensor_id)
+                        table, unique_id=lcd.line_3_sensor_id)
                     self.lcd_line[3]['name'] = sensor_line_3.name
                     if 'time' in lcd.line_3_measurement:
                         self.lcd_line[3]['measurement'] = 'time'
@@ -192,7 +191,7 @@ class LCDController(threading.Thread):
                     elif lcd.line_4_measurement in list_relays:
                         table = Relay
                     sensor_line_4 = db_retrieve_table_daemon(
-                        table, device_id=lcd.line_4_sensor_id)
+                        table, unique_id=lcd.line_4_sensor_id)
                     self.lcd_line[4]['name'] = sensor_line_4.name
                     if 'time' in lcd.line_4_measurement:
                         self.lcd_line[4]['measurement'] = 'time'
@@ -237,7 +236,7 @@ class LCDController(threading.Thread):
                     "Could not initialize I2C bus: {err}".format(
                         err=except_msg))
 
-            self.I2C_ADDR = int(self.lcd_pin, 16)
+            self.I2C_ADDR = int(self.lcd_location, 16)
             self.lcd_init()
             self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION),
                                   self.LCD_LINE[1])
@@ -342,7 +341,7 @@ class LCDController(threading.Thread):
                         measurement = ''
                         if self.lcd_line[i]['measurement'] == 'setpoint':
                             pid = db_retrieve_table_daemon(
-                                PID, device_id=self.lcd_line[i]['id'])
+                                PID, unique_id=self.lcd_line[i]['id'])
                             measurement = pid.measurement
                         elif self.lcd_line[i]['measurement'] in [
                                 'temperature',
@@ -395,7 +394,7 @@ class LCDController(threading.Thread):
 
     @staticmethod
     def relay_state(relay_id):
-        relay = db_retrieve_table_daemon(Relay, device_id=relay_id)
+        relay = db_retrieve_table_daemon(Relay, unique_id=relay_id)
         GPIO.setmode(GPIO.BCM)
         if GPIO.input(relay.pin) == relay.trigger:
             gpio_state = 'On'
