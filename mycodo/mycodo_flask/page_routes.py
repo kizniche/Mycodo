@@ -48,6 +48,7 @@ from mycodo.mycodo_flask.general_routes import (
     logged_in
 )
 from mycodo.devices.camera_pi import camera_record
+from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import sum_relay_usage
 from mycodo.utils.system_pi import csv_to_list_of_int
 
@@ -264,9 +265,20 @@ def page_export():
         end_time = export_options.date_range.data.split(' - ')[1]
         end_seconds = int(time.mktime(
             time.strptime(end_time, '%m/%d/%Y %H:%M')))
+
+        device_id = export_options.measurement.data.split(',')[0]
+        measurement = export_options.measurement.data.split(',')[1]
+
+        if measurement == 'duration_sec':
+            unique_id = db_retrieve_table_daemon(
+                Relay, device_id=device_id).unique_id
+        else:
+            unique_id = db_retrieve_table_daemon(
+                Sensor, device_id=device_id).unique_id
+
         url = '/export_data/{meas}/{id}/{start}/{end}'.format(
-            meas=export_options.measurement.data.split(',')[1],
-            id=export_options.measurement.data.split(',')[0],
+            meas=measurement,
+            id=unique_id,
             start=start_seconds, end=end_seconds)
         return redirect(url)
 

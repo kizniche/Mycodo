@@ -46,6 +46,7 @@ from mycodo.databases.mycodo_db.models_5 import (
     Misc,
     Relay,
     Remote,
+    Sensor,
     Users
 )
 from mycodo.devices.camera_pi import CameraStream
@@ -60,6 +61,7 @@ from mycodo.mycodo_flask.authentication_routes import (
     clear_cookie_auth,
     logged_in
 )
+from mycodo.utils.database import db_retrieve_table_daemon
 
 # Config
 from config import (
@@ -293,9 +295,9 @@ def past_data(sensor_measure, sensor_id, past_seconds):
         return '', 204
 
 
-@blueprint.route('/export_data/<sensor_measure>/<sensor_id>/<start_seconds>/<end_seconds>')
+@blueprint.route('/export_data/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')
 @gzipped
-def export_data(sensor_measure, sensor_id, start_seconds, end_seconds):
+def export_data(measurement, unique_id, start_seconds, end_seconds):
     """
     Return data from start_seconds to end_seconds from influxdb.
     Used for exporting data.
@@ -308,17 +310,28 @@ def export_data(sensor_measure, sensor_id, start_seconds, end_seconds):
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
 
+    if measurement == 'duration_sec':
+        name = db_retrieve_table_daemon(
+            Relay, unique_id=unique_id).name
+    else:
+        name = db_retrieve_table_daemon(
+            Sensor, unique_id=unique_id).name
+
+    utc_offset_timedelta = datetime.datetime.utcnow() - datetime.datetime.now()
     start = datetime.datetime.fromtimestamp(float(start_seconds))
+    start += utc_offset_timedelta
     start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
     end = datetime.datetime.fromtimestamp(float(end_seconds))
+    end += utc_offset_timedelta
     end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
     raw_data = dbcon.query("""SELECT value
                               FROM {}
                               WHERE device_id='{}'
                                     AND time >= '{}'
                                     AND time <= '{}'
-                           """.format(sensor_measure,
-                                      sensor_id,
+                           """.format(measurement,
+                                      unique_id,
                                       start_str,
                                       end_str)).raw
     if not raw_data:
@@ -327,8 +340,8 @@ def export_data(sensor_measure, sensor_id, start_seconds, end_seconds):
     def iter_csv(data_in):
         line = StringIO.StringIO()
         writer = csv.writer(line)
-        writer.writerow(('timestamp', '{id}-{meas}'.format(
-            id=sensor_id, meas=sensor_measure)))
+        writer.writerow(('timestamp (UTC)', '{name} {meas} ({id})'.format(
+            name=name, meas=measurement,id=unique_id)))
         for csv_line in data_in:
             writer.writerow((csv_line[0][:-4], csv_line[1]))
             line.seek(0)
@@ -337,13 +350,13 @@ def export_data(sensor_measure, sensor_id, start_seconds, end_seconds):
 
     response = Response(iter_csv(raw_data['series'][0]['values']), mimetype='text/csv')
     response.headers['Content-Disposition'] = 'attachment; filename={id}_{meas}.csv'.format(
-        id=sensor_id, meas=sensor_measure)
+        id=unique_id, meas=measurement)
     return response
 
 
-@blueprint.route('/async/<sensor_measure>/<sensor_id>/<start_seconds>/<end_seconds>')
+@blueprint.route('/async/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')
 @gzipped
-def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
+def async_data(measurement, unique_id, start_seconds, end_seconds):
     """
     Return data from start_seconds to end_seconds from influxdb.
     Used for asynchronous graph display of many points (up to millions).
@@ -362,16 +375,16 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
         raw_data = dbcon.query("""SELECT COUNT(value)
                                   FROM {}
                                   WHERE device_id='{}'
-                               """.format(sensor_measure,
-                                          sensor_id)).raw
+                               """.format(measurement,
+                                          unique_id)).raw
         count_points = raw_data['series'][0]['values'][0][1]
         # Get the timestamp of the first point in the past year
         raw_data = dbcon.query("""SELECT value
                                   FROM {}
                                   WHERE device_id='{}'
                                         GROUP BY * LIMIT 1
-                               """.format(sensor_measure,
-                                          sensor_id)).raw
+                               """.format(measurement,
+                                          unique_id)).raw
         first_point = raw_data['series'][0]['values'][0][0]
         end = datetime.datetime.utcnow()
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -385,8 +398,8 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
                                   WHERE device_id='{}'
                                         AND time >= '{}'
                                         AND time <= '{}'
-                               """.format(sensor_measure,
-                                          sensor_id,
+                               """.format(measurement,
+                                          unique_id,
                                           start_str,
                                           end_str)).raw
         count_points = raw_data['series'][0]['values'][0][1]
@@ -397,8 +410,8 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
                                         AND time >= '{}'
                                         AND time <= '{}'
                                         GROUP BY * LIMIT 1
-                               """.format(sensor_measure,
-                                          sensor_id,
+                               """.format(measurement,
+                                          unique_id,
                                           start_str,
                                           end_str)).raw
         first_point = raw_data['series'][0]['values'][0][0]
@@ -435,8 +448,8 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
                                       WHERE device_id='{}'
                                             AND time >= '{}'
                                             AND time <= '{}' GROUP BY TIME({}s)
-                                   """.format(sensor_measure,
-                                              sensor_id,
+                                   """.format(measurement,
+                                              unique_id,
                                               start_str,
                                               end_str,
                                               group_seconds)).raw
@@ -452,8 +465,8 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
                                       WHERE device_id='{}'
                                             AND time >= '{}'
                                             AND time <= '{}'
-                                   """.format(sensor_measure,
-                                              sensor_id,
+                                   """.format(measurement,
+                                              unique_id,
                                               start_str,
                                               end_str)).raw
             return jsonify(raw_data['series'][0]['values'])

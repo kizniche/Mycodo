@@ -14,7 +14,8 @@
     {% include 'flash_messages.html' %}
 
     <p>This is an experimental log generator (work-in-progress). It will export all measurements found within the date/time range in comma-separated value (CSV) format (as timestamp, measurement). If a download doesn't begin after the Export button is pressed (i.e. the page just refreshes), that means no data was available for the selected measurement and range.</p>
-    <p>Note: Requesting large data sets may take a long time to process.</p>
+    <p>Note 1: Requesting large data sets may take a long time to process.</p>
+    <p>Note 2: Dates and times are stored in influxdb as UTC, therefore you will need to adjust to your time zone for the local time.</p>
 
     <div class="row" style="padding-top: 1em">
       <form method="post" action="/export">
