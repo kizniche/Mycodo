@@ -519,7 +519,7 @@ class ModGraph(Form):
     enableNavbar = BooleanField(lazy_gettext('Enable Navbar'))
     enableExport = BooleanField(lazy_gettext('Enable Export'))
     enableRangeSelect = BooleanField(lazy_gettext('Enable Range Selector'))
-    colors_custom = BooleanField(lazy_gettext('Enable Custom Colors'))
+    use_custom_colors = BooleanField(lazy_gettext('Enable Custom Colors'))
     Submit = SubmitField(lazy_gettext('Save Graph'))
 
 

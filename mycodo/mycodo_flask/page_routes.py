@@ -940,8 +940,8 @@ def dict_custom_colors(graph):
     color_count = OrderedDict()
     for each_graph in graph:
         # Get current saved colors
-        if each_graph.colors:  # Split into list
-            colors = each_graph.colors.split(',')
+        if each_graph.custom_colors:  # Split into list
+            colors = each_graph.custom_colors.split(',')
         else:  # Create empty list
             colors = []
         # Fill end of list with empty strings
@@ -956,9 +956,9 @@ def dict_custom_colors(graph):
         index = 0
         index_sum = 0
         total = []
-        if each_graph.sensor_ids:
-            for each_set in each_graph.sensor_ids.split(';'):
-                if (index < len(each_graph.sensor_ids.split(';')) and
+        if each_graph.sensor_ids_measurements:
+            for each_set in each_graph.sensor_ids_measurements.split(';'):
+                if (index < len(each_graph.sensor_ids_measurements.split(';')) and
                         len(colors) > index):
                     total.append([
                         '{id} {measure}'.format(

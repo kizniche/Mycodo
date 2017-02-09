@@ -134,8 +134,8 @@ class Graph(db.Model):
     __tablename__ = "graph"
     id = db.Column(db.Integer, unique=True, primary_key=True)
     name = db.Column(db.Text, default='Graph')
-    pid_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
-    relay_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
+    pid_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
+    relay_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
     sensor_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
     width = db.Column(db.Integer, default=100)  # Width of page (in percent)
     height = db.Column(db.Integer, default=400)  # Height (in pixels)
@@ -144,7 +144,7 @@ class Graph(db.Model):
     enable_navbar = db.Column(db.Boolean, default=False)  # Show navigation bar
     enable_rangeselect = db.Column(db.Boolean, default=False)  # Show range selection buttons
     enable_export = db.Column(db.Boolean, default=False)  # Show export menu
-    use_colors_custom = db.Column(db.Boolean, default=False)  # Enable custom colors of graph series
+    use_custom_colors = db.Column(db.Boolean, default=False)  # Enable custom colors of graph series
     custom_colors = db.Column(db.Text, default='')  # Custom hex color values (csv)
 
 
