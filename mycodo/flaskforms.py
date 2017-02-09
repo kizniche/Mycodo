@@ -1015,6 +1015,8 @@ class ModSensor(Form):
     )
     modBus = IntegerField(lazy_gettext('I<sup>2</sup>C Bus'))
     modLocation = StringField(lazy_gettext('Location'))
+    modPowerPin = IntegerField(lazy_gettext('Power Pin'))
+    modPowerState = IntegerField(lazy_gettext('Power On State'))
     modMultiplexAddress = StringField(lazy_gettext('Multiplexer (MX)'))
     modMultiplexBus = StringField(lazy_gettext('Mx I<sup>2</sup>C Bus'))
     modMultiplexChannel = IntegerField(lazy_gettext('Mx Channel'))

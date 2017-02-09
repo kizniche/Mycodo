@@ -229,8 +229,9 @@ def send_stats():
         client = InfluxDBClient(STATS_HOST, STATS_PORT, STATS_USER, STATS_PASSWORD, STATS_DATABASE)
         # Prepare stats before sending
         alembic = db_retrieve_table_daemon(AlembicVersion, entry='first')
+        a_version = alembic.version_num if alembic.version_num else 'None'
         add_update_csv(STATS_CSV, 'alembic_version',
-                       alembic.version_num)
+                       a_version)
 
         relays = db_retrieve_table_daemon(Relay)
         add_update_csv(STATS_CSV, 'num_relays', get_count(relays))

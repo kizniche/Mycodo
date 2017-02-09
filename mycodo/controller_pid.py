@@ -178,13 +178,9 @@ class PIDController(threading.Thread):
     def initialize_values(self):
         """Set PID parameters"""
         pid = db_retrieve_table_daemon(PID, device_id=self.pid_id)
-        sensor = db_retrieve_table_daemon(Sensor, device_id=pid.sensor_id)
         self.is_activated = pid.is_activated
         self.is_held = pid.is_held
         self.is_paused = pid.is_paused
-        self.sensor_id = pid.sensor_id
-        self.sensor_unique_id = db_retrieve_table_daemon(
-            Sensor, device_id=self.sensor_id).unique_id
         self.measurement = pid.measurement
         self.method_id = pid.method_id
         self.direction = pid.direction
@@ -202,7 +198,11 @@ class PIDController(threading.Thread):
         self.measure_interval = pid.period
         self.default_set_point = pid.setpoint
         self.set_point = pid.setpoint
+
+        sensor = db_retrieve_table_daemon(Sensor, device_id=pid.sensor_id)
+        self.sensor_unique_id = sensor.unique_id
         self.sensor_duration = sensor.period
+
         return "success"
 
     def update(self, current_value):

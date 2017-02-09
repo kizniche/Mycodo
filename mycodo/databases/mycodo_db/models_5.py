@@ -332,7 +332,7 @@ class Sensor(db.Model):
     i2c_bus = db.Column(db.Integer, default='')  # I2C bus the sensor is connected to
     location = db.Column(db.Text, default='')  # GPIO pin or i2c address to communicate with sensor
     power_pin = db.Column(db.Integer, default=0)  # GPIO pin to turn HIGH/LOW to power sensor
-    power_state = db.Column(db.Boolean, default=True)  # State that powers sensor (True=HIGH, False=LOW)
+    power_state = db.Column(db.Integer, default=True)  # State that powers sensor (1=HIGH, 0=LOW)
     measurements = db.Column(db.Text, default='')  # Measurements separated by commas
     multiplexer_address = db.Column(db.Text, default=None)
     multiplexer_bus = db.Column(db.Integer, default=1)

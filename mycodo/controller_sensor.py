@@ -146,6 +146,8 @@ class SensorController(threading.Thread):
         self.unique_id = sensor.unique_id
         self.i2c_bus = sensor.i2c_bus
         self.location = sensor.location
+        self.power_pin = sensor.power_pin
+        self.power_state = sensor.power_state
         self.measurements = sensor.measurements
         self.device = sensor.device
         self.period = sensor.period
@@ -235,6 +237,9 @@ class SensorController(threading.Thread):
             self.measure_sensor = RaspberryPiCPULoad()
         elif self.device == 'RPi':
             self.measure_sensor = RaspberryPiCPUTemp()
+        elif self.device == 'AM2302':
+            self.measure_sensor = DHT22Sensor(self.sensor_id,
+                                              int(self.location))
         elif self.device == 'CHIRP':
             self.measure_sensor = ChirpSensor(self.i2c_address,
                                               self.i2c_bus)
@@ -243,9 +248,11 @@ class SensorController(threading.Thread):
         elif self.device == 'DHT11':
             self.measure_sensor = DHT11Sensor(self.sensor_id,
                                               int(self.location))
-        elif self.device in ['DHT22', 'AM2302']:
+        elif self.device == 'DHT22':
             self.measure_sensor = DHT22Sensor(self.sensor_id,
-                                              int(self.location))
+                                              int(self.location),
+                                              power=self.power_pin,
+                                              state=self.power_state)
         elif self.device == 'HTU21D':
             self.measure_sensor = HTU21DSensor(self.i2c_bus)
         elif self.device == 'AM2315':

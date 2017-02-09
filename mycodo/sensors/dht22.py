@@ -27,7 +27,7 @@ class DHT22Sensor(AbstractSensor):
     gpio ------------+
 
     """
-    def __init__(self, sensor_id, gpio, power=None):
+    def __init__(self, sensor_id, gpio, power=None, state=None):
         """
         :param gpio: gpio pin number
         :type gpio: int
@@ -51,6 +51,7 @@ class DHT22Sensor(AbstractSensor):
         self.pi = pigpio.pi()
         self.gpio = gpio
         self.power = power
+        self.state = state
         self.powered = False
 
         self.bad_CS = 0  # Bad checksum count
@@ -70,7 +71,6 @@ class DHT22Sensor(AbstractSensor):
         self._temperature = 0.0
 
         self.start_sensor()
-        time.sleep(2)
 
     def __repr__(self):
         """  Representation of object """
@@ -322,19 +322,23 @@ class DHT22Sensor(AbstractSensor):
             self.either_edge_cb = None
 
     def start_sensor(self):
-        """ Power the sensor """
+        """ Turn the sensor on """
         if self.power:
             self.logger.info(
-                "Turning on sensor by powering pin {pin}".format(
-                    pin=self.power))
-            self.pi.write(self.power, 1)
+                "Turning on sensor by making pin {pin} {state}".format(
+                    pin=self.power,
+                    state=('HIGH' if self.state else 'LOW')))
+            self.pi.set_mode(self.power, pigpio.OUTPUT)
+            self.pi.write(self.power, self.state)
+            time.sleep(2)
             self.powered = True
 
     def stop_sensor(self):
-        """ Depower the sensor """
+        """ Turn the sensor off """
         if self.power:
             self.logger.info(
-                "Turning off sensor by depowering pin {pin}".format(
-                    pin=self.power))
-            self.pi.write(self.power, 0)
+                "Turning off sensor by making pin {pin} {state}".format(
+                    pin=self.power,
+                    state=('LOW' if self.state else 'HIGH')))
+            self.pi.write(self.power, not self.state)
             self.powered = False
