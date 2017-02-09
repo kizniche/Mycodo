@@ -431,7 +431,7 @@
 
         {# comment  Determine what y-axes are needed for sensor measurements #}
         {%- for each_sensor in sensor -%}
-          {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id|string in each_sensor_and_measure -%}
+          {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id|string in each_sensor_and_measure.split(',')[0] -%}
             {%- if 'cpu_load' in each_sensor_and_measure -%}
               {%- do yaxis_cpu_load.append(1) -%}
             {%- elif 'temperature' in each_sensor_and_measure -%}
@@ -462,7 +462,7 @@
 
         {# Determine what y-axes are needed for PID setpoints #}
         {%- for each_pid in pid -%}
-          {%- for each_graph_pid_ids in graph_pid_ids if each_pid.id in each_graph_pid_ids -%}
+          {%- for each_graph_pid_ids in graph_pid_ids if each_pid.id == each_graph_pid_ids -%}
             {%- for each_sensor in sensor if each_sensor.id == each_pid.sensor_id -%}
               {%- if each_pid.measurement in ['temperature', 'temperature_object', 'temperature_die'] -%}
                 {%- do yaxis_temp.append(1) -%}
@@ -490,7 +490,7 @@
         {%- endfor -%}
 
         {%- for each_relay in relay -%}
-          {%- for each_graph_relay in graph_relay_ids if each_relay.id|string in each_graph_relay -%}
+          {%- for each_graph_relay in graph_relay_ids if each_relay.id|string == each_graph_relay -%}
             {%- do yaxis_relay.append(1) -%}
           {%- endfor -%}
         {%- endfor -%}
@@ -509,7 +509,7 @@
             {%- set count_series = [] -%}
 
             {%- for each_sensor in sensor -%}
-              {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id|string in each_sensor_and_measure -%}
+              {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id|string in each_sensor_and_measure.split(',')[0] -%}
                 {%- if each_sensor.device_type == 'cpu_load' %}
                   {% if 'cpu_load_1m' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'cpu_load_1m', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration*60}});
@@ -619,7 +619,7 @@
             {%- endfor -%}
 
             {%- for each_relay in relay -%}
-              {%- for each_graph_relay in graph_relay_ids if each_relay.id|string in each_graph_relay %}
+              {%- for each_graph_relay in graph_relay_ids if each_relay.id|string == each_graph_relay %}
             getPastData({{chart_number}}, {{count_series|count}}, 'duration_sec', '{{each_relay.unique_id}}', {{each_graph.x_axis_duration*60}});
             getLiveData({{chart_number}}, {{count_series|count}}, 'duration_sec', '{{each_relay.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                 {%- do count_series.append(1) %}
@@ -627,7 +627,7 @@
             {%- endfor -%}
 
             {%- for each_pid in pid -%}
-              {%- for each_graph_pid in graph_pid_ids if each_pid.id|string in each_graph_pid %}
+              {%- for each_graph_pid in graph_pid_ids if each_pid.id|string == each_graph_pid %}
             getPastData({{chart_number}}, {{count_series|count}}, 'setpoint', '{{each_pid.unique_id}}', {{each_graph.x_axis_duration*60}});
             getLiveData({{chart_number}}, {{count_series|count}}, 'setpoint', '{{each_pid.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                 {%- do count_series.append(1) %}
@@ -911,7 +911,7 @@
       },
       series: [
       {%- for each_sensor in sensor -%}
-        {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id|string in each_sensor_and_measure -%}
+        {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id|string in each_sensor_and_measure.split(',')[0] -%}
           {%- if each_sensor.device_type == 'cpu_load' -%}
             {% if 'cpu_load_1m' in each_sensor_and_measure -%}
               {
@@ -1173,7 +1173,7 @@
       {%- endfor -%}
 
       {%- for each_relay in relay -%}
-        {%- for each_graph_relay in graph_relay_ids if each_relay.id|string in each_graph_relay -%}
+        {%- for each_graph_relay in graph_relay_ids if each_relay.id|string == each_graph_relay -%}
           {
             name: '{{each_relay.name}}',
             type: 'column',
@@ -1192,7 +1192,7 @@
       {%- endfor -%}
 
       {%- for each_pid in pid -%}
-        {%- for each_graph_pid_ids in graph_pid_ids if each_pid.id|string in each_graph_pid_ids -%}
+        {%- for each_graph_pid_ids in graph_pid_ids if each_pid.id|string == each_graph_pid_ids and each_pid.measurement -%}
           {
             name: '{{each_pid.name}} {{_('Setpoint')}}',
             type: 'line',

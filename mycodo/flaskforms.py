@@ -418,10 +418,12 @@ class AddGraph(Form):
         validators=[DataRequired()]
     )
     pidIDs = SelectMultipleField(
-        lazy_gettext('PID IDs (Setpoint)')
+        lazy_gettext('PID IDs (Setpoint)'),
+        coerce=int
     )
     relayIDs = SelectMultipleField(
-        lazy_gettext('Relay IDs')
+        lazy_gettext('Relay IDs'),
+        coerce=int
     )
     sensorIDs = SelectMultipleField(
         lazy_gettext('Sensor IDs')
@@ -474,10 +476,12 @@ class ModGraph(Form):
         validators=[DataRequired()]
     )
     pidIDs = SelectMultipleField(
-        lazy_gettext('PID IDs (Setpoint)')
+        lazy_gettext('PID IDs (Setpoint)'),
+        coerce=int
     )
     relayIDs = SelectMultipleField(
-        lazy_gettext('Relay IDs')
+        lazy_gettext('Relay IDs'),
+        coerce=int
     )
     sensorIDs = SelectMultipleField(
         lazy_gettext('Sensor IDs')

@@ -15,30 +15,8 @@ db = SQLAlchemy()
 # TODO Build a BaseConditional that all the conditionals inherit from
 
 
-class UUID(types.TypeDecorator):
-    impl = MSBinary
-
-    def __init__(self):
-        self.impl.length = 16
-        types.TypeDecorator.__init__(self,length=self.impl.length)
-
-    def process_bind_param(self,value,dialect=None):
-        if value and isinstance(value,uuid.UUID):
-            return value.bytes
-        elif value and not isinstance(value,uuid.UUID):
-            raise ValueError('value {val} is not a valid uuid.UUID'.format(val=value))
-        else:
-            return None
-
-    def process_result_value(self, value, dialect=None):
-        if value:
-            return uuid.UUID(bytes=value)
-        else:
-            return None
-
-    @staticmethod
-    def is_mutable():
-        return False
+def set_uuid():
+    return str(uuid.uuid4())
 
 
 class AlembicVersion(db.Model):
@@ -228,7 +206,7 @@ class PID(db.Model):
     __tablename__ = "pid"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(UUID, nullable=False, unique=True, default=uuid.uuid4)  # ID for influxdb entries
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
     name = db.Column(db.Text, default='PID')
     is_activated = db.Column(db.Boolean, default=False)
     is_held = db.Column(db.Boolean, default=False)
@@ -258,7 +236,7 @@ class Relay(db.Model):
     __tablename__ = "relay"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(UUID, nullable=False, unique=True, default=uuid.uuid4)  # ID for influxdb entries
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
     name = db.Column(db.Text, default='Relay')
     pin = db.Column(db.Integer, default=0)
     amps = db.Column(db.Float, default=0.0)  # The current drawn by the device connected to the relay
@@ -346,7 +324,7 @@ class Sensor(db.Model):
     __tablename__ = "sensor"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(UUID, nullable=False, unique=True, default=uuid.uuid4)  # ID for influxdb entries
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
     name = db.Column(db.Text, default='Sensor')
     is_activated = db.Column(db.Boolean, default=False)
     is_preset = db.Column(db.Boolean, default=False)  # Is config saved as a preset?
