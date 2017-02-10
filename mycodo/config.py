@@ -50,9 +50,12 @@ MEASUREMENT_UNITS = {
 }
 
 CAM_TYPES = [
-    dict(id=1, type_name='Still', description='Still image acquisition options'),
-    dict(id=2, type_name='Time-lapse', description='Tile-lapse acquisition options'),
-    dict(id=3, type_name='Stream', description='Stream options')
+    dict(id=1, type_name='Still',
+         description='Still image acquisition options'),
+    dict(id=2, type_name='Time-lapse',
+         description='Tile-lapse acquisition options'),
+    dict(id=3, type_name='Stream',
+         description='Stream options')
 ]
 
 USER_ROLES = [
