@@ -1,6 +1,15 @@
 <div class="form-group">
-  <label class="control-label">Device ID (28-x)</label>
+  <label class="control-label">Device ID</label>
   <div>
-    {{form_mod_sensor.modLocation(class_='form-control', value=each_sensor.location, **{'title':'Where to access the device/sensor? This is the ID code that comes after the 28- of the devices listed with the command "ls /sys/bus/w1/devices"'})}}
+    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modLocation" name="modLocation" title="{{_('Where to access the device/sensor? This is the ID code that comes after the 28- of the devices listed with the command "ls /sys/bus/w1/devices".')}}">
+      {% if ds18b20_sensors != [] %}
+        <option value=""></option>
+        {% for each_ds18b20 in ds18b20_sensors %}
+          <option value="{{each_ds18b20}}"{% if each_sensor.location == each_ds18b20 %} selected{% endif %}>{{each_ds18b20}}</option>
+        {% endfor %}
+      {% else %}
+        <option value="">None Detected</option>
+      {% endif %}
+    </select>
   </div>
 </div>

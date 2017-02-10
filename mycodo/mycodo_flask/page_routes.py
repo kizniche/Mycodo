@@ -739,18 +739,23 @@ def page_sensor():
     # TCA9548A I2C multiplexer channels (0 - 8)
     multiplexer_channels = list(range(0, 9))
 
+    form_add_sensor = flaskforms.AddSensor()
+    form_mod_sensor = flaskforms.ModSensor()
+    form_mod_sensor_cond = flaskforms.ModSensorConditional()
+
     lcd = LCD.query.all()
     pid = PID.query.all()
     relay = Relay.query.all()
     sensor = Sensor.query.all()
     sensor_conditional = SensorConditional.query.all()
     users = User.query.all()
-
     display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
 
-    form_add_sensor = flaskforms.AddSensor()
-    form_mod_sensor = flaskforms.ModSensor()
-    form_mod_sensor_cond = flaskforms.ModSensorConditional()
+    ds18b20_sensors = []
+    if Sensor.query.filter(Sensor.device == 'DS18B20').count():
+        from w1thermsensor import W1ThermSensor
+        for each_sensor in W1ThermSensor.get_available_sensors():
+            ds18b20_sensors.append(each_sensor.id)
 
     # Create list of file names from the sensor_options directory
     # Used in generating the correct options for each sensor/device
@@ -790,6 +795,7 @@ def page_sensor():
 
     return render_template('pages/sensor.html',
                            displayOrder=display_order,
+                           ds18b20_sensors=ds18b20_sensors,
                            form_add_sensor=form_add_sensor,
                            form_mod_sensor=form_mod_sensor,
                            form_mod_sensor_cond=form_mod_sensor_cond,

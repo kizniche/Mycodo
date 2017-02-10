@@ -1744,9 +1744,9 @@ def sensor_mod(form_mod_sensor):
         mod_sensor = Sensor.query.filter(
             Sensor.id == form_mod_sensor.modSensor_id.data).first()
 
-        if not form_mod_sensor.modLocation.data:
-            error.append(gettext(
-                "Invalid device GPIO/I2C address/location"))
+        # if not form_mod_sensor.modLocation.data:
+        #     error.append(gettext(
+        #         "Invalid device GPIO/I2C address/location"))
         if mod_sensor.is_activated:
             error.append(gettext(
                 "Deactivate sensor controller before modifying its "
@@ -2543,7 +2543,6 @@ def gzipped(f):
 
 def add_display_order(display_order, device_id):
     """ Add integer ID to list of string IDs """
-    logger.error("ERR0: {} - {}".format(display_order, device_id))
     if display_order:
         display_order.append(device_id)
         display_order = [str(i) for i in display_order]
