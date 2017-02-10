@@ -2276,8 +2276,7 @@ def user_mod(form_mod_user):
 def user_del(form_del_user):
     try:
         if form_del_user.validate():
-            delete_user(User,
-                        form_del_user.delUsername.data)
+            delete_user(form_del_user.delUsername.data)
             if form_del_user.delUsername.data == session['user_name']:
                 return 'logout'
         else:
@@ -2421,11 +2420,11 @@ def db_retrieve_table(table, first=False, device_id=''):
     return return_table
 
 
-def delete_user(users, username):
+def delete_user(username):
     """ Delete user from SQL database """
     try:
         user = User.query.filter(
-            users.user_name == username).first()
+            User.user_name == username).first()
         user.delete(db.session)
         flash(gettext("Success: %(msg)s",
                       msg='{action} {user}'.format(

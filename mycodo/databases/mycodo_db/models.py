@@ -66,7 +66,7 @@ class User(CRUDMixin, db.Model):
 
     user_id = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.VARCHAR(64), unique=True, index=True)
-    user_password_hash = db.Column(db.VARCHAR(255), nullable=False)
+    user_password_hash = db.Column(db.VARCHAR(255))
     user_email = db.Column(db.VARCHAR(64), unique=True, index=True)
     user_role = db.Column(db.Integer, db.ForeignKey('roles.id'), default=None)
     user_theme = db.Column(db.VARCHAR(64))

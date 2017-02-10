@@ -218,8 +218,7 @@ def logout():
 
 def admin_exists():
     """Verify that at least one admin user exists"""
-    test = User.query.filter(User.user_role == 1).count()
-    return test
+    return User.query.filter(User.user_role == 1).count()
 
 
 def authenticate_cookies():

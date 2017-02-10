@@ -53,7 +53,8 @@ def create_admin_user(mycodo_db_uri):
     with session_scope(mycodo_db_uri) as db_session:
         if not db_session.query(User).filter_by(user_role=1).count():
             logging.info("--> Creating new 'test' user as an admin")
-            db_session.add(User(user_name='test', user_role=1))
+            db_session.add(User(user_name='test',
+                                user_role=1))
             db_session.commit()
         else:
-            logging.warning("--> Dirty User DB: Admin user was already setup in: '{uri}'".format(uri=user_db_uri))
+            logging.warning("--> Dirty User DB: Admin user was already setup in: '{uri}'".format(uri=mycodo_db_uri))

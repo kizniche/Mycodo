@@ -84,13 +84,6 @@ def login_user(app, username, password):
 
 
 @pytest.yield_fixture()
-def user_db(app):
-    """ creates a session to the user db """
-    with session_scope(app.config['MYCODO_DB_PATH']) as session:
-        yield session
-
-
-@pytest.yield_fixture()
 def mycodo_db(app):
     """ creates a session to the mycodo db """
     with session_scope(app.config['MYCODO_DB_PATH']) as session:
