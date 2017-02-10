@@ -38,7 +38,7 @@ import time as t
 import timeit
 
 # Classes
-from databases.mycodo_db.models_5 import (
+from databases.mycodo_db.models import (
     Method,
     PID,
     Relay,
@@ -59,9 +59,9 @@ from utils.method import (
 )
 
 # Config
-from config import SQL_DATABASE_MYCODO_5
+from config import SQL_DATABASE_MYCODO
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class PIDController(threading.Thread):

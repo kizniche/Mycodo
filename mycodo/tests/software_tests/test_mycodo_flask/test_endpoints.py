@@ -3,7 +3,7 @@
 import mock
 # from flask import current_app
 
-from mycodo.databases.mycodo_db.models_5 import Sensor
+from mycodo.databases.mycodo_db.models import Sensor
 from mycodo.tests.software_tests.factories_user import UserFactory
 # from mycodo.tests.software_tests.factories_mycodo import SensorFactory
 from mycodo.tests.software_tests.test_mycodo_flask.conftest import login_user

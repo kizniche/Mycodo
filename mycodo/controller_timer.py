@@ -13,7 +13,7 @@ import time
 import timeit
 
 # Classes
-from databases.mycodo_db.models_5 import Timer
+from databases.mycodo_db.models import Timer
 from mycodo_client import DaemonControl
 
 # Functions
@@ -21,9 +21,9 @@ from utils.database import db_retrieve_table_daemon
 from utils.system_pi import time_between_range
 
 # Config
-from config import SQL_DATABASE_MYCODO_5
+from config import SQL_DATABASE_MYCODO
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class TimerController(threading.Thread):

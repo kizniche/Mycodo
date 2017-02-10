@@ -1,84 +1,284 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
-#
-#  update-database.py - Create and update Mycodo SQLite databases
-#
-#  Copyright (C) 2015  Kyle T. Gabriel
-#
-#  This file is part of Mycodo
-#
-#  Mycodo is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  Mycodo is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
-#
-#  Contact at kylegabriel.com
-
-from sqlalchemy import Column, TEXT, INT, REAL, DATETIME, BOOLEAN, String
-from sqlalchemy.ext.declarative import declarative_base
-from RPi import GPIO
+import bcrypt
 import datetime
+import logging
+import uuid
+from flask_sqlalchemy import SQLAlchemy
+from RPi import GPIO
 
-Base = declarative_base()
+from mycodo.config import ALEMBIC_VERSION
 
+logger = logging.getLogger(__name__)
+
+db = SQLAlchemy()
 
 # TODO Build a BaseConditional that all the conditionals inherit from
 
-class AlembicVersion(Base):
+
+class CRUDMixin(object):
+    """
+    Basic Create, Read, Update and Delete methods
+    Models that inherit from this class automatically get these CRUD methods
+    """
+
+    def save(self, session=db.session):
+        """ creates the model in the database """
+
+        try:
+            session.add(self)
+            session.commit()
+            return self
+        except Exception as error:
+            session.rollback()
+            logging.error(
+                "Unable to save {model} due to error: {err}".format(
+                    model=self, err=error))
+            raise error
+
+    def delete(self, session=db.session):
+        """ deletes the record from the database """
+        try:
+            session.delete(self)
+            session.commit()
+        except Exception as error:
+            logger.error(
+                "Failed to delete '{record}' due to error: '{err}'".format(
+                    record=self, err=error))
+
+
+def set_uuid():
+    return str(uuid.uuid4())
+
+
+class AlembicVersion(CRUDMixin, db.Model):
     __tablename__ = "alembic_version"
-    version_num = Column(String(32), primary_key=True, nullable=False)
+    version_num = db.Column(db.String(32),
+                            primary_key=True, nullable=False,
+                            default=ALEMBIC_VERSION)
 
 
-class Method(Base):
+#
+# User Table
+#
+
+class User(CRUDMixin, db.Model):
+    __tablename__ = "users"
+
+    user_id = db.Column(db.Integer, primary_key=True)
+    user_name = db.Column(db.VARCHAR(64), unique=True, index=True)
+    user_password_hash = db.Column(db.VARCHAR(255), nullable=False)
+    user_email = db.Column(db.VARCHAR(64), unique=True, index=True)
+    user_role = db.Column(db.Integer, db.ForeignKey('roles.id'), default=None)
+    user_theme = db.Column(db.VARCHAR(64))
+
+    role = db.relationship("Role", back_populates="user")
+
+    def __repr__(self):
+        output = "<User: <name='{name}', email='{email}' is_admin='{isadmin}'>"
+        return output.format(name=self.user_name,
+                             email=self.user_email,
+                             isadmin=bool(self.user_role == 1))
+
+    def set_password(self, new_password):
+        self.user_password_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+
+    @staticmethod
+    def check_password(password, hashed_password):
+        hashes_match = bcrypt.hashpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
+        return hashes_match
+
+
+class Role(CRUDMixin, db.Model):
+    __tablename__ = "roles"
+
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    name = db.Column(db.String, nullable=False, unique=True)
+    edit_camera = db.Column(db.Boolean, nullable=False, default=False)
+    edit_controllers = db.Column(db.Boolean, nullable=False, default=False)
+    edit_users = db.Column(db.Boolean, nullable=False, default=False)
+    view_settings = db.Column(db.Boolean, nullable=False, default=False)
+    view_camera = db.Column(db.Boolean, nullable=False, default=False)
+    view_stats = db.Column(db.Boolean, nullable=False, default=False)
+    view_logs = db.Column(db.Boolean, nullable=False, default=False)
+
+    user = db.relationship("User", back_populates="role")
+
+
+#
+# Mycodo settings tables
+#
+
+class Camera(CRUDMixin, db.Model):
+    __tablename__ = "camera"
+
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to turn on while capturing
+    hflip = db.Column(db.Boolean, default=False)  # Horizontal flip image
+    vflip = db.Column(db.Boolean, default=False)  # Vertical flip image
+    rotation = db.Column(db.Integer, default=0)  # Rotation degree (0-360)
+    cmd_pre_camera = db.Column(db.Text, default='')  # Command to execute before capture
+    cmd_post_camera = db.Column(db.Text, default='') # Command to execute after capture
+    camera_type = db.Column(db.Integer, db.ForeignKey('camera_type.id'), nullable=False)
+
+
+class CameraType(CRUDMixin, db.Model):
+    """ Holds camera description or kind: 'still', 'timelapse', 'stream', etc """
+    __tablename__ = 'camera_type'
+
+    id = db.Column(db.Integer, primary_key=True)
+    type_name = db.Column(db.String, nullable=False, unique=True)  # 'Still', 'Time-lapse', 'Stream', etc
+
+
+class DisplayOrder(CRUDMixin, db.Model):
+    __tablename__ = "displayorder"
+
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    graph = db.Column(db.Text, default='')
+    lcd = db.Column(db.Text, default='')
+    pid = db.Column(db.Text, default='')
+    relay = db.Column(db.Text, default='')
+    remote_host = db.Column(db.Text, default='')
+    sensor = db.Column(db.Text, default='')
+    timer = db.Column(db.Text, default='')
+
+
+class Graph(CRUDMixin, db.Model):
+    __tablename__ = "graph"
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    name = db.Column(db.Text, default='Graph')
+    pid_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
+    relay_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
+    sensor_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
+    width = db.Column(db.Integer, default=100)  # Width of page (in percent)
+    height = db.Column(db.Integer, default=400)  # Height (in pixels)
+    x_axis_duration = db.Column(db.Integer, default=1440)  # X-axis duration (in minutes)
+    refresh_duration = db.Column(db.Integer, default=120)  # How often to add new data and redraw graph
+    enable_navbar = db.Column(db.Boolean, default=False)  # Show navigation bar
+    enable_rangeselect = db.Column(db.Boolean, default=False)  # Show range selection buttons
+    enable_export = db.Column(db.Boolean, default=False)  # Show export menu
+    use_custom_colors = db.Column(db.Boolean, default=False)  # Enable custom colors of graph series
+    custom_colors = db.Column(db.Text, default='')  # Custom hex color values (csv)
+
+
+class LCD(CRUDMixin, db.Model):
+    __tablename__ = "lcd"
+
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    name = db.Column(db.Text, default='LCD')
+    is_activated = db.Column(db.Boolean, default=False)
+    period = db.Column(db.Integer, default=30)
+    location = db.Column(db.Text, default='27')
+    multiplexer_address = db.Column(db.Text, default='')
+    multiplexer_channel = db.Column(db.Integer, default=0)
+    x_characters = db.Column(db.Integer, default=16)
+    y_lines = db.Column(db.Integer, default=2)
+    line_1_sensor_id = db.Column(db.Text, default='')
+    line_1_measurement = db.Column(db.Text, default='')
+    line_2_sensor_id = db.Column(db.Text, default='')
+    line_2_measurement = db.Column(db.Text, default='')
+    line_3_sensor_id = db.Column(db.Text, default='')
+    line_3_measurement = db.Column(db.Text, default='')
+    line_4_sensor_id = db.Column(db.Text, default='')
+    line_4_measurement = db.Column(db.Text, default='')
+
+
+class Method(CRUDMixin, db.Model):
     __tablename__ = "method"
 
-    id = Column(TEXT, unique=True, primary_key=True)
-    name = Column(TEXT)
-    method_id = Column(TEXT)
-    method_type = Column(TEXT)
-    method_order = Column(INT)
-    start_time = Column(TEXT)
-    end_time = Column(TEXT)
-    duration_sec = Column(INT)
-    relay_id = Column(TEXT)
-    relay_state = Column(TEXT)
-    relay_duration = Column(REAL)
-    setpoint_start = Column(REAL)
-    setpoint_end = Column(REAL)
-    amplitude = Column(REAL)
-    frequency = Column(REAL)
-    shift_angle = Column(REAL)
-    shift_y = Column(REAL)
-    x0 = Column(REAL)
-    y0 = Column(REAL)
-    x1 = Column(REAL)
-    y1 = Column(REAL)
-    x2 = Column(REAL)
-    y2 = Column(REAL)
-    x3 = Column(REAL)
-    y3 = Column(REAL)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    name = db.Column(db.Text, default='Method')
+    method_type = db.Column(db.Text, default='')
+    method_order = db.Column(db.Text, default='')
+    start_time = db.Column(db.Text, default=None)
 
 
-class Relay(Base):
-    __tablename__ = "relays"
+class MethodData(CRUDMixin, db.Model):
+    __tablename__ = "method_data"
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    method_id = db.Column(db.Integer, db.ForeignKey('method.id'), default=None)
+    time_start = db.Column(db.Text, default=None)
+    time_end = db.Column(db.Text, default=None)
+    duration_sec = db.Column(db.Float, default=None)
+    relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)
+    relay_state = db.Column(db.Text, default=None)
+    relay_duration = db.Column(db.Float, default=None)
+    setpoint_start = db.Column(db.Float, default=None)
+    setpoint_end = db.Column(db.Float, default=None)
+    amplitude = db.Column(db.Float, default=None)
+    frequency = db.Column(db.Float, default=None)
+    shift_angle = db.Column(db.Float, default=None)
+    shift_y = db.Column(db.Float, default=None)
+    x0 = db.Column(db.Float, default=None)
+    y0 = db.Column(db.Float, default=None)
+    x1 = db.Column(db.Float, default=None)
+    y1 = db.Column(db.Float, default=None)
+    x2 = db.Column(db.Float, default=None)
+    y2 = db.Column(db.Float, default=None)
+    x3 = db.Column(db.Float, default=None)
+    y3 = db.Column(db.Float, default=None)
 
-    id = Column(TEXT, unique=True, primary_key=True)
-    name = Column(TEXT)
-    pin = Column(INT)
-    amps = Column(REAL)
-    trigger = Column(INT)
-    start_state = Column(INT)
-    on_until = Column(DATETIME)
-    last_duration = Column(REAL)
-    on_duration = Column(BOOLEAN)
+
+class Misc(CRUDMixin, db.Model):
+    __tablename__ = "misc"
+
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    dismiss_notification = db.Column(db.Boolean, default=False)  # Dismiss login page license notice
+    force_https = db.Column(db.Boolean, default=True)  # Force web interface to use SSL/HTTPS
+    hide_alert_info = db.Column(db.Boolean, default=False)
+    hide_alert_success = db.Column(db.Boolean, default=False)
+    hide_alert_warning = db.Column(db.Boolean, default=False)
+    language = db.Column(db.Text, default=None)  # Force the web interface to use a specific language
+    login_message = db.Column(db.Text, default='')  # Put a message on the login screen
+    relay_stats_cost = db.Column(db.Float, default=0.05)  # Energy cost per kWh
+    relay_stats_currency = db.Column(db.Text, default='$')  # Energy cost currency
+    relay_stats_dayofmonth = db.Column(db.Integer, default=15)  # Electricity billing day of month
+    relay_stats_volts = db.Column(db.Integer, default=120)  # Voltage the alternating current operates
+    stats_opt_out = db.Column(db.Boolean, default=False)  # Opt not to send anonymous usage statistics
+
+
+class PID(CRUDMixin, db.Model):
+    __tablename__ = "pid"
+
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
+    name = db.Column(db.Text, default='PID')
+    is_activated = db.Column(db.Boolean, default=False)
+    is_held = db.Column(db.Boolean, default=False)
+    is_paused = db.Column(db.Boolean, default=False)
+    is_preset = db.Column(db.Boolean, default=False)  # Is config saved as a preset?
+    preset_name = db.Column(db.Text, default='')  # Name for preset
+    period = db.Column(db.Integer, default=30)
+    sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'), default=None)
+    measurement = db.Column(db.Text, default='')  # What condition is the controller regulating?
+    direction = db.Column(db.Text, default='Raise')  # Direction of regulation (raise, lower, both)
+    setpoint = db.Column(db.Float, default=30.0)  # PID setpoint
+    method_id = db.Column(db.Integer, db.ForeignKey('method.id'), default=None)
+    p = db.Column(db.Float, default=1.0)  # Kp gain
+    i = db.Column(db.Float, default=0.0)  # Ki gain
+    d = db.Column(db.Float, default=0.0)  # Kd gain
+    integrator_min = db.Column(db.Float, default=-100.0)
+    integrator_max = db.Column(db.Float, default=100.0)
+    raise_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to raise the condition
+    raise_min_duration = db.Column(db.Float, default=0.0)
+    raise_max_duration = db.Column(db.Float, default=0.0)
+    lower_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to lower the condition
+    lower_min_duration = db.Column(db.Float, default=0.0)
+    lower_max_duration = db.Column(db.Float, default=0.0)
+
+
+class Relay(CRUDMixin, db.Model):
+    __tablename__ = "relay"
+
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
+    name = db.Column(db.Text, default='Relay')
+    pin = db.Column(db.Integer, default=0)
+    amps = db.Column(db.Float, default=0.0)  # The current drawn by the device connected to the relay
+    trigger = db.Column(db.Boolean, default=True)  # GPIO output to turn relay on (True=HIGH, False=LOW)
+    on_at_start = db.Column(db.Boolean, default=False)  # Turn relay on when daemon starts?
+    on_until = db.Column(db.DateTime, default=None)  # Stores time to turn off relay (if on for a duration)
+    last_duration = db.Column(db.Float, default=None)  # Stores the last on duration (seconds)
+    on_duration = db.Column(db.Boolean, default=None)  # Stores if the relay is currently on for a duration
 
     @staticmethod
     def _is_setup():
@@ -130,316 +330,123 @@ class Relay(Base):
         return self.trigger == GPIO.input(self.pin)
 
 
-class RelayConditional(Base):
+class RelayConditional(CRUDMixin, db.Model):
     __tablename__ = "relayconditional"
 
-    id = Column(TEXT, unique=True, primary_key=True)
-    name = Column(TEXT)
-    activated = Column(BOOLEAN)
-    if_relay_id = Column(TEXT)
-    if_action = Column(TEXT)
-    if_duration = Column(REAL)
-    do_relay_id = Column(TEXT)
-    do_action = Column(TEXT)
-    do_duration = Column(REAL)
-    execute_command = Column(TEXT)
-    email_notify = Column(TEXT)
-    flash_lcd = Column(TEXT)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    name = db.Column(db.Text, default='Relay Cond')
+    is_activated = db.Column(db.Boolean, default=False)
+    if_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Watch this relay for action
+    if_action = db.Column(db.Text, default='')  # What action to watch relay for
+    if_duration = db.Column(db.Float, default=0.0)
+    do_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Actuate relay if conditional triggered
+    do_action = db.Column(db.Text, default='')  # what action, such as email, execute command, flash LCD
+    do_action_data = db.Column(db.Text, default='')  # string, such as email address, command, or duration
 
 
-class Sensor(Base):
+class Remote(CRUDMixin, db.Model):
+    __tablename__ = "remote"
+
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    is_activated = db.Column(db.Boolean, default=False)
+    host = db.Column(db.Text, default='')
+    username = db.Column(db.Text, default='')
+    password_hash = db.Column(db.Text, default='')
+
+
+class Sensor(CRUDMixin, db.Model):
     __tablename__ = "sensor"
 
-    id = Column(TEXT, unique=True, primary_key=True)
-    name = Column(TEXT)
-    activated = Column(INT)
-    device = Column(TEXT)
-    device_type = Column(TEXT)
-    i2c_bus = Column(INT)
-    location = Column(TEXT)
-    multiplexer_address = Column(TEXT)
-    multiplexer_bus = Column(INT)
-    multiplexer_channel = Column(INT)
-    adc_channel = Column(INT)
-    adc_gain = Column(INT)
-    adc_resolution = Column(INT)
-    adc_measure = Column(TEXT)
-    adc_measure_units = Column(TEXT)
-    adc_volts_min = Column(REAL)
-    adc_volts_max = Column(REAL)
-    adc_units_min = Column(REAL)
-    adc_units_max = Column(REAL)
-    switch_edge = Column(TEXT)
-    switch_bouncetime = Column(INT)
-    switch_reset_period = Column(INT)
-    pre_relay_id = Column(TEXT)
-    pre_relay_duration = Column(REAL)
-    graph = Column(INT)
-    period = Column(INT)
-    sht_clock_pin = Column(INT)
-    sht_voltage = Column(REAL)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
+    name = db.Column(db.Text, default='Sensor')
+    is_activated = db.Column(db.Boolean, default=False)
+    is_preset = db.Column(db.Boolean, default=False)  # Is config saved as a preset?
+    preset_name = db.Column(db.Text, default=None)  # Name for preset
+    device = db.Column(db.Text, default='')  # Device name, such as DHT11, DHT22, DS18B20
+    device_type = db.Column(db.Text, default='')
+    period = db.Column(db.Float, default=15.0)  # Duration between readings
+    i2c_bus = db.Column(db.Integer, default='')  # I2C bus the sensor is connected to
+    location = db.Column(db.Text, default='')  # GPIO pin or i2c address to communicate with sensor
+    power_pin = db.Column(db.Integer, default=0)  # GPIO pin to turn HIGH/LOW to power sensor
+    power_state = db.Column(db.Integer, default=True)  # State that powers sensor (1=HIGH, 0=LOW)
+    measurements = db.Column(db.Text, default='')  # Measurements separated by commas
+    multiplexer_address = db.Column(db.Text, default=None)
+    multiplexer_bus = db.Column(db.Integer, default=1)
+    multiplexer_channel = db.Column(db.Integer, default=0)
+    switch_edge = db.Column(db.Text, default='rising')
+    switch_bouncetime = db.Column(db.Integer, default=50)
+    switch_reset_period = db.Column(db.Integer, default=10)
+    pre_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=False)  # Relay to turn on before sensor read
+    pre_relay_duration = db.Column(db.Float, default=0.0)  # Duration to turn relay on before sensor read
+    sht_clock_pin = db.Column(db.Integer, default=None)
+    sht_voltage = db.Column(db.Text, default='3.5')
 
-    def is_activated(self):
+    # Analog to digital converter options
+    adc_channel = db.Column(db.Integer, default=0)
+    adc_gain = db.Column(db.Integer, default=1)
+    adc_resolution = db.Column(db.Integer, default=18)
+    adc_measure = db.Column(db.Text, default='Condition')
+    adc_measure_units = db.Column(db.Text, default='unit')
+    adc_volts_min = db.Column(db.Float, default=None)
+    adc_volts_max = db.Column(db.Float, default=None)
+    adc_units_min = db.Column(db.Float, default=0)
+    adc_units_max = db.Column(db.Float, default=10)
+
+    def is_active(self):
         """
         :return: Whether the sensor is currently activated
         :rtype: bool
         """
-        return self.activated
+        return self.is_activated
 
 
-class SensorPreset(Base):
-    __tablename__ = "sensorpreset"
-
-    id = Column(TEXT, unique=True, primary_key=True)
-    name = Column(TEXT)
-    device = Column(TEXT)
-    device_type = Column(TEXT)
-    location = Column(TEXT)
-    multiplex = Column(TEXT)
-    pre_relay_id = Column(TEXT)
-    pre_period = Column(INT)
-    graph = Column(INT)
-    period = Column(INT)
-    sht_clock_pin = Column(INT)
-    sht_voltage = Column(REAL)
-
-
-class SensorConditional(Base):
+class SensorConditional(CRUDMixin, db.Model):
     __tablename__ = "sensorconditional"
 
-    id = Column(TEXT, unique=True, primary_key=True)
-    name = Column(TEXT)
-    activated = Column(INT)
-    sensor_id = Column(TEXT)
-    period = Column(INT)
-    measurement_type = Column(TEXT)
-    edge_select = Column(TEXT)
-    gpio_state = Column(INT)
-    edge_detected = Column(TEXT)
-    direction = Column(TEXT)  # 'above' or 'below' setpoint
-    setpoint = Column(REAL)
-    relay_id = Column(TEXT)
-    relay_state = Column(TEXT)  # 'on' or 'off'
-    relay_on_duration = Column(REAL)
-    execute_command = Column(TEXT)
-    email_notify = Column(TEXT)
-    flash_lcd = Column(TEXT)
-    camera_record = Column(TEXT)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    name = db.Column(db.Text, default='Sensor Cond')
+    is_activated = db.Column(db.Integer, default=False)
+    sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'), default=None)
+    period = db.Column(db.Float, default=60.0)
+    measurement = db.Column(db.Text, default='')  # which measurement to monitor
+    edge_select = db.Column(db.Text, default='edge')  # monitor Rising, Falling, or Both switch edges
+    edge_detected = db.Column(db.Text, default='rising')
+    gpio_state = db.Column(db.Boolean, default=True)
+    direction = db.Column(db.Text, default='')  # 'above' or 'below' setpoint
+    setpoint = db.Column(db.Float, default=0.0)
+    relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)
+    relay_state = db.Column(db.Text, default='')  # 'on' or 'off'
+    relay_on_duration = db.Column(db.Float, default=0.0)
+    execute_command = db.Column(db.Text, default='')
+    email_notify = db.Column(db.Text, default='')
+    flash_lcd = db.Column(db.Text, default='')
+    camera_record = db.Column(db.Text, default='')
 
 
-class PID(Base):
-    __tablename__ = "pid"
-
-    id = Column(TEXT, unique=True, primary_key=True)
-    name = Column(TEXT)
-    activated = Column(INT)
-    sensor_id = Column(TEXT)
-    measure_type = Column(TEXT)
-    direction = Column(TEXT)
-    period = Column(INT)
-    setpoint = Column(REAL)
-    method_id = Column(TEXT)
-    p = Column(REAL)
-    i = Column(REAL)
-    d = Column(REAL)
-    integrator_min = Column(REAL)
-    integrator_max = Column(REAL)
-    raise_relay_id = Column(TEXT)
-    raise_min_duration = Column(INT)
-    raise_max_duration = Column(INT)
-    lower_relay_id = Column(TEXT)
-    lower_min_duration = Column(INT)
-    lower_max_duration = Column(INT)
-
-
-class PIDPreset(Base):
-    __tablename__ = "pidpreset"
-
-    id = Column(TEXT, unique=True, primary_key=True)
-    name = Column(TEXT)
-    sensor_id = Column(TEXT)
-    measure_type = Column(TEXT)
-    direction = Column(TEXT)
-    period = Column(INT)
-    setpoint = Column(REAL)
-    p = Column(REAL)
-    i = Column(REAL)
-    d = Column(REAL)
-    raise_relay_id = Column(TEXT)
-    raise_min_duration = Column(INT)
-    raise_max_duration = Column(INT)
-    lower_relay_id = Column(TEXT)
-    lower_min_duration = Column(INT)
-    lower_max_duration = Column(INT)
-
-
-class PIDConditional(Base):
-    """
-    PID conditionals
-
-
-    Every PID period, perform math on the PID input (sensor measurement), then
-    activate relay_id for a duration of time based on the PID output.
-
-    This is early conception. Future support for PWM, stepper motor, or other output.
-
-    """
-    __tablename__ = 'pidconditional'
-
-    id = Column(TEXT, unique=True, primary_key=True)
-    name = Column(TEXT)
-    activated = Column(INT)
-    pid_id = Column(TEXT)
-    relay_id = Column(TEXT)
-    relay_math = Column(TEXT)
-    relay_on_duration = Column(INT)
-    command = Column(TEXT)
-    notify = Column(TEXT)
-
-
-class Graph(Base):
-    __tablename__ = "graph"
-    id = Column(TEXT, unique=True, primary_key=True)
-    colors_custom = Column(BOOLEAN)
-    colors = Column(TEXT)
-    name = Column(TEXT)
-    pid_ids = Column(TEXT)
-    relay_ids = Column(TEXT)
-    sensor_ids = Column(TEXT)
-    width = Column(INT)
-    height = Column(INT)
-    x_axis_duration = Column(INT)
-    refresh_duration = Column(INT)
-    enable_navbar = Column(BOOLEAN)
-    enable_rangeselect = Column(BOOLEAN)
-    enable_export = Column(BOOLEAN)
-
-
-class DisplayOrder(Base):
-    __tablename__ = "displayorder"
-
-    id = Column(TEXT, unique=True, primary_key=True)
-    graph = Column(TEXT)
-    lcd = Column(TEXT)
-    pid = Column(TEXT)
-    relay = Column(TEXT)
-    remote_host = Column(TEXT)
-    sensor = Column(TEXT)
-    timer = Column(TEXT)
-
-
-class LCD(Base):
-    __tablename__ = "lcd"
-
-    id = Column(TEXT, unique=True, primary_key=True)
-    name = Column(TEXT)
-    activated = Column(INT)
-    pin = Column(TEXT)
-    multiplexer_address = Column(TEXT)
-    multiplexer_channel = Column(INT)
-    period = Column(INT)
-    x_characters = Column(INT)
-    y_lines = Column(INT)
-    line_1_sensor_id = Column(TEXT)
-    line_1_measurement = Column(TEXT)
-    line_2_sensor_id = Column(TEXT)
-    line_2_measurement = Column(TEXT)
-    line_3_sensor_id = Column(TEXT)
-    line_3_measurement = Column(TEXT)
-    line_4_sensor_id = Column(TEXT)
-    line_4_measurement = Column(TEXT)
-
-
-class Timer(Base):
-    __tablename__ = "timer"
-
-    id = Column(TEXT, unique=True, primary_key=True)
-    timer_type = Column(TEXT)
-    name = Column(TEXT)
-    activated = Column(INT)
-    relay_id = Column(TEXT)
-    state = Column(TEXT)  # 'on' or 'off'
-    time_start = Column(TEXT)
-    time_end = Column(TEXT)
-    duration_on = Column(REAL)
-    duration_off = Column(REAL)
-
-
-class SMTP(Base):
+class SMTP(CRUDMixin, db.Model):
     __tablename__ = "smtp"
 
-    id = Column(TEXT, unique=True, primary_key=True)
-    host = Column(TEXT)
-    ssl = Column(INT)
-    port = Column(INT)
-    user = Column(TEXT)
-    passw = Column(TEXT)
-    email_from = Column(TEXT)
-    hourly_max = Column(INT)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    host = db.Column(db.Text, default='smtp.gmail.com')
+    ssl = db.Column(db.Boolean, default=1)
+    port = db.Column(db.Integer, default=465)
+    user = db.Column(db.Text, default='email@gmail.com')
+    passw = db.Column(db.Text, default='password')
+    email_from = db.Column(db.Text, default='email@gmail.com')
+    hourly_max = db.Column(db.Integer, default=2)
 
 
-class CameraStill(Base):
-    __tablename__ = "camerastill"
+class Timer(CRUDMixin, db.Model):
+    __tablename__ = "timer"
 
-    id = Column(TEXT, unique=True, primary_key=True)
-    hflip = Column(BOOLEAN)
-    vflip = Column(BOOLEAN)
-    rotation = Column(INT)
-    relay_id = Column(TEXT)
-    timestamp = Column(INT)
-    display_last = Column(INT)
-    cmd_pre_camera = Column(TEXT)
-    cmd_post_camera = Column(TEXT)
-    extra_parameters = Column(TEXT)
-
-
-class CameraStream(Base):
-    __tablename__ = "camerastream"
-
-    id = Column(TEXT, unique=True, primary_key=True)
-    relay_id = Column(TEXT)
-    cmd_pre_camera = Column(TEXT)
-    cmd_post_camera = Column(TEXT)
-    extra_parameters = Column(TEXT)
-
-
-class CameraTimelapse(Base):
-    __tablename__ = "cameratimelapse"
-
-    id = Column(TEXT, unique=True, primary_key=True)
-    relay_id = Column(TEXT)
-    path = Column(TEXT)
-    prefix = Column(TEXT)
-    file_timestamp = Column(INT)
-    display_last = Column(INT)
-    cmd_pre_camera = Column(TEXT)
-    cmd_post_camera = Column(TEXT)
-    extra_parameters = Column(TEXT)
-
-
-class Misc(Base):
-    __tablename__ = "misc"
-
-    id = Column(TEXT, unique=True, primary_key=True)
-    dismiss_notification = Column(INT)
-    force_https = Column(BOOLEAN)
-    hide_alert_info = Column(BOOLEAN)
-    hide_alert_success = Column(BOOLEAN)
-    hide_alert_warning = Column(BOOLEAN)
-    language = Column(TEXT)
-    login_message = Column(TEXT)
-    relay_stats_cost = Column(REAL)
-    relay_stats_currency = Column(TEXT)
-    relay_stats_dayofmonth = Column(INT)
-    relay_stats_volts = Column(INT)
-    stats_opt_out = Column(BOOLEAN)
-
-
-class Remote(Base):
-    __tablename__ = "remote"
-
-    id = Column(TEXT, unique=True, primary_key=True)
-    activated = Column(INT)
-    host = Column(TEXT)
-    username = Column(TEXT)
-    password_hash = Column(TEXT)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    name = db.Column(db.Text, default='Timer')
+    is_activated = db.Column(db.Boolean, default=False)
+    timer_type = db.Column(db.Text, default=None)
+    relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)
+    state = db.Column(db.Text, default=None)  # 'on' or 'off'
+    time_start = db.Column(db.Text, default=None)
+    time_end = db.Column(db.Text, default=None)
+    duration_on = db.Column(db.Float, default=None)
+    duration_off = db.Column(db.Float, default=None)

@@ -25,7 +25,7 @@ from flask_babel import gettext
 from RPi import GPIO
 
 # Classes
-from databases.mycodo_db.models_5 import (
+from databases.mycodo_db.models import (
     db,
     Camera,
     DisplayOrder,
@@ -1145,7 +1145,7 @@ def pid_add(form_add_pid):
     if form_add_pid.validate():
         for _ in range(0, form_add_pid.numberPIDs.data):
             try:
-                new_pid = PID().save(db.session)
+                new_pid = PID().save()
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
                 DisplayOrder.query.first().pid = add_display_order(
                     display_order, new_pid.id)
@@ -1435,7 +1435,7 @@ def relay_add(form_add_relay):
     if form_add_relay.validate():
         for _ in range(0, form_add_relay.numberRelays.data):
             try:
-                new_relay = Relay().save(db.session)
+                new_relay = Relay().save()
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
                 DisplayOrder.query.first().relay = add_display_order(
                     display_order, new_relay.id)
@@ -1709,7 +1709,7 @@ def sensor_add(form_add_sensor):
                     new_sensor.adc_volts_max = 2.048
 
             try:
-                new_sensor.save(db.session)
+                new_sensor.save()
 
                 DisplayOrder.query.first().sensor = add_display_order(
                     display_order, new_sensor.id)
@@ -1910,7 +1910,7 @@ def sensor_conditional_add(form_mod_sensor):
     try:
         new_sensor_cond = SensorConditional()
         new_sensor_cond.sensor_id = form_mod_sensor.modSensor_id.data
-        new_sensor_cond.save(db.session)
+        new_sensor_cond.save()
         check_refresh_conditional(form_mod_sensor.modSensor_id.data,
                                   'add',
                                   new_sensor_cond.id)
@@ -2083,7 +2083,7 @@ def timer_add(form_add_timer, timer_type, display_order):
 
         if not error:
             try:
-                new_timer.save(db.session)
+                new_timer.save()
                 DisplayOrder.query.first().timer = add_display_order(
                     display_order, new_timer.id)
                 db.session.commit()
@@ -2222,7 +2222,7 @@ def user_add(form_add_user):
             new_user.user_role = role
             new_user.user_theme = 'slate'
             try:
-                new_user.save(db.session)
+                new_user.save()
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:

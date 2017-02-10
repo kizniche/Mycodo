@@ -13,7 +13,7 @@ from flask import (
 from flask.blueprints import Blueprint
 
 # Classes
-from mycodo.databases.mycodo_db.models_5 import (
+from mycodo.databases.mycodo_db.models import (
     Camera,
     Misc,
     Role,

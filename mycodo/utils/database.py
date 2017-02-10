@@ -2,9 +2,9 @@
 import logging
 from databases.utils import session_scope
 
-from mycodo.config import SQL_DATABASE_MYCODO_5
+from mycodo.config import SQL_DATABASE_MYCODO
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 logger = logging.getLogger("mycodo.database")
 

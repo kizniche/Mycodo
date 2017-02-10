@@ -59,7 +59,7 @@ import RPi.GPIO as GPIO
 import datetime
 
 # Classes
-from databases.mycodo_db.models_5 import (
+from databases.mycodo_db.models import (
     LCD,
     PID,
     Relay,
@@ -73,12 +73,12 @@ from utils.influx import read_last_influxdb
 
 # Config
 from config import (
-    SQL_DATABASE_MYCODO_5,
+    SQL_DATABASE_MYCODO,
     MEASUREMENT_UNITS,
     MYCODO_VERSION
 )
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class LCDController(threading.Thread):

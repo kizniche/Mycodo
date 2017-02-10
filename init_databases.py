@@ -31,15 +31,15 @@ import errno
 
 import sqlalchemy
 
-from mycodo.config import SQL_DATABASE_MYCODO_5
-from mycodo.databases.mycodo_db.models_5 import User
+from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.databases.mycodo_db.models import User
 from mycodo.databases.utils import session_scope
 from mycodo.scripts.utils import test_username, test_password, is_email, query_yes_no
 
 if sys.version[0] == "3":
     raw_input = input  # Make sure this works in PY3
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 def add_user(admin=False):
@@ -122,7 +122,7 @@ def change_password(username):
                     sys.exit(1)
 
 
-def create_dbs(db_name, create_all=False, config=None, exit_when_done=True):
+def create_dbs(config=None, exit_when_done=True):
     """
     Creates the individual databases using a database URI or
     a configuration object (like 'ProdConfig', or 'TestConfig' in
@@ -135,7 +135,7 @@ def create_dbs(db_name, create_all=False, config=None, exit_when_done=True):
 
     :return: None
     """
-    db_path = config.SQL_DATABASE_MYCODO_5 if config and hasattr(config, 'SQL_DATABASE_MYCODO_5') else SQL_DATABASE_MYCODO_5
+    db_path = config.SQL_DATABASE_MYCODO if config and hasattr(config, 'SQL_DATABASE_MYCODO') else SQL_DATABASE_MYCODO
     mycodo_db_uri = config.MYCODO_DB_PATH if config and hasattr(config, 'MYCODO_DB_PATH') else MYCODO_DB_PATH
 
     if not os.path.exists(os.path.dirname(db_path)):
@@ -145,12 +145,11 @@ def create_dbs(db_name, create_all=False, config=None, exit_when_done=True):
             if exc.errno != errno.EEXIST:
                 raise
 
-    if db_name == 'mycodo' or create_all:
-        logging.debug("Creating/verifying mycodo_5.db at {} ...".format(mycodo_db_uri))
-        from mycodo.databases.mycodo_db import init_db
-        from mycodo.databases.mycodo_db import populate_db
-        init_db(mycodo_db_uri)
-        populate_db(mycodo_db_uri)
+    logging.debug("Creating/verifying mycodo.db at {} ...".format(mycodo_db_uri))
+    from mycodo.databases.mycodo_db import init_db
+    from mycodo.databases.mycodo_db import populate_db
+    init_db(mycodo_db_uri)
+    populate_db(mycodo_db_uri)
 
     if exit_when_done:
         sys.exit(0)
@@ -160,9 +159,8 @@ def menu():
     parser = argparse.ArgumentParser(description="Initialize Mycodo Database "
                                                  "structure and manage users")
 
-    parser.add_argument('-i', '--install_db', type=str,
-                        choices=['users', 'mycodo', 'notes', 'all'],
-                        help="Create new users.db, mycodo.db and/or note.db")
+    parser.add_argument('-i', '--install_db', action='store_true',
+                        help="Create new mycodo.db")
 
     parser.add_argument('-A', '--addadmin', action='store_true',
                         help="Add admin user to users database")
@@ -181,19 +179,16 @@ def menu():
     if args.adduser:
         add_user()
 
-    if args.addadmin:
+    elif args.addadmin:
         add_user(admin=True)
 
-    if args.install_db:
-        if args.install_db == 'all':
-            create_dbs('', create_all=True)
-        else:
-            create_dbs(args.install_db)
+    elif args.install_db:
+        create_dbs()
 
-    if args.deleteuser:
+    elif args.deleteuser:
         delete_user(args.deleteuser)
 
-    if args.pwchange:
+    elif args.pwchange:
         change_password(args.pwchange)
 
 

@@ -41,7 +41,7 @@ from flask_babel import gettext
 from flask_influxdb import InfluxDB
 
 # Classes
-from mycodo.databases.mycodo_db.models_5 import (
+from mycodo.databases.mycodo_db.models import (
     DisplayOrder,
     Misc,
     Relay,

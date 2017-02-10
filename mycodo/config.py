@@ -90,11 +90,11 @@ HTTP_LOG_FILE = '/var/log/apache2/error.log'
 
 # SQLite3 databases that hold users and settings
 DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
-SQL_DATABASE_MYCODO_5 = os.path.join(DATABASE_PATH, 'mycodo_5.db')
+SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
 # SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
 # SQL_DATABASE_USER = os.path.join(DATABASE_PATH, 'users.db')
 # SQL_DATABASE_NOTE = os.path.join(DATABASE_PATH, 'notes.db')
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 # USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
 
 # Influxdb sensor/device measurement database
@@ -131,9 +131,9 @@ MAX_AMPS = 15
 
 class ProdConfig(object):
     """ Production Configuration """
-    SQL_DATABASE_MYCODO_5 = os.path.join(DATABASE_PATH, 'mycodo_5.db')
-    MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + SQL_DATABASE_MYCODO_5
+    SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
+    MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + SQL_DATABASE_MYCODO
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 

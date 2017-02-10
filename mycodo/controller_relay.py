@@ -13,7 +13,7 @@ import time
 import timeit
 
 # Classes
-from databases.mycodo_db.models_5 import (
+from databases.mycodo_db.models import (
     Relay,
     RelayConditional,
     SMTP

@@ -14,7 +14,7 @@ from influxdb import InfluxDBClient
 from sqlalchemy import func
 
 # Classes
-from databases.mycodo_db.models_5 import (
+from databases.mycodo_db.models import (
     AlembicVersion,
     LCD,
     Method,
@@ -33,7 +33,7 @@ from utils.database import db_retrieve_table_daemon
 from config import (
     ID_FILE,
     MYCODO_VERSION,
-    SQL_DATABASE_MYCODO_5,
+    SQL_DATABASE_MYCODO,
     STATS_CSV,
     STATS_DATABASE,
     STATS_HOST,
@@ -43,7 +43,7 @@ from config import (
     STATS_USER
 )
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 logger = logging.getLogger("mycodo.stats")
 

@@ -19,7 +19,7 @@ from flask import (
 from flask_babel import gettext
 
 # Classes
-from mycodo.databases.mycodo_db.models_5 import (
+from mycodo.databases.mycodo_db.models import (
     Method,
     MethodData,
     Relay

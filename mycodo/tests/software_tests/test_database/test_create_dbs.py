@@ -14,6 +14,6 @@ from init_databases import create_dbs
 def test_create_dbs_mycodo_db(db_config):
     """ only create the mycodo_db """
     # Expect DB to exist
-    create_dbs('mycodo', config=db_config, exit_when_done=False)
+    create_dbs(config=db_config, exit_when_done=False)
     assert os.path.isfile(uri_to_path(db_config.MYCODO_DB_PATH)), "Mycodo Database File does not exist"
     assert os.path.getsize(uri_to_path(db_config.MYCODO_DB_PATH)) > 0, "Mycodo Database File was not set up (It is empty)"

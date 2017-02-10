@@ -25,7 +25,7 @@ import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from .models_5 import (
+from .models import (
     db,
     AlembicVersion,
     DisplayOrder,

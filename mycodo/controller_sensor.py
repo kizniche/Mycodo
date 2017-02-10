@@ -15,7 +15,7 @@ import RPi.GPIO as GPIO
 from lockfile import LockFile
 
 # Classes
-from databases.mycodo_db.models_5 import (
+from databases.mycodo_db.models import (
     Camera,
     Relay,
     Sensor,
@@ -57,9 +57,9 @@ from utils.send_data import send_email
 from utils.system_pi import cmd_output
 
 # Config
-from config import SQL_DATABASE_MYCODO_5
+from config import SQL_DATABASE_MYCODO
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class Measurement:

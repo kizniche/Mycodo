@@ -32,7 +32,7 @@ from flask_babel import Babel
 from flask_sslify import SSLify
 
 # Classes
-from mycodo.databases.mycodo_db.models_5 import (
+from mycodo.databases.mycodo_db.models import (
     db,
     Misc
 )
@@ -94,7 +94,7 @@ def register_extensions(_app, config):
     _app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
 
     # create the databases if needed
-    create_dbs(None, create_all=True, config=config, exit_when_done=False)
+    create_dbs(config=config, exit_when_done=False)
 
     # attach influx db
     influx_db.init_app(_app)

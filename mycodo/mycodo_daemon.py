@@ -50,7 +50,7 @@ from mycodo.controller_pid import PIDController
 from mycodo.controller_relay import RelayController
 from mycodo.controller_sensor import SensorController
 from mycodo.controller_timer import TimerController
-from mycodo.databases.mycodo_db.models_5 import (
+from mycodo.databases.mycodo_db.models import (
     Camera,
     LCD,
     Misc,
@@ -76,12 +76,12 @@ from mycodo.config import (
     FILE_TIMELAPSE_PARAM,
     LOCK_FILE_TIMELAPSE,
     MYCODO_VERSION,
-    SQL_DATABASE_MYCODO_5,
+    SQL_DATABASE_MYCODO,
     STATS_CSV,
     STATS_INTERVAL
 )
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class ComThread(threading.Thread):
