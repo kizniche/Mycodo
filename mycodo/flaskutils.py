@@ -799,12 +799,15 @@ def graph_add(form_add_graph, display_order):
             form_add_graph.refreshDuration.data):
         new_graph = Graph()
         new_graph.name = form_add_graph.name.data
-        pid_ids_joined = ",".join(str(form_add_graph.pidIDs.data))
-        new_graph.pid_ids = pid_ids_joined
-        relay_ids_joined = ",".join(str(form_add_graph.relayIDs.data))
-        new_graph.relay_ids = relay_ids_joined
-        sensor_ids_joined = ";".join(form_add_graph.sensorIDs.data)
-        new_graph.sensor_ids_measurements = sensor_ids_joined
+        if form_add_graph.pidIDs.data:
+            pid_ids_joined = ",".join(str(form_add_graph.pidIDs.data))
+            new_graph.pid_ids = pid_ids_joined
+        if form_add_graph.relayIDs.data:
+            relay_ids_joined = ",".join(str(form_add_graph.relayIDs.data))
+            new_graph.relay_ids = relay_ids_joined
+        if form_add_graph.sensorIDs.data:
+            sensor_ids_joined = ";".join(form_add_graph.sensorIDs.data)
+            new_graph.sensor_ids_measurements = sensor_ids_joined
         new_graph.width = form_add_graph.width.data
         new_graph.height = form_add_graph.height.data
         new_graph.x_axis_duration = form_add_graph.xAxisDuration.data
@@ -813,8 +816,7 @@ def graph_add(form_add_graph, display_order):
         new_graph.enable_rangeselect = form_add_graph.enableRangeSelect.data
         new_graph.enable_export = form_add_graph.enableExport.data
         try:
-            db.session.add(new_graph)
-            db.session.commit()
+            new_graph.save()
             flash(gettext(
                 "Graph with ID %(id)s successfully added",
                 id=new_graph.id),
@@ -866,13 +868,15 @@ def graph_mod(form_mod_graph, request_form):
             mod_graph.custom_colors = sorted_colors_string
             mod_graph.use_custom_colors = form_mod_graph.use_custom_colors.data
             mod_graph.name = form_mod_graph.name.data
-            pid_ids_joined = ",".join(str(form_mod_graph.pidIDs.data))
-            mod_graph.pid_ids = pid_ids_joined
-            relay_ids_joined = ",".join(str(form_mod_graph.relayIDs.data))
-            relay_ids_joined = ",".join(str(form_mod_graph.relayIDs.data))
-            mod_graph.relay_ids = relay_ids_joined
-            sensor_ids_joined = ";".join(form_mod_graph.sensorIDs.data)
-            mod_graph.sensor_ids_measurements = sensor_ids_joined
+            if form_mod_graph.pidIDs.data:
+                pid_ids_joined = ",".join(str(form_mod_graph.pidIDs.data))
+                mod_graph.pid_ids = pid_ids_joined
+            if form_mod_graph.relayIDs.data:
+                relay_ids_joined = ",".join(str(form_mod_graph.relayIDs.data))
+                mod_graph.relay_ids = relay_ids_joined
+            if form_mod_graph.sensorIDs.data:
+                sensor_ids_joined = ";".join(form_mod_graph.sensorIDs.data)
+                mod_graph.sensor_ids_measurements = sensor_ids_joined
             mod_graph.width = form_mod_graph.width.data
             mod_graph.height = form_mod_graph.height.data
             mod_graph.x_axis_duration = form_mod_graph.xAxisDuration.data

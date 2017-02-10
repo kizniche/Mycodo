@@ -101,8 +101,9 @@ def populate_db(db_path):
     Session = sessionmaker(bind=engine)
     session = Session()
     try:
-        for index, each_camera_type in enumerate(CAM_TYPES, 1):
-            insert_or_ignore(Camera(id=index, camera_type=each_camera_type), session)
+        for index, each_type in enumerate(CAM_TYPES, 1):
+            insert_or_ignore(CameraType(**each_type), session)
+            insert_or_ignore(Camera(id=index, camera_type=index), session)
         for each_role in USER_ROLES:
             insert_or_ignore(Role(**each_role), session)
         insert_or_ignore(AlembicVersion(), session)

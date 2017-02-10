@@ -1,8 +1,5 @@
 #!/usr/bin/python
 # coding=utf-8
-
-# !/usr/bin/python
-
 import io  # used to create file streams
 import fcntl  # used to access I2C parameters like addresses
 

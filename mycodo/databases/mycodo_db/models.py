@@ -127,6 +127,7 @@ class CameraType(CRUDMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     type_name = db.Column(db.String, nullable=False, unique=True)  # 'Still', 'Time-lapse', 'Stream', etc
+    description = db.Column(db.String)
 
 
 class DisplayOrder(CRUDMixin, db.Model):
@@ -377,7 +378,7 @@ class Sensor(CRUDMixin, db.Model):
     switch_edge = db.Column(db.Text, default='rising')
     switch_bouncetime = db.Column(db.Integer, default=50)
     switch_reset_period = db.Column(db.Integer, default=10)
-    pre_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=False)  # Relay to turn on before sensor read
+    pre_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to turn on before sensor read
     pre_relay_duration = db.Column(db.Float, default=0.0)  # Duration to turn relay on before sensor read
     sht_clock_pin = db.Column(db.Integer, default=None)
     sht_voltage = db.Column(db.Text, default='3.5')

@@ -63,6 +63,12 @@ def create_admin():
             "Cannot access admin creation form if an admin user "
             "already exists."), "error")
         return redirect(url_for('general_routes.home'))
+
+    # If cookies from previous session exist, delete them
+    if request.cookies.get('user_name'):
+        response = clear_cookie_auth()
+        return response
+
     form = flaskforms.CreateAdmin()
     if request.method == 'POST':
         if form.validate():
