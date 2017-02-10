@@ -1511,7 +1511,7 @@ msgid "General"
 msgstr ""
 
 #: mycodo_flask/templates/layout-settings.html:22
-msgid "Users"
+msgid "User"
 msgstr ""
 
 #: mycodo_flask/templates/layout-settings.html:23

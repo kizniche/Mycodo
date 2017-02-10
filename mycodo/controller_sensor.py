@@ -16,8 +16,7 @@ from lockfile import LockFile
 
 # Classes
 from databases.mycodo_db.models_5 import (
-    CameraStill,
-    CameraStream,
+    Camera,
     Relay,
     Sensor,
     SensorConditional,
@@ -230,7 +229,7 @@ class SensorController(threading.Thread):
 
         self.device_recognized = True
 
-        # Set up sensor
+        # Set up sensors or devices
         if self.device in ['EDGE', 'ADS1x15', 'MCP342x']:
             self.measure_sensor = None
         elif self.device == 'RPiCPULoad':
@@ -240,6 +239,16 @@ class SensorController(threading.Thread):
         elif self.device == 'AM2302':
             self.measure_sensor = DHT22Sensor(self.sensor_id,
                                               int(self.location))
+        elif self.device == 'AM2315':
+            self.measure_sensor = AM2315Sensor(self.i2c_bus)
+        elif self.device == 'ATLAS_PT1000':
+            self.measure_sensor = AtlasPT1000Sensor(self.i2c_address,
+                                                    self.i2c_bus)
+        elif self.device == 'BME280':
+            self.measure_sensor = BME280Sensor(self.i2c_address,
+                                               self.i2c_bus)
+        elif self.device == 'BMP':
+            self.measure_sensor = BMPSensor(self.i2c_bus)
         elif self.device == 'CHIRP':
             self.measure_sensor = ChirpSensor(self.i2c_address,
                                               self.i2c_bus)
@@ -255,18 +264,8 @@ class SensorController(threading.Thread):
                                               state=self.power_state)
         elif self.device == 'HTU21D':
             self.measure_sensor = HTU21DSensor(self.i2c_bus)
-        elif self.device == 'AM2315':
-            self.measure_sensor = AM2315Sensor(self.i2c_bus)
-        elif self.device == 'ATLAS_PT1000':
-            self.measure_sensor = AtlasPT1000Sensor(self.i2c_address,
-                                                    self.i2c_bus)
         elif self.device == 'K30':
             self.measure_sensor = K30Sensor()
-        elif self.device == 'BME280':
-            self.measure_sensor = BME280Sensor(self.i2c_address,
-                                               self.i2c_bus)
-        elif self.device == 'BMP':
-            self.measure_sensor = BMPSensor(self.i2c_bus)
         elif self.device == 'SHT1x_7x':
             self.measure_sensor = SHT1x7xSensor(self.location,
                                                 self.sht_clock_pin,
@@ -284,7 +283,7 @@ class SensorController(threading.Thread):
             self.device_recognized = False
             self.logger.debug("Device '{device}' not recognized".format(
                 device=self.device))
-            raise Exception("{device} is not a valid device type.".format(
+            raise Exception("'{device}' is not a valid device type.".format(
                 device=self.device))
 
         self.edge_reset_timer = time.time()
@@ -492,11 +491,11 @@ class SensorController(threading.Thread):
             message += "Status: {}. ".format(cmd_status)
 
         if self.cond_camera_record[cond_id] in ['photo', 'photoemail']:
-            camera_still = db_retrieve_table_daemon(CameraStill, entry='first')
+            camera_still = db_retrieve_table_daemon(Camera, device_id=1)
             attachment_file = camera_record(
                 'photo', camera_still)
         elif self.cond_camera_record[cond_id] in ['video', 'videoemail']:
-            camera_stream = db_retrieve_table_daemon(CameraStream, entry='first')
+            camera_stream = db_retrieve_table_daemon(Camera, device_id=3)
             attachment_file = camera_record(
                 'video', camera_stream, duration_sec=5)
 

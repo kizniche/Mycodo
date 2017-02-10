@@ -23,7 +23,7 @@ from flask.blueprints import Blueprint
 
 # Classes
 from mycodo.databases.mycodo_db.models_5 import (
-    CameraStill,
+    Camera,
     DisplayOrder,
     Graph,
     LCD,
@@ -35,17 +35,16 @@ from mycodo.databases.mycodo_db.models_5 import (
     Sensor,
     SensorConditional,
     Timer,
-    Users
+    User
 )
 from mycodo.devices.camera_pi import CameraStream
 
 # Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
+from mycodo.mycodo_flask.authentication_routes import logged_in
 from mycodo.mycodo_flask.general_routes import (
-    before_blueprint_request,
-    inject_mycodo_version,
-    logged_in
+    inject_mycodo_version
 )
 from mycodo.devices.camera_pi import camera_record
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -55,6 +54,7 @@ from mycodo.utils.system_pi import csv_to_list_of_int
 
 # Config
 from config import (
+    CAM_TYPES,
     DAEMON_LOG_FILE,
     FILE_TIMELAPSE_PARAM,
     HTTP_LOG_FILE,
@@ -73,7 +73,6 @@ blueprint = Blueprint('page_routes',
                       __name__,
                       static_folder='../static',
                       template_folder='../templates')
-blueprint.before_request(before_blueprint_request)  # check if admin was created
 
 
 @blueprint.context_processor
@@ -112,7 +111,7 @@ def page_camera():
 
     if request.method == 'POST':
         form_name = request.form['form-name']
-        if session['user_group'] == 'guest':
+        if not flaskutils.authorized(session, 'Guest'):
             flaskutils.deny_guest_user()
             return redirect('/camera')
         elif form_name == 'camera':
@@ -122,8 +121,10 @@ def page_camera():
                         if CameraStream().is_running():
                             CameraStream().terminate_controller()  # Stop camera stream
                             time.sleep(2)
-                        camera = CameraStill.query.first()
-                        camera_record('photo', camera)
+                        if form_camera.camera_type.data in CAM_TYPES:
+                            camera = Camera.query.filter(
+                                Camera.camera_type == form_camera.camera_type.data).first()
+                            camera_record('photo', camera)
                     except Exception as msg:
                         flash("Camera Error: {}".format(msg), "error")
                 else:
@@ -340,7 +341,7 @@ def page_graph():
     # Detect which form on the page was submitted
     if request.method == 'POST':
         form_name = request.form['form-name']
-        if session['user_group'] == 'guest':
+        if not flaskutils.authorized(session, 'Guest'):
             flaskutils.deny_guest_user()
             return redirect('/graph')
         elif form_name == 'modGraph':
@@ -475,7 +476,7 @@ def page_lcd():
 
     if request.method == 'POST':
         form_name = request.form['form-name']
-        if session['user_group'] == 'guest':
+        if not flaskutils.authorized(session, 'Guest'):
             flaskutils.deny_guest_user()
         elif form_name == 'orderLCD':
             flaskutils.lcd_reorder(form_order_lcd, display_order)
@@ -558,7 +559,7 @@ def page_logview():
     lines = 30
     logfile = ''
     if request.method == 'POST':
-        if session['user_group'] == 'guest':
+        if not flaskutils.authorized(session, 'Guest'):
             flaskutils.deny_guest_user()
             return redirect('/logview')
         if form_log_view.lines.data:
@@ -620,7 +621,7 @@ def page_pid():
 
     if request.method == 'POST':
         form_name = request.form['form-name']
-        if session['user_group'] == 'guest':
+        if not flaskutils.authorized(session, 'Guest'):
             flaskutils.deny_guest_user()
         elif form_name == 'addPID':
             flaskutils.pid_add(form_add_pid)
@@ -673,7 +674,7 @@ def page_relay():
     lcd = LCD.query.all()
     relay = Relay.query.all()
     relayconditional = RelayConditional.query.all()
-    users = Users.query.all()
+    users = User.query.all()
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
 
@@ -684,7 +685,7 @@ def page_relay():
 
     if request.method == 'POST':
         form_name = request.form['form-name']
-        if session['user_group'] == 'guest':
+        if not flaskutils.authorized(session, 'Guest'):
             flaskutils.deny_guest_user()
         elif form_name == 'addRelay':
             flaskutils.relay_add(form_add_relay)
@@ -743,7 +744,7 @@ def page_sensor():
     relay = Relay.query.all()
     sensor = Sensor.query.all()
     sensor_conditional = SensorConditional.query.all()
-    users = Users.query.all()
+    users = User.query.all()
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
 
@@ -765,7 +766,7 @@ def page_sensor():
 
     if request.method == 'POST':
         form_name = request.form['form-name']
-        if session['user_group'] == 'guest':
+        if not flaskutils.authorized(session, 'Guest'):
             flaskutils.deny_guest_user()
         elif form_name == 'addSensor':
             flaskutils.sensor_add(form_add_sensor)
@@ -819,7 +820,7 @@ def page_timer():
 
     if request.method == 'POST':
         form_name = request.form['form-name']
-        if session['user_group'] == 'guest':
+        if not flaskutils.authorized(session, 'Guest'):
             flaskutils.deny_guest_user()
         elif form_name == 'addTimer':
             flaskutils.timer_add(form_timer,

@@ -47,7 +47,7 @@ from mycodo.databases.mycodo_db.models_5 import (
     Relay,
     Remote,
     Sensor,
-    Users
+    User
 )
 from mycodo.devices.camera_pi import CameraStream
 from mycodo.mycodo_client import DaemonControl
@@ -82,13 +82,33 @@ logger = logging.getLogger(__name__)
 influx_db = InfluxDB()
 
 
-def before_blueprint_request():
+def before_request_admin_exist():
     """
     Ensure databases exist and at least one user is in the user database.
     """
     if not admin_exists():
         return redirect(url_for("authentication_routes.create_admin"))
-blueprint.before_request(before_blueprint_request)
+blueprint.before_request(before_request_admin_exist)
+
+
+@blueprint.context_processor
+def inject_mycodo_version():
+    """Variables to send with every page request"""
+    try:
+        control = DaemonControl()
+        daemon_status = control.daemon_status()
+    except Exception as e:
+        logger.error(gettext("URL for 'inject_mycodo_version' raised and "
+                             "error: %(err)s", err=e))
+        daemon_status = '0'
+
+    misc = Misc.query.first()
+    return dict(daemon_status=daemon_status,
+                mycodo_version=MYCODO_VERSION,
+                host=socket.gethostname(),
+                hide_alert_success=misc.hide_alert_success,
+                hide_alert_info=misc.hide_alert_info,
+                hide_alert_warning=misc.hide_alert_warning)
 
 
 @blueprint.route('/')
@@ -110,7 +130,7 @@ def remote_admin(page):
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    elif session['user_group'] == 'guest':
+    if not flaskutils.authorized(session, 'Guest'):
         flaskutils.deny_guest_user()
         return redirect(url_for('general_routes.home'))
 
@@ -260,9 +280,12 @@ def last_data(sensor_measure, sensor_id, sensor_period):
         timestamp = calendar.timegm(dt.timetuple()) * 1000
         live_data = '[{},{}]'.format(timestamp, value)
         return Response(live_data, mimetype='text/json')
+    except KeyError:
+        logger.debug("No Data returned form influxdb")
+        return '', 204
     except Exception as e:
-        logger.error("URL for 'last_data' raised and error: "
-                     "{err}".format(err=e))
+        logger.exception("URL for 'last_data' raised and error: "
+                         "{err}".format(err=e))
         return '', 204
 
 
@@ -497,7 +520,7 @@ def computer_command(action):
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    if session['user_group'] == 'guest':
+    if not flaskutils.authorized(session, 'Guest'):
         flaskutils.deny_guest_user()
         return redirect(url_for('general_routes.home'))
 
@@ -528,13 +551,13 @@ def newremote():
     username = request.args.get('user')
     pass_word = request.args.get('passw')
 
-    user = Users.query.filter(
-        Users.user_name == username).first()
+    user = User.query.filter(
+        User.user_name == username).first()
 
     # TODO: Change sleep() to max requests per duration of time
     time.sleep(1)  # Slow down requests (hackish, prevent brute force attack)
     if user:
-        if Users().check_password(pass_word, user.user_password_hash) == user.user_password_hash:
+        if User().check_password(pass_word, user.user_password_hash) == user.user_password_hash:
             return jsonify(status=0,
                            message="{hash}".format(
                                hash=user.user_password_hash))
@@ -548,13 +571,13 @@ def data():
     username = request.args.get('user')
     password_hash = request.args.get('pw_hash')
 
-    user = Users.query.filter(
-        Users.user_name == username).first()
+    user = User.query.filter(
+        User.user_name == username).first()
 
     # TODO: Change sleep() to max requests per duration of time
     time.sleep(1)  # Slow down requests (hackish, prevents brute force attack)
     if (user and
-            user.user_restriction == 'admin' and
+            user.role.name == 'admin' and
             password_hash == user.user_password_hash):
         return "0"
     return "1"
@@ -564,26 +587,6 @@ def data():
 def static_from_root():
     """Return static robots.txt"""
     return send_from_directory(current_app.static_folder, request.path[1:])
-
-
-@blueprint.context_processor
-def inject_mycodo_version():
-    """Variables to send with every page request"""
-    try:
-        control = DaemonControl()
-        daemon_status = control.daemon_status()
-    except Exception as e:
-        logger.error(gettext("URL for 'inject_mycodo_version' raised and "
-                             "error: %(err)s", err=e))
-        daemon_status = '0'
-
-    misc = Misc.query.first()
-    return dict(daemon_status=daemon_status,
-                mycodo_version=MYCODO_VERSION,
-                host=socket.gethostname(),
-                hide_alert_success=misc.hide_alert_success,
-                hide_alert_info=misc.hide_alert_info,
-                hide_alert_warning=misc.hide_alert_warning)
 
 
 @blueprint.errorhandler(404)

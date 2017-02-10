@@ -1,22 +1,56 @@
 # -*- coding: utf-8 -*-
 import bcrypt
 import datetime
+import logging
 import uuid
 from flask_sqlalchemy import SQLAlchemy
 from RPi import GPIO
 
 from mycodo.config import ALEMBIC_VERSION
 
+logger = logging.getLogger(__name__)
+
 db = SQLAlchemy()
 
 # TODO Build a BaseConditional that all the conditionals inherit from
+
+
+class CRUDMixin(object):
+    """
+    Basic Create, Read, Update and Delete methods
+    Models that inherit from this class automatically get these CRUD methods
+    """
+
+    def save(self, session):
+        """ creates the model in the database """
+
+        try:
+            session.add(self)
+            session.commit()
+            return self
+        except Exception as error:
+            session.rollback()
+            logging.error(
+                "Unable to save {model} due to error: {err}".format(
+                    model=self, err=error))
+            raise error
+
+    def delete(self, session):
+        """ deletes the record from the database """
+        try:
+            session.delete(self)
+            session.commit()
+        except Exception as error:
+            logger.error(
+                "Failed to delete '{record}' due to error: '{err}'".format(
+                    record=self, err=error))
 
 
 def set_uuid():
     return str(uuid.uuid4())
 
 
-class AlembicVersion(db.Model):
+class AlembicVersion(CRUDMixin, db.Model):
     __tablename__ = "alembic_version"
     version_num = db.Column(db.String(32),
                             primary_key=True, nullable=False,
@@ -27,21 +61,23 @@ class AlembicVersion(db.Model):
 # User Table
 #
 
-class Users(db.Model):
+class User(CRUDMixin, db.Model):
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.VARCHAR(64), unique=True, index=True)
     user_password_hash = db.Column(db.VARCHAR(255))
     user_email = db.Column(db.VARCHAR(64), unique=True, index=True)
-    user_restriction = db.Column(db.VARCHAR(64))
+    user_role = db.Column(db.Integer, db.ForeignKey('roles.id'), default=None)
     user_theme = db.Column(db.VARCHAR(64))
+
+    role = db.relationship("Role", back_populates="user")
 
     def __repr__(self):
         output = "<User: <name='{name}', email='{email}' is_admin='{isadmin}'>"
         return output.format(name=self.user_name,
                              email=self.user_email,
-                             isadmin=bool(self.user_restriction == 'admin'))
+                             isadmin=bool(self.user_role == 1))
 
     def set_password(self, new_password):
         self.user_password_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
@@ -52,12 +88,28 @@ class Users(db.Model):
         return hashes_match
 
 
+class Role(CRUDMixin, db.Model):
+    __tablename__ = "roles"
+
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    name = db.Column(db.String, nullable=False, unique=True)
+    edit_camera = db.Column(db.Boolean, default=False)
+    edit_controllers = db.Column(db.Boolean, default=False)
+    edit_users = db.Column(db.Boolean, default=False)
+    view_settings = db.Column(db.Boolean, default=False)
+    view_camera = db.Column(db.Boolean, default=False)
+    view_stats = db.Column(db.Boolean, default=False)
+    view_logs = db.Column(db.Boolean, default=False)
+
+    user = db.relationship("User", back_populates="role")
+
+
 #
 # Mycodo settings tables
 #
 
-class CameraStill(db.Model):
-    __tablename__ = "camerastill"
+class Camera(CRUDMixin, db.Model):
+    __tablename__ = "camera"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to turn on while capturing
@@ -65,34 +117,19 @@ class CameraStill(db.Model):
     vflip = db.Column(db.Boolean, default=False)  # Vertical flip image
     rotation = db.Column(db.Integer, default=0)  # Rotation degree (0-360)
     cmd_pre_camera = db.Column(db.Text, default='')  # Command to execute before capture
-    cmd_post_camera = db.Column(db.Text, default='')  # Command to execute after capture
+    cmd_post_camera = db.Column(db.Text, default='') # Command to execute after capture
+    camera_type = db.Column(db.Integer, db.ForeignKey('camera_type.id'), nullable=False)
 
 
-class CameraStream(db.Model):
-    __tablename__ = "camerastream"
+class CameraType(CRUDMixin, db.Model):
+    """ Holds camera description or kind: 'still', 'timelapse', 'stream', etc """
+    __tablename__ = 'camera_type'
 
-    id = db.Column(db.Integer, unique=True, primary_key=True)
-    relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to turn on while capturing
-    hflip = db.Column(db.Boolean, default=False)  # Horizontal flip image
-    vflip = db.Column(db.Boolean, default=False)  # Vertical flip image
-    rotation = db.Column(db.Integer, default=0)  # Rotation degree (0-360)
-    cmd_pre_camera = db.Column(db.Text, default='')  # Command to execute before capture
-    cmd_post_camera = db.Column(db.Text, default='')  # Command to execute after capture
+    id = db.Column(db.Integer, primary_key=True)
+    type_name = db.Column(db.String, nullable=False, unique=True)  # 'Still', 'Timelapse', 'Infrared', etc
 
 
-class CameraTimelapse(db.Model):
-    __tablename__ = "cameratimelapse"
-
-    id = db.Column(db.Integer, unique=True, primary_key=True)
-    relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to turn on while capturing
-    hflip = db.Column(db.Boolean, default=False)  # Horizontal flip image
-    vflip = db.Column(db.Boolean, default=False)  # Vertical flip image
-    rotation = db.Column(db.Integer, default=0)  # Rotation degree (0-360)
-    cmd_pre_camera = db.Column(db.Text, default='')  # Command to execute before capture
-    cmd_post_camera = db.Column(db.Text, default='')  # Command to execute after capture
-
-
-class DisplayOrder(db.Model):
+class DisplayOrder(CRUDMixin, db.Model):
     __tablename__ = "displayorder"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
@@ -105,7 +142,7 @@ class DisplayOrder(db.Model):
     timer = db.Column(db.Text, default='')
 
 
-class Graph(db.Model):
+class Graph(CRUDMixin, db.Model):
     __tablename__ = "graph"
     id = db.Column(db.Integer, unique=True, primary_key=True)
     name = db.Column(db.Text, default='Graph')
@@ -123,7 +160,7 @@ class Graph(db.Model):
     custom_colors = db.Column(db.Text, default='')  # Custom hex color values (csv)
 
 
-class LCD(db.Model):
+class LCD(CRUDMixin, db.Model):
     __tablename__ = "lcd"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
@@ -145,7 +182,7 @@ class LCD(db.Model):
     line_4_measurement = db.Column(db.Text, default='')
 
 
-class Method(db.Model):
+class Method(CRUDMixin, db.Model):
     __tablename__ = "method"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
@@ -155,7 +192,7 @@ class Method(db.Model):
     start_time = db.Column(db.Text, default=None)
 
 
-class MethodData(db.Model):
+class MethodData(CRUDMixin, db.Model):
     __tablename__ = "method_data"
     id = db.Column(db.Integer, unique=True, primary_key=True)
     method_id = db.Column(db.Integer, db.ForeignKey('method.id'), default=None)
@@ -181,7 +218,7 @@ class MethodData(db.Model):
     y3 = db.Column(db.Float, default=None)
 
 
-class Misc(db.Model):
+class Misc(CRUDMixin, db.Model):
     __tablename__ = "misc"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
@@ -199,7 +236,7 @@ class Misc(db.Model):
     stats_opt_out = db.Column(db.Boolean, default=False)  # Opt not to send anonymous usage statistics
 
 
-class PID(db.Model):
+class PID(CRUDMixin, db.Model):
     __tablename__ = "pid"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
@@ -229,7 +266,7 @@ class PID(db.Model):
     lower_max_duration = db.Column(db.Float, default=0.0)
 
 
-class Relay(db.Model):
+class Relay(CRUDMixin, db.Model):
     __tablename__ = "relay"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
@@ -293,7 +330,7 @@ class Relay(db.Model):
         return self.trigger == GPIO.input(self.pin)
 
 
-class RelayConditional(db.Model):
+class RelayConditional(CRUDMixin, db.Model):
     __tablename__ = "relayconditional"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
@@ -307,7 +344,7 @@ class RelayConditional(db.Model):
     do_action_data = db.Column(db.Text, default='')  # string, such as email address, command, or duration
 
 
-class Remote(db.Model):
+class Remote(CRUDMixin, db.Model):
     __tablename__ = "remote"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
@@ -317,7 +354,7 @@ class Remote(db.Model):
     password_hash = db.Column(db.Text, default='')
 
 
-class Sensor(db.Model):
+class Sensor(CRUDMixin, db.Model):
     __tablename__ = "sensor"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
@@ -364,7 +401,7 @@ class Sensor(db.Model):
         return self.is_activated
 
 
-class SensorConditional(db.Model):
+class SensorConditional(CRUDMixin, db.Model):
     __tablename__ = "sensorconditional"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
@@ -387,7 +424,7 @@ class SensorConditional(db.Model):
     camera_record = db.Column(db.Text, default='')
 
 
-class SMTP(db.Model):
+class SMTP(CRUDMixin, db.Model):
     __tablename__ = "smtp"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
@@ -400,7 +437,7 @@ class SMTP(db.Model):
     hourly_max = db.Column(db.Integer, default=2)
 
 
-class Timer(db.Model):
+class Timer(CRUDMixin, db.Model):
     __tablename__ = "timer"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)

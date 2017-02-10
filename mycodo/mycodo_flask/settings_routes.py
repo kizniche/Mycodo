@@ -14,10 +14,11 @@ from flask.blueprints import Blueprint
 
 # Classes
 from mycodo.databases.mycodo_db.models_5 import (
-    CameraStill,
+    Camera,
     Misc,
+    Role,
     SMTP,
-    Users
+    User
 )
 
 # Functions
@@ -28,7 +29,6 @@ from mycodo import flaskutils
 from config import LANGUAGES
 
 from mycodo.mycodo_flask.general_routes import (
-    before_blueprint_request,
     inject_mycodo_version,
     logged_in
 )
@@ -39,7 +39,6 @@ blueprint = Blueprint('settings_routes',
                       __name__,
                       static_folder='../static',
                       template_folder='../templates')
-blueprint.before_request(before_blueprint_request)  # check if admin was created
 
 
 @blueprint.context_processor
@@ -53,7 +52,7 @@ def settings_alerts():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    if session['user_group'] == 'guest':
+    if not flaskutils.authorized(session, 'Guest'):
         flaskutils.deny_guest_user()
         return redirect(url_for('settings_routes.settings_general'))
 
@@ -78,7 +77,7 @@ def settings_camera():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    camera = CameraStill.query.first()
+    camera = Camera.query.all()
     form_settings_camera = flaskforms.SettingsCamera()
 
     if request.method == 'POST':
@@ -121,11 +120,12 @@ def settings_users():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    if session['user_group'] == 'guest':
+    if not flaskutils.authorized(session, 'Admin'):
         flaskutils.deny_guest_user()
         return redirect(url_for('settings_routes.settings_general'))
 
-    users = Users.query.all()
+    users = User.query.all()
+    user_roles = Role.query.all()
     form_add_user = flaskforms.AddUser()
     form_mod_user = flaskforms.ModUser()
     form_del_user = flaskforms.DelUser()
@@ -144,6 +144,7 @@ def settings_users():
 
     return render_template('settings/users.html',
                            users=users,
+                           user_roles=user_roles,
                            form_add_user=form_add_user,
                            form_mod_user=form_mod_user,
                            form_del_user=form_del_user)

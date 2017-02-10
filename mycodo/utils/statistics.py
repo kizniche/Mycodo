@@ -22,7 +22,7 @@ from databases.mycodo_db.models_5 import (
     Relay,
     Sensor,
     Timer,
-    Users
+    User
 )
 
 # Functions
@@ -274,10 +274,10 @@ def send_stats():
         admin_count = 0
         # TODO: More specific exception or remove try
         try:
-            users = db_retrieve_table_daemon(Users, entry='all')
+            users = db_retrieve_table_daemon(User, entry='all')
             for each_user in users:
                 user_count += 1
-                if each_user.user_restriction == 'admin':
+                if each_user.user_role == 1:
                     admin_count += 1
         except Exception:
             pass

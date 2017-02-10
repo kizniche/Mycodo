@@ -32,7 +32,7 @@ import errno
 import sqlalchemy
 
 from mycodo.config import SQL_DATABASE_MYCODO_5
-from mycodo.databases.mycodo_db.models_5 import Users
+from mycodo.databases.mycodo_db.models_5 import User
 from mycodo.databases.utils import session_scope
 from mycodo.scripts.utils import test_username, test_password, is_email, query_yes_no
 
@@ -43,7 +43,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO_5
 
 
 def add_user(admin=False):
-    new_user = Users()
+    new_user = User()
 
     print('\nAdd user to database')
 
@@ -70,9 +70,9 @@ def add_user(admin=False):
             break
 
     if admin:
-        new_user.user_restriction = 'admin'
+        new_user.user_role = 1
     else:
-        new_user.user_restriction = 'guest'
+        new_user.user_role = 4
 
     new_user.user_theme = 'slate'
     try:
@@ -92,7 +92,7 @@ def delete_user(username):
     if query_yes_no("Confirm delete user '{}' from user database.".format(username)):
         try:
             with session_scope(MYCODO_DB_PATH) as db_session:
-                user = db_session.query(Users).filter(Users.user_name == username).one()
+                user = db_session.query(User).filter(User.user_name == username).one()
                 db_session.delete(user)
                 print("User deleted.")
                 sys.exit(0)
@@ -105,7 +105,7 @@ def change_password(username):
     print('Changing password for {}'.format(username))
 
     with session_scope(MYCODO_DB_PATH) as db_session:
-        user = db_session.query(Users).filter(Users.user_name == username).one()
+        user = db_session.query(User).filter(User.user_name == username).one()
 
         while True:
             user_password = getpass.getpass('Password: ')

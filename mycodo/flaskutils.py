@@ -27,7 +27,7 @@ from RPi import GPIO
 # Classes
 from databases.mycodo_db.models_5 import (
     db,
-    CameraStill,
+    Camera,
     DisplayOrder,
     Graph,
     LCD,
@@ -38,11 +38,12 @@ from databases.mycodo_db.models_5 import (
     Relay,
     RelayConditional,
     Remote,
+    Role,
     SMTP,
     Sensor,
     SensorConditional,
     Timer,
-    Users
+    User
 )
 from mycodo_client import DaemonControl
 
@@ -56,7 +57,10 @@ from utils.send_data import send_email
 from utils.system_pi import csv_to_list_of_int
 
 # Config
-from config import INSTALL_DIRECTORY
+from config import (
+    CAM_TYPES,
+    INSTALL_DIRECTORY
+)
 
 logger = logging.getLogger(__name__)
 
@@ -951,11 +955,8 @@ def lcd_add(form_add_lcd):
     if form_add_lcd.validate():
         for _ in range(0, form_add_lcd.numberLCDs.data):
             try:
+                new_lcd = LCD().save
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
-                new_lcd = LCD()
-                db.session.add(new_lcd)
-                db.session.commit()
-
                 DisplayOrder.query.first().lcd = add_display_order(
                     display_order, new_lcd.id)
                 db.session.commit()
@@ -1144,11 +1145,8 @@ def pid_add(form_add_pid):
     if form_add_pid.validate():
         for _ in range(0, form_add_pid.numberPIDs.data):
             try:
+                new_pid = PID().save(db.session)
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
-                new_pid = PID()
-                db.session.add(new_pid)
-                db.session.commit()
-
                 DisplayOrder.query.first().pid = add_display_order(
                     display_order, new_pid.id)
                 db.session.commit()
@@ -1437,11 +1435,8 @@ def relay_add(form_add_relay):
     if form_add_relay.validate():
         for _ in range(0, form_add_relay.numberRelays.data):
             try:
+                new_relay = Relay().save(db.session)
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
-                new_relay = Relay()
-                db.session.add(new_relay)
-                db.session.commit()
-
                 DisplayOrder.query.first().relay = add_display_order(
                     display_order, new_relay.id)
                 db.session.commit()
@@ -1549,8 +1544,7 @@ def relay_conditional_add(form_add_relay_cond):
     if form_add_relay_cond.validate():
         for _ in range(0, form_add_relay_cond.numberRelayConditionals.data):
             try:
-                db.session.add(RelayConditional())
-                db.session.commit()
+                RelayConditional().save
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
@@ -1715,8 +1709,7 @@ def sensor_add(form_add_sensor):
                     new_sensor.adc_volts_max = 2.048
 
             try:
-                db.session.add(new_sensor)
-                db.session.commit()
+                new_sensor.save(db.session)
 
                 DisplayOrder.query.first().sensor = add_display_order(
                     display_order, new_sensor.id)
@@ -1771,7 +1764,7 @@ def sensor_mod(form_mod_sensor):
             mod_sensor.i2c_bus = form_mod_sensor.modBus.data
             mod_sensor.location = form_mod_sensor.modLocation.data
             mod_sensor.power_pin = form_mod_sensor.modPowerPin.data
-            mod_sensor.power_state = int(form_mod_sensor.modPowerState.data)
+            mod_sensor.power_state = form_mod_sensor.modPowerState.data
             mod_sensor.multiplexer_address = form_mod_sensor.modMultiplexAddress.data
             mod_sensor.multiplexer_bus = form_mod_sensor.modMultiplexBus.data
             mod_sensor.multiplexer_channel = form_mod_sensor.modMultiplexChannel.data
@@ -1917,8 +1910,7 @@ def sensor_conditional_add(form_mod_sensor):
     try:
         new_sensor_cond = SensorConditional()
         new_sensor_cond.sensor_id = form_mod_sensor.modSensor_id.data
-        db.session.add(new_sensor_cond)
-        db.session.commit()
+        new_sensor_cond.save(db.session)
         check_refresh_conditional(form_mod_sensor.modSensor_id.data,
                                   'add',
                                   new_sensor_cond.id)
@@ -2091,9 +2083,7 @@ def timer_add(form_add_timer, timer_type, display_order):
 
         if not error:
             try:
-                db.session.add(new_timer)
-                db.session.commit()
-
+                new_timer.save(db.session)
                 DisplayOrder.query.first().timer = add_display_order(
                     display_order, new_timer.id)
                 db.session.commit()
@@ -2209,7 +2199,7 @@ def user_add(form_add_user):
     error = []
 
     if form_add_user.validate():
-        new_user = Users()
+        new_user = User()
         if not test_username(form_add_user.addUsername.data):
             error.append(gettext(
                 "Invalid user name. Must be between 2 and 64 characters "
@@ -2227,12 +2217,12 @@ def user_add(form_add_user):
             new_user.user_name = form_add_user.addUsername.data
             new_user.user_email = form_add_user.addEmail.data
             new_user.set_password(form_add_user.addPassword.data)
-            new_user.user_restriction = form_add_user.addGroup.data
+            role = Role.query.filter(
+                Role.name == form_add_user.addGroup.data).first().id
+            new_user.user_role = role
             new_user.user_theme = 'slate'
             try:
-                db.session.add(new_user)
-                db.session.commit()
-
+                new_user.save(db.session)
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
@@ -2250,8 +2240,8 @@ def user_mod(form_mod_user):
     error = []
 
     try:
-        mod_user = Users.query.filter(
-            Users.user_name == form_mod_user.modUsername.data).first()
+        mod_user = User.query.filter(
+            User.user_name == form_mod_user.modUsername.data).first()
         mod_user.user_email = form_mod_user.modEmail.data
         # Only change the password if it's entered in the form
         logout_user = False
@@ -2268,7 +2258,9 @@ def user_mod(form_mod_user):
                 error.append(gettext("Passwords do not match. Please try again."))
 
         if not error:
-            mod_user.user_restriction = form_mod_user.modGroup.data
+            role = Role.query.filter(
+                Role.name == form_mod_user.modGroup.data).first().id
+            mod_user.user_role = role
             mod_user.user_theme = form_mod_user.modTheme.data
             if session['user_name'] == form_mod_user.modUsername.data:
                 session['user_theme'] = form_mod_user.modTheme.data
@@ -2284,7 +2276,7 @@ def user_mod(form_mod_user):
 def user_del(form_del_user):
     try:
         if form_del_user.validate():
-            delete_user(Users,
+            delete_user(User,
                         form_del_user.delUsername.data)
             if form_del_user.delUsername.data == session['user_name']:
                 return 'logout'
@@ -2349,11 +2341,13 @@ def settings_camera_mod(form_mod_camera):
 
     try:
         if form_mod_camera.validate():
-            mod_camera = CameraStill.query.one()
-            mod_camera.hflip = form_mod_camera.hflip.data
-            mod_camera.vflip = form_mod_camera.vflip.data
-            mod_camera.rotation = form_mod_camera.rotation.data
-            db.session.commit()
+            if form_mod_camera.camera_type.data in CAM_TYPES:
+                mod_camera = Camera.query.filter(
+                    Camera.camera_type == form_mod_camera.camera_type.data).first()
+                mod_camera.hflip = form_mod_camera.hflip.data
+                mod_camera.vflip = form_mod_camera.vflip.data
+                mod_camera.rotation = form_mod_camera.rotation.data
+                db.session.commit()
         else:
             flash_form_errors(form_mod_camera)
     except Exception as except_msg:
@@ -2405,6 +2399,15 @@ def settings_alert_mod(form_mod_alert):
 # Miscellaneous
 #
 
+def authorized(session, role_name, role_id=None):
+    if role_id:
+        user = User.query.filter(User.id == role_id).first()
+    else:
+        user = User.query.filter(Role.name == role_name).first()
+    if user and user.role.name == session['user_role']:
+            return True
+    return False
+
 
 def db_retrieve_table(table, first=False, device_id=''):
     """ Return table data from database SQL query """
@@ -2418,19 +2421,18 @@ def db_retrieve_table(table, first=False, device_id=''):
     return return_table
 
 
-def delete_user(db_path, users, username):
+def delete_user(users, username):
     """ Delete user from SQL database """
     try:
-        with session_scope(db_path) as db_session:
-            user = db_session.query(users).filter(
-                users.user_name == username).first()
-            db_session.delete(user)
-            flash(gettext("Success: %(msg)s",
-                          msg='{action} {user}'.format(
-                              action=gettext("Delete"),
-                              user=username)),
-                  "success")
-            return 1
+        user = User.query.filter(
+            users.user_name == username).first()
+        user.delete(db.session)
+        flash(gettext("Success: %(msg)s",
+                      msg='{action} {user}'.format(
+                          action=gettext("Delete"),
+                          user=username)),
+              "success")
+        return 1
     except sqlalchemy.orm.exc.NoResultFound:
         flash(gettext("Error: %(err)s",
                       err=gettext("User not found")),
@@ -2466,7 +2468,7 @@ def delete_entry_with_id(table, entry_id):
 
 
 def deny_guest_user():
-    if session['user_group'] == 'guest':
+    if not authorized(session, 'Guest'):
         flash(gettext("Guests are not permitted to do that"), "error")
         return True
 

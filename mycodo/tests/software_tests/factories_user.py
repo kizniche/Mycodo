@@ -7,7 +7,7 @@ from mycodo.databases.mycodo_db import models_5
 class UserFactory(factory.Factory):
     """ A factory for creating user models """
     class Meta(object):
-        model = models_5.Users
+        model = models_5.User
 
     user_name = factory.Faker('name')
     user_email = factory.Faker('email')
@@ -17,19 +17,19 @@ class UserFactory(factory.Factory):
 class AdminFactory(factory.Factory):
     """ A factory for creating admin user models """
     class Meta(object):
-        model = models_5.Users
+        model = models_5.User
 
     user_name = factory.Faker('name')
     user_email = factory.Faker('email')
-    user_restriction = "admin"
+    user_role = 1  # Admin
 
 
 # Guest factory
 class GuestFactory(factory.Factory):
     """ A factory for creating admin user models """
     class Meta(object):
-        model = models_5.Users
+        model = models_5.User
 
     user_name = factory.Faker('name')
     user_email = factory.Faker('email')
-    user_restriction = "guest"
+    user_role = 4  # Guest

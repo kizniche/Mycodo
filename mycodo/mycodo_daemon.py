@@ -51,7 +51,7 @@ from mycodo.controller_relay import RelayController
 from mycodo.controller_sensor import SensorController
 from mycodo.controller_timer import TimerController
 from mycodo.databases.mycodo_db.models_5 import (
-    CameraStill,
+    Camera,
     LCD,
     Misc,
     PID,
@@ -282,7 +282,7 @@ class DaemonController(threading.Thread):
                                        'capture_number',
                                        capture_number)
                         # Capture image
-                        camera = db_retrieve_table_daemon(CameraStill, entry='first')
+                        camera = db_retrieve_table_daemon(Camera, device_id=1)
                         camera_record(
                             'timelapse',
                             camera,

@@ -331,12 +331,8 @@ class AddUser(Form):
         render_kw={"placeholder": lazy_gettext("Repeat Password")},
         validators=[DataRequired()]
     )
-    addGroup = SelectField(
+    addGroup = StringField(
         lazy_gettext('Group'),
-        choices=[
-            ('admin', 'Admin'),
-            ('guest', 'Guest')
-        ],
         validators=[DataRequired()]
     )
     addSubmit = SubmitField(lazy_gettext('Submit'))
@@ -369,12 +365,8 @@ class ModUser(Form):
         lazy_gettext('Repeat Password'),
         render_kw={"placeholder": lazy_gettext("Repeat Password")}
     )
-    modGroup = SelectField(
+    modGroup = StringField(
         lazy_gettext('Group'),
-        choices=[
-            ('admin', 'Admin'),
-            ('guest', 'Guest')
-        ],
         validators=[DataRequired()]
     )
     modTheme = StringField(lazy_gettext('Theme'))

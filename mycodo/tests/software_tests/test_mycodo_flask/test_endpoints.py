@@ -89,7 +89,7 @@ def test_does_not_see_admin_creation_form(testapp):
 def test_routes_logged_in_as_admin(_, testapp, user_db):
     """ Verifies behavior of these endpoints for a logged in admin user """
     # Create admin user and log in
-    admin_user = create_user(user_db, 'admin', 'name_admin', 'secret_pass')
+    admin_user = create_user(user_db, 1, 'name_admin', 'secret_pass')
     login_user(testapp, admin_user.user_name, 'secret_pass')
 
     # Test if the navigation bar is seen on the main page
@@ -133,7 +133,7 @@ def test_routes_logged_in_as_admin(_, testapp, user_db):
 def test_add_sensor_logged_in_as_admin(_, testapp, user_db):
     """ Verifies behavior of these endpoints for a logged in admin user """
     # Create admin user and log in
-    admin_user = create_user(user_db, 'admin', 'name_admin', 'secret_pass')
+    admin_user = create_user(user_db, 1, 'name_admin', 'secret_pass')
     login_user(testapp, admin_user.user_name, 'secret_pass')
 
     response = add_sensor(testapp)
@@ -154,7 +154,7 @@ def test_add_sensor_logged_in_as_admin(_, testapp, user_db):
 def test_routes_logged_in_as_guest(_, testapp, user_db):
     """ Verifies behavior of these endpoints for a logged in guest user """
     # Create guest user and log in
-    guest_user = create_user(user_db, 'guest', 'name_guest', 'secret_pass')
+    guest_user = create_user(user_db, 4, 'name_guest', 'secret_pass')
     login_user(testapp, guest_user.user_name, 'secret_pass')
 
     # Test if the navigation bar is seen on the main page
@@ -182,7 +182,7 @@ def create_user(user_db, restriction, name, password):
     new_user = UserFactory()
     new_user.user_name = name
     new_user.set_password(password)
-    new_user.user_restriction = restriction
+    new_user.user_role = restriction
     user_db.add(new_user)
     user_db.commit()
     return new_user

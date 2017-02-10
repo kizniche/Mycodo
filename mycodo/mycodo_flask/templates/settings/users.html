@@ -39,7 +39,12 @@
     <div class="form-group">
       {{form_add_user.addGroup.label(class_='col-sm-4 control-label')}}
       <div class="col-sm-8">
-        {{form_add_user.addGroup(class_='form-control')}}
+        <select class="form-control" id="addGroup" name="addGroup">
+          <option value="Admin">Admin</option>
+          {% for each_role in user_roles if each_role.name != 'Admin' %}
+            <option value="{{each_role.name}}">{{each_role.name}}</option>
+          {% endfor -%}
+        </select>
       </div>
     </div>
     <div class="form-group">
@@ -91,8 +96,9 @@
           </td>
           <td>
             <select class="form-control" id="modGroup" name="modGroup">
-              <option value="admin"{% if user.user_restriction == 'admin' %} selected{% endif %}>Admin</option>
-              <option value="guest"{% if user.user_restriction == 'guest' %} selected{% endif %}>Guest</option>
+              {% for each_role in user_roles %}
+                <option value="{{each_role.name}}"{% if user.role.name == each_role.name %} selected{% endif %}>{{each_role.name}}</option>
+              {% endfor %}
             </select>
           </td>
           <td>
@@ -115,7 +121,7 @@
                   ('united', 'United'),
                   ('yeti', 'Yeti')
             ] -%}
-            <select class="form-control" id="modGroup" name="modTheme">
+            <select class="form-control" id="modTheme" name="modTheme">
               <option value=""{% if user.user_theme == '' %} selected{% endif %}>Default</option>
               {% for value, name in theme_options %}
                 <option value="{{value|e}}"{% if value == user.user_theme %} selected{% endif %}>{{name|e}}</option>

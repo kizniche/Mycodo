@@ -1,5 +1,9 @@
 ## 5.0.0 (Unreleased)
 
+### Features
+
+  - Add new user roles: Editor and Monitor
+
 ### Miscellaneous
 
   - Database restructuring

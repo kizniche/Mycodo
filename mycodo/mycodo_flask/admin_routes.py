@@ -20,7 +20,6 @@ from pkg_resources import parse_version
 from mycodo import flaskforms
 from mycodo import flaskutils
 from mycodo.mycodo_flask.general_routes import (
-    before_blueprint_request,
     inject_mycodo_version,
     logged_in
 )
@@ -43,7 +42,6 @@ blueprint = Blueprint(
     static_folder='../static',
     template_folder='../templates'
 )
-blueprint.before_request(before_blueprint_request)  # check if admin was created
 
 
 @blueprint.context_processor
@@ -57,7 +55,7 @@ def admin_backup():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    if session['user_group'] == 'guest':
+    if not flaskutils.authorized(session, 'Guest'):
         flaskutils.deny_guest_user()
         return redirect(url_for('general_routes.home'))
 
@@ -98,7 +96,7 @@ def admin_statistics():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    if session['user_group'] == 'guest':
+    if not flaskutils.authorized(session, 'Guest'):
         flaskutils.deny_guest_user()
         return redirect(url_for('general_routes.home'))
 
@@ -116,7 +114,7 @@ def admin_upgrade():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    if session['user_group'] == 'guest':
+    if not flaskutils.authorized(session, 'Guest'):
         flaskutils.deny_guest_user()
         return redirect(url_for('general_routes.home'))
 

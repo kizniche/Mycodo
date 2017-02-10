@@ -29,7 +29,6 @@ from mycodo.databases.mycodo_db.models_5 import (
 from mycodo import flaskforms
 from mycodo import flaskutils
 from mycodo.mycodo_flask.general_routes import (
-    before_blueprint_request,
     inject_mycodo_version,
     logged_in
 )
@@ -45,7 +44,6 @@ blueprint = Blueprint('method_routes',
                       __name__,
                       static_folder='../static',
                       template_folder='../templates')
-blueprint.before_request(before_blueprint_request)  # check if admin was created
 
 
 @blueprint.context_processor
@@ -200,7 +198,7 @@ def method_builder(method_type, method_id):
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    if session['user_group'] == 'guest':
+    if not flaskutils.authorized(session, 'Guest'):
         flaskutils.deny_guest_user()
         return redirect('/method')
 
@@ -295,7 +293,7 @@ def method_delete(method_id):
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    if session['user_group'] == 'guest':
+    if not flaskutils.authorized(session, 'Guest'):
         flaskutils.deny_guest_user()
         return redirect('/method')
 

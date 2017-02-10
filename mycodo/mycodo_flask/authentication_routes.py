@@ -1,6 +1,7 @@
 # coding=utf-8
 """ flask views that deal with user authentication """
 import datetime
+import logging
 import socket
 import time
 
@@ -21,7 +22,7 @@ from mycodo.databases.mycodo_db.models_5 import (
     db,
     AlembicVersion,
     Misc,
-    Users
+    User
 )
 
 # Functions
@@ -45,6 +46,8 @@ blueprint = Blueprint(
     static_folder='../static',
     template_folder='../templates'
 )
+
+logger = logging.getLogger(__name__)
 
 
 @blueprint.context_processor
@@ -83,11 +86,11 @@ def create_admin():
             if error:
                 return redirect(url_for('general_routes.home'))
 
-            new_user = Users()
+            new_user = User()
             new_user.user_name = form.username.data
             new_user.user_email = form.email.data
             new_user.set_password(form.password.data)
-            new_user.user_restriction = 'admin'
+            new_user.user_role = 1  # Admin
             new_user.user_theme = 'slate'
             try:
                 db.session.add(new_user)
@@ -112,7 +115,7 @@ def do_login():
     if not admin_exists():
         return redirect('/create_admin')
 
-    if logged_in():
+    elif logged_in():
         flash(gettext("Cannot access login page if you're already logged in"),
               "error")
         return redirect(url_for('general_routes.home'))
@@ -143,8 +146,8 @@ def do_login():
                     flash(gettext("Acknowledgement unable to be saved: "
                                   "%(err)s", err=except_msg), "error")
             elif form_name == 'login' and form.validate_on_submit():
-                user = Users.query.filter(
-                    Users.user_name == form.username.data).first()
+                user = User.query.filter(
+                    User.user_name == form.username.data).first()
                 if not user:
                     login_log(form.username.data,
                               'NA',
@@ -152,16 +155,16 @@ def do_login():
                                   'REMOTE_ADDR', 'unknown address'),
                               'NOUSER')
                     failed_login()
-                elif Users().check_password(
+                elif User().check_password(
                         form.password.data,
                         user.user_password_hash) == user.user_password_hash:
                     login_log(user.user_name,
-                              user.user_restriction,
+                              user.role.name,
                               request.environ.get('REMOTE_ADDR',
                                                   'unknown address'),
                               'LOGIN')
                     session['logged_in'] = True
-                    session['user_group'] = user.user_restriction
+                    session['user_role'] = user.role.name
                     session['user_name'] = user.user_name
                     session['user_theme'] = user.user_theme
                     if form.remember.data:
@@ -178,7 +181,7 @@ def do_login():
                     return redirect(url_for('general_routes.home'))
                 else:
                     login_log(user.user_name,
-                              user.user_restriction,
+                              user.role.name,
                               request.environ.get('REMOTE_ADDR',
                                                   'unknown address'),
                               'FAIL')
@@ -205,7 +208,7 @@ def logout():
     """Log out of the web-ui"""
     if session.get('user_name'):
         login_log(session['user_name'],
-                  session['user_group'],
+                  session['user_role'],
                   request.environ.get('REMOTE_ADDR', 'unknown address'),
                   'LOGOUT')
     response = clear_cookie_auth()
@@ -215,7 +218,8 @@ def logout():
 
 def admin_exists():
     """Verify that at least one admin user exists"""
-    return Users.query.filter(Users.user_restriction == 'admin').count()
+    test = User.query.filter(User.user_role == 1).count()
+    return test
 
 
 def authenticate_cookies():
@@ -223,14 +227,14 @@ def authenticate_cookies():
     cookie_username = request.cookies.get('user_name')
     cookie_password_hash = request.cookies.get('user_pass_hash')
     if cookie_username is not None:
-        user = Users.query.filter(
-            Users.user_name == cookie_username).first()
+        user = User.query.filter(
+            User.user_name == cookie_username).first()
 
         if user is None:
             return False
         elif cookie_password_hash == user.user_password_hash:
             session['logged_in'] = True
-            session['user_group'] = user.user_restriction
+            session['user_role'] = user.role.name
             session['user_name'] = user.user_name
             session['user_theme'] = user.user_theme
             return True

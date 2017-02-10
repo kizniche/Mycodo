@@ -49,6 +49,32 @@ MEASUREMENT_UNITS = {
     'altitude': 'm'
 }
 
+CAM_TYPES = (
+    'Still',
+    'Time-lapse',
+    'Stream'
+)
+
+USER_ROLES = [
+    dict(id=1, name='Admin',
+         edit_camera=True, edit_controllers=True, edit_users=True,
+         view_settings=True, view_camera=True, view_stats=True,
+         view_logs=True),
+    dict(id=2, name='Editor',
+         edit_camera=True, edit_controllers=True, edit_users=False,
+         view_settings=True, view_camera=True, view_stats=True,
+         view_logs=True),
+    dict(id=3, name='Monitor',
+         edit_camera=False, edit_controllers=False, edit_users=False,
+         view_settings=True, view_camera=True, view_stats=True,
+         view_logs=True),
+    dict(id=4, name='Guest',
+         edit_camera=False, edit_controllers=False, edit_users=False,
+         view_settings=False, view_camera=False, view_stats=False,
+         view_logs=False)
+    ]
+
+
 INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
 
 LOCK_PATH = '/var/lock'
