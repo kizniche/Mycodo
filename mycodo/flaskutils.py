@@ -48,7 +48,6 @@ from databases.mycodo_db.models import (
 from mycodo_client import DaemonControl
 
 # Functions
-from databases.utils import session_scope
 from scripts.utils import (
     test_username,
     test_password
@@ -58,7 +57,7 @@ from utils.system_pi import csv_to_list_of_int
 
 # Config
 from config import (
-    CAM_TYPES,
+    CAMERAS_SUPPORTED,
     INSTALL_DIRECTORY
 )
 
@@ -782,6 +781,91 @@ def choices_id_name(table):
                                          name=each_entry.name)
         choices.update({value:display})
     return choices
+
+
+#
+# Camera
+#
+
+def camera_add(form_camera):
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Camera"))
+    error = []
+
+    if form_camera.validate():
+        new_camera = Camera()
+        if Camera.query.filter(Camera.name == form_camera.name.data).count():
+            flash("You must choose a unique name", "error")
+            return redirect(url_for('settings_routes.settings_camera'))
+        new_camera.name = form_camera.name.data
+        new_camera.camera_type = form_camera.camera_type.data
+        new_camera.library = CAMERAS_SUPPORTED[form_camera.camera_type.data]
+        if not error:
+            try:
+                new_camera.save()
+            except sqlalchemy.exc.OperationalError as except_msg:
+                error.append(except_msg)
+            except sqlalchemy.exc.IntegrityError  as except_msg:
+                error.append(except_msg)
+
+        flash_success_errors(error, action, url_for('settings_routes.settings_camera'))
+    else:
+        flash_form_errors(form_camera)
+
+
+def camera_mod(form_camera):
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Camera"))
+    error = []
+
+    try:
+        if (Camera.query
+                    .filter(Camera.id != form_camera.camera_id.data)
+                    .filter(Camera.name == form_camera.name.data).count()):
+            flash("You must choose a unique name", "error")
+            return redirect(url_for('settings_routes.settings_camera'))
+
+        mod_camera = Camera.query.filter(
+            Camera.id == form_camera.camera_id.data).first()
+        mod_camera.name = form_camera.name.data
+        mod_camera.camera_type = form_camera.camera_type.data
+        mod_camera.library = form_camera.library.data
+        mod_camera.hflip = form_camera.hflip.data
+        mod_camera.vflip = form_camera.vflip.data
+        mod_camera.rotation = form_camera.rotation.data
+        mod_camera.height = form_camera.height.data
+        mod_camera.width = form_camera.width.data
+        mod_camera.contrast = form_camera.contrast.data
+        mod_camera.exposure = form_camera.exposure.data
+        mod_camera.gain = form_camera.gain.data
+        mod_camera.hue = form_camera.hue.data
+        mod_camera.saturation = form_camera.saturation.data
+        mod_camera.white_balance = form_camera.white_balance.data
+        mod_camera.relay_id = form_camera.relay_id.data
+        mod_camera.cmd_pre_camera = form_camera.cmd_pre_camera.data
+        mod_camera.cmd_post_camera = form_camera.cmd_post_camera.data
+        mod_camera.relay_id = form_camera.relay_id.data
+        db.session.commit()
+    except Exception as except_msg:
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('settings_routes.settings_camera'))
+
+
+def camera_del(form_camera):
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Camera"))
+    error = []
+    try:
+        delete_entry_with_id(Camera,
+                             int(form_camera.camera_id.data))
+    except Exception as except_msg:
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('settings_routes.settings_camera'))
 
 
 #
@@ -2449,6 +2533,7 @@ def delete_entry_with_id(table, entry_id):
         entries = table.query.filter(
             table.id == entry_id).first()
         db.session.delete(entries)
+        db.session.commit()
         flash(gettext("Success: %(msg)s",
                       msg='{action} {id}'.format(
                           action=gettext("Delete"),

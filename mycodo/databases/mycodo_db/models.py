@@ -112,22 +112,23 @@ class Camera(CRUDMixin, db.Model):
     __tablename__ = "camera"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to turn on while capturing
+    name = db.Column(db.Text, unique=True, nullable=False)
+    camera_type = db.Column(db.Text, nullable=False)
+    library = db.Column(db.Text, nullable=False)
     hflip = db.Column(db.Boolean, default=False)  # Horizontal flip image
     vflip = db.Column(db.Boolean, default=False)  # Vertical flip image
     rotation = db.Column(db.Integer, default=0)  # Rotation degree (0-360)
+    height = db.Column(db.Integer, default=640)
+    width = db.Column(db.Integer, default=480)
+    contrast = db.Column(db.Float, default=0.0)
+    exposure = db.Column(db.Float, default=0.0)
+    gain = db.Column(db.Float, default=0.0)
+    hue = db.Column(db.Float, default=0.0)
+    saturation = db.Column(db.Float, default=0.0)
+    white_balance = db.Column(db.Float, default=0.0)
+    relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Turn relay on during capture
     cmd_pre_camera = db.Column(db.Text, default='')  # Command to execute before capture
-    cmd_post_camera = db.Column(db.Text, default='') # Command to execute after capture
-    camera_type = db.Column(db.Integer, db.ForeignKey('camera_type.id'), nullable=False)
-
-
-class CameraType(CRUDMixin, db.Model):
-    """ Holds camera description or kind: 'still', 'timelapse', 'stream', etc """
-    __tablename__ = 'camera_type'
-
-    id = db.Column(db.Integer, primary_key=True)
-    type_name = db.Column(db.String, nullable=False, unique=True)  # 'Still', 'Time-lapse', 'Stream', etc
-    description = db.Column(db.String)
+    cmd_post_camera = db.Column(db.Text, default='')  # Command to execute after capture
 
 
 class DisplayOrder(CRUDMixin, db.Model):

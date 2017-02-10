@@ -21,8 +21,8 @@ case "${1:-''}" in
 
           NOW=$(date +"%Y-%m-%d_%H-%M-%S")
           CURRENT_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
-          UPDATE_URL=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 4 2>&1)
-          UPDATE_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 4 -v 2>&1)
+          UPDATE_URL=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 5 2>&1)
+          UPDATE_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 5 -v 2>&1)
           MYCODO_NEW_TMP_DIR="/tmp/Mycodo-${UPDATE_VERSION}"
           TARBALL_FILE="mycodo-${UPDATE_VERSION}"
 
@@ -237,7 +237,7 @@ EOF
     'upgrade-packages')
         printf "\n#### Installing prerequisite apt packages.\n"
         apt-get update -y
-        apt-get install -y apache2 gawk git libav-tools libffi-dev libi2c-dev python-dev python-numpy python-setuptools python-smbus sqlite3
+        apt-get install -y apache2 gawk git libav-tools libffi-dev libi2c-dev python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3
         easy_install pip
     ;;
     'compile-translations')

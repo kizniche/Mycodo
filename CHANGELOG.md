@@ -2,6 +2,7 @@
 
 ### Features
 
+  - Automatically detect DS18B20 sensors in sensor configuration
   - Add new user roles: Editor and Monitor
 
 ### Miscellaneous

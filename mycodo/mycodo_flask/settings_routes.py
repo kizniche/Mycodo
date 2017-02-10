@@ -14,8 +14,10 @@ from flask.blueprints import Blueprint
 
 # Classes
 from mycodo.databases.mycodo_db.models import (
+    db,
     Camera,
     Misc,
+    Relay,
     Role,
     SMTP,
     User
@@ -26,7 +28,10 @@ from mycodo import flaskforms
 from mycodo import flaskutils
 
 # Config
-from config import LANGUAGES
+from config import (
+    CAMERAS_SUPPORTED,
+    LANGUAGES
+)
 
 from mycodo.mycodo_flask.general_routes import (
     inject_mycodo_version,
@@ -77,18 +82,32 @@ def settings_camera():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
+    form_camera = flaskforms.SettingsCamera()
+
     camera = Camera.query.all()
-    form_settings_camera = flaskforms.SettingsCamera()
+    relay = Relay.query.all()
+
+    camera_libraries = []
+    camera_types = []
+    for camera_type, library in CAMERAS_SUPPORTED.items():
+        camera_libraries.append(library)
+        camera_types.append(camera_type)
 
     if request.method == 'POST':
-        form_name = request.form['form-name']
-        if form_name == 'Camera':
-            flaskutils.settings_camera_mod(form_settings_camera)
+        if form_camera.camera_add.data:
+            flaskutils.camera_add(form_camera)
+        elif form_camera.camera_mod.data:
+            flaskutils.camera_mod(form_camera)
+        elif form_camera.camera_del.data:
+            flaskutils.camera_del(form_camera)
         return redirect(url_for('settings_routes.settings_camera'))
 
     return render_template('settings/camera.html',
                            camera=camera,
-                           form_settings_camera=form_settings_camera)
+                           camera_libraries=camera_libraries,
+                           camera_types=camera_types,
+                           form_camera=form_camera,
+                           relay=relay)
 
 
 @blueprint.route('/settings/general', methods=('GET', 'POST'))

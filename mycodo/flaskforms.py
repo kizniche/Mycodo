@@ -379,14 +379,31 @@ class DelUser(Form):
 
 
 #
-# Camera Settings
+# Camera Options
 #
 
 class SettingsCamera(Form):
-    hflip = BooleanField(lazy_gettext('Flip Horizontally'))
-    vflip = BooleanField(lazy_gettext('Flip Vertically'))
-    rotation = IntegerField(lazy_gettext('Rotate Image'))
-    Submit = SubmitField(lazy_gettext('Save'))
+    camera_id = HiddenField(lazy_gettext('Camera ID'))
+    name = StringField(lazy_gettext('Name'))
+    camera_type = StringField(lazy_gettext('Type'))
+    library = StringField(lazy_gettext('Library'))
+    hflip = BooleanField(lazy_gettext('Flip image horizontally'))
+    vflip = BooleanField(lazy_gettext('Flip image vertically'))
+    rotation = IntegerField(lazy_gettext('Rotate image (degrees)'))
+    height = IntegerField(lazy_gettext('Image Height'))
+    width = IntegerField(lazy_gettext('Image width'))
+    contrast = DecimalField(lazy_gettext('Contrast'))
+    exposure = DecimalField(lazy_gettext('Exposure'))
+    gain = DecimalField(lazy_gettext('Gain'))
+    hue = DecimalField(lazy_gettext('Hue'))
+    saturation = DecimalField(lazy_gettext('Saturation'))
+    white_balance = DecimalField(lazy_gettext('White Balance'))
+    relay_id = IntegerField(lazy_gettext('Relay ID'))
+    cmd_pre_camera = StringField(lazy_gettext('Pre Command'))
+    cmd_post_camera = StringField(lazy_gettext('Post Command'))
+    camera_add = SubmitField(lazy_gettext('Add Camera'))
+    camera_mod = SubmitField(lazy_gettext('Save'))
+    camera_del = SubmitField(lazy_gettext('Delete'))
 
 
 #

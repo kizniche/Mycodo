@@ -32,17 +32,13 @@ from .models import (
     Method,
     Misc,
     Camera,
-    CameraType,
     Remote,
     Role,
     SMTP,
     User
 )
 
-from mycodo.config import (
-    CAM_TYPES,
-    USER_ROLES
-)
+from mycodo.config import USER_ROLES
 
 logger = logging.getLogger(__name__)
 
@@ -101,9 +97,6 @@ def populate_db(db_path):
     Session = sessionmaker(bind=engine)
     session = Session()
     try:
-        for index, each_type in enumerate(CAM_TYPES, 1):
-            insert_or_ignore(CameraType(**each_type), session)
-            insert_or_ignore(Camera(id=index, camera_type=index), session)
         for each_role in USER_ROLES:
             insert_or_ignore(Role(**each_role), session)
         insert_or_ignore(AlembicVersion(), session)

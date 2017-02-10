@@ -54,7 +54,6 @@ from mycodo.utils.system_pi import csv_to_list_of_int
 
 # Config
 from config import (
-    CAM_TYPES,
     DAEMON_LOG_FILE,
     FILE_TIMELAPSE_PARAM,
     HTTP_LOG_FILE,
@@ -724,7 +723,7 @@ def page_sensor():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    # TCA9548A I2C multiplexer I2C addresses
+    # TCA9548A I2C multiplexer
     multiplexer_addresses = [
         '0x70',
         '0x71',
@@ -735,8 +734,6 @@ def page_sensor():
         '0x76',
         '0x77'
     ]
-
-    # TCA9548A I2C multiplexer channels (0 - 8)
     multiplexer_channels = list(range(0, 9))
 
     form_add_sensor = flaskforms.AddSensor()
@@ -751,6 +748,7 @@ def page_sensor():
     users = User.query.all()
     display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
 
+    # If DS18B20 sensors added, compile a list of detected sensors
     ds18b20_sensors = []
     if Sensor.query.filter(Sensor.device == 'DS18B20').count():
         from w1thermsensor import W1ThermSensor

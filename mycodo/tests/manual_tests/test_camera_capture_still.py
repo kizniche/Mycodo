@@ -33,26 +33,31 @@ def main():
         print("Cannot detect camera")
         sys.exit()
 
-    # Change the camera setting using the set() function
-    # cap.set(cv2.cv.CV_CAP_PROP_EXPOSURE, -6.0)
+    # cap.set(cv2.cv.CV_CAP_PROP_EXPOSURE, 1.0)
     # cap.set(cv2.cv.CV_CAP_PROP_GAIN, 4.0)
     # cap.set(cv2.cv.CV_CAP_PROP_BRIGHTNESS, 144.0)
     # cap.set(cv2.cv.CV_CAP_PROP_CONTRAST, 27.0)
     # cap.set(cv2.cv.CV_CAP_PROP_HUE, 13.0) # 13.0
-    # cap.set(cv2.cv.CV_CAP_PROP_SATURATION, 28.0)
+    # cap.set(cv2.cv.CV_CAP_PROP_SATURATION, 0.0)
 
     # Read the current setting from the camera
-    print("Test: ", cap.get(cv2.cv.CV_CAP_PROP_POS_MSEC))
-    print("Ratio: ", cap.get(cv2.cv.CV_CAP_PROP_POS_AVI_RATIO))
-    print("Frame Rate: ", cap.get(cv2.cv.CV_CAP_PROP_FPS))
-    print("Height: ", cap.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH))
-    print("Width: ", cap.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT))
-    print("Brightness: ", cap.get(cv2.cv.CV_CAP_PROP_BRIGHTNESS))
-    print("Contrast: ", cap.get(cv2.cv.CV_CAP_PROP_CONTRAST))
-    print("Saturation: ", cap.get(cv2.cv.CV_CAP_PROP_SATURATION))
-    print("Hue: ", cap.get(cv2.cv.CV_CAP_PROP_HUE))
-    print("Gain: ", cap.get(cv2.cv.CV_CAP_PROP_GAIN))
-    print("Exposure: ", cap.get(cv2.cv.CV_CAP_PROP_EXPOSURE))
+    height = cap.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH)
+    width = cap.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT)
+    brightness = cap.get(cv2.cv.CV_CAP_PROP_BRIGHTNESS)
+    contrast = cap.get(cv2.cv.CV_CAP_PROP_CONTRAST)
+    saturation = cap.get(cv2.cv.CV_CAP_PROP_SATURATION)
+    hue = cap.get(cv2.cv.CV_CAP_PROP_HUE)
+    gain = cap.get(cv2.cv.CV_CAP_PROP_GAIN)
+    exposure = cap.get(cv2.cv.CV_CAP_PROP_EXPOSURE)
+
+    print("Height: {}".format(height))
+    print("Width: {}".format(width))
+    print("Brightness: {}".format(brightness))
+    print("Contrast: {}".format(contrast))
+    print("Saturation: {}".format(saturation))
+    print("Hue: {}".format(hue))
+    print("Gain: {}".format(gain))
+    print("Exposure: {}".format(exposure))
 
     # Save image
     ret, img = cap.read()

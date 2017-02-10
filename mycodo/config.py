@@ -49,14 +49,10 @@ MEASUREMENT_UNITS = {
     'altitude': 'm'
 }
 
-CAM_TYPES = [
-    dict(id=1, type_name='Still',
-         description='Still image acquisition options'),
-    dict(id=2, type_name='Time-lapse',
-         description='Tile-lapse acquisition options'),
-    dict(id=3, type_name='Stream',
-         description='Stream options')
-]
+CAMERAS_SUPPORTED = {
+    'Raspberry Pi': 'picamera',
+    'USB Camera': 'opencv'
+}
 
 USER_ROLES = [
     dict(id=1, name='Admin',
@@ -75,7 +71,7 @@ USER_ROLES = [
          edit_camera=False, edit_controllers=False, edit_users=False,
          view_settings=False, view_camera=False, view_stats=False,
          view_logs=False)
-    ]
+]
 
 
 INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
