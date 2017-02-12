@@ -3,6 +3,7 @@ from __future__ import print_function  # In python 2.7
 
 import cv2
 import datetime
+import imutils
 import io
 import logging
 import os
@@ -172,8 +173,28 @@ def camera_record(record_type, settings, duration_sec=None,
         cap.set(cv2.cv.CV_CAP_PROP_SATURATION, settings.saturation)
 
         if record_type in ['photo', 'timelapse']:
-            ret, img = cap.read()
-            cv2.imwrite(path_file, img)
+            edited = False
+            ret, img_orig = cap.read()
+            img_edited = img_orig.copy()
+
+            if any((settings.hflip, settings.vflip, settings.rotation)):
+                edited = True
+
+            if settings.hflip and settings.vflip:
+                img_edited = cv2.flip(img_orig, -1)
+            elif settings.hflip:
+                img_edited = cv2.flip(img_orig, 1)
+            elif settings.vflip:
+                img_edited = cv2.flip(img_orig, 0)
+
+            if settings.rotation:
+                img_edited = imutils.rotate_bound(img_orig, settings.rotation)
+
+            if edited:
+                cv2.imwrite(path_file, img_edited)
+            else:
+                cv2.imwrite(path_file, img_orig)
+
             cap.release()
         else:
             return

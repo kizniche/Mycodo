@@ -59,16 +59,17 @@ def settings_alerts():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    if not flaskutils.authorized(session, 'Guest'):
-        flaskutils.deny_guest_user()
-        return redirect(url_for('settings_routes.settings_general'))
+    if not flaskutils.user_has_permission(session, 'view_settings'):
+        return redirect(url_for('general_routes.home'))
 
     smtp = SMTP.query.first()
     form_email_alert = flaskforms.EmailAlert()
 
     if request.method == 'POST':
+        if not flaskutils.user_has_permission(session, 'edit_settings'):
+            return redirect(url_for('general_routes.home'))
+
         form_name = request.form['form-name']
-        # Update smtp settings table in mycodo SQL database
         if form_name == 'EmailAlert':
             flaskutils.settings_alert_mod(form_email_alert)
         return redirect(url_for('settings_routes.settings_alerts'))
@@ -82,6 +83,9 @@ def settings_alerts():
 def settings_camera():
     """ Display camera settings """
     if not logged_in():
+        return redirect(url_for('general_routes.home'))
+
+    if not flaskutils.user_has_permission(session, 'view_settings'):
         return redirect(url_for('general_routes.home'))
 
     form_camera = flaskforms.SettingsCamera()
@@ -106,6 +110,9 @@ def settings_camera():
                      "{err}".format(err=e))
 
     if request.method == 'POST':
+        if not flaskutils.user_has_permission(session, 'edit_settings'):
+            return redirect(url_for('general_routes.home'))
+
         if form_camera.camera_add.data:
             flaskutils.camera_add(form_camera)
         elif form_camera.camera_mod.data:
@@ -130,12 +137,18 @@ def settings_general():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
+    if not flaskutils.user_has_permission(session, 'view_settings'):
+        return redirect(url_for('general_routes.home'))
+
     misc = Misc.query.first()
     form_settings_general = flaskforms.SettingsGeneral()
 
     languages_sorted = sorted(LANGUAGES.items(), key=operator.itemgetter(1))
 
     if request.method == 'POST':
+        if not flaskutils.user_has_permission(session, 'edit_settings'):
+            return redirect(url_for('general_routes.home'))
+
         form_name = request.form['form-name']
         if form_name == 'General':
             flaskutils.settings_general_mod(form_settings_general)
@@ -153,9 +166,8 @@ def settings_users():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    if not flaskutils.authorized(session, 'Admin'):
-        flaskutils.deny_guest_user()
-        return redirect(url_for('settings_routes.settings_general'))
+    if not flaskutils.user_has_permission(session, 'view_settings'):
+        return redirect(url_for('general_routes.home'))
 
     users = User.query.all()
     user_roles = Role.query.all()
@@ -164,6 +176,9 @@ def settings_users():
     form_del_user = flaskforms.DelUser()
 
     if request.method == 'POST':
+        if not flaskutils.user_has_permission(session, 'edit_users'):
+            return redirect(url_for('general_routes.home'))
+
         form_name = request.form['form-name']
         if form_name == 'addUser':
             flaskutils.user_add(form_add_user)

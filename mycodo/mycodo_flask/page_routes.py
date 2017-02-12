@@ -97,6 +97,9 @@ def page_camera():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
+    if not flaskutils.user_has_permission(session, 'view_camera'):
+        return redirect(url_for('general_routes.home'))
+
     form_camera = flaskforms.Camera()
     camera = Camera.query.all()
 
@@ -148,7 +151,17 @@ def page_camera():
             db.session.commit()
         elif form_camera.start_stream.data:
             if mod_camera.timelapse_started:
-                flash(gettext("Cannot start stream if time-lapse is active."))
+                flash(gettext(
+                    "Cannot start stream if time-lapse is active."))
+                return redirect('/camera')
+            if CameraStream().is_running():
+                flash(gettext(
+                    "Cannot start stream. The stream is already running."))
+                return redirect('/camera')
+            if (not (mod_camera.camera_type == 'Raspberry Pi' and
+                     mod_camera.library == 'picamera')):
+                flash(gettext("Streaming is only supported with the Raspberry"
+                              " Pi camera using the picamera library."))
                 return redirect('/camera')
             mod_camera.stream_started = True
             db.session.commit()
@@ -303,6 +316,9 @@ def page_graph():
 
     # Detect which form on the page was submitted
     if request.method == 'POST':
+        if not flaskutils.user_has_permission(session, 'edit_controllers'):
+            return redirect(url_for('general_routes.home'))
+
         form_name = request.form['form-name']
         if not flaskutils.authorized(session, 'Guest'):
             flaskutils.deny_guest_user()
@@ -377,6 +393,9 @@ def page_info():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
+    if not flaskutils.user_has_permission(session, 'view_stats'):
+        return redirect(url_for('general_routes.home'))
+
     uptime = subprocess.Popen(
         "uptime", stdout=subprocess.PIPE, shell=True)
     (uptime_output, _) = uptime.communicate()
@@ -438,6 +457,9 @@ def page_lcd():
     form_reset_flashing_lcd = flaskforms.ResetFlashingLCD()
 
     if request.method == 'POST':
+        if not flaskutils.user_has_permission(session, 'edit_controllers'):
+            return redirect(url_for('general_routes.home'))
+
         form_name = request.form['form-name']
         if not flaskutils.authorized(session, 'Guest'):
             flaskutils.deny_guest_user()
@@ -517,16 +539,17 @@ def page_logview():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
+    if not flaskutils.user_has_permission(session, 'view_logs'):
+        return redirect(url_for('general_routes.home'))
+
     form_log_view = flaskforms.LogView()
     log_output = None
     lines = 30
     logfile = ''
     if request.method == 'POST':
-        if not flaskutils.authorized(session, 'Guest'):
-            flaskutils.deny_guest_user()
-            return redirect('/logview')
         if form_log_view.lines.data:
             lines = form_log_view.lines.data
+
         if form_log_view.loglogin.data:
             logfile = LOGIN_LOG_FILE
         elif form_log_view.loghttp.data:
@@ -583,10 +606,11 @@ def page_pid():
         Method.method_order == 0).all()
 
     if request.method == 'POST':
+        if not flaskutils.user_has_permission(session, 'edit_controllers'):
+            return redirect(url_for('general_routes.home'))
+
         form_name = request.form['form-name']
-        if not flaskutils.authorized(session, 'Guest'):
-            flaskutils.deny_guest_user()
-        elif form_name == 'addPID':
+        if form_name == 'addPID':
             flaskutils.pid_add(form_add_pid)
         elif form_name == 'modPID':
             if form_mod_pid.mod_pid_del.data:
@@ -647,10 +671,11 @@ def page_relay():
     form_mod_relay_cond = flaskforms.ModRelayConditional()
 
     if request.method == 'POST':
+        if not flaskutils.user_has_permission(session, 'edit_controllers'):
+            return redirect(url_for('general_routes.home'))
+
         form_name = request.form['form-name']
-        if not flaskutils.authorized(session, 'Guest'):
-            flaskutils.deny_guest_user()
-        elif form_name == 'addRelay':
+        if form_name == 'addRelay':
             flaskutils.relay_add(form_add_relay)
         elif form_name == 'modRelay':
             if (form_mod_relay.turn_on.data or
@@ -732,10 +757,11 @@ def page_sensor():
         sensor_templates.append(each_file_name.split(".")[0])
 
     if request.method == 'POST':
+        if not flaskutils.user_has_permission(session, 'edit_controllers'):
+            return redirect(url_for('general_routes.home'))
+
         form_name = request.form['form-name']
-        if not flaskutils.authorized(session, 'Guest'):
-            flaskutils.deny_guest_user()
-        elif form_name == 'addSensor':
+        if form_name == 'addSensor':
             flaskutils.sensor_add(form_add_sensor)
         elif form_name == 'modSensor':
             if form_mod_sensor.modSensorSubmit.data:
@@ -787,10 +813,11 @@ def page_timer():
     form_timer = flaskforms.Timer()
 
     if request.method == 'POST':
+        if not flaskutils.user_has_permission(session, 'edit_controllers'):
+            return redirect(url_for('general_routes.home'))
+
         form_name = request.form['form-name']
-        if not flaskutils.authorized(session, 'Guest'):
-            flaskutils.deny_guest_user()
-        elif form_name == 'addTimer':
+        if form_name == 'addTimer':
             flaskutils.timer_add(form_timer,
                                  request.form['timer_type'],
                                  display_order)
@@ -819,6 +846,9 @@ def page_timer():
 def page_usage():
     """ Display relay usage (duration and energy usage/cost) """
     if not logged_in():
+        return redirect(url_for('general_routes.home'))
+
+    if not flaskutils.user_has_permission(session, 'view_stats'):
         return redirect(url_for('general_routes.home'))
 
     misc = Misc.query.first()

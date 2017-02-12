@@ -958,7 +958,7 @@ def lcd_add(form_add_lcd):
     if form_add_lcd.validate():
         for _ in range(0, form_add_lcd.numberLCDs.data):
             try:
-                new_lcd = LCD().save
+                new_lcd = LCD().save()
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
                 DisplayOrder.query.first().lcd = add_display_order(
                     display_order, new_lcd.id)
@@ -2412,6 +2412,9 @@ def camera_mod(form_camera):
                     .filter(Camera.name == form_camera.name.data).count()):
             flash("You must choose a unique name", "error")
             return redirect(url_for('settings_routes.settings_camera'))
+        if 0 > form_camera.rotation.data > 360:
+            flash("Rotation must be between 0 and 360 degrees", "error")
+            return redirect(url_for('settings_routes.settings_camera'))
 
         mod_camera = Camera.query.filter(
             Camera.id == form_camera.camera_id.data).first()
@@ -2460,13 +2463,29 @@ def camera_del(form_camera):
 # Miscellaneous
 #
 
-def authorized(session, role_name, role_id=None):
+def authorized(user_session, role_name, role_id=None):
     if role_id:
         user = User.query.filter(User.id == role_id).first()
     else:
         user = User.query.filter(Role.name == role_name).first()
-    if user and user.role.name == session['user_role']:
-            return True
+    if user and user.role.name == user_session['user_role']:
+        return True
+    return False
+
+
+def user_has_permission(user_session, permission):
+    user = User.query.filter(User.user_name == user_session['user_name']).first()
+    if (any((
+            (permission == 'edit_settings' and user.role.edit_settings),
+            (permission == 'edit_controllers' and user.role.edit_controllers),
+            (permission == 'edit_users' and user.role.edit_users),
+            (permission == 'view_settings' and user.role.view_settings),
+            (permission == 'view_camera' and user.role.view_camera),
+            (permission == 'view_stats' and user.role.view_stats),
+            (permission == 'view_logs' and user.role.view_logs),
+            ))):
+        return True
+    flash("You don't have permission to do that", "error")
     return False
 
 

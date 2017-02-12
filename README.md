@@ -33,6 +33,7 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
     - [I<sub>2</sub>C](#i2c)
     - [Devices](#devices)
 - [Notes](#notes)
+- [User Roles](#user-roles)
 - [HTTP Server](#http-server-security)
 - [Daemon Info](#daemon-info)
 - [Upgrading](#upgrading)
@@ -230,6 +231,23 @@ A minimal set of anonymous usage statistics are collected to help improve develo
 Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the system from the web interface. It has the setuid bit to permit it to be executed as root ('sudo bash ~/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh initialize' sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), the mycodo_wrapper binary permits these operations to be executed as root by a non-root user (in this case, members of the group 'mycodo'). You can audit the source code of Mycodo/mycodo/scripts/mycodo_wrapper.c and if you want to ensure the binary is indeed compiled from that source, you may compile it yourself with the following command. Otherwise, the compiled binary is already included and no further action is needed.
 
 ```sudo gcc ~/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ~/Mycodo/mycodo/scripts/mycodo_wrapper```
+
+
+### User Roles
+
+User roles are used to restrict users from performing certain functions. There are 4 default user roles (the ability to create custom roles will be implemented in the future).
+
+
+|   Role  |   Edit Users  | Edit Controllers | Edit Settings | View Settings | View Camera | View Stats | View Logs |
+| ------- | ------------- | ---------------- | ------------- | ------------- | ----------- | ---------- | --------- |
+| Admin   |      True     |       True       |      True     |      True     |     True    |    True    |   True    |
+| Editor  |      False    |       True       |      True     |      True     |     True    |    True    |   True    |
+| Monitor |      False    |       False      |      False    |      True     |     True    |    True    |   True    |
+| Guest   |      False    |       False      |      False    |      False    |     False   |    False   |   False   |
+
+#### User Notes
+
+Edit controllers includes editing settings such as graphs and relays.
 
 
 ### HTTP Server Security
