@@ -18,6 +18,7 @@ from flask import (
     session,
     url_for
 )
+from flask_babel import gettext
 from flask.blueprints import Blueprint
 
 # Classes
@@ -99,39 +100,62 @@ def page_camera():
     form_camera = flaskforms.Camera()
     camera = Camera.query.all()
 
+    # Check if a video stream is active
+    for each_camera in camera:
+        if each_camera.stream_started and not CameraStream().is_running():
+            each_camera.stream_started = False
+            db.session.commit()
+
     if request.method == 'POST':
         if not flaskutils.authorized(session, 'Guest'):
             flaskutils.deny_guest_user()
             return redirect('/camera')
-        settings = Camera.query.filter(Camera.id == form_camera.camera_id.data).first()
+
+        mod_camera = Camera.query.filter(Camera.id == form_camera.camera_id.data).first()
         if form_camera.capture_still.data:
-            camera_record('photo', settings)
+            if mod_camera.stream_started:
+                flash(gettext("Cannot capture still image if stream is active."))
+                return redirect('/camera')
+            if CameraStream().is_running():
+                CameraStream().terminate_controller()  # Stop camera stream
+                time.sleep(2)
+            camera_record('photo', mod_camera)
         elif form_camera.start_timelapse.data:
+            if mod_camera.stream_started:
+                flash(gettext("Cannot start time-lapse if stream is active."))
+                return redirect('/camera')
             now = time.time()
-            mod_camera = Camera.query.filter(Camera.id == form_camera.camera_id.data).first()
             mod_camera.timelapse_started = True
             mod_camera.timelapse_start_time = now
-            mod_camera.timelapse_end_time = now + float(form_camera.timelapse_runtime_sec.data)
+            mod_camera.timelapse_end_time = now + form_camera.timelapse_runtime_sec.data
             mod_camera.timelapse_interval = form_camera.timelapse_interval.data
             mod_camera.timelapse_next_capture = now
             mod_camera.timelapse_capture_number = 0
             db.session.commit()
         elif form_camera.pause_timelapse.data:
-            mod_camera = Camera.query.filter(Camera.id == form_camera.camera_id.data).first()
             mod_camera.timelapse_paused = True
             db.session.commit()
         elif form_camera.resume_timelapse.data:
-            mod_camera = Camera.query.filter(Camera.id == form_camera.camera_id.data).first()
             mod_camera.timelapse_paused = False
             db.session.commit()
         elif form_camera.stop_timelapse.data:
-            mod_camera = Camera.query.filter(Camera.id == form_camera.camera_id.data).first()
             mod_camera.timelapse_started = False
             mod_camera.timelapse_start_time = None
             mod_camera.timelapse_end_time = None
             mod_camera.timelapse_interval = None
             mod_camera.timelapse_next_capture = None
             mod_camera.timelapse_capture_number = None
+            db.session.commit()
+        elif form_camera.start_stream.data:
+            if mod_camera.timelapse_started:
+                flash(gettext("Cannot start stream if time-lapse is active."))
+                return redirect('/camera')
+            mod_camera.stream_started = True
+            db.session.commit()
+        elif form_camera.stop_stream.data:
+            if CameraStream().is_running():
+                CameraStream().terminate_controller()
+            mod_camera.stream_started = False
             db.session.commit()
         return redirect('/camera')
 
@@ -173,135 +197,6 @@ def page_camera():
             latest_img_tl[each_camera.id] = None
 
     time_now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-    # # Check if a video stream is active
-    # stream_locked = os.path.isfile(LOCK_FILE_STREAM)
-    # if stream_locked and not CameraStream().is_running():
-    #     os.remove(LOCK_FILE_STREAM)
-    # stream_locked = os.path.isfile(LOCK_FILE_STREAM)
-    #
-    # if request.method == 'POST':
-    #     form_name = request.form['form-name']
-    #     if not flaskutils.authorized(session, 'Guest'):
-    #         flaskutils.deny_guest_user()
-    #         return redirect('/camera')
-    #     elif form_name == 'camera':
-    #         if form_camera.Still.data:
-    #             if not stream_locked:
-    #                 try:
-    #                     if CameraStream().is_running():
-    #                         CameraStream().terminate_controller()  # Stop camera stream
-    #                         time.sleep(2)
-    #                     if form_camera.camera_type.data in CAM_TYPES:
-    #                         camera = Camera.query.filter(
-    #                             Camera.camera_type == form_camera.camera_type.data).first()
-    #                         camera_record('photo', camera)
-    #                 except Exception as msg:
-    #                     flash("Camera Error: {}".format(msg), "error")
-    #             else:
-    #                 flash(gettext("Cannot capture still if stream is active. "
-    #                               "If it is not active, delete %(file)s.",
-    #                               file=LOCK_FILE_STREAM),
-    #                       "error")
-    #
-    #         elif form_camera.start_timelapse.data:
-    #             if not stream_locked:
-    #                 # Create lock file and file with time-lapse parameters
-    #                 open(LOCK_FILE_TIMELAPSE, 'a')
-    #
-    #                 # Save time-lapse parameters to a csv file to resume
-    #                 # if there is a power outage or reboot.
-    #                 now = time.time()
-    #                 timestamp = datetime.datetime.now().strftime(
-    #                     '%Y-%m-%d_%H-%M-%S')
-    #                 uid_gid = pwd.getpwnam('mycodo').pw_uid
-    #                 timelapse_data = [
-    #                     ['start_time', timestamp],
-    #                     ['end_time', now + float(form_camera.timelapse_runtime_sec.data)],
-    #                     ['interval', form_camera.timelapse_interval.data],
-    #                     ['next_capture', now],
-    #                     ['capture_number', 0]]
-    #                 with open(FILE_TIMELAPSE_PARAM, 'w') as time_lapse_file:
-    #                     write_csv = csv.writer(time_lapse_file)
-    #                     for row in timelapse_data:
-    #                         write_csv.writerow(row)
-    #                 os.chown(FILE_TIMELAPSE_PARAM, uid_gid, uid_gid)
-    #                 os.chmod(FILE_TIMELAPSE_PARAM, 0664)
-    #             else:
-    #                 flash(gettext("Cannot start time-lapse if a video stream "
-    #                               "is active. If it is not active, delete "
-    #                               "%(file)s.", file=LOCK_FILE_STREAM),
-    #                       "error")
-    #
-    #         elif form_camera.stop_timelapse.data:
-    #             try:
-    #                 os.remove(FILE_TIMELAPSE_PARAM)
-    #                 os.remove(LOCK_FILE_TIMELAPSE)
-    #             except IOError as e:
-    #                 logger.error("Camera IOError raised in '/camera' "
-    #                              "endpoint: {err}".format(err=e))
-    #
-    #         elif form_camera.start_stream.data:
-    #             if not is_time_lapse_locked():
-    #                 open(LOCK_FILE_STREAM, 'a')
-    #                 stream_locked = True
-    #             else:
-    #                 flash(gettext("Cannot start stream if a time-lapse is "
-    #                               "active. If not active, delete %(file)s.",
-    #                               file=LOCK_FILE_TIMELAPSE),
-    #                       "error")
-    #
-    #         elif form_camera.stop_stream.data:
-    #             if CameraStream().is_running():
-    #                 CameraStream().terminate_controller()
-    #             if os.path.isfile(LOCK_FILE_STREAM):
-    #                 os.remove(LOCK_FILE_STREAM)
-    #             stream_locked = False
-    #
-    # # Get the full path of latest still image
-    # try:
-    #     latest_still_img_full_path = max(glob.iglob(
-    #         '{path}/camera-stills/*.jpg'.format(path=INSTALL_DIRECTORY)),
-    #         key=os.path.getmtime)
-    #     ts = os.path.getmtime(latest_still_img_full_path)
-    #     latest_still_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%c")
-    #     latest_still_img = os.path.basename(latest_still_img_full_path)
-    # except Exception as e:
-    #     logger.error(
-    #         "Exception raised in '/camera' endpoint: {err}".format(err=e))
-    #     latest_still_img_ts = None
-    #     latest_still_img = None
-    #
-    # # Get the full path of latest timelapse image
-    # try:
-    #     latest_time_lapse_img_full_path = max(glob.iglob(
-    #         '{path}/camera-timelapse/*.jpg'.format(path=INSTALL_DIRECTORY)),
-    #         key=os.path.getmtime)
-    #     ts = os.path.getmtime(latest_time_lapse_img_full_path)
-    #     latest_time_lapse_img_ts = datetime.datetime.fromtimestamp(ts).strftime("%c")
-    #     latest_time_lapse_img = os.path.basename(
-    #         latest_time_lapse_img_full_path)
-    # except Exception as e:
-    #     logger.error(
-    #         "Exception raised in '/camera' endpoint: {err}".format(err=e))
-    #     latest_time_lapse_img_ts = None
-    #     latest_time_lapse_img = None
-    #
-    # # If time-lapse active, retrieve parameters for display
-    # dict_time_lapse = {}
-    # time_now = datetime.datetime.now().strftime('%c')
-    # if (os.path.isfile(FILE_TIMELAPSE_PARAM) and
-    #         os.path.isfile(LOCK_FILE_TIMELAPSE)):
-    #     with open(FILE_TIMELAPSE_PARAM, mode='r') as infile:
-    #         reader = csv.reader(infile)
-    #         dict_time_lapse = OrderedDict((row[0], row[1]) for row in reader)
-    #     dict_time_lapse['start_time'] = datetime.datetime.strptime(
-    #         dict_time_lapse['start_time'], "%Y-%m-%d_%H-%M-%S")
-    #     dict_time_lapse['start_time'] = dict_time_lapse['start_time'].strftime('%c')
-    #     dict_time_lapse['end_time'] = datetime.datetime.fromtimestamp(
-    #         float(dict_time_lapse['end_time'])).strftime('%c')
-    #     dict_time_lapse['next_capture'] = datetime.datetime.fromtimestamp(
-    #         float(dict_time_lapse['next_capture'])).strftime('%c')
 
     return render_template('pages/camera.html',
                            camera=camera,

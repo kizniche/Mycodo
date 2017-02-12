@@ -131,7 +131,7 @@ class Camera(CRUDMixin, db.Model):
     relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Turn relay on during capture
     cmd_pre_camera = db.Column(db.Text, default='')  # Command to execute before capture
     cmd_post_camera = db.Column(db.Text, default='')  # Command to execute after capture
-    stream_running = db.Column(db.Boolean, default=False)
+    stream_started = db.Column(db.Boolean, default=False)
     timelapse_started = db.Column(db.Boolean, default=False)
     timelapse_paused = db.Column(db.Boolean, default=False)
     timelapse_start_time = db.Column(db.Float, default=None)

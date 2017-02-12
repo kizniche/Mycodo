@@ -49,11 +49,6 @@ MEASUREMENT_UNITS = {
     'altitude': 'm'
 }
 
-CAMERAS_SUPPORTED = {
-    'Raspberry Pi': 'picamera',
-    'USB Camera': 'opencv'
-}
-
 USER_ROLES = [
     dict(id=1, name='Admin',
          edit_camera=True, edit_controllers=True, edit_users=True,
@@ -90,6 +85,10 @@ HTTP_LOG_FILE = '/var/log/apache2/error.log'
 # Camera
 PATH_CAMERA_STILL = os.path.join(INSTALL_DIRECTORY, 'camera-stills')
 PATH_CAMERA_TIMELAPSE = os.path.join(INSTALL_DIRECTORY, 'camera-timelapse')
+CAMERAS_SUPPORTED = {
+    'Raspberry Pi': 'picamera',
+    'USB Camera': 'opencv'
+}
 
 # SQLite3 databases that hold users and settings
 DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
