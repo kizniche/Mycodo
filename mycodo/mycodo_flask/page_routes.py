@@ -80,6 +80,13 @@ def inject_dictionary():
     return inject_mycodo_version()
 
 
+@blueprint.context_processor
+def epoch_to_time_string():
+    def format_timestamp(epoch):
+        return datetime.datetime.fromtimestamp(epoch).strftime("%Y-%m-%d %H:%M:%S")
+    return dict(format_timestamp=format_timestamp)
+
+
 @blueprint.route('/camera', methods=('GET', 'POST'))
 def page_camera():
     """
@@ -144,7 +151,7 @@ def page_camera():
             latest_still_img_full_path = None
         if latest_still_img_full_path:
             ts = os.path.getmtime(latest_still_img_full_path)
-            latest_img_still_ts[each_camera.id] = datetime.datetime.fromtimestamp(ts).strftime("%c")
+            latest_img_still_ts[each_camera.id] = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
             latest_img_still[each_camera.id] = os.path.basename(latest_still_img_full_path)
         else:
             latest_img_still[each_camera.id] = None
@@ -159,13 +166,13 @@ def page_camera():
             latest_time_lapse_img_full_path = None
         if latest_time_lapse_img_full_path:
             ts = os.path.getmtime(latest_time_lapse_img_full_path)
-            latest_img_tl_ts[each_camera.id] = datetime.datetime.fromtimestamp(ts).strftime("%c")
+            latest_img_tl_ts[each_camera.id] = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
             latest_img_tl[each_camera.id] = os.path.basename(
                 latest_time_lapse_img_full_path)
         else:
             latest_img_tl[each_camera.id] = None
 
-    time_now = datetime.datetime.now().strftime('%c')
+    time_now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     # # Check if a video stream is active
     # stream_locked = os.path.isfile(LOCK_FILE_STREAM)
