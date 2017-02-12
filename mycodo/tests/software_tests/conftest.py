@@ -1,5 +1,22 @@
 # coding=utf-8
 """ pytest file """
+#  Hardware specific libs are found through out the flask app pages
+#  and the following mock work will patch them so that we can pretend
+#  that we have them installed:
+from mock import patch, MagicMock
+
+patch.dict("sys.modules",
+           RPi=MagicMock(),
+           picamera=MagicMock(),
+           AM2315=MagicMock(),
+           tentacle_pi=MagicMock(),
+           Adafruit_BMP=MagicMock(),
+           Adafruit_TMP=MagicMock(),
+           w1thermsensor=MagicMock(),
+           sht_sensor=MagicMock(),
+           smbus=MagicMock(),
+           ).start()
+
 import pytest
 import logging
 import tempfile

@@ -10,6 +10,8 @@ endpoints is the ultimate goal because it will be easier to test, read, and modi
 being less error prone.
 """
 from __future__ import print_function
+
+import StringIO  # not python 3 compatible
 import calendar
 import csv
 import datetime
@@ -18,60 +20,40 @@ import os
 import socket
 import subprocess
 import sys
-import StringIO
 import time
+
 from RPi import GPIO
 from dateutil.parser import parse as date_parse
-
+from flask import Response
+from flask import current_app
+from flask import flash
+from flask import jsonify
+from flask import make_response
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import send_from_directory
+from flask import session
+from flask import url_for
 from flask.blueprints import Blueprint
-from flask import (
-    current_app,
-    flash,
-    jsonify,
-    make_response,
-    redirect,
-    render_template,
-    Response,
-    request,
-    send_from_directory,
-    session,
-    url_for
-)
 from flask_babel import gettext
-from flask_influxdb import InfluxDB
 
-# Classes
-from mycodo.databases.mycodo_db.models import (
-    DisplayOrder,
-    Misc,
-    Relay,
-    Remote,
-    Sensor,
-    User
-)
-from mycodo.devices.camera import CameraStream
-from mycodo.mycodo_client import DaemonControl
-
-# Functions
+from extensions import influx_db
 from mycodo import flaskforms
 from mycodo import flaskutils
+from mycodo.databases.mycodo_db.models import DisplayOrder
+from mycodo.databases.mycodo_db.models import Misc
+from mycodo.databases.mycodo_db.models import Relay
+from mycodo.databases.mycodo_db.models import Remote
+from mycodo.databases.mycodo_db.models import Sensor
+from mycodo.databases.mycodo_db.models import User
+from mycodo.devices.camera import CameraStream
 from mycodo.flaskutils import gzipped
-from mycodo.mycodo_flask.authentication_routes import (
-    admin_exists,
-    clear_cookie_auth,
-    logged_in
-)
+from mycodo.mycodo_client import DaemonControl
+from mycodo.mycodo_flask.authentication_routes import admin_exists
+from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
+from mycodo.mycodo_flask.authentication_routes import logged_in
 from mycodo.utils.database import db_retrieve_table_daemon
-
-# Config
-from config import (
-    INFLUXDB_USER,
-    INFLUXDB_PASSWORD,
-    INFLUXDB_DATABASE,
-    INSTALL_DIRECTORY,
-    LOG_PATH,
-    MYCODO_VERSION
-)
 
 blueprint = Blueprint('general_routes',
                       __name__,
@@ -79,7 +61,6 @@ blueprint = Blueprint('general_routes',
                       template_folder='../templates')
 
 logger = logging.getLogger(__name__)
-influx_db = InfluxDB()
 
 
 def before_request_admin_exist():
@@ -104,7 +85,7 @@ def inject_mycodo_version():
 
     misc = Misc.query.first()
     return dict(daemon_status=daemon_status,
-                mycodo_version=MYCODO_VERSION,
+                mycodo_version=current_app.config['MYCODO_VERSION'],
                 host=socket.gethostname(),
                 hide_alert_success=misc.hide_alert_success,
                 hide_alert_info=misc.hide_alert_info,
@@ -152,10 +133,10 @@ def remote_admin(page):
             form_name = request.form['form-name']
             if form_name == 'setup':
                 if form_setup.add.data:
-                    flaskutils.remote_host_add(form_setup, display_order)
+                    flaskutils.remote_host_add(form_setup=form_setup, display_order=display_order)
             if form_name == 'mod_remote':
                 if form_setup.delete.data:
-                    flaskutils.remote_host_del(form_setup, display_order)
+                    flaskutils.remote_host_del(form_setup=form_setup)
             return redirect('/remote/setup')
 
         return render_template('remote/setup.html',
@@ -173,8 +154,8 @@ def camera_img(img_type, filename):
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    still_path = INSTALL_DIRECTORY + '/camera-stills/'
-    timelapse_path = INSTALL_DIRECTORY + '/camera-timelapse/'
+    still_path = current_app.config['INSTALL_DIRECTORY ']+ '/camera-stills/'
+    timelapse_path = current_app.config['INSTALL_DIRECTORY ']+ '/camera-timelapse/'
 
     # Get a list of files in each directory
     if os.path.isdir(still_path):
@@ -249,7 +230,7 @@ def download_file(dl_type, filename):
         return redirect(url_for('general_routes.home'))
 
     elif dl_type == 'log':
-        return send_from_directory(LOG_PATH, filename, as_attachment=True)
+        return send_from_directory(current_app.config['LOG_PATH'], filename, as_attachment=True)
 
     return '', 204
 
@@ -259,10 +240,6 @@ def last_data(sensor_measure, sensor_id, sensor_period):
     """Return the most recent time and value from influxdb"""
     if not logged_in():
         return redirect(url_for('general_routes.home'))
-
-    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
     try:
         raw_data = dbcon.query("""SELECT last(value)
@@ -296,9 +273,6 @@ def past_data(sensor_measure, sensor_id, past_seconds):
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
     try:
         raw_data = dbcon.query("""SELECT value
@@ -328,9 +302,6 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
 
     if measurement == 'duration_sec':
@@ -387,9 +358,6 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
 
     # Set the time frame to the past year if start/end not specified
@@ -530,7 +498,7 @@ def computer_command(action):
                 action=action), "success")
             return redirect('/settings')
         cmd = '{path}/mycodo/scripts/mycodo_wrapper {action} 2>&1'.format(
-                path=INSTALL_DIRECTORY, action=action)
+                path=current_app.config['INSTALL_DIRECTORY'], action=action)
         subprocess.Popen(cmd, shell=True)
         if action == 'restart':
             flash(gettext("System rebooting in 10 seconds"), "success")
