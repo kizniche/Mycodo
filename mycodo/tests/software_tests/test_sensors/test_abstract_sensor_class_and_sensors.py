@@ -1,26 +1,23 @@
 # coding=utf-8
 """ Tests for the abstract class and sensor classes """
+from collections import Iterator
+
 import pytest
 from testfixtures import LogCapture
 
-from collections import Iterator
-from mycodo.sensors.base_sensor import AbstractSensor
-from mycodo.sensors.atlas_pt1000 import AtlasPT1000Sensor
 from mycodo.sensors.am2315 import AM2315Sensor
-# from mycodo.sensors.bme280 import BME280Sensor
+from mycodo.sensors.atlas_pt1000 import AtlasPT1000Sensor
+from mycodo.sensors.base_sensor import AbstractSensor
 from mycodo.sensors.bmp import BMPSensor
-# from mycodo.sensors.dht11 import DHT11Sensor
-# from mycodo.sensors.dht22 import DHT22Sensor
 from mycodo.sensors.ds18b20 import DS18B20Sensor
 from mycodo.sensors.htu21d import HTU21DSensor
-# from mycodo.sensors.k30 import K30Sensor
 from mycodo.sensors.raspi import (RaspberryPiCPUTemp,
                                   RaspberryPiGPUTemp)
 from mycodo.sensors.raspi_cpuload import RaspberryPiCPULoad
-from mycodo.sensors.tmp006 import TMP006Sensor
-from mycodo.sensors.tsl2561 import TSL2561Sensor
 from mycodo.sensors.sht1x_7x import SHT1x7xSensor
 from mycodo.sensors.sht2x import SHT2xSensor
+from mycodo.sensors.tmp006 import TMP006Sensor
+from mycodo.sensors.tsl2561 import TSL2561Sensor
 
 # TODO: Find which errors when uncommented
 # TODO: Need to mock GPIO for Travis CI

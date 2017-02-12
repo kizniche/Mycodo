@@ -1,6 +1,6 @@
 # coding=utf-8
 import logging
-from tentacle_pi.TSL2561 import TSL2561
+from tentacle_pi import TSL2561
 from .base_sensor import AbstractSensor
 
 logger = logging.getLogger("mycodo.sensors.tsl2561")

@@ -1,6 +1,6 @@
 # coding=utf-8
 import logging
-import Adafruit_TMP.TMP006 as TMP006
+from Adafruit_TMP import TMP006
 from .base_sensor import AbstractSensor
 
 logger = logging.getLogger("mycodo.sensors.tmp006")
