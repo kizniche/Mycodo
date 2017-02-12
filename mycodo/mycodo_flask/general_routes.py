@@ -154,8 +154,8 @@ def camera_img(img_type, filename):
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    still_path = current_app.config['INSTALL_DIRECTORY ']+ '/camera-stills/'
-    timelapse_path = current_app.config['INSTALL_DIRECTORY ']+ '/camera-timelapse/'
+    still_path = current_app.config['INSTALL_DIRECTORY'] + '/camera-stills/'
+    timelapse_path = current_app.config['INSTALL_DIRECTORY'] + '/camera-timelapse/'
 
     # Get a list of files in each directory
     if os.path.isdir(still_path):
