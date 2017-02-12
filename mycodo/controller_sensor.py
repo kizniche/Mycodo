@@ -45,7 +45,7 @@ from sensors.sht1x_7x import SHT1x7xSensor
 from sensors.sht2x import SHT2xSensor
 
 # Functions
-from devices.camera_pi import camera_record
+from devices.camera import camera_record
 from utils.database import db_retrieve_table_daemon
 from utils.influx import (
     format_influxdb_data,

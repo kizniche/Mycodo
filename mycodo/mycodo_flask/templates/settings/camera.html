@@ -56,6 +56,11 @@
           ID: {{ each_camera.id }}
         </div>
       </div>
+      {% if not pi_camera_enabled and each_camera.camera_type == 'Raspberry Pi' %}
+        <div class="row" style="color: red; padding: 1em 1em;">
+          Raspberry Pi Camera support doesn't appear to be enabled on the Raspberry Pi. Please enable it with 'sudo raspi-config'
+        </div>
+      {% endif %}
       <div style="padding: 0.5em 0 0.25em 0" class="form-inline">
         <div class="form-group">
           {{form_camera.name.label(class_='control-label')}}
@@ -66,7 +71,7 @@
         <div class="form-group">
           {{form_camera.camera_type.label(class_='control-label')}}
           <div>
-            <select class="form-control" id="library" name="library" title="" data-original-title="Select the library to use to communicate with the camera.">
+            <select class="form-control" id="camera_type" name="camera_type" title="" data-original-title="Select the type of camera.">
               {%- for each_type in camera_types -%}
                 <option value="{{each_type}}"{% if each_camera.camera_type == each_type %} selected{% endif %}>{{each_type}}</option>
               {%- endfor -%}
@@ -82,6 +87,19 @@
               {%- endfor -%}
             </select>
            </div>
+        </div>
+        <div class="form-group">
+          {{form_camera.opencv_device.label(class_='control-label')}}
+          <div>
+            <select class="form-control" id="opencv_device" name="opencv_device" title="" data-original-title="Select the opencv device (if using opencv).">
+              {% if not opencv_devices %}
+                <option value="0">No Devices</option>
+              {% endif %}
+              {% for device_id in range(opencv_devices) %}
+                <option value="{{device_id}}"{% if each_camera.opencv_device == device_id %} selected{% endif %}>Device: {{device_id}}</option>
+              {%- endfor -%}
+            </select>
+          </div>
         </div>
         <div class="form-group">
           {{form_camera.relay_id.label(class_='control-label')}}
@@ -112,6 +130,12 @@
           {{form_camera.width.label(class_='control-label')}}
           <div>
             {{form_camera.width(class_='form-control', value=each_camera.width)}}
+           </div>
+        </div>
+        <div class="form-group">
+          {{form_camera.brightness.label(class_='control-label')}}
+          <div>
+            {{form_camera.brightness(class_='form-control', value=each_camera.brightness)}}
            </div>
         </div>
         <div class="form-group">

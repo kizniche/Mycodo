@@ -87,6 +87,10 @@ UPGRADE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupgrade.log')
 RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
 HTTP_LOG_FILE = '/var/log/apache2/error.log'
 
+# Camera
+PATH_CAMERA_STILL = os.path.join(INSTALL_DIRECTORY, 'camera-stills')
+PATH_CAMERA_TIMELAPSE = os.path.join(INSTALL_DIRECTORY, 'camera-timelapse')
+
 # SQLite3 databases that hold users and settings
 DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
 SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')

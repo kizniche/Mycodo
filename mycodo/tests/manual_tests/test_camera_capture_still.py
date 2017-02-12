@@ -5,6 +5,16 @@ import datetime
 import sys
 
 
+def count_cameras_opencv():
+    num_cameras = 0
+    for i in range(10):
+        temp_camera = cv2.VideoCapture(i-1)
+        ret, img = temp_camera.read()
+        if ret:
+            num_cameras += 1
+    return num_cameras
+
+
 def main():
     #   0  CV_CAP_PROP_POS_MSEC Current position of the video file in milliseconds.
     #   1  CV_CAP_PROP_POS_FRAMES 0-based index of the frame to be decoded/captured next.
@@ -50,6 +60,13 @@ def main():
     gain = cap.get(cv2.cv.CV_CAP_PROP_GAIN)
     exposure = cap.get(cv2.cv.CV_CAP_PROP_EXPOSURE)
 
+    cap.set(cv2.cv.CV_CAP_PROP_BRIGHTNESS, brightness)
+    cap.set(cv2.cv.CV_CAP_PROP_CONTRAST, contrast)
+    cap.set(cv2.cv.CV_CAP_PROP_SATURATION, saturation)
+    cap.set(cv2.cv.CV_CAP_PROP_HUE, hue)
+    cap.set(cv2.cv.CV_CAP_PROP_GAIN, gain)
+    cap.set(cv2.cv.CV_CAP_PROP_EXPOSURE, exposure)
+
     print("Height: {}".format(height))
     print("Width: {}".format(width))
     print("Brightness: {}".format(brightness))
@@ -64,6 +81,8 @@ def main():
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     cv2.imwrite("camera_image_{ts}.bmp".format(ts=timestamp), img)
     cap.release()
+
+    print("Cameras: {cams}".format(cams=count_cameras_opencv()))
 
 
 if __name__ == '__main__':

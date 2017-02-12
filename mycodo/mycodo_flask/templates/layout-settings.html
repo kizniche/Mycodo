@@ -7,6 +7,11 @@
     $(document).ready(function(){
       $('input[title]').tooltip({placement:'bottom'});
     });
+    $(document).ready(function(){
+      $('select[title]').tooltip({placement:'bottom'});
+      $('.form-dropdown').dropdown();
+      $('.form-dropdown').tooltip();
+    })
     $(document).ready(function() {
       $('[data-toggle=offcanvas]').click(function() {
         $('.row-offcanvas').toggleClass('active');

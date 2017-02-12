@@ -1,0 +1,2741 @@
+# Korean translations for PROJECT.
+# Copyright (C) 2017 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2017-02-11 00:35-0500\n"
+"PO-Revision-Date: 2017-02-11 00:35-0500\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ko\n"
+"Language-Team: ko <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.3.4\n"
+
+#: flaskforms.py:36
+msgid "Create New Method"
+msgstr ""
+
+#: flaskforms.py:44 flaskforms.py:107
+msgid "Start HH:MM:SS"
+msgstr ""
+
+#: flaskforms.py:48 flaskforms.py:111
+msgid "End HH:MM:SS"
+msgstr ""
+
+#: flaskforms.py:52 flaskforms.py:115
+msgid "Start YYYY-MM-DD HH:MM:SS"
+msgstr ""
+
+#: flaskforms.py:56 flaskforms.py:119
+msgid "End YYYY-MM-DD HH:MM:SS"
+msgstr ""
+
+#: flaskforms.py:59 flaskforms.py:131
+msgid "Start Setpoint"
+msgstr ""
+
+#: flaskforms.py:60 flaskforms.py:132
+msgid "End Setpoint (optional)"
+msgstr ""
+
+#: flaskforms.py:61 flaskforms.py:130
+msgid "Duration (seconds)"
+msgstr ""
+
+#: flaskforms.py:62
+msgid "Amplitude"
+msgstr ""
+
+#: flaskforms.py:63
+msgid "Frequency"
+msgstr ""
+
+#: flaskforms.py:64
+msgid "Angle Shift (0 to 360)"
+msgstr ""
+
+#: flaskforms.py:65
+msgid "Y-Axis Shift"
+msgstr ""
+
+#: flaskforms.py:75 flaskforms.py:123
+msgid "Time HH:MM:SS"
+msgstr ""
+
+#: flaskforms.py:79 flaskforms.py:127
+msgid "Time YYYY-MM-DD HH:MM:SS"
+msgstr ""
+
+#: flaskforms.py:83
+msgid "Duration On (seconds)"
+msgstr ""
+
+#: flaskforms.py:87 flaskforms.py:401 flaskforms.py:1100 flaskforms.py:1143
+#: flaskforms.py:1144
+msgid "Relay ID"
+msgstr ""
+
+#: flaskforms.py:91 flaskforms.py:134 flaskforms.py:1101
+msgid "Relay State"
+msgstr ""
+
+#: flaskforms.py:98
+msgid "Add to Method"
+msgstr ""
+
+#: flaskforms.py:105 flaskforms.py:387 flaskforms.py:569 flaskforms.py:570
+#: flaskforms.py:719 flaskforms.py:720 flaskforms.py:868 flaskforms.py:869
+#: flaskforms.py:937 flaskforms.py:938 flaskforms.py:1022 flaskforms.py:1087
+#: flaskforms.py:1138 flaskforms.py:1139
+#: mycodo_flask/templates/tools/usage.html:14
+msgid "Name"
+msgstr ""
+
+#: flaskforms.py:133 flaskutils.py:1482 flaskutils.py:1520 flaskutils.py:1544
+#: flaskutils.py:1573 flaskutils.py:1595 mycodo_flask/templates/layout.html:74
+msgid "Relay"
+msgstr ""
+
+#: flaskforms.py:135
+msgid "Relay On Duration (sec)"
+msgstr ""
+
+#: flaskforms.py:136 flaskforms.py:295 flaskforms.py:405 flaskforms.py:622
+#: flaskforms.py:908 flaskforms.py:974 flaskforms.py:1071 flaskforms.py:1107
+#: flaskforms.py:1173
+msgid "Save"
+msgstr ""
+
+#: flaskforms.py:137 flaskforms.py:378 flaskforms.py:406 flaskforms.py:627
+#: flaskforms.py:909 flaskforms.py:975 flaskforms.py:1072 flaskforms.py:1108
+#: flaskforms.py:1174 flaskutils.py:469 flaskutils.py:859 flaskutils.py:983
+#: flaskutils.py:1117 flaskutils.py:1332 flaskutils.py:1572 flaskutils.py:1584
+#: flaskutils.py:1668 flaskutils.py:1885 flaskutils.py:2019 flaskutils.py:2224
+#: mycodo_flask/method_routes.py:290
+msgid "Delete"
+msgstr ""
+
+#: flaskforms.py:147
+msgid "Domain or IP Address"
+msgstr ""
+
+#: flaskforms.py:152 flaskforms.py:304 flaskforms.py:305 flaskforms.py:657
+#: flaskforms.py:658 flaskforms.py:684 flaskforms.py:685
+msgid "Username"
+msgstr ""
+
+#: flaskforms.py:157 flaskforms.py:248 flaskforms.py:317 flaskforms.py:318
+#: flaskforms.py:350 flaskforms.py:667 flaskforms.py:668 flaskforms.py:689
+#: flaskforms.py:690
+msgid "Password"
+msgstr ""
+
+#: flaskforms.py:161
+msgid "Add Host"
+msgstr ""
+
+#: flaskforms.py:162
+msgid "Delete Host"
+msgstr ""
+
+#: flaskforms.py:171
+msgid "Number of Lines"
+msgstr ""
+
+#: flaskforms.py:172
+msgid "Lines"
+msgstr ""
+
+#: flaskforms.py:175
+msgid "Number of lines should be greater than 0."
+msgstr ""
+
+#: flaskforms.py:178
+msgid "Login Log"
+msgstr ""
+
+#: flaskforms.py:179
+msgid "HTTP Log"
+msgstr ""
+
+#: flaskforms.py:180
+msgid "Daemon Log"
+msgstr ""
+
+#: flaskforms.py:181
+msgid "Upgrade Log"
+msgstr ""
+
+#: flaskforms.py:182
+msgid "Restore Log"
+msgstr ""
+
+#: flaskforms.py:190
+msgid "Stop Daemon"
+msgstr ""
+
+#: flaskforms.py:191
+msgid "Start Daemon"
+msgstr ""
+
+#: flaskforms.py:192
+msgid "Restart Daemon"
+msgstr ""
+
+#: flaskforms.py:200
+msgid "Capture Still"
+msgstr ""
+
+#: flaskforms.py:201
+msgid "Start Timelapse"
+msgstr ""
+
+#: flaskforms.py:202
+msgid "Stop Timelapse"
+msgstr ""
+
+#: flaskforms.py:204
+msgid "Photo Interval (sec)"
+msgstr ""
+
+#: flaskforms.py:207
+msgid "Photo Interval must be a positive value."
+msgstr ""
+
+#: flaskforms.py:211
+msgid "Total Run Time (sec)"
+msgstr ""
+
+#: flaskforms.py:214
+msgid "Total Run Time must be a positive value."
+msgstr ""
+
+#: flaskforms.py:217
+msgid "Start Stream"
+msgstr ""
+
+#: flaskforms.py:218
+msgid "Stop Stream"
+msgstr ""
+
+#: flaskforms.py:227 flaskforms.py:228
+msgid "SMTP Host"
+msgstr ""
+
+#: flaskforms.py:232 flaskforms.py:233
+msgid "SMTP Port"
+msgstr ""
+
+#: flaskforms.py:237
+msgid "Port should be between 1 and 65535"
+msgstr ""
+
+#: flaskforms.py:242 flaskforms.py:243
+msgid "SMTP User"
+msgstr ""
+
+#: flaskforms.py:247
+msgid "SMTP Password"
+msgstr ""
+
+#: flaskforms.py:251
+msgid "From Email"
+msgstr ""
+
+#: flaskforms.py:252 flaskforms.py:309 flaskforms.py:310 flaskforms.py:344
+#: flaskforms.py:345 flaskforms.py:662 flaskforms.py:663 flaskforms.py:966
+#: mycodo_flask/templates/settings/users.html:65
+msgid "Email"
+msgstr ""
+
+#: flaskforms.py:259 flaskforms.py:260
+msgid "Max emails (per hour)"
+msgstr ""
+
+#: flaskforms.py:263
+msgid "Must have at least one message able to be sent per hour."
+msgstr ""
+
+#: flaskforms.py:269
+msgid "Test Email To"
+msgstr ""
+
+#: flaskforms.py:270
+msgid "Email address to send test email"
+msgstr ""
+
+#: flaskforms.py:285
+msgid "Language"
+msgstr ""
+
+#: flaskforms.py:286
+msgid "Force HTTPS"
+msgstr ""
+
+#: flaskforms.py:287
+msgid "Hide success messages"
+msgstr ""
+
+#: flaskforms.py:288
+msgid "Hide info messages"
+msgstr ""
+
+#: flaskforms.py:289 flaskforms.py:1070
+#: mycodo_flask/templates/pages/graph.html:802
+#: mycodo_flask/templates/pages/graph.html:1150
+#: mycodo_flask/templates/pages/sensor.html:270
+msgid "Voltage"
+msgstr ""
+
+#: flaskforms.py:290
+msgid "Cost per kWh"
+msgstr ""
+
+#: flaskforms.py:291
+msgid "Currency Unit"
+msgstr ""
+
+#: flaskforms.py:292
+msgid "Billing Day of Month (1-30)"
+msgstr ""
+
+#: flaskforms.py:293
+msgid "Hide warning messages"
+msgstr ""
+
+#: flaskforms.py:294
+msgid "Opt-out of sending statistics"
+msgstr ""
+
+#: flaskforms.py:322 flaskforms.py:356
+msgid "Passwords must match"
+msgstr ""
+
+#: flaskforms.py:325 flaskforms.py:360
+msgid "Password must be 6 or more characters"
+msgstr ""
+
+#: flaskforms.py:330 flaskforms.py:331 flaskforms.py:365 flaskforms.py:366
+#: flaskforms.py:672 flaskforms.py:673
+#: mycodo_flask/templates/settings/users.html:67
+msgid "Repeat Password"
+msgstr ""
+
+#: flaskforms.py:335 flaskforms.py:369
+#: mycodo_flask/templates/settings/users.html:68
+msgid "Group"
+msgstr ""
+
+#: flaskforms.py:338 flaskforms.py:373
+msgid "Submit"
+msgstr ""
+
+#: flaskforms.py:351 mycodo_flask/templates/settings/users.html:66
+msgid "New Password"
+msgstr ""
+
+#: flaskforms.py:372 mycodo_flask/templates/settings/users.html:69
+msgid "Theme"
+msgstr ""
+
+#: flaskforms.py:386
+msgid "Camera ID"
+msgstr ""
+
+#: flaskforms.py:388
+msgid "Type"
+msgstr ""
+
+#: flaskforms.py:389
+msgid "Library"
+msgstr ""
+
+#: flaskforms.py:390
+msgid "Flip image horizontally"
+msgstr ""
+
+#: flaskforms.py:391
+msgid "Flip image vertically"
+msgstr ""
+
+#: flaskforms.py:392
+msgid "Rotate image (degrees)"
+msgstr ""
+
+#: flaskforms.py:393
+msgid "Image Height"
+msgstr ""
+
+#: flaskforms.py:394
+msgid "Image width"
+msgstr ""
+
+#: flaskforms.py:395
+msgid "Contrast"
+msgstr ""
+
+#: flaskforms.py:396
+msgid "Exposure"
+msgstr ""
+
+#: flaskforms.py:397
+msgid "Gain"
+msgstr ""
+
+#: flaskforms.py:398
+msgid "Hue"
+msgstr ""
+
+#: flaskforms.py:399
+msgid "Saturation"
+msgstr ""
+
+#: flaskforms.py:400
+msgid "White Balance"
+msgstr ""
+
+#: flaskforms.py:402
+msgid "Pre Command"
+msgstr ""
+
+#: flaskforms.py:403
+msgid "Post Command"
+msgstr ""
+
+#: flaskforms.py:404
+msgid "Add Camera"
+msgstr ""
+
+#: flaskforms.py:414
+msgid "Measurement to Export"
+msgstr ""
+
+#: flaskforms.py:415
+msgid "Time Range DD/MM/YYYY HH:MM"
+msgstr ""
+
+#: flaskforms.py:416
+msgid "Export"
+msgstr ""
+
+#: flaskforms.py:425 flaskforms.py:426 flaskforms.py:483 flaskforms.py:484
+#: mycodo_flask/templates/pages/graph.html:227
+msgid "Graph Name"
+msgstr ""
+
+#: flaskforms.py:430 flaskforms.py:488
+msgid "PID IDs (Setpoint)"
+msgstr ""
+
+#: flaskforms.py:434 flaskforms.py:492
+msgid "Relay IDs"
+msgstr ""
+
+#: flaskforms.py:438 flaskforms.py:496
+msgid "Sensor IDs"
+msgstr ""
+
+#: flaskforms.py:441 flaskforms.py:499
+msgid "Width (%)"
+msgstr ""
+
+#: flaskforms.py:442 flaskforms.py:500
+msgid "Percent Width"
+msgstr ""
+
+#: flaskforms.py:449 flaskforms.py:507
+msgid "Height (pixels)"
+msgstr ""
+
+#: flaskforms.py:450 flaskforms.py:508
+msgid "Percent Height"
+msgstr ""
+
+#: flaskforms.py:457
+msgid "x-Axis (minutes)"
+msgstr ""
+
+#: flaskforms.py:458 flaskforms.py:516
+msgid "X-Axis Duration"
+msgstr ""
+
+#: flaskforms.py:461 flaskforms.py:519
+msgid "Number of minutes to display of past measurements."
+msgstr ""
+
+#: flaskforms.py:466 flaskforms.py:524
+msgid "Refresh (seconds)"
+msgstr ""
+
+#: flaskforms.py:467 flaskforms.py:525
+msgid "Refresh duration"
+msgstr ""
+
+#: flaskforms.py:470 flaskforms.py:528
+msgid "Number of seconds to wait between acquiring any new measurements."
+msgstr ""
+
+#: flaskforms.py:474 flaskforms.py:532
+msgid "Enable Navbar"
+msgstr ""
+
+#: flaskforms.py:475 flaskforms.py:533
+msgid "Enable Export"
+msgstr ""
+
+#: flaskforms.py:476 flaskforms.py:534
+msgid "Enable Range Selector"
+msgstr ""
+
+#: flaskforms.py:477
+msgid "Create Graph"
+msgstr ""
+
+#: flaskforms.py:515
+msgid "x-Axis (min)"
+msgstr ""
+
+#: flaskforms.py:535
+msgid "Enable Custom Colors"
+msgstr ""
+
+#: flaskforms.py:536
+msgid "Save Graph"
+msgstr ""
+
+#: flaskforms.py:541
+msgid "Delete Graph"
+msgstr ""
+
+#: flaskforms.py:546 flaskforms.py:642 flaskforms.py:910 flaskforms.py:1075
+#: flaskforms.py:1177
+msgid "Up"
+msgstr ""
+
+#: flaskforms.py:547 flaskforms.py:643 flaskforms.py:911 flaskforms.py:1076
+#: flaskforms.py:1178
+msgid "Down"
+msgstr ""
+
+#: flaskforms.py:556 flaskforms.py:557 flaskforms.py:706 flaskforms.py:707
+#: flaskforms.py:854 flaskforms.py:855 flaskforms.py:924 flaskforms.py:925
+#: flaskforms.py:984 flaskforms.py:985
+msgid "Quantity"
+msgstr ""
+
+#: flaskforms.py:563
+msgid "Add LCDs"
+msgstr ""
+
+#: flaskforms.py:574 flaskforms.py:575 flaskforms.py:580
+msgid "I2C Address"
+msgstr ""
+
+#: flaskforms.py:579
+msgid "Multiplexer I2C Address"
+msgstr ""
+
+#: flaskforms.py:583 mycodo_flask/templates/pages/lcd.html:88
+msgid "Multiplexer Channel"
+msgstr ""
+
+#: flaskforms.py:584
+msgid "Channel"
+msgstr ""
+
+#: flaskforms.py:592 flaskforms.py:742
+msgid "Period (seconds)"
+msgstr ""
+
+#: flaskforms.py:593 flaskforms.py:743
+msgid "Period"
+msgstr ""
+
+#: flaskforms.py:597
+msgid ""
+"Duration between calculating LCD output and applying to regulation must "
+"be between 5 and 86400 seconds."
+msgstr ""
+
+#: flaskforms.py:603 mycodo_flask/templates/pages/lcd.html:85
+msgid "LCD Type"
+msgstr ""
+
+#: flaskforms.py:611
+msgid "Line 1 Sensor ID"
+msgstr ""
+
+#: flaskforms.py:614
+msgid "Line 2 Sensor ID"
+msgstr ""
+
+#: flaskforms.py:617
+msgid "Line 3 Sensor ID"
+msgstr ""
+
+#: flaskforms.py:620
+msgid "Line 4 Sensor ID"
+msgstr ""
+
+#: flaskforms.py:632 flaskforms.py:972 flaskforms.py:1073 flaskforms.py:1109
+#: flaskforms.py:1175 flaskforms.py:1183 flaskutils.py:1168 flaskutils.py:1652
+#: flaskutils.py:2067
+msgid "Activate"
+msgstr ""
+
+#: flaskforms.py:637 flaskforms.py:973 flaskforms.py:1074 flaskforms.py:1110
+#: flaskforms.py:1176 flaskforms.py:1188 flaskutils.py:1660 flaskutils.py:2111
+msgid "Deactivate"
+msgstr ""
+
+#: flaskforms.py:648
+msgid "Reset Flashing"
+msgstr ""
+
+#: flaskforms.py:693
+msgid "remember"
+msgstr ""
+
+#: flaskforms.py:697
+msgid "I Understand"
+msgstr ""
+
+#: flaskforms.py:713
+msgid "Add PIDs"
+msgstr ""
+
+#: flaskforms.py:724 flaskforms.py:725 flaskforms.py:1086
+msgid "Sensor ID"
+msgstr ""
+
+#: flaskforms.py:729
+msgid "Measure Type"
+msgstr ""
+
+#: flaskforms.py:733 flaskforms.py:1098
+msgid "Direction"
+msgstr ""
+
+#: flaskforms.py:747
+msgid ""
+"Duration between calculating PID output and applying to regulation must "
+"be between 5 and 86400 seconds."
+msgstr ""
+
+#: flaskforms.py:753 flaskforms.py:1099
+#: mycodo_flask/templates/pages/graph.html:1197
+msgid "Setpoint"
+msgstr ""
+
+#: flaskforms.py:758
+msgid "Setpoint range must be between -1,000,000 and 1,000,000."
+msgstr ""
+
+#: flaskforms.py:763
+msgid "Kp"
+msgstr ""
+
+#: flaskforms.py:764
+msgid "P"
+msgstr ""
+
+#: flaskforms.py:767
+msgid "Kp must be a positive value."
+msgstr ""
+
+#: flaskforms.py:771
+msgid "Ki"
+msgstr ""
+
+#: flaskforms.py:772
+msgid "I"
+msgstr ""
+
+#: flaskforms.py:775
+msgid "Ki must be a positive value."
+msgstr ""
+
+#: flaskforms.py:779
+msgid "Kd"
+msgstr ""
+
+#: flaskforms.py:780
+msgid "D"
+msgstr ""
+
+#: flaskforms.py:783
+msgid "Kd must be a positive value."
+msgstr ""
+
+#: flaskforms.py:786
+msgid "Integrator Min"
+msgstr ""
+
+#: flaskforms.py:787
+msgid "Integrator Max"
+msgstr ""
+
+#: flaskforms.py:789 flaskforms.py:790
+msgid "Raise Relay ID"
+msgstr ""
+
+#: flaskforms.py:793 flaskforms.py:794
+msgid "Raise Min Duration"
+msgstr ""
+
+#: flaskforms.py:798
+msgid "Raise minimum duration must be a non-negative value. (0 to disable)"
+msgstr ""
+
+#: flaskforms.py:803 flaskforms.py:804
+msgid "Raise Max Duration"
+msgstr ""
+
+#: flaskforms.py:808
+msgid "Raise maximum duration must be a non-negative value. (0 to disable)"
+msgstr ""
+
+#: flaskforms.py:813 flaskforms.py:814
+msgid "Lower Relay ID"
+msgstr ""
+
+#: flaskforms.py:817 flaskforms.py:818
+msgid "Lower Min Duration"
+msgstr ""
+
+#: flaskforms.py:822
+msgid "Lower minimum duration must be a non-negative value. (0 to disable)"
+msgstr ""
+
+#: flaskforms.py:827 flaskforms.py:828
+msgid "Lower Max Duration"
+msgstr ""
+
+#: flaskforms.py:832
+msgid "Lower maximum duration must be a non-negative value. (0 to disable)"
+msgstr ""
+
+#: flaskforms.py:837
+msgid "Save Settings"
+msgstr ""
+
+#: flaskforms.py:838
+msgid "Hold"
+msgstr ""
+
+#: flaskforms.py:839
+msgid "Pause"
+msgstr ""
+
+#: flaskforms.py:840
+msgid "Resume"
+msgstr ""
+
+#: flaskforms.py:841
+msgid "Delete PID"
+msgstr ""
+
+#: flaskforms.py:842
+msgid "Activate PID"
+msgstr ""
+
+#: flaskforms.py:843
+msgid "Deactivate PID"
+msgstr ""
+
+#: flaskforms.py:844
+msgid "Order Up"
+msgstr ""
+
+#: flaskforms.py:845
+msgid "Order Down"
+msgstr ""
+
+#: flaskforms.py:861
+msgid "Add Relays"
+msgstr ""
+
+#: flaskforms.py:873
+msgid "GPIO Pin (BCM)"
+msgstr ""
+
+#: flaskforms.py:874
+msgid "GPIO"
+msgstr ""
+
+#: flaskforms.py:878
+msgid "GPIO pin, using BCM numbering, between 1 and 27 (0 to disable)"
+msgstr ""
+
+#: flaskforms.py:883
+msgid "Current Draw (amps)"
+msgstr ""
+
+#: flaskforms.py:884
+msgid "Amps"
+msgstr ""
+
+#: flaskforms.py:888
+msgid "The current draw of the device connected to this relay, in amps."
+msgstr ""
+
+#: flaskforms.py:893
+msgid "On Trigger"
+msgstr ""
+
+#: flaskforms.py:901
+msgid "Start State"
+msgstr ""
+
+#: flaskforms.py:912 mycodo_flask/templates/pages/relay.html:158
+#: mycodo_flask/templates/pages/relay.html:249
+#: mycodo_flask/templates/pages/relay.html:272
+#: mycodo_flask/templates/pages/timer.html:51
+#: mycodo_flask/templates/pages/timer.html:84
+#: mycodo_flask/templates/pages/timer.html:203
+#: mycodo_flask/templates/pages/timer.html:231
+msgid "On"
+msgstr ""
+
+#: flaskforms.py:913 mycodo_flask/templates/pages/relay.html:159
+#: mycodo_flask/templates/pages/relay.html:250
+#: mycodo_flask/templates/pages/relay.html:273
+#: mycodo_flask/templates/pages/timer.html:52
+#: mycodo_flask/templates/pages/timer.html:85
+#: mycodo_flask/templates/pages/timer.html:204
+#: mycodo_flask/templates/pages/timer.html:232
+msgid "Off"
+msgstr ""
+
+#: flaskforms.py:914
+msgid "Seconds to turn on"
+msgstr ""
+
+#: flaskforms.py:915 mycodo_flask/templates/pages/method-build.html:441
+msgid "Turn On"
+msgstr ""
+
+#: flaskforms.py:931
+msgid "Add Conditionals"
+msgstr ""
+
+#: flaskforms.py:941
+msgid "If Relay ID"
+msgstr ""
+
+#: flaskforms.py:944
+msgid "If Action"
+msgstr ""
+
+#: flaskforms.py:947
+msgid "If Relay Duration"
+msgstr ""
+
+#: flaskforms.py:948 flaskforms.py:958
+#: mycodo_flask/templates/pages/method-list.html:34
+msgid "Duration"
+msgstr ""
+
+#: flaskforms.py:951
+msgid "Do Relay ID"
+msgstr ""
+
+#: flaskforms.py:954
+msgid "Do Action"
+msgstr ""
+
+#: flaskforms.py:957
+msgid "Do Relay Duration"
+msgstr ""
+
+#: flaskforms.py:961 flaskforms.py:1103
+msgid "Execute Command"
+msgstr ""
+
+#: flaskforms.py:962
+msgid "Command"
+msgstr ""
+
+#: flaskforms.py:965 flaskforms.py:1104
+msgid "Notify by Email"
+msgstr ""
+
+#: flaskforms.py:969 flaskforms.py:1105
+msgid "Flash LCD"
+msgstr ""
+
+#: flaskforms.py:970 flaskutils.py:630 flaskutils.py:1040 flaskutils.py:1063
+#: flaskutils.py:1118 flaskutils.py:1139 flaskutils.py:1169
+#: mycodo_flask/templates/layout.html:109
+#: mycodo_flask/templates/pages/lcd.html:3
+msgid "LCD"
+msgstr ""
+
+#: flaskforms.py:992 flaskutils.py:632 flaskutils.py:1706 flaskutils.py:1824
+#: flaskutils.py:1886 flaskutils.py:1923 mycodo_flask/templates/layout.html:73
+msgid "Sensor"
+msgstr ""
+
+#: flaskforms.py:1016
+msgid "Add Device"
+msgstr ""
+
+#: flaskforms.py:1025
+msgid "I<sup>2</sup>C Bus"
+msgstr ""
+
+#: flaskforms.py:1026
+msgid "Location"
+msgstr ""
+
+#: flaskforms.py:1027
+msgid "Power Pin"
+msgstr ""
+
+#: flaskforms.py:1028
+msgid "Power On State"
+msgstr ""
+
+#: flaskforms.py:1029
+msgid "Multiplexer (MX)"
+msgstr ""
+
+#: flaskforms.py:1030
+msgid "Mx I<sup>2</sup>C Bus"
+msgstr ""
+
+#: flaskforms.py:1031
+msgid "Mx Channel"
+msgstr ""
+
+#: flaskforms.py:1032
+msgid "ADC Channel"
+msgstr ""
+
+#: flaskforms.py:1033
+msgid "ADC Gain"
+msgstr ""
+
+#: flaskforms.py:1034
+msgid "ADC Resolution"
+msgstr ""
+
+#: flaskforms.py:1035
+msgid "ADC Measurement Type"
+msgstr ""
+
+#: flaskforms.py:1036
+msgid "ADC Measurement Units"
+msgstr ""
+
+#: flaskforms.py:1037
+msgid "Volts Min"
+msgstr ""
+
+#: flaskforms.py:1038
+msgid "Volts Max"
+msgstr ""
+
+#: flaskforms.py:1039
+msgid "Units Min"
+msgstr ""
+
+#: flaskforms.py:1040
+msgid "Units Max"
+msgstr ""
+
+#: flaskforms.py:1041 mycodo_flask/templates/pages/graph.html:790
+#: mycodo_flask/templates/pages/graph.html:1138
+msgid "Edge"
+msgstr ""
+
+#: flaskforms.py:1042
+msgid "Bounce Time (milliseconds)"
+msgstr ""
+
+#: flaskforms.py:1043
+msgid "Reset Period (seconds)"
+msgstr ""
+
+#: flaskforms.py:1044
+msgid "Pre Relay"
+msgstr ""
+
+#: flaskforms.py:1046
+msgid "Pre Relay Duration (sec)"
+msgstr ""
+
+#: flaskforms.py:1053
+msgid "Read Period (seconds)"
+msgstr ""
+
+#: flaskforms.py:1061
+msgid "Clock Pin"
+msgstr ""
+
+#: flaskforms.py:1065
+msgid ""
+"If using a SHT sensor, enter the GPIO connected to the clock pin (using "
+"BCM numbering)."
+msgstr ""
+
+#: flaskforms.py:1077
+msgid "Add Conditional"
+msgstr ""
+
+#: flaskforms.py:1089 mycodo_flask/templates/pages/lcd.html:89
+msgid "Period (sec)"
+msgstr ""
+
+#: flaskforms.py:1094
+msgid "Measurement Type"
+msgstr ""
+
+#: flaskforms.py:1095
+msgid "Edge or State"
+msgstr ""
+
+#: flaskforms.py:1096
+msgid "Edge Detected"
+msgstr ""
+
+#: flaskforms.py:1097
+msgid "GPIO State"
+msgstr ""
+
+#: flaskforms.py:1102 mycodo_flask/templates/pages/graph.html:682
+msgid "Relay Duration"
+msgstr ""
+
+#: flaskforms.py:1106
+msgid "Record with Camera"
+msgstr ""
+
+#: flaskforms.py:1118
+msgid "Upgrade Mycodo"
+msgstr ""
+
+#: flaskforms.py:1126
+msgid "Create Backup"
+msgstr ""
+
+#: flaskforms.py:1127
+msgid "Restore Backup"
+msgstr ""
+
+#: flaskforms.py:1147
+msgid "State"
+msgstr ""
+
+#: flaskforms.py:1154 flaskforms.py:1155
+msgid "Time of day"
+msgstr ""
+
+#: flaskforms.py:1157 flaskforms.py:1158 flaskforms.py:1165
+msgid "On (sec)"
+msgstr ""
+
+#: flaskforms.py:1166
+msgid "On seconds"
+msgstr ""
+
+#: flaskforms.py:1169
+msgid "Off (sec)"
+msgstr ""
+
+#: flaskforms.py:1170
+msgid "Off seconds"
+msgstr ""
+
+#: flaskforms.py:1172
+msgid "Create Timer"
+msgstr ""
+
+#: flaskutils.py:74
+msgid "Duration must be a positive integer"
+msgstr ""
+
+#: flaskutils.py:77
+msgid "Duration must be a valid integer"
+msgstr ""
+
+#: flaskutils.py:88
+msgid "Required: Start date/time, end date/time, start setpoint"
+msgstr ""
+
+#: flaskutils.py:97
+msgid "Invalid Date/Time format. Correct format: DD/MM/YYYY HH:MM:SS"
+msgstr ""
+
+#: flaskutils.py:101
+msgid "The end time/date must be after the start time/date."
+msgstr ""
+
+#: flaskutils.py:109
+msgid "Required: Start time, end time, start setpoint"
+msgstr ""
+
+#: flaskutils.py:118 flaskutils.py:170
+msgid "Invalid Date/Time format. Correct format: HH:MM:SS"
+msgstr ""
+
+#: flaskutils.py:122
+msgid "The end time must be after the start time."
+msgstr ""
+
+#: flaskutils.py:129
+msgid "Required: Duration, start setpoint"
+msgstr ""
+
+#: flaskutils.py:140
+msgid "Required: Date/Time, Relay ID, and Relay State"
+msgstr ""
+
+#: flaskutils.py:147
+msgid "Invalid Date/Time format. Correct format: DD-MM-YYYY HH:MM:SS"
+msgstr ""
+
+#: flaskutils.py:154
+msgid "Required: Duration, Relay ID, and Relay State"
+msgstr ""
+
+#: flaskutils.py:163
+msgid "Required: Time, Relay ID, and Relay State"
+msgstr ""
+
+#: flaskutils.py:177
+msgid "Create"
+msgstr ""
+
+#: flaskutils.py:178 flaskutils.py:215 flaskutils.py:369 flaskutils.py:470
+#: mycodo_flask/method_routes.py:291 mycodo_flask/templates/layout.html:75
+msgid "Method"
+msgstr ""
+
+#: flaskutils.py:214 flaskutils.py:792 flaskutils.py:877 flaskutils.py:1039
+#: flaskutils.py:1229 flaskutils.py:1519 flaskutils.py:1531 flaskutils.py:1628
+#: flaskutils.py:1705 flaskutils.py:1994 flaskutils.py:2144 flaskutils.py:2285
+msgid "Add"
+msgstr ""
+
+#: flaskutils.py:237
+msgid "Error: Angle Shift is out of range. It must be <= 0 and <= 360."
+msgstr ""
+
+#: flaskutils.py:241
+msgid "Error: X0 must be greater than X3."
+msgstr ""
+
+#: flaskutils.py:284
+#, python-format
+msgid ""
+"The new entry start time (%(st)s) cannot overlap the last entry's end "
+"time (%(et)s). Note: They may be the same time."
+msgstr ""
+
+#: flaskutils.py:336 flaskutils.py:343
+#, python-format
+msgid "Added duration to method from %(st)s to %(end)s"
+msgstr ""
+
+#: flaskutils.py:346
+#, python-format
+msgid "Added duration to method for %(sec)s seconds"
+msgstr ""
+
+#: flaskutils.py:350 flaskutils.py:355 flaskutils.py:357
+#, python-format
+msgid "Added relay modulation to method at start time: %(tm)s"
+msgstr ""
+
+#: flaskutils.py:368 flaskutils.py:819 flaskutils.py:923 flaskutils.py:1062
+#: flaskutils.py:1252 flaskutils.py:1543 flaskutils.py:1560 flaskutils.py:1675
+#: flaskutils.py:1823 flaskutils.py:2033 flaskutils.py:2190 flaskutils.py:2326
+#: flaskutils.py:2388 flaskutils.py:2425 flaskutils.py:2449
+msgid "Modify"
+msgstr ""
+
+#: flaskutils.py:415
+#, python-format
+msgid ""
+"The entry start time (%(st)s) cannot overlap the previous entry's end "
+"time (%(et)s)"
+msgstr ""
+
+#: flaskutils.py:425
+#, python-format
+msgid ""
+"The entry end time (%(et)s) cannot overlap the next entry's start time "
+"(%(st)s)"
+msgstr ""
+
+#: flaskutils.py:535
+#, python-format
+msgid "Remote Host %(host)s with ID %(id)s (%(uuid)s) successfully added"
+msgstr ""
+
+#: flaskutils.py:546 flaskutils.py:549 flaskutils.py:552 flaskutils.py:570
+#, python-format
+msgid "Remote Host Error: %(msg)s"
+msgstr ""
+
+#: flaskutils.py:592 flaskutils.py:662 flaskutils.py:679 flaskutils.py:2525
+#: flaskutils.py:2545
+#, python-format
+msgid "Error: %(err)s"
+msgstr ""
+
+#: flaskutils.py:598
+#, python-format
+msgid "Success: %(err)s"
+msgstr ""
+
+#: flaskutils.py:631 flaskutils.py:1230 flaskutils.py:1253 flaskutils.py:1333
+#: flaskutils.py:1357 flaskutils.py:1401 mycodo_flask/templates/layout.html:76
+#: mycodo_flask/templates/pages/pid.html:3
+msgid "PID"
+msgstr ""
+
+#: flaskutils.py:633 flaskutils.py:2145 flaskutils.py:2191 flaskutils.py:2225
+#: flaskutils.py:2244 mycodo_flask/templates/layout.html:77
+msgid "Timer"
+msgstr ""
+
+#: flaskutils.py:653
+#, python-format
+msgid "%(cont)s controller activated in SQL database"
+msgstr ""
+
+#: flaskutils.py:657
+#, python-format
+msgid "%(cont)s controller deactivated in SQL database"
+msgstr ""
+
+#: flaskutils.py:793 flaskutils.py:820 flaskutils.py:860
+#: mycodo_flask/templates/layout-settings.html:27
+#: mycodo_flask/templates/layout.html:110
+#: mycodo_flask/templates/pages/camera.html:3
+msgid "Camera"
+msgstr ""
+
+#: flaskutils.py:878 flaskutils.py:924 flaskutils.py:984 flaskutils.py:1005
+#: mycodo_flask/templates/layout.html:97
+#: mycodo_flask/templates/pages/graph.html:17
+msgid "Graph"
+msgstr ""
+
+#: flaskutils.py:904
+#, python-format
+msgid "Graph with ID %(id)s successfully added"
+msgstr ""
+
+#: flaskutils.py:938
+msgid "Invalid hex color value"
+msgstr ""
+
+#: flaskutils.py:1004 flaskutils.py:1138 flaskutils.py:1356 flaskutils.py:1594
+#: flaskutils.py:1922 flaskutils.py:2243
+msgid "Reorder"
+msgstr ""
+
+#: flaskutils.py:1071
+msgid "Deactivate LCD controller before modifying its settings."
+msgstr ""
+
+#: flaskutils.py:1191
+msgid "Cannot activate controller if the associated sensor controller is inactive"
+msgstr ""
+
+#: flaskutils.py:1218 flaskutils.py:2375 flaskutils.py:2552 flaskutils.py:2578
+#, python-format
+msgid "Error: %(msg)s"
+msgstr ""
+
+#: flaskutils.py:1261
+msgid "A valid sensor ID is required"
+msgstr ""
+
+#: flaskutils.py:1291
+msgid "Select a Measure Type that is compatible with the chosen sensor"
+msgstr ""
+
+#: flaskutils.py:1320
+#, python-format
+msgid "PID Controller settings refresh response: %(resp)s"
+msgstr ""
+
+#: flaskutils.py:1382
+msgid "A valid sensor is required"
+msgstr ""
+
+#: flaskutils.py:1385
+msgid "A valid Measure Type is required"
+msgstr ""
+
+#: flaskutils.py:1388
+msgid "A Raise Relay ID and/or a Lower Relay ID is required"
+msgstr ""
+
+#: flaskutils.py:1400 flaskutils.py:1481
+msgid "Actuate"
+msgstr ""
+
+#: flaskutils.py:1411
+msgid ""
+"Cannot activate PID controller if the associated sensor controller is "
+"inactive"
+msgstr ""
+
+#: flaskutils.py:1444
+#, python-format
+msgid "Invalid PID action: %(act)s"
+msgstr ""
+
+#: flaskutils.py:1469
+#, python-format
+msgid "Daemon response to PID controller %(act)s command: %(rval)s"
+msgstr ""
+
+#: flaskutils.py:1472
+#, python-format
+msgid "PID Error: %(msg)s"
+msgstr ""
+
+#: flaskutils.py:1488
+msgid "Cannot modulate relay with a GPIO of 0"
+msgstr ""
+
+#: flaskutils.py:1491
+msgid "Value must be greater than 0"
+msgstr ""
+
+#: flaskutils.py:1495
+#, python-format
+msgid "Relay turned on for %(sec)s seconds: %(rvalue)s"
+msgstr ""
+
+#: flaskutils.py:1501
+#, python-format
+msgid "Relay turned on: %(rvalue)s"
+msgstr ""
+
+#: flaskutils.py:1505
+#, python-format
+msgid "Relay turned off: %(rvalue)s"
+msgstr ""
+
+#: flaskutils.py:1509
+msgid "Invalid value"
+msgstr ""
+
+#: flaskutils.py:1629 flaskutils.py:1653 flaskutils.py:1661 flaskutils.py:1669
+#: flaskutils.py:1676
+msgid "Relay Conditional"
+msgstr ""
+
+#: flaskutils.py:1806
+#, python-format
+msgid "%(type)s Sensor with ID %(id)s (%(uuid)s) successfully added"
+msgstr ""
+
+#: flaskutils.py:1835
+msgid "Deactivate sensor controller before modifying its settings"
+msgstr ""
+
+#: flaskutils.py:1840
+msgid ""
+"Choose a Read Period equal to or greater than 7. The AM2315 may become "
+"unresponsive if the period is below 7."
+msgstr ""
+
+#: flaskutils.py:1846
+msgid "The Read Period cannot be less than the Pre-Relay Duration"
+msgstr ""
+
+#: flaskutils.py:1995 flaskutils.py:2020 flaskutils.py:2034 flaskutils.py:2068
+#: flaskutils.py:2112
+msgid "Sensor Conditional"
+msgstr ""
+
+#: flaskutils.py:2037
+msgid ""
+"A notification email address is required if the record and email option "
+"is selected"
+msgstr ""
+
+#: flaskutils.py:2103
+#, python-format
+msgid ""
+"Cannot activate sensor conditional %(cond)s because of an incomplete "
+"configuration"
+msgstr ""
+
+#: flaskutils.py:2166
+msgid "Durations must be greater than 0"
+msgstr ""
+
+#: flaskutils.py:2198
+msgid "Deactivate timer controller before modifying its settings"
+msgstr ""
+
+#: flaskutils.py:2286 flaskutils.py:2327
+#: mycodo_flask/templates/layout-settings.html:22
+#: mycodo_flask/templates/settings/users.html:64
+msgid "User"
+msgstr ""
+
+#: flaskutils.py:2292 mycodo_flask/authentication_routes.py:81
+msgid ""
+"Invalid user name. Must be between 2 and 64 characters and only contain "
+"letters and numbers."
+msgstr ""
+
+#: flaskutils.py:2297 mycodo_flask/authentication_routes.py:87
+msgid ""
+"Invalid password. Must be between 6 and 64 characters and only contain "
+"letters, numbers, and symbols."
+msgstr ""
+
+#: flaskutils.py:2302 flaskutils.py:2346
+#: mycodo_flask/authentication_routes.py:77
+msgid "Passwords do not match. Please try again."
+msgstr ""
+
+#: flaskutils.py:2338
+msgid "Invalid password"
+msgstr ""
+
+#: flaskutils.py:2389 mycodo_flask/templates/settings/general.html:6
+#: mycodo_flask/templates/settings/general.html:10
+msgid "General Settings"
+msgstr ""
+
+#: flaskutils.py:2426 mycodo_flask/templates/settings/camera.html:6
+#: mycodo_flask/templates/settings/camera.html:10
+msgid "Camera Settings"
+msgstr ""
+
+#: flaskutils.py:2450
+msgid "Alert Settings"
+msgstr ""
+
+#: flaskutils.py:2462
+#, python-format
+msgid ""
+"Test email sent to %(recip)s. Check your inbox to see if it was "
+"successful."
+msgstr ""
+
+#: flaskutils.py:2519 flaskutils.py:2539 flaskutils.py:2584
+#, python-format
+msgid "Success: %(msg)s"
+msgstr ""
+
+#: flaskutils.py:2560
+msgid "Guests are not permitted to do that"
+msgstr ""
+
+#: flaskutils.py:2569
+#, python-format
+msgid "Error in the %(field)s field - %(err)s"
+msgstr ""
+
+#: flaskutils.py:2648
+msgid "Cannot move above the first item in the list"
+msgstr ""
+
+#: flaskutils.py:2652
+msgid "Cannot move below the last item in the list"
+msgstr ""
+
+#: mycodo_flask/admin_routes.py:122
+msgid ""
+"Upgrade functionality is disabled because an internet connection was "
+"unable to be detected"
+msgstr ""
+
+#: mycodo_flask/admin_routes.py:141
+msgid "An upgrade is currently in progress. Please wait for it to finish"
+msgstr ""
+
+#: mycodo_flask/admin_routes.py:144
+msgid ""
+"There was an error encountered during the upgrade process. Check the "
+"upgrade log for details."
+msgstr ""
+
+#: mycodo_flask/admin_routes.py:181
+msgid "The upgrade has started. The daemon will be stopped during the upgrade."
+msgstr ""
+
+#: mycodo_flask/admin_routes.py:184
+msgid "You cannot upgrade if an upgrade is not available"
+msgstr ""
+
+#: mycodo_flask/authentication_routes.py:62
+msgid "Cannot access admin creation form if an admin user already exists."
+msgstr ""
+
+#: mycodo_flask/authentication_routes.py:104
+#, python-format
+msgid "User '%(user)s' successfully created. Please log in below."
+msgstr ""
+
+#: mycodo_flask/authentication_routes.py:109
+#, python-format
+msgid "Failed to create user '%(user)s': %(err)s"
+msgstr ""
+
+#: mycodo_flask/authentication_routes.py:125
+msgid "Cannot access login page if you're already logged in"
+msgstr ""
+
+#: mycodo_flask/authentication_routes.py:141
+#, python-format
+msgid ""
+"Too many failed login attempts. Please wait %(min)s minutes before "
+"attempting to log in again"
+msgstr ""
+
+#: mycodo_flask/authentication_routes.py:152
+#, python-format
+msgid "Acknowledgement unable to be saved: %(err)s"
+msgstr ""
+
+#: mycodo_flask/authentication_routes.py:221
+msgid "Successfully logged out"
+msgstr ""
+
+#: mycodo_flask/general_routes.py:101
+#, python-format
+msgid "URL for 'inject_mycodo_version' raised and error: %(err)s"
+msgstr ""
+
+#: mycodo_flask/general_routes.py:536
+msgid "System rebooting in 10 seconds"
+msgstr ""
+
+#: mycodo_flask/general_routes.py:538
+msgid "System shutting down in 10 seconds"
+msgstr ""
+
+#: mycodo_flask/page_routes.py:98
+msgid ""
+"Camera support doesn't appear to be enabled. Please enable it with 'sudo "
+"raspi-config'"
+msgstr ""
+
+#: mycodo_flask/page_routes.py:130
+#, python-format
+msgid ""
+"Cannot capture still if stream is active. If it is not active, delete "
+"%(file)s."
+msgstr ""
+
+#: mycodo_flask/page_routes.py:159
+#, python-format
+msgid ""
+"Cannot start time-lapse if a video stream is active. If it is not active,"
+" delete %(file)s."
+msgstr ""
+
+#: mycodo_flask/page_routes.py:177
+#, python-format
+msgid ""
+"Cannot start stream if a time-lapse is active. If not active, delete "
+"%(file)s."
+msgstr ""
+
+#: mycodo_flask/templates/404.html:3 mycodo_flask/templates/404.html:5
+msgid "Error 404: Page Not Found"
+msgstr ""
+
+#: mycodo_flask/templates/create_admin.html:12
+#: mycodo_flask/templates/create_admin.html:36
+#: mycodo_flask/templates/create_admin.html:46
+msgid "Create Admin"
+msgstr ""
+
+#: mycodo_flask/templates/create_admin.html:32
+#, python-format
+msgid ""
+"Mycodo was unable to find an admin user in the user database. This is "
+"expected with a new install of Mycodo. Use the form below to create an "
+"admin user and you will be redirected to the login page. If this is not a"
+" new install and this is unexpected behavior, please create an "
+"%(hrefo)sIssue on Github%(hrefc)s"
+msgstr ""
+
+#: mycodo_flask/templates/layout-settings.html:21
+msgid "General"
+msgstr ""
+
+#: mycodo_flask/templates/layout-settings.html:23
+msgid "Alerts"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:44 mycodo_flask/templates/layout.html:53
+#: mycodo_flask/templates/layout.html:91
+msgid "Daemon is Not Running"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:49 mycodo_flask/templates/layout.html:91
+msgid "Daemon is Running"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:95
+#: mycodo_flask/templates/pages/live.html:4
+msgid "Live"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:99
+msgid "General Graph"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:100
+#: mycodo_flask/templates/pages/graph-async.html:17
+msgid "Asynchronous Graph"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:107
+msgid "Tools"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:111
+msgid "Relay Usage"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:112
+#: mycodo_flask/templates/tools/export.html:3
+msgid "Export Measurements"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:113
+msgid "Mycodo Logs"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:114
+msgid "System Info"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:115
+#: mycodo_flask/templates/tools/notes.html:3
+msgid "Notes"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:120
+msgid "Help"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:122
+msgid "Admin"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:124
+msgid "Configure"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:125
+msgid "Upgrade"
+msgstr ""
+
+#: mycodo_flask/templates/admin/backup.html:3
+#: mycodo_flask/templates/layout.html:126
+msgid "Backup/Restore"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:128
+msgid "Restart Computer"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:129
+msgid "Shutdown Computer"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:131
+msgid "Remote Admin"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:133
+msgid "Logout"
+msgstr ""
+
+#: mycodo_flask/templates/login.html:12
+msgid "Login"
+msgstr ""
+
+#: mycodo_flask/templates/login.html:30
+msgid "You're logged in already!"
+msgstr ""
+
+#: mycodo_flask/templates/login.html:38
+msgid "Mycodo Login"
+msgstr ""
+
+#: mycodo_flask/templates/login.html:45
+msgid "Remember me (90 days)"
+msgstr ""
+
+#: mycodo_flask/templates/login.html:47
+msgid "Sign in"
+msgstr ""
+
+#: mycodo_flask/templates/admin/backup.html:25
+msgid "Changelog"
+msgstr ""
+
+#: mycodo_flask/templates/admin/statistics.html:6
+msgid "Statistics"
+msgstr ""
+
+#: mycodo_flask/templates/admin/statistics.html:10
+msgid "Collected Statistics"
+msgstr ""
+
+#: mycodo_flask/templates/admin/upgrade.html:11
+msgid "Mycodo is currently in the process of an upgrade."
+msgstr ""
+
+#: mycodo_flask/templates/admin/upgrade.html:12
+msgid ""
+"This often takes several minutes, and in some cases longer, to complete. "
+"Give the process ample time to complete before doing anything. When the "
+"upgrade has successfully finished, the daemon status indicator at the top"
+" left will turn from red to green. You can monitor the upgrade progress "
+"by going to Tools->Mycodo Logs->Upgrade Log or by opening "
+"/var/log/mycodo/mycodoupgrade.log."
+msgstr ""
+
+#: mycodo_flask/templates/admin/upgrade.html:13
+msgid ""
+"If this is in error, you may delete the ~/Mycodo/.upgrade file to be able"
+" to reinitiate the upgrade process."
+msgstr ""
+
+#: mycodo_flask/templates/admin/upgrade.html:17
+msgid "There was an error that occurred during the upgrade."
+msgstr ""
+
+#: mycodo_flask/templates/admin/upgrade.html:18
+msgid "View the upgrade log at /var/log/mycodo/mycodoupgrade.log."
+msgstr ""
+
+#: mycodo_flask/templates/admin/upgrade.html:19
+msgid ""
+"Delete ~/Mycoco/.upgrade to acknowledge this message and restore upgrade "
+"functionality."
+msgstr ""
+
+#: mycodo_flask/templates/admin/upgrade.html:23
+msgid ""
+"No internet connection detected. To upgrade Mycodo automatically, you "
+"will need an internet connection. Refresh the page when one is connected."
+msgstr ""
+
+#: mycodo_flask/templates/admin/upgrade.html:27
+msgid "No upgrade is available. You are running the latest release, version"
+msgstr ""
+
+#: mycodo_flask/templates/admin/upgrade.html:39
+msgid ""
+"Click the button below to begin the upgrade process. Note: An upgrade "
+"often takes several minutes, and in rare cases hours, to complete. During"
+" that time, the Mycodo web interface and server recording sensors and "
+"manipulating relays (among other services) will be completely shut down. "
+"It is not recommended not perform an upgrade on a production machine "
+"(i.e. trust buy verify: treat the new version as unstable until you have "
+"verified it works as expected)."
+msgstr ""
+
+#: mycodo_flask/templates/admin/upgrade.html:56
+msgid "Current to latest versions"
+msgstr ""
+
+#: mycodo_flask/templates/admin/upgrade.html:64
+msgid "current"
+msgstr ""
+
+#: mycodo_flask/templates/admin/upgrade.html:64
+msgid "latest"
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:23
+msgid "Create Timelapse"
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:70
+msgid "Video Stream"
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:77
+msgid "Timelapse Parameters"
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:78
+msgid "Now"
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:80
+msgid "Start"
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:81
+msgid "End"
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:82
+msgid "Interval"
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:83
+msgid "Next Capture"
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:84
+msgid "Next Capture Number"
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:89
+msgid "Last Timelapse"
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:97
+msgid "Last Still"
+msgstr ""
+
+#: mycodo_flask/templates/pages/graph.html:147
+#: mycodo_flask/templates/pages/graph.html:290
+msgid ""
+"Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more "
+"than one"
+msgstr ""
+
+#: mycodo_flask/templates/pages/graph.html:217
+msgid "New Graph"
+msgstr ""
+
+#: mycodo_flask/templates/pages/graph.html:694
+#: mycodo_flask/templates/pages/graph.html:918
+#: mycodo_flask/templates/pages/graph.html:928
+#: mycodo_flask/templates/pages/graph.html:938
+msgid "CPU Load"
+msgstr ""
+
+#: mycodo_flask/templates/pages/graph.html:706
+#: mycodo_flask/templates/pages/graph.html:949
+#: mycodo_flask/templates/pages/graph.html:988
+#: mycodo_flask/templates/pages/graph.html:1046
+#: mycodo_flask/templates/pages/graph.html:1081
+#: mycodo_flask/templates/pages/sensor.html:254
+#: mycodo_flask/templates/pages/sensor.html:256
+#: mycodo_flask/templates/pages/sensor.html:264
+#: mycodo_flask/templates/pages/sensor.html:266
+msgid "Temperature"
+msgstr ""
+
+#: mycodo_flask/templates/pages/graph.html:718
+msgid "Relative Humidity"
+msgstr ""
+
+#: mycodo_flask/templates/pages/graph.html:742
+#: mycodo_flask/templates/pages/sensor.html:262
+msgid "Luminosity"
+msgstr ""
+
+#: mycodo_flask/templates/pages/graph.html:754
+#: mycodo_flask/templates/pages/graph.html:1035
+#: mycodo_flask/templates/pages/sensor.html:263
+msgid "Moisture"
+msgstr ""
+
+#: mycodo_flask/templates/pages/graph.html:766
+#: mycodo_flask/templates/pages/graph.html:1115
+#: mycodo_flask/templates/pages/sensor.html:267
+msgid "Pressure"
+msgstr ""
+
+#: mycodo_flask/templates/pages/graph.html:778
+#: mycodo_flask/templates/pages/graph.html:1126
+#: mycodo_flask/templates/pages/sensor.html:268
+msgid "Altitude"
+msgstr ""
+
+#: mycodo_flask/templates/pages/graph.html:962
+msgid "Temperature (Object)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/graph.html:974
+msgid "Temperature (Die)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/graph.html:1000
+#: mycodo_flask/templates/pages/graph.html:1093
+#: mycodo_flask/templates/pages/sensor.html:257
+msgid "Humidity"
+msgstr ""
+
+#: mycodo_flask/templates/pages/graph.html:1011
+#: mycodo_flask/templates/pages/graph.html:1104
+#: mycodo_flask/templates/pages/sensor.html:258
+msgid "Dew Point"
+msgstr ""
+
+#: mycodo_flask/templates/pages/graph.html:1024
+msgid "Light"
+msgstr ""
+
+#: mycodo_flask/templates/pages/graph.html:1069
+msgid "Lux"
+msgstr ""
+
+#: mycodo_flask/templates/pages/lcd.html:14
+msgid "How many LCD controllers to add"
+msgstr ""
+
+#: mycodo_flask/templates/pages/lcd.html:86
+msgid "LCD I<sup>2</sup>C Address"
+msgstr ""
+
+#: mycodo_flask/templates/pages/lcd.html:87
+msgid "Multiplexer I<sup>2</sup>C Address"
+msgstr ""
+
+#: mycodo_flask/templates/pages/lcd.html:148
+#: mycodo_flask/templates/pages/lcd.html:153
+msgid "Display Line 1"
+msgstr ""
+
+#: mycodo_flask/templates/pages/lcd.html:149
+#: mycodo_flask/templates/pages/lcd.html:154
+msgid "Display Line 2"
+msgstr ""
+
+#: mycodo_flask/templates/pages/lcd.html:150
+msgid "Display Line 3"
+msgstr ""
+
+#: mycodo_flask/templates/pages/lcd.html:151
+msgid "Display Line 4"
+msgstr ""
+
+#: mycodo_flask/templates/pages/live.html:109
+#: mycodo_flask/templates/pages/live.html:118
+#: mycodo_flask/templates/pages/live.html:125
+#: mycodo_flask/templates/pages/live.html:133
+#: mycodo_flask/templates/pages/live.html:142
+#: mycodo_flask/templates/pages/live.html:149
+#: mycodo_flask/templates/pages/live.html:156
+#: mycodo_flask/templates/pages/live.html:165
+#: mycodo_flask/templates/pages/live.html:174
+#: mycodo_flask/templates/pages/live.html:182
+msgid "Measurement"
+msgstr ""
+
+#: mycodo_flask/templates/pages/live.html:109
+#: mycodo_flask/templates/pages/live.html:118
+#: mycodo_flask/templates/pages/live.html:125
+#: mycodo_flask/templates/pages/live.html:133
+#: mycodo_flask/templates/pages/live.html:142
+#: mycodo_flask/templates/pages/live.html:149
+#: mycodo_flask/templates/pages/live.html:156
+#: mycodo_flask/templates/pages/live.html:165
+#: mycodo_flask/templates/pages/live.html:174
+#: mycodo_flask/templates/pages/live.html:182
+msgid "Timestamp"
+msgstr ""
+
+#: mycodo_flask/templates/pages/live.html:205
+msgid "Gains"
+msgstr ""
+
+#: mycodo_flask/templates/pages/live.html:215
+msgid "Raise Relay"
+msgstr ""
+
+#: mycodo_flask/templates/pages/live.html:221
+#: mycodo_flask/templates/pages/live.html:244
+msgid "On Duration"
+msgstr ""
+
+#: mycodo_flask/templates/pages/live.html:223
+#: mycodo_flask/templates/pages/live.html:246
+msgid "Min"
+msgstr ""
+
+#: mycodo_flask/templates/pages/live.html:223
+#: mycodo_flask/templates/pages/live.html:246
+msgid "sec."
+msgstr ""
+
+#: mycodo_flask/templates/pages/live.html:223
+#: mycodo_flask/templates/pages/live.html:246
+msgid "Max"
+msgstr ""
+
+#: mycodo_flask/templates/pages/live.html:227
+#: mycodo_flask/templates/pages/live.html:250
+msgid "Current Draw"
+msgstr ""
+
+#: mycodo_flask/templates/pages/live.html:229
+#: mycodo_flask/templates/pages/live.html:252
+msgid "amps"
+msgstr ""
+
+#: mycodo_flask/templates/pages/live.html:238
+msgid "Lower Relay"
+msgstr ""
+
+#: mycodo_flask/templates/pages/live.html:260
+msgid "Method Enabled"
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:3
+#: mycodo_flask/templates/pages/method-build.html:26
+msgid "Method-Builder"
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:22
+msgid "Back to Method Management"
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:26
+msgid "Method ID"
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:64
+msgid "Define the setpoint over a period of time based on specific times/dates."
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:65
+#: mycodo_flask/templates/pages/method-build.html:83
+msgid ""
+"The new entry's start time may be equal to the last entry's end time, but"
+" it cannot overlap. The default setpoint for the PID will be used if "
+"there is any unaccounted time."
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:82
+msgid ""
+"Define the setpoint over a period of time based on specific times of the "
+"day. This method will repeat daily. Start the first entry at midnight "
+"(00:00) if you wish to fill the entire day."
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:100
+msgid ""
+"Define the setpoint over the day based on a sinusoidal wave defined by y "
+"= [A * sin(B * x + C)] + D, where A is amplitude, B is frequency, C is "
+"the angle shift, and D is the y-axis shift. This method will repeat "
+"daily."
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:129
+msgid ""
+"Define the setpoint over the day based on a cubic Bezier curve. If "
+"unfamiliar with a Bezier curve, it is recommended you use the <a "
+"href=\"https://www.desmos.com/calculator/cahqdxeshd\" "
+"target=\"_blank\">graphical Bezier curve generator</a> and use the 8 "
+"variables it creates for 4 points (each a set of x and y). The x-axis "
+"start (x3) and end (x0) will be automatically stretched or skewed to fit "
+"within a 24-hour period and this method will repeat daily."
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:197
+msgid ""
+"Define the setpoint over a period of time, based on specific durations of"
+" time."
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:198
+msgid ""
+"Duration here is defined as the amount of time after the previous "
+"duration. If this is the first duration added, this will be the beginning"
+" of the method. If this is not the first duration added, it will execute "
+"after the last duration already in the method."
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:226
+msgid "Activate or deactivate a relay within this method at a specific time/date."
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:236
+msgid "Activate or deactivate a relay at a specific time of day."
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:237
+msgid ""
+"Hour and minute (HH:MM) here is defined as the time of day. For example, "
+"3:05 PM would be \"15:05\"."
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:247
+msgid "Activate or deactivate a relay within this method at a specific duration."
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:248
+msgid ""
+"Duration here is defined as the amount of time since the beginning of the"
+" method. For example, 60 seconds would execute the relay modulation 60 "
+"seconds after the start of the method."
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:258
+msgid "Modulate the selected relay"
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:393
+msgid "Relay Modulation"
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:393
+msgid ""
+"Note: This feature is currently not implemented. These relays will NOT be"
+" modulated if applied to a PID. This will be implemented soon."
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:428
+#: mycodo_flask/templates/pages/method-build.html:439
+msgid "Modulate the selected relay."
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-build.html:442
+msgid "Turn Off"
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-list.html:3
+msgid "Method List"
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-list.html:17
+msgid "Method Management"
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-list.html:33
+msgid "Time/Date"
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-list.html:35
+msgid "Daily (Time-Based)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-list.html:36
+msgid "Daily (Sine Wave)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-list.html:37
+msgid "Daily (Bezier Curve)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-list.html:52
+msgid "No Saved Methods Exist"
+msgstr ""
+
+#: mycodo_flask/templates/pages/method-list.html:54
+msgid "Saved Methods"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:30
+msgid "How many PID controllers to add"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:55
+msgid "Name for this PID controller."
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:59
+#: mycodo_flask/templates/pages/timer.html:163
+msgid "Active"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:60
+msgid "Paused"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:61
+msgid "On Hold"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:62
+#: mycodo_flask/templates/pages/timer.html:164
+msgid "Inactive"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:111
+msgid "Select the environmental condition to regulate"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:133
+msgid "What direction to regulate the chosen environmental condition?"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:143
+msgid ""
+"The duration between calculating a new PID output to power the raise and "
+"lower relays."
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:149
+msgid ""
+"This is the desired state of a perticular environmental condition. For "
+"instance, this could be the desired temperature in Celsius."
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:155
+msgid "Proportional gain"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:161
+msgid "Integral gain"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:167
+msgid "Derivative gain"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:173
+msgid ""
+"Limit the integrator minimum, for calculating Ki_total: (Ki_total = Ki * "
+"integrator; and PID output = Kp_total + Ki_total + Kd_total)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:179
+msgid ""
+"Limit the integrator maximum, for calculating Ki_total: (Ki_total = Ki * "
+"integrator; and PID output = Kp_total + Ki_total + Kd_total)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:188
+msgid ""
+"The Relay that will raise the selected environmental condition (Measure "
+"Type)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:199
+msgid ""
+"The minimum duration (in seconds) required for the Raise Relay to "
+"activate. If an On duration is below this value, the Raise Relay will not"
+" turn on."
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:205
+msgid ""
+"The maximum duration (in seconds) allowed for the Raise Relay to be on "
+"for, per period. If an On duration is above this value, the Raise Relay "
+"will turn on for this set duration."
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:214
+msgid ""
+"The relay that will lower the selected environmental condition (Measure "
+"Type)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:225
+msgid ""
+"The minimum duration (in seconds) required for the Lower Relay to "
+"activate. If an On duration is below this value, the Lower Relay will not"
+" turn on."
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:231
+msgid ""
+"The maximum duration (in seconds) allowed for the Lower Relay to be on "
+"for, per period. If an ON duration is above this value, the Lower Relay "
+"will turn on for this set duration."
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:240
+msgid ""
+"Select the method to use when calculating the setpoint. When enabled, the"
+" setpoint(s) of the method override the PID setpoint above."
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:242
+msgid "No methods exist. Create one with this button"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:244
+#: mycodo_flask/templates/pages/sensor.html:164
+#: mycodo_flask/templates/pages/sensor.html:181
+msgid "Disabled"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:255
+msgid "Invalid saved method. Save another method from this list."
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid.html:263
+msgid "Manage Methods"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:3
+msgid "Relays"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:65
+msgid "How many relays to add"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:77
+msgid "How many relay conditionals to add"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:130
+msgid "Name for this Relay"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:136
+msgid "The GPIO pin (using BCM numbering) connected to the relay"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:142
+msgid ""
+"The number of amps the device connected to the relay draws (at 120/240 "
+"VAC)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:148
+msgid "What state triggers the relay to turn on? High or Low?"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:149
+msgid "High"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:150
+msgid "Low"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:157
+msgid "When Mycodo starts, turn the relay On or Off?"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:175
+msgid "Turn this relay on for a specific number of seconds (used to test relay)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:214
+msgid "Name for this Relay Conditional"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:239
+msgid "Trigger this conditional to act when this relay turns on or off"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:247
+msgid "What action will trigger this conditional statement, on or off?"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:254
+msgid ""
+"Set this to a soecific duration of time if the conditional should trigger"
+" when the relay On duration equals this amount"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:262
+msgid "If this conditional triggers, then actuate this relay"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:270
+msgid "If this conditional triggers, what state should the relay actuate to?"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:277
+msgid ""
+"If this conditional triggers, how long should the activated relay turn on"
+" for?"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:282
+msgid ""
+"If this conditional triggers, should a command be executed? (leave blank "
+"to disable)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:286
+msgid "If this conditional triggers, should an email be sent?"
+msgstr ""
+
+#: mycodo_flask/templates/pages/relay.html:292
+msgid "If this conditional triggers, should an LCD flash?"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:4
+msgid "Sensors"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:25
+msgid "How many sensors to add"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:57
+msgid "A common name to distinguish this sensor from others"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:134
+msgid "The duration between sensor reads, in seconds."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:143
+msgid "Turn the selected relay on before taking every measurement"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:154
+msgid ""
+"If a Pre Relay is selected, set the duration (in seconds) to turn the Pre"
+" Relay on for before every measurement is acquired."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:163
+msgid "The I2C address of the multiplexer (if used)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:166
+#, python-format
+msgid "I2C Address %(address)s"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:174
+msgid "Which I2C bus is this multiplexer connected?"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:180
+msgid ""
+"If a multiplexer address is selected, select the channel connected to "
+"your target device"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:183
+#, python-format
+msgid "Channel %(channel)s"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:229
+msgid "Edge Detected, Direction of change:"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:230
+msgid "Detect low to high (rising), high to low (falling), or both?"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:231
+msgid "Rising"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:232
+msgid "Falling"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:233
+msgid "Both"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:243
+msgid "HIGH (3.3 volts)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:244
+msgid "LOW (0 volts)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:246
+#: mycodo_flask/templates/pages/sensor.html:282
+msgid ""
+"The duration between checking whether the conditional is true (in "
+"seconds)."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:251
+msgid "The measurement from the sensor to test the following conditional logic"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:275
+msgid ""
+"The conditional is true when the measured condition is \"Above\" or "
+"\"Below\" the set value."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:277
+msgid "Greater Than"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:278
+msgid "Less Than"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:281
+msgid "What value to check the measurement against."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:289
+msgid "Select a relay to be changed if the condition is true."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:295
+msgid "If a relay is selected, choose whether it turns on or off."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:300
+msgid ""
+"If a relay is set to turn on, an optional duration can be set (in "
+"seconds)."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:306
+msgid "Execute"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:306
+msgid "Execute linux commands if the condition is true."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:307
+msgid "Flash LCD if the condition is true."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:313
+msgid "Notify a user by email if the condition is true."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:319
+msgid "Activate camera if the condition is true."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:321
+msgid "Save Photo"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:322
+msgid "Email Photo"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:323
+msgid "Save 5s Video"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor.html:324
+msgid "Email 5s Video"
+msgstr ""
+
+#: mycodo_flask/templates/pages/timer.html:3
+msgid "Timers"
+msgstr ""
+
+#: mycodo_flask/templates/pages/timer.html:71
+#, python-format
+msgid "Optional: If On, for %(sec)s seconds"
+msgstr ""
+
+#: mycodo_flask/templates/pages/timer.html:159
+msgid "Name for this Timer controller."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:4
+msgid "The I2C address of the analog to digital converter."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:16
+msgid "Which I2C bus is this ADC connected?"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:22
+msgid "What condition is being measured by the ADC?"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:28
+msgid "What are the units of the condition being measured by the ADC?"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:34
+msgid "The channel of the analog to digital converter."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:46
+msgid ""
+"Adjust the gain to change the measurable voltage range. See ADC "
+"documentation for details."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:61
+msgid "12, 14, 16, or 18-bit ADC resolution."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:70
+msgid "Minimum analog to digital converter input voltage."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:76
+msgid "Maximum analog to digital converter input voltage."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:82
+msgid "Minimum unit to convert the voltage to."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:88
+msgid "Maximum unit to convert the voltage to."
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor_options/DHT22.html:16
+msgid "Does a HIGH or LOW signal to the GPIO power the sensor?"
+msgstr ""
+
+#: mycodo_flask/templates/pages/sensor_options/DS18B20.html:4
+msgid ""
+"Where to access the device/sensor? This is the ID code that comes after "
+"the 28- of the devices listed with the command \"ls "
+"/sys/bus/w1/devices\"."
+msgstr ""
+
+#: mycodo_flask/templates/settings/alerts.html:6
+#: mycodo_flask/templates/settings/alerts.html:10
+msgid "Alerts Settings"
+msgstr ""
+
+#: mycodo_flask/templates/settings/alerts.html:24
+msgid "465 for SSL, 587 for TSL"
+msgstr ""
+
+#: mycodo_flask/templates/settings/alerts.html:41
+msgid "Usually your full email address"
+msgstr ""
+
+#: mycodo_flask/templates/settings/alerts.html:47
+msgid "Only enter a password here if you wish to change it"
+msgstr ""
+
+#: mycodo_flask/templates/settings/alerts.html:59
+msgid "Maximum number of alerts that can be emailed per hour."
+msgstr ""
+
+#: mycodo_flask/templates/settings/camera.html:63
+msgid "Name for this Camera"
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:18
+msgid "Selecting a language will override the web browser's language."
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:34
+msgid ""
+"Check to force all web connections to use SSL (port 443) for greater "
+"security."
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:45
+msgid ""
+"Check to prevent Success alert messages from appearing at the top of the "
+"page."
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:56
+msgid ""
+"Check to prevent Info alert messages from appearing at the top of the "
+"page."
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:67
+msgid ""
+"Check to prevent Warning alert messages from appearing at the top of the "
+"page."
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:78
+msgid "Check if you do not wish to send anonymous usage statistics."
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:78
+msgid "View collected statistics"
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:84
+msgid "Relay Usage Options"
+msgstr ""
+
+#: mycodo_flask/templates/settings/users.html:6
+#: mycodo_flask/templates/settings/users.html:10
+msgid "User Settings"
+msgstr ""
+
+#: mycodo_flask/templates/tools/info.html:3
+msgid "Info"
+msgstr ""
+
+#: mycodo_flask/templates/tools/info.html:12
+msgid "Daemon is currently"
+msgstr ""
+
+#: mycodo_flask/templates/tools/info.html:14
+msgid "Running"
+msgstr ""
+
+#: mycodo_flask/templates/tools/info.html:16
+msgid "Not Running"
+msgstr ""
+
+#: mycodo_flask/templates/tools/info.html:47
+msgid ""
+"Command \"gpio\" not found. Install gpio from the terminal with the "
+"following commands"
+msgstr ""
+
+#: mycodo_flask/templates/tools/logview.html:3
+msgid "View Logs"
+msgstr ""
+
+#: mycodo_flask/templates/tools/usage.html:3
+msgid "Usage"
+msgstr ""
+
+#: mycodo_flask/templates/tools/usage.html:13
+msgid "ID"
+msgstr ""
+
+#: mycodo_flask/templates/tools/usage.html:16
+msgid "Past Day"
+msgstr ""
+
+#: mycodo_flask/templates/tools/usage.html:17
+msgid "Past Week"
+msgstr ""
+
+#: mycodo_flask/templates/tools/usage.html:18
+#: mycodo_flask/templates/tools/usage.html:19
+msgid "Past Month"
+msgstr ""
+
+#: mycodo_flask/templates/tools/usage.html:19
+msgid "From"
+msgstr ""
+
+#: mycodo_flask/templates/tools/usage.html:20
+msgid "Past Year"
+msgstr ""
+
+#: mycodo_flask/templates/tools/usage.html:29
+#: mycodo_flask/templates/tools/usage.html:68
+msgid "Duration On (hours)"
+msgstr ""
+
+#: mycodo_flask/templates/tools/usage.html:38
+#: mycodo_flask/templates/tools/usage.html:77
+msgid "Power Usage"
+msgstr ""
+
+#: mycodo_flask/templates/tools/usage.html:67
+msgid "Total"
+msgstr ""
+
+#: mycodo_flask/templates/tools/usage.html:86
+msgid "Cost"
+msgstr ""
+

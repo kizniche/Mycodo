@@ -1,19 +1,26 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function  # In python 2.7
-import logging
+
+import cv2
 import datetime
-import time
 import io
+import logging
 import os
-import threading
 import picamera
+import threading
+import time
+
 
 from utils.system_pi import (
     assure_path_exists,
     set_user_grp
 )
 
-from config import INSTALL_DIRECTORY
+from config import (
+    PATH_CAMERA_STILL,
+    PATH_CAMERA_TIMELAPSE,
+    INSTALL_DIRECTORY
+)
 
 logger = logging.getLogger('mycodo.devices.picamera')
 
@@ -105,33 +112,69 @@ def camera_record(record_type, settings, duration_sec=None,
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
     if record_type == 'photo':
-        path = os.path.join(INSTALL_DIRECTORY, 'camera-stills')
-        filename = 'Still-{ts}.jpg'.format(ts=timestamp)
+        path = PATH_CAMERA_STILL
+        filename = 'Still-{cam_id}-{cam}-{ts}.jpg'.format(
+            cam_id=settings.id,
+            cam=settings.name,
+            ts=timestamp)
     elif record_type == 'timelapse':
-        path = os.path.join(INSTALL_DIRECTORY, 'camera-timelapse')
-        filename = '{st}-img-{cn:05d}.jpg'.format(st=start_time,
-                                                  cn=capture_number)
+        path = PATH_CAMERA_TIMELAPSE
+        start = datetime.datetime.fromtimestamp(settings.timelapse_start_time).strftime("%Y-%m-%d_%H-%M-%S")
+        filename = 'Timelapse-{cam_id}-{cam}-{st}-img-{cn:05d}.jpg'.format(
+            cam_id=settings.id,
+            cam=settings.name,
+            st=start,
+            cn=settings.timelapse_capture_number)
     elif record_type == 'video':
         path = os.path.join(INSTALL_DIRECTORY, 'camera-video')
-        filename = 'Video-{ts}.h264'.format(ts=timestamp)
+        filename = 'Video-{cam}-{ts}.h264'.format(
+            cam=settings.name,
+            ts=timestamp)
     path_file = os.path.join(path, filename)
 
     assure_path_exists(path)
 
-    with picamera.PiCamera() as camera:
-        camera.resolution = (1296, 972)
-        camera.hflip = settings.hflip
-        camera.vflip = settings.vflip
-        camera.rotation = settings.rotation
-        camera.start_preview()
-        time.sleep(2)  # Camera warm-up time
+    if settings.library == 'picamera':
+        with picamera.PiCamera() as camera:
+            camera.resolution = (settings.width, settings.height)
+            camera.hflip = settings.hflip
+            camera.vflip = settings.vflip
+            camera.rotation = settings.rotation
+            camera.start_preview()
+            time.sleep(2)  # Camera warm-up time
+
+            if record_type in ['photo', 'timelapse']:
+                camera.capture(path_file, use_video_port=True)
+            elif record_type == 'video':
+                camera.start_recording(path_file, format='h264', quality=20)
+                camera.wait_recording(duration_sec)
+                camera.stop_recording()
+            else:
+                return
+
+    elif settings.library == 'opencv':
+        cap = cv2.VideoCapture(settings.opencv_device)
+
+        # Check if image can be read
+        if not cap.read():
+            logger.error(
+                "Cannot detect USB camera with device '{dev}'".format(
+                    dev=settings.opencv_device))
+            return
+
+        cap.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, settings.width)
+        cap.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, settings.height)
+        cap.set(cv2.cv.CV_CAP_PROP_EXPOSURE, settings.exposure)
+        cap.set(cv2.cv.CV_CAP_PROP_GAIN, settings.gain)
+        cap.set(cv2.cv.CV_CAP_PROP_BRIGHTNESS, settings.brightness)
+        cap.set(cv2.cv.CV_CAP_PROP_CONTRAST, settings.contrast)
+        cap.set(cv2.cv.CV_CAP_PROP_HUE, settings.hue)
+        cap.set(cv2.cv.CV_CAP_PROP_SATURATION, settings.saturation)
 
         if record_type in ['photo', 'timelapse']:
-            camera.capture(path_file, use_video_port=True)
-        elif record_type == 'video':
-            camera.start_recording(path_file, format='h264', quality=20)
-            camera.wait_recording(duration_sec)
-            camera.stop_recording()
+            ret, img = cap.read()
+            cv2.imwrite(path_file, img)
+            cap.release()
         else:
             return
 
@@ -141,3 +184,13 @@ def camera_record(record_type, settings, duration_sec=None,
         logger.error(
             "Exception raised in 'camera_record' when setting user grp: "
             "{err}".format(err=e))
+
+
+def count_cameras_opencv():
+    num_cameras = 0
+    for i in range(10):
+        temp_camera = cv2.VideoCapture(i-1)
+        ret, img = temp_camera.read()
+        if ret:
+            num_cameras += 1
+    return num_cameras

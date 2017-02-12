@@ -2,6 +2,8 @@
 
 ### Features
 
+  - Add ability to use multiple camera configurations (multiple cameras)
+  - Add ability to use USB cameras
   - Automatically detect DS18B20 sensors in sensor configuration
   - Add new user roles: Editor and Monitor
 

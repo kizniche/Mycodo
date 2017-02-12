@@ -4,17 +4,18 @@ import logging
 import operator
 
 from flask import (
+    flash,
     redirect,
     render_template,
     request,
     session,
     url_for
 )
+from flask_babel import gettext
 from flask.blueprints import Blueprint
 
 # Classes
 from mycodo.databases.mycodo_db.models import (
-    db,
     Camera,
     Misc,
     Relay,
@@ -26,6 +27,7 @@ from mycodo.databases.mycodo_db.models import (
 # Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
+from mycodo.devices.camera import count_cameras_opencv
 
 # Config
 from config import (
@@ -93,6 +95,16 @@ def settings_camera():
         camera_libraries.append(library)
         camera_types.append(camera_type)
 
+    opencv_devices = count_cameras_opencv()
+
+    pi_camera_enabled = False
+    try:
+        if 'start_x=1' in open('/boot/config.txt').read():
+            pi_camera_enabled = True
+    except IOError as e:
+        logger.error("Camera IOError raised in '/settings/camera' endpoint: "
+                     "{err}".format(err=e))
+
     if request.method == 'POST':
         if form_camera.camera_add.data:
             flaskutils.camera_add(form_camera)
@@ -107,6 +119,8 @@ def settings_camera():
                            camera_libraries=camera_libraries,
                            camera_types=camera_types,
                            form_camera=form_camera,
+                           opencv_devices=opencv_devices,
+                           pi_camera_enabled=pi_camera_enabled,
                            relay=relay)
 
 

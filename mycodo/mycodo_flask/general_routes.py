@@ -49,7 +49,7 @@ from mycodo.databases.mycodo_db.models import (
     Sensor,
     User
 )
-from mycodo.devices.camera_pi import CameraStream
+from mycodo.devices.camera import CameraStream
 from mycodo.mycodo_client import DaemonControl
 
 # Functions

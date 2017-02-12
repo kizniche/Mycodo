@@ -197,25 +197,28 @@ class DaemonControl(Form):
 #
 
 class Camera(Form):
-    Still = SubmitField(lazy_gettext('Capture Still'))
-    StartTimelapse = SubmitField(lazy_gettext('Start Timelapse'))
-    StopTimelapse = SubmitField(lazy_gettext('Stop Timelapse'))
-    TimelapseInterval = DecimalField(
+    camera_id = HiddenField('Camera ID')
+    capture_still = SubmitField(lazy_gettext('Capture Still'))
+    start_timelapse = SubmitField(lazy_gettext('Start Timelapse'))
+    pause_timelapse = SubmitField(lazy_gettext('Pause Timelapse'))
+    resume_timelapse = SubmitField(lazy_gettext('Resume Timelapse'))
+    stop_timelapse = SubmitField(lazy_gettext('Stop Timelapse'))
+    timelapse_interval = DecimalField(
         lazy_gettext('Photo Interval (sec)'),
         validators=[validators.NumberRange(
             min=0,
             message=lazy_gettext('Photo Interval must be a positive value.')
         )]
     )
-    TimelapseRunTime = DecimalField(
+    timelapse_runtime_sec = DecimalField(
         lazy_gettext('Total Run Time (sec)'),
         validators=[validators.NumberRange(
             min=0,
             message=lazy_gettext('Total Run Time must be a positive value.')
         )]
     )
-    StartStream = SubmitField(lazy_gettext('Start Stream'))
-    StopStream = SubmitField(lazy_gettext('Stop Stream'))
+    start_stream = SubmitField(lazy_gettext('Start Stream'))
+    stop_stream = SubmitField(lazy_gettext('Stop Stream'))
 
 
 #
@@ -387,11 +390,13 @@ class SettingsCamera(Form):
     name = StringField(lazy_gettext('Name'))
     camera_type = StringField(lazy_gettext('Type'))
     library = StringField(lazy_gettext('Library'))
+    opencv_device = IntegerField(lazy_gettext('OpenCV Device'))
     hflip = BooleanField(lazy_gettext('Flip image horizontally'))
     vflip = BooleanField(lazy_gettext('Flip image vertically'))
     rotation = IntegerField(lazy_gettext('Rotate image (degrees)'))
     height = IntegerField(lazy_gettext('Image Height'))
     width = IntegerField(lazy_gettext('Image width'))
+    brightness = DecimalField(lazy_gettext('Brightness'))
     contrast = DecimalField(lazy_gettext('Contrast'))
     exposure = DecimalField(lazy_gettext('Exposure'))
     gain = DecimalField(lazy_gettext('Gain'))

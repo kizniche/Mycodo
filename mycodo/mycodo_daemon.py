@@ -40,7 +40,6 @@ import rpyc
 # Don't remove the next line. It's required to not crash strptime
 # that's used in the controllers. I've tested with and without this line.
 from time import strptime  # Fix multithread bug in strptime
-from collections import OrderedDict
 from daemonize import Daemonize
 from rpyc.utils.server import ThreadedServer
 
@@ -60,7 +59,8 @@ from mycodo.databases.mycodo_db.models import (
 )
 
 # Functions
-from mycodo.devices.camera_pi import camera_record
+from mycodo.databases.utils import session_scope
+from mycodo.devices.camera import camera_record
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.statistics import (
     add_update_csv,
@@ -73,8 +73,6 @@ from mycodo.utils.statistics import (
 from mycodo.config import (
     DAEMON_LOG_FILE,
     DAEMON_PID_FILE,
-    FILE_TIMELAPSE_PARAM,
-    LOCK_FILE_TIMELAPSE,
     MYCODO_VERSION,
     SQL_DATABASE_MYCODO,
     STATS_CSV,
@@ -253,50 +251,44 @@ class DaemonController(threading.Thread):
             while self.daemon_run:
                 now = time.time()
 
-                # If time-lapse active, take photo at predefined periods
-                if (os.path.isfile(FILE_TIMELAPSE_PARAM) and
-                        os.path.isfile(LOCK_FILE_TIMELAPSE)):
-                    # Read user-defined time-lapse parameters
-                    with open(FILE_TIMELAPSE_PARAM, mode='r') as infile:
-                        reader = csv.reader(infile)
-                        dict_timelapse_param = OrderedDict((row[0], row[1]) for row in reader)
-                    if now > float(dict_timelapse_param['end_time']):
-                        try:
-                            os.remove(FILE_TIMELAPSE_PARAM)
-                            os.remove(LOCK_FILE_TIMELAPSE)
-                        except Exception as e:
-                            self.logger.error("{cls} raised an exception: "
-                                              "{err}".format(cls=type(self).__name__, err=e))
-                    elif now > float(dict_timelapse_param['next_capture']):
-                        # Ensure next capture is greater than now (in case of power failure/reboot)
-                        next_capture = float(dict_timelapse_param['next_capture'])
-                        capture_number = int(dict_timelapse_param['capture_number'])
-                        while now > next_capture:
-                            # Update last capture and image number to latest before capture
-                            next_capture += float(dict_timelapse_param['interval'])
-                            capture_number += 1
-                        add_update_csv(FILE_TIMELAPSE_PARAM,
-                                       'next_capture',
-                                       next_capture)
-                        add_update_csv(FILE_TIMELAPSE_PARAM,
-                                       'capture_number',
-                                       capture_number)
-                        # Capture image
-                        camera = db_retrieve_table_daemon(Camera, device_id=1)
-                        camera_record(
-                            'timelapse',
-                            camera,
-                            start_time=dict_timelapse_param['start_time'],
-                            capture_number=capture_number)
-
-                elif (os.path.isfile(FILE_TIMELAPSE_PARAM) or
-                        os.path.isfile(LOCK_FILE_TIMELAPSE)):
-                    try:
-                        os.remove(FILE_TIMELAPSE_PARAM)
-                        os.remove(LOCK_FILE_TIMELAPSE)
-                    except Exception as e:
-                        self.logger.error("{cls} raised an exception: "
-                                          "{err}".format(cls=type(self).__name__, err=e))
+                try:
+                    # If time-lapses are active, take photo at predefined periods
+                    camera = db_retrieve_table_daemon(Camera, entry='all')
+                    for each_camera in camera:
+                        if (each_camera.timelapse_started and
+                                now > each_camera.timelapse_end_time):
+                            with session_scope(MYCODO_DB_PATH) as new_session:
+                                mod_camera = new_session.query(Camera).filter(
+                                    Camera.id == each_camera.id)
+                                mod_camera.timelapse_started = False
+                                mod_camera.timelapse_paused = False
+                                mod_camera.timelapse_start_time = None
+                                mod_camera.timelapse_end_time = None
+                                mod_camera.timelapse_interval = None
+                                mod_camera.timelapse_next_capture = None
+                                mod_camera.timelapse_capture_number = None
+                                new_session.commit()
+                        elif ((each_camera.timelapse_started and not each_camera.timelapse_paused) and
+                                now > each_camera.timelapse_next_capture):
+                            # Ensure next capture is greater than now (in case of power failure/reboot)
+                            next_capture = each_camera.timelapse_next_capture
+                            capture_number = each_camera.timelapse_capture_number
+                            while now > next_capture:
+                                # Update last capture and image number to latest before capture
+                                next_capture += each_camera.timelapse_interval
+                                capture_number += 1
+                            with session_scope(MYCODO_DB_PATH) as new_session:
+                                mod_camera = new_session.query(Camera).filter(
+                                    Camera.id == each_camera.id)
+                                mod_camera.timelapse_next_capture = next_capture
+                                mod_camera.timelapse_capture_number = capture_number
+                                new_session.commit()
+                            # Capture image
+                            self.logger.error("Timelapse image captured: {img}".format(
+                                img=each_camera.timelapse_capture_number))
+                            camera_record('timelapse', each_camera)
+                except Exception:
+                    self.logger.exception("Timelapse ERROR")
 
                 # Log ram usage every 24 hours
                 if now > self.timer_ram_use:
