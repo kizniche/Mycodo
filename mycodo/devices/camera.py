@@ -208,6 +208,7 @@ def camera_record(record_type, settings, duration_sec=None,
 
 
 def count_cameras_opencv():
+    """ Returns how many cameras are detected with opencv (cv2) """
     num_cameras = 0
     for i in range(10):
         temp_camera = cv2.VideoCapture(i-1)

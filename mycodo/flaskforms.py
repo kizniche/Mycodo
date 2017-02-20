@@ -998,6 +998,7 @@ class AddSensor(Form):
         choices=[
             ('RPi', 'Raspberry Pi CPU Temperature'),
             ('RPiCPULoad', 'Raspberry Pi CPU Load'),
+            ('RPiFreeSpace', 'Raspberry Pi Free Disk Space'),
             ('ADS1x15', 'Analog-to-Digital Converter: ADS1x15'),
             ('MCP342x', 'Analog-to-Digital Converter: MCP342x'),
             ('EDGE', 'Edge Detection: Simple Switch'),

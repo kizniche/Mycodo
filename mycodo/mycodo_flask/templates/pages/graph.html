@@ -25,7 +25,9 @@
   {%- set count_measurements = [0] -%}
 
   {%- for each_sensor in sensor -%}
-    {%- if each_sensor.device_type in ['tsensor', 'co2sensor', 'luxsensor', 'edgedetect'] -%}
+    {%- if each_sensor.device_type in ['co2sensor', 'edgedetect',
+                                       'free_space', 'luxsensor',
+                                       'tsensor'] -%}
       {% if count_measurements.append(count_measurements.pop() + 1) %}{% endif %}
     {%- elif each_sensor.device_type in ['tmpsensor', 'analogsensor'] -%}
       {% if count_measurements.append(count_measurements.pop() + 2) %}{% endif %}
@@ -417,6 +419,7 @@
         {% set graph_relay_ids = each_graph.relay_ids.split(',') %}
         {% set graph_pid_ids = each_graph.pid_ids.split(',') %}
         {%- set yaxis_cpu_load = [] -%}
+        {%- set yaxis_free_space = [] -%}
         {%- set yaxis_temp = [] -%}
         {%- set yaxis_hum = [] -%}
         {%- set yaxis_co2 = [] -%}
@@ -429,11 +432,13 @@
         {%- set yaxis_edge = [] -%}
         {%- set yaxis_relay = [] -%}
 
-        {# comment  Determine what y-axes are needed for sensor measurements #}
+        {# Determine what y-axes are needed for sensor measurements #}
         {%- for each_sensor in sensor -%}
           {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id|string in each_sensor_and_measure.split(',')[0] -%}
             {%- if 'cpu_load' in each_sensor_and_measure -%}
               {%- do yaxis_cpu_load.append(1) -%}
+            {%- elif 'free_space' in each_sensor_and_measure -%}
+              {%- do yaxis_free_space.append(1) -%}
             {%- elif 'temperature' in each_sensor_and_measure -%}
               {%- do yaxis_temp.append(1) -%}
             {%- elif 'humidity' in each_sensor_and_measure -%}
@@ -526,6 +531,10 @@
             getLiveData({{chart_number}}, {{count_series|count}}, 'cpu_load_15m', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                     {%- do count_series.append(1) -%}
                   {% endif %}
+                {%- elif each_sensor.device_type == 'free_space' %}
+            getPastData({{chart_number}}, {{count_series|count}}, 'free_space', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'free_space', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+                  {%- do count_series.append(1) -%}
                 {%- elif each_sensor.device_type == 'tsensor' %}
                   {% if 'temperature' in each_sensor_and_measure %}
             getPastData({{chart_number}}, {{count_series|count}}, 'temperature', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration*60}});
@@ -698,6 +707,18 @@
           },
           opposite: false,
           id: 'cpu_load'
+        },
+      {%- endif -%}
+      {%- if yaxis_free_space -%}
+        {
+          title: {
+            text: '{{_('Free Space')}} (MB)'
+          },
+          labels: {
+            format: '{value}'
+          },
+          opposite: false,
+          id: 'free_space'
         },
       {%- endif -%}
       {%- if yaxis_temp -%}
@@ -911,7 +932,7 @@
       },
       series: [
       {%- for each_sensor in sensor -%}
-        {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id|string in each_sensor_and_measure.split(',')[0] -%}
+        {%- for each_sensor_and_measure in graph_sensor_ids if each_sensor.id|string == each_sensor_and_measure.split(',')[0] -%}
           {%- if each_sensor.device_type == 'cpu_load' -%}
             {% if 'cpu_load_1m' in each_sensor_and_measure -%}
               {
@@ -944,6 +965,17 @@
                 data: []
               },
             {% endif %}
+          {%- elif each_sensor.device_type == 'free_space' -%}
+            {
+              name: '{{each_sensor.name}} {{_('Free Space')}}',
+              type: 'line',
+              tooltip: {
+                valueSuffix: ' MB',
+                valueDecimals: 2
+              },
+              yAxis: 'free_space',
+              data: []
+            },
           {%- elif each_sensor.device_type == 'tsensor' -%}
             {
               name: '{{each_sensor.name}} {{_('Temperature')}}',

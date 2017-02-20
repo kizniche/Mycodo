@@ -24,18 +24,6 @@
 
   <div style="padding: 0 0.5em 0.5em 0.5em">
 
-  {%- set count_measurements = [0] -%}
-
-  {%- for each_sensor in sensor -%}
-    {%- if each_sensor.device_type in ['tsensor', 'co2sensor', 'luxsensor', 'edgedetect'] -%}
-      {% if count_measurements.append(count_measurements.pop() + 1) %}{% endif %}
-    {%- elif each_sensor.device_type in ['tmpsensor', 'analogsensor'] -%}
-      {% if count_measurements.append(count_measurements.pop() + 2) %}{% endif %}
-    {%- elif each_sensor.device_type in ['htsensor', 'moistsensor', 'presssensor', 'cpu_load'] -%}
-      {% if count_measurements.append(count_measurements.pop() + 3) %}{% endif %}
-    {%- endif -%}
-  {%- endfor %}
-
   <form method="post" action="/graph-async">
   <div class="form-inline">
     <div class="form-group">
@@ -95,7 +83,7 @@ $(function () {
     }
 
     function afterSetExtremes(e) {
-      var url = '/async/{{selected_measure}}/{{selected_id}}/' + Math.round(e.min)/1000 + '/' + Math.round(e.max)/1000;
+      var url = '/async/{{selected_measure}}/{{selected_unique_id}}/' + Math.round(e.min)/1000 + '/' + Math.round(e.max)/1000;
       console.log(url);
       $.getJSON(url,
         function(data, responseText, jqXHR) {
@@ -113,7 +101,7 @@ $(function () {
       );
     }
 
-    var url = '/async/{{selected_measure}}/{{selected_id}}/0/0';
+    var url = '/async/{{selected_measure}}/{{selected_unique_id}}/0/0';
     $.getJSON(url, function (data_raw) {
 
       var data = [];
@@ -123,9 +111,6 @@ $(function () {
         data.push([new_time, data_raw[i][1]]);
       }
       data.push([new Date().getTime(), null]);
-
-      // var data = getPastData('tsensor', 'temperature', 'Ps7I233m');
-      // console.log(data)
 
       // create the chart
       chart[0] = new Highcharts.StockChart({
