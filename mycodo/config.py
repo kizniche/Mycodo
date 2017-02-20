@@ -38,6 +38,7 @@ MEASUREMENT_UNITS = {
     'cpu_load_5m': '',
     'cpu_load_15m': '',
     'duration_sec': 'sec',
+    'free_space': 'MB',
     'temperature': 'C',
     'temperature_object': 'C',
     'temperature_die': 'C',

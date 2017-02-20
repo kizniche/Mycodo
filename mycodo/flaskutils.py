@@ -690,7 +690,7 @@ def choices_sensors(sensor):
     choices = OrderedDict()
     # populate form multi-select choices for sensors and measurements
     for each_sensor in sensor:
-        if each_sensor.device in ['RPiCPULoad']:
+        if each_sensor.device == 'RPiCPULoad':
             value = '{},cpu_load_1m'.format(each_sensor.id)
             display = '{} ({}) CPU Load (1m)'.format(
                 each_sensor.id, each_sensor.name)
@@ -701,6 +701,11 @@ def choices_sensors(sensor):
             choices.update({value: display})
             value = '{},cpu_load_15m'.format(each_sensor.id)
             display = '{} ({}) CPU Load (15m)'.format(
+                each_sensor.id, each_sensor.name)
+            choices.update({value: display})
+        if each_sensor.device == 'RPiFreeSpace':
+            value = '{},free_space'.format(each_sensor.id)
+            display = '{} ({}) Free Space'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
         if each_sensor.device == 'CHIRP':
@@ -1639,6 +1644,10 @@ def sensor_add(form_add_sensor):
                 new_sensor.device_type = 'cpu_load'
                 new_sensor.measurements = 'cpu_load_1m,cpu_load_5m,cpu_load_15m'
                 new_sensor.location = 'RPi'
+            elif form_add_sensor.sensor.data == 'RPiFreeSpace':
+                new_sensor.device_type = 'free_space'
+                new_sensor.measurements = 'free_space'
+                new_sensor.location = '/'
             elif form_add_sensor.sensor.data == 'EDGE':
                 new_sensor.device_type = 'edgedetect'
                 new_sensor.measurements = 'edge'

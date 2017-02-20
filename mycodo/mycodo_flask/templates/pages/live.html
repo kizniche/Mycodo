@@ -113,6 +113,13 @@
                   <br><b><span id="{{each_sensor.unique_id}}-cpu_load_15m-value">0.0</span> (15m)</b> | <span id="{{each_sensor.unique_id}}-cpu_load_15m-time">&lt;please wait&gt;</span>
                 </div>
               </div>
+            {%- elif each_sensor.device_type == 'free_space' %}
+              <div class="inline-right text-right" style="padding: 0.3em;">
+                {{_('Measurement')}} | {{_('Timestamp')}}
+                <div>
+                  <b><span id="{{each_sensor.unique_id}}-free_space-value">0.0</span> (MB)</b> | <span id="{{each_sensor.unique_id}}-free_space-time">&lt;please wait&gt;</span>
+                </div>
+              </div>
             {%- elif each_sensor.device_type == 'tsensor' %}
               <div class="inline-right text-right" style="padding: 0.3em;">
                 {{_('Measurement')}} | {{_('Timestamp')}}

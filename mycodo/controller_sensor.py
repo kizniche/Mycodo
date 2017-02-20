@@ -39,6 +39,7 @@ from sensors.htu21d import HTU21DSensor
 from sensors.k30 import K30Sensor
 from sensors.raspi import RaspberryPiCPUTemp
 from sensors.raspi_cpuload import RaspberryPiCPULoad
+from sensors.raspi_freespace import RaspberryPiFreeSpace
 from sensors.tmp006 import TMP006Sensor
 from sensors.tsl2561 import TSL2561Sensor
 from sensors.sht1x_7x import SHT1x7xSensor
@@ -236,6 +237,8 @@ class SensorController(threading.Thread):
             self.measure_sensor = RaspberryPiCPULoad()
         elif self.device == 'RPi':
             self.measure_sensor = RaspberryPiCPUTemp()
+        elif self.device == 'RPiFreeSpace':
+            self.measure_sensor = RaspberryPiFreeSpace(self.location)
         elif self.device == 'AM2302':
             self.measure_sensor = DHT22Sensor(self.sensor_id,
                                               int(self.location))

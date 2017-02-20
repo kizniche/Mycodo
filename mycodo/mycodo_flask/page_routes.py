@@ -369,13 +369,15 @@ def page_graph_async():
     if request.method == 'POST':
         selected_id = request.form['selected_measure'].split(",")[0]
         selected_measure = request.form['selected_measure'].split(",")[1]
+        selected_unique_id = Sensor.query.filter(Sensor.id == int(selected_id)).first().unique_id
 
     return render_template('pages/graph-async.html',
                            sensor=sensor,
                            sensor_choices=sensor_choices,
                            sensor_choices_split=sensor_choices_split,
                            selected_id=selected_id,
-                           selected_measure=selected_measure)
+                           selected_measure=selected_measure,
+                           selected_unique_id=selected_unique_id)
 
 
 @blueprint.route('/help', methods=('GET', 'POST'))

@@ -2,6 +2,7 @@
 
 ### Features
 
+  - Add new sensor: Free Space (of specific path)
   - Add ability to use multiple camera configurations (multiple cameras)
   - Add ability to use USB cameras with OpenCV ([#193](https://github.com/kizniche/mycodo/issues/193))
   - Automatically detect DS18B20 sensors in sensor configuration
