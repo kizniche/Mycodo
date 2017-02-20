@@ -24,23 +24,36 @@
 
 import os
 
-from flask import Flask
-from flask import request
+from flask import (
+    Flask,
+    request
+)
 from flask_babel import Babel
 from flask_sslify import SSLify
 
+# Classes
+from mycodo.databases.mycodo_db.models import (
+    db,
+    Misc
+)
+
+# Functions
 from init_databases import create_dbs
-from mycodo.config import LANGUAGES
-from mycodo.config import ProdConfig
-from mycodo.databases.mycodo_db.models import Misc
-from mycodo.mycodo_flask import admin_routes
-from mycodo.mycodo_flask import authentication_routes
-from mycodo.mycodo_flask import general_routes
-from mycodo.mycodo_flask import method_routes
-from mycodo.mycodo_flask import page_routes
-from mycodo.mycodo_flask import settings_routes
-from .extensions import db
-from .extensions import influx_db
+from mycodo.mycodo_flask import (
+    admin_routes,
+    authentication_routes,
+    general_routes,
+    method_routes,
+    page_routes,
+    settings_routes
+)
+from mycodo.mycodo_flask.general_routes import influx_db
+
+# Config
+from mycodo.config import (
+    ProdConfig,
+    LANGUAGES
+)
 
 
 def create_app(config=ProdConfig):
@@ -56,7 +69,9 @@ def create_app(config=ProdConfig):
     app.config.from_object(config)
     app.secret_key = os.urandom(24)
 
-    register_extensions(app)
+    db.init_app(app)
+
+    register_extensions(app, config)
     register_blueprints(app)
 
     # Translations
@@ -66,7 +81,7 @@ def create_app(config=ProdConfig):
     def get_locale():
         misc = Misc.query.first()
         if misc.language != '':
-            for key, _ in LANGUAGES.items():
+            for key, _ in LANGUAGES.iteritems():
                 if key == misc.language:
                     return key
         return request.accept_languages.best_match(LANGUAGES.keys())
@@ -74,20 +89,26 @@ def create_app(config=ProdConfig):
     return app
 
 
-def register_extensions(_app):
+def register_extensions(_app, config):
     """ register extensions to the app """
     _app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
 
     # create the databases if needed
-    db.init_app(_app)
-    create_dbs(config=_app.config, exit_when_done=False)
+    create_dbs(config=config, exit_when_done=False)
 
     # attach influx db
     influx_db.init_app(_app)
 
     # Check user option to force all web connections to use SSL
-    misc = Misc.query.first()
-    force_https = misc.force_https
+    force_https = True
+    from databases.utils import session_scope
+    with session_scope(_app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
+        # TODO: More specific exception or remove try
+        try:
+            misc = new_session.query(Misc).first()
+            force_https = misc.force_https
+        except:
+            pass
 
     if force_https:
         SSLify(_app)

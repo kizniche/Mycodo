@@ -38,7 +38,7 @@ from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 
-from extensions import influx_db
+from flask_influxdb import InfluxDB
 from mycodo import flaskforms
 from mycodo import flaskutils
 from mycodo.databases.mycodo_db.models import DisplayOrder
@@ -55,12 +55,22 @@ from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
 from mycodo.mycodo_flask.authentication_routes import logged_in
 from mycodo.utils.database import db_retrieve_table_daemon
 
+from config import (
+    INFLUXDB_USER,
+    INFLUXDB_PASSWORD,
+    INFLUXDB_DATABASE,
+    INSTALL_DIRECTORY,
+    LOG_PATH,
+    MYCODO_VERSION
+)
+
 blueprint = Blueprint('general_routes',
                       __name__,
                       static_folder='../static',
                       template_folder='../templates')
 
 logger = logging.getLogger(__name__)
+influx_db = InfluxDB()
 
 
 def before_request_admin_exist():
@@ -85,7 +95,7 @@ def inject_mycodo_version():
 
     misc = Misc.query.first()
     return dict(daemon_status=daemon_status,
-                mycodo_version=current_app.config['MYCODO_VERSION'],
+                mycodo_version=MYCODO_VERSION,
                 host=socket.gethostname(),
                 hide_alert_success=misc.hide_alert_success,
                 hide_alert_info=misc.hide_alert_info,
@@ -154,8 +164,8 @@ def camera_img(img_type, filename):
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    still_path = current_app.config['INSTALL_DIRECTORY'] + '/camera-stills/'
-    timelapse_path = current_app.config['INSTALL_DIRECTORY'] + '/camera-timelapse/'
+    still_path = INSTALL_DIRECTORY + '/camera-stills/'
+    timelapse_path = INSTALL_DIRECTORY + '/camera-timelapse/'
 
     # Get a list of files in each directory
     if os.path.isdir(still_path):
@@ -230,7 +240,7 @@ def download_file(dl_type, filename):
         return redirect(url_for('general_routes.home'))
 
     elif dl_type == 'log':
-        return send_from_directory(current_app.config['LOG_PATH'], filename, as_attachment=True)
+        return send_from_directory(LOG_PATH, filename, as_attachment=True)
 
     return '', 204
 
@@ -240,6 +250,9 @@ def last_data(sensor_measure, sensor_id, sensor_period):
     """Return the most recent time and value from influxdb"""
     if not logged_in():
         return redirect(url_for('general_routes.home'))
+    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
+    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
+    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
     try:
         raw_data = dbcon.query("""SELECT last(value)
@@ -272,7 +285,9 @@ def past_data(sensor_measure, sensor_id, past_seconds):
     """Return data from past_seconds until present from influxdb"""
     if not logged_in():
         return redirect(url_for('general_routes.home'))
-
+    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
+    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
+    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
     try:
         raw_data = dbcon.query("""SELECT value
@@ -302,6 +317,9 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
+    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
+    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
+    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
 
     if measurement == 'duration_sec':
@@ -358,6 +376,9 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
+    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
+    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
+    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
 
     # Set the time frame to the past year if start/end not specified
@@ -498,7 +519,7 @@ def computer_command(action):
                 action=action), "success")
             return redirect('/settings')
         cmd = '{path}/mycodo/scripts/mycodo_wrapper {action} 2>&1'.format(
-                path=current_app.config['INSTALL_DIRECTORY'], action=action)
+                path=INSTALL_DIRECTORY, action=action)
         subprocess.Popen(cmd, shell=True)
         if action == 'restart':
             flash(gettext("System rebooting in 10 seconds"), "success")
