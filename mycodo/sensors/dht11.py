@@ -129,7 +129,7 @@ class DHT11Sensor(AbstractSensor):
             self.get_measurement()
             if self._humidity != 0 or self._temperature != 0:
                 return  # success - no errors
-            self.logger.error("Could not acquire a measurement")
+            self.logger.debug("Could not acquire a measurement")
         except Exception as e:
             self.logger.error(
                 "Exception raised when taking a reading: {err}".format(

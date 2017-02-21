@@ -2,10 +2,14 @@
  * Custom CSS
  */
 
-.row.no-gutters {
-  margin-right: 0;
-  margin-left: 0;
+.gi-2x{font-size: 1.6em;}
+
+.row.small-gutters > [class^="col-"],
+.row.small-gutters > [class*=" col-"] {
+  padding-right: 0.2em;
+  padding-left: 0.2em;
 }
+
 .row.no-gutters > [class^="col-"],
 .row.no-gutters > [class*=" col-"] {
   padding-right: 0;

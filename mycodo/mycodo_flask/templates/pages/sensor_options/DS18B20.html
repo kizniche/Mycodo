@@ -1,7 +1,7 @@
 <div class="form-group">
   <label class="control-label">Device ID</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modLocation" name="modLocation" title="{{_('Where to access the device/sensor? This is the ID code that comes after the 28- of the devices listed with the command "ls /sys/bus/w1/devices".')}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="location" name="location" title="{{_('Where to access the device/sensor? This is the ID code that comes after the 28- of the devices listed with the command "ls /sys/bus/w1/devices".')}}">
       {% if ds18b20_sensors != [] %}
         <option value=""></option>
         {% for each_ds18b20 in ds18b20_sensors %}

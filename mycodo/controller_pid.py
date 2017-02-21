@@ -143,21 +143,23 @@ class PIDController(threading.Thread):
 
             while self.running:
                 if t.time() > self.timer:
-                    self.timer = self.timer+self.measure_interval
+                    # Ensure the timer ends in the future
+                    while t.time() > self.timer:
+                        self.timer = self.timer+self.measure_interval
 
-                    # If active, retrieve sensor measurement and update PID output
+                    # If PID is active, retrieve sensor measurement and update PID output
                     if self.is_activated and not self.is_paused:
                         self.get_last_measurement()
 
                         if self.last_measurement_success:
-                            # Update setpoint if a method is selected
+                            # Update setpoint using a method if one is selected
                             if self.method_id != '':
                                 self.calculate_method_setpoint(self.method_id)
                             write_influxdb_setpoint(self.pid_unique_id, self.set_point)
                             # Update PID and get control variable
                             self.control_variable = self.update(self.last_measurement)
 
-                    # If active or on hold, activate relays
+                    # If PID is active or on hold, activate relays
                     if ((self.is_activated and not self.is_paused) or
                             (self.is_activated and self.is_held)):
                         self.manipulate_relays()
@@ -187,15 +189,18 @@ class PIDController(threading.Thread):
         self.raise_relay_id = pid.raise_relay_id
         self.raise_min_duration = pid.raise_min_duration
         self.raise_max_duration = pid.raise_max_duration
+        self.raise_min_off_duration = pid.raise_min_off_duration
         self.lower_relay_id = pid.lower_relay_id
         self.lower_min_duration = pid.lower_min_duration
         self.lower_max_duration = pid.lower_max_duration
+        self.lower_min_off_duration = pid.lower_min_off_duration
         self.Kp = pid.p
         self.Ki = pid.i
         self.Kd = pid.d
         self.Integrator_min = pid.integrator_min
         self.Integrator_max = pid.integrator_max
         self.measure_interval = pid.period
+        self.max_measure_age = pid.max_measure_age
         self.default_set_point = pid.setpoint
         self.set_point = pid.setpoint
 
@@ -278,6 +283,14 @@ class PIDController(threading.Thread):
                 self.logger.debug("Latest {}: {} @ {}".format(
                     self.measurement, self.last_measurement,
                     local_timestamp))
+                if calendar.timegm(t.gmtime())-utc_timestamp > self.max_measure_age:
+                    self.logger.error(
+                        "Last measurement was {last_sec} seconds ago, however"
+                        "the maximum measurement age is set to {max_sec}"
+                        " seconds.".format(
+                            last_sec=calendar.timegm(t.gmtime())-utc_timestamp,
+                            max_sec=self.max_measure_age
+                        ))
                 self.last_measurement_success = True
             else:
                 self.logger.warning("No data returned from influxdb")
@@ -296,11 +309,11 @@ class PIDController(threading.Thread):
 
         :rtype: None
         """
-        # If there was a measurement able to be retrieved from
-        # influxdb database that was entered within the past minute
+        # If the last measurement was able to be retrieved and was entered within the past minute
         if self.last_measurement_success:
             #
-            # PID control variable positive to raise environmental condition
+            # PID control variable is positive, indicating a desire to raise
+            # the environmental condition
             #
             if self.direction in ['raise', 'both'] and self.raise_relay_id:
                 if self.control_variable > 0:
@@ -327,13 +340,16 @@ class PIDController(threading.Thread):
                                 sp=self.set_point,
                                 op=self.control_variable,
                                 relay=self.raise_relay_id))
-                        self.control.relay_on(self.raise_relay_id,
-                                              self.raise_seconds_on)
+                        self.control.relay_on(
+                            self.raise_relay_id,
+                            self.raise_seconds_on,
+                            min_off_duration=self.raise_min_off_duration)
                 else:
                     self.control.relay_off(self.raise_relay_id)
 
             #
-            # PID control variable negative to lower environmental condition
+            # PID control variable is negative, indicating a desire to lower
+            # the environmental condition
             #
             if self.direction in ['lower', 'both'] and self.lower_relay_id:
                 if self.control_variable < 0:
@@ -359,8 +375,10 @@ class PIDController(threading.Thread):
                                             sp=self.set_point,
                                             op=self.control_variable,
                                             relay=self.lower_relay_id))
-                        self.control.relay_on(self.lower_relay_id,
-                                              self.lower_seconds_on)
+                        self.control.relay_on(
+                            self.lower_relay_id,
+                            self.lower_seconds_on,
+                            min_off_duration=self.lower_min_off_duration)
                 else:
                     self.control.relay_off(self.lower_relay_id)
 

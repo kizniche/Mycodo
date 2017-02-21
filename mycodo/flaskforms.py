@@ -13,9 +13,11 @@ from wtforms import (
     SelectMultipleField,
     SubmitField,
     StringField,
-    validators
+    validators,
+    widgets
 )
 from wtforms.validators import DataRequired
+from wtforms.validators import Optional
 from wtforms.fields.html5 import EmailField
 
 
@@ -25,21 +27,24 @@ from wtforms.fields.html5 import EmailField
 
 class CreateMethod(Form):
     name = StringField(
-        u'Name',
+        'Name',
         render_kw={"placeholder": "Name"}
     )
     method_type = StringField(
-        u'Method Type',
+        'Method Type',
         render_kw={"placeholder": ""}
     )
-    controller_type = HiddenField(u'Controller Type')
-    Submit = SubmitField(lazy_gettext(u'Create New Method'))
+    controller_type = HiddenField('Controller Type')
+    Submit = SubmitField(lazy_gettext('Create New Method'))
 
 
 class AddMethod(Form):
-    method_id = HiddenField(u'Method ID')
-    method_type = HiddenField(u'Method Type')
-    method_select = HiddenField(u'Method Select')
+    method_id = IntegerField(
+        lazy_gettext('Method ID'),
+        widget=widgets.HiddenInput()
+    )
+    method_type = HiddenField('Method Type')
+    method_select = HiddenField('Method Select')
     startDailyTime = StringField(
         lazy_gettext('Start HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
@@ -63,14 +68,14 @@ class AddMethod(Form):
     frequency = DecimalField(lazy_gettext('Frequency'))
     shiftAngle = DecimalField(lazy_gettext('Angle Shift (0 to 360)'))
     shiftY = DecimalField(lazy_gettext('Y-Axis Shift'))
-    x0 = DecimalField(u'X0')
-    y0 = DecimalField(u'Y0')
-    x1 = DecimalField(u'X1')
-    y1 = DecimalField(u'Y1')
-    x2 = DecimalField(u'X2')
-    y2 = DecimalField(u'Y2')
-    x3 = DecimalField(u'X3')
-    y3 = DecimalField(u'Y3')
+    x0 = DecimalField('X0')
+    y0 = DecimalField('Y0')
+    x1 = DecimalField('X1')
+    y1 = DecimalField('Y1')
+    x2 = DecimalField('X2')
+    y2 = DecimalField('Y2')
+    x3 = DecimalField('X3')
+    y3 = DecimalField('Y3')
     relayDailyTime = StringField(
         lazy_gettext('Time HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
@@ -99,9 +104,9 @@ class AddMethod(Form):
 
 
 class ModMethod(Form):
-    method_id = HiddenField(u'Method ID')
-    method_type = HiddenField(u'Method Type')
-    method_select = HiddenField(u'Method Select')
+    method_id = HiddenField('Method ID')
+    method_type = HiddenField('Method Type')
+    method_select = HiddenField('Method Select')
     name = StringField(lazy_gettext('Name'))
     startDailyTime = StringField(
         lazy_gettext('Start HH:MM:SS'),
@@ -142,7 +147,7 @@ class ModMethod(Form):
 #
 
 class RemoteSetup(Form):
-    remote_id = HiddenField(u'Remote Host ID')
+    remote_id = HiddenField('Remote Host ID')
     host = StringField(
         lazy_gettext('Domain or IP Address'),
         render_kw={"placeholder": "youraddress.com or 0.0.0.0"},
@@ -240,7 +245,7 @@ class EmailAlert(Form):
             message=lazy_gettext('Port should be between 1 and 65535')
         )]
     )
-    sslEnable = BooleanField(u'Enable SSL')
+    sslEnable = BooleanField('Enable SSL')
     smtpUser = StringField(
         lazy_gettext('SMTP User'),
         render_kw={"placeholder": lazy_gettext('SMTP User')},
@@ -267,7 +272,7 @@ class EmailAlert(Form):
                                  'sent per hour.')
         )]
     )
-    sendTestEmail = SubmitField(u'Send Test Email')
+    sendTestEmail = SubmitField('Send Test Email')
     testEmailTo = EmailField(
         lazy_gettext('Test Email To'),
         render_kw={"placeholder": lazy_gettext('Email address to send test '
@@ -277,7 +282,7 @@ class EmailAlert(Form):
             validators.Optional()
         ]
     )
-    smtpSubmit = SubmitField(u'Save')
+    smtpSubmit = SubmitField('Save')
 
 
 #
@@ -342,7 +347,7 @@ class AddUser(Form):
 
 
 class ModUser(Form):
-    modUsername = HiddenField(u'Username')
+    modUsername = HiddenField('Username')
     modEmail = EmailField(
         lazy_gettext('Email'),
         render_kw={"placeholder": lazy_gettext("Email")},
@@ -377,7 +382,7 @@ class ModUser(Form):
 
 
 class DelUser(Form):
-    delUsername = HiddenField(u'Username')
+    delUsername = HiddenField('Username')
     delUserSubmit = SubmitField(lazy_gettext('Delete'))
 
 
@@ -483,7 +488,10 @@ class AddGraph(Form):
 
 
 class ModGraph(Form):
-    graph_id = HiddenField(u'Graph ID')
+    graph_id = IntegerField(
+        lazy_gettext('Graph ID'),
+        widget=widgets.HiddenInput()
+    )
     name = StringField(
         lazy_gettext('Graph Name'),
         render_kw={"placeholder": lazy_gettext("Graph Name")},
@@ -542,12 +550,12 @@ class ModGraph(Form):
 
 
 class DelGraph(Form):
-    graph_id = HiddenField(u'Graph ID')
+    graph_id = HiddenField('Graph ID')
     Submit = SubmitField(lazy_gettext('Delete Graph'))
 
 
 class OrderGraph(Form):
-    orderGraph_id = HiddenField(u'Graph')
+    orderGraph_id = HiddenField('Graph')
     orderGraphUp = SubmitField(lazy_gettext('Up'))
     orderGraphDown = SubmitField(lazy_gettext('Down'))
 
@@ -569,22 +577,25 @@ class AddLCD(Form):
 
 
 class ModLCD(Form):
-    modLCD_id = HiddenField(u'Relay')
-    modName = StringField(
+    lcd_id = IntegerField(
+        lazy_gettext('LCD ID'),
+        widget=widgets.HiddenInput()
+    )
+    name = StringField(
         lazy_gettext('Name'),
         render_kw={"placeholder": lazy_gettext("Name")},
         validators=[DataRequired()]
     )
-    modLocation = StringField(
+    location = StringField(
         lazy_gettext('I2C Address'),
         render_kw={"placeholder": lazy_gettext("I2C Address")},
         validators=[DataRequired()]
     )
-    modMultiplexAddress = StringField(
+    multiplexer_address = StringField(
         lazy_gettext('Multiplexer I2C Address'),
         render_kw={"placeholder": lazy_gettext("I2C Address")}
     )
-    modMultiplexChannel = IntegerField(
+    multiplexer_channel = IntegerField(
         lazy_gettext('Multiplexer Channel'),
         render_kw={"placeholder": lazy_gettext("Channel")},
         validators=[
@@ -593,7 +604,7 @@ class ModLCD(Form):
                 max=8
             )]
     )
-    modPeriod = DecimalField(
+    period = DecimalField(
         lazy_gettext('Period (seconds)'),
         render_kw={"placeholder": lazy_gettext("Period")},
         validators=[validators.NumberRange(
@@ -604,7 +615,7 @@ class ModLCD(Form):
                                  "5 and 86400 seconds.")
         )]
     )
-    modLCDType = SelectField(
+    lcd_type = SelectField(
         lazy_gettext('LCD Type'),
         choices=[
             ('16x2', '16x2'),
@@ -612,44 +623,44 @@ class ModLCD(Form):
         ],
         validators=[DataRequired()]
     )
-    modLine1SensorIDMeasurement = StringField(
+    line_1_display = StringField(
         lazy_gettext('Line 1 Sensor ID')
     )
-    modLine2SensorIDMeasurement = StringField(
+    line_2_display = StringField(
         lazy_gettext('Line 2 Sensor ID')
     )
-    modLine3SensorIDMeasurement = StringField(
+    line_3_display = StringField(
         lazy_gettext('Line 3 Sensor ID')
     )
-    modLine4SensorIDMeasurement = StringField(
+    line_4_display = StringField(
         lazy_gettext('Line 4 Sensor ID')
     )
-    modLCDSubmit = SubmitField(lazy_gettext('Save'))
+    save = SubmitField(lazy_gettext('Save'))
 
 
 class DelLCD(Form):
-    delLCD_id = HiddenField(u'LCD')
-    delLCDSubmit = SubmitField(lazy_gettext('Delete'))
+    lcd_id = HiddenField('LCD ID')
+    delete = SubmitField(lazy_gettext('Delete'))
 
 
 class ActivateLCD(Form):
-    activateLCD_id = HiddenField(u'LCD')
-    activateLCDSubmit = SubmitField(lazy_gettext('Activate'))
+    lcd_id = HiddenField('LCD ID')
+    activate = SubmitField(lazy_gettext('Activate'))
 
 
 class DeactivateLCD(Form):
-    deactivateLCD_id = HiddenField(u'LCD')
-    deactivateLCDSubmit = SubmitField(lazy_gettext('Deactivate'))
+    lcd_id = HiddenField('LCD ID')
+    deactivate = SubmitField(lazy_gettext('Deactivate'))
 
 
 class OrderLCD(Form):
-    orderLCD_id = HiddenField(u'LCD')
-    orderLCDUp = SubmitField(lazy_gettext('Up'))
-    orderLCDDown = SubmitField(lazy_gettext('Down'))
+    lcd_id = HiddenField('LCD ID')
+    reorder_up = SubmitField(lazy_gettext('Up'))
+    reorder_down = SubmitField(lazy_gettext('Down'))
 
 
 class ResetFlashingLCD(Form):
-    flashLCD_id = HiddenField(u'LCD')
+    lcd_id = HiddenField('LCD ID')
     Submit = SubmitField(lazy_gettext('Reset Flashing'))
 
 
@@ -719,22 +730,25 @@ class AddPID(Form):
 
 
 class ModPID(Form):
-    modPID_id = HiddenField(u'Relay')
-    modName = StringField(
+    pid_id = IntegerField(
+        lazy_gettext('PID ID'),
+        widget=widgets.HiddenInput()
+    )
+    name = StringField(
         lazy_gettext('Name'),
         render_kw={"placeholder": lazy_gettext("Name")},
         validators=[DataRequired()]
     )
-    modSensorID = StringField(
+    sensor_id = StringField(
         lazy_gettext('Sensor ID'),
         render_kw={"placeholder": lazy_gettext("Sensor ID")},
         validators=[DataRequired()]
     )
-    modMeasurement = StringField(
+    measurement = StringField(
         lazy_gettext('Measure Type'),
         validators=[DataRequired()]
     )
-    modDirection = SelectField(
+    direction = SelectField(
         lazy_gettext('Direction'),
         choices=[
             ('raise', 'Raise'),
@@ -743,111 +757,119 @@ class ModPID(Form):
         ],
         validators=[DataRequired()]
     )
-    modPeriod = DecimalField(
-        lazy_gettext('Period (seconds)'),
+    period = DecimalField(
+        lazy_gettext('Period (sec)'),
         render_kw={"placeholder": lazy_gettext("Period")},
         validators=[validators.NumberRange(
             min=5.0,
-            max=86400.0,
-            message=lazy_gettext("Duration between calculating PID output "
-                                 "and applying to regulation must be between "
-                                 "5 and 86400 seconds.")
+            max=86400.0
         )]
     )
-    modSetpoint = DecimalField(
+    max_measure_age = DecimalField(
+        lazy_gettext('Max Age (sec)'),
+        render_kw={"placeholder": lazy_gettext("Max Age")},
+        validators=[validators.NumberRange(
+            min=5.0,
+            max=86400.0
+        )]
+    )
+    setpoint = DecimalField(
         lazy_gettext('Setpoint'),
         render_kw={"placeholder": "Setpoint"},
         validators=[validators.NumberRange(
             min=-1000000,
-            max=1000000,
-            message=lazy_gettext("Setpoint range must be between -1,000,000 "
-                                 "and 1,000,000.")
+            max=1000000
         )]
     )
-    modKp = DecimalField(
-        lazy_gettext('Kp'),
-        render_kw={"placeholder": lazy_gettext("P")},
+    k_p = DecimalField(
+        lazy_gettext('Kp Gain'),
+        render_kw={"placeholder": lazy_gettext("Kp Gain")},
         validators=[validators.NumberRange(
-            min=0,
-            message=lazy_gettext("Kp must be a positive value.")
+            min=0
         )]
     )
-    modKi = DecimalField(
-        lazy_gettext('Ki'),
-        render_kw={"placeholder": lazy_gettext("I")},
+    k_i = DecimalField(
+        lazy_gettext('Ki Gain'),
+        render_kw={"placeholder": lazy_gettext("Ki Gain")},
         validators=[validators.NumberRange(
-            min=0,
-            message=lazy_gettext("Ki must be a positive value.")
+            min=0
         )]
     )
-    modKd = DecimalField(
-        lazy_gettext('Kd'),
-        render_kw={"placeholder": lazy_gettext("D")},
+    k_d = DecimalField(
+        lazy_gettext('Kd Gain'),
+        render_kw={"placeholder": lazy_gettext("Kd Gain")},
         validators=[validators.NumberRange(
-            min=0,
-            message=lazy_gettext("Kd must be a positive value.")
+            min=0
         )]
     )
-    modIntegratorMin = DecimalField(lazy_gettext('Integrator Min'))
-    modIntegratorMax = DecimalField(lazy_gettext('Integrator Max'))
-    modRaiseRelayID = StringField(
+    integrator_max = DecimalField(lazy_gettext('Integrator Min'))
+    integrator_min = DecimalField(lazy_gettext('Integrator Max'))
+    raise_relay_id = StringField(
         lazy_gettext('Raise Relay ID'),
         render_kw={"placeholder": lazy_gettext("Raise Relay ID")},
     )
-    modRaiseMinDuration = IntegerField(
-        lazy_gettext('Raise Min Duration'),
-        render_kw={"placeholder": lazy_gettext("Raise Min Duration")},
+    raise_min_duration = DecimalField(
+        lazy_gettext('Raise Min On Duration'),
+        render_kw={"placeholder": lazy_gettext("Raise Min On Duration")},
         validators=[validators.NumberRange(
             min=0,
-            max=86400,
-            message=lazy_gettext("Raise minimum duration must be a "
-                                 "non-negative value. (0 to disable)")
+            max=86400
         )]
     )
-    modRaiseMaxDuration = IntegerField(
-        lazy_gettext('Raise Max Duration'),
-        render_kw={"placeholder": lazy_gettext("Raise Max Duration")},
+    raise_max_duration = DecimalField(
+        lazy_gettext('Raise Max On Duration'),
+        render_kw={"placeholder": lazy_gettext("Raise Max On Duration")},
         validators=[validators.NumberRange(
             min=0,
-            max=86400,
-            message=lazy_gettext("Raise maximum duration must be a "
-                                 "non-negative value. (0 to disable)")
+            max=86400
         )]
     )
-    modLowerRelayID = StringField(
+    raise_min_off_duration = DecimalField(
+        lazy_gettext('Raise Min Off Duration'),
+        render_kw={"placeholder": lazy_gettext("Raise Min Off Duration")},
+        validators=[validators.NumberRange(
+            min=0,
+            max=86400
+        )]
+    )
+    lower_relay_id = StringField(
         lazy_gettext('Lower Relay ID'),
         render_kw={"placeholder": lazy_gettext("Lower Relay ID")},
     )
-    modLowerMinDuration = IntegerField(
-        lazy_gettext('Lower Min Duration'),
-        render_kw={"placeholder": lazy_gettext("Lower Min Duration")},
+    lower_min_duration = DecimalField(
+        lazy_gettext('Lower Min On Duration'),
+        render_kw={"placeholder": lazy_gettext("Lower Min On Duration")},
         validators=[validators.NumberRange(
             min=0,
-            max=86400,
-            message=lazy_gettext("Lower minimum duration must be a "
-                                 "non-negative value. (0 to disable)")
+            max=86400
         )]
     )
-    modLowerMaxDuration = IntegerField(
-        lazy_gettext('Lower Max Duration'),
-        render_kw={"placeholder": lazy_gettext("Lower Max Duration")},
+    lower_max_duration = DecimalField(
+        lazy_gettext('Lower Max On Duration'),
+        render_kw={"placeholder": lazy_gettext("Lower Max On Duration")},
         validators=[validators.NumberRange(
             min=0,
-            max=86400,
-            message=lazy_gettext("Lower maximum duration must be a "
-                                 "non-negative value. (0 to disable)")
+            max=86400
         )]
     )
-    mod_method_id = HiddenField(u'Setpoint Tracking Method')
-    mod_pid_save = SubmitField(lazy_gettext('Save Settings'))
-    mod_pid_hold = SubmitField(lazy_gettext('Hold'))
-    mod_pid_pause = SubmitField(lazy_gettext('Pause'))
-    mod_pid_resume = SubmitField(lazy_gettext('Resume'))
-    mod_pid_del = SubmitField(lazy_gettext('Delete PID'))
-    mod_pid_activate = SubmitField(lazy_gettext('Activate PID'))
-    mod_pid_deactivate = SubmitField(lazy_gettext('Deactivate PID'))
-    mod_pid_order_up = SubmitField(lazy_gettext('Order Up'))
-    mod_pid_order_down = SubmitField(lazy_gettext('Order Down'))
+    lower_min_off_duration = DecimalField(
+        lazy_gettext('Lower Min Off Duration'),
+        render_kw={"placeholder": lazy_gettext("Lower Min Off Duration")},
+        validators=[validators.NumberRange(
+            min=0,
+            max=86400
+        )]
+    )
+    method_id = HiddenField('Setpoint Tracking Method')
+    save = SubmitField(lazy_gettext('Save Settings'))
+    hold = SubmitField(lazy_gettext('Hold'))
+    pause = SubmitField(lazy_gettext('Pause'))
+    resume = SubmitField(lazy_gettext('Resume'))
+    delete = SubmitField(lazy_gettext('Delete PID'))
+    activate = SubmitField(lazy_gettext('Activate PID'))
+    deactivate = SubmitField(lazy_gettext('Deactivate PID'))
+    reorder_up = SubmitField(lazy_gettext('Order Up'))
+    reorder_down = SubmitField(lazy_gettext('Order Down'))
 
 
 #
@@ -855,7 +877,7 @@ class ModPID(Form):
 #
 
 class AddRelay(Form):
-    numberRelays = IntegerField(
+    relay_quantity = IntegerField(
         lazy_gettext('Quantity'),
         render_kw={"placeholder": lazy_gettext("Quantity")},
         validators=[validators.NumberRange(
@@ -863,12 +885,25 @@ class AddRelay(Form):
             max=20
         )]
     )
-    relayAddSubmit = SubmitField(lazy_gettext('Add Relays'))
+    relay_add = SubmitField(lazy_gettext('Add Relays'))
+
+    relay_cond_quantity = IntegerField(
+        lazy_gettext('Quantity'),
+        render_kw={"placeholder": lazy_gettext("Quantity")},
+        validators=[validators.NumberRange(
+            min=1,
+            max=20
+        )]
+    )
+    relay_cond_add = SubmitField(lazy_gettext('Add Conditionals'))
 
 
 class ModRelay(Form):
-    relay_id = HiddenField(u'Relay')
-    relay_pin = HiddenField(u'Relay Pin')
+    relay_id = IntegerField(
+        lazy_gettext('Relay ID'),
+        widget=widgets.HiddenInput()
+    )
+    relay_pin = HiddenField('Relay Pin')
     name = StringField(
         lazy_gettext('Name'),
         render_kw={"placeholder": lazy_gettext("Name")},
@@ -916,28 +951,18 @@ class ModRelay(Form):
     order_down = SubmitField(lazy_gettext('Down'))
     turn_on = SubmitField(lazy_gettext('On'))
     turn_off = SubmitField(lazy_gettext('Off'))
-    sec_on = DecimalField(lazy_gettext('Seconds to turn on'))
+    sec_on = DecimalField(
+        lazy_gettext('Seconds to turn on'),
+        validators=[Optional()]
+    )
     sec_on_submit = SubmitField(lazy_gettext('Turn On'))
 
 
-#
-# Relay Conditionals
-#
-
-class AddRelayConditional(Form):
-    numberRelayConditionals = IntegerField(
-        lazy_gettext('Quantity'),
-        render_kw={"placeholder": lazy_gettext("Quantity")},
-        validators=[validators.NumberRange(
-            min=1,
-            max=20
-        )]
-    )
-    relayCondAddSubmit = SubmitField(lazy_gettext('Add Conditionals'))
-
-
 class ModRelayConditional(Form):
-    relay_id = HiddenField(u'Conditional ID')
+    relay_id = IntegerField(
+        lazy_gettext('Relay Conditional ID'),
+        widget=widgets.HiddenInput()
+    )
     name = StringField(
         lazy_gettext('Name'),
         render_kw={"placeholder": lazy_gettext("Name")}
@@ -957,6 +982,9 @@ class ModRelayConditional(Form):
     )
     do_relay_action = StringField(
         lazy_gettext('Do Action')
+    )
+    do_relay_action_command = StringField(
+        lazy_gettext('Do Action Command(s)')
     )
     do_relay_duration = DecimalField(
         lazy_gettext('Do Relay Duration'),
@@ -1023,18 +1051,21 @@ class AddSensor(Form):
 
 
 class ModSensor(Form):
-    modSensor_id = HiddenField(u'Sensor')
-    modName = StringField(
+    modSensor_id = IntegerField(
+        lazy_gettext('Sensor ID'),
+        widget=widgets.HiddenInput()
+    )
+    name = StringField(
         lazy_gettext('Name'),
         validators=[DataRequired()]
     )
     modBus = IntegerField(lazy_gettext('I<sup>2</sup>C Bus'))
-    modLocation = StringField(lazy_gettext('Location'))
+    location = StringField(lazy_gettext('Location'))
     modPowerPin = IntegerField(lazy_gettext('Power Pin'))
     modPowerState = IntegerField(lazy_gettext('Power On State'))
-    modMultiplexAddress = StringField(lazy_gettext('Multiplexer (MX)'))
+    multiplexer_address = StringField(lazy_gettext('Multiplexer (MX)'))
     modMultiplexBus = StringField(lazy_gettext('Mx I<sup>2</sup>C Bus'))
-    modMultiplexChannel = IntegerField(lazy_gettext('Mx Channel'))
+    multiplexer_channel = IntegerField(lazy_gettext('Mx Channel'))
     modADCChannel = IntegerField(lazy_gettext('ADC Channel'))
     modADCGain = IntegerField(lazy_gettext('ADC Gain'))
     modADCResolution = IntegerField(lazy_gettext('ADC Resolution'))
@@ -1055,7 +1086,7 @@ class ModSensor(Form):
             max=86400
         )]
     )
-    modPeriod = DecimalField(
+    period = DecimalField(
         lazy_gettext('Read Period (seconds)'),
         validators=[DataRequired(),
                     validators.NumberRange(
@@ -1088,8 +1119,14 @@ class ModSensor(Form):
 #
 
 class ModSensorConditional(Form):
-    modCondSensor_id = HiddenField(u'Conditional ID')
-    modSensor_id = HiddenField(lazy_gettext('Sensor ID'))
+    modCondSensor_id = IntegerField(
+        lazy_gettext('Conditional ID'),
+        widget=widgets.HiddenInput()
+    )
+    modSensor_id = IntegerField(
+        lazy_gettext('Sensor ID'),
+        widget=widgets.HiddenInput()
+    )
     modCondName = StringField(lazy_gettext('Name'))
     Period = DecimalField(
         lazy_gettext('Period (sec)'),
@@ -1131,7 +1168,7 @@ class Upgrade(Form):
 class Backup(Form):
     backup = SubmitField(lazy_gettext('Create Backup'))
     restore = SubmitField(lazy_gettext('Restore Backup'))
-    restore_dir = HiddenField(u'Restore Backup')
+    restore_dir = HiddenField('Restore Backup')
 
 
 #
@@ -1139,7 +1176,10 @@ class Backup(Form):
 #
 
 class Timer(Form):
-    timer_id = HiddenField(u'Timer ID')
+    timer_id = IntegerField(
+        lazy_gettext('Timer ID'),
+        widget=widgets.HiddenInput()
+    )
     name = StringField(
         lazy_gettext('Name'),
         render_kw={"placeholder": lazy_gettext("Name")},
@@ -1185,10 +1225,10 @@ class Timer(Form):
 
 
 class ActivateTimer(Form):
-    activateTimer_id = HiddenField(u'Timer')
+    activateTimer_id = HiddenField('Timer')
     activateTimerSubmit = SubmitField(lazy_gettext('Activate'))
 
 
 class DeactivateTimer(Form):
-    deactivateTimer_id = HiddenField(u'Timer')
+    deactivateTimer_id = HiddenField('Timer')
     deactivateTimerSubmit = SubmitField(lazy_gettext('Deactivate'))

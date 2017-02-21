@@ -1,7 +1,7 @@
 <div class="form-group">
   <label class="control-label">GPIO</label>
   <div>
-    {{form_mod_sensor.modLocation(class_='form-control', value=each_sensor.location, **{'title':'Where to access the device/sensor?'})}}
+    {{form_mod_sensor.location(class_='form-control', value=each_sensor.location, **{'title':'Where to access the device/sensor?'})}}
   </div>
 </div>
 <div class="form-group">
@@ -26,4 +26,4 @@
     {{form_mod_sensor.modSwitchResetPeriod(class_='form-control', value=each_sensor.switch_reset_period, **{'title':'How long to wait after the first edge detection to begin detecting again, in seconds.'})}}
   </div>
 </div>
-<input id="modPeriod" name="modPeriod" type="hidden" value="10">
+<input id="period" name="period" type="hidden" value="10">

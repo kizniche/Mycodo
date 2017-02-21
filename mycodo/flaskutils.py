@@ -986,41 +986,41 @@ def lcd_mod(form_mod_lcd):
     if form_mod_lcd.validate():
         try:
             mod_lcd = LCD.query.filter(
-                LCD.id == form_mod_lcd.modLCD_id.data).first()
+                LCD.id == form_mod_lcd.lcd_id.data).first()
             if mod_lcd.is_activated:
                 flash(gettext("Deactivate LCD controller before modifying"
                               " its settings."), "error")
                 return redirect('/lcd')
             mod_lcd = LCD.query.filter(
-                LCD.id == form_mod_lcd.modLCD_id.data).first()
-            mod_lcd.name = form_mod_lcd.modName.data
-            mod_lcd.location = form_mod_lcd.modLocation.data
-            mod_lcd.multiplexer_address = form_mod_lcd.modMultiplexAddress.data
-            mod_lcd.multiplexer_channel = form_mod_lcd.modMultiplexChannel.data
-            mod_lcd.period = form_mod_lcd.modPeriod.data
-            mod_lcd.x_characters = form_mod_lcd.modLCDType.data.split("x")[0]
-            mod_lcd.y_lines = form_mod_lcd.modLCDType.data.split("x")[1]
-            if form_mod_lcd.modLine1SensorIDMeasurement.data:
-                mod_lcd.line_1_sensor_id = form_mod_lcd.modLine1SensorIDMeasurement.data.split(",")[0]
-                mod_lcd.line_1_measurement = form_mod_lcd.modLine1SensorIDMeasurement.data.split(",")[1]
+                LCD.id == form_mod_lcd.lcd_id.data).first()
+            mod_lcd.name = form_mod_lcd.name.data
+            mod_lcd.location = form_mod_lcd.location.data
+            mod_lcd.multiplexer_address = form_mod_lcd.multiplexer_address.data
+            mod_lcd.multiplexer_channel = form_mod_lcd.multiplexer_channel.data
+            mod_lcd.period = form_mod_lcd.period.data
+            mod_lcd.x_characters = form_mod_lcd.lcd_type.data.split("x")[0]
+            mod_lcd.y_lines = form_mod_lcd.lcd_type.data.split("x")[1]
+            if form_mod_lcd.line_1_display.data:
+                mod_lcd.line_1_sensor_id = form_mod_lcd.line_1_display.data.split(",")[0]
+                mod_lcd.line_1_measurement = form_mod_lcd.line_1_display.data.split(",")[1]
             else:
                 mod_lcd.line_1_sensor_id = ''
                 mod_lcd.line_1_measurement = ''
-            if form_mod_lcd.modLine2SensorIDMeasurement.data:
-                mod_lcd.line_2_sensor_id = form_mod_lcd.modLine2SensorIDMeasurement.data.split(",")[0]
-                mod_lcd.line_2_measurement = form_mod_lcd.modLine2SensorIDMeasurement.data.split(",")[1]
+            if form_mod_lcd.line_2_display.data:
+                mod_lcd.line_2_sensor_id = form_mod_lcd.line_2_display.data.split(",")[0]
+                mod_lcd.line_2_measurement = form_mod_lcd.line_2_display.data.split(",")[1]
             else:
                 mod_lcd.line_2_sensor_id = ''
                 mod_lcd.line_2_measurement = ''
-            if form_mod_lcd.modLine3SensorIDMeasurement.data:
-                mod_lcd.line_3_sensor_id = form_mod_lcd.modLine3SensorIDMeasurement.data.split(",")[0]
-                mod_lcd.line_3_measurement = form_mod_lcd.modLine3SensorIDMeasurement.data.split(",")[1]
+            if form_mod_lcd.line_3_display.data:
+                mod_lcd.line_3_sensor_id = form_mod_lcd.line_3_display.data.split(",")[0]
+                mod_lcd.line_3_measurement = form_mod_lcd.line_3_display.data.split(",")[1]
             else:
                 mod_lcd.line_3_sensor_id = ''
                 mod_lcd.line_3_measurement = ''
-            if form_mod_lcd.modLine4SensorIDMeasurement.data:
-                mod_lcd.line_4_sensor_id = form_mod_lcd.modLine4SensorIDMeasurement.data.split(",")[0]
-                mod_lcd.line_4_measurement = form_mod_lcd.modLine4SensorIDMeasurement.data.split(",")[1]
+            if form_mod_lcd.line_4_display.data:
+                mod_lcd.line_4_sensor_id = form_mod_lcd.line_4_display.data.split(",")[0]
+                mod_lcd.line_4_measurement = form_mod_lcd.line_4_display.data.split(",")[1]
             else:
                 mod_lcd.line_4_sensor_id = ''
                 mod_lcd.line_4_measurement = ''
@@ -1041,9 +1041,9 @@ def lcd_del(form_del_lcd):
     if form_del_lcd.validate():
         try:
             delete_entry_with_id(LCD,
-                                 form_del_lcd.delLCD_id.data)
+                                 form_del_lcd.lcd_id.data)
             display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
-            display_order.remove(int(form_del_lcd.delLCD_id.data))
+            display_order.remove(int(form_del_lcd.lcd_id.data))
             DisplayOrder.query.first().lcd = list_to_csv(display_order)
             db.session.commit()
         except Exception as except_msg:
@@ -1061,15 +1061,15 @@ def lcd_reorder(form_order_lcd, display_order):
 
     if form_order_lcd.validate():
         try:
-            if form_order_lcd.orderLCDUp.data:
+            if form_order_lcd.reorder_up.data:
                 status, reord_list = reorder_list(
                     display_order,
-                    form_order_lcd.orderLCD_id.data,
+                    form_order_lcd.lcd_id.data,
                     'up')
-            elif form_order_lcd.orderLCDDown.data:
+            elif form_order_lcd.reorder_down.data:
                 status, reord_list = reorder_list(
                     display_order,
-                    form_order_lcd.orderLCD_id.data,
+                    form_order_lcd.lcd_id.data,
                     'down')
             if status == 'success':
                 DisplayOrder.query.first().lcd = ','.join(reord_list)
@@ -1093,7 +1093,7 @@ def lcd_activate(form_activate_lcd):
         try:
             # All sensors the LCD depends on must be active to activate the LCD
             lcd = LCD.query.filter(
-                LCD.id == form_activate_lcd.activateLCD_id.data).first()
+                LCD.id == form_activate_lcd.lcd_id.data).first()
             if lcd.y_lines == 2:
                 lcd_lines = [lcd.line_1_sensor_id,
                              lcd.line_2_sensor_id]
@@ -1113,7 +1113,7 @@ def lcd_activate(form_activate_lcd):
                         "sensor controller is inactive"), "error")
                     return redirect('/lcd')
             activate_deactivate_controller(
-                'activate', 'LCD', form_activate_lcd.activateLCD_id.data)
+                'activate', 'LCD', form_activate_lcd.lcd_id.data)
         except Exception as except_msg:
             error.append(except_msg)
         flash_success_errors(error, action, url_for('page_routes.page_lcd'))
@@ -1124,7 +1124,7 @@ def lcd_activate(form_activate_lcd):
 def lcd_deactivate(form_deactivate_lcd):
     if form_deactivate_lcd.validate():
         activate_deactivate_controller(
-            'deactivate', 'LCD', form_deactivate_lcd.deactivateLCD_id.data)
+            'deactivate', 'LCD', form_deactivate_lcd.lcd_id.data)
     else:
         flash_form_errors(form_deactivate_lcd)
 
@@ -1133,7 +1133,7 @@ def lcd_reset_flashing(form_reset_flashing_lcd):
     if form_reset_flashing_lcd.validate():
         control = DaemonControl()
         return_value, return_msg = control.flash_lcd(
-            form_reset_flashing_lcd.flashLCD_id.data, 0)
+            form_reset_flashing_lcd.lcd_id.data, 0)
         if not return_value:
             flash(gettext("Error: %(msg)s", msg=return_msg), "error")
     else:
@@ -1176,35 +1176,35 @@ def pid_mod(form_mod_pid):
     if form_mod_pid.validate():
         try:
             sensor = Sensor.query.filter(
-                Sensor.id == form_mod_pid.modSensorID.data).first()
+                Sensor.id == form_mod_pid.sensor_id.data).first()
             if not sensor:
                 error.append(gettext("A valid sensor ID is required"))
             elif (
                   (sensor.device_type == 'tsensor' and
-                   form_mod_pid.modMeasurement.data not in ['temperature']) or
+                   form_mod_pid.measurement.data not in ['temperature']) or
 
                   (sensor.device_type == 'tmpsensor' and
-                   form_mod_pid.modMeasurement.data not in ['temperature_object',
+                   form_mod_pid.measurement.data not in ['temperature_object',
                                                             'temperature_die']) or
 
                   (sensor.device_type == 'htsensor' and
-                   form_mod_pid.modMeasurement.data not in ['temperature',
+                   form_mod_pid.measurement.data not in ['temperature',
                                                             'humidity',
                                                             'dewpoint']) or
 
                   (sensor.device_type == 'co2sensor' and
-                   form_mod_pid.modMeasurement.data not in ['co2']) or
+                   form_mod_pid.measurement.data not in ['co2']) or
 
                   (sensor.device_type == 'luxsensor' and
-                   form_mod_pid.modMeasurement.data not in ['lux']) or
+                   form_mod_pid.measurement.data not in ['lux']) or
 
                   (sensor.device_type == 'moistsensor' and
-                   form_mod_pid.modMeasurement.data not in ['temperature',
+                   form_mod_pid.measurement.data not in ['temperature',
                                                             'lux',
                                                             'moisture']) or
 
                   (sensor.device_type == 'presssensor' and
-                   form_mod_pid.modMeasurement.data not in ['temperature',
+                   form_mod_pid.measurement.data not in ['temperature',
                                                             'pressure',
                                                             'altitude'])
             ):
@@ -1213,30 +1213,33 @@ def pid_mod(form_mod_pid):
                     "chosen sensor"))
             if not error:
                 mod_pid = PID.query.filter(
-                    PID.id == form_mod_pid.modPID_id.data).first()
-                mod_pid.name = form_mod_pid.modName.data
-                mod_pid.sensor_id = form_mod_pid.modSensorID.data
-                mod_pid.measurement = form_mod_pid.modMeasurement.data
-                mod_pid.direction = form_mod_pid.modDirection.data
-                mod_pid.period = form_mod_pid.modPeriod.data
-                mod_pid.setpoint = form_mod_pid.modSetpoint.data
-                mod_pid.p = form_mod_pid.modKp.data
-                mod_pid.i = form_mod_pid.modKi.data
-                mod_pid.d = form_mod_pid.modKd.data
-                mod_pid.integrator_min = form_mod_pid.modIntegratorMin.data
-                mod_pid.integrator_max = form_mod_pid.modIntegratorMax.data
-                mod_pid.raise_relay_id = form_mod_pid.modRaiseRelayID.data
-                mod_pid.raise_min_duration = form_mod_pid.modRaiseMinDuration.data
-                mod_pid.raise_max_duration = form_mod_pid.modRaiseMaxDuration.data
-                mod_pid.lower_relay_id = form_mod_pid.modLowerRelayID.data
-                mod_pid.lower_min_duration = form_mod_pid.modLowerMinDuration.data
-                mod_pid.lower_max_duration = form_mod_pid.modLowerMaxDuration.data
-                mod_pid.method_id = form_mod_pid.mod_method_id.data
+                    PID.id == form_mod_pid.pid_id.data).first()
+                mod_pid.name = form_mod_pid.name.data
+                mod_pid.sensor_id = form_mod_pid.sensor_id.data
+                mod_pid.measurement = form_mod_pid.measurement.data
+                mod_pid.direction = form_mod_pid.direction.data
+                mod_pid.period = form_mod_pid.period.data
+                mod_pid.max_measure_age = form_mod_pid.max_measure_age.data
+                mod_pid.setpoint = form_mod_pid.setpoint.data
+                mod_pid.p = form_mod_pid.k_p.data
+                mod_pid.i = form_mod_pid.k_i.data
+                mod_pid.d = form_mod_pid.k_d.data
+                mod_pid.integrator_min = form_mod_pid.integrator_max.data
+                mod_pid.integrator_max = form_mod_pid.integrator_min.data
+                mod_pid.raise_relay_id = form_mod_pid.raise_relay_id.data
+                mod_pid.raise_min_duration = form_mod_pid.raise_min_duration.data
+                mod_pid.raise_max_duration = form_mod_pid.raise_max_duration.data
+                mod_pid.raise_min_off_duration = form_mod_pid.raise_min_off_duration.data
+                mod_pid.lower_relay_id = form_mod_pid.lower_relay_id.data
+                mod_pid.lower_min_duration = form_mod_pid.lower_min_duration.data
+                mod_pid.lower_max_duration = form_mod_pid.lower_max_duration.data
+                mod_pid.lower_min_off_duration = form_mod_pid.lower_min_off_duration.data
+                mod_pid.method_id = form_mod_pid.method_id.data
                 db.session.commit()
                 # If the controller is active or paused, refresh variables in thread
                 if mod_pid.is_activated:
                     control = DaemonControl()
-                    return_value = control.pid_mod(form_mod_pid.modPID_id.data)
+                    return_value = control.pid_mod(form_mod_pid.pid_id.data)
                     flash(gettext(
                         "PID Controller settings refresh response: %(resp)s",
                         resp=return_value), "success")
@@ -1279,9 +1282,15 @@ def pid_reorder(pid_id, display_order, direction):
 
     try:
         if direction == 'up':
-            status, reord_list = reorder_list(display_order, pid_id, 'up')
+            status, reord_list = reorder_list(
+                display_order,
+                pid_id,
+                'up')
         elif direction == 'down':
-            status, reord_list = reorder_list(display_order, pid_id, 'down')
+            status, reord_list = reorder_list(
+                display_order,
+                pid_id,
+                'down')
         if status == 'success':
             DisplayOrder.query.first().pid = ','.join(reord_list)
             db.session.commit()
@@ -1331,7 +1340,15 @@ def pid_activate(pid_id):
         error.append(gettext(
             "Cannot activate PID controller if the associated sensor "
             "controller is inactive"))
-    else:
+
+    if ((pid.direction == 'both' and not (pid.lower_relay_id and pid.raise_relay_id)) or
+                (pid.direction == 'lower' and not pid.lower_relay_id) or
+                (pid.direction == 'raise' and not pid.raise_relay_id)):
+        error.append(gettext(
+            "Cannot activate PID controller if raise and/or lower relay IDs "
+            "are not selected"))
+
+    if not error:
         # Signal the duration method can run because it's been
         # properly initiated (non-power failure)
         mod_method = Method.query.filter(
@@ -1441,7 +1458,7 @@ def relay_add(form_add_relay):
     error = []
 
     if form_add_relay.validate():
-        for _ in range(0, form_add_relay.numberRelays.data):
+        for _ in range(0, form_add_relay.relay_quantity.data):
             try:
                 new_relay = Relay().save()
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
@@ -1550,7 +1567,7 @@ def relay_conditional_add(form_add_relay_cond):
     error = []
 
     if form_add_relay_cond.validate():
-        for _ in range(0, form_add_relay_cond.numberRelayConditionals.data):
+        for _ in range(0, form_add_relay_cond.relay_cond_quantity.data):
             try:
                 RelayConditional().save
             except sqlalchemy.exc.OperationalError as except_msg:
@@ -1752,7 +1769,7 @@ def sensor_mod(form_mod_sensor):
         mod_sensor = Sensor.query.filter(
             Sensor.id == form_mod_sensor.modSensor_id.data).first()
 
-        # if not form_mod_sensor.modLocation.data:
+        # if not form_mod_sensor.location.data:
         #     error.append(gettext(
         #         "Invalid device GPIO/I2C address/location"))
         if mod_sensor.is_activated:
@@ -1760,26 +1777,26 @@ def sensor_mod(form_mod_sensor):
                 "Deactivate sensor controller before modifying its "
                 "settings"))
         if (mod_sensor.device == 'AM2315' and
-                form_mod_sensor.modPeriod.data < 7):
+                form_mod_sensor.period.data < 7):
             error.append(gettext(
                 "Choose a Read Period equal to or greater than 7. The "
                 "AM2315 may become unresponsive if the period is "
                 "below 7."))
-        if ((form_mod_sensor.modPeriod.data < mod_sensor.pre_relay_duration) and
+        if ((form_mod_sensor.period.data < mod_sensor.pre_relay_duration) and
                 mod_sensor.pre_relay_duration):
             error.append(gettext(
                 "The Read Period cannot be less than the Pre-Relay "
                 "Duration"))
 
         if not error:
-            mod_sensor.name = form_mod_sensor.modName.data
+            mod_sensor.name = form_mod_sensor.name.data
             mod_sensor.i2c_bus = form_mod_sensor.modBus.data
-            mod_sensor.location = form_mod_sensor.modLocation.data
+            mod_sensor.location = form_mod_sensor.location.data
             mod_sensor.power_pin = form_mod_sensor.modPowerPin.data
             mod_sensor.power_state = form_mod_sensor.modPowerState.data
-            mod_sensor.multiplexer_address = form_mod_sensor.modMultiplexAddress.data
+            mod_sensor.multiplexer_address = form_mod_sensor.multiplexer_address.data
             mod_sensor.multiplexer_bus = form_mod_sensor.modMultiplexBus.data
-            mod_sensor.multiplexer_channel = form_mod_sensor.modMultiplexChannel.data
+            mod_sensor.multiplexer_channel = form_mod_sensor.multiplexer_channel.data
             mod_sensor.adc_channel = form_mod_sensor.modADCChannel.data
             mod_sensor.adc_gain = form_mod_sensor.modADCGain.data
             mod_sensor.adc_resolution = form_mod_sensor.modADCResolution.data
@@ -1794,7 +1811,7 @@ def sensor_mod(form_mod_sensor):
             mod_sensor.switch_reset_period = form_mod_sensor.modSwitchResetPeriod.data
             mod_sensor.pre_relay_id = form_mod_sensor.modPreRelayID.data
             mod_sensor.pre_relay_duration = form_mod_sensor.modPreRelayDuration.data
-            mod_sensor.period = form_mod_sensor.modPeriod.data
+            mod_sensor.period = form_mod_sensor.period.data
             mod_sensor.sht_clock_pin = form_mod_sensor.modSHTClockPin.data
             mod_sensor.sht_voltage = form_mod_sensor.modSHTVoltage.data
             db.session.commit()

@@ -109,6 +109,7 @@ class SensorController(threading.Thread):
             'TSL2561'
         ]
 
+        self.stop_iteration_counter = 0
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
         self.ready = ready
@@ -638,10 +639,19 @@ class SensorController(threading.Thread):
             try:
                 # Get measurement from sensor
                 measurements = self.measure_sensor.next()
+                # Reset StopIteration counter on successful read
+                if self.stop_iteration_counter:
+                    self.stop_iteration_counter = 0
             except StopIteration:
-                self.logger.info(
-                    "StopIteration raised. Possibly could not read sensor. "
-                    "Ensure it's connected properly and detected.")
+                self.stop_iteration_counter += 1
+                # Notify after 3 consecutive errors. Prevents filling log
+                # with many one-off errors over long periods of time
+                if self.stop_iteration_counter > 2:
+                    self.stop_iteration_counter = 0
+                    self.logger.error(
+                        "StopIteration raised. Possibly could not read "
+                        "sensor. Ensure it's connected properly and "
+                        "detected.")
             except Exception as except_msg:
                 self.logger.exception(
                     "Error while attempting to read sensor: {err}".format(

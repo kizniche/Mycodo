@@ -114,9 +114,9 @@ class ComServer(rpyc.Service):
         return mycodo_daemon.relay_state(relay_id)
 
     @staticmethod
-    def exposed_relay_on(relay_id, duration):
+    def exposed_relay_on(relay_id, duration, min_off_duration=0.0):
         """Turns relay on from the client"""
-        return mycodo_daemon.relay_on(relay_id, duration)
+        return mycodo_daemon.relay_on(relay_id, duration, min_off_duration)
 
     @staticmethod
     def exposed_relay_off(relay_id, trigger_conditionals=True):
@@ -253,7 +253,11 @@ class DaemonController(threading.Thread):
 
                 try:
                     # If time-lapses are active, take photo at predefined periods
-                    camera = db_retrieve_table_daemon(Camera, entry='all')
+                    try:
+                        camera = db_retrieve_table_daemon(Camera, entry='all')
+                    except Exception as err:
+                        self.logger.error(
+                            "Could not read camera table: {err}".format(err=err))
                     for each_camera in camera:
                         if (each_camera.timelapse_started and
                                 now > each_camera.timelapse_end_time):
@@ -442,7 +446,7 @@ class DaemonController(threading.Thread):
         """
         return self.controller['Relay'].relay_state(relay_id)
 
-    def relay_on(self, relay_id, duration):
+    def relay_on(self, relay_id, duration, min_off_duration=0.0):
         """
         Turn relay on using default relay controller
 
@@ -450,8 +454,14 @@ class DaemonController(threading.Thread):
         :type relay_id: str
         :param duration: How long to turn the relay on
         :type duration: float
+        :param min_off_duration: Don't turn on if not off for at least this duration (0 = disabled)
+        :type min_off_duration: float
         """
-        self.controller['Relay'].relay_on_off(relay_id, 'on', duration=duration)
+        self.controller['Relay'].relay_on_off(
+            relay_id,
+            'on',
+            duration=duration,
+            min_off_duration=min_off_duration)
         return "Relay turned on"
 
     def relay_off(self, relay_id, trigger_conditionals=True):
@@ -463,7 +473,10 @@ class DaemonController(threading.Thread):
         :param trigger_conditionals: Whether to trigger relay conditionals or not
         :type trigger_conditionals: bool
         """
-        self.controller['Relay'].relay_on_off(relay_id, 'off', trigger_conditionals=trigger_conditionals)
+        self.controller['Relay'].relay_on_off(
+            relay_id,
+            'off',
+            trigger_conditionals=trigger_conditionals)
         return "Relay turned off"
 
     def relay_setup(self, action, relay_id, setup_pin=False):
@@ -480,7 +493,10 @@ class DaemonController(threading.Thread):
         :param setup_pin: Whether or not to setup the GPIO pin as output
         :type setup_pin: bool
         """
-        return self.controller['Relay'].relay_setup(action, relay_id, setup_pin)
+        return self.controller['Relay'].relay_setup(
+            action,
+            relay_id,
+            setup_pin)
 
     def pid_mod(self, pid_id):
         return self.controller['PID'][pid_id].pid_mod()

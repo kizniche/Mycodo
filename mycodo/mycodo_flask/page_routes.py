@@ -615,30 +615,30 @@ def page_pid():
         if form_name == 'addPID':
             flaskutils.pid_add(form_add_pid)
         elif form_name == 'modPID':
-            if form_mod_pid.mod_pid_del.data:
+            if form_mod_pid.delete.data:
                 flaskutils.pid_del(
-                    form_mod_pid.modPID_id.data)
-            elif form_mod_pid.mod_pid_order_up.data:
+                    form_mod_pid.pid_id.data)
+            elif form_mod_pid.reorder_up.data:
                 flaskutils.pid_reorder(
-                    form_mod_pid.modPID_id.data, display_order, 'up')
-            elif form_mod_pid.mod_pid_order_down.data:
+                    form_mod_pid.pid_id.data, display_order, 'up')
+            elif form_mod_pid.reorder_down.data:
                 flaskutils.pid_reorder(
-                    form_mod_pid.modPID_id.data, display_order, 'down')
-            elif form_mod_pid.mod_pid_activate.data:
+                    form_mod_pid.pid_id.data, display_order, 'down')
+            elif form_mod_pid.activate.data:
                 flaskutils.pid_activate(
-                    form_mod_pid.modPID_id.data)
-            elif form_mod_pid.mod_pid_deactivate.data:
+                    form_mod_pid.pid_id.data)
+            elif form_mod_pid.deactivate.data:
                 flaskutils.pid_deactivate(
-                    form_mod_pid.modPID_id.data)
-            elif form_mod_pid.mod_pid_hold.data:
+                    form_mod_pid.pid_id.data)
+            elif form_mod_pid.hold.data:
                 flaskutils.pid_manipulate(
-                    form_mod_pid.modPID_id.data, 'Hold')
-            elif form_mod_pid.mod_pid_pause.data:
+                    form_mod_pid.pid_id.data, 'Hold')
+            elif form_mod_pid.pause.data:
                 flaskutils.pid_manipulate(
-                    form_mod_pid.modPID_id.data, 'Pause')
-            elif form_mod_pid.mod_pid_resume.data:
+                    form_mod_pid.pid_id.data, 'Pause')
+            elif form_mod_pid.resume.data:
                 flaskutils.pid_manipulate(
-                    form_mod_pid.modPID_id.data, 'Resume')
+                    form_mod_pid.pid_id.data, 'Resume')
             else:
                 flaskutils.pid_mod(form_mod_pid)
 
@@ -669,30 +669,27 @@ def page_relay():
 
     form_add_relay = flaskforms.AddRelay()
     form_mod_relay = flaskforms.ModRelay()
-    form_add_relay_cond = flaskforms.AddRelayConditional()
     form_mod_relay_cond = flaskforms.ModRelayConditional()
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission(session, 'edit_controllers'):
             return redirect(url_for('general_routes.home'))
 
-        form_name = request.form['form-name']
-        if form_name == 'addRelay':
+        if form_add_relay.relay_add.data:
             flaskutils.relay_add(form_add_relay)
-        elif form_name == 'modRelay':
-            if (form_mod_relay.turn_on.data or
-                    form_mod_relay.turn_off.data or
-                    form_mod_relay.sec_on_submit.data):
-                flaskutils.relay_on_off(form_mod_relay)
-            elif form_mod_relay.save.data:
-                flaskutils.relay_mod(form_mod_relay)
-            elif form_mod_relay.delete.data:
-                flaskutils.relay_del(form_mod_relay)
-            elif form_mod_relay.order_up.data or form_mod_relay.order_down.data:
-                flaskutils.relay_reorder(form_mod_relay, display_order)
-        elif form_name == 'addRelayConditional':
-            flaskutils.relay_conditional_add(form_add_relay_cond)
-        elif form_name == 'modRelayConditional':
+        elif form_mod_relay.save.data:
+            flaskutils.relay_mod(form_mod_relay)
+        elif (form_mod_relay.turn_on.data or
+                form_mod_relay.turn_off.data or
+                form_mod_relay.sec_on_submit.data):
+            flaskutils.relay_on_off(form_mod_relay)
+        elif form_mod_relay.delete.data:
+            flaskutils.relay_del(form_mod_relay)
+        elif form_mod_relay.order_up.data or form_mod_relay.order_down.data:
+            flaskutils.relay_reorder(form_mod_relay, display_order)
+        elif form_add_relay.relay_cond_add.data:
+            flaskutils.relay_conditional_add(form_add_relay)
+        elif form_mod_relay_cond.save.data:
             flaskutils.relay_conditional_mod(form_mod_relay_cond)
         return redirect('/relay')
 
@@ -704,7 +701,6 @@ def page_relay():
                            displayOrder=display_order,
                            form_add_relay=form_add_relay,
                            form_mod_relay=form_mod_relay,
-                           form_add_relay_cond=form_add_relay_cond,
                            form_mod_relay_cond=form_mod_relay_cond)
 
 

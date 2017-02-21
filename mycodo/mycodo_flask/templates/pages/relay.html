@@ -5,7 +5,7 @@
 {% block head %}
 <script>
   $(document).ready(function(){
-    $('input[title]').tooltip({placement:'bottom'});
+    $('input[title]').tooltip({placement:'top'});
     $('.form-dropdown').dropdown();
     $('.form-dropdown').tooltip();
   })
@@ -56,33 +56,26 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <div class="row">
-      <div class="col-xs-5">
-        <form class="form-inline" method="post" action="/relay">
-          <input type="hidden" name="form-name" value="addRelay">
-          {{form_add_relay.hidden_tag()}}
-          <div class="form-group">
-            {{form_add_relay.numberRelays(class_='form-control',type="number",**{'rel':'tooltip','title':_('How many relays to add')})}}
-          </div>
-          <div class="form-group">
-            {{form_add_relay.relayAddSubmit(class_='form-control btn btn-default')}}
-          </div>
-        </form>
+    <form method="post" action="/relay">
+    <div class="row small-gutters" style="padding: 0 1.5em">
+      {{form_add_relay.hidden_tag()}}
+      <div class="col-sm-2 col-lg-2">
+        {{form_add_relay.relay_quantity(class_='form-control',type="number")}}
       </div>
-      <div class="col-xs-5">
-        <form class="form-inline" method="post" action="/relay">
-          <input type="hidden" name="form-name" value="addRelayConditional">
-          {{form_add_relay_cond.hidden_tag()}}
-          <div class="form-group">
-            {{form_add_relay_cond.numberRelayConditionals(class_='form-control',type="number",**{'rel':'tooltip','title':_('How many relay conditionals to add')})}}
-          </div>
-          <div class="form-group">
-            {{form_add_relay_cond.relayCondAddSubmit(class_='form-control btn btn-default')}}
-          </div>
-        </form>
+      <div class="col-sm-3 col-lg-2">
+        {{form_add_relay.relay_add(class_='form-control btn btn-default')}}
       </div>
-      <div class="col-xs-2"></div>
+
+      <div class="col-sm-1"></div>
+
+      <div class="col-sm-2 col-lg-2">
+        {{form_add_relay.relay_cond_quantity(class_='form-control',type="number")}}
+      </div>
+      <div class="col-sm-3 col-lg-2">
+        {{form_add_relay.relay_cond_add(class_='form-control btn btn-default')}}
+      </div>
     </div>
+    </form>
 
     <div style="clear: both; padding:1em 0;"></div>
 
@@ -92,7 +85,6 @@
 
       <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
         <form method="post" action="/relay">
-        <input type="hidden" name="form-name" value="modRelay">
         {{form_mod_relay.csrf_token}}
         {{form_mod_relay.relay_id(class_='form-control', value=each_relay.id)}}
         {{form_mod_relay.relay_pin(class_='form-control', value=each_relay.pin)}}
@@ -117,32 +109,32 @@
           </div>
         </div>
 
-        <div style="padding: 0.5em 0 0.25em 0" class="form-inline">
-          <div class="form-group">
+        <div style="padding: 0.5em 0.5em 0.25em 0.5em" class="row small-gutters">
+          <div class="col-sm-4 col-md-2">
             <label class="control-label">Relay ID</label>
             <div>
               <input class="form-control" title="UUID: {{each_relay.unique_id}}" disabled="" value="{{each_relay.id}}" type="text">
             </div>
           </div>
-          <div class="form-group">
+          <div class="col-sm-4 col-md-2">
             {{form_mod_relay.name.label(class_='control-label')}}
             <div>
               {{form_mod_relay.name(class_='form-control', value=each_relay.name, **{'title':_('Name for this Relay')})}}
             </div>
           </div>
-          <div class="form-group">
+          <div class="col-sm-4 col-md-2">
             {{form_mod_relay.gpio.label(class_='control-label')}}
             <div>
               {{form_mod_relay.gpio(class_='form-control', value=each_relay.pin, **{'title':_('The GPIO pin (using BCM numbering) connected to the relay')})}}
              </div>
           </div>
-          <div class="form-group">
+          <div class="col-sm-4 col-md-2">
             {{form_mod_relay.amps.label(class_='control-label')}}
             <div>
               {{form_mod_relay.amps(class_='form-control', value=each_relay.amps, **{'title':_('The number of amps the device connected to the relay draws (at 120/240 VAC)')})}}
              </div>
           </div>
-          <div class="form-group">
+          <div class="col-sm-4 col-md-2">
             {{form_mod_relay.trigger.label(class_='control-label')}}
             <div>
               <select class="form-control form-tooltip form-dropdown" id="trigger" name="trigger" data-placement="bottom" title="{{_('What state triggers the relay to turn on? High or Low?')}}">
@@ -151,7 +143,7 @@
               </select>
              </div>
           </div>
-          <div class="form-group">
+          <div class="col-sm-4 col-md-2">
             {{form_mod_relay.on_at_start.label(class_='control-label')}}
             <div>
               <select class="form-control form-tooltip form-dropdown" id="on_at_start" name="on_at_start" data-placement="bottom" title="{{_('When Mycodo starts, turn the relay On or Off?')}}">
@@ -161,25 +153,19 @@
             </div>
           </div>
         </div>
-        </form>
 
-        <form method="post" action="/relay">
-        <input type="hidden" name="form-name" value="modRelay">
         {{form_mod_relay.csrf_token}}
         {{form_mod_relay.relay_id(class_='form-control', value=each_relay.id)}}
         {{form_mod_relay.relay_pin(class_='form-control', value=each_relay.pin)}}
-        <div style="padding: 0.25em 0 1em 0" class="form-inline">
-          <div class="form-group">
-            {{form_mod_relay.sec_on.label(class_='control-label')}}
-            <div>
-              {{form_mod_relay.sec_on(class_='form-control', **{'title':_('Turn this relay on for a specific number of seconds (used to test relay)')})}}
-            </div>
+        <div class="row small-gutters" style="padding: 0.25em .8em 0 0.8em">
+          {{form_mod_relay.sec_on.label(class_='control-label')}}
+        </div>
+        <div class="row small-gutters" style="padding: 0 0.8em 1em 0.6em">
+          <div class="col-sm-4 col-md-2">
+            {{form_mod_relay.sec_on(class_='form-control', **{'title':_('Turn this relay on for a specific number of seconds (used to test relay)')})}}
           </div>
-          <div class="form-group">
-            <label></label>
-            <div>
-              {{form_mod_relay.sec_on_submit(class_='form-control btn btn-default')}}
-             </div>
+          <div class="col-sm-4 col-md-2">
+            {{form_mod_relay.sec_on_submit(class_='form-control btn btn-default')}}
           </div>
         </div>
         </form>

@@ -2,6 +2,8 @@
 
 ### Features
 
+  - Add PID option: maximum allowable sensor measurement age (to allow the PID controller from manipulate relays, the sensor measurement must have occurred in the past x seconds)
+  - Add PID option: minimum off duration for lower/raise relay (protects devices that require a minimum off period by preventing power cycling from occurring too quickly)
   - Add new sensor: Free Space (of specific path)
   - Add ability to use multiple camera configurations (multiple cameras)
   - Add ability to use USB cameras with OpenCV ([#193](https://github.com/kizniche/mycodo/issues/193))
@@ -10,6 +12,7 @@
 
 ### Miscellaneous
 
+  - Update Flask WTF to 0.14.2
   - Database restructuring ([#115](https://github.com/kizniche/mycodo/issues/115), [#122](https://github.com/kizniche/mycodo/issues/122))
   - Move from using sqlalchemy to flask sqlalchemy
 

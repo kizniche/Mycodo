@@ -259,7 +259,8 @@ class PID(CRUDMixin, db.Model):
     is_paused = db.Column(db.Boolean, default=False)
     is_preset = db.Column(db.Boolean, default=False)  # Is config saved as a preset?
     preset_name = db.Column(db.Text, default='')  # Name for preset
-    period = db.Column(db.Integer, default=30)
+    period = db.Column(db.Float, default=30.0)
+    max_measure_age = db.Column(db.Float, default=120.0)
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'), default=None)
     measurement = db.Column(db.Text, default='')  # What condition is the controller regulating?
     direction = db.Column(db.Text, default='Raise')  # Direction of regulation (raise, lower, both)
@@ -273,9 +274,11 @@ class PID(CRUDMixin, db.Model):
     raise_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to raise the condition
     raise_min_duration = db.Column(db.Float, default=0.0)
     raise_max_duration = db.Column(db.Float, default=0.0)
+    raise_min_off_duration = db.Column(db.Float, default=0.0)
     lower_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to lower the condition
     lower_min_duration = db.Column(db.Float, default=0.0)
     lower_max_duration = db.Column(db.Float, default=0.0)
+    lower_min_off_duration = db.Column(db.Float, default=0.0)
 
 
 class Relay(CRUDMixin, db.Model):
