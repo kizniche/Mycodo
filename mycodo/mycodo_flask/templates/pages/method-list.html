@@ -58,10 +58,16 @@
     {%- for each_method in method -%}
       {%- set chart_number = loop.index -%}
       <div style="margin: 0 0.3em 0.6em 0.3em; border: 2px solid #ddd; border-radius: 5px;">
-        <div class="form-inline" style="padding: 0.5em">
-          <a href="/method-delete/{{each_method.id}}" class="btn btn-default" role="button" onclick="return confirm('Are you sure you want to delete the Method &quot;{{each_method.name}}&quot;?')">Delete Method</a>
-          <a href="/method-build/{{each_method.id}}" class="btn btn-default" role="button">Edit Method</a>
-          {{each_method.method_type}} Method: {{each_method.name}} ({{each_method.id}})
+        <div class="row small-gutters">
+          <div class="col-xs-12 col-sm-4">
+            <input class="form-control btn btn-default" disabled="" value="{{each_method.method_type}} Method: {{each_method.name}} ({{each_method.id}})" type="text">
+          </div>
+          <div class="col-xs-12 col-sm-2">
+            <a href="/method-delete/{{each_method.id}}" class="form-control btn btn-default" role="button" onclick="return confirm('Are you sure you want to delete the Method &quot;{{each_method.name}}&quot;?')">Delete Method</a>
+          </div>
+          <div class="col-xs-12 col-sm-2">
+            <a href="/method-build/{{each_method.id}}" class="form-control btn btn-default" role="button">Edit Method</a>
+          </div>
         </div>
 
         {%- set method_setpoint = [] -%}

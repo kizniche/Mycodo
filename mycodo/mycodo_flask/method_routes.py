@@ -238,8 +238,6 @@ def method_builder(method_id):
         else:
             last_method_data = None
 
-        method_data = None
-
         last_end_time = ''
         last_setpoint = ''
         if method.method_type in ['Daily', 'Date', 'Duration']:
