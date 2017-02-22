@@ -262,9 +262,9 @@
                   </div>
                   {%- endfor -%}
 
-                  {%- for each_method in method if each_method.method_id == each_pid.method_id -%}
+                  {%- for each_method in method if each_method.id == each_pid.method_id -%}
                     <div style="padding: 0 0.3em 0 0.6em;">
-                      {{_('Method Enabled')}}: <a href="/method-build/{{each_method.method_type}}/{{each_method.method_id}}">{{each_method.name}} ({{each_method.method_id}})</a>
+                      {{_('Method Enabled')}}: <a href="/method-build/{{each_method.id}}">{{each_method.name}} ({{each_method.id}})</a>
                     </div>
                   {%- endfor -%}
 
