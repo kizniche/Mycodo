@@ -522,8 +522,7 @@ def page_live():
                     sensor_order_sorted.append(each_sensor.id)
 
     # Retrieve only parent method columns
-    method = Method.query.filter(
-        Method.method_order == 0).all()
+    method = Method.query.all()
 
     return render_template('pages/live.html',
                            method=method,
@@ -604,8 +603,7 @@ def page_pid():
     form_add_pid = flaskforms.AddPID()
     form_mod_pid = flaskforms.ModPID()
 
-    method = Method.query.filter(
-        Method.method_order == 0).all()
+    method = Method.query.all()
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission(session, 'edit_controllers'):

@@ -271,12 +271,12 @@
 
                 {%- set valid_saved_method = [] -%}
                 {%- for each_method in method -%}
-                  {%- if each_method.method_id == each_pid.method_id -%}
+                  {%- if each_method.id == each_pid.method_id -%}
                     {%- do valid_saved_method.append(1) -%}
                   {%- endif -%}
-                  <option value="{{each_method.method_id}}"{% if each_pid.method_id == each_method.method_id %} selected{% endif %}>{{each_method.id}} ({{each_method.name}})</option>
+                  <option value="{{each_method.id}}"{% if each_pid.method_id == each_method.id %} selected{% endif %}>{{each_method.id}} ({{each_method.name}})</option>
                 {%- endfor -%}
-                {%- if not valid_saved_method and each_pid.method_id != '' -%}
+                {%- if not valid_saved_method and each_pid.method_id -%}
                   <option value="" selected>{{_('Invalid saved method. Save another method from this list.')}}</option>
                 {%- endif -%}
               </select>

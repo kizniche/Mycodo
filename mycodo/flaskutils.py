@@ -172,67 +172,92 @@ def validate_method_data(form_data, this_method):
                 return 1
 
 
-def method_create(form_create_method, method_id):
+def method_create(form_create_method):
+    """ Create new method table entry (all data stored in method_data table) """
     action = '{action} {controller}'.format(
         action=gettext("Create"),
         controller=gettext("Method"))
     error = []
 
     try:
+        # Create method
         new_method = Method()
-        new_method.method_id = method_id
-        if form_create_method.name.data:
-            new_method.name = form_create_method.name.data
+        new_method.name = form_create_method.name.data
         new_method.method_type = form_create_method.method_type.data
-        if form_create_method.method_type.data == 'DailySine':
-            new_method.amplitude = 1.0
-            new_method.frequency = 1.0
-            new_method.shift_angle = 0.0
-            new_method.shift_y = 1.0
-        if form_create_method.method_type.data == 'DailyBezier':
-            new_method.shift_angle = 0.0
-            new_method.x0 = 20.0
-            new_method.y0 = 20.0
-            new_method.x1 = 10.0
-            new_method.y1 = 13.5
-            new_method.x2 = 22.5
-            new_method.y2 = 30.0
-            new_method.x3 = 0.0
-            new_method.y3 = 20.0
-        new_method.method_order = 0
-        new_method.controller_type = form_create_method.controller_type.data
         db.session.add(new_method)
         db.session.commit()
+
+        # Add new method line id to method display order
+        method_order = DisplayOrder.query.first()
+        display_order = csv_to_list_of_int(method_order.method)
+        method_order.method = add_display_order(display_order, new_method.id)
+        db.session.commit()
+
+        # For tables that require only one entry to configure,
+        # create that single entry now with default values
+        if new_method.method_type == 'DailySine':
+            new_method_data = MethodData()
+            new_method_data.method_id = new_method.id
+            new_method_data.amplitude = 1.0
+            new_method_data.frequency = 1.0
+            new_method_data.shift_angle = 0
+            new_method_data.shift_y = 1.0
+            db.session.add(new_method_data)
+            db.session.commit()
+        elif new_method.method_type == 'DailyBezier':
+            new_method_data = MethodData()
+            new_method_data.method_id = new_method.id
+            new_method_data.shift_angle = 0.0
+            new_method_data.x0 = 20.0
+            new_method_data.y0 = 20.0
+            new_method_data.x1 = 10.0
+            new_method_data.y1 = 13.5
+            new_method_data.x2 = 22.5
+            new_method_data.y2 = 30.0
+            new_method_data.x3 = 0.0
+            new_method_data.y3 = 20.0
+            db.session.add(new_method_data)
+            db.session.commit()
+
+        # Add new method data line id to method_data display order
+        if new_method.method_type in ['DailyBezier', 'DailySine']:
+            display_order = csv_to_list_of_int(new_method.method_order)
+            method = Method.query.filter(Method.id == new_method.id).first()
+            method.method_order = add_display_order(display_order, new_method_data.id)
+            db.session.commit()
+
         return 0
     except Exception as except_msg:
+
         error.append(except_msg)
     flash_success_errors(error, action, url_for('method_routes.method_list'))
 
 
-def method_add(form_add_method, method):
+def method_add(form_add_method):
+    """ Add line to method_data table """
     action = '{action} {controller}'.format(
         action=gettext("Add"),
         controller=gettext("Method"))
     error = []
 
+    method = Method.query.filter(Method.id == form_add_method.method_id.data).first()
+    display_order = csv_to_list_of_int(method.method_order)
+
     try:
-        # Validate input time data
-        this_method = method.filter(Method.method_id == form_add_method.method_id.data)
-        this_method = this_method.filter(Method.method_order == 0).first()
-        if validate_method_data(form_add_method, this_method):
+        if validate_method_data(form_add_method, method):
             return 1
 
-        if this_method.method_type == 'DailySine':
-            mod_method = Method.query.filter(
-                Method.method_id == form_add_method.method_id.data).first()
-            mod_method.amplitude = form_add_method.amplitude.data
-            mod_method.frequency = form_add_method.frequency.data
-            mod_method.shift_angle = form_add_method.shiftAngle.data
-            mod_method.shift_y = form_add_method.shiftY.data
+        if method.method_type == 'DailySine':
+            add_method_data = MethodData.query.filter(
+                MethodData.method_id == form_add_method.method_id.data).first()
+            add_method_data.amplitude = form_add_method.amplitude.data
+            add_method_data.frequency = form_add_method.frequency.data
+            add_method_data.shift_angle = form_add_method.shiftAngle.data
+            add_method_data.shift_y = form_add_method.shiftY.data
             db.session.commit()
             return 0
 
-        if this_method.method_type == 'DailyBezier':
+        elif method.method_type == 'DailyBezier':
             if not 0 <= form_add_method.shiftAngle.data <= 360:
                 flash(gettext("Error: Angle Shift is out of range. It must be "
                               "<= 0 and <= 360."), "error")
@@ -240,43 +265,45 @@ def method_add(form_add_method, method):
             if form_add_method.x0.data <= form_add_method.x3.data:
                 flash(gettext("Error: X0 must be greater than X3."), "error")
                 return 1
-            mod_method = Method.query.filter(
-                Method.method_id == form_add_method.method_id.data).first()
-            mod_method.shift_angle = form_add_method.shiftAngle.data
-            mod_method.x0 = form_add_method.x0.data
-            mod_method.y0 = form_add_method.y0.data
-            mod_method.x1 = form_add_method.x1.data
-            mod_method.y1 = form_add_method.y1.data
-            mod_method.x2 = form_add_method.x2.data
-            mod_method.y2 = form_add_method.y2.data
-            mod_method.x3 = form_add_method.x3.data
-            mod_method.y3 = form_add_method.y3.data
+            add_method_data = MethodData.query.filter(
+                MethodData.method_id == form_add_method.method_id.data).first()
+            add_method_data.shift_angle = form_add_method.shiftAngle.data
+            add_method_data.x0 = form_add_method.x0.data
+            add_method_data.y0 = form_add_method.y0.data
+            add_method_data.x1 = form_add_method.x1.data
+            add_method_data.y1 = form_add_method.y1.data
+            add_method_data.x2 = form_add_method.x2.data
+            add_method_data.y2 = form_add_method.y2.data
+            add_method_data.x3 = form_add_method.x3.data
+            add_method_data.y3 = form_add_method.y3.data
             db.session.commit()
             return 0
 
         if form_add_method.method_select.data == 'setpoint':
-            if this_method.method_type == 'Date':
+            if method.method_type == 'Date':
                 start_time = datetime.strptime(form_add_method.startTime.data,
                                                '%Y-%m-%d %H:%M:%S')
                 end_time = datetime.strptime(form_add_method.endTime.data,
                                              '%Y-%m-%d %H:%M:%S')
-            elif this_method.method_type == 'Daily':
+            elif method.method_type == 'Daily':
                 start_time = datetime.strptime(form_add_method.startDailyTime.data,
                                                '%H:%M:%S')
                 end_time = datetime.strptime(form_add_method.endDailyTime.data,
                                              '%H:%M:%S')
 
-            if this_method.method_type in ['Date', 'Daily']:
+            if method.method_type in ['Date', 'Daily']:
                 # Check if the start time comes after the last entry's end time
-                last_method = method.filter(Method.method_id == this_method.method_id)
-                last_method = last_method.filter(Method.method_order > 0)
-                last_method = last_method.filter(Method.relay_id == None)
-                last_method = last_method.order_by(Method.method_order.desc()).first()
+                display_order = csv_to_list_of_int(method.method_order)
+                if display_order:
+                    last_method = MethodData.query.filter(MethodData.id == display_order[-1]).first()
+                else:
+                    last_method = None
+
                 if last_method is not None:
-                    if this_method.method_type == 'Date':
+                    if method.method_type == 'Date':
                         last_method_end_time = datetime.strptime(last_method.time_end,
                                                                  '%Y-%m-%d %H:%M:%S')
-                    elif this_method.method_type == 'Daily':
+                    elif method.method_type == 'Daily':
                         last_method_end_time = datetime.strptime(last_method.time_end,
                                                                  '%H:%M:%S')
 
@@ -291,69 +318,68 @@ def method_add(form_add_method, method):
                         return 1
 
         elif form_add_method.method_select.data == 'relay':
-            if this_method.method_type == 'Date':
+            if method.method_type == 'Date':
                 start_time = datetime.strptime(form_add_method.relayTime.data,
                                                '%Y-%m-%d %H:%M:%S')
-            elif this_method.method_type == 'Daily':
+            elif method.method_type == 'Daily':
                 start_time = datetime.strptime(form_add_method.relayDailyTime.data,
                                                '%H:%M:%S')
 
-        new_method = Method()
-        new_method.method_id = form_add_method.method_id.data
+        add_method_data = MethodData()
+        add_method_data.method_id = form_add_method.method_id.data
 
-        # Get last number in ordered list, increment for new entry
-        method_last = method.order_by(Method.method_order.desc()).first()
-        new_method.method_order = method_last.method_order+1
-
-        if this_method.method_type == 'Date':
+        if method.method_type == 'Date':
             if form_add_method.method_select.data == 'setpoint':
-                new_method.time_start = start_time.strftime('%Y-%m-%d %H:%M:%S')
-                new_method.time_end = end_time.strftime('%Y-%m-%d %H:%M:%S')
+                add_method_data.time_start = start_time.strftime('%Y-%m-%d %H:%M:%S')
+                add_method_data.time_end = end_time.strftime('%Y-%m-%d %H:%M:%S')
             if form_add_method.method_select.data == 'relay':
-                new_method.time_start = form_add_method.relayTime.data
-        elif this_method.method_type == 'Daily':
+                add_method_data.time_start = form_add_method.relayTime.data
+        elif method.method_type == 'Daily':
             if form_add_method.method_select.data == 'setpoint':
-                new_method.time_start = start_time.strftime('%H:%M:%S')
-                new_method.time_end = end_time.strftime('%H:%M:%S')
+                add_method_data.time_start = start_time.strftime('%H:%M:%S')
+                add_method_data.time_end = end_time.strftime('%H:%M:%S')
             if form_add_method.method_select.data == 'relay':
-                new_method.time_start = form_add_method.relayDailyTime.data
-        elif this_method.method_type == 'Duration':
-            new_method.duration_sec = form_add_method.DurationSec.data
+                add_method_data.time_start = form_add_method.relayDailyTime.data
+        elif method.method_type == 'Duration':
+            add_method_data.duration_sec = form_add_method.DurationSec.data
 
         if form_add_method.method_select.data == 'setpoint':
-            new_method.setpoint_start = form_add_method.startSetpoint.data
-            new_method.setpoint_end = form_add_method.endSetpoint.data
+            add_method_data.setpoint_start = form_add_method.startSetpoint.data
+            add_method_data.setpoint_end = form_add_method.endSetpoint.data
         elif form_add_method.method_select.data == 'relay':
-            new_method.relay_id = form_add_method.relayID.data
-            new_method.relay_state = form_add_method.relayState.data
-            new_method.relay_duration = form_add_method.relayDurationSec.data
+            add_method_data.relay_id = form_add_method.relayID.data
+            add_method_data.relay_state = form_add_method.relayState.data
+            add_method_data.relay_duration = form_add_method.relayDurationSec.data
 
-        db.session.add(new_method)
+        db.session.add(add_method_data)
+        db.session.commit()
+
+        method.method_order = add_display_order(display_order, add_method_data.id)
         db.session.commit()
 
         if form_add_method.method_select.data == 'setpoint':
-            if this_method.method_type == 'Date':
+            if method.method_type == 'Date':
                 flash(gettext("Added duration to method from %(st)s to "
                               "%(end)s", st=start_time, end=end_time),
                       "success")
-            elif this_method.method_type == 'Daily':
+            elif method.method_type == 'Daily':
                 flash(gettext("Added duration to method from %(st)s to "
                               "%(end)s",
                               st=start_time.strftime('%H:%M:%S'),
                               end=end_time.strftime('%H:%M:%S')),
                       "success")
-            elif this_method.method_type == 'Duration':
+            elif method.method_type == 'Duration':
                 flash(gettext("Added duration to method for %(sec)s seconds",
                               sec=form_add_method.DurationSec.data), "success")
         elif form_add_method.method_select.data == 'relay':
-            if this_method.method_type == 'Date':
+            if method.method_type == 'Date':
                 flash(gettext("Added relay modulation to method at start "
                               "time: %(tm)s", tm=start_time), "success")
-            elif this_method.method_type == 'Daily':
+            elif method.method_type == 'Daily':
                 flash(gettext("Added relay modulation to method at start "
                               "time: %(tm)s",
                               tm=start_time.strftime('%H:%M:%S')), "success")
-            elif this_method.method_type == 'Duration':
+            elif method.method_type == 'Duration':
                 flash(gettext("Added relay modulation to method at start "
                               "time: %(tm)s",
                               tm=form_add_method.DurationSec.data), "success")
@@ -363,49 +389,56 @@ def method_add(form_add_method, method):
     flash_success_errors(error, action, url_for('method_routes.method_list'))
 
 
-def method_mod(form_mod_method, method):
+def method_mod(form_mod_method):
     action = '{action} {controller}'.format(
         action=gettext("Modify"),
         controller=gettext("Method"))
     error = []
 
+    method = Method.query.filter(
+        Method.id == form_mod_method.method_id.data).first()
+    method_data = MethodData.query.filter(
+        MethodData.id == form_mod_method.method_data_id.data).first()
+    display_order = csv_to_list_of_int(method.method_order)
+
     try:
         if form_mod_method.Delete.data:
-            delete_entry_with_id(Method,
-                                 form_mod_method.method_id.data)
-            return 0
-
-        if form_mod_method.name.data:
-            mod_method = Method.query.filter(
-                Method.method_id == form_mod_method.method_id.data)
-            mod_method = mod_method.filter(Method.method_order == 0).first()
-            mod_method.name = form_mod_method.name.data
+            delete_entry_with_id(MethodData,
+                                 form_mod_method.method_data_id.data)
+            method_order = Method.query.filter(Method.id == method.id).first()
+            display_order = csv_to_list_of_int(method_order.method_order)
+            display_order.remove(method_data.id)
+            method_order.method_order = list_to_csv(display_order)
             db.session.commit()
             return 0
 
-        # Ensure data data is valid
-        this_method = method.filter(Method.id == form_mod_method.method_id.data).first()
-        method_set = method.filter(Method.method_id == this_method.method_id)
-        method_set = method_set.filter(Method.method_order == 0).first()
-        if validate_method_data(form_mod_method, method_set):
+        if form_mod_method.rename.data:
+            method.name = form_mod_method.name.data
+            db.session.commit()
+            return 0
+
+        # Ensure data is valid
+        if validate_method_data(form_mod_method, method):
             return 1
 
-        mod_method = Method.query.filter(
-            Method.id == form_mod_method.method_id.data).first()
-
         if form_mod_method.method_select.data == 'setpoint':
-            if method_set.method_type == 'Date':
+            if method.method_type == 'Date':
                 start_time = datetime.strptime(form_mod_method.startTime.data, '%Y-%m-%d %H:%M:%S')
                 end_time = datetime.strptime(form_mod_method.endTime.data, '%Y-%m-%d %H:%M:%S')
 
                 # Ensure the start time comes after the previous entry's end time
                 # and the end time comes before the next entry's start time
                 # method_id_set is the id given to all method entries, 'method_id', not 'id'
-
-                previous_method = method.order_by(Method.method_order.desc()).filter(
-                    Method.method_order < this_method.method_order).first()
-                next_method = method.order_by(Method.method_order.asc()).filter(
-                    Method.method_order > this_method.method_order).first()
+                previous_method = None
+                next_method = None
+                for index, each_order in enumerate(display_order):
+                    if each_order == method_data.id:
+                        if len(display_order) > 1 and index > 0:
+                            previous_method = MethodData.query.filter(
+                                MethodData.id == display_order[index-1]).first()
+                        if len(display_order) > index+1:
+                            next_method = MethodData.query.filter(
+                                MethodData.id == display_order[index+1]).first()
 
                 if previous_method is not None and previous_method.time_end is not None:
                     previous_end_time = datetime.strptime(
@@ -427,34 +460,40 @@ def method_mod(form_mod_method, method):
                                     "(%(st)s)",
                                     et=end_time, st=next_start_time))
 
-                mod_method.time_start = start_time.strftime('%Y-%m-%d %H:%M:%S')
-                mod_method.time_end = end_time.strftime('%Y-%m-%d %H:%M:%S')
+                method_data.time_start = start_time.strftime('%Y-%m-%d %H:%M:%S')
+                method_data.time_end = end_time.strftime('%Y-%m-%d %H:%M:%S')
 
-            elif method_set.method_type == 'Duration':
-                mod_method.duration_sec = form_mod_method.DurationSec.data
+            elif method.method_type == 'Duration':
+                method_data.duration_sec = form_mod_method.DurationSec.data
 
-            elif method_set.method_type == 'Daily':
-                mod_method.time_start = form_mod_method.startDailyTime.data
-                mod_method.time_end = form_mod_method.endDailyTime.data
+            elif method.method_type == 'Daily':
+                method_data.time_start = form_mod_method.startDailyTime.data
+                method_data.time_end = form_mod_method.endDailyTime.data
 
-            mod_method.setpoint_start = form_mod_method.startSetpoint.data
-            mod_method.setpoint_end = form_mod_method.endSetpoint.data
+            method_data.setpoint_start = form_mod_method.startSetpoint.data
+            method_data.setpoint_end = form_mod_method.endSetpoint.data
 
         elif form_mod_method.method_select.data == 'relay':
-            if method_set.method_type == 'Date':
-                mod_method.time_start = form_mod_method.relayTime.data
-            elif method_set.method_type == 'Duration':
-                mod_method.duration_sec = form_mod_method.DurationSec.data
-            mod_method.relay_id = form_mod_method.relayID.data
-            mod_method.relay_state = form_mod_method.relayState.data
-            mod_method.relay_duration = form_mod_method.relayDurationSec.data
+            if method.method_type == 'Date':
+                method_data.time_start = form_mod_method.relayTime.data
+            elif method.method_type == 'Duration':
+                method_data.duration_sec = form_mod_method.DurationSec.data
+            if form_mod_method.relay_id.data == '':
+                method_data.relay_id = None
+            else:
+                method_data.relay_id = form_mod_method.relayID.data
+            method_data.relay_state = form_mod_method.relayState.data
+            method_data.relay_duration = form_mod_method.relayDurationSec.data
 
-        elif method_set.method_type == 'DailySine':
+        elif method.method_type == 'DailySine':
             if form_mod_method.method_select.data == 'relay':
-                mod_method.time_start = form_mod_method.relayTime.data
-                mod_method.relay_id = form_mod_method.relayID.data
-                mod_method.relay_state = form_mod_method.relayState.data
-                mod_method.relay_duration = form_mod_method.relayDurationSec.data
+                method_data.time_start = form_mod_method.relayTime.data
+                if form_mod_method.relay_id.data == '':
+                    method_data.relay_id = None
+                else:
+                    method_data.relay_id = form_mod_method.relayID.data
+                method_data.relay_state = form_mod_method.relayState.data
+                method_data.relay_duration = form_mod_method.relayDurationSec.data
 
         if not error:
             db.session.commit()
@@ -1185,12 +1224,12 @@ def pid_mod(form_mod_pid):
 
                   (sensor.device_type == 'tmpsensor' and
                    form_mod_pid.measurement.data not in ['temperature_object',
-                                                            'temperature_die']) or
+                                                         'temperature_die']) or
 
                   (sensor.device_type == 'htsensor' and
                    form_mod_pid.measurement.data not in ['temperature',
-                                                            'humidity',
-                                                            'dewpoint']) or
+                                                         'humidity',
+                                                         'dewpoint']) or
 
                   (sensor.device_type == 'co2sensor' and
                    form_mod_pid.measurement.data not in ['co2']) or
@@ -1200,13 +1239,13 @@ def pid_mod(form_mod_pid):
 
                   (sensor.device_type == 'moistsensor' and
                    form_mod_pid.measurement.data not in ['temperature',
-                                                            'lux',
-                                                            'moisture']) or
+                                                         'lux',
+                                                         'moisture']) or
 
                   (sensor.device_type == 'presssensor' and
                    form_mod_pid.measurement.data not in ['temperature',
-                                                            'pressure',
-                                                            'altitude'])
+                                                         'pressure',
+                                                         'altitude'])
             ):
                 error.append(gettext(
                     "Select a Measure Type that is compatible with the "
@@ -1215,7 +1254,10 @@ def pid_mod(form_mod_pid):
                 mod_pid = PID.query.filter(
                     PID.id == form_mod_pid.pid_id.data).first()
                 mod_pid.name = form_mod_pid.name.data
-                mod_pid.sensor_id = form_mod_pid.sensor_id.data
+                if form_mod_pid.sensor_id.data == '':
+                    mod_pid.sensor_id = None
+                else:
+                    mod_pid.sensor_id = form_mod_pid.sensor_id.data
                 mod_pid.measurement = form_mod_pid.measurement.data
                 mod_pid.direction = form_mod_pid.direction.data
                 mod_pid.period = form_mod_pid.period.data
@@ -1226,15 +1268,24 @@ def pid_mod(form_mod_pid):
                 mod_pid.d = form_mod_pid.k_d.data
                 mod_pid.integrator_min = form_mod_pid.integrator_max.data
                 mod_pid.integrator_max = form_mod_pid.integrator_min.data
-                mod_pid.raise_relay_id = form_mod_pid.raise_relay_id.data
+                if form_mod_pid.raise_relay_id.data == '':
+                    mod_pid.raise_relay_id = None
+                else:
+                    mod_pid.raise_relay_id = form_mod_pid.raise_relay_id.data
                 mod_pid.raise_min_duration = form_mod_pid.raise_min_duration.data
                 mod_pid.raise_max_duration = form_mod_pid.raise_max_duration.data
                 mod_pid.raise_min_off_duration = form_mod_pid.raise_min_off_duration.data
-                mod_pid.lower_relay_id = form_mod_pid.lower_relay_id.data
+                if form_mod_pid.lower_relay_id.data == '':
+                    mod_pid.lower_relay_id = None
+                else:
+                    mod_pid.lower_relay_id = form_mod_pid.lower_relay_id.data
                 mod_pid.lower_min_duration = form_mod_pid.lower_min_duration.data
                 mod_pid.lower_max_duration = form_mod_pid.lower_max_duration.data
                 mod_pid.lower_min_off_duration = form_mod_pid.lower_min_off_duration.data
-                mod_pid.method_id = form_mod_pid.method_id.data
+                if form_mod_pid.method_id.data == '':
+                    mod_pid.method_id = None
+                else:
+                    mod_pid.method_id = form_mod_pid.method_id.data
                 db.session.commit()
                 # If the controller is active or paused, refresh variables in thread
                 if mod_pid.is_activated:

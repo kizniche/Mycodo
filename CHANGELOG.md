@@ -9,11 +9,13 @@
   - Add ability to use USB cameras with OpenCV ([#193](https://github.com/kizniche/mycodo/issues/193))
   - Automatically detect DS18B20 sensors in sensor configuration
   - Add new user roles: Editor and Monitor ([#46](https://github.com/kizniche/mycodo/issues/46))
+  - Restructure database ([#115](https://github.com/kizniche/mycodo/issues/115), [#122](https://github.com/kizniche/mycodo/issues/122))
 
 ### Miscellaneous
 
+  - Move from depricated flask_wtf.Form to FlaskForm
+  - Update web interface style and layout
   - Update Flask WTF to 0.14.2
-  - Database restructuring ([#115](https://github.com/kizniche/mycodo/issues/115), [#122](https://github.com/kizniche/mycodo/issues/122))
   - Move from using sqlalchemy to flask sqlalchemy
 
 ## 4.1.17 (Unreleased)

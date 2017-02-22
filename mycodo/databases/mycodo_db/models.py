@@ -147,6 +147,7 @@ class DisplayOrder(CRUDMixin, db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     graph = db.Column(db.Text, default='')
     lcd = db.Column(db.Text, default='')
+    method = db.Column(db.Text, default='')
     pid = db.Column(db.Text, default='')
     relay = db.Column(db.Text, default='')
     remote_host = db.Column(db.Text, default='')
@@ -199,9 +200,11 @@ class Method(CRUDMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     name = db.Column(db.Text, default='Method')
-    method_type = db.Column(db.Text, default='')
     method_order = db.Column(db.Text, default='')
-    start_time = db.Column(db.Text, default=None)
+    method_type = db.Column(db.Text, default='')
+    start_time = db.Column(db.DateTime, default=None)
+
+    method_data = db.relationship("MethodData", back_populates="method")
 
 
 class MethodData(CRUDMixin, db.Model):
@@ -218,8 +221,8 @@ class MethodData(CRUDMixin, db.Model):
     setpoint_end = db.Column(db.Float, default=None)
     amplitude = db.Column(db.Float, default=None)
     frequency = db.Column(db.Float, default=None)
-    shift_angle = db.Column(db.Float, default=None)
     shift_y = db.Column(db.Float, default=None)
+    shift_angle = db.Column(db.Float, default=None)
     x0 = db.Column(db.Float, default=None)
     y0 = db.Column(db.Float, default=None)
     x1 = db.Column(db.Float, default=None)
@@ -228,6 +231,8 @@ class MethodData(CRUDMixin, db.Model):
     y2 = db.Column(db.Float, default=None)
     x3 = db.Column(db.Float, default=None)
     y3 = db.Column(db.Float, default=None)
+
+    method = db.relationship("Method", back_populates="method_data")
 
 
 class Misc(CRUDMixin, db.Model):

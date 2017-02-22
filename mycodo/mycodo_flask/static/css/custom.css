@@ -10,6 +10,10 @@
   padding-left: 0.2em;
 }
 
+.small-gutters {
+    padding: 0 0.8em
+}
+
 .row.no-gutters > [class^="col-"],
 .row.no-gutters > [class*=" col-"] {
   padding-right: 0;

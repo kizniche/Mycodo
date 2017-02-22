@@ -40,6 +40,7 @@ import timeit
 # Classes
 from databases.mycodo_db.models import (
     Method,
+    MethodData,
     PID,
     Relay,
     Sensor
@@ -101,11 +102,9 @@ class PIDController(threading.Thread):
 
         # Check if a method is set for this PID
         if self.method_id:
-            method = Method.query
-            method = method.filter(Method.method_id == self.method_id)
-            method = method.filter(Method.method_order == 0).first()
+            method = db_retrieve_table_daemon(Method, device_id=self.method_id)
             self.method_type = method.method_type
-            self.method_start_time = method.time_start
+            self.method_start_time = method.start_time
 
             if self.method_type == 'Duration':
                 if self.method_start_time == 'Ended':
@@ -115,10 +114,9 @@ class PIDController(threading.Thread):
                     # Method has been instructed to begin
                     with session_scope(MYCODO_DB_PATH) as db_session:
                         mod_method = db_session.query(Method)
-                        mod_method = mod_method.filter(Method.method_id == self.method_id)
-                        mod_method = mod_method.filter(Method.method_order == 0).first()
+                        mod_method = mod_method.filter(Method.id == self.method_id).first()
                         mod_method.time_start = datetime.datetime.now()
-                        self.method_start_time = mod_method.time_start
+                        self.method_start_time = mod_method.start_time
                         db_session.commit()
                 else:
                     # Method neither instructed to begin or not to
@@ -153,7 +151,7 @@ class PIDController(threading.Thread):
 
                         if self.last_measurement_success:
                             # Update setpoint using a method if one is selected
-                            if self.method_id != '':
+                            if self.method_id:
                                 self.calculate_method_setpoint(self.method_id)
                             write_influxdb_setpoint(self.pid_unique_id, self.set_point)
                             # Update PID and get control variable
@@ -296,7 +294,7 @@ class PIDController(threading.Thread):
                 self.logger.warning("No data returned from influxdb")
         except requests.ConnectionError:
             self.logger.error("Failed to read measurement from the "
-                                  "influxdb database: Could not connect.")
+                              "influxdb database: Could not connect.")
         except Exception as except_msg:
             self.logger.exception(
                 "Exception while reading measurement from the influxdb "
@@ -389,21 +387,21 @@ class PIDController(threading.Thread):
                 self.control.relay_off(self.lower_relay_id)
 
     def calculate_method_setpoint(self, method_id):
-        method = Method.query
+        method = db_retrieve_table_daemon(Method)
 
-        method_key = method.filter(Method.method_id == method_id)
-        method_key = method_key.filter(Method.method_order == 0).first()
+        method_key = method.filter(Method.id == method_id).first()
 
-        method = method.filter(Method.method_id == method_id)
-        method = method.filter(Method.relay_id == None)
-        method = method.filter(Method.method_order > 0)
-        method = method.order_by(Method.method_order.asc()).all()
+        method_data = db_retrieve_table_daemon(MethodData)
+        method_data = method_data.filter(MethodData.method_id == method_id)
+
+        method_data_all = method_data.filter(MethodData.relay_id == None).all()
+        method_data_first = method_data.filter(MethodData.relay_id == None).first()
 
         now = datetime.datetime.now()
 
         # Calculate where the current time/date is within the time/date method
         if method_key.method_type == 'Date':
-            for each_method in method:
+            for each_method in method_data_all:
                 start_time = datetime.datetime.strptime(each_method.time_start, '%Y-%m-%d %H:%M:%S')
                 end_time = datetime.datetime.strptime(each_method.time_end, '%Y-%m-%d %H:%M:%S')
                 if start_time < now < end_time:
@@ -438,7 +436,7 @@ class PIDController(threading.Thread):
         elif method_key.method_type == 'Daily':
             daily_now = datetime.datetime.now().strftime('%H:%M:%S')
             daily_now = datetime.datetime.strptime(str(daily_now), '%H:%M:%S')
-            for each_method in method:
+            for each_method in method_data_all:
                 start_time = datetime.datetime.strptime(each_method.time_start, '%H:%M:%S')
                 end_time = datetime.datetime.strptime(each_method.time_end, '%H:%M:%S')
                 if start_time < daily_now < end_time:
@@ -471,20 +469,21 @@ class PIDController(threading.Thread):
 
         # Calculate sine y-axis value from the x-axis (seconds of the day)
         elif method_key.method_type == 'DailySine':
-            new_setpoint = sine_wave_y_out(method_key.amplitude,
-                                           method_key.frequency,
-                                           method_key.shift_angle,
-                                           method_key.shift_y)
+            new_setpoint = sine_wave_y_out(method_data_first.amplitude,
+                                           method_data_first.frequency,
+                                           method_data_first.shift_angle,
+                                           method_data_first.shift_y)
             self.set_point = new_setpoint
             return 0
 
         # Calculate Bezier curve y-axis value from the x-axis (seconds of the day)
         elif method_key.method_type == 'DailyBezier':
-            new_setpoint = bezier_curve_y_out(method_key.shift_angle,
-                                              (method_key.x0, method_key.y0),
-                                              (method_key.x1, method_key.y1),
-                                              (method_key.x2, method_key.y2),
-                                              (method_key.x3, method_key.y3))
+            new_setpoint = bezier_curve_y_out(
+                method_data_first.shift_angle,
+                (method_data_first.x0, method_data_first.y0),
+                (method_data_first.x1, method_data_first.y1),
+                (method_data_first.x2, method_data_first.y2),
+                (method_data_first.x3, method_data_first.y3))
             self.set_point = new_setpoint
             return 0
 
@@ -493,7 +492,7 @@ class PIDController(threading.Thread):
             seconds_from_start = (now-self.method_start_time).total_seconds()
             total_sec = 0
             previous_total_sec = 0
-            for each_method in method:
+            for each_method in method_data_all:
                 total_sec += each_method.duration_sec
                 if previous_total_sec <= seconds_from_start < total_sec:
                     row_start_time = float(self.method_start_time.strftime('%s'))+previous_total_sec

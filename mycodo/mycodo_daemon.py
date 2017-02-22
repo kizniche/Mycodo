@@ -220,7 +220,7 @@ class DaemonController(threading.Thread):
 
         self.startup_timer = timeit.default_timer()
         self.logger = logger
-        self.logger.info("Mycodo v{ver} starting".format(ver=MYCODO_VERSION))
+        self.logger.info("Mycodo daemon v{ver} starting".format(ver=MYCODO_VERSION))
         self.thread_shutdown_timer = None
         self.daemon_run = True
         self.terminated = False
@@ -255,9 +255,8 @@ class DaemonController(threading.Thread):
                     # If time-lapses are active, take photo at predefined periods
                     try:
                         camera = db_retrieve_table_daemon(Camera, entry='all')
-                    except Exception as err:
-                        self.logger.error(
-                            "Could not read camera table: {err}".format(err=err))
+                    except Exception:
+                        self.logger.error("Could not read camera table.")
                     for each_camera in camera:
                         if (each_camera.timelapse_started and
                                 now > each_camera.timelapse_end_time):
@@ -549,7 +548,7 @@ class DaemonController(threading.Thread):
                 recreate_stat_file()
 
             daemon_startup_time = timeit.default_timer()-self.startup_timer
-            self.logger.info("Mycodo v{ver} started in {time:.3f}"
+            self.logger.info("Mycodo daemon v{ver} started in {time:.3f}"
                              " seconds".format(ver=MYCODO_VERSION,
                                                time=daemon_startup_time))
             add_update_csv(STATS_CSV, 'daemon_startup_seconds',

@@ -17,7 +17,7 @@
     <h4>{{_('Method Management')}}</h4>
 
     <div class="form-inline">
-      <form method="post" action="/method-build/0/0" style="padding: 0.7em 0">
+      <form method="post" action="/method-build/0" style="padding: 0.7em 0">
         <input type="hidden" name="form-name" value="createMethod">
         {{form_create_method.csrf_token}}
         <div class="form-group">
@@ -59,13 +59,13 @@
       {%- set chart_number = loop.index -%}
       <div style="margin: 0 0.3em 0.6em 0.3em; border: 2px solid #ddd; border-radius: 5px;">
         <div class="form-inline" style="padding: 0.5em">
-          <a href="/method-delete/{{each_method.method_id}}" class="btn btn-default" role="button" onclick="return confirm('Are you sure you want to delete the Method &quot;{{each_method.name}}&quot;?')">Delete Method</a>
-          <a href="/method-build/{{each_method.method_type}}/{{each_method.method_id}}" class="btn btn-default" role="button">Edit Method</a>
-          {{each_method.method_type}} Method: {{each_method.name}} ({{each_method.method_id}})
+          <a href="/method-delete/{{each_method.id}}" class="btn btn-default" role="button" onclick="return confirm('Are you sure you want to delete the Method &quot;{{each_method.name}}&quot;?')">Delete Method</a>
+          <a href="/method-build/{{each_method.id}}" class="btn btn-default" role="button">Edit Method</a>
+          {{each_method.method_type}} Method: {{each_method.name}} ({{each_method.id}})
         </div>
 
         {%- set method_setpoint = [] -%}
-        {%- for each_method_all in method_all if each_method_all.method_id == each_method.method_id and each_method_all.method_order != 0 and each_method_all.setpoint_start -%}
+        {%- for each_method_all in method_all if each_method_all.method_id == each_method.id and each_method_all.setpoint_start -%}
           {%- do method_setpoint.append(1) -%}
         {%- endfor -%}
 
@@ -83,8 +83,8 @@
   $(document).ready(function() {
     var chart = new Array();
     // Retrieve initial chart data set from the past (duration set by user)
-    function getPastData(chart_number, method_type, method_id) {
-      var url = '/method-data/' + method_type + '/' + method_id;
+    function getPastData(chart_number, method_id) {
+      var url = '/method-data/' + method_id;
       $.getJSON(url,
         function(data, responseText, jqXHR) {
           if (jqXHR.status != 204) {
@@ -98,7 +98,7 @@
     }
     {% for each_method in method -%}
       {%- set method_setpoint = [] -%}
-      {%- for each_method_all in method_all if each_method_all.method_id == each_method.method_id and each_method_all.method_order != 0 and each_method_all.setpoint_start -%}
+      {%- for each_method_all in method_all if each_method_all.method_id == each_method.id and each_method_all.setpoint_start -%}
         {%- do method_setpoint.append(1) -%}
       {%- endfor -%}
       {%- set chart_number = loop.index -%}
@@ -115,7 +115,7 @@
             },
             events: {
               load: function () {
-                getPastData({{chart_number}}, "{{each_method.method_type}}", "{{each_method.method_id}}");
+                getPastData({{chart_number}}, "{{each_method.id}}");
               }
             }
           },
@@ -130,7 +130,7 @@
               xDateFormat: '%a, %b %e, %Y %H:%M:%S',
             {% elif each_method.method_type in ["Daily", "DailySine", 'DailyBezier'] -%}
               xDateFormat: '%H:%M:%S',
-            {%- endif -%}
+            {%- endif %}
             valueDecimals: 2
           },
           legend: {
