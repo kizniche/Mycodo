@@ -50,6 +50,15 @@ MEASUREMENT_UNITS = {
     'altitude': 'm'
 }
 
+CONDITIONAL_ACTIONS = {
+    'relay': 'Relay',
+    'email': 'Email',
+    'flash_lcd': 'Flash LCD',
+    'photo': 'Photo',
+    'video': 'Video',
+    'command': 'Command'
+}
+
 USER_ROLES = [
     dict(id=1, name='Admin',
          edit_settings=True, edit_controllers=True, edit_users=True,

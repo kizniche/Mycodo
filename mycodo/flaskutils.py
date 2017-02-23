@@ -28,6 +28,8 @@ from RPi import GPIO
 from databases.mycodo_db.models import (
     db,
     Camera,
+    Conditional,
+    ConditionalActions,
     DisplayOrder,
     Graph,
     LCD,
@@ -53,7 +55,10 @@ from scripts.utils import (
     test_password
 )
 from utils.send_data import send_email
-from utils.system_pi import csv_to_list_of_int
+from utils.system_pi import (
+    csv_to_list_of_int,
+    is_int
+)
 
 # Config
 from config import (
@@ -1502,13 +1507,119 @@ def relay_on_off(form_relay):
     flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
+def conditional_add(form):
+    action = '{action} {controller} ({type})'.format(
+        action=gettext("Add"),
+        controller=gettext("Conditional"),
+        type=gettext("Relay"))
+    error = []
+
+    if is_int(form.quantity.data, check_range=[1, 20]):
+        for _ in range(0, form.quantity.data):
+            try:
+                new_conditional = Conditional()
+                new_conditional.conditional_type = form.conditional_type.data
+                new_conditional.save()
+            except sqlalchemy.exc.OperationalError as except_msg:
+                error.append(except_msg)
+            except sqlalchemy.exc.IntegrityError as except_msg:
+                error.append(except_msg)
+    flash_success_errors(error, action, url_for('page_routes.page_relay'))
+
+
+def conditional_mod(form, mod_type):
+    action = '{action} {controller} ({type})'.format(
+        action=gettext("Modify"),
+        controller=gettext("Conditional"),
+        type=gettext("Relay"))
+    error = []
+
+    if mod_type == 'delete':
+        delete_entry_with_id(Conditional,
+                             form.conditional_id.data)
+    elif mod_type == 'modify':
+        try:
+            mod_action = Conditional.query.filter(
+                Conditional.id == form.conditional_id.data).first()
+            mod_action.name = form.name.data
+            if mod_action.conditional_type == 'relay':
+                mod_action.if_relay_id = form.if_relay_id.data
+                mod_action.if_relay_state = form.if_relay_state.data
+                mod_action.if_relay_duration = form.if_relay_duration.data
+            elif mod_action.conditional_type == 'sensor':
+                pass
+            db.session.commit()
+        except sqlalchemy.exc.OperationalError as except_msg:
+            error.append(except_msg)
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            error.append(except_msg)
+    flash_success_errors(error, action, url_for('page_routes.page_relay'))
+
+
+def conditional_action_add(form):
+    action = '{action} {controller} ({type})'.format(
+        action=gettext("Add"),
+        controller=gettext("Conditional Action"),
+        type=gettext("Relay"))
+    error = []
+
+    try:
+        new_action = ConditionalActions()
+        new_action.conditional_id = form.conditional_id.data
+        new_action.do_action = form.do_action.data
+        new_action.save()
+    except sqlalchemy.exc.OperationalError as except_msg:
+        error.append(except_msg)
+    except sqlalchemy.exc.IntegrityError as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('page_routes.page_relay'))
+
+
+def conditional_action_mod(form, mod_type):
+    action = '{action} {controller} ({type})'.format(
+        action=gettext("Modify"),
+        controller=gettext("Conditional Action"),
+        type=gettext("Relay"))
+    error = []
+
+    if mod_type == 'delete':
+        delete_entry_with_id(ConditionalActions,
+                             form.conditional_id.data)
+    elif mod_type == 'modify':
+        try:
+            mod_action = ConditionalActions.query.filter(
+                ConditionalActions.id == form.conditional_id.data).first()
+            mod_action.do_action = form.do_action.data
+            if form.do_action.data == 'relay':
+                mod_action.do_relay_id = form.do_relay_id.data
+                mod_action.do_relay_state = form.do_relay_state.data
+                mod_action.do_relay_duration = form.do_relay_duration.data
+            elif form.do_action.data == 'email':
+                mod_action.do_action_string = form.do_action_string.data
+            elif form.do_action.data == 'flash_lcd':
+                mod_action.do_lcd_id = form.do_lcd_id.data
+            elif form.do_action.data == 'photo':
+                mod_action.do_camera_id = form.do_camera_id.data
+            elif form.do_action.data == 'video':
+                mod_action.do_camera_id = form.do_camera_id.data
+                mod_action.do_camera_duration = form.do_camera_duration.data
+            elif form.do_action.data == 'command':
+                mod_action.do_action_string = form.do_action_string.data
+            db.session.commit()
+        except sqlalchemy.exc.OperationalError as except_msg:
+            error.append(except_msg)
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            error.append(except_msg)
+    flash_success_errors(error, action, url_for('page_routes.page_relay'))
+
+
 def relay_add(form_add_relay):
     action = '{action} {controller}'.format(
         action=gettext("Add"),
         controller=gettext("Relay"))
     error = []
 
-    if form_add_relay.validate():
+    if is_int(form_add_relay.relay_quantity.data, check_range=[1, 20]):
         for _ in range(0, form_add_relay.relay_quantity.data):
             try:
                 new_relay = Relay().save()
@@ -1521,9 +1632,13 @@ def relay_add(form_add_relay):
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
                 error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_relay'))
     else:
-        flash_form_errors(form_add_relay)
+        error_msg = "{error}. {accepted_values}: 1-20".format(
+            error=gettext("Invalid quantity"),
+            accepted_values=gettext("Acceptable values:")
+        )
+        error.append(error_msg)
+    flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
 def relay_mod(form_relay):
@@ -1617,17 +1732,21 @@ def relay_conditional_add(form_add_relay_cond):
         controller=gettext("Relay Conditional"))
     error = []
 
-    if form_add_relay_cond.validate():
+    if is_int(form_add_relay_cond.relay_cond_quantity.data, check_range=[1, 20]):
         for _ in range(0, form_add_relay_cond.relay_cond_quantity.data):
             try:
-                RelayConditional().save
+                RelayConditional().save()
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
                 error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_sensor'))
     else:
-        flash_form_errors(form_add_relay_cond)
+        error_msg = "{error}. {accepted_values}: 1-20".format(
+            error=gettext("Invalid quantity"),
+            accepted_values=gettext("Acceptable values:")
+        )
+        error.append(error_msg)
+    flash_success_errors(error, action, url_for('page_routes.page_sensor'))
 
 
 def relay_conditional_mod(form_relay_cond):

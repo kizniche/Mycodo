@@ -91,6 +91,24 @@ def get_sec(time_str):
     return int(h) * 3600 + int(m) * 60 + int(s)
 
 
+def is_int(test_var, check_range=None):
+    """
+    Test if var is integer (and also between range)
+    check_range should be a list of minimum and maximum values
+    e.g. check_range=[0, 100]
+    """
+    try:
+        value = int(test_var)
+    except ValueError:
+        return False
+
+    if check_range:
+        if not (check_range[0] <= int(test_var) <= check_range[1]):
+            return False
+
+    return True
+
+
 def set_user_grp(filepath, user, group):
     """ Set the UID and GUID of a file """
     uid = pwd.getpwnam(user).pw_uid

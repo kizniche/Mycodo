@@ -2,10 +2,8 @@
 """ collection of Page endpoints """
 import logging
 import os
-import csv
 import datetime
 import glob
-import pwd
 import subprocess
 import time
 from collections import OrderedDict
@@ -25,6 +23,8 @@ from flask.blueprints import Blueprint
 from mycodo.databases.mycodo_db.models import (
     db,
     Camera,
+    Conditional,
+    ConditionalActions,
     DisplayOrder,
     Graph,
     LCD,
@@ -55,6 +55,7 @@ from mycodo.utils.system_pi import csv_to_list_of_int
 
 # Config
 from config import (
+    CONDITIONAL_ACTIONS,
     DAEMON_LOG_FILE,
     FILE_TIMELAPSE_PARAM,
     HTTP_LOG_FILE,
@@ -658,16 +659,23 @@ def page_relay():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
+    camera = Camera.query.all()
     lcd = LCD.query.all()
     relay = Relay.query.all()
-    relayconditional = RelayConditional.query.all()
-    users = User.query.all()
+    relay_conditional = RelayConditional.query.all()
+    user = User.query.all()
+
+    conditional = Conditional.query.filter(Conditional.conditional_type == 'relay').all()
+    conditional_actions = ConditionalActions.query.all()
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
 
     form_add_relay = flaskforms.AddRelay()
     form_mod_relay = flaskforms.ModRelay()
     form_mod_relay_cond = flaskforms.ModRelayConditional()
+
+    form_conditional = flaskforms.Conditional()
+    form_conditional_actions = flaskforms.ConditionalActions()
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission(session, 'edit_controllers'):
@@ -685,21 +693,37 @@ def page_relay():
             flaskutils.relay_del(form_mod_relay)
         elif form_mod_relay.order_up.data or form_mod_relay.order_down.data:
             flaskutils.relay_reorder(form_mod_relay, display_order)
-        elif form_add_relay.relay_cond_add.data:
-            flaskutils.relay_conditional_add(form_add_relay)
+
+        elif form_conditional.add_cond.data:
+            flaskutils.conditional_add(form_conditional)
+        elif form_conditional.save_cond.data:
+            flaskutils.conditional_mod(form_conditional, 'modify')
+        elif form_conditional_actions.add_action.data:
+            flaskutils.conditional_action_add(form_conditional_actions)
+        elif form_conditional_actions.save_action.data:
+            flaskutils.conditional_action_mod(form_conditional_actions, 'modify')
+        elif form_conditional_actions.delete_action.data:
+            flaskutils.conditional_action_mod(form_conditional_actions, 'delete')
+
         elif form_mod_relay_cond.save.data:
             flaskutils.relay_conditional_mod(form_mod_relay_cond)
         return redirect('/relay')
 
     return render_template('pages/relay.html',
-                           lcd=lcd,
-                           relay=relay,
-                           relayconditional=relayconditional,
-                           users=users,
+                           camera=camera,
+                           conditional=conditional,
+                           conditional_actions=conditional_actions,
+                           conditional_actions_list=CONDITIONAL_ACTIONS,
                            displayOrder=display_order,
+                           form_conditional=form_conditional,
+                           form_conditional_actions=form_conditional_actions,
                            form_add_relay=form_add_relay,
                            form_mod_relay=form_mod_relay,
-                           form_mod_relay_cond=form_mod_relay_cond)
+                           form_mod_relay_cond=form_mod_relay_cond,
+                           lcd=lcd,
+                           relay=relay,
+                           relay_conditional=relay_conditional,
+                           user=user)
 
 
 @blueprint.route('/sensor', methods=('GET', 'POST'))

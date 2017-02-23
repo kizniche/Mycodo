@@ -225,9 +225,15 @@
                       </div>
                     </div>
                     <div style="display: inline-block; padding: 0.3em;">
-                      {{_('On Duration')}}
+                      {{_('On Duration (sec.)')}}
                       <div>
-                        {{_('Min')}}: {{each_pid.raise_min_duration}} {{_('sec.')}}, {{_('Max')}}: {{each_pid.raise_max_duration}} {{_('sec.')}}
+                        {{_('Min')}}: {{each_pid.raise_min_duration}}, {{_('Max')}}: {{each_pid.raise_max_duration}}
+                       </div>
+                    </div>
+                    <div style="display: inline-block; padding: 0.3em;">
+                      {{_('Off Duration (sec.)')}}
+                      <div>
+                        {{_('Min')}}: {{each_pid.raise_min_off_duration}}
                       </div>
                     </div>
                     <div style="display: inline-block; padding: 0.3em;">
@@ -248,9 +254,15 @@
                       </div>
                     </div>
                     <div style="display: inline-block; padding: 0.3em;">
-                      {{_('On Duration')}}
+                      {{_('On Duration (sec.)')}}
                       <div>
-                        {{_('Min')}}: {{each_pid.lower_min_duration}} {{_('sec.')}}, {{_('Max')}}: {{each_pid.lower_max_duration}} {{_('sec.')}}
+                        {{_('Min')}}: {{each_pid.lower_min_duration}}, {{_('Max')}}: {{each_pid.lower_max_duration}}
+                      </div>
+                    </div>
+                    <div style="display: inline-block; padding: 0.3em;">
+                      {{_('Off Duration (sec.)')}}
+                      <div>
+                        {{_('Min')}}: {{each_pid.lower_min_off_duration}}
                       </div>
                     </div>
                     <div style="display: inline-block; padding: 0.3em;">
