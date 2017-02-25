@@ -171,9 +171,9 @@ def settings_users():
 
     users = User.query.all()
     user_roles = Role.query.all()
-    form_add_user = flaskforms.AddUser()
-    form_mod_user = flaskforms.ModUser()
-    form_del_user = flaskforms.DelUser()
+    form_add_user = flaskforms.UserAdd()
+    form_mod_user = flaskforms.UserMod()
+    form_del_user = flaskforms.UserDel()
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission(session, 'edit_users'):

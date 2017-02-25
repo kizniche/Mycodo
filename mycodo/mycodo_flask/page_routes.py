@@ -32,9 +32,7 @@ from mycodo.databases.mycodo_db.models import (
     Misc,
     PID,
     Relay,
-    RelayConditional,
     Sensor,
-    SensorConditional,
     Timer,
     User
 )
@@ -282,10 +280,10 @@ def page_graph():
         return redirect(url_for('general_routes.home'))
 
     # Create form objects
-    form_mod_graph = flaskforms.ModGraph()
-    form_del_graph = flaskforms.DelGraph()
-    form_order_graph = flaskforms.OrderGraph()
-    form_add_graph = flaskforms.AddGraph()
+    form_mod_graph = flaskforms.GraphMod()
+    form_del_graph = flaskforms.GraphDel()
+    form_order_graph = flaskforms.GraphOrder()
+    form_add_graph = flaskforms.GraphAdd()
 
     # Retrieve the order to display graphs
     display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
@@ -451,13 +449,13 @@ def page_lcd():
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
 
-    form_activate_lcd = flaskforms.ActivateLCD()
-    form_add_lcd = flaskforms.AddLCD()
-    form_deactivate_lcd = flaskforms.DeactivateLCD()
-    form_del_lcd = flaskforms.DelLCD()
-    form_mod_lcd = flaskforms.ModLCD()
-    form_order_lcd = flaskforms.OrderLCD()
-    form_reset_flashing_lcd = flaskforms.ResetFlashingLCD()
+    form_activate_lcd = flaskforms.LCDActivate()
+    form_add_lcd = flaskforms.LCDAdd()
+    form_deactivate_lcd = flaskforms.LCDDeactivate()
+    form_del_lcd = flaskforms.LCDDel()
+    form_mod_lcd = flaskforms.LCDMod()
+    form_order_lcd = flaskforms.LCDOrder()
+    form_reset_flashing_lcd = flaskforms.LCDResetFlashing()
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission(session, 'edit_controllers'):
@@ -601,8 +599,8 @@ def page_pid():
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
 
-    form_add_pid = flaskforms.AddPID()
-    form_mod_pid = flaskforms.ModPID()
+    form_add_pid = flaskforms.PIDAdd()
+    form_mod_pid = flaskforms.PIDMod()
 
     method = Method.query.all()
 
@@ -669,16 +667,15 @@ def page_relay():
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
 
-    form_add_relay = flaskforms.AddRelay()
-    form_mod_relay = flaskforms.ModRelay()
-    form_mod_relay_cond = flaskforms.ModRelayConditional()
+    form_add_relay = flaskforms.RelayAdd()
+    form_mod_relay = flaskforms.RelayMod()
 
     form_conditional = flaskforms.Conditional()
     form_conditional_actions = flaskforms.ConditionalActions()
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission(session, 'edit_controllers'):
-            return redirect(url_for('general_routes.home'))
+            return redirect(url_for('general_routes.page_relay'))
 
         if form_add_relay.relay_add.data:
             flaskutils.relay_add(form_add_relay)
@@ -718,7 +715,6 @@ def page_relay():
                            form_conditional_actions=form_conditional_actions,
                            form_add_relay=form_add_relay,
                            form_mod_relay=form_mod_relay,
-                           form_mod_relay_cond=form_mod_relay_cond,
                            lcd=lcd,
                            relay=relay,
                            user=user)
@@ -755,9 +751,8 @@ def page_sensor():
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
 
-    form_add_sensor = flaskforms.AddSensor()
-    form_mod_sensor = flaskforms.ModSensor()
-    form_mod_sensor_cond = flaskforms.ModSensorConditional()
+    form_add_sensor = flaskforms.SensorAdd()
+    form_mod_sensor = flaskforms.SensorMod()
 
     form_conditional = flaskforms.Conditional()
     form_conditional_actions = flaskforms.ConditionalActions()
@@ -783,7 +778,7 @@ def page_sensor():
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission(session, 'edit_controllers'):
-            return redirect(url_for('general_routes.home'))
+            return redirect(url_for('general_routes.page_sensor'))
 
         if form_add_sensor.sensorAddSubmit.data:
             flaskutils.sensor_add(form_add_sensor)
@@ -825,7 +820,6 @@ def page_sensor():
                            form_conditional=form_conditional,
                            form_conditional_actions=form_conditional_actions,
                            form_mod_sensor=form_mod_sensor,
-                           form_mod_sensor_cond=form_mod_sensor_cond,
                            lcd=lcd,
                            multiplexer_addresses=multiplexer_addresses,
                            multiplexer_channels=multiplexer_channels,

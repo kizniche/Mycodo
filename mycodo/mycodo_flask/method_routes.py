@@ -177,7 +177,7 @@ def method_list():
     if not logged_in():
         return redirect(url_for('general_routes.home'))
 
-    form_create_method = flaskforms.CreateMethod()
+    form_create_method = flaskforms.MethodCreate()
 
     method = Method.query.all()
     method_all = MethodData.query.all()
@@ -203,9 +203,9 @@ def method_builder(method_id):
 
     relay = Relay.query.all()
 
-    form_create_method = flaskforms.CreateMethod()
-    form_add_method = flaskforms.AddMethod()
-    form_mod_method = flaskforms.ModMethod()
+    form_create_method = flaskforms.MethodCreate()
+    form_add_method = flaskforms.MethodAdd()
+    form_mod_method = flaskforms.MethodMod()
 
     # Used in software tests to verify function is executing as admin
     if method_id == '-1':

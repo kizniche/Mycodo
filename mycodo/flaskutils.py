@@ -982,8 +982,7 @@ def graph_reorder(form_order_graph, display_order):
                     form_order_graph.orderGraph_id.data,
                     'down')
             if status == 'success':
-                order_graph = DisplayOrder.query.first()
-                order_graph.graph = ','.join(reord_list)
+                DisplayOrder.query.first().graph = ','.join(map(str, reord_list))
                 db.session.commit()
             else:
                 error.append(reord_list)
@@ -1116,7 +1115,7 @@ def lcd_reorder(form_order_lcd, display_order):
                     form_order_lcd.lcd_id.data,
                     'down')
             if status == 'success':
-                DisplayOrder.query.first().lcd = ','.join(reord_list)
+                DisplayOrder.query.first().lcd = ','.join(map(str, reord_list))
                 db.session.commit()
             else:
                 error.append(reord_list)
@@ -1348,7 +1347,7 @@ def pid_reorder(pid_id, display_order, direction):
                 pid_id,
                 'down')
         if status == 'success':
-            DisplayOrder.query.first().pid = ','.join(reord_list)
+            DisplayOrder.query.first().pid = ','.join(map(str, reord_list))
             db.session.commit()
         else:
             error.append(reord_list)
@@ -1745,7 +1744,7 @@ def relay_reorder(form_relay, display_order):
                     form_relay.relay_id.data,
                     'down')
             if status == 'success':
-                DisplayOrder.query.first().relay = ','.join(reord_list)
+                DisplayOrder.query.first().relay = ','.join(map(str, reord_list))
                 db.session.commit()
             else:
                 error.append(reord_list)
@@ -2072,13 +2071,16 @@ def sensor_reorder(form_mod_sensor, display_order):
         status = None
         if form_mod_sensor.orderSensorUp.data:
             status, reord_list = reorder_list(
-                display_order, form_mod_sensor.modSensor_id.data, 'up')
+                display_order,
+                form_mod_sensor.modSensor_id.data,
+                'up')
         elif form_mod_sensor.orderSensorDown.data:
             status, reord_list = reorder_list(
-                display_order, form_mod_sensor.modSensor_id.data, 'down')
+                display_order,
+                form_mod_sensor.modSensor_id.data,
+                'down')
         if status == 'success':
-            order_sensor = DisplayOrder.query.first()
-            order_sensor.sensor = ','.join(reord_list)
+            DisplayOrder.query.first().sensor = ','.join(map(str, reord_list))
             db.session.commit()
         elif status == 'error':
             error.append(reord_list)
@@ -2393,15 +2395,17 @@ def timer_reorder(form_timer, display_order):
         status = ''
         reord_list = ''
         if form_timer.orderTimerUp.data:
-            status, reord_list = reorder_list(display_order,
-                                              form_timer.timer_id.data,
-                                              'up')
+            status, reord_list = reorder_list(
+                display_order,
+                form_timer.timer_id.data,
+                'up')
         elif form_timer.orderTimerDown.data:
-            status, reord_list = reorder_list(display_order,
-                                              form_timer.timer_id.data,
-                                              'down')
+            status, reord_list = reorder_list(
+                display_order,
+                form_timer.timer_id.data,
+                'down')
         if status == 'success':
-            DisplayOrder.query.first().timer = ','.join(reord_list)
+            DisplayOrder.query.first().timer = ','.join(map(str, reord_list))
             db.session.commit()
         else:
             error.append(reord_list)

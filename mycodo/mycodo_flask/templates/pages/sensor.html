@@ -41,6 +41,7 @@
     <div class="table-responsive" style="border: 2px solid #ddd; border-radius: 5px;">
       <form method="post" action="/sensor">
       {{form_mod_sensor.csrf_token}}
+      {{form_mod_sensor.modSensor_id(value=each_sensor.id)}}
       <div style="padding: 0.5em;" class="form-inline {% if each_sensor.is_activated -%}active-background{%- else -%}inactive-background{% endif -%}">
         <div class="form-group">
           <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{each_sensor.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_sensor.id}}">
@@ -71,7 +72,6 @@
           <div class="form-group">
             <label class="control-label"></label>
             <div>
-              {{form_mod_sensor.csrf_token}}
               {% if has_active_pid or has_active_lcd -%}
                 {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("There are currently active PID or LCD controllers that rely on this sensor to be active. If you deactivate this sensor, all active PID and LCD controllers that use it will be deactivated. Select OK to deactivate this sensor and all associated PID and LCD controllers, otherwise click Cancel to leave them active.")'})}}
               {% else -%}
@@ -92,7 +92,6 @@
           <div class="form-group">
             <label class="control-label"></label>
             <div>
-              {{form_conditional.conditional_type(class_='form-control', value='relay')}}
               {{form_mod_sensor.sensorCondAddSubmit(class_='form-control btn btn-default')}}
             </div>
           </div>
@@ -113,7 +112,6 @@
               {{form_mod_sensor.delSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this sensor?")'})}}
             {% endif -%}
             <input type="hidden" name="form-name" value="modSensor">
-            {{form_mod_sensor.modSensor_id(value=each_sensor.id)}}
             {{form_mod_sensor.modSensorSubmit(class_='form-control btn btn-default')}}
           </div>
         </div>
@@ -135,7 +133,7 @@
             </div>
           {% endif -%}
 
-          {% if each_sensor.device not in ['EDGE', 'RPiCPULoad'] -%}
+          {% if each_sensor.device not in ['EDGE', 'RPiCPULoad', 'RPiFreeSpace'] -%}
             <div class="form-group">
               {{form_mod_sensor.modPreRelayID.label(class_='control-label')}}
               <div>
@@ -190,7 +188,7 @@
             <input id="modSHTClockPin" name="modSHTClockPin" type="hidden" value="0">
             <input id="modSHTVoltage" name="modSHTVoltage" type="hidden" value="0">
           {% endif -%}
-          {% if each_sensor.device == 'RPiCPULoad' -%}
+          {% if each_sensor.device in ['RPiCPULoad', 'RPiFreeSpace'] -%}
             <input id="modPreRelayID" name="modPreRelayID" type="hidden" value="0">
             <input id="modPreRelayDuration" name="modPreRelayDuration" type="hidden" value="0">
           {% endif -%}

@@ -17,6 +17,8 @@ from lockfile import LockFile
 # Classes
 from databases.mycodo_db.models import (
     Camera,
+    Conditional,
+    ConditionalActions,
     Relay,
     Sensor,
     SensorConditional,
