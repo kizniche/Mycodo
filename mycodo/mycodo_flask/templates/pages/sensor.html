@@ -37,303 +37,475 @@
     {%- if displayOrder -%}
     {%- for order in displayOrder -%}
       {%- for each_sensor in sensor if each_sensor.id == order -%}
-        <div class="table-responsive" style="border: 2px solid #ddd; border-radius: 5px;">
-          <form method="post" action="/sensor">
-            <div style="padding: 0.5em;" class="form-inline {% if each_sensor.is_activated -%}active-background{%- else -%}inactive-background{% endif -%}">
-              <div class="form-group">
-                <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{each_sensor.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_sensor.id}}">
-                  <span class='collapse-button{{each_sensor.id}} glyphicon glyphicon-plus' style="font-size: 1.3em;"></span>
-                </a>
-              </div>
-              <div class="form-group">
-                  <label class="control-label">Device (ID)</label>
-                <div>
-                  <input class="form-control" title="UUID: {{each_sensor.unique_id}}" disabled="" value="{{each_sensor.device}} ({{each_sensor.id}})" type="text">
-                </div>
-              </div>
-              <div class="form-group">
-                {{form_mod_sensor.name.label(class_='control-label')}}
-                <div>
-                  {{form_mod_sensor.name(class_='form-control', value=each_sensor.name, **{'title':_('A common name to distinguish this sensor from others')})}}
-                </div>
-              </div>
-              {% if each_sensor.is_activated -%}
-                {%- set has_active_pid = [] -%}
-                {%- for each_pid in pid if each_pid.sensor_id == each_sensor.id and each_pid.is_activated -%}
-                  {%- do has_active_pid.append(1) -%}
-                {%- endfor -%}
-                {%- set has_active_lcd = [] -%}
-                {%- for each_lcd in lcd if each_lcd.is_activated and (each_lcd.line_1_sensor_id == each_sensor.id or each_lcd.line_2_sensor_id == each_sensor.id or each_lcd.line_3_sensor_id == each_sensor.id or each_lcd.line_4_sensor_id == each_sensor.id) -%}
-                  {%- do has_active_lcd.append(1) -%}
-                {%- endfor -%}
-                <div class="form-group">
-                  <label class="control-label"></label>
-                  <div>
-                    {{form_mod_sensor.csrf_token}}
-                    {% if has_active_pid or has_active_lcd -%}
-                      {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("There are currently active PID or LCD controllers that rely on this sensor to be active. If you deactivate this sensor, all active PID and LCD controllers that use it will be deactivated. Select OK to deactivate this sensor and all associated PID and LCD controllers, otherwise click Cancel to leave them active.")'})}}
-                    {% else -%}
-                      {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default')}}
-                    {% endif -%}
-                  </div>
-                </div>
-              {% else -%}
-                <div class="form-group">
-                  <label class="control-label"></label>
-                  <div>
-                    {{form_mod_sensor.csrf_token}}
-                    {{form_mod_sensor.activateSensorSubmit(class_='form-control btn btn-default')}}
-                  </div>
-                </div>
-              {% endif -%}
-              {% if each_sensor.device != 'RPiCPULoad' -%}
-                <div class="form-group">
-                  <label class="control-label"></label>
-                  <div>
-                    {{form_mod_sensor.csrf_token}}
-                    {{form_mod_sensor.sensorCondAddSubmit(class_='form-control btn btn-default')}}
-                  </div>
-                </div>
-              {% endif -%}
-              <div class="form-group">
-                <label class="control-label"></label>
-                <div>
-                  {{form_mod_sensor.csrf_token}}
-                  {{form_mod_sensor.orderSensorUp(class_='form-control btn btn-default')}}
-                  {{form_mod_sensor.orderSensorDown(class_='form-control btn btn-default')}}
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="control-label"></label>
-                <div>
-                  {{form_mod_sensor.csrf_token}}
-                  {% if has_active_pid or has_active_lcd -%}
-                    {{form_mod_sensor.delSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Note: there are currently active PID or LCD controlelrs that rely on this sensor to operate. Deleting it will deactivate these sensors. Are you sure you want to delete this sensor?")'})}}
-                  {% else -%}
-                    {{form_mod_sensor.delSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this sensor?")'})}}
-                  {% endif -%}
-                  <input type="hidden" name="form-name" value="modSensor">
-                  {{form_mod_sensor.csrf_token}}
-                  {{form_mod_sensor.modSensor_id(value=each_sensor.id)}}
-                  {{form_mod_sensor.modSensorSubmit(class_='form-control btn btn-default')}}
-                </div>
-              </div>
-            </div>
 
-            <div class="collapse" id="collapseContainer{{each_sensor.id}}" style="padding: 0 0.5em 0.5em 0.5em;">
-
-              <div style="padding: 0.5em;" class="form-inline">
-                {% for each_sensor_template in sensor_templates if each_sensor_template == each_sensor.device %}
-                  {% include 'pages/sensor_options/'+each_sensor_template+'.html' %}
-                {% endfor %}
-
-                {% if each_sensor.device != 'EDGE' -%}
-                  <div class="form-group">
-                    {{form_mod_sensor.period.label(class_='control-label')}}
-                    <div>
-                      {{form_mod_sensor.period(class_='form-control', value=each_sensor.period, **{'title':_('The duration between sensor reads, in seconds.')})}}
-                    </div>
-                  </div>
-                {% endif -%}
-
-                {% if each_sensor.device not in ['EDGE', 'RPiCPULoad'] -%}
-                  <div class="form-group">
-                    {{form_mod_sensor.modPreRelayID.label(class_='control-label')}}
-                    <div>
-                      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modPreRelayID" name="modPreRelayID" title="{{_('Turn the selected relay on before taking every measurement')}}.">
-                        <option value="">Disabled</option>
-                        {% for rel in relay -%}
-                          <option value="{{rel.id}}"{% if each_sensor.pre_relay_id == rel.id %} selected{% endif %}>{{rel.id}} ({{rel.name}})</option>
-                        {% endfor -%}
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    {{form_mod_sensor.modPreRelayDuration.label(class_='control-label')}}
-                    <div>
-                      {{form_mod_sensor.modPreRelayDuration(class_='form-control', value=each_sensor.pre_relay_duration, **{'title':_('If a Pre Relay is selected, set the duration (in seconds) to turn the Pre Relay on for before every measurement is acquired.')})}}
-                    </div>
-                  </div>
-                {% endif -%}
-
-                {% if each_sensor.device in ['AM2315', 'ATLAS_PT1000', 'BME280', 'BMP', 'HTU21D', 'TSL2561', 'TMP006', 'ADS1x15', 'MCP342x', 'SHT2x'] -%}
-                  <div class="form-group">
-                    {{form_mod_sensor.multiplexer_address.label(class_='control-label')}}
-                    <div>
-                      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="multiplexer_address" name="multiplexer_address" title="{{_('The I2C address of the multiplexer (if used)')}}.">
-                        <option value=""{% if each_sensor.multiplexer_address == '' %} selected{% endif %}>{{_('Disabled')}}</option>
-                      {% for each_mp_add in multiplexer_addresses %}
-                        <option value="{{each_mp_add}}"{% if each_sensor.multiplexer_address == each_mp_add %} selected{% endif %}>{{_('I2C Address %(address)s', address=each_mp_add)}}</option>
-                      {% endfor %}
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    {{form_mod_sensor.modMultiplexBus.label(class_='control-label')}}
-                    <div>
-                      {{form_mod_sensor.modMultiplexBus(class_='form-control', value=each_sensor.multiplexer_bus, **{'title':_('Which I2C bus is this multiplexer connected?')})}}
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    {{form_mod_sensor.multiplexer_channel.label(class_='control-label')}}
-                    <div>
-                      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="multiplexer_channel" name="multiplexer_channel" rel="tooltip" title="{{_('If a multiplexer address is selected, select the channel connected to your target device')}}.">
-                        <option value="0"{% if each_sensor.multiplexer_channel == 0 %} selected{% endif %}>{{_('Disabled')}}</option>
-                      {% for each_mp_chan in multiplexer_channels %}
-                        <option value="{{each_mp_chan}}"{% if each_sensor.multiplexer_channel == each_mp_chan %} selected{% endif %}>{{_('Channel %(channel)s', channel=each_mp_chan)}}</option>
-                      {% endfor %}
-                      </select>
-                    </div>
-                  </div>
-                {% endif -%}
-
-                {% if each_sensor.device != 'SHT1x7x' -%}
-                  <input id="modSHTClockPin" name="modSHTClockPin" type="hidden" value="0">
-                  <input id="modSHTVoltage" name="modSHTVoltage" type="hidden" value="0">
-                {% endif -%}
-                {% if each_sensor.device == 'RPiCPULoad' -%}
-                  <input id="modPreRelayID" name="modPreRelayID" type="hidden" value="0">
-                  <input id="modPreRelayDuration" name="modPreRelayDuration" type="hidden" value="0">
-                {% endif -%}
-              </div>
-            </form>
-
-          {%- for each_sensorcond in sensor_conditional if each_sensorcond.sensor_id == each_sensor.id -%}
-            <div class="table-responsive" style="margin: 0.5em 0.5em 0.5em 0.5em; border: 2px solid #ddd; border-radius: 5px;">
-              <form method="post" action="/sensor" class="form-inline">
-                <input type="hidden" name="form-name" value="modSensorConditional">
-                {{form_mod_sensor_cond.csrf_token}}
-                {{form_mod_sensor_cond.modCondSensor_id(value=each_sensorcond.id)}}
-                {{form_mod_sensor_cond.modSensor_id(value=each_sensor.id)}}
-                <table class="table {% if each_sensorcond.is_activated -%}active-background{%- else -%}inactive-background{% endif -%}">
-                  <tr>
-                    <td class="col-sm-2">{{form_mod_sensor_cond.modCondName(class_='form-control', value=each_sensorcond.name, **{'title':'A common name to distinguish this conditional from others.'})}}</td>
-                    <td class="col-sm-1" style="vertical-align: bottom">{{each_sensorcond.id}}</td>
-                    <td class="col-sm-5"></td>
-                    <td class="col-sm-4 text-right">
-                      {%- if each_sensorcond.is_activated %}
-                        {{form_mod_sensor_cond.deactivateSubmit(class_='form-control btn btn-default')}}
-                      {%- else -%}
-                        {{form_mod_sensor_cond.activateSubmit(class_='form-control btn btn-default')}}
-                      {%- endif %}
-                      {{form_mod_sensor_cond.modSubmit(class_='form-control btn btn-default')}} {{form_mod_sensor_cond.delSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this sensor conditional?")'})}}
-                    </td>
-                  </tr>
-                </table>
-
-                <table class="table">
-                  <tr>
-                    <td>If</td>
-                    {% if each_sensor.device_type == 'edgedetect' %}
-                      <td class="text-left">
-                        <input id="EdgeSelect-0" name="EdgeSelect" type="radio" value="edge" {% if each_sensorcond.edge_select == 'edge' %} checked{% endif %}> {{_('Edge Detected, Direction of change:')}}
-                        <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="EdgeDetected" name="EdgeDetected" title="{{_('Detect low to high (rising), high to low (falling), or both?')}}">
-                          <option value="rising"{% if each_sensorcond.edge_detected == 'rising' %} selected{% endif %}>{{_('Rising')}}</option>
-                          <option value="falling"{% if each_sensorcond.edge_detected == 'falling' %} selected{% endif %}>{{_('Falling')}}</option>
-                          <option value="both"{% if each_sensorcond.edge_detected == 'both' %} selected{% endif %}>{{_('Both')}}</option>
-                        </select>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                      </td>
-                      <td>
-                        <input id="EdgeSelect-1" name="EdgeSelect" type="radio" value="state" {% if each_sensorcond.edge_select == 'state' %} checked{% endif %}> GPIO state is:
-                        <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="GPIOState" name="GPIOState">
-                          <option value="1"{% if each_sensorcond.gpio_state == 1 %} selected{% endif %}>{{_('HIGH (3.3 volts)')}}</option>
-                          <option value="0"{% if each_sensorcond.gpio_state == 0 %} selected{% endif %}>{{_('LOW (0 volts)')}}</option>
-                        </select>
-                        (check every {{form_mod_sensor_cond.Period(class_='form-control', value=each_sensorcond.period, **{'title':_('The duration between checking whether the conditional is true (in seconds).'), 'size':'3'})}} seconds)
-                      </td>
-                    {% else %}
-                      <td class="text-left">
-                        <input type="hidden" class="form-control" id="EdgeDetected" name="EdgeDetected" value="">
-                        <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="MeasureType" name="MeasureType" title="{{_('The measurement from the sensor to test the following conditional logic')}}.">
-                          <option value=""></option>
-                          {%- if each_sensor.device_type == 'tsensor' -%}
-                            <option value="temperature"{% if each_sensorcond.measurement_type == 'temperature' %} selected{% endif %}>{{_('Temperature')}}</option>
-                          {%- elif each_sensor.device_type == 'htsensor' -%}
-                            <option value="temperature"{% if each_sensorcond.measurement_type == 'temperature' %} selected{% endif %}>{{_('Temperature')}}</option>
-                            <option value="humidity"{% if each_sensorcond.measurement_type == 'humidity' %} selected{% endif %}>{{_('Humidity')}}</option>
-                            <option value="dewpoint"{% if each_sensorcond.measurement_type == 'dewpoint' %} selected{% endif %}>{{_('Dew Point')}}</option>
-                          {%- elif each_sensor.device_type == 'co2sensor' -%}
-                            <option value="co2"{% if each_sensorcond.measurement_type == 'co2' %} selected{% endif %}>CO2</option>
-                          {%- elif each_sensor.device_type == 'moistsensor' -%}
-                            <option value="lux"{% if each_sensorcond.measurement_type == 'lux' %} selected{% endif %}>{{_('Luminosity')}}</option>
-                            <option value="moisture"{% if each_sensorcond.measurement_type == 'moisture' %} selected{% endif %}>{{_('Moisture')}}</option>
-                            <option value="temperature"{% if each_sensorcond.measurement_type == 'temperature' %} selected{% endif %}>{{_('Temperature')}}</option>
-                          {%- elif each_sensor.device_type == 'presssensor' -%}
-                            <option value="temperature"{% if each_sensorcond.measurement_type == 'temperature' %} selected{% endif %}>{{_('Temperature')}}</option>
-                            <option value="pressure"{% if each_sensorcond.measurement_type == 'pressure' %} selected{% endif %}>{{_('Pressure')}}</option>
-                            <option value="altitude"{% if each_sensorcond.measurement_type == 'altitude' %} selected{% endif %}>{{_('Altitude')}}</option>
-                          {% elif each_sensor.device_type == 'analogsensor' %}
-                            <option value="voltage"{% if each_sensorcond.measurement_type == 'voltage' %} selected{% endif %}>{{_('Voltage')}} (ADC)</option>
-                            <option value="{{each_sensor.adc_measure}}"{% if each_sensorcond.measurement_type == each_sensor.adc_measure %} selected{% endif %}>{{each_sensor.adc_measure}} (ADC)</option>
-                          {%- endif -%}
-                        </select>
-                        is
-                        <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="Direction" name="Direction" title="{{_('The conditional is true when the measured condition is "Above" or "Below" the set value.')}}">
-                          <option value=""></option>
-                          <option value="above"{% if each_sensorcond.direction == 'above' %} selected{% endif %}>{{_('Greater Than')}}</option>
-                          <option value="below"{% if each_sensorcond.direction == 'below' %} selected{% endif %}>{{_('Less Than')}}</option>
-                        </select>
-                        the setpoint of 
-                        {{form_mod_sensor_cond.Setpoint(class_='form-control', value=each_sensorcond.setpoint, **{'title':_('What value to check the measurement against.'), 'size':'3'})}}
-                        (check every {{form_mod_sensor_cond.Period(class_='form-control', value=each_sensorcond.period, **{'title':_('The duration between checking whether the conditional is true (in seconds).'), 'size':'3'})}} seconds)
-                      </td>
-                    {% endif %}
-                  </tr>
-                  <tr>
-                    <td>Then</td>
-                    <td class="text-left">
-                      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modCondRelayID" name="modCondRelayID" title="{{_('Select a relay to be changed if the condition is true.')}}">
-                        <option value=""></option>
-                        {%- for each_relay in relay -%}
-                          <option value="{{each_relay.id}}"{% if each_sensorcond.relay_id == each_relay.id %} selected{% endif %}>{{each_relay.id}} ({{each_relay.name}})</option>
-                        {%- endfor -%}
-                      </select>
-                      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="RelayState" name="RelayState" title="{{_('If a relay is selected, choose whether it turns on or off.')}}">
-                        <option value=""></option>
-                        <option value="on"{% if each_sensorcond.relay_state == 'on' %} selected{% endif %}>On</option>
-                        <option value="off"{% if each_sensorcond.relay_state == 'off' %} selected{% endif %}>Off</option>
-                      </select>
-                      (for {{form_mod_sensor_cond.RelayDuration(class_='form-control', value=each_sensorcond.relay_on_duration, **{'title':_('If a relay is set to turn on, an optional duration can be set (in seconds).'), 'size':'3'})}} sec)
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td>
-                      {{_('Execute')}} {{form_mod_sensor_cond.DoExecute(class_='form-control', value=each_sensorcond.execute_command, **{'title':_('Execute linux commands if the condition is true.')})}}, Flash LCD
-                      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="DoFlashLCD" name="DoFlashLCD" title="{{_('Flash LCD if the condition is true.')}}">
-                        <option value=""></option>
-                        {%- for each_lcd in lcd -%}
-                          <option value="{{each_lcd.id}}"{% if each_sensorcond.flash_lcd == each_lcd.id %} selected{% endif %}>{{each_lcd.id}} ({{each_lcd.name}})</option>
-                        {%- endfor -%}
-                      </select>, Notify
-                      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="DoNotify" name="DoNotify" title="{{_('Notify a user by email if the condition is true.')}}">
-                        <option value=""></option>
-                        {%- for each_user in users -%}
-                          <option value="{{each_user.user_email}}"{% if each_sensorcond.email_notify == each_user.user_email %} selected{% endif %}>{{each_user.user_email}}</option>
-                        {%- endfor -%}
-                      </select>, Record
-                      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="DoRecord" name="DoRecord" title="{{_('Activate camera if the condition is true.')}}">
-                        <option value=""></option>
-                        <option value="photo"{% if each_sensorcond.camera_record == 'photo' %} selected{% endif %}>{{_('Save Photo')}}</option>
-                        <option value="photoemail"{% if each_sensorcond.camera_record == 'photoemail' %} selected{% endif %}>{{_('Email Photo')}}</option>
-                        <option value="video"{% if each_sensorcond.camera_record == 'video' %} selected{% endif %}>{{_('Save 5s Video')}}</option>
-                        <option value="videoemail"{% if each_sensorcond.camera_record == 'videoemail' %} selected{% endif %}>{{_('Email 5s Video')}}</option>
-                      </select>
-                    </td>
-                  </tr>
-                </table>
-              </form>
-            </div>
-
+    <div class="table-responsive" style="border: 2px solid #ddd; border-radius: 5px;">
+      <form method="post" action="/sensor">
+      {{form_mod_sensor.csrf_token}}
+      <div style="padding: 0.5em;" class="form-inline {% if each_sensor.is_activated -%}active-background{%- else -%}inactive-background{% endif -%}">
+        <div class="form-group">
+          <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{each_sensor.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_sensor.id}}">
+            <span class='collapse-button{{each_sensor.id}} glyphicon glyphicon-plus' style="font-size: 1.3em;"></span>
+          </a>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Device (ID)</label>
+          <div>
+            <input class="form-control" title="UUID: {{each_sensor.unique_id}}" disabled="" value="{{each_sensor.device}} ({{each_sensor.id}})" type="text">
+          </div>
+        </div>
+        <div class="form-group">
+          {{form_mod_sensor.name.label(class_='control-label')}}
+          <div>
+            {{form_mod_sensor.name(class_='form-control', value=each_sensor.name, **{'title':_('A common name to distinguish this sensor from others')})}}
+          </div>
+        </div>
+        {% if each_sensor.is_activated -%}
+          {%- set has_active_pid = [] -%}
+          {%- for each_pid in pid if each_pid.sensor_id == each_sensor.id and each_pid.is_activated -%}
+            {%- do has_active_pid.append(1) -%}
           {%- endfor -%}
+          {%- set has_active_lcd = [] -%}
+          {%- for each_lcd in lcd if each_lcd.is_activated and (each_lcd.line_1_sensor_id == each_sensor.id or each_lcd.line_2_sensor_id == each_sensor.id or each_lcd.line_3_sensor_id == each_sensor.id or each_lcd.line_4_sensor_id == each_sensor.id) -%}
+            {%- do has_active_lcd.append(1) -%}
+          {%- endfor -%}
+          <div class="form-group">
+            <label class="control-label"></label>
+            <div>
+              {{form_mod_sensor.csrf_token}}
+              {% if has_active_pid or has_active_lcd -%}
+                {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("There are currently active PID or LCD controllers that rely on this sensor to be active. If you deactivate this sensor, all active PID and LCD controllers that use it will be deactivated. Select OK to deactivate this sensor and all associated PID and LCD controllers, otherwise click Cancel to leave them active.")'})}}
+              {% else -%}
+                {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default')}}
+              {% endif -%}
+            </div>
+          </div>
+        {% else -%}
+          <div class="form-group">
+            <label class="control-label"></label>
+            <div>
+              {{form_mod_sensor.csrf_token}}
+              {{form_mod_sensor.activateSensorSubmit(class_='form-control btn btn-default')}}
+            </div>
+          </div>
+        {% endif -%}
+        {% if each_sensor.device != 'RPiCPULoad' -%}
+          <div class="form-group">
+            <label class="control-label"></label>
+            <div>
+              {{form_conditional.conditional_type(class_='form-control', value='relay')}}
+              {{form_mod_sensor.sensorCondAddSubmit(class_='form-control btn btn-default')}}
+            </div>
+          </div>
+        {% endif -%}
+        <div class="form-group">
+          <label class="control-label"></label>
+          <div>
+            {{form_mod_sensor.orderSensorUp(class_='form-control btn btn-default')}}
+            {{form_mod_sensor.orderSensorDown(class_='form-control btn btn-default')}}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label"></label>
+          <div>
+            {% if has_active_pid or has_active_lcd -%}
+              {{form_mod_sensor.delSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Note: there are currently active PID or LCD controlelrs that rely on this sensor to operate. Deleting it will deactivate these sensors. Are you sure you want to delete this sensor?")'})}}
+            {% else -%}
+              {{form_mod_sensor.delSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this sensor?")'})}}
+            {% endif -%}
+            <input type="hidden" name="form-name" value="modSensor">
+            {{form_mod_sensor.modSensor_id(value=each_sensor.id)}}
+            {{form_mod_sensor.modSensorSubmit(class_='form-control btn btn-default')}}
+          </div>
+        </div>
+      </div>
 
+      <div class="collapse" id="collapseContainer{{each_sensor.id}}" style="padding: 0 0.5em 0.5em 0.5em;">
+
+        <div style="padding: 0.5em;" class="form-inline">
+          {% for each_sensor_template in sensor_templates if each_sensor_template == each_sensor.device %}
+            {% include 'pages/sensor_options/'+each_sensor_template+'.html' %}
+          {% endfor %}
+
+          {% if each_sensor.device != 'EDGE' -%}
+            <div class="form-group">
+              {{form_mod_sensor.period.label(class_='control-label')}}
+              <div>
+                {{form_mod_sensor.period(class_='form-control', value=each_sensor.period, **{'title':_('The duration between sensor reads, in seconds.')})}}
+              </div>
+            </div>
+          {% endif -%}
+
+          {% if each_sensor.device not in ['EDGE', 'RPiCPULoad'] -%}
+            <div class="form-group">
+              {{form_mod_sensor.modPreRelayID.label(class_='control-label')}}
+              <div>
+                <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modPreRelayID" name="modPreRelayID" title="{{_('Turn the selected relay on before taking every measurement')}}.">
+                  <option value="">Disabled</option>
+                  {% for rel in relay -%}
+                    <option value="{{rel.id}}"{% if each_sensor.pre_relay_id == rel.id %} selected{% endif %}>{{rel.id}} ({{rel.name}})</option>
+                  {% endfor -%}
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              {{form_mod_sensor.modPreRelayDuration.label(class_='control-label')}}
+              <div>
+                {{form_mod_sensor.modPreRelayDuration(class_='form-control', value=each_sensor.pre_relay_duration, **{'title':_('If a Pre Relay is selected, set the duration (in seconds) to turn the Pre Relay on for before every measurement is acquired.')})}}
+              </div>
+            </div>
+          {% endif -%}
+
+          {% if each_sensor.device in ['AM2315', 'ATLAS_PT1000', 'BME280', 'BMP', 'HTU21D', 'TSL2561', 'TMP006', 'ADS1x15', 'MCP342x', 'SHT2x'] -%}
+            <div class="form-group">
+              {{form_mod_sensor.multiplexer_address.label(class_='control-label')}}
+              <div>
+                <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="multiplexer_address" name="multiplexer_address" title="{{_('The I2C address of the multiplexer (if used)')}}.">
+                  <option value=""{% if each_sensor.multiplexer_address == '' %} selected{% endif %}>{{_('Disabled')}}</option>
+                {% for each_mp_add in multiplexer_addresses %}
+                  <option value="{{each_mp_add}}"{% if each_sensor.multiplexer_address == each_mp_add %} selected{% endif %}>{{_('I2C Address %(address)s', address=each_mp_add)}}</option>
+                {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              {{form_mod_sensor.modMultiplexBus.label(class_='control-label')}}
+              <div>
+                {{form_mod_sensor.modMultiplexBus(class_='form-control', value=each_sensor.multiplexer_bus, **{'title':_('Which I2C bus is this multiplexer connected?')})}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{form_mod_sensor.multiplexer_channel.label(class_='control-label')}}
+              <div>
+                <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="multiplexer_channel" name="multiplexer_channel" rel="tooltip" title="{{_('If a multiplexer address is selected, select the channel connected to your target device')}}.">
+                  <option value="0"{% if each_sensor.multiplexer_channel == 0 %} selected{% endif %}>{{_('Disabled')}}</option>
+                {% for each_mp_chan in multiplexer_channels %}
+                  <option value="{{each_mp_chan}}"{% if each_sensor.multiplexer_channel == each_mp_chan %} selected{% endif %}>{{_('Channel %(channel)s', channel=each_mp_chan)}}</option>
+                {% endfor %}
+                </select>
+              </div>
+            </div>
+          {% endif -%}
+
+          {% if each_sensor.device != 'SHT1x7x' -%}
+            <input id="modSHTClockPin" name="modSHTClockPin" type="hidden" value="0">
+            <input id="modSHTVoltage" name="modSHTVoltage" type="hidden" value="0">
+          {% endif -%}
+          {% if each_sensor.device == 'RPiCPULoad' -%}
+            <input id="modPreRelayID" name="modPreRelayID" type="hidden" value="0">
+            <input id="modPreRelayDuration" name="modPreRelayDuration" type="hidden" value="0">
+          {% endif -%}
         </div>
 
+      </form>
+        {%- set sensor_conditional = [] -%}
+
+        {%- for each_cond in conditional if each_cond.sensor_id == each_sensor.id -%}
+          {%- do sensor_conditional.append(1) -%}
+        {% endfor %}
+
+        {% if sensor_conditional %}
+          <h3>{{_('Sensor Conditionals')}}</h3>
+          <p>{{_('Conditionals allow certain actions to be carried out when a certain set of conditions are met.')}} See the <a href="/help#conditional-statements">manual</a> for more information.</p>
+        {% endif %}
+
+        {%- for each_cond in conditional if each_cond.sensor_id == each_sensor.id -%}
+
+        <div class="container" style="width: 100%; border: 2px solid #ddd; border-radius: 5px;">
+
+          <form method="post" action="/sensor">
+          {{form_conditional.csrf_token}}
+          {{form_conditional.sensor_id(class_='form-control', value=each_sensor.id)}}
+          {{form_conditional.conditional_id(class_='form-control', value=each_cond.id)}}
+
+          <div class="row {% if each_cond.is_activated -%}active-background
+                            {% else -%}inactive-background
+                            {% endif -%}" style="padding-top: 1em; padding-bottom: 0.5em;">
+            <div class="col-xs-12 col-sm-12 col-md-3">
+              {{form_conditional.name(class_='form-control', value=each_cond.name, **{'title':_('Name')})}}
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-3">
+              {%- if each_cond.is_activated %}
+                {{form_conditional.deactivate_cond(class_='form-control btn btn-default')}}
+              {%- else %}
+                {{form_conditional.activate_cond(class_='form-control btn btn-default')}}
+              {%- endif -%}
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-3">
+              {{form_conditional.save_cond(class_='form-control btn btn-default')}}
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-3">
+              {{form_conditional.delete_cond(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Relay Conditional?")'})}}
+            </div>
+          </div>
+
+          <div class="row small-gutters {% if each_cond.is_activated -%}active-background
+                            {% else -%}inactive-background
+                            {% endif -%}" style="border-bottom: 2px solid #ddd; padding-bottom: 1em">
+            <div class="col-sm-1 col-md-1 text-center">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <div>
+                <label class='control-label'>If</label>
+              </div>
+            </div>
+
+            {% if each_sensor.device_type == 'edgedetect' %}
+
+            <div class="col-sm-6 col-md-6">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <div>
+                <input id="if_sensor_edge_select_0" name="if_sensor_edge_select" type="radio" value="edge" {% if each_cond.if_sensor_edge_select == 'edge' %} checked{% endif %}>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-6">
+              <label class='control-label'>{{_('Edge Detected, Direction of change:')}}</label>
+              <div>
+                <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="if_sensor_edge_detected" name="if_sensor_edge_detected" title="{{_('Detect low to high (rising), high to low (falling), or both?')}}">
+                  <option value="rising"{% if each_cond.if_sensor_edge_detected == 'rising' %} selected{% endif %}>{{_('Rising')}}</option>
+                  <option value="falling"{% if each_cond.if_sensor_edge_detected == 'falling' %} selected{% endif %}>{{_('Falling')}}</option>
+                  <option value="both"{% if each_cond.if_sensor_edge_detected == 'both' %} selected{% endif %}>{{_('Both')}}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-sm-4 col-md-4">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <div>
+                <input id="if_sensor_edge_select_1" name="if_sensor_edge_select" type="radio" value="state" {% if each_cond.if_sensor_edge_select == 'state' %} checked{% endif %}>
+              </div>
+            </div>
+            <div class="col-sm-4 col-md-4">
+              <label class='control-label'>GPIO state is</label>
+              <div>
+                <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="if_sensor_gpio_state" name="if_sensor_gpio_state">
+                  <option value="1"{% if each_cond.if_sensor_gpio_state == 1 %} selected{% endif %}>{{_('HIGH (3.3 volts)')}}</option>
+                  <option value="0"{% if each_cond.if_sensor_gpio_state == 0 %} selected{% endif %}>{{_('LOW (0 volts)')}}</option>
+                </select>
+              </div>
+            </div>
+          
+          {% else %}
+
+            <div class="col-sm-3 col-md-3">
+              <label class='control-label'>Measurement</label>
+              <div>
+                <input type="hidden" class="form-control" id="if_sensor_edge_detected" name="if_sensor_edge_detected" value="">
+                <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="if_sensor_measurement" name="if_sensor_measurement" title="{{_('The measurement from the sensor to test the following conditional logic')}}.">
+                  <option value=""></option>
+                  {%- if each_sensor.device_type == 'tsensor' -%}
+                    <option value="temperature"{% if each_cond.if_sensor_measurement == 'temperature' %} selected{% endif %}>{{_('Temperature')}}</option>
+                  {%- elif each_sensor.device_type == 'htsensor' -%}
+                    <option value="temperature"{% if each_cond.if_sensor_measurement == 'temperature' %} selected{% endif %}>{{_('Temperature')}}</option>
+                    <option value="humidity"{% if each_cond.if_sensor_measurement == 'humidity' %} selected{% endif %}>{{_('Humidity')}}</option>
+                    <option value="dewpoint"{% if each_cond.if_sensor_measurement == 'dewpoint' %} selected{% endif %}>{{_('Dew Point')}}</option>
+                  {%- elif each_sensor.device_type == 'co2sensor' -%}
+                    <option value="co2"{% if each_cond.if_sensor_measurement == 'co2' %} selected{% endif %}>CO2</option>
+                  {%- elif each_sensor.device_type == 'moistsensor' -%}
+                    <option value="lux"{% if each_cond.if_sensor_measurement == 'lux' %} selected{% endif %}>{{_('Luminosity')}}</option>
+                    <option value="moisture"{% if each_cond.if_sensor_measurement == 'moisture' %} selected{% endif %}>{{_('Moisture')}}</option>
+                    <option value="temperature"{% if each_cond.if_sensor_measurement == 'temperature' %} selected{% endif %}>{{_('Temperature')}}</option>
+                  {%- elif each_sensor.device_type == 'presssensor' -%}
+                    <option value="temperature"{% if each_cond.if_sensor_measurement == 'temperature' %} selected{% endif %}>{{_('Temperature')}}</option>
+                    <option value="pressure"{% if each_cond.if_sensor_measurement == 'pressure' %} selected{% endif %}>{{_('Pressure')}}</option>
+                    <option value="altitude"{% if each_cond.if_sensor_measurement == 'altitude' %} selected{% endif %}>{{_('Altitude')}}</option>
+                  {% elif each_sensor.device_type == 'analogsensor' %}
+                    <option value="voltage"{% if each_cond.if_sensor_measurement == 'voltage' %} selected{% endif %}>{{_('Voltage')}} (ADC)</option>
+                    <option value="{{each_sensor.adc_measure}}"{% if each_cond.if_sensor_measurement == each_sensor.adc_measure %} selected{% endif %}>{{each_sensor.adc_measure}} (ADC)</option>
+                  {%- endif -%}
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-1 col-md-1 text-center">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <div>
+                <label class='control-label'>Is</label>
+              </div>
+            </div>
+
+             <div class="col-sm-3 col-md-3">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <div>
+                  <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="if_sensor_direction" name="if_sensor_direction" title="{{_('The conditional is true when the measured condition is greater than or less than the set value.')}}">
+                    <option value=""></option>
+                    <option value="above"{% if each_cond.if_sensor_direction == 'above' %} selected{% endif %}>{{_('Greater Than')}}</option>
+                    <option value="below"{% if each_cond.if_sensor_direction == 'below' %} selected{% endif %}>{{_('Less Than')}}</option>
+                  </select>
+              </div>
+            </div>
+            <div class="col-sm-2 col-md-2">
+              <label class='control-label'>Value</label>
+              <div>
+                {{form_conditional.if_sensor_setpoint(class_='form-control', value=each_cond.if_sensor_setpoint, **{'title':_('What value to check the measurement against.'), 'size':'3'})}}
+              </div>
+            </div>
+
+          {% endif %}
+
+            <div class="col-sm-2 col-md-2">
+              <label class='control-label'>Period (sec)</label>
+              <div>
+                {{form_conditional.if_sensor_period(class_='form-control', value=each_cond.if_sensor_period, **{'title':_('The duration between checking whether the conditional is true (in seconds). Set to 0 to check after every sensor measurement.'), 'size':'3'})}}
+              </div>
+            </div>
+          </div>
+
+          </form>
+
+          {% for each_cond_action in conditional_actions if each_cond_action.conditional_id == each_cond.id %}
+
+          <form method="post" action="/sensor">
+          {{form_conditional_actions.csrf_token}}
+          {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond_action.id)}}
+
+          <div class="row small-gutters" style="padding-top: 0.5em">
+            <div class="col-sm-1 col-md-1">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <div>
+                Then ({{loop.index}})
+              </div>
+            </div>
+            <div class="col-sm-2 col-md-2">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <select class="form-control form-tooltip form-dropdown" id="do_action" name="do_action" data-placement="top" title="{{_('The action to perform when the conditional is True')}}">
+                {% for each_action, each_action_string in conditional_actions_list.items() %}
+                  <option value="{{each_action}}"{% if each_cond_action.do_action == each_action %} selected{% endif %}>{{_(each_action_string)}}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+          {% if each_cond_action.do_action == 'relay' %}
+
+            <div class="col-sm-2 col-md-3">
+              {{form_conditional_actions.do_relay_id.label(class_='control-label')}}
+              <select class="form-control form-tooltip form-dropdown" id="do_relay_id" name="do_relay_id" data-placement="top" title="{{_('What relay to manipulate')}}">
+                <option value=""></option>
+                {%- for each_relay in relay -%}
+                  <option value="{{each_relay.id}}"{% if each_cond_action.do_relay_id == each_relay.id %} selected{% endif %}>{{each_relay.id}} ({{each_relay.name}})</option>
+                {%- endfor -%}
+              </select>
+            </div>
+            <div class="col-sm-2 col-md-2">
+              <label class='control-label'>Turn</label>
+              <select class="form-control form-tooltip form-dropdown" id="do_relay_state" name="do_relay_state" data-placement="top" title="{{_('Turn the relay on or off')}}">
+                <option value=""></option>
+                <option value="on"{% if each_cond_action.do_relay_state == 'on' %} selected{% endif %}>{{_('On')}}</option>
+                <option value="off"{% if each_cond_action.do_relay_state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
+              </select>
+            </div>
+            <div class="col-sm-1 col-md-2">
+              <label class='control-label'>Sec.</label>
+              {{form_conditional_actions.do_relay_duration(class_='form-control', value=each_cond_action.do_relay_duration, **{'title':_('How long to turn the relay on (optional)'), 'size':'3'})}}
+            </div>
+
+          {% elif each_cond_action.do_action == 'email' %}
+
+            <div class="col-sm-5 col-md-7">
+              <label class='control-label'>Email Address</label>
+              <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
+                <option value=""></option>
+                {%- for each_user in user -%}
+                  <option value="{{each_user.user_email}}"{% if each_cond_action.do_action_string == each_user.user_email %} selected{% endif %}>{{each_user.user_email}}</option>
+                {%- endfor -%}
+              </select>
+            </div>
+
+          {% elif each_cond_action.do_action == 'flash_lcd' %}
+
+            <div class="col-sm-5 col-md-7">
+              <label class='control-label'>LCD</label>
+              <select class="form-control form-tooltip form-dropdown" id="do_lcd_id" name="do_lcd_id" data-placement="top" title="{{_('LCD to flash')}}">
+                <option value=""></option>
+                {%- for each_lcd in lcd -%}
+                  <option value="{{each_lcd.id}}"{% if each_cond_action.do_lcd_id == each_lcd.id %} selected{% endif %}>{{each_lcd.id}} ({{each_lcd.name}})</option>
+                {%- endfor -%}
+              </select>
+            </div>
+
+          {% elif each_cond_action.do_action == 'photo' %}
+
+            <div class="col-sm-5 col-md-7">
+              <label class='control-label'>Camera</label>
+              <select class="form-control form-tooltip form-dropdown" id="do_camera_id" name="do_camera_id" data-placement="top" title="{{_('Camera to capture with')}}">
+                <option value=""></option>
+                {%- for each_camera in camera -%}
+                  <option value="{{each_camera.id}}"{% if each_cond_action.do_camera_id == each_camera.id %} selected{% endif %}>{{each_camera.id}} ({{each_camera.name}})</option>
+                {%- endfor -%}
+              </select>
+            </div>
+
+          {% elif each_cond_action.do_action == 'video' %}
+
+            <div class="col-sm-3 col-md-5">
+              <label class='control-label'>Camera</label>
+              <select class="form-control form-tooltip form-dropdown" id="do_camera_id" name="do_camera_id" data-placement="top" title="{{_('Camera to capture with')}}">
+                <option value=""></option>
+                {%- for each_camera in camera -%}
+                  <option value="{{each_camera.id}}"{% if each_cond_action.do_camera_id == each_camera.id %} selected{% endif %}>{{each_camera.id}} ({{each_camera.name}})</option>
+                {%- endfor -%}
+              </select>
+            </div>
+            <div class="col-sm-2 col-md-2">
+              {{form_conditional_actions.do_camera_duration.label(class_='control-label')}}
+              {{form_conditional_actions.do_camera_duration(class_='form-control', value=each_cond_action.do_camera_duration, **{'title':_('Duration to record video')})}}
+            </div>
+
+          {% elif each_cond_action.do_action == 'command' %}
+
+            <div class="col-sm-5 col-md-7">
+              <label class='control-label'>Command</label>
+              {{form_conditional_actions.do_action_string(class_='form-control', value=each_cond_action.do_action_string, **{'title':_('Command to execute (as user "mycodo")')})}}
+            </div>
+
+          {% endif %}
+
+            <div class="col-sm-2 col-md-1">
+              <label class='control-label' style="padding-top: 1em"></label>
+              {{form_conditional_actions.save_action(class_='form-control btn btn-default')}}
+            </div>
+            <div class="col-sm-2 col-md-1">
+              <label class='control-label' style="padding-top: 1em"></label>
+              {{form_conditional_actions.delete_action(class_='form-control btn btn-default')}}
+            </div>
+          </div>
+
+          </form>
+
+          {% endfor %}
+
+          <form method="post" action="/sensor">
+          {{form_conditional_actions.csrf_token}}
+          {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.id)}}
+
+          <div class="row small-gutters" style="padding-bottom: 1em">
+            <div class="col-sm-2 col-md-1">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <div>
+                Add Action
+              </div>
+            </div>
+            <div class="col-sm-4 col-md-2">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <select class="form-control form-tooltip form-dropdown" id="do_action" name="do_action" data-placement="top" title="{{_('The action to perform when the conditional is True')}}">
+                {% for each_action, each_action_string in conditional_actions_list.items() %}
+                  <option value="{{each_action}}">{{_(each_action_string)}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-sm-4 col-md-2">
+              <label class='control-label' style="padding-top: 1em"></label>
+              {{form_conditional_actions.add_action(class_='form-control btn btn-default')}}
+            </div>
+          </div>
+          </form>
+        </div>
+
+        {% if loop.index < sensor_conditional|length %}
+          <div style="clear: both; padding: 0.5em 0;"></div>
+        {% endif %}
+
+      {%- endfor -%}
+
       </div>
+    </div>
 
     {%- endfor -%}
 

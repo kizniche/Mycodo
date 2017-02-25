@@ -1507,52 +1507,86 @@ def relay_on_off(form_relay):
     flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
-def conditional_add(form):
+def conditional_add(cond_type, quantity, sensor_id=None):
+    error = []
+    if cond_type == 'relay':
+        conditional_type = gettext("Relay")
+    elif cond_type == 'sensor':
+        conditional_type = gettext("Sensor")
+    else:
+        error.append("Unrecognized conditional type: {cond_type}".format(
+            cond_type=cond_type))
+        conditional_type = None
     action = '{action} {controller} ({type})'.format(
         action=gettext("Add"),
         controller=gettext("Conditional"),
-        type=gettext("Relay"))
-    error = []
+        type=conditional_type)
 
-    if is_int(form.quantity.data, check_range=[1, 20]):
-        for _ in range(0, form.quantity.data):
-            try:
-                new_conditional = Conditional()
-                new_conditional.conditional_type = form.conditional_type.data
-                new_conditional.save()
-            except sqlalchemy.exc.OperationalError as except_msg:
-                error.append(except_msg)
-            except sqlalchemy.exc.IntegrityError as except_msg:
-                error.append(except_msg)
+    if not error:
+        if is_int(quantity, check_range=[1, 20]):
+            for _ in range(0, quantity):
+                try:
+                    new_conditional = Conditional()
+                    new_conditional.conditional_type = cond_type
+                    if sensor_id:
+                        new_conditional.sensor_id = sensor_id
+                    new_conditional.save()
+                except sqlalchemy.exc.OperationalError as except_msg:
+                    error.append(except_msg)
+                except sqlalchemy.exc.IntegrityError as except_msg:
+                    error.append(except_msg)
     flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
 def conditional_mod(form, mod_type):
-    action = '{action} {controller} ({type})'.format(
-        action=gettext("Modify"),
-        controller=gettext("Conditional"),
-        type=gettext("Relay"))
     error = []
+    conditional_type = Conditional.query.filter(
+        Conditional.id == form.conditional_id.data).first().conditional_type
+    if conditional_type == 'relay':
+        cond_type = gettext("Relay")
+    elif conditional_type == 'sensor':
+        cond_type = gettext("Sensor")
+    else:
+        error.append("Unrecognized conditional type: {cond_type}".format(
+            cond_type=form.conditional_type.data))
+        cond_type = None
+    action = '{action} {controller} ({cond_type})'.format(
+        action=gettext("Mod"),
+        controller=gettext("Conditional"),
+        cond_type=cond_type)
 
-    if mod_type == 'delete':
-        delete_entry_with_id(Conditional,
-                             form.conditional_id.data)
-    elif mod_type == 'modify':
-        try:
-            mod_action = Conditional.query.filter(
-                Conditional.id == form.conditional_id.data).first()
-            mod_action.name = form.name.data
-            if mod_action.conditional_type == 'relay':
-                mod_action.if_relay_id = form.if_relay_id.data
-                mod_action.if_relay_state = form.if_relay_state.data
-                mod_action.if_relay_duration = form.if_relay_duration.data
-            elif mod_action.conditional_type == 'sensor':
-                pass
+    if not error:
+        if mod_type == 'delete':
+            delete_entry_with_id(Conditional,
+                                 form.conditional_id.data)
+            conditional_actions = ConditionalActions.query.filter(
+                ConditionalActions.conditional_id == form.conditional_id.data).all()
+            for each_cond_action in conditional_actions:
+                db.session.delete(each_cond_action)
             db.session.commit()
-        except sqlalchemy.exc.OperationalError as except_msg:
-            error.append(except_msg)
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            error.append(except_msg)
+
+        elif mod_type == 'modify':
+            try:
+                mod_action = Conditional.query.filter(
+                    Conditional.id == form.conditional_id.data).first()
+                mod_action.name = form.name.data
+                if conditional_type == 'relay':
+                    mod_action.if_relay_id = form.if_relay_id.data
+                    mod_action.if_relay_state = form.if_relay_state.data
+                    mod_action.if_relay_duration = form.if_relay_duration.data
+                elif conditional_type == 'sensor':
+                    mod_action.if_sensor_period = form.if_sensor_period.data
+                    mod_action.if_sensor_measurement = form.if_sensor_measurement.data
+                    mod_action.if_sensor_edge_select = form.if_sensor_edge_select.data
+                    mod_action.if_sensor_edge_detected = form.if_sensor_edge_detected.data
+                    mod_action.if_sensor_gpio_state = form.if_sensor_gpio_state.data
+                    mod_action.if_sensor_direction = form.if_sensor_direction.data
+                    mod_action.if_sensor_setpoint = form.if_sensor_setpoint.data
+                db.session.commit()
+            except sqlalchemy.exc.OperationalError as except_msg:
+                error.append(except_msg)
+            except sqlalchemy.exc.IntegrityError as except_msg:
+                error.append(except_msg)
     flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 

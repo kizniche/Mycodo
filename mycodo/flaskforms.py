@@ -1161,6 +1161,11 @@ class ModSensor(FlaskForm):
     deactivateSensorSubmit = SubmitField(lazy_gettext('Deactivate'))
     orderSensorUp = SubmitField(lazy_gettext('Up'))
     orderSensorDown = SubmitField(lazy_gettext('Down'))
+
+    conditional_type = StringField(
+        lazy_gettext('Conditional Type'),
+        widget=widgets.HiddenInput()
+    )
     sensorCondAddSubmit = SubmitField(lazy_gettext('Add Conditional'))
 
 

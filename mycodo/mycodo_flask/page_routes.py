@@ -662,7 +662,6 @@ def page_relay():
     camera = Camera.query.all()
     lcd = LCD.query.all()
     relay = Relay.query.all()
-    relay_conditional = RelayConditional.query.all()
     user = User.query.all()
 
     conditional = Conditional.query.filter(Conditional.conditional_type == 'relay').all()
@@ -695,7 +694,10 @@ def page_relay():
             flaskutils.relay_reorder(form_mod_relay, display_order)
 
         elif form_conditional.add_cond.data:
-            flaskutils.conditional_add(form_conditional)
+            flaskutils.conditional_add(form_conditional.conditoinal_type.data,
+                                       form_conditional.quantity.data)
+        elif form_conditional.delete_cond.data:
+            flaskutils.conditional_mod(form_conditional, 'delete')
         elif form_conditional.save_cond.data:
             flaskutils.conditional_mod(form_conditional, 'modify')
         elif form_conditional_actions.add_action.data:
@@ -704,9 +706,6 @@ def page_relay():
             flaskutils.conditional_action_mod(form_conditional_actions, 'modify')
         elif form_conditional_actions.delete_action.data:
             flaskutils.conditional_action_mod(form_conditional_actions, 'delete')
-
-        elif form_mod_relay_cond.save.data:
-            flaskutils.relay_conditional_mod(form_mod_relay_cond)
         return redirect('/relay')
 
     return render_template('pages/relay.html',
@@ -722,7 +721,6 @@ def page_relay():
                            form_mod_relay_cond=form_mod_relay_cond,
                            lcd=lcd,
                            relay=relay,
-                           relay_conditional=relay_conditional,
                            user=user)
 
 
@@ -745,17 +743,24 @@ def page_sensor():
     ]
     multiplexer_channels = list(range(0, 9))
 
-    form_add_sensor = flaskforms.AddSensor()
-    form_mod_sensor = flaskforms.ModSensor()
-    form_mod_sensor_cond = flaskforms.ModSensorConditional()
-
+    camera = Camera.query.all()
     lcd = LCD.query.all()
     pid = PID.query.all()
     relay = Relay.query.all()
     sensor = Sensor.query.all()
-    sensor_conditional = SensorConditional.query.all()
-    users = User.query.all()
+    user = User.query.all()
+
+    conditional = Conditional.query.filter(Conditional.conditional_type == 'sensor').all()
+    conditional_actions = ConditionalActions.query.all()
+
     display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
+
+    form_add_sensor = flaskforms.AddSensor()
+    form_mod_sensor = flaskforms.ModSensor()
+    form_mod_sensor_cond = flaskforms.ModSensorConditional()
+
+    form_conditional = flaskforms.Conditional()
+    form_conditional_actions = flaskforms.ConditionalActions()
 
     # If DS18B20 sensors added, compile a list of detected sensors
     ds18b20_sensors = []
@@ -780,31 +785,45 @@ def page_sensor():
         if not flaskutils.user_has_permission(session, 'edit_controllers'):
             return redirect(url_for('general_routes.home'))
 
-        form_name = request.form['form-name']
-        if form_name == 'addSensor':
+        if form_add_sensor.sensorAddSubmit.data:
             flaskutils.sensor_add(form_add_sensor)
-        elif form_name == 'modSensor':
-            if form_mod_sensor.modSensorSubmit.data:
-                flaskutils.sensor_mod(form_mod_sensor)
-            elif form_mod_sensor.delSensorSubmit.data:
-                flaskutils.sensor_del(form_mod_sensor)
-            elif (form_mod_sensor.orderSensorUp.data or
-                    form_mod_sensor.orderSensorDown.data):
-                flaskutils.sensor_reorder(form_mod_sensor, display_order)
-            elif form_mod_sensor.activateSensorSubmit.data:
-                flaskutils.sensor_activate(form_mod_sensor)
-            elif form_mod_sensor.deactivateSensorSubmit.data:
-                flaskutils.sensor_deactivate(form_mod_sensor)
-            elif form_mod_sensor.sensorCondAddSubmit.data:
-                flaskutils.sensor_conditional_add(form_mod_sensor)
-        elif form_name == 'modSensorConditional':
-            flaskutils.sensor_conditional_mod(form_mod_sensor_cond)
+        elif form_mod_sensor.modSensorSubmit.data:
+            flaskutils.sensor_mod(form_mod_sensor)
+        elif form_mod_sensor.delSensorSubmit.data:
+            flaskutils.sensor_del(form_mod_sensor)
+        elif (form_mod_sensor.orderSensorUp.data or
+                form_mod_sensor.orderSensorDown.data):
+            flaskutils.sensor_reorder(form_mod_sensor, display_order)
+        elif form_mod_sensor.activateSensorSubmit.data:
+            flaskutils.sensor_activate(form_mod_sensor)
+        elif form_mod_sensor.deactivateSensorSubmit.data:
+            flaskutils.sensor_deactivate(form_mod_sensor)
+
+        elif form_mod_sensor.sensorCondAddSubmit.data:
+            flaskutils.conditional_add(
+                'sensor', 1, sensor_id=form_mod_sensor.modSensor_id.data)
+        elif form_conditional.delete_cond.data:
+            flaskutils.conditional_mod(form_conditional, 'delete')
+        elif form_conditional.save_cond.data:
+            flaskutils.conditional_mod(form_conditional, 'modify')
+        elif form_conditional_actions.add_action.data:
+            flaskutils.conditional_action_add(form_conditional_actions)
+        elif form_conditional_actions.save_action.data:
+            flaskutils.conditional_action_mod(form_conditional_actions, 'modify')
+        elif form_conditional_actions.delete_action.data:
+            flaskutils.conditional_action_mod(form_conditional_actions, 'delete')
         return redirect('/sensor')
 
     return render_template('pages/sensor.html',
+                           camera=camera,
+                           conditional=conditional,
+                           conditional_actions=conditional_actions,
+                           conditional_actions_list=CONDITIONAL_ACTIONS,
                            displayOrder=display_order,
                            ds18b20_sensors=ds18b20_sensors,
                            form_add_sensor=form_add_sensor,
+                           form_conditional=form_conditional,
+                           form_conditional_actions=form_conditional_actions,
                            form_mod_sensor=form_mod_sensor,
                            form_mod_sensor_cond=form_mod_sensor_cond,
                            lcd=lcd,
@@ -813,9 +832,8 @@ def page_sensor():
                            pid=pid,
                            relay=relay,
                            sensor=sensor,
-                           sensor_conditional=sensor_conditional,
                            sensor_templates=sensor_templates,
-                           users=users)
+                           user=user)
 
 
 @blueprint.route('/timer', methods=('GET', 'POST'))

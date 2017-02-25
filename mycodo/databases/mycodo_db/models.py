@@ -145,7 +145,7 @@ class Conditional(CRUDMixin, db.Model):
     __tablename__ = "conditional"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    name = db.Column(db.Text, default='Conditional')
+    name = db.Column(db.Text, default='Conditional Name')
     conditional_type = db.Column(db.Text, default=None)
     is_activated = db.Column(db.Boolean, default=False)
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'), default=None)  # Which sensor does this belong?
