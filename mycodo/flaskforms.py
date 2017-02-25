@@ -938,8 +938,8 @@ class SensorMod(FlaskForm):
     modADCUnitsMin = DecimalField(lazy_gettext('Units Min'))
     modADCUnitsMax = DecimalField(lazy_gettext('Units Max'))
     modSwitchEdge = StringField(lazy_gettext('Edge'))
-    modSwitchBounceTime = IntegerField(lazy_gettext('Bounce Time (milliseconds)'))
-    modSwitchResetPeriod = IntegerField(lazy_gettext('Reset Period (seconds)'))
+    modSwitchBounceTime = IntegerField(lazy_gettext('Bounce Time (ms)'))
+    modSwitchResetPeriod = IntegerField(lazy_gettext('Reset Period (sec)'))
     modPreRelayID = StringField(lazy_gettext('Pre Relay'))
     modPreRelayDuration = DecimalField(
         lazy_gettext('Pre Relay Duration (sec)'),
@@ -949,7 +949,7 @@ class SensorMod(FlaskForm):
         )]
     )
     period = DecimalField(
-        lazy_gettext('Read Period (seconds)'),
+        lazy_gettext('Period (sec)'),
         validators=[DataRequired(),
                     validators.NumberRange(
             min=5.0,

@@ -16,7 +16,6 @@ from databases.mycodo_db.models import (
     Conditional,
     ConditionalActions,
     Relay,
-    RelayConditional,
     SMTP
 )
 from mycodo_client import DaemonControl
@@ -300,92 +299,99 @@ class RelayController(threading.Thread):
             self.check_conditionals(relay_id, duration)
 
     def check_conditionals(self, relay_id, on_duration):
-        conditionals = db_retrieve_table_daemon(RelayConditional)
+        conditionals = db_retrieve_table_daemon(Conditional)
+        conditionals = conditionals.filter(Conditional.if_relay_id == relay_id)
+        conditionals = conditionals.filter(Conditional.is_activated == True)
 
-        conditionals = conditionals.filter(RelayConditional.if_relay_id == relay_id)
-        conditionals = conditionals.filter(RelayConditional.is_activated == True)
+        # conditionals = db_retrieve_table_daemon(RelayConditional)
+        # conditionals = conditionals.filter(RelayConditional.if_relay_id == relay_id)
+        # conditionals = conditionals.filter(RelayConditional.is_activated == True)
 
         if self.is_on(relay_id):
-            conditionals = conditionals.filter(RelayConditional.if_action == 'on')
-            conditionals = conditionals.filter(RelayConditional.if_duration == on_duration)
+            conditionals = conditionals.filter(Conditional.if_relay_state == 'on')
+            conditionals = conditionals.filter(Conditional.if_relay_duration == on_duration)
         else:
-            conditionals = conditionals.filter(RelayConditional.if_action == 'off')
+            conditionals = conditionals.filter(Conditional.if_relay_state == 'off')
 
         for each_conditional in conditionals.all():
-            message = None
-            if (each_conditional.do_relay_id or
-                    each_conditional.execute_command or
-                    each_conditional.email_notify):
+            conditional_actions = db_retrieve_table_daemon(ConditionalActions)
+            conditional_actions = conditional_actions.filter(
+                ConditionalActions.conditional_id == each_conditional.id).all()
+
+            for each_cond_action in conditional_actions:
                 now = time.time()
                 timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
                 message = "{}\n[Relay Conditional {}] {}\n".format(
-                    timestamp, each_conditional.id, each_conditional.name)
-                message += "If relay {} ({}) turns {}, Then:\n".format(
-                    each_conditional.if_relay_id,
-                    self.relay_name[each_conditional.if_relay_id],
-                    each_conditional.if_action)
+                    timestamp, each_cond_action.id, each_cond_action.name)
 
-            if each_conditional.do_relay_id:
-                message += "Turn relay {} ({}) {}".format(
-                        each_conditional.do_relay_id,
-                        self.relay_name[each_conditional.do_relay_id],
-                        each_conditional.do_action)
+                if each_cond_action.do_action == 'relay':
+                    message += "If relay {} ({}) turns {}, Then:\n".format(
+                        each_cond_action.if_relay_id,
+                        self.relay_name[each_cond_action.if_relay_id],
+                        each_cond_action.if_relay_state)
+                    message += "Turn relay {} ({}) {}".format(
+                            each_cond_action.do_relay_id,
+                            self.relay_name[each_cond_action.do_relay_id],
+                            each_cond_action.do_relay_state)
 
-                if each_conditional.do_duration == 0:
-                    self.relay_on_off(each_conditional.do_relay_id,
-                                      each_conditional.do_action)
-                else:
-                    message += " for {} seconds".format(each_conditional.do_duration)
-                    self.relay_on_off(each_conditional.do_relay_id,
-                                      each_conditional.do_action,
-                                      each_conditional.do_duration)
-                message += ".\n"
+                    if each_cond_action.do_duration == 0:
+                        self.relay_on_off(each_cond_action.do_relay_id,
+                                          each_cond_action.do_relay_state)
+                    else:
+                        message += " for {} seconds".format(each_cond_action.do_duration)
+                        self.relay_on_off(each_cond_action.do_relay_id,
+                                          each_cond_action.do_relay_state,
+                                          each_cond_action.do_relay_duration)
+                    message += ".\n"
 
-            if each_conditional.execute_command:
-                # Execute command as user mycodo
-                message += "Execute: '{}'. ".format(
-                    each_conditional.execute_command)
-                _, _, cmd_status = cmd_output(
-                    each_conditional.execute_command)
-                message += "Status: {}. ".format(cmd_status)
+                elif each_cond_action.do_action == 'command':
+                    # Execute command as user mycodo
+                    message += "Execute: '{}'. ".format(
+                        each_cond_action.do_action_string)
+                    _, _, cmd_status = cmd_output(
+                        each_cond_action.do_action_string)
+                    message += "Status: {}. ".format(cmd_status)
 
-            if each_conditional.email_notify:
-                if (self.email_count >= self.smtp_max_count and
-                        time.time() < self.smtp_wait_time):
-                    self.allowed_to_send_notice = False
-                else:
-                    if time.time() > self.smtp_wait_time:
-                        self.email_count = 0
-                        self.smtp_wait_time = time.time() + 3600
-                    self.allowed_to_send_notice = True
-                self.email_count += 1
+                elif each_cond_action.do_action == 'email':
+                    if (self.email_count >= self.smtp_max_count and
+                            time.time() < self.smtp_wait_time):
+                        self.allowed_to_send_notice = False
+                    else:
+                        if time.time() > self.smtp_wait_time:
+                            self.email_count = 0
+                            self.smtp_wait_time = time.time() + 3600
+                        self.allowed_to_send_notice = True
+                    self.email_count += 1
 
-                if self.allowed_to_send_notice:
-                    message += "Notify {}.".format(
-                        each_conditional.email_notify)
+                    if self.allowed_to_send_notice:
+                        message += "Notify {}.".format(
+                            each_cond_action.email_notify)
 
-                    smtp = db_retrieve_table_daemon(SMTP, entry='first')
-                    send_email(
-                        smtp.host, smtp.ssl, smtp.port, smtp.user,
-                        smtp.passw, smtp.email_from,
-                        each_conditional.email_notify, message)
-                else:
-                    self.logger.debug("[Relay Conditional {}] True: "
-                                      "{:.0f} seconds left to be "
-                                      "allowed to email again.".format(
-                                        each_conditional.id,
-                                        (self.smtp_wait_time-time.time())))
+                        smtp = db_retrieve_table_daemon(SMTP, entry='first')
+                        send_email(
+                            smtp.host, smtp.ssl, smtp.port, smtp.user,
+                            smtp.passw, smtp.email_from,
+                            each_cond_action.do_action_string, message)
+                    else:
+                        self.logger.debug(
+                            "[Relay Conditional {}] True: {:.0f} seconds "
+                            "left to be allowed to email again.".format(
+                                each_cond_action.id,
+                                self.smtp_wait_time-time.time()))
 
-            if each_conditional.flash_lcd:
-                start_flashing = threading.Thread(
-                    target=self.control.flash_lcd,
-                    args=(each_conditional.flash_lcd,
-                          1,))
-                start_flashing.start()
+                elif each_cond_action.do_action == 'flash_lcd':
+                    start_flashing = threading.Thread(
+                        target=self.control.flash_lcd,
+                        args=(each_cond_action.do_lcd_id, 1,))
+                    start_flashing.start()
 
-            if (each_conditional.do_relay_id or
-                    each_conditional.execute_command or
-                    each_conditional.email_notify):
+                # TODO: Implement photo/video actions for relay conditionals
+                elif each_cond_action.do_action == 'photo':
+                    pass
+
+                elif each_cond_action.do_action == 'video':
+                    pass
+
                 self.logger.debug("{}".format(message))
 
     def all_relays_initialize(self, relays):

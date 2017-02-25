@@ -38,7 +38,6 @@ from databases.mycodo_db.models import (
     Misc,
     PID,
     Relay,
-    RelayConditional,
     Remote,
     Role,
     SMTP,
@@ -1524,8 +1523,8 @@ def conditional_add(cond_type, quantity, sensor_id=None):
     if not error:
         if is_int(quantity, check_range=[1, 20]):
             for _ in range(0, quantity):
+                new_conditional = Conditional()
                 try:
-                    new_conditional = Conditional()
                     new_conditional.conditional_type = cond_type
                     if sensor_id:
                         new_conditional.sensor_id = sensor_id
@@ -1534,6 +1533,12 @@ def conditional_add(cond_type, quantity, sensor_id=None):
                     error.append(except_msg)
                 except sqlalchemy.exc.IntegrityError as except_msg:
                     error.append(except_msg)
+
+                if conditional_type == 'sensor':
+                    check_refresh_conditional(
+                        sensor_id,
+                        'add',
+                        new_conditional.id)
     flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
@@ -1564,6 +1569,12 @@ def conditional_mod(form, mod_type):
                 db.session.delete(each_cond_action)
             db.session.commit()
 
+            if conditional_type == 'sensor':
+                check_refresh_conditional(
+                    form.sensor_id.data,
+                    'del',
+                    form.conditional_id.data)
+
         elif mod_type == 'modify':
             try:
                 mod_action = Conditional.query.filter(
@@ -1586,6 +1597,12 @@ def conditional_mod(form, mod_type):
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
                 error.append(except_msg)
+
+            if conditional_type == 'sensor':
+                check_refresh_conditional(
+                    form.sensor_id.data,
+                    'mod',
+                    form.conditional_id.data)
     flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
@@ -1753,87 +1770,6 @@ def relay_reorder(form_relay, display_order):
         flash_success_errors(error, action, url_for('page_routes.page_relay'))
     else:
         flash_form_errors(form_relay)
-
-
-#
-# Relay conditional manipulation
-#
-
-def relay_conditional_add(form_add_relay_cond):
-    action = '{action} {controller}'.format(
-        action=gettext("Add"),
-        controller=gettext("Relay Conditional"))
-    error = []
-
-    if is_int(form_add_relay_cond.relay_cond_quantity.data, check_range=[1, 20]):
-        for _ in range(0, form_add_relay_cond.relay_cond_quantity.data):
-            try:
-                RelayConditional().save()
-            except sqlalchemy.exc.OperationalError as except_msg:
-                error.append(except_msg)
-            except sqlalchemy.exc.IntegrityError as except_msg:
-                error.append(except_msg)
-    else:
-        error_msg = "{error}. {accepted_values}: 1-20".format(
-            error=gettext("Invalid quantity"),
-            accepted_values=gettext("Acceptable values:")
-        )
-        error.append(error_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_sensor'))
-
-
-def relay_conditional_mod(form_relay_cond):
-    action = None
-    error = []
-
-    try:
-        if form_relay_cond.activate.data:
-            action = '{action} {controller}'.format(
-                action=gettext("Activate"),
-                controller=gettext("Relay Conditional"))
-            relay_cond = RelayConditional.query.filter(
-                RelayConditional.id == form_relay_cond.relay_id.data).first()
-            relay_cond.is_activated = True
-            db.session.commit()
-        elif form_relay_cond.deactivate.data:
-            action = '{action} {controller}'.format(
-                action=gettext("Deactivate"),
-                controller=gettext("Relay Conditional"))
-            relay_cond = RelayConditional.query.filter(
-                RelayConditional.id == form_relay_cond.relay_id.data).first()
-            relay_cond.is_activated = False
-            db.session.commit()
-        elif form_relay_cond.delete.data:
-            action = '{action} {controller}'.format(
-                action=gettext("Delete"),
-                controller=gettext("Relay Conditional"))
-            delete_entry_with_id(RelayConditional,
-                                 form_relay_cond.relay_id.data)
-        elif (form_relay_cond.save.data and
-                form_relay_cond.validate()):
-            action = '{action} {controller}'.format(
-                action=gettext("Modify"),
-                controller=gettext("Relay Conditional"))
-            mod_relay = RelayConditional.query.filter(
-                RelayConditional.id == form_relay_cond.relay_id.data).first()
-            mod_relay.name = form_relay_cond.name.data
-            mod_relay.if_relay_id = form_relay_cond.if_relay_id.data
-            mod_relay.if_action = form_relay_cond.if_relay_action.data
-            mod_relay.if_duration = form_relay_cond.if_relay_duration.data
-            mod_relay.do_relay_id = form_relay_cond.do_relay_id.data
-            mod_relay.do_action = form_relay_cond.do_relay_action.data
-            mod_relay.do_duration = form_relay_cond.do_relay_duration.data
-            mod_relay.execute_command = form_relay_cond.do_execute.data
-            mod_relay.email_notify = form_relay_cond.do_notify.data
-            mod_relay.flash_lcd = form_relay_cond.do_flash_lcd.data
-            db.session.commit()
-        else:
-            flash_form_errors(form_relay_cond)
-            return redirect(url_for('page_routes.page_relay'))
-    except Exception as except_msg:
-        error.append(except_msg)
-
-    flash_success_errors(error, action, url_for('page_routes.page_sensor'))
 
 
 #
@@ -2130,146 +2066,6 @@ def sensor_deactivate_associated_controllers(sensor_id):
             activate_deactivate_controller('deactivate',
                                            'LCD',
                                            each_lcd.id)
-
-
-#
-# Sensor conditional manipulation
-#
-
-def sensor_conditional_add(form_mod_sensor):
-    action = '{action} {controller}'.format(
-        action=gettext("Add"),
-        controller=gettext("Sensor Conditional"))
-    error = []
-
-    try:
-        new_sensor_cond = SensorConditional()
-        new_sensor_cond.sensor_id = form_mod_sensor.modSensor_id.data
-        new_sensor_cond.save()
-        check_refresh_conditional(form_mod_sensor.modSensor_id.data,
-                                  'add',
-                                  new_sensor_cond.id)
-    except sqlalchemy.exc.OperationalError as except_msg:
-        error.append(except_msg)
-    except sqlalchemy.exc.IntegrityError as except_msg:
-        error.append(except_msg)
-
-    flash_success_errors(error, action, url_for('page_routes.page_sensor'))
-
-
-def sensor_conditional_mod(form_mod_sensor_cond):
-    action = None
-    error = []
-
-    if form_mod_sensor_cond.delSubmit.data:
-        action = '{action} {controller}'.format(
-            action=gettext("Delete"),
-            controller=gettext("Sensor Conditional"))
-        try:
-            delete_entry_with_id(SensorConditional,
-                                 form_mod_sensor_cond.modCondSensor_id.data)
-            check_refresh_conditional(
-                form_mod_sensor_cond.modSensor_id.data,
-                'del',
-                form_mod_sensor_cond.modCondSensor_id.data)
-        except Exception as except_msg:
-            error.append(except_msg)
-    elif (form_mod_sensor_cond.modSubmit.data and
-            form_mod_sensor_cond.validate()):
-        action = '{action} {controller}'.format(
-            action=gettext("Modify"),
-            controller=gettext("Sensor Conditional"))
-        try:
-            if (form_mod_sensor_cond.DoRecord.data == 'photoemail' or form_mod_sensor_cond.DoRecord.data == 'videoemail') and not form_mod_sensor_cond.DoNotify.data:
-                error.append(gettext("A notification email address is "
-                                     "required if the record and email "
-                                     "option is selected"))
-            else:
-                mod_sensor = SensorConditional.query.filter(
-                    SensorConditional.id == form_mod_sensor_cond.modCondSensor_id.data).first()
-                mod_sensor.name = form_mod_sensor_cond.modCondName.data
-                mod_sensor.period = form_mod_sensor_cond.Period.data
-                mod_sensor.measurement_type = form_mod_sensor_cond.MeasureType.data
-                mod_sensor.edge_select = form_mod_sensor_cond.EdgeSelect.data
-                mod_sensor.edge_detected = form_mod_sensor_cond.EdgeDetected.data
-                mod_sensor.gpio_state = form_mod_sensor_cond.GPIOState.data
-                mod_sensor.direction = form_mod_sensor_cond.Direction.data
-                mod_sensor.setpoint = form_mod_sensor_cond.Setpoint.data
-                mod_sensor.relay_id = form_mod_sensor_cond.modCondRelayID.data
-                mod_sensor.relay_state = form_mod_sensor_cond.RelayState.data
-                mod_sensor.relay_on_duration = form_mod_sensor_cond.RelayDuration.data
-                mod_sensor.execute_command = form_mod_sensor_cond.DoExecute.data
-                mod_sensor.email_notify = form_mod_sensor_cond.DoNotify.data
-                mod_sensor.flash_lcd = form_mod_sensor_cond.DoFlashLCD.data
-                mod_sensor.camera_record = form_mod_sensor_cond.DoRecord.data
-                db.session.commit()
-                check_refresh_conditional(
-                    form_mod_sensor_cond.modSensor_id.data,
-                    'mod',
-                    form_mod_sensor_cond.modCondSensor_id.data)
-        except Exception as except_msg:
-            error.append(except_msg)
-    elif form_mod_sensor_cond.activateSubmit.data:
-        action = '{action} {controller}'.format(
-            action=gettext("Activate"),
-            controller=gettext("Sensor Conditional"))
-        try:
-            mod_sensor = SensorConditional.query.filter(
-                SensorConditional.id == form_mod_sensor_cond.modCondSensor_id.data).first()
-            sensor = Sensor.query.filter(
-                Sensor.id == mod_sensor.sensor_id).first()
-
-            device_specific_configured = False
-            cond_configured = False
-
-            # Ensure device-specific settings configured properly
-            if sensor.device == 'EDGE' and mod_sensor.edge_detected:
-                device_specific_configured = True
-            elif (sensor.device != 'EDGE' and
-                    mod_sensor.period and
-                    mod_sensor.measurement_type and
-                    mod_sensor.direction):
-                device_specific_configured = True
-
-            # Ensure universal conditional settings configured properly
-            if ((mod_sensor.relay_id and mod_sensor.relay_state) or
-                    mod_sensor.execute_command or
-                    mod_sensor.email_notify or
-                    mod_sensor.flash_lcd or
-                    mod_sensor.camera_record):
-                cond_configured = True
-
-            if device_specific_configured and cond_configured:
-                mod_sensor.is_activated = True
-                db.session.commit()
-                check_refresh_conditional(
-                    form_mod_sensor_cond.modSensor_id.data,
-                    'mod',
-                    form_mod_sensor_cond.modCondSensor_id.data)
-            else:
-                error.append(gettext(
-                    "Cannot activate sensor conditional %(cond)s because "
-                    "of an incomplete configuration",
-                    cond=form_mod_sensor_cond.modCondSensor_id.data))
-        except Exception as except_msg:
-            error.append(except_msg)
-    elif form_mod_sensor_cond.deactivateSubmit.data:
-        action = '{action} {controller}'.format(
-            action=gettext("Deactivate"),
-            controller=gettext("Sensor Conditional"))
-        try:
-            mod_sensor = SensorConditional.query.filter(
-                SensorConditional.id == form_mod_sensor_cond.modCondSensor_id.data).first()
-            mod_sensor.is_activated = False
-            db.session.commit()
-            check_refresh_conditional(
-                form_mod_sensor_cond.modSensor_id.data,
-                'mod',
-                form_mod_sensor_cond.modCondSensor_id.data)
-        except Exception as except_msg:
-            error.append(except_msg)
-
-    flash_success_errors(error, action, url_for('page_routes.page_sensor'))
 
 
 def check_refresh_conditional(sensor_id, cond_mod, cond_id):
