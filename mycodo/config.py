@@ -86,6 +86,7 @@ MEASUREMENT_UNITS = {
 # Conditional actions
 CONDITIONAL_ACTIONS = {
     'command': 'Command',
+    'activate_pid': 'Activate PID',
     'deactivate_pid': 'Deactivate PID',
     'email': 'Email',
     'flash_lcd': 'Flash LCD',

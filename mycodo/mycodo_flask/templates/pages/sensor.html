@@ -401,7 +401,7 @@
               </div>
               <div class="col-xs-1 hidden-sm hidden-md hidden-lg"></div>
 
-            {% elif each_cond_action.do_action == 'deactivate_pid' %}
+            {% elif each_cond_action.do_action in ['activate_pid', 'deactivate_pid'] %}
 
               <div class="col-xs-4 col-sm-5 col-md-7">
                 <label class='control-label'>PID</label>

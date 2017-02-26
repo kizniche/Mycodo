@@ -19,6 +19,7 @@ from databases.mycodo_db.models import (
     Camera,
     Conditional,
     ConditionalActions,
+    PID,
     Relay,
     Sensor,
     SMTP
@@ -432,8 +433,8 @@ class SensorController(threading.Thread):
         timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
         message = "\n({ts})\n[Sensor Conditional: {name} ({id})]".format(
             ts=timestamp,
-            id=cond_id,
-            name=cond.name)
+            name=cond.name,
+            id=cond_id)
 
         if cond.if_sensor_direction:
             last_measurement = self.get_last_measurement(cond.if_sensor_measurement)
@@ -527,15 +528,35 @@ class SensorController(threading.Thread):
             elif cond_action.do_action == 'video_email':
                 pass
 
+            # Activate PID controller
+            elif cond_action.do_action == 'activate_pid':
+                message += "\n  Activate PID ({id}).".format(
+                    id=cond_action.do_pid_id)
+                pid = db_retrieve_table_daemon(
+                    PID, device_id=cond_action.do_pid_id, entry='first')
+                if pid.is_activated:
+                    message += " PID is already active!"
+                else:
+                    activate_pid = threading.Thread(
+                        target=self.control.activate_controller,
+                        args=('PID',
+                              cond_action.do_pid_id,))
+                    activate_pid.start()
+
             # Deactivate PID controller
             elif cond_action.do_action == 'deactivate_pid':
                 message += "\n  Deactivate PID ({id}).".format(
                     id=cond_action.do_pid_id)
-                deactivate_pid = threading.Thread(
-                    target=self.control.deactivate_controller,
-                    args=('PID',
-                          cond_action.do_pid_id,))
-                deactivate_pid.start()
+                pid = db_retrieve_table_daemon(
+                    PID, device_id=cond_action.do_pid_id, entry='first')
+                if not pid.is_activated:
+                    message += " PID is already inactive!"
+                else:
+                    deactivate_pid = threading.Thread(
+                        target=self.control.deactivate_controller,
+                        args=('PID',
+                              cond_action.do_pid_id,))
+                    deactivate_pid.start()
 
             elif cond_action.do_action == 'email':
                 if (self.email_count >= self.smtp_max_count and
@@ -782,10 +803,6 @@ class SensorController(threading.Thread):
                     self.check_conditionals(each_cond_id)
 
     def setup_sensor_conditionals(self, cond_mod='setup', cond_id=None):
-        logger_cond = logging.getLogger(
-            "mycodo.sensor_{id}_cond_{cond}".format(id=self.sensor_id,
-                                                    cond=cond_id))
-
         # Signal to pause the main loop and wait for verification
         self.pause_loop = True
         while not self.verify_pause_loop:
@@ -797,18 +814,6 @@ class SensorController(threading.Thread):
         self.cond_is_activated = {}
         self.cond_if_sensor_period = {}
 
-        if cond_mod == 'setup':
-            self.cond_timer = {}
-            self.smtp_wait_timer = {}
-        elif cond_mod == 'add':
-            logger_cond.debug("Added Conditional".format(
-                sen=self.sensor_id))
-        elif cond_mod == 'mod':
-            logger_cond.debug("Modified Conditional".format(
-                sen=self.sensor_id))
-        else:
-            return 1
-
         sensor_conditional = db_retrieve_table_daemon(
             Conditional)
         sensor_conditional = sensor_conditional.filter(
@@ -816,10 +821,19 @@ class SensorController(threading.Thread):
         sensor_conditional = sensor_conditional.filter(
             Conditional.is_activated == True).all()
 
+        if cond_mod == 'setup':
+            self.cond_timer = {}
+            self.smtp_wait_timer = {}
+        elif cond_mod == 'add':
+            self.logger.debug("Added Conditional")
+        elif cond_mod == 'mod':
+            self.logger.debug("Modified Conditional")
+        else:
+            return 1
+
         for each_cond in sensor_conditional:
             if cond_mod == 'setup':
-                self.logger.info("Activated Conditional {cond}".format(
-                    cond=each_cond.id))
+                self.logger.info("Activated Conditional ({id})".format(id=each_cond.id))
             self.cond_id[each_cond.id] = each_cond.id
             self.cond_is_activated[each_cond.id] = each_cond.is_activated
             self.cond_if_sensor_period[each_cond.id] = each_cond.if_sensor_period

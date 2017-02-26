@@ -357,12 +357,12 @@ class DaemonController(threading.Thread):
                 controller_manage['type'] = Timer
                 controller_manage['function'] = TimerController
             else:
-                return 1, "{} controller with ID {} not found.".format(
-                    cont_type, cont_id)
+                return 1, "'{type}' not a valid controller type.".format(
+                    type=cont_type)
 
             # Check if the controller ID actually exists and start it
             controller = db_retrieve_table_daemon(controller_manage['type'],
-                                           device_id=cont_id)
+                                                  device_id=cont_id)
             if controller:
                 self.controller[cont_type][cont_id] = controller_manage['function'](
                     ready, cont_id)
