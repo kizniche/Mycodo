@@ -78,7 +78,7 @@ class Conditional(FlaskForm):
     if_relay_duration = DecimalField(lazy_gettext('If Relay Duration'))
 
     # Sensor conditional options
-    if_sensor_period = DecimalField(lazy_gettext('Period (sec)'))
+    if_sensor_period = DecimalField(lazy_gettext('Period'))
     if_sensor_measurement = StringField(lazy_gettext('Measurement'))
     if_sensor_edge_select = StringField(lazy_gettext('Edge or State'))
     if_sensor_edge_detected = StringField(lazy_gettext('Edge Detected'))
@@ -98,14 +98,19 @@ class ConditionalActions(FlaskForm):
         lazy_gettext('Conditional ID'),
         widget=widgets.HiddenInput()
     )
+    conditional_action_id = IntegerField(
+        lazy_gettext('Conditional Action ID'),
+        widget=widgets.HiddenInput()
+    )
     do_action = StringField(lazy_gettext('Action to Perform'))
     do_action_string = StringField(lazy_gettext('Action String'))
     do_relay_id = IntegerField(lazy_gettext('Relay'))
     do_relay_state = StringField(lazy_gettext('Relay State'))
-    do_relay_duration = DecimalField(lazy_gettext('Duration (sec)'))
+    do_relay_duration = DecimalField(lazy_gettext('Duration'))
     do_camera_id = IntegerField(lazy_gettext('Camera'))
-    do_camera_duration = DecimalField(lazy_gettext('Duration (sec)'))
+    do_camera_duration = DecimalField(lazy_gettext('Duration'))
     do_lcd_id = IntegerField(lazy_gettext('LCD ID'))
+    do_pid_id = IntegerField(lazy_gettext('PID ID'))
     add_action = SubmitField(lazy_gettext('Add Action'))
     save_action = SubmitField(lazy_gettext('Save'))
     delete_action = SubmitField(lazy_gettext('Delete'))
@@ -395,7 +400,7 @@ class LCDMod(FlaskForm):
             )]
     )
     period = DecimalField(
-        lazy_gettext('Period (seconds)'),
+        lazy_gettext('Period'),
         render_kw={"placeholder": lazy_gettext("Period")},
         validators=[validators.NumberRange(
             min=5,
@@ -660,7 +665,7 @@ class PIDMod(FlaskForm):
         validators=[DataRequired()]
     )
     period = DecimalField(
-        lazy_gettext('Period (sec)'),
+        lazy_gettext('Period'),
         render_kw={"placeholder": lazy_gettext("Period")},
         validators=[validators.NumberRange(
             min=5.0,
@@ -939,17 +944,17 @@ class SensorMod(FlaskForm):
     modADCUnitsMax = DecimalField(lazy_gettext('Units Max'))
     modSwitchEdge = StringField(lazy_gettext('Edge'))
     modSwitchBounceTime = IntegerField(lazy_gettext('Bounce Time (ms)'))
-    modSwitchResetPeriod = IntegerField(lazy_gettext('Reset Period (sec)'))
+    modSwitchResetPeriod = IntegerField(lazy_gettext('Reset Period'))
     modPreRelayID = StringField(lazy_gettext('Pre Relay'))
     modPreRelayDuration = DecimalField(
-        lazy_gettext('Pre Relay Duration (sec)'),
+        lazy_gettext('Pre Relay Duration'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
         )]
     )
     period = DecimalField(
-        lazy_gettext('Period (sec)'),
+        lazy_gettext('Period'),
         validators=[DataRequired(),
                     validators.NumberRange(
             min=5.0,

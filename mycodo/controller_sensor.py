@@ -21,7 +21,6 @@ from databases.mycodo_db.models import (
     ConditionalActions,
     Relay,
     Sensor,
-    SensorConditional,
     SMTP
 )
 from mycodo_client import DaemonControl
@@ -421,130 +420,165 @@ class SensorController(threading.Thread):
         :param cond_id: ID of conditional to check
         :type cond_id: str
         """
-        logger_cond = logging.getLogger("mycodo.SensorCond-{id}".format(
+        logger_cond = logging.getLogger("mycodo.sensor_cond_{id}".format(
             id=cond_id))
         attachment_file = False
         attachment_type = False
-        message = ""
 
-        conditional = False
-        if self.cond_if_sensor_edge_detected[cond_id]:
-            conditional = 'edge'
-        elif self.cond_if_sensor_direction[cond_id]:
-            conditional = 'measurement'
+        cond = db_retrieve_table_daemon(
+            Conditional, device_id=cond_id, entry='first')
 
         now = time.time()
         timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
+        message = "\n({ts})\n[Sensor Conditional: {name} ({id})]".format(
+            ts=timestamp,
+            id=cond_id,
+            name=cond.name)
 
-        if conditional == 'measurement':
-            last_measurement = self.get_last_measurement(self.cond_if_sensor_measurement[cond_id])
+        if cond.if_sensor_direction:
+            last_measurement = self.get_last_measurement(cond.if_sensor_measurement)
             if (last_measurement and
-                ((self.cond_if_sensor_direction[cond_id] == 'above' and
-                    last_measurement > self.cond_if_sensor_setpoint[cond_id]) or
-                 (self.cond_if_sensor_direction[cond_id] == 'below' and
-                    last_measurement < self.cond_if_sensor_setpoint[cond_id]))):
+                    ((cond.if_sensor_direction == 'above' and
+                        last_measurement > cond.if_sensor_setpoint) or
+                     (cond.if_sensor_direction == 'below' and
+                        last_measurement < cond.if_sensor_setpoint))):
 
-                message = "{}\n[Sensor Conditional {}] {}\n{} {} ".format(
-                        timestamp, cond_id,
-                        self.cond_name[cond_id],
-                        self.cond_if_sensor_measurement[cond_id],
-                        last_measurement)
-                if self.cond_if_sensor_direction[cond_id] == 'above':
-                    message += ">"
-                elif self.cond_if_sensor_direction[cond_id] == 'below':
-                    message += "<"
-                message += " {} setpoint.".format(self.cond_if_sensor_setpoint[cond_id])
+                message += "\n{meas}: {value} ".format(
+                    meas=cond.if_sensor_measurement,
+                    value=last_measurement)
+                if cond.if_sensor_direction == 'above':
+                    message += "(>"
+                elif cond.if_sensor_direction == 'below':
+                    message += "(<"
+                message += " {} set value).".format(cond.if_sensor_setpoint)
             else:
                 logger_cond.debug("Last measurement not found")
                 return 1
-
-        elif conditional == 'edge':
-            if self.cond_if_sensor_edge_select[cond_id] == 'edge':
-                message = "{}\n[Sensor Conditional {}] {}. {} Edge Detected.".format(
-                    timestamp, cond_id,
-                    self.cond_name[cond_id],
-                    self.cond_if_sensor_edge_detected)
-            elif self.cond_if_sensor_edge_select[cond_id] == 'state':
-                if GPIO.input(int(self.location)) == self.cond_if_sensor_gpio_state[cond_id]:
-                    message = "{}\n[Sensor Conditional {}] {}. {} GPIO State Detected.".format(
-                        timestamp, cond_id,
-                        self.cond_name[cond_id],
-                        self.cond_if_sensor_gpio_state[cond_id])
+        elif cond.if_sensor_edge_detected:
+            if cond.if_sensor_edge_select == 'edge':
+                message += "\n{edge} Edge Detected.".format(
+                    edge=cond.if_sensor_edge_detected)
+            elif cond.if_sensor_edge_select == 'state':
+                if GPIO.input(int(self.location)) == cond.if_sensor_gpio_state:
+                    message += "\n{state} GPIO State Detected.".format(
+                        state=cond.if_sensor_gpio_state)
                 else:
                     return 0
 
-        if (self.cond_do_relay_id[cond_id] and
-                self.cond_do_relay_state[cond_id] in ['on', 'off']):
-            message += "\nTurning relay {} {}".format(
-                    self.cond_do_relay_id[cond_id],
-                    self.cond_do_relay_state[cond_id])
-            if (self.cond_do_relay_state[cond_id] == 'on' and
-                    self.cond_do_relay_duration[cond_id]):
-                message += " for {} seconds".format(self.cond_do_relay_duration[cond_id])
-            message += ". "
-            relay_on_off = threading.Thread(
-                target=self.control.relay_on_off,
-                args=(self.cond_do_relay_id[cond_id],
-                      self.cond_do_relay_state[cond_id],
-                      self.cond_do_relay_duration[cond_id],))
-            relay_on_off.start()
+        cond_actions = db_retrieve_table_daemon(ConditionalActions)
+        cond_actions = cond_actions.filter(
+            ConditionalActions.conditional_id == cond_id).all()
 
-        # Execute command in shell
-        if self.cond_execute_command[cond_id]:
-            message += "\nExecute '{}'. ".format(
-                    self.cond_execute_command[cond_id])
-            _, _, cmd_status = cmd_output(self.cond_execute_command[cond_id])
-            message += "Status: {}. ".format(cmd_status)
+        for cond_action in cond_actions:
+            message += "\nConditional Action ({id}): {do_action}".format(
+                id=cond_action.id, do_action=cond_action.do_action)
 
-        if self.cond_do_camera_id[cond_id] in ['photo', 'photoemail']:
-            camera_still = db_retrieve_table_daemon(Camera, device_id=1)
-            attachment_file = camera_record(
-                'photo', camera_still)
-        elif self.cond_do_camera_id[cond_id] in ['video', 'videoemail']:
-            camera_stream = db_retrieve_table_daemon(Camera, device_id=3)
-            attachment_file = camera_record(
-                'video', camera_stream, duration_sec=5)
+            # Actuate relay
+            if (cond_action.do_relay_id and
+                    cond_action.do_relay_state in ['on', 'off']):
+                message += "\n  Turn relay {id} {state}".format(
+                        id=cond_action.do_relay_id,
+                        state=cond_action.do_relay_state)
+                if (cond_action.do_relay_state == 'on' and
+                        cond_action.do_relay_duration):
+                    message += " for {sec} seconds".format(
+                        sec=cond_action.do_relay_duration)
+                message += ". "
+                relay_on_off = threading.Thread(
+                    target=self.control.relay_on_off,
+                    args=(cond_action.do_relay_id,
+                          cond_action.do_relay_state,
+                          cond_action.do_relay_duration,))
+                relay_on_off.start()
 
-        if self.cond_email_notify[cond_id]:
-            if (self.email_count >= self.smtp_max_count and
-                    time.time() < self.smtp_wait_timer[cond_id]):
-                self.allowed_to_send_notice = False
-            else:
-                if time.time() > self.smtp_wait_timer[cond_id]:
-                    self.email_count = 0
-                    self.smtp_wait_timer[cond_id] = time.time()+3600
-                self.allowed_to_send_notice = True
-            self.email_count += 1
+            # Execute command in shell
+            elif cond_action.do_action == 'command':
+                message += "\n  Execute '{com}'. ".format(
+                        com=cond_action.do_action_string)
+                _, _, cmd_status = cmd_output(cond_action.do_action_string)
+                message += "Status: {stat}. ".format(stat=cmd_status)
 
-            # If the emails per hour limit has not been exceeded
-            if self.allowed_to_send_notice:
-                message += "\nNotify {}.".format(
-                        self.cond_email_notify[cond_id])
-                # attachment_type != False indicates to
-                # attach a photo or video
-                if self.cond_do_camera_id[cond_id] == 'photoemail':
-                    message += "\nPhoto attached."
-                    attachment_type = 'still'
-                elif self.cond_do_camera_id[cond_id] == 'videoemail':
-                    message += "\nVideo attached."
-                    attachment_type = 'video'
+            # Capture photo
+            elif cond_action.do_action in 'photo':
+                message += "\n  Capturing photo with camera ({id}).".format(
+                    id=cond_action.do_camera_id)
+                camera_still = db_retrieve_table_daemon(
+                    Camera, device_id=cond_action.do_camera_id)
+                attachment_file = camera_record(
+                    'photo', camera_still)
 
-                smtp = db_retrieve_table_daemon(SMTP, entry='first')
-                send_email(smtp.host, smtp.ssl, smtp.port,
-                           smtp.user, smtp.passw, smtp.email_from,
-                           self.cond_email_notify[cond_id], message,
-                           attachment_file, attachment_type)
-            else:
-                logger_cond.debug(
-                    "{:.0f} seconds left to be allowed to email "
-                    "again.".format(
-                        self.smtp_wait_timer[cond_id]-time.time()))
+            # Capture video
+            elif cond_action.do_action == 'video':
+                message += "\n  Capturing video with camera ({id}).".format(
+                    id=cond_action.do_camera_id)
+                camera_stream = db_retrieve_table_daemon(
+                    Camera, device_id=cond_action.do_camera_id)
+                attachment_file = camera_record(
+                    'video',
+                    camera_stream,
+                    duration_sec=cond_action.do_camera_duration)
 
-        if self.cond_do_lcd_id[cond_id]:
-            start_flashing = threading.Thread(
-                target=self.control.flash_lcd,
-                args=(self.cond_do_lcd_id[cond_id], 1,))
-            start_flashing.start()
+            # TODO: Fix missing actions
+            # Email captured photo
+            elif cond_action.do_action == 'photo_email':
+                pass
+
+            # Email captured video
+            elif cond_action.do_action == 'video_email':
+                pass
+
+            # Deactivate PID controller
+            elif cond_action.do_action == 'deactivate_pid':
+                message += "\n  Deactivate PID ({id}).".format(
+                    id=cond_action.do_pid_id)
+                deactivate_pid = threading.Thread(
+                    target=self.control.deactivate_controller,
+                    args=('PID',
+                          cond_action.do_pid_id,))
+                deactivate_pid.start()
+
+            elif cond_action.do_action == 'email':
+                if (self.email_count >= self.smtp_max_count and
+                        time.time() < self.smtp_wait_timer[cond_id]):
+                    self.allowed_to_send_notice = False
+                else:
+                    if time.time() > self.smtp_wait_timer[cond_id]:
+                        self.email_count = 0
+                        self.smtp_wait_timer[cond_id] = time.time()+3600
+                    self.allowed_to_send_notice = True
+                self.email_count += 1
+
+                # If the emails per hour limit has not been exceeded
+                if self.allowed_to_send_notice:
+                    message += "\n  Notify {}.".format(
+                            cond_action.do_action_string)
+                    # attachment_type != False indicates to
+                    # attach a photo or video
+                    if cond_action.do_action == 'photo_email':
+                        message += "\n  Photo attached."
+                        attachment_type = 'still'
+                    elif cond_action.do_action == 'video_email':
+                        message += "\n  Video attached."
+                        attachment_type = 'video'
+
+                    smtp = db_retrieve_table_daemon(SMTP, entry='first')
+                    send_email(smtp.host, smtp.ssl, smtp.port,
+                               smtp.user, smtp.passw, smtp.email_from,
+                               cond_action.do_action_string, message,
+                               attachment_file, attachment_type)
+                else:
+                    logger_cond.debug(
+                        "{:.0f} seconds left to be allowed to email "
+                        "again.".format(
+                            self.smtp_wait_timer[cond_id]-time.time()))
+
+            elif cond_action.do_action == 'flash_lcd':
+                message += "\n  Flashing LCD ({id}).".format(
+                    id=cond_action.do_lcd_id)
+                start_flashing = threading.Thread(
+                    target=self.control.flash_lcd,
+                    args=(cond_action.do_lcd_id, 1,))
+                start_flashing.start()
 
         logger_cond.debug(message)
 
@@ -715,10 +749,10 @@ class SensorController(threading.Thread):
         :type measurement_type: str
         """
         last_measurement = read_last_influxdb(
-            self.sensor_id, measurement_type, int(self.period*1.5)).raw
+            self.unique_id, measurement_type, int(self.period*1.5))
+
         if last_measurement:
-            number = len(last_measurement['series'][0]['values'])
-            last_value = last_measurement['series'][0]['values'][number-1][1]
+            last_value = last_measurement[1]
             return last_value
         else:
             return None
@@ -757,106 +791,40 @@ class SensorController(threading.Thread):
         while not self.verify_pause_loop:
             time.sleep(0.1)
 
-        if cond_mod == 'del':
-            self.cond_id.pop(cond_id, None)
-            self.cond_name.pop(cond_id, None)
-            self.cond_is_activated.pop(cond_id, None)
-            self.cond_if_sensor_period.pop(cond_id, None)
-            self.cond_if_sensor_measurement.pop(cond_id, None)
-            self.cond_if_sensor_edge_select.pop(cond_id, None)
-            self.cond_if_sensor_edge_detected.pop(cond_id, None)
-            self.cond_if_sensor_gpio_state.pop(cond_id, None)
-            self.cond_if_sensor_direction.pop(cond_id, None)
-            self.cond_if_sensor_setpoint.pop(cond_id, None)
-            self.cond_do_action.pop(cond_id, None)
-            self.dond_do_action_string.pop(cond_id, None)
-            self.cond_do_relay_id.pop(cond_id, None)
-            self.cond_do_relay_state.pop(cond_id, None)
-            self.cond_do_relay_duration.pop(cond_id, None)
-            self.cond_do_lcd_id.pop(cond_id, None)
-            self.cond_do_camera_id.pop(cond_id, None)
-            self.cond_do_camera_duration.pop(cond_id, None)
-            self.cond_timer.pop(cond_id, None)
-            self.smtp_wait_timer.pop(cond_id, None)
-            logger_cond.debug("Deleted Conditional".format(
+        self.cond_id = {}
+        self.cond_action_id = {}
+        self.cond_name = {}
+        self.cond_is_activated = {}
+        self.cond_if_sensor_period = {}
+
+        if cond_mod == 'setup':
+            self.cond_timer = {}
+            self.smtp_wait_timer = {}
+        elif cond_mod == 'add':
+            logger_cond.debug("Added Conditional".format(
+                sen=self.sensor_id))
+        elif cond_mod == 'mod':
+            logger_cond.debug("Modified Conditional".format(
                 sen=self.sensor_id))
         else:
+            return 1
+
+        sensor_conditional = db_retrieve_table_daemon(
+            Conditional)
+        sensor_conditional = sensor_conditional.filter(
+            Conditional.sensor_id == self.sensor_id)
+        sensor_conditional = sensor_conditional.filter(
+            Conditional.is_activated == True).all()
+
+        for each_cond in sensor_conditional:
             if cond_mod == 'setup':
-                self.cond_id = {}
-                self.cond_name = {}
-                self.cond_is_activated = {}
-                self.cond_if_sensor_period = {}
-                self.cond_if_sensor_measurement = {}
-                self.cond_if_sensor_edge_select = {}
-                self.cond_if_sensor_edge_detected = {}
-                self.cond_if_sensor_gpio_state = {}
-                self.cond_if_sensor_direction = {}
-                self.cond_if_sensor_setpoint = {}
-                self.cond_do_action = {}
-                self.dond_do_action_string = {}
-                self.cond_do_relay_id = {}
-                self.cond_do_relay_state = {}
-                self.cond_do_relay_duration = {}
-                self.cond_do_lcd_id = {}
-                self.cond_do_camera_id = {}
-                self.cond_do_camera_duration = {}
-                self.cond_timer = {}
-                self.smtp_wait_timer = {}
-
-                sensor_conditional = db_retrieve_table_daemon(
-                    Conditional)
-                sensor_conditional = sensor_conditional.filter(
-                    Conditional.is_activated == True).all()
-            elif cond_mod == 'add':
-                sensor_conditional = db_retrieve_table_daemon(
-                    Conditional)
-                sensor_conditional = sensor_conditional.filter(
-                    Conditional.sensor_id == self.sensor_id)
-                sensor_conditional = sensor_conditional.filter(
-                    Conditional.id == cond_id).all()
-                logger_cond.debug("Added Conditional".format(
-                    sen=self.sensor_id))
-            elif cond_mod == 'mod':
-                sensor_conditional = db_retrieve_table_daemon(
-                    Conditional)
-                sensor_conditional = sensor_conditional.filter(
-                    Conditional.sensor_id == self.sensor_id)
-                sensor_conditional = sensor_conditional.filter(
-                    Conditional.id == cond_id).all()
-                logger_cond.debug("Modified Conditional".format(
-                    sen=self.sensor_id))
-            else:
-                return 1
-
-            for each_cond in sensor_conditional:
-                conditional_actions = db_retrieve_table_daemon(ConditionalActions)
-                conditional_actions = conditional_actions.filter(
-                    ConditionalActions.conditional_id == each_cond.id).all()
-
-                for each_cond_action in conditional_actions:
-                    if cond_mod == 'setup':
-                        self.logger.debug("Activated Conditional {cond}".format(
-                            cond=each_cond_action))
-                    self.cond_id[each_cond_action.id] = each_cond_action.id
-                    self.cond_name[each_cond_action.id] = each_cond_action.name
-                    self.cond_is_activated[each_cond_action.id] = each_cond_action.is_activated
-                    self.cond_if_sensor_period[each_cond_action.id] = each_cond_action.period
-                    self.cond_if_sensor_measurement[each_cond_action.id] = each_cond_action.measurement_type
-                    self.cond_if_sensor_edge_select[each_cond_action.id] = each_cond_action.edge_select
-                    self.cond_if_sensor_edge_detected[each_cond_action.id] = each_cond_action.edge_detected
-                    self.cond_if_sensor_gpio_state[each_cond_action.id] = each_cond_action.gpio_state
-                    self.cond_if_sensor_direction[each_cond_action.id] = each_cond_action.direction
-                    self.cond_if_sensor_setpoint[each_cond_action.id] = each_cond_action.setpoint
-                    self.cond_do_action[each_cond_action.id] = each_cond_action.cond_do_action
-                    self.dond_do_action_string[each_cond_action.id] = each_cond_action.dond_do_action_string
-                    self.cond_do_relay_id[each_cond_action.id] = each_cond_action.relay_id
-                    self.cond_do_relay_state[each_cond_action.id] = each_cond_action.relay_state
-                    self.cond_do_relay_duration[each_cond_action.id] = each_cond_action.relay_on_duration
-                    self.cond_do_lcd_id[each_cond_action.id] = each_cond_action.email_notify
-                    self.cond_do_camera_id[each_cond_action.id] = each_cond_action.camera_record
-                    self.cond_do_camera_duration[each_cond_action.id] = each_cond_action.camera_record
-                    self.cond_timer[each_cond_action.id] = time.time()+each_cond_action.period
-                    self.smtp_wait_timer[each_cond_action.id] = time.time()+3600
+                self.logger.info("Activated Conditional {cond}".format(
+                    cond=each_cond.id))
+            self.cond_id[each_cond.id] = each_cond.id
+            self.cond_is_activated[each_cond.id] = each_cond.is_activated
+            self.cond_if_sensor_period[each_cond.id] = each_cond.if_sensor_period
+            self.cond_timer[each_cond.id] = time.time() + each_cond.if_sensor_period
+            self.smtp_wait_timer[each_cond.id] = time.time() + 3600
 
         self.pause_loop = False
         self.verify_pause_loop = False

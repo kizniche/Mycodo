@@ -55,11 +55,9 @@ from mycodo.utils.system_pi import csv_to_list_of_int
 from config import (
     CONDITIONAL_ACTIONS,
     DAEMON_LOG_FILE,
-    FILE_TIMELAPSE_PARAM,
     HTTP_LOG_FILE,
     INSTALL_DIRECTORY,
     LOGIN_LOG_FILE,
-    LOCK_FILE_TIMELAPSE,
     MEASUREMENT_UNITS,
     PATH_CAMERA_STILL,
     PATH_CAMERA_TIMELAPSE,
@@ -691,7 +689,7 @@ def page_relay():
             flaskutils.relay_reorder(form_mod_relay, display_order)
 
         elif form_conditional.add_cond.data:
-            flaskutils.conditional_add(form_conditional.conditoinal_type.data,
+            flaskutils.conditional_add(form_conditional.conditional_type.data,
                                        form_conditional.quantity.data)
         elif form_conditional.delete_cond.data:
             flaskutils.conditional_mod(form_conditional, 'delete')
@@ -794,6 +792,10 @@ def page_sensor():
         elif form_mod_sensor.deactivateSensorSubmit.data:
             flaskutils.sensor_deactivate(form_mod_sensor)
 
+        elif form_conditional.deactivate_cond.data:
+            flaskutils.conditional_deactivate(form_conditional)
+        elif form_conditional.activate_cond.data:
+            flaskutils.conditional_activate(form_conditional)
         elif form_mod_sensor.sensorCondAddSubmit.data:
             flaskutils.conditional_add(
                 'sensor', 1, sensor_id=form_mod_sensor.modSensor_id.data)
@@ -1057,13 +1059,3 @@ def gen(camera):
         frame = camera.get_frame()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-
-def is_time_lapse_locked():
-    """Check if a time-lapse is active"""
-    time_lapse_locked = os.path.isfile(LOCK_FILE_TIMELAPSE)
-    if time_lapse_locked and not os.path.isfile(FILE_TIMELAPSE_PARAM):
-        os.remove(LOCK_FILE_TIMELAPSE)
-    elif not time_lapse_locked and os.path.isfile(FILE_TIMELAPSE_PARAM):
-        os.remove(FILE_TIMELAPSE_PARAM)
-    return os.path.isfile(LOCK_FILE_TIMELAPSE)

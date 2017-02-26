@@ -6,18 +6,22 @@
 
 .row.small-gutters > [class^="col-"],
 .row.small-gutters > [class*=" col-"] {
-  padding-right: 0.2em;
-  padding-left: 0.2em;
+  padding-right: 0.1em;
+  padding-left: 0.1em;
 }
 
 .small-gutters {
-    padding: 0 0.8em
+    padding: 0 0.2em
 }
 
 .row.no-gutters > [class^="col-"],
 .row.no-gutters > [class*=" col-"] {
   padding-right: 0;
   padding-left: 0;
+}
+
+.no-gutters {
+    padding: 0 0
 }
 
 .checkbox-nopad {

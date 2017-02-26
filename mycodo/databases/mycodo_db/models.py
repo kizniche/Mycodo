@@ -178,9 +178,10 @@ class ConditionalActions(CRUDMixin, db.Model):
     do_relay_state = db.Column(db.Text, default='')  # 'on' or 'off'
     do_relay_duration = db.Column(db.Float, default=0.0)
 
-    do_lcd_id = db.Column(db.Integer, db.ForeignKey('lcd.id'),default=None)
     do_camera_id = db.Column(db.Integer, db.ForeignKey('lcd.id'), default=None)
     do_camera_duration = db.Column(db.Float, default=0.0)
+    do_lcd_id = db.Column(db.Integer, db.ForeignKey('lcd.id'), default=None)
+    do_pid_id = db.Column(db.Integer, db.ForeignKey('pid.id'), default=None)
 
 
 class DisplayOrder(CRUDMixin, db.Model):
@@ -447,29 +448,6 @@ class Sensor(CRUDMixin, db.Model):
         :rtype: bool
         """
         return self.is_activated
-
-
-class SensorConditional(CRUDMixin, db.Model):
-    __tablename__ = "sensorconditional"
-
-    id = db.Column(db.Integer, unique=True, primary_key=True)
-    name = db.Column(db.Text, default='Sensor Cond')
-    is_activated = db.Column(db.Integer, default=False)
-    sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'), default=None)
-    period = db.Column(db.Float, default=60.0)
-    measurement = db.Column(db.Text, default='')  # which measurement to monitor
-    edge_select = db.Column(db.Text, default='edge')  # monitor Rising, Falling, or Both switch edges
-    edge_detected = db.Column(db.Text, default='rising')
-    gpio_state = db.Column(db.Boolean, default=True)
-    direction = db.Column(db.Text, default='')  # 'above' or 'below' setpoint
-    setpoint = db.Column(db.Float, default=0.0)
-    relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)
-    relay_state = db.Column(db.Text, default='')  # 'on' or 'off'
-    relay_on_duration = db.Column(db.Float, default=0.0)
-    execute_command = db.Column(db.Text, default='')
-    email_notify = db.Column(db.Text, default='')
-    flash_lcd = db.Column(db.Text, default='')
-    camera_record = db.Column(db.Text, default='')
 
 
 class SMTP(CRUDMixin, db.Model):

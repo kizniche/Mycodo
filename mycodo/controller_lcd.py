@@ -307,15 +307,14 @@ class LCDController(threading.Thread):
                         if self.lcd_line[i]['measurement'] == 'time':
                             last_measurement = read_last_influxdb(
                                 self.lcd_line[i]['id'],
-                                '/.*/').raw
+                                '/.*/')
                         else:
                             last_measurement = read_last_influxdb(
                                 self.lcd_line[i]['id'],
-                                self.lcd_line[i]['measurement']).raw
+                                self.lcd_line[i]['measurement'])
                         if last_measurement:
-                            number = len(last_measurement['series'][0]['values'])
-                            self.lcd_line[i]['time'] = last_measurement['series'][0]['values'][number - 1][0]
-                            self.lcd_line[i]['measurement_value'] = last_measurement['series'][0]['values'][number - 1][1]
+                            self.lcd_line[i]['time'] = last_measurement[0]
+                            self.lcd_line[i]['measurement_value'] = last_measurement[1]
                             utc_dt = datetime.datetime.strptime(
                                 self.lcd_line[i]['time'].split(".")[0],
                                 '%Y-%m-%dT%H:%M:%S')

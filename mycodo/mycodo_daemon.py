@@ -410,7 +410,7 @@ class DaemonController(threading.Thread):
                 message = "Could not deactivate {type} controller with ID " \
                           "{id}, it's not active.".format(type=cont_type,
                                                           id=cont_id)
-                self.logger.warning(message)
+                self.logger.debug(message)
                 return 1, message
         else:
             message = "{type} controller with ID {id} not found".format(

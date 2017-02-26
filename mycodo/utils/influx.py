@@ -88,25 +88,27 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE)
 
     if duration_sec:
-        query = """SELECT value
+        query = """SELECT last(value)
                        FROM   {measurement}
                        WHERE  device_id = '{device}'
                               AND TIME > Now() - {dur}s
-                              ORDER BY time
-                              DESC LIMIT 1;
                 """.format(measurement=measure_type,
                            device=device_id,
                            dur=duration_sec)
     else:
-        query = """SELECT value
+        query = """SELECT last(value)
                        FROM   {measurement}
                        WHERE  device_id = '{device}'
-                              ORDER BY time
-                              DESC LIMIT 1;
                 """.format(measurement=measure_type,
                            device=device_id)
 
-    return client.query(query)
+    last_measurement = client.query(query).raw
+
+    if last_measurement:
+        number = len(last_measurement['series'][0]['values'])
+        last_time = last_measurement['series'][0]['values'][number - 1][0]
+        last_measurement = last_measurement['series'][0]['values'][number - 1][1]
+        return [last_time, last_measurement]
 
 
 def sum_relay_usage(relay_id, past_seconds):

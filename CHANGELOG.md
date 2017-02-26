@@ -2,6 +2,7 @@
 
 ### Features
 
+  - New sensor conditional actions: Deactivate PID, Email Photo, Email Video
   - New relay/sensor conditional management system
   - Add PID option: maximum allowable sensor measurement age (to allow the PID controller from manipulate relays, the sensor measurement must have occurred in the past x seconds)
   - Add PID option: minimum off duration for lower/raise relay (protects devices that require a minimum off period by preventing power cycling from occurring too quickly)

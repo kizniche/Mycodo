@@ -33,32 +33,70 @@ LANGUAGES = {
     'fr': 'Français'
 }
 
+# Install path, the parent directory this script resides
+INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
+
+# Sensor/device information
+MEASUREMENTS = {
+    'ADS1x15': ['voltage'],
+    'AM2315': ['dewpoint', 'humidity', 'temperature'],
+    'ATLAS_PT1000': ['temperature'],
+    'BME280': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature'],
+    'BMP': ['temperature'],
+    'CHIRP': ['lux', 'moisture', 'temperature'],
+    'DHT11': ['dewpoint', 'humidity', 'temperature'],
+    'DHT22': ['dewpoint', 'humidity', 'temperature'],
+    'DS18B20': ['temperature'],
+    'EDGE': ['edge'],
+    'HTU21D': ['dewpoint', 'humidity', 'temperature'],
+    'K30': ['co2'],
+    'MCP342x': ['voltage'],
+    'RPi': ['temperature'],
+    'RPiCPULoad': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m'],
+    'RPiFreeSpace': ['free_space'],
+    'SHT1x_7x': ['dewpoint', 'humidity', 'temperature'],
+    'SHT2x': ['dewpoint', 'humidity', 'temperature'],
+    'TMP006': ['temperature_object', 'temperature_die'],
+    'TSL2561': ['lux']
+}
+# Devices that have a default address that doesn't change
+DEVICES_DEFAULT_LOCATION = [
+    'AM2315', 'ATLAS_PT1000', 'BMP', 'HTU21D', 'K30', 'RPi', 'RPiCPULoad'
+]
 MEASUREMENT_UNITS = {
+    'altitude': 'm',
+    'co2': 'ppmv',
+    'dewpoint': 'C',
     'cpu_load_1m': '',
     'cpu_load_5m': '',
     'cpu_load_15m': '',
     'duration_sec': 'sec',
+    'edge': 'edge',
     'free_space': 'MB',
+    'humidity': '%',
+    'lux': 'lx',
+    'moisture': 'moisture',
+    'pressure': 'Pa',
     'temperature': 'C',
     'temperature_object': 'C',
     'temperature_die': 'C',
-    'humidity': '%',
-    'dewpoint': 'C',
-    'co2': 'ppmv',
-    'lux': 'lx',
-    'pressure': 'Pa',
-    'altitude': 'm'
+    'voltage': 'volts'
 }
 
+# Conditional actions
 CONDITIONAL_ACTIONS = {
-    'relay': 'Relay',
+    'command': 'Command',
+    'deactivate_pid': 'Deactivate PID',
     'email': 'Email',
     'flash_lcd': 'Flash LCD',
     'photo': 'Photo',
+    'photo_email': 'Email Photo',
+    'relay': 'Relay',
     'video': 'Video',
-    'command': 'Command'
+    'video_email': 'Email Video'
 }
 
+# User Roles
 USER_ROLES = [
     dict(id=1, name='Admin',
          edit_settings=True, edit_controllers=True, edit_users=True,
@@ -78,9 +116,12 @@ USER_ROLES = [
          view_logs=False)
 ]
 
+# SQLite3 databases that stores users and settings
+DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
+SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
-INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
-
+# Lock file paths
 LOCK_PATH = '/var/lock'
 DAEMON_PID_FILE = os.path.join(LOCK_PATH, 'mycodo.pid')
 
@@ -99,31 +140,18 @@ CAMERAS_SUPPORTED = {
     'Raspberry Pi': 'picamera',
     'USB Camera': 'opencv'
 }
+LOCK_FILE_STREAM = os.path.join(DATABASE_PATH, 'mycodo-camera-stream.pid')
 
-# SQLite3 databases that hold users and settings
-DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
-SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
-# SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
-# SQL_DATABASE_USER = os.path.join(DATABASE_PATH, 'users.db')
-# SQL_DATABASE_NOTE = os.path.join(DATABASE_PATH, 'notes.db')
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
-# USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
-
-# Influxdb sensor/device measurement database
+# Influx sensor/device measurement database
 INFLUXDB_HOST = 'localhost'
 INFLUXDB_PORT = 8086
 INFLUXDB_USER = 'mycodo'
 INFLUXDB_PASSWORD = 'mmdu77sj3nIoiajjs'
 INFLUXDB_DATABASE = 'mycodo_db'
 
-# Anonymous usage statistics
+# Anonymous usage statistics files
 STATS_CSV = os.path.join(DATABASE_PATH, 'statistics.csv')
 ID_FILE = os.path.join(DATABASE_PATH, 'statistics.id')
-
-# Camera
-LOCK_FILE_STREAM = os.path.join(DATABASE_PATH, 'mycodo-camera-stream.pid')
-LOCK_FILE_TIMELAPSE = os.path.join(DATABASE_PATH, 'timelapse.pid')
-FILE_TIMELAPSE_PARAM = os.path.join(DATABASE_PATH, 'timelapse.csv')
 
 # Anonymous statistics
 STATS_INTERVAL = 86400  # 1 day

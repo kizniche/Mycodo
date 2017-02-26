@@ -42,7 +42,6 @@ from databases.mycodo_db.models import (
     Role,
     SMTP,
     Sensor,
-    SensorConditional,
     Timer,
     User
 )
@@ -62,6 +61,7 @@ from utils.system_pi import (
 # Config
 from config import (
     CAMERAS_SUPPORTED,
+    DEVICES_DEFAULT_LOCATION,
     INSTALL_DIRECTORY
 )
 
@@ -1155,7 +1155,9 @@ def lcd_activate(form_activate_lcd):
                         "sensor controller is inactive"), "error")
                     return redirect('/lcd')
             activate_deactivate_controller(
-                'activate', 'LCD', form_activate_lcd.lcd_id.data)
+                'activate',
+                'LCD',
+                form_activate_lcd.lcd_id.data)
         except Exception as except_msg:
             error.append(except_msg)
         flash_success_errors(error, action, url_for('page_routes.page_lcd'))
@@ -1166,7 +1168,9 @@ def lcd_activate(form_activate_lcd):
 def lcd_deactivate(form_deactivate_lcd):
     if form_deactivate_lcd.validate():
         activate_deactivate_controller(
-            'deactivate', 'LCD', form_deactivate_lcd.lcd_id.data)
+            'deactivate',
+            'LCD',
+            form_deactivate_lcd.lcd_id.data)
     else:
         flash_form_errors(form_deactivate_lcd)
 
@@ -1607,11 +1611,21 @@ def conditional_mod(form, mod_type):
 
 
 def conditional_action_add(form):
-    action = '{action} {controller} ({type})'.format(
-        action=gettext("Add"),
-        controller=gettext("Conditional Action"),
-        type=gettext("Relay"))
     error = []
+    conditional_type = Conditional.query.filter(
+        Conditional.id == form.conditional_id.data).first().conditional_type
+    if conditional_type == 'relay':
+        cond_type = gettext("Relay")
+    elif conditional_type == 'sensor':
+        cond_type = gettext("Sensor")
+    else:
+        error.append("Unrecognized conditional type: {cond_type}".format(
+            cond_type=form.conditional_type.data))
+        cond_type = None
+    action = '{action} {controller} ({cond_type})'.format(
+        action=gettext("Add"),
+        controller=gettext("Conditional"),
+        cond_type=cond_type)
 
     try:
         new_action = ConditionalActions()
@@ -1626,24 +1640,36 @@ def conditional_action_add(form):
 
 
 def conditional_action_mod(form, mod_type):
-    action = '{action} {controller} ({type})'.format(
-        action=gettext("Modify"),
-        controller=gettext("Conditional Action"),
-        type=gettext("Relay"))
     error = []
+    cond = Conditional.query.filter(
+        Conditional.id == form.conditional_id.data).first()
+    if cond.conditional_type == 'relay':
+        cond_type = gettext("Relay")
+    elif cond.conditional_type == 'sensor':
+        cond_type = gettext("Sensor")
+    else:
+        error.append("Unrecognized conditional type: {cond_type}".format(
+            cond_type=form.conditional_type.data))
+        cond_type = None
+    action = '{action} {controller} ({cond_type})'.format(
+        action=gettext("Mod"),
+        controller=gettext("Conditional"),
+        cond_type=cond_type)
 
     if mod_type == 'delete':
         delete_entry_with_id(ConditionalActions,
-                             form.conditional_id.data)
+                             form.conditional_action_id.data)
     elif mod_type == 'modify':
         try:
             mod_action = ConditionalActions.query.filter(
-                ConditionalActions.id == form.conditional_id.data).first()
+                ConditionalActions.id == form.conditional_action_id.data).first()
             mod_action.do_action = form.do_action.data
             if form.do_action.data == 'relay':
                 mod_action.do_relay_id = form.do_relay_id.data
                 mod_action.do_relay_state = form.do_relay_state.data
                 mod_action.do_relay_duration = form.do_relay_duration.data
+            elif form.do_action.data == 'deactivate_pid':
+                mod_action.do_pid_id = form.do_pid_id.data
             elif form.do_action.data == 'email':
                 mod_action.do_action_string = form.do_action_string.data
             elif form.do_action.data == 'flash_lcd':
@@ -1660,8 +1686,42 @@ def conditional_action_mod(form, mod_type):
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
+
+        if cond.conditional_type == 'sensor':
+            check_refresh_conditional(
+                cond.sensor_id,
+                'mod',
+                cond.id)
     flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
+
+def conditional_activate(form):
+    conditional = Conditional.query.filter(
+        Conditional.id == form.conditional_id.data).first()
+    conditional.is_activated = True
+    db.session.commit()
+    if conditional.conditional_type == 'sensor':
+        check_refresh_conditional(
+            form.sensor_id.data,
+            'mod',
+            form.conditional_id.data)
+
+
+def conditional_deactivate(form):
+    conditional = Conditional.query.filter(
+        Conditional.id == form.conditional_id.data).first()
+    conditional.is_activated = False
+    db.session.commit()
+    if conditional.conditional_type == 'sensor':
+        check_refresh_conditional(
+            form.sensor_id.data,
+            'mod',
+            form.conditional_id.data)
+
+
+#
+# Relay
+#
 
 def relay_add(form_add_relay):
     action = '{action} {controller}'.format(
@@ -1973,14 +2033,19 @@ def sensor_del(form_mod_sensor):
             sensor_deactivate_associated_controllers(
                 form_mod_sensor.modSensor_id.data)
             activate_deactivate_controller(
-                'deactivate', 'Sensor',
+                'deactivate',
+                'Sensor',
                 form_mod_sensor.modSensor_id.data)
 
-        sensor_cond = SensorConditional.query.all()
-        for each_sensor_cond in sensor_cond:
-            if each_sensor_cond.sensor_id == form_mod_sensor.modSensor_id.data:
-                delete_entry_with_id(SensorConditional,
-                                     each_sensor_cond.id)
+        conditionals = Conditional.query.filter(
+            Conditional.sensor_id == form_mod_sensor.modSensor_id.data).all()
+        for each_cond in conditionals:
+            conditional_actions = ConditionalActions.query.filter(
+                ConditionalActions.conditional_id == each_cond.id).all()
+            for each_cond_action in conditional_actions:
+                db.session.delete(each_cond_action)
+            db.session.delete(each_cond)
+        db.session.commit()
 
         delete_entry_with_id(Sensor,
                              form_mod_sensor.modSensor_id.data)
@@ -1988,7 +2053,7 @@ def sensor_del(form_mod_sensor):
             display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
             display_order.remove(int(form_mod_sensor.modSensor_id.data))
             DisplayOrder.query.first().sensor = list_to_csv(display_order)
-        except:  # id not in list
+        except Exception:  # id not in list
             pass
         db.session.commit()
     except Exception as except_msg:
@@ -2029,7 +2094,8 @@ def sensor_reorder(form_mod_sensor, display_order):
 def sensor_activate(form_mod_sensor):
     sensor = Sensor.query.filter(
         Sensor.id == form_mod_sensor.modSensor_id.data).first()
-    if not sensor.location:
+    if (not sensor.location and
+            sensor.device not in DEVICES_DEFAULT_LOCATION):
         flash("Cannot activate sensor without the GPIO/I2C Address/Port "
               "to communicate with it set.", "error")
         return redirect('/sensor')

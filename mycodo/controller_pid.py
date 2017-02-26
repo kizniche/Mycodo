@@ -269,10 +269,9 @@ class PIDController(threading.Thread):
                 self.measurement,
                 duration)
             if self.last_measurement:
-                measurement_list = list(self.last_measurement.get_points(
-                    measurement=self.measurement))
-                self.last_time = measurement_list[0]['time']
-                self.last_measurement = measurement_list[0]['value']
+                self.last_time = self.last_measurement[0]
+                self.last_measurement = self.last_measurement[1]
+
                 utc_dt = datetime.datetime.strptime(
                     self.last_time.split(".")[0],
                     '%Y-%m-%dT%H:%M:%S')
