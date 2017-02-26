@@ -50,7 +50,7 @@ def add_user(admin=False):
     while True:
         user_name = raw_input('User (a-z, A-Z, 2-64 chars): ')
         if test_username(user_name):
-            new_user.user_name = user_name
+            new_user.name = user_name
             break
 
     while True:
@@ -64,17 +64,17 @@ def add_user(admin=False):
                 break
 
     while True:
-        user_email = raw_input('Email: ')
-        if is_email(user_email):
-            new_user.user_email = user_email
+        email = raw_input('Email: ')
+        if is_email(email):
+            new_user.email = email
             break
 
     if admin:
-        new_user.user_role = 1
+        new_user.role = 1
     else:
-        new_user.user_role = 4
+        new_user.role = 4
 
-    new_user.user_theme = 'slate'
+    new_user.theme = 'slate'
     try:
         with session_scope(MYCODO_DB_PATH) as db_session:
             db_session.add(new_user)
@@ -92,7 +92,7 @@ def delete_user(username):
     if query_yes_no("Confirm delete user '{}' from user database.".format(username)):
         try:
             with session_scope(MYCODO_DB_PATH) as db_session:
-                user = db_session.query(User).filter(User.user_name == username).one()
+                user = db_session.query(User).filter(User.name == username).one()
                 db_session.delete(user)
                 print("User deleted.")
                 sys.exit(0)
@@ -105,7 +105,7 @@ def change_password(username):
     print('Changing password for {}'.format(username))
 
     with session_scope(MYCODO_DB_PATH) as db_session:
-        user = db_session.query(User).filter(User.user_name == username).one()
+        user = db_session.query(User).filter(User.name == username).one()
 
         while True:
             user_password = getpass.getpass('Password: ')

@@ -10,6 +10,7 @@ import re
 import requests
 import sqlalchemy
 import time
+import flask_login
 from collections import OrderedDict
 from datetime import datetime
 from cStringIO import StringIO as IO
@@ -557,7 +558,7 @@ def auth_credentials(address, user, password_hash):
 
 
 def remote_host_add(form_setup, display_order):
-    if deny_guest_user():
+    if not user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     if form_setup.validate():
@@ -599,7 +600,7 @@ def remote_host_add(form_setup, display_order):
 
 
 def remote_host_del(form_setup):
-    if deny_guest_user():
+    if not user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     try:
@@ -661,7 +662,7 @@ def activate_deactivate_controller(controller_action,
     :param controller_id: Controller with ID to activate or deactivate
     :type controller_id: str
     """
-    if deny_guest_user():
+    if not user_has_permission('edit_controllers'):
         return redirect(url_for('general_routes.home'))
 
     if controller_action == 'activate':
@@ -2313,13 +2314,13 @@ def user_add(form_add_user):
             error.append(gettext("Passwords do not match. Please try again."))
 
         if not error:
-            new_user.user_name = form_add_user.addUsername.data
-            new_user.user_email = form_add_user.addEmail.data
+            new_user.name = form_add_user.addUsername.data
+            new_user.email = form_add_user.addEmail.data
             new_user.set_password(form_add_user.addPassword.data)
             role = Role.query.filter(
                 Role.name == form_add_user.addGroup.data).first().id
-            new_user.user_role = role
-            new_user.user_theme = 'slate'
+            new_user.role = role
+            new_user.theme = 'slate'
             try:
                 new_user.save()
             except sqlalchemy.exc.OperationalError as except_msg:
@@ -2340,18 +2341,18 @@ def user_mod(form_mod_user):
 
     try:
         mod_user = User.query.filter(
-            User.user_name == form_mod_user.modUsername.data).first()
-        mod_user.user_email = form_mod_user.modEmail.data
+            User.name == form_mod_user.modUsername.data).first()
+        mod_user.email = form_mod_user.modEmail.data
         # Only change the password if it's entered in the form
         logout_user = False
         if form_mod_user.modPassword.data != '':
             if not test_password(form_mod_user.modPassword.data):
                 error.append(gettext("Invalid password"))
             if form_mod_user.modPassword.data == form_mod_user.modPassword_repeat.data:
-                mod_user.user_password_hash = bcrypt.hashpw(
+                mod_user.password_hash = bcrypt.hashpw(
                     form_mod_user.modPassword.data.encode('utf-8'),
                     bcrypt.gensalt())
-                if session['user_name'] == form_mod_user.modUsername.data:
+                if flask_login.current_user.name == form_mod_user.modUsername.data:
                     logout_user = True
             else:
                 error.append(gettext("Passwords do not match. Please try again."))
@@ -2359,10 +2360,8 @@ def user_mod(form_mod_user):
         if not error:
             role = Role.query.filter(
                 Role.name == form_mod_user.modGroup.data).first().id
-            mod_user.user_role = role
-            mod_user.user_theme = form_mod_user.modTheme.data
-            if session['user_name'] == form_mod_user.modUsername.data:
-                session['user_theme'] = form_mod_user.modTheme.data
+            mod_user.role = role
+            mod_user.theme = form_mod_user.modTheme.data
             db.session.commit()
             if logout_user:
                 return 'logout'
@@ -2376,7 +2375,7 @@ def user_del(form_del_user):
     try:
         if form_del_user.validate():
             delete_user(form_del_user.delUsername.data)
-            if form_del_user.delUsername.data == session['user_name']:
+            if form_del_user.delUsername.data == flask_login.current_user.name:
                 return 'logout'
         else:
             flash_form_errors(form_del_user)
@@ -2559,27 +2558,15 @@ def camera_del(form_camera):
 # Miscellaneous
 #
 
-def authorized(user_session, role_name, role_id=None):
-    if role_id:
-        user = User.query.filter(User.id == role_id).first()
-    else:
-        user = User.query.filter(Role.name == role_name).first()
-    if user and user.role.name == user_session['user_role']:
-        return True
-    return False
-
-
-def user_has_permission(user_session, permission):
-    user = User.query.filter(User.user_name == user_session['user_name']).first()
-    if (any((
-            (permission == 'edit_settings' and user.role.edit_settings),
-            (permission == 'edit_controllers' and user.role.edit_controllers),
-            (permission == 'edit_users' and user.role.edit_users),
-            (permission == 'view_settings' and user.role.view_settings),
-            (permission == 'view_camera' and user.role.view_camera),
-            (permission == 'view_stats' and user.role.view_stats),
-            (permission == 'view_logs' and user.role.view_logs),
-            ))):
+def user_has_permission(permission):
+    user = User.query.filter(User.name == flask_login.current_user.name).first()
+    if ((permission == 'edit_settings' and user.roles.edit_settings) or
+        (permission == 'edit_controllers' and user.roles.edit_controllers) or
+        (permission == 'edit_users' and user.roles.edit_users) or
+        (permission == 'view_settings' and user.roles.view_settings) or
+        (permission == 'view_camera' and user.roles.view_camera) or
+        (permission == 'view_stats' and user.roles.view_stats) or
+        (permission == 'view_logs' and user.roles.view_logs)):
         return True
     flash("You don't have permission to do that", "error")
     return False
@@ -2601,7 +2588,7 @@ def delete_user(username):
     """ Delete user from SQL database """
     try:
         user = User.query.filter(
-            User.user_name == username).first()
+            User.name == username).first()
         user.delete(db.session)
         flash(gettext("Success: %(msg)s",
                       msg='{action} {user}'.format(
@@ -2642,12 +2629,6 @@ def delete_entry_with_id(table, entry_id):
                                       id=entry_id))),
               "success")
         return 0
-
-
-def deny_guest_user():
-    if not authorized(session, 'Guest'):
-        flash(gettext("Guests are not permitted to do that"), "error")
-        return True
 
 
 def flash_form_errors(form):

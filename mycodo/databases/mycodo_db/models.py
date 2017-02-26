@@ -3,6 +3,7 @@ import bcrypt
 import datetime
 import logging
 import uuid
+from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from RPi import GPIO
 
@@ -61,26 +62,26 @@ class AlembicVersion(CRUDMixin, db.Model):
 # User Table
 #
 
-class User(CRUDMixin, db.Model):
+class User(UserMixin, CRUDMixin, db.Model):
     __tablename__ = "users"
 
-    user_id = db.Column(db.Integer, primary_key=True)
-    user_name = db.Column(db.VARCHAR(64), unique=True, index=True)
-    user_password_hash = db.Column(db.VARCHAR(255))
-    user_email = db.Column(db.VARCHAR(64), unique=True, index=True)
-    user_role = db.Column(db.Integer, db.ForeignKey('roles.id'), default=None)
-    user_theme = db.Column(db.VARCHAR(64))
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.VARCHAR(64), unique=True, index=True)
+    password_hash = db.Column(db.VARCHAR(255))
+    email = db.Column(db.VARCHAR(64), unique=True, index=True)
+    role = db.Column(db.Integer, db.ForeignKey('roles.id'), default=None)
+    theme = db.Column(db.VARCHAR(64))
 
-    role = db.relationship("Role", back_populates="user")
+    roles = db.relationship("Role", back_populates="user")
 
     def __repr__(self):
         output = "<User: <name='{name}', email='{email}' is_admin='{isadmin}'>"
-        return output.format(name=self.user_name,
-                             email=self.user_email,
-                             isadmin=bool(self.user_role == 1))
+        return output.format(name=self.name,
+                             email=self.email,
+                             isadmin=bool(self.role == 1))
 
     def set_password(self, new_password):
-        self.user_password_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+        self.password_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
 
     @staticmethod
     def check_password(password, hashed_password):
@@ -101,7 +102,7 @@ class Role(CRUDMixin, db.Model):
     view_stats = db.Column(db.Boolean, nullable=False, default=False)
     view_logs = db.Column(db.Boolean, nullable=False, default=False)
 
-    user = db.relationship("User", back_populates="role")
+    user = db.relationship("User", back_populates="roles")
 
 
 #

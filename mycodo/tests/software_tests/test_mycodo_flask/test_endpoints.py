@@ -90,7 +90,7 @@ def test_routes_logged_in_as_admin(_, testapp, mycodo_db):
     """ Verifies behavior of these endpoints for a logged in admin user """
     # Create admin user and log in
     admin_user = create_user(mycodo_db, 1, 'name_admin', 'secret_pass')
-    login_user(testapp, admin_user.user_name, 'secret_pass')
+    login_user(testapp, admin_user.name, 'secret_pass')
 
     # Test if the navigation bar is seen on the main page
     sees_navbar(testapp)
@@ -134,7 +134,7 @@ def test_add_sensor_logged_in_as_admin(_, testapp, mycodo_db):
     """ Verifies behavior of these endpoints for a logged in admin user """
     # Create admin user and log in
     admin_user = create_user(mycodo_db, 1, 'name_admin', 'secret_pass')
-    login_user(testapp, admin_user.user_name, 'secret_pass')
+    login_user(testapp, admin_user.name, 'secret_pass')
 
     response = add_sensor(testapp)
 
@@ -155,7 +155,7 @@ def test_routes_logged_in_as_guest(_, testapp, mycodo_db):
     """ Verifies behavior of these endpoints for a logged in guest user """
     # Create guest user and log in
     guest_user = create_user(mycodo_db, 4, 'name_guest', 'secret_pass')
-    login_user(testapp, guest_user.user_name, 'secret_pass')
+    login_user(testapp, guest_user.name, 'secret_pass')
 
     # Test if the navigation bar is seen on the main page
     sees_navbar(testapp)
@@ -180,9 +180,9 @@ def test_routes_logged_in_as_guest(_, testapp, mycodo_db):
 def create_user(mycodo_db, role, name, password):
     """ Create fake admin user """
     new_user = UserFactory()
-    new_user.user_name = name
+    new_user.name = name
     new_user.set_password(password)
-    new_user.user_role = role
+    new_user.role = role
     mycodo_db.add(new_user)
     mycodo_db.commit()
     return new_user

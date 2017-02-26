@@ -15,6 +15,7 @@
 
 ### Miscellaneous
 
+  - Move to using Flask-Login
   - Move from depricated flask_wtf.Form to FlaskForm
   - Update web interface style and layout
   - Update Flask WTF to 0.14.2

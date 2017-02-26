@@ -22,22 +22,20 @@
 #
 #  Contact at kylegabriel.com
 
-import os
-
+import flask_login
 from flask import (
     Flask,
-    request
+    redirect,
+    request,
+    url_for
 )
 from flask_babel import Babel
 from flask_sslify import SSLify
-
-# Classes
 from mycodo.databases.mycodo_db.models import (
     db,
-    Misc
+    Misc,
+    User
 )
-
-# Functions
 from init_databases import create_dbs
 from mycodo.mycodo_flask import (
     admin_routes,
@@ -48,8 +46,6 @@ from mycodo.mycodo_flask import (
     settings_routes
 )
 from mycodo.mycodo_flask.general_routes import influx_db
-
-# Config
 from mycodo.config import (
     ProdConfig,
     LANGUAGES
@@ -67,9 +63,11 @@ def create_app(config=ProdConfig):
     app = Flask(__name__)
 
     app.config.from_object(config)
-    app.secret_key = os.urandom(24)
 
     db.init_app(app)
+
+    login_manager = flask_login.LoginManager()
+    login_manager.init_app(app)
 
     register_extensions(app, config)
     register_blueprints(app)
@@ -85,6 +83,17 @@ def create_app(config=ProdConfig):
                 if key == misc.language:
                     return key
         return request.accept_languages.best_match(LANGUAGES.keys())
+
+    @login_manager.user_loader
+    def user_loader(user_id):
+        user = User.query.filter(User.id == user_id).first()
+        if not user:
+            return
+        return user
+
+    @login_manager.unauthorized_handler
+    def unauthorized():
+        return redirect(url_for('authentication_routes.do_login'))
 
     return app
 

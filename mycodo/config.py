@@ -21,9 +21,10 @@
 #  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
 #
 #  Contact at kylegabriel.com
-
 import os
 import collections
+
+from datetime import timedelta
 
 MYCODO_VERSION = '5.0.0'
 ALEMBIC_VERSION = ''
@@ -172,6 +173,8 @@ LOGIN_BAN_SECONDS = 600  # 10 minutes
 # Relay
 MAX_AMPS = 15
 
+SECRET_KEY_PATH = os.path.join(DATABASE_PATH, 'secret_key')
+
 
 class ProdConfig(object):
     """ Production Configuration """
@@ -179,6 +182,14 @@ class ProdConfig(object):
     MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + SQL_DATABASE_MYCODO
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    REMEMBER_COOKIE_DURATION = timedelta(days=90)
+
+    # Ensure file containing the Flask secret_key exists
+    if not os.path.isfile(SECRET_KEY_PATH):
+        with open(SECRET_KEY_PATH, 'w') as file:
+            file.write(os.urandom(24))
+    SECRET_KEY = open(SECRET_KEY_PATH, 'rb').read()
 
 
 class TestConfig(object):

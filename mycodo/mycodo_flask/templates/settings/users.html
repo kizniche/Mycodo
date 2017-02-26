@@ -74,19 +74,19 @@
       {% for user in users %}
         <tr>
           <td>
-          <form method="post" action="/settings/users" onsubmit="return confirm('Confirm the deletion of user {{user.user_name}}. This cannot be undone. To keep this user, click Cancel.')">
+          <form method="post" action="/settings/users" onsubmit="return confirm('Confirm the deletion of user {{user.name}}. This cannot be undone. To keep this user, click Cancel.')">
             <input type="hidden" name="form-name" value="delUser">
             {{form_del_user.csrf_token}}
-            {{form_del_user.delUsername(value=user.user_name)}}
+            {{form_del_user.delUsername(value=user.name)}}
             {{form_del_user.delUserSubmit(class_='btn btn-default')}}
           </form>
           </td>
           <form method="post" action="/settings/users">
           {{form_mod_user.csrf_token}}
           <input type="hidden" name="form-name" value="modUser">
-          <td>{{user.user_name}}{{form_mod_user.modUsername(value=user.user_name)}}</td>
+          <td>{{user.name}}{{form_mod_user.modUsername(value=user.name)}}</td>
           <td>
-            {{form_mod_user.modEmail(class_='form-control', value=user.user_email)}}
+            {{form_mod_user.modEmail(class_='form-control', value=user.email)}}
           </td>
           <td>
             {{form_mod_user.modPassword(class_='form-control')}}
@@ -97,7 +97,7 @@
           <td>
             <select class="form-control" id="modGroup" name="modGroup">
               {% for each_role in user_roles %}
-                <option value="{{each_role.name}}"{% if user.role.name == each_role.name %} selected{% endif %}>{{each_role.name}}</option>
+                <option value="{{each_role.name}}"{% if user.roles.name == each_role.name %} selected{% endif %}>{{each_role.name}}</option>
               {% endfor %}
             </select>
           </td>
@@ -122,9 +122,9 @@
                   ('yeti', 'Yeti')
             ] -%}
             <select class="form-control" id="modTheme" name="modTheme">
-              <option value=""{% if user.user_theme == '' %} selected{% endif %}>Default</option>
+              <option value=""{% if user.theme == '' %} selected{% endif %}>Default</option>
               {% for value, name in theme_options %}
-                <option value="{{value|e}}"{% if value == user.user_theme %} selected{% endif %}>{{name|e}}</option>
+                <option value="{{value|e}}"{% if value == user.theme %} selected{% endif %}>{{name|e}}</option>
               {% endfor -%}
             </select>
           </td>

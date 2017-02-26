@@ -2,16 +2,13 @@
 """ collection of Page endpoints """
 import logging
 import operator
-
+import flask_login
 from flask import (
-    flash,
     redirect,
     render_template,
     request,
-    session,
     url_for
 )
-from flask_babel import gettext
 from flask.blueprints import Blueprint
 
 # Classes
@@ -35,10 +32,7 @@ from config import (
     LANGUAGES
 )
 
-from mycodo.mycodo_flask.general_routes import (
-    inject_mycodo_version,
-    logged_in
-)
+from mycodo.mycodo_flask.general_routes import inject_mycodo_version
 
 logger = logging.getLogger('mycodo.mycodo_flask.settings')
 
@@ -54,19 +48,17 @@ def inject_dictionary():
 
 
 @blueprint.route('/settings/alerts', methods=('GET', 'POST'))
+@flask_login.login_required
 def settings_alerts():
     """ Display alert settings """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if not flaskutils.user_has_permission(session, 'view_settings'):
+    if not flaskutils.user_has_permission('view_settings'):
         return redirect(url_for('general_routes.home'))
 
     smtp = SMTP.query.first()
     form_email_alert = flaskforms.EmailAlert()
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission(session, 'edit_settings'):
+        if not flaskutils.user_has_permission('edit_settings'):
             return redirect(url_for('general_routes.home'))
 
         form_name = request.form['form-name']
@@ -80,12 +72,10 @@ def settings_alerts():
 
 
 @blueprint.route('/settings/camera', methods=('GET', 'POST'))
+@flask_login.login_required
 def settings_camera():
     """ Display camera settings """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if not flaskutils.user_has_permission(session, 'view_settings'):
+    if not flaskutils.user_has_permission('view_settings'):
         return redirect(url_for('general_routes.home'))
 
     form_camera = flaskforms.SettingsCamera()
@@ -110,7 +100,7 @@ def settings_camera():
                      "{err}".format(err=e))
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission(session, 'edit_settings'):
+        if not flaskutils.user_has_permission('edit_settings'):
             return redirect(url_for('general_routes.home'))
 
         if form_camera.camera_add.data:
@@ -132,12 +122,10 @@ def settings_camera():
 
 
 @blueprint.route('/settings/general', methods=('GET', 'POST'))
+@flask_login.login_required
 def settings_general():
     """ Display general settings """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if not flaskutils.user_has_permission(session, 'view_settings'):
+    if not flaskutils.user_has_permission('view_settings'):
         return redirect(url_for('general_routes.home'))
 
     misc = Misc.query.first()
@@ -146,7 +134,7 @@ def settings_general():
     languages_sorted = sorted(LANGUAGES.items(), key=operator.itemgetter(1))
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission(session, 'edit_settings'):
+        if not flaskutils.user_has_permission('edit_settings'):
             return redirect(url_for('general_routes.home'))
 
         form_name = request.form['form-name']
@@ -161,12 +149,10 @@ def settings_general():
 
 
 @blueprint.route('/settings/users', methods=('GET', 'POST'))
+@flask_login.login_required
 def settings_users():
     """ Display user settings """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if not flaskutils.user_has_permission(session, 'view_settings'):
+    if not flaskutils.user_has_permission('view_settings'):
         return redirect(url_for('general_routes.home'))
 
     users = User.query.all()
@@ -176,7 +162,7 @@ def settings_users():
     form_del_user = flaskforms.UserDel()
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission(session, 'edit_users'):
+        if not flaskutils.user_has_permission('edit_users'):
             return redirect(url_for('general_routes.home'))
 
         form_name = request.form['form-name']

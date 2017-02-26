@@ -9,8 +9,8 @@ class UserFactory(factory.Factory):
     class Meta(object):
         model = models.User
 
-    user_name = factory.Faker('name')
-    user_email = factory.Faker('email')
+    name = factory.Faker('name')
+    email = factory.Faker('email')
 
 
 # Another, different, factory for the same object
@@ -19,9 +19,9 @@ class AdminFactory(factory.Factory):
     class Meta(object):
         model = models.User
 
-    user_name = factory.Faker('name')
-    user_email = factory.Faker('email')
-    user_role = 1  # Admin
+    name = factory.Faker('name')
+    email = factory.Faker('email')
+    role = 1  # Admin
 
 
 # Guest factory
@@ -30,6 +30,6 @@ class GuestFactory(factory.Factory):
     class Meta(object):
         model = models.User
 
-    user_name = factory.Faker('name')
-    user_email = factory.Faker('email')
-    user_role = 4  # Guest
+    name = factory.Faker('name')
+    email = factory.Faker('email')
+    role = 4  # Guest

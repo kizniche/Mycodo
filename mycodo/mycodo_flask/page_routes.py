@@ -3,6 +3,7 @@
 import logging
 import os
 import datetime
+import flask_login
 import glob
 import subprocess
 import time
@@ -13,7 +14,6 @@ from flask import (
     redirect,
     render_template,
     request,
-    session,
     url_for
 )
 from flask_babel import gettext
@@ -41,7 +41,6 @@ from mycodo.devices.camera import CameraStream
 # Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
-from mycodo.mycodo_flask.authentication_routes import logged_in
 from mycodo.mycodo_flask.general_routes import (
     inject_mycodo_version
 )
@@ -86,15 +85,13 @@ def epoch_to_time_string():
 
 
 @blueprint.route('/camera', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_camera():
     """
     Page to start/stop video stream or time-lapse, or capture a still image.
     Displays most recent still image and time-lapse image.
     """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if not flaskutils.user_has_permission(session, 'view_camera'):
+    if not flaskutils.user_has_permission('view_camera'):
         return redirect(url_for('general_routes.home'))
 
     form_camera = flaskforms.Camera()
@@ -107,9 +104,8 @@ def page_camera():
             db.session.commit()
 
     if request.method == 'POST':
-        if not flaskutils.authorized(session, 'Guest'):
-            flaskutils.deny_guest_user()
-            return redirect('/camera')
+        if not flaskutils.user_has_permission('edit_settings'):
+            return redirect(url_for('page_routes.page_camera'))
 
         mod_camera = Camera.query.filter(Camera.id == form_camera.camera_id.data).first()
         if form_camera.capture_still.data:
@@ -219,13 +215,11 @@ def page_camera():
 
 
 @blueprint.route('/export', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_export():
     """
     Export measurement data in CSV format
     """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     export_options = flaskforms.ExportOptions()
     relay = Relay.query.all()
     sensor = Sensor.query.all()
@@ -270,13 +264,11 @@ def page_export():
 
 
 @blueprint.route('/graph', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_graph():
     """
     Generate custom graphs to display sensor data retrieved from influxdb.
     """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     # Create form objects
     form_mod_graph = flaskforms.GraphMod()
     form_del_graph = flaskforms.GraphDel()
@@ -313,14 +305,11 @@ def page_graph():
 
     # Detect which form on the page was submitted
     if request.method == 'POST':
-        if not flaskutils.user_has_permission(session, 'edit_controllers'):
+        if not flaskutils.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
 
         form_name = request.form['form-name']
-        if not flaskutils.authorized(session, 'Guest'):
-            flaskutils.deny_guest_user()
-            return redirect('/graph')
-        elif form_name == 'modGraph':
+        if form_name == 'modGraph':
             flaskutils.graph_mod(form_mod_graph, request.form)
         elif form_name == 'delGraph':
             flaskutils.graph_del(form_del_graph)
@@ -348,11 +337,9 @@ def page_graph():
 
 
 @blueprint.route('/graph-async', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_graph_async():
     """ Generate graphs using asynchronous data retrieval """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     sensor = Sensor.query.all()
     sensor_choices = flaskutils.choices_sensors(sensor)
     sensor_choices_split = OrderedDict()
@@ -378,21 +365,17 @@ def page_graph_async():
 
 
 @blueprint.route('/help', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_help():
     """ Display Mycodo manual/help """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     return render_template('manual.html')
 
 
 @blueprint.route('/info', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_info():
     """ Display page with system information from command line tools """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if not flaskutils.user_has_permission(session, 'view_stats'):
+    if not flaskutils.user_has_permission('view_stats'):
         return redirect(url_for('general_routes.home'))
 
     uptime = subprocess.Popen(
@@ -435,11 +418,9 @@ def page_info():
 
 
 @blueprint.route('/lcd', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_lcd():
     """ Display LCD output settings """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     lcd = LCD.query.all()
     pid = PID.query.all()
     relay = Relay.query.all()
@@ -456,13 +437,11 @@ def page_lcd():
     form_reset_flashing_lcd = flaskforms.LCDResetFlashing()
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission(session, 'edit_controllers'):
+        if not flaskutils.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
 
         form_name = request.form['form-name']
-        if not flaskutils.authorized(session, 'Guest'):
-            flaskutils.deny_guest_user()
-        elif form_name == 'orderLCD':
+        if form_name == 'orderLCD':
             flaskutils.lcd_reorder(form_order_lcd, display_order)
         elif form_name == 'addLCD':
             flaskutils.lcd_add(form_add_lcd)
@@ -494,11 +473,9 @@ def page_lcd():
 
 
 @blueprint.route('/live', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_live():
     """ Page of recent and updating sensor data """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     # Retrieve tables for the data displayed on the live page
     pid = PID.query.all()
     relay = Relay.query.all()
@@ -532,12 +509,10 @@ def page_live():
 
 
 @blueprint.route('/logview', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_logview():
     """ Display the last (n) lines from a log file """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if not flaskutils.user_has_permission(session, 'view_logs'):
+    if not flaskutils.user_has_permission('view_logs'):
         return redirect(url_for('general_routes.home'))
 
     form_log_view = flaskforms.LogView()
@@ -577,20 +552,16 @@ def page_logview():
 
 
 @blueprint.route('/notes', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_notes():
     """ Display notes viewer/editor """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     return render_template('tools/notes.html')
 
 
 @blueprint.route('/pid', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_pid():
     """ Display PID settings """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     pids = PID.query.all()
     relay = Relay.query.all()
     sensor = Sensor.query.all()
@@ -603,7 +574,7 @@ def page_pid():
     method = Method.query.all()
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission(session, 'edit_controllers'):
+        if not flaskutils.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
 
         form_name = request.form['form-name']
@@ -650,11 +621,9 @@ def page_pid():
 
 
 @blueprint.route('/relay', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_relay():
     """ Display relay status and config """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     camera = Camera.query.all()
     lcd = LCD.query.all()
     relay = Relay.query.all()
@@ -672,7 +641,7 @@ def page_relay():
     form_conditional_actions = flaskforms.ConditionalActions()
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission(session, 'edit_controllers'):
+        if not flaskutils.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.page_relay'))
 
         if form_add_relay.relay_add.data:
@@ -719,11 +688,9 @@ def page_relay():
 
 
 @blueprint.route('/sensor', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_sensor():
     """ Display sensor settings """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     # TCA9548A I2C multiplexer
     multiplexer_addresses = [
         '0x70',
@@ -775,7 +742,7 @@ def page_sensor():
         sensor_templates.append(each_file_name.split(".")[0])
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission(session, 'edit_controllers'):
+        if not flaskutils.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.page_sensor'))
 
         if form_add_sensor.sensorAddSubmit.data:
@@ -833,11 +800,9 @@ def page_sensor():
 
 
 @blueprint.route('/timer', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_timer():
     """ Display Timer settings """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     timer = Timer.query.all()
     relay = Relay.query.all()
     relay_choices = flaskutils.choices_id_name(relay)
@@ -847,7 +812,7 @@ def page_timer():
     form_timer = flaskforms.Timer()
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission(session, 'edit_controllers'):
+        if not flaskutils.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
 
         form_name = request.form['form-name']
@@ -877,12 +842,10 @@ def page_timer():
 
 
 @blueprint.route('/usage', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_usage():
     """ Display relay usage (duration and energy usage/cost) """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if not flaskutils.user_has_permission(session, 'view_stats'):
+    if not flaskutils.user_has_permission('view_stats'):
         return redirect(url_for('general_routes.home'))
 
     misc = Misc.query.first()
@@ -971,7 +934,7 @@ def dict_custom_colors(graph):
     """
     # Count how many lines will need a custom color input
     dark_themes = ['cyborg', 'darkly', 'slate', 'sun', 'superhero']
-    if session['user_theme'] in dark_themes:
+    if flask_login.current_user.theme in dark_themes:
         default_palette = [
             '#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066',
             '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'

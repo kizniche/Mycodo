@@ -206,8 +206,8 @@ def recreate_stat_file():
         ['num_relays', 0],
         ['num_sensors', 0],
         ['num_sensors_active', 0],
-        ['num_condtionals', 0],
-        ['num_condtionals_active', 0],
+        ['num_conditionals', 0],
+        ['num_conditionals_active', 0],
         ['num_timers', 0],
         ['num_timers_active', 0]
     ]
@@ -246,7 +246,7 @@ def send_stats():
                            sensors.filter(Sensor.is_activated == True)))
 
         conditionals = db_retrieve_table_daemon(Conditional)
-        add_update_csv(STATS_CSV, 'num_condtionals', get_count(conditionals))
+        add_update_csv(STATS_CSV, 'num_conditionals', get_count(conditionals))
         add_update_csv(STATS_CSV, 'num_conditionals_active',
                        get_count(
                            conditionals.filter(Conditional.is_activated == True)))
@@ -285,7 +285,7 @@ def send_stats():
             users = db_retrieve_table_daemon(User, entry='all')
             for each_user in users:
                 user_count += 1
-                if each_user.user_role == 1:
+                if each_user.role == 1:
                     admin_count += 1
         except Exception:
             pass

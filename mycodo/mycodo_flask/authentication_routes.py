@@ -4,7 +4,7 @@ import datetime
 import logging
 import socket
 import time
-
+import flask_login
 from flask import (
     redirect,
     request,
@@ -64,8 +64,8 @@ def create_admin():
             "already exists."), "error")
         return redirect(url_for('general_routes.home'))
 
-    # If cookies from previous session exist, delete them
-    if request.cookies.get('user_name'):
+    # If login token cookie from previous session exists, delete
+    if request.cookies.get('remember_token'):
         response = clear_cookie_auth()
         return response
 
@@ -93,11 +93,11 @@ def create_admin():
                 return redirect(url_for('general_routes.home'))
 
             new_user = User()
-            new_user.user_name = form.username.data
-            new_user.user_email = form.email.data
+            new_user.name = form.username.data
+            new_user.email = form.email.data
             new_user.set_password(form.password.data)
-            new_user.user_role = 1  # Admin
-            new_user.user_theme = 'slate'
+            new_user.role = 1  # Admin
+            new_user.theme = 'slate'
             try:
                 db.session.add(new_user)
                 db.session.commit()
@@ -121,7 +121,7 @@ def do_login():
     if not admin_exists():
         return redirect('/create_admin')
 
-    elif logged_in():
+    elif flask_login.current_user.is_authenticated:
         flash(gettext("Cannot access login page if you're already logged in"),
               "error")
         return redirect(url_for('general_routes.home'))
@@ -142,6 +142,7 @@ def do_login():
                 "info")
     else:
         if request.method == 'POST':
+            user_ip = request.environ.get('REMOTE_ADDR', 'unknown address')
             form_name = request.form['form-name']
             if form_name == 'acknowledge':
                 try:
@@ -153,51 +154,28 @@ def do_login():
                                   "%(err)s", err=except_msg), "error")
             elif form_name == 'login' and form.validate_on_submit():
                 user = User.query.filter(
-                    User.user_name == form.username.data).first()
+                    User.name == form.username.data).first()
                 if not user:
-                    login_log(form.username.data,
-                              'NA',
-                              request.environ.get(
-                                  'REMOTE_ADDR', 'unknown address'),
-                              'NOUSER')
+                    login_log(form.username.data, 'NA', user_ip, 'NOUSER')
                     failed_login()
                 elif User().check_password(
                         form.password.data,
-                        user.user_password_hash) == user.user_password_hash:
-                    login_log(user.user_name,
-                              user.role.name,
-                              request.environ.get('REMOTE_ADDR',
-                                                  'unknown address'),
-                              'LOGIN')
-                    session['logged_in'] = True
-                    session['user_role'] = user.role.name
-                    session['user_name'] = user.user_name
-                    session['user_theme'] = user.user_theme
-                    if form.remember.data:
-                        response = make_response(redirect('/'))
-                        expire_date = datetime.datetime.now()
-                        expire_date = expire_date + datetime.timedelta(days=90)
-                        response.set_cookie('user_name',
-                                            user.user_name,
-                                            expires=expire_date)
-                        response.set_cookie('user_pass_hash',
-                                            user.user_password_hash,
-                                            expires=expire_date)
-                        return response
+                        user.password_hash) == user.password_hash:
+
+                    login_log(user.name, user.roles.name, user_ip, 'LOGIN')
+
+                    # flask-login user
+                    login_user = User()
+                    login_user.id = user.id
+                    remember_me = True if form.remember.data else False
+                    flask_login.login_user(login_user, remember=remember_me)
+
                     return redirect(url_for('general_routes.home'))
                 else:
-                    login_log(user.user_name,
-                              user.role.name,
-                              request.environ.get('REMOTE_ADDR',
-                                                  'unknown address'),
-                              'FAIL')
+                    login_log(user.name, user.roles.name, user_ip, 'FAIL')
                     failed_login()
             else:
-                login_log(form.username.data,
-                          'NA',
-                          request.environ.get('REMOTE_ADDR',
-                                              'unknown address'),
-                          'FAIL')
+                login_log(form.username.data, 'NA', user_ip, 'FAIL')
                 failed_login()
 
             return redirect('/login')
@@ -212,40 +190,22 @@ def do_login():
 @blueprint.route("/logout")
 def logout():
     """Log out of the web-ui"""
-    if session.get('user_name'):
-        login_log(session['user_name'],
-                  session['user_role'],
-                  request.environ.get('REMOTE_ADDR', 'unknown address'),
-                  'LOGOUT')
+    login_log(flask_login.current_user.name,
+              flask_login.current_user.roles.name,
+              request.environ.get('REMOTE_ADDR', 'unknown address'),
+              'LOGOUT')
+    # flask-login logout
+    flask_login.logout_user()
+
     response = clear_cookie_auth()
+
     flash(gettext("Successfully logged out"), 'success')
     return response
 
 
 def admin_exists():
     """Verify that at least one admin user exists"""
-    return User.query.filter(User.user_role == 1).count()
-
-
-def authenticate_cookies():
-    """Check for cookies to authenticate Login"""
-    cookie_username = request.cookies.get('user_name')
-    cookie_password_hash = request.cookies.get('user_pass_hash')
-    if cookie_username is not None:
-        user = User.query.filter(
-            User.user_name == cookie_username).first()
-
-        if user is None:
-            return False
-        elif cookie_password_hash == user.user_password_hash:
-            session['logged_in'] = True
-            session['user_role'] = user.role.name
-            session['user_name'] = user.user_name
-            session['user_theme'] = user.user_theme
-            return True
-        else:
-            failed_login()
-    return False
+    return User.query.filter(User.role == 1).count()
 
 
 def check_database_version_issue():
@@ -263,18 +223,6 @@ def check_database_version_issue():
               " scratch, but this is the only way to ensure your database is "
               "able to be upgraded when the time comes. Sorry for the "
               "inconvenience.", "error")
-
-
-def logged_in():
-    """Verify the user is logged in"""
-    check_database_version_issue()
-    if (not session.get('logged_in') and
-            not authenticate_cookies()):
-        return 0
-    elif (session.get('logged_in') or
-            (not session.get('logged_in') and
-                authenticate_cookies())):
-        return 1
 
 
 def banned_from_login():
@@ -319,7 +267,6 @@ def login_log(user, group, ip, status):
 def clear_cookie_auth():
     """Delete authentication cookies"""
     response = make_response(redirect('/login'))
-    session.clear()  # or session['logged_in'] = False
-    response.set_cookie('user_name', '', expires=0)
-    response.set_cookie('user_pass_hash', '', expires=0)
+    session.clear()
+    response.set_cookie('remember_token', '', expires=0)
     return response

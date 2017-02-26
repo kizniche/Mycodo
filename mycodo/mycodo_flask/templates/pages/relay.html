@@ -327,7 +327,7 @@
             <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
               <option value=""></option>
               {%- for each_user in user -%}
-                <option value="{{each_user.user_email}}"{% if each_cond_action.do_action_string == each_user.user_email %} selected{% endif %}>{{each_user.user_email}}</option>
+                <option value="{{each_user.email}}"{% if each_cond_action.do_action_string == each_user.email %} selected{% endif %}>{{each_user.email}}</option>
               {%- endfor -%}
             </select>
           </div>

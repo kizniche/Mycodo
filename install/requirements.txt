@@ -9,6 +9,7 @@ daemonize == 2.4.6
 Flask == 0.12
 Flask_Babel
 Flask_InfluxDB == 0.1
+Flask_Login == 0.4.0
 Flask_SQLAlchemy == 2.1
 Flask_SSLify
 Flask_WTF == 0.14.2

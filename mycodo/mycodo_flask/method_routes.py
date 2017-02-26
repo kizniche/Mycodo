@@ -3,6 +3,7 @@
 import logging
 import datetime
 import time
+import flask_login
 
 from flask import (
     Blueprint,
@@ -11,7 +12,6 @@ from flask import (
     redirect,
     render_template,
     request,
-    session,
     url_for
 )
 from flask_babel import gettext
@@ -27,10 +27,7 @@ from mycodo.databases.mycodo_db.models import (
 # Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
-from mycodo.mycodo_flask.general_routes import (
-    inject_mycodo_version,
-    logged_in
-)
+from mycodo.mycodo_flask.general_routes import inject_mycodo_version
 from mycodo.utils.system_pi import (
     csv_to_list_of_int,
     get_sec
@@ -55,14 +52,12 @@ def inject_dictionary():
 
 
 @blueprint.route('/method-data/<method_id>')
+@flask_login.login_required
 def method_data(method_id):
     """
     Returns options for a particular method
     This includes sets of (time, setpoint) data.
     """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     # First method column with general information about method
     method = Method.query.filter(Method.id == method_id).first()
 
@@ -172,11 +167,9 @@ def method_data(method_id):
 
 
 @blueprint.route('/method', methods=('GET', 'POST'))
+@flask_login.login_required
 def method_list():
     """ List all methods on one page with a graph for each """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     form_create_method = flaskforms.MethodCreate()
 
     method = Method.query.all()
@@ -189,17 +182,14 @@ def method_list():
 
 
 @blueprint.route('/method-build/<method_id>', methods=('GET', 'POST'))
+@flask_login.login_required
 def method_builder(method_id):
     """
     Page to edit the details of each method
     This includes the (time, setpoint) data sets
     """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if not flaskutils.authorized(session, 'Guest'):
-        flaskutils.deny_guest_user()
-        return redirect('/method')
+    if not flaskutils.user_has_permission('edit_settings'):
+        return redirect(url_for('method_routes.method_list'))
 
     relay = Relay.query.all()
 
@@ -284,18 +274,15 @@ def method_builder(method_id):
 
 
 @blueprint.route('/method-delete/<method_id>')
+@flask_login.login_required
 def method_delete(method_id):
     """Delete a method"""
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
         controller=gettext("Method"))
 
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if not flaskutils.authorized(session, 'Guest'):
-        flaskutils.deny_guest_user()
-        return redirect('/method')
+    if not flaskutils.user_has_permission('edit_settings'):
+        return redirect(url_for('method_routes.method_list'))
 
     try:
         Method.query.filter(Method.id == method_id).delete()

@@ -4,7 +4,7 @@
 
 {% block head %}
   <script src="/static/js/highcharts.js"></script>
-  {% if session.user_theme in ['cyborg', 'darkly', 'slate', 'superhero'] %}
+  {% if flask_login.current_user.theme in ['cyborg', 'darkly', 'slate', 'superhero'] %}
     <script src="/static/js/dark-unica.js"></script>
   {% endif %}
 {% endblock %}

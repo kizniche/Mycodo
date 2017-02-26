@@ -21,6 +21,7 @@ import socket
 import subprocess
 import sys
 import time
+import flask_login
 
 from RPi import GPIO
 from dateutil.parser import parse as date_parse
@@ -33,7 +34,6 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import send_from_directory
-from flask import session
 from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
@@ -52,7 +52,6 @@ from mycodo.flaskutils import gzipped
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.authentication_routes import admin_exists
 from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
-from mycodo.mycodo_flask.authentication_routes import logged_in
 from mycodo.utils.database import db_retrieve_table_daemon
 
 from config import (
@@ -105,24 +104,22 @@ def inject_mycodo_version():
 @blueprint.route('/')
 def home():
     """Load the default landing page"""
-    if logged_in():
+    if flask_login.current_user.is_authenticated:
         return redirect(url_for('page_routes.page_live'))
     return clear_cookie_auth()
 
 
 @blueprint.route('/settings', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_settings():
     return redirect('settings/general')
 
 
 @blueprint.route('/remote/<page>', methods=('GET', 'POST'))
+@flask_login.login_required
 def remote_admin(page):
     """Return pages for remote administraion"""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if not flaskutils.authorized(session, 'Guest'):
-        flaskutils.deny_guest_user()
+    if not flaskutils.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     remote_hosts = Remote.query.all()
@@ -159,11 +156,9 @@ def remote_admin(page):
 
 
 @blueprint.route('/camera/<img_type>/<filename>')
+@flask_login.login_required
 def camera_img(img_type, filename):
     """Return an image from stills or timelapses"""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     still_path = INSTALL_DIRECTORY + '/camera-stills/'
     timelapse_path = INSTALL_DIRECTORY + '/camera-timelapse/'
 
@@ -204,21 +199,17 @@ def gen(camera):
 
 
 @blueprint.route('/video_feed')
+@flask_login.login_required
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     return Response(gen(CameraStream()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @blueprint.route('/gpiostate')
+@flask_login.login_required
 def gpio_state():
     """Return the GPIO state, for relay page status"""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     relay = Relay.query.all()
     gpio_state = {}
     GPIO.setmode(GPIO.BCM)
@@ -234,22 +225,19 @@ def gpio_state():
 
 
 @blueprint.route('/dl/<dl_type>/<path:filename>')
+@flask_login.login_required
 def download_file(dl_type, filename):
     """Serve log file to download"""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    elif dl_type == 'log':
+    if dl_type == 'log':
         return send_from_directory(LOG_PATH, filename, as_attachment=True)
 
     return '', 204
 
 
 @blueprint.route('/last/<sensor_measure>/<sensor_id>/<sensor_period>')
+@flask_login.login_required
 def last_data(sensor_measure, sensor_id, sensor_period):
     """Return the most recent time and value from influxdb"""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
@@ -280,11 +268,10 @@ def last_data(sensor_measure, sensor_id, sensor_period):
 
 
 @blueprint.route('/past/<sensor_measure>/<sensor_id>/<past_seconds>')
+@flask_login.login_required
 @gzipped
 def past_data(sensor_measure, sensor_id, past_seconds):
     """Return data from past_seconds until present from influxdb"""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
@@ -308,15 +295,13 @@ def past_data(sensor_measure, sensor_id, past_seconds):
 
 
 @blueprint.route('/export_data/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')
+@flask_login.login_required
 @gzipped
 def export_data(measurement, unique_id, start_seconds, end_seconds):
     """
     Return data from start_seconds to end_seconds from influxdb.
     Used for exporting data.
     """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
@@ -367,15 +352,13 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
 
 
 @blueprint.route('/async/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')
+@flask_login.login_required
 @gzipped
 def async_data(measurement, unique_id, start_seconds, end_seconds):
     """
     Return data from start_seconds to end_seconds from influxdb.
     Used for asynchronous graph display of many points (up to millions).
     """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
@@ -489,11 +472,9 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
 
 
 @blueprint.route('/daemonactive')
+@flask_login.login_required
 def daemon_active():
     """Return 'alive' if the daemon is running"""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     try:
         control = DaemonControl()
         return control.daemon_status()
@@ -504,13 +485,10 @@ def daemon_active():
 
 
 @blueprint.route('/systemctl/<action>')
+@flask_login.login_required
 def computer_command(action):
     """Execute one of several commands as root"""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if not flaskutils.authorized(session, 'Guest'):
-        flaskutils.deny_guest_user()
+    if not flaskutils.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     try:
@@ -541,15 +519,15 @@ def newremote():
     pass_word = request.args.get('passw')
 
     user = User.query.filter(
-        User.user_name == username).first()
+        User.name == username).first()
 
     # TODO: Change sleep() to max requests per duration of time
     time.sleep(1)  # Slow down requests (hackish, prevent brute force attack)
     if user:
-        if User().check_password(pass_word, user.user_password_hash) == user.user_password_hash:
+        if User().check_password(pass_word, user.password_hash) == user.password_hash:
             return jsonify(status=0,
                            message="{hash}".format(
-                               hash=user.user_password_hash))
+                               hash=user.password_hash))
     return jsonify(status=1,
                    message="Unable to authenticate with user and password.")
 
@@ -561,13 +539,13 @@ def data():
     password_hash = request.args.get('pw_hash')
 
     user = User.query.filter(
-        User.user_name == username).first()
+        User.name == username).first()
 
     # TODO: Change sleep() to max requests per duration of time
     time.sleep(1)  # Slow down requests (hackish, prevents brute force attack)
     if (user and
-            user.role.name == 'admin' and
-            password_hash == user.user_password_hash):
+            user.roles.name == 'admin' and
+            password_hash == user.password_hash):
         return "0"
     return "1"
 
