@@ -16,6 +16,7 @@ from sqlalchemy import func
 # Classes
 from databases.mycodo_db.models import (
     AlembicVersion,
+    Conditional,
     LCD,
     Method,
     PID,
@@ -205,6 +206,8 @@ def recreate_stat_file():
         ['num_relays', 0],
         ['num_sensors', 0],
         ['num_sensors_active', 0],
+        ['num_condtionals', 0],
+        ['num_condtionals_active', 0],
         ['num_timers', 0],
         ['num_timers_active', 0]
     ]
@@ -242,6 +245,12 @@ def send_stats():
                        get_count(
                            sensors.filter(Sensor.is_activated == True)))
 
+        conditionals = db_retrieve_table_daemon(Conditional)
+        add_update_csv(STATS_CSV, 'num_condtionals', get_count(conditionals))
+        add_update_csv(STATS_CSV, 'num_conditionals_active',
+                       get_count(
+                           conditionals.filter(Conditional.is_activated == True)))
+
         pids = db_retrieve_table_daemon(PID)
         add_update_csv(STATS_CSV, 'num_pids', get_count(pids))
         add_update_csv(STATS_CSV, 'num_pids_active',
@@ -254,8 +263,7 @@ def send_stats():
 
         methods = db_retrieve_table_daemon(Method)
         add_update_csv(STATS_CSV, 'num_methods',
-                       get_count(methods.filter(
-                           Method.method_order == 0)))
+                       get_count(methods))
         add_update_csv(STATS_CSV, 'num_methods_in_pid',
                        get_count(pids.filter(PID.method_id != '')))
 
