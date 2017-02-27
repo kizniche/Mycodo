@@ -72,12 +72,13 @@ def create_admin():
     form = flaskforms.CreateAdmin()
     if request.method == 'POST':
         if form.validate():
+            username = form.username.data.lower()
             error = False
             if form.password.data != form.password_repeat.data:
                 flash(gettext("Passwords do not match. Please try again."),
                       "error")
                 error = True
-            if not test_username(form.username.data):
+            if not test_username(username):
                 flash(gettext(
                     "Invalid user name. Must be between 2 and 64 characters "
                     "and only contain letters and numbers."),
@@ -93,7 +94,7 @@ def create_admin():
                 return redirect(url_for('general_routes.home'))
 
             new_user = User()
-            new_user.name = form.username.data
+            new_user.name = username
             new_user.email = form.email.data
             new_user.set_password(form.password.data)
             new_user.role = 1  # Admin
@@ -102,12 +103,12 @@ def create_admin():
                 db.session.add(new_user)
                 db.session.commit()
                 flash(gettext("User '%(user)s' successfully created. Please "
-                              "log in below.", user=form.username.data),
+                              "log in below.", user=username),
                       "success")
                 return redirect(url_for('authentication_routes.do_login'))
             except Exception as except_msg:
                 flash(gettext("Failed to create user '%(user)s': %(err)s",
-                              user=form.username.data,
+                              user=username,
                               err=except_msg), "error")
         else:
             flash_form_errors(form)
@@ -142,6 +143,7 @@ def do_login():
                 "info")
     else:
         if request.method == 'POST':
+            username = form.username.data.lower()
             user_ip = request.environ.get('REMOTE_ADDR', 'unknown address')
             form_name = request.form['form-name']
             if form_name == 'acknowledge':
@@ -154,15 +156,15 @@ def do_login():
                                   "%(err)s", err=except_msg), "error")
             elif form_name == 'login' and form.validate_on_submit():
                 user = User.query.filter(
-                    User.name == form.username.data).first()
+                    User.name == username).first()
                 if not user:
-                    login_log(form.username.data, 'NA', user_ip, 'NOUSER')
+                    login_log(username, 'NA', user_ip, 'NOUSER')
                     failed_login()
                 elif User().check_password(
                         form.password.data,
                         user.password_hash) == user.password_hash:
 
-                    login_log(user.name, user.roles.name, user_ip, 'LOGIN')
+                    login_log(username, user.roles.name, user_ip, 'LOGIN')
 
                     # flask-login user
                     login_user = User()
@@ -172,10 +174,10 @@ def do_login():
 
                     return redirect(url_for('general_routes.home'))
                 else:
-                    login_log(user.name, user.roles.name, user_ip, 'FAIL')
+                    login_log(username, user.roles.name, user_ip, 'FAIL')
                     failed_login()
             else:
-                login_log(form.username.data, 'NA', user_ip, 'FAIL')
+                login_log(username, 'NA', user_ip, 'FAIL')
                 failed_login()
 
             return redirect('/login')

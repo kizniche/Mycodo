@@ -15,6 +15,7 @@
 
 ### Miscellaneous
 
+  - User names are no longer case-sensitive
   - Switch to using Flask-Login
   - Switch to using flask_wtf.FlaskForm (from using depricated flask_wtf.Form)
   - Update web interface style and layout

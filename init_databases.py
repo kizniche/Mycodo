@@ -48,7 +48,7 @@ def add_user(admin=False):
     print('\nAdd user to database')
 
     while True:
-        user_name = raw_input('User (a-z, A-Z, 2-64 chars): ')
+        user_name = raw_input('User (a-z, A-Z, 2-64 chars): ').lower()
         if test_username(user_name):
             new_user.name = user_name
             break
@@ -89,10 +89,12 @@ def add_user(admin=False):
 
 
 def delete_user(username):
-    if query_yes_no("Confirm delete user '{}' from user database.".format(username)):
+    if query_yes_no("Confirm delete user '{}' from user "
+                    "database.".format(username.lower())):
         try:
             with session_scope(MYCODO_DB_PATH) as db_session:
-                user = db_session.query(User).filter(User.name == username).one()
+                user = db_session.query(User).filter(
+                    User.name == username.lower()).first()
                 db_session.delete(user)
                 print("User deleted.")
                 sys.exit(0)
@@ -102,10 +104,11 @@ def delete_user(username):
 
 
 def change_password(username):
-    print('Changing password for {}'.format(username))
+    print('Changing password for {}'.format(username.lower()))
 
     with session_scope(MYCODO_DB_PATH) as db_session:
-        user = db_session.query(User).filter(User.name == username).one()
+        user = db_session.query(User).filter(
+            User.name == username.lower()).first()
 
         while True:
             user_password = getpass.getpass('Password: ')

@@ -256,7 +256,8 @@ class DaemonController(threading.Thread):
                     try:
                         camera = db_retrieve_table_daemon(Camera, entry='all')
                     except Exception:
-                        self.logger.error("Could not read camera table.")
+                        camera = []
+                        self.logger.debug("Could not read camera table.")
                     for each_camera in camera:
                         if (each_camera.timelapse_started and
                                 now > each_camera.timelapse_end_time):
