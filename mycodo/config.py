@@ -173,8 +173,6 @@ LOGIN_BAN_SECONDS = 600  # 10 minutes
 # Relay
 MAX_AMPS = 15
 
-SECRET_KEY_PATH = os.path.join(DATABASE_PATH, 'secret_key')
-
 
 class ProdConfig(object):
     """ Production Configuration """
@@ -186,10 +184,11 @@ class ProdConfig(object):
     REMEMBER_COOKIE_DURATION = timedelta(days=90)
 
     # Ensure file containing the Flask secret_key exists
-    if not os.path.isfile(SECRET_KEY_PATH):
-        with open(SECRET_KEY_PATH, 'w') as file:
+    FLASK_SECRET_KEY_PATH = os.path.join(DATABASE_PATH, 'flask_secret_key')
+    if not os.path.isfile(FLASK_SECRET_KEY_PATH):
+        with open(FLASK_SECRET_KEY_PATH, 'w') as file:
             file.write(os.urandom(24))
-    SECRET_KEY = open(SECRET_KEY_PATH, 'rb').read()
+    SECRET_KEY = open(FLASK_SECRET_KEY_PATH, 'rb').read()
 
 
 class TestConfig(object):

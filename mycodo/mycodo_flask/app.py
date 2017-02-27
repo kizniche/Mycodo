@@ -24,12 +24,14 @@
 
 import flask_login
 from flask import (
+    flash,
     Flask,
     redirect,
     request,
     url_for
 )
 from flask_babel import Babel
+from flask_babel import gettext
 from flask_sslify import SSLify
 from mycodo.databases.mycodo_db.models import (
     db,
@@ -93,6 +95,7 @@ def create_app(config=ProdConfig):
 
     @login_manager.unauthorized_handler
     def unauthorized():
+        flash(gettext('Please log in to access this page'), "error")
         return redirect(url_for('authentication_routes.do_login'))
 
     return app

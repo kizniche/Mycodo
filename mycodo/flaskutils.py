@@ -156,10 +156,10 @@ def validate_method_data(form_data, this_method):
             if (not form_data.DurationSec.data or
                     not form_data.relayID.data or
                     not form_data.relayState.data):
-                flash(gettext("Required: Duration, Relay ID, and Relay State"),
+                flash(gettext("Required: Relay ID, Relay State, and Relay Duration"),
                       "error")
                 return 1
-            if not is_positive_integer(form_data.DurationSec.data):
+            if not is_positive_integer(form_data.relayDurationSec.data):
                 return 1
         elif this_method.method_type == 'Daily':
             if (not form_data.relayDailyTime.data or
@@ -359,8 +359,10 @@ def method_add(form_add_method):
         db.session.add(add_method_data)
         db.session.commit()
 
-        method.method_order = add_display_order(display_order, add_method_data.id)
-        db.session.commit()
+        # Add line to method data list if not a relay duration
+        if form_add_method.method_select.data != 'relay':
+            method.method_order = add_display_order(display_order, add_method_data.id)
+            db.session.commit()
 
         if form_add_method.method_select.data == 'setpoint':
             if method.method_type == 'Date':
@@ -390,6 +392,7 @@ def method_add(form_add_method):
                               tm=form_add_method.DurationSec.data), "success")
 
     except Exception as except_msg:
+        logger.exception(1)
         error.append(except_msg)
     flash_success_errors(error, action, url_for('method_routes.method_list'))
 
@@ -410,11 +413,12 @@ def method_mod(form_mod_method):
         if form_mod_method.Delete.data:
             delete_entry_with_id(MethodData,
                                  form_mod_method.method_data_id.data)
-            method_order = Method.query.filter(Method.id == method.id).first()
-            display_order = csv_to_list_of_int(method_order.method_order)
-            display_order.remove(method_data.id)
-            method_order.method_order = list_to_csv(display_order)
-            db.session.commit()
+            if form_mod_method.method_select.data != 'relay':
+                method_order = Method.query.filter(Method.id == method.id).first()
+                display_order = csv_to_list_of_int(method_order.method_order)
+                display_order.remove(method_data.id)
+                method_order.method_order = list_to_csv(display_order)
+                db.session.commit()
             return 0
 
         if form_mod_method.rename.data:

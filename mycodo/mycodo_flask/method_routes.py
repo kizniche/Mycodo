@@ -98,6 +98,9 @@ def method_data(method_id):
                  None])
 
     elif method.method_type == "Daily":
+        method_data = method_data.filter(MethodData.time_start != None)
+        method_data = method_data.filter(MethodData.time_end != None)
+        method_data = method_data.filter(MethodData.relay_id == None)
         for each_method in method_data:
             if each_method.setpoint_end is None:
                 setpoint_end = each_method.setpoint_start
@@ -143,6 +146,7 @@ def method_data(method_id):
         first_entry = True
         start_duration = 0
         end_duration = 0
+        method_data = method_data.filter(MethodData.relay_id == None)
         for each_method in method_data:
             if each_method.setpoint_end is None:
                 setpoint_end = each_method.setpoint_start
@@ -223,10 +227,17 @@ def method_builder(method_id):
         display_order = csv_to_list_of_int(method.method_order)
 
         method_data = MethodData.query.filter(MethodData.method_id == method.id)
+        setpoint_method_data = MethodData.query.filter(MethodData.setpoint_start != None)
+        sine_method_data = MethodData.query.filter(MethodData.amplitude != None)
+        bezier_method_data = MethodData.query.filter(MethodData.x0 != None)
         if display_order is not None:
-            last_method_data = method_data.filter(MethodData.id == display_order[-1]).first()
+            last_setpoint_method = setpoint_method_data.filter(MethodData.id == display_order[-1]).first()
+            last_sine_method = sine_method_data.filter(MethodData.id == display_order[-1]).first()
+            last_bezier_method = bezier_method_data.filter(MethodData.id == display_order[-1]).first()
         else:
-            last_method_data = None
+            last_setpoint_method = None
+            last_sine_method = None
+            last_bezier_method = None
 
         last_end_time = ''
         last_setpoint = ''
@@ -234,15 +245,15 @@ def method_builder(method_id):
             method_data = method_data.all()
 
             # Get last entry end time and setpoint to populate the form
-            if last_method_data is None:
+            if last_setpoint_method is None:
                 last_end_time = ''
                 last_setpoint = ''
             else:
-                last_end_time = last_method_data.time_end
-                if last_method_data.setpoint_end is not None:
-                    last_setpoint = last_method_data.setpoint_end
+                last_end_time = last_setpoint_method.time_end
+                if last_setpoint_method.setpoint_end is not None:
+                    last_setpoint = last_setpoint_method.setpoint_end
                 else:
-                    last_setpoint = last_method_data.setpoint_start
+                    last_setpoint = last_setpoint_method.setpoint_start
 
         if request.method == 'POST':
             form_name = request.form['form-name']
@@ -264,7 +275,9 @@ def method_builder(method_id):
                                method_data=method_data,
                                method_id=method_id,
                                last_end_time=last_end_time,
-                               last_method_data=last_method_data,
+                               last_bezier_method=last_bezier_method,
+                               last_sine_method=last_sine_method,
+                               last_setpoint_method=last_setpoint_method,
                                last_setpoint=last_setpoint,
                                form_create_method=form_create_method,
                                form_add_method=form_add_method,
