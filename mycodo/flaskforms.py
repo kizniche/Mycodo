@@ -813,7 +813,7 @@ class RelayMod(FlaskForm):
     )
     amps = DecimalField(
         lazy_gettext('Current Draw (amps)'),
-        render_kw={"placeholder": lazy_gettext("Amps")},
+        render_kw={"placeholder": lazy_gettext("amps")},
         validators=[validators.NumberRange(
             min=0,
             max=50,

@@ -386,7 +386,7 @@ If you would like to rescan for translatable text and update your language's mes
 
 ```
 pybabel extract -F babel.cfg -k lazy_gettext -o messages.pot .
-pybabel update -i messages.pot -d mycodo_flask/translations
+pybabel update --ignore-obsolete -i messages.pot -d mycodo_flask/translations
 pybabel compile -d mycodo_flask/translations
 ```
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-02-26 17:25-0500\n"
+"POT-Creation-Date: 2017-02-26 22:14-0500\n"
 "PO-Revision-Date: 2017-01-19 13:50-0300\n"
 "Last-Translator: \n"
 "Language: es\n"
@@ -147,20 +147,20 @@ msgstr "Agregar Condición"
 
 #: flaskforms.py:90 flaskforms.py:115 flaskforms.py:433 flaskforms.py:619
 #: flaskforms.py:840 flaskforms.py:975 flaskforms.py:1015 flaskforms.py:1034
-#: flaskforms.py:1082 mycodo_flask/templates/pages/method-build.html:307
+#: flaskforms.py:1082 mycodo_flask/templates/pages/method-build.html:315
 msgid "Save"
 msgstr "Guardar"
 
 #: flaskforms.py:91 flaskforms.py:116 flaskforms.py:438 flaskforms.py:620
 #: flaskforms.py:841 flaskforms.py:976 flaskforms.py:1016 flaskforms.py:1083
-#: flaskforms.py:1180 flaskutils.py:513 flaskutils.py:947 flaskutils.py:1080
-#: flaskutils.py:1314 flaskutils.py:1786 flaskutils.py:1798 flaskutils.py:2026
-#: flaskutils.py:2234 flaskutils.py:2545 mycodo_flask/method_routes.py:281
+#: flaskforms.py:1180 flaskutils.py:517 flaskutils.py:951 flaskutils.py:1084
+#: flaskutils.py:1318 flaskutils.py:1790 flaskutils.py:1802 flaskutils.py:2030
+#: flaskutils.py:2238 flaskutils.py:2549 mycodo_flask/method_routes.py:294
 msgid "Delete"
 msgstr "Borrar"
 
 #: flaskforms.py:92 flaskforms.py:443 flaskforms.py:977 flaskforms.py:1084
-#: flaskforms.py:1092 flaskutils.py:1131
+#: flaskforms.py:1092 flaskutils.py:1135
 msgid "Activate"
 msgstr "Activar"
 
@@ -181,13 +181,13 @@ msgstr ""
 msgid "Action String"
 msgstr ""
 
-#: flaskforms.py:107 flaskforms.py:615 flaskutils.py:1478 flaskutils.py:1516
-#: flaskutils.py:1555 flaskutils.py:1619 flaskutils.py:1648 flaskutils.py:1730
-#: flaskutils.py:1758 flaskutils.py:1787 flaskutils.py:1809
+#: flaskforms.py:107 flaskforms.py:615 flaskutils.py:1482 flaskutils.py:1520
+#: flaskutils.py:1559 flaskutils.py:1623 flaskutils.py:1652 flaskutils.py:1734
+#: flaskutils.py:1762 flaskutils.py:1791 flaskutils.py:1813
 #: mycodo_flask/templates/layout.html:74
-#: mycodo_flask/templates/pages/method-build.html:235
-#: mycodo_flask/templates/pages/method-build.html:249
-#: mycodo_flask/templates/pages/method-build.html:262
+#: mycodo_flask/templates/pages/method-build.html:243
+#: mycodo_flask/templates/pages/method-build.html:257
+#: mycodo_flask/templates/pages/method-build.html:270
 msgid "Relay"
 msgstr "Relé"
 
@@ -195,12 +195,12 @@ msgstr "Relé"
 msgid "Relay State"
 msgstr "Estado Relé"
 
-#: flaskforms.py:109 flaskforms.py:111
+#: flaskforms.py:109 flaskforms.py:111 flaskforms.py:612
 #: mycodo_flask/templates/pages/method-list.html:34
 msgid "Duration"
 msgstr "Duracion"
 
-#: flaskforms.py:110 flaskutils.py:2474 flaskutils.py:2501 flaskutils.py:2546
+#: flaskforms.py:110 flaskutils.py:2478 flaskutils.py:2505 flaskutils.py:2550
 #: mycodo_flask/templates/layout-settings.html:32
 #: mycodo_flask/templates/layout.html:110
 #: mycodo_flask/templates/pages/camera.html:3
@@ -501,7 +501,7 @@ msgstr "Log Restauración"
 msgid "Create New Method"
 msgstr "Crear nuevo método"
 
-#: flaskforms.py:519 mycodo_flask/templates/pages/method-build.html:26
+#: flaskforms.py:519 mycodo_flask/templates/pages/method-build.html:30
 msgid "Method ID"
 msgstr "ID Método"
 
@@ -529,7 +529,7 @@ msgstr "Referencia de Inicio"
 msgid "End Setpoint (optional)"
 msgstr "Referencia final (opcional)"
 
-#: flaskforms.py:542 flaskforms.py:612
+#: flaskforms.py:542
 msgid "Duration (seconds)"
 msgstr "Duración (segundos)"
 
@@ -574,9 +574,9 @@ msgstr "Agregar método"
 msgid "End Setpoint"
 msgstr ""
 
-#: flaskforms.py:617
-msgid "Relay On Duration (sec)"
-msgstr "Duración Encendido (segundos)"
+#: flaskforms.py:617 mycodo_flask/templates/pages/graph.html:691
+msgid "Relay Duration"
+msgstr "Duración Relé"
 
 #: flaskforms.py:618
 msgid "Rename"
@@ -754,7 +754,7 @@ msgstr "Apague"
 msgid "Seconds to turn on"
 msgstr ""
 
-#: flaskforms.py:850 mycodo_flask/templates/pages/method-build.html:459
+#: flaskforms.py:850 mycodo_flask/templates/pages/method-build.html:497
 msgid "Turn On"
 msgstr "Encender"
 
@@ -770,9 +770,9 @@ msgstr "Agregar Host"
 msgid "Delete Host"
 msgstr "Borrar Host"
 
-#: flaskforms.py:892 flaskutils.py:676 flaskutils.py:1518 flaskutils.py:1557
-#: flaskutils.py:1621 flaskutils.py:1650 flaskutils.py:1843 flaskutils.py:1965
-#: flaskutils.py:2027 flaskutils.py:2069 mycodo_flask/templates/layout.html:73
+#: flaskforms.py:892 flaskutils.py:680 flaskutils.py:1522 flaskutils.py:1561
+#: flaskutils.py:1625 flaskutils.py:1654 flaskutils.py:1847 flaskutils.py:1969
+#: flaskutils.py:2031 flaskutils.py:2073 mycodo_flask/templates/layout.html:73
 msgid "Sensor"
 msgstr "Sensor"
 
@@ -1116,8 +1116,8 @@ msgid "Invalid Date/Time format. Correct format: DD-MM-YYYY HH:MM:SS"
 msgstr "Formato de Fecha/Hora no válido. Formato correcto: DD-MM-AAAA HH: MM: SS"
 
 #: flaskutils.py:159
-msgid "Required: Duration, Relay ID, and Relay State"
-msgstr "Se requiere: Duración, ID de relé y estado de relé"
+msgid "Required: Relay ID, Relay State, and Relay Duration"
+msgstr ""
 
 #: flaskutils.py:168
 msgid "Required: Time, Relay ID, and Relay State"
@@ -1127,14 +1127,14 @@ msgstr "Se requiere: Tiempo, ID de relé y Estado de relé"
 msgid "Create"
 msgstr ""
 
-#: flaskutils.py:184 flaskutils.py:245 flaskutils.py:400 flaskutils.py:514
-#: mycodo_flask/method_routes.py:282 mycodo_flask/templates/layout.html:75
+#: flaskutils.py:184 flaskutils.py:245 flaskutils.py:403 flaskutils.py:518
+#: mycodo_flask/method_routes.py:295 mycodo_flask/templates/layout.html:75
 msgid "Method"
 msgstr "Método"
 
-#: flaskutils.py:244 flaskutils.py:841 flaskutils.py:1002 flaskutils.py:1196
-#: flaskutils.py:1524 flaskutils.py:1627 flaskutils.py:1729 flaskutils.py:1741
-#: flaskutils.py:1842 flaskutils.py:2154 flaskutils.py:2297 flaskutils.py:2473
+#: flaskutils.py:244 flaskutils.py:845 flaskutils.py:1006 flaskutils.py:1200
+#: flaskutils.py:1528 flaskutils.py:1631 flaskutils.py:1733 flaskutils.py:1745
+#: flaskutils.py:1846 flaskutils.py:2158 flaskutils.py:2301 flaskutils.py:2477
 msgid "Add"
 msgstr ""
 
@@ -1156,28 +1156,28 @@ msgstr ""
 " hora de finalización de la última entrada (%(et)s). Nota: Pueden ser al "
 "mismo tiempo."
 
-#: flaskutils.py:367 flaskutils.py:374
+#: flaskutils.py:369 flaskutils.py:376
 #, python-format
 msgid "Added duration to method from %(st)s to %(end)s"
 msgstr "Se agregó la duración al método de %(st)s a %(end)s"
 
-#: flaskutils.py:377
+#: flaskutils.py:379
 #, python-format
 msgid "Added duration to method for %(sec)s seconds"
 msgstr "Se agregó la duración al método de %(sec)s segundos"
 
-#: flaskutils.py:381 flaskutils.py:386 flaskutils.py:388
+#: flaskutils.py:383 flaskutils.py:388 flaskutils.py:390
 #, python-format
 msgid "Added relay modulation to method at start time: %(tm)s"
 msgstr "Se agregó la modulación de relé al Método en la hora de inicio: %​(tm)s"
 
-#: flaskutils.py:399 flaskutils.py:887 flaskutils.py:1025 flaskutils.py:1219
-#: flaskutils.py:1757 flaskutils.py:1774 flaskutils.py:1964 flaskutils.py:2200
-#: flaskutils.py:2338 flaskutils.py:2398 flaskutils.py:2435 flaskutils.py:2500
+#: flaskutils.py:402 flaskutils.py:891 flaskutils.py:1029 flaskutils.py:1223
+#: flaskutils.py:1761 flaskutils.py:1778 flaskutils.py:1968 flaskutils.py:2204
+#: flaskutils.py:2342 flaskutils.py:2402 flaskutils.py:2439 flaskutils.py:2504
 msgid "Modify"
 msgstr ""
 
-#: flaskutils.py:453
+#: flaskutils.py:457
 #, python-format
 msgid ""
 "The entry start time (%(st)s) cannot overlap the previous entry's end "
@@ -1186,7 +1186,7 @@ msgstr ""
 "La hora de inicio de la entrada (%(st)s) no puede superponerse a la hora "
 "de finalización de la entrada anterior (%(et)s)"
 
-#: flaskutils.py:463
+#: flaskutils.py:467
 #, python-format
 msgid ""
 "The entry end time (%(et)s) cannot overlap the next entry's start time "
@@ -1195,197 +1195,197 @@ msgstr ""
 "La hora de inicio de la entrada (%(et)s) no puede superponerse a la hora "
 "de inicio de la siguiente entrada (%(st)s)"
 
-#: flaskutils.py:579
+#: flaskutils.py:583
 #, python-format
 msgid "Remote Host %(host)s with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
-#: flaskutils.py:590 flaskutils.py:593 flaskutils.py:596 flaskutils.py:614
+#: flaskutils.py:594 flaskutils.py:597 flaskutils.py:600 flaskutils.py:618
 #, python-format
 msgid "Remote Host Error: %(msg)s"
 msgstr ""
 
-#: flaskutils.py:636 flaskutils.py:706 flaskutils.py:723 flaskutils.py:2601
-#: flaskutils.py:2621
+#: flaskutils.py:640 flaskutils.py:710 flaskutils.py:727 flaskutils.py:2605
+#: flaskutils.py:2625
 #, python-format
 msgid "Error: %(err)s"
 msgstr ""
 
-#: flaskutils.py:642
+#: flaskutils.py:646
 #, python-format
 msgid "Success: %(err)s"
 msgstr ""
 
-#: flaskutils.py:674 flaskutils.py:1003 flaskutils.py:1026 flaskutils.py:1081
-#: flaskutils.py:1102 flaskutils.py:1132 mycodo_flask/templates/layout.html:109
+#: flaskutils.py:678 flaskutils.py:1007 flaskutils.py:1030 flaskutils.py:1085
+#: flaskutils.py:1106 flaskutils.py:1136 mycodo_flask/templates/layout.html:109
 #: mycodo_flask/templates/pages/lcd.html:3
 msgid "LCD"
 msgstr "LCD"
 
-#: flaskutils.py:675 flaskutils.py:1197 flaskutils.py:1220 flaskutils.py:1315
-#: flaskutils.py:1339 flaskutils.py:1389 mycodo_flask/templates/layout.html:76
+#: flaskutils.py:679 flaskutils.py:1201 flaskutils.py:1224 flaskutils.py:1319
+#: flaskutils.py:1343 flaskutils.py:1393 mycodo_flask/templates/layout.html:76
 #: mycodo_flask/templates/pages/pid.html:3
 msgid "PID"
 msgstr "PID"
 
-#: flaskutils.py:677 flaskutils.py:2155 flaskutils.py:2201 flaskutils.py:2235
-#: flaskutils.py:2254 mycodo_flask/templates/layout.html:77
+#: flaskutils.py:681 flaskutils.py:2159 flaskutils.py:2205 flaskutils.py:2239
+#: flaskutils.py:2258 mycodo_flask/templates/layout.html:77
 msgid "Timer"
 msgstr "Avisador"
 
-#: flaskutils.py:697
+#: flaskutils.py:701
 #, python-format
 msgid "%(cont)s controller activated in SQL database"
 msgstr "Controlador de %(cont)s activado en base de datos SQL"
 
-#: flaskutils.py:701
+#: flaskutils.py:705
 #, python-format
 msgid "%(cont)s controller deactivated in SQL database"
 msgstr "Controlador de %(cont)s desactivado en la base de datos SQL"
 
-#: flaskutils.py:842 flaskutils.py:888 flaskutils.py:948 flaskutils.py:969
+#: flaskutils.py:846 flaskutils.py:892 flaskutils.py:952 flaskutils.py:973
 #: mycodo_flask/templates/pages/graph.html:17
 msgid "Graph"
 msgstr "Gráfico"
 
-#: flaskutils.py:868
+#: flaskutils.py:872
 #, python-format
 msgid "Graph with ID %(id)s successfully added"
 msgstr ""
 
-#: flaskutils.py:902
+#: flaskutils.py:906
 msgid "Invalid hex color value"
 msgstr ""
 
-#: flaskutils.py:968 flaskutils.py:1101 flaskutils.py:1338 flaskutils.py:1808
-#: flaskutils.py:2068 flaskutils.py:2253
+#: flaskutils.py:972 flaskutils.py:1105 flaskutils.py:1342 flaskutils.py:1812
+#: flaskutils.py:2072 flaskutils.py:2257
 msgid "Reorder"
 msgstr ""
 
-#: flaskutils.py:1034
+#: flaskutils.py:1038
 msgid "Deactivate LCD controller before modifying its settings."
 msgstr "Desactive el controlador LCD antes de modificar sus ajustes."
 
-#: flaskutils.py:1154
+#: flaskutils.py:1158
 msgid "Cannot activate controller if the associated sensor controller is inactive"
 msgstr ""
 "No se puede activar el controlador si el controlador del sensor asociado "
 "está inactivo"
 
-#: flaskutils.py:1185 flaskutils.py:2385 flaskutils.py:2628 flaskutils.py:2648
+#: flaskutils.py:1189 flaskutils.py:2389 flaskutils.py:2632 flaskutils.py:2652
 #, python-format
 msgid "Error: %(msg)s"
 msgstr ""
 
-#: flaskutils.py:1228
+#: flaskutils.py:1232
 msgid "A valid sensor ID is required"
 msgstr "Se requiere un ID de sensor válido"
 
-#: flaskutils.py:1258
+#: flaskutils.py:1262
 msgid "Select a Measure Type that is compatible with the chosen sensor"
 msgstr "Seleccione un tipo de medida que sea compatible con el sensor elegido"
 
-#: flaskutils.py:1302
+#: flaskutils.py:1306
 #, python-format
 msgid "PID Controller settings refresh response: %(resp)s"
 msgstr "Respuesta de actualización de los ajustes del controlador PID: %(resp)s"
 
-#: flaskutils.py:1370
+#: flaskutils.py:1374
 msgid "A valid sensor is required"
 msgstr ""
 
-#: flaskutils.py:1373
+#: flaskutils.py:1377
 msgid "A valid Measure Type is required"
 msgstr "Se requiere un tipo de medida válido"
 
-#: flaskutils.py:1376
+#: flaskutils.py:1380
 msgid "A Raise Relay ID and/or a Lower Relay ID is required"
 msgstr "Se requiere ID del relé aumentar y/o una ID de relé disminuir"
 
-#: flaskutils.py:1388 flaskutils.py:1477
+#: flaskutils.py:1392 flaskutils.py:1481
 msgid "Actuate"
 msgstr ""
 
-#: flaskutils.py:1399
+#: flaskutils.py:1403
 msgid ""
 "Cannot activate PID controller if the associated sensor controller is "
 "inactive"
 msgstr ""
 
-#: flaskutils.py:1406
+#: flaskutils.py:1410
 msgid ""
 "Cannot activate PID controller if raise and/or lower relay IDs are not "
 "selected"
 msgstr ""
 
-#: flaskutils.py:1440
+#: flaskutils.py:1444
 #, python-format
 msgid "Invalid PID action: %(act)s"
 msgstr "Acción PID no válida: %(act)s"
 
-#: flaskutils.py:1465
+#: flaskutils.py:1469
 #, python-format
 msgid "Daemon response to PID controller %(act)s command: %(rval)s"
 msgstr "La respuesta del Daemon al controlador PID %(act)s comando: %(rval)s"
 
-#: flaskutils.py:1468
+#: flaskutils.py:1472
 #, python-format
 msgid "PID Error: %(msg)s"
 msgstr ""
 
-#: flaskutils.py:1484
+#: flaskutils.py:1488
 msgid "Cannot modulate relay with a GPIO of 0"
 msgstr "No se puede modular el relé con un GPIO de 0"
 
-#: flaskutils.py:1487
+#: flaskutils.py:1491
 msgid "Value must be greater than 0"
 msgstr ""
 
-#: flaskutils.py:1491
+#: flaskutils.py:1495
 #, python-format
 msgid "Relay turned on for %(sec)s seconds: %(rvalue)s"
 msgstr ""
 
-#: flaskutils.py:1497
+#: flaskutils.py:1501
 #, python-format
 msgid "Relay turned on: %(rvalue)s"
 msgstr ""
 
-#: flaskutils.py:1501
+#: flaskutils.py:1505
 #, python-format
 msgid "Relay turned off: %(rvalue)s"
 msgstr ""
 
-#: flaskutils.py:1505
+#: flaskutils.py:1509
 msgid "Invalid value"
 msgstr ""
 
-#: flaskutils.py:1525 flaskutils.py:1564 flaskutils.py:1628 flaskutils.py:1657
+#: flaskutils.py:1529 flaskutils.py:1568 flaskutils.py:1632 flaskutils.py:1661
 msgid "Conditional"
 msgstr ""
 
-#: flaskutils.py:1563 flaskutils.py:1656
+#: flaskutils.py:1567 flaskutils.py:1660
 msgid "Mod"
 msgstr ""
 
-#: flaskutils.py:1748
+#: flaskutils.py:1752
 msgid "Invalid quantity"
 msgstr ""
 
-#: flaskutils.py:1749
+#: flaskutils.py:1753
 msgid "Acceptable values:"
 msgstr ""
 
-#: flaskutils.py:1947
+#: flaskutils.py:1951
 #, python-format
 msgid "%(type)s Sensor with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
-#: flaskutils.py:1976
+#: flaskutils.py:1980
 msgid "Deactivate sensor controller before modifying its settings"
 msgstr "Desactive el controlador del sensor antes de modificar su configuración"
 
-#: flaskutils.py:1981
+#: flaskutils.py:1985
 msgid ""
 "Choose a Read Period equal to or greater than 7. The AM2315 may become "
 "unresponsive if the period is below 7."
@@ -1393,57 +1393,57 @@ msgstr ""
 "Elija un Período de Lectura igual o mayor que 7. El AM2315 puede no "
 "responder si el período es inferior a 7."
 
-#: flaskutils.py:1987
+#: flaskutils.py:1991
 msgid "The Read Period cannot be less than the Pre-Relay Duration"
 msgstr "El Período de Lectura no puede ser menor que la Duración del Pre-Relé"
 
-#: flaskutils.py:2176
+#: flaskutils.py:2180
 msgid "Durations must be greater than 0"
 msgstr ""
 
-#: flaskutils.py:2208
+#: flaskutils.py:2212
 msgid "Deactivate timer controller before modifying its settings"
 msgstr ""
 "Desactivar el controlador del temporizador antes de modificar su "
 "configuración"
 
-#: flaskutils.py:2298 flaskutils.py:2339
+#: flaskutils.py:2302 flaskutils.py:2343
 #: mycodo_flask/templates/layout-settings.html:27
 #: mycodo_flask/templates/settings/users.html:64
 msgid "User"
 msgstr "Usuario"
 
-#: flaskutils.py:2304 mycodo_flask/authentication_routes.py:81
+#: flaskutils.py:2308 mycodo_flask/authentication_routes.py:81
 msgid ""
 "Invalid user name. Must be between 2 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
 
-#: flaskutils.py:2309 mycodo_flask/authentication_routes.py:87
+#: flaskutils.py:2313 mycodo_flask/authentication_routes.py:87
 msgid ""
 "Invalid password. Must be between 6 and 64 characters and only contain "
 "letters, numbers, and symbols."
 msgstr ""
 
-#: flaskutils.py:2314 flaskutils.py:2358
+#: flaskutils.py:2318 flaskutils.py:2362
 #: mycodo_flask/authentication_routes.py:77
 msgid "Passwords do not match. Please try again."
 msgstr ""
 
-#: flaskutils.py:2350
+#: flaskutils.py:2354
 msgid "Invalid password"
 msgstr ""
 
-#: flaskutils.py:2399 mycodo_flask/templates/settings/general.html:6
+#: flaskutils.py:2403 mycodo_flask/templates/settings/general.html:6
 #: mycodo_flask/templates/settings/general.html:10
 msgid "General Settings"
 msgstr "Configuración General"
 
-#: flaskutils.py:2436
+#: flaskutils.py:2440
 msgid "Alert Settings"
 msgstr ""
 
-#: flaskutils.py:2448
+#: flaskutils.py:2452
 #, python-format
 msgid ""
 "Test email sent to %(recip)s. Check your inbox to see if it was "
@@ -1452,21 +1452,21 @@ msgstr ""
 "Correo electrónico de prueba enviado a %(recip)s. Revisa tu bandeja de "
 "entrada para ver si tuvo éxito."
 
-#: flaskutils.py:2595 flaskutils.py:2615 flaskutils.py:2654
+#: flaskutils.py:2599 flaskutils.py:2619 flaskutils.py:2658
 #, python-format
 msgid "Success: %(msg)s"
 msgstr ""
 
-#: flaskutils.py:2639
+#: flaskutils.py:2643
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr ""
 
-#: flaskutils.py:2718
+#: flaskutils.py:2722
 msgid "Cannot move above the first item in the list"
 msgstr ""
 
-#: flaskutils.py:2722
+#: flaskutils.py:2726
 msgid "Cannot move below the last item in the list"
 msgstr ""
 
@@ -1823,10 +1823,6 @@ msgstr ""
 msgid "New Graph"
 msgstr "Nuevo Gráfico"
 
-#: mycodo_flask/templates/pages/graph.html:691
-msgid "Relay Duration"
-msgstr "Duración Relé"
-
 #: mycodo_flask/templates/pages/graph.html:703
 #: mycodo_flask/templates/pages/graph.html:939
 #: mycodo_flask/templates/pages/graph.html:949
@@ -2006,22 +2002,22 @@ msgid "Method Enabled"
 msgstr "Habilitar metodo"
 
 #: mycodo_flask/templates/pages/method-build.html:3
-#: mycodo_flask/templates/pages/method-build.html:26
+#: mycodo_flask/templates/pages/method-build.html:30
 msgid "Method-Builder"
 msgstr "Contrustror de Métodos"
 
-#: mycodo_flask/templates/pages/method-build.html:22
+#: mycodo_flask/templates/pages/method-build.html:24
 msgid "Back to Method Management"
 msgstr "Volver al Administrador de Métodos"
 
-#: mycodo_flask/templates/pages/method-build.html:69
+#: mycodo_flask/templates/pages/method-build.html:74
 msgid "Define the setpoint over a period of time based on specific times/dates."
 msgstr ""
 "Defina la referencia durante un período de tiempo basado en fechas / "
 "horas específicas."
 
-#: mycodo_flask/templates/pages/method-build.html:70
-#: mycodo_flask/templates/pages/method-build.html:92
+#: mycodo_flask/templates/pages/method-build.html:75
+#: mycodo_flask/templates/pages/method-build.html:94
 msgid ""
 "The new entry's start time may be equal to the last entry's end time, but"
 " it cannot overlap. The default setpoint for the PID will be used if "
@@ -2032,7 +2028,7 @@ msgstr ""
 "predeterminado para el PID se utilizará si hay algún tiempo no "
 "contabilizado."
 
-#: mycodo_flask/templates/pages/method-build.html:91
+#: mycodo_flask/templates/pages/method-build.html:93
 msgid ""
 "Define the setpoint over a period of time based on specific times of the "
 "day. This method will repeat daily. Start the first entry at midnight "
@@ -2073,7 +2069,7 @@ msgstr ""
 "se inclinarán para encajar dentro de un período de 24 horas y este método"
 " se repetirá diariamente."
 
-#: mycodo_flask/templates/pages/method-build.html:205
+#: mycodo_flask/templates/pages/method-build.html:204
 msgid ""
 "Define the setpoint over a period of time, based on specific durations of"
 " time."
@@ -2081,7 +2077,7 @@ msgstr ""
 "Define la referencia durante un período de tiempo, en función de las "
 "duraciones específicas del tiempo."
 
-#: mycodo_flask/templates/pages/method-build.html:206
+#: mycodo_flask/templates/pages/method-build.html:205
 msgid ""
 "Duration here is defined as the amount of time after the previous "
 "duration. If this is the first duration added, this will be the beginning"
@@ -2093,20 +2089,20 @@ msgstr ""
 "comienzo del método. Si esta no es la primera duración añadida, se "
 "ejecutará después de la última duración ya en el método."
 
-#: mycodo_flask/templates/pages/method-build.html:236
+#: mycodo_flask/templates/pages/method-build.html:244
 msgid "Activate or deactivate a relay within this method at a specific time/date."
 msgstr ""
 "Activar o desactivar un relé dentro de este método en una hora / fecha "
 "específica."
 
-#: mycodo_flask/templates/pages/method-build.html:250
+#: mycodo_flask/templates/pages/method-build.html:258
 msgid ""
 "Activate or deactivate a relay at a specific time of day. Hour and minute"
 " (HH:MM) here is defined as the time of day. For example, 3:05 PM would "
 "be \"15:05\"."
 msgstr ""
 
-#: mycodo_flask/templates/pages/method-build.html:263
+#: mycodo_flask/templates/pages/method-build.html:271
 msgid ""
 "Activate or deactivate a relay within this method at a specific duration."
 " Duration here is defined as the amount of time since the beginning of "
@@ -2114,15 +2110,15 @@ msgid ""
 " seconds after the start of the method."
 msgstr ""
 
-#: mycodo_flask/templates/pages/method-build.html:272
+#: mycodo_flask/templates/pages/method-build.html:279
 msgid "Modulate the selected relay"
 msgstr "Modular el relé seleccionado"
 
-#: mycodo_flask/templates/pages/method-build.html:410
+#: mycodo_flask/templates/pages/method-build.html:435
 msgid "Relay Modulation"
 msgstr "Modulación Relé"
 
-#: mycodo_flask/templates/pages/method-build.html:410
+#: mycodo_flask/templates/pages/method-build.html:438
 msgid ""
 "Note: This feature is currently not implemented. These relays will NOT be"
 " modulated if applied to a PID. This will be implemented soon."
@@ -2130,12 +2126,12 @@ msgstr ""
 "Nota: Esta función no está implementada actualmente. Estos relés no serán"
 " modulados si se aplican a un PID. Esto se implementará pronto."
 
-#: mycodo_flask/templates/pages/method-build.html:446
-#: mycodo_flask/templates/pages/method-build.html:457
+#: mycodo_flask/templates/pages/method-build.html:484
+#: mycodo_flask/templates/pages/method-build.html:495
 msgid "Modulate the selected relay."
 msgstr "Modular el relé seleccionado."
 
-#: mycodo_flask/templates/pages/method-build.html:460
+#: mycodo_flask/templates/pages/method-build.html:498
 msgid "Turn Off"
 msgstr "Apagar"
 
@@ -2163,11 +2159,11 @@ msgstr "Diara (Onda Sinuidal)"
 msgid "Daily (Bezier Curve)"
 msgstr "Diaria (Curva Bézier)"
 
-#: mycodo_flask/templates/pages/method-list.html:52
+#: mycodo_flask/templates/pages/method-list.html:53
 msgid "No Saved Methods Exist"
 msgstr "No existen Métodos almacendos"
 
-#: mycodo_flask/templates/pages/method-list.html:54
+#: mycodo_flask/templates/pages/method-list.html:55
 msgid "Saved Methods"
 msgstr "Métodos Almacenados"
 
@@ -2626,19 +2622,19 @@ msgstr ""
 msgid "12, 14, 16, or 18-bit ADC resolution."
 msgstr "12, 14, 16, o 18 bits de resolución ADC."
 
-#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:65
+#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:63
 msgid "Minimum analog to digital converter input voltage."
 msgstr "Tensión mínima de entrada del convertidor analógico a digital."
 
-#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:71
+#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:69
 msgid "Maximum analog to digital converter input voltage."
 msgstr "Tensión máxima de entrada del convertidor analógico a digital."
 
-#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:77
+#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:75
 msgid "Minimum unit to convert the voltage to."
 msgstr "Unidad mínima de conversión la tensión."
 
-#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:83
+#: mycodo_flask/templates/pages/sensor_options/ADS1x15.html:81
 msgid "Maximum unit to convert the voltage to."
 msgstr "Unidad máxima de conversión la tensión."
 
@@ -2872,648 +2868,4 @@ msgstr "Total"
 #: mycodo_flask/templates/tools/usage.html:86
 msgid "Cost"
 msgstr "Costo"
-
-#~ msgid "%(cont)s controller %(act)sd in SQL database."
-#~ msgstr "Controlador de %(cont)s %(act)s en la base de datos SQL."
-
-#~ msgid "Max emails per hour"
-#~ msgstr "Cantidad máxima de Emails (por hora)"
-
-#~ msgid "Refresh (sec)"
-#~ msgstr "Refrescar (segundos)"
-
-#~ msgid "Botify by Email"
-#~ msgstr ""
-
-#~ msgid "Switch Edge Detected"
-#~ msgstr ""
-
-#~ msgid "Bounce Time (ms)"
-#~ msgstr "Tiempo de anti-rebote (ms)"
-
-#~ msgid "Reset Period (sec)"
-#~ msgstr ""
-
-#~ msgid "Read Period (sec)"
-#~ msgstr ""
-
-#~ msgid "On sec."
-#~ msgstr "Encendido (seg)"
-
-#~ msgid ""
-#~ msgstr ""
-
-#~ msgid "Turn the selected relay on before taking a measurement"
-#~ msgstr ""
-
-#~ msgid "Activte camera if the condition is true."
-#~ msgstr ""
-
-#~ msgid "Guests are not permitted to create methods"
-#~ msgstr ""
-
-#~ msgid "Guests are not permitted to add to methods"
-#~ msgstr ""
-
-#~ msgid "Sine method settings successfully modified"
-#~ msgstr ""
-
-#~ msgid "Bezier method settings successfully modified"
-#~ msgstr ""
-
-#~ msgid "Added duration to method from %(st)s to %(end)s."
-#~ msgstr ""
-
-#~ msgid "Added relay modulation to method at %(tm)s"
-#~ msgstr ""
-
-#~ msgid "Added relay modulation to method at %(sec)s seconds"
-#~ msgstr ""
-
-#~ msgid "Add Method Error: %(err)s"
-#~ msgstr ""
-
-#~ msgid "Guests are not permitted to modify methods"
-#~ msgstr ""
-
-#~ msgid "Method successfully renamed."
-#~ msgstr ""
-
-#~ msgid "Method settings successfully modified."
-#~ msgstr ""
-
-#~ msgid "Guests are not permitted to add remote hosts"
-#~ msgstr ""
-
-#~ msgid "A remote host with that ID already exists"
-#~ msgstr ""
-
-#~ msgid "Guests are not permitted to delete remote hosts"
-#~ msgstr ""
-
-#~ msgid "Guests are not permitted to activate/deactivate controllers"
-#~ msgstr "Los huéspedes no se les permite activar / desactivar los controladores"
-
-#~ msgid "%(cont)s settings were not able to be modified: %(err)s"
-#~ msgstr ""
-
-#~ msgid "Guests are not permitted to add graphs"
-#~ msgstr ""
-
-#~ msgid "Guests are not permitted to modify graphs"
-#~ msgstr ""
-
-#~ msgid "Graph settings successfully modified"
-#~ msgstr ""
-
-#~ msgid "A graph with that ID already exists"
-#~ msgstr ""
-
-#~ msgid "Guests are not permitted to delete graphs"
-#~ msgstr ""
-
-#~ msgid "Guests are not permitted to delete sensors"
-#~ msgstr ""
-
-#~ msgid "Guests are not permitted to activate sensors"
-#~ msgstr ""
-
-#~ msgid "Guests are not permitted to deactivate sensors"
-#~ msgstr "Los huéspedes no se les permite desactivar los controladores"
-
-#~ msgid "Guests are not permitted to add sensor conditionals"
-#~ msgstr ""
-
-#~ msgid "A sensor conditional with that ID already exists"
-#~ msgstr ""
-
-#~ msgid "Guests are not permitted to modify sensor conditionals"
-#~ msgstr ""
-
-#~ msgid "Sensor Conditional settings successfully modified"
-#~ msgstr ""
-
-#~ msgid "Sensor Conditional activated in SQL database."
-#~ msgstr ""
-
-#~ msgid "Sensor Conditional deactivated in SQL database."
-#~ msgstr ""
-
-#~ msgid "Guests are not permitted to add timers"
-#~ msgstr ""
-
-#~ msgid "Added relay modulation to method at start time: %(sec)s"
-#~ msgstr ""
-
-#~ msgid "You must select a valid sensor ID"
-#~ msgstr ""
-
-#~ msgid "You must select a valid Measure Type"
-#~ msgstr ""
-
-#~ msgid "You must select a Raise Relay ID and/or a Lower Relay ID"
-#~ msgstr ""
-
-#~ msgid "Relay successfully turned on: {rvalue}"
-#~ msgstr ""
-
-#~ msgid "Relay successfully turned off: {rvalue}"
-#~ msgstr ""
-
-#~ msgid "Sensor and Measurement"
-#~ msgstr "Sensor y Medición"
-
-#~ msgid "Create Log Controller"
-#~ msgstr "Crear Log del Controlador"
-
-#~ msgid "SHT Input Voltage"
-#~ msgstr ""
-
-#~ msgid "Log"
-#~ msgstr "Log"
-
-#~ msgid "Error in the period field: Durations must be greater than 0"
-#~ msgstr ""
-
-#~ msgid "Deactivate log controller before modifying its settings"
-#~ msgstr ""
-
-#~ msgid "Sensor Logs"
-#~ msgstr "Registros del sensor"
-
-#~ msgid "Logs"
-#~ msgstr "Logs"
-
-#~ msgid "Download Log"
-#~ msgstr "Download Logs"
-
-#~ msgid "Method Error: %(err)s"
-#~ msgstr "Error en Método %(err)s"
-
-#~ msgid "Remote Host Error: %(err)s"
-#~ msgstr "Error en el Hot Remoto: %(err)s"
-
-#~ msgid "%(cont)s controller settings were not able to be modified: %(err)s"
-#~ msgstr ""
-
-#~ msgid "Could not communicate with daemon: %(err)s"
-#~ msgstr "No se pudo comunicar con el Daemon: %(err)s"
-
-#~ msgid "Graph Error: %(err)s"
-#~ msgstr "Error en el Gráfica: %(err)s"
-
-#~ msgid "LCD Error: %(err)s"
-#~ msgstr "Error del LCD: %(err)s"
-
-#~ msgid "PID Error: %(err)s"
-#~ msgstr "Error PID: %(err)s"
-
-#~ msgid "Relay successfully turned on: %(rvalue)s"
-#~ msgstr "El relé se ha activado correctamente: %(rvalue)s"
-
-#~ msgid "Relay successfully turned off: %(rvalue)s"
-#~ msgstr "El relé se ha desactivado correctamente: %(rvalue)s"
-
-#~ msgid "Relay Error: %(err)s"
-#~ msgstr "Error Relé: %(err)s"
-
-#~ msgid "Sensor Error: %(err)s"
-#~ msgstr "Error sensor: %(err)s"
-
-#~ msgid "Error in the Duration field(s): Durations must be greater than 0"
-#~ msgstr ""
-
-#~ msgid "Timer Error: %(err)s"
-#~ msgstr "Error de Tiempo: %(err)s"
-
-#~ msgid "User Error: %(err)s"
-#~ msgstr "Error Usuario: %(err)s"
-
-#~ msgid "Settings Error: %(err)s"
-#~ msgstr "Error Configuración: %(err)s"
-
-#~ msgid "User %(user)s deleted"
-#~ msgstr "El usuario %(user)s ha sido borrado "
-
-#~ msgid "User %(user)s not found"
-#~ msgstr "El usuario %(user)s no ha sido encontrado"
-
-#~ msgid "Entry with ID %(id)s deleted"
-#~ msgstr "Se ha eliminado la entrada con ID %(id)s"
-
-#~ msgid "Entry with ID %(id)s not found"
-#~ msgstr "La entrada con ID %(id)s no ha sido encontrada"
-
-#~ msgid "New Method successfully created. You may now add time points"
-#~ msgstr ""
-
-#~ msgid "Edit"
-#~ msgstr "Editar"
-
-#~ msgid "Power"
-#~ msgstr "Encender"
-
-#~ msgid "Order"
-#~ msgstr "Ordenar"
-
-#~ msgid "GPIO (BCM numbering) is between 1 and 27 (0 to disable)"
-#~ msgstr "GPIO (numeración BCM) es entre 1 y 27 (0 para deshabilitar)"
-
-#~ msgid "Remote Host %(host)s with ID %(id)s successfully added"
-#~ msgstr "Host remoto %(host)s con ID %(id)s agregado correctamente"
-
-#~ msgid "Graph with ID %(id)s successfully created"
-#~ msgstr "Gráfico con ID %(id)s ha sido creado correctamente"
-
-#~ msgid "A valid sensor  is required"
-#~ msgstr "Se requiere un sensor válido"
-
-#~ msgid "%(type)s Sensor with ID %(id)s successfully added"
-#~ msgstr ""
-
-#~ msgid "Could not create method"
-#~ msgstr ""
-
-#~ msgid "Flip Horizontally"
-#~ msgstr "Girar horizontalmente"
-
-#~ msgid "Flip Vertically"
-#~ msgstr "Girar verticalmente"
-
-#~ msgid "Rotate Image"
-#~ msgstr "Rotar Imagen"
-
-#~ msgid "Setpoint range must be between -1,000,000 and 1,000,000."
-#~ msgstr "El rango de la Referencia debe ser entre -1.000.000 y 1.000.000"
-
-#~ msgid "Kp"
-#~ msgstr "Kp"
-
-#~ msgid "P"
-#~ msgstr "P"
-
-#~ msgid "Kp must be a positive value."
-#~ msgstr "Kp debe ser un valor positivo."
-
-#~ msgid "Ki"
-#~ msgstr "Ki"
-
-#~ msgid "I"
-#~ msgstr "I"
-
-#~ msgid "Ki must be a positive value."
-#~ msgstr "Ki debe ser un valor positivo."
-
-#~ msgid "Kd"
-#~ msgstr "Kd"
-
-#~ msgid "D"
-#~ msgstr "D"
-
-#~ msgid "Kd must be a positive value."
-#~ msgstr "Kd debe ser un valor positivo."
-
-#~ msgid "Raise Min Duration"
-#~ msgstr "Duración Mínima Aumento"
-
-#~ msgid "Raise minimum duration must be a non-negative value. (0 to disable)"
-#~ msgstr ""
-
-#~ msgid "Raise Max Duration"
-#~ msgstr "Duración Máxima Aumento"
-
-#~ msgid "Raise maximum duration must be a non-negative value. (0 to disable)"
-#~ msgstr ""
-
-#~ msgid "Lower Min Duration"
-#~ msgstr "Duración inferior mínima"
-
-#~ msgid "Lower minimum duration must be a non-negative value. (0 to disable)"
-#~ msgstr "Duración mínima debe ser un valor no negativo. (0 para desahabilitar)"
-
-#~ msgid "Lower Max Duration"
-#~ msgstr "Duración Máxima Inferior"
-
-#~ msgid "Lower maximum duration must be a non-negative value. (0 to disable)"
-#~ msgstr "Duración máxima debe ser un valor no negativo. (0 para desahabilitar)"
-
-#~ msgid "Invalid device GPIO/I2C address/location"
-#~ msgstr "Dirección/ubicación GPIO/I2C del dispositivo no válida"
-
-#~ msgid "Help"
-#~ msgstr "Ayuda"
-
-#~ msgid "Admin"
-#~ msgstr "Admin"
-
-#~ msgid "Video Stream"
-#~ msgstr "Stream de Video"
-
-#~ msgid "Timelapse Parameters"
-#~ msgstr "Parametros Timelapse"
-
-#~ msgid "Now"
-#~ msgstr "Ahora"
-
-#~ msgid "Start"
-#~ msgstr "Comienzo"
-
-#~ msgid "End"
-#~ msgstr "Finalización"
-
-#~ msgid "Interval"
-#~ msgstr "Intervalor"
-
-#~ msgid "Next Capture"
-#~ msgstr "Próxima captua"
-
-#~ msgid "Next Capture Number"
-#~ msgstr "Numero próxima captura"
-
-#~ msgid "How many PID controllers to add"
-#~ msgstr "Cuantos controladores PID agregar"
-
-#~ msgid "How many relays to add"
-#~ msgstr "Cuantos relés agregar"
-
-#~ msgid "How many relay conditionals to add"
-#~ msgstr "Cuantos relés condicionales agregar"
-
-#~ msgid "How many sensors to add"
-#~ msgstr "Cuantos sensores agregar"
-
-#~ msgid "Check to flip the camera image on the horizontal axis."
-#~ msgstr "Compruebe para invertir la imagen de la cámara en el eje horizontal."
-
-#~ msgid "Check to flip the camera image on the vertical axis."
-#~ msgstr "Compruebe para invertir la imagen de la cámara en el eje vertical."
-
-#~ msgid "Rotate the camera image"
-#~ msgstr "Rotar imagen de la cámara"
-
-#~ msgid "90 Degrees Clockwise"
-#~ msgstr "90 grados en sentido horario"
-
-#~ msgid "180 Degrees Clockwise"
-#~ msgstr "180 grados en sentido horario"
-
-#~ msgid "270 Degrees Clockwise"
-#~ msgstr "270 grados en sentido horario"
-
-#~ msgid "Duration On (seconds)"
-#~ msgstr "Duración Encendido (segundos)"
-
-#~ msgid "Email address to send test email"
-#~ msgstr "Dirección a para enviar Email de prueba"
-
-#~ msgid "Period (seconds)"
-#~ msgstr "Periodo (segundos)"
-
-#~ msgid "Add Relays"
-#~ msgstr "Agregar Reles"
-
-#~ msgid "Relay Conditional ID"
-#~ msgstr ""
-
-#~ msgid "If Action"
-#~ msgstr "Si sucede"
-
-#~ msgid "Do Relay ID"
-#~ msgstr "Ejecutar Rele ID"
-
-#~ msgid "Do Action"
-#~ msgstr "Ejecutar acción"
-
-#~ msgid "Do Action Command(s)"
-#~ msgstr ""
-
-#~ msgid "Do Relay Duration"
-#~ msgstr "Ejecutar Rele durante"
-
-#~ msgid "Execute Command"
-#~ msgstr "Ejecutar comando"
-
-#~ msgid "Command"
-#~ msgstr "Comando"
-
-#~ msgid "Notify by Email"
-#~ msgstr "Notificar via Email"
-
-#~ msgid "Flash LCD"
-#~ msgstr "Limpiar LCD"
-
-#~ msgid "Bounce Time (milliseconds)"
-#~ msgstr "Tiempo anti-rebote (mili segundos)"
-
-#~ msgid "Reset Period (seconds)"
-#~ msgstr "Reset periódico (segundos)"
-
-#~ msgid "Pre Relay Duration (sec)"
-#~ msgstr "Pre-Relé Duración (segundos)"
-
-#~ msgid "Read Period (seconds)"
-#~ msgstr "Periodo de lectura (segundos)"
-
-#~ msgid "Measurement Type"
-#~ msgstr "Tipo de Medición"
-
-#~ msgid "Record with Camera"
-#~ msgstr "Grabar con la Camara"
-
-#~ msgid "Relay Conditional"
-#~ msgstr ""
-
-#~ msgid "Sensor Conditional"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "A notification email address is required"
-#~ " if the record and email option "
-#~ "is selected"
-#~ msgstr ""
-#~ "Se requiere una dirección de correo "
-#~ "electrónico de notificación si se "
-#~ "selecciona la opción de registro y "
-#~ "correo electrónico"
-
-#~ msgid ""
-#~ "Cannot activate sensor conditional %(cond)s"
-#~ " because of an incomplete configuration"
-#~ msgstr ""
-#~ "No se puede activar el condicional "
-#~ "del sensor %(cond)s debido a una "
-#~ "configuración incompleta"
-
-#~ msgid "Guests are not permitted to do that"
-#~ msgstr "Los Invitados no están habilitados a hacer eso"
-
-#~ msgid "On Duration"
-#~ msgstr "Duración Enecndido"
-
-#~ msgid "sec."
-#~ msgstr "seg."
-
-#~ msgid "Activate or deactivate a relay at a specific time of day."
-#~ msgstr "Activar o desactivar un relé a una hora específica del día."
-
-#~ msgid ""
-#~ "Hour and minute (HH:MM) here is "
-#~ "defined as the time of day. For"
-#~ " example, 3:05 PM would be \"15:05\"."
-#~ msgstr ""
-#~ "Hora y minuto (HH: MM) aquí se "
-#~ "define como la hora del día. Por"
-#~ " ejemplo, 3:05 PM sería \"15:05\"."
-
-#~ msgid ""
-#~ "Activate or deactivate a relay within"
-#~ " this method at a specific duration."
-#~ msgstr ""
-#~ "Activar o desactivar un relé dentro "
-#~ "de este método a una duración "
-#~ "específica."
-
-#~ msgid ""
-#~ "Duration here is defined as the "
-#~ "amount of time since the beginning "
-#~ "of the method. For example, 60 "
-#~ "seconds would execute the relay "
-#~ "modulation 60 seconds after the start"
-#~ " of the method."
-#~ msgstr ""
-#~ "La Duración aquí se define como la"
-#~ " cantidad de tiempo desde el comienzo"
-#~ " del método. Por ejemplo, 60 segundos"
-#~ " se ejecutaría la modulación de relé"
-#~ " 60 segundos después del inicio del"
-#~ " método."
-
-#~ msgid "Name for this Relay Conditional"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Set this to a soecific duration of"
-#~ " time if the conditional should "
-#~ "trigger when the relay On duration "
-#~ "equals this amount"
-#~ msgstr ""
-
-#~ msgid "If this conditional triggers, then actuate this relay"
-#~ msgstr ""
-
-#~ msgid "If this conditional triggers, what state should the relay actuate to?"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "If this conditional triggers, how long"
-#~ " should the activated relay turn on"
-#~ " for?"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "If this conditional triggers, should a"
-#~ " command be executed? (leave blank to"
-#~ " disable)"
-#~ msgstr ""
-
-#~ msgid "If this conditional triggers, should an email be sent?"
-#~ msgstr ""
-
-#~ msgid "If this conditional triggers, should an LCD flash?"
-#~ msgstr ""
-
-#~ msgid "The duration between sensor reads, in seconds."
-#~ msgstr "La duración entre lecturas del sensor en segundos."
-
-#~ msgid ""
-#~ "If a Pre Relay is selected, set"
-#~ " the duration (in seconds) to turn"
-#~ " the Pre Relay on for before "
-#~ "every measurement is acquired."
-#~ msgstr ""
-#~ "Si se selecciona un Pre Relé, "
-#~ "ajuste la duración (en segundos) para"
-#~ " activar el Pre Relé antes de "
-#~ "cada medición."
-
-#~ msgid "Edge Detected, Direction of change:"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The duration between checking whether "
-#~ "the conditional is true (in seconds)."
-#~ msgstr ""
-#~ "La duración entre comprobar si el "
-#~ "condicional es verdadero (en segundos)."
-
-#~ msgid ""
-#~ "The conditional is true when the "
-#~ "measured condition is \"Above\" or "
-#~ "\"Below\" the set value."
-#~ msgstr ""
-#~ "El condicional es verdadero cuando la"
-#~ " condición medida es \"Superior\" o "
-#~ "\"Inferior\" el valor ajustado."
-
-#~ msgid "Select a relay to be changed if the condition is true."
-#~ msgstr ""
-#~ "Seleccione un relé que se va "
-#~ "cambiar el estado si la condición "
-#~ "es verdadera."
-
-#~ msgid "If a relay is selected, choose whether it turns on or off."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "If a relay is set to turn "
-#~ "on, an optional duration can be "
-#~ "set (in seconds)."
-#~ msgstr ""
-#~ "Si un relé está configurado para "
-#~ "encenderse, se puede ajustar una "
-#~ "duración opcional (en segundos)."
-
-#~ msgid "Execute"
-#~ msgstr "Ejecutar"
-
-#~ msgid "Execute linux commands if the condition is true."
-#~ msgstr "Ejecutar comando Linux si la condición es verdadera."
-
-#~ msgid "Flash LCD if the condition is true."
-#~ msgstr "Borrar LCD si la condición es verdadera."
-
-#~ msgid "Notify a user by email if the condition is true."
-#~ msgstr "Notificar a usuario por mail si la condición es verdadera."
-
-#~ msgid "Activate camera if the condition is true."
-#~ msgstr "Activar cámara si la condición es verdadera."
-
-#~ msgid "Save Photo"
-#~ msgstr "Guardar Foto"
-
-#~ msgid "Email Photo"
-#~ msgstr "Enviar por Email Foto"
-
-#~ msgid "Save 5s Video"
-#~ msgstr "Guardar video de 5seg"
-
-#~ msgid "Email 5s Video"
-#~ msgstr "Enviar por Email video de 5seg"
-
-#~ msgid "The I2C address of the analog to digital converter."
-#~ msgstr "La dirección I2C del convertidor analógico a digital."
-
-#~ msgid "Which I2C bus is this ADC connected?"
-#~ msgstr "En cual bus I2C se encuentra el ADC conectado?"
-
-#~ msgid "Does a HIGH or LOW signal to the GPIO power the sensor?"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Where to access the device/sensor? This"
-#~ " is the ID code that comes "
-#~ "after the 28- of the devices "
-#~ "listed with the command \"ls "
-#~ "/sys/bus/w1/devices\"."
-#~ msgstr ""
 
