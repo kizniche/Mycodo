@@ -190,6 +190,7 @@ def do_login():
 
 
 @blueprint.route("/logout")
+@flask_login.login_required
 def logout():
     """Log out of the web-ui"""
     login_log(flask_login.current_user.name,

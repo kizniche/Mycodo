@@ -21,8 +21,11 @@
 #  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
 #
 #  Contact at kylegabriel.com
-
+import datetime
+import errno
 import flask_login
+import os
+import sys
 from flask import (
     flash,
     Flask,
@@ -50,7 +53,12 @@ from mycodo.mycodo_flask import (
 from mycodo.mycodo_flask.general_routes import influx_db
 from mycodo.config import (
     ProdConfig,
-    LANGUAGES
+    LANGUAGES,
+    INSTALL_DIRECTORY
+)
+from werkzeug.contrib.profiler import (
+    ProfilerMiddleware,
+    MergeStream
 )
 
 
@@ -70,6 +78,10 @@ def create_app(config=ProdConfig):
 
     login_manager = flask_login.LoginManager()
     login_manager.init_app(app)
+
+    # Uncomment to enable profiler
+    # See scripts/profile_analyzer.py to analyze output
+    # app = setup_profiler(app)
 
     register_extensions(app, config)
     register_blueprints(app)
@@ -134,3 +146,26 @@ def register_blueprints(_app):
     _app.register_blueprint(method_routes.blueprint)  # register method views
     _app.register_blueprint(page_routes.blueprint)  # register page views
     _app.register_blueprint(settings_routes.blueprint)  # register settings views
+
+
+def setup_profiler(app):
+    """
+    Set up a profiler for every request
+    Outputs to file and stream
+    See profile_analyzer.py in Mycodo/mycodo/scripts/
+    """
+    app.config['PROFILE'] = True
+    new_dir = 'profile-{dt:%Y-%m-%d_%H:%M:%S}'.format(
+        dt=datetime.datetime.now())
+    profile_path = os.path.join(INSTALL_DIRECTORY, new_dir)
+    try:
+        os.makedirs(profile_path)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
+    profile_log = os.path.join(profile_path, 'profile.log')
+    profile_log_file = open(profile_log, 'w')
+    stream = MergeStream(sys.stdout, profile_log_file)
+    app.wsgi_app = ProfilerMiddleware(app.wsgi_app, stream,
+                                      restrictions=[30])
+    return app

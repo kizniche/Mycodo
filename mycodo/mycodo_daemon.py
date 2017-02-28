@@ -29,7 +29,6 @@ sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
 import argparse
-import csv
 import logging
 import resource
 import RPi.GPIO as GPIO
