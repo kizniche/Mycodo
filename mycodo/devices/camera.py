@@ -104,17 +104,11 @@ def camera_record(record_type, settings, duration_sec=None,
     :param capture_number: timelapse capture number (for filename)
     :return:
     """
-
-    filename = ''
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-
-    # TODO Make new directory for each camera, with unique ID
-
     root_path = assure_path_exists(os.path.join(INSTALL_DIRECTORY, 'cameras'))
     camera_path = assure_path_exists(
         os.path.join(root_path, '{id}-{uid}'.format(id=settings.id,
                                                     uid=settings.unique_id)))
-
     if record_type == 'photo':
         save_path = assure_path_exists(os.path.join(camera_path, 'still'))
         filename = 'Still-{cam_id}-{cam}-{ts}.jpg'.format(

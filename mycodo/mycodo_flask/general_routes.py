@@ -165,29 +165,15 @@ def camera_img(camera_id, img_type, filename):
     camera_path = os.path.join(PATH_CAMERAS, '{id}-{uid}'.format(
             id=camera.id, uid=camera.unique_id))
 
-    if img_type == 'still':
-        still_path = os.path.join(camera_path, 'still')
-        if os.path.isdir(still_path):
-            still_files = (files for files in os.listdir(still_path)
-                           if os.path.isfile(os.path.join(still_path, files)))
+    if img_type in ['still', 'timelapse']:
+        path = os.path.join(camera_path, img_type)
+        if os.path.isdir(path):
+            files = (files for files in os.listdir(path)
+                               if os.path.isfile(os.path.join(path, files)))
         else:
-            still_files = []
-        # Ensure file exists in directory before serving it
-        if filename in still_files:
-            path_file = os.path.join(still_path, filename)
-            resp = make_response(open(path_file).read())
-            resp.content_type = "image/jpeg"
-            return resp
-    elif img_type == 'timelapse':
-        timelapse_path = os.path.join(camera_path, 'timelapse')
-        if os.path.isdir(timelapse_path):
-            timelapse_files = (files for files in os.listdir(timelapse_path)
-                               if os.path.isfile(os.path.join(timelapse_path, files)))
-        else:
-            timelapse_files = []
-
-        if filename in timelapse_files:
-            path_file = os.path.join(timelapse_path, filename)
+            files = []
+        if filename in files:
+            path_file = os.path.join(path, filename)
             resp = make_response(open(path_file).read())
             resp.content_type = "image/jpeg"
             return resp

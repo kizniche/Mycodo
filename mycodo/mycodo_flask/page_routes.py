@@ -8,7 +8,6 @@ import glob
 import subprocess
 import time
 from collections import OrderedDict
-from decimal import Decimal
 
 from flask import (
     flash,
@@ -124,7 +123,7 @@ def page_camera():
             now = time.time()
             mod_camera.timelapse_started = True
             mod_camera.timelapse_start_time = now
-            mod_camera.timelapse_end_time = Decimal(now) + form_camera.timelapse_runtime_sec.data
+            mod_camera.timelapse_end_time = now + float(form_camera.timelapse_runtime_sec.data)
             mod_camera.timelapse_interval = form_camera.timelapse_interval.data
             mod_camera.timelapse_next_capture = now
             mod_camera.timelapse_capture_number = 0
