@@ -1000,7 +1000,7 @@ class SettingsCamera(FlaskForm):
     vflip = BooleanField(lazy_gettext('Flip image vertically'))
     rotation = IntegerField(lazy_gettext('Rotate image (degrees)'))
     height = IntegerField(lazy_gettext('Image Height'))
-    width = IntegerField(lazy_gettext('Image width'))
+    width = IntegerField(lazy_gettext('Image Width'))
     brightness = DecimalField(lazy_gettext('Brightness'))
     contrast = DecimalField(lazy_gettext('Contrast'))
     exposure = DecimalField(lazy_gettext('Exposure'))

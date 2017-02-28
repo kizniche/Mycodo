@@ -24,6 +24,7 @@ import argparse
 import datetime
 import logging
 import os.path
+import re
 
 logging.basicConfig(format='%(asctime)s %(message)s',
                     level=logging.INFO)
@@ -33,11 +34,10 @@ logger = logging.getLogger(__name__)
 def analyze(args):
     dt_start = datetime.datetime.now()
     parsed_data = {}
+
     for index, line in enumerate(open(args.filename, 'r')):
         if line.startswith('PATH: '):
-            request = line.split()[1]
-            if request.startswith("'") and request.endswith("'"):
-                request = request[1:-1]
+            request = re.findall(r"'(.*?)'", line, re.DOTALL)[0]
         if line.find('primitive calls) in') > -1:
             time_ms = float(line.split()[7])
             if request not in parsed_data:
@@ -45,66 +45,63 @@ def analyze(args):
             else:
                 parsed_data[request].append(time_ms)
             logger.info(
-                "Found request '{request}' with a render time of {sec} "
-                "seconds".format(request=request,
-                                 sec=float(line.split()[7])))
+                "Found '{request}', {sec} sec".format(
+                    request=request, sec=float(line.split()[7])))
+
     logger.info("Parsing completed in {msec:.2f} ms. Begin analysis for each request.".format(
         msec=(datetime.datetime.now()-dt_start).total_seconds() * 1000))
-    logger.info("")
     dt_timer = datetime.datetime.now()
 
-    logger.info("Analyzed Profile Data (times in seconds). avg and median exclude the 1st time.")
-    logger.info("")
-    logger.info("Request                   Quantity      1st      avg   median")
-    for page, times in parsed_data.items():
-        times_median = 0.0
-        times_avg = 0.0
-        str_avg = ''
-        str_median = ''
-
+    analyzed_data = []
+    for index, (page, times) in enumerate(parsed_data.items()):
+        avg = None
+        median = None
         if len(times) == 2:
-            times_avg = times[1]
-
-        if len(times) > 2:
+            avg = times[1]
+        elif len(times) > 2:
             # remove first time (first load is slow and throws off calculations)
             times_except_first = times[1:]
-
             # average
-            times_avg = sum(times_except_first) / float(len(times_except_first))
-
+            avg = sum(times_except_first) / float(len(times_except_first))
             # median
             half = len(times) // 2
             if len(times) % 2 == 1:
-                times_median = times[half]
+                median = times[half]
             else:
                 low = float(times[half - 1])
                 high = float(times[half])
-                times_median = low + (high - low) / 2
+                median = low + (high - low) / 2
+        # page, count, 1st, avg, median
+        analyzed_data.append([page, len(times), times[0], avg, median])
 
-        if times_avg:
-            str_avg = '{:8.3f}'.format(times_avg)
-        if times_median:
-            str_median = '{:8.3f}'.format(times_median)
+    # Sort by average load time (find the slowest pages)
+    analyzed_data.sort(key=lambda x: x[3])
+    now = datetime.datetime.now()
 
-        if len(page) > 19:
-            if args.full_name:
-                logger.info("{pg}".format(pg=page))
-                logger.info("{pg:26} {nr:7} {fms:8.3f} {av:8} {med:8}".format(
-                    pg='', nr=len(times), fms=times[0], av=str_avg, med=str_median))
-            else:
-                logger.info("{pg:26} {nr:7} {fms:8.3f} {av:8} {med:8}".format(
-                    pg=page[:26], nr=len(times), fms=times[0], av=str_avg, med=str_median))
+    logger.info(
+        "Analysis completed in {msec:.2f} ms".format(
+            msec=(now - dt_timer).total_seconds() * 1000))
+    logger.info("")
+    logger.info("Analyzed Profile Data (times in seconds). avg and median exclude the 1st time.")
+    logger.info("")
+    logger.info("Request                   Quantity      1st      avg   median")
+
+    for index, each_line in enumerate(analyzed_data):
+        str_avg = ''
+        str_median = ''
+        if each_line[3]:
+            str_avg = '{:8.3f}'.format(each_line[3])
+        if each_line[4]:
+            str_median = '{:8.3f}'.format(each_line[4])
+
+        if args.full_name:
+            logger.info("{pg}".format(pg=each_line[0]))
+            logger.info("{pg:26} {nr:7} {fms:8.3f} {av:8} {med:8}".format(
+                pg='', nr=each_line[1], fms= each_line[2], av=str_avg, med=str_median))
         else:
             logger.info("{pg:26} {nr:7} {fms:8.3f} {av:8} {med:8}".format(
-                pg=page, nr=len(times), fms=times[0], av=str_avg, med=str_median))
+                pg=each_line[0][:26], nr=each_line[1], fms= each_line[2], av=str_avg, med=str_median))
 
-    now = datetime.datetime.now()
-    logger.info("")
-    logger.info(
-        "Analysis completed in {msec:.2f} ms, "
-        "total run time: {tot:.2f} ms".format(
-            msec=(now - dt_timer).total_seconds() * 1000,
-            tot=(now - dt_start).total_seconds() * 1000))
 
 
 def extant_file(x):

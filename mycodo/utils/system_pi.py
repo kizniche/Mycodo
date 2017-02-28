@@ -64,11 +64,12 @@ def internet(host="8.8.8.8", port=53, timeout=3):
     return False
 
 
-def assure_path_exists(new_dir):
+def assure_path_exists(path):
     """ Create path if it doesn't exist """
-    if not os.path.exists(new_dir):
-        os.makedirs(new_dir)
-        set_user_grp(new_dir, 'mycodo', 'mycodo')
+    if not os.path.exists(path):
+        os.makedirs(path)
+        set_user_grp(path, 'mycodo', 'mycodo')
+    return path
 
 
 def csv_to_list_of_int(str_csv):

@@ -18,6 +18,7 @@ from flask import (
 )
 from flask_babel import gettext
 from flask.blueprints import Blueprint
+from w1thermsensor import W1ThermSensor
 
 # Classes
 from mycodo.databases.mycodo_db.models import (
@@ -725,21 +726,17 @@ def page_sensor():
     # If DS18B20 sensors added, compile a list of detected sensors
     ds18b20_sensors = []
     if Sensor.query.filter(Sensor.device == 'DS18B20').count():
-        from w1thermsensor import W1ThermSensor
         for each_sensor in W1ThermSensor.get_available_sensors():
             ds18b20_sensors.append(each_sensor.id)
 
     # Create list of file names from the sensor_options directory
     # Used in generating the correct options for each sensor/device
-    sensor_template_list = []
-    sensor_path = "{path}/mycodo/mycodo_flask/templates/pages/sensor_options/".format(
-        path=INSTALL_DIRECTORY)
-    for (_, _, file_names) in os.walk(sensor_path):
-        sensor_template_list.extend(file_names)
-        break
     sensor_templates = []
-    for each_file_name in sensor_template_list:
-        sensor_templates.append(each_file_name.split(".")[0])
+    sensor_path = "{path}/mycodo/mycodo_flask/templates/pages" \
+                  "/sensor_options/".format(path=INSTALL_DIRECTORY)
+    for (_, _, file_names) in os.walk(sensor_path):
+        sensor_templates.extend(file_names)
+        break
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission('edit_controllers'):

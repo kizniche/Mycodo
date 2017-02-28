@@ -136,6 +136,15 @@ case "${1:-''}" in
             printf "Done.\n"
           fi
 
+          if [ -d ${INSTALL_DIRECTORY}/Mycodo/cameras ] ; then
+            printf "Moving Camera stills directory..."
+            if ! mv ${INSTALL_DIRECTORY}/Mycodo/cameras ${MYCODO_NEW_TMP_DIR} ; then
+              printf "Failed: Error while trying to move cameras directory.\n"
+              error_found
+            fi
+            printf "Done.\n"
+          fi
+
           if [ -d ${INSTALL_DIRECTORY}/Mycodo/camera-stills ] ; then
             printf "Moving Camera stills directory..."
             if ! mv ${INSTALL_DIRECTORY}/Mycodo/camera-stills ${MYCODO_NEW_TMP_DIR} ; then

@@ -7,6 +7,10 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
+  {% if not camera %}
+    No cameras configured. Go to <a href="/settings/camera">Camera Settings</a> to configure a camera.
+  {% endif %}
+
     {% for each_camera in camera %}
 
       <div class="container" style="width: 95%; border: 2px solid #ddd; border-radius: 5px;">

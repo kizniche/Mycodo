@@ -132,7 +132,7 @@
 
           <div style="padding: 0.5em;" class="row">
             {% for each_sensor_template in sensor_templates if each_sensor_template == each_sensor.device %}
-              {% include 'pages/sensor_options/'+each_sensor_template+'.html' %}
+              {% include 'pages/sensor_options/'+each_sensor_template %}
             {% endfor %}
 
             {% if each_sensor.device != 'EDGE' -%}

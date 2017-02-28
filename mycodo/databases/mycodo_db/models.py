@@ -113,6 +113,7 @@ class Camera(CRUDMixin, db.Model):
     __tablename__ = "camera"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     name = db.Column(db.Text, unique=True, nullable=False)
     camera_type = db.Column(db.Text, nullable=False)
     library = db.Column(db.Text, nullable=False)

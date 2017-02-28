@@ -3,6 +3,7 @@ from __future__ import print_function  # In python 2.7
 
 import cv2
 import datetime
+import errno
 import imutils
 import io
 import logging
@@ -17,11 +18,7 @@ from utils.system_pi import (
     set_user_grp
 )
 
-from config import (
-    PATH_CAMERA_STILL,
-    PATH_CAMERA_TIMELAPSE,
-    INSTALL_DIRECTORY
-)
+from config import INSTALL_DIRECTORY
 
 logger = logging.getLogger('mycodo.devices.picamera')
 
@@ -108,32 +105,40 @@ def camera_record(record_type, settings, duration_sec=None,
     :return:
     """
 
-    path = ''
     filename = ''
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
+    # TODO Make new directory for each camera, with unique ID
+
+    root_path = assure_path_exists(os.path.join(INSTALL_DIRECTORY, 'cameras'))
+    camera_path = assure_path_exists(
+        os.path.join(root_path, '{id}-{uid}'.format(id=settings.id,
+                                                    uid=settings.unique_id)))
+
     if record_type == 'photo':
-        path = PATH_CAMERA_STILL
+        save_path = assure_path_exists(os.path.join(camera_path, 'still'))
         filename = 'Still-{cam_id}-{cam}-{ts}.jpg'.format(
             cam_id=settings.id,
             cam=settings.name,
             ts=timestamp)
     elif record_type == 'timelapse':
-        path = PATH_CAMERA_TIMELAPSE
-        start = datetime.datetime.fromtimestamp(settings.timelapse_start_time).strftime("%Y-%m-%d_%H-%M-%S")
+        save_path = assure_path_exists(os.path.join(camera_path, 'timelapse'))
+        start = datetime.datetime.fromtimestamp(
+            settings.timelapse_start_time).strftime("%Y-%m-%d_%H-%M-%S")
         filename = 'Timelapse-{cam_id}-{cam}-{st}-img-{cn:05d}.jpg'.format(
             cam_id=settings.id,
             cam=settings.name,
             st=start,
             cn=settings.timelapse_capture_number)
     elif record_type == 'video':
-        path = os.path.join(INSTALL_DIRECTORY, 'camera-video')
+        save_path = assure_path_exists(os.path.join(camera_path, 'video'))
         filename = 'Video-{cam}-{ts}.h264'.format(
             cam=settings.name,
             ts=timestamp)
-    path_file = os.path.join(path, filename)
+    else:
+        return
 
-    assure_path_exists(path)
+    path_file = os.path.join(save_path, filename)
 
     if settings.library == 'picamera':
         with picamera.PiCamera() as camera:
@@ -198,7 +203,6 @@ def camera_record(record_type, settings, duration_sec=None,
             cap.release()
         else:
             return
-
     try:
         set_user_grp(path_file, 'mycodo', 'mycodo')
     except Exception as e:
