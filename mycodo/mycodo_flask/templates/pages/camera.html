@@ -99,14 +99,14 @@
         {% if latest_img_tl[each_camera.id] %}
           <div class="container-timelapse-{{each_camera.id}}" style="margin-top: 0.75em;">
             {{_('Last Timelapse')}}: {{latest_img_tl_ts[each_camera.id]}}
-            <br/><a href="/camera/timelapse/{{latest_img_tl[each_camera.id]}}" target="_blank"><img style="max-width: 100%" src="/camera/timelapse/{{latest_img_tl[each_camera.id]}}"></a>
+            <br/><a href="/camera/{{each_camera.id}}/timelapse/{{latest_img_tl[each_camera.id]}}" target="_blank"><img style="max-width: 100%" src="/camera/{{each_camera.id}}/timelapse/{{latest_img_tl[each_camera.id]}}"></a>
           </div>
         {% endif %}
 
         {% if latest_img_still[each_camera.id] %}
           <div class="container-still-{{each_camera.id}}" style="margin-top: 0.75em;">
             {{_('Last Still')}}: {{latest_img_still_ts[each_camera.id]}}
-            <br/><a href="/camera/still/{{latest_img_still[each_camera.id]}}" target="_blank"><img style="max-width: 100%" src="/camera/still/{{latest_img_still[each_camera.id]}}"></a>
+            <br/><a href="/camera/{{each_camera.id}}/still/{{latest_img_still[each_camera.id]}}" target="_blank"><img style="max-width: 100%" src="/camera/{{each_camera.id}}/still/{{latest_img_still[each_camera.id]}}"></a>
           </div>
         {% endif %}
         </form>

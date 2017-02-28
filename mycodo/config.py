@@ -139,8 +139,7 @@ RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
 HTTP_LOG_FILE = '/var/log/apache2/error.log'
 
 # Camera
-PATH_CAMERA_STILL = os.path.join(INSTALL_DIRECTORY, 'camera-stills')
-PATH_CAMERA_TIMELAPSE = os.path.join(INSTALL_DIRECTORY, 'camera-timelapse')
+PATH_CAMERAS = os.path.join(INSTALL_DIRECTORY, 'cameras')
 CAMERAS_SUPPORTED = {
     'Raspberry Pi': 'picamera',
     'USB Camera': 'opencv'

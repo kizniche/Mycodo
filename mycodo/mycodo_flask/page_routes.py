@@ -8,6 +8,7 @@ import glob
 import subprocess
 import time
 from collections import OrderedDict
+from decimal import Decimal
 
 from flask import (
     flash,
@@ -59,8 +60,7 @@ from config import (
     INSTALL_DIRECTORY,
     LOGIN_LOG_FILE,
     MEASUREMENT_UNITS,
-    PATH_CAMERA_STILL,
-    PATH_CAMERA_TIMELAPSE,
+    PATH_CAMERAS,
     RESTORE_LOG_FILE,
     UPGRADE_LOG_FILE,
 )
@@ -124,7 +124,7 @@ def page_camera():
             now = time.time()
             mod_camera.timelapse_started = True
             mod_camera.timelapse_start_time = now
-            mod_camera.timelapse_end_time = now + form_camera.timelapse_runtime_sec.data
+            mod_camera.timelapse_end_time = Decimal(now) + form_camera.timelapse_runtime_sec.data
             mod_camera.timelapse_interval = form_camera.timelapse_interval.data
             mod_camera.timelapse_next_capture = now
             mod_camera.timelapse_capture_number = 0
@@ -172,10 +172,12 @@ def page_camera():
     latest_img_tl_ts = {}
     latest_img_tl = {}
     for each_camera in camera:
+        camera_path = os.path.join(PATH_CAMERAS, '{id}-{uid}'.format(
+            id=each_camera.id, uid=each_camera.unique_id))
         try:
             latest_still_img_full_path = max(glob.iglob(
-                '{path_still}/Still-{cam_id}-*.jpg'.format(
-                    path_still=PATH_CAMERA_STILL,
+                '{path}/still/Still-{cam_id}-*.jpg'.format(
+                    path=camera_path,
                     cam_id=each_camera.id)),
                 key=os.path.getmtime)
         except ValueError:
@@ -189,8 +191,8 @@ def page_camera():
 
         try:
             latest_time_lapse_img_full_path = max(glob.iglob(
-                '{path_tl}/Timelapse-{cam_id}-*.jpg'.format(
-                    path_tl=PATH_CAMERA_TIMELAPSE,
+                '{path}/timelapse/Timelapse-{cam_id}-*.jpg'.format(
+                    path=camera_path,
                     cam_id=each_camera.id)),
                 key=os.path.getmtime)
         except ValueError:

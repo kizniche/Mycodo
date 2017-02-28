@@ -41,6 +41,7 @@ from flask_babel import gettext
 from flask_influxdb import InfluxDB
 from mycodo import flaskforms
 from mycodo import flaskutils
+from mycodo.databases.mycodo_db.models import Camera
 from mycodo.databases.mycodo_db.models import DisplayOrder
 from mycodo.databases.mycodo_db.models import Misc
 from mycodo.databases.mycodo_db.models import Relay
@@ -60,7 +61,8 @@ from config import (
     INFLUXDB_DATABASE,
     INSTALL_DIRECTORY,
     LOG_PATH,
-    MYCODO_VERSION
+    MYCODO_VERSION,
+    PATH_CAMERAS,
 )
 
 blueprint = Blueprint('general_routes',
@@ -155,35 +157,38 @@ def remote_admin(page):
         return render_template('404.html'), 404
 
 
-@blueprint.route('/camera/<img_type>/<filename>')
+@blueprint.route('/camera/<camera_id>/<img_type>/<filename>')
 @flask_login.login_required
-def camera_img(img_type, filename):
+def camera_img(camera_id, img_type, filename):
     """Return an image from stills or timelapses"""
-    still_path = INSTALL_DIRECTORY + '/camera-stills/'
-    timelapse_path = INSTALL_DIRECTORY + '/camera-timelapse/'
-
-    # Get a list of files in each directory
-    if os.path.isdir(still_path):
-        still_files = (files for files in os.listdir(still_path)
-                       if os.path.isfile(os.path.join(still_path, files)))
-    else:
-        still_files = []
-
-    if os.path.isdir(timelapse_path):
-        timelapse_files = (files for files in os.listdir(timelapse_path)
-                           if os.path.isfile(os.path.join(timelapse_path, files)))
-    else:
-        timelapse_files = []
+    camera = Camera.query.filter(Camera.id == int(camera_id)).first()
+    camera_path = os.path.join(PATH_CAMERAS, '{id}-{uid}'.format(
+            id=camera.id, uid=camera.unique_id))
 
     if img_type == 'still':
+        still_path = os.path.join(camera_path, 'still')
+        if os.path.isdir(still_path):
+            still_files = (files for files in os.listdir(still_path)
+                           if os.path.isfile(os.path.join(still_path, files)))
+        else:
+            still_files = []
         # Ensure file exists in directory before serving it
         if filename in still_files:
-            resp = make_response(open(still_path + filename).read())
+            path_file = os.path.join(still_path, filename)
+            resp = make_response(open(path_file).read())
             resp.content_type = "image/jpeg"
             return resp
     elif img_type == 'timelapse':
+        timelapse_path = os.path.join(camera_path, 'timelapse')
+        if os.path.isdir(timelapse_path):
+            timelapse_files = (files for files in os.listdir(timelapse_path)
+                               if os.path.isfile(os.path.join(timelapse_path, files)))
+        else:
+            timelapse_files = []
+
         if filename in timelapse_files:
-            resp = make_response(open(timelapse_path + filename).read())
+            path_file = os.path.join(timelapse_path, filename)
+            resp = make_response(open(path_file).read())
             resp.content_type = "image/jpeg"
             return resp
 
