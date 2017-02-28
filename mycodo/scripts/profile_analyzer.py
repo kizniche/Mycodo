@@ -57,14 +57,15 @@ def analyze(args):
     logger.info("")
     logger.info("Request                   Quantity      1st      avg   median")
     for page, times in parsed_data.items():
-        stats = False
-        if len(times) == 1:
-            times_avg = 0.0
-        elif len(times) == 2:
+        times_median = 0.0
+        times_avg = 0.0
+        str_avg = ''
+        str_median = ''
+
+        if len(times) == 2:
             times_avg = times[1]
 
         if len(times) > 2:
-            stats = True
             # remove first time (first load is slow and throws off calculations)
             times_except_first = times[1:]
 
@@ -80,17 +81,22 @@ def analyze(args):
                 high = float(times[half])
                 times_median = low + (high - low) / 2
 
+        if times_avg:
+            str_avg = '{:8.3f}'.format(times_avg)
+        if times_median:
+            str_median = '{:8.3f}'.format(times_median)
+
         if len(page) > 19:
             if args.full_name:
                 logger.info("{pg}".format(pg=page))
-                logger.info("{pg:26} {nr:7} {fms:8.3f} {av:8.3f} {med:8.3f}".format(
-                    pg='', nr=len(times), fms=times[0], av=times_avg, med=times_median))
+                logger.info("{pg:26} {nr:7} {fms:8.3f} {av:8} {med:8}".format(
+                    pg='', nr=len(times), fms=times[0], av=str_avg, med=str_median))
             else:
-                logger.info("{pg:26} {nr:7} {fms:8.3f} {av:8.3f} {med:8.3f}".format(
-                    pg=page[:26], nr=len(times), fms=times[0], av=times_avg, med=times_median))
+                logger.info("{pg:26} {nr:7} {fms:8.3f} {av:8} {med:8}".format(
+                    pg=page[:26], nr=len(times), fms=times[0], av=str_avg, med=str_median))
         else:
-            logger.info("{pg:26} {nr:7} {fms:8.3f} {av:8.3f} {med:8.3f}".format(
-                pg=page, nr=len(times), fms=times[0], av=times_avg, med=times_median))
+            logger.info("{pg:26} {nr:7} {fms:8.3f} {av:8} {med:8}".format(
+                pg=page, nr=len(times), fms=times[0], av=str_avg, med=str_median))
 
     now = datetime.datetime.now()
     logger.info("")
