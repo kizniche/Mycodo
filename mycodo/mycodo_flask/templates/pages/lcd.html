@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 {% set active_page = "lcd" %}
+{% set help_page = "lcd" %}
+
 {% block title %} - {{_('LCD')}}{% endblock %}
 
 {% block body %}
@@ -86,7 +88,7 @@
               <td class="col-sm-1">{{_('LCD I<sup>2</sup>C Address')}}</td>
               <td class="col-sm-1">{{_('Multiplexer I<sup>2</sup>C Address')}}</td>
               <td class="col-sm-1">{{_('Multiplexer Channel')}}</td>
-              <td class="col-sm-1">{{_('Period (sec)')}}</td>
+              <td class="col-sm-1">{{_('Period')}}</td>
             </tr>
             <tr>
               <td>

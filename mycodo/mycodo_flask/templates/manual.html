@@ -35,10 +35,11 @@
         <li><a href="#settings-alerts">Alerts</a></li>
         <li><a href="#settings-camera">Camera</a></li>
 			</ul>
-			<li><a href="#sensors">Sensors</a></li>
+			<li style="padding-top: 0.6em;"><a href="#sensors">Sensors</a></li>
 			<li><a href="#relays">Relays</a></li>
 			<li><a href="#conditional-statements">Conditional Statements</a></li>
 			<li><a href="#timers">Timers</a></li>
+      <li><a href="#lcd">LCDs</a></li>
 			<li><a href="#pid">PIDs</a></li>
       <li><a href="#methods">Methods</a></li>
 			<li style="padding-top: 0.6em;">PID Tuning</li>
@@ -49,7 +50,7 @@
 				<li><a href="#high-temperature-regulation">High-Temperature Regulation</a></li>
 			</ul>
 			<li style="padding-top: 0.6em;"><a href="#camera">Camera</a></li>
-			<li><a href="#tools">Tools</a></li>
+      <li><a href="#relay-usage">Relay Usage</a></li>
 			<li><a href="#system-backup">System Backup</a></li>
 			<li><a href="#system-restore">System Restore</a></li>
 			<li><a href="#preserving-custom-code">Preserving Custom Code</a></li>
@@ -107,8 +108,11 @@
 
     <p>Settings are a general area for various system configuration options.</p>
 
+    <hr>
+
     <a class="anchor" name="settings-general"></a>
     <h3>General</h3>
+
 		<dl class="dl-horizontal">
       <dt>Language</dt>
       <dd>Set the language that will be displayed in the web user interface.</dd>
@@ -123,6 +127,8 @@
       <dt>Opt-out of statistics</dt>
       <dd>Turn off sending anonymous usage statistics. Please consider that this helps the development to leave on.</dd>
     </dl>
+
+    <hr>
 
     <a class="anchor" name="settings-relay-usage"></a>
     <h3>Relay Usage</h3>
@@ -139,6 +145,8 @@
       <dt>Day of Month</dt>
       <dd>This is the day of the month (1-30) that the electricity meter is read (which will correspond to the electrical bill).</dd>
     </dl>
+
+    <hr>
 
     <a class="anchor" name="settings-user"></a>
     <h3>User</h3>
@@ -216,8 +224,11 @@
       </tbody>
     </table>
 
+    <hr>
+
     <a class="anchor" name="settings-alerts"></a>
     <h3>Alerts</h3>
+
     <dl class="dl-horizontal">
       <dt>SMTP Host</dt>
       <dd>The SMTP server to use to send emails from.</dd>
@@ -234,6 +245,8 @@
       <dt>Max emails (per hour)</dt>
       <dd>Set the maximum number of emails that can be sent per hour. If more notifications are triggered within the hour and this number has been reached, the notifications will be discarded.</dd>
     </dl>
+
+    <hr>
 
     <a class="anchor" name="settings-camera"></a>
     <h3>Camera</h3>
@@ -283,8 +296,8 @@
       <dd>Move a particular sensor up or down in the order displayed.</dd>
       <dt>Location</dt>
       <dd>Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I<sup>2</sup>C address. and channel if using the TCA9548A I<sup>2</sup>C multiplexer.</dd>
-      <dt>I2C Bus</dt>
-      <dd>The bus to be used to communicate with the I2C address. If you're using an I2C multiplexer that provides multiple buses, this allows you to select which bus the sensor is connected to.</dd>
+      <dt>I<sup>2</sup>C Bus</dt>
+      <dd>The bus to be used to communicate with the I<sup>2</sup>C address. If you're using an I<sup>2</sup>C multiplexer that provides multiple buses, this allows you to select which bus the sensor is connected to.</dd>
       <dt>Period</dt>
       <dd>After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.</dd>
       <dt>Pre Relay</dt>
@@ -298,11 +311,11 @@
       <dt>Reset Period</dt>
       <dd>Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.</dd>
       <dt>Multiplexer (MX)</dt>
-      <dd>If connected to the TCA9548A I2C multiplexer, select what the I2C address of the multiplexer is.</dd>
-      <dt>Mx I2C Bus</dt>
-      <dd>If connected to the TCA9548A I2C multiplexer, select the I2C bus the multiplexer is connected to.</dd>
+      <dd>If connected to the TCA9548A I<sup>2</sup>C multiplexer, select what the I<sup>2</sup>C address of the multiplexer is.</dd>
+      <dt>Mx I<sup>2</sup>C Bus</dt>
+      <dd>If connected to the TCA9548A I<sup>2</sup>C multiplexer, select the I<sup>2</sup>C bus the multiplexer is connected to.</dd>
       <dt>Mx Channel</dt>
-      <dd>If connected to the TCA9548A I2C multiplexer, select the channel of the multiplexer the device is connected to.</dd>
+      <dd>If connected to the TCA9548A I<sup>2</sup>C multiplexer, select the channel of the multiplexer the device is connected to.</dd>
       <dt>Measurement</dt>
       <dd>Analog-to-digital converter only: The type of measurement being acuired by the ADC. For instance, if the resistance of a photocell is being measured through a voltage divider, this measurement would be "light".</dd>
       <dt>Units</dt>
@@ -373,6 +386,30 @@
 
 		<p>Timers enable a relay to be switched on and off at specific durations or at a specific time of the day. For <em>Duration Timers</em>, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated. For <em>Daily Timers</em>, the start hour:minute can be set to turn a specific realy on or off at the specific time of day.</p>
 
+    <hr>
+
+    <a class="anchor" name="lcd"></a>
+		<h2>LCDs</h2>
+
+    <p>Data may be output to an LCD for easy viewing. There are only a few number fo LCDs that are supported. Only 16x2 and 20x4 character LCD displays with I<sup>2</sup>C backpacks are supported. Please see the README for specific information regarding compatibility.</p>
+
+		<dl class="dl-horizontal">
+      <dt>Reset Flashing</dt>
+      <dd>If the LCD is flashing to alert you because it was instructed to do so by a triggered Conditional Statement, use this button to stop the flashing.</dd>
+      <dt>Type</dt>
+      <dd>Select either a 16x2 or 20x4 character LCD display.</dd>
+      <dt>I<sup>2</sup>C Address</dt>
+      <dd>Select the I<sup>2</sup>C to communicate with the LCD.</dd>
+      <dt>Multiplexer I<sup>2</sup>C Address</dt>
+      <dd>If the LCD is connected to a multiplexer, select the multiplexer I<sup>2</sup>C address.</dd>
+      <dt>Multiplexer Channel</dt>
+      <dd>If the LCD is connected to a multiplexer, select the multiplexer channel the LCD is connected to.</dd>
+      <dt>Period</dt>
+      <dd>This is the period of time (in seconds) between redrawing the LCD with new data.</dd>
+      <dt>Display Line #</dt>
+      <dd>Select which measurement to display on each line of the LCD.</dd>
+    </dl>
+
 		<hr>
 
     <a class="anchor" name="pid"></a>
@@ -417,15 +454,47 @@
 
     <hr>
 
-    <a class="anchor" name="method"></a>
+    <a class="anchor" name="methods"></a>
 		<h2>Methods</h2>
 
-    <p></p>
+    <p>Method allow different types of setpoint tracking in PID controllers. Normally, a PID controller will regulate an environmental condition to a specific setpoint. If you would like the setpoint to change over time, this is called setpoint tracking. Setpoint tracking is useful for applications such as reflow ovens, thermal cyclers (DNA replication), mimicking natural daily cycles, and more.</p>
+
+    <h3>Universal Options</h3>
+
+    <p>These options are shared with several method types.</p>
 
     <dl class="dl-horizontal">
-      <dt></dt>
-      <dd></dd>
+      <dt>Start Time/Date</dt>
+      <dd>This is the start time of a range of time.</dd>
+      <dt>End Time/Date</dt>
+      <dd>This is the end time of a range of time.</dd>
+      <dt>Start Setpoint</dt>
+      <dd>This is the start setpoint of a range of setpoints.</dd>
+      <dt>End Setpoint</dt>
+      <dd>This is the end setpoint of a range of setpoints.</dd>
     </dl>
+
+    <h3>Specific Method Options</h3>
+
+    <h4>Time/Date Method</h4>
+
+    <p>A time/date method allows a specific time/date span to dictate the setpoint. This is useful for long-running methods, that may take place over the period of days, weeks, or months.</p>
+
+    <h4>Duration Method</h4>
+
+    <p>A duration method allows a specific durations of time to dictate the setpoint. This is useful for when short periods of time are required in a method, such as those that take place over the course of a few minutes or hours. Each duration will stack on the previous duration, meaning a newly-added start setpoint will begin from the previous entry's end setpoint.</p>
+
+    <h4>Daily (Time-Based) Method</h4>
+
+    <p>The daily time-based method is similar to the time/date method, however it will repeat every day. Therefore, it is essential that only the span of one day be set in this method. Begin with the start time at 00:00:00 and end at 23:59:59 (or 00:00:00, which would be 24 hours from the start). The start time must be equal or greater than the previous end time.</p>
+
+    <h4>Daily (Sine Wave) Method</h4>
+
+    <p>The daily sine wave method defines the setpoint over the day based on a sinusoidal wave. The sine wave is defined by y = [A * sin(B * x + C)] + D, where A is amplitude, B is frequency, C is the angle shift, and D is the y-axis shift. This method will repeat daily.</p>
+
+    <h4>Daily (Bezier Curve) Method</h4>
+
+    <p>A daily Bezier curve method define the setpoint over the day based on a cubic Bezier curve. If unfamiliar with a Bezier curve, it is recommended you use the <a href="https://www.desmos.com/calculator/cahqdxeshd">graphical Bezier curve generator</a> and use the 8 variables it creates for 4 points (each a set of x and y). The x-axis start (x3) and end (x0) will be automatically stretched or skewed to fit within a 24-hour period and this method will repeat daily.</p>
 
     <hr>
 
@@ -442,6 +511,8 @@
 
 		<p>The <b>D</b>erivative multiplies the error by K<sub>d</sub>, then differentiates it (K<sub>d</sub> · s). When the error rate changes over time, the output signal will change. The faster the change in error, the larger the derivative path becomes, decreasing the output rate of change. This has the effect of dampening overshoot and undershoot (oscillation) of the Set Point.</p>
 
+    <hr>
+
 		<p><a href="https://en.wikipedia.org/wiki/PID_controller" target="_blank"><img src="/static/img/PIDAnimation.gif"></a></p>
 
 		<p>Using temperature as an example, the Process Variable (PV) is the measured temperature, the Setpoint (SP) is the desired temperature, and the Error (e) is the distance between the measured temperature and the desired temperature (indicating if the actual temperature is too hot or too cold and to what degree). The error is manipulated by each of the three PID components, producing an output, called the Manipulated Variable (MV) or Control Variable (CV). To allow control of how much each path contributes to the output value, each path is multiplied by a gain (represented by <i>K<sub>P</sub></i>, <i>K<sub>I</sub></i>, and <i>K<sub>D</sub></i>). By adjusting the gains, the sensitivity of the system to each path is affected. When all three paths are summed, the PID output is produced. If a gain is set to 0, that path does not contribute to the output and that path is eessentially turned off.</p>
@@ -452,12 +523,16 @@
 
 		<p>Implementing a controller that effectively utilizes <i>K<sub>P</sub></i>, <i>K<sub>I</sub></i>, and <i>K<sub>D</sub></i> can be challenging. Furthermore, it is often unnecessary. For instance, the <i>K<sub>I</sub></i> and <i>K<sub>D</sub></i> can be set to 0, effectively turning them off and producing the very popular and simple P controller. Also popular is the PI controller. It is recommended to start with only <i>K<sub>P</sub></i> activated, then experiment with <i>K<sub>P</sub></i> and <i>K<sub>I</sub></i>, before finally using all three. Because systems will vary (e.g. airspace volume, degree of insulation, and the degree of impact from the connected device, etc.), each path will need to be adjusted through experimentation to produce an effective output.</p>
 
+    <hr>
+
 		<a class="anchor" name="quick-set-up-examples"></a>
 		<h3>Quick Set-up Examples</h3>
 
 		<p>These example setups are meant to illustrate how to configure regulation in particular directions, and not to achieve ideal values to configure your <i>K<sub>P</sub></i>, <i>K<sub>I</sub></i>, and <i>K<sub>D</sub></i> gains. There are a number of online resources that discuss techniques and methods that have been developed to determine ideal PID values (such as <a href="http://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops" target="_blank">here</a>, <a href="http://innovativecontrols.com/blog/basics-tuning-pid-loops" target="_blank">here</a>, <a href="https://hennulat.wordpress.com/2011/01/12/pid-loop-tuning-101/" target="_blank">here</a>, <a href="http://eas.uccs.edu/wang/ECE4330F12/PID-without-a-PhD.pdf" target="_blank">here</a>, and <a href="http://www.atmel.com/Images/doc2558.pdf" target="_blank">here</a>) and since there are no universal values that will work for every system, it is recommended to conduct your own research to understand the variables and essential to conduct your own experiments to effectively implement them.</p>
 
 		<p>Provided merely as an example of the variance of PID values, one of my setups had temperature PID values (up regulation) of <i>K<sub>P</sub></i> = 30, <i>K<sub>I</sub></i> = 1.0, and <i>K<sub>D</sub></i> = 0.5, and humidity PID values (up regulation) of <i>K<sub>P</sub></i> = 1.0, <i>K<sub>I</sub></i> = 0.2, and <i>K<sub>D</sub></i> = 0.5. Furthermore, these values may not have been optimal but they worked well for the conditions of my environmental chamber.</p>
+
+    <hr>
 
 		<a class="anchor" name="exact-temperature-regulation"></a>
 		<h3>Exact Temperature Regulation</h3>
@@ -488,16 +563,16 @@
     <hr>
 
 		<a class="anchor" name="camera"></a>
-		<h3 style="text-decoration: line-through;">Camera</h3>
+		<h3>Camera</h3>
 
-		<p style="text-decoration: line-through;">Todo.</p>
+    <p>Once a cameras has been set up (in the <a href="#settings-camera">Camera Settings</a>), it may be used to capture still images, create time-lapses, and stream video. Cameras may also be used with <a href="#conditional-statements">Conditional Statements</a> to trigger a camera image or video capture (as well as the ability to email the image/video with a notification).</p>
 
     <hr>
 
-		<a class="anchor" name="tools"></a>
-		<h3 style="text-decoration: line-through;">Tools</h3>
+    <a class="anchor" name="relay-usage"></a>
+		<h3>Relay Usage</h3>
 
-		<p style="text-decoration: line-through;">Todo.</p>
+    <p>Relay usage statistics are calculated for each relay, based on how long the relay has been powered, the current draw of the device connected to the relay, and other <a href="#settings-relay-usage">relay usage options</a>.</p>
 
     <hr>
 

@@ -568,7 +568,7 @@ http://KyleGabriel.com
 
 ## Languages
 
-Mycodo has been translated (to varying degrees) to [Español](#espa%C3%B1ol-spanish), [Français](#fran%C3%A7ais-french), and [한국어](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean). By default, mycodo will display the default language set by your browser. You may also force a language in the settings at Configure->General Settings->Language.
+Mycodo has been translated (to varying degrees) to [Español (Spanish)](#espa%C3%B1ol-spanish), [Français (French)](#fran%C3%A7ais-french), and [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean). By default, mycodo will display the default language set by your browser. You may also force a language in the settings at Configure->General Settings->Language.
 
 ### Español (Spanish)
 
