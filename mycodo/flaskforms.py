@@ -20,7 +20,7 @@ from wtforms.validators import DataRequired
 from wtforms.validators import Optional
 from wtforms.fields.html5 import EmailField
 
-
+from mycodo.config import SENSORS
 
 
 #
@@ -28,7 +28,7 @@ from wtforms.fields.html5 import EmailField
 #
 
 class Camera(FlaskForm):
-    camera_id = HiddenField('Camera ID')
+    camera_id = IntegerField('Camera ID', widget=widgets.HiddenInput())
     capture_still = SubmitField(lazy_gettext('Capture Still'))
     start_timelapse = SubmitField(lazy_gettext('Start Timelapse'))
     pause_timelapse = SubmitField(lazy_gettext('Pause Timelapse'))
@@ -57,20 +57,11 @@ class Camera(FlaskForm):
 #
 
 class Conditional(FlaskForm):
-    conditional_id = IntegerField(
-        lazy_gettext('Conditional ID'),
-        widget=widgets.HiddenInput()
-    )
+    conditional_id = IntegerField('Conditional ID', widget=widgets.HiddenInput())
+    conditional_type = StringField('Conditional Type', widget=widgets.HiddenInput())
+    sensor_id = IntegerField('Sensor ID', widget=widgets.HiddenInput())
     quantity = IntegerField(lazy_gettext('Quantity'))
     name = StringField(lazy_gettext('Name'))
-    conditional_type = StringField(
-        lazy_gettext('Conditional Type'),
-        widget=widgets.HiddenInput()
-    )
-    sensor_id = IntegerField(
-        lazy_gettext('Sensor ID'),
-        widget=widgets.HiddenInput()
-    )
 
     # Relay conditional options
     if_relay_id = StringField(lazy_gettext('If Relay ID'))
@@ -95,13 +86,9 @@ class Conditional(FlaskForm):
 
 class ConditionalActions(FlaskForm):
     conditional_id = IntegerField(
-        lazy_gettext('Conditional ID'),
-        widget=widgets.HiddenInput()
-    )
+        'Conditional ID', widget=widgets.HiddenInput())
     conditional_action_id = IntegerField(
-        lazy_gettext('Conditional Action ID'),
-        widget=widgets.HiddenInput()
-    )
+        'Conditional Action ID', widget=widgets.HiddenInput())
     do_action = StringField(lazy_gettext('Action to Perform'))
     do_action_string = StringField(lazy_gettext('Action String'))
     do_relay_id = IntegerField(lazy_gettext('Relay'))
@@ -122,25 +109,13 @@ class ConditionalActions(FlaskForm):
 
 class CreateAdmin(FlaskForm):
     username = StringField(
-        lazy_gettext('Username'),
-        render_kw={"placeholder": lazy_gettext("Username")},
-        validators=[DataRequired()]
-    )
+        lazy_gettext('Username'), validators=[DataRequired()])
     email = StringField(
-        lazy_gettext('Email'),
-        render_kw={"placeholder": lazy_gettext("Email")},
-        validators=[DataRequired()]
-    )
+        lazy_gettext('Email'), validators=[DataRequired()])
     password = PasswordField(
-        lazy_gettext('Password'),
-        render_kw={"placeholder": lazy_gettext("Password")},
-        validators=[DataRequired()]
-    )
+        lazy_gettext('Password'), validators=[DataRequired()])
     password_repeat = PasswordField(
-        lazy_gettext('Repeat Password'),
-        render_kw={"placeholder": lazy_gettext("Repeat Password")},
-        validators=[DataRequired()]
-    )
+        lazy_gettext('Repeat Password'), validators=[DataRequired()])
 
 
 #
@@ -283,10 +258,7 @@ class GraphAdd(FlaskForm):
 
 
 class GraphMod(FlaskForm):
-    graph_id = IntegerField(
-        lazy_gettext('Graph ID'),
-        widget=widgets.HiddenInput()
-    )
+    graph_id = IntegerField('Graph ID', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext('Graph Name'),
         render_kw={"placeholder": lazy_gettext("Graph Name")},
@@ -345,12 +317,12 @@ class GraphMod(FlaskForm):
 
 
 class GraphDel(FlaskForm):
-    graph_id = HiddenField('Graph ID')
+    graph_id = IntegerField('Graph ID', widget=widgets.HiddenInput())
     Submit = SubmitField(lazy_gettext('Delete Graph'))
 
 
 class GraphOrder(FlaskForm):
-    orderGraph_id = HiddenField('Graph')
+    orderGraph_id = IntegerField('Graph ID', widget=widgets.HiddenInput())
     orderGraphUp = SubmitField(lazy_gettext('Up'))
     orderGraphDown = SubmitField(lazy_gettext('Down'))
 
@@ -372,10 +344,7 @@ class LCDAdd(FlaskForm):
 
 
 class LCDMod(FlaskForm):
-    lcd_id = IntegerField(
-        lazy_gettext('LCD ID'),
-        widget=widgets.HiddenInput()
-    )
+    lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext('Name'),
         render_kw={"placeholder": lazy_gettext("Name")},
@@ -434,28 +403,28 @@ class LCDMod(FlaskForm):
 
 
 class LCDDel(FlaskForm):
-    lcd_id = HiddenField('LCD ID')
+    lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
     delete = SubmitField(lazy_gettext('Delete'))
 
 
 class LCDActivate(FlaskForm):
-    lcd_id = HiddenField('LCD ID')
+    lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
     activate = SubmitField(lazy_gettext('Activate'))
 
 
 class LCDDeactivate(FlaskForm):
-    lcd_id = HiddenField('LCD ID')
+    lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
     deactivate = SubmitField(lazy_gettext('Deactivate'))
 
 
 class LCDOrder(FlaskForm):
-    lcd_id = HiddenField('LCD ID')
+    lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
     reorder_up = SubmitField(lazy_gettext('Up'))
     reorder_down = SubmitField(lazy_gettext('Down'))
 
 
 class LCDResetFlashing(FlaskForm):
-    lcd_id = HiddenField('LCD ID')
+    lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
     Submit = SubmitField(lazy_gettext('Reset Flashing'))
 
 
@@ -502,23 +471,14 @@ class LogView(FlaskForm):
 #
 
 class MethodCreate(FlaskForm):
-    name = StringField(
-        'Name',
-        render_kw={"placeholder": "Name"}
-    )
-    method_type = StringField(
-        'Method Type',
-        render_kw={"placeholder": ""}
-    )
+    name = StringField(lazy_gettext('Name'))
+    method_type = StringField(lazy_gettext('Method Type'))
     controller_type = HiddenField('Controller Type')
     Submit = SubmitField(lazy_gettext('Create New Method'))
 
 
 class MethodAdd(FlaskForm):
-    method_id = IntegerField(
-        lazy_gettext('Method ID'),
-        widget=widgets.HiddenInput()
-    )
+    method_id = IntegerField('Method ID', widget=widgets.HiddenInput())
     method_type = HiddenField('Method Type')
     method_select = HiddenField('Method Select')
     startDailyTime = StringField(
@@ -560,14 +520,8 @@ class MethodAdd(FlaskForm):
         lazy_gettext('Time YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    relayDurationSec = IntegerField(
-        lazy_gettext('Duration On (sec)'),
-        render_kw={"placeholder": ""}
-    )
-    relayID = StringField(
-        lazy_gettext('Relay ID'),
-        render_kw={"placeholder": ""}
-    )
+    relayDurationSec = IntegerField(lazy_gettext('Duration On (sec)'))
+    relayID = StringField(lazy_gettext('Relay ID'),)
     relayState = SelectField(
         lazy_gettext('Relay State'),
         choices=[
@@ -580,8 +534,8 @@ class MethodAdd(FlaskForm):
 
 
 class MethodMod(FlaskForm):
-    method_id = HiddenField('Method ID')
-    method_data_id = HiddenField('Method Data ID')
+    method_id = IntegerField('Method ID', widget=widgets.HiddenInput())
+    method_data_id = IntegerField('Method Data ID', widget=widgets.HiddenInput())
     method_type = HiddenField('Method Type')
     method_select = HiddenField('Method Select')
     name = StringField(lazy_gettext('Name'))
@@ -637,18 +591,13 @@ class PIDAdd(FlaskForm):
 
 
 class PIDMod(FlaskForm):
-    pid_id = IntegerField(
-        lazy_gettext('PID ID'),
-        widget=widgets.HiddenInput()
-    )
+    pid_id = IntegerField('PID ID', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext('Name'),
-        render_kw={"placeholder": lazy_gettext("Name")},
         validators=[DataRequired()]
     )
     sensor_id = StringField(
         lazy_gettext('Sensor ID'),
-        render_kw={"placeholder": lazy_gettext("Sensor ID")},
         validators=[DataRequired()]
     )
     measurement = StringField(
@@ -666,7 +615,6 @@ class PIDMod(FlaskForm):
     )
     period = DecimalField(
         lazy_gettext('Period'),
-        render_kw={"placeholder": lazy_gettext("Period")},
         validators=[validators.NumberRange(
             min=5.0,
             max=86400.0
@@ -674,7 +622,6 @@ class PIDMod(FlaskForm):
     )
     max_measure_age = DecimalField(
         lazy_gettext('Max Age (sec)'),
-        render_kw={"placeholder": lazy_gettext("Max Age")},
         validators=[validators.NumberRange(
             min=5.0,
             max=86400.0
@@ -682,7 +629,6 @@ class PIDMod(FlaskForm):
     )
     setpoint = DecimalField(
         lazy_gettext('Setpoint'),
-        render_kw={"placeholder": "Setpoint"},
         validators=[validators.NumberRange(
             min=-1000000,
             max=1000000
@@ -690,34 +636,27 @@ class PIDMod(FlaskForm):
     )
     k_p = DecimalField(
         lazy_gettext('Kp Gain'),
-        render_kw={"placeholder": lazy_gettext("Kp Gain")},
         validators=[validators.NumberRange(
             min=0
         )]
     )
     k_i = DecimalField(
         lazy_gettext('Ki Gain'),
-        render_kw={"placeholder": lazy_gettext("Ki Gain")},
         validators=[validators.NumberRange(
             min=0
         )]
     )
     k_d = DecimalField(
         lazy_gettext('Kd Gain'),
-        render_kw={"placeholder": lazy_gettext("Kd Gain")},
         validators=[validators.NumberRange(
             min=0
         )]
     )
     integrator_max = DecimalField(lazy_gettext('Integrator Min'))
     integrator_min = DecimalField(lazy_gettext('Integrator Max'))
-    raise_relay_id = StringField(
-        lazy_gettext('Raise Relay ID'),
-        render_kw={"placeholder": lazy_gettext("Raise Relay ID")},
-    )
+    raise_relay_id = StringField(lazy_gettext('Raise Relay ID'))
     raise_min_duration = DecimalField(
         lazy_gettext('Raise Min On Duration'),
-        render_kw={"placeholder": lazy_gettext("Raise Min On Duration")},
         validators=[validators.NumberRange(
             min=0,
             max=86400
@@ -725,7 +664,6 @@ class PIDMod(FlaskForm):
     )
     raise_max_duration = DecimalField(
         lazy_gettext('Raise Max On Duration'),
-        render_kw={"placeholder": lazy_gettext("Raise Max On Duration")},
         validators=[validators.NumberRange(
             min=0,
             max=86400
@@ -733,19 +671,14 @@ class PIDMod(FlaskForm):
     )
     raise_min_off_duration = DecimalField(
         lazy_gettext('Raise Min Off Duration'),
-        render_kw={"placeholder": lazy_gettext("Raise Min Off Duration")},
         validators=[validators.NumberRange(
             min=0,
             max=86400
         )]
     )
-    lower_relay_id = StringField(
-        lazy_gettext('Lower Relay ID'),
-        render_kw={"placeholder": lazy_gettext("Lower Relay ID")},
-    )
+    lower_relay_id = StringField(lazy_gettext('Lower Relay ID'),)
     lower_min_duration = DecimalField(
         lazy_gettext('Lower Min On Duration'),
-        render_kw={"placeholder": lazy_gettext("Lower Min On Duration")},
         validators=[validators.NumberRange(
             min=0,
             max=86400
@@ -753,7 +686,6 @@ class PIDMod(FlaskForm):
     )
     lower_max_duration = DecimalField(
         lazy_gettext('Lower Max On Duration'),
-        render_kw={"placeholder": lazy_gettext("Lower Max On Duration")},
         validators=[validators.NumberRange(
             min=0,
             max=86400
@@ -761,13 +693,13 @@ class PIDMod(FlaskForm):
     )
     lower_min_off_duration = DecimalField(
         lazy_gettext('Lower Min Off Duration'),
-        render_kw={"placeholder": lazy_gettext("Lower Min Off Duration")},
         validators=[validators.NumberRange(
             min=0,
             max=86400
         )]
     )
-    method_id = HiddenField('Setpoint Tracking Method')
+    method_id = IntegerField(
+        'Setpoint Tracking Method', widget=widgets.HiddenInput())
     save = SubmitField(lazy_gettext('Save Settings'))
     hold = SubmitField(lazy_gettext('Hold'))
     pause = SubmitField(lazy_gettext('Pause'))
@@ -791,19 +723,14 @@ class RelayAdd(FlaskForm):
 
 
 class RelayMod(FlaskForm):
-    relay_id = IntegerField(
-        lazy_gettext('Relay ID'),
-        widget=widgets.HiddenInput()
-    )
+    relay_id = IntegerField('Relay ID', widget=widgets.HiddenInput())
     relay_pin = HiddenField('Relay Pin')
     name = StringField(
         lazy_gettext('Name'),
-        render_kw={"placeholder": lazy_gettext("Name")},
         validators=[DataRequired()]
     )
     gpio = IntegerField(
-        lazy_gettext('GPIO Pin (BCM)'),
-        render_kw={"placeholder": lazy_gettext("GPIO")},
+        lazy_gettext('GPIO Pin'),
         validators=[validators.NumberRange(
             min=0,
             max=27,
@@ -813,7 +740,6 @@ class RelayMod(FlaskForm):
     )
     amps = DecimalField(
         lazy_gettext('Current Draw (amps)'),
-        render_kw={"placeholder": lazy_gettext("amps")},
         validators=[validators.NumberRange(
             min=0,
             max=50,
@@ -855,7 +781,7 @@ class RelayMod(FlaskForm):
 #
 
 class RemoteSetup(FlaskForm):
-    remote_id = HiddenField('Remote Host ID')
+    remote_id = IntegerField('Remote Host ID', widget=widgets.HiddenInput())
     host = StringField(
         lazy_gettext('Domain or IP Address'),
         render_kw={"placeholder": "youraddress.com or 0.0.0.0"},
@@ -863,12 +789,10 @@ class RemoteSetup(FlaskForm):
     )
     username = StringField(
         lazy_gettext('Username'),
-        render_kw={"placeholder": "Username"},
         validators=[DataRequired()]
     )
     password = PasswordField(
         lazy_gettext('Password'),
-        render_kw={"placeholder": "Password"},
         validators=[DataRequired()]
     )
     add = SubmitField(lazy_gettext('Add Host'))
@@ -890,38 +814,14 @@ class SensorAdd(FlaskForm):
     )
     sensor = SelectField(
         lazy_gettext('Sensor'),
-        choices=[
-            ('RPi', 'Raspberry Pi CPU Temperature'),
-            ('RPiCPULoad', 'Raspberry Pi CPU Load'),
-            ('RPiFreeSpace', 'Raspberry Pi Free Disk Space'),
-            ('ADS1x15', 'Analog-to-Digital Converter: ADS1x15'),
-            ('MCP342x', 'Analog-to-Digital Converter: MCP342x'),
-            ('EDGE', 'Edge Detection: Simple Switch'),
-            ('K30', 'CO2: K30'),
-            ('TSL2561', 'Luminance: TSL2561'),
-            ('CHIRP', 'Moisture: Chirp'),
-            ('BME280', 'Pressure: BME 280'),
-            ('BMP', 'Pressure: BMP 180/085'),
-            ('DS18B20', 'Temperature: DS18B20'),
-            ('TMP006', 'Temperature (Contactless): TMP 006/007'),
-            ('ATLAS_PT1000', 'Temperature: Atlas Scientific, PT-1000'),
-            ('AM2315', 'Temperature/Humidity: AM2315'),
-            ('DHT11', 'Temperature/Humidity: DHT11'),
-            ('DHT22', 'Temperature/Humidity: DHT22'),
-            ('HTU21D', 'Temperature/Humidity: HTU21D'),
-            ('SHT1x_7x', 'Temperature/Humidity: SHT 10/11/15/71/75'),
-            ('SHT2x', 'Temperature/Humidity: SHT 21/25')
-        ],
+        choices=SENSORS,
         validators=[DataRequired()]
     )
     sensorAddSubmit = SubmitField(lazy_gettext('Add Device'))
 
 
 class SensorMod(FlaskForm):
-    modSensor_id = IntegerField(
-        lazy_gettext('Sensor ID'),
-        widget=widgets.HiddenInput()
-    )
+    modSensor_id = IntegerField('Sensor ID', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext('Name'),
         validators=[DataRequired()]
@@ -979,10 +879,7 @@ class SensorMod(FlaskForm):
     orderSensorUp = SubmitField(lazy_gettext('Up'))
     orderSensorDown = SubmitField(lazy_gettext('Down'))
 
-    conditional_type = StringField(
-        lazy_gettext('Conditional Type'),
-        widget=widgets.HiddenInput()
-    )
+    conditional_type = StringField('Conditional Type', widget=widgets.HiddenInput())
     sensorCondAddSubmit = SubmitField(lazy_gettext('Add Conditional'))
 
 
@@ -991,14 +888,14 @@ class SensorMod(FlaskForm):
 #
 
 class SettingsCamera(FlaskForm):
-    camera_id = HiddenField(lazy_gettext('Camera ID'))
+    camera_id = IntegerField('Camera ID', widget=widgets.HiddenInput())
     name = StringField(lazy_gettext('Name'))
     camera_type = StringField(lazy_gettext('Type'))
     library = StringField(lazy_gettext('Library'))
     opencv_device = IntegerField(lazy_gettext('OpenCV Device'))
     hflip = BooleanField(lazy_gettext('Flip image horizontally'))
     vflip = BooleanField(lazy_gettext('Flip image vertically'))
-    rotation = IntegerField(lazy_gettext('Rotate image (degrees)'))
+    rotation = IntegerField(lazy_gettext('Rotate Image'))
     height = IntegerField(lazy_gettext('Image Height'))
     width = IntegerField(lazy_gettext('Image Width'))
     brightness = DecimalField(lazy_gettext('Brightness'))
@@ -1028,9 +925,9 @@ class SettingsGeneral(FlaskForm):
     relayStatsVolts = IntegerField(lazy_gettext('Voltage'))
     relayStatsCost = DecimalField(lazy_gettext('Cost per kWh'))
     relayStatsCurrency = StringField(lazy_gettext('Currency Unit'))
-    relayStatsDayOfMonth = StringField(lazy_gettext('Billing Day of Month (1-30)'))
+    relayStatsDayOfMonth = StringField(lazy_gettext('Day of Month'))
     hideAlertWarning = BooleanField(lazy_gettext('Hide warning messages'))
-    stats_opt_out = BooleanField(lazy_gettext('Opt-out of sending statistics'))
+    stats_opt_out = BooleanField(lazy_gettext('Opt-out of statistics'))
     Submit = SubmitField(lazy_gettext('Save'))
 
 
@@ -1039,19 +936,12 @@ class SettingsGeneral(FlaskForm):
 #
 
 class Timer(FlaskForm):
-    timer_id = IntegerField(
-        lazy_gettext('Timer ID'),
-        widget=widgets.HiddenInput()
-    )
+    timer_id = IntegerField('Timer ID', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext('Name'),
-        render_kw={"placeholder": lazy_gettext("Name")},
         validators=[DataRequired()]
     )
-    relayID = StringField(
-        lazy_gettext('Relay ID'),
-        render_kw={"placeholder": lazy_gettext("Relay ID")}
-    )
+    relayID = StringField(lazy_gettext('Relay ID'))
     state = SelectField(
         lazy_gettext('State'),
         choices=[
@@ -1064,20 +954,13 @@ class Timer(FlaskForm):
     timeEnd = StringField(lazy_gettext('Time of day'))
     timeOnDurationOn = DecimalField(
         lazy_gettext('On (sec)'),
-        render_kw={"placeholder": lazy_gettext("On (sec)")},
         validators=[validators.NumberRange(
             min=0,
             max=86400
         )]
     )
-    durationOn = DecimalField(
-        lazy_gettext('On (sec)'),
-        render_kw={"placeholder": lazy_gettext("On seconds")}
-    )
-    durationOff = DecimalField(
-        lazy_gettext('Off (sec)'),
-        render_kw={"placeholder": lazy_gettext("Off seconds")}
-    )
+    durationOn = DecimalField(lazy_gettext('On (sec)'))
+    durationOff = DecimalField(lazy_gettext('Off (sec)'))
     timerCreate = SubmitField(lazy_gettext('Create Timer'))
     timerMod = SubmitField(lazy_gettext('Save'))
     timerDel = SubmitField(lazy_gettext('Delete'))
@@ -1088,12 +971,12 @@ class Timer(FlaskForm):
 
 
 class ActivateTimer(FlaskForm):
-    activateTimer_id = HiddenField('Timer')
+    activateTimer_id = IntegerField('Timer ID', widget=widgets.HiddenInput())
     activateTimerSubmit = SubmitField(lazy_gettext('Activate'))
 
 
 class DeactivateTimer(FlaskForm):
-    deactivateTimer_id = HiddenField('Timer')
+    deactivateTimer_id = IntegerField('Timer ID', widget=widgets.HiddenInput())
     deactivateTimerSubmit = SubmitField(lazy_gettext('Deactivate'))
 
 
@@ -1104,12 +987,10 @@ class DeactivateTimer(FlaskForm):
 class UserAdd(FlaskForm):
     addUsername = StringField(
         lazy_gettext('Username'),
-        render_kw={"placeholder": lazy_gettext("Username")},
         validators=[DataRequired()]
     )
     addEmail = EmailField(
         lazy_gettext('Email'),
-        render_kw={"placeholder": lazy_gettext("Email")},
         validators=[
             DataRequired(),
             validators.Email()
@@ -1117,7 +998,6 @@ class UserAdd(FlaskForm):
     )
     addPassword = PasswordField(
         lazy_gettext('Password'),
-        render_kw={"placeholder": lazy_gettext("Password")},
         validators=[
             DataRequired(),
             validators.EqualTo('addPassword_repeat',
@@ -1130,11 +1010,10 @@ class UserAdd(FlaskForm):
     )
     addPassword_repeat = PasswordField(
         lazy_gettext('Repeat Password'),
-        render_kw={"placeholder": lazy_gettext("Repeat Password")},
         validators=[DataRequired()]
     )
-    addGroup = StringField(
-        lazy_gettext('Group'),
+    addRole = StringField(
+        lazy_gettext('Role'),
         validators=[DataRequired()]
     )
     addSubmit = SubmitField(lazy_gettext('Submit'))
@@ -1167,8 +1046,8 @@ class UserMod(FlaskForm):
         lazy_gettext('Repeat Password'),
         render_kw={"placeholder": lazy_gettext("Repeat Password")}
     )
-    modGroup = StringField(
-        lazy_gettext('Group'),
+    modRole = StringField(
+        lazy_gettext('Role'),
         validators=[DataRequired()]
     )
     modTheme = StringField(lazy_gettext('Theme'))

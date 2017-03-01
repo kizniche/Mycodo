@@ -8,7 +8,7 @@ Mycodo is a remote monitoring and automated regulation system with a focus on mo
 
 The core system coordinates a diverse set of responses to sensor measurements, including actions such as camera captures, email notifications, relay activation/deactivation, regulation with PID control, and more. Mycodo has been used for cultivating gourmet mushrooms, cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs and young animals, aging cheeses, fermenting foods, maintaining aquatic systems, and more.
 
-
+[Español](#español), [Français](#français), [한국어](#한국어)
 
 ## What is PID Control?
 
@@ -43,7 +43,10 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 - [License](#license)
 - [Screenshots](#screenshots)
 - [Links](#links)
-
+- [Languages](#languages)
+    - [Español](#español)
+    - [Français](#français)
+    - [한국어](#한국어)
 
 
 ## Features
@@ -561,3 +564,26 @@ Thanks for using and supporting Mycodo, however it may not be the latest version
 https://github.com/kizniche/Mycodo
 
 http://KyleGabriel.com
+
+
+## Languages
+
+Mycodo has been translated (to varying degrees) to [Español](#español), [Français](#français), and [한국어](#한국어). By default, mycodo will display the default language set by your browser. You may also force a language in the settings at Configure->General Settings->Language.
+
+### Español (Spanish)
+
+Mycodo es un sistema de control remoto y automatizado con un enfoque en la modulación de las condiciones ambientales. Fue construido para ejecutarse en el Raspberry Pi (versiones Zero, 1, 2 y 3) y tiene como objetivo ser fácil de instalar y operar.
+
+El sistema central coordina un conjunto diverso de respuestas a las mediciones de sensores, incluyendo acciones tales como grabación de cámara, notificaciones por correo electrónico, activación / desactivación de relés, regulación con control PID y más.
+
+### Français (French)
+
+Mycodo est un système de surveillance à distance et de régulation automatisée, axé sur la modulation des conditions environnementales. Il a été construit pour exécuter dans le Raspberry Pi (versions Zero, 1, 2 et 3) et vise à être facile à installer et à utiliser.
+
+Le système de base coordonne un ensemble divers de réponses aux mesures de capteurs, y compris des actions telles que l'enregistrement de caméra, les notifications par courrier électronique, l'activation / désactivation de relais, la régulation avec contrôle PID, et plus encore.
+
+### 한국어 (Korean)
+
+Mycodo는 환경 조건을 조절하는 데 중점을 둔 원격 모니터링 및 자동화 된 규제 시스템입니다. Raspberry Pi (버전 Zero, 1, 2, 3)를 실행하기 위해 제작되었으며 설치 및 작동이 쉽도록 설계되었습니다.
+
+핵심 시스템은 카메라 기록, 전자 메일 알림, 릴레이 활성화 / 비활성화, PID 제어 규정 등과 같은 조치를 포함하여 센서 측정에 대한 다양한 응답을 조정합니다.

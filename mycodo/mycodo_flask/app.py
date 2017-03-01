@@ -51,6 +51,7 @@ from mycodo.mycodo_flask import (
     settings_routes
 )
 from mycodo.mycodo_flask.general_routes import influx_db
+from mycodo.utils.system_pi import assure_path_exists
 from mycodo.config import (
     ProdConfig,
     LANGUAGES,
@@ -150,22 +151,16 @@ def register_blueprints(_app):
 
 def setup_profiler(app):
     """
-    Set up a profiler for every request
+    Set up a profiler
     Outputs to file and stream
     See profile_analyzer.py in Mycodo/mycodo/scripts/
     """
     app.config['PROFILE'] = True
-    new_dir = 'profile-{dt:%Y-%m-%d_%H:%M:%S}'.format(
+    new = 'profile-{dt:%Y-%m-%d_%H:%M:%S}'.format(
         dt=datetime.datetime.now())
-    profile_path = os.path.join(INSTALL_DIRECTORY, new_dir)
-    try:
-        os.makedirs(profile_path)
-    except OSError as exception:
-        if exception.errno != errno.EEXIST:
-            raise
+    profile_path = assure_path_exists(os.path.join(INSTALL_DIRECTORY, new))
     profile_log = os.path.join(profile_path, 'profile.log')
     profile_log_file = open(profile_log, 'w')
     stream = MergeStream(sys.stdout, profile_log_file)
-    app.wsgi_app = ProfilerMiddleware(app.wsgi_app, stream,
-                                      restrictions=[30])
+    app.wsgi_app = ProfilerMiddleware(app.wsgi_app, stream, restrictions=[30])
     return app

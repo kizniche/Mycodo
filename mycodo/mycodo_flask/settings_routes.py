@@ -28,7 +28,7 @@ from mycodo.devices.camera import count_cameras_opencv
 
 # Config
 from config import (
-    CAMERAS_SUPPORTED,
+    CAMERAS,
     LANGUAGES
 )
 
@@ -85,7 +85,7 @@ def settings_camera():
 
     camera_libraries = []
     camera_types = []
-    for camera_type, library in CAMERAS_SUPPORTED.items():
+    for camera_type, library in CAMERAS.items():
         camera_libraries.append(library)
         camera_types.append(camera_type)
 

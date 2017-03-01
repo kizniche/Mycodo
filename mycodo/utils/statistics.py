@@ -27,7 +27,6 @@ from databases.mycodo_db.models import (
 )
 
 # Functions
-from databases.utils import session_scope
 from utils.database import db_retrieve_table_daemon
 
 # Config

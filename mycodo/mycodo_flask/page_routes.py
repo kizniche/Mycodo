@@ -352,6 +352,8 @@ def page_graph_async():
 
     selected_id = None
     selected_measure = None
+    selected_unique_id = None
+
     if request.method == 'POST':
         selected_id = request.form['selected_measure'].split(",")[0]
         selected_measure = request.form['selected_measure'].split(",")[1]

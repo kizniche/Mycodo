@@ -31,8 +31,9 @@ ALEMBIC_VERSION = ''
 
 LANGUAGES = {
     'en': 'English',
-    'es': 'Español',
-    'fr': 'Français'
+    'fr': 'Français (French)',
+    'es': 'Español (Spanish)',
+    'ko': '한국어 (Korean)'
 }
 
 # Install path, the parent directory this script resides
@@ -61,10 +62,7 @@ MEASUREMENTS = {
     'TMP006': ['temperature_object', 'temperature_die'],
     'TSL2561': ['lux']
 }
-# Devices that have a default address that doesn't change
-DEVICES_DEFAULT_LOCATION = [
-    'AM2315', 'ATLAS_PT1000', 'BMP', 'HTU21D', 'K30', 'RPi', 'RPiCPULoad'
-]
+
 MEASUREMENT_UNITS = {
     'altitude': 'm',
     'co2': 'ppmv',
@@ -84,6 +82,35 @@ MEASUREMENT_UNITS = {
     'temperature_die': 'C',
     'voltage': 'volts'
 }
+
+SENSORS = [
+    ('RPi', 'Raspberry Pi CPU Temperature'),
+    ('RPiCPULoad', 'Raspberry Pi CPU Load'),
+    ('RPiFreeSpace', 'Raspberry Pi Free Disk Space'),
+    ('ADS1x15', 'Analog-to-Digital Converter: ADS1x15'),
+    ('MCP342x', 'Analog-to-Digital Converter: MCP342x'),
+    ('EDGE', 'Edge Detection: Simple Switch'),
+    ('K30', 'CO2: K30'),
+    ('TSL2561', 'Luminance: TSL2561'),
+    ('CHIRP', 'Moisture: Chirp'),
+    ('BME280', 'Pressure: BME 280'),
+    ('BMP', 'Pressure: BMP 180/085'),
+    ('DS18B20', 'Temperature: DS18B20'),
+    ('TMP006', 'Temperature (Contactless): TMP 006/007'),
+    ('ATLAS_PT1000', 'Temperature: Atlas Scientific, PT-1000'),
+    ('AM2315', 'Temperature/Humidity: AM2315'),
+    ('DHT11', 'Temperature/Humidity: DHT11'),
+    ('DHT22', 'Temperature/Humidity: DHT22'),
+    ('HTU21D', 'Temperature/Humidity: HTU21D'),
+    ('SHT1x_7x', 'Temperature/Humidity: SHT 10/11/15/71/75'),
+    ('SHT2x', 'Temperature/Humidity: SHT 21/25')
+]
+
+# Devices that have a default address that doesn't change
+DEVICES_DEFAULT_LOCATION = [
+    'AM2315', 'ATLAS_PT1000', 'BMP', 'HTU21D', 'K30', 'RPi', 'RPiCPULoad'
+]
+
 # Conditional actions
 CONDITIONAL_ACTIONS = collections.OrderedDict(
     [
@@ -99,7 +126,6 @@ CONDITIONAL_ACTIONS = collections.OrderedDict(
         ('video_email', 'Email Video')
     ]
 )
-
 
 # User Roles
 USER_ROLES = [
@@ -126,24 +152,22 @@ DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
 SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
-# Lock file paths
-LOCK_PATH = '/var/lock'
-DAEMON_PID_FILE = os.path.join(LOCK_PATH, 'mycodo.pid')
-
-# Logging
+# File paths/logging
 LOG_PATH = '/var/log/mycodo'  # Where generated logs are stored
 LOGIN_LOG_FILE = os.path.join(LOG_PATH, 'login.log')
 DAEMON_LOG_FILE = os.path.join(LOG_PATH, 'mycodo.log')
 UPGRADE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupgrade.log')
 RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
 HTTP_LOG_FILE = '/var/log/apache2/error.log'
+LOCK_PATH = '/var/lock'
+DAEMON_PID_FILE = os.path.join(LOCK_PATH, 'mycodo.pid')
 
 # Camera
-PATH_CAMERAS = os.path.join(INSTALL_DIRECTORY, 'cameras')
-CAMERAS_SUPPORTED = {
+CAMERAS = {
     'Raspberry Pi': 'picamera',
     'USB Camera': 'opencv'
 }
+PATH_CAMERAS = os.path.join(INSTALL_DIRECTORY, 'cameras')
 LOCK_FILE_STREAM = os.path.join(DATABASE_PATH, 'mycodo-camera-stream.pid')
 
 # Influx sensor/device measurement database
@@ -153,23 +177,21 @@ INFLUXDB_USER = 'mycodo'
 INFLUXDB_PASSWORD = 'mmdu77sj3nIoiajjs'
 INFLUXDB_DATABASE = 'mycodo_db'
 
-# Anonymous usage statistics files
-STATS_CSV = os.path.join(DATABASE_PATH, 'statistics.csv')
-ID_FILE = os.path.join(DATABASE_PATH, 'statistics.id')
-
 # Anonymous statistics
-STATS_INTERVAL = 86400  # 1 day
+STATS_INTERVAL = 86400
 STATS_HOST = 'fungi.kylegabriel.com'
 STATS_PORT = 8086
 STATS_USER = 'mycodo_stats'
 STATS_PASSWORD = 'Io8Nasr5JJDdhPOj32222'
 STATS_DATABASE = 'mycodo_stats'
+STATS_CSV = os.path.join(DATABASE_PATH, 'statistics.csv')
+ID_FILE = os.path.join(DATABASE_PATH, 'statistics.id')
 
-# Login
+# Login restrictions
 LOGIN_ATTEMPTS = 5
 LOGIN_BAN_SECONDS = 600  # 10 minutes
 
-# Relay
+# Relay restrictions
 MAX_AMPS = 15
 
 

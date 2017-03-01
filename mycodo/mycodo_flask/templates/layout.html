@@ -78,6 +78,7 @@
     ] -%}
     
     {% set active_page = active_page|default('graph') -%}
+    {% set help_page = '#'+help_page|default('') -%}
 
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
@@ -117,7 +118,7 @@
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li{% if active_page == 'help' %} class="active"{% endif %}><a href="/help" style="padding-top: 0.8em; padding-bottom: 0.8em"><span class="gi-2x glyphicon glyphicon-question-sign"></span></a></li>
+            <li{% if active_page == 'help' %} class="active"{% endif %}><a href="/help{{help_page}}" style="padding-top: 0.8em; padding-bottom: 0.8em"><span class="gi-2x glyphicon glyphicon-question-sign"></span></a></li>
             <li class="dropdown{% if active_page == 'settings' %} active{% endif %}">
               <a href="#" class="dropdown-toggle" style="padding-top: 0.8em; padding-bottom: 0.8em" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="gi-2x glyphicon glyphicon-cog"></span></a>
               <ul class="dropdown-menu">

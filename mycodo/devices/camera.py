@@ -3,7 +3,6 @@ from __future__ import print_function  # In python 2.7
 
 import cv2
 import datetime
-import errno
 import imutils
 import io
 import logging
@@ -11,7 +10,6 @@ import os
 import picamera
 import threading
 import time
-
 
 from utils.system_pi import (
     assure_path_exists,

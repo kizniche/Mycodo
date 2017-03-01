@@ -1,7 +1,7 @@
 {% extends "layout-settings.html" %}
-
 {% set active_page = "settings" %}
 {% set active_settings = "users" %}
+{% set help_page = "settings-user" %}
 
 {% block title %} - {{_('User Settings')}}{% endblock %}
 
@@ -37,9 +37,9 @@
       </div>
     </div>
     <div class="form-group">
-      {{form_add_user.addGroup.label(class_='col-sm-4 control-label')}}
+      {{form_add_user.addRole.label(class_='col-sm-4 control-label')}}
       <div class="col-sm-8">
-        <select class="form-control" id="addGroup" name="addGroup">
+        <select class="form-control" id="addRole" name="addRole">
           <option value="Admin">Admin</option>
           {% for each_role in user_roles if each_role.name != 'Admin' %}
             <option value="{{each_role.name}}">{{each_role.name}}</option>
@@ -65,7 +65,7 @@
           <td class="col-sm-2">{{_('Email')}}</td>
           <td class="col-sm-2">{{_('New Password')}}</td>
           <td class="col-sm-2">{{_('Repeat Password')}}</td>
-          <td class="col-sm-2">{{_('Group')}}</td>
+          <td class="col-sm-2">{{_('Role')}}</td>
           <td class="col-sm-2">{{_('Theme')}}</td>
           <td class="col-sm-1"></td>
         </tr>
@@ -95,7 +95,7 @@
             {{form_mod_user.modPassword_repeat(class_='form-control')}}
           </td>
           <td>
-            <select class="form-control" id="modGroup" name="modGroup">
+            <select class="form-control" id="modRole" name="modRole">
               {% for each_role in user_roles %}
                 <option value="{{each_role.name}}"{% if user.roles.name == each_role.name %} selected{% endif %}>{{each_role.name}}</option>
               {% endfor %}

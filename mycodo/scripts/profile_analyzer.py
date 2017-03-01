@@ -35,7 +35,7 @@ def analyze(args):
     dt_start = datetime.datetime.now()
     parsed_data = {}
 
-    for index, line in enumerate(open(args.filename, 'r')):
+    for line in open(args.filename, 'r'):
         if line.startswith('PATH: '):
             request = re.findall(r"'(.*?)'", line, re.DOTALL)[0]
         if line.find('primitive calls) in') > -1:

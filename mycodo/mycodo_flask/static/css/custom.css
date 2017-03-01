@@ -2,6 +2,13 @@
  * Custom CSS
  */
 
+a.anchor {
+    display: block;
+    position: relative;
+    top: -3.7em;
+    visibility: hidden;
+}
+
 .gi-2x{font-size: 1.6em;}
 
 .row.small-gutters > [class^="col-"],

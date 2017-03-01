@@ -19,7 +19,6 @@ from flask import (
     flash,
     redirect,
     request,
-    session,
     url_for
 )
 from flask_babel import gettext
@@ -61,7 +60,7 @@ from utils.system_pi import (
 
 # Config
 from config import (
-    CAMERAS_SUPPORTED,
+    CAMERAS,
     DEVICES_DEFAULT_LOCATION,
     INSTALL_DIRECTORY
 )
@@ -2322,7 +2321,7 @@ def user_add(form_add_user):
             new_user.email = form_add_user.addEmail.data
             new_user.set_password(form_add_user.addPassword.data)
             role = Role.query.filter(
-                Role.name == form_add_user.addGroup.data).first().id
+                Role.name == form_add_user.addRole.data).first().id
             new_user.role = role
             new_user.theme = 'slate'
             try:
@@ -2363,7 +2362,7 @@ def user_mod(form_mod_user):
 
         if not error:
             role = Role.query.filter(
-                Role.name == form_mod_user.modGroup.data).first().id
+                Role.name == form_mod_user.modRole.data).first().id
             mod_user.role = role
             mod_user.theme = form_mod_user.modTheme.data
             db.session.commit()
@@ -2485,7 +2484,7 @@ def camera_add(form_camera):
             return redirect(url_for('settings_routes.settings_camera'))
         new_camera.name = form_camera.name.data
         new_camera.camera_type = form_camera.camera_type.data
-        new_camera.library = CAMERAS_SUPPORTED[form_camera.camera_type.data]
+        new_camera.library = CAMERAS[form_camera.camera_type.data]
         if not error:
             try:
                 new_camera.save()

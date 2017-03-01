@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
-{% set active_page = "relay" %}
+{% set active_page = "relays" %}
+{% set help_page = "relays" %}
+
 {% block title %} - {{_('Relays')}}{% endblock %}
 
 {% block head %}
@@ -84,10 +86,8 @@
 
     <div style="clear: both; padding:1em 0;"></div>
 
-    {%  if relay %}
-      <h4>Relays</h4>
-      <p>Relays enable Mycodo to use a low power signal (3.3 DC volts in the case of a Raspberry Pi) to power electrical devices that require greater voltage/current (such as household appliances that require 120/240 AC volts).</p>
-    {% endif %}
+    <h4>Relays <a href="/help#relays"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <p>Relays enable a low power signal (3.3 DC volts from a Raspberry Pi) to switch a greater voltage/current (such as household appliances that require 120/240 AC volts). Add and configure relays to manipulate them and allow them be used throughout Mycodo.</p>
 
     {%- if displayOrder -%}
       {%- for order in displayOrder -%}
@@ -191,7 +191,7 @@
     <div style="clear: both; padding: 0.25em 0;"></div>
 
     {% if conditional %}
-      <h4>{{_('Conditionals')}}</h4>
+      <h4>{{_('Conditionals')}} <a href="/help#conditional-statements"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
       <p>{{_('Conditionals allow certain actions to be carried out when a certain set of conditions are met.')}} See the <a href="/help#conditional-statements">manual</a> for more information.</p>
     {% endif %}
 
