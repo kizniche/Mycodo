@@ -8,7 +8,7 @@ Mycodo is a remote monitoring and automated regulation system with a focus on mo
 
 The core system coordinates a diverse set of responses to sensor measurements, including actions such as camera captures, email notifications, relay activation/deactivation, regulation with PID control, and more. Mycodo has been used for cultivating gourmet mushrooms, cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs and young animals, aging cheeses, fermenting foods, maintaining aquatic systems, and more.
 
-[Español](#español), [Français](#français), [한국어](#한국어)
+[Español](#espa%C3%B1ol-spanish), [Français](#fran%C3%A7ais-french), [한국어](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
 
 ## What is PID Control?
 
@@ -44,9 +44,9 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 - [Screenshots](#screenshots)
 - [Links](#links)
 - [Languages](#languages)
-    - [Español](#español)
-    - [Français](#français)
-    - [한국어](#한국어)
+    - [Español (Spanish)](#espa%C3%B1ol-spanish)
+    - [Français (French)](#fran%C3%A7ais-french)
+    - [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
 
 
 ## Features
@@ -568,7 +568,7 @@ http://KyleGabriel.com
 
 ## Languages
 
-Mycodo has been translated (to varying degrees) to [Español](#español), [Français](#français), and [한국어](#한국어). By default, mycodo will display the default language set by your browser. You may also force a language in the settings at Configure->General Settings->Language.
+Mycodo has been translated (to varying degrees) to [Español](#espa%C3%B1ol-spanish), [Français](#fran%C3%A7ais-french), and [한국어](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean). By default, mycodo will display the default language set by your browser. You may also force a language in the settings at Configure->General Settings->Language.
 
 ### Español (Spanish)
 
