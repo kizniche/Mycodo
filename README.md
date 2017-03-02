@@ -162,16 +162,16 @@ Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the s
 User roles define a set of permissions that dictate the abilities of a user when performing certain functions. There are 4 default user roles as well as the ability to create custom roles.
 
 
-|   Role  |  Edit Users | Edit Controllers<sup>1</sup | Edit Settings | View Settings | View Camera | View Stats<sup>2</sup | View Logs |
+|   Role  |  Edit Users | Edit Controllers<sup>1</sup> | Edit Settings | View Settings | View Camera | View Stats<sup>2</sup> | View Logs |
 | ------- | ----------- | ----------------- | ------------- | ------------- | ----------- | ---------- | --------- |
 | Admin   |      X      |         X         |       X       |       X       |      X      |      X     |     X     |
 | Editor  |             |         X         |       X       |       X       |      X      |      X     |     X     |
 | Monitor |             |                   |               |       X       |      X      |      X     |     X     |
 | Guest   |             |                   |               |               |             |            |           |
 
-<sup>1</supThe ```Edit Controllers``` permission protects the editing of Graphs, LCDs, Methods, PIDs, Relays, Sensors, and Timers.
+<sup>1</sup>The ```Edit Controllers``` permission protects the editing of Graphs, LCDs, Methods, PIDs, Relays, Sensors, and Timers.
 
-<sup>2</supThe ```View Stats``` permission protects the viewing of usage statistics and the System Info and Relay Usage pages.
+<sup>2</sup>The ```View Stats``` permission protects the viewing of usage statistics and the System Info and Relay Usage pages.
 
 
 ### Web Server Security
