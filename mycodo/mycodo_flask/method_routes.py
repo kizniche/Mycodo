@@ -192,7 +192,7 @@ def method_builder(method_id):
     Page to edit the details of each method
     This includes the (time, setpoint) data sets
     """
-    if not flaskutils.user_has_permission('edit_settings'):
+    if not flaskutils.user_has_permission('edit_controllers'):
         return redirect(url_for('method_routes.method_list'))
 
     relay = Relay.query.all()

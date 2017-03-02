@@ -8,7 +8,8 @@ Mycodo is a remote monitoring and automated regulation system with a focus on mo
 
 The core system coordinates a diverse set of responses to sensor measurements, including actions such as camera captures, email notifications, relay activation/deactivation, regulation with PID control, and more. Mycodo has been used for cultivating gourmet mushrooms, cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs and young animals, aging cheeses, fermenting foods, maintaining aquatic systems, and more.
 
-[Español](#espa%C3%B1ol-spanish), [Français](#fran%C3%A7ais-french), [한국어](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
+Languages: [Español](#espa%C3%B1ol-spanish), [Français](#fran%C3%A7ais-french), [한국어](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
+
 
 ## What is PID Control?
 
@@ -17,7 +18,6 @@ The core system coordinates a diverse set of responses to sensor measurements, i
 A [proportional-derivative-integral (PID) controller](https://en.wikipedia.org/wiki/PID_controller) is a control loop feedback mechanism used throughout industry for controlling systems. It efficiently brings a measurable condition, such as the temperature, to a desired state and maintains it there with little overshoot and oscillation. A well-tuned PID controller will raise to the setpoint quickly, have minimal overshoot, and maintain the setpoint with little oscillation.
 
 In the top graph of the above screenshot visualizes the regulation of temperature in a sealed chamber. The red line is the desired temperature setpoint that has been configured (which also happens to have been configured to change over the course of each day). The blue line is the actual recorded temperature. The green vertical bars represent how long a heater is activated for, per every 20-second period. This regulation was achieved with minimal tuning (Actual tuned gains: K<sub>P</sub>=0.08, K<sub>I</sub>=0.005, K<sub>D</sub>=0.001), and already displays a very minimal deviation from the setpoint (±0.5° Celsius). Further tuning would reduce this variability even more.
-
 
 
 ## Table of Contents
@@ -36,7 +36,6 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 - [Notes](#notes)
 - [User Roles](#user-roles)
 - [HTTP Server](#http-server-security)
-- [Daemon Info](#daemon-info)
 - [Upgrading](#upgrading)
 - [Backup and Restore](#backup-and-restore)
 - [Translations](#translations)
@@ -52,59 +51,19 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 
 ## Features
 
-* Web interface - Access anywhere with an internet connection
-  * Visualize data in real-time graphs or export for personal use
-  * Configure the system in an easy to use interface
-
-* Relays - Control electrical devices
-  * Connect appliances and electrical devices to relays to allow Mycodo to actuate them.
-  * Manually control power to relays.
-  * Automate powering relays (see Conditional Statements, Timers, PIDs, and Methods, below)
-
-* Sensors - Measure environmental conditions
-  * Many [analog and digital sensors](#supported-devices-and-sensors) supported: Measuring temperature, humidity, CO<sub>2</sub>, atmospheric pressure, luminosity, infrared heat, soil moisture, and more!
-  * Analog to digital converter support for reading any analog sensor or signal.
-  * Store measurements in a round-robin database (influx)
-
-* Timers - Actions at various times and intervals
-  * Simple Timer - Set to a specific time of day to execute (Example: A water pump that should activate for 5 seconds at noon and midnight)
-  * Period Timer - Ensure a relay is either On of Off for a period of the day (Example: Plants that need lights to remain on for specific parts of the day)
-  * Simple On/Off Cycle - Set the on duration and the off duration
-
-* Conditional Statements
-  * Execute actions based on inputs or measurements, such as email notification, relay actuation, camera recording, and more.
-  * Example: If the humidity is above 80%, turn on Emergency_Fan_1 for 120 seconds, record a 10 second video to attach and send in an email, and flash LCD_1.
-  * Example: If motion detected (PIR motion sensor), capture still image from Camera_1, record a 5 second video with camera_2, and attach the photo and video in and send an email.
-
-* PID (Proportional Integral Derivative) Controller - Regulate environmental conditions
-  * Couple relays with sensors and regulate environmental conditions.
-  * PID algorithms regulate with prediction and precision.
-
-* Methods
-  * Change an environmental condition over time (setpoint tracking). Useful for reflow ovens, thermal cyclers, mimicking natural environments, and more.
-  * Time/Date: Change the setpoint based on specific times and dates (ideal for long-duration changes).
-  * Duration: Change the setpoint at durations from when it was activated (ideal for short-term changes)
-  * Daily: Change the setpoint on a daily, repeatable schedule.
-  * Daily Sine Wave: Change the setpoint on a daily, repeatable schedule that follows a configurable sinusoidal wave.
-  * Daily Bezier Curve: Change the setpoint on a daily, repeatable schedule that follows a configurable [Bezier curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve).
-
-* LCDs
-  * Display measurements and data on a physical display (cheaper than a monitor)
-  * Can set to flash if an environmental condition is outside the acceptable range.
-
-* I<sup>2</sup>C Multiplexer Support
-  * Allow using multiple devices/sensors with the same I<sup>2</sup>C address.
-  * Some sensors have the same I<sup>2</sup>C address. This allows up to 64 sensors of the same address to be connected to one I<sup>2</sup>C bus.
-
-* Camera support
-  * Raspberry Pi Camera support - Stream live video, capture still images, or create time-lapses.
-  * USB camera support - Capture stills and time-lapses with most USB cameras (using opencv)
-
-* Miscellaneous
-  * [Full Manual](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo/mycodo_flask/templates/manual.html) (Note: the manual may render unexpectedly when viewed outside of the Mycodo web interface).
-  * Automated system upgrade - When there's new release on github, an upgrade can be initiated from the web user interface.
-  * Languages: English, [Español](#espa%C3%B1ol-spanish), [Français](#fran%C3%A7ais-french), and [한국어](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
-
+* Web Interface - Access anywhere with an internet connection
+* Relays - Control electrical devices, manually and automatic
+* Sensors - Measure environmental conditions (temperature, humidity, CO<sub>2</sub>, atmospheric pressure, luminosity, infrared heat, soil moisture, and more)
+* Analog to digital converter support for reading any analog sensor or signal.
+* Timers - Execute actions at various times and intervals
+* Conditional Statements - Execute actions based on inputs or measurements (such as email notification, relay actuation, camera recording, and more)
+* PID (Proportional Integral Derivative) Controller - Couple relays with sensors and regulate environmental conditions with prediction and precision
+* Methods - Change an environmental condition over time (setpoint tracking, useful for reflow ovens, thermal cyclers, mimicking natural environments, and more)
+* LCDs - Display measurements and data on a physical display (cheaper than a monitor)
+* I<sup>2</sup>C Multiplexer Support - Allow using multiple devices/sensors with the same I<sup>2</sup>C address.
+* Camera support - Raspberry Pi Camera and USB cameras, to stream live video, capture still images, and create time-lapses
+* Automated system upgrade - When there's new release on github, an upgrade can be initiated from the web user interface.
+* Languages: English, [Español](#espa%C3%B1ol-spanish), [Français](#fran%C3%A7ais-french), and [한국어](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
 
 
 ## TODO:
@@ -118,7 +77,6 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 * Add graph export options (width, height, scale)
 * Create custom log from influxdb query
 * Notes, flag points of time on graph (text, file upload, graph saving, etc.)
-
 
 
 ## Install
@@ -162,7 +120,6 @@ If the install is successful, the web user interface should be accessible with y
 Alternatively, an admin user may also be created with the following command:
 
 ```sudo ~/Mycodo/init_databases.py --addadmin```
-
 
 
 ## Install Notes
@@ -267,7 +224,6 @@ An analog to digital converter (ADC) allows the use of any analog sensor that ou
 > [MCP342x Analog to Digital Converters](http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)) &plusmn;2.048 (I<sup>2</sup>C)
 
 
-
 ## Notes
 
 A minimal set of anonymous usage statistics are collected to help improve development. No identifying information is saved from the information that is collected and it is only used to improve Mycodo. No other sources will have access to this information. The data collected is mainly how much specific features are used, how often errors occur, and other similar statistics. The data that's collected can be viewed from the 'View collected statistics' link in the Settings/General panel of the UI or in the file Mycodo/databases/statistics.csv. You may opt out from transmitting this information from the General settings in the Admin panel.
@@ -279,19 +235,19 @@ Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the s
 
 ### User Roles
 
-User roles are used to restrict users from performing certain functions. There are 4 default user roles (the ability to create custom roles will be implemented in the future).
+User roles define a set of permissions that dictate the abilities of a user when performing certain functions. There are 4 default user roles as well as the ability to create custom roles.
 
 
-|   Role  |   Edit Users  | Edit Controllers | Edit Settings | View Settings | View Camera | View Stats | View Logs |
-| ------- | ------------- | ---------------- | ------------- | ------------- | ----------- | ---------- | --------- |
-| Admin   |      True     |       True       |      True     |      True     |     True    |    True    |   True    |
-| Editor  |      False    |       True       |      True     |      True     |     True    |    True    |   True    |
-| Monitor |      False    |       False      |      False    |      True     |     True    |    True    |   True    |
-| Guest   |      False    |       False      |      False    |      False    |     False   |    False   |   False   |
+|   Role  |  Edit Users | Edit Controllers | Edit Settings | View Settings | View Camera | View Stats | View Logs |
+| ------- | ----------- | ---------------- | ------------- | ------------- | ----------- | ---------- | --------- |
+| Admin   |      X      |        X         |       X       |       X       |      X      |    True    |     X     |
+| Editor  |             |        X         |       X       |       X       |      X      |      X     |     X     |
+| Monitor |             |                  |               |       X       |      X      |      X     |     X     |
+| Guest   |             |                  |               |               |             |            |           |
 
-#### User Notes
+#### User Roles Notes
 
-Edit controllers includes editing settings such as graphs and relays.
+The ```Edit Controllers``` permission protects the editing of Graphs, LCDs, Methods, PIDs, Relays, Sensors, and Timers.
 
 
 ### HTTP Server Security
@@ -301,28 +257,9 @@ An SSL certificate will be generated and stored at ~/Mycodo/mycodo/mycodo_flask/
 If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the 'https://' version (opposed to 'http://')of the web UI. You may receive a warning message about the security of your site, unless you add the certificate to your browser's trusted list.
 
 
-### Daemon info
-
-The status of the daemon's service can be checked
-
-```sudo service mycodo service```
-
-The daemon can also be started manually if the systemd method above isn't used or an error needs to be debugged
-
-```sudo ~/Mycodo/mycodo/mycodo_daemon.py```
-
-Also, use '-d' to log all debug messages to /var/log/mycodo/mycodo.log
-
-```sudo ~/Mycodo/mycodo/mycodo_daemon.py -d```
-
-To terminate the daemon, you can use two methods. If the daemon was started with ```sudo service mycodo start```, please use ```sudo service mycodo stop``` to stop it. If the daemon was started from either of the two commands above, then the following command may be used to terminate the daemon:
-
-```python ~/Mycodo/mycodo/mycodo_client.py -t```
-
-
 ### Upgrading
 
-If you already have Mycodo installed (>=4.0.0), you can perform an upgrade to the latest [release](https://github.com/kizniche/Mycodo/releases) on github by either using the Admin/Upgrade menu in the web UI (recommended) or by issuing the following command at the terminal. A log of the upgrade process is created at /var/log/mycodo/mycodoupgrade.log
+If you already have Mycodo installed (>=5.0.0), you can perform an upgrade to the latest [release](https://github.com/kizniche/Mycodo/releases) on github by either using the Upgrade option in the web UI (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at /var/log/mycodo/mycodoupgrade.log
 
 ```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh upgrade```
 
@@ -336,70 +273,9 @@ alembic upgrade head
 Refer to the [alembic documentation](http://alembic.readthedocs.org/en/latest/tutorial.html) for other functions.
 
 
-
 ### Backup and Restore
 
-Currently only the Mycodo settings are backed up when the system is upgraded from the Admin/Upgrade menu of the web UI.
-
-If you would like to create a full backup that includes all the sensor data, which can be used to set up Mycodo on a new system as it was on the old, you can follow these steps:
-
-Backup the influx databases:
-
-```bash
-influxd backup <path-to-metastore-backup>
-influxd backup -database mycodo_db <path-to-database-backup>
-```
- 
-Backup the Mycodo databases:
-
-```bash
-cd ~/Mycodo/databases
-tar zcf ~/Mycodo-databases.tar.gz users.db mycodo.db
-```
-
-Then, on the new system, assign the same IP as the old system (if using the remote admin).
-
-Clone the latest Mycodo from github (ensure [prerequisites](#install-notes) are taken care of first):
-
-```bash
-cd ~
-clone git clone https://github.com/kizniche/Mycodo
-```
-
-Extract the Mycodo databases back to Mycodo/databases:
-
-```bash
-tar zxvf ~/Mycodo-databases.tar.gz -C ~/Mycodo/databases
-```
-
-To ensure your databases are up-to-date and compatible with the latest version of Mycodo, run:
-
-```bash
-cd ~/Mycodo/databases
-alembic upgrade head
-```
-
-Execute the Mycodo setup.sh script:
-
-```bash
-cd ~/Mycodo/install
-sudo /bin/bash setup.sh
-```
-
-Restore the influx databases:
-
-```bash
-service influxdb stop
-influxd restore -metadir /var/lib/influxdb/meta <path-to-metastore-backup>
-influxd restore -datadir /var/lib/influxdb/data <path-to-database-backup>
-sudo chown -R influxdb:influxdb /var/lib/influxdb
-service influxdb start
-```
-
-The order of these events are important, because databases will be created and services started while the setup.sh script is running, so certain commands need to be done before this happens.
-
-You could also copy the influx databases and just copy the entire Mycodo directory (archive to preserve permissions) to a new system, but I was writing from the perspective of backing up the most minimal set of data, so if a system became corrupt somewhere, the backups could be restored to a new system.
-
+Currently only the Mycodo settings are backed up when the system is upgraded from the Upgrade option of the web UI. See the [Backup and Restore Wiki Page](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore) for instructions to create and restore a full backup. Note: This feature will be built in to Mycodo in the future.
 
 
 ### Translations
@@ -407,15 +283,14 @@ You could also copy the influx databases and just copy the entire Mycodo directo
 Translation support has been added but there is currently a lack of translation languages. If you know another language and would like to create translations, see the [Translations Wiki Page](https://github.com/kizniche/Mycodo/wiki/Translations).
 
 
-
 ### Directory Structure
 
 The file structure of this project, with comments, can be found on the [File Structure Wiki Page](https://github.com/kizniche/Mycodo/wiki/File-Structure)
 
 
-### Screenshots (may be outdated)
+### Screenshots
 
-See the [Screenshots Wiki Page](https://github.com/kizniche/Mycodo/wiki/Screenshots).
+See the [Screenshots Wiki Page](https://github.com/kizniche/Mycodo/wiki/Screenshots). (may be outdated)
 
 
 ### License
@@ -427,7 +302,6 @@ Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRAN
 A full copy of the GNU General Public License can be found at <a href="http://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">http://www.gnu.org/licenses/gpl-3.0.en.html</a>
 
 This software includes third party open source software components: Discrete PID Controller. Each of these software components have their own license. Please see Mycodo/mycodo/controller_PID.py for license information.
-
 
 
 ## Links
