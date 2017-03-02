@@ -5,7 +5,7 @@
 #                    execute that wouldn't be possible from the running
 #                    upgrade script.
 #
-#  Copyright (C) 2015  Kyle T. Gabriel
+#  Copyright (C) 2017  Kyle T. Gabriel
 #
 #  This file is part of Mycodo
 #

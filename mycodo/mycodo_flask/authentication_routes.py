@@ -28,7 +28,7 @@ from mycodo.databases.mycodo_db.models import (
 # Functions
 from mycodo import flaskforms
 from mycodo.flaskutils import flash_form_errors
-from mycodo.scripts.utils import (
+from mycodo.utils.utils import (
     test_username,
     test_password
 )

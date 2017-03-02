@@ -4,7 +4,7 @@
 #  mycodo_client.py - Client for mycodo daemon. Communicates with daemon
 #                     to execute commands and receive status.
 #
-#  Copyright (C) 2016  Kyle T. Gabriel
+#  Copyright (C) 2017  Kyle T. Gabriel
 #
 #  This file is part of Mycodo
 #

@@ -3,7 +3,7 @@
 #
 #  init_databases.py - Create and update Mycodo SQLite databases
 #
-#  Copyright (C) 2015  Kyle T. Gabriel
+#  Copyright (C) 2017  Kyle T. Gabriel
 #
 #  This file is part of Mycodo
 #
@@ -34,7 +34,12 @@ import sqlalchemy
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.mycodo_db.models import User
 from mycodo.databases.utils import session_scope
-from mycodo.scripts.utils import test_username, test_password, is_email, query_yes_no
+from mycodo.utils.utils import (
+    test_username,
+    test_password,
+    is_email,
+    query_yes_no
+)
 
 if sys.version[0] == "3":
     raw_input = input  # Make sure this works in PY3

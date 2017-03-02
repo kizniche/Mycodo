@@ -49,7 +49,7 @@ from databases.mycodo_db.models import (
 from mycodo_client import DaemonControl
 
 # Functions
-from scripts.utils import (
+from utils.utils import (
     test_username,
     test_password
 )

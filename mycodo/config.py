@@ -3,24 +3,6 @@
 #
 #  config.py - Global Mycodo configuration settings
 #
-#  Copyright (C) 2015  Kyle T. Gabriel
-#
-#  This file is part of Mycodo
-#
-#  Mycodo is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  Mycodo is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
-#
-#  Contact at kylegabriel.com
 import os
 import collections
 
@@ -39,7 +21,7 @@ LANGUAGES = {
 # Install path, the parent directory this script resides
 INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
 
-# Sensor/device information
+# Measurements for each sensor/device
 MEASUREMENTS = {
     'ADS1x15': ['voltage'],
     'AM2315': ['dewpoint', 'humidity', 'temperature'],
@@ -63,6 +45,7 @@ MEASUREMENTS = {
     'TSL2561': ['lux']
 }
 
+# Unit abbreviation for each measurement
 MEASUREMENT_UNITS = {
     'altitude': 'm',
     'co2': 'ppmv',
@@ -83,6 +66,7 @@ MEASUREMENT_UNITS = {
     'voltage': 'volts'
 }
 
+# Sensors and description
 SENSORS = [
     ('RPi', 'Raspberry Pi CPU Temperature'),
     ('RPiCPULoad', 'Raspberry Pi CPU Load'),
@@ -107,6 +91,7 @@ SENSORS = [
 ]
 
 # Devices that have a default address that doesn't change
+# Used to determine whether or not to present the option to change address
 DEVICES_DEFAULT_LOCATION = [
     'AM2315', 'ATLAS_PT1000', 'BMP', 'HTU21D', 'K30', 'RPi', 'RPiCPULoad'
 ]
@@ -145,6 +130,7 @@ USER_ROLES = [
          view_logs=False)
 ]
 
+# Web UI themes
 THEMES = [
     ('cerulean', 'Cerulean'),
     ('cosmo', 'Cosmo'),
@@ -209,7 +195,10 @@ ID_FILE = os.path.join(DATABASE_PATH, 'statistics.id')
 LOGIN_ATTEMPTS = 5
 LOGIN_BAN_SECONDS = 600  # 10 minutes
 
-# Relay restrictions
+# Relay amp restrictions. If the sum of current draws of all relay currently
+# on, plus the one directed to turn on, surpasses this maximum, the relay
+# will be prevented from turning on. Prevents exceeding current rating of
+# the electrical system.
 MAX_AMPS = 15
 
 

@@ -4,7 +4,7 @@
 # controller_lcd.py - Mycodo LCD controller that outputs measurements and other
 #                     information to I2C-interfaced LCDs
 #
-#  Copyright (C) 2016  Kyle T. Gabriel
+#  Copyright (C) 2017  Kyle T. Gabriel
 #
 #  This file is part of Mycodo
 #
