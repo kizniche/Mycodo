@@ -35,7 +35,7 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
     - [Devices](#devices)
 - [Notes](#notes)
 - [User Roles](#user-roles)
-- [HTTP Server](#http-server-security)
+- [Web Server](#web-server-security)
 - [Upgrading](#upgrading)
 - [Backup and Restore](#backup-and-restore)
 - [Translations](#translations)
@@ -141,88 +141,12 @@ If you receive an unresolvable error during the install, please [create an issue
 
 ## Diagnosing Issues
 
-Being experimental software, there may be issues from time to time with the web user interface (frontend) or the daemon (backend). See the [Diagnosing Issues Wiki Page](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues).
+See the [Diagnosing Issues Wiki Page](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues)
 
 
 ## Supported Devices and Sensors
 
-Certain sensors will require extra steps to be taken in order to set up the interface for communication. This includes I<sup>2</sup>C, one-wire, and UART.
-
-### 1-Wire
-
-The 1-wire interface should be configured with [these instructions](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing).
-
-> [DS18B20](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf), [DS18S20](https://datasheets.maximintegrated.com/en/ds/DS18S20.pdf), [DS1822](https://datasheets.maximintegrated.com/en/ds/DS1822.pdf), [DS28EA00](https://datasheets.maximintegrated.com/en/ds/DS28EA00.pdf), [DS1825](https://datasheets.maximintegrated.com/en/ds/DS1825.pdf)/[MAX31850K](https://datasheets.maximintegrated.com/en/ds/MAX31850-MAX31851.pdf) Temperature
-
-### GPIO
-
-> [DHT11, DHT22, AM2302](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring) Relative humidity and temperature.
-
-> [SHT1x, SHT2x, SHT7x](https://github.com/mk-fg/sht-sensor) Relative humidity and temperature.
-
-### UART
-
-> [K30](http://www.co2meter.com/products/k-30-co2-sensor-module) Carbon dioxide (CO<sub>2</sub>) in ppmv
-
-[This documentation](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip) provides specific installation procedures for the K30 with the Raspberry Pi version 1 or 2. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing ~/Mycodo/mycodo/tests/test_uart_K30.py
-
-Because the UART is handled differently by the Raspberry Pi 3, from of the addition of bluetooth, there are a different set of instructions for getting the K30 working on the Raspberry Pi 3. If installing on a Raspberry Pi 3, you only need to perform these steps to get the K30 working:
-
-Run raspi-config
-
-```sudo raspi-config```
-
-Go to Advanced Options->Serial and disable. Then edit /boot/config.txt
-
-```sudo vi /boot/config.txt```
-
-Find the line "enable_uart=0" and change it to "enable_uart=1", then reboot.
-
-### I<sup>2</sup>C
-
-The I<sup>2</sup>C interface should be enabled with `raspi-config`.
-
-> [AM2315](https://github.com/lexruee/tentacle_pi) Relative humidity and temperature.
-
-> [Atlas Scientific PT-1000](http://www.atlas-scientific.com/product_pages/kits/temp_kit.html) Temperature
-
-> [BME280](https://www.bosch-sensortec.com/bst/products/all_products/bme280) Barometric pressure, humidity, and temperature
-
-> [BMP085, BMP180](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi) Barometric pressure and temperature
-
-> [HTU21D](http://www.te.com/usa-en/product-CAT-HSC0004.html) Relative humidity and temperature
-
-> [TMP006, TMP007](https://www.sparkfun.com/products/11859) Contactless temperature
-
-> [TSL2561](https://www.sparkfun.com/products/12055) Light
-
-> [Chirp](https://wemakethings.net/chirp/) Moisture, light, and temperature
-
-### Edge Detection
-
-The detection of a changing signal, for instance a simple switch completing a circuit, requires the use of edge detection. By detecting a rising edge (LOW to HIGH), a falling edge (HIGH to LOW), or both, actions or events can be triggered. The GPIO chosen to detect the signal should be equipped with an appropriate resistor that either pulls the GPIO up [to 5-volts] or down [to ground]. The option to enable the internal pull-up or pull-down resistors is not available for safety reasons. Use your own resistor to pull the GPIO high or low.
-
-Examples of devices that can be used with edge detection: simple switches and buttons, PIR motion sensors, reed switches, hall effect sensors, float switches, and more.
-
-
-### Devices
-
-### I<sup>2</sup>C Multiplexers
-
-All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some sensors may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.
-
-> [TCA9548A I<sup>2</sup>C Multiplexer](https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview) (I<sup>2</sup>C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I<sup>2</sup>C address.
-
-> [TCA9545A Grove I<sup>2</sup>C Bus Multiplexer](http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/) (I<sup>2</sup>C): This board works a little differently than the TCA9548A, ablove. This board actually creates 4 new I<sup>2</sup>C busses, each with their own selectable voltage, either 3.3 or 5.0 volts. Instructions to enable the Device Tree Overlay are at [https://github.com/camrex/i2c-mux-pca9545a](https://github.com/camrex/i2c-mux-pca9545a). Nothing else needs to be done in Mycodo after that except to select the correct I<sup>2</sup>C bus when configuring the sensor.
-
-### Analog to Digital Converters
-
-An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A [voltage divider](https://learn.sparkfun.com/tutorials/voltage-dividers) may be necessary to attain your desired range.
-
-> [ADS1x15 Analog to Digital Converters](https://www.adafruit.com/product/1085) &plusmn;4.096 (I<sup>2</sup>C)
-
-> [MCP342x Analog to Digital Converters](http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)) &plusmn;2.048 (I<sup>2</sup>C)
-
+See the [Sensors and Devices Wiki Page](https://github.com/kizniche/Mycodo/wiki/Sensors-and-Devices)
 
 ## Notes
 
@@ -238,23 +162,23 @@ Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the s
 User roles define a set of permissions that dictate the abilities of a user when performing certain functions. There are 4 default user roles as well as the ability to create custom roles.
 
 
-|   Role  |  Edit Users | Edit Controllers | Edit Settings | View Settings | View Camera | View Stats | View Logs |
-| ------- | ----------- | ---------------- | ------------- | ------------- | ----------- | ---------- | --------- |
-| Admin   |      X      |        X         |       X       |       X       |      X      |    True    |     X     |
-| Editor  |             |        X         |       X       |       X       |      X      |      X     |     X     |
-| Monitor |             |                  |               |       X       |      X      |      X     |     X     |
-| Guest   |             |                  |               |               |             |            |           |
+|   Role  |  Edit Users | Edit Controllers<sup>1</sup | Edit Settings | View Settings | View Camera | View Stats<sup>2</sup | View Logs |
+| ------- | ----------- | ----------------- | ------------- | ------------- | ----------- | ---------- | --------- |
+| Admin   |      X      |         X         |       X       |       X       |      X      |      X     |     X     |
+| Editor  |             |         X         |       X       |       X       |      X      |      X     |     X     |
+| Monitor |             |                   |               |       X       |      X      |      X     |     X     |
+| Guest   |             |                   |               |               |             |            |           |
 
-#### User Roles Notes
+<sup>1</supThe ```Edit Controllers``` permission protects the editing of Graphs, LCDs, Methods, PIDs, Relays, Sensors, and Timers.
 
-The ```Edit Controllers``` permission protects the editing of Graphs, LCDs, Methods, PIDs, Relays, Sensors, and Timers.
+<sup>2</supThe ```View Stats``` permission protects the viewing of usage statistics and the System Info and Relay Usage pages.
 
 
-### HTTP Server Security
+### Web Server Security
 
-An SSL certificate will be generated and stored at ~/Mycodo/mycodo/mycodo_flask/ssl_certs/ during the install process. If you want to use your own SSL certificates, replace them with your own. [letsencrypt.org](https://letsencrypt.org) provides free verified SSL certificates if you have your own domain.
+An SSL certificate will be generated and stored at ~/Mycodo/mycodo/mycodo_flask/ssl_certs/ during the install process. If you want to use your own SSL certificates, replace them with your own.
 
-If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the 'https://' version (opposed to 'http://')of the web UI. You may receive a warning message about the security of your site, unless you add the certificate to your browser's trusted list.
+If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the web UI at the "https://" address (opposed to "http://"). You may receive a warning message about the security of your site, unless you add the certificate to your browser's trusted list.
 
 
 ### Upgrading
@@ -275,22 +199,21 @@ Refer to the [alembic documentation](http://alembic.readthedocs.org/en/latest/tu
 
 ### Backup and Restore
 
-Currently only the Mycodo settings are backed up when the system is upgraded from the Upgrade option of the web UI. See the [Backup and Restore Wiki Page](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore) for instructions to create and restore a full backup. Note: This feature will be built in to Mycodo in the future.
+See the [Backup and Restore Wiki Page](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore)
 
 
 ### Translations
 
-Translation support has been added but there is currently a lack of translation languages. If you know another language and would like to create translations, see the [Translations Wiki Page](https://github.com/kizniche/Mycodo/wiki/Translations).
+See the [Translations Wiki Page](https://github.com/kizniche/Mycodo/wiki/Translations)
 
 
 ### Directory Structure
-
-The file structure of this project, with comments, can be found on the [File Structure Wiki Page](https://github.com/kizniche/Mycodo/wiki/File-Structure)
+See the [Directory Structure Wiki Page](https://github.com/kizniche/Mycodo/wiki/Directory-Structure)
 
 
 ### Screenshots
 
-See the [Screenshots Wiki Page](https://github.com/kizniche/Mycodo/wiki/Screenshots). (may be outdated)
+See the [Screenshots Wiki Page](https://github.com/kizniche/Mycodo/wiki/Screenshots)
 
 
 ### License

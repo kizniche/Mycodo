@@ -27,7 +27,7 @@ from databases.mycodo_db.models import (
 )
 
 # Functions
-from utils.database import db_retrieve_table_daemon
+from database import db_retrieve_table_daemon
 
 # Config
 from config import (
@@ -187,6 +187,7 @@ def recreate_stat_file():
     new_stat_data = [
         ['stat', 'value'],
         ['id', stat_id],
+        ['uptime', 0.0],
         ['next_send', time.time() + STATS_INTERVAL],
         ['RPi_revision', get_pi_revision()],
         ['Mycodo_revision', MYCODO_VERSION],
@@ -219,7 +220,7 @@ def recreate_stat_file():
     os.chmod(STATS_CSV, 0664)
 
 
-def send_stats():
+def send_anonymous_stats(start_time):
     """
     Send anonymous usage statistics
 
@@ -230,6 +231,9 @@ def send_stats():
     try:
         client = InfluxDBClient(STATS_HOST, STATS_PORT, STATS_USER, STATS_PASSWORD, STATS_DATABASE)
         # Prepare stats before sending
+        uptime = (time.time() - start_time) / 86400.0  # Days
+        add_update_csv(STATS_CSV, 'uptime', uptime)
+
         version_num = db_retrieve_table_daemon(
             AlembicVersion, entry='first').version_num
         version_send = version_num if version_num else 'None'
@@ -304,7 +308,7 @@ def send_stats():
                                                     each_key,
                                                     each_value)
 
-        # Send stats to secure, remote influxdb server
+        # Send stats to secure, remote influxdb server (only write permission)
         client.write_points(formatted_stat_dict)
         logger.debug("Sent anonymous usage statistics")
         return 0

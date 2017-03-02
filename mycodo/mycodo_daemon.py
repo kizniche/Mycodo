@@ -65,7 +65,7 @@ from mycodo.utils.statistics import (
     add_update_csv,
     recreate_stat_file,
     return_stat_file_dict,
-    send_stats
+    send_anonymous_stats
 )
 
 # Config
@@ -230,6 +230,7 @@ class DaemonController(threading.Thread):
             'Sensor': {},
             'Timer': {}
         }
+        self.start_time = time.time()
         self.timer_ram_use = time.time()
         self.timer_stats = time.time()+120
 
@@ -531,7 +532,7 @@ class DaemonController(threading.Thread):
                 pass
             recreate_stat_file()
         try:
-            send_stats()
+            send_anonymous_stats(self.start_time)
         except Exception as except_msg:
             self.logger.exception(
                 "Error: Could not send statistics: {err}".format(
