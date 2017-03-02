@@ -58,9 +58,13 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
+    <h4>{{_('Relays')}} <a href="/help#relays"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+
+    <p>{{_('Relays enable a low power signal (3.3 DC volts from a Raspberry Pi) to switch a greater voltage/current (such as household appliances that require 120/240 AC volts). Add and configure relays to manipulate them and allow them be used throughout Mycodo.')}}</p>
+
     <div style="clear: both; padding: 0.5em 0;"></div>
 
-    <div class="row small-gutters" style="padding: 0 1.5em">
+    <div class="row small-gutters">
       <form method="post" action="/relay">
         {{form_add_relay.hidden_tag()}}
         <div class="col-xs-6 col-sm-2 col-lg-2">
@@ -84,10 +88,7 @@
       </form>
     </div>
 
-    <div style="clear: both; padding:1em 0;"></div>
-
-    <h4>Relays <a href="/help#relays"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
-    <p>Relays enable a low power signal (3.3 DC volts from a Raspberry Pi) to switch a greater voltage/current (such as household appliances that require 120/240 AC volts). Add and configure relays to manipulate them and allow them be used throughout Mycodo.</p>
+    <div style="clear: both; padding: 1em 0;"></div>
 
     {%- if displayOrder -%}
       {%- for order in displayOrder -%}

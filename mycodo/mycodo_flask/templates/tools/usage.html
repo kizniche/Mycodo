@@ -9,7 +9,11 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <div class="table-responsive" style="padding-bottom: 1em">
+    <h4>{{_('Relay Usage')}} <a href="/help#relay-usage"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+
+    <div style="clear: both; padding: 0.5em 0;"></div>
+
+    <div class="table-responsive">
       <table class="table">
         <tr>
           <td>{{_('ID')}}</td>
@@ -94,6 +98,8 @@
         </tr>
       </table>
     </div>
+
+    <div style="clear: both; padding: 1em 0;"></div>
 
   </div>
 

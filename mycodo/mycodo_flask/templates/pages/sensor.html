@@ -19,6 +19,12 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
+    <h4>{{_('Sensors')}} <a href="/help#sensors"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+
+    <p>{{_('Sensors enable measuring conditions in the environment. Add, configure, and activate sensors to begin recording measurements to the database and allow them to be used throughout Mycodo.')}}</p>
+
+    <div style="clear: both; padding: 0.5em 0;"></div>
+
     <div class="row small-gutters">
       <form id="new_sensor_form" method="post" action="/sensor">
       <input type="hidden" name="form-name" value="addSensor">
@@ -35,10 +41,7 @@
       </form>
     </div>
 
-    <div style="clear: both; padding:1em 0;"></div>
-
-    <h4>Sensors <a href="/help#sensors"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
-    <p>Sensors enable measuring conditions in the environment. Add, configure, and activate sensors to begin recording measurements to the database and allow them to be used throughout Mycodo.</p>
+    <div style="clear: both; padding: 1em 0;"></div>
 
     {%- if displayOrder -%}
     {%- for order in displayOrder -%}

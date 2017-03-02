@@ -20,7 +20,13 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <div class="form-inline" style="padding-bottom: 2em">
+    <h4>{{_('Timers')}} <a href="/help#timers"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+
+    <p>{{_('Timers enable relays to be turned on or off for specific durations of time or at specific times of the day.')}}</p>
+
+    <div style="clear: both; padding: 0.5em 0;"></div>
+
+    <div class="form-inline">
       <form method="post" action="/timer">
         <input type="hidden" name="form-name" value="addTimer">
         {{form_timer.csrf_token}}
@@ -143,6 +149,8 @@
         </div>
       </form>
     </div>
+
+    <div style="clear: both; padding: 1em 0;"></div>
 
     {%- if displayOrder -%}
     {%- for order in displayOrder -%}
