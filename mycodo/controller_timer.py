@@ -31,12 +31,11 @@ class TimerController(threading.Thread):
     class for controlling timers
 
     """
-    def __init__(self, ready, timer_id, db):
+    def __init__(self, ready, timer_id):
         threading.Thread.__init__(self)
 
         self.logger = logging.getLogger(
             "mycodo.timer_{id}".format(id=timer_id))
-        self.db = db
 
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0

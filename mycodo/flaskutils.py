@@ -38,6 +38,7 @@ from databases.mycodo_db.models import (
     Misc,
     PID,
     Relay,
+    Role,
     Remote,
     Role,
     SMTP,
@@ -1293,9 +1294,7 @@ def pid_mod(form_mod_pid):
                 mod_pid.lower_min_duration = form_mod_pid.lower_min_duration.data
                 mod_pid.lower_max_duration = form_mod_pid.lower_max_duration.data
                 mod_pid.lower_min_off_duration = form_mod_pid.lower_min_off_duration.data
-                if form_mod_pid.method_id.data == '':
-                    mod_pid.method_id = None
-                else:
+                if form_mod_pid.method_id.data:
                     mod_pid.method_id = form_mod_pid.method_id.data
                 db.session.commit()
                 # If the controller is active or paused, refresh variables in thread
@@ -2295,33 +2294,84 @@ def timer_deactivate(form_timer):
 # User manipulation
 #
 
-def user_add(form_add_user):
+def user_roles(form):
+    if form.add_role.data:
+        action = gettext("Add")
+    elif form.save_role.data:
+        action = gettext("Modify")
+    elif form.delete_role.data:
+        action = gettext("Delete")
+
+    action = '{action} {controller}'.format(
+        action=action,
+        controller=gettext("User Role"))
+    error = []
+
+    if not error:
+        if form.add_role.data:
+            new_role = Role()
+            new_role.name = form.name.data
+            new_role.view_logs = form.view_logs.data
+            new_role.view_camera = form.view_camera.data
+            new_role.view_stats = form.view_stats.data
+            new_role.view_settings = form.view_settings.data
+            new_role.edit_users = form.edit_users.data
+            new_role.edit_settings = form.edit_settings.data
+            new_role.edit_controllers = form.edit_controllers.data
+            try:
+                new_role.save()
+            except sqlalchemy.exc.OperationalError as except_msg:
+                error.append(except_msg)
+            except sqlalchemy.exc.IntegrityError as except_msg:
+                error.append(except_msg)
+        elif form.save_role.data:
+            mod_role = Role.query.filter(Role.id == form.role_id.data).first()
+            mod_role.view_logs = form.view_logs.data
+            mod_role.view_camera = form.view_camera.data
+            mod_role.view_stats = form.view_stats.data
+            mod_role.view_settings = form.view_settings.data
+            mod_role.edit_users = form.edit_users.data
+            mod_role.edit_settings = form.edit_settings.data
+            mod_role.edit_controllers = form.edit_controllers.data
+            db.session.commit()
+        elif form.delete_role.data:
+            if User().query.filter(User.role == form.role_id.data).count():
+                error.append(
+                    "Cannot delete role if it is assigned to a user. "
+                    "Change the user to another role and try again.")
+            else:
+                delete_entry_with_id(Role,
+                                     form.role_id.data)
+    flash_success_errors(error, action, url_for('settings_routes.settings_users'))
+
+
+def user_add(form):
     action = '{action} {controller}'.format(
         action=gettext("Add"),
         controller=gettext("User"))
     error = []
 
-    if form_add_user.validate():
+    if form.validate():
         new_user = User()
-        if not test_username(form_add_user.addUsername.data):
+        if not test_username(form.addUsername.data):
             error.append(gettext(
                 "Invalid user name. Must be between 2 and 64 characters "
                 "and only contain letters and numbers."))
 
-        if not test_password(form_add_user.addPassword.data):
+        if not test_password(form.addPassword.data):
             error.append(gettext(
                 "Invalid password. Must be between 6 and 64 characters "
                 "and only contain letters, numbers, and symbols."))
 
-        if form_add_user.addPassword.data != form_add_user.addPassword_repeat.data:
+        if form.addPassword.data != form.addPassword_repeat.data:
             error.append(gettext("Passwords do not match. Please try again."))
 
         if not error:
-            new_user.name = form_add_user.addUsername.data
-            new_user.email = form_add_user.addEmail.data
-            new_user.set_password(form_add_user.addPassword.data)
+            new_user.name = form.addUsername.data
+            new_user.email = form.addEmail.data
+            new_user.set_password(form.addPassword.data)
             role = Role.query.filter(
-                Role.name == form_add_user.addRole.data).first().id
+                Role.name == form.addRole.data).first().id
             new_user.role = role
             new_user.theme = 'slate'
             try:
@@ -2333,10 +2383,10 @@ def user_add(form_add_user):
 
         flash_success_errors(error, action, url_for('settings_routes.settings_users'))
     else:
-        flash_form_errors(form_add_user)
+        flash_form_errors(form)
 
 
-def user_mod(form_mod_user):
+def user_mod(form):
     action = '{action} {controller}'.format(
         action=gettext("Modify"),
         controller=gettext("User"))
@@ -2344,27 +2394,27 @@ def user_mod(form_mod_user):
 
     try:
         mod_user = User.query.filter(
-            User.name == form_mod_user.modUsername.data).first()
-        mod_user.email = form_mod_user.modEmail.data
+            User.id == form.user_id.data).first()
+        mod_user.email = form.modEmail.data
         # Only change the password if it's entered in the form
         logout_user = False
-        if form_mod_user.modPassword.data != '':
-            if not test_password(form_mod_user.modPassword.data):
+        if form.modPassword.data != '':
+            if not test_password(form.modPassword.data):
                 error.append(gettext("Invalid password"))
-            if form_mod_user.modPassword.data == form_mod_user.modPassword_repeat.data:
+            if form.modPassword.data == form.modPassword_repeat.data:
                 mod_user.password_hash = bcrypt.hashpw(
-                    form_mod_user.modPassword.data.encode('utf-8'),
+                    form.modPassword.data.encode('utf-8'),
                     bcrypt.gensalt())
-                if flask_login.current_user.name == form_mod_user.modUsername.data:
+                if flask_login.current_user.id == form.user_id.data:
                     logout_user = True
             else:
                 error.append(gettext("Passwords do not match. Please try again."))
 
         if not error:
             role = Role.query.filter(
-                Role.name == form_mod_user.modRole.data).first().id
+                Role.name == form.modRole.data).first().id
             mod_user.role = role
-            mod_user.theme = form_mod_user.modTheme.data
+            mod_user.theme = form.modTheme.data
             db.session.commit()
             if logout_user:
                 return 'logout'
@@ -2374,19 +2424,20 @@ def user_mod(form_mod_user):
     flash_success_errors(error, action, url_for('settings_routes.settings_users'))
 
 
-def user_del(form_del_user):
+def user_del(form):
     try:
-        if form_del_user.validate():
-            delete_user(form_del_user.delUsername.data)
-            if form_del_user.delUsername.data == flask_login.current_user.name:
+        if form.validate():
+            user_name = User.query.filter(User.id == form.user_id.data).first().name
+            delete_user(form.user_id.data)
+            if form.user_id.data == flask_login.current_user.id:
                 return 'logout'
         else:
-            flash_form_errors(form_del_user)
+            flash_form_errors(form)
     except Exception as except_msg:
         flash(gettext("Error: %(msg)s",
                       msg='{action} {user}: {err}'.format(
                           action=gettext("Delete"),
-                          user=form_del_user.delUsername.data,
+                          user=user_name,
                           err=except_msg)),
               "error")
 
@@ -2587,16 +2638,17 @@ def db_retrieve_table(table, first=False, device_id=''):
     return return_table
 
 
-def delete_user(username):
+def delete_user(user_id):
     """ Delete user from SQL database """
     try:
         user = User.query.filter(
-            User.name == username).first()
+            User.id == user_id).first()
+        user_name = user.name
         user.delete(db.session)
         flash(gettext("Success: %(msg)s",
                       msg='{action} {user}'.format(
                           action=gettext("Delete"),
-                          user=username)),
+                          user=user_name)),
               "success")
         return 1
     except sqlalchemy.orm.exc.NoResultFound:

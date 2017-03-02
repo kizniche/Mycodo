@@ -984,6 +984,24 @@ class DeactivateTimer(FlaskForm):
 # Settings (User)
 #
 
+class UserRoles(FlaskForm):
+    name = StringField(
+        lazy_gettext('Role Name'),
+        validators=[DataRequired()]
+    )
+    view_logs = BooleanField('View Logs')
+    view_stats = BooleanField('View Stats')
+    view_camera = BooleanField('View Camera')
+    view_settings = BooleanField('View Settings')
+    edit_users = BooleanField('Edit Users')
+    edit_controllers = BooleanField('Edit Controllers')
+    edit_settings = BooleanField('Edit Settings')
+    role_id = IntegerField('Role ID', widget=widgets.HiddenInput())
+    add_role = SubmitField(lazy_gettext('Add Role'))
+    save_role = SubmitField(lazy_gettext('Save'))
+    delete_role = SubmitField(lazy_gettext('Delete'))
+
+
 class UserAdd(FlaskForm):
     addUsername = StringField(
         lazy_gettext('Username'),
@@ -1016,11 +1034,15 @@ class UserAdd(FlaskForm):
         lazy_gettext('Role'),
         validators=[DataRequired()]
     )
-    addSubmit = SubmitField(lazy_gettext('Submit'))
+    addTheme = StringField(
+        lazy_gettext('Theme'),
+        validators=[DataRequired()]
+    )
+    add_user = SubmitField(lazy_gettext('Add User'))
 
 
 class UserMod(FlaskForm):
-    modUsername = HiddenField('Username')
+    user_id = IntegerField('User ID', widget=widgets.HiddenInput())
     modEmail = EmailField(
         lazy_gettext('Email'),
         render_kw={"placeholder": lazy_gettext("Email")},
@@ -1051,12 +1073,8 @@ class UserMod(FlaskForm):
         validators=[DataRequired()]
     )
     modTheme = StringField(lazy_gettext('Theme'))
-    modSubmit = SubmitField(lazy_gettext('Submit'))
-
-
-class UserDel(FlaskForm):
-    delUsername = HiddenField('Username')
-    delUserSubmit = SubmitField(lazy_gettext('Delete'))
+    save_user = SubmitField(lazy_gettext('Save'))
+    delete_user = SubmitField(lazy_gettext('Delete'))
 
 
 class InstallNotice(FlaskForm):

@@ -668,6 +668,10 @@ def page_relay():
             flaskutils.conditional_mod(form_conditional, 'delete')
         elif form_conditional.save_cond.data:
             flaskutils.conditional_mod(form_conditional, 'modify')
+        elif form_conditional.activate_cond.data:
+            flaskutils.conditional_activate(form_conditional)
+        elif form_conditional.deactivate_cond.data:
+            flaskutils.conditional_activate(form_conditional)
         elif form_conditional_actions.add_action.data:
             flaskutils.conditional_action_add(form_conditional_actions)
         elif form_conditional_actions.save_action.data:

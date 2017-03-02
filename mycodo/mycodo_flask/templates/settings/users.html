@@ -9,36 +9,39 @@
   <!-- Route: /settings/users -->
   <h3 style="text-align: right; padding-bottom: 1.3em;">{{_('User Settings')}}</h3>
 
+  <h3>{{_('Users')}}</h3>
+
   <form class="form-horizontal" method="post" action="/settings/users">
-    <input type="hidden" name="form-name" value="addUser">
-    {{form_add_user.hidden_tag()}}
-    <div class="form-group">
-      {{form_add_user.addUsername.label(class_='col-sm-4 control-label')}}
-      <div class="col-sm-8">
+  {{form_add_user.hidden_tag()}}
+
+  <div class="row small-gutters">
+    <div class="col-xs-6 col-sm-3 col-md-2">
+      {{form_add_user.addUsername.label(class_='control-label')}}
+      <div>
         {{form_add_user.addUsername(class_='form-control')}}
       </div>
     </div>
-    <div class="form-group">
-      {{form_add_user.addEmail.label(class_='col-sm-4 control-label')}}
-      <div class="col-sm-8">
+    <div class="col-xs-6 col-sm-3 col-md-2">
+      {{form_add_user.addEmail.label(class_='control-label')}}
+      <div>
         {{form_add_user.addEmail(class_='form-control')}}
       </div>
     </div>
-    <div class="form-group">
-      {{form_add_user.addPassword.label(class_='col-sm-4 control-label')}}
-      <div class="col-sm-8">
+    <div class="col-xs-6 col-sm-3 col-md-2">
+      {{form_add_user.addPassword.label(class_='control-label')}}
+      <div>
         {{form_add_user.addPassword(class_='form-control')}}
       </div>
     </div>
-    <div class="form-group">
-      {{form_add_user.addPassword_repeat.label(class_='col-sm-4 control-label')}}
-      <div class="col-sm-8">
+    <div class="col-xs-6 col-sm-3 col-md-2">
+      {{form_add_user.addPassword_repeat.label(class_='control-label')}}
+      <div>
         {{form_add_user.addPassword_repeat(class_='form-control')}}
       </div>
     </div>
-    <div class="form-group">
-      {{form_add_user.addRole.label(class_='col-sm-4 control-label')}}
-      <div class="col-sm-8">
+    <div class="col-xs-4 col-sm-3 col-md-2">
+      {{form_add_user.addRole.label(class_='control-label')}}
+      <div>
         <select class="form-control" id="addRole" name="addRole">
           <option value="Admin">Admin</option>
           {% for each_role in user_roles if each_role.name != 'Admin' %}
@@ -47,95 +50,207 @@
         </select>
       </div>
     </div>
-    <div class="form-group">
-      <div class="col-sm-offset-4 col-sm-8">
-        {{form_add_user.addSubmit(class_='btn btn-default', value="Create New User")}}
+    <div class="col-xs-4 col-sm-3 col-md-2">
+    {{form_add_user.addTheme.label(class_='control-label')}}
+      <div>
+        <select class="form-control" id="addTheme" name="addTheme">
+          {% for value, name in themes %}
+            <option value="{{value|e}}"{% if name|e == 'Slate' %} selected{% endif %}>{{name|e}}</option>
+          {% endfor -%}
+        </select>
       </div>
     </div>
+    <div class="col-xs-4 col-sm-3 col-md-2">
+      <label class="control-label">&nbsp;</label>
+      <div>
+        {{form_add_user.add_user(class_='form-control btn btn-default')}}
+      </div>
+    </div>
+  </div>
+
   </form>
 
-  <div style="padding: 1em 0;"></div>
+  <div style="clear: both; padding: 1em 0;"></div>
 
-  <div class="table-responsive">
-    <table class="table">
-      <thead>
-        <tr>
-          <td class="col-sm-1"></td>
-          <td class="col-sm-1">{{_('User')}}</td>
-          <td class="col-sm-2">{{_('Email')}}</td>
-          <td class="col-sm-2">{{_('New Password')}}</td>
-          <td class="col-sm-2">{{_('Repeat Password')}}</td>
-          <td class="col-sm-2">{{_('Role')}}</td>
-          <td class="col-sm-2">{{_('Theme')}}</td>
-          <td class="col-sm-1"></td>
-        </tr>
-      </thead>
-      <tbody>
-      {% for user in users %}
-        <tr>
-          <td>
-          <form method="post" action="/settings/users" onsubmit="return confirm('Confirm the deletion of user {{user.name}}. This cannot be undone. To keep this user, click Cancel.')">
-            <input type="hidden" name="form-name" value="delUser">
-            {{form_del_user.csrf_token}}
-            {{form_del_user.delUsername(value=user.name)}}
-            {{form_del_user.delUserSubmit(class_='btn btn-default')}}
-          </form>
-          </td>
-          <form method="post" action="/settings/users">
-          {{form_mod_user.csrf_token}}
-          <input type="hidden" name="form-name" value="modUser">
-          <td>{{user.name}}{{form_mod_user.modUsername(value=user.name)}}</td>
-          <td>
-            {{form_mod_user.modEmail(class_='form-control', value=user.email)}}
-          </td>
-          <td>
-            {{form_mod_user.modPassword(class_='form-control')}}
-          </td>
-          <td>
-            {{form_mod_user.modPassword_repeat(class_='form-control')}}
-          </td>
-          <td>
-            <select class="form-control" id="modRole" name="modRole">
-              {% for each_role in user_roles %}
-                <option value="{{each_role.name}}"{% if user.roles.name == each_role.name %} selected{% endif %}>{{each_role.name}}</option>
-              {% endfor %}
-            </select>
-          </td>
-          <td>
-            {% set theme_options = [
-                  ('cerulean', 'Cerulean'),
-                  ('cosmo', 'Cosmo'),
-                  ('cyborg', 'Cyborg'),
-                  ('darkly', 'Darkly'),
-                  ('flatly', 'Flatly'),
-                  ('journal', 'Journal'),
-                  ('lumen', 'Lumen'),
-                  ('paper', 'Paper'),
-                  ('readable', 'Readable'),
-                  ('sadstone', 'Sadstone'),
-                  ('simplex', 'Simplex'),
-                  ('slate', 'Slate'),
-                  ('spacelab', 'Spacelab'),
-                  ('sun', 'Sun'),
-                  ('superhearo', 'Superhearo'),
-                  ('united', 'United'),
-                  ('yeti', 'Yeti')
-            ] -%}
-            <select class="form-control" id="modTheme" name="modTheme">
-              <option value=""{% if user.theme == '' %} selected{% endif %}>Default</option>
-              {% for value, name in theme_options %}
-                <option value="{{value|e}}"{% if value == user.theme %} selected{% endif %}>{{name|e}}</option>
-              {% endfor -%}
-            </select>
-          </td>
-          <td>
-            {{form_mod_user.modSubmit(class_='btn btn-default', value="Save")}}
-          </td>
-          </form>
-        </tr>
-      {% endfor -%}
-      </tbody>
-    </table>
+  {% for user in users %}
+
+    <form method="post" action="/settings/users">
+    {{form_mod_user.csrf_token}}
+    {{form_mod_user.user_id(value=user.id)}}
+
+    <div class="row small-gutters">
+      <div class="col-xs-4 col-sm-4 col-md-2">
+        <input class="form-control btn btn-default" disabled="" value="{{user.name}}" type="text">
+      </div>
+      <div class="col-xs-4 col-sm-4 col-md-1">
+        {{form_mod_user.save_user(class_='form-control btn btn-default')}}
+      </div>
+      <div class="col-xs-4 col-sm-4 col-md-1">
+        {{form_mod_user.delete_user(class_='form-control btn btn-default', **{'onclick':'return confirm("Are you sure you want to delete this user?")'})}}
+      </div>
+    </div>
+
+    <div class="row small-gutters">
+      <div class="col-xs-4 col-sm-2 col-md-2">
+        {{form_mod_user.modEmail(class_='form-control', value=user.email)}}
+      </div>
+      <div class="col-xs-4 col-sm-3 col-md-2">
+        {{form_mod_user.modPassword(class_='form-control')}}
+      </div>
+      <div class="col-xs-4 col-sm-3 col-md-2">
+        {{form_mod_user.modPassword_repeat(class_='form-control')}}
+      </div>
+      <div class="col-xs-6 col-sm-2 col-md-2">
+        <select class="form-control" id="modRole" name="modRole">
+          {% for each_role in user_roles %}
+            <option value="{{each_role.name}}"{% if user.roles.name == each_role.name %} selected{% endif %}>{{each_role.name}}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-xs-6 col-sm-2 col-md-2">
+        <select class="form-control" id="modTheme" name="modTheme">
+          <option value=""{% if user.theme == '' %} selected{% endif %}>Default</option>
+          {% for value, name in themes %}
+            <option value="{{value|e}}"{% if value == user.theme %} selected{% endif %}>{{name|e}}</option>
+          {% endfor -%}
+        </select>
+      </div>
+    </div>
+
+    </form>
+
+    <div style="clear: both; padding: 0.5em 0;"></div>
+
+  {% endfor -%}
+
+  <hr>
+
+  <h3>{{_('Roles')}} <a href="/help#settings-role"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h3>
+
+  <form method="post" action="/settings/users">
+  {{form_user_roles.csrf_token}}
+
+  <div class="row small-gutters">
+    <div class="col-xs-6 col-sm-6 col-md-3">
+      {{form_user_roles.name.label(class_='control-label')}}
+      <div>
+        {{form_user_roles.name(class_='form-control')}}
+      </div>
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-2">
+      <label class="control-label">&nbsp;</label>
+      <div>
+        {{form_user_roles.add_role(class_='form-control btn btn-default')}}
+      </div>
+    </div>
   </div>
+
+  <div class="row small-gutters">
+    <label class="checkbox-inline">
+      {{form_user_roles.view_logs()}} {{form_user_roles.view_logs.label.text}}
+    </label>
+    <label class="checkbox-inline">
+      {{form_user_roles.view_stats()}} {{form_user_roles.view_stats.label.text}}
+    </label>
+    <label class="checkbox-inline">
+      {{form_user_roles.view_camera()}} {{form_user_roles.view_camera.label.text}}
+    </label>
+    <label class="checkbox-inline">
+      {{form_user_roles.view_settings()}} {{form_user_roles.view_settings.label.text}}
+    </label>
+    <label class="checkbox-inline">
+      {{form_user_roles.edit_users()}} {{form_user_roles.edit_users.label.text}}
+    </label>
+    <label class="checkbox-inline">
+      {{form_user_roles.edit_controllers()}} {{form_user_roles.edit_controllers.label.text}}
+    </label>
+    <label class="checkbox-inline">
+      {{form_user_roles.edit_settings()}} {{form_user_roles.edit_settings.label.text}}
+    </label>
+  </div>
+
+  </form>
+
+  {% if user_roles|length > 4 %}
+
+    <div style="clear: both; padding: 1em 0;"></div>
+
+    {% for each_role in user_roles if each_role.id > 4 %}
+
+      <form method="post" action="/settings/users">
+      {{form_user_roles.csrf_token}}
+      {{form_user_roles.role_id(value=each_role.id)}}
+
+      <div class="row small-gutters">
+        <div class="col-xs-4 col-sm-4 col-md-2">
+          <input class="form-control btn btn-default" disabled="" value="{{each_role.name}}" type="text">
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-1">
+          {{form_user_roles.save_role(class_='form-control btn btn-default')}}
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-1">
+          {{form_user_roles.delete_role(class_='form-control btn btn-default', **{'onclick':'return confirm("Are you sure you want to delete this role?")'})}}
+        </div>
+      </div>
+
+      <div class="row small-gutters">
+        <label class="checkbox-inline">
+          {%- if each_role.view_logs == true -%}
+            {{form_user_roles.view_logs(checked=True)}}
+          {%- else -%}
+            {{form_user_roles.view_logs()}}
+          {%- endif %} {{form_user_roles.view_logs.label.text}}
+        </label>
+        <label class="checkbox-inline">
+          {%- if each_role.view_stats == true -%}
+            {{form_user_roles.view_stats(checked=True)}}
+          {%- else -%}
+            {{form_user_roles.view_stats()}}
+          {%- endif %} {{form_user_roles.view_stats.label.text}}
+        </label>
+        <label class="checkbox-inline">
+          {%- if each_role.view_camera == true -%}
+            {{form_user_roles.view_camera(checked=True)}}
+          {%- else -%}
+            {{form_user_roles.view_camera()}}
+          {%- endif %} {{form_user_roles.view_camera.label.text}}
+        </label>
+        <label class="checkbox-inline">
+          {%- if each_role.view_settings == true -%}
+            {{form_user_roles.view_settings(checked=True)}}
+          {%- else -%}
+            {{form_user_roles.view_settings()}}
+          {%- endif -%} {{form_user_roles.view_settings.label.text}}
+        </label>
+        <label class="checkbox-inline">
+          {%- if each_role.edit_users == true -%}
+            {{form_user_roles.edit_users(checked=True)}}
+          {%- else -%}
+            {{form_user_roles.edit_users()}}
+          {%- endif -%} {{form_user_roles.edit_users.label.text}}
+        </label>
+        <label class="checkbox-inline">
+          {%- if each_role.edit_controllers == true -%}
+            {{form_user_roles.edit_controllers(checked=True)}}
+          {%- else -%}
+            {{form_user_roles.edit_controllers()}}
+          {%- endif -%} {{form_user_roles.edit_controllers.label.text}}
+        </label>
+        <label class="checkbox-inline">
+          {%- if each_role.edit_settings == true -%}
+            {{form_user_roles.edit_settings(checked=True)}}
+          {%- else -%}
+            {{form_user_roles.edit_settings()}}
+          {%- endif -%} {{form_user_roles.edit_settings.label.text}}
+        </label>
+      </div>
+
+      </form>
+
+      <div style="clear: both; padding: 0.5em 0;"></div>
+
+    {% endfor %}
+
+  {% endif %}
 
 {% endblock %}

@@ -112,20 +112,18 @@ DEVICES_DEFAULT_LOCATION = [
 ]
 
 # Conditional actions
-CONDITIONAL_ACTIONS = collections.OrderedDict(
-    [
-        ('relay', 'Relay'),
-        ('command', 'Command'),
-        ('activate_pid', 'Activate PID'),
-        ('deactivate_pid', 'Deactivate PID'),
-        ('email', 'Email'),
-        ('flash_lcd', 'Flash LCD'),
-        ('photo', 'Photo'),
-        ('photo_email', 'Email Photo'),
-        ('video', 'Video'),
-        ('video_email', 'Email Video')
-    ]
-)
+CONDITIONAL_ACTIONS = collections.OrderedDict([
+    ('relay', 'Relay'),
+    ('command', 'Command'),
+    ('activate_pid', 'Activate PID'),
+    ('deactivate_pid', 'Deactivate PID'),
+    ('email', 'Email'),
+    ('flash_lcd', 'Flash LCD'),
+    ('photo', 'Photo'),
+    ('photo_email', 'Email Photo'),
+    ('video', 'Video'),
+    ('video_email', 'Email Video')
+])
 
 # User Roles
 USER_ROLES = [
@@ -145,6 +143,26 @@ USER_ROLES = [
          edit_settings=False, edit_controllers=False, edit_users=False,
          view_settings=False, view_camera=False, view_stats=False,
          view_logs=False)
+]
+
+THEMES = [
+    ('cerulean', 'Cerulean'),
+    ('cosmo', 'Cosmo'),
+    ('cyborg', 'Cyborg'),
+    ('darkly', 'Darkly'),
+    ('flatly', 'Flatly'),
+    ('journal', 'Journal'),
+    ('lumen', 'Lumen'),
+    ('paper', 'Paper'),
+    ('readable', 'Readable'),
+    ('sadstone', 'Sadstone'),
+    ('simplex', 'Simplex'),
+    ('slate', 'Slate'),
+    ('spacelab', 'Spacelab'),
+    ('sun', 'Sun'),
+    ('superhearo', 'Superhearo'),
+    ('united', 'United'),
+    ('yeti', 'Yeti')
 ]
 
 # SQLite3 databases that stores users and settings

@@ -57,13 +57,13 @@
       cache: false
     });
   }
-  function initiate_datemon_status() {
+  function initiate_daemon_status() {
     setInterval(function () {
       // Update after every 30 seconds
       check_daemon_active();
     }, {% if active_page == "update" -%}5000{% else -%}60000{%- endif -%});
   }
-  initiate_datemon_status();
+  initiate_daemon_status();
   </script>
   {% block head %}{% endblock %}
   </head>
@@ -77,7 +77,7 @@
       (url_for('page_routes.page_timer'), 'timer', _('Timer'))
     ] -%}
     
-    {% set active_page = active_page|default('graph') -%}
+    {% set active_page = active_page|default('') -%}
     {% set help_page = '#'+help_page|default('') -%}
 
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -104,7 +104,7 @@
           {% for href, id, caption in navigation_bar_top %}
             <li{% if id == active_page %} class="active"{% endif %}><a href="{{ href|e }}">{{caption|e}}</a></li>
           {% endfor -%}
-            <li class="dropdown">
+            <li class="dropdown {% if active_page in ['logview', 'export', 'info', 'usage', 'lcd', 'camera'] %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Tools')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="{{url_for('page_routes.page_lcd')}}"><i class="glyphicon glyphicon-modal-window"></i>&nbsp;&nbsp;{{_('LCD')}}</a></li>

@@ -32,6 +32,7 @@
 				<li><a href="#settings-general">General</a></li>
         <li><a href="#settings-relay-usage">Relay Usage</a></li>
         <li><a href="#settings-user">User</a></li>
+        <li><a href="#settings-role">Role</a></li>
         <li><a href="#settings-alerts">Alerts</a></li>
         <li><a href="#settings-camera">Camera</a></li>
 			</ul>
@@ -160,6 +161,11 @@
       <dt>Role</dt>
       <dd>Roles are a way of imposing access restrictions on users, to either allow or deny actions. See the table below for explanations of the four default Roles.</dd>
     </dl>
+
+    <a class="anchor" name="settings-role"></a>
+    <h3>Role</h3>
+
+    <p>Roles define the permissions of each user. There are 4 default roles that determine if a user can view or edit particular areas of Mycodo. Custom roles may be created, but these four roles may not be modified or deleted.</p>
 
     <table class="table">
       <thead>
@@ -334,7 +340,9 @@
       <dd>Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.</dd>
     </dl>
 
-		<h4 style="text-decoration: line-through;">Sensor Verification</h4>
+		<h4>Sensor Verification</h4>
+
+    <p>Sensor verification was introduced in an earlier version and was broken when the system moved to its new software framework. It was a great feature, and it's planned to be integrated into the latest version.</p>
 
 		<p style="text-decoration: line-through;">This allows the verification of a sensor's measurement with another sensor's measurement. This feature is best utilized when you have two sensors in the same location (ideally as close as possible). One sensor (host) should be set up to use the other sensor (slave) to verify. The host sensor should be used to operate the PID, as one feature of the verification is the ability to disable the PID if the difference between measurements is not within the range specificed.</p>
 
@@ -361,6 +369,19 @@
 
 		<p>Relays must be properly set up before PID regulation can be achieved. Add and configure relays in the Sensor tab. Set the "GPIO Pin" to the BCM GPIO number of each pin that activates each relay. <i>On Trigger</i> should be set to the signal that activates the relay (closes the relay circuit). If your relay activates when the potential across the coil is 0-volts, set <i>On Trigger</i> to "Low", otherwise if your relay activates when the potential across the coil is 5-volts, set it to "High".</p>
 
+    <dl class="dl-horizontal">
+      <dt>GPIO Pin</dt>
+      <dd>This is the GPIO that will be the signal to the relay.</dd>
+      <dt>Current Draw (amps)</dt>
+      <dd>The is the amount of current the device powered by the relay draws. Note: this value should be calculated based on the voltage set in the <a href="#settings-relay-usage">Relay Usage Settings</a>.</dd>
+      <dt>On Trigger</dt>
+      <dd>This is the state of the GPIO to signal the relay to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you relay completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.</dd>
+      <dt>Start State</dt>
+      <dd>This specifies whether the relay should be ON or OFF when mycodo initially starts.</dd>
+      <dt>Seconds to turn On</dt>
+      <dd>This is a way to turn a relay on for a specific duration of time. This can be useful for testing the relays and powered devices or the measured effects a device may have on an environmental condition.</dd>
+    </dl>
+
     <hr>
 
 		<a class="anchor" name="conditional-statements"></a>
@@ -369,15 +390,41 @@
 		<p>A conditional statement is a way to perform certain actions based on whether a condition is true. Conditional statements can be created for both relays and sensors. Possible conditional statements include:</p>
 
 		<p>
-		If Relay #1 turns ON, turn Relay #3 ON<br>
-		If Relay #1 turns ON, turn Relay #4 ON for 40 seconds and notify critical-issue@domain.com<br>
-		If Relay #4 turns ON for 21 seconds, turn Relay #5 ON for 50 seconds<br>
-		If Relay #4 turns ON for 20 seconds, turn Relay #1 OFF<br>
-		If Humidity is Greater Than 80%, turn Relay #4 ON for 40 seconds<br>
-		If Humidity if Less Than 50%, turn Relay #1 ON for 21 seconds, execute '/usr/local/bin/myscript.sh', and notify minor-issue@domain.com<br>
+		If Relay #1 turns ON, turn Relay #3 ON
+		<br>If Relay #1 turns ON, turn Relay #4 ON for 40 seconds and notify critical-issue@domain.com
+		<br>If Relay #4 turns ON for 21 seconds, turn Relay #5 ON for 50 seconds
+		<br>If Relay #4 turns ON for 20 seconds, turn Relay #1 OFF
+		<br>If Humidity is Greater Than 80%, turn Relay #4 ON for 40 seconds
+		<br>If Humidity if Less Than 50%, turn Relay #1 ON for 21 seconds, execute '/usr/local/bin/myscript.sh', and notify email@domain.com
+    <br>If Temperature if Greater Than 35 C, turn off PID #1
 		</p>
 
 		<p>Before activating any conditional statements or PID controllers, it's advised to thoroughly explore all possible scenarios and plan a configuration that eliminates conflicts. Then, trial run your configuration before connecting devices to the relays. Some devices or relays may respond atypically or fail when switched on and off in rapid succession. Therefore, avoid creating an <a href="https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops" target="_blank">infinite loop</a> with conditional statements.</p>
+
+    <h4>Conditional Statement Actions</h4>
+
+    <dl class="dl-horizontal">
+      <dt>Relay</dt>
+      <dd>Turn a relay on, off, or on for a duration of time.</dd>
+      <dt>Command</dt>
+      <dd>Execute a command in the linux shell (as user mycodo).</dd>
+      <dt>Activate PID</dt>
+      <dd>Activate a particular PID controller.</dd>
+      <dt>Deactivate PID</dt>
+      <dd>Deactivate a particular PID controller.</dd>
+      <dt>Email</dt>
+      <dd>Send an email containing information about the current condition that triggered the conditional to send the email.</dd>
+      <dt>Flash LCD</dt>
+      <dd>Have an LCD screen begin flashing in order to alert.</dd>
+      <dt>Photo</dt>
+      <dd>Capture a photo with the selected camera.</dd>
+      <dt>Email Photo</dt>
+      <dd>Capture a photo and email it as an attachment to the an email address.</dd>
+      <dt>Video</dt>
+      <dd>Capture a video of a set duration with the selected camera.</dd>
+      <dt>Email Video</dt>
+      <dd>Capture a video and email it as an attachment to the an email address.</dd>
+    </dl>
 
     <hr>
 
@@ -432,6 +479,8 @@
       <dd>This is the direction that you wish to regulate. For example, if you only require the temperature to be raised, set this to "Up," but if you require regulation up and down, set this to "Both."</dd>
       <dt>Period</dt>
       <dd>This is the duration between when the PID relay turns off amd when the sensor takes another measurement, the PID is updated, and the relay is turned on again for another duration.</dd>
+      <dt>Max Age</dt>
+      <dd>The time (in seconds) that the sensor measurement age is required to be less than. If the measurement is not younger than this age, the measurement is thrown out and the PID will not actuate the relay. This is a safety measure to ensure the PID is only using recent measurements.</dd>
       <dt>Raise Relay</dt>
       <dd>This is the relay that will cause the particular environmental condition to rise. In the case of raising the temperature, this may be a heating pad or coil.</dd>
       <dt>Min Duration (raise)</dt>
@@ -445,7 +494,7 @@
       <dt>Max Duration (lower)</dt>
       <dd>This is the maximum duration the Down Relay is allowed to turn on for. if the PID output exceeds this number, the Down Relay will turn on for no greater than this duration of time.</dd>
       <dt>K<sub>P</sub></dt>
-      <dd>Porportional coefficient (non-negative). Accounts for present values of the error.</dd>
+      <dd>Prportional coefficient (non-negative). Accounts for present values of the error.</dd>
       <dt>K<sub>I</sub></dt>
       <dd>Integral coefficient (non-negative). Accounts for past values of the error.</dd>
       <dt>K<sub>D</sub></dt>
@@ -600,52 +649,53 @@ sudo /etc/init.d/apache2 restart</pre>
 
 		As per the <a href="https://github.com/kizniche/Mycodo/issues/25#issuecomment-143360432" target="_blank">work done by Boomstick8x</a>, the process to preserve custom code edits and restore them after a Mycodo update is below. Be aware that this method does not guarantee the successful operation of Mycodo after restoring custom code, as it can't be unknown what is changed in an update. It's assumed that if you're producing custom code, you should also be familiar with analyzing the changes of an update to determine if your code edits will work.
 
-		<table class="custom-code" style="padding: 1.5em 0 1em 0">
-			<tr>
-				<td colspan="2">Stash uncommited changes and apply them after an update:</td>
-			</tr>
-			<tr>
-				<td>1. <code>git stash</code></td>
-				<td>Save uncommited changes to git stack (use <code>git stash list</code> to see the stack)</td>
-			</tr>
-			<tr>
-				<td>2. Update Mycodo</td>
-			</tr>
-			<tr>
-				<td>3. <code>git stash apply</code></td>
-				<td>Apply the last saved changes to updated version (<code>git stash pop</code> can be used to apply changes from the stack and then drop the stack)</td>
-			</tr>
-			<tr>
-				<td>4. Check if everything worked</td>
-			</tr>
-			<tr>
-				<td>5. <code>git stash drop</code></td>
-				<td>Drop last saved stash (if <code>git stash pop</code> wasn't used)</td>
-			</tr>
-			<tr>
-				<td colspan="2" style="padding-top: 1.5em;">Creating a patch file of changes and restoring them after an update:</td>
-			</tr>
-			<tr>
-				<td>1. <code>git stash</code></td>
-				<td>Stash changes</td>
-			</tr>
-			<tr>
-				<td style="white-space: nowrap;">2. <code>git stash show -p > name.patch</code></td>
-				<td>Stash output in a patch file (add <code>--binary</code> option after <code>-p</code> if we also need to stash binary files: <code>git stash show -p --binary > name.patch</code>)</td>
-			</tr>
-			<tr>
-				<td>3. <code>git apply --stat name.patch</code></td>
-				<td>View is everything looks good</td>
-			</tr>
-			<tr>
-				<td>4. <code>git apply --check name.patch</code></td>
-				<td>Verify no errors</td>
-			</tr>
-			<tr>
-				<td>5. <code>git apply name.patch</code></td>
-				<td>Apply the patch</td>
-			</tr>
-		</table>
+    <h4>Stash uncommited changes and apply them after an update</h4>
+
+    <ol style="padding: 0.5em 0 1em 2em">
+      <li>
+        <p><code>git stash</code></p>
+        <p>Save uncommited changes to git stack (use <code>git stash list</code> to see the stack)</p>
+      </li>
+      <li>
+        <p>Update Mycodo</p>
+      </li>
+      <li>
+        <p><code>git stash apply</code></p>
+        <p>Apply the last saved changes to updated version (<code>git stash pop</code> can be used to apply changes from the stack and then drop the stack)</p>
+      </li>
+      <li>
+        <p>Check if everything worked</p>
+      </li>
+      <li>
+        <p><code>git stash drop</code></td>
+        <p>Drop last saved stash (if <code>git stash pop</code> wasn't used)</p>
+      </li>
+    </ol>
+
+    <h4>Create a patch file of changes and restore them after an update</h4>
+
+    <ol style="padding: 0.5em 0 1em 2em">
+      <li>
+        <p><code>git stash</code></p>
+        <p>Stash changes</p>
+      </li>
+      <li>
+        <p><code>git stash show -p > name.patch</code></p>
+        <p>Stash output in a patch file (add <code>--binary</code> option after <code>-p</code> if we also need to stash binary files: <code>git stash show -p --binary > name.patch</code>)</p>
+      </li>
+      <li>
+        <p><code>git apply --stat name.patch</code></p>
+        <p>View is everything looks good</p>
+      </li>
+      <li>
+        <p><code>git apply --check name.patch</code></p>
+        <p>Verify no errors</p>
+      </li>
+      <li>
+        <p><code>git apply name.patch</code></p>
+        <p>Apply the patch</p>
+      </li>
+    </ol>
 
     <hr>
 

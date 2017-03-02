@@ -10,6 +10,7 @@
   - Add ability to use multiple camera configurations (multiple cameras)
   - Add ability to use USB cameras with OpenCV ([#193](https://github.com/kizniche/mycodo/issues/193))
   - Automatically detect DS18B20 sensors in sensor configuration
+  - Add ability to create custom user roles
   - Add new user roles: Editor and Monitor ([#46](https://github.com/kizniche/mycodo/issues/46))
   - Restructure database ([#115](https://github.com/kizniche/mycodo/issues/115), [#122](https://github.com/kizniche/mycodo/issues/122))
 

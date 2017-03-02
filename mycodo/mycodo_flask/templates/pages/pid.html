@@ -266,9 +266,9 @@
             <div class="col-sm-3">
               <select class="form-control" id="method_id" name="method_id" title="" data-original-title="{{_('Select the method to use when calculating the setpoint. When enabled, the setpoint(s) of the method override the PID setpoint above.')}}">
                 {%- if method == [] -%}
-                  <option value="">{{_('No methods exist. Create one with this button')}} -></option>
+                  <option value="0">{{_('No methods exist. Create one with this button')}} -></option>
                 {%- else -%}
-                  <option value="">{{_('Disabled')}}</option>
+                  <option value="0">{{_('Disabled')}}</option>
                 {%- endif-%}
 
                 {%- set valid_saved_method = [] -%}

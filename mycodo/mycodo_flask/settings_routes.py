@@ -29,7 +29,8 @@ from mycodo.devices.camera import count_cameras_opencv
 # Config
 from config import (
     CAMERAS,
-    LANGUAGES
+    LANGUAGES,
+    THEMES
 )
 
 from mycodo.mycodo_flask.general_routes import inject_mycodo_version
@@ -159,26 +160,30 @@ def settings_users():
     user_roles = Role.query.all()
     form_add_user = flaskforms.UserAdd()
     form_mod_user = flaskforms.UserMod()
-    form_del_user = flaskforms.UserDel()
+    form_user_roles = flaskforms.UserRoles()
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission('edit_users'):
             return redirect(url_for('general_routes.home'))
 
-        form_name = request.form['form-name']
-        if form_name == 'addUser':
+        if form_add_user.add_user.data:
             flaskutils.user_add(form_add_user)
-        elif form_name == 'delUser':
-            if flaskutils.user_del(form_del_user) == 'logout':
+        elif form_mod_user.delete_user.data:
+            if flaskutils.user_del(form_mod_user) == 'logout':
                 return redirect('/logout')
-        elif form_name == 'modUser':
+        elif form_mod_user.save_user.data:
             if flaskutils.user_mod(form_mod_user) == 'logout':
                 return redirect('/logout')
+        elif (form_user_roles.add_role.data or
+                form_user_roles.save_role.data or
+                form_user_roles.delete_role.data):
+            flaskutils.user_roles(form_user_roles)
         return redirect(url_for('settings_routes.settings_users'))
 
     return render_template('settings/users.html',
+                           themes=THEMES,
                            users=users,
                            user_roles=user_roles,
                            form_add_user=form_add_user,
                            form_mod_user=form_mod_user,
-                           form_del_user=form_del_user)
+                           form_user_roles=form_user_roles)

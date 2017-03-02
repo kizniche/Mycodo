@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 4.1.16 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
+### Latest version: 5.0.0 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
 
 Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.
 
@@ -26,6 +26,7 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 - [TODO](#todo)
 - [Install](#install)
 - [Install Notes](#install-notes)
+- [Diagnosing Issues](#diagnosing-issues)
 - [Supported Devices and Sensors](#supported-devices-and-sensors)
     - [1-Wire](#1-wire)
     - [GPIO](#gpio)
@@ -40,8 +41,8 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 - [Backup and Restore](#backup-and-restore)
 - [Translations](#translations)
 - [Directory Structure](#directory-structure)
-- [License](#license)
 - [Screenshots](#screenshots)
+- [License](#license)
 - [Links](#links)
 - [Languages](#languages)
     - [Español (Spanish)](#espa%C3%B1ol-spanish)
@@ -51,22 +52,58 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 
 ## Features
 
-* Web interface: Visualize data, configure the system, manipulate relays, and more, from anywhere with an internet connection.
-* Many Analog and digital sensors supported: Measuring temperature, humidity, CO<sub>2</sub>, atmospheric pressure, luminosity, infrared heat, soil moisture, and more!
+* Web interface - Access anywhere with an internet connection
+  * Visualize data in real-time graphs or export for personal use
+  * Configure the system in an easy to use interface
+
+* Relays - Control electrical devices
+  * Connect appliances and electrical devices to relays to allow Mycodo to actuate them.
+  * Manually control power to relays.
+  * Automate powering relays (see Conditional Statements, Timers, PIDs, and Methods, below)
+
+* Sensors - Measure environmental conditions
+  * Many [analog and digital sensors](#supported-devices-and-sensors) supported: Measuring temperature, humidity, CO<sub>2</sub>, atmospheric pressure, luminosity, infrared heat, soil moisture, and more!
   * Analog to digital converter support for reading any analog sensor or signal.
-* Event triggers: When certain conditions are met, activate relays, camera recording, email notification, and more.
-* Discrete PID control: Regulate environmental conditions with prediction and precision.
-* Method creation for dynamic PID setpoints for changing conditions over time (setpoint tracking).
+  * Store measurements in a round-robin database (influx)
+
+* Timers - Actions at various times and intervals
+  * Simple Timer - Set to a specific time of day to execute (Example: A water pump that should activate for 5 seconds at noon and midnight)
+  * Period Timer - Ensure a relay is either On of Off for a period of the day (Example: Plants that need lights to remain on for specific parts of the day)
+  * Simple On/Off Cycle - Set the on duration and the off duration
+
+* Conditional Statements
+  * Execute actions based on inputs or measurements, such as email notification, relay actuation, camera recording, and more.
+  * Example: If the humidity is above 80%, turn on Emergency_Fan_1 for 120 seconds, record a 10 second video to attach and send in an email, and flash LCD_1.
+  * Example: If motion detected (PIR motion sensor), capture still image from Camera_1, record a 5 second video with camera_2, and attach the photo and video in and send an email.
+
+* PID (Proportional Integral Derivative) Controller - Regulate environmental conditions
+  * Couple relays with sensors and regulate environmental conditions.
+  * PID algorithms regulate with prediction and precision.
+
+* Methods
+  * Change an environmental condition over time (setpoint tracking). Useful for reflow ovens, thermal cyclers, mimicking natural environments, and more.
   * Time/Date: Change the setpoint based on specific times and dates (ideal for long-duration changes).
-  * Duration: Change the setpoint at durations form when it was activated (examples: reflow oven, thermal cycler).
+  * Duration: Change the setpoint at durations from when it was activated (ideal for short-term changes)
   * Daily: Change the setpoint on a daily, repeatable schedule.
   * Daily Sine Wave: Change the setpoint on a daily, repeatable schedule that follows a configurable sinusoidal wave.
-  * Daily Bezier Curve: Change the setpoint on a daily, repeatable schedule that follows a configurable Bezier curve.
-* 16x2 and 20x4 I<sup>2</sup>C LCD support: Create a physical display of conditions or status of the system.
-* I<sup>2</sup>C multiplexer support to allow using multiple devices/sensors with the same I<sup>2</sup>C address.
-* Pi Camera support: Stream live video, capture still images, or create time-lapses.
-* Automated system upgrade: When there's new release on github, an upgrade can be initiated from the web UI.
-* Languages: English and Spanish.
+  * Daily Bezier Curve: Change the setpoint on a daily, repeatable schedule that follows a configurable [Bezier curve](https://en.wikipedia.org/wiki/B%C3%A9zier_curve).
+
+* LCDs
+  * Display measurements and data on a physical display (cheaper than a monitor)
+  * Can set to flash if an environmental condition is outside the acceptable range.
+
+* I<sup>2</sup>C Multiplexer Support
+  * Allow using multiple devices/sensors with the same I<sup>2</sup>C address.
+  * Some sensors have the same I<sup>2</sup>C address. This allows up to 64 sensors of the same address to be connected to one I<sup>2</sup>C bus.
+
+* Camera support
+  * Raspberry Pi Camera support - Stream live video, capture still images, or create time-lapses.
+  * USB camera support - Capture stills and time-lapses with most USB cameras (using opencv)
+
+* Miscellaneous
+  * [Full Manual](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo/mycodo_flask/templates/manual.html) (Note: the manual may render unexpectedly when viewed outside of the Mycodo web interface).
+  * Automated system upgrade - When there's new release on github, an upgrade can be initiated from the web user interface.
+  * Languages: English, [Español](#espa%C3%B1ol-spanish), [Français](#fran%C3%A7ais-french), and [한국어](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
 
 
 
@@ -74,13 +111,13 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 
 * Support Serial Port Expander
 * Support more Atlas Scientific sensors
-* Add PID filters (of input or output) and alternate PID functions.
-* Add support for wireless communication (z-wave, xbee, or other).
+* Add PID filters (of input or output) and alternate PID functions
+* Add support for wireless communication (z-wave, xbee, or other)
 * Support for PWM and servo/stepper motors
 * Continue development of Remote Admin Dashboard to monitor other Mycodo servers
 * Add graph export options (width, height, scale)
 * Create custom log from influxdb query
-* Notes, flag points of time on graph (text, file upload, graph saving, etc.).
+* Notes, flag points of time on graph (text, file upload, graph saving, etc.)
 
 
 
@@ -142,8 +179,12 @@ Then reboot
 
 ```sudo shutdown now -r```
 
-If you receive an unresolvable error during the install, please [create an issue](https://github.com/kizniche/Mycodo/issues).
+If you receive an unresolvable error during the install, please [create an issue](https://github.com/kizniche/Mycodo/issues). If you want to try to diagnose the issue yourself, see the next section.
 
+
+## Diagnosing Issues
+
+Being experimental software, there may be issues from time to time with the web user interface (frontend) or the daemon (backend). See the [Diagnosing Issues Wiki Page](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues).
 
 
 ## Supported Devices and Sensors
@@ -363,143 +404,18 @@ You could also copy the influx databases and just copy the entire Mycodo directo
 
 ### Translations
 
-Translation support has been added but there is currently a lack of translation languages. If you know another language and would like to create translations, follow the steps below.
-
-To create your own translation, use the following commands.
-
-```cd ~/Mycodo/mycodo```
-
-Create a messages.pot file from searching all files that contain translatable text.
-
-```pybabel extract -F babel.cfg -k lazy_gettext -o messages.pot .```
-
-Create the translation for the new language (in this case it is 'es' for Spanish).
-
-```pybabel init -i messages.pot -d mycodo_flask/translations -l es```
-
-There will now be the file 'messages.po' created in ~/Mycodo/mycodo/mycodo_flask/translations/es/LC_MESSAGES/
-
-Edit messages.po (I used [poedit](https://poedit.net/)) to edit and save the translation for each translatable word or phrase.
-
-Finally, compile the new translation.
-
-```pybabel compile -d mycodo_flask/translations```
-
-If you would like to rescan for translatable text and update your language's messages.po file (or add translations to an already-created messages.po) without losing your previous translation work, use the following commands instead of the above commands. Then edit with poedit (or similar app) and compile for it to take effect.
-
-```
-pybabel extract -F babel.cfg -k lazy_gettext -o messages.pot .
-pybabel update --ignore-obsolete -i messages.pot -d mycodo_flask/translations
-pybabel compile -d mycodo_flask/translations
-```
-
-The important file is ~/Mycodo/mycodo/mycodo_flask/translations/##/LC_MESSAGES/messages.po (with '##' representing the language code, e.g. 'es' for spanish, 'fr' for French) that should either be sent to me or added to a pull request. This is how the new translations can be incorporated into Mycodo.
-
-Refer to [The Flask Mega-Tutorial, Part XIV: I18n and L10n](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-xiv-i18n-and-l10n) for more details of this process.
+Translation support has been added but there is currently a lack of translation languages. If you know another language and would like to create translations, see the [Translations Wiki Page](https://github.com/kizniche/Mycodo/wiki/Translations).
 
 
 
 ### Directory Structure
 
-This is the file structure of Mycodo, so it may assist anyone to understand or modify the system. I'll try to keep this current.
+The file structure of this project, with comments, can be found on the [File Structure Wiki Page](https://github.com/kizniche/Mycodo/wiki/File-Structure)
 
-```
-Mycodo/
-├── CHANGELOG.md - Mycodo version changelog
-├── databases - SQLite databases (for configuration)
-│   ├── alembic - Alembic SQL database migration tool
-│   │   └── versions - Scripts to upgrade/downgrade databases
-│   │       ├── 04303bc223c4_create_dynamic_pid_setpoint_table.py
-│   │       ├── px5pvbcdpw46_rename_table.py
-│   │       └── ...
-│   ├── mycodo.db - Mycodo settings
-│   ├── notes.db
-│   ├── statistics.csv - Anonymous statistics data
-│   └── users.db - User settings
-├── init_databases.py - Script to create SQLite databases and users
-├── install
-│   ├── crontab.sh - Ensures proper line is in crontab
-│   ├── mycodo.service - Systemd script
-│   ├── mycodo_flask_apache.conf - Apache2 configuration file
-│   ├── requirements.txt - Python module requirements
-│   └── setup.sh - Mycodo install script
-├── mycodo
-│   ├── config.py - Global configuration file
-│   ├── controller_lcd.py - LCD controller class
-│   ├── controller_log.py - Log controller class
-│   ├── controller_pid.py - PID controller class
-│   ├── controller_relay.py - Relay controller class
-│   ├── controller_sensor.py - Sensor controller class
-│   ├── controller_timer.py - Timer controller class
-│   ├── daemonutils.py - Various functions to assist mycodo_daemon.py
-│   ├── databases - SQL database manipulation framework (SQLAlchemy)
-│   │   └── ...
-│   ├── devices - Python modules for devices (such as I2C multiplexer)
-│   │   ├── ads1x15.py
-│   │   ├── camera_pi.py
-│   │   └── ...
-│   ├── flaskforms.py - Flask form classes
-│   ├── flaskutils.py - Various functions to assist the flask UI
-│   ├── mycodo_flask - HTTP server files (Flask)
-│   │   ├── admin_routes.py - Admin page routes
-│   │   ├── authentication_routes.py - Authentication routes
-│   │   ├── general_routes.py - General routes
-│   │   ├── method_routes.py - Method routes
-│   │   ├── page_routes.py - General page routes
-│   │   ├── settings_routes.py - Settings page routes
-│   │   ├── ssl_certs - Location of HTTP SSL certificates
-│   │   ├── static - Static files reside (images, css, js, etc.)
-│   │   ├── templates - Flask HTML templates
-│   │   │   ├── 404.html
-│   │   │   ├── flash_messages.html - Error message handler
-│   │   │   ├── layout.html - Template for pages/, settings/, /tools
-│   │   │   ├── layout-remote.html - Template for /remote
-│   │   │   ├── layout-settings.html - Template for /settings
-│   │   │   ├── login.html - Login page
-│   │   │   ├── manual.html - Mycodo usage manual
-│   │   │   ├── admin - Flask admin pages
-│   │   │   ├── pages - Flask general pages
-│   │   │   │   ├── graph.html - Graph display age
-│   │   │   │   ├── live.html - Live data display page
-│   │   │   │   ├── sensor.html - Sensor configuration page
-│   │   │   │   └── ...
-│   │   │   ├── remote - Future remote administration panel
-│   │   │   │   └── setup.html - Add or check the status of remote systems
-│   │   │   ├── settings - Flask settings pages
-│   │   │   │   ├── alerts.html - Alerts settings page
-│   │   │   │   ├── users.html - Users settings page
-│   │   │   │   └── ...
-│   │   │   └── tools - Various tools for Mycodo
-│   │   │       ├── info.html - Information about your system
-│   │   │       ├── logview.html - Display log files
-│   │   │       ├── usage.html - Calculate relay usage/power consumtion
-│   │   │       └── ...
-│   │   └── translations - Language translations
-│   ├── mycodo_client.py - Communicates with the running daemon
-│   ├── mycodo_daemon.py - Mycodo daemon (core of the system)
-│   ├── start_flask_ui.py - Flask startup script
-│   ├── scripts - Miscellaneous helper and test scripts and functions
-│   │   ├── mycodo_wrapper.c - Source to binary that's setuid, for upgrades 
-│   │   ├── restore_mycodo.sh - Script to restore a backed-up Mycodo version
-│   │   ├── upgrade_mycodo_release.sh - Updates Mycodo to the latest release
-│   │   ├── update_post.sh - Post update commands (from the latest release)
-│   │   └── ...
-│   ├── sensors - Python modules for sensors
-│   │   ├── am2315.py
-│   │   ├── bmp.py
-│   │   ├── dht11.py
-│   │   └── ...
-│   └── tests - Software and Hardware Tests 
-│       ├── manual_tests - Scripts to test various sensors or devices
-│       │   ├── Test_I2C_LCD.py
-│       │   ├── Test_I2C_MCP342x.py
-│       │   ├── Test_I2C_Multiplexer.py
-│       │   └──...
-│       └── software_tests - Automated Tests for Software
-├── mycodo_flask.wsgi - Start script for Apache2 mod_wsgi
-├── old - Archived milestone versions of Mycodo
-└──
-```
+
+### Screenshots (may be outdated)
+
+See the [Screenshots Wiki Page](https://github.com/kizniche/Mycodo/wiki/Screenshots).
 
 
 ### License
@@ -511,49 +427,6 @@ Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRAN
 A full copy of the GNU General Public License can be found at <a href="http://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">http://www.gnu.org/licenses/gpl-3.0.en.html</a>
 
 This software includes third party open source software components: Discrete PID Controller. Each of these software components have their own license. Please see Mycodo/mycodo/controller_PID.py for license information.
-
-
-### Screenshots (may be outdated)
-
-See the status of all sensors on one page
-
-<img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-Status-2016-04-10-10-53-58.png">
-
----
-
-Create custom live graphs
-
-<img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-Graph-2016-04-14-18-29-24.png">
-
----
-
-Add sensors
-
-<img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-Sensors-2016-04-10-10-52-36.png">
-
----
-
-Configure and manipulate relays
-
-<img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-Relays-2016-04-10-10-52-57.png">
-
----
-
-Create PID controllers
-
-<img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-PID-2016-04-10-10-53-11.png">
-
----
-
-Output to LCDs
-
-<img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-LCD-2016-04-10-10-53-38.png">
-
----
-
-Change settings
-
-<img src="http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/04/Mycodo-Alerts-Settings-2016-04-10-11-50-29-e1460303466599.png">
 
 
 
