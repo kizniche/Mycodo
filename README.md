@@ -26,22 +26,24 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 - [TODO](#todo)
 - [Install](#install)
 - [Install Notes](#install-notes)
-- [Diagnosing Issues](#diagnosing-issues)
-- [Supported Devices and Sensors](#supported-devices-and-sensors)
-- [Notes](#notes)
-- [User Roles](#user-roles)
 - [Web Server](#web-server-security)
 - [Upgrading](#upgrading)
-- [Backup and Restore](#backup-and-restore)
-- [Translations](#translations)
-- [Directory Structure](#directory-structure)
-- [Screenshots](#screenshots)
 - [License](#license)
 - [Links](#links)
 - [Languages](#languages)
     - [Español (Spanish)](#espa%C3%B1ol-spanish)
     - [Français (French)](#fran%C3%A7ais-french)
     - [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
+- [Miscellaneous](#miscellaneous)
+    - [Backup and Restore](#backup-and-restore)
+    - [Diagnosing Issues](#diagnosing-issues)
+    - [Directory Structure](#directory-structure)
+    - [Preserving Custom Code](#preserving-custom-code)
+    - [Screenshots](#screenshots)
+    - [Supported Devices and Sensors](#supported-devices-and-sensors)
+    - [Translations](#translations)
+    - [User Roles](#user-roles)
+
 
 
 ## Features
@@ -131,19 +133,7 @@ Then reboot
 
 ```sudo shutdown now -r```
 
-If you receive an unresolvable error during the install, please [create an issue](https://github.com/kizniche/Mycodo/issues). If you want to try to diagnose the issue yourself, see the next section.
-
-
-## Diagnosing Issues
-
-See the [Diagnosing Issues Wiki Page](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues)
-
-
-## Supported Devices and Sensors
-
-See the [Sensors and Devices Wiki Page](https://github.com/kizniche/Mycodo/wiki/Sensors-and-Devices)
-
-## Notes
+If you receive an unresolvable error during the install, please [create an issue](https://github.com/kizniche/Mycodo/issues). If you want to try to diagnose the issue yourself, see [Diagnosing Issues](#diagnosing-issues).
 
 A minimal set of anonymous usage statistics are collected to help improve development. No identifying information is saved from the information that is collected and it is only used to improve Mycodo. No other sources will have access to this information. The data collected is mainly how much specific features are used, how often errors occur, and other similar statistics. The data that's collected can be viewed from the 'View collected statistics' link in the Settings/General panel of the UI or in the file Mycodo/databases/statistics.csv. You may opt out from transmitting this information from the General settings in the Admin panel.
 
@@ -151,22 +141,6 @@ Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the s
 
 ```sudo gcc ~/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ~/Mycodo/mycodo/scripts/mycodo_wrapper```
 
-
-### User Roles
-
-User roles define a set of permissions that dictate the abilities of a user when performing certain functions. There are 4 default user roles as well as the ability to create custom roles.
-
-
-|   Role  |  Edit Users | Edit Controllers<sup>1</sup> | Edit Settings | View Settings | View Camera | View Stats<sup>2</sup> | View Logs |
-| ------- | ----------- | ----------------- | ------------- | ------------- | ----------- | ---------- | --------- |
-| Admin   |      X      |         X         |       X       |       X       |      X      |      X     |     X     |
-| Editor  |             |         X         |       X       |       X       |      X      |      X     |     X     |
-| Monitor |             |                   |               |       X       |      X      |      X     |     X     |
-| Guest   |             |                   |               |               |             |            |           |
-
-<sup>1</sup>The ```Edit Controllers``` permission protects the editing of Graphs, LCDs, Methods, PIDs, Relays, Sensors, and Timers.
-
-<sup>2</sup>The ```View Stats``` permission protects the viewing of usage statistics and the System Info and Relay Usage pages.
 
 
 ### Web Server Security
@@ -191,24 +165,6 @@ alembic upgrade head
 
 Refer to the [alembic documentation](http://alembic.readthedocs.org/en/latest/tutorial.html) for other functions.
 
-
-### Backup and Restore
-
-See the [Backup and Restore Wiki Page](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore)
-
-
-### Translations
-
-See the [Translations Wiki Page](https://github.com/kizniche/Mycodo/wiki/Translations)
-
-
-### Directory Structure
-See the [Directory Structure Wiki Page](https://github.com/kizniche/Mycodo/wiki/Directory-Structure)
-
-
-### Screenshots
-
-See the [Screenshots Wiki Page](https://github.com/kizniche/Mycodo/wiki/Screenshots)
 
 
 ### License
@@ -258,3 +214,40 @@ Mycodo는 환경 조건을 조절하는 데 중점을 둔 원격 모니터링 �
 핵심 시스템은 카메라 기록, 전자 메일 알림, 릴레이 활성화 / 비활성화, PID 제어 규정 등과 같은 조치를 포함하여 센서 측정에 대한 다양한 응답을 조정합니다.
 
 Mycodo는 미식가 버섯을 재배하고, 식물을 재배하고, 미생물을 배양하고, 꿀벌 양봉장의 항상성을 유지하고, 뱀의 달걀과 어린 동물을 키우고, 치즈를 생산하고, 발효 식품을 만들고, 수생 시스템을 유지하는 데 사용되었습니다.
+
+
+
+## Miscellaneous
+
+The following sections can now be found in the wiki.
+
+### Backup and Restore
+
+See the [Backup and Restore Wiki Page](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore)
+
+## Diagnosing Issues
+
+See the [Diagnosing Issues Wiki Page](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues)
+
+### Directory Structure
+See the [Directory Structure Wiki Page](https://github.com/kizniche/Mycodo/wiki/Directory-Structure)
+
+### Preserving Custom Code
+
+See the [Preserving Custom Code Wiki Page](https://github.com/kizniche/Mycodo/wiki/Preserving-Custom-Code)
+
+### Screenshots
+
+See the [Screenshots Wiki Page](https://github.com/kizniche/Mycodo/wiki/Screenshots)
+
+## Supported Devices and Sensors
+
+See the [Sensors and Devices Wiki Page](https://github.com/kizniche/Mycodo/wiki/Sensors-and-Devices)
+
+### Translations
+
+See the [Translations Wiki Page](https://github.com/kizniche/Mycodo/wiki/Translations)
+
+### User Roles
+
+See the [User Roles Wiki Page](https://github.com/kizniche/Mycodo/wiki/User-Roles)
