@@ -251,7 +251,8 @@ EOF
     ;;
     'compile-translations')
         printf "\n#### Compiling Translations ####\n"
-        pybabel compile -d ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/translations
+        cd ${INSTALL_DIRECTORY}/Mycodo/mycodo
+        pybabel compile -d mycodo_flask/translations
     ;;
     'upgrade-influxdb')
         printf "\n#### Ensure compatible version of influxdb is installed ####\n"
