@@ -38,6 +38,7 @@ from mycodo.databases.mycodo_db.models import (
     User
 )
 from mycodo.devices.camera import CameraStream
+from mycodo_client import DaemonControl
 
 # Functions
 from mycodo import flaskforms
@@ -107,6 +108,7 @@ def page_camera():
         if not flaskutils.user_has_permission('edit_settings'):
             return redirect(url_for('page_routes.page_camera'))
 
+        control = DaemonControl()
         mod_camera = Camera.query.filter(Camera.id == form_camera.camera_id.data).first()
         if form_camera.capture_still.data:
             if mod_camera.stream_started:
@@ -128,12 +130,15 @@ def page_camera():
             mod_camera.timelapse_next_capture = now
             mod_camera.timelapse_capture_number = 0
             db.session.commit()
+            control.refresh_daemon_camera_settings()
         elif form_camera.pause_timelapse.data:
             mod_camera.timelapse_paused = True
             db.session.commit()
+            control.refresh_daemon_camera_settings()
         elif form_camera.resume_timelapse.data:
             mod_camera.timelapse_paused = False
             db.session.commit()
+            control.refresh_daemon_camera_settings()
         elif form_camera.stop_timelapse.data:
             mod_camera.timelapse_started = False
             mod_camera.timelapse_start_time = None
@@ -142,6 +147,7 @@ def page_camera():
             mod_camera.timelapse_next_capture = None
             mod_camera.timelapse_capture_number = None
             db.session.commit()
+            control.refresh_daemon_camera_settings()
         elif form_camera.start_stream.data:
             if mod_camera.timelapse_started:
                 flash(gettext(

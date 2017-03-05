@@ -34,15 +34,15 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
     - [Español (Spanish)](#espa%C3%B1ol-spanish)
     - [Français (French)](#fran%C3%A7ais-french)
     - [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
-- [Miscellaneous](#miscellaneous)
-    - [Backup and Restore](#backup-and-restore)
-    - [Diagnosing Issues](#diagnosing-issues)
-    - [Directory Structure](#directory-structure)
-    - [Preserving Custom Code](#preserving-custom-code)
-    - [Screenshots](#screenshots)
-    - [Supported Devices and Sensors](#supported-devices-and-sensors)
-    - [Translations](#translations)
-    - [User Roles](#user-roles)
+- [From the Wiki](#from-the-wiki)
+    - [Backup and Restore](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore)
+    - [Diagnosing Issues](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues)
+    - [Directory Structure](https://github.com/kizniche/Mycodo/wiki/Directory-Structure)
+    - [Preserving Custom Code](https://github.com/kizniche/Mycodo/wiki/Preserving-Custom-Code)
+    - [Screenshots](https://github.com/kizniche/Mycodo/wiki/Screenshots)
+    - [Sensors and Devices](https://github.com/kizniche/Mycodo/wiki/Sensors-and-Devices)
+    - [Translations](https://github.com/kizniche/Mycodo/wiki/Translations)
+    - [User Roles](https://github.com/kizniche/Mycodo/wiki/User-Roles)
 
 
 
@@ -63,7 +63,7 @@ In the top graph of the above screenshot visualizes the regulation of temperatur
 * Languages: English, [Español](#espa%C3%B1ol-spanish), [Français](#fran%C3%A7ais-french), and [한국어](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
 
 
-## TODO:
+## TODO
 
 * Support Serial Port Expander
 * Support more Atlas Scientific sensors
@@ -143,14 +143,14 @@ Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the s
 
 
 
-### Web Server Security
+## Web Server Security
 
 An SSL certificate will be generated and stored at ~/Mycodo/mycodo/mycodo_flask/ssl_certs/ during the install process. If you want to use your own SSL certificates, replace them with your own.
 
 If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the web UI at the "https://" address (opposed to "http://"). You may receive a warning message about the security of your site, unless you add the certificate to your browser's trusted list.
 
 
-### Upgrading
+## Upgrading
 
 If you already have Mycodo installed (>=5.0.0), you can perform an upgrade to the latest [release](https://github.com/kizniche/Mycodo/releases) on github by either using the Upgrade option in the web UI (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at /var/log/mycodo/mycodoupgrade.log
 
@@ -167,7 +167,7 @@ Refer to the [alembic documentation](http://alembic.readthedocs.org/en/latest/tu
 
 
 
-### License
+## License
 
 Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
@@ -217,37 +217,15 @@ Mycodo는 미식가 버섯을 재배하고, 식물을 재배하고, 미생물을
 
 
 
-## Miscellaneous
+## From the Wiki
 
-The following sections can now be found in the wiki.
+The following sections can be found in the wiki.
 
-### Backup and Restore
-
-See the [Backup and Restore Wiki Page](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore)
-
-## Diagnosing Issues
-
-See the [Diagnosing Issues Wiki Page](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues)
-
-### Directory Structure
-See the [Directory Structure Wiki Page](https://github.com/kizniche/Mycodo/wiki/Directory-Structure)
-
-### Preserving Custom Code
-
-See the [Preserving Custom Code Wiki Page](https://github.com/kizniche/Mycodo/wiki/Preserving-Custom-Code)
-
-### Screenshots
-
-See the [Screenshots Wiki Page](https://github.com/kizniche/Mycodo/wiki/Screenshots)
-
-## Supported Devices and Sensors
-
-See the [Sensors and Devices Wiki Page](https://github.com/kizniche/Mycodo/wiki/Sensors-and-Devices)
-
-### Translations
-
-See the [Translations Wiki Page](https://github.com/kizniche/Mycodo/wiki/Translations)
-
-### User Roles
-
-See the [User Roles Wiki Page](https://github.com/kizniche/Mycodo/wiki/User-Roles)
+ - [Backup and Restore](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore)
+ - [Diagnosing Issues](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues)
+ - [Directory Structure](https://github.com/kizniche/Mycodo/wiki/Directory-Structure)
+ - [Preserving Custom Code](https://github.com/kizniche/Mycodo/wiki/Preserving-Custom-Code)
+ - [Screenshots](https://github.com/kizniche/Mycodo/wiki/Screenshots)
+ - [Sensors and Devices](https://github.com/kizniche/Mycodo/wiki/Sensors-and-Devices)
+ - [Translations](https://github.com/kizniche/Mycodo/wiki/Translations)
+ - [User Roles](https://github.com/kizniche/Mycodo/wiki/User-Roles)

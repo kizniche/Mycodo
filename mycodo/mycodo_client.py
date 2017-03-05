@@ -82,6 +82,9 @@ class DaemonControl:
         return self.rpyc_client.root.refresh_sensor_conditionals(
             sensor_id, cond_mod, cond_id)
 
+    def refresh_daemon_camera_settings(self):
+        return self.rpyc_client.root.refresh_daemon_camera_settings()
+
     def daemon_status(self):
         return self.rpyc_client.root.daemon_status()
 

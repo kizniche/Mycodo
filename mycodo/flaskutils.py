@@ -38,7 +38,6 @@ from databases.mycodo_db.models import (
     Misc,
     PID,
     Relay,
-    Role,
     Remote,
     Role,
     SMTP,
@@ -2588,6 +2587,8 @@ def camera_mod(form_camera):
         mod_camera.cmd_post_camera = form_camera.cmd_post_camera.data
         mod_camera.relay_id = form_camera.relay_id.data
         db.session.commit()
+        control = DaemonControl()
+        control.refresh_daemon_camera_settings()
     except Exception as except_msg:
         error.append(except_msg)
 
@@ -2599,11 +2600,19 @@ def camera_del(form_camera):
         action=gettext("Delete"),
         controller=gettext("Camera"))
     error = []
-    try:
-        delete_entry_with_id(Camera,
-                             int(form_camera.camera_id.data))
-    except Exception as except_msg:
-        error.append(except_msg)
+
+    camera = db_retrieve_table(
+        Camera, first=True, device_id=form_camera.camera_id.data)
+    if camera.timelapse_started:
+        error.append("Cannot delete camera if a time-lapse is currently "
+                     "using it. Stop the time-lapse and try again.")
+
+    if not error:
+        try:
+            delete_entry_with_id(
+                Camera, int(form_camera.camera_id.data))
+        except Exception as except_msg:
+            error.append(except_msg)
 
     flash_success_errors(error, action, url_for('settings_routes.settings_camera'))
 

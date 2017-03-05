@@ -68,17 +68,17 @@ MEASUREMENT_UNITS = {
 
 # Sensors and description
 SENSORS = [
-    ('RPi', 'Raspberry Pi CPU Temperature'),
-    ('RPiCPULoad', 'Raspberry Pi CPU Load'),
-    ('RPiFreeSpace', 'Raspberry Pi Free Disk Space'),
+    ('RPi', 'Raspberry Pi: CPU Temperature'),
+    ('RPiCPULoad', 'Raspberry Pi: CPU Load'),
+    ('RPiFreeSpace', 'Raspberry Pi: Free Disk Space'),
     ('ADS1x15', 'Analog-to-Digital Converter: ADS1x15'),
     ('MCP342x', 'Analog-to-Digital Converter: MCP342x'),
     ('EDGE', 'Edge Detection: Simple Switch'),
     ('K30', 'CO2: K30'),
     ('TSL2561', 'Luminance: TSL2561'),
     ('CHIRP', 'Moisture: Chirp'),
-    ('BME280', 'Pressure: BME 280'),
-    ('BMP', 'Pressure: BMP 180/085'),
+    ('BME280', 'Pressure/Temperature/Humidity: BME 280'),
+    ('BMP', 'Pressure/Temperature: BMP 180/085'),
     ('DS18B20', 'Temperature: DS18B20'),
     ('TMP006', 'Temperature (Contactless): TMP 006/007'),
     ('ATLAS_PT1000', 'Temperature: Atlas Scientific, PT-1000'),

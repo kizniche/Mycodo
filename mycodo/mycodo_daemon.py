@@ -152,11 +152,18 @@ class ComServer(rpyc.Service):
                                             cond_mod, cond_id):
         """
         Instruct the sensor controller to refresh the settings of a
-        conditionalstatement
+        conditional statement
         """
         return mycodo_daemon.refresh_sensor_conditionals(sensor_id,
                                                          cond_mod,
                                                          cond_id)
+
+    @staticmethod
+    def exposed_refresh_daemon_camera_settings():
+        """
+        Instruct the daemon to refresh the camera settings
+        """
+        return mycodo_daemon.refresh_daemon_camera_settings()
 
     @staticmethod
     def exposed_daemon_status():
@@ -230,6 +237,7 @@ class DaemonController(threading.Thread):
             'Sensor': {},
             'Timer': {}
         }
+        self.refresh_camera_settings = True
         self.start_time = time.time()
         self.timer_ram_use = time.time()
         self.timer_stats = time.time()+120
@@ -252,12 +260,17 @@ class DaemonController(threading.Thread):
                 now = time.time()
 
                 try:
+                    # Refresh camera settings if they change
+                    if self.refresh_camera_settings:
+                        try:
+                            self.logger.debug("Refreshing camera settings.")
+                            camera = db_retrieve_table_daemon(
+                                Camera, entry='all')
+                            self.refresh_camera_settings = False
+                        except Exception:
+                            camera = []
+                            self.logger.debug("Could not read camera table.")
                     # If time-lapses are active, take photo at predefined periods
-                    try:
-                        camera = db_retrieve_table_daemon(Camera, entry='all')
-                    except Exception:
-                        camera = []
-                        self.logger.debug("Could not read camera table.")
                     for each_camera in camera:
                         if (each_camera.timelapse_started and
                                 now > each_camera.timelapse_end_time):
@@ -272,6 +285,10 @@ class DaemonController(threading.Thread):
                                 mod_camera.timelapse_next_capture = None
                                 mod_camera.timelapse_capture_number = None
                                 new_session.commit()
+                            self.logger.debug(
+                                "Camera {id}: End of time-lapse.".format(
+                                    id=each_camera.id))
+                            self.refresh_camera_settings = True
                         elif ((each_camera.timelapse_started and not each_camera.timelapse_paused) and
                                 now > each_camera.timelapse_next_capture):
                             # Ensure next capture is greater than now (in case of power failure/reboot)
@@ -287,6 +304,10 @@ class DaemonController(threading.Thread):
                                 mod_camera.timelapse_next_capture = next_capture
                                 mod_camera.timelapse_capture_number = capture_number
                                 new_session.commit()
+                            self.logger.debug(
+                                "Camera {id}: Capturing time-lapse image.".format(
+                                    id=each_camera.id))
+                            self.refresh_camera_settings = True
                             # Capture image
                             camera_record('timelapse', each_camera)
                 except Exception:
@@ -512,6 +533,9 @@ class DaemonController(threading.Thread):
 
     def refresh_sensor_conditionals(self, sensor_id, cond_mod, cond_id):
         return self.controller['Sensor'][sensor_id].setup_sensor_conditionals(cond_mod, cond_id)
+
+    def refresh_daemon_camera_settings(self):
+        self.refresh_camera_settings = True
 
     def send_stats(self):
         """Collect and send statistics"""
