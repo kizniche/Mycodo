@@ -27,6 +27,7 @@ import logging
 import argparse
 import datetime
 import rpyc
+import signal
 import socket
 import sys
 
@@ -36,6 +37,10 @@ logging.basicConfig(
     format='%(asctime)s %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+
+class TimeoutException(Exception):  # Custom exception class
+    pass
 
 
 class DaemonControl:
@@ -78,6 +83,18 @@ class DaemonControl:
         return self.rpyc_client.root.deactivate_controller(
             controller_type, controller_id)
 
+    def check_daemon(self):
+        signal.signal(signal.SIGALRM, timeout_handler)
+        signal.alarm(10)  # 10 second timeout while checking the daemon status
+        try:
+            result = self.rpyc_client.root.check_daemon()
+            if result:
+                return result
+            else:
+                return "GOOD"
+        except TimeoutException:
+            return "Error: Timeout"
+
     def refresh_sensor_conditionals(self, sensor_id, cond_mod, cond_id):
         return self.rpyc_client.root.refresh_sensor_conditionals(
             sensor_id, cond_mod, cond_id)
@@ -104,6 +121,10 @@ class DaemonControl:
         return self.rpyc_client.root.terminate_daemon()
 
 
+def timeout_handler(signum, frame):  # Custom signal handler
+    raise TimeoutException
+
+
 def parseargs(parser):
     parser.add_argument('--activatecontroller', nargs=2,
                         metavar=('CONTROLLER', 'ID'), type=str,
@@ -113,6 +134,8 @@ def parseargs(parser):
                         metavar=('CONTROLLER', 'ID'), type=str,
                         help='Deactivate controller. Options: LCD, PID, Sensor, Timer',
                         required=False)
+    parser.add_argument('-c', '--checkdaemon', action='store_true',
+                        help="Check if all active daemon controllers are running")
     parser.add_argument('--relayoff', metavar='RELAYID', type=str,
                         help='Turn off relay with relay ID',
                         required=False)
@@ -133,6 +156,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Client for Mycodo daemon.")
     args = parseargs(parser)
     daemon_control = DaemonControl()
+
+    if args.checkdaemon:
+        return_msg = daemon_control.check_daemon()
+        logger.info(
+            "[Remote command] Check Daemon: {msg}".format(msg=return_msg))
 
     if args.relayoff:
         return_msg = daemon_control.relay_off(args.relayoff)

@@ -28,39 +28,34 @@
         {% if display_order -%}
           {%- for order in display_order -%}
             {%- for each_relay in relay if each_relay.id == order -%}
-              {% for key, value in relay_each_duration.iteritems() if key == each_relay.id -%}
+              {% for key, value in relay_stats.iteritems() if key == each_relay.id -%}
                 <tr>
                   <td>{{each_relay.id}}</td>
                   <td>{{each_relay.name}}</td>
                   <td>{{_('Duration On (hours)')}}</td>
-                  <td>{{value['1d']|round(2)}}</td>
-                  <td>{{value['1w']|round(2)}}</td>
-                  <td>{{value['1m']|round(2)}}</td>
-                  <td>{{value['1m-date']|round(2)}}</td>
-                  <td>{{value['1y']|round(2)}}</td>
+                  <td>{{value['1d']['seconds_on']|round(2)}}</td>
+                  <td>{{value['1w']['seconds_on']|round(2)}}</td>
+                  <td>{{value['1m']['seconds_on']|round(2)}}</td>
+                  <td>{{value['1m_date']['seconds_on']|round(2)}}</td>
+                  <td>{{value['1y']['seconds_on']|round(2)}}</td>
                 </tr>
                 <tr>
                   <td colspan="2"></td>
                   <td>{{_('Power Usage')}} (kWh@{{misc.relay_stats_volts}}V)</td>
-                  {%- set kwh_1d = misc.relay_stats_volts*each_relay.amps*(value['1d'])/1000 -%}
-                  {%- set kwh_1w = misc.relay_stats_volts*each_relay.amps*(value['1w'])/1000 -%}
-                  {%- set kwh_1m = misc.relay_stats_volts*each_relay.amps*(value['1m'])/1000 -%}
-                  {%- set kwh_1m_date = misc.relay_stats_volts*each_relay.amps*(value['1m-date'])/1000 -%}
-                  {%- set kwh_1y = misc.relay_stats_volts*each_relay.amps*(value['1y'])/1000 -%}
-                  <td>{{kwh_1d|round(2)}}</td>
-                  <td>{{kwh_1w|round(2)}}</td>
-                  <td>{{kwh_1m|round(2)}}</td>
-                  <td>{{kwh_1m_date|round(2)}}</td>
-                  <td>{{kwh_1y|round(2)}}</td>
+                  <td>{{value['1d']['kwh']|round(2)}}</td>
+                  <td>{{value['1w']['kwh']|round(2)}}</td>
+                  <td>{{value['1m']['kwh']|round(2)}}</td>
+                  <td>{{value['1m_date']['kwh']|round(2)}}</td>
+                  <td>{{value['1y']['kwh']|round(2)}}</td>
                 </tr>
                 <tr>
                   <td colspan="2"></td>
                   <td>Cost ({{misc.relay_stats_currency}}{{misc.relay_stats_cost}}/kWh)</td>
-                  <td>{{misc.relay_stats_currency}}{{(kwh_1d*misc.relay_stats_cost)|round(2)}}</td>
-                  <td>{{misc.relay_stats_currency}}{{(kwh_1w*misc.relay_stats_cost)|round(2)}}</td>
-                  <td>{{misc.relay_stats_currency}}{{(kwh_1m*misc.relay_stats_cost)|round(2)}}</td>
-                  <td>{{misc.relay_stats_currency}}{{(kwh_1m_date*misc.relay_stats_cost)|round(2)}}</td>
-                  <td>{{misc.relay_stats_currency}}{{(kwh_1y*misc.relay_stats_cost)|round(2)}}</td>
+                  <td>{{misc.relay_stats_currency}}{{value['1d']['cost']|round(2)}}</td>
+                  <td>{{misc.relay_stats_currency}}{{value['1w']['cost']|round(2)}}</td>
+                  <td>{{misc.relay_stats_currency}}{{value['1m']['cost']|round(2)}}</td>
+                  <td>{{misc.relay_stats_currency}}{{value['1m_date']['cost']|round(2)}}</td>
+                  <td>{{misc.relay_stats_currency}}{{value['1y']['cost']|round(2)}}</td>
                 </tr>
                 <tr>
                   <td colspan="8"></td>
@@ -72,29 +67,29 @@
         <tr>
           <td colspan="2">{{_('Total')}}</td>
           <td>{{_('Duration On (hours)')}}</td>
-          <td>{{relay_sum_duration['1d']|round(2)}}</td>
-          <td>{{relay_sum_duration['1w']|round(2)}}</td>
-          <td>{{relay_sum_duration['1m']|round(2)}}</td>
-          <td>{{relay_sum_duration['1m-date']|round(2)}}</td>
-          <td>{{relay_sum_duration['1y']|round(2)}}</td>
+          <td>{{relay_stats['total_duration']['1d']|round(2)}}</td>
+          <td>{{relay_stats['total_duration']['1w']|round(2)}}</td>
+          <td>{{relay_stats['total_duration']['1m']|round(2)}}</td>
+          <td>{{relay_stats['total_duration']['1m_date']|round(2)}}</td>
+          <td>{{relay_stats['total_duration']['1y']|round(2)}}</td>
         </tr>
         <tr>
           <td colspan="2"></td>
           <td>{{_('Power Usage')}} (kWh@{{misc.relay_stats_volts}}V)</td>
-          <td>{{relay_sum_kwh['1d']|round(2)}}</td>
-          <td>{{relay_sum_kwh['1w']|round(2)}}</td>
-          <td>{{relay_sum_kwh['1m']|round(2)}}</td>
-          <td>{{relay_sum_kwh['1m-date']|round(2)}}</td>
-          <td>{{relay_sum_kwh['1y']|round(2)}}</td>
+          <td>{{relay_stats['total_kwh']['1d']|round(2)}}</td>
+          <td>{{relay_stats['total_kwh']['1w']|round(2)}}</td>
+          <td>{{relay_stats['total_kwh']['1m']|round(2)}}</td>
+          <td>{{relay_stats['total_kwh']['1m_date']|round(2)}}</td>
+          <td>{{relay_stats['total_kwh']['1y']|round(2)}}</td>
         </tr>
         <tr>
           <td colspan="2"></td>
           <td>{{_('Cost')}} ({{misc.relay_stats_currency}}{{misc.relay_stats_cost}}/kWh)</td>
-          <td>{{misc.relay_stats_currency}}{{(relay_sum_kwh['1d']*misc.relay_stats_cost)|round(2)}}</td>
-          <td>{{misc.relay_stats_currency}}{{(relay_sum_kwh['1w']*misc.relay_stats_cost)|round(2)}}</td>
-          <td>{{misc.relay_stats_currency}}{{(relay_sum_kwh['1m']*misc.relay_stats_cost)|round(2)}}</td>
-          <td>{{misc.relay_stats_currency}}{{(relay_sum_kwh['1m-date']*misc.relay_stats_cost)|round(2)}}</td>
-          <td>{{misc.relay_stats_currency}}{{(relay_sum_kwh['1y']*misc.relay_stats_cost)|round(2)}}</td>
+          <td>{{misc.relay_stats_currency}}{{relay_stats['total_cost']['1d']|round(2)}}</td>
+          <td>{{misc.relay_stats_currency}}{{relay_stats['total_cost']['1w']|round(2)}}</td>
+          <td>{{misc.relay_stats_currency}}{{relay_stats['total_cost']['1m']|round(2)}}</td>
+          <td>{{misc.relay_stats_currency}}{{relay_stats['total_cost']['1m_date']|round(2)}}</td>
+          <td>{{misc.relay_stats_currency}}{{relay_stats['total_cost']['1y']|round(2)}}</td>
         </tr>
       </table>
     </div>

@@ -48,8 +48,8 @@ from mycodo.mycodo_flask.general_routes import (
 )
 from mycodo.devices.camera import camera_record
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import sum_relay_usage
 from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.tools import return_relay_usage
 
 
 # Config
@@ -861,76 +861,21 @@ def page_usage():
     misc = Misc.query.first()
     relay = Relay.query.all()
 
-    display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
+    relay_stats = return_relay_usage(misc, relay)
 
-    # Calculate the number of seconds since the (n)th day of tyhe month
-    # Enables usage/cost assessments to align with a power bill cycle
-    now = datetime.date.today()
-    past_month_seconds = 0
     day = misc.relay_stats_dayofmonth
     if 4 <= day <= 20 or 24 <= day <= 30:
         date_suffix = 'th'
     else:
         date_suffix = ['st', 'nd', 'rd'][day % 10 - 1]
-    if misc.relay_stats_dayofmonth == datetime.datetime.today().day:
-        dt_now = datetime.datetime.now()
-        past_month_seconds = (dt_now - dt_now.replace(
-            hour=0, minute=0, second=0, microsecond=0)).total_seconds()
-    elif misc.relay_stats_dayofmonth > datetime.datetime.today().day:
-        first_day = now.replace(day=1)
-        last_month = first_day - datetime.timedelta(days=1)
-        past_month = last_month.replace(day=misc.relay_stats_dayofmonth)
-        past_month_seconds = (now - past_month).total_seconds()
-    elif misc.relay_stats_dayofmonth < datetime.datetime.today().day:
-        past_month = now.replace(day=misc.relay_stats_dayofmonth)
-        past_month_seconds = (now - past_month).total_seconds()
 
-    # Calculate relay on duration for different time periods
-    relay_each_duration = {}
-    relay_sum_duration = dict.fromkeys(
-        ['1d', '1w', '1m', '1m-date', '1y'], 0)
-    relay_sum_kwh = dict.fromkeys(
-        ['1d', '1w', '1m', '1m-date', '1y'], 0)
-    for each_relay in relay:
-        relay_each_duration[each_relay.id] = {}
-        relay_each_duration[each_relay.id]['1d'] = sum_relay_usage(
-            each_relay.id, 86400) / 3600
-        relay_each_duration[each_relay.id]['1w'] = sum_relay_usage(
-            each_relay.id, 604800) / 3600
-        relay_each_duration[each_relay.id]['1m'] = sum_relay_usage(
-            each_relay.id, 2629743) / 3600
-        relay_each_duration[each_relay.id]['1m-date'] = sum_relay_usage(
-            each_relay.id, int(past_month_seconds)) / 3600
-        relay_each_duration[each_relay.id]['1y'] = sum_relay_usage(
-            each_relay.id, 31556926) / 3600
-        relay_sum_duration['1d'] += relay_each_duration[each_relay.id]['1d']
-        relay_sum_duration['1w'] += relay_each_duration[each_relay.id]['1w']
-        relay_sum_duration['1m'] += relay_each_duration[each_relay.id]['1m']
-        relay_sum_duration['1m-date'] += relay_each_duration[each_relay.id]['1m-date']
-        relay_sum_duration['1y'] += relay_each_duration[each_relay.id]['1y']
-        relay_sum_kwh['1d'] += (
-            misc.relay_stats_volts * each_relay.amps *
-            relay_each_duration[each_relay.id]['1d'] / 1000)
-        relay_sum_kwh['1w'] += (
-            misc.relay_stats_volts * each_relay.amps *
-            relay_each_duration[each_relay.id]['1w'] / 1000)
-        relay_sum_kwh['1m'] += (
-            misc.relay_stats_volts * each_relay.amps *
-            relay_each_duration[each_relay.id]['1m'] / 1000)
-        relay_sum_kwh['1m-date'] += (
-            misc.relay_stats_volts * each_relay.amps *
-            relay_each_duration[each_relay.id]['1m-date'] / 1000)
-        relay_sum_kwh['1y'] += (
-            misc.relay_stats_volts * each_relay.amps *
-            relay_each_duration[each_relay.id]['1y'] / 1000)
+    display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
 
     return render_template('tools/usage.html',
                            display_order=display_order,
                            misc=misc,
                            relay=relay,
-                           relay_each_duration=relay_each_duration,
-                           relay_sum_duration=relay_sum_duration,
-                           relay_sum_kwh=relay_sum_kwh,
+                           relay_stats=relay_stats,
                            date_suffix=date_suffix)
 
 

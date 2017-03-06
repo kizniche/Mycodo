@@ -67,6 +67,7 @@ from mycodo.utils.statistics import (
     return_stat_file_dict,
     send_anonymous_stats
 )
+from mycodo.utils.tools import return_relay_usage
 
 # Config
 from mycodo.config import (
@@ -146,6 +147,14 @@ class ComServer(rpyc.Service):
         """
         return mycodo_daemon.deactivate_controller(
             cont_type, cont_id)
+
+    @staticmethod
+    def exposed_check_daemon():
+        """
+        Check if all active controllers respond
+
+        """
+        return mycodo_daemon.check_daemon()
 
     @staticmethod
     def exposed_refresh_sensor_conditionals(sensor_id,
@@ -237,10 +246,13 @@ class DaemonController(threading.Thread):
             'Sensor': {},
             'Timer': {}
         }
-        self.refresh_camera_settings = True
         self.start_time = time.time()
         self.timer_ram_use = time.time()
         self.timer_stats = time.time()+120
+
+        # Refreshable daemon settings
+        self.refresh_camera_settings = True
+        self.camera = []
 
         misc = db_retrieve_table_daemon(Misc, entry='first')
 
@@ -259,19 +271,13 @@ class DaemonController(threading.Thread):
             while self.daemon_run:
                 now = time.time()
 
+                # Time-lapse
                 try:
                     # Refresh camera settings if they change
                     if self.refresh_camera_settings:
-                        try:
-                            self.logger.debug("Refreshing camera settings.")
-                            camera = db_retrieve_table_daemon(
-                                Camera, entry='all')
-                            self.refresh_camera_settings = False
-                        except Exception:
-                            camera = []
-                            self.logger.debug("Could not read camera table.")
+                        self.refresh_daemon_camera_settings()
                     # If time-lapses are active, take photo at predefined periods
-                    for each_camera in camera:
+                    for each_camera in self.camera:
                         if (each_camera.timelapse_started and
                                 now > each_camera.timelapse_end_time):
                             with session_scope(MYCODO_DB_PATH) as new_session:
@@ -440,6 +446,25 @@ class DaemonController(threading.Thread):
             self.logger.warning(message)
             return 1, message
 
+    def check_daemon(self):
+        try:
+            for lcd_id in self.controller['LCD']:
+                if not self.controller['LCD'][lcd_id].is_running():
+                    return "Error: LCD ID {}".format(lcd_id)
+            for pid_id in self.controller['PID']:
+                if not self.controller['PID'][pid_id].is_running():
+                    return "Error: PID ID {}".format(pid_id)
+            for sensor_id in self.controller['Sensor']:
+                if not self.controller['Sensor'][sensor_id].is_running():
+                    return "Error: Sensor ID {}".format(sensor_id)
+            for timer_id in self.controller['Timer']:
+                if not self.controller['Timer'][timer_id].is_running():
+                    return "Error: Timer ID {}".format(timer_id)
+            if not self.controller['Relay'].is_running():
+                return "Error: Relay controller"
+        except Exception as msg:
+            return "Exception: {msg}".format(msg=msg)
+
     def flash_lcd(self, lcd_id, state):
         """
         Begin or end a repeated flashing of an LCD
@@ -535,7 +560,14 @@ class DaemonController(threading.Thread):
         return self.controller['Sensor'][sensor_id].setup_sensor_conditionals(cond_mod, cond_id)
 
     def refresh_daemon_camera_settings(self):
-        self.refresh_camera_settings = True
+        try:
+            self.logger.debug("Refreshing camera settings.")
+            self.camera = db_retrieve_table_daemon(
+                Camera, entry='all')
+        except Exception:
+            self.camera = []
+            self.logger.debug("Could not read camera table.")
+        self.refresh_camera_settings = False
 
     def send_stats(self):
         """Collect and send statistics"""
