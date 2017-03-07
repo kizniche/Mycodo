@@ -48,6 +48,7 @@ from databases.mycodo_db.models import (
 from mycodo_client import DaemonControl
 
 # Functions
+from utils.tools import next_schedule
 from utils.utils import (
     test_username,
     test_password
@@ -2445,41 +2446,56 @@ def user_del(form):
 # Settings modifications
 #
 
-def settings_general_mod(form_mod_general):
+def settings_general_mod(form):
     """ Modify General settings """
     action = '{action} {controller}'.format(
         action=gettext("Modify"),
         controller=gettext("General Settings"))
     error = []
 
-    try:
-        if form_mod_general.validate():
-            mod_misc = Misc.query.first()
-            force_https = mod_misc.force_https
-            mod_misc.language = form_mod_general.language.data
-            mod_misc.force_https = form_mod_general.forceHTTPS.data
-            mod_misc.hide_alert_success = form_mod_general.hideAlertSuccess.data
-            mod_misc.hide_alert_info = form_mod_general.hideAlertInfo.data
-            mod_misc.relay_stats_volts = form_mod_general.relayStatsVolts.data
-            mod_misc.relay_stats_cost = form_mod_general.relayStatsCost.data
-            mod_misc.relay_stats_currency = form_mod_general.relayStatsCurrency.data
-            mod_misc.relay_stats_dayofmonth = form_mod_general.relayStatsDayOfMonth.data
-            mod_misc.hide_alert_warning = form_mod_general.hideAlertWarning.data
-            mod_misc.stats_opt_out = form_mod_general.stats_opt_out.data
-            db.session.commit()
+    if form.validate():
+        if (form.relay_usage_report_span.data == 'monthly' and
+                not 0 < form.relay_usage_report_day.data < 29):
+            error.append("Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28")
+        elif (form.relay_usage_report_span.data == 'weekly' and
+                not 0 < form.relay_usage_report_day.data < 8):
+            error.append("Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28")
 
-            if force_https != form_mod_general.forceHTTPS.data:
-                # Force HTTPS option changed.
-                # Reload web server with new settings.
-                wsgi_file = INSTALL_DIRECTORY+'/mycodo_flask.wsgi'
-                with open(wsgi_file, 'a'):
-                    os.utime(wsgi_file, None)
-        else:
-            flash_form_errors(form_mod_general)
-    except Exception as except_msg:
-        error.append(except_msg)
+        if not error:
+            try:
+                mod_misc = Misc.query.first()
+                force_https = mod_misc.force_https
+                mod_misc.language = form.language.data
+                mod_misc.force_https = form.forceHTTPS.data
+                mod_misc.hide_alert_success = form.hideAlertSuccess.data
+                mod_misc.hide_alert_info = form.hideAlertInfo.data
+                mod_misc.relay_usage_volts = form.relayStatsVolts.data
+                mod_misc.relay_usage_cost = form.relayStatsCost.data
+                mod_misc.relay_usage_currency = form.relayStatsCurrency.data
+                mod_misc.relay_usage_dayofmonth = form.relayStatsDayOfMonth.data
+                mod_misc.relay_usage_report_gen = form.relay_usage_report_gen.data
+                mod_misc.relay_usage_report_span = form.relay_usage_report_span.data
+                mod_misc.relay_usage_report_day = form.relay_usage_report_day.data
+                mod_misc.relay_usage_report_hour = form.relay_usage_report_hour.data
+                mod_misc.hide_alert_warning = form.hideAlertWarning.data
+                mod_misc.stats_opt_out = form.stats_opt_out.data
+                db.session.commit()
+                control = DaemonControl()
+                control.refresh_daemon_misc_settings()
 
-    flash_success_errors(error, action, url_for('settings_routes.settings_general'))
+                if force_https != form.forceHTTPS.data:
+                    # Force HTTPS option changed.
+                    # Reload web server with new settings.
+                    wsgi_file = INSTALL_DIRECTORY + '/mycodo_flask.wsgi'
+                    with open(wsgi_file, 'a'):
+                        os.utime(wsgi_file, None)
+
+            except Exception as except_msg:
+                error.append(except_msg)
+
+        flash_success_errors(error, action, url_for('settings_routes.settings_general'))
+    else:
+        flash_form_errors(form)
 
 
 def settings_alert_mod(form_mod_alert):

@@ -2,6 +2,8 @@
 
 ### Features
 
+  - Add ability to automatically generate relay usage/cost reports on daily, weekly, and monthly schedules
+  - Add ability to check daemon health (mycodo_client.py --checkdaemon)
   - New sensor conditional actions: Activate/Deactivate PID, Email Photo, Email Video
   - New relay/sensor conditional management system
   - Add PID option: maximum allowable sensor measurement age (to allow the PID controller from manipulate relays, the sensor measurement must have occurred in the past x seconds)
@@ -16,7 +18,6 @@
 
 ### Miscellaneous
 
-  - Add ability to check daemon health (mycodo_client.py --checkdaemon)
   - User names are no longer case-sensitive
   - Switch to using Flask-Login
   - Switch to using flask_wtf.FlaskForm (from using deprecated flask_wtf.Form)

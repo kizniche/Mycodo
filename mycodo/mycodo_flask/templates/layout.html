@@ -104,12 +104,13 @@
           {% for href, id, caption in navigation_bar_top %}
             <li{% if id == active_page %} class="active"{% endif %}><a href="{{ href|e }}">{{caption|e}}</a></li>
           {% endfor -%}
-            <li class="dropdown {% if active_page in ['logview', 'export', 'info', 'usage', 'lcd', 'camera'] %} active{% endif %}">
+            <li class="dropdown {% if active_page in ['logview', 'export', 'info', 'usage', 'usage_reports', 'lcd', 'camera'] %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Tools')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="{{url_for('page_routes.page_lcd')}}"><i class="glyphicon glyphicon-modal-window"></i>&nbsp;&nbsp;{{_('LCD')}}</a></li>
                 <li><a href="{{url_for('page_routes.page_camera')}}"><i class="glyphicon glyphicon-camera"></i>&nbsp;&nbsp;{{_('Camera')}}</a></li>
                 <li><a href="{{url_for('page_routes.page_usage')}}"><i class="glyphicon glyphicon-equalizer"></i>&nbsp;&nbsp;{{_('Relay Usage')}}</a></li>
+                <li><a href="{{url_for('page_routes.page_usage_reports')}}"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;&nbsp;{{_('Relay Usage Reports')}}</a></li>
                 <li><a href="{{url_for('page_routes.page_export')}}"><i class="glyphicon glyphicon-save-file"></i>&nbsp;&nbsp;{{_('Export Measurements')}}</a></li>
                 <li><a href="{{url_for('page_routes.page_logview')}}"><i class="glyphicon glyphicon-book"></i>&nbsp;&nbsp;{{_('Mycodo Logs')}}</a></li>
                 <li><a href="{{url_for('page_routes.page_info')}}"><i class=" glyphicon glyphicon-info-sign"></i>&nbsp;&nbsp;{{_('System Info')}}</a></li>

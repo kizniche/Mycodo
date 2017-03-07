@@ -103,7 +103,6 @@ def analyze(args):
                 pg=each_line[0][:26], nr=each_line[1], fms= each_line[2], av=str_avg, med=str_median))
 
 
-
 def extant_file(x):
     """
     'Type' for argparse - checks that file exists but does not open.

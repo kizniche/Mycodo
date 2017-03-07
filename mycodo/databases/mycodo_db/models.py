@@ -291,10 +291,14 @@ class Misc(CRUDMixin, db.Model):
     hide_alert_warning = db.Column(db.Boolean, default=False)
     language = db.Column(db.Text, default=None)  # Force the web interface to use a specific language
     login_message = db.Column(db.Text, default='')  # Put a message on the login screen
-    relay_stats_cost = db.Column(db.Float, default=0.05)  # Energy cost per kWh
-    relay_stats_currency = db.Column(db.Text, default='$')  # Energy cost currency
-    relay_stats_dayofmonth = db.Column(db.Integer, default=15)  # Electricity billing day of month
-    relay_stats_volts = db.Column(db.Integer, default=120)  # Voltage the alternating current operates
+    relay_usage_cost = db.Column(db.Float, default=0.05)  # Energy cost per kWh
+    relay_usage_currency = db.Column(db.Text, default='$')  # Energy cost currency
+    relay_usage_dayofmonth = db.Column(db.Integer, default=15)  # Electricity billing day of month
+    relay_usage_volts = db.Column(db.Integer, default=120)  # Voltage the alternating current operates
+    relay_usage_report_gen = db.Column(db.Boolean, default=False)
+    relay_usage_report_span = db.Column(db.Text, default='monthly')
+    relay_usage_report_day = db.Column(db.Integer, default=1)
+    relay_usage_report_hour = db.Column(db.Integer, default=0)
     stats_opt_out = db.Column(db.Boolean, default=False)  # Opt not to send anonymous usage statistics
 
 

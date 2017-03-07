@@ -22,7 +22,7 @@
           <td>{{_('Past Day')}}</td>
           <td>{{_('Past Week')}}</td>
           <td>{{_('Past Month')}}</td>
-          <td>{{_('Past Month')}}<br/>({{_('From')}} {{misc.relay_stats_dayofmonth}}{{date_suffix}})</td>
+          <td>{{_('Past Month')}}<br/>({{_('From')}} {{misc.relay_usage_dayofmonth}}{{date_suffix}})</td>
           <td>{{_('Past Year')}}</td>
         </tr>
         {% if display_order -%}
@@ -41,7 +41,7 @@
                 </tr>
                 <tr>
                   <td colspan="2"></td>
-                  <td>{{_('Power Usage')}} (kWh@{{misc.relay_stats_volts}}V)</td>
+                  <td>{{_('Power Usage')}} (kWh@{{misc.relay_usage_volts}}V)</td>
                   <td>{{value['1d']['kwh']|round(2)}}</td>
                   <td>{{value['1w']['kwh']|round(2)}}</td>
                   <td>{{value['1m']['kwh']|round(2)}}</td>
@@ -50,12 +50,12 @@
                 </tr>
                 <tr>
                   <td colspan="2"></td>
-                  <td>Cost ({{misc.relay_stats_currency}}{{misc.relay_stats_cost}}/kWh)</td>
-                  <td>{{misc.relay_stats_currency}}{{value['1d']['cost']|round(2)}}</td>
-                  <td>{{misc.relay_stats_currency}}{{value['1w']['cost']|round(2)}}</td>
-                  <td>{{misc.relay_stats_currency}}{{value['1m']['cost']|round(2)}}</td>
-                  <td>{{misc.relay_stats_currency}}{{value['1m_date']['cost']|round(2)}}</td>
-                  <td>{{misc.relay_stats_currency}}{{value['1y']['cost']|round(2)}}</td>
+                  <td>Cost ({{misc.relay_usage_currency}}{{misc.relay_usage_cost}}/kWh)</td>
+                  <td>{{misc.relay_usage_currency}}{{value['1d']['cost']|round(2)}}</td>
+                  <td>{{misc.relay_usage_currency}}{{value['1w']['cost']|round(2)}}</td>
+                  <td>{{misc.relay_usage_currency}}{{value['1m']['cost']|round(2)}}</td>
+                  <td>{{misc.relay_usage_currency}}{{value['1m_date']['cost']|round(2)}}</td>
+                  <td>{{misc.relay_usage_currency}}{{value['1y']['cost']|round(2)}}</td>
                 </tr>
                 <tr>
                   <td colspan="8"></td>
@@ -75,7 +75,7 @@
         </tr>
         <tr>
           <td colspan="2"></td>
-          <td>{{_('Power Usage')}} (kWh@{{misc.relay_stats_volts}}V)</td>
+          <td>{{_('Power Usage')}} (kWh@{{misc.relay_usage_volts}}V)</td>
           <td>{{relay_stats['total_kwh']['1d']|round(2)}}</td>
           <td>{{relay_stats['total_kwh']['1w']|round(2)}}</td>
           <td>{{relay_stats['total_kwh']['1m']|round(2)}}</td>
@@ -84,12 +84,12 @@
         </tr>
         <tr>
           <td colspan="2"></td>
-          <td>{{_('Cost')}} ({{misc.relay_stats_currency}}{{misc.relay_stats_cost}}/kWh)</td>
-          <td>{{misc.relay_stats_currency}}{{relay_stats['total_cost']['1d']|round(2)}}</td>
-          <td>{{misc.relay_stats_currency}}{{relay_stats['total_cost']['1w']|round(2)}}</td>
-          <td>{{misc.relay_stats_currency}}{{relay_stats['total_cost']['1m']|round(2)}}</td>
-          <td>{{misc.relay_stats_currency}}{{relay_stats['total_cost']['1m_date']|round(2)}}</td>
-          <td>{{misc.relay_stats_currency}}{{relay_stats['total_cost']['1y']|round(2)}}</td>
+          <td>{{_('Cost')}} ({{misc.relay_usage_currency}}{{misc.relay_usage_cost}}/kWh)</td>
+          <td>{{misc.relay_usage_currency}}{{relay_stats['total_cost']['1d']|round(2)}}</td>
+          <td>{{misc.relay_usage_currency}}{{relay_stats['total_cost']['1w']|round(2)}}</td>
+          <td>{{misc.relay_usage_currency}}{{relay_stats['total_cost']['1m']|round(2)}}</td>
+          <td>{{misc.relay_usage_currency}}{{relay_stats['total_cost']['1m_date']|round(2)}}</td>
+          <td>{{misc.relay_usage_currency}}{{relay_stats['total_cost']['1y']|round(2)}}</td>
         </tr>
       </table>
     </div>

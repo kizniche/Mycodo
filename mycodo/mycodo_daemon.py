@@ -67,7 +67,10 @@ from mycodo.utils.statistics import (
     return_stat_file_dict,
     send_anonymous_stats
 )
-from mycodo.utils.tools import return_relay_usage
+from mycodo.utils.tools import (
+    generate_relay_usage_report,
+    next_schedule
+)
 
 # Config
 from mycodo.config import (
@@ -175,6 +178,13 @@ class ComServer(rpyc.Service):
         return mycodo_daemon.refresh_daemon_camera_settings()
 
     @staticmethod
+    def exposed_refresh_daemon_misc_settings():
+        """
+        Instruct the daemon to refresh the misc settings
+        """
+        return mycodo_daemon.refresh_daemon_misc_settings()
+
+    @staticmethod
     def exposed_daemon_status():
         """
         Merely indicates if the daemon is running or not, with succesful
@@ -250,17 +260,26 @@ class DaemonController(threading.Thread):
         self.timer_ram_use = time.time()
         self.timer_stats = time.time()+120
 
-        # Refreshable daemon settings
-        self.refresh_camera_settings = True
         self.camera = []
+        self.refresh_daemon_camera_settings()
 
-        misc = db_retrieve_table_daemon(Misc, entry='first')
-
-        self.opt_out_statistics = misc.stats_opt_out
+        self.relay_usage_report_gen = None
+        self.relay_usage_report_span = None
+        self.relay_usage_report_day = None
+        self.relay_usage_report_hour = None
+        self.relay_usage_report_next_gen = None
+        self.opt_out_statistics = None
+        self.refresh_daemon_misc_settings()
         if self.opt_out_statistics:
             self.logger.info("Anonymous statistics disabled")
         else:
             self.logger.info("Anonymous statistics enabled")
+        if self.relay_usage_report_gen:
+            now = time.time()
+            self.logger.info(
+                "Relay usage report generation enabled. "
+                "Next report in {sec} seconds.".format(
+                    sec=int(self.relay_usage_report_next_gen-now)))
 
     def run(self):
         self.start_all_controllers()
@@ -271,11 +290,8 @@ class DaemonController(threading.Thread):
             while self.daemon_run:
                 now = time.time()
 
-                # Time-lapse
+                # Capture time-lapse image
                 try:
-                    # Refresh camera settings if they change
-                    if self.refresh_camera_settings:
-                        self.refresh_daemon_camera_settings()
                     # If time-lapses are active, take photo at predefined periods
                     for each_camera in self.camera:
                         if (each_camera.timelapse_started and
@@ -294,8 +310,8 @@ class DaemonController(threading.Thread):
                             self.logger.debug(
                                 "Camera {id}: End of time-lapse.".format(
                                     id=each_camera.id))
-                            self.refresh_camera_settings = True
-                        elif ((each_camera.timelapse_started and not each_camera.timelapse_paused) and
+                        elif ((each_camera.timelapse_started and
+                                not each_camera.timelapse_paused) and
                                 now > each_camera.timelapse_next_capture):
                             # Ensure next capture is greater than now (in case of power failure/reboot)
                             next_capture = each_camera.timelapse_next_capture
@@ -313,23 +329,40 @@ class DaemonController(threading.Thread):
                             self.logger.debug(
                                 "Camera {id}: Capturing time-lapse image.".format(
                                     id=each_camera.id))
-                            self.refresh_camera_settings = True
                             # Capture image
                             camera_record('timelapse', each_camera)
                 except Exception:
                     self.logger.exception("Timelapse ERROR")
 
+                # A Generate relay usage report
+                if (self.relay_usage_report_gen and
+                        now > self.relay_usage_report_next_gen):
+                    try:
+                        self.relay_usage_report_next_gen = next_schedule(
+                            self.relay_usage_report_span,
+                            self.relay_usage_report_day,
+                            self.relay_usage_report_hour)
+                        generate_relay_usage_report()
+                    except Exception:
+                        self.logger.exception("Relay Usage Report Generation ERROR")
+
                 # Log ram usage every 24 hours
                 if now > self.timer_ram_use:
-                    self.timer_ram_use = now+86400
-                    ram = resource.getrusage(
-                        resource.RUSAGE_SELF).ru_maxrss / float(1000)
-                    self.logger.info("{} MB ram in use".format(ram))
+                    try:
+                        self.timer_ram_use = now + 86400
+                        ram_mb = resource.getrusage(
+                            resource.RUSAGE_SELF).ru_maxrss / float(1000)
+                        self.logger.info("{ram} MB ram in use".format(ram=ram_mb))
+                    except Exception:
+                        self.logger.exception("Free Ram ERROR")
 
                 # collect and send anonymous statistics
                 if (not self.opt_out_statistics and
                         now > self.timer_stats):
-                    self.send_stats()
+                    try:
+                        self.send_stats()
+                    except Exception:
+                        self.logger.exception("Stats ERROR")
 
                 time.sleep(0.25)
             GPIO.cleanup()
@@ -567,7 +600,24 @@ class DaemonController(threading.Thread):
         except Exception:
             self.camera = []
             self.logger.debug("Could not read camera table.")
-        self.refresh_camera_settings = False
+
+    def refresh_daemon_misc_settings(self):
+        self.logger.debug("Refreshing misc settings.")
+        misc = db_retrieve_table_daemon(Misc, entry='first')
+        self.opt_out_statistics = misc.stats_opt_out
+        self.relay_usage_report_gen = misc.relay_usage_report_gen
+        self.relay_usage_report_span = misc.relay_usage_report_span
+        self.relay_usage_report_day = misc.relay_usage_report_day
+        self.relay_usage_report_hour = misc.relay_usage_report_hour
+        self.relay_usage_report_next_gen = next_schedule(
+            self.relay_usage_report_span,
+            self.relay_usage_report_day,
+            self.relay_usage_report_hour)
+        if self.relay_usage_report_gen:
+            str_next_report = time.strftime(
+                '%c', time.localtime(self.relay_usage_report_next_gen))
+            self.logger.error("Next relay usage report: {time_date}".format(
+                time_date=str_next_report))
 
     def send_stats(self):
         """Collect and send statistics"""

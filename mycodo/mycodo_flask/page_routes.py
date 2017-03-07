@@ -63,6 +63,7 @@ from config import (
     PATH_CAMERAS,
     RESTORE_LOG_FILE,
     UPGRADE_LOG_FILE,
+    USAGE_REPORTS_PATH
 )
 
 logger = logging.getLogger('mycodo.mycodo_flask.pages')
@@ -863,7 +864,7 @@ def page_usage():
 
     relay_stats = return_relay_usage(misc, relay)
 
-    day = misc.relay_stats_dayofmonth
+    day = misc.relay_usage_dayofmonth
     if 4 <= day <= 20 or 24 <= day <= 30:
         date_suffix = 'th'
     else:
@@ -877,6 +878,21 @@ def page_usage():
                            relay=relay,
                            relay_stats=relay_stats,
                            date_suffix=date_suffix)
+
+
+@blueprint.route('/usage_reports', methods=('GET', 'POST'))
+@flask_login.login_required
+def page_usage_reports():
+    """ Display relay usage (duration and energy usage/cost) """
+    if not flaskutils.user_has_permission('view_stats'):
+        return redirect(url_for('general_routes.home'))
+
+    report_location = os.path.normpath(USAGE_REPORTS_PATH)
+    reports = [0, 0]
+
+    return render_template('tools/usage_reports.html',
+                           report_location=report_location,
+                           reports=reports)
 
 
 def dict_custom_colors(graph):
