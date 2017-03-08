@@ -556,7 +556,7 @@ class SensorController(threading.Thread):
                     message += " PID is already active!"
                 else:
                     activate_pid = threading.Thread(
-                        target=self.control.activate_controller,
+                        target=self.control.controller_activate,
                         args=('PID',
                               cond_action.do_pid_id,))
                     activate_pid.start()
@@ -571,7 +571,7 @@ class SensorController(threading.Thread):
                     message += " PID is already inactive!"
                 else:
                     deactivate_pid = threading.Thread(
-                        target=self.control.deactivate_controller,
+                        target=self.control.controller_deactivate,
                         args=('PID',
                               cond_action.do_pid_id,))
                     deactivate_pid.start()

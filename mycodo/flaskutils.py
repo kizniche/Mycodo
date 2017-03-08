@@ -653,7 +653,7 @@ def manipulate_relay(action, relay_id, setup_pin=False):
 # Activate/deactivate controller
 #
 
-def activate_deactivate_controller(controller_action,
+def controller_activate_deactivate(controller_action,
                                    controller_type,
                                    controller_id):
     """
@@ -713,10 +713,10 @@ def activate_deactivate_controller(controller_action,
     try:
         control = DaemonControl()
         if controller_action == 'activate':
-            return_values = control.activate_controller(controller_type,
+            return_values = control.controller_activate(controller_type,
                                                         int(controller_id))
         else:
-            return_values = control.deactivate_controller(controller_type,
+            return_values = control.controller_deactivate(controller_type,
                                                           int(controller_id))
         if return_values[0]:
             flash("{err}".format(err=return_values[1]), "error")
@@ -1159,7 +1159,7 @@ def lcd_activate(form_activate_lcd):
                         "Cannot activate controller if the associated "
                         "sensor controller is inactive"), "error")
                     return redirect('/lcd')
-            activate_deactivate_controller(
+            controller_activate_deactivate(
                 'activate',
                 'LCD',
                 form_activate_lcd.lcd_id.data)
@@ -1172,7 +1172,7 @@ def lcd_activate(form_activate_lcd):
 
 def lcd_deactivate(form_deactivate_lcd):
     if form_deactivate_lcd.validate():
-        activate_deactivate_controller(
+        controller_activate_deactivate(
             'deactivate',
             'LCD',
             form_deactivate_lcd.lcd_id.data)
@@ -1419,7 +1419,7 @@ def pid_activate(pid_id):
             db.session.commit()
 
         time.sleep(1)
-        activate_deactivate_controller('activate',
+        controller_activate_deactivate('activate',
                                        'PID',
                                        pid_id)
 
@@ -1432,7 +1432,7 @@ def pid_deactivate(pid_id):
     pid.is_activated = False
     db.session.commit()
     time.sleep(1)
-    activate_deactivate_controller('deactivate',
+    controller_activate_deactivate('deactivate',
                                    'PID',
                                    pid_id)
 
@@ -2035,7 +2035,7 @@ def sensor_del(form_mod_sensor):
         if sensor.is_activated:
             sensor_deactivate_associated_controllers(
                 form_mod_sensor.modSensor_id.data)
-            activate_deactivate_controller(
+            controller_activate_deactivate(
                 'deactivate',
                 'Sensor',
                 form_mod_sensor.modSensor_id.data)
@@ -2102,7 +2102,7 @@ def sensor_activate(form_mod_sensor):
         flash("Cannot activate sensor without the GPIO/I2C Address/Port "
               "to communicate with it set.", "error")
         return redirect('/sensor')
-    activate_deactivate_controller('activate',
+    controller_activate_deactivate('activate',
                                    'Sensor',
                                    form_mod_sensor.modSensor_id.data)
 
@@ -2110,7 +2110,7 @@ def sensor_activate(form_mod_sensor):
 def sensor_deactivate(form_mod_sensor):
     sensor_deactivate_associated_controllers(
         form_mod_sensor.modSensor_id.data)
-    activate_deactivate_controller('deactivate',
+    controller_activate_deactivate('deactivate',
                                    'Sensor',
                                    form_mod_sensor.modSensor_id.data)
 
@@ -2123,7 +2123,7 @@ def sensor_deactivate_associated_controllers(sensor_id):
            ).all()
     if pid:
         for each_pid in pid:
-            activate_deactivate_controller('deactivate',
+            controller_activate_deactivate('deactivate',
                                            'PID',
                                            each_pid.id)
     lcd = LCD.query.filter(LCD.is_activated)
@@ -2132,7 +2132,7 @@ def sensor_deactivate_associated_controllers(sensor_id):
                          each_lcd.line_2_sensor_id,
                          each_lcd.line_3_sensor_id,
                          each_lcd.line_4_sensor_id]:
-            activate_deactivate_controller('deactivate',
+            controller_activate_deactivate('deactivate',
                                            'LCD',
                                            each_lcd.id)
 
@@ -2281,12 +2281,12 @@ def timer_reorder(form_timer, display_order):
 
 
 def timer_activate(form_timer):
-    activate_deactivate_controller(
+    controller_activate_deactivate(
         'activate', 'Timer', form_timer.timer_id.data)
 
 
 def timer_deactivate(form_timer):
-    activate_deactivate_controller(
+    controller_activate_deactivate(
         'deactivate', 'Timer', form_timer.timer_id.data)
 
 

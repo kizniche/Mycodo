@@ -1,6 +1,8 @@
 # coding=utf-8
-import logging
+import csv
 import datetime
+import logging
+import os
 import time
 from dateutil import relativedelta
 
@@ -11,7 +13,10 @@ from mycodo.databases.mycodo_db.models import (
 
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import sum_relay_usage
-from mycodo.utils.system_pi import assure_path_exists
+from mycodo.utils.system_pi import (
+    assure_path_exists,
+    set_user_grp
+)
 
 from config import USAGE_REPORTS_PATH
 
@@ -162,8 +167,59 @@ def generate_relay_usage_report():
     Generate relay usage report
     :return:
     """
-    logger.error("Generating relay usage report")
-    assure_path_exists(USAGE_REPORTS_PATH)
-    misc = db_retrieve_table_daemon(Misc, entry='first')
-    relay = db_retrieve_table_daemon(Relay, entry='all')
-    relay_usage = return_relay_usage(misc, relay)
+    logger.debug("Generating relay usage report...")
+    try:
+        assure_path_exists(USAGE_REPORTS_PATH)
+        timestamp = time.strftime("%Y-%m-%d_%H-%M")
+        report_file = os.path.join(
+            USAGE_REPORTS_PATH,
+            'relay_usage_report_{ts}.csv'.format(ts=timestamp))
+
+        misc = db_retrieve_table_daemon(Misc, entry='first')
+        relay = db_retrieve_table_daemon(Relay)
+        relay_usage = return_relay_usage(misc, relay.all())
+
+        with open(report_file, 'wb') as f:
+            w = csv.writer(f)
+            w.writerow([
+                 'Relay ID',
+                 'Relay Name',
+                 'Type',
+                 'Past Day',
+                 'Past Week',
+                 'Past Month',
+                 'Past Month (from {})'.format(misc.relay_usage_dayofmonth),
+                 'Past Year'
+            ])
+            for key, value in relay_usage.items():
+                if key in ['total_duration', 'total_cost', 'total_kwh']:
+                    w.writerow(['', '', key, value['1d'], value['1w'], value['1m'], value['1m_date'], value['1y']])
+                else:
+                    w.writerow([key,
+                                relay.filter(Relay.id == key).first().name,
+                                'seconds_on',
+                                value['1d']['seconds_on'],
+                                value['1w']['seconds_on'],
+                                value['1m']['seconds_on'],
+                                value['1m_date']['seconds_on'],
+                                value['1y']['seconds_on']])
+                    w.writerow([key,
+                                relay.filter(Relay.id == key).first().name,
+                                'kwh',
+                                value['1d']['kwh'],
+                                value['1w']['kwh'],
+                                value['1m']['kwh'],
+                                value['1m_date']['kwh'],
+                                value['1y']['kwh']])
+                    w.writerow([key,
+                                relay.filter(Relay.id == key).first().name,
+                                'cost',
+                                value['1d']['cost'],
+                                value['1w']['cost'],
+                                value['1m']['cost'],
+                                value['1m_date']['cost'],
+                                value['1y']['cost']])
+
+        set_user_grp(report_file, 'mycodo', 'mycodo')
+    except Exception:
+        logger.exception("Relay Usage Report Generation ERROR")

@@ -54,35 +54,6 @@ class DaemonControl:
         except socket.error:
             raise Exception("Connection refused. Is the daemon running?")
 
-    def flash_lcd(self, lcd_id, state):
-        return self.rpyc_client.root.flash_lcd(lcd_id, state)
-
-    def relay_state(self, relay_id):
-        return self.rpyc_client.root.relay_state(relay_id)
-
-    def relay_on_off(self, relay_id, state, duration):
-        if state == 'on':
-            self.relay_on(relay_id, duration)
-        else:
-            self.relay_off(relay_id)
-
-    def relay_on(self, relay_id, duration, min_off_duration=0.0):
-        return self.rpyc_client.root.relay_on(relay_id, duration, min_off_duration)
-
-    def relay_off(self, relay_id, trigger_conditionals=True):
-        return self.rpyc_client.root.relay_off(relay_id, trigger_conditionals)
-
-    def relay_setup(self, action, relay_id, setup_pin):
-        return self.rpyc_client.root.relay_setup(action, relay_id, setup_pin)
-
-    def activate_controller(self, controller_type, controller_id):
-        return self.rpyc_client.root.activate_controller(
-            controller_type, controller_id)
-
-    def deactivate_controller(self, controller_type, controller_id):
-        return self.rpyc_client.root.deactivate_controller(
-            controller_type, controller_id)
-
     def check_daemon(self):
         signal.signal(signal.SIGALRM, timeout_handler)
         signal.alarm(10)  # 10 second timeout while checking the daemon status
@@ -95,9 +66,49 @@ class DaemonControl:
         except TimeoutException:
             return "Error: Timeout"
 
-    def refresh_sensor_conditionals(self, sensor_id, cond_mod, cond_id):
-        return self.rpyc_client.root.refresh_sensor_conditionals(
-            sensor_id, cond_mod, cond_id)
+    def controller_activate(self, controller_type, controller_id):
+        return self.rpyc_client.root.controller_activate(
+            controller_type, controller_id)
+
+    def controller_deactivate(self, controller_type, controller_id):
+        return self.rpyc_client.root.controller_deactivate(
+            controller_type, controller_id)
+
+    def daemon_status(self):
+        return self.rpyc_client.root.daemon_status()
+
+    def flash_lcd(self, lcd_id, state):
+        return self.rpyc_client.root.flash_lcd(lcd_id, state)
+
+    def pid_hold(self, pid_id):
+        return self.rpyc_client.root.pid_hold(pid_id)
+
+    def pid_mod(self, pid_id):
+        return self.rpyc_client.root.pid_mod(pid_id)
+
+    def pid_pause(self, pid_id):
+        return self.rpyc_client.root.pid_pause(pid_id)
+
+    def pid_resume(self, pid_id):
+        return self.rpyc_client.root.pid_resume(pid_id)
+
+    def relay_off(self, relay_id, trigger_conditionals=True):
+        return self.rpyc_client.root.relay_off(relay_id, trigger_conditionals)
+
+    def relay_on(self, relay_id, duration, min_off_duration=0.0):
+        return self.rpyc_client.root.relay_on(relay_id, duration, min_off_duration)
+
+    def relay_on_off(self, relay_id, state, duration):
+        if state == 'on':
+            self.relay_on(relay_id, duration)
+        else:
+            self.relay_off(relay_id)
+
+    def relay_setup(self, action, relay_id, setup_pin):
+        return self.rpyc_client.root.relay_setup(action, relay_id, setup_pin)
+
+    def relay_state(self, relay_id):
+        return self.rpyc_client.root.relay_state(relay_id)
 
     def refresh_daemon_camera_settings(self):
         return self.rpyc_client.root.refresh_daemon_camera_settings()
@@ -105,20 +116,9 @@ class DaemonControl:
     def refresh_daemon_misc_settings(self):
         return self.rpyc_client.root.refresh_daemon_misc_settings()
 
-    def daemon_status(self):
-        return self.rpyc_client.root.daemon_status()
-
-    def pid_mod(self, pid_id):
-        return self.rpyc_client.root.pid_mod(pid_id)
-
-    def pid_hold(self, pid_id):
-        return self.rpyc_client.root.pid_hold(pid_id)
-
-    def pid_pause(self, pid_id):
-        return self.rpyc_client.root.pid_pause(pid_id)
-
-    def pid_resume(self, pid_id):
-        return self.rpyc_client.root.pid_resume(pid_id)
+    def refresh_sensor_conditionals(self, sensor_id, cond_mod, cond_id):
+        return self.rpyc_client.root.refresh_sensor_conditionals(
+            sensor_id, cond_mod, cond_id)
 
     def terminate_daemon(self):
         return self.rpyc_client.root.terminate_daemon()
@@ -150,7 +150,6 @@ def parseargs(parser):
                         required=False)
     parser.add_argument('-t', '--terminate', action='store_true',
                         help="Terminate the daemon")
-
     return parser.parse_args()
 
 
@@ -165,17 +164,17 @@ if __name__ == "__main__":
         logger.info(
             "[Remote command] Check Daemon: {msg}".format(msg=return_msg))
 
-    if args.relayoff:
+    elif args.relayoff:
         return_msg = daemon_control.relay_off(args.relayoff)
         logger.info("[Remote command] Turn off relay with ID '{id}': "
                     "Server returned: {msg}".format(
                         id=args.relayoff,
                         msg=return_msg))
 
-    if args.duration and args.relayon is None:
+    elif args.duration and args.relayon is None:
         parser.error("--duration requires --relayon")
 
-    if args.relayon:
+    elif args.relayon:
         duration = 0
         if args.duration:
             duration = args.duration
@@ -185,13 +184,13 @@ if __name__ == "__main__":
                         id=args.relayon,
                         msg=return_msg))
 
-    if args.activatecontroller:
+    elif args.activatecontroller:
         if args.activatecontroller[0] not in ['LCD', 'Log', 'PID',
                                               'Sensor', 'Timer']:
             logger.info("Invalid controller type. Options are LCD, Log, PID, "
                         "Sensor, and Timer.")
         else:
-            return_msg = daemon_control.activate_controller(
+            return_msg = daemon_control.controller_activate(
                 args.activatecontroller[0], args.activatecontroller[1])
             logger.info("[Remote command] Activate {type} controller with "
                         "ID '{id}': Server returned: {msg}".format(
@@ -199,13 +198,13 @@ if __name__ == "__main__":
                             id=args.activatecontroller[1],
                             msg=return_msg))
 
-    if args.deactivatecontroller:
+    elif args.deactivatecontroller:
         if args.deactivatecontroller[0] not in ['LCD', 'Log', 'PID',
                                                 'Sensor', 'Timer']:
             logger.info("Invalid controller type. Options are LCD, Log, PID, "
                         "Sensor, and Timer.")
         else:
-            return_msg = daemon_control.deactivate_controller(
+            return_msg = daemon_control.controller_deactivate(
                 args.deactivatecontroller[0], args.deactivatecontroller[1])
             logger.info("[Remote command] Deactivate {type} controller with "
                         "ID '{id}': Server returned: {msg}".format(
@@ -213,7 +212,7 @@ if __name__ == "__main__":
                             id=args.deactivatecontroller[1],
                             msg=return_msg))
 
-    if args.terminate:
+    elif args.terminate:
         logger.info("[Remote command] Terminate daemon...")
         if daemon_control.terminate_daemon():
             logger.info("Daemon response: Terminated.")

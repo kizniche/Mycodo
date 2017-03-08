@@ -2,28 +2,28 @@
 
 ### Features
 
-  - Add ability to automatically generate relay usage/cost reports on daily, weekly, and monthly schedules
+  - Add ability to automatically generate relay usage/cost reports on a daily, weekly, or monthly schedule
   - Add ability to check daemon health (mycodo_client.py --checkdaemon)
-  - New sensor conditional actions: Activate/Deactivate PID, Email Photo, Email Video
-  - New relay/sensor conditional management system
+  - Add sensor conditional actions: Activate/Deactivate PID, Email Photo, Email Video
   - Add PID option: maximum allowable sensor measurement age (to allow the PID controller from manipulate relays, the sensor measurement must have occurred in the past x seconds)
   - Add PID option: minimum off duration for lower/raise relay (protects devices that require a minimum off period by preventing power cycling from occurring too quickly)
-  - Add new sensor: Free Space (of specific path)
+  - Add new sensor: Free Disk Space (of a set path)
   - Add ability to use multiple camera configurations (multiple cameras)
-  - Add ability to use USB cameras with OpenCV ([#193](https://github.com/kizniche/mycodo/issues/193))
+  - Add OpenCV camera library to allow use of USB cameras ([#193](https://github.com/kizniche/mycodo/issues/193))
   - Automatically detect DS18B20 sensors in sensor configuration
   - Add ability to create custom user roles
   - Add new user roles: Editor and Monitor ([#46](https://github.com/kizniche/mycodo/issues/46))
-  - Restructure database ([#115](https://github.com/kizniche/mycodo/issues/115), [#122](https://github.com/kizniche/mycodo/issues/122))
 
 ### Miscellaneous
 
+  - Refactor the relay/sensor conditional management system
   - User names are no longer case-sensitive
   - Switch to using Flask-Login
   - Switch to using flask_wtf.FlaskForm (from using deprecated flask_wtf.Form)
   - Update web interface style and layout
   - Update Flask WTF to 0.14.2
   - Move from using sqlalchemy to flask sqlalchemy
+  - Restructure database ([#115](https://github.com/kizniche/mycodo/issues/115), [#122](https://github.com/kizniche/mycodo/issues/122))
 
 ## 4.1.17 (Unreleased)
 
