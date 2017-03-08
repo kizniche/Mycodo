@@ -862,7 +862,6 @@ def page_usage():
     misc = Misc.query.first()
     relay = Relay.query.all()
 
-    timestamp = time.strftime("%c")
     relay_stats = return_relay_usage(misc, relay)
 
     day = misc.relay_usage_dayofmonth
@@ -879,7 +878,7 @@ def page_usage():
                            misc=misc,
                            relay=relay,
                            relay_stats=relay_stats,
-                           timestamp=timestamp)
+                           timestamp=time.strftime("%c"))
 
 
 @blueprint.route('/usage_reports', methods=('GET', 'POST'))

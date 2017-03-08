@@ -164,20 +164,20 @@ def return_relay_usage(table_misc, table_relays):
 
 def generate_relay_usage_report():
     """
-    Generate relay usage report
-    :return:
+    Generate relay usage report in a csv file
+
     """
     logger.debug("Generating relay usage report...")
     try:
         assure_path_exists(USAGE_REPORTS_PATH)
-        timestamp = time.strftime("%Y-%m-%d_%H-%M")
-        report_file = os.path.join(
-            USAGE_REPORTS_PATH,
-            'relay_usage_report_{ts}.csv'.format(ts=timestamp))
 
         misc = db_retrieve_table_daemon(Misc, entry='first')
         relay = db_retrieve_table_daemon(Relay)
         relay_usage = return_relay_usage(misc, relay.all())
+
+        timestamp = time.strftime("%Y-%m-%d_%H-%M")
+        file_name = 'relay_usage_report_{ts}.csv'.format(ts=timestamp)
+        report_file = os.path.join(USAGE_REPORTS_PATH, file_name)
 
         with open(report_file, 'wb') as f:
             w = csv.writer(f)
