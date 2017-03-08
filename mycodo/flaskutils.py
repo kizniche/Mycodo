@@ -1045,8 +1045,8 @@ def lcd_mod(form_mod_lcd):
             mod_lcd.multiplexer_address = form_mod_lcd.multiplexer_address.data
             mod_lcd.multiplexer_channel = form_mod_lcd.multiplexer_channel.data
             mod_lcd.period = form_mod_lcd.period.data
-            mod_lcd.x_characters = form_mod_lcd.lcd_type.data.split("x")[0]
-            mod_lcd.y_lines = form_mod_lcd.lcd_type.data.split("x")[1]
+            mod_lcd.x_characters = int(form_mod_lcd.lcd_type.data.split("x")[0])
+            mod_lcd.y_lines = int(form_mod_lcd.lcd_type.data.split("x")[1])
             if form_mod_lcd.line_1_display.data:
                 mod_lcd.line_1_sensor_id = form_mod_lcd.line_1_display.data.split(",")[0]
                 mod_lcd.line_1_measurement = form_mod_lcd.line_1_display.data.split(",")[1]

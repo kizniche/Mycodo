@@ -59,6 +59,7 @@ from config import (
     HTTP_LOG_FILE,
     INSTALL_DIRECTORY,
     LOGIN_LOG_FILE,
+    MEASUREMENTS,
     MEASUREMENT_UNITS,
     PATH_CAMERAS,
     RESTORE_LOG_FILE,
@@ -470,6 +471,7 @@ def page_lcd():
 
     return render_template('pages/lcd.html',
                            lcd=lcd,
+                           measurements=MEASUREMENTS,
                            pid=pid,
                            relay=relay,
                            sensor=sensor,

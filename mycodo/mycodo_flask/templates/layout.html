@@ -93,12 +93,12 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="dropdown{% if active_page in ['live', 'graph'] %} active{% endif %}">
+            <li class="dropdown{% if active_page in ['live', 'graph', 'graph_async'] %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Data')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="{{url_for('page_routes.page_live')}}"><i class="glyphicon glyphicon-play"></i>&nbsp;&nbsp;{{_('Live')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_graph')}}"><i class="glyphicon glyphicon-stats"></i>&nbsp;&nbsp;{{_('General Graph')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_graph_async')}}"><i class="glyphicon glyphicon-transfer"></i>&nbsp;&nbsp;{{_('Asynchronous Graph')}}</a></li>
+                <li{% if active_page == 'live' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_live')}}"><i class="glyphicon glyphicon-play"></i>&nbsp;&nbsp;{{_('Live')}}</a></li>
+                <li{% if active_page == 'graph' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_graph')}}"><i class="glyphicon glyphicon-stats"></i>&nbsp;&nbsp;{{_('General Graph')}}</a></li>
+                <li{% if active_page == 'graph_async' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_graph_async')}}"><i class="glyphicon glyphicon-transfer"></i>&nbsp;&nbsp;{{_('Asynchronous Graph')}}</a></li>
               </ul>
             </li>
           {% for href, id, caption in navigation_bar_top %}
@@ -107,14 +107,14 @@
             <li class="dropdown {% if active_page in ['logview', 'export', 'info', 'usage', 'usage_reports', 'lcd', 'camera'] %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Tools')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="{{url_for('page_routes.page_lcd')}}"><i class="glyphicon glyphicon-modal-window"></i>&nbsp;&nbsp;{{_('LCD')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_camera')}}"><i class="glyphicon glyphicon-camera"></i>&nbsp;&nbsp;{{_('Camera')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_usage')}}"><i class="glyphicon glyphicon-equalizer"></i>&nbsp;&nbsp;{{_('Relay Usage')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_usage_reports')}}"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;&nbsp;{{_('Relay Usage Reports')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_export')}}"><i class="glyphicon glyphicon-save-file"></i>&nbsp;&nbsp;{{_('Export Measurements')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_logview')}}"><i class="glyphicon glyphicon-book"></i>&nbsp;&nbsp;{{_('Mycodo Logs')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_info')}}"><i class=" glyphicon glyphicon-info-sign"></i>&nbsp;&nbsp;{{_('System Info')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_notes')}}"><i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp;{{_('Notes')}}</a></li>
+                <li{% if active_page == 'lcd' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_lcd')}}"><i class="glyphicon glyphicon-modal-window"></i>&nbsp;&nbsp;{{_('LCD')}}</a></li>
+                <li{% if active_page == 'camera' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_camera')}}"><i class="glyphicon glyphicon-camera"></i>&nbsp;&nbsp;{{_('Camera')}}</a></li>
+                <li{% if active_page == 'usage' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_usage')}}"><i class="glyphicon glyphicon-equalizer"></i>&nbsp;&nbsp;{{_('Relay Usage')}}</a></li>
+                <li{% if active_page == 'usage_reports' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_usage_reports')}}"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;&nbsp;{{_('Relay Usage Reports')}}</a></li>
+                <li{% if active_page == 'export' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_export')}}"><i class="glyphicon glyphicon-save-file"></i>&nbsp;&nbsp;{{_('Export Measurements')}}</a></li>
+                <li{% if active_page == 'logview' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_logview')}}"><i class="glyphicon glyphicon-book"></i>&nbsp;&nbsp;{{_('Mycodo Logs')}}</a></li>
+                <li{% if active_page == 'info' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_info')}}"><i class=" glyphicon glyphicon-info-sign"></i>&nbsp;&nbsp;{{_('System Info')}}</a></li>
+                <li{% if active_page == 'notes' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_notes')}}"><i class="glyphicon glyphicon-pencil"></i>&nbsp;&nbsp;{{_('Notes')}}</a></li>
               </ul>
             </li>
           </ul>
@@ -123,7 +123,7 @@
             <li class="dropdown{% if active_page == 'settings' %} active{% endif %}">
               <a href="#" class="dropdown-toggle" style="padding-top: 0.8em; padding-bottom: 0.8em" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="gi-2x glyphicon glyphicon-cog"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="{{url_for('settings_routes.settings_general')}}"><i class="glyphicon glyphicon-wrench"></i>&nbsp;&nbsp;{{_('Configure')}}</a></li>
+                <li{% if active_page == 'settings' %} class="active"{% endif %}><a href="{{url_for('settings_routes.settings_general')}}"><i class="glyphicon glyphicon-wrench"></i>&nbsp;&nbsp;{{_('Configure')}}</a></li>
                 <li><a href="/admin/upgrade"><i class="glyphicon glyphicon-open"></i>&nbsp;&nbsp;{{_('Upgrade')}}</a></li>
                 <li><a href="/admin/backup"><i class=" glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;{{_('Backup/Restore')}}</a></li>
                 <li role="separator" class="divider"></li>

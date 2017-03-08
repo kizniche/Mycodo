@@ -520,7 +520,7 @@ class DaemonController(threading.Thread):
                 old_time != self.relay_usage_report_next_gen):
             str_next_report = time.strftime(
                 '%c', time.localtime(self.relay_usage_report_next_gen))
-            self.logger.info(
+            self.logger.debug(
                 "Generating next relay usage report {time_date}".format(
                     time_date=str_next_report))
 
