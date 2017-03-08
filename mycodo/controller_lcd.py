@@ -107,6 +107,8 @@ class LCDController(threading.Thread):
             self.lcd_period = lcd.period
             self.lcd_x_characters = lcd.x_characters
             self.lcd_y_lines = lcd.y_lines
+            self.timer = time.time() + self.lcd_period
+            self.backlight_timer = time.time()
 
             if lcd.multiplexer_address:
                 self.multiplexer_address_string = lcd.multiplexer_address
@@ -121,10 +123,8 @@ class LCDController(threading.Thread):
             for i in range(1, 5):
                 self.lcd_line[i] = {}
 
-            list_sensors = [
-                'sensor_time', 'temperature', 'humidity', 'co2', 'pressure',
-                'altitude', 'temperature_die', 'temperature_object', 'lux'
-            ]
+            list_sensors = MEASUREMENT_UNITS
+            list_sensors.update({'sensor_time': None})
 
             list_pids = ['setpoint', 'pid_time']
 
@@ -195,9 +195,6 @@ class LCDController(threading.Thread):
                     self.lcd_line[4]['name'] = sensor_line_4.name
                     if 'time' in lcd.line_4_measurement:
                         self.lcd_line[4]['measurement'] = 'time'
-
-            self.timer = time.time() + self.lcd_period
-            self.backlight_timer = time.time()
 
             self.lcd_string_line = {}
             for i in range(1, self.lcd_y_lines + 1):
@@ -343,6 +340,7 @@ class LCDController(threading.Thread):
                                 PID, unique_id=self.lcd_line[i]['id'])
                             measurement = pid.measurement
                         elif self.lcd_line[i]['measurement'] in [
+                                'free_space',
                                 'temperature',
                                 'temperature_die',
                                 'temperature_object',

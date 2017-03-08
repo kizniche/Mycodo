@@ -48,7 +48,6 @@ from databases.mycodo_db.models import (
 from mycodo_client import DaemonControl
 
 # Functions
-from utils.tools import next_schedule
 from utils.utils import (
     test_username,
     test_password
