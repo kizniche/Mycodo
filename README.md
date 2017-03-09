@@ -137,15 +137,22 @@ If you receive an unresolvable error during the install, please [create an issue
 
 A minimal set of anonymous usage statistics are collected to help improve development. No identifying information is saved from the information that is collected and it is only used to improve Mycodo. No other sources will have access to this information. The data collected is mainly how much specific features are used, how often errors occur, and other similar statistics. The data that's collected can be viewed from the 'View collected statistics' link in the Settings/General panel of the UI or in the file Mycodo/databases/statistics.csv. You may opt out from transmitting this information from the General settings in the Admin panel.
 
-Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the system from the web interface. It has the setuid bit to permit it to be executed as root ('sudo bash ~/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh initialize' sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), the mycodo_wrapper binary permits these operations to be executed as root by a non-root user (in this case, members of the group 'mycodo'). You can audit the source code of Mycodo/mycodo/scripts/mycodo_wrapper.c and if you want to ensure the binary is indeed compiled from that source, you may compile it yourself with the following command. Otherwise, the compiled binary is already included and no further action is needed.
+Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the system from the web interface. It has the setuid bit to permit it to be executed as root ('sudo bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh initialize' sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), the mycodo_wrapper binary permits these operations to be executed as root by a non-root user (in this case, members of the group 'mycodo'). You can audit the source code of Mycodo/mycodo/scripts/mycodo_wrapper.c and if you want to ensure the binary is indeed compiled from that source, you may compile it yourself with the following command. Otherwise, the compiled binary is already included and no further action is needed.
 
 ```sudo gcc ~/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ~/Mycodo/mycodo/scripts/mycodo_wrapper```
-
 
 
 ## Web Server Security
 
 An SSL certificate will be generated and stored at ~/Mycodo/mycodo/mycodo_flask/ssl_certs/ during the install process. If you want to use your own SSL certificates, replace them with your own.
+
+The certificate that is automatically generated are set to expire in 365 days. If you would like to regenerate new certificate, delete the old certificates, create a new one, and restart the web server with the following commands.
+
+```
+rm -rf ~/Mycodo/mycodo/mycodo_flask/ssl_certs/*.pem
+/bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh generate-ssl-certs
+sudo /etc/init.d/apache2 restart
+```
 
 If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the web UI at the "https://" address (opposed to "http://"). You may receive a warning message about the security of your site, unless you add the certificate to your browser's trusted list.
 
@@ -154,7 +161,7 @@ If using the auto-generated certificate from the install, be aware that it will 
 
 If you already have Mycodo installed (>=5.0.0), you can perform an upgrade to the latest [release](https://github.com/kizniche/Mycodo/releases) on github by either using the Upgrade option in the web UI (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at /var/log/mycodo/mycodoupgrade.log
 
-```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh upgrade```
+```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade```
 
 Upgrading the mycodo database is performed automatically during the upgrade process, however it can also be performed manually with the following commands (Note: This does not create the database, only upgrade them. You must already have a database created in order to upgrade):
 

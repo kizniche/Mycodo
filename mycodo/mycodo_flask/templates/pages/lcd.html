@@ -9,22 +9,24 @@
   <div class="container">
   {% include 'flash_messages.html' %}
 
-   <h4>{{_('LCDs')}} <a href="/help#lcd"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+  <h4>{{_('LCDs')}} <a href="/help#lcd"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
-    <p>{{_('LCDs allow the display of data for easy viewing and for displaing alerts to conditional events you configure (flash the LCD).')}}</p>
+  <p>{{_('LCDs allow the display of data for easy viewing and for displaing alerts to conditional events you configure (flash the LCD).')}}</p>
 
-    <div style="clear: both; padding: 0.5em 0;"></div>
+  <div style="clear: both; padding: 0.5em 0;"></div>
 
-  <form class="form-inline" method="post" action="/lcd">
+  <div class="row small-gutters">
+    <form method="post" action="/lcd">
     <input type="hidden" name="form-name" value="addLCD">
     {{form_add_lcd.hidden_tag()}}
-    <div class="form-group">
-      {{form_add_lcd.numberLCDs(class_='form-control',type="number",**{'rel':'tooltip','title':_('How many LCD controllers to add')})}}
+    <div class="col-xs-6 col-sm-2 col-lg-2">
+      {{form_add_lcd.numberLCDs(class_='form-control', value=1, type="number", **{'rel':'tooltip','title':_('How many LCD controllers to add')})}}
     </div>
-    <div class="form-group">
+    <div class="col-xs-6 col-sm-3 col-lg-2">
       {{form_add_lcd.lcdAddSubmit(class_='form-control btn btn-default')}}
     </div>
-  </form>
+    </form>
+  </div>
 
   <div style="clear: both; padding:1em 0;"></div>
 

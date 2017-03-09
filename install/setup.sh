@@ -40,14 +40,14 @@ set -e
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
 printf "### Mycodo installation beginning at $NOW\n"
 
-printf "\n#### Uninstalling current version of pip\n"
+printf "\n#### Uninstalling apt version of pip (if installed)\n"
 apt-get update
 apt-get purge -y python-pip
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh upgrade-packages
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh upgrade-packages
 pip install -U pip
 
-printf "#### Installing gpiod ####\n"
+printf "#### Installing gpiod\n"
 cd ${INSTALL_DIRECTORY}/install
 wget --quiet -P ${INSTALL_DIRECTORY}/install abyz.co.uk/rpi/pigpio/pigpio.zip
 unzip pigpio.zip
@@ -55,27 +55,22 @@ cd ${INSTALL_DIRECTORY}/install/PIGPIO
 make -j4
 make install
 /usr/local/bin/pigpiod &
+cd ${INSTALL_DIRECTORY}/install
+rm -rf ./PIGPIO ./pigpio.zip
 
-printf "#### Updating crontab entry ####\n"
-/bin/bash ${INSTALL_DIRECTORY}/install/crontab.sh mycodo --remove
-/bin/bash ${INSTALL_DIRECTORY}/install/crontab.sh mycodo
-
-printf "#### Installing wiringpi ####\n"
+printf "#### Installing wiringpi\n"
 git clone git://git.drogon.net/wiringPi ${INSTALL_DIRECTORY}/install/wiringPi
 cd ${INSTALL_DIRECTORY}/install/wiringPi
 ./build
+cd ${INSTALL_DIRECTORY}/install
+rm -rf ./wiringPi
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh upgrade-influxdb
-service influxdb start
-
-printf "#### Installing pip requirements from requirements.txt ####\n"
+printf "#### Installing pip requirements from requirements.txt\n"
 cd ${INSTALL_DIRECTORY}/install
 pip install -r requirements.txt --upgrade
 
-rm -rf ./PIGPIO ./pigpio.zip ./wiringPi
-
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh compile-translations
-
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-influxdb
+service influxdb start
 printf "\n#### Creating InfluxDB database and user\n"
 influx -execute "CREATE DATABASE mycodo_db"
 influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
@@ -85,46 +80,16 @@ apt-get install -y apache2 libapache2-mod-wsgi
 a2enmod wsgi ssl
 ln -sf ${INSTALL_DIRECTORY}/install/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
 
-printf "\n#### Generating SSL certificates at ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
-mkdir -p ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs
-cd ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs/
-
-openssl req \
-    -new \
-    -x509 \
-    -sha512 \
-    -days 365 \
-    -nodes \
-    -out cert.pem \
-    -keyout privkey.pem\
-    -subj "/C=US/ST=Georgia/L=Atlanta/O=mycodo/OU=mycodo/CN=mycodo"
-
-openssl genrsa -out certificate.key 1024
-
-openssl req \
-    -new \
-    -key certificate.key \
-    -out certificate.csr \
-    -subj "/C=US/ST=Georgia/L=Atlanta/O=mycodo/OU=mycodo/CN=mycodo"
-
-openssl x509 -req \
-    -days 365 \
-    -in certificate.csr -CA cert.pem \
-    -CAkey privkey.pem \
-    -set_serial $RANDOM \
-    -out chain.pem
-
-rm -f certificate.csr
-
 printf "\n#### Enabling mycodo startup script\n"
 systemctl enable ${INSTALL_DIRECTORY}/install/mycodo.service
 
-printf "\n#### Creating SQLite databases\n"
-python ${INSTALL_DIRECTORY}/init_databases.py -i all
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh generate-ssl-certs
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh compile-translations
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-cron
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh initialize
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh compile-translations
+
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh initialize
 
 printf "\n#### Starting the Mycodo daemon and web server\n"
 service mycodo start

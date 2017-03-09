@@ -141,7 +141,7 @@ Miscellaneous
 
 This update fixes an error in the upgrade system, but it may mean that you cannot upgrade from the web interface (only for this version). If you cannot upgrade, execute the following command from the terminal to manually upgrade:
 
-```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh upgrade```
+```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade```
 
 ### Bugfixes
 
@@ -157,7 +157,7 @@ This update fixes an error in the upgrade system, but it may mean that you canno
 
 This update fixes an error in the upgrade system, but it may mean that you cannot upgrade from the web interface (only for this version). If you cannot upgrade, execute the following command from the terminal to manually upgrade:
 
-```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh upgrade```
+```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade```
 
 ### Bugfixes
 

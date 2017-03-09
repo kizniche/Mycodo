@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
 			char updateScript[255];
 			strncpy(updateScript, "/bin/bash ", sizeof(updateScript));
 			strncat(updateScript, path, sizeof(updateScript));
-			strncat(updateScript, "/upgrade_mycodo_release.sh upgrade", sizeof(updateScript));
+			strncat(updateScript, "/upgrade_commands.sh upgrade", sizeof(updateScript));
 			system(updateScript);
 
 		}
