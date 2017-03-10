@@ -349,8 +349,7 @@ class Relay(CRUDMixin, db.Model):
     last_duration = db.Column(db.Float, default=None)  # Stores the last on duration (seconds)
     on_duration = db.Column(db.Boolean, default=None)  # Stores if the relay is currently on for a duration
 
-    @staticmethod
-    def _is_setup():
+    def _is_setup(self):
         """
         This function checks to see if the GPIO pin is setup and ready to use.  This is for safety
         and to make sure we don't blow anything.
@@ -360,7 +359,9 @@ class Relay(CRUDMixin, db.Model):
         :return: Is it safe to manipulate this relay?
         :rtype: bool
         """
-        return True
+        if self.pin:
+            self.setup_pin()
+            return True
 
     def setup_pin(self):
         """
@@ -368,7 +369,8 @@ class Relay(CRUDMixin, db.Model):
 
         :rtype: None
         """
-        # TODO add some extra checks here.  Maybe verify BCM?
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(True)
         GPIO.setup(self.pin, GPIO.OUT)
 
     def turn_off(self):
@@ -396,7 +398,8 @@ class Relay(CRUDMixin, db.Model):
         :return: Whether the relay is currently "ON"
         :rtype: bool
         """
-        return self.trigger == GPIO.input(self.pin)
+        if self._is_setup():
+            return self.trigger == GPIO.input(self.pin)
 
 
 class Remote(CRUDMixin, db.Model):
@@ -423,8 +426,7 @@ class Sensor(CRUDMixin, db.Model):
     period = db.Column(db.Float, default=15.0)  # Duration between readings
     i2c_bus = db.Column(db.Integer, default='')  # I2C bus the sensor is connected to
     location = db.Column(db.Text, default='')  # GPIO pin or i2c address to communicate with sensor
-    power_pin = db.Column(db.Integer, default=0)  # GPIO pin to turn HIGH/LOW to power sensor
-    power_state = db.Column(db.Integer, default=True)  # State that powers sensor (1=HIGH, 0=LOW)
+    power_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to power sensor
     measurements = db.Column(db.Text, default='')  # Measurements separated by commas
     multiplexer_address = db.Column(db.Text, default=None)
     multiplexer_bus = db.Column(db.Integer, default=1)

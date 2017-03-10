@@ -159,7 +159,7 @@ If using the auto-generated certificate from the install, be aware that it will 
 
 ## Upgrading
 
-If you already have Mycodo installed (>=5.0.0), you can perform an upgrade to the latest [release](https://github.com/kizniche/Mycodo/releases) on github by either using the Upgrade option in the web UI (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at /var/log/mycodo/mycodoupgrade.log
+If you already have Mycodo installed (version >= 4.0.0), you can perform an upgrade to the latest [release](https://github.com/kizniche/Mycodo/releases) on github by either using the Upgrade option in the web UI (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at /var/log/mycodo/mycodoupgrade.log
 
 ```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade```
 

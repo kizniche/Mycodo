@@ -44,7 +44,7 @@ printf "\n#### Uninstalling apt version of pip (if installed)\n"
 apt-get update
 apt-get purge -y python-pip
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh upgrade-packages
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-packages
 pip install -U pip
 
 printf "#### Installing gpiod\n"

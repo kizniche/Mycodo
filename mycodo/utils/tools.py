@@ -4,6 +4,7 @@ import datetime
 import logging
 import os
 import time
+from collections import OrderedDict
 from dateutil import relativedelta
 
 from mycodo.databases.mycodo_db.models import (
@@ -12,7 +13,7 @@ from mycodo.databases.mycodo_db.models import (
 )
 
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import sum_relay_usage
+from mycodo.utils.influx import relay_sec_on
 from mycodo.utils.system_pi import (
     assure_path_exists,
     set_user_grp
@@ -78,74 +79,79 @@ def next_schedule(time_span='daily', set_day=None, set_hour=None):
 
 def return_relay_usage(table_misc, table_relays):
     """ Return relay usage and cost """
-    now = datetime.date.today()
+    date_now = datetime.date.today()
+    time_now = datetime.datetime.now()
     past_month_seconds = 0
 
     if table_misc.relay_usage_dayofmonth == datetime.datetime.today().day:
-        dt_now = datetime.datetime.now()
-        past_month_seconds = (dt_now - dt_now.replace(
+        past_month_seconds = (time_now - time_now.replace(
             hour=0, minute=0, second=0, microsecond=0)).total_seconds()
     elif table_misc.relay_usage_dayofmonth > datetime.datetime.today().day:
-        first_day = now.replace(day=1)
+        first_day = date_now.replace(day=1)
         last_month = first_day - datetime.timedelta(days=1)
         past_month = last_month.replace(day=table_misc.relay_usage_dayofmonth)
-        past_month_seconds = (now - past_month).total_seconds()
+        past_month_seconds = (date_now - past_month).total_seconds()
     elif table_misc.relay_usage_dayofmonth < datetime.datetime.today().day:
-        past_month = now.replace(day=table_misc.relay_usage_dayofmonth)
-        past_month_seconds = (now - past_month).total_seconds()
+        past_month = date_now.replace(day=table_misc.relay_usage_dayofmonth)
+        past_month_seconds = (date_now - past_month).total_seconds()
+
+    relay_stats = OrderedDict()
+
+    for each_relay in table_relays:
+        relay_stats[each_relay.id] = None
 
     # Calculate relay on duration for different time periods
-    relay_stats = {
-        'total_duration': dict.fromkeys(['1d', '1w', '1m', '1m_date', '1y'], 0),
-        'total_kwh': dict.fromkeys(['1d', '1w', '1m', '1m_date', '1y'], 0),
-        'total_cost': dict.fromkeys(['1d', '1w', '1m', '1m_date', '1y'], 0)
-    }
-    for each_relay in table_relays:
-        past_1d_sec = sum_relay_usage(each_relay.id, 86400) / 3600
-        past_1w_sec = sum_relay_usage(each_relay.id, 604800) / 3600
-        past_1m_sec = sum_relay_usage(each_relay.id, 2629743) / 3600
-        past_1m_date_sec = sum_relay_usage(each_relay.id, int(past_month_seconds)) / 3600
-        past_1y_sec = sum_relay_usage(each_relay.id, 31556926) / 3600
+    # Use OrderedDict to ensure proper order when saved to csv file
+    relay_stats['total_duration'] = dict.fromkeys(['1d', '1w', '1m', '1m_date', '1y'], 0)
+    relay_stats['total_kwh'] = dict.fromkeys(['1d', '1w', '1m', '1m_date', '1y'], 0)
+    relay_stats['total_cost'] = dict.fromkeys(['1d', '1w', '1m', '1m_date', '1y'], 0)
 
-        past_1d_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1d_sec / 1000
-        past_1w_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1w_sec / 1000
-        past_1m_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1m_sec / 1000
-        past_1m_date_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1m_date_sec / 1000
-        past_1y_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1y_sec / 1000
+    for each_relay in table_relays:
+        past_1d_hours = relay_sec_on(each_relay.id, 86400) / 3600
+        past_1w_hours = relay_sec_on(each_relay.id, 604800) / 3600
+        past_1m_hours = relay_sec_on(each_relay.id, 2629743) / 3600
+        past_1m_date_hours = relay_sec_on(each_relay.id, int(past_month_seconds)) / 3600
+        past_1y_hours = relay_sec_on(each_relay.id, 31556926) / 3600
+
+        past_1d_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1d_hours / 1000
+        past_1w_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1w_hours / 1000
+        past_1m_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1m_hours / 1000
+        past_1m_date_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1m_date_hours / 1000
+        past_1y_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1y_hours / 1000
 
         relay_stats[each_relay.id] = {
             '1d': {
-                'seconds_on': past_1d_sec,
+                'hours_on': past_1d_hours,
                 'kwh': past_1d_kwh,
                 'cost': table_misc.relay_usage_cost * past_1d_kwh
             },
             '1w': {
-                'seconds_on': past_1w_sec,
+                'hours_on': past_1w_hours,
                 'kwh': past_1w_kwh,
                 'cost': table_misc.relay_usage_cost * past_1w_kwh
             },
             '1m': {
-                'seconds_on': past_1m_sec,
+                'hours_on': past_1m_hours,
                 'kwh': past_1m_kwh,
                 'cost': table_misc.relay_usage_cost * past_1m_kwh
             },
             '1m_date': {
-                'seconds_on': past_1m_date_sec,
+                'hours_on': past_1m_date_hours,
                 'kwh': past_1m_date_kwh,
                 'cost': table_misc.relay_usage_cost * past_1m_date_kwh
             },
             '1y': {
-                'seconds_on': past_1y_sec,
+                'hours_on': past_1y_hours,
                 'kwh': past_1y_kwh,
                 'cost': table_misc.relay_usage_cost * past_1y_kwh
             }
         }
 
-        relay_stats['total_duration']['1d'] += past_1d_sec
-        relay_stats['total_duration']['1w'] += past_1w_sec
-        relay_stats['total_duration']['1m'] += past_1m_sec
-        relay_stats['total_duration']['1m_date'] += past_1m_date_sec
-        relay_stats['total_duration']['1y'] += past_1y_sec
+        relay_stats['total_duration']['1d'] += past_1d_hours
+        relay_stats['total_duration']['1w'] += past_1w_hours
+        relay_stats['total_duration']['1m'] += past_1m_hours
+        relay_stats['total_duration']['1m_date'] += past_1m_date_hours
+        relay_stats['total_duration']['1y'] += past_1y_hours
 
         relay_stats['total_kwh']['1d'] += past_1d_kwh
         relay_stats['total_kwh']['1w'] += past_1w_kwh
@@ -177,12 +183,14 @@ def generate_relay_usage_report():
 
         timestamp = time.strftime("%Y-%m-%d_%H-%M")
         file_name = 'relay_usage_report_{ts}.csv'.format(ts=timestamp)
-        report_file = os.path.join(USAGE_REPORTS_PATH, file_name)
+        report_path_file = os.path.join(USAGE_REPORTS_PATH, file_name)
 
-        with open(report_file, 'wb') as f:
+        with open(report_path_file, 'wb') as f:
             w = csv.writer(f)
+            # Header row
             w.writerow([
                  'Relay ID',
+                 'Relay Unique ID',
                  'Relay Name',
                  'Type',
                  'Past Day',
@@ -193,26 +201,38 @@ def generate_relay_usage_report():
             ])
             for key, value in relay_usage.items():
                 if key in ['total_duration', 'total_cost', 'total_kwh']:
-                    w.writerow(['', '', key, value['1d'], value['1w'], value['1m'], value['1m_date'], value['1y']])
+                    # Totals rows
+                    w.writerow(['', '', '',
+                                key,
+                                value['1d'],
+                                value['1w'],
+                                value['1m'],
+                                value['1m_date'],
+                                value['1y']])
                 else:
-                    w.writerow([key,
-                                relay.filter(Relay.id == key).first().name,
-                                'seconds_on',
-                                value['1d']['seconds_on'],
-                                value['1w']['seconds_on'],
-                                value['1m']['seconds_on'],
-                                value['1m_date']['seconds_on'],
-                                value['1y']['seconds_on']])
-                    w.writerow([key,
-                                relay.filter(Relay.id == key).first().name,
+                    # Each relay rows
+                    each_relay = relay.filter(Relay.id == key).first()
+                    w.writerow([each_relay.id,
+                                each_relay.unique_id,
+                                each_relay.name,
+                                'hours_on',
+                                value['1d']['hours_on'],
+                                value['1w']['hours_on'],
+                                value['1m']['hours_on'],
+                                value['1m_date']['hours_on'],
+                                value['1y']['hours_on']])
+                    w.writerow([each_relay.id,
+                                each_relay.unique_id,
+                                each_relay.name,
                                 'kwh',
                                 value['1d']['kwh'],
                                 value['1w']['kwh'],
                                 value['1m']['kwh'],
                                 value['1m_date']['kwh'],
                                 value['1y']['kwh']])
-                    w.writerow([key,
-                                relay.filter(Relay.id == key).first().name,
+                    w.writerow([each_relay.id,
+                                each_relay.unique_id,
+                                each_relay.name,
                                 'cost',
                                 value['1d']['cost'],
                                 value['1w']['cost'],
@@ -220,6 +240,6 @@ def generate_relay_usage_report():
                                 value['1m_date']['cost'],
                                 value['1y']['cost']])
 
-        set_user_grp(report_file, 'mycodo', 'mycodo')
+        set_user_grp(report_path_file, 'mycodo', 'mycodo')
     except Exception:
         logger.exception("Relay Usage Report Generation ERROR")

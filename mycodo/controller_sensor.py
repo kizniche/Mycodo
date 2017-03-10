@@ -167,8 +167,7 @@ class SensorController(threading.Thread):
         self.unique_id = sensor.unique_id
         self.i2c_bus = sensor.i2c_bus
         self.location = sensor.location
-        self.power_pin = sensor.power_pin
-        self.power_state = sensor.power_state
+        self.power_relay_id = sensor.power_relay_id
         self.measurements = sensor.measurements
         self.device = sensor.device
         self.period = sensor.period
@@ -280,12 +279,12 @@ class SensorController(threading.Thread):
             self.measure_sensor = DS18B20Sensor(self.location)
         elif self.device == 'DHT11':
             self.measure_sensor = DHT11Sensor(self.sensor_id,
-                                              int(self.location))
+                                              int(self.location),
+                                              power=self.power_relay_id)
         elif self.device == 'DHT22':
             self.measure_sensor = DHT22Sensor(self.sensor_id,
                                               int(self.location),
-                                              power=self.power_pin,
-                                              state=self.power_state)
+                                              power=self.power_relay_id)
         elif self.device == 'HTU21D':
             self.measure_sensor = HTU21DSensor(self.i2c_bus)
         elif self.device == 'K30':

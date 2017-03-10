@@ -200,6 +200,11 @@ def mycodo_service(mycodo):
             return mycodo.relay_off(relay_id, trigger_conditionals)
 
         @staticmethod
+        def exposed_relay_sec_currently_on(relay_id):
+            """Turns the amount of time a relay has already been on"""
+            return mycodo.controller['Relay'].relay_sec_currently_on(relay_id)
+
+        @staticmethod
         def exposed_relay_setup(action, relay_id, setup_pin):
             """Add, delete, or modify a relay in the running relay controller"""
             return mycodo.relay_setup(action, relay_id, setup_pin)
@@ -286,6 +291,8 @@ class DaemonController(threading.Thread):
         else:
             self.logger.info("Anonymous statistics enabled")
 
+        self.TEST = True
+
     def run(self):
         self.start_all_controllers()
         self.startup_stats()
@@ -302,8 +309,9 @@ class DaemonController(threading.Thread):
                     self.logger.exception("Timelapse ERROR")
 
                 # A Generate relay usage report
-                if (self.relay_usage_report_gen and
+                if self.TEST or (self.relay_usage_report_gen and
                         now > self.relay_usage_report_next_gen):
+                    self.TEST = False
                     try:
                         # gen_report = threading.Thread(target=generate_relay_usage_report)
                         # gen_report.start()

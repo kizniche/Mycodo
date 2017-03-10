@@ -1993,8 +1993,7 @@ def sensor_mod(form_mod_sensor):
             mod_sensor.name = form_mod_sensor.name.data
             mod_sensor.i2c_bus = form_mod_sensor.modBus.data
             mod_sensor.location = form_mod_sensor.location.data
-            mod_sensor.power_pin = form_mod_sensor.modPowerPin.data
-            mod_sensor.power_state = form_mod_sensor.modPowerState.data
+            mod_sensor.power_relay_id = form_mod_sensor.modPowerRelayID.data
             mod_sensor.multiplexer_address = form_mod_sensor.multiplexer_address.data
             mod_sensor.multiplexer_bus = form_mod_sensor.modMultiplexBus.data
             mod_sensor.multiplexer_channel = form_mod_sensor.multiplexer_channel.data

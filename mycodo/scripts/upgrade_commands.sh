@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  upgrade_commands.sh - 
+#  upgrade_commands.sh -
 #
 
 if [ "$EUID" -ne 0 ] ; then
@@ -12,15 +12,6 @@ INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../.." && pwd -P )
 cd ${INSTALL_DIRECTORY}
 
 case "${1:-''}" in
-    'upgrade')
-      /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh
-    ;;
-    'upgrade-packages')
-        printf "\n#### Installing prerequisite apt packages.\n"
-        apt-get update -y
-        apt-get install -y apache2 gawk git libav-tools libffi-dev libi2c-dev python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3
-        easy_install pip
-    ;;
     'compile-translations')
         printf "\n#### Compiling Translations\n"
         cd ${INSTALL_DIRECTORY}/Mycodo/mycodo
@@ -108,5 +99,14 @@ case "${1:-''}" in
             rm -rf ${INSTALL_FILE}
             service influxdb restart
         fi
+    ;;
+    'update-packages')
+        printf "\n#### Installing prerequisite apt packages.\n"
+        apt-get update -y
+        apt-get install -y apache2 gawk git libav-tools libffi-dev libi2c-dev python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3
+        easy_install pip
+    ;;
+    'upgrade')
+        /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh
     ;;
 esac

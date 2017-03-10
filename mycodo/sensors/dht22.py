@@ -2,8 +2,13 @@
 import logging
 import time
 import pigpio
-from sensorutils import dewpoint
+
 from .base_sensor import AbstractSensor
+from sensorutils import dewpoint
+from mycodo.databases.mycodo_db.models import Relay
+from mycodo.utils.database import db_retrieve_table_daemon
+
+from mycodo.mycodo_client import DaemonControl
 
 
 class DHT22Sensor(AbstractSensor):
@@ -27,7 +32,7 @@ class DHT22Sensor(AbstractSensor):
     gpio ------------+
 
     """
-    def __init__(self, sensor_id, gpio, power=None, state=None):
+    def __init__(self, sensor_id, gpio, power=None):
         """
         :param gpio: gpio pin number
         :type gpio: int
@@ -48,10 +53,11 @@ class DHT22Sensor(AbstractSensor):
         self.logger = logging.getLogger(
             'mycodo.sensor_{id}'.format(id=sensor_id))
 
+        self.control = DaemonControl()
+
         self.pi = pigpio.pi()
         self.gpio = gpio
-        self.power = power
-        self.state = state
+        self.power_relay_id = power
         self.powered = False
 
         self.bad_CS = 0  # Bad checksum count
@@ -126,10 +132,11 @@ class DHT22Sensor(AbstractSensor):
         self._temperature = 0.0
 
         # Ensure if the power pin turns off, it is turned back on
-        if self.power and not self.pi.read(self.power):
+        if (self.power_relay_id and
+                not db_retrieve_table_daemon(Relay, device_id=self.power_relay_id).is_on()):
             self.logger.error(
-                'Sensor power pin {pin} detected as being off. '
-                'Turning on.'.format(pin=self.power))
+                'Sensor power relay {rel} detected as being off. '
+                'Turning on.'.format(rel=self.power_relay_id))
             self.start_sensor()
             time.sleep(2)
 
@@ -278,13 +285,12 @@ class DHT22Sensor(AbstractSensor):
             if self.no_response > self.MAX_NO_RESPONSE:
                 self.no_response = 0
                 self.bad_SR += 1  # Bump sensor reset count.
-                if self.power is not None:
+                if self.power_relay_id is not None:
                     self.logger.error(
                         "Invalid data, power cycling sensor.")
                     self.stop_sensor()
                     time.sleep(2)
                     self.start_sensor()
-                    time.sleep(2)
         elif self.bit < 39:  # Short message received.
             self.bad_SM += 1  # Bump short message count.
             self.no_response = 0
@@ -323,22 +329,15 @@ class DHT22Sensor(AbstractSensor):
 
     def start_sensor(self):
         """ Turn the sensor on """
-        if self.power:
-            self.logger.info(
-                "Turning on sensor by making pin {pin} {state}".format(
-                    pin=self.power,
-                    state=('HIGH' if self.state else 'LOW')))
-            self.pi.set_mode(self.power, pigpio.OUTPUT)
-            self.pi.write(self.power, self.state)
+        if self.power_relay_id:
+            self.logger.info("Turning on sensor")
+            self.control.relay_on(self.power_relay_id, 0)
             time.sleep(2)
             self.powered = True
 
     def stop_sensor(self):
         """ Turn the sensor off """
-        if self.power:
-            self.logger.info(
-                "Turning off sensor by making pin {pin} {state}".format(
-                    pin=self.power,
-                    state=('LOW' if self.state else 'HIGH')))
-            self.pi.write(self.power, not self.state)
+        if self.power_relay_id:
+            self.logger.info("Turning off sensor")
+            self.control.relay_off(self.power_relay_id)
             self.powered = False

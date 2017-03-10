@@ -522,6 +522,21 @@ class RelayController(threading.Thread):
         except Exception as msg:
             return 1, "Del_Relay Error: ID {}: {}".format(relay_id, msg)
 
+    def relay_sec_currently_on(self, relay_id):
+        if not self.is_on(relay_id):
+            return 0
+        else:
+            time_now = datetime.datetime.now()
+            sec_currently_on = 0
+            if self.relay_on_duration[relay_id]:
+                remaining_time = 0
+                if self.relay_on_until[relay_id] > time_now:
+                    remaining_time = (self.relay_on_until[relay_id] - time_now).seconds
+                sec_currently_on = self.relay_last_duration[relay_id] - remaining_time
+            elif self.relay_time_turned_on[relay_id]:
+                sec_currently_on = (time_now - self.relay_time_turned_on[relay_id]).seconds
+            return sec_currently_on
+
     def relay_setup(self, action, relay_id, setup_pin):
         """ Add, delete, or modify a specific relay """
         if action == 'Add':

@@ -2,7 +2,7 @@
 
 ### Features
 
-  - Add ability to automatically generate relay usage/cost reports on a daily, weekly, or monthly schedule
+  - Add auto-generation of relay usage/cost reports on a daily, weekly, or monthly schedule
   - Add ability to check daemon health (mycodo_client.py --checkdaemon)
   - Add sensor conditional actions: Activate/Deactivate PID, Email Photo, Email Video
   - Add PID option: maximum allowable sensor measurement age (to allow the PID controller from manipulate relays, the sensor measurement must have occurred in the past x seconds)
@@ -139,10 +139,6 @@ Miscellaneous
 
 ## 4.1.8 (2017-01-21)
 
-This update fixes an error in the upgrade system, but it may mean that you cannot upgrade from the web interface (only for this version). If you cannot upgrade, execute the following command from the terminal to manually upgrade:
-
-```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade```
-
 ### Bugfixes
 
   - Actually fix the upgrade system (mycodo_wrapper)
@@ -154,10 +150,6 @@ This update fixes an error in the upgrade system, but it may mean that you canno
   - Update Spanish translations
 
 ## 4.1.7 (2017-01-19)
-
-This update fixes an error in the upgrade system, but it may mean that you cannot upgrade from the web interface (only for this version). If you cannot upgrade, execute the following command from the terminal to manually upgrade:
-
-```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade```
 
 ### Bugfixes
 

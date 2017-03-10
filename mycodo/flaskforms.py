@@ -109,13 +109,21 @@ class ConditionalActions(FlaskForm):
 
 class CreateAdmin(FlaskForm):
     username = StringField(
-        lazy_gettext('Username'), validators=[DataRequired()])
+        lazy_gettext('Username'),
+        render_kw={"placeholder": lazy_gettext('Username')},
+        validators=[DataRequired()])
     email = StringField(
-        lazy_gettext('Email'), validators=[DataRequired()])
+        lazy_gettext('Email'),
+        render_kw={"placeholder": lazy_gettext('Email')},
+        validators=[DataRequired()])
     password = PasswordField(
-        lazy_gettext('Password'), validators=[DataRequired()])
+        lazy_gettext('Password'),
+        render_kw={"placeholder": lazy_gettext('Password')},
+        validators=[DataRequired()])
     password_repeat = PasswordField(
-        lazy_gettext('Repeat Password'), validators=[DataRequired()])
+        lazy_gettext('Repeat Password'),
+        render_kw={"placeholder": lazy_gettext('Password Repeat')},
+        validators=[DataRequired()])
 
 
 #
@@ -828,8 +836,7 @@ class SensorMod(FlaskForm):
     )
     modBus = IntegerField(lazy_gettext('I<sup>2</sup>C Bus'))
     location = StringField(lazy_gettext('Location'))
-    modPowerPin = IntegerField(lazy_gettext('Power Pin'))
-    modPowerState = IntegerField(lazy_gettext('Power On State'))
+    modPowerRelayID = IntegerField(lazy_gettext('Power Relay'))
     multiplexer_address = StringField(lazy_gettext('Multiplexer (MX)'))
     modMultiplexBus = StringField(lazy_gettext('Mx I<sup>2</sup>C Bus'))
     multiplexer_channel = IntegerField(lazy_gettext('Mx Channel'))
