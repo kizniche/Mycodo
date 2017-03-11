@@ -25,7 +25,7 @@ from flask_babel import gettext
 from RPi import GPIO
 
 # Classes
-from databases.mycodo_db.models import (
+from mycodo.databases.mycodo_db.models import (
     db,
     Camera,
     Conditional,
@@ -45,21 +45,17 @@ from databases.mycodo_db.models import (
     Timer,
     User
 )
-from mycodo_client import DaemonControl
-
-# Functions
-from utils.utils import (
+from mycodo.mycodo_client import DaemonControl
+from mycodo.utils.utils import (
     test_username,
     test_password
 )
-from utils.send_data import send_email
-from utils.system_pi import (
+from mycodo.utils.send_data import send_email
+from mycodo.utils.system_pi import (
     csv_to_list_of_int,
     is_int
 )
-
-# Config
-from config import (
+from mycodo.config import (
     CAMERAS,
     DEVICES_DEFAULT_LOCATION,
     INSTALL_DIRECTORY
@@ -680,19 +676,24 @@ def controller_activate_deactivate(controller_action,
         "Timer": gettext("Timer")
     }
 
+    mod_controller = None
+    if controller_type == 'LCD':
+        mod_controller = LCD.query.filter(
+            LCD.id == int(controller_id)).first()
+    elif controller_type == 'PID':
+        mod_controller = PID.query.filter(
+            PID.id == int(controller_id)).first()
+    elif controller_type == 'Sensor':
+        mod_controller = Sensor.query.filter(
+            Sensor.id == int(controller_id)).first()
+    elif controller_type == 'Timer':
+        mod_controller = Timer.query.filter(
+            Timer.id == int(controller_id)).first()
+
+    if mod_controller is None:
+        return redirect(url_for('general_routes.home'))
+
     try:
-        if controller_type == 'LCD':
-            mod_controller = LCD.query.filter(
-                LCD.id == int(controller_id)).first()
-        elif controller_type == 'PID':
-            mod_controller = PID.query.filter(
-                PID.id == int(controller_id)).first()
-        elif controller_type == 'Sensor':
-            mod_controller = Sensor.query.filter(
-                Sensor.id == int(controller_id)).first()
-        elif controller_type == 'Timer':
-            mod_controller = Timer.query.filter(
-                Timer.id == int(controller_id)).first()
         mod_controller.is_activated = activated
         db.session.commit()
 
@@ -1265,10 +1266,10 @@ def pid_mod(form_mod_pid):
                 mod_pid = PID.query.filter(
                     PID.id == form_mod_pid.pid_id.data).first()
                 mod_pid.name = form_mod_pid.name.data
-                if form_mod_pid.sensor_id.data == '':
-                    mod_pid.sensor_id = None
-                else:
+                if form_mod_pid.sensor_id.data:
                     mod_pid.sensor_id = form_mod_pid.sensor_id.data
+                else:
+                    mod_pid.sensor_id = None
                 mod_pid.measurement = form_mod_pid.measurement.data
                 mod_pid.direction = form_mod_pid.direction.data
                 mod_pid.period = form_mod_pid.period.data
@@ -1279,22 +1280,24 @@ def pid_mod(form_mod_pid):
                 mod_pid.d = form_mod_pid.k_d.data
                 mod_pid.integrator_min = form_mod_pid.integrator_max.data
                 mod_pid.integrator_max = form_mod_pid.integrator_min.data
-                if form_mod_pid.raise_relay_id.data == '':
-                    mod_pid.raise_relay_id = None
-                else:
+                if form_mod_pid.raise_relay_id.data:
                     mod_pid.raise_relay_id = form_mod_pid.raise_relay_id.data
+                else:
+                    mod_pid.raise_relay_id = None
                 mod_pid.raise_min_duration = form_mod_pid.raise_min_duration.data
                 mod_pid.raise_max_duration = form_mod_pid.raise_max_duration.data
                 mod_pid.raise_min_off_duration = form_mod_pid.raise_min_off_duration.data
-                if form_mod_pid.lower_relay_id.data == '':
-                    mod_pid.lower_relay_id = None
-                else:
+                if form_mod_pid.lower_relay_id.data:
                     mod_pid.lower_relay_id = form_mod_pid.lower_relay_id.data
+                else:
+                    mod_pid.lower_relay_id = None
                 mod_pid.lower_min_duration = form_mod_pid.lower_min_duration.data
                 mod_pid.lower_max_duration = form_mod_pid.lower_max_duration.data
                 mod_pid.lower_min_off_duration = form_mod_pid.lower_min_off_duration.data
                 if form_mod_pid.method_id.data:
                     mod_pid.method_id = form_mod_pid.method_id.data
+                else:
+                    mod_pid.method_id = None
                 db.session.commit()
                 # If the controller is active or paused, refresh variables in thread
                 if mod_pid.is_activated:
@@ -1587,7 +1590,10 @@ def conditional_mod(form, mod_type):
                     Conditional.id == form.conditional_id.data).first()
                 mod_action.name = form.name.data
                 if conditional_type == 'relay':
-                    mod_action.if_relay_id = form.if_relay_id.data
+                    if form.if_relay_id.data:
+                        mod_action.if_relay_id = form.if_relay_id.data
+                    else:
+                        mod_action.if_relay_id = None
                     mod_action.if_relay_state = form.if_relay_state.data
                     mod_action.if_relay_duration = form.if_relay_duration.data
                 elif conditional_type == 'sensor':
@@ -1667,19 +1673,34 @@ def conditional_action_mod(form, mod_type):
                 ConditionalActions.id == form.conditional_action_id.data).first()
             mod_action.do_action = form.do_action.data
             if form.do_action.data == 'relay':
-                mod_action.do_relay_id = form.do_relay_id.data
+                if form.do_relay_id.data:
+                    mod_action.do_relay_id = form.do_relay_id.data
+                else:
+                    mod_action.do_relay_id = None
                 mod_action.do_relay_state = form.do_relay_state.data
                 mod_action.do_relay_duration = form.do_relay_duration.data
             elif form.do_action.data == 'deactivate_pid':
-                mod_action.do_pid_id = form.do_pid_id.data
+                if form.do_pid_id.data:
+                    mod_action.do_pid_id = form.do_pid_id.data
+                else:
+                    mod_action.do_pid_id = None
             elif form.do_action.data == 'email':
                 mod_action.do_action_string = form.do_action_string.data
             elif form.do_action.data == 'flash_lcd':
-                mod_action.do_lcd_id = form.do_lcd_id.data
+                if form.do_lcd_id.data:
+                    mod_action.do_lcd_id = form.do_lcd_id.data
+                else:
+                    mod_action.do_lcd_id = None
             elif form.do_action.data == 'photo':
-                mod_action.do_camera_id = form.do_camera_id.data
+                if form.do_camera_id.data:
+                    mod_action.do_camera_id = form.do_camera_id.data
+                else:
+                    mod_action.do_camera_id = None
             elif form.do_action.data == 'video':
-                mod_action.do_camera_id = form.do_camera_id.data
+                if form.do_camera_id.data:
+                    mod_action.do_camera_id = form.do_camera_id.data
+                else:
+                    mod_action.do_camera_id = None
                 mod_action.do_camera_duration = form.do_camera_duration.data
             elif form.do_action.data == 'command':
                 mod_action.do_action_string = form.do_action_string.data
@@ -1993,7 +2014,10 @@ def sensor_mod(form_mod_sensor):
             mod_sensor.name = form_mod_sensor.name.data
             mod_sensor.i2c_bus = form_mod_sensor.modBus.data
             mod_sensor.location = form_mod_sensor.location.data
-            mod_sensor.power_relay_id = form_mod_sensor.modPowerRelayID.data
+            if form_mod_sensor.modPowerRelayID.data:
+                mod_sensor.power_relay_id = form_mod_sensor.modPowerRelayID.data
+            else:
+                mod_sensor.power_relay_id = None
             mod_sensor.multiplexer_address = form_mod_sensor.multiplexer_address.data
             mod_sensor.multiplexer_bus = form_mod_sensor.modMultiplexBus.data
             mod_sensor.multiplexer_channel = form_mod_sensor.multiplexer_channel.data
@@ -2009,7 +2033,10 @@ def sensor_mod(form_mod_sensor):
             mod_sensor.switch_edge = form_mod_sensor.modSwitchEdge.data
             mod_sensor.switch_bouncetime = form_mod_sensor.modSwitchBounceTime.data
             mod_sensor.switch_reset_period = form_mod_sensor.modSwitchResetPeriod.data
-            mod_sensor.pre_relay_id = form_mod_sensor.modPreRelayID.data
+            if form_mod_sensor.modPreRelayID.data:
+                mod_sensor.pre_relay_id = form_mod_sensor.modPreRelayID.data
+            else:
+                mod_sensor.pre_relay_id = None
             mod_sensor.pre_relay_duration = form_mod_sensor.modPreRelayDuration.data
             mod_sensor.period = form_mod_sensor.period.data
             mod_sensor.sht_clock_pin = form_mod_sensor.modSHTClockPin.data
@@ -2210,7 +2237,10 @@ def timer_mod(form_timer):
             return redirect(url_for('page_routes.page_timer'))
         else:
             mod_timer.name = form_timer.name.data
-            mod_timer.relay_id = form_timer.relayID.data
+            if form_timer.relayID.data:
+                mod_timer.relay_id = form_timer.relayID.data
+            else:
+                mod_timer.relay_id = None
             if mod_timer.timer_type == 'time':
                 mod_timer.state = form_timer.state.data
                 mod_timer.time_start = form_timer.timeStart.data
@@ -2596,10 +2626,12 @@ def camera_mod(form_camera):
         mod_camera.hue = form_camera.hue.data
         mod_camera.saturation = form_camera.saturation.data
         mod_camera.white_balance = form_camera.white_balance.data
-        mod_camera.relay_id = form_camera.relay_id.data
+        if form_camera.relay_id.data:
+            mod_camera.relay_id = form_camera.relay_id.data
+        else:
+            mod_camera.relay_id = None
         mod_camera.cmd_pre_camera = form_camera.cmd_pre_camera.data
         mod_camera.cmd_post_camera = form_camera.cmd_post_camera.data
-        mod_camera.relay_id = form_camera.relay_id.data
         db.session.commit()
         control = DaemonControl()
         control.refresh_daemon_camera_settings()
@@ -2816,7 +2848,7 @@ def test_sql():
         before_count = PID.query.count()
         run_times = []
         a = datetime.now()
-        for x in xrange(1, num_entries + 1):
+        for x in range(1, num_entries + 1):
             db.session.add(PID())
             if x % factor_info == 0:
                 db.session.commit()

@@ -88,25 +88,25 @@
     <div class="form-group">
       {{form_settings_general.relayStatsVolts.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{form_settings_general.relayStatsVolts(class_='form-control', value=misc.relay_usage_volts)}}
+        {{form_settings_general.relayStatsVolts(class_='form-control', value=misc.relay_usage_volts, **{'title':_('Set the voltage used to power the devices powered by the relays')})}}
       </div>
     </div>
     <div class="form-group">
       {{form_settings_general.relayStatsCost.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{form_settings_general.relayStatsCost(class_='form-control', value=misc.relay_usage_cost)}}
+        {{form_settings_general.relayStatsCost(class_='form-control', value=misc.relay_usage_cost, **{'title':_('Set the cost per kilowatt-hour')})}}
       </div>
     </div>
     <div class="form-group">
       {{form_settings_general.relayStatsCurrency.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{form_settings_general.relayStatsCurrency(class_='form-control', value=misc.relay_usage_currency)}}
+        {{form_settings_general.relayStatsCurrency(class_='form-control', value=misc.relay_usage_currency, **{'title':_('Set the unit of currency used to pay for the electricity')})}}
       </div>
     </div>
     <div class="form-group">
       {{form_settings_general.relayStatsDayOfMonth.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{form_settings_general.relayStatsDayOfMonth(class_='form-control', value=misc.relay_usage_dayofmonth)}}
+        {{form_settings_general.relayStatsDayOfMonth(class_='form-control', value=misc.relay_usage_dayofmonth, **{'title':_('Set a day of the month to calculate monthly power usage')})}}
       </div>
     </div>
     <div class="form-group">

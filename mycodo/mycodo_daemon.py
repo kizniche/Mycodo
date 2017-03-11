@@ -291,8 +291,6 @@ class DaemonController(threading.Thread):
         else:
             self.logger.info("Anonymous statistics enabled")
 
-        self.TEST = True
-
     def run(self):
         self.start_all_controllers()
         self.startup_stats()
@@ -309,12 +307,9 @@ class DaemonController(threading.Thread):
                     self.logger.exception("Timelapse ERROR")
 
                 # A Generate relay usage report
-                if self.TEST or (self.relay_usage_report_gen and
+                if (self.relay_usage_report_gen and
                         now > self.relay_usage_report_next_gen):
-                    self.TEST = False
                     try:
-                        # gen_report = threading.Thread(target=generate_relay_usage_report)
-                        # gen_report.start()
                         generate_relay_usage_report()
                         self.refresh_daemon_misc_settings()
                     except Exception:
