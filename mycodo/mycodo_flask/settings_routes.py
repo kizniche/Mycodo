@@ -12,7 +12,7 @@ from flask import (
 from flask.blueprints import Blueprint
 
 # Classes
-from mycodo.databases.mycodo_db.models import (
+from mycodo.databases.models import (
     Camera,
     Misc,
     Relay,
@@ -27,7 +27,7 @@ from mycodo import flaskutils
 from mycodo.devices.camera import count_cameras_opencv
 
 # Config
-from config import (
+from mycodo.config import (
     CAMERAS,
     LANGUAGES,
     THEMES

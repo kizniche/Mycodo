@@ -33,7 +33,7 @@ import RPi.GPIO as GPIO
 from lockfile import LockFile
 
 # Classes
-from databases.mycodo_db.models import (
+from databases.models import (
     Camera,
     Conditional,
     ConditionalActions,

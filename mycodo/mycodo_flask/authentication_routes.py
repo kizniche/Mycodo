@@ -14,12 +14,12 @@ from flask import (
     url_for,
     make_response
 )
+from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 from flask.blueprints import Blueprint
 
 # Classes
-from mycodo.databases.mycodo_db.models import (
-    db,
+from mycodo.databases.models import (
     AlembicVersion,
     Misc,
     User
@@ -34,7 +34,7 @@ from mycodo.utils.utils import (
 )
 
 # Config
-from config import (
+from mycodo.config import (
     LOGIN_ATTEMPTS,
     LOGIN_BAN_SECONDS,
     LOGIN_LOG_FILE
@@ -208,7 +208,7 @@ def logout():
 
 def admin_exists():
     """Verify that at least one admin user exists"""
-    return User.query.filter(User.role == 1).count()
+    return User.query.filter_by(role=1).count()
 
 
 def check_database_version_issue():

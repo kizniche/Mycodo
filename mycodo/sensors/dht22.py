@@ -5,7 +5,7 @@ import pigpio
 
 from .base_sensor import AbstractSensor
 from sensorutils import dewpoint
-from mycodo.databases.mycodo_db.models import Relay
+from mycodo.databases.models import Relay
 from mycodo.utils.database import db_retrieve_table_daemon
 
 from mycodo.mycodo_client import DaemonControl

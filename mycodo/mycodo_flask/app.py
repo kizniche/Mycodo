@@ -5,9 +5,10 @@
 #
 
 import datetime
-import flask_login
 import os
 import sys
+
+import flask_login
 from flask import (
     flash,
     Flask,
@@ -18,12 +19,18 @@ from flask import (
 from flask_babel import Babel
 from flask_babel import gettext
 from flask_sslify import SSLify
-from mycodo.databases.mycodo_db.models import (
-    db,
-    Misc,
-    User
+from werkzeug.contrib.profiler import (
+    ProfilerMiddleware,
+    MergeStream
 )
-from init_databases import create_dbs
+
+from mycodo.databases.models import Misc
+from mycodo.databases.models import User
+from mycodo.config import (
+    ProdConfig,
+    LANGUAGES,
+    INSTALL_DIRECTORY
+)
 from mycodo.mycodo_flask import (
     admin_routes,
     authentication_routes,
@@ -34,15 +41,7 @@ from mycodo.mycodo_flask import (
 )
 from mycodo.mycodo_flask.general_routes import influx_db
 from mycodo.utils.system_pi import assure_path_exists
-from mycodo.config import (
-    ProdConfig,
-    LANGUAGES,
-    INSTALL_DIRECTORY
-)
-from werkzeug.contrib.profiler import (
-    ProfilerMiddleware,
-    MergeStream
-)
+from mycodo.mycodo_flask.extensions import db
 
 
 def create_app(config=ProdConfig):
@@ -54,10 +53,7 @@ def create_app(config=ProdConfig):
     :returns: Flask
     """
     app = Flask(__name__)
-
     app.config.from_object(config)
-
-    db.init_app(app)
 
     login_manager = flask_login.LoginManager()
     login_manager.init_app(app)
@@ -66,7 +62,7 @@ def create_app(config=ProdConfig):
     # See scripts/profile_analyzer.py to analyze output
     # app = setup_profiler(app)
 
-    register_extensions(app, config)
+    register_extensions(app)
     register_blueprints(app)
 
     # Translations
@@ -75,7 +71,7 @@ def create_app(config=ProdConfig):
     @babel.localeselector
     def get_locale():
         misc = Misc.query.first()
-        if misc.language != '':
+        if misc and misc.language != '':
             for key in LANGUAGES:
                 if key == misc.language:
                     return key
@@ -96,29 +92,19 @@ def create_app(config=ProdConfig):
     return app
 
 
-def register_extensions(_app, config):
+def register_extensions(app):
     """ register extensions to the app """
-    _app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
+    app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
 
-    # create the databases if needed
-    create_dbs(config=config, exit_when_done=False)
+    db.init_app(app)
+    influx_db.init_app(app)  # attach influx db
+    with app.app_context():
+        db.create_all()
 
-    # attach influx db
-    influx_db.init_app(_app)
-
-    # Check user option to force all web connections to use SSL
-    force_https = True
-    from databases.utils import session_scope
-    with session_scope(_app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
-        # TODO: More specific exception or remove try
-        try:
-            misc = new_session.query(Misc).first()
-            force_https = misc.force_https
-        except:
-            pass
-
-    if force_https:
-        SSLify(_app)
+        # Check user option to force all web connections to use SSL
+        misc = Misc.query.first()
+        if misc and misc.force_https:
+            SSLify(app)
 
 
 def register_blueprints(_app):

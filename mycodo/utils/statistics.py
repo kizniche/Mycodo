@@ -14,7 +14,7 @@ from influxdb import InfluxDBClient
 from sqlalchemy import func
 
 # Classes
-from databases.mycodo_db.models import (
+from mycodo.databases.models import (
     AlembicVersion,
     Conditional,
     LCD,
@@ -30,7 +30,7 @@ from databases.mycodo_db.models import (
 from database import db_retrieve_table_daemon
 
 # Config
-from config import (
+from mycodo.config import (
     ID_FILE,
     MYCODO_VERSION,
     SQL_DATABASE_MYCODO,

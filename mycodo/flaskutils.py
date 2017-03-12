@@ -21,15 +21,13 @@ from flask import (
     request,
     url_for
 )
+from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 from RPi import GPIO
 
 # Classes
-from mycodo.databases.mycodo_db.models import (
-    db,
+from mycodo.databases.models import (
     Camera,
-    Conditional,
-    ConditionalActions,
     DisplayOrder,
     Graph,
     LCD,

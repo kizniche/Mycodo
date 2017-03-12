@@ -20,27 +20,31 @@
 #
 #  Contact at kylegabriel.com
 
-import logging
 import sqlalchemy
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-from .models import (
-    db,
-    AlembicVersion,
-    DisplayOrder,
-    Method,
-    Misc,
-    Camera,
-    Remote,
-    Role,
-    SMTP,
-    User
-)
+from flask import current_app
 
 from mycodo.config import USER_ROLES
-
-logger = logging.getLogger(__name__)
+from mycodo.mycodo_flask.extensions import db
+from .conditional import Conditional
+from .conditional import ConditionalActions
+from .alembic_version import AlembicVersion
+from .camera import Camera
+from .display_order import DisplayOrder
+from .graph import Graph
+from .lcd import LCD
+from .method import Method
+from .method_data import MethodData
+from .misc import Misc
+from .pid import PID
+from .relay import Relay
+from .relay_conditional import RelayConditional
+from .remote import Remote
+from .role import Role
+from .sensor import Sensor
+from .sensor_conditional import SensorConditional
+from .smtp import SMTP
+from .timer import Timer
+from .user import User
 
 
 def insert_or_ignore(an_object, a_session):
@@ -55,17 +59,17 @@ def insert_or_ignore(an_object, a_session):
     except sqlalchemy.exc.IntegrityError as e:
         # Ignore duplicate primary key
         # This is the same as the 'INSERT OR IGNORE'
-        logger.debug("An error occurred when committing changes to a database: "
-                     "{err}".format(err=e))
+        current_app.logger.debug("An error occurred when committing changes to a database: "
+                                 "{err}".format(err=e))
         a_session.rollback()
     except Exception as e:
-        logger.error("Exception in 'insert_or_ignore'' call.  Error: '{err}'".format(err=e))
+        current_app.logger.error("Exception in 'insert_or_ignore'' call.  Error: '{err}'".format(err=e))
         # Something else went wrong!!
         a_session.rollback()
         raise
 
 
-def init_db(db_uri):
+def init_db():
     """
     Binds the database to the specific class tables
     and creates them if needed
@@ -73,35 +77,27 @@ def init_db(db_uri):
     :param db_uri:  URI to the database
     :return: None
     """
-    engine = create_engine(db_uri)
-    db.Model.metadata.create_all(engine)
+    db.create_all()
 
 
-def drop_db(db_uri):
+def drop_db():
     """
     Remove all entries in the database
     :param db_uri: URI to the database
     :return: None
     """
-    engine = create_engine(db_uri)
-    db.Model.metadata.drop_all(engine)
+    db.drop_all()
 
 
-def populate_db(db_path):
+def populate_db(*args, **kwargs):
     """
     Populates the db tables with default values.  This will likely
     be replaced in the future by just setting the default values in the
     db fields
     """
-    engine = create_engine(db_path)
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    try:
-        for each_role in USER_ROLES:
-            insert_or_ignore(Role(**each_role), session)
-        insert_or_ignore(AlembicVersion(), session)
-        insert_or_ignore(DisplayOrder(id=1), session)
-        insert_or_ignore(Misc(id=1), session)
-        insert_or_ignore(SMTP(id=1), session)
-    finally:
-        session.close()
+    [Role(**each_role).save() for each_role in USER_ROLES]
+
+    AlembicVersion().save()
+    DisplayOrder(id=1).save()
+    Misc(id=1).save()
+    SMTP(id=1).save()

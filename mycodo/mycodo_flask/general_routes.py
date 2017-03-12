@@ -41,13 +41,13 @@ from flask_babel import gettext
 from flask_influxdb import InfluxDB
 from mycodo import flaskforms
 from mycodo import flaskutils
-from mycodo.databases.mycodo_db.models import Camera
-from mycodo.databases.mycodo_db.models import DisplayOrder
-from mycodo.databases.mycodo_db.models import Misc
-from mycodo.databases.mycodo_db.models import Relay
-from mycodo.databases.mycodo_db.models import Remote
-from mycodo.databases.mycodo_db.models import Sensor
-from mycodo.databases.mycodo_db.models import User
+from mycodo.databases.models import Camera
+from mycodo.databases.models import DisplayOrder
+from mycodo.databases.models import Misc
+from mycodo.databases.models import Relay
+from mycodo.databases.models import Remote
+from mycodo.databases.models import Sensor
+from mycodo.databases.models import User
 from mycodo.devices.camera import CameraStream
 from mycodo.flaskutils import gzipped
 from mycodo.mycodo_client import DaemonControl
@@ -55,7 +55,7 @@ from mycodo.mycodo_flask.authentication_routes import admin_exists
 from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
 from mycodo.utils.database import db_retrieve_table_daemon
 
-from config import (
+from mycodo.config import (
     INFLUXDB_USER,
     INFLUXDB_PASSWORD,
     INFLUXDB_DATABASE,

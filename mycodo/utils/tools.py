@@ -7,7 +7,7 @@ import time
 from collections import OrderedDict
 from dateutil import relativedelta
 
-from mycodo.databases.mycodo_db.models import (
+from mycodo.databases.models import (
     Misc,
     Relay
 )
@@ -19,7 +19,7 @@ from mycodo.utils.system_pi import (
     set_user_grp
 )
 
-from config import USAGE_REPORTS_PATH
+from mycodo.config import USAGE_REPORTS_PATH
 
 logger = logging.getLogger("mycodo.tools")
 

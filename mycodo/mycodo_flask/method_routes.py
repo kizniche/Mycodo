@@ -15,10 +15,9 @@ from flask import (
     url_for
 )
 from flask_babel import gettext
-
+from mycodo.mycodo_flask.extensions import db
 # Classes
-from mycodo.databases.mycodo_db.models import (
-    db,
+from mycodo.databases.models import (
     Method,
     MethodData,
     Relay
@@ -300,7 +299,6 @@ def method_delete(method_id):
     try:
         Method.query.filter(Method.id == method_id).delete()
         MethodData.query.filter(MethodData.method_id == method_id).delete()
-        db.session.commit()
         flash("Success: {action}".format(action=action), "success")
     except Exception as except_msg:
         flash("Error: {action}: {err}".format(action=action,

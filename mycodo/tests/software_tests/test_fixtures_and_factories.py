@@ -24,7 +24,7 @@ from mycodo.tests.software_tests.factories_user import (
 def create_user_from_factory(factory, role=None):
     """ Uses a factory to create a user and attempts to save it """
     new_user = factory()
-    assert new_user.name, "Failed to create a 'user_name' using {factory}".format(factory=factory)
+    assert new_user.name, "Failed to create a 'name' using {factory}".format(factory=factory)
     assert new_user.email, "Failed to create a 'email' using {factory}".format(factory=factory)
     assert new_user.role == role
 

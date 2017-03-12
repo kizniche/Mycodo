@@ -19,12 +19,12 @@ from pkg_resources import parse_version
 from mycodo import flaskforms
 from mycodo import flaskutils
 from mycodo.mycodo_flask.general_routes import inject_mycodo_version
-from utils.statistics import return_stat_file_dict
-from utils.system_pi import internet
-from utils.github_release_info import github_releases
+from mycodo.utils.statistics import return_stat_file_dict
+from mycodo.utils.system_pi import internet
+from mycodo.utils.github_release_info import github_releases
 
 # Config
-from config import (
+from mycodo.config import (
     INSTALL_DIRECTORY,
     MYCODO_VERSION,
     STATS_CSV

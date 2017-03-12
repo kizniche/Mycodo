@@ -19,10 +19,9 @@ from flask import (
 from flask_babel import gettext
 from flask.blueprints import Blueprint
 from w1thermsensor import W1ThermSensor
-
+from mycodo.mycodo_flask.extensions import db
 # Classes
-from mycodo.databases.mycodo_db.models import (
-    db,
+from mycodo.databases.models import (
     Camera,
     Conditional,
     ConditionalActions,

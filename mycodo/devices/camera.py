@@ -11,12 +11,12 @@ import picamera
 import threading
 import time
 
-from utils.system_pi import (
+from mycodo.utils.system_pi import (
     assure_path_exists,
     set_user_grp
 )
 
-from config import INSTALL_DIRECTORY
+from mycodo.config import INSTALL_DIRECTORY
 
 logger = logging.getLogger('mycodo.devices.picamera')
 

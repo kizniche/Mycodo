@@ -57,7 +57,7 @@ import time as t
 import timeit
 
 # Classes
-from databases.mycodo_db.models import (
+from databases.models import (
     Method,
     MethodData,
     PID,

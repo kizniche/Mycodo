@@ -32,7 +32,7 @@ import errno
 import sqlalchemy
 
 from mycodo.config import SQL_DATABASE_MYCODO
-from mycodo.databases.mycodo_db.models import User
+from mycodo.databases.models import User
 from mycodo.databases.utils import session_scope
 from mycodo.utils.utils import (
     test_username,

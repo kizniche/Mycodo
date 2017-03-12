@@ -1,6 +1,6 @@
 # coding=utf-8
 import logging
-from databases.utils import session_scope
+from mycodo.databases.utils import session_scope
 
 from mycodo.config import SQL_DATABASE_MYCODO
 

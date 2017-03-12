@@ -59,7 +59,7 @@ import RPi.GPIO as GPIO
 import datetime
 
 # Classes
-from databases.mycodo_db.models import (
+from databases.models import (
     LCD,
     PID,
     Relay,

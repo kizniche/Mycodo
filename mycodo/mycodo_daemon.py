@@ -48,7 +48,7 @@ from mycodo.controller_pid import PIDController
 from mycodo.controller_relay import RelayController
 from mycodo.controller_sensor import SensorController
 from mycodo.controller_timer import TimerController
-from mycodo.databases.mycodo_db.models import (
+from mycodo.databases.models import (
     Camera,
     LCD,
     Misc,

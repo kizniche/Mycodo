@@ -30,7 +30,7 @@ import time
 import timeit
 
 # Classes
-from databases.mycodo_db.models import (
+from databases.models import (
     Conditional,
     ConditionalActions,
     Relay,
