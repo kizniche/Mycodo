@@ -566,7 +566,7 @@ class RelayController(threading.Thread):
         :rtype: float
         """
         amp_load = 0.0
-        for each_relay_id, each_relay_amps in self.relay_amps.iteritems():
+        for each_relay_id, each_relay_amps in self.relay_amps.items():
             if self.is_on(each_relay_id):
                 amp_load += each_relay_amps
         return amp_load

@@ -417,7 +417,7 @@ class SensorController(threading.Thread):
         """
         if self.updateSuccess:
             data = []
-            for each_measurement, each_value in self.measurement.values.iteritems():
+            for each_measurement, each_value in self.measurement.values.items():
                 data.append(format_influxdb_data(self.unique_id,
                                                  each_measurement,
                                                  each_value))

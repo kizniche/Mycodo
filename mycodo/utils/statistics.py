@@ -301,7 +301,7 @@ def send_anonymous_stats(start_time):
         # Combine stats into list of dictionaries
         new_stats_dict = return_stat_file_dict(STATS_CSV)
         formatted_stat_dict = []
-        for each_key, each_value in new_stats_dict.iteritems():
+        for each_key, each_value in new_stats_dict.items():
             if each_key != 'stat':  # Do not send header row
                 formatted_stat_dict = add_stat_dict(formatted_stat_dict,
                                                     new_stats_dict['id'],

@@ -47,7 +47,7 @@ from werkzeug.contrib.profiler import (
 
 def create_app(config=ProdConfig):
     """
-    Applicaiton factory:
+    Application factory:
         http://flask.pocoo.org/docs/0.11/patterns/appfactories/
 
     :param config: configuration object that holds config constants
@@ -76,7 +76,7 @@ def create_app(config=ProdConfig):
     def get_locale():
         misc = Misc.query.first()
         if misc.language != '':
-            for key, _ in LANGUAGES.iteritems():
+            for key in LANGUAGES:
                 if key == misc.language:
                     return key
         return request.accept_languages.best_match(LANGUAGES.keys())

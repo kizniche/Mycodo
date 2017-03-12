@@ -303,11 +303,11 @@ def page_graph():
     form_mod_graph.pidIDs.choices = []
     form_mod_graph.relayIDs.choices = []
     form_mod_graph.sensorIDs.choices = []
-    for key, value in pid_choices.iteritems():
+    for key, value in pid_choices.items():
         form_mod_graph.pidIDs.choices.append((key, value))
-    for key, value in relay_choices.iteritems():
+    for key, value in relay_choices.items():
         form_mod_graph.relayIDs.choices.append((key, value))
-    for key, value in sensor_choices.iteritems():
+    for key, value in sensor_choices.items():
         form_mod_graph.sensorIDs.choices.append((key, value))
 
     # Generate dictionary of custom colors for each graph
@@ -353,7 +353,7 @@ def page_graph_async():
     sensor = Sensor.query.all()
     sensor_choices = flaskutils.choices_sensors(sensor)
     sensor_choices_split = OrderedDict()
-    for key, _ in sensor_choices.iteritems():
+    for key in sensor_choices:
         order = key.split(",")
         # Separate sensor IDs and measurement types
         sensor_choices_split.update({order[0]: order[1]})
