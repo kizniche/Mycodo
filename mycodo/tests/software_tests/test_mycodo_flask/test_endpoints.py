@@ -70,13 +70,13 @@ def test_routes_when_not_logged_in(testapp):
         'video_feed'
     ]
     for route in routes:
-        redirects_to_admin_creation_page(testapp=testapp, endpoint='/{add}'.format(add=route))
+        redirects_to_login_page(testapp=testapp, endpoint='/{add}'.format(add=route))
 
 
-def test_sees_admin_creation_form(testapp_no_admin_user):
+def test_sees_admin_creation_form(testapp):
     """ No Admin user exists: user sees the admin creation page """
     expected_body_msg = "<!-- Route: /create_admin -->"
-    assert expected_body_msg in testapp_no_admin_user.get('/').maybe_follow()
+    assert expected_body_msg in testapp.get('/').maybe_follow()
 
 
 def test_does_not_see_admin_creation_form(testapp):
