@@ -95,9 +95,25 @@ def populate_db(*args, **kwargs):
     be replaced in the future by just setting the default values in the
     db fields
     """
-    [Role(**each_role).save() for each_role in USER_ROLES]
+    known_roles = {r.name: r for r in Role.query.all()}
+    for role_cfg in USER_ROLES:
+        if role_cfg['name'] in known_roles:
+            # Update Previous Roles
+            previous_record = known_roles[role_cfg['name']]
+            for k, v in role_cfg.items():
+                if k == 'id':  # skip the primary key
+                    continue
+                setattr(previous_record, k, v)  # set values from app config
+                previous_record.save()
+        else:
+            # Create new roles
+            Role(**role_cfg).save()
 
-    AlembicVersion().save()
-    DisplayOrder(id=1).save()
-    Misc(id=1).save()
-    SMTP(id=1).save()
+    if not AlembicVersion.query.count():
+        AlembicVersion().save()
+    if not DisplayOrder.query.count():
+        DisplayOrder(id=1).save()
+    if not Misc.query.count():
+        Misc(id=1).save()
+    if not SMTP.query.count():
+        SMTP(id=1).save()

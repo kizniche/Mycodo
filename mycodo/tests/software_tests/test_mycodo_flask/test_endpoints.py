@@ -17,6 +17,13 @@ def redirects_to_login_page(testapp, endpoint):
     assert "Mycodo Login" in response
 
 
+def redirects_to_admin_creation_page(testapp, endpoint):
+    """ helper function that verifies that we see the admin creation page """
+    response = testapp.get(endpoint, expect_errors=True).maybe_follow()
+    assert response.status_code == 200, "Response Status Failure: {}".format(endpoint)
+    assert "<!-- Route: /create_admin -->" in response
+
+
 def test_routes_when_not_logged_in(testapp):
     """
     Verifies behavior of these endpoints when not logged in.
@@ -63,7 +70,7 @@ def test_routes_when_not_logged_in(testapp):
         'video_feed'
     ]
     for route in routes:
-        redirects_to_login_page(testapp=testapp, endpoint='/{add}'.format(add=route))
+        redirects_to_admin_creation_page(testapp=testapp, endpoint='/{add}'.format(add=route))
 
 
 def test_sees_admin_creation_form(testapp_no_admin_user):
