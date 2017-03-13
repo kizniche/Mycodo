@@ -5,7 +5,6 @@ factory_boy == 2.8.1
 alembic
 argparse
 bcrypt
-cv2
 daemonize == 2.4.6
 Flask == 0.12
 Flask_Babel
@@ -17,6 +16,7 @@ Flask_WTF == 0.14.2
 geocoder == 1.15.0
 influxdb == 2.12.0
 lockfile == 0.12.2
+opencv-python
 pyserial == 3.1
 python-dateutil
 RPi.GPIO
