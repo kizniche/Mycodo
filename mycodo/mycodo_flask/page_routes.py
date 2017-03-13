@@ -322,8 +322,12 @@ def page_graph():
             flaskutils.graph_mod(form_mod_graph, request.form)
         elif form_name == 'delGraph':
             flaskutils.graph_del(form_del_graph)
-        elif form_name == 'orderGraph':
-            flaskutils.graph_reorder(form_order_graph, display_order)
+        elif form_order_graph.orderGraphUp.data:
+            flaskutils.graph_reorder(form_order_graph.orderGraph_id.data,
+                                     display_order, 'up')
+        elif form_order_graph.orderGraphDown.data:
+            flaskutils.graph_reorder(form_order_graph.orderGraph_id.data,
+                                     display_order, 'down')
         elif form_name == 'addGraph':
             flaskutils.graph_add(form_add_graph, display_order)
         return redirect('/graph')
@@ -452,14 +456,18 @@ def page_lcd():
             return redirect(url_for('general_routes.home'))
 
         form_name = request.form['form-name']
-        if form_name == 'orderLCD':
-            flaskutils.lcd_reorder(form_order_lcd, display_order)
-        elif form_name == 'addLCD':
+        if form_name == 'addLCD':
             flaskutils.lcd_add(form_add_lcd)
         elif form_name == 'modLCD':
             flaskutils.lcd_mod(form_mod_lcd)
         elif form_name == 'delLCD':
             flaskutils.lcd_del(form_del_lcd)
+        elif form_order_lcd.reorder_up.data:
+            flaskutils.lcd_reorder(form_order_lcd.lcd_id.data,
+                                   display_order, 'up')
+        elif form_order_lcd.reorder_down.data:
+            flaskutils.lcd_reorder(form_order_lcd.lcd_id.data,
+                                   display_order, 'down')
         elif form_name == 'activateLCD':
             flaskutils.lcd_activate(form_activate_lcd)
         elif form_name == 'deactivateLCD':
@@ -511,6 +519,7 @@ def page_live():
     method = Method.query.all()
 
     return render_template('pages/live.html',
+                           measurement_units=MEASUREMENT_UNITS,
                            method=method,
                            pid=pid,
                            relay=relay,
@@ -666,9 +675,10 @@ def page_relay():
             flaskutils.relay_on_off(form_mod_relay)
         elif form_mod_relay.delete.data:
             flaskutils.relay_del(form_mod_relay)
-        elif form_mod_relay.order_up.data or form_mod_relay.order_down.data:
-            flaskutils.relay_reorder(form_mod_relay, display_order)
-
+        elif form_mod_relay.order_up.data:
+            flaskutils.relay_reorder(form_mod_relay.relay_id.data, display_order, 'up')
+        elif form_mod_relay.order_down.data:
+            flaskutils.relay_reorder(form_mod_relay.relay_id.data, display_order, 'down')
         elif form_conditional.add_cond.data:
             flaskutils.conditional_add(form_conditional.conditional_type.data,
                                        form_conditional.quantity.data)
@@ -763,9 +773,12 @@ def page_sensor():
             flaskutils.sensor_mod(form_mod_sensor)
         elif form_mod_sensor.delSensorSubmit.data:
             flaskutils.sensor_del(form_mod_sensor)
-        elif (form_mod_sensor.orderSensorUp.data or
-                form_mod_sensor.orderSensorDown.data):
-            flaskutils.sensor_reorder(form_mod_sensor, display_order)
+        elif form_mod_sensor.orderSensorUp.data:
+            flaskutils.sensor_reorder(form_mod_sensor.modSensor_id.data,
+                                      display_order, 'up')
+        elif form_mod_sensor.orderSensorDown.data:
+            flaskutils.sensor_reorder(form_mod_sensor.modSensor_id.data,
+                                      display_order, 'down')
         elif form_mod_sensor.activateSensorSubmit.data:
             flaskutils.sensor_activate(form_mod_sensor)
         elif form_mod_sensor.deactivateSensorSubmit.data:
@@ -835,9 +848,12 @@ def page_timer():
         elif form_name == 'modTimer':
             if form_timer.timerDel.data:
                 flaskutils.timer_del(form_timer)
-            elif (form_timer.orderTimerUp.data or
-                    form_timer.orderTimerDown.data):
-                flaskutils.timer_reorder(form_timer, display_order)
+            elif form_timer.orderTimerUp.data:
+                flaskutils.timer_reorder(form_timer.timer_id.data,
+                                         display_order, 'up')
+            elif form_timer.orderTimerDown.data:
+                flaskutils.timer_reorder(form_timer.timer_id.data,
+                                         display_order, 'down')
             elif form_timer.activate.data:
                 flaskutils.timer_activate(form_timer)
             elif form_timer.deactivate.data:

@@ -92,6 +92,9 @@ class DaemonControl:
     def pid_resume(self, pid_id):
         return self.rpyc_client.root.pid_resume(pid_id)
 
+    def ram_use(self):
+        return self.rpyc_client.root.ram_use()
+
     def relay_off(self, relay_id, trigger_conditionals=True):
         return self.rpyc_client.root.relay_off(relay_id, trigger_conditionals)
 
@@ -142,6 +145,8 @@ def parseargs(parser):
                         required=False)
     parser.add_argument('-c', '--checkdaemon', action='store_true',
                         help="Check if all active daemon controllers are running")
+    parser.add_argument('--ramuse', action='store_true',
+                        help="Return the amount of ram used by the Mycodo daemon")
     parser.add_argument('--relayoff', metavar='RELAYID', type=str,
                         help='Turn off relay with relay ID',
                         required=False)
@@ -166,6 +171,11 @@ if __name__ == "__main__":
         return_msg = daemon_control.check_daemon()
         logger.info(
             "[Remote command] Check Daemon: {msg}".format(msg=return_msg))
+
+    if args.ramuse:
+        return_msg = daemon_control.ram_use()
+        logger.info(
+            "[Remote command] Daemon Ram in Use: {msg} MB".format(msg=return_msg))
 
     elif args.relayoff:
         return_msg = daemon_control.relay_off(args.relayoff)

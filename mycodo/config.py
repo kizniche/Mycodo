@@ -23,6 +23,7 @@ INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
 
 # Measurements for each sensor/device
 MEASUREMENTS = {
+    'MYCODO_RAM': ['ram_use'],
     'ADS1x15': ['voltage'],
     'AM2315': ['dewpoint', 'humidity', 'temperature'],
     'ATLAS_PT1000': ['temperature'],
@@ -50,9 +51,9 @@ MEASUREMENT_UNITS = {
     'altitude': 'm',
     'co2': 'ppmv',
     'dewpoint': 'C',
-    'cpu_load_1m': '',
-    'cpu_load_5m': '',
-    'cpu_load_15m': '',
+    'cpu_load_1m': '1 min',
+    'cpu_load_5m': '5 min',
+    'cpu_load_15m': '15 min',
     'duration_sec': 'sec',
     'edge': 'edge',
     'free_space': 'MB',
@@ -60,6 +61,7 @@ MEASUREMENT_UNITS = {
     'lux': 'lx',
     'moisture': 'moisture',
     'pressure': 'Pa',
+    'ram_use': 'MB',
     'temperature': 'C',
     'temperature_object': 'C',
     'temperature_die': 'C',
@@ -68,6 +70,7 @@ MEASUREMENT_UNITS = {
 
 # Sensors and description
 SENSORS = [
+    ('MYCODO_RAM', 'Mycodo: Daemon Ram Usage'),
     ('RPi', 'Raspberry Pi: CPU Temperature'),
     ('RPiCPULoad', 'Raspberry Pi: CPU Load'),
     ('RPiFreeSpace', 'Raspberry Pi: Free Disk Space'),
@@ -93,7 +96,8 @@ SENSORS = [
 # Devices that have a default address that doesn't change
 # Used to determine whether or not to present the option to change address
 DEVICES_DEFAULT_LOCATION = [
-    'AM2315', 'ATLAS_PT1000', 'BMP', 'HTU21D', 'K30', 'RPi', 'RPiCPULoad'
+    'AM2315', 'ATLAS_PT1000', 'BMP', 'HTU21D',
+    'K30', 'RPi', 'RPiCPULoad', 'mycodo_ram'
 ]
 
 # Conditional actions

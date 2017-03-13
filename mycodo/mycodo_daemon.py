@@ -159,6 +159,12 @@ def mycodo_service(mycodo):
             return mycodo.pid_resume(pid_id)
 
         @staticmethod
+        def exposed_ram_use():
+            """Return the amount of ram used by the daemon"""
+            return resource.getrusage(
+                resource.RUSAGE_SELF).ru_maxrss / float(1000)
+
+        @staticmethod
         def exposed_refresh_daemon_camera_settings():
             """
             Instruct the daemon to refresh the camera settings
@@ -262,7 +268,6 @@ class DaemonController(threading.Thread):
         self.startup_timer = timeit.default_timer()
         self.logger = logger
         self.logger.info("Mycodo daemon v{ver} starting".format(ver=MYCODO_VERSION))
-        self.thread_shutdown_timer = None
         self.daemon_run = True
         self.terminated = False
         self.controller = {
@@ -272,13 +277,16 @@ class DaemonController(threading.Thread):
             'Sensor': {},
             'Timer': {}
         }
+        self.thread_shutdown_timer = None
         self.start_time = time.time()
         self.timer_ram_use = time.time()
-        self.timer_stats = time.time()+120
+        self.timer_stats = time.time() + 120
 
+        # Update camera settings
         self.camera = []
         self.refresh_daemon_camera_settings()
 
+        # Update Misc settings
         self.relay_usage_report_gen = None
         self.relay_usage_report_span = None
         self.relay_usage_report_day = None
@@ -286,12 +294,12 @@ class DaemonController(threading.Thread):
         self.relay_usage_report_next_gen = None
         self.opt_out_statistics = None
         self.refresh_daemon_misc_settings()
+
+    def run(self):
         if self.opt_out_statistics:
             self.logger.info("Anonymous statistics disabled")
         else:
             self.logger.info("Anonymous statistics enabled")
-
-    def run(self):
         self.start_all_controllers()
         self.startup_stats()
 
@@ -302,11 +310,12 @@ class DaemonController(threading.Thread):
 
                 # Capture time-lapse image
                 try:
-                    self.timelapse_check(now)
+                    for each_camera in self.camera:
+                        self.timelapse_check(each_camera, now)
                 except Exception:
                     self.logger.exception("Timelapse ERROR")
 
-                # A Generate relay usage report
+                # Generate relay usage report
                 if (self.relay_usage_report_gen and
                         now > self.relay_usage_report_next_gen):
                     try:
@@ -734,46 +743,42 @@ class DaemonController(threading.Thread):
             time.sleep(0.1)
         return 1
 
-    def timelapse_check(self, now):
-        # If time-lapses are active, take photo at predefined periods
-        for each_camera in self.camera:
-            if (each_camera.timelapse_started and
-                        now > each_camera.timelapse_end_time):
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    mod_camera = new_session.query(Camera).filter(
-                        Camera.id == each_camera.id).first()
-                    mod_camera.timelapse_started = False
-                    mod_camera.timelapse_paused = False
-                    mod_camera.timelapse_start_time = None
-                    mod_camera.timelapse_end_time = None
-                    mod_camera.timelapse_interval = None
-                    mod_camera.timelapse_next_capture = None
-                    mod_camera.timelapse_capture_number = None
-                    new_session.commit()
-                self.logger.debug(
-                    "Camera {id}: End of time-lapse.".format(
-                        id=each_camera.id))
-            elif ((each_camera.timelapse_started and
-                       not each_camera.timelapse_paused) and
-                          now > each_camera.timelapse_next_capture):
-                # Ensure next capture is greater than now (in case of power failure/reboot)
-                next_capture = each_camera.timelapse_next_capture
-                capture_number = each_camera.timelapse_capture_number
-                while now > next_capture:
-                    # Update last capture and image number to latest before capture
-                    next_capture += each_camera.timelapse_interval
-                    capture_number += 1
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    mod_camera = new_session.query(Camera).filter(
-                        Camera.id == each_camera.id).first()
-                    mod_camera.timelapse_next_capture = next_capture
-                    mod_camera.timelapse_capture_number = capture_number
-                    new_session.commit()
-                self.logger.debug(
-                    "Camera {id}: Capturing time-lapse image.".format(
-                        id=each_camera.id))
-                # Capture image
-                camera_record('timelapse', each_camera)
+    def timelapse_check(self, camera, now):
+        """ If time-lapses are active, take photo at predefined periods """
+        if (camera.timelapse_started and
+                now > camera.timelapse_end_time):
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                mod_camera = new_session.query(Camera).filter(
+                    Camera.id == camera.id).first()
+                mod_camera.timelapse_started = False
+                mod_camera.timelapse_paused = False
+                mod_camera.timelapse_start_time = None
+                mod_camera.timelapse_end_time = None
+                mod_camera.timelapse_interval = None
+                mod_camera.timelapse_next_capture = None
+                mod_camera.timelapse_capture_number = None
+                new_session.commit()
+            self.logger.debug(
+                "Camera {id}: End of time-lapse.".format(id=camera.id))
+        elif ((camera.timelapse_started and not camera.timelapse_paused) and
+                now > camera.timelapse_next_capture):
+            # Ensure next capture is greater than now (in case of power failure/reboot)
+            next_capture = camera.timelapse_next_capture
+            capture_number = camera.timelapse_capture_number
+            while now > next_capture:
+                # Update last capture and image number to latest before capture
+                next_capture += camera.timelapse_interval
+                capture_number += 1
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                mod_camera = new_session.query(Camera).filter(
+                    Camera.id == camera.id).first()
+                mod_camera.timelapse_next_capture = next_capture
+                mod_camera.timelapse_capture_number = capture_number
+                new_session.commit()
+            self.logger.debug(
+                "Camera {id}: Capturing time-lapse image".format(id=camera.id))
+            # Capture image
+            camera_record('timelapse', camera)
 
 
 class MycodoDaemon:
@@ -795,7 +800,7 @@ class MycodoDaemon:
             # Start daemon thread that manages all controllers
             self.mycodo.start()
         except Exception:
-            logger.exception("MycodoDaemon ERROR")
+            logger.exception("ERROR Starting Mycodo Daemon Thread")
 
 
 def parse_args():

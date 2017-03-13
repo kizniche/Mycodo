@@ -26,8 +26,8 @@
 
   {%- for each_sensor in sensor -%}
     {%- if each_sensor.device_type in ['co2sensor', 'edgedetect',
-                                       'free_space', 'luxsensor',
-                                       'tsensor'] -%}
+                                       'mycodo_ram', 'free_space',
+                                       'luxsensor', 'tsensor'] -%}
       {% if count_measurements.append(count_measurements.pop() + 1) %}{% endif %}
     {%- elif each_sensor.device_type in ['tmpsensor', 'analogsensor'] -%}
       {% if count_measurements.append(count_measurements.pop() + 2) %}{% endif %}
@@ -420,6 +420,7 @@
         {% set graph_pid_ids = each_graph.pid_ids.split(',') %}
         {%- set yaxis_cpu_load = [] -%}
         {%- set yaxis_free_space = [] -%}
+        {%- set yaxis_ram_use = [] -%}
         {%- set yaxis_temp = [] -%}
         {%- set yaxis_hum = [] -%}
         {%- set yaxis_co2 = [] -%}
@@ -439,6 +440,8 @@
               {%- do yaxis_cpu_load.append(1) -%}
             {%- elif 'free_space' in each_sensor_and_measure -%}
               {%- do yaxis_free_space.append(1) -%}
+            {%- elif 'ram_use' in each_sensor_and_measure -%}
+              {%- do yaxis_ram_use.append(1) -%}
             {%- elif 'temperature' in each_sensor_and_measure -%}
               {%- do yaxis_temp.append(1) -%}
             {%- elif 'humidity' in each_sensor_and_measure -%}
@@ -534,6 +537,10 @@
                 {%- elif each_sensor.device_type == 'free_space' %}
             getPastData({{chart_number}}, {{count_series|count}}, 'free_space', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration*60}});
             getLiveData({{chart_number}}, {{count_series|count}}, 'free_space', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+                  {%- do count_series.append(1) -%}
+                {%- elif each_sensor.device_type == 'mycodo_ram' %}
+            getPastData({{chart_number}}, {{count_series|count}}, 'ram_use', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, 'ram_use', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                   {%- do count_series.append(1) -%}
                 {%- elif each_sensor.device_type == 'tsensor' %}
                   {% if 'temperature' in each_sensor_and_measure %}
@@ -709,16 +716,16 @@
           id: 'cpu_load'
         },
       {%- endif -%}
-      {%- if yaxis_free_space -%}
+      {%- if yaxis_free_space or yaxis_ram_use -%}
         {
           title: {
-            text: '{{_('Free Space')}} (MB)'
+            text: '{{_('MegaBytes')}} (MB)'
           },
           labels: {
             format: '{value}'
           },
           opposite: false,
-          id: 'free_space'
+          id: 'megabytes'
         },
       {%- endif -%}
       {%- if yaxis_temp -%}
@@ -965,15 +972,15 @@
                 data: []
               },
             {% endif %}
-          {%- elif each_sensor.device_type == 'free_space' -%}
+          {%- elif each_sensor.device_type in ['free_space', 'mycodo_ram'] -%}
             {
-              name: '{{each_sensor.name}} {{_('Free')}}',
+              name: '{{each_sensor.name}} {{_('MegaBytes')}}',
               type: 'line',
               tooltip: {
                 valueSuffix: ' MB',
                 valueDecimals: 2
               },
-              yAxis: 'free_space',
+              yAxis: 'megabytes',
               data: []
             },
           {%- elif each_sensor.device_type == 'tsensor' -%}

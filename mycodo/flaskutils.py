@@ -223,7 +223,8 @@ def method_create(form_create_method):
         if new_method.method_type in ['DailyBezier', 'DailySine']:
             display_order = csv_to_list_of_int(new_method.method_order)
             method = Method.query.filter(Method.id == new_method.id).first()
-            method.method_order = add_display_order(display_order, new_method_data.id)
+            method.method_order = add_display_order(display_order,
+                                                    new_method_data.id)
             db.session.commit()
 
         return 0
@@ -356,7 +357,8 @@ def method_add(form_add_method):
 
         # Add line to method data list if not a relay duration
         if form_add_method.method_select.data != 'relay':
-            method.method_order = add_display_order(display_order, add_method_data.id)
+            method.method_order = add_display_order(display_order,
+                                                    add_method_data.id)
             db.session.commit()
 
         if form_add_method.method_select.data == 'setpoint':
@@ -738,7 +740,12 @@ def choices_sensors(sensor):
     choices = OrderedDict()
     # populate form multi-select choices for sensors and measurements
     for each_sensor in sensor:
-        if each_sensor.device == 'RPiCPULoad':
+        if each_sensor.device == 'MYCODO_RAM':
+            value = '{},ram_use'.format(each_sensor.id)
+            display = '{} ({}) Daemon Ram Use (MB)'.format(
+                each_sensor.id, each_sensor.name)
+            choices.update({value: display})
+        elif each_sensor.device == 'RPiCPULoad':
             value = '{},cpu_load_1m'.format(each_sensor.id)
             display = '{} ({}) CPU Load (1m)'.format(
                 each_sensor.id, each_sensor.name)
@@ -967,34 +974,23 @@ def graph_del(form_del_graph):
         flash_form_errors(form_del_graph)
 
 
-def graph_reorder(form_order_graph, display_order):
+def graph_reorder(graph_id, display_order, direction):
     action = '{action} {controller}'.format(
         action=gettext("Reorder"),
         controller=gettext("Graph"))
     error = []
-
-    if form_order_graph.validate():
-        try:
-            if form_order_graph.orderGraphUp.data:
-                status, reord_list = reorder_list(
-                    display_order,
-                    form_order_graph.orderGraph_id.data,
-                    'up')
-            elif form_order_graph.orderGraphDown.data:
-                status, reord_list = reorder_list(
-                    display_order,
-                    form_order_graph.orderGraph_id.data,
-                    'down')
-            if status == 'success':
-                DisplayOrder.query.first().graph = ','.join(map(str, reord_list))
-                db.session.commit()
-            else:
-                error.append(reord_list)
-        except Exception as except_msg:
-            error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_graph'))
-    else:
-        flash_form_errors(form_order_graph)
+    try:
+        status, reord_list = reorder(display_order,
+                                     graph_id,
+                                     direction)
+        if status == 'success':
+            DisplayOrder.query.first().graph = ','.join(map(str, reord_list))
+            db.session.commit()
+        else:
+            error.append(reord_list)
+    except Exception as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('page_routes.page_graph'))
 
 
 #
@@ -1100,34 +1096,23 @@ def lcd_del(form_del_lcd):
         flash_form_errors(form_del_lcd)
 
 
-def lcd_reorder(form_order_lcd, display_order):
+def lcd_reorder(lcd_id, display_order, direction):
     action = '{action} {controller}'.format(
         action=gettext("Reorder"),
         controller=gettext("LCD"))
     error = []
-
-    if form_order_lcd.validate():
-        try:
-            if form_order_lcd.reorder_up.data:
-                status, reord_list = reorder_list(
-                    display_order,
-                    form_order_lcd.lcd_id.data,
-                    'up')
-            elif form_order_lcd.reorder_down.data:
-                status, reord_list = reorder_list(
-                    display_order,
-                    form_order_lcd.lcd_id.data,
-                    'down')
-            if status == 'success':
-                DisplayOrder.query.first().lcd = ','.join(map(str, reord_list))
-                db.session.commit()
-            else:
-                error.append(reord_list)
-        except Exception as except_msg:
-            error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_lcd'))
-    else:
-        flash_form_errors(form_order_lcd)
+    try:
+        status, reord_list = reorder(display_order,
+                                     lcd_id,
+                                     direction)
+        if status == 'success':
+            DisplayOrder.query.first().lcd = ','.join(map(str, reord_list))
+            db.session.commit()
+        else:
+            error.append(reord_list)
+    except Exception as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('page_routes.page_lcd'))
 
 
 def lcd_activate(form_activate_lcd):
@@ -1342,18 +1327,10 @@ def pid_reorder(pid_id, display_order, direction):
         action=gettext("Reorder"),
         controller=gettext("PID"))
     error = []
-
     try:
-        if direction == 'up':
-            status, reord_list = reorder_list(
-                display_order,
-                pid_id,
-                'up')
-        elif direction == 'down':
-            status, reord_list = reorder_list(
-                display_order,
-                pid_id,
-                'down')
+        status, reord_list = reorder(display_order,
+                                     pid_id,
+                                     direction)
         if status == 'success':
             DisplayOrder.query.first().pid = ','.join(map(str, reord_list))
             db.session.commit()
@@ -1361,7 +1338,6 @@ def pid_reorder(pid_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-
     flash_success_errors(error, action, url_for('page_routes.page_pid'))
 
 
@@ -1825,34 +1801,23 @@ def relay_del(form_relay):
         flash_form_errors(form_relay)
 
 
-def relay_reorder(form_relay, display_order):
+def relay_reorder(relay_id, display_order, direction):
     action = '{action} {controller}'.format(
         action=gettext("Reorder"),
         controller=gettext("Relay"))
     error = []
-
-    if form_relay.validate():
-        try:
-            if form_relay.order_up.data:
-                status, reord_list = reorder_list(
-                    display_order,
-                    form_relay.relay_id.data,
-                    'up')
-            elif form_relay.order_down.data:
-                status, reord_list = reorder_list(
-                    display_order,
-                    form_relay.relay_id.data,
-                    'down')
-            if status == 'success':
-                DisplayOrder.query.first().relay = ','.join(map(str, reord_list))
-                db.session.commit()
-            else:
-                error.append(reord_list)
-        except Exception as except_msg:
-            error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_relay'))
-    else:
-        flash_form_errors(form_relay)
+    try:
+        status, reord_list = reorder(display_order,
+                                     relay_id,
+                                     direction)
+        if status == 'success':
+            DisplayOrder.query.first().relay = ','.join(map(str, reord_list))
+            db.session.commit()
+        else:
+            error.append(reord_list)
+    except Exception as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
 #
@@ -1867,7 +1832,6 @@ def sensor_add(form_add_sensor):
 
     if form_add_sensor.validate():
         for _ in range(0, form_add_sensor.numberSensors.data):
-            display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
             new_sensor = Sensor()
             new_sensor.device = form_add_sensor.sensor.data
             new_sensor.name = '{}'.format(form_add_sensor.sensor.data)
@@ -1879,7 +1843,11 @@ def sensor_add(form_add_sensor):
                 new_sensor.multiplexer_bus = 0
 
             # Process monitors
-            if form_add_sensor.sensor.data == 'RPiCPULoad':
+            if form_add_sensor.sensor.data == 'MYCODO_RAM':
+                new_sensor.device_type = 'mycodo_ram'
+                new_sensor.measurements = 'ram_use'
+                new_sensor.location = 'Mycodo_daemon'
+            elif form_add_sensor.sensor.data == 'RPiCPULoad':
                 new_sensor.device_type = 'cpu_load'
                 new_sensor.measurements = 'cpu_load_1m,cpu_load_5m,cpu_load_15m'
                 new_sensor.location = 'RPi'
@@ -1962,6 +1930,8 @@ def sensor_add(form_add_sensor):
             try:
                 new_sensor.save()
 
+                display_order = csv_to_list_of_int(
+                    DisplayOrder.query.first().sensor)
                 DisplayOrder.query.first().sensor = add_display_order(
                     display_order, new_sensor.id)
                 db.session.commit()
@@ -2013,7 +1983,8 @@ def sensor_mod(form_mod_sensor):
         if not error:
             mod_sensor.name = form_mod_sensor.name.data
             mod_sensor.i2c_bus = form_mod_sensor.modBus.data
-            mod_sensor.location = form_mod_sensor.location.data
+            if form_mod_sensor.location.data:
+                mod_sensor.location = form_mod_sensor.location.data
             if form_mod_sensor.modPowerRelayID.data:
                 mod_sensor.power_relay_id = form_mod_sensor.modPowerRelayID.data
             else:
@@ -2090,24 +2061,15 @@ def sensor_del(form_mod_sensor):
     flash_success_errors(error, action, url_for('page_routes.page_sensor'))
 
 
-def sensor_reorder(form_mod_sensor, display_order):
+def sensor_reorder(sensor_id, display_order, direction):
     action = '{action} {controller}'.format(
         action=gettext("Reorder"),
         controller=gettext("Sensor"))
     error = []
-
     try:
-        status = None
-        if form_mod_sensor.orderSensorUp.data:
-            status, reord_list = reorder_list(
-                display_order,
-                form_mod_sensor.modSensor_id.data,
-                'up')
-        elif form_mod_sensor.orderSensorDown.data:
-            status, reord_list = reorder_list(
-                display_order,
-                form_mod_sensor.modSensor_id.data,
-                'down')
+        status, reord_list = reorder(display_order,
+                                     sensor_id,
+                                     direction)
         if status == 'success':
             DisplayOrder.query.first().sensor = ','.join(map(str, reord_list))
             db.session.commit()
@@ -2115,7 +2077,6 @@ def sensor_reorder(form_mod_sensor, display_order):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-
     flash_success_errors(error, action, url_for('page_routes.page_sensor'))
 
 
@@ -2278,25 +2239,15 @@ def timer_del(form_timer):
     flash_success_errors(error, action, url_for('page_routes.page_timer'))
 
 
-def timer_reorder(form_timer, display_order):
+def timer_reorder(timer_id, display_order, direction):
     action = '{action} {controller}'.format(
         action=gettext("Reorder"),
         controller=gettext("Timer"))
     error = []
-
     try:
-        status = ''
-        reord_list = ''
-        if form_timer.orderTimerUp.data:
-            status, reord_list = reorder_list(
-                display_order,
-                form_timer.timer_id.data,
-                'up')
-        elif form_timer.orderTimerDown.data:
-            status, reord_list = reorder_list(
-                display_order,
-                form_timer.timer_id.data,
-                'down')
+        status, reord_list = reorder(display_order,
+                                     timer_id,
+                                     direction)
         if status == 'success':
             DisplayOrder.query.first().timer = ','.join(map(str, reord_list))
             db.session.commit()
@@ -2304,7 +2255,6 @@ def timer_reorder(form_timer, display_order):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-
     flash_success_errors(error, action, url_for('page_routes.page_timer'))
 
 
@@ -2818,6 +2768,23 @@ def add_display_order(display_order, device_id):
 def list_to_csv(display_order):
     str_csv = [str(i) for i in display_order]
     return ','.join(str_csv)
+
+
+def reorder(display_order, device_id, direction):
+    if direction == 'up':
+        status, reord_list = reorder_list(
+            display_order,
+            device_id,
+            'up')
+    elif direction == 'down':
+        status, reord_list = reorder_list(
+            display_order,
+            device_id,
+            'down')
+    else:
+        status = "Fail"
+        reord_list = "unrecognized command"
+    return status, reord_list
 
 
 def reorder_list(modified_list, item, direction):

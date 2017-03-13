@@ -47,6 +47,7 @@ from mycodo_client import DaemonControl
 from devices.tca9548a import TCA9548A
 from devices.ads1x15 import ADS1x15Read
 from devices.mcp342x import MCP342xRead
+from sensors.mycodo_ram import MycodoRam
 from sensors.atlas_pt1000 import AtlasPT1000Sensor
 from sensors.am2315 import AM2315Sensor
 from sensors.bme280 import BME280Sensor
@@ -253,6 +254,8 @@ class SensorController(threading.Thread):
         # Set up sensors or devices
         if self.device in ['EDGE', 'ADS1x15', 'MCP342x']:
             self.measure_sensor = None
+        elif self.device == 'MYCODO_RAM':
+            self.measure_sensor = MycodoRam()
         elif self.device == 'RPiCPULoad':
             self.measure_sensor = RaspberryPiCPULoad()
         elif self.device == 'RPi':

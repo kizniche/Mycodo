@@ -151,7 +151,7 @@
               </div>
             {% endif -%}
 
-            {% if each_sensor.device not in ['EDGE', 'RPi', 'RPiCPULoad', 'RPiFreeSpace'] -%}
+            {% if each_sensor.device not in ['EDGE', 'RPi', 'RPiCPULoad', 'RPiFreeSpace', 'MYCODO_RAM'] -%}
               <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
                 {{form_mod_sensor.modPreRelayID.label(class_='control-label')}}
                 <div>
@@ -299,7 +299,9 @@
                   <input type="hidden" class="form-control" id="if_sensor_edge_detected" name="if_sensor_edge_detected" value="">
                   <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_measurement" name="if_sensor_measurement" title="{{_('The measurement from the sensor to test the following conditional logic')}}.">
                     <option value=""></option>
-                    {%- if each_sensor.device_type == 'free_space' -%}
+                    {%- if each_sensor.device_type == 'mycodo_ram' -%}
+                      <option value="ram_use"{% if each_cond.if_sensor_measurement == 'ram_use' %} selected{% endif %}>{{_('Daemon Ram Usage')}}</option>
+                    {%- elif each_sensor.device_type == 'free_space' -%}
                       <option value="free_space"{% if each_cond.if_sensor_measurement == 'free_space' %} selected{% endif %}>{{_('Free Disk Space')}}</option>
                     {%- elif each_sensor.device_type == 'tsensor' -%}
                       <option value="temperature"{% if each_cond.if_sensor_measurement == 'temperature' %} selected{% endif %}>{{_('Temperature')}}</option>

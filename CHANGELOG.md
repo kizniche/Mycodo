@@ -2,6 +2,7 @@
 
 ### Features
 
+  - Add sensor to track Mycodo daemon ram usage
   - Add auto-generation of relay usage/cost reports on a daily, weekly, or monthly schedule
   - Add ability to check daemon health (mycodo_client.py --checkdaemon)
   - Add sensor conditional actions: Activate/Deactivate PID, Email Photo, Email Video
