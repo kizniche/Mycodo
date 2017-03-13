@@ -5,6 +5,7 @@ factory_boy == 2.8.1
 alembic
 argparse
 bcrypt
+cv2
 daemonize == 2.4.6
 Flask == 0.12
 Flask_Babel

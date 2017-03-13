@@ -5,11 +5,11 @@ python:
   - 2.7
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -y libav-tools libi2c-dev python-numpy python-setuptools python-smbus
+  - sudo apt-get install -y gawk git libav-tools libffi-dev libi2c-dev python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3
   - git clone git://git.drogon.net/wiringPi && cd ./wiringPi && ./build && cd ..
   - wget abyz.co.uk/rpi/pigpio/pigpio.zip && unzip pigpio.zip && cd ./PIGPIO && make -j4 && sudo make install && cd ..
   - pip install --upgrade pip webtest
-  - wget https://dl.influxdata.com/influxdb/releases/influxdb_1.1.1_amd64.deb && sudo dpkg -i influxdb_1.1.1_amd64.deb
+  - wget https://dl.influxdata.com/influxdb/releases/influxdb_1.2.1_amd64.deb && sudo dpkg -i influxdb_1.2.1_amd64.deb
   - sudo service influxdb start
   - influx -execute "CREATE DATABASE mycodo_db"
   - influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
