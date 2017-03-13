@@ -40,10 +40,33 @@ def app():
     ctx.pop()
 
 
+def login_user(app, username, password):
+    """
+    returns a test context with a modified
+    session for the user login status
+    :returns: None
+    """
+    res = app.get('/login')
+    form = res.forms['login_form']
+    form['username'] = username
+    form['password'] = password
+    form.submit().maybe_follow()
+    return None
+
+
 @pytest.fixture()
 def testapp(app):
     """ creates a webtest fixture """
-    create_admin_user(app=app)
+    with app.app_context():
+        populate_db()
+        create_admin_user()
+        create_guest_user()
+    return TestApp(app)
+
+
+@pytest.fixture()
+def testapp_nouser(app):
+    """ creates a webtest fixture """
     return TestApp(app)
 
 
@@ -74,15 +97,23 @@ def db(app):
     _db.drop_all()
 
 
-def create_admin_user(app):
+def create_admin_user():
     """ mycodo_flask exits if there is no user called admin. So we create one """
-    with app.app_context():
-        populate_db()
+    role = Role.query.filter_by(name='Admin').first()
+    user = UserFactory()
+    user.name = 'admin'
+    user.set_password('53CR3t_p4zZW0rD')
+    user.save()
+    user.role = role.id
+    user.save()
 
-        user = UserFactory()
-        user.set_password('53CR3t p4zZW0rD')
-        user.save()
 
-        role = Role.query.filter_by(name='Admin').first()
-        user.user_role = role.id
-        user.save()
+def create_guest_user():
+    """ Create a guest user """
+    role = Role.query.filter_by(name='Guest').first()
+    user = UserFactory()
+    user.name = 'guest'
+    user.email = 'guest@email.com'
+    user.set_password('53CR3t_p4zZW0rD')
+    user.role = role.id
+    user.save()

@@ -1,4 +1,5 @@
 # coding=utf-8
+import datetime
 from RPi import GPIO
 
 from mycodo.databases import CRUDMixin
@@ -23,8 +24,7 @@ class Relay(CRUDMixin, db.Model):
     def __reper__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
-    @staticmethod
-    def _is_setup():
+    def _is_setup(self):
         """
         This function checks to see if the GPIO pin is setup and ready to use.  This is for safety
         and to make sure we don't blow anything.
@@ -34,7 +34,9 @@ class Relay(CRUDMixin, db.Model):
         :return: Is it safe to manipulate this relay?
         :rtype: bool
         """
-        return True
+        if self.pin:
+            self.setup_pin()
+            return True
 
     def setup_pin(self):
         """
@@ -42,7 +44,8 @@ class Relay(CRUDMixin, db.Model):
 
         :rtype: None
         """
-        # TODO add some extra checks here.  Maybe verify BCM?
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(True)
         GPIO.setup(self.pin, GPIO.OUT)
 
     def turn_off(self):
@@ -70,5 +73,6 @@ class Relay(CRUDMixin, db.Model):
         :return: Whether the relay is currently "ON"
         :rtype: bool
         """
-        return self.trigger == GPIO.input(self.pin)
+        if self._is_setup():
+            return self.trigger == GPIO.input(self.pin)
 
