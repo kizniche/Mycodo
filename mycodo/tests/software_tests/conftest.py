@@ -27,6 +27,7 @@ from webtest import TestApp
 from mycodo.mycodo_flask.extensions import db as _db
 from mycodo.tests.software_tests.factories import UserFactory
 from mycodo.databases.models import Role
+from mycodo.databases.models import User
 from mycodo.databases.models import populate_db
 
 
@@ -40,20 +41,6 @@ def app():
     ctx.pop()
 
 
-def login_user(app, username, password):
-    """
-    returns a test context with a modified
-    session for the user login status
-    :returns: None
-    """
-    res = app.get('/login')
-    form = res.forms['login_form']
-    form['username'] = username
-    form['password'] = password
-    form.submit().maybe_follow()
-    return None
-
-
 @pytest.fixture()
 def testapp(app):
     """ creates a webtest fixture """
@@ -61,12 +48,6 @@ def testapp(app):
         populate_db()
         create_admin_user()
         create_guest_user()
-    return TestApp(app)
-
-
-@pytest.fixture()
-def testapp_nouser(app):
-    """ creates a webtest fixture """
     return TestApp(app)
 
 
@@ -98,22 +79,36 @@ def db(app):
 
 
 def create_admin_user():
-    """ mycodo_flask exits if there is no user called admin. So we create one """
-    role = Role.query.filter_by(name='Admin').first()
-    user = UserFactory()
-    user.name = 'admin'
-    user.set_password('53CR3t_p4zZW0rD')
-    user.save()
-    user.role = role.id
-    user.save()
+    """ Create an admin user if it doesn't exist """
+    if not User.query.filter_by(name='admin').count():
+        user = UserFactory()
+        user.name = 'admin'
+        user.set_password('53CR3t_p4zZW0rD')
+        user.save()
+        user.role = Role.query.filter_by(name='Admin').first().id
+        user.save()
 
 
 def create_guest_user():
-    """ Create a guest user """
-    role = Role.query.filter_by(name='Guest').first()
-    user = UserFactory()
-    user.name = 'guest'
-    user.email = 'guest@email.com'
-    user.set_password('53CR3t_p4zZW0rD')
-    user.role = role.id
-    user.save()
+    """ Create a guest user if it doesn't exist """
+    if not User.query.filter_by(name='guest').count():
+        user = UserFactory()
+        user.name = 'guest'
+        user.email = 'guest@email.com'
+        user.set_password('53CR3t_p4zZW0rD')
+        user.role = Role.query.filter_by(name='Guest').first().id
+        user.save()
+
+
+def login_user(app, username, password):
+    """
+    returns a test context with a modified
+    session for the user login status
+    :returns: None
+    """
+    res = app.get('/login')
+    form = res.forms['login_form']
+    form['username'] = username
+    form['password'] = password
+    form.submit().maybe_follow()
+    return None

@@ -26,13 +26,13 @@ def redirects_to_admin_creation_page(testapp, endpoint):
     assert "<!-- Route: /create_admin -->" in response
 
 
-def test_sees_admin_creation_form(testapp_nouser):
+def test_sees_admin_creation_form(testapp):
     """ No Admin user exists: user sees the admin creation page """
-    # Delete all admin users to run this test
+    # Delete all admin users to show the admin creation form
     for each_admin in User.query.filter_by(role=1).all():
         each_admin.delete()
     expected_body_msg = "<!-- Route: /create_admin -->"
-    assert expected_body_msg in testapp_nouser.get('/').maybe_follow()
+    assert expected_body_msg in testapp.get('/').maybe_follow()
 
 
 def test_does_not_see_admin_creation_form(testapp):
@@ -138,7 +138,7 @@ def test_routes_logged_in_as_admin(_, testapp):
 
 # @mock.patch('mycodo.mycodo_flask.authentication_routes.login_log')
 # def test_add_sensor_logged_in_as_admin(_, testapp):
-#     """ Verifies behavior of these endpoints for a logged in admin user """
+#     """ Verifies adding a sensor as a logged in admin user """
 #     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
 #
 #     response = add_sensor(testapp)

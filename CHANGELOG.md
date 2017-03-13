@@ -21,6 +21,7 @@
   - Switch to using Flask-Login
   - Switch to using flask_wtf.FlaskForm (from using deprecated flask_wtf.Form)
   - Update web interface style and layout
+  - Update influxdb to 1.2.1
   - Update Flask WTF to 0.14.2
   - Move from using sqlalchemy to flask sqlalchemy
   - Restructure database ([#115](https://github.com/kizniche/mycodo/issues/115), [#122](https://github.com/kizniche/mycodo/issues/122))
