@@ -49,7 +49,7 @@ class TSL2561Sensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the DS18B20's lux in Celsius by reading the temp file and div by 1000"""
-        tsl = TSL2561(self.i2c_address, "/dev/i2c-" + str(self.i2c_bus))
+        tsl = TSL2561.TSL2561(self.i2c_address, "/dev/i2c-" + str(self.i2c_bus))
         tsl.enable_autogain()
         # tsl.set_gain(16)
         tsl.set_time(0x00)
