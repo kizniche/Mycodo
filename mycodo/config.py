@@ -53,7 +53,7 @@ MEASUREMENT_UNITS = {
     'co2': {
         'name': 'CO2', 'meas': 'co2', 'unit': 'ppmv'},
     'dewpoint': {
-        'name': 'Dewpoint', 'meas': 'dewpoint', 'unit': 'C'},
+        'name': 'Dewpoint', 'meas': 'temperature', 'unit': 'C'},
     'cpu_load_1m': {
         'name': 'CPU Load', 'meas': 'cpu_load', 'unit': '1 min'},
     'cpu_load_5m': {
