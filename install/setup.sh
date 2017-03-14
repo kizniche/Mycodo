@@ -91,8 +91,9 @@ ln -sf ${INSTALL_DIRECTORY}/install/mycodo_flask_apache.conf /etc/apache2/sites-
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh initialize
 
 printf "\n#### Starting the Mycodo daemon and web server\n"
-service mycodo start
 /etc/init.d/apache2 restart
+wget -p http://127.0.0.1 -O /dev/null
+service mycodo start
 
 trap : 0
 
