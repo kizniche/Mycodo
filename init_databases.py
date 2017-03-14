@@ -154,8 +154,8 @@ def create_dbs(config=None, exit_when_done=True):
                 raise
 
     logging.debug("Creating/verifying mycodo.db at {} ...".format(mycodo_db_uri))
-    from mycodo.databases.mycodo_db import init_db
-    from mycodo.databases.mycodo_db import populate_db
+    from mycodo.databases.models import init_db
+    from mycodo.databases.models import populate_db
     init_db(mycodo_db_uri)
     populate_db(mycodo_db_uri)
 
