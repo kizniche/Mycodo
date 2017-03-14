@@ -443,8 +443,11 @@ def page_info():
     for each_ver in AlembicVersion.query.all():
         database_version.append(each_ver.version_num)
 
-    control = DaemonControl()
-    ram_use = control.ram_use()
+    if daemon_pid_output:
+        control = DaemonControl()
+        ram_use = control.ram_use()
+    else:
+        ram_use = 0
 
     return render_template('tools/info.html',
                            daemon_pid=daemon_pid_output,
