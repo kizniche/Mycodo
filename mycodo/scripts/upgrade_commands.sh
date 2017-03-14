@@ -19,8 +19,8 @@ case "${1:-''}" in
     ;;
     'generate-ssl-certs')
         printf "\n#### Generating SSL certificates at ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
-        mkdir -p ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs
-        cd ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs/
+        mkdir -p ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs
+        cd ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs/
         rm -f ./*.pem
 
         openssl req \
@@ -106,7 +106,13 @@ case "${1:-''}" in
         apt-get install -y apache2 gawk git libav-tools libffi-dev libi2c-dev python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3
         easy_install pip
     ;;
+    'update-mycodo-startup-script')
+        printf "\n#### Enable mycodo startup script\n"
+        systemctl disable mycodo.service
+        rm -rf /etc/systemd/system/mycodo.service
+        systemctl enable ${INSTALL_DIRECTORY}/Mycodo/install/mycodo.service
+    ;;
     'upgrade')
-        /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh
+        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh
     ;;
 esac

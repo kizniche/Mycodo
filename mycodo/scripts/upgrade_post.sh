@@ -31,6 +31,8 @@ alembic upgrade head
 printf "\n#### Removing statistics file\n"
 rm ${INSTALL_DIRECTORY}/databases/statistics.csv
 
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-mycodo-startup-script
+
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh compile-translations
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-cron

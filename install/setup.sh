@@ -80,8 +80,7 @@ apt-get install -y apache2 libapache2-mod-wsgi
 a2enmod wsgi ssl
 ln -sf ${INSTALL_DIRECTORY}/install/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
 
-printf "\n#### Enabling mycodo startup script\n"
-systemctl enable ${INSTALL_DIRECTORY}/install/mycodo.service
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-mycodo-startup-script
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh generate-ssl-certs
 
