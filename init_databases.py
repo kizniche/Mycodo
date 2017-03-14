@@ -136,8 +136,6 @@ def create_dbs(config=None, exit_when_done=True):
     a configuration object (like 'ProdConfig', or 'TestConfig' in
     mycodo.config
 
-    :param db_name:  SQLAlchemy URI
-    :param create_all: Bool to create all DBs
     :param config: Configuration Object to use custom URIs
     :param exit_when_done: Normally this code exits after setup is complete
 
@@ -156,8 +154,8 @@ def create_dbs(config=None, exit_when_done=True):
     logging.debug("Creating/verifying mycodo.db at {} ...".format(mycodo_db_uri))
     from mycodo.databases.models import init_db
     from mycodo.databases.models import populate_db
-    init_db(mycodo_db_uri)
-    populate_db(mycodo_db_uri)
+    init_db()
+    populate_db()
 
     if exit_when_done:
         sys.exit(0)

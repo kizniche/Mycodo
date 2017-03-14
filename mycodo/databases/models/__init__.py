@@ -89,7 +89,7 @@ def drop_db():
     db.drop_all()
 
 
-def populate_db(*args, **kwargs):
+def populate_db():
     """
     Populates the db tables with default values.  This will likely
     be replaced in the future by just setting the default values in the

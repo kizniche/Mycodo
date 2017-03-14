@@ -24,6 +24,7 @@ from werkzeug.contrib.profiler import (
     MergeStream
 )
 
+from mycodo.databases.models import populate_db
 from mycodo.databases.models import Misc
 from mycodo.databases.models import User
 from mycodo.config import (
@@ -98,8 +99,10 @@ def register_extensions(app):
 
     db.init_app(app)
     influx_db.init_app(app)  # attach influx db
+
     with app.app_context():
         db.create_all()
+        populate_db()
 
         # Check user option to force all web connections to use SSL
         misc = Misc.query.first()
