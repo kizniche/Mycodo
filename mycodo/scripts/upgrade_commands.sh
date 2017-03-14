@@ -83,8 +83,8 @@ case "${1:-''}" in
     ;;
     'update-cron')
         printf "#### Updating crontab entry\n"
-        /bin/bash ${INSTALL_DIRECTORY}/install/crontab.sh mycodo --remove
-        /bin/bash ${INSTALL_DIRECTORY}/install/crontab.sh mycodo
+        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/install/crontab.sh mycodo --remove
+        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/install/crontab.sh mycodo
     ;;
     'update-influxdb')
         printf "\n#### Ensure compatible version of influxdb is installed ####\n"
