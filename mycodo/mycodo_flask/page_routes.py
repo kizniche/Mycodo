@@ -22,6 +22,7 @@ from w1thermsensor import W1ThermSensor
 from mycodo.mycodo_flask.extensions import db
 # Classes
 from mycodo.databases.models import (
+    AlembicVersion,
     Camera,
     Conditional,
     ConditionalActions,
@@ -423,11 +424,38 @@ def page_info():
     (ifconfig_output, _) = ifconfig.communicate()
     ifconfig.wait()
 
+    daemon_pid = subprocess.Popen(
+        "pgrep mycodo_daemon", stdout=subprocess.PIPE, shell=True)
+    (daemon_pid_output, _) = daemon_pid.communicate()
+    daemon_pid.wait()
+
+    pstree = subprocess.Popen(
+        "pstree -p {pid}".format(pid=daemon_pid_output), stdout=subprocess.PIPE, shell=True)
+    (pstree_output, _) = pstree.communicate()
+    pstree.wait()
+
+    top = subprocess.Popen(
+        "top -bH -n 1 -p {pid}".format(pid=daemon_pid_output), stdout=subprocess.PIPE, shell=True)
+    (top_output, _) = top.communicate()
+    top.wait()
+
+    database_version = []
+    for each_ver in AlembicVersion.query.all():
+        database_version.append(each_ver.version_num)
+
+    control = DaemonControl()
+    ram_use = control.ram_use()
+
     return render_template('tools/info.html',
+                           daemon_pid=daemon_pid_output,
                            gpio_readall=gpio_output,
+                           database_version=database_version,
                            df=df_output,
                            free=free_output,
                            ifconfig=ifconfig_output,
+                           pstree=pstree_output,
+                           ram_use=ram_use,
+                           top=top_output,
                            uname=uname_output,
                            uptime=uptime_output)
 

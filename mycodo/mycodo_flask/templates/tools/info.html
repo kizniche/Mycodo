@@ -9,9 +9,20 @@
 
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em; font-size: 1.3em">
-        {{_('Daemon is currently')}}
+        {{_('Mycodo Version:')}} <span style="color: #4E9258; font-weight: bold;">{{mycodo_version}}</span>
+        <br>{{_('Database Version:')}} <span style="color: #4E9258; font-weight: bold;">
+        {%- for each_ver in database_version %}
+          {%- if each_ver != '' %}
+            {{each_ver}}
+          {%- else %}
+            None
+          {% endif %}
+        {% endfor %}</span>
+        <br>{{_('Daemon Status:')}}
         {%- if daemon_status == "alive" %}
           <span style="color: #4E9258; font-weight: bold;">{{_('Running')}}</span>
+          <br>{{_('Daemon PID:')}} <span style="color: #4E9258; font-weight: bold;">{{daemon_pid}}</span>
+          <br>{{_('Daemon RAM usage:')}} <span style="color: #4E9258; font-weight: bold;">{{ram_use}} MB</span>
         {%- else %}
           <span style="color: #F70D1A; font-weight: bold;">{{_('Not Running')}}</span>
         {% endif %}
@@ -74,6 +85,24 @@
       </div>
       <div>
         <pre>{{ifconfig}}</pre>
+      </div>
+    </div>
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        pstree -p {{daemon_pid}} (backend, daemon PID)
+      </div>
+      <div>
+        <pre>{{pstree}}</pre>
+      </div>
+    </div>
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        top -b -H -n 1 -p {{daemon_pid}} (backend, daemon PID)
+      </div>
+      <div>
+        <pre>{{top}}</pre>
       </div>
     </div>
 

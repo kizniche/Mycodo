@@ -48,23 +48,40 @@ MEASUREMENTS = {
 
 # Unit abbreviation for each measurement
 MEASUREMENT_UNITS = {
-    'altitude': {'unit': 'm', 'name': 'Altitude', 'meas': 'altitude'},
-    'co2': {'unit': 'ppmv', 'name': 'CO2', 'meas': 'co2'},
-    'dewpoint': {'unit': 'C', 'name': 'Dewpoint', 'meas': 'dewpoint'},
-    'cpu_load_1m': {'unit': '1 min', 'name': 'CPU Load', 'meas': 'cpu_load'},
-    'cpu_load_5m': {'unit': '5 min', 'name': 'CPU Load', 'meas': 'cpu_load'},
-    'cpu_load_15m': {'unit': '15 min', 'name': 'CPU Load', 'meas': 'cpu_load'},
-    'duration_sec': {'unit': 'sec', 'name': 'Duration', 'meas': 'duration_sec'},
-    'edge': {'unit': 'edge', 'name': 'Edge', 'meas': 'edge'},
-    'disk_space': {'unit': 'MB', 'name': 'Disk', 'meas': 'disk_space'},
-    'humidity': {'unit': '%', 'name': 'Humidity', 'meas': 'humidity'},
-    'lux': {'unit': 'lx', 'name': 'Light', 'meas': 'lux'},
-    'moisture': {'unit': 'moisture', 'name': 'Moisture', 'meas': 'moisture'},
-    'pressure': {'unit': 'Pa', 'name': 'Pressure', 'meas': 'pressure'},
-    'temperature': {'unit': 'C', 'name': 'Temperature', 'meas': 'temperature'},
-    'temperature_object': {'unit': 'C', 'name': 'Temperature (Obj)', 'meas': 'temperature'},
-    'temperature_die': {'unit': 'C', 'name': 'Temperature (Die)', 'meas': 'temperature'},
-    'voltage': {'unit': 'volts', 'name': 'Voltage', 'meas': 'voltage'},
+    'altitude': {
+        'name': 'Altitude', 'meas': 'altitude', 'unit': 'm'},
+    'co2': {
+        'name': 'CO2', 'meas': 'co2', 'unit': 'ppmv'},
+    'dewpoint': {
+        'name': 'Dewpoint', 'meas': 'dewpoint', 'unit': 'C'},
+    'cpu_load_1m': {
+        'name': 'CPU Load', 'meas': 'cpu_load', 'unit': '1 min'},
+    'cpu_load_5m': {
+        'name': 'CPU Load', 'meas': 'cpu_load', 'unit': '5 min'},
+    'cpu_load_15m': {
+        'name': 'CPU Load', 'meas': 'cpu_load', 'unit': '15 min'},
+    'duration_sec': {
+        'name': 'Duration', 'meas': 'duration_sec', 'unit': 'sec'},
+    'edge': {
+        'name': 'Edge', 'meas': 'edge', 'unit': 'edge'},
+    'disk_space': {
+        'name': 'Disk', 'meas': 'disk_space', 'unit': 'MB'},
+    'humidity': {
+        'name': 'Humidity', 'meas': 'humidity', 'unit': '%'},
+    'lux': {
+        'name': 'Light', 'meas': 'lux', 'unit': 'lx'},
+    'moisture': {
+        'name': 'Moisture', 'meas': 'moisture', 'unit': 'moisture'},
+    'pressure': {
+        'name': 'Pressure', 'meas': 'pressure', 'unit': 'Pa'},
+    'temperature': {
+        'name': 'Temperature', 'meas': 'temperature', 'unit': 'C'},
+    'temperature_object': {
+        'name': 'Temperature (Obj)', 'meas': 'temperature', 'unit': 'C'},
+    'temperature_die': {
+        'name': 'Temperature (Die)', 'meas': 'temperature', 'unit': 'C'},
+    'voltage': {
+        'name': 'Voltage', 'meas': 'voltage', 'unit': 'volts'}
 }
 
 # Sensors and description
