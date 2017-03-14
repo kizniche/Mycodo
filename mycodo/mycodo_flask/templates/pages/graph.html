@@ -408,6 +408,11 @@
         {% set graph_sensor_ids = each_graph.sensor_ids_measurements.split(';') %}
         {% set graph_relay_ids = each_graph.relay_ids.split(',') %}
         {% set graph_pid_ids = each_graph.pid_ids.split(',') %}
+
+        {#
+         # All possible y-axes available for use.
+         # Measurements with the same units will use the same y-axis
+         #}
         {%- set yaxis_cpu_load = [] -%}
         {%- set yaxis_disk_space = [] -%}
         {%- set yaxis_temp = [] -%}
@@ -425,33 +430,35 @@
         {# Determine what y-axes are needed for sensor measurements #}
         {%- for each_sensor in sensor -%}
           {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id in each_id_and_measure.split(',')[0] -%}
-            {%- if 'cpu_load' in each_id_and_measure -%}
+            {%- set measurement = each_id_and_measure.split(',')[1] -%}
+            {%- if measurement in ['cpu_load_1m',
+                                   'cpu_load_5m',
+                                   'cpu_load_15m'] -%}
               {%- do yaxis_cpu_load.append(1) -%}
-            {%- elif 'disk_space' in each_id_and_measure -%}
+            {%- elif measurement == 'disk_space' -%}
               {%- do yaxis_disk_space.append(1) -%}
-            {%- elif 'disk_space' in each_id_and_measure -%}
-              {%- do yaxis_disk_space.append(1) -%}
-            {%- elif 'temperature' in each_id_and_measure -%}
+            {%- elif measurement in ['dewpoint',
+                                     'temperature',
+                                     'temperature_object',
+                                     'temperature_die'] -%}
               {%- do yaxis_temp.append(1) -%}
-            {%- elif 'humidity' in each_id_and_measure -%}
+            {%- elif measurement == 'humidity' -%}
               {%- do yaxis_hum.append(1) -%}
-            {%- elif 'dewpoint' in each_id_and_measure -%}
-              {%- do yaxis_temp.append(1) -%}
-            {%- elif 'co2' in each_id_and_measure -%}
+            {%- elif measurement == 'co2' -%}
               {%- do yaxis_co2.append(1) -%}
-            {%- elif 'lux' in each_id_and_measure -%}
+            {%- elif measurement == 'lux' -%}
               {%- do yaxis_lux.append(1) -%}
-            {%- elif 'moisture' in each_id_and_measure -%}
+            {%- elif measurement == 'moisture' -%}
               {%- do yaxis_moisture.append(1) -%}
-            {%- elif 'pressure' in each_id_and_measure -%}
+            {%- elif measurement == 'pressure' -%}
               {%- do yaxis_press.append(1) -%}
-            {%- elif 'altitude' in each_id_and_measure -%}
+            {%- elif measurement == 'altitude' -%}
               {%- do yaxis_alt.append(1) -%}
-            {%- elif 'edge' in each_id_and_measure -%}
+            {%- elif measurement == 'edge' -%}
               {%- do yaxis_edge.append(1) -%}
-            {%- elif 'voltage' in each_id_and_measure -%}
+            {%- elif measurement == 'voltage' -%}
               {%- do yaxis_volts.append(1) -%}
-            {%- elif each_sensor.adc_measure in each_id_and_measure -%}
+            {%- elif measurement == each_sensor.adc_measure -%}
               {%- do yaxis_adc.append(each_sensor.adc_measure) -%}
             {%- endif -%}
           {%- endfor -%}
@@ -461,10 +468,10 @@
         {%- for each_pid in pid -%}
           {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id -%}
             {%- for each_sensor in sensor if each_sensor.id == each_pid.sensor_id -%}
-              {%- if each_pid.measurement in [
-                  'dewpoint', 'temperature',
-                  'temperature_object',
-                  'temperature_die'] -%}
+              {%- if each_pid.measurement in ['dewpoint',
+                                              'temperature',
+                                              'temperature_object',
+                                              'temperature_die'] -%}
                 {%- do yaxis_temp.append(1) -%}
               {%- elif each_pid.measurement == 'humidity' -%}
                 {%- do yaxis_hum.append(1) -%}
@@ -487,6 +494,7 @@
           {%- endfor -%}
         {%- endfor -%}
 
+        {# Determine if a y-axes is needed for relay durations #}
         {%- for each_relay in relay -%}
           {%- for each_graph_relay_id in graph_relay_ids if each_relay.unique_id == each_graph_relay_id -%}
             {%- do yaxis_relay.append(1) -%}
@@ -507,7 +515,7 @@
             {% set count_series = [] -%}
 
             {% for each_sensor in sensor -%}
-              {% for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id in each_id_and_measure.split(',')[0] -%}
+              {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id in each_id_and_measure.split(',')[0] -%}
             getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration*60}});
             getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                 {% do count_series.append(1) %}
@@ -551,7 +559,7 @@
       },
       // plotOptions: {
       //   series: {
-      //     events: { // Hide all exept the selected legend series, or show all
+      //     events: { // Hide all except the selected legend series, or show all
       //       legendItemClick: function(event) {
       //         if (!this.visible)
       //           return true;
@@ -818,12 +826,12 @@
         text: "Mycodo"
       },
       series: [
-      {%- for each_sensor in sensor -%}
+      {% for each_sensor in sensor -%}
         {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id == each_id_and_measure.split(',')[0] -%}
 
-          {%- for each_measurement in each_sensor.measurements.split(',') %}
+          {%- for each_measurement in each_sensor.measurements.split(',') -%}
 
-            {% if each_measurement == each_id_and_measure.split(',')[1] %}
+            {%- if each_measurement == each_id_and_measure.split(',')[1] -%}
               {
                 name: '{{each_sensor.name}} {{measurement_units[each_measurement]['name']}} ({{measurement_units[each_measurement]['unit']}})',
                 type: 'line',
@@ -831,10 +839,10 @@
                   {% if measurement_units[each_measurement]['meas'] == 'temperature' %}
                   pointFormatter: function () {
                     return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
-                  }
+                  },
                   {% else %}
-                    valueSuffix: ' {{measurement_units[each_measurement]['unit']}}',
-                    valueDecimals: 2
+                  valueSuffix: ' {{measurement_units[each_measurement]['unit']}}',
+                  valueDecimals: 2
                   {% endif %}
                 },
                 yAxis: '{{measurement_units[each_measurement]['meas']}}',
@@ -851,12 +859,12 @@
                 yAxis: '{{each_sensor.adc_measure}}',
                 data: []
               },
-            {% endif %}
+            {%- endif -%}
 
-          {% endfor %}
+          {%- endfor -%}
 
         {%- endfor -%}
-      {%- endfor -%}
+      {% endfor %}
 
       {%- for each_relay in relay -%}
         {%- for each_graph_relay_id in graph_relay_ids if each_relay.unique_id == each_graph_relay_id -%}

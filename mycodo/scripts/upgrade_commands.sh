@@ -18,7 +18,7 @@ case "${1:-''}" in
         pybabel compile -d mycodo_flask/translations
     ;;
     'generate-ssl-certs')
-        printf "\n#### Generating SSL certificates at ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
+        printf "\n#### Generating SSL certificates at ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
         mkdir -p ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs
         cd ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs/
         rm -f ./*.pem

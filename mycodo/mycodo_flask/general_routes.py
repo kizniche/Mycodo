@@ -243,7 +243,8 @@ def last_data(sensor_measure, sensor_id, sensor_period):
                                           sensor_period)).raw
         number = len(raw_data['series'][0]['values'])
         time_raw = raw_data['series'][0]['values'][number - 1][0]
-        value = raw_data['series'][0]['values'][number - 1][1]
+        value = '{:.3f}'.format(
+            float(raw_data['series'][0]['values'][number - 1][1]))
         # Convert date-time to epoch (potential bottleneck for data)
         dt = date_parse(time_raw)
         timestamp = calendar.timegm(dt.timetuple()) * 1000
