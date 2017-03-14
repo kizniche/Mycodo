@@ -23,7 +23,7 @@ INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
 
 # Measurements for each sensor/device
 MEASUREMENTS = {
-    'MYCODO_RAM': ['ram_use'],
+    'MYCODO_RAM': ['disk_space'],
     'ADS1x15': ['voltage'],
     'AM2315': ['dewpoint', 'humidity', 'temperature'],
     'ATLAS_PT1000': ['temperature'],
@@ -39,7 +39,7 @@ MEASUREMENTS = {
     'MCP342x': ['voltage'],
     'RPi': ['temperature'],
     'RPiCPULoad': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m'],
-    'RPiFreeSpace': ['free_space'],
+    'RPiFreeSpace': ['disk_space'],
     'SHT1x_7x': ['dewpoint', 'humidity', 'temperature'],
     'SHT2x': ['dewpoint', 'humidity', 'temperature'],
     'TMP006': ['temperature_object', 'temperature_die'],
@@ -48,24 +48,23 @@ MEASUREMENTS = {
 
 # Unit abbreviation for each measurement
 MEASUREMENT_UNITS = {
-    'altitude': 'm',
-    'co2': 'ppmv',
-    'dewpoint': 'C',
-    'cpu_load_1m': '1 min',
-    'cpu_load_5m': '5 min',
-    'cpu_load_15m': '15 min',
-    'duration_sec': 'sec',
-    'edge': 'edge',
-    'free_space': 'MB',
-    'humidity': '%',
-    'lux': 'lx',
-    'moisture': 'moisture',
-    'pressure': 'Pa',
-    'ram_use': 'MB',
-    'temperature': 'C',
-    'temperature_object': 'C',
-    'temperature_die': 'C',
-    'voltage': 'volts'
+    'altitude': {'unit': 'm', 'name': 'Altitude', 'meas': 'altitude'},
+    'co2': {'unit': 'ppmv', 'name': 'CO2', 'meas': 'co2'},
+    'dewpoint': {'unit': 'C', 'name': 'Dewpoint', 'meas': 'dewpoint'},
+    'cpu_load_1m': {'unit': '1 min', 'name': 'CPU Load', 'meas': 'cpu_load'},
+    'cpu_load_5m': {'unit': '5 min', 'name': 'CPU Load', 'meas': 'cpu_load'},
+    'cpu_load_15m': {'unit': '15 min', 'name': 'CPU Load', 'meas': 'cpu_load'},
+    'duration_sec': {'unit': 'sec', 'name': 'Duration', 'meas': 'duration_sec'},
+    'edge': {'unit': 'edge', 'name': 'Edge', 'meas': 'edge'},
+    'disk_space': {'unit': 'MB', 'name': 'Disk', 'meas': 'disk_space'},
+    'humidity': {'unit': '%', 'name': 'Humidity', 'meas': 'humidity'},
+    'lux': {'unit': 'lx', 'name': 'Light', 'meas': 'lux'},
+    'moisture': {'unit': 'moisture', 'name': 'Moisture', 'meas': 'moisture'},
+    'pressure': {'unit': 'Pa', 'name': 'Pressure', 'meas': 'pressure'},
+    'temperature': {'unit': 'C', 'name': 'Temperature', 'meas': 'temperature'},
+    'temperature_object': {'unit': 'C', 'name': 'Temperature (Obj)', 'meas': 'temperature'},
+    'temperature_die': {'unit': 'C', 'name': 'Temperature (Die)', 'meas': 'temperature'},
+    'voltage': {'unit': 'volts', 'name': 'Voltage', 'meas': 'voltage'},
 }
 
 # Sensors and description

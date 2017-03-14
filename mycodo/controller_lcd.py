@@ -124,7 +124,7 @@ class LCDController(threading.Thread):
                 self.lcd_line[i] = {}
 
             list_sensors = MEASUREMENT_UNITS
-            list_sensors.update({'sensor_time': None})
+            list_sensors.update({'sensor_time': {'unit': None, 'name': 'Time'}})
 
             list_pids = ['setpoint', 'pid_time']
 
@@ -251,9 +251,12 @@ class LCDController(threading.Thread):
 
             while self.running:
                 if time.time() > self.timer:
-                    self.get_lcd_strings()
                     try:
+                        self.get_lcd_strings()
                         self.output_lcds()
+                    except KeyError:
+                        self.logger.error(
+                            "KeyError: Unable to output to LCD.")
                     except IOError:
                         self.logger.error(
                             "IOError: Unable to output to LCD.")
@@ -339,16 +342,7 @@ class LCDController(threading.Thread):
                             pid = db_retrieve_table_daemon(
                                 PID, unique_id=self.lcd_line[i]['id'])
                             measurement = pid.measurement
-                        elif self.lcd_line[i]['measurement'] in [
-                                'free_space',
-                                'temperature',
-                                'temperature_die',
-                                'temperature_object',
-                                'humidity',
-                                'co2',
-                                'lux',
-                                'pressure',
-                                'altitude']:
+                        elif self.lcd_line[i]['measurement'] in MEASUREMENT_UNITS:
                             measurement = self.lcd_line[i]['measurement']
                         elif self.lcd_line[i]['measurement'] == 'duration_sec':
                             measurement = 'duration_sec'
@@ -366,13 +360,13 @@ class LCDController(threading.Thread):
                         elif measurement:
                             value_length = len(str(
                                 self.lcd_line[i]['measurement_value']))
-                            unit_length = len(MEASUREMENT_UNITS[measurement])
+                            unit_length = len(MEASUREMENT_UNITS[measurement]['unit'])
                             name_length = number_characters - value_length - unit_length - 2
                             name_cropped = self.lcd_line[i]['name'].ljust(name_length)[:name_length]
                             self.lcd_string_line[i] = '{} {} {}'.format(
                                 name_cropped,
                                 self.lcd_line[i]['measurement_value'],
-                                MEASUREMENT_UNITS[measurement])
+                                MEASUREMENT_UNITS[measurement]['unit'])
                         else:
                             value_length = len(str(
                                 self.lcd_line[i]['measurement_value']))

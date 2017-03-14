@@ -214,17 +214,9 @@ class GraphAdd(FlaskForm):
         render_kw={"placeholder": lazy_gettext("Graph Name")},
         validators=[DataRequired()]
     )
-    pidIDs = SelectMultipleField(
-        lazy_gettext('PID IDs (Setpoint)'),
-        coerce=int
-    )
-    relayIDs = SelectMultipleField(
-        lazy_gettext('Relay IDs'),
-        coerce=int
-    )
-    sensorIDs = SelectMultipleField(
-        lazy_gettext('Sensor IDs')
-    )
+    pidIDs = SelectMultipleField(lazy_gettext('PID IDs (Setpoint)'))
+    relayIDs = SelectMultipleField(lazy_gettext('Relay IDs'))
+    sensorIDs = SelectMultipleField(lazy_gettext('Sensor IDs'))
     width = IntegerField(
         lazy_gettext('Width (%)'),
         render_kw={"placeholder": lazy_gettext("Percent Width")},
@@ -272,17 +264,9 @@ class GraphMod(FlaskForm):
         render_kw={"placeholder": lazy_gettext("Graph Name")},
         validators=[DataRequired()]
     )
-    pidIDs = SelectMultipleField(
-        lazy_gettext('PID IDs (Setpoint)'),
-        coerce=int
-    )
-    relayIDs = SelectMultipleField(
-        lazy_gettext('Relay IDs'),
-        coerce=int
-    )
-    sensorIDs = SelectMultipleField(
-        lazy_gettext('Sensor IDs')
-    )
+    pidIDs = SelectMultipleField(lazy_gettext('PID IDs (Setpoint)'))
+    relayIDs = SelectMultipleField(lazy_gettext('Relay IDs'))
+    sensorIDs = SelectMultipleField(lazy_gettext('Sensor IDs'))
     width = IntegerField(
         lazy_gettext('Width (%)'),
         render_kw={"placeholder": lazy_gettext("Percent Width")},

@@ -741,89 +741,89 @@ def choices_sensors(sensor):
     # populate form multi-select choices for sensors and measurements
     for each_sensor in sensor:
         if each_sensor.device == 'MYCODO_RAM':
-            value = '{},ram_use'.format(each_sensor.id)
+            value = '{},disk_space'.format(each_sensor.unique_id)
             display = '{} ({}) Daemon Ram Use (MB)'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
-        elif each_sensor.device == 'RPiCPULoad':
-            value = '{},cpu_load_1m'.format(each_sensor.id)
+        if each_sensor.device == 'RPiCPULoad':
+            value = '{},cpu_load_1m'.format(each_sensor.unique_id)
             display = '{} ({}) CPU Load (1m)'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
-            value = '{},cpu_load_5m'.format(each_sensor.id)
+            value = '{},cpu_load_5m'.format(each_sensor.unique_id)
             display = '{} ({}) CPU Load (5m)'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
-            value = '{},cpu_load_15m'.format(each_sensor.id)
+            value = '{},cpu_load_15m'.format(each_sensor.unique_id)
             display = '{} ({}) CPU Load (15m)'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
         if each_sensor.device == 'RPiFreeSpace':
-            value = '{},free_space'.format(each_sensor.id)
+            value = '{},disk_space'.format(each_sensor.unique_id)
             display = '{} ({}) Free Space'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
         if each_sensor.device == 'CHIRP':
-            value = '{},moisture'.format(each_sensor.id)
+            value = '{},moisture'.format(each_sensor.unique_id)
             display = '{} ({}) Moisture'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
         if each_sensor.device in ['AM2315', 'ATLAS_PT1000', 'BME280', 'BMP',
                                   'CHIRP', 'DHT11', 'DHT22', 'DS18B20',
                                   'HTU21D', 'RPi', 'SHT1x_7x', 'SHT2x']:
-            value = '{},temperature'.format(each_sensor.id)
+            value = '{},temperature'.format(each_sensor.unique_id)
             display = '{} ({}) Temperature'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
         if each_sensor.device == 'TMP006':
-            value = '{},temperature_object'.format(each_sensor.id)
+            value = '{},temperature_object'.format(each_sensor.unique_id)
             display = '{} ({}) Temperature (Object)'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
-            value = '{},temperature_die'.format(each_sensor.id)
+            value = '{},temperature_die'.format(each_sensor.unique_id)
             display = '{} ({}) Temperature (Die)'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
         if each_sensor.device in ['AM2315', 'BME280', 'DHT11', 'DHT22', 'HTU21D',
                                   'SHT1x_7x', 'SHT2x']:
-            value = '{},humidity'.format(each_sensor.id)
+            value = '{},humidity'.format(each_sensor.unique_id)
             display = '{} ({}) Humidity'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
-            value = '{},dewpoint'.format(each_sensor.id)
+            value = '{},dewpoint'.format(each_sensor.unique_id)
             display = '{} ({}) Dew Point'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
         if each_sensor.device == 'K30':
-            value = '{},co2'.format(each_sensor.id)
+            value = '{},co2'.format(each_sensor.unique_id)
             display = '{} ({}) CO2'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
         if each_sensor.device in ['BME280', 'BMP']:
-            value = '{},pressure'.format(each_sensor.id)
+            value = '{},pressure'.format(each_sensor.unique_id)
             display = '{} ({}) Pressure'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
-            value = '{},altitude'.format(each_sensor.id)
+            value = '{},altitude'.format(each_sensor.unique_id)
             display = '{} ({}) Altitude'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
         if each_sensor.device == 'EDGE':
-            value = '{},edge'.format(each_sensor.id)
+            value = '{},edge'.format(each_sensor.unique_id)
             display = '{} ({}) Edge'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
         if each_sensor.device in ['ADS1x15', 'MCP342x']:
-            value = '{},voltage'.format(each_sensor.id)
+            value = '{},voltage'.format(each_sensor.unique_id)
             display = '{} ({}) Volts'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
-            value = '{},{}'.format(each_sensor.id, each_sensor.adc_measure)
+            value = '{},{}'.format(each_sensor.unique_id, each_sensor.adc_measure)
             display = '{} ({}) {}'.format(
                 each_sensor.id, each_sensor.name, each_sensor.adc_measure)
             choices.update({value: display})
         if each_sensor.device in ['CHIRP', 'TSL2561']:
-            value = '{},lux'.format(each_sensor.id)
+            value = '{},lux'.format(each_sensor.unique_id)
             display = '{} ({}) Lux'.format(
                 each_sensor.id, each_sensor.name)
             choices.update({value: display})
@@ -836,10 +836,10 @@ def choices_id_name(table):
     choices = OrderedDict()
     # populate form multi-select choices for relays
     for each_entry in table:
-        value = each_entry.id
+        value = each_entry.unique_id
         display = '{id} ({name})'.format(id=each_entry.id,
                                          name=each_entry.name)
-        choices.update({value:display})
+        choices.update({value: display})
     return choices
 
 
@@ -928,14 +928,20 @@ def graph_mod(form_mod_graph, request_form):
             mod_graph.use_custom_colors = form_mod_graph.use_custom_colors.data
             mod_graph.name = form_mod_graph.name.data
             if form_mod_graph.pidIDs.data:
-                pid_ids_joined = ",".join(str(form_mod_graph.pidIDs.data))
+                pid_ids_joined = ",".join(form_mod_graph.pidIDs.data)
                 mod_graph.pid_ids = pid_ids_joined
+            else:
+                mod_graph.pid_ids = ''
             if form_mod_graph.relayIDs.data:
-                relay_ids_joined = ",".join(str(form_mod_graph.relayIDs.data))
+                relay_ids_joined = ",".join(form_mod_graph.relayIDs.data)
                 mod_graph.relay_ids = relay_ids_joined
+            else:
+                mod_graph.relay_ids = ''
             if form_mod_graph.sensorIDs.data:
                 sensor_ids_joined = ";".join(form_mod_graph.sensorIDs.data)
                 mod_graph.sensor_ids_measurements = sensor_ids_joined
+            else:
+                mod_graph.sensor_ids_measurements = ''
             mod_graph.width = form_mod_graph.width.data
             mod_graph.height = form_mod_graph.height.data
             mod_graph.x_axis_duration = form_mod_graph.xAxisDuration.data
@@ -1845,7 +1851,7 @@ def sensor_add(form_add_sensor):
             # Process monitors
             if form_add_sensor.sensor.data == 'MYCODO_RAM':
                 new_sensor.device_type = 'mycodo_ram'
-                new_sensor.measurements = 'ram_use'
+                new_sensor.measurements = 'disk_space'
                 new_sensor.location = 'Mycodo_daemon'
             elif form_add_sensor.sensor.data == 'RPiCPULoad':
                 new_sensor.device_type = 'cpu_load'
@@ -1853,7 +1859,7 @@ def sensor_add(form_add_sensor):
                 new_sensor.location = 'RPi'
             elif form_add_sensor.sensor.data == 'RPiFreeSpace':
                 new_sensor.device_type = 'free_space'
-                new_sensor.measurements = 'free_space'
+                new_sensor.measurements = 'disk_space'
                 new_sensor.location = '/'
             elif form_add_sensor.sensor.data == 'EDGE':
                 new_sensor.device_type = 'edgedetect'
@@ -1902,7 +1908,7 @@ def sensor_add(form_add_sensor):
             elif form_add_sensor.sensor.data in ['BME280', 'BMP']:
                 new_sensor.device_type = 'presssensor'
                 if form_add_sensor.sensor.data == 'BME280':
-                    new_sensor.measurements = 'altitude,humidity,pressure,temperature'
+                    new_sensor.measurements = 'altitude,dewpoint,humidity,pressure,temperature'
                     new_sensor.location = '0x76'
                 elif form_add_sensor.sensor.data == 'BMP':
                     new_sensor.measurements = 'altitude,pressure,temperature'

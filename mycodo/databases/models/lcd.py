@@ -9,7 +9,7 @@ class LCD(CRUDMixin, db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     name = db.Column(db.Text, default='LCD')
     is_activated = db.Column(db.Boolean, default=False)
-    period = db.Column(db.Integer, default=30)
+    period = db.Column(db.Float, default=30.0)
     location = db.Column(db.Text, default='27')
     multiplexer_address = db.Column(db.Text, default='')
     multiplexer_channel = db.Column(db.Integer, default=0)
