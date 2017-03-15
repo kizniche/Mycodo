@@ -92,7 +92,7 @@ ln -sf ${INSTALL_DIRECTORY}/install/mycodo_flask_apache.conf /etc/apache2/sites-
 
 printf "\n#### Starting the Mycodo daemon and web server\n"
 /etc/init.d/apache2 restart
-wget -p http://127.0.0.1 -O /dev/null
+wget --quiet --no-check-certificate -p http://127.0.0.1 -O /dev/null
 service mycodo start
 
 trap : 0
