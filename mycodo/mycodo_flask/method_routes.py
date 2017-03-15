@@ -299,10 +299,10 @@ def method_delete(method_id):
         return redirect(url_for('method_routes.method_list'))
 
     try:
-        MethodData.query.filter(MethodData.method_id == method_id).delete()
-        Method.query.filter(Method.id == method_id).delete()
+        MethodData.query.filter(MethodData.method_id == int(method_id)).delete()
+        Method.query.filter(Method.id == int(method_id)).delete()
         display_order = csv_to_list_of_int(DisplayOrder.query.first().method)
-        display_order.remove(method_id)
+        display_order.remove(int(method_id))
         DisplayOrder.query.first().method = list_to_csv(display_order)
         db.session.commit()
         flash("Success: {action}".format(action=action), "success")
