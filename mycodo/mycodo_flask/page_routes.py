@@ -40,6 +40,7 @@ from mycodo.databases.models import (
 )
 from mycodo.devices.camera import CameraStream
 from mycodo_client import DaemonControl
+from mycodo_client import daemon_active
 
 # Functions
 from mycodo import flaskforms
@@ -450,8 +451,8 @@ def page_info():
         virtualenv_flask = True
 
     virtualenv_daemon = False
-    control = DaemonControl()
-    if control.daemon_active():
+    if daemon_active():
+        control = DaemonControl()
         ram_use = control.ram_use()
         virtualenv_daemon = control.is_in_virtualenv()
     else:

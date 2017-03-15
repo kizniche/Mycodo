@@ -74,13 +74,6 @@ class DaemonControl:
         return self.rpyc_client.root.controller_deactivate(
             controller_type, controller_id)
 
-    def daemon_active(self):
-        try:
-            self.rpyc_client.root.daemon_status()
-            return True
-        except Exception:
-            return False
-
     def daemon_status(self):
         return self.rpyc_client.root.daemon_status()
 
@@ -138,6 +131,14 @@ class DaemonControl:
 
     def terminate_daemon(self):
         return self.rpyc_client.root.terminate_daemon()
+
+
+def daemon_active():
+    try:
+        rpyc.connect("localhost", 18813)
+        return True
+    except socket.error:
+        return False
 
 
 def timeout_handler(signum, frame):  # Custom signal handler
