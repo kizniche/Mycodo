@@ -83,7 +83,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" id="daemon-status" data-toggle="tooltip" data-placement="bottom" href="{{url_for('page_routes.page_info')}}" style="text-align: center; padding: 4px 15px; font-size: 14px; font-weight: bold;{%- if daemon_status == "alive" -%} /*noinspection CssOverwrittenProperties*/color: #4E9258{%- else -%} /*noinspection CssOverwrittenProperties*/color: #F70D1A{%- endif -%}" title="{%- if daemon_status == "alive" -%}{{_('Daemon is Running')}}{%- else -%}{{_('Daemon is Not Running')}}{%- endif -%}">{{host}}</a>
+          <a class="navbar-brand" id="daemon-status" data-toggle="tooltip" data-placement="bottom" href="{{url_for('page_routes.page_info')}}" style="text-align: center; padding: 0 15px; padding-top: 2px !important; font-size: 14px; font-weight: bold;{%- if daemon_status == "alive" -%} /*noinspection CssOverwrittenProperties*/color: #4E9258{%- else -%} /*noinspection CssOverwrittenProperties*/color: #F70D1A{%- endif -%}" title="{%- if daemon_status == "alive" -%}{{_('Daemon is Running')}}{%- else -%}{{_('Daemon is Not Running')}}{%- endif -%}">{{host}}<br>Mycodo {{mycodo_version}}</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -115,10 +115,10 @@
               </ul>
             </li>
 
-            <li class="dropdown {% if active_page in ['logview', 'export', 'lcd', 'camera'] %} active{% endif %}">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Tools')}}<span class="caret"></span></a>
+            <li class="dropdown {% if active_page in ['camera', 'export', 'lcd', 'logview', 'timer'] %} active{% endif %}">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('More')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li{% if active_page == 'lcd' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_timer')}}"><i class="glyphicon glyphicon-time"></i>&nbsp;&nbsp;{{_('Timers')}}</a></li>
+                <li{% if active_page == 'timer' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_timer')}}"><i class="glyphicon glyphicon-time"></i>&nbsp;&nbsp;{{_('Timers')}}</a></li>
                 <li{% if active_page == 'lcd' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_lcd')}}"><i class="fa fa-desktop"></i>&nbsp;&nbsp;{{_('LCDs')}}</a></li>
                 <li{% if active_page == 'camera' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_camera')}}"><i class="glyphicon glyphicon-camera"></i>&nbsp;&nbsp;{{_('Cameras')}}</a></li>
                 <li{% if active_page == 'export' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_export')}}"><i class="glyphicon glyphicon-save-file"></i>&nbsp;&nbsp;{{_('Export Measurements')}}</a></li>

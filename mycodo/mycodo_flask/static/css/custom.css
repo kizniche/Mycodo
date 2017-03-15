@@ -4,9 +4,9 @@
 
 .navbar-nav > li > a, .navbar-brand {
     padding-top:10px !important; padding-bottom:0 !important;
-    height: 40px;
+    height: 45px;
 }
-.navbar {min-height:40px !important;}
+.navbar {min-height:45px !important;}
 
 a.anchor {
     display: block;

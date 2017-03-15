@@ -459,7 +459,7 @@ def page_info():
     else:
         ram_use = 0
 
-    return render_template('tools/info.html',
+    return render_template('pages/info.html',
                            daemon_pid=daemon_pid_first,
                            daemon_up=daemon_up,
                            gpio_readall=gpio_output,
@@ -926,7 +926,7 @@ def page_usage():
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
 
-    return render_template('tools/usage.html',
+    return render_template('pages/usage.html',
                            date_suffix=date_suffix,
                            display_order=display_order,
                            misc=misc,
@@ -945,7 +945,7 @@ def page_usage_reports():
     report_location = os.path.normpath(USAGE_REPORTS_PATH)
     reports = [0, 0]
 
-    return render_template('tools/usage_reports.html',
+    return render_template('pages/usage_reports.html',
                            report_location=report_location,
                            reports=reports)
 
