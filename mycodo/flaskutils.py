@@ -53,7 +53,8 @@ from mycodo.utils.utils import (
 from mycodo.utils.send_data import send_email
 from mycodo.utils.system_pi import (
     csv_to_list_of_int,
-    is_int
+    is_int,
+    list_to_csv
 )
 from mycodo.config import (
     CAMERAS,
@@ -2769,11 +2770,6 @@ def add_display_order(display_order, device_id):
         display_order = [str(i) for i in display_order]
         return ','.join(display_order)
     return str(device_id)
-
-
-def list_to_csv(display_order):
-    str_csv = [str(i) for i in display_order]
-    return ','.join(str_csv)
 
 
 def reorder(display_order, device_id, direction):

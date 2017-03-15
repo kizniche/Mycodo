@@ -82,6 +82,11 @@ def csv_to_list_of_int(str_csv):
         return list_int
 
 
+def list_to_csv(display_order):
+    str_csv = [str(i) for i in display_order]
+    return ','.join(str_csv)
+
+
 def find_owner(filename):
     """ Return the owner of a file """
     return pwd.getpwuid(os.stat(filename).st_uid).pw_name

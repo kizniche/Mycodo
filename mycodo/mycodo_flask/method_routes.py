@@ -18,6 +18,7 @@ from flask_babel import gettext
 from mycodo.mycodo_flask.extensions import db
 # Classes
 from mycodo.databases.models import (
+    DisplayOrder,
     Method,
     MethodData,
     Relay
@@ -29,7 +30,8 @@ from mycodo import flaskutils
 from mycodo.mycodo_flask.general_routes import inject_mycodo_version
 from mycodo.utils.system_pi import (
     csv_to_list_of_int,
-    get_sec
+    get_sec,
+    list_to_csv
 )
 
 from mycodo.utils.method import (
@@ -297,8 +299,12 @@ def method_delete(method_id):
         return redirect(url_for('method_routes.method_list'))
 
     try:
-        Method.query.filter(Method.id == method_id).delete()
         MethodData.query.filter(MethodData.method_id == method_id).delete()
+        Method.query.filter(Method.id == method_id).delete()
+        display_order = csv_to_list_of_int(DisplayOrder.query.first().method)
+        display_order.remove(method_id)
+        DisplayOrder.query.first().method = list_to_csv(display_order)
+        db.session.commit()
         flash("Success: {action}".format(action=action), "success")
     except Exception as except_msg:
         flash("Error: {action}: {err}".format(action=action,
