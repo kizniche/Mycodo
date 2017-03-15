@@ -430,15 +430,15 @@ def page_info():
         "pgrep -f '/var/www/mycodo/env/bin/python /var/www/mycodo/mycodo/mycodo_daemon.py'", stdout=subprocess.PIPE, shell=True)
     (daemon_pid_output, _) = daemon_pid.communicate()
     daemon_pid.wait()
-    daemon_pid_output = daemon_pid_output.split('\n')[0]
+    daemon_pid_first = daemon_pid_output.split('\n')[0]
 
     pstree = subprocess.Popen(
-        "pstree -p {pid}".format(pid=daemon_pid_output), stdout=subprocess.PIPE, shell=True)
+        "pstree -p {pid}".format(pid=daemon_pid_first), stdout=subprocess.PIPE, shell=True)
     (pstree_output, _) = pstree.communicate()
     pstree.wait()
 
     top = subprocess.Popen(
-        "top -bH -n 1 -p {pid}".format(pid=daemon_pid_output), stdout=subprocess.PIPE, shell=True)
+        "top -bH -n 1 -p {pid}".format(pid=daemon_pid_first), stdout=subprocess.PIPE, shell=True)
     (top_output, _) = top.communicate()
     top.wait()
 
@@ -459,7 +459,7 @@ def page_info():
         ram_use = 0
 
     return render_template('tools/info.html',
-                           daemon_pid=daemon_pid_output,
+                           daemon_pid=daemon_pid_first,
                            gpio_readall=gpio_output,
                            database_version=database_version,
                            df=df_output,

@@ -19,7 +19,7 @@ ln -sf ${INSTALL_DIRECTORY}/install/mycodo_flask_apache.conf /etc/apache2/sites-
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-packages
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh upgrade-pip-packages
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-pip-packages
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-influxdb
 
@@ -43,5 +43,6 @@ rm ${INSTALL_DIRECTORY}/databases/statistics.csv
 
 printf "\n#### Reloading systemctl, Mycodo daemon, and apache2\n"
 systemctl daemon-reload
-service mycodo restart
 /etc/init.d/apache2 restart
+wget -p http://127.0.0.1 -O /dev/null
+service mycodo restart

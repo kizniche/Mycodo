@@ -83,6 +83,7 @@ case "${1:-''}" in
     ;;
     'setup-virtualenv')
         if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env ]; then
+            pip install virtualenv --upgrade
             virtualenv --system-site-packages ${INSTALL_DIRECTORY}/Mycodo/env
         else
             printf "## Virtualenv already exists, skipping creation\n"
@@ -110,11 +111,11 @@ case "${1:-''}" in
     'update-packages')
         printf "\n#### Installing prerequisite apt packages and update pip\n"
         apt-get update -y
-        apt-get install -y apache2 gawk git libav-tools libffi-dev libi2c-dev python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3
+        apt-get install -y apache2 gawk git libapache2-mod-wsgi libav-tools libffi-dev libi2c-dev python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3
         easy_install pip
         pip install pip --upgrade
     ;;
-    'upgrade-pip-packages')
+    'update-pip-packages')
         printf "\n#### Installing pip requirements from requirements.txt\n"
         if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env ]; then
             printf "\n## Error: Virtualenv doesn't exist. Create with $0 setup-virtualenv\n"

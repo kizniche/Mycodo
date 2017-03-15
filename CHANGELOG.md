@@ -17,7 +17,7 @@
 
 ### Miscellaneous
 
-  - Use Python virtual environment
+  - Move to using a Python virtual environment
   - Refactor the relay/sensor conditional management system
   - User names are no longer case-sensitive
   - Switch to using Flask-Login

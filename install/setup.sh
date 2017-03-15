@@ -68,7 +68,7 @@ cd ${INSTALL_DIRECTORY}/install/wiringPi
 cd ${INSTALL_DIRECTORY}/install
 rm -rf ./wiringPi
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh upgrade-pip-packages
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-pip-packages
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-influxdb
 service influxdb start
@@ -77,17 +77,16 @@ influx -execute "CREATE DATABASE mycodo_db"
 influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
 
 printf "\n#### Installing and configuring apache2 web server\n"
-apt-get install -y apache2 libapache2-mod-wsgi
 a2enmod wsgi ssl
 ln -sf ${INSTALL_DIRECTORY}/install/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-mycodo-startup-script
-
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh generate-ssl-certs
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-cron
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-mycodo-startup-script
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh compile-translations
+
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-cron
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh initialize
 
