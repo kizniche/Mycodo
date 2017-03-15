@@ -51,7 +51,7 @@ case "${1:-''}" in
         rm -f certificate.csr certificate.key
     ;;
     'initialize')
-        printf "\n#### Initialize: Create proper users, directories, and permissions\n"
+        printf "\n#### Creating proper users, directories, and permissions\n"
         useradd -M mycodo
         adduser mycodo gpio
         adduser mycodo adm
@@ -81,13 +81,20 @@ case "${1:-''}" in
         chown root:mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
         chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
     ;;
+    'setup-virtualenv')
+        if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env ]; then
+            virtualenv --system-site-packages ${INSTALL_DIRECTORY}/Mycodo/env
+        else
+            printf "## Virtualenv already exists, skipping creation\n"
+        fi
+    ;;
     'update-cron')
         printf "#### Updating crontab entry\n"
         /bin/bash ${INSTALL_DIRECTORY}/Mycodo/install/crontab.sh mycodo --remove
         /bin/bash ${INSTALL_DIRECTORY}/Mycodo/install/crontab.sh mycodo
     ;;
     'update-influxdb')
-        printf "\n#### Ensure compatible version of influxdb is installed ####\n"
+        printf "\n#### Ensuring compatible version of influxdb is installed ####\n"
         INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
         INSTALL_FILE="influxdb_1.2.1_armhf.deb"
         CORRECT_VERSION="1.2.1-1"
@@ -101,13 +108,24 @@ case "${1:-''}" in
         fi
     ;;
     'update-packages')
-        printf "\n#### Installing prerequisite apt packages.\n"
+        printf "\n#### Installing prerequisite apt packages and update pip\n"
         apt-get update -y
         apt-get install -y apache2 gawk git libav-tools libffi-dev libi2c-dev python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3
         easy_install pip
+        pip install pip --upgrade
+    ;;
+    'upgrade-pip-packages')
+        printf "\n#### Installing pip requirements from requirements.txt\n"
+        if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env ]; then
+            printf "\n## Error: Virtualenv doesn't exist. Create with $0 setup-virtualenv\n"
+        else
+            source ${INSTALL_DIRECTORY}/Mycodo/env/bin/activate
+            ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install pip --upgrade
+            ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install -r ${INSTALL_DIRECTORY}/Mycodo/install/requirements.txt --upgrade
+        fi
     ;;
     'update-mycodo-startup-script')
-        printf "\n#### Enable mycodo startup script\n"
+        printf "\n#### Enabling mycodo startup script\n"
         systemctl disable mycodo.service
         rm -rf /etc/systemd/system/mycodo.service
         systemctl enable ${INSTALL_DIRECTORY}/Mycodo/install/mycodo.service

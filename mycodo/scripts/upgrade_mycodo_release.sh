@@ -100,6 +100,15 @@ runSelfUpgrade() {
   fi
   printf "Done.\n"
 
+  if [ -d ${INSTALL_DIRECTORY}/Mycodo/env ] ; then
+    printf "Moving env directory..."
+    if ! mv ${INSTALL_DIRECTORY}/Mycodo/env ${MYCODO_NEW_TMP_DIR} ; then
+      printf "Failed: Error while trying to move env directory.\n"
+      error_found
+    fi
+    printf "Done.\n"
+  fi
+
   printf "Moving databases from ${INSTALL_DIRECTORY}/Mycodo/databases/ to ${MYCODO_NEW_TMP_DIR}/databases..."
   if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/*.db ${MYCODO_NEW_TMP_DIR}/databases ; then
     printf "Failed: Error while trying to copy databases."

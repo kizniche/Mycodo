@@ -45,7 +45,10 @@ apt-get update
 apt-get purge -y python-pip
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-packages
-pip install -U pip
+
+pip install --upgrade pip
+
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
 
 printf "#### Installing gpiod\n"
 cd ${INSTALL_DIRECTORY}/install
@@ -65,9 +68,7 @@ cd ${INSTALL_DIRECTORY}/install/wiringPi
 cd ${INSTALL_DIRECTORY}/install
 rm -rf ./wiringPi
 
-printf "#### Installing pip requirements from requirements.txt\n"
-cd ${INSTALL_DIRECTORY}/install
-pip install -r requirements.txt --upgrade
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh upgrade-pip-packages
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-influxdb
 service influxdb start

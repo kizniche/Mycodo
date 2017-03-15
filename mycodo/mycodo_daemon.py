@@ -139,6 +139,13 @@ def mycodo_service(mycodo):
             return 'alive'
 
         @staticmethod
+        def exposed_is_in_virtualenv():
+            """Returns True if this script is running in a virtualenv"""
+            if hasattr(sys, 'real_prefix'):
+                return True
+            return False
+
+        @staticmethod
         def exposed_pid_hold(pid_id):
             """Hold PID Controller operation"""
             return mycodo.pid_hold(pid_id)

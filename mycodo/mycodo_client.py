@@ -80,6 +80,9 @@ class DaemonControl:
     def flash_lcd(self, lcd_id, state):
         return self.rpyc_client.root.flash_lcd(lcd_id, state)
 
+    def is_in_virtualenv(self):
+        return self.rpyc_client.root.is_in_virtualenv()
+
     def pid_hold(self, pid_id):
         return self.rpyc_client.root.pid_hold(pid_id)
 
@@ -172,7 +175,7 @@ if __name__ == "__main__":
         logger.info(
             "[Remote command] Check Daemon: {msg}".format(msg=return_msg))
 
-    if args.ramuse:
+    elif args.ramuse:
         return_msg = daemon_control.ram_use()
         logger.info(
             "[Remote command] Daemon Ram in Use: {msg} MB".format(msg=return_msg))

@@ -1,11 +1,12 @@
 # coding=utf-8
 """ collection of Page endpoints """
-import logging
-import os
 import datetime
 import flask_login
 import glob
+import logging
+import os
 import subprocess
+import sys
 import time
 from collections import OrderedDict
 
@@ -425,9 +426,10 @@ def page_info():
     ifconfig.wait()
 
     daemon_pid = subprocess.Popen(
-        "pgrep mycodo_daemon", stdout=subprocess.PIPE, shell=True)
+        "pgrep -f '/var/www/mycodo/env/bin/python /var/www/mycodo/mycodo/mycodo_daemon.py'", stdout=subprocess.PIPE, shell=True)
     (daemon_pid_output, _) = daemon_pid.communicate()
     daemon_pid.wait()
+    daemon_pid_output = daemon_pid_output.split('\n')[0]
 
     pstree = subprocess.Popen(
         "pstree -p {pid}".format(pid=daemon_pid_output), stdout=subprocess.PIPE, shell=True)
@@ -443,9 +445,15 @@ def page_info():
     for each_ver in AlembicVersion.query.all():
         database_version.append(each_ver.version_num)
 
+    virtualenv_flask = False
+    if hasattr(sys, 'real_prefix'):
+        virtualenv_flask = True
+
+    virtualenv_daemon = False
     if daemon_pid_output:
         control = DaemonControl()
         ram_use = control.ram_use()
+        virtualenv_daemon = control.is_in_virtualenv()
     else:
         ram_use = 0
 
@@ -460,7 +468,9 @@ def page_info():
                            ram_use=ram_use,
                            top=top_output,
                            uname=uname_output,
-                           uptime=uptime_output)
+                           uptime=uptime_output,
+                           virtualenv_daemon=virtualenv_daemon,
+                           virtualenv_flask=virtualenv_flask)
 
 
 @blueprint.route('/lcd', methods=('GET', 'POST'))
