@@ -452,7 +452,7 @@ def page_info():
 
     virtualenv_daemon = False
     daemon_up = daemon_active()
-    if daemon_active:
+    if daemon_up:
         control = DaemonControl()
         ram_use = control.ram_use()
         virtualenv_daemon = control.is_in_virtualenv()
