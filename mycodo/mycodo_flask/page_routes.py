@@ -450,8 +450,8 @@ def page_info():
         virtualenv_flask = True
 
     virtualenv_daemon = False
-    if daemon_pid_output:
-        control = DaemonControl()
+    control = DaemonControl()
+    if control.daemon_active():
         ram_use = control.ram_use()
         virtualenv_daemon = control.is_in_virtualenv()
     else:

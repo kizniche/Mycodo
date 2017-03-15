@@ -74,6 +74,13 @@ class DaemonControl:
         return self.rpyc_client.root.controller_deactivate(
             controller_type, controller_id)
 
+    def daemon_active(self):
+        try:
+            self.rpyc_client.root.daemon_status()
+            return True
+        except Exception:
+            return False
+
     def daemon_status(self):
         return self.rpyc_client.root.daemon_status()
 
