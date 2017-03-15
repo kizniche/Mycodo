@@ -58,7 +58,7 @@ case "${1:-''}" in
         adduser mycodo video
 
         chown -LR mycodo.mycodo ${INSTALL_DIRECTORY}/Mycodo
-        ln -sf ${INSTALL_DIRECTORY}/Mycodo /var/www/mycodo
+        ln -sfn ${INSTALL_DIRECTORY}/Mycodo /var/www/mycodo
 
         mkdir -p /var/log/mycodo
         if [ ! -e /var/log/mycodo/mycodo.log ]; then
