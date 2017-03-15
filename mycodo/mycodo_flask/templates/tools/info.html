@@ -21,12 +21,14 @@
         <br>{{_('Daemon Status:')}}
         {%- if daemon_status == "alive" %}
           <span style="color: #4E9258; font-weight: bold;">{{_('Running')}}</span>
-          <br>{{_('Daemon Process ID:')}} <span style="color: #4E9258; font-weight: bold;">{{daemon_pid}}</span>
-          <br>{{_('Daemon RAM usage:')}} <span style="color: #4E9258; font-weight: bold;">{{ram_use}} MB</span>
-          <br>{{_('Daemon Virtualenv:')}} <span style="color: #4E9258; font-weight: bold;">{{virtualenv_daemon}}</span>
         {%- else %}
           <span style="color: #F70D1A; font-weight: bold;">{{_('Not Running')}}</span>
         {% endif %}
+      {% if daemon_up %}
+        <br>{{_('Daemon Process ID:')}} <span style="color: #4E9258; font-weight: bold;">{{daemon_pid}}</span>
+        <br>{{_('Daemon RAM usage:')}} <span style="color: #4E9258; font-weight: bold;">{{ram_use}} MB</span>
+        <br>{{_('Daemon Virtualenv:')}} <span style="color: #4E9258; font-weight: bold;">{{virtualenv_daemon}}</span>
+      {% endif %}
         <br>{{_('Frontend Virtualenv:')}} <span style="color: #4E9258; font-weight: bold;">{{virtualenv_flask}}</span>
       </div>
     </div>
@@ -90,6 +92,8 @@
       </div>
     </div>
 
+  {% if daemon_up %}
+
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em">
         pstree -p {{daemon_pid}} (daemon and threads)
@@ -107,6 +111,8 @@
         <pre>{{top}}</pre>
       </div>
     </div>
+
+  {% endif %}
 
   </div>
 

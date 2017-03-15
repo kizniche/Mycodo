@@ -371,7 +371,7 @@ def page_graph_async():
     if request.method == 'POST':
         selected_id = request.form['selected_measure'].split(",")[0]
         selected_measure = request.form['selected_measure'].split(",")[1]
-        selected_unique_id = Sensor.query.filter(Sensor.id == int(selected_id)).first().unique_id
+        selected_unique_id = Sensor.query.filter(Sensor.unique_id == selected_id).first().unique_id
 
     return render_template('pages/graph-async.html',
                            sensor=sensor,
@@ -451,7 +451,8 @@ def page_info():
         virtualenv_flask = True
 
     virtualenv_daemon = False
-    if daemon_active():
+    daemon_up = daemon_active()
+    if daemon_active:
         control = DaemonControl()
         ram_use = control.ram_use()
         virtualenv_daemon = control.is_in_virtualenv()
@@ -460,6 +461,7 @@ def page_info():
 
     return render_template('tools/info.html',
                            daemon_pid=daemon_pid_first,
+                           daemon_up=daemon_up,
                            gpio_readall=gpio_output,
                            database_version=database_version,
                            df=df_output,
