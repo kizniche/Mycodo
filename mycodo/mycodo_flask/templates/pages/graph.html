@@ -40,24 +40,25 @@
     {%- set chart_number = loop.index -%}
     {%- for each_graph in graph if each_graph.id == order -%}
 
-    <div style="display: inline-block; margin: 0 0.3em 0.6em 0.3em; border: 2px solid #ddd; border-radius: 5px; width: calc({{each_graph.width}}% - 0.7em); min-width: 350px">
+    <div style="margin: 0 0.3em 0.6em 0.3em; border: 2px solid #ddd; border-radius: 5px; width: calc({{each_graph.width}}% - 0.7em); min-width: 350px">
 
-      <div class="container" style="width: 100%;">
-        <div class="row">
-          <div class="col-sx-6 col-md-6" style="padding-left: 5px;">
-            {{each_graph.name}} ({{each_graph.id}})
-          </div>
-          <div class="col-sx-6 col-md-6 text-right" style="padding-right: 10px;">
-            <button class="btn btn-default btn-sm" id="resetZoom{{chart_number}}">Reset Zoom</button>
-            <button class="btn btn-default btn-sm" id="showhidebutton{{chart_number}}" style="margin-right: 10px;">Show/Hide All</button>
-            <a data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
-              <span class='collapse-button{{chart_number}} glyphicon glyphicon-plus' style="font-size: 1.6em; vertical-align: top;"></span>
-            </a>
-          </div>
+      <div class="row" style="padding-left: 0.2em">
+        <div class="col-xs-12">
+          <span style="padding-left: 0.5em">{{each_graph.name}} ({{each_graph.id}})</span>
         </div>
       </div>
 
       <div id="container{{each_graph.id}}" style="height: {{each_graph.height}}px; width: 99%;"></div>
+
+      <div class="row" style="padding-left: 1.4em">
+        <div class="col-sx-12 bottom-align-text">
+          <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
+            <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
+          </button>
+          <button class="btn btn-default btn-sm" id="resetZoom{{chart_number}}">Reset Zoom</button>
+          <button class="btn btn-default btn-sm" id="showhidebutton{{chart_number}}">Show/Hide All</button>
+        </div>
+      </div>
 
       <div class="collapse" id="collapseContainer{{chart_number}}" style="margin: 0.5em; padding: 0.5em; border: 1px solid #ddd; border-radius: 5px; width: calc(100% - 1em)">
         <div class="form-inline">
@@ -311,9 +312,9 @@
 
   <script>
   $('.collapse').on('show.bs.collapse', function(){
-    $(this).parent().find(".glyphicon-plus").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+    $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
   }).on('hide.bs.collapse', function(){
-    $(this).parent().find(".glyphicon-minus").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+    $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
   });
 
   $('#collapseContainerGraphAdd').on('shown.bs.collapse', function () {

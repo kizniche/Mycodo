@@ -616,13 +616,6 @@ def page_logview():
                            log_output=log_output)
 
 
-@blueprint.route('/notes', methods=('GET', 'POST'))
-@flask_login.login_required
-def page_notes():
-    """ Display notes viewer/editor """
-    return render_template('tools/notes.html')
-
-
 @blueprint.route('/pid', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_pid():

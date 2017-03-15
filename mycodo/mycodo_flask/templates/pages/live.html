@@ -93,9 +93,7 @@
                 {%- endfor -%}
               {%- endif -%}
               {%- if sensor_has_pid -%}
-                <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{collapse_container_number}}" aria-expanded="false" aria-controls="collapseContainer{{collapse_container_number}}">
-                  <span class='collapse-button{{collapse_container_number}} glyphicon glyphicon-plus' style="font-size: 1.3em;"></span>
-                </a>
+                <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{collapse_container_number}}" aria-expanded="false" aria-controls="collapseContainer{{collapse_container_number}}"><span class='collapse-button{{collapse_container_number}} fa fa-2x fa-plus-square'></span></a>
               {%- endif -%}
               {{each_sensor.name}} ({{each_sensor.id}})
               {%- if each_sensor.device != 'EDGE' -%}
@@ -225,9 +223,9 @@
 
   <script>
     $('.collapse').on('show.bs.collapse', function(){
-      $(this).parent().find(".glyphicon-plus").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+      $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
     }).on('hide.bs.collapse', function(){
-      $(this).parent().find(".glyphicon-minus").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+      $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
     });
   </script>
 

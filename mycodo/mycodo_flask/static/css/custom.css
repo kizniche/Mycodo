@@ -2,6 +2,12 @@
  * Custom CSS
  */
 
+.navbar-nav > li > a, .navbar-brand {
+    padding-top:10px !important; padding-bottom:0 !important;
+    height: 40px;
+}
+.navbar {min-height:40px !important;}
+
 a.anchor {
     display: block;
     position: relative;

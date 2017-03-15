@@ -53,11 +53,11 @@
         <form method="post" action="/sensor">
         {{form_mod_sensor.csrf_token}}
         {{form_mod_sensor.modSensor_id(value=each_sensor.id)}}
-        <div class="col-xs-2 col-sm-1 col-md-1">
+        <div class="col-xs-2 col-sm-1 col-md-1 text-center">
           <label class="control-label" style="padding-top: 1em"></label>
           <div>
-            <a class="btn btn-default" data-toggle="collapse" href="#collapseContainer{{each_sensor.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_sensor.id}}">
-              <span class='collapse-button{{each_sensor.id}} glyphicon glyphicon-plus' style="font-size: 1em;"></span>
+            <a data-toggle="collapse" href="#collapseContainer{{each_sensor.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_sensor.id}}">
+              <span class="collapse-button{{each_sensor.id}} fa fa-3x fa-plus-square"></span>
             </a>
           </div>
         </div>
@@ -593,9 +593,9 @@
 
   <script>
     $('.collapse').on('show.bs.collapse', function(){
-      $(this).parent().find(".glyphicon-plus").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+      $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
     }).on('hide.bs.collapse', function(){
-      $(this).parent().find(".glyphicon-minus").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+      $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
     });
   </script>
 

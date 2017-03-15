@@ -134,6 +134,7 @@ class DaemonControl:
 
 
 def daemon_active():
+    """ Used to determine if the daemon is reachable to communicate """
     try:
         rpyc.connect("localhost", 18813)
         return True

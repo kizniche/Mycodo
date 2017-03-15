@@ -108,10 +108,13 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
     last_measurement = client.query(query).raw
 
     if last_measurement:
-        number = len(last_measurement['series'][0]['values'])
-        last_time = last_measurement['series'][0]['values'][number - 1][0]
-        last_measurement = last_measurement['series'][0]['values'][number - 1][1]
-        return [last_time, last_measurement]
+        try:
+            number = len(last_measurement['series'][0]['values'])
+            last_time = last_measurement['series'][0]['values'][number - 1][0]
+            last_measurement = last_measurement['series'][0]['values'][number - 1][1]
+            return [last_time, last_measurement]
+        except Exception:
+            logger.exception("ERROR parsing last influx measurement")
 
 
 def relay_sec_on(relay_id, past_seconds):

@@ -54,7 +54,8 @@ class MycodoRam(AbstractSensor):
             self.read()
         return self._disk_space
 
-    def get_measurement(self):
+    @staticmethod
+    def get_measurement():
         """ Gets the measurement in units by reading resource """
         disk_space = resource.getrusage(
             resource.RUSAGE_SELF).ru_maxrss / float(1000)
