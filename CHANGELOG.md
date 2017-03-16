@@ -17,6 +17,7 @@
 
 ### Miscellaneous
 
+  - Improve content and accessibility of help documentation
   - Redesign navigation menu (including glyphs from bootstrap and fontawesome)
   - Move to using a Python virtual environment
   - Refactor the relay/sensor conditional management system

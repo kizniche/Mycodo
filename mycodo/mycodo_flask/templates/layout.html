@@ -115,37 +115,38 @@
               </ul>
             </li>
 
-            <li class="dropdown {% if active_page in ['camera', 'export', 'lcd', 'logview', 'timer'] %} active{% endif %}">
+            <li class="dropdown {% if active_page in ['camera', 'export', 'lcd', 'timer'] %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('More')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li{% if active_page == 'timer' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_timer')}}"><i class="fa fa-hourglass-o"></i>&nbsp;&nbsp;{{_('Timers')}}</a></li>
                 <li{% if active_page == 'lcd' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_lcd')}}"><i class="fa fa-desktop"></i>&nbsp;&nbsp;{{_('LCDs')}}</a></li>
                 <li{% if active_page == 'camera' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_camera')}}"><i class="glyphicon glyphicon-camera"></i>&nbsp;&nbsp;{{_('Cameras')}}</a></li>
                 <li{% if active_page == 'export' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_export')}}"><i class="glyphicon glyphicon-save-file"></i>&nbsp;&nbsp;{{_('Export Measurements')}}</a></li>
-                <li{% if active_page == 'logview' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_logview')}}"><i class="glyphicon glyphicon-book"></i>&nbsp;&nbsp;{{_('Mycodo Logs')}}</a></li>
               </ul>
             </li>
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown {% if active_page in ['help', 'info'] %} active{% endif %}">
+            <li class="dropdown {% if active_page == 'help' %} active{% endif %}">
               <a style="padding-top: 10px !important;" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="gi-2x glyphicon glyphicon-question-sign"></span></a>
               <ul class="dropdown-menu">
                 {% if help_page[0] != '' %}
                   <li{% if active_page == 'help' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_help')}}#{{help_page[0]}}"><i class="fa fa-book"></i>&nbsp;&nbsp;{{_('Help:')}} {{help_page[1]}}</a></li>
                 {% endif %}
                 <li{% if active_page == 'help' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_help')}}"><i class="fa fa-book"></i>&nbsp;&nbsp;{{_('Mycodo Manual')}}</a></li>
-                <li{% if active_page == 'info' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_info')}}"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;&nbsp;{{_('System Information')}}</a></li>
                 <li role="separator" class="divider"></li>
                 <li><a href="https://github.com/kizniche/Mycodo/issues/new" target="_blank"><i class="fa fa-bug"></i>&nbsp;&nbsp;{{_('Submit an Issue')}}</a></li>
                 <li><a href="https://github.com/kizniche/Mycodo" target="_blank"><i class="fa fa-github"></i>&nbsp;&nbsp;{{_('Mycodo on Github')}}</a></li>
               </ul>
             </li>
 
-            <li class="dropdown{% if active_page == 'settings' %} active{% endif %}">
+            <li class="dropdown{% if active_page in ['info', 'logview', 'settings'] %} active{% endif %}">
               <a style="padding-top: 10px !important;" href="#" class="dropdown-toggle" style="padding-top: 0.2em; padding-bottom: 0.2em" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="gi-2x glyphicon glyphicon-cog"></span></a>
               <ul class="dropdown-menu">
                 <li{% if active_page == 'settings' %} class="active"{% endif %}><a href="{{url_for('settings_routes.settings_general')}}"><i class="fa fa-sliders"></i>&nbsp;&nbsp;{{_('Configure')}}</a></li>
+                <li{% if active_page == 'logview' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_logview')}}"><i class="glyphicon glyphicon-book"></i>&nbsp;&nbsp;{{_('Mycodo Logs')}}</a></li>
+                <li{% if active_page == 'info' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_info')}}"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;&nbsp;{{_('System Information')}}</a></li>
+                <li role="separator" class="divider"></li>
                 <li><a href="/admin/upgrade"><i class="glyphicon glyphicon-open"></i>&nbsp;&nbsp;{{_('Upgrade')}}</a></li>
                 <li><a href="/admin/backup"><i class=" glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;{{_('Backup/Restore')}}</a></li>
                 <li role="separator" class="divider"></li>
