@@ -18,7 +18,7 @@
         {% endfor %}</span>
         <br>{{_('Daemon Status:')}}&nbsp
         {%- if daemon_status == "alive" %}<span style="color: #4E9258; font-weight: bold;">{{_('Running')}}</span>
-        {%- else %}<span style="color: #F70D1A; font-weight: bold;">{{_('Not Running')}}</span>
+        {%- else %}<span style="color: #F70D1A; font-weight: bold;">{{_('Not Running')}}</span> <a href="/help#ts-daemon-not-running"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a>
         {% endif %}
         {% if daemon_up %}
           <br>{{_('Daemon Process ID:')}} <span style="color: #4E9258; font-weight: bold;">{{daemon_pid}}</span>
