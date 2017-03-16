@@ -118,11 +118,11 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li{% if active_page == 'help' %} class="active"{% endif %}><a href="/help">{{_('Help')}}</a></li>
-            <li class="dropdown">
+            <li class="{% if mycodo_version == '4.2.0' %}active-upgrade {% endif %}dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Admin')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="{{url_for('settings_routes.settings_general')}}">{{_('Configure')}}</a></li>
-                <li><a href="/admin/upgrade">{{_('Upgrade')}}</a></li>
+                <li{% if mycodo_version == '4.2.0' %} class="active-upgrade"{% endif %}><a href="/admin/upgrade">{{_('Upgrade')}}</a></li>
                 <li><a href="/admin/backup">{{_('Backup/Restore')}}</a></li>
                 <li role="separator" class="divider"></li>
                 <li><a href="/systemctl/restart"onclick='return confirm("Confirm restarting the computer.")'>{{_('Restart Computer')}}</a></li>

@@ -125,8 +125,9 @@ python ${INSTALL_DIRECTORY}/init_databases.py -i all
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_mycodo_release.sh initialize
 
 printf "\n#### Starting the Mycodo daemon and web server\n"
-service mycodo start
 /etc/init.d/apache2 restart
+wget --quiet --no-check-certificate -p http://127.0.0.1 -O /dev/null
+service mycodo start
 
 trap : 0
 

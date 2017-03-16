@@ -2,6 +2,18 @@
  * Custom CSS
  */
 
+.navbar-default .navbar-nav > .active-upgrade > a, .navbar-default .navbar-nav > .active-upgrade > a:hover, .navbar-default .navbar-nav > .active-upgrade > a:focus {
+    color: #ffffff;
+    background-color: #8e0001;
+}
+
+.dropdown-menu > .active-upgrade > a, .dropdown-menu > .active-upgrade > a:hover, .dropdown-menu > .active-upgrade > a:focus {
+    color: #ffffff;
+    text-decoration: none;
+    outline: 0;
+    background-color: #8e0001;
+}
+
 .row.no-gutters {
   margin-right: 0;
   margin-left: 0;
