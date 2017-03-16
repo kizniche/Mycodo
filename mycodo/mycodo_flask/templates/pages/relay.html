@@ -371,7 +371,7 @@
           </div>
           <div class="col-sm-2 col-md-2">
             {{form_conditional_actions.do_camera_duration.label(class_='control-label')}}
-            {{form_conditional_actions.do_camera_duration(class_='form-control', value=each_cond_action.do_camera_duration, **{'title':_('Duration to record video')})}}
+            {{form_conditional_actions.do_camera_duration(class_='form-control', value=each_cond_action.do_camera_duration, **{'title':_('Duration to record video (sec)')})}}
           </div>
 
         {% elif each_cond_action.do_action == 'command' %}

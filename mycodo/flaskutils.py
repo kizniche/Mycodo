@@ -1751,7 +1751,7 @@ def relay_add(form_add_relay):
     else:
         error_msg = "{error}. {accepted_values}: 1-20".format(
             error=gettext("Invalid quantity"),
-            accepted_values=gettext("Acceptable values:")
+            accepted_values=gettext("Acceptable values")
         )
         error.append(error_msg)
     flash_success_errors(error, action, url_for('page_routes.page_relay'))

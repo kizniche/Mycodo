@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-03-15 22:16-0400\n"
+"POT-Creation-Date: 2017-03-16 01:06-0400\n"
 "PO-Revision-Date: 2017-02-11 01:38-0500\n"
 "Last-Translator: \n"
 "Language: ko\n"
@@ -207,12 +207,9 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: flaskforms.py:124 flaskforms.py:1032 flaskforms.py:1070 flaskforms.py:1071
+#: flaskforms.py:124 flaskforms.py:125 flaskforms.py:1032 flaskforms.py:1070
+#: flaskforms.py:1071
 msgid "Repeat Password"
-msgstr ""
-
-#: flaskforms.py:125
-msgid "Password Repeat"
 msgstr ""
 
 #: flaskforms.py:134
@@ -1323,7 +1320,7 @@ msgid "Invalid quantity"
 msgstr ""
 
 #: flaskutils.py:1754
-msgid "Acceptable values:"
+msgid "Acceptable values"
 msgstr ""
 
 #: flaskutils.py:1946
@@ -1577,6 +1574,7 @@ msgstr ""
 
 #: mycodo_flask/templates/layout.html:96
 #: mycodo_flask/templates/pages/graph-async.html:3
+#: mycodo_flask/templates/pages/graph-async.html:25
 msgid "Asynchronous Graphs"
 msgstr ""
 
@@ -1639,56 +1637,56 @@ msgstr ""
 msgid "Export Measurements"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:125
-msgid "Mycodo Logs"
+#: mycodo_flask/templates/layout.html:134
+msgid "Help"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:135
-msgid "Help:"
-msgstr ""
-
-#: mycodo_flask/templates/layout.html:137
+#: mycodo_flask/templates/layout.html:136
 msgid "Mycodo Manual"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:138
-msgid "System Information"
-msgstr ""
-
-#: mycodo_flask/templates/layout.html:140
 msgid "Submit an Issue"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:141
+#: mycodo_flask/templates/layout.html:139
 msgid "Mycodo on Github"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:148
+#: mycodo_flask/templates/layout.html:146
 msgid "Configure"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:149
+#: mycodo_flask/templates/layout.html:147
+msgid "Mycodo Logs"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:148
+msgid "System Information"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:150
 msgid "Upgrade"
 msgstr ""
 
 #: mycodo_flask/templates/admin/backup.html:3
-#: mycodo_flask/templates/layout.html:150
+#: mycodo_flask/templates/layout.html:151
 msgid "Backup/Restore"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:152
+#: mycodo_flask/templates/layout.html:153
 msgid "Restart Computer"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:153
+#: mycodo_flask/templates/layout.html:154
 msgid "Shutdown Computer"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:155
+#: mycodo_flask/templates/layout.html:156
 msgid "Remote Admin"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:157
+#: mycodo_flask/templates/layout.html:158
 msgid "Logout"
 msgstr ""
 
@@ -1807,10 +1805,6 @@ msgstr ""
 msgid "Asynchronous Graph"
 msgstr ""
 
-#: mycodo_flask/templates/pages/graph-async.html:25
-msgid "Asynchrnous Graphs"
-msgstr ""
-
 #: mycodo_flask/templates/pages/graph.html:136
 #: mycodo_flask/templates/pages/graph.html:279
 msgid ""
@@ -1871,11 +1865,11 @@ msgid "Mycodo Version:"
 msgstr ""
 
 #: mycodo_flask/templates/pages/info.html:14
-msgid "Database Version:"
+msgid "Database Version"
 msgstr ""
 
 #: mycodo_flask/templates/pages/info.html:20
-msgid "Daemon Status:"
+msgid "Daemon Status"
 msgstr ""
 
 #: mycodo_flask/templates/pages/info.html:21
@@ -1887,15 +1881,16 @@ msgid "Not Running"
 msgstr ""
 
 #: mycodo_flask/templates/pages/info.html:25
-msgid "Daemon Process ID:"
+msgid "Daemon Process ID"
 msgstr ""
 
 #: mycodo_flask/templates/pages/info.html:26
-msgid "Daemon RAM usage:"
+#: mycodo_flask/templates/pages/sensor.html:303
+msgid "Daemon RAM Usage"
 msgstr ""
 
 #: mycodo_flask/templates/pages/info.html:27
-msgid "Daemon Virtualenv:"
+msgid "Daemon Virtualenv"
 msgstr ""
 
 #: mycodo_flask/templates/pages/info.html:28
@@ -1909,7 +1904,7 @@ msgid "No"
 msgstr ""
 
 #: mycodo_flask/templates/pages/info.html:32
-msgid "Frontend Virtualenv:"
+msgid "Frontend Virtualenv"
 msgstr ""
 
 #: mycodo_flask/templates/pages/info.html:65
@@ -2423,7 +2418,9 @@ msgid "Camera to capture with"
 msgstr ""
 
 #: mycodo_flask/templates/pages/relay.html:374
-msgid "Duration to record video"
+#: mycodo_flask/templates/pages/sensor.html:495
+#: mycodo_flask/templates/pages/sensor.html:520
+msgid "Duration to record video (sec)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/relay.html:381
@@ -2516,10 +2513,6 @@ msgstr ""
 msgid "The measurement from the sensor to test the following conditional logic"
 msgstr ""
 
-#: mycodo_flask/templates/pages/sensor.html:303
-msgid "Daemon Ram Usage"
-msgstr ""
-
 #: mycodo_flask/templates/pages/sensor.html:305
 msgid "Free Disk Space"
 msgstr ""
@@ -2554,11 +2547,6 @@ msgstr ""
 msgid ""
 "The duration (seconds) between checking whether the conditional is true. "
 "Set to 0 to check after every sensor measurement."
-msgstr ""
-
-#: mycodo_flask/templates/pages/sensor.html:495
-#: mycodo_flask/templates/pages/sensor.html:520
-msgid "Duration to record video (seconds)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/timer.html:25
@@ -2720,7 +2708,7 @@ msgid "ADC Gain (see ADC documentation)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/sensor_options/MCP342x.html:54
-msgid "ADC Resolution (se ADC documentation)"
+msgid "ADC Resolution (see ADC documentation)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/sensor_options/MCP342x.html:68

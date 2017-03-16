@@ -11,25 +11,25 @@
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em; font-size: 1.3em">
         {{_('Mycodo Version:')}} <span style="color: #4E9258; font-weight: bold;">{{mycodo_version}}</span>
-        <br>{{_('Database Version:')}} <span style="color: #4E9258; font-weight: bold;">
+        <br>{{_('Database Version')}}: <span style="color: #4E9258; font-weight: bold;">
         {%- for each_ver in database_version %}
           {%- if each_ver != '' %}{{each_ver}}
           {%- else %}None
           {% endif %}
         {% endfor %}</span>
-        <br>{{_('Daemon Status:')}}&nbsp
+        <br>{{_('Daemon Status')}}:&nbsp
         {%- if daemon_status == "alive" %}<span style="color: #4E9258; font-weight: bold;">{{_('Running')}}</span>
         {%- else %}<span style="color: #F70D1A; font-weight: bold;">{{_('Not Running')}}</span> <a href="/help#ts-daemon-not-running"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a>
         {% endif %}
         {% if daemon_up %}
-          <br>{{_('Daemon Process ID:')}} <span style="color: #4E9258; font-weight: bold;">{{daemon_pid}}</span>
-          <br>{{_('Daemon RAM usage:')}} <span style="color: #4E9258; font-weight: bold;">{{ram_use}} MB</span>
-          <br>{{_('Daemon Virtualenv:')}}&nbsp
+          <br>{{_('Daemon Process ID')}}: <span style="color: #4E9258; font-weight: bold;">{{daemon_pid}}</span>
+          <br>{{_('Daemon RAM Usage')}}: <span style="color: #4E9258; font-weight: bold;">{{ram_use}} MB</span>
+          <br>{{_('Daemon Virtualenv')}}:&nbsp
             {%- if virtualenv_daemon -%}<span style="color: #4E9258; font-weight: bold;">{{_('Yes')}}</span>
             {%- else -%}<span style="color: #F70D1A; font-weight: bold;">{{_('No')}}</span>
             {%- endif -%}
         {% endif %}
-        <br>{{_('Frontend Virtualenv:')}}&nbsp
+        <br>{{_('Frontend Virtualenv')}}:&nbsp
         {%- if virtualenv_flask -%}<span style="color: #4E9258; font-weight: bold;">{{_('Yes')}}</span>
         {%- else -%}<span style="color: #F70D1A; font-weight: bold;">{{_('No')}}</span>
         {%- endif -%}

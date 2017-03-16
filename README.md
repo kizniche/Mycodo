@@ -8,7 +8,7 @@ Mycodo is a remote monitoring and automated regulation system with a focus on mo
 
 The core system coordinates a diverse set of responses to sensor measurements, including actions such as camera captures, email notifications, relay activation/deactivation, regulation with PID control, and more. Mycodo has been used for cultivating gourmet mushrooms, cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs and young animals, aging cheeses, fermenting foods, maintaining aquatic systems, and more.
 
-Languages: [Español](#espa%C3%B1ol-spanish), [Français](#fran%C3%A7ais-french), [한국어](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
+Languages: Complete: [Español](#espa%C3%B1ol-spanish); Partial: [Français](#fran%C3%A7ais-french), [한국어](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
 
 
 ## What is PID Control?

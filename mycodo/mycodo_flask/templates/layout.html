@@ -131,7 +131,7 @@
               <a style="padding-top: 10px !important;" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="gi-2x glyphicon glyphicon-question-sign"></span></a>
               <ul class="dropdown-menu">
                 {% if help_page[0] != '' %}
-                  <li{% if active_page == 'help' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_help')}}#{{help_page[0]}}"><i class="fa fa-book"></i>&nbsp;&nbsp;{{_('Help:')}} {{help_page[1]}}</a></li>
+                  <li{% if active_page == 'help' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_help')}}#{{help_page[0]}}"><i class="fa fa-book"></i>&nbsp;&nbsp;{{_('Help')}}: {{help_page[1]}}</a></li>
                 {% endif %}
                 <li{% if active_page == 'help' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_help')}}"><i class="fa fa-book"></i>&nbsp;&nbsp;{{_('Mycodo Manual')}}</a></li>
                 <li role="separator" class="divider"></li>

@@ -122,7 +122,7 @@ class CreateAdmin(FlaskForm):
         validators=[DataRequired()])
     password_repeat = PasswordField(
         lazy_gettext('Repeat Password'),
-        render_kw={"placeholder": lazy_gettext('Password Repeat')},
+        render_kw={"placeholder": lazy_gettext('Repeat Password')},
         validators=[DataRequired()])
 
 

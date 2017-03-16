@@ -300,7 +300,7 @@
                   <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_measurement" name="if_sensor_measurement" title="{{_('The measurement from the sensor to test the following conditional logic')}}.">
                     <option value=""></option>
                     {%- if each_sensor.device_type == 'mycodo_ram' -%}
-                      <option value="ram_use"{% if each_cond.if_sensor_measurement == 'ram_use' %} selected{% endif %}>{{_('Daemon Ram Usage')}}</option>
+                      <option value="ram_use"{% if each_cond.if_sensor_measurement == 'ram_use' %} selected{% endif %}>{{_('Daemon RAM Usage')}}</option>
                     {%- elif each_sensor.device_type == 'free_space' -%}
                       <option value="free_space"{% if each_cond.if_sensor_measurement == 'free_space' %} selected{% endif %}>{{_('Free Disk Space')}}</option>
                     {%- elif each_sensor.device_type == 'tsensor' -%}
@@ -492,7 +492,7 @@
               </div>
               <div class="col-xs-2 col-sm-2 col-md-2">
                 {{form_conditional_actions.do_camera_duration.label(class_='control-label')}}
-                {{form_conditional_actions.do_camera_duration(class_='form-control', value=each_cond_action.do_camera_duration, **{'title':_('Duration to record video (seconds)')})}}
+                {{form_conditional_actions.do_camera_duration(class_='form-control', value=each_cond_action.do_camera_duration, **{'title':_('Duration to record video (sec)')})}}
               </div>
 
             {% elif each_cond_action.do_action == 'video_email' %}
@@ -517,7 +517,7 @@
               </div>
               <div class="col-xs-1 col-sm-1 col-md-1">
                 {{form_conditional_actions.do_camera_duration.label(class_='control-label')}}
-                {{form_conditional_actions.do_camera_duration(class_='form-control', value=each_cond_action.do_camera_duration, **{'title':_('Duration to record video (seconds)')})}}
+                {{form_conditional_actions.do_camera_duration(class_='form-control', value=each_cond_action.do_camera_duration, **{'title':_('Duration to record video (sec)')})}}
               </div>
 
             {% elif each_cond_action.do_action == 'command' %}

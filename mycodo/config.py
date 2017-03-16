@@ -86,7 +86,7 @@ MEASUREMENT_UNITS = {
 
 # Sensors and description
 SENSORS = [
-    ('MYCODO_RAM', 'Mycodo: Daemon Ram Usage'),
+    ('MYCODO_RAM', 'Mycodo: Daemon RAM Usage'),
     ('RPi', 'Raspberry Pi: CPU Temperature'),
     ('RPiCPULoad', 'Raspberry Pi: CPU Load'),
     ('RPiFreeSpace', 'Raspberry Pi: Free Disk Space'),
