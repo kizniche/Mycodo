@@ -1,9 +1,3 @@
-## 5.0.1 (Unreleased)
-
-### Features
-
-  - Test
-
 ## 5.0.0 (2017-03-16)
 
 ### Features
