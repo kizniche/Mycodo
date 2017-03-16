@@ -617,7 +617,7 @@ msgstr ""
 
 #: flaskforms.py:695
 msgid "Save Settings"
-msgstr "Guardar Configuración"
+msgstr "Guardar Configuracion"
 
 #: flaskforms.py:696
 msgid "Hold"
@@ -1412,11 +1412,11 @@ msgstr "Contraseña invalida"
 #: mycodo_flask/templates/settings/general.html:6
 #: mycodo_flask/templates/settings/general.html:10
 msgid "General Settings"
-msgstr "Configuración General"
+msgstr "Configuracion General"
 
 #: flaskutils.py:2490 mycodo_flask/templates/settings/alerts.html:4
 msgid "Alert Settings"
-msgstr "Configuración de Alertas"
+msgstr "Configuracion de Alertas"
 
 #: flaskutils.py:2502
 #, python-format
@@ -2929,7 +2929,7 @@ msgstr "La tensión de entrada al sensor"
 #: mycodo_flask/templates/settings/alerts.html:6
 #: mycodo_flask/templates/settings/alerts.html:10
 msgid "Alerts Settings"
-msgstr "Configuración Alertas"
+msgstr "Configuracion Alertas"
 
 #: mycodo_flask/templates/settings/alerts.html:24
 msgid "465 for SSL, 587 for TSL"
@@ -2953,7 +2953,7 @@ msgstr ""
 #: mycodo_flask/templates/settings/camera.html:6
 #: mycodo_flask/templates/settings/camera.html:10
 msgid "Camera Settings"
-msgstr "Configuración Camara"
+msgstr "Configuracion Camara"
 
 #: mycodo_flask/templates/settings/camera.html:50
 msgid "Name for this Camera"
@@ -3041,7 +3041,7 @@ msgstr "Día Opciones: Diario: 1-7 (1 = Lunes), Mensual: 1-28"
 #: mycodo_flask/templates/settings/users.html:6
 #: mycodo_flask/templates/settings/users.html:10
 msgid "User Settings"
-msgstr "Configuración Usuario"
+msgstr "Configuracion Usuario"
 
 #: mycodo_flask/templates/settings/users.html:128
 msgid "Roles"

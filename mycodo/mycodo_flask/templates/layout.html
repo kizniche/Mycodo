@@ -99,7 +99,7 @@
             <li{% if active_page == 'sensor' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_sensor')}}">{{_('Sensors')}}</a></li>
 
             <li class="dropdown {% if active_page in ['relay', 'usage', 'usage_reports'] %} active{% endif %}">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Relay<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Relay')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li{% if active_page == 'relay' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_relay')}}"><i class="fa fa-bolt"></i>&nbsp;&nbsp;{{_('Relays')}}</a></li>
                 <li{% if active_page == 'usage' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_usage')}}"><i class="glyphicon glyphicon-equalizer"></i>&nbsp;&nbsp;{{_('Relay Usage')}}</a></li>
