@@ -1,7 +1,7 @@
 {% extends "layout-settings.html" %}
 {% set active_page = "settings" %}
 {% set active_settings = "alerts" %}
-{% set help_page = "settings-alerts" %}
+{% set help_page = ["settings-alerts", _('Alert Settings')] %}
 
 {% block title %} - {{_('Alerts Settings')}}{% endblock %}
 

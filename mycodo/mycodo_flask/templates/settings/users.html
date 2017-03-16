@@ -1,7 +1,7 @@
 {% extends "layout-settings.html" %}
 {% set active_page = "settings" %}
 {% set active_settings = "users" %}
-{% set help_page = "settings-user" %}
+{% set help_page = ["settings-user", _('User Settings')] %}
 
 {% block title %} - {{_('User Settings')}}{% endblock %}
 

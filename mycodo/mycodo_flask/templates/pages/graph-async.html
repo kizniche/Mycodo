@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "graph_async" %}
-{% set help_page = "graphs" %}
+{% set help_page = ["graphs-asynchronous", _('Asynchronous Graphs')] %}
 
 {% block head %}
   <script src="/static/js/highstock.js"></script>
@@ -22,7 +22,7 @@
   <div class="container">
   {% include 'flash_messages.html' %}
 
-    <h4>{{_('Asynchrnous Graphs')}} <a href="/help#graphs"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <h4>{{_('Asynchrnous Graphs')}} <a href="/help#graphs-asynchronous"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
     <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph.</p>
 
@@ -176,6 +176,9 @@ $(function () {
 
           series: [{
               data: data,
+              tooltip: {
+                  valueDecimals: 3
+              },
               dataGrouping: {
                   enabled: false
               }

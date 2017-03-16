@@ -433,12 +433,6 @@ def page_info():
         with open(DAEMON_PID_FILE, 'r') as pid_file:
             daemon_pid = int(pid_file.read())
 
-    # daemon_pid = subprocess.Popen(
-    #     "pgrep -f '/var/www/mycodo/env/bin/python /var/www/mycodo/mycodo/mycodo_daemon.py'", stdout=subprocess.PIPE, shell=True)
-    # (daemon_pid_output, _) = daemon_pid.communicate()
-    # daemon_pid.wait()
-    # daemon_pid_first = daemon_pid_output.split('\n')[0]
-
     database_version = []
     for each_ver in AlembicVersion.query.all():
         database_version.append(each_ver.version_num)
