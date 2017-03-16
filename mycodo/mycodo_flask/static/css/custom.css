@@ -3,7 +3,7 @@
  */
 
 .navbar-nav > li > a, .navbar-brand {
-    padding-top:10px !important; padding-bottom:0 !important;
+    padding-top:12px !important; padding-bottom:0 !important;
     height: 45px;
 }
 .navbar {min-height:45px !important;}

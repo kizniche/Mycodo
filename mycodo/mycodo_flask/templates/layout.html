@@ -110,7 +110,7 @@
             <li class="dropdown {% if active_page in ['pid', 'method_list'] %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">PID<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li{% if active_page == 'pid' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_pid')}}"><i class="glyphicon glyphicon-screenshot"></i>&nbsp;&nbsp;{{_('PID Controllers')}}</a></li>
+                <li{% if active_page == 'pid' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_pid')}}"><i class="fa fa-crosshairs"></i>&nbsp;&nbsp;{{_('PID Controllers')}}</a></li>
                 <li{% if active_page == 'method_list' %} class="active"{% endif %}><a href="{{url_for('method_routes.method_list')}}"><i class="fa fa-line-chart"></i>&nbsp;&nbsp;{{_('PID Methods')}}</a></li>
               </ul>
             </li>
@@ -118,7 +118,7 @@
             <li class="dropdown {% if active_page in ['camera', 'export', 'lcd', 'logview', 'timer'] %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('More')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li{% if active_page == 'timer' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_timer')}}"><i class="glyphicon glyphicon-time"></i>&nbsp;&nbsp;{{_('Timers')}}</a></li>
+                <li{% if active_page == 'timer' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_timer')}}"><i class="fa fa-hourglass-o"></i>&nbsp;&nbsp;{{_('Timers')}}</a></li>
                 <li{% if active_page == 'lcd' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_lcd')}}"><i class="fa fa-desktop"></i>&nbsp;&nbsp;{{_('LCDs')}}</a></li>
                 <li{% if active_page == 'camera' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_camera')}}"><i class="glyphicon glyphicon-camera"></i>&nbsp;&nbsp;{{_('Cameras')}}</a></li>
                 <li{% if active_page == 'export' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_export')}}"><i class="glyphicon glyphicon-save-file"></i>&nbsp;&nbsp;{{_('Export Measurements')}}</a></li>
@@ -129,20 +129,20 @@
 
           <ul class="nav navbar-nav navbar-right">
             <li class="dropdown {% if active_page in ['help', 'info'] %} active{% endif %}">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="gi-2x glyphicon glyphicon-question-sign"></span></a>
+              <a style="padding-top: 10px !important;" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="gi-2x glyphicon glyphicon-question-sign"></span></a>
               <ul class="dropdown-menu">
                 <li{% if active_page == 'help' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_help')}}{{help_page}}"><i class="fa fa-book"></i>&nbsp;&nbsp;{{_('Mycodo Manual')}}</a></li>
                 <li{% if active_page == 'info' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_info')}}"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;&nbsp;{{_('System Information')}}</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="https://github.com/kizniche/Mycodo/issues/new" target="_blank"><i class="fa fa-exclamation-triangle"></i>&nbsp;&nbsp;{{_('Submit an Issue')}}</a></li>
+                <li><a href="https://github.com/kizniche/Mycodo/issues/new" target="_blank"><i class="fa fa-bug"></i>&nbsp;&nbsp;{{_('Submit an Issue')}}</a></li>
                 <li><a href="https://github.com/kizniche/Mycodo" target="_blank"><i class="fa fa-github"></i>&nbsp;&nbsp;{{_('Mycodo on Github')}}</a></li>
               </ul>
             </li>
 
             <li class="dropdown{% if active_page == 'settings' %} active{% endif %}">
-              <a href="#" class="dropdown-toggle" style="padding-top: 0.2em; padding-bottom: 0.2em" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="gi-2x glyphicon glyphicon-cog"></span></a>
+              <a style="padding-top: 10px !important;" href="#" class="dropdown-toggle" style="padding-top: 0.2em; padding-bottom: 0.2em" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="gi-2x glyphicon glyphicon-cog"></span></a>
               <ul class="dropdown-menu">
-                <li{% if active_page == 'settings' %} class="active"{% endif %}><a href="{{url_for('settings_routes.settings_general')}}"><i class="glyphicon glyphicon-wrench"></i>&nbsp;&nbsp;{{_('Configure')}}</a></li>
+                <li{% if active_page == 'settings' %} class="active"{% endif %}><a href="{{url_for('settings_routes.settings_general')}}"><i class="fa fa-sliders"></i>&nbsp;&nbsp;{{_('Configure')}}</a></li>
                 <li><a href="/admin/upgrade"><i class="glyphicon glyphicon-open"></i>&nbsp;&nbsp;{{_('Upgrade')}}</a></li>
                 <li><a href="/admin/backup"><i class=" glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;{{_('Backup/Restore')}}</a></li>
                 <li role="separator" class="divider"></li>

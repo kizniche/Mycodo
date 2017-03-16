@@ -58,6 +58,7 @@ from mycodo.utils.tools import return_relay_usage
 from config import (
     CONDITIONAL_ACTIONS,
     DAEMON_LOG_FILE,
+    DAEMON_PID_FILE,
     HTTP_LOG_FILE,
     INSTALL_DIRECTORY,
     LOGIN_LOG_FILE,
@@ -426,21 +427,17 @@ def page_info():
     (ifconfig_output, _) = ifconfig.communicate()
     ifconfig.wait()
 
-    daemon_pid = subprocess.Popen(
-        "pgrep -f '/var/www/mycodo/env/bin/python /var/www/mycodo/mycodo/mycodo_daemon.py'", stdout=subprocess.PIPE, shell=True)
-    (daemon_pid_output, _) = daemon_pid.communicate()
-    daemon_pid.wait()
-    daemon_pid_first = daemon_pid_output.split('\n')[0]
+    import os.path
+    daemon_pid = None
+    if os.path.exists(DAEMON_PID_FILE):
+        with open(DAEMON_PID_FILE, 'r') as pid_file:
+            daemon_pid = int(pid_file.read())
 
-    pstree = subprocess.Popen(
-        "pstree -p {pid}".format(pid=daemon_pid_first), stdout=subprocess.PIPE, shell=True)
-    (pstree_output, _) = pstree.communicate()
-    pstree.wait()
-
-    top = subprocess.Popen(
-        "top -bH -n 1 -p {pid}".format(pid=daemon_pid_first), stdout=subprocess.PIPE, shell=True)
-    (top_output, _) = top.communicate()
-    top.wait()
+    # daemon_pid = subprocess.Popen(
+    #     "pgrep -f '/var/www/mycodo/env/bin/python /var/www/mycodo/mycodo/mycodo_daemon.py'", stdout=subprocess.PIPE, shell=True)
+    # (daemon_pid_output, _) = daemon_pid.communicate()
+    # daemon_pid.wait()
+    # daemon_pid_first = daemon_pid_output.split('\n')[0]
 
     database_version = []
     for each_ver in AlembicVersion.query.all():
@@ -451,16 +448,28 @@ def page_info():
         virtualenv_flask = True
 
     virtualenv_daemon = False
+    pstree_output = None
+    top_output = None
     daemon_up = daemon_active()
     if daemon_up:
         control = DaemonControl()
         ram_use = control.ram_use()
         virtualenv_daemon = control.is_in_virtualenv()
+
+        pstree = subprocess.Popen(
+            "pstree -p {pid}".format(pid=daemon_pid), stdout=subprocess.PIPE, shell=True)
+        (pstree_output, _) = pstree.communicate()
+        pstree.wait()
+
+        top = subprocess.Popen(
+            "top -bH -n 1 -p {pid}".format(pid=daemon_pid), stdout=subprocess.PIPE, shell=True)
+        (top_output, _) = top.communicate()
+        top.wait()
     else:
         ram_use = 0
 
     return render_template('pages/info.html',
-                           daemon_pid=daemon_pid_first,
+                           daemon_pid=daemon_pid,
                            daemon_up=daemon_up,
                            gpio_readall=gpio_output,
                            database_version=database_version,

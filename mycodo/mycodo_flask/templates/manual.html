@@ -44,6 +44,7 @@
 			</ul>
       <li style="padding-top: 0.6em;"><a href="#miscellaneous">Miscellaneous</a></li>
 			<ul>
+        <li><a href="#graphs">Graphs</a></li>
         <li><a href="#camera">Camera</a></li>
         <li><a href="#relay-usage">Relay Usage</a></li>
         <li><a href="#system-backup">System Backup</a></li>
@@ -626,7 +627,24 @@
     <a class="anchor" name="miscellaneous"></a>
 		<h1>Miscellaneous</h1>
 
-		<a class="anchor" name="camera"></a>
+		<a class="anchor" name="graphs"></a>
+		<h2>Graphs</h2>
+
+    <p>There are two different types of graphs, Live and Asynchronous.</p>
+
+    <h3>Live Graphs</h3>
+
+    <p>A graphical data display that is useful for viewing data sets spanning relatively short periods of time (hours/days/weeks). Select a time frame to view data and continually updating data from new sensor measurements. Multiple graphs can be created on one page that enables a dashboard to be created of graphed sensor data. Each graphs may have one or more sensor measurement, relay duration, or PID setpoint rendered onto it. Several live graph options exist, such as the time period (x-axis) and line colors, as well as navigation and data/image export options. To edit graph options, select the plus sign on the top-right of a graph.</p>
+
+    <h3>Asynchronous Graphs</h3>
+
+    <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it's not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.</p>
+
+    <p>Note: Live Graphs require measurements to be acquired, therefore at least one sensor needs to be added and activated in order to display live data.</p>
+
+    <hr>
+
+    <a class="anchor" name="camera"></a>
 		<h2>Camera</h2>
 
     <p>Once a cameras has been set up (in the <a href="#settings-camera">Camera Settings</a>), it may be used to capture still images, create time-lapses, and stream video. Cameras may also be used with <a href="#conditional-statements">Conditional Statements</a> to trigger a camera image or video capture (as well as the ability to email the image/video with a notification).</p>

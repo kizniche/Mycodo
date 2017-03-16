@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "graph" %}
+{% set help_page = "graphs" %}
 
 {% block head %}
   <script src="/static/js/highstock.js"></script>
@@ -42,23 +43,18 @@
 
     <div style="margin: 0 0.3em 0.6em 0.3em; border: 2px solid #ddd; border-radius: 5px; width: calc({{each_graph.width}}% - 0.7em); min-width: 350px">
 
-      <div class="row" style="padding-left: 0.2em">
-        <div class="col-xs-12">
-          <span style="padding-left: 0.5em">{{each_graph.name}} ({{each_graph.id}})</span>
+    <div class="row" style="padding-right: 1.4em">
+        <div class="col-sx-12 text-right">
+          <span style="padding-right: 0.5em">{{each_graph.name}} ({{each_graph.id}})</span>
+          <button class="btn btn-default btn-sm" id="resetZoom{{chart_number}}">Reset Zoom</button>
+          <button class="btn btn-default btn-sm" id="showhidebutton{{chart_number}}">Show/Hide All</button>
+          <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
+            <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
+          </button>
         </div>
       </div>
 
       <div id="container{{each_graph.id}}" style="height: {{each_graph.height}}px; width: 99%;"></div>
-
-      <div class="row" style="padding-left: 1.4em">
-        <div class="col-sx-12 bottom-align-text">
-          <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
-            <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
-          </button>
-          <button class="btn btn-default btn-sm" id="resetZoom{{chart_number}}">Reset Zoom</button>
-          <button class="btn btn-default btn-sm" id="showhidebutton{{chart_number}}">Show/Hide All</button>
-        </div>
-      </div>
 
       <div class="collapse" id="collapseContainer{{chart_number}}" style="margin: 0.5em; padding: 0.5em; border: 1px solid #ddd; border-radius: 5px; width: calc(100% - 1em)">
         <div class="form-inline">

@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "graph_async" %}
+{% set help_page = "graphs" %}
 
 {% block head %}
   <script src="/static/js/highstock.js"></script>
@@ -20,27 +21,26 @@
   <!-- Route: /graph-async -->
   <div class="container">
   {% include 'flash_messages.html' %}
-  </div>
 
-  <div style="padding: 0 0.5em 0.5em 0.5em">
+    <h4>{{_('Asynchrnous Graphs')}} <a href="/help#graphs"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
-  <form method="post" action="/graph-async">
-  <div class="form-inline">
-    <div class="form-group">
-      <select class="form-control" id="selected_measure" name="selected_measure">
-      {% for each_choice, value in sensor_choices.iteritems() -%}
-        <option value="{{each_choice}}">{{value}}</option>
-      {% endfor -%}
-      </select>
+    <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph.</p>
+
+    <form method="post" action="/graph-async">
+    <div class="form-inline">
+      <div class="form-group">
+        <select class="form-control" id="selected_measure" name="selected_measure">
+        {% for each_choice, value in sensor_choices.iteritems() -%}
+          <option value="{{each_choice}}">{{value}}</option>
+        {% endfor -%}
+        </select>
+      </div>
+      <div class="form-group">
+        <input type="submit" value="Submit">
+      </div>
     </div>
-    <div class="form-group">
-      <input type="submit" value="Submit">
-    </div>
-  </div>
-  </form>
+    </form>
 
-  <div style="padding: 0.5em">
-    This is a simple test of asynchronous loading of data. I just figured out how to do this, so it is in its infancy. Expect updated functionality in the future. For every zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it's not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, you will only be downloading ~50kb until you select a new zoom level, at which time you will download only another ~50kb.
   </div>
 
   {% if selected_measure %}
