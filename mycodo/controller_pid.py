@@ -4,6 +4,25 @@
 # controller_pid.py - PID controller that manages descrete control of a
 #                     regulation system of sensors, relays, and devices
 #
+#  Copyright (C) 2017  Kyle T. Gabriel
+#
+#  This file is part of Mycodo
+#
+#  Mycodo is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Mycodo is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
+#
+#  Contact at kylegabriel.com
+#
 # PID controller code was used from the source below, with modifications.
 #
 # <http://code.activestate.com/recipes/577231-discrete-pid-controller/>
@@ -38,8 +57,9 @@ import time as t
 import timeit
 
 # Classes
-from databases.mycodo_db.models import (
+from databases.models import (
     Method,
+    MethodData,
     PID,
     Relay,
     Sensor
@@ -48,7 +68,7 @@ from mycodo_client import DaemonControl
 
 # Functions
 from databases.utils import session_scope
-from utils.database import db_retrieve_table
+from utils.database import db_retrieve_table_daemon
 from utils.influx import (
     read_last_influxdb,
     write_influxdb_setpoint
@@ -79,6 +99,8 @@ class PIDController(threading.Thread):
         self.thread_shutdown_timer = 0
         self.ready = ready
         self.pid_id = pid_id
+        self.pid_unique_id = db_retrieve_table_daemon(
+            PID, device_id=self.pid_id).unique_id
         self.control = DaemonControl()
 
         self.control_variable = 0
@@ -99,9 +121,7 @@ class PIDController(threading.Thread):
 
         # Check if a method is set for this PID
         if self.method_id:
-            method = db_retrieve_table(MYCODO_DB_PATH, Method)
-            method = method.filter(Method.method_id == self.method_id)
-            method = method.filter(Method.method_order == 0).first()
+            method = db_retrieve_table_daemon(Method, device_id=self.method_id)
             self.method_type = method.method_type
             self.method_start_time = method.start_time
 
@@ -113,9 +133,8 @@ class PIDController(threading.Thread):
                     # Method has been instructed to begin
                     with session_scope(MYCODO_DB_PATH) as db_session:
                         mod_method = db_session.query(Method)
-                        mod_method = mod_method.filter(Method.method_id == self.method_id)
-                        mod_method = mod_method.filter(Method.method_order == 0).first()
-                        mod_method.start_time = datetime.datetime.now()
+                        mod_method = mod_method.filter(Method.id == self.method_id).first()
+                        mod_method.time_start = datetime.datetime.now()
                         self.method_start_time = mod_method.start_time
                         db_session.commit()
                 else:
@@ -133,31 +152,33 @@ class PIDController(threading.Thread):
             self.running = True
             self.logger.info("Activated in {:.1f} ms".format(
                 (timeit.default_timer()-self.thread_startup_timer)*1000))
-            if self.activated == 2:
+            if self.is_paused:
                 self.logger.info("Paused")
-            elif self.activated == 3:
+            elif self.is_held:
                 self.logger.info("Held")
             self.ready.set()
 
             while self.running:
                 if t.time() > self.timer:
-                    self.timer = self.timer+self.measure_interval
-                    # self.activated: 0=inactive, 1=active, 2=pause, 3=hold
+                    # Ensure the timer ends in the future
+                    while t.time() > self.timer:
+                        self.timer = self.timer+self.measure_interval
 
-                    # If active, retrieve sensor measurement and update PID output
-                    if self.activated == 1:
+                    # If PID is active, retrieve sensor measurement and update PID output
+                    if self.is_activated and not self.is_paused:
                         self.get_last_measurement()
 
                         if self.last_measurement_success:
-                            # Update setpoint if a method is selected
-                            if self.method_id != '':
+                            # Update setpoint using a method if one is selected
+                            if self.method_id:
                                 self.calculate_method_setpoint(self.method_id)
-                            write_influxdb_setpoint(self.pid_id, self.set_point)
+                            write_influxdb_setpoint(self.pid_unique_id, self.set_point)
                             # Update PID and get control variable
                             self.control_variable = self.update(self.last_measurement)
 
-                    # If active or on hold, activate relays
-                    if self.activated in [1, 3]:
+                    # If PID is active or on hold, activate relays
+                    if ((self.is_activated and not self.is_paused) or
+                            (self.is_activated and self.is_held)):
                         self.manipulate_relays()
                 t.sleep(0.1)
 
@@ -175,28 +196,35 @@ class PIDController(threading.Thread):
 
     def initialize_values(self):
         """Set PID parameters"""
-        pid = db_retrieve_table(MYCODO_DB_PATH, PID, device_id=self.pid_id)
-        sensor = db_retrieve_table(MYCODO_DB_PATH, Sensor, device_id=pid.sensor_id)
-        self.activated = pid.activated  # 0=inactive, 1=active, 2=paused
-        self.sensor_id = pid.sensor_id
-        self.measure_type = pid.measure_type
+        pid = db_retrieve_table_daemon(PID, device_id=self.pid_id)
+        self.is_activated = pid.is_activated
+        self.is_held = pid.is_held
+        self.is_paused = pid.is_paused
+        self.measurement = pid.measurement
         self.method_id = pid.method_id
         self.direction = pid.direction
         self.raise_relay_id = pid.raise_relay_id
         self.raise_min_duration = pid.raise_min_duration
         self.raise_max_duration = pid.raise_max_duration
+        self.raise_min_off_duration = pid.raise_min_off_duration
         self.lower_relay_id = pid.lower_relay_id
         self.lower_min_duration = pid.lower_min_duration
         self.lower_max_duration = pid.lower_max_duration
+        self.lower_min_off_duration = pid.lower_min_off_duration
         self.Kp = pid.p
         self.Ki = pid.i
         self.Kd = pid.d
         self.Integrator_min = pid.integrator_min
         self.Integrator_max = pid.integrator_max
         self.measure_interval = pid.period
+        self.max_measure_age = pid.max_measure_age
         self.default_set_point = pid.setpoint
         self.set_point = pid.setpoint
+
+        sensor = db_retrieve_table_daemon(Sensor, device_id=pid.sensor_id)
+        self.sensor_unique_id = sensor.unique_id
         self.sensor_duration = sensor.period
+
         return "success"
 
     def update(self, current_value):
@@ -256,28 +284,35 @@ class PIDController(threading.Thread):
             else:
                 duration = int(self.sensor_duration*1.5)
             self.last_measurement = read_last_influxdb(
-                self.sensor_id,
-                self.measure_type,
+                self.sensor_unique_id,
+                self.measurement,
                 duration)
             if self.last_measurement:
-                measurement_list = list(self.last_measurement.get_points(
-                    measurement=self.measure_type))
-                self.last_time = measurement_list[0]['time']
-                self.last_measurement = measurement_list[0]['value']
+                self.last_time = self.last_measurement[0]
+                self.last_measurement = self.last_measurement[1]
+
                 utc_dt = datetime.datetime.strptime(
                     self.last_time.split(".")[0],
                     '%Y-%m-%dT%H:%M:%S')
                 utc_timestamp = calendar.timegm(utc_dt.timetuple())
                 local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
                 self.logger.debug("Latest {}: {} @ {}".format(
-                    self.measure_type, self.last_measurement,
+                    self.measurement, self.last_measurement,
                     local_timestamp))
+                if calendar.timegm(t.gmtime())-utc_timestamp > self.max_measure_age:
+                    self.logger.error(
+                        "Last measurement was {last_sec} seconds ago, however"
+                        "the maximum measurement age is set to {max_sec}"
+                        " seconds.".format(
+                            last_sec=calendar.timegm(t.gmtime())-utc_timestamp,
+                            max_sec=self.max_measure_age
+                        ))
                 self.last_measurement_success = True
             else:
                 self.logger.warning("No data returned from influxdb")
         except requests.ConnectionError:
             self.logger.error("Failed to read measurement from the "
-                                  "influxdb database: Could not connect.")
+                              "influxdb database: Could not connect.")
         except Exception as except_msg:
             self.logger.exception(
                 "Exception while reading measurement from the influxdb "
@@ -290,11 +325,11 @@ class PIDController(threading.Thread):
 
         :rtype: None
         """
-        # If there was a measurement able to be retrieved from
-        # influxdb database that was entered within the past minute
+        # If the last measurement was able to be retrieved and was entered within the past minute
         if self.last_measurement_success:
             #
-            # PID control variable positive to raise environmental condition
+            # PID control variable is positive, indicating a desire to raise
+            # the environmental condition
             #
             if self.direction in ['raise', 'both'] and self.raise_relay_id:
                 if self.control_variable > 0:
@@ -308,10 +343,8 @@ class PIDController(threading.Thread):
 
                     # Turn off lower_relay if active, because we're now raising
                     if self.lower_relay_id:
-                        relay = db_retrieve_table(
-                            MYCODO_DB_PATH,
-                            Relay,
-                            device_id=self.lower_relay_id)
+                        relay = db_retrieve_table_daemon(
+                            Relay, device_id=self.lower_relay_id)
                         if relay.is_on():
                             self.control.relay_off(self.lower_relay_id)
 
@@ -323,13 +356,16 @@ class PIDController(threading.Thread):
                                 sp=self.set_point,
                                 op=self.control_variable,
                                 relay=self.raise_relay_id))
-                        self.control.relay_on(self.raise_relay_id,
-                                              self.raise_seconds_on)
+                        self.control.relay_on(
+                            self.raise_relay_id,
+                            self.raise_seconds_on,
+                            min_off_duration=self.raise_min_off_duration)
                 else:
                     self.control.relay_off(self.raise_relay_id)
 
             #
-            # PID control variable negative to lower environmental condition
+            # PID control variable is negative, indicating a desire to lower
+            # the environmental condition
             #
             if self.direction in ['lower', 'both'] and self.lower_relay_id:
                 if self.control_variable < 0:
@@ -343,10 +379,8 @@ class PIDController(threading.Thread):
 
                     # Turn off raise_relay if active, because we're now lowering
                     if self.raise_relay_id:
-                        relay = db_retrieve_table(
-                            MYCODO_DB_PATH,
-                            Relay,
-                            device_id=self.raise_relay_id)
+                        relay = db_retrieve_table_daemon(
+                            Relay, device_id=self.raise_relay_id)
                         if relay.is_on():
                             self.control.relay_off(self.raise_relay_id)
 
@@ -357,8 +391,10 @@ class PIDController(threading.Thread):
                                             sp=self.set_point,
                                             op=self.control_variable,
                                             relay=self.lower_relay_id))
-                        self.control.relay_on(self.lower_relay_id,
-                                              self.lower_seconds_on)
+                        self.control.relay_on(
+                            self.lower_relay_id,
+                            self.lower_seconds_on,
+                            min_off_duration=self.lower_min_off_duration)
                 else:
                     self.control.relay_off(self.lower_relay_id)
 
@@ -369,44 +405,44 @@ class PIDController(threading.Thread):
                 self.control.relay_off(self.lower_relay_id)
 
     def calculate_method_setpoint(self, method_id):
-        method = db_retrieve_table(MYCODO_DB_PATH, Method)
+        method = db_retrieve_table_daemon(Method)
 
-        method_key = method.filter(Method.method_id == method_id)
-        method_key = method_key.filter(Method.method_order == 0).first()
+        method_key = method.filter(Method.id == method_id).first()
 
-        method = method.filter(Method.method_id == method_id)
-        method = method.filter(Method.relay_id == None)
-        method = method.filter(Method.method_order > 0)
-        method = method.order_by(Method.method_order.asc()).all()
+        method_data = db_retrieve_table_daemon(MethodData)
+        method_data = method_data.filter(MethodData.method_id == method_id)
+
+        method_data_all = method_data.filter(MethodData.relay_id == None).all()
+        method_data_first = method_data.filter(MethodData.relay_id == None).first()
 
         now = datetime.datetime.now()
 
         # Calculate where the current time/date is within the time/date method
         if method_key.method_type == 'Date':
-            for each_method in method:
-                start_time = datetime.datetime.strptime(each_method.start_time, '%Y-%m-%d %H:%M:%S')
-                end_time = datetime.datetime.strptime(each_method.end_time, '%Y-%m-%d %H:%M:%S')
+            for each_method in method_data_all:
+                start_time = datetime.datetime.strptime(each_method.time_start, '%Y-%m-%d %H:%M:%S')
+                end_time = datetime.datetime.strptime(each_method.time_end, '%Y-%m-%d %H:%M:%S')
                 if start_time < now < end_time:
-                    start_setpoint = each_method.start_setpoint
-                    if each_method.end_setpoint:
-                        end_setpoint = each_method.end_setpoint
+                    setpoint_start = each_method.setpoint_start
+                    if each_method.setpoint_end:
+                        setpoint_end = each_method.setpoint_end
                     else:
-                        end_setpoint = each_method.start_setpoint
+                        setpoint_end = each_method.setpoint_start
 
-                    setpoint_diff = abs(end_setpoint-start_setpoint)
+                    setpoint_diff = abs(setpoint_end-setpoint_start)
                     total_seconds = (end_time-start_time).total_seconds()
                     part_seconds = (now-start_time).total_seconds()
                     percent_total = part_seconds/total_seconds
 
-                    if start_setpoint < end_setpoint:
-                        new_setpoint = start_setpoint+(setpoint_diff*percent_total)
+                    if setpoint_start < setpoint_end:
+                        new_setpoint = setpoint_start+(setpoint_diff*percent_total)
                     else:
-                        new_setpoint = start_setpoint-(setpoint_diff*percent_total)
+                        new_setpoint = setpoint_start-(setpoint_diff*percent_total)
 
                     self.logger.debug("[Method] Start: {} End: {}".format(
                         start_time, end_time))
                     self.logger.debug("[Method] Start: {} End: {}".format(
-                        start_setpoint, end_setpoint))
+                        setpoint_start, setpoint_end))
                     self.logger.debug("[Method] Total: {} Part total: {} ({}%)".format(
                         total_seconds, part_seconds, percent_total))
                     self.logger.debug("[Method] New Setpoint: {}".format(
@@ -418,30 +454,30 @@ class PIDController(threading.Thread):
         elif method_key.method_type == 'Daily':
             daily_now = datetime.datetime.now().strftime('%H:%M:%S')
             daily_now = datetime.datetime.strptime(str(daily_now), '%H:%M:%S')
-            for each_method in method:
-                start_time = datetime.datetime.strptime(each_method.start_time, '%H:%M:%S')
-                end_time = datetime.datetime.strptime(each_method.end_time, '%H:%M:%S')
+            for each_method in method_data_all:
+                start_time = datetime.datetime.strptime(each_method.time_start, '%H:%M:%S')
+                end_time = datetime.datetime.strptime(each_method.time_end, '%H:%M:%S')
                 if start_time < daily_now < end_time:
-                    start_setpoint = each_method.start_setpoint
-                    if each_method.end_setpoint:
-                        end_setpoint = each_method.end_setpoint
+                    setpoint_start = each_method.setpoint_start
+                    if each_method.setpoint_end:
+                        setpoint_end = each_method.setpoint_end
                     else:
-                        end_setpoint = each_method.start_setpoint
+                        setpoint_end = each_method.setpoint_start
 
-                    setpoint_diff = abs(end_setpoint-start_setpoint)
+                    setpoint_diff = abs(setpoint_end-setpoint_start)
                     total_seconds = (end_time-start_time).total_seconds()
                     part_seconds = (daily_now-start_time).total_seconds()
                     percent_total = part_seconds/total_seconds
 
-                    if start_setpoint < end_setpoint:
-                        new_setpoint = start_setpoint+(setpoint_diff*percent_total)
+                    if setpoint_start < setpoint_end:
+                        new_setpoint = setpoint_start+(setpoint_diff*percent_total)
                     else:
-                        new_setpoint = start_setpoint-(setpoint_diff*percent_total)
+                        new_setpoint = setpoint_start-(setpoint_diff*percent_total)
 
                     self.logger.debug("[Method] Start: {} End: {}".format(
                         start_time.strftime('%H:%M:%S'), end_time.strftime('%H:%M:%S')))
                     self.logger.debug("[Method] Start: {} End: {}".format(
-                        start_setpoint, end_setpoint))
+                        setpoint_start, setpoint_end))
                     self.logger.debug("[Method] Total: {} Part total: {} ({}%)".format(
                         total_seconds, part_seconds, percent_total))
                     self.logger.debug("[Method] New Setpoint: {}".format(
@@ -451,20 +487,21 @@ class PIDController(threading.Thread):
 
         # Calculate sine y-axis value from the x-axis (seconds of the day)
         elif method_key.method_type == 'DailySine':
-            new_setpoint = sine_wave_y_out(method_key.amplitude,
-                                           method_key.frequency,
-                                           method_key.shift_angle,
-                                           method_key.shift_y)
+            new_setpoint = sine_wave_y_out(method_data_first.amplitude,
+                                           method_data_first.frequency,
+                                           method_data_first.shift_angle,
+                                           method_data_first.shift_y)
             self.set_point = new_setpoint
             return 0
 
         # Calculate Bezier curve y-axis value from the x-axis (seconds of the day)
         elif method_key.method_type == 'DailyBezier':
-            new_setpoint = bezier_curve_y_out(method_key.shift_angle,
-                                              (method_key.x0, method_key.y0),
-                                              (method_key.x1, method_key.y1),
-                                              (method_key.x2, method_key.y2),
-                                              (method_key.x3, method_key.y3))
+            new_setpoint = bezier_curve_y_out(
+                method_data_first.shift_angle,
+                (method_data_first.x0, method_data_first.y0),
+                (method_data_first.x1, method_data_first.y1),
+                (method_data_first.x2, method_data_first.y2),
+                (method_data_first.x3, method_data_first.y3))
             self.set_point = new_setpoint
             return 0
 
@@ -473,23 +510,23 @@ class PIDController(threading.Thread):
             seconds_from_start = (now-self.method_start_time).total_seconds()
             total_sec = 0
             previous_total_sec = 0
-            for each_method in method:
+            for each_method in method_data_all:
                 total_sec += each_method.duration_sec
                 if previous_total_sec <= seconds_from_start < total_sec:
                     row_start_time = float(self.method_start_time.strftime('%s'))+previous_total_sec
                     row_since_start_sec = (now-(self.method_start_time+datetime.timedelta(0, previous_total_sec))).total_seconds()
                     percent_row = row_since_start_sec/each_method.duration_sec
 
-                    start_setpoint = each_method.start_setpoint
-                    if each_method.end_setpoint:
-                        end_setpoint = each_method.end_setpoint
+                    setpoint_start = each_method.setpoint_start
+                    if each_method.setpoint_end:
+                        setpoint_end = each_method.setpoint_end
                     else:
-                        end_setpoint = each_method.start_setpoint
-                    setpoint_diff = abs(end_setpoint-start_setpoint)
-                    if start_setpoint < end_setpoint:
-                        new_setpoint = start_setpoint+(setpoint_diff*percent_row)
+                        setpoint_end = each_method.setpoint_start
+                    setpoint_diff = abs(setpoint_end-setpoint_start)
+                    if setpoint_start < setpoint_end:
+                        new_setpoint = setpoint_start+(setpoint_diff*percent_row)
                     else:
-                        new_setpoint = start_setpoint-(setpoint_diff*percent_row)
+                        new_setpoint = setpoint_start-(setpoint_diff*percent_row)
 
                     self.logger.debug(
                         "[Method] Start: {} Seconds Since: {}".format(
@@ -510,14 +547,12 @@ class PIDController(threading.Thread):
                     return 0
                 previous_total_sec = total_sec
 
-            # Duration method has ended, reset start_time locally and in DB
+            # Duration method has ended, reset method_start_time locally and in DB
             if self.method_start_time:
                 with session_scope(MYCODO_DB_PATH) as db_session:
                     mod_method = db_session.query(Method).filter(
-                        Method.method_id == self.method_id)
-                    mod_method = mod_method.filter(
-                        Method.method_order == 0).first()
-                    mod_method.start_time = 'Ended'
+                        Method.id == self.method_id).first()
+                    mod_method.method_start_time = 'Ended'
                     db_session.commit()
                 self.method_start_time = 'Ended'
 
@@ -531,17 +566,19 @@ class PIDController(threading.Thread):
             return "error"
 
     def pid_hold(self):
-        self.activated = 3
+        self.is_held = True
         self.logger.info("Hold")
         return "success"
 
     def pid_pause(self):
-        self.activated = 2
+        self.is_paused = True
         self.logger.info("Pause")
         return "success"
 
     def pid_resume(self):
-        self.activated = 1
+        self.is_activated = True
+        self.is_held = False
+        self.is_paused = False
         self.logger.info("Resume")
         return "success"
 
@@ -592,10 +629,7 @@ class PIDController(threading.Thread):
         # Unset method start time
         if self.method_id:
             with session_scope(MYCODO_DB_PATH) as db_session:
-                mod_method = db_session.query(Method)
-                mod_method = mod_method.filter(
-                    Method.method_id == self.method_id)
-                mod_method = mod_method.filter(
-                    Method.method_order == 0).first()
-                mod_method.start_time = 'Ended'
+                mod_method = db_session.query(Method).filter(
+                    Method.id == self.method_id).first()
+                mod_method.method_start_time = 'Ended'
                 db_session.commit()

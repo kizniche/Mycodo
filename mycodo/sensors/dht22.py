@@ -2,8 +2,13 @@
 import logging
 import time
 import pigpio
-from sensorutils import dewpoint
+
 from .base_sensor import AbstractSensor
+from sensorutils import dewpoint
+from mycodo.databases.models import Relay
+from mycodo.utils.database import db_retrieve_table_daemon
+
+from mycodo.mycodo_client import DaemonControl
 
 
 class DHT22Sensor(AbstractSensor):
@@ -48,9 +53,11 @@ class DHT22Sensor(AbstractSensor):
         self.logger = logging.getLogger(
             'mycodo.sensor_{id}'.format(id=sensor_id))
 
+        self.control = DaemonControl()
+
         self.pi = pigpio.pi()
         self.gpio = gpio
-        self.power = power
+        self.power_relay_id = power
         self.powered = False
 
         self.bad_CS = 0  # Bad checksum count
@@ -70,7 +77,6 @@ class DHT22Sensor(AbstractSensor):
         self._temperature = 0.0
 
         self.start_sensor()
-        time.sleep(2)
 
     def __repr__(self):
         """  Representation of object """
@@ -126,10 +132,11 @@ class DHT22Sensor(AbstractSensor):
         self._temperature = 0.0
 
         # Ensure if the power pin turns off, it is turned back on
-        if self.power and not self.pi.read(self.power):
+        if (self.power_relay_id and
+                not db_retrieve_table_daemon(Relay, device_id=self.power_relay_id).is_on()):
             self.logger.error(
-                'Sensor power pin {pin} detected as being off. '
-                'Turning on.'.format(pin=self.power))
+                'Sensor power relay {rel} detected as being off. '
+                'Turning on.'.format(rel=self.power_relay_id))
             self.start_sensor()
             time.sleep(2)
 
@@ -171,7 +178,7 @@ class DHT22Sensor(AbstractSensor):
                     return  # success - no errors
                 time.sleep(2)
 
-            self.logger.error("Could not acquire a measurement")
+            self.logger.debug("Could not acquire a measurement")
         except Exception as e:
             self.logger.error(
                 "Exception raised when taking a reading: {err}".format(
@@ -278,13 +285,12 @@ class DHT22Sensor(AbstractSensor):
             if self.no_response > self.MAX_NO_RESPONSE:
                 self.no_response = 0
                 self.bad_SR += 1  # Bump sensor reset count.
-                if self.power is not None:
+                if self.power_relay_id is not None:
                     self.logger.error(
                         "Invalid data, power cycling sensor.")
                     self.stop_sensor()
                     time.sleep(2)
                     self.start_sensor()
-                    time.sleep(2)
         elif self.bit < 39:  # Short message received.
             self.bad_SM += 1  # Bump short message count.
             self.no_response = 0
@@ -322,19 +328,16 @@ class DHT22Sensor(AbstractSensor):
             self.either_edge_cb = None
 
     def start_sensor(self):
-        """ Power the sensor """
-        if self.power:
-            self.logger.info(
-                "Turning on sensor by powering pin {pin}".format(
-                    pin=self.power))
-            self.pi.write(self.power, 1)
+        """ Turn the sensor on """
+        if self.power_relay_id:
+            self.logger.info("Turning on sensor")
+            self.control.relay_on(self.power_relay_id, 0)
+            time.sleep(2)
             self.powered = True
 
     def stop_sensor(self):
-        """ Depower the sensor """
-        if self.power:
-            self.logger.info(
-                "Turning off sensor by depowering pin {pin}".format(
-                    pin=self.power))
-            self.pi.write(self.power, 0)
+        """ Turn the sensor off """
+        if self.power_relay_id:
+            self.logger.info("Turning off sensor")
+            self.control.relay_off(self.power_relay_id)
             self.powered = False

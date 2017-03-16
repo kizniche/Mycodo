@@ -1,7 +1,7 @@
-<div class="form-group">
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   <label class="control-label">I2C Address</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modLocation" name="modLocation" title="The I2C address of the sensor.">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{_('The I2C address to access the device')}}">
       <option value=""{% if each_sensor.location == '' %} selected{% endif %}></option>
       <option value="0x40"{% if each_sensor.location == '0x40' %} selected{% endif %}>Address 0x40</option>
       <option value="0x41"{% if each_sensor.location == '0x41' %} selected{% endif %}>Address 0x41</option>
@@ -14,9 +14,4 @@
     </select>
   </div>
 </div>
-<div class="form-group">
-  {{form_mod_sensor.modBus.label(class_='control-label')}}
-  <div>
-    {{form_mod_sensor.modBus(class_='form-control', value=each_sensor.i2c_bus, **{'title':'Which I2C bus is this sensor connected?'})}}
-  </div>
-</div>
+{% include 'pages/sensor_options/I2C_BUS.html' %}

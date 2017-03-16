@@ -14,26 +14,26 @@ from influxdb import InfluxDBClient
 from sqlalchemy import func
 
 # Classes
-from databases.mycodo_db.models import (
+from mycodo.databases.models import (
     AlembicVersion,
+    Conditional,
     LCD,
     Method,
     PID,
     Relay,
     Sensor,
-    Timer
+    Timer,
+    User
 )
-from databases.users_db.models import Users
 
 # Functions
-from databases.utils import session_scope
+from database import db_retrieve_table_daemon
 
 # Config
-from config import (
+from mycodo.config import (
     ID_FILE,
     MYCODO_VERSION,
     SQL_DATABASE_MYCODO,
-    SQL_DATABASE_USER,
     STATS_CSV,
     STATS_DATABASE,
     STATS_HOST,
@@ -44,7 +44,6 @@ from config import (
 )
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
-USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
 
 logger = logging.getLogger("mycodo.stats")
 
@@ -188,6 +187,7 @@ def recreate_stat_file():
     new_stat_data = [
         ['stat', 'value'],
         ['id', stat_id],
+        ['uptime', 0.0],
         ['next_send', time.time() + STATS_INTERVAL],
         ['RPi_revision', get_pi_revision()],
         ['Mycodo_revision', MYCODO_VERSION],
@@ -206,6 +206,8 @@ def recreate_stat_file():
         ['num_relays', 0],
         ['num_sensors', 0],
         ['num_sensors_active', 0],
+        ['num_conditionals', 0],
+        ['num_conditionals_active', 0],
         ['num_timers', 0],
         ['num_timers_active', 0]
     ]
@@ -218,7 +220,7 @@ def recreate_stat_file():
     os.chmod(STATS_CSV, 0664)
 
 
-def send_stats():
+def send_anonymous_stats(start_time):
     """
     Send anonymous usage statistics
 
@@ -229,42 +231,50 @@ def send_stats():
     try:
         client = InfluxDBClient(STATS_HOST, STATS_PORT, STATS_USER, STATS_PASSWORD, STATS_DATABASE)
         # Prepare stats before sending
-        with session_scope(MYCODO_DB_PATH) as new_session:
-            alembic = new_session.query(AlembicVersion).first()
-            add_update_csv(STATS_CSV, 'alembic_version',
-                           alembic.version_num)
+        uptime = (time.time() - start_time) / 86400.0  # Days
+        add_update_csv(STATS_CSV, 'uptime', uptime)
 
-            relays = new_session.query(Relay)
-            add_update_csv(STATS_CSV, 'num_relays', get_count(relays))
+        version_num = db_retrieve_table_daemon(
+            AlembicVersion, entry='first').version_num
+        version_send = version_num if version_num else 'None'
+        add_update_csv(STATS_CSV, 'alembic_version', version_send)
 
-            sensors = new_session.query(Sensor)
-            add_update_csv(STATS_CSV, 'num_sensors', get_count(sensors))
-            add_update_csv(STATS_CSV, 'num_sensors_active',
-                           get_count(
-                               sensors.filter(Sensor.activated == True)))
+        relays = db_retrieve_table_daemon(Relay)
+        add_update_csv(STATS_CSV, 'num_relays', get_count(relays))
 
-            pids = new_session.query(PID)
-            add_update_csv(STATS_CSV, 'num_pids', get_count(pids))
-            add_update_csv(STATS_CSV, 'num_pids_active',
-                           get_count(pids.filter(PID.activated == True)))
+        sensors = db_retrieve_table_daemon(Sensor)
+        add_update_csv(STATS_CSV, 'num_sensors', get_count(sensors))
+        add_update_csv(STATS_CSV, 'num_sensors_active',
+                       get_count(
+                           sensors.filter(Sensor.is_activated == True)))
 
-            lcds = new_session.query(LCD)
-            add_update_csv(STATS_CSV, 'num_lcds', get_count(lcds))
-            add_update_csv(STATS_CSV, 'num_lcds_active',
-                           get_count(lcds.filter(LCD.activated == True)))
+        conditionals = db_retrieve_table_daemon(Conditional)
+        add_update_csv(STATS_CSV, 'num_conditionals', get_count(conditionals))
+        add_update_csv(STATS_CSV, 'num_conditionals_active',
+                       get_count(
+                           conditionals.filter(Conditional.is_activated == True)))
 
-            methods = new_session.query(Method)
-            add_update_csv(STATS_CSV, 'num_methods',
-                           get_count(methods.filter(
-                               Method.method_order == 0)))
-            add_update_csv(STATS_CSV, 'num_methods_in_pid',
-                           get_count(pids.filter(PID.method_id != '')))
+        pids = db_retrieve_table_daemon(PID)
+        add_update_csv(STATS_CSV, 'num_pids', get_count(pids))
+        add_update_csv(STATS_CSV, 'num_pids_active',
+                       get_count(pids.filter(PID.is_activated == True)))
 
-            timers = new_session.query(Timer)
-            add_update_csv(STATS_CSV, 'num_timers', get_count(timers))
-            add_update_csv(STATS_CSV, 'num_timers_active',
-                           get_count(timers.filter(
-                               Timer.activated == True)))
+        lcds = db_retrieve_table_daemon(LCD)
+        add_update_csv(STATS_CSV, 'num_lcds', get_count(lcds))
+        add_update_csv(STATS_CSV, 'num_lcds_active',
+                       get_count(lcds.filter(LCD.is_activated == True)))
+
+        methods = db_retrieve_table_daemon(Method)
+        add_update_csv(STATS_CSV, 'num_methods',
+                       get_count(methods))
+        add_update_csv(STATS_CSV, 'num_methods_in_pid',
+                       get_count(pids.filter(PID.method_id != '')))
+
+        timers = db_retrieve_table_daemon(Timer)
+        add_update_csv(STATS_CSV, 'num_timers', get_count(timers))
+        add_update_csv(STATS_CSV, 'num_timers_active',
+                       get_count(timers.filter(
+                           Timer.is_activated == True)))
 
         add_update_csv(STATS_CSV, 'country', geocoder.ip('me').country)
         add_update_csv(STATS_CSV, 'ram_use_mb',
@@ -273,15 +283,15 @@ def send_stats():
 
         user_count = 0
         admin_count = 0
-        with session_scope(USER_DB_PATH) as db_session:
-            try:
-                users = db_session.query(Users).all()
-                for each_user in users:
-                    user_count += 1
-                    if each_user.user_restriction == 'admin':
-                        admin_count += 1
-            except Exception:
-                pass
+        # TODO: More specific exception or remove try
+        try:
+            users = db_retrieve_table_daemon(User, entry='all')
+            for each_user in users:
+                user_count += 1
+                if each_user.role == 1:
+                    admin_count += 1
+        except Exception:
+            pass
         add_update_csv(STATS_CSV, 'num_users_admin', admin_count)
         add_update_csv(STATS_CSV, 'num_users_guest',
                        user_count - admin_count)
@@ -291,14 +301,14 @@ def send_stats():
         # Combine stats into list of dictionaries
         new_stats_dict = return_stat_file_dict(STATS_CSV)
         formatted_stat_dict = []
-        for each_key, each_value in new_stats_dict.iteritems():
+        for each_key, each_value in new_stats_dict.items():
             if each_key != 'stat':  # Do not send header row
                 formatted_stat_dict = add_stat_dict(formatted_stat_dict,
                                                     new_stats_dict['id'],
                                                     each_key,
                                                     each_value)
 
-        # Send stats to secure, remote influxdb server
+        # Send stats to secure, remote influxdb server (only write permission)
         client.write_points(formatted_stat_dict)
         logger.debug("Sent anonymous usage statistics")
         return 0

@@ -5,6 +5,24 @@
 #                       at predefined intervals or at specific times
 #                       of the day.
 #
+#  Copyright (C) 2017  Kyle T. Gabriel
+#
+#  This file is part of Mycodo
+#
+#  Mycodo is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Mycodo is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
+#
+#  Contact at kylegabriel.com
 
 import datetime
 import logging
@@ -13,11 +31,11 @@ import time
 import timeit
 
 # Classes
-from databases.mycodo_db.models import Timer
+from databases.models import Timer
 from mycodo_client import DaemonControl
 
 # Functions
-from utils.database import db_retrieve_table
+from utils.database import db_retrieve_table_daemon
 from utils.system_pi import time_between_range
 
 # Config
@@ -43,8 +61,7 @@ class TimerController(threading.Thread):
         self.timer_id = timer_id
         self.control = DaemonControl()
 
-        timer = db_retrieve_table(
-            MYCODO_DB_PATH, Timer, device_id=self.timer_id)
+        timer = db_retrieve_table_daemon(Timer, device_id=self.timer_id)
         self.timer_type = timer.timer_type
         self.name = timer.name
         self.relay_id = timer.relay_id

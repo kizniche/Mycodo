@@ -1,16 +1,19 @@
 # coding=utf-8
 import logging
 import threading
+
 from influxdb import InfluxDBClient
 
-# Config
-from config import (
+from mycodo.config import (
     INFLUXDB_HOST,
     INFLUXDB_PORT,
     INFLUXDB_USER,
     INFLUXDB_PASSWORD,
     INFLUXDB_DATABASE
 )
+from mycodo.databases.models import Relay
+from mycodo.mycodo_client import DaemonControl
+from mycodo.utils.database import db_retrieve_table_daemon
 
 logger = logging.getLogger("mycodo.influxdb")
 
@@ -88,28 +91,36 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE)
 
     if duration_sec:
-        query = """SELECT value
+        query = """SELECT last(value)
                        FROM   {measurement}
                        WHERE  device_id = '{device}'
                               AND TIME > Now() - {dur}s
-                              ORDER BY time
-                              DESC LIMIT 1;
                 """.format(measurement=measure_type,
                            device=device_id,
                            dur=duration_sec)
     else:
-        query = """SELECT value
+        query = """SELECT last(value)
                        FROM   {measurement}
                        WHERE  device_id = '{device}'
-                              ORDER BY time
-                              DESC LIMIT 1;
                 """.format(measurement=measure_type,
                            device=device_id)
 
-    return client.query(query)
+    last_measurement = client.query(query).raw
+
+    if last_measurement:
+        try:
+            number = len(last_measurement['series'][0]['values'])
+            last_time = last_measurement['series'][0]['values'][number - 1][0]
+            last_measurement = last_measurement['series'][0]['values'][number - 1][1]
+            return [last_time, last_measurement]
+        except Exception:
+            logger.exception("ERROR parsing last influx measurement")
 
 
-def sum_relay_usage(relay_id, past_seconds):
+def relay_sec_on(relay_id, past_seconds):
+    """ Return the number of seconds a relay has been ON in the past number of seconds """
+    # Get the number of seconds ON stored in the database
+    relay = db_retrieve_table_daemon(Relay, device_id=relay_id)
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE)
     if relay_id:
@@ -117,17 +128,29 @@ def sum_relay_usage(relay_id, past_seconds):
                        FROM   duration_sec
                        WHERE  device_id = '{}'
                               AND TIME > Now() - {}s;
-                """.format(relay_id, past_seconds)
+                """.format(relay.unique_id, past_seconds)
     else:
         query = """SELECT sum(value)
                        FROM   duration_sec
                        WHERE  TIME > Now() - {}s;
                 """.format(past_seconds)
     output = client.query(query)
+    sec_recorded_on = 0
     if output:
-        return output.raw['series'][0]['values'][0][1]
-    else:
-        return 0
+        sec_recorded_on = output.raw['series'][0]['values'][0][1]
+
+    # Get the number of seconds not stored in the database (if currently on)
+
+    relay_time_on = 0
+    if relay.is_on():
+        control = DaemonControl()
+        relay_time_on = control.relay_sec_currently_on(relay_id)
+
+    sec_currently_on = 0
+    if relay_time_on:
+        sec_currently_on = min(relay_time_on, past_seconds)
+
+    return sec_recorded_on + sec_currently_on
 
 
 def write_influxdb_value(device_id, measure_type, value, timestamp=None):

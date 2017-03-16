@@ -2,40 +2,38 @@
 """ collection of Method endpoints """
 import logging
 import datetime
-import random
-import string
 import time
+import flask_login
 
 from flask import (
     Blueprint,
-    current_app,
     flash,
     jsonify,
     redirect,
     render_template,
     request,
-    session,
     url_for
 )
 from flask_babel import gettext
-
+from mycodo.mycodo_flask.extensions import db
 # Classes
-from mycodo.databases.mycodo_db.models import (
+from mycodo.databases.models import (
+    DisplayOrder,
     Method,
+    MethodData,
     Relay
 )
 
 # Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
-from mycodo.databases.utils import session_scope
-from mycodo.mycodo_flask.general_routes import (
-    before_blueprint_request,
-    inject_mycodo_version,
-    logged_in
+from mycodo.mycodo_flask.general_routes import inject_mycodo_version
+from mycodo.utils.system_pi import (
+    csv_to_list_of_int,
+    get_sec,
+    list_to_csv
 )
-from mycodo.utils.database import db_retrieve_table
-from mycodo.utils.system_pi import get_sec
+
 from mycodo.utils.method import (
     sine_wave_y_out,
     bezier_curve_y_out
@@ -47,7 +45,6 @@ blueprint = Blueprint('method_routes',
                       __name__,
                       static_folder='../static',
                       template_folder='../templates')
-blueprint.before_request(before_blueprint_request)  # check if admin was created
 
 
 @blueprint.context_processor
@@ -55,118 +52,119 @@ def inject_dictionary():
     return inject_mycodo_version()
 
 
-@blueprint.route('/method-data/<method_type>/<method_id>')
-def method_data(method_type, method_id):
+@blueprint.route('/method-data/<method_id>')
+@flask_login.login_required
+def method_data(method_id):
     """
     Returns options for a particular method
     This includes sets of (time, setpoint) data.
     """
-    logger.debug('called method_data(method_type={type}, '
-                 'method_id={id})'.format(type=method_type, id=method_id))
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    method = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Method)
-
     # First method column with general information about method
-    method_key = method.filter(Method.method_id == method_id)
-    method_key = method_key.filter(Method.method_order == 0).first()
+    method = Method.query.filter(Method.id == method_id).first()
 
     # User-edited lines of each method
-    method = method.filter(Method.method_id == method_id)
-    method = method.filter(Method.method_order > 0)
-    method = method.filter(Method.relay_id == None)
-    method = method.order_by(Method.method_order.asc()).all()
+    method_data = MethodData.query.filter(MethodData.method_id == method.id)
+
+    # Retrieve the order to display method data lines
+    display_order = csv_to_list_of_int(method.method_order)
+
+    last_method_data = None
+    if display_order is not None:
+        method_data = MethodData.query.filter(MethodData.method_id == method.id)
+        last_method_data = method_data.filter(MethodData.id == display_order[-1]).first()
 
     method_list = []
-    if method_key.method_type == "Date":
-        for each_method in method:
-            if each_method.end_setpoint == None:
-                end_setpoint = each_method.start_setpoint
+    if method.method_type == "Date":
+        for each_method in method_data:
+            if each_method.setpoint_end == None:
+                setpoint_end = each_method.setpoint_start
             else:
-                end_setpoint = each_method.end_setpoint
+                setpoint_end = each_method.setpoint_end
 
             start_time = datetime.datetime.strptime(
-                each_method.start_time, '%Y-%m-%d %H:%M:%S')
+                each_method.time_start, '%Y-%m-%d %H:%M:%S')
             end_time = datetime.datetime.strptime(
-                each_method.end_time, '%Y-%m-%d %H:%M:%S')
+                each_method.time_end, '%Y-%m-%d %H:%M:%S')
 
             is_dst = time.daylight and time.localtime().tm_isdst > 0
             utc_offset_ms = (time.altzone if is_dst else time.timezone)
             method_list.append(
                 [(int(start_time.strftime("%s")) - utc_offset_ms) * 1000,
-                 each_method.start_setpoint])
+                 each_method.setpoint_start])
             method_list.append(
                 [(int(end_time.strftime("%s")) - utc_offset_ms) * 1000,
-                 end_setpoint])
+                 setpoint_end])
             method_list.append(
                 [(int(start_time.strftime("%s")) - utc_offset_ms) * 1000,
                  None])
 
-    elif method_key.method_type == "Daily":
-        for each_method in method:
-            if each_method.end_setpoint is None:
-                end_setpoint = each_method.start_setpoint
+    elif method.method_type == "Daily":
+        method_data = method_data.filter(MethodData.time_start != None)
+        method_data = method_data.filter(MethodData.time_end != None)
+        method_data = method_data.filter(MethodData.relay_id == None)
+        for each_method in method_data:
+            if each_method.setpoint_end is None:
+                setpoint_end = each_method.setpoint_start
             else:
-                end_setpoint = each_method.end_setpoint
+                setpoint_end = each_method.setpoint_end
             method_list.append(
-                [get_sec(each_method.start_time) * 1000,
-                 each_method.start_setpoint])
+                [get_sec(each_method.time_start) * 1000,
+                 each_method.setpoint_start])
             method_list.append(
-                [get_sec(each_method.end_time) * 1000,
-                 end_setpoint])
+                [get_sec(each_method.time_end) * 1000,
+                 setpoint_end])
             method_list.append(
-                [get_sec(each_method.start_time) * 1000,
+                [get_sec(each_method.time_start) * 1000,
                  None])
 
-    elif method_key.method_type == "DailyBezier":
+    elif method.method_type == "DailyBezier":
         points_x = 700
         seconds_in_day = 60 * 60 * 24
-        P0 = (method_key.x0, method_key.y0)
-        P1 = (method_key.x1, method_key.y1)
-        P2 = (method_key.x2, method_key.y2)
-        P3 = (method_key.x3, method_key.y3)
+        P0 = (last_method_data.x0, last_method_data.y0)
+        P1 = (last_method_data.x1, last_method_data.y1)
+        P2 = (last_method_data.x2, last_method_data.y2)
+        P3 = (last_method_data.x3, last_method_data.y3)
         for n in range(points_x):
             percent = n / float(points_x)
             second_of_day = percent * seconds_in_day
-            y = bezier_curve_y_out(method_key.shift_angle,
+            y = bezier_curve_y_out(last_method_data.shift_angle,
                                    P0, P1, P2, P3,
                                    second_of_day)
             method_list.append([percent * seconds_in_day * 1000, y])
 
-    elif method_key.method_type == "DailySine":
+    elif method.method_type == "DailySine":
         points_x = 700
         seconds_in_day = 60 * 60 * 24
         for n in range(points_x):
             percent = n / float(points_x)
             angle = n / float(points_x) * 360
-            y = sine_wave_y_out(method_key.amplitude, method_key.frequency,
-                                method_key.shift_angle, method_key.shift_y,
+            y = sine_wave_y_out(last_method_data.amplitude, last_method_data.frequency,
+                                last_method_data.shift_angle, last_method_data.shift_y,
                                 angle)
             method_list.append([percent * seconds_in_day * 1000, y])
 
-    elif method_key.method_type == "Duration":
+    elif method.method_type == "Duration":
         first_entry = True
         start_duration = 0
         end_duration = 0
-        for each_method in method:
-            if each_method.end_setpoint is None:
-                end_setpoint = each_method.start_setpoint
+        method_data = method_data.filter(MethodData.relay_id == None)
+        for each_method in method_data:
+            if each_method.setpoint_end is None:
+                setpoint_end = each_method.setpoint_start
             else:
-                end_setpoint = each_method.end_setpoint
+                setpoint_end = each_method.setpoint_end
             if first_entry:
-                method_list.append([0, each_method.start_setpoint])
-                method_list.append([each_method.duration_sec, end_setpoint])
+                method_list.append([0, each_method.setpoint_start])
+                method_list.append([each_method.duration_sec, setpoint_end])
                 start_duration += each_method.duration_sec
                 first_entry = False
             else:
                 end_duration = start_duration + each_method.duration_sec
 
                 method_list.append(
-                    [start_duration, each_method.start_setpoint])
+                    [start_duration, each_method.setpoint_start])
                 method_list.append(
-                    [end_duration, end_setpoint])
+                    [end_duration, setpoint_end])
 
                 start_duration += each_method.duration_sec
 
@@ -174,20 +172,13 @@ def method_data(method_type, method_id):
 
 
 @blueprint.route('/method', methods=('GET', 'POST'))
+@flask_login.login_required
 def method_list():
     """ List all methods on one page with a graph for each """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
+    form_create_method = flaskforms.MethodCreate()
 
-    form_create_method = flaskforms.CreateMethod()
-
-    # TODO: Move to Flask-SQLAlchemy. This creates errors in the HTTP log: "SQLite objects created in a thread can only be used in that same thread"
-    method = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Method)
-
-    method_all = method.filter(Method.method_order > 0)
-    method_all = method_all.filter(Method.relay_id == None).all()
-    method = method.filter(Method.method_order == 0).all()
+    method = Method.query.all()
+    method_all = MethodData.query.all()
 
     return render_template('pages/method-list.html',
                            method=method,
@@ -195,97 +186,99 @@ def method_list():
                            form_create_method=form_create_method)
 
 
-@blueprint.route('/method-build/<method_type>/<method_id>', methods=('GET', 'POST'))
-def method_builder(method_type, method_id):
+@blueprint.route('/method-build/<method_id>', methods=('GET', 'POST'))
+@flask_login.login_required
+def method_builder(method_id):
     """
     Page to edit the details of each method
     This includes the (time, setpoint) data sets
     """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
+    if not flaskutils.user_has_permission('edit_controllers'):
+        return redirect(url_for('method_routes.method_list'))
 
-    if session['user_group'] == 'guest':
-        flaskutils.deny_guest_user()
-        return redirect('/method')
+    relay = Relay.query.all()
+
+    form_create_method = flaskforms.MethodCreate()
+    form_add_method = flaskforms.MethodAdd()
+    form_mod_method = flaskforms.MethodMod()
 
     # Used in software tests to verify function is executing as admin
-    if method_type == '1':
+    if method_id == '-1':
         return 'admin logged in'
+    # Create new method
+    elif method_id == '0':
+        form_fail = flaskutils.method_create(form_create_method)
+        new_method = Method.query.order_by(Method.id.desc()).first()
+        if not form_fail:
+            return redirect('/method-build/{method_id}'.format(
+                method_id=new_method.id))
+        else:
+            return redirect('/method')
+    elif int(method_id) < 0:
+        flash("Invalid method ID", "error")
+        return redirect('/method')
 
-    if method_type in ['Date', 'Duration', 'Daily',
-                       'DailySine', 'DailyBezier', '0']:
-        form_create_method = flaskforms.CreateMethod()
-        form_add_method = flaskforms.AddMethod()
-        form_mod_method = flaskforms.ModMethod()
+    # First method column with general information about method
+    method = Method.query.filter(Method.id == int(method_id)).first()
 
-        # Create new method
-        if method_type == '0':
-            random_id = ''.join([random.choice(
-                string.ascii_letters + string.digits) for _ in xrange(8)])
-            method_id = random_id
-            method_type = form_create_method.method_type.data
-            form_fail = flaskutils.method_create(form_create_method,
-                                                 method_id)
-            if not form_fail:
-                return redirect('/method-build/{}/{}'.format(
-                    method_type, method_id))
-            else:
-                flash(gettext("Could not create method"), "error")
+    if method.method_type in ['Date', 'Duration', 'Daily',
+                              'DailySine', 'DailyBezier']:
 
-        method = db_retrieve_table(
-            current_app.config['MYCODO_DB_PATH'], Method)
+        # Retrieve the order to display method data lines
+        display_order = csv_to_list_of_int(method.method_order)
 
-        # The single table entry that holds the method type information
-        method_key = method.filter(Method.method_id == method_id)
-        method_key = method_key.filter(Method.method_order == 0).first()
-
-        # The table entries with time, setpoint, and relay data, sorted by order
-        method_list = method.filter(Method.method_order > 0)
-        method_list = method_list.order_by(Method.method_order.asc()).all()
+        method_data = MethodData.query.filter(MethodData.method_id == method.id)
+        setpoint_method_data = MethodData.query.filter(MethodData.setpoint_start != None)
+        sine_method_data = MethodData.query.filter(MethodData.amplitude != None)
+        bezier_method_data = MethodData.query.filter(MethodData.x0 != None)
+        if display_order is not None:
+            last_setpoint_method = setpoint_method_data.filter(MethodData.id == display_order[-1]).first()
+            last_sine_method = sine_method_data.filter(MethodData.id == display_order[-1]).first()
+            last_bezier_method = bezier_method_data.filter(MethodData.id == display_order[-1]).first()
+        else:
+            last_setpoint_method = None
+            last_sine_method = None
+            last_bezier_method = None
 
         last_end_time = ''
         last_setpoint = ''
-        if method_type in ['Date', 'Daily']:
-            last_method = method.filter(Method.method_id == method_key.method_id)
-            last_method = last_method.filter(Method.method_order > 0)
-            last_method = last_method.filter(Method.relay_id == None)
-            last_method = last_method.order_by(Method.method_order.desc()).first()
+        if method.method_type in ['Daily', 'Date', 'Duration']:
+            method_data = method_data.all()
 
             # Get last entry end time and setpoint to populate the form
-            if last_method is None:
+            if last_setpoint_method is None:
                 last_end_time = ''
                 last_setpoint = ''
             else:
-                last_end_time = last_method.end_time
-                if last_method.end_setpoint is not None:
-                    last_setpoint = last_method.end_setpoint
+                last_end_time = last_setpoint_method.time_end
+                if last_setpoint_method.setpoint_end is not None:
+                    last_setpoint = last_setpoint_method.setpoint_end
                 else:
-                    last_setpoint = last_method.start_setpoint
-
-        # method = db_retrieve_table(
-        #     current_app.config['MYCODO_DB_PATH'], Method)
-        relay = db_retrieve_table(
-            current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
+                    last_setpoint = last_setpoint_method.setpoint_start
 
         if request.method == 'POST':
             form_name = request.form['form-name']
             if form_name == 'addMethod':
-                form_fail = flaskutils.method_add(form_add_method, method)
+                form_fail = flaskutils.method_add(form_add_method)
             elif form_name in ['modMethod', 'renameMethod']:
-                form_fail = flaskutils.method_mod(form_mod_method, method)
+                form_fail = flaskutils.method_mod(form_mod_method)
             if (form_name in ['addMethod', 'modMethod', 'renameMethod'] and
                     not form_fail):
-                return redirect('/method-build/{}/{}'.format(
-                    method_type, method_id))
+                return redirect('/method-build/{method_id}'.format(
+                    method_id=method.id))
+
+        if not method_data:
+            method_data = []
 
         return render_template('pages/method-build.html',
                                method=method,
                                relay=relay,
-                               method_key=method_key,
-                               method_list=method_list,
+                               method_data=method_data,
                                method_id=method_id,
-                               method_type=method_type,
                                last_end_time=last_end_time,
+                               last_bezier_method=last_bezier_method,
+                               last_sine_method=last_sine_method,
+                               last_setpoint_method=last_setpoint_method,
                                last_setpoint=last_setpoint,
                                form_create_method=form_create_method,
                                form_add_method=form_add_method,
@@ -295,24 +288,24 @@ def method_builder(method_type, method_id):
 
 
 @blueprint.route('/method-delete/<method_id>')
+@flask_login.login_required
 def method_delete(method_id):
     """Delete a method"""
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
         controller=gettext("Method"))
 
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if session['user_group'] == 'guest':
-        flaskutils.deny_guest_user()
-        return redirect('/method')
+    if not flaskutils.user_has_permission('edit_settings'):
+        return redirect(url_for('method_routes.method_list'))
 
     try:
-        with session_scope(current_app.config['MYCODO_DB_PATH']) as new_session:
-            method = new_session.query(Method)
-            method.filter(Method.method_id == method_id).delete()
-            flash("Success: {action}".format(action=action), "success")
+        MethodData.query.filter(MethodData.method_id == int(method_id)).delete()
+        Method.query.filter(Method.id == int(method_id)).delete()
+        display_order = csv_to_list_of_int(DisplayOrder.query.first().method)
+        display_order.remove(int(method_id))
+        DisplayOrder.query.first().method = list_to_csv(display_order)
+        db.session.commit()
+        flash("Success: {action}".format(action=action), "success")
     except Exception as except_msg:
         flash("Error: {action}: {err}".format(action=action,
                                               err=except_msg),

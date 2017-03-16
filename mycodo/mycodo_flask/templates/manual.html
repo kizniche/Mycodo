@@ -3,231 +3,611 @@
 
 {% block title %} - Help{% endblock %}
 
-{% block head %}
-    <style type="text/css">
-    	table.options {
-    		padding-bottom: 1em;
-    	}
-    	table.options td {
-    		padding: 0.3em 0.5em 0.3em 0;
-    	}
-    	table.custom-code td {
-    		padding: 0.1em 1em 0.1em 0;
-    	}
-    </style>
-{% endblock %}
-
 {%- block body %}
   <!-- Route: /help -->
 	<div class="container" style="padding-bottom: 2.5em">
 	  {% include 'flash_messages.html' %}
 
-		<h1 style="padding-bottom: 0.7em">Manual</h1>
+		<h1 style="padding-bottom: 0.7em">Mycodo Manual</h1>
+
+    <h3>Table of Contents</h3>
 
 		<ul class="list-unstyled">
-			<li><a href="#settings">Settings</a></li>
-			<li><a href="#sensors">Sensors</a></li>
-			<li><a href="#relays">Relays</a></li>
-			<li><a href="#conditional-statements">Conditional Statements</a></li>
-			<li><a href="#timers">Timers</a></li>
-			<li><a href="#pid">PIDs</a></li>
-			<li style="padding-top: 0.6em;">PID Tuning</li>
+			<li><a href="#about">About Mycodo</a></li>
+      <li><a href="#faqs">Frequently Asked Questions</a></li>
+      <li style="padding-top: 0.6em;"><a href="#settings">Settings</a></li>
+      <ul>
+				<li><a href="#settings-general">General Settings</a></li>
+        <li><a href="#settings-relay-usage">Relay Usage Settings</a></li>
+        <li><a href="#settings-user">Users</a></li>
+        <li><a href="#settings-user-roles">User Roles</a></li>
+        <li><a href="#settings-alerts">Alert Settings</a></li>
+        <li><a href="#settings-camera">Camera Settings</a></li>
+			</ul>
+      <li style="padding-top: 0.6em;"><a href="#controllers">Controllers</a></li>
+      <ul>
+        <li><a href="#sensors">Sensors</a></li>
+        <li><a href="#relays">Relays</a></li>
+        <li><a href="#pid">PIDs</a></li>
+        <li><a href="#timers">Timers</a></li>
+        <li><a href="#lcd">LCDs</a></li>
+      </ul>
+      <li style="padding-top: 0.6em;"><a href="#controller-functions">Controller Functions</a></li>
+      <ul>
+        <li><a href="#conditional-statements">Conditional Statements</a></li>
+        <li><a href="#methods">Methods</a></li>
+      </ul>
+      <li style="padding-top: 0.6em;"><a href="#pid-tuning">PID Tuning</a></li>
 			<ul>
 				<li><a href="#pid-control-theory">PID Control Theory</a></li>
 				<li><a href="#quick-set-up-examples">Quick Setup Examples</a></li>
 				<li><a href="#exact-temperature-regulation">Exact-Temperature Regulation</a></li>
 				<li><a href="#high-temperature-regulation">High-Temperature Regulation</a></li>
 			</ul>
-			<li style="padding-top: 0.6em;"><a href="#camera">Camera</a></li>
-			<li><a href="#tools">Tools</a></li>
-			<li><a href="#system-backup">System Backup</a></li>
-			<li><a href="#system-restore">System Restore</a></li>
-			<li><a href="#preserving-custom-code">Preserving Custom Code</a></li>
-
-			<li style="padding-top: 1.5em;">Appendix</li>
+      <li style="padding-top: 0.6em;"><a href="#miscellaneous">Miscellaneous</a></li>
 			<ul>
-				<li><a href="#temperature-sensors">Temperature Sensors</a></li>
-				<ul>
-					<li><a href="#raspberry-pi">Raspberry Pi</a></li>
-					<li><a href="#atlas_scientific-PT1000">Atlas Scientific PT-1000</a></li>
-          <li><a href="#DS18B20">DS18B20</a></li>
-          <li><a href="#TMP006">TMP006/007</a></li>
-				</ul>
-				<li><a href="#temperature-humidity-sensors">Temperature/Humidity Sensors</a></li>
-				<ul>
-          <li><a href="#AM2315">AM2315</a></li>
-					<li><a href="#DHT11">DHT11</a></li>
-					<li><a href="#DHT22-AM2302">DHT22, AM2302</a></li>
-          <li><a href="#HTU21D">HTU21D</a></li>
-					<li><a href="#SHT1X">SHT1x</a></li>
-					<li><a href="#SHT7X">SHT7x</a></li>
-				</ul>
-				<li><a href="#co2-sensors">CO2 Sensors</a></li>
-				<ul>
-					<li><a href="#K-30">K-30</a></li>
-				</ul>
-        <li><a href="#moisture-sensors">Moisture Sensors</a></li>
-				<ul>
-					<li><a href="#CHIRP">Chirp</a></li>
-				</ul>
-				<li><a href="#pressure-sensors">Pressure Sensors</a></li>
-				<ul>
-					<li><a href="#BMP">BMP085, BMP180</a></li>
-				</ul>
-        <li><a href="#luminosity-sensors">Luminosity Sensors</a></li>
-        <ul>
-          <li><a href="#TSL2561">TSL2561</a></li>
-        </ul>
-				<li><a href="#multiplexers">I<sup>2</sup>C Multiplexers</a></li>
-				<ul>
-					<li><a href="#TCA9548A">TCA9548A</a></li>
-				</ul>
-        <li><a href="#adc">Analog to Digital Converters</a></li>
-        <ul>
-          <li><a href="#ADS1x15">ADS1x15</a></li>
-          <li><a href="#MCP342x">MCP342x</a></li>
-        </ul>
-			</ul>
+        <li><a href="#graphs">Graphs</a></li>
+        <li><a href="#camera">Camera</a></li>
+        <li><a href="#relay-usage">Relay Usage</a></li>
+        <li><a href="#system-backup">System Backup</a></li>
+        <li><a href="#system-restore">System Restore</a></li>
+      </ul>
+      <li style="padding-top: 0.6em;"><a href="#troubleshooting">Troubleshooting</a></li>
+			<ul>
+        <li><a href="#ts-daemon-not-running">Daemon Not Running</a></li>
+        <li><a href="#ts-more">More</a></li>
+      </ul>
     </ul>
 
-		<div style="padding-bottom: 2em"></div>
+  <h3><a href="#appendix">Appendix</a></h3>
+    <ul class="list-unstyled">
+      <li><a href="#temperature-sensors">Temperature Sensors</a></li>
+      <ul>
+        <li><a href="#raspberry-pi">Raspberry Pi</a></li>
+        <li><a href="#atlas_scientific-PT1000">Atlas Scientific PT-1000</a></li>
+        <li><a href="#DS18B20">DS18B20</a></li>
+        <li><a href="#TMP006">TMP006/007</a></li>
+      </ul>
+      <li><a href="#temperature-humidity-sensors">Temperature/Humidity Sensors</a></li>
+      <ul>
+        <li><a href="#AM2315">AM2315</a></li>
+        <li><a href="#DHT11">DHT11</a></li>
+        <li><a href="#DHT22-AM2302">DHT22, AM2302</a></li>
+        <li><a href="#HTU21D">HTU21D</a></li>
+        <li><a href="#SHT1X">SHT1x</a></li>
+        <li><a href="#SHT7X">SHT7x</a></li>
+      </ul>
+      <li><a href="#co2-sensors">CO2 Sensors</a></li>
+      <ul>
+        <li><a href="#K-30">K-30</a></li>
+      </ul>
+      <li><a href="#moisture-sensors">Moisture Sensors</a></li>
+      <ul>
+        <li><a href="#CHIRP">Chirp</a></li>
+      </ul>
+      <li><a href="#pressure-sensors">Pressure Sensors</a></li>
+      <ul>
+        <li><a href="#BMP">BMP085, BMP180</a></li>
+      </ul>
+      <li><a href="#luminosity-sensors">Luminosity Sensors</a></li>
+      <ul>
+        <li><a href="#TSL2561">TSL2561</a></li>
+      </ul>
+      <li><a href="#multiplexers">I<sup>2</sup>C Multiplexers</a></li>
+      <ul>
+        <li><a href="#TCA9548A">TCA9548A</a></li>
+      </ul>
+      <li><a href="#adc">Analog to Digital Converters</a></li>
+      <ul>
+        <li><a href="#ADS1x15">ADS1x15</a></li>
+        <li><a href="#MCP342x">MCP342x</a></li>
+      </ul>
+    </ul>
 
-		<a name="settings"></a>
-		<h2>Settings</h2>
+    <hr>
 
-		<p>Todo.</p>
+    <a class="anchor" name="about"></a>
+		<h1>About Mycodo</h1>
 
-		<a name="sensors"></a>
-		<h2>Sensors</h2>
+    <p>Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.</p>
 
-		<p>Sensors will acquire environmental measurements, which will be used to create historical logs and provide the mos recent measurement for any PID controllers to operate from, allowing modulation of relays to regulate the environment.</p>
+    <p>The core system coordinates a diverse set of responses to sensor measurements, including actions such as camera captures, email notifications, relay activation/deactivation, regulation with PID control, and more. Mycodo has been used for cultivating gourmet mushrooms, cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs and young animals, aging cheeses, fermenting foods, maintaining aquatic systems, and more.</p>
 
-    <dl class="dl-horizontal">
-      <dt>Name</dt>
-      <dd>This is a unique name you can give this sensor, which will allow you to easily recognize it with a familiar name.</dd>
+    <p>A <a href="https://en.wikipedia.org/wiki/PID_controller" target="_blank">proportional-derivative-integral (PID) controller</a> is a control loop feedback mechanism used throughout industry for controlling systems. It efficiently brings a measurable condition, such as the temperature, to a desired state and maintains it there with little overshoot and oscillation. A well-tuned PID controller will raise to the setpoint quickly, have minimal overshoot, and maintain the setpoint with little oscillation.</p>
 
-      <dt>Device</dt>
-      <dd>If there is support for more than one of a particular type of sensor, select which sensor is being used.</dd>
+    <hr>
 
-      <dt>Location</dt>
-      <dd>Depending on what sensor is being used, you will need to either enter the serial number (in the case of the DS18B20 temperature sensor), the GPIO pin (in the case of sensors read by a GPIO), or the I<sup>2</sup>C address and channel if using the TCA9548A I<sup>2</sup>C multiplexer.</dd>
+    <a class="anchor" name="faqs"></a>
+		<h1>Frequently Asked Questions</h1>
 
-      <dt>Read Period</dt>
-      <dd>After the sensor is successfully read and a log entry is made, this is the duration of time that is waited until the sensor is measured again for a log entry.</dd>
+    <a class="anchor" name="faqs-how-this"></a>
+    <p><i>Where do I even begin?</i></p>
+    <p>Here is how I generally set up Mycodo to monitor and regulate:</p>
 
-      <dt>Pre Relay</dt>
-      <dd>If you require a relay to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the relay number that will be activated. The relay will be activated for a duration defined by the Pre Duration, then once the relay turns off, a measurement by the sensor is made.</dd>
+    <ol>
+      <li>Determine what environmental condition you want to measure or regulate. Consider the devices that must be coupled to achieve this. For instance, temperature regulation require a temperature sensor and an electric heater and/or electric air conditioner.</li>
+      <li>Determine what relays you will need to power your electric devices. The Raspberry Pi is capable of directly switching relays (using a 3.3-volt signal), although opto-isolating the circuit is advisable. Be careful when selecting a relay not to exceed the current draw of the Raspberry Pi's PGIO.</li>
+      <li>See the <a href="#appendix">Appendix</a> for information about what sensors are supported. Acquire one or more of these sensors and relays and connect them to the Raspberry Pi according to the manufacturer's instructions.</li>
+      <li>On the <a href="/sensor">Sensor Page</a>, create a new sensor, using the dropdown to select the correct sensor. Configure the sensor with the correct communication pins, etc. and save. Activate the sensor to begin recording measurements.</li>
+      <li>Go to the <a href="/live">Live Page</a> to ensure there is recent data being acquired from the sensor.</li>
+      <li>On the <a href="/relay">Relay Page</a>, add a relay and configure the GPIO pin that switches it, whether the relay switches On when the signal is HIGH or LOW, and what state (On or Off) to set the relay when Mycodo starts.</li>
+      <li>Test the relay by switching it On and Off from the <a href="/relay">Relay Page</a> and make sure the device connected to the relay turns On when you select "On", and Off when you select "Off".</li>
+      <li>On the <a href="/pid">PID Page</a>, create a PID controller with the appropriate sensor, measurement, relay, and other parameters. Refer to the <a href="#quick-set-up-examples">Quick Setup Examples</a> for setting up and tuning a PID controller.</li>
+      <li>On the <a href="/graph">Graph Page</a>, create a graph that includes the sensor measurement, the relay that is being used by the PID, and the PID setpoint. This provides a good visualization for tuning and adjusting the system.</li>
+    </ol>
 
-      <dt>Pre Relay Duration</dt>
-      <dd>This is the duration of time that the Pre Relay runs for before the sensor measurement is obtained.</dd>
+    <hr>
+
+    <a class="anchor" name="faqs-how-that"></a>
+    <p><i>Why is there only one FAQ?</i></p>
+    <p>Good question.</p>
+
+    <hr>
+
+		<a class="anchor" name="settings"></a>
+		<h1>Settings</h1>
+
+    <p>The settings menu, accessed by selecting the gear icon in the top-right, then the Configure link, is a general area for various system-wide configuration options.</p>
+
+    <hr>
+
+    <a class="anchor" name="settings-general"></a>
+    <h2>General Settings</h2>
+
+		<dl class="dl-horizontal">
+      <dt>Language</dt>
+      <dd>Set the language that will be displayed in the web user interface.</dd>
+      <dt>Force HTTPS</dt>
+      <dd>Require web browsers to use SSL/HTTPS. Any request to http:// will be redirected to https://.</dd>
+      <dt>Hide success alerts</dt>
+      <dd>Hide all success alert boxes that appear at the top of the page.</dd>
+      <dt>Hide info alerts</dt>
+      <dd>Hide all info alert boxes that appear at the top of the page.</dd>
+      <dt>Hide warning alerts</dt>
+      <dd>Hide all warning alert boxes that appear at the top of the page.</dd>
+      <dt>Opt-out of statistics</dt>
+      <dd>Turn off sending anonymous usage statistics. Please consider that this helps the development to leave on.</dd>
     </dl>
 
-		<div style="padding: 0.3em"></div>
+    <hr>
 
-		<h4 style="text-decoration: line-through;">Sensor Verification</h4>
+    <a class="anchor" name="settings-relay-usage"></a>
+    <h2>Relay Usage Settings</h2>
 
-		<p style="text-decoration: line-through;">This allows the verification of a sensor's measurement with another sensor's measurement. This feature is best utilized when you have two sensors in the same location (ideally as close as possible). One sensor (host) should be set up to use the other sensor (slave) to verify. The host sensor should be used to operate the PID, as one feature of the verification is the ability to disable the PID if the difference between measurements is not within the range specificed.</p>
+    <p>In order to calculate accurate <a href="/usage">relay usage statistics</a>, a few characteristics of your electrical system needs to be know. These variables should describe the characteristics of the electrical system being used by the relays to operate electrical devices. Note: Proper relay usage calculations also rely on the correct current draw to be set for each relay (see <a href="/relay">Relay Options</a>).</p>
+
+    <dl class="dl-horizontal">
+      <dt>Voltage</dt>
+      <dd>Alternating current (AC) voltage that is switched by the relays. This is usually 120 or 240.</dd>
+      <dt>Cost per kWh</dt>
+      <dd>This is how much you pay per kWh.</dd>
+      <dt>Currency Unit</dt>
+      <dd>This is the unit used for the currency that pays for electricity.</dd>
+      <dt>Day of Month</dt>
+      <dd>This is the day of the month (1-30) that the electricity meter is read (which will correspond to the electrical bill).</dd>
+    </dl>
+
+    <hr>
+
+    <a class="anchor" name="settings-user"></a>
+    <h2>Users</h2>
+
+    <p>Mycodo requires at least one Admin user for the login system to be enabled. If there isn't an Admin user, the web server will redirect to an Admin Creation Form. This is the first page you see when starting Mycodo for the first time. After an Admin user has been created, additional users may be created from the User Settings page.</p>
+
+    <dl class="dl-horizontal">
+      <dt>Username</dt>
+      <dd>Choose a user name that is between 2 and 64 characters. The user name is case insensitive (all user names are converted to lower-case).</dd>
+      <dt>Email</dt>
+      <dd>The email associated with the new account.</dd>
+      <dt>Password/Repeat</dt>
+      <dd>Choose a password that is between 6 and 64 characters and only contain letters, numbers, and symbols.</dd>
+      <dt>Role</dt>
+      <dd>Roles are a way of imposing access restrictions on users, to either allow or deny actions. See the table below for explanations of the four default Roles.</dd>
+    </dl>
+
+    <a class="anchor" name="settings-user-roles"></a>
+    <h2>User Roles</h2>
+
+    <p>Roles define the permissions of each user. There are 4 default roles that determine if a user can view or edit particular areas of Mycodo. Custom roles may be created, but these four roles may not be modified or deleted.</p>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Role</th>
+          <th>Admin</th>
+          <th>Editor</th>
+          <th>Monitor</th>
+          <th>Guest</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">View Logs</th>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th scope="row">View Stats</th>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th scope="row">View Camera</th>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th scope="row">View Settings</th>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th scope="row">Edit Settings</th>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th scope="row">Edit Controllers</th>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th scope="row">Edit Users</th>
+          <td><span class="glyphicon glyphicon-ok"></span></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr>
+
+    <a class="anchor" name="settings-alerts"></a>
+    <h2>Alert Settings</h2>
+
+    <p>Alert settings set up the credentials for sending email notifications.</p>
+
+    <dl class="dl-horizontal">
+      <dt>SMTP Host</dt>
+      <dd>The SMTP server to use to send emails from.</dd>
+      <dt>SMTP Port</dt>
+      <dd>Port to communicate with the SMTP server (465 for SSL, 587 for TSL).</dd>
+      <dt>Enable SSL</dt>
+      <dd>Check to emable SSL, uncheck to enable TSL.</dd>
+      <dt>SMTP User</dt>
+      <dd>The user name to send the email from. This can be just a name or the entire email address.</dd>
+      <dt>SMTP Password</dt>
+      <dd>The password for the user.</dd>
+      <dt>From Email</dt>
+      <dd>What the from email address be set as. This should be the actual email address for this user.</dd>
+      <dt>Max emails (per hour)</dt>
+      <dd>Set the maximum number of emails that can be sent per hour. If more notifications are triggered within the hour and this number has been reached, the notifications will be discarded.</dd>
+    </dl>
+
+    <hr>
+
+    <a class="anchor" name="settings-camera"></a>
+    <h2>Camera Settings</h2>
+
+    <p>Many cameras can be used simultaneously with Mycodo. Each camera needs to be set up in the camera settings, then may be used throughout the software. Note that not every option (such as Hue or White Balance) may be able to be used with your particular camera, due to manufacturer differences in hardware and software.</p>
+
+    <dl class="dl-horizontal">
+      <dt>Type</dt>
+      <dd>Select whether the camera is a Raspberry Pi Camera or a USB camera.</dd>
+      <dt>Library</dt>
+      <dd>Select which library to use to communicate with the camera. The Raspberry Pi Camera uses picamera (and potentially opencv), and USB cameras should be set to opencv.</dd>
+      <dt>OpenCV Device</dt>
+      <dd>Any devices detected by opencv will populate this dropdown list. If there are no values in this list, none were detected. If you have multiple opencv devices detected, try setting the camera to each device and take a photo to determine which camera is associated with which device.</dd>
+      <dt>Relay ID</dt>
+      <dd>This relay will turn on during the capture of any still image (which includes timelapses).</dd>
+      <dt>Rotate Image</dt>
+      <dd>The number of degrees to rotate the image.</dd>
+      <dt>...</dt>
+      <dd>Image Width, Image Height, Brightness, Contrast, Exposure, Gain, Hue, Saturation, White Balance. These options are self-explanatory. Not all options will work with all cameras.</dd>
+      <dt>Pre Command</dt>
+      <dd>A command to execute (as user mycodo) before a still image is captured.</dd>
+      <dt>Post Command</dt>
+      <dd>A command to execute (as user mycodo) after a still image is captured.</dd>
+      <dt>Flip horizontally </dt>
+      <dd>Flip, or mirror, the image horizontally.</dd>
+      <dt>Flip vertically</dt>
+      <dd>Flip, or mirror, the image vertically.</dd>
+    </dl>
+
+    <hr>
+
+    <a class="anchor" name="controllers"></a>
+		<h1>Controllers</h1>
+
+    <p>Controllers are essentially modules that can be used to perform functions or communicate with other parts of Mycodo. Each controller performs a specific task or group of related tasks. There are also Controller Functions, which are larger functions of a controller or controllers and have been given their own sections.</p>
+
+    <a class="anchor" name="sensors"></a>
+		<h2>Sensors</h2>
+
+    <p>Sensors measure environmental conditions, which will be stored in an influx database. This database will provide recent measurement for <a href="/help#conditional-statements">Conditional Statements</a> or <a href="/help#pid">PID Controllers</a> to operate from, among other uses.</p>
+
+    <dl class="dl-horizontal">
+      <dt>Activate</dt>
+      <dd>After the sensor has been properly configured, activation begins acquiring measurements from the sensor. Any activated conditional statements will now being operating.</dd>
+      <dt>Deactivate</dt>
+      <dd>Deactivation stops measurements from being acquired from the sensor. All associated conditional statements will cease to operate.</dd>
+      <dt>Save</dt>
+      <dd>Save the current configuration entered into the input boxes for a particular sensor.</dd>
+      <dt>Delete</dt>
+      <dd>Delete a particular sensor.</dd>
+      <dt>Up/Down</dt>
+      <dd>Move a particular sensor up or down in the order displayed.</dd>
+      <dt>Location</dt>
+      <dd>Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I<sup>2</sup>C address. and channel if using the TCA9548A I<sup>2</sup>C multiplexer.</dd>
+      <dt>I<sup>2</sup>C Bus</dt>
+      <dd>The bus to be used to communicate with the I<sup>2</sup>C address. If you're using an I<sup>2</sup>C multiplexer that provides multiple buses, this allows you to select which bus the sensor is connected to.</dd>
+      <dt>Period</dt>
+      <dd>After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.</dd>
+      <dt>Pre Relay</dt>
+      <dd>If you require a relay to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the relay number that will be activated. The relay will be activated for a duration defined by the Pre Duration, then once the relay turns off, a measurement by the sensor is made.</dd>
+      <dt>Pre Relay Duration</dt>
+      <dd>This is the duration of time that the Pre Relay runs for before the sensor measurement is obtained.</dd>
+      <dt>Edge</dt>
+      <dd>Edge sensors only: Select whether the Rising or Falling (or both) edges of a changing voltage are detected. A number of devices to do this when in-line with a circuit supplying a 3.3-volt input signal to a GPIO, such as simple mechanical switch, a button, a magnet (reed/hall) sensor, a PIR motion detector, and more.</dd>
+      <dt>Bounce Time (ms)</dt>
+      <dd>Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly called <a target="_blank" href="http://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing">debouncing a signal</a>, and may be necessary if using a mechanical circuit.</dd>
+      <dt>Reset Period</dt>
+      <dd>Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.</dd>
+      <dt>Multiplexer (MX)</dt>
+      <dd>If connected to the TCA9548A I<sup>2</sup>C multiplexer, select what the I<sup>2</sup>C address of the multiplexer is.</dd>
+      <dt>Mx I<sup>2</sup>C Bus</dt>
+      <dd>If connected to the TCA9548A I<sup>2</sup>C multiplexer, select the I<sup>2</sup>C bus the multiplexer is connected to.</dd>
+      <dt>Mx Channel</dt>
+      <dd>If connected to the TCA9548A I<sup>2</sup>C multiplexer, select the channel of the multiplexer the device is connected to.</dd>
+      <dt>Measurement</dt>
+      <dd>Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if the resistance of a photocell is being measured through a voltage divider, this measurement would be "light".</dd>
+      <dt>Units</dt>
+      <dd>Analog-to-digital converter only: This is the unit of the measurement. With the above example of "light" as the measurement, the unit may be "lux" or "intensity".</dd>
+      <dt>Channel</dt>
+      <dd>Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.</dd>
+      <dt>Gain</dt>
+      <dd>Analog-to-digital converter only: set the gain when acquiring the measurement.</dd>
+      <dt>Volts Min</dt>
+      <dd>Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to "0.2".</dd>
+      <dt>Volts Max</dt>
+      <dd>Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the voltage range.</dd>
+      <dt>Units Min</dt>
+      <dd>Analog-to-digital converter only: This value will be the lower value of a range that will use the Min and Max Voltages, above, to produce a unit output. For instance, if your voltage range is 0.0 - 1.0 volts, and the unit range is 1 - 60, and a voltage of 0.5 is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables creating calibrated scales to use with your particular circuit.</dd>
+      <dt>Units Max</dt>
+      <dd>Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.</dd>
+    </dl>
+
+		<h3>Sensor Verification</h3>
+
+    <p>Sensor verification was introduced in an earlier version and was broken when the system moved to its new software framework. It was a great feature, and it's planned to be integrated into the latest version.</p>
+
+		<p style="text-decoration: line-through;">This allows the verification of a sensor's measurement with another sensor's measurement. This feature is best utilized when you have two sensors in the same location (ideally as close as possible). One sensor (host) should be set up to use the other sensor (slave) to verify. The host sensor should be used to operate the PID, as one feature of the verification is the ability to disable the PID if the difference between measurements is not within the range specified.</p>
 
 		<dl class="dl-horizontal" style="text-decoration: line-through;">
       <dt>GPIO</dt>
       <dd>This is the sensor that will be used to verify the sensor measurement. The sensor will be read directly after the first sensor's measurement to verify whether the sensors have similar measurements.</dd>
-
       <dt>Difference</dt>
       <dd>This is the maximum measured measurement difference between the two sensors before an action is triggered (either notify by email or prevent PID from operating; more below).</dd>
-
       <dt>Notification</dt>
       <dd>If the measurements of the two sensors differ by more than the set <i>Difference</i>, an email will be sent to the address in the <i>Notification</i> field.</dd>
-
       <dt>Stop PID</dt>
       <dd>If the measurements of the two sensors differ by more than the set <i>Difference</i>, the PID controller will turn off.</dd>
     </dl>
 
-		<a name="relays"></a>
+    <hr>
+
+		<a class="anchor" name="relays"></a>
 		<h2>Relays</h2>
 
 		<p>Relays are electromechanical or solid-state devices that enable a small voltage signal (such as from a microprocessor) to activate a much larger voltage, without exposing the low -voltage system to the dangers of the higher voltage.</p>
 
 		<p>Relays must be properly set up before PID regulation can be achieved. Add and configure relays in the Sensor tab. Set the "GPIO Pin" to the BCM GPIO number of each pin that activates each relay. <i>On Trigger</i> should be set to the signal that activates the relay (closes the relay circuit). If your relay activates when the potential across the coil is 0-volts, set <i>On Trigger</i> to "Low", otherwise if your relay activates when the potential across the coil is 5-volts, set it to "High".</p>
 
-		<a name="conditional-statements"></a>
-		<h2>Conditional Statements</h2>
+    <dl class="dl-horizontal">
+      <dt>GPIO Pin</dt>
+      <dd>This is the GPIO that will be the signal to the relay.</dd>
+      <dt>Current Draw (amps)</dt>
+      <dd>The is the amount of current the device powered by the relay draws. Note: this value should be calculated based on the voltage set in the <a href="#settings-relay-usage">Relay Usage Settings</a>.</dd>
+      <dt>On Trigger</dt>
+      <dd>This is the state of the GPIO to signal the relay to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you relay completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.</dd>
+      <dt>Start State</dt>
+      <dd>This specifies whether the relay should be ON or OFF when mycodo initially starts.</dd>
+      <dt>Seconds to turn On</dt>
+      <dd>This is a way to turn a relay on for a specific duration of time. This can be useful for testing the relays and powered devices or the measured effects a device may have on an environmental condition.</dd>
+    </dl>
 
-		<p>A conditional statement is a way to perform certain actions based on whether a condition is true. Conditional statements can be created for both relays and sensors. Possible conditional statements include:</p>
+    <hr>
 
-		<p>
-		If Relay #1 turns ON, turn Relay #3 ON<br>
-		If Relay #1 turns ON, turn Relay #4 ON for 40 seconds and notify critical-issue@domain.com<br>
-		If Relay #4 turns ON for 21 seconds, turn Relay #5 ON for 50 seconds<br>
-		If Relay #4 turns ON for 20 seconds, turn Relay #1 OFF<br>
-		If Humidity is Greater Than 80%, turn Relay #4 ON for 40 seconds<br>
-		If Humidity if Less Than 50%, turn Relay #1 ON for 21 seconds, execute '/usr/local/bin/myscript.sh', and notify minor-issue@domain.com<br>
-		</p>
+    <a class="anchor" name="pid"></a>
+		<h2>PID Regulation</h2>
 
-		<p>Before activating any conditional statements or PID controllers, it's advised to thoroughly explore all possible scenarios and plan a configuration that eliminates conflicts. Then, trial run your configuration before connecting devices to the relays. Some devices or relays may respond atypically or fail when switched on and off in rapid succession. Therefore, avoid creating an <a href="https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops" target="_blank">infinite loop</a> with conditional statements.</p>
-
-		<a name="timers"></a>
-		<h2>Timers</h2>
-
-		<p>Timers enable a relay to be switched on and off at specific durations or at a specific time of the day. For <em>Duration Timers</em>, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated. For <em>Daily Timers</em>, the start hour:minute can be set to turn a specific realy on or off at the specific time of day.</p>
-
-		<a name="pid"></a>
-		<h2>PIDs</h2>
+    <p>A <a href="https://en.wikipedia.org/wiki/PID_controller">proportional-derivative-integral (PID) controller</a> is a control loop feedback mechanism used throughout industry for controlling systems. It efficiently brings a measurable condition, such as the temperature, to a desired state and maintains it there with little overshoot and oscillation. A well-tuned PID controller will raise to the setpoint quickly, have minimal overshoot, and maintain the setpoint with little oscillation.</p>
 
     <p>PID settings may be changed while the PID is activated and the new settings will take effect immediately. If settings are changed while the controller is paused, the values will be used once the controller resumes operation.</p>
 
 		<dl class="dl-horizontal">
       <dt>Activate/Deactivate</dt>
       <dd>Turn a particular PID controller on or off.</dd>
-
       <dt>Pause</dt>
       <dd>When paused, the PID will not turn on the associated relays, and settings can be changed without losing current PID output values.</dd>
-
       <dt>Hold</dt>
       <dd>When held, the PID will turn on the associated relays, and settings can be changed without losing current PID output values.</dd>
-
       <dt>Resume</dt>
       <dd>Resume a PID controller from being held or paused.</dd>
-
       <dt>Setpoint</dt>
       <dd>This is the specific point you would like the environment to be regaulted at. For example, if you would like the humidity regulated to 60%, enter 60.</dd>
-
-      <dt>Regulate Direction</dt>
+      <dt>Direction</dt>
       <dd>This is the direction that you wish to regulate. For example, if you only require the temperature to be raised, set this to "Up," but if you require regulation up and down, set this to "Both."</dd>
-
       <dt>Period</dt>
       <dd>This is the duration between when the PID relay turns off amd when the sensor takes another measurement, the PID is updated, and the relay is turned on again for another duration.</dd>
-
+      <dt>Max Age</dt>
+      <dd>The time (in seconds) that the sensor measurement age is required to be less than. If the measurement is not younger than this age, the measurement is thrown out and the PID will not actuate the relay. This is a safety measure to ensure the PID is only using recent measurements.</dd>
       <dt>Raise Relay</dt>
       <dd>This is the relay that will cause the particular environmental condition to rise. In the case of raising the temperature, this may be a heating pad or coil.</dd>
-
       <dt>Min Duration (raise)</dt>
       <dd>This is the minimum that the PID output must be before the Up Relay turns on. If the PID output exceeds this minimum, the Up Relay will turn on for the PID output number of seconds.</dd>
-
       <dt>Max Duration (raise)</dt>
       <dd>This is the maximum duration the Up Relay is allowed to turn on for. if the PID output exceeds this number, the Up Relay will turn on for no greater than this duration of time.</dd>
-
       <dt>Lower Relay</dt>
       <dd>This is the relay that will cause the particular environmental condition to lower. In the case of lowering the CO<sub>2</sub>, this may be an exhaust fan.</dd>
-
       <dt>Min Duration (lower)</dt>
       <dd>This is the minimum that the PID output must be before the Down Relay turns on. If the PID output exceeds this minimum, the Down Relay will turn on for the PID output number of seconds.</dd>
-
       <dt>Max Duration (lower)</dt>
       <dd>This is the maximum duration the Down Relay is allowed to turn on for. if the PID output exceeds this number, the Down Relay will turn on for no greater than this duration of time.</dd>
-
       <dt>K<sub>P</sub></dt>
-      <dd>Porportional coefficient (non-negative). Accounts for present values of the error.</dd>
-
+      <dd>Proportional coefficient (non-negative). Accounts for present values of the error. For example, if the error is large and positive, the control output will also be large and positive.</dd>
       <dt>K<sub>I</sub></dt>
-      <dd>Integral coefficient (non-negative). Accounts for past values of the error.</dd>
-
+      <dd>Integral coefficient (non-negative). Accounts for past values of the error. For example, if the current output is not sufficiently strong, the integral of the error will accumulate over time, and the controller will respond by applying a stronger action.</dd>
       <dt>K<sub>D</sub></dt>
       <dd>Derivative coefficient (non-negative). Accounts for predicted future values of the error, based on its current rate of change.</dd>
+      <dt>Integrator Min</dt>
+      <dd>The minimum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)</dd>
+      <dt>Integrator Max</dt>
+      <dd>The maximum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)</dd>
+
     </dl>
 
+    <hr>
+
+		<a class="anchor" name="timers"></a>
+		<h2>Timers</h2>
+
+		<p>Timers enable a relay to be manipulated after specific durations of time or at a specific times of the day. For <em>Duration Timers</em>, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated. For <em>Daily Timers</em>, the start hour:minute can be set to turn a specific relay on or off at the specific time of day.</p>
+
+    <hr>
+
+    <a class="anchor" name="lcd"></a>
+		<h2>LCDs</h2>
+
+    <p>Data may be output to a liquid crystal display (LCD) for easy viewing. There are only a few number fo LCDs that are supported. Only 16x2 and 20x4 character LCD displays with I<sup>2</sup>C backpacks are supported. Please see the README for specific information regarding compatibility.</p>
+
+		<dl class="dl-horizontal">
+      <dt>Reset Flashing</dt>
+      <dd>If the LCD is flashing to alert you because it was instructed to do so by a triggered Conditional Statement, use this button to stop the flashing.</dd>
+      <dt>Type</dt>
+      <dd>Select either a 16x2 or 20x4 character LCD display.</dd>
+      <dt>I<sup>2</sup>C Address</dt>
+      <dd>Select the I<sup>2</sup>C to communicate with the LCD.</dd>
+      <dt>Multiplexer I<sup>2</sup>C Address</dt>
+      <dd>If the LCD is connected to a multiplexer, select the multiplexer I<sup>2</sup>C address.</dd>
+      <dt>Multiplexer Channel</dt>
+      <dd>If the LCD is connected to a multiplexer, select the multiplexer channel the LCD is connected to.</dd>
+      <dt>Period</dt>
+      <dd>This is the period of time (in seconds) between redrawing the LCD with new data.</dd>
+      <dt>Display Line #</dt>
+      <dd>Select which measurement to display on each line of the LCD.</dd>
+    </dl>
+
+		<hr>
+
+    <a class="anchor" name="controller-functions"></a>
+		<h1>Controller Functions</h1>
+
+		<a class="anchor" name="conditional-statements"></a>
+		<h2>Conditional Statements</h2>
+
+		<p>A conditional statement is a way to perform certain actions based on whether a condition is true. Conditional statements can be created for both relays and sensors. Possible conditional statements include:</p>
+
+		<ul>
+      <li>If Relay #1 turns ON, turn Relay #3 ON</li>
+      <li>If Relay #1 turns ON, turn Relay #4 ON for 40 seconds and notify critical-issue@domain.com</li>
+      <li>If Relay #4 turns ON for 21 seconds, turn Relay #5 ON for 50 seconds</li>
+      <li>If Relay #4 turns ON for 20 seconds, turn Relay #1 OFF</li>
+      <li>If Humidity is Greater Than 80%, turn Relay #4 ON for 40 seconds</li>
+      <li>If Humidity if Less Than 50%, turn Relay #1 ON for 21 seconds, execute '/usr/local/bin/myscript.sh', and notify email@domain.com</li>
+      <li>If Temperature if Greater Than 35 C, deactivate PID #1</li>
+		</ul>
+
+		<p>Before activating any conditional statements or PID controllers, it's advised to thoroughly explore all possible scenarios and plan a configuration that eliminates conflicts. Then, trial run your configuration before connecting devices to the relays. Some devices or relays may respond atypically or fail when switched on and off in rapid succession. Therefore, avoid creating an <a href="https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops" target="_blank">infinite loop</a> with conditional statements.</p>
+
+    <h3>Conditional Statement Actions</h3>
+
+    <dl class="dl-horizontal">
+      <dt>Relay</dt>
+      <dd>Turn a relay on, off, or on for a duration of time.</dd>
+      <dt>Command</dt>
+      <dd>Execute a command in the linux shell (as user mycodo).</dd>
+      <dt>Activate PID</dt>
+      <dd>Activate a particular PID controller.</dd>
+      <dt>Deactivate PID</dt>
+      <dd>Deactivate a particular PID controller.</dd>
+      <dt>Email</dt>
+      <dd>Send an email containing information about the current condition that triggered the conditional to send the email.</dd>
+      <dt>Flash LCD</dt>
+      <dd>Have an LCD screen begin flashing in order to alert.</dd>
+      <dt>Photo</dt>
+      <dd>Capture a photo with the selected camera.</dd>
+      <dt>Email Photo</dt>
+      <dd>Capture a photo and email it as an attachment to the an email address.</dd>
+      <dt>Video</dt>
+      <dd>Capture a video of a set duration with the selected camera.</dd>
+      <dt>Email Video</dt>
+      <dd>Capture a video and email it as an attachment to the an email address.</dd>
+    </dl>
+
+    <hr>
+
+    <a class="anchor" name="methods"></a>
+		<h2>Methods</h2>
+
+    <p>Methods allow different types of setpoint tracking in PID controllers. Normally, a PID controller will regulate an environmental condition to a specific setpoint. If you would like the setpoint to change over time, this is called setpoint tracking. Setpoint tracking is useful for applications such as reflow ovens, thermal cyclers (DNA replication), mimicking natural daily cycles, and more.</p>
+
+    <h3>Universal Options</h3>
+
+    <p>These options are shared with several method types.</p>
+
+    <dl class="dl-horizontal">
+      <dt>Start Time/Date</dt>
+      <dd>This is the start time of a range of time.</dd>
+      <dt>End Time/Date</dt>
+      <dd>This is the end time of a range of time.</dd>
+      <dt>Start Setpoint</dt>
+      <dd>This is the start setpoint of a range of setpoints.</dd>
+      <dt>End Setpoint</dt>
+      <dd>This is the end setpoint of a range of setpoints.</dd>
+    </dl>
+
+    <h3>Specific Method Options</h3>
+
+    <h4>Time/Date Method</h4>
+
+    <p>A time/date method allows a specific time/date span to dictate the setpoint. This is useful for long-running methods, that may take place over the period of days, weeks, or months.</p>
+
+    <h4>Duration Method</h4>
+
+    <p>A duration method allows a specific durations of time to dictate the setpoint. This is useful for when short periods of time are required in a method, such as those that take place over the course of a few minutes or hours. Each duration will stack on the previous duration, meaning a newly-added start setpoint will begin from the previous entry's end setpoint.</p>
+
+    <h4>Daily (Time-Based) Method</h4>
+
+    <p>The daily time-based method is similar to the time/date method, however it will repeat every day. Therefore, it is essential that only the span of one day be set in this method. Begin with the start time at 00:00:00 and end at 23:59:59 (or 00:00:00, which would be 24 hours from the start). The start time must be equal or greater than the previous end time.</p>
+
+    <h4>Daily (Sine Wave) Method</h4>
+
+    <p>The daily sine wave method defines the setpoint over the day based on a sinusoidal wave. The sine wave is defined by y = [A * sin(B * x + C)] + D, where A is amplitude, B is frequency, C is the angle shift, and D is the y-axis shift. This method will repeat daily.</p>
+
+    <h4>Daily (Bezier Curve) Method</h4>
+
+    <p>A daily Bezier curve method define the setpoint over the day based on a cubic Bezier curve. If unfamiliar with a Bezier curve, it is recommended you use the <a href="https://www.desmos.com/calculator/cahqdxeshd">graphical Bezier curve generator</a> and use the 8 variables it creates for 4 points (each a set of x and y). The x-axis start (x3) and end (x0) will be automatically stretched or skewed to fit within a 24-hour period and this method will repeat daily.</p>
+
+    <hr>
+
+    <a class="anchor" name="pid-tuning"></a>
 		<h2>PID Tuning</h2>
 
-		<a name="pid-control-theory"></a>
+		<a class="anchor" name="pid-control-theory"></a>
 		<h3>PID Control Theory</h3>
 
 		<p>The PID controller is the most common regulatory controller found in industrial settings, for it"s ability to handle both simple and complex regulation. The PID controller has three paths, the proportional, integral, and derivative.</p>
@@ -238,24 +618,30 @@
 
 		<p>The <b>D</b>erivative multiplies the error by K<sub>d</sub>, then differentiates it (K<sub>d</sub> · s). When the error rate changes over time, the output signal will change. The faster the change in error, the larger the derivative path becomes, decreasing the output rate of change. This has the effect of dampening overshoot and undershoot (oscillation) of the Set Point.</p>
 
+    <hr>
+
 		<p><a href="https://en.wikipedia.org/wiki/PID_controller" target="_blank"><img src="/static/img/PIDAnimation.gif"></a></p>
 
-		<p>Using temperature as an example, the Process Variable (PV) is the measured temperature, the Setpoint (SP) is the desired temperature, and the Error (e) is the distance between the measured temperature and the desired temperature (indicating if the actual temperature is too hot or too cold and to what degree). The error is manipulated by each of the three PID components, producing an output, called the Manipulated Variable (MV) or Control Variable (CV). To allow control of how much each path contributes to the output value, each path is multiplied by a gain (represented by <i>K<sub>P</sub></i>, <i>K<sub>I</sub></i>, and <i>K<sub>D</sub></i>). By adjusting the gains, the sensitivity of the system to each path is affected. When all three paths are summed, the PID output is produced. If a gain is set to 0, that path does not contribute to the output and that path is eessentially turned off.</p>
+		<p>Using temperature as an example, the Process Variable (PV) is the measured temperature, the Setpoint (SP) is the desired temperature, and the Error (e) is the distance between the measured temperature and the desired temperature (indicating if the actual temperature is too hot or too cold and to what degree). The error is manipulated by each of the three PID components, producing an output, called the Manipulated Variable (MV) or Control Variable (CV). To allow control of how much each path contributes to the output value, each path is multiplied by a gain (represented by <i>K<sub>P</sub></i>, <i>K<sub>I</sub></i>, and <i>K<sub>D</sub></i>). By adjusting the gains, the sensitivity of the system to each path is affected. When all three paths are summed, the PID output is produced. If a gain is set to 0, that path does not contribute to the output and that path is essentially turned off.</p>
 
-		<p>The output can be used a number of ways, however this controller was designed to use the ouput to affect the measured value (PV). This feedback loop, with a <i>properly tuned</i> PID controller, can achieve a set point in a short period of time, maintain regulation with little oscillation, and respond quickly to disturbance.</p>
+		<p>The output can be used a number of ways, however this controller was designed to use the output to affect the measured value (PV). This feedback loop, with a <i>properly tuned</i> PID controller, can achieve a set point in a short period of time, maintain regulation with little oscillation, and respond quickly to disturbance.</p>
 
-		<p>Therefor, if one would be regulating temperature, the sensor would be a temperature sensor and the feedback device(s) would be able to heat and cool. If the temperature is lower than the Set Point, the output value would be positive and a heater would activate. The temperature would rise toward the desired temperature, causing the error to decrease and a lower output to be produced. This feedback loop would continue until the error reaches 0 (at which point the output would be 0). If the temperature continues to rise past the Set Point (this is may be aceptable, depending on the degree), the PID would produce a negative output, which could be used by the cooling device to bring the temperature back down, to reduce the error. If the temperature would normally lower without the aid of a cooling device, then the system can be simplified by omitting a cooler and allowing it to lower on its own.</p>
+		<p>Therefor, if one would be regulating temperature, the sensor would be a temperature sensor and the feedback device(s) would be able to heat and cool. If the temperature is lower than the Set Point, the output value would be positive and a heater would activate. The temperature would rise toward the desired temperature, causing the error to decrease and a lower output to be produced. This feedback loop would continue until the error reaches 0 (at which point the output would be 0). If the temperature continues to rise past the Set Point (this is may be acceptable, depending on the degree), the PID would produce a negative output, which could be used by the cooling device to bring the temperature back down, to reduce the error. If the temperature would normally lower without the aid of a cooling device, then the system can be simplified by omitting a cooler and allowing it to lower on its own.</p>
 
 		<p>Implementing a controller that effectively utilizes <i>K<sub>P</sub></i>, <i>K<sub>I</sub></i>, and <i>K<sub>D</sub></i> can be challenging. Furthermore, it is often unnecessary. For instance, the <i>K<sub>I</sub></i> and <i>K<sub>D</sub></i> can be set to 0, effectively turning them off and producing the very popular and simple P controller. Also popular is the PI controller. It is recommended to start with only <i>K<sub>P</sub></i> activated, then experiment with <i>K<sub>P</sub></i> and <i>K<sub>I</sub></i>, before finally using all three. Because systems will vary (e.g. airspace volume, degree of insulation, and the degree of impact from the connected device, etc.), each path will need to be adjusted through experimentation to produce an effective output.</p>
 
-		<a name="quick-set-up-examples"></a>
+    <hr>
+
+		<a class="anchor" name="quick-set-up-examples"></a>
 		<h3>Quick Set-up Examples</h3>
 
 		<p>These example setups are meant to illustrate how to configure regulation in particular directions, and not to achieve ideal values to configure your <i>K<sub>P</sub></i>, <i>K<sub>I</sub></i>, and <i>K<sub>D</sub></i> gains. There are a number of online resources that discuss techniques and methods that have been developed to determine ideal PID values (such as <a href="http://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops" target="_blank">here</a>, <a href="http://innovativecontrols.com/blog/basics-tuning-pid-loops" target="_blank">here</a>, <a href="https://hennulat.wordpress.com/2011/01/12/pid-loop-tuning-101/" target="_blank">here</a>, <a href="http://eas.uccs.edu/wang/ECE4330F12/PID-without-a-PhD.pdf" target="_blank">here</a>, and <a href="http://www.atmel.com/Images/doc2558.pdf" target="_blank">here</a>) and since there are no universal values that will work for every system, it is recommended to conduct your own research to understand the variables and essential to conduct your own experiments to effectively implement them.</p>
 
 		<p>Provided merely as an example of the variance of PID values, one of my setups had temperature PID values (up regulation) of <i>K<sub>P</sub></i> = 30, <i>K<sub>I</sub></i> = 1.0, and <i>K<sub>D</sub></i> = 0.5, and humidity PID values (up regulation) of <i>K<sub>P</sub></i> = 1.0, <i>K<sub>I</sub></i> = 0.2, and <i>K<sub>D</sub></i> = 0.5. Furthermore, these values may not have been optimal but they worked well for the conditions of my environmental chamber.</p>
 
-		<a name="exact-temperature-regulation"></a>
+    <hr>
+
+		<a class="anchor" name="exact-temperature-regulation"></a>
 		<h3>Exact Temperature Regulation</h3>
 
 		<p>This will set up the system to raise and lower the temperature to a certain level with two regulatory devices (one that heats and one that cools).</p>
@@ -264,7 +650,7 @@
 
 		<p>Add two relays, then save each GPIO and On Trigger state.</p>
 
-		<p>Add a PID, then select the newly-created sensor. Change <i>Setpoint</i> to the desired temperature, <i>Regulate Direction</i> to "Both". Set <i>Raise Relay</i> to the relay attached to the heating device and the <i>Lower Relay</i> to the relay attached to the coolong device.</p>
+		<p>Add a PID, then select the newly-created sensor. Change <i>Setpoint</i> to the desired temperature, <i>Regulate Direction</i> to "Both". Set <i>Raise Relay</i> to the relay attached to the heating device and the <i>Lower Relay</i> to the relay attached to the cooling device.</p>
 
 		<p>Set <i>K<sub>P</sub></i> = 1, <i>K<sub>I</sub></i> = 0, and <i>K<sub>D</sub></i> = 0, then activate the PID.</p>
 
@@ -274,103 +660,103 @@
 
 		<p>Once regulation is achieved, experiment by reducing <i>K<sub>P</sub></i> slightly (~25%) and increasing <i>K<sub>I</sub></i> by a low amount to start, such as 0.1 (or lower, 0.01), then start the PID and observe how well the controller regulates. Slowly increase <i>K<sub>I</sub></i> until regulation becomes both quick and with little oscillation. At this point, you should be fairly familiar with experimenting with the system and the <i>K<sub>D</sub></i> value can be experimented with once both <i>K<sub>P</sub></i> and <i>K<sub>I</sub></i> have been tuned.</p>
 
-		<a name="high-temperature-regulation"></a>
+		<a class="anchor" name="high-temperature-regulation"></a>
 		<h3>High Temperature Regulation</h3>
 
 		<p>Often the system can be simplified if two-way regulation is not needed. For instance, if cooling is unnecessary, this can be removed from the system and only up-regulation can be used.</p>
 
 		<p>Use the same configuration as the <a href="#exact-temperature-regulation">Exact Temperature Regulation</a> example, except change <i>Regulate Direction</i> to "Raise" and do not touch the "Down Relay" section.</p>
 
-		<a name="camera"></a>
-		<h3 style="text-decoration: line-through;">Camera</h3>
+    <hr>
 
-		<p style="text-decoration: line-through;">Todo.</p>
+    <a class="anchor" name="miscellaneous"></a>
+		<h1>Miscellaneous</h1>
 
-		<a name="tools"></a>
-		<h3 style="text-decoration: line-through;">Tools</h3>
+		<a class="anchor" name="graphs"></a>
+		<h2>Graphs</h2>
 
-		<p style="text-decoration: line-through;">Todo.</p>
+    <p>There are two different types of graphs, Live and Asynchronous.</p>
 
-		<a name="system-backup"></a>
-		<h3>System Backup</h3>
+    <a class="anchor" name="graphs-live"></a>
+    <h3>Live Graphs</h3>
 
-		<p>A backup is made when the system is upgraded.</p>
+    <p>A graphical data display that is useful for viewing data sets spanning relatively short periods of time (hours/days/weeks). Select a time frame to view data and continually updating data from new sensor measurements. Multiple graphs can be created on one page that enables a dashboard to be created of graphed sensor data. Each graphs may have one or more sensor measurement, relay duration, or PID setpoint rendered onto it. Several live graph options exist, such as the time period (x-axis) and line colors, as well as navigation and data/image export options. To edit graph options, select the plus sign on the top-right of a graph.</p>
 
-		<a name="system-restore"></a>
-		<h3>System Restore</h3>
+    <a class="anchor" name="graphs-asynchronous"></a>
+    <h3>Asynchronous Graphs</h3>
 
-		<p>If you need to restore a backup, do the following, changing the appropriate directory names with these commands, changing 'user' to your user name:
+    <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it's not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.</p>
+
+    <p>Note: Live Graphs require measurements to be acquired, therefore at least one sensor needs to be added and activated in order to display live data.</p>
+
+    <hr>
+
+    <a class="anchor" name="camera"></a>
+		<h2>Camera</h2>
+
+    <p>Once a cameras has been set up (in the <a href="#settings-camera">Camera Settings</a>), it may be used to capture still images, create time-lapses, and stream video. Cameras may also be used with <a href="#conditional-statements">Conditional Statements</a> to trigger a camera image or video capture (as well as the ability to email the image/video with a notification).</p>
+
+    <hr>
+
+    <a class="anchor" name="relay-usage"></a>
+		<h2>Relay Usage</h2>
+
+    <p>Relay usage statistics are calculated for each relay, based on how long the relay has been powered, the current draw of the device connected to the relay, and other <a href="#settings-relay-usage">relay usage options</a>.</p>
+
+    <hr>
+
+		<a class="anchor" name="system-backup"></a>
+		<h2>System Backup</h2>
+
+		<p>A backup is made to /var/Mycodo-backups when the system is upgraded through the web interface or the upgrade script.</p>
+
+    <hr>
+
+		<a class="anchor" name="system-restore"></a>
+		<h2>System Restore</h2>
+
+		<p>If you need to restore a backup, do the following, changing the appropriate directory names with these commands, changing 'user' to your user name:</p>
 
 		<pre>sudo mv /home/user/Mycodo /home/user/Mycodo_old
 sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
 sudo service mycodo restart
 sudo /etc/init.d/apache2 restart</pre>
-		</p>
 
-		<a name="preserving-custom-code"></a>
-		<h3>Preserving Custom Code</h3>
+    <hr>
 
-		As per the <a href="https://github.com/kizniche/Mycodo/issues/25#issuecomment-143360432" target="_blank">work done by Boomstick8x</a>, the process to preserve custom code edits and restore them after a Mycodo update is below. Be aware that this method does not guarantee the successful operation of Mycodo after restoring custom code, as it can't be unknown what is changed in an update. It's assumed that if you're producing custom code, you should also be familiar with analyzing the changes of an update to determine if your code edits will work.
+    <a class="anchor" name="troubleshooting"></a>
+		<h1>Troubleshooting</h1>
 
-		<table class="custom-code" style="padding: 1.5em 0 1em 0">
-			<tr>
-				<td colspan="2">Stash uncommited changes and apply them after an update:</td>
-			</tr>
-			<tr>
-				<td>1. <code>git stash</code></td>
-				<td>Save uncommited changes to git stack (use <code>git stash list</code> to see the stack)</td>
-			</tr>
-			<tr>
-				<td>2. Update Mycodo</td>
-			</tr>
-			<tr>
-				<td>3. <code>git stash apply</code></td>
-				<td>Apply the last saved changes to updated version (<code>git stash pop</code> can be used to apply changes from the stack and then drop the stack)</td>
-			</tr>
-			<tr>
-				<td>4. Check if everything worked</td>
-			</tr>
-			<tr>
-				<td>5. <code>git stash drop</code></td>
-				<td>Drop last saved stash (if <code>git stash pop</code> wasn't used)</td>
-			</tr>
-			<tr>
-				<td colspan="2" style="padding-top: 1.5em;">Creating a patch file of changes and restoring them after an update:</td>
-			</tr>
-			<tr>
-				<td>1. <code>git stash</code></td>
-				<td>Stash changes</td>
-			</tr>
-			<tr>
-				<td style="white-space: nowrap;">2. <code>git stash show -p > name.patch</code></td>
-				<td>Stash output in a patch file (add <code>--binary</code> option after <code>-p</code> if we also need to stash binary files: <code>git stash show -p --binary > name.patch</code>)</td>
-			</tr>
-			<tr>
-				<td>3. <code>git apply --stat name.patch</code></td>
-				<td>View is everything looks good</td>
-			</tr>
-			<tr>
-				<td>4. <code>git apply --check name.patch</code></td>
-				<td>Verify no errors</td>
-			</tr>
-			<tr>
-				<td>5. <code>git apply name.patch</code></td>
-				<td>Apply the patch</td>
-			</tr>
-		</table>
+    <a class="anchor" name="ts-daemon-not-running"></a>
+		<h3>Daemon Not Running</h3>
 
+    <ul>
+      <li>Check the Logs: From the <a href="/logview">Log Page</a>, check the Daemon Log for any errors. If the issue began after an upgrade, also check the Upgrade Log for indications of an issue.</li>
+      <li>Determine if the Daemon is Running: Execute <code>ps aux | grep '/var/www/mycodo/env/bin/python /var/www/mycodo/mycodo/mycodo_daemon.py'</code> in a terminal and look for an entry to be returned. If nothing is returned, the daemon is not running.</li>
+      <li>Daemon Lock File: If the daemon is not running, make sure the daemon lock file is deleted at <code>/var/lock/mycodo.pid</code>. The daemon cannot start if the lock file is present.</li>
+      <li>If a solution could not be found after investigating the above suggestions, submit a <a href="https://github.com/kizniche/Mycodo/issues/new" target="_blank">new Mycodo issue</a> on github.</li>
+    </ul>
+
+    <a class="anchor" name="ts-more"></a>
+		<h3>More</h3>
+
+    <p>Check out the <a href="https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues" target="_blank">Diagnosing Mycodo Issues Wiki Page</a> on github for more information about diagnosing issues.</p>
+
+    <hr>
+
+    <a class="anchor" name="appendix"></a>
 		<h2 style="padding-top: 2em;">Appendix</h2>
 
-		<a name="temperature-sensors"></a>
+		<a class="anchor" name="temperature-sensors"></a>
 		<h3>Temperature Sensors</h3>
 
-		<a name="raspberry-pi"></a>
+		<a class="anchor" name="raspberry-pi"></a>
 		<h4>Raspberry Pi (integrated)</h4>
 
 		<p>The Raspberry Pi has an integrated temperature sensor on the BCM2835 SoC that measure the temperature of the CPU/GPU. This is the easiest sensor to set up in Mycodo, as it is immediately available to be used.</p>
 
 
-    <a name="atlas_scientific-PT1000"></a>
+    <a class="anchor" name="atlas_scientific-PT1000"></a>
     <h4>Atlas Scientific PT-1000</h4>
 
     <p>The PT1000 temperature probe is a resistance type thermometer. Where PT stands for platinum and 1000 is the measured resistance of the probe at 0 ̊C in ohms (1k at 0 ̊C).</p>
@@ -378,7 +764,7 @@ sudo /etc/init.d/apache2 restart</pre>
     <p>
     Specifications:
     <br>Accuracy +/- (0.15 + (0.002*t))
-    <br>Probe type: Class A Platnum, RTD (resistance temperature detector)
+    <br>Probe type: Class A Platinum, RTD (resistance temperature detector)
     <br>Cable length: 81cm (32")
     <br>Cable material: Silicone rubber
     <br>30mm sensing area (304 SS)
@@ -391,7 +777,7 @@ sudo /etc/init.d/apache2 restart</pre>
     <br>Cable min temp -55°C
     </p>
 
-		<a name="DS18B20"></a>
+		<a class="anchor" name="DS18B20"></a>
 		<h4>DS18B20</h4>
 
 		<p>The DS18B20 is a 1-Wire digital temperature sensor from Maxim IC. Each sensor has a unique 64-Bit Serial number, allowing for a huge number of sensors to be used on one data bus (GPIO 4).</p>
@@ -409,7 +795,7 @@ sudo /etc/init.d/apache2 restart</pre>
 		<br>Usable with 3.0V to 5.5V power/data
 		</p>
 
-    <a name="TMP006"></a>
+    <a class="anchor" name="TMP006"></a>
     <h4>TMP 006/007</h4>
 
     <p>The TMP006 Breakout can measure the temperature of an object without making contact with it. By using a thermopile to detect and absorb the infrared energy an object is emitting, the TMP006 Breakout can determine how hot or cold the object is.</p>
@@ -420,10 +806,12 @@ sudo /etc/init.d/apache2 restart</pre>
     <br>Optimal operating voltage of 3.3V to 5V (tolerant up to 7V max)
     </p>
 
-		<a name="temperature-humidity-sensors"></a>
+    <hr>
+
+		<a class="anchor" name="temperature-humidity-sensors"></a>
 		<h3>Temperature/Humidity Sensors</h3>
 
-    <a name="AM2315"></a>
+    <a class="anchor" name="AM2315"></a>
     <h4>AM2315</h4>
 
     <p>
@@ -435,7 +823,7 @@ sudo /etc/init.d/apache2 restart</pre>
     <br>No more than 0.5 Hz sampling rate (once every 2 seconds)
     </p>
 
-		<a name="DHT11"></a>
+		<a class="anchor" name="DHT11"></a>
 		<h4>DHT11</h4>
 
 		<p>
@@ -447,7 +835,7 @@ sudo /etc/init.d/apache2 restart</pre>
 		<br>No more than 1 Hz sampling rate (once every second)
 		</p>
 
-		<a name="DHT22-AM2302"></a>
+		<a class="anchor" name="DHT22-AM2302"></a>
 		<h4>DHT22, AM2302</h4>
 
 		<p>Compared to the DHT11, this sensor is more precise, more accurate and works in a bigger range of temperature/humidity, but its larger and more expensive.</p>
@@ -461,7 +849,7 @@ sudo /etc/init.d/apache2 restart</pre>
 		<br>No more than 0.5 Hz sampling rate (once every 2 seconds)
 		</p>
 
-    <a name="HTU21D"></a>
+    <a class="anchor" name="HTU21D"></a>
     <h4>HTU21D</h4>
 
     <p>
@@ -471,7 +859,7 @@ sudo /etc/init.d/apache2 restart</pre>
     <br>-30 to 90°C temperature readings ±1°C typical accuracy
     </p>
 
-		<a name="SHT1X"></a>
+		<a class="anchor" name="SHT1X"></a>
 		<h4>SHT1x</h4> (SHT10, SHT11, SHT15)
 
 		<p>
@@ -482,7 +870,7 @@ sudo /etc/init.d/apache2 restart</pre>
 		<br>No more than 0.125 Hz sampling rate (once every 8 seconds)
 		</p>
 
-		<a name="SHT7X"></a>
+		<a class="anchor" name="SHT7X"></a>
 		<h4>SHT7x</h4> (SHT71, SHT75)
 
 		<p>
@@ -493,10 +881,12 @@ sudo /etc/init.d/apache2 restart</pre>
 		<br>No more than 0.125 Hz sampling rate (once every 8 seconds)
 		</p>
 
-		<a name="co2-sensors"></a>
+    <hr>
+
+		<a class="anchor" name="co2-sensors"></a>
 		<h3>CO<sub>2</sub> Sensors</h3>
 
-		<a name="K-30"></a>
+		<a class="anchor" name="K-30"></a>
 		<h4>K-30</h4>
 
 		<p>
@@ -511,10 +901,12 @@ sudo /etc/init.d/apache2 restart</pre>
 		<br>0.5 Hz sampling rate (once every 2 seconds)
 		</p>
 
-    <a name="moisture-sensors"></a>
+    <hr>
+
+    <a class="anchor" name="moisture-sensors"></a>
 		<h3>Moisture Sensors</h3>
 
-		<a name="CHIRP"></a>
+		<a class="anchor" name="CHIRP"></a>
 		<h4>Chirp</h4>
 
 		<p>The Chirp sensor measures moisture, light, and temperature.</p>
@@ -525,10 +917,12 @@ sudo /etc/init.d/apache2 restart</pre>
 		<br>I<sup>2</sup>C 7-bit address 0x77
 		</p>
 
-		<a name="pressure-sensors"></a>
+    <hr>
+
+		<a class="anchor" name="pressure-sensors"></a>
 		<h3>Pressure Sensors</h3>
 
-		<a name="BMP"></a>
+		<a class="anchor" name="BMP"></a>
 		<h4>BMP085, BMP180</h4>
 
 		<p>The BMP180 is the next-generation of sensors from Bosch, and replaces the BMP085. It is completely identical to the BMP085 in terms of firmware/software/interfacing.</p>
@@ -544,10 +938,12 @@ sudo /etc/init.d/apache2 restart</pre>
 		<br>I<sup>2</sup>C 7-bit address 0x77
 		</p>
 
-    <a name="luminosity-sensors"></a>
+    <hr>
+
+    <a class="anchor" name="luminosity-sensors"></a>
     <h3>Luminosity Sensors</h3>
 
-    <a name="TSL2561"></a>
+    <a class="anchor" name="TSL2561"></a>
     <h4>TSL2561</h4>
 
     <p>The TSL2561 SparkFun Luminosity Sensor Breakout is a sophisticated light sensor which has a flat response across most of the visible spectrum. Unlike simpler sensors, the TSL2561 measures both infrared and visible light to better approximate the response of the human eye. And because the TSL2561 is an integrating sensor (it soaks up light for a predetermined amount of time), it is capable of measuring both small and large amounts of light by changing the integration time.</p>
@@ -559,18 +955,22 @@ sudo /etc/init.d/apache2 restart</pre>
     <br>Max current: 0.6mA.
     </p>
 
-		<a name="multiplexers"></a>
+    <hr>
+
+		<a class="anchor" name="multiplexers"></a>
 		<h3>I<sup>2</sup>C Multiplexers</h3>
 
-		<a name="TCA9548A"></a>
+		<a class="anchor" name="TCA9548A"></a>
 		<h4>TCA9548A</h4>
 
 		<p>The TCA9548A I<sup>2</sup>C allows multiple sensors that have the same I<sup>2</sup>C address to be used with mycodo (such as the AM2315). The multiplexer has a selectable address, from 0x70 through 0x77, allowing up to 8 multiplexers to be used at once. With 8 channels per multiplexer, this allows up to 64 devices with the same address to be used.</p>
 
-    <a name="adc"></a>
+    <hr>
+
+    <a class="anchor" name="adc"></a>
     <h3>Analog to Digital Converters</h3>
 
-    <a name="ADS1x15"></a>
+    <a class="anchor" name="ADS1x15"></a>
     <h4>ADS1x15</h4> (ADS1015, ADS1115)
 
     <p>
@@ -583,7 +983,7 @@ sudo /etc/init.d/apache2 restart</pre>
     <br>Resolution: 1015: 12-bit, 1115: 16-bit
     </p>
 
-    <a name="MCP342x"></a>
+    <a class="anchor" name="MCP342x"></a>
     <h4>MCP342x</h4> (MCP3422, MCP3423, MCP3424, MCP3426, MCP3427, MCP3428)
 
     <p>
@@ -598,6 +998,6 @@ sudo /etc/init.d/apache2 restart</pre>
     <br>MCP3428: 4 channel, 12, 14, or 16 bit
     </p>
 
-  </div>
+  </ul>
 
 {% endblock -%}

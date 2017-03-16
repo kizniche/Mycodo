@@ -1,17 +1,54 @@
 # coding=utf-8
 """ pytest file """
+#  Hardware specific libs are found through out the flask app pages
+#  and the following mock work will patch them so that we can pretend
+#  that we have them installed:
+from mock import patch, MagicMock
+patch.dict("sys.modules",
+           RPi=MagicMock(),
+           imutils=MagicMock(),
+           picamera=MagicMock(),
+           AM2315=MagicMock(),
+           tentacle_pi=MagicMock(),
+           Adafruit_BMP=MagicMock(),
+           Adafruit_TMP=MagicMock(),
+           w1thermsensor=MagicMock(),
+           sht_sensor=MagicMock(),
+           smbus=MagicMock(),
+           ).start()
+
 import pytest
-import logging
 import tempfile
 import shutil
 import os
-from mycodo.databases.utils import session_scope
-from mycodo.databases.users_db.models import Users
+from mycodo.mycodo_flask.app import create_app
+from mycodo.config import TestConfig
+from webtest import TestApp
+from mycodo.mycodo_flask.extensions import db as _db
+from mycodo.tests.software_tests.factories import UserFactory
+from mycodo.databases.models import Role
+from mycodo.databases.models import User
+from mycodo.databases.models import populate_db
 
 
-def uri_to_path(uri):
-    """ splits a URI back into a path """
-    return str(uri).split('sqlite:///')[1]
+@pytest.yield_fixture()
+def app():
+    """ creates a flask instance """
+    _app = create_app(config=TestConfig)
+    ctx = _app.test_request_context()
+    ctx.push()
+    yield _app
+    ctx.pop()
+
+
+@pytest.fixture()
+def testapp(app):
+    """ creates a webtest fixture """
+    with app.app_context():
+        populate_db()
+        create_admin_user()
+        create_guest_user()
+    return TestApp(app)
 
 
 @pytest.yield_fixture()
@@ -31,46 +68,47 @@ def tmp_file():
 
 
 @pytest.fixture()
-def db_config(tmp_file, mycodo_db_uri, user_db_uri, notes_db_uri):
+def db(app):
     """ Creates a config object to setup and databases during tests """
+    _db.app = app
+    with app.app_context():
+        _db.create_all()
 
-    class Config(object):
-        SQL_DATABASE_USER = tmp_file
-        SQL_DATABASE_MYCODO = uri_to_path(mycodo_db_uri)
-        SQL_DATABASE_NOTE = uri_to_path(notes_db_uri)
-
-        MYCODO_DB_PATH = mycodo_db_uri
-        NOTES_DB_PATH = notes_db_uri
-        USER_DB_PATH = user_db_uri
-
-    return Config
+    yield _db
+    _db.drop_all()
 
 
-@pytest.fixture()
-def mycodo_db_uri(tmp_file):
-    """ returns the sqlalchemy URI as the MYCODO_DB_PATH """
-    return ''.join(['sqlite:///', tmp_file, '_mycodo_db'])
+def create_admin_user():
+    """ Create an admin user if it doesn't exist """
+    if not User.query.filter_by(name='admin').count():
+        user = UserFactory()
+        user.name = 'admin'
+        user.set_password('53CR3t_p4zZW0rD')
+        user.save()
+        user.role = Role.query.filter_by(name='Admin').first().id
+        user.save()
 
 
-@pytest.fixture()
-def user_db_uri(tmp_file):
-    """ returns the sqlalchemy URI as the USER_DB_PATH """
-    return ''.join(['sqlite:///', tmp_file, '_user_db'])
+def create_guest_user():
+    """ Create a guest user if it doesn't exist """
+    if not User.query.filter_by(name='guest').count():
+        user = UserFactory()
+        user.name = 'guest'
+        user.email = 'guest@email.com'
+        user.set_password('53CR3t_p4zZW0rD')
+        user.role = Role.query.filter_by(name='Guest').first().id
+        user.save()
 
 
-@pytest.fixture()
-def notes_db_uri(tmp_file):
-    """ returns the sqlalchemy URI as the USER_DB_PATH """
-    return ''.join(['sqlite:///', tmp_file, '_notes_db'])
-
-
-def create_admin_user(user_db_uri):
-    """ mycodo_flask exits if there is no user called admin. So we create one """
-
-    with session_scope(user_db_uri) as db_session:
-        if not db_session.query(Users).filter_by(user_restriction='admin').count():
-            logging.info("--> Creating new 'test' user as an admin")
-            db_session.add(Users(user_name='test', user_restriction='admin'))
-            db_session.commit()
-        else:
-            logging.warning("--> Dirty User DB: Admin user was already setup in: '{uri}'".format(uri=user_db_uri))
+def login_user(app, username, password):
+    """
+    returns a test context with a modified
+    session for the user login status
+    :returns: None
+    """
+    res = app.get('/login')
+    form = res.forms['login_form']
+    form['username'] = username
+    form['password'] = password
+    form.submit().maybe_follow()
+    return None

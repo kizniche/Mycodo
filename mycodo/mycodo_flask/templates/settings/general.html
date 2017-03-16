@@ -1,7 +1,7 @@
 {% extends "layout-settings.html" %}
-
 {% set active_page = "settings" %}
 {% set active_settings = "general" %}
+{% set help_page = ["settings-general", _('General Settings')] %}
 
 {% block title %} - {{_('General Settings')}}{% endblock %}
 
@@ -15,7 +15,7 @@
     <div class="form-group">
       {{form_settings_general.language.label(class_='col-sm-4 control-label')}}
       <div class="col-sm-8">
-        <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="language" name="language" title="{{_('Selecting a language will override the web browser\'s language.')}}">
+        <select class="form-control form-tooltip form-dropdown" data-placement="top" id="language" name="language" title="{{_('Selecting a language will override the web browser\'s language.')}}">
           <option value="">Browser Default</option>
           {% for each_language in languages %}
             <option value="{{each_language[0]}}"{% if misc.language == each_language[0] %} selected{% endif %}>{{each_language[1].decode('utf-8')}}</option>
@@ -81,31 +81,64 @@
     <div class="form-group">
       <div class="col-sm-4"></div>
       <div class="col-sm-8">
-        <h3>{{_('Relay Usage Options')}}</h3>
+        <h3>{{_('Relay Usage')}}</h3>
       </div>
     </div>
     <div class="form-group">
       {{form_settings_general.relayStatsVolts.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{form_settings_general.relayStatsVolts(class_='form-control', value=misc.relay_stats_volts)}}
+        {{form_settings_general.relayStatsVolts(class_='form-control', value=misc.relay_usage_volts, **{'title':_('Set the voltage used to power the devices powered by the relays')})}}
       </div>
     </div>
     <div class="form-group">
       {{form_settings_general.relayStatsCost.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{form_settings_general.relayStatsCost(class_='form-control', value=misc.relay_stats_cost)}}
+        {{form_settings_general.relayStatsCost(class_='form-control', value=misc.relay_usage_cost, **{'title':_('Set the cost per kilowatt-hour')})}}
       </div>
     </div>
     <div class="form-group">
       {{form_settings_general.relayStatsCurrency.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{form_settings_general.relayStatsCurrency(class_='form-control', value=misc.relay_stats_currency)}}
+        {{form_settings_general.relayStatsCurrency(class_='form-control', value=misc.relay_usage_currency, **{'title':_('Set the unit of currency used to pay for the electricity')})}}
       </div>
     </div>
     <div class="form-group">
       {{form_settings_general.relayStatsDayOfMonth.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{form_settings_general.relayStatsDayOfMonth(class_='form-control', value=misc.relay_stats_dayofmonth)}}
+        {{form_settings_general.relayStatsDayOfMonth(class_='form-control', value=misc.relay_usage_dayofmonth, **{'title':_('Set a day of the month to calculate monthly power usage')})}}
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_settings_general.relay_usage_report_gen.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      <div class="col-sm-8">
+        {%- if misc.relay_usage_report_gen == true -%}
+          {{form_settings_general.relay_usage_report_gen(checked=True)}}
+        {%- else -%}
+          {{form_settings_general.relay_usage_report_gen()}}
+        {%- endif -%}
+        &nbsp;&nbsp;{{_('Automatically generate relay usage reports on a daily/weekly/monthly schedule')}}
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_settings_general.relay_usage_report_span.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      <div class="col-sm-8">
+        <select class="form-control" id="relay_usage_report_span" name="relay_usage_report_span" title="" data-original-title="{{_('How often to generate a report')}}">
+          <option value="monthly"{% if misc.relay_usage_report_span == 'monthly' %} selected{% endif %}>Monthly</option>
+          <option value="weekly"{% if misc.relay_usage_report_span == 'weekly' %} selected{% endif %}>Weekly</option>
+          <option value="daily"{% if misc.relay_usage_report_span == 'daily' %} selected{% endif %}>Daily</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_settings_general.relay_usage_report_day.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      <div class="col-sm-8">
+        {{form_settings_general.relay_usage_report_day(class_='form-control', value=misc.relay_usage_report_day, **{'title':_('Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28')})}}
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_settings_general.relay_usage_report_hour.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      <div class="col-sm-8">
+        {{form_settings_general.relay_usage_report_hour(class_='form-control', value=misc.relay_usage_report_hour, **{'title':_('Hour Options: 0-23')})}}
       </div>
     </div>
     <div class="form-group">

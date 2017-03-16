@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% set active_page = "info" %}
+
+{% block title %} - {{_('Info')}}{% endblock %}
+
+{% block body %}
+  <!-- Route: /info -->
+  <div class="container"> 
+    {% include 'flash_messages.html' %}
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em; font-size: 1.3em">
+        {{_('Mycodo Version:')}} <span style="color: #4E9258; font-weight: bold;">{{mycodo_version}}</span>
+        <br>{{_('Database Version')}}: <span style="color: #4E9258; font-weight: bold;">
+        {%- for each_ver in database_version %}
+          {%- if each_ver != '' %}{{each_ver}}
+          {%- else %}None
+          {% endif %}
+        {% endfor %}</span>
+        <br>{{_('Daemon Status')}}:&nbsp
+        {%- if daemon_status == "alive" %}<span style="color: #4E9258; font-weight: bold;">{{_('Running')}}</span>
+        {%- else %}<span style="color: #F70D1A; font-weight: bold;">{{_('Not Running')}}</span> <a href="/help#ts-daemon-not-running"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a>
+        {% endif %}
+        {% if daemon_up %}
+          <br>{{_('Daemon Process ID')}}: <span style="color: #4E9258; font-weight: bold;">{{daemon_pid}}</span>
+          <br>{{_('Daemon RAM Usage')}}: <span style="color: #4E9258; font-weight: bold;">{{ram_use}} MB</span>
+          <br>{{_('Daemon Virtualenv')}}:&nbsp
+            {%- if virtualenv_daemon -%}<span style="color: #4E9258; font-weight: bold;">{{_('Yes')}}</span>
+            {%- else -%}<span style="color: #F70D1A; font-weight: bold;">{{_('No')}}</span>
+            {%- endif -%}
+        {% endif %}
+        <br>{{_('Frontend Virtualenv')}}:&nbsp
+        {%- if virtualenv_flask -%}<span style="color: #4E9258; font-weight: bold;">{{_('Yes')}}</span>
+        {%- else -%}<span style="color: #F70D1A; font-weight: bold;">{{_('No')}}</span>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        uptime
+      </div>
+      <div>
+        <pre>{{uptime}}</pre>
+      </div>
+    </div>
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        uname
+      </div>
+      <div>
+        <pre>{{uname}}</pre>
+      </div>
+    </div>
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        gpio readall
+      </div>
+      <div>
+        {%- if gpio_readall != "" -%}
+          <pre>{{gpio_readall}}</pre>
+        {%- else -%}
+{{_('Command "gpio" not found. Install gpio from the terminal with the following commands')}}:
+<pre>cd &amp;&amp; git clone git://git.drogon.net/wiringPi &amp;&amp; cd wiringPi &amp;&amp; ./build</pre>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        df -h
+      </div>
+      <div>
+        <pre>{{df}}</pre>
+      </div>
+    </div>
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        free -h
+      </div>
+      <div>
+        <pre>{{free}}</pre>
+      </div>
+    </div>
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        ifconfig -a
+      </div>
+      <div>
+        <pre>{{ifconfig}}</pre>
+      </div>
+    </div>
+
+  {% if daemon_up %}
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        pstree -p {{daemon_pid}} (daemon and threads)
+      </div>
+      <div>
+        <pre>{{pstree}}</pre>
+      </div>
+    </div>
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        top -b -H -n 1 -p {{daemon_pid}} (daemon and threads)
+      </div>
+      <div>
+        <pre>{{top}}</pre>
+      </div>
+    </div>
+
+  {% endif %}
+
+  </div>
+
+{% endblock %}

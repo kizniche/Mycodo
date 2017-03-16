@@ -4,7 +4,7 @@
 #  mycodo_daemon.py - Daemon for managing Mycodo controllers, such as sensors,
 #                     relays, PID controllers, etc.
 #
-#  Copyright (C) 2016  Kyle T. Gabriel
+#  Copyright (C) 2017  Kyle T. Gabriel
 #
 #  This file is part of Mycodo
 #
@@ -23,13 +23,15 @@
 #
 #  Contact at kylegabriel.com
 
+import os
+import sys
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+
 import argparse
-import csv
 import logging
 import resource
 import RPi.GPIO as GPIO
-import os
-import sys
 import threading
 import time
 import timeit
@@ -37,18 +39,17 @@ import rpyc
 # Don't remove the next line. It's required to not crash strptime
 # that's used in the controllers. I've tested with and without this line.
 from time import strptime  # Fix multithread bug in strptime
-from collections import OrderedDict
 from daemonize import Daemonize
 from rpyc.utils.server import ThreadedServer
 
 # Classes
-from controller_lcd import LCDController
-from controller_pid import PIDController
-from controller_relay import RelayController
-from controller_sensor import SensorController
-from controller_timer import TimerController
-from databases.mycodo_db.models import (
-    CameraStill,
+from mycodo.controller_lcd import LCDController
+from mycodo.controller_pid import PIDController
+from mycodo.controller_relay import RelayController
+from mycodo.controller_sensor import SensorController
+from mycodo.controller_timer import TimerController
+from mycodo.databases.models import (
+    Camera,
     LCD,
     Misc,
     PID,
@@ -57,30 +58,176 @@ from databases.mycodo_db.models import (
 )
 
 # Functions
-from devices.camera_pi import camera_record
-from utils.database import db_retrieve_table
-from utils.statistics import (
+from mycodo.databases.utils import session_scope
+from mycodo.devices.camera import camera_record
+from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.statistics import (
     add_update_csv,
     recreate_stat_file,
     return_stat_file_dict,
-    send_stats
+    send_anonymous_stats
+)
+from mycodo.utils.tools import (
+    generate_relay_usage_report,
+    next_schedule
 )
 
 # Config
-from config import (
+from mycodo.config import (
     DAEMON_LOG_FILE,
     DAEMON_PID_FILE,
-    FILE_TIMELAPSE_PARAM,
-    LOCK_FILE_TIMELAPSE,
     MYCODO_VERSION,
     SQL_DATABASE_MYCODO,
-    SQL_DATABASE_USER,
     STATS_CSV,
     STATS_INTERVAL
 )
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
-USER_DB_PATH = 'sqlite:///' + SQL_DATABASE_USER
+
+
+def mycodo_service(mycodo):
+    class ComServer(rpyc.Service):
+        """
+        Class to handle communication between the client (mycodo_client.py) and
+        the daemon (mycodo_daemon.py). This also serves as how other controllers
+        (e.g. timers) communicate to the relay controller.
+
+        """
+
+        @staticmethod
+        def exposed_flash_lcd(lcd_id, state):
+            """Starts or stops an LCD from flashing (alarm)"""
+            return mycodo.flash_lcd(lcd_id, state)
+
+        @staticmethod
+        def exposed_controller_activate(cont_type, cont_id):
+            """
+            Activates a controller
+            This may be a Sensor, PID, Timer, or LCD controllar
+
+            """
+            return mycodo.controller_activate(
+                cont_type, cont_id)
+
+        @staticmethod
+        def exposed_controller_deactivate(cont_type, cont_id):
+            """
+            Deactivates a controller
+            This may be a Sensor, PID, Timer, or LCD controllar
+
+            """
+            return mycodo.controller_deactivate(
+                cont_type, cont_id)
+
+        @staticmethod
+        def exposed_check_daemon():
+            """
+            Check if all active controllers respond
+
+            """
+            return mycodo.check_daemon()
+
+        @staticmethod
+        def exposed_daemon_status():
+            """
+            Merely indicates if the daemon is running or not, with successful
+            response of 'alive'. This will perform checks in the future and
+            return a more detailed daemon status.
+
+            TODO: Incorporate controller checks with daemon status
+            """
+            return 'alive'
+
+        @staticmethod
+        def exposed_is_in_virtualenv():
+            """Returns True if this script is running in a virtualenv"""
+            if hasattr(sys, 'real_prefix'):
+                return True
+            return False
+
+        @staticmethod
+        def exposed_pid_hold(pid_id):
+            """Hold PID Controller operation"""
+            return mycodo.pid_hold(pid_id)
+
+        @staticmethod
+        def exposed_pid_mod(pid_id):
+            """Set new PID Controller settings"""
+            return mycodo.pid_mod(pid_id)
+
+        @staticmethod
+        def exposed_pid_pause(pid_id):
+            """Pause PID Controller operation"""
+            return mycodo.pid_pause(pid_id)
+
+        @staticmethod
+        def exposed_pid_resume(pid_id):
+            """Resume PID controller operation"""
+            return mycodo.pid_resume(pid_id)
+
+        @staticmethod
+        def exposed_ram_use():
+            """Return the amount of ram used by the daemon"""
+            return resource.getrusage(
+                resource.RUSAGE_SELF).ru_maxrss / float(1000)
+
+        @staticmethod
+        def exposed_refresh_daemon_camera_settings():
+            """
+            Instruct the daemon to refresh the camera settings
+            """
+            return mycodo.refresh_daemon_camera_settings()
+
+        @staticmethod
+        def exposed_refresh_daemon_misc_settings():
+            """
+            Instruct the daemon to refresh the misc settings
+            """
+            return mycodo.refresh_daemon_misc_settings()
+
+        @staticmethod
+        def exposed_refresh_sensor_conditionals(sensor_id,
+                                                cond_mod,
+                                                cond_id):
+            """
+            Instruct the sensor controller to refresh the settings of a
+            conditional statement
+            """
+            return mycodo.refresh_sensor_conditionals(sensor_id,
+                                                      cond_mod,
+                                                      cond_id)
+
+        @staticmethod
+        def exposed_relay_state(relay_id):
+            """Return the relay state (not pin but whether relay is on or off"""
+            return mycodo.relay_state(relay_id)
+
+        @staticmethod
+        def exposed_relay_on(relay_id, duration, min_off_duration=0.0):
+            """Turns relay on from the client"""
+            return mycodo.relay_on(relay_id, duration, min_off_duration)
+
+        @staticmethod
+        def exposed_relay_off(relay_id, trigger_conditionals=True):
+            """Turns relay off from the client"""
+            return mycodo.relay_off(relay_id, trigger_conditionals)
+
+        @staticmethod
+        def exposed_relay_sec_currently_on(relay_id):
+            """Turns the amount of time a relay has already been on"""
+            return mycodo.controller['Relay'].relay_sec_currently_on(relay_id)
+
+        @staticmethod
+        def exposed_relay_setup(action, relay_id, setup_pin):
+            """Add, delete, or modify a relay in the running relay controller"""
+            return mycodo.relay_setup(action, relay_id, setup_pin)
+
+        @staticmethod
+        def exposed_terminate_daemon():
+            """Instruct the daemon to shut down"""
+            return mycodo.terminate_daemon()
+
+    return ComServer
 
 
 class ComThread(threading.Thread):
@@ -92,109 +239,15 @@ class ComThread(threading.Thread):
     user) to communicate with the daemon (mycodo_daemon.py, executed as root).
 
     """
+    def __init__(self, mycodo):
+        threading.Thread.__init__(self)
+
+        self.mycodo = mycodo
+
     def run(self):
-        server = ThreadedServer(ComServer, port=18813)
+        service = mycodo_service(self.mycodo)
+        server = ThreadedServer(service, port=18813)
         server.start()
-
-
-class ComServer(rpyc.Service):
-    """
-    Class to handle communication between the client (mycodo_client.py) and
-    the daemon (mycodo_daemon.py). This also serves as how other controllers
-    (e.g. timers) communicate to the relay controller.
-
-    """
-    @staticmethod
-    def exposed_flash_lcd(lcd_id, state):
-        """Starts or stops an LCD from flashing (alarm)"""
-        return mycodo_daemon.flash_lcd(lcd_id, state)
-
-    @staticmethod
-    def exposed_relay_state(relay_id):
-        """Return the relay state (not pin but whether relay is on or off"""
-        return mycodo_daemon.relay_state(relay_id)
-
-    @staticmethod
-    def exposed_relay_on(relay_id, duration):
-        """Turns relay on from the client"""
-        return mycodo_daemon.relay_on(relay_id, duration)
-
-    @staticmethod
-    def exposed_relay_off(relay_id, trigger_conditionals=True):
-        """Turns relay off from the client"""
-        return mycodo_daemon.relay_off(relay_id, trigger_conditionals)
-
-    @staticmethod
-    def exposed_relay_setup(action, relay_id, setup_pin):
-        """Add, delete, or modify a relay in the running relay controller"""
-        return mycodo_daemon.relay_setup(action, relay_id, setup_pin)
-
-    @staticmethod
-    def exposed_activate_controller(cont_type, cont_id):
-        """
-        Activates a controller
-        This may be a Sensor, PID, Timer, or LCD controllar
-
-        """
-        return mycodo_daemon.activate_controller(
-            cont_type, cont_id)
-
-    @staticmethod
-    def exposed_deactivate_controller(cont_type, cont_id):
-        """
-        Deactivates a controller
-        This may be a Sensor, PID, Timer, or LCD controllar
-
-        """
-        return mycodo_daemon.deactivate_controller(
-            cont_type, cont_id)
-
-    @staticmethod
-    def exposed_refresh_sensor_conditionals(sensor_id,
-                                            cond_mod, cond_id):
-        """
-        Instruct the sensor controller to refresh the settings of a
-        conditionalstatement
-        """
-        return mycodo_daemon.refresh_sensor_conditionals(sensor_id,
-                                                         cond_mod,
-                                                         cond_id)
-
-    @staticmethod
-    def exposed_daemon_status():
-        """
-        Merely indicates if the daemon is running or not, with succesful
-        response of 'alive'. This will perform checks in the future and return
-        a more detailed daemon status.
-
-        TODO: Incorporate controller checks with daemon status
-        """
-        return 'alive'
-
-    @staticmethod
-    def exposed_pid_mod(pid_id):
-        """Set new PID Controller settings"""
-        return mycodo_daemon.pid_mod(pid_id)
-
-    @staticmethod
-    def exposed_pid_hold(pid_id):
-        """Hold PID Controller operation"""
-        return mycodo_daemon.pid_hold(pid_id)
-
-    @staticmethod
-    def exposed_pid_pause(pid_id):
-        """Pause PID Controller operation"""
-        return mycodo_daemon.pid_pause(pid_id)
-
-    @staticmethod
-    def exposed_pid_resume(pid_id):
-        """Resume PID controller operation"""
-        return mycodo_daemon.pid_resume(pid_id)
-
-    @staticmethod
-    def exposed_terminate_daemon():
-        """Instruct the daemon to shut down"""
-        return mycodo_daemon.terminateDaemon()
 
 
 class DaemonController(threading.Thread):
@@ -221,8 +274,7 @@ class DaemonController(threading.Thread):
 
         self.startup_timer = timeit.default_timer()
         self.logger = logger
-        self.logger.info("Mycodo v{ver} starting".format(ver=MYCODO_VERSION))
-        self.thread_shutdown_timer = None
+        self.logger.info("Mycodo daemon v{ver} starting".format(ver=MYCODO_VERSION))
         self.daemon_run = True
         self.terminated = False
         self.controller = {
@@ -232,17 +284,29 @@ class DaemonController(threading.Thread):
             'Sensor': {},
             'Timer': {}
         }
+        self.thread_shutdown_timer = None
+        self.start_time = time.time()
         self.timer_ram_use = time.time()
-        self.timer_stats = time.time()+120
+        self.timer_stats = time.time() + 120
 
-        misc = db_retrieve_table(MYCODO_DB_PATH, Misc, entry='first')
-        self.opt_out_statistics = misc.stats_opt_out
+        # Update camera settings
+        self.camera = []
+        self.refresh_daemon_camera_settings()
+
+        # Update Misc settings
+        self.relay_usage_report_gen = None
+        self.relay_usage_report_span = None
+        self.relay_usage_report_day = None
+        self.relay_usage_report_hour = None
+        self.relay_usage_report_next_gen = None
+        self.opt_out_statistics = None
+        self.refresh_daemon_misc_settings()
+
+    def run(self):
         if self.opt_out_statistics:
             self.logger.info("Anonymous statistics disabled")
         else:
             self.logger.info("Anonymous statistics enabled")
-
-    def run(self):
         self.start_all_controllers()
         self.startup_stats()
 
@@ -251,63 +315,39 @@ class DaemonController(threading.Thread):
             while self.daemon_run:
                 now = time.time()
 
-                # If time-lapse active, take photo at predefined periods
-                if (os.path.isfile(FILE_TIMELAPSE_PARAM) and
-                        os.path.isfile(LOCK_FILE_TIMELAPSE)):
-                    # Read user-defined time-lapse parameters
-                    with open(FILE_TIMELAPSE_PARAM, mode='r') as infile:
-                        reader = csv.reader(infile)
-                        dict_timelapse_param = OrderedDict((row[0], row[1]) for row in reader)
-                    if now > float(dict_timelapse_param['end_time']):
-                        try:
-                            os.remove(FILE_TIMELAPSE_PARAM)
-                            os.remove(LOCK_FILE_TIMELAPSE)
-                        except Exception as e:
-                            self.logger.error("{cls} raised an exception: "
-                                              "{err}".format(cls=type(self).__name__, err=e))
-                    elif now > float(dict_timelapse_param['next_capture']):
-                        # Ensure next capture is greater than now (in case of power failure/reboot)
-                        next_capture = float(dict_timelapse_param['next_capture'])
-                        capture_number = int(dict_timelapse_param['capture_number'])
-                        while now > next_capture:
-                            # Update last capture and image number to latest before capture
-                            next_capture += float(dict_timelapse_param['interval'])
-                            capture_number += 1
-                        add_update_csv(FILE_TIMELAPSE_PARAM,
-                                       'next_capture',
-                                       next_capture)
-                        add_update_csv(FILE_TIMELAPSE_PARAM,
-                                       'capture_number',
-                                       capture_number)
-                        # Capture image
-                        camera = db_retrieve_table(
-                            MYCODO_DB_PATH, CameraStill, entry='first')
-                        camera_record(
-                            'timelapse',
-                            camera,
-                            start_time=dict_timelapse_param['start_time'],
-                            capture_number=capture_number)
+                # Capture time-lapse image
+                try:
+                    for each_camera in self.camera:
+                        self.timelapse_check(each_camera, now)
+                except Exception:
+                    self.logger.exception("Timelapse ERROR")
 
-                elif (os.path.isfile(FILE_TIMELAPSE_PARAM) or
-                        os.path.isfile(LOCK_FILE_TIMELAPSE)):
+                # Generate relay usage report
+                if (self.relay_usage_report_gen and
+                        now > self.relay_usage_report_next_gen):
                     try:
-                        os.remove(FILE_TIMELAPSE_PARAM)
-                        os.remove(LOCK_FILE_TIMELAPSE)
-                    except Exception as e:
-                        self.logger.error("{cls} raised an exception: "
-                                          "{err}".format(cls=type(self).__name__, err=e))
+                        generate_relay_usage_report()
+                        self.refresh_daemon_misc_settings()
+                    except Exception:
+                        self.logger.exception("Relay Usage Report Generation ERROR")
 
                 # Log ram usage every 24 hours
                 if now > self.timer_ram_use:
-                    self.timer_ram_use = now+86400
-                    ram = resource.getrusage(
-                        resource.RUSAGE_SELF).ru_maxrss / float(1000)
-                    self.logger.info("{} MB ram in use".format(ram))
+                    try:
+                        self.timer_ram_use = now + 86400
+                        ram_mb = resource.getrusage(
+                            resource.RUSAGE_SELF).ru_maxrss / float(1000)
+                        self.logger.info("{ram} MB ram in use".format(ram=ram_mb))
+                    except Exception:
+                        self.logger.exception("Free Ram ERROR")
 
                 # collect and send anonymous statistics
                 if (not self.opt_out_statistics and
                         now > self.timer_stats):
-                    self.send_stats()
+                    try:
+                        self.send_stats()
+                    except Exception:
+                        self.logger.exception("Stats ERROR")
 
                 time.sleep(0.25)
             GPIO.cleanup()
@@ -328,7 +368,7 @@ class DaemonController(threading.Thread):
         # Wait for the client to receive the response before it disconnects
         time.sleep(0.25)
 
-    def activate_controller(self, cont_type, cont_id):
+    def controller_activate(self, cont_type, cont_id):
         """
         Activate currently-inactive controller
 
@@ -363,12 +403,12 @@ class DaemonController(threading.Thread):
                 controller_manage['type'] = Timer
                 controller_manage['function'] = TimerController
             else:
-                return 1, "{} controller with ID {} not found.".format(
-                    cont_type, cont_id)
+                return 1, "'{type}' not a valid controller type.".format(
+                    type=cont_type)
 
             # Check if the controller ID actually exists and start it
-            controller = db_retrieve_table(
-                MYCODO_DB_PATH, controller_manage['type'], device_id=cont_id)
+            controller = db_retrieve_table_daemon(controller_manage['type'],
+                                                  device_id=cont_id)
             if controller:
                 self.controller[cont_type][cont_id] = controller_manage['function'](
                     ready, cont_id)
@@ -386,7 +426,7 @@ class DaemonController(threading.Thread):
             self.logger.exception(message)
             return 1, message
 
-    def deactivate_controller(self, cont_type, cont_id):
+    def controller_deactivate(self, cont_type, cont_id):
         """
         Deactivate currently-active controller
 
@@ -416,13 +456,32 @@ class DaemonController(threading.Thread):
                 message = "Could not deactivate {type} controller with ID " \
                           "{id}, it's not active.".format(type=cont_type,
                                                           id=cont_id)
-                self.logger.warning(message)
+                self.logger.debug(message)
                 return 1, message
         else:
             message = "{type} controller with ID {id} not found".format(
                 type=cont_type, id=cont_id)
             self.logger.warning(message)
             return 1, message
+
+    def check_daemon(self):
+        try:
+            for lcd_id in self.controller['LCD']:
+                if not self.controller['LCD'][lcd_id].is_running():
+                    return "Error: LCD ID {}".format(lcd_id)
+            for pid_id in self.controller['PID']:
+                if not self.controller['PID'][pid_id].is_running():
+                    return "Error: PID ID {}".format(pid_id)
+            for sensor_id in self.controller['Sensor']:
+                if not self.controller['Sensor'][sensor_id].is_running():
+                    return "Error: Sensor ID {}".format(sensor_id)
+            for timer_id in self.controller['Timer']:
+                if not self.controller['Timer'][timer_id].is_running():
+                    return "Error: Timer ID {}".format(timer_id)
+            if not self.controller['Relay'].is_running():
+                return "Error: Relay controller"
+        except Exception as msg:
+            return "Exception: {msg}".format(msg=msg)
 
     def flash_lcd(self, lcd_id, state):
         """
@@ -442,26 +501,50 @@ class DaemonController(threading.Thread):
         else:
             return "Cannot flash, LCD not running"
 
-    def relay_state(self, relay_id):
-        """
-        Return the relay state, wither "on" or "off"
+    def pid_hold(self, pid_id):
+        return self.controller['PID'][pid_id].pid_hold()
 
-        :param relay_id: Unique ID for relay
-        :type relay_id: str
-        """
-        return self.controller['Relay'].relay_state(relay_id)
+    def pid_mod(self, pid_id):
+        return self.controller['PID'][pid_id].pid_mod()
 
-    def relay_on(self, relay_id, duration):
-        """
-        Turn relay on using default relay controller
+    def pid_pause(self, pid_id):
+        return self.controller['PID'][pid_id].pid_pause()
 
-        :param relay_id: Unique ID for relay
-        :type relay_id: str
-        :param duration: How long to turn the relay on
-        :type duration: float
-        """
-        self.controller['Relay'].relay_on_off(relay_id, 'on', duration=duration)
-        return "Relay turned on"
+    def pid_resume(self, pid_id):
+        return self.controller['PID'][pid_id].pid_resume()
+
+    def refresh_daemon_camera_settings(self):
+        try:
+            self.logger.debug("Refreshing camera settings")
+            self.camera = db_retrieve_table_daemon(
+                Camera, entry='all')
+        except Exception:
+            self.camera = []
+            self.logger.debug("Could not read camera table")
+
+    def refresh_daemon_misc_settings(self):
+        self.logger.debug("Refreshing misc settings")
+        misc = db_retrieve_table_daemon(Misc, entry='first')
+        self.opt_out_statistics = misc.stats_opt_out
+        self.relay_usage_report_gen = misc.relay_usage_report_gen
+        self.relay_usage_report_span = misc.relay_usage_report_span
+        self.relay_usage_report_day = misc.relay_usage_report_day
+        self.relay_usage_report_hour = misc.relay_usage_report_hour
+        old_time = self.relay_usage_report_next_gen
+        self.relay_usage_report_next_gen = next_schedule(
+            self.relay_usage_report_span,
+            self.relay_usage_report_day,
+            self.relay_usage_report_hour)
+        if (self.relay_usage_report_gen and
+                old_time != self.relay_usage_report_next_gen):
+            str_next_report = time.strftime(
+                '%c', time.localtime(self.relay_usage_report_next_gen))
+            self.logger.debug(
+                "Generating next relay usage report {time_date}".format(
+                    time_date=str_next_report))
+
+    def refresh_sensor_conditionals(self, sensor_id, cond_mod, cond_id):
+        return self.controller['Sensor'][sensor_id].setup_sensor_conditionals(cond_mod, cond_id)
 
     def relay_off(self, relay_id, trigger_conditionals=True):
         """
@@ -472,8 +555,29 @@ class DaemonController(threading.Thread):
         :param trigger_conditionals: Whether to trigger relay conditionals or not
         :type trigger_conditionals: bool
         """
-        self.controller['Relay'].relay_on_off(relay_id, 'off', trigger_conditionals=trigger_conditionals)
+        self.controller['Relay'].relay_on_off(
+            relay_id,
+            'off',
+            trigger_conditionals=trigger_conditionals)
         return "Relay turned off"
+
+    def relay_on(self, relay_id, duration, min_off_duration=0.0):
+        """
+        Turn relay on using default relay controller
+
+        :param relay_id: Unique ID for relay
+        :type relay_id: str
+        :param duration: How long to turn the relay on
+        :type duration: float
+        :param min_off_duration: Don't turn on if not off for at least this duration (0 = disabled)
+        :type min_off_duration: float
+        """
+        self.controller['Relay'].relay_on_off(
+            relay_id,
+            'on',
+            duration=duration,
+            min_off_duration=min_off_duration)
+        return "Relay turned on"
 
     def relay_setup(self, action, relay_id, setup_pin=False):
         """
@@ -489,35 +593,33 @@ class DaemonController(threading.Thread):
         :param setup_pin: Whether or not to setup the GPIO pin as output
         :type setup_pin: bool
         """
-        return self.controller['Relay'].relay_setup(action, relay_id, setup_pin)
+        return self.controller['Relay'].relay_setup(
+            action,
+            relay_id,
+            setup_pin)
 
-    def pid_mod(self, pid_id):
-        return self.controller['PID'][pid_id].pid_mod()
+    def relay_state(self, relay_id):
+        """
+        Return the relay state, wither "on" or "off"
 
-    def pid_hold(self, pid_id):
-        return self.controller['PID'][pid_id].pid_hold()
-
-    def pid_pause(self, pid_id):
-        return self.controller['PID'][pid_id].pid_pause()
-
-    def pid_resume(self, pid_id):
-        return self.controller['PID'][pid_id].pid_resume()
-
-    def refresh_sensor_conditionals(self, sensor_id, cond_mod, cond_id):
-        return self.controller['Sensor'][sensor_id].setup_sensor_conditionals(cond_mod, cond_id)
+        :param relay_id: Unique ID for relay
+        :type relay_id: str
+        """
+        return self.controller['Relay'].relay_state(relay_id)
 
     def send_stats(self):
         """Collect and send statistics"""
         try:
             stat_dict = return_stat_file_dict(STATS_CSV)
             if float(stat_dict['next_send']) < time.time():
-                self.timer_stats = self.timer_stats+STATS_INTERVAL
+                self.timer_stats = self.timer_stats + STATS_INTERVAL
                 add_update_csv(STATS_CSV, 'next_send', self.timer_stats)
             else:
                 self.timer_stats = float(stat_dict['next_send'])
         except Exception as msg:
+            self.timer_stats = self.timer_stats + STATS_INTERVAL
             self.logger.exception(
-                "Error: Could not read stats file. Regenerating. Error msg: "
+                "Error: Could not read stats file. Regenerating. Message: "
                 "{msg}".format(msg=msg))
             try:
                 os.remove(STATS_CSV)
@@ -525,7 +627,7 @@ class DaemonController(threading.Thread):
                 pass
             recreate_stat_file()
         try:
-            send_stats()
+            send_anonymous_stats(self.start_time)
         except Exception as except_msg:
             self.logger.exception(
                 "Error: Could not send statistics: {err}".format(
@@ -542,7 +644,7 @@ class DaemonController(threading.Thread):
                 recreate_stat_file()
 
             daemon_startup_time = timeit.default_timer()-self.startup_timer
-            self.logger.info("Mycodo v{ver} started in {time:.3f}"
+            self.logger.info("Mycodo daemon v{ver} started in {time:.3f}"
                              " seconds".format(ver=MYCODO_VERSION,
                                                time=daemon_startup_time))
             add_update_csv(STATS_CSV, 'daemon_startup_seconds',
@@ -559,10 +661,10 @@ class DaemonController(threading.Thread):
         controller does.
         """
         # Obtain database configuration options
-        lcd = db_retrieve_table(MYCODO_DB_PATH, LCD, entry='all')
-        pid = db_retrieve_table(MYCODO_DB_PATH, PID, entry='all')
-        sensor = db_retrieve_table(MYCODO_DB_PATH, Sensor, entry='all')
-        timer = db_retrieve_table(MYCODO_DB_PATH, Timer, entry='all')
+        lcd = db_retrieve_table_daemon(LCD, entry='all')
+        pid = db_retrieve_table_daemon(PID, entry='all')
+        sensor = db_retrieve_table_daemon(Sensor, entry='all')
+        timer = db_retrieve_table_daemon(Timer, entry='all')
 
         self.logger.debug("Starting relay controller")
         self.controller['Relay'] = RelayController()
@@ -570,26 +672,26 @@ class DaemonController(threading.Thread):
 
         self.logger.debug("Starting all activated timer controllers")
         for each_timer in timer:
-            if each_timer.activated:
-                self.activate_controller('Timer', each_timer.id)
+            if each_timer.is_activated:
+                self.controller_activate('Timer', each_timer.id)
         self.logger.info("All activated timer controllers started")
 
         self.logger.debug("Starting all activated sensor controllers")
         for each_sensor in sensor:
-            if each_sensor.activated:
-                self.activate_controller('Sensor', each_sensor.id)
+            if each_sensor.is_activated:
+                self.controller_activate('Sensor', each_sensor.id)
         self.logger.info("All activated sensor controllers started")
 
         self.logger.debug("Starting all activated PID controllers")
         for each_pid in pid:
-            if each_pid.activated:
-                self.activate_controller('PID', each_pid.id)
+            if each_pid.is_activated:
+                self.controller_activate('PID', each_pid.id)
         self.logger.info("All activated PID controllers started")
 
         self.logger.debug("Starting all activated LCD controllers")
         for each_lcd in lcd:
-            if each_lcd.activated:
-                self.activate_controller('LCD', each_lcd.id)
+            if each_lcd.is_activated:
+                self.controller_activate('LCD', each_lcd.id)
         self.logger.info("All activated LCD controllers started")
 
     def stop_all_controllers(self):
@@ -639,7 +741,7 @@ class DaemonController(threading.Thread):
         self.controller['Relay'].stop_controller()
         self.controller['Relay'].join()
 
-    def terminateDaemon(self):
+    def terminate_daemon(self):
         """Instruct the daemon to shut down"""
         self.thread_shutdown_timer = timeit.default_timer()
         self.logger.info("Received command to terminate daemon")
@@ -648,15 +750,64 @@ class DaemonController(threading.Thread):
             time.sleep(0.1)
         return 1
 
+    def timelapse_check(self, camera, now):
+        """ If time-lapses are active, take photo at predefined periods """
+        if (camera.timelapse_started and
+                now > camera.timelapse_end_time):
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                mod_camera = new_session.query(Camera).filter(
+                    Camera.id == camera.id).first()
+                mod_camera.timelapse_started = False
+                mod_camera.timelapse_paused = False
+                mod_camera.timelapse_start_time = None
+                mod_camera.timelapse_end_time = None
+                mod_camera.timelapse_interval = None
+                mod_camera.timelapse_next_capture = None
+                mod_camera.timelapse_capture_number = None
+                new_session.commit()
+            self.logger.debug(
+                "Camera {id}: End of time-lapse.".format(id=camera.id))
+        elif ((camera.timelapse_started and not camera.timelapse_paused) and
+                now > camera.timelapse_next_capture):
+            # Ensure next capture is greater than now (in case of power failure/reboot)
+            next_capture = camera.timelapse_next_capture
+            capture_number = camera.timelapse_capture_number
+            while now > next_capture:
+                # Update last capture and image number to latest before capture
+                next_capture += camera.timelapse_interval
+                capture_number += 1
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                mod_camera = new_session.query(Camera).filter(
+                    Camera.id == camera.id).first()
+                mod_camera.timelapse_next_capture = next_capture
+                mod_camera.timelapse_capture_number = capture_number
+                new_session.commit()
+            self.logger.debug(
+                "Camera {id}: Capturing time-lapse image".format(id=camera.id))
+            # Capture image
+            camera_record('timelapse', camera)
 
-def start_daemon():
-    """Start the daemon"""
-    ct = ComThread()
-    ct.daemon = True
-    # Start communication thread for receiving commands from mycodo_client.py
-    ct.start()
-    # Start daemon thread that manages all controllers
-    mycodo_daemon.start()
+
+class MycodoDaemon:
+    """
+    Handle starting the components of the Mycodo Daemon
+
+    """
+
+    def __init__(self, mycodo):
+        self.mycodo = mycodo
+
+    def start_daemon(self):
+        """Start communication and daemon threads"""
+        try:
+            ct = ComThread(self.mycodo)
+            ct.daemon = True
+            # Start communication thread for receiving commands from mycodo_client.py
+            ct.start()
+            # Start daemon thread that manages all controllers
+            self.mycodo.start()
+        except Exception:
+            logger.exception("ERROR Starting Mycodo Daemon Thread")
 
 
 def parse_args():
@@ -700,12 +851,12 @@ if __name__ == '__main__':
     logger.addHandler(fh)
     keep_fds = [fh.stream.fileno()]
 
-    global mycodo_daemon
-    mycodo_daemon = DaemonController()
+    daemon_controller = DaemonController()
+    mycodo_daemon = MycodoDaemon(daemon_controller)
 
     # Set up daemon and start it
-    daemon = Daemonize(app="Mycodod",
+    daemon = Daemonize(app="mycodo_daemon",
                        pid=DAEMON_PID_FILE,
-                       action=start_daemon,
+                       action=mycodo_daemon.start_daemon,
                        keep_fds=keep_fds)
     daemon.start()

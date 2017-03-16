@@ -1,3 +1,36 @@
+## 5.0.0 (Unreleased)
+
+### Features
+
+  - Complete Spanish translation
+  - Add auto-generation of relay usage/cost reports on a daily, weekly, or monthly schedule
+  - Add ability to check daemon health (mycodo_client.py --checkdaemon)
+  - Add sensor conditional actions: Activate/Deactivate PID, Email Photo, Email Video
+  - Add PID option: maximum allowable sensor measurement age (to allow the PID controller from manipulate relays, the sensor measurement must have occurred in the past x seconds)
+  - Add PID option: minimum off duration for lower/raise relay (protects devices that require a minimum off period by preventing power cycling from occurring too quickly)
+  - Add new sensor: Free Disk Space (of a set path)
+  - Add new sensor: Mycodo Daemon RAM Usage (used for testing)
+  - Add ability to use multiple camera configurations (multiple cameras)
+  - Add OpenCV camera library to allow use of USB cameras ([#193](https://github.com/kizniche/mycodo/issues/193))
+  - Automatically detect DS18B20 sensors in sensor configuration
+  - Add ability to create custom user roles
+  - Add new user roles: Editor and Monitor ([#46](https://github.com/kizniche/mycodo/issues/46))
+
+### Miscellaneous
+
+  - Improve content and accessibility of help documentation
+  - Redesign navigation menu (including glyphs from bootstrap and fontawesome)
+  - Move to using a Python virtual environment
+  - Refactor the relay/sensor conditional management system
+  - User names are no longer case-sensitive
+  - Switch to using Flask-Login
+  - Switch to using flask_wtf.FlaskForm (from using deprecated flask_wtf.Form)
+  - Update web interface style and layout
+  - Update influxdb to 1.2.1
+  - Update Flask WTF to 0.14.2
+  - Move from using sqlalchemy to flask sqlalchemy
+  - Restructure database ([#115](https://github.com/kizniche/mycodo/issues/115), [#122](https://github.com/kizniche/mycodo/issues/122))
+
 ## 4.2.0 (2017-03-16)
 
 ### Features
@@ -112,10 +145,6 @@ Miscellaneous
 
 ## 4.1.8 (2017-01-21)
 
-This update fixes an error in the upgrade system, but it may mean that you cannot upgrade from the web interface (only for this version). If you cannot upgrade, execute the following command from the terminal to manually upgrade:
-
-```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh upgrade```
-
 ### Bugfixes
 
   - Actually fix the upgrade system (mycodo_wrapper)
@@ -127,10 +156,6 @@ This update fixes an error in the upgrade system, but it may mean that you canno
   - Update Spanish translations
 
 ## 4.1.7 (2017-01-19)
-
-This update fixes an error in the upgrade system, but it may mean that you cannot upgrade from the web interface (only for this version). If you cannot upgrade, execute the following command from the terminal to manually upgrade:
-
-```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh upgrade```
 
 ### Bugfixes
 

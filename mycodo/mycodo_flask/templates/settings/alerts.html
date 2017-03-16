@@ -1,7 +1,7 @@
 {% extends "layout-settings.html" %}
-
 {% set active_page = "settings" %}
 {% set active_settings = "alerts" %}
+{% set help_page = ["settings-alerts", _('Alert Settings')] %}
 
 {% block title %} - {{_('Alerts Settings')}}{% endblock %}
 
@@ -64,15 +64,20 @@
         {{form_email_alert.smtpSubmit(class_='btn btn-default')}}
       </div>
     </div>
-    <div class="form-group">
+
+    <div class="form-group" style="padding-top: 1.5em">
       <div class="col-sm-offset-4 col-sm-8">
-        <div>
-          <div class="pull-left" style="margin-right:5px">
-            {{form_email_alert.sendTestEmail(class_='btn btn-default')}}
-          </div>
-          <div>
-            <div class="input-group">
+        <div class="row">
+          <div class="col-md-5">
+            <div class="form-group" style="padding: 0 1em">
               {{form_email_alert.testEmailTo(class_='form-control')}}
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group" style="padding: 0 1em">
+              {{form_email_alert.sendTestEmail(class_='btn btn-default')}}
             </div>
           </div>
         </div>

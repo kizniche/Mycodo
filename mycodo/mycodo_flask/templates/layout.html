@@ -11,14 +11,16 @@
 
   <title>{{host}}{% block title %}{% endblock %} - Mycodo {{mycodo_version}}</title>
 
+  <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+
   <!-- Bootstrap core CSS -->
   <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 
-  {% if session.user_theme != '' %}
-    <link href="/static/css/bootstrap-themes/bootstrap-{{session.user_theme}}.min.css" rel="stylesheet">
+  {% if current_user.theme != '' %}
+    <link href="/static/css/bootstrap-themes/bootstrap-{{current_user.theme}}.min.css" rel="stylesheet">
   {% endif %}
 
-  {% if session.user_theme in ['cyborg', 'darkly', 'slate', 'sun', 'superhero'] %}
+  {% if current_user.theme in ['cyborg', 'darkly', 'slate', 'sun', 'superhero'] %}
     <link href="/static/css/custom-dark.css" rel="stylesheet">
   {% else %}
     <link href="/static/css/custom-light.css" rel="stylesheet">
@@ -57,27 +59,20 @@
       cache: false
     });
   }
-  function initiate_datemon_status() {
+  function initiate_daemon_status() {
     setInterval(function () {
       // Update after every 30 seconds
       check_daemon_active();
     }, {% if active_page == "update" -%}5000{% else -%}60000{%- endif -%});
   }
-  initiate_datemon_status();
+  initiate_daemon_status();
   </script>
   {% block head %}{% endblock %}
   </head>
   <body>
-
-    {% set navigation_bar_top = [
-      (url_for('page_routes.page_sensor'), 'sensor', _('Sensor')),
-      (url_for('page_routes.page_relay'), 'relay', _('Relay')),
-      (url_for('method_routes.method_list'), 'method_list', _('Method')),
-      (url_for('page_routes.page_pid'), 'pid', _('PID')),
-      (url_for('page_routes.page_timer'), 'timer', _('Timer'))
-    ] -%}
     
-    {% set active_page = active_page|default('graph') -%}
+    {% set active_page = active_page|default('') -%}
+    {% set help_page = help_page|default(['', '']) -%}
 
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
@@ -88,52 +83,83 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" id="daemon-status" data-toggle="tooltip" data-placement="bottom" href="https://github.com/kizniche/Mycodo" target="_blank" style="text-align: center; padding: 4px 15px; font-size: 14px; font-weight: bold;{%- if daemon_status == "alive" -%} /*noinspection CssOverwrittenProperties*/color: #4E9258{%- else -%} /*noinspection CssOverwrittenProperties*/color: #F70D1A{%- endif -%}" title="{%- if daemon_status == "alive" -%}{{_('Daemon is Running')}}{%- else -%}{{_('Daemon is Not Running')}}{%- endif -%}">{{host}}<br>Mycodo {{mycodo_version}}</a>
+          <a class="navbar-brand" id="daemon-status" data-toggle="tooltip" data-placement="bottom" href="{{url_for('page_routes.page_info')}}" style="text-align: center; padding: 0 15px; padding-top: 2px !important; font-size: 14px; font-weight: bold;{%- if daemon_status == "alive" -%} /*noinspection CssOverwrittenProperties*/color: #4E9258{%- else -%} /*noinspection CssOverwrittenProperties*/color: #F70D1A{%- endif -%}" title="{%- if daemon_status == "alive" -%}{{_('Daemon is Running')}}{%- else -%}{{_('Daemon is Not Running')}}{%- endif -%}">{{host}}<br>Mycodo {{mycodo_version}}</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li{% if active_page == 'live' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_live')}}">{{_('Live')}}</a></li>
-            <li class="dropdown{% if active_page == 'graph' %} active{% endif %}">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Graph')}}<span class="caret"></span></a>
+
+            <li class="dropdown{% if active_page in ['live', 'graph', 'graph_async'] %} active{% endif %}">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Data')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="{{url_for('page_routes.page_graph')}}">{{_('General Graph')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_graph_async')}}">{{_('Asynchronous Graph')}}</a></li>
+                <li{% if active_page == 'live' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_live')}}"><i class="glyphicon glyphicon-play"></i>&nbsp;&nbsp;{{_('Live Measurements')}}</a></li>
+                <li{% if active_page == 'graph' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_graph')}}"><i class="fa fa-area-chart"></i>&nbsp;&nbsp;{{_('Live Graphs')}}</a></li>
+                <li{% if active_page == 'graph_async' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_graph_async')}}"><i class="glyphicon glyphicon-transfer"></i>&nbsp;&nbsp;{{_('Asynchronous Graphs')}}</a></li>
               </ul>
             </li>
-          {% for href, id, caption in navigation_bar_top %}
-            <li{% if id == active_page %} class="active"{% endif %}><a href="{{ href|e }}">{{caption|e}}</a></li>
-          {% endfor -%}
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Tools')}}<span class="caret"></span></a>
+            <li{% if active_page == 'sensor' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_sensor')}}">{{_('Sensors')}}</a></li>
+
+            <li class="dropdown {% if active_page in ['relay', 'usage', 'usage_reports'] %} active{% endif %}">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Relay')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="{{url_for('page_routes.page_lcd')}}">{{_('LCD')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_camera')}}">{{_('Camera')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_usage')}}">{{_('Relay Usage')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_export')}}">{{_('Export Measurements')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_logview')}}">{{_('Mycodo Logs')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_info')}}">{{_('System Info')}}</a></li>
-                <li><a href="{{url_for('page_routes.page_notes')}}">{{_('Notes')}}</a></li>
+                <li{% if active_page == 'relay' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_relay')}}"><i class="fa fa-bolt"></i>&nbsp;&nbsp;{{_('Relays')}}</a></li>
+                <li{% if active_page == 'usage' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_usage')}}"><i class="glyphicon glyphicon-equalizer"></i>&nbsp;&nbsp;{{_('Relay Usage')}}</a></li>
+                <li{% if active_page == 'usage_reports' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_usage_reports')}}"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;&nbsp;{{_('Relay Usage Reports')}}</a></li>
+              </ul>
+            </li>
+
+            <li class="dropdown {% if active_page in ['pid', 'method_list'] %} active{% endif %}">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">PID<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li{% if active_page == 'pid' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_pid')}}"><i class="fa fa-crosshairs"></i>&nbsp;&nbsp;{{_('PID Controllers')}}</a></li>
+                <li{% if active_page == 'method_list' %} class="active"{% endif %}><a href="{{url_for('method_routes.method_list')}}"><i class="fa fa-line-chart"></i>&nbsp;&nbsp;{{_('PID Methods')}}</a></li>
+              </ul>
+            </li>
+
+            <li class="dropdown {% if active_page in ['camera', 'export', 'lcd', 'timer'] %} active{% endif %}">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('More')}}<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li{% if active_page == 'timer' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_timer')}}"><i class="fa fa-hourglass-o"></i>&nbsp;&nbsp;{{_('Timers')}}</a></li>
+                <li{% if active_page == 'lcd' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_lcd')}}"><i class="fa fa-desktop"></i>&nbsp;&nbsp;{{_('LCDs')}}</a></li>
+                <li{% if active_page == 'camera' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_camera')}}"><i class="glyphicon glyphicon-camera"></i>&nbsp;&nbsp;{{_('Cameras')}}</a></li>
+                <li{% if active_page == 'export' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_export')}}"><i class="glyphicon glyphicon-save-file"></i>&nbsp;&nbsp;{{_('Export Measurements')}}</a></li>
               </ul>
             </li>
           </ul>
+
           <ul class="nav navbar-nav navbar-right">
-            <li{% if active_page == 'help' %} class="active"{% endif %}><a href="/help">{{_('Help')}}</a></li>
-            <li class="{% if mycodo_version == '4.2.0' %}active-upgrade {% endif %}dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Admin')}}<span class="caret"></span></a>
+            <li class="dropdown {% if active_page == 'help' %} active{% endif %}">
+              <a style="padding-top: 10px !important;" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="gi-2x glyphicon glyphicon-question-sign"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="{{url_for('settings_routes.settings_general')}}">{{_('Configure')}}</a></li>
-                <li{% if mycodo_version == '4.2.0' %} class="active-upgrade"{% endif %}><a href="/admin/upgrade">{{_('Upgrade')}}</a></li>
-                <li><a href="/admin/backup">{{_('Backup/Restore')}}</a></li>
+                {% if help_page[0] != '' %}
+                  <li{% if active_page == 'help' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_help')}}#{{help_page[0]}}"><i class="fa fa-book"></i>&nbsp;&nbsp;{{_('Help')}}: {{help_page[1]}}</a></li>
+                {% endif %}
+                <li{% if active_page == 'help' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_help')}}"><i class="fa fa-book"></i>&nbsp;&nbsp;{{_('Mycodo Manual')}}</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="/systemctl/restart"onclick='return confirm("Confirm restarting the computer.")'>{{_('Restart Computer')}}</a></li>
-                <li><a href="/systemctl/shutdown"onclick='return confirm("Confirm shutting down the computer.")'>{{_('Shutdown Computer')}}</a></li>
+                <li><a href="https://github.com/kizniche/Mycodo/issues/new" target="_blank"><i class="fa fa-bug"></i>&nbsp;&nbsp;{{_('Submit an Issue')}}</a></li>
+                <li><a href="https://github.com/kizniche/Mycodo" target="_blank"><i class="fa fa-github"></i>&nbsp;&nbsp;{{_('Mycodo on Github')}}</a></li>
+              </ul>
+            </li>
+
+            <li class="dropdown{% if active_page in ['info', 'logview', 'settings'] %} active{% endif %}">
+              <a style="padding-top: 10px !important;" href="#" class="dropdown-toggle" style="padding-top: 0.2em; padding-bottom: 0.2em" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="gi-2x glyphicon glyphicon-cog"></span></a>
+              <ul class="dropdown-menu">
+                <li{% if active_page == 'settings' %} class="active"{% endif %}><a href="{{url_for('settings_routes.settings_general')}}"><i class="fa fa-sliders"></i>&nbsp;&nbsp;{{_('Configure')}}</a></li>
+                <li{% if active_page == 'logview' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_logview')}}"><i class="glyphicon glyphicon-book"></i>&nbsp;&nbsp;{{_('Mycodo Logs')}}</a></li>
+                <li{% if active_page == 'info' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_info')}}"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;&nbsp;{{_('System Information')}}</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="/remote/setup">{{_('Remote Admin')}}</a></li>
+                <li><a href="/admin/upgrade"><i class="glyphicon glyphicon-open"></i>&nbsp;&nbsp;{{_('Upgrade')}}</a></li>
+                <li><a href="/admin/backup"><i class=" glyphicon glyphicon-floppy-saved"></i>&nbsp;&nbsp;{{_('Backup/Restore')}}</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="/logout">{{_('Logout')}}</a></li>
+                <li><a href="/systemctl/restart"onclick='return confirm("Confirm restarting the computer.")'><i class="glyphicon glyphicon-repeat"></i>&nbsp;&nbsp;{{_('Restart Computer')}}</a></li>
+                <li><a href="/systemctl/shutdown"onclick='return confirm("Confirm shutting down the computer.")'><i class="glyphicon glyphicon-off"></i>&nbsp;&nbsp;{{_('Shutdown Computer')}}</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="/remote/setup"><i class="glyphicon glyphicon-sort"></i>&nbsp;&nbsp;{{_('Remote Admin')}}</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="/logout"><i class="glyphicon glyphicon-lock"></i>&nbsp;&nbsp;{{_('Logout')}}</a></li>
               </ul>
             </li>
           </ul>
+
         </div>
       </div>
     </nav>

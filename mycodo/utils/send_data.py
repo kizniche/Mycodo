@@ -10,7 +10,7 @@ from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
 from email import Encoders
 
-from utils.system_pi import (
+from system_pi import (
     cmd_output,
     set_user_grp
 )

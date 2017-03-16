@@ -2,26 +2,39 @@
  * Custom CSS
  */
 
-.navbar-default .navbar-nav > .active-upgrade > a, .navbar-default .navbar-nav > .active-upgrade > a:hover, .navbar-default .navbar-nav > .active-upgrade > a:focus {
-    color: #ffffff;
-    background-color: #8e0001;
+.navbar-nav > li > a, .navbar-brand {
+    padding-top:12px !important; padding-bottom:0 !important;
+    height: 45px;
+}
+.navbar {min-height:45px !important;}
+
+a.anchor {
+    display: block;
+    position: relative;
+    top: -3.7em;
+    visibility: hidden;
 }
 
-.dropdown-menu > .active-upgrade > a, .dropdown-menu > .active-upgrade > a:hover, .dropdown-menu > .active-upgrade > a:focus {
-    color: #ffffff;
-    text-decoration: none;
-    outline: 0;
-    background-color: #8e0001;
+.gi-2x{font-size: 1.6em;}
+
+.row.small-gutters > [class^="col-"],
+.row.small-gutters > [class*=" col-"] {
+  padding-right: 0.1em;
+  padding-left: 0.1em;
 }
 
-.row.no-gutters {
-  margin-right: 0;
-  margin-left: 0;
+.small-gutters {
+    padding: 0 0.2em
 }
+
 .row.no-gutters > [class^="col-"],
 .row.no-gutters > [class*=" col-"] {
   padding-right: 0;
   padding-left: 0;
+}
+
+.no-gutters {
+    padding: 0 0
 }
 
 .checkbox-nopad {

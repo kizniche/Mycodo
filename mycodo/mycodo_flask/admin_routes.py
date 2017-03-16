@@ -3,14 +3,13 @@
 import logging
 import os
 import subprocess
-
+import flask_login
 from flask import (
     Blueprint,
     redirect,
     render_template,
     flash,
     request,
-    session,
     url_for
 )
 from flask_babel import gettext
@@ -19,17 +18,13 @@ from pkg_resources import parse_version
 # Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
-from mycodo.mycodo_flask.general_routes import (
-    before_blueprint_request,
-    inject_mycodo_version,
-    logged_in
-)
-from utils.statistics import return_stat_file_dict
-from utils.system_pi import internet
-from utils.github_release_info import github_releases
+from mycodo.mycodo_flask.general_routes import inject_mycodo_version
+from mycodo.utils.statistics import return_stat_file_dict
+from mycodo.utils.system_pi import internet
+from mycodo.utils.github_release_info import github_releases
 
 # Config
-from config import (
+from mycodo.config import (
     INSTALL_DIRECTORY,
     MYCODO_VERSION,
     STATS_CSV
@@ -43,22 +38,19 @@ blueprint = Blueprint(
     static_folder='../static',
     template_folder='../templates'
 )
-blueprint.before_request(before_blueprint_request)  # check if admin was created
 
 
 @blueprint.context_processor
+@flask_login.login_required
 def inject_dictionary():
     return inject_mycodo_version()
 
 
 @blueprint.route('/admin/backup', methods=('GET', 'POST'))
+@flask_login.login_required
 def admin_backup():
     """ Load the backup management page """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if session['user_group'] == 'guest':
-        flaskutils.deny_guest_user()
+    if not flaskutils.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     form_backup = flaskforms.Backup()
@@ -93,13 +85,10 @@ def admin_backup():
 
 
 @blueprint.route('/admin/statistics', methods=('GET', 'POST'))
+@flask_login.login_required
 def admin_statistics():
     """ Display collected statistics """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if session['user_group'] == 'guest':
-        flaskutils.deny_guest_user()
+    if not flaskutils.user_has_permission('view_stats'):
         return redirect(url_for('general_routes.home'))
 
     try:
@@ -111,13 +100,10 @@ def admin_statistics():
 
 
 @blueprint.route('/admin/upgrade', methods=('GET', 'POST'))
+@flask_login.login_required
 def admin_upgrade():
     """ Display any available upgrades and option to upgrade """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if session['user_group'] == 'guest':
-        flaskutils.deny_guest_user()
+    if not flaskutils.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     if not internet():

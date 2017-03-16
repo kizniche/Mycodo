@@ -31,19 +31,19 @@ def return_classes():
         AtlasPT1000Sensor(0x00, 1),
         AM2315Sensor(1),
         # BME280Sensor(0x00, 1),
-        BMPSensor(1),
+        # BMPSensor(1),
         # DHT11Sensor(pigpio.pi(), 1),
         # DHT22Sensor(pigpio.pi(), 1),
-        DS18B20Sensor('1'),
+        # DS18B20Sensor('1'),
         # HTU21DSensor(1),
         # K30Sensor(),
         # RaspberryPiCPUTemp(),
         # RaspberryPiGPUTemp(),
         # RaspberryPiCPULoad(),
-        SHT1x7xSensor(1, 2, '5.0'),
-        SHT2xSensor(0x00, 1),
-        TMP006Sensor(0x00, 1),
-        TSL2561Sensor(0x00, 1)
+        # SHT1x7xSensor(1, 2, '5.0'),
+        # SHT2xSensor(0x00, 1),
+        # TMP006Sensor(0x00, 1),
+        # TSL2561Sensor(0x00, 1)
     ]
     return sensor_classes
 
@@ -67,8 +67,7 @@ def conditions_list(sensor_measurements, range_num):
 
 def test_sensor_class_iterates_using_in():
     """ Verify that a class object can use the 'in' operator """
-    sensor_classes = return_classes()
-    for each_class in sensor_classes:
+    for each_class in return_classes():
         sensor_measurements = each_class.info()
         with mock.patch('{mod}.{name}.get_measurement'.format(
                 mod=each_class.__module__,
@@ -97,8 +96,7 @@ def test_sensor_class_iterates_using_in():
 
 def test_sensor_class__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
-    sensor_classes = return_classes()
-    for each_class in sensor_classes:
+    for each_class in return_classes():
         sensor_measurements = each_class.info()
         with mock.patch('{mod}.{name}.get_measurement'.format(
                 mod=each_class.__module__,
@@ -111,8 +109,7 @@ def test_sensor_class__iter__returns_iterator():
 
 def test_sensor_class_read_updates_condition():
     """  Verify that Class.read() gets the condition """
-    sensor_classes = return_classes()
-    for each_class in sensor_classes:
+    for each_class in return_classes():
         sensor_measurements = each_class.info()
         with mock.patch('{mod}.{name}.get_measurement'.format(
                 mod=each_class.__module__,
@@ -147,8 +144,7 @@ def test_sensor_class_read_updates_condition():
 
 def test_sensor_class_next_returns_dict():
     """ next returns dict(condition=type) """
-    sensor_classes = return_classes()
-    for each_class in sensor_classes:
+    for each_class in return_classes():
         sensor_measurements = each_class.info()
         with mock.patch('{mod}.{name}.get_measurement'.format(
                 mod=each_class.__module__,
@@ -174,8 +170,7 @@ def test_sensor_class_next_returns_dict():
 
 def test_sensor_class_condition_properties():
     """ verify condition property """
-    sensor_classes = return_classes()
-    for each_class in sensor_classes:
+    for each_class in return_classes():
         sensor_measurements = each_class.info()
         with mock.patch('{mod}.{name}.get_measurement'.format(
                 mod=each_class.__module__,
@@ -214,8 +209,7 @@ def test_sensor_class_condition_properties():
 
 def test_sensor_class_special_method_str():
     """ expect a __str__ format """
-    sensor_classes = return_classes()
-    for each_class in sensor_classes:
+    for each_class in return_classes():
         sensor_measurements = each_class.info()
         for each_cond in sensor_measurements:
             assert "{cond}: {num}".format(
@@ -225,8 +219,7 @@ def test_sensor_class_special_method_str():
 
 def test_sensor_class_special_method_repr():
     """ expect a __repr__ format """
-    sensor_classes = return_classes()
-    for each_class in sensor_classes:
+    for each_class in return_classes():
         str_class = ''
         sensor_measurements = each_class.info()
         for each_cond in sensor_measurements:
@@ -239,8 +232,7 @@ def test_sensor_class_special_method_repr():
 
 def test_sensor_class_raises_exception():
     """ stops iteration on read() error """
-    sensor_classes = return_classes()
-    for each_class in sensor_classes:
+    for each_class in return_classes():
         with mock.patch('{mod}.{name}.get_measurement'.format(
                 mod=each_class.__module__,
                 name=each_class.__class__.__name__),
@@ -251,8 +243,7 @@ def test_sensor_class_raises_exception():
 
 def test_sensor_class_read_returns_1_on_exception():
     """ Verify the read() method returns true on error """
-    sensor_classes = return_classes()
-    for each_class in sensor_classes:
+    for each_class in return_classes():
         with mock.patch('{mod}.{name}.get_measurement'.format(
                 mod=each_class.__module__,
                 name=each_class.__class__.__name__),
@@ -269,8 +260,7 @@ def test_sensor_class_read_returns_1_on_exception():
 
 def test_sensor_class_read_logs_unknown_errors():
     """ verify that IOErrors are logged """
-    sensor_classes = return_classes()
-    for each_class in sensor_classes:
+    for each_class in return_classes():
         with LogCapture() as log_cap:
             # force an Exception to be raised when get_measurement is called
             with mock.patch('{mod}.{name}.get_measurement'.format(

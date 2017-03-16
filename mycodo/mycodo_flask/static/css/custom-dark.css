@@ -10,8 +10,12 @@
     background-color: #2B0100 !important
 }
 
-.paused-background {
+.pause-background {
     background-color: #2b2600 !important
+}
+
+.hold-background {
+    background-color: #00022b !important
 }
 
 .alert-success {
@@ -22,6 +26,3 @@
     background-color: #744400;
 }
 
-.hold-background {
-    background-color: #00022b !important
-}

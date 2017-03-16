@@ -5,8 +5,13 @@
   <link href="/static/css/dashboard.css" rel="stylesheet">
   <script>
     $(document).ready(function(){
-      $('input[title]').tooltip({placement:'bottom'});
+      $('input[title]').tooltip({placement:'top'});
     });
+    $(document).ready(function(){
+      $('select[title]').tooltip({placement:'top'});
+      $('.form-dropdown').dropdown();
+      $('.form-dropdown').tooltip();
+    })
     $(document).ready(function() {
       $('[data-toggle=offcanvas]').click(function() {
         $('.row-offcanvas').toggleClass('active');
@@ -17,30 +22,18 @@
 
 {% block body %}
 
-  {% set navigation_bar_left1 = [
-    (url_for('settings_routes.settings_general'), 'general', _('General')),
-    (url_for('settings_routes.settings_users'), 'users', _('Users')),
-    (url_for('settings_routes.settings_alerts'), 'alerts', _('Alerts'))
-  ] -%}
-
-  {% set navigation_bar_left2 = [
-    (url_for('settings_routes.settings_camera'), 'camera', _('Camera'))
-  ] -%}
-
   {% set active_settings = active_settings|default('users') -%}
 
   <div class="container-fluid">
     <div class="row row-offcanvas row-offcanvas-left">
-      <div class="col-sm-3 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
+      <div class="col-sm-2 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
         <ul class="nav nav-sidebar">
-        {% for href, id, caption in navigation_bar_left1 %}
-          <li{% if id == active_settings %} class="active"{% endif %}><a href="{{href|e}}">{{caption|e}}</a></li>
-        {% endfor %}
+          <li{% if active_settings == 'general' %} class="active"{% endif %}><a href="{{url_for('settings_routes.settings_general')}}"><i class="glyphicon glyphicon-globe"></i>&nbsp;&nbsp;{{_('General')}}</a></li>
+          <li{% if active_settings == 'users' %} class="active"{% endif %}><a href="{{url_for('settings_routes.settings_users')}}"><i class="fa fa-users"></i>&nbsp;&nbsp;{{_('Users')}}</a></li>
         </ul>
         <ul class="nav nav-sidebar">
-        {% for href, id, caption in navigation_bar_left2 %}
-          <li{% if id == active_settings %} class="active"{% endif %}><a href="{{href|e}}">{{caption|e}}</a></li>
-        {% endfor %}
+          <li{% if active_settings == 'alerts' %} class="active"{% endif %}><a href="{{url_for('settings_routes.settings_alerts')}}"><i class="glyphicon glyphicon-alert"></i>&nbsp;&nbsp;{{_('Alerts')}}</a></li>
+          <li{% if active_settings == 'camera' %} class="active"{% endif %}><a href="{{url_for('settings_routes.settings_camera')}}"><i class="glyphicon glyphicon-camera"></i>&nbsp;&nbsp;{{_('Cameras')}}</a></li>
         </ul>
       </div><!--/span-->
       <div class="col-sm-9 col-md-10 main">

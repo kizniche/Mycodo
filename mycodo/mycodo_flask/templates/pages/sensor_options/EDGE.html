@@ -1,29 +1,29 @@
-<div class="form-group">
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   <label class="control-label">GPIO</label>
   <div>
-    {{form_mod_sensor.modLocation(class_='form-control', value=each_sensor.location, **{'title':'Where to access the device/sensor?'})}}
+    {{form_mod_sensor.location(class_='form-control', value=each_sensor.location, **{'title':_('The GPIO pin (BCM numbering) to access the device')})}}
   </div>
 </div>
-<div class="form-group">
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   {{form_mod_sensor.modSwitchEdge.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="modSwitchEdge" name="modSwitchEdge" title="Detect low to high (rising), high to low (falling), or both?">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="modSwitchEdge" name="modSwitchEdge" title="{{_('Edge detection: low to high (rising), high to low (falling), or both')}}">
       <option value="rising"{% if each_sensor.switch_edge == "rising" %} selected{% endif %}>Rising</option>
       <option value="falling"{% if each_sensor.switch_edge == "falling" %} selected{% endif %}>Falling</option>
       <option value="both"{% if each_sensor.switch_edge == "both" %} selected{% endif %}>Both</option>
     </select>
   </div>
 </div>
-<div class="form-group">
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   {{form_mod_sensor.modSwitchBounceTime.label(class_='control-label')}}
   <div>
-    {{form_mod_sensor.modSwitchBounceTime(class_='form-control', value=each_sensor.switch_bouncetime, **{'title':'The amount of time to bounce the input signal, in miliseconds.'})}}
+    {{form_mod_sensor.modSwitchBounceTime(class_='form-control', value=each_sensor.switch_bouncetime, **{'title':_('The amount of time (miliseconds) to bounce the input signal')})}}
   </div>
 </div>
-<div class="form-group">
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   {{form_mod_sensor.modSwitchResetPeriod.label(class_='control-label')}}
   <div>
-    {{form_mod_sensor.modSwitchResetPeriod(class_='form-control', value=each_sensor.switch_reset_period, **{'title':'How long to wait after the first edge detection to begin detecting again, in seconds.'})}}
+    {{form_mod_sensor.modSwitchResetPeriod(class_='form-control', value=each_sensor.switch_reset_period, **{'title':_('Wait a period of time (seconds) after the first edge detection to begin detecting again')})}}
   </div>
 </div>
-<input id="modPeriod" name="modPeriod" type="hidden" value="10">
+<input id="period" name="period" type="hidden" value="10">

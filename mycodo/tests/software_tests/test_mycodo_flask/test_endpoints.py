@@ -1,26 +1,47 @@
 # coding=utf-8
 """ functional tests for flask endpoints """
+import pytest
 import mock
-from flask import current_app
+from mycodo.databases.models import Sensor
+from mycodo.databases.models import User
 
-from mycodo.databases.mycodo_db.models import Sensor
-from mycodo.tests.software_tests.factories_user import UserFactory
-# from mycodo.tests.software_tests.factories_mycodo import SensorFactory
-from mycodo.tests.software_tests.test_mycodo_flask.conftest import login_user
-from mycodo.utils.database import db_retrieve_table
+from mycodo.tests.software_tests.conftest import login_user
+from mycodo.tests.software_tests.factories import UserFactory
 
 
 # ----------------------
 #   Non-Logged In Tests
 # ----------------------
-def redirects_to_login_page(app, endpoint):
+def redirects_to_login_page(testapp, endpoint):
     """ helper function that verifies that we see the login page """
-    response = app.get(endpoint).maybe_follow()
-    assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
-    assert "Mycodo Login" in response, 'Did Not see login page.  Saw "{body}"'.format(body=response.body)
+    response = testapp.get(endpoint, expect_errors=True).maybe_follow()
+    assert response.status_code == 200, "Response Status Failure: {}".format(endpoint)
+    assert "Mycodo Login" in response
 
 
-def test_routes_not_logged_in(testapp):
+def redirects_to_admin_creation_page(testapp, endpoint):
+    """ helper function that verifies that we see the admin creation page """
+    response = testapp.get(endpoint, expect_errors=True).maybe_follow()
+    assert response.status_code == 200, "Response Status Failure: {}".format(endpoint)
+    assert "<!-- Route: /create_admin -->" in response
+
+
+def test_sees_admin_creation_form(testapp):
+    """ No Admin user exists: user sees the admin creation page """
+    # Delete all admin users to show the admin creation form
+    for each_admin in User.query.filter_by(role=1).all():
+        each_admin.delete()
+    expected_body_msg = "<!-- Route: /create_admin -->"
+    assert expected_body_msg in testapp.get('/').maybe_follow()
+
+
+def test_does_not_see_admin_creation_form(testapp):
+    """ Admin user exists: user sees the normal login page """
+    expected_body_msg = "<!-- Route: /login -->"
+    assert expected_body_msg in testapp.get('/').maybe_follow()
+
+
+def test_routes_when_not_logged_in(testapp):
     """
     Verifies behavior of these endpoints when not logged in.
     All endpoint requests should redirect to the login page.
@@ -46,10 +67,9 @@ def test_routes_not_logged_in(testapp):
         'logout',
         'logview',
         'method',
-        'method-build/0/0',
-        'method-data/0/0',
+        'method-build/0',
+        'method-data/0',
         'method-delete/0',
-        'notes',
         'past/0/0/0',
         'pid',
         'relay',
@@ -66,31 +86,16 @@ def test_routes_not_logged_in(testapp):
         'video_feed'
     ]
     for route in routes:
-        redirects_to_login_page(app=testapp,
-                                endpoint='/{add}'.format(add=route))
-
-
-def test_sees_admin_creation_form(testapp_no_admin_user):
-    """ No Admin user exists: user sees the admin creation page """
-    expected_body_msg = "<!-- Route: /create_admin -->"
-    assert expected_body_msg in testapp_no_admin_user.get('/').maybe_follow()
-
-
-def test_does_not_see_admin_creation_form(testapp):
-    """ Admin user exists: user sees the normal login page """
-    expected_body_msg = "<!-- Route: /login -->"
-    assert expected_body_msg in testapp.get('/').maybe_follow()
+        redirects_to_login_page(testapp=testapp, endpoint='/{add}'.format(add=route))
 
 
 # ---------------------------
 #   Tests Logged in as Admin
 # ---------------------------
 @mock.patch('mycodo.mycodo_flask.authentication_routes.login_log')
-def test_routes_logged_in_as_admin(_, testapp, user_db):
+def test_routes_logged_in_as_admin(_, testapp):
     """ Verifies behavior of these endpoints for a logged in admin user """
-    # Create admin user and log in
-    admin_user = create_user(user_db, 'admin', 'name_admin', 'secret_pass')
-    login_user(testapp, admin_user.user_name, 'secret_pass')
+    login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
 
     # Test if the navigation bar is seen on the main page
     sees_navbar(testapp)
@@ -114,14 +119,14 @@ def test_routes_logged_in_as_admin(_, testapp, user_db):
         ('live', '<!-- Route: /live -->'),
         ('logview', '<!-- Route: /logview -->'),
         ('method', '<!-- Route: /method -->'),
-        ('method-build/1/0', 'admin logged in'),
-        ('notes', '<!-- Route: /notes -->'),
+        ('method-build/-1', 'admin logged in'),
         ('pid', '<!-- Route: /pid -->'),
         ('relay', '<!-- Route: /relay -->'),
         ('remote/setup', '<!-- Route: /remote/setup -->'),
         ('sensor', '<!-- Route: /sensor -->'),
         ('timer', '<!-- Route: /timer -->'),
-        ('usage', '<!-- Route: /usage -->')
+        ('usage', '<!-- Route: /usage -->'),
+        ('usage_reports', '<!-- Route: /usage_reports -->')
     ]
     for route in routes:
         response = testapp.get('/{add}'.format(add=route[0])).maybe_follow()
@@ -129,48 +134,44 @@ def test_routes_logged_in_as_admin(_, testapp, user_db):
         assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
 
 
-@mock.patch('mycodo.mycodo_flask.authentication_routes.login_log')
-def test_add_sensor_logged_in_as_admin(_, testapp, user_db):
-    """ Verifies behavior of these endpoints for a logged in admin user """
-    # Create admin user and log in
-    admin_user = create_user(user_db, 'admin', 'name_admin', 'secret_pass')
-    login_user(testapp, admin_user.user_name, 'secret_pass')
-
-    response = add_sensor(testapp)
-
-    # Verify success message flashed
-    assert "RPi Sensor with ID" in response
-    assert "successfully added" in response
-
-    # Verify data was entered into the database
-    sensor = db_retrieve_table(current_app.config['MYCODO_DB_PATH'], Sensor, entry='all')
-    for each_sensor in sensor:
-        assert 'RPi' in each_sensor.name, "Sensor name doesn't match: {}".format(each_sensor.name)
+# @mock.patch('mycodo.mycodo_flask.authentication_routes.login_log')
+# def test_add_sensor_logged_in_as_admin(_, testapp):
+#     """ Verifies adding a sensor as a logged in admin user """
+#     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
+#
+#     response = add_sensor(testapp)
+#
+#     # Verify success message flashed
+#     print(response)
+#     assert "RPi Sensor with ID" in response
+#     assert "successfully added" in response
+#
+#     # Verify data was entered into the database
+#     for each_sensor in Sensor.query.all():
+#         assert 'RPi' in each_sensor.name, "Sensor name doesn't match: {}".format(each_sensor.name)
 
 
 # ---------------------------
 #   Tests Logged in as Guest
 # ---------------------------
 @mock.patch('mycodo.mycodo_flask.authentication_routes.login_log')
-def test_routes_logged_in_as_guest(_, testapp, user_db):
+def test_routes_logged_in_as_guest(_, testapp):
     """ Verifies behavior of these endpoints for a logged in guest user """
-    # Create guest user and log in
-    guest_user = create_user(user_db, 'guest', 'name_guest', 'secret_pass')
-    login_user(testapp, guest_user.user_name, 'secret_pass')
+    login_user(testapp, 'guest', '53CR3t_p4zZW0rD')
 
     # Test if the navigation bar is seen on the main page
     sees_navbar(testapp)
 
     # Test all endpoints
     routes = [
-        ('admin/backup', 'Guests are not permitted'),
-        ('admin/upgrade', 'Guests are not permitted'),
-        ('admin/statistics', 'Guests are not permitted'),
-        ('remote/setup', 'Guests are not permitted'),
-        ('settings/users', 'Guests are not permitted'),
-        ('settings/alerts', 'Guests are not permitted'),
-        ('systemctl/restart', 'Guests are not permitted'),
-        ('systemctl/shutdown', 'Guests are not permitted')
+        ('admin/backup', '<!-- Route: /live -->'),
+        ('admin/upgrade', '<!-- Route: /live -->'),
+        ('admin/statistics', '<!-- Route: /live -->'),
+        ('remote/setup', '<!-- Route: /live -->'),
+        ('settings/users', '<!-- Route: /live -->'),
+        ('settings/alerts', '<!-- Route: /live -->'),
+        ('systemctl/restart', '<!-- Route: /live -->'),
+        ('systemctl/shutdown', '<!-- Route: /live -->')
     ]
     for route in routes:
         response = testapp.get('/{add}'.format(add=route[0])).maybe_follow()
@@ -178,14 +179,14 @@ def test_routes_logged_in_as_guest(_, testapp, user_db):
         assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
 
 
-def create_user(user_db, restriction, name, password):
+def create_user(mycodo_db, role, name, password):
     """ Create fake admin user """
     new_user = UserFactory()
-    new_user.user_name = name
+    new_user.name = name
     new_user.set_password(password)
-    new_user.user_restriction = restriction
-    user_db.add(new_user)
-    user_db.commit()
+    new_user.role = role
+    mycodo_db.add(new_user)
+    mycodo_db.commit()
     return new_user
 
 
@@ -205,25 +206,25 @@ def sees_navbar(testapp):
     response = testapp.get('/').maybe_follow()
     assert response.status_code == 200
     navbar_strings = [
-        'Admin',
-        'Camera',
+        'Asynchronous Graphs',
+        'Cameras',
         'Configure',
+        'Data',
         'Export Measurements',
-        'Graph',
-        'Help',
-        'LCD',
-        'Live',
+        'Live Graphs',
+        'LCDs',
+        'Live Measurements',
         'Logout',
-        'Method',
         'Mycodo Logs',
-        'Notes',
-        'PID',
-        'Relay',
+        'PID Methods',
+        'PID Controllers',
+        'Relays',
         'Relay Usage',
+        'Relay Usage Reports',
         'Remote Admin',
-        'Sensor',
-        'System Info',
-        'Timer',
+        'Sensors',
+        'System Information',
+        'Timers',
         'Upgrade'
     ]
     assert all(

@@ -1,5 +1,5 @@
 # coding=utf-8
-import Adafruit_BMP.BMP085 as BMP085
+from Adafruit_BMP import BMP085
 import logging
 import time
 from .base_sensor import AbstractSensor

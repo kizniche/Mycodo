@@ -1,6 +1,12 @@
-<div class="form-group">
-  <label class="control-label">GPIO</label>
+{% include 'pages/sensor_options/GPIO_PIN.html' %}
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+  {{form_mod_sensor.modPowerRelayID.label(class_='control-label')}}
   <div>
-    {{form_mod_sensor.modLocation(class_='form-control', value=each_sensor.location, **{'title':'Where to access the device/sensor?'})}}
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="modPowerRelayID" name="modPowerRelayID" title="{{_('The relay used to power the device')}}.">
+      <option value="0">Disabled</option>
+      {% for rel in relay -%}
+        <option value="{{rel.id}}"{% if each_sensor.power_relay_id == rel.id %} selected{% endif %}>{{rel.id}} ({{rel.name}})</option>
+      {% endfor -%}
+    </select>
   </div>
 </div>

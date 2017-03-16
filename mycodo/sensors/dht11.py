@@ -2,8 +2,13 @@
 import logging
 import time
 import pigpio
-from sensorutils import dewpoint
+
 from .base_sensor import AbstractSensor
+from sensorutils import dewpoint
+from mycodo.databases.models import Relay
+from mycodo.utils.database import db_retrieve_table_daemon
+
+from mycodo.mycodo_client import DaemonControl
 
 
 class DHT11Sensor(AbstractSensor):
@@ -34,9 +39,11 @@ class DHT11Sensor(AbstractSensor):
         self.logger = logging.getLogger(
             'mycodo.sensor_{id}'.format(id=sensor_id))
 
+        self.control = DaemonControl()
+
         self.pi = pigpio.pi()
         self.gpio = gpio
-        self.power = power
+        self.power_relay_id = power
         self.powered = False
         self.high_tick = None
         self.bit = None
@@ -98,6 +105,18 @@ class DHT11Sensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
+        self._humidity = 0.0
+        self._temperature = 0.0
+
+        # Ensure if the power pin turns off, it is turned back on
+        if (self.power_relay_id and
+                not db_retrieve_table_daemon(Relay, device_id=self.power_relay_id).is_on()):
+            self.logger.error(
+                'Sensor power relay {rel} detected as being off. '
+                'Turning on.'.format(rel=self.power_relay_id))
+            self.start_sensor()
+            time.sleep(2)
+
         try:
             try:
                 self.setup()
@@ -129,7 +148,7 @@ class DHT11Sensor(AbstractSensor):
             self.get_measurement()
             if self._humidity != 0 or self._temperature != 0:
                 return  # success - no errors
-            self.logger.error("Could not acquire a measurement")
+            self.logger.debug("Could not acquire a measurement")
         except Exception as e:
             self.logger.error(
                 "Exception raised when taking a reading: {err}".format(
@@ -219,18 +238,15 @@ class DHT11Sensor(AbstractSensor):
 
     def start_sensor(self):
         """ Power the sensor """
-        if self.power:
-            self.logger.info(
-                "Turning on sensor by powering pin {pin}".format(
-                    pin=self.power))
-            self.pi.write(self.power, 1)
+        if self.power_relay_id:
+            self.logger.info("Turning on sensor")
+            self.control.relay_on(self.power_relay_id, 0)
+            time.sleep(2)
             self.powered = True
 
     def stop_sensor(self):
         """ Depower the sensor """
-        if self.power:
-            self.logger.info(
-                "Turning off sensor by depowering pin {pin}".format(
-                    pin=self.power))
-            self.pi.write(self.power, 0)
+        if self.power_relay_id:
+            self.logger.info("Turning off sensor")
+            self.control.relay_off(self.power_relay_id)
             self.powered = False

@@ -10,6 +10,8 @@ endpoints is the ultimate goal because it will be easier to test, read, and modi
 being less error prone.
 """
 from __future__ import print_function
+
+import StringIO  # not python 3 compatible
 import calendar
 import csv
 import datetime
@@ -18,58 +20,49 @@ import os
 import socket
 import subprocess
 import sys
-import StringIO
 import time
+import flask_login
+
 from RPi import GPIO
 from dateutil.parser import parse as date_parse
-
+from flask import Response
+from flask import current_app
+from flask import flash
+from flask import jsonify
+from flask import make_response
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import send_from_directory
+from flask import url_for
 from flask.blueprints import Blueprint
-from flask import (
-    current_app,
-    flash,
-    jsonify,
-    make_response,
-    redirect,
-    render_template,
-    Response,
-    request,
-    send_from_directory,
-    session,
-    url_for
-)
 from flask_babel import gettext
+
 from flask_influxdb import InfluxDB
-
-# Classes
-from mycodo.databases.mycodo_db.models import (
-    DisplayOrder,
-    Misc,
-    Relay,
-    Remote
-)
-from mycodo.databases.users_db.models import Users
-from mycodo.devices.camera_pi import CameraStream
-from mycodo.mycodo_client import DaemonControl
-
-# Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
+from mycodo.databases.models import Camera
+from mycodo.databases.models import DisplayOrder
+from mycodo.databases.models import Misc
+from mycodo.databases.models import Relay
+from mycodo.databases.models import Remote
+from mycodo.databases.models import Sensor
+from mycodo.databases.models import User
+from mycodo.devices.camera import CameraStream
 from mycodo.flaskutils import gzipped
-from mycodo.mycodo_flask.authentication_routes import (
-    admin_exists,
-    clear_cookie_auth,
-    logged_in
-)
-from mycodo.utils.database import db_retrieve_table
+from mycodo.mycodo_client import DaemonControl
+from mycodo.mycodo_flask.authentication_routes import admin_exists
+from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
+from mycodo.utils.database import db_retrieve_table_daemon
 
-# Config
-from config import (
+from mycodo.config import (
     INFLUXDB_USER,
     INFLUXDB_PASSWORD,
     INFLUXDB_DATABASE,
     INSTALL_DIRECTORY,
     LOG_PATH,
-    MYCODO_VERSION
+    MYCODO_VERSION,
+    PATH_CAMERAS,
 )
 
 blueprint = Blueprint('general_routes',
@@ -81,44 +74,58 @@ logger = logging.getLogger(__name__)
 influx_db = InfluxDB()
 
 
-def before_blueprint_request():
+def before_request_admin_exist():
     """
     Ensure databases exist and at least one user is in the user database.
     """
     if not admin_exists():
         return redirect(url_for("authentication_routes.create_admin"))
-blueprint.before_request(before_blueprint_request)
+blueprint.before_request(before_request_admin_exist)
+
+
+@blueprint.context_processor
+def inject_mycodo_version():
+    """Variables to send with every page request"""
+    try:
+        control = DaemonControl()
+        daemon_status = control.daemon_status()
+    except Exception as e:
+        logger.error(gettext("URL for 'inject_mycodo_version' raised and "
+                             "error: %(err)s", err=e))
+        daemon_status = '0'
+
+    misc = Misc.query.first()
+    return dict(daemon_status=daemon_status,
+                mycodo_version=MYCODO_VERSION,
+                host=socket.gethostname(),
+                hide_alert_success=misc.hide_alert_success,
+                hide_alert_info=misc.hide_alert_info,
+                hide_alert_warning=misc.hide_alert_warning)
 
 
 @blueprint.route('/')
 def home():
     """Load the default landing page"""
-    if logged_in():
+    if flask_login.current_user.is_authenticated:
         return redirect(url_for('page_routes.page_live'))
     return clear_cookie_auth()
 
 
 @blueprint.route('/settings', methods=('GET', 'POST'))
+@flask_login.login_required
 def page_settings():
     return redirect('settings/general')
 
 
 @blueprint.route('/remote/<page>', methods=('GET', 'POST'))
+@flask_login.login_required
 def remote_admin(page):
     """Return pages for remote administraion"""
-    if not logged_in():
+    if not flaskutils.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
-    elif session['user_group'] == 'guest':
-        flaskutils.deny_guest_user()
-        return redirect(url_for('general_routes.home'))
-
-    remote_hosts = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Remote, entry='all')
-    display_order_unsplit = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'],
-        DisplayOrder,
-        entry='first').remote_host
+    remote_hosts = Remote.query.all()
+    display_order_unsplit = DisplayOrder.query.first().remote_host
     if display_order_unsplit:
         display_order = display_order_unsplit.split(",")
     else:
@@ -135,10 +142,10 @@ def remote_admin(page):
             form_name = request.form['form-name']
             if form_name == 'setup':
                 if form_setup.add.data:
-                    flaskutils.remote_host_add(form_setup, display_order)
+                    flaskutils.remote_host_add(form_setup=form_setup, display_order=display_order)
             if form_name == 'mod_remote':
                 if form_setup.delete.data:
-                    flaskutils.remote_host_del(form_setup, display_order)
+                    flaskutils.remote_host_del(form_setup=form_setup)
             return redirect('/remote/setup')
 
         return render_template('remote/setup.html',
@@ -150,37 +157,24 @@ def remote_admin(page):
         return render_template('404.html'), 404
 
 
-@blueprint.route('/camera/<img_type>/<filename>')
-def camera_img(img_type, filename):
+@blueprint.route('/camera/<camera_id>/<img_type>/<filename>')
+@flask_login.login_required
+def camera_img(camera_id, img_type, filename):
     """Return an image from stills or timelapses"""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
+    camera = Camera.query.filter(Camera.id == int(camera_id)).first()
+    camera_path = os.path.join(PATH_CAMERAS, '{id}-{uid}'.format(
+            id=camera.id, uid=camera.unique_id))
 
-    still_path = INSTALL_DIRECTORY + '/camera-stills/'
-    timelapse_path = INSTALL_DIRECTORY + '/camera-timelapse/'
-
-    # Get a list of files in each directory
-    if os.path.isdir(still_path):
-        still_files = (files for files in os.listdir(still_path)
-                       if os.path.isfile(os.path.join(still_path, files)))
-    else:
-        still_files = []
-
-    if os.path.isdir(timelapse_path):
-        timelapse_files = (files for files in os.listdir(timelapse_path)
-                           if os.path.isfile(os.path.join(timelapse_path, files)))
-    else:
-        timelapse_files = []
-
-    if img_type == 'still':
-        # Ensure file exists in directory before serving it
-        if filename in still_files:
-            resp = make_response(open(still_path + filename).read())
-            resp.content_type = "image/jpeg"
-            return resp
-    elif img_type == 'timelapse':
-        if filename in timelapse_files:
-            resp = make_response(open(timelapse_path + filename).read())
+    if img_type in ['still', 'timelapse']:
+        path = os.path.join(camera_path, img_type)
+        if os.path.isdir(path):
+            files = (files for files in os.listdir(path)
+                               if os.path.isfile(os.path.join(path, files)))
+        else:
+            files = []
+        if filename in files:
+            path_file = os.path.join(path, filename)
+            resp = make_response(open(path_file).read())
             resp.content_type = "image/jpeg"
             return resp
 
@@ -196,23 +190,18 @@ def gen(camera):
 
 
 @blueprint.route('/video_feed')
+@flask_login.login_required
 def video_feed():
     """Video streaming route. Put this in the src attribute of an img tag."""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     return Response(gen(CameraStream()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @blueprint.route('/gpiostate')
+@flask_login.login_required
 def gpio_state():
     """Return the GPIO state, for relay page status"""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    relay = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Relay, entry='all')
+    relay = Relay.query.all()
     gpio_state = {}
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
@@ -227,23 +216,19 @@ def gpio_state():
 
 
 @blueprint.route('/dl/<dl_type>/<path:filename>')
+@flask_login.login_required
 def download_file(dl_type, filename):
     """Serve log file to download"""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    elif dl_type == 'log':
+    if dl_type == 'log':
         return send_from_directory(LOG_PATH, filename, as_attachment=True)
 
     return '', 204
 
 
 @blueprint.route('/last/<sensor_measure>/<sensor_id>/<sensor_period>')
+@flask_login.login_required
 def last_data(sensor_measure, sensor_id, sensor_period):
     """Return the most recent time and value from influxdb"""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
@@ -259,24 +244,26 @@ def last_data(sensor_measure, sensor_id, sensor_period):
         number = len(raw_data['series'][0]['values'])
         time_raw = raw_data['series'][0]['values'][number - 1][0]
         value = raw_data['series'][0]['values'][number - 1][1]
+        value = '{:.3f}'.format(float(value))
         # Convert date-time to epoch (potential bottleneck for data)
         dt = date_parse(time_raw)
         timestamp = calendar.timegm(dt.timetuple()) * 1000
         live_data = '[{},{}]'.format(timestamp, value)
         return Response(live_data, mimetype='text/json')
+    except KeyError:
+        logger.debug("No Data returned form influxdb")
+        return '', 204
     except Exception as e:
-        logger.error("URL for 'last_data' raised and error: "
-                     "{err}".format(err=e))
+        logger.exception("URL for 'last_data' raised and error: "
+                         "{err}".format(err=e))
         return '', 204
 
 
 @blueprint.route('/past/<sensor_measure>/<sensor_id>/<past_seconds>')
+@flask_login.login_required
 @gzipped
 def past_data(sensor_measure, sensor_id, past_seconds):
     """Return data from past_seconds until present from influxdb"""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
@@ -299,32 +286,41 @@ def past_data(sensor_measure, sensor_id, past_seconds):
         return '', 204
 
 
-@blueprint.route('/export_data/<sensor_measure>/<sensor_id>/<start_seconds>/<end_seconds>')
+@blueprint.route('/export_data/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')
+@flask_login.login_required
 @gzipped
-def export_data(sensor_measure, sensor_id, start_seconds, end_seconds):
+def export_data(measurement, unique_id, start_seconds, end_seconds):
     """
     Return data from start_seconds to end_seconds from influxdb.
     Used for exporting data.
     """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
 
+    if measurement == 'duration_sec':
+        name = db_retrieve_table_daemon(
+            Relay, unique_id=unique_id).name
+    else:
+        name = db_retrieve_table_daemon(
+            Sensor, unique_id=unique_id).name
+
+    utc_offset_timedelta = datetime.datetime.utcnow() - datetime.datetime.now()
     start = datetime.datetime.fromtimestamp(float(start_seconds))
+    start += utc_offset_timedelta
     start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
     end = datetime.datetime.fromtimestamp(float(end_seconds))
+    end += utc_offset_timedelta
     end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
     raw_data = dbcon.query("""SELECT value
                               FROM {}
                               WHERE device_id='{}'
                                     AND time >= '{}'
                                     AND time <= '{}'
-                           """.format(sensor_measure,
-                                      sensor_id,
+                           """.format(measurement,
+                                      unique_id,
                                       start_str,
                                       end_str)).raw
     if not raw_data:
@@ -333,8 +329,8 @@ def export_data(sensor_measure, sensor_id, start_seconds, end_seconds):
     def iter_csv(data_in):
         line = StringIO.StringIO()
         writer = csv.writer(line)
-        writer.writerow(('timestamp', '{id}-{meas}'.format(
-            id=sensor_id, meas=sensor_measure)))
+        writer.writerow(('timestamp (UTC)', '{name} {meas} ({id})'.format(
+            name=name, meas=measurement,id=unique_id)))
         for csv_line in data_in:
             writer.writerow((csv_line[0][:-4], csv_line[1]))
             line.seek(0)
@@ -343,20 +339,18 @@ def export_data(sensor_measure, sensor_id, start_seconds, end_seconds):
 
     response = Response(iter_csv(raw_data['series'][0]['values']), mimetype='text/csv')
     response.headers['Content-Disposition'] = 'attachment; filename={id}_{meas}.csv'.format(
-        id=sensor_id, meas=sensor_measure)
+        id=unique_id, meas=measurement)
     return response
 
 
-@blueprint.route('/async/<sensor_measure>/<sensor_id>/<start_seconds>/<end_seconds>')
+@blueprint.route('/async/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')
+@flask_login.login_required
 @gzipped
-def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
+def async_data(measurement, unique_id, start_seconds, end_seconds):
     """
     Return data from start_seconds to end_seconds from influxdb.
     Used for asynchronous graph display of many points (up to millions).
     """
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
@@ -368,16 +362,16 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
         raw_data = dbcon.query("""SELECT COUNT(value)
                                   FROM {}
                                   WHERE device_id='{}'
-                               """.format(sensor_measure,
-                                          sensor_id)).raw
+                               """.format(measurement,
+                                          unique_id)).raw
         count_points = raw_data['series'][0]['values'][0][1]
         # Get the timestamp of the first point in the past year
         raw_data = dbcon.query("""SELECT value
                                   FROM {}
                                   WHERE device_id='{}'
                                         GROUP BY * LIMIT 1
-                               """.format(sensor_measure,
-                                          sensor_id)).raw
+                               """.format(measurement,
+                                          unique_id)).raw
         first_point = raw_data['series'][0]['values'][0][0]
         end = datetime.datetime.utcnow()
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -391,8 +385,8 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
                                   WHERE device_id='{}'
                                         AND time >= '{}'
                                         AND time <= '{}'
-                               """.format(sensor_measure,
-                                          sensor_id,
+                               """.format(measurement,
+                                          unique_id,
                                           start_str,
                                           end_str)).raw
         count_points = raw_data['series'][0]['values'][0][1]
@@ -403,8 +397,8 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
                                         AND time >= '{}'
                                         AND time <= '{}'
                                         GROUP BY * LIMIT 1
-                               """.format(sensor_measure,
-                                          sensor_id,
+                               """.format(measurement,
+                                          unique_id,
                                           start_str,
                                           end_str)).raw
         first_point = raw_data['series'][0]['values'][0][0]
@@ -441,8 +435,8 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
                                       WHERE device_id='{}'
                                             AND time >= '{}'
                                             AND time <= '{}' GROUP BY TIME({}s)
-                                   """.format(sensor_measure,
-                                              sensor_id,
+                                   """.format(measurement,
+                                              unique_id,
                                               start_str,
                                               end_str,
                                               group_seconds)).raw
@@ -458,8 +452,8 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
                                       WHERE device_id='{}'
                                             AND time >= '{}'
                                             AND time <= '{}'
-                                   """.format(sensor_measure,
-                                              sensor_id,
+                                   """.format(measurement,
+                                              unique_id,
                                               start_str,
                                               end_str)).raw
             return jsonify(raw_data['series'][0]['values'])
@@ -470,11 +464,9 @@ def async_data(sensor_measure, sensor_id, start_seconds, end_seconds):
 
 
 @blueprint.route('/daemonactive')
+@flask_login.login_required
 def daemon_active():
     """Return 'alive' if the daemon is running"""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
     try:
         control = DaemonControl()
         return control.daemon_status()
@@ -485,13 +477,10 @@ def daemon_active():
 
 
 @blueprint.route('/systemctl/<action>')
+@flask_login.login_required
 def computer_command(action):
     """Execute one of several commands as root"""
-    if not logged_in():
-        return redirect(url_for('general_routes.home'))
-
-    if session['user_group'] == 'guest':
-        flaskutils.deny_guest_user()
+    if not flaskutils.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     try:
@@ -521,18 +510,16 @@ def newremote():
     username = request.args.get('user')
     pass_word = request.args.get('passw')
 
-    user = db_retrieve_table(
-        current_app.config['USER_DB_PATH'], Users)
-    user = user.filter(
-        Users.user_name == username).first()
+    user = User.query.filter(
+        User.name == username).first()
 
     # TODO: Change sleep() to max requests per duration of time
     time.sleep(1)  # Slow down requests (hackish, prevent brute force attack)
     if user:
-        if Users().check_password(pass_word, user.user_password_hash) == user.user_password_hash:
+        if User().check_password(pass_word, user.password_hash) == user.password_hash:
             return jsonify(status=0,
                            message="{hash}".format(
-                               hash=user.user_password_hash))
+                               hash=user.password_hash))
     return jsonify(status=1,
                    message="Unable to authenticate with user and password.")
 
@@ -543,16 +530,14 @@ def data():
     username = request.args.get('user')
     password_hash = request.args.get('pw_hash')
 
-    user = db_retrieve_table(
-        current_app.config['USER_DB_PATH'], Users)
-    user = user.filter(
-        Users.user_name == username).first()
+    user = User.query.filter(
+        User.name == username).first()
 
     # TODO: Change sleep() to max requests per duration of time
     time.sleep(1)  # Slow down requests (hackish, prevents brute force attack)
     if (user and
-            user.user_restriction == 'admin' and
-            password_hash == user.user_password_hash):
+            user.roles.name == 'admin' and
+            password_hash == user.password_hash):
         return "0"
     return "1"
 
@@ -561,27 +546,6 @@ def data():
 def static_from_root():
     """Return static robots.txt"""
     return send_from_directory(current_app.static_folder, request.path[1:])
-
-
-@blueprint.context_processor
-def inject_mycodo_version():
-    """Variables to send with every page request"""
-    try:
-        control = DaemonControl()
-        daemon_status = control.daemon_status()
-    except Exception as e:
-        logger.error(gettext("URL for 'inject_mycodo_version' raised and "
-                             "error: %(err)s", err=e))
-        daemon_status = '0'
-
-    misc = db_retrieve_table(
-        current_app.config['MYCODO_DB_PATH'], Misc, entry='first')
-    return dict(daemon_status=daemon_status,
-                mycodo_version=MYCODO_VERSION,
-                host=socket.gethostname(),
-                hide_alert_success=misc.hide_alert_success,
-                hide_alert_info=misc.hide_alert_info,
-                hide_alert_warning=misc.hide_alert_warning)
 
 
 @blueprint.errorhandler(404)

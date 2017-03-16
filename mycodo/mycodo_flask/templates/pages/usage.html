@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+{% set active_page = "usage" %}
+{% set help_page = ["relay-usage", _('Relay Usage')] %}
+
+{% block title %} - {{_('Usage')}}{% endblock %}
+
+{% block body %}
+  <!-- Route: /usage -->
+  <div class="container">
+    {% include 'flash_messages.html' %}
+
+    <h4>{{_('Relay Usage')}} <a href="/help#relay-usage"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+
+    <div style="clear: both; padding: 0.5em 0;"></div>
+
+    Generated {{timestamp}}
+
+    <div style="clear: both; padding: 0.5em 0;"></div>
+
+    <div class="table-responsive">
+      <table class="table">
+        <tr>
+          <td>{{_('ID')}}</td>
+          <td>{{_('Name')}}</td>
+          <td></td>
+          <td>{{_('Past Day')}}</td>
+          <td>{{_('Past Week')}}</td>
+          <td>{{_('Past Month')}}</td>
+          <td>{{_('Past Month')}}<br/>({{_('From')}} {{misc.relay_usage_dayofmonth}}{{date_suffix}})</td>
+          <td>{{_('Past Year')}}</td>
+        </tr>
+        {% if display_order -%}
+          {%- for order in display_order -%}
+            {%- for each_relay in relay if each_relay.id == order -%}
+              {% for key, value in relay_stats.iteritems() if key == each_relay.id -%}
+                <tr>
+                  <td>{{each_relay.id}}</td>
+                  <td>{{each_relay.name}}</td>
+                  <td>{{_('Duration On (hours)')}}</td>
+                  <td>{{value['1d']['hours_on']|round(2)}}</td>
+                  <td>{{value['1w']['hours_on']|round(2)}}</td>
+                  <td>{{value['1m']['hours_on']|round(2)}}</td>
+                  <td>{{value['1m_date']['hours_on']|round(2)}}</td>
+                  <td>{{value['1y']['hours_on']|round(2)}}</td>
+                </tr>
+                <tr>
+                  <td colspan="2"></td>
+                  <td>{{_('Power Usage')}} (kWh@{{misc.relay_usage_volts}}V)</td>
+                  <td>{{value['1d']['kwh']|round(2)}}</td>
+                  <td>{{value['1w']['kwh']|round(2)}}</td>
+                  <td>{{value['1m']['kwh']|round(2)}}</td>
+                  <td>{{value['1m_date']['kwh']|round(2)}}</td>
+                  <td>{{value['1y']['kwh']|round(2)}}</td>
+                </tr>
+                <tr>
+                  <td colspan="2"></td>
+                  <td>Cost ({{misc.relay_usage_currency}}{{misc.relay_usage_cost}}/kWh)</td>
+                  <td>{{misc.relay_usage_currency}}{{value['1d']['cost']|round(2)}}</td>
+                  <td>{{misc.relay_usage_currency}}{{value['1w']['cost']|round(2)}}</td>
+                  <td>{{misc.relay_usage_currency}}{{value['1m']['cost']|round(2)}}</td>
+                  <td>{{misc.relay_usage_currency}}{{value['1m_date']['cost']|round(2)}}</td>
+                  <td>{{misc.relay_usage_currency}}{{value['1y']['cost']|round(2)}}</td>
+                </tr>
+                <tr>
+                  <td colspan="8"></td>
+                </tr>
+              {%- endfor -%}
+            {%- endfor -%}
+          {% endfor %}
+        {%- endif -%}
+        <tr>
+          <td colspan="2">{{_('Total')}}</td>
+          <td>{{_('Duration On (hours)')}}</td>
+          <td>{{relay_stats['total_duration']['1d']|round(2)}}</td>
+          <td>{{relay_stats['total_duration']['1w']|round(2)}}</td>
+          <td>{{relay_stats['total_duration']['1m']|round(2)}}</td>
+          <td>{{relay_stats['total_duration']['1m_date']|round(2)}}</td>
+          <td>{{relay_stats['total_duration']['1y']|round(2)}}</td>
+        </tr>
+        <tr>
+          <td colspan="2"></td>
+          <td>{{_('Power Usage')}} (kWh@{{misc.relay_usage_volts}}V)</td>
+          <td>{{relay_stats['total_kwh']['1d']|round(2)}}</td>
+          <td>{{relay_stats['total_kwh']['1w']|round(2)}}</td>
+          <td>{{relay_stats['total_kwh']['1m']|round(2)}}</td>
+          <td>{{relay_stats['total_kwh']['1m_date']|round(2)}}</td>
+          <td>{{relay_stats['total_kwh']['1y']|round(2)}}</td>
+        </tr>
+        <tr>
+          <td colspan="2"></td>
+          <td>{{_('Cost')}} ({{misc.relay_usage_currency}}{{misc.relay_usage_cost}}/kWh)</td>
+          <td>{{misc.relay_usage_currency}}{{relay_stats['total_cost']['1d']|round(2)}}</td>
+          <td>{{misc.relay_usage_currency}}{{relay_stats['total_cost']['1w']|round(2)}}</td>
+          <td>{{misc.relay_usage_currency}}{{relay_stats['total_cost']['1m']|round(2)}}</td>
+          <td>{{misc.relay_usage_currency}}{{relay_stats['total_cost']['1m_date']|round(2)}}</td>
+          <td>{{misc.relay_usage_currency}}{{relay_stats['total_cost']['1y']|round(2)}}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="clear: both; padding: 1em 0;"></div>
+
+  </div>
+
+{% endblock %}
