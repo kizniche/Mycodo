@@ -54,7 +54,7 @@ set -e
 
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
 
-cd ~
+cd ${INSTALL_DIRECTORY}
 
 printf "\n#### Checking if ${INSTALL_DIRECTORY}/Mycodo directory exists\n"
 if [ ! -d ${INSTALL_DIRECTORY}/Mycodo ] ; then
@@ -79,21 +79,21 @@ printf "Moving ${INSTALL_DIRECTORY}/Mycodo to ${INSTALL_DIRECTORY}/Mycodo-4-old.
 printf "Done.\n"
 
 printf "Creating Mycodo 5.0.0 directory..."
-  if ! mkdir Mycodo ; then
+  if ! mkdir ${INSTALL_DIRECTORY}/Mycodo ; then
     printf "Failed: Create Mycodo 5.0.0 directory.\n"
     exit 1
   fi
 printf "Done.\n"
 
 printf "Extracting Mycodo 5.0.0 files..."
-  if ! tar xzf v5.0.0.tar.gz -C Mycodo --strip-components=1 ; then
+  if ! tar xzf ${INSTALL_DIRECTORY}/v5.0.0.tar.gz -C ${INSTALL_DIRECTORY}/Mycodo --strip-components=1 ; then
     printf "Failed: Extract Mycodo 5.0.0 files.\n"
     exit 1
   fi
 printf "Done.\n"
 
 rm -f v5.0.0.tar.gz
-cd Mycodo/install
+cd ${INSTALL_DIRECTORY}/Mycodo/install
 sudo /bin/bash ./setup.sh
 
 echo >&2 "
