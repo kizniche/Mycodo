@@ -89,6 +89,12 @@ case "${1:-''}" in
             printf "## Virtualenv already exists, skipping creation\n"
         fi
     ;;
+    'update-apache2')
+        printf "\n#### Installing and configuring apache2 web server\n"
+        a2enmod wsgi ssl
+        ln -sf ${INSTALL_DIRECTORY}/Mycodo/install/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
+
+    ;;
     'update-cron')
         printf "#### Updating crontab entry\n"
         /bin/bash ${INSTALL_DIRECTORY}/Mycodo/install/crontab.sh mycodo --remove

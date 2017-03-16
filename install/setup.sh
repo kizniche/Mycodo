@@ -76,9 +76,7 @@ printf "\n#### Creating InfluxDB database and user\n"
 influx -execute "CREATE DATABASE mycodo_db"
 influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
 
-printf "\n#### Installing and configuring apache2 web server\n"
-a2enmod wsgi ssl
-ln -sf ${INSTALL_DIRECTORY}/install/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-apache2
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh generate-ssl-certs
 
