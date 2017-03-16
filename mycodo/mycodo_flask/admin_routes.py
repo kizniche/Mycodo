@@ -142,7 +142,7 @@ def admin_upgrade():
     upgrade_available = False
 
     # Check for any new Mycodo releases on github
-    releases = github_releases(4)
+    releases = github_releases(5)
     if len(releases) > 0:
         latest_release = releases[0]
         current_releases = []
