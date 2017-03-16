@@ -20,7 +20,7 @@
 
   - Improve content and accessibility of help documentation
   - Redesign navigation menu (including glyphs from bootstrap and fontawesome)
-  - Move to using a Python virtual environment
+  - Move to using a Python virtual environment ([#203](https://github.com/kizniche/mycodo/issues/203))
   - Refactor the relay/sensor conditional management system
   - User names are no longer case-sensitive
   - Switch to using Flask-Login
