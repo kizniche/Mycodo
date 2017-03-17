@@ -1,3 +1,9 @@
+## 5.0.2 (2017-03-17)
+
+### Bugfixes
+
+  - Fixes inability of relay conditionals to operate
+
 ## 5.0.0 (2017-03-17)
 
 ### Bugfixes
