@@ -33,14 +33,13 @@ from .display_order import DisplayOrder
 from .graph import Graph
 from .lcd import LCD
 from .method import Method
-from .method_data import MethodData
+from .method import MethodData
 from .misc import Misc
 from .pid import PID
 from .relay import Relay
 from .remote import Remote
 from .role import Role
 from .sensor import Sensor
-from .sensor_conditional import SensorConditional
 from .smtp import SMTP
 from .timer import Timer
 from .user import User

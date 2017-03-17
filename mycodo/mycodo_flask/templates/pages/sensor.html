@@ -75,7 +75,7 @@
           </div>
         </div>
 
-        <div class="col-xs-12 col-sm-4 col-md-4 no-gutters">
+        <div class="col-xs-12 col-sm-4 col-md-4 small-gutters">
           {% if each_sensor.is_activated -%}
             {%- set has_active_pid = [] -%}
             {%- for each_pid in pid if each_pid.sensor_id == each_sensor.id and each_pid.is_activated -%}
