@@ -332,10 +332,6 @@ class RelayController(threading.Thread):
         conditionals = conditionals.filter(Conditional.if_relay_id == relay_id)
         conditionals = conditionals.filter(Conditional.is_activated == True)
 
-        # conditionals = db_retrieve_table_daemon(RelayConditional)
-        # conditionals = conditionals.filter(RelayConditional.if_relay_id == relay_id)
-        # conditionals = conditionals.filter(RelayConditional.is_activated == True)
-
         if self.is_on(relay_id):
             conditionals = conditionals.filter(Conditional.if_relay_state == 'on')
             conditionals = conditionals.filter(Conditional.if_relay_duration == on_duration)
@@ -351,7 +347,7 @@ class RelayController(threading.Thread):
                 now = time.time()
                 timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
                 message = "{}\n[Relay Conditional {}] {}\n".format(
-                    timestamp, each_cond_action.id, each_cond_action.name)
+                    timestamp, each_cond_action.id, each_conditional.name)
 
                 if each_cond_action.do_action == 'relay':
                     message += "If relay {} ({}) turns {}, Then:\n".format(
