@@ -1,10 +1,8 @@
-## 5.1.0 (Unreleased)
+## 5.0.0 (2017-03-17)
 
-### Miscellaneous
+### Bugfixes
 
-  - Mobile display improvements
-
-## 5.0.0 (2017-03-16)
+  - Fix influxdb being unreachable directly after package install
 
 ### Features
 
@@ -24,6 +22,7 @@
 
 ### Miscellaneous
 
+  - Mobile display improvements
   - Improve content and accessibility of help documentation
   - Redesign navigation menu (including glyphs from bootstrap and fontawesome)
   - Move to using a Python virtual environment ([#203](https://github.com/kizniche/mycodo/issues/203))

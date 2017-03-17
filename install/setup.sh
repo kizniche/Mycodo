@@ -71,7 +71,7 @@ rm -rf ./wiringPi
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-pip-packages
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-influxdb
-service influxdb start
+
 printf "\n#### Creating InfluxDB database and user\n"
 influx -execute "CREATE DATABASE mycodo_db"
 influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"

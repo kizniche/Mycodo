@@ -11,7 +11,7 @@
 
   <h4>{{_('LCDs')}} <a href="/help#lcd"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
-  <p>{{_('LCDs allow the display of data for easy viewing and for displaing alerts to conditional events you configure (flash the LCD).')}}</p>
+  <p>{{_('LCDs allow the display of data for easy viewing and for displaying alerts to conditional events you configure (flash the LCD).')}}</p>
 
   <div style="clear: both; padding: 0.5em 0;"></div>
 
@@ -39,10 +39,10 @@
                       {%- else -%}inactive-background
                       {% endif %} row small-gutters" style="border-bottom: 2px solid #ddd; padding: 0.5em">
             <div class="col-xs-12">
-              <div class="col-xs-6 col-md-6 small-gutters">
+              <div class="col-xs-6 col-md-6 no-gutters">
                 {{form_mod_lcd.name(class_='form-control', value=each_lcd.name, **{'title':_('Name for this PID controller.')})}}
               </div>
-              <div class="col-xs-6 small-gutters">
+              <div class="col-xs-6 no-gutters">
                 <input class="form-control btn btn-default" title="UUID: {{each_lcd.unique_id}}" disabled="" value="ID: {{each_lcd.id}}, State:
                 {%- if each_lcd.is_activated -%} {{_('Active')}}
                 {%- else -%} {{_('Inactive')}}
@@ -179,10 +179,7 @@
             </div>
           </div>
 
-          <div class="row small-gutters">
-
-          {%- if each_lcd.y_lines in [2, 4] -%}
-
+          <div class="row small-gutters" style="padding-bottom: 0.3em">
             <div class="col-xs-12 col-sm-6">
               <label>{{_('Display Line 1')}}</label>
               <div>
@@ -233,8 +230,6 @@
                 </select>
               </div>
             </div>
-
-          {% endif %}
 
           {%- if each_lcd.y_lines == 4 -%}
 
