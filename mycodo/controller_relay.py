@@ -351,19 +351,19 @@ class RelayController(threading.Thread):
 
                 if each_cond_action.do_action == 'relay':
                     message += "If relay {} ({}) turns {}, Then:\n".format(
-                        each_cond_action.if_relay_id,
-                        self.relay_name[each_cond_action.if_relay_id],
-                        each_cond_action.if_relay_state)
+                        each_conditional.if_relay_id,
+                        self.relay_name[each_conditional.if_relay_id],
+                        each_conditional.if_relay_state)
                     message += "Turn relay {} ({}) {}".format(
                             each_cond_action.do_relay_id,
                             self.relay_name[each_cond_action.do_relay_id],
                             each_cond_action.do_relay_state)
 
-                    if each_cond_action.do_duration == 0:
+                    if each_cond_action.do_relay_duration == 0:
                         self.relay_on_off(each_cond_action.do_relay_id,
                                           each_cond_action.do_relay_state)
                     else:
-                        message += " for {} seconds".format(each_cond_action.do_duration)
+                        message += " for {} seconds".format(each_cond_action.do_relay_duration)
                         self.relay_on_off(each_cond_action.do_relay_id,
                                           each_cond_action.do_relay_state,
                                           each_cond_action.do_relay_duration)
@@ -401,7 +401,7 @@ class RelayController(threading.Thread):
                         self.logger.debug(
                             "[Relay Conditional {}] True: {:.0f} seconds "
                             "left to be allowed to email again.".format(
-                                each_cond_action.id,
+                                each_conditional.id,
                                 self.smtp_wait_time-time.time()))
 
                 elif each_cond_action.do_action == 'flash_lcd':

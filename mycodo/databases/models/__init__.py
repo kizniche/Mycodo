@@ -37,7 +37,6 @@ from .method_data import MethodData
 from .misc import Misc
 from .pid import PID
 from .relay import Relay
-from .relay_conditional import RelayConditional
 from .remote import Remote
 from .role import Role
 from .sensor import Sensor
