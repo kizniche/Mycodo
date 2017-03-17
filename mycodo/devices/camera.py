@@ -171,7 +171,7 @@ def camera_record(record_type, settings, duration_sec=None,
 
         if record_type in ['photo', 'timelapse']:
             edited = False
-            ret, img_orig = cap.read()
+            _, img_orig = cap.read()
             img_edited = img_orig.copy()
 
             if any((settings.hflip, settings.vflip, settings.rotation)):
@@ -208,7 +208,7 @@ def count_cameras_opencv():
     num_cameras = 0
     for i in range(10):
         temp_camera = cv2.VideoCapture(i-1)
-        ret, img = temp_camera.read()
+        ret, _ = temp_camera.read()
         if ret:
             num_cameras += 1
     return num_cameras

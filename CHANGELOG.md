@@ -12,7 +12,7 @@
   - Add auto-generation of relay usage/cost reports on a daily, weekly, or monthly schedule
   - Add ability to check daemon health (mycodo_client.py --checkdaemon)
   - Add sensor conditional actions: Activate/Deactivate PID, Email Photo, Email Video
-  - Add PID option: maximum allowable sensor measurement age (to allow the PID controller from manipulate relays, the sensor measurement must have occurred in the past x seconds)
+  - Add PID option: maximum allowable sensor measurement age (to allow the PID controller to manipulate relays, the sensor measurement must have occurred in the past x seconds)
   - Add PID option: minimum off duration for lower/raise relay (protects devices that require a minimum off period by preventing power cycling from occurring too quickly)
   - Add new sensor: Free Disk Space (of a set path)
   - Add new sensor: Mycodo Daemon RAM Usage (used for testing)

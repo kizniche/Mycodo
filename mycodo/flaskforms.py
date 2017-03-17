@@ -692,15 +692,15 @@ class PIDMod(FlaskForm):
     )
     method_id = IntegerField(
         'Setpoint Tracking Method', widget=widgets.HiddenInput())
-    save = SubmitField(lazy_gettext('Save Settings'))
+    save = SubmitField(lazy_gettext('Save'))
     hold = SubmitField(lazy_gettext('Hold'))
     pause = SubmitField(lazy_gettext('Pause'))
     resume = SubmitField(lazy_gettext('Resume'))
-    delete = SubmitField(lazy_gettext('Delete PID'))
-    activate = SubmitField(lazy_gettext('Activate PID'))
-    deactivate = SubmitField(lazy_gettext('Deactivate PID'))
-    reorder_up = SubmitField(lazy_gettext('Order Up'))
-    reorder_down = SubmitField(lazy_gettext('Order Down'))
+    delete = SubmitField(lazy_gettext('Delete'))
+    activate = SubmitField(lazy_gettext('Activate'))
+    deactivate = SubmitField(lazy_gettext('Deactivate'))
+    reorder_up = SubmitField(lazy_gettext('Up'))
+    reorder_down = SubmitField(lazy_gettext('Down'))
 
 
 #

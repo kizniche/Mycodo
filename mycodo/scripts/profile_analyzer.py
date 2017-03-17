@@ -53,7 +53,7 @@ def analyze(args):
     dt_timer = datetime.datetime.now()
 
     analyzed_data = []
-    for index, (page, times) in enumerate(parsed_data.items()):
+    for page, times in parsed_data.items():
         avg = None
         median = None
         if len(times) == 2:
@@ -86,7 +86,7 @@ def analyze(args):
     logger.info("")
     logger.info("Request                   Quantity      1st      avg   median")
 
-    for index, each_line in enumerate(analyzed_data):
+    for each_line in analyzed_data:
         str_avg = ''
         str_median = ''
         if each_line[3]:

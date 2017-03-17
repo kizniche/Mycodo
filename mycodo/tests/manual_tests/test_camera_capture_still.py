@@ -9,7 +9,7 @@ def count_cameras_opencv():
     num_cameras = 0
     for i in range(10):
         temp_camera = cv2.VideoCapture(i-1)
-        ret, img = temp_camera.read()
+        ret, _ = temp_camera.read()
         if ret:
             num_cameras += 1
     return num_cameras
@@ -77,7 +77,7 @@ def main():
     print("Exposure: {}".format(exposure))
 
     # Save image
-    ret, img = cap.read()
+    _, img = cap.read()
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     cv2.imwrite("camera_image_{ts}.bmp".format(ts=timestamp), img)
     cap.release()
