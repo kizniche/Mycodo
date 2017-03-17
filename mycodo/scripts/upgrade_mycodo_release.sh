@@ -89,14 +89,12 @@ runSelfUpgrade() {
   printf "Removing ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz..."
   if ! rm -rf ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz ; then
     printf "Failed: Error while removing ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz.\n"
-    error_found
   fi
   printf "Done.\n"
 
   printf "Copying ${MYCODO_NEW_TMP_DIR}/.upgrade status file to ${MYCODO_NEW_TMP_DIR}..."
   if ! cp ${INSTALL_DIRECTORY}/Mycodo/.upgrade ${MYCODO_NEW_TMP_DIR} ; then
     printf "Failed: Error while trying to copy .upgrade status file.\n"
-    error_found
   fi
   printf "Done.\n"
 
@@ -116,11 +114,16 @@ runSelfUpgrade() {
   fi
   printf "Done.\n"
 
+  printf "Moving flask_secret_key from ${INSTALL_DIRECTORY}/Mycodo/databases/ to ${MYCODO_NEW_TMP_DIR}/databases..."
+  if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/flask_secret_key ${MYCODO_NEW_TMP_DIR}/databases ; then
+    printf "Failed: Error while trying to copy flask_secret_key."
+  fi
+  printf "Done.\n"
+
   if [ -e ${INSTALL_DIRECTORY}/Mycodo/databases/statistics.id ]; then
     printf "Copying statistics ID..."
     if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/statistics.id ${MYCODO_NEW_TMP_DIR}/databases ; then
       printf "Failed: Error while trying to copy statistics ID."
-      error_found
     fi
     printf "Done.\n"
   fi
@@ -138,7 +141,6 @@ runSelfUpgrade() {
     printf "Moving cameras directory..."
     if ! mv ${INSTALL_DIRECTORY}/Mycodo/cameras ${MYCODO_NEW_TMP_DIR} ; then
       printf "Failed: Error while trying to move cameras directory.\n"
-      error_found
     fi
     printf "Done.\n"
   fi
