@@ -2346,6 +2346,10 @@ def user_add(form):
                 "Invalid user name. Must be between 2 and 64 characters "
                 "and only contain letters and numbers."))
 
+        if User.query.filter_by(email=form.addEmail.data).count():
+            error.append(gettext(
+                "Another user already has that email address."))
+
         if not test_password(form.addPassword.data):
             error.append(gettext(
                 "Invalid password. Must be between 6 and 64 characters "
@@ -2659,7 +2663,7 @@ def delete_user(user_id):
         user = User.query.filter(
             User.id == user_id).first()
         user_name = user.name
-        user.delete(db.session)
+        user.delete()
         flash(gettext("Success: %(msg)s",
                       msg='{action} {user}'.format(
                           action=gettext("Delete"),
