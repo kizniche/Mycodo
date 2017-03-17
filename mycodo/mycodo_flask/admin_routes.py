@@ -142,8 +142,14 @@ def admin_upgrade():
     upgrade_available = False
 
     # Check for any new Mycodo releases on github
-    releases = github_releases(5)
-    if len(releases) > 0:
+    releases = []
+    try:
+        maj_version = int(MYCODO_VERSION.split('.')[0])
+        releases = github_releases(maj_version)
+    except Exception:
+        flash(gettext("Could not determine local mycodo version or "
+                      "online release versions"), "error")
+    if len(releases):
         latest_release = releases[0]
         current_releases = []
         releases_behind = None

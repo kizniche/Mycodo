@@ -70,9 +70,9 @@
     {% include 'flash_messages.html' %}
 
     {%- if sensorDisplayOrderSorted|length == 0 -%}
-      <div>
-        No Sensors Activated. <a href="/sensor">Click here</a> to go to the sensor page. Read the <a href="/help">Manual</a> to become more familiar with the system and configuration options.
-      </div>
+    <div>
+      No Sensors Activated. <a href="/sensor">Click here</a> to go to the sensor page. Read the <a href="/help">Manual</a> to become more familiar with the system and configuration options.
+    </div>
     {%- endif -%}
 
     {%- if sensorDisplayOrderSorted -%}
@@ -81,139 +81,146 @@
 
       {%- for each_sensor in sensor if each_sensor.id == sensor_order -%}
 
-        <div style="margin-bottom: 0.7em; border: 2px solid #ddd; border-radius: 5px;">
-          <div class="inline-align" style="margin-bottom: -1.2em; padding: 0.3em 0.3em 0 0.3em;">
-            <div class="inline-left" style="vertical-align: top; display: inline-block; padding: 0.3em;">
-              {%- set sensor_has_pid = [] -%}
-              {%- if pidDisplayOrder -%}
-                {%- for pid_order in pidDisplayOrder -%}
-                  {%- for each_pid in pid if each_pid.id == pid_order and each_pid.is_activated and each_pid.sensor_id == each_sensor.id -%}
-                    {%- do sensor_has_pid.append(1) -%}
-                  {%- endfor -%}
-                {%- endfor -%}
-              {%- endif -%}
-              {%- if sensor_has_pid -%}
-                <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{collapse_container_number}}" aria-expanded="false" aria-controls="collapseContainer{{collapse_container_number}}"><span class='collapse-button{{collapse_container_number}} fa fa-2x fa-plus-square'></span></a>
-              {%- endif -%}
-              {{each_sensor.name}} ({{each_sensor.id}})
-              {%- if each_sensor.device != 'EDGE' -%}
-                <div>
-                  {{each_sensor.device}} Sensor, {{each_sensor.period}} sec. between reads
-                </div>
-              {%- endif -%}
-            </div>
+    <div style="padding: 0.5em; margin-bottom: 0.7em; border: 2px solid #ddd; border-radius: 5px;">
 
-            <div class="inline-right text-right" style="padding: 0.3em;">
-              {{_('Measurement')}} | {{_('Timestamp')}}
-              <div>
-                {% for each_measure in each_sensor.measurements.split(',') %}
-                  {% if 'temperature' in each_measure %}
-                    <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}} (<span id="{{each_sensor.unique_id}}-{{each_measure}}-value-F">0.0</span> &deg;F)</b> | <span id="{{each_sensor.unique_id}}-{{each_measure}}-time">&lt;please wait&gt;</span><br>
-                  {% else %}
-                    <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}}</b> | <span id="{{each_sensor.unique_id}}-{{each_measure}}-time">&lt;please wait&gt;</span><br>
-                  {% endif %}
-                {% endfor %}
-                {%- if each_sensor.device_type == 'analogsensor' %}
-                  <b><span id="{{each_sensor.unique_id}}-{{each_sensor.adc_measure}}-value">0.0</span> {{each_sensor.adc_measure_units}} {{each_sensor.adc_measure}}</b> | <span id="{{each_sensor.unique_id}}-{{each_sensor.adc_measure}}-time">&lt;please wait&gt;</span>
-                {% endif %}
-              </div>
-            </div>
-          </div>
-
-          <div class="collapse" id="collapseContainer{{collapse_container_number}}" style="padding: 0 0.5em 0.5em 0.5em;">
-
-            {%- if pidDisplayOrder -%}
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 text-left">
+          {%- set sensor_has_pid = [] -%}
+          {%- if pidDisplayOrder -%}
             {%- for pid_order in pidDisplayOrder -%}
               {%- for each_pid in pid if each_pid.id == pid_order and each_pid.is_activated and each_pid.sensor_id == each_sensor.id -%}
-
-                <div style="padding-bottom: 1em; border: 1px solid #ddd; border-radius: 5px;">
-                  <div class="inline-align" style="margin-bottom: -1.5em;">
-                    <div class="inline-left" style="padding: 0.3em;">
-                      {{each_pid.name}} ({{each_pid.id}})
-                      <div>
-                        Every {{each_pid.period}} seconds, apply PID to {% if each_pid.direction == 'both' -%}raise or lower{%- else -%}{{each_pid.direction}}{%- endif %} {{each_pid.measurement}} to {{each_pid.setpoint}}
-                      </div>
-                    </div>
-                    <div class="inline-right" style="padding: 0.3em;">
-                      {{_('Gain')}}
-                      <div>
-                        K<sub>P</sub>: {{each_pid.p}}, K<sub>I</sub>: {{each_pid.i}}, K<sub>D</sub>: {{each_pid.d}}
-                      </div>
-                    </div>
-                  </div>
-
-                  {%- for rel in relay if rel.id == each_pid.raise_relay_id -%}
-                  <div style="padding: 0 0.3em 0.3em 0.3em;">
-                    <div style="display: inline-block; padding: 0 0.3em;">
-                      {{_('Raise Relay')}}
-                      <div>
-                        {{rel.name}} ({{rel.id}})
-                      </div>
-                    </div>
-                    <div style="display: inline-block; padding: 0.3em;">
-                      {{_('On Duration (sec.)')}}
-                      <div>
-                        {{_('Min')}}: {{each_pid.raise_min_duration}}, {{_('Max')}}: {{each_pid.raise_max_duration}}
-                       </div>
-                    </div>
-                    <div style="display: inline-block; padding: 0.3em;">
-                      {{_('Off Duration (sec.)')}}
-                      <div>
-                        {{_('Min')}}: {{each_pid.raise_min_off_duration}}
-                      </div>
-                    </div>
-                    <div style="display: inline-block; padding: 0.3em;">
-                      {{_('Current Draw')}}
-                      <div>
-                        {{rel.amps}} {{_('amps')}}
-                      </div>
-                    </div>
-                  </div>
-                  {%- endfor -%}
-
-                  {%- for rel in relay if rel.id == each_pid.lower_relay_id -%}
-                  <div style="padding: 0 0.3em 0.3em 0.3em;">
-                    <div style="display: inline-block; padding: 0 0.3em;">
-                      {{_('Lower Relay')}}
-                      <div>
-                        {{rel.name}} ({{rel.id}})
-                      </div>
-                    </div>
-                    <div style="display: inline-block; padding: 0.3em;">
-                      {{_('On Duration (sec.)')}}
-                      <div>
-                        {{_('Min')}}: {{each_pid.lower_min_duration}}, {{_('Max')}}: {{each_pid.lower_max_duration}}
-                      </div>
-                    </div>
-                    <div style="display: inline-block; padding: 0.3em;">
-                      {{_('Off Duration (sec.)')}}
-                      <div>
-                        {{_('Min')}}: {{each_pid.lower_min_off_duration}}
-                      </div>
-                    </div>
-                    <div style="display: inline-block; padding: 0.3em;">
-                      {{_('Current Draw')}}
-                      <div>
-                        {{rel.amps}} {{_('amps')}}
-                      </div>
-                    </div>
-                  </div>
-                  {%- endfor -%}
-
-                  {%- for each_method in method if each_method.id == each_pid.method_id -%}
-                    <div style="padding: 0 0.3em 0 0.6em;">
-                      {{_('Method Enabled')}}: <a href="/method-build/{{each_method.id}}">{{each_method.name}} ({{each_method.id}})</a>
-                    </div>
-                  {%- endfor -%}
-
-                </div>
-
+                {%- do sensor_has_pid.append(1) -%}
               {%- endfor -%}
             {%- endfor -%}
-            {%- endif -%}
+          {%- endif -%}
+          {%- if sensor_has_pid -%}
+            <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{collapse_container_number}}" aria-expanded="false" aria-controls="collapseContainer{{collapse_container_number}}"><span class='collapse-button{{collapse_container_number}} fa fa-2x fa-plus-square'></span></a>
+          {%- endif -%}
+          {{each_sensor.name}} ({{each_sensor.id}})
+          {%- if each_sensor.device != 'EDGE' -%}
+            <div>
+              {{each_sensor.device}} Sensor, {{each_sensor.period}} sec. between reads
+            </div>
+          {%- endif -%}
+        </div>
 
+        <div class="col-xs-12 col-sm-6 text-right">
+          {{_('Measurement')}} | {{_('Timestamp')}}
+          <div>
+            {% for each_measure in each_sensor.measurements.split(',') %}
+              {% if 'temperature' in each_measure %}
+                <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}} (<span id="{{each_sensor.unique_id}}-{{each_measure}}-value-F">0.0</span> &deg;F)</b> | <span id="{{each_sensor.unique_id}}-{{each_measure}}-time">&lt;please wait&gt;</span><br>
+              {% else %}
+                <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}}</b> | <span id="{{each_sensor.unique_id}}-{{each_measure}}-time">&lt;please wait&gt;</span><br>
+              {% endif %}
+            {% endfor %}
+            {%- if each_sensor.device_type == 'analogsensor' %}
+              <b><span id="{{each_sensor.unique_id}}-{{each_sensor.adc_measure}}-value">0.0</span> {{each_sensor.adc_measure_units}} {{each_sensor.adc_measure}}</b> | <span id="{{each_sensor.unique_id}}-{{each_sensor.adc_measure}}-time">&lt;please wait&gt;</span>
+            {% endif %}
           </div>
         </div>
+      </div>
+
+        {%- if pidDisplayOrder -%}
+        {%- for pid_order in pidDisplayOrder -%}
+          {%- for each_pid in pid if each_pid.id == pid_order and each_pid.is_activated and each_pid.sensor_id == each_sensor.id -%}
+
+      <div class="collapse" id="collapseContainer{{collapse_container_number}}" style="padding: 0.5em 0;">
+
+        <div class="row" style="padding-top: 0.5em">
+          <div class="col-xs-12 col-sm-6">
+            {{each_pid.name}} ({{each_pid.id}})
+            <div>
+              Every {{each_pid.period}} seconds, apply PID to {% if each_pid.direction == 'both' -%}raise or lower{%- else -%}{{each_pid.direction}}{%- endif %} {{each_pid.measurement}} to {{each_pid.setpoint}}
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-6">
+            {{_('Gain')}}
+            <div>
+              K<sub>P</sub>: {{each_pid.p}}, K<sub>I</sub>: {{each_pid.i}}, K<sub>D</sub>: {{each_pid.d}}
+            </div>
+          </div>
+        </div>
+
+            {%- for rel in relay if rel.id == each_pid.raise_relay_id -%}
+
+        <div class="row" style="padding-top: 0.5em">
+          <div class="col-xs-12 col-sm-3 col-md-2">
+            {{_('Raise Relay')}}
+            <div>
+              {{rel.name}} ({{rel.id}})
+            </div>
+          </div>
+          <div class="col-xs-4 col-sm-3 col-md-2">
+            {{_('On Duration (sec.)')}}
+            <div>
+              {{_('Min')}}: {{each_pid.raise_min_duration}}, {{_('Max')}}: {{each_pid.raise_max_duration}}
+             </div>
+          </div>
+          <div class="col-xs-4 col-sm-3 col-md-2">
+            {{_('Off Duration (sec.)')}}
+            <div>
+              {{_('Min')}}: {{each_pid.raise_min_off_duration}}
+            </div>
+          </div>
+          <div class="col-xs-4 col-sm-3 col-md-2">
+            {{_('Current Draw')}}
+            <div>
+              {{rel.amps}} {{_('amps')}}
+            </div>
+          </div>
+        </div>
+
+            {%- endfor -%}
+
+            {%- for rel in relay if rel.id == each_pid.lower_relay_id -%}
+
+        <div class="row" style="padding-top: 0.5em">
+          <div class="col-xs-12 col-sm-3 col-md-2">
+            {{_('Lower Relay')}}
+            <div>
+              {{rel.name}} ({{rel.id}})
+            </div>
+          </div>
+          <div class="col-xs-4 col-sm-3 col-md-2">
+            {{_('On Duration (sec.)')}}
+            <div>
+              {{_('Min')}}: {{each_pid.lower_min_duration}}, {{_('Max')}}: {{each_pid.lower_max_duration}}
+            </div>
+          </div>
+          <div class="col-xs-4 col-sm-3 col-md-2">
+            {{_('Off Duration (sec.)')}}
+            <div>
+              {{_('Min')}}: {{each_pid.lower_min_off_duration}}
+            </div>
+          </div>
+          <div class="col-xs-4 col-sm-3 col-md-2">
+            {{_('Current Draw')}}
+            <div>
+              {{rel.amps}} {{_('amps')}}
+            </div>
+          </div>
+        </div>
+
+            {%- endfor -%}
+
+            {%- for each_method in method if each_method.id == each_pid.method_id -%}
+
+        <div class="row">
+          <div class="col-xs-12">
+            {{_('Method Enabled')}}: <a href="/method-build/{{each_method.id}}">{{each_method.name}} ({{each_method.id}})</a>
+          </div>
+        </div>
+
+            {%- endfor -%}
+
+      </div>
+
+          {%- endfor -%}
+        {%- endfor -%}
+        {%- endif -%}
+
+    </div>
 
       {%- endfor -%}
     {%- endfor -%}
