@@ -112,7 +112,8 @@ case "${1:-''}" in
             dpkg -i ${INSTALL_FILE}
             rm -rf ${INSTALL_FILE}
             service influxdb restart
-            sleep 15
+            printf "\nWaiting 90 seconds for influxdb to restart...\n"
+            sleep 90
         fi
     ;;
     'update-packages')
