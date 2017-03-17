@@ -1,13 +1,8 @@
-## 5.0.1 (2017-03-17)
-
-### Bugfixes
-
-  - Fix issue with user creation/deletion in web UI
-
 ## 5.0.0 (2017-03-17)
 
 ### Bugfixes
 
+  - Fix issue with user creation/deletion in web UI
   - Fix influxdb being unreachable directly after package install
 
 ### Features
