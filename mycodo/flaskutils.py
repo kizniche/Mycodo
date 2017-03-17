@@ -1854,6 +1854,10 @@ def sensor_add(form_add_sensor):
                 new_sensor.device_type = 'mycodo_ram'
                 new_sensor.measurements = 'disk_space'
                 new_sensor.location = 'Mycodo_daemon'
+            elif form_add_sensor.sensor.data == 'RPi':
+                new_sensor.device_type = 'tsensor'
+                new_sensor.measurements = 'temperature'
+                new_sensor.location = 'RPi'
             elif form_add_sensor.sensor.data == 'RPiCPULoad':
                 new_sensor.device_type = 'cpu_load'
                 new_sensor.measurements = 'cpu_load_1m,cpu_load_5m,cpu_load_15m'
@@ -1868,14 +1872,13 @@ def sensor_add(form_add_sensor):
 
             # Environmental Sensors
             # Temperature
-            elif form_add_sensor.sensor.data in ['ATLAS_PT1000', 'DS18B20',
-                                                 'RPi', 'TMP006']:
+            elif form_add_sensor.sensor.data in ['ATLAS_PT1000',
+                                                 'DS18B20',
+                                                 'TMP006']:
                 new_sensor.device_type = 'tsensor'
                 new_sensor.measurements = 'temperature'
                 if form_add_sensor.sensor.data == 'ATLAS_PT1000':
                     new_sensor.location = '0x66'
-                elif form_add_sensor.sensor.data == 'RPi':
-                    new_sensor.location = 'RPi'
                 elif form_add_sensor.sensor.data == 'TMP006':
                     new_sensor.measurements = 'temperature_object,temperature_die'
                     new_sensor.location = '0x40'

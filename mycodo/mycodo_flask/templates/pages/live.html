@@ -99,7 +99,7 @@
           {{each_sensor.name}} ({{each_sensor.id}})
           {%- if each_sensor.device != 'EDGE' -%}
             <div>
-              {{each_sensor.device}} Sensor, {{each_sensor.period}} sec. between reads
+               {{_('%(type)s Sensor, %(sec)s second interval', type=each_sensor.device, sec=each_sensor.period)}}
             </div>
           {%- endif -%}
         </div>

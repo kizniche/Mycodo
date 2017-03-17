@@ -414,7 +414,9 @@
 
 		<p>Relays are electromechanical or solid-state devices that enable a small voltage signal (such as from a microprocessor) to activate a much larger voltage, without exposing the low -voltage system to the dangers of the higher voltage.</p>
 
-		<p>Relays must be properly set up before PID regulation can be achieved. Add and configure relays in the Sensor tab. Set the "GPIO Pin" to the BCM GPIO number of each pin that activates each relay. <i>On Trigger</i> should be set to the signal that activates the relay (closes the relay circuit). If your relay activates when the potential across the coil is 0-volts, set <i>On Trigger</i> to "Low", otherwise if your relay activates when the potential across the coil is 5-volts, set it to "High".</p>
+		<p>Relays must be properly set up before PID regulation can be achieved. Add and configure relays in the Relay tab. Set the "GPIO Pin" to the BCM GPIO number of each pin that activates each relay. <i>On Trigger</i> should be set to the signal that activates the relay (the device attached to the relay turns on). If your relay activates when the potential across the coil is 0-volts, set <i>On Trigger</i> to "Low", otherwise if your relay activates when the potential across the coil is 3.3-volts (or whatever switching voltage you are using, if not being driven by the GPIO pin), set it to "High".</p>
+
+    <p>When a relay is initially added, the background of the new relay will be yellow, indicating it is not configured. When properly configured, it will either turn green, indicating the relay is activated (device is on), or red, indicating the relay is inactivated (device is off).</p>
 
     <dl class="dl-horizontal">
       <dt>GPIO Pin</dt>
