@@ -25,17 +25,17 @@
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
-    <div class="row small-gutters">
+    <div class="row small-gutters" style="padding-left: 1em">
       <form id="new_sensor_form" method="post" action="/sensor">
       <input type="hidden" name="form-name" value="addSensor">
       {{form_add_sensor.hidden_tag()}}
-      <div class="col-xs-3 col-sm-3 col-md-2">
+      <div class="col-xs-3 col-sm-3 col-md-2 no-gutters">
         {{form_add_sensor.numberSensors(class_='form-control', type="number", value=1)}}
       </div>
-      <div class="col-xs-9 col-sm-6 col-md-4">
+      <div class="col-xs-9 col-sm-6 col-md-4 no-gutters">
         {{form_add_sensor.sensor(class_='form-control')}}
       </div>
-      <div class="col-xs-12 col-sm-3 col-md-2">
+      <div class="col-xs-12 col-sm-3 col-md-2 no-gutters">
         {{form_add_sensor.sensorAddSubmit(class_='form-control btn btn-default')}}
       </div>
       </form>
@@ -53,6 +53,7 @@
         <form method="post" action="/sensor">
         {{form_mod_sensor.csrf_token}}
         {{form_mod_sensor.modSensor_id(value=each_sensor.id)}}
+
         <div class="col-xs-2 col-sm-1 col-md-1 text-center">
           <label class="control-label" style="padding-top: 1em"></label>
           <div>
@@ -73,6 +74,7 @@
             {{form_mod_sensor.name(class_='form-control', value=each_sensor.name, **{'title':_('A common name to distinguish this sensor from others')})}}
           </div>
         </div>
+
         <div class="col-xs-12 col-sm-4 col-md-4 no-gutters">
           {% if each_sensor.is_activated -%}
             {%- set has_active_pid = [] -%}
@@ -84,11 +86,11 @@
               {%- do has_active_lcd.append(1) -%}
             {%- endfor -%}
             <div class="col-xs-6 col-sm-6 col-md-6 no-gutters">
-            {% if has_active_pid or has_active_lcd -%}
-              {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("There are currently active PID or LCD controllers that rely on this sensor to be active. If you deactivate this sensor, all active PID and LCD controllers that use it will be deactivated. Select OK to deactivate this sensor and all associated PID and LCD controllers, otherwise click Cancel to leave them active.")'})}}
-            {% else -%}
-              {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default')}}
-            {% endif -%}
+              {% if has_active_pid or has_active_lcd -%}
+                {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("There are currently active PID or LCD controllers that rely on this sensor to be active. If you deactivate this sensor, all active PID and LCD controllers that use it will be deactivated. Select OK to deactivate this sensor and all associated PID and LCD controllers, otherwise click Cancel to leave them active.")'})}}
+              {% else -%}
+                {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default')}}
+              {% endif -%}
             </div>
           {% else -%}
             <div class="col-xs-6 col-sm-6 col-md-6 no-gutters">
@@ -101,6 +103,7 @@
             </div>
           {% endif -%}
         </div>
+
         <div class="col-xs-12 col-sm-4 col-md-4 small-gutters">
           <div class="col-xs-6 col-sm-6 col-md-6 no-gutters">
             {{form_mod_sensor.modSensorSubmit(class_='form-control btn btn-default')}}
@@ -113,6 +116,7 @@
             {% endif -%}
           </div>
         </div>
+
         <div class="col-xs-12 col-sm-4 col-md-4 small-gutters">
           <div class="col-xs-6 col-sm-6 col-md-6 no-gutters">
             {{form_mod_sensor.orderSensorUp(class_='form-control btn btn-default')}}
@@ -121,6 +125,7 @@
             {{form_mod_sensor.orderSensorDown(class_='form-control btn btn-default')}}
           </div>
         </div>
+
       </div>
 
       <div class="collapse" id="collapseContainer{{each_sensor.id}}">
