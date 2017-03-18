@@ -1,13 +1,8 @@
-## 5.0.3 (2017-03-17)
+## 5.0.0 (2017-03-18)
 
 ### Bugfixes
 
   - Fixes inability of relay conditionals to operate
-
-## 5.0.0 (2017-03-17)
-
-### Bugfixes
-
   - Fix issue with user creation/deletion in web UI
   - Fix influxdb being unreachable directly after package install
 
