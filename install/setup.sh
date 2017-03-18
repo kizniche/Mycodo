@@ -73,8 +73,11 @@ rm -rf ./wiringPi
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-influxdb
 
 printf "\n#### Creating InfluxDB database and user\n"
-influx -execute "CREATE DATABASE mycodo_db"
-influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
+# Attempt to connect to influxdb 5 times, sleeping 60 seconds every fail
+for i in {1..5}; do
+influx -execute "CREATE DATABASE mycodo_db" &&
+influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'" &&
+break || sleep 60; done
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-apache2
 
