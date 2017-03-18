@@ -1,14 +1,20 @@
+## 5.0.5 (2017-03-18)
+
+### Bugfixes
+
+  - Fix issue with timers not actuating relays ([#213](https://github.com/kizniche/mycodo/issues/213))
+
 ## 5.0.4 (2017-03-18)
 
 ### Bugfixes
 
-  - Fix issues with saving LCD options
+  - Fix issues with saving LCD options ([#211](https://github.com/kizniche/mycodo/issues/211))
 
 ## 5.0.0 (2017-03-18)
 
 ### Bugfixes
 
-  - Fixes inability of relay conditionals to operate
+  - Fixes inability of relay conditionals to operate ([#209](https://github.com/kizniche/mycodo/issues/209), [#210](https://github.com/kizniche/mycodo/issues/210))
   - Fix issue with user creation/deletion in web UI
   - Fix influxdb being unreachable directly after package install
 

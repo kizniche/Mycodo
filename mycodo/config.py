@@ -8,7 +8,7 @@ import collections
 
 from datetime import timedelta
 
-MYCODO_VERSION = '5.0.4'
+MYCODO_VERSION = '5.0.5'
 ALEMBIC_VERSION = ''
 
 LANGUAGES = {
