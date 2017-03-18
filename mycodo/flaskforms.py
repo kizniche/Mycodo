@@ -324,7 +324,7 @@ class GraphOrder(FlaskForm):
 #
 
 class LCDAdd(FlaskForm):
-    numberLCDs = IntegerField(
+    quantity = IntegerField(
         lazy_gettext('Quantity'),
         render_kw={"placeholder": lazy_gettext("Quantity")},
         validators=[validators.NumberRange(
@@ -332,7 +332,7 @@ class LCDAdd(FlaskForm):
             max=20
         )]
     )
-    lcdAddSubmit = SubmitField(lazy_gettext('Add LCDs'))
+    add = SubmitField(lazy_gettext('Add LCDs'))
 
 
 class LCDMod(FlaskForm):
@@ -392,32 +392,12 @@ class LCDMod(FlaskForm):
         lazy_gettext('Line 4 Sensor ID')
     )
     save = SubmitField(lazy_gettext('Save'))
-
-
-class LCDDel(FlaskForm):
-    lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
     delete = SubmitField(lazy_gettext('Delete'))
-
-
-class LCDActivate(FlaskForm):
-    lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
     activate = SubmitField(lazy_gettext('Activate'))
-
-
-class LCDDeactivate(FlaskForm):
-    lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
     deactivate = SubmitField(lazy_gettext('Deactivate'))
-
-
-class LCDOrder(FlaskForm):
-    lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
     reorder_up = SubmitField(lazy_gettext('Up'))
     reorder_down = SubmitField(lazy_gettext('Down'))
-
-
-class LCDResetFlashing(FlaskForm):
-    lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
-    Submit = SubmitField(lazy_gettext('Reset Flashing'))
+    reset_flashing = SubmitField(lazy_gettext('Reset Flashing'))
 
 
 #

@@ -1,3 +1,9 @@
+## 5.0.4 (2017-03-18)
+
+### Bugfixes
+
+  - Fix issues with saving LCD options
+
 ## 5.0.0 (2017-03-18)
 
 ### Bugfixes

@@ -1004,27 +1004,23 @@ def graph_reorder(graph_id, display_order, direction):
 # LCD Manipulation
 #
 
-def lcd_add(form_add_lcd):
+def lcd_add(quantity):
     action = '{action} {controller}'.format(
         action=gettext("Add"),
         controller=gettext("LCD"))
     error = []
-
-    if form_add_lcd.validate():
-        for _ in range(0, form_add_lcd.numberLCDs.data):
-            try:
-                new_lcd = LCD().save()
-                display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
-                DisplayOrder.query.first().lcd = add_display_order(
-                    display_order, new_lcd.id)
-                db.session.commit()
-            except sqlalchemy.exc.OperationalError as except_msg:
-                error.append(except_msg)
-            except sqlalchemy.exc.IntegrityError as except_msg:
-                error.append(except_msg)
-            flash_success_errors(error, action, url_for('page_routes.page_lcd'))
-    else:
-        flash_form_errors(form_add_lcd)
+    for _ in range(0, quantity):
+        try:
+            new_lcd = LCD().save()
+            display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
+            DisplayOrder.query.first().lcd = add_display_order(
+                display_order, new_lcd.id)
+            db.session.commit()
+        except sqlalchemy.exc.OperationalError as except_msg:
+            error.append(except_msg)
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            error.append(except_msg)
+        flash_success_errors(error, action, url_for('page_routes.page_lcd'))
 
 
 def lcd_mod(form_mod_lcd):
@@ -1122,65 +1118,58 @@ def lcd_reorder(lcd_id, display_order, direction):
     flash_success_errors(error, action, url_for('page_routes.page_lcd'))
 
 
-def lcd_activate(form_activate_lcd):
+def lcd_activate(lcd_id):
     action = '{action} {controller}'.format(
         action=gettext("Activate"),
         controller=gettext("LCD"))
     error = []
 
-    if form_activate_lcd.validate():
-        try:
-            # All sensors the LCD depends on must be active to activate the LCD
-            lcd = LCD.query.filter(
-                LCD.id == form_activate_lcd.lcd_id.data).first()
-            if lcd.y_lines == 2:
-                lcd_lines = [lcd.line_1_sensor_id,
-                             lcd.line_2_sensor_id]
-            else:
-                lcd_lines = [lcd.line_1_sensor_id,
-                             lcd.line_2_sensor_id,
-                             lcd.line_3_sensor_id,
-                             lcd.line_4_sensor_id]
-            # Filter only sensors that will be displayed
-            sensor = Sensor.query.filter(
-                Sensor.id.in_(lcd_lines)).all()
-            # Check if any sensors are not active
-            for each_sensor in sensor:
-                if not each_sensor.is_activated:
-                    flash(gettext(
-                        "Cannot activate controller if the associated "
-                        "sensor controller is inactive"), "error")
-                    return redirect('/lcd')
-            controller_activate_deactivate(
-                'activate',
-                'LCD',
-                form_activate_lcd.lcd_id.data)
-        except Exception as except_msg:
-            error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_lcd'))
-    else:
-        flash_form_errors(form_activate_lcd)
-
-
-def lcd_deactivate(form_deactivate_lcd):
-    if form_deactivate_lcd.validate():
+    try:
+        # All sensors the LCD depends on must be active to activate the LCD
+        lcd = LCD.query.filter(
+            LCD.id == lcd_id).first()
+        if lcd.y_lines == 2:
+            lcd_lines = [lcd.line_1_sensor_id,
+                         lcd.line_2_sensor_id]
+        else:
+            lcd_lines = [lcd.line_1_sensor_id,
+                         lcd.line_2_sensor_id,
+                         lcd.line_3_sensor_id,
+                         lcd.line_4_sensor_id]
+        # Filter only sensors that will be displayed
+        sensor = Sensor.query.filter(
+            Sensor.id.in_(lcd_lines)).all()
+        # Check if any sensors are not active
+        for each_sensor in sensor:
+            if not each_sensor.is_activated:
+                flash(gettext(
+                    "Cannot activate controller if the associated "
+                    "sensor controller is inactive"), "error")
+                return redirect('/lcd')
         controller_activate_deactivate(
-            'deactivate',
+            'activate',
             'LCD',
-            form_deactivate_lcd.lcd_id.data)
-    else:
-        flash_form_errors(form_deactivate_lcd)
+            lcd_id)
+    except Exception as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('page_routes.page_lcd'))
 
 
-def lcd_reset_flashing(form_reset_flashing_lcd):
-    if form_reset_flashing_lcd.validate():
-        control = DaemonControl()
-        return_value, return_msg = control.flash_lcd(
-            form_reset_flashing_lcd.lcd_id.data, 0)
-        if not return_value:
-            flash(gettext("Error: %(msg)s", msg=return_msg), "error")
+def lcd_deactivate(lcd_id):
+    controller_activate_deactivate(
+        'deactivate',
+        'LCD',
+        lcd_id)
+
+
+def lcd_reset_flashing(lcd_id):
+    control = DaemonControl()
+    return_value, return_msg = control.flash_lcd(
+        lcd_id, 0)
+    if return_value:
+        flash(gettext("Success: %(msg)s", msg=return_msg), "success")
     else:
-        flash_form_errors(form_reset_flashing_lcd)
+        flash(gettext("Error: %(msg)s", msg=return_msg), "error")
 
 
 #

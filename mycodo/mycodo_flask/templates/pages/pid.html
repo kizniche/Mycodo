@@ -60,7 +60,7 @@
                       {% elif each_pid.is_held -%}hold-background
                       {% else -%}inactive-background
                       {% endif %} row small-gutters" style="border-bottom: 2px solid #ddd; padding: 0.5em;">
-            <div class="col-xs-12">
+            <div class="col-xs-12 small-gutters">
               <div class="col-xs-6 col-md-6 no-gutters">
                 {{form_mod_pid.name(class_='form-control', value=each_pid.name, **{'title':_('Name for this PID controller.')})}}
               </div>
@@ -74,23 +74,27 @@
                 " type="text">
               </div>
             </div>
-            <div class="col-xs-12 col-sm-6 no-gutters">
+            <div class="col-xs-12 col-sm-6 small-gutters">
               {%- if each_pid.is_activated %}
-                {{form_mod_pid.deactivate(class_='form-control btn btn-default')}}
+                <div class="col-xs-12 no-gutters">
+                  {{form_mod_pid.deactivate(class_='form-control btn btn-default')}}
+                </div>
                 {%- if each_pid.is_paused or each_pid.is_held %}
-                  {{form_mod_pid.resume(class_='form-control btn btn-default')}}
+                  <div class="col-xs-12 col-sm-6 no-gutters">
+                    {{form_mod_pid.resume(class_='form-control btn btn-default')}}
+                  </div>
                 {%- else %}
-                  <div class="row">
-                    <div class="col-xs-12 col-sm-6 no-gutters">
-                      {{form_mod_pid.pause(class_='form-control btn btn-default')}}
-                    </div>
-                    <div class="col-xs-12 col-sm-6 no-gutters">
-                      {{form_mod_pid.hold(class_='form-control btn btn-default')}}
-                    </div>
+                  <div class="col-xs-12 col-sm-6 no-gutters">
+                    {{form_mod_pid.pause(class_='form-control btn btn-default')}}
+                  </div>
+                  <div class="col-xs-12 col-sm-6 no-gutters">
+                    {{form_mod_pid.hold(class_='form-control btn btn-default')}}
                   </div>
                 {%- endif -%}
               {%- else %}
-                {{form_mod_pid.activate(class_='form-control btn btn-default')}}
+                <div class="col-xs-12 no-gutters">
+                  {{form_mod_pid.activate(class_='form-control btn btn-default')}}
+                </div>
               {%- endif -%}
             </div>
             <div class="col-xs-6 col-sm-3 small-gutters">

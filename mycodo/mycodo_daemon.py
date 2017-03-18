@@ -496,10 +496,10 @@ class DaemonController(threading.Thread):
         :type state: int
 
         """
-        if self.controller['LCD'][lcd_id].is_running():
+        try:
             return self.controller['LCD'][lcd_id].flash_lcd(state)
-        else:
-            return "Cannot flash, LCD not running"
+        except KeyError:
+            return 0, "Cannot stop flashing, LCD not running"
 
     def pid_hold(self, pid_id):
         return self.controller['PID'][pid_id].pid_hold()
