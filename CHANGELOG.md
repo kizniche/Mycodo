@@ -1,3 +1,9 @@
+## 5.0.7 (2017-03-19)
+
+### Bugfixes
+
+  - Fix pybabel reference during install/upgrade ([#212](https://github.com/kizniche/mycodo/issues/212))
+
 ## 5.0.6 (2017-03-19)
 
 ### Bugfixes

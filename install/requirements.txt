@@ -7,7 +7,7 @@ argparse
 bcrypt
 daemonize == 2.4.6
 Flask == 0.12
-Flask_Babel
+Flask_Babel == 0.11.1
 Flask_InfluxDB == 0.1
 Flask_Login == 0.4.0
 Flask_SQLAlchemy == 2.1

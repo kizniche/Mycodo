@@ -15,7 +15,7 @@ case "${1:-''}" in
     'compile-translations')
         printf "\n#### Compiling Translations\n"
         cd ${INSTALL_DIRECTORY}/Mycodo/mycodo
-        pybabel compile -d mycodo_flask/translations
+        ${INSTALL_DIRECTORY}/Mycodo/env/bin/pybabel compile -d mycodo_flask/translations
     ;;
     'generate-ssl-certs')
         printf "\n#### Generating SSL certificates at ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"

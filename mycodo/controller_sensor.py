@@ -822,7 +822,7 @@ class SensorController(threading.Thread):
                          self.cond_if_sensor_edge_detected[each_cond_id] == 'both')):
                     self.check_conditionals(each_cond_id)
 
-    def setup_sensor_conditionals(self, cond_mod='setup', cond_id=None):
+    def setup_sensor_conditionals(self, cond_mod='setup'):
         # Signal to pause the main loop and wait for verification
         self.pause_loop = True
         while not self.verify_pause_loop:

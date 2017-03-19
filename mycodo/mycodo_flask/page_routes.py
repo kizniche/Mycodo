@@ -428,7 +428,6 @@ def page_info():
     (ifconfig_output, _) = ifconfig.communicate()
     ifconfig.wait()
 
-    import os.path
     daemon_pid = None
     if os.path.exists(DAEMON_PID_FILE):
         with open(DAEMON_PID_FILE, 'r') as pid_file:
