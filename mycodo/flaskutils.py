@@ -1877,7 +1877,7 @@ def sensor_add(form_add_sensor):
                                                  'HTU21D', 'SHT1x_7x',
                                                  'SHT2x']:
                 new_sensor.device_type = 'htsensor'
-                new_sensor.measurements = 'dewpoint,humidity,temperature'
+                new_sensor.measurements = 'temperature,humidity,dewpoint'
                 if form_add_sensor.sensor.data == 'AM2315':
                     new_sensor.location = '0x5c'
                 elif form_add_sensor.sensor.data == 'HTU21D':
@@ -1901,10 +1901,10 @@ def sensor_add(form_add_sensor):
             elif form_add_sensor.sensor.data in ['BME280', 'BMP']:
                 new_sensor.device_type = 'presssensor'
                 if form_add_sensor.sensor.data == 'BME280':
-                    new_sensor.measurements = 'altitude,dewpoint,humidity,pressure,temperature'
+                    new_sensor.measurements = 'temperature,humidity,dewpoint,pressure,altitude'
                     new_sensor.location = '0x76'
                 elif form_add_sensor.sensor.data == 'BMP':
-                    new_sensor.measurements = 'altitude,pressure,temperature'
+                    new_sensor.measurements = 'temperature,pressure,altitude'
                     new_sensor.location = '0x77'
 
             # Light
