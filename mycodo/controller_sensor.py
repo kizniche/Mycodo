@@ -833,6 +833,12 @@ class SensorController(threading.Thread):
         self.cond_name = {}
         self.cond_is_activated = {}
         self.cond_if_sensor_period = {}
+        self.cond_if_sensor_measurement = {}
+        self.cond_if_sensor_edge_select = {}
+        self.cond_if_sensor_edge_detected = {}
+        self.cond_if_sensor_gpio_state = {}
+        self.cond_if_sensor_direction = {}
+        self.cond_if_sensor_setpoint = {}
 
         sensor_conditional = db_retrieve_table_daemon(
             Conditional)
@@ -857,6 +863,12 @@ class SensorController(threading.Thread):
             self.cond_id[each_cond.id] = each_cond.id
             self.cond_is_activated[each_cond.id] = each_cond.is_activated
             self.cond_if_sensor_period[each_cond.id] = each_cond.if_sensor_period
+            self.cond_if_sensor_measurement[each_cond.id] = each_cond.if_sensor_measurement
+            self.cond_if_sensor_edge_select[each_cond.id] = each_cond.if_sensor_edge_select
+            self.cond_if_sensor_edge_detected[each_cond.id] = each_cond.if_sensor_edge_detected
+            self.cond_if_sensor_gpio_state[each_cond.id] = each_cond.if_sensor_gpio_state
+            self.cond_if_sensor_direction[each_cond.id] = each_cond.if_sensor_direction
+            self.cond_if_sensor_setpoint[each_cond.id] = each_cond.if_sensor_setpoint
             self.cond_timer[each_cond.id] = time.time() + each_cond.if_sensor_period
             self.smtp_wait_timer[each_cond.id] = time.time() + 3600
 
