@@ -1,3 +1,10 @@
+## 5.0.6 (2017-03-19)
+
+### Bugfixes
+
+  -  Fix edge detection conditional statements ([#214](https://github.com/kizniche/mycodo/issues/214))
+  -  Fix identification and conversion of dewpoint on live page ([#215](https://github.com/kizniche/mycodo/issues/215))
+
 ## 5.0.5 (2017-03-18)
 
 ### Bugfixes
