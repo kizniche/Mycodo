@@ -76,18 +76,18 @@
             </div>
             <div class="col-xs-12 col-sm-6 small-gutters">
               {%- if each_pid.is_activated %}
-                <div class="col-xs-12 no-gutters">
+                <div class="col-xs-12 col-sm-12 col-md-6 no-gutters">
                   {{form_mod_pid.deactivate(class_='form-control btn btn-default')}}
                 </div>
                 {%- if each_pid.is_paused or each_pid.is_held %}
-                  <div class="col-xs-12 col-sm-6 no-gutters">
+                  <div class="col-xs-6 col-sm-6 col-md-3 no-gutters">
                     {{form_mod_pid.resume(class_='form-control btn btn-default')}}
                   </div>
                 {%- else %}
-                  <div class="col-xs-12 col-sm-6 no-gutters">
+                  <div class="col-xs-6 col-sm-6 col-md-3 no-gutters">
                     {{form_mod_pid.pause(class_='form-control btn btn-default')}}
                   </div>
-                  <div class="col-xs-12 col-sm-6 no-gutters">
+                  <div class="col-xs-6 col-sm-6 col-md-3 no-gutters">
                     {{form_mod_pid.hold(class_='form-control btn btn-default')}}
                   </div>
                 {%- endif -%}

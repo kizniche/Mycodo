@@ -5,6 +5,7 @@ import flask_login
 import glob
 import logging
 import os
+import resource
 import subprocess
 import sys
 import time
@@ -447,7 +448,7 @@ def page_info():
     daemon_up = daemon_active()
     if daemon_up:
         control = DaemonControl()
-        ram_use = control.ram_use()
+        ram_use_daemon = control.ram_use()
         virtualenv_daemon = control.is_in_virtualenv()
 
         pstree = subprocess.Popen(
@@ -460,7 +461,10 @@ def page_info():
         (top_output, _) = top.communicate()
         top.wait()
     else:
-        ram_use = 0
+        ram_use_daemon = 0
+
+    ram_use_flask = resource.getrusage(
+        resource.RUSAGE_SELF).ru_maxrss / float(1000)
 
     return render_template('pages/info.html',
                            daemon_pid=daemon_pid,
@@ -471,7 +475,8 @@ def page_info():
                            free=free_output,
                            ifconfig=ifconfig_output,
                            pstree=pstree_output,
-                           ram_use=ram_use,
+                           ram_use_daemon=ram_use_daemon,
+                           ram_use_flask=ram_use_flask,
                            top=top_output,
                            uname=uname_output,
                            uptime=uptime_output,

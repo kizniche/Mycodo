@@ -23,12 +23,13 @@
         {% endif %}
         {% if daemon_up %}
           <br>{{_('Daemon Process ID')}}: <span style="color: #4E9258; font-weight: bold;">{{daemon_pid}}</span>
-          <br>{{_('Daemon RAM Usage')}}: <span style="color: #4E9258; font-weight: bold;">{{ram_use}} MB</span>
+          <br>{{_('Daemon RAM Usage')}}: <span style="color: #4E9258; font-weight: bold;">{{ram_use_daemon}} MB</span>
           <br>{{_('Daemon Virtualenv')}}:&nbsp
             {%- if virtualenv_daemon -%}<span style="color: #4E9258; font-weight: bold;">{{_('Yes')}}</span>
             {%- else -%}<span style="color: #F70D1A; font-weight: bold;">{{_('No')}}</span>
             {%- endif -%}
         {% endif %}
+        <br>{{_('Frontend RAM Usage')}}: <span style="color: #4E9258; font-weight: bold;">{{ram_use_flask}} MB</span>
         <br>{{_('Frontend Virtualenv')}}:&nbsp
         {%- if virtualenv_flask -%}<span style="color: #4E9258; font-weight: bold;">{{_('Yes')}}</span>
         {%- else -%}<span style="color: #F70D1A; font-weight: bold;">{{_('No')}}</span>

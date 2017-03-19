@@ -104,8 +104,8 @@ class PIDController(threading.Thread):
         self.control = DaemonControl()
 
         self.control_variable = 0
-        self.Derivator = 0
-        self.Integrator = 0
+        self.derivator = 0
+        self.integrator = 0
         self.error = 0.0
         self.P_value = None
         self.I_value = None
@@ -182,10 +182,11 @@ class PIDController(threading.Thread):
                         self.manipulate_relays()
                 t.sleep(0.1)
 
-            if self.raise_relay_id:
-                self.control.relay_off(self.raise_relay_id, trigger_conditionals=False)
-            if self.lower_relay_id:
-                self.control.relay_off(self.lower_relay_id, trigger_conditionals=False)
+            # Turn off relay used in PID when the controller is deactivated
+            if self.raise_relay_id and self.direction in ['raise', 'both']:
+                self.control.relay_off(self.raise_relay_id, trigger_conditionals=True)
+            if self.lower_relay_id and self.direction in ['lower', 'both']:
+                self.control.relay_off(self.lower_relay_id, trigger_conditionals=True)
 
             self.running = False
             self.logger.info("Deactivated in {:.1f} ms".format(
@@ -214,8 +215,8 @@ class PIDController(threading.Thread):
         self.Kp = pid.p
         self.Ki = pid.i
         self.Kd = pid.d
-        self.Integrator_min = pid.integrator_min
-        self.Integrator_max = pid.integrator_max
+        self.integrator_min = pid.integrator_min
+        self.integrator_max = pid.integrator_max
         self.measure_interval = pid.period
         self.max_measure_age = pid.max_measure_age
         self.default_set_point = pid.setpoint
@@ -244,26 +245,26 @@ class PIDController(threading.Thread):
         self.P_value = self.Kp * self.error
 
         # Calculate I-value
-        self.Integrator += self.error
+        self.integrator += self.error
 
-        # First method for managing Integrator
-        if self.Integrator > self.Integrator_max:
-            self.Integrator = self.Integrator_max
-        elif self.Integrator < self.Integrator_min:
-            self.Integrator = self.Integrator_min
+        # First method for managing integrator
+        if self.integrator > self.integrator_max:
+            self.integrator = self.integrator_max
+        elif self.integrator < self.integrator_min:
+            self.integrator = self.integrator_min
 
-        # Second method for regulating Integrator
+        # Second method for regulating integrator
         # if self.measure_interval is not None:
-        #     if self.Integrator * self.Ki > self.measure_interval:
-        #         self.Integrator = self.measure_interval / self.Ki
-        #     elif self.Integrator * self.Ki < -self.measure_interval:
-        #         self.Integrator = -self.measure_interval / self.Ki
+        #     if self.integrator * self.Ki > self.measure_interval:
+        #         self.integrator = self.measure_interval / self.Ki
+        #     elif self.integrator * self.Ki < -self.measure_interval:
+        #         self.integrator = -self.measure_interval / self.Ki
 
-        self.I_value = self.Integrator * self.Ki
+        self.I_value = self.integrator * self.Ki
 
         # Calculate D-value
-        self.D_value = self.Kd * (self.error - self.Derivator)
-        self.Derivator = self.error
+        self.D_value = self.Kd * (self.error - self.derivator)
+        self.derivator = self.error
 
         # Produce output form P, I, and D values
         pid_value = self.P_value + self.I_value + self.D_value
@@ -585,16 +586,16 @@ class PIDController(threading.Thread):
     def set_setpoint(self, set_point):
         """ Initilize the setpoint of PID """
         self.set_point = set_point
-        self.Integrator = 0
-        self.Derivator = 0
+        self.integrator = 0
+        self.derivator = 0
 
-    def set_integrator(self, Integrator):
-        """ Set the Integrator of the controller """
-        self.Integrator = Integrator
+    def set_integrator(self, integrator):
+        """ Set the integrator of the controller """
+        self.integrator = integrator
 
-    def set_derivator(self, Derivator):
-        """ Set the Derivator of the controller """
-        self.Derivator = Derivator
+    def set_derivator(self, derivator):
+        """ Set the derivator of the controller """
+        self.derivator = derivator
 
     def set_kp(self, P):
         """ Set Kp gain of the controller """
@@ -615,10 +616,10 @@ class PIDController(threading.Thread):
         return self.error
 
     def get_integrator(self):
-        return self.Integrator
+        return self.integrator
 
     def get_derivator(self):
-        return self.Derivator
+        return self.derivator
 
     def is_running(self):
         return self.running
