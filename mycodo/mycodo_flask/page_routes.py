@@ -986,7 +986,6 @@ def dict_custom_colors(graph):
         index = 0
         index_sum = 0
         total = []
-        color = None
         if each_graph.sensor_ids_measurements:
             for each_set in each_graph.sensor_ids_measurements.split(';'):
                 sensor_unique_id = each_set.split(',')[0].split(' ')[0]
@@ -997,11 +996,11 @@ def dict_custom_colors(graph):
                     color = colors[index]
                 else:
                     color = '#FF00AA'
-                total.append([
-                    sensor_unique_id,
-                    sensor.name,
-                    sensor_measure,
-                    color])
+                total.append({
+                    'unique_id': sensor_unique_id,
+                    'name': sensor.name,
+                    'measure': sensor_measure,
+                    'color': color})
                 index += 1
             index_sum += index
 
@@ -1015,11 +1014,11 @@ def dict_custom_colors(graph):
                     color = colors[index_sum+index]
                 else:
                     color = '#FF00AA'
-                total.append([
-                    relay_unique_id,
-                    relay.name,
-                    'relay duration',
-                    color])
+                total.append({
+                    'unique_id': relay_unique_id,
+                    'name': relay.name,
+                    'measure': 'relay duration',
+                    'color': color})
                 index += 1
             index_sum += index
 
@@ -1034,11 +1033,11 @@ def dict_custom_colors(graph):
                 else:
                     color = '#FF00AA'
 
-                total.append([
-                    pid_unique_id,
-                    pid.name,
-                    'PID setpoint',
-                    color])
+                total.append({
+                    'unique_id': pid_unique_id,
+                    'name': pid.name,
+                    'measure': 'PID setpoint',
+                    'color': color})
                 index += 1
 
         color_count.update({each_graph.id: total})

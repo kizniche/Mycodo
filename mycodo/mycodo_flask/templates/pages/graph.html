@@ -164,8 +164,8 @@
           <div class="form-check">
             {% set index = '{0:0>2}'.format(n) %}
             <label class="form-check-label" for="color_number{{index}}">
-              <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{dict_colors[each_graph.id][n][3]}}">
-              {{dict_colors[each_graph.id][n][1]}} ({{dict_colors[each_graph.id][n][2]}})
+              <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{dict_colors[each_graph.id][n]['color']}}">
+              {{dict_colors[each_graph.id][n]['name']}} ({{dict_colors[each_graph.id][n]['measure']}})
             </label>
           </div>
           {% endfor %}
