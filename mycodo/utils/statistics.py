@@ -276,7 +276,7 @@ def send_anonymous_stats(start_time):
                        get_count(timers.filter(
                            Timer.is_activated == True)))
 
-        add_update_csv(STATS_CSV, 'country', geocoder.ip('me').country)
+        add_update_csv(STATS_CSV, 'country', geocoder.ip('me').country.encode('utf-8'))
         add_update_csv(STATS_CSV, 'ram_use_mb',
                        resource.getrusage(
                            resource.RUSAGE_SELF).ru_maxrss / float(1000))

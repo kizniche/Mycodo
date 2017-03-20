@@ -37,7 +37,7 @@ runSelfUpgrade() {
     error_found
   fi
 
-  printf "\n#### Upgrade to v${UPDATE_VERSION} initiated $NOW ####\n"
+  printf "\n#### Upgrade to v${UPDATE_VERSION} initiated ${NOW} ####\n"
   printf "\n#### Beginning Upgrade: Stage 1 of 2 ####\n"
 
   printf "Stopping the Mycodo daemon..."
@@ -207,6 +207,7 @@ if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_post.sh ; then
 fi
 printf "Done.\n"
 
+date
 printf "\nUpgrade completed successfully without errors.\n"
 echo '0' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
 rm \$0
