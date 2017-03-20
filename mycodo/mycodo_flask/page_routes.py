@@ -986,51 +986,59 @@ def dict_custom_colors(graph):
         index = 0
         index_sum = 0
         total = []
+        color = None
         if each_graph.sensor_ids_measurements:
             for each_set in each_graph.sensor_ids_measurements.split(';'):
+                sensor_unique_id = each_set.split(',')[0].split(' ')[0]
+                sensor_measure = each_set.split(',')[1]
+                sensor = Sensor.query.filter_by(unique_id=sensor_unique_id).first()
                 if (index < len(each_graph.sensor_ids_measurements.split(';')) and
                         len(colors) > index):
-                    total.append([
-                        '{id} {measure}'.format(
-                            id=each_set.split(',')[0],
-                            measure=each_set.split(',')[1]),
-                        colors[index]])
+                    color = colors[index]
                 else:
-                    total.append([
-                        '{id} {measure}'.format(
-                            id=each_set.split(',')[0],
-                            measure=each_set.split(',')[1]),
-                        '#FF00AA'])
+                    color = '#FF00AA'
+                total.append([
+                    sensor_unique_id,
+                    sensor.name,
+                    sensor_measure,
+                    color])
                 index += 1
             index_sum += index
 
         if each_graph.relay_ids:
             index = 0
             for each_set in each_graph.relay_ids.split(','):
+                relay_unique_id = each_set.split(',')[0]
+                relay = Relay.query.filter_by(unique_id=relay_unique_id).first()
                 if (index < len(each_graph.relay_ids.split(',')) and
                         len(colors) > index_sum + index):
-                    total.append([
-                        '{id} Relay'.format(id=each_set.split(',')[0]),
-                        colors[index_sum+index]])
+                    color = colors[index_sum+index]
                 else:
-                    total.append([
-                        '{id} Relay'.format(id=each_set.split(',')[0]),
-                        '#FF00AA'])
+                    color = '#FF00AA'
+                total.append([
+                    relay_unique_id,
+                    relay.name,
+                    'relay duration',
+                    color])
                 index += 1
             index_sum += index
 
         if each_graph.pid_ids:
             index = 0
             for each_set in each_graph.pid_ids.split(','):
+                pid_unique_id = each_set.split(',')[0]
+                pid = PID.query.filter_by(unique_id=pid_unique_id).first()
                 if (index < len(each_graph.pid_ids.split(',')) and
                         len(colors) > index_sum + index):
-                    total.append([
-                        '{id} PID Setpoint'.format(id=each_set.split(',')[0]),
-                        colors[index_sum+index]])
+                    color = colors[index_sum+index]
                 else:
-                    total.append([
-                        '{id} PID Setpoint'.format(id=each_set.split(',')[0]),
-                        '#FF00AA'])
+                    color = '#FF00AA'
+
+                total.append([
+                    pid_unique_id,
+                    pid.name,
+                    'PID setpoint',
+                    color])
                 index += 1
 
         color_count.update({each_graph.id: total})

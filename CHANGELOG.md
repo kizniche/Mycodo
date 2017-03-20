@@ -2,6 +2,7 @@
 
 ### Bugfixes
 
+  - Display the device name next to each custom graph color
   - Fix encoding error when collecting anonymous statistics ([#216](https://github.com/kizniche/mycodo/issues/216))
 
 ## 5.0.7 (2017-03-19)
