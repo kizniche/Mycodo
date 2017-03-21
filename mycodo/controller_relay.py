@@ -432,7 +432,8 @@ class RelayController(threading.Thread):
             self.relay_last_duration[each_relay.id] = 0
             self.relay_on_duration[each_relay.id] = False
             self.relay_time_turned_on[each_relay.id] = None
-            self.setup_pin(each_relay.id, each_relay.pin, each_relay.trigger)
+            if self.relay_pin[each_relay.id]:
+                self.setup_pin(each_relay.id, each_relay.pin, each_relay.trigger)
             self.logger.debug("{id} ({name}) Initialized".format(
                 id=each_relay.id, name=each_relay.name))
 

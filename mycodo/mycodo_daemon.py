@@ -273,6 +273,7 @@ class DaemonController(threading.Thread):
         threading.Thread.__init__(self)
 
         self.startup_timer = timeit.default_timer()
+        self.daemon_startup_time = None
         self.logger = logger
         self.logger.info("Mycodo daemon v{ver} starting".format(ver=MYCODO_VERSION))
         self.daemon_run = True
@@ -302,14 +303,16 @@ class DaemonController(threading.Thread):
         self.opt_out_statistics = None
         self.refresh_daemon_misc_settings()
 
-    def run(self):
-        if self.opt_out_statistics:
-            self.logger.info("Anonymous statistics disabled")
-        else:
-            self.logger.info("Anonymous statistics enabled")
-        self.start_all_controllers()
-        self.startup_stats()
+        state = 'disabled' if self.opt_out_statistics else 'enabled'
+        self.logger.info("Anonymous statistics {state}".format(state=state))
 
+    def run(self):
+        self.start_all_controllers()
+        self.daemon_startup_time = timeit.default_timer() - self.startup_timer
+        self.logger.info("Mycodo daemon v{ver} started in {time:.3f}"
+                         " seconds".format(ver=MYCODO_VERSION,
+                                           time=self.daemon_startup_time))
+        self.startup_stats()
         try:
             # loop until daemon is instructed to shut down
             while self.daemon_run:
@@ -634,7 +637,7 @@ class DaemonController(threading.Thread):
                     err=except_msg))
 
     def startup_stats(self):
-        """Initial statistics collection and transmssion at startup"""
+        """Ensure existence of statistics file and save daemon startup time"""
         try:
             # if statistics file doesn't exist, create it
             if not os.path.isfile(STATS_CSV):
@@ -642,13 +645,8 @@ class DaemonController(threading.Thread):
                     "Statistics file doesn't exist, creating {file}".format(
                         file=STATS_CSV))
                 recreate_stat_file()
-
-            daemon_startup_time = timeit.default_timer()-self.startup_timer
-            self.logger.info("Mycodo daemon v{ver} started in {time:.3f}"
-                             " seconds".format(ver=MYCODO_VERSION,
-                                               time=daemon_startup_time))
             add_update_csv(STATS_CSV, 'daemon_startup_seconds',
-                           daemon_startup_time)
+                           self.daemon_startup_time)
         except Exception as msg:
             self.logger.exception(
                 "Statistics initialization Error: {err}".format(err=msg))

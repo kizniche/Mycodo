@@ -315,7 +315,7 @@ def page_graph():
         form_mod_graph.sensorIDs.choices.append((key, value))
 
     # Generate dictionary of custom colors for each graph
-    dict_colors = dict_custom_colors(graph)
+    dict_colors = dict_custom_colors()
 
     # Detect which form on the page was submitted
     if request.method == 'POST':
@@ -946,12 +946,11 @@ def page_usage_reports():
                            reports=reports)
 
 
-def dict_custom_colors(graph):
+def dict_custom_colors():
     """
     Generate lists of custom colors from CSV strings saved in the database.
     If custom colors aren't already saved, fill in with a default palette.
 
-    :param graph: graph SQL object
     :return: dictionary of graph_ids and lists of custom colors
     """
     # Count how many lines will need a custom color input
@@ -968,6 +967,8 @@ def dict_custom_colors(graph):
         ]
 
     color_count = OrderedDict()
+
+    graph = Graph.query.all()
     for each_graph in graph:
         # Get current saved colors
         if each_graph.custom_colors:  # Split into list
@@ -1032,7 +1033,6 @@ def dict_custom_colors(graph):
                     color = colors[index_sum+index]
                 else:
                     color = '#FF00AA'
-
                 total.append({
                     'unique_id': pid_unique_id,
                     'name': pid.name,

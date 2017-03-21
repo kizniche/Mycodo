@@ -168,15 +168,26 @@ class DHT22Sensor(AbstractSensor):
         :returns: None on success or 1 on error
         """
         try:
-            # Try twice to get measurement before failing.
-            # This prevents a bug where the first measurement fails if
-            # the sensor has just been powered for the first time.
-            # This is here mainly to keep the logs clean.
+            # Try twice to get measurement. This prevents an anomaly where
+            # the first measurement fails if the sensor has just been powered
+            # for the first time.
             for _ in range(2):
                 self.get_measurement()
-                if self._humidity != 0 or self._temperature != 0:
+                if self._humidity or self._temperature:
                     return  # success - no errors
                 time.sleep(2)
+
+            # Measurement failure, power cycle the sensor (if enabled)
+            # Then try two more times to get a measurement
+            if self.power_relay_id is not None:
+                self.stop_sensor()
+                time.sleep(2)
+                self.start_sensor()
+                for _ in range(2):
+                    self.get_measurement()
+                    if self._humidity or self._temperature:
+                        return  # success - no errors
+                    time.sleep(2)
 
             self.logger.debug("Could not acquire a measurement")
         except Exception as e:
