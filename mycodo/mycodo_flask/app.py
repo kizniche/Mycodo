@@ -25,6 +25,7 @@ from werkzeug.contrib.profiler import (
 )
 
 from mycodo.databases.models import populate_db
+from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Misc
 from mycodo.databases.models import User
 from mycodo.config import (
@@ -108,6 +109,11 @@ def register_extensions(app):
         misc = Misc.query.first()
         if misc and misc.force_https:
             SSLify(app)
+
+        # If row with blank version_num exists, delete it
+        alembic = AlembicVersion.query.first()
+        if alembic and alembic.version_num == '':
+            alembic.delete()
 
 
 def register_blueprints(_app):

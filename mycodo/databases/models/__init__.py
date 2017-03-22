@@ -107,8 +107,6 @@ def populate_db():
             # Create new roles
             Role(**role_cfg).save()
 
-    if not AlembicVersion.query.count():
-        AlembicVersion().save()
     if not DisplayOrder.query.count():
         DisplayOrder(id=1).save()
     if not Misc.query.count():

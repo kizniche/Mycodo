@@ -235,8 +235,8 @@ def send_anonymous_stats(start_time):
         add_update_csv(STATS_CSV, 'uptime', uptime)
 
         version_num = db_retrieve_table_daemon(
-            AlembicVersion, entry='first').version_num
-        version_send = version_num if version_num else 'None'
+            AlembicVersion, entry='first')
+        version_send = version_num.version_num if version_num else 'None'
         add_update_csv(STATS_CSV, 'alembic_version', version_send)
 
         relays = db_retrieve_table_daemon(Relay)

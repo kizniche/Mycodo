@@ -2,6 +2,8 @@
 
 ### Bugfixes
 
+  - Fix reference to alembic for database upgrades and delete alembic table to prepare for first version
+  - Fix photos being taken uncontrollably when a time-lapse is active
   - Show edge measurements as vertical bars instead of lines on graphs
   - Fix default image width/height when adding cameras
   - Prevent attempting to setup a relay at startup if the GPIO pin is < 1
