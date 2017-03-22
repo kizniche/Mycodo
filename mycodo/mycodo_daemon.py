@@ -763,6 +763,7 @@ class DaemonController(threading.Thread):
                 mod_camera.timelapse_next_capture = None
                 mod_camera.timelapse_capture_number = None
                 new_session.commit()
+            self.refresh_daemon_misc_settings()
             self.logger.debug(
                 "Camera {id}: End of time-lapse.".format(id=camera.id))
         elif ((camera.timelapse_started and not camera.timelapse_paused) and
@@ -780,6 +781,7 @@ class DaemonController(threading.Thread):
                 mod_camera.timelapse_next_capture = next_capture
                 mod_camera.timelapse_capture_number = capture_number
                 new_session.commit()
+            self.refresh_daemon_misc_settings()
             self.logger.debug(
                 "Camera {id}: Capturing time-lapse image".format(id=camera.id))
             # Capture image
