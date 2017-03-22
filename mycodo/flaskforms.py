@@ -893,7 +893,8 @@ class SettingsGeneral(FlaskForm):
     forceHTTPS = BooleanField(lazy_gettext('Force HTTPS'))
     hideAlertSuccess = BooleanField(lazy_gettext('Hide success messages'))
     hideAlertInfo = BooleanField(lazy_gettext('Hide info messages'))
-
+    hideAlertWarning = BooleanField(lazy_gettext('Hide warning messages'))
+    hide_tooltips = BooleanField(lazy_gettext('Hide Form Tooltips'))
     relayStatsVolts = IntegerField(lazy_gettext('Voltage'))
     relayStatsCost = DecimalField(lazy_gettext('Cost per kWh'))
     relayStatsCurrency = StringField(lazy_gettext('Currency Unit'))
@@ -908,7 +909,6 @@ class SettingsGeneral(FlaskForm):
             max=23,
             message=lazy_gettext("Hour Options: 0-23")
         )])
-    hideAlertWarning = BooleanField(lazy_gettext('Hide warning messages'))
     stats_opt_out = BooleanField(lazy_gettext('Opt-out of statistics'))
     Submit = SubmitField(lazy_gettext('Save'))
 

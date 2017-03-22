@@ -6,12 +6,6 @@
 
 {% block head %}
 <script>
-  $(document).ready(function(){
-    $('input[title]').tooltip({placement:'top'});
-    $('.form-dropdown').dropdown();
-    $('.form-dropdown').tooltip();
-  })
-
   function gpioState() {
     var url = '/gpiostate';
     $.getJSON(url,

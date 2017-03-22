@@ -100,7 +100,8 @@ def inject_mycodo_version():
                 host=socket.gethostname(),
                 hide_alert_success=misc.hide_alert_success,
                 hide_alert_info=misc.hide_alert_info,
-                hide_alert_warning=misc.hide_alert_warning)
+                hide_alert_warning=misc.hide_alert_warning,
+                hide_tooltips=misc.hide_tooltips)
 
 
 @blueprint.route('/')

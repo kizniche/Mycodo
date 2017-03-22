@@ -68,6 +68,17 @@
       </div>
     </div>
     <div class="form-group">
+      {{form_settings_general.hide_tooltips.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      <div class="col-sm-8">
+        {%- if misc.hide_tooltips == true -%}
+          {{form_settings_general.hide_tooltips(checked=True)}}
+        {%- else -%}
+          {{form_settings_general.hide_tooltips()}}
+        {%- endif -%}
+        &nbsp;&nbsp;{{_('Hide tooltips that pop up over form inputs.')}}
+      </div>
+    </div>
+    <div class="form-group">
       {{form_settings_general.stats_opt_out.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
         {%- if misc.stats_opt_out == true -%}

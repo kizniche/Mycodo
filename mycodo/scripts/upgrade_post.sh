@@ -29,6 +29,7 @@ ln -sf ${INSTALL_DIRECTORY} /var/www/mycodo
 printf "\n#### Checking if python modules are up-to-date\n"
 pip install --upgrade -r ${INSTALL_DIRECTORY}/install/requirements.txt
 
+# Not needed here since it is done in the flask app, but done again for good measure
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-alembic
 
 printf "\n#### Removing statistics file\n"

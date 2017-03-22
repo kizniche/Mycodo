@@ -2450,6 +2450,8 @@ def settings_general_mod(form):
                 mod_misc.force_https = form.forceHTTPS.data
                 mod_misc.hide_alert_success = form.hideAlertSuccess.data
                 mod_misc.hide_alert_info = form.hideAlertInfo.data
+                mod_misc.hide_alert_warning = form.hideAlertWarning.data
+                mod_misc.hide_tooltips = form.hide_tooltips.data
                 mod_misc.relay_usage_volts = form.relayStatsVolts.data
                 mod_misc.relay_usage_cost = form.relayStatsCost.data
                 mod_misc.relay_usage_currency = form.relayStatsCurrency.data
@@ -2458,7 +2460,6 @@ def settings_general_mod(form):
                 mod_misc.relay_usage_report_span = form.relay_usage_report_span.data
                 mod_misc.relay_usage_report_day = form.relay_usage_report_day.data
                 mod_misc.relay_usage_report_hour = form.relay_usage_report_hour.data
-                mod_misc.hide_alert_warning = form.hideAlertWarning.data
                 mod_misc.stats_opt_out = form.stats_opt_out.data
                 db.session.commit()
                 control = DaemonControl()

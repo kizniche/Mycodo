@@ -1,8 +1,13 @@
 ## 5.0.8 (2017-03-21)
 
+### Features
+
+  - Add option to hide tooltips
+
 ### Bugfixes
 
-  - Fix reference to alembic for database upgrades and delete alembic table to prepare for first version
+  - Add alembic upgrade check as a part of flask app startup
+  - Fix reference to alembic for database upgrades
   - Fix photos being taken uncontrollably when a time-lapse is active
   - Show edge measurements as vertical bars instead of lines on graphs
   - Fix default image width/height when adding cameras

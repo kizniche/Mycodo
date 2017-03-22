@@ -6,6 +6,7 @@
 
 import datetime
 import os
+import subprocess
 import sys
 
 import flask_login
@@ -29,6 +30,7 @@ from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Misc
 from mycodo.databases.models import User
 from mycodo.config import (
+    ALEMBIC_VERSION,
     ProdConfig,
     LANGUAGES,
     INSTALL_DIRECTORY
@@ -103,17 +105,13 @@ def register_extensions(app):
 
     with app.app_context():
         db.create_all()
+        alembic_upgrade_db()
         populate_db()
 
         # Check user option to force all web connections to use SSL
         misc = Misc.query.first()
         if misc and misc.force_https:
             SSLify(app)
-
-        # If row with blank version_num exists, delete it
-        alembic = AlembicVersion.query.first()
-        if alembic and alembic.version_num == '':
-            alembic.delete()
 
 
 def register_blueprints(_app):
@@ -141,3 +139,24 @@ def setup_profiler(app):
     stream = MergeStream(sys.stdout, profile_log_file)
     app.wsgi_app = ProfilerMiddleware(app.wsgi_app, stream, restrictions=[30])
     return app
+
+
+def alembic_upgrade_db():
+    """Upgrade sqlite3 database with alembic"""
+    # If row with blank version_num exists, delete it
+    # Then attempt to upgrade the database
+    def upgrade_alembic():
+        command = 'cd {path}/databases && {path}/env/bin/alembic upgrade head'.format(path=INSTALL_DIRECTORY)
+        upgrade_alembic = subprocess.Popen(command,
+                                           stdout=subprocess.PIPE,
+                                           shell=True)
+        (_, _) = upgrade_alembic.communicate()
+        upgrade_alembic.wait()
+
+    alembic = AlembicVersion.query.first()
+    if alembic:
+        if alembic.version_num == '':
+            alembic.delete()
+            upgrade_alembic()
+        elif alembic.version_num != ALEMBIC_VERSION:
+            upgrade_alembic()

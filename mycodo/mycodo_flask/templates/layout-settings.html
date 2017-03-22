@@ -4,20 +4,13 @@
 {% block head %}
   <link href="/static/css/dashboard.css" rel="stylesheet">
   <script>
-    $(document).ready(function(){
-      $('input[title]').tooltip({placement:'top'});
-    });
-    $(document).ready(function(){
-      $('select[title]').tooltip({placement:'top'});
-      $('.form-dropdown').dropdown();
-      $('.form-dropdown').tooltip();
-    })
     $(document).ready(function() {
       $('[data-toggle=offcanvas]').click(function() {
         $('.row-offcanvas').toggleClass('active');
       });
     });
   </script>
+
 {% endblock %} 
 
 {% block body %}

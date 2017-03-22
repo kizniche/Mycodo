@@ -67,6 +67,20 @@
   }
   initiate_daemon_status();
   </script>
+  {% if not hide_tooltips %}
+  <script>
+    $(document).ready(function(){
+      $('input[title]').tooltip({placement:'top'});
+      $('.form-dropdown').dropdown();
+      $('.form-dropdown').tooltip();
+    })
+    $(document).ready(function(){
+      $('select[title]').tooltip({placement:'top'});
+      $('.form-dropdown').dropdown();
+      $('.form-dropdown').tooltip();
+    })
+  </script>
+  {% endif %}
   {% block head %}{% endblock %}
   </head>
   <body>

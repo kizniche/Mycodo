@@ -4,15 +4,7 @@
 
 {% block title %} - {{_('Sensors')}}{% endblock %}
 
-{% block head %}
-  <script>
-    $(document).ready(function(){
-      $('input[title]').tooltip({placement:'top'});
-      $('.form-dropdown').dropdown();
-      $('.form-dropdown').tooltip();
-    })
-  </script>
-{% endblock %}
+{% block head %}{% endblock %}
 
 {%- block body %}
   <!-- Route: /sensor -->
