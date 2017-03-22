@@ -1,3 +1,9 @@
+## 5.0.11 (2017-03-22)
+
+### Bugfixes
+
+  - Fix alembic database upgrade error (hopefully)
+
 ## 5.0.10 (2017-03-22)
 
 ### Bugfixes
