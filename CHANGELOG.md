@@ -2,6 +2,7 @@
 
 ### Bugfixes
 
+  - Fix creation of alembic version number in database of new install
   - Add suffixes to distinguish Object from Die temperatures of TMP006 sensor on Live page
   - Fix reference to pybabel in virtualenv
 

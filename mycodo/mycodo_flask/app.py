@@ -6,7 +6,6 @@
 
 import datetime
 import os
-import subprocess
 import sys
 
 import flask_login
@@ -25,12 +24,11 @@ from werkzeug.contrib.profiler import (
     MergeStream
 )
 
+from mycodo.databases.models import alembic_create_upgrade_db
 from mycodo.databases.models import populate_db
-from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Misc
 from mycodo.databases.models import User
 from mycodo.config import (
-    ALEMBIC_VERSION,
     ProdConfig,
     LANGUAGES,
     INSTALL_DIRECTORY
@@ -105,7 +103,7 @@ def register_extensions(app):
 
     with app.app_context():
         db.create_all()
-        alembic_upgrade_db()
+        alembic_create_upgrade_db()
         populate_db()
 
         # Check user option to force all web connections to use SSL
@@ -139,19 +137,3 @@ def setup_profiler(app):
     stream = MergeStream(sys.stdout, profile_log_file)
     app.wsgi_app = ProfilerMiddleware(app.wsgi_app, stream, restrictions=[30])
     return app
-
-
-def alembic_upgrade_db():
-    """Upgrade sqlite3 database with alembic"""
-    # If row with blank version_num exists, delete it
-    # Then attempt to upgrade the database
-    alembic = AlembicVersion.query.first()
-    if alembic:
-        if alembic.version_num == '':
-            alembic.delete()
-
-    command = '/bin/bash {path}/mycodo/scripts/upgrade_commands.sh update-alembic'.format(path=INSTALL_DIRECTORY)
-    upgrade_alembic = subprocess.Popen(
-        command, stdout=subprocess.PIPE, shell=True)
-    (_, _) = upgrade_alembic.communicate()
-    upgrade_alembic.wait()

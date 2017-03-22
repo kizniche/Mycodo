@@ -21,8 +21,11 @@
 #  Contact at kylegabriel.com
 
 import sqlalchemy
+import subprocess
 from flask import current_app
 
+from mycodo.config import ALEMBIC_VERSION
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import USER_ROLES
 from mycodo.mycodo_flask.extensions import db
 from .conditional import Conditional
@@ -43,6 +46,26 @@ from .sensor import Sensor
 from .smtp import SMTP
 from .timer import Timer
 from .user import User
+
+
+def alembic_create_upgrade_db():
+    """Upgrade sqlite3 database with alembic"""
+
+    # If row with blank version_num exists, delete it
+    # Then attempt to upgrade the database
+    alembic = AlembicVersion.query.first()
+    if alembic:
+        if alembic.version_num == '':
+            alembic.delete()
+    else:
+        if ALEMBIC_VERSION != '':
+            AlembicVersion().save()
+
+    command = '/bin/bash {path}/mycodo/scripts/upgrade_commands.sh update-alembic'.format(path=INSTALL_DIRECTORY)
+    upgrade_alembic = subprocess.Popen(
+        command, stdout=subprocess.PIPE, shell=True)
+    (_, _) = upgrade_alembic.communicate()
+    upgrade_alembic.wait()
 
 
 def insert_or_ignore(an_object, a_session):
