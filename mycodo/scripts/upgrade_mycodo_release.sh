@@ -193,6 +193,8 @@ if ! mv ${MYCODO_NEW_TMP_DIR} ${INSTALL_DIRECTORY}/Mycodo ; then
 fi
 printf "Done.\n"
 
+sleep 30
+
 if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh initialize ; then
   printf "Failed: Error while running initialization script.\n"
   revertInstall

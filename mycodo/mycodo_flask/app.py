@@ -145,18 +145,13 @@ def alembic_upgrade_db():
     """Upgrade sqlite3 database with alembic"""
     # If row with blank version_num exists, delete it
     # Then attempt to upgrade the database
-    def upgrade_alembic():
-        command = 'cd {path}/databases && {path}/env/bin/alembic upgrade head'.format(path=INSTALL_DIRECTORY)
-        upgrade_alembic = subprocess.Popen(command,
-                                           stdout=subprocess.PIPE,
-                                           shell=True)
-        (_, _) = upgrade_alembic.communicate()
-        upgrade_alembic.wait()
-
     alembic = AlembicVersion.query.first()
     if alembic:
         if alembic.version_num == '':
             alembic.delete()
-            upgrade_alembic()
-        elif alembic.version_num != ALEMBIC_VERSION:
-            upgrade_alembic()
+
+    command = '/bin/bash {path}/mycodo/scripts/upgrade_commands.sh update-alembic'.format(path=INSTALL_DIRECTORY)
+    upgrade_alembic = subprocess.Popen(
+        command, stdout=subprocess.PIPE, shell=True)
+    (_, _) = upgrade_alembic.communicate()
+    upgrade_alembic.wait()
