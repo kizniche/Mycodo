@@ -1,4 +1,10 @@
-## 5.0.8 (2017-03-21)
+## 5.0.9 (Unreleased)
+
+### Bugfixes
+
+  - Fix reference to pybabel in virtualenv
+
+## 5.0.8 (2017-03-22)
 
 ### Features
 
