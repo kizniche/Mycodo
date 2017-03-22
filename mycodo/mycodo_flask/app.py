@@ -24,7 +24,7 @@ from werkzeug.contrib.profiler import (
     MergeStream
 )
 
-from mycodo.databases.models import alembic_create_upgrade_db
+from mycodo.databases.models import alembic_upgrade_db
 from mycodo.databases.models import populate_db
 from mycodo.databases.models import Misc
 from mycodo.databases.models import User
@@ -103,8 +103,8 @@ def register_extensions(app):
 
     with app.app_context():
         db.create_all()
-        alembic_create_upgrade_db()
         populate_db()
+        alembic_upgrade_db()
 
         # Check user option to force all web connections to use SSL
         misc = Misc.query.first()

@@ -48,7 +48,7 @@ from .timer import Timer
 from .user import User
 
 
-def alembic_create_upgrade_db():
+def alembic_upgrade_db():
     """Upgrade sqlite3 database with alembic"""
 
     def upgrade_alembic():
