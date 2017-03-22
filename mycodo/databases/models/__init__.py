@@ -51,21 +51,24 @@ from .user import User
 def alembic_create_upgrade_db():
     """Upgrade sqlite3 database with alembic"""
 
+    def upgrade_alembic():
+        command = '/bin/bash {path}/mycodo/scripts/upgrade_commands.sh update-alembic'.format(path=INSTALL_DIRECTORY)
+        upgrade_alembic = subprocess.Popen(
+            command, stdout=subprocess.PIPE, shell=True)
+        (_, _) = upgrade_alembic.communicate()
+        upgrade_alembic.wait()
+
     # If row with blank version_num exists, delete it
     # Then attempt to upgrade the database
     alembic = AlembicVersion.query.first()
     if alembic:
         if alembic.version_num == '':
             alembic.delete()
-    else:
-        if ALEMBIC_VERSION != '':
-            AlembicVersion().save()
-
-    command = '/bin/bash {path}/mycodo/scripts/upgrade_commands.sh update-alembic'.format(path=INSTALL_DIRECTORY)
-    upgrade_alembic = subprocess.Popen(
-        command, stdout=subprocess.PIPE, shell=True)
-    (_, _) = upgrade_alembic.communicate()
-    upgrade_alembic.wait()
+            upgrade_alembic()
+        if alembic.version_num != ALEMBIC_VERSION:
+            upgrade_alembic()
+    elif not alembic:
+        upgrade_alembic()
 
 
 def insert_or_ignore(an_object, a_session):
@@ -130,6 +133,8 @@ def populate_db():
             # Create new roles
             Role(**role_cfg).save()
 
+    if not AlembicVersion.query.count():
+        AlembicVersion().save()
     if not DisplayOrder.query.count():
         DisplayOrder(id=1).save()
     if not Misc.query.count():
