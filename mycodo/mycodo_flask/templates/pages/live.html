@@ -109,7 +109,11 @@
           <div>
             {% for each_measure in each_sensor.measurements.split(',') %}
               {% if measurement_units[each_measure]['meas'] == 'temperature' %}
-                <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}} (<span id="{{each_sensor.unique_id}}-{{each_measure}}-value-F">0.0</span> &deg;F){% if each_measure == 'dewpoint' %} DP{% endif %}</b> | <span id="{{each_sensor.unique_id}}-{{each_measure}}-time">&lt;please wait&gt;</span><br>
+                <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}} (<span id="{{each_sensor.unique_id}}-{{each_measure}}-value-F">0.0</span> &deg;F)
+                  {%- if each_measure == 'dewpoint' %} DP
+                  {% elif each_measure == 'temperature_object' %} Obj
+                  {% elif each_measure == 'temperature_die' %} Die
+                  {%- endif -%}</b> | <span id="{{each_sensor.unique_id}}-{{each_measure}}-time">&lt;please wait&gt;</span><br>
               {% else %}
                 <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}}</b> | <span id="{{each_sensor.unique_id}}-{{each_measure}}-time">&lt;please wait&gt;</span><br>
               {% endif %}

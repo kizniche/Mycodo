@@ -2,6 +2,7 @@
 
 ### Bugfixes
 
+  - Add suffixes to distinguish Object from Die temperatures of TMP006 sensor on Live page
   - Fix reference to pybabel in virtualenv
 
 ## 5.0.8 (2017-03-22)
