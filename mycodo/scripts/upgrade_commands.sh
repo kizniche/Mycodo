@@ -89,6 +89,11 @@ case "${1:-''}" in
             printf "## Virtualenv already exists, skipping creation\n"
         fi
     ;;
+    'update-alembic')
+        printf "\n#### Upgrading database with alembic\n"
+        cd ${INSTALL_DIRECTORY}/databases
+        ${INSTALL_DIRECTORY}/Mycodo/env/bin/alembic upgrade head
+    ;;
     'update-apache2')
         printf "\n#### Installing and configuring apache2 web server\n"
         a2enmod wsgi ssl

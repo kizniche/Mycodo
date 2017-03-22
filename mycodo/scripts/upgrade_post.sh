@@ -29,9 +29,7 @@ ln -sf ${INSTALL_DIRECTORY} /var/www/mycodo
 printf "\n#### Checking if python modules are up-to-date\n"
 pip install --upgrade -r ${INSTALL_DIRECTORY}/install/requirements.txt
 
-printf "\n#### Upgrading database with alembic\n"
-cd ${INSTALL_DIRECTORY}/databases
-alembic upgrade head
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-alembic
 
 printf "\n#### Removing statistics file\n"
 rm ${INSTALL_DIRECTORY}/databases/statistics.csv
