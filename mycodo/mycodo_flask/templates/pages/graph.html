@@ -56,7 +56,7 @@
 
       <div id="container{{each_graph.id}}" style="height: {{each_graph.height}}px; width: 99%;"></div>
 
-      <div class="collapse" id="collapseContainer{{chart_number}}" style="margin: 0.5em; padding: 0.5em; border: 1px solid #ddd; border-radius: 5px; width: calc(100% - 1em)">
+      <div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
         <div class="form-inline">
           <form method="post" action="/graph">
           <input type="hidden" name="form-name" value="modGraph">
@@ -831,7 +831,15 @@
             {%- if each_measurement == each_id_and_measure.split(',')[1] -%}
               {
                 name: '{{each_sensor.name}} {{measurement_units[each_measurement]['name']}} ({{measurement_units[each_measurement]['unit']}})',
+                {% if measurement_units[each_measurement]['meas'] == 'edge' %}
+                type: 'column',
+                dataGrouping: {
+                  approximation: 'low',
+                  groupPixelWidth: 3
+                },
+                {% else %}
                 type: 'line',
+                {% endif %}
                 tooltip: {
                   {% if measurement_units[each_measurement]['meas'] == 'temperature' %}
                   pointFormatter: function () {

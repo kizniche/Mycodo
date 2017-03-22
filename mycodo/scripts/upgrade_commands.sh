@@ -103,8 +103,8 @@ case "${1:-''}" in
     'update-influxdb')
         printf "\n#### Ensuring compatible version of influxdb is installed ####\n"
         INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
-        INSTALL_FILE="influxdb_1.2.1_armhf.deb"
-        CORRECT_VERSION="1.2.1-1"
+        INSTALL_FILE="influxdb_1.2.2_armhf.deb"
+        CORRECT_VERSION="1.2.2-1"
         CURRENT_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
         if [ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]; then
             echo "Incorrect version of InfluxDB installed: v${CURRENT_VERSION}. Installing ${CORRECT_VERSION}"

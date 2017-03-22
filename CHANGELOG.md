@@ -2,10 +2,17 @@
 
 ### Bugfixes
 
-  - Prevent attempting to activate relay if the GPIO pin is < 1
+  - Show edge measurements as vertical bars instead of lines on graphs
+  - Fix default image width/height when adding cameras
+  - Prevent attempting to setup a relay at startup if the GPIO pin is < 1
   - Add coverage where DHT22 sensor could be power cycled to fix an inability to acquire measurements
   - Display the device name next to each custom graph color
   - Fix encoding error when collecting anonymous statistics ([#216](https://github.com/kizniche/mycodo/issues/216))
+
+### Miscellaneous
+
+  - Update Influxdb to version 1.2.2
+  - UI style improvements
 
 ## 5.0.7 (2017-03-19)
 
