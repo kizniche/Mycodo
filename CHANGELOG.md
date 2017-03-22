@@ -1,3 +1,9 @@
+## 5.0.10 (2017-03-22)
+
+### Bugfixes
+
+  - Fix photos being taken uncontrollably when a time-lapse is active
+
 ## 5.0.9 (2017-03-22)
 
 ### Bugfixes
