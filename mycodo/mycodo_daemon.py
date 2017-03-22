@@ -364,7 +364,7 @@ class DaemonController(threading.Thread):
             self.logger.debug("Stopping all running controllers")
             self.stop_all_controllers()
 
-        self.logger.info("Mycodo terminated in {:.3f} seconds".format(
+        self.logger.info("Mycodo terminated in {:.3f} seconds\n\n".format(
             timeit.default_timer()-self.thread_shutdown_timer))
         self.terminated = True
 

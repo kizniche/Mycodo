@@ -1,7 +1,8 @@
-## 5.0.9 (Unreleased)
+## 5.0.9 (2017-03-22)
 
 ### Bugfixes
 
+  - Update geocoder to 1.21.0 to attempt to resolve issue
   - Fix creation of alembic version number in database of new install
   - Add suffixes to distinguish Object from Die temperatures of TMP006 sensor on Live page
   - Fix reference to pybabel in virtualenv
