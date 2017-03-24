@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # coding=utf-8
 #
 # controller_lcd.py - Mycodo LCD controller that outputs measurements and other

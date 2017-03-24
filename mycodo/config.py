@@ -1,14 +1,12 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
 #  config.py - Global Mycodo configuration settings
 #
 import os
 import collections
-
 from datetime import timedelta
 
-MYCODO_VERSION = '5.0.11'
+MYCODO_VERSION = '5.0.12'
 ALEMBIC_VERSION = '059a47f950b8'
 
 LANGUAGES = {

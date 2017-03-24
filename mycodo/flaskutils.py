@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
 import logging
@@ -1515,11 +1514,10 @@ def conditional_add(cond_type, quantity, sensor_id=None):
                 except sqlalchemy.exc.IntegrityError as except_msg:
                     error.append(except_msg)
 
-                if conditional_type == 'sensor':
+                if cond_type == 'sensor':
                     check_refresh_conditional(
                         sensor_id,
-                        'add',
-                        new_conditional.id)
+                        'add')
     flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
@@ -1553,8 +1551,7 @@ def conditional_mod(form, mod_type):
             if conditional_type == 'sensor':
                 check_refresh_conditional(
                     form.sensor_id.data,
-                    'del',
-                    form.conditional_id.data)
+                    'del')
 
         elif mod_type == 'modify':
             try:
@@ -1585,8 +1582,7 @@ def conditional_mod(form, mod_type):
             if conditional_type == 'sensor':
                 check_refresh_conditional(
                     form.sensor_id.data,
-                    'mod',
-                    form.conditional_id.data)
+                    'mod')
     flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
@@ -1685,8 +1681,7 @@ def conditional_action_mod(form, mod_type):
         if cond.conditional_type == 'sensor':
             check_refresh_conditional(
                 cond.sensor_id,
-                'mod',
-                cond.id)
+                'mod')
     flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
@@ -1698,8 +1693,7 @@ def conditional_activate(form):
     if conditional.conditional_type == 'sensor':
         check_refresh_conditional(
             form.sensor_id.data,
-            'mod',
-            form.conditional_id.data)
+            'mod')
 
 
 def conditional_deactivate(form):
@@ -1710,8 +1704,7 @@ def conditional_deactivate(form):
     if conditional.conditional_type == 'sensor':
         check_refresh_conditional(
             form.sensor_id.data,
-            'mod',
-            form.conditional_id.data)
+            'mod')
 
 
 #
@@ -2122,14 +2115,14 @@ def sensor_deactivate_associated_controllers(sensor_id):
                                            each_lcd.id)
 
 
-def check_refresh_conditional(sensor_id, cond_mod, cond_id):
+def check_refresh_conditional(sensor_id, cond_mod):
     sensor = (Sensor.query
               .filter(Sensor.id == sensor_id)
               .filter(Sensor.is_activated == True)
               ).first()
     if sensor:
         control = DaemonControl()
-        control.refresh_sensor_conditionals(sensor_id, cond_mod, cond_id)
+        control.refresh_sensor_conditionals(sensor_id, cond_mod)
 
 
 #

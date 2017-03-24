@@ -70,8 +70,10 @@ def method_data(method_id):
 
     last_method_data = None
     if display_order is not None:
-        method_data = MethodData.query.filter(MethodData.method_id == method.id)
-        last_method_data = method_data.filter(MethodData.id == display_order[-1]).first()
+        method_data = MethodData.query.filter(
+            MethodData.method_id == method.id)
+        last_method_data = method_data.filter(
+            MethodData.id == display_order[-1]).first()
 
     method_list = []
     if method.method_type == "Date":
@@ -138,8 +140,10 @@ def method_data(method_id):
         for n in range(points_x):
             percent = n / float(points_x)
             angle = n / float(points_x) * 360
-            y = sine_wave_y_out(last_method_data.amplitude, last_method_data.frequency,
-                                last_method_data.shift_angle, last_method_data.shift_y,
+            y = sine_wave_y_out(last_method_data.amplitude,
+                                last_method_data.frequency,
+                                last_method_data.shift_angle,
+                                last_method_data.shift_y,
                                 angle)
             method_list.append([percent * seconds_in_day * 1000, y])
 
@@ -227,14 +231,21 @@ def method_builder(method_id):
         # Retrieve the order to display method data lines
         display_order = csv_to_list_of_int(method.method_order)
 
-        method_data = MethodData.query.filter(MethodData.method_id == method.id)
-        setpoint_method_data = MethodData.query.filter(MethodData.setpoint_start != None)
-        sine_method_data = MethodData.query.filter(MethodData.amplitude != None)
-        bezier_method_data = MethodData.query.filter(MethodData.x0 != None)
+        method_data = MethodData.query.filter(
+            MethodData.method_id == method.id)
+        setpoint_method_data = MethodData.query.filter(
+            MethodData.setpoint_start != None)
+        sine_method_data = MethodData.query.filter(
+            MethodData.amplitude != None)
+        bezier_method_data = MethodData.query.filter(
+            MethodData.x0 != None)
         if display_order is not None:
-            last_setpoint_method = setpoint_method_data.filter(MethodData.id == display_order[-1]).first()
-            last_sine_method = sine_method_data.filter(MethodData.id == display_order[-1]).first()
-            last_bezier_method = bezier_method_data.filter(MethodData.id == display_order[-1]).first()
+            last_setpoint_method = setpoint_method_data.filter(
+                MethodData.id == display_order[-1]).first()
+            last_sine_method = sine_method_data.filter(
+                MethodData.id == display_order[-1]).first()
+            last_bezier_method = bezier_method_data.filter(
+                MethodData.id == display_order[-1]).first()
         else:
             last_setpoint_method = None
             last_sine_method = None
@@ -299,8 +310,10 @@ def method_delete(method_id):
         return redirect(url_for('method_routes.method_list'))
 
     try:
-        MethodData.query.filter(MethodData.method_id == int(method_id)).delete()
-        Method.query.filter(Method.id == int(method_id)).delete()
+        MethodData.query.filter(
+            MethodData.method_id == int(method_id)).delete()
+        Method.query.filter(
+            Method.id == int(method_id)).delete()
         display_order = csv_to_list_of_int(DisplayOrder.query.first().method)
         display_order.remove(int(method_id))
         DisplayOrder.query.first().method = list_to_csv(display_order)

@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
 #  mycodo_daemon.py - Daemon for managing Mycodo controllers, such as sensors,
@@ -187,15 +186,13 @@ def mycodo_service(mycodo):
 
         @staticmethod
         def exposed_refresh_sensor_conditionals(sensor_id,
-                                                cond_mod,
-                                                cond_id):
+                                                cond_mod):
             """
             Instruct the sensor controller to refresh the settings of a
             conditional statement
             """
             return mycodo.refresh_sensor_conditionals(sensor_id,
-                                                      cond_mod,
-                                                      cond_id)
+                                                      cond_mod)
 
         @staticmethod
         def exposed_relay_state(relay_id):
@@ -546,8 +543,8 @@ class DaemonController(threading.Thread):
                 "Generating next relay usage report {time_date}".format(
                     time_date=str_next_report))
 
-    def refresh_sensor_conditionals(self, sensor_id, cond_mod, cond_id):
-        return self.controller['Sensor'][sensor_id].setup_sensor_conditionals(cond_mod, cond_id)
+    def refresh_sensor_conditionals(self, sensor_id, cond_mod):
+        return self.controller['Sensor'][sensor_id].setup_sensor_conditionals(cond_mod)
 
     def relay_off(self, relay_id, trigger_conditionals=True):
         """

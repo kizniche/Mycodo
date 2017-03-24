@@ -1812,10 +1812,10 @@ msgstr "Ver el registro de actualización en /var/log/mycodo/mycodoupgrade.log."
 
 #: mycodo_flask/templates/admin/upgrade.html:19
 msgid ""
-"Delete ~/Mycoco/.upgrade to acknowledge this message and restore upgrade "
+"Delete ~/Mycodo/.upgrade to acknowledge this message and restore upgrade "
 "functionality."
 msgstr ""
-"Elimine ~ / Mycoco / .upgrade para confirmar este mensaje y restaurar la "
+"Elimine ~ / Mycodo / .upgrade para confirmar este mensaje y restaurar la "
 "funcionalidad de actualización."
 
 #: mycodo_flask/templates/admin/upgrade.html:23

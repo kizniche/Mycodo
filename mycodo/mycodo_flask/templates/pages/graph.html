@@ -825,18 +825,12 @@
       series: [
       {% for each_sensor in sensor -%}
         {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id == each_id_and_measure.split(',')[0] -%}
-
           {%- for each_measurement in each_sensor.measurements.split(',') -%}
-
             {%- if each_measurement == each_id_and_measure.split(',')[1] -%}
               {
                 name: '{{each_sensor.name}} {{measurement_units[each_measurement]['name']}} ({{measurement_units[each_measurement]['unit']}})',
                 {% if measurement_units[each_measurement]['meas'] == 'edge' %}
                 type: 'column',
-                dataGrouping: {
-                  approximation: 'low',
-                  groupPixelWidth: 3
-                },
                 {% else %}
                 type: 'line',
                 {% endif %}
@@ -865,9 +859,7 @@
                 data: []
               },
             {%- endif -%}
-
           {%- endfor -%}
-
         {%- endfor -%}
       {% endfor %}
 

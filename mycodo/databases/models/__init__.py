@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
 #  Copyright (C) 2015  Kyle T. Gabriel
@@ -52,22 +51,21 @@ def alembic_upgrade_db():
     """Upgrade sqlite3 database with alembic"""
 
     def upgrade_alembic():
+        """ Run alembic database upgrade """
         command = '/bin/bash {path}/mycodo/scripts/upgrade_commands.sh update-alembic'.format(path=INSTALL_DIRECTORY)
-        upgrade_alembic = subprocess.Popen(
+        upgrade = subprocess.Popen(
             command, stdout=subprocess.PIPE, shell=True)
-        (_, _) = upgrade_alembic.communicate()
-        upgrade_alembic.wait()
+        (_, _) = upgrade.communicate()
+        upgrade.wait()
 
-    # If row with blank version_num exists, delete it
-    # Then attempt to upgrade the database
     alembic = AlembicVersion.query.first()
-    if alembic:
+    if alembic:  # If alembic_version table has an entry
         if alembic.version_num == '':
-            alembic.delete()
+            alembic.delete()  # Delete row with blank version_num
             upgrade_alembic()
-        if alembic.version_num != ALEMBIC_VERSION:
+        elif alembic.version_num != ALEMBIC_VERSION:  # Not current version
             upgrade_alembic()
-    elif not alembic:
+    else:
         upgrade_alembic()
 
 

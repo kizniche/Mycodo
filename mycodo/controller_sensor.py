@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # coding=utf-8
 #
 # controller_sensor.py - Sensor controller that manages reading sensors and
@@ -852,6 +851,8 @@ class SensorController(threading.Thread):
             self.smtp_wait_timer = {}
         elif cond_mod == 'add':
             self.logger.debug("Added Conditional")
+        elif cond_mod == 'del':
+            self.logger.debug("Deleted Conditional")
         elif cond_mod == 'mod':
             self.logger.debug("Modified Conditional")
         else:

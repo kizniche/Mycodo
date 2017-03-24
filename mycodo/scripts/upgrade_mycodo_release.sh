@@ -207,10 +207,10 @@ if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_post.sh ; then
   revertInstall
   error_found
 fi
-printf "Done.\n"
+printf "Done.\n\n"
 
 date
-printf "\nUpgrade completed successfully without errors.\n"
+printf "Upgrade completed successfully without errors.\n"
 echo '0' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
 rm \$0
 EOF

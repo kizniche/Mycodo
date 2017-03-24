@@ -1,3 +1,9 @@
+## 5.0.12 (2017-03-23)
+
+### Bugfixes
+
+  - Fix frontend and backend issues with conditionals
+
 ## 5.0.11 (2017-03-22)
 
 ### Bugfixes

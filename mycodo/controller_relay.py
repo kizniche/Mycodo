@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # coding=utf-8
 #
 # controller_relay.py - Relay controller to manage turning relays on/off

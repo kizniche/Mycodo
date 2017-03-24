@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # coding=utf-8
 #
 # controller_timer.py - Timer controller to turn relays on or off

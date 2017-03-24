@@ -115,10 +115,12 @@ def page_camera():
             return redirect(url_for('page_routes.page_camera'))
 
         control = DaemonControl()
-        mod_camera = Camera.query.filter(Camera.id == form_camera.camera_id.data).first()
+        mod_camera = Camera.query.filter(
+            Camera.id == form_camera.camera_id.data).first()
         if form_camera.capture_still.data:
             if mod_camera.stream_started:
-                flash(gettext("Cannot capture still image if stream is active."))
+                flash(gettext(
+                    "Cannot capture still image if stream is active."))
                 return redirect('/camera')
             if CameraStream().is_running():
                 CameraStream().terminate_controller()  # Stop camera stream
@@ -543,8 +545,10 @@ def page_live():
     timer = Timer.query.all()
 
     # Display orders
-    pid_display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
-    sensor_display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
+    pid_display_order = csv_to_list_of_int(
+        DisplayOrder.query.first().pid)
+    sensor_display_order = csv_to_list_of_int(
+        DisplayOrder.query.first().sensor)
 
     # Filter only activated sensors
     sensor_order_sorted = []
@@ -597,9 +601,10 @@ def page_logview():
 
         # Get contents from file
         if os.path.isfile(logfile):
-            log = subprocess.Popen('tail -n ' + str(lines) + ' ' + logfile,
-                                   stdout=subprocess.PIPE,
-                                   shell=True)
+            command = 'tail -n {lines} {log}'.format(lines=lines,
+                                                     log=logfile)
+            log = subprocess.Popen(
+                command, stdout=subprocess.PIPE, shell=True)
             (log_output, _) = log.communicate()
             log.wait()
         else:
@@ -683,7 +688,8 @@ def page_relay():
     relay = Relay.query.all()
     user = User.query.all()
 
-    conditional = Conditional.query.filter(Conditional.conditional_type == 'relay').all()
+    conditional = Conditional.query.filter(
+        Conditional.conditional_type == 'relay').all()
     conditional_actions = ConditionalActions.query.all()
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
@@ -709,9 +715,11 @@ def page_relay():
         elif form_mod_relay.delete.data:
             flaskutils.relay_del(form_mod_relay)
         elif form_mod_relay.order_up.data:
-            flaskutils.relay_reorder(form_mod_relay.relay_id.data, display_order, 'up')
+            flaskutils.relay_reorder(form_mod_relay.relay_id.data,
+                                     display_order, 'up')
         elif form_mod_relay.order_down.data:
-            flaskutils.relay_reorder(form_mod_relay.relay_id.data, display_order, 'down')
+            flaskutils.relay_reorder(form_mod_relay.relay_id.data,
+                                     display_order, 'down')
         elif form_conditional.add_cond.data:
             flaskutils.conditional_add(form_conditional.conditional_type.data,
                                        form_conditional.quantity.data)
@@ -726,9 +734,11 @@ def page_relay():
         elif form_conditional_actions.add_action.data:
             flaskutils.conditional_action_add(form_conditional_actions)
         elif form_conditional_actions.save_action.data:
-            flaskutils.conditional_action_mod(form_conditional_actions, 'modify')
+            flaskutils.conditional_action_mod(form_conditional_actions,
+                                              'modify')
         elif form_conditional_actions.delete_action.data:
-            flaskutils.conditional_action_mod(form_conditional_actions, 'delete')
+            flaskutils.conditional_action_mod(form_conditional_actions,
+                                              'delete')
         return redirect('/relay')
 
     return render_template('pages/relay.html',
@@ -770,7 +780,8 @@ def page_sensor():
     sensor = Sensor.query.all()
     user = User.query.all()
 
-    conditional = Conditional.query.filter(Conditional.conditional_type == 'sensor').all()
+    conditional = Conditional.query.filter(
+        Conditional.conditional_type == 'sensor').all()
     conditional_actions = ConditionalActions.query.all()
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
@@ -831,9 +842,11 @@ def page_sensor():
         elif form_conditional_actions.add_action.data:
             flaskutils.conditional_action_add(form_conditional_actions)
         elif form_conditional_actions.save_action.data:
-            flaskutils.conditional_action_mod(form_conditional_actions, 'modify')
+            flaskutils.conditional_action_mod(form_conditional_actions,
+                                              'modify')
         elif form_conditional_actions.delete_action.data:
-            flaskutils.conditional_action_mod(form_conditional_actions, 'delete')
+            flaskutils.conditional_action_mod(form_conditional_actions,
+                                              'delete')
         return redirect('/sensor')
 
     return render_template('pages/sensor.html',
@@ -991,7 +1004,8 @@ def dict_custom_colors():
             for each_set in each_graph.sensor_ids_measurements.split(';'):
                 sensor_unique_id = each_set.split(',')[0].split(' ')[0]
                 sensor_measure = each_set.split(',')[1]
-                sensor = Sensor.query.filter_by(unique_id=sensor_unique_id).first()
+                sensor = Sensor.query.filter_by(
+                    unique_id=sensor_unique_id).first()
                 if (index < len(each_graph.sensor_ids_measurements.split(';')) and
                         len(colors) > index):
                     color = colors[index]
@@ -1009,7 +1023,8 @@ def dict_custom_colors():
             index = 0
             for each_set in each_graph.relay_ids.split(','):
                 relay_unique_id = each_set.split(',')[0]
-                relay = Relay.query.filter_by(unique_id=relay_unique_id).first()
+                relay = Relay.query.filter_by(
+                    unique_id=relay_unique_id).first()
                 if (index < len(each_graph.relay_ids.split(',')) and
                         len(colors) > index_sum + index):
                     color = colors[index_sum+index]
@@ -1027,7 +1042,8 @@ def dict_custom_colors():
             index = 0
             for each_set in each_graph.pid_ids.split(','):
                 pid_unique_id = each_set.split(',')[0]
-                pid = PID.query.filter_by(unique_id=pid_unique_id).first()
+                pid = PID.query.filter_by(
+                    unique_id=pid_unique_id).first()
                 if (index < len(each_graph.pid_ids.split(',')) and
                         len(colors) > index_sum + index):
                     color = colors[index_sum+index]

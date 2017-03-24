@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # coding=utf-8
 #
 # controller_pid.py - PID controller that manages descrete control of a

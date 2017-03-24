@@ -1752,7 +1752,7 @@ msgstr ""
 
 #: mycodo_flask/templates/admin/upgrade.html:19
 msgid ""
-"Delete ~/Mycoco/.upgrade to acknowledge this message and restore upgrade "
+"Delete ~/Mycodo/.upgrade to acknowledge this message and restore upgrade "
 "functionality."
 msgstr ""
 

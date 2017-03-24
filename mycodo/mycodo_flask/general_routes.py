@@ -121,7 +121,7 @@ def page_settings():
 @blueprint.route('/remote/<page>', methods=('GET', 'POST'))
 @flask_login.login_required
 def remote_admin(page):
-    """Return pages for remote administraion"""
+    """Return pages for remote administration"""
     if not flaskutils.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
@@ -143,7 +143,8 @@ def remote_admin(page):
             form_name = request.form['form-name']
             if form_name == 'setup':
                 if form_setup.add.data:
-                    flaskutils.remote_host_add(form_setup=form_setup, display_order=display_order)
+                    flaskutils.remote_host_add(form_setup=form_setup,
+                                               display_order=display_order)
             if form_name == 'mod_remote':
                 if form_setup.delete.data:
                     flaskutils.remote_host_del(form_setup=form_setup)
@@ -338,7 +339,8 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
             yield line.read()
             line.truncate(0)
 
-    response = Response(iter_csv(raw_data['series'][0]['values']), mimetype='text/csv')
+    response = Response(iter_csv(raw_data['series'][0]['values']),
+                        mimetype='text/csv')
     response.headers['Content-Disposition'] = 'attachment; filename={id}_{meas}.csv'.format(
         id=unique_id, meas=measurement)
     return response
