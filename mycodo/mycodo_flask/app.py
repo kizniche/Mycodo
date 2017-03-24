@@ -88,7 +88,7 @@ def create_app(config=ProdConfig):
 
     @login_manager.unauthorized_handler
     def unauthorized():
-        flash(gettext('Please log in to access this page'), "error")
+        flash(gettext(u'Please log in to access this page'), "error")
         return redirect(url_for('authentication_routes.do_login'))
 
     return app

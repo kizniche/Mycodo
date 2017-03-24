@@ -60,8 +60,8 @@ def inject_hostname():
 def create_admin():
     if admin_exists():
         flash(gettext(
-            "Cannot access admin creation form if an admin user "
-            "already exists."), "error")
+            u"Cannot access admin creation form if an admin user "
+            u"already exists."), "error")
         return redirect(url_for('general_routes.home'))
 
     # If login token cookie from previous session exists, delete
@@ -75,19 +75,19 @@ def create_admin():
             username = form.username.data.lower()
             error = False
             if form.password.data != form.password_repeat.data:
-                flash(gettext("Passwords do not match. Please try again."),
+                flash(gettext(u"Passwords do not match. Please try again."),
                       "error")
                 error = True
             if not test_username(username):
                 flash(gettext(
-                    "Invalid user name. Must be between 2 and 64 characters "
-                    "and only contain letters and numbers."),
+                    u"Invalid user name. Must be between 2 and 64 characters "
+                    u"and only contain letters and numbers."),
                     "error")
                 error = True
             if not test_password(form.password.data):
                 flash(gettext(
-                    "Invalid password. Must be between 6 and 64 characters "
-                    "and only contain letters, numbers, and symbols."),
+                    u"Invalid password. Must be between 6 and 64 characters "
+                    u"and only contain letters, numbers, and symbols."),
                       "error")
                 error = True
             if error:
@@ -102,12 +102,12 @@ def create_admin():
             try:
                 db.session.add(new_user)
                 db.session.commit()
-                flash(gettext("User '%(user)s' successfully created. Please "
-                              "log in below.", user=username),
+                flash(gettext(u"User '%(user)s' successfully created. Please "
+                              u"log in below.", user=username),
                       "success")
                 return redirect(url_for('authentication_routes.do_login'))
             except Exception as except_msg:
-                flash(gettext("Failed to create user '%(user)s': %(err)s",
+                flash(gettext(u"Failed to create user '%(user)s': %(err)s",
                               user=username,
                               err=except_msg), "error")
         else:
@@ -123,7 +123,7 @@ def do_login():
         return redirect('/create_admin')
 
     elif flask_login.current_user.is_authenticated:
-        flash(gettext("Cannot access login page if you're already logged in"),
+        flash(gettext(u"Cannot access login page if you're already logged in"),
               "error")
         return redirect(url_for('general_routes.home'))
 
@@ -137,8 +137,8 @@ def do_login():
     # Check if the user is banned from logging in (too many incorrect attempts)
     if banned_from_login():
         flash(gettext(
-            "Too many failed login attempts. Please wait %(min)s "
-            "minutes before attempting to log in again",
+            u"Too many failed login attempts. Please wait %(min)s "
+            u"minutes before attempting to log in again",
             min=(int(LOGIN_BAN_SECONDS - session['ban_time_left']) / 60) + 1),
                 "info")
     else:
@@ -152,8 +152,8 @@ def do_login():
                     mod_misc.dismiss_notification = 1
                     db.session.commit()
                 except Exception as except_msg:
-                    flash(gettext("Acknowledgement unable to be saved: "
-                                  "%(err)s", err=except_msg), "error")
+                    flash(gettext(u"Acknowledgement unable to be saved: "
+                                  u"%(err)s", err=except_msg), "error")
             elif form_name == 'login' and form.validate_on_submit():
                 user = User.query.filter(
                     User.name == username).first()
@@ -202,7 +202,7 @@ def logout():
 
     response = clear_cookie_auth()
 
-    flash(gettext("Successfully logged out"), 'success')
+    flash(gettext(u"Successfully logged out"), 'success')
     return response
 
 

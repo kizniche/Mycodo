@@ -303,8 +303,8 @@ def method_builder(method_id):
 def method_delete(method_id):
     """Delete a method"""
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
-        controller=gettext("Method"))
+        action=gettext(u"Delete"),
+        controller=gettext(u"Method"))
 
     if not flaskutils.user_has_permission('edit_settings'):
         return redirect(url_for('method_routes.method_list'))

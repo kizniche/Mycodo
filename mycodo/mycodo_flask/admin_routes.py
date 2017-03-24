@@ -107,8 +107,8 @@ def admin_upgrade():
         return redirect(url_for('general_routes.home'))
 
     if not internet():
-        flash(gettext("Upgrade functionality is disabled because an internet "
-                      "connection was unable to be detected"), "error")
+        flash(gettext(u"Upgrade functionality is disabled because an internet "
+                      u"connection was unable to be detected"), "error")
         return render_template('admin/upgrade.html',
                                is_internet=False)
 
@@ -126,11 +126,11 @@ def admin_upgrade():
 
     if upgrade:
         if upgrade == 1:
-            flash(gettext("An upgrade is currently in progress. Please wait "
-                          "for it to finish"), "error")
+            flash(gettext(u"An upgrade is currently in progress. Please wait "
+                          u"for it to finish"), "error")
         elif upgrade == 2:
-            flash(gettext("There was an error encountered during the upgrade "
-                          "process. Check the upgrade log for details."),
+            flash(gettext(u"There was an error encountered during the upgrade "
+                          u"process. Check the upgrade log for details."),
                   "error")
         return render_template('admin/upgrade.html',
                                upgrade=upgrade)
@@ -147,8 +147,8 @@ def admin_upgrade():
         maj_version = int(MYCODO_VERSION.split('.')[0])
         releases = github_releases(maj_version)
     except Exception:
-        flash(gettext("Could not determine local mycodo version or "
-                      "online release versions"), "error")
+        flash(gettext(u"Could not determine local mycodo version or "
+                      u"online release versions"), "error")
     if len(releases):
         latest_release = releases[0]
         current_releases = []
@@ -172,10 +172,10 @@ def admin_upgrade():
                                 path=INSTALL_DIRECTORY),
                              shell=True)
             upgrade = 1
-            flash(gettext("The upgrade has started. The daemon will be "
-                          "stopped during the upgrade."), "success")
+            flash(gettext(u"The upgrade has started. The daemon will be "
+                          u"stopped during the upgrade."), "success")
         else:
-            flash(gettext("You cannot upgrade if an upgrade is not available"),
+            flash(gettext(u"You cannot upgrade if an upgrade is not available"),
                   "error")
 
     return render_template('admin/upgrade.html',

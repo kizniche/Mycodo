@@ -1,7 +1,10 @@
-## 5.0.13 (Unreleased)
+## 5.0.13 (2017-03-24)
 
 ### Bugfixes
 
+  - Fix issue with adding/deleting relays
+  - Fix inability to have multiple graphs appear on the same row
+  - Fix UnicodeEncodeError when using translations
   - Fix BME280 sensor pressure/altitude
 
 ## 5.0.12 (2017-03-23)

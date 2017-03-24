@@ -90,8 +90,8 @@ def inject_mycodo_version():
         control = DaemonControl()
         daemon_status = control.daemon_status()
     except Exception as e:
-        logger.error(gettext("URL for 'inject_mycodo_version' raised and "
-                             "error: %(err)s", err=e))
+        logger.error(gettext(u"URL for 'inject_mycodo_version' raised and "
+                             u"error: %(err)s", err=e))
         daemon_status = '0'
 
     misc = Misc.query.first()
@@ -495,9 +495,9 @@ def computer_command(action):
                 path=INSTALL_DIRECTORY, action=action)
         subprocess.Popen(cmd, shell=True)
         if action == 'restart':
-            flash(gettext("System rebooting in 10 seconds"), "success")
+            flash(gettext(u"System rebooting in 10 seconds"), "success")
         elif action == 'shutdown':
-            flash(gettext("System shutting down in 10 seconds"), "success")
+            flash(gettext(u"System shutting down in 10 seconds"), "success")
         return redirect('/settings')
     except Exception as e:
         logger.error("System command '{cmd}' raised and error: "

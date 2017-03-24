@@ -552,6 +552,8 @@ class RelayController(threading.Thread):
             return self.add_mod_relay(relay_id, do_setup_pin=setup_pin)
         elif action == 'Delete':
             return self.del_relay(relay_id)
+        else:
+            return [1, 'Invalid relay_setup action']
 
     def current_amp_load(self):
         """

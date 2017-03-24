@@ -34,165 +34,180 @@
     {% endif %}
   {%- endfor %}
 
-  <div style="padding: 0 0.5em 0.5em 0.5em">
+  <div style="padding: 0 1.5em 0 1em">
+
+  <div class="row">
 
   {% if displayOrder -%}
   {%- for order in displayOrder -%}
     {%- set chart_number = loop.index -%}
     {%- for each_graph in graph if each_graph.id == order -%}
 
-    <div style="margin: 0 0.3em 0.6em 0.3em; border: 2px solid #ddd; border-radius: 5px; width: calc({{each_graph.width}}% - 0.7em); min-width: 350px">
+    <div class="col-xs-12 col-sm-
+    {%- if each_graph.width < 13 and each_graph.width > 0 -%}
+      {{each_graph.width}}
+    {%- else -%}
+      12
+    {%- endif -%}" style="padding: 0.25em;">
 
-    <div class="row" style="padding-right: 1.4em">
-        <div class="col-sx-12 text-right">
-          <span style="padding-right: 0.5em">{{each_graph.name}} ({{each_graph.id}})</span>
-          <button class="btn btn-default btn-sm" id="resetZoom{{chart_number}}">Reset Zoom</button>
-          <button class="btn btn-default btn-sm" id="showhidebutton{{chart_number}}">Show/Hide All</button>
-          <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
-            <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
-          </button>
-        </div>
-      </div>
+      <div style="border: 2px solid #ddd; border-radius: 5px;">
 
-      <div id="container{{each_graph.id}}" style="height: {{each_graph.height}}px; width: 99%;"></div>
-
-      <div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
-        <div class="form-inline">
-          <form method="post" action="/graph">
-          <input type="hidden" name="form-name" value="modGraph">
-          {{form_mod_graph.csrf_token}}
-          {{form_mod_graph.graph_id(value=each_graph.id)}}
-          <div class="form-group">
-            {{form_mod_graph.name.label(class_='control-label')}}
-            <div>
-              {{form_mod_graph.name(class_='form-control', value=each_graph.name)}}
-            </div>
+        <div style="padding-right: 0.5em;">
+          <div class="col-sx-12 text-right">
+            <span style="padding-right: 0.5em">{{each_graph.name}} ({{each_graph.id}})</span>
+            <button class="btn btn-default btn-sm" id="resetZoom{{chart_number}}">Reset Zoom</button>
+            <button class="btn btn-default btn-sm" id="showhidebutton{{chart_number}}">Show/Hide All</button>
+            <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
+              <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
+            </button>
           </div>
-          <div class="form-group">
-            {{form_mod_graph.width.label(class_='control-label')}}
-            <div>
-              {{form_mod_graph.width(class_='form-control', value=each_graph.width)}}
-            </div>
-          </div>
-          <div class="form-group">
-            {{form_mod_graph.height.label(class_='control-label')}}
-            <div>
-              {{form_mod_graph.height(class_='form-control', value=each_graph.height)}}
-            </div>
-          </div>
-          <div class="form-group">
-            {{form_mod_graph.xAxisDuration.label(class_='control-label')}}
-            <div>
-              {{form_mod_graph.xAxisDuration(class_='form-control', value=each_graph.x_axis_duration)}}
-            </div>
-          </div>
-          <div class="form-group">
-            {{form_mod_graph.refreshDuration.label(class_='control-label')}}
-            <div>
-              {{form_mod_graph.refreshDuration(class_='form-control', value=each_graph.refresh_duration)}}
-            </div>
-          </div>
-
-          <div style="clear: both"></div>
-
-          <div class="form-group">
-            {{form_mod_graph.sensorIDs.label(class_='control-label')}}
-            <div>
-              <select class="form-control" id="sensorIDs" name="sensorIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-              {% if sensor_choices %}
-                {% for each_choice, value in sensor_choices.iteritems() -%}
-                  <option value="{{each_choice}}"{%- if each_choice|string in each_graph.sensor_ids_measurements %} selected{%- endif -%}>{{value}}</option>
-                {% endfor -%}
-              {% endif %}
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            {{form_mod_graph.relayIDs.label(class_='control-label')}}
-            <div>
-              <select class="form-control" id="relayIDs" name="relayIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-              {% if relay_choices %}
-                {% for each_choice, value in relay_choices.iteritems() -%}
-                  <option value="{{each_choice}}"{%- if each_choice|string in each_graph.relay_ids %} selected{%- endif -%}>{{value}}</option>
-                {% endfor -%}
-              {% endif %}
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            {{form_mod_graph.pidIDs.label(class_='control-label')}}
-            <div>
-              <select class="form-control" id="pidIDs" name="pidIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-              {% if pid_choices %}
-                {% for each_choice, value in pid_choices.iteritems() -%}
-                  <option value="{{each_choice}}"{%- if each_choice|string in each_graph.pid_ids %} selected{%- endif -%}>{{value}}</option>
-                {% endfor -%}
-              {% endif %}
-              </select>
-            </div>
-          </div>
-
-          <div style="clear: both"></div>
-          {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.</br>
-
-          <div class="form-check" style="padding-top: 1em">
-            <label class="form-check-label">
-              <input class="form-check-input" id="enableNavbar" name="enableNavbar" type="checkbox" value="y"{% if each_graph.enable_navbar %} checked{% endif %}>
-              {{form_mod_graph.enableNavbar.label.text}}
-            </label>
-          </div>
-          <div class="form-check disabled">
-            <label class="form-check-label">
-              <input class="form-check-input" id="enableExport" name="enableExport" type="checkbox" value="y"{% if each_graph.enable_export %} checked{% endif %}>
-              {{form_mod_graph.enableExport.label.text}}
-            </label>
-          </div>
-          <div class="form-check">
-            <label class="form-check-label">
-              <input class="form-check-input" id="enableRangeSelect" name="enableRangeSelect" type="checkbox" value="y"{% if each_graph.enable_rangeselect %} checked{% endif %}>
-              {{form_mod_graph.enableRangeSelect.label.text}}
-            </label>
-          </div>
-          <div class="form-check disabled" style="padding-top: 1em">
-            <label class="form-check-label">
-              <input class="form-check-input" id="colors_custom" name="use_custom_colors" type="checkbox" value="y"{% if each_graph.use_custom_colors %} checked{% endif %}>
-              {{form_mod_graph.use_custom_colors.label.text}}
-            </label>
-          </div>
-
-          {% for n in range(dict_colors[each_graph.id]|length) %}
-          <div class="form-check">
-            {% set index = '{0:0>2}'.format(n) %}
-            <label class="form-check-label" for="color_number{{index}}">
-              <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{dict_colors[each_graph.id][n]['color']}}">
-              {{dict_colors[each_graph.id][n]['name']}} ({{dict_colors[each_graph.id][n]['measure']}})
-            </label>
-          </div>
-          {% endfor %}
-
         </div>
 
-        <div class="form-inline btn-group" style="padding-top: 1em;">
-          <div class="form-group">
-            {{form_mod_graph.Submit(class_='form-control btn btn-default')}}
-            </form>
-          </div>
-          <div class="form-group">
+        <div id="container{{each_graph.id}}" style="height: {{each_graph.height}}px;"></div>
+
+        <div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
+          <div class="form-inline">
             <form method="post" action="/graph">
-              <input type="hidden" name="form-name" value="delGraph">
-              {{form_del_graph.csrf_token}}
-              {{form_del_graph.graph_id(value=each_graph.id)}}
-              {{form_del_graph.Submit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this graph?")'})}}
-            </form>
+            <input type="hidden" name="form-name" value="modGraph">
+            {{form_mod_graph.csrf_token}}
+            {{form_mod_graph.graph_id(value=each_graph.id)}}
+            <div class="form-group">
+              {{form_mod_graph.name.label(class_='control-label')}}
+              <div>
+                {{form_mod_graph.name(class_='form-control', value=each_graph.name)}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{form_mod_graph.width.label(class_='control-label')}}
+              <div>
+                <select class="form-control" id="width" name="width">
+                  {% for n in range(11) %}
+                    <option value="{{loop.index}}"{%- if each_graph.width == loop.index %} selected{%- endif -%}>{{loop.index}}/12</option>
+                  {% endfor %}
+                  <option value="12"{%- if each_graph.width == 12 or each_graph.width > 12 or each_graph.width < 1 %} selected{%- endif -%}>12/12</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              {{form_mod_graph.height.label(class_='control-label')}}
+              <div>
+                {{form_mod_graph.height(class_='form-control', value=each_graph.height)}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{form_mod_graph.xAxisDuration.label(class_='control-label')}}
+              <div>
+                {{form_mod_graph.xAxisDuration(class_='form-control', value=each_graph.x_axis_duration)}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{form_mod_graph.refreshDuration.label(class_='control-label')}}
+              <div>
+                {{form_mod_graph.refreshDuration(class_='form-control', value=each_graph.refresh_duration)}}
+              </div>
+            </div>
+
+            <div style="clear: both"></div>
+
+            <div class="form-group">
+              {{form_mod_graph.sensorIDs.label(class_='control-label')}}
+              <div>
+                <select class="form-control" id="sensorIDs" name="sensorIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+                {% if sensor_choices %}
+                  {% for each_choice, value in sensor_choices.iteritems() -%}
+                    <option value="{{each_choice}}"{%- if each_choice|string in each_graph.sensor_ids_measurements %} selected{%- endif -%}>{{value}}</option>
+                  {% endfor -%}
+                {% endif %}
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              {{form_mod_graph.relayIDs.label(class_='control-label')}}
+              <div>
+                <select class="form-control" id="relayIDs" name="relayIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+                {% if relay_choices %}
+                  {% for each_choice, value in relay_choices.iteritems() -%}
+                    <option value="{{each_choice}}"{%- if each_choice|string in each_graph.relay_ids %} selected{%- endif -%}>{{value}}</option>
+                  {% endfor -%}
+                {% endif %}
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              {{form_mod_graph.pidIDs.label(class_='control-label')}}
+              <div>
+                <select class="form-control" id="pidIDs" name="pidIDs" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+                {% if pid_choices %}
+                  {% for each_choice, value in pid_choices.iteritems() -%}
+                    <option value="{{each_choice}}"{%- if each_choice|string in each_graph.pid_ids %} selected{%- endif -%}>{{value}}</option>
+                  {% endfor -%}
+                {% endif %}
+                </select>
+              </div>
+            </div>
+
+            <div style="clear: both"></div>
+            {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.</br>
+
+            <div class="form-check" style="padding-top: 1em">
+              <label class="form-check-label">
+                <input class="form-check-input" id="enableNavbar" name="enableNavbar" type="checkbox" value="y"{% if each_graph.enable_navbar %} checked{% endif %}>
+                {{form_mod_graph.enableNavbar.label.text}}
+              </label>
+            </div>
+            <div class="form-check disabled">
+              <label class="form-check-label">
+                <input class="form-check-input" id="enableExport" name="enableExport" type="checkbox" value="y"{% if each_graph.enable_export %} checked{% endif %}>
+                {{form_mod_graph.enableExport.label.text}}
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input class="form-check-input" id="enableRangeSelect" name="enableRangeSelect" type="checkbox" value="y"{% if each_graph.enable_rangeselect %} checked{% endif %}>
+                {{form_mod_graph.enableRangeSelect.label.text}}
+              </label>
+            </div>
+            <div class="form-check disabled" style="padding-top: 1em">
+              <label class="form-check-label">
+                <input class="form-check-input" id="colors_custom" name="use_custom_colors" type="checkbox" value="y"{% if each_graph.use_custom_colors %} checked{% endif %}>
+                {{form_mod_graph.use_custom_colors.label.text}}
+              </label>
+            </div>
+
+            {% for n in range(dict_colors[each_graph.id]|length) %}
+            <div class="form-check">
+              {% set index = '{0:0>2}'.format(n) %}
+              <label class="form-check-label" for="color_number{{index}}">
+                <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{dict_colors[each_graph.id][n]['color']}}">
+                {{dict_colors[each_graph.id][n]['name']}} ({{dict_colors[each_graph.id][n]['measure']}})
+              </label>
+            </div>
+            {% endfor %}
+
           </div>
-          <div class="form-group">
-            <form method="post" action="/graph">
-              Reorder: <input type="hidden" name="form-name" value="orderGraph">
-              {{form_order_graph.csrf_token}}
-              {{form_order_graph.orderGraph_id(value=each_graph.id)}}
-              {{form_order_graph.orderGraphUp(class_='form-control btn btn-default')}}
-              {{form_order_graph.orderGraphDown(class_='form-control btn btn-default')}}
-            </form>
+
+          <div class="form-inline btn-group" style="padding-top: 1em;">
+            <div class="form-group">
+              {{form_mod_graph.Submit(class_='form-control btn btn-default')}}
+              </form>
+            </div>
+            <div class="form-group">
+              <form method="post" action="/graph">
+                <input type="hidden" name="form-name" value="delGraph">
+                {{form_del_graph.csrf_token}}
+                {{form_del_graph.graph_id(value=each_graph.id)}}
+                {{form_del_graph.Submit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this graph?")'})}}
+              </form>
+            </div>
+            <div class="form-group">
+              <form method="post" action="/graph">
+                Reorder: <input type="hidden" name="form-name" value="orderGraph">
+                {{form_order_graph.csrf_token}}
+                {{form_order_graph.orderGraph_id(value=each_graph.id)}}
+                {{form_order_graph.orderGraphUp(class_='form-control btn btn-default')}}
+                {{form_order_graph.orderGraphDown(class_='form-control btn btn-default')}}
+              </form>
+            </div>
           </div>
         </div>
       </div>
@@ -219,7 +234,11 @@
         <div class="form-group">
           {{form_add_graph.width.label(class_='control-label')}}
           <div>
-            {{form_add_graph.width(class_='form-control', value=100)}}
+            <select class="form-control" id="width" name="width">
+              {% for n in range(12) %}
+                <option value="{{loop.index}}">{{loop.index}}/12</option>
+              {% endfor %}
+            </select>
           </div>
         </div>
         <div class="form-group">
@@ -304,6 +323,8 @@
       </div>
       </form>
     </div>
+  </div>
+
   </div>
 
   <script>

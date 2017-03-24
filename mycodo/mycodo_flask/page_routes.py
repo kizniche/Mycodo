@@ -120,7 +120,7 @@ def page_camera():
         if form_camera.capture_still.data:
             if mod_camera.stream_started:
                 flash(gettext(
-                    "Cannot capture still image if stream is active."))
+                    u"Cannot capture still image if stream is active."))
                 return redirect('/camera')
             if CameraStream().is_running():
                 CameraStream().terminate_controller()  # Stop camera stream
@@ -128,7 +128,7 @@ def page_camera():
             camera_record('photo', mod_camera)
         elif form_camera.start_timelapse.data:
             if mod_camera.stream_started:
-                flash(gettext("Cannot start time-lapse if stream is active."))
+                flash(gettext(u"Cannot start time-lapse if stream is active."))
                 return redirect('/camera')
             now = time.time()
             mod_camera.timelapse_started = True
@@ -159,16 +159,16 @@ def page_camera():
         elif form_camera.start_stream.data:
             if mod_camera.timelapse_started:
                 flash(gettext(
-                    "Cannot start stream if time-lapse is active."))
+                    u"Cannot start stream if time-lapse is active."))
                 return redirect('/camera')
             if CameraStream().is_running():
                 flash(gettext(
-                    "Cannot start stream. The stream is already running."))
+                    u"Cannot start stream. The stream is already running."))
                 return redirect('/camera')
             if (not (mod_camera.camera_type == 'Raspberry Pi' and
                      mod_camera.library == 'picamera')):
-                flash(gettext("Streaming is only supported with the Raspberry"
-                              " Pi camera using the picamera library."))
+                flash(gettext(u"Streaming is only supported with the Raspberry"
+                              u" Pi camera using the picamera library."))
                 return redirect('/camera')
             mod_camera.stream_started = True
             db.session.commit()

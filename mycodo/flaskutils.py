@@ -71,10 +71,10 @@ logger = logging.getLogger(__name__)
 def is_positive_integer(number_string):
     try:
         if int(number_string) < 0:
-            flash(gettext("Duration must be a positive integer"), "error")
+            flash(gettext(u"Duration must be a positive integer"), "error")
             return False
     except ValueError:
-        flash(gettext("Duration must be a valid integer"), "error")
+        flash(gettext(u"Duration must be a valid integer"), "error")
         return False
     return True
 
@@ -85,8 +85,8 @@ def validate_method_data(form_data, this_method):
             if (not form_data.startTime.data or
                     not form_data.endTime.data or
                     form_data.startSetpoint.data == ''):
-                flash(gettext("Required: Start date/time, end date/time, "
-                              "start setpoint"), "error")
+                flash(gettext(u"Required: Start date/time, end date/time, "
+                              u"start setpoint"), "error")
                 return 1
             try:
                 start_time = datetime.strptime(form_data.startTime.data,
@@ -94,20 +94,20 @@ def validate_method_data(form_data, this_method):
                 end_time = datetime.strptime(form_data.endTime.data,
                                              '%Y-%m-%d %H:%M:%S')
             except ValueError:
-                flash(gettext("Invalid Date/Time format. Correct format: "
-                              "DD/MM/YYYY HH:MM:SS"), "error")
+                flash(gettext(u"Invalid Date/Time format. Correct format: "
+                              u"DD/MM/YYYY HH:MM:SS"), "error")
                 return 1
             if end_time <= start_time:
-                flash(gettext("The end time/date must be after the start "
-                              "time/date."), "error")
+                flash(gettext(u"The end time/date must be after the start "
+                              u"time/date."), "error")
                 return 1
 
         elif this_method.method_type == 'Daily':
             if (not form_data.startDailyTime.data or
                     not form_data.endDailyTime.data or
                     form_data.startSetpoint.data == ''):
-                flash(gettext("Required: Start time, end time, start "
-                              "setpoint"), "error")
+                flash(gettext(u"Required: Start time, end time, start "
+                              u"setpoint"), "error")
                 return 1
             try:
                 start_time = datetime.strptime(form_data.startDailyTime.data,
@@ -115,18 +115,18 @@ def validate_method_data(form_data, this_method):
                 end_time = datetime.strptime(form_data.endDailyTime.data,
                                              '%H:%M:%S')
             except ValueError:
-                flash(gettext("Invalid Date/Time format. Correct format: "
-                              "HH:MM:SS"), "error")
+                flash(gettext(u"Invalid Date/Time format. Correct format: "
+                              u"HH:MM:SS"), "error")
                 return 1
             if end_time <= start_time:
-                flash(gettext("The end time must be after the start time."),
+                flash(gettext(u"The end time must be after the start time."),
                       "error")
                 return 1
 
         elif this_method.method_type == 'Duration':
             if (not form_data.DurationSec.data or
                     form_data.startSetpoint.data == ''):
-                flash(gettext("Required: Duration, start setpoint"),
+                flash(gettext(u"Required: Duration, start setpoint"),
                       "error")
                 return 1
             if not is_positive_integer(form_data.DurationSec.data):
@@ -137,21 +137,21 @@ def validate_method_data(form_data, this_method):
             if (not form_data.relayTime.data or
                     not form_data.relayID.data or
                     not form_data.relayState.data):
-                flash(gettext("Required: Date/Time, Relay ID, and Relay "
+                flash(gettext(u"Required: Date/Time, Relay ID, and Relay "
                               "State"), "error")
                 return 1
             try:
                 datetime.strptime(form_data.relayTime.data,
                                   '%Y-%m-%d %H:%M:%S')
             except ValueError:
-                flash(gettext("Invalid Date/Time format. Correct format: "
-                              "DD-MM-YYYY HH:MM:SS"), "error")
+                flash(gettext(u"Invalid Date/Time format. Correct format: "
+                              u"DD-MM-YYYY HH:MM:SS"), "error")
                 return 1
         elif this_method.method_type == 'Duration':
             if (not form_data.DurationSec.data or
                     not form_data.relayID.data or
                     not form_data.relayState.data):
-                flash(gettext("Required: Relay ID, Relay State, and Relay Duration"),
+                flash(gettext(u"Required: Relay ID, Relay State, and Relay Duration"),
                       "error")
                 return 1
             if not is_positive_integer(form_data.relayDurationSec.data):
@@ -160,23 +160,23 @@ def validate_method_data(form_data, this_method):
             if (not form_data.relayDailyTime.data or
                     not form_data.relayID.data or
                     not form_data.relayState.data):
-                flash(gettext("Required: Time, Relay ID, and Relay State"),
+                flash(gettext(u"Required: Time, Relay ID, and Relay State"),
                       "error")
                 return 1
             try:
                 datetime.strptime(form_data.relayDailyTime.data,
                                   '%H:%M:%S')
             except ValueError:
-                flash(gettext("Invalid Date/Time format. Correct format: "
-                              "HH:MM:SS"), "error")
+                flash(gettext(u"Invalid Date/Time format. Correct format: "
+                              u"HH:MM:SS"), "error")
                 return 1
 
 
 def method_create(form_create_method):
     """ Create new method table entry (all data stored in method_data table) """
-    action = '{action} {controller}'.format(
-        action=gettext("Create"),
-        controller=gettext("Method"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Create"),
+        controller=gettext(u"Method"))
     error = []
 
     try:
@@ -236,9 +236,9 @@ def method_create(form_create_method):
 
 def method_add(form_add_method):
     """ Add line to method_data table """
-    action = '{action} {controller}'.format(
-        action=gettext("Add"),
-        controller=gettext("Method"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Add"),
+        controller=gettext(u"Method"))
     error = []
 
     method = Method.query.filter(Method.id == form_add_method.method_id.data).first()
@@ -260,11 +260,11 @@ def method_add(form_add_method):
 
         elif method.method_type == 'DailyBezier':
             if not 0 <= form_add_method.shiftAngle.data <= 360:
-                flash(gettext("Error: Angle Shift is out of range. It must be "
-                              "<= 0 and <= 360."), "error")
+                flash(gettext(u"Error: Angle Shift is out of range. It must be "
+                              u"<= 0 and <= 360."), "error")
                 return 1
             if form_add_method.x0.data <= form_add_method.x3.data:
-                flash(gettext("Error: X0 must be greater than X3."), "error")
+                flash(gettext(u"Error: X0 must be greater than X3."), "error")
                 return 1
             add_method_data = MethodData.query.filter(
                 MethodData.method_id == form_add_method.method_id.data).first()
@@ -309,10 +309,10 @@ def method_add(form_add_method):
                                                                  '%H:%M:%S')
 
                     if start_time < last_method_end_time:
-                        flash(gettext("The new entry start time (%(st)s) "
-                                      "cannot overlap the last entry's end "
-                                      "time (%(et)s). Note: They may be the "
-                                      "same time.",
+                        flash(gettext(u"The new entry start time (%(st)s) "
+                                      u"cannot overlap the last entry's end "
+                                      u"time (%(et)s). Note: They may be the "
+                                      u"same time.",
                                       st=last_method_end_time,
                                       et=start_time),
                               "error")
@@ -363,29 +363,29 @@ def method_add(form_add_method):
 
         if form_add_method.method_select.data == 'setpoint':
             if method.method_type == 'Date':
-                flash(gettext("Added duration to method from %(st)s to "
-                              "%(end)s", st=start_time, end=end_time),
+                flash(gettext(u"Added duration to method from %(st)s to "
+                              u"%(end)s", st=start_time, end=end_time),
                       "success")
             elif method.method_type == 'Daily':
-                flash(gettext("Added duration to method from %(st)s to "
-                              "%(end)s",
+                flash(gettext(u"Added duration to method from %(st)s to "
+                              u"%(end)s",
                               st=start_time.strftime('%H:%M:%S'),
                               end=end_time.strftime('%H:%M:%S')),
                       "success")
             elif method.method_type == 'Duration':
-                flash(gettext("Added duration to method for %(sec)s seconds",
+                flash(gettext(u"Added duration to method for %(sec)s seconds",
                               sec=form_add_method.DurationSec.data), "success")
         elif form_add_method.method_select.data == 'relay':
             if method.method_type == 'Date':
-                flash(gettext("Added relay modulation to method at start "
-                              "time: %(tm)s", tm=start_time), "success")
+                flash(gettext(u"Added relay modulation to method at start "
+                              u"time: %(tm)s", tm=start_time), "success")
             elif method.method_type == 'Daily':
-                flash(gettext("Added relay modulation to method at start "
-                              "time: %(tm)s",
+                flash(gettext(u"Added relay modulation to method at start "
+                              u"time: %(tm)s",
                               tm=start_time.strftime('%H:%M:%S')), "success")
             elif method.method_type == 'Duration':
-                flash(gettext("Added relay modulation to method at start "
-                              "time: %(tm)s",
+                flash(gettext(u"Added relay modulation to method at start "
+                              u"time: %(tm)s",
                               tm=form_add_method.DurationSec.data), "success")
 
     except Exception as except_msg:
@@ -395,9 +395,9 @@ def method_add(form_add_method):
 
 
 def method_mod(form_mod_method):
-    action = '{action} {controller}'.format(
-        action=gettext("Modify"),
-        controller=gettext("Method"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Modify"),
+        controller=gettext(u"Method"))
     error = []
 
     method = Method.query.filter(
@@ -451,9 +451,9 @@ def method_mod(form_mod_method):
                         previous_method.time_end, '%Y-%m-%d %H:%M:%S')
                     if previous_end_time is not None and start_time < previous_end_time:
                         error.append(
-                            gettext("The entry start time (%(st)s) cannot "
-                                    "overlap the previous entry's end time "
-                                    "(%(et)s)",
+                            gettext(u"The entry start time (%(st)s) cannot "
+                                    u"overlap the previous entry's end time "
+                                    u"(%(et)s)",
                                     st=start_time, et=previous_end_time))
 
                 if next_method is not None and next_method.time_start is not None:
@@ -461,9 +461,9 @@ def method_mod(form_mod_method):
                         next_method.time_start, '%Y-%m-%d %H:%M:%S')
                     if next_start_time is not None and end_time > next_start_time:
                         error.append(
-                            gettext("The entry end time (%(et)s) cannot "
-                                    "overlap the next entry's start time "
-                                    "(%(st)s)",
+                            gettext(u"The entry end time (%(et)s) cannot "
+                                    u"overlap the next entry's start time "
+                                    u"(%(st)s)",
                                     et=end_time, st=next_start_time))
 
                 method_data.time_start = start_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -510,9 +510,9 @@ def method_mod(form_mod_method):
 
 
 def method_del(method_id):
-    action = '{action} {controller}'.format(
-        action=gettext("Delete"),
-        controller=gettext("Method"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Delete"),
+        controller=gettext(u"Method"))
     error = []
 
     try:
@@ -577,8 +577,8 @@ def remote_host_add(form_setup, display_order):
             try:
                 db.session.add(new_remote_host)
                 db.session.commit()
-                flash(gettext("Remote Host %(host)s with ID %(id)s (%(uuid)s)"
-                              " successfully added",
+                flash(gettext(u"Remote Host %(host)s with ID %(id)s (%(uuid)s)"
+                              u" successfully added",
                               host=form_setup.host.data,
                               id=new_remote_host.id,
                               uuid=new_remote_host.unique_id),
@@ -588,13 +588,13 @@ def remote_host_add(form_setup, display_order):
                     display_order, new_remote_host.id)
                 db.session.commit()
             except sqlalchemy.exc.OperationalError as except_msg:
-                flash(gettext("Remote Host Error: %(msg)s", msg=except_msg),
+                flash(gettext(u"Remote Host Error: %(msg)s", msg=except_msg),
                       "error")
             except sqlalchemy.exc.IntegrityError as except_msg:
-                flash(gettext("Remote Host Error: %(msg)s", msg=except_msg),
+                flash(gettext(u"Remote Host Error: %(msg)s", msg=except_msg),
                       "error")
         except Exception as except_msg:
-            flash(gettext("Remote Host Error: %(msg)s", msg=except_msg),
+            flash(gettext(u"Remote Host Error: %(msg)s", msg=except_msg),
                   "error")
     else:
         flash_form_errors(form_setup)
@@ -612,7 +612,7 @@ def remote_host_del(form_setup):
         DisplayOrder.query.first().remote_host = list_to_csv(display_order)
         db.session.commit()
     except Exception as except_msg:
-        flash(gettext("Remote Host Error: %(msg)s", msg=except_msg), "error")
+        flash(gettext(u"Remote Host Error: %(msg)s", msg=except_msg), "error")
 
 
 #
@@ -633,15 +633,15 @@ def manipulate_relay(action, relay_id, setup_pin=False):
     control = DaemonControl()
     return_values = control.relay_setup(action, relay_id, setup_pin)
     if return_values[0]:
-        flash(gettext("Error: %(err)s",
-                      err='{action} Relay: Daemon response: {msg}'.format(
+        flash(gettext(u"Error: %(err)s",
+                      err=u'{action} Relay: Daemon response: {msg}'.format(
                           action=action,
                           msg=return_values[1])),
               "error")
     else:
-        flash(gettext("Success: %(err)s",
-                      err='{action} Relay: Daemon response: {msg}'.format(
-                          action=action,
+        flash(gettext(u"Success: %(err)s",
+                      err=u'{action} Relay: Daemon response: {msg}'.format(
+                          action=gettext(action),
                           msg=return_values[1])),
               "success")
 
@@ -672,10 +672,10 @@ def controller_activate_deactivate(controller_action,
         activated = False
 
     translated_names = {
-        "LCD": gettext("LCD"),
-        "PID": gettext("PID"),
-        "Sensor": gettext("Sensor"),
-        "Timer": gettext("Timer")
+        "LCD": gettext(u"LCD"),
+        "PID": gettext(u"PID"),
+        "Sensor": gettext(u"Sensor"),
+        "Timer": gettext(u"Timer")
     }
 
     mod_controller = None
@@ -700,16 +700,16 @@ def controller_activate_deactivate(controller_action,
         db.session.commit()
 
         if activated:
-            flash(gettext("%(cont)s controller activated in SQL database",
+            flash(gettext(u"%(cont)s controller activated in SQL database",
                           cont=translated_names[controller_type]),
                   "success")
         else:
-            flash(gettext("%(cont)s controller deactivated in SQL database",
+            flash(gettext(u"%(cont)s controller deactivated in SQL database",
                           cont=translated_names[controller_type]),
                   "success")
     except Exception as except_msg:
-        flash(gettext("Error: %(err)s",
-                      err='SQL: {msg}'.format(msg=except_msg)),
+        flash(gettext(u"Error: %(err)s",
+                      err=u'SQL: {msg}'.format(msg=except_msg)),
               "error")
 
     try:
@@ -725,8 +725,8 @@ def controller_activate_deactivate(controller_action,
         else:
             flash("{err}".format(err=return_values[1]), "success")
     except Exception as except_msg:
-        flash(gettext("Error: %(err)s",
-                      err='Daemon: {msg}'.format(msg=except_msg)),
+        flash(gettext(u"Error: %(err)s",
+                      err=u'Daemon: {msg}'.format(msg=except_msg)),
               "error")
 
 
@@ -848,9 +848,9 @@ def choices_id_name(table):
 #
 
 def graph_add(form_add_graph, display_order):
-    action = '{action} {controller}'.format(
-        action=gettext("Add"),
-        controller=gettext("Graph"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Add"),
+        controller=gettext(u"Graph"))
     error = []
 
     if (form_add_graph.name.data and form_add_graph.width.data and
@@ -877,7 +877,7 @@ def graph_add(form_add_graph, display_order):
         try:
             new_graph.save()
             flash(gettext(
-                "Graph with ID %(id)s successfully added",
+                u"Graph with ID %(id)s successfully added",
                 id=new_graph.id),
                 "success")
 
@@ -894,9 +894,9 @@ def graph_add(form_add_graph, display_order):
 
 
 def graph_mod(form_mod_graph, request_form):
-    action = '{action} {controller}'.format(
-        action=gettext("Modify"),
-        controller=gettext("Graph"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Modify"),
+        controller=gettext(u"Graph"))
     error = []
 
     if form_mod_graph.validate():
@@ -910,7 +910,7 @@ def graph_mod(form_mod_graph, request_form):
             if 'color_number' in key:
                 for value in f.getlist(key):
                     if not is_rgb_color(value):
-                        flash(gettext("Invalid hex color value"), "error")
+                        flash(gettext(u"Invalid hex color value"), "error")
                         return redirect(url_for('page_routes.page_graph'))
                     colors[key[12:]] = value
 
@@ -960,9 +960,9 @@ def graph_mod(form_mod_graph, request_form):
 
 
 def graph_del(form_del_graph):
-    action = '{action} {controller}'.format(
-        action=gettext("Delete"),
-        controller=gettext("Graph"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Delete"),
+        controller=gettext(u"Graph"))
     error = []
 
     if form_del_graph.validate():
@@ -981,9 +981,9 @@ def graph_del(form_del_graph):
 
 
 def graph_reorder(graph_id, display_order, direction):
-    action = '{action} {controller}'.format(
-        action=gettext("Reorder"),
-        controller=gettext("Graph"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Reorder"),
+        controller=gettext(u"Graph"))
     error = []
     try:
         status, reord_list = reorder(display_order,
@@ -1004,9 +1004,9 @@ def graph_reorder(graph_id, display_order, direction):
 #
 
 def lcd_add(quantity):
-    action = '{action} {controller}'.format(
-        action=gettext("Add"),
-        controller=gettext("LCD"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Add"),
+        controller=gettext(u"LCD"))
     error = []
     for _ in range(0, quantity):
         try:
@@ -1023,9 +1023,9 @@ def lcd_add(quantity):
 
 
 def lcd_mod(form_mod_lcd):
-    action = '{action} {controller}'.format(
-        action=gettext("Modify"),
-        controller=gettext("LCD"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Modify"),
+        controller=gettext(u"LCD"))
     error = []
 
     if form_mod_lcd.validate():
@@ -1033,8 +1033,8 @@ def lcd_mod(form_mod_lcd):
             mod_lcd = LCD.query.filter(
                 LCD.id == form_mod_lcd.lcd_id.data).first()
             if mod_lcd.is_activated:
-                flash(gettext("Deactivate LCD controller before modifying"
-                              " its settings."), "error")
+                flash(gettext(u"Deactivate LCD controller before modifying"
+                              u" its settings."), "error")
                 return redirect('/lcd')
             mod_lcd = LCD.query.filter(
                 LCD.id == form_mod_lcd.lcd_id.data).first()
@@ -1078,9 +1078,9 @@ def lcd_mod(form_mod_lcd):
 
 
 def lcd_del(form_del_lcd):
-    action = '{action} {controller}'.format(
-        action=gettext("Delete"),
-        controller=gettext("LCD"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Delete"),
+        controller=gettext(u"LCD"))
     error = []
 
     if form_del_lcd.validate():
@@ -1099,9 +1099,9 @@ def lcd_del(form_del_lcd):
 
 
 def lcd_reorder(lcd_id, display_order, direction):
-    action = '{action} {controller}'.format(
-        action=gettext("Reorder"),
-        controller=gettext("LCD"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Reorder"),
+        controller=gettext(u"LCD"))
     error = []
     try:
         status, reord_list = reorder(display_order,
@@ -1118,9 +1118,9 @@ def lcd_reorder(lcd_id, display_order, direction):
 
 
 def lcd_activate(lcd_id):
-    action = '{action} {controller}'.format(
-        action=gettext("Activate"),
-        controller=gettext("LCD"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Activate"),
+        controller=gettext(u"LCD"))
     error = []
 
     try:
@@ -1142,8 +1142,8 @@ def lcd_activate(lcd_id):
         for each_sensor in sensor:
             if not each_sensor.is_activated:
                 flash(gettext(
-                    "Cannot activate controller if the associated "
-                    "sensor controller is inactive"), "error")
+                    u"Cannot activate controller if the associated "
+                    u"sensor controller is inactive"), "error")
                 return redirect('/lcd')
         controller_activate_deactivate(
             'activate',
@@ -1166,9 +1166,9 @@ def lcd_reset_flashing(lcd_id):
     return_value, return_msg = control.flash_lcd(
         lcd_id, 0)
     if return_value:
-        flash(gettext("Success: %(msg)s", msg=return_msg), "success")
+        flash(gettext(u"Success: %(msg)s", msg=return_msg), "success")
     else:
-        flash(gettext("Error: %(msg)s", msg=return_msg), "error")
+        flash(gettext(u"Error: %(msg)s", msg=return_msg), "error")
 
 
 #
@@ -1176,9 +1176,9 @@ def lcd_reset_flashing(lcd_id):
 #
 
 def pid_add(form_add_pid):
-    action = '{action} {controller}'.format(
-        action=gettext("Add"),
-        controller=gettext("PID"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Add"),
+        controller=gettext(u"PID"))
     error = []
 
     if form_add_pid.validate():
@@ -1199,9 +1199,9 @@ def pid_add(form_add_pid):
 
 
 def pid_mod(form_mod_pid):
-    action = '{action} {controller}'.format(
-        action=gettext("Modify"),
-        controller=gettext("PID"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Modify"),
+        controller=gettext(u"PID"))
     error = []
 
     if form_mod_pid.validate():
@@ -1209,7 +1209,7 @@ def pid_mod(form_mod_pid):
             sensor = Sensor.query.filter(
                 Sensor.id == form_mod_pid.sensor_id.data).first()
             if not sensor:
-                error.append(gettext("A valid sensor ID is required"))
+                error.append(gettext(u"A valid sensor ID is required"))
             elif (
                   (sensor.device_type == 'tsensor' and
                    form_mod_pid.measurement.data not in ['temperature']) or
@@ -1240,8 +1240,8 @@ def pid_mod(form_mod_pid):
                                                          'altitude'])
             ):
                 error.append(gettext(
-                    "Select a Measure Type that is compatible with the "
-                    "chosen sensor"))
+                    u"Select a Measure Type that is compatible with the "
+                    u"chosen sensor"))
             if not error:
                 mod_pid = PID.query.filter(
                     PID.id == form_mod_pid.pid_id.data).first()
@@ -1284,7 +1284,7 @@ def pid_mod(form_mod_pid):
                     control = DaemonControl()
                     return_value = control.pid_mod(form_mod_pid.pid_id.data)
                     flash(gettext(
-                        "PID Controller settings refresh response: %(resp)s",
+                        u"PID Controller settings refresh response: %(resp)s",
                         resp=return_value), "success")
         except Exception as except_msg:
             error.append(except_msg)
@@ -1294,9 +1294,9 @@ def pid_mod(form_mod_pid):
 
 
 def pid_del(pid_id):
-    action = '{action} {controller}'.format(
-        action=gettext("Delete"),
-        controller=gettext("PID"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Delete"),
+        controller=gettext(u"PID"))
     error = []
 
     try:
@@ -1318,9 +1318,9 @@ def pid_del(pid_id):
 
 
 def pid_reorder(pid_id, display_order, direction):
-    action = '{action} {controller}'.format(
-        action=gettext("Reorder"),
-        controller=gettext("PID"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Reorder"),
+        controller=gettext(u"PID"))
     error = []
     try:
         status, reord_list = reorder(display_order,
@@ -1342,13 +1342,13 @@ def has_required_pid_values(pid_id):
     error = False
     # TODO: Add more settings-checks before allowing controller to be activated
     if not pid.sensor_id:
-        flash(gettext("A valid sensor is required"), "error")
+        flash(gettext(u"A valid sensor is required"), "error")
         error = True
     if not pid.measurement:
-        flash(gettext("A valid Measure Type is required"), "error")
+        flash(gettext(u"A valid Measure Type is required"), "error")
         error = True
     if not pid.raise_relay_id and not pid.lower_relay_id:
-        flash(gettext("A Raise Relay ID and/or a Lower Relay ID is "
+        flash(gettext(u"A Raise Relay ID and/or a Lower Relay ID is "
                       "required"), "error")
         error = True
     if error:
@@ -1360,8 +1360,8 @@ def pid_activate(pid_id):
         return redirect(url_for('page_routes.page_pid'))
 
     action = '{action} {controller}'.format(
-        action=gettext("Actuate"),
-        controller=gettext("PID"))
+        action=gettext(u"Actuate"),
+        controller=gettext(u"PID"))
     error = []
 
     # Check if associated sensor is activated
@@ -1372,15 +1372,15 @@ def pid_activate(pid_id):
 
     if not sensor.is_activated:
         error.append(gettext(
-            "Cannot activate PID controller if the associated sensor "
-            "controller is inactive"))
+            u"Cannot activate PID controller if the associated sensor "
+            u"controller is inactive"))
 
     if ((pid.direction == 'both' and not (pid.lower_relay_id and pid.raise_relay_id)) or
                 (pid.direction == 'lower' and not pid.lower_relay_id) or
                 (pid.direction == 'raise' and not pid.raise_relay_id)):
         error.append(gettext(
-            "Cannot activate PID controller if raise and/or lower relay IDs "
-            "are not selected"))
+            u"Cannot activate PID controller if raise and/or lower relay IDs "
+            u"are not selected"))
 
     if not error:
         # Signal the duration method can run because it's been
@@ -1412,7 +1412,7 @@ def pid_deactivate(pid_id):
 
 def pid_manipulate(pid_id, action):
     if action not in ['Hold', 'Pause', 'Resume']:
-        flash(gettext("Invalid PID action: %(act)s", act=action), "error")
+        flash(gettext(u"Invalid PID action: %(act)s", act=action), "error")
         return 1
 
     try:
@@ -1437,10 +1437,10 @@ def pid_manipulate(pid_id, action):
             return_value = control.pid_pause(pid_id)
         elif action == 'Resume':
             return_value = control.pid_resume(pid_id)
-        flash(gettext("Daemon response to PID controller %(act)s command: "
-                      "%(rval)s", act=action, rval=return_value), "success")
+        flash(gettext(u"Daemon response to PID controller %(act)s command: "
+                      u"%(rval)s", act=action, rval=return_value), "success")
     except Exception as err:
-        flash(gettext("PID Error: %(msg)s", msg=err), "error")
+        flash(gettext(u"PID Error: %(msg)s", msg=err), "error")
 
 
 #
@@ -1448,36 +1448,36 @@ def pid_manipulate(pid_id, action):
 #
 
 def relay_on_off(form_relay):
-    action = '{action} {controller}'.format(
-        action=gettext("Actuate"),
-        controller=gettext("Relay"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Actuate"),
+        controller=gettext(u"Relay"))
     error = []
 
     try:
         control = DaemonControl()
         if int(form_relay.relay_pin.data) <= 0:
-            error.append(gettext("Cannot modulate relay with a GPIO of 0"))
+            error.append(gettext(u"Cannot modulate relay with a GPIO of 0"))
         elif form_relay.sec_on_submit.data:
             if float(form_relay.sec_on.data) <= 0:
-                error.append(gettext("Value must be greater than 0"))
+                error.append(gettext(u"Value must be greater than 0"))
             else:
                 return_value = control.relay_on(form_relay.relay_id.data,
                                                 float(form_relay.sec_on.data))
-                flash(gettext("Relay turned on for %(sec)s seconds: %(rvalue)s",
+                flash(gettext(u"Relay turned on for %(sec)s seconds: %(rvalue)s",
                               sec=form_relay.sec_on.data,
                               rvalue=return_value),
                       "success")
         elif form_relay.turn_on.data:
             return_value = control.relay_on(form_relay.relay_id.data, 0)
-            flash(gettext("Relay turned on: %(rvalue)s",
+            flash(gettext(u"Relay turned on: %(rvalue)s",
                           rvalue=return_value), "success")
         elif form_relay.turn_off.data:
             return_value = control.relay_off(form_relay.relay_id.data)
-            flash(gettext("Relay turned off: %(rvalue)s",
+            flash(gettext(u"Relay turned off: %(rvalue)s",
                           rvalue=return_value), "success")
     except ValueError as except_msg:
         error.append('{err}: {msg}'.format(
-            err=gettext("Invalid value"),
+            err=gettext(u"Invalid value"),
             msg=except_msg))
     except Exception as except_msg:
         error.append(except_msg)
@@ -1488,16 +1488,16 @@ def relay_on_off(form_relay):
 def conditional_add(cond_type, quantity, sensor_id=None):
     error = []
     if cond_type == 'relay':
-        conditional_type = gettext("Relay")
+        conditional_type = gettext(u"Relay")
     elif cond_type == 'sensor':
-        conditional_type = gettext("Sensor")
+        conditional_type = gettext(u"Sensor")
     else:
         error.append("Unrecognized conditional type: {cond_type}".format(
             cond_type=cond_type))
         conditional_type = None
-    action = '{action} {controller} ({type})'.format(
-        action=gettext("Add"),
-        controller=gettext("Conditional"),
+    action = u'{action} {controller} ({type})'.format(
+        action=gettext(u"Add"),
+        controller=gettext(u"Conditional"),
         type=conditional_type)
 
     if not error:
@@ -1526,16 +1526,16 @@ def conditional_mod(form, mod_type):
     conditional_type = Conditional.query.filter(
         Conditional.id == form.conditional_id.data).first().conditional_type
     if conditional_type == 'relay':
-        cond_type = gettext("Relay")
+        cond_type = gettext(u"Relay")
     elif conditional_type == 'sensor':
-        cond_type = gettext("Sensor")
+        cond_type = gettext(u"Sensor")
     else:
         error.append("Unrecognized conditional type: {cond_type}".format(
             cond_type=form.conditional_type.data))
         cond_type = None
-    action = '{action} {controller} ({cond_type})'.format(
-        action=gettext("Mod"),
-        controller=gettext("Conditional"),
+    action = u'{action} {controller} ({cond_type})'.format(
+        action=gettext(u"Mod"),
+        controller=gettext(u"Conditional"),
         cond_type=cond_type)
 
     if not error:
@@ -1591,16 +1591,16 @@ def conditional_action_add(form):
     conditional_type = Conditional.query.filter(
         Conditional.id == form.conditional_id.data).first().conditional_type
     if conditional_type == 'relay':
-        cond_type = gettext("Relay")
+        cond_type = gettext(u"Relay")
     elif conditional_type == 'sensor':
-        cond_type = gettext("Sensor")
+        cond_type = gettext(u"Sensor")
     else:
         error.append("Unrecognized conditional type: {cond_type}".format(
             cond_type=form.conditional_type.data))
         cond_type = None
-    action = '{action} {controller} ({cond_type})'.format(
-        action=gettext("Add"),
-        controller=gettext("Conditional"),
+    action = u'{action} {controller} ({cond_type})'.format(
+        action=gettext(u"Add"),
+        controller=gettext(u"Conditional"),
         cond_type=cond_type)
 
     try:
@@ -1620,16 +1620,16 @@ def conditional_action_mod(form, mod_type):
     cond = Conditional.query.filter(
         Conditional.id == form.conditional_id.data).first()
     if cond.conditional_type == 'relay':
-        cond_type = gettext("Relay")
+        cond_type = gettext(u"Relay")
     elif cond.conditional_type == 'sensor':
-        cond_type = gettext("Sensor")
+        cond_type = gettext(u"Sensor")
     else:
         error.append("Unrecognized conditional type: {cond_type}".format(
             cond_type=form.conditional_type.data))
         cond_type = None
-    action = '{action} {controller} ({cond_type})'.format(
-        action=gettext("Mod"),
-        controller=gettext("Conditional"),
+    action = u'{action} {controller} ({cond_type})'.format(
+        action=gettext(u"Mod"),
+        controller=gettext(u"Conditional"),
         cond_type=cond_type)
 
     if mod_type == 'delete':
@@ -1712,9 +1712,9 @@ def conditional_deactivate(form):
 #
 
 def relay_add(form_add_relay):
-    action = '{action} {controller}'.format(
-        action=gettext("Add"),
-        controller=gettext("Relay"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Add"),
+        controller=gettext(u"Relay"))
     error = []
 
     if is_int(form_add_relay.relay_quantity.data, check_range=[1, 20]):
@@ -1725,24 +1725,24 @@ def relay_add(form_add_relay):
                 DisplayOrder.query.first().relay = add_display_order(
                     display_order, new_relay.id)
                 db.session.commit()
-                manipulate_relay(gettext('Add'), new_relay.id)
+                manipulate_relay('Add', new_relay.id)
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
                 error.append(except_msg)
     else:
-        error_msg = "{error}. {accepted_values}: 1-20".format(
-            error=gettext("Invalid quantity"),
-            accepted_values=gettext("Acceptable values")
+        error_msg = u"{error}. {accepted_values}: 1-20".format(
+            error=gettext(u"Invalid quantity"),
+            accepted_values=gettext(u"Acceptable values")
         )
         error.append(error_msg)
     flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
 def relay_mod(form_relay):
-    action = '{action} {controller}'.format(
-        action=gettext("Modify"),
-        controller=gettext("Relay"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Modify"),
+        controller=gettext(u"Relay"))
     error = []
 
     if form_relay.validate():
@@ -1758,7 +1758,7 @@ def relay_mod(form_relay):
             mod_relay.trigger = form_relay.trigger.data
             mod_relay.on_at_start = form_relay.on_at_start.data
             db.session.commit()
-            manipulate_relay(gettext('Modify'),
+            manipulate_relay('Modify',
                              form_relay.relay_id.data,
                              setup_pin)
         except Exception as except_msg:
@@ -1769,9 +1769,9 @@ def relay_mod(form_relay):
 
 
 def relay_del(form_relay):
-    action = '{action} {controller}'.format(
-        action=gettext("Delete"),
-        controller=gettext("Relay"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Delete"),
+        controller=gettext(u"Relay"))
     error = []
 
     if form_relay.validate():
@@ -1782,7 +1782,7 @@ def relay_del(form_relay):
             display_order.remove(int(form_relay.relay_id.data))
             DisplayOrder.query.first().relay = list_to_csv(display_order)
             db.session.commit()
-            manipulate_relay(gettext('Delete'), form_relay.relay_id.data)
+            manipulate_relay('Delete', form_relay.relay_id.data)
         except Exception as except_msg:
             error.append(except_msg)
         flash_success_errors(error, action, url_for('page_routes.page_relay'))
@@ -1791,9 +1791,9 @@ def relay_del(form_relay):
 
 
 def relay_reorder(relay_id, display_order, direction):
-    action = '{action} {controller}'.format(
-        action=gettext("Reorder"),
-        controller=gettext("Relay"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Reorder"),
+        controller=gettext(u"Relay"))
     error = []
     try:
         status, reord_list = reorder(display_order,
@@ -1814,9 +1814,9 @@ def relay_reorder(relay_id, display_order, direction):
 #
 
 def sensor_add(form_add_sensor):
-    action = '{action} {controller}'.format(
-        action=gettext("Add"),
-        controller=gettext("Sensor"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Add"),
+        controller=gettext(u"Sensor"))
     error = []
 
     if form_add_sensor.validate():
@@ -1929,7 +1929,7 @@ def sensor_add(form_add_sensor):
                 db.session.commit()
 
                 flash(gettext(
-                    "%(type)s Sensor with ID %(id)s (%(uuid)s) successfully added",
+                    u"%(type)s Sensor with ID %(id)s (%(uuid)s) successfully added",
                     type=form_add_sensor.sensor.data,
                     id=new_sensor.id,
                     uuid=new_sensor.unique_id),
@@ -1944,9 +1944,9 @@ def sensor_add(form_add_sensor):
 
 
 def sensor_mod(form_mod_sensor):
-    action = '{action} {controller}'.format(
-        action=gettext("Modify"),
-        controller=gettext("Sensor"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Modify"),
+        controller=gettext(u"Sensor"))
     error = []
 
     try:
@@ -1958,19 +1958,19 @@ def sensor_mod(form_mod_sensor):
         #         "Invalid device GPIO/I2C address/location"))
         if mod_sensor.is_activated:
             error.append(gettext(
-                "Deactivate sensor controller before modifying its "
-                "settings"))
+                u"Deactivate sensor controller before modifying its "
+                u"settings"))
         if (mod_sensor.device == 'AM2315' and
                 form_mod_sensor.period.data < 7):
             error.append(gettext(
-                "Choose a Read Period equal to or greater than 7. The "
-                "AM2315 may become unresponsive if the period is "
-                "below 7."))
+                u"Choose a Read Period equal to or greater than 7. The "
+                u"AM2315 may become unresponsive if the period is "
+                u"below 7."))
         if ((form_mod_sensor.period.data < mod_sensor.pre_relay_duration) and
                 mod_sensor.pre_relay_duration):
             error.append(gettext(
-                "The Read Period cannot be less than the Pre-Relay "
-                "Duration"))
+                u"The Read Period cannot be less than the Pre-Relay "
+                u"Duration"))
 
         if not error:
             mod_sensor.name = form_mod_sensor.name.data
@@ -2012,9 +2012,9 @@ def sensor_mod(form_mod_sensor):
 
 
 def sensor_del(form_mod_sensor):
-    action = '{action} {controller}'.format(
-        action=gettext("Delete"),
-        controller=gettext("Sensor"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Delete"),
+        controller=gettext(u"Sensor"))
     error = []
 
     try:
@@ -2054,9 +2054,9 @@ def sensor_del(form_mod_sensor):
 
 
 def sensor_reorder(sensor_id, display_order, direction):
-    action = '{action} {controller}'.format(
-        action=gettext("Reorder"),
-        controller=gettext("Sensor"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Reorder"),
+        controller=gettext(u"Sensor"))
     error = []
     try:
         status, reord_list = reorder(display_order,
@@ -2130,9 +2130,9 @@ def check_refresh_conditional(sensor_id, cond_mod):
 #
 
 def timer_add(form_add_timer, timer_type, display_order):
-    action = '{action} {controller}'.format(
-        action=gettext("Add"),
-        controller=gettext("Timer"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Add"),
+        controller=gettext(u"Timer"))
     error = []
 
     if form_add_timer.validate():
@@ -2153,7 +2153,7 @@ def timer_add(form_add_timer, timer_type, display_order):
         elif timer_type == 'duration':
             if (form_add_timer.durationOn.data <= 0 or
                     form_add_timer.durationOff.data <= 0):
-                error.append(gettext("Durations must be greater than 0"))
+                error.append(gettext(u"Durations must be greater than 0"))
             else:
                 new_timer.timer_type = 'duration'
                 new_timer.duration_on = form_add_timer.durationOn.data
@@ -2176,17 +2176,17 @@ def timer_add(form_add_timer, timer_type, display_order):
 
 
 def timer_mod(form_timer):
-    action = '{action} {controller}'.format(
-        action=gettext("Modify"),
-        controller=gettext("Timer"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Modify"),
+        controller=gettext(u"Timer"))
     error = []
 
     try:
         mod_timer = Timer.query.filter(
             Timer.id == form_timer.timer_id.data).first()
         if mod_timer.is_activated:
-            error.append(gettext("Deactivate timer controller before "
-                                 "modifying its settings"))
+            error.append(gettext(u"Deactivate timer controller before "
+                                 u"modifying its settings"))
             return redirect(url_for('page_routes.page_timer'))
         else:
             mod_timer.name = form_timer.name.data
@@ -2213,9 +2213,9 @@ def timer_mod(form_timer):
 
 
 def timer_del(form_timer):
-    action = '{action} {controller}'.format(
-        action=gettext("Delete"),
-        controller=gettext("Timer"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Delete"),
+        controller=gettext(u"Timer"))
     error = []
 
     try:
@@ -2232,9 +2232,9 @@ def timer_del(form_timer):
 
 
 def timer_reorder(timer_id, display_order, direction):
-    action = '{action} {controller}'.format(
-        action=gettext("Reorder"),
-        controller=gettext("Timer"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Reorder"),
+        controller=gettext(u"Timer"))
     error = []
     try:
         status, reord_list = reorder(display_order,
@@ -2265,16 +2265,17 @@ def timer_deactivate(form_timer):
 #
 
 def user_roles(form):
+    action = None
     if form.add_role.data:
-        action = gettext("Add")
+        action = gettext(u"Add")
     elif form.save_role.data:
-        action = gettext("Modify")
+        action = gettext(u"Modify")
     elif form.delete_role.data:
-        action = gettext("Delete")
+        action = gettext(u"Delete")
 
-    action = '{action} {controller}'.format(
+    action = u'{action} {controller}'.format(
         action=action,
-        controller=gettext("User Role"))
+        controller=gettext(u"User Role"))
     error = []
 
     if not error:
@@ -2316,29 +2317,29 @@ def user_roles(form):
 
 
 def user_add(form):
-    action = '{action} {controller}'.format(
-        action=gettext("Add"),
-        controller=gettext("User"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Add"),
+        controller=gettext(u"User"))
     error = []
 
     if form.validate():
         new_user = User()
         if not test_username(form.addUsername.data):
             error.append(gettext(
-                "Invalid user name. Must be between 2 and 64 characters "
-                "and only contain letters and numbers."))
+                u"Invalid user name. Must be between 2 and 64 characters "
+                u"and only contain letters and numbers."))
 
         if User.query.filter_by(email=form.addEmail.data).count():
             error.append(gettext(
-                "Another user already has that email address."))
+                u"Another user already has that email address."))
 
         if not test_password(form.addPassword.data):
             error.append(gettext(
-                "Invalid password. Must be between 6 and 64 characters "
-                "and only contain letters, numbers, and symbols."))
+                u"Invalid password. Must be between 6 and 64 characters "
+                u"and only contain letters, numbers, and symbols."))
 
         if form.addPassword.data != form.addPassword_repeat.data:
-            error.append(gettext("Passwords do not match. Please try again."))
+            error.append(gettext(u"Passwords do not match. Please try again."))
 
         if not error:
             new_user.name = form.addUsername.data
@@ -2361,9 +2362,9 @@ def user_add(form):
 
 
 def user_mod(form):
-    action = '{action} {controller}'.format(
-        action=gettext("Modify"),
-        controller=gettext("User"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Modify"),
+        controller=gettext(u"User"))
     error = []
 
     try:
@@ -2374,7 +2375,7 @@ def user_mod(form):
         logout_user = False
         if form.modPassword.data != '':
             if not test_password(form.modPassword.data):
-                error.append(gettext("Invalid password"))
+                error.append(gettext(u"Invalid password"))
             if form.modPassword.data == form.modPassword_repeat.data:
                 mod_user.password_hash = bcrypt.hashpw(
                     form.modPassword.data.encode('utf-8'),
@@ -2382,7 +2383,7 @@ def user_mod(form):
                 if flask_login.current_user.id == form.user_id.data:
                     logout_user = True
             else:
-                error.append(gettext("Passwords do not match. Please try again."))
+                error.append(gettext(u"Passwords do not match. Please try again."))
 
         if not error:
             role = Role.query.filter(
@@ -2399,6 +2400,7 @@ def user_mod(form):
 
 
 def user_del(form):
+    user_name = None
     try:
         if form.validate():
             user_name = User.query.filter(User.id == form.user_id.data).first().name
@@ -2408,9 +2410,9 @@ def user_del(form):
         else:
             flash_form_errors(form)
     except Exception as except_msg:
-        flash(gettext("Error: %(msg)s",
-                      msg='{action} {user}: {err}'.format(
-                          action=gettext("Delete"),
+        flash(gettext(u"Error: %(msg)s",
+                      msg=u'{action} {user}: {err}'.format(
+                          action=gettext(u"Delete"),
                           user=user_name,
                           err=except_msg)),
               "error")
@@ -2422,9 +2424,9 @@ def user_del(form):
 
 def settings_general_mod(form):
     """ Modify General settings """
-    action = '{action} {controller}'.format(
-        action=gettext("Modify"),
-        controller=gettext("General Settings"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Modify"),
+        controller=gettext(u"General Settings"))
     error = []
 
     if form.validate():
@@ -2475,9 +2477,9 @@ def settings_general_mod(form):
 
 def settings_alert_mod(form_mod_alert):
     """ Modify Alert settings """
-    action = '{action} {controller}'.format(
-        action=gettext("Modify"),
-        controller=gettext("Alert Settings"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Modify"),
+        controller=gettext(u"Alert Settings"))
     error = []
 
     try:
@@ -2489,8 +2491,8 @@ def settings_alert_mod(form_mod_alert):
                     mod_smtp.user, mod_smtp.passw, mod_smtp.email_from,
                     form_mod_alert.testEmailTo.data,
                     "This is a test email from Mycodo")
-                flash(gettext("Test email sent to %(recip)s. Check your "
-                              "inbox to see if it was successful.",
+                flash(gettext(u"Test email sent to %(recip)s. Check your "
+                              u"inbox to see if it was successful.",
                               recip=form_mod_alert.testEmailTo.data),
                       "success")
                 return redirect(url_for('settings_routes.settings_alerts'))
@@ -2513,9 +2515,9 @@ def settings_alert_mod(form_mod_alert):
 
 
 def camera_add(form_camera):
-    action = '{action} {controller}'.format(
-        action=gettext("Add"),
-        controller=gettext("Camera"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Add"),
+        controller=gettext(u"Camera"))
     error = []
 
     if form_camera.validate():
@@ -2540,9 +2542,9 @@ def camera_add(form_camera):
 
 
 def camera_mod(form_camera):
-    action = '{action} {controller}'.format(
-        action=gettext("Modify"),
-        controller=gettext("Camera"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Modify"),
+        controller=gettext(u"Camera"))
     error = []
 
     try:
@@ -2589,9 +2591,9 @@ def camera_mod(form_camera):
 
 
 def camera_del(form_camera):
-    action = '{action} {controller}'.format(
-        action=gettext("Delete"),
-        controller=gettext("Camera"))
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Delete"),
+        controller=gettext(u"Camera"))
     error = []
 
     camera = db_retrieve_table(
@@ -2647,15 +2649,15 @@ def delete_user(user_id):
             User.id == user_id).first()
         user_name = user.name
         user.delete()
-        flash(gettext("Success: %(msg)s",
-                      msg='{action} {user}'.format(
-                          action=gettext("Delete"),
+        flash(gettext(u"Success: %(msg)s",
+                      msg=u'{action} {user}'.format(
+                          action=gettext(u"Delete"),
                           user=user_name)),
               "success")
         return 1
     except sqlalchemy.orm.exc.NoResultFound:
-        flash(gettext("Error: %(err)s",
-                      err=gettext("User not found")),
+        flash(gettext(u"Error: %(err)s",
+                      err=gettext(u"User not found")),
               "error")
         return 0
 
@@ -2667,22 +2669,22 @@ def delete_entry_with_id(table, entry_id):
             table.id == entry_id).first()
         db.session.delete(entries)
         db.session.commit()
-        flash(gettext("Success: %(msg)s",
-                      msg='{action} {id}'.format(
-                          action=gettext("Delete"),
+        flash(gettext(u"Success: %(msg)s",
+                      msg=u'{action} {id}'.format(
+                          action=gettext(u"Delete"),
                           id=entry_id)),
               "success")
         return 1
     except sqlalchemy.orm.exc.NoResultFound:
-        flash(gettext("Error: %(err)s",
-                      err=gettext("Entry with ID %(id)s not found",
+        flash(gettext(u"Error: %(err)s",
+                      err=gettext(u"Entry with ID %(id)s not found",
                                   id=entry_id)),
               "error")
-        flash(gettext("Error: %(msg)s",
-                      msg='{action} {id}: {err}'.format(
-                          action=gettext("Delete"),
+        flash(gettext(u"Error: %(msg)s",
+                      msg=u'{action} {id}: {err}'.format(
+                          action=gettext(u"Delete"),
                           id=entry_id,
-                          err=gettext("Entry with ID %(id)s not found",
+                          err=gettext(u"Entry with ID %(id)s not found",
                                       id=entry_id))),
               "success")
         return 0
@@ -2701,14 +2703,14 @@ def flash_form_errors(form):
 def flash_success_errors(error, action, redirect_url):
     if error:
         for each_error in error:
-            flash(gettext("Error: %(msg)s",
-                          msg='{action}: {err}'.format(
+            flash(gettext(u"Error: %(msg)s",
+                          msg=u'{action}: {err}'.format(
                               action=action,
                               err=each_error)),
                   "error")
         return redirect(redirect_url)
     else:
-        flash(gettext("Success: %(msg)s",
+        flash(gettext(u"Success: %(msg)s",
                       msg=action),
               "success")
 
@@ -2784,11 +2786,11 @@ def reorder_list(modified_list, item, direction):
     from_position = modified_list.index(item)
     if direction == "up":
         if from_position == 0:
-            return 'error', gettext('Cannot move above the first item in the list')
+            return 'error', gettext(u'Cannot move above the first item in the list')
         to_position = from_position - 1
     elif direction == 'down':
         if from_position == len(modified_list) - 1:
-            return 'error', gettext('Cannot move below the last item in the list')
+            return 'error', gettext(u'Cannot move below the last item in the list')
         to_position = from_position + 1
     else:
         return 'error', []
