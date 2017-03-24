@@ -106,9 +106,10 @@ class BME280Sensor(AbstractSensor):
         """ Gets the measurement in units by reading the """
         time.sleep(2)
         temperature, humidity, pressure = self.read_bme280_all()
-        alt = altitude(pressure)
+        pressure_pa = pressure * 100  # Correct units, Pa = hPa * 100
+        alt = altitude(pressure_pa)
         dew_pt = dewpoint(temperature, humidity)
-        return alt, dew_pt, humidity, pressure, temperature
+        return alt, dew_pt, humidity, pressure_pa, temperature
 
     def read(self):
         """
