@@ -235,9 +235,10 @@
           {{form_add_graph.width.label(class_='control-label')}}
           <div>
             <select class="form-control" id="width" name="width">
-              {% for n in range(12) %}
+              {% for n in range(11) %}
                 <option value="{{loop.index}}">{{loop.index}}/12</option>
               {% endfor %}
+              <option value="12" selected>12/12</option>
             </select>
           </div>
         </div>
