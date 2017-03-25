@@ -215,26 +215,30 @@ class RelayController(threading.Thread):
                 time_now = datetime.datetime.now()
                 if self.is_on(relay_id) and self.relay_on_duration[relay_id]:
                     if self.relay_on_until[relay_id] > time_now:
-                        remaining_time = (self.relay_on_until[relay_id]-time_now).total_seconds()
+                        remaining_time = (self.relay_on_until[relay_id] - time_now).total_seconds()
                     else:
                         remaining_time = 0
                     time_on = self.relay_last_duration[relay_id] - remaining_time
-                    self.logger.debug("Relay {} ({}) is already "
-                                      "on for a duration of {:.1f} seconds (with "
-                                      "{:.1f} seconds remaining). Recording the "
-                                      "amount of time the relay has been on ({:.1f} "
-                                      "sec) and updating the on duration to {:.1f} "
-                                      "seconds.".format(self.relay_id[relay_id],
-                                                        self.relay_name[relay_id],
-                                                        self.relay_last_duration[relay_id],
-                                                        remaining_time,
-                                                        time_on,
-                                                        duration))
+                    self.logger.debug(
+                        "Relay {rid} ({rname}) is already on for a duration "
+                        "of {ron:.1f} seconds (with {rremain:.1f} seconds "
+                        "remaining). Recording the amount of time the relay "
+                        "has been on ({rbeenon:.1f} sec) and updating the on "
+                        "duration to {rnewon:.1f} seconds.".format(
+                            rid=self.relay_id[relay_id],
+                            rname=self.relay_name[relay_id],
+                            ron=self.relay_last_duration[relay_id],
+                            rremain=remaining_time,
+                            rbeenon=time_on,
+                            rnewon=duration))
+                    self.relay_on_until[relay_id] = time_now + datetime.timedelta(seconds=duration)
+                    self.relay_last_duration[relay_id] = duration
+
                     if time_on > 0:
                         # Write the duration the relay was ON to the
                         # database at the timestamp it turned ON
                         duration = float(time_on)
-                        timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
+                        timestamp = datetime.datetime.utcnow() - datetime.timedelta(seconds=duration)
                         write_db = threading.Thread(
                             target=write_influxdb_value,
                             args=(self.relay_unique_id[relay_id],
@@ -243,12 +247,10 @@ class RelayController(threading.Thread):
                                   timestamp,))
                         write_db.start()
 
-                    self.relay_on_until[relay_id] = time_now+datetime.timedelta(seconds=duration)
-                    self.relay_last_duration[relay_id] = duration
                     return 0
                 elif self.is_on(relay_id) and not self.relay_on_duration:
                     self.relay_on_duration[relay_id] = True
-                    self.relay_on_until[relay_id] = time_now+datetime.timedelta(seconds=duration)
+                    self.relay_on_until[relay_id] = time_now + datetime.timedelta(seconds=duration)
                     self.relay_last_duration[relay_id] = duration
 
                     self.logger.debug("Relay {} ({}) is currently"
@@ -259,7 +261,7 @@ class RelayController(threading.Thread):
                                                         duration))
                     return 0
                 else:
-                    self.relay_on_until[relay_id] = time_now+datetime.timedelta(seconds=duration)
+                    self.relay_on_until[relay_id] = time_now + datetime.timedelta(seconds=duration)
                     self.relay_on_duration[relay_id] = True
                     self.relay_last_duration[relay_id] = duration
                     self.logger.debug("Relay {} ({}) on for {:.1f} "

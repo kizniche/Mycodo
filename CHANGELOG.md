@@ -1,3 +1,10 @@
+## 5.0.14 (Unreleased)
+
+### Bugfixes
+
+  - Fix relays not recording proper ON duration (which causes other issues) ([#223](https://github.com/kizniche/mycodo/issues/223))
+  - Fix new graphs occupying 100% width (12/12 columns)
+
 ## 5.0.13 (2017-03-24)
 
 ### Bugfixes

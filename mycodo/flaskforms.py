@@ -218,8 +218,7 @@ class GraphAdd(FlaskForm):
     relayIDs = SelectMultipleField(lazy_gettext(u'Relay IDs'))
     sensorIDs = SelectMultipleField(lazy_gettext(u'Sensor IDs'))
     width = IntegerField(
-        lazy_gettext(u'Width (%)'),
-        render_kw={"placeholder": lazy_gettext(u"Percent Width")},
+        lazy_gettext(u'Width'),
         validators=[validators.NumberRange(
             min=1,
             max=12
@@ -268,8 +267,7 @@ class GraphMod(FlaskForm):
     relayIDs = SelectMultipleField(lazy_gettext(u'Relay IDs'))
     sensorIDs = SelectMultipleField(lazy_gettext(u'Sensor IDs'))
     width = IntegerField(
-        lazy_gettext(u'Width (%)'),
-        render_kw={"placeholder": lazy_gettext(u"Percent Width")},
+        lazy_gettext(u'Width'),
         validators=[validators.NumberRange(
             min=1,
             max=12

@@ -391,7 +391,7 @@ class SensorController(threading.Thread):
                     for each_cond_id in self.cond_id:
                         if self.cond_is_activated[each_cond_id]:
                             if time.time() > self.cond_timer[each_cond_id]:
-                                self.cond_timer[each_cond_id] = time.time()+self.cond_if_sensor_period[each_cond_id]
+                                self.cond_timer[each_cond_id] = time.time() + self.cond_if_sensor_period[each_cond_id]
                                 self.check_conditionals(each_cond_id)
 
                 time.sleep(0.1)
@@ -448,10 +448,7 @@ class SensorController(threading.Thread):
         cond = db_retrieve_table_daemon(
             Conditional, device_id=cond_id, entry='first')
 
-        now = time.time()
-        timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
-        message = "\n({ts})\n[Sensor Conditional: {name} ({id})]".format(
-            ts=timestamp,
+        message = "[Sensor Conditional: {name} ({id})]".format(
             name=cond.name,
             id=cond_id)
 
@@ -463,7 +460,7 @@ class SensorController(threading.Thread):
                      (cond.if_sensor_direction == 'below' and
                         last_measurement < cond.if_sensor_setpoint))):
 
-                message += "\n{meas}: {value} ".format(
+                message += " {meas}: {value} ".format(
                     meas=cond.if_sensor_measurement,
                     value=last_measurement)
                 if cond.if_sensor_direction == 'above':
@@ -476,11 +473,11 @@ class SensorController(threading.Thread):
                 return 1
         elif cond.if_sensor_edge_detected:
             if cond.if_sensor_edge_select == 'edge':
-                message += "\n{edge} Edge Detected.".format(
+                message += " {edge} Edge Detected.".format(
                     edge=cond.if_sensor_edge_detected)
             elif cond.if_sensor_edge_select == 'state':
                 if GPIO.input(int(self.location)) == cond.if_sensor_gpio_state:
-                    message += "\n{state} GPIO State Detected.".format(
+                    message += " {state} GPIO State Detected.".format(
                         state=cond.if_sensor_gpio_state)
                 else:
                     return 0
@@ -490,18 +487,18 @@ class SensorController(threading.Thread):
             ConditionalActions.conditional_id == cond_id).all()
 
         for cond_action in cond_actions:
-            message += "\nConditional Action ({id}): {do_action}".format(
+            message += " Conditional Action ({id}): {do_action}.".format(
                 id=cond_action.id, do_action=cond_action.do_action)
 
             # Actuate relay
             if (cond_action.do_relay_id and
                     cond_action.do_relay_state in ['on', 'off']):
-                message += "\n  Turn relay {id} {state}".format(
+                message += " Turn relay {id} {state}".format(
                         id=cond_action.do_relay_id,
                         state=cond_action.do_relay_state)
                 if (cond_action.do_relay_state == 'on' and
                         cond_action.do_relay_duration):
-                    message += " for {sec} seconds".format(
+                    message += " for {sec} seconds.".format(
                         sec=cond_action.do_relay_duration)
                 message += ". "
                 relay_on_off = threading.Thread(
@@ -513,14 +510,14 @@ class SensorController(threading.Thread):
 
             # Execute command in shell
             elif cond_action.do_action == 'command':
-                message += "\n  Execute '{com}'. ".format(
+                message += " Execute '{com}' ".format(
                         com=cond_action.do_action_string)
                 _, _, cmd_status = cmd_output(cond_action.do_action_string)
-                message += "Status: {stat}. ".format(stat=cmd_status)
+                message += "(Status: {stat}).".format(stat=cmd_status)
 
             # Capture photo
             elif cond_action.do_action in 'photo':
-                message += "\n  Capturing photo with camera ({id}).".format(
+                message += "  Capturing photo with camera ({id}).".format(
                     id=cond_action.do_camera_id)
                 camera_still = db_retrieve_table_daemon(
                     Camera, device_id=cond_action.do_camera_id)
@@ -529,7 +526,7 @@ class SensorController(threading.Thread):
 
             # Capture video
             elif cond_action.do_action == 'video':
-                message += "\n  Capturing video with camera ({id}).".format(
+                message += "  Capturing video with camera ({id}).".format(
                     id=cond_action.do_camera_id)
                 camera_stream = db_retrieve_table_daemon(
                     Camera, device_id=cond_action.do_camera_id)
@@ -549,12 +546,12 @@ class SensorController(threading.Thread):
 
             # Activate PID controller
             elif cond_action.do_action == 'activate_pid':
-                message += "\n  Activate PID ({id}).".format(
+                message += " Activate PID ({id}).".format(
                     id=cond_action.do_pid_id)
                 pid = db_retrieve_table_daemon(
                     PID, device_id=cond_action.do_pid_id, entry='first')
                 if pid.is_activated:
-                    message += " PID is already active!"
+                    message += " Notice: PID is already active!"
                 else:
                     activate_pid = threading.Thread(
                         target=self.control.controller_activate,
@@ -564,12 +561,12 @@ class SensorController(threading.Thread):
 
             # Deactivate PID controller
             elif cond_action.do_action == 'deactivate_pid':
-                message += "\n  Deactivate PID ({id}).".format(
+                message += " Deactivate PID ({id}).".format(
                     id=cond_action.do_pid_id)
                 pid = db_retrieve_table_daemon(
                     PID, device_id=cond_action.do_pid_id, entry='first')
                 if not pid.is_activated:
-                    message += " PID is already inactive!"
+                    message += " Notice: PID is already inactive!"
                 else:
                     deactivate_pid = threading.Thread(
                         target=self.control.controller_deactivate,
@@ -590,15 +587,15 @@ class SensorController(threading.Thread):
 
                 # If the emails per hour limit has not been exceeded
                 if self.allowed_to_send_notice:
-                    message += "\n  Notify {}.".format(
+                    message += " Notify {}.".format(
                             cond_action.do_action_string)
                     # attachment_type != False indicates to
                     # attach a photo or video
                     if cond_action.do_action == 'photo_email':
-                        message += "\n  Photo attached."
+                        message += " Photo attached to email."
                         attachment_type = 'still'
                     elif cond_action.do_action == 'video_email':
-                        message += "\n  Video attached."
+                        message += " Video attached to email."
                         attachment_type = 'video'
 
                     smtp = db_retrieve_table_daemon(SMTP, entry='first')
@@ -613,7 +610,7 @@ class SensorController(threading.Thread):
                             self.smtp_wait_timer[cond_id]-time.time()))
 
             elif cond_action.do_action == 'flash_lcd':
-                message += "\n  Flashing LCD ({id}).".format(
+                message += " Flashing LCD ({id}).".format(
                     id=cond_action.do_lcd_id)
                 start_flashing = threading.Thread(
                     target=self.control.flash_lcd,

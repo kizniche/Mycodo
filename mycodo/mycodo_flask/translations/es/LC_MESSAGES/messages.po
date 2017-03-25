@@ -294,12 +294,8 @@ msgid "Sensor IDs"
 msgstr "IDs Sensores"
 
 #: flaskforms.py:221 flaskforms.py:271
-msgid "Width (%)"
-msgstr "Ancho (%)"
-
-#: flaskforms.py:222 flaskforms.py:272
-msgid "Percent Width"
-msgstr "Porcentaje del Ancho"
+msgid "Width"
+msgstr "Ancho"
 
 #: flaskforms.py:229 flaskforms.py:279
 msgid "Height (pixels)"
