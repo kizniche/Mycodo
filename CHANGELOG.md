@@ -1,7 +1,12 @@
-## 5.0.14 (Unreleased)
+## 5.0.14 (2017-03-25)
+
+### Features
+
+  - Add BH1750 I2C light sensor ([#224](https://github.com/kizniche/mycodo/issues/224))
 
 ### Bugfixes
 
+  - Change default opencv values for new cameras ([#225](https://github.com/kizniche/mycodo/issues/225))
   - Fix relays not recording proper ON duration (which causes other issues) ([#223](https://github.com/kizniche/mycodo/issues/223))
   - Fix new graphs occupying 100% width (12/12 columns)
 

@@ -19,6 +19,8 @@ class Sensor(CRUDMixin, db.Model):
     i2c_bus = db.Column(db.Integer, default='')  # I2C bus the sensor is connected to
     location = db.Column(db.Text, default='')  # GPIO pin or i2c address to communicate with sensor
     power_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to power sensor
+    resolution = db.Column(db.Integer, default=0)
+    sensitivity = db.Column(db.Integer, default=0)
     measurements = db.Column(db.Text, default='')  # Measurements separated by commas
     multiplexer_address = db.Column(db.Text, default=None)
     multiplexer_bus = db.Column(db.Integer, default=1)

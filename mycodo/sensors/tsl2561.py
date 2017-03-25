@@ -7,7 +7,7 @@ logger = logging.getLogger("mycodo.sensors.tsl2561")
 
 
 class TSL2561Sensor(AbstractSensor):
-    """ A sensor support class that monitors the DS18B20's lux """
+    """ A sensor support class that monitors the TSL2561's lux """
 
     def __init__(self, address, bus):
         super(TSL2561Sensor, self).__init__()
@@ -48,7 +48,7 @@ class TSL2561Sensor(AbstractSensor):
         return self._lux
 
     def get_measurement(self):
-        """ Gets the DS18B20's lux in Celsius by reading the temp file and div by 1000"""
+        """ Gets the TSL2561's lux """
         tsl = TSL2561.TSL2561(self.i2c_address, "/dev/i2c-" + str(self.i2c_bus))
         tsl.enable_autogain()
         # tsl.set_gain(16)

@@ -1900,10 +1900,15 @@ def sensor_add(form_add_sensor):
                     new_sensor.location = '0x77'
 
             # Light
-            elif form_add_sensor.sensor.data == 'TSL2561':
+            elif form_add_sensor.sensor.data in ['BH1750', 'TSL2561']:
                 new_sensor.device_type = 'luxsensor'
                 new_sensor.measurements = 'lux'
-                new_sensor.location = '0x39'
+                if form_add_sensor.sensor.data == 'BH1750':
+                    new_sensor.location = '0x23'
+                    new_sensor.resolution = 0  # 0=Low, 1=High, 2=High2
+                    new_sensor.sensitivity = 69
+                elif form_add_sensor.sensor.data == 'TSL2561':
+                    new_sensor.location = '0x39'
 
             # Analog to Digital Converters
             elif form_add_sensor.sensor.data in ['ADS1x15', 'MCP342x']:
@@ -2001,6 +2006,8 @@ def sensor_mod(form_mod_sensor):
                 mod_sensor.pre_relay_id = None
             mod_sensor.pre_relay_duration = form_mod_sensor.modPreRelayDuration.data
             mod_sensor.period = form_mod_sensor.period.data
+            mod_sensor.resolution = form_mod_sensor.modResolution.data
+            mod_sensor.sensitivity = form_mod_sensor.modSensitivity.data
             mod_sensor.sht_clock_pin = form_mod_sensor.modSHTClockPin.data
             mod_sensor.sht_voltage = form_mod_sensor.modSHTVoltage.data
             db.session.commit()

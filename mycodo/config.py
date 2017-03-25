@@ -6,8 +6,8 @@ import os
 import collections
 from datetime import timedelta
 
-MYCODO_VERSION = '5.0.13'
-ALEMBIC_VERSION = '059a47f950b8'
+MYCODO_VERSION = '5.0.14'
+ALEMBIC_VERSION = 'f1c6b2901d45'
 
 LANGUAGES = {
     'en': 'English',
@@ -25,6 +25,7 @@ MEASUREMENTS = {
     'ADS1x15': ['voltage'],
     'AM2315': ['dewpoint', 'humidity', 'temperature'],
     'ATLAS_PT1000': ['temperature'],
+    'BH1750': ['lux'],
     'BME280': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature'],
     'BMP': ['temperature'],
     'CHIRP': ['lux', 'moisture', 'temperature'],
@@ -92,6 +93,7 @@ SENSORS = [
     ('MCP342x', 'Analog-to-Digital Converter: MCP342x'),
     ('EDGE', 'Edge Detection: Simple Switch'),
     ('K30', 'CO2: K30'),
+    ('BH1750', 'Luminance: BH1750'),
     ('TSL2561', 'Luminance: TSL2561'),
     ('CHIRP', 'Moisture: Chirp'),
     ('BME280', 'Pressure/Temperature/Humidity: BME 280'),

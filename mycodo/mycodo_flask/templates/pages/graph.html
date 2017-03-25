@@ -81,8 +81,8 @@
               {{form_mod_graph.width.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="width" name="width">
-                  {% for n in range(11) %}
-                    <option value="{{loop.index}}"{%- if each_graph.width == loop.index %} selected{%- endif -%}>{{loop.index}}/12</option>
+                  {% for n in range(1, 12) %}
+                    <option value="{{n}}"{%- if each_graph.width == n %} selected{%- endif -%}>{{n}}/12</option>
                   {% endfor %}
                   <option value="12"{%- if each_graph.width == 12 or each_graph.width > 12 or each_graph.width < 1 %} selected{%- endif -%}>12/12</option>
                 </select>
@@ -235,8 +235,8 @@
           {{form_add_graph.width.label(class_='control-label')}}
           <div>
             <select class="form-control" id="width" name="width">
-              {% for n in range(11) %}
-                <option value="{{loop.index}}">{{loop.index}}/12</option>
+              {% for n in range(1, 12) %}
+                <option value="{{n}}">{{n}}/12</option>
               {% endfor %}
               <option value="12" selected>12/12</option>
             </select>

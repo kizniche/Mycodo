@@ -49,6 +49,7 @@ from devices.mcp342x import MCP342xRead
 from sensors.mycodo_ram import MycodoRam
 from sensors.atlas_pt1000 import AtlasPT1000Sensor
 from sensors.am2315 import AM2315Sensor
+from sensors.bh1750 import BH1750Sensor
 from sensors.bme280 import BME280Sensor
 from sensors.bmp import BMPSensor
 from sensors.chirp import ChirpSensor
@@ -119,6 +120,7 @@ class SensorController(threading.Thread):
             'ADS1x15',
             'AM2315',
             'ATLAS_PT1000',
+            'BH1750',
             'BME280',
             'BMP',
             'CHIRP',
@@ -171,6 +173,8 @@ class SensorController(threading.Thread):
         self.measurements = sensor.measurements
         self.device = sensor.device
         self.period = sensor.period
+        self.resolution = sensor.resolution
+        self.sensitivity = sensor.sensitivity
         self.multiplexer_address_raw = sensor.multiplexer_address
         self.multiplexer_bus = sensor.multiplexer_bus
         self.multiplexer_channel = sensor.multiplexer_channel
@@ -269,6 +273,11 @@ class SensorController(threading.Thread):
         elif self.device == 'ATLAS_PT1000':
             self.measure_sensor = AtlasPT1000Sensor(self.i2c_address,
                                                     self.i2c_bus)
+        elif self.device == 'BH1750':
+            self.measure_sensor = BH1750Sensor(self.i2c_address,
+                                               self.i2c_bus,
+                                               self.resolution,
+                                               self.sensitivity)
         elif self.device == 'BME280':
             self.measure_sensor = BME280Sensor(self.i2c_address,
                                                self.i2c_bus)
@@ -498,9 +507,9 @@ class SensorController(threading.Thread):
                         state=cond_action.do_relay_state)
                 if (cond_action.do_relay_state == 'on' and
                         cond_action.do_relay_duration):
-                    message += " for {sec} seconds.".format(
+                    message += " for {sec} seconds".format(
                         sec=cond_action.do_relay_duration)
-                message += ". "
+                message += "."
                 relay_on_off = threading.Thread(
                     target=self.control.relay_on_off,
                     args=(cond_action.do_relay_id,
