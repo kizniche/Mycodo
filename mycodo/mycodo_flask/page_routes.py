@@ -161,17 +161,22 @@ def page_camera():
                 flash(gettext(
                     u"Cannot start stream if time-lapse is active."))
                 return redirect('/camera')
-            if CameraStream().is_running():
+            elif CameraStream().is_running():
                 flash(gettext(
                     u"Cannot start stream. The stream is already running."))
                 return redirect('/camera')
-            if (not (mod_camera.camera_type == 'Raspberry Pi' and
-                     mod_camera.library == 'picamera')):
+            elif (not (mod_camera.camera_type == 'Raspberry Pi' and
+                       mod_camera.library == 'picamera')):
                 flash(gettext(u"Streaming is only supported with the Raspberry"
                               u" Pi camera using the picamera library."))
                 return redirect('/camera')
-            mod_camera.stream_started = True
-            db.session.commit()
+            elif Camera.query.filter_by(stream_started=True).count():
+                flash(gettext(u"Cannot start stream if another stream is "
+                              u"already in progress."))
+                return redirect('/camera')
+            else:
+                mod_camera.stream_started = True
+                db.session.commit()
         elif form_camera.stop_stream.data:
             if CameraStream().is_running():
                 CameraStream().terminate_controller()
