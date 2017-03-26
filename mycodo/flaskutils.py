@@ -57,7 +57,9 @@ from mycodo.utils.system_pi import (
 from mycodo.config import (
     CAMERAS,
     DEVICES_DEFAULT_LOCATION,
-    INSTALL_DIRECTORY
+    INSTALL_DIRECTORY,
+    MEASUREMENT_UNITS,
+    MEASUREMENTS
 )
 
 logger = logging.getLogger(__name__)
@@ -739,92 +741,20 @@ def choices_sensors(sensor):
     choices = OrderedDict()
     # populate form multi-select choices for sensors and measurements
     for each_sensor in sensor:
-        if each_sensor.device == 'MYCODO_RAM':
-            value = '{},disk_space'.format(each_sensor.unique_id)
-            display = '{} ({}) Daemon Ram Use (MB)'.format(
-                each_sensor.id, each_sensor.name)
+        for each_measurement in MEASUREMENTS[each_sensor.device]:
+            value = '{dev_id},{measure}'.format(dev_id=each_sensor.unique_id,
+                                                measure=each_measurement)
+            display = '{dev_id} ({dev_name}) {name} ({unit})'.format(
+                dev_id=each_sensor.id,
+                dev_name=each_sensor.name,
+                name=MEASUREMENT_UNITS[each_measurement]['name'],
+                unit=MEASUREMENT_UNITS[each_measurement]['unit'])
             choices.update({value: display})
-        if each_sensor.device == 'RPiCPULoad':
-            value = '{},cpu_load_1m'.format(each_sensor.unique_id)
-            display = '{} ({}) CPU Load (1m)'.format(
-                each_sensor.id, each_sensor.name)
-            choices.update({value: display})
-            value = '{},cpu_load_5m'.format(each_sensor.unique_id)
-            display = '{} ({}) CPU Load (5m)'.format(
-                each_sensor.id, each_sensor.name)
-            choices.update({value: display})
-            value = '{},cpu_load_15m'.format(each_sensor.unique_id)
-            display = '{} ({}) CPU Load (15m)'.format(
-                each_sensor.id, each_sensor.name)
-            choices.update({value: display})
-        if each_sensor.device == 'RPiFreeSpace':
-            value = '{},disk_space'.format(each_sensor.unique_id)
-            display = '{} ({}) Free Space'.format(
-                each_sensor.id, each_sensor.name)
-            choices.update({value: display})
-        if each_sensor.device == 'CHIRP':
-            value = '{},moisture'.format(each_sensor.unique_id)
-            display = '{} ({}) Moisture'.format(
-                each_sensor.id, each_sensor.name)
-            choices.update({value: display})
-        if each_sensor.device in ['AM2315', 'ATLAS_PT1000', 'BME280', 'BMP',
-                                  'CHIRP', 'DHT11', 'DHT22', 'DS18B20',
-                                  'HTU21D', 'RPi', 'SHT1x_7x', 'SHT2x']:
-            value = '{},temperature'.format(each_sensor.unique_id)
-            display = '{} ({}) Temperature'.format(
-                each_sensor.id, each_sensor.name)
-            choices.update({value: display})
-        if each_sensor.device == 'TMP006':
-            value = '{},temperature_object'.format(each_sensor.unique_id)
-            display = '{} ({}) Temperature (Object)'.format(
-                each_sensor.id, each_sensor.name)
-            choices.update({value: display})
-            value = '{},temperature_die'.format(each_sensor.unique_id)
-            display = '{} ({}) Temperature (Die)'.format(
-                each_sensor.id, each_sensor.name)
-            choices.update({value: display})
-        if each_sensor.device in ['AM2315', 'BME280', 'DHT11', 'DHT22', 'HTU21D',
-                                  'SHT1x_7x', 'SHT2x']:
-            value = '{},humidity'.format(each_sensor.unique_id)
-            display = '{} ({}) Humidity'.format(
-                each_sensor.id, each_sensor.name)
-            choices.update({value: display})
-            value = '{},dewpoint'.format(each_sensor.unique_id)
-            display = '{} ({}) Dew Point'.format(
-                each_sensor.id, each_sensor.name)
-            choices.update({value: display})
-        if each_sensor.device == 'K30':
-            value = '{},co2'.format(each_sensor.unique_id)
-            display = '{} ({}) CO2'.format(
-                each_sensor.id, each_sensor.name)
-            choices.update({value: display})
-        if each_sensor.device in ['BME280', 'BMP']:
-            value = '{},pressure'.format(each_sensor.unique_id)
-            display = '{} ({}) Pressure'.format(
-                each_sensor.id, each_sensor.name)
-            choices.update({value: display})
-            value = '{},altitude'.format(each_sensor.unique_id)
-            display = '{} ({}) Altitude'.format(
-                each_sensor.id, each_sensor.name)
-            choices.update({value: display})
-        if each_sensor.device == 'EDGE':
-            value = '{},edge'.format(each_sensor.unique_id)
-            display = '{} ({}) Edge'.format(
-                each_sensor.id, each_sensor.name)
-            choices.update({value: display})
+        # Display custom converted units for ADCs
         if each_sensor.device in ['ADS1x15', 'MCP342x']:
-            value = '{},voltage'.format(each_sensor.unique_id)
-            display = '{} ({}) Volts'.format(
-                each_sensor.id, each_sensor.name)
-            choices.update({value: display})
             value = '{},{}'.format(each_sensor.unique_id, each_sensor.adc_measure)
             display = '{} ({}) {}'.format(
                 each_sensor.id, each_sensor.name, each_sensor.adc_measure)
-            choices.update({value: display})
-        if each_sensor.device in ['CHIRP', 'TSL2561']:
-            value = '{},lux'.format(each_sensor.unique_id)
-            display = '{} ({}) Lux'.format(
-                each_sensor.id, each_sensor.name)
             choices.update({value: display})
     return choices
 

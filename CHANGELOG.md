@@ -1,3 +1,10 @@
+## 5.0.16 (Unreleased)
+
+### Bugfixes
+
+  - Fix measurements export
+  - Fix display of BMP and BH1750 sensor measurements in sensor lists (graphs/export)
+
 ## 5.0.14 (2017-03-25)
 
 ### Features

@@ -27,7 +27,7 @@ MEASUREMENTS = {
     'ATLAS_PT1000': ['temperature'],
     'BH1750': ['lux'],
     'BME280': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature'],
-    'BMP': ['temperature'],
+    'BMP': ['altitude', 'pressure', 'temperature'],
     'CHIRP': ['lux', 'moisture', 'temperature'],
     'DHT11': ['dewpoint', 'humidity', 'temperature'],
     'DHT22': ['dewpoint', 'humidity', 'temperature'],

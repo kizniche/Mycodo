@@ -250,15 +250,8 @@ def page_export():
         end_seconds = int(time.mktime(
             time.strptime(end_time, '%m/%d/%Y %H:%M')))
 
-        device_id = export_options.measurement.data.split(',')[0]
+        unique_id = export_options.measurement.data.split(',')[0]
         measurement = export_options.measurement.data.split(',')[1]
-
-        if measurement == 'duration_sec':
-            unique_id = db_retrieve_table_daemon(
-                Relay, device_id=device_id).unique_id
-        else:
-            unique_id = db_retrieve_table_daemon(
-                Sensor, device_id=device_id).unique_id
 
         url = '/export_data/{meas}/{id}/{start}/{end}'.format(
             meas=measurement,
