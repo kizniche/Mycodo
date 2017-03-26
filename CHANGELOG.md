@@ -1,10 +1,14 @@
-## 5.0.16 (Unreleased)
+## 5.0.15 (Unreleased)
 
 ### Bugfixes
 
   - Fix inability to delete LCD ([#229](https://github.com/kizniche/mycodo/issues/229))
   - Fix measurements export
   - Fix display of BMP and BH1750 sensor measurements in sensor lists (graphs/export)
+
+### Miscellaneous
+
+  - Better exception-handling (clean up logging of influxdb measurement errors)
 
 ## 5.0.14 (2017-03-25)
 

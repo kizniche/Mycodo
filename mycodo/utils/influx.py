@@ -113,8 +113,14 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
             last_time = last_measurement['series'][0]['values'][number - 1][0]
             last_measurement = last_measurement['series'][0]['values'][number - 1][1]
             return [last_time, last_measurement]
+        except KeyError:
+            if duration_sec:
+                logger.error("No measurement available in the past "
+                             "{sec} seconds.".format(sec=duration_sec))
+            else:
+                logger.error("No measurement available.")
         except Exception:
-            logger.exception("ERROR parsing last influx measurement")
+            logger.exception("Error parsing the last influx measurement")
 
 
 def relay_sec_on(relay_id, past_seconds):
