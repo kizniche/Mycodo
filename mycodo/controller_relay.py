@@ -101,8 +101,9 @@ class RelayController(threading.Thread):
     def run(self):
         try:
             self.running = True
-            self.logger.info("Relay controller activated in "
-                             "{:.1f} ms".format((timeit.default_timer()-self.thread_startup_timer)*1000))
+            self.logger.info(
+                "Relay controller activated in {:.1f} ms".format(
+                    (timeit.default_timer() - self.thread_startup_timer)*1000))
             while self.running:
                 current_time = datetime.datetime.now()
                 for relay_id in self.relay_id:
@@ -121,7 +122,7 @@ class RelayController(threading.Thread):
 
                         if self.relay_last_duration[relay_id] > 0:
                             duration = float(self.relay_last_duration[relay_id])
-                            timestamp = datetime.datetime.utcnow()-datetime.timedelta(seconds=duration)
+                            timestamp = datetime.datetime.utcnow() - datetime.timedelta(seconds=duration)
                             write_db = threading.Thread(
                                 target=write_influxdb_value,
                                 args=(self.relay_unique_id[relay_id],
@@ -135,8 +136,9 @@ class RelayController(threading.Thread):
             self.all_relays_off()
             self.cleanup_gpio()
             self.running = False
-            self.logger.info("Relay controller deactivated in "
-                             "{:.1f} ms".format((timeit.default_timer()-self.thread_shutdown_timer)*1000))
+            self.logger.info(
+                "Relay controller deactivated in {:.1f} ms".format(
+                    (timeit.default_timer() - self.thread_shutdown_timer)*1000))
 
     def relay_on_off(self, relay_id, state,
                      duration=0.0,
@@ -182,14 +184,14 @@ class RelayController(threading.Thread):
 
             current_amps = self.current_amp_load()
             if current_amps+self.relay_amps[relay_id] > MAX_AMPS:
-                self.logger.warning("Cannot turn relay {} "
-                                    "({}) On. If this relay turns on, "
-                                    "there will be {} amps being drawn, "
-                                    "which exceeds the maximum set draw of {}"
-                                    " amps.".format(self.relay_id[relay_id],
-                                                    self.relay_name[relay_id],
-                                                    current_amps,
-                                                    MAX_AMPS))
+                self.logger.warning(
+                    "Cannot turn relay {} ({}) On. If this relay turns on, "
+                    "there will be {} amps being drawn, which exceeds the "
+                    "maximum set draw of {} amps.".format(
+                        self.relay_id[relay_id],
+                        self.relay_name[relay_id],
+                        current_amps,
+                        MAX_AMPS))
                 return 1
 
             # If the relay is used in a PID, a minimum off duration is set,
@@ -221,10 +223,10 @@ class RelayController(threading.Thread):
                     time_on = self.relay_last_duration[relay_id] - remaining_time
                     self.logger.debug(
                         "Relay {rid} ({rname}) is already on for a duration "
-                        "of {ron:.1f} seconds (with {rremain:.1f} seconds "
+                        "of {ron:.2f} seconds (with {rremain:.2f} seconds "
                         "remaining). Recording the amount of time the relay "
-                        "has been on ({rbeenon:.1f} sec) and updating the on "
-                        "duration to {rnewon:.1f} seconds.".format(
+                        "has been on ({rbeenon:.2f} sec) and updating the on "
+                        "duration to {rnewon:.2f} seconds.".format(
                             rid=self.relay_id[relay_id],
                             rname=self.relay_name[relay_id],
                             ron=self.relay_last_duration[relay_id],
@@ -252,7 +254,6 @@ class RelayController(threading.Thread):
                     self.relay_on_duration[relay_id] = True
                     self.relay_on_until[relay_id] = time_now + datetime.timedelta(seconds=duration)
                     self.relay_last_duration[relay_id] = duration
-
                     self.logger.debug("Relay {} ({}) is currently"
                                       " on without a duration. Turning "
                                       "into a duration  of {:.1f} "
@@ -281,10 +282,11 @@ class RelayController(threading.Thread):
                     # calculate and log the total duration is was on, when
                     # it eventually turns off.
                     self.relay_time_turned_on[relay_id] = datetime.datetime.now()
-                    self.logger.debug("Relay {rid} ({rname}) ON "
-                                      "at {timeon}.".format(rid=self.relay_id[relay_id],
-                                                            rname=self.relay_name[relay_id],
-                                                            timeon=self.relay_time_turned_on[relay_id]))
+                    self.logger.debug(
+                        "Relay {rid} ({rname}) ON at {timeon}.".format(
+                            rid=self.relay_id[relay_id],
+                            rname=self.relay_name[relay_id],
+                            timeon=self.relay_time_turned_on[relay_id]))
                     GPIO.output(self.relay_pin[relay_id],
                                 self.relay_trigger[relay_id])
 
@@ -311,7 +313,7 @@ class RelayController(threading.Thread):
                     if self.relay_time_turned_on[relay_id] is not None:
                         # Write the duration the relay was ON to the database
                         # at the timestamp it turned ON
-                        duration = (datetime.datetime.now()-self.relay_time_turned_on[relay_id]).total_seconds()
+                        duration = (datetime.datetime.now() - self.relay_time_turned_on[relay_id]).total_seconds()
                         self.relay_time_turned_on[relay_id] = None
 
                     timestamp = datetime.datetime.utcnow() - datetime.timedelta(seconds=duration)
@@ -330,14 +332,19 @@ class RelayController(threading.Thread):
 
     def check_conditionals(self, relay_id, on_duration):
         conditionals = db_retrieve_table_daemon(Conditional)
-        conditionals = conditionals.filter(Conditional.if_relay_id == relay_id)
-        conditionals = conditionals.filter(Conditional.is_activated == True)
+        conditionals = conditionals.filter(
+            Conditional.if_relay_id == relay_id)
+        conditionals = conditionals.filter(
+            Conditional.is_activated == True)
 
         if self.is_on(relay_id):
-            conditionals = conditionals.filter(Conditional.if_relay_state == 'on')
-            conditionals = conditionals.filter(Conditional.if_relay_duration == on_duration)
+            conditionals = conditionals.filter(
+                Conditional.if_relay_state == 'on')
+            conditionals = conditionals.filter(
+                Conditional.if_relay_duration == on_duration)
         else:
-            conditionals = conditionals.filter(Conditional.if_relay_state == 'off')
+            conditionals = conditionals.filter(
+                Conditional.if_relay_state == 'off')
 
         for each_conditional in conditionals.all():
             conditional_actions = db_retrieve_table_daemon(ConditionalActions)
@@ -434,7 +441,9 @@ class RelayController(threading.Thread):
             self.relay_on_duration[each_relay.id] = False
             self.relay_time_turned_on[each_relay.id] = None
             if self.relay_pin[each_relay.id]:
-                self.setup_pin(each_relay.id, each_relay.pin, each_relay.trigger)
+                self.setup_pin(each_relay.id,
+                               each_relay.pin,
+                               each_relay.trigger)
             self.logger.debug("{id} ({name}) Initialized".format(
                 id=each_relay.id, name=each_relay.name))
 

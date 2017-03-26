@@ -1006,25 +1006,22 @@ def lcd_mod(form_mod_lcd):
         flash_form_errors(form_mod_lcd)
 
 
-def lcd_del(form_del_lcd):
+def lcd_del(lcd_id):
     action = u'{action} {controller}'.format(
         action=gettext(u"Delete"),
         controller=gettext(u"LCD"))
     error = []
 
-    if form_del_lcd.validate():
-        try:
-            delete_entry_with_id(LCD,
-                                 form_del_lcd.lcd_id.data)
-            display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
-            display_order.remove(int(form_del_lcd.lcd_id.data))
-            DisplayOrder.query.first().lcd = list_to_csv(display_order)
-            db.session.commit()
-        except Exception as except_msg:
-            error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_lcd'))
-    else:
-        flash_form_errors(form_del_lcd)
+    try:
+        delete_entry_with_id(LCD,
+                             lcd_id)
+        display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
+        display_order.remove(int(lcd_id))
+        DisplayOrder.query.first().lcd = list_to_csv(display_order)
+        db.session.commit()
+    except Exception as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('page_routes.page_lcd'))
 
 
 def lcd_reorder(lcd_id, display_order, direction):
