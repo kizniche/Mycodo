@@ -87,9 +87,17 @@
           </div>
         </div>
 
+        {%- if each_camera.stream_started -%}
+          <div style="padding-bottom: 1em">
+            {{_('Video Stream')}}:
+            <img style="max-width: 100%" src="{{url_for('general_routes.video_feed')}}">
+          </div>
+        {%- endif -%}
+
         {% if each_camera.timelapse_started %}
           <div style="margin-top: 0.75em;">
-            Time-lapse: {% if each_camera.timelapse_paused %}Paused{% else %}Running{% endif %}
+            {{_('Timelapse Parameters')}}:
+            <br>Time-lapse: {% if each_camera.timelapse_paused %}Paused{% else %}Running{% endif %}
             <br/>Start time: {{format_timestamp(each_camera.timelapse_start_time)}}
             <br/>End time: {{format_timestamp(each_camera.timelapse_end_time)}}
             <br/>Interval: {{each_camera.timelapse_interval}} seconds
