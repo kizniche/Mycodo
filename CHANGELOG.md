@@ -1,7 +1,9 @@
-## 5.0.15 (Unreleased)
+## 5.0.15 (2017-03-28)
 
 ### Bugfixes
 
+  - Fix issue with graph page errors when creating a graph with PIDs or Relays
+  - Fix sensor conditional measurement selections ([#230](https://github.com/kizniche/mycodo/issues/230))
   - Fix inability to stream video from a Pi camera ([#228](https://github.com/kizniche/mycodo/issues/228))
   - Fix inability to delete LCD ([#229](https://github.com/kizniche/mycodo/issues/229))
   - Fix measurements export

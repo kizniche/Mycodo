@@ -859,12 +859,14 @@ def page_sensor():
                            form_conditional_actions=form_conditional_actions,
                            form_mod_sensor=form_mod_sensor,
                            lcd=lcd,
+                           measurements=MEASUREMENTS,
                            multiplexer_addresses=multiplexer_addresses,
                            multiplexer_channels=multiplexer_channels,
                            pid=pid,
                            relay=relay,
                            sensor=sensor,
                            sensor_templates=sensor_templates,
+                           units=MEASUREMENT_UNITS,
                            user=user)
 
 
@@ -1028,11 +1030,12 @@ def dict_custom_colors():
                     color = colors[index_sum+index]
                 else:
                     color = '#FF00AA'
-                total.append({
-                    'unique_id': relay_unique_id,
-                    'name': relay.name,
-                    'measure': 'relay duration',
-                    'color': color})
+                if relay.name is not None:
+                    total.append({
+                        'unique_id': relay_unique_id,
+                        'name': relay.name,
+                        'measure': 'relay duration',
+                        'color': color})
                 index += 1
             index_sum += index
 
@@ -1047,11 +1050,12 @@ def dict_custom_colors():
                     color = colors[index_sum+index]
                 else:
                     color = '#FF00AA'
-                total.append({
-                    'unique_id': pid_unique_id,
-                    'name': pid.name,
-                    'measure': 'PID setpoint',
-                    'color': color})
+                if pid.name is not None:
+                    total.append({
+                        'unique_id': pid_unique_id,
+                        'name': pid.name,
+                        'measure': 'PID setpoint',
+                        'color': color})
                 index += 1
 
         color_count.update({each_graph.id: total})

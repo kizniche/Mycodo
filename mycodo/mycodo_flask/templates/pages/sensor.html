@@ -296,30 +296,14 @@
                   <input type="hidden" class="form-control" id="if_sensor_edge_detected" name="if_sensor_edge_detected" value="">
                   <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_measurement" name="if_sensor_measurement" title="{{_('The measurement from the sensor to test the following conditional logic')}}.">
                     <option value=""></option>
-                    {%- if each_sensor.device_type == 'mycodo_ram' -%}
-                      <option value="ram_use"{% if each_cond.if_sensor_measurement == 'ram_use' %} selected{% endif %}>{{_('Daemon RAM Usage')}}</option>
-                    {%- elif each_sensor.device_type == 'free_space' -%}
-                      <option value="free_space"{% if each_cond.if_sensor_measurement == 'free_space' %} selected{% endif %}>{{_('Free Disk Space')}}</option>
-                    {%- elif each_sensor.device_type == 'tsensor' -%}
-                      <option value="temperature"{% if each_cond.if_sensor_measurement == 'temperature' %} selected{% endif %}>{{_('Temperature')}}</option>
-                    {%- elif each_sensor.device_type == 'htsensor' -%}
-                      <option value="temperature"{% if each_cond.if_sensor_measurement == 'temperature' %} selected{% endif %}>{{_('Temperature')}}</option>
-                      <option value="humidity"{% if each_cond.if_sensor_measurement == 'humidity' %} selected{% endif %}>{{_('Humidity')}}</option>
-                      <option value="dewpoint"{% if each_cond.if_sensor_measurement == 'dewpoint' %} selected{% endif %}>{{_('Dew Point')}}</option>
-                    {%- elif each_sensor.device_type == 'co2sensor' -%}
-                      <option value="co2"{% if each_cond.if_sensor_measurement == 'co2' %} selected{% endif %}>CO2</option>
-                    {%- elif each_sensor.device_type == 'moistsensor' -%}
-                      <option value="lux"{% if each_cond.if_sensor_measurement == 'lux' %} selected{% endif %}>{{_('Luminosity')}}</option>
-                      <option value="moisture"{% if each_cond.if_sensor_measurement == 'moisture' %} selected{% endif %}>{{_('Moisture')}}</option>
-                      <option value="temperature"{% if each_cond.if_sensor_measurement == 'temperature' %} selected{% endif %}>{{_('Temperature')}}</option>
-                    {%- elif each_sensor.device_type == 'presssensor' -%}
-                      <option value="temperature"{% if each_cond.if_sensor_measurement == 'temperature' %} selected{% endif %}>{{_('Temperature')}}</option>
-                      <option value="pressure"{% if each_cond.if_sensor_measurement == 'pressure' %} selected{% endif %}>{{_('Pressure')}}</option>
-                      <option value="altitude"{% if each_cond.if_sensor_measurement == 'altitude' %} selected{% endif %}>{{_('Altitude')}}</option>
-                    {% elif each_sensor.device_type == 'analogsensor' %}
-                      <option value="voltage"{% if each_cond.if_sensor_measurement == 'voltage' %} selected{% endif %}>{{_('Voltage')}} (ADC)</option>
-                      <option value="{{each_sensor.adc_measure}}"{% if each_cond.if_sensor_measurement == each_sensor.adc_measure %} selected{% endif %}>{{each_sensor.adc_measure}} (ADC)</option>
-                    {%- endif -%}
+                    {% for key, measurements in measurements.items() if each_sensor.device == key %}
+                      {% for each_measure in measurements %}
+                        <option value="{{each_measure}}"{% if each_cond.if_sensor_measurement == each_measure %} selected{% endif %}>{{units[each_measure]['name']}} ({{units[each_measure]['unit']}})</option>
+                      {%- endfor -%}
+                      {% if key in ['MCP342x', 'ADS1x15'] %}
+                        <option value="{{each_sensor.adc_measure}}"{% if each_cond.if_sensor_measurement == each_sensor.adc_measure %} selected{% endif %}>{{each_sensor.adc_measure}} ({{each_sensor.adc_measure_units}})</option>
+                      {% endif %}
+                    {%- endfor -%}
                   </select>
                 </div>
               </div>
