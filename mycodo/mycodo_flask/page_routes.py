@@ -1011,11 +1011,12 @@ def dict_custom_colors():
                     color = colors[index]
                 else:
                     color = '#FF00AA'
-                total.append({
-                    'unique_id': sensor_unique_id,
-                    'name': sensor.name,
-                    'measure': sensor_measure,
-                    'color': color})
+                if sensor.name is not None:
+                    total.append({
+                        'unique_id': sensor_unique_id,
+                        'name': sensor.name,
+                        'measure': sensor_measure,
+                        'color': color})
                 index += 1
             index_sum += index
 
