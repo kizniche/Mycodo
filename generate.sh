@@ -12,7 +12,7 @@ then
   pandoc metadata.yaml mycodo-manual.md --latex-engine=xelatex -s -o mycodo-manual.pdf
 
   # output HTML (HTML5) file
-  pandoc metadata.yaml mycodo-manual.md -s -S -t html5 -o mycodo-manual.html
+  pandoc metadata.yaml mycodo-manual.md --css pandoc.css -s -S -t html5 -o mycodo-manual.html
   cp mycodo-manual.html /var/www/mycodo/mycodo/mycodo_flask/templates/manual.html
 
   # output plain text
