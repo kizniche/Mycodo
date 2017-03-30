@@ -157,7 +157,7 @@ Here is how I generally set up Mycodo to monitor and regulate:
     turns On when you select "On", and Off when you select "Off".
 8.  On the ```PID``` -> ```PID Controllers``` page, create a PID
     controller with the appropriate sensor, measurement, relay, and other
-    parameters. Refer to the [Quick Setup Examples](#quick-set-up-examples)
+    parameters. Refer to the [Quick Setup Examples](#quick-setup-examples)
     for setting up and tuning a PID controller.
 9.  On the ```Data``` -> ```Live Graphs``` page, create a graph that
     includes the sensor measurement, the relay that is being used by the
@@ -196,12 +196,12 @@ Opt-out of statistics | Turn off sending anonymous usage statistics. Please cons
 Relay Usage Settings
 --------------------
 
-In order to calculate accurate [relay usage statistics](/usage), a few
+In order to calculate accurate relay usage statistics, a few
 characteristics of your electrical system needs to be know. These
 variables should describe the characteristics of the electrical system
 being used by the relays to operate electrical devices. Note: Proper
 relay usage calculations also rely on the correct current draw to be set
-for each relay (see [Relay Options](/relay)).
+for each relay (see [Relay Settings](#relays)).
 
 Setting | Description
 --- | ---
@@ -297,7 +297,7 @@ Sensors
 Sensors measure environmental conditions, which will be stored in an
 influx database. This database will provide recent measurement for
 [Conditional Statements](/help#conditional-statements) or [PID
-Controllers](/help#pid) to operate from, among other uses.
+Controllers](/help#pids) to operate from, among other uses.
 
 Setting | Description
 --- | ---
@@ -372,7 +372,7 @@ on), or red, indicating the relay is inactivated (device is off).
 Setting | Description
 --- | ---
 GPIO Pin | This is the GPIO that will be the signal to the relay.
-Current Draw (amps) | The is the amount of current the device powered by the relay draws. Note: this value should be calculated based on the voltage set in the [Relay Usage Settings](#settings-relay-usage).
+Current Draw (amps) | The is the amount of current the device powered by the relay draws. Note: this value should be calculated based on the voltage set in the [Relay Usage Settings](#relay-usage-settings).
 On Trigger | This is the state of the GPIO to signal the relay to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you relay completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.
 Start State | This specifies whether the relay should be ON or OFF when mycodo initially starts.
 Seconds to turn On | This is a way to turn a relay on for a specific duration of time. This can be useful for testing the relays and powered devices or the measured effects a device may have on an environmental condition.
@@ -765,7 +765,7 @@ Relay Usage
 
 Relay usage statistics are calculated for each relay, based on how long
 the relay has been powered, the current draw of the device connected to
-the relay, and other [relay usage options](#relay-usage-settings).
+the relay, and other [Relay Usage Settings](#relay-usage-settings).
 
 System Backup
 -------------
@@ -782,8 +782,7 @@ user name:
 
     sudo mv /home/user/Mycodo /home/user/Mycodo_old
     sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
-    sudo service mycodo restart
-    sudo /etc/init.d/apache2 restart
+    sudo /bin/bash ~/Mycodo/mycoco/scripts/upgrade_post.sh
 
 Troubleshooting
 ===============
@@ -801,8 +800,8 @@ Troubleshooting
     lock file is deleted at `/var/lock/mycodo.pid`. The daemon cannot
     start if the lock file is present.
 -   If a solution could not be found after investigating the above
-    suggestions, submit a [new Mycodo
-    issue](https://github.com/kizniche/Mycodo/issues/new) on github.
+    suggestions, submit a [New Mycodo
+    Issue](https://github.com/kizniche/Mycodo/issues/new) on github.
 
 ## More
 

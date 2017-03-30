@@ -442,7 +442,7 @@
 <li>Go to the <code>Data</code> -&gt; <code>Live Measurements</code> page to ensure there is recent data being acquired from the sensor.</li>
 <li>On the <code>Relay</code> -&gt; <code>Relays</code> page, add a relay and configure the GPIO pin that switches it, whether the relay switches On when the signal is HIGH or LOW, and what state (On or Off) to set the relay when Mycodo starts.</li>
 <li>Test the relay by switching it On and Off from the <code>Relay</code> -&gt; <code>Relays</code> page and make sure the device connected to the relay turns On when you select “On”, and Off when you select “Off”.</li>
-<li>On the <code>PID</code> -&gt; <code>PID Controllers</code> page, create a PID controller with the appropriate sensor, measurement, relay, and other parameters. Refer to the <a href="#quick-set-up-examples">Quick Setup Examples</a> for setting up and tuning a PID controller.</li>
+<li>On the <code>PID</code> -&gt; <code>PID Controllers</code> page, create a PID controller with the appropriate sensor, measurement, relay, and other parameters. Refer to the <a href="#quick-setup-examples">Quick Setup Examples</a> for setting up and tuning a PID controller.</li>
 <li>On the <code>Data</code> -&gt; <code>Live Graphs</code> page, create a graph that includes the sensor measurement, the relay that is being used by the PID, and the PID setpoint. This provides a good visualization for tuning and adjusting the system.</li>
 </ol>
 <hr />
@@ -487,7 +487,7 @@
 </tbody>
 </table>
 <h2 id="relay-usage-settings">Relay Usage Settings</h2>
-<p>In order to calculate accurate <a href="/usage">relay usage statistics</a>, a few characteristics of your electrical system needs to be know. These variables should describe the characteristics of the electrical system being used by the relays to operate electrical devices. Note: Proper relay usage calculations also rely on the correct current draw to be set for each relay (see <a href="/relay">Relay Options</a>).</p>
+<p>In order to calculate accurate relay usage statistics, a few characteristics of your electrical system needs to be know. These variables should describe the characteristics of the electrical system being used by the relays to operate electrical devices. Note: Proper relay usage calculations also rely on the correct current draw to be set for each relay (see <a href="#relays">Relay Settings</a>).</p>
 <table>
 <thead>
 <tr class="header">
@@ -697,7 +697,7 @@
 <h1 id="controllers">Controllers</h1>
 <p>Controllers are essentially modules that can be used to perform functions or communicate with other parts of Mycodo. Each controller performs a specific task or group of related tasks. There are also Controller Functions, which are larger functions of a controller or controllers and have been given their own sections.</p>
 <h2 id="sensors">Sensors</h2>
-<p>Sensors measure environmental conditions, which will be stored in an influx database. This database will provide recent measurement for <a href="/help#conditional-statements">Conditional Statements</a> or <a href="/help#pid">PID Controllers</a> to operate from, among other uses.</p>
+<p>Sensors measure environmental conditions, which will be stored in an influx database. This database will provide recent measurement for <a href="/help#conditional-statements">Conditional Statements</a> or <a href="/help#pids">PID Controllers</a> to operate from, among other uses.</p>
 <table>
 <thead>
 <tr class="header">
@@ -847,7 +847,7 @@
 </tr>
 <tr class="even">
 <td style="text-align: left;">Current Draw (amps)</td>
-<td style="text-align: left;">The is the amount of current the device powered by the relay draws. Note: this value should be calculated based on the voltage set in the <a href="#settings-relay-usage">Relay Usage Settings</a>.</td>
+<td style="text-align: left;">The is the amount of current the device powered by the relay draws. Note: this value should be calculated based on the voltage set in the <a href="#relay-usage-settings">Relay Usage Settings</a>.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">On Trigger</td>
@@ -1136,22 +1136,21 @@
 <h2 id="camera">Camera</h2>
 <p>Once a cameras has been set up (in the <a href="#camera-settings">Camera Settings</a>), it may be used to capture still images, create time-lapses, and stream video. Cameras may also be used with <a href="#conditional-statements">Conditional Statements</a> to trigger a camera image or video capture (as well as the ability to email the image/video with a notification).</p>
 <h2 id="relay-usage">Relay Usage</h2>
-<p>Relay usage statistics are calculated for each relay, based on how long the relay has been powered, the current draw of the device connected to the relay, and other <a href="#relay-usage-settings">relay usage options</a>.</p>
+<p>Relay usage statistics are calculated for each relay, based on how long the relay has been powered, the current draw of the device connected to the relay, and other <a href="#relay-usage-settings">Relay Usage Settings</a>.</p>
 <h2 id="system-backup">System Backup</h2>
 <p>A backup is made to /var/Mycodo-backups when the system is upgraded through the web interface or the upgrade script.</p>
 <h2 id="system-restore">System Restore</h2>
 <p>If you need to restore a backup, do the following, changing the appropriate directory names with these commands, changing ‘user’ to your user name:</p>
 <pre><code>sudo mv /home/user/Mycodo /home/user/Mycodo_old
 sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
-sudo service mycodo restart
-sudo /etc/init.d/apache2 restart</code></pre>
+sudo /bin/bash ~/Mycodo/mycoco/scripts/upgrade_post.sh</code></pre>
 <h1 id="troubleshooting">Troubleshooting</h1>
 <h2 id="daemon-not-running">Daemon Not Running</h2>
 <ul>
 <li>Check the Logs: From the <code>[Gear Icon]</code> -&gt; <code>Mycodo Logs</code> page, check the Daemon Log for any errors. If the issue began after an upgrade, also check the Upgrade Log for indications of an issue.</li>
 <li>Determine if the Daemon is Running: Execute <code>ps aux | grep '/var/www/mycodo/env/bin/python /var/www/mycodo/mycodo/mycodo_daemon.py'</code> in a terminal and look for an entry to be returned. If nothing is returned, the daemon is not running.</li>
 <li>Daemon Lock File: If the daemon is not running, make sure the daemon lock file is deleted at <code>/var/lock/mycodo.pid</code>. The daemon cannot start if the lock file is present.</li>
-<li>If a solution could not be found after investigating the above suggestions, submit a <a href="https://github.com/kizniche/Mycodo/issues/new">new Mycodo issue</a> on github.</li>
+<li>If a solution could not be found after investigating the above suggestions, submit a <a href="https://github.com/kizniche/Mycodo/issues/new">New Mycodo Issue</a> on github.</li>
 </ul>
 <h2 id="more">More</h2>
 <p>Check out the <a href="https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues">Diagnosing Mycodo Issues Wiki Page</a> on github for more information about diagnosing issues.</p>

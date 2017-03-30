@@ -196,7 +196,7 @@ characteristics of your electrical system needs to be know. These
 variables should describe the characteristics of the electrical system
 being used by the relays to operate electrical devices. Note: Proper
 relay usage calculations also rely on the correct current draw to be set
-for each relay (see Relay Options).
+for each relay (see Relay Settings).
 
   Setting         Description
   --------------- ------------------------------------------------------------------------------------------------------------------------
@@ -748,7 +748,7 @@ Relay Usage
 
 Relay usage statistics are calculated for each relay, based on how long
 the relay has been powered, the current draw of the device connected to
-the relay, and other relay usage options.
+the relay, and other Relay Usage Settings.
 
 System Backup
 -------------
@@ -765,8 +765,7 @@ user name:
 
     sudo mv /home/user/Mycodo /home/user/Mycodo_old
     sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
-    sudo service mycodo restart
-    sudo /etc/init.d/apache2 restart
+    sudo /bin/bash ~/Mycodo/mycoco/scripts/upgrade_post.sh
 
 Troubleshooting
 ===============
@@ -785,7 +784,7 @@ Daemon Not Running
     lock file is deleted at /var/lock/mycodo.pid. The daemon cannot
     start if the lock file is present.
 -   If a solution could not be found after investigating the above
-    suggestions, submit a new Mycodo issue on github.
+    suggestions, submit a New Mycodo Issue on github.
 
 More
 ----
