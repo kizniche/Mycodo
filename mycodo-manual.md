@@ -95,6 +95,10 @@ Table of Contents
    - [ADS1x15](#ads1x15)
    - [MCP342x](#mcp342x)
 
+[Schematics and Diagrams](#schematics-and-diagrams)
+
+   - [Pi Schematics](#pi-schematics)
+
 * * * * *
 
 About Mycodo
@@ -556,7 +560,7 @@ within a 24-hour period and this method will repeat daily.
 PID Tuning
 ----------
 
-![](manual_images/PIDAnimation.gif)
+![Figure: PID Tune animation](manual_images/PIDAnimation.gif)
 
 ### PID Control Theory
 
@@ -1053,4 +1057,16 @@ Analog to Digital Converters
  - MCP3426: 2 channel, 12, 14, or 16 bit
  - MCP3427: 2 channel, 12, 14, or 16 bit
  - MCP3428: 4 channel, 12, 14, or 16 bit
- 
+
+Schematics and diagrams
+-----------------------
+
+### Pi Schematics
+
+#### Pi, 4 Relays, 4 120/240-volt AC outlets, and 1 DS18B20 sensor
+
+![Figure: Pi and 4 relays and outlets schematic](manual_images/Schematic-Pi-4-relays.png)
+
+#### Pi, 8 Relays, and 8 120/240-volt AC outlets
+
+![Figure: Pi and 8 relays and outlets schematic](manual_images/Schematic-Pi-8-relays.png)

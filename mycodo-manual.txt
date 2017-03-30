@@ -94,6 +94,10 @@ Analog to Digital Converters
 -   ADS1x15
 -   MCP342x
 
+Schematics and Diagrams
+
+-   Pi Schematics
+
 * * * * *
 
 About Mycodo
@@ -548,6 +552,8 @@ end (x0) will be automatically stretched or skewed to fit within a
 
 PID Tuning
 ----------
+
+[Figure: PID Tune animation]
 
 PID Control Theory
 
@@ -1042,3 +1048,16 @@ Specifications
 -   MCP3426: 2 channel, 12, 14, or 16 bit
 -   MCP3427: 2 channel, 12, 14, or 16 bit
 -   MCP3428: 4 channel, 12, 14, or 16 bit
+
+Schematics and diagrams
+-----------------------
+
+Pi Schematics
+
+Pi, 4 Relays, 4 120/240-volt AC outlets, and 1 DS18B20 sensor
+
+[Figure: Pi and 4 relays and outlets schematic]
+
+Pi, 8 Relays, and 8 120/240-volt AC outlets
+
+[Figure: Pi and 8 relays and outlets schematic]
