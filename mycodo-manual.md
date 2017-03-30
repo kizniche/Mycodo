@@ -238,12 +238,15 @@ that determine if a user can view or edit particular areas of Mycodo.
 Custom roles may be created, but these four roles may not be modified or
 deleted.
 
-| Role | Edit Users | Edit Controllers | Edit Settings | View Settings | View Camera | View Stats | View Logs |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Admin   | X | X | X | X | X | X | X |
-| Editor  | _ | X | X | X | X | X | X |
-| Monitor | _ | _ | _ | X | X | X | X |
-| Guest   | _ | _ | _ | _ | _ | _ | _ |
+| Role | Admin | Editor | Monitor | Guest |
+| --- | --- | --- | --- | --- |
+| Edit Users       | X | | | |
+| Edit Controllers | X | X | | |
+| Edit Settings    | X | X | | |
+| View Settings    | X | X | X | |
+| View Camera      | X | X | X | |
+| View Stats       | X | X | X | |
+| View Logs        | X | X | X | |
 
 <sup>1</sup>The ```Edit Controllers``` permission protects the editing of Graphs, LCDs, Methods, PIDs, Relays, Sensors, and Timers.
 
