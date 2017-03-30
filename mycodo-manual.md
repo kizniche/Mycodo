@@ -1064,10 +1064,10 @@ Schematics and diagrams
 
 ### Raspberry Pi Schematics
 
-Raspberry Pi, 4 relays, 4 outlets, 1 DS18B20 sensor.\ 
+Raspberry Pi, 4 relays, 4 outlets, 1 DS18B20 sensor.
 
 ![Schematic: Pi, 4 relays, 4 outlets, and 1 DS18B20 sensor](manual_images/Schematic-Pi-4-relays.png)\ 
 
-Raspberry Pi, 8 relays, 8 outlets.\ 
+Raspberry Pi, 8 relays, 8 outlets.
 
 ![Schematic: Pi, 8 relays, and 8 outlets](manual_images/Schematic-Pi-8-relays.png)\ 
