@@ -1,8 +1,8 @@
-## 5.0.16 (Unreleased)
+## 5.0.16 (2017-03-30)
 
 ### Features
 
-  - New Mycodo Manual rendered in markdown, html, and plain text
+  - New Mycodo Manual rendered in markdown, html, pdf, and plain text
 
 ### Bugfixes
 
