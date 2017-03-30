@@ -4,7 +4,7 @@
 
 ### Latest version: 5.0.15 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
 
-#### [Mycodo Manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md) ([PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt))
+#### [Mycodo Manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md) ([HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt))
 
 
 Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.
@@ -54,7 +54,7 @@ The top graph of the above screenshot visualizes the regulation of temperature i
 
 ## Mycodo Manual
 
-The Mycodo Manual may be viewed or downloaded as [Markdown](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md), [PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), or [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt)
+The Mycodo Manual may be viewed or downloaded as [Markdown](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), or [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt)
 
 ## Features
 

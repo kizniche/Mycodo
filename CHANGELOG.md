@@ -2,7 +2,7 @@
 
 ### Features
 
-  - New Mycodo Manual rendered in markdown, html, pdf, and plain text
+  - New Mycodo Manual rendered in markdown, html, and plain text
 
 ### Bugfixes
 
