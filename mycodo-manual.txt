@@ -1053,12 +1053,16 @@ Specifications
 Schematics and diagrams
 -----------------------
 
-Pi Schematics
+Raspberry Pi Schematics
 
-Pi, 4 Relays, 4 120/240-volt AC outlets, and 1 DS18B20 sensor
+Raspberry Pi, 4 relays, 4 outlets, 1 DS18B20 sensor.
 
-[Figure: Pi and 4 relays and outlets schematic]
+ 
 
-Pi, 8 Relays, and 8 120/240-volt AC outlets
+[Schematic: Pi, 4 relays, 4 outlets, and 1 DS18B20 sensor]  
 
-[Figure: Pi and 8 relays and outlets schematic]
+Raspberry Pi, 8 relays, 8 outlets.
+
+ 
+
+[Schematic: Pi, 8 relays, and 8 outlets]

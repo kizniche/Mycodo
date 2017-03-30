@@ -1062,12 +1062,16 @@ Analog to Digital Converters
 Schematics and diagrams
 -----------------------
 
-### Pi Schematics
+### Raspberry Pi Schematics
 
-#### Pi, 4 Relays, 4 120/240-volt AC outlets, and 1 DS18B20 sensor
+#### Raspberry Pi, 4 relays, 4 outlets, 1 DS18B20 sensor.
+\ 
 
-![Figure: Pi and 4 relays and outlets schematic](manual_images/Schematic-Pi-4-relays.png)
+![Schematic: Pi, 4 relays, 4 outlets, and 1 DS18B20 sensor](manual_images/Schematic-Pi-4-relays.png)
+\ 
 
-#### Pi, 8 Relays, and 8 120/240-volt AC outlets
+#### Raspberry Pi, 8 relays, 8 outlets.
+\ 
 
-![Figure: Pi and 8 relays and outlets schematic](manual_images/Schematic-Pi-8-relays.png)
+![Schematic: Pi, 8 relays, and 8 outlets](manual_images/Schematic-Pi-8-relays.png)
+\ 

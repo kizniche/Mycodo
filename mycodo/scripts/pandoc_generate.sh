@@ -2,7 +2,7 @@
 # Generates the Mycodo Manual in different formats with pandoc
 #
 # To install dependencies on Debian/Ubuntu:
-# sudo apt-get install pandoc texlive texlive-xetex
+# sudo apt-get install pandoc texlive
 #
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
