@@ -53,8 +53,6 @@ Troubleshooting
 -   Daemon Not Running
 -   More
 
-Appendix
-
 Sensor and Device Setup
 
 Sensor Interfaces
@@ -163,9 +161,10 @@ Here is how I generally set up Mycodo to monitor and regulate:
     3.3-volt signal), although opto-isolating the circuit is advisable.
     Be careful when selecting a relay not to exceed the current draw of
     the Raspberry Pi’s PGIO.
-3.  See the Appendix for information about what sensors are supported.
-    Acquire one or more of these sensors and relays and connect them to
-    the Raspberry Pi according to the manufacturer’s instructions.
+3.  See the Device Specific Information for information about what
+    sensors are supported. Acquire one or more of these sensors and
+    relays and connect them to the Raspberry Pi according to the
+    manufacturer’s instructions.
 4.  On the Sensors page, create a new sensor, using the dropdown to
     select the correct sensor. Configure the sensor with the correct
     communication pins, etc. and save. Activate the sensor to begin
@@ -835,10 +834,6 @@ information about diagnosing issues.
 
 
 
-APPENDIX
-
-
-
 SENSOR AND DEVICE SETUP
 
 
@@ -1132,8 +1127,6 @@ Specifications
 Moisture Sensors
 
 Chirp
-
-[] 
 
 The Chirp sensor measures moisture, light, and temperature.
 
