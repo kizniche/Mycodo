@@ -5,11 +5,11 @@ Mycodo Manual
 Table of Contents
 =================
 
-#### [About Mycodo](#about-mycodo)
+[About Mycodo](#about-mycodo)
 
-#### [Frequently Asked Questions](#frequently-asked-questions)
+[Frequently Asked Questions](#frequently-asked-questions)
 
-#### [Settings](#settings)
+[Settings](#settings)
 
    - [General Settings](#general-settings)
    - [Relay Usage Settings](#relay-usage-settings)
@@ -18,7 +18,7 @@ Table of Contents
    - [Alert Settings](#alert-settings)
    - [Camera Settings](#camera-settings)
     
-#### [Controllers](#controllers)
+[Controllers](#controllers)
 
    - [Sensors](#sensors)
    - [Relays](#relays)
@@ -26,19 +26,19 @@ Table of Contents
    - [Timers](#timers)
    - [LCDs](#lcds)
  
-#### [Controller Functions](#controller-functions)
+[Controller Functions](#controller-functions)
 
    - [Conditional Statements](#conditional-statements)
    - [Methods](#methods)
     
-#### [PID Tuning](#pid-tuning)
+[PID Tuning](#pid-tuning)
 
    - [PID Control Theory](#pid-control-theory)
    - [Quick Setup Examples](#quick-setup-examples)
    - [Exact-Temperature Regulation](#exact-temperature-regulation)
    - [High-Temperature Regulation](#high-temperature-regulation)
 
-#### [Miscellaneous](#miscellaneous)
+[Miscellaneous](#miscellaneous)
 
    - [Graphs](#graphs)
    - [Camera](#camera)
@@ -46,14 +46,14 @@ Table of Contents
    - [System Backup](#system-backup)
    - [System Restore](#system-restore)
 
-#### [Troubleshooting](#troubleshooting)
+[Troubleshooting](#troubleshooting)
 
    - [Daemon Not Running](#daemon-not-running)
    - [More](#more)
 
-### [Sensor and Device Setup](#sensor-and-device-setup)
+[Sensor and Device Setup](#sensor-and-device-setup)
 
-#### [Sensor Interfaces](#sensor-interfaces)
+[Sensor Interfaces](#sensor-interfaces)
 
    - [1-Wire](#1-wire)
    - [GPIO](#gpio)
@@ -61,21 +61,21 @@ Table of Contents
    - [I<sup>2</sup>C](#i2c)
    - [Edge Detection](#edge-detection)
 
-#### [Device Setup](#device-setup)
+[Device Setup](#device-setup)
 
    - [I<sup>2</sup>C Multiplexers](#i2c-multiplexers)
    - [Analog to Digital Converters](#analog-to-digital-converters)
 
-### [Device Specific Information](#device-specific-information)
+[Device Specific Information](#device-specific-information)
 
-#### [Temperature Sensors](#temperature-sensors)
+[Temperature Sensors](#temperature-sensors)
 
    - [Raspberry Pi](#raspberry-pi)
    - [Atlas Scientific PT-1000](#atlas-scientific-pt-1000)
    - [DS18B20](#ds18b20)
    - [TMP006, TMP007](#tmp006-tmp007)
 
-#### [Temperature, Humidity Sensors](#temperature-humidity-sensors)
+[Temperature, Humidity Sensors](#temperature-humidity-sensors)
 
    - [AM2315](#am2315)
    - [DHT11](#dht11)
@@ -84,30 +84,30 @@ Table of Contents
    - [SHT1x](#sht1x)
    - [SHT7x](#sht7x)
 
-#### [CO2 Sensors](#co2-sensors)
+[CO2 Sensors](#co2-sensors)
 
    - [K-30](#k-30)
 
-#### [Moisture Sensors](#moisture-sensors)
+[Moisture Sensors](#moisture-sensors)
 
    - [Chirp](#chirp)
 
-#### [Pressure Sensors](#pressure-sensors)
+[Pressure Sensors](#pressure-sensors)
 
    - [BME280](#bme280)
    - [BMP085, BMP180](#bmp085-bmp180)
 
-#### [Luminosity Sensors](#luminosity-sensors)
+[Luminosity Sensors](#luminosity-sensors)
 
    - [BH1750](#bh1750)
    - [TSL2561](#tsl2561)
 
-#### [Analog to Digital Converters](#analog-to-digital-converters)
+[Analog to Digital Converters](#analog-to-digital-converters)
 
    - [ADS1x15](#ads1x15)
    - [MCP342x](#mcp342x)
 
-### [Diagrams](#diagrams)
+[Diagrams](#diagrams)
 
    - [DHT11 Diagrams](#dht11-diagrams)
    - [DS18B20 Diagrams](#ds18b20-diagrams)
