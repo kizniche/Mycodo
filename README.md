@@ -16,6 +16,33 @@ The core system coordinates a diverse set of responses to sensor measurements, i
   - Complete: [Español (Spanish)](#espa%C3%B1ol-spanish)
   - Partial: [Français (French)](#fran%C3%A7ais-french), [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
 
+## Table of Contents
+
+- [What is PID Control](#what-is-pid-control)
+- [Features](#features)
+- [Install](#install)
+  - [Install Notes](#install-notes)
+  - [Web Server Security](#web-server-security)
+- [Manual](#manual)
+- [License](#license)
+- [Links](#links)
+
+[Languages](#languages)
+
+- [Español (Spanish)](#espa%C3%B1ol-spanish)
+- [Français (French)](#fran%C3%A7ais-french)
+- [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
+
+[From the Wiki](#from-the-wiki)
+
+- [Backup and Restore](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore)
+- [Diagnosing Issues](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues)
+- [Directory Structure](https://github.com/kizniche/Mycodo/wiki/Directory-Structure)
+- [Preserving Custom Code](https://github.com/kizniche/Mycodo/wiki/Preserving-Custom-Code)
+- [Screenshots](https://github.com/kizniche/Mycodo/wiki/Screenshots)
+- [Testing](https://github.com/kizniche/Mycodo/wiki/Testing)
+- [TODO](https://github.com/kizniche/Mycodo/wiki/TODO)
+- [Translations](https://github.com/kizniche/Mycodo/wiki/Translations)
 
 ## What is PID Control?
 
@@ -24,35 +51,6 @@ The core system coordinates a diverse set of responses to sensor measurements, i
 A [proportional-derivative-integral (PID) controller](https://en.wikipedia.org/wiki/PID_controller) is a control loop feedback mechanism used throughout industry for controlling systems. It efficiently brings a measurable condition, such as the temperature, to a desired state and maintains it there with little overshoot and oscillation. A well-tuned PID controller will raise to the setpoint quickly, have minimal overshoot, and maintain the setpoint with little oscillation.
 
 The top graph of the above screenshot visualizes the regulation of temperature in a sealed chamber. The red line is the desired temperature setpoint that has been configured (which also happens to have been configured to change over the course of each day). The blue line is the actual recorded temperature. The green vertical bars represent how long a heater is activated for, per every 20-second period. This regulation was achieved with minimal tuning (Actual tuned gains: K<sub>P</sub>=0.08, K<sub>I</sub>=0.005, K<sub>D</sub>=0.001), and already displays a very minimal deviation from the setpoint (±0.5° Celsius). Further tuning would reduce this variability even more.
-
-
-## Table of Contents
-
-- [Mycodo Manual](#mycodo-manual)
-- [Features](#features)
-- [TODO](#todo)
-- [Install](#install)
-- [Install Notes](#install-notes)
-- [Web Server](#web-server-security)
-- [Upgrading](#upgrading)
-- [License](#license)
-- [Links](#links)
-- [Languages](#languages)
-    - [Español (Spanish)](#espa%C3%B1ol-spanish)
-    - [Français (French)](#fran%C3%A7ais-french)
-    - [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
-- [From the Wiki](#from-the-wiki)
-    - [Backup and Restore](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore)
-    - [Diagnosing Issues](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues)
-    - [Directory Structure](https://github.com/kizniche/Mycodo/wiki/Directory-Structure)
-    - [Preserving Custom Code](https://github.com/kizniche/Mycodo/wiki/Preserving-Custom-Code)
-    - [Screenshots](https://github.com/kizniche/Mycodo/wiki/Screenshots)
-    - [Testing](https://github.com/kizniche/Mycodo/wiki/Testing)
-    - [Translations](https://github.com/kizniche/Mycodo/wiki/Translations)
-
-## Mycodo Manual
-
-The Mycodo Manual may be viewed or downloaded as [Markdown](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md), [PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), or [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt)
 
 ## Features
 
@@ -69,20 +67,6 @@ The Mycodo Manual may be viewed or downloaded as [Markdown](https://github.com/k
 * Camera support - Raspberry Pi Camera and USB cameras, to stream live video, capture still images, and create time-lapses
 * Automated system upgrade - When there's new release on github, an upgrade can be initiated from the web user interface.
 * Languages: English, [Español](#espa%C3%B1ol-spanish), [Français](#fran%C3%A7ais-french), and [한국어](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
-
-
-## TODO
-
-* Support Serial Port Expander
-* Support more Atlas Scientific sensors
-* Add PID filters (of input or output) and alternate PID functions
-* Add support for wireless communication (z-wave, xbee, or other)
-* Support for PWM and servo/stepper motors
-* Continue development of Remote Admin Dashboard to monitor other Mycodo servers
-* Add graph export options (width, height, scale)
-* Create custom log from influxdb query
-* Notes, flag points of time on graph (text, file upload, graph saving, etc.)
-
 
 ## Install
 
@@ -122,8 +106,7 @@ Make sure the setup.sh script finishes without errors. A log of the setup.sh scr
 
 If the install is successful, the web user interface should be accessible with your PI's IP address https://IPaddress/. The first time you visit this page, you will be prompted to create an admin user. After creating an admin user, you should be redirected to the login page to use the credentials just created to log in. Once logged in, make sure the host name and version number at the top left is green, indicating the daemon is running. Red indicates the daemon is inactive or unresponsive. Ensure any java-blocking plugins are disabled for all the web UI features to work.
 
-
-## Install Notes
+### Install Notes
 
 If you want write access to the mycodo files, add your user to the mycodo group, changing 'username' to your user.
 
@@ -159,23 +142,9 @@ sudo /etc/init.d/apache2 restart
 
 If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the web UI at the "https://" address (opposed to "http://"). You may receive a warning message about the security of your site, unless you add the certificate to your browser's trusted list.
 
+## Manual
 
-## Upgrading
-
-If you already have Mycodo installed (version >= 4.0.0), you can perform an upgrade to the latest [release](https://github.com/kizniche/Mycodo/releases) on github by either using the Upgrade option in the web UI (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at /var/log/mycodo/mycodoupgrade.log
-
-```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade```
-
-Upgrading the mycodo database is performed automatically during the upgrade process, however it can also be performed manually with the following commands (Note: This does not create the database, only upgrade them. You must already have a database created in order to upgrade):
-
-```bash
-cd ~/Mycodo/databases
-alembic upgrade head
-```
-
-Refer to the [alembic documentation](http://alembic.readthedocs.org/en/latest/tutorial.html) for other functions.
-
-
+The Mycodo Manual may be viewed or downloaded as [Markdown](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md), [PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), or [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt)
 
 ## License
 

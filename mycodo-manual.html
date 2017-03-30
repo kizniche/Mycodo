@@ -341,6 +341,7 @@
 <h1 id="table-of-contents">Table of Contents</h1>
 <p><a href="#about-mycodo">About Mycodo</a></p>
 <p><a href="#frequently-asked-questions">Frequently Asked Questions</a></p>
+<p><a href="#upgrading">Upgrading</a></p>
 <p><a href="#settings">Settings</a></p>
 <ul>
 <li><a href="#general-settings">General Settings</a></li>
@@ -386,7 +387,7 @@
 <p><a href="#sensor-and-device-setup">Sensor and Device Setup</a></p>
 <p><a href="#sensor-interfaces">Sensor Interfaces</a></p>
 <ul>
-<li><a href="#wire">1-Wire</a></li>
+<li><a href="#1-wire">1-Wire</a></li>
 <li><a href="#gpio">GPIO</a></li>
 <li><a href="#uart">UART</a></li>
 <li><a href="#i2c">I<sup>2</sup>C</a></li>
@@ -466,6 +467,9 @@
 <p><em>Why is there only one FAQ?</em></p>
 <p>Good question.</p>
 <hr />
+<h1 id="upgrading">Upgrading</h1>
+<p>If you already have Mycodo installed (version &gt;= 4.0.0), you can perform an upgrade to the latest <a href="https://github.com/kizniche/Mycodo/releases">release</a> on github by either using the Upgrade option in the web UI (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at <code>/var/log/mycodo/mycodoupgrade.log</code></p>
+<p><code>sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade</code></p>
 <h1 id="settings">Settings</h1>
 <p>The settings menu, accessed by selecting the gear icon in the top-right, then the Configure link, is a general area for various system-wide configuration options.</p>
 <h2 id="general-settings">General Settings</h2>

@@ -9,6 +9,8 @@ Table of Contents
 
 [Frequently Asked Questions](#frequently-asked-questions)
 
+[Upgrading](#upgrading)
+
 [Settings](#settings)
 
    - [General Settings](#general-settings)
@@ -55,7 +57,7 @@ Table of Contents
 
 [Sensor Interfaces](#sensor-interfaces)
 
-   - [1-Wire](#wire)
+   - [1-Wire](#1-wire)
    - [GPIO](#gpio)
    - [UART](#uart)
    - [I<sup>2</sup>C](#i2c)
@@ -189,6 +191,13 @@ Here is how I generally set up Mycodo to monitor and regulate:
 Good question.
 
 * * * * *
+
+Upgrading
+=========
+
+If you already have Mycodo installed (version >= 4.0.0), you can perform an upgrade to the latest [release](https://github.com/kizniche/Mycodo/releases) on github by either using the Upgrade option in the web UI (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at ```/var/log/mycodo/mycodoupgrade.log```
+
+```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade```
 
 Settings
 ========

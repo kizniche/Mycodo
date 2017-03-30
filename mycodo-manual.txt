@@ -11,6 +11,8 @@ About Mycodo
 
 Frequently Asked Questions
 
+Upgrading
+
 Settings
 
 -   General Settings
@@ -194,6 +196,19 @@ _Why is there only one FAQ?_
 Good question.
 
 ------------------------------------------------------------------------
+
+
+
+UPGRADING
+
+
+If you already have Mycodo installed (version >= 4.0.0), you can perform
+an upgrade to the latest release on github by either using the Upgrade
+option in the web UI (recommended) or by issuing the following command
+in a terminal. A log of the upgrade process is created at
+/var/log/mycodo/mycodoupgrade.log
+
+sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade
 
 
 
