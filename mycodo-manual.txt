@@ -1,8 +1,11 @@
-Mycodo Manual
-=============
 
-Table of Contents
-=================
+
+MYCODO MANUAL
+
+
+
+TABLE OF CONTENTS
+
 
 About Mycodo
 
@@ -52,6 +55,23 @@ Troubleshooting
 
 Appendix
 
+Sensor and Device Setup
+
+Sensor Interfaces
+
+-   1-Wire
+-   GPIO
+-   UART
+-   I2C
+-   Edge Detection
+
+Device Setup
+
+-   I2C Multiplexers
+-   Analog to Digital Converters
+
+Device Specific Information
+
 Temperature Sensors
 
 -   Raspberry Pi
@@ -78,6 +98,7 @@ Moisture Sensors
 
 Pressure Sensors
 
+-   BME280
 -   BMP085, BMP180
 
 Luminosity Sensors
@@ -85,23 +106,23 @@ Luminosity Sensors
 -   BH1750
 -   TSL2561
 
-I2C Multiplexers
-
--   TCA9548A
-
 Analog to Digital Converters
 
 -   ADS1x15
 -   MCP342x
 
-Schematics and Diagrams
+Diagrams
 
--   Pi Schematics
+-   DHT11 Diagrams
+-   DS18B20 Diagrams
+-   Raspberry Pi and Relay Diagrams
 
-* * * * *
+------------------------------------------------------------------------
 
-About Mycodo
-============
+
+
+ABOUT MYCODO
+
 
 Mycodo is a remote monitoring and automated regulation system with a
 focus on modulating environmental conditions. It was built to run on the
@@ -124,10 +145,12 @@ oscillation. A well-tuned PID controller will raise to the setpoint
 quickly, have minimal overshoot, and maintain the setpoint with little
 oscillation.
 
-Frequently Asked Questions
-==========================
 
-Where do I even begin?
+
+FREQUENTLY ASKED QUESTIONS
+
+
+_Where do I even begin?_
 
 Here is how I generally set up Mycodo to monitor and regulate:
 
@@ -165,23 +188,25 @@ Here is how I generally set up Mycodo to monitor and regulate:
     PID setpoint. This provides a good visualization for tuning and
     adjusting the system.
 
-* * * * *
+------------------------------------------------------------------------
 
-Why is there only one FAQ?
+_Why is there only one FAQ?_
 
 Good question.
 
-* * * * *
+------------------------------------------------------------------------
 
-Settings
-========
+
+
+SETTINGS
+
 
 The settings menu, accessed by selecting the gear icon in the top-right,
 then the Configure link, is a general area for various system-wide
 configuration options.
 
+
 General Settings
-----------------
 
   Setting                 Description
   ----------------------- -----------------------------------------------------------------------------------------------------------
@@ -192,8 +217,8 @@ General Settings
   Hide warning alerts     Hide all warning alert boxes that appear at the top of the page.
   Opt-out of statistics   Turn off sending anonymous usage statistics. Please consider that this helps the development to leave on.
 
+
 Relay Usage Settings
---------------------
 
 In order to calculate accurate relay usage statistics, a few
 characteristics of your electrical system needs to be know. These
@@ -209,8 +234,8 @@ for each relay (see Relay Settings).
   Currency Unit   This is the unit used for the currency that pays for electricity.
   Day of Month    This is the day of the month (1-30) that the electricity meter is read (which will correspond to the electrical bill).
 
+
 Users
------
 
 Mycodo requires at least one Admin user for the login system to be
 enabled. If there isn’t an Admin user, the web server will redirect to
@@ -225,8 +250,8 @@ additional users may be created from the User Settings page.
   Password/Repeat   Choose a password that is between 6 and 64 characters and only contain letters, numbers, and symbols.
   Role              Roles are a way of imposing access restrictions on users, to either allow or deny actions. See the table below for explanations of the four default Roles.
 
+
 User Roles
-----------
 
 Roles define the permissions of each user. There are 4 default roles
 that determine if a user can view or edit particular areas of Mycodo.
@@ -249,8 +274,8 @@ Methods, PIDs, Relays, Sensors, and Timers.
 2The View Stats permission protects the viewing of usage statistics and
 the System Info and Relay Usage pages.
 
+
 Alert Settings
---------------
 
 Alert settings set up the credentials for sending email notifications.
 
@@ -264,8 +289,8 @@ Alert settings set up the credentials for sending email notifications.
   From Email              What the from email address be set as. This should be the actual email address for this user.
   Max emails (per hour)   Set the maximum number of emails that can be sent per hour. If more notifications are triggered within the hour and this number has been reached, the notifications will be discarded.
 
+
 Camera Settings
----------------
 
 Many cameras can be used simultaneously with Mycodo. Each camera needs
 to be set up in the camera settings, then may be used throughout the
@@ -286,8 +311,10 @@ differences in hardware and software.
   Flip horizontally   Flip, or mirror, the image horizontally.
   Flip vertically     Flip, or mirror, the image vertically.
 
-Controllers
-===========
+
+
+CONTROLLERS
+
 
 Controllers are essentially modules that can be used to perform
 functions or communicate with other parts of Mycodo. Each controller
@@ -295,8 +322,8 @@ performs a specific task or group of related tasks. There are also
 Controller Functions, which are larger functions of a controller or
 controllers and have been given their own sections.
 
+
 Sensors
--------
 
 Sensors measure environmental conditions, which will be stored in an
 influx database. This database will provide recent measurement for
@@ -347,11 +374,11 @@ measurements is not within the range specified.
   -------------- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   GPIO           This is the sensor that will be used to verify the sensor measurement. The sensor will be read directly after the first sensor’s measurement to verify whether the sensors have similar measurements.
   Difference     This is the maximum measured measurement difference between the two sensors before an action is triggered (either notify by email or prevent PID from operating; more below).
-  Notification   If the measurements of the two sensors differ by more than the set Difference, an email will be sent to the address in the Notification field.
-  Stop PID       If the measurements of the two sensors differ by more than the set Difference, the PID controller will turn off.
+  Notification   If the measurements of the two sensors differ by more than the set _Difference_, an email will be sent to the address in the _Notification_ field.
+  Stop PID       If the measurements of the two sensors differ by more than the set _Difference_, the PID controller will turn off.
+
 
 Relays
-------
 
 Relays are electromechanical or solid-state devices that enable a small
 voltage signal (such as from a microprocessor) to activate a much larger
@@ -360,10 +387,10 @@ higher voltage.
 
 Relays must be properly set up before PID regulation can be achieved.
 Add and configure relays in the Relay tab. Set the “GPIO Pin” to the BCM
-GPIO number of each pin that activates each relay. On Trigger should be
-set to the signal that activates the relay (the device attached to the
-relay turns on). If your relay activates when the potential across the
-coil is 0-volts, set On Trigger to “Low”, otherwise if your relay
+GPIO number of each pin that activates each relay. _On Trigger_ should
+be set to the signal that activates the relay (the device attached to
+the relay turns on). If your relay activates when the potential across
+the coil is 0-volts, set _On Trigger_ to “Low”, otherwise if your relay
 activates when the potential across the coil is 3.3-volts (or whatever
 switching voltage you are using, if not being driven by the GPIO pin),
 set it to “High”.
@@ -381,8 +408,8 @@ on), or red, indicating the relay is inactivated (device is off).
   Start State           This specifies whether the relay should be ON or OFF when mycodo initially starts.
   Seconds to turn On    This is a way to turn a relay on for a specific duration of time. This can be useful for testing the relays and powered devices or the measured effects a device may have on an environmental condition.
 
+
 PIDs
-----
 
 A proportional-derivative-integral (PID) controller is a control loop
 feedback mechanism used throughout industry for controlling systems. It
@@ -410,27 +437,27 @@ resumes operation.
   Raise Relay            This is the relay that will cause the particular environmental condition to rise. In the case of raising the temperature, this may be a heating pad or coil.
   Min Duration (raise)   This is the minimum that the PID output must be before the Up Relay turns on. If the PID output exceeds this minimum, the Up Relay will turn on for the PID output number of seconds.
   Max Duration (raise)   This is the maximum duration the Up Relay is allowed to turn on for. If the PID output exceeds this number, the Up Relay will turn on for no greater than this duration of time.
-  Lower Relay            This is the relay that will cause the particular environmental condition to lower. In the case of lowering the CO2, this may be an exhaust fan.
+  Lower Relay            This is the relay that will cause the particular environmental condition to lower. In the case of lowering the CO~2~, this may be an exhaust fan.
   Min Duration (lower)   This is the minimum that the PID output must be before the Down Relay turns on. If the PID output exceeds this minimum, the Down Relay will turn on for the PID output number of seconds.
   Max Duration (lower)   This is the maximum duration the Down Relay is allowed to turn on for. if the PID output exceeds this number, the Down Relay will turn on for no greater than this duration of time.
-  KP                     Proportional coefficient (non-negative). Accounts for present values of the error. For example, if the error is large and positive, the control output will also be large and positive.
-  KI                     Integral coefficient (non-negative). Accounts for past values of the error. For example, if the current output is not sufficiently strong, the integral of the error will accumulate over time, and the controller will respond by applying a stronger action.
-  KD                     Derivative coefficient (non-negative). Accounts for predicted future values of the error, based on its current rate of change.
+  K~P~                   Proportional coefficient (non-negative). Accounts for present values of the error. For example, if the error is large and positive, the control output will also be large and positive.
+  K~I~                   Integral coefficient (non-negative). Accounts for past values of the error. For example, if the current output is not sufficiently strong, the integral of the error will accumulate over time, and the controller will respond by applying a stronger action.
+  K~D~                   Derivative coefficient (non-negative). Accounts for predicted future values of the error, based on its current rate of change.
   Integrator Min         The minimum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)
   Integrator Max         The maximum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)
 
+
 Timers
-------
 
 Timers enable a relay to be manipulated after specific durations of time
-or at a specific times of the day. For Duration Timers, both the on
+or at a specific times of the day. For _Duration Timers_, both the on
 duration and the off duration can be defined and the timer will be
-turned on and off for those durations until deactivated. For Daily
-Timers, the start hour:minute can be set to turn a specific relay on or
+turned on and off for those durations until deactivated. For _Daily
+Timers_, the start hour:minute can be set to turn a specific relay on or
 off at the specific time of day.
 
+
 LCDs
-----
 
 Data may be output to a liquid crystal display (LCD) for easy viewing.
 There are only a few number fo LCDs that are supported. Only 16x2 and
@@ -447,11 +474,12 @@ the README for specific information regarding compatibility.
   Period                    This is the period of time (in seconds) between redrawing the LCD with new data.
   Display Line #            Select which measurement to display on each line of the LCD.
 
-Controller Functions
-====================
+
+
+CONTROLLER FUNCTIONS
+
 
 Conditional Statements
-----------------------
 
 A conditional statement is a way to perform certain actions based on
 whether a condition is true. Conditional statements can be created for
@@ -490,8 +518,8 @@ Conditional Statement Actions
   Video            Capture a video of a set duration with the selected camera.
   Email Video      Capture a video and email it as an attachment to the an email address.
 
+
 Methods
--------
 
 Methods allow different types of setpoint tracking in PID controllers.
 Normally, a PID controller will regulate an environmental condition to a
@@ -553,8 +581,8 @@ creates for 4 points (each a set of x and y). The x-axis start (x3) and
 end (x0) will be automatically stretched or skewed to fit within a
 24-hour period and this method will repeat daily.
 
+
 PID Tuning
-----------
 
 PID Control Theory
 
@@ -563,25 +591,26 @@ industrial settings, for it“s ability to handle both simple and complex
 regulation. The PID controller has three paths, the proportional,
 integral, and derivative.
 
-The Proportional takes the error and multiplies it by the constant Kp,
+The Proportional takes the error and multiplies it by the constant K~p~,
 to yield an output value. When the error is large, there will be a large
 proportional output.
 
-The Integral takes the error and multiplies it by Ki, then integrates it
-(Ki · 1/s). As the error changes over time, the integral will
-continually sum it and multiply it by the constant Ki. The integral is
-used to remove perpetual error in the control system. If using Kp alone
-produces an output that produces a perpetual error (i.e. if the sensor
-measurement never reaches the Set Point), the integral will increase the
-output until the error decreases and the Set Point is reached.
+The Integral takes the error and multiplies it by K~i~, then integrates
+it (K~i~ · 1/s). As the error changes over time, the integral will
+continually sum it and multiply it by the constant K~i~. The integral is
+used to remove perpetual error in the control system. If using K~p~
+alone produces an output that produces a perpetual error (i.e. if the
+sensor measurement never reaches the Set Point), the integral will
+increase the output until the error decreases and the Set Point is
+reached.
 
-The Derivative multiplies the error by Kd, then differentiates it (Kd ·
-s). When the error rate changes over time, the output signal will
-change. The faster the change in error, the larger the derivative path
-becomes, decreasing the output rate of change. This has the effect of
-dampening overshoot and undershoot (oscillation) of the Set Point.
+The Derivative multiplies the error by K~d~, then differentiates it
+(K~d~ · s). When the error rate changes over time, the output signal
+will change. The faster the change in error, the larger the derivative
+path becomes, decreasing the output rate of change. This has the effect
+of dampening overshoot and undershoot (oscillation) of the Set Point.
 
-* * * * *
+------------------------------------------------------------------------
 
 Using temperature as an example, the Process Variable (PV) is the
 measured temperature, the Setpoint (SP) is the desired temperature, and
@@ -591,15 +620,15 @@ too cold and to what degree). The error is manipulated by each of the
 three PID components, producing an output, called the Manipulated
 Variable (MV) or Control Variable (CV). To allow control of how much
 each path contributes to the output value, each path is multiplied by a
-gain (represented by KP, KI, and KD). By adjusting the gains, the
-sensitivity of the system to each path is affected. When all three paths
-are summed, the PID output is produced. If a gain is set to 0, that path
-does not contribute to the output and that path is essentially turned
-off.
+gain (represented by _K~P~_, _K~I~_, and _K~D~_). By adjusting the
+gains, the sensitivity of the system to each path is affected. When all
+three paths are summed, the PID output is produced. If a gain is set to
+0, that path does not contribute to the output and that path is
+essentially turned off.
 
 The output can be used a number of ways, however this controller was
 designed to use the output to affect the measured value (PV). This
-feedback loop, with a properly tuned PID controller, can achieve a set
+feedback loop, with a _properly tuned_ PID controller, can achieve a set
 point in a short period of time, maintain regulation with little
 oscillation, and respond quickly to disturbance.
 
@@ -617,32 +646,35 @@ temperature back down, to reduce the error. If the temperature would
 normally lower without the aid of a cooling device, then the system can
 be simplified by omitting a cooler and allowing it to lower on its own.
 
-Implementing a controller that effectively utilizes KP, KI, and KD can
-be challenging. Furthermore, it is often unnecessary. For instance, the
-KI and KD can be set to 0, effectively turning them off and producing
-the very popular and simple P controller. Also popular is the PI
-controller. It is recommended to start with only KP activated, then
-experiment with KP and KI, before finally using all three. Because
-systems will vary (e.g. airspace volume, degree of insulation, and the
-degree of impact from the connected device, etc.), each path will need
-to be adjusted through experimentation to produce an effective output.
+Implementing a controller that effectively utilizes _K~P~_, _K~I~_, and
+_K~D~_ can be challenging. Furthermore, it is often unnecessary. For
+instance, the _K~I~_ and _K~D~_ can be set to 0, effectively turning
+them off and producing the very popular and simple P controller. Also
+popular is the PI controller. It is recommended to start with only
+_K~P~_ activated, then experiment with _K~P~_ and _K~I~_, before finally
+using all three. Because systems will vary (e.g. airspace volume, degree
+of insulation, and the degree of impact from the connected device,
+etc.), each path will need to be adjusted through experimentation to
+produce an effective output.
 
 Quick Setup Examples
 
 These example setups are meant to illustrate how to configure regulation
 in particular directions, and not to achieve ideal values to configure
-your KP, KI, and KD gains. There are a number of online resources that
-discuss techniques and methods that have been developed to determine
-ideal PID values (such as here, here, here, here, and here) and since
-there are no universal values that will work for every system, it is
-recommended to conduct your own research to understand the variables and
-essential to conduct your own experiments to effectively implement them.
+your _K~P~_, _K~I~_, and _K~D~_ gains. There are a number of online
+resources that discuss techniques and methods that have been developed
+to determine ideal PID values (such as here, here, here, here, and here)
+and since there are no universal values that will work for every system,
+it is recommended to conduct your own research to understand the
+variables and essential to conduct your own experiments to effectively
+implement them.
 
 Provided merely as an example of the variance of PID values, one of my
-setups had temperature PID values (up regulation) of KP = 30, KI = 1.0,
-and KD = 0.5, and humidity PID values (up regulation) of KP = 1.0, KI =
-0.2, and KD = 0.5. Furthermore, these values may not have been optimal
-but they worked well for the conditions of my environmental chamber.
+setups had temperature PID values (up regulation) of _K~P~_ = 30, _K~I~_
+= 1.0, and _K~D~_ = 0.5, and humidity PID values (up regulation) of
+_K~P~_ = 1.0, _K~I~_ = 0.2, and _K~D~_ = 0.5. Furthermore, these values
+may not have been optimal but they worked well for the conditions of my
+environmental chamber.
 
 Exact Temperature Regulation
 
@@ -655,12 +687,12 @@ sensor and activate the sensor.
 
 Add two relays, then save each GPIO and On Trigger state.
 
-Add a PID, then select the newly-created sensor. Change Setpoint to the
-desired temperature, Regulate Direction to “Both”. Set Raise Relay to
-the relay attached to the heating device and the Lower Relay to the
-relay attached to the cooling device.
+Add a PID, then select the newly-created sensor. Change _Setpoint_ to
+the desired temperature, _Regulate Direction_ to “Both”. Set _Raise
+Relay_ to the relay attached to the heating device and the _Lower Relay_
+to the relay attached to the cooling device.
 
-Set KP = 1, KI = 0, and KD = 0, then activate the PID.
+Set _K~P~_ = 1, _K~I~_ = 0, and _K~D~_ = 0, then activate the PID.
 
 If the temperature is lower than the Set Point, the heater should
 activate at some interval determined by the PID controller until the
@@ -668,10 +700,10 @@ temperature rises to the set point. If the temperature goes higher than
 the Set Point (or Set Point + Buffer), the cooling device will activate
 until the temperature returns to the set point. If the temperature is
 not reaching the Set Point after a reasonable amount of time, increase
-the KP value and see how that affects the system. Experiment with
-different configurations involving only Read Interval and KP to achieve
-a good regulation. Avoid changing the KI and KD from 0 until a working
-regulation is achieved with KP alone.
+the _K~P~_ value and see how that affects the system. Experiment with
+different configurations involving only _Read Interval_ and _K~P~_ to
+achieve a good regulation. Avoid changing the _K~I~_ and _K~D~_ from 0
+until a working regulation is achieved with _K~P~_ alone.
 
 View graphs in the 6 to 12 hour time span to identify how well the
 temperature is regulated to the Setpoint. What is meant by
@@ -680,13 +712,13 @@ tolerances. Most applications of a PID controller would like to see the
 proper temperature attained within a reasonable amount of time and with
 little oscillation around the Setpoint.
 
-Once regulation is achieved, experiment by reducing KP slightly (~25%)
-and increasing KI by a low amount to start, such as 0.1 (or lower,
-0.01), then start the PID and observe how well the controller regulates.
-Slowly increase KI until regulation becomes both quick and with little
-oscillation. At this point, you should be fairly familiar with
-experimenting with the system and the KD value can be experimented with
-once both KP and KI have been tuned.
+Once regulation is achieved, experiment by reducing _K~P~_ slightly
+(~25%) and increasing _K~I~_ by a low amount to start, such as 0.1 (or
+lower, 0.01), then start the PID and observe how well the controller
+regulates. Slowly increase _K~I~_ until regulation becomes both quick
+and with little oscillation. At this point, you should be fairly
+familiar with experimenting with the system and the _K~D~_ value can be
+experimented with once both _K~P~_ and _K~I~_ have been tuned.
 
 High Temperature Regulation
 
@@ -695,14 +727,15 @@ For instance, if cooling is unnecessary, this can be removed from the
 system and only up-regulation can be used.
 
 Use the same configuration as the Exact Temperature Regulation example,
-except change Regulate Direction to “Raise” and do not touch the “Down
+except change _Regulate Direction_ to “Raise” and do not touch the “Down
 Relay” section.
 
-Miscellaneous
-=============
+
+
+MISCELLANEOUS
+
 
 Graphs
-------
 
 There are two different types of graphs, Live and Asynchronous.
 
@@ -741,8 +774,8 @@ Note: Live Graphs require measurements to be acquired, therefore at
 least one sensor needs to be added and activated in order to display
 live data.
 
+
 Camera
-------
 
 Once a cameras has been set up (in the Camera Settings), it may be used
 to capture still images, create time-lapses, and stream video. Cameras
@@ -750,21 +783,21 @@ may also be used with Conditional Statements to trigger a camera image
 or video capture (as well as the ability to email the image/video with a
 notification).
 
+
 Relay Usage
------------
 
 Relay usage statistics are calculated for each relay, based on how long
 the relay has been powered, the current draw of the device connected to
 the relay, and other Relay Usage Settings.
 
+
 System Backup
--------------
 
 A backup is made to /var/Mycodo-backups when the system is upgraded
 through the web interface or the upgrade script.
 
+
 System Restore
---------------
 
 If you need to restore a backup, do the following, changing the
 appropriate directory names with these commands, changing ‘user’ to your
@@ -774,11 +807,12 @@ user name:
     sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
     sudo /bin/bash ~/Mycodo/mycoco/scripts/upgrade_post.sh
 
-Troubleshooting
-===============
+
+
+TROUBLESHOOTING
+
 
 Daemon Not Running
-------------------
 
 -   Check the Logs: From the [Gear Icon] -> Mycodo Logs page, check the
     Daemon Log for any errors. If the issue began after an upgrade, also
@@ -793,17 +827,151 @@ Daemon Not Running
 -   If a solution could not be found after investigating the above
     suggestions, submit a New Mycodo Issue on github.
 
+
 More
-----
 
 Check out the Diagnosing Mycodo Issues Wiki Page on github for more
 information about diagnosing issues.
 
-Appendix
-========
+
+
+APPENDIX
+
+
+
+SENSOR AND DEVICE SETUP
+
+
+Certain sensors will require extra steps to be taken in order to set up
+the interface for communication. This includes I2C, one-wire, and UART.
+
+
+Sensor Interfaces
+
+Sensors are categorized below by their communication interface.
+
+1-Wire
+
+The 1-wire interface should be configured with these instructions.
+
+  DS18B20: Temperature link (Also works with: DS18S20, DS1822, DS28EA00,
+  DS1825/MAX31850K)
+
+GPIO
+
+  DHT11, DHT22/AM2302: Relative humidity and temperature link
+
+  SHT1x/SHT7x, SHT2x: Relative humidity and temperature link
+
+UART
+
+  K30: Carbon dioxide (CO2) in ppmv link
+
+This documentation provides specific installation procedures for the K30
+with the Raspberry Pi version 1 or 2. Once the K30 has been configured
+with this documentation, it can be tested whether the sensor is able to
+be read, by executing
+~/Mycodo/mycodo/tests/manual_tests/test_uart_K30.py
+
+Because the UART is handled differently by the Raspberry Pi 3, from of
+the addition of bluetooth, there are a different set of instructions for
+getting the K30 working on the Raspberry Pi 3. If installing on a
+Raspberry Pi 3, you only need to perform these steps to get the K30
+working:
+
+Run raspi-config
+
+sudo raspi-config
+
+Go to Advanced Options -> Serial and disable. Then edit /boot/config.txt
+
+sudo vi /boot/config.txt
+
+Find the line “enable_uart=0” and change it to “enable_uart=1”, then
+reboot.
+
+I2C
+
+The I2C interface should be enabled with raspi-config.
+
+  AM2315: Relative humidity, temperature link
+
+  Atlas Scientific PT-1000: Temperature link
+
+  BH1750: Light link
+
+  BME280: Barometric pressure, humidity, temperature link
+
+  BMP085, BMP180: Barometric pressure, temperature link
+
+  HTU21D: Relative humidity and temperature link
+
+  TMP006, TMP007: Contactless temperature link
+
+  TSL2561: Light link
+
+  Chirp: link Moisture, light, and temperature
+
+
+Edge Detection
+
+The detection of a changing signal, for instance a simple switch
+completing a circuit, requires the use of edge detection. By detecting a
+rising edge (LOW to HIGH), a falling edge (HIGH to LOW), or both,
+actions or events can be triggered. The GPIO chosen to detect the signal
+should be equipped with an appropriate resistor that either pulls the
+GPIO up [to 5-volts] or down [to ground]. The option to enable the
+internal pull-up or pull-down resistors is not available for safety
+reasons. Use your own resistor to pull the GPIO high or low.
+
+Examples of devices that can be used with edge detection: simple
+switches and buttons, PIR motion sensors, reed switches, hall effect
+sensors, float switches, and more.
+
+
+Device Setup
+
+I2C Multiplexers
+
+All devices that connected to the Raspberry Pi by the I2C bus need to
+have a unique address in order to communicate. Some sensors may have the
+same address (such as the AM2315), which prevents more than one from
+being connected at the same time. Others may provide the ability to
+change the address, however the address range may be limited, which
+limits by how many you can use at the same time. I2C multiplexers are
+extremely clever and useful in these scenarios because they allow
+multiple sensors with the same I2C address to be connected.
+
+  TCA9548A: I2C Multiplexer link (I2C): Has 8 selectable addresses, so 8
+  multiplexers can be connected to one Raspberry Pi. Each multiplexer
+  has 8 channels, allowing up to 8 devices/sensors with the same address
+  to be connected to each multiplexer. 8 multiplexers x 8 channels = 64
+  devices/sensors with the same I2C address.
+
+  TCA9545A: I2C Bus Multiplexer link (I2C): This board works a little
+  differently than the TCA9548A, above. This board actually creates 4
+  new I2C busses, each with their own selectable voltage, either 3.3 or
+  5.0 volts. Instructions to enable the Device Tree Overlay are at
+  https://github.com/camrex/i2c-mux-pca9545a. Nothing else needs to be
+  done in Mycodo after that except to select the correct I2C bus when
+  configuring a sensor.
+
+Analog to Digital Converters
+
+An analog to digital converter (ADC) allows the use of any analog sensor
+that outputs a variable voltage. A voltage divider may be necessary to
+attain your desired range.
+
+  ADS1x15 link ±4.096 (I2C)
+
+  MCP342x link ±2.048 (I2C)
+
+
+
+DEVICE SPECIFIC INFORMATION
+
 
 Temperature Sensors
--------------------
 
 Raspberry Pi
 
@@ -863,8 +1031,8 @@ Specifications
 -   Usable temperature range: -40°C to 125°C
 -   Optimal operating voltage of 3.3V to 5V (tolerant up to 7V max)
 
+
 Temperature, Humidity Sensors
------------------------------
 
 AM2315
 
@@ -891,7 +1059,7 @@ DHT22, AM2302
 
 Compared to the DHT11, this sensor is more precise, more accurate and
 works in a bigger range of temperature/humidity, but its larger and more
-expensive.
+expensive. The wiring is the same as the DHT11.
 
 Specifications
 
@@ -937,10 +1105,17 @@ Specifications
 -   2.4 to 5.5V power and I/O
 -   No more than 0.125 Hz sampling rate (once every 8 seconds)
 
+
 CO2 Sensors
------------
 
 K-30
+
+[] 
+
+Be very careful when connecting the K-30, as there is no reverse-voltage
+protection. Improper connections could destroy your sensor.
+
+Wiring instructions for the Raspberry Pi can be found here.
 
 Specifications
 
@@ -953,10 +1128,12 @@ Specifications
 -   Warm-up time: < 1 min. (@ full specs < 15 min)
 -   0.5 Hz sampling rate (once every 2 seconds)
 
+
 Moisture Sensors
-----------------
 
 Chirp
+
+[] 
 
 The Chirp sensor measures moisture, light, and temperature.
 
@@ -965,8 +1142,27 @@ Specifications
 -   Vin: 3 to 5V
 -   I2C 7-bit address 0x77
 
+
 Pressure Sensors
-----------------
+
+BME280
+
+The BME280 is the next-generation of sensors from Bosch, and is the
+upgrade to the BMP085/BMP180/BMP183 - with a low altitude noise of 0.25m
+and the same fast conversion time. It has the same specifications, but
+can use either I2C or SPI.
+
+Specifications
+
+-   300-1100 hPa (9000m to -500m above sea level)
+-   -40 to +85°C operational range
+-   ±3% humidity accuracy tollerance
+-   ±1% humidity hysteresis
+-   ±1 hPa pressure accuracy
+-   ±2°C temperature accuracy
+-   Vin: 3 to 5V
+-   Logic: 3 to 5V compliant
+-   I2C 7-bit address 0x76 or 0x77
 
 BMP085, BMP180
 
@@ -984,8 +1180,8 @@ Specifications
 -   Logic: 3 to 5V compliant
 -   I2C 7-bit address 0x77
 
+
 Luminosity Sensors
-------------------
 
 BH1750
 
@@ -1008,19 +1204,8 @@ Specifications
 -   Vin: 3V and a low supply
 -   Max current: 0.6mA.
 
-I2C Multiplexers
-----------------
-
-TCA9548A
-
-The TCA9548A I2C allows multiple sensors that have the same I2C address
-to be used with mycodo (such as the AM2315). The multiplexer has a
-selectable address, from 0x70 through 0x77, allowing up to 8
-multiplexers to be used at once. With 8 channels per multiplexer, this
-allows up to 64 devices with the same address to be used.
 
 Analog to Digital Converters
-----------------------------
 
 ADS1x15
 
@@ -1050,10 +1235,24 @@ Specifications
 -   MCP3427: 2 channel, 12, 14, or 16 bit
 -   MCP3428: 4 channel, 12, 14, or 16 bit
 
-Schematics and diagrams
------------------------
 
-Raspberry Pi Schematics
+Diagrams
+
+DHT11 Diagrams
+
+[] 
+
+[] 
+
+DS18B20 Diagrams
+
+[] 
+
+[] 
+
+[] 
+
+Raspberry Pi and Relay Diagrams
 
 Raspberry Pi, 4 relays, 4 outlets, 1 DS18B20 sensor.
 
@@ -1061,6 +1260,4 @@ Raspberry Pi, 4 relays, 4 outlets, 1 DS18B20 sensor.
 
 Raspberry Pi, 8 relays, 8 outlets.
 
-[Schematic: Pi, 8 relays, and 8 outlets] 
-
-test
+[Schematic: Pi, 8 relays, and 8 outlets]

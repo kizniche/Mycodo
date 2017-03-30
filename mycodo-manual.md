@@ -17,7 +17,7 @@ Table of Contents
    - [User Roles](#user-roles)
    - [Alert Settings](#alert-settings)
    - [Camera Settings](#camera-settings)
-
+    
 [Controllers](#controllers)
 
    - [Sensors](#sensors)
@@ -25,12 +25,12 @@ Table of Contents
    - [PIDs](#pids)
    - [Timers](#timers)
    - [LCDs](#lcds)
-
+ 
 [Controller Functions](#controller-functions)
 
    - [Conditional Statements](#conditional-statements)
    - [Methods](#methods)
-
+    
 [PID Tuning](#pid-tuning)
 
    - [PID Control Theory](#pid-control-theory)
@@ -52,6 +52,23 @@ Table of Contents
    - [More](#more)
 
 [Appendix](#appendix)
+
+[Sensor and Device Setup](#sensor-and-device-setup)
+
+[Sensor Interfaces](#sensor-interfaces)
+
+   - [1-Wire](#1-wire)
+   - [GPIO](#gpio)
+   - [UART](#uart)
+   - [I<sup>2</sup>C](#i2c)
+   - [Edge Detection](#edge-detection)
+
+[Device Setup](#device-setup)
+
+   - [I<sup>2</sup>C Multiplexers](#i2c-multiplexers)
+   - [Analog to Digital Converters](#analog-to-digital-converters)
+
+[Device Specific Information](#device-specific-information)
 
 [Temperature Sensors](#temperature-sensors)
 
@@ -79,6 +96,7 @@ Table of Contents
 
 [Pressure Sensors](#pressure-sensors)
 
+   - [BME280](#bme280)
    - [BMP085, BMP180](#bmp085-bmp180)
 
 [Luminosity Sensors](#luminosity-sensors)
@@ -86,18 +104,16 @@ Table of Contents
    - [BH1750](#bh1750)
    - [TSL2561](#tsl2561)
 
-[I<sup>2</sup>C Multiplexers](#i2c-multiplexers)
-
-   - [TCA9548A](#tca9548a)
-
 [Analog to Digital Converters](#analog-to-digital-converters)
 
    - [ADS1x15](#ads1x15)
    - [MCP342x](#mcp342x)
 
-[Schematics and Diagrams](#schematics-and-diagrams)
+[Diagrams](#diagrams)
 
-   - [Pi Schematics](#pi-schematics)
+   - [DHT11 Diagrams](#dht11-diagrams)
+   - [DS18B20 Diagrams](#ds18b20-diagrams)
+   - [Raspberry Pi and Relay Diagrams](#raspberry-pi-and-relay-diagrams)
 
 * * * * *
 
@@ -819,6 +835,97 @@ github for more information about diagnosing issues.
 Appendix
 ========
 
+Sensor and Device Setup
+=======================
+
+Certain sensors will require extra steps to be taken in order to set up the interface for communication. This includes I<sup>2</sup>C, one-wire, and UART.
+
+Sensor Interfaces
+-----------------
+
+Sensors are categorized below by their communication interface.
+
+### 1-Wire
+
+The 1-wire interface should be configured with [these instructions](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing).
+
+> [DS18B20](#ds18b20): Temperature [link](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf) (Also works with: [DS18S20](https://datasheets.maximintegrated.com/en/ds/DS18S20.pdf), [DS1822](https://datasheets.maximintegrated.com/en/ds/DS1822.pdf), [DS28EA00](https://datasheets.maximintegrated.com/en/ds/DS28EA00.pdf), [DS1825](https://datasheets.maximintegrated.com/en/ds/DS1825.pdf)/[MAX31850K](https://datasheets.maximintegrated.com/en/ds/MAX31850-MAX31851.pdf))
+
+### GPIO
+
+> [DHT11](#dht11), [DHT22](#dht22)/AM2302: Relative humidity and temperature [link](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring)
+
+> [SHT1x](#sht1x)/[SHT7x](#sht7x), SHT2x: Relative humidity and temperature [link](https://github.com/mk-fg/sht-sensor)
+
+### UART
+
+> [K30](#k-30): Carbon dioxide (CO<sub>2</sub>) in ppmv [link](http://www.co2meter.com/products/k-30-co2-sensor-module)
+
+[This documentation](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip) provides specific installation procedures for the K30 with the Raspberry Pi version 1 or 2. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing ```~/Mycodo/mycodo/tests/manual_tests/test_uart_K30.py```
+
+Because the UART is handled differently by the Raspberry Pi 3, from of the addition of bluetooth, there are a different set of instructions for getting the K30 working on the Raspberry Pi 3. If installing on a Raspberry Pi 3, you only need to perform these steps to get the K30 working:
+
+Run raspi-config
+
+```sudo raspi-config```
+
+Go to ```Advanced Options``` -> ```Serial``` and disable. Then edit ```/boot/config.txt```
+
+```sudo vi /boot/config.txt```
+
+Find the line "enable_uart=0" and change it to "enable_uart=1", then reboot.
+
+### I<sup>2</sup>C
+
+The I<sup>2</sup>C interface should be enabled with `raspi-config`.
+
+> [AM2315](#am2315): Relative humidity, temperature [link](https://github.com/lexruee/tentacle_pi)
+
+> [Atlas Scientific PT-1000](#atlas-scientific-pt-1000): Temperature [link](http://www.atlas-scientific.com/product_pages/kits/temp_kit.html)
+
+> [BH1750](#bh1750): Light [link](https://www.dfrobot.com/product-531.html)
+
+> [BME280](#bme280): Barometric pressure, humidity, temperature [link](https://www.bosch-sensortec.com/bst/products/all_products/bme280)
+
+> [BMP085, BMP180](#bmp085-bmp180): Barometric pressure, temperature [link](https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi)
+
+> [HTU21D](#htu21d): Relative humidity and temperature [link](http://www.te.com/usa-en/product-CAT-HSC0004.html)
+
+> [TMP006, TMP007](#tmp006-tmp007): Contactless temperature [link](https://www.sparkfun.com/products/11859)
+
+> [TSL2561](#tsl2561): Light [link](https://www.sparkfun.com/products/12055)
+
+> [Chirp](#chirp): [link](https://wemakethings.net/chirp/) Moisture, light, and temperature
+
+Edge Detection
+--------------
+
+The detection of a changing signal, for instance a simple switch completing a circuit, requires the use of edge detection. By detecting a rising edge (LOW to HIGH), a falling edge (HIGH to LOW), or both, actions or events can be triggered. The GPIO chosen to detect the signal should be equipped with an appropriate resistor that either pulls the GPIO up [to 5-volts] or down [to ground]. The option to enable the internal pull-up or pull-down resistors is not available for safety reasons. Use your own resistor to pull the GPIO high or low.
+
+Examples of devices that can be used with edge detection: simple switches and buttons, PIR motion sensors, reed switches, hall effect sensors, float switches, and more.
+
+Device Setup
+------------
+
+### I<sup>2</sup>C Multiplexers
+
+All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some sensors may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.
+
+> [TCA9548A](#tca9548a): I<sup>2</sup>C Multiplexer [link](https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview) (I<sup>2</sup>C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I<sup>2</sup>C address.
+
+> TCA9545A: I<sup>2</sup>C Bus Multiplexer [link](http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/) (I<sup>2</sup>C): This board works a little differently than the TCA9548A, above. This board actually creates 4 new I<sup>2</sup>C busses, each with their own selectable voltage, either 3.3 or 5.0 volts. Instructions to enable the Device Tree Overlay are at [https://github.com/camrex/i2c-mux-pca9545a](https://github.com/camrex/i2c-mux-pca9545a). Nothing else needs to be done in Mycodo after that except to select the correct I<sup>2</sup>C bus when configuring a sensor.
+
+### Analog to Digital Converters
+
+An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A [voltage divider](https://learn.sparkfun.com/tutorials/voltage-dividers) may be necessary to attain your desired range.
+
+> [ADS1x15](#ads1x15) [link](https://www.adafruit.com/product/1085) &plusmn;4.096 (I<sup>2</sup>C)
+
+> [MCP342x](#mcp342x) [link](http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)) &plusmn;2.048 (I<sup>2</sup>C)
+
+Device Specific Information
+===========================
+
 Temperature Sensors
 -------------------
 
@@ -906,7 +1013,7 @@ Temperature, Humidity Sensors
 
 Compared to the DHT11, this sensor is more precise, more accurate and
 works in a bigger range of temperature/humidity, but its larger and more
-expensive.
+expensive. The wiring is the same as the [DHT11](#dht11).
 
 #### Specifications
 
@@ -946,10 +1053,16 @@ expensive.
  - 2.4 to 5.5V power and I/O
  - No more than 0.125 Hz sampling rate (once every 8 seconds)
 
-CO~2~ Sensors
+CO<sup>2</sup> Sensors
 -------------
 
 ### K-30
+
+![](manual_images/Sensor-K30-01.jpg)\ 
+
+Be very careful when connecting the K-30, as there is no reverse-voltage protection. Improper connections could destroy your sensor.
+
+Wiring instructions for the Raspberry Pi can be found [here](https://www.co2meter.com/blogs/news/8307094-using-co2meter-com-sensors-with-raspberry-pi).
 
 #### Specifications
 
@@ -967,6 +1080,8 @@ Moisture Sensors
 
 ### Chirp
 
+![](manual_images/Sensor-K30-01.jpg)\ 
+
 The Chirp sensor measures moisture, light, and temperature.
 
 #### Specifications
@@ -976,6 +1091,22 @@ The Chirp sensor measures moisture, light, and temperature.
 
 Pressure Sensors
 ----------------
+
+### BME280
+
+The BME280 is the next-generation of sensors from Bosch, and is the upgrade to the BMP085/BMP180/BMP183 - with a low altitude noise of 0.25m and the same fast conversion time. It has the same specifications, but can use either I2C or SPI.
+
+#### Specifications
+
+ - 300-1100 hPa (9000m to -500m above sea level)
+ - -40 to +85&deg;C operational range
+ - &plusmn;3% humidity accuracy tollerance
+ - &plusmn;1% humidity hysteresis
+ - &plusmn;1 hPa pressure accuracy
+ - &plusmn;2&deg;C temperature accuracy
+ - Vin: 3 to 5V
+ - Logic: 3 to 5V compliant
+ - I<sup>2</sup>C 7-bit address 0x76 or 0x77
 
 ### BMP085, BMP180
 
@@ -1017,17 +1148,6 @@ large amounts of light by changing the integration time.
  - Vin: 3V and a low supply
  - Max current: 0.6mA.
 
-I<sup>2</sup>C Multiplexers
-------------------
-
-### TCA9548A
-
-The TCA9548A I<sup>2</sup>C allows multiple sensors that have the same I<sup>2</sup>C
-address to be used with mycodo (such as the AM2315). The multiplexer has
-a selectable address, from 0x70 through 0x77, allowing up to 8
-multiplexers to be used at once. With 8 channels per multiplexer, this
-allows up to 64 devices with the same address to be used.
-
 Analog to Digital Converters
 ----------------------------
 
@@ -1059,10 +1179,24 @@ Analog to Digital Converters
  - MCP3427: 2 channel, 12, 14, or 16 bit
  - MCP3428: 4 channel, 12, 14, or 16 bit
 
-Schematics and diagrams
------------------------
+Diagrams
+--------
 
-### Raspberry Pi Schematics
+### DHT11 Diagrams
+
+![](manual_images/Schematic-Sensor-DHT11-01.jpg)\ 
+
+![](manual_images/Schematic-Sensor-DHT11-02.png)\ 
+
+### DS18B20 Diagrams
+
+![](manual_images/Schematic-Sensor-DS18B20-01.png)\ 
+
+![](manual_images/Schematic-Sensor-DS18B20-02.jpg)\ 
+
+![](manual_images/Schematic-Sensor-DS18B20-03.jpg)\ 
+
+### Raspberry Pi and Relay Diagrams
 
 Raspberry Pi, 4 relays, 4 outlets, 1 DS18B20 sensor.
 

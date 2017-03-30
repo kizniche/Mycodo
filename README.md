@@ -47,7 +47,6 @@ The top graph of the above screenshot visualizes the regulation of temperature i
     - [Directory Structure](https://github.com/kizniche/Mycodo/wiki/Directory-Structure)
     - [Preserving Custom Code](https://github.com/kizniche/Mycodo/wiki/Preserving-Custom-Code)
     - [Screenshots](https://github.com/kizniche/Mycodo/wiki/Screenshots)
-    - [Sensors and Devices](https://github.com/kizniche/Mycodo/wiki/Sensors-and-Devices)
     - [Testing](https://github.com/kizniche/Mycodo/wiki/Testing)
     - [Translations](https://github.com/kizniche/Mycodo/wiki/Translations)
 
