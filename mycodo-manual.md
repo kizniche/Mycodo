@@ -55,7 +55,7 @@ Table of Contents
 
 [Sensor Interfaces](#sensor-interfaces)
 
-   - [1-Wire](#1-wire)
+   - [1-Wire](#wire)
    - [GPIO](#gpio)
    - [UART](#uart)
    - [I<sup>2</sup>C](#i2c)
