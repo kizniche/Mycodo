@@ -505,7 +505,36 @@
 <p>Relays are electromechanical or solid-state devices that enable a small voltage signal (such as from a microprocessor) to activate a much larger voltage, without exposing the low -voltage system to the dangers of the higher voltage.</p>
 <p>Relays must be properly set up before PID regulation can be achieved. Add and configure relays in the Relay tab. Set the “GPIO Pin” to the BCM GPIO number of each pin that activates each relay. <em>On Trigger</em> should be set to the signal that activates the relay (the device attached to the relay turns on). If your relay activates when the potential across the coil is 0-volts, set <em>On Trigger</em> to “Low”, otherwise if your relay activates when the potential across the coil is 3.3-volts (or whatever switching voltage you are using, if not being driven by the GPIO pin), set it to “High”.</p>
 <p>When a relay is initially added, the background of the new relay will be yellow, indicating it is not configured. When properly configured, it will either turn green, indicating the relay is activated (device is on), or red, indicating the relay is inactivated (device is off).</p>
-<p>Setting | Description — | — GPIO Pin | This is the GPIO that will be the signal to the relay. Current Draw (amps) | The is the amount of current the device powered by the relay draws. Note: this value should be calculated based on the voltage set in the <a href="#settings-relay-usage">Relay Usage Settings</a>. On Trigger | This is the state of the GPIO to signal the relay to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you relay completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW. Start State | This specifies whether the relay should be ON or OFF when mycodo initially starts. Seconds to turn On | This is a way to turn a relay on for a specific duration of time. This can be useful for testing the relays and powered devices or the measured effects a device may have on an environmental condition.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">GPIO Pin</td>
+<td style="text-align: left;">This is the GPIO that will be the signal to the relay.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Current Draw (amps)</td>
+<td style="text-align: left;">The is the amount of current the device powered by the relay draws. Note: this value should be calculated based on the voltage set in the <a href="#settings-relay-usage">Relay Usage Settings</a>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">On Trigger</td>
+<td style="text-align: left;">This is the state of the GPIO to signal the relay to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you relay completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Start State</td>
+<td style="text-align: left;">This specifies whether the relay should be ON or OFF when mycodo initially starts.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Seconds to turn On</td>
+<td style="text-align: left;">This is a way to turn a relay on for a specific duration of time. This can be useful for testing the relays and powered devices or the measured effects a device may have on an environmental condition.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="pids">PIDs</h2>
 <p>A <a href="https://en.wikipedia.org/wiki/PID_controller">proportional-derivative-integral (PID) controller</a> is a control loop feedback mechanism used throughout industry for controlling systems. It efficiently brings a measurable condition, such as the temperature, to a desired state and maintains it there with little overshoot and oscillation. A well-tuned PID controller will raise to the setpoint quickly, have minimal overshoot, and maintain the setpoint with little oscillation.</p>
 <p>PID settings may be changed while the PID is activated and the new settings will take effect immediately. If settings are changed while the controller is paused, the values will be used once the controller resumes operation.</p>

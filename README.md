@@ -29,6 +29,7 @@ The top graph of the above screenshot visualizes the regulation of temperature i
 - [TODO](#todo)
 - [Install](#install)
 - [Install Notes](#install-notes)
+- [Mycodo Manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md) ([PDF](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), [TEXT](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.txt))
 - [Web Server](#web-server-security)
 - [Upgrading](#upgrading)
 - [License](#license)

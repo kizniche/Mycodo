@@ -388,7 +388,7 @@ def page_graph_async():
 @flask_login.login_required
 def page_help():
     """ Display Mycodo manual/help """
-    return render_template('manual.html')
+    return render_template('manual-old.html')
 
 
 @blueprint.route('/info', methods=('GET', 'POST'))
@@ -1017,7 +1017,7 @@ def dict_custom_colors():
                         'name': sensor.name,
                         'measure': sensor_measure,
                         'color': color})
-                index += 1
+                    index += 1
             index_sum += index
 
         if each_graph.relay_ids:
@@ -1037,7 +1037,7 @@ def dict_custom_colors():
                         'name': relay.name,
                         'measure': 'relay duration',
                         'color': color})
-                index += 1
+                    index += 1
             index_sum += index
 
         if each_graph.pid_ids:
@@ -1057,7 +1057,7 @@ def dict_custom_colors():
                         'name': pid.name,
                         'measure': 'PID setpoint',
                         'color': color})
-                index += 1
+                    index += 1
 
         color_count.update({each_graph.id: total})
 

@@ -1,5 +1,9 @@
 ## 5.0.16 (Unreleased)
 
+### Features
+
+  - New Mycodo Manual rendered in markdown, html, pdf, and plain text
+
 ### Bugfixes
 
   - Fix issue with graph page crashing when non-existent sensor referenced ([#231](https://github.com/kizniche/mycodo/issues/231))
