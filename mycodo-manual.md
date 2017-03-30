@@ -563,8 +563,6 @@ within a 24-hour period and this method will repeat daily.
 PID Tuning
 ----------
 
-![Figure: PID Tune animation](manual_images/PIDAnimation.gif)
-
 ### PID Control Theory
 
 The PID controller is the most common regulatory controller found in

@@ -2,7 +2,7 @@
 # Generates the Mycodo Manual in different formats with pandoc
 #
 # To install dependencies on Debian/Ubuntu:
-# sudo apt-get install pandoc
+# sudo apt-get install pandoc texlive texlive-xetex
 #
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
@@ -11,9 +11,8 @@ cd ${INSTALL_DIRECTORY}
 # check if pandoc is installed
 if [[ `command -v pandoc` ]]
 then
-  # output PDF file (dep: sudo apt-get install texlive texlive-xetex)
-  # disabled because it doesn't render images correctly
-  # pandoc ${INSTALL_DIRECTORY}/mycodo/scripts/pandoc_metadata.yaml ${INSTALL_DIRECTORY}/mycodo-manual.md --latex-engine=xelatex -s -o ${INSTALL_DIRECTORY}/mycodo-manual.pdf
+  # output PDF file
+  pandoc ${INSTALL_DIRECTORY}/mycodo/scripts/pandoc_metadata.yaml ${INSTALL_DIRECTORY}/mycodo-manual.md -s -o ${INSTALL_DIRECTORY}/mycodo-manual.pdf
 
   # output HTML (HTML5) file
   pandoc ${INSTALL_DIRECTORY}/mycodo-manual.md -H ${INSTALL_DIRECTORY}/mycodo/scripts/pandoc.css_style --self-contained -s -S -t html5 -o ${INSTALL_DIRECTORY}/mycodo-manual.html

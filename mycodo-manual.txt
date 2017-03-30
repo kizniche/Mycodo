@@ -556,8 +556,6 @@ end (x0) will be automatically stretched or skewed to fit within a
 PID Tuning
 ----------
 
-[Figure: PID Tune animation]
-
 PID Control Theory
 
 The PID controller is the most common regulatory controller found in
