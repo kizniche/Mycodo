@@ -51,7 +51,6 @@ The top graph of the above screenshot visualizes the regulation of temperature i
     - [Sensors and Devices](https://github.com/kizniche/Mycodo/wiki/Sensors-and-Devices)
     - [Testing](https://github.com/kizniche/Mycodo/wiki/Testing)
     - [Translations](https://github.com/kizniche/Mycodo/wiki/Translations)
-    - [User Roles](https://github.com/kizniche/Mycodo/wiki/User-Roles)
 
 ## Mycodo Manual
 

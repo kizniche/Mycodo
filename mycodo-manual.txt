@@ -236,6 +236,12 @@ deleted.
   Monitor   _            _                  _               X               X             X            X
   Guest     _            _                  _               _               _             _            _
 
+1The Edit Controllers permission protects the editing of Graphs, LCDs,
+Methods, PIDs, Relays, Sensors, and Timers.
+
+2The View Stats permission protects the viewing of usage statistics and
+the System Info and Relay Usage pages.
+
 Alert Settings
 --------------
 

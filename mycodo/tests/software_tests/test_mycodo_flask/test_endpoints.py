@@ -113,7 +113,7 @@ def test_routes_logged_in_as_admin(_, testapp):
         ('export', '<!-- Route: /export -->'),
         ('graph', '<!-- Route: /graph -->'),
         ('graph-async', '<!-- Route: /graph-async -->'),
-        ('help', '<!-- Route: /help -->'),
+        ('help', '<h1 id="mycodo-manual">Mycodo Manual</h1>'),
         ('info', '<!-- Route: /info -->'),
         ('lcd', '<!-- Route: /lcd -->'),
         ('live', '<!-- Route: /live -->'),
