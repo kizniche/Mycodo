@@ -830,7 +830,7 @@ stands for platinum and 1000 is the measured resistance of the probe at
 
 #### Specifications
 
- - Accuracy &plusmn; (0.15 + (0.002\*t))
+ - Accuracy &plusmn;(0.15 + (0.002\*t))
  - Probe type: Class A Platinum, RTD (resistance temperature detector)
  - Cable length: 81cm (32")
  - Cable material: Silicone rubber
@@ -948,8 +948,8 @@ CO~2~ Sensors
 #### Specifications
 
  - 0 – 10,000 ppm (0-5,000 ppm within specifications)
- - Repeatability: &plusmn; 20 ppm &plusmn; 1 % of measured value within specifications
- - Accuracy: &plusmn; 30 ppm &plusmn; 3 % of measured value within specifications
+ - Repeatability: &plusmn;20 ppm &plusmn;1% of measured value within specifications
+ - Accuracy: &plusmn;30 ppm &plusmn;3% of measured value within specifications
  - Non-dispersive infrared (NDIR) technology
  - Sensor life expectancy: \> 15 years
  - Self-diagnostics: complete function check of the sensor module
@@ -982,7 +982,7 @@ firmware/software/interfacing.
  - 300-1100 hPa (9000m to -500m above sea level)
  - Up to 0.03hPa / 0.25m resolution
  - -40 to +85&deg;C operational range
- - +-2&deg;C temperature accuracy
+ - &plusmn;2&deg;C temperature accuracy
  - Vin: 3 to 5V
  - Logic: 3 to 5V compliant
  - I<sup>2</sup>C 7-bit address 0x77
