@@ -4,6 +4,9 @@
 
 ### Latest version: 5.0.15 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
 
+#### [Mycodo Manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md) ([PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt))
+
+
 Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.
 
 The core system coordinates a diverse set of responses to sensor measurements, including actions such as camera captures, email notifications, relay activation/deactivation, regulation with PID control, and more. Mycodo has been used for cultivating gourmet mushrooms, cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs and young animals, aging cheeses, fermenting foods, maintaining aquatic systems, and more.
@@ -25,11 +28,11 @@ The top graph of the above screenshot visualizes the regulation of temperature i
 
 ## Table of Contents
 
+- [Mycodo Manual](#mycodo-manual)
 - [Features](#features)
 - [TODO](#todo)
 - [Install](#install)
 - [Install Notes](#install-notes)
-- [Mycodo Manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md) ([PDF](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), [TEXT](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.txt))
 - [Web Server](#web-server-security)
 - [Upgrading](#upgrading)
 - [License](#license)
@@ -50,7 +53,9 @@ The top graph of the above screenshot visualizes the regulation of temperature i
     - [Translations](https://github.com/kizniche/Mycodo/wiki/Translations)
     - [User Roles](https://github.com/kizniche/Mycodo/wiki/User-Roles)
 
+## Mycodo Manual
 
+The Mycodo Manual may be viewed or downloaded as [Markdown](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md), [PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), or [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt)
 
 ## Features
 
@@ -142,7 +147,6 @@ A minimal set of anonymous usage statistics are collected to help improve develo
 Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the system from the web interface. It has the setuid bit to permit it to be executed as root ('sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh initialize' sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), the mycodo_wrapper binary permits these operations to be executed as root by a non-root user (in this case, members of the group 'mycodo'). You can audit the source code of Mycodo/mycodo/scripts/mycodo_wrapper.c and if you want to ensure the binary is indeed compiled from that source, you may compile it yourself with the following command. Otherwise, the compiled binary is already included and no further action is needed.
 
 ```sudo gcc ~/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ~/Mycodo/mycodo/scripts/mycodo_wrapper```
-
 
 ## Web Server Security
 

@@ -86,7 +86,7 @@ Table of Contents
    - [BH1750](#bh1750)
    - [TSL2561](#tsl2561)
 
-[I^2^C Multiplexers](#i2c-multiplexers)
+[I<sup>2</sup>C Multiplexers](#i2c-multiplexers)
 
    - [TCA9548A](#tca9548a)
 
@@ -302,17 +302,17 @@ Deactivate | Deactivation stops measurements from being acquired from the sensor
 Save | Save the current configuration entered into the input boxes for a particular sensor.
 Delete | Delete a particular sensor.
 Up/Down | Move a particular sensor up or down in the order displayed.
-Location | Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I^2^C address. and channel if using the TCA9548A I^2^C multiplexer.
-I^2^C Bus | The bus to be used to communicate with the I^2^C address. If you're using an I^2^C multiplexer that provides multiple buses, this allows you to select which bus the sensor is connected to.
+Location | Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I<sup>2</sup>C address. and channel if using the TCA9548A I<sup>2</sup>C multiplexer.
+I<sup>2</sup>C Bus | The bus to be used to communicate with the I<sup>2</sup>C address. If you're using an I<sup>2</sup>C multiplexer that provides multiple buses, this allows you to select which bus the sensor is connected to.
 Period | After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.
 Pre Relay | If you require a relay to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the relay number that will be activated. The relay will be activated for a duration defined by the Pre Duration, then once the relay turns off, a measurement by the sensor is made.
 Pre Relay Duration | This is the duration of time that the Pre Relay runs for before the sensor measurement is obtained.
 Edge | Edge sensors only: Select whether the Rising or Falling (or both) edges of a changing voltage are detected. A number of devices to do this when in-line with a circuit supplying a 3.3-volt input signal to a GPIO, such as simple mechanical switch, a button, a magnet (reed/hall) sensor, a PIR motion detector, and more.
 Bounce Time (ms) | Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly called [debouncing a signal](http://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing). and may be necessary if using a mechanical circuit.
 Reset Period | Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.
-Multiplexer (MX) | If connected to the TCA9548A I^2^C multiplexer, select what the I^2^C address of the multiplexer is.
-Mx I^2^C Bus | If connected to the TCA9548A I^2^C multiplexer, select the I^2^C bus the multiplexer is connected to.
-Mx Channel | If connected to the TCA9548A I^2^C multiplexer, select the channel of the multiplexer the device is connected to.
+Multiplexer (MX) | If connected to the TCA9548A I<sup>2</sup>C multiplexer, select what the I<sup>2</sup>C address of the multiplexer is.
+Mx I<sup>2</sup>C Bus | If connected to the TCA9548A I<sup>2</sup>C multiplexer, select the I<sup>2</sup>C bus the multiplexer is connected to.
+Mx Channel | If connected to the TCA9548A I<sup>2</sup>C multiplexer, select the channel of the multiplexer the device is connected to.
 Measurement | Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if the resistance of a photocell is being measured through a voltage divider, this measurement would be "light".
 Units | Analog-to-digital converter only: This is the unit of the measurement. With the above example of "light" as the measurement, the unit may be "lux" or "intensity".
 Channel | Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.
@@ -427,15 +427,15 @@ LCDs
 
 Data may be output to a liquid crystal display (LCD) for easy viewing.
 There are only a few number fo LCDs that are supported. Only 16x2 and
-20x4 character LCD displays with I^2^C backpacks are supported. Please
+20x4 character LCD displays with I<sup>2</sup>C backpacks are supported. Please
 see the README for specific information regarding compatibility.
 
 Setting | Description
 --- | ---
 Reset Flashing | If the LCD is flashing to alert you because it was instructed to do so by a triggered Conditional Statement, use this button to stop the flashing.
 Type | Select either a 16x2 or 20x4 character LCD display.
-I^2^C Address | Select the I^2^C to communicate with the LCD.
-Multiplexer I^2^C Address | If the LCD is connected to a multiplexer, select the multiplexer I^2^C address.
+I<sup>2</sup>C Address | Select the I<sup>2</sup>C to communicate with the LCD.
+Multiplexer I<sup>2</sup>C Address | If the LCD is connected to a multiplexer, select the multiplexer I<sup>2</sup>C address.
 Multiplexer Channel | If the LCD is connected to a multiplexer, select the multiplexer channel the LCD is connected to.
 Period | This is the period of time (in seconds) between redrawing the LCD with new data.
 Display Line \# | Select which measurement to display on each line of the LCD.
@@ -962,7 +962,7 @@ The Chirp sensor measures moisture, light, and temperature.
 #### Specifications
 
  - Vin: 3 to 5V
- - I^2^C 7-bit address 0x77
+ - I<sup>2</sup>C 7-bit address 0x77
 
 Pressure Sensors
 ----------------
@@ -981,14 +981,14 @@ firmware/software/interfacing.
  - +-2&deg;C temperature accuracy
  - Vin: 3 to 5V
  - Logic: 3 to 5V compliant
- - I^2^C 7-bit address 0x77
+ - I<sup>2</sup>C 7-bit address 0x77
 
 Luminosity Sensors
 ------------------
 
 ### BH1750
 
-The BH1750 is an I^2^C luminosity sensor that provides a digital value
+The BH1750 is an I<sup>2</sup>C luminosity sensor that provides a digital value
 in lux (Lx) over a range of 1 - 65535 lx.
 
 ### TSL2561
@@ -1007,12 +1007,12 @@ large amounts of light by changing the integration time.
  - Vin: 3V and a low supply
  - Max current: 0.6mA.
 
-I^2^C Multiplexers
+I<sup>2</sup>C Multiplexers
 ------------------
 
 ### TCA9548A
 
-The TCA9548A I^2^C allows multiple sensors that have the same I^2^C
+The TCA9548A I<sup>2</sup>C allows multiple sensors that have the same I<sup>2</sup>C
 address to be used with mycodo (such as the AM2315). The multiplexer has
 a selectable address, from 0x70 through 0x77, allowing up to 8
 multiplexers to be used at once. With 8 channels per multiplexer, this
@@ -1027,8 +1027,8 @@ Analog to Digital Converters
 
 #### Specifications
 
- - Interface: I^2^C
- - I^2^C 7-bit addresses 0x48 - 0x4B
+ - Interface: I<sup>2</sup>C
+ - I<sup>2</sup>C 7-bit addresses 0x48 - 0x4B
  - Input channels: 2 (differential), 4 (single-ended)
  - Power: 2.0V to 5.5V
  - Sample Rate: 1015: 128SPS to 3.3kSPS, 1115: 8SPS to 860SPS
@@ -1040,8 +1040,8 @@ Analog to Digital Converters
 
 #### Specifications
 
- - Interface: I^2^C
- - I^2^C 7-bit addresses 0x68 - 0x6F
+ - Interface: I<sup>2</sup>C
+ - I<sup>2</sup>C 7-bit addresses 0x68 - 0x6F
  - MCP3422: 2 channel, 12, 14, 16, or 18 bit
  - MCP3423: 2 channel, 12, 14, 16, or 18 bit
  - MCP3424: 4 channel, 12, 14, 16, or 18 bit
