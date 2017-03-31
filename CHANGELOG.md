@@ -1,3 +1,9 @@
+## 5.0.17 (2017-03-31)
+
+### Bugfixes
+
+  - Fix issue with graph page crashing when non-existent sensor referenced ([#232](https://github.com/kizniche/mycodo/issues/232))
+
 ## 5.0.16 (2017-03-30)
 
 ### Features

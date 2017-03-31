@@ -1011,7 +1011,7 @@ def dict_custom_colors():
                     color = colors[index]
                 else:
                     color = '#FF00AA'
-                if sensor.name is not None:
+                if sensor is not None:
                     total.append({
                         'unique_id': sensor_unique_id,
                         'name': sensor.name,
@@ -1031,7 +1031,7 @@ def dict_custom_colors():
                     color = colors[index_sum+index]
                 else:
                     color = '#FF00AA'
-                if relay.name is not None:
+                if relay is not None:
                     total.append({
                         'unique_id': relay_unique_id,
                         'name': relay.name,
@@ -1051,7 +1051,7 @@ def dict_custom_colors():
                     color = colors[index_sum+index]
                 else:
                     color = '#FF00AA'
-                if pid.name is not None:
+                if pid is not None:
                     total.append({
                         'unique_id': pid_unique_id,
                         'name': pid.name,
