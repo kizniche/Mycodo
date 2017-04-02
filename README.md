@@ -68,29 +68,36 @@ The top graph of the above screenshot visualizes the regulation of temperature i
 * I<sup>2</sup>C Multiplexer Support - Allow using multiple devices/sensors with the same I<sup>2</sup>C address.
 * Camera support - Raspberry Pi Camera and USB cameras, to stream live video, capture still images, and create time-lapses
 * Automated system upgrade - When there's new release on github, an upgrade can be initiated from the web user interface.
-* Languages: English, [Español](#espa%C3%B1ol-spanish), [Français](#fran%C3%A7ais-french), and [한국어](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
+* Languages: English, [Español (Spanish)](#espa%C3%B1ol-spanish), [Français (French)](#fran%C3%A7ais-french), and [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
 
 ## Install
 
 These install procedures have been tested to work with a Raspberry Pi following a fresh install of [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/) (Full or Lite version), with an active internet connection.
 
-It appears that with the current version of Raspbian, SSH is not enabled by default. This necessitates the use of a keyboard and monitor to run raspi-config and enable SSH.
+***Important:*** The most recent version of Raspbian has SSH disabled by default. SSH can be enabled for the first bootup by creating a blank file named ```ssh``` and placing it in the boot partition of the SD card. This will enable SSH access until either A. the system is rebooted, or B. SSH is fully-enabled with raspi-config (instructions below).
 
-Set up the initial settings with raspi-config. **It's very important that you don't skip the file system expansion and reboot! This needs to be done before continuing or there won't be any free disk space.**
+### Configure raspi-config
+
+**It's very important that you don't skip the file system expansion and reboot! This needs to be done before continuing or there won't be any free disk space.**
+
+After writing Raspbian to an SD card and enabling ssh by creating the ```ssh``` file on the boot partition, insert the SD card into the Pi and power the system. When you SSH or log into a terminal for the first time (user: pi, password: raspberry), issue the following command to start raspi-config.
 
 ```sudo raspi-config```
 
- + Expand File system (required)**
- + Change User Password
- + Internationalisation Options -> Change Locale (set and select en_US.UTF-8 if US)
- + Internationalisation Options -> Change Timezone
- + Enable Camera
- + Advanced Options -> Enable SSH
- + Advanced Options -> Enable I<sup>2</sup>C (required if using certain sensors)
- + **Reboot (required)**
+Then change the following settings
 
+ + ```Change User Password```
+ + ```Localisation Options``` -> ```Change Locale``` (set and select en_US.UTF-8, if US)
+ + ```Localisation Options``` -> ```Change Timezone```
+ + ```Interfacing Options``` -> ```SSH``` -> ```Enable```
+  + ```Interfacing Options``` -> ```Camera``` -> ```Enable``` (required if using a Pi camera)
+ + ```Interfacing Options``` -> ```I2C``` -> ```Enable``` (required if using I<sup>2</sup>C sensors)
+ + ```Advanced Options``` -> ```Expand Filesystem``` (***required***)
+ + Reboot (***required***)
 
-Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web UI. If you require a custom setup, examine and modify this script accordingly. If you do not require a custom setup, just run the install script with the following commands:
+### Install Mycodo
+
+Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web UI. If you require a custom setup, examine and modify this script and accompanying scripts accordingly. If you do not require a custom setup, just run the install script with the following commands.
 
 ```
 sudo apt-get install jq
@@ -104,9 +111,9 @@ cd Mycodo/install
 sudo /bin/bash ./setup.sh
 ```
 
-Make sure the setup.sh script finishes without errors. A log of the setup.sh script output will be created at ~/Mycodo/install/setup.log.
+Make sure the setup.sh script finishes without errors. A log of the setup.sh script output will be created at ```~/Mycodo/install/setup.log```.
 
-If the install is successful, the web user interface should be accessible with your PI's IP address https://IPaddress/. The first time you visit this page, you will be prompted to create an admin user. After creating an admin user, you should be redirected to the login page to use the credentials just created to log in. Once logged in, make sure the host name and version number at the top left is green, indicating the daemon is running. Red indicates the daemon is inactive or unresponsive. Ensure any java-blocking plugins are disabled for all the web UI features to work.
+If the install is successful, the web user interface should be accessible by navigating a web browser to ```https://0.0.0.0/```, replacing ```0.0.0.0``` with your Raspberry Pi's IP address. The first time you visit this page, you will be prompted to create an admin user. After creating an admin user, you should be redirected to the login page. Once logged in, make sure the host name and version number at the top left is green, indicating the daemon is running. Red indicates the daemon is inactive or unresponsive. Ensure any java-blocking plugins are disabled for all the web UI features to function properly.
 
 ### Install Notes
 
@@ -124,15 +131,15 @@ Then reboot
 
 If you receive an unresolvable error during the install, please [create an issue](https://github.com/kizniche/Mycodo/issues). If you want to try to diagnose the issue yourself, see [Diagnosing Issues](#diagnosing-issues).
 
-A minimal set of anonymous usage statistics are collected to help improve development. No identifying information is saved from the information that is collected and it is only used to improve Mycodo. No other sources will have access to this information. The data collected is mainly how much specific features are used, how often errors occur, and other similar statistics. The data that's collected can be viewed from the 'View collected statistics' link in the Settings/General panel of the UI or in the file Mycodo/databases/statistics.csv. You may opt out from transmitting this information from the General settings in the Admin panel.
+A minimal set of anonymous usage statistics are collected to help improve development. No identifying information is saved from the information that is collected and it is only used to improve Mycodo. No other sources will have access to this information. The data collected is mainly how much specific features are used, how often errors occur, and other similar statistics. The data that's collected can be viewed from the 'View collected statistics' link in the Settings/General panel of the UI or in the file ```~/Mycodo/databases/statistics.csv```. You may opt out from transmitting this information from the General settings in the Admin panel.
 
-Mycodo/mycodo/scripts/mycodo_wrapper is a binary executable used to update the system from the web interface. It has the setuid bit to permit it to be executed as root ('sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh initialize' sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), the mycodo_wrapper binary permits these operations to be executed as root by a non-root user (in this case, members of the group 'mycodo'). You can audit the source code of Mycodo/mycodo/scripts/mycodo_wrapper.c and if you want to ensure the binary is indeed compiled from that source, you may compile it yourself with the following command. Otherwise, the compiled binary is already included and no further action is needed.
+```~/Mycodo/mycodo/scripts/mycodo_wrapper``` is a binary executable used to update the system from the web interface. It has the setuid bit to permit it to be executed as root (```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh initialize``` sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), the ```mycodo_wrapper``` binary permits these operations to be executed as root by a non-root user (in this case, members of the group ```mycodo```). You can audit the source code of ```~/Mycodo/mycodo/scripts/mycodo_wrapper.c``` and if you want to ensure the binary is indeed compiled from that source, you may compile it yourself with the following command. Otherwise, the compiled binary is already included and no further action is needed.
 
 ```sudo gcc ~/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ~/Mycodo/mycodo/scripts/mycodo_wrapper```
 
 ## Web Server Security
 
-An SSL certificate will be generated and stored at ~/Mycodo/mycodo/mycodo_flask/ssl_certs/ during the install process. If you want to use your own SSL certificates, replace them with your own.
+An SSL certificate will be generated and stored at ```~/Mycodo/mycodo/mycodo_flask/ssl_certs/``` during the install process. If you want to use your own SSL certificates, replace them with your own.
 
 The certificate that is automatically generated are set to expire in 365 days. If you would like to regenerate new certificate, delete the old certificates, create a new one, and restart the web server with the following commands.
 
@@ -142,7 +149,7 @@ rm -rf ~/Mycodo/mycodo/mycodo_flask/ssl_certs/*.pem
 sudo /etc/init.d/apache2 restart
 ```
 
-If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the web UI at the "https://" address (opposed to "http://"). You may receive a warning message about the security of your site, unless you add the certificate to your browser's trusted list.
+If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the web UI at the ```https://``` address (opposed to ```http://```). You may receive a warning message about the security of your site, unless you add the certificate to your browser's trusted list.
 
 ## Manual
 
@@ -170,7 +177,7 @@ http://KyleGabriel.com
 
 ## Languages
 
-Mycodo has been translated (to varying degrees) to [Spanish (Español)](#espa%C3%B1ol-spanish), [French (Français)](#fran%C3%A7ais-french), and [Korean (한국어)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean). By default, mycodo will display the default language set by your browser. You may also force a language in the settings at Configure->General Settings->Language.
+Mycodo has been translated (to varying degrees) to [Spanish (Español)](#espa%C3%B1ol-spanish), [French (Français)](#fran%C3%A7ais-french), and [Korean (한국어)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean). By default, mycodo will display the default language set by your browser. You may also force a language in the settings at ```[Gear Icon]``` -> ```Configure``` -> ```General``` -> ```Language```.
 
 ### Español (Spanish)
 
