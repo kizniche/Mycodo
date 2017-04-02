@@ -286,7 +286,8 @@ class SensorController(threading.Thread):
         elif self.device in ['BMP', 'BMP180']:
             self.measure_sensor = BMP180Sensor(self.i2c_bus)
         elif self.device == 'BMP280':
-            self.measure_sensor = BMP280Sensor(self.i2c_bus)
+            self.measure_sensor = BMP280Sensor(self.i2c_address,
+                                               self.i2c_bus)
         elif self.device == 'CHIRP':
             self.measure_sensor = ChirpSensor(self.i2c_address,
                                               self.i2c_bus)

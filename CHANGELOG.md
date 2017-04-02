@@ -1,3 +1,9 @@
+## 5.0.19 (2017-04-02)
+
+### Bugfixes
+
+  - Fix BMP280 sensor I<sup>2</sup>C address options ([#233](https://github.com/kizniche/mycodo/issues/233))
+
 ## 5.0.18 (2017-04-01)
 
 ### Features

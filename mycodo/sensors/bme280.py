@@ -67,8 +67,8 @@ class BME280Sensor(AbstractSensor):
 
     def __init__(self, address, bus, mode=BME280_OSAMPLE_1):
         super(BME280Sensor, self).__init__()
-        self.i2c_address = address
-        self.bus = bus
+        self.I2C_address = address
+        self.I2C_bus_number = bus
         self._altitude = 0.0
         self._dew_point = 0.0
         self._humidity = 0.0
@@ -85,7 +85,8 @@ class BME280Sensor(AbstractSensor):
         self._mode = mode
         # Create I2C device.
         i2c = I2C
-        self._device = i2c.get_i2c_device(self.i2c_address, busnum=self.bus)
+        self._device = i2c.get_i2c_device(self.I2C_address,
+                                          busnum=self.I2C_bus_number)
         # Load calibration values.
         self._load_calibration()
         self._device.write8(BME280_REGISTER_CONTROL, 0x3F)

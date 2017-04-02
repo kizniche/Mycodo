@@ -7,9 +7,6 @@ import Adafruit_GPIO.I2C as I2C
 from sensorutils import altitude
 from .base_sensor import AbstractSensor
 
-# BMP280 default address.
-BMP280_I2CADDR = 0x77
-
 # Operating Modes
 BMP280_ULTRALOWPOWER = 0
 BMP280_STANDARD = 1
@@ -54,8 +51,9 @@ class BMP280Sensor(AbstractSensor):
 
     """
 
-    def __init__(self, bus, address=BMP280_I2CADDR, mode=BMP280_STANDARD):
+    def __init__(self, address, bus, mode=BMP280_STANDARD):
         super(BMP280Sensor, self).__init__()
+        self.I2C_address = address
         self.I2C_bus_number = bus
         self._altitude = 0.0
         self._pressure = 0
@@ -68,7 +66,8 @@ class BMP280Sensor(AbstractSensor):
         self._mode = mode
         # Create I2C device.
         i2c = I2C
-        self._device = i2c.get_i2c_device(address, busnum=self.I2C_bus_number)
+        self._device = i2c.get_i2c_device(self.I2C_address,
+                                          busnum=self.I2C_bus_number)
         # Load calibration values.
         self._load_calibration()
         self._tfine = 0
