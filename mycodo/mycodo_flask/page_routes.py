@@ -966,7 +966,6 @@ def dict_custom_colors():
 
     :return: dictionary of graph_ids and lists of custom colors
     """
-    # Count how many lines will need a custom color input
     dark_themes = ['cyborg', 'darkly', 'slate', 'sun', 'superhero']
     if flask_login.current_user.theme in dark_themes:
         default_palette = [

@@ -1,3 +1,9 @@
+## 5.0.18 (2017-04-01)
+
+### Features
+
+  - Add BMP280 I2C temperature and pressure sensor ([#233](https://github.com/kizniche/mycodo/issues/233))
+
 ## 5.0.17 (2017-03-31)
 
 ### Bugfixes

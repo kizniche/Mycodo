@@ -8,7 +8,7 @@ from collections import Iterator
 from mycodo.sensors.am2315 import AM2315Sensor
 from mycodo.sensors.atlas_pt1000 import AtlasPT1000Sensor
 # from mycodo.sensors.bme280 import BME280Sensor
-from mycodo.sensors.bmp import BMPSensor
+from mycodo.sensors.bmp180 import BMPSensor
 # from mycodo.sensors.dht11 import DHT11Sensor
 # from mycodo.sensors.dht22 import DHT22Sensor
 from mycodo.sensors.ds18b20 import DS18B20Sensor

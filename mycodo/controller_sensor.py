@@ -51,7 +51,8 @@ from sensors.atlas_pt1000 import AtlasPT1000Sensor
 from sensors.am2315 import AM2315Sensor
 from sensors.bh1750 import BH1750Sensor
 from sensors.bme280 import BME280Sensor
-from sensors.bmp import BMPSensor
+from sensors.bmp180 import BMP180Sensor
+from sensors.bmp280 import BMP280Sensor
 from sensors.chirp import ChirpSensor
 from sensors.dht11 import DHT11Sensor
 from sensors.dht22 import DHT22Sensor
@@ -281,8 +282,11 @@ class SensorController(threading.Thread):
         elif self.device == 'BME280':
             self.measure_sensor = BME280Sensor(self.i2c_address,
                                                self.i2c_bus)
-        elif self.device == 'BMP':
-            self.measure_sensor = BMPSensor(self.i2c_bus)
+        # TODO: BMP is an old designation and will be removed in the future
+        elif self.device in ['BMP', 'BMP180']:
+            self.measure_sensor = BMP180Sensor(self.i2c_bus)
+        elif self.device == 'BMP280':
+            self.measure_sensor = BMP280Sensor(self.i2c_bus)
         elif self.device == 'CHIRP':
             self.measure_sensor = ChirpSensor(self.i2c_address,
                                               self.i2c_bus)

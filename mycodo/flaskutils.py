@@ -1817,12 +1817,14 @@ def sensor_add(form_add_sensor):
                 new_sensor.location = 'Tx/Rx'
 
             # Pressure
-            elif form_add_sensor.sensor.data in ['BME280', 'BMP']:
+            elif form_add_sensor.sensor.data in ['BME280',
+                                                 'BMP180',
+                                                 'BMP280']:
                 new_sensor.device_type = 'presssensor'
                 if form_add_sensor.sensor.data == 'BME280':
                     new_sensor.measurements = 'temperature,humidity,dewpoint,pressure,altitude'
                     new_sensor.location = '0x76'
-                elif form_add_sensor.sensor.data == 'BMP':
+                elif form_add_sensor.sensor.data in ['BMP180', 'BMP280']:
                     new_sensor.measurements = 'temperature,pressure,altitude'
                     new_sensor.location = '0x77'
 

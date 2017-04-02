@@ -150,7 +150,7 @@ class BME280Sensor(AbstractSensor):
 
     @property
     def pressure(self):
-        """ BME280 pressure in Pescals """
+        """ BME280 pressure in Pascals """
         if not self._pressure:  # update if needed
             self.read()
         return self._pressure
@@ -192,7 +192,6 @@ class BME280Sensor(AbstractSensor):
         return 1
 
     def _load_calibration(self):
-
         self.dig_T1 = self._device.readU16LE(BME280_REGISTER_DIG_T1)
         self.dig_T2 = self._device.readS16LE(BME280_REGISTER_DIG_T2)
         self.dig_T3 = self._device.readS16LE(BME280_REGISTER_DIG_T3)
@@ -221,18 +220,15 @@ class BME280Sensor(AbstractSensor):
         self.dig_H5 = h5 | (
             self._device.readU8(BME280_REGISTER_DIG_H5) >> 4 & 0x0F)
 
-        '''
-        print '0xE4 = {0:2x}'.format (self._device.readU8 (BME280_REGISTER_DIG_H4))
-        print '0xE5 = {0:2x}'.format (self._device.readU8 (BME280_REGISTER_DIG_H5))
-        print '0xE6 = {0:2x}'.format (self._device.readU8 (BME280_REGISTER_DIG_H6))
-
-        print 'dig_H1 = {0:d}'.format (self.dig_H1)
-        print 'dig_H2 = {0:d}'.format (self.dig_H2)
-        print 'dig_H3 = {0:d}'.format (self.dig_H3)
-        print 'dig_H4 = {0:d}'.format (self.dig_H4)
-        print 'dig_H5 = {0:d}'.format (self.dig_H5)
-        print 'dig_H6 = {0:d}'.format (self.dig_H6)
-        '''
+        logger.debug('0xE4 = {0:2x}'.format(self._device.readU8 (BME280_REGISTER_DIG_H4)))
+        logger.debug('0xE5 = {0:2x}'.format(self._device.readU8 (BME280_REGISTER_DIG_H5)))
+        logger.debug('0xE6 = {0:2x}'.format(self._device.readU8 (BME280_REGISTER_DIG_H6)))
+        logger.debug('dig_H1 = {0:d}'.format(self.dig_H1))
+        logger.debug('dig_H2 = {0:d}'.format(self.dig_H2))
+        logger.debug('dig_H3 = {0:d}'.format(self.dig_H3))
+        logger.debug('dig_H4 = {0:d}'.format(self.dig_H4))
+        logger.debug('dig_H5 = {0:d}'.format(self.dig_H5))
+        logger.debug('dig_H6 = {0:d}'.format(self.dig_H6))
 
     def read_raw_temp(self):
         """Reads the raw (uncompensated) temperature from the sensor."""
@@ -251,9 +247,11 @@ class BME280Sensor(AbstractSensor):
         return raw
 
     def read_raw_pressure(self):
-        """Reads the raw (uncompensated) pressure level from the sensor."""
-        """Assumes that the temperature has already been read """
-        """i.e. that enough delay has been provided"""
+        """
+        Reads the raw (uncompensated) pressure level from the sensor.
+        Assumes that the temperature has already been read
+        i.e. that enough delay has been provided
+        """
         msb = self._device.readU8(BME280_REGISTER_PRESSURE_DATA)
         lsb = self._device.readU8(BME280_REGISTER_PRESSURE_DATA + 1)
         xlsb = self._device.readU8(BME280_REGISTER_PRESSURE_DATA + 2)
@@ -261,8 +259,10 @@ class BME280Sensor(AbstractSensor):
         return raw
 
     def read_raw_humidity(self):
-        """Assumes that the temperature has already been read """
-        """i.e. that enough delay has been provided"""
+        """
+        Assumes that the temperature has already been read
+        i.e. that enough delay has been provided
+        """
         msb = self._device.readU8(BME280_REGISTER_HUMIDITY_DATA)
         lsb = self._device.readU8(BME280_REGISTER_HUMIDITY_DATA + 1)
         raw = (msb << 8) | lsb
@@ -274,7 +274,7 @@ class BME280Sensor(AbstractSensor):
         UT = float(self.read_raw_temp())
         var1 = (UT / 16384.0 - self.dig_T1 / 1024.0) * float(self.dig_T2)
         var2 = ((UT / 131072.0 - self.dig_T1 / 8192.0) * (
-        UT / 131072.0 - self.dig_T1 / 8192.0)) * float(self.dig_T3)
+            UT / 131072.0 - self.dig_T1 / 8192.0)) * float(self.dig_T3)
         self.t_fine = int(var1 + var2)
         temp = (var1 + var2) / 5120.0
         return temp
@@ -304,8 +304,8 @@ class BME280Sensor(AbstractSensor):
         # print 'Raw humidity = {0:d}'.format (adc)
         h = self.t_fine - 76800.0
         h = (adc - (self.dig_H4 * 64.0 + self.dig_H5 / 16384.8 * h)) * (
-        self.dig_H2 / 65536.0 * (1.0 + self.dig_H6 / 67108864.0 * h * (
-        1.0 + self.dig_H3 / 67108864.0 * h)))
+            self.dig_H2 / 65536.0 * (1.0 + self.dig_H6 / 67108864.0 * h * (
+                1.0 + self.dig_H3 / 67108864.0 * h)))
         h = h * (1.0 - self.dig_H1 * h / 524288.0)
         if h > 100:
             h = 100

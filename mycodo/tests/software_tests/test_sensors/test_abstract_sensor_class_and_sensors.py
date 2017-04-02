@@ -8,7 +8,7 @@ from testfixtures import LogCapture
 from mycodo.sensors.am2315 import AM2315Sensor
 from mycodo.sensors.atlas_pt1000 import AtlasPT1000Sensor
 from mycodo.sensors.base_sensor import AbstractSensor
-from mycodo.sensors.bmp import BMPSensor
+from mycodo.sensors.bmp180 import BMPSensor
 from mycodo.sensors.ds18b20 import DS18B20Sensor
 from mycodo.sensors.htu21d import HTU21DSensor
 from mycodo.sensors.raspi import (RaspberryPiCPUTemp,

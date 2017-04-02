@@ -4,10 +4,10 @@ import logging
 import time
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger("mycodo.sensors.bmp")
+logger = logging.getLogger("mycodo.sensors.bmp180")
 
 
-class BMPSensor(AbstractSensor):
+class BMP180Sensor(AbstractSensor):
     """
     A sensor support class that measures the BMP 180/085's humidity,
     temperature, and pressure, then calculates the altitude and dew point
@@ -15,7 +15,7 @@ class BMPSensor(AbstractSensor):
     """
 
     def __init__(self, bus):
-        super(BMPSensor, self).__init__()
+        super(BMP180Sensor, self).__init__()
         self.I2C_bus_number = bus
         self._altitude = 0.0
         self._pressure = 0
@@ -63,34 +63,34 @@ class BMPSensor(AbstractSensor):
 
     @property
     def altitude(self):
-        """ BMP dew point in Celsius """
+        """ BMP180/085 altitude in meters """
         if not self._altitude:  # update if needed
             self.read()
         return self._altitude
 
     @property
     def pressure(self):
-        """ BME280 pressure in Pescals """
+        """ BME180/085 pressure in Pascals """
         if not self._pressure:  # update if needed
             self.read()
         return self._pressure
 
     @property
     def temperature(self):
-        """ BMP temperature in Celsius """
+        """ BMP180/085 temperature in Celsius """
         if not self._temperature:  # update if needed
             self.read()
         return self._temperature
 
     def get_measurement(self):
-        """ Gets the measurement in units by reading the """
+        """ Gets the measurement in units by reading the BMP180/085 """
         time.sleep(2)
         bmp = BMP085.BMP085(busnum=self.I2C_bus_number)
         return bmp.read_temperature(), bmp.read_pressure(), bmp.read_altitude()
 
     def read(self):
         """
-        Takes a reading from the BME280 and updates the self._humidity and
+        Takes a reading from the BMP180/085 and updates the self._humidity and
         self._temperature values
 
         :returns: None on success or 1 on error

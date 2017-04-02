@@ -6,7 +6,7 @@ import os
 import collections
 from datetime import timedelta
 
-MYCODO_VERSION = '5.0.17'
+MYCODO_VERSION = '5.0.18'
 ALEMBIC_VERSION = 'f1c6b2901d45'
 
 LANGUAGES = {
@@ -28,6 +28,8 @@ MEASUREMENTS = {
     'BH1750': ['lux'],
     'BME280': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature'],
     'BMP': ['altitude', 'pressure', 'temperature'],
+    'BMP180': ['altitude', 'pressure', 'temperature'],
+    'BMP280': ['altitude', 'pressure', 'temperature'],
     'CHIRP': ['lux', 'moisture', 'temperature'],
     'DHT11': ['dewpoint', 'humidity', 'temperature'],
     'DHT22': ['dewpoint', 'humidity', 'temperature'],
@@ -97,7 +99,8 @@ SENSORS = [
     ('TSL2561', 'Luminance: TSL2561'),
     ('CHIRP', 'Moisture: Chirp'),
     ('BME280', 'Pressure/Temperature/Humidity: BME 280'),
-    ('BMP', 'Pressure/Temperature: BMP 180/085'),
+    ('BMP180', 'Pressure/Temperature: BMP 180/085'),
+    ('BMP280', 'Pressure/Temperature: BMP 280'),
     ('DS18B20', 'Temperature: DS18B20'),
     ('TMP006', 'Temperature (Contactless): TMP 006/007'),
     ('ATLAS_PT1000', 'Temperature: Atlas Scientific, PT-1000'),
@@ -112,7 +115,7 @@ SENSORS = [
 # Devices that have a default address that doesn't change
 # Used to determine whether or not to present the option to change address
 DEVICES_DEFAULT_LOCATION = [
-    'AM2315', 'ATLAS_PT1000', 'BMP', 'HTU21D',
+    'AM2315', 'ATLAS_PT1000', 'BMP', 'BMP180', 'BMP280', 'HTU21D',
     'K30', 'RPi', 'RPiCPULoad', 'mycodo_ram'
 ]
 

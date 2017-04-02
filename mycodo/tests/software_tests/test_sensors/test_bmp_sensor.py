@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.sensors.bmp import BMPSensor
+from mycodo.sensors.bmp180 import BMPSensor
 
 
 # ----------------------------
