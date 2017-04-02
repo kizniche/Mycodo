@@ -1,3 +1,9 @@
+## 5.0.20 (2017-04-02)
+
+### Bugfixes
+
+  - Fix inability to select certain measurements for a sensor under the PID options
+
 ## 5.0.19 (2017-04-02)
 
 ### Bugfixes

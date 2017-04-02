@@ -9,7 +9,6 @@ logger = logging.getLogger("mycodo.sensors.bh1750")
 
 class BH1750Sensor(AbstractSensor):
     """ A sensor support class that monitors the DS18B20's lux """
-
     # Define some constants from the datasheet
     POWER_DOWN = 0x00  # No active state
     POWER_ON = 0x01  # Power on
@@ -127,8 +126,9 @@ class BH1750Sensor(AbstractSensor):
         self._set_mode(self.ONE_TIME_HIGH_RES_MODE_2)
 
     def set_sensitivity(self, sensitivity=69):
-        """ Set the sensor sensitivity.
-            Valid values are 31 (lowest) to 254 (highest), default is 69.
+        """
+        Set the sensor sensitivity.
+        Valid values are 31 (lowest) to 254 (highest), default is 69.
         """
         if sensitivity < 31:
             self.mtreg = 31
@@ -154,10 +154,9 @@ class BH1750Sensor(AbstractSensor):
         time.sleep(basetime * (self.mtreg / 69.0) + additional)
 
     def do_measurement(self, mode, additional_delay=0):
-        """ 
-        Perform complete measurement using command
-        specified by parameter mode with additional
-        delay specified in parameter additional_delay.
+        """
+        Perform complete measurement using command specified by parameter
+        mode with additional delay specified in parameter additional_delay.
         Return output value in Lx.
         """
         self.reset()

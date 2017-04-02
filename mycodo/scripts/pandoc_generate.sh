@@ -6,7 +6,7 @@
 # Debian/Ubuntu
 # sudo apt-get install pandoc texlive texlive-latex-extra
 #
-# Fedroa
+# Fedora
 # sudo yum install pandoc texlive texlive-collection-latexextra
 #
 
@@ -14,7 +14,7 @@ INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 cd ${INSTALL_DIRECTORY}
 
 # check if pandoc is installed
-if [[ `command -v pandoc` ]]
+if [[ $(command -v pandoc) ]]
 then
   # output PDF file
   pandoc ${INSTALL_DIRECTORY}/mycodo/scripts/pandoc_metadata.yaml ${INSTALL_DIRECTORY}/mycodo-manual.md -s -o ${INSTALL_DIRECTORY}/mycodo-manual.pdf
@@ -27,5 +27,5 @@ then
   pandoc ${INSTALL_DIRECTORY}/mycodo-manual.md -s -S -t plain -o ${INSTALL_DIRECTORY}/mycodo-manual.txt
 else
   # pandoc is not installed inform the user
-  echo "The command pandoc could not be found in the PATH!\n"
+  printf "The command pandoc could not be found in the PATH!\n"
 fi

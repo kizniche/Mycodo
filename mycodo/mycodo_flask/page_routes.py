@@ -50,7 +50,6 @@ from mycodo.mycodo_flask.general_routes import (
     inject_mycodo_version
 )
 from mycodo.devices.camera import camera_record
-from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.tools import return_relay_usage
 

@@ -667,10 +667,7 @@ def controller_activate_deactivate(controller_action,
     if not user_has_permission('edit_controllers'):
         return redirect(url_for('general_routes.home'))
 
-    if controller_action == 'activate':
-        activated = True
-    else:
-        activated = False
+    activated = bool(controller_action == 'activate')
 
     translated_names = {
         "LCD": gettext(u"LCD"),
@@ -1136,35 +1133,10 @@ def pid_mod(form_mod_pid):
                 Sensor.id == form_mod_pid.sensor_id.data).first()
             if not sensor:
                 error.append(gettext(u"A valid sensor ID is required"))
-            elif (
-                  (sensor.device_type == 'tsensor' and
-                   form_mod_pid.measurement.data not in ['temperature']) or
-
-                  (sensor.device_type == 'tmpsensor' and
-                   form_mod_pid.measurement.data not in ['temperature_object',
-                                                         'temperature_die']) or
-
-                  (sensor.device_type == 'htsensor' and
-                   form_mod_pid.measurement.data not in ['temperature',
-                                                         'humidity',
-                                                         'dewpoint']) or
-
-                  (sensor.device_type == 'co2sensor' and
-                   form_mod_pid.measurement.data not in ['co2']) or
-
-                  (sensor.device_type == 'luxsensor' and
-                   form_mod_pid.measurement.data not in ['lux']) or
-
-                  (sensor.device_type == 'moistsensor' and
-                   form_mod_pid.measurement.data not in ['temperature',
-                                                         'lux',
-                                                         'moisture']) or
-
-                  (sensor.device_type == 'presssensor' and
-                   form_mod_pid.measurement.data not in ['temperature',
-                                                         'pressure',
-                                                         'altitude'])
-            ):
+            elif sensor.device not in MEASUREMENTS:
+                error.append(gettext(
+                    u"Invalid sensor"))
+            elif form_mod_pid.measurement.data not in MEASUREMENTS[sensor.device]:
                 error.append(gettext(
                     u"Select a Measure Type that is compatible with the "
                     u"chosen sensor"))
