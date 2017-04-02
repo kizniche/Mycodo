@@ -8,7 +8,7 @@ from testfixtures import LogCapture
 from mycodo.sensors.am2315 import AM2315Sensor
 from mycodo.sensors.atlas_pt1000 import AtlasPT1000Sensor
 from mycodo.sensors.base_sensor import AbstractSensor
-from mycodo.sensors.bmp180 import BMPSensor
+from mycodo.sensors.bmp180 import BMP180Sensor
 from mycodo.sensors.ds18b20 import DS18B20Sensor
 from mycodo.sensors.htu21d import HTU21DSensor
 from mycodo.sensors.raspi import (RaspberryPiCPUTemp,
@@ -25,7 +25,7 @@ sensor_classes = [
     AtlasPT1000Sensor(0x00, 1),
     AM2315Sensor(1),
     # BME280Sensor(0x00, 1),
-    BMPSensor(1),
+    BMP180Sensor(1),
     # DHT11Sensor(pigpio.pi(), 1),
     # DHT22Sensor(pigpio.pi(), 1),
     DS18B20Sensor('1'),

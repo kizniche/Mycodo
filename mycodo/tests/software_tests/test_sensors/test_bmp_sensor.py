@@ -5,21 +5,21 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.sensors.bmp180 import BMPSensor
+from mycodo.sensors.bmp180 import BMP180Sensor
 
 
 # ----------------------------
 #   BMP tests
 # ----------------------------
 def test_bmp_iterates_using_in():
-    """ Verify that a BMPSensor object can use the 'in' operator """
-    with mock.patch('mycodo.sensors.bmp.BMPSensor.get_measurement') as mock_measure:
+    """ Verify that a BMP180Sensor object can use the 'in' operator """
+    with mock.patch('mycodo.sensors.bmp180.BMP180Sensor.get_measurement') as mock_measure:
         mock_measure.side_effect = [(67, 23, 3000),
                                     (52, 25, 3200),
                                     (37, 27, 3400),
                                     (45, 30, 3300)]  # first reading, second reading
 
-        bmp = BMPSensor(1)
+        bmp = BMP180Sensor(1)
         expected_result_list = [dict(altitude=3000, pressure=23.00, temperature=67.00),
                                 dict(altitude=3200, pressure=25.00, temperature=52.00),
                                 dict(altitude=3400, pressure=27.00, temperature=37.00),
@@ -29,21 +29,21 @@ def test_bmp_iterates_using_in():
 
 def test_bmp__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
-    with mock.patch('mycodo.sensors.bmp.BMPSensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.sensors.bmp180.BMP180Sensor.get_measurement') as mock_measure:
         # create our object
         mock_measure.side_effect = [67, 52]  # first reading, second reading
-        bmp = BMPSensor(1)
+        bmp = BMP180Sensor(1)
         # check __iter__ method return
         assert isinstance(bmp.__iter__(), Iterator)
 
 
 def test_bmp_read_updates_temp():
-    """  Verify that BMPSensor(1).read() gets the average temp """
-    with mock.patch('mycodo.sensors.bmp.BMPSensor.get_measurement') as mock_measure:
+    """  Verify that BMP180Sensor(1).read() gets the average temp """
+    with mock.patch('mycodo.sensors.bmp180.BMP180Sensor.get_measurement') as mock_measure:
         # create our object
         mock_measure.side_effect = [(67, 33, 2000),
                                     (52, 59, 2500)]  # first reading, second reading
-        bmp = BMPSensor(1)
+        bmp = BMP180Sensor(1)
         assert bmp._altitude == 0  # initial values
         assert bmp._pressure == 0
         assert bmp._temperature == 0
@@ -59,11 +59,11 @@ def test_bmp_read_updates_temp():
 
 def test_bmp_next_returns_dict():
     """ next returns dict(altitude=float,pressure=int,temperature=float) """
-    with mock.patch('mycodo.sensors.bmp.BMPSensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.sensors.bmp180.BMP180Sensor.get_measurement') as mock_measure:
         # create our object
         mock_measure.side_effect = [(67, 44, 3000),  # first reading
                                     (52, 64, 3500)]  # second reading
-        bmp = BMPSensor(1)
+        bmp = BMP180Sensor(1)
         assert bmp.next() == dict(altitude=3000.00,
                                   pressure=44,
                                   temperature=67.00)
@@ -71,11 +71,11 @@ def test_bmp_next_returns_dict():
 
 def test_bmp_condition_properties():
     """ verify temperature property """
-    with mock.patch('mycodo.sensors.bmp.BMPSensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.sensors.bmp180.BMP180Sensor.get_measurement') as mock_measure:
         # create our object
         mock_measure.side_effect = [(67, 50, 3000),  # first reading
                                     (52, 55, 3500)]  # second reading
-        bmp = BMPSensor(1)
+        bmp = BMP180Sensor(1)
         assert bmp._altitude == 0  # initial values
         assert bmp._pressure == 0
         assert bmp._temperature == 0
@@ -93,40 +93,40 @@ def test_bmp_condition_properties():
 
 def test_bmp_special_method_str():
     """ expect a __str__ format """
-    assert "Altitude: 0.00" in str(BMPSensor(1))
-    assert "Pressure: 0" in str(BMPSensor(1))
-    assert "Temperature: 0.00" in str(BMPSensor(1))
+    assert "Altitude: 0.00" in str(BMP180Sensor(1))
+    assert "Pressure: 0" in str(BMP180Sensor(1))
+    assert "Temperature: 0.00" in str(BMP180Sensor(1))
 
 
 def test_bmp_special_method_repr():
     """ expect a __repr__ format """
-    assert "<BMPSensor(temperature=0.00)(pressure=0)(altitude=0.00)>" in repr(BMPSensor(1))
+    assert "<BMP180Sensor(temperature=0.00)(pressure=0)(altitude=0.00)>" in repr(BMP180Sensor(1))
 
 
 def test_bmp_raises_exception():
     """ stops iteration on read() error """
-    with mock.patch('mycodo.sensors.bmp.BMPSensor.get_measurement', side_effect=IOError):
+    with mock.patch('mycodo.sensors.bmp180.BMP180Sensor.get_measurement', side_effect=IOError):
         with pytest.raises(StopIteration):
-            BMPSensor(1).next()
+            BMP180Sensor(1).next()
 
 
 def test_bmp_read_returns_1_on_exception():
     """ Verify the read() method returns true on error """
-    with mock.patch('mycodo.sensors.bmp.BMPSensor.get_measurement', side_effect=Exception):
-        assert BMPSensor(1).read()
+    with mock.patch('mycodo.sensors.bmp180.BMP180Sensor.get_measurement', side_effect=Exception):
+        assert BMP180Sensor(1).read()
 
 
 # def test_bmp_get_measurement_divs_by_1k():
 #     """ verify the return value of get_measurement """
 #     mocked_open = mock.mock_open(read_data='45780')  # value read from sys temperature file
-#     with mock.patch('mycodo.sensors.bmp.open', mocked_open, create=True):
-#         assert BMPSensor.get_measurement() == 45.78  # value read / 1000
+#     with mock.patch('mycodo.sensors.bmp180.open', mocked_open, create=True):
+#         assert BMP180Sensor.get_measurement() == 45.78  # value read / 1000
 
 def test_bmp_read_logs_unknown_errors():
     """ verify that IOErrors are logged """
     with LogCapture() as log_cap:
         # force an Exception to be raised when get_measurement is called
-        with mock.patch('mycodo.sensors.bmp.BMPSensor.get_measurement', side_effect=Exception('msg')):
-            BMPSensor(1).read()
-    expected_logs = ('mycodo.sensors.bmp', 'ERROR', 'BMPSensor raised an exception when taking a reading: msg')
+        with mock.patch('mycodo.sensors.bmp180.BMP180Sensor.get_measurement', side_effect=Exception('msg')):
+            BMP180Sensor(1).read()
+    expected_logs = ('mycodo.sensors.bmp180', 'ERROR', 'BMP180Sensor raised an exception when taking a reading: msg')
     assert expected_logs in log_cap.actual()
