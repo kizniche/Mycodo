@@ -22,34 +22,25 @@ case "${1:-''}" in
         printf "\n#### Generating SSL certificates at ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
         mkdir -p ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs
         cd ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs/
-        rm -f ./*.pem
+        rm -f ./*.pem ./*.csr ./*.crt ./*.key
 
-        openssl req \
-            -new \
-            -x509 \
-            -sha512 \
-            -days 365 \
-            -nodes \
-            -out cert.pem \
-            -keyout privkey.pem\
-            -subj "/C=US/ST=Georgia/L=Atlanta/O=mycodo/OU=mycodo/CN=mycodo"
-
-        openssl genrsa -out certificate.key 1024
-
-        openssl req \
-            -new \
-            -key certificate.key \
-            -out certificate.csr \
-            -subj "/C=US/ST=Georgia/L=Atlanta/O=mycodo/OU=mycodo/CN=mycodo"
-
+        openssl genrsa -out server.pass.key 4096
+        openssl rsa -in server.pass.key -out server.key
+        rm -f server.pass.key
+        openssl req -new -key server.key -out server.csr \
+            -subj "/O=mycodo/OU=mycodo/CN=mycodo"
         openssl x509 -req \
             -days 365 \
-            -in certificate.csr -CA cert.pem \
-            -CAkey privkey.pem \
-            -set_serial $RANDOM \
-            -out chain.pem
+            -in server.csr \
+            -signkey server.key \
+            -out server.crt
 
-        rm -f certificate.csr certificate.key
+        # Conform to current file-naming format
+        # TODO: Change to appropriate names in the future
+        ln -s server.key privkey.pem
+        ln -s server.crt cert.pem
+
+        chown mycodo.mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs/*
     ;;
     'initialize')
         printf "\n#### Creating proper users, directories, and permissions\n"

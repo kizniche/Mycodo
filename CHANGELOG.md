@@ -1,3 +1,9 @@
+## 5.0.22 (Unreleased)
+
+### Bugfixes
+
+  - Fix SSL generation script and strengthen from 2048 bit to 4096 bit RSA ([#234](https://github.com/kizniche/mycodo/issues/234))
+
 ## 5.0.21 (2017-04-02)
 
 ### Bugfixes
