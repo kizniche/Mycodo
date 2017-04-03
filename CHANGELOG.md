@@ -1,7 +1,16 @@
+## 5.0.21 (2017-04-02)
+
+### Bugfixes
+
+  - Fix BMP280 sensor module initialization ([#233](https://github.com/kizniche/mycodo/issues/233))
+  - Fix saving and display of PID and Relay values on LCDs
+
 ## 5.0.20 (2017-04-02)
 
 ### Bugfixes
 
+  - Fix BMP280 sensor module initialization
+  - Fix saving and display of PID and Relay values on LCDs
   - Fix inability to select certain measurements for a sensor under the PID options
 
 ## 5.0.19 (2017-04-02)

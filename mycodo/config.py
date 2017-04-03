@@ -6,7 +6,7 @@ import os
 import collections
 from datetime import timedelta
 
-MYCODO_VERSION = '5.0.20'
+MYCODO_VERSION = '5.0.21'
 ALEMBIC_VERSION = 'f1c6b2901d45'
 
 LANGUAGES = {
@@ -115,8 +115,33 @@ SENSORS = [
 # Devices that have a default address that doesn't change
 # Used to determine whether or not to present the option to change address
 DEVICES_DEFAULT_LOCATION = [
-    'AM2315', 'ATLAS_PT1000', 'BMP', 'BMP180', 'BMP280', 'HTU21D',
-    'K30', 'RPi', 'RPiCPULoad', 'mycodo_ram'
+    'AM2315',
+    'ATLAS_PT1000',
+    'BMP',
+    'BMP180',
+    'HTU21D',
+    'K30',
+    'RPi',
+    'RPiCPULoad',
+    'mycodo_ram'
+]
+
+# Devices that use I2C to communicate
+LIST_DEVICES_I2C = [
+    'ADS1x15',
+    'AM2315',
+    'ATLAS_PT1000',
+    'BH1750',
+    'BME280',
+    'BMP',
+    'BMP180',
+    'BMP280',
+    'CHIRP',
+    'HTU21D',
+    'MCP342x',
+    'SHT2x',
+    'TMP006',
+    'TSL2561'
 ]
 
 # Conditional actions

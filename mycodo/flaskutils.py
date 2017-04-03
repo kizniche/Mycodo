@@ -1134,8 +1134,7 @@ def pid_mod(form_mod_pid):
             if not sensor:
                 error.append(gettext(u"A valid sensor ID is required"))
             elif sensor.device not in MEASUREMENTS:
-                error.append(gettext(
-                    u"Invalid sensor"))
+                error.append(gettext(u"Invalid sensor"))
             elif form_mod_pid.measurement.data not in MEASUREMENTS[sensor.device]:
                 error.append(gettext(
                     u"Select a Measure Type that is compatible with the "

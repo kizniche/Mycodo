@@ -22,7 +22,6 @@
 #
 #  Contact at kylegabriel.com
 
-import datetime
 import logging
 import requests
 import threading
@@ -80,9 +79,7 @@ from utils.send_data import send_email
 from utils.system_pi import cmd_output
 
 # Config
-from config import SQL_DATABASE_MYCODO
-
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+from config import LIST_DEVICES_I2C
 
 
 class Measurement:
@@ -116,21 +113,6 @@ class SensorController(threading.Thread):
 
         self.logger = logging.getLogger(
             "mycodo.sensor_{id}".format(id=sensor_id))
-
-        list_devices_i2c = [
-            'ADS1x15',
-            'AM2315',
-            'ATLAS_PT1000',
-            'BH1750',
-            'BME280',
-            'BMP',
-            'CHIRP',
-            'HTU21D',
-            'MCP342x',
-            'SHT2x',
-            'TMP006',
-            'TSL2561'
-        ]
 
         self.stop_iteration_counter = 0
         self.thread_startup_timer = timeit.default_timer()
@@ -217,11 +199,11 @@ class SensorController(threading.Thread):
         self.allowed_to_send_notice = True
 
         # Convert string I2C address to base-16 int
-        if self.device in list_devices_i2c:
+        if self.device in LIST_DEVICES_I2C:
             self.i2c_address = int(str(self.location), 16)
 
         # Set up multiplexer if enabled
-        if self.device in list_devices_i2c and self.multiplexer_address_raw:
+        if self.device in LIST_DEVICES_I2C and self.multiplexer_address_raw:
             self.multiplexer_address_string = self.multiplexer_address_raw
             self.multiplexer_address = int(str(self.multiplexer_address_raw), 16)
             self.multiplexer_lock_file = "/var/lock/mycodo_multiplexer_0x{:02X}.pid".format(self.multiplexer_address)
