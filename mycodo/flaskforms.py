@@ -932,8 +932,8 @@ class Timer(FlaskForm):
         ],
         validators=[DataRequired()]
     )
-    timeStart = StringField(lazy_gettext(u'Time of day'))
-    timeEnd = StringField(lazy_gettext(u'Time of day'))
+    timeStart = StringField(lazy_gettext(u'Start Time'))
+    timeEnd = StringField(lazy_gettext(u'End Time'))
     timeOnDurationOn = DecimalField(
         lazy_gettext(u'On (sec)'),
         validators=[validators.NumberRange(
@@ -943,7 +943,7 @@ class Timer(FlaskForm):
     )
     durationOn = DecimalField(lazy_gettext(u'On (sec)'))
     durationOff = DecimalField(lazy_gettext(u'Off (sec)'))
-    timerCreate = SubmitField(lazy_gettext(u'Create Timer'))
+    timerCreate = SubmitField(lazy_gettext(u'Save'))
     timerMod = SubmitField(lazy_gettext(u'Save'))
     timerDel = SubmitField(lazy_gettext(u'Delete'))
     activate = SubmitField(lazy_gettext(u'Activate'))
