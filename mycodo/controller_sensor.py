@@ -512,7 +512,7 @@ class SensorController(threading.Thread):
                 message += "(Status: {stat}).".format(stat=cmd_status)
 
             # Capture photo
-            elif cond_action.do_action in 'photo':
+            elif cond_action.do_action in ['photo', 'photo_email']:
                 message += "  Capturing photo with camera ({id}).".format(
                     id=cond_action.do_camera_id)
                 camera_still = db_retrieve_table_daemon(
@@ -521,24 +521,14 @@ class SensorController(threading.Thread):
                     'photo', camera_still)
 
             # Capture video
-            elif cond_action.do_action == 'video':
+            elif cond_action.do_action in ['video', 'video_email']:
                 message += "  Capturing video with camera ({id}).".format(
                     id=cond_action.do_camera_id)
                 camera_stream = db_retrieve_table_daemon(
                     Camera, device_id=cond_action.do_camera_id)
                 attachment_file = camera_record(
-                    'video',
-                    camera_stream,
+                    'video', camera_stream,
                     duration_sec=cond_action.do_camera_duration)
-
-            # TODO: Fix missing actions
-            # Email captured photo
-            elif cond_action.do_action == 'photo_email':
-                pass
-
-            # Email captured video
-            elif cond_action.do_action == 'video_email':
-                pass
 
             # Activate PID controller
             elif cond_action.do_action == 'activate_pid':
@@ -570,7 +560,9 @@ class SensorController(threading.Thread):
                               cond_action.do_pid_id,))
                     deactivate_pid.start()
 
-            elif cond_action.do_action == 'email':
+            elif cond_action.do_action in ['email',
+                                           'photo_email',
+                                           'video_email']:
                 if (self.email_count >= self.smtp_max_count and
                         time.time() < self.smtp_wait_timer[cond_id]):
                     self.allowed_to_send_notice = False

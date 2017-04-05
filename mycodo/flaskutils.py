@@ -19,6 +19,7 @@ from flask import (
     request,
     url_for
 )
+from sqlalchemy import and_
 from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 from RPi import GPIO
@@ -1551,6 +1552,14 @@ def conditional_action_mod(form, mod_type):
                     mod_action.do_pid_id = None
             elif form.do_action.data == 'email':
                 mod_action.do_action_string = form.do_action_string.data
+            elif form.do_action.data in ['photo_email', 'video_email']:
+                mod_action.do_action_string = form.do_action_string.data
+                mod_action.do_camera_id = form.do_camera_id.data
+                if (form.do_action.data == 'video_email' and
+                        Camera.query.filter(
+                            and_(Camera.id == form.do_camera_id.data,
+                                 Camera.library == 'opencv')).count()):
+                    error.append('Only Pi Cameras can record video')
             elif form.do_action.data == 'flash_lcd':
                 if form.do_lcd_id.data:
                     mod_action.do_lcd_id = form.do_lcd_id.data
@@ -1563,13 +1572,18 @@ def conditional_action_mod(form, mod_type):
                     mod_action.do_camera_id = None
             elif form.do_action.data == 'video':
                 if form.do_camera_id.data:
+                    if (Camera.query.filter(
+                            and_(Camera.id == form.do_camera_id.data,
+                                 Camera.library == 'opencv')).count()):
+                        error.append('Only Pi Cameras can record video')
                     mod_action.do_camera_id = form.do_camera_id.data
                 else:
                     mod_action.do_camera_id = None
                 mod_action.do_camera_duration = form.do_camera_duration.data
             elif form.do_action.data == 'command':
                 mod_action.do_action_string = form.do_action_string.data
-            db.session.commit()
+            if not error:
+                db.session.commit()
         except sqlalchemy.exc.OperationalError as except_msg:
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:

@@ -1,7 +1,12 @@
 ## 5.0.22 (Unreleased)
 
+### Features
+
+  - Add sensor conditional: emailing of photo or video (video only supported by picamera library at the moment) ([#226](https://github.com/kizniche/mycodo/issues/226))
+
 ### Bugfixes
 
+  - Fix inability to disable relay during camera capture
   - Fix SSL generation script and strengthen from 2048 bit to 4096 bit RSA ([#234](https://github.com/kizniche/mycodo/issues/234))
 
 ### Miscellaneous

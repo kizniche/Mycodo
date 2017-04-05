@@ -87,6 +87,7 @@
             </select>
            </div>
         </div>
+      {% if each_camera.library == 'opencv' %}
         <div class="form-group">
           {{form_camera.opencv_device.label(class_='control-label')}}
           <div>
@@ -100,12 +101,15 @@
             </select>
           </div>
         </div>
+      {% endif %}
         <div class="form-group">
           {{form_camera.relay_id.label(class_='control-label')}}
           <div>
             <select class="form-control" id="relay_id" name="relay_id" title="" data-original-title="Select the relay to activate while the camera is acquiring an image or streaming.">
               {%  if not relay %}
                 <option value="">No Relays Available</option>
+              {% else %}
+                <option value="">Disabled</option>
               {% endif %}
               {%- for each_relay in relay -%}
                 <option value="{{each_relay.id}}"{% if each_camera.relay_id == each_relay.id %} selected{% endif %}>{{each_relay.id}} ({{each_relay.name}})</option>
@@ -192,7 +196,7 @@
               {{form_camera.hflip(checked=True)}}
             {%- else -%}
               {{form_camera.hflip()}}
-            {%- endif -%}
+            {%- endif %}
             {{form_camera.hflip.label.text}}
           </label>
         </div>
@@ -202,7 +206,7 @@
               {{form_camera.vflip(checked=True)}}
             {%- else -%}
               {{form_camera.vflip()}}
-            {%- endif -%}
+            {%- endif %}
             {{form_camera.vflip.label.text}}
           </label>
         </div>

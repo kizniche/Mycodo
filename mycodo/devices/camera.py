@@ -90,16 +90,13 @@ class CameraStream(object):
 # Camera record
 #
 
-def camera_record(record_type, settings, duration_sec=None,
-                  start_time=None, capture_number=None):
+def camera_record(record_type, settings, duration_sec=None):
     """
     Record still/timelapse images, and video
 
     :param record_type: 'photo', 'timelapse', or 'video'
     :param settings: picamera settings object
     :param duration_sec: video duration
-    :param start_time: timelapse start time (for filename)
-    :param capture_number: timelapse capture number (for filename)
     :return:
     """
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
@@ -193,6 +190,29 @@ def camera_record(record_type, settings, duration_sec=None,
                 cv2.imwrite(path_file, img_orig)
 
             cap.release()
+        elif record_type == 'video':
+            # TODO: opencv video recording is currently not working. No idea why.
+            try:
+                cap = cv2.VideoCapture(settings.opencv_device)
+                fourcc = cv2.cv.CV_FOURCC('X', 'V', 'I', 'D')
+                resolution = (settings.width, settings.height)
+                out = cv2.VideoWriter(path_file, fourcc, 20.0, resolution)
+
+                time_end = time.time() + duration_sec
+                while cap.isOpened() and time.time() < time_end:
+                    ret, frame = cap.read()
+                    if ret:
+                        # write the frame
+                        out.write(frame)
+                        if cv2.waitKey(1) & 0xFF == ord('q'):
+                            break
+                    else:
+                        break
+                cap.release()
+                out.release()
+                cv2.destroyAllWindows()
+            except:
+                logger.exception(1)
         else:
             return
     try:
