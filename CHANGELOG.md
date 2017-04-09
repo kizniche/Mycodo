@@ -1,4 +1,4 @@
-## 5.0.22 (Unreleased)
+## 5.0.22 (2017-04-08)
 
 ### Features
 
@@ -6,6 +6,7 @@
 
 ### Bugfixes
 
+  - Fix inability to display Sensor page if unable to detect DS18B20 sensors ([#236](https://github.com/kizniche/mycodo/issues/236))
   - Fix inability to disable relay during camera capture
   - Fix SSL generation script and strengthen from 2048 bit to 4096 bit RSA ([#234](https://github.com/kizniche/mycodo/issues/234))
 

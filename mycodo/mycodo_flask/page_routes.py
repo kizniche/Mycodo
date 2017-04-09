@@ -792,8 +792,12 @@ def page_sensor():
     # If DS18B20 sensors added, compile a list of detected sensors
     ds18b20_sensors = []
     if Sensor.query.filter(Sensor.device == 'DS18B20').count():
-        for each_sensor in W1ThermSensor.get_available_sensors():
-            ds18b20_sensors.append(each_sensor.id)
+        try:
+            for each_sensor in W1ThermSensor.get_available_sensors():
+                ds18b20_sensors.append(each_sensor.id)
+        except OSError:
+            flash("Unable to detect sensors in '/sys/bus/w1/devices'",
+                  "error")
 
     # Create list of file names from the sensor_options directory
     # Used in generating the correct options for each sensor/device
