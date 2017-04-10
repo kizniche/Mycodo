@@ -58,7 +58,6 @@ class TimerController(threading.Thread):
 
         timer = db_retrieve_table_daemon(Timer, device_id=self.timer_id)
         self.timer_type = timer.timer_type
-        self.name = timer.name
         self.relay_unique_id = timer.relay_id
         self.state = timer.state
         self.time_start = timer.time_start

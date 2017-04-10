@@ -6,7 +6,7 @@
 
 ### Bugfixes
 
-  - Fix display of sensor and relay names containing unicode characters ([#237](https://github.com/kizniche/mycodo/issues/237))
+  - Fix display of sensor, relay, LCD, and timer names containing unicode characters ([#237](https://github.com/kizniche/mycodo/issues/237))
 
 ## 5.0.22 (2017-04-08)
 

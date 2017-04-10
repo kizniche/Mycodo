@@ -120,7 +120,8 @@ class LCDController(threading.Thread):
                 self.lcd_line[i] = {}
 
             self.list_sensors = MEASUREMENT_UNITS
-            self.list_sensors.update({'sensor_time': {'unit': None, 'name': 'Time'}})
+            self.list_sensors.update(
+                {'sensor_time': {'unit': None, 'name': 'Time'}})
             self.list_pids = ['setpoint', 'pid_time']
             self.list_relays = ['duration_sec', 'relay_time', 'relay_state']
 
@@ -177,7 +178,7 @@ class LCDController(threading.Thread):
             self.lcd_init()
             self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION),
                                   self.LCD_LINE[1])
-            self.lcd_string_write('Start {}'.format(
+            self.lcd_string_write(u'Start {}'.format(
                 self.lcd_name), self.LCD_LINE[2])
         except Exception as except_msg:
             self.logger.exception("Error: {err}".format(err=except_msg))
@@ -222,7 +223,7 @@ class LCDController(threading.Thread):
             self.lcd_init()  # Blank LCD
             self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION),
                                   self.LCD_LINE[1])
-            self.lcd_string_write('Stop {}'.format(
+            self.lcd_string_write(u'Stop {}'.format(
                 self.lcd_name), self.LCD_LINE[2])
             self.logger.info("Deactivated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
@@ -305,18 +306,18 @@ class LCDController(threading.Thread):
                             unit_length = len(MEASUREMENT_UNITS[measurement]['unit'])
                             name_length = number_characters - value_length - unit_length - 2
                             name_cropped = self.lcd_line[i]['name'].ljust(name_length)[:name_length]
-                            self.lcd_string_line[i] = '{} {} {}'.format(
-                                name_cropped,
-                                self.lcd_line[i]['measurement_value'],
-                                MEASUREMENT_UNITS[measurement]['unit'])
+                            self.lcd_string_line[i] = u'{name} {value} {unit}'.format(
+                                name=name_cropped,
+                                value=self.lcd_line[i]['measurement_value'],
+                                unit=MEASUREMENT_UNITS[measurement]['unit'])
                         else:
                             value_length = len(str(
                                 self.lcd_line[i]['measurement_value']))
                             name_length = number_characters - value_length - 1
                             name_cropped = self.lcd_line[i]['name'][:name_length]
-                            self.lcd_string_line[i] = '{} {}'.format(
-                                name_cropped,
-                                self.lcd_line[i]['measurement_value'])
+                            self.lcd_string_line[i] = u'{name} {value}'.format(
+                                name=name_cropped,
+                                value=self.lcd_line[i]['measurement_value'])
                     else:
                         self.lcd_string_line[i] = 'ERROR: NO DATA'
                 except Exception as except_msg:

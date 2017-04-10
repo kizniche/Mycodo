@@ -127,6 +127,7 @@ class SensorController(threading.Thread):
         self.verify_pause_loop = True
 
         self.cond_id = {}
+        self.cond_action_id = {}
         self.cond_name = {}
         self.cond_is_activated = {}
         self.cond_if_sensor_period = {}
@@ -158,10 +159,10 @@ class SensorController(threading.Thread):
         self.period = sensor.period
         self.resolution = sensor.resolution
         self.sensitivity = sensor.sensitivity
-        self.multiplexer_address_raw = sensor.multiplexer_address
-        self.multiplexer_bus = sensor.multiplexer_bus
-        self.multiplexer_channel = sensor.multiplexer_channel
-        self.adc_channel = sensor.adc_channel
+        self.mux_address_raw = sensor.multiplexer_address
+        self.mux_bus = sensor.multiplexer_bus
+        self.mux_chan = sensor.multiplexer_channel
+        self.adc_chan = sensor.adc_channel
         self.adc_gain = sensor.adc_gain
         self.adc_resolution = sensor.adc_resolution
         self.adc_measure = sensor.adc_measure
@@ -203,17 +204,18 @@ class SensorController(threading.Thread):
             self.i2c_address = int(str(self.location), 16)
 
         # Set up multiplexer if enabled
-        if self.device in LIST_DEVICES_I2C and self.multiplexer_address_raw:
-            self.multiplexer_address_string = self.multiplexer_address_raw
-            self.multiplexer_address = int(str(self.multiplexer_address_raw), 16)
-            self.multiplexer_lock_file = "/var/lock/mycodo_multiplexer_0x{:02X}.pid".format(self.multiplexer_address)
-            self.multiplexer = TCA9548A(self.multiplexer_bus,
-                                        self.multiplexer_address)
+        if self.device in LIST_DEVICES_I2C and self.mux_address_raw:
+            self.mux_address_string = self.mux_address_raw
+            self.mux_address = int(str(self.mux_address_raw), 16)
+            self.mux_lock = "/var/lock/mycodo_multiplexer_0x{i2c:02X}.pid".format(
+                i2c=self.mux_address)
+            self.multiplexer = TCA9548A(self.mux_bus, self.mux_address)
         else:
             self.multiplexer = None
 
         if self.device in ['ADS1x15', 'MCP342x'] and self.location:
-            self.adc_lock_file = "/var/lock/mycodo_adc_bus{}_0x{:02X}.pid".format(self.i2c_bus, self.i2c_address)
+            self.adc_lock_file = "/var/lock/mycodo_adc_bus{bus}_0x{i2c:02X}.pid".format(
+                bus=self.i2c_bus, i2c=self.i2c_address)
 
         # Set up edge detection of a GPIO pin
         if self.device == 'EDGE':
@@ -227,10 +229,10 @@ class SensorController(threading.Thread):
         # Set up analog-to-digital converter
         elif self.device == 'ADS1x15':
             self.adc = ADS1x15Read(self.i2c_address, self.i2c_bus,
-                                   self.adc_channel, self.adc_gain)
+                                   self.adc_chan, self.adc_gain)
         elif self.device == 'MCP342x':
             self.adc = MCP342xRead(self.i2c_address, self.i2c_bus,
-                                   self.adc_channel, self.adc_gain,
+                                   self.adc_chan, self.adc_gain,
                                    self.adc_resolution)
         else:
             self.adc = None
@@ -316,7 +318,7 @@ class SensorController(threading.Thread):
         try:
             self.running = True
             self.logger.info("Activated in {:.1f} ms".format(
-                (timeit.default_timer()-self.thread_startup_timer)*1000))
+                (timeit.default_timer() - self.thread_startup_timer) * 1000))
             self.ready.set()
 
             # Set up edge detection
@@ -330,7 +332,7 @@ class SensorController(threading.Thread):
 
             while self.running:
                 # Pause loop to modify conditional statements.
-                # Prevents execution of conditional while varibles are
+                # Prevents execution of conditional while variables are
                 # being modified.
                 if self.pause_loop:
                     self.verify_pause_loop = True
@@ -345,7 +347,7 @@ class SensorController(threading.Thread):
                         if (self.cond_is_activated[each_cond_id] and
                                 self.cond_if_sensor_edge_select[each_cond_id] == 'state'):
                             if time.time() > self.cond_timer[each_cond_id]:
-                                self.cond_timer[each_cond_id] = time.time()+self.cond_if_sensor_period[each_cond_id]
+                                self.cond_timer[each_cond_id] = time.time() + self.cond_if_sensor_period[each_cond_id]
                                 self.check_conditionals(each_cond_id)
 
                 else:
@@ -354,7 +356,7 @@ class SensorController(threading.Thread):
                     # Signal that a measurement needs to be obtained
                     if time.time() > self.next_measurement and not self.get_new_measurement:
                         self.get_new_measurement = True
-                        self.next_measurement = time.time()+self.period
+                        self.next_measurement = time.time() + self.period
 
                     # if signaled and a pre relay is set up correctly, turn the
                     # relay on for the set duration
@@ -367,7 +369,7 @@ class SensorController(threading.Thread):
                                   self.pre_relay_duration,))
                         relay_on.start()
                         self.pre_relay_activated = True
-                        self.pre_relay_timer = time.time()+self.pre_relay_duration
+                        self.pre_relay_timer = time.time() + self.pre_relay_duration
 
                     # If using a pre relay, wait for it to complete before
                     # querying the sensor for a measurement
@@ -399,7 +401,7 @@ class SensorController(threading.Thread):
                 GPIO.cleanup(int(self.location))
 
             self.logger.info("Deactivated in {:.1f} ms".format(
-                (timeit.default_timer()-self.thread_shutdown_timer)*1000))
+                (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
         except requests.ConnectionError:
             self.logger.error("Could not connect to influxdb. Check that it "
                               "is running and accepting connections")
@@ -444,12 +446,13 @@ class SensorController(threading.Thread):
         cond = db_retrieve_table_daemon(
             Conditional, device_id=cond_id, entry='first')
 
-        message = "[Sensor Conditional: {name} ({id})]".format(
+        message = u"[Sensor Conditional: {name} ({id})]".format(
             name=cond.name,
             id=cond_id)
 
         if cond.if_sensor_direction:
-            last_measurement = self.get_last_measurement(cond.if_sensor_measurement)
+            last_measurement = self.get_last_measurement(
+                cond.if_sensor_measurement)
             if (last_measurement and
                     ((cond.if_sensor_direction == 'above' and
                         last_measurement > cond.if_sensor_setpoint) or
@@ -463,7 +466,8 @@ class SensorController(threading.Thread):
                     message += "(>"
                 elif cond.if_sensor_direction == 'below':
                     message += "(<"
-                message += " {} set value).".format(cond.if_sensor_setpoint)
+                message += " {sp} set value).".format(
+                    sp=cond.if_sensor_setpoint)
             else:
                 logger_cond.debug("Last measurement not found")
                 return 1
@@ -517,8 +521,7 @@ class SensorController(threading.Thread):
                     id=cond_action.do_camera_id)
                 camera_still = db_retrieve_table_daemon(
                     Camera, device_id=cond_action.do_camera_id)
-                attachment_file = camera_record(
-                    'photo', camera_still)
+                attachment_file = camera_record('photo', camera_still)
 
             # Capture video
             elif cond_action.do_action in ['video', 'video_email']:
@@ -569,14 +572,14 @@ class SensorController(threading.Thread):
                 else:
                     if time.time() > self.smtp_wait_timer[cond_id]:
                         self.email_count = 0
-                        self.smtp_wait_timer[cond_id] = time.time()+3600
+                        self.smtp_wait_timer[cond_id] = time.time() + 3600
                     self.allowed_to_send_notice = True
                 self.email_count += 1
 
                 # If the emails per hour limit has not been exceeded
                 if self.allowed_to_send_notice:
-                    message += " Notify {}.".format(
-                            cond_action.do_action_string)
+                    message += " Notify {email}.".format(
+                        email=cond_action.do_action_string)
                     # attachment_type != False indicates to
                     # attach a photo or video
                     if cond_action.do_action == 'photo_email':
@@ -593,9 +596,8 @@ class SensorController(threading.Thread):
                                attachment_file, attachment_type)
                 else:
                     logger_cond.debug(
-                        "{:.0f} seconds left to be allowed to email "
-                        "again.".format(
-                            self.smtp_wait_timer[cond_id]-time.time()))
+                        "Wait {sec:.0f} seconds to email again.".format(
+                            sec=self.smtp_wait_timer[cond_id]-time.time()))
 
             elif cond_action.do_action == 'flash_lcd':
                 message += " Flashing LCD ({id}).".format(
@@ -625,27 +627,27 @@ class SensorController(threading.Thread):
         if self.multiplexer:
             # Acquire a lock for multiplexer
             (lock_status,
-             lock_response) = self.setup_lock(self.multiplexer_address,
-                                              self.multiplexer_bus,
-                                              self.multiplexer_lock_file)
+             lock_response) = self.setup_lock(self.mux_address,
+                                              self.mux_bus,
+                                              self.mux_lock)
             if not lock_status:
-                self.logger.warning("Could not acquire lock for multiplexer. "
-                                    "Error: {err}".format(err=lock_response))
+                self.logger.warning(
+                    "Could not acquire lock for multiplexer. Error: "
+                    "{err}".format(err=lock_response))
                 self.updateSuccess = False
                 return 1
             self.logger.debug(
-                "Setting multiplexer at address {add} to channel "
-                "{chan}".format(add=self.multiplexer_address_string,
-                                chan=self.multiplexer_channel))
+                "Setting multiplexer ({add}) to channel {chan}".format(
+                    add=self.mux_address_string,
+                    chan=self.mux_chan))
             # Set multiplexer channel
             (multiplexer_status,
-             multiplexer_response) = self.multiplexer.setup(
-                self.multiplexer_channel)
+             multiplexer_response) = self.multiplexer.setup(self.mux_chan)
             if not multiplexer_status:
                 self.logger.warning(
                     "Could not set channel with multiplexer at address {add}."
                     " Error: {err}".format(
-                        add=self.multiplexer_address_string,
+                        add=self.mux_address_string,
                         err=multiplexer_response))
                 self.updateSuccess = False
                 return 1
@@ -659,8 +661,8 @@ class SensorController(threading.Thread):
                                                   self.adc_lock_file)
                 if not lock_status:
                     self.logger.warning(
-                        "Could not acquire lock for multiplexer. "
-                        "Error: {err}".format(err=lock_response))
+                        "Could not acquire lock for multiplexer. Error: "
+                        "{err}".format(err=lock_response))
                     self.updateSuccess = False
                     return 1
 
@@ -668,7 +670,7 @@ class SensorController(threading.Thread):
                 measurements = self.adc.next()
                 if measurements is not None:
                     # Get the voltage difference between min and max volts
-                    diff_voltage = abs(self.adc_volts_max-self.adc_volts_min)
+                    diff_voltage = abs(self.adc_volts_max - self.adc_volts_min)
                     # Ensure the measured voltage stays within the min/max bounds
                     if measurements['voltage'] < self.adc_volts_min:
                         measured_voltage = self.adc_volts_min
@@ -677,11 +679,13 @@ class SensorController(threading.Thread):
                     else:
                         measured_voltage = measurements['voltage']
                     # Calculate the percentage of the voltage difference
-                    percent_diff = (measured_voltage-self.adc_volts_min)/diff_voltage
+                    percent_diff = ((measured_voltage - self.adc_volts_min) /
+                                    diff_voltage)
                     # Get the units difference between min and max units
-                    diff_units = abs(self.adc_units_max-self.adc_units_min)
+                    diff_units = abs(self.adc_units_max - self.adc_units_min)
                     # Calculate the measured units from the percent difference
-                    converted_units = self.adc_units_min+(diff_units*percent_diff)
+                    converted_units = (self.adc_units_min +
+                                       (diff_units * percent_diff))
                     if converted_units < self.adc_units_min:
                         measurements[self.adc_measure] = self.adc_units_min
                     elif converted_units > self.adc_units_max:
@@ -719,9 +723,7 @@ class SensorController(threading.Thread):
                         err=except_msg))
 
         if self.multiplexer:
-            self.release_lock(self.multiplexer_address,
-                              self.multiplexer_bus,
-                              self.multiplexer_lock_file)
+            self.release_lock(self.mux_address, self.mux_bus, self.mux_lock)
 
         if self.device_recognized and measurements is not None:
             self.measurement = Measurement(measurements)
@@ -737,29 +739,45 @@ class SensorController(threading.Thread):
             self.lock[lockfile] = LockFile(lockfile)
             while not self.lock[lockfile].i_am_locking():
                 try:
-                    self.logger.debug("[Locking bus-{} 0x{:02X}] Acquiring "
-                                      "Lock: {}".format(i2c_bus, i2c_address,
-                                                        self.lock[lockfile].path))
-                    self.lock[lockfile].acquire(timeout=60)    # wait up to 60 seconds
+                    self.logger.debug(
+                        "[Locking bus-{bus} 0x{i2c:02X}] Acquiring Lock: "
+                        "{lock}".format(
+                            bus=i2c_bus,
+                            i2c=i2c_address,
+                            lock=self.lock[lockfile].path))
+                    # wait up to 60 seconds
+                    self.lock[lockfile].acquire(timeout=60)
                 except Exception as e:
-                    self.logger.error("{cls} raised an exception: "
-                                      "{err}".format(cls=type(self).__name__, err=e))
-                    self.logger.exception("[Locking bus-{} 0x{:02X}] Waited 60 "
-                                          "seconds. Breaking lock to acquire "
-                                          "{}".format(i2c_bus, i2c_address,
-                                                      self.lock[lockfile].path))
+                    self.logger.error(
+                        "{cls} raised an exception: {err}".format(
+                            cls=type(self).__name__, err=e))
+                    self.logger.exception(
+                        "[Locking bus-{bus} 0x{i2c:02X}] Waited 60 seconds. "
+                        "Breaking lock to acquire {lock}".format(
+                            bus=i2c_bus,
+                            i2c=i2c_address,
+                            lock=self.lock[lockfile].path))
                     self.lock[lockfile].break_lock()
                     self.lock[lockfile].acquire()
-            self.logger.debug("[Locking bus-{} 0x{:02X}] Acquired Lock: {}".format(
-                i2c_bus, i2c_address, self.lock[lockfile].path))
-            self.logger.debug("[Locking bus-{} 0x{:02X}] Executed in {:.1f} ms".format(
-                i2c_bus, i2c_address, (timeit.default_timer()-execution_timer)*1000))
+            self.logger.debug(
+                "[Locking bus-{bus} 0x{i2c:02X}] Acquired Lock: "
+                "{lock}".format(
+                    bus=i2c_bus,
+                    i2c=i2c_address,
+                    lock=self.lock[lockfile].path))
+            self.logger.debug(
+                "[Locking bus-{bus} 0x{i2c:02X}] Executed in {ms:.1f} ms".format(
+                    bus=i2c_bus,
+                    i2c=i2c_address,
+                    ms=(timeit.default_timer()-execution_timer)*1000))
             return 1, "Success"
         except Exception as msg:
             return 0, "Multiplexer Fail: {}".format(msg)
 
     def release_lock(self, i2c_address, i2c_bus, lockfile):
-        self.logger.debug("[Locking bus-{} 0x{:02X}] Releasing Lock: {}".format(i2c_bus, i2c_address, lockfile))
+        self.logger.debug(
+            "[Locking bus-{bus} 0x{i2c:02X}] Releasing Lock: {lock}".format(
+                bus=i2c_bus, i2c=i2c_address, lock=lockfile))
         self.lock[lockfile].release()
 
     def get_last_measurement(self, measurement_type):
@@ -774,7 +792,7 @@ class SensorController(threading.Thread):
         :type measurement_type: str
         """
         last_measurement = read_last_influxdb(
-            self.unique_id, measurement_type, int(self.period*1.5))
+            self.unique_id, measurement_type, int(self.period * 1.5))
 
         if last_measurement:
             last_value = last_measurement[1]
@@ -798,7 +816,8 @@ class SensorController(threading.Thread):
 
             # Check sensor conditionals
             for each_cond_id in self.cond_id:
-                if ((self.cond_is_activated[each_cond_id] and self.cond_if_sensor_edge_select[each_cond_id] == 'edge') and
+                if ((self.cond_is_activated[each_cond_id] and
+                     self.cond_if_sensor_edge_select[each_cond_id] == 'edge') and
                         ((self.cond_if_sensor_edge_detected[each_cond_id] == 'rising' and
                           rising_or_falling == 1) or
                          (self.cond_if_sensor_edge_detected[each_cond_id] == 'falling' and
@@ -845,7 +864,8 @@ class SensorController(threading.Thread):
 
         for each_cond in sensor_conditional:
             if cond_mod == 'setup':
-                self.logger.info("Activated Conditional ({id})".format(id=each_cond.id))
+                self.logger.info(
+                    "Activated Conditional ({id})".format(id=each_cond.id))
             self.cond_id[each_cond.id] = each_cond.id
             self.cond_is_activated[each_cond.id] = each_cond.is_activated
             self.cond_if_sensor_period[each_cond.id] = each_cond.if_sensor_period
