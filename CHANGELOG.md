@@ -1,12 +1,12 @@
-## 5.0.23 (Unreleased)
+## 5.0.23 (2017-04-10)
 
 ### Features
 
-  - Add PID Output as a graph display option (useful for tuning PIDs)
+  - Add PID Output as a graph display option (useful for tuning PID controllers)
 
 ### Bugfixes
 
-  - Fix display of sensor, relay, LCD, and timer names containing unicode characters ([#237](https://github.com/kizniche/mycodo/issues/237))
+  - Fix display of unicode characters ([#237](https://github.com/kizniche/mycodo/issues/237))
 
 ## 5.0.22 (2017-04-08)
 

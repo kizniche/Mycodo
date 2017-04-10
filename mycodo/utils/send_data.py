@@ -28,13 +28,29 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
     """
     Email a specific recipient or recipients a message.
 
-    :return: success (0) or failure (1)
-    :rtype: bool
-
-    :param email_to: Who to email
+    :param smtp_host: Email server hostname
+    :type smtp_host: str
+    :param smtp_ssl: Use SSL?
+    :type smtp_ssl: bool
+    :param smtp_port: Email server port
+    :type smtp_port: int
+    :param smtp_user: Email server user name
+    :type smtp_user: str
+    :param smtp_pass: Email server password
+    :type smtp_pass: str
+    :param smtp_email_from: From email address
+    :type smtp_email_from: str
+    :param email_to: To email address(s)
     :type email_to: str or list
     :param message: Message in the body of the email
     :type message: unicode
+    :param attachment_file: location of file attachment
+    :type attachment_file: str
+    :param attachment_type: type of attachment ('still' or 'video')
+    :type attachment_type: str
+    
+    :return: success (0) or failure (1)
+    :rtype: bool
     """
     try:
         if smtp_ssl:
