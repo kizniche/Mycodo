@@ -740,9 +740,10 @@ def choices_sensors(sensor):
     # populate form multi-select choices for sensors and measurements
     for each_sensor in sensor:
         for each_measurement in MEASUREMENTS[each_sensor.device]:
-            value = '{dev_id},{measure}'.format(dev_id=each_sensor.unique_id,
-                                                measure=each_measurement)
-            display = '{dev_id} ({dev_name}) {name} ({unit})'.format(
+            value = '{id},{meas}'.format(
+                id=each_sensor.unique_id,
+                meas=each_measurement)
+            display = u'{dev_id} ({dev_name}) {name} ({unit})'.format(
                 dev_id=each_sensor.id,
                 dev_name=each_sensor.name,
                 name=MEASUREMENT_UNITS[each_measurement]['name'],
@@ -750,9 +751,13 @@ def choices_sensors(sensor):
             choices.update({value: display})
         # Display custom converted units for ADCs
         if each_sensor.device in ['ADS1x15', 'MCP342x']:
-            value = '{},{}'.format(each_sensor.unique_id, each_sensor.adc_measure)
-            display = '{} ({}) {}'.format(
-                each_sensor.id, each_sensor.name, each_sensor.adc_measure)
+            value = '{id},{meas}'.format(
+                id=each_sensor.unique_id,
+                meas=each_sensor.adc_measure)
+            display = u'{id} ({name}) {meas}'.format(
+                id=each_sensor.id,
+                name=each_sensor.name,
+                meas=each_sensor.adc_measure)
             choices.update({value: display})
     return choices
 
@@ -762,11 +767,11 @@ def choices_pids(pid):
     # populate form multi-select choices for sensors and measurements
     for each_pid in pid:
         value = '{id},setpoint'.format(id=each_pid.unique_id)
-        display = '{id} ({name}) Setpoint'.format(
+        display = u'{id} ({name}) Setpoint'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
         value = '{id},pid_output'.format(id=each_pid.unique_id)
-        display = '{id} ({name}) Output'.format(
+        display = u'{id} ({name}) Output'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
     return choices
@@ -779,8 +784,8 @@ def choices_id_name(table):
     # populate form multi-select choices for relays
     for each_entry in table:
         value = each_entry.unique_id
-        display = '{id} ({name})'.format(id=each_entry.id,
-                                         name=each_entry.name)
+        display = u'{id} ({name})'.format(id=each_entry.id,
+                                          name=each_entry.name)
         choices.update({value: display})
     return choices
 

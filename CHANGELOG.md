@@ -4,6 +4,10 @@
 
   - Add PID Output as a graph display option (useful for tuning PIDs)
 
+### Bugfixes
+
+  - Fix display of sensor and relay names containing unicode characters ([#237](https://github.com/kizniche/mycodo/issues/237))
+
 ## 5.0.22 (2017-04-08)
 
 ### Features

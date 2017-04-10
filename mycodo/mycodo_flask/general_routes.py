@@ -283,7 +283,7 @@ def past_data(sensor_measure, sensor_id, past_seconds):
         else:
             return '', 204
     except Exception as e:
-        logger.error("URL for 'past_data' raised and error: "
+        logger.debug("URL for 'past_data' raised and error: "
                      "{err}".format(err=e))
         return '', 204
 
