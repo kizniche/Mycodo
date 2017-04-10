@@ -2434,7 +2434,7 @@ def settings_alert_mod(form_mod_alert):
                     mod_smtp.host, mod_smtp.ssl, mod_smtp.port,
                     mod_smtp.user, mod_smtp.passw, mod_smtp.email_from,
                     form_mod_alert.testEmailTo.data,
-                    "This is a test email from Mycodo")
+                    u"This is a test email from Mycodo")
                 flash(gettext(u"Test email sent to %(recip)s. Check your "
                               u"inbox to see if it was successful.",
                               recip=form_mod_alert.testEmailTo.data),

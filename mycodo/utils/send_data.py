@@ -34,7 +34,7 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
     :param email_to: Who to email
     :type email_to: str or list
     :param message: Message in the body of the email
-    :type message: str
+    :type message: unicode
     """
     try:
         if smtp_ssl:
@@ -50,7 +50,7 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
             socket.gethostname())
         msg['From'] = smtp_email_from
         msg['To'] = email_to
-        msg_body = MIMEText(message.decode('utf-8'), 'plain', 'utf-8')
+        msg_body = MIMEText(message, 'plain', 'utf-8')
         msg.attach(msg_body)
 
         if attachment_file and attachment_type == 'still':

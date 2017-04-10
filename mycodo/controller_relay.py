@@ -388,11 +388,11 @@ class RelayController(threading.Thread):
 
                 elif each_cond_action.do_action == 'command':
                     # Execute command as user mycodo
-                    message += "Execute: '{}'. ".format(
+                    message += u"Execute: '{}'. ".format(
                         each_cond_action.do_action_string)
                     _, _, cmd_status = cmd_output(
                         each_cond_action.do_action_string)
-                    message += "Status: {}. ".format(cmd_status)
+                    message += u"Status: {}. ".format(cmd_status)
 
                 elif each_cond_action.do_action == 'email':
                     if (self.email_count >= self.smtp_max_count and
@@ -406,7 +406,7 @@ class RelayController(threading.Thread):
                     self.email_count += 1
 
                     if self.allowed_to_send_notice:
-                        message += "Notify {}.".format(
+                        message += u"Notify {}.".format(
                             each_cond_action.email_notify)
 
                         smtp = db_retrieve_table_daemon(SMTP, entry='first')
@@ -434,7 +434,7 @@ class RelayController(threading.Thread):
                 elif each_cond_action.do_action == 'video':
                     pass
 
-                self.logger.debug("{}".format(message))
+                self.logger.debug(u"{}".format(message))
 
     def all_relays_initialize(self, relays):
         for each_relay in relays:

@@ -159,7 +159,7 @@ class TimerController(threading.Thread):
         self.control.relay_off(self.relay_id)
         self.running = False
         self.logger.info("Deactivated in {:.1f} ms".format(
-            (timeit.default_timer() - self.thread_shutdown_timer)*1000))
+            (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
 
     def is_running(self):
         return self.running
