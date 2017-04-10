@@ -70,7 +70,7 @@ from databases.utils import session_scope
 from utils.database import db_retrieve_table_daemon
 from utils.influx import (
     read_last_influxdb,
-    write_influxdb_setpoint
+    write_influxdb_value
 )
 from utils.method import (
     bezier_curve_y_out,
@@ -171,9 +171,21 @@ class PIDController(threading.Thread):
                             # Update setpoint using a method if one is selected
                             if self.method_id:
                                 self.calculate_method_setpoint(self.method_id)
-                            write_influxdb_setpoint(self.pid_unique_id, self.set_point)
+                            write_setpoint_db = threading.Thread(
+                                target=write_influxdb_value,
+                                args=(self.pid_unique_id,
+                                      'setpoint',
+                                      self.set_point,))
+                            write_setpoint_db.start()
+
                             # Update PID and get control variable
-                            self.control_variable = self.update(self.last_measurement)
+                            self.control_variable = self.update_pid_output(self.last_measurement)
+                            write_pid_out_db = threading.Thread(
+                                target=write_influxdb_value,
+                                args=(self.pid_unique_id,
+                                      'pid_output',
+                                      self.control_variable,))
+                            write_pid_out_db.start()
 
                     # If PID is active or on hold, activate relays
                     if ((self.is_activated and not self.is_paused) or
@@ -227,7 +239,7 @@ class PIDController(threading.Thread):
 
         return "success"
 
-    def update(self, current_value):
+    def update_pid_output(self, current_value):
         """
         Calculate PID output value from reference input and feedback
 

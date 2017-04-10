@@ -1,3 +1,9 @@
+## 5.0.23 (Unreleased)
+
+### Features
+
+  - Add PID Output as a graph display option (useful for tuning PIDs)
+
 ## 5.0.22 (2017-04-08)
 
 ### Features

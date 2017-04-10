@@ -223,15 +223,3 @@ def write_influxdb_list(data):
             "submitted for writing: {data}. Exception: {err}".format(
                 data=data, err=except_msg))
         return 1
-
-
-def write_influxdb_setpoint(pid_id, setpoint):
-    """
-    Add a setpoint entry to InfluxDB
-
-    :rtype: None
-    """
-    write_db = threading.Thread(
-        target=write_influxdb_value,
-        args=(pid_id, 'setpoint', setpoint,))
-    write_db.start()

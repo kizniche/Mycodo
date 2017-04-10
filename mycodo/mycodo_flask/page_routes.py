@@ -298,7 +298,7 @@ def page_graph():
     sensor = Sensor.query.all()
 
     # Retrieve all choices to populate form drop-down menu
-    pid_choices = flaskutils.choices_id_name(pid)
+    pid_choices = flaskutils.choices_pids(pid)
     relay_choices = flaskutils.choices_id_name(relay)
     sensor_choices = flaskutils.choices_sensors(sensor)
 

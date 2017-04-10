@@ -757,6 +757,21 @@ def choices_sensors(sensor):
     return choices
 
 
+def choices_pids(pid):
+    choices = OrderedDict()
+    # populate form multi-select choices for sensors and measurements
+    for each_pid in pid:
+        value = '{id},setpoint'.format(id=each_pid.unique_id)
+        display = '{id} ({name}) Setpoint'.format(
+            id=each_pid.id, name=each_pid.name)
+        choices.update({value: display})
+        value = '{id},pid_output'.format(id=each_pid.unique_id)
+        display = '{id} ({name}) Output'.format(
+            id=each_pid.id, name=each_pid.name)
+        choices.update({value: display})
+    return choices
+
+
 # Return a dictionary of all available ids and names
 # produce a multi-select form input for creating/modifying custom graphs
 def choices_id_name(table):
@@ -854,21 +869,25 @@ def graph_mod(form_mod_graph, request_form):
             mod_graph.custom_colors = sorted_colors_string
             mod_graph.use_custom_colors = form_mod_graph.use_custom_colors.data
             mod_graph.name = form_mod_graph.name.data
+
             if form_mod_graph.pidIDs.data:
-                pid_ids_joined = ",".join(form_mod_graph.pidIDs.data)
+                pid_ids_joined = ";".join(form_mod_graph.pidIDs.data)
                 mod_graph.pid_ids = pid_ids_joined
             else:
                 mod_graph.pid_ids = ''
+
             if form_mod_graph.relayIDs.data:
                 relay_ids_joined = ",".join(form_mod_graph.relayIDs.data)
                 mod_graph.relay_ids = relay_ids_joined
             else:
                 mod_graph.relay_ids = ''
+
             if form_mod_graph.sensorIDs.data:
                 sensor_ids_joined = ";".join(form_mod_graph.sensorIDs.data)
                 mod_graph.sensor_ids_measurements = sensor_ids_joined
             else:
                 mod_graph.sensor_ids_measurements = ''
+
             mod_graph.width = form_mod_graph.width.data
             mod_graph.height = form_mod_graph.height.data
             mod_graph.x_axis_duration = form_mod_graph.xAxisDuration.data

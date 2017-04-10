@@ -426,7 +426,7 @@
 
         {% set graph_sensor_ids = each_graph.sensor_ids_measurements.split(';') %}
         {% set graph_relay_ids = each_graph.relay_ids.split(',') %}
-        {% set graph_pid_ids = each_graph.pid_ids.split(',') %}
+        {% set graph_pid_ids = each_graph.pid_ids.split(';') %}
 
         {#
          # All possible y-axes available for use.
@@ -485,31 +485,36 @@
 
         {# Determine what y-axes are needed for PID setpoints #}
         {%- for each_pid in pid -%}
-          {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id -%}
-            {%- for each_sensor in sensor if each_sensor.id == each_pid.sensor_id -%}
-              {%- if each_pid.measurement in ['dewpoint',
-                                              'temperature',
-                                              'temperature_object',
-                                              'temperature_die'] -%}
-                {%- do yaxis_temp.append(1) -%}
-              {%- elif each_pid.measurement == 'humidity' -%}
-                {%- do yaxis_hum.append(1) -%}
-              {%- elif each_pid.measurement == 'co2' -%}
-                {%- do yaxis_co2.append(1) -%}
-              {%- elif each_pid.measurement == 'lux' -%}
-                {%- do yaxis_lux.append(1) -%}
-              {%- elif each_pid.measurement == 'moisture' -%}
-                {%- do yaxis_moisture.append(1) -%}
-              {%- elif each_pid.measurement == 'pressure' -%}
-                {%- do yaxis_press.append(1) -%}
-              {%- elif each_pid.measurement == 'altitude' -%}
-                {%- do yaxis_alt.append(1) -%}
-              {%- elif each_pid.measurement == 'voltage' -%}
-                {%- do yaxis_volts.append(1) -%}
-              {%- elif each_pid.measurement == each_sensor.adc_measure -%}
-                {%- do yaxis_adc.append(each_sensor.adc_measure) -%}
-              {%- endif -%}
-            {%- endfor -%}
+          {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id.split(',')[0] -%}
+            {%- set measurement = each_graph_pid_id.split(',')[1] -%}
+            {% if measurement == 'setpoint' %}
+              {%- for each_sensor in sensor if each_sensor.id == each_pid.sensor_id -%}
+                {%- if each_pid.measurement in ['dewpoint',
+                                                'temperature',
+                                                'temperature_object',
+                                                'temperature_die'] -%}
+                  {%- do yaxis_temp.append(1) -%}
+                {%- elif each_pid.measurement == 'humidity' -%}
+                  {%- do yaxis_hum.append(1) -%}
+                {%- elif each_pid.measurement == 'co2' -%}
+                  {%- do yaxis_co2.append(1) -%}
+                {%- elif each_pid.measurement == 'lux' -%}
+                  {%- do yaxis_lux.append(1) -%}
+                {%- elif each_pid.measurement == 'moisture' -%}
+                  {%- do yaxis_moisture.append(1) -%}
+                {%- elif each_pid.measurement == 'pressure' -%}
+                  {%- do yaxis_press.append(1) -%}
+                {%- elif each_pid.measurement == 'altitude' -%}
+                  {%- do yaxis_alt.append(1) -%}
+                {%- elif each_pid.measurement == 'voltage' -%}
+                  {%- do yaxis_volts.append(1) -%}
+                {%- elif each_pid.measurement == each_sensor.adc_measure -%}
+                  {%- do yaxis_adc.append(each_sensor.adc_measure) -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {% elif measurement == 'pid_output' %}
+              {%- do yaxis_relay.append(1) -%}
+            {% endif %}
           {%- endfor -%}
         {%- endfor -%}
 
@@ -534,7 +539,7 @@
             {% set count_series = [] -%}
 
             {% for each_sensor in sensor -%}
-              {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id in each_id_and_measure.split(',')[0] -%}
+              {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id == each_id_and_measure.split(',')[0] -%}
             getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration*60}});
             getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                 {% do count_series.append(1) %}
@@ -550,9 +555,9 @@
             {%- endfor -%}
 
             {%- for each_pid in pid -%}
-              {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'setpoint', '{{each_pid.unique_id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'setpoint', '{{each_pid.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+              {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id.split(',')[0] %}
+            getPastData({{chart_number}}, {{count_series|count}}, '{{each_graph_pid_id.split(',')[1]}}', '{{each_pid.unique_id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_pid_id.split(',')[1]}}', '{{each_pid.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                 {%- do count_series.append(1) %}
               {%- endfor -%}
             {%- endfor -%}
@@ -905,7 +910,8 @@
       {%- endfor -%}
 
       {%- for each_pid in pid -%}
-        {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id and each_pid.measurement -%}
+        {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id.split(',')[0] -%}
+          {% if each_graph_pid_id.split(',')[1] == 'setpoint' and each_pid.measurement %}
           {
             name: '{{each_pid.name}} {{_('Setpoint')}}',
             type: 'line',
@@ -916,6 +922,18 @@
             yAxis: '{{each_pid.measurement}}',
             data: []
           },
+          {% elif each_graph_pid_id.split(',')[1] == 'pid_output' %}
+          {
+            name: '{{each_pid.name}} {{_('Output')}}',
+            type: 'line',
+            tooltip: {
+              valueSuffix: ' sec',
+              valueDecimals: 2
+            },
+            yAxis: 'relay',
+            data: []
+          },
+          {% endif %}
         {%- endfor -%}
       {%- endfor -%}
       ]
