@@ -806,7 +806,7 @@ def graph_add(form_add_graph, display_order):
         new_graph = Graph()
         new_graph.name = form_add_graph.name.data
         if form_add_graph.pidIDs.data:
-            pid_ids_joined = ",".join(form_add_graph.pidIDs.data)
+            pid_ids_joined = ";".join(form_add_graph.pidIDs.data)
             new_graph.pid_ids = pid_ids_joined
         if form_add_graph.relayIDs.data:
             relay_ids_joined = ",".join(form_add_graph.relayIDs.data)

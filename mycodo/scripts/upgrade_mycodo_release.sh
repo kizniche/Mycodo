@@ -151,24 +151,13 @@ runSelfUpgrade() {
   cat > /tmp/upgrade_mycodo_stagetwo.sh << EOF
 #!/bin/bash
 
+BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
+
 function error_found {
+  printf "\n\nThe upgrade has errored.\n"
+  printf "Try executing manually: sudo ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade\n\n"
   echo '2' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
   exit 1
-}
-
-revertInstall() {
-  printf "\n\nThe upgrade has failed: Attempting to revert moving the old Mycodo install.\n"
-  if ! mv /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION} ${INSTALL_DIRECTORY}/Mycodo ; then
-    printf "\nFailed: Error while trying to revert moving. Could not move /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION} to ${INSTALL_DIRECTORY}/Mycodo.\n"
-    error_occurred
-  fi
-  printf "\nSuccessfully reverted moving the old Mycodo install directory. Moved /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION} to ${INSTALL_DIRECTORY}/Mycodo\n"
-
-  if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh initialize ; then
-    printf "Failed: Error while running initialization script.\n"
-    error_occurred
-  fi
-  printf "Done.\n"
 }
 
 printf "#### Continuing Upgrade: Stage 2 of 2 ####\n"
@@ -177,10 +166,9 @@ if [ ! -d "/var/Mycodo-backups" ] ; then
   mkdir /var/Mycodo-backups
 fi
 
-printf "\nMoving old Mycodo from ${INSTALL_DIRECTORY}/Mycodo to /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}..."
-if ! mv ${INSTALL_DIRECTORY}/Mycodo /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION} ; then
-  printf "Failed: Error while trying to move old Mycodo install from ${INSTALL_DIRECTORY}/Mycodo to /var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}.\n"
-  revertInstall
+printf "\nMoving old Mycodo from ${INSTALL_DIRECTORY}/Mycodo to ${BACKUP_DIR}..."
+if ! mv ${INSTALL_DIRECTORY}/Mycodo ${BACKUP_DIR} ; then
+  printf "Failed: Error while trying to move old Mycodo install from ${INSTALL_DIRECTORY}/Mycodo to ${BACKUP_DIR}.\n"
   error_found
 fi
 printf "Done.\n"
@@ -188,7 +176,6 @@ printf "Done.\n"
 printf "Moving new Mycodo from ${MYCODO_NEW_TMP_DIR} to ${INSTALL_DIRECTORY}/Mycodo..."
 if ! mv ${MYCODO_NEW_TMP_DIR} ${INSTALL_DIRECTORY}/Mycodo ; then
   printf "Failed: Error while trying to move new Mycodo install from ${MYCODO_NEW_TMP_DIR} to ${INSTALL_DIRECTORY}/Mycodo.\n"
-  revertInstall
   error_found
 fi
 printf "Done.\n"
@@ -197,14 +184,12 @@ sleep 30
 
 if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh initialize ; then
   printf "Failed: Error while running initialization script.\n"
-  revertInstall
   error_found
 fi
 
 printf "\n\nRunning post-upgrade script...\n"
 if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_post.sh ; then
   printf "Failed: Error while running post-upgrade script.\n"
-  revertInstall
   error_found
 fi
 printf "Done.\n\n"

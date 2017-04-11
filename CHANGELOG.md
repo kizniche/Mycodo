@@ -1,3 +1,10 @@
+## 5.0.24 (Unreleased)
+
+### Bugfixes
+
+  - Fix PID Output not appearing when adding new graph (modifying graph works)
+  - Remove ineffective upgrade reversion script (reversion was risky)
+
 ## 5.0.23 (2017-04-10)
 
 ### Features
