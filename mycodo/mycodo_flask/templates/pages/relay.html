@@ -5,6 +5,63 @@
 {% block title %} - {{_('Relays')}}{% endblock %}
 
 {% block head %}
+<link href="/static/css/toastr.min.css" rel="stylesheet"/>
+<script src="/static/js/toastr.min.js"></script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+      toastr.options = {
+          "closeButton": true,
+          "debug": false,
+          "newestOnTop": false,
+          "progressBar": false,
+          "positionClass": "toast-top-full-width",
+          "preventDuplicates": false,
+          "onclick": null,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": "5000",
+          "extendedTimeOut": "5000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+      }
+  });
+
+  function getAjax(button, data) {
+    $.ajax({
+      url: "{{url_for('page_routes.data_post')}}",
+      method: "POST",
+      data: {
+          button: button,
+          data: data
+      },
+      success: function(response, statusText) {
+        for (i = 0; i < response.messages.length; i++) {
+          toastr[response.messages[i].status](response.messages[i].message);
+        }
+
+      },
+      error: function(XMLHttpRequest, textStatus, errorThrown) {
+        toastr['info']("Status: " + textStatus);
+        toastr['error']("Error: " + errorThrown);
+      }
+    });
+  }
+
+  $(document).ready(function() {
+    $('#turn_on').on('click', function() {
+      toastr['info']('Command to turn on relay sent');
+      getAjax('On', $('#relay_actuate').serialize());
+    });
+    $('#turn_off').on('click', function() {
+      toastr['info']('Command to turn off relay sent');
+      getAjax('Off', $('#relay_actuate').serialize());
+    });
+  });
+</script>
+
 <script>
   function gpioState() {
     var url = '/gpiostate';
@@ -54,7 +111,7 @@
 
     <h4>{{_('Relays')}} <a href="/help#relays" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
-    <p>{{_('Relays enable a low power signal (3.3 DC volts from a Raspberry Pi) to switch a greater voltage/current (such as household appliances that require 120/240 AC volts). Add and configure relays to manipulate them and allow them be used throughout Mycodo.')}}</p>
+    <p>{{_('Relays enable a low power signal (3.3 DC volts from a Raspberry Pi GPIO) to switch a greater voltage/current (such as household appliances that require 120/240 AC volts). Add and configure relays to manipulate them and allow them be used throughout Mycodo.')}}</p>
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
@@ -89,19 +146,22 @@
         {%- for each_relay in relay if each_relay.id == order -%}
 
       <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
-        <form method="post" action="/relay">
-        {{form_mod_relay.csrf_token}}
-        {{form_mod_relay.relay_id(class_='form-control', value=each_relay.id)}}
-        {{form_mod_relay.relay_pin(class_='form-control', value=each_relay.pin)}}
         <div class="row pause-background" style="padding: 0.5em; border-bottom: 2px solid #ddd;" id="{{each_relay.id}}-relay-state">
+          <form id="relay_actuate" method="post">
+          {{form_mod_relay.relay_id(class_='form-control', value=each_relay.id)}}
           <div class="col-xs-12 col-sm-4 col-md-4 small-gutters">
             <div class="col-xs-6 col-sm-12 col-md-6 small-gutters">
-              {{form_mod_relay.turn_on(class_='form-control btn btn-default')}}
+              {{form_mod_relay.turn_on(class_='form-control btn btn-default', type='button')}}
             </div>
             <div class="col-xs-6 col-sm-12 col-md-6 small-gutters">
-              {{form_mod_relay.turn_off(class_='form-control btn btn-default')}}
+              {{form_mod_relay.turn_off(class_='form-control btn btn-default', type='button')}}
             </div>
           </div>
+          </form>
+          <form method="post" action="/relay">
+          {{form_mod_relay.csrf_token}}
+          {{form_mod_relay.relay_id(class_='form-control', value=each_relay.id)}}
+          {{form_mod_relay.relay_pin(class_='form-control', value=each_relay.pin)}}
           <div class="col-xs-12 col-sm-4 col-md-4 small-gutters">
             <div class="col-xs-6 col-sm-12 col-md-6 small-gutters">
               {{form_mod_relay.save(class_='form-control btn btn-default')}}

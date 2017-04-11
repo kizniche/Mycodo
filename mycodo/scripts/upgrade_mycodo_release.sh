@@ -154,8 +154,13 @@ runSelfUpgrade() {
 BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
 
 function error_found {
-  printf "\n\nThe upgrade has errored.\n"
-  printf "Try executing manually: sudo ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade\n\n"
+  printf "\n\nThere was an error during the upgrade.\n"
+  printf "Initial steps to try to fix:\n"
+  printf "1. Reboot\n"
+  printf "2. If that doesn't fix the issue, run the following command:\n"
+  printf "sudo ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade\n"
+  printf "3. If that command returns that you are running the latest version, run the following command:\n"
+  printf "sudo ~/Mycodo/mycodo/scripts/upgrade_post.sh\n\n"
   echo '2' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
   exit 1
 }

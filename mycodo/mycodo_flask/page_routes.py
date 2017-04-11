@@ -9,10 +9,12 @@ import resource
 import subprocess
 import sys
 import time
+import urlparse
 from collections import OrderedDict
 
 from flask import (
     flash,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -88,6 +90,28 @@ def epoch_to_time_string():
     def format_timestamp(epoch):
         return datetime.datetime.fromtimestamp(epoch).strftime("%Y-%m-%d %H:%M:%S")
     return dict(format_timestamp=format_timestamp)
+
+
+@blueprint.route('/test')
+@flask_login.login_required
+def test():
+    return render_template('pages/test.html')
+
+
+@blueprint.route('/data', methods=['POST'])
+@flask_login.login_required
+def data_post():
+    button = request.form['button']
+    options = urlparse.parse_qs(request.form['data'])
+    relay = Relay.query.filter_by(id=int(options['relay_id'][0])).first()
+    status, resp = flaskutils.ajax_relay_on_off(relay.id, button)
+    response = {
+        'messages': [{
+            'status': status,
+            'message': resp
+        }]
+    }
+    return jsonify(response)
 
 
 @blueprint.route('/camera', methods=('GET', 'POST'))
@@ -705,10 +729,6 @@ def page_relay():
             flaskutils.relay_add(form_add_relay)
         elif form_mod_relay.save.data:
             flaskutils.relay_mod(form_mod_relay)
-        elif (form_mod_relay.turn_on.data or
-                form_mod_relay.turn_off.data or
-                form_mod_relay.sec_on_submit.data):
-            flaskutils.relay_on_off(form_mod_relay)
         elif form_mod_relay.delete.data:
             flaskutils.relay_del(form_mod_relay)
         elif form_mod_relay.order_up.data:

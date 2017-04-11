@@ -1,5 +1,9 @@
 ## 5.0.24 (Unreleased)
 
+### Features
+
+  - Add toastr and ajax support for submitting forms without refreshing the page (currently only used with relay On/Off buttons) ([#70](https://github.com/kizniche/mycodo/issues/70))
+
 ### Bugfixes
 
   - Fix PID Output not appearing when adding new graph (modifying graph works)

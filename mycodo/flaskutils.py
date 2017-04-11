@@ -1369,6 +1369,25 @@ def pid_manipulate(pid_id, action):
 # Relay manipulation
 #
 
+def ajax_relay_on_off(relay_id, state):
+    relay = Relay.query.filter_by(id=relay_id).first()
+    control = DaemonControl()
+    if relay.pin <= 0:
+        return ('error',
+                gettext(u"Cannot modulate relay %(id)s (%(name)s) with "
+                        u"a GPIO of 0", id=relay.id, name=relay.name))
+    elif state == 'On':
+        return_value = control.relay_on(relay.id, 0)
+        return ('success',
+                gettext(u"Relay %(id)s (%(name)s) turned on: %(rvalue)s",
+                        id=relay.id, name=relay.name, rvalue=return_value))
+    elif state == 'Off':
+        return_value = control.relay_off(relay.id)
+        return ('success',
+                gettext(u"Relay %(id)s (%(name)s) turned off: %(rvalue)s",
+                        id=relay.id, name=relay.name, rvalue=return_value))
+
+
 def relay_on_off(form_relay):
     action = u'{action} {controller}'.format(
         action=gettext(u"Actuate"),
