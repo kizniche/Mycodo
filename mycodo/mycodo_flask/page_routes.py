@@ -92,26 +92,25 @@ def epoch_to_time_string():
     return dict(format_timestamp=format_timestamp)
 
 
-@blueprint.route('/test')
-@flask_login.login_required
-def test():
-    return render_template('pages/test.html')
-
-
 @blueprint.route('/data', methods=['POST'])
 @flask_login.login_required
 def data_post():
     button = request.form['button']
     options = urlparse.parse_qs(request.form['data'])
-    relay = Relay.query.filter_by(id=int(options['relay_id'][0])).first()
-    status, resp = flaskutils.ajax_relay_on_off(relay.id, button)
-    response = {
-        'messages': [{
-            'status': status,
-            'message': resp
-        }]
-    }
-    return jsonify(response)
+
+    if button in ['relay_off', 'relay_on', 'relay_on_dur']:
+        duration = None
+        if button == 'relay_on_dur':
+            duration = float(options['sec_on'][0])
+        relay = Relay.query.filter_by(id=int(options['relay_id'][0])).first()
+        status, resp = flaskutils.ajax_relay_on_off(relay.id, button, duration)
+        response = {
+            'messages': [{
+                'status': status,
+                'message': resp
+            }]
+        }
+        return jsonify(response)
 
 
 @blueprint.route('/camera', methods=('GET', 'POST'))

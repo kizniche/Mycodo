@@ -15,13 +15,13 @@
           "debug": false,
           "newestOnTop": false,
           "progressBar": false,
-          "positionClass": "toast-top-full-width",
+          "positionClass": "toast-top-right",
           "preventDuplicates": false,
           "onclick": null,
           "showDuration": "300",
           "hideDuration": "1000",
-          "timeOut": "5000",
-          "extendedTimeOut": "5000",
+          "timeOut": "7000",
+          "extendedTimeOut": "10000",
           "showEasing": "swing",
           "hideEasing": "linear",
           "showMethod": "fadeIn",
@@ -39,11 +39,12 @@
       },
       success: function(response, statusText) {
         for (i = 0; i < response.messages.length; i++) {
+          toastr.clear();
           toastr[response.messages[i].status](response.messages[i].message);
         }
-
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {
+        toastr.clear();
         toastr['info']("Status: " + textStatus);
         toastr['error']("Error: " + errorThrown);
       }
@@ -53,11 +54,15 @@
   $(document).ready(function() {
     $('#turn_on').on('click', function() {
       toastr['info']('Command to turn on relay sent');
-      getAjax('On', $('#relay_actuate').serialize());
+      getAjax('relay_on', $('#relay_actuate').serialize());
     });
     $('#turn_off').on('click', function() {
       toastr['info']('Command to turn off relay sent');
-      getAjax('Off', $('#relay_actuate').serialize());
+      getAjax('relay_off', $('#relay_actuate').serialize());
+    });
+    $('#sec_on_submit').on('click', function() {
+      toastr['info']('Command to turn on relay for a duration sent');
+      getAjax('relay_on_dur', $('#relay_actuate_seconds').serialize());
     });
   });
 </script>
@@ -223,10 +228,10 @@
               </select>
             </div>
           </div>
+          </form>
 
-          {{form_mod_relay.csrf_token}}
+          <form id="relay_actuate_seconds" method="post">
           {{form_mod_relay.relay_id(class_='form-control', value=each_relay.id)}}
-          {{form_mod_relay.relay_pin(class_='form-control', value=each_relay.pin)}}
           <div class="col-xs-12">
             {{form_mod_relay.sec_on.label(class_='control-label')}}
           </div>
@@ -235,11 +240,11 @@
               {{form_mod_relay.sec_on(class_='form-control', **{'title':_('Turn this relay on for a specific number of seconds (used to test relay)')})}}
             </div>
             <div class="col-xs-6 col-sm-4 col-md-2 no-gutters">
-              {{form_mod_relay.sec_on_submit(class_='form-control btn btn-default')}}
+              {{form_mod_relay.sec_on_submit(class_='form-control btn btn-default', type='button')}}
             </div>
           </div>
+          </form>
         </div>
-        </form>
 
       </div>
 

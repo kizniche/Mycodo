@@ -2,7 +2,7 @@
 
 ### Features
 
-  - Add toastr and ajax support for submitting forms without refreshing the page (currently only used with relay On/Off buttons) ([#70](https://github.com/kizniche/mycodo/issues/70))
+  - Add toastr and ajax support for submitting forms without refreshing the page (currently only used with relay On/Off/Duration buttons) ([#70](https://github.com/kizniche/mycodo/issues/70))
 
 ### Bugfixes
 
