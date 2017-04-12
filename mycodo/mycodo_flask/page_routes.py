@@ -92,27 +92,6 @@ def epoch_to_time_string():
     return dict(format_timestamp=format_timestamp)
 
 
-@blueprint.route('/data', methods=['POST'])
-@flask_login.login_required
-def data_post():
-    button = request.form['button']
-    options = urlparse.parse_qs(request.form['data'])
-
-    if button in ['relay_off', 'relay_on', 'relay_on_dur']:
-        duration = None
-        if button == 'relay_on_dur':
-            duration = float(options['sec_on'][0])
-        relay = Relay.query.filter_by(id=int(options['relay_id'][0])).first()
-        status, resp = flaskutils.ajax_relay_on_off(relay.id, button, duration)
-        response = {
-            'messages': [{
-                'status': status,
-                'message': resp
-            }]
-        }
-        return jsonify(response)
-
-
 @blueprint.route('/camera', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_camera():
@@ -728,6 +707,10 @@ def page_relay():
             flaskutils.relay_add(form_add_relay)
         elif form_mod_relay.save.data:
             flaskutils.relay_mod(form_mod_relay)
+        elif (form_mod_relay.turn_on.data or
+                form_mod_relay.turn_off.data or
+                form_mod_relay.sec_on_submit.data):
+            flaskutils.relay_on_off(form_mod_relay)
         elif form_mod_relay.delete.data:
             flaskutils.relay_del(form_mod_relay)
         elif form_mod_relay.order_up.data:

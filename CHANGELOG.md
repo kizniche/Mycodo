@@ -1,3 +1,9 @@
+## 5.0.27 (Unreleased)
+
+### Bugfixes
+
+  - Revert to old relay form submission method (ajax method broken)
+
 ## 5.0.26 (2017-04-12)
 
 ### Bugfixes
