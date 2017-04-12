@@ -1,3 +1,9 @@
+## 5.0.26 (2017-04-12)
+
+### Bugfixes
+
+  - Fix critical issue with upgrade script
+
 ## 5.0.25 (2017-04-12)
 
 ### Bugfixes

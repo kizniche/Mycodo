@@ -19,6 +19,7 @@ runSelfUpgrade() {
 
   NOW=$(date +"%Y-%m-%d_%H-%M-%S")
   CURRENT_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
+  BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
   UPDATE_URL=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 5 2>&1)
   UPDATE_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 5 -v 2>&1)
   MYCODO_NEW_TMP_DIR="/tmp/Mycodo-${UPDATE_VERSION}"
@@ -150,8 +151,6 @@ runSelfUpgrade() {
   # Spawn upgrade script
   cat > /tmp/upgrade_mycodo_stagetwo.sh << EOF
 #!/bin/bash
-
-BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
 
 function error_found {
   printf "\n\nThere was an error during the upgrade.\n"
