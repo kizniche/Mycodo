@@ -1023,7 +1023,7 @@ def dict_custom_colors():
         total = []
         if each_graph.sensor_ids_measurements:
             for each_set in each_graph.sensor_ids_measurements.split(';'):
-                sensor_unique_id = each_set.split(',')[0].split(' ')[0]
+                sensor_unique_id = each_set.split(',')[0]
                 sensor_measure = each_set.split(',')[1]
                 sensor = Sensor.query.filter_by(
                     unique_id=sensor_unique_id).first()
@@ -1063,11 +1063,12 @@ def dict_custom_colors():
 
         if each_graph.pid_ids:
             index = 0
-            for each_set in each_graph.pid_ids.split(','):
+            for each_set in each_graph.pid_ids.split(';'):
                 pid_unique_id = each_set.split(',')[0]
+                pid_measure = each_set.split(',')[1]
                 pid = PID.query.filter_by(
                     unique_id=pid_unique_id).first()
-                if (index < len(each_graph.pid_ids.split(',')) and
+                if (index < len(each_graph.pid_ids.split(';')) and
                         len(colors) > index_sum + index):
                     color = colors[index_sum+index]
                 else:
@@ -1076,7 +1077,7 @@ def dict_custom_colors():
                     total.append({
                         'unique_id': pid_unique_id,
                         'name': pid.name,
-                        'measure': 'PID setpoint',
+                        'measure': pid_measure,
                         'color': color})
                     index += 1
 

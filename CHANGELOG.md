@@ -1,3 +1,9 @@
+## 5.0.25 (2017-04-12)
+
+### Bugfixes
+
+  - Fix setting custom graph colors
+
 ## 5.0.24 (2017-04-12)
 
 ### Features

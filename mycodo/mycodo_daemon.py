@@ -345,6 +345,7 @@ class DaemonController(threading.Thread):
                 if (not self.opt_out_statistics and
                         now > self.timer_stats):
                     try:
+                        self.timer_stats = self.timer_stats + STATS_INTERVAL
                         self.send_stats()
                     except Exception:
                         self.logger.exception("Stats ERROR")
@@ -612,12 +613,10 @@ class DaemonController(threading.Thread):
         try:
             stat_dict = return_stat_file_dict(STATS_CSV)
             if float(stat_dict['next_send']) < time.time():
-                self.timer_stats = self.timer_stats + STATS_INTERVAL
                 add_update_csv(STATS_CSV, 'next_send', self.timer_stats)
             else:
                 self.timer_stats = float(stat_dict['next_send'])
         except Exception as msg:
-            self.timer_stats = self.timer_stats + STATS_INTERVAL
             self.logger.exception(
                 "Error: Could not read stats file. Regenerating. Message: "
                 "{msg}".format(msg=msg))
