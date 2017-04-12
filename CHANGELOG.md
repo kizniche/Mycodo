@@ -1,4 +1,4 @@
-## 5.0.24 (Unreleased)
+## 5.0.24 (2017-04-12)
 
 ### Features
 
@@ -6,6 +6,7 @@
 
 ### Bugfixes
 
+  - Fix issue with changing ownership of SSL certificates during install ([#240](https://github.com/kizniche/mycodo/issues/240))
   - Fix PID Output not appearing when adding new graph (modifying graph works)
   - Remove ineffective upgrade reversion script (reversion was risky)
 

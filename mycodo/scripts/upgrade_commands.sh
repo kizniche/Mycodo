@@ -39,8 +39,6 @@ case "${1:-''}" in
         # TODO: Change to appropriate names in the future
         ln -s server.key privkey.pem
         ln -s server.crt cert.pem
-
-        chown mycodo.mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs/*
     ;;
     'initialize')
         printf "\n#### Creating proper users, directories, and permissions\n"
