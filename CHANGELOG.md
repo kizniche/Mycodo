@@ -1,7 +1,8 @@
-## 5.0.27 (Unreleased)
+## 5.0.27 (2017-04-12)
 
 ### Bugfixes
 
+  - Fix issue with old database entries and new graph page parsing
   - Revert to old relay form submission method (ajax method broken)
 
 ## 5.0.26 (2017-04-12)

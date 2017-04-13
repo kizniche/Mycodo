@@ -985,86 +985,91 @@ def dict_custom_colors():
 
     color_count = OrderedDict()
 
-    graph = Graph.query.all()
-    for each_graph in graph:
-        # Get current saved colors
-        if each_graph.custom_colors:  # Split into list
-            colors = each_graph.custom_colors.split(',')
-        else:  # Create empty list
-            colors = []
-        # Fill end of list with empty strings
-        while len(colors) < len(default_palette):
-            colors.append('')
+    try:
+        graph = Graph.query.all()
+        for each_graph in graph:
+            # Get current saved colors
+            if each_graph.custom_colors:  # Split into list
+                colors = each_graph.custom_colors.split(',')
+            else:  # Create empty list
+                colors = []
+            # Fill end of list with empty strings
+            while len(colors) < len(default_palette):
+                colors.append('')
 
-        # Populate empty strings with default colors
-        for x, _ in enumerate(default_palette):
-            if colors[x] == '':
-                colors[x] = default_palette[x]
+            # Populate empty strings with default colors
+            for x, _ in enumerate(default_palette):
+                if colors[x] == '':
+                    colors[x] = default_palette[x]
 
-        index = 0
-        index_sum = 0
-        total = []
-        if each_graph.sensor_ids_measurements:
-            for each_set in each_graph.sensor_ids_measurements.split(';'):
-                sensor_unique_id = each_set.split(',')[0]
-                sensor_measure = each_set.split(',')[1]
-                sensor = Sensor.query.filter_by(
-                    unique_id=sensor_unique_id).first()
-                if (index < len(each_graph.sensor_ids_measurements.split(';')) and
-                        len(colors) > index):
-                    color = colors[index]
-                else:
-                    color = '#FF00AA'
-                if sensor is not None:
-                    total.append({
-                        'unique_id': sensor_unique_id,
-                        'name': sensor.name,
-                        'measure': sensor_measure,
-                        'color': color})
-                    index += 1
-            index_sum += index
-
-        if each_graph.relay_ids:
             index = 0
-            for each_set in each_graph.relay_ids.split(','):
-                relay_unique_id = each_set.split(',')[0]
-                relay = Relay.query.filter_by(
-                    unique_id=relay_unique_id).first()
-                if (index < len(each_graph.relay_ids.split(',')) and
-                        len(colors) > index_sum + index):
-                    color = colors[index_sum+index]
-                else:
-                    color = '#FF00AA'
-                if relay is not None:
-                    total.append({
-                        'unique_id': relay_unique_id,
-                        'name': relay.name,
-                        'measure': 'relay duration',
-                        'color': color})
-                    index += 1
-            index_sum += index
+            index_sum = 0
+            total = []
+            if each_graph.sensor_ids_measurements:
+                for each_set in each_graph.sensor_ids_measurements.split(';'):
+                    sensor_unique_id = each_set.split(',')[0]
+                    sensor_measure = each_set.split(',')[1]
+                    sensor = Sensor.query.filter_by(
+                        unique_id=sensor_unique_id).first()
+                    if (index < len(each_graph.sensor_ids_measurements.split(';')) and
+                            len(colors) > index):
+                        color = colors[index]
+                    else:
+                        color = '#FF00AA'
+                    if sensor is not None:
+                        total.append({
+                            'unique_id': sensor_unique_id,
+                            'name': sensor.name,
+                            'measure': sensor_measure,
+                            'color': color})
+                        index += 1
+                index_sum += index
 
-        if each_graph.pid_ids:
-            index = 0
-            for each_set in each_graph.pid_ids.split(';'):
-                pid_unique_id = each_set.split(',')[0]
-                pid_measure = each_set.split(',')[1]
-                pid = PID.query.filter_by(
-                    unique_id=pid_unique_id).first()
-                if (index < len(each_graph.pid_ids.split(';')) and
-                        len(colors) > index_sum + index):
-                    color = colors[index_sum+index]
-                else:
-                    color = '#FF00AA'
-                if pid is not None:
-                    total.append({
-                        'unique_id': pid_unique_id,
-                        'name': pid.name,
-                        'measure': pid_measure,
-                        'color': color})
-                    index += 1
+            if each_graph.relay_ids:
+                index = 0
+                for each_set in each_graph.relay_ids.split(','):
+                    relay_unique_id = each_set.split(',')[0]
+                    relay = Relay.query.filter_by(
+                        unique_id=relay_unique_id).first()
+                    if (index < len(each_graph.relay_ids.split(',')) and
+                            len(colors) > index_sum + index):
+                        color = colors[index_sum+index]
+                    else:
+                        color = '#FF00AA'
+                    if relay is not None:
+                        total.append({
+                            'unique_id': relay_unique_id,
+                            'name': relay.name,
+                            'measure': 'relay duration',
+                            'color': color})
+                        index += 1
+                index_sum += index
 
-        color_count.update({each_graph.id: total})
+            if each_graph.pid_ids:
+                index = 0
+                for each_set in each_graph.pid_ids.split(';'):
+                    pid_unique_id = each_set.split(',')[0]
+                    pid_measure = each_set.split(',')[1]
+                    pid = PID.query.filter_by(
+                        unique_id=pid_unique_id).first()
+                    if (index < len(each_graph.pid_ids.split(';')) and
+                            len(colors) > index_sum + index):
+                        color = colors[index_sum+index]
+                    else:
+                        color = '#FF00AA'
+                    if pid is not None:
+                        total.append({
+                            'unique_id': pid_unique_id,
+                            'name': pid.name,
+                            'measure': pid_measure,
+                            'color': color})
+                        index += 1
+
+            color_count.update({each_graph.id: total})
+    except IndexError:
+        # Expected exception from previous version database
+        # TODO: Remove this exception in next major version release
+        pass
 
     return color_count
 
