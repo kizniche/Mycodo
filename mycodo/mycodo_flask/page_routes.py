@@ -9,12 +9,10 @@ import resource
 import subprocess
 import sys
 import time
-import urlparse
 from collections import OrderedDict
 
 from flask import (
     flash,
-    jsonify,
     redirect,
     render_template,
     request,
@@ -234,6 +232,44 @@ def page_camera():
                            latest_img_tl=latest_img_tl,
                            latest_img_tl_ts=latest_img_tl_ts,
                            time_now=time_now)
+
+
+@blueprint.route('/atlas_ph_calibrate', methods=('GET', 'POST'))
+@flask_login.login_required
+def page_atlas_ph_calibrate():
+    """
+    Calibrate the Atlas Scientific pH Sensor
+    """
+    
+    form_ph_calibrate = flaskforms.AtlasPHCalibrate()
+    sensor = Sensor.query.filter_by(device='RPi').all()
+    stage = 0
+    selected_sensor = None
+
+    if form_ph_calibrate.go_to_stage_1.data:
+        stage = 1
+        selected_sensor = Sensor.query.filter_by(
+            unique_id=form_ph_calibrate.selected_sensor_id.data).first()
+        if not selected_sensor:
+            flash('Sensor not found: {}'.format(form_ph_calibrate.selected_sensor_id.data), 'error')
+    elif form_ph_calibrate.go_to_stage_2.data:
+        stage = 2
+        selected_sensor = Sensor.query.filter_by(
+            unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
+    elif form_ph_calibrate.go_to_stage_3.data:
+        stage = 3
+        selected_sensor = Sensor.query.filter_by(
+            unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
+    elif form_ph_calibrate.go_to_stage_4.data:
+        stage = 4
+        selected_sensor = Sensor.query.filter_by(
+            unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
+
+    return render_template('tools/atlas_ph_calibrate.html',
+                           form_ph_calibrate=form_ph_calibrate,
+                           sensor=sensor,
+                           selected_sensor=selected_sensor,
+                           stage=stage)
 
 
 @blueprint.route('/export', methods=('GET', 'POST'))

@@ -24,6 +24,19 @@ from mycodo.config import SENSORS
 
 
 #
+# Atlas Scientific pH Sensor Calibration
+#
+
+class AtlasPHCalibrate(FlaskForm):
+    selected_sensor_id = StringField(lazy_gettext(u'Atlas pH Sensor'))
+    hidden_sensor_id = StringField('Sensor ID', widget=widgets.HiddenInput())
+    go_to_stage_1 = SubmitField(lazy_gettext(u'Continue to Stage 1'))
+    go_to_stage_2 = SubmitField(lazy_gettext(u'Continue to Stage 2'))
+    go_to_stage_3 = SubmitField(lazy_gettext(u'Continue to Stage 3'))
+    go_to_stage_4 = SubmitField(lazy_gettext(u'Continue to Stage 4'))
+
+
+#
 # Camera Use
 #
 

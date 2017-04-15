@@ -1,0 +1,146 @@
+{% extends "layout.html" %}
+{% set active_page = "" %}
+{% block title %} - {{_('Calibrate Atlas Scientific pH Sensor')}}{% endblock %}
+
+{% block head %}
+<script>
+function startTimer() {
+  document.getElementById("countdown").style.display = "inline-block";
+  document.getElementById("timer").style.display = "none";
+  timer = 5;
+  var numericExpression = /^[0-9]+$/;
+  function display(notifier, str) {
+    document.getElementById(notifier).innerHTML = str;
+  }
+  function toMinuteAndSecond(x) {
+    return "Please wait for sensor to equilibrate: " + Math.floor(x / 60) + ":" + x % 60;
+  }
+  function setTimer(remain, actions) {
+    (function countdown() {
+        display("countdown", toMinuteAndSecond(remain));
+        actions[remain] && actions[remain]();
+        (remain -= 1) >= 0 && setTimeout(countdown, 1000);
+    })();
+  }
+  setTimer(timer, {
+    0: function () {
+      document.getElementById("go_to_next_stage").style.display = "inline-block";
+      document.getElementById("countdown").style.display = "none";
+    }
+  });
+}
+</script>
+{% endblock %}
+
+{% block body %}
+  <!-- Route: /export -->
+  <div class="container"> 
+    {% include 'flash_messages.html' %}
+
+    {% if stage == 0 %}
+
+    <p>This guide will walk you through the calibration procedure for the Atlas Scientific pH Sensor. To complete this procedure, you will need three solutions, each with a different pH (pH 4, pH 7, and pH 10). At each step, you will be instructed to insert the pH probe into each solution and wait for the reading to equilibrate before proceeding. Between transferring the probe from one solution to another, you will be instructed to rinse the probe with distilled water. Instructions will be provided at easch step of the way.</p>
+
+    <p>To begin, have your probe properly connected to Mycodo, select the probe from the dropdown list, and click Continue.</p>
+
+    <div class="row small-gutters">
+      <form method="post" action="/atlas_ph_calibrate">
+      <div class="col-xs-6 col-sm-4 col-lg-2">
+        <select class="form-control" id="selected_sensor_id" name="selected_sensor_id" title="" data-original-title="Select which Atlas Scientific pH sensor to calibrate">
+          {% if sensor %}
+            {%- for each_sensor in sensor -%}
+              <option value="{{each_sensor.unique_id}}">{{each_sensor.id}} ({{each_sensor.name}})</option>
+            {%- endfor -%}
+          {% else %}
+            <option value="">{{_('No Sensors Found')}}</option>
+          {% endif %}
+        </select>
+      </div>
+      <div class="col-xs-6 col-sm-4 col-lg-2 no-gutters">
+        {{form_ph_calibrate.go_to_stage_1(class_='form-control btn btn-default')}}
+      </div>
+      </form>
+    </div>
+
+    {% elif stage == 1 %}
+
+    <p>Calibrating Atlas Scientific pH Sensor {{selected_sensor.id}} ({{selected_sensor.name}})</p>
+
+    <p>Insert the probe into the pH 7 solution, then click Ready.</p>
+
+    <form method="post" action="/atlas_ph_calibrate">
+    <div class="row small-gutters">
+      {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
+      <div id="proceed_stage_2">
+        <div id="go_to_next_stage" style="display: none" class="col-xs-6 col-sm-4 col-lg-2 no-gutters">
+          {{form_ph_calibrate.go_to_stage_2(class_='form-control btn btn-default')}}
+        </div>
+      </div>
+    </div>
+    <div class="row small-gutters">
+      <div class="col-xs-6 col-sm-4 col-lg-2 no-gutters">
+        <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="Ready"/>
+      </div>
+    </div>
+    <div id="countdown"></div>
+    </form>
+
+    {% elif stage == 2 %}
+
+    <p>Calibrating Atlas Scientific pH Sensor {{selected_sensor.id}} ({{selected_sensor.name}})</p>
+
+    <p>Remove the pH probe from the pH 7 solution and rinse it with distilled water.</p>
+
+    <p>Insert the probe into the pH 4 solution, then click Ready.</p>
+
+    <form method="post" action="/atlas_ph_calibrate">
+    <div class="row small-gutters">
+      {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
+      <div id="proceed_stage_2">
+        <div id="go_to_next_stage" style="display: none" class="col-xs-6 col-sm-4 col-lg-2 no-gutters">
+          {{form_ph_calibrate.go_to_stage_3(class_='form-control btn btn-default')}}
+        </div>
+      </div>
+    </div>
+    <div class="row small-gutters">
+      <div class="col-xs-6 col-sm-4 col-lg-2 no-gutters">
+        <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="Ready"/>
+      </div>
+    </div>
+    <div id="countdown"></div>
+    </form>
+
+    {% elif stage == 3 %}
+
+    <p>Calibrating Atlas Scientific pH Sensor {{selected_sensor.id}} ({{selected_sensor.name}})</p>
+
+    <p>Remove the pH probe from the pH 4 solution and rinse it with distilled water.</p>
+
+    <p>Insert the probe into the pH 10 solution, then click Ready.</p>
+
+    <form method="post" action="/atlas_ph_calibrate">
+    <div class="row small-gutters">
+      {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
+      <div id="proceed_stage_2">
+        <div id="go_to_next_stage" style="display: none" class="col-xs-6 col-sm-4 col-lg-2 no-gutters">
+          {{form_ph_calibrate.go_to_stage_4(class_='form-control btn btn-default')}}
+        </div>
+      </div>
+    </div>
+    <div class="row small-gutters">
+      <div class="col-xs-6 col-sm-4 col-lg-2 no-gutters">
+        <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="Ready"/>
+      </div>
+    </div>
+    <div id="countdown"></div>
+    </form>
+
+    {% elif stage == 4 %}
+
+    <p>Sensor {{selected_sensor.id}} ({{selected_sensor.name}}) has been successfully calibrated.</p>
+
+    {% endif %}
+
+  </div>
+
+{% endblock %}
