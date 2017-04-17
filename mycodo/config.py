@@ -24,6 +24,7 @@ MEASUREMENTS = {
     'MYCODO_RAM': ['disk_space'],
     'ADS1x15': ['voltage'],
     'AM2315': ['dewpoint', 'humidity', 'temperature'],
+    'ATLAS_PH_UART': ['ph'],
     'ATLAS_PT1000': ['temperature'],
     'BH1750': ['lux'],
     'BME280': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature'],
@@ -73,6 +74,8 @@ MEASUREMENT_UNITS = {
         'name': 'Light', 'meas': 'lux', 'unit': 'lx'},
     'moisture': {
         'name': 'Moisture', 'meas': 'moisture', 'unit': 'moisture'},
+    'ph': {
+        'name': 'pH', 'meas': 'pH', 'unit': 'pH'},
     'pressure': {
         'name': 'Pressure', 'meas': 'pressure', 'unit': 'Pa'},
     'temperature': {
@@ -98,12 +101,13 @@ SENSORS = [
     ('BH1750', 'Luminance: BH1750'),
     ('TSL2561', 'Luminance: TSL2561'),
     ('CHIRP', 'Moisture: Chirp'),
+    ('ATLAS_PH_UART', 'pH: Atlas Scientific (UART)'),
     ('BME280', 'Pressure/Temperature/Humidity: BME 280'),
     ('BMP180', 'Pressure/Temperature: BMP 180/085'),
     ('BMP280', 'Pressure/Temperature: BMP 280'),
     ('DS18B20', 'Temperature: DS18B20'),
     ('TMP006', 'Temperature (Contactless): TMP 006/007'),
-    ('ATLAS_PT1000', 'Temperature: Atlas Scientific, PT-1000'),
+    ('ATLAS_PT1000', 'Temperature: Atlas Scientific, PT-1000 (I2C)'),
     ('AM2315', 'Temperature/Humidity: AM2315'),
     ('DHT11', 'Temperature/Humidity: DHT11'),
     ('DHT22', 'Temperature/Humidity: DHT22'),
@@ -116,6 +120,7 @@ SENSORS = [
 # Used to determine whether or not to present the option to change address
 DEVICES_DEFAULT_LOCATION = [
     'AM2315',
+    'ATLAS_PH_UART',
     'ATLAS_PT1000',
     'BMP',
     'BMP180',

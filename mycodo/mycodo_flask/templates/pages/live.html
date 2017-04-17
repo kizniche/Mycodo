@@ -119,7 +119,7 @@
                 <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}}</b> | <span id="{{each_sensor.unique_id}}-{{each_measure}}-time">&lt;please wait&gt;</span><br>
               {% endif %}
             {% endfor %}
-            {%- if each_sensor.device_type == 'analogsensor' %}
+            {%- if each_sensor.device in ['ADS1x15', 'MCP342x'] %}
               <b><span id="{{each_sensor.unique_id}}-{{each_sensor.adc_measure}}-value">0.0</span> {{each_sensor.adc_measure_units}} {{each_sensor.adc_measure}}</b> | <span id="{{each_sensor.unique_id}}-{{each_sensor.adc_measure}}-time">&lt;please wait&gt;</span>
             {% endif %}
           </div>

@@ -1797,23 +1797,20 @@ def sensor_add(form_add_sensor):
 
             # Process monitors
             if form_add_sensor.sensor.data == 'MYCODO_RAM':
-                new_sensor.device_type = 'mycodo_ram'
                 new_sensor.measurements = 'disk_space'
                 new_sensor.location = 'Mycodo_daemon'
             elif form_add_sensor.sensor.data == 'RPi':
-                new_sensor.device_type = 'tsensor'
                 new_sensor.measurements = 'temperature'
                 new_sensor.location = 'RPi'
             elif form_add_sensor.sensor.data == 'RPiCPULoad':
-                new_sensor.device_type = 'cpu_load'
-                new_sensor.measurements = 'cpu_load_1m,cpu_load_5m,cpu_load_15m'
+                new_sensor.measurements = 'cpu_load_1m,' \
+                                          'cpu_load_5m,' \
+                                          'cpu_load_15m'
                 new_sensor.location = 'RPi'
             elif form_add_sensor.sensor.data == 'RPiFreeSpace':
-                new_sensor.device_type = 'free_space'
                 new_sensor.measurements = 'disk_space'
                 new_sensor.location = '/'
             elif form_add_sensor.sensor.data == 'EDGE':
-                new_sensor.device_type = 'edgedetect'
                 new_sensor.measurements = 'edge'
 
             # Environmental Sensors
@@ -1821,19 +1818,18 @@ def sensor_add(form_add_sensor):
             elif form_add_sensor.sensor.data in ['ATLAS_PT1000',
                                                  'DS18B20',
                                                  'TMP006']:
-                new_sensor.device_type = 'tsensor'
                 new_sensor.measurements = 'temperature'
                 if form_add_sensor.sensor.data == 'ATLAS_PT1000':
                     new_sensor.location = '0x66'
                 elif form_add_sensor.sensor.data == 'TMP006':
-                    new_sensor.measurements = 'temperature_object,temperature_die'
+                    new_sensor.measurements = 'temperature_object,' \
+                                              'temperature_die'
                     new_sensor.location = '0x40'
 
             # Temperature/Humidity
-            elif form_add_sensor.sensor.data in ['AM2315', 'DHT11', 'DHT22',
-                                                 'HTU21D', 'SHT1x_7x',
-                                                 'SHT2x']:
-                new_sensor.device_type = 'htsensor'
+            elif form_add_sensor.sensor.data in ['AM2315', 'DHT11',
+                                                 'DHT22', 'HTU21D',
+                                                 'SHT1x_7x', 'SHT2x']:
                 new_sensor.measurements = 'temperature,humidity,dewpoint'
                 if form_add_sensor.sensor.data == 'AM2315':
                     new_sensor.location = '0x5c'
@@ -1844,23 +1840,26 @@ def sensor_add(form_add_sensor):
 
             # Chirp moisture sensor
             elif form_add_sensor.sensor.data == 'CHIRP':
-                new_sensor.device_type = 'moistsensor'
                 new_sensor.measurements = 'lux,moisture,temperature'
                 new_sensor.location = '0x20'
 
             # CO2
             elif form_add_sensor.sensor.data == 'K30':
-                new_sensor.device_type = 'co2sensor'
                 new_sensor.measurements = 'co2'
+                new_sensor.location = 'Tx/Rx'
+
+            # pH
+            elif form_add_sensor.sensor.data == 'ATLAS_PH_UART':
+                new_sensor.measurements = 'ph'
                 new_sensor.location = 'Tx/Rx'
 
             # Pressure
             elif form_add_sensor.sensor.data in ['BME280',
                                                  'BMP180',
                                                  'BMP280']:
-                new_sensor.device_type = 'presssensor'
                 if form_add_sensor.sensor.data == 'BME280':
-                    new_sensor.measurements = 'temperature,humidity,dewpoint,pressure,altitude'
+                    new_sensor.measurements = 'temperature,humidity,' \
+                                              'dewpoint,pressure,altitude'
                     new_sensor.location = '0x76'
                 elif form_add_sensor.sensor.data in ['BMP180', 'BMP280']:
                     new_sensor.measurements = 'temperature,pressure,altitude'
@@ -1868,7 +1867,6 @@ def sensor_add(form_add_sensor):
 
             # Light
             elif form_add_sensor.sensor.data in ['BH1750', 'TSL2561']:
-                new_sensor.device_type = 'luxsensor'
                 new_sensor.measurements = 'lux'
                 if form_add_sensor.sensor.data == 'BH1750':
                     new_sensor.location = '0x23'
@@ -1879,7 +1877,6 @@ def sensor_add(form_add_sensor):
 
             # Analog to Digital Converters
             elif form_add_sensor.sensor.data in ['ADS1x15', 'MCP342x']:
-                new_sensor.device_type = 'analogsensor'
                 new_sensor.measurements = 'voltage'
                 if form_add_sensor.sensor.data == 'ADS1x15':
                     new_sensor.location = '0x48'

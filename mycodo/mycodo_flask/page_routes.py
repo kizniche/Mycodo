@@ -240,7 +240,6 @@ def page_atlas_ph_calibrate():
     """
     Calibrate the Atlas Scientific pH Sensor
     """
-    
     form_ph_calibrate = flaskforms.AtlasPHCalibrate()
     sensor = Sensor.query.filter_by(device='RPi').all()
     stage = 0
@@ -253,15 +252,26 @@ def page_atlas_ph_calibrate():
         if not selected_sensor:
             flash('Sensor not found: {}'.format(form_ph_calibrate.selected_sensor_id.data), 'error')
     elif form_ph_calibrate.go_to_stage_2.data:
-        stage = 2
-        selected_sensor = Sensor.query.filter_by(
-            unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
+        if form_ph_calibrate.temperature.data is None:
+            flash(gettext(u"Must enter a valid temperature: %(temp)s",
+                          temp=form_ph_calibrate.temperature.data), "error")
+            stage = 1
+        else:
+            temperature = '{temp:.2f}'.format(
+                temp=form_ph_calibrate.temperature.data)
+            # use temperature command
+            stage = 2
     elif form_ph_calibrate.go_to_stage_3.data:
         stage = 3
-        selected_sensor = Sensor.query.filter_by(
-            unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
     elif form_ph_calibrate.go_to_stage_4.data:
         stage = 4
+    elif form_ph_calibrate.go_to_stage_5.data:
+        stage = 5
+
+    if (form_ph_calibrate.go_to_stage_2.data or
+            form_ph_calibrate.go_to_stage_3.data or
+            form_ph_calibrate.go_to_stage_4.data or
+            form_ph_calibrate.go_to_stage_5.data):
         selected_sensor = Sensor.query.filter_by(
             unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
 
