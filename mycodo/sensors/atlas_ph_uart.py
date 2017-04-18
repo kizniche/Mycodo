@@ -7,11 +7,11 @@ import RPi.GPIO as GPIO
 from .base_sensor import AbstractSensor
 
 logger = logging.getLogger("mycodo.sensors.atlas_ph")
-ATLAS_PH_LOCK_FILE = "/var/lock/sensor-k30"
+ATLAS_PH_LOCK_FILE = "/var/lock/sensor-atlas-ph"
 
 
 class AtlaspHUARTSensor(AbstractSensor):
-    """ A sensor support class that monitors the K30's CO2 concentration """
+    """A sensor support class that monitors the Atlas Scientific sensor pH"""
 
     def __init__(self):
         super(AtlaspHUARTSensor, self).__init__()
@@ -32,24 +32,24 @@ class AtlaspHUARTSensor(AbstractSensor):
         time.sleep(1)
 
     def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(co2={co2})>".format(
+        """ Representation of object """
+        return "<{cls}(ph={ph})>".format(
             cls=type(self).__name__,
-            co2="{0:.2f}".format(self._ph))
+            ph="{0:.2f}".format(self._ph))
 
     def __str__(self):
-        """ Return CO2 information """
-        return "CO2: {co2}".format(co2="{0:.2f}".format(self._ph))
+        """ Return pH information """
+        return "pH: {ph}".format(ph="{0:.2f}".format(self._ph))
 
     def __iter__(self):  # must return an iterator
-        """ K30 iterates through live CO2 readings """
+        """ Atlas pH sensor iterates through live pH readings """
         return self
 
     def next(self):
-        """ Get next CO2 reading """
+        """ Get next pH reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(co2=float('{0:.2f}'.format(self._ph)))
+        return dict(ph=float('{0:.2f}'.format(self._ph)))
 
     def info(self):
         conditions_measured = [
@@ -73,6 +73,7 @@ class AtlaspHUARTSensor(AbstractSensor):
         if bytes_read != 0:
             ph = self.ser.read(bytes_read)
             self.ser.flushInput()
+            logger.info("RETURNED VALUE: {ph}".format(ph=ph))
         else:
             ph = None
 
@@ -84,7 +85,7 @@ class AtlaspHUARTSensor(AbstractSensor):
 
     def read(self):
         """
-        Takes a reading from the K30 and updates the self._ph value
+        Takes a reading from the sensor and updates the self._ph value
 
         :returns: None on success or 1 on error
         """
