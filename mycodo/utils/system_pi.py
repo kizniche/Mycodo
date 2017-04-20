@@ -98,6 +98,17 @@ def get_sec(time_str):
     return int(h) * 3600 + int(m) * 60 + int(s)
 
 
+def str_is_float(text):
+    """Returns true if the string represents a float value"""
+    try:
+        if text.isalpha():
+            return False
+        float(text)
+        return True
+    except ValueError:
+        return False
+
+
 def is_int(test_var, check_range=None):
     """
     Test if var is integer (and also between range)

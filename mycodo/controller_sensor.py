@@ -46,7 +46,7 @@ from devices.tca9548a import TCA9548A
 from devices.ads1x15 import ADS1x15Read
 from devices.mcp342x import MCP342xRead
 from sensors.mycodo_ram import MycodoRam
-from sensors.atlas_ph_uart import AtlaspHUARTSensor
+from sensors.atlas_ph import AtlaspHSensor
 from sensors.atlas_pt1000 import AtlasPT1000Sensor
 from sensors.am2315 import AM2315Sensor
 from sensors.bh1750 import BH1750Sensor
@@ -257,7 +257,7 @@ class SensorController(threading.Thread):
         elif self.device == 'AM2315':
             self.measure_sensor = AM2315Sensor(self.i2c_bus)
         elif self.device == 'ATLAS_PH_UART':
-            self.measure_sensor = AtlaspHUARTSensor()
+            self.measure_sensor = AtlaspHSensor(interface='UART')
         elif self.device == 'ATLAS_PT1000':
             self.measure_sensor = AtlasPT1000Sensor(self.i2c_address,
                                                     self.i2c_bus)

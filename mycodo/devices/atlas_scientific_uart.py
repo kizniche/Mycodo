@@ -1,7 +1,6 @@
 # coding=utf-8
 import logging
 import serial
-import sys
 import RPi.GPIO as GPIO
 from serial import SerialException
 
@@ -14,6 +13,7 @@ class AtlasScientificUART:
     def __init__(self, serial_device=None, baudrate=9600):
         self.serial_device = serial_device
         self.baudrate = baudrate
+        self.setup = True
         if serial_device is None:
             if GPIO.RPI_INFO['P1_REVISION'] == 3:
                 self.serial_device = "/dev/ttyS0"
@@ -25,18 +25,8 @@ class AtlasScientificUART:
                                      baudrate=self.baudrate,
                                      timeout=0)
         except serial.SerialException:
+            self.setup = False
             logger.exception('Opening serial')
-            sys.exit(0)
-
-    @staticmethod
-    def is_float(text):
-        try:
-            if text.isalpha():
-                return False
-            float(text)
-            return True
-        except ValueError:
-            return False
 
     def read_line(self):
         """

@@ -2,20 +2,26 @@
 from lockfile import LockFile
 import logging
 import time
+from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
+from mycodo.utils.system_pi import str_is_float
 from .base_sensor import AbstractSensor
 
 logger = logging.getLogger("mycodo.sensors.atlas_ph")
 ATLAS_PH_LOCK_FILE = "/var/lock/sensor-atlas-ph"
 
 
-class AtlaspHUARTSensor(AbstractSensor):
+class AtlaspHSensor(AbstractSensor):
     """A sensor support class that monitors the Atlas Scientific sensor pH"""
 
-    def __init__(self):
-        super(AtlaspHUARTSensor, self).__init__()
+    def __init__(self, interface):
+        super(AtlaspHSensor, self).__init__()
         self._ph = 0
-        self.ph_uart = AtlasScientificUART()
+        self.interface = interface
+        if self.interface == 'UART':
+            self.ph_sensor_uart = AtlasScientificUART()
+        elif self.interface == 'I2C':
+            self.ph_sensor_i2c = AtlasScientificI2C()
 
     def __repr__(self):
         """ Representation of object """
@@ -51,22 +57,38 @@ class AtlaspHUARTSensor(AbstractSensor):
         return self._ph
 
     def get_measurement(self):
-        """ Gets the sensor's pH measurement via UART """
-        self.ph_uart.send_cmd('R')
-        time.sleep(1.3)
-        lines = self.ph_uart.read_lines()
-        logger.info("All Lines: {lines}".format(lines=lines))
+        """ Gets the sensor's pH measurement via UART/I2C """
+        ph = None
+        if self.interface == 'UART':
+            if self.ph_sensor_uart.setup:
+                self.ph_sensor_uart.send_cmd('R')
+                time.sleep(1.3)
+                lines = self.ph_sensor_uart.read_lines()
+                logger.info("All Lines: {lines}".format(lines=lines))
 
-        if 'check probe' in lines:
-            ph = None
-            logger.error('"check probe" returned from sensor')
-        elif self.ph_uart.is_float(lines[0]):
-            ph = float(lines[0])
-            logger.error('Value is float: {val}'.format(val=ph))
-        else:
-            ph = float(lines[0])
-            logger.error('Value is not float or "check probe": '
-                         '{val}'.format(val=ph))
+                if 'check probe' in lines:
+                    logger.error('"check probe" returned from sensor')
+                elif str_is_float(lines[0]):
+                    ph = float(lines[0])
+                    logger.error('Value[0] is float: {val}'.format(val=ph))
+                else:
+                    ph = lines[0]
+                    logger.error('Value[0] is not float or "check probe": '
+                                 '{val}'.format(val=ph))
+            else:
+                logger.error('UART device is not set up.'
+                             'Check the log for errors.')
+                ph = None
+        elif self.interface == 'I2C':
+            if self.ph_sensor_i2c.setup:
+                ph = self.ph_sensor_i2c.query('R')
+                if not str_is_float(ph):
+                    ph = None
+            else:
+                logger.error('I2C device is not set up.'
+                             'Check the log for errors.')
+                ph = None
+            
         return ph
 
     def read(self):
