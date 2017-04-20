@@ -9,18 +9,18 @@ logger = logging.getLogger("mycodo.device.atlas_scientific_i2c")
 
 
 class AtlasScientificI2C:
-    """Atlas Scientific EZO pH, EC and dissolved oxygen circuit for I2C"""
+    """Class for Atlas Scientific sensor communication via I2C"""
     long_timeout = 1.5  # the timeout needed to query readings and calibrations
     short_timeout = .5  # timeout for regular commands
     default_bus = 1  # the default bus for I2C on the newer Raspberry Pis, certain older boards use bus 0
     default_address = 98  # the default address for the sensor
-    current_addr = default_address
 
     def __init__(self, address=default_address, bus=default_bus):
         # open two file streams, one for reading and one for writing
         # the specific I2C channel is selected with bus
         # it is usually 1, except for older revisions where its 0
         # wb and rb indicate binary read and write
+        self.current_addr = address
         self.setup = True
         try:
             self.file_read = io.open("/dev/i2c-" + str(bus), "rb", buffering=0)
