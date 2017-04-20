@@ -77,3 +77,30 @@ class AtlasScientificUART:
         except SerialException:
             logger.exception('Send CMD')
             return None
+
+
+def main():
+    device_str = raw_input("Device? (e.g. '/dev/ttyS0'): ")
+    baud_str = raw_input("Baud rate? (e.g. '9600'): ")
+
+    device = AtlasScientificUART(serial_device=device_str,
+                                 baudrate=int(baud_str))
+
+    print(">> Atlas Scientific sample code")
+    print(">> Any commands entered are passed to the board via UART")
+    print(">> Pressing ctrl-c will stop the polling")
+
+    while True:
+        input_str = raw_input("Enter command: ")
+
+        if len(input_str) == 0:
+            print "Please input valid command."
+        else:
+            try:
+                device.send_cmd(input_str)
+                print(device.read_lines())
+            except IOError:
+                print("Send command failed\n")
+
+if __name__ == "__main__":
+    main()

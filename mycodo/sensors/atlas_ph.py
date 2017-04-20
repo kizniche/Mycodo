@@ -64,13 +64,13 @@ class AtlaspHSensor(AbstractSensor):
                 self.ph_sensor_uart.send_cmd('R')
                 time.sleep(1.3)
                 lines = self.ph_sensor_uart.read_lines()
-                logger.info("All Lines: {lines}".format(lines=lines))
+                logger.debug("All Lines: {lines}".format(lines=lines))
 
                 if 'check probe' in lines:
                     logger.error('"check probe" returned from sensor')
                 elif str_is_float(lines[0]):
                     ph = float(lines[0])
-                    logger.error('Value[0] is float: {val}'.format(val=ph))
+                    logger.debug('Value[0] is float: {val}'.format(val=ph))
                 else:
                     ph = lines[0]
                     logger.error('Value[0] is not float or "check probe": '

@@ -39,6 +39,8 @@ from mycodo.databases.models import (
     Timer,
     User
 )
+from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
+from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.devices.camera import CameraStream
 from mycodo_client import DaemonControl
 from mycodo_client import daemon_active
@@ -241,9 +243,52 @@ def page_atlas_ph_calibrate():
     Calibrate the Atlas Scientific pH Sensor
     """
     form_ph_calibrate = flaskforms.AtlasPHCalibrate()
-    sensor = Sensor.query.filter_by(device='RPi').all()
+    sensor = Sensor.query.filter_by(device='ATLAS_PH_UART').all()
     stage = 0
     selected_sensor = None
+    interface = 'UART'
+
+    def calibrate(command):
+        ph_sensor_uart = None
+        ph_sensor_i2c = None
+        if interface == 'UART':
+            ph_sensor_uart = AtlasScientificUART()
+        elif interface == 'I2C':
+            ph_sensor_i2c = AtlasScientificI2C()
+
+        info = None
+        if interface == 'UART':
+            ph_sensor_uart.send_cmd('i')
+            info = ph_sensor_uart.read_lines()[0]
+        elif interface == 'I2C':
+            info = ph_sensor_i2c.query('i')
+
+        if info[0] == 'P':
+            version = 1
+        else:
+            version = 2
+
+        cmd_send = None
+        if command == 'mid':
+            if version == 1:
+                cmd_send = 'S'
+            else:
+                cmd_send = 'Cal,mid,7.00'
+        elif command == 'low':
+            if version == 1:
+                cmd_send = 'F'
+            else:
+                cmd_send = 'Cal,low,4.00'
+        elif command == 'high':
+            if version == 1:
+                cmd_send = 'T'
+            else:
+                cmd_send = 'Cal,high,10.00'
+        if cmd_send:
+            if interface == 'UART':
+                ph_sensor_uart.send_cmd(cmd_send)
+            elif interface == 'I2C':
+                ph_sensor_i2c.query(cmd_send)
 
     if form_ph_calibrate.go_to_stage_1.data:
         stage = 1
@@ -257,15 +302,18 @@ def page_atlas_ph_calibrate():
                           temp=form_ph_calibrate.temperature.data), "error")
             stage = 1
         else:
-            temperature = '{temp:.2f}'.format(
+            temperature = 'T,{temp:.2f}'.format(
                 temp=form_ph_calibrate.temperature.data)
-            # use temperature command
+            calibrate(temperature)
             stage = 2
     elif form_ph_calibrate.go_to_stage_3.data:
+        calibrate('mid')
         stage = 3
     elif form_ph_calibrate.go_to_stage_4.data:
+        calibrate('low')
         stage = 4
     elif form_ph_calibrate.go_to_stage_5.data:
+        calibrate('high')
         stage = 5
 
     if (form_ph_calibrate.go_to_stage_2.data or

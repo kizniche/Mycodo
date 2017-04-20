@@ -91,7 +91,7 @@ class AtlasScientificI2C:
 
 
 def main():
-    device = AtlasScientificI2C()  # creates the I2C port object, specify the address or bus if necessary
+    device = AtlasScientificI2C()
 
     print(">> Atlas Scientific sample code")
     print(">> Any commands entered are passed to the board via I2C except:")
@@ -102,7 +102,6 @@ def main():
         to=device.long_timeout))
     print(">> Pressing ctrl-c will stop the polling")
 
-    # main loop
     while True:
         input_str = raw_input("Enter command: ")
 
