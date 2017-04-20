@@ -9,6 +9,7 @@ logger = logging.getLogger("mycodo.device.atlas_scientific_i2c")
 
 
 class AtlasScientificI2C:
+    """Atlas Scientific EZO pH, EC and dissolved oxygen circuit for I2C"""
     long_timeout = 1.5  # the timeout needed to query readings and calibrations
     short_timeout = .5  # timeout for regular commands
     default_bus = 1  # the default bus for I2C on the newer Raspberry Pis, certain older boards use bus 0
@@ -144,3 +145,6 @@ def main():
                     print(device.query(input))
                 except IOError:
                     print("Query failed \n - Address may be invalid, use List_addr command to see available addresses")
+
+if __name__ == "__main__":
+    main()

@@ -54,8 +54,8 @@ class AtlasScientificUART:
             while True:
                 line = self.read_line()
                 if not line:
-                    self.ser.flush_input()
                     break
+                    # self.ser.flush_input()
                 lines.append(line)
             return lines
 
