@@ -96,6 +96,10 @@ Moisture Sensors
 
 -   Chirp
 
+pH Sensors
+
+-   Chirp
+
 Pressure Sensors
 
 -   BME280
@@ -154,10 +158,10 @@ _Where do I even begin?_
 
 Here is how I generally set up Mycodo to monitor and regulate:
 
-1.  Determine what environmental condition you want to measure or
-    regulate. Consider the devices that must be coupled to achieve this.
-    For instance, temperature regulation require a temperature sensor
-    and an electric heater and/or electric air conditioner.
+1.  Determine what environmental condition you want to measure
+    or regulate. Consider the devices that must be coupled to achieve
+    this. For instance, temperature regulation require a temperature
+    sensor and an electric heater and/or electric air conditioner.
 2.  Determine what relays you will need to power your electric devices.
     The Raspberry Pi is capable of directly switching relays (using a
     3.3-volt signal), although opto-isolating the circuit is advisable.
@@ -175,15 +179,15 @@ Here is how I generally set up Mycodo to monitor and regulate:
     data being acquired from the sensor.
 6.  On the Relay -> Relays page, add a relay and configure the GPIO pin
     that switches it, whether the relay switches On when the signal is
-    HIGH or LOW, and what state (On or Off) to set the relay when Mycodo
-    starts.
+    HIGH or LOW, and what state (On or Off) to set the relay when
+    Mycodo starts.
 7.  Test the relay by switching it On and Off from the Relay -> Relays
     page and make sure the device connected to the relay turns On when
     you select “On”, and Off when you select “Off”.
 8.  On the PID -> PID Controllers page, create a PID controller with the
     appropriate sensor, measurement, relay, and other parameters. Refer
-    to the Quick Setup Examples for setting up and tuning a PID
-    controller.
+    to the Quick Setup Examples for setting up and tuning a
+    PID controller.
 9.  On the Data -> Live Graphs page, create a graph that includes the
     sensor measurement, the relay that is being used by the PID, and the
     PID setpoint. This provides a good visualization for tuning and
@@ -222,14 +226,140 @@ configuration options.
 
 General Settings
 
-  Setting                 Description
-  ----------------------- -----------------------------------------------------------------------------------------------------------
-  Language                Set the language that will be displayed in the web user interface.
-  Force HTTPS             Require web browsers to use SSL/HTTPS. Any request to http:// will be redirected to https://.
-  Hide success alerts     Hide all success alert boxes that appear at the top of the page.
-  Hide info alerts        Hide all info alert boxes that appear at the top of the page.
-  Hide warning alerts     Hide all warning alert boxes that appear at the top of the page.
-  Opt-out of statistics   Turn off sending anonymous usage statistics. Please consider that this helps the development to leave on.
+  ---------
+  Sett Desc
+  ing  ript
+       ion
+  ---- ----
+  Lang Set
+  uage the
+       lang
+       uage
+       that
+       will
+       be
+       disp
+       laye
+       d
+       in
+       the
+       web
+       user
+       inte
+       rfac
+       e.
+
+  Forc Requ
+  e    ire
+  HTTP web
+  S    brow
+       sers
+       to
+       use
+       SSL/
+       HTTP
+       S.
+       Any
+       requ
+       est
+       to
+       http
+       ://
+       will
+       be
+       redi
+       rect
+       ed
+       to
+       http
+       s://
+       .
+
+  Hide Hide
+  succ all
+  ess  succ
+  aler ess
+  ts   aler
+       t
+       boxe
+       s
+       that
+       appe
+       ar
+       at
+       the
+       top
+       of
+       the
+       page
+       .
+
+  Hide Hide
+  info all
+  aler info
+  ts   aler
+       t
+       boxe
+       s
+       that
+       appe
+       ar
+       at
+       the
+       top
+       of
+       the
+       page
+       .
+
+  Hide Hide
+  warn all
+  ing  warn
+  aler ing
+  ts   aler
+       t
+       boxe
+       s
+       that
+       appe
+       ar
+       at
+       the
+       top
+       of
+       the
+       page
+       .
+
+  Opt- Turn
+  out  off
+  of   send
+  stat ing
+  isti anon
+  cs   ymou
+       s
+       usag
+       e
+       stat
+       isti
+       cs.
+       Plea
+       se
+       cons
+       ider
+       that
+       this
+       help
+       s
+       the
+       deve
+       lopm
+       ent
+       to
+       leav
+       e
+       on.
+  ---------
 
 
 Relay Usage Settings
@@ -241,12 +371,93 @@ being used by the relays to operate electrical devices. Note: Proper
 relay usage calculations also rely on the correct current draw to be set
 for each relay (see Relay Settings).
 
-  Setting         Description
-  --------------- ------------------------------------------------------------------------------------------------------------------------
-  Voltage         Alternating current (AC) voltage that is switched by the relays. This is usually 120 or 240.
-  Cost per kWh    This is how much you pay per kWh.
-  Currency Unit   This is the unit used for the currency that pays for electricity.
-  Day of Month    This is the day of the month (1-30) that the electricity meter is read (which will correspond to the electrical bill).
+  ---------
+  Sett Desc
+  ing  ript
+       ion
+  ---- ----
+  Volt Alte
+  age  rnat
+       ing
+       curr
+       ent
+       (AC)
+       volt
+       age
+       that
+       is
+       swit
+       ched
+       by
+       the
+       rela
+       ys.
+       This
+       is
+       usua
+       lly
+       120
+       or
+       240.
+
+  Cost This
+  per  is
+  kWh  how
+       much
+       you
+       pay
+       per
+       kWh.
+
+  Curr This
+  ency is
+  Unit the
+       unit
+       used
+       for
+       the
+       curr
+       ency
+       that
+       pays
+       for
+       elec
+       tric
+       ity.
+
+  Day  This
+  of   is
+  Mont the
+  h    day
+       of
+       the
+       mont
+       h
+       (1-3
+       0)
+       that
+       the
+       elec
+       tric
+       ity
+       mete
+       r
+       is
+       read
+       (whi
+       ch
+       will
+       corr
+       espo
+       nd
+       to
+       the
+       elec
+       tric
+       al
+       bill
+       ).
+  ---------
 
 
 Users
@@ -257,12 +468,129 @@ an Admin Creation Form. This is the first page you see when starting
 Mycodo for the first time. After an Admin user has been created,
 additional users may be created from the User Settings page.
 
-  Setting           Description
-  ----------------- ------------------------------------------------------------------------------------------------------------------------------------------------------------
-  Username          Choose a user name that is between 2 and 64 characters. The user name is case insensitive (all user names are converted to lower-case).
-  Email             The email associated with the new account.
-  Password/Repeat   Choose a password that is between 6 and 64 characters and only contain letters, numbers, and symbols.
-  Role              Roles are a way of imposing access restrictions on users, to either allow or deny actions. See the table below for explanations of the four default Roles.
+  ---------
+  Sett Desc
+  ing  ript
+       ion
+  ---- ----
+  User Choo
+  name se
+       a
+       user
+       name
+       that
+       is
+       betw
+       een
+       2
+       and
+       64
+       char
+       acte
+       rs.
+       The
+       user
+       name
+       is
+       case
+       inse
+       nsit
+       ive
+       (all
+       user
+       name
+       s
+       are
+       conv
+       erte
+       d
+       to
+       lowe
+       r-ca
+       se).
+
+  Emai The
+  l    emai
+       l
+       asso
+       ciat
+       ed
+       with
+       the
+       new
+       acco
+       unt.
+
+  Pass Choo
+  word se
+  /Rep a
+  eat  pass
+       word
+       that
+       is
+       betw
+       een
+       6
+       and
+       64
+       char
+       acte
+       rs
+       and
+       only
+       cont
+       ain
+       lett
+       ers,
+       numb
+       ers,
+       and
+       symb
+       ols.
+
+  Role Role
+       s
+       are
+       a
+       way
+       of
+       impo
+       sing
+       acce
+       ss
+       rest
+       rict
+       ions
+       on
+       user
+       s,
+       to
+       eith
+       er
+       allo
+       w
+       or
+       deny
+       acti
+       ons.
+       See
+       the
+       tabl
+       e
+       belo
+       w
+       for
+       expl
+       anat
+       ions
+       of
+       the
+       four
+       defa
+       ult
+       Role
+       s.
+  ---------
 
 
 User Roles
@@ -293,15 +621,163 @@ Alert Settings
 
 Alert settings set up the credentials for sending email notifications.
 
-  Setting                 Description
-  ----------------------- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  SMTP Host               The SMTP server to use to send emails from.
-  SMTP Port               Port to communicate with the SMTP server (465 for SSL, 587 for TSL).
-  Enable SSL              Check to emable SSL, uncheck to enable TSL.
-  SMTP User               The user name to send the email from. This can be just a name or the entire email address.
-  SMTP Password           The password for the user.
-  From Email              What the from email address be set as. This should be the actual email address for this user.
-  Max emails (per hour)   Set the maximum number of emails that can be sent per hour. If more notifications are triggered within the hour and this number has been reached, the notifications will be discarded.
+  ---------
+  Sett Desc
+  ing  ript
+       ion
+  ---- ----
+  SMTP The
+  Host SMTP
+       serv
+       er
+       to
+       use
+       to
+       send
+       emai
+       ls
+       from
+       .
+
+  SMTP Port
+  Port to
+       comm
+       unic
+       ate
+       with
+       the
+       SMTP
+       serv
+       er
+       (465
+       for
+       SSL,
+       587
+       for
+       TSL)
+       .
+
+  Enab Chec
+  le   k
+  SSL  to
+       emab
+       le
+       SSL,
+       unch
+       eck
+       to
+       enab
+       le
+       TSL.
+
+  SMTP The
+  User user
+       name
+       to
+       send
+       the
+       emai
+       l
+       from
+       .
+       This
+       can
+       be
+       just
+       a
+       name
+       or
+       the
+       enti
+       re
+       emai
+       l
+       addr
+       ess.
+
+  SMTP The
+  Pass pass
+  word word
+       for
+       the
+       user
+       .
+
+  From What
+  Emai the
+  l    from
+       emai
+       l
+       addr
+       ess
+       be
+       set
+       as.
+       This
+       shou
+       ld
+       be
+       the
+       actu
+       al
+       emai
+       l
+       addr
+       ess
+       for
+       this
+       user
+       .
+
+  Max  Set
+  emai the
+  ls   maxi
+  (per mum
+  hour numb
+  )    er
+       of
+       emai
+       ls
+       that
+       can
+       be
+       sent
+       per
+       hour
+       .
+       If
+       more
+       noti
+       fica
+       tion
+       s
+       are
+       trig
+       gere
+       d
+       with
+       in
+       the
+       hour
+       and
+       this
+       numb
+       er
+       has
+       been
+       reac
+       hed,
+       the
+       noti
+       fica
+       tion
+       s
+       will
+       be
+       disc
+       arde
+       d.
+  ---------
 
 
 Camera Settings
@@ -312,18 +788,306 @@ software. Note that not every option (such as Hue or White Balance) may
 be able to be used with your particular camera, due to manufacturer
 differences in hardware and software.
 
-  Setting             Description
-  ------------------- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  Type                Select whether the camera is a Raspberry Pi Camera or a USB camera.
-  Library             Select which library to use to communicate with the camera. The Raspberry Pi Camera uses picamera (and potentially opencv), and USB cameras should be set to opencv.
-  OpenCV Device       Any devices detected by opencv will populate this dropdown list. If there are no values in this list, none were detected. If you have multiple opencv devices detected, try setting the camera to each device and take a photo to determine which camera is associated with which device.
-  Relay ID            This relay will turn on during the capture of any still image (which includes timelapses).
-  Rotate Image        The number of degrees to rotate the image.
-  …                   Image Width, Image Height, Brightness, Contrast, Exposure, Gain, Hue, Saturation, White Balance. These options are self-explanatory. Not all options will work with all cameras.
-  Pre Command         A command to execute (as user mycodo) before a still image is captured.
-  Post Command        A command to execute (as user mycodo) after a still image is captured.
-  Flip horizontally   Flip, or mirror, the image horizontally.
-  Flip vertically     Flip, or mirror, the image vertically.
+  ---------
+  Sett Desc
+  ing  ript
+       ion
+  ---- ----
+  Type Sele
+       ct
+       whet
+       her
+       the
+       came
+       ra
+       is a
+       Rasp
+       berr
+       y
+       Pi
+       Came
+       ra
+       or a
+       USB
+       came
+       ra.
+
+  Libr Sele
+  ary  ct
+       whic
+       h
+       libr
+       ary
+       to
+       use
+       to
+       comm
+       unic
+       ate
+       with
+       the
+       came
+       ra.
+       The
+       Rasp
+       berr
+       y
+       Pi
+       Came
+       ra
+       uses
+       pica
+       mera
+       (and
+       pote
+       ntia
+       lly
+       open
+       cv),
+       and
+       USB
+       came
+       ras
+       shou
+       ld
+       be
+       set
+       to
+       open
+       cv.
+
+  Open Any
+  CV   devi
+  Devi ces
+  ce   dete
+       cted
+       by
+       open
+       cv
+       will
+       popu
+       late
+       this
+       drop
+       down
+       list
+       .
+       If
+       ther
+       e
+       are
+       no
+       valu
+       es
+       in
+       this
+       list
+       ,
+       none
+       were
+       dete
+       cted
+       .
+       If
+       you
+       have
+       mult
+       iple
+       open
+       cv
+       devi
+       ces
+       dete
+       cted
+       ,
+       try
+       sett
+       ing
+       the
+       came
+       ra
+       to
+       each
+       devi
+       ce
+       and
+       take
+       a
+       phot
+       o
+       to
+       dete
+       rmin
+       e
+       whic
+       h
+       came
+       ra
+       is
+       asso
+       ciat
+       ed
+       with
+       whic
+       h
+       devi
+       ce.
+
+  Rela This
+  y    rela
+  ID   y
+       will
+       turn
+       on
+       duri
+       ng
+       the
+       capt
+       ure
+       of
+       any
+       stil
+       l
+       imag
+       e
+       (whi
+       ch
+       incl
+       udes
+       time
+       laps
+       es).
+
+  Rota The
+  te   numb
+  Imag er
+  e    of
+       degr
+       ees
+       to
+       rota
+       te
+       the
+       imag
+       e.
+
+  …    Imag
+       e
+       Widt
+       h,
+       Imag
+       e
+       Heig
+       ht,
+       Brig
+       htne
+       ss,
+       Cont
+       rast
+       ,
+       Expo
+       sure
+       ,
+       Gain
+       ,
+       Hue,
+       Satu
+       rati
+       on,
+       Whit
+       e
+       Bala
+       nce.
+       Thes
+       e
+       opti
+       ons
+       are
+       self
+       -exp
+       lana
+       tory
+       .
+       Not
+       all
+       opti
+       ons
+       will
+       work
+       with
+       all
+       came
+       ras.
+
+  Pre  A
+  Comm comm
+  and  and
+       to
+       exec
+       ute
+       (as
+       user
+       myco
+       do)
+       befo
+       re
+       a
+       stil
+       l
+       imag
+       e
+       is
+       capt
+       ured
+       .
+
+  Post A
+  Comm comm
+  and  and
+       to
+       exec
+       ute
+       (as
+       user
+       myco
+       do)
+       afte
+       r
+       a
+       stil
+       l
+       imag
+       e
+       is
+       capt
+       ured
+       .
+
+  Flip Flip
+  hori ,
+  zont or
+  ally mirr
+       or,
+       the
+       imag
+       e
+       hori
+       zont
+       ally
+       .
+
+  Flip Flip
+  vert ,
+  ical or
+  ly   mirr
+       or,
+       the
+       imag
+       e
+       vert
+       ical
+       ly.
+  ---------
 
 
 
@@ -344,31 +1108,1108 @@ influx database. This database will provide recent measurement for
 Conditional Statements or PID Controllers to operate from, among other
 uses.
 
-  Setting              Description
-  -------------------- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  Activate             After the sensor has been properly configured, activation begins acquiring measurements from the sensor. Any activated conditional statements will now being operating.
-  Deactivate           Deactivation stops measurements from being acquired from the sensor. All associated conditional statements will cease to operate.
-  Save                 Save the current configuration entered into the input boxes for a particular sensor.
-  Delete               Delete a particular sensor.
-  Up/Down              Move a particular sensor up or down in the order displayed.
-  Location             Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I2C address. and channel if using the TCA9548A I2C multiplexer.
-  I2C Bus              The bus to be used to communicate with the I2C address. If you’re using an I2C multiplexer that provides multiple buses, this allows you to select which bus the sensor is connected to.
-  Period               After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.
-  Pre Relay            If you require a relay to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the relay number that will be activated. The relay will be activated for a duration defined by the Pre Duration, then once the relay turns off, a measurement by the sensor is made.
-  Pre Relay Duration   This is the duration of time that the Pre Relay runs for before the sensor measurement is obtained.
-  Edge                 Edge sensors only: Select whether the Rising or Falling (or both) edges of a changing voltage are detected. A number of devices to do this when in-line with a circuit supplying a 3.3-volt input signal to a GPIO, such as simple mechanical switch, a button, a magnet (reed/hall) sensor, a PIR motion detector, and more.
-  Bounce Time (ms)     Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly called debouncing a signal. and may be necessary if using a mechanical circuit.
-  Reset Period         Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.
-  Multiplexer (MX)     If connected to the TCA9548A I2C multiplexer, select what the I2C address of the multiplexer is.
-  Mx I2C Bus           If connected to the TCA9548A I2C multiplexer, select the I2C bus the multiplexer is connected to.
-  Mx Channel           If connected to the TCA9548A I2C multiplexer, select the channel of the multiplexer the device is connected to.
-  Measurement          Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if the resistance of a photocell is being measured through a voltage divider, this measurement would be “light”.
-  Units                Analog-to-digital converter only: This is the unit of the measurement. With the above example of “light” as the measurement, the unit may be “lux” or “intensity”.
-  Channel              Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.
-  Gain                 Analog-to-digital converter only: set the gain when acquiring the measurement.
-  Volts Min            Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to “0.2”.
-  Volts Max            Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the voltage range. Units Min Analog-to-digital converter only: This value will be the lower value of a range that will use the Min and Max Voltages, above, to produce a unit output. For instance, if your voltage range is 0.0 - 1.0 volts, and the unit range is 1 - 60, and a voltage of 0.5 is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables creating calibrated scales to use with your particular circuit.
-  Units Max            Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.
+  ---------
+  Sett Desc
+  ing  ript
+       ion
+  ---- ----
+  Acti Afte
+  vate r
+       the
+       sens
+       or
+       has
+       been
+       prop
+       erly
+       conf
+       igur
+       ed,
+       acti
+       vati
+       on
+       begi
+       ns
+       acqu
+       irin
+       g
+       meas
+       urem
+       ents
+       from
+       the
+       sens
+       or.
+       Any
+       acti
+       vate
+       d
+       cond
+       itio
+       nal
+       stat
+       emen
+       ts
+       will
+       now
+       bein
+       g
+       oper
+       atin
+       g.
+
+  Deac Deac
+  tiva tiva
+  te   tion
+       stop
+       s
+       meas
+       urem
+       ents
+       from
+       bein
+       g
+       acqu
+       ired
+       from
+       the
+       sens
+       or.
+       All
+       asso
+       ciat
+       ed
+       cond
+       itio
+       nal
+       stat
+       emen
+       ts
+       will
+       ceas
+       e
+       to
+       oper
+       ate.
+
+  Save Save
+       the
+       curr
+       ent
+       conf
+       igur
+       atio
+       n
+       ente
+       red
+       into
+       the
+       inpu
+       t
+       boxe
+       s
+       for
+       a
+       part
+       icul
+       ar
+       sens
+       or.
+
+  Dele Dele
+  te   te
+       a
+       part
+       icul
+       ar
+       sens
+       or.
+
+  Up/D Move
+  own  a
+       part
+       icul
+       ar
+       sens
+       or
+       up
+       or
+       down
+       in
+       the
+       orde
+       r
+       disp
+       laye
+       d.
+
+  Loca Depe
+  tion ndin
+       g
+       on
+       what
+       sens
+       or
+       is
+       bein
+       g
+       used
+       ,
+       you
+       will
+       need
+       to
+       eith
+       er
+       sele
+       ct
+       a
+       seri
+       al
+       numb
+       er
+       (DS1
+       8B20
+       temp
+       erat
+       ure
+       sens
+       or),
+       a
+       GPIO
+       pin
+       (in
+       the
+       case
+       of
+       sens
+       ors
+       read
+       by a
+       GPIO
+       ),
+       or
+       an
+       I2C
+       addr
+       ess.
+       and
+       chan
+       nel
+       if
+       usin
+       g
+       the
+       TCA9
+       548A
+       I2C
+       mult
+       iple
+       xer.
+
+  I2C  The
+  Bus  bus
+       to
+       be
+       used
+       to
+       comm
+       unic
+       ate
+       with
+       the
+       I2C
+       addr
+       ess.
+       If
+       you’
+       re
+       usin
+       g
+       an
+       I2C
+       mult
+       iple
+       xer
+       that
+       prov
+       ides
+       mult
+       iple
+       buse
+       s,
+       this
+       allo
+       ws
+       you
+       to
+       sele
+       ct
+       whic
+       h
+       bus
+       the
+       sens
+       or
+       is
+       conn
+       ecte
+       d
+       to.
+
+  Peri Afte
+  od   r
+       the
+       sens
+       or
+       is
+       succ
+       essf
+       ully
+       read
+       and
+       a
+       data
+       base
+       entr
+       y
+       is
+       made
+       ,
+       this
+       is
+       the
+       dura
+       tion
+       of
+       time
+       wait
+       ed
+       unti
+       l
+       the
+       sens
+       or
+       is
+       meas
+       ured
+       agai
+       n.
+
+  Pre  If
+  Rela you
+  y    requ
+       ire
+       a
+       rela
+       y
+       to
+       be
+       acti
+       vate
+       d
+       befo
+       re
+       a
+       meas
+       urem
+       ent
+       is
+       made
+       (for
+       inst
+       ance
+       ,
+       if
+       you
+       have
+       a
+       pump
+       that
+       extr
+       acts
+       air
+       to a
+       cham
+       ber
+       wher
+       e
+       the
+       sens
+       or
+       resi
+       des)
+       ,
+       this
+       is
+       the
+       rela
+       y
+       numb
+       er
+       that
+       will
+       be
+       acti
+       vate
+       d.
+       The
+       rela
+       y
+       will
+       be
+       acti
+       vate
+       d
+       for
+       a
+       dura
+       tion
+       defi
+       ned
+       by
+       the
+       Pre
+       Dura
+       tion
+       ,
+       then
+       once
+       the
+       rela
+       y
+       turn
+       s
+       off,
+       a
+       meas
+       urem
+       ent
+       by
+       the
+       sens
+       or
+       is
+       made
+       .
+
+  Pre  This
+  Rela is
+  y    the
+  Dura dura
+  tion tion
+       of
+       time
+       that
+       the
+       Pre
+       Rela
+       y
+       runs
+       for
+       befo
+       re
+       the
+       sens
+       or
+       meas
+       urem
+       ent
+       is
+       obta
+       ined
+       .
+
+  Edge Edge
+       sens
+       ors
+       only
+       :
+       Sele
+       ct
+       whet
+       her
+       the
+       Risi
+       ng
+       or
+       Fall
+       ing
+       (or
+       both
+       )
+       edge
+       s
+       of a
+       chan
+       ging
+       volt
+       age
+       are
+       dete
+       cted
+       .
+       A
+       numb
+       er
+       of
+       devi
+       ces
+       to
+       do
+       this
+       when
+       in-l
+       ine
+       with
+       a
+       circ
+       uit
+       supp
+       lyin
+       g
+       a
+       3.3-
+       volt
+       inpu
+       t
+       sign
+       al
+       to a
+       GPIO
+       ,
+       such
+       as
+       simp
+       le
+       mech
+       anic
+       al
+       swit
+       ch,
+       a
+       butt
+       on,
+       a
+       magn
+       et
+       (ree
+       d/ha
+       ll)
+       sens
+       or,
+       a
+       PIR
+       moti
+       on
+       dete
+       ctor
+       ,
+       and
+       more
+       .
+
+  Boun Edge
+  ce   sens
+  Time ors
+  (ms) only
+       :
+       This
+       is
+       the
+       numb
+       er
+       of
+       mill
+       isec
+       onds
+       to
+       boun
+       ce
+       the
+       inpu
+       t
+       sign
+       al.
+       This
+       is
+       comm
+       only
+       call
+       ed
+       debo
+       unci
+       ng
+       a
+       sign
+       al.
+       and
+       may
+       be
+       nece
+       ssar
+       y
+       if
+       usin
+       g
+       a
+       mech
+       anic
+       al
+       circ
+       uit.
+
+  Rese Edge
+  t    sens
+  Peri ors
+  od   only
+       :
+       This
+       is
+       the
+       peri
+       od
+       of
+       time
+       afte
+       r
+       an
+       edge
+       dete
+       ctio
+       n
+       that
+       anot
+       her
+       edge
+       will
+       not
+       be
+       reco
+       rded
+       .
+       This
+       enab
+       les
+       devi
+       ces
+       such
+       as
+       PIR
+       moti
+       on
+       sens
+       ors
+       that
+       may
+       stay
+       acti
+       vate
+       d
+       for
+       long
+       er
+       peri
+       ods
+       of
+       time
+       .
+
+  Mult If
+  iple conn
+  xer  ecte
+  (MX) d
+       to
+       the
+       TCA9
+       548A
+       I2C
+       mult
+       iple
+       xer,
+       sele
+       ct
+       what
+       the
+       I2C
+       addr
+       ess
+       of
+       the
+       mult
+       iple
+       xer
+       is.
+
+  Mx   If
+  I2C  conn
+  Bus  ecte
+       d
+       to
+       the
+       TCA9
+       548A
+       I2C
+       mult
+       iple
+       xer,
+       sele
+       ct
+       the
+       I2C
+       bus
+       the
+       mult
+       iple
+       xer
+       is
+       conn
+       ecte
+       d
+       to.
+
+  Mx   If
+  Chan conn
+  nel  ecte
+       d
+       to
+       the
+       TCA9
+       548A
+       I2C
+       mult
+       iple
+       xer,
+       sele
+       ct
+       the
+       chan
+       nel
+       of
+       the
+       mult
+       iple
+       xer
+       the
+       devi
+       ce
+       is
+       conn
+       ecte
+       d
+       to.
+
+  Meas Anal
+  urem og-t
+  ent  o-di
+       gita
+       l
+       conv
+       erte
+       r
+       only
+       :
+       The
+       type
+       of
+       meas
+       urem
+       ent
+       bein
+       g
+       acqu
+       ired
+       by
+       the
+       ADC.
+       For
+       inst
+       ance
+       ,
+       if
+       the
+       resi
+       stan
+       ce
+       of a
+       phot
+       ocel
+       l
+       is
+       bein
+       g
+       meas
+       ured
+       thro
+       ugh
+       a
+       volt
+       age
+       divi
+       der,
+       this
+       meas
+       urem
+       ent
+       woul
+       d
+       be
+       “lig
+       ht”.
+
+  Unit Anal
+  s    og-t
+       o-di
+       gita
+       l
+       conv
+       erte
+       r
+       only
+       :
+       This
+       is
+       the
+       unit
+       of
+       the
+       meas
+       urem
+       ent.
+       With
+       the
+       abov
+       e
+       exam
+       ple
+       of
+       “lig
+       ht”
+       as
+       the
+       meas
+       urem
+       ent,
+       the
+       unit
+       may
+       be
+       “lux
+       ”
+       or
+       “int
+       ensi
+       ty”.
+
+  Chan Anal
+  nel  og-t
+       o-di
+       gita
+       l
+       conv
+       erte
+       r
+       only
+       :
+       This
+       is
+       the
+       chan
+       nel
+       to
+       obta
+       in
+       the
+       volt
+       age
+       meas
+       urem
+       ent
+       from
+       the
+       ADC.
+
+  Gain Anal
+       og-t
+       o-di
+       gita
+       l
+       conv
+       erte
+       r
+       only
+       :
+       set
+       the
+       gain
+       when
+       acqu
+       irin
+       g
+       the
+       meas
+       urem
+       ent.
+
+  Volt Anal
+  s    og-t
+  Min  o-di
+       gita
+       l
+       conv
+       erte
+       r
+       only
+       :
+       What
+       is
+       the
+       mini
+       mum
+       volt
+       age
+       to
+       use
+       when
+       scal
+       ing
+       to
+       prod
+       uce
+       the
+       unit
+       valu
+       e
+       for
+       the
+       data
+       base
+       .
+       For
+       inst
+       ance
+       ,
+       if
+       your
+       ADC
+       is
+       not
+       expe
+       cted
+       to
+       meas
+       ure
+       belo
+       w
+       0.2
+       volt
+       s
+       for
+       your
+       part
+       icul
+       ar
+       circ
+       uit,
+       set
+       this
+       to
+       “0.2
+       ”.
+
+  Volt Anal
+  s    og-t
+  Max  o-di
+       gita
+       l
+       conv
+       erte
+       r
+       only
+       :
+       This
+       is
+       simi
+       lar
+       to
+       the
+       Min
+       opti
+       on
+       abov
+       e,
+       howe
+       ver
+       it
+       is
+       sett
+       ing
+       the
+       ceil
+       ing
+       to
+       the
+       volt
+       age
+       rang
+       e.
+       Unit
+       s
+       Min
+       Anal
+       og-t
+       o-di
+       gita
+       l
+       conv
+       erte
+       r
+       only
+       :
+       This
+       valu
+       e
+       will
+       be
+       the
+       lowe
+       r
+       valu
+       e
+       of a
+       rang
+       e
+       that
+       will
+       use
+       the
+       Min
+       and
+       Max
+       Volt
+       ages
+       ,
+       abov
+       e,
+       to
+       prod
+       uce
+       a
+       unit
+       outp
+       ut.
+       For
+       inst
+       ance
+       ,
+       if
+       your
+       volt
+       age
+       rang
+       e
+       is
+       0.0
+       -
+       1.0
+       volt
+       s,
+       and
+       the
+       unit
+       rang
+       e
+       is 1
+       -
+       60,
+       and
+       a
+       volt
+       age
+       of
+       0.5
+       is
+       meas
+       ured
+       ,
+       in
+       addi
+       tion
+       to
+       0.5
+       bein
+       g
+       stor
+       ed
+       in
+       the
+       data
+       base
+       ,
+       30
+       will
+       be
+       stor
+       ed
+       as
+       well
+       .
+       This
+       enab
+       les
+       crea
+       ting
+       cali
+       brat
+       ed
+       scal
+       es
+       to
+       use
+       with
+       your
+       part
+       icul
+       ar
+       circ
+       uit.
+
+  Unit Anal
+  s    og-t
+  Max  o-di
+       gita
+       l
+       conv
+       erte
+       r
+       only
+       :
+       This
+       is
+       simi
+       lar
+       to
+       the
+       Min
+       opti
+       on
+       abov
+       e,
+       howe
+       ver
+       it
+       is
+       sett
+       ing
+       the
+       ceil
+       ing
+       to
+       the
+       unit
+       rang
+       e.
+  ---------
 
 Sensor Verification
 
@@ -384,12 +2225,180 @@ host sensor should be used to operate the PID, as one feature of the
 verification is the ability to disable the PID if the difference between
 measurements is not within the range specified.
 
-  Setting        Description
-  -------------- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  GPIO           This is the sensor that will be used to verify the sensor measurement. The sensor will be read directly after the first sensor’s measurement to verify whether the sensors have similar measurements.
-  Difference     This is the maximum measured measurement difference between the two sensors before an action is triggered (either notify by email or prevent PID from operating; more below).
-  Notification   If the measurements of the two sensors differ by more than the set _Difference_, an email will be sent to the address in the _Notification_ field.
-  Stop PID       If the measurements of the two sensors differ by more than the set _Difference_, the PID controller will turn off.
+  ---------
+  Sett Desc
+  ing  ript
+       ion
+  ---- ----
+  GPIO This
+       is
+       the
+       sens
+       or
+       that
+       will
+       be
+       used
+       to
+       veri
+       fy
+       the
+       sens
+       or
+       meas
+       urem
+       ent.
+       The
+       sens
+       or
+       will
+       be
+       read
+       dire
+       ctly
+       afte
+       r
+       the
+       firs
+       t
+       sens
+       or’s
+       meas
+       urem
+       ent
+       to
+       veri
+       fy
+       whet
+       her
+       the
+       sens
+       ors
+       have
+       simi
+       lar
+       meas
+       urem
+       ents
+       .
+
+  Diff This
+  eren is
+  ce   the
+       maxi
+       mum
+       meas
+       ured
+       meas
+       urem
+       ent
+       diff
+       eren
+       ce
+       betw
+       een
+       the
+       two
+       sens
+       ors
+       befo
+       re
+       an
+       acti
+       on
+       is
+       trig
+       gere
+       d
+       (eit
+       her
+       noti
+       fy
+       by
+       emai
+       l
+       or
+       prev
+       ent
+       PID
+       from
+       oper
+       atin
+       g;
+       more
+       belo
+       w).
+
+  Noti If
+  fica the
+  tion meas
+       urem
+       ents
+       of
+       the
+       two
+       sens
+       ors
+       diff
+       er
+       by
+       more
+       than
+       the
+       set
+       _Dif
+       fere
+       nce_
+       ,
+       an
+       emai
+       l
+       will
+       be
+       sent
+       to
+       the
+       addr
+       ess
+       in
+       the
+       _Not
+       ific
+       atio
+       n_
+       fiel
+       d.
+
+  Stop If
+  PID  the
+       meas
+       urem
+       ents
+       of
+       the
+       two
+       sens
+       ors
+       diff
+       er
+       by
+       more
+       than
+       the
+       set
+       _Dif
+       fere
+       nce_
+       ,
+       the
+       PID
+       cont
+       roll
+       er
+       will
+       turn
+       off.
+  ---------
 
 
 Relays
@@ -414,13 +2423,241 @@ yellow, indicating it is not configured. When properly configured, it
 will either turn green, indicating the relay is activated (device is
 on), or red, indicating the relay is inactivated (device is off).
 
-  Setting               Description
-  --------------------- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  GPIO Pin              This is the GPIO that will be the signal to the relay.
-  Current Draw (amps)   The is the amount of current the device powered by the relay draws. Note: this value should be calculated based on the voltage set in the Relay Usage Settings.
-  On Trigger            This is the state of the GPIO to signal the relay to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you relay completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.
-  Start State           This specifies whether the relay should be ON or OFF when mycodo initially starts.
-  Seconds to turn On    This is a way to turn a relay on for a specific duration of time. This can be useful for testing the relays and powered devices or the measured effects a device may have on an environmental condition.
+  ---------
+  Sett Desc
+  ing  ript
+       ion
+  ---- ----
+  GPIO This
+  Pin  is
+       the
+       GPIO
+       that
+       will
+       be
+       the
+       sign
+       al
+       to
+       the
+       rela
+       y.
+
+  Curr The
+  ent  is
+  Draw the
+  (amp amou
+  s)   nt
+       of
+       curr
+       ent
+       the
+       devi
+       ce
+       powe
+       red
+       by
+       the
+       rela
+       y
+       draw
+       s.
+       Note
+       :
+       this
+       valu
+       e
+       shou
+       ld
+       be
+       calc
+       ulat
+       ed
+       base
+       d
+       on
+       the
+       volt
+       age
+       set
+       in
+       the
+       Rela
+       y
+       Usag
+       e
+       Sett
+       ings
+       .
+
+  On   This
+  Trig is
+  ger  the
+       stat
+       e
+       of
+       the
+       GPIO
+       to
+       sign
+       al
+       the
+       rela
+       y
+       to
+       turn
+       the
+       devi
+       ce
+       on.
+       HIGH
+       will
+       send
+       a
+       3.3-
+       volt
+       sign
+       al
+       and
+       LOW
+       will
+       send
+       a
+       0-vo
+       lt
+       sign
+       al.
+       If
+       you
+       rela
+       y
+       comp
+       lete
+       s
+       the
+       circ
+       uit
+       (and
+       the
+       devi
+       ce
+       powe
+       rs
+       on)
+       when
+       a
+       3.3-
+       volt
+       sign
+       al
+       is
+       sent
+       ,
+       then
+       set
+       this
+       to
+       HIGH
+       .
+       If
+       the
+       devi
+       ce
+       powe
+       rs
+       when
+       a
+       0-vo
+       lt
+       sign
+       al
+       is
+       sent
+       ,
+       set
+       this
+       to
+       LOW.
+
+  Star This
+  t    spec
+  Stat ifie
+  e    s
+       whet
+       her
+       the
+       rela
+       y
+       shou
+       ld
+       be
+       ON
+       or
+       OFF
+       when
+       myco
+       do
+       init
+       iall
+       y
+       star
+       ts.
+
+  Seco This
+  nds  is a
+  to   way
+  turn to
+  On   turn
+       a
+       rela
+       y
+       on
+       for
+       a
+       spec
+       ific
+       dura
+       tion
+       of
+       time
+       .
+       This
+       can
+       be
+       usef
+       ul
+       for
+       test
+       ing
+       the
+       rela
+       ys
+       and
+       powe
+       red
+       devi
+       ces
+       or
+       the
+       meas
+       ured
+       effe
+       cts
+       a
+       devi
+       ce
+       may
+       have
+       on
+       an
+       envi
+       ronm
+       enta
+       l
+       cond
+       itio
+       n.
+  ---------
 
 
 PIDs
@@ -438,27 +2675,826 @@ settings will take effect immediately. If settings are changed while the
 controller is paused, the values will be used once the controller
 resumes operation.
 
-  Setting                Description
-  ---------------------- -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  Activate/Deactivate    Turn a particular PID controller on or off.
-  Pause                  When paused, the PID will not turn on the associated relays, and settings can be changed without losing current PID output values.
-  Hold                   When held, the PID will turn on the associated relays, and settings can be changed without losing current PID output values.
-  Resume                 Resume a PID controller from being held or paused.
-  Setpoint               This is the specific point you would like the environment to be regaulted at. For example, if you would like the humidity regulated to 60%, enter 60.
-  Direction              This is the direction that you wish to regulate. For example, if you only require the temperature to be raised, set this to “Up,” but if you require regulation up and down, set this to “Both.”
-  Period                 This is the duration between when the PID relay turns off amd when the sensor takes another measurement, the PID is updated, and the relay is turned on again for another duration.
-  Max Age                The time (in seconds) that the sensor measurement age is required to be less than. If the measurement is not younger than this age, the measurement is thrown out and the PID will not actuate the relay. This is a safety measure to ensure the PID is only using recent measurements.
-  Raise Relay            This is the relay that will cause the particular environmental condition to rise. In the case of raising the temperature, this may be a heating pad or coil.
-  Min Duration (raise)   This is the minimum that the PID output must be before the Up Relay turns on. If the PID output exceeds this minimum, the Up Relay will turn on for the PID output number of seconds.
-  Max Duration (raise)   This is the maximum duration the Up Relay is allowed to turn on for. If the PID output exceeds this number, the Up Relay will turn on for no greater than this duration of time.
-  Lower Relay            This is the relay that will cause the particular environmental condition to lower. In the case of lowering the CO~2~, this may be an exhaust fan.
-  Min Duration (lower)   This is the minimum that the PID output must be before the Down Relay turns on. If the PID output exceeds this minimum, the Down Relay will turn on for the PID output number of seconds.
-  Max Duration (lower)   This is the maximum duration the Down Relay is allowed to turn on for. if the PID output exceeds this number, the Down Relay will turn on for no greater than this duration of time.
-  K~P~                   Proportional coefficient (non-negative). Accounts for present values of the error. For example, if the error is large and positive, the control output will also be large and positive.
-  K~I~                   Integral coefficient (non-negative). Accounts for past values of the error. For example, if the current output is not sufficiently strong, the integral of the error will accumulate over time, and the controller will respond by applying a stronger action.
-  K~D~                   Derivative coefficient (non-negative). Accounts for predicted future values of the error, based on its current rate of change.
-  Integrator Min         The minimum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)
-  Integrator Max         The maximum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)
+  ---------
+  Sett Desc
+  ing  ript
+       ion
+  ---- ----
+  Acti Turn
+  vate a
+  /Dea part
+  ctiv icul
+  ate  ar
+       PID
+       cont
+       roll
+       er
+       on
+       or
+       off.
+
+  Paus When
+  e    paus
+       ed,
+       the
+       PID
+       will
+       not
+       turn
+       on
+       the
+       asso
+       ciat
+       ed
+       rela
+       ys,
+       and
+       sett
+       ings
+       can
+       be
+       chan
+       ged
+       with
+       out
+       losi
+       ng
+       curr
+       ent
+       PID
+       outp
+       ut
+       valu
+       es.
+
+  Hold When
+       held
+       ,
+       the
+       PID
+       will
+       turn
+       on
+       the
+       asso
+       ciat
+       ed
+       rela
+       ys,
+       and
+       sett
+       ings
+       can
+       be
+       chan
+       ged
+       with
+       out
+       losi
+       ng
+       curr
+       ent
+       PID
+       outp
+       ut
+       valu
+       es.
+
+  Resu Resu
+  me   me
+       a
+       PID
+       cont
+       roll
+       er
+       from
+       bein
+       g
+       held
+       or
+       paus
+       ed.
+
+  Setp This
+  oint is
+       the
+       spec
+       ific
+       poin
+       t
+       you
+       woul
+       d
+       like
+       the
+       envi
+       ronm
+       ent
+       to
+       be
+       rega
+       ulte
+       d
+       at.
+       For
+       exam
+       ple,
+       if
+       you
+       woul
+       d
+       like
+       the
+       humi
+       dity
+       regu
+       late
+       d
+       to
+       60%,
+       ente
+       r
+       60.
+
+  Dire This
+  ctio is
+  n    the
+       dire
+       ctio
+       n
+       that
+       you
+       wish
+       to
+       regu
+       late
+       .
+       For
+       exam
+       ple,
+       if
+       you
+       only
+       requ
+       ire
+       the
+       temp
+       erat
+       ure
+       to
+       be
+       rais
+       ed,
+       set
+       this
+       to
+       “Up,
+       ”
+       but
+       if
+       you
+       requ
+       ire
+       regu
+       lati
+       on
+       up
+       and
+       down
+       ,
+       set
+       this
+       to
+       “Bot
+       h.”
+
+  Peri This
+  od   is
+       the
+       dura
+       tion
+       betw
+       een
+       when
+       the
+       PID
+       rela
+       y
+       turn
+       s
+       off
+       amd
+       when
+       the
+       sens
+       or
+       take
+       s
+       anot
+       her
+       meas
+       urem
+       ent,
+       the
+       PID
+       is
+       upda
+       ted,
+       and
+       the
+       rela
+       y
+       is
+       turn
+       ed
+       on
+       agai
+       n
+       for
+       anot
+       her
+       dura
+       tion
+       .
+
+  Max  The
+  Age  time
+       (in
+       seco
+       nds)
+       that
+       the
+       sens
+       or
+       meas
+       urem
+       ent
+       age
+       is
+       requ
+       ired
+       to
+       be
+       less
+       than
+       .
+       If
+       the
+       meas
+       urem
+       ent
+       is
+       not
+       youn
+       ger
+       than
+       this
+       age,
+       the
+       meas
+       urem
+       ent
+       is
+       thro
+       wn
+       out
+       and
+       the
+       PID
+       will
+       not
+       actu
+       ate
+       the
+       rela
+       y.
+       This
+       is a
+       safe
+       ty
+       meas
+       ure
+       to
+       ensu
+       re
+       the
+       PID
+       is
+       only
+       usin
+       g
+       rece
+       nt
+       meas
+       urem
+       ents
+       .
+
+  Rais This
+  e    is
+  Rela the
+  y    rela
+       y
+       that
+       will
+       caus
+       e
+       the
+       part
+       icul
+       ar
+       envi
+       ronm
+       enta
+       l
+       cond
+       itio
+       n
+       to
+       rise
+       .
+       In
+       the
+       case
+       of
+       rais
+       ing
+       the
+       temp
+       erat
+       ure,
+       this
+       may
+       be a
+       heat
+       ing
+       pad
+       or
+       coil
+       .
+
+  Min  This
+  Dura is
+  tion the
+  (rai mini
+  se)  mum
+       that
+       the
+       PID
+       outp
+       ut
+       must
+       be
+       befo
+       re
+       the
+       Up
+       Rela
+       y
+       turn
+       s
+       on.
+       If
+       the
+       PID
+       outp
+       ut
+       exce
+       eds
+       this
+       mini
+       mum,
+       the
+       Up
+       Rela
+       y
+       will
+       turn
+       on
+       for
+       the
+       PID
+       outp
+       ut
+       numb
+       er
+       of
+       seco
+       nds.
+
+  Max  This
+  Dura is
+  tion the
+  (rai maxi
+  se)  mum
+       dura
+       tion
+       the
+       Up
+       Rela
+       y
+       is
+       allo
+       wed
+       to
+       turn
+       on
+       for.
+       If
+       the
+       PID
+       outp
+       ut
+       exce
+       eds
+       this
+       numb
+       er,
+       the
+       Up
+       Rela
+       y
+       will
+       turn
+       on
+       for
+       no
+       grea
+       ter
+       than
+       this
+       dura
+       tion
+       of
+       time
+       .
+
+  Lowe This
+  r    is
+  Rela the
+  y    rela
+       y
+       that
+       will
+       caus
+       e
+       the
+       part
+       icul
+       ar
+       envi
+       ronm
+       enta
+       l
+       cond
+       itio
+       n
+       to
+       lowe
+       r.
+       In
+       the
+       case
+       of
+       lowe
+       ring
+       the
+       CO₂,
+       this
+       may
+       be
+       an
+       exha
+       ust
+       fan.
+
+  Min  This
+  Dura is
+  tion the
+  (low mini
+  er)  mum
+       that
+       the
+       PID
+       outp
+       ut
+       must
+       be
+       befo
+       re
+       the
+       Down
+       Rela
+       y
+       turn
+       s
+       on.
+       If
+       the
+       PID
+       outp
+       ut
+       exce
+       eds
+       this
+       mini
+       mum,
+       the
+       Down
+       Rela
+       y
+       will
+       turn
+       on
+       for
+       the
+       PID
+       outp
+       ut
+       numb
+       er
+       of
+       seco
+       nds.
+
+  Max  This
+  Dura is
+  tion the
+  (low maxi
+  er)  mum
+       dura
+       tion
+       the
+       Down
+       Rela
+       y
+       is
+       allo
+       wed
+       to
+       turn
+       on
+       for.
+       if
+       the
+       PID
+       outp
+       ut
+       exce
+       eds
+       this
+       numb
+       er,
+       the
+       Down
+       Rela
+       y
+       will
+       turn
+       on
+       for
+       no
+       grea
+       ter
+       than
+       this
+       dura
+       tion
+       of
+       time
+       .
+
+  KP   Prop
+       orti
+       onal
+       coef
+       fici
+       ent
+       (non
+       -neg
+       ativ
+       e).
+       Acco
+       unts
+       for
+       pres
+       ent
+       valu
+       es
+       of
+       the
+       erro
+       r.
+       For
+       exam
+       ple,
+       if
+       the
+       erro
+       r
+       is
+       larg
+       e
+       and
+       posi
+       tive
+       ,
+       the
+       cont
+       rol
+       outp
+       ut
+       will
+       also
+       be
+       larg
+       e
+       and
+       posi
+       tive
+       .
+
+  KI   Inte
+       gral
+       coef
+       fici
+       ent
+       (non
+       -neg
+       ativ
+       e).
+       Acco
+       unts
+       for
+       past
+       valu
+       es
+       of
+       the
+       erro
+       r.
+       For
+       exam
+       ple,
+       if
+       the
+       curr
+       ent
+       outp
+       ut
+       is
+       not
+       suff
+       icie
+       ntly
+       stro
+       ng,
+       the
+       inte
+       gral
+       of
+       the
+       erro
+       r
+       will
+       accu
+       mula
+       te
+       over
+       time
+       ,
+       and
+       the
+       cont
+       roll
+       er
+       will
+       resp
+       ond
+       by
+       appl
+       ying
+       a
+       stro
+       nger
+       acti
+       on.
+
+  KD   Deri
+       vati
+       ve
+       coef
+       fici
+       ent
+       (non
+       -neg
+       ativ
+       e).
+       Acco
+       unts
+       for
+       pred
+       icte
+       d
+       futu
+       re
+       valu
+       es
+       of
+       the
+       erro
+       r,
+       base
+       d
+       on
+       its
+       curr
+       ent
+       rate
+       of
+       chan
+       ge.
+
+  Inte The
+  grat mini
+  or   mum
+  Min  allo
+       wed
+       inte
+       grat
+       or
+       valu
+       e,
+       for
+       calc
+       ulat
+       ing
+       Ki_t
+       otal
+       :
+       (Ki_
+       tota
+       l
+       = Ki
+       *
+       inte
+       grat
+       or;
+       and
+       PID
+       outp
+       ut
+       =
+       Kp_t
+       otal
+       +
+       Ki_t
+       otal
+       +
+       Kd_t
+       otal
+       )
+
+  Inte The
+  grat maxi
+  or   mum
+  Max  allo
+       wed
+       inte
+       grat
+       or
+       valu
+       e,
+       for
+       calc
+       ulat
+       ing
+       Ki_t
+       otal
+       :
+       (Ki_
+       tota
+       l
+       = Ki
+       *
+       inte
+       grat
+       or;
+       and
+       PID
+       outp
+       ut
+       =
+       Kp_t
+       otal
+       +
+       Ki_t
+       otal
+       +
+       Kd_t
+       otal
+       )
+  ---------
 
 
 Timers
@@ -478,15 +3514,166 @@ There are only a few number fo LCDs that are supported. Only 16x2 and
 20x4 character LCD displays with I2C backpacks are supported. Please see
 the README for specific information regarding compatibility.
 
-  Setting                   Description
-  ------------------------- ----------------------------------------------------------------------------------------------------------------------------------------------------
-  Reset Flashing            If the LCD is flashing to alert you because it was instructed to do so by a triggered Conditional Statement, use this button to stop the flashing.
-  Type                      Select either a 16x2 or 20x4 character LCD display.
-  I2C Address               Select the I2C to communicate with the LCD.
-  Multiplexer I2C Address   If the LCD is connected to a multiplexer, select the multiplexer I2C address.
-  Multiplexer Channel       If the LCD is connected to a multiplexer, select the multiplexer channel the LCD is connected to.
-  Period                    This is the period of time (in seconds) between redrawing the LCD with new data.
-  Display Line #            Select which measurement to display on each line of the LCD.
+  ---------
+  Sett Desc
+  ing  ript
+       ion
+  ---- ----
+  Rese If
+  t    the
+  Flas LCD
+  hing is
+       flas
+       hing
+       to
+       aler
+       t
+       you
+       beca
+       use
+       it
+       was
+       inst
+       ruct
+       ed
+       to
+       do
+       so
+       by a
+       trig
+       gere
+       d
+       Cond
+       itio
+       nal
+       Stat
+       emen
+       t,
+       use
+       this
+       butt
+       on
+       to
+       stop
+       the
+       flas
+       hing
+       .
+
+  Type Sele
+       ct
+       eith
+       er
+       a
+       16x2
+       or
+       20x4
+       char
+       acte
+       r
+       LCD
+       disp
+       lay.
+
+  I2C  Sele
+  Addr ct
+  ess  the
+       I2C
+       to
+       comm
+       unic
+       ate
+       with
+       the
+       LCD.
+
+  Mult If
+  iple the
+  xer  LCD
+  I2C  is
+  Addr conn
+  ess  ecte
+       d
+       to a
+       mult
+       iple
+       xer,
+       sele
+       ct
+       the
+       mult
+       iple
+       xer
+       I2C
+       addr
+       ess.
+
+  Mult If
+  iple the
+  xer  LCD
+  Chan is
+  nel  conn
+       ecte
+       d
+       to a
+       mult
+       iple
+       xer,
+       sele
+       ct
+       the
+       mult
+       iple
+       xer
+       chan
+       nel
+       the
+       LCD
+       is
+       conn
+       ecte
+       d
+       to.
+
+  Peri This
+  od   is
+       the
+       peri
+       od
+       of
+       time
+       (in
+       seco
+       nds)
+       betw
+       een
+       redr
+       awin
+       g
+       the
+       LCD
+       with
+       new
+       data
+       .
+
+  Disp Sele
+  lay  ct
+  Line whic
+  #    h
+       meas
+       urem
+       ent
+       to
+       disp
+       lay
+       on
+       each
+       line
+       of
+       the
+       LCD.
+  ---------
 
 
 
@@ -519,18 +3706,186 @@ statements.
 
 Conditional Statement Actions
 
-  Setting          Description
-  ---------------- --------------------------------------------------------------------------------------------------------------------
-  Relay            Turn a relay on, off, or on for a duration of time.
-  Command          Execute a command in the linux shell (as user mycodo).
-  Activate PID     Activate a particular PID controller.
-  Deactivate PID   Deactivate a particular PID controller.
-  Email            Send an email containing information about the current condition that triggered the conditional to send the email.
-  Flash LCD        Have an LCD screen begin flashing in order to alert.
-  Photo            Capture a photo with the selected camera.
-  Email Photo      Capture a photo and email it as an attachment to the an email address.
-  Video            Capture a video of a set duration with the selected camera.
-  Email Video      Capture a video and email it as an attachment to the an email address.
+  ---------
+  Sett Desc
+  ing  ript
+       ion
+  ---- ----
+  Rela Turn
+  y    a
+       rela
+       y
+       on,
+       off,
+       or
+       on
+       for
+       a
+       dura
+       tion
+       of
+       time
+       .
+
+  Comm Exec
+  and  ute
+       a
+       comm
+       and
+       in
+       the
+       linu
+       x
+       shel
+       l
+       (as
+       user
+       myco
+       do).
+
+  Acti Acti
+  vate vate
+  PID  a
+       part
+       icul
+       ar
+       PID
+       cont
+       roll
+       er.
+
+  Deac Deac
+  tiva tiva
+  te   te
+  PID  a
+       part
+       icul
+       ar
+       PID
+       cont
+       roll
+       er.
+
+  Emai Send
+  l    an
+       emai
+       l
+       cont
+       aini
+       ng
+       info
+       rmat
+       ion
+       abou
+       t
+       the
+       curr
+       ent
+       cond
+       itio
+       n
+       that
+       trig
+       gere
+       d
+       the
+       cond
+       itio
+       nal
+       to
+       send
+       the
+       emai
+       l.
+
+  Flas Have
+  h    an
+  LCD  LCD
+       scre
+       en
+       begi
+       n
+       flas
+       hing
+       in
+       orde
+       r
+       to
+       aler
+       t.
+
+  Phot Capt
+  o    ure
+       a
+       phot
+       o
+       with
+       the
+       sele
+       cted
+       came
+       ra.
+
+  Emai Capt
+  l    ure
+  Phot a
+  o    phot
+       o
+       and
+       emai
+       l
+       it
+       as
+       an
+       atta
+       chme
+       nt
+       to
+       the
+       an
+       emai
+       l
+       addr
+       ess.
+
+  Vide Capt
+  o    ure
+       a
+       vide
+       o
+       of a
+       set
+       dura
+       tion
+       with
+       the
+       sele
+       cted
+       came
+       ra.
+
+  Emai Capt
+  l    ure
+  Vide a
+  o    vide
+       o
+       and
+       emai
+       l
+       it
+       as
+       an
+       atta
+       chme
+       nt
+       to
+       the
+       an
+       emai
+       l
+       addr
+       ess.
+  ---------
 
 
 Methods
@@ -605,24 +3960,23 @@ industrial settings, for it“s ability to handle both simple and complex
 regulation. The PID controller has three paths, the proportional,
 integral, and derivative.
 
-The Proportional takes the error and multiplies it by the constant K~p~,
+The Proportional takes the error and multiplies it by the constant Kp,
 to yield an output value. When the error is large, there will be a large
 proportional output.
 
-The Integral takes the error and multiplies it by K~i~, then integrates
-it (K~i~ · 1/s). As the error changes over time, the integral will
-continually sum it and multiply it by the constant K~i~. The integral is
-used to remove perpetual error in the control system. If using K~p~
-alone produces an output that produces a perpetual error (i.e. if the
-sensor measurement never reaches the Set Point), the integral will
-increase the output until the error decreases and the Set Point is
-reached.
+The Integral takes the error and multiplies it by Ki, then integrates it
+(Ki · 1/s). As the error changes over time, the integral will
+continually sum it and multiply it by the constant Ki. The integral is
+used to remove perpetual error in the control system. If using Kp alone
+produces an output that produces a perpetual error (i.e. if the sensor
+measurement never reaches the Set Point), the integral will increase the
+output until the error decreases and the Set Point is reached.
 
-The Derivative multiplies the error by K~d~, then differentiates it
-(K~d~ · s). When the error rate changes over time, the output signal
-will change. The faster the change in error, the larger the derivative
-path becomes, decreasing the output rate of change. This has the effect
-of dampening overshoot and undershoot (oscillation) of the Set Point.
+The Derivative multiplies the error by Kd, then differentiates it (Kd ·
+s). When the error rate changes over time, the output signal will
+change. The faster the change in error, the larger the derivative path
+becomes, decreasing the output rate of change. This has the effect of
+dampening overshoot and undershoot (oscillation) of the Set Point.
 
 ------------------------------------------------------------------------
 
@@ -634,11 +3988,11 @@ too cold and to what degree). The error is manipulated by each of the
 three PID components, producing an output, called the Manipulated
 Variable (MV) or Control Variable (CV). To allow control of how much
 each path contributes to the output value, each path is multiplied by a
-gain (represented by _K~P~_, _K~I~_, and _K~D~_). By adjusting the
-gains, the sensitivity of the system to each path is affected. When all
-three paths are summed, the PID output is produced. If a gain is set to
-0, that path does not contribute to the output and that path is
-essentially turned off.
+gain (represented by _KP_, _KI_, and _KD_). By adjusting the gains, the
+sensitivity of the system to each path is affected. When all three paths
+are summed, the PID output is produced. If a gain is set to 0, that path
+does not contribute to the output and that path is essentially turned
+off.
 
 The output can be used a number of ways, however this controller was
 designed to use the output to affect the measured value (PV). This
@@ -660,35 +4014,34 @@ temperature back down, to reduce the error. If the temperature would
 normally lower without the aid of a cooling device, then the system can
 be simplified by omitting a cooler and allowing it to lower on its own.
 
-Implementing a controller that effectively utilizes _K~P~_, _K~I~_, and
-_K~D~_ can be challenging. Furthermore, it is often unnecessary. For
-instance, the _K~I~_ and _K~D~_ can be set to 0, effectively turning
-them off and producing the very popular and simple P controller. Also
-popular is the PI controller. It is recommended to start with only
-_K~P~_ activated, then experiment with _K~P~_ and _K~I~_, before finally
-using all three. Because systems will vary (e.g. airspace volume, degree
-of insulation, and the degree of impact from the connected device,
-etc.), each path will need to be adjusted through experimentation to
-produce an effective output.
+Implementing a controller that effectively utilizes _KP_, _KI_, and _KD_
+can be challenging. Furthermore, it is often unnecessary. For instance,
+the _KI_ and _KD_ can be set to 0, effectively turning them off and
+producing the very popular and simple P controller. Also popular is the
+PI controller. It is recommended to start with only _KP_ activated, then
+experiment with _KP_ and _KI_, before finally using all three. Because
+systems will vary (e.g. airspace volume, degree of insulation, and the
+degree of impact from the connected device, etc.), each path will need
+to be adjusted through experimentation to produce an effective output.
 
 Quick Setup Examples
 
 These example setups are meant to illustrate how to configure regulation
 in particular directions, and not to achieve ideal values to configure
-your _K~P~_, _K~I~_, and _K~D~_ gains. There are a number of online
-resources that discuss techniques and methods that have been developed
-to determine ideal PID values (such as here, here, here, here, and here)
+your _KP_, _KI_, and _KD_ gains. There are a number of online resources
+that discuss techniques and methods that have been developed to
+determine ideal PID values (such as here, here, here, here, and here)
 and since there are no universal values that will work for every system,
 it is recommended to conduct your own research to understand the
 variables and essential to conduct your own experiments to effectively
 implement them.
 
 Provided merely as an example of the variance of PID values, one of my
-setups had temperature PID values (up regulation) of _K~P~_ = 30, _K~I~_
-= 1.0, and _K~D~_ = 0.5, and humidity PID values (up regulation) of
-_K~P~_ = 1.0, _K~I~_ = 0.2, and _K~D~_ = 0.5. Furthermore, these values
-may not have been optimal but they worked well for the conditions of my
-environmental chamber.
+setups had temperature PID values (up regulation) of _KP_ = 30, _KI_ =
+1.0, and _KD_ = 0.5, and humidity PID values (up regulation) of _KP_ =
+1.0, _KI_ = 0.2, and _KD_ = 0.5. Furthermore, these values may not have
+been optimal but they worked well for the conditions of my environmental
+chamber.
 
 Exact Temperature Regulation
 
@@ -706,7 +4059,7 @@ the desired temperature, _Regulate Direction_ to “Both”. Set _Raise
 Relay_ to the relay attached to the heating device and the _Lower Relay_
 to the relay attached to the cooling device.
 
-Set _K~P~_ = 1, _K~I~_ = 0, and _K~D~_ = 0, then activate the PID.
+Set _KP_ = 1, _KI_ = 0, and _KD_ = 0, then activate the PID.
 
 If the temperature is lower than the Set Point, the heater should
 activate at some interval determined by the PID controller until the
@@ -714,10 +4067,10 @@ temperature rises to the set point. If the temperature goes higher than
 the Set Point (or Set Point + Buffer), the cooling device will activate
 until the temperature returns to the set point. If the temperature is
 not reaching the Set Point after a reasonable amount of time, increase
-the _K~P~_ value and see how that affects the system. Experiment with
-different configurations involving only _Read Interval_ and _K~P~_ to
-achieve a good regulation. Avoid changing the _K~I~_ and _K~D~_ from 0
-until a working regulation is achieved with _K~P~_ alone.
+the _KP_ value and see how that affects the system. Experiment with
+different configurations involving only _Read Interval_ and _KP_ to
+achieve a good regulation. Avoid changing the _KI_ and _KD_ from 0 until
+a working regulation is achieved with _KP_ alone.
 
 View graphs in the 6 to 12 hour time span to identify how well the
 temperature is regulated to the Setpoint. What is meant by
@@ -726,13 +4079,13 @@ tolerances. Most applications of a PID controller would like to see the
 proper temperature attained within a reasonable amount of time and with
 little oscillation around the Setpoint.
 
-Once regulation is achieved, experiment by reducing _K~P~_ slightly
-(~25%) and increasing _K~I~_ by a low amount to start, such as 0.1 (or
-lower, 0.01), then start the PID and observe how well the controller
-regulates. Slowly increase _K~I~_ until regulation becomes both quick
-and with little oscillation. At this point, you should be fairly
-familiar with experimenting with the system and the _K~D~_ value can be
-experimented with once both _K~P~_ and _K~I~_ have been tuned.
+Once regulation is achieved, experiment by reducing _KP_ slightly (~25%)
+and increasing _KI_ by a low amount to start, such as 0.1 (or lower,
+0.01), then start the PID and observe how well the controller regulates.
+Slowly increase _KI_ until regulation becomes both quick and with little
+oscillation. At this point, you should be fairly familiar with
+experimenting with the system and the _KD_ value can be experimented
+with once both _KP_ and _KI_ have been tuned.
 
 High Temperature Regulation
 
@@ -875,13 +4228,17 @@ GPIO
 
 UART
 
-  K30: Carbon dioxide (CO2) in ppmv link
+  Atlas Scientific pH: pH link K30: Carbon dioxide (CO2) in ppmv link
 
-This documentation provides specific installation procedures for the K30
-with the Raspberry Pi version 1 or 2. Once the K30 has been configured
-with this documentation, it can be tested whether the sensor is able to
-be read, by executing
+This documentation provides specific installation procedures for
+configuring UART for the K30 with the Raspberry Pi version 1 or 2. Once
+the K30 has been configured with this documentation, it can be tested
+whether the sensor is able to be read, by executing
 ~/Mycodo/mycodo/tests/manual_tests/test_uart_K30.py
+
+For Atlas Scientific sensors, this guide may be used, as well as the
+above K-30 guide, to set up UART on the Raspberry Pi 1 and 2. However,
+for Pi 3s, use the procedure below.
 
 Because the UART is handled differently by the Raspberry Pi 3, from of
 the addition of bluetooth, there are a different set of instructions for
@@ -1110,8 +4467,8 @@ Specifications
 
 -   0-100% humidity readings with 2%-3% (10-90% RH) and 2%-5% (0-10% RH
     and 90-100% RH) accuracy
--   -40 to 125°C temperature readings ±0.4°C and ±0.3°C typical accuracy
-    (respectively)
+-   -40 to 125°C temperature readings ±0.4°C and ±0.3°C typical
+    accuracy (respectively)
 -   2.4 to 5.5V power and I/O
 -   No more than 0.125 Hz sampling rate (once every 8 seconds)
 
@@ -1149,6 +4506,20 @@ Specifications
 
 -   Vin: 3 to 5V
 -   I2C 7-bit address 0x77
+
+
+pH Sensors
+
+Atlas Scientific pH
+
+The Atlas Scientific pH sensor measures the pH of a liquid.
+
+Specifications
+
+-   Probe Max Pressure: 690 kPa (100PSI)
+-   Probe Max Depth 60 M (197 ft)
+-   Probe Weight: 49 grams
+-   Probe can be fully submerged in fresh or salt water indefinitely
 
 
 Pressure Sensors

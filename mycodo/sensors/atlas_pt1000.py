@@ -55,18 +55,18 @@ class AtlasPT1000Sensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the Atlas PT1000's temperature in Celsius """
-        temperature_string = self.atlas_temp.query('R')
+        temp_str = self.atlas_temp.query('R')
         # the temperature return string, if successfully read, will be
         # "Command succeeded X.XX", where X denotes the temperature
-        if temperature_string[:17] != 'Command succeeded':
+        if 'Command succeeded' in temp_str:
             raise Exception(
-                "Sensor read failed: {err}".format(err=temperature_string))
+                "Sensor read unsuccessful: {err}".format(err=temp_str))
         else:
-            return float(temperature_string[18:24])
+            return float(temp_str[18:24])
 
     def read(self):
         """
-        Takes a reading from the PT1000 and updates the self._temperature value
+        Takes a reading from the PT-1000 and updates self._temperature
 
         :returns: None on success or 1 on error
         """

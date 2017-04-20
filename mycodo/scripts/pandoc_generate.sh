@@ -26,6 +26,5 @@ then
   # output plain text
   pandoc ${INSTALL_DIRECTORY}/mycodo-manual.md -s -S -t plain -o ${INSTALL_DIRECTORY}/mycodo-manual.txt
 else
-  # pandoc is not installed inform the user
-  printf "The command pandoc could not be found in the PATH!\n"
+  printf "The command pandoc could not be found in the PATH!"
 fi

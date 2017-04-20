@@ -7,7 +7,7 @@
   <title></title>
   <style type="text/css">code{white-space: pre;}</style>
   <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
   <style>
     html {
@@ -423,6 +423,10 @@
 <ul>
 <li><a href="#chirp">Chirp</a></li>
 </ul>
+<p><a href="#ph-sensors">pH Sensors</a></p>
+<ul>
+<li><a href="#atlas-scientific-ph">Chirp</a></li>
+</ul>
 <p><a href="#pressure-sensors">Pressure Sensors</a></p>
 <ul>
 <li><a href="#bme280">BME280</a></li>
@@ -473,7 +477,11 @@
 <h1 id="settings">Settings</h1>
 <p>The settings menu, accessed by selecting the gear icon in the top-right, then the Configure link, is a general area for various system-wide configuration options.</p>
 <h2 id="general-settings">General Settings</h2>
-<table>
+<table style="width:11%;">
+<colgroup>
+<col style="width: 5%"></col>
+<col style="width: 5%"></col>
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Setting</th>
@@ -509,7 +517,11 @@
 </table>
 <h2 id="relay-usage-settings">Relay Usage Settings</h2>
 <p>In order to calculate accurate relay usage statistics, a few characteristics of your electrical system needs to be know. These variables should describe the characteristics of the electrical system being used by the relays to operate electrical devices. Note: Proper relay usage calculations also rely on the correct current draw to be set for each relay (see <a href="#relays">Relay Settings</a>).</p>
-<table>
+<table style="width:11%;">
+<colgroup>
+<col style="width: 5%"></col>
+<col style="width: 5%"></col>
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Setting</th>
@@ -537,7 +549,11 @@
 </table>
 <h2 id="users">Users</h2>
 <p>Mycodo requires at least one Admin user for the login system to be enabled. If there isn’t an Admin user, the web server will redirect to an Admin Creation Form. This is the first page you see when starting Mycodo for the first time. After an Admin user has been created, additional users may be created from the User Settings page.</p>
-<table>
+<table style="width:11%;">
+<colgroup>
+<col style="width: 5%"></col>
+<col style="width: 5%"></col>
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Setting</th>
@@ -631,7 +647,11 @@
 <p><sup>2</sup>The <code>View Stats</code> permission protects the viewing of usage statistics and the System Info and Relay Usage pages.</p>
 <h2 id="alert-settings">Alert Settings</h2>
 <p>Alert settings set up the credentials for sending email notifications.</p>
-<table>
+<table style="width:11%;">
+<colgroup>
+<col style="width: 5%"></col>
+<col style="width: 5%"></col>
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Setting</th>
@@ -671,7 +691,11 @@
 </table>
 <h2 id="camera-settings">Camera Settings</h2>
 <p>Many cameras can be used simultaneously with Mycodo. Each camera needs to be set up in the camera settings, then may be used throughout the software. Note that not every option (such as Hue or White Balance) may be able to be used with your particular camera, due to manufacturer differences in hardware and software.</p>
-<table>
+<table style="width:11%;">
+<colgroup>
+<col style="width: 5%"></col>
+<col style="width: 5%"></col>
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Setting</th>
@@ -725,7 +749,11 @@
 <p>Controllers are essentially modules that can be used to perform functions or communicate with other parts of Mycodo. Each controller performs a specific task or group of related tasks. There are also Controller Functions, which are larger functions of a controller or controllers and have been given their own sections.</p>
 <h2 id="sensors">Sensors</h2>
 <p>Sensors measure environmental conditions, which will be stored in an influx database. This database will provide recent measurement for <a href="/help#conditional-statements">Conditional Statements</a> or <a href="/help#pids">PID Controllers</a> to operate from, among other uses.</p>
-<table>
+<table style="width:11%;">
+<colgroup>
+<col style="width: 5%"></col>
+<col style="width: 5%"></col>
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Setting</th>
@@ -830,7 +858,11 @@
 <h3 id="sensor-verification">Sensor Verification</h3>
 <p>Sensor verification was introduced in an earlier version and was broken when the system moved to its new software framework. It was a great feature, and it’s planned to be integrated into the latest version.</p>
 <p>This allows the verification of a sensor’s measurement with another sensor’s measurement. This feature is best utilized when you have two sensors in the same location (ideally as close as possible). One sensor (host) should be set up to use the other sensor (slave) to verify. The host sensor should be used to operate the PID, as one feature of the verification is the ability to disable the PID if the difference between measurements is not within the range specified.</p>
-<table>
+<table style="width:11%;">
+<colgroup>
+<col style="width: 5%"></col>
+<col style="width: 5%"></col>
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Setting</th>
@@ -860,7 +892,11 @@
 <p>Relays are electromechanical or solid-state devices that enable a small voltage signal (such as from a microprocessor) to activate a much larger voltage, without exposing the low -voltage system to the dangers of the higher voltage.</p>
 <p>Relays must be properly set up before PID regulation can be achieved. Add and configure relays in the Relay tab. Set the “GPIO Pin” to the BCM GPIO number of each pin that activates each relay. <em>On Trigger</em> should be set to the signal that activates the relay (the device attached to the relay turns on). If your relay activates when the potential across the coil is 0-volts, set <em>On Trigger</em> to “Low”, otherwise if your relay activates when the potential across the coil is 3.3-volts (or whatever switching voltage you are using, if not being driven by the GPIO pin), set it to “High”.</p>
 <p>When a relay is initially added, the background of the new relay will be yellow, indicating it is not configured. When properly configured, it will either turn green, indicating the relay is activated (device is on), or red, indicating the relay is inactivated (device is off).</p>
-<table>
+<table style="width:11%;">
+<colgroup>
+<col style="width: 5%"></col>
+<col style="width: 5%"></col>
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Setting</th>
@@ -893,7 +929,11 @@
 <h2 id="pids">PIDs</h2>
 <p>A <a href="https://en.wikipedia.org/wiki/PID_controller">proportional-derivative-integral (PID) controller</a> is a control loop feedback mechanism used throughout industry for controlling systems. It efficiently brings a measurable condition, such as the temperature, to a desired state and maintains it there with little overshoot and oscillation. A well-tuned PID controller will raise to the setpoint quickly, have minimal overshoot, and maintain the setpoint with little oscillation.</p>
 <p>PID settings may be changed while the PID is activated and the new settings will take effect immediately. If settings are changed while the controller is paused, the values will be used once the controller resumes operation.</p>
-<table>
+<table style="width:11%;">
+<colgroup>
+<col style="width: 5%"></col>
+<col style="width: 5%"></col>
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Setting</th>
@@ -983,7 +1023,11 @@
 <p>Timers enable a relay to be manipulated after specific durations of time or at a specific times of the day. For <em>Duration Timers</em>, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated. For <em>Daily Timers</em>, the start hour:minute can be set to turn a specific relay on or off at the specific time of day.</p>
 <h2 id="lcds">LCDs</h2>
 <p>Data may be output to a liquid crystal display (LCD) for easy viewing. There are only a few number fo LCDs that are supported. Only 16x2 and 20x4 character LCD displays with I<sup>2</sup>C backpacks are supported. Please see the README for specific information regarding compatibility.</p>
-<table>
+<table style="width:11%;">
+<colgroup>
+<col style="width: 5%"></col>
+<col style="width: 5%"></col>
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Setting</th>
@@ -1035,7 +1079,11 @@
 </ul>
 <p>Before activating any conditional statements or PID controllers, it’s advised to thoroughly explore all possible scenarios and plan a configuration that eliminates conflicts. Then, trial run your configuration before connecting devices to the relays. Some devices or relays may respond atypically or fail when switched on and off in rapid succession. Therefore, avoid creating an <a href="https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops">infinite loop</a> with conditional statements.</p>
 <h3 id="conditional-statement-actions">Conditional Statement Actions</h3>
-<table>
+<table style="width:11%;">
+<colgroup>
+<col style="width: 5%"></col>
+<col style="width: 5%"></col>
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Setting</th>
@@ -1199,9 +1247,10 @@ sudo /bin/bash ~/Mycodo/mycoco/scripts/upgrade_post.sh</code></pre>
 </blockquote>
 <h3 id="uart">UART</h3>
 <blockquote>
-<p><a href="#k-30">K30</a>: Carbon dioxide (CO<sub>2</sub>) in ppmv <a href="http://www.co2meter.com/products/k-30-co2-sensor-module">link</a></p>
+<p><a href="#atlas-scientific-ph">Atlas Scientific pH</a>: pH <a href="https://www.atlas-scientific.com/ph.html">link</a> <a href="#k-30">K30</a>: Carbon dioxide (CO<sub>2</sub>) in ppmv <a href="http://www.co2meter.com/products/k-30-co2-sensor-module">link</a></p>
 </blockquote>
-<p><a href="http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip">This documentation</a> provides specific installation procedures for the K30 with the Raspberry Pi version 1 or 2. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing <code>~/Mycodo/mycodo/tests/manual_tests/test_uart_K30.py</code></p>
+<p><a href="http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip">This documentation</a> provides specific installation procedures for configuring UART for the K30 with the Raspberry Pi version 1 or 2. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing <code>~/Mycodo/mycodo/tests/manual_tests/test_uart_K30.py</code></p>
+<p>For Atlas Scientific sensors, <a href="https://www.atlas-scientific.com/_files/code/pi_sample_code.pdf">this guide</a> may be used, as well as the above K-30 guide, to set up UART on the Raspberry Pi 1 and 2. However, for Pi 3s, use the procedure below.</p>
 <p>Because the UART is handled differently by the Raspberry Pi 3, from of the addition of bluetooth, there are a different set of instructions for getting the K30 working on the Raspberry Pi 3. If installing on a Raspberry Pi 3, you only need to perform these steps to get the K30 working:</p>
 <p>Run raspi-config</p>
 <p><code>sudo raspi-config</code></p>
@@ -1377,10 +1426,20 @@ sudo /bin/bash ~/Mycodo/mycoco/scripts/upgrade_post.sh</code></pre>
 <li>Vin: 3 to 5V</li>
 <li>I<sup>2</sup>C 7-bit address 0x77</li>
 </ul>
+<h2 id="ph-sensors">pH Sensors</h2>
+<h3 id="atlas-scientific-ph">Atlas Scientific pH</h3>
+<p>The Atlas Scientific pH sensor measures the pH of a liquid.</p>
+<h4 id="specifications-11">Specifications</h4>
+<ul>
+<li>Probe Max Pressure: 690 kPa (100PSI)</li>
+<li>Probe Max Depth 60 M (197 ft)</li>
+<li>Probe Weight: 49 grams</li>
+<li>Probe can be fully submerged in fresh or salt water indefinitely</li>
+</ul>
 <h2 id="pressure-sensors">Pressure Sensors</h2>
 <h3 id="bme280">BME280</h3>
 <p>The BME280 is the next-generation of sensors from Bosch, and is the upgrade to the BMP085/BMP180/BMP183 - with a low altitude noise of 0.25m and the same fast conversion time. It has the same specifications, but can use either I2C or SPI.</p>
-<h4 id="specifications-11">Specifications</h4>
+<h4 id="specifications-12">Specifications</h4>
 <ul>
 <li>300-1100 hPa (9000m to -500m above sea level)</li>
 <li>-40 to +85°C operational range</li>
@@ -1394,7 +1453,7 @@ sudo /bin/bash ~/Mycodo/mycoco/scripts/upgrade_post.sh</code></pre>
 </ul>
 <h3 id="bmp085-bmp180">BMP085, BMP180</h3>
 <p>The BMP180 is the next-generation of sensors from Bosch, and replaces the BMP085. It is completely identical to the BMP085 in terms of firmware/software/interfacing.</p>
-<h4 id="specifications-12">Specifications</h4>
+<h4 id="specifications-13">Specifications</h4>
 <ul>
 <li>300-1100 hPa (9000m to -500m above sea level)</li>
 <li>Up to 0.03hPa / 0.25m resolution</li>
@@ -1409,7 +1468,7 @@ sudo /bin/bash ~/Mycodo/mycoco/scripts/upgrade_post.sh</code></pre>
 <p>The BH1750 is an I<sup>2</sup>C luminosity sensor that provides a digital value in lux (Lx) over a range of 1 - 65535 lx.</p>
 <h3 id="tsl2561">TSL2561</h3>
 <p>The TSL2561 SparkFun Luminosity Sensor Breakout is a sophisticated light sensor which has a flat response across most of the visible spectrum. Unlike simpler sensors, the TSL2561 measures both infrared and visible light to better approximate the response of the human eye. And because the TSL2561 is an integrating sensor (it soaks up light for a predetermined amount of time), it is capable of measuring both small and large amounts of light by changing the integration time.</p>
-<h4 id="specifications-13">Specifications</h4>
+<h4 id="specifications-14">Specifications</h4>
 <ul>
 <li>Light range: 0.1 - 40k+ Lux</li>
 <li>Vin: 3V and a low supply</li>
@@ -1418,7 +1477,7 @@ sudo /bin/bash ~/Mycodo/mycoco/scripts/upgrade_post.sh</code></pre>
 <h2 id="analog-to-digital-converters-1">Analog to Digital Converters</h2>
 <h3 id="ads1x15">ADS1x15</h3>
 <p>(ADS1015, ADS1115)</p>
-<h4 id="specifications-14">Specifications</h4>
+<h4 id="specifications-15">Specifications</h4>
 <ul>
 <li>Interface: I<sup>2</sup>C</li>
 <li>I<sup>2</sup>C 7-bit addresses 0x48 - 0x4B</li>
@@ -1429,7 +1488,7 @@ sudo /bin/bash ~/Mycodo/mycoco/scripts/upgrade_post.sh</code></pre>
 </ul>
 <h3 id="mcp342x">MCP342x</h3>
 <p>(MCP3422, MCP3423, MCP3424, MCP3426, MCP3427, MCP3428)</p>
-<h4 id="specifications-15">Specifications</h4>
+<h4 id="specifications-16">Specifications</h4>
 <ul>
 <li>Interface: I<sup>2</sup>C</li>
 <li>I<sup>2</sup>C 7-bit addresses 0x68 - 0x6F</li>

@@ -94,6 +94,10 @@ Table of Contents
 
    - [Chirp](#chirp)
 
+[pH Sensors](#ph-sensors)
+
+   - [Chirp](#atlas-scientific-ph)
+
 [Pressure Sensors](#pressure-sensors)
 
    - [BME280](#bme280)
@@ -863,9 +867,12 @@ The 1-wire interface should be configured with [these instructions](https://lear
 
 ### UART
 
+> [Atlas Scientific pH](#atlas-scientific-ph): pH [link](https://www.atlas-scientific.com/ph.html)
 > [K30](#k-30): Carbon dioxide (CO<sub>2</sub>) in ppmv [link](http://www.co2meter.com/products/k-30-co2-sensor-module)
 
-[This documentation](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip) provides specific installation procedures for the K30 with the Raspberry Pi version 1 or 2. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing ```~/Mycodo/mycodo/tests/manual_tests/test_uart_K30.py```
+[This documentation](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip) provides specific installation procedures for configuring UART for the K30 with the Raspberry Pi version 1 or 2. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing ```~/Mycodo/mycodo/tests/manual_tests/test_uart_K30.py```
+
+For Atlas Scientific sensors, [this guide](https://www.atlas-scientific.com/_files/code/pi_sample_code.pdf) may be used, as well as the above K-30 guide, to set up UART on the Raspberry Pi 1 and 2. However, for Pi 3s, use the procedure below. 
 
 Because the UART is handled differently by the Raspberry Pi 3, from of the addition of bluetooth, there are a different set of instructions for getting the K30 working on the Raspberry Pi 3. If installing on a Raspberry Pi 3, you only need to perform these steps to get the K30 working:
 
@@ -1090,6 +1097,20 @@ The Chirp sensor measures moisture, light, and temperature.
 
  - Vin: 3 to 5V
  - I<sup>2</sup>C 7-bit address 0x77
+
+pH Sensors
+----------------
+
+### Atlas Scientific pH
+
+The Atlas Scientific pH sensor measures the pH of a liquid.
+
+#### Specifications
+
+  - Probe Max Pressure: 690 kPa (100PSI) 
+  - Probe Max Depth 60 M (197 ft)
+  - Probe Weight: 49 grams
+  - Probe can be fully submerged in fresh or salt water indefinitely
 
 Pressure Sensors
 ----------------
