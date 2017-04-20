@@ -98,7 +98,7 @@ Moisture Sensors
 
 pH Sensors
 
--   Chirp
+-   Atlas Scientific pH
 
 Pressure Sensors
 

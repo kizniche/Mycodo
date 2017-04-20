@@ -96,7 +96,7 @@ Table of Contents
 
 [pH Sensors](#ph-sensors)
 
-   - [Chirp](#atlas-scientific-ph)
+   - [Atlas Scientific pH](#atlas-scientific-ph)
 
 [Pressure Sensors](#pressure-sensors)
 
