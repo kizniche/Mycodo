@@ -1,9 +1,8 @@
 # coding=utf-8
 from lockfile import LockFile
 import logging
-import serial
 import time
-import RPi.GPIO as GPIO
+from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from .base_sensor import AbstractSensor
 
 logger = logging.getLogger("mycodo.sensors.atlas_ph")
@@ -16,20 +15,7 @@ class AtlaspHUARTSensor(AbstractSensor):
     def __init__(self):
         super(AtlaspHUARTSensor, self).__init__()
         self._ph = 0
-        if GPIO.RPI_INFO['P1_REVISION'] == 3:
-            self.serial_device = "/dev/ttyS0"
-        else:
-            self.serial_device = "/dev/ttyAMA0"
-        self.ser = serial.Serial(port=self.serial_device,
-                                 baudrate=38400,
-                                 parity=serial.PARITY_NONE,
-                                 stopbits=serial.STOPBITS_ONE,
-                                 bytesize=serial.EIGHTBITS)
-        self.ser.close()
-        self.ser.open()
-        self.ser.isOpen()
-        self.ser.flushInput()
-        time.sleep(1)
+        self.ph_uart = AtlasScientificUART()
 
     def __repr__(self):
         """ Representation of object """
@@ -49,7 +35,7 @@ class AtlaspHUARTSensor(AbstractSensor):
         """ Get next pH reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(ph=float('{0:.2f}'.format(self._ph)))
+        return dict(ph=float(self._ph))
 
     def info(self):
         conditions_measured = [
@@ -65,22 +51,22 @@ class AtlaspHUARTSensor(AbstractSensor):
         return self._ph
 
     def get_measurement(self):
-        """ Gets the sensor's pH measurement via UART"""
-        self.ser.flushOutput()
-        self.ser.write('R\r')
-        time.sleep(0.3)
-        bytes_read = self.ser.inWaiting()
-        if bytes_read != 0:
-            ph = self.ser.read(bytes_read)
-            self.ser.flushInput()
-            logger.info("RETURNED VALUE: {ph}".format(ph=ph))
+        """ Gets the sensor's pH measurement via UART """
+        self.ph_uart.send_cmd('R')
+        time.sleep(1.3)
+        lines = self.ph_uart.read_lines()
+        logger.info("All Lines: {lines}".format(lines=lines))
+
+        if 'check probe' in lines:
+            ph = None
+            logger.error('"check probe" returned from sensor')
+        elif self.ph_uart.is_float(lines[0]):
+            ph = float(lines[0])
+            logger.error('Value is float: {val}'.format(val=ph))
         else:
-            ph = None
-
-        if 'check probe' in ph:
-            logger.error('"Check Probe" returned from pH sensor.')
-            ph = None
-
+            ph = float(lines[0])
+            logger.error('Value is not float or "check probe": '
+                         '{val}'.format(val=ph))
         return ph
 
     def read(self):
