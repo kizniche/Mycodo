@@ -4228,7 +4228,9 @@ GPIO
 
 UART
 
-  Atlas Scientific pH: pH link K30: Carbon dioxide (CO2) in ppmv link
+  Atlas Scientific pH: pH link
+
+  K30: Carbon dioxide (CO2) in ppmv link
 
 This documentation provides specific installation procedures for
 configuring UART for the K30 with the Raspberry Pi version 1 or 2. Once
