@@ -59,7 +59,8 @@ class AtlasPT1000Sensor(AbstractSensor):
         # the temperature return string, if successfully read, will be
         # "Command succeeded X.XX", where X denotes the temperature
         if temperature_string[:17] != 'Command succeeded':
-            raise Exception("Sensor read failed")
+            raise Exception(
+                "Sensor read failed: {err}".format(err=temperature_string))
         else:
             return float(temperature_string[18:24])
 
