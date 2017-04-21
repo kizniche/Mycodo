@@ -246,7 +246,12 @@ def page_atlas_ph_calibrate():
     selected_sensor = None
     interface = 'UART'
 
+    # TODO: This function may be moved
     def calibrate(command, temperature=None):
+        """
+        Determine and send the correct calibration command based on the
+        board version.
+        """
         from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
         from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         ph_sensor_uart = None
@@ -264,13 +269,16 @@ def page_atlas_ph_calibrate():
             info = ph_sensor_i2c.query('i')
         flash("Device Info: {info}".format(info=info), "info")
 
+        # Check first letter of info response
+        # "P" indicates V3.0 or V5.0 board version (both legacy)
         if info[0] == 'P':
             version = 1
         else:
             version = 2
-
         flash("Detected Version: {ver}".format(ver=version), "info")
 
+        # Formulate command based on calibration step and board version
+        # Legacy boards requires a different command than recent boards
         cmd_send = None
         if command == 'temp':
             if version == 1:
@@ -292,6 +300,8 @@ def page_atlas_ph_calibrate():
                 cmd_send = 'T'
             else:
                 cmd_send = 'Cal,high,10.00'
+
+        # Send the command and return the response
         if cmd_send:
             if interface == 'UART':
                 ph_sensor_uart.send_cmd(cmd_send)
@@ -299,12 +309,15 @@ def page_atlas_ph_calibrate():
             elif interface == 'I2C':
                 return ph_sensor_i2c.query(cmd_send)
 
+    # Select sensor
     if form_ph_calibrate.go_to_stage_1.data:
         stage = 1
         selected_sensor = Sensor.query.filter_by(
             unique_id=form_ph_calibrate.selected_sensor_id.data).first()
         if not selected_sensor:
             flash('Sensor not found: {}'.format(form_ph_calibrate.selected_sensor_id.data), 'error')
+
+    # Set temperature
     elif form_ph_calibrate.go_to_stage_2.data:
         if form_ph_calibrate.temperature.data is None:
             flash(gettext(u"Must enter a valid temperature: %(temp)s",
@@ -314,16 +327,22 @@ def page_atlas_ph_calibrate():
             temp = '{temp:.2f}'.format(
                 temp=form_ph_calibrate.temperature.data)
             flash("Temperature Response: {resp}".format(
-                resp=calibrate('temp', temp)), "info")
+                resp=calibrate('temp', temperature=temp)), "info")
             stage = 2
+
+    # Calibrate Mid
     elif form_ph_calibrate.go_to_stage_3.data:
         flash("Calibrate Mid (7.0 pH) Response: {resp}".format(
             resp=calibrate('mid')), "info")
         stage = 3
+
+    # Calibrate Low
     elif form_ph_calibrate.go_to_stage_4.data:
         flash("Calibrate Low (4.0 pH) Response: {resp}".format(
             resp=calibrate('low')), "info")
         stage = 4
+
+    # Calibrate High
     elif form_ph_calibrate.go_to_stage_5.data:
         flash("Calibrate High (10.0 pH) Response: {resp}".format(
             resp=calibrate('high')), "info")

@@ -48,7 +48,7 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
     :type attachment_file: str
     :param attachment_type: type of attachment ('still' or 'video')
     :type attachment_type: str
-    
+
     :return: success (0) or failure (1)
     :rtype: bool
     """
