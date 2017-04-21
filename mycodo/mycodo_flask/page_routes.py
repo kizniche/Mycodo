@@ -39,8 +39,6 @@ from mycodo.databases.models import (
     Timer,
     User
 )
-from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.devices.camera import CameraStream
 from mycodo_client import DaemonControl
 from mycodo_client import daemon_active
@@ -248,7 +246,9 @@ def page_atlas_ph_calibrate():
     selected_sensor = None
     interface = 'UART'
 
-    def calibrate(command):
+    def calibrate(command, temperature=None):
+        from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
+        from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         ph_sensor_uart = None
         ph_sensor_i2c = None
         if interface == 'UART':
@@ -262,13 +262,21 @@ def page_atlas_ph_calibrate():
             info = ph_sensor_uart.read_lines()[0]
         elif interface == 'I2C':
             info = ph_sensor_i2c.query('i')
+        flash("Device Info: {info}".format(info=info), "info")
 
         if info[0] == 'P':
             version = 1
         else:
             version = 2
 
+        flash("Detected Version: {ver}".format(ver=version), "info")
+
         cmd_send = None
+        if command == 'temp':
+            if version == 1:
+                cmd_send = temperature
+            else:
+                cmd_send = 'T,{temp}'.format(temp=temperature)
         if command == 'mid':
             if version == 1:
                 cmd_send = 'S'
@@ -287,8 +295,9 @@ def page_atlas_ph_calibrate():
         if cmd_send:
             if interface == 'UART':
                 ph_sensor_uart.send_cmd(cmd_send)
+                return ph_sensor_uart.read_lines()
             elif interface == 'I2C':
-                ph_sensor_i2c.query(cmd_send)
+                return ph_sensor_i2c.query(cmd_send)
 
     if form_ph_calibrate.go_to_stage_1.data:
         stage = 1
@@ -302,18 +311,22 @@ def page_atlas_ph_calibrate():
                           temp=form_ph_calibrate.temperature.data), "error")
             stage = 1
         else:
-            temperature = 'T,{temp:.2f}'.format(
+            temp = '{temp:.2f}'.format(
                 temp=form_ph_calibrate.temperature.data)
-            calibrate(temperature)
+            flash("Temperature Response: {resp}".format(
+                resp=calibrate('temp', temp)), "info")
             stage = 2
     elif form_ph_calibrate.go_to_stage_3.data:
-        calibrate('mid')
+        flash("Calibrate Mid (7.0 pH) Response: {resp}".format(
+            resp=calibrate('mid')), "info")
         stage = 3
     elif form_ph_calibrate.go_to_stage_4.data:
-        calibrate('low')
+        flash("Calibrate Low (4.0 pH) Response: {resp}".format(
+            resp=calibrate('low')), "info")
         stage = 4
     elif form_ph_calibrate.go_to_stage_5.data:
-        calibrate('high')
+        flash("Calibrate High (10.0 pH) Response: {resp}".format(
+            resp=calibrate('high')), "info")
         stage = 5
 
     if (form_ph_calibrate.go_to_stage_2.data or
