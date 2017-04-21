@@ -238,7 +238,7 @@ def page_camera():
 @flask_login.login_required
 def page_atlas_ph_calibrate():
     """
-    Calibrate the Atlas Scientific pH Sensor
+    Step-by-step tool for calibrating the Atlas Scientific pH Sensor
     """
     form_ph_calibrate = flaskforms.AtlasPHCalibrate()
     sensor = Sensor.query.filter_by(device='ATLAS_PH_UART').all()
@@ -249,8 +249,7 @@ def page_atlas_ph_calibrate():
     # TODO: This function may be moved
     def calibrate(command, temperature=None):
         """
-        Determine and send the correct calibration command based on the
-        board version.
+        Determine and send the correct command based on the board version
         """
         from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
         from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
@@ -274,45 +273,47 @@ def page_atlas_ph_calibrate():
         flash("Device Info: {info}".format(info=info), "info")
 
         # Check first letter of info response
-        # "P" indicates V3.0 or V5.0 board version (both legacy)
+        # "P" indicates a legacy board version
         if info[0] == 'P':
             version = 1
         else:
             version = 2
         flash("Detected Version: {ver}".format(ver=version), "info")
 
-        # Formulate command based on calibration step and board version
-        # Legacy boards requires a different command than recent boards
+        # Formulate command based on calibration step and board version.
+        # Legacy boards requires a different command than recent boards.
+        # Some commands are not necessary for recent boards and will not
+        # generate a response.
         cmd_send = None
-        if command == 'temp':
+        if command == 'temp' and temperature is not None:
             if version == 1:
                 cmd_send = temperature
-            else:
+            elif version == 2:
                 cmd_send = 'T,{temp}'.format(temp=temperature)
-        if command == 'continuous':
+        elif command == 'continuous':
             if version == 1:
                 cmd_send = 'C'
-        if command == 'mid':
-            if version == 1:
-                cmd_send = 'S'
-            else:
-                cmd_send = 'Cal,mid,7.00'
         elif command == 'low':
             if version == 1:
                 cmd_send = 'F'
-            else:
+            elif version == 2:
                 cmd_send = 'Cal,low,4.00'
+        elif command == 'mid':
+            if version == 1:
+                cmd_send = 'S'
+            elif version == 2:
+                cmd_send = 'Cal,mid,7.00'
         elif command == 'high':
             if version == 1:
                 cmd_send = 'T'
-            else:
+            elif version == 2:
                 cmd_send = 'Cal,high,10.00'
         elif command == 'end':
             if version == 1:
                 cmd_send = 'E'
 
-        # Send the command and return the response
-        if cmd_send:
+        # Send the command (if not None) and return the response
+        if cmd_send is not None:
             if interface == 'UART':
                 ph_sensor_uart.send_cmd(cmd_send)
                 time.sleep(1.3)
@@ -332,7 +333,7 @@ def page_atlas_ph_calibrate():
     # Set temperature
     elif form_ph_calibrate.go_to_stage_2.data:
         if form_ph_calibrate.temperature.data is None:
-            flash(gettext(u"Must enter a valid temperature: %(temp)s",
+            flash(gettext(u"A valid temperature is required: %(temp)s is invalid.",
                           temp=form_ph_calibrate.temperature.data), "error")
             stage = 1
         else:
@@ -362,7 +363,7 @@ def page_atlas_ph_calibrate():
         flash("Calibrate High (10.0 pH) Response: {resp}".format(
             resp=calibrate('high')), "info")
         calibrate('end')
-        stage = 5
+        stage = 5  # End
 
     if (form_ph_calibrate.go_to_stage_2.data or
             form_ph_calibrate.go_to_stage_3.data or
