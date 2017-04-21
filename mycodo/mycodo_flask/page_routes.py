@@ -320,7 +320,8 @@ def page_atlas_ph_calibrate():
         selected_sensor = Sensor.query.filter_by(
             unique_id=form_ph_calibrate.selected_sensor_id.data).first()
         if not selected_sensor:
-            flash('Sensor not found: {}'.format(form_ph_calibrate.selected_sensor_id.data), 'error')
+            flash('Sensor not found: {}'.format(
+                form_ph_calibrate.selected_sensor_id.data), 'error')
 
     # Set temperature
     elif form_ph_calibrate.go_to_stage_2.data:

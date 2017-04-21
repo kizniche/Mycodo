@@ -1,6 +1,7 @@
 # coding=utf-8
 import logging
 import serial
+import time
 import RPi.GPIO as GPIO
 from serial import SerialException
 
