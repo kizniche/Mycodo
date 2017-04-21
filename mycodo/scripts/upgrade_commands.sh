@@ -46,6 +46,7 @@ case "${1:-''}" in
         adduser mycodo gpio
         adduser mycodo adm
         adduser mycodo video
+        adduser mycodo dialout
 
         chown -LR mycodo.mycodo ${INSTALL_DIRECTORY}/Mycodo
         ln -sfn ${INSTALL_DIRECTORY}/Mycodo /var/www/mycodo

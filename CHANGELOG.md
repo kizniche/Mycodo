@@ -3,6 +3,7 @@
 ### Features
 
   - Add support for Atlas Scientific pH Sensor ([#238](https://github.com/kizniche/mycodo/issues/238))
+  - Add support for calibrating the Atlas Scientific pH sensor
 
 ## 5.0.27 (2017-04-12)
 

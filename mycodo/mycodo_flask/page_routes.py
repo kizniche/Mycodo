@@ -267,6 +267,7 @@ def page_atlas_ph_calibrate():
         info = None
         if interface == 'UART':
             ph_sensor_uart.send_cmd('i')
+            time.sleep(1.3)
             info = ph_sensor_uart.read_lines()[0]
         elif interface == 'I2C':
             info = ph_sensor_i2c.query('i')

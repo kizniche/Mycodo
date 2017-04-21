@@ -98,6 +98,7 @@ def main():
         else:
             try:
                 device.send_cmd(input_str)
+                time.sleep(1.3)
                 print(device.read_lines())
             except IOError:
                 print("Send command failed\n")
