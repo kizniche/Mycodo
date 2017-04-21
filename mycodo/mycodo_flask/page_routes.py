@@ -289,6 +289,9 @@ def page_atlas_ph_calibrate():
                 cmd_send = temperature
             else:
                 cmd_send = 'T,{temp}'.format(temp=temperature)
+        if command == 'continuous':
+            if version == 1:
+                cmd_send = 'C'
         if command == 'mid':
             if version == 1:
                 cmd_send = 'S'
@@ -304,6 +307,9 @@ def page_atlas_ph_calibrate():
                 cmd_send = 'T'
             else:
                 cmd_send = 'Cal,high,10.00'
+        elif command == 'end':
+            if version == 1:
+                cmd_send = 'E'
 
         # Send the command and return the response
         if cmd_send:
@@ -334,24 +340,28 @@ def page_atlas_ph_calibrate():
                 temp=form_ph_calibrate.temperature.data)
             flash("Temperature Response: {resp}".format(
                 resp=calibrate('temp', temperature=temp)), "info")
+            calibrate('continuous')
             stage = 2
 
     # Calibrate Mid
     elif form_ph_calibrate.go_to_stage_3.data:
         flash("Calibrate Mid (7.0 pH) Response: {resp}".format(
             resp=calibrate('mid')), "info")
+        calibrate('continuous')
         stage = 3
 
     # Calibrate Low
     elif form_ph_calibrate.go_to_stage_4.data:
         flash("Calibrate Low (4.0 pH) Response: {resp}".format(
             resp=calibrate('low')), "info")
+        calibrate('continuous')
         stage = 4
 
     # Calibrate High
     elif form_ph_calibrate.go_to_stage_5.data:
         flash("Calibrate High (10.0 pH) Response: {resp}".format(
             resp=calibrate('high')), "info")
+        calibrate('end')
         stage = 5
 
     if (form_ph_calibrate.go_to_stage_2.data or
