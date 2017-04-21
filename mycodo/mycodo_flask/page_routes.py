@@ -257,7 +257,10 @@ def page_atlas_ph_calibrate():
         ph_sensor_uart = None
         ph_sensor_i2c = None
         if interface == 'UART':
-            ph_sensor_uart = AtlasScientificUART()
+            # TODO: Change these to reflect values set in the database
+            # These values are set for testing
+            ph_sensor_uart = AtlasScientificUART(
+                serial_device='/dev/ttyAMA0', baudrate=38400)
         elif interface == 'I2C':
             ph_sensor_i2c = AtlasScientificI2C()
 

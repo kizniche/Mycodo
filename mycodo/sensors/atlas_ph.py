@@ -19,7 +19,10 @@ class AtlaspHSensor(AbstractSensor):
         self._ph = 0
         self.interface = interface
         if self.interface == 'UART':
-            self.ph_sensor_uart = AtlasScientificUART()
+            # TODO: Change these to reflect values set in the database
+            # These values are set for testing
+            self.ph_sensor_uart = AtlasScientificUART(
+                serial_device='/dev/ttyAMA0', baudrate=38400)
         elif self.interface == 'I2C':
             self.ph_sensor_i2c = AtlasScientificI2C()
 
