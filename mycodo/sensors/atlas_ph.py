@@ -24,7 +24,7 @@ class AtlaspHSensor(AbstractSensor):
                 serial_device=device_loc, baudrate=baud_rate)
         elif self.interface == 'I2C':
             self.atlas_sensor_i2c = AtlasScientificI2C(
-                address=i2c_address, bus=i2c_bus)
+                i2c_address=i2c_address, i2c_bus=i2c_bus)
 
     def __repr__(self):
         """ Representation of object """

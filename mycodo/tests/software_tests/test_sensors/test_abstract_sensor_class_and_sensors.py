@@ -1,11 +1,11 @@
 # coding=utf-8
 """ Tests for the abstract class and sensor classes """
-from collections import Iterator
-
 import pytest
+from collections import Iterator
 from testfixtures import LogCapture
 
 from mycodo.sensors.am2315 import AM2315Sensor
+from mycodo.sensors.atlas_ph import AtlaspHSensor
 from mycodo.sensors.atlas_pt1000 import AtlasPT1000Sensor
 from mycodo.sensors.base_sensor import AbstractSensor
 from mycodo.sensors.bmp180 import BMP180Sensor
@@ -22,7 +22,10 @@ from mycodo.sensors.tsl2561 import TSL2561Sensor
 # TODO: Find which errors when uncommented
 # TODO: Need to mock GPIO for Travis CI
 sensor_classes = [
-    AtlasPT1000Sensor(0x00, 1),
+    AtlaspHSensor('I2C', i2c_address=0x00, i2c_bus=1),
+    AtlaspHSensor('UART', device_loc='/dev/ttyS0', baud_rate=9600),
+    AtlasPT1000Sensor('I2C', i2c_address=0x00, i2c_bus=1),
+    AtlasPT1000Sensor('UART', device_loc='/dev/ttyS0', baud_rate=9600),
     AM2315Sensor(1),
     # BME280Sensor(0x00, 1),
     BMP180Sensor(1),

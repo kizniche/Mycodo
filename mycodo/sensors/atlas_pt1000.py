@@ -22,7 +22,7 @@ class AtlasPT1000Sensor(AbstractSensor):
                 serial_device=device_loc, baudrate=baud_rate)
         elif self.interface == 'I2C':
             self.atlas_sensor_i2c = AtlasScientificI2C(
-                address=i2c_address, bus=i2c_bus)
+                i2c_address=i2c_address, i2c_bus=i2c_bus)
 
     def __repr__(self):
         """  Representation of object """
@@ -79,7 +79,7 @@ class AtlasPT1000Sensor(AbstractSensor):
                     logger.error('Value[0] is not float or "check probe": '
                                  '{val}'.format(val=temp))
             else:
-                logger.error('UART device is not set up.'
+                logger.error('UART device is not set up. '
                              'Check the log for errors.')
                 temp = None
         elif self.interface == 'I2C':

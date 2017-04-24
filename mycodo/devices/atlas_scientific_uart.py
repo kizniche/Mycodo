@@ -2,7 +2,6 @@
 import logging
 import serial
 import time
-import RPi.GPIO as GPIO
 from serial import SerialException
 
 logger = logging.getLogger("mycodo.device.atlas_scientific_uart")
@@ -15,12 +14,6 @@ class AtlasScientificUART:
         self.serial_device = serial_device
         self.baudrate = baudrate
         self.setup = True
-        if serial_device is None:
-            if GPIO.RPI_INFO['P1_REVISION'] == 3:
-                self.serial_device = "/dev/ttyS0"
-            else:
-                self.serial_device = "/dev/ttyAMA0"
-
         try:
             self.ser = serial.Serial(port=self.serial_device,
                                      baudrate=self.baudrate,

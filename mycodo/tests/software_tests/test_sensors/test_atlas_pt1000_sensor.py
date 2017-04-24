@@ -16,7 +16,7 @@ def test_atlas_pt1000_iterates_using_in():
     with mock.patch('mycodo.sensors.atlas_pt1000.AtlasPT1000Sensor.get_measurement') as mock_measure:
         mock_measure.side_effect = [67, 52, 37, 45]  # first reading, second reading
 
-        atlas_pt1000 = AtlasPT1000Sensor(0x99, 1)
+        atlas_pt1000 = AtlasPT1000Sensor('I2C', i2c_address=0x99, i2c_bus=1)
         expected_result_list = [dict(temperature=67.00),
                                 dict(temperature=52.00),
                                 dict(temperature=37.00),
@@ -29,7 +29,7 @@ def test_atlas_pt1000__iter__returns_iterator():
     with mock.patch('mycodo.sensors.atlas_pt1000.AtlasPT1000Sensor.get_measurement') as mock_measure:
         # create our object
         mock_measure.side_effect = [67, 52]  # first reading, second reading
-        atlas_pt1000 = AtlasPT1000Sensor(0x99, 1)
+        atlas_pt1000 = AtlasPT1000Sensor('I2C', i2c_address=0x99, i2c_bus=1)
         # check __iter__ method return
         assert isinstance(atlas_pt1000.__iter__(), Iterator)
 
@@ -53,7 +53,7 @@ def test_atlas_pt1000_next_returns_dict():
     with mock.patch('mycodo.sensors.atlas_pt1000.AtlasPT1000Sensor.get_measurement') as mock_measure:
         # create our object
         mock_measure.side_effect = [67, 52]  # first reading, second reading
-        atlas_pt1000 = AtlasPT1000Sensor(0x99, 1)
+        atlas_pt1000 = AtlasPT1000Sensor('I2C', i2c_address=0x99, i2c_bus=1)
         assert atlas_pt1000.next() == dict(temperature=67.00)
 
 
@@ -72,12 +72,12 @@ def test_atlas_pt1000_condition_properties():
 
 def test_atlas_pt1000_special_method_str():
     """ expect a __str__ format """
-    assert "Temperature: 0.00" in str(AtlasPT1000Sensor(0x99, 1))
+    assert "Temperature: 0.00" in str(AtlasPT1000Sensor('I2C', i2c_address=0x99, i2c_bus=1))
 
 
 def test_atlas_pt1000_special_method_repr():
     """ expect a __repr__ format """
-    assert "<AtlasPT1000Sensor(temperature=0.00)>" in repr(AtlasPT1000Sensor(0x99, 1))
+    assert "<AtlasPT1000Sensor(temperature=0.00)>" in repr(AtlasPT1000Sensor('I2C', i2c_address=0x99, i2c_bus=1))
 
 
 def test_atlas_pt1000_raises_exception():
