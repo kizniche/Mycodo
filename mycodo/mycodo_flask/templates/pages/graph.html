@@ -439,6 +439,7 @@
         {%- set yaxis_co2 = [] -%}
         {%- set yaxis_lux = [] -%}
         {%- set yaxis_moisture = [] -%}
+        {%- set yaxis_ph = [] -%}
         {%- set yaxis_press = [] -%}
         {%- set yaxis_alt = [] -%}
         {%- set yaxis_volts = [] -%}
@@ -469,6 +470,8 @@
               {%- do yaxis_lux.append(1) -%}
             {%- elif measurement == 'moisture' -%}
               {%- do yaxis_moisture.append(1) -%}
+            {%- elif measurement == 'ph' -%}
+              {%- do yaxis_ph.append(1) -%}
             {%- elif measurement == 'pressure' -%}
               {%- do yaxis_press.append(1) -%}
             {%- elif measurement == 'altitude' -%}
@@ -502,6 +505,8 @@
                   {%- do yaxis_lux.append(1) -%}
                 {%- elif each_pid.measurement == 'moisture' -%}
                   {%- do yaxis_moisture.append(1) -%}
+                {%- elif each_pid.measurement == 'ph' -%}
+                  {%- do yaxis_ph.append(1) -%}
                 {%- elif each_pid.measurement == 'pressure' -%}
                   {%- do yaxis_press.append(1) -%}
                 {%- elif each_pid.measurement == 'altitude' -%}
@@ -616,6 +621,18 @@
           id: 'relay'
         },
       {%- endif -%}
+      {%- if yaxis_alt -%}
+        {
+          title: {
+            text: '{{_('Altitude')}} (m)'
+          },
+          labels: {
+            format: '{value}'
+          },
+          opposite: false,
+          id: 'altitude'
+        },
+      {%- endif -%}
       {%- if yaxis_cpu_load -%}
         {
           title: {
@@ -626,6 +643,18 @@
           },
           opposite: false,
           id: 'cpu_load'
+        },
+      {%- endif -%}
+      {%- if yaxis_co2 -%}
+        {
+          title: {
+            text: 'CO<sub>2</sub> (ppmv)'
+          },
+          labels: {
+            format: '{value}'
+          },
+          opposite: false,
+          id: 'co2'
         },
       {%- endif -%}
       {%- if yaxis_disk_space -%}
@@ -640,16 +669,16 @@
           id: 'disk_space'
         },
       {%- endif -%}
-      {%- if yaxis_temp -%}
+      {%- if yaxis_edge -%}
         {
           title: {
-            text: '{{_('Temperature')}} (°C)'
+            text: '{{_('Edge')}}'
           },
           labels: {
             format: '{value}'
           },
           opposite: false,
-          id: 'temperature'
+          id: 'edge'
         },
       {%- endif -%}
       {%- if yaxis_hum -%}
@@ -662,18 +691,6 @@
           },
           opposite: false,
           id: 'humidity'
-        },
-      {%- endif -%}
-      {%- if yaxis_co2 -%}
-        {
-          title: {
-            text: 'CO<sub>2</sub> (ppmv)'
-          },
-          labels: {
-            format: '{value}'
-          },
-          opposite: false,
-          id: 'co2'
         },
       {%- endif -%}
       {%- if yaxis_lux -%}
@@ -700,6 +717,18 @@
           id: 'moisture'
         },
       {%- endif -%}
+      {%- if yaxis_ph -%}
+        {
+          title: {
+            text: '{{_('pH')}}'
+          },
+          labels: {
+            format: '{value}'
+          },
+          opposite: false,
+          id: 'ph'
+        },
+      {%- endif -%}
       {%- if yaxis_press -%}
         {
           title: {
@@ -712,28 +741,16 @@
           id: 'pressure'
         },
       {%- endif -%}
-      {%- if yaxis_alt -%}
+      {%- if yaxis_temp -%}
         {
           title: {
-            text: '{{_('Altitude')}} (m)'
+            text: '{{_('Temperature')}} (°C)'
           },
           labels: {
             format: '{value}'
           },
           opposite: false,
-          id: 'altitude'
-        },
-      {%- endif -%}
-      {%- if yaxis_edge -%}
-        {
-          title: {
-            text: '{{_('Edge')}}'
-          },
-          labels: {
-            format: '{value}'
-          },
-          opposite: false,
-          id: 'edge'
+          id: 'temperature'
         },
       {%- endif -%}
       {%- if yaxis_volts -%}
