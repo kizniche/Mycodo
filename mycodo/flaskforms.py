@@ -299,7 +299,7 @@ class GraphMod(FlaskForm):
         )]
     )
     xAxisDuration = IntegerField(
-        lazy_gettext(u'x-Axis (min)'),
+        lazy_gettext(u'x-Axis (minutes)'),
         render_kw={"placeholder": lazy_gettext(u"X-Axis Duration")},
         validators=[validators.NumberRange(
             min=1,

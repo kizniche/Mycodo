@@ -75,7 +75,7 @@ MEASUREMENT_UNITS = {
     'moisture': {
         'name': 'Moisture', 'meas': 'moisture', 'unit': 'moisture'},
     'ph': {
-        'name': 'pH', 'meas': 'pH', 'unit': 'pH'},
+        'name': 'pH', 'meas': 'ph', 'unit': 'pH'},
     'pressure': {
         'name': 'Pressure', 'meas': 'pressure', 'unit': 'Pa'},
     'temperature': {
