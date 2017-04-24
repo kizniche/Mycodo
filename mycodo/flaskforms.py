@@ -815,6 +815,8 @@ class SensorMod(FlaskForm):
     )
     modBus = IntegerField(lazy_gettext(u'I<sup>2</sup>C Bus'))
     location = StringField(lazy_gettext(u'Location'))
+    baud_rate = IntegerField(lazy_gettext(u'Baud Rate'))
+    device_loc = StringField(lazy_gettext(u'Device'))
     modResolution = IntegerField(lazy_gettext(u'Resolution'))
     modSensitivity = IntegerField(lazy_gettext(u'Sensitivity'))
     modPowerRelayID = IntegerField(lazy_gettext(u'Power Relay'))

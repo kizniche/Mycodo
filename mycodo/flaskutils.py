@@ -1815,12 +1815,22 @@ def sensor_add(form_add_sensor):
 
             # Environmental Sensors
             # Temperature
-            elif form_add_sensor.sensor.data in ['ATLAS_PT1000',
+            elif form_add_sensor.sensor.data in ['ATLAS_PT1000_I2C',
+                                                 'ATLAS_PT1000_UART',
                                                  'DS18B20',
                                                  'TMP006']:
                 new_sensor.measurements = 'temperature'
-                if form_add_sensor.sensor.data == 'ATLAS_PT1000':
+                if form_add_sensor.sensor.data == 'ATLAS_PT1000_I2C':
+                    new_sensor.interface = 'I2C'
                     new_sensor.location = '0x66'
+                elif form_add_sensor.sensor.data == 'ATLAS_PT1000_UART':
+                    new_sensor.location = 'Tx/Rx'
+                    new_sensor.interface = 'UART'
+                    new_sensor.baud_rate = 9600
+                    if GPIO.RPI_INFO['P1_REVISION'] == 3:
+                        new_sensor.device_loc = "/dev/ttyS0"
+                    else:
+                        new_sensor.device_loc = "/dev/ttyAMA0"
                 elif form_add_sensor.sensor.data == 'TMP006':
                     new_sensor.measurements = 'temperature_object,' \
                                               'temperature_die'
@@ -1849,11 +1859,21 @@ def sensor_add(form_add_sensor):
                 new_sensor.location = 'Tx/Rx'
 
             # pH
+            elif form_add_sensor.sensor.data == 'ATLAS_PH_I2C':
+                new_sensor.measurements = 'ph'
+                new_sensor.location = '0x63'
+                new_sensor.interface = 'I2C'
             elif form_add_sensor.sensor.data == 'ATLAS_PH_UART':
                 new_sensor.measurements = 'ph'
                 new_sensor.location = 'Tx/Rx'
+                new_sensor.interface = 'UART'
+                new_sensor.baud_rate = 9600
+                if GPIO.RPI_INFO['P1_REVISION'] == 3:
+                    new_sensor.device_loc = "/dev/ttyS0"
+                else:
+                    new_sensor.device_loc = "/dev/ttyAMA0"
 
-            # Pressure
+                # Pressure
             elif form_add_sensor.sensor.data in ['BME280',
                                                  'BMP180',
                                                  'BMP280']:

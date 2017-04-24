@@ -14,17 +14,17 @@ ATLAS_PH_LOCK_FILE = "/var/lock/sensor-atlas-ph"
 class AtlaspHSensor(AbstractSensor):
     """A sensor support class that monitors the Atlas Scientific sensor pH"""
 
-    def __init__(self, interface):
+    def __init__(self, interface, device_loc=None, baud_rate=None,
+                 i2c_address=None, i2c_bus=None):
         super(AtlaspHSensor, self).__init__()
         self._ph = 0
         self.interface = interface
         if self.interface == 'UART':
-            # TODO: Change these to reflect values set in the database
-            # These values are set for testing
-            self.ph_sensor_uart = AtlasScientificUART(
-                serial_device='/dev/ttyAMA0', baudrate=38400)
+            self.atlas_sensor_uart = AtlasScientificUART(
+                serial_device=device_loc, baudrate=baud_rate)
         elif self.interface == 'I2C':
-            self.ph_sensor_i2c = AtlasScientificI2C()
+            self.atlas_sensor_i2c = AtlasScientificI2C(
+                address=i2c_address, bus=i2c_bus)
 
     def __repr__(self):
         """ Representation of object """
@@ -63,10 +63,10 @@ class AtlaspHSensor(AbstractSensor):
         """ Gets the sensor's pH measurement via UART/I2C """
         ph = None
         if self.interface == 'UART':
-            if self.ph_sensor_uart.setup:
-                self.ph_sensor_uart.send_cmd('R')
+            if self.atlas_sensor_uart.setup:
+                self.atlas_sensor_uart.send_cmd('R')
                 time.sleep(1.3)
-                lines = self.ph_sensor_uart.read_lines()
+                lines = self.atlas_sensor_uart.read_lines()
                 logger.debug("All Lines: {lines}".format(lines=lines))
 
                 if 'check probe' in lines:
@@ -83,10 +83,13 @@ class AtlaspHSensor(AbstractSensor):
                              'Check the log for errors.')
                 ph = None
         elif self.interface == 'I2C':
-            if self.ph_sensor_i2c.setup:
-                ph = self.ph_sensor_i2c.query('R')
-                if not str_is_float(ph):
-                    ph = None
+            if self.atlas_sensor_i2c.setup:
+                ph_str = self.atlas_sensor_i2c.query('R')
+                if 'Error' in ph_str:
+                    raise Exception(
+                        "Sensor read unsuccessful: {err}".format(err=ph_str))
+                elif 'Command succeeded' in ph_str:
+                    ph = float(ph_str[18:24])
             else:
                 logger.error('I2C device is not set up.'
                              'Check the log for errors.')

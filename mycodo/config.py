@@ -7,7 +7,7 @@ import collections
 from datetime import timedelta
 
 MYCODO_VERSION = '5.0.27'
-ALEMBIC_VERSION = 'f1c6b2901d45'
+ALEMBIC_VERSION = 'a9a330ea0ccb'
 
 LANGUAGES = {
     'en': 'English',
@@ -24,8 +24,10 @@ MEASUREMENTS = {
     'MYCODO_RAM': ['disk_space'],
     'ADS1x15': ['voltage'],
     'AM2315': ['dewpoint', 'humidity', 'temperature'],
+    'ATLAS_PH_I2C': ['ph'],
     'ATLAS_PH_UART': ['ph'],
-    'ATLAS_PT1000': ['temperature'],
+    'ATLAS_PT1000_I2C': ['temperature'],
+    'ATLAS_PT1000_UART': ['temperature'],
     'BH1750': ['lux'],
     'BME280': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature'],
     'BMP': ['altitude', 'pressure', 'temperature'],
@@ -101,13 +103,15 @@ SENSORS = [
     ('BH1750', 'Luminance: BH1750'),
     ('TSL2561', 'Luminance: TSL2561'),
     ('CHIRP', 'Moisture: Chirp'),
+    ('ATLAS_PH_I2C', 'pH: Atlas Scientific (I2C)'),
     ('ATLAS_PH_UART', 'pH: Atlas Scientific (UART)'),
     ('BME280', 'Pressure/Temperature/Humidity: BME 280'),
     ('BMP180', 'Pressure/Temperature: BMP 180/085'),
     ('BMP280', 'Pressure/Temperature: BMP 280'),
     ('DS18B20', 'Temperature: DS18B20'),
     ('TMP006', 'Temperature (Contactless): TMP 006/007'),
-    ('ATLAS_PT1000', 'Temperature: Atlas Scientific, PT-1000 (I2C)'),
+    ('ATLAS_PT1000_I2C', 'Temperature: Atlas Scientific PT-1000 (I2C)'),
+    ('ATLAS_PT1000_UART', 'Temperature: Atlas Scientific PT-1000 (UART)'),
     ('AM2315', 'Temperature/Humidity: AM2315'),
     ('DHT11', 'Temperature/Humidity: DHT11'),
     ('DHT22', 'Temperature/Humidity: DHT22'),
@@ -121,7 +125,7 @@ SENSORS = [
 DEVICES_DEFAULT_LOCATION = [
     'AM2315',
     'ATLAS_PH_UART',
-    'ATLAS_PT1000',
+    'ATLAS_PT1000_UART',
     'BMP',
     'BMP180',
     'HTU21D',
@@ -135,7 +139,8 @@ DEVICES_DEFAULT_LOCATION = [
 LIST_DEVICES_I2C = [
     'ADS1x15',
     'AM2315',
-    'ATLAS_PT1000',
+    'ATLAS_PH_I2C',
+    'ATLAS_PT1000_I2C',
     'BH1750',
     'BME280',
     'BMP',

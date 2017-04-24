@@ -247,7 +247,7 @@ def page_atlas_ph_calibrate():
     interface = 'UART'
 
     # TODO: This function may be moved
-    def calibrate(command, temperature=None):
+    def calibrate(sensor_sel, command, temperature=None):
         """
         Determine and send the correct command based on the board version
         """
@@ -255,13 +255,14 @@ def page_atlas_ph_calibrate():
         from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         ph_sensor_uart = None
         ph_sensor_i2c = None
-        if interface == 'UART':
-            # TODO: Change these to reflect values set in the database
-            # These values are set for testing
+        if sensor_sel.interface == 'UART':
             ph_sensor_uart = AtlasScientificUART(
-                serial_device='/dev/ttyAMA0', baudrate=38400)
-        elif interface == 'I2C':
-            ph_sensor_i2c = AtlasScientificI2C()
+                serial_device=sensor_sel.device_loc,
+                baudrate=sensor_sel.baud_rate)
+        elif sensor_sel.interface == 'I2C':
+            ph_sensor_i2c = AtlasScientificI2C(
+                address=sensor_sel.i2c_address,
+                bus=sensor_sel.i2c_bus)
 
         info = None
         if interface == 'UART':
@@ -321,6 +322,13 @@ def page_atlas_ph_calibrate():
             elif interface == 'I2C':
                 return ph_sensor_i2c.query(cmd_send)
 
+    if (form_ph_calibrate.go_to_stage_2.data or
+            form_ph_calibrate.go_to_stage_3.data or
+            form_ph_calibrate.go_to_stage_4.data or
+            form_ph_calibrate.go_to_stage_5.data):
+        selected_sensor = Sensor.query.filter_by(
+            unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
+
     # Select sensor
     if form_ph_calibrate.go_to_stage_1.data:
         stage = 1
@@ -340,37 +348,32 @@ def page_atlas_ph_calibrate():
             temp = '{temp:.2f}'.format(
                 temp=form_ph_calibrate.temperature.data)
             flash("Temperature Response: {resp}".format(
-                resp=calibrate('temp', temperature=temp)), "info")
-            calibrate('continuous')
+                resp=calibrate(selected_sensor,
+                               'temp',
+                               temperature=temp)), "info")
+            calibrate(selected_sensor, 'continuous')
             stage = 2
 
     # Calibrate Mid
     elif form_ph_calibrate.go_to_stage_3.data:
         flash("Calibrate Mid (7.0 pH) Response: {resp}".format(
-            resp=calibrate('mid')), "info")
-        calibrate('continuous')
+            resp=calibrate(selected_sensor, 'mid')), "info")
+        calibrate(selected_sensor, 'continuous')
         stage = 3
 
     # Calibrate Low
     elif form_ph_calibrate.go_to_stage_4.data:
         flash("Calibrate Low (4.0 pH) Response: {resp}".format(
-            resp=calibrate('low')), "info")
-        calibrate('continuous')
+            resp=calibrate(selected_sensor, 'low')), "info")
+        calibrate(selected_sensor, 'continuous')
         stage = 4
 
     # Calibrate High
     elif form_ph_calibrate.go_to_stage_5.data:
         flash("Calibrate High (10.0 pH) Response: {resp}".format(
-            resp=calibrate('high')), "info")
-        calibrate('end')
+            resp=calibrate(selected_sensor, 'high')), "info")
+        calibrate(selected_sensor, 'end')
         stage = 5  # End
-
-    if (form_ph_calibrate.go_to_stage_2.data or
-            form_ph_calibrate.go_to_stage_3.data or
-            form_ph_calibrate.go_to_stage_4.data or
-            form_ph_calibrate.go_to_stage_5.data):
-        selected_sensor = Sensor.query.filter_by(
-            unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
 
     return render_template('tools/atlas_ph_calibrate.html',
                            form_ph_calibrate=form_ph_calibrate,

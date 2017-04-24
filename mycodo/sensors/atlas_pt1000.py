@@ -1,6 +1,9 @@
 # coding=utf-8
 import logging
+import time
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
+from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
+from mycodo.utils.system_pi import str_is_float
 from .base_sensor import AbstractSensor
 
 logger = logging.getLogger("mycodo.sensors.atlas_pt1000")
@@ -9,14 +12,17 @@ logger = logging.getLogger("mycodo.sensors.atlas_pt1000")
 class AtlasPT1000Sensor(AbstractSensor):
     """ A sensor support class that monitors the PT1000's temperature """
 
-    def __init__(self, address, bus):
+    def __init__(self, interface, device_loc=None, baud_rate=None,
+                 i2c_address=None, i2c_bus=None):
         super(AtlasPT1000Sensor, self).__init__()
         self._temperature = 0.0
-        self.address = address
-        self.running = True
-        self.I2C_bus_number = bus
-        self.atlas_temp = AtlasScientificI2C(
-            address=self.address, bus=self.I2C_bus_number)
+        self.interface = interface
+        if self.interface == 'UART':
+            self.atlas_sensor_uart = AtlasScientificUART(
+                serial_device=device_loc, baudrate=baud_rate)
+        elif self.interface == 'I2C':
+            self.atlas_sensor_i2c = AtlasScientificI2C(
+                address=i2c_address, bus=i2c_bus)
 
     def __repr__(self):
         """  Representation of object """
@@ -55,14 +61,41 @@ class AtlasPT1000Sensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the Atlas PT1000's temperature in Celsius """
-        temp_str = self.atlas_temp.query('R')
-        # the temperature return string, if successfully read, will be
-        # "Command succeeded X.XX", where X denotes the temperature
-        if 'Command succeeded' in temp_str:
-            raise Exception(
-                "Sensor read unsuccessful: {err}".format(err=temp_str))
-        else:
-            return float(temp_str[18:24])
+        temp = None
+        if self.interface == 'UART':
+            if self.atlas_sensor_uart.setup:
+                self.atlas_sensor_uart.send_cmd('R')
+                time.sleep(1.3)
+                lines = self.atlas_sensor_uart.read_lines()
+                logger.debug("All Lines: {lines}".format(lines=lines))
+
+                if 'check probe' in lines:
+                    logger.error('"check probe" returned from sensor')
+                elif str_is_float(lines[0]):
+                    temp = float(lines[0])
+                    logger.debug('Value[0] is float: {val}'.format(val=temp))
+                else:
+                    temp = lines[0]
+                    logger.error('Value[0] is not float or "check probe": '
+                                 '{val}'.format(val=temp))
+            else:
+                logger.error('UART device is not set up.'
+                             'Check the log for errors.')
+                temp = None
+        elif self.interface == 'I2C':
+            if self.atlas_sensor_i2c.setup:
+                temp_str = self.atlas_sensor_i2c.query('R')
+                if 'Error' in temp_str:
+                    raise Exception(
+                        "Sensor read unsuccessful: {err}".format(err=temp_str))
+                elif 'Command succeeded' in temp_str:
+                    temp = float(temp_str[18:24])
+            else:
+                logger.error('I2C device is not set up.'
+                             'Check the log for errors.')
+                temp = None
+
+        return temp
 
     def read(self):
         """

@@ -14,6 +14,9 @@ class Sensor(CRUDMixin, db.Model):
     is_preset = db.Column(db.Boolean, default=False)  # Is config saved as a preset?
     preset_name = db.Column(db.Text, default=None)  # Name for preset
     device = db.Column(db.Text, default='')  # Device name, such as DHT11, DHT22, DS18B20
+    interface = db.Column(db.Text, default=None)  # Communication interface (I2C, UART, etc.)
+    device_loc = db.Column(db.Text, default=None)  # Device location for UART communication
+    baud_rate = db.Column(db.Integer, default=None)  # Baud rate for UART communication
     period = db.Column(db.Float, default=15.0)  # Duration between readings
     i2c_bus = db.Column(db.Integer, default='')  # I2C bus the sensor is connected to
     location = db.Column(db.Text, default='')  # GPIO pin or i2c address to communicate with sensor

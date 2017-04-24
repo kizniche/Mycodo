@@ -157,6 +157,9 @@ class SensorController(threading.Thread):
         self.power_relay_id = sensor.power_relay_id
         self.measurements = sensor.measurements
         self.device = sensor.device
+        self.interface = sensor.interface
+        self.device_loc = sensor.device_loc
+        self.baud_rate = sensor.baud_rate
         self.period = sensor.period
         self.resolution = sensor.resolution
         self.sensitivity = sensor.sensitivity
@@ -256,11 +259,22 @@ class SensorController(threading.Thread):
                                               int(self.location))
         elif self.device == 'AM2315':
             self.measure_sensor = AM2315Sensor(self.i2c_bus)
+        elif self.device == 'ATLAS_PH_I2C':
+            self.measure_sensor = AtlaspHSensor(self.interface,
+                                                i2c_address=self.i2c_address,
+                                                i2c_bus=self.i2c_bus)
         elif self.device == 'ATLAS_PH_UART':
-            self.measure_sensor = AtlaspHSensor(interface='UART')
-        elif self.device == 'ATLAS_PT1000':
-            self.measure_sensor = AtlasPT1000Sensor(self.i2c_address,
-                                                    self.i2c_bus)
+            self.measure_sensor = AtlaspHSensor(self.interface,
+                                                device_loc=self.device_loc,
+                                                baud_rate=self.baud_rate)
+        elif self.device == 'ATLAS_PT1000_I2C':
+            self.measure_sensor = AtlasPT1000Sensor(self.interface,
+                                                    i2c_address=self.i2c_address,
+                                                    i2c_bus=self.i2c_bus)
+        elif self.device == 'ATLAS_PT1000_UART':
+            self.measure_sensor = AtlasPT1000Sensor(self.interface,
+                                                    device_loc=self.device_loc,
+                                                    baud_rate=self.baud_rate)
         elif self.device == 'BH1750':
             self.measure_sensor = BH1750Sensor(self.i2c_address,
                                                self.i2c_bus,
