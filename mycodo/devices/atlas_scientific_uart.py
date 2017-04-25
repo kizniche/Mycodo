@@ -11,12 +11,10 @@ class AtlasScientificUART:
     """A Class to communicate with Atlas Scientific sensors via UART"""
 
     def __init__(self, serial_device=None, baudrate=9600):
-        self.serial_device = serial_device
-        self.baudrate = baudrate
         self.setup = True
         try:
-            self.ser = serial.Serial(port=self.serial_device,
-                                     baudrate=self.baudrate,
+            self.ser = serial.Serial(port=serial_device,
+                                     baudrate=baudrate,
                                      timeout=0)
         except serial.SerialException:
             self.setup = False
