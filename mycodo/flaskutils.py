@@ -1941,9 +1941,6 @@ def sensor_mod(form_mod_sensor):
         mod_sensor = Sensor.query.filter(
             Sensor.id == form_mod_sensor.modSensor_id.data).first()
 
-        # if not form_mod_sensor.location.data:
-        #     error.append(gettext(
-        #         "Invalid device GPIO/I2C address/location"))
         if mod_sensor.is_activated:
             error.append(gettext(
                 u"Deactivate sensor controller before modifying its "
@@ -1959,6 +1956,10 @@ def sensor_mod(form_mod_sensor):
             error.append(gettext(
                 u"The Read Period cannot be less than the Pre-Relay "
                 u"Duration"))
+        if (form_mod_sensor.device_loc.data and
+                not os.path.exists(form_mod_sensor.device_loc.data)):
+            error.append(gettext(
+                u"Invalid device or improper permissions to read device"))
 
         if not error:
             mod_sensor.name = form_mod_sensor.name.data
@@ -1969,6 +1970,10 @@ def sensor_mod(form_mod_sensor):
                 mod_sensor.power_relay_id = form_mod_sensor.modPowerRelayID.data
             else:
                 mod_sensor.power_relay_id = None
+            if form_mod_sensor.baud_rate.data:
+                mod_sensor.baud_rate = form_mod_sensor.baud_rate.data
+            if form_mod_sensor.device_loc.data:
+                mod_sensor.device_loc = form_mod_sensor.device_loc.data
             mod_sensor.multiplexer_address = form_mod_sensor.multiplexer_address.data
             mod_sensor.multiplexer_bus = form_mod_sensor.modMultiplexBus.data
             mod_sensor.multiplexer_channel = form_mod_sensor.multiplexer_channel.data
