@@ -2,7 +2,7 @@
 
 ### Features
 
-  - Update Koreal translations
+  - Update Korean translations
   - Add UART support for Atlas Scientific PT-1000 sensor
   - Add support for Atlas Scientific pH Sensor ([#238](https://github.com/kizniche/mycodo/issues/238))
   - Add support for calibrating the Atlas Scientific pH sensor

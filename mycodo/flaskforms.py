@@ -196,10 +196,10 @@ class EmailAlert(FlaskForm):
         validators=[validators.NumberRange(
             min=1,
             message=lazy_gettext(u'Must have at least one message able to be '
-                                 'sent per hour.')
+                                 u'sent per hour.')
         )]
     )
-    sendTestEmail = SubmitField('Send Test Email')
+    sendTestEmail = SubmitField(lazy_gettext(u'Send Test Email'))
     testEmailTo = EmailField(
         lazy_gettext(u'Test Email To'),
         render_kw={"placeholder": lazy_gettext(u'To Email Address')},
@@ -255,7 +255,7 @@ class GraphAdd(FlaskForm):
         validators=[validators.NumberRange(
             min=1,
             message=lazy_gettext(u"Number of minutes to display of past "
-                                 "measurements.")
+                                 u"measurements.")
         )]
     )
     refreshDuration = IntegerField(
@@ -264,7 +264,7 @@ class GraphAdd(FlaskForm):
         validators=[validators.NumberRange(
             min=1,
             message=lazy_gettext(u"Number of seconds to wait between acquiring"
-                                 " any new measurements.")
+                                 u" any new measurements.")
         )]
     )
     enableNavbar = BooleanField(lazy_gettext(u'Enable Navbar'))
@@ -304,7 +304,7 @@ class GraphMod(FlaskForm):
         validators=[validators.NumberRange(
             min=1,
             message=lazy_gettext(u"Number of minutes to display of past "
-                                 "measurements.")
+                                 u"measurements.")
         )]
     )
     refreshDuration = IntegerField(
@@ -313,7 +313,7 @@ class GraphMod(FlaskForm):
         validators=[validators.NumberRange(
             min=1,
             message=lazy_gettext(u"Number of seconds to wait between acquiring"
-                                 " any new measurements.")
+                                 u" any new measurements.")
         )]
     )
     enableNavbar = BooleanField(lazy_gettext(u'Enable Navbar'))
@@ -382,8 +382,8 @@ class LCDMod(FlaskForm):
             min=5,
             max=86400,
             message=lazy_gettext(u"Duration between calculating LCD output "
-                                 "and applying to regulation must be between "
-                                 "5 and 86400 seconds.")
+                                 u"and applying to regulation must be between "
+                                 u"5 and 86400 seconds.")
         )]
     )
     lcd_type = SelectField(
@@ -513,8 +513,8 @@ class MethodAdd(FlaskForm):
         lazy_gettext(u'Relay State'),
         choices=[
             ('', ''),
-            ('On', 'Turn On'),
-            ('Off', 'Turn Off')
+            ('On', lazy_gettext(u'Turn On')),
+            ('Off', lazy_gettext(u'Turn Off'))
         ]
     )
     save = SubmitField(lazy_gettext(u'Add to Method'))
@@ -594,9 +594,9 @@ class PIDMod(FlaskForm):
     direction = SelectField(
         lazy_gettext(u'Direction'),
         choices=[
-            ('raise', 'Raise'),
-            ('lower', 'Lower'),
-            ('both', 'Both')
+            ('raise', lazy_gettext(u'Raise')),
+            ('lower', lazy_gettext(u'Lower')),
+            ('both', lazy_gettext(u'Both'))
         ],
         validators=[DataRequired()]
     )
@@ -706,7 +706,7 @@ class RelayAdd(FlaskForm):
     relay_quantity = IntegerField(lazy_gettext(u'Quantity'))
     relay_add = SubmitField(lazy_gettext(u'Add Relay'))
     relay_cond_quantity = IntegerField(lazy_gettext(u'Quantity'))
-    relay_cond_add = SubmitField(lazy_gettext(u'Add Conditionals'))
+    relay_cond_add = SubmitField(lazy_gettext(u'Add Conditional'))
 
 
 class RelayMod(FlaskForm):
@@ -722,7 +722,7 @@ class RelayMod(FlaskForm):
             min=0,
             max=27,
             message=lazy_gettext(u"GPIO pin, using BCM numbering, between 1 and 27 "
-                                 "(0 to disable)")
+                                 u"(0 to disable)")
         )]
     )
     amps = DecimalField(
@@ -731,22 +731,22 @@ class RelayMod(FlaskForm):
             min=0,
             max=50,
             message=lazy_gettext(u"The current draw of the device connected "
-                                 "to this relay, in amps.")
+                                 u"to this relay, in amps.")
         )]
     )
     trigger = SelectField(
         lazy_gettext(u'On Trigger'),
         choices=[
-            ("1", 'High'),
-            ("0", 'Low')
+            ("1", lazy_gettext(u'High')),
+            ("0", lazy_gettext(u'Low'))
         ],
         validators=[DataRequired()]
     )
     on_at_start = SelectField(
         lazy_gettext(u'Start State'),
         choices=[
-            ("1", 'On'),
-            ("0", 'Off')
+            ("1", lazy_gettext(u'On')),
+            ("0", lazy_gettext(u'Off'))
         ],
         validators=[DataRequired()]
     )
@@ -857,8 +857,8 @@ class SensorMod(FlaskForm):
             min=0,
             max=100,
             message=lazy_gettext(u"If using a SHT sensor, enter the GPIO "
-                                 "connected to the clock pin (using BCM "
-                                 "numbering).")
+                                 u"connected to the clock pin (using BCM "
+                                 u"numbering).")
         )]
     )
     modSHTVoltage = StringField(lazy_gettext(u'Voltage'))
@@ -921,8 +921,8 @@ class SettingsGeneral(FlaskForm):
     relay_usage_report_gen = BooleanField(lazy_gettext(u'Generate Usage/Cost Report'))
     relay_usage_report_span = StringField(lazy_gettext(u'Time Span to Generate'))
     relay_usage_report_day = IntegerField(lazy_gettext(u'Day of Week/Month to Generate'))
-    relay_usage_report_hour = IntegerField(lazy_gettext(
-        'Hour of Day to Generate'),
+    relay_usage_report_hour = IntegerField(
+        lazy_gettext(u'Hour of Day to Generate'),
         validators=[validators.NumberRange(
             min=0,
             max=23,
@@ -946,8 +946,8 @@ class Timer(FlaskForm):
     state = SelectField(
         lazy_gettext(u'State'),
         choices=[
-            ('on', 'On'),
-            ('off', 'Off')
+            ('on', lazy_gettext(u'On')),
+            ('off', lazy_gettext(u'Off'))
         ],
         validators=[DataRequired()]
     )
