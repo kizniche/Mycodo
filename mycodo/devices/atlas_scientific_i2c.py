@@ -53,9 +53,9 @@ class AtlasScientificI2C:
             # change MSB to 0 for all received characters except the first and get a list of characters
             char_list = map(lambda x: chr(ord(x) & ~0x80), list(response[1:]))
             # NOTE: having to change the MSB to 0 is a glitch in the raspberry pi, and you shouldn't have to do this!
-            return "Command succeeded " + ''.join(char_list)  # convert the char list to a string and returns it
+            return "success", ''.join(char_list)  # convert the char list to a string and returns it
         else:
-            return "Error " + str(ord(response[0]))
+            return "error", str(ord(response[0]))
 
     def query(self, query_str):
         # write a command to the board, wait the correct timeout, and read the response

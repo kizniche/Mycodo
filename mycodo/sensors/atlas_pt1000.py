@@ -81,19 +81,17 @@ class AtlasPT1000Sensor(AbstractSensor):
             else:
                 logger.error('UART device is not set up. '
                              'Check the log for errors.')
-                temp = None
         elif self.interface == 'I2C':
             if self.atlas_sensor_i2c.setup:
-                temp_str = self.atlas_sensor_i2c.query('R')
-                if 'Error' in temp_str:
-                    raise Exception(
-                        "Sensor read unsuccessful: {err}".format(err=temp_str))
-                elif 'Command succeeded' in temp_str:
-                    temp = float(temp_str[18:24])
+                temp_status, temp_str = self.atlas_sensor_i2c.query('R')
+                if temp_status == 'error':
+                    logger.error("Sensor read unsuccessful: {err}".format(
+                        err=temp_str))
+                elif temp_status == 'success':
+                    temp = float(temp_str)
             else:
                 logger.error('I2C device is not set up.'
                              'Check the log for errors.')
-                temp = None
 
         return temp
 

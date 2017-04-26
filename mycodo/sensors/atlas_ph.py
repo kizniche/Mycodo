@@ -81,20 +81,18 @@ class AtlaspHSensor(AbstractSensor):
             else:
                 logger.error('UART device is not set up.'
                              'Check the log for errors.')
-                ph = None
         elif self.interface == 'I2C':
             if self.atlas_sensor_i2c.setup:
-                ph_str = self.atlas_sensor_i2c.query('R')
-                if 'Error' in ph_str:
-                    raise Exception(
-                        "Sensor read unsuccessful: {err}".format(err=ph_str))
-                elif 'Command succeeded' in ph_str:
-                    ph = float(ph_str[18:24])
+                ph_status, ph_str = self.atlas_sensor_i2c.query('R')
+                if ph_status == 'error':
+                    logger.error("Sensor read unsuccessful: {err}".format(
+                        err=ph_str))
+                elif ph_status == 'success':
+                    ph = float(ph_str)
             else:
                 logger.error('I2C device is not set up.'
                              'Check the log for errors.')
-                ph = None
-            
+
         return ph
 
     def read(self):
