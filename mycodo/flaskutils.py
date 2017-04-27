@@ -1787,7 +1787,7 @@ def sensor_add(form_add_sensor):
         for _ in range(0, form_add_sensor.numberSensors.data):
             new_sensor = Sensor()
             new_sensor.device = form_add_sensor.sensor.data
-            new_sensor.name = '{}'.format(form_add_sensor.sensor.data)
+            new_sensor.name = '{name} Sensor'.format(name=form_add_sensor.sensor.data)
             if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
                 new_sensor.i2c_bus = 1
                 new_sensor.multiplexer_bus = 1

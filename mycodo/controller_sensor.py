@@ -189,6 +189,7 @@ class SensorController(threading.Thread):
         self.pre_relay_setup = False
         self.next_measurement = time.time()
         self.get_new_measurement = False
+        self.trigger_cond = False
         self.measurement_acquired = False
         self.pre_relay_activated = False
         self.pre_relay_timer = time.time()
@@ -357,8 +358,7 @@ class SensorController(threading.Thread):
                         time.sleep(0.1)
 
                 if self.device in ['EDGE']:
-                    # Sensors that are triggered (simple switch,
-                    # PIR motion, reed, hall, etc.)
+                    # Sensors that are triggered (switch, reed, hall, etc.)
                     # Check sensor conditionals if their timers have expired
                     for each_cond_id in self.cond_id:
                         if (self.cond_is_activated[each_cond_id] and
@@ -373,6 +373,7 @@ class SensorController(threading.Thread):
                     # Signal that a measurement needs to be obtained
                     if time.time() > self.next_measurement and not self.get_new_measurement:
                         self.get_new_measurement = True
+                        self.trigger_cond = True
                         self.next_measurement = time.time() + self.period
 
                     # if signaled and a pre relay is set up correctly, turn the
@@ -402,12 +403,17 @@ class SensorController(threading.Thread):
                             self.pre_relay_activated = False
                             self.get_new_measurement = False
 
-                    # Check sensor conditionals if their timers have expired
+                    # Check sensor conditional if:
+                    # 2. A measurement occurred and the conditional period == 0
+                    # or
+                    # 1. A conditional timer has expired and the conditional period != 0
                     for each_cond_id in self.cond_id:
                         if self.cond_is_activated[each_cond_id]:
-                            if time.time() > self.cond_timer[each_cond_id]:
+                            if ((not self.cond_timer[each_cond_id] and self.trigger_cond) or
+                                    time.time() > self.cond_timer[each_cond_id]):
                                 self.cond_timer[each_cond_id] = time.time() + self.cond_if_sensor_period[each_cond_id]
                                 self.check_conditionals(each_cond_id)
+                    self.trigger_cond = False
 
                 time.sleep(0.1)
 

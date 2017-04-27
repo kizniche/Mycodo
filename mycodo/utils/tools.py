@@ -214,7 +214,7 @@ def generate_relay_usage_report():
                     each_relay = relay.filter(Relay.id == key).first()
                     w.writerow([each_relay.id,
                                 each_relay.unique_id,
-                                each_relay.name,
+                                unicode(each_relay.name),
                                 'hours_on',
                                 value['1d']['hours_on'],
                                 value['1w']['hours_on'],
@@ -223,7 +223,7 @@ def generate_relay_usage_report():
                                 value['1y']['hours_on']])
                     w.writerow([each_relay.id,
                                 each_relay.unique_id,
-                                each_relay.name,
+                                unicode(each_relay.name),
                                 'kwh',
                                 value['1d']['kwh'],
                                 value['1w']['kwh'],
@@ -232,7 +232,7 @@ def generate_relay_usage_report():
                                 value['1y']['kwh']])
                     w.writerow([each_relay.id,
                                 each_relay.unique_id,
-                                each_relay.name,
+                                unicode(each_relay.name),
                                 'cost',
                                 value['1d']['cost'],
                                 value['1w']['cost'],
