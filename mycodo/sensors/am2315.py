@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+import time
 from tentacle_pi import AM2315
 from sensorutils import dewpoint
 from .base_sensor import AbstractSensor
@@ -84,12 +85,21 @@ class AM2315Sensor(AbstractSensor):
     def get_measurement(self):
         """ Gets the humidity and temperature """
         self.am = AM2315.AM2315(0x5c, "/dev/i2c-" + self.I2C_bus_number)
-        temperature, humidity, crc_check = self.am.sense()
-        if crc_check != 1:
-            return 1
-        else:
-            dew_pt = dewpoint(temperature, humidity)
-            return dew_pt, humidity, temperature
+
+        # Retry measurement if CRC fails
+        for num_measure in range(3):
+            temperature, humidity, crc_check = self.am.sense()
+            if crc_check != 1:
+                logger.error("Measurement {num} returned failed CRC".format(
+                    num=num_measure))
+                pass
+            else:
+                dew_pt = dewpoint(temperature, humidity)
+                return dew_pt, humidity, temperature
+            time.sleep(3)
+
+        logger.error("All measurements returned failed CRC")
+        return None, None, None
 
     def read(self):
         """
@@ -100,6 +110,8 @@ class AM2315Sensor(AbstractSensor):
         """
         try:
             self._dew_point, self._humidity, self._temperature = self.get_measurement()
+            if self._dew_point is None:
+                return 1
             return  # success - no errors
         except Exception as e:
             logger.error("{cls} raised an exception when taking a reading: "
