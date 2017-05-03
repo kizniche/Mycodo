@@ -21,6 +21,7 @@ import socket
 import subprocess
 import sys
 import time
+import traceback
 import flask_login
 
 from RPi import GPIO
@@ -551,6 +552,12 @@ def static_from_root():
     return send_from_directory(current_app.static_folder, request.path[1:])
 
 
-@blueprint.errorhandler(404)
+@blueprint.app_errorhandler(404)
 def not_found(error):
     return render_template('404.html', error=error), 404
+
+
+@blueprint.app_errorhandler(500)
+def page_error(error):
+    trace = traceback.format_exc()
+    return render_template('500.html', trace=trace), 500
