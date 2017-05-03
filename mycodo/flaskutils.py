@@ -2143,8 +2143,8 @@ def timer_add(form_add_timer, timer_type, display_order):
         elif timer_type == 'timespan':
             new_timer.timer_type = 'timespan'
             new_timer.state = form_add_timer.state.data
-            new_timer.time_start = form_add_timer.timeStart.data
-            new_timer.time_end = form_add_timer.timeEnd.data
+            new_timer.time_start = form_add_timer.timeStartDur.data
+            new_timer.time_end = form_add_timer.timeEndDur.data
         elif timer_type == 'duration':
             if (form_add_timer.durationOn.data <= 0 or
                     form_add_timer.durationOff.data <= 0):
@@ -2195,8 +2195,8 @@ def timer_mod(form_timer):
                 mod_timer.duration_on = form_timer.timeOnDurationOn.data
             elif mod_timer.timer_type == 'timespan':
                 mod_timer.state = form_timer.state.data
-                mod_timer.time_start = form_timer.timeStart.data
-                mod_timer.time_end = form_timer.timeEnd.data
+                mod_timer.time_start = form_timer.timeStartDur.data
+                mod_timer.time_end = form_timer.timeEndDur.data
             elif mod_timer.timer_type == 'duration':
                 mod_timer.duration_on = form_timer.durationOn.data
                 mod_timer.duration_off = form_timer.durationOff.data

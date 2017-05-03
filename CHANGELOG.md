@@ -2,10 +2,15 @@
 
 ### Features
 
-  - Update Korean translations
-  - Add UART support for Atlas Scientific PT-1000 sensor
   - Add support for Atlas Scientific pH Sensor ([#238](https://github.com/kizniche/mycodo/issues/238))
   - Add support for calibrating the Atlas Scientific pH sensor
+  - Add UART support for Atlas Scientific PT-1000 sensor
+  - Update Korean translations
+  - Add measurement retries upon CRC fail for AM2315 sensor ([#246](https://github.com/kizniche/mycodo/issues/246))
+
+### Bugfixes
+
+  - Fix saving of proper start time during timer creation ([#248](https://github.com/kizniche/mycodo/issues/248))
 
 ## 5.0.27 (2017-04-12)
 

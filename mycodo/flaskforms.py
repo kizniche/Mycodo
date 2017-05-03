@@ -952,7 +952,8 @@ class Timer(FlaskForm):
         validators=[DataRequired()]
     )
     timeStart = StringField(lazy_gettext(u'Start Time'))
-    timeEnd = StringField(lazy_gettext(u'End Time'))
+    timeStartDur = StringField(lazy_gettext(u'Start Time'))
+    timeEndDur = StringField(lazy_gettext(u'End Time'))
     timeOnDurationOn = DecimalField(
         lazy_gettext(u'On (sec)'),
         validators=[validators.NumberRange(
