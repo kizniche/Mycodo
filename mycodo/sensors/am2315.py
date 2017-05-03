@@ -90,7 +90,7 @@ class AM2315Sensor(AbstractSensor):
         for num_measure in range(3):
             temperature, humidity, crc_check = self.am.sense()
             if crc_check != 1:
-                logger.error("Measurement {num} returned failed CRC".format(
+                logger.debug("Measurement {num} returned failed CRC".format(
                     num=num_measure))
                 pass
             else:
