@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
-{% set active_page = "ph_calibrate" %}
-{% block title %} - {{_('Calibrate Atlas Scientific pH Sensor')}}{% endblock %}
+{% set active_page = "sensor_calibrate" %}
+{% block title %} - {{_('Sensor Calibration')}}{% if sensor_device_name %}: {{sensor_device_name}}{% endif %}{% endblock %}
 
 {% block head %}
 <script>
@@ -10,10 +10,10 @@ function ph_status() {
   $.ajax(url, {
     success: function(data, responseText, jqXHR) {
       if (jqXHR.status == 204) {
-        document.getElementById("ph_status").innerHTML = "pH: error taking measurement";
+        document.getElementById("ph_status").innerHTML = "{{_('Latest pH measurement')}}: {{_('Error acquiring measurement')}}";
       }
       else {
-        document.getElementById("ph_status").innerHTML = "pH: "+data;
+        document.getElementById("ph_status").innerHTML = "{{_('Latest pH measurement')}}: " + data;
       }
     },
     cache: false
@@ -26,6 +26,7 @@ function startTimer() {
   document.getElementById("timer").style.display = "none";
 
   {% if stage in [2, 3, 4] -%}
+    document.getElementById("ph_status").innerHTML = "{{_('Latest pH measurement')}}: <{{_('Please wait')}}>";
     document.getElementById("ph_status").style.display = "inline-block";
     ph_status();
     var refreshIntervalId = setInterval(function () {
@@ -39,7 +40,7 @@ function startTimer() {
     document.getElementById(notifier).innerHTML = str;
   }
   function toMinuteAndSecond(x) {
-    return "Please wait for sensor to equilibrate: " + Math.floor(x / 60) + ":" + x % 60;
+    return "{{_('Please wait for sensor to equilibrate')}}: " + x + "{{_('seconds')}}";
   }
   function setTimer(remain, actions) {
     (function countdown() {
@@ -111,12 +112,13 @@ function startTimer() {
 
     {% elif stage == 2 %}
 
+      {% if info is None %}
     <p>2. Calibrating Atlas Scientific pH Sensor {{selected_sensor.id}} ({{selected_sensor.name}})</p>
 
     <p>Insert the probe into the pH 7 solution, then click Ready.</p>
 
     <form method="post" action="/atlas_ph_calibrate">
-    <div style="display: none" id="ph_status">pH: Waiting for first measurement</div>
+    <div style="display: none" id="ph_status"></div>
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
       <div id="proceed_stage_2">
@@ -142,7 +144,7 @@ function startTimer() {
     <p>Insert the probe into the pH 4 solution, then click Ready.</p>
 
     <form method="post" action="/atlas_ph_calibrate">
-    <div style="display: none" id="ph_status">pH: Waiting for first measurement</div>
+    <div style="display: none" id="ph_status"></div>
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
       <div id="proceed_stage_2">
@@ -168,7 +170,7 @@ function startTimer() {
     <p>Insert the probe into the pH 10 solution, then click Ready.</p>
 
     <form method="post" action="/atlas_ph_calibrate">
-    <div style="display: none" id="ph_status">pH: Waiting for first measurement</div>
+    <div style="display: none" id="ph_status"></div>
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
       <div id="proceed_stage_2">
@@ -187,7 +189,13 @@ function startTimer() {
 
     {% elif stage == 5 %}
 
-    <p>5. Sensor {{selected_sensor.id}} ({{selected_sensor.name}}) has been successfully calibrated.</p>
+    <p>5. Sensor {{selected_sensor.id}} ({{selected_sensor.name}}) calibration: {% if complete_with_error %}Fail{% else %}Success{% endif %}.</p>
+
+    {% if complete_with_error %}
+      <p>There was an error during the final calibration stage. This was the error returned: {{complete_with_error}}</p>
+    {% else %}
+      <p>You may now remove the sensor from the calibration fluid and either use it or submerge it in its storage fluid.</p>
+    {% endif %}
 
     {% endif %}
 

@@ -61,6 +61,7 @@ from config import MEASUREMENTS
 from config import MEASUREMENT_UNITS
 from config import PATH_CAMERAS
 from config import RESTORE_LOG_FILE
+from config import SENSORS
 from config import UPGRADE_LOG_FILE
 from config import USAGE_REPORTS_PATH
 
@@ -232,7 +233,10 @@ def page_camera():
 @blueprint.route('/atlas_ph_calibrate_measure/<sensor_id>')
 @flask_login.login_required
 def atlas_ph_calibrate_measure(sensor_id):
-    """Return measurements from the pH sensor during calibration"""
+    """
+    Acquire a measurement from the Atlas Scientific pH sensor and return it
+    Used during calibration to display the current pH to the user
+    """
     if not flaskutils.user_has_permission('edit_controllers'):
         return redirect(url_for('page_routes.page_atlas_ph_calibrate'))
 
@@ -255,7 +259,8 @@ def atlas_ph_calibrate_measure(sensor_id):
             ph = lines[0]
             logger.debug('Value[0] is float: {val}'.format(val=ph))
         else:
-            error = 'Value[0] is not float or "check probe": {val}'.format(val=lines[0])
+            error = 'Value[0] is not float or "check probe": {val}'.format(
+                val=lines[0])
     elif selected_sensor.interface == 'I2C':
         ph_sensor_i2c = AtlasScientificI2C(
             i2c_address=selected_sensor.i2c_address,
@@ -273,11 +278,141 @@ def atlas_ph_calibrate_measure(sensor_id):
         return ph
 
 
+def calibrate(sensor_sel, command, temperature=None):
+    """
+    Determine and send the correct command to an Atlas Scientific sensor,
+    based on the board version
+    """
+    cmd_send = None
+    info = None
+    ph_sensor_uart = None
+    ph_sensor_i2c = None
+
+    if sensor_sel.interface == 'UART':
+        ph_sensor_uart = AtlasScientificUART(
+            serial_device=sensor_sel.device_loc,
+            baudrate=sensor_sel.baud_rate)
+    elif sensor_sel.interface == 'I2C':
+        ph_sensor_i2c = AtlasScientificI2C(
+            i2c_address=sensor_sel.i2c_address,
+            i2c_bus=sensor_sel.i2c_bus)
+
+    try:
+        if sensor_sel.interface == 'UART':
+            ph_sensor_uart.send_cmd('i')
+            time.sleep(1.3)
+            info = ph_sensor_uart.read_lines()[0]
+        elif sensor_sel.interface == 'I2C':
+            info = ph_sensor_i2c.query('i')
+    except TypeError:
+        info = None
+    except Exception:
+        info = None
+
+    if info is not None:
+        flash("Device Info: {info}".format(info=info), "info")
+
+    # Check first letter of info response
+    # "P" indicates a legacy board version
+    if info is None:
+        return 1, "Error: Unable to retrieve device info. Ths indicates the " \
+               "device was not properly initialized."
+    elif info[0] == 'P':
+        version = 1  # Older board version
+    else:
+        version = 2  # Newer board version
+    flash("Detected Version: {ver}".format(ver=version), "info")
+
+    # Formulate command based on calibration step and board version.
+    # Legacy boards requires a different command than recent boards.
+    # Some commands are not necessary for recent boards and will not
+    # generate a response.
+    if command == 'temperature' and temperature is not None:
+        if version == 1:
+            cmd_send = temperature
+        elif version == 2:
+            cmd_send = 'T,{temp}'.format(temp=temperature)
+    elif command == 'continuous':
+        if version == 1:
+            cmd_send = 'C'
+    elif command == 'low':
+        if version == 1:
+            cmd_send = 'F'
+        elif version == 2:
+            cmd_send = 'Cal,low,4.00'
+    elif command == 'mid':
+        if version == 1:
+            cmd_send = 'S'
+        elif version == 2:
+            cmd_send = 'Cal,mid,7.00'
+    elif command == 'high':
+        if version == 1:
+            cmd_send = 'T'
+        elif version == 2:
+            cmd_send = 'Cal,high,10.00'
+    elif command == 'end':
+        if version == 1:
+            cmd_send = 'E'
+
+    # Send the command (if not None) and return the response
+    if cmd_send is not None:
+        if sensor_sel.interface == 'UART':
+            ph_sensor_uart.send_cmd(cmd_send)
+            time.sleep(1.3)
+            return 0, ph_sensor_uart.read_lines()
+        elif sensor_sel.interface == 'I2C':
+            return 0, ph_sensor_i2c.query(cmd_send)
+    else:
+        return 0, "No message"
+
+
+def dual_commands_to_sensor(sensor_sel, first_cmd, amount,
+                            second_cmd, current_stage):
+    """
+    Handles the Atlas Scientific pH sensor calibration:
+    Sends two consecutive commands to the sensor board
+    Denies advancement to the next stage if any commands fail
+    Permits advancement to the next stage if all commands succeed
+    Prints any errors or successes
+    """
+    return_error = None
+    set_temp = None
+
+    if first_cmd == 'temperature':
+        unit = 'C'
+        set_temp = amount
+    else:
+        unit = 'pH'
+
+    first_status, first_return_str = calibrate(
+        sensor_sel, first_cmd, temperature=set_temp)
+    info_str = "Calibrate {lvl} ({amt} {unit}) Response: {resp}".format(
+        lvl=first_cmd, amt=amount, unit=unit, resp=first_return_str)
+
+    if first_status:
+        flash(info_str, "error")
+        return_error = first_return_str
+        return_stage = current_stage
+    else:
+        flash(info_str, "success")
+        second_status, second_return_str = calibrate(sensor_sel, second_cmd)
+        second_info_str = "Command to sensor: {cmd}: {resp}".format(
+            cmd=second_cmd, resp=second_return_str)
+        if second_status:
+            flash(second_info_str, "error")
+            return_error = second_return_str
+            return_stage = current_stage
+        else:
+            flash(second_info_str, "success")
+            return_stage = current_stage + 1
+    return return_stage, return_error
+
+
 @blueprint.route('/atlas_ph_calibrate', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_atlas_ph_calibrate():
     """
-    Step-by-step tool for calibrating the Atlas Scientific pH Sensor
+    Step-by-step tool for calibrating the Atlas Scientific pH sensor
     """
     if not flaskutils.user_has_permission('edit_controllers'):
         return redirect(url_for('general_routes.home'))
@@ -286,86 +421,8 @@ def page_atlas_ph_calibrate():
     sensor = Sensor.query.filter_by(device='ATLAS_PH_UART').all()
     stage = 0
     selected_sensor = None
-
-    # TODO: This function may be moved
-    def calibrate(sensor_sel, command, temperature=None):
-        """
-        Determine and send the correct command based on the board version
-        """
-        ph_sensor_uart = None
-        ph_sensor_i2c = None
-        if sensor_sel.interface == 'UART':
-            ph_sensor_uart = AtlasScientificUART(
-                serial_device=sensor_sel.device_loc,
-                baudrate=sensor_sel.baud_rate)
-        elif sensor_sel.interface == 'I2C':
-            ph_sensor_i2c = AtlasScientificI2C(
-                i2c_address=sensor_sel.i2c_address,
-                i2c_bus=sensor_sel.i2c_bus)
-
-        info = None
-        if sensor_sel.interface == 'UART':
-            ph_sensor_uart.send_cmd('i')
-            time.sleep(1.3)
-            try:
-                info = ph_sensor_uart.read_lines()[0]
-            except TypeError:
-                info = None
-        elif sensor_sel.interface == 'I2C':
-            info = ph_sensor_i2c.query('i')
-        flash("Device Info: {info}".format(info=info), "info")
-
-        # Check first letter of info response
-        # "P" indicates a legacy board version
-        if info is None:
-            version = 1  # TODO: Change this to produce error
-            return "Error: Unable to retrieve device info. Ths indicates the device was not properly initialized."
-        elif info[0] == 'P':
-            version = 1
-        else:
-            version = 2
-        flash("Detected Version: {ver}".format(ver=version), "info")
-
-        # Formulate command based on calibration step and board version.
-        # Legacy boards requires a different command than recent boards.
-        # Some commands are not necessary for recent boards and will not
-        # generate a response.
-        cmd_send = None
-        if command == 'temp' and temperature is not None:
-            if version == 1:
-                cmd_send = temperature
-            elif version == 2:
-                cmd_send = 'T,{temp}'.format(temp=temperature)
-        elif command == 'continuous':
-            if version == 1:
-                cmd_send = 'C'
-        elif command == 'low':
-            if version == 1:
-                cmd_send = 'F'
-            elif version == 2:
-                cmd_send = 'Cal,low,4.00'
-        elif command == 'mid':
-            if version == 1:
-                cmd_send = 'S'
-            elif version == 2:
-                cmd_send = 'Cal,mid,7.00'
-        elif command == 'high':
-            if version == 1:
-                cmd_send = 'T'
-            elif version == 2:
-                cmd_send = 'Cal,high,10.00'
-        elif command == 'end':
-            if version == 1:
-                cmd_send = 'E'
-
-        # Send the command (if not None) and return the response
-        if cmd_send is not None:
-            if sensor_sel.interface == 'UART':
-                ph_sensor_uart.send_cmd(cmd_send)
-                time.sleep(1.3)
-                return ph_sensor_uart.read_lines()
-            elif sensor_sel.interface == 'I2C':
-                return ph_sensor_i2c.query(cmd_send)
+    sensor_device_name = None
+    complete_with_error = None
 
     if (form_ph_calibrate.go_to_stage_2.data or
             form_ph_calibrate.go_to_stage_3.data or
@@ -373,18 +430,24 @@ def page_atlas_ph_calibrate():
             form_ph_calibrate.go_to_stage_5.data):
         selected_sensor = Sensor.query.filter_by(
             unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
+        for each_sensor in SENSORS:
+            if selected_sensor.device == each_sensor[0]:
+                sensor_device_name = each_sensor[1]
 
     # Select sensor
-    if form_ph_calibrate.go_to_stage_1.data:
+    elif form_ph_calibrate.go_to_stage_1.data:
         stage = 1
         selected_sensor = Sensor.query.filter_by(
             unique_id=form_ph_calibrate.selected_sensor_id.data).first()
         if not selected_sensor:
             flash('Sensor not found: {}'.format(
                 form_ph_calibrate.selected_sensor_id.data), 'error')
+        else:
+            for index, each_sensor in enumerate(SENSORS):
+                if selected_sensor.device == each_sensor[0]:
+                    sensor_device_name = each_sensor[1]
 
-    # Set temperature
-    elif form_ph_calibrate.go_to_stage_2.data:
+    if form_ph_calibrate.go_to_stage_2.data:
         if form_ph_calibrate.temperature.data is None:
             flash(gettext(u"A valid temperature is required: %(temp)s is invalid.",
                           temp=form_ph_calibrate.temperature.data), "error")
@@ -392,37 +455,23 @@ def page_atlas_ph_calibrate():
         else:
             temp = '{temp:.2f}'.format(
                 temp=form_ph_calibrate.temperature.data)
-            flash("Temperature Response: {resp}".format(
-                resp=calibrate(selected_sensor,
-                               'temp',
-                               temperature=temp)), "info")
-            calibrate(selected_sensor, 'continuous')
-            stage = 2
-
-    # Calibrate Mid
+            stage, complete_with_error = dual_commands_to_sensor(
+                selected_sensor, 'temperature', temp, 'continuous', 1)
     elif form_ph_calibrate.go_to_stage_3.data:
-        flash("Calibrate Mid (7.0 pH) Response: {resp}".format(
-            resp=calibrate(selected_sensor, 'mid')), "info")
-        calibrate(selected_sensor, 'continuous')
-        stage = 3
-
-    # Calibrate Low
+        stage, complete_with_error = dual_commands_to_sensor(
+            selected_sensor, 'mid', '7.0', 'continuous', 2)
     elif form_ph_calibrate.go_to_stage_4.data:
-        flash("Calibrate Low (4.0 pH) Response: {resp}".format(
-            resp=calibrate(selected_sensor, 'low')), "info")
-        calibrate(selected_sensor, 'continuous')
-        stage = 4
-
-    # Calibrate High
+        stage, complete_with_error = dual_commands_to_sensor(
+            selected_sensor, 'low', '4.0', 'continuous', 3)
     elif form_ph_calibrate.go_to_stage_5.data:
-        flash("Calibrate High (10.0 pH) Response: {resp}".format(
-            resp=calibrate(selected_sensor, 'high')), "info")
-        calibrate(selected_sensor, 'end')
-        stage = 5  # End
+        stage, complete_with_error = dual_commands_to_sensor(
+            selected_sensor, 'high', '10.0', 'end', 4)
 
     return render_template('tools/atlas_ph_calibrate.html',
+                           complete_with_error=complete_with_error,
                            form_ph_calibrate=form_ph_calibrate,
                            sensor=sensor,
+                           sensor_device_name=sensor_device_name,
                            selected_sensor=selected_sensor,
                            stage=stage)
 
