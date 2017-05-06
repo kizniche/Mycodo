@@ -10,68 +10,59 @@ import subprocess
 import sys
 import time
 from collections import OrderedDict
-
-from flask import (
-    flash,
-    jsonify,
-    redirect,
-    render_template,
-    request,
-    url_for
-)
 from flask_babel import gettext
-from flask.blueprints import Blueprint
 from w1thermsensor import W1ThermSensor
+
+from flask import flash
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import url_for
+
+from flask.blueprints import Blueprint
+
 from mycodo.mycodo_flask.extensions import db
-# Classes
-from mycodo.databases.models import (
-    AlembicVersion,
-    Camera,
-    Conditional,
-    ConditionalActions,
-    DisplayOrder,
-    Graph,
-    LCD,
-    Method,
-    Misc,
-    PID,
-    Relay,
-    Sensor,
-    Timer,
-    User
-)
-from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
-from mycodo.devices.camera import CameraStream
+from mycodo.mycodo_flask.general_routes import inject_mycodo_version
+from mycodo import flaskforms
+from mycodo import flaskutils
 from mycodo_client import DaemonControl
 from mycodo_client import daemon_active
 
-# Functions
-from mycodo import flaskforms
-from mycodo import flaskutils
-from mycodo.mycodo_flask.general_routes import (
-    inject_mycodo_version
-)
+from mycodo.databases.models import AlembicVersion
+from mycodo.databases.models import Camera
+from mycodo.databases.models import Conditional
+from mycodo.databases.models import ConditionalActions
+from mycodo.databases.models import DisplayOrder
+from mycodo.databases.models import Graph
+from mycodo.databases.models import LCD
+from mycodo.databases.models import Method
+from mycodo.databases.models import Misc
+from mycodo.databases.models import PID
+from mycodo.databases.models import Relay
+from mycodo.databases.models import Sensor
+from mycodo.databases.models import Timer
+from mycodo.databases.models import User
+
+from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
+from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
+from mycodo.devices.camera import CameraStream
 from mycodo.devices.camera import camera_record
 from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import str_is_float
 from mycodo.utils.tools import return_relay_usage
 
-
-# Config
-from config import (
-    CONDITIONAL_ACTIONS,
-    DAEMON_LOG_FILE,
-    DAEMON_PID_FILE,
-    HTTP_LOG_FILE,
-    INSTALL_DIRECTORY,
-    LOGIN_LOG_FILE,
-    MEASUREMENTS,
-    MEASUREMENT_UNITS,
-    PATH_CAMERAS,
-    RESTORE_LOG_FILE,
-    UPGRADE_LOG_FILE,
-    USAGE_REPORTS_PATH
-)
+from config import CONDITIONAL_ACTIONS
+from config import DAEMON_LOG_FILE
+from config import DAEMON_PID_FILE
+from config import HTTP_LOG_FILE
+from config import INSTALL_DIRECTORY
+from config import LOGIN_LOG_FILE
+from config import MEASUREMENTS
+from config import MEASUREMENT_UNITS
+from config import PATH_CAMERAS
+from config import RESTORE_LOG_FILE
+from config import UPGRADE_LOG_FILE
+from config import USAGE_REPORTS_PATH
 
 logger = logging.getLogger('mycodo.mycodo_flask.pages')
 
@@ -219,7 +210,8 @@ def page_camera():
             latest_time_lapse_img_full_path = None
         if latest_time_lapse_img_full_path:
             ts = os.path.getmtime(latest_time_lapse_img_full_path)
-            latest_img_tl_ts[each_camera.id] = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
+            latest_img_tl_ts[each_camera.id] = datetime.datetime.fromtimestamp(
+                ts).strftime("%Y-%m-%d %H:%M:%S")
             latest_img_tl[each_camera.id] = os.path.basename(
                 latest_time_lapse_img_full_path)
         else:
@@ -245,20 +237,41 @@ def atlas_ph_calibrate_measure(sensor_id):
         return redirect(url_for('page_routes.page_atlas_ph_calibrate'))
 
     selected_sensor = Sensor.query.filter_by(unique_id=sensor_id).first()
+
+    ph = None
+    error = None
     if selected_sensor.interface == 'UART':
         ph_sensor_uart = AtlasScientificUART(
             serial_device=selected_sensor.device_loc,
             baudrate=selected_sensor.baud_rate)
         ph_sensor_uart.send_cmd('R')
         time.sleep(1.3)
-        return jsonify({'lines': ph_sensor_uart.read_lines()})
+        lines = ph_sensor_uart.read_lines()
+        logger.debug("All Lines: {lines}".format(lines=lines))
+
+        if 'check probe' in lines:
+            error = '"check probe" returned from sensor'
+        elif str_is_float(lines[0]):
+            ph = float(lines[0])
+            logger.debug('Value[0] is float: {val}'.format(val=ph))
+        else:
+            ph = lines[0]
+            error = 'Value[0] is not float or "check probe": {val}'.format(val=ph)
     elif selected_sensor.interface == 'I2C':
         ph_sensor_i2c = AtlasScientificI2C(
             i2c_address=selected_sensor.i2c_address,
             i2c_bus=selected_sensor.i2c_bus)
-        return jsonify({'lines': ph_sensor_i2c.query('R')})
+        ph_status, ph_str = ph_sensor_i2c.query('R')
+        if ph_status == 'error':
+            error = "Sensor read unsuccessful: {err}".format(err=ph_str)
+        elif ph_status == 'success':
+            ph = float(ph_str)
+
+    if error:
+        logger.error(error)
+        return error, 204
     else:
-        return '', 204
+        return ph
 
 
 @blueprint.route('/atlas_ph_calibrate', methods=('GET', 'POST'))
@@ -267,6 +280,9 @@ def page_atlas_ph_calibrate():
     """
     Step-by-step tool for calibrating the Atlas Scientific pH Sensor
     """
+    if not flaskutils.user_has_permission('edit_controllers'):
+        return redirect(url_for('general_routes.home'))
+
     form_ph_calibrate = flaskforms.AtlasPHCalibrate()
     sensor = Sensor.query.filter_by(device='ATLAS_PH_UART').all()
     stage = 0
