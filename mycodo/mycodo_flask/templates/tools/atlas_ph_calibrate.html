@@ -5,20 +5,20 @@
 {% block head %}
 <script>
 {% if stage in [2, 3, 4] -%}
-  function ph_status() {
-    var url = '/atlas_ph_calibrate_measure/'+{{selected_sensor.unique_id}};
-    $.ajax(url, {
-      success: function(data, responseText, jqXHR) {
-        if (jqXHR.status == 204) {
-          document.getElementById("ph_status").innerHTML = "pH: error taking measurement";
-        }
-        else {
-          document.getElementById("ph_status").innerHTML = "pH: "+data;
-        }
-      },
-      cache: false
-    });
-  }
+function ph_status() {
+  var url = '/atlas_ph_calibrate_measure/{{selected_sensor.unique_id}}';
+  $.ajax(url, {
+    success: function(data, responseText, jqXHR) {
+      if (jqXHR.status == 204) {
+        document.getElementById("ph_status").innerHTML = "pH: error taking measurement";
+      }
+      else {
+        document.getElementById("ph_status").innerHTML = "pH: "+data;
+      }
+    },
+    cache: false
+  });
+}
 {% endif %}
 
 function startTimer() {
@@ -34,7 +34,7 @@ function startTimer() {
     }, 5000);
   {% endif %}
 
-  timer = 5;
+  timer = 120;
   function display(notifier, str) {
     document.getElementById(notifier).innerHTML = str;
   }
@@ -116,6 +116,7 @@ function startTimer() {
     <p>Insert the probe into the pH 7 solution, then click Ready.</p>
 
     <form method="post" action="/atlas_ph_calibrate">
+    <div style="display: none" id="ph_status">pH: Waiting for first measurement</div>
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
       <div id="proceed_stage_2">
@@ -129,7 +130,6 @@ function startTimer() {
         <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="Ready"/>
       </div>
     </div>
-    <div style="display: none" id="ph_status">pH: Waiting for first measurement</div>
     <div id="countdown"></div>
     </form>
 
@@ -142,6 +142,7 @@ function startTimer() {
     <p>Insert the probe into the pH 4 solution, then click Ready.</p>
 
     <form method="post" action="/atlas_ph_calibrate">
+    <div style="display: none" id="ph_status">pH: Waiting for first measurement</div>
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
       <div id="proceed_stage_2">
@@ -155,7 +156,6 @@ function startTimer() {
         <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="Ready"/>
       </div>
     </div>
-    <div style="display: none" id="ph_status">pH: Waiting for first measurement</div>
     <div id="countdown"></div>
     </form>
 
@@ -168,6 +168,7 @@ function startTimer() {
     <p>Insert the probe into the pH 10 solution, then click Ready.</p>
 
     <form method="post" action="/atlas_ph_calibrate">
+    <div style="display: none" id="ph_status">pH: Waiting for first measurement</div>
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
       <div id="proceed_stage_2">
@@ -181,7 +182,6 @@ function startTimer() {
         <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="Ready"/>
       </div>
     </div>
-    <div style="display: none" id="ph_status">pH: Waiting for first measurement</div>
     <div id="countdown"></div>
     </form>
 

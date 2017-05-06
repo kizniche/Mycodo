@@ -288,14 +288,20 @@ def page_atlas_ph_calibrate():
         if sensor_sel.interface == 'UART':
             ph_sensor_uart.send_cmd('i')
             time.sleep(1.3)
-            info = ph_sensor_uart.read_lines()[0]
+            try:
+                info = ph_sensor_uart.read_lines()[0]
+            except TypeError:
+                info = None
         elif sensor_sel.interface == 'I2C':
             info = ph_sensor_i2c.query('i')
         flash("Device Info: {info}".format(info=info), "info")
 
         # Check first letter of info response
         # "P" indicates a legacy board version
-        if info[0] == 'P':
+        if info is None:
+            version = 1  # TODO: Change this to produce error
+            return "Error: Unable to retrieve device info. Ths indicates the device was not properly initialized."
+        elif info[0] == 'P':
             version = 1
         else:
             version = 2

@@ -54,6 +54,9 @@ class AtlasScientificUART:
         except SerialException:
             logger.exception('Read Lines')
             return None
+        except AttributeError:
+            logger.error('UART device not initialized')
+            return None
 
     def send_cmd(self, cmd):
         """
@@ -67,7 +70,10 @@ class AtlasScientificUART:
             self.ser.write(buf)
             return True
         except SerialException:
-            logger.exception('Send CMD')
+            logger.error('Send CMD')
+            return None
+        except AttributeError:
+            logger.error('UART device not initialized')
             return None
 
 
