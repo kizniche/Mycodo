@@ -30,7 +30,7 @@ function startTimer() {
     ph_status();
     var refreshIntervalId = setInterval(function () {
       // Update pH every 5 seconds
-      check_daemon_active();
+      ph_status();
     }, 5000);
   {% endif %}
 
