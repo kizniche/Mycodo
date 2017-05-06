@@ -13,6 +13,7 @@ from collections import OrderedDict
 
 from flask import (
     flash,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -240,6 +241,9 @@ def page_camera():
 @flask_login.login_required
 def atlas_ph_calibrate_measure(sensor_id):
     """Return measurements from the pH sensor during calibration"""
+    if not flaskutils.user_has_permission('edit_controllers'):
+        return redirect(url_for('page_routes.page_atlas_ph_calibrate'))
+
     selected_sensor = Sensor.query.filter_by(unique_id=sensor_id).first()
     if selected_sensor.interface == 'UART':
         ph_sensor_uart = AtlasScientificUART(
@@ -247,12 +251,12 @@ def atlas_ph_calibrate_measure(sensor_id):
             baudrate=selected_sensor.baud_rate)
         ph_sensor_uart.send_cmd('R')
         time.sleep(1.3)
-        return ph_sensor_uart.read_lines()
+        return jsonify({'lines': ph_sensor_uart.read_lines()})
     elif selected_sensor.interface == 'I2C':
         ph_sensor_i2c = AtlasScientificI2C(
             i2c_address=selected_sensor.i2c_address,
             i2c_bus=selected_sensor.i2c_bus)
-        return ph_sensor_i2c.query('R')
+        return jsonify({'lines': ph_sensor_i2c.query('R')})
     else:
         return '', 204
 
