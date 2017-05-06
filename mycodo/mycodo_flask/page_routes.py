@@ -252,11 +252,10 @@ def atlas_ph_calibrate_measure(sensor_id):
         if 'check probe' in lines:
             error = '"check probe" returned from sensor'
         elif str_is_float(lines[0]):
-            ph = float(lines[0])
+            ph = lines[0]
             logger.debug('Value[0] is float: {val}'.format(val=ph))
         else:
-            ph = lines[0]
-            error = 'Value[0] is not float or "check probe": {val}'.format(val=ph)
+            error = 'Value[0] is not float or "check probe": {val}'.format(val=lines[0])
     elif selected_sensor.interface == 'I2C':
         ph_sensor_i2c = AtlasScientificI2C(
             i2c_address=selected_sensor.i2c_address,
@@ -265,7 +264,7 @@ def atlas_ph_calibrate_measure(sensor_id):
         if ph_status == 'error':
             error = "Sensor read unsuccessful: {err}".format(err=ph_str)
         elif ph_status == 'success':
-            ph = float(ph_str)
+            ph = ph_str
 
     if error:
         logger.error(error)
