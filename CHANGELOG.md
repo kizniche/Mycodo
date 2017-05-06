@@ -8,6 +8,7 @@
   - Update Korean translations
   - Add measurement retries upon CRC fail for AM2315 sensor ([#246](https://github.com/kizniche/mycodo/issues/246))
   - Add page error handler that provides full traceback when the Web UI crashes
+  - Add pH monitor to pH sensor calibration procedure
 
 ### Bugfixes
 

@@ -4,11 +4,37 @@
 
 {% block head %}
 <script>
+{% if stage in [2, 3, 4] -%}
+  function ph_status() {
+    var url = '/atlas_ph_calibrate_measure/'+{{selected_sensor.unique_id}};
+    $.ajax(url, {
+      success: function(data, responseText, jqXHR) {
+        if (jqXHR.status == 204) {
+          document.getElementById("ph_status").innerHTML = "pH: error taking measurement";
+        }
+        else {
+          document.getElementById("ph_status").innerHTML = "pH: "+data;
+        }
+      },
+      cache: false
+    });
+  }
+{% endif %}
+
 function startTimer() {
   document.getElementById("countdown").style.display = "inline-block";
   document.getElementById("timer").style.display = "none";
+
+  {% if stage in [2, 3, 4] -%}
+    document.getElementById("ph_status").style.display = "inline-block";
+    ph_status();
+    var refreshIntervalId = setInterval(function () {
+      // Update pH every 5 seconds
+      check_daemon_active();
+    }, 5000);
+  {% endif %}
+
   timer = 5;
-  var numericExpression = /^[0-9]+$/;
   function display(notifier, str) {
     document.getElementById(notifier).innerHTML = str;
   }
@@ -24,6 +50,9 @@ function startTimer() {
   }
   setTimer(timer, {
     0: function () {
+      {% if stage in [2, 3, 4] -%}
+        clearInterval(refreshIntervalId);
+      {% endif %}
       document.getElementById("go_to_next_stage").style.display = "inline-block";
       document.getElementById("countdown").style.display = "none";
     }
@@ -100,6 +129,7 @@ function startTimer() {
         <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="Ready"/>
       </div>
     </div>
+    <div style="display: none" id="ph_status">pH: Waiting for first measurement</div>
     <div id="countdown"></div>
     </form>
 
@@ -125,6 +155,7 @@ function startTimer() {
         <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="Ready"/>
       </div>
     </div>
+    <div style="display: none" id="ph_status">pH: Waiting for first measurement</div>
     <div id="countdown"></div>
     </form>
 
@@ -150,6 +181,7 @@ function startTimer() {
         <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="Ready"/>
       </div>
     </div>
+    <div style="display: none" id="ph_status">pH: Waiting for first measurement</div>
     <div id="countdown"></div>
     </form>
 

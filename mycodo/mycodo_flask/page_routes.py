@@ -39,6 +39,8 @@ from mycodo.databases.models import (
     Timer,
     User
 )
+from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
+from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.devices.camera import CameraStream
 from mycodo_client import DaemonControl
 from mycodo_client import daemon_active
@@ -234,6 +236,27 @@ def page_camera():
                            time_now=time_now)
 
 
+@blueprint.route('/atlas_ph_calibrate_measure/<sensor_id>')
+@flask_login.login_required
+def atlas_ph_calibrate_measure(sensor_id):
+    """Return measurements from the pH sensor during calibration"""
+    selected_sensor = Sensor.query.filter_by(unique_id=sensor_id).first()
+    if selected_sensor.interface == 'UART':
+        ph_sensor_uart = AtlasScientificUART(
+            serial_device=selected_sensor.device_loc,
+            baudrate=selected_sensor.baud_rate)
+        ph_sensor_uart.send_cmd('R')
+        time.sleep(1.3)
+        return ph_sensor_uart.read_lines()
+    elif selected_sensor.interface == 'I2C':
+        ph_sensor_i2c = AtlasScientificI2C(
+            i2c_address=selected_sensor.i2c_address,
+            i2c_bus=selected_sensor.i2c_bus)
+        return ph_sensor_i2c.query('R')
+    else:
+        return '', 204
+
+
 @blueprint.route('/atlas_ph_calibrate', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_atlas_ph_calibrate():
@@ -244,15 +267,12 @@ def page_atlas_ph_calibrate():
     sensor = Sensor.query.filter_by(device='ATLAS_PH_UART').all()
     stage = 0
     selected_sensor = None
-    interface = 'UART'
 
     # TODO: This function may be moved
     def calibrate(sensor_sel, command, temperature=None):
         """
         Determine and send the correct command based on the board version
         """
-        from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-        from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         ph_sensor_uart = None
         ph_sensor_i2c = None
         if sensor_sel.interface == 'UART':
@@ -261,15 +281,15 @@ def page_atlas_ph_calibrate():
                 baudrate=sensor_sel.baud_rate)
         elif sensor_sel.interface == 'I2C':
             ph_sensor_i2c = AtlasScientificI2C(
-                address=sensor_sel.i2c_address,
-                bus=sensor_sel.i2c_bus)
+                i2c_address=sensor_sel.i2c_address,
+                i2c_bus=sensor_sel.i2c_bus)
 
         info = None
-        if interface == 'UART':
+        if sensor_sel.interface == 'UART':
             ph_sensor_uart.send_cmd('i')
             time.sleep(1.3)
             info = ph_sensor_uart.read_lines()[0]
-        elif interface == 'I2C':
+        elif sensor_sel.interface == 'I2C':
             info = ph_sensor_i2c.query('i')
         flash("Device Info: {info}".format(info=info), "info")
 
@@ -315,11 +335,11 @@ def page_atlas_ph_calibrate():
 
         # Send the command (if not None) and return the response
         if cmd_send is not None:
-            if interface == 'UART':
+            if sensor_sel.interface == 'UART':
                 ph_sensor_uart.send_cmd(cmd_send)
                 time.sleep(1.3)
                 return ph_sensor_uart.read_lines()
-            elif interface == 'I2C':
+            elif sensor_sel.interface == 'I2C':
                 return ph_sensor_i2c.query(cmd_send)
 
     if (form_ph_calibrate.go_to_stage_2.data or
