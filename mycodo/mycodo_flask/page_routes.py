@@ -315,8 +315,8 @@ def calibrate(sensor_sel, command, temperature=None):
     # Check first letter of info response
     # "P" indicates a legacy board version
     if info is None:
-        return 1, "Error: Unable to retrieve device info. Ths indicates the " \
-               "device was not properly initialized."
+        return 1, gettext("Unable to retrieve device info (this indicates the "
+                          "device was not properly initialized or connected)")
     elif info[0] == 'P':
         version = 1  # Older board version
     else:
@@ -386,8 +386,8 @@ def dual_commands_to_sensor(sensor_sel, first_cmd, amount,
 
     first_status, first_return_str = calibrate(
         sensor_sel, first_cmd, temperature=set_temp)
-    info_str = "Calibrate {lvl} ({amt} {unit}) Response: {resp}".format(
-        lvl=first_cmd, amt=amount, unit=unit, resp=first_return_str)
+    info_str = "{act}: {lvl} ({amt} {unit}): {resp}".format(
+        act=gettext('Calibration'), lvl=first_cmd, amt=amount, unit=unit, resp=first_return_str)
 
     if first_status:
         flash(info_str, "error")
@@ -396,8 +396,8 @@ def dual_commands_to_sensor(sensor_sel, first_cmd, amount,
     else:
         flash(info_str, "success")
         second_status, second_return_str = calibrate(sensor_sel, second_cmd)
-        second_info_str = "Command to sensor: {cmd}: {resp}".format(
-            cmd=second_cmd, resp=second_return_str)
+        second_info_str = "{act}: {cmd}: {resp}".format(
+            act=gettext('Command'), cmd=second_cmd, resp=second_return_str)
         if second_status:
             flash(second_info_str, "error")
             return_error = second_return_str

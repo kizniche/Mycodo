@@ -136,7 +136,7 @@
                 <li{% if active_page == 'lcd' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_lcd')}}"><i class="fa fa-desktop"></i>&nbsp;&nbsp;{{_('LCDs')}}</a></li>
                 <li{% if active_page == 'camera' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_camera')}}"><i class="glyphicon glyphicon-camera"></i>&nbsp;&nbsp;{{_('Cameras')}}</a></li>
                 <li{% if active_page == 'export' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_export')}}"><i class="glyphicon glyphicon-save-file"></i>&nbsp;&nbsp;{{_('Export Measurements')}}</a></li>
-                <li{% if active_page == 'sensor_calibrate' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_atlas_ph_calibrate')}}"><i class="fa fa-balance-scale"></i>&nbsp;&nbsp;{{_('Sensor Calibration')}}</a></li>
+                <li{% if active_page == 'sensor_calibrate' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_atlas_ph_calibrate')}}"><i class="fa fa-balance-scale"></i>&nbsp;&nbsp;{{_('Calibration')}}: {{_('Sensor')}}</a></li>
               </ul>
             </li>
           </ul>

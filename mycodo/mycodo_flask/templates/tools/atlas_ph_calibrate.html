@@ -94,9 +94,15 @@ function startTimer() {
 
     {% elif stage == 1 %}
 
-    <p>1. Calibrating Atlas Scientific pH Sensor {{selected_sensor.id}} ({{selected_sensor.name}})</p>
+      {% if complete_with_error %}
+    <p>
+      {{_('Error')}}:
+      <br>{{complete_with_error}}
+    </p>
+      {% else %}
 
-    <p>Ensure all your pH calibration solutions are the same temperature. Enter the temperature (in Celsius) of your solutions, then click Continue.</p>
+    <p>1. {{_('Calibration')}}{% if sensor_device_name %}: {{sensor_device_name}}{% endif %} {{selected_sensor.id}} ({{selected_sensor.name}})</p>
+    <p>{{_('Ensure all pH calibration solutions are the same temperature. Enter the temperature (in Celsius) of your solutions, then click Continue.')}}</p>
 
     <form method="post" action="/atlas_ph_calibrate">
     <div class="row small-gutters">
@@ -110,12 +116,19 @@ function startTimer() {
     </div>
     </form>
 
+      {% endif %}
+
     {% elif stage == 2 %}
 
-      {% if info is None %}
-    <p>2. Calibrating Atlas Scientific pH Sensor {{selected_sensor.id}} ({{selected_sensor.name}})</p>
+      {% if complete_with_error %}
+    <p>
+      {{_('Error')}}:
+      <br>{{complete_with_error}}
+    </p>
+      {% else %}
 
-    <p>Insert the probe into the pH 7 solution, then click Ready.</p>
+    <p>2. {{_('Calibration')}}{% if sensor_device_name %}: {{sensor_device_name}}{% endif %} {{selected_sensor.id}} ({{selected_sensor.name}})</p>
+    <p>{{_('Insert the probe into the pH %(ph)s solution, then click Ready', ph='7.0')}}</p>
 
     <form method="post" action="/atlas_ph_calibrate">
     <div style="display: none" id="ph_status"></div>
@@ -135,13 +148,20 @@ function startTimer() {
     <div id="countdown"></div>
     </form>
 
+      {% endif %}
+
     {% elif stage == 3 %}
 
-    <p>3. Calibrating Atlas Scientific pH Sensor {{selected_sensor.id}} ({{selected_sensor.name}})</p>
+      {% if complete_with_error %}
+    <p>
+      {{_('Error')}}:
+      <br>{{complete_with_error}}
+    </p>
+      {% else %}
 
-    <p>Remove the pH probe from the pH 7 solution and rinse it with distilled water.</p>
-
-    <p>Insert the probe into the pH 4 solution, then click Ready.</p>
+    <p>3. {{_('Calibration')}}{% if sensor_device_name %}: {{sensor_device_name}}{% endif %} {{selected_sensor.id}} ({{selected_sensor.name}})</p>
+    <p>{{_('Remove the pH probe from the pH %(ph)s solution and rinse it with distilled water', ph='7.0')}}</p>
+    <p>{{_('Insert the probe into the pH %(ph)s solution, then click Ready', ph='4.0')}}</p>
 
     <form method="post" action="/atlas_ph_calibrate">
     <div style="display: none" id="ph_status"></div>
@@ -161,13 +181,20 @@ function startTimer() {
     <div id="countdown"></div>
     </form>
 
+      {% endif %}
+
     {% elif stage == 4 %}
 
-    <p>4. Calibrating Atlas Scientific pH Sensor {{selected_sensor.id}} ({{selected_sensor.name}})</p>
+      {% if complete_with_error %}
+    <p>
+      {{_('Error')}}:
+      <br>{{complete_with_error}}
+    </p>
+      {% else %}
 
-    <p>Remove the pH probe from the pH 4 solution and rinse it with distilled water.</p>
-
-    <p>Insert the probe into the pH 10 solution, then click Ready.</p>
+    <p>4. {{_('Calibration')}}{% if sensor_device_name %}: {{sensor_device_name}}{% endif %} {{selected_sensor.id}} ({{selected_sensor.name}})</p>
+    <p>{{_('Remove the pH probe from the pH %(ph)s solution and rinse it with distilled water', ph='4.0')}}</p>
+    <p>{{_('Insert the probe into the pH %(ph)s solution, then click Ready', ph='10.0')}}</p>
 
     <form method="post" action="/atlas_ph_calibrate">
     <div style="display: none" id="ph_status"></div>
@@ -187,15 +214,20 @@ function startTimer() {
     <div id="countdown"></div>
     </form>
 
+      {% endif %}
+
     {% elif stage == 5 %}
 
-    <p>5. Sensor {{selected_sensor.id}} ({{selected_sensor.name}}) calibration: {% if complete_with_error %}Fail{% else %}Success{% endif %}.</p>
+    <p>5. {{_('Calibration')}}{% if sensor_device_name %}: {{sensor_device_name}}{% endif %} {{selected_sensor.id}} ({{selected_sensor.name}}): {% if complete_with_error %}{{_('Fail')}}{% else %}{{_('Success')}}{% endif %}</p>
 
-    {% if complete_with_error %}
-      <p>There was an error during the final calibration stage. This was the error returned: {{complete_with_error}}</p>
-    {% else %}
-      <p>You may now remove the sensor from the calibration fluid and either use it or submerge it in its storage fluid.</p>
-    {% endif %}
+    <p>
+      {% if complete_with_error %}
+      {{_('Error')}}:
+      <br>{{complete_with_error}}
+      {% else %}
+      {{_('Calibration complete')}}
+      {% endif %}
+    </p>
 
     {% endif %}
 
