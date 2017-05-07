@@ -120,6 +120,11 @@ SENSORS = [
     ('SHT2x', 'Temperature/Humidity: SHT 21/25')
 ]
 
+# Sensors and description
+CALIBRATION_DEVICES = [
+    ('calibration_atlas_ph', 'Atlas Scientific pH sensor')
+]
+
 # Devices that have a default address that doesn't change
 # Used to determine whether or not to present the option to change address
 DEVICES_DEFAULT_LOCATION = [

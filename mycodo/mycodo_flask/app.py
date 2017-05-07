@@ -9,38 +9,37 @@ import os
 import sys
 
 import flask_login
-from flask import (
-    flash,
-    Flask,
-    redirect,
-    request,
-    url_for
-)
+
+from flask import flash
+from flask import Flask
+from flask import redirect
+from flask import request
+from flask import url_for
+
 from flask_babel import Babel
 from flask_babel import gettext
 from flask_sslify import SSLify
-from werkzeug.contrib.profiler import (
-    ProfilerMiddleware,
-    MergeStream
-)
+
+from werkzeug.contrib.profiler import ProfilerMiddleware
+from werkzeug.contrib.profiler import MergeStream
 
 from mycodo.databases.models import alembic_upgrade_db
 from mycodo.databases.models import populate_db
 from mycodo.databases.models import Misc
 from mycodo.databases.models import User
-from mycodo.config import (
-    ProdConfig,
-    LANGUAGES,
-    INSTALL_DIRECTORY
-)
-from mycodo.mycodo_flask import (
-    admin_routes,
-    authentication_routes,
-    general_routes,
-    method_routes,
-    page_routes,
-    settings_routes
-)
+
+from mycodo.config import ProdConfig
+from mycodo.config import LANGUAGES
+from mycodo.config import INSTALL_DIRECTORY
+
+from mycodo.mycodo_flask import admin_routes
+from mycodo.mycodo_flask import authentication_routes
+from mycodo.mycodo_flask import calibration_routes
+from mycodo.mycodo_flask import general_routes
+from mycodo.mycodo_flask import method_routes
+from mycodo.mycodo_flask import page_routes
+from mycodo.mycodo_flask import settings_routes
+
 from mycodo.mycodo_flask.general_routes import influx_db
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.mycodo_flask.extensions import db
@@ -116,6 +115,7 @@ def register_blueprints(_app):
     """ register blueprints to the app """
     _app.register_blueprint(admin_routes.blueprint)  # register admin views
     _app.register_blueprint(authentication_routes.blueprint)  # register login/logout views
+    _app.register_blueprint(calibration_routes.blueprint)  # register calibration views
     _app.register_blueprint(general_routes.blueprint)  # register general routes
     _app.register_blueprint(method_routes.blueprint)  # register method views
     _app.register_blueprint(page_routes.blueprint)  # register page views

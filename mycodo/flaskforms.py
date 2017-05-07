@@ -3,31 +3,45 @@
 
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
-from wtforms import (
-    BooleanField,
-    DecimalField,
-    HiddenField,
-    IntegerField,
-    PasswordField,
-    SelectField,
-    SelectMultipleField,
-    SubmitField,
-    StringField,
-    validators,
-    widgets
-)
+
+from wtforms import BooleanField
+from wtforms import DecimalField
+from wtforms import HiddenField
+from wtforms import IntegerField
+from wtforms import PasswordField
+from wtforms import SelectField
+from wtforms import SelectMultipleField
+from wtforms import SubmitField
+from wtforms import StringField
+from wtforms import validators
+from wtforms import widgets
+
 from wtforms.validators import DataRequired
 from wtforms.validators import Optional
 from wtforms.fields.html5 import EmailField
 
+from mycodo.config import CALIBRATION_DEVICES
 from mycodo.config import SENSORS
 
 
 #
-# Atlas Scientific pH Sensor Calibration
+# Calibration selection (what to calibrate)
 #
 
-class AtlasPHCalibrate(FlaskForm):
+class Calibration(FlaskForm):
+    selection = SelectField(
+        'Device to Calibrate',
+        choices=CALIBRATION_DEVICES,
+        validators=[DataRequired()]
+    )
+    submit = SubmitField(lazy_gettext(u'Calibrate'))
+
+
+#
+# Calibration: Atlas Scientific pH sensor
+#
+
+class CalibrationAtlasph(FlaskForm):
     selected_sensor_id = StringField(lazy_gettext(u'Atlas pH Sensor'))
     hidden_sensor_id = StringField('Sensor ID', widget=widgets.HiddenInput())
     temperature = DecimalField(

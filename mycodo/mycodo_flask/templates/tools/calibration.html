@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% set active_page = "calibration" %}
+{% block title %} - {{_('Calibration')}}{% endblock %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+  <!-- Route: /calibration -->
+  <div class="container"> 
+    {% include 'flash_messages.html' %}
+
+    <p>{{("Certain devices require calibration in order to operate accurately. If Mycodo supports the calibration of a specific device, it will be listed below. For calibrating other devices, refer to the manufacturer's documentation.")}}</p>
+
+    <div class="row small-gutters">
+      <form method="post" action="/calibration">
+      <div class="col-xs-6 col-sm-4 col-lg-3">
+        {{form_calibration.selection(class_='form-control')}}
+      </div>
+      <div class="col-xs-6 col-sm-4 col-lg-2 no-gutters">
+        {{form_calibration.submit(class_='form-control btn btn-default')}}
+      </div>
+      </form>
+    </div>
+
+  </div>
+
+{% endblock %}
