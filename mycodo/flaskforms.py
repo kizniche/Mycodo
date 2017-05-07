@@ -34,10 +34,10 @@ class AtlasPHCalibrate(FlaskForm):
     temperature = DecimalField(
         lazy_gettext(u'Temperature'),
         render_kw={"placeholder": 25.00})
-    go_to_stage_2 = SubmitField(lazy_gettext(u'Continue to Stage 2'))
-    go_to_stage_3 = SubmitField(lazy_gettext(u'Continue to Stage 3'))
-    go_to_stage_4 = SubmitField(lazy_gettext(u'Continue to Stage 4'))
-    go_to_stage_5 = SubmitField(lazy_gettext(u'Continue to Stage 4'))
+    hidden_next_stage = StringField('Stage', widget=widgets.HiddenInput())
+    go_from_first_stage = SubmitField(lazy_gettext(u'Continue to Next Stage'))
+    go_to_next_stage = SubmitField(lazy_gettext(u'Continue to Next Stage'))
+    go_to_last_stage = SubmitField(lazy_gettext(u'Continue to Next Stage'))
 
 
 #

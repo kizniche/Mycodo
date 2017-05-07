@@ -315,8 +315,8 @@ def calibrate(sensor_sel, command, temperature=None):
     # Check first letter of info response
     # "P" indicates a legacy board version
     if info is None:
-        return 1, gettext("Unable to retrieve device info (this indicates the "
-                          "device was not properly initialized or connected)")
+        return 1, gettext(u"Unable to retrieve device info (this indicates the "
+                          u"device was not properly initialized or connected)")
     elif info[0] == 'P':
         version = 1  # Older board version
     else:
@@ -387,7 +387,7 @@ def dual_commands_to_sensor(sensor_sel, first_cmd, amount,
     first_status, first_return_str = calibrate(
         sensor_sel, first_cmd, temperature=set_temp)
     info_str = "{act}: {lvl} ({amt} {unit}): {resp}".format(
-        act=gettext('Calibration'), lvl=first_cmd, amt=amount, unit=unit, resp=first_return_str)
+        act=gettext(u'Calibration'), lvl=first_cmd, amt=amount, unit=unit, resp=first_return_str)
 
     if first_status:
         flash(info_str, "error")
@@ -397,7 +397,7 @@ def dual_commands_to_sensor(sensor_sel, first_cmd, amount,
         flash(info_str, "success")
         second_status, second_return_str = calibrate(sensor_sel, second_cmd)
         second_info_str = "{act}: {cmd}: {resp}".format(
-            act=gettext('Command'), cmd=second_cmd, resp=second_return_str)
+            act=gettext(u'Command'), cmd=second_cmd, resp=second_return_str)
         if second_status:
             flash(second_info_str, "error")
             return_error = second_return_str
@@ -420,22 +420,16 @@ def page_atlas_ph_calibrate():
     form_ph_calibrate = flaskforms.AtlasPHCalibrate()
     sensor = Sensor.query.filter_by(device='ATLAS_PH_UART').all()
     stage = 0
+    next_stage = None
     selected_sensor = None
     sensor_device_name = None
     complete_with_error = None
 
-    if (form_ph_calibrate.go_to_stage_2.data or
-            form_ph_calibrate.go_to_stage_3.data or
-            form_ph_calibrate.go_to_stage_4.data or
-            form_ph_calibrate.go_to_stage_5.data):
-        selected_sensor = Sensor.query.filter_by(
-            unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
-        for each_sensor in SENSORS:
-            if selected_sensor.device == each_sensor[0]:
-                sensor_device_name = each_sensor[1]
+    if form_ph_calibrate.hidden_next_stage.data is not None:
+        next_stage = int(form_ph_calibrate.hidden_next_stage.data)
 
     # Select sensor
-    elif form_ph_calibrate.go_to_stage_1.data:
+    if form_ph_calibrate.go_from_first_stage.data:
         stage = 1
         selected_sensor = Sensor.query.filter_by(
             unique_id=form_ph_calibrate.selected_sensor_id.data).first()
@@ -447,7 +441,16 @@ def page_atlas_ph_calibrate():
                 if selected_sensor.device == each_sensor[0]:
                     sensor_device_name = each_sensor[1]
 
-    if form_ph_calibrate.go_to_stage_2.data:
+    elif (form_ph_calibrate.go_to_next_stage.data or
+            form_ph_calibrate.go_to_last_stage.data or
+            next_stage > 1):
+        selected_sensor = Sensor.query.filter_by(
+            unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
+        for each_sensor in SENSORS:
+            if selected_sensor.device == each_sensor[0]:
+                sensor_device_name = each_sensor[1]
+
+    if next_stage == 2:
         if form_ph_calibrate.temperature.data is None:
             flash(gettext(u"A valid temperature is required: %(temp)s is invalid.",
                           temp=form_ph_calibrate.temperature.data), "error")
@@ -457,13 +460,13 @@ def page_atlas_ph_calibrate():
                 temp=form_ph_calibrate.temperature.data)
             stage, complete_with_error = dual_commands_to_sensor(
                 selected_sensor, 'temperature', temp, 'continuous', 1)
-    elif form_ph_calibrate.go_to_stage_3.data:
+    elif next_stage == 3:
         stage, complete_with_error = dual_commands_to_sensor(
             selected_sensor, 'mid', '7.0', 'continuous', 2)
-    elif form_ph_calibrate.go_to_stage_4.data:
+    elif next_stage == 4:
         stage, complete_with_error = dual_commands_to_sensor(
             selected_sensor, 'low', '4.0', 'continuous', 3)
-    elif form_ph_calibrate.go_to_stage_5.data:
+    elif next_stage == 5:
         stage, complete_with_error = dual_commands_to_sensor(
             selected_sensor, 'high', '10.0', 'end', 4)
 
