@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-04-24 20:33-0400\n"
+"POT-Creation-Date: 2017-05-06 20:40-0400\n"
 "PO-Revision-Date: 2017-03-24 15:59-0400\n"
 "Last-Translator: \n"
 "Language: es\n"
@@ -143,33 +143,33 @@ msgstr "Dirección"
 msgid "Setpoint"
 msgstr "Referencia"
 
-#: flaskforms.py:97 flaskforms.py:873
+#: flaskforms.py:97 flaskforms.py:709 flaskforms.py:873
 msgid "Add Conditional"
 msgstr "Agregar Condición"
 
 #: flaskforms.py:98 flaskforms.py:119 flaskforms.py:409 flaskforms.py:560
 #: flaskforms.py:690 flaskforms.py:753 flaskforms.py:865 flaskforms.py:902
-#: flaskforms.py:932 flaskforms.py:965 flaskforms.py:966 flaskforms.py:1002
-#: flaskforms.py:1077 mycodo_flask/templates/pages/method-build.html:317
+#: flaskforms.py:932 flaskforms.py:966 flaskforms.py:967 flaskforms.py:1003
+#: flaskforms.py:1078 mycodo_flask/templates/pages/method-build.html:317
 msgid "Save"
 msgstr "Guardar"
 
 #: flaskforms.py:99 flaskforms.py:120 flaskforms.py:410 flaskforms.py:561
 #: flaskforms.py:694 flaskforms.py:754 flaskforms.py:866 flaskforms.py:903
-#: flaskforms.py:967 flaskforms.py:1003 flaskforms.py:1078 flaskutils.py:516
+#: flaskforms.py:968 flaskforms.py:1004 flaskforms.py:1079 flaskutils.py:516
 #: flaskutils.py:915 flaskutils.py:1033 flaskutils.py:1220 flaskutils.py:1737
-#: flaskutils.py:2006 flaskutils.py:2207 flaskutils.py:2264 flaskutils.py:2585
+#: flaskutils.py:2011 flaskutils.py:2212 flaskutils.py:2269 flaskutils.py:2590
 #: mycodo_flask/method_routes.py:306
 msgid "Delete"
 msgstr "Borrar"
 
 #: flaskforms.py:100 flaskforms.py:411 flaskforms.py:695 flaskforms.py:867
-#: flaskforms.py:968 flaskforms.py:976 flaskutils.py:1070
+#: flaskforms.py:969 flaskforms.py:977 flaskutils.py:1070
 msgid "Activate"
 msgstr "Activar"
 
 #: flaskforms.py:101 flaskforms.py:412 flaskforms.py:696 flaskforms.py:868
-#: flaskforms.py:969 flaskforms.py:981
+#: flaskforms.py:970 flaskforms.py:982
 msgid "Deactivate"
 msgstr "Desactivar"
 
@@ -200,7 +200,7 @@ msgstr "Estado Relé"
 msgid "Duration"
 msgstr "Duracion"
 
-#: flaskforms.py:114 flaskutils.py:2510 flaskutils.py:2537 flaskutils.py:2586
+#: flaskforms.py:114 flaskutils.py:2515 flaskutils.py:2542 flaskutils.py:2591
 #: mycodo_flask/templates/pages/camera.html:5
 msgid "Camera"
 msgstr "Cámara"
@@ -218,22 +218,22 @@ msgid "Add Action"
 msgstr "Agregar Acción"
 
 #: flaskforms.py:129 flaskforms.py:130 flaskforms.py:424 flaskforms.py:425
-#: flaskforms.py:778 flaskforms.py:1008
+#: flaskforms.py:778 flaskforms.py:1009
 msgid "Username"
 msgstr "Nombre de Usuario"
 
-#: flaskforms.py:133 flaskforms.py:134 flaskforms.py:187 flaskforms.py:1012
-#: flaskforms.py:1048 flaskforms.py:1049
+#: flaskforms.py:133 flaskforms.py:134 flaskforms.py:187 flaskforms.py:1013
+#: flaskforms.py:1049 flaskforms.py:1050
 msgid "Email"
 msgstr "Email"
 
 #: flaskforms.py:137 flaskforms.py:138 flaskforms.py:183 flaskforms.py:429
-#: flaskforms.py:430 flaskforms.py:782 flaskforms.py:1019 flaskforms.py:1054
+#: flaskforms.py:430 flaskforms.py:782 flaskforms.py:1020 flaskforms.py:1055
 msgid "Password"
 msgstr "Contraseña"
 
-#: flaskforms.py:141 flaskforms.py:142 flaskforms.py:1031 flaskforms.py:1069
-#: flaskforms.py:1070
+#: flaskforms.py:141 flaskforms.py:142 flaskforms.py:1032 flaskforms.py:1070
+#: flaskforms.py:1071
 msgid "Repeat Password"
 msgstr "Repetir la clave"
 
@@ -280,6 +280,10 @@ msgstr "Cantidad máxima de Emails (por hora)"
 #: flaskforms.py:198
 msgid "Must have at least one message able to be sent per hour."
 msgstr "Debe permitir enviar por lo menos un mensaje por hora."
+
+#: flaskforms.py:202
+msgid "Send Test Email"
+msgstr ""
 
 #: flaskforms.py:204
 msgid "Test Email To"
@@ -383,12 +387,12 @@ msgid "Delete Graph"
 msgstr "Borrar Gráfico"
 
 #: flaskforms.py:333 flaskforms.py:413 flaskforms.py:697 flaskforms.py:755
-#: flaskforms.py:869 flaskforms.py:970
+#: flaskforms.py:869 flaskforms.py:971
 msgid "Up"
 msgstr "Arriba"
 
 #: flaskforms.py:334 flaskforms.py:414 flaskforms.py:698 flaskforms.py:756
-#: flaskforms.py:870 flaskforms.py:971
+#: flaskforms.py:870 flaskforms.py:972
 msgid "Down"
 msgstr "Abajo"
 
@@ -548,6 +552,15 @@ msgstr "Duración En (seg)"
 msgid "Relay ID"
 msgstr "ID Relé"
 
+#: flaskforms.py:516 flaskforms.py:763
+#: mycodo_flask/templates/pages/method-build.html:499
+msgid "Turn On"
+msgstr "Encender"
+
+#: flaskforms.py:517 mycodo_flask/templates/pages/method-build.html:500
+msgid "Turn Off"
+msgstr "Apagar"
+
 #: flaskforms.py:520
 msgid "Add to Method"
 msgstr "Agregar método"
@@ -575,6 +588,18 @@ msgstr "ID Sensor"
 #: flaskforms.py:591
 msgid "Measure Type"
 msgstr "Tipo de Medición"
+
+#: flaskforms.py:597
+msgid "Raise"
+msgstr ""
+
+#: flaskforms.py:598
+msgid "Lower"
+msgstr ""
+
+#: flaskforms.py:599 mycodo_flask/templates/pages/sensor.html:270
+msgid "Both"
+msgstr "Ambos"
 
 #: flaskforms.py:611
 msgid "Max Age (sec)"
@@ -648,10 +673,6 @@ msgstr "Continuar"
 msgid "Add Relay"
 msgstr "Agregar Relé"
 
-#: flaskforms.py:709
-msgid "Add Conditionals"
-msgstr "Agregar Condicionales"
-
 #: flaskforms.py:720
 msgid "GPIO Pin"
 msgstr ""
@@ -674,39 +695,45 @@ msgstr ""
 msgid "On Trigger"
 msgstr "Disparo Encendido"
 
+#: flaskforms.py:740 mycodo_flask/templates/pages/relay.html:152
+msgid "High"
+msgstr "Superior"
+
+#: flaskforms.py:741 mycodo_flask/templates/pages/relay.html:153
+msgid "Low"
+msgstr "Inferior"
+
 #: flaskforms.py:746
 msgid "Start State"
 msgstr "Estado Inicial"
 
-#: flaskforms.py:757 mycodo_flask/templates/pages/relay.html:161
+#: flaskforms.py:748 flaskforms.py:757 flaskforms.py:949
+#: mycodo_flask/templates/pages/relay.html:161
 #: mycodo_flask/templates/pages/relay.html:258
 #: mycodo_flask/templates/pages/relay.html:316
 #: mycodo_flask/templates/pages/sensor.html:384
-#: mycodo_flask/templates/pages/timer.html:57
-#: mycodo_flask/templates/pages/timer.html:90
-#: mycodo_flask/templates/pages/timer.html:222
-#: mycodo_flask/templates/pages/timer.html:250
+#: mycodo_flask/templates/pages/timer.html:60
+#: mycodo_flask/templates/pages/timer.html:93
+#: mycodo_flask/templates/pages/timer.html:225
+#: mycodo_flask/templates/pages/timer.html:253
 msgid "On"
 msgstr "Encienda"
 
-#: flaskforms.py:758 mycodo_flask/templates/pages/relay.html:162
+#: flaskforms.py:749 flaskforms.py:758 flaskforms.py:950
+#: mycodo_flask/templates/pages/relay.html:162
 #: mycodo_flask/templates/pages/relay.html:259
 #: mycodo_flask/templates/pages/relay.html:317
 #: mycodo_flask/templates/pages/sensor.html:385
-#: mycodo_flask/templates/pages/timer.html:58
-#: mycodo_flask/templates/pages/timer.html:91
-#: mycodo_flask/templates/pages/timer.html:223
-#: mycodo_flask/templates/pages/timer.html:251
+#: mycodo_flask/templates/pages/timer.html:61
+#: mycodo_flask/templates/pages/timer.html:94
+#: mycodo_flask/templates/pages/timer.html:226
+#: mycodo_flask/templates/pages/timer.html:254
 msgid "Off"
 msgstr "Apague"
 
 #: flaskforms.py:760
 msgid "Seconds to turn on"
 msgstr "Segundos para encenderse"
-
-#: flaskforms.py:763 mycodo_flask/templates/pages/method-build.html:499
-msgid "Turn On"
-msgstr "Encender"
 
 #: flaskforms.py:773
 msgid "Domain or IP Address"
@@ -722,7 +749,7 @@ msgstr "Borrar Host"
 
 #: flaskforms.py:803 flaskutils.py:676 flaskutils.py:1444 flaskutils.py:1482
 #: flaskutils.py:1547 flaskutils.py:1576 flaskutils.py:1783 flaskutils.py:1937
-#: flaskutils.py:2007 flaskutils.py:2049
+#: flaskutils.py:2012 flaskutils.py:2054 mycodo_flask/templates/layout.html:139
 msgid "Sensor"
 msgstr "Sensor"
 
@@ -963,7 +990,7 @@ msgstr "Intervalo de tiempo para generar"
 msgid "Day of Week/Month to Generate"
 msgstr "Día de la Semana / Mes Para Generar"
 
-#: flaskforms.py:924
+#: flaskforms.py:925
 msgid "Hour of Day to Generate"
 msgstr "Hora del Día para Generar"
 
@@ -979,95 +1006,95 @@ msgstr "Desactivar estadísticas"
 msgid "State"
 msgstr "Estado"
 
-#: flaskforms.py:954
+#: flaskforms.py:954 flaskforms.py:955
 msgid "Start Time"
 msgstr ""
 
-#: flaskforms.py:955
+#: flaskforms.py:956
 msgid "End Time"
 msgstr ""
 
-#: flaskforms.py:957 flaskforms.py:963
+#: flaskforms.py:958 flaskforms.py:964
 msgid "On (sec)"
 msgstr "Encendido (seg)"
 
-#: flaskforms.py:964
+#: flaskforms.py:965
 msgid "Off (sec)"
 msgstr "Apagado (seg)"
 
-#: flaskforms.py:990
+#: flaskforms.py:991
 msgid "Role Name"
 msgstr "Nombre de rol"
 
-#: flaskforms.py:993 mycodo_flask/templates/tools/logview.html:3
+#: flaskforms.py:994 mycodo_flask/templates/tools/logview.html:3
 msgid "View Logs"
 msgstr "Ver Logs"
 
-#: flaskforms.py:994
+#: flaskforms.py:995
 msgid "View Stats"
 msgstr ""
 
-#: flaskforms.py:995
+#: flaskforms.py:996
 msgid "View Camera"
 msgstr ""
 
-#: flaskforms.py:996
+#: flaskforms.py:997
 msgid "View Settings"
 msgstr ""
 
-#: flaskforms.py:997
+#: flaskforms.py:998
 msgid "Edit Users"
 msgstr ""
 
-#: flaskforms.py:998
+#: flaskforms.py:999
 msgid "Edit Controllers"
 msgstr ""
 
-#: flaskforms.py:999
+#: flaskforms.py:1000
 msgid "Edit Settings"
 msgstr ""
 
-#: flaskforms.py:1001
+#: flaskforms.py:1002
 msgid "Add Role"
 msgstr ""
 
-#: flaskforms.py:1023 flaskforms.py:1060
+#: flaskforms.py:1024 flaskforms.py:1061
 msgid "Passwords must match"
 msgstr "La clave debe coincidir"
 
-#: flaskforms.py:1026 flaskforms.py:1064
+#: flaskforms.py:1027 flaskforms.py:1065
 msgid "Password must be 6 or more characters"
 msgstr "La clave debe ser de 6 o más caracteres"
 
-#: flaskforms.py:1035 flaskforms.py:1073
+#: flaskforms.py:1036 flaskforms.py:1074
 msgid "Role"
 msgstr "Rol"
 
-#: flaskforms.py:1039 flaskforms.py:1076
+#: flaskforms.py:1040 flaskforms.py:1077
 msgid "Theme"
 msgstr "Apariencia"
 
-#: flaskforms.py:1042
+#: flaskforms.py:1043
 msgid "Add User"
 msgstr "Agregar Usuario"
 
-#: flaskforms.py:1055
+#: flaskforms.py:1056
 msgid "New Password"
 msgstr "Nueva Contraseña"
 
-#: flaskforms.py:1082
+#: flaskforms.py:1083
 msgid "I Understand"
 msgstr "Lo entiendo"
 
-#: flaskforms.py:1090
+#: flaskforms.py:1091
 msgid "Upgrade Mycodo"
 msgstr "Actualizar Mycodo"
 
-#: flaskforms.py:1098
+#: flaskforms.py:1099
 msgid "Create Backup"
 msgstr "Crear Backup"
 
-#: flaskforms.py:1099
+#: flaskforms.py:1100
 msgid "Restore Backup"
 msgstr "Restaurar Backup"
 
@@ -1136,7 +1163,7 @@ msgstr "Método"
 
 #: flaskutils.py:242 flaskutils.py:799 flaskutils.py:959 flaskutils.py:1128
 #: flaskutils.py:1450 flaskutils.py:1553 flaskutils.py:1680 flaskutils.py:1782
-#: flaskutils.py:2124 flaskutils.py:2260 flaskutils.py:2311 flaskutils.py:2509
+#: flaskutils.py:2129 flaskutils.py:2265 flaskutils.py:2316 flaskutils.py:2514
 msgid "Add"
 msgstr "Agregar"
 
@@ -1174,8 +1201,8 @@ msgid "Added relay modulation to method at start time: %(tm)s"
 msgstr "Se agregó la modulación de relé al Método en la hora de inicio: %​(tm)s"
 
 #: flaskutils.py:401 flaskutils.py:845 flaskutils.py:978 flaskutils.py:1151
-#: flaskutils.py:1708 flaskutils.py:1936 flaskutils.py:2170 flaskutils.py:2262
-#: flaskutils.py:2356 flaskutils.py:2418 flaskutils.py:2471 flaskutils.py:2536
+#: flaskutils.py:1708 flaskutils.py:1936 flaskutils.py:2175 flaskutils.py:2267
+#: flaskutils.py:2361 flaskutils.py:2423 flaskutils.py:2476 flaskutils.py:2541
 msgid "Modify"
 msgstr "Modificar"
 
@@ -1207,8 +1234,8 @@ msgstr ""
 msgid "Remote Host Error: %(msg)s"
 msgstr ""
 
-#: flaskutils.py:639 flaskutils.py:711 flaskutils.py:728 flaskutils.py:2650
-#: flaskutils.py:2670
+#: flaskutils.py:639 flaskutils.py:711 flaskutils.py:728 flaskutils.py:2655
+#: flaskutils.py:2675
 #, python-format
 msgid "Error: %(err)s"
 msgstr ""
@@ -1230,8 +1257,8 @@ msgstr "LCD"
 msgid "PID"
 msgstr "PID"
 
-#: flaskutils.py:677 flaskutils.py:2125 flaskutils.py:2171 flaskutils.py:2208
-#: flaskutils.py:2227
+#: flaskutils.py:677 flaskutils.py:2130 flaskutils.py:2176 flaskutils.py:2213
+#: flaskutils.py:2232
 msgid "Timer"
 msgstr "Avisador"
 
@@ -1260,7 +1287,7 @@ msgid "Invalid hex color value"
 msgstr "Valor de color hexadecimal no válido"
 
 #: flaskutils.py:936 flaskutils.py:1051 flaskutils.py:1244 flaskutils.py:1759
-#: flaskutils.py:2048 flaskutils.py:2226
+#: flaskutils.py:2053 flaskutils.py:2231
 msgid "Reorder"
 msgstr "Reordenar"
 
@@ -1274,12 +1301,12 @@ msgstr ""
 "No se puede activar el controlador si el controlador del sensor asociado "
 "está inactivo"
 
-#: flaskutils.py:1117 flaskutils.py:2644 flaskutils.py:2664 flaskutils.py:2703
+#: flaskutils.py:1117 flaskutils.py:2649 flaskutils.py:2669 flaskutils.py:2708
 #, python-format
 msgid "Success: %(msg)s"
 msgstr "Éxito: %(msg)s"
 
-#: flaskutils.py:1119 flaskutils.py:2405 flaskutils.py:2677 flaskutils.py:2697
+#: flaskutils.py:1119 flaskutils.py:2410 flaskutils.py:2682 flaskutils.py:2702
 #, python-format
 msgid "Error: %(msg)s"
 msgstr ""
@@ -1416,11 +1443,11 @@ msgstr "Valores aceptables"
 msgid "%(type)s Sensor with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
-#: flaskutils.py:1948
+#: flaskutils.py:1945
 msgid "Deactivate sensor controller before modifying its settings"
 msgstr "Desactive el controlador del sensor antes de modificar su configuración"
 
-#: flaskutils.py:1953
+#: flaskutils.py:1950
 msgid ""
 "Choose a Read Period equal to or greater than 7. The AM2315 may become "
 "unresponsive if the period is below 7."
@@ -1428,29 +1455,33 @@ msgstr ""
 "Elija un Período de Lectura igual o mayor que 7. El AM2315 puede no "
 "responder si el período es inferior a 7."
 
-#: flaskutils.py:1959
+#: flaskutils.py:1956
 msgid "The Read Period cannot be less than the Pre-Relay Duration"
 msgstr "El Período de Lectura no puede ser menor que la Duración del Pre-Relé"
 
-#: flaskutils.py:2146
+#: flaskutils.py:1961
+msgid "Invalid device or improper permissions to read device"
+msgstr ""
+
+#: flaskutils.py:2151
 msgid "Durations must be greater than 0"
 msgstr "Las duraciones deben ser mayores de 0"
 
-#: flaskutils.py:2178
+#: flaskutils.py:2183
 msgid "Deactivate timer controller before modifying its settings"
 msgstr ""
 "Desactivar el controlador del temporizador antes de modificar su "
 "configuración"
 
-#: flaskutils.py:2268
+#: flaskutils.py:2273
 msgid "User Role"
 msgstr "Rol del usuario"
 
-#: flaskutils.py:2312 flaskutils.py:2357
+#: flaskutils.py:2317 flaskutils.py:2362
 msgid "User"
 msgstr "Usuario"
 
-#: flaskutils.py:2318 mycodo_flask/authentication_routes.py:82
+#: flaskutils.py:2323 mycodo_flask/authentication_routes.py:82
 msgid ""
 "Invalid user name. Must be between 2 and 64 characters and only contain "
 "letters and numbers."
@@ -1458,11 +1489,11 @@ msgstr ""
 "Nombre de usuario no válido. Debe tener entre 2 y 64 caracteres y sólo "
 "contiene letras y números."
 
-#: flaskutils.py:2323
+#: flaskutils.py:2328
 msgid "Another user already has that email address."
 msgstr ""
 
-#: flaskutils.py:2327 mycodo_flask/authentication_routes.py:88
+#: flaskutils.py:2332 mycodo_flask/authentication_routes.py:88
 msgid ""
 "Invalid password. Must be between 6 and 64 characters and only contain "
 "letters, numbers, and symbols."
@@ -1470,26 +1501,26 @@ msgstr ""
 "Contraseña invalida. Debe tener entre 6 y 64 caracteres y sólo contiene "
 "letras, números y símbolos."
 
-#: flaskutils.py:2332 flaskutils.py:2376
+#: flaskutils.py:2337 flaskutils.py:2381
 #: mycodo_flask/authentication_routes.py:78
 msgid "Passwords do not match. Please try again."
 msgstr "Las contraseñas no coinciden. Vuelve a intentarlo."
 
-#: flaskutils.py:2368
+#: flaskutils.py:2373
 msgid "Invalid password"
 msgstr "Contraseña invalida"
 
-#: flaskutils.py:2419 mycodo_flask/templates/settings/general.html:4
+#: flaskutils.py:2424 mycodo_flask/templates/settings/general.html:4
 #: mycodo_flask/templates/settings/general.html:6
 #: mycodo_flask/templates/settings/general.html:10
 msgid "General Settings"
 msgstr "Configuracion General"
 
-#: flaskutils.py:2472 mycodo_flask/templates/settings/alerts.html:4
+#: flaskutils.py:2477 mycodo_flask/templates/settings/alerts.html:4
 msgid "Alert Settings"
 msgstr "Configuracion de Alertas"
 
-#: flaskutils.py:2484
+#: flaskutils.py:2489
 #, python-format
 msgid ""
 "Test email sent to %(recip)s. Check your inbox to see if it was "
@@ -1498,16 +1529,16 @@ msgstr ""
 "Correo electrónico de prueba enviado a %(recip)s. Revisa tu bandeja de "
 "entrada para ver si tuvo éxito."
 
-#: flaskutils.py:2688
+#: flaskutils.py:2693
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr ""
 
-#: flaskutils.py:2779
+#: flaskutils.py:2784
 msgid "Cannot move above the first item in the list"
 msgstr "No se puede mover por encima del primer elemento de la lista"
 
-#: flaskutils.py:2783
+#: flaskutils.py:2788
 msgid "Cannot move below the last item in the list"
 msgstr "No se puede mover por debajo del último elemento de la lista"
 
@@ -1589,36 +1620,36 @@ msgstr "Confirmación no se puede guardar: %(err)s"
 msgid "Successfully logged out"
 msgstr "Cerrado con éxito"
 
-#: mycodo_flask/general_routes.py:93
+#: mycodo_flask/general_routes.py:94
 #, python-format
 msgid "URL for 'inject_mycodo_version' raised and error: %(err)s"
 msgstr ""
 
-#: mycodo_flask/general_routes.py:498
+#: mycodo_flask/general_routes.py:499
 msgid "System rebooting in 10 seconds"
 msgstr "Reinicio del sistema en 10 segundos"
 
-#: mycodo_flask/general_routes.py:500
+#: mycodo_flask/general_routes.py:501
 msgid "System shutting down in 10 seconds"
 msgstr "El sistema se apaga en 10 segundos"
 
-#: mycodo_flask/page_routes.py:121
+#: mycodo_flask/page_routes.py:116
 msgid "Cannot capture still image if stream is active."
 msgstr "No se puede capturar un photo si la transmisión está activa."
 
-#: mycodo_flask/page_routes.py:130
+#: mycodo_flask/page_routes.py:125
 msgid "Cannot start time-lapse if stream is active."
 msgstr "No se puede iniciar time-lapse si la secuencia está activa."
 
-#: mycodo_flask/page_routes.py:160
+#: mycodo_flask/page_routes.py:155
 msgid "Cannot start stream if time-lapse is active."
 msgstr "No se puede iniciar el flujo si el lapso de tiempo está activo."
 
-#: mycodo_flask/page_routes.py:164
+#: mycodo_flask/page_routes.py:159
 msgid "Cannot start stream. The stream is already running."
 msgstr "No se puede iniciar la transmisión. La transmisión está ejecutando."
 
-#: mycodo_flask/page_routes.py:169
+#: mycodo_flask/page_routes.py:164
 msgid ""
 "Streaming is only supported with the Raspberry Pi camera using the "
 "picamera library."
@@ -1626,18 +1657,41 @@ msgstr ""
 "Streaming sólo es compatible con la cámara de Frambuesa Pi utilizando el "
 "catálogo de picamera."
 
-#: mycodo_flask/page_routes.py:173
+#: mycodo_flask/page_routes.py:168
 msgid "Cannot start stream if another stream is already in progress."
 msgstr ""
 
-#: mycodo_flask/page_routes.py:344
+#: mycodo_flask/page_routes.py:318
+msgid ""
+"Unable to retrieve device info (this indicates the device was not "
+"properly initialized or connected)"
+msgstr ""
+
+#: mycodo_flask/page_routes.py:390 mycodo_flask/templates/layout.html:139
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:102
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:125
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:154
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:184
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:209
+msgid "Calibration"
+msgstr ""
+
+#: mycodo_flask/page_routes.py:400
+msgid "Command"
+msgstr ""
+
+#: mycodo_flask/page_routes.py:452
 #, python-format
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr ""
 
-#: mycodo_flask/templates/404.html:3 mycodo_flask/templates/404.html:5
+#: mycodo_flask/templates/404.html:3 mycodo_flask/templates/404.html:6
 msgid "Error 404: Page Not Found"
 msgstr "Error 404 - Página No Encontrada"
+
+#: mycodo_flask/templates/500.html:3 mycodo_flask/templates/500.html:6
+msgid "Error 500: Internal Server Error"
+msgstr ""
 
 #: mycodo_flask/templates/create_admin.html:12
 #: mycodo_flask/templates/create_admin.html:36
@@ -1660,6 +1714,24 @@ msgstr ""
 "redirigido a la página de inicio de sesión. Si no se trata de una "
 "instalación nueva y se trata de un comportamiento inesperado, cree un "
 "%(hrefo)sproblema en Github%(hrefc)s"
+
+#: mycodo_flask/templates/flash_messages.html:7
+msgid "Success"
+msgstr ""
+
+#: mycodo_flask/templates/flash_messages.html:20
+#: mycodo_flask/templates/pages/info.html:4
+msgid "Info"
+msgstr "Información"
+
+#: mycodo_flask/templates/flash_messages.html:33
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:98
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:121
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:150
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:180
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:213
+msgid "Error"
+msgstr ""
 
 #: mycodo_flask/templates/layout-settings.html:24
 msgid "General"
@@ -1766,10 +1838,6 @@ msgstr ""
 #: mycodo_flask/templates/tools/export.html:3
 msgid "Export Measurements"
 msgstr "Exportar Valores"
-
-#: mycodo_flask/templates/layout.html:139
-msgid "Calibrate pH Sensor"
-msgstr ""
 
 #: mycodo_flask/templates/layout.html:149
 msgid "Help"
@@ -2014,10 +2082,6 @@ msgstr "Presión"
 msgid "Output"
 msgstr ""
 
-#: mycodo_flask/templates/pages/info.html:4
-msgid "Info"
-msgstr "Información"
-
 #: mycodo_flask/templates/pages/info.html:13
 msgid "Mycodo Version:"
 msgstr ""
@@ -2093,13 +2157,13 @@ msgstr "Nombre del Controlador PID"
 
 #: mycodo_flask/templates/pages/lcd.html:50
 #: mycodo_flask/templates/pages/pid.html:57
-#: mycodo_flask/templates/pages/timer.html:178
+#: mycodo_flask/templates/pages/timer.html:181
 msgid "Active"
 msgstr "Activar"
 
 #: mycodo_flask/templates/pages/lcd.html:51
 #: mycodo_flask/templates/pages/pid.html:60
-#: mycodo_flask/templates/pages/timer.html:179
+#: mycodo_flask/templates/pages/timer.html:182
 msgid "Inactive"
 msgstr "Desactivar"
 
@@ -2334,10 +2398,6 @@ msgstr ""
 #: mycodo_flask/templates/pages/method-build.html:497
 msgid "Modulate the selected relay."
 msgstr "Modular el relé seleccionado."
-
-#: mycodo_flask/templates/pages/method-build.html:500
-msgid "Turn Off"
-msgstr "Apagar"
 
 #: mycodo_flask/templates/pages/method-list.html:5
 msgid "Method List"
@@ -2583,14 +2643,6 @@ msgstr ""
 msgid "What state triggers the relay to turn on? High or Low?"
 msgstr "¿Qué estado activa el relé para encenderse, Alto o Bajo?"
 
-#: mycodo_flask/templates/pages/relay.html:152
-msgid "High"
-msgstr "Superior"
-
-#: mycodo_flask/templates/pages/relay.html:153
-msgid "Low"
-msgstr "Inferior"
-
 #: mycodo_flask/templates/pages/relay.html:160
 msgid "When Mycodo starts, turn the relay On or Off?"
 msgstr "Cuando Mycodo comienza, enciende o apaga el relé."
@@ -2766,10 +2818,6 @@ msgstr "Creciente"
 msgid "Falling"
 msgstr "Cayendo"
 
-#: mycodo_flask/templates/pages/sensor.html:270
-msgid "Both"
-msgstr "Ambos"
-
 #: mycodo_flask/templates/pages/sensor.html:285
 msgid "HIGH (3.3 volts)"
 msgstr "Alta (3,3 voltios)"
@@ -2814,7 +2862,7 @@ msgstr ""
 msgid "Test"
 msgstr ""
 
-#: mycodo_flask/templates/pages/timer.html:18
+#: mycodo_flask/templates/pages/timer.html:19
 msgid ""
 "Timers enable relays to be turned on or off for specific durations of "
 "time or at specific times of the day."
@@ -2822,16 +2870,16 @@ msgstr ""
 "Los temporizadores permiten que los relés se activen o desactiven durante"
 " determinadas duraciones de tiempo o en determinadas horas del día."
 
-#: mycodo_flask/templates/pages/timer.html:23
+#: mycodo_flask/templates/pages/timer.html:26
 msgid "New Timer"
 msgstr ""
 
-#: mycodo_flask/templates/pages/timer.html:77
+#: mycodo_flask/templates/pages/timer.html:80
 #, python-format
 msgid "Optional: If On, for %(sec)s seconds"
 msgstr "Opcional: Si se encuentra encendido por %(sec)s segundos"
 
-#: mycodo_flask/templates/pages/timer.html:174
+#: mycodo_flask/templates/pages/timer.html:177
 msgid "Name for this Timer controller."
 msgstr "Nombre del Controlador Tinutero"
 
@@ -3149,10 +3197,77 @@ msgid "Roles"
 msgstr ""
 
 #: mycodo_flask/templates/tools/atlas_ph_calibrate.html:3
-msgid "Calibrate Atlas Scientific pH Sensor"
+msgid "Sensor Calibration"
 msgstr ""
 
-#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:55
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:13
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:16
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:29
+msgid "Latest pH measurement"
+msgstr ""
+
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:13
+msgid "Error acquiring measurement"
+msgstr ""
+
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:29
+msgid "Please wait"
+msgstr ""
+
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:43
+msgid "Please wait for sensor to equilibrate"
+msgstr ""
+
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:43
+msgid "seconds"
+msgstr ""
+
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:85
 msgid "No Sensors Found"
+msgstr ""
+
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:98
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:121
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:150
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:180
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:209
+msgid "Calibration Failed"
+msgstr ""
+
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:99
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:122
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:151
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:181
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:216
+msgid "Refer to the logs for details"
+msgstr ""
+
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:103
+msgid ""
+"Ensure all pH calibration solutions are the same temperature. Enter the "
+"temperature (in Celsius) of your solutions, then click Continue."
+msgstr ""
+
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:126
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:156
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:186
+#, python-format
+msgid "Insert the probe into the pH %(ph)s solution, then click Ready"
+msgstr ""
+
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:155
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:185
+#, python-format
+msgid ""
+"Remove the pH probe from the pH %(ph)s solution and rinse it with "
+"distilled water"
+msgstr ""
+
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:209
+msgid "Calibration Succeeded"
+msgstr ""
+
+#: mycodo_flask/templates/tools/atlas_ph_calibrate.html:218
+msgid "Calibration Complete"
 msgstr ""
 
