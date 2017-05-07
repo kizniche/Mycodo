@@ -13,6 +13,7 @@
 ### Bugfixes
 
   - Fix saving of proper start time during timer creation ([#248](https://github.com/kizniche/mycodo/issues/248))
+  - Fix unicode error when generating relay usage reports
 
 ## 5.0.27 (2017-04-12)
 
