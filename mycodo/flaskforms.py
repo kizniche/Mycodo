@@ -30,7 +30,6 @@ from mycodo.config import SENSORS
 class AtlasPHCalibrate(FlaskForm):
     selected_sensor_id = StringField(lazy_gettext(u'Atlas pH Sensor'))
     hidden_sensor_id = StringField('Sensor ID', widget=widgets.HiddenInput())
-    go_to_stage_1 = SubmitField(lazy_gettext(u'Continue to Stage 1'))
     temperature = DecimalField(
         lazy_gettext(u'Temperature'),
         render_kw={"placeholder": 25.00})

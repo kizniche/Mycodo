@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "sensor_calibrate" %}
-{% block title %} - {{_('Sensor Calibration')}}{% if sensor_device_name %}: {{sensor_device_name}}{% endif %}{% endblock %}
+{% block title %} - {{_('Calibration')}}: {{_('Sensor')}}{% if sensor_device_name %}: {{sensor_device_name}}{% endif %}{% endblock %}
 
 {% block head %}
 <script>
@@ -139,7 +139,7 @@ function startTimer() {
     </div>
     <div class="row small-gutters">
       <div class="col-xs-6 col-sm-4 col-lg-2 no-gutters">
-        <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="Ready"/>
+        <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="{{_('Ready')}}"/>
       </div>
     </div>
     <div id="countdown"></div>
@@ -170,7 +170,7 @@ function startTimer() {
     </div>
     <div class="row small-gutters">
       <div class="col-xs-6 col-sm-4 col-lg-2 no-gutters">
-        <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="Ready"/>
+        <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="{{_('Ready')}}"/>
       </div>
     </div>
     <div id="countdown"></div>
@@ -201,7 +201,7 @@ function startTimer() {
     </div>
     <div class="row small-gutters">
       <div class="col-xs-6 col-sm-4 col-lg-2 no-gutters">
-        <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="Ready"/>
+        <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="{{_('Ready')}}"/>
       </div>
     </div>
     <div id="countdown"></div>
