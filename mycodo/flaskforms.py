@@ -34,7 +34,7 @@ class Calibration(FlaskForm):
         choices=CALIBRATION_DEVICES,
         validators=[DataRequired()]
     )
-    submit = SubmitField(lazy_gettext(u'Calibrate'))
+    submit = SubmitField(lazy_gettext(u'Select Device'))
 
 
 #
@@ -44,11 +44,12 @@ class Calibration(FlaskForm):
 class CalibrationAtlasph(FlaskForm):
     selected_sensor_id = StringField(lazy_gettext(u'Atlas pH Sensor'))
     hidden_sensor_id = StringField('Sensor ID', widget=widgets.HiddenInput())
+    clear_calibration = SubmitField(lazy_gettext(u'Clear Calibration'))
     temperature = DecimalField(
         lazy_gettext(u'Temperature'),
         render_kw={"placeholder": 25.00})
     hidden_next_stage = StringField('Stage', widget=widgets.HiddenInput())
-    go_from_first_stage = SubmitField(lazy_gettext(u'Continue to Next Stage'))
+    go_from_first_stage = SubmitField(lazy_gettext(u'Begin Calibration'))
     go_to_next_stage = SubmitField(lazy_gettext(u'Continue to Next Stage'))
     go_to_last_stage = SubmitField(lazy_gettext(u'Continue to Next Stage'))
 

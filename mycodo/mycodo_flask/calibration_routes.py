@@ -96,6 +96,16 @@ def calibration_atlas_ph():
             if selected_sensor.device == each_sensor[0]:
                 sensor_device_name = each_sensor[1]
 
+    if form_ph_calibrate.clear_calibration.data:
+        selected_sensor = Sensor.query.filter_by(
+            unique_id=form_ph_calibrate.selected_sensor_id.data).first()
+        status, message = calibrate(
+            selected_sensor, 'clear_calibration')
+        if status:
+            flash(message, "error")
+        else:
+            flash(message, "success")
+
     if next_stage == 2:
         if form_ph_calibrate.temperature.data is None:
             flash(gettext(u"A valid temperature is required: %(temp)s is invalid.",
@@ -173,7 +183,7 @@ def calibration_atlas_ph_measure(sensor_id):
         return ph
 
 
-def calibrate(sensor_sel, command, temperature=None):
+def calibrate(sensor_sel, command, temperature=None, custom_cmd=None):
     """
     Determine and send the correct command to an Atlas Scientific sensor,
     based on the board version
@@ -227,6 +237,12 @@ def calibrate(sensor_sel, command, temperature=None):
             cmd_send = temperature
         elif version == 2:
             cmd_send = 'T,{temp}'.format(temp=temperature)
+    elif command == 'clear_calibration':
+        if version == 1:
+            cmd_send = 'X'
+            calibrate(sensor_sel, '', custom_cmd='L0')
+        elif version == 2:
+            cmd_send = 'Cal,clear'
     elif command == 'continuous':
         if version == 1:
             cmd_send = 'C'
@@ -248,6 +264,8 @@ def calibrate(sensor_sel, command, temperature=None):
     elif command == 'end':
         if version == 1:
             cmd_send = 'E'
+    elif custom_cmd:
+        cmd_send = custom_cmd
 
     # Send the command (if not None) and return the response
     if cmd_send is not None:

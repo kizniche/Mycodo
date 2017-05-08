@@ -71,12 +71,14 @@ function startTimer() {
 
     <p>This guide will walk you through the calibration procedure for the Atlas Scientific pH Sensor. To complete this procedure, you will need three solutions, each with a different pH (pH 4, pH 7, and pH 10). At each step, you will be instructed to insert the pH probe into each solution and wait for the reading to equilibrate before proceeding. Between transferring the probe from one solution to another, you will be instructed to rinse the probe with distilled water. Instructions will be provided at each step of the way.</p>
 
-    <p>To begin, have your probe properly connected to Mycodo, select the probe from the dropdown list, and click Continue.</p>
+    <p>To begin calibration, have your probe properly connected to Mycodo, select the probe from the dropdown list, and click Begin Calibration.</p>
+
+    <p>If you wish to clear the calibration from the sensor memory, click Clear Calibration.</p>
 
     <div class="row small-gutters">
       <form method="post" action="/calibration_atlas_ph">
       {{form_ph_calibrate.hidden_next_stage(value=1)}}
-      <div class="col-xs-6 col-sm-4 col-lg-3">
+      <div class="col-xs-12 col-sm-4 col-lg-3">
         <select class="form-control" id="selected_sensor_id" name="selected_sensor_id" title="" data-original-title="Select which Atlas Scientific pH sensor to calibrate">
           {% if sensor %}
             {%- for each_sensor in sensor -%}
@@ -87,8 +89,11 @@ function startTimer() {
           {% endif %}
         </select>
       </div>
-      <div class="col-xs-6 col-sm-4 col-lg-2 no-gutters">
+      <div class="col-xs-6 col-sm-4 col-lg-2">
         {{form_ph_calibrate.go_from_first_stage(class_='form-control btn btn-default')}}
+      </div>
+      <div class="col-xs-6 col-sm-4 col-lg-2">
+        {{form_ph_calibrate.clear_calibration(class_='form-control btn btn-default')}}
       </div>
       </form>
     </div>
