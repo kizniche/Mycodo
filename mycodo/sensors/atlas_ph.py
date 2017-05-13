@@ -65,17 +65,27 @@ class AtlaspHSensor(AbstractSensor):
     def get_measurement(self):
         """ Gets the sensor's pH measurement via UART/I2C """
         if ',' in self.sensor_sel.calibrate_sensor_measure:
-            logger.info("pH sensor set to calibrate temperature")  # TODO: Remove this debug line
+            # TODO: Remove this debug line
+            logger.info("pH sensor set to calibrate temperature")
+
             deive_id = self.sensor_sel.calibrate_sensor_measure.split(',')[0]
             measurement = self.sensor_sel.calibrate_sensor_measure.split(',')[1]
             last_measurement = read_last_influxdb(
                 deive_id, measurement, duration_sec=300)
             if last_measurement:
-                logger.info("Latest temperature used to calibrate: {temp}".format(temp=last_measurement[1]))  # TODO: Remove this debug line
+
+                # TODO: Remove this debug line
+                logger.info("Latest temperature used to calibrate: {temp}".format(
+                    temp=last_measurement[1])) 
 
                 ret_value, ret_msg = calibrate(self.sensor_sel, 'temperature',
-                          temperature=last_measurement[1])
+                                               temperature=last_measurement[1])
                 time.sleep(0.5)
+
+                # TODO: Remove this debug line
+                logger.info("Calibration returned: {val}, {msg}".format(
+                    val=ret_value, msg=ret_msg))
+
 
         ph = None
         if self.interface == 'UART':
