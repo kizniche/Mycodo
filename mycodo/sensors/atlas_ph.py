@@ -4,6 +4,8 @@ import logging
 import time
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
+from mycodo.mycodo_flask.calibration_routes import calibrate
+from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import str_is_float
 from .base_sensor import AbstractSensor
 
@@ -15,10 +17,11 @@ class AtlaspHSensor(AbstractSensor):
     """A sensor support class that monitors the Atlas Scientific sensor pH"""
 
     def __init__(self, interface, device_loc=None, baud_rate=None,
-                 i2c_address=None, i2c_bus=None):
+                 i2c_address=None, i2c_bus=None, sensor_sel=None):
         super(AtlaspHSensor, self).__init__()
         self._ph = 0
         self.interface = interface
+        self.sensor_sel = sensor_sel
         if self.interface == 'UART':
             self.atlas_sensor_uart = AtlasScientificUART(
                 serial_device=device_loc, baudrate=baud_rate)
@@ -61,6 +64,19 @@ class AtlaspHSensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the sensor's pH measurement via UART/I2C """
+        if ',' in self.sensor_sel.calibrate_sensor_measure:
+            logger.info("pH sensor set to calibrate temperature")  # TODO: Remove this debug line
+            deive_id = self.sensor_sel.calibrate_sensor_measure.split(',')[0]
+            measurement = self.sensor_sel.calibrate_sensor_measure.split(',')[1]
+            last_measurement = read_last_influxdb(
+                deive_id, measurement, duration_sec=300)
+            if last_measurement:
+                logger.info("Latest temperature used to calibrate: {temp}".format(temp=last_measurement[1]))  # TODO: Remove this debug line
+
+                ret_value, ret_msg = calibrate(self.sensor_sel, 'temperature',
+                          temperature=last_measurement[1])
+                time.sleep(0.5)
+
         ph = None
         if self.interface == 'UART':
             if self.atlas_sensor_uart.setup:

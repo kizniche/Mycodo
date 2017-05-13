@@ -1974,6 +1974,7 @@ def sensor_mod(form_mod_sensor):
                 mod_sensor.baud_rate = form_mod_sensor.baud_rate.data
             if form_mod_sensor.device_loc.data:
                 mod_sensor.device_loc = form_mod_sensor.device_loc.data
+            mod_sensor.calibrate_sensor_measure = form_mod_sensor.calibrate_sensor_measure.data
             mod_sensor.multiplexer_address = form_mod_sensor.multiplexer_address.data
             mod_sensor.multiplexer_bus = form_mod_sensor.modMultiplexBus.data
             mod_sensor.multiplexer_channel = form_mod_sensor.multiplexer_channel.data

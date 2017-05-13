@@ -831,6 +831,7 @@ class SensorMod(FlaskForm):
     location = StringField(lazy_gettext(u'Location'))
     baud_rate = IntegerField(lazy_gettext(u'Baud Rate'))
     device_loc = StringField(lazy_gettext(u'Device'))
+    calibrate_sensor_measure = StringField(lazy_gettext(u'Calibration Measurement'))
     modResolution = IntegerField(lazy_gettext(u'Resolution'))
     modSensitivity = IntegerField(lazy_gettext(u'Sensitivity'))
     modPowerRelayID = IntegerField(lazy_gettext(u'Power Relay'))

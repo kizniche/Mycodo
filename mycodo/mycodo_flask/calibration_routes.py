@@ -74,8 +74,18 @@ def calibration_atlas_ph():
     if form_ph_calibrate.hidden_next_stage.data is not None:
         next_stage = int(form_ph_calibrate.hidden_next_stage.data)
 
-    # Select sensor
-    if form_ph_calibrate.go_from_first_stage.data:
+    # Clear Calibration memory
+    if form_ph_calibrate.clear_calibration.data:
+        selected_sensor = Sensor.query.filter_by(
+            unique_id=form_ph_calibrate.selected_sensor_id.data).first()
+        status, message = calibrate(
+            selected_sensor, 'clear_calibration')
+        if status:
+            flash(message, "error")
+        else:
+            flash(message, "success")
+    # Begin calibration from Selected sensor
+    elif form_ph_calibrate.go_from_first_stage.data:
         stage = 1
         selected_sensor = Sensor.query.filter_by(
             unique_id=form_ph_calibrate.selected_sensor_id.data).first()
@@ -86,7 +96,7 @@ def calibration_atlas_ph():
             for index, each_sensor in enumerate(SENSORS):
                 if selected_sensor.device == each_sensor[0]:
                     sensor_device_name = each_sensor[1]
-
+    # Continue calibration from selected sensor
     elif (form_ph_calibrate.go_to_next_stage.data or
             form_ph_calibrate.go_to_last_stage.data or
             next_stage > 1):
@@ -95,16 +105,6 @@ def calibration_atlas_ph():
         for each_sensor in SENSORS:
             if selected_sensor.device == each_sensor[0]:
                 sensor_device_name = each_sensor[1]
-
-    if form_ph_calibrate.clear_calibration.data:
-        selected_sensor = Sensor.query.filter_by(
-            unique_id=form_ph_calibrate.selected_sensor_id.data).first()
-        status, message = calibrate(
-            selected_sensor, 'clear_calibration')
-        if status:
-            flash(message, "error")
-        else:
-            flash(message, "success")
 
     if next_stage == 2:
         if form_ph_calibrate.temperature.data is None:
@@ -189,6 +189,80 @@ def calibrate(sensor_sel, command, temperature=None, custom_cmd=None):
     based on the board version
     """
     cmd_send = None
+    ph_sensor_uart = None
+    ph_sensor_i2c = None
+
+    if sensor_sel.interface == 'UART':
+        ph_sensor_uart = AtlasScientificUART(
+            serial_device=sensor_sel.device_loc,
+            baudrate=sensor_sel.baud_rate)
+    elif sensor_sel.interface == 'I2C':
+        ph_sensor_i2c = AtlasScientificI2C(
+            i2c_address=sensor_sel.i2c_address,
+            i2c_bus=sensor_sel.i2c_bus)
+
+    board_version, board_info = atlas_ph_board_version(sensor_sel)
+
+    if board_version == 0:
+        return 1, gettext(u"Unable to retrieve device info (this indicates the "
+                          u"device was not properly initialized or connected)")
+
+    flash("Device Info: {info}".format(info=board_info), "info")
+    flash("Detected Version: {ver}".format(ver=board_version), "info")
+
+    # Formulate command based on calibration step and board version.
+    # Legacy boards requires a different command than recent boards.
+    # Some commands are not necessary for recent boards and will not
+    # generate a response.
+    if command == 'temperature' and temperature is not None:
+        if board_version == 1:
+            cmd_send = temperature
+        elif board_version == 2:
+            cmd_send = 'T,{temp}'.format(temp=temperature)
+    elif command == 'clear_calibration':
+        if board_version == 1:
+            cmd_send = 'X'
+            calibrate(sensor_sel, '', custom_cmd='L0')
+        elif board_version == 2:
+            cmd_send = 'Cal,clear'
+    elif command == 'continuous':
+        if board_version == 1:
+            cmd_send = 'C'
+    elif command == 'low':
+        if board_version == 1:
+            cmd_send = 'F'
+        elif board_version == 2:
+            cmd_send = 'Cal,low,4.00'
+    elif command == 'mid':
+        if board_version == 1:
+            cmd_send = 'S'
+        elif board_version == 2:
+            cmd_send = 'Cal,mid,7.00'
+    elif command == 'high':
+        if board_version == 1:
+            cmd_send = 'T'
+        elif board_version == 2:
+            cmd_send = 'Cal,high,10.00'
+    elif command == 'end':
+        if board_version == 1:
+            cmd_send = 'E'
+    elif custom_cmd:
+        cmd_send = custom_cmd
+
+    # Send the command (if not None) and return the response
+    if cmd_send is not None:
+        if sensor_sel.interface == 'UART':
+            ph_sensor_uart.send_cmd(cmd_send)
+            time.sleep(1.3)
+            return 0, ph_sensor_uart.read_lines()
+        elif sensor_sel.interface == 'I2C':
+            return 0, ph_sensor_i2c.query(cmd_send)
+    else:
+        return 0, "No message"
+
+
+def atlas_ph_board_version(sensor_sel):
+    """Return the board version of the Atlas Scientific pH sensor"""
     info = None
     ph_sensor_uart = None
     ph_sensor_i2c = None
@@ -214,69 +288,14 @@ def calibrate(sensor_sel, command, temperature=None, custom_cmd=None):
     except Exception:
         info = None
 
-    if info is not None:
-        flash("Device Info: {info}".format(info=info), "info")
-
     # Check first letter of info response
     # "P" indicates a legacy board version
     if info is None:
-        return 1, gettext(u"Unable to retrieve device info (this indicates the "
-                          u"device was not properly initialized or connected)")
+        return 0, None
     elif info[0] == 'P':
-        version = 1  # Older board version
+        return 1, info  # Older board version
     else:
-        version = 2  # Newer board version
-    flash("Detected Version: {ver}".format(ver=version), "info")
-
-    # Formulate command based on calibration step and board version.
-    # Legacy boards requires a different command than recent boards.
-    # Some commands are not necessary for recent boards and will not
-    # generate a response.
-    if command == 'temperature' and temperature is not None:
-        if version == 1:
-            cmd_send = temperature
-        elif version == 2:
-            cmd_send = 'T,{temp}'.format(temp=temperature)
-    elif command == 'clear_calibration':
-        if version == 1:
-            cmd_send = 'X'
-            calibrate(sensor_sel, '', custom_cmd='L0')
-        elif version == 2:
-            cmd_send = 'Cal,clear'
-    elif command == 'continuous':
-        if version == 1:
-            cmd_send = 'C'
-    elif command == 'low':
-        if version == 1:
-            cmd_send = 'F'
-        elif version == 2:
-            cmd_send = 'Cal,low,4.00'
-    elif command == 'mid':
-        if version == 1:
-            cmd_send = 'S'
-        elif version == 2:
-            cmd_send = 'Cal,mid,7.00'
-    elif command == 'high':
-        if version == 1:
-            cmd_send = 'T'
-        elif version == 2:
-            cmd_send = 'Cal,high,10.00'
-    elif command == 'end':
-        if version == 1:
-            cmd_send = 'E'
-    elif custom_cmd:
-        cmd_send = custom_cmd
-
-    # Send the command (if not None) and return the response
-    if cmd_send is not None:
-        if sensor_sel.interface == 'UART':
-            ph_sensor_uart.send_cmd(cmd_send)
-            time.sleep(1.3)
-            return 0, ph_sensor_uart.read_lines()
-        elif sensor_sel.interface == 'I2C':
-            return 0, ph_sensor_i2c.query(cmd_send)
-    else:
-        return 0, "No message"
+        return 2, info  # Newer board version
 
 
 def dual_commands_to_sensor(sensor_sel, first_cmd, amount,

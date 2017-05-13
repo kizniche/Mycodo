@@ -16,6 +16,7 @@ class Sensor(CRUDMixin, db.Model):
     device = db.Column(db.Text, default='')  # Device name, such as DHT11, DHT22, DS18B20
     interface = db.Column(db.Text, default=None)  # Communication interface (I2C, UART, etc.)
     device_loc = db.Column(db.Text, default=None)  # Device location for UART communication
+    calibrate_sensor_measure = db.Column(db.Text, default=None)  # sensor ID and measurement (CSV)
     baud_rate = db.Column(db.Integer, default=None)  # Baud rate for UART communication
     period = db.Column(db.Float, default=15.0)  # Duration between readings
     i2c_bus = db.Column(db.Integer, default='')  # I2C bus the sensor is connected to

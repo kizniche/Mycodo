@@ -9,7 +9,8 @@
   - Add measurement retries upon CRC fail for AM2315 sensor ([#246](https://github.com/kizniche/mycodo/issues/246))
   - Add page error handler that provides full traceback when the Web UI crashes
   - Display live pH measurements during pH sensor calibration
-  _ Add ability to clear calibration data from Atlas Scientific pH sensors
+  - Add ability to clear calibration data from Atlas Scientific pH sensors
+  - Add sensor option to calibrate Atlas Scientific pH sensor with the temperature from another sensor before measuring pH
 
 ### Bugfixes
 

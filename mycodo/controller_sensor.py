@@ -151,6 +151,7 @@ class SensorController(threading.Thread):
         self.setup_sensor_conditionals()
 
         sensor = db_retrieve_table_daemon(Sensor, device_id=self.sensor_id)
+        self.sensor_sel = sensor
         self.unique_id = sensor.unique_id
         self.i2c_bus = sensor.i2c_bus
         self.location = sensor.location
@@ -263,11 +264,13 @@ class SensorController(threading.Thread):
         elif self.device == 'ATLAS_PH_I2C':
             self.measure_sensor = AtlaspHSensor(self.interface,
                                                 i2c_address=self.i2c_address,
-                                                i2c_bus=self.i2c_bus)
+                                                i2c_bus=self.i2c_bus,
+                                                sensor_sel=self.sensor_sel)
         elif self.device == 'ATLAS_PH_UART':
             self.measure_sensor = AtlaspHSensor(self.interface,
                                                 device_loc=self.device_loc,
-                                                baud_rate=self.baud_rate)
+                                                baud_rate=self.baud_rate,
+                                                sensor_sel=self.sensor_sel)
         elif self.device == 'ATLAS_PT1000_I2C':
             self.measure_sensor = AtlasPT1000Sensor(self.interface,
                                                     i2c_address=self.i2c_address,
