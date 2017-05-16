@@ -17,9 +17,9 @@ from mycodo import flaskforms
 from mycodo import flaskutils
 
 from mycodo.databases.models import Sensor
-
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
+from mycodo.utils.calibration import AtlasScientificCommand
 from mycodo.utils.system_pi import str_is_float
 
 from config import SENSORS
@@ -78,8 +78,8 @@ def calibration_atlas_ph():
     if form_ph_calibrate.clear_calibration.data:
         selected_sensor = Sensor.query.filter_by(
             unique_id=form_ph_calibrate.selected_sensor_id.data).first()
-        status, message = calibrate(
-            selected_sensor, 'clear_calibration')
+        atlas_command = AtlasScientificCommand(selected_sensor)
+        status, message = atlas_command.calibrate('clear_calibration')
         if status:
             flash(message, "error")
         else:
@@ -183,121 +183,6 @@ def calibration_atlas_ph_measure(sensor_id):
         return ph
 
 
-def calibrate(sensor_sel, command, temperature=None, custom_cmd=None):
-    """
-    Determine and send the correct command to an Atlas Scientific sensor,
-    based on the board version
-    """
-    cmd_send = None
-    ph_sensor_uart = None
-    ph_sensor_i2c = None
-
-    if sensor_sel.interface == 'UART':
-        ph_sensor_uart = AtlasScientificUART(
-            serial_device=sensor_sel.device_loc,
-            baudrate=sensor_sel.baud_rate)
-    elif sensor_sel.interface == 'I2C':
-        ph_sensor_i2c = AtlasScientificI2C(
-            i2c_address=sensor_sel.i2c_address,
-            i2c_bus=sensor_sel.i2c_bus)
-
-    board_version, board_info = atlas_ph_board_version(sensor_sel)
-
-    if board_version == 0:
-        return 1, gettext(u"Unable to retrieve device info (this indicates the "
-                          u"device was not properly initialized or connected)")
-
-    flash("Device Info: {info}".format(info=board_info), "info")
-    flash("Detected Version: {ver}".format(ver=board_version), "info")
-
-    # Formulate command based on calibration step and board version.
-    # Legacy boards requires a different command than recent boards.
-    # Some commands are not necessary for recent boards and will not
-    # generate a response.
-    if command == 'temperature' and temperature is not None:
-        if board_version == 1:
-            cmd_send = temperature
-        elif board_version == 2:
-            cmd_send = 'T,{temp}'.format(temp=temperature)
-    elif command == 'clear_calibration':
-        if board_version == 1:
-            cmd_send = 'X'
-            calibrate(sensor_sel, '', custom_cmd='L0')
-        elif board_version == 2:
-            cmd_send = 'Cal,clear'
-    elif command == 'continuous':
-        if board_version == 1:
-            cmd_send = 'C'
-    elif command == 'low':
-        if board_version == 1:
-            cmd_send = 'F'
-        elif board_version == 2:
-            cmd_send = 'Cal,low,4.00'
-    elif command == 'mid':
-        if board_version == 1:
-            cmd_send = 'S'
-        elif board_version == 2:
-            cmd_send = 'Cal,mid,7.00'
-    elif command == 'high':
-        if board_version == 1:
-            cmd_send = 'T'
-        elif board_version == 2:
-            cmd_send = 'Cal,high,10.00'
-    elif command == 'end':
-        if board_version == 1:
-            cmd_send = 'E'
-    elif custom_cmd:
-        cmd_send = custom_cmd
-
-    # Send the command (if not None) and return the response
-    if cmd_send is not None:
-        if sensor_sel.interface == 'UART':
-            ph_sensor_uart.send_cmd(cmd_send)
-            time.sleep(1.3)
-            return 0, ph_sensor_uart.read_lines()
-        elif sensor_sel.interface == 'I2C':
-            return 0, ph_sensor_i2c.query(cmd_send)
-    else:
-        return 0, "No message"
-
-
-def atlas_ph_board_version(sensor_sel):
-    """Return the board version of the Atlas Scientific pH sensor"""
-    info = None
-    ph_sensor_uart = None
-    ph_sensor_i2c = None
-
-    if sensor_sel.interface == 'UART':
-        ph_sensor_uart = AtlasScientificUART(
-            serial_device=sensor_sel.device_loc,
-            baudrate=sensor_sel.baud_rate)
-    elif sensor_sel.interface == 'I2C':
-        ph_sensor_i2c = AtlasScientificI2C(
-            i2c_address=sensor_sel.i2c_address,
-            i2c_bus=sensor_sel.i2c_bus)
-
-    try:
-        if sensor_sel.interface == 'UART':
-            ph_sensor_uart.send_cmd('i')
-            time.sleep(1.3)
-            info = ph_sensor_uart.read_lines()[0]
-        elif sensor_sel.interface == 'I2C':
-            info = ph_sensor_i2c.query('i')
-    except TypeError:
-        info = None
-    except Exception:
-        info = None
-
-    # Check first letter of info response
-    # "P" indicates a legacy board version
-    if info is None:
-        return 0, None
-    elif info[0] == 'P':
-        return 1, info  # Older board version
-    else:
-        return 2, info  # Newer board version
-
-
 def dual_commands_to_sensor(sensor_sel, first_cmd, amount,
                             second_cmd, current_stage):
     """
@@ -316,8 +201,9 @@ def dual_commands_to_sensor(sensor_sel, first_cmd, amount,
     else:
         unit = 'pH'
 
-    first_status, first_return_str = calibrate(
-        sensor_sel, first_cmd, temperature=set_temp)
+    atlas_command = AtlasScientificCommand(sensor_sel)
+
+    first_status, first_return_str = atlas_command.calibrate(first_cmd, temperature=set_temp)
     info_str = "{act}: {lvl} ({amt} {unit}): {resp}".format(
         act=gettext(u'Calibration'), lvl=first_cmd, amt=amount, unit=unit, resp=first_return_str)
 
@@ -327,7 +213,7 @@ def dual_commands_to_sensor(sensor_sel, first_cmd, amount,
         return_stage = current_stage
     else:
         flash(info_str, "success")
-        second_status, second_return_str = calibrate(sensor_sel, second_cmd)
+        second_status, second_return_str = atlas_command.calibrate(second_cmd)
         second_info_str = "{act}: {cmd}: {resp}".format(
             act=gettext(u'Command'), cmd=second_cmd, resp=second_return_str)
         if second_status:
@@ -336,5 +222,7 @@ def dual_commands_to_sensor(sensor_sel, first_cmd, amount,
             return_stage = current_stage
         else:
             flash(second_info_str, "success")
+            # Advance to the next stage
             return_stage = current_stage + 1
+
     return return_stage, return_error
