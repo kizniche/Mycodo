@@ -72,40 +72,43 @@ class AtlasScientificCommand:
         # Legacy boards requires a different command than recent boards.
         # Some commands are not necessary for recent boards and will not
         # generate a response.
+        err = 1
+        msg = "Default message"
         if command == 'temperature' and temperature is not None:
             if self.board_version == 1:
-                self.send_command(temperature)
+                err, msg = self.send_command(temperature)
             elif self.board_version == 2:
-                self.send_command('T,{temp}'.format(temp=temperature))
+                err, msg = self.send_command('T,{temp}'.format(temp=temperature))
         elif command == 'clear_calibration':
             if self.board_version == 1:
-                self.send_command('X')
+                err, msg = self.send_command('X')
                 self.send_command('L0')
             elif self.board_version == 2:
-                self.send_command('Cal,clear')
+                err, msg = self.send_command('Cal,clear')
         elif command == 'continuous':
             if self.board_version == 1:
-                self.send_command('C')
+                err, msg = self.send_command('C')
         elif command == 'low':
             if self.board_version == 1:
-                self.send_command('F')
+                err, msg = self.send_command('F')
             elif self.board_version == 2:
-                self.send_command('Cal,low,4.00')
+                err, msg = self.send_command('Cal,low,4.00')
         elif command == 'mid':
             if self.board_version == 1:
-                self.send_command('S')
+                err, msg = self.send_command('S')
             elif self.board_version == 2:
-                self.send_command('Cal,mid,7.00')
+                err, msg = self.send_command('Cal,mid,7.00')
         elif command == 'high':
             if self.board_version == 1:
-                self.send_command('T')
+                err, msg = self.send_command('T')
             elif self.board_version == 2:
-                self.send_command('Cal,high,10.00')
+                err, msg = self.send_command('Cal,high,10.00')
         elif command == 'end':
             if self.board_version == 1:
-                self.send_command('E')
+                err, msg = self.send_command('E')
         elif custom_cmd:
-            self.send_command(custom_cmd)
+            err, msg = self.send_command(custom_cmd)
+        return err, msg
 
     def send_command(self, cmd_send):
         """ Send the command (if not None) and return the response """
