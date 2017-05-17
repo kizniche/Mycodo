@@ -63,63 +63,70 @@ class AtlaspHSensor(AbstractSensor):
         return self._ph
 
     def get_measurement(self):
-        """ Gets the sensor's pH measurement via UART/I2C """
-        if ',' in self.sensor_sel.calibrate_sensor_measure:
-            # TODO: Remove this debug line
-            logger.info("pH sensor set to calibrate temperature")
-
-            device_id = self.sensor_sel.calibrate_sensor_measure.split(',')[0]
-            measurement = self.sensor_sel.calibrate_sensor_measure.split(',')[1]
-            last_measurement = read_last_influxdb(
-                device_id, measurement, duration_sec=300)
-            if last_measurement:
-
+        try:
+            """ Gets the sensor's pH measurement via UART/I2C """
+            if ',' in self.sensor_sel.calibrate_sensor_measure:
                 # TODO: Remove this debug line
-                logger.info("Latest temperature used to calibrate: {temp}".format(
-                    temp=last_measurement[1]))
+                logger.info("pH sensor set to calibrate temperature")
 
-                atlas_command = AtlasScientificCommand(self.sensor_sel)
-                ret_value, ret_msg = atlas_command.calibrate(
-                    'temperature', temperature=last_measurement[1])
-                time.sleep(0.5)
+                device_id = self.sensor_sel.calibrate_sensor_measure.split(',')[0]
+                measurement = self.sensor_sel.calibrate_sensor_measure.split(',')[1]
+                last_measurement = read_last_influxdb(
+                    device_id, measurement, duration_sec=300)
+                if last_measurement:
 
-                # TODO: Remove this debug line
-                logger.info("Calibration returned: {val}, {msg}".format(
-                    val=ret_value, msg=ret_msg))
+                    # TODO: Remove this debug line
+                    logger.info("Latest temperature used to calibrate: {temp}".format(
+                        temp=last_measurement[1]))
 
-        ph = None
-        if self.interface == 'UART':
-            if self.atlas_sensor_uart.setup:
-                self.atlas_sensor_uart.send_cmd('R')
-                time.sleep(1.3)
-                lines = self.atlas_sensor_uart.read_lines()
-                logger.debug("All Lines: {lines}".format(lines=lines))
+                    atlas_command = AtlasScientificCommand(self.sensor_sel)
 
-                if 'check probe' in lines:
-                    logger.error('"check probe" returned from sensor')
-                elif str_is_float(lines[0]):
-                    ph = float(lines[0])
-                    logger.debug('Value[0] is float: {val}'.format(val=ph))
+                    # TODO: Remove this debug line
+                    logger.info("Test 01")
+
+                    ret_value, ret_msg = atlas_command.calibrate(
+                        'temperature', temperature=last_measurement[1])
+                    time.sleep(0.5)
+
+                    # TODO: Remove this debug line
+                    logger.info("Calibration returned: {val}, {msg}".format(
+                        val=ret_value, msg=ret_msg))
+
+            ph = None
+            if self.interface == 'UART':
+                if self.atlas_sensor_uart.setup:
+                    self.atlas_sensor_uart.send_cmd('R')
+                    time.sleep(1.3)
+                    lines = self.atlas_sensor_uart.read_lines()
+                    logger.debug("All Lines: {lines}".format(lines=lines))
+
+                    if 'check probe' in lines:
+                        logger.error('"check probe" returned from sensor')
+                    elif str_is_float(lines[0]):
+                        ph = float(lines[0])
+                        logger.debug('Value[0] is float: {val}'.format(val=ph))
+                    else:
+                        ph = lines[0]
+                        logger.error('Value[0] is not float or "check probe": '
+                                     '{val}'.format(val=ph))
                 else:
-                    ph = lines[0]
-                    logger.error('Value[0] is not float or "check probe": '
-                                 '{val}'.format(val=ph))
-            else:
-                logger.error('UART device is not set up.'
-                             'Check the log for errors.')
-        elif self.interface == 'I2C':
-            if self.atlas_sensor_i2c.setup:
-                ph_status, ph_str = self.atlas_sensor_i2c.query('R')
-                if ph_status == 'error':
-                    logger.error("Sensor read unsuccessful: {err}".format(
-                        err=ph_str))
-                elif ph_status == 'success':
-                    ph = float(ph_str)
-            else:
-                logger.error('I2C device is not set up.'
-                             'Check the log for errors.')
+                    logger.error('UART device is not set up.'
+                                 'Check the log for errors.')
+            elif self.interface == 'I2C':
+                if self.atlas_sensor_i2c.setup:
+                    ph_status, ph_str = self.atlas_sensor_i2c.query('R')
+                    if ph_status == 'error':
+                        logger.error("Sensor read unsuccessful: {err}".format(
+                            err=ph_str))
+                    elif ph_status == 'success':
+                        ph = float(ph_str)
+                else:
+                    logger.error('I2C device is not set up.'
+                                 'Check the log for errors.')
 
-        return ph
+            return ph
+        except:
+            logger.exception(1)
 
     def read(self):
         """
