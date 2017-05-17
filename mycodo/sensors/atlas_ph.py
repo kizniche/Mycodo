@@ -63,8 +63,8 @@ class AtlaspHSensor(AbstractSensor):
         return self._ph
 
     def get_measurement(self):
+        """ Gets the sensor's pH measurement via UART/I2C """
         try:
-            """ Gets the sensor's pH measurement via UART/I2C """
             if ',' in self.sensor_sel.calibrate_sensor_measure:
                 # TODO: Remove this debug line
                 logger.info("pH sensor set to calibrate temperature")
