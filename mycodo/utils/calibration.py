@@ -1,10 +1,12 @@
 # coding=utf-8
 import logging
 import time
+from lockfile import LockFile
 
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
+from mycodo.devices.atlas_scientific_uart import AtlasScientificUART\
 
+from mycodo.config import ATLAS_PH_LOCK_FILE
 
 logger = logging.getLogger("mycodo.atlas_scientific")
 
@@ -42,17 +44,30 @@ class AtlasScientificCommand:
         """Return the board version of the Atlas Scientific pH sensor"""
         info = None
 
+        lock = LockFile(ATLAS_PH_LOCK_FILE)
         try:
+            while not lock.i_am_locking():
+                try:
+                    lock.acquire(timeout=60)  # wait up to 60 seconds before breaking lock
+                except Exception as e:
+                    logger.error("{cls} 60 second timeout, {lock} lock broken: "
+                                 "{err}".format(cls=type(self).__name__,
+                                                lock=ATLAS_PH_LOCK_FILE,
+                                                err=e))
+                    lock.break_lock()
+                    lock.acquire()
             if self.interface == 'UART':
                 self.ph_sensor_uart.send_cmd('i')
                 time.sleep(1.3)
                 info = self.ph_sensor_uart.read_lines()[0]
             elif self.interface == 'I2C':
                 info = self.ph_sensor_i2c.query('i')
-        except TypeError:
+            lock.release()
+        except Exception as err:
             info = None
-        except Exception:
-            info = None
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=err))
+            lock.release()
 
         # Check first letter of info response
         # "P" indicates a legacy board version
@@ -112,7 +127,18 @@ class AtlasScientificCommand:
 
     def send_command(self, cmd_send):
         """ Send the command (if not None) and return the response """
+        lock = LockFile(ATLAS_PH_LOCK_FILE)
         try:
+            while not lock.i_am_locking():
+                try:
+                    lock.acquire(timeout=60)  # wait up to 60 seconds before breaking lock
+                except Exception as e:
+                    logger.error("{cls} 60 second timeout, {lock} lock broken: "
+                                 "{err}".format(cls=type(self).__name__,
+                                                lock=ATLAS_PH_LOCK_FILE,
+                                                err=e))
+                    lock.break_lock()
+                    lock.acquire()
             if cmd_send is not None:
                 if self.interface == 'UART':
                     self.ph_sensor_uart.send_cmd(cmd_send)
@@ -121,7 +147,13 @@ class AtlasScientificCommand:
                 elif self.interface == 'I2C':
                     return 0, self.ph_sensor_i2c.query(cmd_send)
                 time.sleep(0.1)
+                lock.release()
             else:
+                lock.release()
                 return 0, "No message"
         except Exception as err:
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=err))
+            lock.release()
             return 1, err
+

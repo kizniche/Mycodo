@@ -1,7 +1,7 @@
 # coding=utf-8
-from lockfile import LockFile
 import logging
 import time
+from lockfile import LockFile
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.mycodo_flask.calibration_routes import AtlasScientificCommand
@@ -9,8 +9,9 @@ from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import str_is_float
 from .base_sensor import AbstractSensor
 
+from mycodo.config import ATLAS_PH_LOCK_FILE
+
 logger = logging.getLogger("mycodo.sensors.atlas_ph")
-ATLAS_PH_LOCK_FILE = "/var/lock/sensor-atlas-ph"
 
 
 class AtlaspHSensor(AbstractSensor):
@@ -98,17 +99,18 @@ class AtlaspHSensor(AbstractSensor):
                     self.atlas_sensor_uart.send_cmd('R')
                     time.sleep(1.3)
                     lines = self.atlas_sensor_uart.read_lines()
-                    logger.debug("All Lines: {lines}".format(lines=lines))
+                    if len(lines[0]) > 0:
+                        logger.debug("All Lines: {lines}".format(lines=lines))
 
-                    if 'check probe' in lines:
-                        logger.error('"check probe" returned from sensor')
-                    elif str_is_float(lines[0]):
-                        ph = float(lines[0])
-                        logger.debug('Value[0] is float: {val}'.format(val=ph))
-                    else:
-                        ph = lines[0]
-                        logger.error('Value[0] is not float or "check probe": '
-                                     '{val}'.format(val=ph))
+                        if 'check probe' in lines:
+                            logger.error('"check probe" returned from sensor')
+                        elif str_is_float(lines[0]):
+                            ph = float(lines[0])
+                            logger.debug('Value[0] is float: {val}'.format(val=ph))
+                        else:
+                            ph = lines[0]
+                            logger.error('Value[0] is not float or "check probe": '
+                                         '{val}'.format(val=ph))
                 else:
                     logger.error('UART device is not set up.'
                                  'Check the log for errors.')

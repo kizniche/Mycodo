@@ -227,8 +227,11 @@ DAEMON_LOG_FILE = os.path.join(LOG_PATH, 'mycodo.log')
 UPGRADE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupgrade.log')
 RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
 HTTP_LOG_FILE = '/var/log/apache2/error.log'
+
 LOCK_PATH = '/var/lock'
+ATLAS_PH_LOCK_FILE = os.path.join(LOCK_PATH, 'sensor-atlas-ph.pid')
 DAEMON_PID_FILE = os.path.join(LOCK_PATH, 'mycodo.pid')
+LOCK_FILE_STREAM = os.path.join(LOCK_PATH, 'mycodo-camera-stream.pid')
 
 # Camera
 CAMERAS = {
@@ -236,7 +239,6 @@ CAMERAS = {
     'USB Camera': 'opencv'
 }
 PATH_CAMERAS = os.path.join(INSTALL_DIRECTORY, 'cameras')
-LOCK_FILE_STREAM = os.path.join(DATABASE_PATH, 'mycodo-camera-stream.pid')
 
 # Influx sensor/device measurement database
 INFLUXDB_HOST = 'localhost'
