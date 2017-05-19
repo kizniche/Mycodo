@@ -4,6 +4,9 @@ import io  # used to create file streams
 import logging
 import string  # helps parse strings
 import time  # used for sleep delay and timestamps
+from lockfile import LockFile
+
+from mycodo.config import ATLAS_PH_LOCK_FILE
 
 logger = logging.getLogger("mycodo.device.atlas_scientific_i2c")
 
@@ -58,19 +61,40 @@ class AtlasScientificI2C:
             return "error", str(ord(response[0]))
 
     def query(self, query_str):
-        # write a command to the board, wait the correct timeout, and read the response
-        self.write(query_str)
+        """ Send command to board and read response """
+        lock = LockFile(ATLAS_PH_LOCK_FILE)
+        try:
+            while not lock.i_am_locking():
+                try:
+                    lock.acquire(timeout=60)  # wait up to 60 seconds before breaking lock
+                except Exception as e:
+                    logger.error("{cls} 60 second timeout, {lock} lock broken: "
+                                 "{err}".format(cls=type(self).__name__,
+                                                lock=ATLAS_PH_LOCK_FILE,
+                                                err=e))
+                    lock.break_lock()
+                    lock.acquire()
 
-        # the read and calibration commands require a longer timeout
-        if ((query_str.upper().startswith("R")) or
-                (query_str.upper().startswith("CAL"))):
-            time.sleep(self.long_timeout)
-        elif query_str.upper().startswith("SLEEP"):
-            return "sleep mode"
-        else:
-            time.sleep(self.short_timeout)
+            # write a command to the board, wait the correct timeout, and read the response
+            self.write(query_str)
 
-        return self.read()
+            # the read and calibration commands require a longer timeout
+            if ((query_str.upper().startswith("R")) or
+                    (query_str.upper().startswith("CAL"))):
+                time.sleep(self.long_timeout)
+            elif query_str.upper().startswith("SLEEP"):
+                return "sleep mode"
+            else:
+                time.sleep(self.short_timeout)
+
+            response = self.read()
+            lock.release()
+            return response
+        except Exception as err:
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=err))
+            lock.release()
+            return None
 
     def close(self):
         self.file_read.close()

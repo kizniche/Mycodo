@@ -96,9 +96,7 @@ class AtlaspHSensor(AbstractSensor):
             ph = None
             if self.interface == 'UART':
                 if self.atlas_sensor_uart.setup:
-                    self.atlas_sensor_uart.send_cmd('R')
-                    time.sleep(1.3)
-                    lines = self.atlas_sensor_uart.read_lines()
+                    lines = self.atlas_sensor_uart.query('R')
                     if len(lines[0]) > 0:
                         logger.debug("All Lines: {lines}".format(lines=lines))
 

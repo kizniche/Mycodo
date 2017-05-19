@@ -2,14 +2,12 @@
 """ collection of Page endpoints """
 import flask_login
 import logging
-import time
 from flask_babel import gettext
 from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import url_for
 from flask.blueprints import Blueprint
-from lockfile import LockFile
 
 from mycodo.mycodo_flask.general_routes import inject_mycodo_version
 from mycodo import flaskforms
@@ -21,7 +19,6 @@ from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.utils.calibration import AtlasScientificCommand
 from mycodo.utils.system_pi import str_is_float
 
-from mycodo.config import ATLAS_PH_LOCK_FILE
 from config import SENSORS
 
 logger = logging.getLogger('mycodo.mycodo_flask.calibration')
@@ -150,47 +147,30 @@ def calibration_atlas_ph_measure(sensor_id):
     ph = None
     error = None
 
-    lock = LockFile(ATLAS_PH_LOCK_FILE)
-    try:
-        while not lock.i_am_locking():
-            try:
-                lock.acquire(timeout=60)  # wait up to 60 seconds before breaking lock
-            except Exception as e:
-                logger.error("60 second timeout, {lock} lock broken: "
-                             "{err}".format(lock=ATLAS_PH_LOCK_FILE,
-                                            err=e))
-                lock.break_lock()
-                lock.acquire()
-        if selected_sensor.interface == 'UART':
-            ph_sensor_uart = AtlasScientificUART(
-                serial_device=selected_sensor.device_loc,
-                baudrate=selected_sensor.baud_rate)
-            ph_sensor_uart.send_cmd('R')
-            time.sleep(1.3)
-            lines = ph_sensor_uart.read_lines()
-            logger.debug("All Lines: {lines}".format(lines=lines))
+    if selected_sensor.interface == 'UART':
+        ph_sensor_uart = AtlasScientificUART(
+            serial_device=selected_sensor.device_loc,
+            baudrate=selected_sensor.baud_rate)
+        lines = ph_sensor_uart.query('R')
+        logger.debug("All Lines: {lines}".format(lines=lines))
 
-            if 'check probe' in lines:
-                error = '"check probe" returned from sensor'
-            elif str_is_float(lines[0]):
-                ph = lines[0]
-                logger.debug('Value[0] is float: {val}'.format(val=ph))
-            else:
-                error = 'Value[0] is not float or "check probe": {val}'.format(
-                    val=lines[0])
-        elif selected_sensor.interface == 'I2C':
-            ph_sensor_i2c = AtlasScientificI2C(
-                i2c_address=selected_sensor.i2c_address,
-                i2c_bus=selected_sensor.i2c_bus)
-            ph_status, ph_str = ph_sensor_i2c.query('R')
-            if ph_status == 'error':
-                error = "Sensor read unsuccessful: {err}".format(err=ph_str)
-            elif ph_status == 'success':
-                ph = ph_str
-        lock.release()
-    except Exception as err:
-        error = "Exception when taking a reading: {err}".format(err=err)
-        lock.release()
+        if 'check probe' in lines:
+            error = '"check probe" returned from sensor'
+        elif str_is_float(lines[0]):
+            ph = lines[0]
+            logger.debug('Value[0] is float: {val}'.format(val=ph))
+        else:
+            error = 'Value[0] is not float or "check probe": {val}'.format(
+                val=lines[0])
+    elif selected_sensor.interface == 'I2C':
+        ph_sensor_i2c = AtlasScientificI2C(
+            i2c_address=selected_sensor.i2c_address,
+            i2c_bus=selected_sensor.i2c_bus)
+        ph_status, ph_str = ph_sensor_i2c.query('R')
+        if ph_status == 'error':
+            error = "Sensor read unsuccessful: {err}".format(err=ph_str)
+        elif ph_status == 'success':
+            ph = ph_str
 
     if error:
         logger.error(error)

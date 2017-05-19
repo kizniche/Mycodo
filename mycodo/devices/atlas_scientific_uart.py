@@ -2,7 +2,10 @@
 import logging
 import serial
 import time
+from lockfile import LockFile
 from serial import SerialException
+
+from mycodo.config import ATLAS_PH_LOCK_FILE
 
 logger = logging.getLogger("mycodo.device.atlas_scientific_uart")
 
@@ -36,6 +39,31 @@ class AtlasScientificUART:
                     line_buffer[-lsl:] == list('\r')):
                 break
         return ''.join(line_buffer)
+
+    def query(self, query_str):
+        """ Send command and return reply """
+        lock = LockFile(ATLAS_PH_LOCK_FILE)
+        try:
+            while not lock.i_am_locking():
+                try:
+                    lock.acquire(timeout=60)  # wait up to 60 seconds before breaking lock
+                except Exception as e:
+                    logger.error("{cls} 60 second timeout, {lock} lock broken: "
+                                 "{err}".format(cls=type(self).__name__,
+                                                lock=ATLAS_PH_LOCK_FILE,
+                                                err=e))
+                    lock.break_lock()
+                    lock.acquire()
+            self.send_cmd(query_str)
+            time.sleep(1.3)
+            response = self.read_lines()
+            lock.release()
+            return response
+        except Exception as err:
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=err))
+            lock.release()
+            return None
 
     def read_lines(self):
         """
@@ -95,9 +123,7 @@ def main():
             print "Please input valid command."
         else:
             try:
-                device.send_cmd(input_str)
-                time.sleep(1.3)
-                print(device.read_lines())
+                print(device.query(input_str))
             except IOError:
                 print("Send command failed\n")
 
