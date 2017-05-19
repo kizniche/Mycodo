@@ -139,18 +139,16 @@ class AtlasScientificCommand:
                                                 err=e))
                     lock.break_lock()
                     lock.acquire()
+            return_value = "No message"
             if cmd_send is not None:
                 if self.interface == 'UART':
                     self.ph_sensor_uart.send_cmd(cmd_send)
-                    time.sleep(1.3)
-                    return 0, self.ph_sensor_uart.read_lines()
+                    return_value = self.ph_sensor_uart.read_lines()
                 elif self.interface == 'I2C':
-                    return 0, self.ph_sensor_i2c.query(cmd_send)
+                    return_value = self.ph_sensor_i2c.query(cmd_send)
                 time.sleep(0.1)
-                lock.release()
-            else:
-                lock.release()
-                return 0, "No message"
+            lock.release()
+            return 0, return_value
         except Exception as err:
             logger.error("{cls} raised an exception when taking a reading: "
                          "{err}".format(cls=type(self).__name__, err=err))
