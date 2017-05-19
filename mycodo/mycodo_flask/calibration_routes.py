@@ -187,11 +187,10 @@ def calibration_atlas_ph_measure(sensor_id):
                 error = "Sensor read unsuccessful: {err}".format(err=ph_str)
             elif ph_status == 'success':
                 ph = ph_str
-    except Exception as err:
-        logger.error("Exception when taking a reading: "
-                     "{err}".format(err=err))
         lock.release()
-        return 1, err
+    except Exception as err:
+        error = "Exception when taking a reading: {err}".format(err=err)
+        lock.release()
 
     if error:
         logger.error(error)
