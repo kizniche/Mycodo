@@ -62,7 +62,9 @@ class AtlasScientificI2C:
 
     def query(self, query_str):
         """ Send command to board and read response """
-        lock = LockFile(ATLAS_PH_LOCK_FILE)
+        lock_file_amend = '{lf}.{dev}'.format(lf=ATLAS_PH_LOCK_FILE,
+                                              dev=self.current_addr)
+        lock = LockFile(lock_file_amend)
         try:
             while not lock.i_am_locking():
                 try:

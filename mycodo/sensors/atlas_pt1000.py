@@ -18,8 +18,8 @@ class AtlasPT1000Sensor(AbstractSensor):
         self._temperature = 0.0
         self.interface = interface
         if self.interface == 'UART':
-            self.atlas_sensor_uart = AtlasScientificUART(
-                serial_device=device_loc, baudrate=baud_rate)
+            self.atlas_sensor_uart = AtlasScientificUART(device_loc,
+                                                         baudrate=baud_rate)
         elif self.interface == 'I2C':
             self.atlas_sensor_i2c = AtlasScientificI2C(
                 i2c_address=i2c_address, i2c_bus=i2c_bus)

@@ -21,8 +21,7 @@ class AtlasScientificCommand:
 
         if self.interface == 'UART':
             self.ph_sensor_uart = AtlasScientificUART(
-                serial_device=sensor_sel.device_loc,
-                baudrate=sensor_sel.baud_rate)
+                sensor_sel.device_loc, baudrate=sensor_sel.baud_rate)
         elif self.interface == 'I2C':
             self.ph_sensor_i2c = AtlasScientificI2C(
                 i2c_address=sensor_sel.i2c_address,

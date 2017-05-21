@@ -1,15 +1,12 @@
 # coding=utf-8
 import logging
 import time
-from lockfile import LockFile
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.mycodo_flask.calibration_routes import AtlasScientificCommand
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import str_is_float
 from .base_sensor import AbstractSensor
-
-from mycodo.config import ATLAS_PH_LOCK_FILE
 
 logger = logging.getLogger("mycodo.sensors.atlas_ph")
 
@@ -24,8 +21,8 @@ class AtlaspHSensor(AbstractSensor):
         self.interface = interface
         self.sensor_sel = sensor_sel
         if self.interface == 'UART':
-            self.atlas_sensor_uart = AtlasScientificUART(
-                serial_device=device_loc, baudrate=baud_rate)
+            self.atlas_sensor_uart = AtlasScientificUART(device_loc,
+                                                         baudrate=baud_rate)
         elif self.interface == 'I2C':
             self.atlas_sensor_i2c = AtlasScientificI2C(
                 i2c_address=i2c_address, i2c_bus=i2c_bus)
@@ -97,7 +94,7 @@ class AtlaspHSensor(AbstractSensor):
             if self.interface == 'UART':
                 if self.atlas_sensor_uart.setup:
                     lines = self.atlas_sensor_uart.query('R')
-                    if len(lines[0]) > 0:
+                    if lines:
                         logger.debug("All Lines: {lines}".format(lines=lines))
 
                         if 'check probe' in lines:
@@ -134,27 +131,12 @@ class AtlaspHSensor(AbstractSensor):
 
         :returns: None on success or 1 on error
         """
-        lock = LockFile(ATLAS_PH_LOCK_FILE)
         try:
-            # Acquire lock to ensure more than one read isn't
-            # being attempted at once.
-            while not lock.i_am_locking():
-                try:
-                    lock.acquire(timeout=60)  # wait up to 60 seconds before breaking lock
-                except Exception as e:
-                    logger.error("{cls} 60 second timeout, {lock} lock broken: "
-                                 "{err}".format(cls=type(self).__name__,
-                                                lock=ATLAS_PH_LOCK_FILE,
-                                                err=e))
-                    lock.break_lock()
-                    lock.acquire()
             self._ph = self.get_measurement()
-            lock.release()
             if self._ph is None:
                 return 1
             return  # success - no errors
         except Exception as e:
             logger.error("{cls} raised an exception when taking a reading: "
                          "{err}".format(cls=type(self).__name__, err=e))
-            lock.release()
             return 1

@@ -13,8 +13,9 @@ logger = logging.getLogger("mycodo.device.atlas_scientific_uart")
 class AtlasScientificUART:
     """A Class to communicate with Atlas Scientific sensors via UART"""
 
-    def __init__(self, serial_device=None, baudrate=9600):
+    def __init__(self, serial_device, baudrate=9600):
         self.setup = True
+        self.serial_device = serial_device
         try:
             self.ser = serial.Serial(port=serial_device,
                                      baudrate=baudrate,
@@ -42,7 +43,9 @@ class AtlasScientificUART:
 
     def query(self, query_str):
         """ Send command and return reply """
-        lock = LockFile(ATLAS_PH_LOCK_FILE)
+        lock_file_amend = '{lf}.{dev}'.format(lf=ATLAS_PH_LOCK_FILE,
+                                              dev=self.serial_device)
+        lock = LockFile(lock_file_amend)
         try:
             while not lock.i_am_locking():
                 try:
@@ -109,8 +112,7 @@ def main():
     device_str = raw_input("Device? (e.g. '/dev/ttyS0'): ")
     baud_str = raw_input("Baud rate? (e.g. '9600'): ")
 
-    device = AtlasScientificUART(serial_device=device_str,
-                                 baudrate=int(baud_str))
+    device = AtlasScientificUART(device_str, baudrate=int(baud_str))
 
     print(">> Atlas Scientific sample code")
     print(">> Any commands entered are passed to the board via UART")

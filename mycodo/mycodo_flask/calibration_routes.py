@@ -149,13 +149,14 @@ def calibration_atlas_ph_measure(sensor_id):
 
     if selected_sensor.interface == 'UART':
         ph_sensor_uart = AtlasScientificUART(
-            serial_device=selected_sensor.device_loc,
-            baudrate=selected_sensor.baud_rate)
+            selected_sensor.device_loc, baudrate=selected_sensor.baud_rate)
         lines = ph_sensor_uart.query('R')
         logger.debug("All Lines: {lines}".format(lines=lines))
 
         if 'check probe' in lines:
             error = '"check probe" returned from sensor'
+        elif not lines:
+            error = 'Nothing returned from sensor'
         elif str_is_float(lines[0]):
             ph = lines[0]
             logger.debug('Value[0] is float: {val}'.format(val=ph))
