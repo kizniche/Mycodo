@@ -11,7 +11,7 @@
   - Display live pH measurements during pH sensor calibration
   - Add ability to clear calibration data from Atlas Scientific pH sensors
   - Add sensor option to calibrate Atlas Scientific pH sensor with the temperature from another sensor before measuring pH
-  - Add 443MHz wireless relay support ([#88](https://github.com/kizniche/mycodo/issues/88), [#245](https://github.com/kizniche/mycodo/issues/245))
+  - Add 433MHz wireless relay support ([#88](https://github.com/kizniche/mycodo/issues/88), [#245](https://github.com/kizniche/mycodo/issues/245))
 
 ### Bugfixes
 
