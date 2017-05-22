@@ -49,11 +49,11 @@ class AtlasScientificUART:
         try:
             while not lock.i_am_locking():
                 try:
-                    lock.acquire(timeout=10)  # wait up to 60 seconds before breaking lock
+                    lock.acquire(timeout=10)  # wait up to 10 seconds before breaking lock
                 except Exception as e:
                     logger.error("{cls} 10 second timeout, {lock} lock broken: "
                                  "{err}".format(cls=type(self).__name__,
-                                                lock=ATLAS_PH_LOCK_FILE,
+                                                lock=lock_file_amend,
                                                 err=e))
                     lock.break_lock()
                     lock.acquire()
