@@ -44,7 +44,7 @@ class AtlasScientificUART:
     def query(self, query_str):
         """ Send command and return reply """
         lock_file_amend = '{lf}.{dev}'.format(lf=ATLAS_PH_LOCK_FILE,
-                                              dev=self.serial_device)
+                                              dev=self.serial_device.replace("/", "-"))
         lock = LockFile(lock_file_amend)
         try:
             while not lock.i_am_locking():
