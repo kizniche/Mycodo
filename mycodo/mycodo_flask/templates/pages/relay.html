@@ -61,10 +61,16 @@
     <div class="row small-gutters" style="padding-left: 1em">
       <form method="post" action="/relay">
         {{form_add_relay.hidden_tag()}}
-        <div class="col-xs-6 col-sm-2 col-lg-2 no-gutters">
+        <div class="col-xs-4 col-sm-2 col-lg-2 no-gutters">
           {{form_add_relay.relay_quantity(class_='form-control', type="number", value=1)}}
         </div>
-        <div class="col-xs-6 col-sm-3 col-lg-2 no-gutters">
+        <div class="col-xs-6 col-sm-4 col-md-2">
+          <select class="form-control form-tooltip form-dropdown" id="relay_type" name="relay_type" data-placement="top" title="{{_('What type of relay?')}}">
+            <option value="wired">Wired</option>
+            <option value="wireless_433MHz_pi_switch">Wireless (433MHz, pi_switch)</option>
+          </select>
+        </div>
+        <div class="col-xs-4 col-sm-3 col-lg-2 no-gutters">
           {{form_add_relay.relay_add(class_='form-control btn btn-default')}}
         </div>
       </form>
@@ -128,21 +134,22 @@
             </div>
           </div>
           <div class="col-xs-6 col-sm-4 col-md-2">
+            <label class="control-label">Type</label>
+            <div>
+              <input class="form-control" disabled="" value="{{each_relay.relay_type}}" type="text">
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-2">
             {{form_mod_relay.name.label(class_='control-label')}}
             <div>
               {{form_mod_relay.name(class_='form-control', value=each_relay.name, **{'title':_('Name for this Relay')})}}
             </div>
           </div>
+        {% if each_relay.relay_type == 'wired' %}
           <div class="col-xs-6 col-sm-4 col-md-2">
             {{form_mod_relay.gpio.label(class_='control-label')}}
             <div>
-              {{form_mod_relay.gpio(class_='form-control', value=each_relay.pin, **{'title':_('The GPIO pin (using BCM numbering) connected to the relay')})}}
-             </div>
-          </div>
-          <div class="col-xs-6 col-sm-4 col-md-2">
-            {{form_mod_relay.amps.label(class_='control-label')}}
-            <div>
-              {{form_mod_relay.amps(class_='form-control', value=each_relay.amps, **{'title':_('The number of amps the device connected to the relay draws (at 120/240 VAC)')})}}
+              {{form_mod_relay.gpio(class_='form-control', value=each_relay.pin, **{'title':_('The GPIO pin (using BCM numbering)')})}}
              </div>
           </div>
           <div class="col-xs-6 col-sm-4 col-md-2">
@@ -152,6 +159,50 @@
                 <option value="1"{% if each_relay.trigger %} selected{% endif %}>{{_('High')}}</option>
                 <option value="0"{% if not each_relay.trigger %} selected{% endif %}>{{_('Low')}}</option>
               </select>
+             </div>
+          </div>
+        {% elif each_relay.relay_type == 'wireless_433MHz_pi_switch' %}
+          <div class="col-xs-6 col-sm-4 col-md-2">
+            {{form_mod_relay.wiringpi_pin.label(class_='control-label')}}
+            <div>
+              {{form_mod_relay.wiringpi_pin(class_='form-control', value=each_relay.pin, **{'title':_('The GPIO pin (using WiringPi numbering)')})}}
+             </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-2">
+            {{form_mod_relay.protocol.label(class_='control-label')}}
+            <div>
+              {{form_mod_relay.protocol(class_='form-control', value=each_relay.protocol, **{'title':_('Wireless 433MHz protocol')})}}
+             </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-2">
+            {{form_mod_relay.pulse_length.label(class_='control-label')}}
+            <div>
+              {{form_mod_relay.pulse_length(class_='form-control', value=each_relay.pulse_length, **{'title':_('Wireless 433MHz pulse length')})}}
+             </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-2">
+            {{form_mod_relay.bit_length.label(class_='control-label')}}
+            <div>
+              {{form_mod_relay.bit_length(class_='form-control', value=each_relay.bit_length, **{'title':_('Wireless 433MHz bit length')})}}
+             </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-2">
+            {{form_mod_relay.on_command.label(class_='control-label')}}
+            <div>
+              {{form_mod_relay.on_command(class_='form-control', value=each_relay.on_command, **{'title':_('Wireless 433MHz On command')})}}
+             </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-2">
+            {{form_mod_relay.off_command.label(class_='control-label')}}
+            <div>
+              {{form_mod_relay.off_command(class_='form-control', value=each_relay.off_command, **{'title':_('Wireless 433MHz Off command')})}}
+             </div>
+          </div>
+        {% endif %}
+          <div class="col-xs-6 col-sm-4 col-md-2">
+            {{form_mod_relay.amps.label(class_='control-label')}}
+            <div>
+              {{form_mod_relay.amps(class_='form-control', value=each_relay.amps, **{'title':_('The number of amps the device connected to the relay draws (at 120/240 VAC)')})}}
              </div>
           </div>
           <div class="col-xs-6 col-sm-4 col-md-2">

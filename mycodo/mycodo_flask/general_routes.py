@@ -205,17 +205,24 @@ def video_feed():
 def gpio_state():
     """Return the GPIO state, for relay page status"""
     relay = Relay.query.all()
-    gpio_state = {}
+    daemon_control = DaemonControl()
+    state = {}
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     for each_relay in relay:
-        if 0 < each_relay.pin < 40:
-            GPIO.setup(each_relay.pin, GPIO.OUT)
-            if GPIO.input(each_relay.pin) == each_relay.trigger:
-                gpio_state[each_relay.id] = 1
-            else:
-                gpio_state[each_relay.id] = 0
-    return jsonify(gpio_state)
+        if -1 < each_relay.pin < 40:
+            if each_relay.relay_type == 'wired':
+                GPIO.setup(each_relay.pin, GPIO.OUT)
+                if GPIO.input(each_relay.pin) == each_relay.trigger:
+                    state[each_relay.id] = 1
+                else:
+                    state[each_relay.id] = 0
+            elif each_relay.relay_type == 'wireless_433MHz_pi_switch':
+                if daemon_control.relay_state(each_relay.id) == 'on':
+                    state[each_relay.id] = 1
+                else:
+                    state[each_relay.id] = 0
+    return jsonify(state)
 
 
 @blueprint.route('/dl/<dl_type>/<path:filename>')

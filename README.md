@@ -57,7 +57,7 @@ The top graph of the above screenshot visualizes the regulation of temperature i
 ## Features
 
 * Web Interface - Access anywhere with an internet connection
-* Relays - Control electrical devices, manually and automatic
+* Relays - Control electrical devices, manually and automatically, wired or wireless (433MHz)
 * Sensors - Measure environmental conditions (temperature, humidity, CO<sub>2</sub>, atmospheric pressure, luminosity, infrared heat, soil moisture, and more)
 * Analog to digital converter support for reading any analog sensor or signal.
 * Timers - Execute actions at various times and intervals

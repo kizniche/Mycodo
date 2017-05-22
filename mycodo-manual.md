@@ -215,7 +215,7 @@ General Settings
 ----------------
 
 Setting | Description
---- | ---
+-------------------- | ----------------------------------------------
 Language | Set the language that will be displayed in the web user interface.
 Force HTTPS | Require web browsers to use SSL/HTTPS. Any request to http:// will be redirected to https://.
 Hide success alerts | Hide all success alert boxes that appear at the top of the page.
@@ -235,7 +235,7 @@ relay usage calculations also rely on the correct current draw to be set
 for each relay (see [Relay Settings](#relays)).
 
 Setting | Description
---- | ---
+-------------------- | ----------------------------------------------
 Voltage | Alternating current (AC) voltage that is switched by the relays. This is usually 120 or 240.
 Cost per kWh | This is how much you pay per kWh.
 Currency Unit | This is the unit used for the currency that pays for electricity.
@@ -251,7 +251,7 @@ Mycodo for the first time. After an Admin user has been created,
 additional users may be created from the User Settings page.
 
 Setting | Description
---- | ---
+-------------------- | ----------------------------------------------
 Username | Choose a user name that is between 2 and 64 characters. The user name is case insensitive (all user names are converted to lower-case).
 Email | The email associated with the new account.
 Password/Repeat | Choose a password that is between 6 and 64 characters and only contain letters, numbers, and symbols.
@@ -266,7 +266,7 @@ Custom roles may be created, but these four roles may not be modified or
 deleted.
 
 | Role | Admin | Editor | Monitor | Guest |
-| --- | --- | --- | --- | --- |
+| ------ | ------ | ------ | ------ | ------ |
 | Edit Users       | X | | | |
 | Edit Controllers | X | X | | |
 | Edit Settings    | X | X | | |
@@ -285,7 +285,7 @@ Alert Settings
 Alert settings set up the credentials for sending email notifications.
 
 Setting | Description
---- | ---
+-------------------- | ----------------------------------------------
 SMTP Host | The SMTP server to use to send emails from.
 SMTP Port | Port to communicate with the SMTP server (465 for SSL, 587 for TSL).
 Enable SSL | Check to emable SSL, uncheck to enable TSL.
@@ -304,7 +304,7 @@ be able to be used with your particular camera, due to manufacturer
 differences in hardware and software.
 
 Setting | Description
---- | ---
+-------------------- | ----------------------------------------------
 Type | Select whether the camera is a Raspberry Pi Camera or a USB camera.
 Library | Select which library to use to communicate with the camera. The Raspberry Pi Camera uses picamera (and potentially opencv), and USB cameras should be set to opencv.
 OpenCV Device | Any devices detected by opencv will populate this dropdown list. If there are no values in this list, none were detected. If you have multiple opencv devices detected, try setting the camera to each device and take a photo to determine which camera is associated with which device.
@@ -334,7 +334,7 @@ influx database. This database will provide recent measurement for
 Controllers](/help#pids) to operate from, among other uses.
 
 Setting | Description
---- | ---
+-------------------- | ----------------------------------------------
 Activate | After the sensor has been properly configured, activation begins acquiring measurements from the sensor. Any activated conditional statements will now being operating.
 Deactivate | Deactivation stops measurements from being acquired from the sensor. All associated conditional statements will cease to operate.
 Save | Save the current configuration entered into the input boxes for a particular sensor.
@@ -374,7 +374,7 @@ verification is the ability to disable the PID if the difference between
 measurements is not within the range specified.
 
 Setting | Description
---- | ---
+-------------------- | ----------------------------------------------
 GPIO | This is the sensor that will be used to verify the sensor measurement. The sensor will be read directly after the first sensor's measurement to verify whether the sensors have similar measurements.
 Difference | This is the maximum measured measurement difference between the two sensors before an action is triggered (either notify by email or prevent PID from operating; more below).
 Notification | If the measurements of the two sensors differ by more than the set *Difference*, an email will be sent to the address in the *Notification* field.
@@ -383,31 +383,31 @@ Stop PID | If the measurements of the two sensors differ by more than the set *D
 Relays
 ------
 
-Relays are electromechanical or solid-state devices that enable a small
-voltage signal (such as from a microprocessor) to activate a much larger
-voltage, without exposing the low -voltage system to the dangers of the
-higher voltage.
+Relays are electromechanical or solid-state devices that enable a small voltage signal (such as from a microprocessor) to activate a much larger voltage, without exposing the low -voltage system to the dangers of the higher voltage.
 
-Relays must be properly set up before PID regulation can be achieved.
-Add and configure relays in the Relay tab. Set the "GPIO Pin" to the BCM
-GPIO number of each pin that activates each relay. *On Trigger* should
-be set to the signal that activates the relay (the device attached to
-the relay turns on). If your relay activates when the potential across
-the coil is 0-volts, set *On Trigger* to "Low", otherwise if your relay
-activates when the potential across the coil is 3.3-volts (or whatever
-switching voltage you are using, if not being driven by the GPIO pin),
-set it to "High".
+Add and configure relays in the Relay tab. Relays must be properly set up before PID regulation can be achieved. Either a wired or wireless relay may be set up.
 
-When a relay is initially added, the background of the new relay will be
-yellow, indicating it is not configured. When properly configured, it
-will either turn green, indicating the relay is activated (device is
-on), or red, indicating the relay is inactivated (device is off).
+To set up a wired relay, set the "GPIO Pin" to the BCM GPIO number of each pin that activates each relay. *On Trigger* should be set to the signal that activates the relay (the device attached to vthe relay turns on). If your relay activates when the potential across the coil is 0-volts, set *On Trigger* to "Low", otherwise if your relay activates when the potential across the coil is 3.3-volts (or whatever switching voltage you are using, if not being driven by the GPIO pin), set it to "High".
+
+Certain 433MHz wireless relays may be used, however you will need to set the pin of the transmitter (using WireingPi numbering), pulse length, bit length, on command, and off command to be set. To determine your on and off commands, run the receiver script and then press one of the buttons (either on or off) on your remote to determine the numeric code associated with that button. You will need a 433MHz receiver and select the correct pin (using WiringPi numbering) with the following script.
+
+```sudo ~/Mycodo/env/bin/python ~/Mycodo/mycodo/devices/wireless_433mhz_pi_switch.py```
+
+433 MHz wireless relays have been successfully tested with SMAKN 433MHz RF Transmitters/Receivers and Etekcity Wireless Remote Control Electrical Outlets (see [Issue 88](https://github.com/kizniche/Mycodo/issues/88) for more information). If you have a 433MHz transmitter/receiver and a wireless relay that does not work with the current code (even after trying several different protocol settings), submit a [new issue](https://github.com/kizniche/Mycodo/issues/new) with details of your hardware.
+
+When a wired relay is initially added, the background of the new relay will be yellow, indicating it is not configured. When properly configured, it will either turn green, indicating the relay is activated (device is on), or red, indicating the relay is inactivated (device is off). Since the wireless protocol only allows 1-way communication to 443MHz devices, wireless relays are assumed to be off until they are turned on, and therefore will appear red (off) when added.
 
 Setting | Description
---- | ---
-GPIO Pin | This is the GPIO that will be the signal to the relay.
-Current Draw (amps) | The is the amount of current the device powered by the relay draws. Note: this value should be calculated based on the voltage set in the [Relay Usage Settings](#relay-usage-settings).
+-------------------- | ----------------------------------------------
+BCM Pin | This is the GPIO that will be the signal to the relay, using BCM numbering.
 On Trigger | This is the state of the GPIO to signal the relay to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you relay completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.
+WiringPi Pin | This is the GPIO that will be the signal to the relay, using WireingPi numbering.
+Protocol | This is the protocol to use to transmit via 433MHz. Default is 1, but if this doesn't work, increment the number.
+Pulse Length | This is the pulse length to transmit via 433MHz. Default is 189 ms.
+Bit Length | This is the bit length to transmit via 433MHz. Default is 24-bit.
+On Command | This is the numerical command transmitted via 433MHz to turn the relay on.
+Off Command | This is the numerical command transmitted via 433MHz to turn the relay off.
+Current Draw (amps) | The is the amount of current the device powered by the relay draws. Note: this value should be calculated based on the voltage set in the [Relay Usage Settings](#relay-usage-settings).
 Start State | This specifies whether the relay should be ON or OFF when mycodo initially starts.
 Seconds to turn On | This is a way to turn a relay on for a specific duration of time. This can be useful for testing the relays and powered devices or the measured effects a device may have on an environmental condition.
 
@@ -429,7 +429,7 @@ controller is paused, the values will be used once the controller
 resumes operation.
 
 Setting | Description
---- | ---
+-------------------- | ----------------------------------------------
 Activate/Deactivate | Turn a particular PID controller on or off.
 Pause | When paused, the PID will not turn on the associated relays, and settings can be changed without losing current PID output values.
 Hold | When held, the PID will turn on the associated relays, and settings can be changed without losing current PID output values.
@@ -469,7 +469,7 @@ There are only a few number fo LCDs that are supported. Only 16x2 and
 see the README for specific information regarding compatibility.
 
 Setting | Description
---- | ---
+-------------------- | ----------------------------------------------
 Reset Flashing | If the LCD is flashing to alert you because it was instructed to do so by a triggered Conditional Statement, use this button to stop the flashing.
 Type | Select either a 16x2 or 20x4 character LCD display.
 I<sup>2</sup>C Address | Select the I<sup>2</sup>C to communicate with the LCD.
@@ -511,7 +511,7 @@ with conditional statements.
 ### Conditional Statement Actions
 
 Setting | Description
---- | ---
+-------------------- | ----------------------------------------------
 Relay | Turn a relay on, off, or on for a duration of time.
 Command | Execute a command in the linux shell (as user mycodo).
 Activate PID | Activate a particular PID controller.
@@ -538,7 +538,7 @@ mimicking natural daily cycles, and more.
 These options are shared with several method types.
 
 Setting | Description
---- | ---
+-------------------- | ----------------------------------------------
 Start Time/Date | This is the start time of a range of time.
 End Time/Date | This is the end time of a range of time.
 Start Setpoint | This is the start setpoint of a range of setpoints.

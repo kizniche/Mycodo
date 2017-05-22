@@ -1369,34 +1369,6 @@ def pid_manipulate(pid_id, action):
 # Relay manipulation
 #
 
-def ajax_relay_on_off(relay_id, state, duration=None):
-    relay = Relay.query.filter_by(id=relay_id).first()
-    control = DaemonControl()
-    if relay.pin <= 0:
-        return ('error',
-                gettext(u"Cannot modulate relay %(id)s (%(name)s) with "
-                        u"a GPIO of 0", id=relay.id, name=relay.name))
-    elif state in ['relay_on', 'relay_on_dur']:
-        if duration:
-            if duration <= 0:
-                return 'error', gettext(u"Value must be greater than 0")
-            return_value = control.relay_on(relay.id, duration)
-            return ('success',
-                    gettext(u"Relay %(id)s (%(name)s) turned on for %(dur)s "
-                            u"seconds: %(ret)s",
-                            id=relay.id, name=relay.name,
-                            dur=duration, ret=return_value))
-        else:
-            return_value = control.relay_on(relay.id, 0)
-            return ('success',
-                    gettext(u"Relay %(id)s (%(name)s) turned on: %(ret)s",
-                            id=relay.id, name=relay.name, ret=return_value))
-    elif state == 'relay_off':
-        return_value = control.relay_off(relay.id)
-        return ('success',
-                gettext(u"Relay %(id)s (%(name)s) turned off: %(ret)s",
-                        id=relay.id, name=relay.name, ret=return_value))
-
 
 def relay_on_off(form_relay):
     action = u'{action} {controller}'.format(
@@ -1406,7 +1378,8 @@ def relay_on_off(form_relay):
 
     try:
         control = DaemonControl()
-        if int(form_relay.relay_pin.data) <= 0:
+        relay = Relay.query.filter_by(id=form_relay.relay_id.data).first()
+        if int(form_relay.relay_pin.data) == 0 and relay.relay_type == 'wired':
             error.append(gettext(u"Cannot modulate relay with a GPIO of 0"))
         elif form_relay.sec_on_submit.data:
             if float(form_relay.sec_on.data) <= 0:
@@ -1684,7 +1657,15 @@ def relay_add(form_add_relay):
     if is_int(form_add_relay.relay_quantity.data, check_range=[1, 20]):
         for _ in range(0, form_add_relay.relay_quantity.data):
             try:
-                new_relay = Relay().save()
+                new_relay = Relay()
+                new_relay.relay_type = form_add_relay.relay_type.data
+                if form_add_relay.relay_type.data == 'wireless_433MHz_pi_switch':
+                    new_relay.protocol = 1
+                    new_relay.pulse_length = 189
+                    new_relay.bit_length = 24
+                    new_relay.on_command = 22559
+                    new_relay.off_command = 22558
+                new_relay.save()
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
                 DisplayOrder.query.first().relay = add_display_order(
                     display_order, new_relay.id)
@@ -1717,9 +1698,17 @@ def relay_mod(form_relay):
             setup_pin = False
             if mod_relay.pin is not form_relay.gpio.data:
                 setup_pin = True
-            mod_relay.pin = form_relay.gpio.data
+            if mod_relay.relay_type == 'wired':
+                mod_relay.pin = form_relay.gpio.data
+                mod_relay.trigger = form_relay.trigger.data
+            elif mod_relay.relay_type == 'wireless_433MHz_pi_switch':
+                mod_relay.pin = form_relay.wiringpi_pin.data
+                mod_relay.protocol = form_relay.protocol.data
+                mod_relay.pulse_length = form_relay.pulse_length.data
+                mod_relay.bit_length = form_relay.bit_length.data
+                mod_relay.on_command = form_relay.on_command.data
+                mod_relay.off_command = form_relay.off_command.data
             mod_relay.amps = form_relay.amps.data
-            mod_relay.trigger = form_relay.trigger.data
             mod_relay.on_at_start = form_relay.on_at_start.data
             db.session.commit()
             manipulate_relay('Modify',
@@ -1738,20 +1727,17 @@ def relay_del(form_relay):
         controller=gettext(u"Relay"))
     error = []
 
-    if form_relay.validate():
-        try:
-            delete_entry_with_id(Relay,
-                                 form_relay.relay_id.data)
-            display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
-            display_order.remove(int(form_relay.relay_id.data))
-            DisplayOrder.query.first().relay = list_to_csv(display_order)
-            db.session.commit()
-            manipulate_relay('Delete', form_relay.relay_id.data)
-        except Exception as except_msg:
-            error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_relay'))
-    else:
-        flash_form_errors(form_relay)
+    try:
+        delete_entry_with_id(Relay,
+                             form_relay.relay_id.data)
+        display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
+        display_order.remove(int(form_relay.relay_id.data))
+        DisplayOrder.query.first().relay = list_to_csv(display_order)
+        db.session.commit()
+        manipulate_relay('Delete', form_relay.relay_id.data)
+    except Exception as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
 def relay_reorder(relay_id, display_order, direction):

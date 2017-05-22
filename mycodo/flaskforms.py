@@ -718,6 +718,7 @@ class PIDMod(FlaskForm):
 
 class RelayAdd(FlaskForm):
     relay_quantity = IntegerField(lazy_gettext(u'Quantity'))
+    relay_type = StringField(lazy_gettext(u'Type'))
     relay_add = SubmitField(lazy_gettext(u'Add Relay'))
     relay_cond_quantity = IntegerField(lazy_gettext(u'Quantity'))
     relay_cond_add = SubmitField(lazy_gettext(u'Add Conditional'))
@@ -730,15 +731,13 @@ class RelayMod(FlaskForm):
         lazy_gettext(u'Name'),
         validators=[DataRequired()]
     )
-    gpio = IntegerField(
-        lazy_gettext(u'GPIO Pin'),
-        validators=[validators.NumberRange(
-            min=0,
-            max=27,
-            message=lazy_gettext(u"GPIO pin, using BCM numbering, between 1 and 27 "
-                                 u"(0 to disable)")
-        )]
-    )
+    gpio = IntegerField(lazy_gettext(u'BCM Pin'))
+    wiringpi_pin = IntegerField(lazy_gettext(u'WiringPi Pin'))
+    protocol = IntegerField(lazy_gettext(u'Protocol'))
+    pulse_length = IntegerField(lazy_gettext(u'Pulse Length'))
+    bit_length = IntegerField(lazy_gettext(u'Bit length'))
+    on_command = StringField(lazy_gettext(u'On Command'))
+    off_command = StringField(lazy_gettext(u'Off Command'))
     amps = DecimalField(
         lazy_gettext(u'Current Draw (amps)'),
         validators=[validators.NumberRange(
@@ -754,7 +753,7 @@ class RelayMod(FlaskForm):
             ("1", lazy_gettext(u'High')),
             ("0", lazy_gettext(u'Low'))
         ],
-        validators=[DataRequired()]
+        validators=[Optional()]
     )
     on_at_start = SelectField(
         lazy_gettext(u'Start State'),
