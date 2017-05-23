@@ -2,14 +2,16 @@
 
 ## Environmental Regulation System
 
-### Latest version: 5.0.27 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
+### Latest version: 5.0.28 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
 
 #### [Mycodo Manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md) ([PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt))
 
 
-Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.
+Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up. A web interface enables easy navigation and configuration from any browser-enabled device.
 
-The core system coordinates a diverse set of responses to sensor measurements, including actions such as camera captures, email notifications, relay activation/deactivation, regulation with PID control, and more. Mycodo has been used for cultivating gourmet mushrooms, cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs and young animals, aging cheeses, fermenting foods, maintaining aquatic systems, and more.
+The core system is built to conduct measurements from sensors and coordinate a diverse set of responses to those measurements. Features include the ability to modulate relays (wired and 433MHz wireless) to control powered devices, regulate environmental conditions with electrical devices under PID control, conduct steady environmental regulation or setpoint tracking for changing conditions over time (uses building reflow ovens, thermal cyclers, etc.), schedule simple timers to control when relays turn on and off, capture photos and stream video, trigger actions when measurements meet certain conditions (modulate relays, execute commands, notify by email, attach photo/video), and more.
+
+Mycodo has been used for cultivating mushrooms and plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs, maintaining aquatic systems, aging cheeses, fermenting foods and tobacco, cooking (vous-vide), and more.
 
 #### Languages
 
@@ -56,19 +58,19 @@ The top graph of the above screenshot visualizes the regulation of temperature i
 
 ## Features
 
-* Web Interface - Access anywhere with an internet connection
-* Relays - Control electrical devices, manually and automatically, wired or wireless (433MHz)
-* Sensors - Measure environmental conditions (temperature, humidity, CO<sub>2</sub>, atmospheric pressure, luminosity, infrared heat, soil moisture, and more)
-* Analog to digital converter support for reading any analog sensor or signal.
-* Timers - Execute actions at various times and intervals
-* Conditional Statements - Execute actions based on inputs or measurements (such as email notification, relay actuation, camera recording, and more)
-* PID (Proportional Integral Derivative) Controller - Couple relays with sensors and regulate environmental conditions with prediction and precision
-* Methods - Change an environmental condition over time (setpoint tracking, useful for reflow ovens, thermal cyclers, mimicking natural environments, and more)
-* LCDs - Display measurements and data on a physical display (cheaper than a monitor)
-* I<sup>2</sup>C Multiplexer Support - Allow using multiple devices/sensors with the same I<sup>2</sup>C address.
-* Camera support - Raspberry Pi Camera and USB cameras, to stream live video, capture still images, and create time-lapses
-* Automated system upgrade - When there's new release on github, an upgrade can be initiated from the web user interface.
-* Languages: English, [Español (Spanish)](#espa%C3%B1ol-spanish), [Français (French)](#fran%C3%A7ais-french), and [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
+* Web Interface - Access anywhere with an internet connection.
+* Relays (wired or 433MHz wireless) - Control electrical devices, manually and automatically
+* Sensors - Support for devices that measure temperature, humidity, CO<sub>2</sub>, atmospheric pressure, infrared heat, luminosity, magnetism, motion, pH, soil moisture, and more.
+* Analog to digital converter support - Read any analog sensor or signal.
+* Timers - Schedule the execution of actions at various times and intervals.
+* Conditional Statements - Execute actions based on inputs or measurements (such as email notification, relay actuation, camera recording, and more).
+* PID (Proportional Integral Derivative) Controller - Couple relays with sensors and regulate environmental conditions with prediction and precision.
+* Methods/Setpoint Tracking - Change an environmental condition over time (useful for reflow ovens, thermal cyclers, mimicking natural environmental changes, etc.)
+* LCDs - Display measurements and data on I2C-enabled displays (cheaper than a monitor)
+* I<sup>2</sup>C Multiplexer Support - Allow multiple devices/sensors with the same I<sup>2</sup>C address to be used simultaneously.
+* Camera support - Raspberry Pi Camera and USB cameras, to stream live video (only Pi cam), capture still images, and create time-lapses.
+* Automated system upgrade - When a new version is released on github, an upgrade can be initiated from the web interface.
+* Languages: English, [Español (Spanish)](#espa%C3%B1ol-spanish) (partial: [Français (French)](#fran%C3%A7ais-french), [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean))
 
 ## Install
 
@@ -91,7 +93,7 @@ Then change the following settings
  + ```Localisation Options``` -> ```Change Timezone```
  + ```Interfacing Options``` -> ```SSH``` -> ```Enable```
  + ```Interfacing Options``` -> ```Camera``` -> ```Enable``` (required if using a Pi camera)
- + ```Interfacing Options``` -> ```I2C``` -> ```Enable``` (required if using I<sup>2</sup>C sensors)
+ + ```Interfacing Options``` -> ```I2C``` -> ```Enable``` (required if using I<sup>2</sup>C sensors/devices)
  + ```Advanced Options``` -> ```Expand Filesystem``` (***required***)
  + Reboot (***required***)
 

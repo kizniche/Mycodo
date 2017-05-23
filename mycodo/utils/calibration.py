@@ -31,7 +31,7 @@ class AtlasScientificCommand:
 
         if self.board_version == 0:
             logger.error("Unable to retrieve device info (this indicates the "
-                        "device was not properly initialized or connected)")
+                         "device was not properly initialized or connected)")
         else:
             logger.debug("Device Info: {info}".format(info=self.board_info))
             logger.debug("Detected Version: {ver}".format(ver=self.board_version))
