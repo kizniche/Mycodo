@@ -168,15 +168,15 @@
       <div class="row {% if each_timer.is_activated -%}active-background
                       {% else -%}inactive-background
                       {% endif -%} small-gutters" style="border-bottom: 2px solid #ddd; padding: 0.5em;">
-        <div class="col-xs-2 col-sm-1 text-center">
+        <div class="col-xs-2 col-sm-1 text-center icon-fh">
           <a data-toggle="collapse" href="#collapseContainer{{each_timer.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_timer.id}}">
             <span class="collapse-button{{each_timer.id}} fa fa-3x fa-plus-square"></span>
           </a>
         </div>
-        <div class="col-xs-10 col-sm-3">
-          {{form_timer.name(class_='form-control', value=each_timer.name, **{'title':_('Name for this Timer controller.')})}}
+        <div class="col-xs-5 col-sm-3">
+          {{form_timer.name(class_='form-control', value=each_timer.name, **{'title':_('Name')})}}
         </div>
-        <div class="col-xs-12 col-sm-2">
+        <div class="col-xs-5 col-sm-2">
           <input class="form-control btn btn-default" disabled="" value="ID: {{each_timer.id}},
             {%- if each_timer.is_activated -%} {{_('Active')}}
             {%- else -%} {{_('Inactive')}}
@@ -190,19 +190,19 @@
             {{form_timer.activate(class_='form-control btn btn-default')}}
           {%- endif -%}
         </div>
-        <div class="col-xs-4 col-sm-2">
+        <div class="col-xs-3 col-sm-2">
           {{form_timer.orderTimerUp(class_='form-control btn btn-default')}}
         </div>
-        <div class="col-xs-4 col-sm-2">
+        <div class="col-xs-3 col-sm-2">
           {{form_timer.orderTimerDown(class_='form-control btn btn-default')}}
         </div>
       </div>
 
       <div class="row small-gutters collapse" id="collapseContainer{{each_timer.id}}" style="border-bottom: 2px solid #ddd; padding: 0.5em">
-        <div class="col-xs-6 col-sm-3 col-sm-offset-6">
+        <div class="col-xs-6 col-sm-4 col-sm-offset-4">
           {{form_timer.timerMod(class_='form-control btn btn-default')}}
         </div>
-        <div class="col-xs-6 col-sm-3">
+        <div class="col-xs-6 col-sm-4">
           {{form_timer.timerDel(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Timer controller?")'})}}
         </div>
         <div class="col-xs-6 col-sm-3">

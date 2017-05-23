@@ -693,8 +693,9 @@ def page_relay():
     # Create list of file names from the sensor_options directory
     # Used in generating the correct options for each sensor/device
     relay_templates = []
-    relay_path = "{path}/mycodo/mycodo_flask/templates/pages" \
-                 "/relay_options/".format(path=INSTALL_DIRECTORY)
+    relay_path = os.path.join(
+        INSTALL_DIRECTORY,
+        'mycodo/mycodo_flask/templates/pages/relay_options')
     for (_, _, file_names) in os.walk(relay_path):
         relay_templates.extend(file_names)
         break
@@ -805,8 +806,9 @@ def page_sensor():
     # Create list of file names from the sensor_options directory
     # Used in generating the correct options for each sensor/device
     sensor_templates = []
-    sensor_path = "{path}/mycodo/mycodo_flask/templates/pages" \
-                  "/sensor_options/".format(path=INSTALL_DIRECTORY)
+    sensor_path = os.path.join(
+        INSTALL_DIRECTORY,
+        'mycodo/mycodo_flask/templates/pages/sensor_options')
     for (_, _, file_names) in os.walk(sensor_path):
         sensor_templates.extend(file_names)
         break

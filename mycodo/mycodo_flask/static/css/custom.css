@@ -2,6 +2,15 @@
  * Custom CSS
  */
 
+.icon-fw {
+    width: 1.28571429em;
+    text-align: center
+}
+
+.icon-fh {
+    font-size: 0.9em;
+}
+
 .navbar-default .navbar-nav > .active-upgrade > a, .navbar-default .navbar-nav > .active-upgrade > a:hover, .navbar-default .navbar-nav > .active-upgrade > a:focus {
     color: #ffffff;
     background-color: #8e0001;
