@@ -155,12 +155,11 @@
     </div>
   </div>
 
-  <div class="container" style="border: 2px solid #ddd;">
-
   {%- if displayOrder -%}
   {%- for order in displayOrder -%}
     {% for each_timer in timer if each_timer.id == order %}
 
+    <div class="container" style="border: 2px solid #ddd;">
       <form method="post" action="/timer">
       <input type="hidden" name="form-name" value="modTimer">
       {{form_timer.csrf_token}}
@@ -177,13 +176,13 @@
           {{form_timer.name(class_='form-control', value=each_timer.name, **{'title':_('Name')})}}
         </div>
         <div class="col-xs-5 col-sm-2">
-          <input class="form-control btn btn-default" disabled="" value="ID: {{each_timer.id}},
-            {%- if each_timer.is_activated -%} {{_('Active')}}
-            {%- else -%} {{_('Inactive')}}
+          <input class="form-control btn btn-default" disabled="" value="ID {{each_timer.id}},
+            {%- if each_timer.is_activated %} {{_('Active')}}
+            {%- else %} {{_('Inactive')}}
             {%-endif -%}
           " type="text">
         </div>
-        <div class="col-xs-4 col-sm-2">
+        <div class="col-xs-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
           {%- if each_timer.is_activated %}
             {{form_timer.deactivate(class_='form-control btn btn-default')}}
           {%- else %}
@@ -301,11 +300,13 @@
       </div>
       </form>
 
+    </div>
+
+    <div style="clear: both; padding-bottom: 0.5em;"></div>
+
     {%- endfor -%}
   {%- endfor -%}
   {%- endif -%}
-
-  </div>
 
   <script type="text/javascript" src="/static/js/bootstrap-clockpicker.min.js"></script>
   <script type="text/javascript">
