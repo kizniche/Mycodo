@@ -1,19 +1,15 @@
 # coding=utf-8
 import logging
-import threading
-
 from influxdb import InfluxDBClient
-
-from mycodo.config import (
-    INFLUXDB_HOST,
-    INFLUXDB_PORT,
-    INFLUXDB_USER,
-    INFLUXDB_PASSWORD,
-    INFLUXDB_DATABASE
-)
 from mycodo.databases.models import Relay
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
+
+from mycodo.config import INFLUXDB_HOST
+from mycodo.config import INFLUXDB_PORT
+from mycodo.config import INFLUXDB_USER
+from mycodo.config import INFLUXDB_PASSWORD
+from mycodo.config import INFLUXDB_DATABASE
 
 logger = logging.getLogger("mycodo.influxdb")
 

@@ -90,7 +90,7 @@ def calibration_atlas_ph():
             flash('Sensor not found: {}'.format(
                 form_ph_calibrate.selected_sensor_id.data), 'error')
         else:
-            for index, each_sensor in enumerate(SENSORS):
+            for each_sensor in SENSORS:
                 if selected_sensor.device == each_sensor[0]:
                     sensor_device_name = each_sensor[1]
     # Continue calibration from selected sensor

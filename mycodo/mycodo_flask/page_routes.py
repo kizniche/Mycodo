@@ -690,6 +690,15 @@ def page_relay():
     form_conditional = flaskforms.Conditional()
     form_conditional_actions = flaskforms.ConditionalActions()
 
+    # Create list of file names from the sensor_options directory
+    # Used in generating the correct options for each sensor/device
+    relay_templates = []
+    relay_path = "{path}/mycodo/mycodo_flask/templates/pages" \
+                 "/relay_options/".format(path=INSTALL_DIRECTORY)
+    for (_, _, file_names) in os.walk(relay_path):
+        relay_templates.extend(file_names)
+        break
+
     if request.method == 'POST':
         if not flaskutils.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.page_relay'))
@@ -743,6 +752,7 @@ def page_relay():
                            form_mod_relay=form_mod_relay,
                            lcd=lcd,
                            relay=relay,
+                           relay_templates=relay_templates,
                            user=user)
 
 

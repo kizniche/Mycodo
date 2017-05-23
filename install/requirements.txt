@@ -17,7 +17,7 @@ geocoder == 1.21.0
 imutils == 0.3.10
 influxdb == 2.12.0
 lockfile == 0.12.2
-pi_switch
+pi_switch == 0.4.0
 pyserial == 3.1
 python-dateutil
 RPi.GPIO

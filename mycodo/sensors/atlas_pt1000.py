@@ -1,6 +1,5 @@
 # coding=utf-8
 import logging
-import time
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.utils.system_pi import str_is_float
