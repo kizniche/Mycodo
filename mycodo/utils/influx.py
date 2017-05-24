@@ -1,5 +1,7 @@
 # coding=utf-8
+import datetime
 import logging
+from uuid import UUID
 from influxdb import InfluxDBClient
 from mycodo.databases.models import Relay
 from mycodo.mycodo_client import DaemonControl
@@ -10,13 +12,10 @@ from mycodo.config import INFLUXDB_PORT
 from mycodo.config import INFLUXDB_USER
 from mycodo.config import INFLUXDB_PASSWORD
 from mycodo.config import INFLUXDB_DATABASE
+from mycodo.config import MEASUREMENT_UNITS
 
 logger = logging.getLogger("mycodo.influxdb")
 
-
-#
-# Influxdb
-#
 
 def format_influxdb_data(device_id, measure_type, value, timestamp=None):
     """
@@ -63,10 +62,53 @@ def format_influxdb_data(device_id, measure_type, value, timestamp=None):
         }
 
 
+def query_string(measurement, unique_id, value=None,
+                 start_str=None, end_str=None,
+                 past_sec=None, group_sec=None, limit=None):
+    """Generate influxdb query string"""
+    # Validate input
+    if (measurement not in MEASUREMENT_UNITS or
+            not valid_uuid(unique_id) or
+            bool(value and value not in ['count', 'last', 'mean', 'sum']) or
+            bool(start_str and not valid_date_str(start_str)) or
+            bool(end_str and not valid_date_str(end_str)) or
+            bool(past_sec and not valid_int(past_sec)) or
+            bool(group_sec and not valid_int(group_sec)) or
+            bool(limit and not valid_int(limit))):
+        return 1
+
+    query = "SELECT "
+
+    if value:
+        if value == 'count':
+            query += "count(value)"
+        elif value == 'last':
+            query += "LAST(value)"
+        elif value == 'mean':
+            query += "MEAN(value)"
+        elif value == 'sum':
+            query += "SUM(value)"
+    else:
+        query += "value"
+
+    query += " FROM {meas} WHERE device_id='{id}'".format(
+        meas=measurement, id=unique_id)
+    if start_str:
+        query += " AND time >= '{start}'".format(start=start_str)
+    if end_str:
+        query += " AND time <= '{end}'".format(end=end_str)
+    if past_sec:
+        query += " AND time > now() - {sec}s".format(sec=past_sec)
+    if group_sec:
+        query += " GROUP BY TIME({sec}s)".format(sec=group_sec)
+    if limit:
+        query += " GROUP BY * LIMIT {lim}".format(lim=limit)
+    return query
+
+
 def read_last_influxdb(device_id, measure_type, duration_sec=None):
     """
-    Query Influxdb for the last entry within the past minute,
-    for a set of conditions.
+    Query Influxdb for the last entry.
 
     example:
         read_last_influxdb('00000001', 'temperature')
@@ -80,26 +122,16 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
     :param measure_type: What measurement to query in the Influxdb
         database (ex. 'temperature', 'duration')
     :type measure_type: str
-    :param duration_sec: How many minutes to look for a past measurement
+    :param duration_sec: How many seconds to look for a past measurement
     :type duration_sec: int
     """
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE)
 
     if duration_sec:
-        query = """SELECT last(value)
-                       FROM   {measurement}
-                       WHERE  device_id = '{device}'
-                              AND TIME > Now() - {dur}s
-                """.format(measurement=measure_type,
-                           device=device_id,
-                           dur=duration_sec)
+        query = query_string(measure_type, device_id, past_sec=duration_sec)
     else:
-        query = """SELECT last(value)
-                       FROM   {measurement}
-                       WHERE  device_id = '{device}'
-                """.format(measurement=measure_type,
-                           device=device_id)
+        query = query_string(measure_type, device_id, value='last')
 
     last_measurement = client.query(query).raw
 
@@ -125,24 +157,16 @@ def relay_sec_on(relay_id, past_seconds):
     relay = db_retrieve_table_daemon(Relay, device_id=relay_id)
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE)
-    if relay_id:
-        query = """SELECT sum(value)
-                       FROM   duration_sec
-                       WHERE  device_id = '{}'
-                              AND TIME > Now() - {}s;
-                """.format(relay.unique_id, past_seconds)
-    else:
-        query = """SELECT sum(value)
-                       FROM   duration_sec
-                       WHERE  TIME > Now() - {}s;
-                """.format(past_seconds)
+    if not relay_id:
+        return None
+
+    query = query_string('duration_sec', relay.unique_id, value='sum', past_sec=past_seconds)
     output = client.query(query)
     sec_recorded_on = 0
     if output:
         sec_recorded_on = output.raw['series'][0]['values'][0][1]
 
     # Get the number of seconds not stored in the database (if currently on)
-
     relay_time_on = 0
     if relay.is_on():
         control = DaemonControl()
@@ -153,6 +177,33 @@ def relay_sec_on(relay_id, past_seconds):
         sec_currently_on = min(relay_time_on, past_seconds)
 
     return sec_recorded_on + sec_currently_on
+
+
+def valid_date_str(date_str):
+    try:
+        datetime.datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%S.%fZ')
+    except ValueError:
+        logger.exception(1)
+        return False
+    return True
+
+
+def valid_int(test_var):
+    try:
+        value = int(test_var)
+    except ValueError:
+        logger.exception(1)
+        return False
+    return True
+
+
+def valid_uuid(uuid_str):
+    try:
+        val = UUID(uuid_str)
+    except Exception:
+        logger.exception(1)
+        return False
+    return val.hex == uuid_str.replace('-', '')
 
 
 def write_influxdb_value(device_id, measure_type, value, timestamp=None):

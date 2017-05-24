@@ -19,11 +19,9 @@ import logging
 import os
 import socket
 import subprocess
-import sys
 import time
 import traceback
 import flask_login
-
 from RPi import GPIO
 from dateutil.parser import parse as date_parse
 from flask import Response
@@ -38,8 +36,8 @@ from flask import send_from_directory
 from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
-
 from flask_influxdb import InfluxDB
+
 from mycodo import flaskforms
 from mycodo import flaskutils
 from mycodo.databases.models import Camera
@@ -55,16 +53,15 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.authentication_routes import admin_exists
 from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.influx import query_string
 
-from mycodo.config import (
-    INFLUXDB_USER,
-    INFLUXDB_PASSWORD,
-    INFLUXDB_DATABASE,
-    INSTALL_DIRECTORY,
-    LOG_PATH,
-    MYCODO_VERSION,
-    PATH_CAMERAS,
-)
+from mycodo.config import INFLUXDB_USER
+from mycodo.config import INFLUXDB_PASSWORD
+from mycodo.config import INFLUXDB_DATABASE
+from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import LOG_PATH
+from mycodo.config import MYCODO_VERSION
+from mycodo.config import PATH_CAMERAS
 
 blueprint = Blueprint('general_routes',
                       __name__,
@@ -172,7 +169,7 @@ def camera_img(camera_id, img_type, filename):
         path = os.path.join(camera_path, img_type)
         if os.path.isdir(path):
             files = (files for files in os.listdir(path)
-                               if os.path.isfile(os.path.join(path, files)))
+                if os.path.isfile(os.path.join(path, files)))
         else:
             files = []
         if filename in files:
@@ -244,13 +241,12 @@ def last_data(sensor_measure, sensor_id, sensor_period):
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
     try:
-        raw_data = dbcon.query("""SELECT last(value)
-                                  FROM {}
-                                  WHERE device_id='{}'
-                                        AND time > now() - {}m
-                               """.format(sensor_measure,
-                                          sensor_id,
-                                          sensor_period)).raw
+        query_str = query_string(
+            sensor_measure, sensor_id, value='last',
+            past_sec=int(sensor_period) * 60)
+        if query_str == 1:
+            return '', 204
+        raw_data = dbcon.query(query_str).raw
         number = len(raw_data['series'][0]['values'])
         time_raw = raw_data['series'][0]['values'][number - 1][0]
         value = raw_data['series'][0]['values'][number - 1][1]
@@ -279,13 +275,11 @@ def past_data(sensor_measure, sensor_id, past_seconds):
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
     try:
-        raw_data = dbcon.query("""SELECT value
-                                  FROM {meas}
-                                  WHERE device_id='{id}'
-                                        AND time > now() - {sec}s;
-                               """.format(meas=sensor_measure,
-                                          id=sensor_id,
-                                          sec=past_seconds)).raw
+        query_str = query_string(
+            sensor_measure, sensor_id, past_sec=past_seconds)
+        if query_str == 1:
+            return '', 204
+        raw_data = dbcon.query(query_str).raw
         if raw_data:
             return jsonify(raw_data['series'][0]['values'])
         else:
@@ -324,15 +318,13 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     end += utc_offset_timedelta
     end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-    raw_data = dbcon.query("""SELECT value
-                              FROM {}
-                              WHERE device_id='{}'
-                                    AND time >= '{}'
-                                    AND time <= '{}'
-                           """.format(measurement,
-                                      unique_id,
-                                      start_str,
-                                      end_str)).raw
+    query_str = query_string(
+        measurement, unique_id,
+        start_str=start_str, end_str=end_str)
+    if query_str == 1:
+        return '', 204
+    raw_data = dbcon.query(query_str).raw
+
     if not raw_data:
         return '', 204
 
@@ -340,7 +332,7 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
         line = StringIO.StringIO()
         writer = csv.writer(line)
         writer.writerow(('timestamp (UTC)', '{name} {meas} ({id})'.format(
-            name=name, meas=measurement,id=unique_id)))
+            name=name, meas=measurement, id=unique_id)))
         for csv_line in data_in:
             writer.writerow((csv_line[0][:-4], csv_line[1]))
             line.seek(0)
@@ -370,19 +362,20 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
     # Set the time frame to the past year if start/end not specified
     if start_seconds == '0' and end_seconds == '0':
         # Get how many points there are in the past year
-        raw_data = dbcon.query("""SELECT COUNT(value)
-                                  FROM {}
-                                  WHERE device_id='{}'
-                               """.format(measurement,
-                                          unique_id)).raw
+        query_str = query_string(
+            measurement, unique_id, value='count')
+        if query_str == 1:
+            return '', 204
+        raw_data = dbcon.query(query_str).raw
+
         count_points = raw_data['series'][0]['values'][0][1]
         # Get the timestamp of the first point in the past year
-        raw_data = dbcon.query("""SELECT value
-                                  FROM {}
-                                  WHERE device_id='{}'
-                                        GROUP BY * LIMIT 1
-                               """.format(measurement,
-                                          unique_id)).raw
+        query_str = query_string(
+            measurement, unique_id, limit=1)
+        if query_str == 1:
+            return '', 204
+        raw_data = dbcon.query(query_str).raw
+
         first_point = raw_data['series'][0]['values'][0][0]
         end = datetime.datetime.utcnow()
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -391,66 +384,56 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
         start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         end = datetime.datetime.utcfromtimestamp(float(end_seconds))
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-        raw_data = dbcon.query("""SELECT COUNT(value)
-                                  FROM {}
-                                  WHERE device_id='{}'
-                                        AND time >= '{}'
-                                        AND time <= '{}'
-                               """.format(measurement,
-                                          unique_id,
-                                          start_str,
-                                          end_str)).raw
+        query_str = query_string(
+            measurement, unique_id,
+            value='count', start_str=start_str, end_str=end_str)
+        if query_str == 1:
+            return '', 204
+        raw_data = dbcon.query(query_str).raw
+
         count_points = raw_data['series'][0]['values'][0][1]
         # Get the timestamp of the first point in the past year
-        raw_data = dbcon.query("""SELECT value
-                                  FROM {}
-                                  WHERE device_id='{}'
-                                        AND time >= '{}'
-                                        AND time <= '{}'
-                                        GROUP BY * LIMIT 1
-                               """.format(measurement,
-                                          unique_id,
-                                          start_str,
-                                          end_str)).raw
+        query_str = query_string(
+            measurement, unique_id,
+            start_str=start_str, end_str=end_str, limit=1)
+        if query_str == 1:
+            return '', 204
+        raw_data = dbcon.query(query_str).raw
+
         first_point = raw_data['series'][0]['values'][0][0]
 
     start = datetime.datetime.strptime(first_point[:26],
                                        '%Y-%m-%dT%H:%M:%S.%f')
     start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-    logger.debug('Count = {}'.format(count_points), file=sys.stderr)
-    logger.debug('Start = {}'.format(start), file=sys.stderr)
-    logger.debug('End   = {}'.format(end), file=sys.stderr)
+    logger.debug('Count = {}'.format(count_points))
+    logger.debug('Start = {}'.format(start))
+    logger.debug('End   = {}'.format(end))
 
     # How many seconds between the start and end period
     time_difference_seconds = (end - start).total_seconds()
-    logger.debug('Difference seconds = {}'.format(time_difference_seconds),
-                 file=sys.stderr)
+    logger.debug('Difference seconds = {}'.format(time_difference_seconds))
 
     # If there are more than 700 points in the time frame, we need to group
     # data points into 700 groups with points averaged in each group.
     if count_points > 700:
         # Average period between sensor reads
         seconds_per_point = time_difference_seconds / count_points
-        logger.debug('Seconds per point = {}'.format(seconds_per_point),
-                     file=sys.stderr)
+        logger.debug('Seconds per point = {}'.format(seconds_per_point))
 
         # How many seconds to group data points in
         group_seconds = int(time_difference_seconds / 700)
-        logger.debug('Group seconds = {}'.format(group_seconds),
-                     file=sys.stderr)
+        logger.debug('Group seconds = {}'.format(group_seconds))
 
         try:
-            raw_data = dbcon.query("""SELECT MEAN(value)
-                                      FROM {}
-                                      WHERE device_id='{}'
-                                            AND time >= '{}'
-                                            AND time <= '{}' GROUP BY TIME({}s)
-                                   """.format(measurement,
-                                              unique_id,
-                                              start_str,
-                                              end_str,
-                                              group_seconds)).raw
+            query_str = query_string(
+                measurement, unique_id, value='mean',
+                start_str=start_str, end_str=end_str,
+                group_sec=group_seconds)
+            if query_str == 1:
+                return '', 204
+            raw_data = dbcon.query(query_str).raw
+
             return jsonify(raw_data['series'][0]['values'])
         except Exception as e:
             logger.error("URL for 'async_data' raised and error: "
@@ -458,15 +441,13 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
             return '', 204
     else:
         try:
-            raw_data = dbcon.query("""SELECT value
-                                      FROM {}
-                                      WHERE device_id='{}'
-                                            AND time >= '{}'
-                                            AND time <= '{}'
-                                   """.format(measurement,
-                                              unique_id,
-                                              start_str,
-                                              end_str)).raw
+            query_string(
+                measurement, unique_id,
+                start_str=start_str, end_str=end_str)
+            if query_str == 1:
+                return '', 204
+            raw_data = dbcon.query(query_str).raw
+
             return jsonify(raw_data['series'][0]['values'])
         except Exception as e:
             logger.error("URL for 'async_data' raised and error: "
