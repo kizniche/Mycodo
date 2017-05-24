@@ -406,24 +406,24 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
                                        '%Y-%m-%dT%H:%M:%S.%f')
     start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-    logger.error('Count = {}'.format(count_points))
-    logger.error('Start = {}'.format(start))
-    logger.error('End   = {}'.format(end))
+    logger.debug('Count = {}'.format(count_points))
+    logger.debug('Start = {}'.format(start))
+    logger.debug('End   = {}'.format(end))
 
     # How many seconds between the start and end period
     time_difference_seconds = (end - start).total_seconds()
-    logger.error('Difference seconds = {}'.format(time_difference_seconds))
+    logger.debug('Difference seconds = {}'.format(time_difference_seconds))
 
     # If there are more than 700 points in the time frame, we need to group
     # data points into 700 groups with points averaged in each group.
     if count_points > 700:
         # Average period between sensor reads
         seconds_per_point = time_difference_seconds / count_points
-        logger.error('Seconds per point = {}'.format(seconds_per_point))
+        logger.debug('Seconds per point = {}'.format(seconds_per_point))
 
         # How many seconds to group data points in
         group_seconds = int(time_difference_seconds / 700)
-        logger.error('Group seconds = {}'.format(group_seconds))
+        logger.debug('Group seconds = {}'.format(group_seconds))
 
         try:
             query_str = query_string(

@@ -1,3 +1,9 @@
+## 5.0.30 (2017-05-23)
+
+### Bugfixes
+
+ - Fix display of proper relay status if pin is 0
+
 ## 5.0.29 (2017-05-23)
 
 ### Features

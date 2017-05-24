@@ -38,10 +38,10 @@
   }
 
   {%- set relay_has_gpio = [] -%}
-  {%- for each_relay in relay if each_relay.pin -%}
+  {%- for each_relay in relay if -1 < each_relay.pin < 40 -%}
     {%- do relay_has_gpio.append(1) -%}
   {%- endfor -%}
-  {%- if relay_has_gpio -%}
+  {% if relay_has_gpio -%}
   $(function() {
     liveGPIOData();
   });
