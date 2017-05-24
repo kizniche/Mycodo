@@ -105,13 +105,13 @@
               <span class="collapse-button{{each_relay.id}} fa fa-3x fa-plus-square"></span>
             </a>
           </div>
-          <div class="col-xs-5 col-sm-3 col-md-2 small-gutters">
+          <div class="col-xs-5 col-sm-3 col-md-3 small-gutters">
             {{form_mod_relay.name(class_='form-control', value=each_relay.name, **{'title':_('Name')})}}
           </div>
-          <div class="col-xs-5 col-sm-2 col-md-1 small-gutters">
+          <div class="col-xs-5 col-sm-2 col-md-2 small-gutters">
             <input class="form-control btn btn-default" disabled="" id="{{each_relay.id}}-input-relay-state" title="UUID: {{each_relay.unique_id}}" value="{{each_relay.id}}" type="text">
           </div>
-          <div class="col-xs-5 col-xs-offset-2 col-sm-3 col-sm-offset-0 col-md-4 small-gutters">
+          <div class="col-xs-5 col-xs-offset-2 col-sm-3 col-sm-offset-0 col-md-3 small-gutters">
             <div class="col-xs-6 col-sm-6 col-md-6 small-gutters">
               {{form_mod_relay.turn_on(class_='form-control btn btn-default')}}
             </div>
@@ -119,7 +119,7 @@
               {{form_mod_relay.turn_off(class_='form-control btn btn-default')}}
             </div>
           </div>
-          <div class="col-xs-5 col-sm-3 col-md-4 small-gutters">
+          <div class="col-xs-5 col-sm-3 col-md-3 small-gutters">
             <div class="col-xs-6 col-sm-6 col-md-6 small-gutters">
               {{form_mod_relay.order_up(class_='form-control btn btn-default')}}
             </div>

@@ -1,3 +1,13 @@
+## 5.0.29 (2017-05-23)
+
+### Features
+
+ - Relay and Timer page style improvements
+
+### Bugfixes
+
+ - Add influxdb query generator with input checks
+
 ## 5.0.28 (2017-05-23)
 
 ### Features

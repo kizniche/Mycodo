@@ -297,71 +297,65 @@ class RelayController(threading.Thread):
                             name=self.relay_name[relay_id]))
                     return 1
                 else:
-                    try:
-                        # Record the time the relay was turned on in order to
-                        # calculate and log the total duration is was on, when
-                        # it eventually turns off.
-                        self.relay_time_turned_on[relay_id] = datetime.datetime.now()
-                        self.logger.debug(
-                            u"Relay {id} ({name}) ON at {timeon}.".format(
-                                id=self.relay_id[relay_id],
-                                name=self.relay_name[relay_id],
-                                timeon=self.relay_time_turned_on[relay_id]))
+                    # Record the time the relay was turned on in order to
+                    # calculate and log the total duration is was on, when
+                    # it eventually turns off.
+                    self.relay_time_turned_on[relay_id] = datetime.datetime.now()
+                    self.logger.debug(
+                        u"Relay {id} ({name}) ON at {timeon}.".format(
+                            id=self.relay_id[relay_id],
+                            name=self.relay_name[relay_id],
+                            timeon=self.relay_time_turned_on[relay_id]))
 
-                        if self.relay_type[relay_id] == 'wired':
-                            GPIO.output(self.relay_pin[relay_id],
-                                        self.relay_trigger[relay_id])
-                        elif self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
-                            self.logger.error("TEST02")
-                            self.wireless_pi_switch[relay_id].transmit(
-                                int(self.relay_on_command[relay_id]))
-                    except:
-                        self.logger.exception(1)
+                    if self.relay_type[relay_id] == 'wired':
+                        GPIO.output(self.relay_pin[relay_id],
+                                    self.relay_trigger[relay_id])
+                    elif self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
+                        self.logger.error("TEST02")
+                        self.wireless_pi_switch[relay_id].transmit(
+                            int(self.relay_on_command[relay_id]))
 
         # Signaled to turn relay off
         elif state == 'off':
-            try:
-                if (self._is_setup(relay_id, self.relay_pin[relay_id]) and
-                        self.relay_pin[relay_id] is not None):  # if pin not 0
+            if (self._is_setup(relay_id, self.relay_pin[relay_id]) and
+                    self.relay_pin[relay_id] is not None):  # if pin not 0
 
-                    if self.relay_type[relay_id] == 'wired':
-                        GPIO.output(self.relay_pin[relay_id], not self.relay_trigger[relay_id])
-                    elif self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
-                        self.wireless_pi_switch[relay_id].transmit(
-                            int(self.relay_off_command[relay_id]))
+                if self.relay_type[relay_id] == 'wired':
+                    GPIO.output(self.relay_pin[relay_id], not self.relay_trigger[relay_id])
+                elif self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
+                    self.wireless_pi_switch[relay_id].transmit(
+                        int(self.relay_off_command[relay_id]))
 
-                    self.logger.debug(u"Relay {id} ({name}) turned off.".format(
-                            id=self.relay_id[relay_id],
-                            name=self.relay_name[relay_id]))
+                self.logger.debug(u"Relay {id} ({name}) turned off.".format(
+                        id=self.relay_id[relay_id],
+                        name=self.relay_name[relay_id]))
 
-                    if (self.relay_time_turned_on[relay_id] is not None or
-                            self.relay_on_duration[relay_id]):
-                        duration = 0
-                        if self.relay_on_duration[relay_id]:
-                            remaining_time = 0
-                            time_now = datetime.datetime.now()
-                            if self.relay_on_until[relay_id] > time_now:
-                                remaining_time = (self.relay_on_until[relay_id] - time_now).total_seconds()
-                            duration = self.relay_last_duration[relay_id] - remaining_time
-                            self.relay_on_duration[relay_id] = False
-                            self.relay_on_until[relay_id] = datetime.datetime.now()
+                if (self.relay_time_turned_on[relay_id] is not None or
+                        self.relay_on_duration[relay_id]):
+                    duration = 0
+                    if self.relay_on_duration[relay_id]:
+                        remaining_time = 0
+                        time_now = datetime.datetime.now()
+                        if self.relay_on_until[relay_id] > time_now:
+                            remaining_time = (self.relay_on_until[relay_id] - time_now).total_seconds()
+                        duration = self.relay_last_duration[relay_id] - remaining_time
+                        self.relay_on_duration[relay_id] = False
+                        self.relay_on_until[relay_id] = datetime.datetime.now()
 
-                        if self.relay_time_turned_on[relay_id] is not None:
-                            # Write the duration the relay was ON to the database
-                            # at the timestamp it turned ON
-                            duration = (datetime.datetime.now() - self.relay_time_turned_on[relay_id]).total_seconds()
-                            self.relay_time_turned_on[relay_id] = None
+                    if self.relay_time_turned_on[relay_id] is not None:
+                        # Write the duration the relay was ON to the database
+                        # at the timestamp it turned ON
+                        duration = (datetime.datetime.now() - self.relay_time_turned_on[relay_id]).total_seconds()
+                        self.relay_time_turned_on[relay_id] = None
 
-                        timestamp = datetime.datetime.utcnow() - datetime.timedelta(seconds=duration)
-                        write_db = threading.Thread(
-                            target=write_influxdb_value,
-                            args=(self.relay_unique_id[relay_id],
-                                  'duration_sec',
-                                  duration,
-                                  timestamp,))
-                        write_db.start()
-            except:
-                self.logger.exception(1)
+                    timestamp = datetime.datetime.utcnow() - datetime.timedelta(seconds=duration)
+                    write_db = threading.Thread(
+                        target=write_influxdb_value,
+                        args=(self.relay_unique_id[relay_id],
+                              'duration_sec',
+                              duration,
+                              timestamp,))
+                    write_db.start()
 
         if trigger_conditionals:
             if state == 'on' and duration != 0:

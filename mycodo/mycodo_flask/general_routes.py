@@ -242,7 +242,7 @@ def last_data(sensor_measure, sensor_id, sensor_period):
     dbcon = influx_db.connection
     try:
         query_str = query_string(
-            sensor_measure, sensor_id, value='last',
+            sensor_measure, sensor_id, value='LAST',
             past_sec=int(sensor_period) * 60)
         if query_str == 1:
             return '', 204
@@ -363,7 +363,7 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
     if start_seconds == '0' and end_seconds == '0':
         # Get how many points there are in the past year
         query_str = query_string(
-            measurement, unique_id, value='count')
+            measurement, unique_id, value='COUNT')
         if query_str == 1:
             return '', 204
         raw_data = dbcon.query(query_str).raw
@@ -386,7 +386,7 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         query_str = query_string(
             measurement, unique_id,
-            value='count', start_str=start_str, end_str=end_str)
+            value='COUNT', start_str=start_str, end_str=end_str)
         if query_str == 1:
             return '', 204
         raw_data = dbcon.query(query_str).raw
@@ -406,28 +406,28 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
                                        '%Y-%m-%dT%H:%M:%S.%f')
     start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-    logger.debug('Count = {}'.format(count_points))
-    logger.debug('Start = {}'.format(start))
-    logger.debug('End   = {}'.format(end))
+    logger.error('Count = {}'.format(count_points))
+    logger.error('Start = {}'.format(start))
+    logger.error('End   = {}'.format(end))
 
     # How many seconds between the start and end period
     time_difference_seconds = (end - start).total_seconds()
-    logger.debug('Difference seconds = {}'.format(time_difference_seconds))
+    logger.error('Difference seconds = {}'.format(time_difference_seconds))
 
     # If there are more than 700 points in the time frame, we need to group
     # data points into 700 groups with points averaged in each group.
     if count_points > 700:
         # Average period between sensor reads
         seconds_per_point = time_difference_seconds / count_points
-        logger.debug('Seconds per point = {}'.format(seconds_per_point))
+        logger.error('Seconds per point = {}'.format(seconds_per_point))
 
         # How many seconds to group data points in
         group_seconds = int(time_difference_seconds / 700)
-        logger.debug('Group seconds = {}'.format(group_seconds))
+        logger.error('Group seconds = {}'.format(group_seconds))
 
         try:
             query_str = query_string(
-                measurement, unique_id, value='mean',
+                measurement, unique_id, value='MEAN',
                 start_str=start_str, end_str=end_str,
                 group_sec=group_seconds)
             if query_str == 1:
@@ -441,7 +441,7 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
             return '', 204
     else:
         try:
-            query_string(
+            query_str = query_string(
                 measurement, unique_id,
                 start_str=start_str, end_str=end_str)
             if query_str == 1:

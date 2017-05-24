@@ -69,7 +69,6 @@ def query_string(measurement, unique_id, value=None,
     # Validate input
     if (measurement not in MEASUREMENT_UNITS or
             not valid_uuid(unique_id) or
-            bool(value and value not in ['count', 'last', 'mean', 'sum']) or
             bool(start_str and not valid_date_str(start_str)) or
             bool(end_str and not valid_date_str(end_str)) or
             bool(past_sec and not valid_int(past_sec)) or
@@ -80,14 +79,10 @@ def query_string(measurement, unique_id, value=None,
     query = "SELECT "
 
     if value:
-        if value == 'count':
-            query += "count(value)"
-        elif value == 'last':
-            query += "LAST(value)"
-        elif value == 'mean':
-            query += "MEAN(value)"
-        elif value == 'sum':
-            query += "SUM(value)"
+        if value in ['COUNT', 'LAST', 'MEAN', 'SUM']:
+            query += "{value}(value)".format(value=value)
+        else:
+            return 1
     else:
         query += "value"
 
@@ -131,7 +126,7 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
     if duration_sec:
         query = query_string(measure_type, device_id, past_sec=duration_sec)
     else:
-        query = query_string(measure_type, device_id, value='last')
+        query = query_string(measure_type, device_id, value='LAST')
 
     last_measurement = client.query(query).raw
 
@@ -160,7 +155,8 @@ def relay_sec_on(relay_id, past_seconds):
     if not relay_id:
         return None
 
-    query = query_string('duration_sec', relay.unique_id, value='sum', past_sec=past_seconds)
+    query = query_string('duration_sec', relay.unique_id, value='SUM',
+                         past_sec=past_seconds)
     output = client.query(query)
     sec_recorded_on = 0
     if output:
@@ -190,7 +186,7 @@ def valid_date_str(date_str):
 
 def valid_int(test_var):
     try:
-        value = int(test_var)
+        _ = int(test_var)
     except ValueError:
         logger.exception(1)
         return False
