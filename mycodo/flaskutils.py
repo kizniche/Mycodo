@@ -1960,10 +1960,20 @@ def sensor_mod(form_mod_sensor):
                 mod_sensor.baud_rate = form_mod_sensor.baud_rate.data
             if form_mod_sensor.device_loc.data:
                 mod_sensor.device_loc = form_mod_sensor.device_loc.data
+            if form_mod_sensor.modPreRelayID.data:
+                mod_sensor.pre_relay_id = form_mod_sensor.modPreRelayID.data
+            else:
+                mod_sensor.pre_relay_id = None
+            mod_sensor.pre_relay_duration = form_mod_sensor.modPreRelayDuration.data
+            mod_sensor.period = form_mod_sensor.period.data
+            mod_sensor.resolution = form_mod_sensor.modResolution.data
+            mod_sensor.sensitivity = form_mod_sensor.modSensitivity.data
             mod_sensor.calibrate_sensor_measure = form_mod_sensor.calibrate_sensor_measure.data
+            # Multiplexer options
             mod_sensor.multiplexer_address = form_mod_sensor.multiplexer_address.data
             mod_sensor.multiplexer_bus = form_mod_sensor.modMultiplexBus.data
             mod_sensor.multiplexer_channel = form_mod_sensor.multiplexer_channel.data
+            # ADC options
             mod_sensor.adc_channel = form_mod_sensor.modADCChannel.data
             mod_sensor.adc_gain = form_mod_sensor.modADCGain.data
             mod_sensor.adc_resolution = form_mod_sensor.modADCResolution.data
@@ -1973,19 +1983,15 @@ def sensor_mod(form_mod_sensor):
             mod_sensor.adc_volts_max = form_mod_sensor.modADCVoltsMax.data
             mod_sensor.adc_units_min = form_mod_sensor.modADCUnitsMin.data
             mod_sensor.adc_units_max = form_mod_sensor.modADCUnitsMax.data
+            # Switch options
             mod_sensor.switch_edge = form_mod_sensor.modSwitchEdge.data
             mod_sensor.switch_bouncetime = form_mod_sensor.modSwitchBounceTime.data
             mod_sensor.switch_reset_period = form_mod_sensor.modSwitchResetPeriod.data
-            if form_mod_sensor.modPreRelayID.data:
-                mod_sensor.pre_relay_id = form_mod_sensor.modPreRelayID.data
-            else:
-                mod_sensor.pre_relay_id = None
-            mod_sensor.pre_relay_duration = form_mod_sensor.modPreRelayDuration.data
-            mod_sensor.period = form_mod_sensor.period.data
-            mod_sensor.resolution = form_mod_sensor.modResolution.data
-            mod_sensor.sensitivity = form_mod_sensor.modSensitivity.data
-            mod_sensor.sht_clock_pin = form_mod_sensor.modSHTClockPin.data
-            mod_sensor.sht_voltage = form_mod_sensor.modSHTVoltage.data
+            # SHT sensor options
+            if form_mod_sensor.modSHTClockPin.data:
+                mod_sensor.sht_clock_pin = form_mod_sensor.modSHTClockPin.data
+            if form_mod_sensor.modSHTVoltage.data:
+                mod_sensor.sht_voltage = form_mod_sensor.modSHTVoltage.data
             db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
