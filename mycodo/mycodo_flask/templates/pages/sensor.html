@@ -125,10 +125,6 @@
           <form method="post" action="/sensor">
           {{form_mod_sensor.csrf_token}}
           {{form_mod_sensor.modSensor_id(value=each_sensor.id)}}
-          {% if each_sensor.device != 'SHT1x7x' -%}
-            <input id="modSHTClockPin" name="modSHTClockPin" type="hidden" value="0">
-            <input id="modSHTVoltage" name="modSHTVoltage" type="hidden" value="0">
-          {% endif -%}
           {% if each_sensor.device in ['RPiCPULoad', 'RPiFreeSpace'] -%}
             <input id="modPreRelayID" name="modPreRelayID" type="hidden" value="0">
             <input id="modPreRelayDuration" name="modPreRelayDuration" type="hidden" value="0">
