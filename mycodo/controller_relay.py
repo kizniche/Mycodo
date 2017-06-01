@@ -28,23 +28,17 @@ import threading
 import time
 import timeit
 
-# Classes
-from databases.models import (
-    Conditional,
-    ConditionalActions,
-    Relay,
-    SMTP
-)
 from mycodo_client import DaemonControl
-
-# Functions
+from databases.models import Conditional
+from databases.models import ConditionalActions
+from databases.models import Relay
+from databases.models import SMTP
 from devices.wireless_433mhz_pi_switch import Transmit433MHz
 from utils.database import db_retrieve_table_daemon
 from utils.influx import write_influxdb_value
 from utils.send_data import send_email
 from utils.system_pi import cmd_output
 
-# Config
 from config import MAX_AMPS
 
 
@@ -311,7 +305,6 @@ class RelayController(threading.Thread):
                         GPIO.output(self.relay_pin[relay_id],
                                     self.relay_trigger[relay_id])
                     elif self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
-                        self.logger.error("TEST02")
                         self.wireless_pi_switch[relay_id].transmit(
                             int(self.relay_on_command[relay_id]))
 
@@ -492,13 +485,23 @@ class RelayController(threading.Thread):
     def all_relays_off(self):
         """Turn all relays off"""
         for each_relay_id in self.relay_id:
-            self.relay_on_off(each_relay_id, 'off', 0, False)
+            if self.relay_on_at_start[each_relay_id] is None:
+                pass
+            else:
+                self.relay_on_off(each_relay_id, 'off',
+                                  trigger_conditionals=False)
 
     def all_relays_on(self):
         """Turn all relays on that are set to be on at startup"""
         for each_relay_id in self.relay_id:
-            if self.relay_on_at_start[each_relay_id]:
-                self.relay_on_off(each_relay_id, 'on', 0, False)
+            if self.relay_on_at_start[each_relay_id] is None:
+                pass
+            elif self.relay_on_at_start[each_relay_id]:
+                self.relay_on_off(each_relay_id, 'on',
+                                  trigger_conditionals=False)
+            elif not self.relay_on_at_start[each_relay_id]:
+                self.relay_on_off(each_relay_id, 'off',
+                                  trigger_conditionals=False)
 
     def cleanup_gpio(self):
         for each_relay_pin in self.relay_pin:
@@ -583,7 +586,7 @@ class RelayController(threading.Thread):
                 self.relay_id[relay_id], self.relay_name[relay_id]))
             # Ensure relay is off before removing it, to prevent
             # it from being stuck on
-            self.relay_on_off(relay_id, 'off')
+            self.relay_on_off(relay_id, 'off', trigger_conditionals=False)
             self.relay_id.pop(relay_id, None)
             self.relay_unique_id.pop(relay_id, None)
             self.relay_type.pop(relay_id, None)
@@ -720,10 +723,14 @@ class RelayController(threading.Thread):
         :return: Is it safe to manipulate this relay?
         :rtype: bool
         """
-        if self.relay_type[relay_id] == 'wired':
+        if self.relay_type[relay_id] == 'wired' and pin:
             GPIO.setmode(GPIO.BCM)
             GPIO.setup(pin, GPIO.OUT)
-        return True
+            return True
+        elif self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
+            return True
+        else:
+            return False
 
     def is_running(self):
         return self.running

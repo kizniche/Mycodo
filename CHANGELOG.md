@@ -1,3 +1,14 @@
+## 5.0.31 (2017-05-31)
+
+### Features
+
+ - Add option to not turn wireless relay on or off at startup
+
+### Bugfixes
+
+ - Fix inability to save SHT sensor options (#251)
+ - Fix inability to turn relay on if another relay is unconfigured (#251)
+
 ## 5.0.30 (2017-05-23)
 
 ### Bugfixes

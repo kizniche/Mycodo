@@ -24,45 +24,45 @@
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.forceHTTPS.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.force_https.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
         {%- if misc.force_https == true -%}
-          {{form_settings_general.forceHTTPS(checked=True)}}
+          {{form_settings_general.force_https(checked=True)}}
         {%- else -%}
-          {{form_settings_general.forceHTTPS()}}
+          {{form_settings_general.force_https()}}
         {%- endif -%}
         &nbsp;&nbsp;{{_('Check to force all web connections to use SSL (port 443) for greater security.')}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.hideAlertSuccess.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.hide_success.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
         {%- if misc.hide_alert_success == true -%}
-          {{form_settings_general.hideAlertSuccess(checked=True)}}
+          {{form_settings_general.hide_success(checked=True)}}
         {%- else -%}
-          {{form_settings_general.hideAlertSuccess()}}
+          {{form_settings_general.hide_success()}}
         {%- endif -%}
         &nbsp;&nbsp;{{_('Check to prevent Success alert messages from appearing at the top of the page.')}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.hideAlertInfo.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.hide_info.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
         {%- if misc.hide_alert_info == true -%}
-          {{form_settings_general.hideAlertInfo(checked=True)}}
+          {{form_settings_general.hide_info(checked=True)}}
         {%- else -%}
-          {{form_settings_general.hideAlertInfo()}}
+          {{form_settings_general.hide_info()}}
         {%- endif -%}
         &nbsp;&nbsp;{{_('Check to prevent Info alert messages from appearing at the top of the page.')}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.hideAlertWarning.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.hide_warning.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
         {%- if misc.hide_alert_warning == true -%}
-          {{form_settings_general.hideAlertWarning(checked=True)}}
+          {{form_settings_general.hide_warning(checked=True)}}
         {%- else -%}
-          {{form_settings_general.hideAlertWarning()}}
+          {{form_settings_general.hide_warning()}}
         {%- endif -%}
         &nbsp;&nbsp;{{_('Check to prevent Warning alert messages from appearing at the top of the page.')}}
       </div>
@@ -96,27 +96,27 @@
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relayStatsVolts.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.relay_stats_volts.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{form_settings_general.relayStatsVolts(class_='form-control', value=misc.relay_usage_volts, **{'title':_('Set the voltage used to power the devices powered by the relays')})}}
+        {{form_settings_general.relay_stats_volts(class_='form-control', value=misc.relay_usage_volts, **{'title':_('Set the voltage used to power the devices powered by the relays')})}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relayStatsCost.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.relay_stats_cost.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{form_settings_general.relayStatsCost(class_='form-control', value=misc.relay_usage_cost, **{'title':_('Set the cost per kilowatt-hour')})}}
+        {{form_settings_general.relay_stats_cost(class_='form-control', value=misc.relay_usage_cost, **{'title':_('Set the cost per kilowatt-hour')})}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relayStatsCurrency.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.relay_stats_currency.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{form_settings_general.relayStatsCurrency(class_='form-control', value=misc.relay_usage_currency, **{'title':_('Set the unit of currency used to pay for the electricity')})}}
+        {{form_settings_general.relay_stats_currency(class_='form-control', value=misc.relay_usage_currency, **{'title':_('Set the unit of currency used to pay for the electricity')})}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relayStatsDayOfMonth.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      {{form_settings_general.relay_stats_day_month.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
-        {{form_settings_general.relayStatsDayOfMonth(class_='form-control', value=misc.relay_usage_dayofmonth, **{'title':_('Set a day of the month to calculate monthly power usage')})}}
+        {{form_settings_general.relay_stats_day_month(class_='form-control', value=misc.relay_usage_dayofmonth, **{'title':_('Set a day of the month to calculate monthly power usage')})}}
       </div>
     </div>
     <div class="form-group">

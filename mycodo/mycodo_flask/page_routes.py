@@ -295,15 +295,15 @@ def page_graph():
     sensor_choices = flaskutils.choices_sensors(sensor)
 
     # Add multi-select values as form choices, for validation
-    form_mod_graph.pidIDs.choices = []
-    form_mod_graph.relayIDs.choices = []
-    form_mod_graph.sensorIDs.choices = []
+    form_mod_graph.pid_ids.choices = []
+    form_mod_graph.relay_ids.choices = []
+    form_mod_graph.sensor_ids.choices = []
     for key, value in pid_choices.items():
-        form_mod_graph.pidIDs.choices.append((key, value))
+        form_mod_graph.pid_ids.choices.append((key, value))
     for key, value in relay_choices.items():
-        form_mod_graph.relayIDs.choices.append((key, value))
+        form_mod_graph.relay_ids.choices.append((key, value))
     for key, value in sensor_choices.items():
-        form_mod_graph.sensorIDs.choices.append((key, value))
+        form_mod_graph.sensor_ids.choices.append((key, value))
 
     # Generate dictionary of custom colors for each graph
     dict_colors = dict_custom_colors()
@@ -900,19 +900,19 @@ def page_timer():
                                  request.form['timer_type'],
                                  display_order)
         elif form_name == 'modTimer':
-            if form_timer.timerDel.data:
+            if form_timer.delete.data:
                 flaskutils.timer_del(form_timer)
-            elif form_timer.orderTimerUp.data:
+            elif form_timer.order_up.data:
                 flaskutils.timer_reorder(form_timer.timer_id.data,
                                          display_order, 'up')
-            elif form_timer.orderTimerDown.data:
+            elif form_timer.order_down.data:
                 flaskutils.timer_reorder(form_timer.timer_id.data,
                                          display_order, 'down')
             elif form_timer.activate.data:
                 flaskutils.timer_activate(form_timer)
             elif form_timer.deactivate.data:
                 flaskutils.timer_deactivate(form_timer)
-            elif form_timer.timerMod.data:
+            elif form_timer.modify.data:
                 flaskutils.timer_mod(form_timer)
         return redirect('/timer')
 

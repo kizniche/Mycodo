@@ -12,56 +12,49 @@ import flask_login
 from collections import OrderedDict
 from datetime import datetime
 from cStringIO import StringIO as IO
-from flask import (
-    after_this_request,
-    flash,
-    redirect,
-    request,
-    url_for
-)
+
+from flask import after_this_request
+from flask import flash
+from flask import redirect
+from flask import request
+from flask import url_for
+
 from sqlalchemy import and_
 from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 from RPi import GPIO
 
-# Classes
-from mycodo.databases.models import (
-    Camera,
-    Conditional,
-    ConditionalActions,
-    DisplayOrder,
-    Graph,
-    LCD,
-    Method,
-    MethodData,
-    Misc,
-    PID,
-    Relay,
-    Remote,
-    Role,
-    SMTP,
-    Sensor,
-    Timer,
-    User
-)
 from mycodo.mycodo_client import DaemonControl
-from mycodo.utils.utils import (
-    test_username,
-    test_password
-)
+
+from mycodo.databases.models import Camera
+from mycodo.databases.models import Conditional
+from mycodo.databases.models import ConditionalActions
+from mycodo.databases.models import DisplayOrder
+from mycodo.databases.models import Graph
+from mycodo.databases.models import LCD
+from mycodo.databases.models import Method
+from mycodo.databases.models import MethodData
+from mycodo.databases.models import Misc
+from mycodo.databases.models import PID
+from mycodo.databases.models import Relay
+from mycodo.databases.models import Remote
+from mycodo.databases.models import Role
+from mycodo.databases.models import SMTP
+from mycodo.databases.models import Sensor
+from mycodo.databases.models import Timer
+from mycodo.databases.models import User
+from mycodo.utils.utils import test_username
+from mycodo.utils.utils import test_password
 from mycodo.utils.send_data import send_email
-from mycodo.utils.system_pi import (
-    csv_to_list_of_int,
-    is_int,
-    list_to_csv
-)
-from mycodo.config import (
-    CAMERAS,
-    DEVICES_DEFAULT_LOCATION,
-    INSTALL_DIRECTORY,
-    MEASUREMENT_UNITS,
-    MEASUREMENTS
-)
+from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import is_int
+from mycodo.utils.system_pi import list_to_csv
+
+from mycodo.config import CAMERAS
+from mycodo.config import DEVICES_DEFAULT_LOCATION
+from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import MEASUREMENT_UNITS
+from mycodo.config import MEASUREMENTS
 
 logger = logging.getLogger(__name__)
 
@@ -84,16 +77,16 @@ def is_positive_integer(number_string):
 def validate_method_data(form_data, this_method):
     if form_data.method_select.data == 'setpoint':
         if this_method.method_type == 'Date':
-            if (not form_data.startTime.data or
-                    not form_data.endTime.data or
-                    form_data.startSetpoint.data == ''):
+            if (not form_data.time_start.data or
+                    not form_data.time_end.data or
+                    form_data.setpoint_start.data == ''):
                 flash(gettext(u"Required: Start date/time, end date/time, "
                               u"start setpoint"), "error")
                 return 1
             try:
-                start_time = datetime.strptime(form_data.startTime.data,
+                start_time = datetime.strptime(form_data.time_start.data,
                                                '%Y-%m-%d %H:%M:%S')
-                end_time = datetime.strptime(form_data.endTime.data,
+                end_time = datetime.strptime(form_data.time_end.data,
                                              '%Y-%m-%d %H:%M:%S')
             except ValueError:
                 flash(gettext(u"Invalid Date/Time format. Correct format: "
@@ -105,16 +98,16 @@ def validate_method_data(form_data, this_method):
                 return 1
 
         elif this_method.method_type == 'Daily':
-            if (not form_data.startDailyTime.data or
-                    not form_data.endDailyTime.data or
-                    form_data.startSetpoint.data == ''):
+            if (not form_data.daily_time_start.data or
+                    not form_data.daily_time_end.data or
+                    form_data.setpoint_start.data == ''):
                 flash(gettext(u"Required: Start time, end time, start "
                               u"setpoint"), "error")
                 return 1
             try:
-                start_time = datetime.strptime(form_data.startDailyTime.data,
+                start_time = datetime.strptime(form_data.daily_time_start.data,
                                                '%H:%M:%S')
-                end_time = datetime.strptime(form_data.endDailyTime.data,
+                end_time = datetime.strptime(form_data.daily_time_end.data,
                                              '%H:%M:%S')
             except ValueError:
                 flash(gettext(u"Invalid Date/Time format. Correct format: "
@@ -126,47 +119,47 @@ def validate_method_data(form_data, this_method):
                 return 1
 
         elif this_method.method_type == 'Duration':
-            if (not form_data.DurationSec.data or
-                    form_data.startSetpoint.data == ''):
+            if (not form_data.duration.data or
+                    form_data.setpoint_start.data == ''):
                 flash(gettext(u"Required: Duration, start setpoint"),
                       "error")
                 return 1
-            if not is_positive_integer(form_data.DurationSec.data):
+            if not is_positive_integer(form_data.duration.data):
                 return 1
 
     elif form_data.method_select.data == 'relay':
         if this_method.method_type == 'Date':
-            if (not form_data.relayTime.data or
-                    not form_data.relayID.data or
-                    not form_data.relayState.data):
+            if (not form_data.relay_time.data or
+                    not form_data.relay_id.data or
+                    not form_data.relay_state.data):
                 flash(gettext(u"Required: Date/Time, Relay ID, and Relay "
                               "State"), "error")
                 return 1
             try:
-                datetime.strptime(form_data.relayTime.data,
+                datetime.strptime(form_data.relay_time.data,
                                   '%Y-%m-%d %H:%M:%S')
             except ValueError:
                 flash(gettext(u"Invalid Date/Time format. Correct format: "
                               u"DD-MM-YYYY HH:MM:SS"), "error")
                 return 1
         elif this_method.method_type == 'Duration':
-            if (not form_data.DurationSec.data or
-                    not form_data.relayID.data or
-                    not form_data.relayState.data):
+            if (not form_data.duration.data or
+                    not form_data.relay_id.data or
+                    not form_data.relay_state.data):
                 flash(gettext(u"Required: Relay ID, Relay State, and Relay Duration"),
                       "error")
                 return 1
-            if not is_positive_integer(form_data.relayDurationSec.data):
+            if not is_positive_integer(form_data.relay_duration.data):
                 return 1
         elif this_method.method_type == 'Daily':
-            if (not form_data.relayDailyTime.data or
-                    not form_data.relayID.data or
-                    not form_data.relayState.data):
+            if (not form_data.relay_daily_time.data or
+                    not form_data.relay_id.data or
+                    not form_data.relay_state.data):
                 flash(gettext(u"Required: Time, Relay ID, and Relay State"),
                       "error")
                 return 1
             try:
-                datetime.strptime(form_data.relayDailyTime.data,
+                datetime.strptime(form_data.relay_daily_time.data,
                                   '%H:%M:%S')
             except ValueError:
                 flash(gettext(u"Invalid Date/Time format. Correct format: "
@@ -255,13 +248,13 @@ def method_add(form_add_method):
                 MethodData.method_id == form_add_method.method_id.data).first()
             add_method_data.amplitude = form_add_method.amplitude.data
             add_method_data.frequency = form_add_method.frequency.data
-            add_method_data.shift_angle = form_add_method.shiftAngle.data
+            add_method_data.shift_angle = form_add_method.shift_angle.data
             add_method_data.shift_y = form_add_method.shiftY.data
             db.session.commit()
             return 0
 
         elif method.method_type == 'DailyBezier':
-            if not 0 <= form_add_method.shiftAngle.data <= 360:
+            if not 0 <= form_add_method.shift_angle.data <= 360:
                 flash(gettext(u"Error: Angle Shift is out of range. It must be "
                               u"<= 0 and <= 360."), "error")
                 return 1
@@ -270,7 +263,7 @@ def method_add(form_add_method):
                 return 1
             add_method_data = MethodData.query.filter(
                 MethodData.method_id == form_add_method.method_id.data).first()
-            add_method_data.shift_angle = form_add_method.shiftAngle.data
+            add_method_data.shift_angle = form_add_method.shift_angle.data
             add_method_data.x0 = form_add_method.x0.data
             add_method_data.y0 = form_add_method.y0.data
             add_method_data.x1 = form_add_method.x1.data
@@ -284,14 +277,14 @@ def method_add(form_add_method):
 
         if form_add_method.method_select.data == 'setpoint':
             if method.method_type == 'Date':
-                start_time = datetime.strptime(form_add_method.startTime.data,
+                start_time = datetime.strptime(form_add_method.time_start.data,
                                                '%Y-%m-%d %H:%M:%S')
-                end_time = datetime.strptime(form_add_method.endTime.data,
+                end_time = datetime.strptime(form_add_method.time_end.data,
                                              '%Y-%m-%d %H:%M:%S')
             elif method.method_type == 'Daily':
-                start_time = datetime.strptime(form_add_method.startDailyTime.data,
+                start_time = datetime.strptime(form_add_method.daily_time_start.data,
                                                '%H:%M:%S')
-                end_time = datetime.strptime(form_add_method.endDailyTime.data,
+                end_time = datetime.strptime(form_add_method.daily_time_end.data,
                                              '%H:%M:%S')
 
             if method.method_type in ['Date', 'Daily']:
@@ -322,10 +315,10 @@ def method_add(form_add_method):
 
         elif form_add_method.method_select.data == 'relay':
             if method.method_type == 'Date':
-                start_time = datetime.strptime(form_add_method.relayTime.data,
+                start_time = datetime.strptime(form_add_method.relay_time.data,
                                                '%Y-%m-%d %H:%M:%S')
             elif method.method_type == 'Daily':
-                start_time = datetime.strptime(form_add_method.relayDailyTime.data,
+                start_time = datetime.strptime(form_add_method.relay_daily_time.data,
                                                '%H:%M:%S')
 
         add_method_data = MethodData()
@@ -336,23 +329,23 @@ def method_add(form_add_method):
                 add_method_data.time_start = start_time.strftime('%Y-%m-%d %H:%M:%S')
                 add_method_data.time_end = end_time.strftime('%Y-%m-%d %H:%M:%S')
             if form_add_method.method_select.data == 'relay':
-                add_method_data.time_start = form_add_method.relayTime.data
+                add_method_data.time_start = form_add_method.relay_time.data
         elif method.method_type == 'Daily':
             if form_add_method.method_select.data == 'setpoint':
                 add_method_data.time_start = start_time.strftime('%H:%M:%S')
                 add_method_data.time_end = end_time.strftime('%H:%M:%S')
             if form_add_method.method_select.data == 'relay':
-                add_method_data.time_start = form_add_method.relayDailyTime.data
+                add_method_data.time_start = form_add_method.relay_daily_time.data
         elif method.method_type == 'Duration':
-            add_method_data.duration_sec = form_add_method.DurationSec.data
+            add_method_data.duration_sec = form_add_method.duration.data
 
         if form_add_method.method_select.data == 'setpoint':
-            add_method_data.setpoint_start = form_add_method.startSetpoint.data
-            add_method_data.setpoint_end = form_add_method.endSetpoint.data
+            add_method_data.setpoint_start = form_add_method.setpoint_start.data
+            add_method_data.setpoint_end = form_add_method.setpoint_end.data
         elif form_add_method.method_select.data == 'relay':
-            add_method_data.relay_id = form_add_method.relayID.data
-            add_method_data.relay_state = form_add_method.relayState.data
-            add_method_data.relay_duration = form_add_method.relayDurationSec.data
+            add_method_data.relay_id = form_add_method.relay_id.data
+            add_method_data.relay_state = form_add_method.relay_state.data
+            add_method_data.relay_duration = form_add_method.relay_duration.data
 
         db.session.add(add_method_data)
         db.session.commit()
@@ -376,7 +369,7 @@ def method_add(form_add_method):
                       "success")
             elif method.method_type == 'Duration':
                 flash(gettext(u"Added duration to method for %(sec)s seconds",
-                              sec=form_add_method.DurationSec.data), "success")
+                              sec=form_add_method.duration.data), "success")
         elif form_add_method.method_select.data == 'relay':
             if method.method_type == 'Date':
                 flash(gettext(u"Added relay modulation to method at start "
@@ -388,7 +381,7 @@ def method_add(form_add_method):
             elif method.method_type == 'Duration':
                 flash(gettext(u"Added relay modulation to method at start "
                               u"time: %(tm)s",
-                              tm=form_add_method.DurationSec.data), "success")
+                              tm=form_add_method.duration.data), "success")
 
     except Exception as except_msg:
         logger.exception(1)
@@ -431,8 +424,8 @@ def method_mod(form_mod_method):
 
         if form_mod_method.method_select.data == 'setpoint':
             if method.method_type == 'Date':
-                start_time = datetime.strptime(form_mod_method.startTime.data, '%Y-%m-%d %H:%M:%S')
-                end_time = datetime.strptime(form_mod_method.endTime.data, '%Y-%m-%d %H:%M:%S')
+                start_time = datetime.strptime(form_mod_method.time_start.data, '%Y-%m-%d %H:%M:%S')
+                end_time = datetime.strptime(form_mod_method.time_end.data, '%Y-%m-%d %H:%M:%S')
 
                 # Ensure the start time comes after the previous entry's end time
                 # and the end time comes before the next entry's start time
@@ -472,36 +465,36 @@ def method_mod(form_mod_method):
                 method_data.time_end = end_time.strftime('%Y-%m-%d %H:%M:%S')
 
             elif method.method_type == 'Duration':
-                method_data.duration_sec = form_mod_method.DurationSec.data
+                method_data.duration_sec = form_mod_method.duration.data
 
             elif method.method_type == 'Daily':
-                method_data.time_start = form_mod_method.startDailyTime.data
-                method_data.time_end = form_mod_method.endDailyTime.data
+                method_data.time_start = form_mod_method.daily_time_start.data
+                method_data.time_end = form_mod_method.daily_time_end.data
 
-            method_data.setpoint_start = form_mod_method.startSetpoint.data
-            method_data.setpoint_end = form_mod_method.endSetpoint.data
+            method_data.setpoint_start = form_mod_method.setpoint_start.data
+            method_data.setpoint_end = form_mod_method.setpoint_end.data
 
         elif form_mod_method.method_select.data == 'relay':
             if method.method_type == 'Date':
-                method_data.time_start = form_mod_method.relayTime.data
+                method_data.time_start = form_mod_method.relay_time.data
             elif method.method_type == 'Duration':
-                method_data.duration_sec = form_mod_method.DurationSec.data
+                method_data.duration_sec = form_mod_method.duration.data
             if form_mod_method.relay_id.data == '':
                 method_data.relay_id = None
             else:
-                method_data.relay_id = form_mod_method.relayID.data
-            method_data.relay_state = form_mod_method.relayState.data
-            method_data.relay_duration = form_mod_method.relayDurationSec.data
+                method_data.relay_id = form_mod_method.relay_id.data
+            method_data.relay_state = form_mod_method.relay_state.data
+            method_data.relay_duration = form_mod_method.relay_duration.data
 
         elif method.method_type == 'DailySine':
             if form_mod_method.method_select.data == 'relay':
-                method_data.time_start = form_mod_method.relayTime.data
+                method_data.time_start = form_mod_method.relay_time.data
                 if form_mod_method.relay_id.data == '':
                     method_data.relay_id = None
                 else:
-                    method_data.relay_id = form_mod_method.relayID.data
-                method_data.relay_state = form_mod_method.relayState.data
-                method_data.relay_duration = form_mod_method.relayDurationSec.data
+                    method_data.relay_id = form_mod_method.relay_id.data
+                method_data.relay_state = form_mod_method.relay_state.data
+                method_data.relay_duration = form_mod_method.relay_duration.data
 
         if not error:
             db.session.commit()
@@ -801,26 +794,26 @@ def graph_add(form_add_graph, display_order):
     error = []
 
     if (form_add_graph.name.data and form_add_graph.width.data and
-            form_add_graph.height.data and form_add_graph.xAxisDuration.data and
-            form_add_graph.refreshDuration.data):
+            form_add_graph.height.data and form_add_graph.xaxis_duration.data and
+            form_add_graph.refresh_duration.data):
         new_graph = Graph()
         new_graph.name = form_add_graph.name.data
-        if form_add_graph.pidIDs.data:
-            pid_ids_joined = ";".join(form_add_graph.pidIDs.data)
+        if form_add_graph.pid_ids.data:
+            pid_ids_joined = ";".join(form_add_graph.pid_ids.data)
             new_graph.pid_ids = pid_ids_joined
-        if form_add_graph.relayIDs.data:
-            relay_ids_joined = ",".join(form_add_graph.relayIDs.data)
+        if form_add_graph.relay_ids.data:
+            relay_ids_joined = ",".join(form_add_graph.relay_ids.data)
             new_graph.relay_ids = relay_ids_joined
-        if form_add_graph.sensorIDs.data:
-            sensor_ids_joined = ";".join(form_add_graph.sensorIDs.data)
+        if form_add_graph.sensor_ids.data:
+            sensor_ids_joined = ";".join(form_add_graph.sensor_ids.data)
             new_graph.sensor_ids_measurements = sensor_ids_joined
         new_graph.width = form_add_graph.width.data
         new_graph.height = form_add_graph.height.data
-        new_graph.x_axis_duration = form_add_graph.xAxisDuration.data
-        new_graph.refresh_duration = form_add_graph.refreshDuration.data
-        new_graph.enable_navbar = form_add_graph.enableNavbar.data
-        new_graph.enable_rangeselect = form_add_graph.enableRangeSelect.data
-        new_graph.enable_export = form_add_graph.enableExport.data
+        new_graph.x_axis_duration = form_add_graph.xaxis_duration.data
+        new_graph.refresh_duration = form_add_graph.refresh_duration.data
+        new_graph.enable_navbar = form_add_graph.enable_navbar.data
+        new_graph.enable_rangeselect = form_add_graph.enable_range.data
+        new_graph.enable_export = form_add_graph.enable_export.data
         try:
             new_graph.save()
             flash(gettext(
@@ -875,31 +868,31 @@ def graph_mod(form_mod_graph, request_form):
             mod_graph.use_custom_colors = form_mod_graph.use_custom_colors.data
             mod_graph.name = form_mod_graph.name.data
 
-            if form_mod_graph.pidIDs.data:
-                pid_ids_joined = ";".join(form_mod_graph.pidIDs.data)
+            if form_mod_graph.pid_ids.data:
+                pid_ids_joined = ";".join(form_mod_graph.pid_ids.data)
                 mod_graph.pid_ids = pid_ids_joined
             else:
                 mod_graph.pid_ids = ''
 
-            if form_mod_graph.relayIDs.data:
-                relay_ids_joined = ",".join(form_mod_graph.relayIDs.data)
+            if form_mod_graph.relay_ids.data:
+                relay_ids_joined = ",".join(form_mod_graph.relay_ids.data)
                 mod_graph.relay_ids = relay_ids_joined
             else:
                 mod_graph.relay_ids = ''
 
-            if form_mod_graph.sensorIDs.data:
-                sensor_ids_joined = ";".join(form_mod_graph.sensorIDs.data)
+            if form_mod_graph.sensor_ids.data:
+                sensor_ids_joined = ";".join(form_mod_graph.sensor_ids.data)
                 mod_graph.sensor_ids_measurements = sensor_ids_joined
             else:
                 mod_graph.sensor_ids_measurements = ''
 
             mod_graph.width = form_mod_graph.width.data
             mod_graph.height = form_mod_graph.height.data
-            mod_graph.x_axis_duration = form_mod_graph.xAxisDuration.data
-            mod_graph.refresh_duration = form_mod_graph.refreshDuration.data
-            mod_graph.enable_navbar = form_mod_graph.enableNavbar.data
-            mod_graph.enable_export = form_mod_graph.enableExport.data
-            mod_graph.enable_rangeselect = form_mod_graph.enableRangeSelect.data
+            mod_graph.x_axis_duration = form_mod_graph.xaxis_duration.data
+            mod_graph.refresh_duration = form_mod_graph.refresh_duration.data
+            mod_graph.enable_navbar = form_mod_graph.enable_navbar.data
+            mod_graph.enable_export = form_mod_graph.enable_export.data
+            mod_graph.enable_rangeselect = form_mod_graph.enable_range.data
             db.session.commit()
         except sqlalchemy.exc.OperationalError as except_msg:
             error.append(except_msg)
@@ -1665,6 +1658,7 @@ def relay_add(form_add_relay):
                     new_relay.bit_length = 24
                     new_relay.on_command = 22559
                     new_relay.off_command = 22558
+                    new_relay.on_at_start = None
                 new_relay.save()
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
                 DisplayOrder.query.first().relay = add_display_order(
@@ -1709,7 +1703,10 @@ def relay_mod(form_relay):
                 mod_relay.on_command = form_relay.on_command.data
                 mod_relay.off_command = form_relay.off_command.data
             mod_relay.amps = form_relay.amps.data
-            mod_relay.on_at_start = form_relay.on_at_start.data
+            if form_relay.on_at_start.data == '-1':
+                mod_relay.on_at_start = None
+            else:
+                mod_relay.on_at_start = form_relay.on_at_start.data
             db.session.commit()
             manipulate_relay('Modify',
                              form_relay.relay_id.data,
@@ -1949,49 +1946,49 @@ def sensor_mod(form_mod_sensor):
 
         if not error:
             mod_sensor.name = form_mod_sensor.name.data
-            mod_sensor.i2c_bus = form_mod_sensor.modBus.data
+            mod_sensor.i2c_bus = form_mod_sensor.i2c_bus.data
             if form_mod_sensor.location.data:
                 mod_sensor.location = form_mod_sensor.location.data
-            if form_mod_sensor.modPowerRelayID.data:
-                mod_sensor.power_relay_id = form_mod_sensor.modPowerRelayID.data
+            if form_mod_sensor.power_relay_id.data:
+                mod_sensor.power_relay_id = form_mod_sensor.power_relay_id.data
             else:
                 mod_sensor.power_relay_id = None
             if form_mod_sensor.baud_rate.data:
                 mod_sensor.baud_rate = form_mod_sensor.baud_rate.data
             if form_mod_sensor.device_loc.data:
                 mod_sensor.device_loc = form_mod_sensor.device_loc.data
-            if form_mod_sensor.modPreRelayID.data:
-                mod_sensor.pre_relay_id = form_mod_sensor.modPreRelayID.data
+            if form_mod_sensor.pre_relay_id.data:
+                mod_sensor.pre_relay_id = form_mod_sensor.pre_relay_id.data
             else:
                 mod_sensor.pre_relay_id = None
-            mod_sensor.pre_relay_duration = form_mod_sensor.modPreRelayDuration.data
+            mod_sensor.pre_relay_duration = form_mod_sensor.pre_relay_duration.data
             mod_sensor.period = form_mod_sensor.period.data
-            mod_sensor.resolution = form_mod_sensor.modResolution.data
-            mod_sensor.sensitivity = form_mod_sensor.modSensitivity.data
+            mod_sensor.resolution = form_mod_sensor.resolution.data
+            mod_sensor.sensitivity = form_mod_sensor.sensitivity.data
             mod_sensor.calibrate_sensor_measure = form_mod_sensor.calibrate_sensor_measure.data
             # Multiplexer options
             mod_sensor.multiplexer_address = form_mod_sensor.multiplexer_address.data
-            mod_sensor.multiplexer_bus = form_mod_sensor.modMultiplexBus.data
+            mod_sensor.multiplexer_bus = form_mod_sensor.multiplexer_bus.data
             mod_sensor.multiplexer_channel = form_mod_sensor.multiplexer_channel.data
             # ADC options
-            mod_sensor.adc_channel = form_mod_sensor.modADCChannel.data
-            mod_sensor.adc_gain = form_mod_sensor.modADCGain.data
-            mod_sensor.adc_resolution = form_mod_sensor.modADCResolution.data
-            mod_sensor.adc_measure = form_mod_sensor.modADCMeasure.data.replace(" ", "_")
-            mod_sensor.adc_measure_units = form_mod_sensor.modADCMeasureUnits.data
-            mod_sensor.adc_volts_min = form_mod_sensor.modADCVoltsMin.data
-            mod_sensor.adc_volts_max = form_mod_sensor.modADCVoltsMax.data
-            mod_sensor.adc_units_min = form_mod_sensor.modADCUnitsMin.data
-            mod_sensor.adc_units_max = form_mod_sensor.modADCUnitsMax.data
+            mod_sensor.adc_channel = form_mod_sensor.adc_channel.data
+            mod_sensor.adc_gain = form_mod_sensor.adc_gain.data
+            mod_sensor.adc_resolution = form_mod_sensor.adc_resolution.data
+            mod_sensor.adc_measure = form_mod_sensor.adc_measurement.data.replace(" ", "_")
+            mod_sensor.adc_measure_units = form_mod_sensor.adc_measurement_units.data
+            mod_sensor.adc_volts_min = form_mod_sensor.adc_volts_min.data
+            mod_sensor.adc_volts_max = form_mod_sensor.adc_volts_max.data
+            mod_sensor.adc_units_min = form_mod_sensor.adc_units_min.data
+            mod_sensor.adc_units_max = form_mod_sensor.adc_units_max.data
             # Switch options
-            mod_sensor.switch_edge = form_mod_sensor.modSwitchEdge.data
-            mod_sensor.switch_bouncetime = form_mod_sensor.modSwitchBounceTime.data
-            mod_sensor.switch_reset_period = form_mod_sensor.modSwitchResetPeriod.data
+            mod_sensor.switch_edge = form_mod_sensor.switch_edge.data
+            mod_sensor.switch_bouncetime = form_mod_sensor.switch_bounce_time.data
+            mod_sensor.switch_reset_period = form_mod_sensor.switch_reset_period.data
             # SHT sensor options
-            if form_mod_sensor.modSHTClockPin.data:
-                mod_sensor.sht_clock_pin = form_mod_sensor.modSHTClockPin.data
-            if form_mod_sensor.modSHTVoltage.data:
-                mod_sensor.sht_voltage = form_mod_sensor.modSHTVoltage.data
+            if form_mod_sensor.sht_clock_pin.data:
+                mod_sensor.sht_clock_pin = form_mod_sensor.sht_clock_pin.data
+            if form_mod_sensor.sht_voltage.data:
+                mod_sensor.sht_voltage = form_mod_sensor.sht_voltage.data
             db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
@@ -2126,26 +2123,26 @@ def timer_add(form_add_timer, timer_type, display_order):
     if form_add_timer.validate():
         new_timer = Timer()
         new_timer.name = form_add_timer.name.data
-        new_timer.relay_id = form_add_timer.relayID.data
+        new_timer.relay_id = form_add_timer.relay_id.data
         if timer_type == 'time':
             new_timer.timer_type = 'time'
             new_timer.state = form_add_timer.state.data
-            new_timer.time_start = form_add_timer.timeStart.data
-            new_timer.duration_on = form_add_timer.timeOnDurationOn.data
+            new_timer.time_start = form_add_timer.time_start.data
+            new_timer.duration_on = form_add_timer.time_on_duration.data
             new_timer.duration_off = 0
         elif timer_type == 'timespan':
             new_timer.timer_type = 'timespan'
             new_timer.state = form_add_timer.state.data
-            new_timer.time_start = form_add_timer.timeStartDur.data
-            new_timer.time_end = form_add_timer.timeEndDur.data
+            new_timer.time_start = form_add_timer.time_start_duration.data
+            new_timer.time_end = form_add_timer.time_end_duration.data
         elif timer_type == 'duration':
-            if (form_add_timer.durationOn.data <= 0 or
-                    form_add_timer.durationOff.data <= 0):
+            if (form_add_timer.duration_on.data <= 0 or
+                    form_add_timer.duration_off.data <= 0):
                 error.append(gettext(u"Durations must be greater than 0"))
             else:
                 new_timer.timer_type = 'duration'
-                new_timer.duration_on = form_add_timer.durationOn.data
-                new_timer.duration_off = form_add_timer.durationOff.data
+                new_timer.duration_on = form_add_timer.duration_on.data
+                new_timer.duration_off = form_add_timer.duration_off.data
 
         if not error:
             try:
@@ -2178,21 +2175,21 @@ def timer_mod(form_timer):
             return redirect(url_for('page_routes.page_timer'))
         else:
             mod_timer.name = form_timer.name.data
-            if form_timer.relayID.data:
-                mod_timer.relay_id = form_timer.relayID.data
+            if form_timer.relay_id.data:
+                mod_timer.relay_id = form_timer.relay_id.data
             else:
                 mod_timer.relay_id = None
             if mod_timer.timer_type == 'time':
                 mod_timer.state = form_timer.state.data
-                mod_timer.time_start = form_timer.timeStart.data
-                mod_timer.duration_on = form_timer.timeOnDurationOn.data
+                mod_timer.time_start = form_timer.time_start.data
+                mod_timer.duration_on = form_timer.time_on_duration.data
             elif mod_timer.timer_type == 'timespan':
                 mod_timer.state = form_timer.state.data
-                mod_timer.time_start = form_timer.timeStartDur.data
-                mod_timer.time_end = form_timer.timeEndDur.data
+                mod_timer.time_start = form_timer.time_start_duration.data
+                mod_timer.time_end = form_timer.time_end_duration.data
             elif mod_timer.timer_type == 'duration':
-                mod_timer.duration_on = form_timer.durationOn.data
-                mod_timer.duration_off = form_timer.durationOff.data
+                mod_timer.duration_on = form_timer.duration_on.data
+                mod_timer.duration_off = form_timer.duration_off.data
             db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
@@ -2312,27 +2309,27 @@ def user_add(form):
 
     if form.validate():
         new_user = User()
-        if not test_username(form.addUsername.data):
+        if not test_username(form.user_name.data):
             error.append(gettext(
                 u"Invalid user name. Must be between 2 and 64 characters "
                 u"and only contain letters and numbers."))
 
-        if User.query.filter_by(email=form.addEmail.data).count():
+        if User.query.filter_by(email=form.email.data).count():
             error.append(gettext(
                 u"Another user already has that email address."))
 
-        if not test_password(form.addPassword.data):
+        if not test_password(form.password_new.data):
             error.append(gettext(
                 u"Invalid password. Must be between 6 and 64 characters "
                 u"and only contain letters, numbers, and symbols."))
 
-        if form.addPassword.data != form.addPassword_repeat.data:
+        if form.password_new.data != form.password_repeat.data:
             error.append(gettext(u"Passwords do not match. Please try again."))
 
         if not error:
-            new_user.name = form.addUsername.data
-            new_user.email = form.addEmail.data
-            new_user.set_password(form.addPassword.data)
+            new_user.name = form.user_name.data
+            new_user.email = form.email.data
+            new_user.set_password(form.password_new.data)
             role = Role.query.filter(
                 Role.name == form.addRole.data).first().id
             new_user.role = role
@@ -2358,15 +2355,15 @@ def user_mod(form):
     try:
         mod_user = User.query.filter(
             User.id == form.user_id.data).first()
-        mod_user.email = form.modEmail.data
+        mod_user.email = form.email.data
         # Only change the password if it's entered in the form
         logout_user = False
-        if form.modPassword.data != '':
-            if not test_password(form.modPassword.data):
+        if form.password_new.data != '':
+            if not test_password(form.password_new.data):
                 error.append(gettext(u"Invalid password"))
-            if form.modPassword.data == form.modPassword_repeat.data:
+            if form.password_new.data == form.password_repeat.data:
                 mod_user.password_hash = bcrypt.hashpw(
-                    form.modPassword.data.encode('utf-8'),
+                    form.password_new.data.encode('utf-8'),
                     bcrypt.gensalt())
                 if flask_login.current_user.id == form.user_id.data:
                     logout_user = True
@@ -2375,9 +2372,9 @@ def user_mod(form):
 
         if not error:
             role = Role.query.filter(
-                Role.name == form.modRole.data).first().id
+                Role.name == form.role.data).first().id
             mod_user.role = role
-            mod_user.theme = form.modTheme.data
+            mod_user.theme = form.theme.data
             db.session.commit()
             if logout_user:
                 return 'logout'
@@ -2430,15 +2427,15 @@ def settings_general_mod(form):
                 mod_misc = Misc.query.first()
                 force_https = mod_misc.force_https
                 mod_misc.language = form.language.data
-                mod_misc.force_https = form.forceHTTPS.data
-                mod_misc.hide_alert_success = form.hideAlertSuccess.data
-                mod_misc.hide_alert_info = form.hideAlertInfo.data
-                mod_misc.hide_alert_warning = form.hideAlertWarning.data
+                mod_misc.force_https = form.force_https.data
+                mod_misc.hide_alert_success = form.hide_success.data
+                mod_misc.hide_alert_info = form.hide_info.data
+                mod_misc.hide_alert_warning = form.hide_warning.data
                 mod_misc.hide_tooltips = form.hide_tooltips.data
-                mod_misc.relay_usage_volts = form.relayStatsVolts.data
-                mod_misc.relay_usage_cost = form.relayStatsCost.data
-                mod_misc.relay_usage_currency = form.relayStatsCurrency.data
-                mod_misc.relay_usage_dayofmonth = form.relayStatsDayOfMonth.data
+                mod_misc.relay_usage_volts = form.relay_stats_volts.data
+                mod_misc.relay_usage_cost = form.relay_stats_cost.data
+                mod_misc.relay_usage_currency = form.relay_stats_currency.data
+                mod_misc.relay_usage_dayofmonth = form.relay_stats_day_month.data
                 mod_misc.relay_usage_report_gen = form.relay_usage_report_gen.data
                 mod_misc.relay_usage_report_span = form.relay_usage_report_span.data
                 mod_misc.relay_usage_report_day = form.relay_usage_report_day.data
@@ -2448,7 +2445,7 @@ def settings_general_mod(form):
                 control = DaemonControl()
                 control.refresh_daemon_misc_settings()
 
-                if force_https != form.forceHTTPS.data:
+                if force_https != form.force_https.data:
                     # Force HTTPS option changed.
                     # Reload web server with new settings.
                     wsgi_file = INSTALL_DIRECTORY + '/mycodo_flask.wsgi'
@@ -2473,26 +2470,26 @@ def settings_alert_mod(form_mod_alert):
     try:
         if form_mod_alert.validate():
             mod_smtp = SMTP.query.one()
-            if form_mod_alert.sendTestEmail.data:
+            if form_mod_alert.send_test.data:
                 send_email(
                     mod_smtp.host, mod_smtp.ssl, mod_smtp.port,
                     mod_smtp.user, mod_smtp.passw, mod_smtp.email_from,
-                    form_mod_alert.testEmailTo.data,
+                    form_mod_alert.send_test_to_email.data,
                     u"This is a test email from Mycodo")
                 flash(gettext(u"Test email sent to %(recip)s. Check your "
                               u"inbox to see if it was successful.",
-                              recip=form_mod_alert.testEmailTo.data),
+                              recip=form_mod_alert.send_test_to_email.data),
                       "success")
                 return redirect(url_for('settings_routes.settings_alerts'))
             else:
-                mod_smtp.host = form_mod_alert.smtpHost.data
-                mod_smtp.port = form_mod_alert.smtpPort.data
-                mod_smtp.ssl = form_mod_alert.sslEnable.data
-                mod_smtp.user = form_mod_alert.smtpUser.data
-                if form_mod_alert.smtpPassword.data:
-                    mod_smtp.passw = form_mod_alert.smtpPassword.data
-                mod_smtp.email_from = form_mod_alert.smtpFromEmail.data
-                mod_smtp.hourly_max = form_mod_alert.smtpMaxPerHour.data
+                mod_smtp.host = form_mod_alert.smtp_host.data
+                mod_smtp.port = form_mod_alert.smtp_port.data
+                mod_smtp.ssl = form_mod_alert.smtp_ssl.data
+                mod_smtp.user = form_mod_alert.smtp_user.data
+                if form_mod_alert.smtp_password.data:
+                    mod_smtp.passw = form_mod_alert.smtp_password.data
+                mod_smtp.email_from = form_mod_alert.smtp_from_email.data
+                mod_smtp.hourly_max = form_mod_alert.smtp_hourly_max.data
                 db.session.commit()
         else:
             flash_form_errors(form_mod_alert)

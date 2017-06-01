@@ -29,12 +29,9 @@ import threading
 import time
 import timeit
 
-# Classes
+from mycodo_client import DaemonControl
 from databases.models import Relay
 from databases.models import Timer
-from mycodo_client import DaemonControl
-
-# Functions
 from utils.database import db_retrieve_table_daemon
 from utils.system_pi import time_between_range
 

@@ -34,3 +34,13 @@
     {{form_mod_relay.off_command(class_='form-control', value=each_relay.off_command, **{'title':_('Wireless 433MHz Off command')})}}
    </div>
 </div>
+<div class="col-xs-6 col-sm-4 col-md-2">
+  {{form_mod_relay.on_at_start.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="on_at_start" name="on_at_start" data-placement="top" title="{{_('When Mycodo starts, turn the relay On or Off?')}}">
+      <option value="-1"{% if each_relay.on_at_start == none %} selected{% endif %}>{{_('Neither')}}</option>
+      <option value="1"{% if each_relay.on_at_start == 1 %} selected{% endif %}>{{_('On')}}</option>
+      <option value="0"{% if each_relay.on_at_start == 0 %} selected{% endif %}>{{_('Off')}}</option>
+    </select>
+  </div>
+</div>

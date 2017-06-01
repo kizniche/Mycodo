@@ -126,8 +126,8 @@
           {{form_mod_sensor.csrf_token}}
           {{form_mod_sensor.modSensor_id(value=each_sensor.id)}}
           {% if each_sensor.device in ['RPiCPULoad', 'RPiFreeSpace'] -%}
-            <input id="modPreRelayID" name="modPreRelayID" type="hidden" value="0">
-            <input id="modPreRelayDuration" name="modPreRelayDuration" type="hidden" value="0">
+            <input id="pre_relay_id" name="pre_relay_id" type="hidden" value="0">
+            <input id="pre_relay_duration" name="pre_relay_duration" type="hidden" value="0">
           {% endif -%}
 
           <div style="padding: 0.5em;" class="row small-gutters">
@@ -146,9 +146,9 @@
 
             {% if each_sensor.device not in ['EDGE', 'RPi', 'RPiCPULoad', 'RPiFreeSpace', 'MYCODO_RAM'] -%}
               <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-                {{form_mod_sensor.modPreRelayID.label(class_='control-label')}}
+                {{form_mod_sensor.pre_relay_id.label(class_='control-label')}}
                 <div>
-                  <select class="form-control form-tooltip form-dropdown" data-placement="top" id="modPreRelayID" name="modPreRelayID" title="{{_('Turn the selected relay on before taking every measurement')}}.">
+                  <select class="form-control form-tooltip form-dropdown" data-placement="top" id="pre_relay_id" name="pre_relay_id" title="{{_('Turn the selected relay on before taking every measurement')}}.">
                     <option value="">Disabled</option>
                     {% for rel in relay -%}
                       <option value="{{rel.id}}"{% if each_sensor.pre_relay_id == rel.id %} selected{% endif %}>{{rel.id}} ({{rel.name}})</option>
@@ -157,9 +157,9 @@
                 </div>
               </div>
               <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-                {{form_mod_sensor.modPreRelayDuration.label(class_='control-label')}}
+                {{form_mod_sensor.pre_relay_duration.label(class_='control-label')}}
                 <div>
-                  {{form_mod_sensor.modPreRelayDuration(class_='form-control', value=each_sensor.pre_relay_duration, **{'title':_('If a Pre Relay is selected, set the duration (seconds) to turn the Pre Relay on for before every measurement is acquired.')})}}
+                  {{form_mod_sensor.pre_relay_duration(class_='form-control', value=each_sensor.pre_relay_duration, **{'title':_('If a Pre Relay is selected, set the duration (seconds) to turn the Pre Relay on for before every measurement is acquired.')})}}
                 </div>
               </div>
             {% endif -%}
@@ -177,9 +177,9 @@
                 </div>
               </div>
               <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-                {{form_mod_sensor.modMultiplexBus.label(class_='control-label')}}
+                {{form_mod_sensor.multiplexer_bus.label(class_='control-label')}}
                 <div>
-                  {{form_mod_sensor.modMultiplexBus(class_='form-control', value=each_sensor.multiplexer_bus, **{'title':_('Which I2C bus is this multiplexer connected?')})}}
+                  {{form_mod_sensor.multiplexer_bus(class_='form-control', value=each_sensor.multiplexer_bus, **{'title':_('Which I2C bus is this multiplexer connected?')})}}
                 </div>
               </div>
               <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">

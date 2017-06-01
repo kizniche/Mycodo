@@ -34,12 +34,10 @@ import sqlalchemy
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import User
 from mycodo.databases.utils import session_scope
-from mycodo.utils.utils import (
-    test_username,
-    test_password,
-    is_email,
-    query_yes_no
-)
+from mycodo.utils.utils import test_username
+from mycodo.utils.utils import test_password
+from mycodo.utils.utils import is_email
+from mycodo.utils.utils import query_yes_no
 
 if sys.version[0] == "3":
     raw_input = input  # Make sure this works in PY3

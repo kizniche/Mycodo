@@ -15,19 +15,19 @@
 <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   <label class="control-label">Measurement</label>
   <div>
-    {{form_mod_sensor.modADCMeasure(class_='form-control', value=each_sensor.adc_measure, **{'title':'The condition being measured'})}}
+    {{form_mod_sensor.adc_measurement(class_='form-control', value=each_sensor.adc_measure, **{'title':'The condition being measured'})}}
   </div>
 </div>
 <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   <label class="control-label">Units</label>
   <div>
-    {{form_mod_sensor.modADCMeasureUnits(class_='form-control', value=each_sensor.adc_measure_units, **{'title':'The units of the condition being measured'})}}
+    {{form_mod_sensor.adc_measurement_units(class_='form-control', value=each_sensor.adc_measure_units, **{'title':'The units of the condition being measured'})}}
   </div>
 </div>
 <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   <label class="control-label">Channel</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="modADCChannel" name="modADCChannel" title="{{_('The channel of the analog to digital converter')}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_channel" name="adc_channel" title="{{_('The channel of the analog to digital converter')}}">
       <option value=""></option>
       <option value="0"{% if each_sensor.adc_channel == 0 %} selected{% endif %}>Channel 1</option>
       <option value="1"{% if each_sensor.adc_channel == 1 %} selected{% endif %}>Channel 2</option>
@@ -39,7 +39,7 @@
 <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   <label class="control-label">Gain</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="modADCGain" name="modADCGain" title="{{_('ADC Gain (see ADC documentation)')}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_gain" name="adc_gain" title="{{_('ADC Gain (see ADC documentation)')}}">
       <option value=""></option>
       <option value="1"{% if each_sensor.adc_gain == 1 %} selected{% endif %}>1</option>
       <option value="2"{% if each_sensor.adc_gain == 2 %} selected{% endif %}>2</option>
@@ -51,7 +51,7 @@
 <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   <label class="control-label">Resolution</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="modADCResolution" name="modADCResolution" title="{{_('ADC Resolution (see ADC documentation)')}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_resolution" name="adc_resolution" title="{{_('ADC Resolution (see ADC documentation)')}}">
       <option value=""></option>
       <option value="12"{% if each_sensor.adc_resolution == 12 %} selected{% endif %}>12-bit</option>
       <option value="14"{% if each_sensor.adc_resolution == 14 %} selected{% endif %}>14-bit</option>
@@ -63,24 +63,24 @@
 <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   <label class="control-label">Volts Min</label>
   <div>
-    {{form_mod_sensor.modADCVoltsMin(class_='form-control', value=each_sensor.adc_volts_min, **{'title':_('Minimum ADC input voltage')})}}
+    {{form_mod_sensor.adc_volts_min(class_='form-control', value=each_sensor.adc_volts_min, **{'title':_('Minimum ADC input voltage')})}}
   </div>
 </div>
 <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   <label class="control-label">Volts Max</label>
   <div>
-    {{form_mod_sensor.modADCVoltsMax(class_='form-control', value=each_sensor.adc_volts_max, **{'title':_('Maximum ADC input voltage')})}}
+    {{form_mod_sensor.adc_volts_max(class_='form-control', value=each_sensor.adc_volts_max, **{'title':_('Maximum ADC input voltage')})}}
   </div>
 </div>
 <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   <label class="control-label">Units Min</label>
   <div>
-    {{form_mod_sensor.modADCUnitsMin(class_='form-control', value=each_sensor.adc_units_min, **{'title':_('Minimum output unit (for scaling voltage to unit scale)')})}}
+    {{form_mod_sensor.adc_units_min(class_='form-control', value=each_sensor.adc_units_min, **{'title':_('Minimum output unit (for scaling voltage to unit scale)')})}}
   </div>
 </div>
 <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   <label class="control-label">Units Max</label>
   <div>
-    {{form_mod_sensor.modADCUnitsMax(class_='form-control', value=each_sensor.adc_units_max, **{'title':_('Maximum output unit (for scaling voltage to unit scale)')})}}
+    {{form_mod_sensor.adc_units_max(class_='form-control', value=each_sensor.adc_units_max, **{'title':_('Maximum output unit (for scaling voltage to unit scale)')})}}
   </div>
 </div>

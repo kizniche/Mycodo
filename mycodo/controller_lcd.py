@@ -57,24 +57,16 @@ import timeit
 import RPi.GPIO as GPIO
 import datetime
 
-# Classes
-from databases.models import (
-    LCD,
-    PID,
-    Relay,
-    Sensor,
-)
+from databases.models import LCD
+from databases.models import PID
+from databases.models import Relay
+from databases.models import Sensor
 from devices.tca9548a import TCA9548A
-
-# Functions
 from utils.database import db_retrieve_table_daemon
 from utils.influx import read_last_influxdb
 
-# Config
-from config import (
-    MEASUREMENT_UNITS,
-    MYCODO_VERSION
-)
+from config import MEASUREMENT_UNITS
+from config import MYCODO_VERSION
 
 
 class LCDController(threading.Thread):

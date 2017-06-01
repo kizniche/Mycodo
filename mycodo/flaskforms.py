@@ -172,12 +172,12 @@ class DaemonControl(FlaskForm):
 #
 
 class EmailAlert(FlaskForm):
-    smtpHost = StringField(
+    smtp_host = StringField(
         lazy_gettext(u'SMTP Host'),
         render_kw={"placeholder": lazy_gettext(u'SMTP Host')},
         validators=[DataRequired()]
     )
-    smtpPort = IntegerField(
+    smtp_port = IntegerField(
         lazy_gettext(u'SMTP Port'),
         render_kw={"placeholder": lazy_gettext(u'SMTP Port')},
         validators=[validators.NumberRange(
@@ -186,17 +186,17 @@ class EmailAlert(FlaskForm):
             message=lazy_gettext(u'Port should be between 1 and 65535')
         )]
     )
-    sslEnable = BooleanField('Enable SSL')
-    smtpUser = StringField(
+    smtp_ssl = BooleanField('Enable SSL')
+    smtp_user = StringField(
         lazy_gettext(u'SMTP User'),
         render_kw={"placeholder": lazy_gettext(u'SMTP User')},
         validators=[DataRequired()]
     )
-    smtpPassword = PasswordField(
+    smtp_password = PasswordField(
         lazy_gettext(u'SMTP Password'),
         render_kw={"placeholder": lazy_gettext(u'Password')}
     )
-    smtpFromEmail = EmailField(
+    smtp_from_email = EmailField(
         lazy_gettext(u'From Email'),
         render_kw={"placeholder": lazy_gettext(u'Email')},
         validators=[
@@ -204,7 +204,7 @@ class EmailAlert(FlaskForm):
             validators.Email()
         ]
     )
-    smtpMaxPerHour = IntegerField(
+    smtp_hourly_max = IntegerField(
         lazy_gettext(u'Max emails (per hour)'),
         render_kw={"placeholder": lazy_gettext(u'Max emails (per hour)')},
         validators=[validators.NumberRange(
@@ -213,8 +213,8 @@ class EmailAlert(FlaskForm):
                                  u'sent per hour.')
         )]
     )
-    sendTestEmail = SubmitField(lazy_gettext(u'Send Test Email'))
-    testEmailTo = EmailField(
+    send_test = SubmitField(lazy_gettext(u'Send Test Email'))
+    send_test_to_email = EmailField(
         lazy_gettext(u'Test Email To'),
         render_kw={"placeholder": lazy_gettext(u'To Email Address')},
         validators=[
@@ -222,7 +222,7 @@ class EmailAlert(FlaskForm):
             validators.Optional()
         ]
     )
-    smtpSubmit = SubmitField('Save')
+    save = SubmitField('Save')
 
 
 #
@@ -245,9 +245,9 @@ class GraphAdd(FlaskForm):
         render_kw={"placeholder": lazy_gettext(u"Graph Name")},
         validators=[DataRequired()]
     )
-    pidIDs = SelectMultipleField(lazy_gettext(u'PID IDs (Setpoint)'))
-    relayIDs = SelectMultipleField(lazy_gettext(u'Relay IDs'))
-    sensorIDs = SelectMultipleField(lazy_gettext(u'Sensor IDs'))
+    pid_ids = SelectMultipleField(lazy_gettext(u'PID IDs (Setpoint)'))
+    relay_ids = SelectMultipleField(lazy_gettext(u'Relay IDs'))
+    sensor_ids = SelectMultipleField(lazy_gettext(u'Sensor IDs'))
     width = IntegerField(
         lazy_gettext(u'Width'),
         validators=[validators.NumberRange(
@@ -263,7 +263,7 @@ class GraphAdd(FlaskForm):
             max=10000
         )]
     )
-    xAxisDuration = IntegerField(
+    xaxis_duration = IntegerField(
         lazy_gettext(u'x-Axis (minutes)'),
         render_kw={"placeholder": lazy_gettext(u"X-Axis Duration")},
         validators=[validators.NumberRange(
@@ -272,7 +272,7 @@ class GraphAdd(FlaskForm):
                                  u"measurements.")
         )]
     )
-    refreshDuration = IntegerField(
+    refresh_duration = IntegerField(
         lazy_gettext(u'Refresh (seconds)'),
         render_kw={"placeholder": lazy_gettext(u"Refresh duration")},
         validators=[validators.NumberRange(
@@ -281,9 +281,9 @@ class GraphAdd(FlaskForm):
                                  u" any new measurements.")
         )]
     )
-    enableNavbar = BooleanField(lazy_gettext(u'Enable Navbar'))
-    enableExport = BooleanField(lazy_gettext(u'Enable Export'))
-    enableRangeSelect = BooleanField(lazy_gettext(u'Enable Range Selector'))
+    enable_navbar = BooleanField(lazy_gettext(u'Enable Navbar'))
+    enable_export = BooleanField(lazy_gettext(u'Enable Export'))
+    enable_range = BooleanField(lazy_gettext(u'Enable Range Selector'))
     Submit = SubmitField(lazy_gettext(u'Create Graph'))
 
 
@@ -294,9 +294,9 @@ class GraphMod(FlaskForm):
         render_kw={"placeholder": lazy_gettext(u"Graph Name")},
         validators=[DataRequired()]
     )
-    pidIDs = SelectMultipleField(lazy_gettext(u'PID IDs (Setpoint)'))
-    relayIDs = SelectMultipleField(lazy_gettext(u'Relay IDs'))
-    sensorIDs = SelectMultipleField(lazy_gettext(u'Sensor IDs'))
+    pid_ids = SelectMultipleField(lazy_gettext(u'PID IDs (Setpoint)'))
+    relay_ids = SelectMultipleField(lazy_gettext(u'Relay IDs'))
+    sensor_ids = SelectMultipleField(lazy_gettext(u'Sensor IDs'))
     width = IntegerField(
         lazy_gettext(u'Width'),
         validators=[validators.NumberRange(
@@ -312,7 +312,7 @@ class GraphMod(FlaskForm):
             max=10000
         )]
     )
-    xAxisDuration = IntegerField(
+    xaxis_duration = IntegerField(
         lazy_gettext(u'x-Axis (minutes)'),
         render_kw={"placeholder": lazy_gettext(u"X-Axis Duration")},
         validators=[validators.NumberRange(
@@ -321,7 +321,7 @@ class GraphMod(FlaskForm):
                                  u"measurements.")
         )]
     )
-    refreshDuration = IntegerField(
+    refresh_duration = IntegerField(
         lazy_gettext(u'Refresh (seconds)'),
         render_kw={"placeholder": lazy_gettext(u"Refresh duration")},
         validators=[validators.NumberRange(
@@ -330,9 +330,9 @@ class GraphMod(FlaskForm):
                                  u" any new measurements.")
         )]
     )
-    enableNavbar = BooleanField(lazy_gettext(u'Enable Navbar'))
-    enableExport = BooleanField(lazy_gettext(u'Enable Export'))
-    enableRangeSelect = BooleanField(lazy_gettext(u'Enable Range Selector'))
+    enable_navbar = BooleanField(lazy_gettext(u'Enable Navbar'))
+    enable_export = BooleanField(lazy_gettext(u'Enable Export'))
+    enable_range = BooleanField(lazy_gettext(u'Enable Range Selector'))
     use_custom_colors = BooleanField(lazy_gettext(u'Enable Custom Colors'))
     Submit = SubmitField(lazy_gettext(u'Save Graph'))
 
@@ -482,28 +482,28 @@ class MethodAdd(FlaskForm):
     method_id = IntegerField('Method ID', widget=widgets.HiddenInput())
     method_type = HiddenField('Method Type')
     method_select = HiddenField('Method Select')
-    startDailyTime = StringField(
+    daily_time_start = StringField(
         lazy_gettext(u'Start HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
     )
-    endDailyTime = StringField(
+    daily_time_end = StringField(
         lazy_gettext(u'End HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
     )
-    startTime = StringField(
+    time_start = StringField(
         lazy_gettext(u'Start YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    endTime = StringField(
+    time_end = StringField(
         lazy_gettext(u'End YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    startSetpoint = DecimalField(lazy_gettext(u'Start Setpoint'))
-    endSetpoint = DecimalField(lazy_gettext(u'End Setpoint (optional)'))
-    DurationSec = IntegerField(lazy_gettext(u'Duration (seconds)'))
+    setpoint_start = DecimalField(lazy_gettext(u'Start Setpoint'))
+    setpoint_end = DecimalField(lazy_gettext(u'End Setpoint (optional)'))
+    duration = IntegerField(lazy_gettext(u'Duration (seconds)'))
     amplitude = DecimalField(lazy_gettext(u'Amplitude'))
     frequency = DecimalField(lazy_gettext(u'Frequency'))
-    shiftAngle = DecimalField(lazy_gettext(u'Angle Shift (0 to 360)'))
+    shift_angle = DecimalField(lazy_gettext(u'Angle Shift (0 to 360)'))
     shiftY = DecimalField(lazy_gettext(u'Y-Axis Shift'))
     x0 = DecimalField('X0')
     y0 = DecimalField('Y0')
@@ -513,17 +513,17 @@ class MethodAdd(FlaskForm):
     y2 = DecimalField('Y2')
     x3 = DecimalField('X3')
     y3 = DecimalField('Y3')
-    relayDailyTime = StringField(
+    relay_daily_time = StringField(
         lazy_gettext(u'Time HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
     )
-    relayTime = StringField(
+    relay_time = StringField(
         lazy_gettext(u'Time YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    relayDurationSec = IntegerField(lazy_gettext(u'Duration On (sec)'))
-    relayID = StringField(lazy_gettext(u'Relay ID'),)
-    relayState = SelectField(
+    relay_duration = IntegerField(lazy_gettext(u'Duration On (sec)'))
+    relay_id = StringField(lazy_gettext(u'Relay ID'),)
+    relay_state = SelectField(
         lazy_gettext(u'Relay State'),
         choices=[
             ('', ''),
@@ -540,36 +540,36 @@ class MethodMod(FlaskForm):
     method_type = HiddenField('Method Type')
     method_select = HiddenField('Method Select')
     name = StringField(lazy_gettext(u'Name'))
-    startDailyTime = StringField(
+    daily_time_start = StringField(
         lazy_gettext(u'Start HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
     )
-    endDailyTime = StringField(
+    daily_time_end = StringField(
         lazy_gettext(u'End HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
     )
-    startTime = StringField(
+    time_start = StringField(
         lazy_gettext(u'Start YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    endTime = StringField(
+    time_end = StringField(
         lazy_gettext(u'End YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    relayDailyTime = StringField(
+    relay_daily_time = StringField(
         lazy_gettext(u'Time HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
     )
-    relayTime = StringField(
+    relay_time = StringField(
         lazy_gettext(u'Time YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    DurationSec = IntegerField(lazy_gettext(u'Duration'))
-    startSetpoint = DecimalField(lazy_gettext(u'Start Setpoint'))
-    endSetpoint = DecimalField(lazy_gettext(u'End Setpoint'))
-    relayID = StringField(lazy_gettext(u'Relay'))
-    relayState = StringField(lazy_gettext(u'Relay State'))
-    relayDurationSec = IntegerField(lazy_gettext(u'Relay Duration'))
+    duration = IntegerField(lazy_gettext(u'Duration (seconds)'))
+    setpoint_start = DecimalField(lazy_gettext(u'Start Setpoint'))
+    setpoint_end = DecimalField(lazy_gettext(u'End Setpoint'))
+    relay_id = StringField(lazy_gettext(u'Relay'))
+    relay_state = StringField(lazy_gettext(u'Relay State'))
+    relay_duration = IntegerField(lazy_gettext(u'Relay Duration'))
     rename = SubmitField(lazy_gettext(u'Rename'))
     save = SubmitField(lazy_gettext(u'Save'))
     Delete = SubmitField(lazy_gettext(u'Delete'))
@@ -758,6 +758,7 @@ class RelayMod(FlaskForm):
     on_at_start = SelectField(
         lazy_gettext(u'Start State'),
         choices=[
+            ("-1", lazy_gettext(u'Neither')),
             ("1", lazy_gettext(u'On')),
             ("0", lazy_gettext(u'Off'))
         ],
@@ -826,31 +827,31 @@ class SensorMod(FlaskForm):
         lazy_gettext(u'Name'),
         validators=[DataRequired()]
     )
-    modBus = IntegerField(lazy_gettext(u'I<sup>2</sup>C Bus'))
+    i2c_bus = IntegerField(lazy_gettext(u'I<sup>2</sup>C Bus'))
     location = StringField(lazy_gettext(u'Location'))
     baud_rate = IntegerField(lazy_gettext(u'Baud Rate'))
     device_loc = StringField(lazy_gettext(u'Device'))
     calibrate_sensor_measure = StringField(lazy_gettext(u'Calibration Measurement'))
-    modResolution = IntegerField(lazy_gettext(u'Resolution'))
-    modSensitivity = IntegerField(lazy_gettext(u'Sensitivity'))
-    modPowerRelayID = IntegerField(lazy_gettext(u'Power Relay'))
+    resolution = IntegerField(lazy_gettext(u'Resolution'))
+    sensitivity = IntegerField(lazy_gettext(u'Sensitivity'))
+    power_relay_id = IntegerField(lazy_gettext(u'Power Relay'))
     multiplexer_address = StringField(lazy_gettext(u'Multiplexer (MX)'))
-    modMultiplexBus = StringField(lazy_gettext(u'Mx I<sup>2</sup>C Bus'))
+    multiplexer_bus = StringField(lazy_gettext(u'Mx I<sup>2</sup>C Bus'))
     multiplexer_channel = IntegerField(lazy_gettext(u'Mx Channel'))
-    modADCChannel = IntegerField(lazy_gettext(u'ADC Channel'))
-    modADCGain = IntegerField(lazy_gettext(u'ADC Gain'))
-    modADCResolution = IntegerField(lazy_gettext(u'ADC Resolution'))
-    modADCMeasure = StringField(lazy_gettext(u'ADC Measurement Type'))
-    modADCMeasureUnits = StringField(lazy_gettext(u'ADC Measurement Units'))
-    modADCVoltsMin = DecimalField(lazy_gettext(u'Volts Min'))
-    modADCVoltsMax = DecimalField(lazy_gettext(u'Volts Max'))
-    modADCUnitsMin = DecimalField(lazy_gettext(u'Units Min'))
-    modADCUnitsMax = DecimalField(lazy_gettext(u'Units Max'))
-    modSwitchEdge = StringField(lazy_gettext(u'Edge'))
-    modSwitchBounceTime = IntegerField(lazy_gettext(u'Bounce Time (ms)'))
-    modSwitchResetPeriod = IntegerField(lazy_gettext(u'Reset Period'))
-    modPreRelayID = StringField(lazy_gettext(u'Pre Relay'))
-    modPreRelayDuration = DecimalField(
+    adc_channel = IntegerField(lazy_gettext(u'ADC Channel'))
+    adc_gain = IntegerField(lazy_gettext(u'ADC Gain'))
+    adc_resolution = IntegerField(lazy_gettext(u'ADC Resolution'))
+    adc_measurement = StringField(lazy_gettext(u'ADC Measurement Type'))
+    adc_measurement_units = StringField(lazy_gettext(u'ADC Measurement Units'))
+    adc_volts_min = DecimalField(lazy_gettext(u'Volts Min'))
+    adc_volts_max = DecimalField(lazy_gettext(u'Volts Max'))
+    adc_units_min = DecimalField(lazy_gettext(u'Units Min'))
+    adc_units_max = DecimalField(lazy_gettext(u'Units Max'))
+    switch_edge = StringField(lazy_gettext(u'Edge'))
+    switch_bounce_time = IntegerField(lazy_gettext(u'Bounce Time (ms)'))
+    switch_reset_period = IntegerField(lazy_gettext(u'Reset Period'))
+    pre_relay_id = StringField(lazy_gettext(u'Pre Relay'))
+    pre_relay_duration = DecimalField(
         lazy_gettext(u'Pre Relay Duration'),
         validators=[validators.NumberRange(
             min=0,
@@ -865,7 +866,7 @@ class SensorMod(FlaskForm):
             max=86400.0
         )]
     )
-    modSHTClockPin = IntegerField(
+    sht_clock_pin = IntegerField(
         lazy_gettext(u'Clock Pin'),
         validators=[validators.NumberRange(
             min=0,
@@ -875,7 +876,7 @@ class SensorMod(FlaskForm):
                                  u"numbering).")
         )]
     )
-    modSHTVoltage = StringField(lazy_gettext(u'Voltage'))
+    sht_voltage = StringField(lazy_gettext(u'Voltage'))
     modSensorSubmit = SubmitField(lazy_gettext(u'Save'))
     delSensorSubmit = SubmitField(lazy_gettext(u'Delete'))
     activateSensorSubmit = SubmitField(lazy_gettext(u'Activate'))
@@ -923,15 +924,15 @@ class SettingsCamera(FlaskForm):
 
 class SettingsGeneral(FlaskForm):
     language = StringField(lazy_gettext(u'Language'))
-    forceHTTPS = BooleanField(lazy_gettext(u'Force HTTPS'))
-    hideAlertSuccess = BooleanField(lazy_gettext(u'Hide success messages'))
-    hideAlertInfo = BooleanField(lazy_gettext(u'Hide info messages'))
-    hideAlertWarning = BooleanField(lazy_gettext(u'Hide warning messages'))
+    force_https = BooleanField(lazy_gettext(u'Force HTTPS'))
+    hide_success = BooleanField(lazy_gettext(u'Hide success messages'))
+    hide_info = BooleanField(lazy_gettext(u'Hide info messages'))
+    hide_warning = BooleanField(lazy_gettext(u'Hide warning messages'))
     hide_tooltips = BooleanField(lazy_gettext(u'Hide Form Tooltips'))
-    relayStatsVolts = IntegerField(lazy_gettext(u'Voltage'))
-    relayStatsCost = DecimalField(lazy_gettext(u'Cost per kWh'))
-    relayStatsCurrency = StringField(lazy_gettext(u'Currency Unit'))
-    relayStatsDayOfMonth = StringField(lazy_gettext(u'Day of Month'))
+    relay_stats_volts = IntegerField(lazy_gettext(u'Voltage'))
+    relay_stats_cost = DecimalField(lazy_gettext(u'Cost per kWh'))
+    relay_stats_currency = StringField(lazy_gettext(u'Currency Unit'))
+    relay_stats_day_month = StringField(lazy_gettext(u'Day of Month'))
     relay_usage_report_gen = BooleanField(lazy_gettext(u'Generate Usage/Cost Report'))
     relay_usage_report_span = StringField(lazy_gettext(u'Time Span to Generate'))
     relay_usage_report_day = IntegerField(lazy_gettext(u'Day of Week/Month to Generate'))
@@ -956,7 +957,7 @@ class Timer(FlaskForm):
         lazy_gettext(u'Name'),
         validators=[DataRequired()]
     )
-    relayID = StringField(lazy_gettext(u'Relay ID'))
+    relay_id = StringField(lazy_gettext(u'Relay ID'))
     state = SelectField(
         lazy_gettext(u'State'),
         choices=[
@@ -965,35 +966,25 @@ class Timer(FlaskForm):
         ],
         validators=[DataRequired()]
     )
-    timeStart = StringField(lazy_gettext(u'Start Time'))
-    timeStartDur = StringField(lazy_gettext(u'Start Time'))
-    timeEndDur = StringField(lazy_gettext(u'End Time'))
-    timeOnDurationOn = DecimalField(
+    time_start = StringField(lazy_gettext(u'Start Time'))
+    time_start_duration = StringField(lazy_gettext(u'Start Time'))
+    time_end_duration = StringField(lazy_gettext(u'End Time'))
+    time_on_duration = DecimalField(
         lazy_gettext(u'On (sec)'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
         )]
     )
-    durationOn = DecimalField(lazy_gettext(u'On (sec)'))
-    durationOff = DecimalField(lazy_gettext(u'Off (sec)'))
-    timerCreate = SubmitField(lazy_gettext(u'Save'))
-    timerMod = SubmitField(lazy_gettext(u'Save'))
-    timerDel = SubmitField(lazy_gettext(u'Delete'))
+    duration_on = DecimalField(lazy_gettext(u'On (sec)'))
+    duration_off = DecimalField(lazy_gettext(u'Off (sec)'))
+    create = SubmitField(lazy_gettext(u'Save'))
+    modify = SubmitField(lazy_gettext(u'Save'))
+    delete = SubmitField(lazy_gettext(u'Delete'))
     activate = SubmitField(lazy_gettext(u'Activate'))
     deactivate = SubmitField(lazy_gettext(u'Deactivate'))
-    orderTimerUp = SubmitField(lazy_gettext(u'Up'))
-    orderTimerDown = SubmitField(lazy_gettext(u'Down'))
-
-
-class ActivateTimer(FlaskForm):
-    activateTimer_id = IntegerField('Timer ID', widget=widgets.HiddenInput())
-    activateTimerSubmit = SubmitField(lazy_gettext(u'Activate'))
-
-
-class DeactivateTimer(FlaskForm):
-    deactivateTimer_id = IntegerField('Timer ID', widget=widgets.HiddenInput())
-    deactivateTimerSubmit = SubmitField(lazy_gettext(u'Deactivate'))
+    order_up = SubmitField(lazy_gettext(u'Up'))
+    order_down = SubmitField(lazy_gettext(u'Down'))
 
 
 #
@@ -1019,22 +1010,22 @@ class UserRoles(FlaskForm):
 
 
 class UserAdd(FlaskForm):
-    addUsername = StringField(
+    user_name = StringField(
         lazy_gettext(u'Username'),
         validators=[DataRequired()]
     )
-    addEmail = EmailField(
+    email = EmailField(
         lazy_gettext(u'Email'),
         validators=[
             DataRequired(),
             validators.Email()
         ]
     )
-    addPassword = PasswordField(
+    password_new = PasswordField(
         lazy_gettext(u'Password'),
         validators=[
             DataRequired(),
-            validators.EqualTo('addPassword_repeat',
+            validators.EqualTo('password_repeat',
                                message=lazy_gettext(u'Passwords must match')),
             validators.Length(
                 min=6,
@@ -1042,7 +1033,7 @@ class UserAdd(FlaskForm):
             )
         ]
     )
-    addPassword_repeat = PasswordField(
+    password_repeat = PasswordField(
         lazy_gettext(u'Repeat Password'),
         validators=[DataRequired()]
     )
@@ -1050,7 +1041,7 @@ class UserAdd(FlaskForm):
         lazy_gettext(u'Role'),
         validators=[DataRequired()]
     )
-    addTheme = StringField(
+    theme = StringField(
         lazy_gettext(u'Theme'),
         validators=[DataRequired()]
     )
@@ -1059,19 +1050,19 @@ class UserAdd(FlaskForm):
 
 class UserMod(FlaskForm):
     user_id = IntegerField('User ID', widget=widgets.HiddenInput())
-    modEmail = EmailField(
+    email = EmailField(
         lazy_gettext(u'Email'),
         render_kw={"placeholder": lazy_gettext(u"Email")},
         validators=[
             DataRequired(),
             validators.Email()])
-    modPassword = PasswordField(
+    password_new = PasswordField(
         lazy_gettext(u'Password'),
         render_kw={"placeholder": lazy_gettext(u"New Password")},
         validators=[
             validators.Optional(),
             validators.EqualTo(
-                'modPassword_repeat',
+                'password_repeat',
                 message=lazy_gettext(u'Passwords must match')
             ),
             validators.Length(
@@ -1080,17 +1071,17 @@ class UserMod(FlaskForm):
             )
         ]
     )
-    modPassword_repeat = PasswordField(
+    password_repeat = PasswordField(
         lazy_gettext(u'Repeat Password'),
         render_kw={"placeholder": lazy_gettext(u"Repeat Password")}
     )
-    modRole = StringField(
+    role = StringField(
         lazy_gettext(u'Role'),
         validators=[DataRequired()]
     )
-    modTheme = StringField(lazy_gettext(u'Theme'))
-    save_user = SubmitField(lazy_gettext(u'Save'))
-    delete_user = SubmitField(lazy_gettext(u'Delete'))
+    theme = StringField(lazy_gettext(u'Theme'))
+    save = SubmitField(lazy_gettext(u'Save'))
+    delete = SubmitField(lazy_gettext(u'Delete'))
 
 
 class InstallNotice(FlaskForm):

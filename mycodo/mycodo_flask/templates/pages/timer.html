@@ -39,9 +39,9 @@
                 </div>
               </div>
               <div class="form-group">
-                {{form_timer.relayID.label(class_='control-label')}}
+                {{form_timer.relay_id.label(class_='control-label')}}
                 <div>
-                  <select class="form-control" id="relayID" name="relayID">
+                  <select class="form-control" id="relay_id" name="relay_id">
                   {% for each_choice, value in relay_choices.iteritems() -%}
                     <option value="{{each_choice}}">{{value}}</option>
                   {% endfor -%}
@@ -63,10 +63,10 @@
                 </div>
               </div>
               <div class="form-group">
-                {{form_timer.timeStart.label(class_='control-label')}}
+                {{form_timer.time_start.label(class_='control-label')}}
                 <div>
                   <div class="input-group clockpicker">
-                    <input type="text" class="form-control" id="timeStart" name="timeStart" size="7" value="09:30">
+                    <input type="text" class="form-control" id="time_start" name="time_start" size="7" value="09:30">
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-time"></span>
                     </span>
@@ -77,7 +77,7 @@
                 <label class='control-label'></label>
                 <div>
                   {% autoescape false %}
-                  ({{_('Optional: If On, for %(sec)s seconds', sec=form_timer.timeOnDurationOn(class_='form-control', value=0.0, **{'size':'6'}))}})
+                  ({{_('Optional: If On, for %(sec)s seconds', sec=form_timer.time_on_duration(class_='form-control', value=0.0, **{'size':'6'}))}})
                   {% endautoescape %}
                 </div>
               </div>
@@ -96,10 +96,10 @@
                 </div>
               </div>
               <div class="form-group">
-                {{form_timer.timeStartDur.label(class_='control-label')}}
+                {{form_timer.time_start_duration.label(class_='control-label')}}
                 <div>
                   <div class="input-group clockpicker">
-                    <input type="text" class="form-control" id="timeStartDur" name="timeStartDur" size="7" value="09:30">
+                    <input type="text" class="form-control" id="time_start_duration" name="time_start_duration" size="7" value="09:30">
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-time"></span>
                     </span>
@@ -113,10 +113,10 @@
                 </div>
               </div>
               <div class="form-group">
-                {{form_timer.timeEndDur.label(class_='control-label')}}
+                {{form_timer.time_end_duration.label(class_='control-label')}}
                 <div>
                   <div class="input-group clockpicker">
-                    <input type="text" class="form-control" id="timeEndDur" name="timeEndDur" size="7" value="18:00">
+                    <input type="text" class="form-control" id="time_end_duration" name="time_end_duration" size="7" value="18:00">
                     <span class="input-group-addon">
                       <span class="glyphicon glyphicon-time"></span>
                     </span>
@@ -129,22 +129,22 @@
                 <input type="radio" name="timer_type" id="inlineRadio2" value="duration">
               </label>
               <div class="form-group">
-                {{form_timer.durationOn.label(class_='control-label')}}
+                {{form_timer.duration_on.label(class_='control-label')}}
                 <div>
-                  {{form_timer.durationOn(class_='form-control', value=0.0, **{'size':'6'})}}
+                  {{form_timer.duration_on(class_='form-control', value=0.0, **{'size':'6'})}}
                 </div>
               </div>
               <div class="form-group">
-                {{form_timer.durationOff.label(class_='control-label')}}
+                {{form_timer.duration_off.label(class_='control-label')}}
                 <div>
-                  {{form_timer.durationOff(class_='form-control', value=0.0, **{'size':'6'})}}
+                  {{form_timer.duration_off(class_='form-control', value=0.0, **{'size':'6'})}}
                 </div>
               </div>
               <br/>
               <div class="form-group">
                 <label class='control-label'></label>
                 <div>
-                  {{form_timer.timerCreate(class_='form-control btn btn-default')}}
+                  {{form_timer.create(class_='form-control btn btn-default')}}
                 </div>
               </div>
             </div>
@@ -190,24 +190,24 @@
           {%- endif -%}
         </div>
         <div class="col-xs-3 col-sm-2">
-          {{form_timer.orderTimerUp(class_='form-control btn btn-default')}}
+          {{form_timer.order_up(class_='form-control btn btn-default')}}
         </div>
         <div class="col-xs-3 col-sm-2">
-          {{form_timer.orderTimerDown(class_='form-control btn btn-default')}}
+          {{form_timer.order_down(class_='form-control btn btn-default')}}
         </div>
       </div>
 
       <div class="row small-gutters collapse" id="collapseContainer{{each_timer.id}}" style="border-bottom: 2px solid #ddd; padding: 0.5em">
         <div class="col-xs-6 col-sm-4 col-sm-offset-4">
-          {{form_timer.timerMod(class_='form-control btn btn-default')}}
+          {{form_timer.modify(class_='form-control btn btn-default')}}
         </div>
         <div class="col-xs-6 col-sm-4">
-          {{form_timer.timerDel(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Timer controller?")'})}}
+          {{form_timer.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Timer controller?")'})}}
         </div>
         <div class="col-xs-6 col-sm-3">
-          {{form_timer.relayID.label(class_='control-label')}}
+          {{form_timer.relay_id.label(class_='control-label')}}
           <div>
-            <select class="form-control" id="relayID" name="relayID">
+            <select class="form-control" id="relay_id" name="relay_id">
               <option value=""></option>
             {% for each_choice, value in relay_choices.iteritems() -%}
               <option value="{{each_choice}}"{% if each_timer.relay_id == each_choice %} selected{% endif %}>{{value}}</option>
@@ -227,10 +227,10 @@
           </div>
         </div>
         <div class="col-xs-6 col-sm-3 col-md-2">
-          {{form_timer.timeStart.label(class_='control-label')}}
+          {{form_timer.time_start.label(class_='control-label')}}
           <div>
             <div class="input-group clockpicker">
-              <input type="text" class="form-control" id="timeOn" name="timeStart" size="4" value="{{each_timer.time_start}}">
+              <input type="text" class="form-control" id="timeOn" name="time_start" size="4" value="{{each_timer.time_start}}">
               <span class="input-group-addon">
                 <span class="glyphicon glyphicon-time"></span>
               </span>
@@ -240,7 +240,7 @@
         <div class="col-xs-6 col-sm-3 col-md-2 col-lg-2">
           <label class='control-label'>On sec. (optional)</label>
           <div>
-            {{form_timer.timeOnDurationOn(class_='form-control', value=each_timer.duration_on, **{'size':'4'})}}
+            {{form_timer.time_on_duration(class_='form-control', value=each_timer.duration_on, **{'size':'4'})}}
           </div>
         </div>
         {% elif each_timer.timer_type == 'timespan' %}
@@ -255,10 +255,10 @@
           </div>
         </div>
         <div class="col-xs-5 col-sm-3 col-md-2">
-          {{form_timer.timeStartDur.label(class_='control-label')}}
+          {{form_timer.time_start_duration.label(class_='control-label')}}
           <div>
             <div class="input-group clockpicker">
-              <input type="text" class="form-control" id="timeOn" name="timeStartDur" size="4" value="{{each_timer.time_start}}">
+              <input type="text" class="form-control" id="timeOn" name="time_start_duration" size="4" value="{{each_timer.time_start}}">
               <span class="input-group-addon">
                 <span class="glyphicon glyphicon-time"></span>
               </span>
@@ -272,10 +272,10 @@
           </div>
         </div>
         <div class="col-xs-5 col-sm-3 col-md-2">
-          {{form_timer.timeEndDur.label(class_='control-label')}}
+          {{form_timer.time_end_duration.label(class_='control-label')}}
           <div>
             <div class="input-group clockpicker">
-              <input type="text" class="form-control" id="timeOn" name="timeEndDur" size="4" value="{{each_timer.time_end}}">
+              <input type="text" class="form-control" id="timeOn" name="time_end_duration" size="4" value="{{each_timer.time_end}}">
               <span class="input-group-addon">
                 <span class="glyphicon glyphicon-time"></span>
               </span>
@@ -285,15 +285,15 @@
         {% elif each_timer.timer_type == 'duration' %}
         <input type="hidden" name="timer_type" value="duration">
         <div class="col-xs-3 col-sm-3 col-md-2 col-lg-1">
-          {{form_timer.durationOn.label(class_='control-label')}}
+          {{form_timer.duration_on.label(class_='control-label')}}
           <div>
-            {{form_timer.durationOn(class_='form-control', value=each_timer.duration_on, **{'size':'6'})}}
+            {{form_timer.duration_on(class_='form-control', value=each_timer.duration_on, **{'size':'6'})}}
           </div>
         </div>
         <div class="col-xs-3 col-sm-3 col-md-2 col-lg-1">
-          {{form_timer.durationOff.label(class_='control-label')}}
+          {{form_timer.duration_off.label(class_='control-label')}}
           <div>
-            {{form_timer.durationOff(class_='form-control', value=each_timer.duration_off, **{'size':'6'})}}
+            {{form_timer.duration_off(class_='form-control', value=each_timer.duration_off, **{'size':'6'})}}
           </div>
         </div>
         {% endif %}

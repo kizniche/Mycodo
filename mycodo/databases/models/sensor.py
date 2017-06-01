@@ -22,18 +22,26 @@ class Sensor(CRUDMixin, db.Model):
     i2c_bus = db.Column(db.Integer, default='')  # I2C bus the sensor is connected to
     location = db.Column(db.Text, default='')  # GPIO pin or i2c address to communicate with sensor
     power_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to power sensor
+    measurements = db.Column(db.Text, default='')  # Measurements separated by commas
     resolution = db.Column(db.Integer, default=0)
     sensitivity = db.Column(db.Integer, default=0)
-    measurements = db.Column(db.Text, default='')  # Measurements separated by commas
+
+    # Multiplexer options
     multiplexer_address = db.Column(db.Text, default=None)
     multiplexer_bus = db.Column(db.Integer, default=1)
     multiplexer_channel = db.Column(db.Integer, default=0)
+
+    # Switch options
     switch_edge = db.Column(db.Text, default='rising')
     switch_bouncetime = db.Column(db.Integer, default=50)
     switch_reset_period = db.Column(db.Integer, default=10)
+
+    # Pre-measurement relay options
     pre_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to turn on before sensor read
     pre_relay_duration = db.Column(db.Float, default=0.0)  # Duration to turn relay on before sensor read
-    sht_clock_pin = db.Column(db.Integer, default=None)
+
+    # SHT sensor options
+    sht_clock_pin = db.Column(db.Integer, default=0)
     sht_voltage = db.Column(db.Text, default='3.5')
 
     # Analog to digital converter options

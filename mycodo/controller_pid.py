@@ -55,27 +55,19 @@ import threading
 import time as t
 import timeit
 
-# Classes
-from databases.models import (
-    Method,
-    MethodData,
-    PID,
-    Relay,
-    Sensor
-)
-from mycodo_client import DaemonControl
-
-# Functions
+from databases.models import Method
+from databases.models import MethodData
+from databases.models import PID
+from databases.models import Relay
+from databases.models import Sensor
 from databases.utils import session_scope
+from mycodo_client import DaemonControl
 from utils.database import db_retrieve_table_daemon
-from utils.influx import (
-    read_last_influxdb,
-    write_influxdb_value
-)
-from utils.method import (
-    bezier_curve_y_out,
-    sine_wave_y_out
-)
+from utils.influx import read_last_influxdb
+from utils.influx import write_influxdb_value
+from utils.method import bezier_curve_y_out
+from utils.method import sine_wave_y_out
+
 
 # Config
 from config import SQL_DATABASE_MYCODO

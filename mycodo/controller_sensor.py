@@ -30,18 +30,15 @@ import timeit
 import RPi.GPIO as GPIO
 from lockfile import LockFile
 
-# Classes
-from databases.models import (
-    Camera,
-    Conditional,
-    ConditionalActions,
-    PID,
-    Relay,
-    Sensor,
-    SMTP
-)
 from mycodo_client import DaemonControl
-# Sensor/device modules
+from databases.models import Camera
+from databases.models import Conditional
+from databases.models import ConditionalActions
+from databases.models import PID
+from databases.models import Relay
+from databases.models import Sensor
+from databases.models import SMTP
+
 from devices.tca9548a import TCA9548A
 from devices.ads1x15 import ADS1x15Read
 from devices.mcp342x import MCP342xRead
@@ -67,19 +64,15 @@ from sensors.tsl2561 import TSL2561Sensor
 from sensors.sht1x_7x import SHT1x7xSensor
 from sensors.sht2x import SHT2xSensor
 
-# Functions
 from devices.camera import camera_record
 from utils.database import db_retrieve_table_daemon
-from utils.influx import (
-    format_influxdb_data,
-    read_last_influxdb,
-    write_influxdb_list,
-    write_influxdb_value
-)
+from utils.influx import format_influxdb_data
+from utils.influx import read_last_influxdb
+from utils.influx import write_influxdb_list
+from utils.influx import write_influxdb_value
 from utils.send_data import send_email
 from utils.system_pi import cmd_output
 
-# Config
 from config import LIST_DEVICES_I2C
 
 

@@ -168,10 +168,10 @@ def settings_users():
 
         if form_add_user.add_user.data:
             flaskutils.user_add(form_add_user)
-        elif form_mod_user.delete_user.data:
+        elif form_mod_user.delete.data:
             if flaskutils.user_del(form_mod_user) == 'logout':
                 return redirect('/logout')
-        elif form_mod_user.save_user.data:
+        elif form_mod_user.save.data:
             if flaskutils.user_mod(form_mod_user) == 'logout':
                 return redirect('/logout')
         elif (form_user_roles.add_role.data or
