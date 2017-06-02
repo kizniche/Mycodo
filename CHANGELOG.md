@@ -1,3 +1,9 @@
+## 5.0.32 (2017-06-02)
+
+### Bugfixes
+
+ - Fix display of PID output and setpoint on live graphs ([#252](https://github.com/kizniche/mycodo/issues/252))
+
 ## 5.0.31 (2017-05-31)
 
 ### Features
@@ -6,8 +12,8 @@
 
 ### Bugfixes
 
- - Fix inability to save SHT sensor options (#251)
- - Fix inability to turn relay on if another relay is unconfigured (#251)
+ - Fix inability to save SHT sensor options ([#251](https://github.com/kizniche/mycodo/issues/251))
+ - Fix inability to turn relay on if another relay is unconfigured ([#251](https://github.com/kizniche/mycodo/issues/251))
 
 ## 5.0.30 (2017-05-23)
 

@@ -6,7 +6,7 @@ import os
 import collections
 from datetime import timedelta
 
-MYCODO_VERSION = '5.0.31'
+MYCODO_VERSION = '5.0.32'
 ALEMBIC_VERSION = '9d7631079ac1'
 
 LANGUAGES = {
@@ -78,8 +78,12 @@ MEASUREMENT_UNITS = {
         'name': 'Moisture', 'meas': 'moisture', 'unit': 'moisture'},
     'ph': {
         'name': 'pH', 'meas': 'ph', 'unit': 'pH'},
+    'pid_output': {
+        'name': 'PID Output', 'meas': 'pid_output', 'unit': 'sec'},
     'pressure': {
         'name': 'Pressure', 'meas': 'pressure', 'unit': 'Pa'},
+    'setpoint': {
+        'name': 'Setpoint', 'meas': 'setpoint', 'unit': ''},
     'temperature': {
         'name': 'Temperature', 'meas': 'temperature', 'unit': 'C'},
     'temperature_object': {
