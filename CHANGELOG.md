@@ -2,7 +2,7 @@
 
 ### Bugfixes
 
- - Fix query of ADC data from influxdb
+ - Fix query of ADC unit data (not voltage) from influxdb
 
 ## 5.0.32 (2017-06-02)
 

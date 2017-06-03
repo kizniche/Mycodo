@@ -4,6 +4,7 @@ import logging
 from uuid import UUID
 from influxdb import InfluxDBClient
 from mycodo.databases.models import Relay
+from mycodo.databases.models import Sensor
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 
@@ -67,7 +68,9 @@ def query_string(measurement, unique_id, value=None,
                  past_sec=None, group_sec=None, limit=None):
     """Generate influxdb query string"""
     # Validate input
-    if (not valid_uuid(unique_id) or
+    sensor = db_retrieve_table_daemon(Sensor, unique_id=unique_id)
+    if ((measurement not in MEASUREMENT_UNITS and not sensor.adc_measure) or
+            not valid_uuid(unique_id) or
             bool(start_str and not valid_date_str(start_str)) or
             bool(end_str and not valid_date_str(end_str)) or
             bool(past_sec and not valid_int(past_sec)) or
