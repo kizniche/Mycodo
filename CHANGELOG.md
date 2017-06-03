@@ -7,6 +7,8 @@
 ### Miscellaneous
 
  - Update influxdb to version 1.2.4
+ - Update Manual
+ - Update translatable texts
 
 ## 5.0.32 (2017-06-02)
 

@@ -628,13 +628,13 @@ def manipulate_relay(action, relay_id, setup_pin=False):
     control = DaemonControl()
     return_values = control.relay_setup(action, relay_id, setup_pin)
     if return_values[0]:
-        flash(gettext(u"Error: %(err)s",
+        flash(gettext(u"%(err)s",
                       err=u'{action} Relay: Daemon response: {msg}'.format(
                           action=action,
                           msg=return_values[1])),
               "error")
     else:
-        flash(gettext(u"Success: %(err)s",
+        flash(gettext(u"%(err)s",
                       err=u'{action} Relay: Daemon response: {msg}'.format(
                           action=gettext(action),
                           msg=return_values[1])),
@@ -1107,9 +1107,9 @@ def lcd_reset_flashing(lcd_id):
     return_value, return_msg = control.flash_lcd(
         lcd_id, 0)
     if return_value:
-        flash(gettext(u"Success: %(msg)s", msg=return_msg), "success")
+        flash(gettext(u"%(msg)s", msg=return_msg), "success")
     else:
-        flash(gettext(u"Error: %(msg)s", msg=return_msg), "error")
+        flash(gettext(u"%(msg)s", msg=return_msg), "error")
 
 
 #
@@ -1653,11 +1653,6 @@ def relay_add(form_add_relay):
                 new_relay = Relay()
                 new_relay.relay_type = form_add_relay.relay_type.data
                 if form_add_relay.relay_type.data == 'wireless_433MHz_pi_switch':
-                    new_relay.protocol = 1
-                    new_relay.pulse_length = 189
-                    new_relay.bit_length = 24
-                    new_relay.on_command = 22559
-                    new_relay.off_command = 22558
                     new_relay.on_at_start = None
                 new_relay.save()
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
@@ -1693,9 +1688,23 @@ def relay_mod(form_relay):
             if mod_relay.pin is not form_relay.gpio.data:
                 setup_pin = True
             if mod_relay.relay_type == 'wired':
+                if not is_int(form_relay.gpio.data):
+                    error.append("BCM Pin must be an integer")
                 mod_relay.pin = form_relay.gpio.data
                 mod_relay.trigger = form_relay.trigger.data
             elif mod_relay.relay_type == 'wireless_433MHz_pi_switch':
+                if not is_int(form_relay.wiringpi_pin.data):
+                    error.append("WiringPi Pin must be an integer")
+                if not is_int(form_relay.protocol.data):
+                    error.append("Protocol must be an integer")
+                if not is_int(form_relay.pulse_length.data):
+                    error.append("Pulse Length must be an integer")
+                if not is_int(form_relay.bit_length.data):
+                    error.append("Bit Length must be an integer")
+                if not is_int(form_relay.on_command.data):
+                    error.append("On Command must be an integer")
+                if not is_int(form_relay.off_command.data):
+                    error.append("Off Command must be an integer")
                 mod_relay.pin = form_relay.wiringpi_pin.data
                 mod_relay.protocol = form_relay.protocol.data
                 mod_relay.pulse_length = form_relay.pulse_length.data
@@ -1707,10 +1716,12 @@ def relay_mod(form_relay):
                 mod_relay.on_at_start = None
             else:
                 mod_relay.on_at_start = form_relay.on_at_start.data
-            db.session.commit()
-            manipulate_relay('Modify',
-                             form_relay.relay_id.data,
-                             setup_pin)
+
+            if not error:
+                db.session.commit()
+                manipulate_relay('Modify',
+                                 form_relay.relay_id.data,
+                                 setup_pin)
         except Exception as except_msg:
             error.append(except_msg)
         flash_success_errors(error, action, url_for('page_routes.page_relay'))
@@ -2634,14 +2645,14 @@ def delete_user(user_id):
             User.id == user_id).first()
         user_name = user.name
         user.delete()
-        flash(gettext(u"Success: %(msg)s",
+        flash(gettext(u"%(msg)s",
                       msg=u'{action} {user}'.format(
                           action=gettext(u"Delete"),
                           user=user_name)),
               "success")
         return 1
     except sqlalchemy.orm.exc.NoResultFound:
-        flash(gettext(u"Error: %(err)s",
+        flash(gettext(u"%(err)s",
                       err=gettext(u"User not found")),
               "error")
         return 0
@@ -2654,18 +2665,18 @@ def delete_entry_with_id(table, entry_id):
             table.id == entry_id).first()
         db.session.delete(entries)
         db.session.commit()
-        flash(gettext(u"Success: %(msg)s",
+        flash(gettext(u"%(msg)s",
                       msg=u'{action} {id}'.format(
                           action=gettext(u"Delete"),
                           id=entry_id)),
               "success")
         return 1
     except sqlalchemy.orm.exc.NoResultFound:
-        flash(gettext(u"Error: %(err)s",
+        flash(gettext(u"%(err)s",
                       err=gettext(u"Entry with ID %(id)s not found",
                                   id=entry_id)),
               "error")
-        flash(gettext(u"Error: %(msg)s",
+        flash(gettext(u"%(msg)s",
                       msg=u'{action} {id}: {err}'.format(
                           action=gettext(u"Delete"),
                           id=entry_id,
@@ -2688,14 +2699,14 @@ def flash_form_errors(form):
 def flash_success_errors(error, action, redirect_url):
     if error:
         for each_error in error:
-            flash(gettext(u"Error: %(msg)s",
+            flash(gettext(u"%(msg)s",
                           msg=u'{action}: {err}'.format(
                               action=action,
                               err=each_error)),
                   "error")
         return redirect(redirect_url)
     else:
-        flash(gettext(u"Success: %(msg)s",
+        flash(gettext(u"%(msg)s",
                       msg=action),
               "success")
 

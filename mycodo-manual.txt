@@ -310,8 +310,7 @@ User Roles
 
 Roles define the permissions of each user. There are 4 default roles
 that determine if a user can view or edit particular areas of Mycodo.
-Custom roles may be created, but these four roles may not be modified or
-deleted.
+Four roles are provided by default, but custom roles may be created.
 
   Role               Admin   Editor   Monitor   Guest
   ------------------ ------- -------- --------- -------
@@ -358,6 +357,9 @@ Alert settings set up the credentials for sending email notifications.
                         triggered within the hour and this number has
                         been reached, the notifications will be
                         discarded.
+
+  Send Test Email       Test the email configuration by sending a test
+                        email.
   ---------------------------------------------------------------------
 
 
@@ -425,9 +427,9 @@ controllers and have been given their own sections.
 Sensors
 
 Sensors measure environmental conditions, which will be stored in an
-influx database. This database will provide recent measurement for
-Conditional Statements or PID Controllers to operate from, among other
-uses.
+influxdb round-robin database. This database will provide recent
+measurements for Graphs, LCDs, PID Controllers, Conditional Statements,
+and other parts of Mycodo to operate from.
 
   ---------------------------------------------------------------------
   Setting               Description
@@ -597,7 +599,7 @@ Relays
 
 Relays are electromechanical or solid-state devices that enable a small
 voltage signal (such as from a microprocessor) to activate a much larger
-voltage, without exposing the low -voltage system to the dangers of the
+voltage, without exposing the low-voltage system to the dangers of the
 higher voltage.
 
 Add and configure relays in the Relay tab. Relays must be properly set
@@ -613,30 +615,35 @@ when the potential across the coil is 3.3-volts (or whatever switching
 voltage you are using, if not being driven by the GPIO pin), set it to
 “High”.
 
-Certain 433MHz wireless relays may be used, however you will need to set
-the pin of the transmitter (using WireingPi numbering), pulse length,
-bit length, on command, and off command to be set. To determine your on
-and off commands, run the receiver script and then press one of the
-buttons (either on or off) on your remote to determine the numeric code
-associated with that button. You will need a 433MHz receiver and select
-the correct pin (using WiringPi numbering) with the following script.
+Certain 433 MHz wireless relays may be used, however you will need to
+set the pin of the transmitter (using WiringPi numbering), pulse length,
+bit length, protocol, on command, and off command. To determine your on
+and off commands, connect a 433 MHz receiver to your Pi, then run the
+receiver script, below, and press one of the buttons (either on or off)
+on your remote to detect the numeric code associated with that button.
 
 sudo ~/Mycodo/env/bin/python ~/Mycodo/mycodo/devices/wireless_433mhz_pi_switch.py
 
 433 MHz wireless relays have been successfully tested with SMAKN 433MHz
 RF Transmitters/Receivers and Etekcity Wireless Remote Control
 Electrical Outlets (see Issue 88 for more information). If you have a
-433MHz transmitter/receiver and a wireless relay that does not work with
-the current code (even after trying several different protocol
+433 MHz transmitter/receiver and a wireless relay that does not work
+with the current code (even after trying several different protocol
 settings), submit a new issue with details of your hardware.
 
-When a wired relay is initially added, the background of the new relay
-will be yellow, indicating it is not configured. When properly
-configured, it will either turn green, indicating the relay is activated
-(device is on), or red, indicating the relay is inactivated (device is
-off). Since the wireless protocol only allows 1-way communication to
-443MHz devices, wireless relays are assumed to be off until they are
-turned on, and therefore will appear red (off) when added.
+When a relay is initially added, the background of the new relay will be
+yellow, indicating it is not configured. When properly configured, it
+will either turn green, indicating the relay is activated (device is
+on), or red, indicating the relay is inactivated (device is off).
+
+Wireless Relay Note: Since the wireless protocol only allows 1-way
+communication to 433 MHz devices, wireless relays are assumed to be off
+until they are turned on, and therefore will appear red (off) when
+added. If a wireless relay is turned off or on outside Mycodo (by a
+remote, for instance), Mycodo will not be able to determine the state of
+the relay and will indicate whichever state the relay was last. This is,
+if Mycodo turns the wireless relay on, and a remote is used to turn the
+relay off, Mycodo will still assume the relay is on.
 
   ---------------------------------------------------------------------
   Setting               Description
@@ -678,7 +685,10 @@ turned on, and therefore will appear red (off) when added.
                         Relay Usage Settings.
 
   Start State           This specifies whether the relay should be ON
-                        or OFF when mycodo initially starts.
+                        or OFF when mycodo initially starts. Wireless
+                        relays have an additional option ‘Neither’
+                        which will not issue an on or off command when
+                        Mycodo starts or stops.
 
   Seconds to turn On    This is a way to turn a relay on for a specific
                         duration of time. This can be useful for
@@ -760,7 +770,7 @@ resumes operation.
 
   Lower Relay           This is the relay that will cause the
                         particular environmental condition to lower. In
-                        the case of lowering the CO₂, this may be an
+                        the case of lowering the CO2, this may be an
                         exhaust fan.
 
   Min Duration (lower)  This is the minimum that the PID output must be
@@ -1168,10 +1178,10 @@ live data.
 Camera
 
 Once a cameras has been set up (in the Camera Settings), it may be used
-to capture still images, create time-lapses, and stream video. Cameras
-may also be used with Conditional Statements to trigger a camera image
-or video capture (as well as the ability to email the image/video with a
-notification).
+to capture still images, create time-lapses, and stream video (Pi camera
+only). Cameras may also be used with Conditional Statements to trigger a
+camera image or video capture (as well as the ability to email the
+image/video with a notification).
 
 
 Relay Usage
@@ -1195,7 +1205,7 @@ user name:
 
     sudo mv /home/user/Mycodo /home/user/Mycodo_old
     sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
-    sudo /bin/bash ~/Mycodo/mycoco/scripts/upgrade_post.sh
+    sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
 
 
 
@@ -1253,6 +1263,8 @@ UART
 
   Atlas Scientific pH: pH link
 
+  Atlas Scientific PT-1000: Temperature link
+
   K30: Carbon dioxide (CO2) in ppmv link
 
 This documentation provides specific installation procedures for
@@ -1266,10 +1278,9 @@ above K-30 guide, to set up UART on the Raspberry Pi 1 and 2. However,
 for Pi 3s, use the procedure below.
 
 Because the UART is handled differently by the Raspberry Pi 3, from of
-the addition of bluetooth, there are a different set of instructions for
-getting the K30 working on the Raspberry Pi 3. If installing on a
-Raspberry Pi 3, you only need to perform these steps to get the K30
-working:
+the addition of bluetooth, there are a different set of instructions. If
+installing Mycodo on a Raspberry Pi 3, you only need to perform these
+steps to configure UART:
 
 Run raspi-config
 
@@ -1287,6 +1298,8 @@ I2C
 The I2C interface should be enabled with raspi-config.
 
   AM2315: Relative humidity, temperature link
+
+  Atlas Scientific pH: pH link
 
   Atlas Scientific PT-1000: Temperature link
 
@@ -1379,6 +1392,7 @@ stands for platinum and 1000 is the measured resistance of the probe at
 
 Specifications
 
+-   UART or I2C
 -   Accuracy ±(0.15 + (0.002*t))
 -   Probe type: Class A Platinum, RTD (resistance temperature detector)
 -   Cable length: 81cm (32“)
@@ -1505,7 +1519,7 @@ K-30
 [] 
 
 Be very careful when connecting the K-30, as there is no reverse-voltage
-protection. Improper connections could destroy your sensor.
+protection and improper connections could destroy your sensor.
 
 Wiring instructions for the Raspberry Pi can be found here.
 
@@ -1541,6 +1555,7 @@ The Atlas Scientific pH sensor measures the pH of a liquid.
 
 Specifications
 
+-   UART or I2C
 -   Probe Max Pressure: 690 kPa (100PSI)
 -   Probe Max Depth 60 M (197 ft)
 -   Probe Weight: 49 grams
@@ -1551,10 +1566,9 @@ Pressure Sensors
 
 BME280
 
-The BME280 is the next-generation of sensors from Bosch, and is the
-upgrade to the BMP085/BMP180/BMP183 - with a low altitude noise of 0.25m
-and the same fast conversion time. It has the same specifications, but
-can use either I2C or SPI.
+The BME280 is the upgrade to the BMP085/BMP180/BMP183. It has a low
+altitude noise of 0.25m and the same fast conversion time. It has the
+same specifications, but can use either I2C or SPI.
 
 Specifications
 
@@ -1570,9 +1584,8 @@ Specifications
 
 BMP085, BMP180
 
-The BMP180 is the next-generation of sensors from Bosch, and replaces
-the BMP085. It is completely identical to the BMP085 in terms of
-firmware/software/interfacing.
+The BMP180 replaces the BMP085. It is completely identical to the BMP085
+in terms of firmware/software/interfacing.
 
 Specifications
 
@@ -1590,7 +1603,7 @@ Luminosity Sensors
 BH1750
 
 The BH1750 is an I2C luminosity sensor that provides a digital value in
-lux (Lx) over a range of 1 - 65535 lx.
+lux (lx) over a range of 1 - 65535 lx.
 
 TSL2561
 
@@ -1604,7 +1617,7 @@ large amounts of light by changing the integration time.
 
 Specifications
 
--   Light range: 0.1 - 40k+ Lux
+-   Light range: 0.1 - 40k+ lux
 -   Vin: 3V and a low supply
 -   Max current: 0.6mA.
 

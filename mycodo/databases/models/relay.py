@@ -17,15 +17,15 @@ class Relay(CRUDMixin, db.Model):
     pin = db.Column(db.Integer, default=None)
     amps = db.Column(db.Float, default=0.0)  # The current drawn by the device connected to the relay
     trigger = db.Column(db.Boolean, default=True)  # GPIO output to turn relay on (True=HIGH, False=LOW)
-    on_at_start = db.Column(db.Boolean, default=False)  # Turn relay on when daemon starts?
+    on_at_start = db.Column(db.Boolean, default=False)  # Turn relay on or off when daemon starts
     on_until = db.Column(db.DateTime, default=None)  # Stores time to turn off relay (if on for a duration)
     last_duration = db.Column(db.Float, default=None)  # Stores the last on duration (seconds)
     on_duration = db.Column(db.Boolean, default=None)  # Stores if the relay is currently on for a duration
-    protocol = db.Column(db.Integer, default=None)
-    pulse_length = db.Column(db.Integer, default=None)
-    bit_length = db.Column(db.Integer, default=None)
-    on_command = db.Column(db.Text, default=None)
-    off_command = db.Column(db.Text, default=None)
+    protocol = db.Column(db.Integer, default=1)
+    pulse_length = db.Column(db.Integer, default=189)
+    bit_length = db.Column(db.Integer, default=24)
+    on_command = db.Column(db.Text, default=22559)
+    off_command = db.Column(db.Text, default=22558)
 
     def __reper__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
