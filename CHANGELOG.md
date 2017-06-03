@@ -1,3 +1,9 @@
+## 5.0.33 (Unreleased)
+
+### Bugfixes
+
+ - Fix query of ADC data from influxdb
+
 ## 5.0.32 (2017-06-02)
 
 ### Bugfixes

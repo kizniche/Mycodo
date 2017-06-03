@@ -67,8 +67,7 @@ def query_string(measurement, unique_id, value=None,
                  past_sec=None, group_sec=None, limit=None):
     """Generate influxdb query string"""
     # Validate input
-    if (measurement not in MEASUREMENT_UNITS or
-            not valid_uuid(unique_id) or
+    if (not valid_uuid(unique_id) or
             bool(start_str and not valid_date_str(start_str)) or
             bool(end_str and not valid_date_str(end_str)) or
             bool(past_sec and not valid_int(past_sec)) or

@@ -47,19 +47,19 @@
     }
 
     $(function() {
-      {% set temperatures = ['dewpoint',
-                             'temperature',
-                             'temperature_die',
-                             'temperature_object'] %}
+      {%- set temperatures = ['dewpoint',
+                              'temperature',
+                              'temperature_die',
+                              'temperature_object'] -%}
       {%- for each_sensor in sensor if each_sensor.is_activated -%}
-        {% set measurement_list = each_sensor.measurements.split(',') %}
-        {% for each_measurement in measurement_list %}
-          {% set c_to_f = 'true' if each_measurement in temperatures else 'false' %}
+        {%- set measurement_list = each_sensor.measurements.split(',') -%}
+        {%- for each_measurement in measurement_list %}
+          {%- set c_to_f = 'true' if each_measurement in temperatures else 'false' %}
           liveTextData('{{each_sensor.unique_id}}', '{{each_measurement}}', 30, {{c_to_f}});
-          {% if each_measurement == 'voltage' %}
+          {%- if each_measurement == 'voltage' %}
             liveTextData('{{each_sensor.unique_id}}', '{{each_sensor.adc_measure}}', 30, {{c_to_f}});
-          {% endif %}
-        {% endfor %}
+          {%- endif -%}
+        {%- endfor -%}
       {%- endfor -%}
     });
   </script>
