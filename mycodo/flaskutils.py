@@ -1372,7 +1372,7 @@ def relay_on_off(form_relay):
     try:
         control = DaemonControl()
         relay = Relay.query.filter_by(id=form_relay.relay_id.data).first()
-        if int(form_relay.relay_pin.data) == 0 and relay.relay_type == 'wired':
+        if relay.relay_type == 'wired' and int(form_relay.relay_pin.data) == 0:
             error.append(gettext(u"Cannot modulate relay with a GPIO of 0"))
         elif form_relay.sec_on_submit.data:
             if float(form_relay.sec_on.data) <= 0:
@@ -1652,8 +1652,14 @@ def relay_add(form_add_relay):
             try:
                 new_relay = Relay()
                 new_relay.relay_type = form_add_relay.relay_type.data
-                if form_add_relay.relay_type.data == 'wireless_433MHz_pi_switch':
-                    new_relay.on_at_start = None
+                if form_add_relay.relay_type.data == 'wired':
+                    new_relay.on_at_start = False
+                elif form_add_relay.relay_type.data == 'wireless_433MHz_pi_switch':
+                    new_relay.on_command = '22559'
+                    new_relay.off_command = '22558'
+                elif form_add_relay.relay_type.data == 'command':
+                    new_relay.on_command = '/home/pi/script_on.sh'
+                    new_relay.off_command = '/home/pi/script_off.sh'
                 new_relay.save()
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
                 DisplayOrder.query.first().relay = add_display_order(
@@ -1709,6 +1715,9 @@ def relay_mod(form_relay):
                 mod_relay.protocol = form_relay.protocol.data
                 mod_relay.pulse_length = form_relay.pulse_length.data
                 mod_relay.bit_length = form_relay.bit_length.data
+                mod_relay.on_command = form_relay.on_command.data
+                mod_relay.off_command = form_relay.off_command.data
+            elif mod_relay.relay_type == 'command':
                 mod_relay.on_command = form_relay.on_command.data
                 mod_relay.off_command = form_relay.off_command.data
             mod_relay.amps = form_relay.amps.data

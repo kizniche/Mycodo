@@ -603,8 +603,9 @@ voltage, without exposing the low-voltage system to the dangers of the
 higher voltage.
 
 Add and configure relays in the Relay tab. Relays must be properly set
-up before PID regulation can be achieved. Either a wired or wireless
-relay may be set up.
+up before PID regulation can be achieved.
+
+Wired
 
 To set up a wired relay, set the “GPIO Pin” to the BCM GPIO number of
 each pin that activates each relay. _On Trigger_ should be set to the
@@ -614,6 +615,8 @@ on). If your relay activates when the potential across the coil is
 when the potential across the coil is 3.3-volts (or whatever switching
 voltage you are using, if not being driven by the GPIO pin), set it to
 “High”.
+
+Wireless
 
 Certain 433 MHz wireless relays may be used, however you will need to
 set the pin of the transmitter (using WiringPi numbering), pulse length,
@@ -631,15 +634,16 @@ Electrical Outlets (see Issue 88 for more information). If you have a
 with the current code (even after trying several different protocol
 settings), submit a new issue with details of your hardware.
 
-When a relay is initially added, the background of the new relay will be
-yellow, indicating it is not configured. When properly configured, it
-will either turn green, indicating the relay is activated (device is
-on), or red, indicating the relay is inactivated (device is off).
+Command
 
-Wireless Relay Note: Since the wireless protocol only allows 1-way
-communication to 433 MHz devices, wireless relays are assumed to be off
-until they are turned on, and therefore will appear red (off) when
-added. If a wireless relay is turned off or on outside Mycodo (by a
+Another option for relay control is to execute a terminal command when
+the relay is turned on or off. Commands will be executed as the user
+‘mycodo’.
+
+Wireless and Command Relay Note: Since the wireless protocol only allows
+1-way communication to 433 MHz devices, wireless relays are assumed to
+be off until they are turned on, and therefore will appear red (off)
+when added. If a wireless relay is turned off or on outside Mycodo (by a
 remote, for instance), Mycodo will not be able to determine the state of
 the relay and will indicate whichever state the relay was last. This is,
 if Mycodo turns the wireless relay on, and a remote is used to turn the
@@ -673,11 +677,15 @@ relay off, Mycodo will still assume the relay is on.
   Bit Length            This is the bit length to transmit via 433MHz.
                         Default is 24-bit.
 
-  On Command            This is the numerical command transmitted via
-                        433MHz to turn the relay on.
+  On Command            This is the command used to turn the relay on.
+                        For wireless relays, this is the numerical
+                        command to be transmitted, and for command
+                        relays this is the command to be executed.
 
-  Off Command           This is the numerical command transmitted via
-                        433MHz to turn the relay off.
+  Off Command           This is the command used to turn the relay off.
+                        For wireless relays, this is the numerical
+                        command to be transmitted, and for command
+                        relays this is the command to be executed.
 
   Current Draw (amps)   The is the amount of current the device powered
                         by the relay draws. Note: this value should be

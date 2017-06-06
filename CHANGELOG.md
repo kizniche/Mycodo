@@ -1,4 +1,8 @@
-## 5.0.33 (Unreleased)
+## 5.0.33 (2017-06-05)
+
+### Features
+
+ - Add new relay type: Execute Commands (executes linux commands to turn the relay on and off)
 
 ### Bugfixes
 
@@ -7,6 +11,7 @@
 ### Miscellaneous
 
  - Update influxdb to version 1.2.4
+ - Update pip packages
  - Update Manual
  - Update translatable texts
 

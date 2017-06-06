@@ -179,7 +179,9 @@ class RelayController(threading.Thread):
 
         # Signaled to turn relay on
         if state == 'on':
-            if self.relay_pin[relay_id] is None:
+            if (self.relay_type[relay_id] in ['wired',
+                                              'wireless_433MHz_pi_switch'] and
+                    self.relay_pin[relay_id] is None):
                 self.logger.warning(
                     u"Invalid pin for relay {id} ({name}): {pin}.".format(
                         id=self.relay_id[relay_id],
@@ -277,11 +279,7 @@ class RelayController(threading.Thread):
                             id=self.relay_id[relay_id],
                             name=self.relay_name[relay_id],
                             dur=duration))
-                    if self.relay_type[relay_id] == 'wired':
-                        GPIO.output(self.relay_pin[relay_id], self.relay_trigger[relay_id])
-                    elif self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
-                        self.wireless_pi_switch[relay_id].transmit(
-                            int(self.relay_on_command[relay_id]))
+                    self.relay_switch(relay_id, 'on')
 
             else:
                 if self.is_on(relay_id):
@@ -300,60 +298,85 @@ class RelayController(threading.Thread):
                             id=self.relay_id[relay_id],
                             name=self.relay_name[relay_id],
                             timeon=self.relay_time_turned_on[relay_id]))
-
-                    if self.relay_type[relay_id] == 'wired':
-                        GPIO.output(self.relay_pin[relay_id],
-                                    self.relay_trigger[relay_id])
-                    elif self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
-                        self.wireless_pi_switch[relay_id].transmit(
-                            int(self.relay_on_command[relay_id]))
+                    self.relay_switch(relay_id, 'on')
 
         # Signaled to turn relay off
         elif state == 'off':
-            if (self._is_setup(relay_id, self.relay_pin[relay_id]) and
-                    self.relay_pin[relay_id] is not None):  # if pin not 0
+            if not self._is_setup(relay_id, self.relay_pin[relay_id]):
+                return
+            if (self.relay_type[relay_id] in ['wired',
+                                              'wireless_433MHz_pi_switch'] and
+                    self.relay_pin[relay_id] is None):
+                return
 
-                if self.relay_type[relay_id] == 'wired':
-                    GPIO.output(self.relay_pin[relay_id], not self.relay_trigger[relay_id])
-                elif self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
-                    self.wireless_pi_switch[relay_id].transmit(
-                        int(self.relay_off_command[relay_id]))
+            self.relay_switch(relay_id, 'off')
 
-                self.logger.debug(u"Relay {id} ({name}) turned off.".format(
-                        id=self.relay_id[relay_id],
-                        name=self.relay_name[relay_id]))
+            self.logger.debug(u"Relay {id} ({name}) turned off.".format(
+                    id=self.relay_id[relay_id],
+                    name=self.relay_name[relay_id]))
 
-                if (self.relay_time_turned_on[relay_id] is not None or
-                        self.relay_on_duration[relay_id]):
-                    duration = 0
-                    if self.relay_on_duration[relay_id]:
-                        remaining_time = 0
-                        time_now = datetime.datetime.now()
-                        if self.relay_on_until[relay_id] > time_now:
-                            remaining_time = (self.relay_on_until[relay_id] - time_now).total_seconds()
-                        duration = self.relay_last_duration[relay_id] - remaining_time
-                        self.relay_on_duration[relay_id] = False
-                        self.relay_on_until[relay_id] = datetime.datetime.now()
+            if (self.relay_time_turned_on[relay_id] is not None or
+                    self.relay_on_duration[relay_id]):
+                duration = 0
+                if self.relay_on_duration[relay_id]:
+                    remaining_time = 0
+                    time_now = datetime.datetime.now()
+                    if self.relay_on_until[relay_id] > time_now:
+                        remaining_time = (self.relay_on_until[relay_id] - time_now).total_seconds()
+                    duration = self.relay_last_duration[relay_id] - remaining_time
+                    self.relay_on_duration[relay_id] = False
+                    self.relay_on_until[relay_id] = datetime.datetime.now()
 
-                    if self.relay_time_turned_on[relay_id] is not None:
-                        # Write the duration the relay was ON to the database
-                        # at the timestamp it turned ON
-                        duration = (datetime.datetime.now() - self.relay_time_turned_on[relay_id]).total_seconds()
-                        self.relay_time_turned_on[relay_id] = None
+                if self.relay_time_turned_on[relay_id] is not None:
+                    # Write the duration the relay was ON to the database
+                    # at the timestamp it turned ON
+                    duration = (datetime.datetime.now() - self.relay_time_turned_on[relay_id]).total_seconds()
+                    self.relay_time_turned_on[relay_id] = None
 
-                    timestamp = datetime.datetime.utcnow() - datetime.timedelta(seconds=duration)
-                    write_db = threading.Thread(
-                        target=write_influxdb_value,
-                        args=(self.relay_unique_id[relay_id],
-                              'duration_sec',
-                              duration,
-                              timestamp,))
-                    write_db.start()
+                timestamp = datetime.datetime.utcnow() - datetime.timedelta(seconds=duration)
+                write_db = threading.Thread(
+                    target=write_influxdb_value,
+                    args=(self.relay_unique_id[relay_id],
+                          'duration_sec',
+                          duration,
+                          timestamp,))
+                write_db.start()
 
         if trigger_conditionals:
             if state == 'on' and duration != 0:
                 self.check_conditionals(relay_id, 0)
             self.check_conditionals(relay_id, duration)
+
+    def relay_switch(self, relay_id, state):
+        if self.relay_type[relay_id] == 'wired':
+            if state == 'on':
+                GPIO.output(self.relay_pin[relay_id],
+                            self.relay_trigger[relay_id])
+            elif state == 'off':
+                GPIO.output(self.relay_pin[relay_id],
+                            not self.relay_trigger[relay_id])
+        elif self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
+            if state == 'on':
+                self.wireless_pi_switch[relay_id].transmit(
+                    int(self.relay_on_command[relay_id]))
+            elif state == 'off':
+                self.wireless_pi_switch[relay_id].transmit(
+                    int(self.relay_off_command[relay_id]))
+        elif self.relay_type[relay_id] == 'command':
+            if state == 'on' and self.relay_on_command[relay_id]:
+                cmd_return, _, cmd_status = cmd_output(
+                    self.relay_on_command[relay_id])
+            elif state == 'off' and self.relay_off_command[relay_id]:
+                cmd_return, _, cmd_status = cmd_output(
+                    self.relay_off_command[relay_id])
+            else:
+                return
+            self.logger.debug(
+                u"Relay {state} command returned: "
+                u"{stat}: '{ret}'".format(
+                    state=state,
+                    stat=cmd_status,
+                    ret=cmd_return))
 
     def check_conditionals(self, relay_id, on_duration):
         conditionals = db_retrieve_table_daemon(Conditional)
@@ -486,7 +509,7 @@ class RelayController(threading.Thread):
         """Turn all relays off"""
         for each_relay_id in self.relay_id:
             if self.relay_on_at_start[each_relay_id] is None:
-                pass
+                pass  # Don't turn off
             else:
                 self.relay_on_off(each_relay_id, 'off',
                                   trigger_conditionals=False)
@@ -495,7 +518,7 @@ class RelayController(threading.Thread):
         """Turn all relays on that are set to be on at startup"""
         for each_relay_id in self.relay_id:
             if self.relay_on_at_start[each_relay_id] is None:
-                pass
+                pass  # Don't turn on or off
             elif self.relay_on_at_start[each_relay_id]:
                 self.relay_on_off(each_relay_id, 'on',
                                   trigger_conditionals=False)
@@ -692,7 +715,8 @@ class RelayController(threading.Thread):
                 return 'on'
             else:
                 return 'off'
-        elif self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
+        elif self.relay_type[relay_id] in ['command',
+                                           'wireless_433MHz_pi_switch']:
             if self.relay_time_turned_on[relay_id]:
                 return 'on'
             else:
@@ -709,7 +733,8 @@ class RelayController(threading.Thread):
         if (self.relay_type[relay_id] == 'wired' and
                 self._is_setup(relay_id, self.relay_pin[relay_id])):
             return self.relay_trigger[relay_id] == GPIO.input(self.relay_pin[relay_id])
-        elif self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
+        elif self.relay_type[relay_id] in ['command',
+                                           'wireless_433MHz_pi_switch']:
             if self.relay_time_turned_on[relay_id]:
                 return True
             else:
@@ -727,7 +752,8 @@ class RelayController(threading.Thread):
             GPIO.setmode(GPIO.BCM)
             GPIO.setup(pin, GPIO.OUT)
             return True
-        elif self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
+        elif self.relay_type[relay_id] in ['command',
+                                           'wireless_433MHz_pi_switch']:
             return True
         else:
             return False

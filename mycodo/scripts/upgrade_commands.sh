@@ -116,7 +116,7 @@ case "${1:-''}" in
         apt-get update -y
         apt-get install -y apache2 gawk git libapache2-mod-wsgi libav-tools libboost-python-dev libffi-dev libi2c-dev python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3
         easy_install pip
-        pip install pip --upgrade
+        pip install --upgrade pip
     ;;
     'update-pip-packages')
         printf "\n#### Installing pip requirements from requirements.txt\n"
@@ -124,8 +124,8 @@ case "${1:-''}" in
             printf "\n## Error: Virtualenv doesn't exist. Create with $0 setup-virtualenv\n"
         else
             source ${INSTALL_DIRECTORY}/Mycodo/env/bin/activate
-            ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install pip --upgrade
-            ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install -r ${INSTALL_DIRECTORY}/Mycodo/install/requirements.txt --upgrade
+            ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install --upgrade pip
+            ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install --upgrade -r ${INSTALL_DIRECTORY}/Mycodo/install/requirements.txt
         fi
     ;;
     'update-mycodo-startup-script')

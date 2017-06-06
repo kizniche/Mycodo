@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 5.0.32 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
+### Latest version: 5.0.33 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
 
 #### [Mycodo Manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md) ([PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt))
 
@@ -59,7 +59,7 @@ The top graph of the above screenshot visualizes the regulation of temperature i
 ## Features
 
 * Web Interface - Access anywhere with an internet connection.
-* Relays (wired or 433MHz wireless) - Control electrical devices, manually and automatically
+* Relays (wired, 433MHz wireless, or linux commands) - Control electrical devices, manually and automatically
 * Sensors - Support for devices that measure temperature, humidity, CO<sub>2</sub>, atmospheric pressure, infrared heat, luminosity, magnetism, motion, pH, soil moisture, and more.
 * Analog to digital converter support - Read any analog sensor or signal.
 * Timers - Schedule the execution of actions at various times and intervals.
