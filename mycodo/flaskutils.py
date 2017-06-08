@@ -2192,7 +2192,6 @@ def timer_mod(form_timer):
         if mod_timer.is_activated:
             error.append(gettext(u"Deactivate timer controller before "
                                  u"modifying its settings"))
-            return redirect(url_for('page_routes.page_timer'))
         else:
             mod_timer.name = form_timer.name.data
             if form_timer.relay_id.data:
@@ -2210,7 +2209,8 @@ def timer_mod(form_timer):
             elif mod_timer.timer_type == 'duration':
                 mod_timer.duration_on = form_timer.duration_on.data
                 mod_timer.duration_off = form_timer.duration_off.data
-            db.session.commit()
+            if not error:
+                db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
 

@@ -13,7 +13,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 LOG_LOCATION=${INSTALL_DIRECTORY}/install/setup.log
-exec > >(tee -i ${LOG_LOCATION})
+exec > >(tee -i -a ${LOG_LOCATION})
 exec 2>&1
 
 abort()

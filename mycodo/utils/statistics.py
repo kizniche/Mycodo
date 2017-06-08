@@ -314,7 +314,8 @@ def send_anonymous_stats(start_time):
         return 0
     except requests.ConnectionError:
         logger.error("Could not send anonymous usage statistics: Connection "
-                     "timed out (expected if there's no internet)")
+                     "timed out (expected if there's no internet or the "
+                     "server is down)")
     except Exception as except_msg:
         logger.exception(
             "Could not send anonymous usage statistics: {err}".format(

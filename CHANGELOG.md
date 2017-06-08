@@ -1,3 +1,10 @@
+## 5.0.34 (Unreleased)
+
+### Bugfixes
+
+ - Append setup.sh output to setup.log instead of overwriting
+ - Fix display of error response when attempting to modify timer when it's active
+
 ## 5.0.33 (2017-06-05)
 
 ### Features
