@@ -40,6 +40,8 @@ set -e
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
 printf "### Mycodo installation beginning at $NOW\n"
 
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-swap-size
+
 printf "\n#### Uninstalling apt version of pip (if installed)\n"
 apt-get update
 apt-get purge -y python-pip
