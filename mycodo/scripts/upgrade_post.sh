@@ -16,6 +16,8 @@ cd ${INSTALL_DIRECTORY}
 
 ln -sf ${INSTALL_DIRECTORY} /var/www/mycodo
 
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-swap-size
+
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-apache2

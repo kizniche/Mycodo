@@ -128,6 +128,17 @@ case "${1:-''}" in
             ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install --upgrade -r ${INSTALL_DIRECTORY}/Mycodo/install/requirements.txt
         fi
     ;;
+    'update-swap-size')
+        printf "\n#### Checking if swap size is 100 MB and needs to be changed to 512 MB\n"
+        if grep -q "CONF_SWAPSIZE=100" "/etc/dphys-swapfile"; then
+            printf "#### Swap currently set to 100 MB. Changing to 512 MB and restarting\n"
+            sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=512/g' /etc/dphys-swapfile
+            /etc/init.d/dphys-swapfile stop
+            /etc/init.d/dphys-swapfile start
+        else
+            printf "#### Swap not currently set to 100 MB. Not changing.\n"
+        fi
+    ;;
     'update-mycodo-startup-script')
         printf "\n#### Enabling mycodo startup script\n"
         systemctl disable mycodo.service

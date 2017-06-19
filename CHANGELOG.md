@@ -1,3 +1,9 @@
+## 5.0.35 (2017-06-18)
+
+### Bugfixes
+
+ - Fix swap size check (and change to 512 MB) to permit pi_switch module compilation size requirement ([#258](https://github.com/kizniche/mycodo/issues/258))
+
 ## 5.0.34 (2017-06-18)
 
 ### Features
