@@ -1889,7 +1889,7 @@ def sensor_add(form_add_sensor):
                     new_sensor.location = '0x77'
 
             # Light
-            elif form_add_sensor.sensor.data in ['BH1750', 'TSL2561']:
+            elif form_add_sensor.sensor.data in ['BH1750', 'TSL2561', 'TSL2591']:
                 new_sensor.measurements = 'lux'
                 if form_add_sensor.sensor.data == 'BH1750':
                     new_sensor.location = '0x23'
@@ -1897,6 +1897,8 @@ def sensor_add(form_add_sensor):
                     new_sensor.sensitivity = 69
                 elif form_add_sensor.sensor.data == 'TSL2561':
                     new_sensor.location = '0x39'
+                elif form_add_sensor.sensor.data == 'TSL2591':
+                    new_sensor.location = '0x29'
 
             # Analog to Digital Converters
             elif form_add_sensor.sensor.data in ['ADS1x15', 'MCP342x']:

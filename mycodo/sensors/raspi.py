@@ -45,6 +45,15 @@ class RaspberryPiCPUTemp(AbstractSensor):
     @staticmethod
     def get_measurement():
         """ Gets the Raspberry pi's temperature in Celsius by reading the temp file and div by 1000 """
+        # import psutil
+        # import resource
+        # open_files_count = 0
+        # for proc in psutil.process_iter():
+        #     if proc.open_files():
+        #         open_files_count += 1
+        # logger.info("Open files: {of}".format(of=open_files_count))
+        # soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+        # logger.info("LIMIT: Soft: {sft}, Hard: {hrd}".format(sft=soft, hrd=hard))
         with open('/sys/class/thermal/thermal_zone0/temp') as cpu_temp_file:
             return float(cpu_temp_file.read()) / 1000
 

@@ -61,6 +61,7 @@ from sensors.raspi_cpuload import RaspberryPiCPULoad
 from sensors.raspi_freespace import RaspberryPiFreeSpace
 from sensors.tmp006 import TMP006Sensor
 from sensors.tsl2561 import TSL2561Sensor
+from sensors.tsl2591_sensor import TSL2591Sensor
 from sensors.sht1x_7x import SHT1x7xSensor
 from sensors.sht2x import SHT2xSensor
 
@@ -315,6 +316,9 @@ class SensorController(threading.Thread):
                                                self.i2c_bus)
         elif self.device == 'TSL2561':
             self.measure_sensor = TSL2561Sensor(self.i2c_address,
+                                                self.i2c_bus)
+        elif self.device == 'TSL2591':
+            self.measure_sensor = TSL2591Sensor(self.i2c_address,
                                                 self.i2c_bus)
         else:
             self.device_recognized = False

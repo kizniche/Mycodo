@@ -1,8 +1,13 @@
-## 5.0.34 (Unreleased)
+## 5.0.34 (2017-06-18)
+
+### Features
+
+ - Add TSL2591 luminosity sensor ([#257](https://github.com/kizniche/mycodo/issues/257))
+ - Update sensor page to more compact style
 
 ### Bugfixes
 
- - Append setup.sh output to setup.log instead of overwriting
+ - Append setup.sh output to setup.log instead of overwriting ([#255](https://github.com/kizniche/mycodo/issues/255))
  - Fix display of error response when attempting to modify timer when it's active
 
 ## 5.0.33 (2017-06-05)

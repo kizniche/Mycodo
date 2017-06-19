@@ -6,7 +6,7 @@ import os
 import collections
 from datetime import timedelta
 
-MYCODO_VERSION = '5.0.33'
+MYCODO_VERSION = '5.0.34'
 ALEMBIC_VERSION = '9d7631079ac1'
 
 LANGUAGES = {
@@ -47,7 +47,8 @@ MEASUREMENTS = {
     'SHT1x_7x': ['dewpoint', 'humidity', 'temperature'],
     'SHT2x': ['dewpoint', 'humidity', 'temperature'],
     'TMP006': ['temperature_object', 'temperature_die'],
-    'TSL2561': ['lux']
+    'TSL2561': ['lux'],
+    'TSL2591': ['lux']
 }
 
 # Unit abbreviation for each measurement
@@ -106,6 +107,7 @@ SENSORS = [
     ('K30', 'CO2: K30'),
     ('BH1750', 'Luminance: BH1750'),
     ('TSL2561', 'Luminance: TSL2561'),
+    ('TSL2591', 'Luminance: TSL2591'),
     ('CHIRP', 'Moisture: Chirp'),
     ('ATLAS_PH_I2C', 'pH: Atlas Scientific (I2C)'),
     ('ATLAS_PH_UART', 'pH: Atlas Scientific (UART)'),
@@ -141,6 +143,7 @@ DEVICES_DEFAULT_LOCATION = [
     'K30',
     'RPi',
     'RPiCPULoad',
+    'TSL2591',
     'mycodo_ram'
 ]
 
@@ -160,7 +163,8 @@ LIST_DEVICES_I2C = [
     'MCP342x',
     'SHT2x',
     'TMP006',
-    'TSL2561'
+    'TSL2561',
+    'TSL2591'
 ]
 
 # Conditional actions
