@@ -135,10 +135,6 @@ If you receive an unresolvable error during the install, please [create an issue
 
 A minimal set of anonymous usage statistics are collected to help improve development. No identifying information is saved from the information that is collected and it is only used to improve Mycodo. No other sources will have access to this information. The data collected is mainly how much specific features are used, how often errors occur, and other similar statistics. The data that's collected can be viewed from the 'View collected statistics' link in the Settings/General panel of the UI or in the file ```~/Mycodo/databases/statistics.csv```. You may opt out from transmitting this information from the General settings in the Admin panel.
 
-```~/Mycodo/mycodo/scripts/mycodo_wrapper``` is a binary executable used to update the system from the web interface. It has the setuid bit to permit it to be executed as root (```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh initialize``` sets the correct permissions and setuid). Since shell scripts cannot be setuid (ony binary files), the ```mycodo_wrapper``` binary permits these operations to be executed as root by a non-root user (in this case, members of the group ```mycodo```). You can audit the source code of ```~/Mycodo/mycodo/scripts/mycodo_wrapper.c``` and if you want to ensure the binary is indeed compiled from that source, you may compile it yourself with the following command. Otherwise, the compiled binary is already included and no further action is needed.
-
-```sudo gcc ~/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ~/Mycodo/mycodo/scripts/mycodo_wrapper```
-
 ## Web Server Security
 
 An SSL certificate will be generated and stored at ```~/Mycodo/mycodo/mycodo_flask/ssl_certs/``` during the install process. If you want to use your own SSL certificates, replace them with your own.

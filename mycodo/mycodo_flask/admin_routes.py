@@ -68,16 +68,28 @@ def admin_backup():
             backup_dirs_filtered.append(each_dir)
 
     if request.method == 'POST':
-        form_name = request.form['form-name']
-        if form_name == 'restore':
-            if form_backup.restore.data:
-                flash("Restore functionality is not currently enabled.",
-                      "error")
-                # formUpdate.restore.data
-                # restore_command = '{path}/mycodo/scripts/mycodo_wrapper ' \
-                #                   'restore >> /var/log/mycodo/mycodorestore.log 2>&1'.format(
-                #                     path=INSTALL_DIRECTORY)
-                # subprocess.Popen(restore_command, shell=True)
+        if form_backup.backup.data:
+            cmd = '{path}/mycodo/scripts/mycodo_wrapper create-backup 2>&1'.format(
+                path=INSTALL_DIRECTORY)
+            subprocess.Popen(cmd, shell=True)
+            flash("Backup in progress. It should complete within a few "
+                  "seconds to a few minutes. The backup will appear on "
+                  "this page after it completes.", "success")
+        elif form_backup.delete.data:
+            cmd = '{path}/mycodo/scripts/mycodo_wrapper delete-backup {dir} 2>&1'.format(
+                path=INSTALL_DIRECTORY, dir=form_backup.selected_dir.data)
+            subprocess.Popen(cmd, shell=True)
+            flash("Deletion of backup in progress. It should complete within "
+                  "a few seconds to a few minutes. The backup will disappear "
+                  "on this page after it completes.", "success")
+        elif form_backup.restore.data:
+            flash("Restore functionality is not currently enabled.",
+                  "error")
+            # formUpdate.restore.data
+            # restore_command = '{path}/mycodo/scripts/mycodo_wrapper ' \
+            #                   'restore >> /var/log/mycodo/mycodorestore.log 2>&1'.format(
+            #                     path=INSTALL_DIRECTORY)
+            # subprocess.Popen(restore_command, shell=True)
 
     return render_template('admin/backup.html',
                            form_backup=form_backup,

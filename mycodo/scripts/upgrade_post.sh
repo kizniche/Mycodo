@@ -43,6 +43,8 @@ rm ${INSTALL_DIRECTORY}/databases/statistics.csv
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-cron
 
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh compile-mycodo-wrapper
+
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh initialize
 
 printf "\n#### Reloading systemctl, Mycodo daemon, and apache2\n"

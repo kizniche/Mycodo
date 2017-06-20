@@ -12,6 +12,9 @@ INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../.." && pwd -P )
 cd ${INSTALL_DIRECTORY}
 
 case "${1:-''}" in
+    'compile-mycodo-wrapper')
+        gcc ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
+    ;;
     'compile-translations')
         printf "\n#### Compiling Translations\n"
         source ${INSTALL_DIRECTORY}/Mycodo/env/bin/activate
@@ -114,7 +117,7 @@ case "${1:-''}" in
     'update-packages')
         printf "\n#### Installing prerequisite apt packages and update pip\n"
         apt-get update -y
-        apt-get install -y apache2 gawk git libapache2-mod-wsgi libav-tools libboost-python-dev libffi-dev libi2c-dev python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3
+        apt-get install -y apache2 gawk gcc git libapache2-mod-wsgi libav-tools libboost-python-dev libffi-dev libi2c-dev python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3
         easy_install pip
         pip install --upgrade pip
     ;;
@@ -147,5 +150,11 @@ case "${1:-''}" in
     ;;
     'upgrade')
         /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh
+    ;;
+    'create-backup')
+        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_backup_create.sh
+    ;;
+    'restore-backup')
+        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_backup_restore.sh $2
     ;;
 esac

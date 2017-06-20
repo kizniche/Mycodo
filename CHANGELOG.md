@@ -1,3 +1,15 @@
+## 5.0.36 (Unreleased)
+
+### Features
+
+ - Add ability to create a Mycodo backup
+ - Add ability to delete a Mycodo backup
+ - Remove mycodo-wrapper binary in favor of compiling it from source code during install/upgrade
+ 
+### Work in progress
+
+ - Add ability to restore a Mycodo backup
+
 ## 5.0.35 (2017-06-18)
 
 ### Bugfixes

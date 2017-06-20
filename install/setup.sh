@@ -91,6 +91,8 @@ break || sleep 60; done
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-cron
 
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh compile-mycodo-wrapper
+
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh initialize
 
 printf "\n#### Starting the Mycodo daemon and web server\n"

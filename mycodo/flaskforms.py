@@ -1103,4 +1103,5 @@ class Upgrade(FlaskForm):
 class Backup(FlaskForm):
     backup = SubmitField(lazy_gettext(u'Create Backup'))
     restore = SubmitField(lazy_gettext(u'Restore Backup'))
-    restore_dir = HiddenField('Restore Backup')
+    delete = SubmitField(lazy_gettext(u'Delete Backup'))
+    selected_dir = HiddenField()

@@ -108,14 +108,14 @@ runSelfUpgrade() {
     printf "Done.\n"
   fi
 
-  printf "Moving databases from ${INSTALL_DIRECTORY}/Mycodo/databases/ to ${MYCODO_NEW_TMP_DIR}/databases..."
+  printf "Copying databases from ${INSTALL_DIRECTORY}/Mycodo/databases/ to ${MYCODO_NEW_TMP_DIR}/databases..."
   if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/*.db ${MYCODO_NEW_TMP_DIR}/databases ; then
     printf "Failed: Error while trying to copy databases."
     error_found
   fi
   printf "Done.\n"
 
-  printf "Moving flask_secret_key from ${INSTALL_DIRECTORY}/Mycodo/databases/ to ${MYCODO_NEW_TMP_DIR}/databases..."
+  printf "Copying flask_secret_key from ${INSTALL_DIRECTORY}/Mycodo/databases/ to ${MYCODO_NEW_TMP_DIR}/databases..."
   if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/flask_secret_key ${MYCODO_NEW_TMP_DIR}/databases ; then
     printf "Failed: Error while trying to copy flask_secret_key."
   fi

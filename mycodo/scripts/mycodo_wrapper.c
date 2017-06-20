@@ -40,13 +40,38 @@ int main(int argc, char *argv[]) {
 
 			sprintf(cmd, "service mycodo stop");
 			system(cmd);
-			sprintf(cmd, "/../mycodo_daemon.py -d");
+			sprintf(cmd, "/../../env/bin/Python /../mycodo_daemon.py -d");
 			system(cmd);
 
 		} else if (strcmp(argv[1], "delete-backup") == 0 && (argc > 2)) {
 
-			sprintf(cmd, "rm -rf /var/Mycodo-backups/%s", argv[2]);
+			sprintf(cmd, "rm -rf /var/Mycodo-backups/Mycodo-backup-%s", argv[2]);
 			system(cmd);
+
+		} else if (strcmp(argv[1], "create-backup") == 0) {
+
+		    char path[255];
+            strncpy(path, argv[0], sizeof(path));
+            dirname(path);
+
+			char restoreScript[255];
+			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
+			strncat(restoreScript, path, sizeof(restoreScript));
+			strncat(restoreScript, "/upgrade_commands.sh create-backup", sizeof(restoreScript));
+			system(restoreScript);
+
+		} else if (strcmp(argv[1], "restore-backup") == 0 && (argc > 2)) {
+
+		    char path[255];
+            strncpy(path, argv[0], sizeof(path));
+            dirname(path);
+
+			char restoreScript[255];
+			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
+			strncat(restoreScript, path, sizeof(restoreScript));
+			sprintf(cmd, "/upgrade_commands.sh restore-backup %s", argv[2]);
+			strncat(restoreScript, cmd, sizeof(restoreScript));
+			system(restoreScript);
 
 		} else if (strcmp(argv[1], "upgrade") == 0) {
 
@@ -68,11 +93,13 @@ int main(int argc, char *argv[]) {
 		printf("                mycodo system to the latest version.\n\n");
 		printf("Usage: mycodo-wrapper start|restart|debug|update|restore [commit]\n\n");
 		printf("Options:\n");
-		printf("   start:                  Start the mycodo daemon\n");
-		printf("   restart:                Restart the mycodo daemon in normal mode\n");
-		printf("   debug:                  Restart the mycodo daemon in debug mode\n");
-		printf("   delete-backup [folder]: Delete Mycodo backup folder named [folder]\n");
-		printf("   upgrade:                Upgrade Mycodo to the latest version on github\n");
+		printf("   start:                      Start the mycodo daemon\n");
+		printf("   restart:                    Restart the mycodo daemon in normal mode\n");
+		printf("   debug:                      Restart the mycodo daemon in debug mode\n");
+		printf("   create-backup:              Create Mycodo backup\n");
+		printf("   delete-backup [DIRECTORY]:  Delete Mycodo backup [DIRECTORY]\n");
+		printf("   restore-backup [DIRECTORY]: Restore Mycodo from backup [DIRECTORY]\n");
+		printf("   upgrade:                    Upgrade Mycodo to the latest version on github\n");
 	}
 
 	return 0;
