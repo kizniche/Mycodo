@@ -79,7 +79,7 @@ case "${1:-''}" in
             pip install virtualenv --upgrade
             virtualenv --system-site-packages ${INSTALL_DIRECTORY}/Mycodo/env
         else
-            printf "## Virtualenv already exists, skipping creation\n"
+            printf "#### Virtualenv already exists, skipping creation\n"
         fi
     ;;
     'update-alembic')
@@ -101,14 +101,14 @@ case "${1:-''}" in
     ;;
     'update-gpiod')
         printf "#### Installing gpiod\n"
-        cd ${INSTALL_DIRECTORY}/install
-        wget --quiet -P ${INSTALL_DIRECTORY}/install abyz.co.uk/rpi/pigpio/pigpio.zip
+        cd ${INSTALL_DIRECTORY}/Mycodo/install
+        wget --quiet -P ${INSTALL_DIRECTORY}/Mycodo/install abyz.co.uk/rpi/pigpio/pigpio.zip
         unzip pigpio.zip
-        cd ${INSTALL_DIRECTORY}/install/PIGPIO
+        cd ${INSTALL_DIRECTORY}/Mycodo/install/PIGPIO
         make -j4
         make install
         /usr/local/bin/pigpiod &
-        cd ${INSTALL_DIRECTORY}/install
+        cd ${INSTALL_DIRECTORY}/Mycodo/install
         rm -rf ./PIGPIO ./pigpio.zip
     ;;
     'update-influxdb')
@@ -131,10 +131,10 @@ case "${1:-''}" in
     ;;
     'update-wiringpi')
         printf "#### Installing wiringpi\n"
-        git clone git://git.drogon.net/wiringPi ${INSTALL_DIRECTORY}/install/wiringPi
-        cd ${INSTALL_DIRECTORY}/install/wiringPi
+        git clone git://git.drogon.net/wiringPi ${INSTALL_DIRECTORY}/Mycodo/install/wiringPi
+        cd ${INSTALL_DIRECTORY}/Mycodo/install/wiringPi
         ./build
-        cd ${INSTALL_DIRECTORY}/install
+        cd ${INSTALL_DIRECTORY}/Mycodo/install
         rm -rf ./wiringPi
     ;;
     'update-packages')
