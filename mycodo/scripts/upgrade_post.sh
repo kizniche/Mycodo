@@ -16,6 +16,9 @@ cd ${INSTALL_DIRECTORY}
 
 ln -sf ${INSTALL_DIRECTORY} /var/www/mycodo
 
+printf "\n#### Removing statistics file\n"
+rm ${INSTALL_DIRECTORY}/databases/statistics.csv
+
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-swap-size
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
@@ -32,14 +35,8 @@ ln -sf ${INSTALL_DIRECTORY} /var/www/mycodo
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-influxdb
 
-printf "\n#### Checking if python modules are up-to-date\n"
-pip install --upgrade -r ${INSTALL_DIRECTORY}/install/requirements.txt
-
 # Not needed here since it is done in the flask app, but done again for good measure
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-alembic
-
-printf "\n#### Removing statistics file\n"
-rm ${INSTALL_DIRECTORY}/databases/statistics.csv
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-mycodo-startup-script
 
@@ -49,8 +46,4 @@ rm ${INSTALL_DIRECTORY}/databases/statistics.csv
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh initialize
 
-printf "\n#### Reloading systemctl, Mycodo daemon, and apache2\n"
-systemctl daemon-reload
-/etc/init.d/apache2 restart
-wget -p http://127.0.0.1 -O /dev/null
-service mycodo restart
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh restart-daemon-web
