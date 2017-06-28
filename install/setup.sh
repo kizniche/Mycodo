@@ -64,11 +64,13 @@ cd ${INSTALL_DIRECTORY}/install
 rm -rf ./PIGPIO ./pigpio.zip
 
 printf "#### Installing wiringpi\n"
-git clone git://git.drogon.net/wiringPi ${INSTALL_DIRECTORY}/install/wiringPi
-cd ${INSTALL_DIRECTORY}/install/wiringPi
+git clone --recursive https://github.com/WiringPi/WiringPi-Python.git ${INSTALL_DIRECTORY}/install/WiringPi-Python
+cd ${INSTALL_DIRECTORY}/install/WiringPi-Python
+git submodule update --init
+cd WiringPi
 ./build
 cd ${INSTALL_DIRECTORY}/install
-rm -rf ./wiringPi
+rm -rf ./WiringPi-Python
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-pip-packages
 
