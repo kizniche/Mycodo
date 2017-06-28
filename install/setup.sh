@@ -103,9 +103,11 @@ done
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh initialize
 
 printf "\n#### Starting the Mycodo web server\n"
-/etc/init.d/apache2 restart
+/etc/init.d/apache2 stop
+/etc/init.d/apache2 start
+sleep 10
 
-printf "\n#### wget\n"
+printf "\n#### Creating Mycodo database\n"
 wget --quiet --no-check-certificate -p http://127.0.0.1 -O /dev/null
 
 printf "\n#### Starting the Mycodo daemon\n"
