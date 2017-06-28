@@ -6,7 +6,7 @@ python:
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y libboost-python-dev gawk git libav-tools libffi-dev libi2c-dev python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3 swig
-  - git clone --recursive https://github.com/WiringPi/WiringPi-Python.git && cd WiringPi-Python && git submodule update --init && cd WiringPi && ./build && cd ..
+  - git clone --recursive https://github.com/WiringPi/WiringPi-Python.git && cd WiringPi-Python && git submodule update --init && cd WiringPi && ./build && cd ../..
   - wget abyz.co.uk/rpi/pigpio/pigpio.zip && unzip pigpio.zip && cd ./PIGPIO && make -j4 && sudo make install && cd ..
   - pip install --upgrade pip webtest
   - wget https://dl.influxdata.com/influxdb/releases/influxdb_1.2.1_amd64.deb && sudo dpkg -i influxdb_1.2.1_amd64.deb
