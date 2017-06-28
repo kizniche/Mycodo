@@ -1,3 +1,9 @@
+## 5.0.38 (2017-06-27)
+
+### Bugfixes
+
+ - Fix install script
+
 ## 5.0.37 (2017-06-27)
 
 ### Bugfixes
