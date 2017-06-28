@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 5.0.38 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
+### Latest version: 5.0.39 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade)
 
 #### [Mycodo Manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md) ([PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt))
 
@@ -25,6 +25,7 @@ Mycodo has been used for cultivating mushrooms and plants, culturing microorgani
 - [Install](#install)
   - [Install Notes](#install-notes)
   - [Web Server Security](#web-server-security)
+- [Upgrade](#upgrade)
 - [Manual](#manual)
 - [License](#license)
 - [Links](#links)
@@ -148,6 +149,14 @@ sudo /etc/init.d/apache2 restart
 ```
 
 If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the web UI at the ```https://``` address (opposed to ```http://```). You may receive a warning message about the security of your site, unless you add the certificate to your browser's trusted list.
+
+## Upgrade
+
+Mycodo can be easily upgraded from the web UI by selecting ```Upgrade```` from the configuration menu. Alternatively, an upgrade can be initiated from a terminal with the following command.
+
+```
+sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade
+```
 
 ## Manual
 

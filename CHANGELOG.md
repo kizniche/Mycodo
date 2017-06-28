@@ -1,3 +1,9 @@
+## 5.0.39 (2017-06-27)
+
+### Bugfixes
+
+ - Fix upgrade process
+
 ## 5.0.38 (2017-06-27)
 
 ### Bugfixes

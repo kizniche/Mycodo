@@ -52,23 +52,9 @@ pip install --upgrade pip
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
 
-printf "#### Installing gpiod\n"
-cd ${INSTALL_DIRECTORY}/install
-wget --quiet -P ${INSTALL_DIRECTORY}/install abyz.co.uk/rpi/pigpio/pigpio.zip
-unzip pigpio.zip
-cd ${INSTALL_DIRECTORY}/install/PIGPIO
-make -j4
-make install
-/usr/local/bin/pigpiod &
-cd ${INSTALL_DIRECTORY}/install
-rm -rf ./PIGPIO ./pigpio.zip
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-gpiod
 
-printf "#### Installing wiringpi\n"
-git clone git://git.drogon.net/wiringPi ${INSTALL_DIRECTORY}/install/wiringPi
-cd ${INSTALL_DIRECTORY}/install/wiringPi
-./build
-cd ${INSTALL_DIRECTORY}/install
-rm -rf ./wiringPi
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-wiringpi
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-pip-packages
 
@@ -97,8 +83,6 @@ done
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh compile-translations
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-cron
-
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh compile-mycodo-wrapper
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh initialize
 

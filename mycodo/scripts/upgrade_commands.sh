@@ -12,9 +12,6 @@ INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../.." && pwd -P )
 cd ${INSTALL_DIRECTORY}
 
 case "${1:-''}" in
-    'compile-mycodo-wrapper')
-        gcc ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
-    ;;
     'compile-translations')
         printf "\n#### Compiling Translations\n"
         source ${INSTALL_DIRECTORY}/Mycodo/env/bin/activate
@@ -50,6 +47,8 @@ case "${1:-''}" in
         adduser mycodo adm
         adduser mycodo video
         adduser mycodo dialout
+
+        gcc ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
 
         chown -LR mycodo.mycodo ${INSTALL_DIRECTORY}/Mycodo
         ln -sfn ${INSTALL_DIRECTORY}/Mycodo /var/www/mycodo
@@ -100,6 +99,18 @@ case "${1:-''}" in
         /bin/bash ${INSTALL_DIRECTORY}/Mycodo/install/crontab.sh mycodo --remove
         /bin/bash ${INSTALL_DIRECTORY}/Mycodo/install/crontab.sh mycodo
     ;;
+    'update-gpiod')
+        printf "#### Installing gpiod\n"
+        cd ${INSTALL_DIRECTORY}/install
+        wget --quiet -P ${INSTALL_DIRECTORY}/install abyz.co.uk/rpi/pigpio/pigpio.zip
+        unzip pigpio.zip
+        cd ${INSTALL_DIRECTORY}/install/PIGPIO
+        make -j4
+        make install
+        /usr/local/bin/pigpiod &
+        cd ${INSTALL_DIRECTORY}/install
+        rm -rf ./PIGPIO ./pigpio.zip
+    ;;
     'update-influxdb')
         printf "\n#### Ensuring compatible version of influxdb is installed ####\n"
         INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
@@ -117,6 +128,14 @@ case "${1:-''}" in
             rm -rf ${INSTALL_FILE}
             service influxdb restart
         fi
+    ;;
+    'update-wiringpi')
+        printf "#### Installing wiringpi\n"
+        git clone git://git.drogon.net/wiringPi ${INSTALL_DIRECTORY}/install/wiringPi
+        cd ${INSTALL_DIRECTORY}/install/wiringPi
+        ./build
+        cd ${INSTALL_DIRECTORY}/install
+        rm -rf ./wiringPi
     ;;
     'update-packages')
         printf "\n#### Installing prerequisite apt packages and update pip\n"
