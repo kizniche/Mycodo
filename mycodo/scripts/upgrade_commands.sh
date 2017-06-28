@@ -118,6 +118,7 @@ case "${1:-''}" in
         cd ${INSTALL_DIRECTORY}/Mycodo/install/PIGPIO
         make -j4
         make install
+        killall pigpiod || true
         /usr/local/bin/pigpiod &
         cd ${INSTALL_DIRECTORY}/Mycodo/install
         rm -rf ./PIGPIO ./pigpio.zip
