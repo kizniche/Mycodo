@@ -107,7 +107,11 @@ case "${1:-''}" in
         CORRECT_VERSION="1.2.4-1"
         CURRENT_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
         if [ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]; then
-            echo "Incorrect version of InfluxDB installed: v${CURRENT_VERSION}. Installing ${CORRECT_VERSION}"
+            if [ ! -z "${CURRENT_VERSION}" ];
+            then
+                echo "Incorrect version of InfluxDB installed: v${CURRENT_VERSION}."
+            fi
+            echo "Installing ${CORRECT_VERSION}"
             wget --quiet ${INSTALL_ADDRESS}${INSTALL_FILE}
             dpkg -i ${INSTALL_FILE}
             rm -rf ${INSTALL_FILE}

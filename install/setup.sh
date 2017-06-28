@@ -64,13 +64,11 @@ cd ${INSTALL_DIRECTORY}/install
 rm -rf ./PIGPIO ./pigpio.zip
 
 printf "#### Installing wiringpi\n"
-git clone --recursive https://github.com/WiringPi/WiringPi-Python.git ${INSTALL_DIRECTORY}/install/WiringPi-Python
-cd ${INSTALL_DIRECTORY}/install/WiringPi-Python
-git submodule update --init
-cd WiringPi
+git clone git://git.drogon.net/wiringPi ${INSTALL_DIRECTORY}/install/wiringPi
+cd ${INSTALL_DIRECTORY}/install/wiringPi
 ./build
 cd ${INSTALL_DIRECTORY}/install
-rm -rf ./WiringPi-Python
+rm -rf ./wiringPi
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-pip-packages
 
@@ -104,9 +102,13 @@ done
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh initialize
 
-printf "\n#### Starting the Mycodo daemon and web server\n"
+printf "\n#### Starting the Mycodo web server\n"
 /etc/init.d/apache2 restart
+
+printf "\n#### wget\n"
 wget --quiet --no-check-certificate -p http://127.0.0.1 -O /dev/null
+
+printf "\n#### Starting the Mycodo daemon\n"
 service mycodo start
 
 trap : 0

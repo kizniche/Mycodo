@@ -1,3 +1,9 @@
+## 5.0.37 (2017-06-27)
+
+### Bugfixes
+
+ - Change wiringpi during install
+
 ## 5.0.36 (2017-06-27)
 
 ### Features
