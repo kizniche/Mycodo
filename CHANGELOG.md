@@ -5,6 +5,10 @@
  - Add ability to create a Mycodo backup
  - Add ability to delete a Mycodo backup
  - Remove mycodo-wrapper binary in favor of compiling it from source code during install/upgrade
+
+### Bugfixes
+
+ - Fix issue with influxdb database and user creation during install ([#255](https://github.com/kizniche/mycodo/issues/255))
  
 ### Work in progress
 

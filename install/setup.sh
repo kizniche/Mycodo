@@ -77,9 +77,16 @@ rm -rf ./wiringPi
 printf "\n#### Creating InfluxDB database and user\n"
 # Attempt to connect to influxdb 5 times, sleeping 60 seconds every fail
 for i in {1..5}; do
-influx -execute "CREATE DATABASE mycodo_db" &&
-influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'" &&
-break || sleep 60; done
+    # Check if influxdb has successfully started and be connected to
+    curl -sL -I localhost:8086/ping > /dev/null &&
+    influx -execute "CREATE DATABASE mycodo_db" &&
+    influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'" &&
+    printf "Influxdb database and user successfully created\n" &&
+    break ||
+    # Else wait 60 seconds if the influxd port is not accepting connections
+    printf "Could not connect to Influxdb. Waiting 60 seconds then trying again...\n" &&
+    sleep 60
+done
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-apache2
 

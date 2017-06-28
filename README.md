@@ -102,7 +102,7 @@ Then change the following settings
 Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web UI. If you require a custom setup, examine and modify this script and accompanying scripts accordingly. If you do not require a custom setup, just run the install script with the following commands.
 
 ```
-sudo apt-get install jq
+sudo apt-get install -y jq
 cd ~
 curl -s https://api.github.com/repos/kizniche/Mycodo/releases/latest | \
 jq -r '.tarball_url' | wget -i - -O mycodo-latest.tar.gz
