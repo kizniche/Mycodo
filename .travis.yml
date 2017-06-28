@@ -1,6 +1,6 @@
 language: python
 os: linux
-dist: precise
+dist: trusty
 python:
   - 2.7
 before_install:
@@ -15,7 +15,6 @@ before_install:
   - influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
 install:
   - sed -i '/picamera/d' install/requirements.txt
-  - sed -i '/pi_switch/d' install/requirements.txt
   - pip install --upgrade -r install/requirements.txt
 virtualenv:
     system_site_packages: true
