@@ -1,3 +1,14 @@
+## 5.0.40 (2017-07-03)
+
+### Features
+
+ - Add ability to restore backup (Warning: Experimental feature, not thoroughly tested)
+
+### Bugfixes
+
+ - Fix install script error ([#253](https://github.com/kizniche/mycodo/issues/253))
+ - Fix issue modulating relays if a conditionals using them are not properly configured ([#266](https://github.com/kizniche/mycodo/issues/266))
+
 ## 5.0.39 (2017-06-27)
 
 ### Bugfixes

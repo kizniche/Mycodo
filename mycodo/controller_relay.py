@@ -408,24 +408,28 @@ class RelayController(threading.Thread):
                     name=each_conditional.name)
 
                 if each_cond_action.do_action == 'relay':
-                    message += u"If relay {id} ({name}) turns {state}, Then:\n".format(
-                        id=each_conditional.if_relay_id,
-                        name=self.relay_name[each_conditional.if_relay_id],
-                        state=each_conditional.if_relay_state)
-                    message += u"Turn relay {id} ({name}) {state}".format(
-                        id=each_cond_action.do_relay_id,
-                        name=self.relay_name[each_cond_action.do_relay_id],
-                        state=each_cond_action.do_relay_state)
-
-                    if each_cond_action.do_relay_duration == 0:
-                        self.relay_on_off(each_cond_action.do_relay_id,
-                                          each_cond_action.do_relay_state)
+                    if each_cond_action.do_relay_id not in self.relay_name:
+                        message += u"Error: Invalid relay ID {id}.".format(
+                            id=each_cond_action.do_relay_id)
                     else:
-                        message += u" for {dur} seconds".format(
-                            dur=each_cond_action.do_relay_duration)
-                        self.relay_on_off(each_cond_action.do_relay_id,
-                                          each_cond_action.do_relay_state,
-                                          each_cond_action.do_relay_duration)
+                        message += u"If relay {id} ({name}) turns {state}, Then ".format(
+                            id=each_conditional.if_relay_id,
+                            name=self.relay_name[each_conditional.if_relay_id],
+                            state=each_conditional.if_relay_state)
+                        message += u"turn relay {id} ({name}) {state}".format(
+                            id=each_cond_action.do_relay_id,
+                            name=self.relay_name[each_cond_action.do_relay_id],
+                            state=each_cond_action.do_relay_state)
+
+                        if each_cond_action.do_relay_duration == 0:
+                            self.relay_on_off(each_cond_action.do_relay_id,
+                                              each_cond_action.do_relay_state)
+                        else:
+                            message += u" for {dur} seconds".format(
+                                dur=each_cond_action.do_relay_duration)
+                            self.relay_on_off(each_cond_action.do_relay_id,
+                                              each_cond_action.do_relay_state,
+                                              each_cond_action.do_relay_duration)
                     message += ".\n"
 
                 elif each_cond_action.do_action == 'command':

@@ -187,7 +187,12 @@ printf "Done.\n"
 sleep 30
 
 if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh initialize ; then
-  printf "Failed: Error while running initialization script.\n"
+  printf "Failed: Error while running initialization.\n"
+  error_found
+fi
+
+if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh set-permissions ; then
+  printf "Failed: Error while setting permissions.\n"
   error_found
 fi
 

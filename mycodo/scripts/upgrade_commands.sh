@@ -41,16 +41,16 @@ case "${1:-''}" in
         ln -s server.crt cert.pem
     ;;
     'initialize')
-        printf "\n#### Creating proper users, directories, and permissions\n"
+        printf "\n#### Compiling mycodo_wrapper\n"
+        gcc ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
+
+        printf "\n#### Creating proper users and directories\n"
         useradd -M mycodo
         adduser mycodo gpio
         adduser mycodo adm
         adduser mycodo video
         adduser mycodo dialout
 
-        gcc ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
-
-        chown -LR mycodo.mycodo ${INSTALL_DIRECTORY}/Mycodo
         ln -sfn ${INSTALL_DIRECTORY}/Mycodo /var/www/mycodo
 
         mkdir -p /var/log/mycodo
@@ -66,6 +66,10 @@ case "${1:-''}" in
         if [ ! -e /var/log/mycodo/login.log ]; then
             touch /var/log/mycodo/login.log
         fi
+    ;;
+    'set-permissions')
+        printf "\n#### Creating proper users, directories, and permissions\n"
+        chown -LR mycodo.mycodo ${INSTALL_DIRECTORY}/Mycodo
         chown -R mycodo.mycodo /var/log/mycodo
 
         find ${INSTALL_DIRECTORY}/Mycodo -type d -exec chmod u+wx,g+wx {} +
@@ -74,16 +78,17 @@ case "${1:-''}" in
         chown root:mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
         chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
     ;;
-    'restart-daemon-web')
+    'restart-daemon')
+        printf "\n#### Restarting the Mycodo daemon\n"
+        service mycodo restart
+    ;;
+    'restart-web-ui')
         printf "\n#### Restarting the Mycodo web server\n"
         /etc/init.d/apache2 restart
         sleep 10
 
         printf "\n#### Creating Mycodo database if it doesn't exist\n"
         wget --quiet --no-check-certificate -p http://127.0.0.1 -O /dev/null
-
-        printf "\n#### Restarting the Mycodo daemon\n"
-        service mycodo restart
     ;;
     'setup-virtualenv')
         if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env ]; then
@@ -103,7 +108,6 @@ case "${1:-''}" in
         printf "\n#### Installing and configuring apache2 web server\n"
         a2enmod wsgi ssl
         ln -sf ${INSTALL_DIRECTORY}/Mycodo/install/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
-
     ;;
     'update-cron')
         printf "#### Updating crontab entry\n"
@@ -134,11 +138,13 @@ case "${1:-''}" in
             then
                 echo "Incorrect version of InfluxDB installed: v${CURRENT_VERSION}."
             fi
-            echo "Installing ${CORRECT_VERSION}"
+            echo "Installing InfluxDB v${CORRECT_VERSION}..."
             wget --quiet ${INSTALL_ADDRESS}${INSTALL_FILE}
             dpkg -i ${INSTALL_FILE}
             rm -rf ${INSTALL_FILE}
             service influxdb restart
+        else
+            printf "Correct version of InfluxDB currently installed\n"
         fi
     ;;
     'update-influxdb-db-user')
