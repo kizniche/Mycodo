@@ -44,7 +44,7 @@ case "${1:-''}" in
         printf "\n#### Compiling mycodo_wrapper\n"
         gcc ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
 
-        printf "\n#### Creating proper users and directories\n"
+        printf "\n#### Creating users and directories\n"
         useradd -M mycodo
         adduser mycodo gpio
         adduser mycodo adm
@@ -68,7 +68,7 @@ case "${1:-''}" in
         fi
     ;;
     'set-permissions')
-        printf "\n#### Creating proper users, directories, and permissions\n"
+        printf "\n#### Setting permissions\n"
         chown -LR mycodo.mycodo ${INSTALL_DIRECTORY}/Mycodo
         chown -R mycodo.mycodo /var/log/mycodo
 
@@ -80,7 +80,10 @@ case "${1:-''}" in
     ;;
     'restart-daemon')
         printf "\n#### Restarting the Mycodo daemon\n"
-        service mycodo restart
+        service mycodo stop
+        sleep 2
+        ${INSTALL_DIRECTORY}/Mycodo/env/bin/python ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/restart_daemon.py
+        service mycodo start
     ;;
     'restart-web-ui')
         printf "\n#### Restarting the Mycodo web server\n"

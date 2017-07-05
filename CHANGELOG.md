@@ -1,3 +1,9 @@
+## 5.0.41 (Unreleased)
+
+### Features
+
+ - Add script to check if daemon uncleanly shut down during upgrade and remove stale PID file ([#198](https://github.com/kizniche/mycodo/issues/198))
+
 ## 5.0.40 (2017-07-03)
 
 ### Features
