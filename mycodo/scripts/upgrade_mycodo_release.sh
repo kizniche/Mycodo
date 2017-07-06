@@ -191,7 +191,7 @@ if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh initialize ;
   error_found
 fi
 
-if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh set-permissions ; then
+if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh update-permissions ; then
   printf "Failed: Error while setting permissions.\n"
   error_found
 fi

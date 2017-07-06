@@ -1,14 +1,16 @@
-## 5.0.41 (Unreleased)
-
-### Features
-
- - Add script to check if daemon uncleanly shut down during upgrade and remove stale PID file ([#198](https://github.com/kizniche/mycodo/issues/198))
-
-## 5.0.40 (2017-07-03)
+## 5.0.41 (2017-07-06)
 
 ### Features
 
  - Add ability to restore backup (Warning: Experimental feature, not thoroughly tested)
+ - Add ability to view the backup log on View Logs page
+ - Add script to check if daemon uncleanly shut down during upgrade and remove stale PID file ([#198](https://github.com/kizniche/mycodo/issues/198))
+
+### Bugfixes
+
+ - Fix error if country cannot be detected for anonymous statistics
+
+## 5.0.40 (2017-07-03)
 
 ### Bugfixes
 

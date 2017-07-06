@@ -9,7 +9,7 @@ from flask import render_template
 from flask import url_for
 from flask.blueprints import Blueprint
 
-from mycodo.mycodo_flask.general_routes import inject_mycodo_version
+from mycodo.mycodo_flask.static_routes import inject_mycodo_version
 from mycodo import flaskforms
 from mycodo import flaskutils
 

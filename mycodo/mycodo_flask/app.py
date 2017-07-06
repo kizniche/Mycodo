@@ -39,6 +39,7 @@ from mycodo.mycodo_flask import general_routes
 from mycodo.mycodo_flask import method_routes
 from mycodo.mycodo_flask import page_routes
 from mycodo.mycodo_flask import settings_routes
+from mycodo.mycodo_flask import static_routes
 
 from mycodo.mycodo_flask.general_routes import influx_db
 from mycodo.utils.system_pi import assure_path_exists
@@ -113,6 +114,7 @@ def register_extensions(app):
 
 def register_blueprints(_app):
     """ register blueprints to the app """
+    _app.register_blueprint(static_routes.blueprint)  # register static routes
     _app.register_blueprint(admin_routes.blueprint)  # register admin views
     _app.register_blueprint(authentication_routes.blueprint)  # register login/logout views
     _app.register_blueprint(calibration_routes.blueprint)  # register calibration views

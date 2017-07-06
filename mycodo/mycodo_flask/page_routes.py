@@ -22,7 +22,7 @@ from flask import url_for
 from flask.blueprints import Blueprint
 
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.general_routes import inject_mycodo_version
+from mycodo.mycodo_flask.static_routes import inject_mycodo_version
 from mycodo import flaskforms
 from mycodo import flaskutils
 from mycodo_client import DaemonControl
@@ -48,17 +48,21 @@ from mycodo.devices.camera import camera_record
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.tools import return_relay_usage
 
-from config import CONDITIONAL_ACTIONS
+from config import BACKUP_LOG_FILE
 from config import DAEMON_LOG_FILE
-from config import DAEMON_PID_FILE
 from config import HTTP_LOG_FILE
-from config import INSTALL_DIRECTORY
+from config import KEEPUP_LOG_FILE
 from config import LOGIN_LOG_FILE
+from config import RESTORE_LOG_FILE
+from config import UPGRADE_LOG_FILE
+
+from config import CONDITIONAL_ACTIONS
+from config import DAEMON_PID_FILE
+from config import INSTALL_DIRECTORY
 from config import MEASUREMENTS
 from config import MEASUREMENT_UNITS
 from config import PATH_CAMERAS
-from config import RESTORE_LOG_FILE
-from config import UPGRADE_LOG_FILE
+
 from config import USAGE_REPORTS_PATH
 
 logger = logging.getLogger('mycodo.mycodo_flask.pages')
@@ -583,10 +587,14 @@ def page_logview():
             logfile = HTTP_LOG_FILE
         elif form_log_view.logdaemon.data:
             logfile = DAEMON_LOG_FILE
-        elif form_log_view.logupgrade.data:
-            logfile = UPGRADE_LOG_FILE
+        elif form_log_view.logkeepup.data:
+            logfile = KEEPUP_LOG_FILE
+        elif form_log_view.logbackup.data:
+            logfile = BACKUP_LOG_FILE
         elif form_log_view.logrestore.data:
             logfile = RESTORE_LOG_FILE
+        elif form_log_view.logupgrade.data:
+            logfile = UPGRADE_LOG_FILE
 
         # Get contents from file
         if os.path.isfile(logfile):

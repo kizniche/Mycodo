@@ -12,6 +12,12 @@ INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../.." && pwd -P )
 cd ${INSTALL_DIRECTORY}
 
 case "${1:-''}" in
+    'backup-create')
+        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_backup_create.sh
+    ;;
+    'backup-restore')
+        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_backup_restore.sh $2
+    ;;
     'compile-translations')
         printf "\n#### Compiling Translations\n"
         source ${INSTALL_DIRECTORY}/Mycodo/env/bin/activate
@@ -43,6 +49,8 @@ case "${1:-''}" in
     'initialize')
         printf "\n#### Compiling mycodo_wrapper\n"
         gcc ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
+        chown root:mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
+        chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
 
         printf "\n#### Creating users and directories\n"
         useradd -M mycodo
@@ -54,8 +62,16 @@ case "${1:-''}" in
         ln -sfn ${INSTALL_DIRECTORY}/Mycodo /var/www/mycodo
 
         mkdir -p /var/log/mycodo
+        mkdir -p /var/Mycodo-backups
+
         if [ ! -e /var/log/mycodo/mycodo.log ]; then
             touch /var/log/mycodo/mycodo.log
+        fi
+        if [ ! -e /var/log/mycodo/mycodobackup.log ]; then
+            touch /var/log/mycodo/mycodobackup.log
+        fi
+        if [ ! -e /var/log/mycodo/mycodokeepup.log ]; then
+            touch /var/log/mycodo/mycodokeepup.log
         fi
         if [ ! -e /var/log/mycodo/mycodoupgrade.log ]; then
             touch /var/log/mycodo/mycodoupgrade.log
@@ -66,17 +82,6 @@ case "${1:-''}" in
         if [ ! -e /var/log/mycodo/login.log ]; then
             touch /var/log/mycodo/login.log
         fi
-    ;;
-    'set-permissions')
-        printf "\n#### Setting permissions\n"
-        chown -LR mycodo.mycodo ${INSTALL_DIRECTORY}/Mycodo
-        chown -R mycodo.mycodo /var/log/mycodo
-
-        find ${INSTALL_DIRECTORY}/Mycodo -type d -exec chmod u+wx,g+wx {} +
-        find ${INSTALL_DIRECTORY}/Mycodo -type f -exec chmod u+w,g+w,o+r {} +
-        # find $INSTALL_DIRECTORY/Mycodo/mycodo -type f -name '.?*' -prune -o -exec chmod 770 {} +
-        chown root:mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
-        chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
     ;;
     'restart-daemon')
         printf "\n#### Restarting the Mycodo daemon\n"
@@ -153,7 +158,7 @@ case "${1:-''}" in
     'update-influxdb-db-user')
         printf "\n#### Creating InfluxDB database and user\n"
         # Attempt to connect to influxdb 5 times, sleeping 60 seconds every fail
-        for i in {1..5}; do
+        for _ in {1..5}; do
             # Check if influxdb has successfully started and be connected to
             curl -sL -I localhost:8086/ping > /dev/null &&
             influx -execute "CREATE DATABASE mycodo_db" &&
@@ -165,13 +170,12 @@ case "${1:-''}" in
             sleep 60
         done
     ;;
-    'update-wiringpi')
-        printf "#### Installing wiringpi\n"
-        git clone git://git.drogon.net/wiringPi ${INSTALL_DIRECTORY}/Mycodo/install/wiringPi
-        cd ${INSTALL_DIRECTORY}/Mycodo/install/wiringPi
-        ./build
-        cd ${INSTALL_DIRECTORY}/Mycodo/install
-        rm -rf ./wiringPi
+    'update-mycodo-startup-script')
+        printf "\n#### Enabling mycodo startup script\n"
+        systemctl disable mycodo.service
+        rm -rf /etc/systemd/system/mycodo.service
+        systemctl enable ${INSTALL_DIRECTORY}/Mycodo/install/mycodo.service
+        systemctl daemon-reload
     ;;
     'update-packages')
         printf "\n#### Installing prerequisite apt packages and update pip\n"
@@ -190,6 +194,18 @@ case "${1:-''}" in
             ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install --upgrade -r ${INSTALL_DIRECTORY}/Mycodo/install/requirements.txt
         fi
     ;;
+    'update-permissions')
+        printf "\n#### Setting permissions\n"
+        chown -LR mycodo.mycodo ${INSTALL_DIRECTORY}/Mycodo
+        chown -R mycodo.mycodo /var/log/mycodo
+        chown -R mycodo.mycodo /var/Mycodo-backups
+
+        find ${INSTALL_DIRECTORY}/Mycodo -type d -exec chmod u+wx,g+wx {} +
+        find ${INSTALL_DIRECTORY}/Mycodo -type f -exec chmod u+w,g+w,o+r {} +
+
+        chown root:mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
+        chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
+    ;;
     'update-swap-size')
         printf "\n#### Checking if swap size is 100 MB and needs to be changed to 512 MB\n"
         if grep -q "CONF_SWAPSIZE=100" "/etc/dphys-swapfile"; then
@@ -201,19 +217,18 @@ case "${1:-''}" in
             printf "#### Swap not currently set to 100 MB. Not changing.\n"
         fi
     ;;
-    'update-mycodo-startup-script')
-        printf "\n#### Enabling mycodo startup script\n"
-        systemctl disable mycodo.service
-        rm -rf /etc/systemd/system/mycodo.service
-        systemctl enable ${INSTALL_DIRECTORY}/Mycodo/install/mycodo.service
+    'update-wiringpi')
+        printf "#### Installing wiringpi\n"
+        git clone git://git.drogon.net/wiringPi ${INSTALL_DIRECTORY}/Mycodo/install/wiringPi
+        cd ${INSTALL_DIRECTORY}/Mycodo/install/wiringPi
+        ./build
+        cd ${INSTALL_DIRECTORY}/Mycodo/install
+        rm -rf ./wiringPi
     ;;
     'upgrade')
         /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh
     ;;
-    'create-backup')
-        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_backup_create.sh
-    ;;
-    'restore-backup')
-        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_backup_restore.sh $2
+    *)
+        printf "Unrecognized command\n"
     ;;
 esac

@@ -3,37 +3,29 @@
 import logging
 import operator
 import flask_login
-from flask import (
-    redirect,
-    render_template,
-    request,
-    url_for
-)
+
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import url_for
 from flask.blueprints import Blueprint
 
-# Classes
-from mycodo.databases.models import (
-    Camera,
-    Misc,
-    Relay,
-    Role,
-    SMTP,
-    User
-)
+from mycodo.databases.models import Camera
+from mycodo.databases.models import Misc
+from mycodo.databases.models import Relay
+from mycodo.databases.models import Role
+from mycodo.databases.models import SMTP
+from mycodo.databases.models import User
 
-# Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
 from mycodo.devices.camera import count_cameras_opencv
 
-# Config
-from mycodo.config import (
-    CAMERAS,
-    LANGUAGES,
-    THEMES
-)
+from mycodo.config import CAMERAS
+from mycodo.config import LANGUAGES
+from mycodo.config import THEMES
 
-from mycodo.mycodo_flask.general_routes import inject_mycodo_version
+from mycodo.mycodo_flask.static_routes import inject_mycodo_version
 
 logger = logging.getLogger('mycodo.mycodo_flask.settings')
 

@@ -27,7 +27,7 @@ from mycodo.databases.models import (
 # Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
-from mycodo.mycodo_flask.general_routes import inject_mycodo_version
+from mycodo.mycodo_flask.static_routes import inject_mycodo_version
 from mycodo.utils.system_pi import (
     csv_to_list_of_int,
     get_sec,

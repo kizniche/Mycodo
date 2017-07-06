@@ -24,14 +24,19 @@ function error_found {
 CURRENT_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
 NOW=$(date +"%Y-%m-%d_%H-%M-%S")
 BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
+ERROR_FOUND=false
 
-printf "#### Restore of backup $2 initiated $NOW ####\n"
+printf "\n#### Restore of backup $2 initiated $NOW ####\n"
 
 printf "#### Stopping Daemon and HTTP server ####\n"
 service mycodo stop
+sleep 2
+${INSTALL_DIRECTORY}/Mycodo/env/bin/python ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/restart_daemon.py
 /etc/init.d/apache2 stop
 
-mkdir -p /var/Mycodo-backups
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh initialize
+
+/bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh update-permissions
 
 printf "\nBacking up current Mycodo from ${INSTALL_DIRECTORY}/Mycodo to ${BACKUP_DIR}..."
 if ! mv ${INSTALL_DIRECTORY}/Mycodo ${BACKUP_DIR} ; then
@@ -71,7 +76,7 @@ if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh initialize ;
   error_found
 fi
 
-if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh set-permissions ; then
+if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh update-permissions ; then
   printf "Failed: Error while setting permissions.\n"
   error_found
 fi
@@ -84,5 +89,11 @@ fi
 printf "Done.\n\n"
 
 date
-printf "Restore completed successfully without errors.\n"
+printf "#### Restore script end\n"
+
+if ${ERROR_FOUND}; then
+    printf "\n#### ERROR ####"
+    printf "\nThere was an error detected during the restore. Please review the log at /var/log/mycodo/mycodorestore.log"
+fi
+
 echo '0' > ${INSTALL_DIRECTORY}/Mycodo/.restore

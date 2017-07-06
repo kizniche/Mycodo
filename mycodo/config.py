@@ -6,7 +6,7 @@ import os
 import collections
 from datetime import timedelta
 
-MYCODO_VERSION = '5.0.40'
+MYCODO_VERSION = '5.0.41'
 ALEMBIC_VERSION = '9d7631079ac1'
 
 LANGUAGES = {
@@ -232,6 +232,8 @@ USAGE_REPORTS_PATH = os.path.join(INSTALL_DIRECTORY, 'relay_usage_reports')
 LOG_PATH = '/var/log/mycodo'  # Where generated logs are stored
 LOGIN_LOG_FILE = os.path.join(LOG_PATH, 'login.log')
 DAEMON_LOG_FILE = os.path.join(LOG_PATH, 'mycodo.log')
+KEEPUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodokeepup.log')
+BACKUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodobackup.log')
 UPGRADE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupgrade.log')
 RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
 HTTP_LOG_FILE = '/var/log/apache2/error.log'

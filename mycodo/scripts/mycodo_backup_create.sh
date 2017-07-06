@@ -8,6 +8,9 @@ fi
 INSTALL_DIRECTORY=$( cd -P /var/www/mycodo/.. && pwd -P )
 
 function error_found {
+    date
+    printf "\n#### ERROR ####"
+    printf "\nThere was an error detected during the backup. Please review the log at /var/log/mycodo/"
     exit 1
 }
 
@@ -16,7 +19,7 @@ NOW=$(date +"%Y-%m-%d_%H-%M-%S")
 TMP_DIR="/var/tmp/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
 BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
 
-printf "#### Create backup $2 initiated $NOW ####\n"
+printf "\n#### Create backup initiated $NOW ####\n"
 
 mkdir -p /var/Mycodo-backups
 

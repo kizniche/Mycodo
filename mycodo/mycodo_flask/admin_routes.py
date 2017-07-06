@@ -18,16 +18,19 @@ from pkg_resources import parse_version
 # Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
-from mycodo.mycodo_flask.general_routes import inject_mycodo_version
+from mycodo.mycodo_flask.static_routes import inject_mycodo_version
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.system_pi import internet
 from mycodo.utils.github_release_info import github_releases
 
 # Config
 from mycodo.config import (
+    BACKUP_LOG_FILE,
     INSTALL_DIRECTORY,
     MYCODO_VERSION,
-    STATS_CSV
+    RESTORE_LOG_FILE,
+    STATS_CSV,
+    UPGRADE_LOG_FILE
 )
 
 logger = logging.getLogger('mycodo.mycodo_flask.admin')
@@ -69,27 +72,34 @@ def admin_backup():
 
     if request.method == 'POST':
         if form_backup.backup.data:
-            cmd = '{path}/mycodo/scripts/mycodo_wrapper create-backup 2>&1'.format(
-                path=INSTALL_DIRECTORY)
+            cmd = '{pth}/mycodo/scripts/mycodo_wrapper backup-create ' \
+                  ' >> {log} 2>&1'.format(pth=INSTALL_DIRECTORY,
+                                          log=BACKUP_LOG_FILE)
             subprocess.Popen(cmd, shell=True)
-            flash("Backup in progress. It should complete within a few "
-                  "seconds to a few minutes. The backup will appear on "
-                  "this page after it completes.", "success")
+            flash(gettext(u"Backup in progress. It should complete within a "
+                          u"few seconds to a few minutes. The backup will "
+                          u"appear on this page after it completes."),
+                  "success")
         elif form_backup.delete.data:
-            cmd = '{path}/mycodo/scripts/mycodo_wrapper delete-backup {dir} 2>&1'.format(
-                path=INSTALL_DIRECTORY, dir=form_backup.selected_dir.data)
+            cmd = '{pth}/mycodo/scripts/mycodo_wrapper backup-delete {dir}' \
+                  ' 2>&1'.format(pth=INSTALL_DIRECTORY,
+                                 dir=form_backup.selected_dir.data)
             subprocess.Popen(cmd, shell=True)
-            flash("Deletion of backup in progress. It should complete within "
-                  "a few seconds to a few minutes. The backup will disappear "
-                  "on this page after it completes.", "success")
+            flash(gettext(u"Deletion of backup in progress. It should "
+                          u"complete within a few seconds to a few minutes. "
+                          u"The backup will disappear on this page after it "
+                          u"completes."),
+                  "success")
         elif form_backup.restore.data:
-            flash("Restore functionality is not currently enabled.",
-                  "error")
-            # formUpdate.restore.data
-            # restore_command = '{path}/mycodo/scripts/mycodo_wrapper ' \
-            #                   'restore >> /var/log/mycodo/mycodorestore.log 2>&1'.format(
-            #                     path=INSTALL_DIRECTORY)
-            # subprocess.Popen(restore_command, shell=True)
+            cmd = '{pth}/mycodo/scripts/mycodo_wrapper backup-restore {dir}' \
+                  ' >> {log} 2>&1'.format(pth=INSTALL_DIRECTORY,
+                                          dir=form_backup.selected_dir.data,
+                                          log=RESTORE_LOG_FILE)
+
+            subprocess.Popen(cmd, shell=True)
+            flash(gettext(u"Restore in progress. It should complete within a "
+                          u"few seconds to a few minutes."),
+                  "success")
 
     return render_template('admin/backup.html',
                            form_backup=form_backup,
@@ -120,7 +130,8 @@ def admin_upgrade():
 
     if not internet():
         flash(gettext(u"Upgrade functionality is disabled because an internet "
-                      u"connection was unable to be detected"), "error")
+                      u"connection was unable to be detected"),
+              "error")
         return render_template('admin/upgrade.html',
                                is_internet=False)
 
@@ -139,7 +150,8 @@ def admin_upgrade():
     if upgrade:
         if upgrade == 1:
             flash(gettext(u"An upgrade is currently in progress. Please wait "
-                          u"for it to finish"), "error")
+                          u"for it to finish"),
+                  "error")
         elif upgrade == 2:
             flash(gettext(u"There was an error encountered during the upgrade "
                           u"process. Check the upgrade log for details."),
@@ -179,10 +191,10 @@ def admin_upgrade():
 
     if request.method == 'POST':
         if form_upgrade.upgrade.data and upgrade_available:
-            subprocess.Popen('{path}/mycodo/scripts/mycodo_wrapper upgrade >>'
-                             ' /var/log/mycodo/mycodoupgrade.log 2>&1'.format(
-                                path=INSTALL_DIRECTORY),
-                             shell=True)
+            cmd = '{pth}/mycodo/scripts/mycodo_wrapper upgrade >> {log} ' \
+                  '2>&1'.format(pth=INSTALL_DIRECTORY,
+                                log=UPGRADE_LOG_FILE)
+            subprocess.Popen(cmd, shell=True)
             upgrade = 1
             flash(gettext(u"The upgrade has started. The daemon will be "
                           u"stopped during the upgrade."), "success")

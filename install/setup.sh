@@ -74,11 +74,11 @@ pip install --upgrade pip
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh initialize
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh set-permissions
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-permissions
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh restart-web-ui
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh set-permissions
+/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-permissions
 
 /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh restart-daemon
 

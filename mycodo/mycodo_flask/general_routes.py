@@ -1,14 +1,4 @@
 # coding=utf-8
-"""
-This module is a temporary holding area for the mycodo_flask routes while they are organized into
-their own logical packages and modules.  See https://github.com/kizniche/Mycodo/issues/129
-
-If you are looking for something to do then breaking up these routes is a great start.  You
-will see that many of the routes accept a range of variable rules and return one of multiple
-pages based on the variable for the route.  Moving towards smaller sections of code for specific
-endpoints is the ultimate goal because it will be easier to test, read, and modify along with
-being less error prone.
-"""
 from __future__ import print_function
 
 import StringIO  # not python 3 compatible
@@ -17,10 +7,8 @@ import csv
 import datetime
 import logging
 import os
-import socket
 import subprocess
 import time
-import traceback
 import flask_login
 from RPi import GPIO
 from dateutil.parser import parse as date_parse
@@ -42,7 +30,6 @@ from mycodo import flaskforms
 from mycodo import flaskutils
 from mycodo.databases.models import Camera
 from mycodo.databases.models import DisplayOrder
-from mycodo.databases.models import Misc
 from mycodo.databases.models import Relay
 from mycodo.databases.models import Remote
 from mycodo.databases.models import Sensor
@@ -50,7 +37,6 @@ from mycodo.databases.models import User
 from mycodo.devices.camera import CameraStream
 from mycodo.flaskutils import gzipped
 from mycodo.mycodo_client import DaemonControl
-from mycodo.mycodo_flask.authentication_routes import admin_exists
 from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import query_string
@@ -60,7 +46,6 @@ from mycodo.config import INFLUXDB_PASSWORD
 from mycodo.config import INFLUXDB_DATABASE
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LOG_PATH
-from mycodo.config import MYCODO_VERSION
 from mycodo.config import PATH_CAMERAS
 
 blueprint = Blueprint('general_routes',
@@ -70,36 +55,6 @@ blueprint = Blueprint('general_routes',
 
 logger = logging.getLogger(__name__)
 influx_db = InfluxDB()
-
-
-def before_request_admin_exist():
-    """
-    Ensure databases exist and at least one user is in the user database.
-    """
-    if not admin_exists():
-        return redirect(url_for("authentication_routes.create_admin"))
-blueprint.before_request(before_request_admin_exist)
-
-
-@blueprint.context_processor
-def inject_mycodo_version():
-    """Variables to send with every page request"""
-    try:
-        control = DaemonControl()
-        daemon_status = control.daemon_status()
-    except Exception as e:
-        logger.error(gettext(u"URL for 'inject_mycodo_version' raised and "
-                             u"error: %(err)s", err=e))
-        daemon_status = '0'
-
-    misc = Misc.query.first()
-    return dict(daemon_status=daemon_status,
-                mycodo_version=MYCODO_VERSION,
-                host=socket.gethostname(),
-                hide_alert_success=misc.hide_alert_success,
-                hide_alert_info=misc.hide_alert_info,
-                hide_alert_warning=misc.hide_alert_warning,
-                hide_tooltips=misc.hide_tooltips)
 
 
 @blueprint.route('/')
@@ -534,20 +489,3 @@ def data():
             password_hash == user.password_hash):
         return "0"
     return "1"
-
-
-@blueprint.route('/robots.txt')
-def static_from_root():
-    """Return static robots.txt"""
-    return send_from_directory(current_app.static_folder, request.path[1:])
-
-
-@blueprint.app_errorhandler(404)
-def not_found(error):
-    return render_template('404.html', error=error), 404
-
-
-@blueprint.app_errorhandler(500)
-def page_error(error):
-    trace = traceback.format_exc()
-    return render_template('500.html', trace=trace), 500
