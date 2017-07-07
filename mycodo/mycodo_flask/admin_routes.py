@@ -95,10 +95,9 @@ def admin_backup():
                   "success")
         elif form_backup.restore.data:
             cmd = '{pth}/mycodo/scripts/mycodo_wrapper backup-restore ' \
-                  '{dir}/{backup} >> {log} 2>&1'.format(
+                  '{backup} >> {log} 2>&1'.format(
                     pth=INSTALL_DIRECTORY,
-                    dir='/var/Mycodo-backups',
-                    backup=form_backup.selected_dir.data,
+                    backup=form_backup.full_path.data,
                     log=RESTORE_LOG_FILE)
 
             subprocess.Popen(cmd, shell=True)

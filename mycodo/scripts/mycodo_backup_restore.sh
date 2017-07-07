@@ -18,8 +18,10 @@ echo '1' > ${INSTALL_DIRECTORY}/Mycodo/.restore
 
 function error_found {
     echo '2' > ${INSTALL_DIRECTORY}/Mycodo/.restore
-    printf "\n#### ERROR ####"
-    printf "\nThere was an error detected during the restore. Please review the log at /var/log/mycodo/mycodorestore.log"
+    printf "\n\n"
+    date
+    printf "#### ERROR ####\n"
+    printf "There was an error detected during the restore. Please review the log at /var/log/mycodo/mycodorestore.log"
     exit 1
 }
 
@@ -91,6 +93,6 @@ fi
 printf "Done.\n\n"
 
 date
-printf "#### Restore completed successfully without errors.\n"
+printf "Restore completed successfully without errors.\n"
 
 echo '0' > ${INSTALL_DIRECTORY}/Mycodo/.restore

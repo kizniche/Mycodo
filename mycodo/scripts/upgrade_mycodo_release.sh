@@ -14,6 +14,10 @@ runSelfUpgrade() {
 
   function error_found {
     echo '2' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
+    printf "\n\n"
+    date
+    printf "#### ERROR ####\n"
+    printf "There was an error detected during the upgrade. Please review the log at /var/log/mycodo/mycodoupgrade.log"
     exit 1
   }
 
@@ -146,6 +150,14 @@ runSelfUpgrade() {
     printf "Done.\n"
   fi
 
+  if [ -d ${INSTALL_DIRECTORY}/Mycodo/.upgrade ] ; then
+    printf "Moving .upgrade file..."
+    if ! mv ${INSTALL_DIRECTORY}/Mycodo/.upgrade ${MYCODO_NEW_TMP_DIR} ; then
+      printf "Failed: Error while trying to move .upgrade file.\n"
+    fi
+    printf "Done.\n"
+  fi
+
   printf "#### Stage 1 of 2 Complete ####\n"
 
   # Spawn upgrade script
@@ -153,7 +165,9 @@ runSelfUpgrade() {
 #!/bin/bash
 
 function error_found {
-  printf "\n\nThere was an error during the upgrade.\n"
+  printf "\n\n"
+  date
+  printf "There was an error during the upgrade.\n"
   printf "Initial steps to try to fix:\n"
   printf "1. Reboot\n"
   printf "2. If that doesn't fix the issue, run the following command:\n"

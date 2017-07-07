@@ -1,3 +1,9 @@
+## 5.0.45 (Unreleased)
+
+### Bugfixes
+
+ - Fix minor bug that leaves the .upgrade file in a backup, causing issue with upgrading after a restore
+
 ## 5.0.44 (2017-07-06)
 
 ### Bugfixes
