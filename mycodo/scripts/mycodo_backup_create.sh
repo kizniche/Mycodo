@@ -10,7 +10,7 @@ INSTALL_DIRECTORY=$( cd -P /var/www/mycodo/.. && pwd -P )
 function error_found {
     date
     printf "\n#### ERROR ####"
-    printf "\nThere was an error detected during the backup. Please review the log at /var/log/mycodo/"
+    printf "\nThere was an error detected while creating the backup. Please review the log at /var/log/mycodo/mycodobackup.log"
     exit 1
 }
 

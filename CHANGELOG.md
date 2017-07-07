@@ -1,3 +1,10 @@
+## 5.0.42 (2017-07-06)
+
+### Features
+
+ - Update InfluxDB to 1.3.0
+ - Update pip package (geocoder)
+
 ## 5.0.41 (2017-07-06)
 
 ### Features
