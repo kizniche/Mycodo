@@ -6,7 +6,7 @@ import os
 import collections
 from datetime import timedelta
 
-MYCODO_VERSION = '5.0.42'
+MYCODO_VERSION = '5.0.43'
 ALEMBIC_VERSION = '9d7631079ac1'
 
 LANGUAGES = {
@@ -229,6 +229,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 # File paths/logging
 USAGE_REPORTS_PATH = os.path.join(INSTALL_DIRECTORY, 'relay_usage_reports')
+BACKUP_PATH = '/var/Mycodo-backups'  # Where Mycodo backups are stored
 LOG_PATH = '/var/log/mycodo'  # Where generated logs are stored
 LOGIN_LOG_FILE = os.path.join(LOG_PATH, 'login.log')
 DAEMON_LOG_FILE = os.path.join(LOG_PATH, 'mycodo.log')

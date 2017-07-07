@@ -22,7 +22,8 @@
     {% else %}
       {%- for each_backup in backup_dirs -%}
         <form method="post" action="/admin/backup">
-        {{form_backup.selected_dir(class_='form-control',value=each_backup[14:])}}
+        {{form_backup.selected_dir(class_='form-control', value=each_backup[14:])}}
+        {{form_backup.full_path(class_='form-control', value=full_paths[loop.index0])}}
         <div class="row" style="padding: 0.3em">
           <div class="col-xs-12 col-sm-3 col-lg-2" style="font-family: 'Courier New', monospace;">
             {% set split_version = each_backup.split('-') %}

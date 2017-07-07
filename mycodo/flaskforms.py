@@ -1106,4 +1106,5 @@ class Backup(FlaskForm):
     backup = SubmitField(lazy_gettext(u'Create Backup'))
     restore = SubmitField(lazy_gettext(u'Restore Backup'))
     delete = SubmitField(lazy_gettext(u'Delete Backup'))
+    full_path = HiddenField()
     selected_dir = HiddenField()

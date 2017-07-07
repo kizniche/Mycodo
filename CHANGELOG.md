@@ -1,3 +1,9 @@
+## 5.0.43 (2017-07-06)
+
+### Bugfixes
+
+ - Fix issues with restore functionality (still possibly buggy: use at own risk)
+
 ## 5.0.42 (2017-07-06)
 
 ### Features

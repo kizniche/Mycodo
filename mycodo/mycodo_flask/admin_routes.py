@@ -26,6 +26,7 @@ from mycodo.utils.github_release_info import github_releases
 # Config
 from mycodo.config import (
     BACKUP_LOG_FILE,
+    BACKUP_PATH,
     INSTALL_DIRECTORY,
     MYCODO_VERSION,
     RESTORE_LOG_FILE,
@@ -58,17 +59,19 @@ def admin_backup():
 
     form_backup = flaskforms.Backup()
 
-    backup_dirs = []
+    backup_dirs_tmp = []
     if not os.path.isdir('/var/Mycodo-backups'):
         flash("Error: Backup directory doesn't exist.", "error")
     else:
-        backup_dirs = sorted(next(os.walk('/var/Mycodo-backups'))[1])
-        backup_dirs.reverse()
+        backup_dirs_tmp = sorted(next(os.walk(BACKUP_PATH))[1])
+        backup_dirs_tmp.reverse()
 
-    backup_dirs_filtered = []
-    for each_dir in backup_dirs:
+    backup_dirs = []
+    full_paths = []
+    for each_dir in backup_dirs_tmp:
         if each_dir.startswith("Mycodo-backup-"):
-            backup_dirs_filtered.append(each_dir)
+            backup_dirs.append(each_dir)
+            full_paths.append(os.path.join(BACKUP_PATH, each_dir))
 
     if request.method == 'POST':
         if form_backup.backup.data:
@@ -91,10 +94,12 @@ def admin_backup():
                           u"completes."),
                   "success")
         elif form_backup.restore.data:
-            cmd = '{pth}/mycodo/scripts/mycodo_wrapper backup-restore {dir}' \
-                  ' >> {log} 2>&1'.format(pth=INSTALL_DIRECTORY,
-                                          dir=form_backup.selected_dir.data,
-                                          log=RESTORE_LOG_FILE)
+            cmd = '{pth}/mycodo/scripts/mycodo_wrapper backup-restore ' \
+                  '{dir}/{backup} >> {log} 2>&1'.format(
+                    pth=INSTALL_DIRECTORY,
+                    dir='/var/Mycodo-backups',
+                    backup=form_backup.selected_dir.data,
+                    log=RESTORE_LOG_FILE)
 
             subprocess.Popen(cmd, shell=True)
             flash(gettext(u"Restore in progress. It should complete within a "
@@ -103,7 +108,8 @@ def admin_backup():
 
     return render_template('admin/backup.html',
                            form_backup=form_backup,
-                           backup_dirs=backup_dirs_filtered)
+                           backup_dirs=backup_dirs,
+                           full_paths=full_paths)
 
 
 @blueprint.route('/admin/statistics', methods=('GET', 'POST'))

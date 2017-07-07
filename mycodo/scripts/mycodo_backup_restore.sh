@@ -36,7 +36,7 @@ sleep 2
 ${INSTALL_DIRECTORY}/Mycodo/env/bin/python ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/restart_daemon.py
 /etc/init.d/apache2 stop
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh initialize
+/bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh initialize
 
 /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh update-permissions
 
@@ -47,8 +47,8 @@ if ! mv ${INSTALL_DIRECTORY}/Mycodo ${BACKUP_DIR} ; then
 fi
 printf "Done.\n"
 
-printf "\nRestoring Mycodo from $2 to ${INSTALL_DIRECTORY}/Mycodo..."
-if ! mv $2 ${INSTALL_DIRECTORY}/Mycodo ; then
+printf "\nRestoring Mycodo from ${2} to ${INSTALL_DIRECTORY}/Mycodo..."
+if ! mv ${2} ${INSTALL_DIRECTORY}/Mycodo ; then
     printf "Failed: Error while trying to restore Mycodo backup from ${INSTALL_DIRECTORY}/Mycodo to ${BACKUP_DIR}.\n"
     error_found
 fi
