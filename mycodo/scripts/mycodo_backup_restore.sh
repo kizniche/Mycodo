@@ -5,10 +5,10 @@ if [ "$EUID" -ne 0 ] ; then
     exit 1
 fi
 
-if [ ! -e $2 ]; then
+if [ ! -e $1 ]; then
     echo "Directory does not exist"
     exit 1
-elif [ ! -d $2 ]; then
+elif [ ! -d $1 ]; then
     echo "Input not a directory"
     exit 2
 fi
@@ -28,7 +28,7 @@ NOW=$(date +"%Y-%m-%d_%H-%M-%S")
 BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
 ERROR_FOUND=false
 
-printf "\n#### Restore of backup $2 initiated $NOW ####\n"
+printf "\n#### Restore of backup $1 initiated $NOW ####\n"
 
 printf "#### Stopping Daemon and HTTP server ####\n"
 service mycodo stop
@@ -47,8 +47,8 @@ if ! mv ${INSTALL_DIRECTORY}/Mycodo ${BACKUP_DIR} ; then
 fi
 printf "Done.\n"
 
-printf "\nRestoring Mycodo from ${2} to ${INSTALL_DIRECTORY}/Mycodo..."
-if ! mv ${2} ${INSTALL_DIRECTORY}/Mycodo ; then
+printf "\nRestoring Mycodo from $1 to ${INSTALL_DIRECTORY}/Mycodo..."
+if ! mv $1 ${INSTALL_DIRECTORY}/Mycodo ; then
     printf "Failed: Error while trying to restore Mycodo backup from ${INSTALL_DIRECTORY}/Mycodo to ${BACKUP_DIR}.\n"
     error_found
 fi
