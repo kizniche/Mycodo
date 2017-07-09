@@ -1,3 +1,9 @@
+## 5.0.46 (2017-07-09)
+
+### Bugfixes
+
+ - Fix upgrade initialization to include setting permissions
+
 ## 5.0.45 (2017-07-07)
 
 ### Bugfixes

@@ -278,7 +278,7 @@ def send_anonymous_stats(start_time):
 
         country = geocoder.ip('me').country
         if not country:
-            country = 'NONE'
+            country = 'None'
         add_update_csv(STATS_CSV, 'country', country)
         add_update_csv(STATS_CSV, 'ram_use_mb',
                        resource.getrusage(
