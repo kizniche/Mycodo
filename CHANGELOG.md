@@ -1,3 +1,9 @@
+## 5.0.47 (2017-07-09)
+
+### Bugfixes
+
+ - Fix upgrade script
+
 ## 5.0.46 (2017-07-09)
 
 ### Bugfixes

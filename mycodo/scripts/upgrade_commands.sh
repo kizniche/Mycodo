@@ -82,7 +82,7 @@ case "${1:-''}" in
         if [ ! -e /var/log/mycodo/login.log ]; then
             touch /var/log/mycodo/login.log
         fi
-        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/upgrade_commands.sh update-permissions
+        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh update-permissions
     ;;
     'restart-daemon')
         printf "\n#### Restarting the Mycodo daemon\n"
