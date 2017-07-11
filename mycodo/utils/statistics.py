@@ -182,7 +182,10 @@ def recreate_stat_file():
         os.chmod(ID_FILE, 0664)
 
     with open(ID_FILE, 'r') as read_file:
-        stat_id = read_file.read()
+        stat_id = read_file.readline().strip()
+
+    if not stat_id.isalnum() or not len(stat_id) == 12:
+        stat_id = 'NoneNoneNone'
 
     new_stat_data = [
         ['stat', 'value'],
