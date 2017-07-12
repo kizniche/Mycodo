@@ -1,3 +1,9 @@
+## 5.0.48 (2017-07-11)
+
+### Features
+
+ - Add power relay to AM2315 sensor configuration ([#273](https://github.com/kizniche/mycodo/issues/273))
+
 ## 5.0.47 (2017-07-09)
 
 ### Bugfixes

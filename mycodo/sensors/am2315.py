@@ -5,7 +5,9 @@ from tentacle_pi import AM2315
 from sensorutils import dewpoint
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger("mycodo.sensors.am2315")
+from mycodo.databases.models import Relay
+from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.mycodo_client import DaemonControl
 
 
 class AM2315Sensor(AbstractSensor):
@@ -15,13 +17,22 @@ class AM2315Sensor(AbstractSensor):
 
     """
 
-    def __init__(self, bus):
+    def __init__(self, sensor_id, bus, power=None):
         super(AM2315Sensor, self).__init__()
+        self.logger = logging.getLogger(
+            'mycodo.sensor_{id}'.format(id=sensor_id))
+
+        self.control = DaemonControl()
+
         self.I2C_bus_number = str(bus)
+        self.power_relay_id = power
+        self.powered = False
         self._dew_point = 0.0
         self._humidity = 0.0
         self._temperature = 0.0
         self.am = None
+
+        self.start_sensor()
 
     def __repr__(self):
         """  Representation of object """
@@ -84,13 +95,26 @@ class AM2315Sensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
+        self._dew_point = None
+        self._humidity = None
+        self._temperature = None
+
+        # Ensure if the power pin turns off, it is turned back on
+        if (self.power_relay_id and
+                not db_retrieve_table_daemon(Relay, device_id=self.power_relay_id).is_on()):
+            self.logger.error(
+                'Sensor power relay {rel} detected as being off. '
+                'Turning on.'.format(rel=self.power_relay_id))
+            self.start_sensor()
+            time.sleep(2)
+
         self.am = AM2315.AM2315(0x5c, "/dev/i2c-" + self.I2C_bus_number)
 
         # Retry measurement if CRC fails
         for num_measure in range(3):
             temperature, humidity, crc_check = self.am.sense()
             if crc_check != 1:
-                logger.debug("Measurement {num} returned failed CRC".format(
+                self.logger.debug("Measurement {num} returned failed CRC".format(
                     num=num_measure))
                 pass
             else:
@@ -98,7 +122,7 @@ class AM2315Sensor(AbstractSensor):
                 return dew_pt, humidity, temperature
             time.sleep(3)
 
-        logger.error("All measurements returned failed CRC")
+        self.logger.error("All measurements returned failed CRC")
         return None, None, None
 
     def read(self):
@@ -109,11 +133,45 @@ class AM2315Sensor(AbstractSensor):
         :returns: None on success or 1 on error
         """
         try:
-            self._dew_point, self._humidity, self._temperature = self.get_measurement()
-            if self._dew_point is None:
-                return 1
-            return  # success - no errors
+            # Try twice to get measurement. This prevents an anomaly where
+            # the first measurement fails if the sensor has just been powered
+            # for the first time.
+            for _ in range(2):
+                self._dew_point, self._humidity, self._temperature = self.get_measurement()
+                if self._dew_point is not None:
+                    return  # success - no errors
+                time.sleep(2)
+
+            # Measurement failure, power cycle the sensor (if enabled)
+            # Then try two more times to get a measurement
+            if self.power_relay_id is not None:
+                self.stop_sensor()
+                time.sleep(2)
+                self.start_sensor()
+                for _ in range(2):
+                    self._dew_point, self._humidity, self._temperature = self.get_measurement()
+                    if self._dew_point is not None:
+                        return  # success - no errors
+                    time.sleep(2)
+
+            self.logger.debug("Could not acquire a measurement")
         except Exception as e:
-            logger.error("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=e))
+            self.logger.error(
+                "{cls} raised an exception when taking a reading: "
+                "{err}".format(cls=type(self).__name__, err=e))
         return 1
+
+    def start_sensor(self):
+        """ Turn the sensor on """
+        if self.power_relay_id:
+            self.logger.info("Turning on sensor")
+            self.control.relay_on(self.power_relay_id, 0)
+            time.sleep(2)
+            self.powered = True
+
+    def stop_sensor(self):
+        """ Turn the sensor off """
+        if self.power_relay_id:
+            self.logger.info("Turning off sensor")
+            self.control.relay_off(self.power_relay_id)
+            self.powered = False

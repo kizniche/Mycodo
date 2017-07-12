@@ -254,7 +254,9 @@ class SensorController(threading.Thread):
             self.measure_sensor = DHT22Sensor(self.sensor_id,
                                               int(self.location))
         elif self.device == 'AM2315':
-            self.measure_sensor = AM2315Sensor(self.i2c_bus)
+            self.measure_sensor = AM2315Sensor(self.sensor_id,
+                                               self.i2c_bus,
+                                               power=self.power_relay_id)
         elif self.device == 'ATLAS_PH_I2C':
             self.measure_sensor = AtlaspHSensor(self.interface,
                                                 i2c_address=self.i2c_address,
