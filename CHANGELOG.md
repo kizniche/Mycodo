@@ -1,3 +1,9 @@
+## 5.0.49 (Unreleased)
+
+### Bugfixes
+
+ - Move relay_usage_reports to new version directory during upgrade
+
 ## 5.0.48 (2017-07-11)
 
 ### Features
