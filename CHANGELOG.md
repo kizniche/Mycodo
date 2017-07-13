@@ -1,9 +1,10 @@
-## 5.0.49 (Unreleased)
+## 5.0.49 (2017-07-13)
 
 ### Bugfixes
 
  - Move relay_usage_reports directory to new version during upgrade
  - Fix LCD display of PID setpoints with long float values (round two decimal places)
+ - Fix geocoder issue
 
 ## 5.0.48 (2017-07-11)
 
