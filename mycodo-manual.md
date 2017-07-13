@@ -341,6 +341,7 @@ Deactivate | Deactivation stops measurements from being acquired from the sensor
 Save | Save the current configuration entered into the input boxes for a particular sensor.
 Delete | Delete a particular sensor.
 Up/Down | Move a particular sensor up or down in the order displayed.
+Power Relay | Select a relay that powers the sensor. This enables powering cycling (turn off then on) when the sensor returns 3 consecutive errors to attempt to fix the issue. Transistors may also be used instead of a relay (note: NPN transistors are preferred over PNP for powering sensors).
 Location | Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I<sup>2</sup>C address. and channel if using the TCA9548A I<sup>2</sup>C multiplexer.
 I<sup>2</sup>C Bus | The bus to be used to communicate with the I<sup>2</sup>C address. If you're using an I<sup>2</sup>C multiplexer that provides multiple buses, this allows you to select which bus the sensor is connected to.
 Period | After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.

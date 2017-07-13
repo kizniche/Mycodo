@@ -1,3 +1,9 @@
+## 5.0.50 (Unreleased)
+
+### Features
+
+ - Add ability to power-cycle the DHT11 sensor if 3 consecutive measurements cannot be retrieved (uses power relay option) ([#273](https://github.com/kizniche/mycodo/issues/273))
+
 ## 5.0.49 (2017-07-13)
 
 ### Bugfixes

@@ -451,6 +451,14 @@ and other parts of Mycodo to operate from.
   Up/Down               Move a particular sensor up or down in the
                         order displayed.
 
+  Power Relay           Select a relay that powers the sensor. This
+                        enables powering cycling (turn off then on)
+                        when the sensor returns 3 consecutive errors to
+                        attempt to fix the issue. Transistors may also
+                        be used instead of a relay (note: NPN
+                        transistors are preferred over PNP for powering
+                        sensors).
+
   Location              Depending on what sensor is being used, you
                         will need to either select a serial number
                         (DS18B20 temperature sensor), a GPIO pin (in

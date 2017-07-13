@@ -786,74 +786,78 @@
 <td style="text-align: left;">Move a particular sensor up or down in the order displayed.</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">Power Relay</td>
+<td style="text-align: left;">Select a relay that powers the sensor. This enables powering cycling (turn off then on) when the sensor returns 3 consecutive errors to attempt to fix the issue. Transistors may also be used instead of a relay (note: NPN transistors are preferred over PNP for powering sensors).</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">Location</td>
 <td style="text-align: left;">Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I<sup>2</sup>C address. and channel if using the TCA9548A I<sup>2</sup>C multiplexer.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">I<sup>2</sup>C Bus</td>
 <td style="text-align: left;">The bus to be used to communicate with the I<sup>2</sup>C address. If you’re using an I<sup>2</sup>C multiplexer that provides multiple buses, this allows you to select which bus the sensor is connected to.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Period</td>
 <td style="text-align: left;">After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Pre Relay</td>
 <td style="text-align: left;">If you require a relay to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the relay number that will be activated. The relay will be activated for a duration defined by the Pre Duration, then once the relay turns off, a measurement by the sensor is made.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Pre Relay Duration</td>
 <td style="text-align: left;">This is the duration of time that the Pre Relay runs for before the sensor measurement is obtained.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Edge</td>
 <td style="text-align: left;">Edge sensors only: Select whether the Rising or Falling (or both) edges of a changing voltage are detected. A number of devices to do this when in-line with a circuit supplying a 3.3-volt input signal to a GPIO, such as simple mechanical switch, a button, a magnet (reed/hall) sensor, a PIR motion detector, and more.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Bounce Time (ms)</td>
 <td style="text-align: left;">Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly called <a href="http://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing">debouncing a signal</a>. and may be necessary if using a mechanical circuit.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Reset Period</td>
 <td style="text-align: left;">Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Multiplexer (MX)</td>
 <td style="text-align: left;">If connected to the TCA9548A I<sup>2</sup>C multiplexer, select what the I<sup>2</sup>C address of the multiplexer is.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Mx I<sup>2</sup>C Bus</td>
 <td style="text-align: left;">If connected to the TCA9548A I<sup>2</sup>C multiplexer, select the I<sup>2</sup>C bus the multiplexer is connected to.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Mx Channel</td>
 <td style="text-align: left;">If connected to the TCA9548A I<sup>2</sup>C multiplexer, select the channel of the multiplexer the device is connected to.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Measurement</td>
 <td style="text-align: left;">Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if the resistance of a photocell is being measured through a voltage divider, this measurement would be “light”.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Units</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is the unit of the measurement. With the above example of “light” as the measurement, the unit may be “lux” or “intensity”.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Channel</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Gain</td>
 <td style="text-align: left;">Analog-to-digital converter only: set the gain when acquiring the measurement.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Volts Min</td>
 <td style="text-align: left;">Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to “0.2”.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Volts Max</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the voltage range. Units Min Analog-to-digital converter only: This value will be the lower value of a range that will use the Min and Max Voltages, above, to produce a unit output. For instance, if your voltage range is 0.0 - 1.0 volts, and the unit range is 1 - 60, and a voltage of 0.5 is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables creating calibrated scales to use with your particular circuit.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Units Max</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.</td>
 </tr>

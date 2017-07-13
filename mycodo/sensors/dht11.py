@@ -45,6 +45,7 @@ class DHT11Sensor(AbstractSensor):
         self.gpio = gpio
         self.power_relay_id = power
         self.powered = False
+
         self.high_tick = None
         self.bit = None
         self.either_edge_cb = None
@@ -145,9 +146,27 @@ class DHT11Sensor(AbstractSensor):
         :returns: None on success or 1 on error
         """
         try:
-            self.get_measurement()
-            if self._humidity != 0 or self._temperature != 0:
-                return  # success - no errors
+            # Try twice to get measurement. This prevents an anomaly where
+            # the first measurement fails if the sensor has just been powered
+            # for the first time.
+            for _ in range(2):
+                self.get_measurement()
+                if self._humidity != 0 or self._temperature != 0:
+                    return  # success - no errors
+                time.sleep(2)
+
+            # Measurement failure, power cycle the sensor (if enabled)
+            # Then try two more times to get a measurement
+            if self.power_relay_id is not None:
+                self.stop_sensor()
+                time.sleep(2)
+                self.start_sensor()
+                for _ in range(2):
+                    self.get_measurement()
+                    if self._humidity != 0 or self._temperature != 0:
+                        return  # success - no errors
+                    time.sleep(2)
+
             self.logger.debug("Could not acquire a measurement")
         except Exception as e:
             self.logger.error(
