@@ -2,7 +2,8 @@
 
 ### Bugfixes
 
- - Move relay_usage_reports to new version directory during upgrade
+ - Move relay_usage_reports directory to new version during upgrade
+ - Fix LCD display of PID setpoints with long float values (round two decimal places)
 
 ## 5.0.48 (2017-07-11)
 

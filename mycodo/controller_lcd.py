@@ -185,7 +185,13 @@ class LCDController(threading.Thread):
             while self.running:
                 if time.time() > self.timer:
                     try:
-                        self.get_lcd_strings()
+                        # Acquire all measurements to be displayed on the LCD
+                        for i in range(1, self.lcd_y_lines + 1):
+                            if self.lcd_line[i]['id']:
+                                self.create_lcd_line(self.get_measurement(i), i)
+                            else:
+                                self.lcd_string_line[i] = ''
+                        # Output lines to the LCD
                         self.output_lcds()
                     except KeyError:
                         self.logger.error(
@@ -221,102 +227,93 @@ class LCDController(threading.Thread):
                 (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
             self.running = False
 
-    def get_lcd_strings(self):
-        """
-        Retrieve measurements and/or timestamps and create strings for LCDs
-        If no data is retrieveable, create string "NO DATA RETURNED".
-        """
-        # loop to acquire all measurements required to be displayed on the LCD
-        for i in range(1, self.lcd_y_lines + 1):
-            if self.lcd_line[i]['id']:
-                # Get latest measurement (within past minute) from influxdb
-                # FROM '/.*/' returns any measurement (for grabbing time of last measurement)
-                last_measurement_success = False
-                try:
-                    if self.lcd_line[i]['measurement'] == 'relay_state':
-                        self.lcd_line[i]['measurement_value'] = self.relay_state(self.lcd_line[i]['id'])
-                        last_measurement_success = True
-                    else:
-                        if self.lcd_line[i]['measurement'] == 'time':
-                            last_measurement = read_last_influxdb(
-                                self.lcd_line[i]['id'],
-                                '/.*/')
-                        else:
-                            last_measurement = read_last_influxdb(
-                                self.lcd_line[i]['id'],
-                                self.lcd_line[i]['measurement'])
-                        if last_measurement:
-                            self.lcd_line[i]['time'] = last_measurement[0]
-                            self.lcd_line[i]['measurement_value'] = last_measurement[1]
-                            utc_dt = datetime.datetime.strptime(
-                                self.lcd_line[i]['time'].split(".")[0],
-                                '%Y-%m-%dT%H:%M:%S')
-                            utc_timestamp = calendar.timegm(utc_dt.timetuple())
-                            local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
-                            self.logger.debug("Latest {}: {} @ {}".format(
-                                self.lcd_line[i]['measurement'],
-                                self.lcd_line[i]['measurement_value'], local_timestamp))
-                            last_measurement_success = True
-                        else:
-                            self.lcd_line[i]['time'] = None
-                            self.lcd_line[i]['measurement_value'] = None
-                            self.logger.debug("No data returned from "
-                                              "influxdb")
-                except Exception as except_msg:
-                    self.logger.debug("Failed to read measurement from the "
-                                      "influxdb database: {err}".format(
-                                        err=except_msg))
-
-                try:
-                    if last_measurement_success:
-                        # Determine if the LCD output will have a value unit
-                        measurement = ''
-                        if self.lcd_line[i]['measurement'] == 'setpoint':
-                            pid = db_retrieve_table_daemon(
-                                PID, unique_id=self.lcd_line[i]['id'])
-                            measurement = pid.measurement
-                        elif self.lcd_line[i]['measurement'] == 'duration_sec':
-                            measurement = 'duration_sec'
-                            self.lcd_line[i]['measurement_value'] = '{:.2f}'.format(
-                                self.lcd_line[i]['measurement_value'])
-                        elif self.lcd_line[i]['measurement'] in MEASUREMENT_UNITS:
-                            measurement = self.lcd_line[i]['measurement']
-
-                        # Produce the line that will be displayed on the LCD
-                        number_characters = self.lcd_x_characters
-                        if self.lcd_line[i]['measurement'] == 'time':
-                            # Convert UTC timestamp to local timezone
-                            utc_dt = datetime.datetime.strptime(
-                                self.lcd_line[i]['time'].split(".")[0],
-                                '%Y-%m-%dT%H:%M:%S')
-                            utc_timestamp = calendar.timegm(utc_dt.timetuple())
-                            self.lcd_string_line[i] = str(
-                                datetime.datetime.fromtimestamp(utc_timestamp))
-                        elif measurement:
-                            value_length = len(str(
-                                self.lcd_line[i]['measurement_value']))
-                            unit_length = len(MEASUREMENT_UNITS[measurement]['unit'])
-                            name_length = number_characters - value_length - unit_length - 2
-                            name_cropped = self.lcd_line[i]['name'].ljust(name_length)[:name_length]
-                            self.lcd_string_line[i] = u'{name} {value} {unit}'.format(
-                                name=name_cropped,
-                                value=self.lcd_line[i]['measurement_value'],
-                                unit=MEASUREMENT_UNITS[measurement]['unit'])
-                        else:
-                            value_length = len(str(
-                                self.lcd_line[i]['measurement_value']))
-                            name_length = number_characters - value_length - 1
-                            name_cropped = self.lcd_line[i]['name'][:name_length]
-                            self.lcd_string_line[i] = u'{name} {value}'.format(
-                                name=name_cropped,
-                                value=self.lcd_line[i]['measurement_value'])
-                    else:
-                        self.lcd_string_line[i] = 'ERROR: NO DATA'
-                except Exception as except_msg:
-                    self.logger.exception("Error: {err}".format(
-                        err=except_msg))
+    def get_measurement(self, i):
+        try:
+            if self.lcd_line[i]['measurement'] == 'relay_state':
+                self.lcd_line[i]['measurement_value'] = self.relay_state(self.lcd_line[i]['id'])
+                return True
             else:
-                self.lcd_string_line[i] = ''
+                if self.lcd_line[i]['measurement'] == 'time':
+                    last_measurement = read_last_influxdb(
+                        self.lcd_line[i]['id'],
+                        '/.*/')
+                else:
+                    last_measurement = read_last_influxdb(
+                        self.lcd_line[i]['id'],
+                        self.lcd_line[i]['measurement'])
+                if last_measurement:
+                    self.lcd_line[i]['time'] = last_measurement[0]
+                    self.lcd_line[i]['measurement_value'] = last_measurement[1]
+                    utc_dt = datetime.datetime.strptime(
+                        self.lcd_line[i]['time'].split(".")[0],
+                        '%Y-%m-%dT%H:%M:%S')
+                    utc_timestamp = calendar.timegm(utc_dt.timetuple())
+                    local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
+                    self.logger.debug("Latest {}: {} @ {}".format(
+                        self.lcd_line[i]['measurement'],
+                        self.lcd_line[i]['measurement_value'], local_timestamp))
+                    return True
+                else:
+                    self.lcd_line[i]['time'] = None
+                    self.lcd_line[i]['measurement_value'] = None
+                    self.logger.debug("No data returned from influxdb")
+            return False
+        except Exception as except_msg:
+            self.logger.debug(
+                "Failed to read measurement from the influxdb database: "
+                "{err}".format(err=except_msg))
+            return False
+
+    def create_lcd_line(self, last_measurement_success, i):
+        try:
+            if last_measurement_success:
+                # Determine if the LCD output will have a value unit
+                measurement = ''
+                if self.lcd_line[i]['measurement'] == 'setpoint':
+                    pid = db_retrieve_table_daemon(
+                        PID, unique_id=self.lcd_line[i]['id'])
+                    measurement = pid.measurement
+                    self.lcd_line[i]['measurement_value'] = '{:.2f}'.format(
+                        self.lcd_line[i]['measurement_value'])
+                elif self.lcd_line[i]['measurement'] == 'duration_sec':
+                    measurement = 'duration_sec'
+                    self.lcd_line[i]['measurement_value'] = '{:.2f}'.format(
+                        self.lcd_line[i]['measurement_value'])
+                elif self.lcd_line[i]['measurement'] in MEASUREMENT_UNITS:
+                    measurement = self.lcd_line[i]['measurement']
+
+                # Produce the line that will be displayed on the LCD
+                number_characters = self.lcd_x_characters
+                if self.lcd_line[i]['measurement'] == 'time':
+                    # Convert UTC timestamp to local timezone
+                    utc_dt = datetime.datetime.strptime(
+                        self.lcd_line[i]['time'].split(".")[0],
+                        '%Y-%m-%dT%H:%M:%S')
+                    utc_timestamp = calendar.timegm(utc_dt.timetuple())
+                    self.lcd_string_line[i] = str(
+                        datetime.datetime.fromtimestamp(utc_timestamp))
+                elif measurement:
+                    value_length = len(str(
+                        self.lcd_line[i]['measurement_value']))
+                    unit_length = len(MEASUREMENT_UNITS[measurement]['unit'])
+                    name_length = number_characters - value_length - unit_length - 2
+                    name_cropped = self.lcd_line[i]['name'].ljust(name_length)[:name_length]
+                    self.lcd_string_line[i] = u'{name} {value} {unit}'.format(
+                        name=name_cropped,
+                        value=self.lcd_line[i]['measurement_value'],
+                        unit=MEASUREMENT_UNITS[measurement]['unit'])
+                else:
+                    value_length = len(str(
+                        self.lcd_line[i]['measurement_value']))
+                    name_length = number_characters - value_length - 1
+                    name_cropped = self.lcd_line[i]['name'][:name_length]
+                    self.lcd_string_line[i] = u'{name} {value}'.format(
+                        name=name_cropped,
+                        value=self.lcd_line[i]['measurement_value'])
+            else:
+                self.lcd_string_line[i] = 'ERROR: NO DATA'
+        except Exception as except_msg:
+            self.logger.exception("Error: {err}".format(err=except_msg))
 
     def output_lcds(self):
         """ Output to all LCDs all at once """
