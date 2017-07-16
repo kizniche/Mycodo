@@ -2,17 +2,18 @@
 #
 # Mycodo install script
 #
-# Usage: sudo /bin/bash Mycodo/install/setup.sh
+# Usage: sudo /bin/bash ~/Mycodo/install/setup.sh
 #
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P )
+INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
+LOG_LOCATION=${INSTALL_DIRECTORY}/install/setup.log
 
 if [ "$EUID" -ne 0 ]; then
     printf "Please run as root: \"sudo /bin/bash ${INSTALL_DIRECTORY}/install/setup.sh\"\n";
     exit
 fi
 
-LOG_LOCATION=${INSTALL_DIRECTORY}/install/setup.log
 exec > >(tee -i -a ${LOG_LOCATION})
 exec 2>&1
 
@@ -40,45 +41,45 @@ set -e
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
 printf "### Mycodo installation beginning at $NOW\n"
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-swap-size
+${INSTALL_CMD} update-swap-size
 
 printf "\n#### Uninstalling apt version of pip (if installed)\n"
 apt-get update
 apt-get purge -y python-pip
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-packages
+${INSTALL_CMD} update-packages
 
 pip install --upgrade pip
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
+${INSTALL_CMD} setup-virtualenv
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-gpiod
+${INSTALL_CMD} update-gpiod
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-wiringpi
+${INSTALL_CMD} update-wiringpi
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-pip-packages
+${INSTALL_CMD} update-pip-packages
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-influxdb
+${INSTALL_CMD} update-influxdb
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-influxdb-db-user
+${INSTALL_CMD} update-influxdb-db-user
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-apache2
+${INSTALL_CMD} update-apache2
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh generate-ssl-certs
+${INSTALL_CMD} generate-ssl-certs
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-mycodo-startup-script
+${INSTALL_CMD} update-mycodo-startup-script
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh compile-translations
+${INSTALL_CMD} compile-translations
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-cron
+${INSTALL_CMD} update-cron
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh initialize
+${INSTALL_CMD} initialize
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh restart-web-ui
+${INSTALL_CMD} restart-web-ui
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-permissions
+${INSTALL_CMD} update-permissions
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh restart-daemon
+${INSTALL_CMD} restart-daemon
 
 trap : 0
 
