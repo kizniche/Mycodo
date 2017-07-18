@@ -23,7 +23,7 @@ Table of Contents
 [Controllers](#controllers)
 
    - [Sensors](#sensors)
-   - [PWM](#PWM)
+   - [PWM](#pwm)
    - [Relays](#relays)
    - [PIDs](#pids)
    - [Timers](#timers)
