@@ -630,6 +630,16 @@ def page_pid():
 
     method = Method.query.all()
 
+    # Create list of file names from the pid_options directory
+    # Used in generating the correct options for each PID
+    pid_templates = []
+    pid_path = os.path.join(
+        INSTALL_DIRECTORY,
+        'mycodo/mycodo_flask/templates/pages/pid_options')
+    for (_, _, file_names) in os.walk(pid_path):
+        pid_templates.extend(file_names)
+        break
+
     if request.method == 'POST':
         if not flaskutils.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
@@ -670,6 +680,7 @@ def page_pid():
     return render_template('pages/pid.html',
                            method=method,
                            pids=pids,
+                           pid_templates=pid_templates,
                            relay=relay,
                            sensor=sensor,
                            displayOrder=display_order,
@@ -698,8 +709,8 @@ def page_relay():
     form_conditional = flaskforms.Conditional()
     form_conditional_actions = flaskforms.ConditionalActions()
 
-    # Create list of file names from the sensor_options directory
-    # Used in generating the correct options for each sensor/device
+    # Create list of file names from the relay_options directory
+    # Used in generating the correct options for each relay/device
     relay_templates = []
     relay_path = os.path.join(
         INSTALL_DIRECTORY,

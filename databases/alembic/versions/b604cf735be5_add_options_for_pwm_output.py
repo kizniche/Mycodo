@@ -20,7 +20,21 @@ def upgrade():
     with op.batch_alter_table("relay") as batch_op:
         batch_op.add_column(sa.Column('pwm_hertz', sa.INTEGER))
 
+    with op.batch_alter_table("pid") as batch_op:
+        batch_op.add_column(sa.Column('pid_type', sa.INTEGER))
+
+    op.execute(
+        '''
+        UPDATE pid
+        SET pid_type='relay'
+        WHERE pid_type IS NULL
+        '''
+    )
+
 
 def downgrade():
     with op.batch_alter_table("relay") as batch_op:
         batch_op.drop_column('pwm_hertz')
+
+    with op.batch_alter_table("pid") as batch_op:
+        batch_op.drop_column('pid_type')

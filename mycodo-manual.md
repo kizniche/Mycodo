@@ -399,7 +399,9 @@ Currently, PWM is very new in Mycodo and does not have many features. PWM pins c
 Setting | Description
 -------------------- | ----------------------------------------------
 BCM Pin | This is the GPIO that will output the PWM signal, using BCM numbering.
-Hertz | This is frequency of the PWM signal
+Hertz | This is frequency of the PWM signal.
+Duty Cycle | This is the proportion of the time on to the time off, expressed in percent (0 - 100).
+Current Draw (amps) | This is the current draw, in amps, when the duty cycle is 100%. Note: this value should be calculated based on the voltage set in the [Relay Usage Settings](#relay-usage-settings).
 
 Relays
 ------

@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# controller_pid.py - PID controller that manages descrete control of a
+# controller_pid.py - PID controller that manages discrete control of a
 #                     regulation system of sensors, relays, and devices
 #
 #  Copyright (C) 2017  Kyle T. Gabriel
@@ -163,6 +163,7 @@ class PIDController(threading.Thread):
                             # Update setpoint using a method if one is selected
                             if self.method_id:
                                 self.calculate_method_setpoint(self.method_id)
+
                             write_setpoint_db = threading.Thread(
                                 target=write_influxdb_value,
                                 args=(self.pid_unique_id,

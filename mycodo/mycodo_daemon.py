@@ -565,7 +565,7 @@ class DaemonController(threading.Thread):
             relay_id,
             'off',
             trigger_conditionals=trigger_conditionals)
-        return "Relay turned off"
+        return "Turned off"
 
     def relay_on(self, relay_id, duration=0.0, min_off=0.0, duty_cycle=0.0):
         """

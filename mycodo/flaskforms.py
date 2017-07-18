@@ -90,7 +90,7 @@ class Camera(FlaskForm):
 class Conditional(FlaskForm):
     conditional_id = IntegerField('Conditional ID', widget=widgets.HiddenInput())
     conditional_type = StringField('Conditional Type', widget=widgets.HiddenInput())
-    sensor_id = IntegerField('Sensor ID', widget=widgets.HiddenInput())
+    sensor_id = IntegerField('Output ID', widget=widgets.HiddenInput())
     quantity = IntegerField(lazy_gettext(u'Quantity'))
     name = StringField(lazy_gettext(u'Name'))
 
@@ -246,8 +246,8 @@ class GraphAdd(FlaskForm):
         validators=[DataRequired()]
     )
     pid_ids = SelectMultipleField(lazy_gettext(u'PID IDs (Setpoint)'))
-    relay_ids = SelectMultipleField(lazy_gettext(u'Relay IDs'))
-    sensor_ids = SelectMultipleField(lazy_gettext(u'Sensor IDs'))
+    relay_ids = SelectMultipleField(lazy_gettext(u'Output IDs'))
+    sensor_ids = SelectMultipleField(lazy_gettext(u'Output IDs'))
     width = IntegerField(
         lazy_gettext(u'Width'),
         validators=[validators.NumberRange(
@@ -295,8 +295,8 @@ class GraphMod(FlaskForm):
         validators=[DataRequired()]
     )
     pid_ids = SelectMultipleField(lazy_gettext(u'PID IDs (Setpoint)'))
-    relay_ids = SelectMultipleField(lazy_gettext(u'Relay IDs'))
-    sensor_ids = SelectMultipleField(lazy_gettext(u'Sensor IDs'))
+    relay_ids = SelectMultipleField(lazy_gettext(u'Output IDs'))
+    sensor_ids = SelectMultipleField(lazy_gettext(u'Output IDs'))
     width = IntegerField(
         lazy_gettext(u'Width'),
         validators=[validators.NumberRange(
@@ -409,16 +409,16 @@ class LCDMod(FlaskForm):
         validators=[DataRequired()]
     )
     line_1_display = StringField(
-        lazy_gettext(u'Line 1 Sensor ID')
+        lazy_gettext(u'Line 1 Display')
     )
     line_2_display = StringField(
-        lazy_gettext(u'Line 2 Sensor ID')
+        lazy_gettext(u'Line 2 Display')
     )
     line_3_display = StringField(
-        lazy_gettext(u'Line 3 Sensor ID')
+        lazy_gettext(u'Line 3 Display')
     )
     line_4_display = StringField(
-        lazy_gettext(u'Line 4 Sensor ID')
+        lazy_gettext(u'Line 4 Display')
     )
     save = SubmitField(lazy_gettext(u'Save'))
     delete = SubmitField(lazy_gettext(u'Delete'))
@@ -582,6 +582,7 @@ class MethodMod(FlaskForm):
 #
 
 class PIDAdd(FlaskForm):
+    pid_type = StringField(lazy_gettext(u'Type'))
     numberPIDs = IntegerField(
         lazy_gettext(u'Quantity'),
         render_kw={"placeholder": lazy_gettext(u"Quantity")},
@@ -600,7 +601,7 @@ class PIDMod(FlaskForm):
         validators=[DataRequired()]
     )
     sensor_id = StringField(
-        lazy_gettext(u'Sensor ID'),
+        lazy_gettext(u'Input ID'),
         validators=[DataRequired()]
     )
     measurement = StringField(
@@ -657,7 +658,7 @@ class PIDMod(FlaskForm):
     )
     integrator_max = DecimalField(lazy_gettext(u'Integrator Min'))
     integrator_min = DecimalField(lazy_gettext(u'Integrator Max'))
-    raise_relay_id = StringField(lazy_gettext(u'Raise Relay ID'))
+    raise_relay_id = StringField(lazy_gettext(u'Output ID (Raise)'))
     raise_min_duration = DecimalField(
         lazy_gettext(u'Raise Min On Duration'),
         validators=[validators.NumberRange(
@@ -679,7 +680,7 @@ class PIDMod(FlaskForm):
             max=86400
         )]
     )
-    lower_relay_id = StringField(lazy_gettext(u'Lower Relay ID'),)
+    lower_relay_id = StringField(lazy_gettext(u'Output ID (Lower)'),)
     lower_min_duration = DecimalField(
         lazy_gettext(u'Lower Min On Duration'),
         validators=[validators.NumberRange(
@@ -829,7 +830,7 @@ class SensorAdd(FlaskForm):
 
 
 class SensorMod(FlaskForm):
-    modSensor_id = IntegerField('Sensor ID', widget=widgets.HiddenInput())
+    modSensor_id = IntegerField('Input ID', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext(u'Name'),
         validators=[DataRequired()]

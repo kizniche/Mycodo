@@ -46,7 +46,7 @@
                 {{form_mod_lcd.name(class_='form-control', value=each_lcd.name, **{'title':_('Name for this PID controller.')})}}
               </div>
               <div class="col-xs-6 no-gutters">
-                <input class="form-control btn btn-default" title="UUID: {{each_lcd.unique_id}}" disabled="" value="ID: {{each_lcd.id}}, State:
+                <input class="form-control btn btn-default" title="ID: {{each_lcd.id}}" disabled="" value="ID: {{each_lcd.id}}, State:
                 {%- if each_lcd.is_activated -%} {{_('Active')}}
                 {%- else -%} {{_('Inactive')}}
                 {%-endif -%}
@@ -154,7 +154,7 @@
 
           <div class="row small-gutters" style="padding-bottom: 0.3em">
             <div class="col-xs-12 col-sm-6">
-              <label>{{_('Display Line 1')}}</label>
+              {{form_mod_lcd.line_1_display.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="line_1_display" name="line_1_display">
                   <option value=""{% if each_lcd.line_1_sensor_id == '' or each_lcd.line_1_measurement == '' %} selected{% endif %}></option>
@@ -179,7 +179,7 @@
               </div>
             </div>
             <div class="col-xs-12 col-sm-6">
-              <label>{{_('Display Line 2')}}</label>
+              {{form_mod_lcd.line_2_display.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="line_2_display" name="line_2_display">
                   <option value=""{% if each_lcd.line_2_sensor_id == '' or each_lcd.line_2_measurement == '' %} selected{% endif %}></option>
@@ -207,7 +207,7 @@
           {%- if each_lcd.y_lines == 4 -%}
 
             <div class="col-xs-12 col-sm-6">
-              <label>{{_('Display Line 3')}}</label>
+              {{form_mod_lcd.line_3_display.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="line_3_display" name="line_3_display">
                     <option value=""{% if each_lcd.line_3_sensor_id == '' or each_lcd.line_3_measurement == '' %} selected{% endif %}></option>
@@ -232,7 +232,7 @@
               </div>
             </div>
             <div class="col-xs-12 col-sm-6">
-              <label>{{_('Display Line 4')}}</label>
+              {{form_mod_lcd.line_4_display.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="line_4_display" name="line_4_display">
                   <option value=""{% if each_lcd.line_4_sensor_id == '' or each_lcd.line_4_measurement == '' %} selected{% endif %}></option>

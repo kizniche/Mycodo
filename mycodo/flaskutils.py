@@ -1125,7 +1125,10 @@ def pid_add(form_add_pid):
     if form_add_pid.validate():
         for _ in range(0, form_add_pid.numberPIDs.data):
             try:
-                new_pid = PID().save()
+                new_pid = PID()
+                new_pid.pid_type = form_add_pid.pid_type.data
+                new_pid.save()
+
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
                 DisplayOrder.query.first().pid = add_display_order(
                     display_order, new_pid.id)
@@ -1368,7 +1371,7 @@ def pid_manipulate(pid_id, action):
 def relay_on_off(form_relay):
     action = u'{action} {controller}'.format(
         action=gettext(u"Actuate"),
-        controller=gettext(u"Relay"))
+        controller=gettext(u"Output"))
     error = []
 
     try:
@@ -1406,11 +1409,11 @@ def relay_on_off(form_relay):
                           "success")
         elif form_relay.turn_on.data:
             return_value = control.relay_on(form_relay.relay_id.data, 0)
-            flash(gettext(u"Relay turned on: %(rvalue)s",
+            flash(gettext(u"Output turned on: %(rvalue)s",
                           rvalue=return_value), "success")
         elif form_relay.turn_off.data:
             return_value = control.relay_off(form_relay.relay_id.data)
-            flash(gettext(u"Relay turned off: %(rvalue)s",
+            flash(gettext(u"Output turned off: %(rvalue)s",
                           rvalue=return_value), "success")
     except ValueError as except_msg:
         error.append('{err}: {msg}'.format(
