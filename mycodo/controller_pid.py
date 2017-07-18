@@ -68,8 +68,6 @@ from utils.influx import write_influxdb_value
 from utils.method import bezier_curve_y_out
 from utils.method import sine_wave_y_out
 
-
-# Config
 from config import SQL_DATABASE_MYCODO
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -94,21 +92,53 @@ class PIDController(threading.Thread):
             PID, device_id=self.pid_id).unique_id
         self.control = DaemonControl()
 
-        self.control_variable = 0
-        self.derivator = 0
-        self.integrator = 0
+        self.control_variable = 0.0
+        self.derivator = 0.0
+        self.integrator = 0.0
         self.error = 0.0
         self.P_value = None
         self.I_value = None
         self.D_value = None
-        self.set_point = 0
-        self.lower_seconds_on = 0
-        self.raise_seconds_on = 0
+        self.set_point = 0.0
+        self.lower_seconds_on = 0.0
+        self.raise_seconds_on = 0.0
+        self.lower_duty_cycle = 0.0
+        self.raise_duty_cycle = 0.0
+        self.last_time = None
+        self.last_measurement = None
         self.last_measurement_success = False
+
+        self.is_activated = None
+        self.is_held = None
+        self.is_paused = None
+        self.pid_type = None
+        self.measurement = None
+        self.method_id = None
+        self.direction = None
+        self.raise_relay_id = None
+        self.raise_min_duration = None
+        self.raise_max_duration = None
+        self.raise_min_off_duration = None
+        self.lower_relay_id = None
+        self.lower_min_duration = None
+        self.lower_max_duration = None
+        self.lower_min_off_duration = None
+        self.Kp = None
+        self.Ki = None
+        self.Kd = None
+        self.integrator_min = None
+        self.integrator_max = None
+        self.period = None
+        self.max_measure_age = None
+        self.default_set_point = None
+        self.set_point = None
+
+        self.sensor_unique_id = None
+        self.sensor_duration = None
 
         self.initialize_values()
 
-        self.timer = t.time()+self.measure_interval
+        self.timer = t.time() + self.period
 
         # Check if a method is set for this PID
         if self.method_id:
@@ -153,7 +183,7 @@ class PIDController(threading.Thread):
                 if t.time() > self.timer:
                     # Ensure the timer ends in the future
                     while t.time() > self.timer:
-                        self.timer = self.timer+self.measure_interval
+                        self.timer = self.timer + self.period
 
                     # If PID is active, retrieve sensor measurement and update PID output
                     if self.is_activated and not self.is_paused:
@@ -171,19 +201,27 @@ class PIDController(threading.Thread):
                                       self.set_point,))
                             write_setpoint_db.start()
 
+                            if self.pid_type == 'relay':
+                                pid_entry_type = 'pid_output'
+                            elif self.pid_type == 'pwm':
+                                pid_entry_type = 'pwm_output'
+                            else:
+                                pid_entry_type = None
+
                             # Update PID and get control variable
                             self.control_variable = self.update_pid_output(self.last_measurement)
-                            write_pid_out_db = threading.Thread(
-                                target=write_influxdb_value,
-                                args=(self.pid_unique_id,
-                                      'pid_output',
-                                      self.control_variable,))
-                            write_pid_out_db.start()
+                            if pid_entry_type:
+                                write_pid_out_db = threading.Thread(
+                                    target=write_influxdb_value,
+                                    args=(self.pid_unique_id,
+                                          pid_entry_type,
+                                          self.control_variable,))
+                                write_pid_out_db.start()
 
                     # If PID is active or on hold, activate relays
                     if ((self.is_activated and not self.is_paused) or
                             (self.is_activated and self.is_held)):
-                        self.manipulate_relays()
+                        self.manipulate_output()
                 t.sleep(0.1)
 
             # Turn off relay used in PID when the controller is deactivated
@@ -194,7 +232,7 @@ class PIDController(threading.Thread):
 
             self.running = False
             self.logger.info("Deactivated in {:.1f} ms".format(
-                (timeit.default_timer()-self.thread_shutdown_timer)*1000))
+                (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
         except Exception as except_msg:
                 self.logger.exception("Run Error: {err}".format(
                     err=except_msg))
@@ -205,6 +243,7 @@ class PIDController(threading.Thread):
         self.is_activated = pid.is_activated
         self.is_held = pid.is_held
         self.is_paused = pid.is_paused
+        self.pid_type = pid.pid_type
         self.measurement = pid.measurement
         self.method_id = pid.method_id
         self.direction = pid.direction
@@ -221,7 +260,7 @@ class PIDController(threading.Thread):
         self.Kd = pid.d
         self.integrator_min = pid.integrator_min
         self.integrator_max = pid.integrator_max
-        self.measure_interval = pid.period
+        self.period = pid.period
         self.max_measure_age = pid.max_measure_age
         self.default_set_point = pid.setpoint
         self.set_point = pid.setpoint
@@ -258,11 +297,11 @@ class PIDController(threading.Thread):
             self.integrator = self.integrator_min
 
         # Second method for regulating integrator
-        # if self.measure_interval is not None:
-        #     if self.integrator * self.Ki > self.measure_interval:
-        #         self.integrator = self.measure_interval / self.Ki
-        #     elif self.integrator * self.Ki < -self.measure_interval:
-        #         self.integrator = -self.measure_interval / self.Ki
+        # if self.period is not None:
+        #     if self.integrator * self.Ki > self.period:
+        #         self.integrator = self.period / self.Ki
+        #     elif self.integrator * self.Ki < -self.period:
+        #         self.integrator = -self.period / self.Ki
 
         self.I_value = self.integrator * self.Ki
 
@@ -287,7 +326,7 @@ class PIDController(threading.Thread):
             if self.sensor_duration < 60:
                 duration = 60
             else:
-                duration = int(self.sensor_duration*1.5)
+                duration = int(self.sensor_duration * 1.5)
             self.last_measurement = read_last_influxdb(
                 self.sensor_unique_id,
                 self.measurement,
@@ -301,9 +340,10 @@ class PIDController(threading.Thread):
                     '%Y-%m-%dT%H:%M:%S')
                 utc_timestamp = calendar.timegm(utc_dt.timetuple())
                 local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
-                self.logger.debug("Latest {}: {} @ {}".format(
-                    self.measurement, self.last_measurement,
-                    local_timestamp))
+                self.logger.debug("Latest {meas}: {last} @ {ts}".format(
+                    meas=self.measurement,
+                    last=self.last_measurement,
+                    ts=local_timestamp))
                 if calendar.timegm(t.gmtime())-utc_timestamp > self.max_measure_age:
                     self.logger.error(
                         "Last measurement was {last_sec} seconds ago, however"
@@ -323,9 +363,9 @@ class PIDController(threading.Thread):
                 "Exception while reading measurement from the influxdb "
                 "database: {err}".format(err=except_msg))
 
-    def manipulate_relays(self):
+    def manipulate_output(self):
         """
-        Activate a relay based on PID output (control variable) and whether
+        Activate output based on PID control variable and whether
         the manipulation directive is to raise, lower, or both.
 
         :rtype: None
@@ -337,71 +377,127 @@ class PIDController(threading.Thread):
             # the environmental condition
             #
             if self.direction in ['raise', 'both'] and self.raise_relay_id:
-                if self.control_variable > 0:
-                    # Ensure the relay on duration doesn't exceed the set maximum
-                    if (self.raise_max_duration and
-                            self.control_variable > self.raise_max_duration):
-                        self.raise_seconds_on = self.raise_max_duration
-                    else:
-                        self.raise_seconds_on = float("{0:.2f}".format(
-                            self.control_variable))
 
-                    # Turn off lower_relay if active, because we're now raising
-                    if self.lower_relay_id:
-                        relay = db_retrieve_table_daemon(
-                            Relay, device_id=self.lower_relay_id)
-                        if relay.is_on():
+                if self.control_variable > 0:
+                    if self.pid_type == 'relay':
+                        # Ensure the relay on duration doesn't exceed the set maximum
+                        if (self.raise_max_duration and
+                                self.control_variable > self.raise_max_duration):
+                            self.raise_seconds_on = self.raise_max_duration
+                        else:
+                            self.raise_seconds_on = float("{0:.2f}".format(
+                                self.control_variable))
+
+                        # Turn off lower_relay if active, because we're now raising
+                        if self.lower_relay_id:
+                            relay = db_retrieve_table_daemon(
+                                Relay, device_id=self.lower_relay_id)
+                            if relay.is_on():
+                                self.control.relay_off(self.lower_relay_id)
+
+                        if self.raise_seconds_on > self.raise_min_duration:
+                            # Activate raise_relay for a duration
+                            self.logger.debug(
+                                "Setpoint: {sp} Output: {cv} to relay "
+                                "{id}".format(
+                                    sp=self.set_point,
+                                    cv=self.control_variable,
+                                    id=self.raise_relay_id))
+                            self.control.relay_on(
+                                self.raise_relay_id,
+                                duration=self.raise_seconds_on,
+                                min_off=self.raise_min_off_duration)
+                    elif self.pid_type == 'pwm':
+                        # Turn off lower_relay if active, because we're now raising
+                        if self.control.relay_state(self.lower_relay_id):
                             self.control.relay_off(self.lower_relay_id)
 
-                    if self.raise_seconds_on > self.raise_min_duration:
-                        # Activate raise_relay for a duration
+                        # Convert control variable to duty cycle
+                        if self.control_variable > self.period:
+                            self.raise_duty_cycle = 100.0
+                        else:
+                            self.raise_duty_cycle = float(
+                                self.period / self.control_variable)
+
+                        # Activate pwm with calculated duty cycle
                         self.logger.debug(
-                            "Setpoint: {sp} Output: {op} to relay "
-                            "{relay}".format(
+                            "Setpoint: {sp} Output: PWM output "
+                            "{id} to {dc}%".format(
                                 sp=self.set_point,
-                                op=self.control_variable,
-                                relay=self.raise_relay_id))
-                        self.control.relay_on(
-                            self.raise_relay_id,
-                            self.raise_seconds_on,
-                            min_off_duration=self.raise_min_off_duration)
+                                id=self.raise_relay_id,
+                                dc=self.raise_duty_cycle))
+                        self.control.relay_on(self.raise_relay_id,
+                                              duty_cycle=self.raise_duty_cycle)
+
                 else:
-                    self.control.relay_off(self.raise_relay_id)
+                    if self.pid_type == 'relay':
+                        self.control.relay_off(self.raise_relay_id)
+                    elif self.pid_type == 'pwm':
+                        self.control.relay_on(self.raise_relay_id,
+                                              duty_cycle=0)
 
             #
             # PID control variable is negative, indicating a desire to lower
             # the environmental condition
             #
             if self.direction in ['lower', 'both'] and self.lower_relay_id:
-                if self.control_variable < 0:
-                    # Ensure the relay on duration doesn't exceed the set maximum
-                    if (self.lower_max_duration and
-                            abs(self.control_variable) > self.lower_max_duration):
-                        self.lower_seconds_on = self.lower_max_duration
-                    else:
-                        self.lower_seconds_on = abs(float("{0:.2f}".format(
-                            self.control_variable)))
 
-                    # Turn off raise_relay if active, because we're now lowering
-                    if self.raise_relay_id:
-                        relay = db_retrieve_table_daemon(
-                            Relay, device_id=self.raise_relay_id)
-                        if relay.is_on():
+                if self.control_variable < 0:
+                    if self.pid_type == 'relay':
+                        # Ensure the relay on duration doesn't exceed the set maximum
+                        if (self.lower_max_duration and
+                                abs(self.control_variable) > self.lower_max_duration):
+                            self.lower_seconds_on = self.lower_max_duration
+                        else:
+                            self.lower_seconds_on = abs(float("{0:.2f}".format(
+                                self.control_variable)))
+
+                        # Turn off raise_relay if active, because we're now lowering
+                        if self.raise_relay_id:
+                            relay = db_retrieve_table_daemon(
+                                Relay, device_id=self.raise_relay_id)
+                            if relay.is_on():
+                                self.control.relay_off(self.raise_relay_id)
+
+                        if self.lower_seconds_on > self.lower_min_duration:
+                            # Activate lower_relay for a duration
+                            self.logger.debug("Setpoint: {sp} Output: {cv} to "
+                                              "relay {id}".format(
+                                                sp=self.set_point,
+                                                cv=self.control_variable,
+                                id=self.lower_relay_id))
+                            self.control.relay_on(
+                                self.lower_relay_id,
+                                duration=self.lower_seconds_on,
+                                min_off=self.lower_min_off_duration)
+                    elif self.pid_type == 'pwm':
+                        # Turn off raise_relay if active, because we're now lowering
+                        if self.control.relay_state(self.raise_relay_id):
                             self.control.relay_off(self.raise_relay_id)
 
-                    if self.lower_seconds_on > self.lower_min_duration:
-                        # Activate lower_relay for a duration
-                        self.logger.debug("Setpoint: {sp} Output: {op} to "
-                                          "relay {relay}".format(
-                                            sp=self.set_point,
-                                            op=self.control_variable,
-                                            relay=self.lower_relay_id))
+                        # Convert control variable to duty cycle
+                        if self.control_variable > self.period:
+                            self.lower_duty_cycle = 100.0
+                        else:
+                            self.lower_duty_cycle = float(
+                                self.period / self.control_variable)
+
+                        # Activate pwm with calculated duty cycle
+                        self.logger.debug(
+                            "Setpoint: {sp} Output: PWM output "
+                            "{id} to {dc}%".format(
+                                sp=self.set_point,
+                                id=self.lower_relay_id,
+                                dc=self.lower_duty_cycle))
                         self.control.relay_on(
                             self.lower_relay_id,
-                            self.lower_seconds_on,
-                            min_off_duration=self.lower_min_off_duration)
+                            duty_cycle=self.lower_duty_cycle)
                 else:
-                    self.control.relay_off(self.lower_relay_id)
+                    if self.pid_type == 'relay':
+                        self.control.relay_off(self.lower_relay_id)
+                    elif self.pid_type == 'pwm':
+                        self.control.relay_on(self.lower_relay_id,
+                                              duty_cycle=0)
 
         else:
             if self.direction in ['raise', 'both'] and self.raise_relay_id:
@@ -512,26 +608,26 @@ class PIDController(threading.Thread):
 
         # Calculate the duration in the method based on self.method_start_time
         elif method_key.method_type == 'Duration' and self.method_start_time != 'Ended':
-            seconds_from_start = (now-self.method_start_time).total_seconds()
+            seconds_from_start = (now - self.method_start_time).total_seconds()
             total_sec = 0
             previous_total_sec = 0
             for each_method in method_data_all:
                 total_sec += each_method.duration_sec
                 if previous_total_sec <= seconds_from_start < total_sec:
                     row_start_time = float(self.method_start_time.strftime('%s'))+previous_total_sec
-                    row_since_start_sec = (now-(self.method_start_time+datetime.timedelta(0, previous_total_sec))).total_seconds()
-                    percent_row = row_since_start_sec/each_method.duration_sec
+                    row_since_start_sec = (now - (self.method_start_time + datetime.timedelta(0, previous_total_sec))).total_seconds()
+                    percent_row = row_since_start_sec / each_method.duration_sec
 
                     setpoint_start = each_method.setpoint_start
                     if each_method.setpoint_end:
                         setpoint_end = each_method.setpoint_end
                     else:
                         setpoint_end = each_method.setpoint_start
-                    setpoint_diff = abs(setpoint_end-setpoint_start)
+                    setpoint_diff = abs(setpoint_end - setpoint_start)
                     if setpoint_start < setpoint_end:
-                        new_setpoint = setpoint_start+(setpoint_diff*percent_row)
+                        new_setpoint = setpoint_start + (setpoint_diff * percent_row)
                     else:
-                        new_setpoint = setpoint_start-(setpoint_diff*percent_row)
+                        new_setpoint = setpoint_start - (setpoint_diff * percent_row)
 
                     self.logger.debug(
                         "[Method] Start: {} Seconds Since: {}".format(
@@ -601,17 +697,17 @@ class PIDController(threading.Thread):
         """ Set the derivator of the controller """
         self.derivator = derivator
 
-    def set_kp(self, P):
+    def set_kp(self, p):
         """ Set Kp gain of the controller """
-        self.Kp = P
+        self.Kp = p
 
-    def set_ki(self, I):
+    def set_ki(self, i):
         """ Set Ki gain of the controller """
-        self.Ki = I
+        self.Ki = i
 
-    def set_kd(self, D):
+    def set_kd(self, d):
         """ Set Kd gain of the controller """
-        self.Kd = D
+        self.Kd = d
 
     def get_setpoint(self):
         return self.set_point

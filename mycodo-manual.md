@@ -403,6 +403,22 @@ Hertz | This is frequency of the PWM signal.
 Duty Cycle | This is the proportion of the time on to the time off, expressed in percent (0 - 100).
 Current Draw (amps) | This is the current draw, in amps, when the duty cycle is 100%. Note: this value should be calculated based on the voltage set in the [Relay Usage Settings](#relay-usage-settings).
 
+### Schematics for AC modulation
+
+Below are hardware schematics that enable the modulation of alternating current (AC) from the PWM output from Mycodo.
+
+PWM output modulating alternating current (AC) at 1% duty cycle
+
+![Schematic: PWM output modulating alternating current (AC) at 1% duty cycle](manual_images/Schematic-PWM-AC-1percent-duty-cycle.png)\
+
+PWM output modulating alternating current (AC) at 50% duty cycle
+
+![Schematic: PWM output modulating alternating current (AC) at 50% duty cycle](manual_images/Schematic-PWM-AC-1percent-duty-cycle.png)\
+
+PWM output modulating alternating current (AC) at 99% duty cycle
+
+![Schematic: PWM output modulating alternating current (AC) at 99% duty cycle](manual_images/Schematic-PWM-AC-1percent-duty-cycle.png)\
+
 Relays
 ------
 
