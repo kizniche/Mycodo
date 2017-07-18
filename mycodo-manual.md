@@ -23,6 +23,7 @@ Table of Contents
 [Controllers](#controllers)
 
    - [Sensors](#sensors)
+   - [PWM](#PWM)
    - [Relays](#relays)
    - [PIDs](#pids)
    - [Timers](#timers)
@@ -381,6 +382,24 @@ GPIO | This is the sensor that will be used to verify the sensor measurement. Th
 Difference | This is the maximum measured measurement difference between the two sensors before an action is triggered (either notify by email or prevent PID from operating; more below).
 Notification | If the measurements of the two sensors differ by more than the set *Difference*, an email will be sent to the address in the *Notification* field.
 Stop PID | If the measurements of the two sensors differ by more than the set *Difference*, the PID controller will turn off.
+
+PWM
+---
+
+Pulse-width modulation (PWM) is a modulation technique used to encode a message into a pulsing signal, at a specific frequency in Hertz (Hz). The average value of voltage (and current) fed to the load is controlled by turning the switch between supply and load on and off at a fast rate. The longer the switch is on compared to the off periods, the higher the total power supplied to the load.
+
+The PWM switching frequency has to be much higher than what would affect the load (the device that uses the power), which is to say that the resultant waveform perceived by the load must be as smooth as possible. The rate (or frequency) at which the power supply must switch can vary greatly depending on load and application, for example
+
+> Switching has to be done several times a minute in an electric stove; 120 Hz in a lamp dimmer; between a few kilohertz (kHz) to tens of kHz for a motor drive; and well into the tens or hundreds of kHz in audio amplifiers and computer power supplies.
+
+The term duty cycle describes the proportion of 'on' time to the regular interval or 'period' of time; a low duty cycle corresponds to low power, because the power is off for most of the time. Duty cycle is expressed in percent, 100% being fully on.
+
+Currently, PWM is very new in Mycodo and does not have many features. PWM pins can be set up in the Output -> PWM page, then it may be used by a PWM PID Controller.
+
+Setting | Description
+-------------------- | ----------------------------------------------
+BCM Pin | This is the GPIO that will output the PWM signal, using BCM numbering.
+Hertz | This is frequency of the PWM signal
 
 Relays
 ------

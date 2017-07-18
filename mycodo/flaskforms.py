@@ -721,9 +721,9 @@ class PIDMod(FlaskForm):
 class RelayAdd(FlaskForm):
     relay_quantity = IntegerField(lazy_gettext(u'Quantity'))
     relay_type = StringField(lazy_gettext(u'Type'))
-    relay_add = SubmitField(lazy_gettext(u'Add Relay'))
+    relay_add = SubmitField(lazy_gettext(u'Add Output Device'))
     relay_cond_quantity = IntegerField(lazy_gettext(u'Quantity'))
-    relay_cond_add = SubmitField(lazy_gettext(u'Add Conditional'))
+    relay_cond_add = SubmitField(lazy_gettext(u'Add Relay Conditional'))
 
 
 class RelayMod(FlaskForm):
@@ -766,6 +766,7 @@ class RelayMod(FlaskForm):
         ],
         validators=[DataRequired()]
     )
+    pwm_hertz = IntegerField(lazy_gettext(u'Hertz'))
     save = SubmitField(lazy_gettext(u'Save'))
     delete = SubmitField(lazy_gettext(u'Delete'))
     order_up = SubmitField(lazy_gettext(u'Up'))
@@ -776,7 +777,11 @@ class RelayMod(FlaskForm):
         lazy_gettext(u'Seconds to turn on'),
         validators=[Optional()]
     )
-    sec_on_submit = SubmitField(lazy_gettext(u'Turn On'))
+    pwm_duty_cycle_on = DecimalField(
+        lazy_gettext(u'Duty Cycle'),
+        validators=[Optional()]
+    )
+    on_submit = SubmitField(lazy_gettext(u'Turn On'))
 
 
 #

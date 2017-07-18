@@ -109,8 +109,8 @@ class TimerController(threading.Thread):
                         modulate_relay = threading.Thread(
                             target=self.control.relay_on_off,
                             args=(self.relay_id,
-                                  self.state,
-                                  self.duration_on,))
+                                  self.state,),
+                            kwargs={'duration': self.duration_on})
                         modulate_relay.start()
                         self.date_timer_not_executed = False
                 elif not self.date_timer_not_executed:
@@ -129,8 +129,7 @@ class TimerController(threading.Thread):
                         modulate_relay = threading.Thread(
                             target=self.control.relay_on_off,
                             args=(self.relay_id,
-                                  self.state,
-                                  0,))
+                                  self.state,))
                         modulate_relay.start()
                         self.logger.debug(message)
 

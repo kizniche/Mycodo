@@ -1346,14 +1346,16 @@ def pid_manipulate(pid_id, action):
         db.session.commit()
 
         control = DaemonControl()
+        return_value = None
         if action == 'Hold':
             return_value = control.pid_hold(pid_id)
         elif action == 'Pause':
             return_value = control.pid_pause(pid_id)
         elif action == 'Resume':
             return_value = control.pid_resume(pid_id)
-        flash(gettext(u"Daemon response to PID controller %(act)s command: "
-                      u"%(rval)s", act=action, rval=return_value), "success")
+        if return_value:
+            flash(gettext(u"Daemon response to PID controller %(act)s command: "
+                          u"%(rval)s", act=action, rval=return_value), "success")
     except Exception as err:
         flash(gettext(u"PID Error: %(msg)s", msg=err), "error")
 
@@ -1374,16 +1376,34 @@ def relay_on_off(form_relay):
         relay = Relay.query.filter_by(id=form_relay.relay_id.data).first()
         if relay.relay_type == 'wired' and int(form_relay.relay_pin.data) == 0:
             error.append(gettext(u"Cannot modulate relay with a GPIO of 0"))
-        elif form_relay.sec_on_submit.data:
-            if float(form_relay.sec_on.data) <= 0:
-                error.append(gettext(u"Value must be greater than 0"))
-            else:
-                return_value = control.relay_on(form_relay.relay_id.data,
-                                                float(form_relay.sec_on.data))
-                flash(gettext(u"Relay turned on for %(sec)s seconds: %(rvalue)s",
-                              sec=form_relay.sec_on.data,
-                              rvalue=return_value),
-                      "success")
+        elif form_relay.on_submit.data:
+            if relay.relay_type in ['wired',
+                                    'wireless_433MHz_pi_switch',
+                                    'command']:
+                if float(form_relay.sec_on.data) <= 0:
+                    error.append(gettext(u"Value must be greater than 0"))
+                else:
+                    return_value = control.relay_on(form_relay.relay_id.data,
+                                                    duration=float(form_relay.sec_on.data))
+                    flash(gettext(u"Relay turned on for %(sec)s seconds: %(rvalue)s",
+                                  sec=form_relay.sec_on.data,
+                                  rvalue=return_value),
+                          "success")
+            if relay.relay_type == 'pwm':
+                if int(form_relay.relay_pin.data) == 0:
+                    error.append(gettext(u"Invalid pin"))
+                if relay.pwm_hertz <= 0:
+                    error.append(gettext(u"PWM Hertz must be a positive value"))
+                if float(form_relay.pwm_duty_cycle_on.data) <= 0:
+                    error.append(gettext(u"PWM duty cycle must be a positive value"))
+                if not error:
+                    return_value = control.relay_on(form_relay.relay_id.data,
+                                                    duty_cycle=float(form_relay.pwm_duty_cycle_on.data))
+                    flash(gettext(u"PWM set to %(dc)s%% at %(hertz)s: %(rvalue)s",
+                                  dc=float(form_relay.pwm_duty_cycle_on.data),
+                                  hertz=relay.pwm_hertz,
+                                  rvalue=return_value),
+                          "success")
         elif form_relay.turn_on.data:
             return_value = control.relay_on(form_relay.relay_id.data, 0)
             flash(gettext(u"Relay turned on: %(rvalue)s",
@@ -1685,57 +1705,58 @@ def relay_mod(form_relay):
         controller=gettext(u"Relay"))
     error = []
 
-    if form_relay.validate():
-        try:
-            mod_relay = Relay.query.filter(
-                Relay.id == form_relay.relay_id.data).first()
-            mod_relay.name = form_relay.name.data
-            setup_pin = False
-            if mod_relay.pin is not form_relay.gpio.data:
-                setup_pin = True
-            if mod_relay.relay_type == 'wired':
-                if not is_int(form_relay.gpio.data):
-                    error.append("BCM Pin must be an integer")
-                mod_relay.pin = form_relay.gpio.data
-                mod_relay.trigger = form_relay.trigger.data
-            elif mod_relay.relay_type == 'wireless_433MHz_pi_switch':
-                if not is_int(form_relay.wiringpi_pin.data):
-                    error.append("WiringPi Pin must be an integer")
-                if not is_int(form_relay.protocol.data):
-                    error.append("Protocol must be an integer")
-                if not is_int(form_relay.pulse_length.data):
-                    error.append("Pulse Length must be an integer")
-                if not is_int(form_relay.bit_length.data):
-                    error.append("Bit Length must be an integer")
-                if not is_int(form_relay.on_command.data):
-                    error.append("On Command must be an integer")
-                if not is_int(form_relay.off_command.data):
-                    error.append("Off Command must be an integer")
-                mod_relay.pin = form_relay.wiringpi_pin.data
-                mod_relay.protocol = form_relay.protocol.data
-                mod_relay.pulse_length = form_relay.pulse_length.data
-                mod_relay.bit_length = form_relay.bit_length.data
-                mod_relay.on_command = form_relay.on_command.data
-                mod_relay.off_command = form_relay.off_command.data
-            elif mod_relay.relay_type == 'command':
-                mod_relay.on_command = form_relay.on_command.data
-                mod_relay.off_command = form_relay.off_command.data
-            mod_relay.amps = form_relay.amps.data
-            if form_relay.on_at_start.data == '-1':
-                mod_relay.on_at_start = None
-            else:
-                mod_relay.on_at_start = form_relay.on_at_start.data
+    try:
+        mod_relay = Relay.query.filter(
+            Relay.id == form_relay.relay_id.data).first()
+        mod_relay.name = form_relay.name.data
+        setup_pin = False
+        if mod_relay.pin is not form_relay.gpio.data:
+            setup_pin = True
+        if mod_relay.relay_type == 'wired':
+            if not is_int(form_relay.gpio.data):
+                error.append("BCM Pin must be an integer")
+            mod_relay.pin = form_relay.gpio.data
+            mod_relay.trigger = form_relay.trigger.data
+        elif mod_relay.relay_type == 'wireless_433MHz_pi_switch':
+            if not is_int(form_relay.wiringpi_pin.data):
+                error.append("WiringPi Pin must be an integer")
+            if not is_int(form_relay.protocol.data):
+                error.append("Protocol must be an integer")
+            if not is_int(form_relay.pulse_length.data):
+                error.append("Pulse Length must be an integer")
+            if not is_int(form_relay.bit_length.data):
+                error.append("Bit Length must be an integer")
+            if not is_int(form_relay.on_command.data):
+                error.append("On Command must be an integer")
+            if not is_int(form_relay.off_command.data):
+                error.append("Off Command must be an integer")
+            mod_relay.pin = form_relay.wiringpi_pin.data
+            mod_relay.protocol = form_relay.protocol.data
+            mod_relay.pulse_length = form_relay.pulse_length.data
+            mod_relay.bit_length = form_relay.bit_length.data
+            mod_relay.on_command = form_relay.on_command.data
+            mod_relay.off_command = form_relay.off_command.data
+        elif mod_relay.relay_type == 'command':
+            mod_relay.on_command = form_relay.on_command.data
+            mod_relay.off_command = form_relay.off_command.data
+        elif mod_relay.relay_type == 'pwm':
+            mod_relay.pin = form_relay.gpio.data
+            mod_relay.pwm_hertz = form_relay.pwm_hertz.data
+        mod_relay.amps = form_relay.amps.data
 
-            if not error:
-                db.session.commit()
-                manipulate_relay('Modify',
-                                 form_relay.relay_id.data,
-                                 setup_pin)
-        except Exception as except_msg:
-            error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_relay'))
-    else:
-        flash_form_errors(form_relay)
+        if form_relay.on_at_start.data == '-1' or mod_relay.relay_type == 'pwm':
+            mod_relay.on_at_start = None
+        else:
+            mod_relay.on_at_start = form_relay.on_at_start.data
+
+        if not error:
+            db.session.commit()
+            manipulate_relay('Modify',
+                             form_relay.relay_id.data,
+                             setup_pin)
+    except Exception as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('page_routes.page_relay'))
 
 
 def relay_del(form_relay):

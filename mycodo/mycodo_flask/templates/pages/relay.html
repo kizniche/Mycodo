@@ -2,7 +2,7 @@
 {% set active_page = "relay" %}
 {% set help_page = ["relays", _('Relays')] %}
 
-{% block title %} - {{_('Relays')}}{% endblock %}
+{% block title %} - {{_('Output Devices')}}{% endblock %}
 
 {% block head %}
 <script>
@@ -13,9 +13,13 @@
         if (jqXHR.status != 204) {
           $.each(data,
             function(relay_id, state) {
-              if (state) {
-                document.getElementById(relay_id + "-relay-state").className = "row active-background";
-                document.getElementById(relay_id + "-input-relay-state").value = 'ID ' + relay_id + ', {{ _('Active')}}';
+              document.getElementById(relay_id + "-relay-state").className = "row active-background";
+              if (state !== 'off') {
+                if (state === 'on') {
+                  document.getElementById(relay_id + "-input-relay-state").value = 'ID ' + relay_id + ', {{ _('Active')}}';
+                } else {
+                  document.getElementById(relay_id + "-input-relay-state").value = 'ID ' + relay_id + ', {{ _('Active')}}, ' + state + '%';
+                }
               }
               else {
                 document.getElementById(relay_id + "-relay-state").className = "row inactive-background";
@@ -54,9 +58,9 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <h4>{{_('Relays')}} <a href="/help#relays" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <h4>{{_('Output Devices')}} <a href="/help#relays" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
-    <p>{{_('Relays enable a low power signal (3.3 DC volts from a Raspberry Pi) to switch a greater voltage/current (such as household appliances that require 120/240 AC volts). Add and configure relays to manipulate them and allow them be used throughout Mycodo.')}}</p>
+    <p>{{_('Output devices enable Mycodo to manipulate things through the use of relays (wired and wireless), PWM output, and executing commands.')}}</p>
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
@@ -68,8 +72,9 @@
         </div>
         <div class="col-xs-6 col-sm-3 col-md-3 small-gutters">
           <select class="form-control form-tooltip form-dropdown" id="relay_type" name="relay_type" data-placement="top" title="{{_('Relay Type')}}">
-            <option value="wired">Wired</option>
-            <option value="wireless_433MHz_pi_switch">Wireless (433MHz, pi_switch)</option>
+            <option value="wired">Relay: Wired</option>
+            <option value="wireless_433MHz_pi_switch">Relay: Wireless (433MHz, pi_switch)</option>
+            <option value="pwm">PWM Output</option>
             <option value="command">Execute Commands</option>
           </select>
         </div>
@@ -113,9 +118,11 @@
             <input class="form-control btn btn-default" disabled="" id="{{each_relay.id}}-input-relay-state" title="UUID: {{each_relay.unique_id}}" value="ID {{each_relay.id}}, {{ _('Unconfigured')}}" type="text">
           </div>
           <div class="col-xs-5 col-xs-offset-2 col-sm-3 col-sm-offset-0 col-md-3 small-gutters">
+            {% if each_relay.relay_type != 'pwm' -%}
             <div class="col-xs-6 col-sm-6 col-md-6 small-gutters">
               {{form_mod_relay.turn_on(class_='form-control btn btn-default')}}
             </div>
+            {%- endif %}
             <div class="col-xs-6 col-sm-6 col-md-6 small-gutters">
               {{form_mod_relay.turn_off(class_='form-control btn btn-default')}}
             </div>
@@ -152,9 +159,8 @@
              </div>
           </div>
 
-          {{form_mod_relay.csrf_token}}
-          {{form_mod_relay.relay_id(class_='form-control', value=each_relay.id)}}
-          {{form_mod_relay.relay_pin(class_='form-control', value=each_relay.pin)}}
+        {% if each_relay.relay_type in ['wired', 'wireless_433MHz_pi_switch', 'command'] %}
+
           <div class="col-xs-12">
             {{form_mod_relay.sec_on.label(class_='control-label')}}
           </div>
@@ -163,9 +169,26 @@
               {{form_mod_relay.sec_on(class_='form-control', **{'title':_('Turn this relay on for a specific number of seconds (used to test relay)')})}}
             </div>
             <div class="col-xs-6 col-sm-4 col-md-2 no-gutters">
-              {{form_mod_relay.sec_on_submit(class_='form-control btn btn-default')}}
+              {{form_mod_relay.on_submit(class_='form-control btn btn-default')}}
             </div>
           </div>
+
+        {% elif each_relay.relay_type == 'pwm' %}
+
+          <div class="col-xs-12">
+            {{form_mod_relay.pwm_duty_cycle_on.label(class_='control-label')}}
+          </div>
+          <div class="col-xs-12 small-gutters">
+            <div class="col-xs-4 col-sm-3 col-md-2 no-gutters">
+              {{form_mod_relay.pwm_duty_cycle_on(class_='form-control', **{'title':_('Select the duty cycle for the PWM when turned on (0.0 - 100.0)')})}}
+            </div>
+            <div class="col-xs-4 col-sm-3 col-md-2 no-gutters">
+              {{form_mod_relay.on_submit(class_='form-control btn btn-default')}}
+            </div>
+          </div>
+
+        {% endif %}
+
         </div>
         </form>
 
@@ -182,6 +205,7 @@
     {% if conditional %}
       <h4>{{_('Conditionals')}} <a href="/help#conditional-statements"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
       <p>{{_('Conditionals allow certain actions to be carried out when a certain set of conditions are met.')}} See the <a href="/help#conditional-statements">manual</a> for more information.</p>
+      <p>Note: PWM output cannot currently be used with conditionals.</p>
     {% endif %}
 
     {%- for each_cond in conditional -%}
@@ -227,7 +251,7 @@
             <div>
               <select class="form-control form-tooltip form-dropdown" id="if_relay_id" name="if_relay_id" data-placement="top" title="{{_('Trigger this conditional to act when this relay turns on or off')}}">
                 <option value=""></option>
-                {%- for each_relay in relay -%}
+                {%- for each_relay in relay if each_relay.relay_type != 'pwm' -%}
                   <option value="{{each_relay.id}}"{% if each_cond.if_relay_id == each_relay.id %} selected{% endif %}>{{each_relay.id}} ({{each_relay.name}})</option>
                 {%- endfor -%}
               </select>
@@ -292,7 +316,7 @@
             {{form_conditional_actions.do_relay_id.label(class_='control-label')}}
             <select class="form-control form-tooltip form-dropdown" id="do_relay_id" name="do_relay_id" data-placement="top" title="{{_('What relay to manipulate')}}">
               <option value=""></option>
-              {%- for each_relay in relay -%}
+              {%- for each_relay in relay if each_relay.relay_type != 'pwm' -%}
                 <option value="{{each_relay.id}}"{% if each_cond_action.do_relay_id == each_relay.id %} selected{% endif %}>{{each_relay.id}} ({{each_relay.name}})</option>
               {%- endfor -%}
             </select>

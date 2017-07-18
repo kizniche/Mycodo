@@ -186,14 +186,28 @@ def mycodo_service(mycodo):
                                                       cond_mod)
 
         @staticmethod
+        def exposed_relay_sec_currently_on(relay_id):
+            """Turns the amount of time a relay has already been on"""
+            return mycodo.controller['Relay'].relay_sec_currently_on(relay_id)
+
+        @staticmethod
+        def exposed_relay_setup(action, relay_id, setup_pin):
+            """Add, delete, or modify a relay in the running relay controller"""
+            return mycodo.relay_setup(action, relay_id, setup_pin)
+
+        @staticmethod
         def exposed_relay_state(relay_id):
             """Return the relay state (not pin but whether relay is on or off"""
             return mycodo.relay_state(relay_id)
 
         @staticmethod
-        def exposed_relay_on(relay_id, duration, min_off_duration=0.0):
+        def exposed_relay_on(
+                relay_id, duration=0.0, min_off=0.0, duty_cycle=0.0):
             """Turns relay on from the client"""
-            return mycodo.relay_on(relay_id, duration, min_off_duration)
+            return mycodo.relay_on(relay_id,
+                                   duration=duration,
+                                   min_off=min_off,
+                                   duty_cycle=duty_cycle)
 
         @staticmethod
         def exposed_relay_off(relay_id, trigger_conditionals=True):
@@ -553,7 +567,7 @@ class DaemonController(threading.Thread):
             trigger_conditionals=trigger_conditionals)
         return "Relay turned off"
 
-    def relay_on(self, relay_id, duration, min_off_duration=0.0):
+    def relay_on(self, relay_id, duration=0.0, min_off=0.0, duty_cycle=0.0):
         """
         Turn relay on using default relay controller
 
@@ -561,15 +575,18 @@ class DaemonController(threading.Thread):
         :type relay_id: str
         :param duration: How long to turn the relay on
         :type duration: float
-        :param min_off_duration: Don't turn on if not off for at least this duration (0 = disabled)
-        :type min_off_duration: float
+        :param min_off: Don't turn on if not off for at least this duration (0 = disabled)
+        :type min_off: float
+        :param duty_cycle: PWM duty cycle (0-100)
+        :type duty_cycle: float
         """
         self.controller['Relay'].relay_on_off(
             relay_id,
             'on',
             duration=duration,
-            min_off_duration=min_off_duration)
-        return "Relay turned on"
+            min_off=min_off,
+            duty_cycle=duty_cycle)
+        return "Turned on"
 
     def relay_setup(self, action, relay_id, setup_pin=False):
         """

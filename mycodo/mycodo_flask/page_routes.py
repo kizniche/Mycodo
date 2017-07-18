@@ -710,7 +710,7 @@ def page_relay():
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission('edit_controllers'):
-            return redirect(url_for('general_routes.page_relay'))
+            return redirect(url_for('page_routes.page_relay'))
 
         if form_add_relay.relay_add.data:
             flaskutils.relay_add(form_add_relay)
@@ -718,7 +718,7 @@ def page_relay():
             flaskutils.relay_mod(form_mod_relay)
         elif (form_mod_relay.turn_on.data or
                 form_mod_relay.turn_off.data or
-                form_mod_relay.sec_on_submit.data):
+                form_mod_relay.on_submit.data):
             flaskutils.relay_on_off(form_mod_relay)
         elif form_mod_relay.delete.data:
             flaskutils.relay_del(form_mod_relay)
@@ -823,7 +823,7 @@ def page_sensor():
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission('edit_controllers'):
-            return redirect(url_for('general_routes.page_sensor'))
+            return redirect(url_for('page_routes.page_sensor'))
 
         if form_add_sensor.sensorAddSubmit.data:
             flaskutils.sensor_add(form_add_sensor)

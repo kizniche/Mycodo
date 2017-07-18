@@ -165,16 +165,13 @@ def gpio_state():
         if each_relay.relay_type == 'wired' and -1 < each_relay.pin < 40:
             GPIO.setup(each_relay.pin, GPIO.OUT)
             if GPIO.input(each_relay.pin) == each_relay.trigger:
-                state[each_relay.id] = 1
+                state[each_relay.id] = 'on'
             else:
-                state[each_relay.id] = 0
+                state[each_relay.id] = 'off'
         elif (each_relay.relay_type == 'command' or
-                (each_relay.relay_type == 'wireless_433MHz_pi_switch' and
+                (each_relay.relay_type in ['pwm', 'wireless_433MHz_pi_switch'] and
                  -1 < each_relay.pin < 40)):
-            if daemon_control.relay_state(each_relay.id) == 'on':
-                state[each_relay.id] = 1
-            else:
-                state[each_relay.id] = 0
+            state[each_relay.id] = daemon_control.relay_state(each_relay.id)
 
     return jsonify(state)
 

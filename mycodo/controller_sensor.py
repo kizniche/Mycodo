@@ -529,8 +529,8 @@ class SensorController(threading.Thread):
                 relay_on_off = threading.Thread(
                     target=self.control.relay_on_off,
                     args=(cond_action.do_relay_id,
-                          cond_action.do_relay_state,
-                          cond_action.do_relay_duration,))
+                          cond_action.do_relay_state,),
+                    kwargs={'duration': cond_action.do_relay_duration})
                 relay_on_off.start()
 
             # Execute command in shell
