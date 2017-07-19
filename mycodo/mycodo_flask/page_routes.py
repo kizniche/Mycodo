@@ -626,7 +626,9 @@ def page_pid():
     display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
 
     form_add_pid = flaskforms.PIDAdd()
-    form_mod_pid = flaskforms.PIDMod()
+    form_mod_pid_base = flaskforms.PIDModBase()
+    form_mod_pid_relay = flaskforms.PIDModRelay()
+    form_mod_pid_pwm = flaskforms.PIDModPWM()
 
     method = Method.query.all()
 
@@ -648,32 +650,34 @@ def page_pid():
         if form_name == 'addPID':
             flaskutils.pid_add(form_add_pid)
         elif form_name == 'modPID':
-            if form_mod_pid.delete.data:
+            if form_mod_pid_base.save.data:
+                flaskutils.pid_mod(form_mod_pid_base,
+                                   form_mod_pid_pwm,
+                                   form_mod_pid_relay)
+            elif form_mod_pid_base.delete.data:
                 flaskutils.pid_del(
-                    form_mod_pid.pid_id.data)
-            elif form_mod_pid.reorder_up.data:
+                    form_mod_pid_base.pid_id.data)
+            elif form_mod_pid_base.reorder_up.data:
                 flaskutils.pid_reorder(
-                    form_mod_pid.pid_id.data, display_order, 'up')
-            elif form_mod_pid.reorder_down.data:
+                    form_mod_pid_base.pid_id.data, display_order, 'up')
+            elif form_mod_pid_base.reorder_down.data:
                 flaskutils.pid_reorder(
-                    form_mod_pid.pid_id.data, display_order, 'down')
-            elif form_mod_pid.activate.data:
+                    form_mod_pid_base.pid_id.data, display_order, 'down')
+            elif form_mod_pid_base.activate.data:
                 flaskutils.pid_activate(
-                    form_mod_pid.pid_id.data)
-            elif form_mod_pid.deactivate.data:
+                    form_mod_pid_base.pid_id.data)
+            elif form_mod_pid_base.deactivate.data:
                 flaskutils.pid_deactivate(
-                    form_mod_pid.pid_id.data)
-            elif form_mod_pid.hold.data:
+                    form_mod_pid_base.pid_id.data)
+            elif form_mod_pid_base.hold.data:
                 flaskutils.pid_manipulate(
-                    form_mod_pid.pid_id.data, 'Hold')
-            elif form_mod_pid.pause.data:
+                    form_mod_pid_base.pid_id.data, 'Hold')
+            elif form_mod_pid_base.pause.data:
                 flaskutils.pid_manipulate(
-                    form_mod_pid.pid_id.data, 'Pause')
-            elif form_mod_pid.resume.data:
+                    form_mod_pid_base.pid_id.data, 'Pause')
+            elif form_mod_pid_base.resume.data:
                 flaskutils.pid_manipulate(
-                    form_mod_pid.pid_id.data, 'Resume')
-            else:
-                flaskutils.pid_mod(form_mod_pid)
+                    form_mod_pid_base.pid_id.data, 'Resume')
 
         return redirect('/pid')
 
@@ -685,7 +689,9 @@ def page_pid():
                            sensor=sensor,
                            displayOrder=display_order,
                            form_add_pid=form_add_pid,
-                           form_mod_pid=form_mod_pid)
+                           form_mod_pid_base=form_mod_pid_base,
+                           form_mod_pid_pwm=form_mod_pid_pwm,
+                           form_mod_pid_relay=form_mod_pid_relay)
 
 
 @blueprint.route('/relay', methods=('GET', 'POST'))

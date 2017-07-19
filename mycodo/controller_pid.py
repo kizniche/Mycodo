@@ -379,6 +379,12 @@ class PIDController(threading.Thread):
             if self.direction in ['raise', 'both'] and self.raise_relay_id:
 
                 if self.control_variable > 0:
+                    # Turn off lower_relay if active, because we're now raising
+                    if (self.direction == 'both' and
+                            self.lower_relay_id and
+                            self.control.relay_state(self.lower_relay_id) != 'off'):
+                        self.control.relay_off(self.lower_relay_id)
+
                     if self.pid_type == 'relay':
                         # Ensure the relay on duration doesn't exceed the set maximum
                         if (self.raise_max_duration and
@@ -387,13 +393,6 @@ class PIDController(threading.Thread):
                         else:
                             self.raise_seconds_on = float("{0:.2f}".format(
                                 self.control_variable))
-
-                        # Turn off lower_relay if active, because we're now raising
-                        if self.lower_relay_id:
-                            relay = db_retrieve_table_daemon(
-                                Relay, device_id=self.lower_relay_id)
-                            if relay.is_on():
-                                self.control.relay_off(self.lower_relay_id)
 
                         if self.raise_seconds_on > self.raise_min_duration:
                             # Activate raise_relay for a duration
@@ -408,22 +407,19 @@ class PIDController(threading.Thread):
                                 duration=self.raise_seconds_on,
                                 min_off=self.raise_min_off_duration)
                     elif self.pid_type == 'pwm':
-                        # Turn off lower_relay if active, because we're now raising
-                        if self.control.relay_state(self.lower_relay_id):
-                            self.control.relay_off(self.lower_relay_id)
-
                         # Convert control variable to duty cycle
                         if self.control_variable > self.period:
                             self.raise_duty_cycle = 100.0
                         else:
                             self.raise_duty_cycle = float(
-                                self.period / self.control_variable)
+                                (self.control_variable / self.period) * 100)
 
                         # Activate pwm with calculated duty cycle
                         self.logger.debug(
-                            "Setpoint: {sp} Output: PWM output "
-                            "{id} to {dc}%".format(
+                            "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output "
+                            "{id} to {dc:.2f}%".format(
                                 sp=self.set_point,
+                                cv=self.control_variable,
                                 id=self.raise_relay_id,
                                 dc=self.raise_duty_cycle))
                         self.control.relay_on(self.raise_relay_id,
@@ -443,6 +439,12 @@ class PIDController(threading.Thread):
             if self.direction in ['lower', 'both'] and self.lower_relay_id:
 
                 if self.control_variable < 0:
+                    # Turn off raise_relay if active, because we're now raising
+                    if (self.direction == 'both' and
+                            self.raise_relay_id and
+                            self.control.relay_state(self.raise_relay_id) != 'off'):
+                        self.control.relay_off(self.raise_relay_id)
+
                     if self.pid_type == 'relay':
                         # Ensure the relay on duration doesn't exceed the set maximum
                         if (self.lower_max_duration and
@@ -451,13 +453,6 @@ class PIDController(threading.Thread):
                         else:
                             self.lower_seconds_on = abs(float("{0:.2f}".format(
                                 self.control_variable)))
-
-                        # Turn off raise_relay if active, because we're now lowering
-                        if self.raise_relay_id:
-                            relay = db_retrieve_table_daemon(
-                                Relay, device_id=self.raise_relay_id)
-                            if relay.is_on():
-                                self.control.relay_off(self.raise_relay_id)
 
                         if self.lower_seconds_on > self.lower_min_duration:
                             # Activate lower_relay for a duration
@@ -471,22 +466,19 @@ class PIDController(threading.Thread):
                                 duration=self.lower_seconds_on,
                                 min_off=self.lower_min_off_duration)
                     elif self.pid_type == 'pwm':
-                        # Turn off raise_relay if active, because we're now lowering
-                        if self.control.relay_state(self.raise_relay_id):
-                            self.control.relay_off(self.raise_relay_id)
-
                         # Convert control variable to duty cycle
                         if self.control_variable > self.period:
                             self.lower_duty_cycle = 100.0
                         else:
                             self.lower_duty_cycle = float(
-                                self.period / self.control_variable)
+                                (self.control_variable / self.period) * 100)
 
                         # Activate pwm with calculated duty cycle
                         self.logger.debug(
-                            "Setpoint: {sp} Output: PWM output "
-                            "{id} to {dc}%".format(
+                            "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output "
+                            "{id} to {dc:.2f}%".format(
                                 sp=self.set_point,
+                                cv=self.control_variable,
                                 id=self.lower_relay_id,
                                 dc=self.lower_duty_cycle))
                         self.control.relay_on(

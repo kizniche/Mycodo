@@ -594,7 +594,7 @@ class PIDAdd(FlaskForm):
     pidAddSubmit = SubmitField(lazy_gettext(u'Add PIDs'))
 
 
-class PIDMod(FlaskForm):
+class PIDModBase(FlaskForm):
     pid_id = IntegerField('PID ID', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext(u'Name'),
@@ -658,6 +658,20 @@ class PIDMod(FlaskForm):
     )
     integrator_max = DecimalField(lazy_gettext(u'Integrator Min'))
     integrator_min = DecimalField(lazy_gettext(u'Integrator Max'))
+    method_id = IntegerField(
+        'Setpoint Tracking Method', widget=widgets.HiddenInput())
+    save = SubmitField(lazy_gettext(u'Save'))
+    hold = SubmitField(lazy_gettext(u'Hold'))
+    pause = SubmitField(lazy_gettext(u'Pause'))
+    resume = SubmitField(lazy_gettext(u'Resume'))
+    delete = SubmitField(lazy_gettext(u'Delete'))
+    activate = SubmitField(lazy_gettext(u'Activate'))
+    deactivate = SubmitField(lazy_gettext(u'Deactivate'))
+    reorder_up = SubmitField(lazy_gettext(u'Up'))
+    reorder_down = SubmitField(lazy_gettext(u'Down'))
+
+
+class PIDModRelay(FlaskForm):
     raise_relay_id = StringField(lazy_gettext(u'Output ID (Raise)'))
     raise_min_duration = DecimalField(
         lazy_gettext(u'Raise Min On Duration'),
@@ -680,7 +694,7 @@ class PIDMod(FlaskForm):
             max=86400
         )]
     )
-    lower_relay_id = StringField(lazy_gettext(u'Output ID (Lower)'),)
+    lower_relay_id = StringField(lazy_gettext(u'Output ID (Lower)'))
     lower_min_duration = DecimalField(
         lazy_gettext(u'Lower Min On Duration'),
         validators=[validators.NumberRange(
@@ -702,17 +716,11 @@ class PIDMod(FlaskForm):
             max=86400
         )]
     )
-    method_id = IntegerField(
-        'Setpoint Tracking Method', widget=widgets.HiddenInput())
-    save = SubmitField(lazy_gettext(u'Save'))
-    hold = SubmitField(lazy_gettext(u'Hold'))
-    pause = SubmitField(lazy_gettext(u'Pause'))
-    resume = SubmitField(lazy_gettext(u'Resume'))
-    delete = SubmitField(lazy_gettext(u'Delete'))
-    activate = SubmitField(lazy_gettext(u'Activate'))
-    deactivate = SubmitField(lazy_gettext(u'Deactivate'))
-    reorder_up = SubmitField(lazy_gettext(u'Up'))
-    reorder_down = SubmitField(lazy_gettext(u'Down'))
+
+
+class PIDModPWM(FlaskForm):
+    raise_relay_id = StringField(lazy_gettext(u'Output ID (Raise)'))
+    lower_relay_id = StringField(lazy_gettext(u'Output ID (Lower)'))
 
 
 #

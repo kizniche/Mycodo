@@ -335,7 +335,7 @@ class RelayController(threading.Thread):
                     return 1
                 self.pwm_time_turned_on[relay_id] = datetime.datetime.now()
                 self.logger.debug(
-                    u"PWM {id} ({name}) ON with a duty cycle of {dc}% at {hertz} Hz".format(
+                    u"PWM {id} ({name}) ON with a duty cycle of {dc:.2f}% at {hertz} Hz".format(
                         id=self.relay_id[relay_id],
                         name=self.relay_name[relay_id],
                         dc=duty_cycle,
@@ -439,8 +439,11 @@ class RelayController(threading.Thread):
                     ret=cmd_return))
         elif self.relay_type[relay_id] == 'pwm':
             if state == 'on':
-                self.pwm_state[relay_id] = duty_cycle
-                self.pwm_output[relay_id].start(duty_cycle)
+                if self.pwm_state[relay_id]:
+                    self.pwm_output[relay_id].ChangeDutyCycle(duty_cycle)
+                else:
+                    self.pwm_state[relay_id] = duty_cycle
+                    self.pwm_output[relay_id].start(duty_cycle)
             elif state == 'off':
                 self.pwm_state[relay_id] = None
                 self.pwm_output[relay_id].stop()
@@ -642,7 +645,14 @@ class RelayController(threading.Thread):
             self.relay_on_command[relay_id] = relay.on_command
             self.relay_off_command[relay_id] = relay.off_command
 
+            if (relay_id in self.pwm_output and
+                    self.pwm_hertz[relay_id] != relay.pwm_hertz):
+                self.pwm_output[relay_id].ChangeFrequency(relay.pwm_hertz)
             self.pwm_hertz[relay_id] = relay.pwm_hertz
+
+            if (relay_id in self.pwm_output and
+                    self.relay_state(relay_id) != 'off'):
+                self.relay_switch(self, relay_id, 'off')
 
             if self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
                 self.wireless_pi_switch[relay_id] = Transmit433MHz(
