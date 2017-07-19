@@ -1,24 +1,24 @@
 {% extends "layout.html" %}
-{% set active_page = "sensor" %}
-{% set help_page = ["sensors", _('Sensors')] %}
+{% set active_page = "input" %}
+{% set help_page = ["input", _('Input')] %}
 
 {% block title %} - {{_('Sensors')}}{% endblock %}
 
 {% block head %}{% endblock %}
 
 {%- block body %}
-  <!-- Route: /sensor -->
+  <!-- Route: /input -->
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <h4>{{_('Sensors')}} <a href="/help#sensors" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <h4>{{_('Inputs')}} <a href="/help#input" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
-    <p>{{_('Sensors enable measuring conditions in the environment. Add, configure, and activate sensors to begin recording measurements to the database and allow them to be used throughout Mycodo.')}}</p>
+    <p>{{_('Inputs, such as sensors or ADC signals, enable measuring conditions in the environment. Add, configure, and activate sensors to begin recording measurements to the database and allow them to be used throughout Mycodo.')}}</p>
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
     <div class="row small-gutters" style="padding-left: 1em">
-      <form id="new_sensor_form" method="post" action="/sensor">
+      <form id="new_sensor_form" method="post" action="/input">
       <input type="hidden" name="form-name" value="addSensor">
       {{form_add_sensor.hidden_tag()}}
       <div class="col-xs-3 col-sm-3 col-md-2 no-gutters">
@@ -41,7 +41,7 @@
 
     <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
 
-      <form method="post" action="/sensor">
+      <form method="post" action="/input">
         {{form_mod_sensor.csrf_token}}
         {{form_mod_sensor.modSensor_id(value=each_sensor.id)}}
 
@@ -91,7 +91,7 @@
 
       <div class="collapse" id="collapseContainer{{each_sensor.id}}">
 
-        <form method="post" action="/sensor">
+        <form method="post" action="/input">
         {{form_mod_sensor.csrf_token}}
         {{form_mod_sensor.modSensor_id(value=each_sensor.id)}}
         {% if each_sensor.device in ['RPiCPULoad', 'RPiFreeSpace'] -%}
@@ -120,7 +120,7 @@
 
         <div style="padding: 0.5em;" class="row small-gutters">
           {% for each_sensor_template in sensor_templates if each_sensor_template[:-5] == each_sensor.device %}
-            {% include 'pages/sensor_options/'+each_sensor_template %}
+            {% include 'pages/input_options/'+each_sensor_template %}
           {% endfor %}
 
           {% if each_sensor.device != 'EDGE' -%}
@@ -201,7 +201,7 @@
 
         <div class="container" style="width: 100%; border: 2px solid #ddd; border-radius: 5px;">
 
-          <form method="post" action="/sensor">
+          <form method="post" action="/input">
           {{form_conditional.csrf_token}}
           {{form_conditional.sensor_id(class_='form-control', value=each_sensor.id)}}
           {{form_conditional.conditional_id(class_='form-control', value=each_cond.id)}}
@@ -329,7 +329,7 @@
 
           {% for each_cond_action in conditional_actions if each_cond_action.conditional_id == each_cond.id %}
 
-          <form method="post" action="/sensor">
+          <form method="post" action="/input">
           {{form_conditional_actions.csrf_token}}
           {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.id)}}
           {{form_conditional_actions.conditional_action_id(class_='form-control', value=each_cond_action.id)}}
@@ -508,7 +508,7 @@
 
           {% endfor %}
 
-          <form method="post" action="/sensor">
+          <form method="post" action="/input">
           {{form_conditional_actions.csrf_token}}
           {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.id)}}
 

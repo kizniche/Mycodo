@@ -24,14 +24,15 @@ class Relay(CRUDMixin, db.Model):
     on_until = db.Column(db.DateTime, default=None)  # Stores time to turn off relay (if on for a duration)
     last_duration = db.Column(db.Float, default=None)  # Stores the last on duration (seconds)
     on_duration = db.Column(db.Boolean, default=None)  # Stores if the relay is currently on for a duration
-    protocol = db.Column(db.Integer, default=1)
-    pulse_length = db.Column(db.Integer, default=189)
-    bit_length = db.Column(db.Integer, default=24)
-    on_command = db.Column(db.Text, default='22559')
-    off_command = db.Column(db.Text, default='22558')
+    protocol = db.Column(db.Integer, default=None)
+    pulse_length = db.Column(db.Integer, default=None)
+    bit_length = db.Column(db.Integer, default=None)
+    on_command = db.Column(db.Text, default=None)
+    off_command = db.Column(db.Text, default=None)
 
     # PWM
-    pwm_hertz = db.Column(db.Integer, default=100)  # PWM Hertz
+    pwm_hertz = db.Column(db.Integer, default=None)  # PWM Hertz
+    pwm_library = db.Column(db.Text, default=None)  # Library to produce PWM
 
     def __reper__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

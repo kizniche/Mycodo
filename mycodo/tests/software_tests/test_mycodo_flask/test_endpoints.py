@@ -121,9 +121,9 @@ def test_routes_logged_in_as_admin(_, testapp):
         ('method', '<!-- Route: /method -->'),
         ('method-build/-1', 'admin logged in'),
         ('pid', '<!-- Route: /pid -->'),
-        ('relay', '<!-- Route: /relay -->'),
+        ('relay', '<!-- Route: /output -->'),
         ('remote/setup', '<!-- Route: /remote/setup -->'),
-        ('sensor', '<!-- Route: /sensor -->'),
+        ('sensor', '<!-- Route: /input -->'),
         ('timer', '<!-- Route: /timer -->'),
         ('usage', '<!-- Route: /usage -->'),
         ('usage_reports', '<!-- Route: /usage_reports -->')
@@ -192,7 +192,7 @@ def create_user(mycodo_db, role, name, password):
 
 def add_sensor(testapp, sensor_type='RPi', qty=1):
     """ Go to the sensor page and create one or more sensors """
-    form = testapp.get('/sensor').maybe_follow().forms['new_sensor_form']
+    form = testapp.get('/input').maybe_follow().forms['new_sensor_form']
     form['numberSensors'] = qty
     form.select(name='sensor', value=sensor_type)
     response = form.submit().maybe_follow()

@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
-{% set active_page = "relay" %}
-{% set help_page = ["relays", _('Relays')] %}
+{% set active_page = "output" %}
+{% set help_page = ["output", _('Output')] %}
 
 {% block title %} - {{_('Output Devices')}}{% endblock %}
 
@@ -54,18 +54,18 @@
 {% endblock %}
 
 {% block body %}
-  <!-- Route: /relay -->
+  <!-- Route: /output -->
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <h4>{{_('Output Devices')}} <a href="/help#relays" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <h4>{{_('Output Devices')}} <a href="/help#output" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
-    <p>{{_('Output devices enable Mycodo to manipulate things through the use of relays (wired and wireless), PWM output, and executing commands.')}}</p>
+    <p>{{_('Output devices enable Mycodo to manipulate things through the use of relays (wired and wireless), PWM signals, and executing commands. When linked to a PID controller, with an input, output devices can be used for feedback regulation.')}}</p>
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
     <div class="row small-gutters" style="padding-left: 1em">
-      <form method="post" action="/relay">
+      <form method="post" action="/output">
         {{form_add_relay.hidden_tag()}}
         <div class="col-xs-2 col-sm-1 small-gutters">
           {{form_add_relay.relay_quantity(class_='form-control', type="number", value=1, **{'title':_('Quantity')})}}
@@ -83,7 +83,7 @@
         </div>
       </form>
 
-      <form method="post" action="/relay">
+      <form method="post" action="/output">
         {{form_conditional.conditional_type(class_='form-control', value='relay')}}
         <div class="col-xs-2 col-sm-1 col-sm-offset-1 small-gutters">
           {{form_conditional.quantity(class_='form-control', type="number", value=1, **{'title':_('Quantity')})}}
@@ -101,7 +101,7 @@
         {%- for each_relay in relay if each_relay.id == order -%}
 
       <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
-        <form method="post" action="/relay">
+        <form method="post" action="/output">
         {{form_mod_relay.csrf_token}}
         {{form_mod_relay.relay_id(class_='form-control', value=each_relay.id)}}
         {{form_mod_relay.relay_pin(class_='form-control', value=each_relay.pin)}}
@@ -149,7 +149,7 @@
           </div>
 
         {% for each_relay_template in relay_templates if each_relay_template[:-5] == each_relay.relay_type %}
-          {% include 'pages/relay_options/'+each_relay_template %}
+          {% include 'pages/output_options/'+each_relay_template %}
         {% endfor %}
 
           <div class="col-xs-6 col-sm-4 col-md-2">
@@ -212,7 +212,7 @@
 
       <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
 
-        <form method="post" action="/relay">
+        <form method="post" action="/output">
         {{form_conditional.csrf_token}}
         {{form_conditional.conditional_id(class_='form-control', value=each_cond.id)}}
 
@@ -289,7 +289,7 @@
         
         {% for each_cond_action in conditional_actions if each_cond_action.conditional_id == each_cond.id %}
 
-        <form method="post" action="/relay">
+        <form method="post" action="/output">
         {{form_conditional_actions.csrf_token}}
         {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.id)}}
         {{form_conditional_actions.conditional_action_id(class_='form-control', value=each_cond_action.id)}}
@@ -409,7 +409,7 @@
           
         {% endfor %}
 
-        <form method="post" action="/relay">
+        <form method="post" action="/output">
         {{form_conditional_actions.csrf_token}}
         {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.id)}}
       

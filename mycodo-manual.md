@@ -22,9 +22,8 @@ Table of Contents
     
 [Controllers](#controllers)
 
-   - [Sensors](#sensors)
-   - [PWM](#pwm)
-   - [Relays](#relays)
+   - [Input](#input)
+   - [Output](#output)
    - [PIDs](#pids)
    - [Timers](#timers)
    - [LCDs](#lcds)
@@ -326,14 +325,10 @@ performs a specific task or group of related tasks. There are also
 Controller Functions, which are larger functions of a controller or
 controllers and have been given their own sections.
 
-Sensors
--------
+Input
+-----
 
-Sensors measure environmental conditions, which will be stored in an
-influxdb round-robin database. This database will provide recent 
-measurements for [Graphs](/help#graphs), [LCDs](/help#lcds), [PID
-Controllers](/help#pids), [Conditional Statements](/help#conditional-statements), 
-and other parts of Mycodo to operate from.
+Inputs (such as sensors or analog signals) measure environmental and other characteristic conditions, which will be stored in an influxdb round-robin database. This database will provide recent measurements for [Graphs](/help#graphs), [LCDs](/help#lcds), [PID Controllers](/help#pids), [Conditional Statements](/help#conditional-statements), and other parts of Mycodo to operate from.
 
 Setting | Description
 -------------------- | ----------------------------------------------
@@ -383,8 +378,10 @@ Difference | This is the maximum measured measurement difference between the two
 Notification | If the measurements of the two sensors differ by more than the set *Difference*, an email will be sent to the address in the *Notification* field.
 Stop PID | If the measurements of the two sensors differ by more than the set *Difference*, the PID controller will turn off.
 
-PWM
----
+Output
+------
+
+### PWM
 
 Pulse-width modulation (PWM) is a modulation technique used to encode a message into a pulsing signal, at a specific frequency in Hertz (Hz). The average value of voltage (and current) fed to the load is controlled by turning the switch between supply and load on and off at a fast rate. The longer the switch is on compared to the off periods, the higher the total power supplied to the load.
 
@@ -398,12 +395,27 @@ Currently, PWM is very new in Mycodo and does not have many features. PWM pins c
 
 Setting | Description
 -------------------- | ----------------------------------------------
+Library | Select the method for producing the PWM signal. Hardware pins can produce up to a 30 MHz PWM signal, while any other (non-hardware PWM) pin can produce up to a 40 kHz PWM signal. See the table, below, for the hardware pins on various Pi boards.
 BCM Pin | This is the GPIO that will output the PWM signal, using BCM numbering.
 Hertz | This is frequency of the PWM signal.
 Duty Cycle | This is the proportion of the time on to the time off, expressed in percent (0 - 100).
 Current Draw (amps) | This is the current draw, in amps, when the duty cycle is 100%. Note: this value should be calculated based on the voltage set in the [Relay Usage Settings](#relay-usage-settings).
 
-### Schematics for AC modulation
+#### Hardware PWM Pins
+
+BCM Pin | PWM Channel | Raspberry Pi Version
+------- | ----------- | --------------------
+12 | 0 | All models except A and B
+13 | 1 | All models except A and B
+18 | 0 | All models
+19 | 1 | All models except A and B
+40 | 0 | Compute module only
+41 | 1 | Compute module only
+45 | 1 | Compute module only
+52 | 0 | Compute module only
+53 | 1 | Compute module only
+
+#### Schematics for AC modulation
 
 Below are hardware schematics that enable the modulation of alternating current (AC) from the PWM output from Mycodo.
 
@@ -419,18 +431,17 @@ PWM output modulating alternating current (AC) at 99% duty cycle
 
 ![Schematic: PWM output modulating alternating current (AC) at 99% duty cycle](manual_images/Schematic-PWM-AC-99percent-duty-cycle.png)\
 
-Relays
-------
+### Relays
 
 Relays are electromechanical or solid-state devices that enable a small voltage signal (such as from a microprocessor) to activate a much larger voltage, without exposing the low-voltage system to the dangers of the higher voltage.
 
 Add and configure relays in the Relay tab. Relays must be properly set up before PID regulation can be achieved.
 
-### Wired 
+#### Wired 
 
 To set up a wired relay, set the "GPIO Pin" to the BCM GPIO number of each pin that activates each relay. *On Trigger* should be set to the signal that activates the relay (the device attached to vthe relay turns on). If your relay activates when the potential across the coil is 0-volts, set *On Trigger* to "Low", otherwise if your relay activates when the potential across the coil is 3.3-volts (or whatever switching voltage you are using, if not being driven by the GPIO pin), set it to "High".
 
-### Wireless
+#### Wireless
 
 Certain 433 MHz wireless relays may be used, however you will need to set the pin of the transmitter (using WiringPi numbering), pulse length, bit length, protocol, on command, and off command. To determine your on and off commands, connect a 433 MHz receiver to your Pi, then run the receiver script, below, and press one of the buttons (either on or off) on your remote to detect the numeric code associated with that button.
 
@@ -438,7 +449,7 @@ Certain 433 MHz wireless relays may be used, however you will need to set the pi
 
 433 MHz wireless relays have been successfully tested with SMAKN 433MHz RF Transmitters/Receivers and Etekcity Wireless Remote Control Electrical Outlets (see [Issue 88](https://github.com/kizniche/Mycodo/issues/88) for more information). If you have a 433 MHz transmitter/receiver and a wireless relay that does not work with the current code (even after trying several different protocol settings), submit a [new issue](https://github.com/kizniche/Mycodo/issues/new) with details of your hardware.
 
-### Command
+#### Command
 
 Another option for relay control is to execute a terminal command when the relay is turned on or off. Commands will be executed as the user 'mycodo'.
 

@@ -1440,7 +1440,7 @@ def relay_on_off(form_relay):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_relay'))
+    flash_success_errors(error, action, url_for('page_routes.page_output'))
 
 
 def conditional_add(cond_type, quantity, sensor_id=None):
@@ -1476,7 +1476,7 @@ def conditional_add(cond_type, quantity, sensor_id=None):
                     check_refresh_conditional(
                         sensor_id,
                         'add')
-    flash_success_errors(error, action, url_for('page_routes.page_relay'))
+    flash_success_errors(error, action, url_for('page_routes.page_output'))
 
 
 def conditional_mod(form, mod_type):
@@ -1541,7 +1541,7 @@ def conditional_mod(form, mod_type):
                 check_refresh_conditional(
                     form.sensor_id.data,
                     'mod')
-    flash_success_errors(error, action, url_for('page_routes.page_relay'))
+    flash_success_errors(error, action, url_for('page_routes.page_output'))
 
 
 def conditional_action_add(form):
@@ -1570,7 +1570,7 @@ def conditional_action_add(form):
         error.append(except_msg)
     except sqlalchemy.exc.IntegrityError as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_relay'))
+    flash_success_errors(error, action, url_for('page_routes.page_output'))
 
 
 def conditional_action_mod(form, mod_type):
@@ -1653,7 +1653,7 @@ def conditional_action_mod(form, mod_type):
             check_refresh_conditional(
                 cond.sensor_id,
                 'mod')
-    flash_success_errors(error, action, url_for('page_routes.page_relay'))
+    flash_success_errors(error, action, url_for('page_routes.page_output'))
 
 
 def conditional_activate(form):
@@ -1696,11 +1696,17 @@ def relay_add(form_add_relay):
                 if form_add_relay.relay_type.data == 'wired':
                     new_relay.on_at_start = False
                 elif form_add_relay.relay_type.data == 'wireless_433MHz_pi_switch':
+                    new_relay.protocol = 1
+                    new_relay.bit_length = 25
+                    new_relay.pulse_length =189
                     new_relay.on_command = '22559'
                     new_relay.off_command = '22558'
                 elif form_add_relay.relay_type.data == 'command':
                     new_relay.on_command = '/home/pi/script_on.sh'
                     new_relay.off_command = '/home/pi/script_off.sh'
+                elif form_add_relay.relay_type.data == 'pwm':
+                    new_relay.pwm_hertz = 22000
+                    new_relay.pwm_library = 'pigpio_any'
                 new_relay.save()
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
                 DisplayOrder.query.first().relay = add_display_order(
@@ -1717,7 +1723,7 @@ def relay_add(form_add_relay):
             accepted_values=gettext(u"Acceptable values")
         )
         error.append(error_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_relay'))
+    flash_success_errors(error, action, url_for('page_routes.page_output'))
 
 
 def relay_mod(form_relay):
@@ -1763,6 +1769,7 @@ def relay_mod(form_relay):
         elif mod_relay.relay_type == 'pwm':
             mod_relay.pin = form_relay.gpio.data
             mod_relay.pwm_hertz = form_relay.pwm_hertz.data
+            mod_relay.pwm_library = form_relay.pwm_library.data
         mod_relay.amps = form_relay.amps.data
 
         if form_relay.on_at_start.data == '-1' or mod_relay.relay_type == 'pwm':
@@ -1777,7 +1784,7 @@ def relay_mod(form_relay):
                              setup_pin)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_relay'))
+    flash_success_errors(error, action, url_for('page_routes.page_output'))
 
 
 def relay_del(form_relay):
@@ -1796,7 +1803,7 @@ def relay_del(form_relay):
         manipulate_relay('Delete', form_relay.relay_id.data)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_relay'))
+    flash_success_errors(error, action, url_for('page_routes.page_output'))
 
 
 def relay_reorder(relay_id, display_order, direction):
@@ -1815,7 +1822,7 @@ def relay_reorder(relay_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_relay'))
+    flash_success_errors(error, action, url_for('page_routes.page_output'))
 
 
 #
@@ -1973,7 +1980,7 @@ def sensor_add(form_add_sensor):
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
                 error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_sensor'))
+        flash_success_errors(error, action, url_for('page_routes.page_input'))
     else:
         flash_form_errors(form_add_sensor)
 
@@ -2057,7 +2064,7 @@ def sensor_mod(form_mod_sensor):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_sensor'))
+    flash_success_errors(error, action, url_for('page_routes.page_input'))
 
 
 def sensor_del(form_mod_sensor):
@@ -2099,7 +2106,7 @@ def sensor_del(form_mod_sensor):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_sensor'))
+    flash_success_errors(error, action, url_for('page_routes.page_input'))
 
 
 def sensor_reorder(sensor_id, display_order, direction):
@@ -2118,7 +2125,7 @@ def sensor_reorder(sensor_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_sensor'))
+    flash_success_errors(error, action, url_for('page_routes.page_input'))
 
 
 def sensor_activate(form_mod_sensor):
@@ -2128,7 +2135,7 @@ def sensor_activate(form_mod_sensor):
             sensor.device not in DEVICES_DEFAULT_LOCATION):
         flash("Cannot activate sensor without the GPIO/I2C Address/Port "
               "to communicate with it set.", "error")
-        return redirect('/sensor')
+        return redirect(url_for('page_routes.page_input'))
     controller_activate_deactivate('activate',
                                    'Sensor',
                                    form_mod_sensor.modSensor_id.data)

@@ -19,6 +19,7 @@ depends_on = None
 def upgrade():
     with op.batch_alter_table("relay") as batch_op:
         batch_op.add_column(sa.Column('pwm_hertz', sa.INTEGER))
+        batch_op.add_column(sa.Column('pwm_library', sa.TEXT))
 
     with op.batch_alter_table("pid") as batch_op:
         batch_op.add_column(sa.Column('pid_type', sa.INTEGER))
@@ -35,6 +36,7 @@ def upgrade():
 def downgrade():
     with op.batch_alter_table("relay") as batch_op:
         batch_op.drop_column('pwm_hertz')
+        batch_op.drop_column('pwm_library')
 
     with op.batch_alter_table("pid") as batch_op:
         batch_op.drop_column('pid_type')

@@ -23,6 +23,7 @@
 
 import datetime
 import logging
+import pigpio
 import RPi.GPIO as GPIO
 import threading
 import time
@@ -78,6 +79,7 @@ class RelayController(threading.Thread):
 
         # PWM
         self.pwm_hertz = {}
+        self.pwm_library = {}
         self.pwm_output = {}
         self.pwm_state = {}
         self.pwm_time_turned_on = {}
@@ -439,12 +441,34 @@ class RelayController(threading.Thread):
                     ret=cmd_return))
         elif self.relay_type[relay_id] == 'pwm':
             if state == 'on':
+
+                if self.pwm_library[relay_id] == 'pigpio_hardware':
+                    self.pwm_output[relay_id].hardware_PWM(
+                        self.relay_pin[relay_id], self.pwm_hertz[relay_id], 0)
+                elif self.pwm_library[relay_id] == 'pigpio_hardware':
+                    self.pwm_output[relay_id].set_PWM_frequency(
+                        self.relay_pin[relay_id], self.pwm_hertz[relay_id])
+                    self.pwm_output[relay_id].set_PWM_duty_cycle(
+                        self.relay_pin[relay_id], 0)
+
+
                 if self.pwm_state[relay_id]:
                     self.pwm_output[relay_id].ChangeDutyCycle(duty_cycle)
                 else:
                     self.pwm_state[relay_id] = duty_cycle
                     self.pwm_output[relay_id].start(duty_cycle)
             elif state == 'off':
+
+                if self.pwm_library[relay_id] == 'pigpio_hardware':
+                    self.pwm_output[relay_id].hardware_PWM(
+                        self.relay_pin[relay_id], self.pwm_hertz[relay_id], 0)
+                elif self.pwm_library[relay_id] == 'pigpio_hardware':
+                    self.pwm_output[relay_id].set_PWM_frequency(
+                        self.relay_pin[relay_id], self.pwm_hertz[relay_id])
+                    self.pwm_output[relay_id].set_PWM_duty_cycle(
+                        self.relay_pin[relay_id], 0)
+
+
                 self.pwm_state[relay_id] = None
                 self.pwm_output[relay_id].stop()
 
@@ -573,6 +597,7 @@ class RelayController(threading.Thread):
             self.relay_off_command[each_relay.id] = each_relay.off_command
 
             self.pwm_hertz[each_relay.id] = each_relay.pwm_hertz
+            self.pwm_library[each_relay.id] = each_relay.pwm_library
             self.pwm_time_turned_on[each_relay.id] = None
 
             if self.relay_pin[each_relay.id] is not None:
@@ -627,6 +652,31 @@ class RelayController(threading.Thread):
         relay_id = int(relay_id)
         try:
             relay = db_retrieve_table_daemon(Relay, device_id=relay_id)
+
+            # If PWM config changes
+            if (relay_id in self.pwm_output and
+                    (self.pwm_hertz[relay_id] != relay.pwm_hertz or
+                     self.relay_pin[relay_id] != relay.relay_pin or
+                     self.pwm_library[relay_id] != relay.pwm_library)):
+
+                # If PWM config changes, turn current relay pin off
+                if self.relay_state(relay_id) != 'off':
+                    self.relay_switch(relay_id, 'off')
+
+                self.pwm_hertz[relay_id] = relay.pwm_hertz
+                self.pwm_library[relay_id] = relay.pwm_library
+
+                # Update new config options
+                self.pwm_output[relay_id] = pigpio.pi()
+                if self.pwm_library[relay_id] == 'pigpio_hardware':
+                    self.pwm_output[relay_id].hardware_PWM(
+                        self.relay_pin[relay_id], self.pwm_hertz[relay_id], 0)
+                elif self.pwm_library[relay_id] == 'pigpio_hardware':
+                    self.pwm_output[relay_id].set_PWM_frequency(
+                        self.relay_pin[relay_id], self.pwm_hertz[relay_id])
+                    self.pwm_output[relay_id].set_PWM_duty_cycle(
+                        self.relay_pin[relay_id], 0)
+
             self.relay_id[relay_id] = relay.id
             self.relay_unique_id[relay_id] = relay.unique_id
             self.relay_type[relay_id] = relay.relay_type
@@ -644,15 +694,6 @@ class RelayController(threading.Thread):
             self.relay_bit_length[relay_id] = relay.bit_length
             self.relay_on_command[relay_id] = relay.on_command
             self.relay_off_command[relay_id] = relay.off_command
-
-            if (relay_id in self.pwm_output and
-                    self.pwm_hertz[relay_id] != relay.pwm_hertz):
-                self.pwm_output[relay_id].ChangeFrequency(relay.pwm_hertz)
-            self.pwm_hertz[relay_id] = relay.pwm_hertz
-
-            if (relay_id in self.pwm_output and
-                    self.relay_state(relay_id) != 'off'):
-                self.relay_switch(self, relay_id, 'off')
 
             if self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
                 self.wireless_pi_switch[relay_id] = Transmit433MHz(
@@ -717,6 +758,7 @@ class RelayController(threading.Thread):
             self.wireless_pi_switch.pop(relay_id, None)
 
             self.pwm_hertz.pop(relay_id, None)
+            self.pwm_library.pop(relay_id, None)
             self.pwm_output.pop(relay_id, None)
             self.pwm_state.pop(relay_id, None)
             self.pwm_time_turned_on.pop(relay_id, None)
@@ -798,6 +840,11 @@ class RelayController(threading.Thread):
         elif self.relay_type[relay_id] == 'pwm':
             # Setup GPIO (BCM numbering) and initialize PWM pin as output
             try:
+                self.pwm_output[relay_id] = pigpio.pi()
+                if self.pwm_libary[relay_id] == 'pigpio_hardware':
+
+                elif self.pwm_libary[relay_id] == 'pigpio_any':
+
                 GPIO.setmode(GPIO.BCM)
                 GPIO.setwarnings(True)
                 GPIO.setup(pin, GPIO.OUT)
@@ -820,7 +867,7 @@ class RelayController(threading.Thread):
         :rtype: str
 
         :param relay_id: Unique ID for each relay
-        :type relay_id: str
+        :type relay_id: int
         """
         if self.relay_type[relay_id] == 'wired':
             if self.relay_trigger[relay_id] == GPIO.input(self.relay_pin[relay_id]):

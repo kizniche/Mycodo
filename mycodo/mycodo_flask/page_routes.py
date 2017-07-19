@@ -694,9 +694,9 @@ def page_pid():
                            form_mod_pid_relay=form_mod_pid_relay)
 
 
-@blueprint.route('/relay', methods=('GET', 'POST'))
+@blueprint.route('/output', methods=('GET', 'POST'))
 @flask_login.login_required
-def page_relay():
+def page_output():
     """ Display relay status and config """
     camera = Camera.query.all()
     lcd = LCD.query.all()
@@ -715,19 +715,19 @@ def page_relay():
     form_conditional = flaskforms.Conditional()
     form_conditional_actions = flaskforms.ConditionalActions()
 
-    # Create list of file names from the relay_options directory
+    # Create list of file names from the output_options directory
     # Used in generating the correct options for each relay/device
     relay_templates = []
     relay_path = os.path.join(
         INSTALL_DIRECTORY,
-        'mycodo/mycodo_flask/templates/pages/relay_options')
+        'mycodo/mycodo_flask/templates/pages/output_options')
     for (_, _, file_names) in os.walk(relay_path):
         relay_templates.extend(file_names)
         break
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission('edit_controllers'):
-            return redirect(url_for('page_routes.page_relay'))
+            return redirect(url_for('page_routes.page_output'))
 
         if form_add_relay.relay_add.data:
             flaskutils.relay_add(form_add_relay)
@@ -764,9 +764,9 @@ def page_relay():
         elif form_conditional_actions.delete_action.data:
             flaskutils.conditional_action_mod(form_conditional_actions,
                                               'delete')
-        return redirect('/relay')
+        return redirect(url_for('page_routes.page_output'))
 
-    return render_template('pages/relay.html',
+    return render_template('pages/output.html',
                            camera=camera,
                            conditional=conditional,
                            conditional_actions=conditional_actions,
@@ -782,9 +782,9 @@ def page_relay():
                            user=user)
 
 
-@blueprint.route('/sensor', methods=('GET', 'POST'))
+@blueprint.route('/input', methods=('GET', 'POST'))
 @flask_login.login_required
-def page_sensor():
+def page_input():
     """ Display sensor settings """
     # TCA9548A I2C multiplexer
     multiplexer_addresses = [
@@ -828,19 +828,19 @@ def page_sensor():
             flash("Unable to detect sensors in '/sys/bus/w1/devices'",
                   "error")
 
-    # Create list of file names from the sensor_options directory
+    # Create list of file names from the input_options directory
     # Used in generating the correct options for each sensor/device
     sensor_templates = []
     sensor_path = os.path.join(
         INSTALL_DIRECTORY,
-        'mycodo/mycodo_flask/templates/pages/sensor_options')
+        'mycodo/mycodo_flask/templates/pages/input_options')
     for (_, _, file_names) in os.walk(sensor_path):
         sensor_templates.extend(file_names)
         break
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission('edit_controllers'):
-            return redirect(url_for('page_routes.page_sensor'))
+            return redirect(url_for('page_routes.page_input'))
 
         if form_add_sensor.sensorAddSubmit.data:
             flaskutils.sensor_add(form_add_sensor)
@@ -878,9 +878,9 @@ def page_sensor():
         elif form_conditional_actions.delete_action.data:
             flaskutils.conditional_action_mod(form_conditional_actions,
                                               'delete')
-        return redirect('/sensor')
+        return redirect(url_for('page_routes.page_input'))
 
-    return render_template('pages/sensor.html',
+    return render_template('pages/input.html',
                            camera=camera,
                            conditional=conditional,
                            conditional_actions=conditional_actions,
