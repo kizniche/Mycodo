@@ -401,7 +401,13 @@ Hertz | This is frequency of the PWM signal.
 Duty Cycle | This is the proportion of the time on to the time off, expressed in percent (0 - 100).
 Current Draw (amps) | This is the current draw, in amps, when the duty cycle is 100%. Note: this value should be calculated based on the voltage set in the [Relay Usage Settings](#relay-usage-settings).
 
+#### Non-hardware PWM Pins
+
+If using any non-hardware PWM pin (see table below for hardware PWM pins), then there are only certain frequencies that can be used. These frequencies are 40000, 20000, 10000, 8000, 5000, 4000, 2500, 2000, 1600, 1250, 1000, 800, 500, 400, 250, 200, 100, and 50 Hz. If you attempt to set a frequency that is not listed here, the nearest frequency from this list will be used.
+
 #### Hardware PWM Pins
+
+The exact frequency may be set when using a hardware PWM pin. The same PWM channel is available on multiple GPIO. The latest frequency and duty cycle setting will be used by all GPIO which share a PWM channel. 
 
 BCM Pin | PWM Channel | Raspberry Pi Version
 ------- | ----------- | --------------------

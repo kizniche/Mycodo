@@ -167,7 +167,7 @@ class RelayController(threading.Thread):
             'If relay 1 turns on, turn relay 3 off'
 
         :param relay_id: Unique ID for relay
-        :type relay_id: str
+        :type relay_id: int
         :param state: What state is desired? 'on' or 'off'
         :type state: str
         :param duration: If state is 'on', a duration can be set to turn the relay off after
@@ -417,6 +417,7 @@ class RelayController(threading.Thread):
             elif state == 'off':
                 GPIO.output(self.relay_pin[relay_id],
                             not self.relay_trigger[relay_id])
+
         elif self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
             if state == 'on':
                 self.wireless_pi_switch[relay_id].transmit(
@@ -424,6 +425,7 @@ class RelayController(threading.Thread):
             elif state == 'off':
                 self.wireless_pi_switch[relay_id].transmit(
                     int(self.relay_off_command[relay_id]))
+
         elif self.relay_type[relay_id] == 'command':
             if state == 'on' and self.relay_on_command[relay_id]:
                 cmd_return, _, cmd_status = cmd_output(
@@ -439,38 +441,35 @@ class RelayController(threading.Thread):
                     state=state,
                     stat=cmd_status,
                     ret=cmd_return))
+
         elif self.relay_type[relay_id] == 'pwm':
             if state == 'on':
-
                 if self.pwm_library[relay_id] == 'pigpio_hardware':
                     self.pwm_output[relay_id].hardware_PWM(
-                        self.relay_pin[relay_id], self.pwm_hertz[relay_id], 0)
-                elif self.pwm_library[relay_id] == 'pigpio_hardware':
+                        self.relay_pin[relay_id],
+                        self.pwm_hertz[relay_id],
+                        duty_cycle * 10000)
+                elif self.pwm_library[relay_id] == 'pigpio_any':
                     self.pwm_output[relay_id].set_PWM_frequency(
-                        self.relay_pin[relay_id], self.pwm_hertz[relay_id])
-                    self.pwm_output[relay_id].set_PWM_duty_cycle(
-                        self.relay_pin[relay_id], 0)
-
-
-                if self.pwm_state[relay_id]:
-                    self.pwm_output[relay_id].ChangeDutyCycle(duty_cycle)
-                else:
-                    self.pwm_state[relay_id] = duty_cycle
-                    self.pwm_output[relay_id].start(duty_cycle)
+                        self.relay_pin[relay_id],
+                        self.pwm_hertz[relay_id])
+                    calc_duty_cycle = int((duty_cycle / 100.0) * 256)
+                    self.pwm_output[relay_id].set_PWM_dutycycle(
+                        self.relay_pin[relay_id],
+                        calc_duty_cycle)
+                self.pwm_state[relay_id] = duty_cycle
             elif state == 'off':
-
                 if self.pwm_library[relay_id] == 'pigpio_hardware':
                     self.pwm_output[relay_id].hardware_PWM(
-                        self.relay_pin[relay_id], self.pwm_hertz[relay_id], 0)
-                elif self.pwm_library[relay_id] == 'pigpio_hardware':
+                        self.relay_pin[relay_id],
+                        self.pwm_hertz[relay_id], 0)
+                elif self.pwm_library[relay_id] == 'pigpio_any':
                     self.pwm_output[relay_id].set_PWM_frequency(
-                        self.relay_pin[relay_id], self.pwm_hertz[relay_id])
-                    self.pwm_output[relay_id].set_PWM_duty_cycle(
+                        self.relay_pin[relay_id],
+                        self.pwm_hertz[relay_id])
+                    self.pwm_output[relay_id].set_PWM_dutycycle(
                         self.relay_pin[relay_id], 0)
-
-
                 self.pwm_state[relay_id] = None
-                self.pwm_output[relay_id].stop()
 
     def check_conditionals(self, relay_id, on_duration):
         conditionals = db_retrieve_table_daemon(Conditional)
@@ -601,8 +600,8 @@ class RelayController(threading.Thread):
             self.pwm_time_turned_on[each_relay.id] = None
 
             if self.relay_pin[each_relay.id] is not None:
-                self.setup_pin(each_relay.id,
-                               each_relay.pin)
+                self.setup_pin(each_relay.id)
+
             self.logger.debug(u"{id} ({name}) Initialized".format(
                 id=each_relay.id, name=each_relay.name))
 
@@ -633,7 +632,7 @@ class RelayController(threading.Thread):
         for each_relay_pin in self.relay_pin:
             GPIO.cleanup(each_relay_pin)
 
-    def add_mod_relay(self, relay_id, do_setup_pin=False):
+    def add_mod_relay(self, relay_id):
         """
         Add or modify local dictionary of relay settings form SQL database
 
@@ -646,36 +645,14 @@ class RelayController(threading.Thread):
 
         :param relay_id: Unique ID for each relay
         :type relay_id: str
-        :param do_setup_pin: If True, initialize GPIO (when adding new relay)
-        :type do_setup_pin: bool
         """
         relay_id = int(relay_id)
         try:
             relay = db_retrieve_table_daemon(Relay, device_id=relay_id)
 
-            # If PWM config changes
-            if (relay_id in self.pwm_output and
-                    (self.pwm_hertz[relay_id] != relay.pwm_hertz or
-                     self.relay_pin[relay_id] != relay.relay_pin or
-                     self.pwm_library[relay_id] != relay.pwm_library)):
-
-                # If PWM config changes, turn current relay pin off
-                if self.relay_state(relay_id) != 'off':
-                    self.relay_switch(relay_id, 'off')
-
-                self.pwm_hertz[relay_id] = relay.pwm_hertz
-                self.pwm_library[relay_id] = relay.pwm_library
-
-                # Update new config options
-                self.pwm_output[relay_id] = pigpio.pi()
-                if self.pwm_library[relay_id] == 'pigpio_hardware':
-                    self.pwm_output[relay_id].hardware_PWM(
-                        self.relay_pin[relay_id], self.pwm_hertz[relay_id], 0)
-                elif self.pwm_library[relay_id] == 'pigpio_hardware':
-                    self.pwm_output[relay_id].set_PWM_frequency(
-                        self.relay_pin[relay_id], self.pwm_hertz[relay_id])
-                    self.pwm_output[relay_id].set_PWM_duty_cycle(
-                        self.relay_pin[relay_id], 0)
+            # Turn current pin off
+            if self.relay_state(relay_id) != 'off':
+                self.relay_switch(relay_id, 'off')
 
             self.relay_id[relay_id] = relay.id
             self.relay_unique_id[relay_id] = relay.unique_id
@@ -695,24 +672,16 @@ class RelayController(threading.Thread):
             self.relay_on_command[relay_id] = relay.on_command
             self.relay_off_command[relay_id] = relay.off_command
 
-            if self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
-                self.wireless_pi_switch[relay_id] = Transmit433MHz(
-                    self.relay_pin[relay_id],
-                    protocol=int(self.relay_protocol[relay_id]),
-                    pulse_length=int(self.relay_pulse_length[relay_id]),
-                    bit_length=int(self.relay_bit_length[relay_id]))
-            else:
-                self.wireless_pi_switch[relay_id] = None
+            self.pwm_hertz[relay_id] = relay.pwm_hertz
+            self.pwm_library[relay_id] = relay.pwm_library
 
-            message = u"Relay {id} ({name}) ".format(
+            self.setup_pin(relay.id)
+
+            message = u"Relay {id} ({name}) initialized".format(
                 id=self.relay_id[relay_id],
                 name=self.relay_name[relay_id])
-            if do_setup_pin and relay.pin:
-                self.setup_pin(relay.id, relay.pin)
-                message += "initialized"
-            else:
-                message += "added"
             self.logger.debug(message)
+
             return 0, "success"
         except Exception as except_msg:
             return 1, "Add_Mod_Relay Error: ID {id}: {err}".format(
@@ -733,12 +702,14 @@ class RelayController(threading.Thread):
         :type relay_id: str
         """
         relay_id = int(relay_id)
+
+        # Turn current pin off
+        if self.relay_state(relay_id) != 'off':
+            self.relay_switch(relay_id, 'off')
+
         try:
             self.logger.debug(u"Relay {} ({}) Deleted.".format(
                 self.relay_id[relay_id], self.relay_name[relay_id]))
-            # Ensure relay is off before removing it, to prevent
-            # it from being stuck on
-            self.relay_on_off(relay_id, 'off', trigger_conditionals=False)
             self.relay_id.pop(relay_id, None)
             self.relay_unique_id.pop(relay_id, None)
             self.relay_type.pop(relay_id, None)
@@ -782,12 +753,10 @@ class RelayController(threading.Thread):
                 sec_currently_on = (time_now - self.relay_time_turned_on[relay_id]).total_seconds()
             return sec_currently_on
 
-    def relay_setup(self, action, relay_id, setup_pin):
+    def relay_setup(self, action, relay_id):
         """ Add, delete, or modify a specific relay """
-        if action == 'Add':
+        if action in ['Add', 'Modify']:
             return self.add_mod_relay(relay_id)
-        elif action == 'Modify':
-            return self.add_mod_relay(relay_id, do_setup_pin=setup_pin)
         elif action == 'Delete':
             return self.del_relay(relay_id)
         else:
@@ -807,27 +776,26 @@ class RelayController(threading.Thread):
                 amp_load += each_relay_amps
         return amp_load
 
-    def setup_pin(self, relay_id, pin):
+    def setup_pin(self, relay_id):
         """
         Setup pin for this relay
         :rtype: None
         """
         if self.relay_type[relay_id] == 'wired':
-            # Setup GPIO (BCM numbering) and initialize relay pin as output
             try:
                 GPIO.setmode(GPIO.BCM)
                 GPIO.setwarnings(True)
-                GPIO.setup(pin, GPIO.OUT)
-                GPIO.output(pin, not self.relay_trigger[relay_id])
+                GPIO.setup(self.relay_pin[relay_id], GPIO.OUT)
+                GPIO.output(self.relay_pin[relay_id], not self.relay_trigger[relay_id])
                 state = 'LOW' if self.relay_trigger[relay_id] else 'HIGH'
                 self.logger.info(
                     "Relay {id} setup on pin {pin} and turned OFF "
-                    "(OFF={state})".format(id=relay_id, pin=pin, state=state))
+                    "(OFF={state})".format(id=relay_id, pin=self.relay_pin[relay_id], state=state))
             except Exception as except_msg:
                 self.logger.error(
                     "Relay {id} was unable to be setup on pin {pin} with "
                     "trigger={trigger}: {err}".format(
-                        id=relay_id, pin=pin,
+                        id=relay_id, pin=self.relay_pin[relay_id],
                         trigger=self.relay_trigger[relay_id], err=except_msg))
 
         elif self.relay_type[relay_id] == 'wireless_433MHz_pi_switch':
@@ -838,28 +806,23 @@ class RelayController(threading.Thread):
                 bit_length=int(self.relay_bit_length[relay_id]))
 
         elif self.relay_type[relay_id] == 'pwm':
-            # Setup GPIO (BCM numbering) and initialize PWM pin as output
             try:
                 self.pwm_output[relay_id] = pigpio.pi()
-                if self.pwm_libary[relay_id] == 'pigpio_hardware':
-
-                elif self.pwm_libary[relay_id] == 'pigpio_any':
-
-                GPIO.setmode(GPIO.BCM)
-                GPIO.setwarnings(True)
-                GPIO.setup(pin, GPIO.OUT)
-                self.pwm_output[relay_id] = GPIO.PWM(
-                    pin, self.pwm_hertz[relay_id])
+                if self.pwm_library[relay_id] == 'pigpio_hardware':
+                    self.pwm_output[relay_id].hardware_PWM(
+                        self.relay_pin[relay_id], self.pwm_hertz[relay_id], 0)
+                elif self.pwm_library[relay_id] == 'pigpio_any':
+                    self.pwm_output[relay_id].set_PWM_frequency(
+                        self.relay_pin[relay_id], self.pwm_hertz[relay_id])
+                    self.pwm_output[relay_id].set_PWM_dutycycle(
+                        self.relay_pin[relay_id], 0)
                 self.pwm_state[relay_id] = None
                 self.logger.info("PWM {id} setup on pin {pin}".format(
-                    id=relay_id, pin=pin))
+                    id=relay_id, pin=self.relay_pin[relay_id]))
             except Exception as except_msg:
                 self.logger.error(
                     "PWM {id} was unable to be setup on pin {pin}: "
-                    "{err}".format(id=relay_id, pin=pin, err=except_msg))
-
-        else:
-            self.wireless_pi_switch[relay_id] = None
+                    "{err}".format(id=relay_id, pin=self.relay_pin[relay_id], err=except_msg))
 
     def relay_state(self, relay_id):
         """

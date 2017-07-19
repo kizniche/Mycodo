@@ -191,9 +191,9 @@ def mycodo_service(mycodo):
             return mycodo.controller['Relay'].relay_sec_currently_on(relay_id)
 
         @staticmethod
-        def exposed_relay_setup(action, relay_id, setup_pin):
+        def exposed_relay_setup(action, relay_id):
             """Add, delete, or modify a relay in the running relay controller"""
-            return mycodo.relay_setup(action, relay_id, setup_pin)
+            return mycodo.relay_setup(action, relay_id)
 
         @staticmethod
         def exposed_relay_state(relay_id):
@@ -220,9 +220,9 @@ def mycodo_service(mycodo):
             return mycodo.controller['Relay'].relay_sec_currently_on(relay_id)
 
         @staticmethod
-        def exposed_relay_setup(action, relay_id, setup_pin):
+        def exposed_relay_setup(action, relay_id):
             """Add, delete, or modify a relay in the running relay controller"""
-            return mycodo.relay_setup(action, relay_id, setup_pin)
+            return mycodo.relay_setup(action, relay_id)
 
         @staticmethod
         def exposed_terminate_daemon():
@@ -588,7 +588,7 @@ class DaemonController(threading.Thread):
             duty_cycle=duty_cycle)
         return "Turned on"
 
-    def relay_setup(self, action, relay_id, setup_pin=False):
+    def relay_setup(self, action, relay_id):
         """
         Setup relay in running relay controller
 
@@ -602,10 +602,7 @@ class DaemonController(threading.Thread):
         :param setup_pin: Whether or not to setup the GPIO pin as output
         :type setup_pin: bool
         """
-        return self.controller['Relay'].relay_setup(
-            action,
-            relay_id,
-            setup_pin)
+        return self.controller['Relay'].relay_setup(action, relay_id)
 
     def relay_state(self, relay_id):
         """

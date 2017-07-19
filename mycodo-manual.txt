@@ -24,9 +24,8 @@ Settings
 
 Controllers
 
--   Sensors
--   PWM
--   Relays
+-   Input
+-   Output
 -   PIDs
 -   Timers
 -   LCDs
@@ -425,12 +424,13 @@ Controller Functions, which are larger functions of a controller or
 controllers and have been given their own sections.
 
 
-Sensors
+Input
 
-Sensors measure environmental conditions, which will be stored in an
-influxdb round-robin database. This database will provide recent
-measurements for Graphs, LCDs, PID Controllers, Conditional Statements,
-and other parts of Mycodo to operate from.
+Inputs (such as sensors or analog signals) measure environmental and
+other characteristic conditions, which will be stored in an influxdb
+round-robin database. This database will provide recent measurements for
+Graphs, LCDs, PID Controllers, Conditional Statements, and other parts
+of Mycodo to operate from.
 
   ---------------------------------------------------------------------
   Setting               Description
@@ -604,6 +604,8 @@ measurements is not within the range specified.
   ---------------------------------------------------------------------
 
 
+Output
+
 PWM
 
 Pulse-width modulation (PWM) is a modulation technique used to encode a
@@ -636,6 +638,13 @@ a PWM PID Controller.
   ---------------------------------------------------------------------
   Setting               Description
   --------------------- -----------------------------------------------
+  Library               Select the method for producing the PWM signal.
+                        Hardware pins can produce up to a 30 MHz PWM
+                        signal, while any other (non-hardware PWM) pin
+                        can produce up to a 40 kHz PWM signal. See the
+                        table, below, for the hardware pins on various
+                        Pi boards.
+
   BCM Pin               This is the GPIO that will output the PWM
                         signal, using BCM numbering.
 
@@ -650,8 +659,51 @@ a PWM PID Controller.
                         Relay Usage Settings.
   ---------------------------------------------------------------------
 
+Non-hardware PWM Pins
 
-Relays
+If using any non-hardware PWM pin (see table below for hardware PWM
+pins), then there are only certain frequencies that can be used. These
+frequencies are 40000, 20000, 10000, 8000, 5000, 4000, 2500, 2000, 1600,
+1250, 1000, 800, 500, 400, 250, 200, 100, and 50 Hz. If you attempt to
+set a frequency that is not listed here, the nearest frequency from this
+list will be used.
+
+Hardware PWM Pins
+
+The exact frequency may be set when using a hardware PWM pin. The same
+PWM channel is available on multiple GPIO. The latest frequency and duty
+cycle setting will be used by all GPIO which share a PWM channel.
+
+  BCM Pin   PWM Channel   Raspberry Pi Version
+  --------- ------------- ---------------------------
+  12        0             All models except A and B
+  13        1             All models except A and B
+  18        0             All models
+  19        1             All models except A and B
+  40        0             Compute module only
+  41        1             Compute module only
+  45        1             Compute module only
+  52        0             Compute module only
+  53        1             Compute module only
+
+Schematics for AC modulation
+
+Below are hardware schematics that enable the modulation of alternating
+current (AC) from the PWM output from Mycodo.
+
+PWM output modulating alternating current (AC) at 1% duty cycle
+
+[Schematic: PWM output modulating alternating current (AC) at 1% duty
+cycle]
+PWM output modulating alternating current (AC) at 50% duty cycle
+
+[Schematic: PWM output modulating alternating current (AC) at 50% duty
+cycle]
+PWM output modulating alternating current (AC) at 99% duty cycle
+
+[Schematic: PWM output modulating alternating current (AC) at 99% duty
+cycle]
+### Relays
 
 Relays are electromechanical or solid-state devices that enable a small
 voltage signal (such as from a microprocessor) to activate a much larger

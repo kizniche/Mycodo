@@ -614,7 +614,7 @@ def remote_host_del(form_setup):
 # Manipulate relay settings while daemon is running
 #
 
-def manipulate_relay(action, relay_id, setup_pin=False):
+def manipulate_relay(action, relay_id):
     """
     Add, delete, and modify relay settings while the daemon is active
 
@@ -626,7 +626,7 @@ def manipulate_relay(action, relay_id, setup_pin=False):
     :type setup_pin: bool
     """
     control = DaemonControl()
-    return_values = control.relay_setup(action, relay_id, setup_pin)
+    return_values = control.relay_setup(action, relay_id)
     if return_values[0]:
         flash(gettext(u"%(err)s",
                       err=u'{action} Relay: Daemon response: {msg}'.format(
@@ -1698,7 +1698,7 @@ def relay_add(form_add_relay):
                 elif form_add_relay.relay_type.data == 'wireless_433MHz_pi_switch':
                     new_relay.protocol = 1
                     new_relay.bit_length = 25
-                    new_relay.pulse_length =189
+                    new_relay.pulse_length = 189
                     new_relay.on_command = '22559'
                     new_relay.off_command = '22558'
                 elif form_add_relay.relay_type.data == 'command':
@@ -1736,9 +1736,6 @@ def relay_mod(form_relay):
         mod_relay = Relay.query.filter(
             Relay.id == form_relay.relay_id.data).first()
         mod_relay.name = form_relay.name.data
-        setup_pin = False
-        if mod_relay.pin is not form_relay.gpio.data:
-            setup_pin = True
         if mod_relay.relay_type == 'wired':
             if not is_int(form_relay.gpio.data):
                 error.append("BCM Pin must be an integer")
@@ -1779,9 +1776,7 @@ def relay_mod(form_relay):
 
         if not error:
             db.session.commit()
-            manipulate_relay('Modify',
-                             form_relay.relay_id.data,
-                             setup_pin)
+            manipulate_relay('Modify', form_relay.relay_id.data)
     except Exception as except_msg:
         error.append(except_msg)
     flash_success_errors(error, action, url_for('page_routes.page_output'))
