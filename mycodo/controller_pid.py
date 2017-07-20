@@ -209,7 +209,11 @@ class PIDController(threading.Thread):
                                 pid_entry_value = self.control_variable
                             elif self.pid_type == 'pwm':
                                 pid_entry_type = 'duty_cycle'
-                                pid_entry_value = self.control_var_to_duty_cycle(self.control_variable)
+                                duty_cycle = self.control_var_to_duty_cycle(abs(self.control_variable))
+                                if self.control_variable >= 0:
+                                    pid_entry_value = duty_cycle
+                                else:
+                                    pid_entry_value = -duty_cycle
                             else:
                                 pid_entry_type = None
                                 pid_entry_value = None
