@@ -152,8 +152,9 @@ class BMP280Sensor(AbstractSensor):
             self._temperature, self._pressure, self._altitude = self.get_measurement()
             return  # success - no errors
         except Exception as e:
-            logger.error("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=e))
+            logger.exception(
+                "{cls} raised an exception when taking a reading: "
+                "{err}".format(cls=type(self).__name__, err=e))
         return 1
 
     def _load_calibration(self):

@@ -85,10 +85,11 @@ class K30Sensor(AbstractSensor):
                 try:
                     lock.acquire(timeout=60)  # wait up to 60 seconds before breaking lock
                 except Exception as e:
-                    logger.error("{cls} 60 second timeout, {lock} lock broken: "
-                                 "{err}".format(cls=type(self).__name__,
-                                                lock=K30_LOCK_FILE,
-                                                err=e))
+                    logger.exception(
+                        "{cls} 60 second timeout, {lock} lock broken: "
+                        "{err}".format(cls=type(self).__name__,
+                                       lock=K30_LOCK_FILE,
+                                       err=e))
                     lock.break_lock()
                     lock.acquire()
             self._co2 = self.get_measurement()
@@ -97,7 +98,8 @@ class K30Sensor(AbstractSensor):
                 return 1
             return  # success - no errors
         except Exception as e:
-            logger.error("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=e))
+            logger.exception(
+                "{cls} raised an exception when taking a reading: "
+                "{err}".format(cls=type(self).__name__, err=e))
             lock.release()
             return 1

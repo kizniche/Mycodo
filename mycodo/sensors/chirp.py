@@ -88,8 +88,9 @@ class ChirpSensor(AbstractSensor):
             self._lux, self._moisture, self._temperature = self.get_measurement()
             return  # success - no errors
         except Exception as e:
-            logger.error("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=e))
+            logger.exception(
+                "{cls} raised an exception when taking a reading: "
+                "{err}".format(cls=type(self).__name__, err=e))
         return 1
 
     def get_reg(self, reg):

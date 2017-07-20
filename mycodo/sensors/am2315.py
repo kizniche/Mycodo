@@ -156,7 +156,7 @@ class AM2315Sensor(AbstractSensor):
 
             self.logger.debug("Could not acquire a measurement")
         except Exception as e:
-            self.logger.error(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

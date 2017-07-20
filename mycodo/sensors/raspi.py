@@ -70,7 +70,7 @@ class RaspberryPiCPUTemp(AbstractSensor):
             logger.error("{cls}.get_measurement() method raised IOError: "
                          "{err}".format(cls=type(self).__name__, err=e))
         except Exception as e:
-            logger.error("{cls} raised an exception when taking a reading: "
+            logger.exception("{cls} raised an exception when taking a reading: "
                          "{err}".format(cls=type(self).__name__, err=e))
         return 1
 
@@ -121,12 +121,15 @@ class RaspberryPiGPUTemp(AbstractSensor):
             self._temperature = self.get_measurement()
             return  # success - no errors
         except subprocess.CalledProcessError as e:
-            logger.error("{cls}.get_measurement() subprocess call raised: "
-                         "{err}".format(cls=type(self).__name__, err=e))
+            logger.exception(
+                "{cls}.get_measurement() subprocess call raised: "
+                "{err}".format(cls=type(self).__name__, err=e))
         except IOError as e:
-            logger.error("{cls}.get_measurement() method raised IOError: "
-                         "{err}".format(cls=type(self).__name__, err=e))
+            logger.exception(
+                "{cls}.get_measurement() method raised IOError: "
+                "{err}".format(cls=type(self).__name__, err=e))
         except Exception as e:
-            logger.error("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=e))
+            logger.exception(
+                "{cls} raised an exception when taking a reading: "
+                "{err}".format(cls=type(self).__name__, err=e))
         return 1

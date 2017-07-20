@@ -191,9 +191,8 @@ class DHT22Sensor(AbstractSensor):
 
             self.logger.debug("Could not acquire a measurement")
         except Exception as e:
-            self.logger.error(
-                "Exception raised when taking a reading: {err}".format(
-                    err=e))
+            self.logger.exception(
+                "Exception raised when taking a reading: {err}".format(err=e))
         return 1
 
     def setup(self):
