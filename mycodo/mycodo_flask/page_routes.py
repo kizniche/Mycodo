@@ -295,7 +295,7 @@ def page_graph():
 
     # Retrieve all choices to populate form drop-down menu
     pid_choices = flaskutils.choices_pids(pid)
-    relay_choices = flaskutils.choices_id_name(relay)
+    output_choices = flaskutils.choices_outputs(relay)
     sensor_choices = flaskutils.choices_sensors(sensor)
 
     # Add multi-select values as form choices, for validation
@@ -304,7 +304,7 @@ def page_graph():
     form_mod_graph.sensor_ids.choices = []
     for key, value in pid_choices.items():
         form_mod_graph.pid_ids.choices.append((key, value))
-    for key, value in relay_choices.items():
+    for key, value in output_choices.items():
         form_mod_graph.relay_ids.choices.append((key, value))
     for key, value in sensor_choices.items():
         form_mod_graph.sensor_ids.choices.append((key, value))
@@ -338,7 +338,7 @@ def page_graph():
                            relay=relay,
                            sensor=sensor,
                            pid_choices=pid_choices,
-                           relay_choices=relay_choices,
+                           output_choices=output_choices,
                            sensor_choices=sensor_choices,
                            dict_colors=dict_colors,
                            measurement_units=MEASUREMENT_UNITS,

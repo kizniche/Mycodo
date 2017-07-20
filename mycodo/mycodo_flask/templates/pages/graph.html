@@ -125,8 +125,8 @@
               {{form_mod_graph.relay_ids.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-                {% if relay_choices %}
-                  {% for each_choice, value in relay_choices.iteritems() -%}
+                {% if output_choices %}
+                  {% for each_choice, value in output_choices.iteritems() -%}
                     <option value="{{each_choice}}"{%- if each_choice|string in each_graph.relay_ids %} selected{%- endif -%}>{{value}}</option>
                   {% endfor -%}
                 {% endif %}
@@ -277,7 +277,7 @@
           {{form_add_graph.relay_ids.label(class_='control-label')}}
           <div>
             <select class="form-control" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-            {% for each_choice, value in relay_choices.iteritems() -%}
+            {% for each_choice, value in output_choices.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
             {% endfor -%}
             </select>
@@ -358,7 +358,7 @@
       var url = '/past/' + sensor_measurement + '/' + unique_id + '/' + past_seconds;
       $.getJSON(url,
         function(data, responseText, jqXHR) {
-          if (jqXHR.status != 204) {
+          if (jqXHR.status !== 204) {
             var past_data = [];
             for (i = 0; i < data.length; i++){
               // Push the received data to the graph
@@ -367,12 +367,12 @@
               past_data.push([new_time, data[i][1]])
 
               // Store the epoch time of the last data point received
-              if (i == data.length - 1) {
-                last_relay_time_mil[chart_number+"-"+unique_id] = new_time;
+              if (i === data.length - 1) {
+                last_relay_time_mil[chart_number + "-" + unique_id] = new_time;
               }
             }
             chart[chart_number].series[sensor].isDirty = true;
-            chart[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes()-(past_seconds/60)), new Date().getTime());
+            chart[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (past_seconds / 60)), new Date().getTime());
             chart[chart_number].series[sensor].setData(past_data, true, false);
           }
         }
@@ -386,28 +386,28 @@
         var url = '';
         if (chart_number+"-"+unique_id in last_relay_time_mil) {
           var epoch_mil = (new Date).getTime();
-          var past_seconds = Math.floor((epoch_mil - last_relay_time_mil[chart_number+"-"+unique_id]) / 1000);
+          var past_seconds = Math.floor((epoch_mil - last_relay_time_mil[chart_number + "-" + unique_id]) / 1000);
           url = '/past/' + sensor_measurement + '/' + unique_id + '/' + past_seconds;
         } else {
           url = '/past/' + sensor_measurement + '/' + unique_id + '/' + refresh_seconds;
         }
         $.getJSON(url,
           function(data, responseText, jqXHR) {
-            if (jqXHR.status != 204) {
+            if (jqXHR.status !== 204) {
               for (i = 0; i < data.length; i++){
                 var new_date = new Date(data[i][0]);
                 var new_time = new_date.getTime();
                 chart[chart_number].series[sensor].addPoint([new_time, data[i][1]], false, false);
-                if (i == data.length - 1) {
-                  last_relay_time_mil[chart_number+"-"+unique_id] = new_time;
+                if (i === data.length - 1) {
+                  last_relay_time_mil[chart_number + "-" + unique_id] = new_time;
                 }
               }
             }
             // Ensure Reset Zoom button resets to the proper start and end times
-            chart[chart_number].xAxis[0].update({min: new Date().setMinutes(new Date().getMinutes()-(1*(xaxis_duration_min)))}, false);
+            chart[chart_number].xAxis[0].update({min: new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)))}, false);
             chart[chart_number].xAxis[0].update({max: new Date().getTime()}, false);
             // Update the new data time frame and redraw the chart
-            chart[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes()-(1*(xaxis_duration_min))), new Date().getTime(), true);
+            chart[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min))), new Date().getTime(), true);
             chart[chart_number].xAxis[0].isDirty = true;
           }
         );
@@ -425,27 +425,28 @@
       {%- for each_graph in graph if each_graph.id == order -%}
 
         {% set graph_sensor_ids = each_graph.sensor_ids_measurements.split(';') %}
-        {% set graph_relay_ids = each_graph.relay_ids.split(',') %}
+        {% set graph_relay_ids = each_graph.relay_ids.split(';') %}
         {% set graph_pid_ids = each_graph.pid_ids.split(';') %}
 
         {#
          # All possible y-axes available for use.
          # Measurements with the same units will use the same y-axis
          #}
+        {%- set yaxis_adc = [] -%}
+        {%- set yaxis_alt = [] -%}
         {%- set yaxis_cpu_load = [] -%}
-        {%- set yaxis_disk_space = [] -%}
-        {%- set yaxis_temp = [] -%}
-        {%- set yaxis_hum = [] -%}
         {%- set yaxis_co2 = [] -%}
+        {%- set yaxis_disk_space = [] -%}
+        {%- set yaxis_duty_cycle = [] -%}
+        {%- set yaxis_edge = [] -%}
+        {%- set yaxis_hum = [] -%}
         {%- set yaxis_lux = [] -%}
         {%- set yaxis_moisture = [] -%}
         {%- set yaxis_ph = [] -%}
         {%- set yaxis_press = [] -%}
-        {%- set yaxis_alt = [] -%}
-        {%- set yaxis_volts = [] -%}
-        {%- set yaxis_adc = [] -%}
-        {%- set yaxis_edge = [] -%}
         {%- set yaxis_relay = [] -%}
+        {%- set yaxis_temp = [] -%}
+        {%- set yaxis_volts = [] -%}
 
         {# Determine what y-axes are needed for sensor measurements #}
         {%- for each_sensor in sensor -%}
@@ -519,13 +520,23 @@
               {%- endfor -%}
             {% elif measurement == 'pid_output' %}
               {%- do yaxis_relay.append(1) -%}
+            {% elif measurement == 'duty_cycle' %}
+              {%- do yaxis_duty_cycle.append(1) -%}
             {% endif %}
           {%- endfor -%}
         {%- endfor -%}
 
         {# Determine if a y-axes is needed for relay durations #}
         {%- for each_relay in relay -%}
-          {%- for each_graph_relay_id in graph_relay_ids if each_relay.unique_id == each_graph_relay_id -%}
+          {%- for each_graph_relay_id in graph_relay_ids if each_relay.unique_id == each_graph_relay_id.split(',')[0] -%}
+
+            {%- set output = each_graph_relay_id.split(',')[1] -%}
+            {% if output == 'duration_sec' %}
+              {%- do yaxis_relay.append(1) -%}
+            {% elif output == 'duty_cycle' %}
+              {%- do yaxis_duty_cycle.append(1) -%}
+            {% endif %}
+
             {%- do yaxis_relay.append(1) -%}
           {%- endfor -%}
         {%- endfor -%}
@@ -552,9 +563,9 @@
             {%- endfor %}
 
             {%- for each_relay in relay -%}
-              {%- for each_graph_relay_id in graph_relay_ids if each_relay.unique_id == each_graph_relay_id %}
-            getPastData({{chart_number}}, {{count_series|count}}, 'duration_sec', '{{each_relay.unique_id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, 'duration_sec', '{{each_relay.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+              {%- for each_graph_relay_id in graph_relay_ids if each_relay.unique_id == each_graph_relay_id.split(',')[0] %}
+            getPastData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_relay.unique_id}}', {{each_graph.x_axis_duration*60}});
+            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_relay.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
                 {%- do count_series.append(1) %}
               {%- endfor -%}
             {%- endfor -%}
@@ -667,6 +678,18 @@
           },
           opposite: false,
           id: 'disk_space'
+        },
+      {%- endif -%}
+      {%- if yaxis_duty_cycle -%}
+        {
+          title: {
+            text: '{{_('Duty Cycle')}} (%)'
+          },
+          labels: {
+            format: '{value}'
+          },
+          opposite: false,
+          id: 'duty_cycle'
         },
       {%- endif -%}
       {%- if yaxis_edge -%}
@@ -908,7 +931,8 @@
       {% endfor %}
 
       {%- for each_relay in relay -%}
-        {%- for each_graph_relay_id in graph_relay_ids if each_relay.unique_id == each_graph_relay_id -%}
+        {%- for each_graph_relay_id in graph_relay_ids if each_relay.unique_id == each_graph_relay_id.split(',')[0] -%}
+          {% if each_graph_relay_id.split(',')[1] == 'duration_sec' %}
           {
             name: '{{each_relay.name}}',
             type: 'column',
@@ -923,6 +947,22 @@
             yAxis: 'relay',
             data: []
           },
+          {% elif each_graph_relay_id.split(',')[1] == 'duty_cycle' %}
+          {
+            name: '{{each_relay.name}}',
+            type: 'column',
+            dataGrouping: {
+              approximation: 'low',
+              groupPixelWidth: 3
+            },
+            tooltip: {
+              valueSuffix: ' %',
+              valueDecimals: 2
+            },
+            yAxis: 'duty_cycle',
+            data: []
+          },
+          {% endif %}
         {%- endfor -%}
       {%- endfor -%}
 
@@ -941,13 +981,24 @@
           },
           {% elif each_graph_pid_id.split(',')[1] == 'pid_output' %}
           {
-            name: '{{each_pid.name}} {{_('PID Output')}}',
+            name: '{{each_pid.name}} {{_('Output')}}',
             type: 'line',
             tooltip: {
               valueSuffix: ' sec',
               valueDecimals: 2
             },
             yAxis: 'relay',
+            data: []
+          },
+          {% elif each_graph_pid_id.split(',')[1] == 'duty_cycle' %}
+          {
+            name: '{{each_pid.name}} {{_('Duty Cycle')}}',
+            type: 'line',
+            tooltip: {
+              valueSuffix: ' %',
+              valueDecimals: 2
+            },
+            yAxis: 'duty_cycle',
             data: []
           },
           {% endif %}

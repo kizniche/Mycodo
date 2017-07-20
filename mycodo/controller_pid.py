@@ -201,21 +201,25 @@ class PIDController(threading.Thread):
                                       self.set_point,))
                             write_setpoint_db.start()
 
-                            if self.pid_type == 'relay':
-                                pid_entry_type = 'pid_output'
-                            elif self.pid_type == 'pwm':
-                                pid_entry_type = 'pwm_output'
-                            else:
-                                pid_entry_type = None
-
                             # Update PID and get control variable
                             self.control_variable = self.update_pid_output(self.last_measurement)
+
+                            if self.pid_type == 'relay':
+                                pid_entry_type = 'pid_output'
+                                pid_entry_value = self.control_variable
+                            elif self.pid_type == 'pwm':
+                                pid_entry_type = 'duty_cycle'
+                                pid_entry_value = self.control_var_to_duty_cycle(self.control_variable)
+                            else:
+                                pid_entry_type = None
+                                pid_entry_value = None
+
                             if pid_entry_type:
                                 write_pid_out_db = threading.Thread(
                                     target=write_influxdb_value,
                                     args=(self.pid_unique_id,
                                           pid_entry_type,
-                                          self.control_variable,))
+                                          pid_entry_value,))
                                 write_pid_out_db.start()
 
                     # If PID is active or on hold, activate relays
@@ -407,12 +411,7 @@ class PIDController(threading.Thread):
                                 duration=self.raise_seconds_on,
                                 min_off=self.raise_min_off_duration)
                     elif self.pid_type == 'pwm':
-                        # Convert control variable to duty cycle
-                        if self.control_variable > self.period:
-                            self.raise_duty_cycle = 100.0
-                        else:
-                            self.raise_duty_cycle = float(
-                                (self.control_variable / self.period) * 100)
+                        self.raise_duty_cycle = self.control_var_to_duty_cycle(self.control_variable)
 
                         # Ensure the duty cycle doesn't exceed the min/max
                         if (self.raise_max_duration and
@@ -474,12 +473,7 @@ class PIDController(threading.Thread):
                                 duration=self.lower_seconds_on,
                                 min_off=self.lower_min_off_duration)
                     elif self.pid_type == 'pwm':
-                        # Convert control variable to duty cycle
-                        if self.control_variable > self.period:
-                            self.lower_duty_cycle = 100.0
-                        else:
-                            self.lower_duty_cycle = float(
-                                (self.control_variable / self.period) * 100)
+                        self.lower_duty_cycle = self.control_var_to_duty_cycle(self.control_variable)
 
                         # Ensure the duty cycle doesn't exceed the min/max
                         if (self.lower_max_duration and
@@ -667,6 +661,13 @@ class PIDController(threading.Thread):
 
         # Setpoint not needing to be calculated, use default setpoint
         self.set_point = self.default_set_point
+
+    def control_var_to_duty_cycle(self, control_variable):
+        # Convert control variable to duty cycle
+        if control_variable > self.period:
+            return 100.0
+        else:
+            return float((self.control_variable / self.period) * 100)
 
     def pid_mod(self):
         if self.initialize_values():

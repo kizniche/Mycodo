@@ -83,6 +83,8 @@ MEASUREMENT_UNITS = {
         'name': 'PID Output', 'meas': 'pid_output', 'unit': 'sec'},
     'pressure': {
         'name': 'Pressure', 'meas': 'pressure', 'unit': 'Pa'},
+    'duty_cycle': {
+        'name': 'Duty Cycle', 'meas': 'duty_cycle', 'unit': '%'},
     'setpoint': {
         'name': 'Setpoint', 'meas': 'setpoint', 'unit': ''},
     'temperature': {

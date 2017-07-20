@@ -10,7 +10,7 @@
       var url = '/last/' + sensor_measurement + '/' + sensor_id + '/' + period.toString();
       $.ajax(url, {
         success: function(data, responseText, jqXHR) {
-          if (jqXHR.status == 204) {
+          if (jqXHR.status === 204) {
             document.getElementById(sensor_id + "-" + sensor_measurement + "-time").innerHTML = "No Data Last " + period.toString() + "m";
             document.getElementById(sensor_id + "-" + sensor_measurement + "-value").innerHTML = "0";
           }
@@ -24,12 +24,11 @@
             var hours = date.getHours();
             var minutes = "0" + date.getMinutes();
             var seconds = "0" + date.getSeconds();
-            var formattedDate = year + "/" + month + "/" + day;
-            var formattedTime = formattedDate + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+            var formattedTime = year + "/" + month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
             document.getElementById(sensor_id + "-" + sensor_measurement + "-time").innerHTML = formattedTime;
             document.getElementById(sensor_id + "-" + sensor_measurement + "-value").innerHTML = measurement;
             if (convert_c) {
-              document.getElementById(sensor_id + "-" + sensor_measurement + "-value-F").innerHTML = (measurement*9/5+32).toFixed(2).toString();
+              document.getElementById(sensor_id + "-" + sensor_measurement + "-value-F").innerHTML = (measurement * 9 / 5 + 32).toFixed(2).toString();
             }
           }
         },
@@ -151,23 +150,29 @@
 
         <div class="row" style="padding-top: 0.5em">
           <div class="col-xs-12 col-sm-3 col-md-2">
-            {{_('Raise Relay')}}
+            {{_('Output (Raise)')}}
             <div>
               {{rel.name}} ({{rel.id}})
             </div>
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
-            {{_('On Duration (sec.)')}}
+              {% if each_pid.pid_type != 'pwm' -%}
+                {{_('On Duration (sec.)')}}
+              {% else -%}
+                {{_('Duty Cycle (%%)')}}
+              {% endif %}
             <div>
               {{_('Min')}}: {{each_pid.raise_min_duration}}, {{_('Max')}}: {{each_pid.raise_max_duration}}
              </div>
           </div>
+          {% if each_pid.pid_type != 'pwm' -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Off Duration (sec.)')}}
             <div>
               {{_('Min')}}: {{each_pid.raise_min_off_duration}}
             </div>
           </div>
+          {% endif %}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Current Draw')}}
             <div>
@@ -182,23 +187,29 @@
 
         <div class="row" style="padding-top: 0.5em">
           <div class="col-xs-12 col-sm-3 col-md-2">
-            {{_('Lower Relay')}}
+            {{_('Output (Lower)')}}
             <div>
               {{rel.name}} ({{rel.id}})
             </div>
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
-            {{_('On Duration (sec.)')}}
+            {% if each_pid.pid_type != 'pwm' -%}
+              {{_('On Duration (sec.)')}}
+            {% else -%}
+              {{_('Duty Cycle (%%)')}}
+            {% endif %}
             <div>
               {{_('Min')}}: {{each_pid.lower_min_duration}}, {{_('Max')}}: {{each_pid.lower_max_duration}}
             </div>
           </div>
+          {% if each_pid.pid_type != 'pwm' -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Off Duration (sec.)')}}
             <div>
               {{_('Min')}}: {{each_pid.lower_min_off_duration}}
             </div>
           </div>
+          {% endif %}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Current Draw')}}
             <div>

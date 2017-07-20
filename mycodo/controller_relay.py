@@ -344,6 +344,14 @@ class RelayController(threading.Thread):
                         hertz=self.pwm_hertz[relay_id]))
                 self.relay_switch(relay_id, 'on', duty_cycle=duty_cycle)
 
+                # Write the duty cycle of the PWM to the database
+                write_db = threading.Thread(
+                    target=write_influxdb_value,
+                    args=(self.relay_unique_id[relay_id],
+                          'duty_cycle',
+                          duty_cycle,))
+                write_db.start()
+
         # Signaled to turn relay off
         elif state == 'off':
             if not self._is_setup(relay_id):
@@ -371,7 +379,7 @@ class RelayController(threading.Thread):
                 write_db = threading.Thread(
                     target=write_influxdb_value,
                     args=(self.relay_unique_id[relay_id],
-                          'pwm_sec',
+                          'duty_cycle',
                           duty_cycle,
                           timestamp,))
                 write_db.start()

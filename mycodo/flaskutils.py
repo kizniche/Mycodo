@@ -755,6 +755,23 @@ def choices_sensors(sensor):
     return choices
 
 
+def choices_outputs(output):
+    choices = OrderedDict()
+    # populate form multi-select choices for output devices
+    for each_output in output:
+        if each_output.relay_type != 'pwm':
+            value = '{id},duration_sec'.format(id=each_output.unique_id)
+            display = u'{id} ({name}) Output'.format(
+                id=each_output.id, name=each_output.name)
+            choices.update({value: display})
+        elif each_output.relay_type == 'pwm':
+            value = '{id},duty_cycle'.format(id=each_output.unique_id)
+            display = u'{id} ({name}) Duty Cycle'.format(
+                id=each_output.id, name=each_output.name)
+            choices.update({value: display})
+    return choices
+
+
 def choices_pids(pid):
     choices = OrderedDict()
     # populate form multi-select choices for sensors and measurements
@@ -763,10 +780,16 @@ def choices_pids(pid):
         display = u'{id} ({name}) Setpoint'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
-        value = '{id},pid_output'.format(id=each_pid.unique_id)
-        display = u'{id} ({name}) Output'.format(
-            id=each_pid.id, name=each_pid.name)
-        choices.update({value: display})
+        if each_pid.pid_type == 'relay':
+            value = '{id},pid_output'.format(id=each_pid.unique_id)
+            display = u'{id} ({name}) Output'.format(
+                id=each_pid.id, name=each_pid.name)
+            choices.update({value: display})
+        elif each_pid.pid_type == 'pwm':
+            value = '{id},duty_cycle'.format(id=each_pid.unique_id)
+            display = u'{id} ({name}) Output'.format(
+                id=each_pid.id, name=each_pid.name)
+            choices.update({value: display})
     return choices
 
 
@@ -875,7 +898,7 @@ def graph_mod(form_mod_graph, request_form):
                 mod_graph.pid_ids = ''
 
             if form_mod_graph.relay_ids.data:
-                relay_ids_joined = ",".join(form_mod_graph.relay_ids.data)
+                relay_ids_joined = ";".join(form_mod_graph.relay_ids.data)
                 mod_graph.relay_ids = relay_ids_joined
             else:
                 mod_graph.relay_ids = ''

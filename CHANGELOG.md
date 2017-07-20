@@ -1,9 +1,11 @@
-## 5.0.50 (Unreleased)
+## 5.1.0 (Unreleased)
+
+Some graphs will need to be reconfigured after upgrading to 5.1.0. This is due to adding PWM as an output option, necessitating refactoring certain portions of code related to graph display.
 
 ### Features
 
- - Add PWM support on relay page ([#262](https://github.com/kizniche/mycodo/issues/262))
- - Add PWM as PID output
+ - Add PWM support as output ([#262](https://github.com/kizniche/mycodo/issues/262))
+ - Add PWM support as PID output
  - Add min and max duty cycle options to PWM PID
  - Add "Max Amps" as a general configuration option
  - Improve error reporting for devices and sensors
