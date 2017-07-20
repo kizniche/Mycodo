@@ -473,7 +473,7 @@ class PIDController(threading.Thread):
                                 duration=self.lower_seconds_on,
                                 min_off=self.lower_min_off_duration)
                     elif self.pid_type == 'pwm':
-                        self.lower_duty_cycle = self.control_var_to_duty_cycle(self.control_variable)
+                        self.lower_duty_cycle = self.control_var_to_duty_cycle(abs(self.control_variable))
 
                         # Ensure the duty cycle doesn't exceed the min/max
                         if (self.lower_max_duration and
