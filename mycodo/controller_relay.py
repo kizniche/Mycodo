@@ -454,6 +454,10 @@ class RelayController(threading.Thread):
                         self.relay_pin[relay_id],
                         self.pwm_hertz[relay_id])
                     calc_duty_cycle = int((duty_cycle / 100.0) * 255)
+                    if calc_duty_cycle > 255:
+                        calc_duty_cycle = 255
+                    if calc_duty_cycle < 0:
+                        calc_duty_cycle = 0
                     self.pwm_output[relay_id].set_PWM_dutycycle(
                         self.relay_pin[relay_id],
                         calc_duty_cycle)
