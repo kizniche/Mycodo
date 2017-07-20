@@ -953,6 +953,7 @@ class SettingsGeneral(FlaskForm):
     hide_info = BooleanField(lazy_gettext(u'Hide info messages'))
     hide_warning = BooleanField(lazy_gettext(u'Hide warning messages'))
     hide_tooltips = BooleanField(lazy_gettext(u'Hide Form Tooltips'))
+    max_amps = DecimalField(lazy_gettext(u'Max Amps'))
     relay_stats_volts = IntegerField(lazy_gettext(u'Voltage'))
     relay_stats_cost = DecimalField(lazy_gettext(u'Cost per kWh'))
     relay_stats_currency = StringField(lazy_gettext(u'Currency Unit'))

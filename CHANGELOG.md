@@ -4,6 +4,7 @@
 
  - Add PWM support on relay page ([#262](https://github.com/kizniche/mycodo/issues/262))
  - Add PWM as PID output
+ - Add "Max Amps" as a general configuration option
  - Add ability to power-cycle the DHT11 sensor if 3 consecutive measurements cannot be retrieved (uses power relay option) ([#273](https://github.com/kizniche/mycodo/issues/273))
 
 ## 5.0.49 (2017-07-13)

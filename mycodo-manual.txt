@@ -263,6 +263,14 @@ for each relay (see Relay Settings).
   ---------------------------------------------------------------------
   Setting               Description
   --------------------- -----------------------------------------------
+  Max Amps              Set the maximum allowed amperage to be switched
+                        on at any given time. If a relay that’s
+                        instructed to turn on will cause the sum of
+                        active devices to exceed this amount, the relay
+                        will not be allowed to turn on, to prevent any
+                        damage that may result from exceeding current
+                        limits.
+
   Voltage               Alternating current (AC) voltage that is
                         switched by the relays. This is usually 120 or
                         240.

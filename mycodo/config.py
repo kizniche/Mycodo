@@ -272,12 +272,6 @@ ID_FILE = os.path.join(DATABASE_PATH, 'statistics.id')
 LOGIN_ATTEMPTS = 5
 LOGIN_BAN_SECONDS = 600  # 10 minutes
 
-# Relay amp restrictions. If the sum of current draws of all relay currently
-# on, plus the one directed to turn on, surpasses this maximum, the relay
-# will be prevented from turning on. Prevents exceeding current rating of
-# the electrical system.
-MAX_AMPS = 15
-
 
 class ProdConfig(object):
     """ Production Configuration """

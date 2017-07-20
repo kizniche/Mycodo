@@ -32,6 +32,7 @@ import timeit
 from mycodo_client import DaemonControl
 from databases.models import Conditional
 from databases.models import ConditionalActions
+from databases.models import Misc
 from databases.models import Relay
 from databases.models import SMTP
 from devices.wireless_433mhz_pi_switch import Transmit433MHz
@@ -39,8 +40,6 @@ from utils.database import db_retrieve_table_daemon
 from utils.influx import write_influxdb_value
 from utils.send_data import send_email
 from utils.system_pi import cmd_output
-
-from config import MAX_AMPS
 
 
 class RelayController(threading.Thread):
@@ -208,7 +207,8 @@ class RelayController(threading.Thread):
                                              'wired',
                                              'wireless_433MHz_pi_switch']:
                 current_amps = self.current_amp_load()
-                if current_amps + self.relay_amps[relay_id] > MAX_AMPS:
+                max_amps = db_retrieve_table_daemon(Misc, entry='first').max_amps
+                if current_amps + self.relay_amps[relay_id] > max_amps:
                     self.logger.warning(
                         u"Cannot turn relay {} ({}) On. If this relay turns on, "
                         u"there will be {} amps being drawn, which exceeds the "
@@ -216,7 +216,7 @@ class RelayController(threading.Thread):
                             self.relay_id[relay_id],
                             self.relay_name[relay_id],
                             current_amps,
-                            MAX_AMPS))
+                            max_amps))
                     return 1
 
                 # If the relay is used in a PID, a minimum off duration is set,

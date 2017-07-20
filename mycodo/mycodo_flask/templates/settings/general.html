@@ -96,6 +96,12 @@
       </div>
     </div>
     <div class="form-group">
+      {{form_settings_general.max_amps.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      <div class="col-sm-8">
+        {{form_settings_general.max_amps(class_='form-control', value=misc.max_amps, **{'title':_("Set the maximum allowed amperage to be switched on at any given time")})}}
+      </div>
+    </div>
+    <div class="form-group">
       {{form_settings_general.relay_stats_volts.label(class_='col-sm-4 control-label checkbox-nopad')}}
       <div class="col-sm-8">
         {{form_settings_general.relay_stats_volts(class_='form-control', value=misc.relay_usage_volts, **{'title':_('Set the voltage used to power the devices powered by the relays')})}}

@@ -17,12 +17,23 @@ depends_on = None
 
 
 def upgrade():
+    with op.batch_alter_table("misc") as batch_op:
+        batch_op.add_column(sa.Column('max_amps', sa.FLOAT))
+
     with op.batch_alter_table("relay") as batch_op:
         batch_op.add_column(sa.Column('pwm_hertz', sa.INTEGER))
         batch_op.add_column(sa.Column('pwm_library', sa.TEXT))
 
     with op.batch_alter_table("pid") as batch_op:
         batch_op.add_column(sa.Column('pid_type', sa.INTEGER))
+
+    op.execute(
+        '''
+        UPDATE misc
+        SET max_amps=15
+        WHERE max_amps IS NULL
+        '''
+    )
 
     op.execute(
         '''
@@ -34,6 +45,9 @@ def upgrade():
 
 
 def downgrade():
+    with op.batch_alter_table("misc") as batch_op:
+        batch_op.drop_column('max_amps')
+
     with op.batch_alter_table("relay") as batch_op:
         batch_op.drop_column('pwm_hertz')
         batch_op.drop_column('pwm_library')
