@@ -529,15 +529,12 @@
         {# Determine if a y-axes is needed for relay durations #}
         {%- for each_relay in relay -%}
           {%- for each_graph_relay_id in graph_relay_ids if each_relay.unique_id == each_graph_relay_id.split(',')[0] -%}
-
             {%- set output = each_graph_relay_id.split(',')[1] -%}
             {% if output == 'duration_sec' %}
               {%- do yaxis_relay.append(1) -%}
             {% elif output == 'duty_cycle' %}
               {%- do yaxis_duty_cycle.append(1) -%}
             {% endif %}
-
-            {%- do yaxis_relay.append(1) -%}
           {%- endfor -%}
         {%- endfor -%}
 
