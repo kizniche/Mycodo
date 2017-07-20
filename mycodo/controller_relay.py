@@ -840,7 +840,7 @@ class RelayController(threading.Thread):
             if self.relay_time_turned_on[relay_id]:
                 return 'on'
         elif self.relay_type[relay_id] == 'pwm':
-            if self.pwm_state[relay_id]:
+            if relay_id in self.pwm_state and  self.pwm_state[relay_id]:
                 return self.pwm_state[relay_id]
         return 'off'
 
