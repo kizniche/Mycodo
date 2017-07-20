@@ -650,6 +650,8 @@ class RelayController(threading.Thread):
         try:
             relay = db_retrieve_table_daemon(Relay, device_id=relay_id)
 
+            self.relay_type[relay_id] = relay.relay_type
+
             # Turn current pin off
             if self.relay_state(relay_id) != 'off':
                 self.relay_switch(relay_id, 'off')
@@ -675,7 +677,8 @@ class RelayController(threading.Thread):
             self.pwm_hertz[relay_id] = relay.pwm_hertz
             self.pwm_library[relay_id] = relay.pwm_library
 
-            self.setup_pin(relay.id)
+            if self.relay_pin[relay_id]:
+                self.setup_pin(relay.id)
 
             message = u"Relay {id} ({name}) initialized".format(
                 id=self.relay_id[relay_id],
@@ -684,6 +687,7 @@ class RelayController(threading.Thread):
 
             return 0, "success"
         except Exception as except_msg:
+            self.logger.exception(1)
             return 1, "Add_Mod_Relay Error: ID {id}: {err}".format(
                 id=relay_id, err=except_msg)
 
@@ -796,7 +800,7 @@ class RelayController(threading.Thread):
                     "Relay {id} setup on pin {pin} and turned OFF "
                     "(OFF={state})".format(id=relay_id, pin=self.relay_pin[relay_id], state=state))
             except Exception as except_msg:
-                self.logger.error(
+                self.logger.exception(
                     "Relay {id} was unable to be setup on pin {pin} with "
                     "trigger={trigger}: {err}".format(
                         id=relay_id, pin=self.relay_pin[relay_id],
@@ -824,7 +828,7 @@ class RelayController(threading.Thread):
                 self.logger.info("PWM {id} setup on pin {pin}".format(
                     id=relay_id, pin=self.relay_pin[relay_id]))
             except Exception as except_msg:
-                self.logger.error(
+                self.logger.exception(
                     "PWM {id} was unable to be setup on pin {pin}: "
                     "{err}".format(id=relay_id, pin=self.relay_pin[relay_id], err=except_msg))
 
@@ -836,16 +840,17 @@ class RelayController(threading.Thread):
         :return: Whether the relay is currently "ON"
         :rtype: str
         """
-        if self.relay_type[relay_id] == 'wired':
-            if self.relay_trigger[relay_id] == GPIO.input(self.relay_pin[relay_id]):
-                return 'on'
-        elif self.relay_type[relay_id] in ['command',
-                                           'wireless_433MHz_pi_switch']:
-            if self.relay_time_turned_on[relay_id]:
-                return 'on'
-        elif self.relay_type[relay_id] == 'pwm':
-            if relay_id in self.pwm_state and self.pwm_state[relay_id]:
-                return self.pwm_state[relay_id]
+        if relay_id in self.relay_type:
+            if self.relay_type[relay_id] == 'wired':
+                if self.relay_trigger[relay_id] == GPIO.input(self.relay_pin[relay_id]):
+                    return 'on'
+            elif self.relay_type[relay_id] in ['command',
+                                               'wireless_433MHz_pi_switch']:
+                if self.relay_time_turned_on[relay_id]:
+                    return 'on'
+            elif self.relay_type[relay_id] == 'pwm':
+                if relay_id in self.pwm_state and self.pwm_state[relay_id]:
+                    return self.pwm_state[relay_id]
         return 'off'
 
     def is_on(self, relay_id):

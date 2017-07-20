@@ -1420,7 +1420,7 @@ def relay_on_off(form_relay):
                 if not error:
                     return_value = control.relay_on(form_relay.relay_id.data,
                                                     duty_cycle=float(form_relay.pwm_duty_cycle_on.data))
-                    flash(gettext(u"PWM set to %(dc)s%% at %(hertz)s: %(rvalue)s",
+                    flash(gettext(u"PWM set to %(dc)s%% at %(hertz)s Hz: %(rvalue)s",
                                   dc=float(form_relay.pwm_duty_cycle_on.data),
                                   hertz=relay.pwm_hertz,
                                   rvalue=return_value),
