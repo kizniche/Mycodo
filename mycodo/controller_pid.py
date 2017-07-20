@@ -347,7 +347,7 @@ class PIDController(threading.Thread):
                 if calendar.timegm(t.gmtime())-utc_timestamp > self.max_measure_age:
                     self.logger.error(
                         "Last measurement was {last_sec} seconds ago, however"
-                        "the maximum measurement age is set to {max_sec}"
+                        " the maximum measurement age is set to {max_sec}"
                         " seconds.".format(
                             last_sec=calendar.timegm(t.gmtime())-utc_timestamp,
                             max_sec=self.max_measure_age
@@ -460,7 +460,7 @@ class PIDController(threading.Thread):
                                               "relay {id}".format(
                                                 sp=self.set_point,
                                                 cv=self.control_variable,
-                                id=self.lower_relay_id))
+                                                id=self.lower_relay_id))
                             self.control.relay_on(
                                 self.lower_relay_id,
                                 duration=self.lower_seconds_on,

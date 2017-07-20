@@ -453,7 +453,7 @@ class RelayController(threading.Thread):
                     self.pwm_output[relay_id].set_PWM_frequency(
                         self.relay_pin[relay_id],
                         self.pwm_hertz[relay_id])
-                    calc_duty_cycle = int((duty_cycle / 100.0) * 256)
+                    calc_duty_cycle = int((duty_cycle / 100.0) * 255)
                     self.pwm_output[relay_id].set_PWM_dutycycle(
                         self.relay_pin[relay_id],
                         calc_duty_cycle)
