@@ -1127,6 +1127,11 @@ def pid_add(form_add_pid):
             try:
                 new_pid = PID()
                 new_pid.pid_type = form_add_pid.pid_type.data
+                if form_add_pid.pid_type.data == 'pwm':
+                    new_pid.raise_min_duration = 2.0
+                    new_pid.raise_max_duration = 98.0
+                    new_pid.lower_min_duration = 2.0
+                    new_pid.lower_max_duration = 98.0
                 new_pid.save()
 
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
@@ -1215,6 +1220,10 @@ def pid_mod(form_mod_pid_base, form_mod_pid_pwm, form_mod_pid_relay):
                         mod_pid.lower_relay_id = form_mod_pid_pwm.lower_relay_id.data
                     else:
                         mod_pid.lower_relay_id = None
+                    mod_pid.raise_min_duration = form_mod_pid_pwm.raise_min_duty_cycle.data
+                    mod_pid.raise_max_duration = form_mod_pid_pwm.raise_max_duty_cycle.data
+                    mod_pid.lower_min_duration = form_mod_pid_pwm.lower_min_duty_cycle.data
+                    mod_pid.lower_max_duration = form_mod_pid_pwm.lower_max_duty_cycle.data
 
             db.session.commit()
             # If the controller is active or paused, refresh variables in thread

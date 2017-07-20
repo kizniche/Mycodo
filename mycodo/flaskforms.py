@@ -720,7 +720,35 @@ class PIDModRelay(FlaskForm):
 
 class PIDModPWM(FlaskForm):
     raise_relay_id = StringField(lazy_gettext(u'Output ID (Raise)'))
+    raise_min_duty_cycle = DecimalField(
+        lazy_gettext(u'Min Duty Cycle (Raise)'),
+        validators=[validators.NumberRange(
+            min=0,
+            max=100
+        )]
+    )
+    raise_max_duty_cycle = DecimalField(
+        lazy_gettext(u'Max Duty Cycle (Raise)'),
+        validators=[validators.NumberRange(
+            min=0,
+            max=100
+        )]
+    )
     lower_relay_id = StringField(lazy_gettext(u'Output ID (Lower)'))
+    lower_min_duty_cycle = DecimalField(
+        lazy_gettext(u'Min Duty Cycle (Lower)'),
+        validators=[validators.NumberRange(
+            min=0,
+            max=100
+        )]
+    )
+    lower_max_duty_cycle = DecimalField(
+        lazy_gettext(u'Max Duty Cycle (Lower)'),
+        validators=[validators.NumberRange(
+            min=0,
+            max=100
+        )]
+    )
 
 
 #

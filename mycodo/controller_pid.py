@@ -414,6 +414,14 @@ class PIDController(threading.Thread):
                             self.raise_duty_cycle = float(
                                 (self.control_variable / self.period) * 100)
 
+                        # Ensure the duty cycle doesn't exceed the min/max
+                        if (self.raise_max_duration and
+                                self.raise_duty_cycle > self.raise_max_duration):
+                            self.raise_duty_cycle = self.raise_max_duration
+                        elif (self.raise_min_duration and
+                                self.raise_duty_cycle < self.raise_min_duration):
+                            self.raise_duty_cycle = self.raise_min_duration
+
                         # Activate pwm with calculated duty cycle
                         self.logger.debug(
                             "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output "
@@ -472,6 +480,14 @@ class PIDController(threading.Thread):
                         else:
                             self.lower_duty_cycle = float(
                                 (self.control_variable / self.period) * 100)
+
+                        # Ensure the duty cycle doesn't exceed the min/max
+                        if (self.lower_max_duration and
+                                self.lower_duty_cycle > self.lower_max_duration):
+                            self.lower_duty_cycle = self.lower_max_duration
+                        elif (self.lower_min_duration and
+                                self.lower_duty_cycle < self.lower_min_duration):
+                            self.lower_duty_cycle = self.lower_min_duration
 
                         # Activate pwm with calculated duty cycle
                         self.logger.debug(
