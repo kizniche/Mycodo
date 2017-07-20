@@ -20,30 +20,45 @@ class Transmit433MHz:
         self.num = 0
 
     def enable_receive(self):
-        self.device = RCSwitchReceiver()
-        self.device.enableReceive(self.pin)
-        self.num = 0
+        try:
+            self.device = RCSwitchReceiver()
+            self.device.enableReceive(self.pin)
+            self.num = 0
+        except Exception as err:
+            logger.exception(
+                "{cls} raised an exception when enabling receiving: "
+                "{err}".format(cls=type(self).__name__, err=err))
 
     def receive_available(self):
-        if self.device.available():
-            received_value = self.device.getReceivedValue()
-            if received_value:
-                self.num += 1
-                bit_length = self.device.getReceivedBitlength()
-                delay = self.device.getReceivedDelay()
-                protocol = self.device.getReceivedProtocol()
-                return self.num, received_value, bit_length, delay, protocol
-        return 0, 0, 0, 0, 0
+        try:
+            if self.device.available():
+                received_value = self.device.getReceivedValue()
+                if received_value:
+                    self.num += 1
+                    bit_length = self.device.getReceivedBitlength()
+                    delay = self.device.getReceivedDelay()
+                    protocol = self.device.getReceivedProtocol()
+                    return self.num, received_value, bit_length, delay, protocol
+            return 0, 0, 0, 0, 0
+        except Exception as err:
+            logger.exception(
+                "{cls} raised an exception when receiving: "
+                "{err}".format(cls=type(self).__name__, err=err))
 
     def reset_available(self):
         self.device.resetAvailable()
 
     def transmit(self, cmd):
-        self.device = RCSwitchSender()
-        self.device.setProtocol(self.protocol)
-        self.device.setPulseLength(self.pulse_length)
-        self.device.enableTransmit(self.pin)
-        self.device.sendDecimal(cmd, self.bit_length)  # switch on
+        try:
+            self.device = RCSwitchSender()
+            self.device.setProtocol(self.protocol)
+            self.device.setPulseLength(self.pulse_length)
+            self.device.enableTransmit(self.pin)
+            self.device.sendDecimal(cmd, self.bit_length)  # switch on
+        except Exception as err:
+            logger.exception(
+                "{cls} raised an exception when transmitting: "
+                "{err}".format(cls=type(self).__name__, err=err))
 
 
 def is_int(test_var, check_range=None):

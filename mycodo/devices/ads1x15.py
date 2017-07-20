@@ -36,8 +36,9 @@ class ADS1x15Read(object):
             self._voltage = adc.read_adc(
                 self.channel, gain=self.gain) / 10000.0
         except Exception as e:
-            logger.error("{cls} raised an error during read() call: "
-                         "{err}".format(cls=type(self).__name__, err=e))
+            logger.exception(
+                "{cls} raised an error during read() call: "
+                "{err}".format(cls=type(self).__name__, err=e))
             return 1
 
     @property

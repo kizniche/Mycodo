@@ -29,8 +29,9 @@ class MCP342xRead(object):
                           resolution=self.resolution)
             self._voltage = adc.convert_and_read()
         except Exception as e:
-            logger.error("{cls} raised exception during read(): "
-                         "{err}".format(cls=type(self).__name__, err=e))
+            logger.exception(
+                "{cls} raised exception during read(): "
+                "{err}".format(cls=type(self).__name__, err=e))
             return 1
 
     @property

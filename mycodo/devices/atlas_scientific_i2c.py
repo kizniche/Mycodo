@@ -31,7 +31,10 @@ class AtlasScientificI2C:
 
             # initializes I2C to either a user specified or default address
             self.set_i2c_address(i2c_address)
-        except Exception:
+        except Exception as err:
+            logger.exception(
+                "{cls} raised an exception when initializing: "
+                "{err}".format(cls=type(self).__name__, err=err))
             self.setup = False
 
     def set_i2c_address(self, addr):
@@ -70,10 +73,11 @@ class AtlasScientificI2C:
                 try:
                     lock.acquire(timeout=10)  # wait up to 60 seconds before breaking lock
                 except Exception as e:
-                    logger.error("{cls} 10 second timeout, {lock} lock broken: "
-                                 "{err}".format(cls=type(self).__name__,
-                                                lock=ATLAS_PH_LOCK_FILE,
-                                                err=e))
+                    logger.exception(
+                        "{cls} 10 second timeout, {lock} lock broken: "
+                        "{err}".format(cls=type(self).__name__,
+                                       lock=ATLAS_PH_LOCK_FILE,
+                                       err=e))
                     lock.break_lock()
                     lock.acquire()
 
@@ -93,8 +97,9 @@ class AtlasScientificI2C:
             lock.release()
             return response
         except Exception as err:
-            logger.error("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=err))
+            logger.exception(
+                "{cls} raised an exception when taking a reading: "
+                "{err}".format(cls=type(self).__name__, err=err))
             lock.release()
             return None
 

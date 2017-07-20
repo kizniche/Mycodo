@@ -81,8 +81,9 @@ class CameraStream(object):
                     if time.time() - cls.last_access > 10 or cls.terminate:
                         break
         except Exception as e:
-            logger.error("{cls} raised an error during read() call: "
-                         "{err}".format(cls=type(cls).__name__, err=e))
+            logger.exception(
+                "{cls} raised an error during read() call: "
+                "{err}".format(cls=type(cls).__name__, err=e))
         cls.thread = None
 
 
@@ -211,14 +212,16 @@ def camera_record(record_type, settings, duration_sec=None):
                 cap.release()
                 out.release()
                 cv2.destroyAllWindows()
-            except:
-                logger.exception(1)
+            except Exception as e:
+                logger.exception(
+                    "Exception raised while recording video: "
+                    "{err}".format(err=e))
         else:
             return
     try:
         set_user_grp(path_file, 'mycodo', 'mycodo')
     except Exception as e:
-        logger.error(
+        logger.exception(
             "Exception raised in 'camera_record' when setting user grp: "
             "{err}".format(err=e))
 

@@ -20,7 +20,10 @@ class AtlasScientificUART:
             self.ser = serial.Serial(port=serial_device,
                                      baudrate=baudrate,
                                      timeout=0)
-        except serial.SerialException:
+        except serial.SerialException as err:
+            logger.exception(
+                "{cls} raised an exception when initializing: "
+                "{err}".format(cls=type(self).__name__, err=err))
             self.setup = False
             logger.exception('Opening serial')
 
@@ -51,10 +54,11 @@ class AtlasScientificUART:
                 try:
                     lock.acquire(timeout=10)  # wait up to 10 seconds before breaking lock
                 except Exception as e:
-                    logger.error("{cls} 10 second timeout, {lock} lock broken: "
-                                 "{err}".format(cls=type(self).__name__,
-                                                lock=lock_file_amend,
-                                                err=e))
+                    logger.exception(
+                        "{cls} 10 second timeout, {lock} lock broken: "
+                        "{err}".format(cls=type(self).__name__,
+                                       lock=lock_file_amend,
+                                       err=e))
                     lock.break_lock()
                     lock.acquire()
             self.send_cmd(query_str)
@@ -63,8 +67,9 @@ class AtlasScientificUART:
             lock.release()
             return response
         except Exception as err:
-            logger.error("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=err))
+            logger.exception(
+                "{cls} raised an exception when taking a reading: "
+                "{err}".format(cls=type(self).__name__, err=err))
             lock.release()
             return None
 
@@ -86,7 +91,7 @@ class AtlasScientificUART:
             logger.exception('Read Lines')
             return None
         except AttributeError:
-            logger.error('UART device not initialized')
+            logger.exception('UART device not initialized')
             return None
 
     def send_cmd(self, cmd):
@@ -101,10 +106,10 @@ class AtlasScientificUART:
             self.ser.write(buf)
             return True
         except SerialException:
-            logger.error('Send CMD')
+            logger.exception('Send CMD')
             return None
         except AttributeError:
-            logger.error('UART device not initialized')
+            logger.exception('UART device not initialized')
             return None
 
 

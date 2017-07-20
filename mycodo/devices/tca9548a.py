@@ -18,6 +18,9 @@ class TCA9548A(object):
             self.bus.write_byte(self.i2c_address, channel)
             return 1, "Success"
         except Exception as msg:
+            logger.exception(
+                "Exception raised during initialization: "
+                "{err}".format(err=msg))
             return 0, "Fail: {}".format(msg)
 
     def read(self):
