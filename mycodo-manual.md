@@ -407,7 +407,7 @@ If using any non-hardware PWM pin (see table below for hardware PWM pins), then 
 
 #### Hardware PWM Pins
 
-The exact frequency may be set when using a hardware PWM pin. The same PWM channel is available on multiple GPIO. The latest frequency and duty cycle setting will be used by all GPIO which share a PWM channel. 
+The exact frequency may be set when using a hardware PWM pin. The same PWM channel is available on multiple GPIO. The latest frequency and duty cycle setting will be used by all GPIO pins which share a PWM channel. 
 
 BCM Pin | PWM Channel | Raspberry Pi Version
 ------- | ----------- | --------------------

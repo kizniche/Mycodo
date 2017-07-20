@@ -775,8 +775,9 @@ class RelayMod(FlaskForm):
         ],
         validators=[DataRequired()]
     )
-    pwm_hertz = IntegerField(lazy_gettext(u'Hertz'))
-    pwm_library = SelectField(lazy_gettext(u'Library'),
+    pwm_hertz = IntegerField(lazy_gettext(u'Frequency (Hertz)'))
+    pwm_library = SelectField(
+        lazy_gettext(u'Library'),
         choices=[
             ("pigpio_any", lazy_gettext(u'Any Pin (<= 40 kHz)')),
             ("pigpio_hardware", lazy_gettext(u'Hardware Pin (<= 30 MHz)'))
@@ -794,7 +795,7 @@ class RelayMod(FlaskForm):
         validators=[Optional()]
     )
     pwm_duty_cycle_on = DecimalField(
-        lazy_gettext(u'Duty Cycle'),
+        lazy_gettext(u'Duty Cycle (%)'),
         validators=[Optional()]
     )
     on_submit = SubmitField(lazy_gettext(u'Turn On'))
