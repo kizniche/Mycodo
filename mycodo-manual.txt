@@ -694,16 +694,19 @@ current (AC) from the PWM output from Mycodo.
 PWM output modulating alternating current (AC) at 1% duty cycle
 
 [Schematic: PWM output modulating alternating current (AC) at 1% duty
-cycle]
+cycle] 
+
 PWM output modulating alternating current (AC) at 50% duty cycle
 
 [Schematic: PWM output modulating alternating current (AC) at 50% duty
-cycle]
+cycle] 
+
 PWM output modulating alternating current (AC) at 99% duty cycle
 
 [Schematic: PWM output modulating alternating current (AC) at 99% duty
-cycle]
-### Relays
+cycle] 
+
+Relays
 
 Relays are electromechanical or solid-state devices that enable a small
 voltage signal (such as from a microprocessor) to activate a much larger

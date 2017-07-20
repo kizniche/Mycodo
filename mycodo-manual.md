@@ -427,15 +427,15 @@ Below are hardware schematics that enable the modulation of alternating current 
 
 PWM output modulating alternating current (AC) at 1% duty cycle
 
-![Schematic: PWM output modulating alternating current (AC) at 1% duty cycle](manual_images/Schematic-PWM-AC-1percent-duty-cycle.png)\
+![Schematic: PWM output modulating alternating current (AC) at 1% duty cycle](manual_images/Schematic-PWM-AC-1percent-duty-cycle.png)\ 
 
 PWM output modulating alternating current (AC) at 50% duty cycle
 
-![Schematic: PWM output modulating alternating current (AC) at 50% duty cycle](manual_images/Schematic-PWM-AC-50percent-duty-cycle.png)\
+![Schematic: PWM output modulating alternating current (AC) at 50% duty cycle](manual_images/Schematic-PWM-AC-50percent-duty-cycle.png)\ 
 
 PWM output modulating alternating current (AC) at 99% duty cycle
 
-![Schematic: PWM output modulating alternating current (AC) at 99% duty cycle](manual_images/Schematic-PWM-AC-99percent-duty-cycle.png)\
+![Schematic: PWM output modulating alternating current (AC) at 99% duty cycle](manual_images/Schematic-PWM-AC-99percent-duty-cycle.png)\ 
 
 ### Relays
 

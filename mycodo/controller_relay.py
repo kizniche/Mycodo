@@ -346,7 +346,7 @@ class RelayController(threading.Thread):
 
         # Signaled to turn relay off
         elif state == 'off':
-            if not self._is_setup(relay_id, self.relay_pin[relay_id]):
+            if not self._is_setup(relay_id):
                 return
             if (self.relay_type[relay_id] in ['pwm',
                                               'wired',
@@ -640,11 +640,11 @@ class RelayController(threading.Thread):
         running, these local variables need to also be modified to
         maintain consistency between the SQL database and running controller.
 
+        :param relay_id: Unique ID for each relay
+        :type relay_id: int
+
         :return: 0 for success, 1 for fail, with success for fail message
         :rtype: int, str
-
-        :param relay_id: Unique ID for each relay
-        :type relay_id: str
         """
         relay_id = int(relay_id)
         try:
@@ -695,11 +695,11 @@ class RelayController(threading.Thread):
         Therefore, this is called when a relay has been removed from the SQL
         database.
 
-        :return: 0 for success, 1 for fail (with error message)
-        :rtype: int, str
-
         :param relay_id: Unique ID for each relay
         :type relay_id: str
+
+        :return: 0 for success, 1 for fail (with error message)
+        :rtype: int, str
         """
         relay_id = int(relay_id)
 
@@ -779,6 +779,10 @@ class RelayController(threading.Thread):
     def setup_pin(self, relay_id):
         """
         Setup pin for this relay
+
+        :param relay_id: Unique ID for each relay
+        :type relay_id: int
+
         :rtype: None
         """
         if self.relay_type[relay_id] == 'wired':
@@ -826,11 +830,11 @@ class RelayController(threading.Thread):
 
     def relay_state(self, relay_id):
         """
-        :return: Whether the relay is currently "ON"
-        :rtype: str
-
         :param relay_id: Unique ID for each relay
         :type relay_id: int
+
+        :return: Whether the relay is currently "ON"
+        :rtype: str
         """
         if self.relay_type[relay_id] == 'wired':
             if self.relay_trigger[relay_id] == GPIO.input(self.relay_pin[relay_id]):
@@ -840,20 +844,20 @@ class RelayController(threading.Thread):
             if self.relay_time_turned_on[relay_id]:
                 return 'on'
         elif self.relay_type[relay_id] == 'pwm':
-            if relay_id in self.pwm_state and  self.pwm_state[relay_id]:
+            if relay_id in self.pwm_state and self.pwm_state[relay_id]:
                 return self.pwm_state[relay_id]
         return 'off'
 
     def is_on(self, relay_id):
         """
+        :param relay_id: Unique ID for each relay
+        :type relay_id: int
+
         :return: Whether the relay is currently "ON"
         :rtype: bool
-
-        :param relay_id: Unique ID for each relay
-        :type relay_id: str
         """
         if (self.relay_type[relay_id] == 'wired' and
-                self._is_setup(relay_id, self.relay_pin[relay_id])):
+                self._is_setup(relay_id)):
             return self.relay_trigger[relay_id] == GPIO.input(self.relay_pin[relay_id])
         elif self.relay_type[relay_id] in ['command',
                                            'wireless_433MHz_pi_switch']:
@@ -864,17 +868,20 @@ class RelayController(threading.Thread):
                 return True
         return False
 
-    def _is_setup(self, relay_id, pin):
+    def _is_setup(self, relay_id):
         """
         This function checks to see if the GPIO pin is setup and ready
         to use. This is for safety and to make sure we don't blow anything.
 
+        :param relay_id: Unique ID for each relay
+        :type relay_id: int
+
         :return: Is it safe to manipulate this relay?
         :rtype: bool
         """
-        if self.relay_type[relay_id] == 'wired' and pin:
+        if self.relay_type[relay_id] == 'wired' and self.relay_pin[relay_id]:
             GPIO.setmode(GPIO.BCM)
-            GPIO.setup(pin, GPIO.OUT)
+            GPIO.setup(self.relay_pin[relay_id], GPIO.OUT)
             return True
         elif self.relay_type[relay_id] in ['command',
                                            'wireless_433MHz_pi_switch']:
