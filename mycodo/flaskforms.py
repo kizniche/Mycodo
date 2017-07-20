@@ -674,21 +674,21 @@ class PIDModBase(FlaskForm):
 class PIDModRelay(FlaskForm):
     raise_relay_id = StringField(lazy_gettext(u'Output ID (Raise)'))
     raise_min_duration = DecimalField(
-        lazy_gettext(u'Raise Min On Duration'),
+        lazy_gettext(u'Min On Duration (Raise)'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
         )]
     )
     raise_max_duration = DecimalField(
-        lazy_gettext(u'Raise Max On Duration'),
+        lazy_gettext(u'Max On Duration (Raise)'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
         )]
     )
     raise_min_off_duration = DecimalField(
-        lazy_gettext(u'Raise Min Off Duration'),
+        lazy_gettext(u'Min Off Duration (Raise)'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
@@ -696,21 +696,21 @@ class PIDModRelay(FlaskForm):
     )
     lower_relay_id = StringField(lazy_gettext(u'Output ID (Lower)'))
     lower_min_duration = DecimalField(
-        lazy_gettext(u'Lower Min On Duration'),
+        lazy_gettext(u'Min On Duration (Lower)'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
         )]
     )
     lower_max_duration = DecimalField(
-        lazy_gettext(u'Lower Max On Duration'),
+        lazy_gettext(u'Max On Duration (Lower)'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
         )]
     )
     lower_min_off_duration = DecimalField(
-        lazy_gettext(u'Lower Min Off Duration'),
+        lazy_gettext(u'Min Off Duration (Lower)'),
         validators=[validators.NumberRange(
             min=0,
             max=86400

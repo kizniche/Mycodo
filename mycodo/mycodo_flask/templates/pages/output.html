@@ -18,7 +18,7 @@
                 if (state === 'on') {
                   document.getElementById(relay_id + "-input-relay-state").value = '(' + relay_id + ') {{ _('Active')}}';
                 } else {
-                  document.getElementById(relay_id + "-input-relay-state").value = '(' + relay_id + ') {{ _('Active')}}, ' + state + '%';
+                  document.getElementById(relay_id + "-input-relay-state").value = '(' + relay_id + ') {{ _('Active')}}, ' + state.toFixed(1) + '%';
                 }
               }
               else {
