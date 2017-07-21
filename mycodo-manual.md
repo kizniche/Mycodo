@@ -392,7 +392,7 @@ The PWM switching frequency has to be much higher than what would affect the loa
 
 The term duty cycle describes the proportion of 'on' time to the regular interval or 'period' of time; a low duty cycle corresponds to low power, because the power is off for most of the time. Duty cycle is expressed in percent, 100% being fully on.
 
-Currently, PWM is very new in Mycodo and does not have many features. PWM pins can be set up in the Output -> PWM page, then it may be used by a PWM PID Controller.
+Currently, PWM is very new in Mycodo and does not have many features. PWM pins can be set up in the Output -> Devices page, then it may be used by a PWM PID Controller.
 
 Setting | Description
 -------------------- | ----------------------------------------------

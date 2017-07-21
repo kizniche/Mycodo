@@ -640,8 +640,8 @@ because the power is off for most of the time. Duty cycle is expressed
 in percent, 100% being fully on.
 
 Currently, PWM is very new in Mycodo and does not have many features.
-PWM pins can be set up in the Output -> PWM page, then it may be used by
-a PWM PID Controller.
+PWM pins can be set up in the Output -> Devices page, then it may be
+used by a PWM PID Controller.
 
   ---------------------------------------------------------------------
   Setting               Description

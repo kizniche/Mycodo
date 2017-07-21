@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+import time
 from w1thermsensor import W1ThermSensor
 from .base_sensor import AbstractSensor
 
@@ -57,11 +58,15 @@ class DS18B20Sensor(AbstractSensor):
 
         :returns: None on success or 1 on error
         """
-        try:
-            self._temperature = self.get_measurement()
-            return  # success - no errors
-        except Exception as e:
-            logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
+        n = 2
+        for i in range(n):
+            try:
+                self._temperature = self.get_measurement()
+                return  # success - no errors
+            except Exception as e:
+                if i == n:
+                    logger.exception(
+                        "{cls} raised an exception when taking a reading: "
+                        "{err}".format(cls=type(self).__name__, err=e))
+                time.sleep(1)
         return 1
