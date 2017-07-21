@@ -50,7 +50,7 @@ class RelayController(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("mycodo.relay")
+        self.logger = logging.getLogger("mycodo.output")
 
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
@@ -327,12 +327,8 @@ class RelayController(threading.Thread):
 
             # PWM output
             elif self.relay_type[relay_id] == 'pwm':
-                # Record the time the PWM was turned on in order to
-                # record the time it was on when it eventually turns off.
-                if duty_cycle <= 0:
-                    self.logger.warning(u"PWM duty cycle must be a positive value")
-                    return 1
-                elif self.pwm_hertz[relay_id] <= 0:
+                # Record the time the PWM was turned on
+                if self.pwm_hertz[relay_id] <= 0:
                     self.logger.warning(u"PWM Hertz must be a positive value")
                     return 1
                 self.pwm_time_turned_on[relay_id] = datetime.datetime.now()
@@ -340,7 +336,7 @@ class RelayController(threading.Thread):
                     u"PWM {id} ({name}) ON with a duty cycle of {dc:.2f}% at {hertz} Hz".format(
                         id=self.relay_id[relay_id],
                         name=self.relay_name[relay_id],
-                        dc=duty_cycle,
+                        dc=abs(duty_cycle),
                         hertz=self.pwm_hertz[relay_id]))
                 self.relay_switch(relay_id, 'on', duty_cycle=duty_cycle)
 
@@ -456,12 +452,12 @@ class RelayController(threading.Thread):
                     self.pwm_output[relay_id].hardware_PWM(
                         self.relay_pin[relay_id],
                         self.pwm_hertz[relay_id],
-                        duty_cycle * 10000)
+                        abs(duty_cycle) * 10000)
                 elif self.pwm_library[relay_id] == 'pigpio_any':
                     self.pwm_output[relay_id].set_PWM_frequency(
                         self.relay_pin[relay_id],
                         self.pwm_hertz[relay_id])
-                    calc_duty_cycle = int((duty_cycle / 100.0) * 255)
+                    calc_duty_cycle = int((abs(duty_cycle) / 100.0) * 255)
                     if calc_duty_cycle > 255:
                         calc_duty_cycle = 255
                     if calc_duty_cycle < 0:
@@ -469,7 +465,7 @@ class RelayController(threading.Thread):
                     self.pwm_output[relay_id].set_PWM_dutycycle(
                         self.relay_pin[relay_id],
                         calc_duty_cycle)
-                self.pwm_state[relay_id] = duty_cycle
+                self.pwm_state[relay_id] = abs(duty_cycle)
             elif state == 'off':
                 if self.pwm_library[relay_id] == 'pigpio_hardware':
                     self.pwm_output[relay_id].hardware_PWM(

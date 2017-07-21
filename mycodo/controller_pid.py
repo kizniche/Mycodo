@@ -209,11 +209,9 @@ class PIDController(threading.Thread):
                                 pid_entry_value = self.control_variable
                             elif self.pid_type == 'pwm':
                                 pid_entry_type = 'duty_cycle'
-                                duty_cycle = self.control_var_to_duty_cycle(abs(self.control_variable))
-                                if self.control_variable >= 0:
-                                    pid_entry_value = duty_cycle
-                                else:
-                                    pid_entry_value = -duty_cycle
+                                pid_entry_value = self.control_var_to_duty_cycle(abs(self.control_variable))
+                                if self.control_variable < 0:
+                                    pid_entry_value = -pid_entry_value
                             else:
                                 pid_entry_type = None
                                 pid_entry_value = None
@@ -414,8 +412,10 @@ class PIDController(threading.Thread):
                                 self.raise_relay_id,
                                 duration=self.raise_seconds_on,
                                 min_off=self.raise_min_off_duration)
+
                     elif self.pid_type == 'pwm':
-                        self.raise_duty_cycle = self.control_var_to_duty_cycle(self.control_variable)
+                        self.raise_duty_cycle = float("{0:.1f}".format(
+                            self.control_var_to_duty_cycle(self.control_variable)))
 
                         # Ensure the duty cycle doesn't exceed the min/max
                         if (self.raise_max_duration and
@@ -425,14 +425,15 @@ class PIDController(threading.Thread):
                                 self.raise_duty_cycle < self.raise_min_duration):
                             self.raise_duty_cycle = self.raise_min_duration
 
-                        # Activate pwm with calculated duty cycle
                         self.logger.debug(
                             "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output "
-                            "{id} to {dc:.2f}%".format(
+                            "{id} to {dc:.1f}%".format(
                                 sp=self.set_point,
                                 cv=self.control_variable,
                                 id=self.raise_relay_id,
                                 dc=self.raise_duty_cycle))
+
+                        # Activate pwm with calculated duty cycle
                         self.control.relay_on(self.raise_relay_id,
                                               duty_cycle=self.raise_duty_cycle)
 
@@ -476,25 +477,32 @@ class PIDController(threading.Thread):
                                 self.lower_relay_id,
                                 duration=self.lower_seconds_on,
                                 min_off=self.lower_min_off_duration)
+
                     elif self.pid_type == 'pwm':
-                        self.lower_duty_cycle = self.control_var_to_duty_cycle(abs(self.control_variable))
+                        self.lower_duty_cycle = float("{0:.1f}".format(
+                            self.control_var_to_duty_cycle(abs(self.control_variable))))
 
                         # Ensure the duty cycle doesn't exceed the min/max
                         if (self.lower_max_duration and
                                 self.lower_duty_cycle > self.lower_max_duration):
-                            self.lower_duty_cycle = self.lower_max_duration
+                            self.lower_duty_cycle = -self.lower_max_duration
                         elif (self.lower_min_duration and
                                 self.lower_duty_cycle < self.lower_min_duration):
-                            self.lower_duty_cycle = self.lower_min_duration
+                            self.lower_duty_cycle = -self.lower_min_duration
 
-                        # Activate pwm with calculated duty cycle
                         self.logger.debug(
                             "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output "
-                            "{id} to {dc:.2f}%".format(
+                            "{id} to {dc:.1f}%".format(
                                 sp=self.set_point,
                                 cv=self.control_variable,
                                 id=self.lower_relay_id,
                                 dc=self.lower_duty_cycle))
+
+                        # Turn back negative for proper logging
+                        if self.control_variable < 0:
+                            self.lower_duty_cycle = -self.lower_duty_cycle
+
+                        # Activate pwm with calculated duty cycle
                         self.control.relay_on(
                             self.lower_relay_id,
                             duty_cycle=self.lower_duty_cycle)
@@ -671,7 +679,7 @@ class PIDController(threading.Thread):
         if control_variable > self.period:
             return 100.0
         else:
-            return float((self.control_variable / self.period) * 100)
+            return float((control_variable / self.period) * 100)
 
     def pid_mod(self):
         if self.initialize_values():

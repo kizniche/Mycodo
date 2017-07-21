@@ -13,7 +13,7 @@ Some graphs will need to be reconfigured after upgrading to 5.1.0. This is due t
 
 ### Bugfixes
 
- - Downgrade to InfluxDB 1.2.4 (until [#8500](https://github.com/influxdata/influxdb/issues/8500) -InfluxDB goes unresponsive- fix is released)
+ - Downgrade to InfluxDB 1.2.4, until [#8500](https://github.com/influxdata/influxdb/issues/8500) (InfluxDB goes unresponsive) fix is released
 
 ## 5.0.49 (2017-07-13)
 
