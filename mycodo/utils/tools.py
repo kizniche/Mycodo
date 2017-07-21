@@ -98,7 +98,8 @@ def return_relay_usage(table_misc, table_relays):
     relay_stats = OrderedDict()
 
     for each_relay in table_relays:
-        relay_stats[each_relay.id] = None
+        if each_relay.relay_type != 'pwm':
+            relay_stats[each_relay.id] = None
 
     # Calculate relay on duration for different time periods
     # Use OrderedDict to ensure proper order when saved to csv file
@@ -107,63 +108,64 @@ def return_relay_usage(table_misc, table_relays):
     relay_stats['total_cost'] = dict.fromkeys(['1d', '1w', '1m', '1m_date', '1y'], 0)
 
     for each_relay in table_relays:
-        past_1d_hours = relay_sec_on(each_relay.id, 86400) / 3600
-        past_1w_hours = relay_sec_on(each_relay.id, 604800) / 3600
-        past_1m_hours = relay_sec_on(each_relay.id, 2629743) / 3600
-        past_1m_date_hours = relay_sec_on(each_relay.id, int(past_month_seconds)) / 3600
-        past_1y_hours = relay_sec_on(each_relay.id, 31556926) / 3600
+        if each_relay.relay_type != 'pwm':
+            past_1d_hours = relay_sec_on(each_relay.id, 86400) / 3600
+            past_1w_hours = relay_sec_on(each_relay.id, 604800) / 3600
+            past_1m_hours = relay_sec_on(each_relay.id, 2629743) / 3600
+            past_1m_date_hours = relay_sec_on(each_relay.id, int(past_month_seconds)) / 3600
+            past_1y_hours = relay_sec_on(each_relay.id, 31556926) / 3600
 
-        past_1d_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1d_hours / 1000
-        past_1w_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1w_hours / 1000
-        past_1m_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1m_hours / 1000
-        past_1m_date_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1m_date_hours / 1000
-        past_1y_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1y_hours / 1000
+            past_1d_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1d_hours / 1000
+            past_1w_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1w_hours / 1000
+            past_1m_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1m_hours / 1000
+            past_1m_date_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1m_date_hours / 1000
+            past_1y_kwh = table_misc.relay_usage_volts * each_relay.amps * past_1y_hours / 1000
 
-        relay_stats[each_relay.id] = {
-            '1d': {
-                'hours_on': past_1d_hours,
-                'kwh': past_1d_kwh,
-                'cost': table_misc.relay_usage_cost * past_1d_kwh
-            },
-            '1w': {
-                'hours_on': past_1w_hours,
-                'kwh': past_1w_kwh,
-                'cost': table_misc.relay_usage_cost * past_1w_kwh
-            },
-            '1m': {
-                'hours_on': past_1m_hours,
-                'kwh': past_1m_kwh,
-                'cost': table_misc.relay_usage_cost * past_1m_kwh
-            },
-            '1m_date': {
-                'hours_on': past_1m_date_hours,
-                'kwh': past_1m_date_kwh,
-                'cost': table_misc.relay_usage_cost * past_1m_date_kwh
-            },
-            '1y': {
-                'hours_on': past_1y_hours,
-                'kwh': past_1y_kwh,
-                'cost': table_misc.relay_usage_cost * past_1y_kwh
+            relay_stats[each_relay.id] = {
+                '1d': {
+                    'hours_on': past_1d_hours,
+                    'kwh': past_1d_kwh,
+                    'cost': table_misc.relay_usage_cost * past_1d_kwh
+                },
+                '1w': {
+                    'hours_on': past_1w_hours,
+                    'kwh': past_1w_kwh,
+                    'cost': table_misc.relay_usage_cost * past_1w_kwh
+                },
+                '1m': {
+                    'hours_on': past_1m_hours,
+                    'kwh': past_1m_kwh,
+                    'cost': table_misc.relay_usage_cost * past_1m_kwh
+                },
+                '1m_date': {
+                    'hours_on': past_1m_date_hours,
+                    'kwh': past_1m_date_kwh,
+                    'cost': table_misc.relay_usage_cost * past_1m_date_kwh
+                },
+                '1y': {
+                    'hours_on': past_1y_hours,
+                    'kwh': past_1y_kwh,
+                    'cost': table_misc.relay_usage_cost * past_1y_kwh
+                }
             }
-        }
 
-        relay_stats['total_duration']['1d'] += past_1d_hours
-        relay_stats['total_duration']['1w'] += past_1w_hours
-        relay_stats['total_duration']['1m'] += past_1m_hours
-        relay_stats['total_duration']['1m_date'] += past_1m_date_hours
-        relay_stats['total_duration']['1y'] += past_1y_hours
+            relay_stats['total_duration']['1d'] += past_1d_hours
+            relay_stats['total_duration']['1w'] += past_1w_hours
+            relay_stats['total_duration']['1m'] += past_1m_hours
+            relay_stats['total_duration']['1m_date'] += past_1m_date_hours
+            relay_stats['total_duration']['1y'] += past_1y_hours
 
-        relay_stats['total_kwh']['1d'] += past_1d_kwh
-        relay_stats['total_kwh']['1w'] += past_1w_kwh
-        relay_stats['total_kwh']['1m'] += past_1m_kwh
-        relay_stats['total_kwh']['1m_date'] += past_1m_date_kwh
-        relay_stats['total_kwh']['1y'] += past_1y_kwh
+            relay_stats['total_kwh']['1d'] += past_1d_kwh
+            relay_stats['total_kwh']['1w'] += past_1w_kwh
+            relay_stats['total_kwh']['1m'] += past_1m_kwh
+            relay_stats['total_kwh']['1m_date'] += past_1m_date_kwh
+            relay_stats['total_kwh']['1y'] += past_1y_kwh
 
-        relay_stats['total_cost']['1d'] += table_misc.relay_usage_cost * past_1d_kwh
-        relay_stats['total_cost']['1w'] += table_misc.relay_usage_cost * past_1w_kwh
-        relay_stats['total_cost']['1m'] += table_misc.relay_usage_cost * past_1m_kwh
-        relay_stats['total_cost']['1m_date'] += table_misc.relay_usage_cost * past_1m_date_kwh
-        relay_stats['total_cost']['1y'] += table_misc.relay_usage_cost * past_1y_kwh
+            relay_stats['total_cost']['1d'] += table_misc.relay_usage_cost * past_1d_kwh
+            relay_stats['total_cost']['1w'] += table_misc.relay_usage_cost * past_1w_kwh
+            relay_stats['total_cost']['1m'] += table_misc.relay_usage_cost * past_1m_kwh
+            relay_stats['total_cost']['1m_date'] += table_misc.relay_usage_cost * past_1m_date_kwh
+            relay_stats['total_cost']['1y'] += table_misc.relay_usage_cost * past_1y_kwh
 
     return relay_stats
 
