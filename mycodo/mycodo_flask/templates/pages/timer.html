@@ -39,14 +39,27 @@
                 </div>
               </div>
               <div class="form-group">
-                {{form_timer.relay_id.label(class_='control-label')}}
+                {{form_timer.timer_type.label(class_='control-label')}}
                 <div>
-                  <select class="form-control" id="relay_id" name="relay_id">
-                  {% for each_choice, value in relay_choices.iteritems() -%}
-                    <option value="{{each_choice}}">{{value}}</option>
-                  {% endfor -%}
+                  <select class="form-control" id="timer_type" name="timer_type">
+                    <option value="">Select One</option>
+                    <option value="relay">Relay (ON/OFF)</option>
+                    <option value="pwm">PWM (Duty Cycle)</option>
                   </select>
                 </div>
+              </div>
+            </div>
+
+          <div style="display: none" id="timer_relay">
+
+            <div class="form-group">
+              {{form_timer.relay_id.label(class_='control-label')}}
+              <div>
+                <select class="form-control" id="relay_id" name="relay_id">
+                {% for each_choice, value in output_choices.iteritems() if each_choice.split(',')[1] == 'duration_sec' -%}
+                  <option value="{{each_choice.split(',')[0]}}">{{value}}</option>
+                {% endfor -%}
+                </select>
               </div>
             </div>
             <div>
@@ -148,6 +161,13 @@
                 </div>
               </div>
             </div>
+
+          </div>
+
+          <div style="display: none" id="timer_pwm">
+            PWM Timer options not yet available
+          </div>
+
           </form>
         </div>
 
@@ -209,8 +229,8 @@
           <div>
             <select class="form-control" id="relay_id" name="relay_id">
               <option value=""></option>
-            {% for each_choice, value in relay_choices.iteritems() -%}
-              <option value="{{each_choice}}"{% if each_timer.relay_id == each_choice %} selected{% endif %}>{{value}}</option>
+            {% for each_choice, value in output_choices.iteritems() if each_choice.split(',')[1] == 'duration_sec' -%}
+              <option value="{{each_choice.split(',')[0]}}"{% if each_timer.relay_id == each_choice.split(',')[0] %} selected{% endif %}>{{value}}</option>
             {% endfor -%}
             </select>
           </div>
@@ -308,6 +328,22 @@
   {%- endfor -%}
   {%- endif -%}
 
+  <script>
+    $('#timer_type').on('change', function () {
+        if (this.value === 'relay') {
+            document.getElementById("timer_pwm").style.display = "none";
+            document.getElementById("timer_relay").style.display = "block";
+        }
+        else if (this.value === 'pwm') {
+            document.getElementById("timer_relay").style.display = "none";
+            document.getElementById("timer_pwm").style.display = "block";
+        }
+        else if (this.value === '') {
+            document.getElementById("timer_relay").style.display = "none";
+            document.getElementById("timer_pwm").style.display = "none";
+        }
+    });
+  </script>
   <script type="text/javascript" src="/static/js/bootstrap-clockpicker.min.js"></script>
   <script type="text/javascript">
     $('.clockpicker').clockpicker({

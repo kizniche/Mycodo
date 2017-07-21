@@ -909,7 +909,7 @@ def page_timer():
     """ Display Timer settings """
     timer = Timer.query.all()
     relay = Relay.query.all()
-    relay_choices = flaskutils.choices_id_name(relay)
+    output_choices = flaskutils.choices_outputs(relay)
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().timer)
 
@@ -944,7 +944,7 @@ def page_timer():
     return render_template('pages/timer.html',
                            timer=timer,
                            displayOrder=display_order,
-                           relay_choices=relay_choices,
+                           output_choices=output_choices,
                            form_timer=form_timer)
 
 
