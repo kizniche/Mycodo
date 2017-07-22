@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# controller_relay.py - Relay controller to manage turning relays on/off
+# controller_relay.py - Output controller to manage turning relays on/off
 #
 #  Copyright (C) 2017  Kyle T. Gabriel
 #
@@ -85,7 +85,7 @@ class RelayController(threading.Thread):
 
         self.relay_time_turned_on = {}
 
-        self.logger.debug("Initializing Relays")
+        self.logger.debug("Initializing Outputs")
         try:
             smtp = db_retrieve_table_daemon(SMTP, entry='first')
             self.smtp_max_count = smtp.hourly_max
@@ -100,7 +100,7 @@ class RelayController(threading.Thread):
             self.all_relays_off()
             # Turn relays on that are set to be on at start
             self.all_relays_on()
-            self.logger.debug("Relays Initialized")
+            self.logger.debug("Outputs Initialized")
 
         except Exception as except_msg:
             self.logger.exception(
@@ -112,7 +112,7 @@ class RelayController(threading.Thread):
         try:
             self.running = True
             self.logger.info(
-                "Relay controller activated in {:.1f} ms".format(
+                "Output controller activated in {:.1f} ms".format(
                     (timeit.default_timer() - self.thread_startup_timer)*1000))
             while self.running:
                 current_time = datetime.datetime.now()
@@ -147,7 +147,7 @@ class RelayController(threading.Thread):
             self.cleanup_gpio()
             self.running = False
             self.logger.info(
-                "Relay controller deactivated in {:.1f} ms".format(
+                "Output controller deactivated in {:.1f} ms".format(
                     (timeit.default_timer() - self.thread_shutdown_timer)*1000))
 
     def relay_on_off(self, relay_id, state,
@@ -182,7 +182,7 @@ class RelayController(threading.Thread):
         relay_id = int(relay_id)
         if relay_id not in self.relay_id:
             self.logger.warning(
-                "Cannot turn {state} Relay with ID {id}. "
+                "Cannot turn {state} Output with ID {id}. "
                 "It doesn't exist".format(
                     state=state, id=relay_id))
             return 1
@@ -360,7 +360,7 @@ class RelayController(threading.Thread):
 
             self.relay_switch(relay_id, 'off')
 
-            self.logger.debug(u"Relay {id} ({name}) turned off.".format(
+            self.logger.debug(u"Output {id} ({name}) turned off.".format(
                     id=self.relay_id[relay_id],
                     name=self.relay_name[relay_id]))
 
@@ -661,7 +661,7 @@ class RelayController(threading.Thread):
             self.relay_type[relay_id] = relay.relay_type
 
             # Turn current pin off
-            if self.relay_state(relay_id) != 'off':
+            if relay_id in self.relay_pin and self.relay_state(relay_id) != 'off':
                 self.relay_switch(relay_id, 'off')
 
             self.relay_id[relay_id] = relay.id
@@ -688,7 +688,7 @@ class RelayController(threading.Thread):
             if self.relay_pin[relay_id]:
                 self.setup_pin(relay.id)
 
-            message = u"Relay {id} ({name}) initialized".format(
+            message = u"Output {id} ({name}) initialized".format(
                 id=self.relay_id[relay_id],
                 name=self.relay_name[relay_id])
             self.logger.debug(message)
@@ -696,7 +696,7 @@ class RelayController(threading.Thread):
             return 0, "success"
         except Exception as except_msg:
             self.logger.exception(1)
-            return 1, "Add_Mod_Relay Error: ID {id}: {err}".format(
+            return 1, "Add_Mod_Output Error: ID {id}: {err}".format(
                 id=relay_id, err=except_msg)
 
     def del_relay(self, relay_id):
@@ -716,12 +716,12 @@ class RelayController(threading.Thread):
         relay_id = int(relay_id)
 
         # Turn current pin off
-        if self.relay_state(relay_id) != 'off':
+        if relay_id in self.relay_pin and self.relay_state(relay_id) != 'off':
             self.relay_switch(relay_id, 'off')
 
         try:
-            self.logger.debug(u"Relay {} ({}) Deleted.".format(
-                self.relay_id[relay_id], self.relay_name[relay_id]))
+            self.logger.debug(u"Output {id} ({name}) Deleted.".format(
+                id=self.relay_id[relay_id], name=self.relay_name[relay_id]))
             self.relay_id.pop(relay_id, None)
             self.relay_unique_id.pop(relay_id, None)
             self.relay_type.pop(relay_id, None)
@@ -748,7 +748,8 @@ class RelayController(threading.Thread):
 
             return 0, "success"
         except Exception as msg:
-            return 1, "Del_Relay Error: ID {}: {}".format(relay_id, msg)
+            return 1, "Del_Output Error: ID {id}: {msg}".format(
+                id=relay_id, msg=msg)
 
     def relay_sec_currently_on(self, relay_id):
         if not self.is_on(relay_id):
@@ -850,7 +851,8 @@ class RelayController(threading.Thread):
         """
         if relay_id in self.relay_type:
             if self.relay_type[relay_id] == 'wired':
-                if self.relay_trigger[relay_id] == GPIO.input(self.relay_pin[relay_id]):
+                if (self.relay_pin[relay_id] is not None and
+                        self.relay_trigger[relay_id] == GPIO.input(self.relay_pin[relay_id])):
                     return 'on'
             elif self.relay_type[relay_id] in ['command',
                                                'wireless_433MHz_pi_switch']:

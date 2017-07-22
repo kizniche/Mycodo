@@ -622,8 +622,6 @@ def manipulate_relay(action, relay_id):
     :type relay_id: str
     :param action: add, del, or mod
     :type action: str
-    :param setup_pin: Initialize new pin (if changed)
-    :type setup_pin: bool
     """
     control = DaemonControl()
     return_values = control.relay_setup(action, relay_id)
