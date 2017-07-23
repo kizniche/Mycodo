@@ -307,7 +307,7 @@ class SensorController(threading.Thread):
         elif self.device == 'K30':
             self.measure_sensor = K30Sensor()
         elif self.device == 'SHT1x_7x':
-            self.measure_sensor = SHT1x7xSensor(self.location,
+            self.measure_sensor = SHT1x7xSensor(int(self.location),
                                                 self.sht_clock_pin,
                                                 self.sht_voltage)
         elif self.device == 'SHT2x':
