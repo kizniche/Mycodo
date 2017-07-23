@@ -30,7 +30,6 @@ sys.path.append(
 import argparse
 import logging
 import resource
-import RPi.GPIO as GPIO
 import threading
 import time
 import timeit
@@ -356,10 +355,9 @@ class DaemonController(threading.Thread):
                         self.logger.exception("Stats ERROR")
 
                 time.sleep(0.25)
-            GPIO.cleanup()
         except Exception as except_msg:
-            self.logger.exception("Unexpected error: {}: {}".format(
-                sys.exc_info()[0], except_msg))
+            self.logger.exception("Unexpected error: {msg}".format(
+                msg=except_msg))
             raise
 
         # If the daemon errors or finishes, shut it down
@@ -368,7 +366,7 @@ class DaemonController(threading.Thread):
             self.stop_all_controllers()
 
         self.logger.info("Mycodo terminated in {:.3f} seconds\n\n".format(
-            timeit.default_timer()-self.thread_shutdown_timer))
+            timeit.default_timer() - self.thread_shutdown_timer))
         self.terminated = True
 
         # Wait for the client to receive the response before it disconnects
@@ -386,14 +384,15 @@ class DaemonController(threading.Thread):
         :param cont_id: Unique ID for controller
         :type cont_id: str
         """
-        if cont_id in self.controller[cont_type]:
-            if self.controller[cont_type][cont_id].is_running():
-                message = "Cannot activate {type} controller with ID {id}: " \
-                          "It's already active.".format(type=cont_type,
-                                                        id=cont_id)
-                self.logger.warning(message)
-                return 1, message
         try:
+            if cont_id in self.controller[cont_type]:
+                if self.controller[cont_type][cont_id].is_running():
+                    message = "Cannot activate {type} controller with ID {id}: " \
+                              "It's already active.".format(type=cont_type,
+                                                            id=cont_id)
+                    self.logger.warning(message)
+                    return 1, message
+
             controller_manage = {}
             ready = threading.Event()
             if cont_type == 'LCD':
@@ -426,9 +425,9 @@ class DaemonController(threading.Thread):
                 return 1, "{type} controller with ID {id} not found.".format(
                     type=cont_type, id=cont_id)
         except Exception as except_msg:
-            message = "Could not activate {type} controller with ID {id}: " \
-                      "{err}".format(type=cont_type, id=cont_id,
-                                     err=except_msg)
+            message = "Could not activate {type} controller with ID {id}:" \
+                      " {err}".format(type=cont_type, id=cont_id,
+                                      err=except_msg)
             self.logger.exception(message)
             return 1, message
 
@@ -444,30 +443,37 @@ class DaemonController(threading.Thread):
         :param cont_id: Unique ID for controller
         :type cont_id: str
         """
-        if cont_id in self.controller[cont_type]:
-            if self.controller[cont_type][cont_id].is_running():
-                try:
-                    self.controller[cont_type][cont_id].stop_controller()
-                    self.controller[cont_type][cont_id].join()
-                    return 0, "{type} controller with ID {id} "\
-                        "deactivated.".format(type=cont_type, id=cont_id)
-                except Exception as except_msg:
-                    message = "Could not deactivate {type} controller with " \
-                              "ID {id}: {err}".format(type=cont_type,
-                                                      id=cont_id,
-                                                      err=except_msg)
-                    self.logger.exception(message)
+        try:
+            if cont_id in self.controller[cont_type]:
+                if self.controller[cont_type][cont_id].is_running():
+                    try:
+                        self.controller[cont_type][cont_id].stop_controller()
+                        self.controller[cont_type][cont_id].join()
+                        return 0, "{type} controller with ID {id} "\
+                            "deactivated.".format(type=cont_type, id=cont_id)
+                    except Exception as except_msg:
+                        message = "Could not deactivate {type} controller with " \
+                                  "ID {id}: {err}".format(type=cont_type,
+                                                          id=cont_id,
+                                                          err=except_msg)
+                        self.logger.exception(message)
+                        return 1, message
+                else:
+                    message = "Could not deactivate {type} controller with ID " \
+                              "{id}, it's not active.".format(type=cont_type,
+                                                              id=cont_id)
+                    self.logger.debug(message)
                     return 1, message
             else:
-                message = "Could not deactivate {type} controller with ID " \
-                          "{id}, it's not active.".format(type=cont_type,
-                                                          id=cont_id)
-                self.logger.debug(message)
+                message = "{type} controller with ID {id} not found".format(
+                    type=cont_type, id=cont_id)
+                self.logger.warning(message)
                 return 1, message
-        else:
-            message = "{type} controller with ID {id} not found".format(
-                type=cont_type, id=cont_id)
-            self.logger.warning(message)
+        except Exception as except_msg:
+            message = "Could not deactivate {type} controller with ID {id}:" \
+                      " {err}".format(type=cont_type, id=cont_id,
+                                      err=except_msg)
+            self.logger.exception(message)
             return 1, message
 
     def check_daemon(self):
@@ -486,8 +492,11 @@ class DaemonController(threading.Thread):
                     return "Error: Timer ID {}".format(timer_id)
             if not self.controller['Relay'].is_running():
                 return "Error: Relay controller"
-        except Exception as msg:
-            return "Exception: {msg}".format(msg=msg)
+        except Exception as except_msg:
+            message = "Could not check running threads:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+            return "Exception: {msg}".format(msg=except_msg)
 
     def flash_lcd(self, lcd_id, state):
         """
@@ -505,52 +514,90 @@ class DaemonController(threading.Thread):
         try:
             return self.controller['LCD'][lcd_id].flash_lcd(state)
         except KeyError:
-            return 0, "Cannot stop flashing, LCD not running"
+            message = "Cannot stop flashing, LCD not running"
+            self.logger.exception(message)
+            return 0, message
+        except Exception as except_msg:
+            message = "Could not flash LCD:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def pid_hold(self, pid_id):
-        return self.controller['PID'][pid_id].pid_hold()
+        try:
+            return self.controller['PID'][pid_id].pid_hold()
+        except Exception as except_msg:
+            message = "Could not hold PID:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def pid_mod(self, pid_id):
-        return self.controller['PID'][pid_id].pid_mod()
+        try:
+            return self.controller['PID'][pid_id].pid_mod()
+        except Exception as except_msg:
+            message = "Could not modify PID:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def pid_pause(self, pid_id):
-        return self.controller['PID'][pid_id].pid_pause()
+        try:
+            return self.controller['PID'][pid_id].pid_pause()
+        except Exception as except_msg:
+            message = "Could not pause PID:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def pid_resume(self, pid_id):
-        return self.controller['PID'][pid_id].pid_resume()
+        try:
+            return self.controller['PID'][pid_id].pid_resume()
+        except Exception as except_msg:
+            message = "Could not resume PID:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def refresh_daemon_camera_settings(self):
         try:
             self.logger.debug("Refreshing camera settings")
             self.camera = db_retrieve_table_daemon(
                 Camera, entry='all')
-        except Exception:
+        except Exception as except_msg:
             self.camera = []
-            self.logger.debug("Could not read camera table")
+            message = "Could not read camera table:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def refresh_daemon_misc_settings(self):
-        self.logger.debug("Refreshing misc settings")
-        misc = db_retrieve_table_daemon(Misc, entry='first')
-        self.opt_out_statistics = misc.stats_opt_out
-        self.relay_usage_report_gen = misc.relay_usage_report_gen
-        self.relay_usage_report_span = misc.relay_usage_report_span
-        self.relay_usage_report_day = misc.relay_usage_report_day
-        self.relay_usage_report_hour = misc.relay_usage_report_hour
-        old_time = self.relay_usage_report_next_gen
-        self.relay_usage_report_next_gen = next_schedule(
-            self.relay_usage_report_span,
-            self.relay_usage_report_day,
-            self.relay_usage_report_hour)
-        if (self.relay_usage_report_gen and
-                old_time != self.relay_usage_report_next_gen):
-            str_next_report = time.strftime(
-                '%c', time.localtime(self.relay_usage_report_next_gen))
-            self.logger.debug(
-                "Generating next relay usage report {time_date}".format(
-                    time_date=str_next_report))
+        try:
+            self.logger.debug("Refreshing misc settings")
+            misc = db_retrieve_table_daemon(Misc, entry='first')
+            self.opt_out_statistics = misc.stats_opt_out
+            self.relay_usage_report_gen = misc.relay_usage_report_gen
+            self.relay_usage_report_span = misc.relay_usage_report_span
+            self.relay_usage_report_day = misc.relay_usage_report_day
+            self.relay_usage_report_hour = misc.relay_usage_report_hour
+            old_time = self.relay_usage_report_next_gen
+            self.relay_usage_report_next_gen = next_schedule(
+                self.relay_usage_report_span,
+                self.relay_usage_report_day,
+                self.relay_usage_report_hour)
+            if (self.relay_usage_report_gen and
+                    old_time != self.relay_usage_report_next_gen):
+                str_next_report = time.strftime(
+                    '%c', time.localtime(self.relay_usage_report_next_gen))
+                self.logger.debug(
+                    "Generating next relay usage report {time_date}".format(
+                        time_date=str_next_report))
+        except Exception as except_msg:
+            message = "Could not refresh misc settings:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def refresh_sensor_conditionals(self, sensor_id, cond_mod):
-        return self.controller['Sensor'][sensor_id].setup_sensor_conditionals(cond_mod)
+        try:
+            return self.controller['Sensor'][sensor_id].setup_sensor_conditionals(cond_mod)
+        except Exception as except_msg:
+            message = "Could not refresh sensor conditionals:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def relay_off(self, relay_id, trigger_conditionals=True):
         """
@@ -561,11 +608,16 @@ class DaemonController(threading.Thread):
         :param trigger_conditionals: Whether to trigger relay conditionals or not
         :type trigger_conditionals: bool
         """
-        self.controller['Relay'].relay_on_off(
-            relay_id,
-            'off',
-            trigger_conditionals=trigger_conditionals)
-        return "Turned off"
+        try:
+            self.controller['Relay'].relay_on_off(
+                relay_id,
+                'off',
+                trigger_conditionals=trigger_conditionals)
+            return "Turned off"
+        except Exception as except_msg:
+            message = "Could not turn relay off:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def relay_on(self, relay_id, duration=0.0, min_off=0.0, duty_cycle=0.0):
         """
@@ -580,13 +632,18 @@ class DaemonController(threading.Thread):
         :param duty_cycle: PWM duty cycle (0-100)
         :type duty_cycle: float
         """
-        self.controller['Relay'].relay_on_off(
-            relay_id,
-            'on',
-            duration=duration,
-            min_off=min_off,
-            duty_cycle=duty_cycle)
-        return "Turned on"
+        try:
+            self.controller['Relay'].relay_on_off(
+                relay_id,
+                'on',
+                duration=duration,
+                min_off=min_off,
+                duty_cycle=duty_cycle)
+            return "Turned on"
+        except Exception as except_msg:
+            message = "Could not turn relay on:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def relay_setup(self, action, relay_id):
         """
@@ -599,10 +656,13 @@ class DaemonController(threading.Thread):
         :type action: str
         :param relay_id: Unique ID for relay
         :type relay_id: str
-        :param setup_pin: Whether or not to setup the GPIO pin as output
-        :type setup_pin: bool
         """
-        return self.controller['Relay'].relay_setup(action, relay_id)
+        try:
+            return self.controller['Relay'].relay_setup(action, relay_id)
+        except Exception as except_msg:
+            message = "Could not set up relay:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def relay_state(self, relay_id):
         """
@@ -611,7 +671,12 @@ class DaemonController(threading.Thread):
         :param relay_id: Unique ID for relay
         :type relay_id: str
         """
-        return self.controller['Relay'].relay_state(relay_id)
+        try:
+            return self.controller['Relay'].relay_state(relay_id)
+        except Exception as except_msg:
+            message = "Could not query relay state:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def send_stats(self):
         """Collect and send statistics"""
@@ -659,86 +724,96 @@ class DaemonController(threading.Thread):
         See the files named controller_[name].py for details of what each
         controller does.
         """
-        # Obtain database configuration options
-        lcd = db_retrieve_table_daemon(LCD, entry='all')
-        pid = db_retrieve_table_daemon(PID, entry='all')
-        sensor = db_retrieve_table_daemon(Sensor, entry='all')
-        timer = db_retrieve_table_daemon(Timer, entry='all')
+        try:
+            # Obtain database configuration options
+            lcd = db_retrieve_table_daemon(LCD, entry='all')
+            pid = db_retrieve_table_daemon(PID, entry='all')
+            sensor = db_retrieve_table_daemon(Sensor, entry='all')
+            timer = db_retrieve_table_daemon(Timer, entry='all')
 
-        self.logger.debug("Starting relay controller")
-        self.controller['Relay'] = RelayController()
-        self.controller['Relay'].start()
+            self.logger.debug("Starting relay controller")
+            self.controller['Relay'] = RelayController()
+            self.controller['Relay'].start()
 
-        self.logger.debug("Starting all activated timer controllers")
-        for each_timer in timer:
-            if each_timer.is_activated:
-                self.controller_activate('Timer', each_timer.id)
-        self.logger.info("All activated timer controllers started")
+            self.logger.debug("Starting all activated timer controllers")
+            for each_timer in timer:
+                if each_timer.is_activated:
+                    self.controller_activate('Timer', each_timer.id)
+            self.logger.info("All activated timer controllers started")
 
-        self.logger.debug("Starting all activated sensor controllers")
-        for each_sensor in sensor:
-            if each_sensor.is_activated:
-                self.controller_activate('Sensor', each_sensor.id)
-        self.logger.info("All activated sensor controllers started")
+            self.logger.debug("Starting all activated sensor controllers")
+            for each_sensor in sensor:
+                if each_sensor.is_activated:
+                    self.controller_activate('Sensor', each_sensor.id)
+            self.logger.info("All activated sensor controllers started")
 
-        self.logger.debug("Starting all activated PID controllers")
-        for each_pid in pid:
-            if each_pid.is_activated:
-                self.controller_activate('PID', each_pid.id)
-        self.logger.info("All activated PID controllers started")
+            self.logger.debug("Starting all activated PID controllers")
+            for each_pid in pid:
+                if each_pid.is_activated:
+                    self.controller_activate('PID', each_pid.id)
+            self.logger.info("All activated PID controllers started")
 
-        self.logger.debug("Starting all activated LCD controllers")
-        for each_lcd in lcd:
-            if each_lcd.is_activated:
-                self.controller_activate('LCD', each_lcd.id)
-        self.logger.info("All activated LCD controllers started")
+            self.logger.debug("Starting all activated LCD controllers")
+            for each_lcd in lcd:
+                if each_lcd.is_activated:
+                    self.controller_activate('LCD', each_lcd.id)
+            self.logger.info("All activated LCD controllers started")
+        except Exception as except_msg:
+            message = "Could not start all controllers:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def stop_all_controllers(self):
         """Stop all running controllers"""
-        lcd_controller_running = []
-        pid_controller_running = []
-        sensor_controller_running = []
-        timer_controller_running = []
+        try:
+            lcd_controller_running = []
+            pid_controller_running = []
+            sensor_controller_running = []
+            timer_controller_running = []
 
-        for lcd_id in self.controller['LCD']:
-            if self.controller['LCD'][lcd_id].is_running():
-                self.controller['LCD'][lcd_id].stop_controller()
-                lcd_controller_running.append(lcd_id)
+            for lcd_id in self.controller['LCD']:
+                if self.controller['LCD'][lcd_id].is_running():
+                    self.controller['LCD'][lcd_id].stop_controller()
+                    lcd_controller_running.append(lcd_id)
 
-        for pid_id in self.controller['PID']:
-            if self.controller['PID'][pid_id].is_running():
-                self.controller['PID'][pid_id].stop_controller()
-                pid_controller_running.append(pid_id)
+            for pid_id in self.controller['PID']:
+                if self.controller['PID'][pid_id].is_running():
+                    self.controller['PID'][pid_id].stop_controller()
+                    pid_controller_running.append(pid_id)
 
-        for sensor_id in self.controller['Sensor']:
-            if self.controller['Sensor'][sensor_id].is_running():
-                self.controller['Sensor'][sensor_id].stop_controller()
-                sensor_controller_running.append(sensor_id)
+            for sensor_id in self.controller['Sensor']:
+                if self.controller['Sensor'][sensor_id].is_running():
+                    self.controller['Sensor'][sensor_id].stop_controller()
+                    sensor_controller_running.append(sensor_id)
 
-        for timer_id in self.controller['Timer']:
-            if self.controller['Timer'][timer_id].is_running():
-                self.controller['Timer'][timer_id].stop_controller()
-                timer_controller_running.append(timer_id)
+            for timer_id in self.controller['Timer']:
+                if self.controller['Timer'][timer_id].is_running():
+                    self.controller['Timer'][timer_id].stop_controller()
+                    timer_controller_running.append(timer_id)
 
-        # Wait for the threads to finish
-        for lcd_id in lcd_controller_running:
-            self.controller['LCD'][lcd_id].join()
-        self.logger.info("All LCD controllers stopped")
+            # Wait for the threads to finish
+            for lcd_id in lcd_controller_running:
+                self.controller['LCD'][lcd_id].join()
+            self.logger.info("All LCD controllers stopped")
 
-        for timer_id in timer_controller_running:
-            self.controller['Timer'][timer_id].join()
-        self.logger.info("All Timer controllers stopped")
+            for timer_id in timer_controller_running:
+                self.controller['Timer'][timer_id].join()
+            self.logger.info("All Timer controllers stopped")
 
-        for sensor_id in sensor_controller_running:
-            self.controller['Sensor'][sensor_id].join()
-        self.logger.info("All Sensor controllers stopped")
+            for sensor_id in sensor_controller_running:
+                self.controller['Sensor'][sensor_id].join()
+            self.logger.info("All Sensor controllers stopped")
 
-        for pid_id in pid_controller_running:
-            self.controller['PID'][pid_id].join()
-        self.logger.info("All PID controllers stopped")
+            for pid_id in pid_controller_running:
+                self.controller['PID'][pid_id].join()
+            self.logger.info("All PID controllers stopped")
 
-        self.controller['Relay'].stop_controller()
-        self.controller['Relay'].join()
+            self.controller['Relay'].stop_controller()
+            self.controller['Relay'].join()
+        except Exception as except_msg:
+            message = "Could not stop all controllers:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def terminate_daemon(self):
         """Instruct the daemon to shut down"""
@@ -751,42 +826,47 @@ class DaemonController(threading.Thread):
 
     def timelapse_check(self, camera, now):
         """ If time-lapses are active, take photo at predefined periods """
-        if (camera.timelapse_started and
-                now > camera.timelapse_end_time):
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                mod_camera = new_session.query(Camera).filter(
-                    Camera.id == camera.id).first()
-                mod_camera.timelapse_started = False
-                mod_camera.timelapse_paused = False
-                mod_camera.timelapse_start_time = None
-                mod_camera.timelapse_end_time = None
-                mod_camera.timelapse_interval = None
-                mod_camera.timelapse_next_capture = None
-                mod_camera.timelapse_capture_number = None
-                new_session.commit()
-            self.refresh_daemon_camera_settings()
-            self.logger.debug(
-                "Camera {id}: End of time-lapse.".format(id=camera.id))
-        elif ((camera.timelapse_started and not camera.timelapse_paused) and
-                now > camera.timelapse_next_capture):
-            # Ensure next capture is greater than now (in case of power failure/reboot)
-            next_capture = camera.timelapse_next_capture
-            capture_number = camera.timelapse_capture_number
-            while now > next_capture:
-                # Update last capture and image number to latest before capture
-                next_capture += camera.timelapse_interval
-                capture_number += 1
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                mod_camera = new_session.query(Camera).filter(
-                    Camera.id == camera.id).first()
-                mod_camera.timelapse_next_capture = next_capture
-                mod_camera.timelapse_capture_number = capture_number
-                new_session.commit()
-            self.refresh_daemon_camera_settings()
-            self.logger.debug(
-                "Camera {id}: Capturing time-lapse image".format(id=camera.id))
-            # Capture image
-            camera_record('timelapse', camera)
+        try:
+            if (camera.timelapse_started and
+                    now > camera.timelapse_end_time):
+                with session_scope(MYCODO_DB_PATH) as new_session:
+                    mod_camera = new_session.query(Camera).filter(
+                        Camera.id == camera.id).first()
+                    mod_camera.timelapse_started = False
+                    mod_camera.timelapse_paused = False
+                    mod_camera.timelapse_start_time = None
+                    mod_camera.timelapse_end_time = None
+                    mod_camera.timelapse_interval = None
+                    mod_camera.timelapse_next_capture = None
+                    mod_camera.timelapse_capture_number = None
+                    new_session.commit()
+                self.refresh_daemon_camera_settings()
+                self.logger.debug(
+                    "Camera {id}: End of time-lapse.".format(id=camera.id))
+            elif ((camera.timelapse_started and not camera.timelapse_paused) and
+                    now > camera.timelapse_next_capture):
+                # Ensure next capture is greater than now (in case of power failure/reboot)
+                next_capture = camera.timelapse_next_capture
+                capture_number = camera.timelapse_capture_number
+                while now > next_capture:
+                    # Update last capture and image number to latest before capture
+                    next_capture += camera.timelapse_interval
+                    capture_number += 1
+                with session_scope(MYCODO_DB_PATH) as new_session:
+                    mod_camera = new_session.query(Camera).filter(
+                        Camera.id == camera.id).first()
+                    mod_camera.timelapse_next_capture = next_capture
+                    mod_camera.timelapse_capture_number = capture_number
+                    new_session.commit()
+                self.refresh_daemon_camera_settings()
+                self.logger.debug(
+                    "Camera {id}: Capturing time-lapse image".format(id=camera.id))
+                # Capture image
+                camera_record('timelapse', camera)
+        except Exception as except_msg:
+            message = "Could not execute timelapse:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
 
 class MycodoDaemon:
