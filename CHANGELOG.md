@@ -1,6 +1,6 @@
 ## 5.1.0 (Unreleased)
 
-Some graphs will need to be reconfigured after upgrading to 5.1.0. This is due to adding PWM as an output option, necessitating refactoring certain portions of code related to graph display.
+Some graphs will need to be reconfigured after upgrading to 5.1.0. This is due to adding PWM as an output and PID option, necessitating refactoring certain portions of code related to graph display.
 
 ### Features
 
@@ -13,7 +13,7 @@ Some graphs will need to be reconfigured after upgrading to 5.1.0. This is due t
 
 ### Bugfixes
 
- - Downgrade to InfluxDB 1.2.4, until [#8500](https://github.com/influxdata/influxdb/issues/8500) (InfluxDB goes unresponsive) fix is released
+ - Upgrade to InfluxDB 1.3.1 ([#8500](https://github.com/influxdata/influxdb/issues/8500) - fixes InfluxDB going unresponsive)
 
 ## 5.0.49 (2017-07-13)
 
