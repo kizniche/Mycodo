@@ -114,7 +114,7 @@ class SHT2xSensor(AbstractSensor):
             self._humidity = humidity
             self._temperature = temperature
         except Exception as e:
-            self.logger.exception(
+            logger.exception(
                 "Exception when taking a reading: {err}".format(err=e))
 
     def read(self):
@@ -129,8 +129,8 @@ class SHT2xSensor(AbstractSensor):
                 self.get_measurement()
                 if self._humidity or self._temperature:
                     return  # success - no errors
-            except:
-                self.logger.debug("Error occurred during first read")
+            except Exception:
+                logger.debug("Error occurred during first read")
 
             # Send soft reset and try a second read
             self.sht2x.write_byte(self.i2c_address, 0xFE)
