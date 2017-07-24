@@ -24,6 +24,8 @@ class SHT2xSensor(AbstractSensor):
         self._humidity = 0.0
         self._temperature = 0.0
 
+        self.sht2x = smbus.SMBus(self.i2c_bus)
+
     def __repr__(self):
         """  Representation of object """
         return "<{cls}(dewpoint={dpt})(humidity={hum})(temperature={temp})>".format(
@@ -85,27 +87,35 @@ class SHT2xSensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        bus = smbus.SMBus(self.i2c_bus)
-        # Send temperature measurement command
-        #       0xF3(243)   NO HOLD master
-        bus.write_byte(self.i2c_address, 0xF3)
-        time.sleep(0.5)
-        # Read data back, 2 bytes
-        # Temp MSB, Temp LSB
-        data0 = bus.read_byte(self.i2c_address)
-        data1 = bus.read_byte(self.i2c_address)
-        temperature = -46.85 + (((data0 * 256 + data1) * 175.72) / 65536.0)
-        # Send humidity measurement command
-        #       0xF5(245)   NO HOLD master
-        bus.write_byte(self.i2c_address, 0xF5)
-        time.sleep(0.5)
-        # Read data back, 2 bytes
-        # Humidity MSB, Humidity LSB
-        data0 = bus.read_byte(self.i2c_address)
-        data1 = bus.read_byte(self.i2c_address)
-        humidity = -6 + (((data0 * 256 + data1) * 125.0) / 65536.0)
-        dew_point = dewpoint(temperature, humidity)
-        return dew_point, humidity, temperature
+        self._humidity = 0.0
+        self._temperature = 0.0
+
+        try:
+            # Send temperature measurement command
+            # 0xF3(243) NO HOLD master
+            self.sht2x.write_byte(self.i2c_address, 0xF3)
+            time.sleep(0.5)
+            # Read data back, 2 bytes
+            # Temp MSB, Temp LSB
+            data0 = self.sht2x.read_byte(self.i2c_address)
+            data1 = self.sht2x.read_byte(self.i2c_address)
+            temperature = -46.85 + (((data0 * 256 + data1) * 175.72) / 65536.0)
+            # Send humidity measurement command
+            # 0xF5(245) NO HOLD master
+            self.sht2x.write_byte(self.i2c_address, 0xF5)
+            time.sleep(0.5)
+            # Read data back, 2 bytes
+            # Humidity MSB, Humidity LSB
+            data0 = self.sht2x.read_byte(self.i2c_address)
+            data1 = self.sht2x.read_byte(self.i2c_address)
+            humidity = -6 + (((data0 * 256 + data1) * 125.0) / 65536.0)
+            dew_point = dewpoint(temperature, humidity)
+            self._dew_point = dew_point
+            self._humidity = humidity
+            self._temperature = temperature
+        except Exception as e:
+            self.logger.exception(
+                "Exception when taking a reading: {err}".format(err=e))
 
     def read(self):
         """
@@ -115,8 +125,19 @@ class SHT2xSensor(AbstractSensor):
         :returns: None on success or 1 on error
         """
         try:
-            self._dew_point, self._humidity, self._temperature = self.get_measurement()
-            return  # success - no errors
+            try:
+                self.get_measurement()
+                if self._humidity or self._temperature:
+                    return  # success - no errors
+            except:
+                self.logger.debug("Error occurred during first read")
+
+            # Send soft reset and try a second read
+            self.sht2x.write_byte(self.i2c_address, 0xFE)
+            time.sleep(0.1) 
+            self.get_measurement()
+            if self._humidity or self._temperature:
+                return  # success - no errors
         except Exception as e:
             logger.exception(
                 "{cls} raised an exception when taking a reading: "
