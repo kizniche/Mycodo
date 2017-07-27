@@ -244,6 +244,7 @@ class ComThread(threading.Thread):
         threading.Thread.__init__(self)
 
         self.logger = logging.getLogger("mycodo.rpyc")
+        self.logger.setLevel(logging.WARNING)
         self.mycodo = mycodo
 
     def run(self):
@@ -273,7 +274,7 @@ def test_rpyc(logger_rpyc):
             try:
                 c = rpyc.connect('localhost', 18813)
                 time.sleep(0.1)
-                logger_rpyc.info(
+                logger_rpyc.error(
                     "TESTING: (30 min timer) rpyc communication thread: "
                     "closed={stat}".format(stat=c.closed))
             except Exception as err:
