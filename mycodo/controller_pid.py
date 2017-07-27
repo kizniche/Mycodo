@@ -58,7 +58,6 @@ import timeit
 from databases.models import Method
 from databases.models import MethodData
 from databases.models import PID
-from databases.models import Relay
 from databases.models import Sensor
 from databases.utils import session_scope
 from mycodo_client import DaemonControl
@@ -172,7 +171,7 @@ class PIDController(threading.Thread):
         try:
             self.running = True
             self.logger.info("Activated in {:.1f} ms".format(
-                (timeit.default_timer()-self.thread_startup_timer)*1000))
+                (timeit.default_timer() - self.thread_startup_timer) * 1000))
             if self.is_paused:
                 self.logger.info("Paused")
             elif self.is_held:

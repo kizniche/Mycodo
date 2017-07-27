@@ -9,6 +9,8 @@ if [ "$EUID" -ne 0 ] ; then
 fi
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../.." && pwd -P )
+APT_PKGS="apache2 gawk gcc git libapache2-mod-wsgi libav-tools libboost-python-dev libffi-dev libi2c-dev python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3 wget"
+
 cd ${INSTALL_DIRECTORY}
 
 case "${1:-''}" in
@@ -82,6 +84,7 @@ case "${1:-''}" in
         if [ ! -e /var/log/mycodo/login.log ]; then
             touch /var/log/mycodo/login.log
         fi
+
         /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh update-permissions
     ;;
     'restart-daemon')
@@ -100,6 +103,7 @@ case "${1:-''}" in
         wget --quiet --no-check-certificate -p http://127.0.0.1 -O /dev/null
     ;;
     'setup-virtualenv')
+        printf "#### Checking if virtualenv\n"
         if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env ]; then
             pip install virtualenv --upgrade
             virtualenv --system-site-packages ${INSTALL_DIRECTORY}/Mycodo/env
@@ -119,12 +123,12 @@ case "${1:-''}" in
         ln -sf ${INSTALL_DIRECTORY}/Mycodo/install/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
     ;;
     'update-cron')
-        printf "#### Updating crontab entry\n"
+        printf "\n#### Updating crontab entry\n"
         /bin/bash ${INSTALL_DIRECTORY}/Mycodo/install/crontab.sh mycodo --remove
         /bin/bash ${INSTALL_DIRECTORY}/Mycodo/install/crontab.sh mycodo
     ;;
     'update-gpiod')
-        printf "#### Installing gpiod\n"
+        printf "\n#### Installing gpiod\n"
         cd ${INSTALL_DIRECTORY}/Mycodo/install
         wget --quiet -P ${INSTALL_DIRECTORY}/Mycodo/install abyz.co.uk/rpi/pigpio/pigpio.zip
         unzip pigpio.zip
@@ -145,9 +149,9 @@ case "${1:-''}" in
         if [ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]; then
             if [ ! -z "${CURRENT_VERSION}" ];
             then
-                echo "Incorrect version of InfluxDB installed: v${CURRENT_VERSION}."
+                echo "#### Incorrect version of InfluxDB installed: v${CURRENT_VERSION}."
             fi
-            echo "Installing InfluxDB v${CORRECT_VERSION}..."
+            echo "#### Installing InfluxDB v${CORRECT_VERSION}..."
             wget --quiet ${INSTALL_ADDRESS}${INSTALL_FILE}
             dpkg -i ${INSTALL_FILE}
             rm -rf ${INSTALL_FILE}
@@ -164,11 +168,13 @@ case "${1:-''}" in
             curl -sL -I localhost:8086/ping > /dev/null &&
             influx -execute "CREATE DATABASE mycodo_db" &&
             influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'" &&
-            printf "Influxdb database and user successfully created\n" &&
+            printf "#### Influxdb database and user successfully created\n" &&
             break ||
             # Else wait 60 seconds if the influxd port is not accepting connections
-            printf "Could not connect to Influxdb. Waiting 60 seconds then trying again...\n" &&
-            sleep 60
+            # Everything below will begin executing if an error occurs before the break
+            printf "#### Could not connect to Influxdb. Waiting 60 seconds then trying again...\n" &&
+            sleep 60 &&
+            printf "#### Trying again...\n"
         done
     ;;
     'update-mycodo-startup-script')
@@ -181,14 +187,14 @@ case "${1:-''}" in
     'update-packages')
         printf "\n#### Installing prerequisite apt packages and update pip\n"
         apt-get update -y
-        apt-get install -y apache2 gawk gcc git libapache2-mod-wsgi libav-tools libboost-python-dev libffi-dev libi2c-dev python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3
+        apt-get install -y ${APT_PKGS}
         easy_install pip
         pip install --upgrade pip
     ;;
     'update-pip-packages')
         printf "\n#### Installing pip requirements from requirements.txt\n"
         if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env ]; then
-            printf "\n## Error: Virtualenv doesn't exist. Create with $0 setup-virtualenv\n"
+            printf "\n#### Error: Virtualenv doesn't exist. Create with $0 setup-virtualenv\n"
         else
             source ${INSTALL_DIRECTORY}/Mycodo/env/bin/activate
             ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install --upgrade pip
@@ -219,7 +225,7 @@ case "${1:-''}" in
         fi
     ;;
     'update-wiringpi')
-        printf "#### Installing wiringpi\n"
+        printf "\n#### Installing wiringpi\n"
         git clone git://git.drogon.net/wiringPi ${INSTALL_DIRECTORY}/Mycodo/install/wiringPi
         cd ${INSTALL_DIRECTORY}/Mycodo/install/wiringPi
         ./build
