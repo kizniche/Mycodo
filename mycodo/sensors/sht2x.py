@@ -20,9 +20,9 @@ class SHT2xSensor(AbstractSensor):
         super(SHT2xSensor, self).__init__()
         self.i2c_address = address
         self.i2c_bus = bus
-        self._dew_point = 0.0
-        self._humidity = 0.0
-        self._temperature = 0.0
+        self._dew_point = None
+        self._humidity = None
+        self._temperature = None
 
         self.sht2x = smbus.SMBus(self.i2c_bus)
 
@@ -87,8 +87,8 @@ class SHT2xSensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        self._humidity = 0.0
-        self._temperature = 0.0
+        self._humidity = None
+        self._temperature = None
 
         try:
             # Send temperature measurement command

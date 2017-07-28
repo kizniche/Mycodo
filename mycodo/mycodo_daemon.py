@@ -305,11 +305,11 @@ class DaemonController(threading.Thread):
 
     def __init__(self):
         threading.Thread.__init__(self)
+        self.logger = logging.getLogger("mycodo.daemon")
+        self.logger.info("Mycodo daemon v{ver} starting".format(ver=MYCODO_VERSION))
 
         self.startup_timer = timeit.default_timer()
         self.daemon_startup_time = None
-        self.logger = logger
-        self.logger.info("Mycodo daemon v{ver} starting".format(ver=MYCODO_VERSION))
         self.daemon_run = True
         self.terminated = False
         self.controller = {
@@ -908,13 +908,14 @@ class MycodoDaemon:
 
     """
 
-    def __init__(self, mycodo, logger):
-        self.logger = logger
+    def __init__(self, mycodo):
+        self.logger = logging.getLogger("mycodo.daemon")
         self.mycodo = mycodo
 
     def start_daemon(self):
         """Start communication and daemon threads"""
         try:
+            self.logger.info("Starting rpyc server")
             ct = ComThread(self.mycodo)
             ct.daemon = True
             # Start communication thread for receiving commands from mycodo_client.py
@@ -967,7 +968,7 @@ if __name__ == '__main__':
     keep_fds = [fh.stream.fileno()]
 
     daemon_controller = DaemonController()
-    mycodo_daemon = MycodoDaemon(daemon_controller, logger)
+    mycodo_daemon = MycodoDaemon(daemon_controller)
 
     # Set up daemon and start it
     daemon = Daemonize(app="mycodo_daemon",
