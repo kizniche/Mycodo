@@ -1860,6 +1860,10 @@ def sensor_add(form_add_sensor):
             elif form_add_sensor.sensor.data == 'K30':
                 new_sensor.measurements = 'co2'
                 new_sensor.location = 'Tx/Rx'
+                if GPIO.RPI_INFO['P1_REVISION'] == 3:
+                    new_sensor.device_loc = "/dev/ttyS0"
+                else:
+                    new_sensor.device_loc = "/dev/ttyAMA0"
 
             # pH
             elif form_add_sensor.sensor.data == 'ATLAS_PH_I2C':
