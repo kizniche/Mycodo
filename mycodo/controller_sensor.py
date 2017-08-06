@@ -305,7 +305,7 @@ class SensorController(threading.Thread):
         elif self.device == 'HTU21D':
             self.measure_sensor = HTU21DSensor(self.i2c_bus)
         elif self.device == 'K30':
-            self.measure_sensor = K30Sensor()
+            self.measure_sensor = K30Sensor(self.device_loc)
         elif self.device == 'SHT1x_7x':
             self.measure_sensor = SHT1x7xSensor(int(self.location),
                                                 self.sht_clock_pin,

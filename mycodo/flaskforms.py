@@ -882,7 +882,7 @@ class SensorMod(FlaskForm):
     i2c_bus = IntegerField(lazy_gettext(u'I<sup>2</sup>C Bus'))
     location = StringField(lazy_gettext(u'Location'))
     baud_rate = IntegerField(lazy_gettext(u'Baud Rate'))
-    device_loc = StringField(lazy_gettext(u'Device'))
+    device_loc = StringField(lazy_gettext(u'Device Location'))
     calibrate_sensor_measure = StringField(lazy_gettext(u'Calibration Measurement'))
     resolution = IntegerField(lazy_gettext(u'Resolution'))
     sensitivity = IntegerField(lazy_gettext(u'Sensitivity'))

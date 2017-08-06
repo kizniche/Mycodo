@@ -2,25 +2,36 @@
 
 from lockfile import LockFile
 import logging
+import os
 import serial
+import stat
 import time
-import RPi.GPIO as GPIO
 from .base_sensor import AbstractSensor
-
-logger = logging.getLogger("mycodo.sensors.k30")
-K30_LOCK_FILE = "/var/lock/sensor-k30"
 
 
 class K30Sensor(AbstractSensor):
     """ A sensor support class that monitors the K30's CO2 concentration """
 
-    def __init__(self):
+    def __init__(self, device_loc):
         super(K30Sensor, self).__init__()
+        self.logger = logging.getLogger(
+            "mycodo.sensors.k30.{dev}".format(dev=device_loc))
+        self.k30_lock_file = None
         self._co2 = 0
-        if GPIO.RPI_INFO['P1_REVISION'] == 3:
-            self.serial_device = "/dev/ttyS0"
+
+        # Check if device is valid
+        self.serial_device = self.is_device(device_loc)
+        if self.serial_device:
+            try:
+                self.ser = serial.Serial(self.serial_device, timeout=1)
+                self.k30_lock_file = "/var/lock/sen-k30-{}".format(device_loc)
+            except serial.SerialException:
+                self.logger.exception('Opening serial')
         else:
-            self.serial_device = "/dev/ttyAMA0"
+            self.logger.error(
+                'Could not open "/dev/{dev}".'
+                'Check the device location is correct.'.format(
+                    dev=self.serial_device))
 
     def __repr__(self):
         """  Representation of object """
@@ -57,19 +68,18 @@ class K30Sensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the K30's CO2 concentration in ppmv via UART"""
-        ser = serial.Serial(self.serial_device, timeout=1)  # Wait 1 second for reply
-        ser.flushInput()
+        self._co2 = None
+        self.ser.flushInput()
         time.sleep(1)
-        ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
+        self.ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
         time.sleep(.01)
-        resp = ser.read(7)
-        if len(resp) == 0:
-            co2 = None
-        else:
+        resp = self.ser.read(7)
+        if len(resp) != 0:
             high = ord(resp[3])
             low = ord(resp[4])
             co2 = (high * 256) + low
-        return co2
+            return co2
+        return None
 
     def read(self):
         """
@@ -77,19 +87,23 @@ class K30Sensor(AbstractSensor):
 
         :returns: None on success or 1 on error
         """
-        lock = LockFile(K30_LOCK_FILE)
+        if not self.serial_device:  # Don't measure if device isn't validated
+            return None
+
+        lock = LockFile(self.k30_lock_file)
         try:
             # Acquire lock on K30 to ensure more than one read isn't
             # being attempted at once.
             while not lock.i_am_locking():
-                try:
-                    lock.acquire(timeout=60)  # wait up to 60 seconds before breaking lock
+                try:  # wait 60 seconds before breaking lock
+                    lock.acquire(timeout=60)
                 except Exception as e:
-                    logger.exception(
+                    self.logger.error(
                         "{cls} 60 second timeout, {lock} lock broken: "
-                        "{err}".format(cls=type(self).__name__,
-                                       lock=K30_LOCK_FILE,
-                                       err=e))
+                        "{err}".format(
+                            cls=type(self).__name__,
+                            lock=self.k30_lock_file,
+                            err=e))
                     lock.break_lock()
                     lock.acquire()
             self._co2 = self.get_measurement()
@@ -98,8 +112,17 @@ class K30Sensor(AbstractSensor):
                 return 1
             return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.error(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
             lock.release()
             return 1
+
+    @staticmethod
+    def is_device(path):
+        try:
+            if stat.S_ISBLK(os.stat("/dev/{dev}".format(dev=path)).st_mode):
+                return path
+        except:
+            pass
+        return None
