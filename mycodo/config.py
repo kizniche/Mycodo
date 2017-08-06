@@ -6,8 +6,8 @@ import os
 import collections
 from datetime import timedelta
 
-MYCODO_VERSION = '5.0.49'
-ALEMBIC_VERSION = 'b604cf735be5'
+MYCODO_VERSION = '5.1.0'
+ALEMBIC_VERSION = 'c7b4a120a7bb'
 
 LANGUAGES = {
     'en': 'English',
@@ -39,7 +39,8 @@ MEASUREMENTS = {
     'DS18B20': ['temperature'],
     'EDGE': ['edge'],
     'HTU21D': ['dewpoint', 'humidity', 'temperature'],
-    'K30': ['co2'],
+    'K30_UART': ['co2'],
+    'MH_Z19_UART': ['co2'],
     'MCP342x': ['voltage'],
     'RPi': ['temperature'],
     'RPiCPULoad': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m'],
@@ -106,7 +107,8 @@ SENSORS = [
     ('ADS1x15', 'Analog-to-Digital Converter: ADS1x15'),
     ('MCP342x', 'Analog-to-Digital Converter: MCP342x'),
     ('EDGE', 'Edge Detection: Simple Switch'),
-    ('K30', 'CO2: K30'),
+    ('K30_UART', 'CO2: K30 (UART)'),
+    ('MH_Z19_UART', 'CO2: MH-Z19 (UART)'),
     ('BH1750', 'Luminance: BH1750'),
     ('TSL2561', 'Luminance: TSL2561'),
     ('TSL2591', 'Luminance: TSL2591'),
@@ -142,7 +144,6 @@ DEVICES_DEFAULT_LOCATION = [
     'BMP',
     'BMP180',
     'HTU21D',
-    'K30',
     'RPi',
     'RPiCPULoad',
     'TSL2591',

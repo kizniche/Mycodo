@@ -1931,9 +1931,11 @@ def sensor_add(form_add_sensor):
                 new_sensor.location = '0x20'
 
             # CO2
-            elif form_add_sensor.sensor.data == 'K30':
+            elif form_add_sensor.sensor.data in ['K30_UART', 'MH_Z19_UART']:
                 new_sensor.measurements = 'co2'
                 new_sensor.location = 'Tx/Rx'
+                new_sensor.interface = 'UART'
+                new_sensor.baud_rate = 9600
                 if GPIO.RPI_INFO['P1_REVISION'] == 3:
                     new_sensor.device_loc = "/dev/ttyS0"
                 else:
@@ -1954,7 +1956,7 @@ def sensor_add(form_add_sensor):
                 else:
                     new_sensor.device_loc = "/dev/ttyAMA0"
 
-                # Pressure
+            # Pressure
             elif form_add_sensor.sensor.data in ['BME280',
                                                  'BMP180',
                                                  'BMP280']:

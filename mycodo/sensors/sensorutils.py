@@ -4,8 +4,20 @@
 
 import logging
 import math
+import os
+import stat
 
 logger = logging.getLogger("mycodo.sensor_utils")
+
+
+def altitude(pressure_pa, sea_level_pa=101325.0):
+    """Calculates the altitude in meters."""
+    alt = 44330.0 * (1.0 - pow(pressure_pa / sea_level_pa, (1.0 / 5.255)))
+    return alt
+
+
+def c_to_f(temp_c):
+    return 9.0 / 5.0 * temp_c + 32
 
 
 def dewpoint(t, rh):
@@ -25,11 +37,10 @@ def dewpoint(t, rh):
             / (m - math.log(rh / 100.0) - m * t / (tn + t)))
 
 
-def altitude(pressure_pa, sealevel_pa=101325.0):
-    """Calculates the altitude in meters."""
-    alt = 44330.0 * (1.0 - pow(pressure_pa / sealevel_pa, (1.0 / 5.255)))
-    return alt
-
-
-def c_to_f(temp_c):
-    return 9.0 / 5.0 * temp_c + 32
+def is_device(path):
+    try:
+        if stat.S_ISBLK(os.stat("{dev}".format(dev=path)).st_mode):
+            return path
+    except:
+        pass
+    return None

@@ -64,7 +64,6 @@ class TSL2591Sensor(AbstractSensor):
             self._lux = self.get_measurement()
             return  # success - no errors
         except Exception as e:
-            logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         return 1

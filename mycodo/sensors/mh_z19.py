@@ -9,13 +9,13 @@ from .base_sensor import AbstractSensor
 from sensorutils import is_device
 
 
-class K30Sensor(AbstractSensor):
-    """ A sensor support class that monitors the K30's CO2 concentration """
+class MHZ19Sensor(AbstractSensor):
+    """ A sensor support class that monitors the MH-Z19's CO2 concentration """
 
     def __init__(self, device_loc, baud_rate=9600):
-        super(K30Sensor, self).__init__()
+        super(MHZ19Sensor, self).__init__()
         self.logger = logging.getLogger(
-            "mycodo.sensors.k30.{dev}".format(dev=device_loc))
+            "mycodo.sensors.mhz19.{dev}".format(dev=device_loc))
         self.k30_lock_file = None
         self._co2 = 0
 
@@ -26,7 +26,7 @@ class K30Sensor(AbstractSensor):
                 self.ser = serial.Serial(self.serial_device,
                                          baudrate=baud_rate,
                                          timeout=1)
-                self.k30_lock_file = "/var/lock/sen-k30-{}".format(device_loc)
+                self.k30_lock_file = "/var/lock/sen-mhz19-{}".format(device_loc)
             except serial.SerialException:
                 self.logger.exception('Opening serial')
         else:
@@ -46,7 +46,7 @@ class K30Sensor(AbstractSensor):
         return "CO2: {co2}".format(co2="{0:.2f}".format(self._co2))
 
     def __iter__(self):  # must return an iterator
-        """ K30 iterates through live CO2 readings """
+        """ MH-Z19 iterates through live CO2 readings """
         return self
 
     def next(self):
@@ -69,23 +69,23 @@ class K30Sensor(AbstractSensor):
         return self._co2
 
     def get_measurement(self):
-        """ Gets the K30's CO2 concentration in ppmv via UART"""
+        """ Gets the MH-Z19's CO2 concentration in ppmv via UART"""
         self._co2 = None
         self.ser.flushInput()
         time.sleep(1)
-        self.ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
+        self.ser.write("\xff\x01\x86\x00\x00\x00\x00\x00\x79")
         time.sleep(.01)
-        resp = self.ser.read(7)
+        resp = self.ser.read(9)
         if len(resp) != 0:
-            high = ord(resp[3])
-            low = ord(resp[4])
+            high = ord(resp[2])
+            low = ord(resp[3])
             co2 = (high * 256) + low
             return co2
         return None
 
     def read(self):
         """
-        Takes a reading from the K30 and updates the self._co2 value
+        Takes a reading from the MH-Z19 and updates the self._co2 value
 
         :returns: None on success or 1 on error
         """
@@ -94,7 +94,7 @@ class K30Sensor(AbstractSensor):
 
         lock = LockFile(self.k30_lock_file)
         try:
-            # Acquire lock on K30 to ensure more than one read isn't
+            # Acquire lock on MHZ19 to ensure more than one read isn't
             # being attempted at once.
             while not lock.i_am_locking():
                 try:  # wait 60 seconds before breaking lock

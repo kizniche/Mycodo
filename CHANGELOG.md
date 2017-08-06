@@ -10,10 +10,12 @@ Some graphs will need to be reconfigured after upgrading to 5.1.0. This is due t
  - Add "Max Amps" as a general configuration option
  - Improve error reporting for devices and sensors
  - Add ability to power-cycle the DHT11 sensor if 3 consecutive measurements cannot be retrieved (uses power relay option) ([#273](https://github.com/kizniche/mycodo/issues/273))
+ - Add MH-Z19 CO2 sensor
 
 ### Bugfixes
 
  - Upgrade to InfluxDB 1.3.1 ([#8500](https://github.com/influxdata/influxdb/issues/8500) - fixes InfluxDB going unresponsive)
+ - Fix K30 sensor module
 
 ## 5.0.49 (2017-07-13)
 

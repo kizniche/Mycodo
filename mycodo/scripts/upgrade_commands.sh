@@ -100,7 +100,7 @@ case "${1:-''}" in
         sleep 10
 
         printf "\n#### Creating Mycodo database if it doesn't exist\n"
-        wget --quiet --no-check-certificate -p http://127.0.0.1 -O /dev/null
+        wget --quiet --no-check-certificate -p http://localhost -O /dev/null
     ;;
     'setup-virtualenv')
         printf "#### Checking if virtualenv\n"

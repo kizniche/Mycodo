@@ -56,6 +56,7 @@ from sensors.dht22 import DHT22Sensor
 from sensors.ds18b20 import DS18B20Sensor
 from sensors.htu21d import HTU21DSensor
 from sensors.k30 import K30Sensor
+from sensors.mh_z19 import MHZ19Sensor
 from sensors.raspi import RaspberryPiCPUTemp
 from sensors.raspi_cpuload import RaspberryPiCPULoad
 from sensors.raspi_freespace import RaspberryPiFreeSpace
@@ -304,8 +305,12 @@ class SensorController(threading.Thread):
                                               power=self.power_relay_id)
         elif self.device == 'HTU21D':
             self.measure_sensor = HTU21DSensor(self.i2c_bus)
-        elif self.device == 'K30':
-            self.measure_sensor = K30Sensor(self.device_loc)
+        elif self.device == 'K30_UART':
+            self.measure_sensor = K30Sensor(self.device_loc,
+                                            baud_rate=self.baud_rate)
+        elif self.device == 'MH_Z19_UART':
+            self.measure_sensor = MHZ19Sensor(self.device_loc,
+                                              baud_rate=self.baud_rate)
         elif self.device == 'SHT1x_7x':
             self.measure_sensor = SHT1x7xSensor(int(self.location),
                                                 self.sht_clock_pin,
