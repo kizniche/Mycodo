@@ -89,6 +89,7 @@ Table of Contents
 [CO2 Sensors](#co2-sensors)
 
    - [K-30](#k-30)
+   - [MH-Z19](#mh-z19)
 
 [Moisture Sensors](#moisture-sensors)
 
@@ -938,7 +939,11 @@ The 1-wire interface should be configured with [these instructions](https://lear
 
 > [K30](#k-30): Carbon dioxide (CO<sub>2</sub>) in ppmv [link](http://www.co2meter.com/products/k-30-co2-sensor-module)
 
-[This documentation](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip) provides specific installation procedures for configuring UART for the K30 with the Raspberry Pi version 1 or 2. Once the K30 has been configured with this documentation, it can be tested whether the sensor is able to be read, by executing ```~/Mycodo/mycodo/tests/manual_tests/test_uart_K30.py```
+> [MH-Z19](#mh-z19): Carbon dioxide (CO<sub>2</sub>) in ppmv [link](http://www.winsen-sensor.com/products/ndir-co2-sensor/mh-z19.html)
+
+[This documentation](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip) provides specific installation procedures for configuring UART with the Raspberry Pi version 1 or 2.
+
+The K30 may be tested by executing ```~/Mycodo/mycodo/tests/manual_tests/test_uart_K30.py```
 
 For Atlas Scientific sensors, [this guide](https://www.atlas-scientific.com/_files/code/pi_sample_code.pdf) may be used, as well as the above K-30 guide, to set up UART on the Raspberry Pi 1 and 2. However, for Pi 3s, use the procedure below. 
 
@@ -1148,7 +1153,7 @@ Wiring instructions for the Raspberry Pi can be found [here](https://www.co2mete
 
 #### Specifications
 
- - 0 – 10,000 ppm (0-5,000 ppm within specifications)
+ - 0 – 10,000 ppmv (0 - 5,000 ppmv within specifications)
  - Repeatability: &plusmn;20 ppm &plusmn;1% of measured value within specifications
  - Accuracy: &plusmn;30 ppm &plusmn;3% of measured value within specifications
  - Non-dispersive infrared (NDIR) technology
@@ -1156,6 +1161,17 @@ Wiring instructions for the Raspberry Pi can be found [here](https://www.co2mete
  - Self-diagnostics: complete function check of the sensor module
  - Warm-up time: \< 1 min. (@ full specs \< 15 min)
  - 0.5 Hz sampling rate (once every 2 seconds)
+
+### MH-Z19
+
+#### Specifications
+
+ - 0 – 5,000 ppmv
+ - Accuracy: &plusmn;50 ppm &plusmn;5% of measured value within specifications
+ - Non-dispersive infrared (NDIR) technology
+ - Sensor life expectancy: \> 5 years
+ - Warm-up time: 3 min.
+ - 0.2 Hz sampling rate (once every 5 seconds)
 
 Moisture Sensors
 ----------------

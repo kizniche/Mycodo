@@ -23,6 +23,7 @@ Mycodo has been used for cultivating mushrooms and plants, culturing microorgani
 
 - [What is PID Control?](#what-is-pid-control)
 - [Features](#features)
+- [Supported Sensors](#supported-sensors)
 - [Install](#install)
   - [Install Notes](#install-notes)
   - [Web Server Security](#web-server-security)
@@ -73,6 +74,10 @@ The top graph of the above screenshot visualizes the regulation of temperature i
 * Camera support - Raspberry Pi Camera and USB cameras, to stream live video (only Pi cam), capture still images, and create time-lapses.
 * Automated system upgrade - When a new version is released on github, an upgrade can be initiated from the web interface.
 * Languages: English, [Español (Spanish)](#espa%C3%B1ol-spanish) (partial: [Français (French)](#fran%C3%A7ais-french), [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean))
+
+## Supported Sensors
+
+All supported sensors can be found under [Sensor Interfaces](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#sensor-interfaces)
 
 ## Install
 
