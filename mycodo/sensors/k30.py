@@ -2,9 +2,10 @@
 
 from lockfile import LockFile
 import logging
+import os
 import serial
+import stat
 import time
-import RPi.GPIO as GPIO
 from .base_sensor import AbstractSensor
 
 
@@ -25,17 +26,12 @@ class K30Sensor(AbstractSensor):
                 self.ser = serial.Serial(self.serial_device, timeout=1)
                 self.k30_lock_file = "/var/lock/sen-k30-{}".format(device_loc)
             except serial.SerialException:
-                logger.exception('Opening serial')
+                self.logger.exception('Opening serial')
         else:
             self.logger.error(
                 'Could not open "/dev/{dev}".'
                 'Check the device location is correct.'.format(
                     dev=self.serial_device))
-
-        # if GPIO.RPI_INFO['P1_REVISION'] == 3:
-        #     self.serial_device = "/dev/ttyS0"
-        # else:
-        #     self.serial_device = "/dev/ttyAMA0"
 
     def __repr__(self):
         """  Representation of object """
@@ -72,7 +68,7 @@ class K30Sensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the K30's CO2 concentration in ppmv via UART"""
-        _co2 = None
+        self._co2 = None
         self.ser.flushInput()
         time.sleep(1)
         self.ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
@@ -123,7 +119,7 @@ class K30Sensor(AbstractSensor):
             return 1
 
     @staticmethod
-    def is_device(path)
+    def is_device(path):
         try:
             if stat.S_ISBLK(os.stat("/dev/{dev}".format(dev=path)).st_mode):
                 return path
