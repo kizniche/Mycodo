@@ -4,18 +4,16 @@ import logging
 import os
 import subprocess
 import flask_login
-from flask import (
-    Blueprint,
-    redirect,
-    render_template,
-    flash,
-    request,
-    url_for
-)
+from flask import Blueprint
+from flask import flash
+from flask import make_response
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import url_for
 from flask_babel import gettext
 from pkg_resources import parse_version
 
-# Functions
 from mycodo import flaskforms
 from mycodo import flaskutils
 from mycodo.mycodo_flask.static_routes import inject_mycodo_version
@@ -23,16 +21,14 @@ from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.system_pi import internet
 from mycodo.utils.github_release_info import github_releases
 
-# Config
-from mycodo.config import (
-    BACKUP_LOG_FILE,
-    BACKUP_PATH,
-    INSTALL_DIRECTORY,
-    MYCODO_VERSION,
-    RESTORE_LOG_FILE,
-    STATS_CSV,
-    UPGRADE_LOG_FILE
-)
+from mycodo.config import BACKUP_LOG_FILE
+from mycodo.config import BACKUP_PATH
+from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import MYCODO_VERSION
+from mycodo.config import RESTORE_LOG_FILE
+from mycodo.config import STATS_CSV
+from mycodo.config import UPGRADE_INIT_FILE
+from mycodo.config import UPGRADE_LOG_FILE
 
 logger = logging.getLogger('mycodo.mycodo_flask.admin')
 
@@ -126,6 +122,25 @@ def admin_statistics():
                            statistics=statistics)
 
 
+@blueprint.route('/admin/upgrade_status', methods=('GET', 'POST'))
+@flask_login.login_required
+def admin_upgrade_status():
+    """ Return the last 30 lines of the upgrade log """
+    if os.path.isfile(UPGRADE_LOG_FILE):
+        command = 'tail -n 30 {log}'.format(log=UPGRADE_LOG_FILE)
+        log = subprocess.Popen(
+            command, stdout=subprocess.PIPE, shell=True)
+        (log_output, _) = log.communicate()
+        log.wait()
+        log_output = unicode(log_output, 'utf-8')
+    else:
+        log_output = unicode('Upgrade log not found. If an upgrade was just '
+                             'initialized, please wait...', 'utf-8')
+    response = make_response(log_output)
+    response.headers["content-type"] = "text/plain"
+    return response
+
+
 @blueprint.route('/admin/upgrade', methods=('GET', 'POST'))
 @flask_login.login_required
 def admin_upgrade():
@@ -143,21 +158,17 @@ def admin_upgrade():
     # Read from the upgrade status file created by the upgrade script
     # to indicate if the upgrade is running.
     try:
-        with open(INSTALL_DIRECTORY + '/.upgrade') as f:
+        with open(UPGRADE_INIT_FILE) as f:
             upgrade = int(f.read(1))
     except IOError:
         try:
-            with open(INSTALL_DIRECTORY + '/.upgrade', 'w') as f:
+            with open(UPGRADE_INIT_FILE, 'w') as f:
                 f.write('0')
         finally:
             upgrade = 0
 
     if upgrade:
-        if upgrade == 1:
-            flash(gettext(u"An upgrade is currently in progress. Please wait "
-                          u"for it to finish"),
-                  "error")
-        elif upgrade == 2:
+        if upgrade == 2:
             flash(gettext(u"There was an error encountered during the upgrade "
                           u"process. Check the upgrade log for details."),
                   "error")

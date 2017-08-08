@@ -232,6 +232,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 # File paths/logging
 USAGE_REPORTS_PATH = os.path.join(INSTALL_DIRECTORY, 'relay_usage_reports')
+UPGRADE_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.upgrade')
 BACKUP_PATH = '/var/Mycodo-backups'  # Where Mycodo backups are stored
 LOG_PATH = '/var/log/mycodo'  # Where generated logs are stored
 LOGIN_LOG_FILE = os.path.join(LOG_PATH, 'login.log')

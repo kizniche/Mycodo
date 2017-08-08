@@ -2,6 +2,39 @@
 {% set active_page = "upgrade" %}
 {% block title %} - Upgrade{% endblock %}
 
+{% block head %}
+<script>
+  var prev_string = '';
+  function check_upgrade_status() {
+    var url = '/admin/upgrade_status';
+    $.ajax(url, {
+      success: function(new_string, responseText, jqXHR) {
+        if (jqXHR.status !== 204) {
+          if (new_string !== prev_string) {
+            prev_string = new_string;
+            document.getElementById("upgrade_status").innerHTML = new_string;
+            var objDiv = document.getElementById("upgrade_status");
+            objDiv.scrollTop = objDiv.scrollHeight;
+          }
+        }
+        else {
+          document.getElementById("upgrade_status").innerHTML = "Attempting to read the mycodo upgrade log. Please wait...";
+        }
+      },
+      cache: false
+    });
+  }
+
+  {% if upgrade == 1 %}
+  check_upgrade_status();
+  setInterval(function() {
+      check_upgrade_status();
+    }, 10000
+  );
+  {% endif %}
+</script>
+{% endblock %}
+
 {% block body %}
   <!-- Route: /admin/upgrade -->
   <div class="container">
@@ -21,9 +54,11 @@ sudo /bin/bash ~/upgrade_mycodo_5.sh</pre>
       {% if upgrade == 1 %}
         <div style="padding: 0.5em 0">
           <p>{{_('Mycodo is currently in the process of an upgrade.')}}</p>
-          <p>{{_('An upgrade often takes several minutes, and in some cases longer, to complete. Give the process ample time to run before doing anything. When the upgrade has successfully finished, the daemon status indicator at the top left will change from red to green. You can monitor the upgrade progress by going to Configure -> Mycodo Logs -> Upgrade Log or by viewing /var/log/mycodo/mycodoupgrade.log.')}}
           <p>{{_('If an upgrade is not currently in progress, you may delete the ~/Mycodo/.upgrade file to be able to reinitiate the upgrade process.')}}</p>
+          <p>{{_('An upgrade often takes several minutes, and in some cases longer, to complete. Give the process ample time to run before doing anything. When the upgrade has successfully finished, the daemon status indicator at the top left will change from red to green. You can monitor the upgrade progress with the life log view, below, by navigating to Configure -> Mycodo Logs -> Upgrade Log, or by opening /var/log/mycodo/mycodoupgrade.log.')}}</p>
+          <p>{{_('Below are the last 30 lines of the upgrade log, updated every 5 seconds. If an error occurs, it is advisable to inspect the entire log in order to diagnose the issue.')}}</p>
         </div>
+        <pre style="overflow:auto;height:400px" id="upgrade_status"></pre>
       {% elif upgrade == 2 %}
         <div style="padding: 0.5em 0">
           <p>{{_('There was an error that occurred during the upgrade.')}}</p>
