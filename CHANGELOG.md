@@ -1,6 +1,6 @@
-## 5.1.0 (Unreleased)
+## 5.1.0 (2017-08-07)
 
-Some graphs will need to be reconfigured after upgrading to 5.1.0. This is due to adding PWM as an output and PID option, necessitating refactoring certain portions of code related to graph display.
+Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This is due to adding PWM as an output and PID option, necessitating refactoring certain portions of code related to graph display.
 
 ### Features
 
