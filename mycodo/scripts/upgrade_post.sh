@@ -1,9 +1,6 @@
 #!/bin/bash
 #
-#  upgrade_post.sh - Extra commands to execute for the upgrade process.
-#                    Used as a way to provide additional commands to
-#                    execute that wouldn't be possible from the running
-#                    upgrade script.
+#  upgrade_post.sh - Commands to execute after a Mycodo upgrade
 #
 
 if [ "$EUID" -ne 0 ]; then
@@ -12,6 +9,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
+INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
 cd ${INSTALL_DIRECTORY}
 
 ln -sf ${INSTALL_DIRECTORY} /var/www/mycodo
@@ -19,33 +17,36 @@ ln -sf ${INSTALL_DIRECTORY} /var/www/mycodo
 printf "\n#### Removing statistics file\n"
 rm ${INSTALL_DIRECTORY}/databases/statistics.csv
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-swap-size
+${INSTALL_CMD} update-swap-size
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
+${INSTALL_CMD} setup-virtualenv
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-gpiod
+${INSTALL_CMD} update-gpiod
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-wiringpi
+${INSTALL_CMD} update-wiringpi
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-apache2
+${INSTALL_CMD} update-apache2
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-packages
+${INSTALL_CMD} update-apt
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-pip-packages
+${INSTALL_CMD} update-packages
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-influxdb
+${INSTALL_CMD} update-pip
 
-# Not needed here since it is done in the flask app, but done again for good measure
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-alembic
+${INSTALL_CMD} update-pip-packages
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-mycodo-startup-script
+${INSTALL_CMD} update-influxdb
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh compile-translations
+${INSTALL_CMD} update-alembic
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh update-cron
+${INSTALL_CMD} update-mycodo-startup-script
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh initialize
+${INSTALL_CMD} compile-translations
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh restart-web-ui
+${INSTALL_CMD} update-cron
 
-/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh restart-daemon
+${INSTALL_CMD} initialize
+
+${INSTALL_CMD} restart-web-ui
+
+${INSTALL_CMD} restart-daemon

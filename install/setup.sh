@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# Mycodo install script
+#  setup.sh - Mycodo install script
 #
-# Usage: sudo /bin/bash ~/Mycodo/install/setup.sh
+#  Usage: sudo /bin/bash ~/Mycodo/install/setup.sh
 #
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P )
@@ -43,13 +43,13 @@ printf "### Mycodo installation beginning at $NOW\n"
 
 ${INSTALL_CMD} update-swap-size
 
-printf "\n#### Uninstalling apt version of pip (if installed)\n"
-apt-get update
-apt-get purge -y python-pip
+${INSTALL_CMD} update-apt
+
+${INSTALL_CMD} uninstall-apt-pip
 
 ${INSTALL_CMD} update-packages
 
-pip install --upgrade pip
+${INSTALL_CMD} update-pip
 
 ${INSTALL_CMD} setup-virtualenv
 

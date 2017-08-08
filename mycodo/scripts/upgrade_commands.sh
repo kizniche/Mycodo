@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  upgrade_commands.sh -
+#  upgrade_commands.sh - Mycodo commands
 #
 
 if [ "$EUID" -ne 0 ] ; then
@@ -97,10 +97,19 @@ case "${1:-''}" in
     'restart-web-ui')
         printf "\n#### Restarting the Mycodo web server\n"
         /etc/init.d/apache2 restart
-        sleep 10
 
         printf "\n#### Creating Mycodo database if it doesn't exist\n"
-        wget --quiet --no-check-certificate -p http://localhost -O /dev/null
+        # Attempt to connect to localhost 5 times, sleeping 60 seconds every fail
+        for _ in {1..5}; do
+            wget --no-check-certificate -p http://localhost/ -O /dev/null &&
+            printf "#### Successfully connected to http://localhost\n" &&
+            break ||
+            # Else wait 60 seconds if localhost is not accepting connections
+            # Everything below will begin executing if an error occurs before the break
+            printf "#### Could not connect to http://localhost. Waiting 60 seconds then trying again...\n" &&
+            sleep 60 &&
+            printf "#### Trying again...\n"
+        done
     ;;
     'setup-virtualenv')
         printf "#### Checking if virtualenv\n"
@@ -110,6 +119,10 @@ case "${1:-''}" in
         else
             printf "#### Virtualenv already exists, skipping creation\n"
         fi
+    ;;
+    'uninstall-apt-pip')
+        printf "\n#### Uninstalling apt version of pip (if installed)\n"
+        apt-get purge -y python-pip
     ;;
     'update-alembic')
         printf "\n#### Upgrading database with alembic\n"
@@ -121,6 +134,10 @@ case "${1:-''}" in
         printf "\n#### Installing and configuring apache2 web server\n"
         a2enmod wsgi ssl
         ln -sf ${INSTALL_DIRECTORY}/Mycodo/install/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
+    ;;
+    'update-apt')
+        printf "\n#### Updating apt repositories\n"
+        apt-get update
     ;;
     'update-cron')
         printf "\n#### Updating crontab entry\n"
@@ -189,6 +206,10 @@ case "${1:-''}" in
         apt-get update -y
         apt-get install -y ${APT_PKGS}
         easy_install pip
+        pip install --upgrade pip
+    ;;
+    'update-pip')
+        printf "\n#### Updating pip\n"
         pip install --upgrade pip
     ;;
     'update-pip-packages')
