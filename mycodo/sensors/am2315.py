@@ -32,6 +32,8 @@ class AM2315Sensor(AbstractSensor):
         self._temperature = 0.0
         self.am = None
 
+        self.exceptions = []
+
         self.start_sensor()
 
     def __repr__(self):
@@ -156,9 +158,15 @@ class AM2315Sensor(AbstractSensor):
 
             self.logger.debug("Could not acquire a measurement")
         except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
+            if e in self.exceptions:
+                self.logger.error(
+                    "{cls} raised an exception when taking a reading: "
+                    "{err}".format(cls=type(self).__name__, err=e))
+            else:
+                self.exceptions
+                self.logger.exception(
+                    "{cls} raised an exception when taking a reading: "
+                    "{err}".format(cls=type(self).__name__, err=e))
         return 1
 
     def start_sensor(self):

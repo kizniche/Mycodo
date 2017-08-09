@@ -1,8 +1,12 @@
-## 5.1.1 (Unreleased)
+## 5.1.1 (2017-08-09)
 
 ### Features
 
  - Add live display of upgrade log during upgrade
+ 
+### Bugfixes
+
+ - Fix setup bug preventing database creation ([#277](https://github.com/kizniche/mycodo/issues/277), [#278](https://github.com/kizniche/mycodo/issues/278), [#283](https://github.com/kizniche/mycodo/issues/283))
 
 ## 5.1.0 (2017-08-07)
 

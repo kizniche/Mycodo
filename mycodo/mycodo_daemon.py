@@ -274,7 +274,7 @@ def test_rpyc(logger_rpyc):
             try:
                 c = rpyc.connect('localhost', 18813)
                 time.sleep(0.1)
-                logger_rpyc.error(
+                logger_rpyc.debug(
                     "TESTING: (30 min timer) rpyc communication thread: "
                     "closed={stat}".format(stat=c.closed))
             except Exception as err:

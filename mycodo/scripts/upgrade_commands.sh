@@ -85,6 +85,11 @@ case "${1:-''}" in
             touch /var/log/mycodo/login.log
         fi
 
+        # Create mycodo database if it doesn't exist
+        if [ ! -e ${INSTALL_DIRECTORY}/Mycodo/databases/mycodo.db ]; then
+            touch ${INSTALL_DIRECTORY}/Mycodo/databases/mycodo.db
+        fi
+
         /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh update-permissions
     ;;
     'restart-daemon')
