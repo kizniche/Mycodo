@@ -1,3 +1,9 @@
+## 5.1.2 (2017-08-09)
+
+### Bugfixes
+
+ - Fix new timers not working ([#284](https://github.com/kizniche/mycodo/issues/284))
+
 ## 5.1.1 (2017-08-09)
 
 ### Features

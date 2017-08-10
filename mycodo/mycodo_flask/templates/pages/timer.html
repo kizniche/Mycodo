@@ -39,9 +39,9 @@
                 </div>
               </div>
               <div class="form-group">
-                {{form_timer.timer_type.label(class_='control-label')}}
+                {{form_timer.timer_type_output.label(class_='control-label')}}
                 <div>
-                  <select class="form-control" id="timer_type" name="timer_type">
+                  <select class="form-control" id="timer_type_output" name="timer_type_output">
                     <option value="">Select One</option>
                     <option value="relay">Relay (ON/OFF)</option>
                     <option value="pwm">PWM (Duty Cycle)</option>
@@ -235,7 +235,9 @@
             </select>
           </div>
         </div>
+
         {% if each_timer.timer_type == 'time' %}
+
         <input type="hidden" name="timer_type" value="time">
         <div class="col-xs-6 col-sm-2">
           {{form_timer.state.label(class_='control-label')}}
@@ -263,7 +265,9 @@
             {{form_timer.time_on_duration(class_='form-control', value=each_timer.duration_on, **{'size':'4'})}}
           </div>
         </div>
+
         {% elif each_timer.timer_type == 'timespan' %}
+
         <input type="hidden" name="timer_type" value="time">
         <div class="col-xs-6 col-sm-2">
           {{form_timer.state.label(class_='control-label')}}
@@ -302,7 +306,9 @@
             </div>
           </div>
         </div>
+
         {% elif each_timer.timer_type == 'duration' %}
+
         <input type="hidden" name="timer_type" value="duration">
         <div class="col-xs-3 col-sm-3 col-md-2 col-lg-1">
           {{form_timer.duration_on.label(class_='control-label')}}
@@ -329,19 +335,19 @@
   {%- endif -%}
 
   <script>
-    $('#timer_type').on('change', function () {
-        if (this.value === 'relay') {
-            document.getElementById("timer_pwm").style.display = "none";
-            document.getElementById("timer_relay").style.display = "block";
-        }
-        else if (this.value === 'pwm') {
-            document.getElementById("timer_relay").style.display = "none";
-            document.getElementById("timer_pwm").style.display = "block";
-        }
-        else if (this.value === '') {
-            document.getElementById("timer_relay").style.display = "none";
-            document.getElementById("timer_pwm").style.display = "none";
-        }
+    $('#timer_type_output').on('change', function () {
+      if (this.value === 'relay') {
+        document.getElementById("timer_pwm").style.display = "none";
+        document.getElementById("timer_relay").style.display = "block";
+      }
+      else if (this.value === 'pwm') {
+        document.getElementById("timer_relay").style.display = "none";
+        document.getElementById("timer_pwm").style.display = "block";
+      }
+      else if (this.value === '') {
+        document.getElementById("timer_relay").style.display = "none";
+        document.getElementById("timer_pwm").style.display = "none";
+      }
     });
   </script>
   <script type="text/javascript" src="/static/js/bootstrap-clockpicker.min.js"></script>

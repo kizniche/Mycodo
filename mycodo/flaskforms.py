@@ -1010,7 +1010,7 @@ class Timer(FlaskForm):
         lazy_gettext(u'Name'),
         validators=[DataRequired()]
     )
-    timer_type = SelectField(
+    timer_type_output = SelectField(
         lazy_gettext(u'Timer Type'),
         choices=[
             ('relay', lazy_gettext(u'Relay (ON/OFF)')),
