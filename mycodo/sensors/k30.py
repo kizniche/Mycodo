@@ -15,7 +15,7 @@ class K30Sensor(AbstractSensor):
     def __init__(self, device_loc, baud_rate=9600):
         super(K30Sensor, self).__init__()
         self.logger = logging.getLogger(
-            "mycodo.sensors.k30.{dev}".format(dev=device_loc))
+            "mycodo.sensors.k30.{dev}".format(dev=device_loc.replace('/', '')))
         self.k30_lock_file = None
         self._co2 = 0
 

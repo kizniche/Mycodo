@@ -15,7 +15,7 @@ class MHZ19Sensor(AbstractSensor):
     def __init__(self, device_loc, baud_rate=9600):
         super(MHZ19Sensor, self).__init__()
         self.logger = logging.getLogger(
-            "mycodo.sensors.mhz19.{dev}".format(dev=device_loc))
+            "mycodo.sensors.mhz19.{dev}".format(dev=device_loc.replace('/', '')))
         self.k30_lock_file = None
         self._co2 = 0
 
@@ -26,7 +26,7 @@ class MHZ19Sensor(AbstractSensor):
                 self.ser = serial.Serial(self.serial_device,
                                          baudrate=baud_rate,
                                          timeout=1)
-                self.k30_lock_file = "/var/lock/sen-mhz19-{}".format(device_loc)
+                self.k30_lock_file = "/var/lock/sen-mhz19-{}".format(device_loc.replace('/', ''))
             except serial.SerialException:
                 self.logger.exception('Opening serial')
         else:
