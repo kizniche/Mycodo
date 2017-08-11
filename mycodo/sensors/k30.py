@@ -26,7 +26,7 @@ class K30Sensor(AbstractSensor):
                 self.ser = serial.Serial(self.serial_device,
                                          baudrate=baud_rate,
                                          timeout=1)
-                self.k30_lock_file = "/var/lock/sen-k30-{}".format(device_loc)
+                self.k30_lock_file = "/var/lock/sen-k30-{}".format(device_loc.replace('/', ''))
             except serial.SerialException:
                 self.logger.exception('Opening serial')
         else:

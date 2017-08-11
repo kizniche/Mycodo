@@ -39,8 +39,7 @@ def dewpoint(t, rh):
 
 def is_device(path):
     try:
-        if stat.S_ISBLK(os.stat("{dev}".format(dev=path)).st_mode):
-            return path
-    except Exception:
-        pass
-    return None
+        os.stat("{dev}".format(dev=path))
+    except OSError:
+        return None
+    return path

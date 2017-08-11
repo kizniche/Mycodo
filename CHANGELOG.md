@@ -1,8 +1,12 @@
-## 5.1.4 (Unreleased)
+## 5.1.4 (2017-08-11)
 
 ### Features
 
  - Update InfluxDB (v1.3.3) and pip packages
+
+### Bugfixes
+
+ - Fix K30 sensor module ([#279](https://github.com/kizniche/mycodo/issues/279))
 
 ## 5.1.3 (2017-08-10)
 
