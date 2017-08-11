@@ -6,7 +6,7 @@ import os
 import collections
 from datetime import timedelta
 
-MYCODO_VERSION = '5.1.5'
+MYCODO_VERSION = '5.1.6'
 ALEMBIC_VERSION = 'c7b4a120a7bb'
 
 LANGUAGES = {
@@ -40,6 +40,8 @@ MEASUREMENTS = {
     'EDGE': ['edge'],
     'HTU21D': ['dewpoint', 'humidity', 'temperature'],
     'K30_UART': ['co2'],
+    'MH_Z16_I2C': ['co2'],
+    'MH_Z16_UART': ['co2'],
     'MH_Z19_UART': ['co2'],
     'MCP342x': ['voltage'],
     'RPi': ['temperature'],
@@ -108,6 +110,8 @@ SENSORS = [
     ('MCP342x', 'Analog-to-Digital Converter: MCP342x'),
     ('EDGE', 'Edge Detection: Simple Switch'),
     ('K30_UART', 'CO2: K30 (UART)'),
+    ('MH_Z16_I2C', 'CO2: MH-Z16 (I2C)'),
+    ('MH_Z16_UART', 'CO2: MH-Z16 (UART)'),
     ('MH_Z19_UART', 'CO2: MH-Z19 (UART)'),
     ('BH1750', 'Luminance: BH1750'),
     ('TSL2561', 'Luminance: TSL2561'),

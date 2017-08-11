@@ -1931,7 +1931,13 @@ def sensor_add(form_add_sensor):
                 new_sensor.location = '0x20'
 
             # CO2
-            elif form_add_sensor.sensor.data in ['K30_UART', 'MH_Z19_UART']:
+            elif form_add_sensor.sensor.data == 'MH_Z16_I2C':
+                new_sensor.measurements = 'co2'
+                new_sensor.location = '0x63'
+                new_sensor.interface = 'I2C'
+            elif form_add_sensor.sensor.data in ['K30_UART',
+                                                 'MH_Z16_UART',
+                                                 'MH_Z19_UART']:
                 new_sensor.measurements = 'co2'
                 new_sensor.location = 'Tx/Rx'
                 new_sensor.interface = 'UART'

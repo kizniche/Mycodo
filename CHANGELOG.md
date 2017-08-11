@@ -1,3 +1,9 @@
+## 5.1.6 (2017-08-11)
+
+### Features
+
+ - Add MH-Z16 sensor module ([#281](https://github.com/kizniche/mycodo/issues/281))
+
 ## 5.1.5 (2017-08-11)
 
 ### Bugfixes
