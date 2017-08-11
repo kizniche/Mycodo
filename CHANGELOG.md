@@ -1,3 +1,9 @@
+## 5.1.3 (2017-08-10)
+
+### Bugfixes
+
+ - Fix install issue in setup.sh install script (catch 1-wire error if not enabled)
+
 ## 5.1.2 (2017-08-09)
 
 ### Bugfixes

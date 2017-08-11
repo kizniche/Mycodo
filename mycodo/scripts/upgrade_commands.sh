@@ -117,8 +117,8 @@ case "${1:-''}" in
         done
     ;;
     'setup-virtualenv')
-        printf "#### Checking if virtualenv\n"
         if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env ]; then
+            printf "\n#### Creating virtualenv\n"
             pip install virtualenv --upgrade
             virtualenv --system-site-packages ${INSTALL_DIRECTORY}/Mycodo/env
         else
@@ -169,11 +169,7 @@ case "${1:-''}" in
         CORRECT_VERSION="1.3.1-1"
         CURRENT_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
         if [ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]; then
-            if [ ! -z "${CURRENT_VERSION}" ];
-            then
-                echo "#### Incorrect version of InfluxDB installed: v${CURRENT_VERSION}."
-            fi
-            echo "#### Installing InfluxDB v${CORRECT_VERSION}..."
+            echo "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed. Installing v${CORRECT_VERSION}..."
             wget --quiet ${INSTALL_ADDRESS}${INSTALL_FILE}
             dpkg -i ${INSTALL_FILE}
             rm -rf ${INSTALL_FILE}
@@ -184,19 +180,19 @@ case "${1:-''}" in
     ;;
     'update-influxdb-db-user')
         printf "\n#### Creating InfluxDB database and user\n"
-        # Attempt to connect to influxdb 5 times, sleeping 60 seconds every fail
-        for _ in {1..5}; do
+        # Attempt to connect to influxdb 3 times, sleeping 60 seconds every fail
+        for _ in {1..3}; do
             # Check if influxdb has successfully started and be connected to
+            printf "#### Attempting to connect...\n" &&
             curl -sL -I localhost:8086/ping > /dev/null &&
             influx -execute "CREATE DATABASE mycodo_db" &&
             influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'" &&
             printf "#### Influxdb database and user successfully created\n" &&
             break ||
-            # Else wait 60 seconds if the influxd port is not accepting connections
+            # Else wait 30 seconds if the influxd port is not accepting connections
             # Everything below will begin executing if an error occurs before the break
-            printf "#### Could not connect to Influxdb. Waiting 60 seconds then trying again...\n" &&
-            sleep 60 &&
-            printf "#### Trying again...\n"
+            printf "#### Could not connect to Influxdb. Waiting 30 seconds then trying again...\n" &&
+            sleep 30
         done
     ;;
     'update-mycodo-startup-script')
@@ -210,7 +206,6 @@ case "${1:-''}" in
         printf "\n#### Installing prerequisite apt packages and update pip\n"
         apt-get update -y
         apt-get install -y ${APT_PKGS}
-        /etc/init.d/apache2 stop
         easy_install pip
         pip install --upgrade pip
     ;;
