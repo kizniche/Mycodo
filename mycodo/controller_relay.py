@@ -127,7 +127,8 @@ class RelayController(threading.Thread):
                         # process that could slow the loop
                         turn_relay_off = threading.Thread(
                             target=self.relay_on_off,
-                            args=(relay_id, 'off',))
+                            args=(relay_id,
+                                  'off',))
                         turn_relay_off.start()
 
                         if self.relay_last_duration[relay_id] > 0:

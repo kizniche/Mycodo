@@ -89,6 +89,7 @@ if [[ -z ${IP} ]]; then
   IP="your.IP.here"
 fi
 
+date
 echo >&2 "
 ***************************************************
 ** Mycodo successfully installed without errors! **

@@ -41,6 +41,6 @@ def is_device(path):
     try:
         if stat.S_ISBLK(os.stat("{dev}".format(dev=path)).st_mode):
             return path
-    except:
+    except Exception:
         pass
     return None

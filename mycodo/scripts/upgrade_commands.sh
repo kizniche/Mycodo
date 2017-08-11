@@ -106,7 +106,7 @@ case "${1:-''}" in
         printf "\n#### Creating Mycodo database if it doesn't exist\n"
         # Attempt to connect to localhost 5 times, sleeping 60 seconds every fail
         for _ in {1..5}; do
-            wget --no-check-certificate -p http://localhost/ -O /dev/null &&
+            wget --quiet --no-check-certificate -p http://localhost/ -O /dev/null &&
             printf "#### Successfully connected to http://localhost\n" &&
             break ||
             # Else wait 60 seconds if localhost is not accepting connections
@@ -210,6 +210,7 @@ case "${1:-''}" in
         printf "\n#### Installing prerequisite apt packages and update pip\n"
         apt-get update -y
         apt-get install -y ${APT_PKGS}
+        /etc/init.d/apache2 stop
         easy_install pip
         pip install --upgrade pip
     ;;

@@ -105,6 +105,8 @@ class TimerController(threading.Thread):
                         if self.state == 'on' and self.duration_on:
                             message += " for {sec} seconds".format(
                                 sec=self.duration_on)
+                        else:
+                            self.duration_on = 0
                         self.logger.debug(message)
                         modulate_relay = threading.Thread(
                             target=self.control.relay_on_off,
