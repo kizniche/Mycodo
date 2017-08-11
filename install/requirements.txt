@@ -1,8 +1,8 @@
 testfixtures
 mock
-pytest == 3.0.3
+pytest == 3.2.1
 factory_boy == 2.8.1
-alembic
+alembic == 0.9.5
 argparse == 1.4.0
 bcrypt
 daemonize == 2.4.7
@@ -13,16 +13,16 @@ Flask_Login == 0.4.0
 Flask_SQLAlchemy == 2.2
 Flask_SSLify
 Flask_WTF == 0.14.2
-geocoder == 1.23.2
+geocoder == 1.25.0
 imutils == 0.4.3
-influxdb == 4.1.0
+influxdb == 4.1.1
 lockfile == 0.12.2
 pi_switch == 0.4.0
-pyserial == 3.3
+pyserial == 3.4
 python-dateutil
 RPi.GPIO
-rpyc == 3.4.3
-SQLAlchemy == 1.0.13
+rpyc == 3.4.4
+SQLAlchemy == 1.2.0b2
 WTForms == 2.1
 
 # Devices/sensors
@@ -30,7 +30,7 @@ WTForms == 2.1
 picamera == 1.13
 sht_sensor == 17.5.5
 tentacle_pi == 0.6.2
-w1thermsensor == 0.4.3
+w1thermsensor == 1.0.4
 Adafruit_ADS1x15
 Adafruit_BMP
 Adafruit_GPIO

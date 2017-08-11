@@ -127,7 +127,7 @@ def admin_statistics():
 def admin_upgrade_status():
     """ Return the last 30 lines of the upgrade log """
     if os.path.isfile(UPGRADE_LOG_FILE):
-        command = 'tail -n 30 {log}'.format(log=UPGRADE_LOG_FILE)
+        command = 'tail -n 40 {log}'.format(log=UPGRADE_LOG_FILE)
         log = subprocess.Popen(
             command, stdout=subprocess.PIPE, shell=True)
         (log_output, _) = log.communicate()

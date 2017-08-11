@@ -11,6 +11,7 @@ import sys
 import time
 from collections import OrderedDict
 from flask_babel import gettext
+from w1thermsensor import W1ThermSensor
 
 from flask import flash
 from flask import redirect
@@ -65,11 +66,6 @@ from config import PATH_CAMERAS
 from config import USAGE_REPORTS_PATH
 
 logger = logging.getLogger('mycodo.mycodo_flask.pages')
-
-try:
-    from w1thermsensor import W1ThermSensor
-except Exception:
-    logger.error("1-wire support doesn't appear to be enabled")
 
 blueprint = Blueprint('page_routes',
                       __name__,
