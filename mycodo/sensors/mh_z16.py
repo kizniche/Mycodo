@@ -1,5 +1,24 @@
 # coding=utf-8
 
+# I2C code created in part by:
+# Author: Tiequan Shao (info@sandboxelectronics.com)
+# License: CC BY-NC-SA 3.0
+#
+# UART Code created in part by:
+# Author: Zion Orent <zorent@ics.com>
+# Copyright (c) 2015 Intel Corporation.
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+
 from lockfile import LockFile
 import logging
 import serial
@@ -17,26 +36,22 @@ class MHZ16Sensor(AbstractSensor):
     def __init__(self, interface, device_loc=None, baud_rate=None,
                  i2c_address=None, i2c_bus=None):
         super(MHZ16Sensor, self).__init__()
+        self.k30_lock_file = None
+        self._co2 = 0
         self.interface = interface
+
         if self.interface == 'UART':
             self.logger = logging.getLogger(
                 "mycodo.sensors.mhz16.{dev}".format(dev=device_loc.replace('/', '')))
-        elif self.interface == 'I2C':
-            self.logger = logging.getLogger(
-                "mycodo.sensors.mhz16.{dev}".format(dev=i2c_address))
-
-        self.k30_lock_file = None
-        self._co2 = 0
-
-        if self.interface == 'UART':
             # Check if device is valid
             self.serial_device = is_device(device_loc)
             if self.serial_device:
                 try:
+                    self.k30_lock_file = "/var/lock/sen-mhz16-{}".format(device_loc.replace('/', ''))
+                    self.lock = LockFile(self.k30_lock_file)
                     self.ser = serial.Serial(self.serial_device,
                                              baudrate=baud_rate,
                                              timeout=1)
-                    self.k30_lock_file = "/var/lock/sen-mhz16-{}".format(device_loc.replace('/', ''))
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
             else:
@@ -46,6 +61,8 @@ class MHZ16Sensor(AbstractSensor):
                         dev=device_loc))
 
         elif self.interface == 'I2C':
+            self.logger = logging.getLogger(
+                "mycodo.sensors.mhz16.{dev}".format(dev=i2c_address))
             self.cmd_measure = [0xFF, 0x01, 0x9C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63]
             self.IOCONTROL = 0X0E << 3
             self.FCR = 0X02 << 3
@@ -114,7 +131,7 @@ class MHZ16Sensor(AbstractSensor):
             self.send(self.cmd_measure)
             try:
                 co2 = self.parse(self.receive())
-            except:
+            except Exception:
                 co2 = None
             return co2
 
@@ -126,19 +143,16 @@ class MHZ16Sensor(AbstractSensor):
 
         :returns: None on success or 1 on error
         """
-        if self.interface == 'UART':
-            lock = LockFile(self.k30_lock_file)
-
         try:
             if self.interface == 'UART':
                 if not self.serial_device:  # Don't measure if device isn't validated
                     return None
 
                 # Acquire lock on MHZ16 to ensure more than one read isn't
-                # being attempted at once.
-                while not lock.i_am_locking():
+                # being attempted at once on the same interface
+                while not self.lock.i_am_locking():
                     try:  # wait 60 seconds before breaking lock
-                        lock.acquire(timeout=60)
+                        self.lock.acquire(timeout=60)
                     except Exception as e:
                         self.logger.error(
                             "{cls} 60 second timeout, {lock} lock broken: "
@@ -146,28 +160,25 @@ class MHZ16Sensor(AbstractSensor):
                                 cls=type(self).__name__,
                                 lock=self.k30_lock_file,
                                 err=e))
-                        lock.break_lock()
-                        lock.acquire()
+                        self.lock.break_lock()
+                        self.lock.acquire()
                 self._co2 = self.get_measurement()
-                lock.release()
+                self.lock.release()
 
             elif self.interface == 'I2C':
-                for _ in range(2):
-                    self._co2 = self.get_measurement()
-                    if self._co2:
-                        return  # success - no errors
-                    time.sleep(1)
+                self._co2 = self.get_measurement()
 
             if self._co2 is None:
                 return 1
             return  # success - no errors
+
         except Exception as e:
             self.logger.error(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
             if self.interface == 'UART':
-                lock.release()
-            return 1
+                self.lock.release()
+        return 1
 
     def begin(self):
         try:
@@ -199,11 +210,11 @@ class MHZ16Sensor(AbstractSensor):
         return None
 
     def read_register(self, reg_addr):
-        time.sleep(0.001)
+        time.sleep(0.01)
         return self.i2c.read_byte_data(self.i2c_address, reg_addr)
 
     def write_register(self, reg_addr, val):
-        time.sleep(0.001)
+        time.sleep(0.01)
         self.i2c.write_byte_data(self.i2c_address, reg_addr, val)
 
     def send(self, command):
