@@ -167,6 +167,7 @@ LIST_DEVICES_I2C = [
     'BMP280',
     'CHIRP',
     'HTU21D',
+    'MH_Z16_I2C',
     'MCP342x',
     'SHT2x',
     'TMP006',

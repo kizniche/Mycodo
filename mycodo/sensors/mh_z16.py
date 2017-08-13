@@ -17,6 +17,7 @@ class MHZ16Sensor(AbstractSensor):
     def __init__(self, interface, device_loc=None, baud_rate=None,
                  i2c_address=None, i2c_bus=None):
         super(MHZ16Sensor, self).__init__()
+        self.interface = interface
         if self.interface == 'UART':
             self.logger = logging.getLogger(
                 "mycodo.sensors.mhz16.{dev}".format(dev=device_loc.replace('/', '')))
@@ -25,7 +26,6 @@ class MHZ16Sensor(AbstractSensor):
                 "mycodo.sensors.mhz16.{dev}".format(dev=i2c_address))
 
         self.k30_lock_file = None
-        self.interface = interface
         self._co2 = 0
 
         if self.interface == 'UART':
@@ -58,6 +58,7 @@ class MHZ16Sensor(AbstractSensor):
             self.RXLVL = 0X09 << 3
             self.i2c_address = i2c_address
             self.i2c = smbus.SMBus(i2c_bus)
+            self.begin()
 
     def __repr__(self):
         """  Representation of object """
@@ -109,22 +110,13 @@ class MHZ16Sensor(AbstractSensor):
                 return co2
 
         elif self.interface == 'I2C':
-            time.sleep(0.001)
-            try:
-                self.write_register(self.IOCONTROL, 0x08)
-            except:
-                pass
-
-            self.write_register(self.FCR, 0x07)
-            self.write_register(self.LCR, 0x83)
-            self.write_register(self.DLL, 0x60)
-            self.write_register(self.DLH, 0x00)
-            self.write_register(self.LCR, 0x03)
-
-            # Measure
             self.write_register(self.FCR, 0x07)
             self.send(self.cmd_measure)
-            return self.parse(self.receive())
+            try:
+                co2 = self.parse(self.receive())
+            except:
+                co2 = None
+            return co2
 
         return None
 
@@ -160,7 +152,11 @@ class MHZ16Sensor(AbstractSensor):
                 lock.release()
 
             elif self.interface == 'I2C':
-                self._co2 = self.get_measurement()
+                for _ in range(2):
+                    self._co2 = self.get_measurement()
+                    if self._co2:
+                        return  # success - no errors
+                    time.sleep(1)
 
             if self._co2 is None:
                 return 1
@@ -173,7 +169,20 @@ class MHZ16Sensor(AbstractSensor):
                 lock.release()
             return 1
 
-    def parse(self, response):
+    def begin(self):
+        try:
+            self.write_register(self.IOCONTROL, 0x08)
+        except IOError:
+            pass
+
+        self.write_register(self.FCR, 0x07)
+        self.write_register(self.LCR, 0x83)
+        self.write_register(self.DLL, 0x60)
+        self.write_register(self.DLH, 0x00)
+        self.write_register(self.LCR, 0x03)
+
+    @staticmethod
+    def parse(response):
         checksum = 0
 
         if len(response) < 9:
