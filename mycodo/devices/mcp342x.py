@@ -1,5 +1,4 @@
 # coding=utf-8
-
 import logging
 import smbus
 import time
@@ -17,21 +16,21 @@ class MCP342xRead(object):
         self.channel = channel
         self.gain = gain
         self.resolution = resolution
+        self.adc = MCP342x(self.bus,
+                           self.i2c_address,
+                           channel=self.channel,
+                           gain=self.gain,
+                           resolution=self.resolution)
 
     def read(self):
         """ Take a measurement """
         try:
-            time.sleep(1)
-            adc = MCP342x(self.bus,
-                          self.i2c_address,
-                          channel=self.channel,
-                          gain=self.gain,
-                          resolution=self.resolution)
-            self._voltage = adc.convert_and_read()
+            self._voltage = self.adc.convert_and_read()
         except Exception as e:
             logger.exception(
                 "{cls} raised exception during read(): "
                 "{err}".format(cls=type(self).__name__, err=e))
+
             return 1
 
     @property

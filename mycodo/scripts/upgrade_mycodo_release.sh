@@ -179,9 +179,9 @@ function error_found {
   printf "Initial steps to try to fix:\n"
   printf "1. Reboot\n"
   printf "2. If that doesn't fix the issue, run the following command:\n"
-  printf "sudo ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade\n"
+  printf "sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade\n"
   printf "3. If that command returns that you are running the latest version, run the following command:\n"
-  printf "sudo ~/Mycodo/mycodo/scripts/upgrade_post.sh\n\n"
+  printf "sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh\n\n"
   echo '2' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
   exit 1
 }

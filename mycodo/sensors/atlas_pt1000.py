@@ -61,6 +61,7 @@ class AtlasPT1000Sensor(AbstractSensor):
     def get_measurement(self):
         """ Gets the Atlas PT1000's temperature in Celsius """
         temp = None
+
         if self.interface == 'UART':
             if self.atlas_sensor_uart.setup:
                 lines = self.atlas_sensor_uart.query('R')
@@ -72,9 +73,8 @@ class AtlasPT1000Sensor(AbstractSensor):
                     temp = float(lines[0])
                     logger.debug('Value[0] is float: {val}'.format(val=temp))
                 else:
-                    temp = lines[0]
                     logger.error('Value[0] is not float or "check probe": '
-                                 '{val}'.format(val=temp))
+                                 '{val}'.format(val=lines[0]))
             else:
                 logger.error('UART device is not set up. '
                              'Check the log for errors.')

@@ -154,7 +154,7 @@ class PIDController(threading.Thread):
                     with session_scope(MYCODO_DB_PATH) as db_session:
                         mod_method = db_session.query(Method)
                         mod_method = mod_method.filter(Method.id == self.method_id).first()
-                        mod_method.time_start = datetime.datetime.now()
+                        mod_method.start_time = datetime.datetime.now()
                         self.method_start_time = mod_method.start_time
                         db_session.commit()
                 else:
@@ -553,14 +553,14 @@ class PIDController(threading.Thread):
                     else:
                         new_setpoint = setpoint_start-(setpoint_diff*percent_total)
 
-                    self.logger.debug("[Method] Start: {} End: {}".format(
-                        start_time, end_time))
-                    self.logger.debug("[Method] Start: {} End: {}".format(
-                        setpoint_start, setpoint_end))
-                    self.logger.debug("[Method] Total: {} Part total: {} ({}%)".format(
-                        total_seconds, part_seconds, percent_total))
-                    self.logger.debug("[Method] New Setpoint: {}".format(
-                        new_setpoint))
+                    self.logger.debug("[Method] Start: {start} End: {end}".format(
+                        start=start_time, end=end_time))
+                    self.logger.debug("[Method] Start: {start} End: {end}".format(
+                        start=setpoint_start, end=setpoint_end))
+                    self.logger.debug("[Method] Total: {tot} Part total: {part} ({per}%)".format(
+                        tot=total_seconds, par=part_seconds, per=percent_total))
+                    self.logger.debug("[Method] New Setpoint: {sp}".format(
+                        sp=new_setpoint))
                     self.set_point = new_setpoint
                     return 0
 
@@ -588,14 +588,15 @@ class PIDController(threading.Thread):
                     else:
                         new_setpoint = setpoint_start-(setpoint_diff*percent_total)
 
-                    self.logger.debug("[Method] Start: {} End: {}".format(
-                        start_time.strftime('%H:%M:%S'), end_time.strftime('%H:%M:%S')))
-                    self.logger.debug("[Method] Start: {} End: {}".format(
-                        setpoint_start, setpoint_end))
-                    self.logger.debug("[Method] Total: {} Part total: {} ({}%)".format(
-                        total_seconds, part_seconds, percent_total))
-                    self.logger.debug("[Method] New Setpoint: {}".format(
-                        new_setpoint))
+                    self.logger.debug("[Method] Start: {start} End: {end}".format(
+                        start=start_time.strftime('%H:%M:%S'),
+                        end=end_time.strftime('%H:%M:%S')))
+                    self.logger.debug("[Method] Start: {start} End: {end}".format(
+                        start=setpoint_start, end=setpoint_end))
+                    self.logger.debug("[Method] Total: {tot} Part total: {par} ({per}%)".format(
+                        tot=total_seconds, par=part_seconds, per=percent_total))
+                    self.logger.debug("[Method] New Setpoint: {sp}".format(
+                        sp=new_setpoint))
                     self.set_point = new_setpoint
                     return 0
 
@@ -643,20 +644,20 @@ class PIDController(threading.Thread):
                         new_setpoint = setpoint_start - (setpoint_diff * percent_row)
 
                     self.logger.debug(
-                        "[Method] Start: {} Seconds Since: {}".format(
-                            self.method_start_time, seconds_from_start))
+                        "[Method] Start: {start} Seconds Since: {sec}".format(
+                            start=self.method_start_time, sec=seconds_from_start))
                     self.logger.debug(
-                        "[Method] Start time of row: {}".format(
-                            datetime.datetime.fromtimestamp(row_start_time)))
+                        "[Method] Start time of row: {start}".format(
+                            start=datetime.datetime.fromtimestamp(row_start_time)))
                     self.logger.debug(
-                        "[Method] Sec since start of row: {}".format(
-                            row_since_start_sec))
+                        "[Method] Sec since start of row: {sec}".format(
+                            sec=row_since_start_sec))
                     self.logger.debug(
-                        "[Method] Percent of row: {}".format(
-                            percent_row))
+                        "[Method] Percent of row: {per}".format(
+                            per=percent_row))
                     self.logger.debug(
-                        "[Method] New Setpoint: {}".format(
-                            new_setpoint))
+                        "[Method] New Setpoint: {sp}".format(
+                            sp=new_setpoint))
                     self.set_point = new_setpoint
                     return 0
                 previous_total_sec = total_sec

@@ -97,11 +97,11 @@ class AtlasScientificI2C:
             lock.release()
             return response
         except Exception as err:
-            logger.exception(
+            logger.error(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=err))
             lock.release()
-            return None
+            return "error", err
 
     def close(self):
         self.file_read.close()
