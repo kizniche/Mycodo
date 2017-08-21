@@ -5,6 +5,7 @@
  - Fix MH-Z16 sensor issues in I2C read mode ([#281](https://github.com/kizniche/mycodo/issues/281))
  - Fix Atlas Scientific I2C device query response in the event of an error
  - Fix issue preventing PID from using duration Methods
+ - Fix issue with PID starting a method again after it has already ended
 
 ## 5.1.6 (2017-08-11)
 

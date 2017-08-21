@@ -125,6 +125,8 @@ def validate_method_data(form_data, this_method):
                       "error")
                 return 1
             if not is_positive_integer(form_data.duration.data):
+                flash(gettext(u"Required: Duration must be positive"),
+                      "error")
                 return 1
 
     elif form_data.method_select.data == 'relay':
@@ -1354,7 +1356,7 @@ def pid_activate(pid_id):
         mod_method = Method.query.filter(
             Method.id == pid.method_id).first()
         if mod_method and mod_method.method_type == 'Duration':
-            mod_method.method_start_time = 'Ready'
+            mod_method.start_time = 'Ready'
             db.session.commit()
 
         time.sleep(1)

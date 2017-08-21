@@ -557,7 +557,7 @@ class PIDController(threading.Thread):
                         start=start_time, end=end_time))
                     self.logger.debug("[Method] Start: {start} End: {end}".format(
                         start=setpoint_start, end=setpoint_end))
-                    self.logger.debug("[Method] Total: {tot} Part total: {part} ({per}%)".format(
+                    self.logger.debug("[Method] Total: {tot} Part total: {par} ({per}%)".format(
                         tot=total_seconds, par=part_seconds, per=percent_total))
                     self.logger.debug("[Method] New Setpoint: {sp}".format(
                         sp=new_setpoint))
@@ -667,7 +667,7 @@ class PIDController(threading.Thread):
                 with session_scope(MYCODO_DB_PATH) as db_session:
                     mod_method = db_session.query(Method).filter(
                         Method.id == self.method_id).first()
-                    mod_method.method_start_time = 'Ended'
+                    mod_method.start_time = 'Ended'
                     db_session.commit()
                 self.method_start_time = 'Ended'
 
@@ -753,5 +753,5 @@ class PIDController(threading.Thread):
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_method = db_session.query(Method).filter(
                     Method.id == self.method_id).first()
-                mod_method.method_start_time = 'Ended'
+                mod_method.start_time = 'Ended'
                 db_session.commit()
