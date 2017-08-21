@@ -6,6 +6,8 @@ import string  # helps parse strings
 import time  # used for sleep delay and timestamps
 from lockfile import LockFile
 
+from mycodo.utils.system_pi import str_is_float
+
 from mycodo.config import ATLAS_PH_LOCK_FILE
 
 logger = logging.getLogger("mycodo.device.atlas_scientific_i2c")
@@ -59,7 +61,11 @@ class AtlasScientificI2C:
             # change MSB to 0 for all received characters except the first and get a list of characters
             char_list = map(lambda x: chr(ord(x) & ~0x80), list(response[1:]))
             # NOTE: having to change the MSB to 0 is a glitch in the raspberry pi, and you shouldn't have to do this!
-            return "success", ''.join(char_list)  # convert the char list to a string and returns it
+            str_float = ''.join(char_list)
+            if str_is_float(str_float):
+                return "success", ''.join(char_list)  # convert the char list to a string and returns it
+            else:
+                return "error", "returned string does not represent a float value: {str}".format(str=str_float)
         else:
             return "error", str(ord(response[0]))
 

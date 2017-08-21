@@ -78,6 +78,7 @@ class AtlasPT1000Sensor(AbstractSensor):
             else:
                 logger.error('UART device is not set up. '
                              'Check the log for errors.')
+
         elif self.interface == 'I2C':
             if self.atlas_sensor_i2c.setup:
                 temp_status, temp_str = self.atlas_sensor_i2c.query('R')
