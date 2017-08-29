@@ -10,11 +10,10 @@ from mycodo.utils.system_pi import str_is_float
 
 from mycodo.config import ATLAS_PH_LOCK_FILE
 
-logger = logging.getLogger("mycodo.device.atlas_scientific_i2c")
-
 
 class AtlasScientificI2C:
     """Class for Atlas Scientific sensor communication via I2C"""
+
     long_timeout = 1.5  # the timeout needed to query readings and calibrations
     short_timeout = .5  # timeout for regular commands
     default_bus = 1  # the default bus for I2C on the newer Raspberry Pis, certain older boards use bus 0
@@ -25,6 +24,8 @@ class AtlasScientificI2C:
         # the specific I2C channel is selected with bus
         # it is usually 1, except for older revisions where its 0
         # wb and rb indicate binary read and write
+        self.logger = logging.getLogger(
+            "mycodo.device.atlas_scientific_i2c_{add}".format(add=i2c_address))
         self.current_addr = i2c_address
         self.setup = True
         try:
@@ -34,7 +35,7 @@ class AtlasScientificI2C:
             # initializes I2C to either a user specified or default address
             self.set_i2c_address(i2c_address)
         except Exception as err:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when initializing: "
                 "{err}".format(cls=type(self).__name__, err=err))
             self.setup = False
@@ -79,7 +80,7 @@ class AtlasScientificI2C:
                 try:
                     lock.acquire(timeout=10)  # wait up to 60 seconds before breaking lock
                 except Exception as e:
-                    logger.exception(
+                    self.logger.error(
                         "{cls} 10 second timeout, {lock} lock broken: "
                         "{err}".format(cls=type(self).__name__,
                                        lock=ATLAS_PH_LOCK_FILE,
@@ -103,9 +104,9 @@ class AtlasScientificI2C:
             lock.release()
             return response
         except Exception as err:
-            logger.error(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=err))
+            # self.logger.exception(
+            #     "{cls} raised an exception when taking a reading: "
+            #     "{err}".format(cls=type(self).__name__, err=err))
             lock.release()
             return "error", err
 

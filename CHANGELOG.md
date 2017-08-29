@@ -6,6 +6,7 @@
  - Fix Atlas Scientific I2C device query response in the event of an error
  - Fix issue preventing PID from using duration Methods
  - Fix issue with PID starting a method again after it has already ended
+ - Fix TSL2591 sensor ([#257](https://github.com/kizniche/mycodo/issues/257))
 
 ## 5.1.6 (2017-08-11)
 

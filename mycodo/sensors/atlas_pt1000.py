@@ -101,7 +101,8 @@ class AtlasPT1000Sensor(AbstractSensor):
         """
         try:
             self._temperature = self.get_measurement()
-            return  # success - no errors
+            if self._temperature:
+                return  # success - no errors
         except Exception as e:
             logger.exception(
                 "{cls} raised an exception when taking a reading: "
