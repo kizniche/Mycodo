@@ -1804,7 +1804,7 @@ def relay_mod(form_relay):
         if form_relay.on_at_start.data == '-1' or mod_relay.relay_type == 'pwm':
             mod_relay.on_at_start = None
         else:
-            mod_relay.on_at_start = form_relay.on_at_start.data
+            mod_relay.on_at_start = bool(int(form_relay.on_at_start.data))
 
         if not error:
             db.session.commit()
