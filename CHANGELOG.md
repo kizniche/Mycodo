@@ -1,3 +1,9 @@
+## 5.1.8 (2017-08-29)
+
+### Bugfixes
+
+ - Fix saving relay start state ([#289](https://github.com/kizniche/mycodo/issues/289))
+
 ## 5.1.7 (2017-08-29)
 
 ### Bugfixes

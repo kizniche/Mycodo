@@ -29,8 +29,11 @@ runSelfUpgrade() {
   MYCODO_NEW_TMP_DIR="/tmp/Mycodo-${UPDATE_VERSION}"
   TARBALL_FILE="mycodo-${UPDATE_VERSION}"
 
+  printf "\n"
+  date
+
   if [ "${CURRENT_VERSION}" == "${UPDATE_VERSION}" ] ; then
-    printf "\nUnable to upgrade. You currently have the latest release installed.\n"
+    printf "Unable to upgrade. You currently have the latest release installed.\n"
     error_found
   else
     printf "\nInstalled version: ${CURRENT_VERSION}\n"
