@@ -1,4 +1,4 @@
-## 5.1.7 (Unreleased)
+## 5.1.7 (2017-08-29)
 
 ### Bugfixes
 
@@ -7,6 +7,7 @@
  - Fix issue preventing PID from using duration Methods
  - Fix issue with PID starting a method again after it has already ended
  - Fix TSL2591 sensor ([#257](https://github.com/kizniche/mycodo/issues/257))
+ - Fix saving relay trigger state ([#289](https://github.com/kizniche/mycodo/issues/289))
 
 ## 5.1.6 (2017-08-11)
 

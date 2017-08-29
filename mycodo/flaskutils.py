@@ -1772,7 +1772,7 @@ def relay_mod(form_relay):
             if not is_int(form_relay.gpio.data):
                 error.append("BCM Pin must be an integer")
             mod_relay.pin = form_relay.gpio.data
-            mod_relay.trigger = form_relay.trigger.data
+            mod_relay.trigger = bool(int(form_relay.trigger.data))
         elif mod_relay.relay_type == 'wireless_433MHz_pi_switch':
             if not is_int(form_relay.wiringpi_pin.data):
                 error.append("WiringPi Pin must be an integer")
