@@ -4,6 +4,10 @@
 
  - Enable daemon monitoring script (cron @reboot) to start the daemon if it stops
 
+### Bugfixes
+
+ - Handle connection error when the web interface cannot connect to the daemon/relay controller ([#289](https://github.com/kizniche/mycodo/issues/289))
+
 ## 5.1.8 (2017-08-29)
 
 ### Bugfixes

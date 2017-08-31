@@ -627,18 +627,24 @@ def manipulate_relay(action, relay_id):
     """
     control = DaemonControl()
     return_values = control.relay_setup(action, relay_id)
-    if return_values[0]:
-        flash(gettext(u"%(err)s",
-                      err=u'{action} Relay: Daemon response: {msg}'.format(
-                          action=action,
-                          msg=return_values[1])),
-              "error")
+    if len(return_values) > 1:
+        if return_values[0]:
+            flash(gettext(u"%(err)s",
+                          err=u'{action} Relay: Daemon response: {msg}'.format(
+                              action=action,
+                              msg=return_values[1])),
+                  "error")
+        else:
+            flash(gettext(u"%(err)s",
+                          err=u'{action} Relay: Daemon response: {msg}'.format(
+                              action=gettext(action),
+                              msg=return_values[1])),
+                  "success")
     else:
         flash(gettext(u"%(err)s",
-                      err=u'{action} Relay: Daemon response: {msg}'.format(
-                          action=gettext(action),
-                          msg=return_values[1])),
-              "success")
+                      err=u'{action} Relay: Could not connect to Daemon'.format(
+                          action=action)),
+              "error")
 
 
 #
