@@ -147,9 +147,12 @@ case "${1:-''}" in
         apt-get update
     ;;
     'update-cron')
-        printf "\n#### Updating crontab entry\n"
+        printf "\n#### Updating Mycodo crontab entry\n"
         /bin/bash ${INSTALL_DIRECTORY}/Mycodo/install/crontab.sh mycodo --remove
         /bin/bash ${INSTALL_DIRECTORY}/Mycodo/install/crontab.sh mycodo
+        printf "\n#### Updating Mycodo restart monitor crontab entry\n"
+        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/install/crontab.sh restart_daemon --remove
+        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/install/crontab.sh restart_daemon
     ;;
     'update-gpiod')
         printf "\n#### Installing gpiod\n"

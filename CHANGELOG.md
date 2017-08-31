@@ -1,3 +1,9 @@
+## 5.1.9 (Unreleased)
+
+### Features
+
+ - Enable daemon monitoring script (cron @reboot) to start the daemon if it stops
+
 ## 5.1.8 (2017-08-29)
 
 ### Bugfixes

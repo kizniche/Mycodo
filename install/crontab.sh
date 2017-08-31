@@ -32,7 +32,7 @@ if type crontab >/dev/null 2>/dev/null; then
             echo 'Appending to crontab:'
             echo '-----------------------------------------------'
             cat ${crontab}
-            crontab -l 2>/dev/null | { cat; echo ${cron_unique_label}; cat ${crontab}; echo "# cm #"; } | crontab -
+            crontab -l 2>/dev/null | { cat; echo ${cron_unique_label}; cat ${crontab}; echo "# cm~$1 #"; } | crontab -
         else
             echo 'Crontab entry already exists, skipping ...'
             echo
@@ -43,7 +43,7 @@ if type crontab >/dev/null 2>/dev/null; then
     elif test ${mode} = remove; then
         if crontab_exists; then
             echo 'Removing crontab entry ...'
-            crontab -l 2>/dev/null | sed -e "\?^$cron_unique_label\$?,/^# cm #\$/ d" | crontab -
+            crontab -l 2>/dev/null | sed -e "\?^$cron_unique_label\$?,/^# cm~$1 #\$/ d" | crontab -
         else
             echo 'Crontab entry does not exist, nothing to do.'
         fi

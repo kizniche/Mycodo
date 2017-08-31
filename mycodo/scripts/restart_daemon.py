@@ -40,12 +40,12 @@ def check_daemon(print_msg=True, start_daemon=True):
         print(message)
 
 
-def parseargs(parser):
-    parser.add_argument('-c', '--continuouscheck', action='store_true',
-                        help="Continually check if the daemon has crashed and start it")
-    parser.add_argument('-d', '--deletepid', action='store_true',
-                        help="Only delete the PID file if the daemon isn't running. Don't start it.")
-    return parser.parse_args()
+def parseargs(par):
+    par.add_argument('-c', '--continuouscheck', action='store_true',
+                     help="Continually check if the daemon has crashed and start it")
+    par.add_argument('-d', '--deletepid', action='store_true',
+                     help="Only delete the PID file if the daemon isn't running. Don't start it.")
+    return par.parse_args()
 
 
 if __name__ == '__main__':
@@ -57,9 +57,10 @@ if __name__ == '__main__':
     args = parseargs(parser)
 
     if args.continuouscheck:
+        print("Beginning monitor of the Mycodo daemon and start it if it is found to not be running")
         while True:
             check_daemon(print_msg=False)
-            time.sleep(5)
+            time.sleep(30)
     elif args.deletepid:
         check_daemon(start_daemon=False)
     else:

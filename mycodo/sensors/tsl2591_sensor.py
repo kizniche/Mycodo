@@ -3,14 +3,14 @@ import logging
 import tsl2591
 from .base_sensor import AbstractSensor
 
-logger = logging.getLogger("mycodo.sensors.tsl2591")
-
 
 class TSL2591Sensor(AbstractSensor):
     """ A sensor support class that monitors the TSL2591's lux """
 
     def __init__(self, address, bus):
         super(TSL2591Sensor, self).__init__()
+        self.logger = logging.getLogger(
+            "mycodo.sensors.tsl2591_{bus}_{add}".format(bus=bus, add=address))
         self.i2c_address = address
         self.i2c_bus = bus
         self._lux = 0.0
@@ -64,6 +64,6 @@ class TSL2591Sensor(AbstractSensor):
             self._lux = self.get_measurement()
             return  # success - no errors
         except Exception as e:
-            logger.error("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=e))
+            self.logger.error("{cls} raised an exception when taking a reading: "
+                              "{err}".format(cls=type(self).__name__, err=e))
         return 1

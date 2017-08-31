@@ -374,7 +374,7 @@ class DaemonController(threading.Thread):
                         self.timer_ram_use = now + 86400
                         ram_mb = resource.getrusage(
                             resource.RUSAGE_SELF).ru_maxrss / float(1000)
-                        self.logger.info("{ram} MB ram in use".format(ram=ram_mb))
+                        self.logger.info("{ram:.2f} MB RAM in use".format(ram=ram_mb))
                     except Exception:
                         self.logger.exception("Free Ram ERROR")
 
