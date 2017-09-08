@@ -1,4 +1,4 @@
-## 5.1.9 (Unreleased)
+## 5.1.9 (2017-09-07)
 
 ### Features
 
@@ -6,6 +6,7 @@
 
 ### Bugfixes
 
+ - Potential fix for certain sensor initialization issues when using a multiplexer ([#290](https://github.com/kizniche/mycodo/issues/290))
  - Handle connection error when the web interface cannot connect to the daemon/relay controller ([#289](https://github.com/kizniche/mycodo/issues/289))
 
 ## 5.1.8 (2017-08-29)

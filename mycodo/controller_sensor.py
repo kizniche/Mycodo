@@ -228,8 +228,10 @@ class SensorController(threading.Thread):
             else:
                 self.switch_edge_gpio = GPIO.BOTH
 
+        self.lock_multiplexer()
+
         # Set up analog-to-digital converter
-        elif self.device == 'ADS1x15':
+        if self.device == 'ADS1x15':
             self.adc = ADS1x15Read(self.i2c_address, self.i2c_bus,
                                    self.adc_chan, self.adc_gain)
         elif self.device == 'MCP342x':
@@ -342,6 +344,8 @@ class SensorController(threading.Thread):
                 device=self.device))
             raise Exception("'{device}' is not a valid device type.".format(
                 device=self.device))
+
+        self.unlock_multiplexer()
 
         self.edge_reset_timer = time.time()
         self.sensor_timer = time.time()
@@ -648,23 +652,9 @@ class SensorController(threading.Thread):
 
         logger_cond.debug(message)
 
-    def update_measure(self):
-        """
-        Retrieve measurement from sensor
-
-        :return: None if success, 0 if fail
-        :rtype: int or None
-        """
-        measurements = None
-
-        if not self.device_recognized:
-            self.logger.debug("Device not recognized: {device}".format(
-                device=self.device))
-            self.updateSuccess = False
-            return 1
-
+    def lock_multiplexer(self):
+        """ Acquire a multiplexer lock """
         if self.multiplexer:
-            # Acquire a lock for multiplexer
             (lock_status,
              lock_response) = self.setup_lock(self.mux_address,
                                               self.mux_bus,
@@ -690,6 +680,28 @@ class SensorController(threading.Thread):
                         err=multiplexer_response))
                 self.updateSuccess = False
                 return 1
+
+    def unlock_multiplexer(self):
+        """ Remove a multiplexer lock """
+        if self.multiplexer:
+            self.release_lock(self.mux_address, self.mux_bus, self.mux_lock)
+
+    def update_measure(self):
+        """
+        Retrieve measurement from sensor
+
+        :return: None if success, 0 if fail
+        :rtype: int or None
+        """
+        measurements = None
+
+        if not self.device_recognized:
+            self.logger.debug("Device not recognized: {device}".format(
+                device=self.device))
+            self.updateSuccess = False
+            return 1
+
+        self.lock_multiplexer()
 
         if self.adc:
             try:
@@ -761,8 +773,7 @@ class SensorController(threading.Thread):
                     "Error while attempting to read sensor: {err}".format(
                         err=except_msg))
 
-        if self.multiplexer:
-            self.release_lock(self.mux_address, self.mux_bus, self.mux_lock)
+        self.unlock_multiplexer()
 
         if self.device_recognized and measurements is not None:
             self.measurement = Measurement(measurements)

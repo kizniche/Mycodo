@@ -23,6 +23,8 @@
 #         = (180/pi)*atan(0.91764 * tan((pi/180)*L)) to give a degree
 #         answer with a degree input for L.
 
+from dateutil.parser import parse
+from dateutil import tz
 import logging
 import math
 import datetime
@@ -91,30 +93,30 @@ class Sun:
         m = (0.9856 * t) - 3.289
 
         # 4. calculate the Sun's true self.longitude
-        l = m + (1.916 * math.sin(to_rad*m)) + (0.020 * math.sin(to_rad * 2 * m)) + 282.634
+        l = m + (1.916 * math.sin(to_rad * m)) + (0.020 * math.sin(to_rad * 2 * m)) + 282.634
         l = self.force_range(l, 360)  # NOTE: l adjusted into the range [0,360)
 
         # 5a. calculate the Sun's right ascension
 
-        ra = (1/to_rad) * math.atan(0.91764 * math.tan(to_rad*l))
+        ra = (1 / to_rad) * math.atan(0.91764 * math.tan(to_rad * l))
         ra = self.force_range(ra, 360)  # NOTE: ra adjusted into the range [0,360)
 
         # 5b. right ascension value needs to be in the same quadrant as l
-        l_quadrant = (math.floor(l/90)) * 90
-        ra_quadrant = (math.floor(ra/90)) * 90
+        l_quadrant = (math.floor(l / 90)) * 90
+        ra_quadrant = (math.floor(ra / 90)) * 90
         ra += l_quadrant - ra_quadrant
 
         # 5c. right ascension value needs to be converted into hours
         ra /= 15
 
         # 6. calculate the Sun's declination
-        sin_dec = 0.39782 * math.sin(to_rad*l)
+        sin_dec = 0.39782 * math.sin(to_rad * l)
         cos_dec = math.cos(math.asin(sin_dec))
 
         # 7a. calculate the Sun's local hour angle
-        cos_h = ((math.cos(to_rad*self.zenith) -
-                  (sin_dec * math.sin(to_rad*self.latitude))) /
-                 (cos_dec * math.cos(to_rad*self.latitude)))
+        cos_h = ((math.cos(to_rad * self.zenith) -
+                  (sin_dec * math.sin(to_rad * self.latitude))) /
+                 (cos_dec * math.cos(to_rad * self.latitude)))
 
         if cos_h > 1:
             return {'status': False,
@@ -137,25 +139,23 @@ class Sun:
         # 8. calculate local mean time of rising/setting
         t = h + ra - (0.06571 * t) - 6.622
 
-        # 9. adjust back to UTC
+        # 9. adjust to UTC
         ut = t - long_hour
         ut = self.force_range(ut, 24)  # UTC time in decimal format (e.g. 23.23)
-        # ut_hour = self.force_range(int(ut), 24)
-        # ut_minute = round((ut - int(ut))*60,0)
+        ut_hour = self.force_range(int(ut), 24)
+        ut_minute = round((ut - int(ut)) * 60, 0)
+        time_utc = parse('{hour}:{min}'.format(
+            hour=ut_hour, min=ut_minute)).replace(tzinfo=tz.tzutc())
 
-        local_offset = -5
-        local_time = ut + local_offset
-        local_time = self.force_range(local_time, 24)  # time in decimal format (e.g. 23.23)
-
-        # 10. Return
-        local_hour = self.force_range(int(local_time), 24)
-        local_minute = round((local_time - int(local_time)) * 60, 0)
+        # 10. calculate local time
+        time_local = time_utc.astimezone(tz.tzlocal())
 
         return {
             'status': True,
-            'decimal': local_time,
-            'hr': int(local_hour),
-            'min': int(local_minute)
+            'utc_hour': ut_hour,
+            'utc_min': ut_minute,
+            'time_utc': time_utc,
+            'time_local': time_local
         }
 
 
@@ -163,9 +163,7 @@ if __name__ == '__main__':
     sun = Sun(latitude=33.749249, longitude=-84.387314, zenith=90.8)
 
     sunrise = sun.get_sunrise_time()
-    print("Sunrise: {hour}:{min}".format(hour=sunrise['hr'],
-                                         min=sunrise['min']))
+    print("Sunrise: {time}".format(time=sunrise['time_local']))
 
     sunset = sun.get_sunset_time()
-    print("Sunset: {hour}:{min}".format(hour=sunset['hr'],
-                                        min=sunset['min']))
+    print("Sunset:  {time}".format(time=sunset['time_local']))

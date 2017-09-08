@@ -27,6 +27,7 @@ WTForms == 2.1
 
 # Devices/sensors
 -e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591
+-e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280
 picamera == 1.13
 sht_sensor == 17.5.5
 tentacle_pi == 0.6.2
