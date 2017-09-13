@@ -1,3 +1,9 @@
+## 5.1.10 (2017-09-12)
+
+### Bugfixes
+
+ - Fix issue reporting issue with the web UI communicating with the daemon ([#291](https://github.com/kizniche/mycodo/issues/291))
+
 ## 5.1.9 (2017-09-07)
 
 ### Features

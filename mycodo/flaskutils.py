@@ -622,12 +622,12 @@ def manipulate_relay(action, relay_id):
 
     :param relay_id: relay ID in the SQL database
     :type relay_id: str
-    :param action: add, del, or mod
+    :param action: "add", "del", or "mod"
     :type action: str
     """
     control = DaemonControl()
     return_values = control.relay_setup(action, relay_id)
-    if len(return_values) > 1:
+    if return_values and len(return_values) > 1:
         if return_values[0]:
             flash(gettext(u"%(err)s",
                           err=u'{action} Relay: Daemon response: {msg}'.format(
