@@ -66,14 +66,14 @@ class Camera(FlaskForm):
     resume_timelapse = SubmitField(lazy_gettext(u'Resume Timelapse'))
     stop_timelapse = SubmitField(lazy_gettext(u'Stop Timelapse'))
     timelapse_interval = DecimalField(
-        lazy_gettext(u'Photo Interval (sec)'),
+        lazy_gettext(u'Interval (seconds)'),
         validators=[validators.NumberRange(
             min=0,
             message=lazy_gettext(u'Photo Interval must be a positive value.')
         )]
     )
     timelapse_runtime_sec = DecimalField(
-        lazy_gettext(u'Total Run Time (sec)'),
+        lazy_gettext(u'Run Time (seconds)'),
         validators=[validators.NumberRange(
             min=0,
             message=lazy_gettext(u'Total Run Time must be a positive value.')
@@ -240,8 +240,9 @@ class ExportOptions(FlaskForm):
 #
 
 class GraphAdd(FlaskForm):
+    graph_type = StringField('Type', widget=widgets.HiddenInput())
     name = StringField(
-        lazy_gettext(u'Graph Name'),
+        lazy_gettext(u'Name'),
         render_kw={"placeholder": lazy_gettext(u"Graph Name")},
         validators=[DataRequired()]
     )
@@ -257,7 +258,7 @@ class GraphAdd(FlaskForm):
     )
     height = IntegerField(
         lazy_gettext(u'Height (pixels)'),
-        render_kw={"placeholder": lazy_gettext(u"Percent Height")},
+        render_kw={"placeholder": lazy_gettext(u"Height (pixels)")},
         validators=[validators.NumberRange(
             min=100,
             max=10000
@@ -284,13 +285,52 @@ class GraphAdd(FlaskForm):
     enable_navbar = BooleanField(lazy_gettext(u'Enable Navbar'))
     enable_export = BooleanField(lazy_gettext(u'Enable Export'))
     enable_range = BooleanField(lazy_gettext(u'Enable Range Selector'))
-    Submit = SubmitField(lazy_gettext(u'Create Graph'))
+    Submit = SubmitField(lazy_gettext(u'Create'))
+
+
+class GaugeAdd(FlaskForm):
+    graph_type = StringField('Type', widget=widgets.HiddenInput())
+    name = StringField(
+        lazy_gettext(u'Name'),
+        render_kw={"placeholder": lazy_gettext(u"Name")},
+        validators=[DataRequired()]
+    )
+    sensor_ids = SelectMultipleField(lazy_gettext(u'Measurement'))
+    width = IntegerField(
+        lazy_gettext(u'Width'),
+        validators=[validators.NumberRange(
+            min=1,
+            max=12
+        )]
+    )
+    height = IntegerField(
+        lazy_gettext(u'Height (pixels)'),
+        render_kw={"placeholder": lazy_gettext(u"Height (pixels)")},
+        validators=[validators.NumberRange(
+            min=100,
+            max=10000
+        )]
+    )
+    y_axis_min = DecimalField(lazy_gettext(u'Gauge Min'))
+    y_axis_max = DecimalField(lazy_gettext(u'Gauge Max'))
+    max_measure_age = DecimalField(lazy_gettext(u'Max Age (seconds)'))
+    refresh_duration = IntegerField(
+        lazy_gettext(u'Refresh (seconds)'),
+        render_kw={"placeholder": lazy_gettext(u"Refresh duration")},
+        validators=[validators.NumberRange(
+            min=1,
+            message=lazy_gettext(u"Number of seconds to wait between acquiring"
+                                 u" any new measurements.")
+        )]
+    )
+    Submit = SubmitField(lazy_gettext(u'Create'))
 
 
 class GraphMod(FlaskForm):
     graph_id = IntegerField('Graph ID', widget=widgets.HiddenInput())
+    graph_type = StringField('Type', widget=widgets.HiddenInput())
     name = StringField(
-        lazy_gettext(u'Graph Name'),
+        lazy_gettext(u'Name'),
         render_kw={"placeholder": lazy_gettext(u"Graph Name")},
         validators=[DataRequired()]
     )
@@ -306,7 +346,7 @@ class GraphMod(FlaskForm):
     )
     height = IntegerField(
         lazy_gettext(u'Height (pixels)'),
-        render_kw={"placeholder": lazy_gettext(u"Percent Height")},
+        render_kw={"placeholder": lazy_gettext(u"Height (pixels)")},
         validators=[validators.NumberRange(
             min=100,
             max=10000
@@ -334,12 +374,26 @@ class GraphMod(FlaskForm):
     enable_export = BooleanField(lazy_gettext(u'Enable Export'))
     enable_range = BooleanField(lazy_gettext(u'Enable Range Selector'))
     use_custom_colors = BooleanField(lazy_gettext(u'Enable Custom Colors'))
-    Submit = SubmitField(lazy_gettext(u'Save Graph'))
+    Submit = SubmitField(lazy_gettext(u'Save'))
+
+
+class GaugeMod(FlaskForm):
+    graph_id = IntegerField('Graph ID', widget=widgets.HiddenInput())
+    graph_type = StringField('Type', widget=widgets.HiddenInput())
+    name = StringField(lazy_gettext(u'Name'))
+    sensor_ids = SelectMultipleField(lazy_gettext(u'Measurement'))
+    width = IntegerField(lazy_gettext(u'Width'))
+    height = IntegerField(lazy_gettext(u'Height (pixels)'))
+    y_axis_min = DecimalField(lazy_gettext(u'Gauge Min'))
+    y_axis_max = DecimalField(lazy_gettext(u'Gauge Max'))
+    max_measure_age = DecimalField(lazy_gettext(u'Max Age (seconds)'))
+    refresh_duration = IntegerField(lazy_gettext(u'Refresh (seconds)'))
+    Submit = SubmitField(lazy_gettext(u'Save'))
 
 
 class GraphDel(FlaskForm):
     graph_id = IntegerField('Graph ID', widget=widgets.HiddenInput())
-    Submit = SubmitField(lazy_gettext(u'Delete Graph'))
+    Submit = SubmitField(lazy_gettext(u'Delete'))
 
 
 class GraphOrder(FlaskForm):
@@ -523,7 +577,7 @@ class MethodAdd(FlaskForm):
         lazy_gettext(u'Time YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    relay_duration = IntegerField(lazy_gettext(u'Duration On (sec)'))
+    relay_duration = IntegerField(lazy_gettext(u'Duration On (seconds)'))
     relay_id = StringField(lazy_gettext(u'Relay ID'),)
     relay_state = SelectField(
         lazy_gettext(u'Relay State'),
@@ -625,7 +679,7 @@ class PIDModBase(FlaskForm):
         )]
     )
     max_measure_age = DecimalField(
-        lazy_gettext(u'Max Age (sec)'),
+        lazy_gettext(u'Max Age (seconds)'),
         validators=[validators.NumberRange(
             min=5.0,
             max=86400.0
@@ -1031,14 +1085,14 @@ class Timer(FlaskForm):
     time_start_duration = StringField(lazy_gettext(u'Start Time'))
     time_end_duration = StringField(lazy_gettext(u'End Time'))
     time_on_duration = DecimalField(
-        lazy_gettext(u'On (sec)'),
+        lazy_gettext(u'On (seconds)'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
         )]
     )
-    duration_on = DecimalField(lazy_gettext(u'On (sec)'))
-    duration_off = DecimalField(lazy_gettext(u'Off (sec)'))
+    duration_on = DecimalField(lazy_gettext(u'On (seconds)'))
+    duration_off = DecimalField(lazy_gettext(u'Off (seconds)'))
     create = SubmitField(lazy_gettext(u'Save'))
     modify = SubmitField(lazy_gettext(u'Save'))
     delete = SubmitField(lazy_gettext(u'Delete'))

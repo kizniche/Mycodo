@@ -1,3 +1,9 @@
+## 5.2.0 (Unreleased)
+
+### Features
+
+ - Add gauges to Live Graphs([#274](https://github.com/kizniche/mycodo/issues/274))
+
 ## 5.1.10 (2017-09-12)
 
 ### Bugfixes

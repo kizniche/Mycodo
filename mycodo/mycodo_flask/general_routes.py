@@ -197,7 +197,7 @@ def last_data(sensor_measure, sensor_id, sensor_period):
     try:
         query_str = query_string(
             sensor_measure, sensor_id, value='LAST',
-            past_sec=int(sensor_period) * 60)
+            past_sec=sensor_period)
         if query_str == 1:
             return '', 204
         raw_data = dbcon.query(query_str).raw

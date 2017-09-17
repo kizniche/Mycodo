@@ -78,7 +78,10 @@ def csv_to_list_of_int(str_csv):
     if str_csv:
         list_int = []
         for x in str_csv.split(','):
-            list_int.append(int(x))
+            try:
+                list_int.append(int(x))
+            except:
+                pass
         return list_int
 
 

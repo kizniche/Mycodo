@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 5.1.10 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade) [![DOI](https://zenodo.org/badge/30382555.svg)](https://zenodo.org/badge/latestdoi/30382555)
+### Latest version: 5.2.0 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade) [![DOI](https://zenodo.org/badge/30382555.svg)](https://zenodo.org/badge/latestdoi/30382555)
 
 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) Note: The build is good. We are currently working on fixing the testing environment.
 

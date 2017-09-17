@@ -6,6 +6,7 @@ from mycodo.mycodo_flask.extensions import db
 class Graph(CRUDMixin, db.Model):
     __tablename__ = "graph"
     id = db.Column(db.Integer, unique=True, primary_key=True)
+    graph_type = db.Column(db.Text, default=None)
     name = db.Column(db.Text, default='Graph')
     pid_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
     relay_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
@@ -19,6 +20,12 @@ class Graph(CRUDMixin, db.Model):
     enable_export = db.Column(db.Boolean, default=False)  # Show export menu
     use_custom_colors = db.Column(db.Boolean, default=False)  # Enable custom colors of graph series
     custom_colors = db.Column(db.Text, default='')  # Custom hex color values (csv)
+
+    # Gauge options
+    y_axis_min = db.Column(db.Float, default=None)  #
+    y_axis_max = db.Column(db.Float, default=None)  #
+    max_measure_age = db.Column(db.Float, default=120.0)
+    range_colors = db.Column(db.Text, default='')  # Custom hex color values and gauge range
 
     def __reper__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

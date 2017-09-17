@@ -821,11 +821,14 @@ def graph_add(form_add_graph, display_order):
         action=gettext(u"Add"),
         controller=gettext(u"Graph"))
     error = []
+    new_graph = Graph()
 
-    if (form_add_graph.name.data and form_add_graph.width.data and
-            form_add_graph.height.data and form_add_graph.xaxis_duration.data and
-            form_add_graph.refresh_duration.data):
-        new_graph = Graph()
+    if (form_add_graph.graph_type.data == 'graph' and
+            (form_add_graph.name.data and
+                form_add_graph.width.data and
+                form_add_graph.height.data and
+                form_add_graph.xaxis_duration.data and
+                form_add_graph.refresh_duration.data)):
         new_graph.name = form_add_graph.name.data
         if form_add_graph.pid_ids.data:
             pid_ids_joined = ";".join(form_add_graph.pid_ids.data)
@@ -857,9 +860,40 @@ def graph_add(form_add_graph, display_order):
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_graph'))
+    elif (form_add_graph.graph_type.data in ['gauge_angular', 'gauge_solid'] and
+            form_add_graph.sensor_ids.data):
+        if form_add_graph.graph_type.data == 'gauge_solid':
+            new_graph.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
+        elif form_add_graph.graph_type.data == 'gauge_angular':
+            new_graph.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
+        new_graph.graph_type = form_add_graph.graph_type.data
+        new_graph.name = form_add_graph.name.data
+        new_graph.width = form_add_graph.width.data
+        new_graph.height = form_add_graph.height.data
+        new_graph.max_measure_age = form_add_graph.max_measure_age.data
+        new_graph.refresh_duration = form_add_graph.refresh_duration.data
+        new_graph.y_axis_min = form_add_graph.y_axis_min.data
+        new_graph.y_axis_max = form_add_graph.y_axis_max.data
+        new_graph.sensor_ids_measurements = form_add_graph.sensor_ids.data[0]
+        try:
+            new_graph.save()
+            flash(gettext(
+                u"Graph with ID %(id)s successfully added",
+                id=new_graph.id),
+                "success")
+
+            DisplayOrder.query.first().graph = add_display_order(
+                display_order, new_graph.id)
+            db.session.commit()
+        except sqlalchemy.exc.OperationalError as except_msg:
+            error.append(except_msg)
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            error.append(except_msg)
     else:
         flash_form_errors(form_add_graph)
+        return
+
+    flash_success_errors(error, action, url_for('page_routes.page_graph'))
 
 
 def graph_mod(form_mod_graph, request_form):
@@ -868,7 +902,10 @@ def graph_mod(form_mod_graph, request_form):
         controller=gettext(u"Graph"))
     error = []
 
-    if form_mod_graph.validate():
+    mod_graph = Graph.query.filter(
+        Graph.id == form_mod_graph.graph_id.data).first()
+
+    if form_mod_graph.graph_type.data == 'graph':
         def is_rgb_color(color_hex):
             return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
 
@@ -890,46 +927,132 @@ def graph_mod(form_mod_graph, request_form):
             short_list.append(each_color[1])
         sorted_colors_string = ",".join(short_list)
 
-        try:
-            mod_graph = Graph.query.filter(
-                Graph.id == form_mod_graph.graph_id.data).first()
-            mod_graph.custom_colors = sorted_colors_string
-            mod_graph.use_custom_colors = form_mod_graph.use_custom_colors.data
-            mod_graph.name = form_mod_graph.name.data
+        mod_graph.custom_colors = sorted_colors_string
+        mod_graph.use_custom_colors = form_mod_graph.use_custom_colors.data
+        mod_graph.name = form_mod_graph.name.data
 
-            if form_mod_graph.pid_ids.data:
-                pid_ids_joined = ";".join(form_mod_graph.pid_ids.data)
-                mod_graph.pid_ids = pid_ids_joined
-            else:
-                mod_graph.pid_ids = ''
+        if form_mod_graph.pid_ids.data:
+            pid_ids_joined = ";".join(form_mod_graph.pid_ids.data)
+            mod_graph.pid_ids = pid_ids_joined
+        else:
+            mod_graph.pid_ids = ''
 
-            if form_mod_graph.relay_ids.data:
-                relay_ids_joined = ";".join(form_mod_graph.relay_ids.data)
-                mod_graph.relay_ids = relay_ids_joined
-            else:
-                mod_graph.relay_ids = ''
+        if form_mod_graph.relay_ids.data:
+            relay_ids_joined = ";".join(form_mod_graph.relay_ids.data)
+            mod_graph.relay_ids = relay_ids_joined
+        else:
+            mod_graph.relay_ids = ''
 
-            if form_mod_graph.sensor_ids.data:
-                sensor_ids_joined = ";".join(form_mod_graph.sensor_ids.data)
-                mod_graph.sensor_ids_measurements = sensor_ids_joined
-            else:
-                mod_graph.sensor_ids_measurements = ''
+        if form_mod_graph.sensor_ids.data:
+            sensor_ids_joined = ";".join(form_mod_graph.sensor_ids.data)
+            mod_graph.sensor_ids_measurements = sensor_ids_joined
+        else:
+            mod_graph.sensor_ids_measurements = ''
 
-            mod_graph.width = form_mod_graph.width.data
-            mod_graph.height = form_mod_graph.height.data
-            mod_graph.x_axis_duration = form_mod_graph.xaxis_duration.data
-            mod_graph.refresh_duration = form_mod_graph.refresh_duration.data
-            mod_graph.enable_navbar = form_mod_graph.enable_navbar.data
-            mod_graph.enable_export = form_mod_graph.enable_export.data
-            mod_graph.enable_rangeselect = form_mod_graph.enable_range.data
-            db.session.commit()
-        except sqlalchemy.exc.OperationalError as except_msg:
-            error.append(except_msg)
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_graph'))
+        mod_graph.width = form_mod_graph.width.data
+        mod_graph.height = form_mod_graph.height.data
+        mod_graph.x_axis_duration = form_mod_graph.xaxis_duration.data
+        mod_graph.refresh_duration = form_mod_graph.refresh_duration.data
+        mod_graph.enable_navbar = form_mod_graph.enable_navbar.data
+        mod_graph.enable_export = form_mod_graph.enable_export.data
+        mod_graph.enable_rangeselect = form_mod_graph.enable_range.data
+
+    elif form_mod_graph.graph_type.data in ['gauge_angular', 'gauge_solid']:
+
+        def is_rgb_color(color_hex):
+            return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
+
+        if form_mod_graph.graph_type.data == 'gauge_angular':
+
+            colors_hex = {}
+            f = request_form
+
+            for key in f.keys():
+                if ('color_hex_number' in key or
+                        'color_low_number' in key or
+                        'color_high_number' in key):
+                    if int(key[17:]) not in colors_hex:
+                        colors_hex[int(key[17:])] = {}
+
+                if 'color_hex_number' in key:
+                    for value in f.getlist(key):
+                        if not is_rgb_color(value):
+                            flash(gettext(u"Invalid hex color value"), "error")
+                            return redirect(url_for('page_routes.page_graph'))
+                        colors_hex[int(key[17:])]['hex'] = value
+                elif 'color_low_number' in key:
+                    for value in f.getlist(key):
+                        colors_hex[int(key[17:])]['low'] = value
+                elif 'color_high_number' in key:
+                    for value in f.getlist(key):
+                        colors_hex[int(key[17:])]['high'] = value
+
+            sorted_colors_string = ""
+
+            for i in range(len(colors_hex)):
+                sorted_colors_string += "{},{},{}".format(
+                    colors_hex[i]['low'],
+                    colors_hex[i]['high'],
+                    colors_hex[i]['hex'])
+                if i < len(colors_hex) - 1:
+                    sorted_colors_string += ";"
+
+            mod_graph.range_colors = sorted_colors_string
+
+        elif form_mod_graph.graph_type.data == 'gauge_solid':
+            colors_hex = {}
+            f = request_form
+
+            for key in f.keys():
+                if ('color_hex_number' in key or
+                        'color_stop_number' in key):
+                    if int(key[17:]) not in colors_hex:
+                        colors_hex[int(key[17:])] = {}
+
+                if 'color_hex_number' in key:
+                    for value in f.getlist(key):
+                        if not is_rgb_color(value):
+                            flash(gettext(u"Invalid hex color value"), "error")
+                            return redirect(url_for('page_routes.page_graph'))
+                        colors_hex[int(key[17:])]['hex'] = value
+                elif 'color_stop_number' in key:
+                    for value in f.getlist(key):
+                        colors_hex[int(key[17:])]['stop'] = value
+
+            sorted_colors_string = ""
+
+            for i in range(len(colors_hex)):
+                sorted_colors_string += "{},{}".format(
+                    colors_hex[i]['stop'],
+                    colors_hex[i]['hex'])
+                if i < len(colors_hex) - 1:
+                    sorted_colors_string += ";"
+
+            mod_graph.range_colors = sorted_colors_string
+
+        mod_graph.graph_type = form_mod_graph.graph_type.data
+        mod_graph.name = form_mod_graph.name.data
+        mod_graph.width = form_mod_graph.width.data
+        mod_graph.height = form_mod_graph.height.data
+        mod_graph.refresh_duration = form_mod_graph.refresh_duration.data
+        mod_graph.y_axis_min = form_mod_graph.y_axis_min.data
+        mod_graph.y_axis_max = form_mod_graph.y_axis_max.data
+        mod_graph.max_measure_age = form_mod_graph.max_measure_age.data
+        if form_mod_graph.sensor_ids.data:
+            sensor_ids_joined = ";".join(form_mod_graph.sensor_ids.data)
+            mod_graph.sensor_ids_measurements = sensor_ids_joined
+        else:
+            mod_graph.sensor_ids_measurements = ''
     else:
         flash_form_errors(form_mod_graph)
+
+    try:
+        db.session.commit()
+    except sqlalchemy.exc.OperationalError as except_msg:
+        error.append(except_msg)
+    except sqlalchemy.exc.IntegrityError as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('page_routes.page_graph'))
 
 
 def graph_del(form_del_graph):
