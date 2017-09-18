@@ -904,30 +904,27 @@ def graph_mod(form_mod_graph, request_form):
 
     mod_graph = Graph.query.filter(
         Graph.id == form_mod_graph.graph_id.data).first()
-
-    if form_mod_graph.graph_type.data == 'graph':
-        def is_rgb_color(color_hex):
+    
+    def is_rgb_color(color_hex):
             return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
 
+    if form_mod_graph.graph_type.data == 'graph':
         # Get variable number of color inputs, turn into CSV string
         colors = {}
+        short_list = []
         f = request_form
         for key in f.keys():
             if 'color_number' in key:
                 for value in f.getlist(key):
                     if not is_rgb_color(value):
-                        flash(gettext(u"Invalid hex color value"), "error")
-                        return redirect(url_for('page_routes.page_graph'))
+                        error.append("Invalid hex color value")
                     colors[key[12:]] = value
-
         sorted_list = [(k, colors[k]) for k in sorted(colors)]
-
-        short_list = []
         for each_color in sorted_list:
             short_list.append(each_color[1])
         sorted_colors_string = ",".join(short_list)
-
         mod_graph.custom_colors = sorted_colors_string
+        
         mod_graph.use_custom_colors = form_mod_graph.use_custom_colors.data
         mod_graph.name = form_mod_graph.name.data
 
@@ -958,27 +955,22 @@ def graph_mod(form_mod_graph, request_form):
         mod_graph.enable_rangeselect = form_mod_graph.enable_range.data
 
     elif form_mod_graph.graph_type.data in ['gauge_angular', 'gauge_solid']:
-
-        def is_rgb_color(color_hex):
-            return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
+        colors_hex = {}
+        f = request_form
+        sorted_colors_string = ""
 
         if form_mod_graph.graph_type.data == 'gauge_angular':
-
-            colors_hex = {}
-            f = request_form
-
+            # Combine all color form inputs to dictionary
             for key in f.keys():
                 if ('color_hex_number' in key or
                         'color_low_number' in key or
                         'color_high_number' in key):
                     if int(key[17:]) not in colors_hex:
                         colors_hex[int(key[17:])] = {}
-
                 if 'color_hex_number' in key:
                     for value in f.getlist(key):
                         if not is_rgb_color(value):
-                            flash(gettext(u"Invalid hex color value"), "error")
-                            return redirect(url_for('page_routes.page_graph'))
+                            error.append("Invalid hex color value")
                         colors_hex[int(key[17:])]['hex'] = value
                 elif 'color_low_number' in key:
                     for value in f.getlist(key):
@@ -987,49 +979,42 @@ def graph_mod(form_mod_graph, request_form):
                     for value in f.getlist(key):
                         colors_hex[int(key[17:])]['high'] = value
 
-            sorted_colors_string = ""
-
-            for i in range(len(colors_hex)):
-                sorted_colors_string += "{},{},{}".format(
-                    colors_hex[i]['low'],
-                    colors_hex[i]['high'],
-                    colors_hex[i]['hex'])
-                if i < len(colors_hex) - 1:
-                    sorted_colors_string += ";"
-
-            mod_graph.range_colors = sorted_colors_string
-
         elif form_mod_graph.graph_type.data == 'gauge_solid':
-            colors_hex = {}
-            f = request_form
-
+            # Combine all color form inputs to dictionary
             for key in f.keys():
                 if ('color_hex_number' in key or
                         'color_stop_number' in key):
                     if int(key[17:]) not in colors_hex:
                         colors_hex[int(key[17:])] = {}
-
                 if 'color_hex_number' in key:
                     for value in f.getlist(key):
                         if not is_rgb_color(value):
-                            flash(gettext(u"Invalid hex color value"), "error")
-                            return redirect(url_for('page_routes.page_graph'))
+                            error.append("Invalid hex color value")
                         colors_hex[int(key[17:])]['hex'] = value
                 elif 'color_stop_number' in key:
                     for value in f.getlist(key):
                         colors_hex[int(key[17:])]['stop'] = value
 
-            sorted_colors_string = ""
-
-            for i in range(len(colors_hex)):
-                sorted_colors_string += "{},{}".format(
-                    colors_hex[i]['stop'],
-                    colors_hex[i]['hex'])
+        # Build string of colors and associated gauge values
+        for i, _ in enumerate(colors_hex):
+            try:
+                if form_mod_graph.graph_type.data == 'gauge_angular':
+                    sorted_colors_string += "{},{},{}".format(
+                        colors_hex[i]['low'],
+                        colors_hex[i]['high'],
+                        colors_hex[i]['hex'])
+                elif form_mod_graph.graph_type.data == 'gauge_solid':
+                    if 0 > colors_hex[i]['stop'] > 1:
+                        error.append("Color stops must be between 0 and 1")
+                    sorted_colors_string += "{},{}".format(
+                        colors_hex[i]['stop'],
+                        colors_hex[i]['hex'])
                 if i < len(colors_hex) - 1:
                     sorted_colors_string += ";"
+            except Exception as err_msg:
+                error.append(err_msg)
 
-            mod_graph.range_colors = sorted_colors_string
-
+        mod_graph.range_colors = sorted_colors_string
         mod_graph.graph_type = form_mod_graph.graph_type.data
         mod_graph.name = form_mod_graph.name.data
         mod_graph.width = form_mod_graph.width.data
@@ -1046,12 +1031,14 @@ def graph_mod(form_mod_graph, request_form):
     else:
         flash_form_errors(form_mod_graph)
 
-    try:
-        db.session.commit()
-    except sqlalchemy.exc.OperationalError as except_msg:
-        error.append(except_msg)
-    except sqlalchemy.exc.IntegrityError as except_msg:
-        error.append(except_msg)
+    if not error:
+        try:
+            db.session.commit()
+        except sqlalchemy.exc.OperationalError as except_msg:
+            error.append(except_msg)
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            error.append(except_msg)
+
     flash_success_errors(error, action, url_for('page_routes.page_graph'))
 
 
