@@ -279,7 +279,6 @@ def page_graph():
     Generate custom graphs to display sensor data retrieved from influxdb.
     """
     # Create form objects
-
     form_add_graph = flaskforms.GraphAdd()
     form_add_gauge = flaskforms.GaugeAdd()
     form_mod_graph = flaskforms.GraphMod()
@@ -317,13 +316,11 @@ def page_graph():
 
     # Retrieve custom colors for gauges
     colors_gauge = OrderedDict()
-
     for each_graph in graph:
         if each_graph.range_colors:  # Split into list
             color_areas = each_graph.range_colors.split(';')
         else:  # Create empty list
             color_areas = []
-
         total = []
         if each_graph.graph_type == 'gauge_angular':
             for each_range in color_areas:

@@ -1004,11 +1004,15 @@ def graph_mod(form_mod_graph, request_form):
                         colors_hex[i]['high'],
                         colors_hex[i]['hex'])
                 elif form_mod_graph.graph_type.data == 'gauge_solid':
-                    if 0 > colors_hex[i]['stop'] > 1:
-                        error.append("Color stops must be between 0 and 1")
-                    sorted_colors_string += "{},{}".format(
-                        colors_hex[i]['stop'],
-                        colors_hex[i]['hex'])
+                    try:
+                        if 0 > colors_hex[i]['stop'] > 1:
+                            error.append("Color stops must be between 0 and 1")
+                        sorted_colors_string += "{},{}".format(
+                            colors_hex[i]['stop'],
+                            colors_hex[i]['hex'])
+                    except Exception:
+                        sorted_colors_string += "0,{}".format(
+                            colors_hex[i]['hex'])
                 if i < len(colors_hex) - 1:
                     sorted_colors_string += ";"
             except Exception as err_msg:

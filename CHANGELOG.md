@@ -1,8 +1,14 @@
+## 5.2.1 (2017-09-21)
+
+### Bugfixes
+
+ - Fix changing a gauge from angular to solid ([#274](https://github.com/kizniche/mycodo/issues/274))
+
 ## 5.2.0 (2017-09-17)
 
 ### Features
 
- - Add gauges to Live Graphs([#274](https://github.com/kizniche/mycodo/issues/274))
+ - Add gauges to Live Graphs ([#274](https://github.com/kizniche/mycodo/issues/274))
 
 ## 5.1.10 (2017-09-12)
 
