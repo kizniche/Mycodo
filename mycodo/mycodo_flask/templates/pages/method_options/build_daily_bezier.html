@@ -1,0 +1,69 @@
+<div class="row">
+  <div class="col-sm-12">
+    <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">{{_('Define the setpoint over the day based on a cubic Bezier curve. If unfamiliar with a Bezier curve, it is recommended you use the <a href="https://www.desmos.com/calculator/cahqdxeshd" target="_blank">graphical Bezier curve generator</a> and use the 8 variables it creates for 4 points (each a set of x and y). The x-axis start (x3) and end (x0) will be automatically stretched or skewed to fit within a 24-hour period and this method will repeat daily.')}}
+  </div>
+
+  <div class="col-md-3">
+    {{form_add_method.x0.label(class_='control-label')}}
+    <div>
+      {{form_add_method.x0(class_='form-control', value=last_bezier_method.x0)}}
+    </div>
+  </div>
+  <div class="col-md-3">
+    {{form_add_method.y0.label(class_='control-label')}}
+    <div>
+      {{form_add_method.y0(class_='form-control', value=last_bezier_method.y0)}}
+    </div>
+  </div>
+  <div class="col-md-3">
+    {{form_add_method.x1.label(class_='control-label')}}
+    <div>
+      {{form_add_method.x1(class_='form-control', value=last_bezier_method.x1)}}
+    </div>
+  </div>
+  <div class="col-md-3">
+    {{form_add_method.y1.label(class_='control-label')}}
+    <div>
+      {{form_add_method.y1(class_='form-control', value=last_bezier_method.y1)}}
+    </div>
+  </div>
+  <div class="col-md-3">
+    {{form_add_method.x2.label(class_='control-label')}}
+    <div>
+      {{form_add_method.x2(class_='form-control', value=last_bezier_method.x2)}}
+    </div>
+  </div>
+  <div class="col-md-3">
+    {{form_add_method.y2.label(class_='control-label')}}
+    <div>
+      {{form_add_method.y2(class_='form-control', value=last_bezier_method.y2)}}
+    </div>
+  </div>
+  <div class="col-md-3">
+    {{form_add_method.x3.label(class_='control-label')}}
+    <div>
+      {{form_add_method.x3(class_='form-control', value=last_bezier_method.x3)}}
+    </div>
+  </div>
+  <div class="col-md-3">
+    {{form_add_method.y3.label(class_='control-label')}}
+    <div>
+      {{form_add_method.y3(class_='form-control', value=last_bezier_method.y3)}}
+    </div>
+  </div>
+  <div class="col-md-3">
+    {{form_add_method.shift_angle.label(class_='control-label')}}
+    <div>
+      {{form_add_method.shift_angle(class_='form-control', value=last_bezier_method.shift_angle)}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-3">
+    <label class='control-label'></label>
+    <div>
+      {{form_add_method.save(class_='form-control btn btn-default', value=_('Save'))}}
+    </div>
+  </div>
+</div>

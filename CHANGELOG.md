@@ -1,3 +1,13 @@
+## 5.2.2 (2017-09-27)
+
+### Features
+
+ - Add 'restart from beginning' option to PID duration methods
+ 
+### Bugfixes
+
+ - Fix adding new graphs
+
 ## 5.2.1 (2017-09-21)
 
 ### Bugfixes

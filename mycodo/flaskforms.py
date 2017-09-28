@@ -588,6 +588,7 @@ class MethodAdd(FlaskForm):
         ]
     )
     save = SubmitField(lazy_gettext(u'Add to Method'))
+    restart = SubmitField(lazy_gettext(u'Restart at Beginning'))
 
 
 class MethodMod(FlaskForm):

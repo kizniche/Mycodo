@@ -1,0 +1,89 @@
+<div class="row">
+  <div class="col-sm-12">
+    <input type="radio" name="method_select" value="setpoint" checked="checked"> {{_('Define the setpoint over a period of time based on specific times/dates.')}}
+    <br>{{_("The new entry's start time may be equal to the last entry's end time, but it cannot overlap. The default setpoint for the PID will be used if there is any unaccounted time.")}}
+  </div>
+  <div class="col-sm-6 col-md-4">
+    {{form_add_method.time_start.label(class_='control-label')}}
+    <div>
+      {{form_add_method.time_start(class_='form-control', value=last_end_time)}}
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-4">
+    {{form_add_method.time_end.label(class_='control-label')}}
+    <div>
+      {{form_add_method.time_end(class_='form-control')}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-6 col-md-4">
+    {{form_add_method.setpoint_start.label(class_='control-label')}}
+    <div>
+      {{form_add_method.setpoint_start(class_='form-control', value=last_setpoint)}}
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-4">
+    {{form_add_method.setpoint_end.label(class_='control-label')}}
+    <div>
+      {{form_add_method.setpoint_end(class_='form-control')}}
+    </div>
+  </div>
+</div>
+
+<div class="row" style="padding-bottom: 1em; padding-top: 1em">
+  <div class="col-sm-12">
+    <label style="padding-top: 1em"></label>
+    <div>
+      OR
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <input type="radio" name="method_select" value="relay"> {{_('Relay')}}
+    <br>{{_('Activate or deactivate a relay within this method at a specific time/date.')}}
+  </div>
+
+  <div class="col-sm-6 col-md-4">
+    {{form_add_method.relay_time.label(class_='control-label')}}
+    <div>
+      {{form_add_method.relay_time(class_='form-control')}}
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-md-4">
+    {{form_add_method.relay_id.label(class_='control-label')}}
+    <div>
+      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relay_id" name="relay_id" title="{{_('Modulate the selected relay')}}.">
+        <option value=""></option>
+        {% for rel in relay -%}
+          <option value="{{rel.id}}">{{rel.id}} ({{rel.name}})</option>
+        {% endfor -%}
+      </select>
+    </div>
+  </div>
+  <div class="col-sm-3 col-md-2">
+    {{form_add_method.relay_state.label(class_='control-label')}}
+    <div>
+      {{form_add_method.relay_state(class_='form-control')}}
+    </div>
+  </div>
+  <div class="col-sm-3 col-md-2">
+    {{form_add_method.relay_duration.label(class_='control-label')}}
+    <div>
+      {{form_add_method.relay_duration(class_='form-control')}}
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-3">
+    <label class='control-label'></label>
+    <div>
+      {{form_add_method.save(class_='form-control btn btn-default')}}
+    </div>
+  </div>
+</div>

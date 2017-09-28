@@ -57,267 +57,40 @@
       {{form_add_method.csrf_token}}
       {{form_add_method.method_id(class_='form-control', value=method.id)}}
 
-      <div class="row">
-
         {%- if method.method_type == "Duration" -%}
 
-        <div class="col-sm-6 col-md-4 " style="padding-bottom: 1.5em">
-          {{form_add_method.duration.label(class_='control-label')}}
-          <div>
-            {{form_add_method.duration(class_='form-control')}}
-          </div>
-        </div>
+          {%- set method_repeat = [] -%}
 
-        {%- endif -%}
+          {%- for each_method in method_data
+            if each_method.method_id == method.id and
+               not each_method.relay_id and
+               not each_method.duration_sec -%}
 
-        {%- if method.method_type == "Date" -%}
+            {%- do method_repeat.append(1) -%}
 
-        <div class="col-sm-12">
-          <input type="radio" name="method_select" value="setpoint" checked="checked"> {{_('Define the setpoint over a period of time based on specific times/dates.')}}
-          <br>{{_("The new entry's start time may be equal to the last entry's end time, but it cannot overlap. The default setpoint for the PID will be used if there is any unaccounted time.")}}
-        </div>
-        <div class="col-sm-6 col-md-4">
-          {{form_add_method.time_start.label(class_='control-label')}}
-          <div>
-            {{form_add_method.time_start(class_='form-control', value=last_end_time)}}
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-4">
-          {{form_add_method.time_end.label(class_='control-label')}}
-          <div>
-            {{form_add_method.time_end(class_='form-control')}}
-          </div>
-        </div>
+          {% endfor %}
+
+          {% if not method_repeat %}
+
+            {% include 'pages/method_options/build_duration.html' %}
+
+          {% endif %}
+
+        {%- elif method.method_type == "Date" -%}
+
+          {% include 'pages/method_options/build_duration.html' %}
 
         {%- elif method.method_type == "Daily" -%}
 
-        <div class="col-md-12">
-          <input type="radio" name="method_select" value="setpoint" checked="checked"> {{_('Define the setpoint over a period of time based on specific times of the day. This method will repeat daily. Start the first entry at midnight (00:00) if you wish to fill the entire day.')}}
-          <br>{{_("The new entry's start time may be equal to the last entry's end time, but it cannot overlap. The default setpoint for the PID will be used if there is any unaccounted time.")}}
-        </div>
-
-        <div class="col-sm-6 col-md-4">
-          {{form_add_method.daily_time_start.label(class_='control-label')}}
-          <div>
-            {{form_add_method.daily_time_start(class_='form-control', value=last_end_time)}}
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-4">
-          {{form_add_method.daily_time_end.label(class_='control-label')}}
-          <div>
-            {{form_add_method.daily_time_end(class_='form-control')}}
-          </div>
-        </div>
+          {% include 'pages/method_options/build_daily.html' %}
 
         {%- elif method.method_type == "DailySine" -%}
 
-        <div class="col-sm-12">
-          <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">{{_('Define the setpoint over the day based on a sinusoidal wave defined by y = [A * sin(B * x + C)] + D, where A is amplitude, B is frequency, C is the angle shift, and D is the y-axis shift. This method will repeat daily.')}}
-        </div>
-        <div class="col-md-3">
-          {{form_add_method.amplitude.label(class_='control-label')}}
-          <div>
-            {{form_add_method.amplitude(class_='form-control', value=last_sine_method.amplitude)}}
-          </div>
-        </div>
-        <div class="col-md-3">
-          {{form_add_method.frequency.label(class_='control-label')}}
-          <div>
-            {{form_add_method.frequency(class_='form-control', value=last_sine_method.frequency)}}
-          </div>
-        </div>
-        <div class="col-md-3">
-          {{form_add_method.shift_angle.label(class_='control-label')}}
-          <div>
-            {{form_add_method.shift_angle(class_='form-control', value=last_sine_method.shift_angle)}}
-          </div>
-        </div>
-        <div class="col-md-3">
-          {{form_add_method.shiftY.label(class_='control-label')}}
-          <div>
-            {{form_add_method.shiftY(class_='form-control', value=last_sine_method.shift_y)}}
-          </div>
-        </div>
+          {% include 'pages/method_options/build_daily_sine.html' %}
 
         {%- elif method.method_type == "DailyBezier" -%}
 
-        <div class="col-sm-12">
-          <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">{{_('Define the setpoint over the day based on a cubic Bezier curve. If unfamiliar with a Bezier curve, it is recommended you use the <a href="https://www.desmos.com/calculator/cahqdxeshd" target="_blank">graphical Bezier curve generator</a> and use the 8 variables it creates for 4 points (each a set of x and y). The x-axis start (x3) and end (x0) will be automatically stretched or skewed to fit within a 24-hour period and this method will repeat daily.')}}
-        </div>
-
-        <div class="col-md-3">
-          {{form_add_method.x0.label(class_='control-label')}}
-          <div>
-            {{form_add_method.x0(class_='form-control', value=last_bezier_method.x0)}}
-          </div>
-        </div>
-        <div class="col-md-3">
-          {{form_add_method.y0.label(class_='control-label')}}
-          <div>
-            {{form_add_method.y0(class_='form-control', value=last_bezier_method.y0)}}
-          </div>
-        </div>
-        <div class="col-md-3">
-          {{form_add_method.x1.label(class_='control-label')}}
-          <div>
-            {{form_add_method.x1(class_='form-control', value=last_bezier_method.x1)}}
-          </div>
-        </div>
-        <div class="col-md-3">
-          {{form_add_method.y1.label(class_='control-label')}}
-          <div>
-            {{form_add_method.y1(class_='form-control', value=last_bezier_method.y1)}}
-          </div>
-        </div>
-        <div class="col-md-3">
-          {{form_add_method.x2.label(class_='control-label')}}
-          <div>
-            {{form_add_method.x2(class_='form-control', value=last_bezier_method.x2)}}
-          </div>
-        </div>
-        <div class="col-md-3">
-          {{form_add_method.y2.label(class_='control-label')}}
-          <div>
-            {{form_add_method.y2(class_='form-control', value=last_bezier_method.y2)}}
-          </div>
-        </div>
-        <div class="col-md-3">
-          {{form_add_method.x3.label(class_='control-label')}}
-          <div>
-            {{form_add_method.x3(class_='form-control', value=last_bezier_method.x3)}}
-          </div>
-        </div>
-        <div class="col-md-3">
-          {{form_add_method.y3.label(class_='control-label')}}
-          <div>
-            {{form_add_method.y3(class_='form-control', value=last_bezier_method.y3)}}
-          </div>
-        </div>
-        <div class="col-md-3">
-          {{form_add_method.shift_angle.label(class_='control-label')}}
-          <div>
-            {{form_add_method.shift_angle(class_='form-control', value=last_bezier_method.shift_angle)}}
-          </div>
-        </div>
-
-        {%- elif method.method_type == "Duration" -%}
-
-        <div class="col-sm-12">
-          <input type="radio" name="method_select" value="setpoint" checked="checked"> {{_('Define the setpoint over a period of time, based on specific durations of time.')}}
-          <br>{{_('Duration here is defined as the amount of time after the previous duration. If this is the first duration added, this will be the beginning of the method. If this is not the first duration added, it will execute after the last duration already in the method.')}}
-        </div>
-
-        {%- endif -%}
-
-      </div>
-
-        {%- if method.method_type in ['Date', 'Duration', 'Daily'] -%}
-
-      <div class="row">
-        <div class="col-sm-6 col-md-4">
-          {{form_add_method.setpoint_start.label(class_='control-label')}}
-          <div>
-            {{form_add_method.setpoint_start(class_='form-control', value=last_setpoint)}}
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-4">
-          {{form_add_method.setpoint_end.label(class_='control-label')}}
-          <div>
-            {{form_add_method.setpoint_end(class_='form-control')}}
-          </div>
-        </div>
-      </div>
-
-      <div class="row" style="padding-bottom: 1em; padding-top: 1em">
-        <div class="col-sm-12">
-          <label style="padding-top: 1em"></label>
-          <div>
-            OR
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-
-          {%- if method.method_type == "Date" -%}
-
-        <div class="col-md-12">
-          <input type="radio" name="method_select" value="relay"> {{_('Relay')}}
-          <br>{{_('Activate or deactivate a relay within this method at a specific time/date.')}}
-        </div>
-
-        <div class="col-sm-6 col-md-4">
-          {{form_add_method.relay_time.label(class_='control-label')}}
-          <div>
-            {{form_add_method.relay_time(class_='form-control')}}
-          </div>
-        </div>
-
-          {%- elif method.method_type == 'Daily' -%}
-
-        <div class="col-md-12">
-          <input type="radio" name="method_select" value="relay"> {{_('Relay')}}
-          <br>{{_('Activate or deactivate a relay at a specific time of day. Hour and minute (HH:MM) here is defined as the time of day. For example, 3:05 PM would be "15:05".')}}
-        </div>
-        <div class="col-sm-6 col-md-2">
-          {{form_add_method.relay_daily_time.label(class_='control-label')}}
-          <div>
-            {{form_add_method.relay_daily_time(class_='form-control')}}
-          </div>
-        </div>
-
-          {%- elif method.method_type == "Duration" -%}
-
-        <div class="col-md-12">
-          <input type="radio" name="method_select" value="relay"> {{_('Relay')}}
-          <br>{{_('Activate or deactivate a relay within this method at a specific duration. Duration here is defined as the amount of time since the beginning of the method. For example, 60 seconds would execute the relay modulation 60 seconds after the start of the method.')}}
-        </div>
-
-          {%- endif -%}
-
-        <div class="col-sm-6 col-md-4">
-          {{form_add_method.relay_id.label(class_='control-label')}}
-          <div>
-            <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relay_id" name="relay_id" title="{{_('Modulate the selected relay')}}.">
-              <option value=""></option>
-              {% for rel in relay -%}
-                <option value="{{rel.id}}">{{rel.id}} ({{rel.name}})</option>
-              {% endfor -%}
-            </select>
-          </div>
-        </div>
-        <div class="col-sm-3 col-md-2">
-          {{form_add_method.relay_state.label(class_='control-label')}}
-          <div>
-            {{form_add_method.relay_state(class_='form-control')}}
-          </div>
-        </div>
-        <div class="col-sm-3 col-md-2">
-          {{form_add_method.relay_duration.label(class_='control-label')}}
-          <div>
-            {{form_add_method.relay_duration(class_='form-control')}}
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-3">
-          <label class='control-label'></label>
-          <div>
-            {{form_add_method.save(class_='form-control btn btn-default')}}
-          </div>
-        </div>
-      </div>
-
-        {%- elif method.method_type in ['DailySine', 'DailyBezier'] -%}
-
-      <div class="row">
-        <div class="col-md-3">
-          <label class='control-label'></label>
-          <div>
-            {{form_add_method.save(class_='form-control btn btn-default', value=_('Save'))}}
-          </div>
-        </div>
-      </div>
+          {% include 'pages/method_options/build_daily_bezier.html' %}
 
         {%- endif -%}
 
@@ -381,7 +154,7 @@
             </div>
           </div>
 
-          {% elif method.method_type == "Duration" -%}
+          {% elif method.method_type == "Duration" and each_method.duration_sec -%}
 
           <div class="col-sm-4 col-md-2">
             {{form_mod_method.duration.label(class_='control-label')}}
@@ -391,6 +164,23 @@
           </div>
 
           {% endif -%}
+
+          {% if method.method_type == "Duration" and not each_method.duration_sec %}
+
+          <div class="col-sm-4 col-md-2">
+            <label class='control-label' style="padding-top: 1em"></label>
+            <div>
+              <input class="form-control btn btn-default" disabled="" value="Repeat Method" type="text">
+            </div>
+          </div>
+          <div class="col-sm-3 col-md-2">
+            <label class='control-label' style="padding-top: 1em"></label>
+            <div>
+              {{form_mod_method.Delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this method line?")'})}}
+            </div>
+          </div>
+
+          {% else %}
 
           <div class="col-sm-3 col-md-2">
             {{form_mod_method.setpoint_start.label(class_='control-label')}}
@@ -416,6 +206,9 @@
               {{form_mod_method.Delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this method line?")'})}}
             </div>
           </div>
+
+          {% endif %}
+
           </form>
         </div>
 

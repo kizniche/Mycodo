@@ -625,7 +625,13 @@ class PIDController(threading.Thread):
             seconds_from_start = (now - self.method_start_time).total_seconds()
             total_sec = 0
             previous_total_sec = 0
+            method_restart = False
+
             for each_method in method_data_all:
+                # If duration_sec == 0, method has instruction to restart
+                if each_method.duration_sec:
+                    method_restart = True
+
                 total_sec += each_method.duration_sec
                 if previous_total_sec <= seconds_from_start < total_sec:
                     row_start_time = float(self.method_start_time.strftime('%s'))+previous_total_sec
@@ -662,14 +668,24 @@ class PIDController(threading.Thread):
                     return 0
                 previous_total_sec = total_sec
 
-            # Duration method has ended, reset method_start_time locally and in DB
             if self.method_start_time:
-                with session_scope(MYCODO_DB_PATH) as db_session:
-                    mod_method = db_session.query(Method).filter(
-                        Method.id == self.method_id).first()
-                    mod_method.start_time = 'Ended'
-                    db_session.commit()
-                self.method_start_time = 'Ended'
+                if method_restart:
+                    # Method has been instructed to restart
+                    with session_scope(MYCODO_DB_PATH) as db_session:
+                        mod_method = db_session.query(Method)
+                        mod_method = mod_method.filter(Method.id == self.method_id).first()
+                        mod_method.start_time = datetime.datetime.now()
+                        self.method_start_time = mod_method.start_time
+                        db_session.commit()
+
+                else:
+                    # Duration method has ended, reset method_start_time locally and in DB
+                    with session_scope(MYCODO_DB_PATH) as db_session:
+                        mod_method = db_session.query(Method).filter(
+                            Method.id == self.method_id).first()
+                        mod_method.start_time = 'Ended'
+                        db_session.commit()
+                    self.method_start_time = 'Ended'
 
         # Setpoint not needing to be calculated, use default setpoint
         self.set_point = self.default_set_point

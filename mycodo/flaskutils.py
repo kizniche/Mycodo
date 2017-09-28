@@ -119,12 +119,14 @@ def validate_method_data(form_data, this_method):
                 return 1
 
         elif this_method.method_type == 'Duration':
-            if (not form_data.duration.data or
-                    form_data.setpoint_start.data == ''):
+            if (not form_data.restart.data and
+                    (not form_data.duration.data or
+                        form_data.setpoint_start.data == '')):
                 flash(gettext(u"Required: Duration, start setpoint"),
                       "error")
                 return 1
-            if not is_positive_integer(form_data.duration.data):
+            if (not form_data.restart.data and
+                    not is_positive_integer(form_data.duration.data)):
                 flash(gettext(u"Required: Duration must be positive"),
                       "error")
                 return 1
@@ -339,7 +341,10 @@ def method_add(form_add_method):
             if form_add_method.method_select.data == 'relay':
                 add_method_data.time_start = form_add_method.relay_daily_time.data
         elif method.method_type == 'Duration':
-            add_method_data.duration_sec = form_add_method.duration.data
+            if form_add_method.restart.data:
+                add_method_data.duration_sec = 0
+            else:
+                add_method_data.duration_sec = form_add_method.duration.data
 
         if form_add_method.method_select.data == 'setpoint':
             add_method_data.setpoint_start = form_add_method.setpoint_start.data
@@ -370,8 +375,11 @@ def method_add(form_add_method):
                               end=end_time.strftime('%H:%M:%S')),
                       "success")
             elif method.method_type == 'Duration':
-                flash(gettext(u"Added duration to method for %(sec)s seconds",
-                              sec=form_add_method.duration.data), "success")
+                if form_add_method.restart.data:
+                    flash(gettext(u"Added method restart"), "success")
+                else:
+                    flash(gettext(u"Added duration to method for %(sec)s seconds",
+                                  sec=form_add_method.duration.data), "success")
         elif form_add_method.method_select.data == 'relay':
             if method.method_type == 'Date':
                 flash(gettext(u"Added relay modulation to method at start "
@@ -829,12 +837,13 @@ def graph_add(form_add_graph, display_order):
                 form_add_graph.height.data and
                 form_add_graph.xaxis_duration.data and
                 form_add_graph.refresh_duration.data)):
+        new_graph.graph_type = form_add_graph.graph_type.data
         new_graph.name = form_add_graph.name.data
         if form_add_graph.pid_ids.data:
             pid_ids_joined = ";".join(form_add_graph.pid_ids.data)
             new_graph.pid_ids = pid_ids_joined
         if form_add_graph.relay_ids.data:
-            relay_ids_joined = ",".join(form_add_graph.relay_ids.data)
+            relay_ids_joined = ";".join(form_add_graph.relay_ids.data)
             new_graph.relay_ids = relay_ids_joined
         if form_add_graph.sensor_ids.data:
             sensor_ids_joined = ";".join(form_add_graph.sensor_ids.data)

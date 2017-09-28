@@ -627,6 +627,11 @@ or hours. Each duration will stack on the previous duration, meaning a
 newly-added start setpoint will begin from the previous entry's end
 setpoint.
 
+If the "Repeat Method" option is used, this will cause the method to
+repeat once it has reached the end. If this option is used, no more
+durations may be added to the method. If the repeat option is deleted
+then more durations may be added.
+
 #### Daily (Time-Based) Method
 
 The daily time-based method is similar to the time/date method, however

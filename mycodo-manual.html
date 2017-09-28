@@ -1324,6 +1324,7 @@
 <p>A time/date method allows a specific time/date span to dictate the setpoint. This is useful for long-running methods, that may take place over the period of days, weeks, or months.</p>
 <h4 id="duration-method">Duration Method</h4>
 <p>A duration method allows a specific durations of time to dictate the setpoint. This is useful for when short periods of time are required in a method, such as those that take place over the course of a few minutes or hours. Each duration will stack on the previous duration, meaning a newly-added start setpoint will begin from the previous entry’s end setpoint.</p>
+<p>If the “Repeat Method” option is used, this will cause the method to repeat once it has reached the end. If this option is used, no more durations may be added to the method. If the repeat option is deleted then more durations may be added.</p>
 <h4 id="daily-time-based-method">Daily (Time-Based) Method</h4>
 <p>The daily time-based method is similar to the time/date method, however it will repeat every day. Therefore, it is essential that only the span of one day be set in this method. Begin with the start time at 00:00:00 and end at 23:59:59 (or 00:00:00, which would be 24 hours from the start). The start time must be equal or greater than the previous end time.</p>
 <h4 id="daily-sine-wave-method">Daily (Sine Wave) Method</h4>
