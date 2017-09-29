@@ -119,14 +119,17 @@ def validate_method_data(form_data, this_method):
                 return 1
 
         elif this_method.method_type == 'Duration':
-            if (not form_data.restart.data and
-                    (not form_data.duration.data or
-                        form_data.setpoint_start.data == '')):
+            try:
+                if form_data.restart.data:
+                    return 0
+            except:
+                return 0
+            if (not form_data.duration.data or
+                    form_data.setpoint_start.data == ''):
                 flash(gettext(u"Required: Duration, start setpoint"),
                       "error")
                 return 1
-            if (not form_data.restart.data and
-                    not is_positive_integer(form_data.duration.data)):
+            if not is_positive_integer(form_data.duration.data):
                 flash(gettext(u"Required: Duration must be positive"),
                       "error")
                 return 1

@@ -143,26 +143,27 @@ class PIDController(threading.Thread):
         if self.method_id:
             method = db_retrieve_table_daemon(Method, device_id=self.method_id)
             self.method_type = method.method_type
-            self.method_start_time = method.start_time
+            self.method_start_act = method.start_time
+            self.method_start_time = None
 
             if self.method_type == 'Duration':
-                if self.method_start_time == 'Ended':
+                if self.method_start_act == 'Ended':
                     # Method has ended and hasn't been instructed to begin again
                     pass
-                elif self.method_start_time == 'Ready' or self.method_start_time is None:
+                elif self.method_start_act == 'Ready' or self.method_start_act is None:
                     # Method has been instructed to begin
+                    self.method_start_time = datetime.datetime.now()
                     with session_scope(MYCODO_DB_PATH) as db_session:
                         mod_method = db_session.query(Method)
                         mod_method = mod_method.filter(Method.id == self.method_id).first()
-                        mod_method.start_time = datetime.datetime.now()
-                        self.method_start_time = mod_method.start_time
+                        mod_method.start_time = self.method_start_time
                         db_session.commit()
                 else:
                     # Method neither instructed to begin or not to
                     # Likely there was a daemon restart ot power failure
                     # Resume method with saved start_time
                     self.method_start_time = datetime.datetime.strptime(
-                        str(self.method_start_time), '%Y-%m-%d %H:%M:%S.%f')
+                        str(method.start_time), '%Y-%m-%d %H:%M:%S.%f')
                     self.logger.warning(
                         "Resuming method {id} started at {time}".format(
                             id=self.method_id, time=self.method_start_time))
@@ -543,15 +544,15 @@ class PIDController(threading.Thread):
                     else:
                         setpoint_end = each_method.setpoint_start
 
-                    setpoint_diff = abs(setpoint_end-setpoint_start)
-                    total_seconds = (end_time-start_time).total_seconds()
-                    part_seconds = (now-start_time).total_seconds()
-                    percent_total = part_seconds/total_seconds
+                    setpoint_diff = abs(setpoint_end - setpoint_start)
+                    total_seconds = (end_time - start_time).total_seconds()
+                    part_seconds = (now - start_time).total_seconds()
+                    percent_total = part_seconds / total_seconds
 
                     if setpoint_start < setpoint_end:
-                        new_setpoint = setpoint_start+(setpoint_diff*percent_total)
+                        new_setpoint = setpoint_start + (setpoint_diff * percent_total)
                     else:
-                        new_setpoint = setpoint_start-(setpoint_diff*percent_total)
+                        new_setpoint = setpoint_start - (setpoint_diff * percent_total)
 
                     self.logger.debug("[Method] Start: {start} End: {end}".format(
                         start=start_time, end=end_time))
@@ -621,20 +622,24 @@ class PIDController(threading.Thread):
             return 0
 
         # Calculate the duration in the method based on self.method_start_time
-        elif method_key.method_type == 'Duration' and self.method_start_time != 'Ended':
+        elif method_key.method_type == 'Duration' and self.method_start_act != 'Ended':
             seconds_from_start = (now - self.method_start_time).total_seconds()
             total_sec = 0
             previous_total_sec = 0
+            previous_end = None
             method_restart = False
 
             for each_method in method_data_all:
-                # If duration_sec == 0, method has instruction to restart
-                if each_method.duration_sec:
+                # If duration_sec is 0, method has instruction to restart
+                if each_method.duration_sec == 0:
                     method_restart = True
+                    self.set_point = previous_end
+                else:
+                    previous_end = each_method.setpoint_end
 
                 total_sec += each_method.duration_sec
                 if previous_total_sec <= seconds_from_start < total_sec:
-                    row_start_time = float(self.method_start_time.strftime('%s'))+previous_total_sec
+                    row_start_time = float(self.method_start_time.strftime('%s')) + previous_total_sec
                     row_since_start_sec = (now - (self.method_start_time + datetime.timedelta(0, previous_total_sec))).total_seconds()
                     percent_row = row_since_start_sec / each_method.duration_sec
 
@@ -671,12 +676,13 @@ class PIDController(threading.Thread):
             if self.method_start_time:
                 if method_restart:
                     # Method has been instructed to restart
+                    self.method_start_time = datetime.datetime.now()
                     with session_scope(MYCODO_DB_PATH) as db_session:
                         mod_method = db_session.query(Method)
                         mod_method = mod_method.filter(Method.id == self.method_id).first()
-                        mod_method.start_time = datetime.datetime.now()
-                        self.method_start_time = mod_method.start_time
+                        mod_method.start_time = self.method_start_time
                         db_session.commit()
+                        return 0
 
                 else:
                     # Duration method has ended, reset method_start_time locally and in DB
@@ -685,7 +691,7 @@ class PIDController(threading.Thread):
                             Method.id == self.method_id).first()
                         mod_method.start_time = 'Ended'
                         db_session.commit()
-                    self.method_start_time = 'Ended'
+                    self.method_start_act = 'Ended'
 
         # Setpoint not needing to be calculated, use default setpoint
         self.set_point = self.default_set_point
@@ -761,11 +767,11 @@ class PIDController(threading.Thread):
     def is_running(self):
         return self.running
 
-    def stop_controller(self):
+    def stop_controller(self, ended_normally=True):
         self.thread_shutdown_timer = timeit.default_timer()
         self.running = False
         # Unset method start time
-        if self.method_id:
+        if self.method_id and ended_normally:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_method = db_session.query(Method).filter(
                     Method.id == self.method_id).first()

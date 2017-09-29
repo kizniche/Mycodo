@@ -267,7 +267,6 @@ class ComThread(threading.Thread):
 def test_rpyc(logger_rpyc):
     running = True
     log_timer = time.time() + 60
-    # TODO: change info to debug
     while running:
         now = time.time()
         if now > log_timer:
@@ -811,7 +810,7 @@ class DaemonController(threading.Thread):
 
             for pid_id in self.controller['PID']:
                 if self.controller['PID'][pid_id].is_running():
-                    self.controller['PID'][pid_id].stop_controller()
+                    self.controller['PID'][pid_id].stop_controller(ended_normally=False)
                     pid_controller_running.append(pid_id)
 
             for sensor_id in self.controller['Sensor']:

@@ -1,3 +1,9 @@
+## 5.2.3 (2017-09-28)
+
+### Bugfixes
+
+ - Fix issues with method repeat option
+
 ## 5.2.2 (2017-09-27)
 
 ### Features

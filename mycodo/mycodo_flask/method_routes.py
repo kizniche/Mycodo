@@ -157,7 +157,10 @@ def method_data(method_id):
                 setpoint_end = each_method.setpoint_start
             else:
                 setpoint_end = each_method.setpoint_end
-            if first_entry:
+
+            if each_method.duration_sec == 0:
+                pass  # Method line is repeat command, don't add to method_list
+            elif first_entry:
                 method_list.append([0, each_method.setpoint_start])
                 method_list.append([each_method.duration_sec, setpoint_end])
                 start_duration += each_method.duration_sec
