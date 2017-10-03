@@ -26,7 +26,7 @@ sensor_classes = [
     AtlaspHSensor('UART', device_loc='/dev/ttyS0', baud_rate=9600),
     AtlasPT1000Sensor('I2C', i2c_address=0x00, i2c_bus=1),
     AtlasPT1000Sensor('UART', device_loc='/dev/ttyS0', baud_rate=9600),
-    AM2315Sensor(1, 1),
+    # AM2315Sensor(1, 1),
     # BME280Sensor(0x00, 1),
     BMP180Sensor(1),
     # DHT11Sensor(pigpio.pi(), 1),
