@@ -1,4 +1,10 @@
-## 5.2.3 (2017-09-28)
+## 5.2.4 (Unreleased)
+
+### Bugfixes
+
+ - Fix Travis-CI tests failing
+
+## 5.2.3 (2017-09-29)
 
 ### Bugfixes
 

@@ -1,13 +1,9 @@
 # coding=utf-8
-import datetime
 from RPi import GPIO
 
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
-
-from mycodo.devices.wireless_433mhz_pi_switch import Transmit433MHz
-from mycodo.utils.system_pi import cmd_output
 
 
 class Relay(CRUDMixin, db.Model):
@@ -60,44 +56,6 @@ class Relay(CRUDMixin, db.Model):
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(True)
         GPIO.setup(self.pin, GPIO.OUT)
-
-    def turn_off(self):
-        """
-        Turn this relay off
-
-        :rtype: None
-        """
-        self.on_duration = False
-        self.on_until = datetime.datetime.now()
-        if self.relay_type == 'wired' and self._is_setup():
-            GPIO.output(self.pin, not self.trigger)
-        elif self.relay_type == 'wireless_433MHz_pi_switch' and self.off_command:
-            wireless_pi_switch = Transmit433MHz(
-                self.pin,
-                protocol=int(self.protocol),
-                pulse_length=int(self.pulse_length),
-                bit_length=int(self.bit_length))
-            wireless_pi_switch.transmit(int(self.off_command))
-        elif self.relay_type == 'command' and self.off_command:
-            cmd_return, _, cmd_status = cmd_output(self.off_command)
-
-    def turn_on(self):
-        """
-        Turn this relay on
-
-        :rtype: None
-        """
-        if self.relay_type == 'wired' and self._is_setup():
-            GPIO.output(self.pin, self.trigger)
-        elif self.relay_type == 'wireless_433MHz_pi_switch' and self.on_command:
-            wireless_pi_switch = Transmit433MHz(
-                self.pin,
-                protocol=int(self.protocol),
-                pulse_length=int(self.pulse_length),
-                bit_length=int(self.bit_length))
-            wireless_pi_switch.transmit(int(self.on_command))
-        elif self.relay_type == 'command' and self.on_command:
-            cmd_return, _, cmd_status = cmd_output(self.on_command)
 
     def is_on(self):
         """
