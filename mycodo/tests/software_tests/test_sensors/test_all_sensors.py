@@ -29,7 +29,7 @@ from mycodo.sensors.tsl2561 import TSL2561Sensor
 def return_classes():
     sensor_classes = [
         # AtlasPT1000Sensor('I2C', i2c_address=0x00, i2c_bus=1),
-        AM2315Sensor(1),
+        AM2315Sensor(1, 1, testing=True),
         # BME280Sensor(0x00, 1),
         # BMPSensor(1),
         # DHT11Sensor(pigpio.pi(), 1),

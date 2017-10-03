@@ -218,7 +218,7 @@ def sees_navbar(testapp):
         'Mycodo Logs',
         'PID Methods',
         'PID Controllers',
-        'Relays',
+        'Output',
         'Relay Usage',
         'Relay Usage Reports',
         'Remote Admin',

@@ -39,7 +39,7 @@ def test_am2315__iter__returns_iterator():
 
 
 def test_am2315_read_updates_temp():
-    """  Verify that AM2315Sensor(1).read() gets the average temp """
+    """  Verify that AM2315Sensor(1, 1, testing=True).read() gets the average temp """
     with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement') as mock_measure:
         # create our object
         mock_measure.side_effect = [(20, 33, 67),  # first reading
