@@ -19,7 +19,7 @@ def test_am2315_iterates_using_in():
                                     (17, 27, 37),
                                     (18, 30, 45)]  # first reading, second reading
 
-        am2315 = AM2315Sensor(1, 1)
+        am2315 = AM2315Sensor(1, 1, testing=True)
         expected_result_list = [dict(dewpoint=15, humidity=23, temperature=67.00),
                                 dict(dewpoint=16, humidity=25, temperature=52.00),
                                 dict(dewpoint=17, humidity=27, temperature=37.00),
@@ -33,7 +33,7 @@ def test_am2315__iter__returns_iterator():
         # create our object
         mock_measure.side_effect = [(23, 67),  # first reading
                                     (25, 52)]  # second reading
-        am2315 = AM2315Sensor(1, 1)
+        am2315 = AM2315Sensor(1, 1, testing=True)
         # check __iter__ method return
         assert isinstance(am2315.__iter__(), Iterator)
 
@@ -44,7 +44,7 @@ def test_am2315_read_updates_temp():
         # create our object
         mock_measure.side_effect = [(20, 33, 67),  # first reading
                                     (22, 59, 52)]  # second reading
-        am2315 = AM2315Sensor(1, 1)
+        am2315 = AM2315Sensor(1, 1, testing=True)
 
         # test our read() function
         assert am2315._dew_point == 0  # init value
@@ -66,7 +66,7 @@ def test_am2315_next_returns_dict():
         # create our object
         mock_measure.side_effect = [(20, 44, 67),  # first reading
                                     (22, 64, 52)]  # second reading
-        am2315 = AM2315Sensor(1, 1)
+        am2315 = AM2315Sensor(1, 1, testing=True)
         assert am2315.next() == dict(dewpoint=20,
                                      humidity=44,
                                      temperature=67.00)
@@ -78,7 +78,7 @@ def test_am2315_condition_properties():
         # create our object
         mock_measure.side_effect = [(20, 50, 67),  # first reading
                                     (22, 55, 52)]  # second reading
-        am2315 = AM2315Sensor(1, 1)
+        am2315 = AM2315Sensor(1, 1, testing=True)
         assert am2315._dew_point == 0  # initial value
         assert am2315._humidity == 0  # initial value
         assert am2315._temperature == 0  # initial value
@@ -96,27 +96,27 @@ def test_am2315_condition_properties():
 
 def test_am2315_special_method_str():
     """ expect a __str__ format """
-    assert "Dew Point: 0.00" in str(AM2315Sensor(1, 1))
-    assert "Humidity: 0.00" in str(AM2315Sensor(1, 1))
-    assert "Temperature: 0.00" in str(AM2315Sensor(1, 1))
+    assert "Dew Point: 0.00" in str(AM2315Sensor(1, 1, testing=True))
+    assert "Humidity: 0.00" in str(AM2315Sensor(1, 1, testing=True))
+    assert "Temperature: 0.00" in str(AM2315Sensor(1, 1, testing=True))
 
 
 def test_am2315_special_method_repr():
     """ expect a __repr__ format """
-    assert "<AM2315Sensor(dewpoint=0.00)(humidity=0.00)(temperature=0.00)>" in repr(AM2315Sensor(1, 1))
+    assert "<AM2315Sensor(dewpoint=0.00)(humidity=0.00)(temperature=0.00)>" in repr(AM2315Sensor(1, 1, testing=True))
 
 
 def test_am2315_raises_exception():
     """ stops iteration on read() error """
     with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement', side_effect=IOError):
         with pytest.raises(StopIteration):
-            AM2315Sensor(1, 1).next()
+            AM2315Sensor(1, 1, testing=True).next()
 
 
 def test_am2315_read_returns_1_on_exception():
     """ Verify the read() method returns true on error """
     with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement', side_effect=Exception):
-        assert AM2315Sensor(1, 1).read()
+        assert AM2315Sensor(1, 1, testing=True).read()
 
 
 # def test_am2315_get_measurement_divs_by_1k():
@@ -130,6 +130,6 @@ def test_am2315_read_logs_unknown_errors():
     with LogCapture() as log_cap:
         # force an Exception to be raised when get_measurement is called
         with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement', side_effect=Exception('msg')):
-            AM2315Sensor(1, 1).read()
+            AM2315Sensor(1, 1, testing=True).read()
     expected_logs = ('mycodo.sensors.am2315', 'ERROR', 'AM2315Sensor raised an exception when taking a reading: msg')
     assert expected_logs in log_cap.actual()
