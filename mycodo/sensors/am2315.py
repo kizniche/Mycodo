@@ -17,12 +17,14 @@ class AM2315Sensor(AbstractSensor):
 
     """
 
-    def __init__(self, sensor_id, bus, power=None):
+    def __init__(self, sensor_id, bus, power=None, testing=False):
         super(AM2315Sensor, self).__init__()
         self.logger = logging.getLogger(
             'mycodo.sensor_{id}'.format(id=sensor_id))
 
-        self.control = DaemonControl()
+        self.testing = testing
+        if not self.testing:
+            self.control = DaemonControl()
 
         self.I2C_bus_number = str(bus)
         self.power_relay_id = power
@@ -165,7 +167,8 @@ class AM2315Sensor(AbstractSensor):
         """ Turn the sensor on """
         if self.power_relay_id:
             self.logger.info("Turning on sensor")
-            self.control.relay_on(self.power_relay_id, 0)
+            if not self.testing:
+                self.control.relay_on(self.power_relay_id, 0)
             time.sleep(2)
             self.powered = True
 
@@ -173,5 +176,6 @@ class AM2315Sensor(AbstractSensor):
         """ Turn the sensor off """
         if self.power_relay_id:
             self.logger.info("Turning off sensor")
-            self.control.relay_off(self.power_relay_id)
+            if not self.testing:
+                self.control.relay_off(self.power_relay_id)
             self.powered = False
