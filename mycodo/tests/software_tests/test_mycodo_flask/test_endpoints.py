@@ -74,7 +74,7 @@ def test_routes_when_not_logged_in(testapp):
         'pid',
         'output',
         'remote/setup',
-        'sensor',
+        'input',
         'settings/alerts',
         'settings/camera',
         'settings/general',
@@ -123,7 +123,7 @@ def test_routes_logged_in_as_admin(_, testapp):
         ('pid', '<!-- Route: /pid -->'),
         ('output', '<!-- Route: /output -->'),
         ('remote/setup', '<!-- Route: /remote/setup -->'),
-        ('sensor', '<!-- Route: /input -->'),
+        ('input', '<!-- Route: /input -->'),
         ('timer', '<!-- Route: /timer -->'),
         ('usage', '<!-- Route: /usage -->'),
         ('usage_reports', '<!-- Route: /usage_reports -->')
