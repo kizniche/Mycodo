@@ -557,6 +557,7 @@ class MethodAdd(FlaskForm):
     setpoint_start = DecimalField(lazy_gettext(u'Start Setpoint'))
     setpoint_end = DecimalField(lazy_gettext(u'End Setpoint (optional)'))
     duration = DecimalField(lazy_gettext(u'Duration (seconds)'))
+    duration_end = DecimalField(lazy_gettext(u'End After (seconds)'))
     amplitude = DecimalField(lazy_gettext(u'Amplitude'))
     frequency = DecimalField(lazy_gettext(u'Frequency'))
     shift_angle = DecimalField(lazy_gettext(u'Angle Shift (0 to 360)'))
@@ -622,6 +623,7 @@ class MethodMod(FlaskForm):
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
     duration = DecimalField(lazy_gettext(u'Duration (seconds)'))
+    duration_end = DecimalField(lazy_gettext(u'End After (seconds)'))
     setpoint_start = DecimalField(lazy_gettext(u'Start Setpoint'))
     setpoint_end = DecimalField(lazy_gettext(u'End Setpoint'))
     relay_id = StringField(lazy_gettext(u'Relay'))

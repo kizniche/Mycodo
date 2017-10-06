@@ -123,9 +123,14 @@ def validate_method_data(form_data, this_method):
                 if form_data.restart.data:
                     return 0
             except:
-                return 0
+                pass
+            try:
+                if form_data.duration_end.data:
+                    return 0
+            except:
+                pass
             if (not form_data.duration.data or
-                    form_data.setpoint_start.data == ''):
+                    not form_data.setpoint_start.data):
                 flash(gettext(u"Required: Duration, start setpoint"),
                       "error")
                 return 1
@@ -346,6 +351,7 @@ def method_add(form_add_method):
         elif method.method_type == 'Duration':
             if form_add_method.restart.data:
                 add_method_data.duration_sec = 0
+                add_method_data.duration_end = form_add_method.duration_end.data
             else:
                 add_method_data.duration_sec = form_add_method.duration.data
 
@@ -478,7 +484,10 @@ def method_mod(form_mod_method):
                 method_data.time_end = end_time.strftime('%Y-%m-%d %H:%M:%S')
 
             elif method.method_type == 'Duration':
-                method_data.duration_sec = form_mod_method.duration.data
+                if method_data.duration_sec == 0:
+                    method_data.duration_end = form_mod_method.duration_end.data
+                else:
+                    method_data.duration_sec = form_mod_method.duration.data
 
             elif method.method_type == 'Daily':
                 method_data.time_start = form_mod_method.daily_time_start.data
@@ -492,6 +501,8 @@ def method_mod(form_mod_method):
                 method_data.time_start = form_mod_method.relay_time.data
             elif method.method_type == 'Duration':
                 method_data.duration_sec = form_mod_method.duration.data
+                if form_mod_method.duration_sec.data == 0:
+                    method_data.duration_end = form_mod_method.duration_end.data
             if form_mod_method.relay_id.data == '':
                 method_data.relay_id = None
             else:

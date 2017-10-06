@@ -1,8 +1,8 @@
-## 5.2.4 (Unreleased)
+## 5.2.4 (2017-10-05)
 
-### Bugfixes
+### Features
 
- - Fix Travis-CI tests failing
+ - Add ability to set time to end repeating duration method
 
 ## 5.2.3 (2017-09-29)
 

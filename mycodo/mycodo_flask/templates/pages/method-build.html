@@ -168,9 +168,21 @@
           {% if method.method_type == "Duration" and not each_method.duration_sec %}
 
           <div class="col-sm-4 col-md-2">
+            {{form_mod_method.duration_end.label(class_='control-label')}}
+            <div>
+              {{form_mod_method.duration_end(class_='form-control', value=each_method.duration_end)}}
+            </div>
+          </div>
+          <div class="col-sm-4 col-md-2">
             <label class='control-label' style="padding-top: 1em"></label>
             <div>
               <input class="form-control btn btn-default" disabled="" value="Repeat Method" type="text">
+            </div>
+          </div>
+          <div class="col-sm-3 col-md-2">
+            <label class='control-label' style="padding-top: 1em"></label>
+            <div>
+              {{form_mod_method.save(class_='form-control btn btn-default')}}
             </div>
           </div>
           <div class="col-sm-3 col-md-2">
