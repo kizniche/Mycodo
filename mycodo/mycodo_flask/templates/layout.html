@@ -56,6 +56,10 @@
           }
         }
       },
+      error: function() {
+        document.getElementById("daemon-status").style.color = "#f78900";
+        $('#daemon-status').tooltip('hide').attr('data-original-title', '{{_('Cannot Check Daemon Status')}}');
+      },
       cache: false
     });
   }
