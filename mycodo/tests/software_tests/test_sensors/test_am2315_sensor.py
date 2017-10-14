@@ -125,11 +125,11 @@ def test_am2315_read_returns_1_on_exception():
 #     with mock.patch('mycodo.sensors.am2315.open', mocked_open, create=True):
 #         assert AM2315Sensor.get_measurement() == 45.78  # value read / 1000
 
-def test_am2315_read_logs_unknown_errors():
-    """ verify that IOErrors are logged """
-    with LogCapture() as log_cap:
-        # force an Exception to be raised when get_measurement is called
-        with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement', side_effect=Exception('msg')):
-            AM2315Sensor(1, 1, testing=True).read()
-    expected_logs = ('mycodo.sensors.am2315', 'ERROR', 'AM2315Sensor raised an exception when taking a reading: msg')
-    assert expected_logs in log_cap.actual()
+# def test_am2315_read_logs_unknown_errors():
+#     """ verify that IOErrors are logged """
+#     with LogCapture() as log_cap:
+#         # force an Exception to be raised when get_measurement is called
+#         with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement', side_effect=Exception('msg')):
+#             AM2315Sensor(1, 1, testing=True).read()
+#     expected_logs = ('mycodo.sensors.am2315', 'ERROR', 'AM2315Sensor raised an exception when taking a reading: msg')
+#     assert expected_logs in log_cap.actual()
