@@ -1,3 +1,13 @@
+## 5.2.5 (Unreleased)
+
+### Features
+
+ - Add another status indicator color (top-left of web UI): Orange: unable to connect to daemon
+
+### Bugfixes
+
+ - Fix Asynchronous Graphs ([#296](https://github.com/kizniche/mycodo/issues/296))
+
 ## 5.2.4 (2017-10-05)
 
 ### Features
