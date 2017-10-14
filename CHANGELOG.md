@@ -1,4 +1,4 @@
-## 5.2.5 (Unreleased)
+## 5.2.5 (2017-10-14)
 
 ### Features
 
@@ -7,6 +7,7 @@
 ### Bugfixes
 
  - Fix Asynchronous Graphs ([#296](https://github.com/kizniche/mycodo/issues/296))
+ - Disable sensor tests to fix testing environment (will add later when the issue is diagnosed)
 
 ## 5.2.4 (2017-10-05)
 
