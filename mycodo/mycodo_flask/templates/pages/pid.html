@@ -19,24 +19,41 @@
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
+    <form method="post" action="/pid">
     <div class="row small-gutters" style="padding-left: 1em">
-      <form method="post" action="/pid">
       <input type="hidden" name="form-name" value="addPID">
       {{form_add_pid.hidden_tag()}}
       <div class="col-xs-2 col-sm-1 no-gutters">
-        {{form_add_pid.numberPIDs(class_='form-control', value=1, type="number")}}
+        {{form_add_pid.numberPIDs.label(class_='control-label')}}
+        <div>
+          {{form_add_pid.numberPIDs(class_='form-control', value=1, type="number")}}
+        </div>
       </div>
       <div class="col-xs-5 col-sm-3 col-md-2 small-gutters">
-        <select class="form-control form-tooltip form-dropdown" id="pid_type" name="pid_type" data-placement="top" title="{{_('PID Type')}}">
-          <option value="relay">Relay Output</option>
-          <option value="pwm">PWM Output</option>
-        </select>
+        {{form_add_pid.pid_type_input.label(class_='control-label')}}
+        <div>
+          <select class="form-control form-tooltip form-dropdown" id="pid_type_input" name="pid_type_input" data-placement="top" title="{{_('Where to get the input for the PID')}}">
+            <option value="sensor">Sensor Input</option>
+            <option value="command">Command Input</option>
+          </select>
+        </div>
       </div>
-      <div class="col-xs-5 col-sm-3 col-lg-2 no-gutters">
+      <div class="col-xs-5 col-sm-3 col-md-2 small-gutters">
+        {{form_add_pid.pid_type.label(class_='control-label')}}
+        <div>
+          <select class="form-control form-tooltip form-dropdown" id="pid_type" name="pid_type" data-placement="top" title="{{_('Where to send the output of the PID')}}">
+            <option value="relay">Relay Output</option>
+            <option value="pwm">PWM Output</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row small-gutters" style="padding-left: 1em">
+      <div class="col-xs-12 col-sm-3 col-lg-2 no-gutters">
         {{form_add_pid.pidAddSubmit(class_='form-control btn btn-default')}}
       </div>
-      </form>
     </div>
+    </form>
 
     <div style="clear: both; padding: 1em 0;"></div>
 
@@ -59,7 +76,7 @@
                 {{form_mod_pid_base.name(class_='form-control', value=each_pid.name, **{'title':_('Name for this PID controller.')})}}
               </div>
               <div class="col-xs-6 no-gutters">
-                <input class="form-control btn btn-default" title="UUID: {{each_pid.unique_id}}" disabled="" value="ID: {{each_pid.id}}, {{each_pid.pid_type}}, State:
+                <input class="form-control btn btn-default" title="UUID: {{each_pid.unique_id}}" disabled="" value="ID: {{each_pid.id}}, {{each_pid.pid_type_input}} in, {{each_pid.pid_type}} out,
                 {%- if each_pid.is_activated and not each_pid.is_paused %} {{_('Active')}}
                 {%- elif each_pid.is_activated and each_pid.is_paused %} {{_('Paused')}}
                 {%- elif each_pid.is_held %} {{_('On Hold')}}
@@ -109,103 +126,19 @@
             </div>
           </div>
 
-          <div class="row small-gutters">
-            <div class="col-xs-6 col-sm-3 col-lg-2">
-              {{form_mod_pid_base.sensor_id.label(class_='control-label')}}
-              <div>
-                <select class="form-control" id="sensor_id" name="sensor_id" title="" data-original-title="Select the sensor to monitor.">
-                  <option value="">{{_('Must Select One')}}</option>
-                  {%- for each_sensor in sensor -%}
-                    <option value="{{each_sensor.id}}"{% if each_pid.sensor_id == each_sensor.id %} selected{% endif %}>{{each_sensor.id}} ({{each_sensor.name}})</option>
-                  {%- endfor -%}
-                </select>
-              </div>
-            </div>
-            <div class="col-xs-6 col-sm-3 col-lg-2">
-              {{form_mod_pid_base.measurement.label(class_='control-label')}}
-              <div>
-                <select class="form-control" id="measurement" name="measurement" title="" data-original-title="{{_('Select the environmental condition to regulate')}}.">
-                  <option value="">{{_('Must Select One')}}</option>
-                  <option value="temperature"{% if each_pid.measurement == 'temperature' %} selected{% endif %}>Temperature</option>
-                  <option value="temperature_object"{% if each_pid.measurement == 'temperature_object' %} selected{% endif %}>Temperature (Object)</option>
-                  <option value="temperature_die"{% if each_pid.measurement == 'temperature_die' %} selected{% endif %}>Temperature (Die)</option>
-                  <option value="humidity"{% if each_pid.measurement == 'humidity' %} selected{% endif %}>Humidity</option>
-                  <option value="dewpoint"{% if each_pid.measurement == 'dewpoint' %} selected{% endif %}>Dew Point</option>
-                  <option value="co2"{% if each_pid.measurement == 'co2' %} selected{% endif %}>CO2</option>
-                  <option value="lux"{% if each_pid.measurement == 'lux' %} selected{% endif %}>Luminosity</option>
-                  <option value="moisture"{% if each_pid.measurement == 'moisture' %} selected{% endif %}>Moisture</option>
-                  <option value="pressure"{% if each_pid.measurement == 'pressure' %} selected{% endif %}>Pressure</option>
-                  <option value="altitude"{% if each_pid.measurement == 'altitude' %} selected{% endif %}>Altitude</option>
-                  <option value="voltage"{% if each_pid.measurement == 'voltage' %} selected{% endif %}>Voltage (ADC)</option>
-                  {% for each_sensor in sensor if each_sensor.adc_measure %}
-                    <option value="{{each_sensor.adc_measure}}"{% if each_pid.measurement == each_sensor.adc_measure %} selected{% endif %}>{{each_sensor.adc_measure}} (ADC)</option>
-                  {% endfor %}
-                </select>
-              </div>
-            </div>
-            <div class="col-xs-4 col-sm-2 col-lg-1">
-              {{form_mod_pid_base.direction.label(class_='control-label')}}
-              <div>
-                <select class="form-control" id="direction" name="direction" title="" data-original-title="{{_('What direction to regulate the chosen environmental condition?')}}">
-                  <option value="raise"{% if each_pid.direction == 'raise' %} selected{% endif %}>Raise</option>
-                  <option value="lower"{% if each_pid.direction == 'lower' %} selected{% endif %}>Lower</option>
-                  <option value="both"{% if each_pid.direction == 'both' %} selected{% endif %}>Both</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-xs-4 col-sm-2 col-lg-1">
-              {{form_mod_pid_base.period.label(class_='control-label')}}
-              <div>
-                {{form_mod_pid_base.period(class_='form-control', value=each_pid.period, **{'title':_('The duration between calculating a new PID output to power the raise and lower relays.')})}}
-              </div>
-            </div>
-            <div class="col-xs-4 col-sm-2 col-lg-2">
-              {{form_mod_pid_base.max_measure_age.label(class_='control-label')}}
-              <div>
-                {{form_mod_pid_base.max_measure_age(class_='form-control', value=each_pid.max_measure_age, **{'title':_('Maximum allowable sensor measurement age (to allow the PID controller to manipulate relays, the sensor measurement must have occurred in the past x seconds)')})}}
-              </div>
-            </div>
-            <div class="col-sm-3 col-lg-1">
-              {{form_mod_pid_base.setpoint.label(class_='control-label')}}
-              <div>
-                {{form_mod_pid_base.setpoint(class_='form-control', value=each_pid.setpoint, **{'title':_('This is the desired state of a perticular environmental condition. For instance, this could be the desired temperature in Celsius.')})}}
-              </div>
-            </div>
-            <div class="col-xs-4 col-sm-3 col-lg-1">
-              {{form_mod_pid_base.k_p.label(class_='control-label')}}
-              <div>
-                {{form_mod_pid_base.k_p(class_='form-control', value=each_pid.p, **{'title':_('Proportional gain')})}}
-              </div>
-            </div>
-            <div class="col-xs-4 col-sm-3 col-lg-1">
-              {{form_mod_pid_base.k_i.label(class_='control-label')}}
-              <div>
-                {{form_mod_pid_base.k_i(class_='form-control', value=each_pid.i, **{'title':_('Integral gain')})}}
-              </div>
-            </div>
-            <div class="col-xs-4 col-sm-3 col-lg-1">
-              {{form_mod_pid_base.k_d.label(class_='control-label')}}
-              <div>
-                {{form_mod_pid_base.k_d(class_='form-control', value=each_pid.d, **{'title':_('Derivative gain')})}}
-              </div>
-            </div>
-            <div class="col-xs-6 col-sm-3 col-lg-2">
-              {{form_mod_pid_base.integrator_max.label(class_='control-label')}}
-              <div>
-                {{form_mod_pid_base.integrator_max(class_='form-control', value=each_pid.integrator_min, **{'title':_('Limit the integrator minimum, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)')})}}
-              </div>
-            </div>
-            <div class="col-xs-6 col-sm-3 col-lg-2">
-              {{form_mod_pid_base.integrator_min.label(class_='control-label')}}
-              <div>
-                {{form_mod_pid_base.integrator_min(class_='form-control', value=each_pid.integrator_max, **{'title':_('Limit the integrator maximum, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)')})}}
-              </div>
-            </div>
-          </div>
+        {% if each_pid.pid_type_input == 'command' %}
+          {% include 'pages/pid_options/input_command.html' %}
+        {% elif each_pid.pid_type_input == 'sensor' %}
+          {% include 'pages/pid_options/input_sensor.html' %}
+        {% endif %}
 
-        {% for each_pid_template in pid_templates if each_pid_template[:-5] == each_pid.pid_type %}
-          {% include 'pages/pid_options/'+each_pid_template %}
-        {% endfor %}
+        {% include 'pages/pid_options/options_pid.html' %}
+
+        {% if each_pid.pid_type == 'relay' %}
+          {% include 'pages/pid_options/output_relay.html' %}
+        {% elif each_pid.pid_type == 'pwm' %}
+          {% include 'pages/pid_options/output_pwm.html' %}
+        {% endif %}
 
           <div class="row small-gutters" style="padding-bottom: 0.3em">
             <div class="col-xs-12 col-sm-12">
@@ -245,7 +178,7 @@
     {%- endfor -%}
     {%- endif -%}
 
-  </div>
+  </form>
 
   <script type="text/javascript" src="/static/js/bootstrap-clockpicker.min.js"></script>
   <script type="text/javascript">

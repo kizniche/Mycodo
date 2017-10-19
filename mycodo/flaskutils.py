@@ -1292,12 +1292,20 @@ def pid_add(form_add_pid):
         for _ in range(0, form_add_pid.numberPIDs.data):
             try:
                 new_pid = PID()
+                new_pid.pid_type_input = form_add_pid.pid_type_input.data
                 new_pid.pid_type = form_add_pid.pid_type.data
+
+                # Input Options
+                if form_add_pid.pid_type_input.data == 'command':
+                    new_pid.measurement_cmd = 'cat /sys/class/thermal/thermal_zone0/temp'
+
+                # Output Options
                 if form_add_pid.pid_type.data == 'pwm':
                     new_pid.raise_min_duration = 2.0
                     new_pid.raise_max_duration = 98.0
                     new_pid.lower_min_duration = 2.0
                     new_pid.lower_max_duration = 98.0
+
                 new_pid.save()
 
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
@@ -1313,7 +1321,9 @@ def pid_add(form_add_pid):
         flash_form_errors(form_add_pid)
 
 
-def pid_mod(form_mod_pid_base, form_mod_pid_pwm, form_mod_pid_relay):
+def pid_mod(form_mod_pid_base,
+            form_mod_pid_pwm, form_mod_pid_relay,
+            form_mod_pid_command, form_mod_pid_sensor):
     action = u'{action} {controller}'.format(
         action=gettext(u"Modify"),
         controller=gettext(u"PID"))
@@ -1337,11 +1347,6 @@ def pid_mod(form_mod_pid_base, form_mod_pid_pwm, form_mod_pid_relay):
             mod_pid = PID.query.filter(
                 PID.id == form_mod_pid_base.pid_id.data).first()
             mod_pid.name = form_mod_pid_base.name.data
-            if form_mod_pid_base.sensor_id.data:
-                mod_pid.sensor_id = form_mod_pid_base.sensor_id.data
-            else:
-                mod_pid.sensor_id = None
-            mod_pid.measurement = form_mod_pid_base.measurement.data
             mod_pid.direction = form_mod_pid_base.direction.data
             mod_pid.period = form_mod_pid_base.period.data
             mod_pid.max_measure_age = form_mod_pid_base.max_measure_age.data
@@ -1360,6 +1365,11 @@ def pid_mod(form_mod_pid_base, form_mod_pid_pwm, form_mod_pid_relay):
                 if not form_mod_pid_relay.validate():
                     flash_form_errors(form_mod_pid_relay)
                 else:
+                    if form_mod_pid_base.sensor_id.data:
+                        mod_pid.sensor_id = form_mod_pid_base.sensor_id.data
+                    else:
+                        mod_pid.sensor_id = None
+                    mod_pid.measurement = form_mod_pid_base.measurement.data
                     if form_mod_pid_relay.raise_relay_id.data:
                         mod_pid.raise_relay_id = form_mod_pid_relay.raise_relay_id.data
                     else:
@@ -1390,6 +1400,21 @@ def pid_mod(form_mod_pid_base, form_mod_pid_pwm, form_mod_pid_relay):
                     mod_pid.raise_max_duration = form_mod_pid_pwm.raise_max_duty_cycle.data
                     mod_pid.lower_min_duration = form_mod_pid_pwm.lower_min_duty_cycle.data
                     mod_pid.lower_max_duration = form_mod_pid_pwm.lower_max_duty_cycle.data
+
+            if mod_pid.pid_type_input == 'sensor':
+                if not form_mod_pid_sensor.validate():
+                    flash_form_errors(form_mod_pid_relay)
+                else:
+                    if form_mod_pid_sensor.sensor_id.data:
+                        mod_pid.sensor_id = form_mod_pid_sensor.sensor_id.data
+                    else:
+                        mod_pid.sensor_id = None
+                    mod_pid.measurement = form_mod_pid_sensor.measurement.data
+            elif mod_pid.pid_type_input == 'command':
+                if not form_mod_pid_command.validate():
+                    flash_form_errors(form_mod_pid_relay)
+                else:
+                    mod_pid.measurement_cmd = form_mod_pid_command.measurement_cmd.data
 
             db.session.commit()
             # If the controller is active or paused, refresh variables in thread

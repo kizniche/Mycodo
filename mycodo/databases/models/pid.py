@@ -10,7 +10,8 @@ class PID(CRUDMixin, db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
     name = db.Column(db.Text, default='PID')
-    pid_type = db.Column(db.Text, default='relay')  # Options: 'relay', 'pwm'
+    pid_type_input = db.Column(db.Text, default='')  # Input options: 'sensor', 'command'
+    pid_type = db.Column(db.Text, default='')  # Output options: 'relay', 'pwm'
     is_activated = db.Column(db.Boolean, default=False)
     is_held = db.Column(db.Boolean, default=False)
     is_paused = db.Column(db.Boolean, default=False)
@@ -20,6 +21,7 @@ class PID(CRUDMixin, db.Model):
     max_measure_age = db.Column(db.Float, default=120.0)
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'), default=None)
     measurement = db.Column(db.Text, default='')  # What condition is the controller regulating?
+    measurement_cmd = db.Column(db.Text, default='')  # A command that returns a value and uses as measurement
     direction = db.Column(db.Text, default='Raise')  # Direction of regulation (raise, lower, both)
     setpoint = db.Column(db.Float, default=30.0)  # PID setpoint
     method_id = db.Column(db.Integer, db.ForeignKey('method.id'), default=None)

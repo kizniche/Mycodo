@@ -1,0 +1,35 @@
+<div class="row small-gutters">
+  <div class="col-xs-6 col-sm-3 col-lg-2">
+    {{form_mod_pid_sensor.sensor_id.label(class_='control-label')}}
+    <div>
+      <select class="form-control" id="sensor_id" name="sensor_id" title="" data-original-title="Select the sensor to monitor.">
+        <option value="">{{_('Must Select One')}}</option>
+        {%- for each_sensor in sensor -%}
+          <option value="{{each_sensor.id}}"{% if each_pid.sensor_id == each_sensor.id %} selected{% endif %}>{{each_sensor.id}} ({{each_sensor.name}})</option>
+        {%- endfor -%}
+      </select>
+    </div>
+  </div>
+  <div class="col-xs-6 col-sm-3 col-lg-2">
+    {{form_mod_pid_sensor.measurement.label(class_='control-label')}}
+    <div>
+      <select class="form-control" id="measurement" name="measurement" title="" data-original-title="{{_('Select the environmental condition to regulate')}}.">
+        <option value="">{{_('Must Select One')}}</option>
+        <option value="temperature"{% if each_pid.measurement == 'temperature' %} selected{% endif %}>Temperature</option>
+        <option value="temperature_object"{% if each_pid.measurement == 'temperature_object' %} selected{% endif %}>Temperature (Object)</option>
+        <option value="temperature_die"{% if each_pid.measurement == 'temperature_die' %} selected{% endif %}>Temperature (Die)</option>
+        <option value="humidity"{% if each_pid.measurement == 'humidity' %} selected{% endif %}>Humidity</option>
+        <option value="dewpoint"{% if each_pid.measurement == 'dewpoint' %} selected{% endif %}>Dew Point</option>
+        <option value="co2"{% if each_pid.measurement == 'co2' %} selected{% endif %}>CO2</option>
+        <option value="lux"{% if each_pid.measurement == 'lux' %} selected{% endif %}>Luminosity</option>
+        <option value="moisture"{% if each_pid.measurement == 'moisture' %} selected{% endif %}>Moisture</option>
+        <option value="pressure"{% if each_pid.measurement == 'pressure' %} selected{% endif %}>Pressure</option>
+        <option value="altitude"{% if each_pid.measurement == 'altitude' %} selected{% endif %}>Altitude</option>
+        <option value="voltage"{% if each_pid.measurement == 'voltage' %} selected{% endif %}>Voltage (ADC)</option>
+        {% for each_sensor in sensor if each_sensor.adc_measure %}
+          <option value="{{each_sensor.adc_measure}}"{% if each_pid.measurement == each_sensor.adc_measure %} selected{% endif %}>{{each_sensor.adc_measure}} (ADC)</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+</div>

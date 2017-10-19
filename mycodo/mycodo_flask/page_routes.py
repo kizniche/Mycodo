@@ -657,6 +657,8 @@ def page_pid():
 
     form_add_pid = flaskforms.PIDAdd()
     form_mod_pid_base = flaskforms.PIDModBase()
+    form_mod_pid_command = flaskforms.PIDModCommand()
+    form_mod_pid_sensor = flaskforms.PIDModSensor()
     form_mod_pid_relay = flaskforms.PIDModRelay()
     form_mod_pid_pwm = flaskforms.PIDModPWM()
 
@@ -683,7 +685,8 @@ def page_pid():
             if form_mod_pid_base.save.data:
                 flaskutils.pid_mod(form_mod_pid_base,
                                    form_mod_pid_pwm,
-                                   form_mod_pid_relay)
+                                   form_mod_pid_relay,
+                                   form_mod_pid_command)
             elif form_mod_pid_base.delete.data:
                 flaskutils.pid_del(
                     form_mod_pid_base.pid_id.data)
@@ -720,6 +723,8 @@ def page_pid():
                            displayOrder=display_order,
                            form_add_pid=form_add_pid,
                            form_mod_pid_base=form_mod_pid_base,
+                           form_mod_pid_command=form_mod_pid_command,
+                           form_mod_pid_sensor=form_mod_pid_sensor,
                            form_mod_pid_pwm=form_mod_pid_pwm,
                            form_mod_pid_relay=form_mod_pid_relay)
 

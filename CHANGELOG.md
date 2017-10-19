@@ -1,3 +1,9 @@
+## 5.2.6 (Unreleased)
+
+### Features
+
+ - Add ability to use the return value of a linux command as a PID input ([#264](https://github.com/kizniche/mycodo/issues/264))
+
 ## 5.2.5 (2017-10-14)
 
 ### Features

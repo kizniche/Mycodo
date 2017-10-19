@@ -836,6 +836,15 @@ oscillation. A well-tuned PID controller will raise to the setpoint
 quickly, have minimal overshoot, and maintain the setpoint with little
 oscillation.
 
+There are two different input types, ‘sensor’ and ‘command’. Selecting a
+sensor input will use the measurement from a sensor as the PID input. A
+command input will execute a user-defined command and use the return
+value as the PID input.
+
+There are two different output types, ‘relay’ and ‘pwm’. Selecting a
+relay output will alternate a relay on and off at predefined periods.
+Selecting PWM will output a pulse-width modulated signal to a pin.
+
 PID settings may be changed while the PID is activated and the new
 settings will take effect immediately. If settings are changed while the
 controller is paused, the values will be used once the controller
