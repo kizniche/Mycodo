@@ -64,6 +64,7 @@ from databases.models import Sensor
 from devices.tca9548a import TCA9548A
 from utils.database import db_retrieve_table_daemon
 from utils.influx import read_last_influxdb
+from utils.system_pi import add_custom_measurements
 
 from config import MEASUREMENT_UNITS
 from config import MYCODO_VERSION
@@ -108,14 +109,20 @@ class LCDController(threading.Thread):
                 self.multiplexer = None
 
             self.lcd_line = {}
-            for i in range(1, 5):
+            for i in range(1, self.lcd_y_lines + 1):
                 self.lcd_line[i] = {}
+
+            self.list_pids = ['setpoint', 'pid_time']
+            self.list_relays = ['duration_sec', 'relay_time', 'relay_state']
 
             self.list_sensors = MEASUREMENT_UNITS
             self.list_sensors.update(
                 {'sensor_time': {'unit': None, 'name': 'Time'}})
-            self.list_pids = ['setpoint', 'pid_time']
-            self.list_relays = ['duration_sec', 'relay_time', 'relay_state']
+
+            # Add custom measurement and units to list (From linux command sensor)
+            sensor = db_retrieve_table_daemon(Sensor)
+            self.list_sensors = add_custom_measurements(
+                sensor, self.list_sensors, MEASUREMENT_UNITS)
 
             if self.lcd_y_lines in [2, 4]:
                 self.setup_lcd_line(
@@ -272,14 +279,14 @@ class LCDController(threading.Thread):
                 if self.lcd_line[i]['measurement'] == 'setpoint':
                     pid = db_retrieve_table_daemon(
                         PID, unique_id=self.lcd_line[i]['id'])
-                    measurement = pid.measurement
+                    measurement = pid.measurement.split(',')[1]
                     self.lcd_line[i]['measurement_value'] = '{:.2f}'.format(
                         self.lcd_line[i]['measurement_value'])
                 elif self.lcd_line[i]['measurement'] == 'duration_sec':
                     measurement = 'duration_sec'
                     self.lcd_line[i]['measurement_value'] = '{:.2f}'.format(
                         self.lcd_line[i]['measurement_value'])
-                elif self.lcd_line[i]['measurement'] in MEASUREMENT_UNITS:
+                elif self.lcd_line[i]['measurement'] in self.list_sensors:
                     measurement = self.lcd_line[i]['measurement']
 
                 # Produce the line that will be displayed on the LCD
@@ -295,13 +302,13 @@ class LCDController(threading.Thread):
                 elif measurement:
                     value_length = len(str(
                         self.lcd_line[i]['measurement_value']))
-                    unit_length = len(MEASUREMENT_UNITS[measurement]['unit'])
+                    unit_length = len(self.list_sensors[measurement]['unit'])
                     name_length = number_characters - value_length - unit_length - 2
                     name_cropped = self.lcd_line[i]['name'].ljust(name_length)[:name_length]
                     self.lcd_string_line[i] = u'{name} {value} {unit}'.format(
                         name=name_cropped,
                         value=self.lcd_line[i]['measurement_value'],
-                        unit=MEASUREMENT_UNITS[measurement]['unit'])
+                        unit=self.list_sensors[measurement]['unit'])
                 else:
                     value_length = len(str(
                         self.lcd_line[i]['measurement_value']))

@@ -70,6 +70,8 @@ Table of Contents
 
 [Device Specific Information](#device-specific-information)
 
+[LCD Displays](#lcd-displays)
+
 [Temperature Sensors](#temperature-sensors)
 
    - [Raspberry Pi](#raspberry-pi)
@@ -154,46 +156,35 @@ Frequently Asked Questions
 
 Here is how I generally set up Mycodo to monitor and regulate:
 
-1.  Determine what environmental condition you want to measure or
-    regulate. Consider the devices that must be coupled to achieve this.
-    For instance, temperature regulation require a temperature sensor
-    and an electric heater and/or electric air conditioner.
-2.  Determine what relays you will need to power your electric devices.
-    The Raspberry Pi is capable of directly switching relays (using a
-    3.3-volt signal), although opto-isolating the circuit is advisable.
-    Be careful when selecting a relay not to exceed the current draw of
-    the Raspberry Pi's PGIO.
-3.  See the [Device Specific Information](#device-specific-information)
-    for information about what sensors are supported. Acquire one or more
-    of these sensors and relays and connect them to the Raspberry Pi
-    according to the manufacturer's instructions.
-4.  On the ```Sensors``` page, create a new sensor, using the
-    dropdown to select the correct sensor. Configure the sensor with the
-    correct communication pins, etc. and save. Activate the sensor to
-    begin recording measurements.
-5.  Go to the ```Data``` -> ```Live Measurements``` page to ensure there
-    is recent data being acquired from the sensor.
-6.  On the ```Relay``` -> ```Relays``` page, add a relay and configure
-    the GPIO pin that switches it, whether the relay switches On when the
-    signal is HIGH or LOW, and what state (On or Off) to set the relay
-    when Mycodo starts.
-7.  Test the relay by switching it On and Off from the ```Relay``` ->
-    ```Relays``` page and make sure the device connected to the relay
-    turns On when you select "On", and Off when you select "Off".
-8.  On the ```PID``` -> ```PID Controllers``` page, create a PID
-    controller with the appropriate sensor, measurement, relay, and other
-    parameters. Refer to the [Quick Setup Examples](#quick-setup-examples)
-    for setting up and tuning a PID controller.
-9.  On the ```Data``` -> ```Live Graphs``` page, create a graph that
-    includes the sensor measurement, the relay that is being used by the
-    PID, and the PID setpoint. This provides a good visualization for
-    tuning and adjusting the system.
+1.  Determine what environmental condition you want to measure or regulate. Consider the devices that must be coupled to achieve this. For instance, temperature regulation require a temperature sensor as the input and an electric heater as the output.
+2.  Determine what relays you will need to power your electric devices. The Raspberry Pi is capable of directly switching relays (using a 3.3-volt signal), although opto-isolating the circuit is advisable. Be careful when selecting a relay not to exceed the current draw of the Raspberry Pi’s PGIO.
+3.  See the [Device Specific Information](#device-specific-information) for information about what sensors are supported. Acquire one or more of these sensors and relays and connect them to the Raspberry Pi according to the manufacturer’s instructions.
+4.  On the ```Input```  page, create a new input using the dropdown to select the correct sensor or input device. Configure the input with the correct communication pins and other options. Activate the input to begin recording measurements to the database..
+5.  Go to the ```Data``` -> ```Live Measurements``` page to ensure there is recent data being acquired from the input.
+6.  On the ```Ouput``` -> ```Devices```  page, add a relay and configure the GPIO pin that switches it, whether the relay switches On when the signal is HIGH or LOW, and what state (On or Off) to set the relay when Mycodo starts. A pulse-width modulated (PWM) output may also be used..
+7.  Test the relay by switching it On and Off or generating a PWM signal from the ```Output``` -> ```Devices``` page and make sure the device connected to the relay turns On when you select "On", and Off when you select "Off".
+8.  On the ```PID``` -> ```PID Controllers``` page, create a PID controller with the appropriate input, output, and other parameters.
+9.  On the ```Data``` -> ```Live Graphs``` page, create a graph that includes the input measurement, the output that is being used by the PID, and the PID setpoint. This provides a good visualization for tuning the PID. See [Quick Setup Examples](#quick-setup-examples) for tuning tips.
 
 * * * * *
 
-*Why is there only one FAQ?*
+*How do I add an input (like a sensor) to the system that's not currently supported?*
 
-Good question.
+Currently, adding the ability to receive input that's not currently supported to the system involves editing several files. There has been effort to make the addition process as simple as possible. See the [Adding Support for a New Input](https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input) Wiki page for how to do this.
+
+An alternate way to add an input is to create a linux script that obtains and returns a value when executed, then add a new input with the "Linux Command" option. This will periodically execute the command and store the returned value to the database for use with the rest of the Mycodo system.
+
+* * * * *
+
+*Can I variably control the speed of motors or other devices with the PWM output signal from the PID?*
+
+Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, an [AC modulation ciruit](#schematics-for-ac-modulation), or something else.
+
+* * * * *
+
+*What should I do if I have an issue?*
+
+First, read the manual to make sure you understand how the system works and you're using the system properly. ALso check out the [Wiki](https://github.com/kizniche/Mycodo/wiki). You may even want to look through recent [Issues](https://github.com/kizniche/Mycodo/issues). If you haven't resolved your issue by this point, make a [New Issue](https://github.com/kizniche/Mycodo/issues/new) describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid diagnostics.
 
 * * * * *
 
@@ -276,7 +267,7 @@ Four roles are provided by default, but custom roles may be created.
 | View Stats       | X | X | X | |
 | View Logs        | X | X | X | |
 
-<sup>1</sup>The ```Edit Controllers``` permission protects the editing of Graphs, LCDs, Methods, PIDs, Relays, Sensors, and Timers.
+<sup>1</sup>The ```Edit Controllers``` permission protects the editing of Graphs, LCDs, Methods, PIDs, Outputs, Inputs, and Timers.
 
 <sup>2</sup>The ```View Stats``` permission protects the viewing of usage statistics and the System Info and Relay Usage pages.
 
@@ -330,7 +321,7 @@ controllers and have been given their own sections.
 Input
 -----
 
-Inputs (such as sensors or analog signals) measure environmental and other characteristic conditions, which will be stored in an influxdb round-robin database. This database will provide recent measurements for [Graphs](/help#graphs), [LCDs](/help#lcds), [PID Controllers](/help#pids), [Conditional Statements](/help#conditional-statements), and other parts of Mycodo to operate from.
+Inputs (such as sensors or analog signals) measure environmental and other characteristic conditions, which will be stored in an influxdb round-robin database. This database will provide recent measurements for [Graphs](#graphs), [LCDs](#lcds), [PID Controllers](#pids), [Conditional Statements](#conditional-statements), and other parts of Mycodo to operate from.
 
 Among the sensors is 'Linux Command'. This is a way to use a custom script to return a value to be used
 within Mycodo, without having to edit the Mycodo code. Merely create your script and use this sensor to
@@ -537,10 +528,7 @@ off at the specific time of day.
 LCDs
 ----
 
-Data may be output to a liquid crystal display (LCD) for easy viewing.
-There are only a few number fo LCDs that are supported. Only 16x2 and
-20x4 character LCD displays with I<sup>2</sup>C backpacks are supported. Please
-see the README for specific information regarding compatibility.
+Data may be output to a liquid crystal display (LCD) for easy viewing. Please see [LCD Displays](#lcd-displays) for specific information regarding compatibility.
 
 Setting | Description
 -------------------- | ----------------------------------------------
@@ -1025,6 +1013,13 @@ An analog to digital converter (ADC) allows the use of any analog sensor that ou
 Device Specific Information
 ===========================
 
+LCD Displays
+------------
+
+There are only a few number fo LCDs that are supported. Only 16x2 and 20x4 character LCD displays with I<sup>2</sup>C backpacks are supported. The below image is the type of device that should be compatible.
+
+![](manual_images/LCD-front-back.jpg)\ 
+
 Temperature Sensors
 -------------------
 
@@ -1060,7 +1055,7 @@ stands for platinum and 1000 is the measured resistance of the probe at
 
 The DS18B20 is a 1-Wire digital temperature sensor from Maxim IC. Each
 sensor has a unique 64-Bit Serial number, allowing for a huge number of
-sensors to be used on one data bus (GPIO 4).
+sensors to be used on one data bus.
 
 #### Specifications
 
@@ -1321,10 +1316,10 @@ Diagrams
 
 ### Raspberry Pi and Relay Diagrams
 
-Raspberry Pi, 4 relays, 4 outlets, 1 DS18B20 sensor.
+Raspberry Pi, 4 relays, 4 outlets, 1 DS18B20 sensor:
 
 ![Schematic: Pi, 4 relays, 4 outlets, and 1 DS18B20 sensor](manual_images/Schematic-Pi-4-relays.png)\ 
 
-Raspberry Pi, 8 relays, 8 outlets.
+Raspberry Pi, 8 relays, 8 outlets:
 
 ![Schematic: Pi, 8 relays, and 8 outlets](manual_images/Schematic-Pi-8-relays.png)\ 

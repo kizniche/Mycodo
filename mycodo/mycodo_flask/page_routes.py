@@ -45,6 +45,7 @@ from mycodo.databases.models import User
 
 from mycodo.devices.camera import CameraStream
 from mycodo.devices.camera import camera_record
+from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.tools import return_relay_usage
 
@@ -300,6 +301,11 @@ def page_graph():
     output_choices = flaskutils.choices_outputs(relay)
     sensor_choices = flaskutils.choices_sensors(sensor)
 
+    # Add custom measurement and units to list (From linux command sensor)
+    sensor_measurements = MEASUREMENT_UNITS
+    sensor_measurements = add_custom_measurements(
+        sensor, sensor_measurements, MEASUREMENT_UNITS)
+
     # Add multi-select values as form choices, for validation
     form_mod_graph.pid_ids.choices = []
     form_mod_graph.relay_ids.choices = []
@@ -369,6 +375,7 @@ def page_graph():
                            sensor_choices=sensor_choices,
                            colors_graph=colors_graph,
                            colors_gauge=colors_gauge,
+                           sensor_measurements=sensor_measurements,
                            measurement_units=MEASUREMENT_UNITS,
                            displayOrder=display_order,
                            form_mod_graph=form_mod_graph,
@@ -522,6 +529,15 @@ def page_lcd():
     form_add_lcd = flaskforms.LCDAdd()
     form_mod_lcd = flaskforms.LCDMod()
 
+    measurements = MEASUREMENTS
+
+    # Add custom measurement and units to list (From linux command sensor)
+    for each_sensor in sensor:
+        if each_sensor.cmd_measurement and each_sensor.cmd_measurement not in MEASUREMENTS:
+            if each_sensor.cmd_measurement and each_sensor.cmd_measurement_units:
+                measurements.update(
+                    {'LinuxCommand': [each_sensor.cmd_measurement]})
+
     if request.method == 'POST':
         if not flaskutils.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
@@ -548,7 +564,7 @@ def page_lcd():
 
     return render_template('pages/lcd.html',
                            lcd=lcd,
-                           measurements=MEASUREMENTS,
+                           measurements=measurements,
                            pid=pid,
                            relay=relay,
                            sensor=sensor,
@@ -649,9 +665,12 @@ def page_logview():
 @flask_login.login_required
 def page_pid():
     """ Display PID settings """
+    method = Method.query.all()
     pids = PID.query.all()
     relay = Relay.query.all()
     sensor = Sensor.query.all()
+
+    sensor_choices = flaskutils.choices_sensors(sensor)
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
 
@@ -659,8 +678,6 @@ def page_pid():
     form_mod_pid_base = flaskforms.PIDModBase()
     form_mod_pid_relay = flaskforms.PIDModRelay()
     form_mod_pid_pwm = flaskforms.PIDModPWM()
-
-    method = Method.query.all()
 
     # Create list of file names from the pid_options directory
     # Used in generating the correct options for each PID
@@ -717,6 +734,7 @@ def page_pid():
                            pid_templates=pid_templates,
                            relay=relay,
                            sensor=sensor,
+                           sensor_choices=sensor_choices,
                            displayOrder=display_order,
                            form_add_pid=form_add_pid,
                            form_mod_pid_base=form_mod_pid_base,

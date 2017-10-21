@@ -56,9 +56,9 @@ class Sensor(CRUDMixin, db.Model):
     adc_units_max = db.Column(db.Float, default=10)
 
     # Command options
-    cmd_command = db.Column(db.Text, default='shuf -i 50-70 -n 1')
-    cmd_measurement = db.Column(db.Text, default='Condition')
-    cmd_measurement_units = db.Column(db.Text, default='unit')
+    cmd_command = db.Column(db.Text, default=None)
+    cmd_measurement = db.Column(db.Text, default=None)
+    cmd_measurement_units = db.Column(db.Text, default=None)
 
     def is_active(self):
         """

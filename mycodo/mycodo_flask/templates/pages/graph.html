@@ -818,7 +818,7 @@
           {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id.split(',')[0] -%}
             {%- set measurement = each_graph_pid_id.split(',')[1] -%}
             {% if measurement == 'setpoint' %}
-              {%- for each_sensor in sensor if each_sensor.id == each_pid.sensor_id -%}
+              {%- for each_sensor in sensor if each_sensor.unique_id == each_pid.measurement.split(',')[0] -%}
                 {%- if each_pid.measurement in ['dewpoint',
                                                 'temperature',
                                                 'temperature_object',
@@ -1128,7 +1128,7 @@
       {%- for each_cmd_measure in yaxis_command -%}
         {
           title: {
-            text: '{{each_cmd_measure}}'
+            text: '{{each_cmd_measure}} ({{sensor_measurements[each_cmd_measure]['unit']}})'
           },
           labels: {
             format: '{value}'
@@ -1326,20 +1326,22 @@
       {%- for each_pid in pid -%}
         {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id.split(',')[0] -%}
           {% if each_graph_pid_id.split(',')[1] == 'setpoint' and each_pid.measurement %}
+
+            {% if each_pid.measurement in measurement_units -%}
+              {% set suffix = measurement_units[each_pid.measurement]['unit']|safe %}
+            {% else -%}
+              {%- for each_sensor in sensor if each_pid.measurement.split(',')[0] == sensor.unique_id and each_sensor.device == 'LinuxCommand' -%}
+                {% set suffix = each_sensor.cmd_measurement_units %}
+              {%- endfor -%}
+            {%- endif %}
           {
             name: '{{each_pid.name}} {{_('Setpoint')}}',
             type: 'line',
             tooltip: {
-              valueSuffix: ' {% if each_pid.measurement in measurement_units -%}
-                               {{measurement_units[each_pid.measurement]['unit']|safe}}
-                             {% else -%}
-                               {%- for each_sensor in sensor if each_pid.sensor_id == sensor.unique_id and each_sensor.device == 'LinuxCommand' %}
-                                 {{each_sensor.cmd_measurement_units}}
-                               {%- endfor -%}
-                             {%- endif %}',
+              valueSuffix: ' {{suffix}}',
               valueDecimals: 2
             },
-            yAxis: '{{each_pid.measurement}}',
+            yAxis: '{{each_pid.measurement.split(',')[1]}}',
             data: []
           },
           {% elif each_graph_pid_id.split(',')[1] == 'pid_output' %}

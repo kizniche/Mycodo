@@ -161,9 +161,13 @@
                   {%- for each_sensor in sensor -%}
                     <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.unique_id and each_lcd.line_1_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
                     {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
-                      {% for each_measurement in measure %}
-                        <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd.line_1_sensor_id == each_sensor.unique_id and each_lcd.line_1_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
-                      {% endfor %}
+                      {% if each_sensor.cmd_measurement == measure %}
+                        <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd.line_1_sensor_id == each_sensor.unique_id and each_lcd.line_1_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
+                      {% else %}
+                        {% for each_measurement in measure %}
+                          <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd.line_1_sensor_id == each_sensor.unique_id and each_lcd.line_1_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
+                        {% endfor %}
+                      {% endif %}
                     {% endfor %}
                   {%- endfor %}
                   {%- for each_pid in pid -%}
@@ -186,9 +190,13 @@
                   {%- for each_sensor in sensor -%}
                     <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd.line_2_sensor_id == each_sensor.unique_id and each_lcd.line_2_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
                     {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
-                      {% for each_measurement in measure %}
-                        <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd.line_2_sensor_id == each_sensor.unique_id and each_lcd.line_2_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
-                      {% endfor %}
+                      {% if each_sensor.cmd_measurement in measure['name'] %}
+                        <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd.line_2_sensor_id == each_sensor.unique_id and each_lcd.line_2_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
+                      {% else %}
+                        {% for each_measurement in measure %}
+                          <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd.line_2_sensor_id == each_sensor.unique_id and each_lcd.line_2_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
+                        {% endfor %}
+                      {% endif %}
                     {% endfor %}
                   {%- endfor %}
                   {%- for each_pid in pid -%}
@@ -210,13 +218,17 @@
               {{form_mod_lcd.line_3_display.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="line_3_display" name="line_3_display">
-                    <option value=""{% if each_lcd.line_3_sensor_id == '' or each_lcd.line_3_measurement == '' %} selected{% endif %}></option>
-                    {%- for each_sensor in sensor -%}
+                  <option value=""{% if each_lcd.line_3_sensor_id == '' or each_lcd.line_3_measurement == '' %} selected{% endif %}></option>
+                  {%- for each_sensor in sensor -%}
                     <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd.line_3_sensor_id == each_sensor.unique_id and each_lcd.line_3_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
                     {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
-                      {% for each_measurement in measure %}
-                        <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd.line_3_sensor_id == each_sensor.unique_id and each_lcd.line_3_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
-                      {% endfor %}
+                      {% if each_sensor.cmd_measurement in measure['name'] %}
+                        <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd.line_3_sensor_id == each_sensor.unique_id and each_lcd.line_3_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
+                      {% else %}
+                        {% for each_measurement in measure %}
+                          <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd.line_3_sensor_id == each_sensor.unique_id and each_lcd.line_3_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
+                        {% endfor %}
+                      {% endif %}
                     {% endfor %}
                   {%- endfor %}
                   {%- for each_pid in pid -%}
@@ -239,9 +251,13 @@
                   {%- for each_sensor in sensor -%}
                     <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd.line_4_sensor_id == each_sensor.unique_id and each_lcd.line_4_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
                     {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
-                      {% for each_measurement in measure %}
-                        <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd.line_4_sensor_id == each_sensor.unique_id and each_lcd.line_4_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
-                      {% endfor %}
+                      {% if each_sensor.cmd_measurement in measure['name'] %}
+                        <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd.line_4_sensor_id == each_sensor.unique_id and each_lcd.line_4_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
+                      {% else %}
+                        {% for each_measurement in measure %}
+                          <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd.line_4_sensor_id == each_sensor.unique_id and each_lcd.line_4_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
+                        {% endfor %}
+                      {% endif %}
                     {% endfor %}
                   {%- endfor %}
                   {%- for each_pid in pid -%}

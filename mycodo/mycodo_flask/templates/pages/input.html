@@ -63,7 +63,7 @@
         <div class="col-xs-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
         {% if each_sensor.is_activated -%}
           {%- set has_active_pid = [] -%}
-          {%- for each_pid in pid if each_pid.sensor_id == each_sensor.id and each_pid.is_activated -%}
+          {%- for each_pid in pid if each_pid.measurement.split(',')[0] == each_sensor.unique_id and each_pid.is_activated -%}
             {%- do has_active_pid.append(1) -%}
           {%- endfor -%}
           {%- set has_active_lcd = [] -%}

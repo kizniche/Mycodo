@@ -1,8 +1,22 @@
-## 5.2.6 (Unreleased)
+## 5.3.0 (Unreleased)
+
+#### ***IMPORTANT***
+
+Because of a necessary database schema change, this update will deactivate all PID controllers and deselect the input measurement. All PID controllers will need the input measurement reconfigured before they can be started again.
 
 ### Features
 
- - Add new Sensor: Linux Command (measurement is the return value of a linux command) ([#264](https://github.com/kizniche/mycodo/issues/264))
+ - Add new Input type: Linux Command (measurement is the return value of an executed command) ([#264](https://github.com/kizniche/mycodo/issues/264))
+ - Refactor PID input option to allow new input and simplify PID configuration
+
+### Bugfixes
+
+ - Fix "Too many files open" error when using the TSL2591 sensor ([#254](https://github.com/kizniche/mycodo/issues/254))
+
+### Miscelaneous
+
+ - Update Readme and Wiki to fix outdated and erroneous information and improve coverage ([#285](https://github.com/kizniche/mycodo/issues/285))
+
 
 ## 5.2.5 (2017-10-14)
 
@@ -15,17 +29,20 @@
  - Fix Asynchronous Graphs ([#296](https://github.com/kizniche/mycodo/issues/296))
  - Disable sensor tests to fix testing environment (will add later when the issue is diagnosed)
 
+
 ## 5.2.4 (2017-10-05)
 
 ### Features
 
  - Add ability to set time to end repeating duration method
 
+
 ## 5.2.3 (2017-09-29)
 
 ### Bugfixes
 
  - Fix issues with method repeat option
+
 
 ## 5.2.2 (2017-09-27)
 
@@ -37,11 +54,13 @@
 
  - Fix adding new graphs
 
+
 ## 5.2.1 (2017-09-21)
 
 ### Bugfixes
 
  - Fix changing a gauge from angular to solid ([#274](https://github.com/kizniche/mycodo/issues/274))
+
 
 ## 5.2.0 (2017-09-17)
 
@@ -49,11 +68,13 @@
 
  - Add gauges to Live Graphs ([#274](https://github.com/kizniche/mycodo/issues/274))
 
+
 ## 5.1.10 (2017-09-12)
 
 ### Bugfixes
 
  - Fix issue reporting issue with the web UI communicating with the daemon ([#291](https://github.com/kizniche/mycodo/issues/291))
+
 
 ## 5.1.9 (2017-09-07)
 
@@ -66,11 +87,13 @@
  - Potential fix for certain sensor initialization issues when using a multiplexer ([#290](https://github.com/kizniche/mycodo/issues/290))
  - Handle connection error when the web interface cannot connect to the daemon/relay controller ([#289](https://github.com/kizniche/mycodo/issues/289))
 
+
 ## 5.1.8 (2017-08-29)
 
 ### Bugfixes
 
  - Fix saving relay start state ([#289](https://github.com/kizniche/mycodo/issues/289))
+
 
 ## 5.1.7 (2017-08-29)
 
@@ -83,17 +106,20 @@
  - Fix TSL2591 sensor ([#257](https://github.com/kizniche/mycodo/issues/257))
  - Fix saving relay trigger state ([#289](https://github.com/kizniche/mycodo/issues/289))
 
+
 ## 5.1.6 (2017-08-11)
 
 ### Features
 
  - Add MH-Z16 sensor module ([#281](https://github.com/kizniche/mycodo/issues/281))
 
+
 ## 5.1.5 (2017-08-11)
 
 ### Bugfixes
 
  - Fix MH-Z19 sensor module ([#281](https://github.com/kizniche/mycodo/issues/281))
+
 
 ## 5.1.4 (2017-08-11)
 
@@ -105,17 +131,20 @@
 
  - Fix K30 sensor module ([#279](https://github.com/kizniche/mycodo/issues/279))
 
+
 ## 5.1.3 (2017-08-10)
 
 ### Bugfixes
 
  - Fix install issue in setup.sh install script (catch 1-wire error if not enabled) ([#258](https://github.com/kizniche/mycodo/issues/258))
 
+
 ## 5.1.2 (2017-08-09)
 
 ### Bugfixes
 
  - Fix new timers not working ([#284](https://github.com/kizniche/mycodo/issues/284))
+
 
 ## 5.1.1 (2017-08-09)
 
@@ -126,6 +155,7 @@
 ### Bugfixes
 
  - Fix setup bug preventing database creation ([#277](https://github.com/kizniche/mycodo/issues/277), [#278](https://github.com/kizniche/mycodo/issues/278), [#283](https://github.com/kizniche/mycodo/issues/283))
+
 
 ## 5.1.0 (2017-08-07)
 
@@ -146,6 +176,7 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
  - Upgrade to InfluxDB 1.3.1 ([#8500](https://github.com/influxdata/influxdb/issues/8500) - fixes InfluxDB going unresponsive)
  - Fix K30 sensor module
 
+
 ## 5.0.49 (2017-07-13)
 
 ### Bugfixes
@@ -154,11 +185,13 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
  - Fix LCD display of PID setpoints with long float values (round two decimal places)
  - Fix geocoder issue
 
+
 ## 5.0.48 (2017-07-11)
 
 ### Features
 
  - Add power relay to AM2315 sensor configuration ([#273](https://github.com/kizniche/mycodo/issues/273))
+
 
 ## 5.0.47 (2017-07-09)
 
@@ -166,11 +199,13 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 
  - Fix upgrade script
 
+
 ## 5.0.46 (2017-07-09)
 
 ### Bugfixes
 
  - Fix upgrade initialization to include setting permissions
+
 
 ## 5.0.45 (2017-07-07)
 
@@ -178,11 +213,13 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 
  - Fix minor bug that leaves the .upgrade file in a backup, causing issue with upgrading after a restore
 
+
 ## 5.0.44 (2017-07-06)
 
 ### Bugfixes
 
  - Fix issues with restore functionality (still possibly buggy: use at own risk)
+
 
 ## 5.0.43 (2017-07-06)
 
@@ -190,12 +227,14 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 
  - Fix issues with restore functionality (still possibly buggy: use at own risk)
 
+
 ## 5.0.42 (2017-07-06)
 
 ### Features
 
  - Update InfluxDB to 1.3.0
  - Update pip package (geocoder)
+
 
 ## 5.0.41 (2017-07-06)
 
@@ -209,6 +248,7 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 
  - Fix error if country cannot be detected for anonymous statistics
 
+
 ## 5.0.40 (2017-07-03)
 
 ### Bugfixes
@@ -216,11 +256,13 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
  - Fix install script error ([#253](https://github.com/kizniche/mycodo/issues/253))
  - Fix issue modulating relays if a conditionals using them are not properly configured ([#266](https://github.com/kizniche/mycodo/issues/266))
 
+
 ## 5.0.39 (2017-06-27)
 
 ### Bugfixes
 
  - Fix upgrade process
+
 
 ## 5.0.38 (2017-06-27)
 
@@ -228,11 +270,13 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 
  - Fix install script
 
+
 ## 5.0.37 (2017-06-27)
 
 ### Bugfixes
 
  - Change wiringpi during install
+
 
 ## 5.0.36 (2017-06-27)
 
@@ -250,11 +294,13 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 
  - Add ability to restore a Mycodo backup
 
+
 ## 5.0.35 (2017-06-18)
 
 ### Bugfixes
 
  - Fix swap size check (and change to 512 MB) to permit pi_switch module compilation size requirement ([#258](https://github.com/kizniche/mycodo/issues/258))
+
 
 ## 5.0.34 (2017-06-18)
 
@@ -267,6 +313,7 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 
  - Append setup.sh output to setup.log instead of overwriting ([#255](https://github.com/kizniche/mycodo/issues/255))
  - Fix display of error response when attempting to modify timer when it's active
+
 
 ## 5.0.33 (2017-06-05)
 
@@ -285,11 +332,13 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
  - Update Manual
  - Update translatable texts
 
+
 ## 5.0.32 (2017-06-02)
 
 ### Bugfixes
 
  - Fix display of PID output and setpoint on live graphs ([#252](https://github.com/kizniche/mycodo/issues/252))
+
 
 ## 5.0.31 (2017-05-31)
 
@@ -302,11 +351,13 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
  - Fix inability to save SHT sensor options ([#251](https://github.com/kizniche/mycodo/issues/251))
  - Fix inability to turn relay on if another relay is unconfigured ([#251](https://github.com/kizniche/mycodo/issues/251))
 
+
 ## 5.0.30 (2017-05-23)
 
 ### Bugfixes
 
  - Fix display of proper relay status if pin is 0
+
 
 ## 5.0.29 (2017-05-23)
 
@@ -317,6 +368,7 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 ### Bugfixes
 
  - Add influxdb query generator with input checks
+
 
 ## 5.0.28 (2017-05-23)
 
@@ -338,6 +390,7 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
   - Fix saving of proper start time during timer creation ([#248](https://github.com/kizniche/mycodo/issues/248))
   - Fix unicode error when generating relay usage reports
 
+
 ## 5.0.27 (2017-04-12)
 
 ### Bugfixes
@@ -345,17 +398,20 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
   - Fix issue with old database entries and new graph page parsing
   - Revert to old relay form submission method (ajax method broken)
 
+
 ## 5.0.26 (2017-04-12)
 
 ### Bugfixes
 
   - Fix critical issue with upgrade script
 
+
 ## 5.0.25 (2017-04-12)
 
 ### Bugfixes
 
   - Fix setting custom graph colors
+
 
 ## 5.0.24 (2017-04-12)
 
@@ -369,6 +425,7 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
   - Fix PID Output not appearing when adding new graph (modifying graph works)
   - Remove ineffective upgrade reversion script (reversion was risky)
 
+
 ## 5.0.23 (2017-04-10)
 
 ### Features
@@ -378,6 +435,7 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 ### Bugfixes
 
   - Fix display of unicode characters ([#237](https://github.com/kizniche/mycodo/issues/237))
+
 
 ## 5.0.22 (2017-04-08)
 
@@ -395,12 +453,14 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 
   - New cleaner Timer page style
 
+
 ## 5.0.21 (2017-04-02)
 
 ### Bugfixes
 
   - Fix BMP280 sensor module initialization ([#233](https://github.com/kizniche/mycodo/issues/233))
   - Fix saving and display of PID and Relay values on LCDs
+
 
 ## 5.0.20 (2017-04-02)
 
@@ -410,11 +470,13 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
   - Fix saving and display of PID and Relay values on LCDs
   - Fix inability to select certain measurements for a sensor under the PID options
 
+
 ## 5.0.19 (2017-04-02)
 
 ### Bugfixes
 
   - Fix BMP280 sensor I<sup>2</sup>C address options ([#233](https://github.com/kizniche/mycodo/issues/233))
+
 
 ## 5.0.18 (2017-04-01)
 
@@ -422,11 +484,13 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 
   - Add BMP280 I2C temperature and pressure sensor ([#233](https://github.com/kizniche/mycodo/issues/233))
 
+
 ## 5.0.17 (2017-03-31)
 
 ### Bugfixes
 
   - Fix issue with graph page crashing when non-existent sensor referenced ([#232](https://github.com/kizniche/mycodo/issues/232))
+
 
 ## 5.0.16 (2017-03-30)
 
@@ -438,6 +502,7 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 
   - Fix BME280 sensor module to include calibration code (fixes "stuck" measurements)
   - Fix issue with graph page crashing when non-existent sensor referenced ([#231](https://github.com/kizniche/mycodo/issues/231))
+
 
 ## 5.0.15 (2017-03-28)
 
@@ -454,6 +519,7 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 
   - Better exception-handling (clean up logging of influxdb measurement errors)
 
+
 ## 5.0.14 (2017-03-25)
 
 ### Features
@@ -466,6 +532,7 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
   - Fix relays not recording proper ON duration (which causes other issues) ([#223](https://github.com/kizniche/mycodo/issues/223))
   - Fix new graphs occupying 100% width (12/12 columns)
 
+
 ## 5.0.13 (2017-03-24)
 
 ### Bugfixes
@@ -475,11 +542,13 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
   - Fix UnicodeEncodeError when using translations
   - Fix BME280 sensor pressure/altitude
 
+
 ## 5.0.12 (2017-03-23)
 
 ### Bugfixes
 
   - Fix frontend and backend issues with conditionals
+
 
 ## 5.0.11 (2017-03-22)
 
@@ -487,11 +556,13 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 
   - Fix alembic database upgrade error (hopefully)
 
+
 ## 5.0.10 (2017-03-22)
 
 ### Bugfixes
 
   - Fix photos being taken uncontrollably when a time-lapse is active
+
 
 ## 5.0.9 (2017-03-22)
 
@@ -501,6 +572,7 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
   - Fix creation of alembic version number in database of new install
   - Add suffixes to distinguish Object from Die temperatures of TMP006 sensor on Live page
   - Fix reference to pybabel in virtualenv
+
 
 ## 5.0.8 (2017-03-22)
 
@@ -525,11 +597,13 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
   - Update Influxdb to version 1.2.2
   - UI style improvements
 
+
 ## 5.0.7 (2017-03-19)
 
 ### Bugfixes
 
   - Fix pybabel reference during install/upgrade ([#212](https://github.com/kizniche/mycodo/issues/212))
+
 
 ## 5.0.6 (2017-03-19)
 
@@ -538,17 +612,20 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
   -  Fix edge detection conditional statements ([#214](https://github.com/kizniche/mycodo/issues/214))
   -  Fix identification and conversion of dewpoint on live page ([#215](https://github.com/kizniche/mycodo/issues/215))
 
+
 ## 5.0.5 (2017-03-18)
 
 ### Bugfixes
 
   - Fix issue with timers not actuating relays ([#213](https://github.com/kizniche/mycodo/issues/213))
 
+
 ## 5.0.4 (2017-03-18)
 
 ### Bugfixes
 
   - Fix issues with saving LCD options ([#211](https://github.com/kizniche/mycodo/issues/211))
+
 
 ## 5.0.0 (2017-03-18)
 
@@ -590,12 +667,14 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
   - Move from using sqlalchemy to flask sqlalchemy
   - Restructure database ([#115](https://github.com/kizniche/mycodo/issues/115), [#122](https://github.com/kizniche/mycodo/issues/122))
 
+
 ## 4.2.0 (2017-03-16)
 
 ### Features
 
   - Add ability to turn a relay on for a specific duration of time
   - Update style of Timer and Relay pages (mobile-compatibility)
+
 
 ## 4.1.16 (2017-02-05)
 
@@ -610,11 +689,13 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 
   - Remove archived versions of Mycodo (Mycodo/old) during upgrade (saves space during backup)
 
+
 ## 4.1.15 (2017-01-31)
 
 ### Bugfixes
 
   - Fix LCD KeyError from missing measurement unit for durations_sec
+
 
 ## 4.1.14 (2017-01-30)
 
@@ -626,17 +707,20 @@ Some graphs will need to be manually reconfigured after upgrading to 5.1.0. This
 
   - Update influxdb to 1.2.0
 
+
 ## 4.1.13 (2017-01-30)
 
 ### Bugfixes
 
   - Fix DHT11 sensor module ([#176](https://github.com/kizniche/mycodo/issues/176))
 
+
 ## 4.1.12 (2017-01-30)
 
 ### Bugfixes
 
   - Fix PID controller crash
+
 
 ## 4.1.11 (2017-01-30)
 
@@ -647,6 +731,7 @@ This is a small update, mainly to fix the install script. It also *should* fix t
   - Fix DHT11 sensor module, removing exception preventing acquisition of future measurements ([#176](https://github.com/kizniche/mycodo/issues/176))
   - Fix setup.sh install script by adding git as a dependency ([#183](https://github.com/kizniche/mycodo/issues/183))
   - Fix initialization script executed during install and upgrade
+
 
 ## 4.1.10 (2017-01-29)
 
@@ -660,6 +745,7 @@ This is a small update, mainly to fix the install script. It also *should* fix t
 ### Miscellaneous
 
   - Add help text for conditional statements to relay page ([#181](https://github.com/kizniche/mycodo/issues/181))
+
 
 ## 4.1.9 (2017-01-27)
 
@@ -702,6 +788,7 @@ Miscellaneous
 
   - Add new theme: Sun
 
+
 ## 4.1.8 (2017-01-21)
 
 ### Bugfixes
@@ -714,6 +801,7 @@ Miscellaneous
 
   - Update Spanish translations
 
+
 ## 4.1.7 (2017-01-19)
 
 ### Bugfixes
@@ -724,6 +812,7 @@ Miscellaneous
   - Fix (and modify) the logging behavior in modules
   - Fix K30 sensor module returning None as a measurement value
   - Fix gpiod being added to crontab during install from setup.sh ([#174](https://github.com/kizniche/mycodo/issues/174))
+
 
 ## 4.1.6 (2017-01-17)
 
@@ -742,12 +831,14 @@ Miscellaneous
   - Add more translatable text
   - Add password repeat input when creating new admin user
 
+
 ## 4.1.5 (2017-01-14)
 
 ### Bugfixes
 
   - Fix DHT11 sensor module not returning values ([#171](https://github.com/kizniche/mycodo/issues/171))
   - Fix HTU21D sensor module not returning values ([#172](https://github.com/kizniche/mycodo/issues/172))
+
 
 ## 4.1.4 (2017-01-13)
 
@@ -784,6 +875,7 @@ This release introduces a new method for upgrading Mycodo to the latest version.
   - Update sht_sensor to v16.12.1
   - Move install files to Mycodo/install
 
+
 ## 4.0.26 (2016-11-23)
 
 ### Features
@@ -798,6 +890,7 @@ This release introduces a new method for upgrading Mycodo to the latest version.
 
   - Fix code warnings and errors
   - Add exceptions, logging, and docstrings
+
 
 ## 4.0.25 (2016-11-13)
 
@@ -815,6 +908,7 @@ This release introduces a new method for upgrading Mycodo to the latest version.
   - Add short sleep() to login to reduce chance of brute-force success
   - Fix code warnings and errors
 
+
 ## 4.0.24 (2016-10-26)
 
 ### Features
@@ -822,6 +916,7 @@ This release introduces a new method for upgrading Mycodo to the latest version.
   - Setup flask app using new create_app() factory
   - Create application factory and moved view implementation into a general blueprint ([#129](https://github.com/kizniche/mycodo/issues/129) [#132](https://github.com/kizniche/Mycodo/pull/132) [#142](https://github.com/kizniche/Mycodo/pull/142))
   - Add initial fixture tests
+
 
 ## 4.0.23 (2016-10-18)
 

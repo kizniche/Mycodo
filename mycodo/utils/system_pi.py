@@ -10,6 +10,17 @@ import subprocess
 logger = logging.getLogger("mycodo.system_pi")
 
 
+def add_custom_measurements(sensor, measurements, measurement_units):
+    """ Returns a dictionary of sensor measurements including custom measurements/units """
+    for each_sensor in sensor:
+        if each_sensor.cmd_measurement and each_sensor.cmd_measurement not in measurement_units:
+            if each_sensor.cmd_measurement and each_sensor.cmd_measurement_units:
+                measurements.update(
+                    {each_sensor.cmd_measurement: {
+                        'unit': each_sensor.cmd_measurement_units,
+                        'name': each_sensor.cmd_measurement}})
+    return measurements
+
 def time_between_range(start_time, end_time):
     """
     Check if the current time is between start_time and end_time

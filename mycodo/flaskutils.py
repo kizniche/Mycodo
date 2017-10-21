@@ -1334,26 +1334,15 @@ def pid_mod(form_mod_pid_base, form_mod_pid_pwm, form_mod_pid_relay):
         flash_form_errors(form_mod_pid_base)
 
     try:
+        sensor_unique_id = form_mod_pid_base.measurement.data.split(',')[0]
         sensor = Sensor.query.filter(
-            Sensor.id == form_mod_pid_base.sensor_id.data).first()
+            Sensor.unique_id == sensor_unique_id).first()
         if not sensor:
-            error.append(gettext(u"A valid sensor ID is required"))
-        elif (sensor.device != 'LinuxCommand' and
-                sensor.device not in MEASUREMENTS):
-            error.append(gettext(u"Invalid sensor"))
-        elif (sensor.device != 'LinuxCommand' and
-                form_mod_pid_base.measurement.data not in MEASUREMENTS[sensor.device]):
-            error.append(gettext(
-                u"Select a Measure Type that is compatible with the "
-                u"chosen sensor"))
+            error.append(gettext(u"A valid sensor is required"))
         if not error:
             mod_pid = PID.query.filter(
                 PID.id == form_mod_pid_base.pid_id.data).first()
             mod_pid.name = form_mod_pid_base.name.data
-            if form_mod_pid_base.sensor_id.data:
-                mod_pid.sensor_id = form_mod_pid_base.sensor_id.data
-            else:
-                mod_pid.sensor_id = None
             mod_pid.measurement = form_mod_pid_base.measurement.data
             mod_pid.direction = form_mod_pid_base.direction.data
             mod_pid.period = form_mod_pid_base.period.data
@@ -1461,16 +1450,19 @@ def pid_reorder(pid_id, display_order, direction):
     flash_success_errors(error, action, url_for('page_routes.page_pid'))
 
 
+# TODO: Add more settings-checks before allowing controller to be activated
 def has_required_pid_values(pid_id):
     pid = PID.query.filter(
         PID.id == pid_id).first()
     error = False
-    # TODO: Add more settings-checks before allowing controller to be activated
-    if not pid.sensor_id:
-        flash(gettext(u"A valid sensor is required"), "error")
-        error = True
     if not pid.measurement:
-        flash(gettext(u"A valid Measure Type is required"), "error")
+        flash(gettext(u"A valid Measurement is required"), "error")
+        error = True
+    sensor_unique_id = pid.measurement.split(',')[0]
+    sensor = Sensor.query.filter(
+        Sensor.unique_id == sensor_unique_id).first()
+    if not sensor:
+        flash(gettext(u"A valid sensor is required"), "error")
         error = True
     if not pid.raise_relay_id and not pid.lower_relay_id:
         flash(gettext(u"A Raise Relay ID and/or a Lower Relay ID is "
@@ -1492,8 +1484,10 @@ def pid_activate(pid_id):
     # Check if associated sensor is activated
     pid = PID.query.filter(
         PID.id == pid_id).first()
+
+    sensor_unique_id = pid.measurement.split(',')[0]
     sensor = Sensor.query.filter(
-        Sensor.id == pid.sensor_id).first()
+        Sensor.unique_id == sensor_unique_id).first()
 
     if not sensor.is_activated:
         error.append(gettext(
@@ -2031,8 +2025,14 @@ def sensor_add(form_add_sensor):
                 new_sensor.i2c_bus = 0
                 new_sensor.multiplexer_bus = 0
 
+            # Linux command as sensor
+            if form_add_sensor.sensor.data == 'LinuxCommand':
+                new_sensor.cmd_command = 'shuf -i 50-70 -n 1'
+                new_sensor.cmd_measurement = 'Condition'
+                new_sensor.cmd_measurement_units = 'unit'
+
             # Process monitors
-            if form_add_sensor.sensor.data == 'MYCODO_RAM':
+            elif form_add_sensor.sensor.data == 'MYCODO_RAM':
                 new_sensor.measurements = 'disk_space'
                 new_sensor.location = 'Mycodo_daemon'
             elif form_add_sensor.sensor.data == 'RPi':
@@ -2355,15 +2355,14 @@ def sensor_deactivate(form_mod_sensor):
 
 # Deactivate any active PID or LCD controllers using this sensor
 def sensor_deactivate_associated_controllers(sensor_id):
-    pid = (PID.query
-           .filter(PID.sensor_id == sensor_id)
-           .filter(PID.is_activated == True)
-           ).all()
-    if pid:
-        for each_pid in pid:
+    sensor_unique_id = Sensor.query.filter(Sensor.id == sensor_id).first().unique_id
+    pid = PID.query.filter(PID.is_activated == True).all()
+    for each_pid in pid:
+        if sensor_unique_id in each_pid.measurement:
             controller_activate_deactivate('deactivate',
                                            'PID',
                                            each_pid.id)
+
     lcd = LCD.query.filter(LCD.is_activated)
     for each_lcd in lcd:
         if sensor_id in [each_lcd.line_1_sensor_id,

@@ -657,12 +657,8 @@ class PIDModBase(FlaskForm):
         lazy_gettext(u'Name'),
         validators=[DataRequired()]
     )
-    sensor_id = StringField(
-        lazy_gettext(u'Input ID'),
-        validators=[DataRequired()]
-    )
     measurement = StringField(
-        lazy_gettext(u'Measure Type'),
+        lazy_gettext(u'Measurement'),
         validators=[DataRequired()]
     )
     direction = SelectField(

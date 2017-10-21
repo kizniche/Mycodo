@@ -283,7 +283,6 @@ class PIDController(threading.Thread):
         self.is_held = pid.is_held
         self.is_paused = pid.is_paused
         self.pid_type = pid.pid_type
-        self.measurement = pid.measurement
         self.method_id = pid.method_id
         self.direction = pid.direction
         self.raise_relay_id = pid.raise_relay_id
@@ -304,7 +303,10 @@ class PIDController(threading.Thread):
         self.default_set_point = pid.setpoint
         self.set_point = pid.setpoint
 
-        sensor = db_retrieve_table_daemon(Sensor, device_id=pid.sensor_id)
+        sensor_unique_id = pid.measurement.split(',')[0]
+        self.measurement = pid.measurement.split(',')[1]
+
+        sensor = db_retrieve_table_daemon(Sensor, unique_id=sensor_unique_id)
         self.sensor_unique_id = sensor.unique_id
         self.sensor_duration = sensor.period
 
