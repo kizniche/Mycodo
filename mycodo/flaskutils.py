@@ -760,26 +760,37 @@ def choices_sensors(sensor):
     choices = OrderedDict()
     # populate form multi-select choices for sensors and measurements
     for each_sensor in sensor:
-        for each_measurement in MEASUREMENTS[each_sensor.device]:
+        if each_sensor.device == 'LinuxCommand':
             value = '{id},{meas}'.format(
                 id=each_sensor.unique_id,
-                meas=each_measurement)
+                meas=each_sensor.cmd_measurement)
             display = u'{dev_id} ({dev_name}) {name} ({unit})'.format(
                 dev_id=each_sensor.id,
                 dev_name=each_sensor.name,
-                name=MEASUREMENT_UNITS[each_measurement]['name'],
-                unit=MEASUREMENT_UNITS[each_measurement]['unit'])
+                name=each_sensor.cmd_measurement,
+                unit=each_sensor.cmd_measurement_units)
             choices.update({value: display})
-        # Display custom converted units for ADCs
-        if each_sensor.device in ['ADS1x15', 'MCP342x']:
-            value = '{id},{meas}'.format(
-                id=each_sensor.unique_id,
-                meas=each_sensor.adc_measure)
-            display = u'{id} ({name}) {meas}'.format(
-                id=each_sensor.id,
-                name=each_sensor.name,
-                meas=each_sensor.adc_measure)
-            choices.update({value: display})
+        else:
+            for each_measurement in MEASUREMENTS[each_sensor.device]:
+                value = '{id},{meas}'.format(
+                    id=each_sensor.unique_id,
+                    meas=each_measurement)
+                display = u'{dev_id} ({dev_name}) {name} ({unit})'.format(
+                    dev_id=each_sensor.id,
+                    dev_name=each_sensor.name,
+                    name=MEASUREMENT_UNITS[each_measurement]['name'],
+                    unit=MEASUREMENT_UNITS[each_measurement]['unit'])
+                choices.update({value: display})
+            # Display custom converted units for ADCs
+            if each_sensor.device in ['ADS1x15', 'MCP342x']:
+                value = '{id},{meas}'.format(
+                    id=each_sensor.unique_id,
+                    meas=each_sensor.adc_measure)
+                display = u'{id} ({name}) {meas}'.format(
+                    id=each_sensor.id,
+                    name=each_sensor.name,
+                    meas=each_sensor.adc_measure)
+                choices.update({value: display})
     return choices
 
 
@@ -1292,20 +1303,12 @@ def pid_add(form_add_pid):
         for _ in range(0, form_add_pid.numberPIDs.data):
             try:
                 new_pid = PID()
-                new_pid.pid_type_input = form_add_pid.pid_type_input.data
                 new_pid.pid_type = form_add_pid.pid_type.data
-
-                # Input Options
-                if form_add_pid.pid_type_input.data == 'command':
-                    new_pid.measurement_cmd = 'cat /sys/class/thermal/thermal_zone0/temp'
-
-                # Output Options
                 if form_add_pid.pid_type.data == 'pwm':
                     new_pid.raise_min_duration = 2.0
                     new_pid.raise_max_duration = 98.0
                     new_pid.lower_min_duration = 2.0
                     new_pid.lower_max_duration = 98.0
-
                 new_pid.save()
 
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
@@ -1321,9 +1324,7 @@ def pid_add(form_add_pid):
         flash_form_errors(form_add_pid)
 
 
-def pid_mod(form_mod_pid_base,
-            form_mod_pid_pwm, form_mod_pid_relay,
-            form_mod_pid_command, form_mod_pid_sensor):
+def pid_mod(form_mod_pid_base, form_mod_pid_pwm, form_mod_pid_relay):
     action = u'{action} {controller}'.format(
         action=gettext(u"Modify"),
         controller=gettext(u"PID"))
@@ -1337,9 +1338,11 @@ def pid_mod(form_mod_pid_base,
             Sensor.id == form_mod_pid_base.sensor_id.data).first()
         if not sensor:
             error.append(gettext(u"A valid sensor ID is required"))
-        elif sensor.device not in MEASUREMENTS:
+        elif (sensor.device != 'LinuxCommand' and
+                sensor.device not in MEASUREMENTS):
             error.append(gettext(u"Invalid sensor"))
-        elif form_mod_pid_base.measurement.data not in MEASUREMENTS[sensor.device]:
+        elif (sensor.device != 'LinuxCommand' and
+                form_mod_pid_base.measurement.data not in MEASUREMENTS[sensor.device]):
             error.append(gettext(
                 u"Select a Measure Type that is compatible with the "
                 u"chosen sensor"))
@@ -1347,6 +1350,11 @@ def pid_mod(form_mod_pid_base,
             mod_pid = PID.query.filter(
                 PID.id == form_mod_pid_base.pid_id.data).first()
             mod_pid.name = form_mod_pid_base.name.data
+            if form_mod_pid_base.sensor_id.data:
+                mod_pid.sensor_id = form_mod_pid_base.sensor_id.data
+            else:
+                mod_pid.sensor_id = None
+            mod_pid.measurement = form_mod_pid_base.measurement.data
             mod_pid.direction = form_mod_pid_base.direction.data
             mod_pid.period = form_mod_pid_base.period.data
             mod_pid.max_measure_age = form_mod_pid_base.max_measure_age.data
@@ -1365,11 +1373,6 @@ def pid_mod(form_mod_pid_base,
                 if not form_mod_pid_relay.validate():
                     flash_form_errors(form_mod_pid_relay)
                 else:
-                    if form_mod_pid_base.sensor_id.data:
-                        mod_pid.sensor_id = form_mod_pid_base.sensor_id.data
-                    else:
-                        mod_pid.sensor_id = None
-                    mod_pid.measurement = form_mod_pid_base.measurement.data
                     if form_mod_pid_relay.raise_relay_id.data:
                         mod_pid.raise_relay_id = form_mod_pid_relay.raise_relay_id.data
                     else:
@@ -1384,6 +1387,7 @@ def pid_mod(form_mod_pid_base,
                     mod_pid.lower_min_duration = form_mod_pid_relay.lower_min_duration.data
                     mod_pid.lower_max_duration = form_mod_pid_relay.lower_max_duration.data
                     mod_pid.lower_min_off_duration = form_mod_pid_relay.lower_min_off_duration.data
+
             elif mod_pid.pid_type == 'pwm':
                 if not form_mod_pid_pwm.validate():
                     flash_form_errors(form_mod_pid_pwm)
@@ -1400,21 +1404,6 @@ def pid_mod(form_mod_pid_base,
                     mod_pid.raise_max_duration = form_mod_pid_pwm.raise_max_duty_cycle.data
                     mod_pid.lower_min_duration = form_mod_pid_pwm.lower_min_duty_cycle.data
                     mod_pid.lower_max_duration = form_mod_pid_pwm.lower_max_duty_cycle.data
-
-            if mod_pid.pid_type_input == 'sensor':
-                if not form_mod_pid_sensor.validate():
-                    flash_form_errors(form_mod_pid_relay)
-                else:
-                    if form_mod_pid_sensor.sensor_id.data:
-                        mod_pid.sensor_id = form_mod_pid_sensor.sensor_id.data
-                    else:
-                        mod_pid.sensor_id = None
-                    mod_pid.measurement = form_mod_pid_sensor.measurement.data
-            elif mod_pid.pid_type_input == 'command':
-                if not form_mod_pid_command.validate():
-                    flash_form_errors(form_mod_pid_relay)
-                else:
-                    mod_pid.measurement_cmd = form_mod_pid_command.measurement_cmd.data
 
             db.session.commit()
             # If the controller is active or paused, refresh variables in thread
@@ -2244,6 +2233,9 @@ def sensor_mod(form_mod_sensor):
             mod_sensor.resolution = form_mod_sensor.resolution.data
             mod_sensor.sensitivity = form_mod_sensor.sensitivity.data
             mod_sensor.calibrate_sensor_measure = form_mod_sensor.calibrate_sensor_measure.data
+            mod_sensor.cmd_command = form_mod_sensor.cmd_command.data
+            mod_sensor.cmd_measurement = form_mod_sensor.cmd_measurement.data
+            mod_sensor.cmd_measurement_units = form_mod_sensor.cmd_measurement_units.data
             # Multiplexer options
             mod_sensor.multiplexer_address = form_mod_sensor.multiplexer_address.data
             mod_sensor.multiplexer_bus = form_mod_sensor.multiplexer_bus.data
@@ -2338,10 +2330,15 @@ def sensor_reorder(sensor_id, display_order, direction):
 def sensor_activate(form_mod_sensor):
     sensor = Sensor.query.filter(
         Sensor.id == form_mod_sensor.modSensor_id.data).first()
-    if (not sensor.location and
+    if (sensor.device != u'LinuxCommand' and
+            not sensor.location and
             sensor.device not in DEVICES_DEFAULT_LOCATION):
         flash("Cannot activate sensor without the GPIO/I2C Address/Port "
               "to communicate with it set.", "error")
+        return redirect(url_for('page_routes.page_input'))
+    elif (sensor.device == u'LinuxCommand' and
+            sensor.cmd_command is ''):
+        flash("Cannot activate sensor without a command set.", "error")
         return redirect(url_for('page_routes.page_input'))
     controller_activate_deactivate('activate',
                                    'Sensor',

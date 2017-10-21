@@ -758,6 +758,7 @@
 <p>Controllers are essentially modules that can be used to perform functions or communicate with other parts of Mycodo. Each controller performs a specific task or group of related tasks. There are also Controller Functions, which are larger functions of a controller or controllers and have been given their own sections.</p>
 <h2 id="input">Input</h2>
 <p>Inputs (such as sensors or analog signals) measure environmental and other characteristic conditions, which will be stored in an influxdb round-robin database. This database will provide recent measurements for <a href="/help#graphs">Graphs</a>, <a href="/help#lcds">LCDs</a>, <a href="/help#pids">PID Controllers</a>, <a href="/help#conditional-statements">Conditional Statements</a>, and other parts of Mycodo to operate from.</p>
+<p>Among the sensors is ‘Linux Command’. This is a way to use a custom script to return a value to be used within Mycodo, without having to edit the Mycodo code. Merely create your script and use this sensor to have the return value of the script be stored in the Mycodo database for use with PIDs and other parts of Mycodo that uses sensor measurements.</p>
 <table style="width:94%;">
 <colgroup>
 <col style="width: 29%"></col>
@@ -815,54 +816,66 @@
 <td style="text-align: left;">This is the duration of time that the Pre Relay runs for before the sensor measurement is obtained.</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">Command</td>
+<td style="text-align: left;">A linux command (executed as the user ‘mycodo’) that the return value becomes the measurement</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Command Measurement</td>
+<td style="text-align: left;">The measured condition (e.g. temperature, humidity, etc.) from the linux command</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Command Units</td>
+<td style="text-align: left;">The units of the measurement condition from the linux command</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">Edge</td>
 <td style="text-align: left;">Edge sensors only: Select whether the Rising or Falling (or both) edges of a changing voltage are detected. A number of devices to do this when in-line with a circuit supplying a 3.3-volt input signal to a GPIO, such as simple mechanical switch, a button, a magnet (reed/hall) sensor, a PIR motion detector, and more.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Bounce Time (ms)</td>
 <td style="text-align: left;">Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly called <a href="http://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing">debouncing a signal</a>. and may be necessary if using a mechanical circuit.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Reset Period</td>
 <td style="text-align: left;">Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Multiplexer (MX)</td>
 <td style="text-align: left;">If connected to the TCA9548A I<sup>2</sup>C multiplexer, select what the I<sup>2</sup>C address of the multiplexer is.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Mx I<sup>2</sup>C Bus</td>
 <td style="text-align: left;">If connected to the TCA9548A I<sup>2</sup>C multiplexer, select the I<sup>2</sup>C bus the multiplexer is connected to.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Mx Channel</td>
 <td style="text-align: left;">If connected to the TCA9548A I<sup>2</sup>C multiplexer, select the channel of the multiplexer the device is connected to.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Measurement</td>
 <td style="text-align: left;">Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if the resistance of a photocell is being measured through a voltage divider, this measurement would be “light”.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Units</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is the unit of the measurement. With the above example of “light” as the measurement, the unit may be “lux” or “intensity”.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Channel</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Gain</td>
 <td style="text-align: left;">Analog-to-digital converter only: set the gain when acquiring the measurement.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Volts Min</td>
 <td style="text-align: left;">Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to “0.2”.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Volts Max</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the voltage range. Units Min Analog-to-digital converter only: This value will be the lower value of a range that will use the Min and Max Voltages, above, to produce a unit output. For instance, if your voltage range is 0.0 - 1.0 volts, and the unit range is 1 - 60, and a voltage of 0.5 is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables creating calibrated scales to use with your particular circuit.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Units Max</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.</td>
 </tr>
@@ -1084,8 +1097,6 @@
 </table>
 <h2 id="pids">PIDs</h2>
 <p>A <a href="https://en.wikipedia.org/wiki/PID_controller">proportional-derivative-integral (PID) controller</a> is a control loop feedback mechanism used throughout industry for controlling systems. It efficiently brings a measurable condition, such as the temperature, to a desired state and maintains it there with little overshoot and oscillation. A well-tuned PID controller will raise to the setpoint quickly, have minimal overshoot, and maintain the setpoint with little oscillation.</p>
-<p>There are two different input types, ‘sensor’ and ‘command’. Selecting a sensor input will use the measurement from a sensor as the PID input. A command input will execute a user-defined command and use the return value as the PID input.</p>
-<p>There are two different output types, ‘relay’ and ‘pwm’. Selecting a relay output will alternate a relay on and off at predefined periods. Selecting PWM will output a pulse-width modulated signal to a pin.</p>
 <p>PID settings may be changed while the PID is activated and the new settings will take effect immediately. If settings are changed while the controller is paused, the values will be used once the controller resumes operation.</p>
 <table style="width:94%;">
 <colgroup>

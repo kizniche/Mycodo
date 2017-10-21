@@ -770,6 +770,7 @@
         {%- set yaxis_relay = [] -%}
         {%- set yaxis_temp = [] -%}
         {%- set yaxis_volts = [] -%}
+        {%- set yaxis_command = [] -%}
 
         {# Determine what y-axes are needed for sensor measurements #}
         {%- for each_sensor in sensor -%}
@@ -806,6 +807,8 @@
               {%- do yaxis_volts.append(1) -%}
             {%- elif measurement == each_sensor.adc_measure -%}
               {%- do yaxis_adc.append(each_sensor.adc_measure) -%}
+            {%- elif each_sensor.device == 'LinuxCommand' -%}
+              {%- do yaxis_command.append(each_sensor.cmd_measurement) -%}
             {%- endif -%}
           {%- endfor -%}
         {%- endfor %}
@@ -839,6 +842,8 @@
                   {%- do yaxis_volts.append(1) -%}
                 {%- elif each_pid.measurement == each_sensor.adc_measure -%}
                   {%- do yaxis_adc.append(each_sensor.adc_measure) -%}
+                {% elif each_sensor.device == 'LinuxCommand' and each_sensor.cmd_measurement not in yaxis_command -%}
+                  {%- do yaxis_command.append(each_sensor.cmd_measurement) -%}
                 {%- endif -%}
               {%- endfor -%}
             {% elif measurement == 'pid_output' %}
@@ -1120,6 +1125,18 @@
           id: '{{each_adc_measure}}'
         },
       {%- endfor -%}
+      {%- for each_cmd_measure in yaxis_command -%}
+        {
+          title: {
+            text: '{{each_cmd_measure}}'
+          },
+          labels: {
+            format: '{value}'
+          },
+          opposite: false,
+          id: '{{each_cmd_measure}}'
+        },
+      {%- endfor -%}
       ],
       exporting: {
         enabled: {% if each_graph.enable_export %}true{% else %}false{% endif %},
@@ -1212,6 +1229,26 @@
       series: [
       {% for each_sensor in sensor -%}
         {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id == each_id_and_measure.split(',')[0] -%}
+
+          {% if each_sensor.device == 'LinuxCommand' %}
+            {
+              name: '{{each_sensor.name}} {{each_sensor.cmd_measurement}} ({{each_sensor.cmd_measurement_units}})',
+              type: 'line',
+              tooltip: {
+                {% if each_sensor.cmd_measurement == 'temperature' %}
+                pointFormatter: function () {
+                  return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
+                },
+                {% else %}
+                valueSuffix: ' {{each_sensor.cmd_measurement_units}}',
+                valueDecimals: 2
+                {% endif %}
+              },
+              yAxis: '{{each_sensor.cmd_measurement}}',
+              data: []
+            },
+          {% endif %}
+
           {%- for each_measurement in each_sensor.measurements.split(',') -%}
             {%- if each_measurement == each_id_and_measure.split(',')[1] -%}
               {
@@ -1293,7 +1330,13 @@
             name: '{{each_pid.name}} {{_('Setpoint')}}',
             type: 'line',
             tooltip: {
-              valueSuffix: ' {{measurement_units[each_pid.measurement]['unit']|safe}}',
+              valueSuffix: ' {% if each_pid.measurement in measurement_units -%}
+                               {{measurement_units[each_pid.measurement]['unit']|safe}}
+                             {% else -%}
+                               {%- for each_sensor in sensor if each_pid.sensor_id == sensor.unique_id and each_sensor.device == 'LinuxCommand' %}
+                                 {{each_sensor.cmd_measurement_units}}
+                               {%- endfor -%}
+                             {%- endif %}',
               valueDecimals: 2
             },
             yAxis: '{{each_pid.measurement}}',

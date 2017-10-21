@@ -140,6 +140,7 @@ class PIDController(threading.Thread):
         self.timer = t.time() + self.period
 
         # Check if a method is set for this PID
+        self.method_start_act = None
         if self.method_id:
             method = db_retrieve_table_daemon(Method, device_id=self.method_id)
             method_data = db_retrieve_table_daemon(MethodData)

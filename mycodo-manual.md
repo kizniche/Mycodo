@@ -332,6 +332,11 @@ Input
 
 Inputs (such as sensors or analog signals) measure environmental and other characteristic conditions, which will be stored in an influxdb round-robin database. This database will provide recent measurements for [Graphs](/help#graphs), [LCDs](/help#lcds), [PID Controllers](/help#pids), [Conditional Statements](/help#conditional-statements), and other parts of Mycodo to operate from.
 
+Among the sensors is 'Linux Command'. This is a way to use a custom script to return a value to be used
+within Mycodo, without having to edit the Mycodo code. Merely create your script and use this sensor to
+have the return value of the script be stored in the Mycodo database for use with PIDs and other parts
+of Mycodo that uses sensor measurements.
+
 Setting | Description
 -------------------- | ----------------------------------------------
 Activate | After the sensor has been properly configured, activation begins acquiring measurements from the sensor. Any activated conditional statements will now being operating.
@@ -345,6 +350,9 @@ I<sup>2</sup>C Bus | The bus to be used to communicate with the I<sup>2</sup>C a
 Period | After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.
 Pre Relay | If you require a relay to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the relay number that will be activated. The relay will be activated for a duration defined by the Pre Duration, then once the relay turns off, a measurement by the sensor is made.
 Pre Relay Duration | This is the duration of time that the Pre Relay runs for before the sensor measurement is obtained.
+Command | A linux command (executed as the user 'mycodo') that the return value becomes the measurement
+Command Measurement | The measured condition (e.g. temperature, humidity, etc.) from the linux command
+Command Units | The units of the measurement condition from the linux command
 Edge | Edge sensors only: Select whether the Rising or Falling (or both) edges of a changing voltage are detected. A number of devices to do this when in-line with a circuit supplying a 3.3-volt input signal to a GPIO, such as simple mechanical switch, a button, a magnet (reed/hall) sensor, a PIR motion detector, and more.
 Bounce Time (ms) | Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly called [debouncing a signal](http://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing). and may be necessary if using a mechanical circuit.
 Reset Period | Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.
@@ -488,15 +496,6 @@ temperature, to a desired state and maintains it there with little
 overshoot and oscillation. A well-tuned PID controller will raise to the
 setpoint quickly, have minimal overshoot, and maintain the setpoint with
 little oscillation.
-
-There are two different input types, 'sensor' and 'command'. Selecting a 
-sensor input will use the measurement from a sensor as the PID input. A 
-command input will execute a user-defined command and use the return value 
-as the PID input.
-
-There are two different output types, 'relay' and 'pwm'. Selecting a relay
-output will alternate a relay on and off at predefined periods. Selecting 
-PWM will output a pulse-width modulated signal to a pin.
 
 PID settings may be changed while the PID is activated and the new
 settings will take effect immediately. If settings are changed while the

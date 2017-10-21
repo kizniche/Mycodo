@@ -55,6 +55,11 @@ class Sensor(CRUDMixin, db.Model):
     adc_units_min = db.Column(db.Float, default=0)
     adc_units_max = db.Column(db.Float, default=10)
 
+    # Command options
+    cmd_command = db.Column(db.Text, default='shuf -i 50-70 -n 1')
+    cmd_measurement = db.Column(db.Text, default='Condition')
+    cmd_measurement_units = db.Column(db.Text, default='unit')
+
     def is_active(self):
         """
         :return: Whether the sensor is currently activated

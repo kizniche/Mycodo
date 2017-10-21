@@ -67,17 +67,6 @@ def query_string(measurement, unique_id, value=None,
                  start_str=None, end_str=None,
                  past_sec=None, group_sec=None, limit=None):
     """Generate influxdb query string"""
-    # Validate input
-    sensor = db_retrieve_table_daemon(Sensor, unique_id=unique_id)
-    if ((measurement not in MEASUREMENT_UNITS and not sensor.adc_measure) or
-            not valid_uuid(unique_id) or
-            bool(start_str and not valid_date_str(start_str)) or
-            bool(end_str and not valid_date_str(end_str)) or
-            bool(past_sec and not valid_int(past_sec)) or
-            bool(group_sec and not valid_int(group_sec)) or
-            bool(limit and not valid_int(limit))):
-        return 1
-
     query = "SELECT "
 
     if value:

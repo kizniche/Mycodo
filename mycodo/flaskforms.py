@@ -639,8 +639,7 @@ class MethodMod(FlaskForm):
 #
 
 class PIDAdd(FlaskForm):
-    pid_type_input = StringField(lazy_gettext(u'Input Type'))
-    pid_type = StringField(lazy_gettext(u'Output Type'))
+    pid_type = StringField(lazy_gettext(u'Type'))
     numberPIDs = IntegerField(
         lazy_gettext(u'Quantity'),
         render_kw={"placeholder": lazy_gettext(u"Quantity")},
@@ -656,6 +655,14 @@ class PIDModBase(FlaskForm):
     pid_id = IntegerField('PID ID', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext(u'Name'),
+        validators=[DataRequired()]
+    )
+    sensor_id = StringField(
+        lazy_gettext(u'Input ID'),
+        validators=[DataRequired()]
+    )
+    measurement = StringField(
+        lazy_gettext(u'Measure Type'),
         validators=[DataRequired()]
     )
     direction = SelectField(
@@ -721,57 +728,6 @@ class PIDModBase(FlaskForm):
     reorder_down = SubmitField(lazy_gettext(u'Down'))
 
 
-class PIDModSensor(FlaskForm):
-    sensor_id = StringField(
-        lazy_gettext(u'Input ID'),
-        validators=[DataRequired()]
-    )
-    measurement = StringField(
-        lazy_gettext(u'Measure Type'),
-        validators=[DataRequired()]
-    )
-
-
-class PIDModCommand(FlaskForm):
-    measurement_cmd = StringField(
-        lazy_gettext(u'Input Command'),
-        validators=[DataRequired()]
-    )
-
-
-class PIDModPWM(FlaskForm):
-    raise_relay_id = StringField(lazy_gettext(u'Output ID (Raise)'))
-    raise_min_duty_cycle = DecimalField(
-        lazy_gettext(u'Min Duty Cycle (Raise)'),
-        validators=[validators.NumberRange(
-            min=0,
-            max=100
-        )]
-    )
-    raise_max_duty_cycle = DecimalField(
-        lazy_gettext(u'Max Duty Cycle (Raise)'),
-        validators=[validators.NumberRange(
-            min=0,
-            max=100
-        )]
-    )
-    lower_relay_id = StringField(lazy_gettext(u'Output ID (Lower)'))
-    lower_min_duty_cycle = DecimalField(
-        lazy_gettext(u'Min Duty Cycle (Lower)'),
-        validators=[validators.NumberRange(
-            min=0,
-            max=100
-        )]
-    )
-    lower_max_duty_cycle = DecimalField(
-        lazy_gettext(u'Max Duty Cycle (Lower)'),
-        validators=[validators.NumberRange(
-            min=0,
-            max=100
-        )]
-    )
-
-
 class PIDModRelay(FlaskForm):
     raise_relay_id = StringField(lazy_gettext(u'Output ID (Raise)'))
     raise_min_duration = DecimalField(
@@ -815,6 +771,39 @@ class PIDModRelay(FlaskForm):
         validators=[validators.NumberRange(
             min=0,
             max=86400
+        )]
+    )
+
+
+class PIDModPWM(FlaskForm):
+    raise_relay_id = StringField(lazy_gettext(u'Output ID (Raise)'))
+    raise_min_duty_cycle = DecimalField(
+        lazy_gettext(u'Min Duty Cycle (Raise)'),
+        validators=[validators.NumberRange(
+            min=0,
+            max=100
+        )]
+    )
+    raise_max_duty_cycle = DecimalField(
+        lazy_gettext(u'Max Duty Cycle (Raise)'),
+        validators=[validators.NumberRange(
+            min=0,
+            max=100
+        )]
+    )
+    lower_relay_id = StringField(lazy_gettext(u'Output ID (Lower)'))
+    lower_min_duty_cycle = DecimalField(
+        lazy_gettext(u'Min Duty Cycle (Lower)'),
+        validators=[validators.NumberRange(
+            min=0,
+            max=100
+        )]
+    )
+    lower_max_duty_cycle = DecimalField(
+        lazy_gettext(u'Max Duty Cycle (Lower)'),
+        validators=[validators.NumberRange(
+            min=0,
+            max=100
         )]
     )
 
@@ -958,6 +947,9 @@ class SensorMod(FlaskForm):
     multiplexer_address = StringField(lazy_gettext(u'Multiplexer (MX)'))
     multiplexer_bus = StringField(lazy_gettext(u'Mx I<sup>2</sup>C Bus'))
     multiplexer_channel = IntegerField(lazy_gettext(u'Mx Channel'))
+    cmd_command = StringField(lazy_gettext(u'Command'))
+    cmd_measurement = StringField(lazy_gettext(u'Measurement'))
+    cmd_measurement_units = StringField(lazy_gettext(u'Unit'))
     adc_channel = IntegerField(lazy_gettext(u'ADC Channel'))
     adc_gain = IntegerField(lazy_gettext(u'ADC Gain'))
     adc_resolution = IntegerField(lazy_gettext(u'ADC Resolution'))

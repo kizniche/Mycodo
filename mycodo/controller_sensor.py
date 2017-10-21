@@ -56,6 +56,7 @@ from sensors.dht22 import DHT22Sensor
 from sensors.ds18b20 import DS18B20Sensor
 from sensors.htu21d import HTU21DSensor
 from sensors.k30 import K30Sensor
+from sensors.linux_command import LinuxCommand
 from sensors.mh_z16 import MHZ16Sensor
 from sensors.mh_z19 import MHZ19Sensor
 from sensors.raspi import RaspberryPiCPUTemp
@@ -160,6 +161,9 @@ class SensorController(threading.Thread):
         self.period = sensor.period
         self.resolution = sensor.resolution
         self.sensitivity = sensor.sensitivity
+        self.cmd_command = sensor.cmd_command
+        self.cmd_measurement = sensor.cmd_measurement
+        self.cmd_measurement_units = sensor.cmd_measurement_units
         self.mux_address_raw = sensor.multiplexer_address
         self.mux_bus = sensor.multiplexer_bus
         self.mux_chan = sensor.multiplexer_channel
@@ -338,6 +342,9 @@ class SensorController(threading.Thread):
         elif self.device == 'TSL2591':
             self.measure_sensor = TSL2591Sensor(self.i2c_address,
                                                 self.i2c_bus)
+        elif self.device == 'LinuxCommand':
+            self.measure_sensor = LinuxCommand(self.cmd_command,
+                                               self.cmd_measurement)
         else:
             self.device_recognized = False
             self.logger.debug("Device '{device}' not recognized".format(

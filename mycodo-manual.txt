@@ -441,6 +441,12 @@ round-robin database. This database will provide recent measurements for
 Graphs, LCDs, PID Controllers, Conditional Statements, and other parts
 of Mycodo to operate from.
 
+Among the sensors is ‘Linux Command’. This is a way to use a custom
+script to return a value to be used within Mycodo, without having to
+edit the Mycodo code. Merely create your script and use this sensor to
+have the return value of the script be stored in the Mycodo database for
+use with PIDs and other parts of Mycodo that uses sensor measurements.
+
   ---------------------------------------------------------------------
   Setting               Description
   --------------------- -----------------------------------------------
@@ -497,6 +503,15 @@ of Mycodo to operate from.
   Pre Relay Duration    This is the duration of time that the Pre Relay
                         runs for before the sensor measurement is
                         obtained.
+
+  Command               A linux command (executed as the user ‘mycodo’)
+                        that the return value becomes the measurement
+
+  Command Measurement   The measured condition (e.g. temperature,
+                        humidity, etc.) from the linux command
+
+  Command Units         The units of the measurement condition from the
+                        linux command
 
   Edge                  Edge sensors only: Select whether the Rising or
                         Falling (or both) edges of a changing voltage
@@ -835,15 +850,6 @@ desired state and maintains it there with little overshoot and
 oscillation. A well-tuned PID controller will raise to the setpoint
 quickly, have minimal overshoot, and maintain the setpoint with little
 oscillation.
-
-There are two different input types, ‘sensor’ and ‘command’. Selecting a
-sensor input will use the measurement from a sensor as the PID input. A
-command input will execute a user-defined command and use the return
-value as the PID input.
-
-There are two different output types, ‘relay’ and ‘pwm’. Selecting a
-relay output will alternate a relay on and off at predefined periods.
-Selecting PWM will output a pulse-width modulated signal to a pin.
 
 PID settings may be changed while the PID is activated and the new
 settings will take effect immediately. If settings are changed while the

@@ -6,8 +6,8 @@ import os
 import collections
 from datetime import timedelta
 
-MYCODO_VERSION = '5.2.5'
-ALEMBIC_VERSION = '4598c6575d45'
+MYCODO_VERSION = '5.2.6'
+ALEMBIC_VERSION = '66db29288333'
 
 LANGUAGES = {
     'en': 'English',
@@ -106,6 +106,7 @@ SENSORS = [
     ('RPi', 'Raspberry Pi: CPU Temperature'),
     ('RPiCPULoad', 'Raspberry Pi: CPU Load'),
     ('RPiFreeSpace', 'Raspberry Pi: Free Disk Space'),
+    ('LinuxCommand', 'Linux Command'),
     ('ADS1x15', 'Analog-to-Digital Converter: ADS1x15'),
     ('MCP342x', 'Analog-to-Digital Converter: MCP342x'),
     ('EDGE', 'Edge Detection: Simple Switch'),
