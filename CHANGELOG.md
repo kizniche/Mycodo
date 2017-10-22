@@ -12,6 +12,7 @@ Because of a necessary database schema change, this update will deactivate all P
 ### Bugfixes
 
  - Fix "Too many files open" error when using the TSL2591 sensor ([#254](https://github.com/kizniche/mycodo/issues/254))
+ - Fix bug that had the potential to lose data with certain graph display configurations
 
 ### Miscelaneous
 

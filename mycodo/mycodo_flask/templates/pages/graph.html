@@ -675,6 +675,7 @@
     // Retrieve initial chart data set from the past (duration set by user)
     function getPastData(chart_number, sensor, sensor_measurement, unique_id, past_seconds) {
       var url = '/past/' + sensor_measurement + '/' + unique_id + '/' + past_seconds;
+      var update_id = chart_number + "-" + sensor + "-" + sensor_measurement + "-" + unique_id;
       $.getJSON(url,
         function(data, responseText, jqXHR) {
           if (jqXHR.status !== 204) {
@@ -687,7 +688,7 @@
 
               // Store the epoch time of the last data point received
               if (i === data.length - 1) {
-                last_relay_time_mil[chart_number + "-" + unique_id] = new_time;
+                last_relay_time_mil[update_id] = new_time;
               }
             }
             chart_graph[chart_number].series[sensor].isDirty = true;
@@ -704,9 +705,10 @@
         // Build the URL
         // Instruct only to return data since the time of the last received data point
         var url = '';
-        if (chart_number+"-"+unique_id in last_relay_time_mil) {
+        var update_id = chart_number + "-" + sensor + "-" + sensor_measurement + "-" + unique_id;
+        if (update_id in last_relay_time_mil) {
           var epoch_mil = (new Date).getTime();
-          var past_seconds = Math.floor((epoch_mil - last_relay_time_mil[chart_number + "-" + unique_id]) / 1000);
+          var past_seconds = Math.floor((epoch_mil - last_relay_time_mil[update_id]) / 1000);
           url = '/past/' + sensor_measurement + '/' + unique_id + '/' + past_seconds;
         } else {
           url = '/past/' + sensor_measurement + '/' + unique_id + '/' + refresh_seconds;
@@ -714,14 +716,12 @@
         $.getJSON(url,
           function(data, responseText, jqXHR) {
             if (jqXHR.status !== 204) {
-              for (i = 0; i < data.length; i++){
+              for (i = 0; i < data.length; i++) {
                 var new_date = new Date(data[i][0]);
                 var new_time = new_date.getTime();
                 chart_graph[chart_number].series[sensor].addPoint([new_time, data[i][1]], false, false);
-                if (i === data.length - 1) {
-                  last_relay_time_mil[chart_number + "-" + unique_id] = new_time;
-                }
               }
+              last_relay_time_mil[update_id] = new_time;
             }
             // Ensure Reset Zoom button resets to the proper start and end times
             chart_graph[chart_number].xAxis[0].update({min: new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)))}, false);

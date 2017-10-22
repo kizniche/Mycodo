@@ -20,6 +20,7 @@ class BMP180Sensor(AbstractSensor):
         self._altitude = 0.0
         self._pressure = 0
         self._temperature = 0.0
+        self.bmp = BMP085.BMP085(busnum=self.I2C_bus_number)
 
     def __repr__(self):
         """  Representation of object """
@@ -85,8 +86,7 @@ class BMP180Sensor(AbstractSensor):
     def get_measurement(self):
         """ Gets the measurement in units by reading the BMP180/085 """
         time.sleep(2)
-        bmp = BMP085.BMP085(busnum=self.I2C_bus_number)
-        return bmp.read_temperature(), bmp.read_pressure(), bmp.read_altitude()
+        return self.bmp.read_temperature(), self.bmp.read_pressure(), self.bmp.read_altitude()
 
     def read(self):
         """
