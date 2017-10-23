@@ -84,7 +84,7 @@
           </div>
 
           <div class="row small-gutters">
-            <div class="col-xs-6 col-sm-2">
+            <div class="col-xs-6 col-sm-3">
               <label>{{_('LCD Type')}}</label>
               <div>
                 <select class="form-control" id="lcd_type" name="lcd_type">
@@ -93,7 +93,7 @@
                 </select>
               </div>
             </div>
-            <div class="col-xs-6 col-sm-2">
+            <div class="col-xs-6 col-sm-3">
               <label>{{_('LCD I<sup>2</sup>C Address')}}</label>
               <div>
                 <select class="form-control" id="location" name="location">
@@ -112,6 +112,20 @@
                 </select>
               </div>
             </div>
+            <div class="col-xs-6 col-sm-3">
+              <label>{{_('LCD I<sup>2</sup>C Bus')}}</label>
+              <div>
+                {{form_mod_lcd.i2c_bus(class_='form-control', value=each_lcd.i2c_bus)}}
+              </div>
+            </div>
+            <div class="col-xs-6 col-sm-3">
+              <label>{{_('Period')}}</label>
+              <div>
+                {{form_mod_lcd.period(class_='form-control', value=each_lcd.period)}}
+              </div>
+            </div>
+          </div>
+          <div class="row small-gutters">
             <div class="col-xs-6 col-sm-3">
               <label>{{_('Multiplexer I<sup>2</sup>C Address')}}</label>
               <div>
@@ -142,12 +156,6 @@
                   <option value="7"{% if each_lcd.multiplexer_channel == 7 %} selected{% endif %}>7</option>
                   <option value="8"{% if each_lcd.multiplexer_channel == 8 %} selected{% endif %}>8</option>
                 </select>
-              </div>
-            </div>
-            <div class="col-xs-6 col-sm-2">
-              <label>{{_('Period')}}</label>
-              <div>
-                {{form_mod_lcd.period(class_='form-control', value=each_lcd.period)}}
               </div>
             </div>
           </div>

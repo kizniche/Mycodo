@@ -1131,7 +1131,12 @@ def lcd_add(quantity):
     error = []
     for _ in range(0, quantity):
         try:
-            new_lcd = LCD().save()
+            new_lcd = LCD()
+            if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
+                new_lcd.i2c_bus = 1
+            else:
+                new_lcd.i2c_bus = 0
+            new_lcd.save()
             display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
             DisplayOrder.query.first().lcd = add_display_order(
                 display_order, new_lcd.id)
@@ -1161,6 +1166,7 @@ def lcd_mod(form_mod_lcd):
                 LCD.id == form_mod_lcd.lcd_id.data).first()
             mod_lcd.name = form_mod_lcd.name.data
             mod_lcd.location = form_mod_lcd.location.data
+            mod_lcd.i2c_bus = form_mod_lcd.i2c_bus.data
             mod_lcd.multiplexer_address = form_mod_lcd.multiplexer_address.data
             mod_lcd.multiplexer_channel = form_mod_lcd.multiplexer_channel.data
             mod_lcd.period = form_mod_lcd.period.data

@@ -11,6 +11,7 @@ class LCD(CRUDMixin, db.Model):
     is_activated = db.Column(db.Boolean, default=False)
     period = db.Column(db.Float, default=30.0)
     location = db.Column(db.Text, default='27')
+    i2c_bus = db.Column(db.Integer, default=1)
     multiplexer_address = db.Column(db.Text, default='')
     multiplexer_channel = db.Column(db.Integer, default=0)
     x_characters = db.Column(db.Integer, default=16)

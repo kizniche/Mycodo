@@ -422,21 +422,21 @@ class LCDMod(FlaskForm):
     lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext(u'Name'),
-        render_kw={"placeholder": lazy_gettext(u"Name")},
         validators=[DataRequired()]
     )
     location = StringField(
         lazy_gettext(u'I2C Address'),
-        render_kw={"placeholder": lazy_gettext(u"I2C Address")},
+        validators=[DataRequired()]
+    )
+    i2c_bus = IntegerField(
+        lazy_gettext(u'I2C Bus'),
         validators=[DataRequired()]
     )
     multiplexer_address = StringField(
-        lazy_gettext(u'Multiplexer I2C Address'),
-        render_kw={"placeholder": lazy_gettext(u"I2C Address")}
+        lazy_gettext(u'Multiplexer I2C Address')
     )
     multiplexer_channel = IntegerField(
         lazy_gettext(u'Multiplexer Channel'),
-        render_kw={"placeholder": lazy_gettext(u"Channel")},
         validators=[
             validators.NumberRange(
                 min=0,

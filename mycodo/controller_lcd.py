@@ -93,6 +93,7 @@ class LCDController(threading.Thread):
 
             self.lcd_name = lcd.name
             self.lcd_location = lcd.location
+            self.lcd_i2c_bus = lcd.i2c_bus
             self.lcd_period = lcd.period
             self.lcd_x_characters = lcd.x_characters
             self.lcd_y_lines = lcd.y_lines
@@ -163,11 +164,7 @@ class LCDController(threading.Thread):
 
             # Setup I2C bus
             try:
-                if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
-                    i2c_bus_number = 1
-                else:
-                    i2c_bus_number = 0
-                self.bus = smbus.SMBus(i2c_bus_number)
+                self.bus = smbus.SMBus(self.lcd_i2c_bus)
             except Exception as except_msg:
                 self.logger.exception(
                     "Could not initialize I2C bus: {err}".format(

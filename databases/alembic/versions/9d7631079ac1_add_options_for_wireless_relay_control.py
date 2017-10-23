@@ -24,6 +24,7 @@ def upgrade():
         batch_op.add_column(sa.Column('bit_length', sa.Integer))
         batch_op.add_column(sa.Column('on_command', sa.Text))
         batch_op.add_column(sa.Column('off_command', sa.Text))
+
     op.execute(
         '''
         UPDATE relay

@@ -8,6 +8,7 @@ Because of a necessary database schema change, this update will deactivate all P
 
  - Add new Input type: Linux Command (measurement is the return value of an executed command) ([#264](https://github.com/kizniche/mycodo/issues/264))
  - Refactor PID input option to allow new input and simplify PID configuration
+ - Add ability to select LCD I2C bus ([#300](https://github.com/kizniche/mycodo/issues/300))
 
 ### Bugfixes
 
