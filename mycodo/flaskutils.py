@@ -1352,6 +1352,14 @@ def pid_mod(form_mod_pid_base, form_mod_pid_pwm, form_mod_pid_relay):
 
     mod_pid = PID.query.filter(
         PID.id == form_mod_pid_base.pid_id.data).first()
+
+    # Check if a specific setting can be modified if the PID is active
+    if mod_pid.is_activated:
+        error = can_set_relay(error,
+                              form_mod_pid_base.pid_id.data,
+                              form_mod_pid_relay.raise_relay_id.data,
+                              form_mod_pid_relay.lower_relay_id.data)
+
     mod_pid.name = form_mod_pid_base.name.data
     mod_pid.measurement = form_mod_pid_base.measurement.data
     mod_pid.direction = form_mod_pid_base.direction.data
@@ -1497,20 +1505,8 @@ def pid_activate(pid_id):
     pid = PID.query.filter(
         PID.id == pid_id).first()
 
-    pid_all = PID.query.filter(
-        PID.is_activated == True).all()
-
-    # Don't allow an output to be used with more than one active PID
-    for each_pid in pid_all:
-        if ((pid.raise_relay_id and
-                (pid.raise_relay_id == each_pid.raise_relay_id or
-                 pid.raise_relay_id == each_pid.lower_relay_id)) or
-            (pid.lower_relay_id and
-                (pid.lower_relay_id == each_pid.lower_relay_id or
-                 pid.lower_relay_id == each_pid.raise_relay_id))):
-            error.append(gettext(
-                u"Cannot activate PID controller if an output is already "
-                u"selected by another active PID controller"))
+    error = can_set_relay(
+        error, pid_id, pid.raise_relay_id, pid.lower_relay_id)
 
     sensor_unique_id = pid.measurement.split(',')[0]
     sensor = Sensor.query.filter(
@@ -1589,6 +1585,25 @@ def pid_manipulate(pid_id, action):
                           u"%(rval)s", act=action, rval=return_value), "success")
     except Exception as err:
         flash(gettext(u"PID Error: %(msg)s", msg=err), "error")
+
+
+def can_set_relay(error, pid_id, raise_relay_id, lower_relay_id):
+    """ Don't allow an output to be used with more than one active PID """
+    pid_all = (PID.query
+               .filter(PID.is_activated == True)
+               .filter(PID.id != int(pid_id))
+              ).all()
+    for each_pid in pid_all:
+        if ((raise_relay_id and
+                (raise_relay_id == str(each_pid.raise_relay_id) or
+                 raise_relay_id == str(each_pid.lower_relay_id))) or
+            (lower_relay_id and
+                (lower_relay_id == str(each_pid.lower_relay_id) or
+                 lower_relay_id == str(each_pid.raise_relay_id)))):
+            error.append(gettext(
+                u"Cannot set output if it is already "
+                u"selected by another active PID controller"))
+    return error
 
 
 #
