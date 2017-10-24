@@ -15,6 +15,8 @@ Because of a necessary database schema change, this update will deactivate all P
 
  - Fix "Too many files open" error when using the TSL2591 sensor ([#254](https://github.com/kizniche/mycodo/issues/254))
  - Fix bug that had the potential to lose data with certain graph display configurations
+ - Prevent more than one active PID from using the same output ([#108](https://github.com/kizniche/mycodo/issues/108))
+ - Prevent a PID from using the same Raise and Lower output
 
 ### Miscelaneous
 

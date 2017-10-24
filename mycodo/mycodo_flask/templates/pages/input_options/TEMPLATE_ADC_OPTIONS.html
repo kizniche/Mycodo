@@ -36,11 +36,11 @@
 </div>
 <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   {{form_mod_sensor.adc_inverse_unit_scale.label(class_='control-label')}}
-  <div>
+  <div class="text-xs-center">
     {%- if each_sensor.adc_inverse_unit_scale == true -%}
-      {{form_mod_sensor.adc_inverse_unit_scale(checked=True, **{'title':_('Inverse the scale (example: a high measurement returns a low unit value)')})}}
+      {{form_mod_sensor.adc_inverse_unit_scale(checked=True, class_='checkbox-big', **{'title':_('Inverse the scale (example: a high measurement returns a low unit value)')})}}
     {%- else -%}
-      {{form_mod_sensor.adc_inverse_unit_scale(**{'title':_('Inverse the scale (example: a high measurement returns a low unit value)')})}}
+      {{form_mod_sensor.adc_inverse_unit_scale(class_='checkbox-big', **{'title':_('Inverse the scale (example: a high measurement returns a low unit value)')})}}
     {%- endif -%}
   </div>
 </div>
