@@ -176,6 +176,7 @@ class SensorController(threading.Thread):
         self.adc_volts_max = sensor.adc_volts_max
         self.adc_units_min = sensor.adc_units_min
         self.adc_units_max = sensor.adc_units_max
+        self.adc_inverse_unit_scale = sensor.adc_inverse_unit_scale
         self.sht_clock_pin = sensor.sht_clock_pin
         self.sht_voltage = sensor.sht_voltage
 
@@ -729,7 +730,7 @@ class SensorController(threading.Thread):
                 if measurements is not None:
                     # Get the voltage difference between min and max volts
                     diff_voltage = abs(self.adc_volts_max - self.adc_volts_min)
-                    # Ensure the measured voltage stays within the min/max bounds
+                    # Ensure the voltage stays within the min/max bounds
                     if measurements['voltage'] < self.adc_volts_min:
                         measured_voltage = self.adc_volts_min
                     elif measurements['voltage'] > self.adc_volts_max:
@@ -739,11 +740,17 @@ class SensorController(threading.Thread):
                     # Calculate the percentage of the voltage difference
                     percent_diff = ((measured_voltage - self.adc_volts_min) /
                                     diff_voltage)
+
                     # Get the units difference between min and max units
                     diff_units = abs(self.adc_units_max - self.adc_units_min)
                     # Calculate the measured units from the percent difference
-                    converted_units = (self.adc_units_min +
-                                       (diff_units * percent_diff))
+                    if self.adc_inverse_unit_scale:
+                        converted_units = (self.adc_units_max -
+                                           (diff_units * percent_diff))
+                    else:
+                        converted_units = (self.adc_units_min +
+                                           (diff_units * percent_diff))
+                    # Ensure the units stay within the min/max bounds
                     if converted_units < self.adc_units_min:
                         measurements[self.adc_measure] = self.adc_units_min
                     elif converted_units > self.adc_units_max:

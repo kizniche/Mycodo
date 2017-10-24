@@ -13,18 +13,6 @@
 </div>
 {% include 'pages/input_options/TEMPLATE_I2C_BUS.html' %}
 <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-  <label class="control-label">Measurement</label>
-  <div>
-    {{form_mod_sensor.adc_measurement(class_='form-control', value=each_sensor.adc_measure, **{'title':'The condition being measured'})}}
-  </div>
-</div>
-<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-  <label class="control-label">Units</label>
-  <div>
-    {{form_mod_sensor.adc_measurement_units(class_='form-control', value=each_sensor.adc_measure_units, **{'title':'The units of the condition being measured'})}}
-  </div>
-</div>
-<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   <label class="control-label">Channel</label>
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_channel" name="adc_channel" title="{{_('The channel of the analog to digital converter')}}">
@@ -60,27 +48,4 @@
     </select>
   </div>
 </div>
-<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-  <label class="control-label">Volts Min</label>
-  <div>
-    {{form_mod_sensor.adc_volts_min(class_='form-control', value=each_sensor.adc_volts_min, **{'title':_('Minimum ADC input voltage')})}}
-  </div>
-</div>
-<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-  <label class="control-label">Volts Max</label>
-  <div>
-    {{form_mod_sensor.adc_volts_max(class_='form-control', value=each_sensor.adc_volts_max, **{'title':_('Maximum ADC input voltage')})}}
-  </div>
-</div>
-<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-  <label class="control-label">Units Min</label>
-  <div>
-    {{form_mod_sensor.adc_units_min(class_='form-control', value=each_sensor.adc_units_min, **{'title':_('Minimum output unit (for scaling voltage to unit scale)')})}}
-  </div>
-</div>
-<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-  <label class="control-label">Units Max</label>
-  <div>
-    {{form_mod_sensor.adc_units_max(class_='form-control', value=each_sensor.adc_units_max, **{'title':_('Maximum output unit (for scaling voltage to unit scale)')})}}
-  </div>
-</div>
+{% include 'pages/input_options/TEMPLATE_ADC_OPTIONS.html' %}

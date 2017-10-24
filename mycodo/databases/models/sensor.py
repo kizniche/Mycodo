@@ -54,6 +54,7 @@ class Sensor(CRUDMixin, db.Model):
     adc_volts_max = db.Column(db.Float, default=None)
     adc_units_min = db.Column(db.Float, default=0)
     adc_units_max = db.Column(db.Float, default=10)
+    adc_inverse_unit_scale = db.Column(db.Boolean, default=False)
 
     # Command options
     cmd_command = db.Column(db.Text, default=None)

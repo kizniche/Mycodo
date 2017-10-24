@@ -2256,6 +2256,7 @@ def sensor_mod(form_mod_sensor):
             mod_sensor.adc_volts_max = form_mod_sensor.adc_volts_max.data
             mod_sensor.adc_units_min = form_mod_sensor.adc_units_min.data
             mod_sensor.adc_units_max = form_mod_sensor.adc_units_max.data
+            mod_sensor.adc_inverse_unit_scale = form_mod_sensor.adc_inverse_unit_scale.data
             # Switch options
             mod_sensor.switch_edge = form_mod_sensor.switch_edge.data
             mod_sensor.switch_bouncetime = form_mod_sensor.switch_bounce_time.data

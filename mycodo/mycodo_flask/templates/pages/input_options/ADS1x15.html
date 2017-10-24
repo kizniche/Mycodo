@@ -12,18 +12,6 @@
 </div>
 {% include 'pages/input_options/TEMPLATE_I2C_BUS.html' %}
 <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-  <label class="control-label">Measurement</label>
-  <div>
-    {{form_mod_sensor.adc_measurement(class_='form-control', value=each_sensor.adc_measure, **{'title':_('What condition is being measured by the ADC?')})}}
-  </div>
-</div>
-<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-  <label class="control-label">Units</label>
-  <div>
-    {{form_mod_sensor.adc_measurement_units(class_='form-control', value=each_sensor.adc_measure_units, **{'title':_('What are the units of the condition being measured by the ADC?')})}}
-  </div>
-</div>
-<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
   <label class="control-label">Channel</label>
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_channel" name="adc_channel" title="{{_('The channel of the analog to digital converter.')}}">
@@ -49,35 +37,4 @@
     </select>
   </div>
 </div>
-{% if each_sensor.device == 'MCP342x' -%}
-  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-    <label class="control-label">Resolution</label>
-    <div>
-      {{form_mod_sensor.adc_resolution(class_='form-control', value=each_sensor.adc_resolution, **{'title':_('12, 14, 16, or 18-bit ADC resolution.')})}}
-    </div>
-  </div>
-{% endif -%}
-<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-  <label class="control-label">Volts Min</label>
-  <div>
-    {{form_mod_sensor.adc_volts_min(class_='form-control', value=each_sensor.adc_volts_min, **{'title':_('Minimum analog to digital converter input voltage.')})}}
-  </div>
-</div>
-<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-  <label class="control-label">Volts Max</label>
-  <div>
-    {{form_mod_sensor.adc_volts_max(class_='form-control', value=each_sensor.adc_volts_max, **{'title':_('Maximum analog to digital converter input voltage.')})}}
-  </div>
-</div>
-<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-  <label class="control-label">Units Min</label>
-  <div>
-    {{form_mod_sensor.adc_units_min(class_='form-control', value=each_sensor.adc_units_min, **{'title':_('Minimum unit to convert the voltage to.')})}}
-  </div>
-</div>
-<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-  <label class="control-label">Units Max</label>
-  <div>
-    {{form_mod_sensor.adc_units_max(class_='form-control', value=each_sensor.adc_units_max, **{'title':_('Maximum unit to convert the voltage to.')})}}
-  </div>
-</div>
+{% include 'pages/input_options/TEMPLATE_ADC_OPTIONS.html' %}

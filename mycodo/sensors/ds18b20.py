@@ -14,6 +14,7 @@ class DS18B20Sensor(AbstractSensor):
         super(DS18B20Sensor, self).__init__()
         self.pin = pin
         self._temperature = 0.0
+        self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, self.pin)
 
     def __repr__(self):
         """  Representation of object """
@@ -50,7 +51,7 @@ class DS18B20Sensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the DS18B20's temperature in Celsius by reading the temp file and div by 1000"""
-        return W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, self.pin).get_temperature()
+        return self.sensor.get_temperature()
 
     def read(self):
         """

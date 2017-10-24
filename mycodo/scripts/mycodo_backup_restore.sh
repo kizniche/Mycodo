@@ -28,7 +28,6 @@ function error_found {
 CURRENT_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
 NOW=$(date +"%Y-%m-%d_%H-%M-%S")
 BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
-ERROR_FOUND=false
 
 printf "\n#### Restore of backup $1 initiated $NOW ####\n"
 
