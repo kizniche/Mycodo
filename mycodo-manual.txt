@@ -1106,130 +1106,65 @@ variables.
 
 Input Conditional command variables
 
-  ----------------------
-  Variable  Description
-  --------- ------------
-  ((input_l The Input
-  ocation)) location
-            (such as
-            GPIO pin,
-            I2C address,
-            etc.)
+  -------------------------------------------------------------------------
+  Variable                     Description
+  ---------------------------- --------------------------------------------
+  ((input_location))           The Input location (such as GPIO pin, I2C
+                               address, etc.)
 
-  ((input_p The period
-  eriod))   (seconds)
-            between
-            condition
+  ((input_period))             The period (seconds) between condition
 
-  ((input_a Sensor
-  ltitude)) measurement:
-            altitude
+  ((input_altitude))           Sensor measurement: altitude
 
-  ((input_c Sensor
-  o2))      measurement:
-            CO2
+  ((input_co2))                Sensor measurement: CO2
 
-  ((input_d Sensor
-  ewpoint)) measurement:
-            dew point
+  ((input_dewpoint))           Sensor measurement: dew point
 
-  ((input_c Sensor
-  pu_load_1 measurement:
-  m))       CPU load (1
-            min)
+  ((input_cpu_load_1m))        Sensor measurement: CPU load (1 min)
 
-  ((input_c Sensor
-  pu_load_5 measurement:
-  m))       CPU load (5
-            min)
+  ((input_cpu_load_5m))        Sensor measurement: CPU load (5 min)
 
-  ((input_c Sensor
-  pu_load_1 measurement:
-  5m))      CPU load (15
-            min)
+  ((input_cpu_load_15m))       Sensor measurement: CPU load (15 min)
 
-  ((input_e Sensor
-  dge))     measurement:
-            edge
-            detected (1
-            or -1)
+  ((input_edge))               Sensor measurement: edge detected (1 or -1)
 
-  ((input_d Sensor
-  isk_space measurement:
-  ))        disk space
+  ((input_disk_space))         Sensor measurement: disk space
 
-  ((input_h Sensor
-  umidity)) measurement:
-            humidity
+  ((input_humidity))           Sensor measurement: humidity
 
-  ((input_l Sensor
-  ux))      measurement:
-            lux
+  ((input_lux))                Sensor measurement: lux
 
-  ((input_m Sensor
-  oisture)) measurement:
-            moisture
+  ((input_moisture))           Sensor measurement: moisture
 
-  ((input_p Sensor
-  h))       measurement:
-            ph
+  ((input_ph))                 Sensor measurement: ph
 
-  ((input_p Sensor
-  ressure)) measurement:
-            pressure
+  ((input_pressure))           Sensor measurement: pressure
 
-  ((input_t Sensor
-  emperatur measurement:
-  e))       temperature
+  ((input_temperature))        Sensor measurement: temperature
 
-  ((input_t Sensor
-  emperatur measurement:
-  e_object) temperature
-  )         (object)
+  ((input_temperature_object)) Sensor measurement: temperature (object)
 
-  ((input_t Sensor
-  emperatur measurement:
-  e_die))   temperature
-            (die)
+  ((input_temperature_die))    Sensor measurement: temperature (die)
 
-  ((input_v Sensor
-  oltage))  measurement:
-            voltage
-  ----------------------
+  ((input_voltage))            Sensor measurement: voltage
+  -------------------------------------------------------------------------
 
 Output Conditional command variables
 
-  ----------------------
-  Variable  Description
-  --------- ------------
-  ((output_ The output
-  pin))     pin
+  -------------------------------------------------------------------------
+  Variable                     Description
+  ---------------------------- --------------------------------------------
+  ((output_pin))               The output pin
 
-  ((output_ The state
-  action))  change of
-            the output
-            (turned on =
-            1, turned
-            off = 0)
+  ((output_action))            The state change of the output (turned on =
+                               1, turned off = 0)
 
-  ((output_ The number
-  duration) of seconds
-  )         the output
-            turned on
-            for (will
-            return 0 if
-            not
-            applicable)
+  ((output_duration))          The number of seconds the output turned on
+                               for (will return 0 if not applicable)
 
-  ((output_ The PWM duty
-  pwm))     cycle the
-            output
-            turned on
-            for (will
-            return 0 if
-            not
-            applicable)
-  ----------------------
+  ((output_pwm))               The PWM duty cycle the output turned on for
+                               (will return 0 if not applicable)
+  -------------------------------------------------------------------------
 
 It is recommended to output a test string to a text file to verify the
 output is as expected, with a command such as the following (for a

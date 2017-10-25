@@ -591,7 +591,7 @@ Commands that are executed by conditional statements can now include variables. 
 
 ##### Input Conditional command variables
 Variable | Description
--------- | -----------
+--------------------------- | -------------------------------------------
 ((input_location)) | The Input location (such as GPIO pin, I2C address, etc.)
 ((input_period)) | The period (seconds) between condition
 ((input_altitude)) | Sensor measurement: altitude
@@ -614,7 +614,7 @@ Variable | Description
 
 ##### Output Conditional command variables
 Variable | Description
--------- | -----------
+--------------------------- | -------------------------------------------
 ((output_pin)) | The output pin
 ((output_action)) | The state change of the output (turned on = 1, turned off = 0)
 ((output_duration)) | The number of seconds the output turned on for (will return 0 if not applicable)
