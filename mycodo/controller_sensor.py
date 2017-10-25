@@ -385,19 +385,7 @@ class SensorController(threading.Thread):
                     while self.pause_loop:
                         time.sleep(0.1)
 
-                if self.device in ['EDGE']:
-                    # Sensors that are triggered (switch, reed, hall, etc.)
-                    # Check sensor conditionals if their timers have expired
-                    for each_cond_id in self.cond_id:
-                        if (self.cond_is_activated[each_cond_id] and
-                                self.cond_if_sensor_edge_select[each_cond_id] == 'state'):
-                            if time.time() > self.cond_timer[each_cond_id]:
-                                self.cond_timer[each_cond_id] = time.time() + self.cond_if_sensor_period[each_cond_id]
-                                self.check_conditionals(each_cond_id)
-
-                else:
-                    # Sensors that are read at a regular period
-
+                if self.device not in ['EDGE']:
                     # Signal that a measurement needs to be obtained
                     if time.time() > self.next_measurement and not self.get_new_measurement:
                         self.get_new_measurement = True
@@ -431,17 +419,22 @@ class SensorController(threading.Thread):
                             self.pre_relay_activated = False
                             self.get_new_measurement = False
 
-                    # Check sensor conditional if:
-                    # 2. A measurement occurred and the conditional period == 0
-                    # or
-                    # 1. A conditional timer has expired and the conditional period != 0
-                    for each_cond_id in self.cond_id:
-                        if self.cond_is_activated[each_cond_id]:
-                            if ((not self.cond_timer[each_cond_id] and self.trigger_cond) or
-                                    time.time() > self.cond_timer[each_cond_id]):
-                                self.cond_timer[each_cond_id] = time.time() + self.cond_if_sensor_period[each_cond_id]
-                                self.check_conditionals(each_cond_id)
-                    self.trigger_cond = False
+                for each_cond_id in self.cond_id:
+                    if self.cond_is_activated[each_cond_id]:
+                        # Check sensor conditional if it has been activated
+                        if (self.device in ['EDGE'] and
+                                self.cond_if_sensor_edge_select[each_cond_id] == 'state' and
+                                time.time() > self.cond_timer[each_cond_id]):
+                            # Inputs that are triggered (switch, reed, hall, etc.)
+                            self.cond_timer[each_cond_id] = time.time() + self.cond_if_sensor_period[each_cond_id]
+                            self.check_conditionals(each_cond_id)
+                        elif ((not self.cond_timer[each_cond_id] and self.trigger_cond) or
+                                time.time() > self.cond_timer[each_cond_id]):
+                            # Inputs that are not triggered (sensors)
+                            self.cond_timer[each_cond_id] = time.time() + self.cond_if_sensor_period[each_cond_id]
+                            self.check_conditionals(each_cond_id)
+
+                self.trigger_cond = False
 
                 time.sleep(0.1)
 
@@ -563,7 +556,17 @@ class SensorController(threading.Thread):
             elif cond_action.do_action == 'command':
                 message += u" Execute '{com}' ".format(
                         com=cond_action.do_action_string)
-                _, _, cmd_status = cmd_output(cond_action.do_action_string)
+
+                command_str = cond_action.do_action_string
+                for each_measurement, each_value in self.measurement.values.items():
+                    command_str = command_str.replace(
+                        "((input_{var}))".format(var=each_measurement), str(each_value))
+                command_str = command_str.replace(
+                    "((input_location))", str(self.location))
+                command_str = command_str.replace(
+                    "((input_period))", str(self.cond_if_sensor_period[cond_id]))
+                _, _, cmd_status = cmd_output(command_str)
+
                 message += u"(Status: {stat}).".format(stat=cmd_status)
 
             # Capture photo

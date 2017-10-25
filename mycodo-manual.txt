@@ -1042,7 +1042,7 @@ Conditional Statements
 
 A conditional statement is a way to perform certain actions based on
 whether a condition is true. Conditional statements can be created for
-both relays and sensors. Possible conditional statements include:
+both inputs and outputs. Possible conditional statements include:
 
 -   If Relay #1 turns ON, turn Relay #3 ON
 -   If Relay #1 turns ON, turn Relay #4 ON for 40 seconds and notify
@@ -1095,6 +1095,151 @@ Conditional Statement Actions
   Email Video           Capture a video and email it as an attachment
                         to the an email address.
   ---------------------------------------------------------------------
+
+Conditional Statement variables
+
+Commands that are executed by conditional statements can now include
+variables. To use, just place the variable name, including “((” and “))”
+in your command, and it will be replaced with the variable’s value
+before execution. See the tables below for the currently-supported
+variables.
+
+Input Conditional command variables
+
+  ----------------------
+  Variable  Description
+  --------- ------------
+  ((input_l The Input
+  ocation)) location
+            (such as
+            GPIO pin,
+            I2C address,
+            etc.)
+
+  ((input_p The period
+  eriod))   (seconds)
+            between
+            condition
+
+  ((input_a Sensor
+  ltitude)) measurement:
+            altitude
+
+  ((input_c Sensor
+  o2))      measurement:
+            CO2
+
+  ((input_d Sensor
+  ewpoint)) measurement:
+            dew point
+
+  ((input_c Sensor
+  pu_load_1 measurement:
+  m))       CPU load (1
+            min)
+
+  ((input_c Sensor
+  pu_load_5 measurement:
+  m))       CPU load (5
+            min)
+
+  ((input_c Sensor
+  pu_load_1 measurement:
+  5m))      CPU load (15
+            min)
+
+  ((input_e Sensor
+  dge))     measurement:
+            edge
+            detected (1
+            or -1)
+
+  ((input_d Sensor
+  isk_space measurement:
+  ))        disk space
+
+  ((input_h Sensor
+  umidity)) measurement:
+            humidity
+
+  ((input_l Sensor
+  ux))      measurement:
+            lux
+
+  ((input_m Sensor
+  oisture)) measurement:
+            moisture
+
+  ((input_p Sensor
+  h))       measurement:
+            ph
+
+  ((input_p Sensor
+  ressure)) measurement:
+            pressure
+
+  ((input_t Sensor
+  emperatur measurement:
+  e))       temperature
+
+  ((input_t Sensor
+  emperatur measurement:
+  e_object) temperature
+  )         (object)
+
+  ((input_t Sensor
+  emperatur measurement:
+  e_die))   temperature
+            (die)
+
+  ((input_v Sensor
+  oltage))  measurement:
+            voltage
+  ----------------------
+
+Output Conditional command variables
+
+  ----------------------
+  Variable  Description
+  --------- ------------
+  ((output_ The output
+  pin))     pin
+
+  ((output_ The state
+  action))  change of
+            the output
+            (turned on =
+            1, turned
+            off = 0)
+
+  ((output_ The number
+  duration) of seconds
+  )         the output
+            turned on
+            for (will
+            return 0 if
+            not
+            applicable)
+
+  ((output_ The PWM duty
+  pwm))     cycle the
+            output
+            turned on
+            for (will
+            return 0 if
+            not
+            applicable)
+  ----------------------
+
+It is recommended to output a test string to a text file to verify the
+output is as expected, with a command such as the following (for a
+Raspberry Pi CPU temperature Input Conditional):
+
+    echo "TEST: ((input_temperature)), ((input_location)), ((input_period))" > /home/mycodo/test_input.txt
+
+Or for an Output Conditional:
+
+    echo "TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm))" > /home/mycodo/test_output.txt
 
 
 Methods

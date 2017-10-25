@@ -1244,7 +1244,7 @@
 </table>
 <h1 id="controller-functions">Controller Functions</h1>
 <h2 id="conditional-statements">Conditional Statements</h2>
-<p>A conditional statement is a way to perform certain actions based on whether a condition is true. Conditional statements can be created for both relays and sensors. Possible conditional statements include:</p>
+<p>A conditional statement is a way to perform certain actions based on whether a condition is true. Conditional statements can be created for both inputs and outputs. Possible conditional statements include:</p>
 <ul>
 <li>If Relay #1 turns ON, turn Relay #3 ON</li>
 <li>If Relay #1 turns ON, turn Relay #4 ON for 40 seconds and notify critical-issue@domain.com</li>
@@ -1310,6 +1310,134 @@
 </tr>
 </tbody>
 </table>
+<h3 id="conditional-statement-variables">Conditional Statement variables</h3>
+<p>Commands that are executed by conditional statements can now include variables. To use, just place the variable name, including “((” and “))” in your command, and it will be replaced with the variable’s value before execution. See the tables below for the currently-supported variables.</p>
+<h5 id="input-conditional-command-variables">Input Conditional command variables</h5>
+<table style="width:29%;">
+<colgroup>
+<col style="width: 12%"></col>
+<col style="width: 16%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">((input_location))</td>
+<td style="text-align: left;">The Input location (such as GPIO pin, I2C address, etc.)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">((input_period))</td>
+<td style="text-align: left;">The period (seconds) between condition</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">((input_altitude))</td>
+<td style="text-align: left;">Sensor measurement: altitude</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">((input_co2))</td>
+<td style="text-align: left;">Sensor measurement: CO2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">((input_dewpoint))</td>
+<td style="text-align: left;">Sensor measurement: dew point</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">((input_cpu_load_1m))</td>
+<td style="text-align: left;">Sensor measurement: CPU load (1 min)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">((input_cpu_load_5m))</td>
+<td style="text-align: left;">Sensor measurement: CPU load (5 min)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">((input_cpu_load_15m))</td>
+<td style="text-align: left;">Sensor measurement: CPU load (15 min)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">((input_edge))</td>
+<td style="text-align: left;">Sensor measurement: edge detected (1 or -1)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">((input_disk_space))</td>
+<td style="text-align: left;">Sensor measurement: disk space</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">((input_humidity))</td>
+<td style="text-align: left;">Sensor measurement: humidity</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">((input_lux))</td>
+<td style="text-align: left;">Sensor measurement: lux</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">((input_moisture))</td>
+<td style="text-align: left;">Sensor measurement: moisture</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">((input_ph))</td>
+<td style="text-align: left;">Sensor measurement: ph</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">((input_pressure))</td>
+<td style="text-align: left;">Sensor measurement: pressure</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">((input_temperature))</td>
+<td style="text-align: left;">Sensor measurement: temperature</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">((input_temperature_object))</td>
+<td style="text-align: left;">Sensor measurement: temperature (object)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">((input_temperature_die))</td>
+<td style="text-align: left;">Sensor measurement: temperature (die)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">((input_voltage))</td>
+<td style="text-align: left;">Sensor measurement: voltage</td>
+</tr>
+</tbody>
+</table>
+<h5 id="output-conditional-command-variables">Output Conditional command variables</h5>
+<table style="width:29%;">
+<colgroup>
+<col style="width: 12%"></col>
+<col style="width: 16%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">((output_pin))</td>
+<td style="text-align: left;">The output pin</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">((output_action))</td>
+<td style="text-align: left;">The state change of the output (turned on = 1, turned off = 0)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">((output_duration))</td>
+<td style="text-align: left;">The number of seconds the output turned on for (will return 0 if not applicable)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">((output_pwm))</td>
+<td style="text-align: left;">The PWM duty cycle the output turned on for (will return 0 if not applicable)</td>
+</tr>
+</tbody>
+</table>
+<p>It is recommended to output a test string to a text file to verify the output is as expected, with a command such as the following (for a Raspberry Pi CPU temperature Input Conditional):</p>
+<pre><code>echo &quot;TEST: ((input_temperature)), ((input_location)), ((input_period))&quot; &gt; /home/mycodo/test_input.txt</code></pre>
+<p>Or for an Output Conditional:</p>
+<pre><code>echo &quot;TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm))&quot; &gt; /home/mycodo/test_output.txt</code></pre>
 <h2 id="methods">Methods</h2>
 <p>Methods allow different types of setpoint tracking in PID controllers. Normally, a PID controller will regulate an environmental condition to a specific setpoint. If you would like the setpoint to change over time, this is called setpoint tracking. Setpoint tracking is useful for applications such as reflow ovens, thermal cyclers (DNA replication), mimicking natural daily cycles, and more.</p>
 <h3 id="universal-options">Universal Options</h3>

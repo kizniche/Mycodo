@@ -548,7 +548,7 @@ Conditional Statements
 
 A conditional statement is a way to perform certain actions based on
 whether a condition is true. Conditional statements can be created for
-both relays and sensors. Possible conditional statements include:
+both inputs and outputs. Possible conditional statements include:
 
 -   If Relay \#1 turns ON, turn Relay \#3 ON
 -   If Relay \#1 turns ON, turn Relay \#4 ON for 40 seconds and notify
@@ -584,6 +584,53 @@ Photo | Capture a photo with the selected camera.
 Email Photo | Capture a photo and email it as an attachment to the an email address.
 Video | Capture a video of a set duration with the selected camera.
 Email Video | Capture a video and email it as an attachment to the an email address.
+
+### Conditional Statement variables
+
+Commands that are executed by conditional statements can now include variables. To use, just place the variable name, including "((" and "))" in your command, and it will be replaced with the variable's value before execution. See the tables below for the currently-supported variables.
+
+##### Input Conditional command variables
+Variable | Description
+-------- | -----------
+((input_location)) | The Input location (such as GPIO pin, I2C address, etc.)
+((input_period)) | The period (seconds) between condition
+((input_altitude)) | Sensor measurement: altitude
+((input_co2)) | Sensor measurement: CO2
+((input_dewpoint)) | Sensor measurement: dew point
+((input_cpu_load_1m)) | Sensor measurement:  CPU load (1 min)
+((input_cpu_load_5m)) | Sensor measurement: CPU load (5 min)
+((input_cpu_load_15m)) | Sensor measurement: CPU load (15 min)
+((input_edge)) | Sensor measurement: edge detected (1 or -1)
+((input_disk_space)) | Sensor measurement: disk space
+((input_humidity)) | Sensor measurement: humidity
+((input_lux)) | Sensor measurement: lux
+((input_moisture)) | Sensor measurement: moisture
+((input_ph)) | Sensor measurement: ph
+((input_pressure)) | Sensor measurement: pressure
+((input_temperature)) | Sensor measurement: temperature
+((input_temperature_object)) | Sensor measurement: temperature (object)
+((input_temperature_die)) | Sensor measurement: temperature (die)
+((input_voltage)) | Sensor measurement: voltage
+
+##### Output Conditional command variables
+Variable | Description
+-------- | -----------
+((output_pin)) | The output pin
+((output_action)) | The state change of the output (turned on = 1, turned off = 0)
+((output_duration)) | The number of seconds the output turned on for (will return 0 if not applicable)
+((output_pwm)) | The PWM duty cycle the output turned on for (will return 0 if not applicable)
+
+It is recommended to output a test string to a text file to verify the output is as expected, with a command such as the following (for a Raspberry Pi CPU temperature Input Conditional):
+
+```
+echo "TEST: ((input_temperature)), ((input_location)), ((input_period))" > /home/mycodo/test_input.txt
+```
+
+Or for an Output Conditional:
+
+```
+echo "TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm))" > /home/mycodo/test_output.txt
+```
 
 Methods
 -------

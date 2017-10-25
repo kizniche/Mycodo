@@ -410,9 +410,10 @@ class RelayController(threading.Thread):
                 write_db.start()
 
         if trigger_conditionals:
-            if state == 'on' and duration != 0:
-                self.check_conditionals(relay_id, 0)
-            self.check_conditionals(relay_id, duration)
+            self.check_conditionals(relay_id,
+                                    state=state,
+                                    on_duration=duration,
+                                    duty_cycle=duty_cycle)
 
     def relay_switch(self, relay_id, state, duty_cycle=None):
         if self.relay_type[relay_id] == 'wired':
@@ -480,7 +481,7 @@ class RelayController(threading.Thread):
                         self.relay_pin[relay_id], 0)
                 self.pwm_state[relay_id] = None
 
-    def check_conditionals(self, relay_id, on_duration):
+    def check_conditionals(self, relay_id, state=None, on_duration=None, duty_cycle=None):
         conditionals = db_retrieve_table_daemon(Conditional)
         conditionals = conditionals.filter(
             Conditional.if_relay_id == relay_id)
@@ -538,8 +539,19 @@ class RelayController(threading.Thread):
                     # Execute command as user mycodo
                     message += u"Execute: '{}'. ".format(
                         each_cond_action.do_action_string)
-                    _, _, cmd_status = cmd_output(
-                        each_cond_action.do_action_string)
+
+                    # Check command for variables to replace with values
+                    command_str = each_cond_action.do_action_string
+                    command_str = command_str.replace(
+                        "((output_pin))", str(self.relay_pin[relay_id]))
+                    command_str = command_str.replace(
+                        "((output_action))", str(state))
+                    command_str = command_str.replace(
+                        "((output_duration))", str(on_duration))
+                    command_str = command_str.replace(
+                        "((output_pwm))", str(duty_cycle))
+                    _, _, cmd_status = cmd_output(command_str)
+
                     message += u"Status: {}. ".format(cmd_status)
 
                 elif each_cond_action.do_action == 'email':
