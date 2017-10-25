@@ -6,7 +6,7 @@ Because of a necessary database schema change, this update will deactivate all P
 
 ### Features
 
-Commands that are executed by Mycodo can now include variables. However, not all variables will be available to every command. To use, just place the variable name, including "{{" and "}}" in your command, and it will be replaced with the variable's value before execution. There are 23 variables currently-supported (See [Conditional Statement variables](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#conditional-statement-variables) for details).
+Commands that are executed by Mycodo can now include variables. There are 23 variables currently-supported. See [Conditional Statement variables](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#conditional-statement-variables) for details.
 
  - Add new Input type: Linux Command (measurement is the return value of an executed command) ([#264](https://github.com/kizniche/mycodo/issues/264))
  - Refactor PID input option to allow new input and simplify PID configuration
