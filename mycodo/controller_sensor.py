@@ -67,6 +67,8 @@ from sensors.tsl2561 import TSL2561Sensor
 from sensors.tsl2591_sensor import TSL2591Sensor
 from sensors.sht1x_7x import SHT1x7xSensor
 from sensors.sht2x import SHT2xSensor
+from sensors.signal_pwm import PWMInput
+from sensors.signal_rpm import RPMInput
 
 from devices.camera import camera_record
 from utils.database import db_retrieve_table_daemon
@@ -334,6 +336,10 @@ class SensorController(threading.Thread):
         elif self.device == 'SHT2x':
             self.measure_sensor = SHT2xSensor(self.i2c_address,
                                               self.i2c_bus)
+        elif self.device == 'SIGNAL_PWM':
+            self.measure_sensor = PWMInput(int(self.location))
+        elif self.device == 'SIGNAL_RPM':
+            self.measure_sensor = RPMInput(int(self.location))
         elif self.device == 'TMP006':
             self.measure_sensor = TMP006Sensor(self.i2c_address,
                                                self.i2c_bus)

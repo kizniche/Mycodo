@@ -6,7 +6,7 @@ import os
 import collections
 from datetime import timedelta
 
-MYCODO_VERSION = '5.3.0'
+MYCODO_VERSION = '5.3.1'
 ALEMBIC_VERSION = '08a36ebf1a82'
 
 LANGUAGES = {
@@ -49,6 +49,8 @@ MEASUREMENTS = {
     'RPiFreeSpace': ['disk_space'],
     'SHT1x_7x': ['dewpoint', 'humidity', 'temperature'],
     'SHT2x': ['dewpoint', 'humidity', 'temperature'],
+    'SIGNAL_PWM': ['frequency', 'pulse_width', 'duty_cycle'],
+    'SIGNAL_RPM': ['rpm'],
     'TMP006': ['temperature_object', 'temperature_die'],
     'TSL2561': ['lux'],
     'TSL2591': ['lux']
@@ -68,12 +70,16 @@ MEASUREMENT_UNITS = {
         'name': 'CPU Load', 'meas': 'cpu_load', 'unit': '5 min'},
     'cpu_load_15m': {
         'name': 'CPU Load', 'meas': 'cpu_load', 'unit': '15 min'},
-    'duration_sec': {
-        'name': 'Duration', 'meas': 'duration_sec', 'unit': 'sec'},
-    'edge': {
-        'name': 'Edge', 'meas': 'edge', 'unit': 'edge'},
     'disk_space': {
         'name': 'Disk', 'meas': 'disk_space', 'unit': 'MB'},
+    'duration_sec': {
+        'name': 'Duration', 'meas': 'duration_sec', 'unit': 'sec'},
+    'duty_cycle': {
+        'name': 'Duty Cycle', 'meas': 'duty_cycle', 'unit': '%'},
+    'edge': {
+        'name': 'Edge', 'meas': 'edge', 'unit': 'edge'},
+    'frequency': {
+        'name': 'Frequency', 'meas': 'frequency', 'unit': 'Hz'},
     'humidity': {
         'name': 'Humidity', 'meas': 'humidity', 'unit': '%'},
     'lux': {
@@ -86,10 +92,12 @@ MEASUREMENT_UNITS = {
         'name': 'PID Output', 'meas': 'pid_output', 'unit': 'sec'},
     'pressure': {
         'name': 'Pressure', 'meas': 'pressure', 'unit': 'Pa'},
-    'duty_cycle': {
-        'name': 'Duty Cycle', 'meas': 'duty_cycle', 'unit': '%'},
+    'pulse_width': {
+        'name': 'Pulse Width', 'meas': 'pulse_width', 'unit': 'sec'},
+    'rpm': {
+        'name': 'Revolutions Per Minute', 'meas': 'rpm', 'unit': ''},
     'setpoint': {
-        'name': 'Setpoint', 'meas': 'setpoint', 'unit': ''},
+        'name': 'Setpoint', 'meas': 'setpoint', 'unit': 'rpm'},
     'temperature': {
         'name': 'Temperature', 'meas': 'temperature', 'unit': 'C'},
     'temperature_object': {
@@ -102,10 +110,12 @@ MEASUREMENT_UNITS = {
 
 # Sensors and description
 SENSORS = [
-    ('MYCODO_RAM', 'Mycodo: Daemon RAM Usage'),
     ('RPi', 'Raspberry Pi: CPU Temperature'),
     ('RPiCPULoad', 'Raspberry Pi: CPU Load'),
     ('RPiFreeSpace', 'Raspberry Pi: Free Disk Space'),
+    ('SIGNAL_PWM', 'Raspberry Pi: Pulse-Width Modulation (PWM)'),
+    ('SIGNAL_RPM', 'Raspberry Pi: Revolutions Per Minute (RPM)'),
+    ('MYCODO_RAM', 'Mycodo: Daemon RAM Usage'),
     ('LinuxCommand', 'Linux Command'),
     ('ADS1x15', 'Analog-to-Digital Converter: ADS1x15'),
     ('MCP342x', 'Analog-to-Digital Converter: MCP342x'),

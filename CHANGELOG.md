@@ -1,3 +1,9 @@
+## 5.3.1 (Unreleased)
+
+### Features
+
+ - Add two new Inputs: PWM and RPM ([#302](https://github.com/kizniche/mycodo/issues/302))
+
 ## 5.3.0 (2017-10-24)
 
 #### ***IMPORTANT***

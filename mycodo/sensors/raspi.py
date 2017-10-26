@@ -23,7 +23,7 @@ class RaspberryPiCPUTemp(AbstractSensor):
 
     def __str__(self):
         """ Return temperature information """
-        return "Temperature: {}".format("{0:.2f}".format(self._temperature))
+        return "Temperature: {0:.2f}".format(self._temperature)
 
     def __iter__(self):  # must return an iterator
         """ RaspberryPiCPUTemp iterates through live temperature readings """
