@@ -58,6 +58,7 @@ import timeit
 from databases.models import Method
 from databases.models import MethodData
 from databases.models import PID
+from databases.models import Relay
 from databases.models import Sensor
 from databases.utils import session_scope
 from mycodo_client import DaemonControl
@@ -236,27 +237,6 @@ class PIDController(threading.Thread):
                             self.control_variable = self.update_pid_output(
                                 self.last_measurement)
 
-                            if self.pid_type == 'relay':
-                                pid_entry_type = 'pid_output'
-                                pid_entry_value = self.control_variable
-                            elif self.pid_type == 'pwm':
-                                pid_entry_type = 'duty_cycle'
-                                pid_entry_value = self.control_var_to_duty_cycle(abs(
-                                    self.control_variable))
-                                if self.control_variable < 0:
-                                    pid_entry_value = -pid_entry_value
-                            else:
-                                pid_entry_type = None
-                                pid_entry_value = None
-
-                            if pid_entry_type:
-                                write_pid_out_db = threading.Thread(
-                                    target=write_influxdb_value,
-                                    args=(self.pid_unique_id,
-                                          pid_entry_type,
-                                          pid_entry_value,))
-                                write_pid_out_db.start()
-
                     # If PID is active or on hold, activate relays
                     if ((self.is_activated and not self.is_paused) or
                             (self.is_activated and self.is_held)):
@@ -309,6 +289,9 @@ class PIDController(threading.Thread):
         sensor = db_retrieve_table_daemon(Sensor, unique_id=sensor_unique_id)
         self.sensor_unique_id = sensor.unique_id
         self.sensor_duration = sensor.period
+
+        self.raise_relay_type = db_retrieve_table_daemon(Relay, device_id=self.raise_relay_id).relay_type
+        self.lower_relay_type = db_retrieve_table_daemon(Relay, device_id=self.lower_relay_id).relay_type
 
         return "success"
 
@@ -426,7 +409,38 @@ class PIDController(threading.Thread):
                             self.control.relay_state(self.lower_relay_id) != 'off'):
                         self.control.relay_off(self.lower_relay_id)
 
-                    if self.pid_type == 'relay':
+                    # Determine if the output should be PWM or a duration
+                    if self.raise_relay_type == 'pwm':
+                        self.raise_duty_cycle = float("{0:.1f}".format(
+                            self.control_var_to_duty_cycle(self.control_variable)))
+
+                        # Ensure the duty cycle doesn't exceed the min/max
+                        if (self.raise_max_duration and
+                                    self.raise_duty_cycle > self.raise_max_duration):
+                            self.raise_duty_cycle = self.raise_max_duration
+                        elif (self.raise_min_duration and
+                                      self.raise_duty_cycle < self.raise_min_duration):
+                            self.raise_duty_cycle = self.raise_min_duration
+
+                        self.logger.debug(
+                            "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output "
+                            "{id} to {dc:.1f}%".format(
+                                sp=self.set_point,
+                                cv=self.control_variable,
+                                id=self.raise_relay_id,
+                                dc=self.raise_duty_cycle))
+
+                        # Activate pwm with calculated duty cycle
+                        self.control.relay_on(self.raise_relay_id,
+                                              duty_cycle=self.raise_duty_cycle)
+
+                        pid_entry_value = self.control_var_to_duty_cycle(
+                            abs(self.control_variable))
+                        if self.control_variable < 0:
+                            pid_entry_value = -pid_entry_value
+                        self.write_pid_output_influxdb('duty_cycle', pid_entry_value)
+
+                    elif self.raise_relay_type in ['command', 'wired', 'wireless_433MHz_pi_switch']:
                         # Ensure the relay on duration doesn't exceed the set maximum
                         if (self.raise_max_duration and
                                 self.control_variable > self.raise_max_duration):
@@ -448,36 +462,14 @@ class PIDController(threading.Thread):
                                 duration=self.raise_seconds_on,
                                 min_off=self.raise_min_off_duration)
 
-                    elif self.pid_type == 'pwm':
-                        self.raise_duty_cycle = float("{0:.1f}".format(
-                            self.control_var_to_duty_cycle(self.control_variable)))
-
-                        # Ensure the duty cycle doesn't exceed the min/max
-                        if (self.raise_max_duration and
-                                self.raise_duty_cycle > self.raise_max_duration):
-                            self.raise_duty_cycle = self.raise_max_duration
-                        elif (self.raise_min_duration and
-                                self.raise_duty_cycle < self.raise_min_duration):
-                            self.raise_duty_cycle = self.raise_min_duration
-
-                        self.logger.debug(
-                            "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output "
-                            "{id} to {dc:.1f}%".format(
-                                sp=self.set_point,
-                                cv=self.control_variable,
-                                id=self.raise_relay_id,
-                                dc=self.raise_duty_cycle))
-
-                        # Activate pwm with calculated duty cycle
-                        self.control.relay_on(self.raise_relay_id,
-                                              duty_cycle=self.raise_duty_cycle)
+                        self.write_pid_output_influxdb('pid_output', self.control_variable)
 
                 else:
-                    if self.pid_type == 'relay':
-                        self.control.relay_off(self.raise_relay_id)
-                    elif self.pid_type == 'pwm':
+                    if self.raise_relay_type == 'pwm':
                         self.control.relay_on(self.raise_relay_id,
                                               duty_cycle=0)
+                    else:
+                        self.control.relay_off(self.raise_relay_id)
 
             #
             # PID control variable is negative, indicating a desire to lower
@@ -492,7 +484,43 @@ class PIDController(threading.Thread):
                             self.control.relay_state(self.raise_relay_id) != 'off'):
                         self.control.relay_off(self.raise_relay_id)
 
-                    if self.pid_type == 'relay':
+                    # Determine if the output should be PWM or a duration
+                    if self.lower_relay_type == 'pwm':
+                        self.lower_duty_cycle = float("{0:.1f}".format(
+                            self.control_var_to_duty_cycle(abs(self.control_variable))))
+
+                        # Ensure the duty cycle doesn't exceed the min/max
+                        if (self.lower_max_duration and
+                                    self.lower_duty_cycle > self.lower_max_duration):
+                            self.lower_duty_cycle = -self.lower_max_duration
+                        elif (self.lower_min_duration and
+                                      self.lower_duty_cycle < self.lower_min_duration):
+                            self.lower_duty_cycle = -self.lower_min_duration
+
+                        self.logger.debug(
+                            "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output "
+                            "{id} to {dc:.1f}%".format(
+                                sp=self.set_point,
+                                cv=self.control_variable,
+                                id=self.lower_relay_id,
+                                dc=self.lower_duty_cycle))
+
+                        # Turn back negative for proper logging
+                        if self.control_variable < 0:
+                            self.lower_duty_cycle = -self.lower_duty_cycle
+
+                        # Activate pwm with calculated duty cycle
+                        self.control.relay_on(
+                            self.lower_relay_id,
+                            duty_cycle=self.lower_duty_cycle)
+
+                        pid_entry_value = self.control_var_to_duty_cycle(
+                            abs(self.control_variable))
+                        if self.control_variable < 0:
+                            pid_entry_value = -pid_entry_value
+                        self.write_pid_output_influxdb('duty_cycle', pid_entry_value)
+
+                    elif self.lower_relay_type in ['command', 'wired', 'wireless_433MHz_pi_switch']:
                         # Ensure the relay on duration doesn't exceed the set maximum
                         if (self.lower_max_duration and
                                 abs(self.control_variable) > self.lower_max_duration):
@@ -513,40 +541,14 @@ class PIDController(threading.Thread):
                                 duration=self.lower_seconds_on,
                                 min_off=self.lower_min_off_duration)
 
-                    elif self.pid_type == 'pwm':
-                        self.lower_duty_cycle = float("{0:.1f}".format(
-                            self.control_var_to_duty_cycle(abs(self.control_variable))))
+                        self.write_pid_output_influxdb('pid_output', self.control_variable)
 
-                        # Ensure the duty cycle doesn't exceed the min/max
-                        if (self.lower_max_duration and
-                                self.lower_duty_cycle > self.lower_max_duration):
-                            self.lower_duty_cycle = -self.lower_max_duration
-                        elif (self.lower_min_duration and
-                                self.lower_duty_cycle < self.lower_min_duration):
-                            self.lower_duty_cycle = -self.lower_min_duration
-
-                        self.logger.debug(
-                            "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output "
-                            "{id} to {dc:.1f}%".format(
-                                sp=self.set_point,
-                                cv=self.control_variable,
-                                id=self.lower_relay_id,
-                                dc=self.lower_duty_cycle))
-
-                        # Turn back negative for proper logging
-                        if self.control_variable < 0:
-                            self.lower_duty_cycle = -self.lower_duty_cycle
-
-                        # Activate pwm with calculated duty cycle
-                        self.control.relay_on(
-                            self.lower_relay_id,
-                            duty_cycle=self.lower_duty_cycle)
                 else:
-                    if self.pid_type == 'relay':
-                        self.control.relay_off(self.lower_relay_id)
-                    elif self.pid_type == 'pwm':
+                    if self.lower_relay_type == 'pwm':
                         self.control.relay_on(self.lower_relay_id,
                                               duty_cycle=0)
+                    else:
+                        self.control.relay_off(self.lower_relay_id)
 
         else:
             if self.direction in ['raise', 'both'] and self.raise_relay_id:
@@ -748,6 +750,14 @@ class PIDController(threading.Thread):
             return 100.0
         else:
             return float((control_variable / self.period) * 100)
+
+    def write_pid_output_influxdb(self, pid_entry_type, pid_entry_value):
+        write_pid_out_db = threading.Thread(
+            target=write_influxdb_value,
+            args=(self.pid_unique_id,
+                  pid_entry_type,
+                  pid_entry_value,))
+        write_pid_out_db.start()
 
     def pid_mod(self):
         if self.initialize_values():

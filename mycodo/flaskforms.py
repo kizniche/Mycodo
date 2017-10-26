@@ -711,6 +711,8 @@ class PIDModBase(FlaskForm):
     )
     integrator_max = DecimalField(lazy_gettext(u'Integrator Min'))
     integrator_min = DecimalField(lazy_gettext(u'Integrator Max'))
+    raise_relay_id = StringField(lazy_gettext(u'Output ID (Raise)'))
+    lower_relay_id = StringField(lazy_gettext(u'Output ID (Lower)'))
     method_id = IntegerField(
         'Setpoint Tracking Method', widget=widgets.HiddenInput())
     save = SubmitField(lazy_gettext(u'Save'))
@@ -724,8 +726,7 @@ class PIDModBase(FlaskForm):
     reorder_down = SubmitField(lazy_gettext(u'Down'))
 
 
-class PIDModRelay(FlaskForm):
-    raise_relay_id = StringField(lazy_gettext(u'Output ID (Raise)'))
+class PIDModRelayRaise(FlaskForm):
     raise_min_duration = DecimalField(
         lazy_gettext(u'Min On Duration (Raise)'),
         validators=[validators.NumberRange(
@@ -747,7 +748,9 @@ class PIDModRelay(FlaskForm):
             max=86400
         )]
     )
-    lower_relay_id = StringField(lazy_gettext(u'Output ID (Lower)'))
+
+
+class PIDModRelayLower(FlaskForm):
     lower_min_duration = DecimalField(
         lazy_gettext(u'Min On Duration (Lower)'),
         validators=[validators.NumberRange(
@@ -771,8 +774,7 @@ class PIDModRelay(FlaskForm):
     )
 
 
-class PIDModPWM(FlaskForm):
-    raise_relay_id = StringField(lazy_gettext(u'Output ID (Raise)'))
+class PIDModPWMRaise(FlaskForm):
     raise_min_duty_cycle = DecimalField(
         lazy_gettext(u'Min Duty Cycle (Raise)'),
         validators=[validators.NumberRange(
@@ -787,7 +789,9 @@ class PIDModPWM(FlaskForm):
             max=100
         )]
     )
-    lower_relay_id = StringField(lazy_gettext(u'Output ID (Lower)'))
+
+
+class PIDModPWMLower(FlaskForm):
     lower_min_duty_cycle = DecimalField(
         lazy_gettext(u'Min Duty Cycle (Lower)'),
         validators=[validators.NumberRange(

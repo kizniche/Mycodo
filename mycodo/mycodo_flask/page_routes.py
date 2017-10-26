@@ -666,7 +666,7 @@ def page_logview():
 def page_pid():
     """ Display PID settings """
     method = Method.query.all()
-    pids = PID.query.all()
+    pid = PID.query.all()
     relay = Relay.query.all()
     sensor = Sensor.query.all()
 
@@ -676,8 +676,10 @@ def page_pid():
 
     form_add_pid = flaskforms.PIDAdd()
     form_mod_pid_base = flaskforms.PIDModBase()
-    form_mod_pid_relay = flaskforms.PIDModRelay()
-    form_mod_pid_pwm = flaskforms.PIDModPWM()
+    form_mod_pid_relay_raise = flaskforms.PIDModRelayRaise()
+    form_mod_pid_relay_lower = flaskforms.PIDModRelayLower()
+    form_mod_pid_pwm_raise = flaskforms.PIDModPWMRaise()
+    form_mod_pid_pwm_lower = flaskforms.PIDModPWMLower()
 
     # Create list of file names from the pid_options directory
     # Used in generating the correct options for each PID
@@ -699,8 +701,10 @@ def page_pid():
         elif form_name == 'modPID':
             if form_mod_pid_base.save.data:
                 flaskutils.pid_mod(form_mod_pid_base,
-                                   form_mod_pid_pwm,
-                                   form_mod_pid_relay)
+                                   form_mod_pid_pwm_raise,
+                                   form_mod_pid_pwm_lower,
+                                   form_mod_pid_relay_raise,
+                                   form_mod_pid_relay_lower)
             elif form_mod_pid_base.delete.data:
                 flaskutils.pid_del(
                     form_mod_pid_base.pid_id.data)
@@ -730,7 +734,7 @@ def page_pid():
 
     return render_template('pages/pid.html',
                            method=method,
-                           pids=pids,
+                           pid=pid,
                            pid_templates=pid_templates,
                            relay=relay,
                            sensor=sensor,
@@ -738,8 +742,10 @@ def page_pid():
                            displayOrder=display_order,
                            form_add_pid=form_add_pid,
                            form_mod_pid_base=form_mod_pid_base,
-                           form_mod_pid_pwm=form_mod_pid_pwm,
-                           form_mod_pid_relay=form_mod_pid_relay)
+                           form_mod_pid_pwm_raise=form_mod_pid_pwm_raise,
+                           form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,
+                           form_mod_pid_relay_raise=form_mod_pid_relay_raise,
+                           form_mod_pid_relay_lower=form_mod_pid_relay_lower)
 
 
 @blueprint.route('/output', methods=('GET', 'POST'))

@@ -3,6 +3,7 @@
 ### Features
 
  - Add two new Inputs: PWM and RPM ([#302](https://github.com/kizniche/mycodo/issues/302))
+ - Allow a PID to use both Relay and PWM Outputs ([#303](https://github.com/kizniche/mycodo/issues/303))
 
 ## 5.3.0 (2017-10-24)
 

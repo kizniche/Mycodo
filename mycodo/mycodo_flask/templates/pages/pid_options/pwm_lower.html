@@ -1,0 +1,26 @@
+{{form_mod_pid_pwm_lower.csrf_token}}
+<div class="row small-gutters">
+  <div class="col-xs-6 col-sm-3 col-lg-2">
+    {{form_mod_pid_pwm_lower.lower_relay_id.label(class_='control-label')}}
+    <div>
+      <select class="form-control" id="lower_relay_id" name="lower_relay_id" title="" data-original-title="{{_('The output that will lower the selected environmental condition (Measure Type)')}}.">
+        <option value="">{{_('Disabled')}}</option>
+        {%- for each_relay in relay if each_relay.relay_type == 'pwm' -%}
+          <option value="{{each_relay.id}}"{% if each_pid.lower_relay_id == each_relay.id %} selected{% endif %}>{{each_relay.id}} ({{each_relay.name}})</option>
+        {%- endfor -%}
+      </select>
+    </div>
+  </div>
+ <div class="col-xs-6 col-sm-3 col-lg-2">
+    {{form_mod_pid_pwm_lower.lower_min_duty_cycle.label(class_='control-label')}}
+    <div>
+      {{form_mod_pid_pwm_lower.lower_min_duty_cycle(class_='form-control', value=each_pid.lower_min_duration, **{'title':_('The minimum duty cycle (in %%). If a duty cycle is below this value, this is the value that will be used.')})}}
+    </div>
+  </div>
+  <div class="col-xs-6 col-sm-3 col-lg-2">
+    {{form_mod_pid_pwm_lower.lower_max_duty_cycle.label(class_='control-label')}}
+    <div>
+      {{form_mod_pid_pwm_lower.lower_max_duty_cycle(class_='form-control', value=each_pid.lower_max_duration, **{'title':_('The maximum duty cycle (in %%). If a duty cycle is below this value, this is the value that will be used.')})}}
+    </div>
+  </div>
+</div>

@@ -1330,7 +1330,9 @@ def pid_add(form_add_pid):
         flash_form_errors(form_add_pid)
 
 
-def pid_mod(form_mod_pid_base, form_mod_pid_pwm, form_mod_pid_relay):
+def pid_mod(form_mod_pid_base,
+            form_mod_pid_pwm_raise, form_mod_pid_pwm_lower,
+            form_mod_pid_relay_raise, form_mod_pid_relay_lower):
     action = u'{action} {controller}'.format(
         action=gettext(u"Modify"),
         controller=gettext(u"PID"))
@@ -1338,11 +1340,6 @@ def pid_mod(form_mod_pid_base, form_mod_pid_pwm, form_mod_pid_relay):
 
     if not form_mod_pid_base.validate():
         flash_form_errors(form_mod_pid_base)
-
-    if (form_mod_pid_relay.raise_relay_id.data and
-            form_mod_pid_relay.raise_relay_id.data ==
-            form_mod_pid_relay.lower_relay_id.data):
-        error.append(gettext(u"Raise and lower outputs cannot be the same"))
 
     sensor_unique_id = form_mod_pid_base.measurement.data.split(',')[0]
     sensor = Sensor.query.filter(
@@ -1376,41 +1373,43 @@ def pid_mod(form_mod_pid_base, form_mod_pid_pwm, form_mod_pid_relay):
     else:
         mod_pid.method_id = None
 
-    if mod_pid.pid_type == 'relay':
-        if not form_mod_pid_relay.validate():
-            flash_form_errors(form_mod_pid_relay)
+    if form_mod_pid_base.raise_relay_id.data:
+        mod_pid.raise_relay_id = form_mod_pid_base.raise_relay_id.data
+        raise_relay_type = Relay.query.filter(Relay.relay_id == mod_pid.raise_relay_id).relay_type
+        if raise_relay_type == 'pwm':
+            if not form_mod_pid_pwm_raise.validate():
+                flash_form_errors(form_mod_pid_pwm_raise)
+            mod_pid.raise_min_duration = form_mod_pid_pwm_raise.raise_min_duty_cycle.data
+            mod_pid.raise_max_duration = form_mod_pid_pwm_raise.raise_max_duty_cycle.data
         else:
-            if form_mod_pid_relay.raise_relay_id.data:
-                mod_pid.raise_relay_id = form_mod_pid_relay.raise_relay_id.data
-            else:
-                mod_pid.raise_relay_id = None
-            mod_pid.raise_min_duration = form_mod_pid_relay.raise_min_duration.data
-            mod_pid.raise_max_duration = form_mod_pid_relay.raise_max_duration.data
-            mod_pid.raise_min_off_duration = form_mod_pid_relay.raise_min_off_duration.data
-            if form_mod_pid_relay.lower_relay_id.data:
-                mod_pid.lower_relay_id = form_mod_pid_relay.lower_relay_id.data
-            else:
-                mod_pid.lower_relay_id = None
-            mod_pid.lower_min_duration = form_mod_pid_relay.lower_min_duration.data
-            mod_pid.lower_max_duration = form_mod_pid_relay.lower_max_duration.data
-            mod_pid.lower_min_off_duration = form_mod_pid_relay.lower_min_off_duration.data
+            if not form_mod_pid_relay_raise.validate():
+                flash_form_errors(form_mod_pid_relay_raise)
+            mod_pid.raise_min_duration = form_mod_pid_relay_raise.raise_min_duration.data
+            mod_pid.raise_max_duration = form_mod_pid_relay_raise.raise_max_duration.data
+            mod_pid.raise_min_off_duration = form_mod_pid_relay_raise.raise_min_off_duration.data
+    else:
+        mod_pid.raise_relay_id = None
 
-    elif mod_pid.pid_type == 'pwm':
-        if not form_mod_pid_pwm.validate():
-            flash_form_errors(form_mod_pid_pwm)
+    if form_mod_pid_base.lower_relay_id.data:
+        mod_pid.lower_relay_id = form_mod_pid_base.lower_relay_id.data
+        lower_relay_type = Relay.query.filter(Relay.relay_id == mod_pid.lower_relay_id).relay_type
+        if lower_relay_type == 'pwm':
+            if not form_mod_pid_pwm_lower.validate():
+                flash_form_errors(form_mod_pid_pwm_lower)
+            mod_pid.lower_min_duration = form_mod_pid_pwm_lower.lower_min_duty_cycle.data
+            mod_pid.lower_max_duration = form_mod_pid_pwm_lower.lower_max_duty_cycle.data
         else:
-            if form_mod_pid_relay.raise_relay_id.data:
-                mod_pid.raise_relay_id = form_mod_pid_pwm.raise_relay_id.data
-            else:
-                mod_pid.raise_relay_id = None
-            if form_mod_pid_relay.lower_relay_id.data:
-                mod_pid.lower_relay_id = form_mod_pid_pwm.lower_relay_id.data
-            else:
-                mod_pid.lower_relay_id = None
-            mod_pid.raise_min_duration = form_mod_pid_pwm.raise_min_duty_cycle.data
-            mod_pid.raise_max_duration = form_mod_pid_pwm.raise_max_duty_cycle.data
-            mod_pid.lower_min_duration = form_mod_pid_pwm.lower_min_duty_cycle.data
-            mod_pid.lower_max_duration = form_mod_pid_pwm.lower_max_duty_cycle.data
+            if not form_mod_pid_relay_lower.validate():
+                flash_form_errors(form_mod_pid_relay_lower)
+            mod_pid.lower_min_duration = form_mod_pid_relay_lower.lower_min_duration.data
+            mod_pid.lower_max_duration = form_mod_pid_relay_lower.lower_max_duration.data
+            mod_pid.lower_min_off_duration = form_mod_pid_relay_lower.lower_min_off_duration.data
+    else:
+        mod_pid.lower_relay_id = None
+
+    if (mod_pid.raise_relay_id and mod_pid.lower_relay_id and
+                mod_pid.raise_relay_id == mod_pid.lower_relay_id):
+        error.append(gettext(u"Raise and lower outputs cannot be the same"))
 
     try:
         if not error:

@@ -42,7 +42,7 @@
 
     {%- if displayOrder -%}
     {%- for order in displayOrder -%}
-      {%- for each_pid in pids if each_pid.id == order -%}
+      {%- for each_pid in pid if each_pid.id == order -%}
 
         <div class="container" style="margin-bottom: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
           <form method="post" action="/pid">
@@ -181,8 +181,20 @@
             </div>
           </div>
 
-        {% for each_pid_template in pid_templates if each_pid_template[:-5] == each_pid.pid_type %}
-          {% include 'pages/pid_options/'+each_pid_template %}
+        {% for each_relay in relay %}
+          {% if each_pid.raise_relay_id == each_relay.id and each_relay.relay_type == 'pwm' %}
+            {% include 'pages/pid_options/pwm_raise.html' %}
+          {% else %}
+            {% include 'pages/pid_options/relay_raise.html' %}
+          {% endif %}
+        {% endfor %}
+
+        {% for each_relay in relay %}
+          {% if each_pid.lower_relay_id == each_relay.id and each_relay.relay_type == 'pwm' %}
+            {% include 'pages/pid_options/pwm_lower.html' %}
+          {% else %}
+            {% include 'pages/pid_options/relay_lower.html' %}
+          {% endif %}
         {% endfor %}
 
           <div class="row small-gutters" style="padding-bottom: 0.3em">
