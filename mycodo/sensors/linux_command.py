@@ -51,6 +51,7 @@ class LinuxCommand(AbstractSensor):
         if str_is_float(out):
             return float(out)
         else:
+            logger.error("The command returned a non-numerical value. Ensure only one numerical value is returned by the command.")
             return None
 
     def read(self):
