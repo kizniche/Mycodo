@@ -1307,7 +1307,6 @@ def pid_add(form_add_pid):
         for _ in range(0, form_add_pid.numberPIDs.data):
             try:
                 new_pid = PID().save()
-
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
                 DisplayOrder.query.first().pid = add_display_order(
                     display_order, new_pid.id)
@@ -2311,6 +2310,9 @@ def sensor_mod(form_mod_sensor):
             mod_sensor.switch_edge = form_mod_sensor.switch_edge.data
             mod_sensor.switch_bouncetime = form_mod_sensor.switch_bounce_time.data
             mod_sensor.switch_reset_period = form_mod_sensor.switch_reset_period.data
+            # PWM and RPM options
+            mod_sensor.weighting = form_mod_sensor.weighting.data
+            mod_sensor.rpm_pulses_per_rev = form_mod_sensor.rpm_pulses_per_rev.data
             # SHT sensor options
             if form_mod_sensor.sht_clock_pin.data:
                 mod_sensor.sht_clock_pin = form_mod_sensor.sht_clock_pin.data

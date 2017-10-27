@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import division
 
 import logging
 import pigpio
@@ -10,37 +9,27 @@ logger = logging.getLogger("mycodo.sensors.rpm")
 
 class ReadRPM:
     """
-    A class to read speedometer pulses and calculate the RPM.
+    A class to read pulses and calculate the RPM
     """
 
-    def __init__(self, pi, gpio, pulses_per_rev=1.0, weighting=0.0, min_RPM=5.0):
+    def __init__(self, pi, gpio, pulses_per_rev=1.0, weighting=0.0):
         """
         Instantiate with the Pi and gpio of the RPM signal
         to monitor.
 
         Optionally the number of pulses for a complete revolution
-        may be specified.  It defaults to 1.
+        may be specified. It defaults to 1.
 
-        Optionally a weighting may be specified.  This is a number
+        Optionally a weighting may be specified. This is a number
         between 0 and 1 and indicates how much the old reading
-        affects the new reading.  It defaults to 0 which means
-        the old reading has no effect.  This may be used to
+        affects the new reading. It defaults to 0 which means
+        the old reading has no effect. This may be used to
         smooth the data.
-
-        Optionally the minimum RPM may be specified.  This is a
-        number between 1 and 1000.  It defaults to 5.  An RPM
-        less than the minimum RPM returns 0.0.
         """
         self.pi = pi
         self.gpio = gpio
         self.pulses_per_rev = pulses_per_rev
 
-        if min_RPM > 1000.0:
-            min_RPM = 1000.0
-        elif min_RPM < 1.0:
-            min_RPM = 1.0
-
-        self.min_RPM = min_RPM
         self._watchdog = 200  # Milliseconds.
 
         if weighting < 0.0:
@@ -80,8 +69,6 @@ class ReadRPM:
         RPM = 0.0
         if self._period is not None:
             RPM = 60000000.0 / (self._period * self.pulses_per_rev)
-            if RPM < self.min_RPM:
-                RPM = 0.0
         return RPM
 
     def cancel(self):

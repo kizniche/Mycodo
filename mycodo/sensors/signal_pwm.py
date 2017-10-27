@@ -1,5 +1,4 @@
 # coding=utf-8
-from __future__ import division
 
 import logging
 import pigpio
@@ -11,8 +10,8 @@ logger = logging.getLogger("mycodo.sensors.pwm")
 class ReadPWM:
     """
     A class to read PWM pulses and calculate their frequency
-    and duty cycle.  The frequency is how often the pulse
-    happens per second.  The duty cycle is the percentage of
+    and duty cycle. The frequency is how often the pulse
+    happens per second. The duty cycle is the percentage of
     pulse high time per cycle.
     """
 

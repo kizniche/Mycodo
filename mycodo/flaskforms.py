@@ -639,7 +639,6 @@ class MethodMod(FlaskForm):
 #
 
 class PIDAdd(FlaskForm):
-    pid_type = StringField(lazy_gettext(u'Type'))
     numberPIDs = IntegerField(
         lazy_gettext(u'Quantity'),
         render_kw={"placeholder": lazy_gettext(u"Quantity")},
@@ -979,6 +978,8 @@ class SensorMod(FlaskForm):
             max=86400.0
         )]
     )
+    weighting = DecimalField(lazy_gettext(u'Weighting'))
+    rpm_pulses_per_rev = DecimalField(lazy_gettext(u'Pulses Per Rev'))
     sht_clock_pin = IntegerField(
         lazy_gettext(u'Clock Pin'),
         validators=[validators.NumberRange(

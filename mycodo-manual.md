@@ -357,6 +357,9 @@ Gain | Analog-to-digital converter only: set the gain when acquiring the measure
 Volts Min | Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to "0.2".
 Volts Max | Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the voltage range. Units Min Analog-to-digital converter only: This value will be the lower value of a range that will use the Min and Max Voltages, above, to produce a unit output. For instance, if your voltage range is 0.0 - 1.0 volts, and the unit range is 1 - 60, and a voltage of 0.5 is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables creating calibrated scales to use with your particular circuit.
 Units Max | Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.
+Weighting | The This is a number between 0 and 1 and indicates how much the old reading affects the new reading.  It defaults to 0 which means the old reading has no effect.  This may be used to smooth the data.
+Pulses Per Rev | The number of pulses for a complete revolution.
+
 
 ### Sensor Verification
 

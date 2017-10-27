@@ -52,7 +52,7 @@ class Sensor(CRUDMixin, db.Model):
     adc_measure_units = db.Column(db.Text, default='unit')
     adc_volts_min = db.Column(db.Float, default=None)
     adc_volts_max = db.Column(db.Float, default=None)
-    adc_units_min = db.Column(db.Float, default=0)
+    adc_units_min = db.Column(db.Float, default=0.0)
     adc_units_max = db.Column(db.Float, default=10)
     adc_inverse_unit_scale = db.Column(db.Boolean, default=False)
 
@@ -60,6 +60,10 @@ class Sensor(CRUDMixin, db.Model):
     cmd_command = db.Column(db.Text, default=None)
     cmd_measurement = db.Column(db.Text, default=None)
     cmd_measurement_units = db.Column(db.Text, default=None)
+
+    # PWM and RPM options
+    weighting = db.Column(db.Float, default=0.0)
+    rpm_pulses_per_rev = db.Column(db.Float, default=1.0)
 
     def is_active(self):
         """
