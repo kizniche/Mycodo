@@ -819,16 +819,14 @@ def choices_pids(pid):
         display = u'{id} ({name}) Setpoint'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
-        if each_pid.pid_type == 'relay':
-            value = '{id},pid_output'.format(id=each_pid.unique_id)
-            display = u'{id} ({name}) Output'.format(
-                id=each_pid.id, name=each_pid.name)
-            choices.update({value: display})
-        elif each_pid.pid_type == 'pwm':
-            value = '{id},duty_cycle'.format(id=each_pid.unique_id)
-            display = u'{id} ({name}) Output'.format(
-                id=each_pid.id, name=each_pid.name)
-            choices.update({value: display})
+        value = '{id},pid_output'.format(id=each_pid.unique_id)
+        display = u'{id} ({name}) Output (Duration)'.format(
+            id=each_pid.id, name=each_pid.name)
+        choices.update({value: display})
+        value = '{id},duty_cycle'.format(id=each_pid.unique_id)
+        display = u'{id} ({name}) Output (Duty Cycle)'.format(
+            id=each_pid.id, name=each_pid.name)
+        choices.update({value: display})
     return choices
 
 
@@ -1308,14 +1306,7 @@ def pid_add(form_add_pid):
     if form_add_pid.validate():
         for _ in range(0, form_add_pid.numberPIDs.data):
             try:
-                new_pid = PID()
-                new_pid.pid_type = form_add_pid.pid_type.data
-                if form_add_pid.pid_type.data == 'pwm':
-                    new_pid.raise_min_duration = 2.0
-                    new_pid.raise_max_duration = 98.0
-                    new_pid.lower_min_duration = 2.0
-                    new_pid.lower_max_duration = 98.0
-                new_pid.save()
+                new_pid = PID().save()
 
                 display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
                 DisplayOrder.query.first().pid = add_display_order(
@@ -1354,8 +1345,8 @@ def pid_mod(form_mod_pid_base,
     if mod_pid.is_activated:
         error = can_set_relay(error,
                               form_mod_pid_base.pid_id.data,
-                              form_mod_pid_relay.raise_relay_id.data,
-                              form_mod_pid_relay.lower_relay_id.data)
+                              form_mod_pid_base.raise_relay_id.data,
+                              form_mod_pid_base.lower_relay_id.data)
 
     mod_pid.name = form_mod_pid_base.name.data
     mod_pid.measurement = form_mod_pid_base.measurement.data
@@ -1374,36 +1365,60 @@ def pid_mod(form_mod_pid_base,
         mod_pid.method_id = None
 
     if form_mod_pid_base.raise_relay_id.data:
-        mod_pid.raise_relay_id = form_mod_pid_base.raise_relay_id.data
-        raise_relay_type = Relay.query.filter(Relay.relay_id == mod_pid.raise_relay_id).relay_type
-        if raise_relay_type == 'pwm':
-            if not form_mod_pid_pwm_raise.validate():
-                flash_form_errors(form_mod_pid_pwm_raise)
-            mod_pid.raise_min_duration = form_mod_pid_pwm_raise.raise_min_duty_cycle.data
-            mod_pid.raise_max_duration = form_mod_pid_pwm_raise.raise_max_duty_cycle.data
+        raise_relay_type = Relay.query.filter(
+            Relay.id == int(form_mod_pid_base.raise_relay_id.data)).first().relay_type
+        if mod_pid.raise_relay_id == int(form_mod_pid_base.raise_relay_id.data):
+            if raise_relay_type == 'pwm':
+                if not form_mod_pid_pwm_raise.validate():
+                    flash_form_errors(form_mod_pid_pwm_raise)
+                else:
+                    mod_pid.raise_min_duration = form_mod_pid_pwm_raise.raise_min_duty_cycle.data
+                    mod_pid.raise_max_duration = form_mod_pid_pwm_raise.raise_max_duty_cycle.data
+            else:
+                if not form_mod_pid_relay_raise.validate():
+                    flash_form_errors(form_mod_pid_relay_raise)
+                else:
+                    mod_pid.raise_min_duration = form_mod_pid_relay_raise.raise_min_duration.data
+                    mod_pid.raise_max_duration = form_mod_pid_relay_raise.raise_max_duration.data
+                    mod_pid.raise_min_off_duration = form_mod_pid_relay_raise.raise_min_off_duration.data
         else:
-            if not form_mod_pid_relay_raise.validate():
-                flash_form_errors(form_mod_pid_relay_raise)
-            mod_pid.raise_min_duration = form_mod_pid_relay_raise.raise_min_duration.data
-            mod_pid.raise_max_duration = form_mod_pid_relay_raise.raise_max_duration.data
-            mod_pid.raise_min_off_duration = form_mod_pid_relay_raise.raise_min_off_duration.data
+            if raise_relay_type == 'pwm':
+                mod_pid.raise_min_duration = 2
+                mod_pid.raise_max_duration = 98
+            else:
+                mod_pid.raise_min_duration = 0
+                mod_pid.raise_max_duration = 0
+                mod_pid.raise_min_off_duration = 0
+        mod_pid.raise_relay_id = form_mod_pid_base.raise_relay_id.data
     else:
         mod_pid.raise_relay_id = None
 
     if form_mod_pid_base.lower_relay_id.data:
-        mod_pid.lower_relay_id = form_mod_pid_base.lower_relay_id.data
-        lower_relay_type = Relay.query.filter(Relay.relay_id == mod_pid.lower_relay_id).relay_type
-        if lower_relay_type == 'pwm':
-            if not form_mod_pid_pwm_lower.validate():
-                flash_form_errors(form_mod_pid_pwm_lower)
-            mod_pid.lower_min_duration = form_mod_pid_pwm_lower.lower_min_duty_cycle.data
-            mod_pid.lower_max_duration = form_mod_pid_pwm_lower.lower_max_duty_cycle.data
+        lower_relay_type = Relay.query.filter(
+            Relay.id == int(form_mod_pid_base.lower_relay_id.data)).first().relay_type
+        if mod_pid.lower_relay_id == int(form_mod_pid_base.lower_relay_id.data):
+            if lower_relay_type == 'pwm':
+                if not form_mod_pid_pwm_lower.validate():
+                    flash_form_errors(form_mod_pid_pwm_lower)
+                else:
+                    mod_pid.lower_min_duration = form_mod_pid_pwm_lower.lower_min_duty_cycle.data
+                    mod_pid.lower_max_duration = form_mod_pid_pwm_lower.lower_max_duty_cycle.data
+            else:
+                if not form_mod_pid_relay_lower.validate():
+                    flash_form_errors(form_mod_pid_relay_lower)
+                else:
+                    mod_pid.lower_min_duration = form_mod_pid_relay_lower.lower_min_duration.data
+                    mod_pid.lower_max_duration = form_mod_pid_relay_lower.lower_max_duration.data
+                    mod_pid.lower_min_off_duration = form_mod_pid_relay_lower.lower_min_off_duration.data
         else:
-            if not form_mod_pid_relay_lower.validate():
-                flash_form_errors(form_mod_pid_relay_lower)
-            mod_pid.lower_min_duration = form_mod_pid_relay_lower.lower_min_duration.data
-            mod_pid.lower_max_duration = form_mod_pid_relay_lower.lower_max_duration.data
-            mod_pid.lower_min_off_duration = form_mod_pid_relay_lower.lower_min_off_duration.data
+            if lower_relay_type == 'pwm':
+                mod_pid.lower_min_duration = 2
+                mod_pid.lower_max_duration = 98
+            else:
+                mod_pid.lower_min_duration = 0
+                mod_pid.lower_max_duration = 0
+                mod_pid.lower_min_off_duration = 0
+        mod_pid.lower_relay_id = form_mod_pid_base.lower_relay_id.data
     else:
         mod_pid.lower_relay_id = None
 

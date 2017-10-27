@@ -1,32 +1,19 @@
 {{form_mod_pid_relay_raise.csrf_token}}
-<div class="row small-gutters">
-  <div class="col-xs-6 col-sm-3 col-lg-2">
-    {{form_mod_pid_relay_raise.raise_relay_id.label(class_='control-label')}}
-    <div>
-      <select class="form-control" id="raise_relay_id" name="raise_relay_id" title="" data-original-title="{{_('The output that will raise the selected environmental condition (Measure Type)')}}.">
-        <option value="">{{_('Disabled')}}</option>
-        {%- for each_relay in relay if each_relay.relay_type != 'pwm' -%}
-          <option value="{{each_relay.id}}"{% if each_pid.raise_relay_id == each_relay.id %} selected{% endif %}>{{each_relay.id}} ({{each_relay.name}})</option>
-        {%- endfor -%}
-      </select>
-    </div>
+<div class="col-xs-6 col-sm-3 col-lg-2">
+  {{form_mod_pid_relay_raise.raise_min_duration.label(class_='control-label')}}
+  <div>
+    {{form_mod_pid_relay_raise.raise_min_duration(class_='form-control', value=each_pid.raise_min_duration, **{'title':_('The minimum duration (in seconds) required for the Raise Relay to activate. If an On duration is below this value, the Raise Relay will not turn on.')})}}
   </div>
-  <div class="col-xs-6 col-sm-3 col-lg-2">
-    {{form_mod_pid_relay_raise.raise_min_duration.label(class_='control-label')}}
-    <div>
-      {{form_mod_pid_relay_raise.raise_min_duration(class_='form-control', value=each_pid.raise_min_duration, **{'title':_('The minimum duration (in seconds) required for the Raise Relay to activate. If an On duration is below this value, the Raise Relay will not turn on.')})}}
-    </div>
+</div>
+<div class="col-xs-6 col-sm-3 col-lg-2">
+  {{form_mod_pid_relay_raise.raise_max_duration.label(class_='control-label')}}
+  <div>
+    {{form_mod_pid_relay_raise.raise_max_duration(class_='form-control', value=each_pid.raise_max_duration, **{'title':_('The maximum duration (in seconds) allowed for the Raise Relay to be on for, per period. If an On duration is above this value, the Raise Relay will turn on for this set duration.')})}}
   </div>
-  <div class="col-xs-6 col-sm-3 col-lg-2">
-    {{form_mod_pid_relay_raise.raise_max_duration.label(class_='control-label')}}
-    <div>
-      {{form_mod_pid_relay_raise.raise_max_duration(class_='form-control', value=each_pid.raise_max_duration, **{'title':_('The maximum duration (in seconds) allowed for the Raise Relay to be on for, per period. If an On duration is above this value, the Raise Relay will turn on for this set duration.')})}}
-    </div>
-  </div>
-  <div class="col-xs-6 col-sm-3 col-lg-2">
-    {{form_mod_pid_relay_raise.raise_min_off_duration.label(class_='control-label')}}
-    <div>
-      {{form_mod_pid_relay_raise.raise_min_off_duration(class_='form-control', value=each_pid.raise_min_off_duration, **{'title':_('This relay will remain off for at least this duration of time.')})}}
-    </div>
+</div>
+<div class="col-xs-6 col-sm-3 col-lg-2">
+  {{form_mod_pid_relay_raise.raise_min_off_duration.label(class_='control-label')}}
+  <div>
+    {{form_mod_pid_relay_raise.raise_min_off_duration(class_='form-control', value=each_pid.raise_min_off_duration, **{'title':_('This relay will remain off for at least this duration of time.')})}}
   </div>
 </div>

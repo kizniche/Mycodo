@@ -143,7 +143,7 @@
           <div class="col-xs-12 col-sm-6">
             {{each_pid.name}} ({{each_pid.id}})
             <div>
-              Every {{each_pid.period}} seconds, apply PID to {% if each_pid.direction == 'both' -%}raise or lower{%- else -%}{{each_pid.direction}}{%- endif %} {{each_pid.measurement}} to {{each_pid.setpoint}}
+              Every {{each_pid.period}} seconds, apply PID to {% if each_pid.direction == 'both' -%}raise or lower{%- else -%}{{each_pid.direction}}{%- endif %} {{each_pid.measurement.split(',')[1]}} to {{each_pid.setpoint}}
             </div>
           </div>
           <div class="col-xs-12 col-sm-6">

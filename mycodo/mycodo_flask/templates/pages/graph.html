@@ -1346,7 +1346,7 @@
           },
           {% elif each_graph_pid_id.split(',')[1] == 'pid_output' %}
           {
-            name: '{{each_pid.name}} {{_('Output')}}',
+            name: '{{each_pid.name}} {{_('Output')}} {{_('Duration')}}',
             type: 'line',
             tooltip: {
               valueSuffix: ' sec',
@@ -1357,7 +1357,7 @@
           },
           {% elif each_graph_pid_id.split(',')[1] == 'duty_cycle' %}
           {
-            name: '{{each_pid.name}} {{_('Duty Cycle')}}',
+            name: '{{each_pid.name}} {{_('Output')}} {{_('Duty Cycle')}}',
             type: 'line',
             tooltip: {
               valueSuffix: ' %',

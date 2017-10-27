@@ -111,7 +111,6 @@ class PIDController(threading.Thread):
         self.is_activated = None
         self.is_held = None
         self.is_paused = None
-        self.pid_type = None
         self.measurement = None
         self.method_id = None
         self.direction = None
@@ -135,6 +134,9 @@ class PIDController(threading.Thread):
 
         self.sensor_unique_id = None
         self.sensor_duration = None
+
+        self.raise_relay_type = None
+        self.lower_relay_type = None
 
         self.initialize_values()
 
@@ -262,7 +264,6 @@ class PIDController(threading.Thread):
         self.is_activated = pid.is_activated
         self.is_held = pid.is_held
         self.is_paused = pid.is_paused
-        self.pid_type = pid.pid_type
         self.method_id = pid.method_id
         self.direction = pid.direction
         self.raise_relay_id = pid.raise_relay_id
@@ -290,8 +291,16 @@ class PIDController(threading.Thread):
         self.sensor_unique_id = sensor.unique_id
         self.sensor_duration = sensor.period
 
-        self.raise_relay_type = db_retrieve_table_daemon(Relay, device_id=self.raise_relay_id).relay_type
-        self.lower_relay_type = db_retrieve_table_daemon(Relay, device_id=self.lower_relay_id).relay_type
+        try:
+            self.raise_relay_type = db_retrieve_table_daemon(
+                Relay, device_id=self.raise_relay_id).relay_type
+        except AttributeError:
+            self.raise_relay_type = None
+        try:
+            self.lower_relay_type = db_retrieve_table_daemon(
+                Relay, device_id=self.lower_relay_id).relay_type
+        except AttributeError:
+            self.lower_relay_type = None
 
         return "success"
 
