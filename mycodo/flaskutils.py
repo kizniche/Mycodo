@@ -2104,6 +2104,12 @@ def sensor_add(form_add_sensor):
             elif form_add_sensor.sensor.data == 'EDGE':
                 new_sensor.measurements = 'edge'
 
+            # Signal measuremnt (PWM and RPM)
+            elif form_add_sensor.sensor.data == 'SIGNAL_PWM':
+                new_sensor.measurements = 'frequency,pulse_width,duty_cycle'
+            elif form_add_sensor.sensor.data == 'SIGNAL_RPM':
+                new_sensor.measurements = 'rpm'
+
             # Environmental Sensors
             # Temperature
             elif form_add_sensor.sensor.data in ['ATLAS_PT1000_I2C',

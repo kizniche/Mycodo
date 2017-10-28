@@ -114,7 +114,7 @@
           <div>
             {% for each_measure in each_sensor.measurements.split(',') if each_sensor.device != 'LinuxCommand' %}
               {% if each_measure and measurement_units[each_measure]['meas'] == 'temperature' %}
-                <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit'].decode('utf-8')}} (<span id="{{each_sensor.unique_id}}-{{each_measure}}-value-F">0.0</span> &deg;F)
+                <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}} (<span id="{{each_sensor.unique_id}}-{{each_measure}}-value-F">0.0</span> &deg;F)
                   {%- if each_measure == 'dewpoint' %} DP
                   {% elif each_measure == 'temperature_object' %} Obj
                   {% elif each_measure == 'temperature_die' %} Die

@@ -59,53 +59,53 @@ MEASUREMENTS = {
 # Unit abbreviation for each measurement
 MEASUREMENT_UNITS = {
     'altitude': {
-        'name': 'Altitude', 'meas': 'altitude', 'unit': 'm'},
+        'name': 'Altitude', 'meas': 'altitude', 'unit': u'm'},
     'co2': {
-        'name': 'CO2', 'meas': 'co2', 'unit': 'ppmv'},
+        'name': 'CO2', 'meas': 'co2', 'unit': u'ppmv'},
     'dewpoint': {
-        'name': 'Dewpoint', 'meas': 'temperature', 'unit': '°C'},
+        'name': 'Dewpoint', 'meas': 'temperature', 'unit': u'°C'},
     'cpu_load_1m': {
-        'name': 'CPU Load', 'meas': 'cpu_load', 'unit': '1 min'},
+        'name': 'CPU Load', 'meas': 'cpu_load', 'unit': u'1 min'},
     'cpu_load_5m': {
-        'name': 'CPU Load', 'meas': 'cpu_load', 'unit': '5 min'},
+        'name': 'CPU Load', 'meas': 'cpu_load', 'unit': u'5 min'},
     'cpu_load_15m': {
-        'name': 'CPU Load', 'meas': 'cpu_load', 'unit': '15 min'},
+        'name': 'CPU Load', 'meas': 'cpu_load', 'unit': u'15 min'},
     'disk_space': {
-        'name': 'Disk', 'meas': 'disk_space', 'unit': 'MB'},
+        'name': 'Disk', 'meas': 'disk_space', 'unit': u'MB'},
     'duration_sec': {
-        'name': 'Duration', 'meas': 'duration_sec', 'unit': 'sec'},
+        'name': 'Duration', 'meas': 'duration_sec', 'unit': u'sec'},
     'duty_cycle': {
-        'name': 'Duty Cycle', 'meas': 'duty_cycle', 'unit': '%'},
+        'name': 'Duty Cycle', 'meas': 'duty_cycle', 'unit': u'%'},
     'edge': {
-        'name': 'Edge', 'meas': 'edge', 'unit': 'edge'},
+        'name': 'Edge', 'meas': 'edge', 'unit': u'edge'},
     'frequency': {
-        'name': 'Frequency', 'meas': 'frequency', 'unit': 'Hz'},
+        'name': 'Frequency', 'meas': 'frequency', 'unit': u'Hz'},
     'humidity': {
-        'name': 'Humidity', 'meas': 'humidity', 'unit': '%'},
+        'name': 'Humidity', 'meas': 'humidity', 'unit': u'%'},
     'lux': {
-        'name': 'Light', 'meas': 'lux', 'unit': 'lx'},
+        'name': 'Light', 'meas': 'lux', 'unit': u'lx'},
     'moisture': {
-        'name': 'Moisture', 'meas': 'moisture', 'unit': 'moisture'},
+        'name': 'Moisture', 'meas': 'moisture', 'unit': u'moisture'},
     'ph': {
-        'name': 'pH', 'meas': 'ph', 'unit': 'pH'},
+        'name': 'pH', 'meas': 'ph', 'unit': u'pH'},
     'pid_output': {
-        'name': 'PID Output', 'meas': 'pid_output', 'unit': 'sec'},
+        'name': 'PID Output', 'meas': 'pid_output', 'unit': u'sec'},
     'pressure': {
-        'name': 'Pressure', 'meas': 'pressure', 'unit': 'Pa'},
+        'name': 'Pressure', 'meas': 'pressure', 'unit': u'Pa'},
     'pulse_width': {
-        'name': 'Pulse Width', 'meas': 'pulse_width', 'unit': 'µs'},
+        'name': 'Pulse Width', 'meas': 'pulse_width', 'unit': u'µs'},
     'rpm': {
-        'name': 'Revolutions Per Minute', 'meas': 'rpm', 'unit': 'rpm'},
+        'name': 'Revolutions Per Minute', 'meas': 'rpm', 'unit': u'rpm'},
     'setpoint': {
-        'name': 'Setpoint', 'meas': 'setpoint', 'unit': ''},
+        'name': 'Setpoint', 'meas': 'setpoint', 'unit': u''},
     'temperature': {
-        'name': 'Temperature', 'meas': 'temperature', 'unit': '°C'},
+        'name': 'Temperature', 'meas': 'temperature', 'unit': u'°C'},
     'temperature_object': {
-        'name': 'Temperature (Obj)', 'meas': 'temperature', 'unit': '°C'},
+        'name': 'Temperature (Obj)', 'meas': 'temperature', 'unit': u'°C'},
     'temperature_die': {
-        'name': 'Temperature (Die)', 'meas': 'temperature', 'unit': '°C'},
+        'name': 'Temperature (Die)', 'meas': 'temperature', 'unit': u'°C'},
     'voltage': {
-        'name': 'Voltage', 'meas': 'voltage', 'unit': 'volts'}
+        'name': 'Voltage', 'meas': 'voltage', 'unit': u'volts'}
 }
 
 # Sensors and description

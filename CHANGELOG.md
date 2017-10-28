@@ -1,4 +1,4 @@
-## 5.3.2 (Unreleased)
+## 5.3.2 (2017-10-28)
 
 ### Features
 
@@ -8,7 +8,7 @@
 
  - Fix exporting measurements
  - Fix Live Data page displaying special characters ([#304](https://github.com/kizniche/mycodo/issues/304))
-
+ - Fix PWM and RPM Input issues ([#302](https://github.com/kizniche/mycodo/issues/302))
 
 ## 5.3.1 (2017-10-27)
 

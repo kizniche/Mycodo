@@ -621,6 +621,14 @@ use with PIDs and other parts of Mycodo that uses sensor measurements.
   Units Max             Analog-to-digital converter only: This is
                         similar to the Min option above, however it is
                         setting the ceiling to the unit range.
+
+  Weighting             The This is a number between 0 and 1 and
+                        indicates how much the old reading affects the
+                        new reading. It defaults to 0 which means the
+                        old reading has no effect. This may be used to
+                        smooth the data.
+
+  Pulses Per Rev        The number of pulses for a complete revolution.
   ---------------------------------------------------------------------
 
 Sensor Verification
