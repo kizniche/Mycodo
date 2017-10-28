@@ -187,6 +187,10 @@ class SensorController(threading.Thread):
         self.switch_bouncetime = sensor.switch_bouncetime
         self.switch_reset_period = sensor.switch_reset_period
 
+        # PWM and RPM options
+        self.weighting = sensor.weighting
+        self.rpm_pulses_per_rev = sensor.rpm_pulses_per_rev
+
         # Relay that will activate prior to sensor read
         self.pre_relay_id = sensor.pre_relay_id
         self.pre_relay_duration = sensor.pre_relay_duration
@@ -337,9 +341,12 @@ class SensorController(threading.Thread):
             self.measure_sensor = SHT2xSensor(self.i2c_address,
                                               self.i2c_bus)
         elif self.device == 'SIGNAL_PWM':
-            self.measure_sensor = PWMInput(int(self.location))
+            self.measure_sensor = PWMInput(int(self.location),
+                                           self.weighting)
         elif self.device == 'SIGNAL_RPM':
-            self.measure_sensor = RPMInput(int(self.location))
+            self.measure_sensor = RPMInput(int(self.location),
+                                           self.weighting,
+                                           self.rpm_pulses_per_rev)
         elif self.device == 'TMP006':
             self.measure_sensor = TMP006Sensor(self.i2c_address,
                                                self.i2c_bus)

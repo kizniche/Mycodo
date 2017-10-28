@@ -98,11 +98,12 @@ class ReadPWM:
 class PWMInput(AbstractSensor):
     """ A sensor support class that monitors pwm """
 
-    def __init__(self, pin):
+    def __init__(self, pin, weighting):
         super(PWMInput, self).__init__()
         self._frequency = 0.0
         self._pulse_width = 0.0
         self._duty_cycle = 0.0
+        self.weighting = weighting
         self.pin = pin
 
     def __repr__(self):
@@ -157,7 +158,7 @@ class PWMInput(AbstractSensor):
         """ Gets the pwm """
         pi = pigpio.pi()
         try:
-            read_pwm = ReadPWM(pi, self.pin)
+            read_pwm = ReadPWM(pi, self.pin, self.weighting)
             frequency = read_pwm.frequency()
             pulse_width = read_pwm.pulse_width()
             duty_cycle = read_pwm.duty_cycle()

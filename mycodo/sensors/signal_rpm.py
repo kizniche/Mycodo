@@ -82,10 +82,12 @@ class ReadRPM:
 class RPMInput(AbstractSensor):
     """ A sensor support class that monitors rpm """
 
-    def __init__(self, pin):
+    def __init__(self, pin, weighting, rpm_pulses_per_rev):
         super(RPMInput, self).__init__()
         self._rpm = 0
         self.pin = pin
+        self.weighting = weighting
+        self.rpm_pulses_per_rev = rpm_pulses_per_rev
 
     def __repr__(self):
         """  Representation of object """
@@ -118,7 +120,8 @@ class RPMInput(AbstractSensor):
         """ Gets the rpm """
         pi = pigpio.pi()
         try:
-            read_rpm = ReadRPM(pi, self.pin)
+            read_rpm = ReadRPM(
+                pi, self.pin, self.weighting, self.rpm_pulses_per_rev)
             rpm = read_rpm.RPM()
             if rpm:
                 return int(rpm + 0.5)
