@@ -63,7 +63,7 @@ MEASUREMENT_UNITS = {
     'co2': {
         'name': 'CO2', 'meas': 'co2', 'unit': 'ppmv'},
     'dewpoint': {
-        'name': 'Dewpoint', 'meas': 'temperature', 'unit': u'°C'},
+        'name': 'Dewpoint', 'meas': 'temperature', 'unit': '°C'},
     'cpu_load_1m': {
         'name': 'CPU Load', 'meas': 'cpu_load', 'unit': '1 min'},
     'cpu_load_5m': {
@@ -93,17 +93,17 @@ MEASUREMENT_UNITS = {
     'pressure': {
         'name': 'Pressure', 'meas': 'pressure', 'unit': 'Pa'},
     'pulse_width': {
-        'name': 'Pulse Width', 'meas': 'pulse_width', 'unit': u'µs'},
+        'name': 'Pulse Width', 'meas': 'pulse_width', 'unit': 'µs'},
     'rpm': {
         'name': 'Revolutions Per Minute', 'meas': 'rpm', 'unit': 'rpm'},
     'setpoint': {
         'name': 'Setpoint', 'meas': 'setpoint', 'unit': ''},
     'temperature': {
-        'name': 'Temperature', 'meas': 'temperature', 'unit': u'°C'},
+        'name': 'Temperature', 'meas': 'temperature', 'unit': '°C'},
     'temperature_object': {
-        'name': 'Temperature (Obj)', 'meas': 'temperature', 'unit': u'°C'},
+        'name': 'Temperature (Obj)', 'meas': 'temperature', 'unit': '°C'},
     'temperature_die': {
-        'name': 'Temperature (Die)', 'meas': 'temperature', 'unit': u'°C'},
+        'name': 'Temperature (Die)', 'meas': 'temperature', 'unit': '°C'},
     'voltage': {
         'name': 'Voltage', 'meas': 'voltage', 'unit': 'volts'}
 }

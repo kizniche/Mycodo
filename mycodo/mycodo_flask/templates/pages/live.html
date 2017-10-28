@@ -113,14 +113,14 @@
           {{_('Measurement')}} | {{_('Timestamp')}}
           <div>
             {% for each_measure in each_sensor.measurements.split(',') if each_sensor.device != 'LinuxCommand' %}
-              {% if measurement_units[each_measure]['meas'] == 'temperature' %}
-                <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}} (<span id="{{each_sensor.unique_id}}-{{each_measure}}-value-F">0.0</span> &deg;F)
+              {% if each_measure and measurement_units[each_measure]['meas'] == 'temperature' %}
+                <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit'].decode('utf-8')}} (<span id="{{each_sensor.unique_id}}-{{each_measure}}-value-F">0.0</span> &deg;F)
                   {%- if each_measure == 'dewpoint' %} DP
                   {% elif each_measure == 'temperature_object' %} Obj
                   {% elif each_measure == 'temperature_die' %} Die
                   {%- endif -%}</b> | <span id="{{each_sensor.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
               {% else %}
-                <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}}</b> | <span id="{{each_sensor.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
+                <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {% if each_measure != '' %}{{measurement_units[each_measure]['unit']}}{% endif %}</b> | <span id="{{each_sensor.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
               {% endif %}
             {% endfor %}
             {%- if each_sensor.device in ['ADS1x15', 'MCP342x'] %}

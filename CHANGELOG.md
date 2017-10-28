@@ -4,12 +4,19 @@
 
  - Turning Outputs On or Off no longer refreshes the page ([#192](https://github.com/kizniche/mycodo/issues/192))
 
+### Bugfixes
+
+ - Fix exporting measurements
+ - Fix Live Data page displaying special characters ([#304](https://github.com/kizniche/mycodo/issues/304))
+
+
 ## 5.3.1 (2017-10-27)
 
 ### Features
 
  - Add two new Inputs: PWM and RPM ([#302](https://github.com/kizniche/mycodo/issues/302))
  - Allow a PID to use both Relay and PWM Outputs ([#303](https://github.com/kizniche/mycodo/issues/303))
+
 
 ## 5.3.0 (2017-10-24)
 
