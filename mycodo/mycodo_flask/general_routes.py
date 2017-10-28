@@ -410,14 +410,17 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
             return '', 204
 
 
-@blueprint.route('/output_mod/<relay_id>/<state>/<duration>')
+@blueprint.route('/output_mod/<relay_id>/<state>/<type>/<amount>')
 @flask_login.login_required
-def output_mod(relay_id, state, duration):
+def output_mod(relay_id, state, type, amount):
     """Manipulate relay"""
     daemon = DaemonControl()
-    if (state in ['on', 'off'] and
-            (str_is_float(duration) and float(duration) >= 0)):
-        return daemon.relay_on_off(int(relay_id), state, float(duration))
+    if (state in ['on', 'off'] and type == 'sec' and
+            (str_is_float(amount) and float(amount) >= 0)):
+        return daemon.relay_on_off(int(relay_id), state, float(amount))
+    elif (state == 'on' and type == 'pwm' and
+              (str_is_float(amount) and float(amount) >= 0)):
+        return daemon.relay_on(int(relay_id), state, duty_cycle=float(amount))
 
 
 @blueprint.route('/daemonactive')
