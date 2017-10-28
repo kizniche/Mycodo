@@ -1,3 +1,9 @@
+## 5.3.2 (Unreleased)
+
+### Features
+
+ - Turning Outputs On or Off no longer refreshes the page ([#192](https://github.com/kizniche/mycodo/issues/192))
+
 ## 5.3.1 (2017-10-27)
 
 ### Features

@@ -40,6 +40,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import query_string
+from mycodo.utils.system_pi import str_is_float
 
 from mycodo.config import INFLUXDB_USER
 from mycodo.config import INFLUXDB_PASSWORD
@@ -407,6 +408,16 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
             logger.error("URL for 'async_data' raised and error: "
                          "{err}".format(err=e))
             return '', 204
+
+
+@blueprint.route('/output_mod/<relay_id>/<state>/<duration>')
+@flask_login.login_required
+def output_mod(relay_id, state, duration):
+    """Manipulate relay"""
+    daemon = DaemonControl()
+    if (state in ['on', 'off'] and
+            (str_is_float(duration) and float(duration) >= 0)):
+        return daemon.relay_on_off(int(relay_id), state, float(duration))
 
 
 @blueprint.route('/daemonactive')

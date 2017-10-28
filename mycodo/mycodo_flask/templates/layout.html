@@ -41,12 +41,12 @@
     var url = '/daemonactive';
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
-        if (jqXHR.status == 204) {
+        if (jqXHR.status === 204) {
           document.getElementById("daemon-status").style.color = "#F70D1A";
           $('#daemon-status').tooltip('hide').attr('data-original-title', '{{_('Daemon is Not Running')}}');
         }
         else {
-          if (data == 'alive') {
+          if (data === 'alive') {
             document.getElementById("daemon-status").style.color = "#4E9258";
             $('#daemon-status').tooltip('hide').attr('data-original-title', '{{_('Daemon is Running')}}');
           }

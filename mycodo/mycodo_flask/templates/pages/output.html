@@ -5,6 +5,61 @@
 {% block title %} - {{_('Output Devices')}}{% endblock %}
 
 {% block head %}
+<link href="/static/css/toastr.min.css" rel="stylesheet"/>
+<script src="/static/js/toastr.min.js"></script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+      toastr.options = {
+          "closeButton": true,
+          "debug": false,
+          "newestOnTop": false,
+          "progressBar": false,
+          "positionClass": "toast-top-right",
+          "preventDuplicates": false,
+          "onclick": null,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": "7000",
+          "extendedTimeOut": "10000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+      }
+  });
+ function getAjax(btn_val) {
+    $.ajax({
+        type: 'GET',
+        url: '/output_mod/' + btn_val,
+        success: function(data) {
+            toastr['success']("Relay " + btn_val.split("/")[0] + ": " + data);
+        },
+        error: function(data) {
+            toastr['error']("Relay " + btn_val.split("/")[0] + ": " + data);
+        }
+    });
+  }
+
+  $(document).ready(function() {
+    $('.turn_on').click(function() {
+      var btn_val = this.name;
+      toastr['info']('Command to turn on relay sent');
+      getAjax(btn_val);
+    });
+    $('.turn_off').click(function() {
+      var btn_val = this.name;
+      toastr['info']('Command to turn off relay sent');
+      getAjax(btn_val);
+    });
+    $('.turn_on_amt').click(function() {
+      var btn_val = this.name;
+      toastr['info']('Command to turn on relay for a duration sent');
+      getAjax(btn_val);
+    });
+  });
+</script>
+
 <script>
   function gpioState() {
     var url = '/gpiostate';
@@ -37,7 +92,6 @@
       }
     );
   }
-
 
   function liveGPIOData() {
     setInterval(function () {
@@ -125,11 +179,11 @@
           <div class="col-xs-5 col-xs-offset-2 col-sm-3 col-sm-offset-0 col-md-3 small-gutters">
             {% if each_relay.relay_type != 'pwm' -%}
             <div class="col-xs-6 col-sm-6 col-md-6 small-gutters">
-              {{form_mod_relay.turn_on(class_='form-control btn btn-default')}}
+              <input class="form-control btn btn-default turn_on" id="turn_on" name="{{each_relay.id}}/on/0" type="button" value="On">
             </div>
             {%- endif %}
             <div class="col-xs-6 col-sm-6 col-md-6 small-gutters">
-              {{form_mod_relay.turn_off(class_='form-control btn btn-default')}}
+              <input class="form-control btn btn-default turn_off" id="turn_off" name="{{each_relay.id}}/off/0" type="button" value="Off">
             </div>
           </div>
           <div class="col-xs-5 col-sm-3 col-md-3 small-gutters">

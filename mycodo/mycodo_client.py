@@ -109,9 +109,9 @@ class DaemonControl:
 
     def relay_on_off(self, relay_id, state, duration=0.0):
         if state == 'on':
-            self.relay_on(relay_id, duration)
+            return self.relay_on(relay_id, duration)
         else:
-            self.relay_off(relay_id)
+            return self.relay_off(relay_id)
 
     def relay_sec_currently_on(self, relay_id):
         return self.rpyc_client.root.relay_sec_currently_on(relay_id)
