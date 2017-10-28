@@ -286,8 +286,9 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     def iter_csv(data_in):
         line = StringIO.StringIO()
         writer = csv.writer(line)
-        writer.writerow(('timestamp (UTC)', '{name} {meas} ({id})'.format(
-            name=name, meas=measurement, id=unique_id)))
+        write_header = ('timestamp (UTC)', '{name} {meas} ({id})'.format(
+            name=name.encode('utf8'), meas=measurement, id=unique_id))
+        writer.writerow(write_header)
         for csv_line in data_in:
             writer.writerow((csv_line[0][:-4], csv_line[1]))
             line.seek(0)
@@ -410,15 +411,18 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
             return '', 204
 
 
-@blueprint.route('/output_mod/<relay_id>/<state>/<type>/<amount>')
+@blueprint.route('/output_mod/<relay_id>/<state>/<out_type>/<amount>')
 @flask_login.login_required
-def output_mod(relay_id, state, type, amount):
+def output_mod(relay_id, state, out_type, amount):
     """Manipulate relay"""
+    if not flaskutils.user_has_permission('edit_controllers'):
+        return 'Insufficient user permissions to manipulate relays'
+
     daemon = DaemonControl()
-    if (state in ['on', 'off'] and type == 'sec' and
+    if (state in ['on', 'off'] and out_type == 'sec' and
             (str_is_float(amount) and float(amount) >= 0)):
         return daemon.relay_on_off(int(relay_id), state, float(amount))
-    elif (state == 'on' and type == 'pwm' and
+    elif (state == 'on' and out_type == 'pwm' and
               (str_is_float(amount) and float(amount) >= 0)):
         return daemon.relay_on(int(relay_id), state, duty_cycle=float(amount))
 

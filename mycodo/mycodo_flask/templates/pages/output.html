@@ -44,26 +44,28 @@
   $(document).ready(function() {
     $('.turn_on').click(function() {
       var btn_val = this.name;
-      toastr['info']('Command to turn on relay sent');
+      var id = btn_val.split('/')[0];
+      toastr['info']('Command sent to turn output ' + id + ' On');
       getAjax(btn_val);
     });
     $('.turn_off').click(function() {
       var btn_val = this.name;
-      toastr['info']('Command to turn off relay sent');
+      var id = btn_val.split('/')[0];
+      toastr['info']('Command sent to turn output ' + id + ' Off');
       getAjax(btn_val);
     });
     $('.sec_on_amt').click(function() {
       var btn_val = this.name;
       var id = btn_val.split('/')[0];
       var sec = $('#sec_on_amt_' + id).val();
-      toastr['info']('Command to turn output ' + id + ' on for ' + sec + ' seconds sent');
+      toastr['info']('Command sent to turn output ' + id + ' On for ' + sec + ' seconds');
       getAjax(btn_val + sec);
     });
     $('.duty_cycle_on_amt').click(function() {
       var btn_val = this.name;
       var id = btn_val.split('/')[0];
       var dc = $('#duty_cycle_on_amt_' + id).val();
-      toastr['info']('Command to turn output ' + id + ' on with a duty cycle of ' + dc + '% sent');
+      toastr['info']('Command sent to turn output ' + id + ' on with a duty cycle of ' + dc + '%');
       getAjax(btn_val + dc);
     });
   });
@@ -230,7 +232,7 @@
         {% if each_relay.relay_type in ['wired', 'wireless_433MHz_pi_switch', 'command'] %}
 
           <div class="col-xs-12">
-            {{form_mod_relay.sec_on.label(class_='control-label')}}
+            <label class='control-label'>Duration On (seconds)</label>
           </div>
           <div class="col-xs-12 small-gutters">
             <div class="col-xs-6 col-sm-4 col-md-2 no-gutters">
@@ -244,7 +246,7 @@
         {% elif each_relay.relay_type == 'pwm' %}
 
           <div class="col-xs-12">
-            {{form_mod_relay.pwm_duty_cycle_on.label(class_='control-label')}}
+            <label class='control-label'>Duty Cycle (%)</label>
           </div>
           <div class="col-xs-12 small-gutters">
             <div class="col-xs-4 col-sm-3 col-md-2 no-gutters">

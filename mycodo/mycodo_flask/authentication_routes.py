@@ -69,12 +69,23 @@ def create_admin():
         response = clear_cookie_auth()
         return response
 
-    form = flaskforms.CreateAdmin()
+    form_create_admin = flaskforms.CreateAdmin()
+    form_notice = flaskforms.InstallNotice()
+
     if request.method == 'POST':
-        if form.validate():
-            username = form.username.data.lower()
+        form_name = request.form['form-name']
+        if form_name == 'acknowledge':
+            try:
+                mod_misc = Misc.query.first()
+                mod_misc.dismiss_notification = 1
+                db.session.commit()
+            except Exception as except_msg:
+                flash(gettext(u"Acknowledgement unable to be saved: "
+                              u"%(err)s", err=except_msg), "error")
+        elif form_create_admin.validate():
+            username = form_create_admin.username.data.lower()
             error = False
-            if form.password.data != form.password_repeat.data:
+            if form_create_admin.password.data != form_create_admin.password_repeat.data:
                 flash(gettext(u"Passwords do not match. Please try again."),
                       "error")
                 error = True
@@ -84,7 +95,7 @@ def create_admin():
                     u"and only contain letters and numbers."),
                     "error")
                 error = True
-            if not test_password(form.password.data):
+            if not test_password(form_create_admin.password.data):
                 flash(gettext(
                     u"Invalid password. Must be between 6 and 64 characters "
                     u"and only contain letters, numbers, and symbols."),
@@ -95,8 +106,8 @@ def create_admin():
 
             new_user = User()
             new_user.name = username
-            new_user.email = form.email.data
-            new_user.set_password(form.password.data)
+            new_user.email = form_create_admin.email.data
+            new_user.set_password(form_create_admin.password.data)
             new_user.role = 1  # Admin
             new_user.theme = 'slate'
             try:
@@ -111,9 +122,14 @@ def create_admin():
                               user=username,
                               err=except_msg), "error")
         else:
-            flash_form_errors(form)
+            flash_form_errors(form_create_admin)
+
+    dismiss_notification = Misc.query.first().dismiss_notification
+
     return render_template('create_admin.html',
-                           form=form)
+                           dismiss_notification=dismiss_notification,
+                           form_create_admin=form_create_admin,
+                           form_notice=form_notice)
 
 
 @blueprint.route('/login', methods=('GET', 'POST'))
@@ -127,12 +143,7 @@ def do_login():
               "error")
         return redirect(url_for('general_routes.home'))
 
-    form = flaskforms.Login()
-    form_notice = flaskforms.InstallNotice()
-
-    misc = Misc.query.first()
-    dismiss_notification = misc.dismiss_notification
-    stats_opt_out = misc.stats_opt_out
+    form_login = flaskforms.Login()
 
     # Check if the user is banned from logging in (too many incorrect attempts)
     if banned_from_login():
@@ -143,25 +154,16 @@ def do_login():
                 "info")
     else:
         if request.method == 'POST':
-            username = form.username.data.lower()
+            username = form_login.username.data.lower()
             user_ip = request.environ.get('REMOTE_ADDR', 'unknown address')
-            form_name = request.form['form-name']
-            if form_name == 'acknowledge':
-                try:
-                    mod_misc = Misc.query.first()
-                    mod_misc.dismiss_notification = 1
-                    db.session.commit()
-                except Exception as except_msg:
-                    flash(gettext(u"Acknowledgement unable to be saved: "
-                                  u"%(err)s", err=except_msg), "error")
-            elif form_name == 'login' and form.validate_on_submit():
+            if form_login.validate_on_submit():
                 user = User.query.filter(
                     User.name == username).first()
                 if not user:
                     login_log(username, 'NA', user_ip, 'NOUSER')
                     failed_login()
                 elif User().check_password(
-                        form.password.data,
+                        form_login.password.data,
                         user.password_hash) == user.password_hash:
 
                     login_log(username, user.roles.name, user_ip, 'LOGIN')
@@ -169,7 +171,7 @@ def do_login():
                     # flask-login user
                     login_user = User()
                     login_user.id = user.id
-                    remember_me = True if form.remember.data else False
+                    remember_me = True if form_login.remember.data else False
                     flask_login.login_user(login_user, remember=remember_me)
 
                     return redirect(url_for('general_routes.home'))
@@ -183,10 +185,7 @@ def do_login():
             return redirect('/login')
 
     return render_template('login.html',
-                           form=form,
-                           formNotice=form_notice,
-                           dismiss_notification=dismiss_notification,
-                           stats_opt_out=stats_opt_out)
+                           form_login=form_login,)
 
 
 @blueprint.route("/logout")

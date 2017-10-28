@@ -787,10 +787,6 @@ def page_output():
             flaskutils.relay_add(form_add_relay)
         elif form_mod_relay.save.data:
             flaskutils.relay_mod(form_mod_relay)
-        elif (form_mod_relay.turn_on.data or
-                form_mod_relay.turn_off.data or
-                form_mod_relay.on_submit.data):
-            flaskutils.relay_on_off(form_mod_relay)
         elif form_mod_relay.delete.data:
             flaskutils.relay_del(form_mod_relay)
         elif form_mod_relay.order_up.data:

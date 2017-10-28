@@ -872,12 +872,6 @@ class RelayMod(FlaskForm):
     delete = SubmitField(lazy_gettext(u'Delete'))
     order_up = SubmitField(lazy_gettext(u'Up'))
     order_down = SubmitField(lazy_gettext(u'Down'))
-    turn_on = SubmitField(lazy_gettext(u'On'))
-    turn_off = SubmitField(lazy_gettext(u'Off'))
-    sec_on = DecimalField(
-        lazy_gettext(u'Seconds to turn on'),
-        validators=[Optional()]
-    )
     pwm_duty_cycle_on = DecimalField(
         lazy_gettext(u'Duty Cycle (%)'),
         validators=[Optional()]
