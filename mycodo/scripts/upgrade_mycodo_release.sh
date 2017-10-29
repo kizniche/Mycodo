@@ -189,7 +189,7 @@ function error_found {
   exit 1
 }
 
-printf "#### Continuing Upgrade: Stage 2 of 2 ####\n"
+printf "\n#### Continuing Upgrade: Stage 2 of 2 ####\n"
 
 if [ ! -d "/var/Mycodo-backups" ] ; then
   mkdir /var/Mycodo-backups
