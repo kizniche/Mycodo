@@ -2,6 +2,7 @@
 
 import logging
 import pigpio
+import time
 from .base_sensor import AbstractSensor
 
 logger = logging.getLogger("mycodo.sensors.pwm")
@@ -98,13 +99,14 @@ class ReadPWM:
 class PWMInput(AbstractSensor):
     """ A sensor support class that monitors pwm """
 
-    def __init__(self, pin, weighting):
+    def __init__(self, pin, weighting, sample_time):
         super(PWMInput, self).__init__()
         self._frequency = 0.0
         self._pulse_width = 0.0
         self._duty_cycle = 0.0
-        self.weighting = weighting
         self.pin = pin
+        self.weighting = weighting
+        self.sample_time = sample_time
 
     def __repr__(self):
         """  Representation of object """
@@ -156,20 +158,15 @@ class PWMInput(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the pwm """
-        try:
-            pi = pigpio.pi()
-            read_pwm = ReadPWM(pi, self.pin, self.weighting)
-        except Exception:
-            return
-
-        try:
-            frequency = read_pwm.frequency()
-            pulse_width = read_pwm.pulse_width()
-            duty_cycle = read_pwm.duty_cycle()
-            return frequency, int(pulse_width + 0.5), duty_cycle
-        finally:
-            read_pwm.cancel()
-            pi.stop()
+        pi = pigpio.pi()
+        read_pwm = ReadPWM(pi, self.pin, self.weighting)
+        time.sleep(self.sample_time)
+        frequency = read_pwm.frequency()
+        pulse_width = read_pwm.pulse_width()
+        duty_cycle = read_pwm.duty_cycle()
+        read_pwm.cancel()
+        pi.stop()
+        return frequency, int(pulse_width + 0.5), duty_cycle
 
     def read(self):
         """

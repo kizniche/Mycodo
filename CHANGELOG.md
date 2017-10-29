@@ -1,3 +1,14 @@
+## 5.3.3 (2017-10-29)
+
+### Features
+
+ - Add Sample Time option to PWM and RPM Input options ([#302](https://github.com/kizniche/mycodo/issues/302))
+
+### Bugfixes
+
+ - Fix issues with PWM and RPM Inputs ([#306](https://github.com/kizniche/mycodo/issues/306))
+
+
 ## 5.3.2 (2017-10-28)
 
 ### Features

@@ -2319,6 +2319,7 @@ def sensor_mod(form_mod_sensor):
             # PWM and RPM options
             mod_sensor.weighting = form_mod_sensor.weighting.data
             mod_sensor.rpm_pulses_per_rev = form_mod_sensor.rpm_pulses_per_rev.data
+            mod_sensor.sample_time = form_mod_sensor.sample_time.data
             # SHT sensor options
             if form_mod_sensor.sht_clock_pin.data:
                 mod_sensor.sht_clock_pin = form_mod_sensor.sht_clock_pin.data

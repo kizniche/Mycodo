@@ -190,6 +190,7 @@ class SensorController(threading.Thread):
         # PWM and RPM options
         self.weighting = sensor.weighting
         self.rpm_pulses_per_rev = sensor.rpm_pulses_per_rev
+        self.sample_time = sensor.sample_time
 
         # Relay that will activate prior to sensor read
         self.pre_relay_id = sensor.pre_relay_id
@@ -342,11 +343,13 @@ class SensorController(threading.Thread):
                                               self.i2c_bus)
         elif self.device == 'SIGNAL_PWM':
             self.measure_sensor = PWMInput(int(self.location),
-                                           self.weighting)
+                                           self.weighting,
+                                           self.sample_time)
         elif self.device == 'SIGNAL_RPM':
             self.measure_sensor = RPMInput(int(self.location),
                                            self.weighting,
-                                           self.rpm_pulses_per_rev)
+                                           self.rpm_pulses_per_rev,
+                                           self.sample_time)
         elif self.device == 'TMP006':
             self.measure_sensor = TMP006Sensor(self.i2c_address,
                                                self.i2c_bus)

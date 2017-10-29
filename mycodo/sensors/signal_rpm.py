@@ -2,6 +2,7 @@
 
 import logging
 import pigpio
+import time
 from .base_sensor import AbstractSensor
 
 logger = logging.getLogger("mycodo.sensors.rpm")
@@ -82,12 +83,13 @@ class ReadRPM:
 class RPMInput(AbstractSensor):
     """ A sensor support class that monitors rpm """
 
-    def __init__(self, pin, weighting, rpm_pulses_per_rev):
+    def __init__(self, pin, weighting, rpm_pulses_per_rev, sample_time):
         super(RPMInput, self).__init__()
         self._rpm = 0
         self.pin = pin
         self.weighting = weighting
         self.rpm_pulses_per_rev = rpm_pulses_per_rev
+        self.sample_time = sample_time
 
     def __repr__(self):
         """  Representation of object """
@@ -118,23 +120,15 @@ class RPMInput(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the rpm """
-        try:
-            pi = pigpio.pi()
-            read_rpm = ReadRPM(
-                pi, self.pin, self.weighting, self.rpm_pulses_per_rev)
-        except Exception:
-            return 0
-
-        try:
-            rpm = read_rpm.RPM()
-            if rpm:
-                return int(rpm + 0.5)
-        except Exception:
-            logger.exception(1)
-        finally:
-            read_rpm.cancel()
-            pi.stop()
-        return 0
+        pi = pigpio.pi()
+        read_rpm = ReadRPM(
+            pi, self.pin, self.rpm_pulses_per_rev, self.weighting)
+        time.sleep(self.sample_time)
+        rpm = read_rpm.RPM()
+        read_rpm.cancel()
+        pi.stop()
+        if rpm:
+            return int(rpm + 0.5)
 
     def read(self):
         """
@@ -144,6 +138,8 @@ class RPMInput(AbstractSensor):
         """
         try:
             self._rpm = self.get_measurement()
+            if self._rpm is None:
+                return 1
             return  # success - no errors
         except IOError as e:
             logger.error("{cls}.get_measurement() method raised IOError: "

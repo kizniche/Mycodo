@@ -64,6 +64,7 @@ class Sensor(CRUDMixin, db.Model):
     # PWM and RPM options
     weighting = db.Column(db.Float, default=0.0)
     rpm_pulses_per_rev = db.Column(db.Float, default=1.0)
+    sample_time = db.Column(db.Float, default=2.0)
 
     def is_active(self):
         """

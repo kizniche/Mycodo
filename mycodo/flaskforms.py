@@ -974,6 +974,7 @@ class SensorMod(FlaskForm):
     )
     weighting = DecimalField(lazy_gettext(u'Weighting'))
     rpm_pulses_per_rev = DecimalField(lazy_gettext(u'Pulses Per Rev'))
+    sample_time = DecimalField(lazy_gettext(u'Sample Time (seconds)'))
     sht_clock_pin = IntegerField(
         lazy_gettext(u'Clock Pin'),
         validators=[validators.NumberRange(
