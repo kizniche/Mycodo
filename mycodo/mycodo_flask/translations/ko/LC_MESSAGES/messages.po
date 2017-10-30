@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2017-10-29 18:44-0400\n"
-"PO-Revision-Date: 2017-04-24 18:28-0700\n"
+"PO-Revision-Date: 2017-10-29 21:02-0400\n"
 "Last-Translator: \n"
 "Language: ko\n"
 "Language-Team: ko <LL@li.org>\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.3.4\n"
+"X-Generator: Poedit 2.0.4\n"
 
 #: flaskforms.py:37
 msgid "Select Device"
@@ -32,7 +33,7 @@ msgstr ""
 
 #: flaskforms.py:49 mycodo_flask/templates/pages/graph.html:1095
 msgid "Temperature"
-msgstr ""
+msgstr "온도"
 
 #: flaskforms.py:52
 msgid "Begin Calibration"
@@ -64,7 +65,7 @@ msgstr "타임랩스 중지"
 
 #: flaskforms.py:69
 msgid "Interval (seconds)"
-msgstr ""
+msgstr "간격 (초)"
 
 #: flaskforms.py:72
 msgid "Photo Interval must be a positive value."
@@ -72,7 +73,7 @@ msgstr "사진 간격은 양수 여야합니다."
 
 #: flaskforms.py:76
 msgid "Run Time (seconds)"
-msgstr ""
+msgstr "런 타임 (초)"
 
 #: flaskforms.py:79
 msgid "Total Run Time must be a positive value."
@@ -125,8 +126,7 @@ msgid "Period"
 msgstr "기간"
 
 #: flaskforms.py:104 flaskforms.py:298 flaskforms.py:384 flaskforms.py:660
-#: flaskforms.py:944 flaskforms.py:949
-#: mycodo_flask/templates/pages/live.html:113
+#: flaskforms.py:944 flaskforms.py:949 mycodo_flask/templates/pages/live.html:113
 msgid "Measurement"
 msgstr "측정"
 
@@ -314,8 +314,7 @@ msgstr "시간 범위 일/월/년도 시간:분"
 msgid "Export"
 msgstr "수출"
 
-#: flaskforms.py:246 flaskforms.py:334
-#: mycodo_flask/templates/pages/graph.html:417
+#: flaskforms.py:246 flaskforms.py:334 mycodo_flask/templates/pages/graph.html:417
 msgid "Graph Name"
 msgstr "그래프 이름"
 
@@ -428,8 +427,8 @@ msgstr ""
 
 #: flaskforms.py:452
 msgid ""
-"Duration between calculating LCD output and applying to regulation must "
-"be between 5 and 86400 seconds."
+"Duration between calculating LCD output and applying to regulation must be "
+"between 5 and 86400 seconds."
 msgstr ""
 
 #: flaskforms.py:458 mycodo_flask/templates/pages/lcd.html:88
@@ -761,8 +760,7 @@ msgstr ""
 msgid "Start State"
 msgstr ""
 
-#: flaskforms.py:856
-#: mycodo_flask/templates/pages/output_options/command.html:17
+#: flaskforms.py:856 mycodo_flask/templates/pages/output_options/command.html:17
 #: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:41
 msgid "Neither"
 msgstr ""
@@ -894,8 +892,7 @@ msgstr ""
 msgid "Channel"
 msgstr "채너"
 
-#: flaskforms.py:947 flaskforms.py:1018
-#: mycodo_flask/templates/pages/live.html:150
+#: flaskforms.py:947 flaskforms.py:1018 mycodo_flask/templates/pages/live.html:150
 msgid "Gain"
 msgstr ""
 
@@ -961,8 +958,8 @@ msgstr ""
 
 #: flaskforms.py:983
 msgid ""
-"If using a SHT sensor, enter the GPIO connected to the clock pin (using "
-"BCM numbering)."
+"If using a SHT sensor, enter the GPIO connected to the clock pin (using BCM "
+"numbering)."
 msgstr ""
 
 #: flaskforms.py:988 flaskforms.py:1042
@@ -1284,8 +1281,8 @@ msgstr ""
 #: flaskutils.py:319
 #, python-format
 msgid ""
-"The new entry start time (%(st)s) cannot overlap the last entry's end "
-"time (%(et)s). Note: They may be the same time."
+"The new entry start time (%(st)s) cannot overlap the last entry's end time "
+"(%(et)s). Note: They may be the same time."
 msgstr ""
 
 #: flaskutils.py:377 flaskutils.py:384
@@ -1316,15 +1313,14 @@ msgstr ""
 #: flaskutils.py:468
 #, python-format
 msgid ""
-"The entry start time (%(st)s) cannot overlap the previous entry's end "
-"time (%(et)s)"
+"The entry start time (%(st)s) cannot overlap the previous entry's end time "
+"(%(et)s)"
 msgstr ""
 
 #: flaskutils.py:478
 #, python-format
 msgid ""
-"The entry end time (%(et)s) cannot overlap the next entry's start time "
-"(%(st)s)"
+"The entry end time (%(et)s) cannot overlap the next entry's start time (%(st)s)"
 msgstr ""
 
 #: flaskutils.py:599
@@ -1344,14 +1340,12 @@ msgid "%(err)s"
 msgstr ""
 
 #: flaskutils.py:695 flaskutils.py:1128 flaskutils.py:1152 flaskutils.py:1208
-#: flaskutils.py:1226 flaskutils.py:1245
-#: mycodo_flask/templates/pages/lcd.html:5
+#: flaskutils.py:1226 flaskutils.py:1245 mycodo_flask/templates/pages/lcd.html:5
 msgid "LCD"
 msgstr ""
 
 #: flaskutils.py:696 flaskutils.py:1303 flaskutils.py:1328 flaskutils.py:1446
-#: flaskutils.py:1470 flaskutils.py:1514
-#: mycodo_flask/templates/pages/pid.html:5
+#: flaskutils.py:1470 flaskutils.py:1514 mycodo_flask/templates/pages/pid.html:5
 msgid "PID"
 msgstr ""
 
@@ -1431,14 +1425,12 @@ msgstr "발동 시키십시오"
 
 #: flaskutils.py:1529
 msgid ""
-"Cannot activate PID controller if the associated sensor controller is "
-"inactive"
+"Cannot activate PID controller if the associated sensor controller is inactive"
 msgstr "관련된 센서 컨드롤러가 꺼져있을땐 PID 컨트롤러를 작동 시킬수 없습니다. "
 
 #: flaskutils.py:1536
 msgid ""
-"Cannot activate PID controller if raise and/or lower relay IDs are not "
-"selected"
+"Cannot activate PID controller if raise and/or lower relay IDs are not selected"
 msgstr ""
 
 #: flaskutils.py:1570
@@ -1458,8 +1450,7 @@ msgstr ""
 
 #: flaskutils.py:1616
 msgid ""
-"Cannot set output if it is already selected by another active PID "
-"controller"
+"Cannot set output if it is already selected by another active PID controller"
 msgstr ""
 
 #: flaskutils.py:1630 mycodo_flask/templates/layout.html:120
@@ -1569,8 +1560,8 @@ msgstr ""
 
 #: flaskutils.py:2653 mycodo_flask/authentication_routes.py:93
 msgid ""
-"Invalid user name. Must be between 2 and 64 characters and only contain "
-"letters and numbers."
+"Invalid user name. Must be between 2 and 64 characters and only contain letters "
+"and numbers."
 msgstr ""
 
 #: flaskutils.py:2658
@@ -1579,12 +1570,11 @@ msgstr ""
 
 #: flaskutils.py:2662 mycodo_flask/authentication_routes.py:99
 msgid ""
-"Invalid password. Must be between 6 and 64 characters and only contain "
-"letters, numbers, and symbols."
+"Invalid password. Must be between 6 and 64 characters and only contain letters, "
+"numbers, and symbols."
 msgstr ""
 
-#: flaskutils.py:2667 flaskutils.py:2711
-#: mycodo_flask/authentication_routes.py:89
+#: flaskutils.py:2667 flaskutils.py:2711 mycodo_flask/authentication_routes.py:89
 msgid "Passwords do not match. Please try again."
 msgstr ""
 
@@ -1610,8 +1600,7 @@ msgstr ""
 #: flaskutils.py:2820
 #, python-format
 msgid ""
-"Test email sent to %(recip)s. Check your inbox to see if it was "
-"successful."
+"Test email sent to %(recip)s. Check your inbox to see if it was successful."
 msgstr ""
 
 #: flaskutils.py:3024
@@ -1629,33 +1618,31 @@ msgstr ""
 
 #: mycodo_flask/admin_routes.py:78
 msgid ""
-"Backup in progress. It should complete within a few seconds to a few "
-"minutes. The backup will appear on this page after it completes."
+"Backup in progress. It should complete within a few seconds to a few minutes. "
+"The backup will appear on this page after it completes."
 msgstr ""
 
 #: mycodo_flask/admin_routes.py:87
 msgid ""
-"Deletion of backup in progress. It should complete within a few seconds "
-"to a few minutes. The backup will disappear on this page after it "
-"completes."
+"Deletion of backup in progress. It should complete within a few seconds to a "
+"few minutes. The backup will disappear on this page after it completes."
 msgstr ""
 
 #: mycodo_flask/admin_routes.py:100
 msgid ""
-"Restore in progress. It should complete within a few seconds to a few "
-"minutes."
+"Restore in progress. It should complete within a few seconds to a few minutes."
 msgstr ""
 
 #: mycodo_flask/admin_routes.py:152
 msgid ""
-"Upgrade functionality is disabled because an internet connection was "
-"unable to be detected"
+"Upgrade functionality is disabled because an internet connection was unable to "
+"be detected"
 msgstr ""
 
 #: mycodo_flask/admin_routes.py:172
 msgid ""
-"There was an error encountered during the upgrade process. Check the "
-"upgrade log for details."
+"There was an error encountered during the upgrade process. Check the upgrade "
+"log for details."
 msgstr ""
 
 #: mycodo_flask/admin_routes.py:190
@@ -1700,8 +1687,8 @@ msgstr ""
 #: mycodo_flask/authentication_routes.py:153
 #, python-format
 msgid ""
-"Too many failed login attempts. Please wait %(min)s minutes before "
-"attempting to log in again"
+"Too many failed login attempts. Please wait %(min)s minutes before attempting "
+"to log in again"
 msgstr ""
 
 #: mycodo_flask/authentication_routes.py:204
@@ -1713,8 +1700,7 @@ msgstr ""
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr ""
 
-#: mycodo_flask/calibration_routes.py:205
-#: mycodo_flask/templates/layout.html:143
+#: mycodo_flask/calibration_routes.py:205 mycodo_flask/templates/layout.html:143
 #: mycodo_flask/templates/tools/calibration.html:3
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:3
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:108
@@ -1751,8 +1737,8 @@ msgstr ""
 
 #: mycodo_flask/page_routes.py:165
 msgid ""
-"Streaming is only supported with the Raspberry Pi camera using the "
-"picamera library."
+"Streaming is only supported with the Raspberry Pi camera using the picamera "
+"library."
 msgstr ""
 
 #: mycodo_flask/page_routes.py:169
@@ -1876,8 +1862,7 @@ msgstr ""
 msgid "Relay Usage Reports"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:131
-#: mycodo_flask/templates/pages/pid.html:3
+#: mycodo_flask/templates/layout.html:131 mycodo_flask/templates/pages/pid.html:3
 #: mycodo_flask/templates/pages/pid.html:16
 msgid "PID Controllers"
 msgstr ""
@@ -1897,8 +1882,7 @@ msgstr ""
 msgid "Timers"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:140
-#: mycodo_flask/templates/pages/lcd.html:3
+#: mycodo_flask/templates/layout.html:140 mycodo_flask/templates/pages/lcd.html:3
 #: mycodo_flask/templates/pages/lcd.html:12
 msgid "LCDs"
 msgstr ""
@@ -1999,26 +1983,25 @@ msgstr ""
 
 #: mycodo_flask/templates/admin/upgrade.html:56
 msgid ""
-"If an upgrade is not currently in progress, you may delete the "
-"~/Mycodo/.upgrade file to be able to reinitiate the upgrade process."
+"If an upgrade is not currently in progress, you may delete the ~/Mycodo/."
+"upgrade file to be able to reinitiate the upgrade process."
 msgstr ""
 
 #: mycodo_flask/templates/admin/upgrade.html:57
 msgid ""
-"An upgrade often takes several minutes, and in some cases longer, to "
-"complete. Give the process ample time to run before doing anything. When "
-"the upgrade has successfully finished, the daemon status indicator at the"
-" top left will change from red to green. You can monitor the upgrade "
-"progress with the life log view, below, by navigating to Configure -> "
-"Mycodo Logs -> Upgrade Log, or by opening "
-"/var/log/mycodo/mycodoupgrade.log."
+"An upgrade often takes several minutes, and in some cases longer, to complete. "
+"Give the process ample time to run before doing anything. When the upgrade has "
+"successfully finished, the daemon status indicator at the top left will change "
+"from red to green. You can monitor the upgrade progress with the life log view, "
+"below, by navigating to Configure -> Mycodo Logs -> Upgrade Log, or by opening /"
+"var/log/mycodo/mycodoupgrade.log."
 msgstr ""
 
 #: mycodo_flask/templates/admin/upgrade.html:58
 msgid ""
-"Below are the last 40 lines of the upgrade log, updated every 10 seconds."
-" If an error occurs, it is advisable to inspect the entire log in order "
-"to diagnose the issue."
+"Below are the last 40 lines of the upgrade log, updated every 10 seconds. If an "
+"error occurs, it is advisable to inspect the entire log in order to diagnose "
+"the issue."
 msgstr ""
 
 #: mycodo_flask/templates/admin/upgrade.html:65
@@ -2037,8 +2020,8 @@ msgstr ""
 
 #: mycodo_flask/templates/admin/upgrade.html:73
 msgid ""
-"No internet connection detected. To upgrade Mycodo automatically, you "
-"will need an internet connection. Refresh the page when one is connected."
+"No internet connection detected. To upgrade Mycodo automatically, you will need "
+"an internet connection. Refresh the page when one is connected."
 msgstr ""
 
 #: mycodo_flask/templates/admin/upgrade.html:79
@@ -2047,13 +2030,12 @@ msgstr ""
 
 #: mycodo_flask/templates/admin/upgrade.html:93
 msgid ""
-"Click the button below to begin the upgrade process. Note: An upgrade "
-"often takes several minutes, and in rare cases hours, to complete. During"
-" that time, the Mycodo web interface and server recording sensors and "
-"manipulating relays (among other services) will be completely shut down. "
-"It is not recommended not perform an upgrade on a production machine "
-"(i.e. trust buy verify: treat the new version as unstable until you have "
-"verified it works as expected)."
+"Click the button below to begin the upgrade process. Note: An upgrade often "
+"takes several minutes, and in rare cases hours, to complete. During that time, "
+"the Mycodo web interface and server recording sensors and manipulating relays "
+"(among other services) will be completely shut down. It is not recommended not "
+"perform an upgrade on a production machine (i.e. trust buy verify: treat the "
+"new version as unstable until you have verified it works as expected)."
 msgstr ""
 
 #: mycodo_flask/templates/admin/upgrade.html:112
@@ -2095,8 +2077,7 @@ msgstr ""
 #: mycodo_flask/templates/pages/graph.html:157
 #: mycodo_flask/templates/pages/graph.html:485
 msgid ""
-"Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more "
-"than one"
+"Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one"
 msgstr ""
 
 #: mycodo_flask/templates/pages/graph.html:404
@@ -2200,8 +2181,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/info.html:66
 msgid ""
-"Command \"gpio\" not found. Install gpio from the terminal with the "
-"following commands"
+"Command \"gpio\" not found. Install gpio from the terminal with the following "
+"commands"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:5
@@ -2214,8 +2195,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:16
 msgid ""
-"Inputs, such as sensors or ADC signals, enable measuring conditions in "
-"the environment. Add, configure, and activate sensors to begin recording "
+"Inputs, such as sensors or ADC signals, enable measuring conditions in the "
+"environment. Add, configure, and activate sensors to begin recording "
 "measurements to the database and allow them to be used throughout Mycodo."
 msgstr ""
 
@@ -2233,8 +2214,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:150
 msgid ""
-"If a Pre Relay is selected, set the duration (seconds) to turn the Pre "
-"Relay on for before every measurement is acquired."
+"If a Pre Relay is selected, set the duration (seconds) to turn the Pre Relay on "
+"for before every measurement is acquired."
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:159
@@ -2272,8 +2253,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:176
 msgid ""
-"If a multiplexer address is selected, select the channel connected to "
-"your target device"
+"If a multiplexer address is selected, select the channel connected to your "
+"target device"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:179
@@ -2288,8 +2269,8 @@ msgstr ""
 #: mycodo_flask/templates/pages/input.html:197
 #: mycodo_flask/templates/pages/output.html:277
 msgid ""
-"Conditionals allow certain actions to be carried out when a certain set "
-"of conditions are met."
+"Conditionals allow certain actions to be carried out when a certain set of "
+"conditions are met."
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:249
@@ -2322,8 +2303,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:304
 msgid ""
-"The conditional is true when the measured condition is greater than or "
-"less than the set value."
+"The conditional is true when the measured condition is greater than or less "
+"than the set value."
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:306
@@ -2340,8 +2321,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:323
 msgid ""
-"The duration (seconds) between checking whether the conditional is true. "
-"Set to 0 to check after every sensor measurement."
+"The duration (seconds) between checking whether the conditional is true. Set to "
+"0 to check after every sensor measurement."
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:346
@@ -2401,8 +2382,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/lcd.html:14
 msgid ""
-"LCDs allow the display of data for easy viewing and for displaying alerts"
-" to conditional events you configure (flash the LCD)."
+"LCDs allow the display of data for easy viewing and for displaying alerts to "
+"conditional events you configure (flash the LCD)."
 msgstr ""
 
 #: mycodo_flask/templates/pages/lcd.html:22
@@ -2543,8 +2524,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/method-build.html:245
 msgid ""
-"Note: This feature is currently not implemented. These relays will NOT be"
-" modulated if applied to a PID. This will be implemented soon."
+"Note: This feature is currently not implemented. These relays will NOT be "
+"modulated if applied to a PID. This will be implemented soon."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method-build.html:291
@@ -2560,8 +2541,8 @@ msgstr ""
 msgid ""
 "Methods allow different types of setpoint tracking in PID controllers. "
 "Normally, a PID controller will regulate an environmental condition to a "
-"specific setpoint. If you would like the setpoint to change over time, "
-"this is called setpoint tracking."
+"specific setpoint. If you would like the setpoint to change over time, this is "
+"called setpoint tracking."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method-list.html:39
@@ -2599,10 +2580,9 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/output.html:133
 msgid ""
-"Output devices enable Mycodo to manipulate things through the use of "
-"relays (wired and wireless), PWM signals, and executing commands. When "
-"linked to a PID controller, with an input, output devices can be used for"
-" feedback regulation."
+"Output devices enable Mycodo to manipulate things through the use of relays "
+"(wired and wireless), PWM signals, and executing commands. When linked to a PID "
+"controller, with an input, output devices can be used for feedback regulation."
 msgstr ""
 
 #: mycodo_flask/templates/pages/output.html:144
@@ -2632,8 +2612,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/output.html:353
 msgid ""
-"(Optional) Set this to a specific duration of time if the conditional "
-"should trigger when the relay On duration equals this amount"
+"(Optional) Set this to a specific duration of time if the conditional should "
+"trigger when the relay On duration equals this amount"
 msgstr ""
 
 #: mycodo_flask/templates/pages/output_pwm.html:3
@@ -2670,8 +2650,8 @@ msgstr ""
 #: mycodo_flask/templates/pages/pid.html:18
 msgid ""
 "PID controllers couple an input with a device connected to an output to "
-"regulate an environmental condition. For example, this could be a heater "
-"and a temperature sensor, allowing the regulation of temperature."
+"regulate an environmental condition. For example, this could be a heater and a "
+"temperature sensor, allowing the regulation of temperature."
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:58
@@ -2694,8 +2674,8 @@ msgstr ""
 #: mycodo_flask/templates/pages/pid_options/command.html:21
 #: mycodo_flask/templates/pages/pid_options/script.html:48
 msgid ""
-"The duration between calculating a new PID output to power the raise and "
-"lower relays."
+"The duration between calculating a new PID output to power the raise and lower "
+"relays."
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:137
@@ -2704,8 +2684,8 @@ msgstr ""
 #: mycodo_flask/templates/pages/pid_options/script.html:54
 msgid ""
 "Maximum allowable sensor measurement age (to allow the PID controller to "
-"manipulate relays, the sensor measurement must have occurred in the past "
-"x seconds)"
+"manipulate relays, the sensor measurement must have occurred in the past x "
+"seconds)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:143
@@ -2764,8 +2744,7 @@ msgstr ""
 #: mycodo_flask/templates/pages/pid_options/relay.html:6
 #: mycodo_flask/templates/pages/pid_options/script.html:100
 msgid ""
-"The output that will raise the selected environmental condition (Measure "
-"Type)"
+"The output that will raise the selected environmental condition (Measure Type)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:205
@@ -2776,14 +2755,13 @@ msgstr ""
 #: mycodo_flask/templates/pages/pid_options/relay.html:38
 #: mycodo_flask/templates/pages/pid_options/script.html:132
 msgid ""
-"The output that will lower the selected environmental condition (Measure "
-"Type)"
+"The output that will lower the selected environmental condition (Measure Type)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:229
 msgid ""
-"Select the method to use when calculating the setpoint. When enabled, the"
-" setpoint(s) of the method override the PID setpoint above."
+"Select the method to use when calculating the setpoint. When enabled, the "
+"setpoint(s) of the method override the PID setpoint above."
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:231
@@ -2800,8 +2778,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/timer.html:19
 msgid ""
-"Timers enable relays to be turned on or off for specific durations of "
-"time or at specific times of the day."
+"Timers enable relays to be turned on or off for specific durations of time or "
+"at specific times of the day."
 msgstr ""
 
 #: mycodo_flask/templates/pages/timer.html:26
@@ -2866,8 +2844,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/usage_reports.html:17
 msgid ""
-"No Reports. Go to <a href=\"%(loc)\">Relay Usage Options</a> to schedule "
-"a report to be generated."
+"No Reports. Go to <a href=\"%(loc)\">Relay Usage Options</a> to schedule a "
+"report to be generated."
 msgstr ""
 
 #: mycodo_flask/templates/pages/input_options/ADS1x15.html:4
@@ -2889,15 +2867,15 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/input_options/ADS1x15.html:29
 msgid ""
-"Adjust the gain to change the measurable voltage range. See ADC "
-"documentation for details."
+"Adjust the gain to change the measurable voltage range. See ADC documentation "
+"for details."
 msgstr ""
 
 #: mycodo_flask/templates/pages/input_options/ATLAS_PH_I2C.html:11
 #: mycodo_flask/templates/pages/input_options/ATLAS_PH_UART.html:7
 msgid ""
-"Select a sensor measurement to use to calibrate this particular sensor "
-"before conducting a measurement"
+"Select a sensor measurement to use to calibrate this particular sensor before "
+"conducting a measurement"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input_options/DS18B20.html:4
@@ -2955,9 +2933,8 @@ msgstr ""
 #: mycodo_flask/templates/pages/input_options/SIGNAL_PWM.html:5
 #: mycodo_flask/templates/pages/input_options/SIGNAL_RPM.html:5
 msgid ""
-"The weighting of the previous measurement on the current measurement. "
-"Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no "
-"weighting."
+"The weighting of the previous measurement on the current measurement. Range: "
+"0.0 - 1.0. Used for smoothing measurements. 0.0 means no weighting."
 msgstr ""
 
 #: mycodo_flask/templates/pages/input_options/SIGNAL_PWM.html:11
@@ -2967,8 +2944,7 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/input_options/SIGNAL_RPM.html:11
 msgid ""
-"The number of pulses per revolution to calculate revolutions per minute "
-"(RPM)"
+"The number of pulses per revolution to calculate revolutions per minute (RPM)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input_options/TEMPLATE_ADC_OPTIONS.html:4
@@ -3015,24 +2991,23 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_daily.html:3
 msgid ""
-"Define the setpoint over a period of time based on specific times of the "
-"day. This method will repeat daily. Start the first entry at midnight "
-"(00:00) if you wish to fill the entire day."
+"Define the setpoint over a period of time based on specific times of the day. "
+"This method will repeat daily. Start the first entry at midnight (00:00) if you "
+"wish to fill the entire day."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_daily.html:4
 #: mycodo_flask/templates/pages/method_options/build_date.html:4
 msgid ""
-"The new entry's start time may be equal to the last entry's end time, but"
-" it cannot overlap. The default setpoint for the PID will be used if "
-"there is any unaccounted time."
+"The new entry's start time may be equal to the last entry's end time, but it "
+"cannot overlap. The default setpoint for the PID will be used if there is any "
+"unaccounted time."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_daily.html:48
 msgid ""
-"Activate or deactivate a relay at a specific time of day. Hour and minute"
-" (HH:MM) here is defined as the time of day. For example, 3:05 PM would "
-"be \"15:05\"."
+"Activate or deactivate a relay at a specific time of day. Hour and minute (HH:"
+"MM) here is defined as the time of day. For example, 3:05 PM would be \"15:05\"."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_daily.html:59
@@ -3043,21 +3018,19 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_daily_bezier.html:3
 msgid ""
-"Define the setpoint over the day based on a cubic Bezier curve. If "
-"unfamiliar with a Bezier curve, it is recommended you use the <a "
-"href=\"https://www.desmos.com/calculator/cahqdxeshd\" "
-"target=\"_blank\">graphical Bezier curve generator</a> and use the 8 "
-"variables it creates for 4 points (each a set of x and y). The x-axis "
-"start (x3) and end (x0) will be automatically stretched or skewed to fit "
+"Define the setpoint over the day based on a cubic Bezier curve. If unfamiliar "
+"with a Bezier curve, it is recommended you use the <a href=\"https://www.desmos."
+"com/calculator/cahqdxeshd\" target=\"_blank\">graphical Bezier curve generator</"
+"a> and use the 8 variables it creates for 4 points (each a set of x and y). The "
+"x-axis start (x3) and end (x0) will be automatically stretched or skewed to fit "
 "within a 24-hour period and this method will repeat daily."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_daily_sine.html:3
 msgid ""
-"Define the setpoint over the day based on a sinusoidal wave defined by y "
-"= [A * sin(B * x + C)] + D, where A is amplitude, B is frequency, C is "
-"the angle shift, and D is the y-axis shift. This method will repeat "
-"daily."
+"Define the setpoint over the day based on a sinusoidal wave defined by y = [A * "
+"sin(B * x + C)] + D, where A is amplitude, B is frequency, C is the angle "
+"shift, and D is the y-axis shift. This method will repeat daily."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_date.html:3
@@ -3070,30 +3043,29 @@ msgstr "이 방법으로 정해진 시간/날짜안에 릴레이를 작동시키
 
 #: mycodo_flask/templates/pages/method_options/build_duration.html:9
 msgid ""
-"Define the setpoint over a period of time, based on specific durations of"
-" time."
+"Define the setpoint over a period of time, based on specific durations of time."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_duration.html:10
 msgid ""
-"Duration here is defined as the amount of time after the previous "
-"duration. If this is the first duration added, this will be the beginning"
-" of the method. If this is not the first duration added, it will execute "
-"after the last duration already in the method."
+"Duration here is defined as the amount of time after the previous duration. If "
+"this is the first duration added, this will be the beginning of the method. If "
+"this is not the first duration added, it will execute after the last duration "
+"already in the method."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_duration.html:41
 msgid ""
-"Activate or deactivate a relay within this method at a specific duration."
-" Duration here is defined as the amount of time since the beginning of "
-"the method. For example, 60 seconds would execute the relay modulation 60"
-" seconds after the start of the method."
+"Activate or deactivate a relay within this method at a specific duration. "
+"Duration here is defined as the amount of time since the beginning of the "
+"method. For example, 60 seconds would execute the relay modulation 60 seconds "
+"after the start of the method."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_duration.html:77
 msgid ""
-"Use the following options to instruct the method to restart when it "
-"reaches the end."
+"Use the following options to instruct the method to restart when it reaches the "
+"end."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_duration.html:78
@@ -3102,20 +3074,18 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_duration.html:79
 msgid ""
-"You may enter a duration (seconds) that the method will end after, "
-"otherwise leave blank to repeat forever."
+"You may enter a duration (seconds) that the method will end after, otherwise "
+"leave blank to repeat forever."
 msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/command.html:4
 msgid ""
-"Command to execute (as user mycodo) when the relay is instructed to turn "
-"on"
+"Command to execute (as user mycodo) when the relay is instructed to turn on"
 msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/command.html:10
 msgid ""
-"Command to execute (as user mycodo) when the relay is instructed to turn "
-"off"
+"Command to execute (as user mycodo) when the relay is instructed to turn off"
 msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/command.html:16
@@ -3148,8 +3118,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:4
 msgid ""
-"The GPIO pin (using WiringPi numbering) connected to the 433 MHz "
-"transmitter data pin"
+"The GPIO pin (using WiringPi numbering) connected to the 433 MHz transmitter "
+"data pin"
 msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:10
@@ -3188,9 +3158,8 @@ msgstr ""
 #: mycodo_flask/templates/pages/pid_options/relay_raise.html:5
 #: mycodo_flask/templates/pages/pid_options/script.html:111
 msgid ""
-"The minimum duration (in seconds) required for the Raise Relay to "
-"activate. If an On duration is below this value, the Raise Relay will not"
-" turn on."
+"The minimum duration (in seconds) required for the Raise Relay to activate. If "
+"an On duration is below this value, the Raise Relay will not turn on."
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid_options/command.html:90
@@ -3199,9 +3168,9 @@ msgstr ""
 #: mycodo_flask/templates/pages/pid_options/relay_raise.html:11
 #: mycodo_flask/templates/pages/pid_options/script.html:117
 msgid ""
-"The maximum duration (in seconds) allowed for the Raise Relay to be on "
-"for, per period. If an On duration is above this value, the Raise Relay "
-"will turn on for this set duration."
+"The maximum duration (in seconds) allowed for the Raise Relay to be on for, per "
+"period. If an On duration is above this value, the Raise Relay will turn on for "
+"this set duration."
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid_options/command.html:96
@@ -3218,9 +3187,8 @@ msgstr ""
 #: mycodo_flask/templates/pages/pid_options/relay_lower.html:5
 #: mycodo_flask/templates/pages/pid_options/script.html:143
 msgid ""
-"The minimum duration (in seconds) required for the Lower Relay to "
-"activate. If an On duration is below this value, the Lower Relay will not"
-" turn on."
+"The minimum duration (in seconds) required for the Lower Relay to activate. If "
+"an On duration is below this value, the Lower Relay will not turn on."
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid_options/command.html:122
@@ -3229,9 +3197,9 @@ msgstr ""
 #: mycodo_flask/templates/pages/pid_options/relay_lower.html:11
 #: mycodo_flask/templates/pages/pid_options/script.html:149
 msgid ""
-"The maximum duration (in seconds) allowed for the Lower Relay to be on "
-"for, per period. If an ON duration is above this value, the Lower Relay "
-"will turn on for this set duration."
+"The maximum duration (in seconds) allowed for the Lower Relay to be on for, per "
+"period. If an ON duration is above this value, the Lower Relay will turn on for "
+"this set duration."
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid_options/command.html:128
@@ -3245,8 +3213,8 @@ msgstr ""
 #: mycodo_flask/templates/pages/pid_options/input_command.html:5
 #: mycodo_flask/templates/pages/pid_options/input_command.html:11
 msgid ""
-"Enter a linux command (executed as user mycodo) that returns a value to "
-"be used for the PID input"
+"Enter a linux command (executed as user mycodo) that returns a value to be used "
+"for the PID input"
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid_options/input_sensor.html:6
@@ -3273,8 +3241,8 @@ msgstr ""
 #: mycodo_flask/templates/pages/pid_options/pwm_raise.html:5
 #, python-format
 msgid ""
-"The minimum duty cycle (in %%). If a duty cycle is below this value, this"
-" is the value that will be used."
+"The minimum duty cycle (in %%). If a duty cycle is below this value, this is "
+"the value that will be used."
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid_options/output_pwm.html:23
@@ -3282,8 +3250,8 @@ msgstr ""
 #: mycodo_flask/templates/pages/pid_options/pwm_raise.html:11
 #, python-format
 msgid ""
-"The maximum duty cycle (in %%). If a duty cycle is above this value, this"
-" is the value that will be used."
+"The maximum duty cycle (in %%). If a duty cycle is above this value, this is "
+"the value that will be used."
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid_options/output_pwm.html:49
@@ -3291,8 +3259,8 @@ msgstr ""
 #: mycodo_flask/templates/pages/pid_options/pwm_lower.html:11
 #, python-format
 msgid ""
-"The maximum duty cycle (in %%). If a duty cycle is below this value, this"
-" is the value that will be used."
+"The maximum duty cycle (in %%). If a duty cycle is below this value, this is "
+"the value that will be used."
 msgstr ""
 
 #: mycodo_flask/templates/settings/alerts.html:6
@@ -3332,26 +3300,22 @@ msgstr ""
 
 #: mycodo_flask/templates/settings/general.html:34
 msgid ""
-"Check to force all web connections to use SSL (port 443) for greater "
-"security."
+"Check to force all web connections to use SSL (port 443) for greater security."
 msgstr ""
 
 #: mycodo_flask/templates/settings/general.html:45
 msgid ""
-"Check to prevent Success alert messages from appearing at the top of the "
-"page."
+"Check to prevent Success alert messages from appearing at the top of the page."
 msgstr ""
 
 #: mycodo_flask/templates/settings/general.html:56
 msgid ""
-"Check to prevent Info alert messages from appearing at the top of the "
-"page."
+"Check to prevent Info alert messages from appearing at the top of the page."
 msgstr ""
 
 #: mycodo_flask/templates/settings/general.html:67
 msgid ""
-"Check to prevent Warning alert messages from appearing at the top of the "
-"page."
+"Check to prevent Warning alert messages from appearing at the top of the page."
 msgstr ""
 
 #: mycodo_flask/templates/settings/general.html:78
@@ -3388,8 +3352,7 @@ msgstr "전력 사용량을 계산 하는 날짜를 설정"
 
 #: mycodo_flask/templates/settings/general.html:136
 msgid ""
-"Automatically generate relay usage reports on a daily/weekly/monthly "
-"schedule"
+"Automatically generate relay usage reports on a daily/weekly/monthly schedule"
 msgstr "일일/주간/월간 일정에 릴레이 사용 현황 보고서를 자동으로 생성"
 
 #: mycodo_flask/templates/settings/general.html:142
@@ -3471,8 +3434,8 @@ msgstr ""
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:194
 #, python-format
 msgid ""
-"Remove the pH probe from the pH %(ph)s solution and rinse it with "
-"distilled water"
+"Remove the pH probe from the pH %(ph)s solution and rinse it with distilled "
+"water"
 msgstr ""
 
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:219
@@ -3482,9 +3445,6 @@ msgstr ""
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:228
 msgid "Calibration Complete"
 msgstr ""
-
-#~ msgid "Seconds to turn on"
-#~ msgstr ""
 
 #~ msgid "ADC Channel"
 #~ msgstr "ADC 채널"
@@ -3501,40 +3461,5 @@ msgstr ""
 #~ msgid "ADC Measurement Units"
 #~ msgstr "ADC 측정 유닛"
 
-#~ msgid ""
-#~ "Mycodo was unable to find an admin"
-#~ " user in the user database. This "
-#~ "is expected with a new install of"
-#~ " Mycodo. Use the form below to "
-#~ "create an admin user and you will"
-#~ " be redirected to the login page. "
-#~ "If this is not a new install "
-#~ "and this is unexpected behavior, please"
-#~ " create an %(hrefo)sIssue on "
-#~ "Github%(hrefc)s"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Turn this relay on for a specific"
-#~ " number of seconds (used to test "
-#~ "relay)"
-#~ msgstr ""
-
-#~ msgid "PID Type"
-#~ msgstr ""
-
 #~ msgid "12, 14, 16, or 18-bit ADC resolution."
 #~ msgstr "12, 14, 16, 아니면 18-비트 ADC 해상도."
-
-#~ msgid "Minimum ADC input voltage"
-#~ msgstr ""
-
-#~ msgid "Maximum ADC input voltage"
-#~ msgstr ""
-
-#~ msgid "Minimum output unit (for scaling voltage to unit scale)"
-#~ msgstr ""
-
-#~ msgid "Maximum output unit (for scaling voltage to unit scale)"
-#~ msgstr ""
-
