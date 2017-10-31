@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2017-10-29 18:44-0400\n"
-"PO-Revision-Date: 2017-10-29 23:09-0400\n"
+"PO-Revision-Date: 2017-10-30 22:24-0400\n"
 "Last-Translator: \n"
 "Language: ko\n"
 "Language-Team: ko <LL@li.org>\n"
@@ -21,15 +21,15 @@ msgstr ""
 
 #: flaskforms.py:37
 msgid "Select Device"
-msgstr ""
+msgstr "디바이스 선택"
 
 #: flaskforms.py:45
 msgid "Atlas pH Sensor"
-msgstr ""
+msgstr "아틀라스 pH 센서"
 
 #: flaskforms.py:47
 msgid "Clear Calibration"
-msgstr ""
+msgstr "캘리브레이션 지우기"
 
 #: flaskforms.py:49 mycodo_flask/templates/pages/graph.html:1095
 msgid "Temperature"
@@ -37,11 +37,11 @@ msgstr "온도"
 
 #: flaskforms.py:52
 msgid "Begin Calibration"
-msgstr ""
+msgstr "캘리브레이션 시작하기"
 
 #: flaskforms.py:53 flaskforms.py:54
 msgid "Continue to Next Stage"
-msgstr ""
+msgstr "다음 단계로 진행"
 
 #: flaskforms.py:63
 msgid "Capture Still"
@@ -505,35 +505,35 @@ msgstr ""
 
 #: flaskforms.py:534
 msgid "Create New Method"
-msgstr ""
+msgstr "새 메서드 만들기"
 
 #: flaskforms.py:542 flaskforms.py:602
 msgid "Start HH:MM:SS"
-msgstr ""
+msgstr "시작 시간:분:초"
 
 #: flaskforms.py:546 flaskforms.py:606
 msgid "End HH:MM:SS"
-msgstr ""
+msgstr "최종 시간:분:초"
 
 #: flaskforms.py:550 flaskforms.py:610
 msgid "Start YYYY-MM-DD HH:MM:SS"
-msgstr ""
+msgstr "시작 년도-월-일 시간:분:초"
 
 #: flaskforms.py:554 flaskforms.py:614
 msgid "End YYYY-MM-DD HH:MM:SS"
-msgstr ""
+msgstr "최종 년도-월-일 시간:분:초"
 
 #: flaskforms.py:557 flaskforms.py:627
 msgid "Start Setpoint"
-msgstr ""
+msgstr "시작할 설정 값"
 
 #: flaskforms.py:558
 msgid "End Setpoint (optional)"
-msgstr ""
+msgstr "최종 설정 값 (옵션)"
 
 #: flaskforms.py:559 flaskforms.py:625
 msgid "Duration (seconds)"
-msgstr ""
+msgstr "지속 시간 (초)"
 
 #: flaskforms.py:560 flaskforms.py:626
 msgid "End After (seconds)"
@@ -549,23 +549,23 @@ msgstr "주파수"
 
 #: flaskforms.py:563
 msgid "Angle Shift (0 to 360)"
-msgstr ""
+msgstr "각도 이동 (0 ~ 360)"
 
 #: flaskforms.py:564
 msgid "Y-Axis Shift"
-msgstr ""
+msgstr "Y 축 이동"
 
 #: flaskforms.py:574 flaskforms.py:618
 msgid "Time HH:MM:SS"
-msgstr ""
+msgstr "시간 시:분:초"
 
 #: flaskforms.py:578 flaskforms.py:622
 msgid "Time YYYY-MM-DD HH:MM:SS"
-msgstr ""
+msgstr "시간 연도-달-날짜 시:분:초"
 
 #: flaskforms.py:581
 msgid "Duration On (seconds)"
-msgstr ""
+msgstr "듀레이션 켜기 (초)"
 
 #: flaskforms.py:582 flaskforms.py:1022 flaskforms.py:1078
 msgid "Relay ID"
@@ -586,15 +586,15 @@ msgstr "방법을 더하시오."
 
 #: flaskforms.py:592
 msgid "Restart at Beginning"
-msgstr ""
+msgstr "처음으로부터 다시시작"
 
 #: flaskforms.py:628
 msgid "End Setpoint"
-msgstr ""
+msgstr "마지막 세트포인트"
 
 #: flaskforms.py:631 mycodo_flask/templates/pages/graph.html:951
 msgid "Relay Duration"
-msgstr ""
+msgstr "릴레이 지속 시간"
 
 #: flaskforms.py:632
 msgid "Rename"
@@ -698,11 +698,11 @@ msgstr ""
 
 #: flaskforms.py:816 flaskforms.py:1007
 msgid "Type"
-msgstr "유형"
+msgstr "타입"
 
 #: flaskforms.py:817
 msgid "Add Output Device"
-msgstr ""
+msgstr "출력 디바이스 추가"
 
 #: flaskforms.py:819
 msgid "Add Relay Conditional"
@@ -730,11 +730,11 @@ msgstr ""
 
 #: flaskforms.py:834
 msgid "On Command"
-msgstr ""
+msgstr "커맨드 켜기"
 
 #: flaskforms.py:835
 msgid "Off Command"
-msgstr ""
+msgstr "커맨드 끄기"
 
 #: flaskforms.py:837
 msgid "Current Draw (amps)"
@@ -795,7 +795,7 @@ msgstr "끄다"
 
 #: flaskforms.py:862
 msgid "Frequency (Hertz)"
-msgstr ""
+msgstr "주파수 (헤르츠)"
 
 #: flaskforms.py:864 flaskforms.py:1008
 msgid "Library"
@@ -811,11 +811,11 @@ msgstr ""
 
 #: flaskforms.py:876
 msgid "Duty Cycle (%)"
-msgstr ""
+msgstr "듀티 사이클 (%)"
 
 #: flaskforms.py:889
 msgid "Domain or IP Address"
-msgstr ""
+msgstr "도메인 또는 IP 주소"
 
 #: flaskforms.py:901
 msgid "Add Host"
@@ -846,7 +846,7 @@ msgstr "로케이션"
 
 #: flaskforms.py:934
 msgid "Baud Rate"
-msgstr ""
+msgstr "보 레이트"
 
 #: flaskforms.py:935
 msgid "Device Location"
@@ -854,7 +854,7 @@ msgstr "디바이스 로케이션"
 
 #: flaskforms.py:936
 msgid "Calibration Measurement"
-msgstr ""
+msgstr "캘리브레이션 측정"
 
 #: flaskforms.py:937 flaskforms.py:948
 msgid "Resolution"
@@ -898,7 +898,7 @@ msgstr "Gain"
 
 #: flaskforms.py:950
 msgid "Measurement Units"
-msgstr ""
+msgstr "측정 단위들"
 
 #: flaskforms.py:951
 msgid "Volts Min"
@@ -926,11 +926,11 @@ msgstr "엣지"
 
 #: flaskforms.py:957
 msgid "Bounce Time (ms)"
-msgstr ""
+msgstr "바운스 타임 (ms)"
 
 #: flaskforms.py:958
 msgid "Reset Period"
-msgstr ""
+msgstr "기간 재설정"
 
 #: flaskforms.py:959
 msgid "Pre Relay"
@@ -950,7 +950,7 @@ msgstr ""
 
 #: flaskforms.py:977
 msgid "Sample Time (seconds)"
-msgstr ""
+msgstr "샘플 시간 (초)"
 
 #: flaskforms.py:979
 msgid "Clock Pin"
@@ -969,7 +969,7 @@ msgstr "전압"
 
 #: flaskforms.py:1009
 msgid "OpenCV Device"
-msgstr ""
+msgstr "OpenCV 디바이스"
 
 #: flaskforms.py:1010
 msgid "Flip image horizontally"
@@ -1033,19 +1033,19 @@ msgstr "언어"
 
 #: flaskforms.py:1036
 msgid "Force HTTPS"
-msgstr ""
+msgstr "강제 HTTPS"
 
 #: flaskforms.py:1037
 msgid "Hide success messages"
-msgstr ""
+msgstr "완료 메시지 숨기기"
 
 #: flaskforms.py:1038
 msgid "Hide info messages"
-msgstr ""
+msgstr "인포메이션 메시지 숨기기"
 
 #: flaskforms.py:1039
 msgid "Hide warning messages"
-msgstr ""
+msgstr "경고 메시지 숨기기"
 
 #: flaskforms.py:1040
 msgid "Hide Form Tooltips"
@@ -1053,11 +1053,11 @@ msgstr ""
 
 #: flaskforms.py:1041
 msgid "Max Amps"
-msgstr ""
+msgstr "최대 암페어"
 
 #: flaskforms.py:1043
 msgid "Cost per kWh"
-msgstr ""
+msgstr "kWh 당 비용"
 
 #: flaskforms.py:1044
 msgid "Currency Unit"
@@ -1065,35 +1065,35 @@ msgstr ""
 
 #: flaskforms.py:1045
 msgid "Day of Month"
-msgstr ""
+msgstr "요일"
 
 #: flaskforms.py:1046
 msgid "Generate Usage/Cost Report"
-msgstr ""
+msgstr "사용량 생성 / 비용 보고서"
 
 #: flaskforms.py:1047
 msgid "Time Span to Generate"
-msgstr ""
+msgstr "생성 할 시간 범위"
 
 #: flaskforms.py:1048
 msgid "Day of Week/Month to Generate"
-msgstr ""
+msgstr "생성 할 요일 / 월"
 
 #: flaskforms.py:1050
 msgid "Hour of Day to Generate"
-msgstr ""
+msgstr "생성 할 시간"
 
 #: flaskforms.py:1054 mycodo_flask/templates/settings/general.html:158
 msgid "Hour Options: 0-23"
-msgstr ""
+msgstr "시간 옵션: 0-23"
 
 #: flaskforms.py:1056
 msgid "Opt-out of statistics"
-msgstr ""
+msgstr "통계 선택 해제"
 
 #: flaskforms.py:1071
 msgid "Timer Type"
-msgstr ""
+msgstr "타이머 타입"
 
 #: flaskforms.py:1073
 msgid "Relay (ON/OFF)"
@@ -1125,15 +1125,15 @@ msgstr "끄기 (초)"
 
 #: flaskforms.py:1114
 msgid "Role Name"
-msgstr ""
+msgstr "역할 이름"
 
 #: flaskforms.py:1117 mycodo_flask/templates/tools/logview.html:3
 msgid "View Logs"
-msgstr ""
+msgstr "로그 보기"
 
 #: flaskforms.py:1118
 msgid "View Stats"
-msgstr ""
+msgstr "통계 보기"
 
 #: flaskforms.py:1119
 msgid "View Camera"
@@ -1141,31 +1141,31 @@ msgstr "카메라 보기"
 
 #: flaskforms.py:1120
 msgid "View Settings"
-msgstr ""
+msgstr "설정 보기"
 
 #: flaskforms.py:1121
 msgid "Edit Users"
-msgstr ""
+msgstr "사용자 수정"
 
 #: flaskforms.py:1122
 msgid "Edit Controllers"
-msgstr ""
+msgstr "컨트롤러 수정"
 
 #: flaskforms.py:1123
 msgid "Edit Settings"
-msgstr ""
+msgstr "설정 옵션"
 
 #: flaskforms.py:1125
 msgid "Add Role"
-msgstr ""
+msgstr "역할 추가"
 
 #: flaskforms.py:1147 flaskforms.py:1184
 msgid "Passwords must match"
-msgstr ""
+msgstr "비밀번호가 일치해야합니다"
 
 #: flaskforms.py:1150 flaskforms.py:1188
 msgid "Password must be 6 or more characters"
-msgstr ""
+msgstr "비밀번호는 6 자 이상이어야합니다"
 
 #: flaskforms.py:1159 flaskforms.py:1197
 msgid "Role"
@@ -1205,15 +1205,15 @@ msgstr "백업 삭제"
 
 #: flaskutils.py:69
 msgid "Duration must be a positive integer"
-msgstr ""
+msgstr "지속 시간은 양의 정수 여야합니다"
 
 #: flaskutils.py:72
 msgid "Duration must be a valid integer"
-msgstr ""
+msgstr "지속 시간은 유효한 정수 여야합니다"
 
 #: flaskutils.py:83
 msgid "Required: Start date/time, end date/time, start setpoint"
-msgstr ""
+msgstr "필요함 : 시작 날짜 / 시간, 종료 날짜 / 시간, 시작 설정 값"
 
 #: flaskutils.py:92
 msgid "Invalid Date/Time format. Correct format: DD/MM/YYYY HH:MM:SS"
@@ -2828,15 +2828,15 @@ msgstr ""
 #: mycodo_flask/templates/pages/usage.html:48
 #: mycodo_flask/templates/pages/usage.html:82
 msgid "Power Usage"
-msgstr ""
+msgstr "전력 사용량"
 
 #: mycodo_flask/templates/pages/usage.html:72
 msgid "Total"
-msgstr ""
+msgstr "합계"
 
 #: mycodo_flask/templates/pages/usage.html:91
 msgid "Cost"
-msgstr ""
+msgstr "비용"
 
 #: mycodo_flask/templates/pages/usage_reports.html:5
 msgid "Usage Reports"
@@ -3244,6 +3244,8 @@ msgid ""
 "The minimum duty cycle (in %%). If a duty cycle is below this value, this is "
 "the value that will be used."
 msgstr ""
+"최소 듀티 사이클 (in %%). 듀티 사이클이 이 값보다 낮으면 지금 입력된 값이 사용됩"
+"니다"
 
 #: mycodo_flask/templates/pages/pid_options/output_pwm.html:23
 #: mycodo_flask/templates/pages/pid_options/pwm.html:23
@@ -3253,6 +3255,8 @@ msgid ""
 "The maximum duty cycle (in %%). If a duty cycle is above this value, this is "
 "the value that will be used."
 msgstr ""
+"최대 듀티 사이클 (in %%). 듀티 사이클이 이 값보다 높으면 지금 입력된 값이 사용됩"
+"니다"
 
 #: mycodo_flask/templates/pages/pid_options/output_pwm.html:49
 #: mycodo_flask/templates/pages/pid_options/pwm.html:49
@@ -3262,11 +3266,13 @@ msgid ""
 "The maximum duty cycle (in %%). If a duty cycle is below this value, this is "
 "the value that will be used."
 msgstr ""
+"최대 듀티 사이클 (in %%). 듀티 사이클이 이 값보다 낮으면 지금 입력된 값이 사용됩"
+"니다"
 
 #: mycodo_flask/templates/settings/alerts.html:6
 #: mycodo_flask/templates/settings/alerts.html:10
 msgid "Alerts Settings"
-msgstr ""
+msgstr "알림 설정"
 
 #: mycodo_flask/templates/settings/alerts.html:24
 msgid "465 for SSL, 587 for TSL"
@@ -3274,15 +3280,15 @@ msgstr "SSL 에는 465, TSL 에는 587."
 
 #: mycodo_flask/templates/settings/alerts.html:41
 msgid "Usually your full email address"
-msgstr ""
+msgstr "본인의 이메일 주소"
 
 #: mycodo_flask/templates/settings/alerts.html:47
 msgid "Only enter a password here if you wish to change it"
-msgstr ""
+msgstr "패스워드 변경하고 싶다면 여기 패스워드를 입력하십시오"
 
 #: mycodo_flask/templates/settings/alerts.html:59
 msgid "Maximum number of alerts that can be emailed per hour."
-msgstr ""
+msgstr "시간당 이메일로 전송될 최대 알림 수"
 
 #: mycodo_flask/templates/settings/camera.html:4
 #: mycodo_flask/templates/settings/camera.html:6
@@ -3292,7 +3298,7 @@ msgstr "카메라 설정"
 
 #: mycodo_flask/templates/settings/camera.html:52
 msgid "Name for this Camera"
-msgstr ""
+msgstr "이 카메라의 이름"
 
 #: mycodo_flask/templates/settings/general.html:18
 msgid "Selecting a language will override the web browser's language."
@@ -3361,7 +3367,7 @@ msgstr "자주 보고서를 생성 하는 방법"
 
 #: mycodo_flask/templates/settings/general.html:152
 msgid "Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28"
-msgstr ""
+msgstr "날짜 옵션 : 매일 : 1-7 (1 = 월요일), 월간 : 1-28"
 
 #: mycodo_flask/templates/settings/users.html:4
 #: mycodo_flask/templates/settings/users.html:6
@@ -3371,29 +3377,29 @@ msgstr "관리자 설정"
 
 #: mycodo_flask/templates/settings/users.html:128
 msgid "Roles"
-msgstr ""
+msgstr "역할"
 
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:13
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:16
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:29
 msgid "Latest pH measurement"
-msgstr ""
+msgstr "최신 pH 측정"
 
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:13
 msgid "Error acquiring measurement"
-msgstr ""
+msgstr "측정 얻기 오류"
 
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:43
 msgid "Please wait for sensor to equilibrate"
-msgstr ""
+msgstr "센서가 평형을 유지할 때까지 기다려주세요"
 
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:43
 msgid "seconds"
-msgstr ""
+msgstr "초"
 
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:88
 msgid "No Sensors Found"
-msgstr ""
+msgstr "센서를 찾을 수 없음"
 
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:104
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:128
@@ -3428,7 +3434,7 @@ msgstr ""
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:178
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:209
 msgid "Ready"
-msgstr ""
+msgstr "준비"
 
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:163
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:194
