@@ -1,3 +1,10 @@
+## 5.3.4 (Unreleased)
+
+### Features
+
+ - Replace deprecated LockFile with fasteners ([#260](https://github.com/kizniche/mycodo/issues/260))
+
+
 ## 5.3.3 (2017-10-29)
 
 ### Features
