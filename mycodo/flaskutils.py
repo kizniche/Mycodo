@@ -2454,15 +2454,26 @@ def check_refresh_conditional(sensor_id, cond_mod):
 # Timers
 #
 
-def timer_add(form_add_timer, timer_type, display_order):
+def timer_add(timer_type, display_order,
+              form_add_timer_base,
+              form_add_timer):
     action = u'{action} {controller}'.format(
         action=gettext(u"Add"),
         controller=gettext(u"Timer"))
     error = []
 
-    if form_add_timer.validate():
-        new_timer = Timer()
-        new_timer.name = form_add_timer.name.data
+    if not form_add_timer_base.validate():
+        error.append("Correct the inputs that are invalid and resubmit")
+        flash_form_errors(form_add_timer_base)
+    if not form_add_timer.validate():
+        error.append("Correct the inputs that are invalid and resubmit")
+        flash_form_errors(form_add_timer)
+
+    new_timer = Timer()
+    new_timer.name = form_add_timer_base.name.data
+    new_timer.timer_type_main = form_add_timer_base.timer_type_output.data
+
+    if form_add_timer_base.timer_type_output.data == 'relay':
         new_timer.relay_id = form_add_timer.relay_id.data
         if timer_type == 'time':
             new_timer.timer_type = 'time'
@@ -2483,24 +2494,25 @@ def timer_add(form_add_timer, timer_type, display_order):
                 new_timer.timer_type = 'duration'
                 new_timer.duration_on = form_add_timer.duration_on.data
                 new_timer.duration_off = form_add_timer.duration_off.data
+    elif form_add_timer_base.timer_type_output.data == 'pwm_method':
+        new_timer.relay_id = form_add_timer.relay_id.data
+        new_timer.method_id = form_add_timer.method_id.data
 
-        if not error:
-            try:
-                new_timer.save()
-                DisplayOrder.query.first().timer = add_display_order(
-                    display_order, new_timer.id)
-                db.session.commit()
-            except sqlalchemy.exc.OperationalError as except_msg:
-                error.append(except_msg)
-            except sqlalchemy.exc.IntegrityError  as except_msg:
-                error.append(except_msg)
+    if not error:
+        try:
+            new_timer.save()
+            DisplayOrder.query.first().timer = add_display_order(
+                display_order, new_timer.id)
+            db.session.commit()
+        except sqlalchemy.exc.OperationalError as except_msg:
+            error.append(except_msg)
+        except sqlalchemy.exc.IntegrityError  as except_msg:
+            error.append(except_msg)
 
-        flash_success_errors(error, action, url_for('page_routes.page_timer'))
-    else:
-        flash_form_errors(form_add_timer)
+    flash_success_errors(error, action, url_for('page_routes.page_timer'))
 
 
-def timer_mod(form_timer):
+def timer_mod(form_mod_timer_base, form_mod_timer):
     action = u'{action} {controller}'.format(
         action=gettext(u"Modify"),
         controller=gettext(u"Timer"))
@@ -2508,29 +2520,42 @@ def timer_mod(form_timer):
 
     try:
         mod_timer = Timer.query.filter(
-            Timer.id == form_timer.timer_id.data).first()
+            Timer.id == form_mod_timer_base.timer_id.data).first()
         if mod_timer.is_activated:
             error.append(gettext(u"Deactivate timer controller before "
                                  u"modifying its settings"))
         else:
-            mod_timer.name = form_timer.name.data
-            if form_timer.relay_id.data:
-                mod_timer.relay_id = form_timer.relay_id.data
-            else:
-                mod_timer.relay_id = None
-            if mod_timer.timer_type == 'time':
-                mod_timer.state = form_timer.state.data
-                mod_timer.time_start = form_timer.time_start.data
-                mod_timer.duration_on = form_timer.time_on_duration.data
-            elif mod_timer.timer_type == 'timespan':
-                mod_timer.state = form_timer.state.data
-                mod_timer.time_start = form_timer.time_start_duration.data
-                mod_timer.time_end = form_timer.time_end_duration.data
-            elif mod_timer.timer_type == 'duration':
-                mod_timer.duration_on = form_timer.duration_on.data
-                mod_timer.duration_off = form_timer.duration_off.data
-            if not error:
-                db.session.commit()
+            mod_timer.name = form_mod_timer_base.name.data
+
+            if mod_timer.timer_type_main == 'relay':
+                if form_mod_timer.relay_id.data:
+                    mod_timer.relay_id = form_mod_timer.relay_id.data
+                else:
+                    mod_timer.relay_id = None
+                if mod_timer.timer_type == 'time':
+                    mod_timer.state = form_mod_timer.state.data
+                    mod_timer.time_start = form_mod_timer.time_start.data
+                    mod_timer.duration_on = form_mod_timer.time_on_duration.data
+                elif mod_timer.timer_type == 'timespan':
+                    mod_timer.state = form_mod_timer.state.data
+                    mod_timer.time_start = form_mod_timer.time_start_duration.data
+                    mod_timer.time_end = form_mod_timer.time_end_duration.data
+                elif mod_timer.timer_type == 'duration':
+                    mod_timer.duration_on = form_mod_timer.duration_on.data
+                    mod_timer.duration_off = form_mod_timer.duration_off.data
+
+            elif mod_timer.timer_type_main == 'pwm_method':
+                if form_mod_timer.method_id.data:
+                    mod_timer.method_id = form_mod_timer.method_id.data
+                else:
+                    mod_timer.method_id = None
+                if form_mod_timer.relay_id.data:
+                    mod_timer.relay_id = form_mod_timer.relay_id.data
+                else:
+                    mod_timer.relay_id = None
+
+        if not error:
+            db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
 

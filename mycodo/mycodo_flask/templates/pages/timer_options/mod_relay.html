@@ -1,0 +1,101 @@
+<input type="hidden" name="timer_type_output" value="relay">
+
+<div class="col-xs-6 col-sm-3">
+  {{form_timer_mod_relay.relay_id.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="relay_id" name="relay_id">
+      <option value=""></option>
+    {% for each_choice, value in output_choices.iteritems() if each_choice.split(',')[1] == 'duration_sec' -%}
+      <option value="{{each_choice.split(',')[0]}}"{% if each_timer.relay_id == each_choice.split(',')[0] %} selected{% endif %}>{{value}}</option>
+    {% endfor -%}
+    </select>
+  </div>
+</div>
+
+{% if each_timer.timer_type == 'time' %}
+
+<input type="hidden" name="timer_type" value="time">
+<div class="col-xs-6 col-sm-2">
+  {{form_timer_mod_relay.state.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="state" name="state">
+      <option value="on"{% if each_timer.state == 'on' %} selected{% endif %}>{{_('On')}}</option>
+      <option value="off"{% if each_timer.state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
+    </select>
+  </div>
+</div>
+<div class="col-xs-6 col-sm-3 col-md-2">
+  {{form_timer_mod_relay.time_start.label(class_='control-label')}}
+  <div>
+    <div class="input-group clockpicker">
+      <input type="text" class="form-control" id="timeOn" name="time_start" size="4" value="{{each_timer.time_start}}">
+      <span class="input-group-addon">
+        <span class="glyphicon glyphicon-time"></span>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="col-xs-6 col-sm-3 col-md-2 col-lg-2">
+  <label class='control-label'>On sec. (optional)</label>
+  <div>
+    {{form_timer_mod_relay.time_on_duration(class_='form-control', value=each_timer.duration_on, **{'size':'4'})}}
+  </div>
+</div>
+
+{% elif each_timer.timer_type == 'timespan' %}
+
+<input type="hidden" name="timer_type" value="time">
+<div class="col-xs-6 col-sm-2">
+  {{form_timer_mod_relay.state.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="state" name="state">
+      <option value="on"{% if each_timer.state == 'on' %} selected{% endif %}>{{_('On')}}</option>
+      <option value="off"{% if each_timer.state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
+    </select>
+  </div>
+</div>
+<div class="col-xs-5 col-sm-3 col-md-2">
+  {{form_timer_mod_relay.time_start_duration.label(class_='control-label')}}
+  <div>
+    <div class="input-group clockpicker">
+      <input type="text" class="form-control" id="timeOn" name="time_start_duration" size="4" value="{{each_timer.time_start}}">
+      <span class="input-group-addon">
+        <span class="glyphicon glyphicon-time"></span>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="col-xs-2 col-sm-1 text-center">
+  <label></label>
+  <div>
+    <span class="collapse-button{{each_timer.id}} fa fa-3x fa-long-arrow-right"></span>
+  </div>
+</div>
+<div class="col-xs-5 col-sm-3 col-md-2">
+  {{form_timer_mod_relay.time_end_duration.label(class_='control-label')}}
+  <div>
+    <div class="input-group clockpicker">
+      <input type="text" class="form-control" id="timeOn" name="time_end_duration" size="4" value="{{each_timer.time_end}}">
+      <span class="input-group-addon">
+        <span class="glyphicon glyphicon-time"></span>
+      </span>
+    </div>
+  </div>
+</div>
+
+{% elif each_timer.timer_type == 'duration' %}
+
+<input type="hidden" name="timer_type" value="duration">
+<div class="col-xs-3 col-sm-3 col-md-2 col-lg-1">
+  {{form_timer_mod_relay.duration_on.label(class_='control-label')}}
+  <div>
+    {{form_timer_mod_relay.duration_on(class_='form-control', value=each_timer.duration_on, **{'size':'6'})}}
+  </div>
+</div>
+<div class="col-xs-3 col-sm-3 col-md-2 col-lg-1">
+  {{form_timer_mod_relay.duration_off.label(class_='control-label')}}
+  <div>
+    {{form_timer_mod_relay.duration_off(class_='form-control', value=each_timer.duration_off, **{'size':'6'})}}
+  </div>
+</div>
+{% endif %}
