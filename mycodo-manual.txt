@@ -1000,12 +1000,30 @@ resumes operation.
 
 Timers
 
-Timers enable a relay to be manipulated after specific durations of time
-or at a specific times of the day. For _Duration Timers_, both the on
-duration and the off duration can be defined and the timer will be
-turned on and off for those durations until deactivated. For _Daily
-Timers_, the start hour:minute can be set to turn a specific relay on or
-off at the specific time of day.
+Timers enable outputs to be manipulated after specific durations of time
+or at a specific times of the day. Timers will _ONLY_ do as instructed,
+therefore if you turn a relay _ON_ from _Start Time_ to _End Time_ and
+you want that relay to turn _OFF_ at the end of that period, you will
+need to create another timer that turns the relay _OFF_ at _End Time_ +
+1 minute.
+
+There are two types of timers, one for general outputs that turn on and
+off, and those that generate a PWM signal.
+
+General Output
+
+For _Duration Timers_, both the on duration and the off duration can be
+defined and the timer will be turned on and off for those durations
+until deactivated.
+
+For _Daily Timers_, the start hour:minute can be set to turn a specific
+relay on or off at the specific time of day.
+
+PWM Method
+
+This timer allows a method to be used to determine the duty cycle (as
+percent) of a PWM output. Ensure your method stays between 0 and 100,
+because a negative or above 100 % duty cycle is not possible.
 
 
 LCDs

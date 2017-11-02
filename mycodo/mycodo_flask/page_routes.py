@@ -964,50 +964,49 @@ def page_timer():
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().timer)
 
-    form_timer_add_base = flaskforms.TimerAddBase()
-    form_timer_add_relay = flaskforms.TimerAddRelay()
-    form_timer_add_pwm_method = flaskforms.TimerAddPWMMethod()
-    form_timer_mod_base = flaskforms.TimerModBase()
-    form_timer_mod_relay = flaskforms.TimerModRelay()
-    form_timer_mod_pwm_method = flaskforms.TimerModPWMMethod()
+    form_timer_base = flaskforms.TimerBase()
+    form_timer_time_point = flaskforms.TimerTimePoint()
+    form_timer_time_span = flaskforms.TimerTimeSpan()
+    form_timer_duration = flaskforms.TimerDuration()
+    form_timer_pwm_method = flaskforms.TimerPWMMethod()
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
 
         form_name = request.form['form-name']
-        if form_name == 'addTimer':
-            form_timer_add = None
-            if form_timer_add_base.timer_type_output.data == 'relay':
-                form_timer_add = form_timer_add_relay
-            elif form_timer_add_base.timer_type_output.data == 'pwm_method':
-                form_timer_add = form_timer_add_pwm_method
-            if form_timer_add:
-                flaskutils.timer_add(form_timer_add_base.timer_type_output.data,
-                                     display_order,
-                                     form_timer_add_base,
-                                     form_timer_add)
+        form_timer = None
+        if form_name == 'addTimer' or form_name == 'modTimer':
+            if form_timer_base.timer_type.data == 'time_point':
+                form_timer = form_timer_time_point
+            elif form_timer_base.timer_type.data == 'time_span':
+                form_timer = form_timer_time_span
+            elif form_timer_base.timer_type.data == 'duration':
+                form_timer = form_timer_duration
+            elif form_timer_base.timer_type.data == 'pwm_method':
+                form_timer = form_timer_pwm_method
+
+        if form_name == 'addTimer' and form_timer:
+            flaskutils.timer_add(display_order,
+                                 form_timer_base,
+                                 form_timer)
         elif form_name == 'modTimer':
-            if form_timer_mod_base.delete.data:
-                flaskutils.timer_del(form_timer_mod_base)
-            elif form_timer_mod_base.order_up.data:
-                flaskutils.timer_reorder(form_timer_mod_base.timer_id.data,
+            if form_timer_base.delete.data:
+                flaskutils.timer_del(form_timer_base)
+            elif form_timer_base.order_up.data:
+                flaskutils.timer_reorder(form_timer_base.timer_id.data,
                                          display_order, 'up')
-            elif form_timer_mod_base.order_down.data:
-                flaskutils.timer_reorder(form_timer_mod_base.timer_id.data,
+            elif form_timer_base.order_down.data:
+                flaskutils.timer_reorder(form_timer_base.timer_id.data,
                                          display_order, 'down')
-            elif form_timer_mod_base.activate.data:
-                flaskutils.timer_activate(form_timer_mod_base)
-            elif form_timer_mod_base.deactivate.data:
-                flaskutils.timer_deactivate(form_timer_mod_base)
-            elif form_timer_mod_base.modify.data:
-                form_timer_mod = None
-                if form_timer_mod_base.timer_type_output.data == 'relay':
-                    form_timer_mod = form_timer_mod_relay
-                elif form_timer_mod_base.timer_type_output.data == 'pwm_method':
-                    form_timer_mod = form_timer_mod_pwm_method
-                flaskutils.timer_mod(form_timer_mod_base,
-                                     form_timer_mod)
+            elif form_timer_base.activate.data:
+                flaskutils.timer_activate(form_timer_base)
+            elif form_timer_base.deactivate.data:
+                flaskutils.timer_deactivate(form_timer_base)
+            elif form_timer_base.modify.data:
+                if form_timer:
+                    flaskutils.timer_mod(form_timer_base,
+                                         form_timer)
         return redirect('/timer')
 
     return render_template('pages/timer.html',
@@ -1015,12 +1014,11 @@ def page_timer():
                            timer=timer,
                            displayOrder=display_order,
                            output_choices=output_choices,
-                           form_timer_add_base=form_timer_add_base,
-                           form_timer_add_relay=form_timer_add_relay,
-                           form_timer_add_pwm_method=form_timer_add_pwm_method,
-                           form_timer_mod_base=form_timer_mod_base,
-                           form_timer_mod_relay=form_timer_mod_relay,
-                           form_timer_mod_pwm_method=form_timer_mod_pwm_method)
+                           form_timer_base=form_timer_base,
+                           form_timer_time_point=form_timer_time_point,
+                           form_timer_time_span=form_timer_time_span,
+                           form_timer_duration=form_timer_duration,
+                           form_timer_pwm_method=form_timer_pwm_method)
 
 
 @blueprint.route('/usage', methods=('GET', 'POST'))

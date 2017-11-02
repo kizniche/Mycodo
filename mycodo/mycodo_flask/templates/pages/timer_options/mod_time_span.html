@@ -1,0 +1,50 @@
+<input type="hidden" name="timer_type" value="relay">
+<div class="col-xs-6 col-sm-3">
+  {{form_timer_base.relay_id.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="relay_id" name="relay_id">
+      <option value=""></option>
+    {% for each_choice, value in output_choices.iteritems() if each_choice.split(',')[1] == 'duration_sec' -%}
+      <option value="{{each_choice.split(',')[0]}}"{% if each_timer.relay_id == each_choice.split(',')[0] %} selected{% endif %}>{{value}}</option>
+    {% endfor -%}
+    </select>
+  </div>
+</div>
+<input type="hidden" name="timer_type" value="time">
+<div class="col-xs-6 col-sm-2">
+  {{form_timer_time_span.state.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="state" name="state">
+      <option value="on"{% if each_timer.state == 'on' %} selected{% endif %}>{{_('On')}}</option>
+      <option value="off"{% if each_timer.state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
+    </select>
+  </div>
+</div>
+<div class="col-xs-5 col-sm-3 col-md-2">
+  {{form_timer_time_span.time_start_duration.label(class_='control-label')}}
+  <div>
+    <div class="input-group clockpicker">
+      <input type="text" class="form-control" id="timeOn" name="time_start_duration" size="4" value="{{each_timer.time_start}}">
+      <span class="input-group-addon">
+        <span class="glyphicon glyphicon-time"></span>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="col-xs-2 col-sm-1 text-center">
+  <label></label>
+  <div>
+    <span class="collapse-button{{each_timer.id}} fa fa-3x fa-long-arrow-right"></span>
+  </div>
+</div>
+<div class="col-xs-5 col-sm-3 col-md-2">
+  {{form_timer_time_span.time_end_duration.label(class_='control-label')}}
+  <div>
+    <div class="input-group clockpicker">
+      <input type="text" class="form-control" id="timeOn" name="time_end_duration" size="4" value="{{each_timer.time_end}}">
+      <span class="input-group-addon">
+        <span class="glyphicon glyphicon-time"></span>
+      </span>
+    </div>
+  </div>
+</div>

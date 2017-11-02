@@ -2454,7 +2454,7 @@ def check_refresh_conditional(sensor_id, cond_mod):
 # Timers
 #
 
-def timer_add(timer_type, display_order,
+def timer_add(display_order,
               form_add_timer_base,
               form_add_timer):
     action = u'{action} {controller}'.format(
@@ -2469,34 +2469,42 @@ def timer_add(timer_type, display_order,
         error.append("Correct the inputs that are invalid and resubmit")
         flash_form_errors(form_add_timer)
 
+    relay = Relay.query.filter(
+        Relay.unique_id == form_add_timer_base.relay_id.data).first()
+    if (form_add_timer_base.timer_type.data == 'pwm_method' and
+            relay.relay_type != 'pwm'):
+        error.append("PWM Method Timers require a PWM Output")
+    elif (form_add_timer_base.timer_type.data != 'pwm_method' and
+            relay.relay_type == 'pwm'):
+        error.append("Time and Duration Timers require a non-PWM Output")
+
     new_timer = Timer()
     new_timer.name = form_add_timer_base.name.data
-    new_timer.timer_type_main = form_add_timer_base.timer_type_output.data
-
-    if form_add_timer_base.timer_type_output.data == 'relay':
-        new_timer.relay_id = form_add_timer.relay_id.data
-        if timer_type == 'time':
-            new_timer.timer_type = 'time'
-            new_timer.state = form_add_timer.state.data
-            new_timer.time_start = form_add_timer.time_start.data
-            new_timer.duration_on = form_add_timer.time_on_duration.data
-            new_timer.duration_off = 0
-        elif timer_type == 'timespan':
-            new_timer.timer_type = 'timespan'
-            new_timer.state = form_add_timer.state.data
-            new_timer.time_start = form_add_timer.time_start_duration.data
-            new_timer.time_end = form_add_timer.time_end_duration.data
-        elif timer_type == 'duration':
-            if (form_add_timer.duration_on.data <= 0 or
-                    form_add_timer.duration_off.data <= 0):
-                error.append(gettext(u"Durations must be greater than 0"))
-            else:
-                new_timer.timer_type = 'duration'
-                new_timer.duration_on = form_add_timer.duration_on.data
-                new_timer.duration_off = form_add_timer.duration_off.data
-    elif form_add_timer_base.timer_type_output.data == 'pwm_method':
-        new_timer.relay_id = form_add_timer.relay_id.data
+    new_timer.relay_id = form_add_timer_base.relay_id.data
+    if form_add_timer_base.timer_type.data == 'time_point':
+        new_timer.timer_type = 'time'
+        new_timer.state = form_add_timer.state.data
+        new_timer.time_start = form_add_timer.time_start.data
+        new_timer.duration_on = form_add_timer.time_on_duration.data
+        new_timer.duration_off = 0
+    elif form_add_timer_base.timer_type.data == 'time_span':
+        new_timer.timer_type = 'timespan'
+        new_timer.state = form_add_timer.state.data
+        new_timer.time_start = form_add_timer.time_start_duration.data
+        new_timer.time_end = form_add_timer.time_end_duration.data
+    elif form_add_timer_base.timer_type.data == 'duration':
+        if (form_add_timer.duration_on.data <= 0 or
+                form_add_timer.duration_off.data <= 0):
+            error.append(gettext(u"Durations must be greater than 0"))
+        else:
+            new_timer.timer_type = 'duration'
+            new_timer.duration_on = form_add_timer.duration_on.data
+            new_timer.duration_off = form_add_timer.duration_off.data
+    elif form_add_timer_base.timer_type.data == 'pwm_method':
+        new_timer.timer_type = 'pwm_method'
         new_timer.method_id = form_add_timer.method_id.data
+    else:
+        error.append("Not a recognized Timer type")
 
     if not error:
         try:
@@ -2518,6 +2526,13 @@ def timer_mod(form_mod_timer_base, form_mod_timer):
         controller=gettext(u"Timer"))
     error = []
 
+    if not form_mod_timer_base.validate():
+        error.append("Correct the inputs that are invalid and resubmit")
+        flash_form_errors(form_mod_timer_base)
+    if not form_mod_timer.validate():
+        error.append("Correct the inputs that are invalid and resubmit")
+        flash_form_errors(form_mod_timer)
+
     try:
         mod_timer = Timer.query.filter(
             Timer.id == form_mod_timer_base.timer_id.data).first()
@@ -2526,24 +2541,22 @@ def timer_mod(form_mod_timer_base, form_mod_timer):
                                  u"modifying its settings"))
         else:
             mod_timer.name = form_mod_timer_base.name.data
+            if form_mod_timer.relay_id.data:
+                mod_timer.relay_id = form_mod_timer.relay_id.data
+            else:
+                mod_timer.relay_id = None
 
-            if mod_timer.timer_type_main == 'relay':
-                if form_mod_timer.relay_id.data:
-                    mod_timer.relay_id = form_mod_timer.relay_id.data
-                else:
-                    mod_timer.relay_id = None
-                if mod_timer.timer_type == 'time':
-                    mod_timer.state = form_mod_timer.state.data
-                    mod_timer.time_start = form_mod_timer.time_start.data
-                    mod_timer.duration_on = form_mod_timer.time_on_duration.data
-                elif mod_timer.timer_type == 'timespan':
-                    mod_timer.state = form_mod_timer.state.data
-                    mod_timer.time_start = form_mod_timer.time_start_duration.data
-                    mod_timer.time_end = form_mod_timer.time_end_duration.data
-                elif mod_timer.timer_type == 'duration':
-                    mod_timer.duration_on = form_mod_timer.duration_on.data
-                    mod_timer.duration_off = form_mod_timer.duration_off.data
-
+            if mod_timer.timer_type == 'time':
+                mod_timer.state = form_mod_timer.state.data
+                mod_timer.time_start = form_mod_timer.time_start.data
+                mod_timer.duration_on = form_mod_timer.time_on_duration.data
+            elif mod_timer.timer_type == 'timespan':
+                mod_timer.state = form_mod_timer.state.data
+                mod_timer.time_start = form_mod_timer.time_start_duration.data
+                mod_timer.time_end = form_mod_timer.time_end_duration.data
+            elif mod_timer.timer_type == 'duration':
+                mod_timer.duration_on = form_mod_timer.duration_on.data
+                mod_timer.duration_off = form_mod_timer.duration_off.data
             elif mod_timer.timer_type_main == 'pwm_method':
                 if form_mod_timer.method_id.data:
                     mod_timer.method_id = form_mod_timer.method_id.data

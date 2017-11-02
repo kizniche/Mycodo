@@ -120,7 +120,9 @@
 
             <li{% if active_page == 'pid' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_pid')}}">{{_('PID')}}</a></li>
 
-            <li class="dropdown{% if active_page in ['camera', 'export', 'lcd', 'method_list', 'calibration', 'timer', 'usage', 'usage_reports'] %} active{% endif %}">
+            <li{% if active_page == 'timer' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_timer')}}">{{_('Timer')}}</a></li>
+
+            <li class="dropdown{% if active_page in ['camera', 'export', 'lcd', 'method_list', 'calibration', 'usage', 'usage_reports'] %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('More')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li{% if active_page == 'calibration' %} class="active"{% endif %}><a href="{{url_for('calibration_routes.calibration_select')}}"><i class="fa fa-balance-scale icon-fw"></i> {{_('Calibration')}}</a></li>
@@ -130,7 +132,6 @@
                 <li{% if active_page == 'method_list' %} class="active"{% endif %}><a href="{{url_for('method_routes.method_list')}}"><i class="fa fa-line-chart icon-fw"></i> {{_('Methods')}}</a></li>
                 <li{% if active_page == 'usage' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_usage')}}"><i class="glyphicon glyphicon-equalizer icon-fw"></i> {{_('Output Usage')}}</a></li>
                 <li{% if active_page == 'usage_reports' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_usage_reports')}}"><i class="glyphicon glyphicon-list-alt icon-fw"></i> {{_('Output Usage Reports')}}</a></li>
-                <li{% if active_page == 'timer' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_timer')}}"><i class="fa fa-hourglass-o icon-fw"></i> {{_('Timers')}}</a></li>
               </ul>
             </li>
           </ul>

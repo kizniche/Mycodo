@@ -1205,7 +1205,13 @@
 </tbody>
 </table>
 <h2 id="timers">Timers</h2>
-<p>Timers enable a relay to be manipulated after specific durations of time or at a specific times of the day. For <em>Duration Timers</em>, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated. For <em>Daily Timers</em>, the start hour:minute can be set to turn a specific relay on or off at the specific time of day.</p>
+<p>Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will <strong><em>only</em></strong> do as instructed, therefore if you turn a relay <em>ON</em> from <em>Start Time</em> to <em>End Time</em> and you want that relay to turn <em>OFF</em> at the end of that period, you will need to create another timer that turns the relay <em>OFF</em> at <em>End Time</em> + 1 minute.</p>
+<p>There are two types of timers, one for general outputs that turn on and off, and those that generate a PWM signal.</p>
+<h4 id="general-output">General Output</h4>
+<p>For <em>Duration Timers</em>, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated.</p>
+<p>For <em>Daily Timers</em>, the start hour:minute can be set to turn a specific relay on or off at the specific time of day.</p>
+<h4 id="pwm-method">PWM Method</h4>
+<p>This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. Ensure your method stays between 0 and 100, because a negative or above 100 % duty cycle is not possible.</p>
 <h2 id="lcds">LCDs</h2>
 <p>Data may be output to a liquid crystal display (LCD) for easy viewing. Please see <a href="#lcd-displays">LCD Displays</a> for specific information regarding compatibility.</p>
 <table style="width:94%;">

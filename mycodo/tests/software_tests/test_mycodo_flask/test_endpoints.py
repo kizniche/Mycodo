@@ -223,7 +223,7 @@ def sees_navbar(testapp):
         'Remote Admin',
         'Sensors',
         'System Information',
-        'Timers',
+        'Timer',
         'Upgrade'
     ]
     assert all(

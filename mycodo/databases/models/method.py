@@ -10,8 +10,6 @@ class Method(CRUDMixin, db.Model):
     name = db.Column(db.Text, default='Method')
     method_type = db.Column(db.Text, default='')
     method_order = db.Column(db.Text, default='')
-    start_time = db.Column(db.Text, default=None)
-    end_time = db.Column(db.Text, default=None)
 
     def __reper__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

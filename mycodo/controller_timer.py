@@ -30,9 +30,12 @@ import time
 import timeit
 
 from mycodo_client import DaemonControl
+from databases.models import Method
+from databases.models import MethodData
 from databases.models import Relay
 from databases.models import Timer
 from utils.database import db_retrieve_table_daemon
+from utils.method import calculate_method_setpoint
 from utils.system_pi import time_between_range
 
 
@@ -56,6 +59,7 @@ class TimerController(threading.Thread):
         timer = db_retrieve_table_daemon(Timer, device_id=self.timer_id)
         self.timer_type = timer.timer_type
         self.relay_unique_id = timer.relay_id
+        self.method_id = timer.method_id
         self.state = timer.state
         self.time_start = timer.time_start
         self.time_end = timer.time_end
@@ -83,13 +87,15 @@ class TimerController(threading.Thread):
             self.end_minute = None
 
         self.duration_timer = time.time()
+        self.pwm_method_timer = time.time()
+        self.pwm_method_count = 0
         self.date_timer_not_executed = True
         self.running = False
 
     def run(self):
         self.running = True
         self.logger.info("Activated in {:.1f} ms".format(
-            (timeit.default_timer() - self.thread_startup_timer)*1000))
+            (timeit.default_timer() - self.thread_startup_timer) * 1000))
         self.ready.set()
         while self.running:
             # Timer is set to react at a specific hour and minute of the day
@@ -98,9 +104,9 @@ class TimerController(threading.Thread):
                         int(self.start_minute) == datetime.datetime.now().minute):
                     # Ensure this is triggered only once at this specific time
                     if self.date_timer_not_executed:
-                        message = "At {st}, turn relay {id} {state}".format(
+                        message = "At {st}, turn Output {id} {state}".format(
                             st=self.time_start,
-                            id=self.relay_unique_id,
+                            id=self.relay_id,
                             state=self.state)
                         if self.state == 'on' and self.duration_on:
                             message += " for {sec} seconds".format(
@@ -123,9 +129,9 @@ class TimerController(threading.Thread):
                 if time_between_range(self.time_start, self.time_end):
                     current_relay_state = self.control.relay_state(self.relay_id)
                     if self.state != current_relay_state:
-                        message = "Relay {relay} should be {state}, but is " \
+                        message = "Output {output} should be {state}, but is " \
                                   "{cstate}. Turning {state}.".format(
-                                    relay=self.relay_unique_id,
+                                    output=self.relay_id,
                                     state=self.state,
                                     cstate=current_relay_state)
                         modulate_relay = threading.Thread(
@@ -141,16 +147,44 @@ class TimerController(threading.Thread):
                     self.duration_timer = (time.time() +
                                            self.duration_on +
                                            self.duration_off)
-                    self.logger.debug("Turn relay {relay} on for {onsec} "
+                    self.logger.debug("Turn Output {output} on for {onsec} "
                                       "seconds, then off for {offsec} "
                                       "seconds".format(
-                                        relay=self.relay_unique_id,
+                                        output=self.relay_id,
                                         onsec=self.duration_on,
                                         offsec=self.duration_off))
                     relay_on = threading.Thread(target=self.control.relay_on,
                                                 args=(self.relay_id,
                                                       self.duration_on,))
                     relay_on.start()
+
+            # Timer is a PWM Method timer
+            elif self.timer_type == 'pwm_method':
+                self.pwm_method_count += 1
+                this_controller = db_retrieve_table_daemon(
+                    Timer, device_id=self.timer_id)
+                return_value, setpoint = calculate_method_setpoint(
+                    self.method_id,
+                    Timer,
+                    this_controller,
+                    Method,
+                    MethodData,
+                    self.logger)
+                if setpoint > 100:
+                    setpoint = 100
+                elif setpoint < 0:
+                    setpoint = 0
+                if self.pwm_method_count > 60:
+                    self.pwm_method_count = 0
+                    self.logger.debug("Turn Output {output} to a PWM duty "
+                                      "cycle of {dc} %".format(
+                                        output=self.relay_id,
+                                        dc=setpoint))
+                # Activate pwm with calculated duty cycle
+                self.control.relay_on(
+                    self.relay_id,
+                    duty_cycle=setpoint)
+                self.pwm_method_timer = (time.time() + 1)
 
             time.sleep(0.1)
 

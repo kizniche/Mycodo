@@ -1,0 +1,25 @@
+<input type="hidden" name="timer_type" value="relay">
+<div class="col-xs-6 col-sm-3">
+  {{form_timer_base.relay_id.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="relay_id" name="relay_id">
+      <option value=""></option>
+    {% for each_choice, value in output_choices.iteritems() if each_choice.split(',')[1] == 'duration_sec' -%}
+      <option value="{{each_choice.split(',')[0]}}"{% if each_timer.relay_id == each_choice.split(',')[0] %} selected{% endif %}>{{value}}</option>
+    {% endfor -%}
+    </select>
+  </div>
+</div>
+<input type="hidden" name="timer_type" value="duration">
+<div class="col-xs-3 col-sm-3 col-md-2 col-lg-1">
+  {{form_timer_duration.duration_on.label(class_='control-label')}}
+  <div>
+    {{form_timer_duration.duration_on(class_='form-control', value=each_timer.duration_on, **{'size':'6'})}}
+  </div>
+</div>
+<div class="col-xs-3 col-sm-3 col-md-2 col-lg-1">
+  {{form_timer_duration.duration_off.label(class_='control-label')}}
+  <div>
+    {{form_timer_duration.duration_off(class_='form-control', value=each_timer.duration_off, **{'size':'6'})}}
+  </div>
+</div>

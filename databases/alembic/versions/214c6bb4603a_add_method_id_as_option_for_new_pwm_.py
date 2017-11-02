@@ -19,17 +19,29 @@ depends_on = None
 def upgrade():
     with op.batch_alter_table("timer") as batch_op:
         batch_op.add_column(sa.Column('method_id', sa.Integer))
-        batch_op.add_column(sa.Column('timer_type_main', sa.Text))
+        batch_op.add_column(sa.Column('method_start_time', sa.Integer))
+        batch_op.add_column(sa.Column('method_end_time', sa.Integer))
 
-    op.execute(
-        '''
-        UPDATE timer
-        SET timer_type_main='relay'
-        WHERE timer_type_main IS NULL
-        '''
-    )
+    with op.batch_alter_table("pid") as batch_op:
+        batch_op.add_column(sa.Column('method_start_time', sa.Integer))
+        batch_op.add_column(sa.Column('method_end_time', sa.Integer))
+
+    with op.batch_alter_table("method") as batch_op:
+        batch_op.drop_column('start_time')
+        batch_op.drop_column('end_time')
+
 
 def downgrade():
     with op.batch_alter_table("timer") as batch_op:
         batch_op.drop_column('method_id')
-        batch_op.drop_column('timer_type_main')
+        batch_op.drop_column('method_start_time')
+        batch_op.drop_column('method_end_time')
+
+    with op.batch_alter_table("pid") as batch_op:
+        batch_op.drop_column('method_id')
+        batch_op.drop_column('method_start_time')
+        batch_op.drop_column('method_end_time')
+
+    with op.batch_alter_table("method") as batch_op:
+        batch_op.drop_column('start_time')
+        batch_op.drop_column('end_time')

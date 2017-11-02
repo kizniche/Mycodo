@@ -521,12 +521,20 @@ Integrator Max | The maximum allowed integrator value, for calculating Ki\_total
 Timers
 ------
 
-Timers enable a relay to be manipulated after specific durations of time
-or at a specific times of the day. For *Duration Timers*, both the on
-duration and the off duration can be defined and the timer will be
-turned on and off for those durations until deactivated. For *Daily
-Timers*, the start hour:minute can be set to turn a specific relay on or
-off at the specific time of day.
+Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will ***only*** do as instructed, therefore if you turn a relay *ON* from *Start Time* to *End Time* and you want that relay to turn *OFF* at the end of that period, you will need to create another timer that turns the relay *OFF* at *End Time* + 1 minute.
+
+ There are two types of timers, one for general outputs that turn on and off, and those that generate a PWM signal.
+
+#### General Output
+
+For *Duration Timers*, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated.
+
+For *Daily Timers*, the start hour:minute can be set to turn a specific relay on or off at the specific time of day.
+
+#### PWM Method
+
+This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. Ensure your method stays between 0 and 100, because a negative or above 100 % duty cycle is not possible.
+
 
 LCDs
 ----

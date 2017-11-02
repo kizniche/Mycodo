@@ -1061,73 +1061,25 @@ class SettingsGeneral(FlaskForm):
 # Timers
 #
 
-class TimerAddBase(FlaskForm):
-    timer_type_output = SelectField(
-        lazy_gettext(u'Timer Type'),
-        choices=[
-            ('relay', lazy_gettext(u'Relay (ON/OFF)')),
-            ('pwm_method', lazy_gettext(u'PWM Method (Duty Cycle)'))
-        ],
-        validators=[DataRequired()]
-    )
-    name = StringField(
-        lazy_gettext(u'Name'),
-        validators=[DataRequired()]
-    )
-    create = SubmitField(lazy_gettext(u'Save'))
-
-
-class TimerAddPWMMethod(FlaskForm):
-    relay_id = StringField(lazy_gettext(u'Relay ID'))
-    method_id = StringField(lazy_gettext(u'Method ID'))
-
-
-class TimerAddRelay(FlaskForm):
-    timer_type_output = SelectField(
-        lazy_gettext(u'Timer Type'),
-        choices=[
-            ('relay', lazy_gettext(u'Relay (ON/OFF)')),
-            ('pwm', lazy_gettext(u'PWM (Duty Cycle)'))
-        ],
-        validators=[DataRequired()]
-    )
-    relay_id = StringField(lazy_gettext(u'Relay ID'))
-    state = SelectField(
-        lazy_gettext(u'State'),
-        choices=[
-            ('on', lazy_gettext(u'On')),
-            ('off', lazy_gettext(u'Off'))
-        ],
-        validators=[DataRequired()]
-    )
-    time_start = StringField(lazy_gettext(u'Start Time'))
-    time_start_duration = StringField(lazy_gettext(u'Start Time'))
-    time_end_duration = StringField(lazy_gettext(u'End Time'))
-    time_on_duration = DecimalField(
-        lazy_gettext(u'On (seconds)'),
-        validators=[validators.NumberRange(
-            min=0,
-            max=86400
-        )]
-    )
-    duration_on = DecimalField(lazy_gettext(u'On (seconds)'))
-    duration_off = DecimalField(lazy_gettext(u'Off (seconds)'))
-
-
-class TimerModBase(FlaskForm):
+class TimerBase(FlaskForm):
     timer_id = IntegerField('Timer ID', widget=widgets.HiddenInput())
-    name = StringField(
-        lazy_gettext(u'Name'),
-        validators=[DataRequired()]
-    )
-    timer_type_output = SelectField(
+    timer_type = SelectField(
         lazy_gettext(u'Timer Type'),
         choices=[
-            ('relay', lazy_gettext(u'Relay (ON/OFF)')),
+            ('', lazy_gettext(u'Select a Timer Type')),
+            ('time_point', lazy_gettext(u'Daily Time Point')),
+            ('time_span', lazy_gettext(u'Daily Time Span')),
+            ('duration', lazy_gettext(u'Duration')),
             ('pwm_method', lazy_gettext(u'PWM Method (Duty Cycle)'))
         ],
         validators=[DataRequired()]
     )
+    name = StringField(
+        lazy_gettext(u'Name'),
+        validators=[DataRequired()]
+    )
+    relay_id = StringField(lazy_gettext(u'Output ID'))
+    create = SubmitField(lazy_gettext(u'Save'))
     modify = SubmitField(lazy_gettext(u'Save'))
     delete = SubmitField(lazy_gettext(u'Delete'))
     activate = SubmitField(lazy_gettext(u'Activate'))
@@ -1136,8 +1088,27 @@ class TimerModBase(FlaskForm):
     order_down = SubmitField(lazy_gettext(u'Down'))
 
 
-class TimerModRelay(FlaskForm):
-    relay_id = StringField(lazy_gettext(u'Relay ID'))
+class TimerTimePoint(FlaskForm):
+    state = SelectField(
+        lazy_gettext(u'State'),
+        choices=[
+            ('on', lazy_gettext(u'On')),
+            ('off', lazy_gettext(u'Off'))
+        ],
+        validators=[DataRequired()]
+    )
+    time_start = StringField(lazy_gettext(u'Start Time'))
+    time_start_duration = StringField(lazy_gettext(u'Start Time'))
+    time_on_duration = DecimalField(
+        lazy_gettext(u'On (seconds)'),
+        validators=[validators.NumberRange(
+            min=0,
+            max=86400
+        )]
+    )
+
+
+class TimerTimeSpan(FlaskForm):
     state = SelectField(
         lazy_gettext(u'State'),
         choices=[
@@ -1156,12 +1127,14 @@ class TimerModRelay(FlaskForm):
             max=86400
         )]
     )
+
+
+class TimerDuration(FlaskForm):
     duration_on = DecimalField(lazy_gettext(u'On (seconds)'))
     duration_off = DecimalField(lazy_gettext(u'Off (seconds)'))
 
 
-class TimerModPWMMethod(FlaskForm):
-    relay_id = StringField(lazy_gettext(u'Relay ID'))
+class TimerPWMMethod(FlaskForm):
     method_id = StringField(lazy_gettext(u'Method ID'))
 
 
