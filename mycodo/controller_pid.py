@@ -228,14 +228,19 @@ class PIDController(threading.Thread):
                             if self.method_id:
                                 this_controller = db_retrieve_table_daemon(
                                     PID, device_id=self.pid_id)
-                                return_value, setpoint = calculate_method_setpoint(
+                                setpoint, ended = calculate_method_setpoint(
                                     self.method_id,
                                     PID,
                                     this_controller,
                                     Method,
                                     MethodData,
                                     self.logger)
-                                self.set_point = setpoint
+                                if ended:
+                                    self.method_start_act = 'Ended'
+                                if setpoint is not None:
+                                    self.set_point = setpoint
+                                else:
+                                    self.set_point = self.default_set_point
 
                             write_setpoint_db = threading.Thread(
                                 target=write_influxdb_value,
@@ -665,7 +670,7 @@ class PIDController(threading.Thread):
 
         if deactivate_pid:
             with session_scope(MYCODO_DB_PATH) as db_session:
-                mod_method = db_session.query(PID).filter(
+                mod_pid = db_session.query(PID).filter(
                     PID.id == self.pid_id).first()
-                mod_method.is_activated = False
+                mod_pid.is_activated = False
                 db_session.commit()

@@ -688,7 +688,7 @@ class SensorController(threading.Thread):
         """ Acquire a multiplexer lock """
         self.mux_lock_acquired = False
 
-        for i in range(600):
+        for _ in range(600):
             self.mux_lock_acquired = self.mux_lock.acquire(blocking=False)
             if self.mux_lock_acquired:
                 break
@@ -727,7 +727,7 @@ class SensorController(threading.Thread):
         try:
             gotten = False
             adc_lock = fasteners.InterProcessLock(self.adc_lock_file)
-            for i in range(600):
+            for _ in range(600):
                 gotten = adc_lock.acquire(blocking=False)
                 if gotten:
                     break

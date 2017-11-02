@@ -34,9 +34,14 @@ from databases.models import Method
 from databases.models import MethodData
 from databases.models import Relay
 from databases.models import Timer
+from databases.utils import session_scope
 from utils.database import db_retrieve_table_daemon
 from utils.method import calculate_method_setpoint
 from utils.system_pi import time_between_range
+
+from config import SQL_DATABASE_MYCODO
+
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class TimerController(threading.Thread):
@@ -60,6 +65,7 @@ class TimerController(threading.Thread):
         self.timer_type = timer.timer_type
         self.relay_unique_id = timer.relay_id
         self.method_id = timer.method_id
+        self.method_period = timer.method_period
         self.state = timer.state
         self.time_start = timer.time_start
         self.time_end = timer.time_end
@@ -88,16 +94,70 @@ class TimerController(threading.Thread):
 
         self.duration_timer = time.time()
         self.pwm_method_timer = time.time()
-        self.pwm_method_count = 0
         self.date_timer_not_executed = True
         self.running = False
+
+        if self.method_id:
+            method = db_retrieve_table_daemon(Method, device_id=self.method_id)
+            method_data = db_retrieve_table_daemon(MethodData)
+            method_data = method_data.filter(MethodData.method_id == self.method_id)
+            method_data_repeat = method_data.filter(MethodData.duration_sec == 0).first()
+            self.method_type = method.method_type
+            self.method_start_act = timer.method_start_time
+            self.method_start_time = None
+            self.method_end_act = None
+            self.method_end_time = None
+
+            if self.method_type == 'Duration':
+                if self.method_start_act == 'Ended':
+                    self.stop_controller(ended_normally=False, deactivate_timer=True)
+                    self.logger.warning(
+                        "Method has ended. "
+                        "Activate the Timer controller to start it again.")
+                elif self.method_start_act == 'Ready' or self.method_start_act is None:
+                    # Method has been instructed to begin
+                    now = datetime.datetime.now()
+                    self.method_start_time = now
+                    if method_data_repeat and method_data_repeat.duration_end:
+                        self.method_end_time = now + datetime.timedelta(
+                            seconds=float(method_data_repeat.duration_end))
+                        self.method_end_act = True
+
+                    with session_scope(MYCODO_DB_PATH) as db_session:
+                        mod_timer = db_session.query(Timer)
+                        mod_timer = mod_timer.filter(Timer.id == self.timer_id).first()
+                        mod_timer.method_start_time = self.method_start_time
+                        mod_timer.method_end_time = self.method_end_time
+                        db_session.commit()
+            else:
+                # Method neither instructed to begin or not to
+                # Likely there was a daemon restart ot power failure
+                # Resume method with saved start_time
+                self.method_start_time = datetime.datetime.strptime(
+                    str(timer.method_start_time), '%Y-%m-%d %H:%M:%S.%f')
+                if method_data_repeat and method_data_repeat.duration_end:
+                    self.method_end_time = datetime.datetime.strptime(
+                        str(timer.method_end_time), '%Y-%m-%d %H:%M:%S.%f')
+                    if self.method_end_time > datetime.datetime.now():
+                        self.logger.warning(
+                            "Resuming method {id}: started {start}, "
+                            "ends {end}".format(
+                                id=self.method_id,
+                                start=self.method_start_time,
+                                end=self.method_end_time))
+                    else:
+                        self.method_start_act = 'Ended'
+                else:
+                    self.method_start_act = 'Ended'
 
     def run(self):
         self.running = True
         self.logger.info("Activated in {:.1f} ms".format(
             (timeit.default_timer() - self.thread_startup_timer) * 1000))
         self.ready.set()
+
         while self.running:
+
             # Timer is set to react at a specific hour and minute of the day
             if self.timer_type == 'time':
                 if (int(self.start_hour) == datetime.datetime.now().hour and
@@ -160,31 +220,40 @@ class TimerController(threading.Thread):
 
             # Timer is a PWM Method timer
             elif self.timer_type == 'pwm_method':
-                self.pwm_method_count += 1
-                this_controller = db_retrieve_table_daemon(
-                    Timer, device_id=self.timer_id)
-                return_value, setpoint = calculate_method_setpoint(
-                    self.method_id,
-                    Timer,
-                    this_controller,
-                    Method,
-                    MethodData,
-                    self.logger)
-                if setpoint > 100:
-                    setpoint = 100
-                elif setpoint < 0:
-                    setpoint = 0
-                if self.pwm_method_count > 60:
-                    self.pwm_method_count = 0
-                    self.logger.debug("Turn Output {output} to a PWM duty "
-                                      "cycle of {dc} %".format(
-                                        output=self.relay_id,
-                                        dc=setpoint))
-                # Activate pwm with calculated duty cycle
-                self.control.relay_on(
-                    self.relay_id,
-                    duty_cycle=setpoint)
-                self.pwm_method_timer = (time.time() + 1)
+                try:
+                    if time.time() > self.pwm_method_timer:
+                        if self.method_start_act == 'Ended':
+                            self.stop_controller(ended_normally=False, deactivate_timer=True)
+                            self.logger.warning(
+                                "Method has ended. "
+                                "Activate the Timer controller to start it again.")
+                        else:
+                            this_controller = db_retrieve_table_daemon(
+                                Timer, device_id=self.timer_id)
+                            setpoint, ended = calculate_method_setpoint(
+                                self.method_id,
+                                Timer,
+                                this_controller,
+                                Method,
+                                MethodData,
+                                self.logger)
+                            if ended:
+                                self.method_start_act = 'Ended'
+                            if setpoint > 100:
+                                setpoint = 100
+                            elif setpoint < 0:
+                                setpoint = 0
+                            self.logger.info("Turn Output {output} to a PWM duty "
+                                             "cycle of {dc:.1f} %".format(
+                                                output=self.relay_id,
+                                                dc=setpoint))
+                            # Activate pwm with calculated duty cycle
+                            self.control.relay_on(
+                                self.relay_id,
+                                duty_cycle=setpoint)
+                        self.pwm_method_timer = time.time() + self.method_period
+                except Exception:
+                    self.logger.exception(1)
 
             time.sleep(0.1)
 
@@ -196,6 +265,21 @@ class TimerController(threading.Thread):
     def is_running(self):
         return self.running
 
-    def stop_controller(self):
+    def stop_controller(self, ended_normally=True, deactivate_timer=False):
         self.thread_shutdown_timer = timeit.default_timer()
         self.running = False
+        # Unset method start time
+        if self.method_id and ended_normally:
+            with session_scope(MYCODO_DB_PATH) as db_session:
+                mod_timer = db_session.query(Timer).filter(
+                    Timer.id == self.timer_id).first()
+                mod_timer.method_start_time = 'Ended'
+                mod_timer.method_end_time = None
+                db_session.commit()
+
+        if deactivate_timer:
+            with session_scope(MYCODO_DB_PATH) as db_session:
+                mod_timer = db_session.query(Timer).filter(
+                    Timer.id == self.timer_id).first()
+                mod_timer.is_activated = False
+                db_session.commit()

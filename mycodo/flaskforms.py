@@ -1136,6 +1136,7 @@ class TimerDuration(FlaskForm):
 
 class TimerPWMMethod(FlaskForm):
     method_id = StringField(lazy_gettext(u'Method ID'))
+    method_period = StringField(lazy_gettext(u'Period (seconds)'))
 
 
 #

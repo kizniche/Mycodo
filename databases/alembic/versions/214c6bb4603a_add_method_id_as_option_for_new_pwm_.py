@@ -19,12 +19,13 @@ depends_on = None
 def upgrade():
     with op.batch_alter_table("timer") as batch_op:
         batch_op.add_column(sa.Column('method_id', sa.Integer))
-        batch_op.add_column(sa.Column('method_start_time', sa.Integer))
-        batch_op.add_column(sa.Column('method_end_time', sa.Integer))
+        batch_op.add_column(sa.Column('method_start_time', sa.Text))
+        batch_op.add_column(sa.Column('method_end_time', sa.Text))
+        batch_op.add_column(sa.Column('method_period', sa.Float))
 
     with op.batch_alter_table("pid") as batch_op:
-        batch_op.add_column(sa.Column('method_start_time', sa.Integer))
-        batch_op.add_column(sa.Column('method_end_time', sa.Integer))
+        batch_op.add_column(sa.Column('method_start_time', sa.Text))
+        batch_op.add_column(sa.Column('method_end_time', sa.Text))
 
     with op.batch_alter_table("method") as batch_op:
         batch_op.drop_column('start_time')
@@ -36,6 +37,7 @@ def downgrade():
         batch_op.drop_column('method_id')
         batch_op.drop_column('method_start_time')
         batch_op.drop_column('method_end_time')
+        batch_op.drop_column('method_period')
 
     with op.batch_alter_table("pid") as batch_op:
         batch_op.drop_column('method_id')

@@ -1540,10 +1540,11 @@ def pid_activate(pid_id):
     if not error:
         # Signal the duration method can run because it's been
         # properly initiated (non-power failure)
-        mod_method = Method.query.filter(
+        method = Method.query.filter(
             Method.id == pid.method_id).first()
-        if mod_method and mod_method.method_type == 'Duration':
-            mod_method.start_time = 'Ready'
+        if method and method.method_type == 'Duration':
+            mod_pid = PID.query.filter(PID.id == pid_id).first()
+            mod_pid.method_start_time = 'Ready'
             db.session.commit()
 
         time.sleep(1)
@@ -2503,6 +2504,7 @@ def timer_add(display_order,
     elif form_add_timer_base.timer_type.data == 'pwm_method':
         new_timer.timer_type = 'pwm_method'
         new_timer.method_id = form_add_timer.method_id.data
+        new_timer.method_period = form_add_timer.method_period.data
     else:
         error.append("Not a recognized Timer type")
 
@@ -2541,8 +2543,8 @@ def timer_mod(form_mod_timer_base, form_mod_timer):
                                  u"modifying its settings"))
         else:
             mod_timer.name = form_mod_timer_base.name.data
-            if form_mod_timer.relay_id.data:
-                mod_timer.relay_id = form_mod_timer.relay_id.data
+            if form_mod_timer_base.relay_id.data:
+                mod_timer.relay_id = form_mod_timer_base.relay_id.data
             else:
                 mod_timer.relay_id = None
 
@@ -2557,15 +2559,14 @@ def timer_mod(form_mod_timer_base, form_mod_timer):
             elif mod_timer.timer_type == 'duration':
                 mod_timer.duration_on = form_mod_timer.duration_on.data
                 mod_timer.duration_off = form_mod_timer.duration_off.data
-            elif mod_timer.timer_type_main == 'pwm_method':
+            elif mod_timer.timer_type == 'pwm_method':
                 if form_mod_timer.method_id.data:
                     mod_timer.method_id = form_mod_timer.method_id.data
                 else:
                     mod_timer.method_id = None
-                if form_mod_timer.relay_id.data:
-                    mod_timer.relay_id = form_mod_timer.relay_id.data
-                else:
-                    mod_timer.relay_id = None
+                mod_timer.method_period = form_mod_timer.method_period.data
+            else:
+                error.append("Unknown Timer Type")
 
         if not error:
             db.session.commit()
@@ -2614,6 +2615,13 @@ def timer_reorder(timer_id, display_order, direction):
 
 
 def timer_activate(form_timer):
+    timer = Timer.query.filter(Timer.id == form_timer.timer_id.data).first()
+    if timer.timer_type == 'pwm_method':
+        # Signal the duration method can run because it's been
+        # properly initiated (non-power failure)
+        mod_timer = Timer.query.filter(Timer.id == form_timer.timer_id.data).first()
+        mod_timer.method_start_time = 'Ready'
+        db.session.commit()
     controller_activate_deactivate(
         'activate', 'Timer', form_timer.timer_id.data)
 

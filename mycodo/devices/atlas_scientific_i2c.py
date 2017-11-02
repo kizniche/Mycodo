@@ -79,7 +79,7 @@ class AtlasScientificI2C:
             lock = fasteners.InterProcessLock(lock_file_amend)
             lock_acquired = False
 
-            for i in range(600):
+            for _ in range(600):
                 lock_acquired = lock.acquire(blocking=False)
                 if lock_acquired:
                     break

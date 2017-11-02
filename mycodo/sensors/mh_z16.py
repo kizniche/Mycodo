@@ -152,7 +152,7 @@ class MHZ16Sensor(AbstractSensor):
                 lock = fasteners.InterProcessLock(self.mhz16_lock_file)
                 lock_acquired = False
 
-                for i in range(600):
+                for _ in range(600):
                     lock_acquired = lock.acquire(blocking=False)
                     if lock_acquired:
                         break
