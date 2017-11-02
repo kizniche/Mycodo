@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2017-10-29 18:44-0400\n"
-"PO-Revision-Date: 2017-10-30 22:24-0400\n"
+"PO-Revision-Date: 2017-11-01 23:02-0400\n"
 "Last-Translator: \n"
 "Language: ko\n"
 "Language-Team: ko <LL@li.org>\n"
@@ -411,11 +411,11 @@ msgstr "LCD 를 더하시오."
 
 #: flaskforms.py:428
 msgid "I2C Address"
-msgstr ""
+msgstr "I2C 주소"
 
 #: flaskforms.py:432
 msgid "I2C Bus"
-msgstr ""
+msgstr "I2C 버스"
 
 #: flaskforms.py:436
 msgid "Multiplexer I2C Address"
@@ -433,7 +433,7 @@ msgstr ""
 
 #: flaskforms.py:458 mycodo_flask/templates/pages/lcd.html:88
 msgid "LCD Type"
-msgstr ""
+msgstr "LCD 타입"
 
 #: flaskforms.py:466
 msgid "Line 1 Display"
@@ -461,7 +461,7 @@ msgstr "기억하기"
 
 #: flaskforms.py:510
 msgid "Number of Lines"
-msgstr ""
+msgstr "라인 개수"
 
 #: flaskforms.py:511
 msgid "Lines"
@@ -469,39 +469,39 @@ msgstr "라인"
 
 #: flaskforms.py:514
 msgid "Number of lines should be greater than 0."
-msgstr ""
+msgstr "라인 개수는 0보다 커야합니다"
 
 #: flaskforms.py:517
 msgid "Login Log"
-msgstr ""
+msgstr "로그인 로그"
 
 #: flaskforms.py:518
 msgid "HTTP Log"
-msgstr ""
+msgstr "HTTP 로그"
 
 #: flaskforms.py:519
 msgid "Daemon Log"
-msgstr ""
+msgstr "데몬 로그"
 
 #: flaskforms.py:520
 msgid "Backup Log"
-msgstr ""
+msgstr "백업 로그"
 
 #: flaskforms.py:521
 msgid "KeepUp Log"
-msgstr ""
+msgstr "KeepUp 로그"
 
 #: flaskforms.py:522
 msgid "Upgrade Log"
-msgstr ""
+msgstr "업그레이드 로그"
 
 #: flaskforms.py:523
 msgid "Restore Log"
-msgstr ""
+msgstr "복원 로그"
 
 #: flaskforms.py:532
 msgid "Method Type"
-msgstr ""
+msgstr "메소드 유형"
 
 #: flaskforms.py:534
 msgid "Create New Method"
@@ -537,7 +537,7 @@ msgstr "지속 시간 (초)"
 
 #: flaskforms.py:560 flaskforms.py:626
 msgid "End After (seconds)"
-msgstr ""
+msgstr "종료 후 (초)"
 
 #: flaskforms.py:561
 msgid "Amplitude"
@@ -1273,10 +1273,11 @@ msgstr "더하다"
 #: flaskutils.py:270
 msgid "Error: Angle Shift is out of range. It must be <= 0 and <= 360."
 msgstr ""
+"오류 : 각도 시프트가 범위를 벗어났습니다. 값은 <= 0 및 <= 360 이어야합니다"
 
 #: flaskutils.py:274
 msgid "Error: X0 must be greater than X3."
-msgstr ""
+msgstr "오류: X0 는 X3 보다 커야합니다"
 
 #: flaskutils.py:319
 #, python-format
@@ -1308,7 +1309,7 @@ msgstr ""
 #: flaskutils.py:1969 flaskutils.py:2247 flaskutils.py:2505 flaskutils.py:2597
 #: flaskutils.py:2691 flaskutils.py:2753 flaskutils.py:2807 flaskutils.py:2872
 msgid "Modify"
-msgstr "수정하다"
+msgstr "수정"
 
 #: flaskutils.py:468
 #, python-format
@@ -1391,6 +1392,7 @@ msgstr ""
 #: flaskutils.py:1266
 msgid "Cannot activate controller if the associated sensor controller is inactive"
 msgstr ""
+"연결된 센서 컨트롤러가 비활성 상태 인 경우 컨트롤러를 활성화 할 수 없습니다"
 
 #: flaskutils.py:1291 flaskutils.py:1293 flaskutils.py:2980 flaskutils.py:3000
 #: flaskutils.py:3013 flaskutils.py:3033 flaskutils.py:3039
@@ -1404,7 +1406,7 @@ msgstr "검증된 센서가 필요합니다."
 
 #: flaskutils.py:1426
 msgid "Raise and lower outputs cannot be the same"
-msgstr ""
+msgstr "높고 낮은 출력은 같을 수 없습니다"
 
 #: flaskutils.py:1435
 #, python-format
@@ -1413,7 +1415,7 @@ msgstr ""
 
 #: flaskutils.py:1492
 msgid "A valid Measurement is required"
-msgstr ""
+msgstr "유효한 측정이 필요합니다"
 
 #: flaskutils.py:1501
 msgid "A Raise Relay ID and/or a Lower Relay ID is required"
@@ -1421,7 +1423,7 @@ msgstr "높이는 릴레이 아이디와 낮추는 릴레이 아이디가 필요
 
 #: flaskutils.py:1513 flaskutils.py:1629
 msgid "Actuate"
-msgstr "발동 시키기"
+msgstr "작동"
 
 #: flaskutils.py:1529
 msgid ""
@@ -1446,7 +1448,7 @@ msgstr ""
 #: flaskutils.py:1600
 #, python-format
 msgid "PID Error: %(msg)s"
-msgstr ""
+msgstr "PID 오류: %(msg)s"
 
 #: flaskutils.py:1616
 msgid ""
@@ -1501,7 +1503,7 @@ msgstr ""
 
 #: flaskutils.py:1676
 msgid "Invalid value"
-msgstr ""
+msgstr "잘못된 값"
 
 #: flaskutils.py:1696 flaskutils.py:1734 flaskutils.py:1799 flaskutils.py:1828
 msgid "Conditional"
@@ -1513,11 +1515,11 @@ msgstr ""
 
 #: flaskutils.py:1960
 msgid "Invalid quantity"
-msgstr ""
+msgstr "유효하지 않은 수량"
 
 #: flaskutils.py:1961
 msgid "Acceptable values"
-msgstr ""
+msgstr "허용되는 값"
 
 #: flaskutils.py:2230
 #, python-format
@@ -1526,7 +1528,7 @@ msgstr "아이디 %(id)s (%(uuid)s) 와 %(type)s 센서가 성공적으로 설�
 
 #: flaskutils.py:2256
 msgid "Deactivate sensor controller before modifying its settings"
-msgstr ""
+msgstr "설정을 수정하기 전에 센서 컨트롤러를 비활성화 시키십시오"
 
 #: flaskutils.py:2261
 msgid ""
@@ -1540,47 +1542,49 @@ msgstr ""
 
 #: flaskutils.py:2272
 msgid "Invalid device or improper permissions to read device"
-msgstr ""
+msgstr "잘못된 디바이스 이거나 장치를 읽을 수있는 적절한 권한이 없습니다"
 
 #: flaskutils.py:2481
 msgid "Durations must be greater than 0"
-msgstr ""
+msgstr "지속 시간은 0보다 커야합니다"
 
 #: flaskutils.py:2513
 msgid "Deactivate timer controller before modifying its settings"
-msgstr ""
+msgstr "설정을 수정하기 전에 타이머 컨트롤러를 비활성화하십시오"
 
 #: flaskutils.py:2603
 msgid "User Role"
-msgstr ""
+msgstr "사용자 권한"
 
 #: flaskutils.py:2647 flaskutils.py:2692
 msgid "User"
-msgstr ""
+msgstr "사용자"
 
 #: flaskutils.py:2653 mycodo_flask/authentication_routes.py:93
 msgid ""
 "Invalid user name. Must be between 2 and 64 characters and only contain letters "
 "and numbers."
-msgstr ""
+msgstr "잘못된 사용자 이름. 2 자에서 64 자 사이의 문자와 숫자 만 포함해야합니다."
 
 #: flaskutils.py:2658
 msgid "Another user already has that email address."
-msgstr ""
+msgstr "다른 사용자가 이미 해당 이메일 주소를 가지고 있습니다."
 
 #: flaskutils.py:2662 mycodo_flask/authentication_routes.py:99
 msgid ""
 "Invalid password. Must be between 6 and 64 characters and only contain letters, "
 "numbers, and symbols."
 msgstr ""
+"유효하지 않은 비밀번호. 6 자에서 64 자 사이의 문자 여야하며 문자, 숫자 및 기호 "
+"만 포함해야합니다."
 
 #: flaskutils.py:2667 flaskutils.py:2711 mycodo_flask/authentication_routes.py:89
 msgid "Passwords do not match. Please try again."
-msgstr ""
+msgstr "비밀번호가 일치하지 않습니다. 다시 시도하십시오."
 
 #: flaskutils.py:2703
 msgid "Invalid password"
-msgstr ""
+msgstr "유효하지 않은 비밀번호"
 
 #: flaskutils.py:2740
 #, python-format
@@ -1591,11 +1595,11 @@ msgstr ""
 #: mycodo_flask/templates/settings/general.html:6
 #: mycodo_flask/templates/settings/general.html:10
 msgid "General Settings"
-msgstr ""
+msgstr "일반 설정"
 
 #: flaskutils.py:2808 mycodo_flask/templates/settings/alerts.html:4
 msgid "Alert Settings"
-msgstr ""
+msgstr "알림 설정"
 
 #: flaskutils.py:2820
 #, python-format
