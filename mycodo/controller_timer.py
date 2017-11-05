@@ -105,12 +105,12 @@ class TimerController(threading.Thread):
             self.method_type = method.method_type
             self.method_start_act = timer.method_start_time
             self.method_start_time = None
-            self.method_end_act = None
             self.method_end_time = None
 
             if self.method_type == 'Duration':
                 if self.method_start_act == 'Ended':
-                    self.stop_controller(ended_normally=False, deactivate_timer=True)
+                    self.stop_controller(ended_normally=False,
+                                         deactivate_timer=True)
                     self.logger.warning(
                         "Method has ended. "
                         "Activate the Timer controller to start it again.")
@@ -121,7 +121,6 @@ class TimerController(threading.Thread):
                     if method_data_repeat and method_data_repeat.duration_end:
                         self.method_end_time = now + datetime.timedelta(
                             seconds=float(method_data_repeat.duration_end))
-                        self.method_end_act = True
 
                     with session_scope(MYCODO_DB_PATH) as db_session:
                         mod_timer = db_session.query(Timer)
@@ -224,7 +223,7 @@ class TimerController(threading.Thread):
                     if time.time() > self.pwm_method_timer:
                         if self.method_start_act == 'Ended':
                             self.stop_controller(ended_normally=False, deactivate_timer=True)
-                            self.logger.warning(
+                            self.logger.info(
                                 "Method has ended. "
                                 "Activate the Timer controller to start it again.")
                         else:
@@ -243,10 +242,11 @@ class TimerController(threading.Thread):
                                 setpoint = 100
                             elif setpoint < 0:
                                 setpoint = 0
-                            self.logger.info("Turn Output {output} to a PWM duty "
-                                             "cycle of {dc:.1f} %".format(
-                                                output=self.relay_id,
-                                                dc=setpoint))
+                            self.logger.debug(
+                                "Turn Output {output} to a PWM duty cycle of "
+                                "{dc:.1f} %".format(
+                                    output=self.relay_id,
+                                    dc=setpoint))
                             # Activate pwm with calculated duty cycle
                             self.control.relay_on(
                                 self.relay_id,

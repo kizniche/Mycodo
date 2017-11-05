@@ -194,8 +194,14 @@ def calculate_method_setpoint(method_id, table, controller, Method, MethodData, 
         start_time = datetime.datetime.strptime(
             str(controller.method_start_time), '%Y-%m-%d %H:%M:%S.%f')
         ended = False
-        if controller.method_end_time and now > start_time:
-            ended = True
+
+        # Check if method_end_time is not None
+        if controller.method_end_time:
+            # Convert time string to datetime object
+            end_time = datetime.datetime.strptime(
+                str(controller.method_end_time), '%Y-%m-%d %H:%M:%S.%f')
+            if now > start_time:
+                ended = True
 
         seconds_from_start = (now - start_time).total_seconds()
         total_sec = 0
@@ -247,7 +253,7 @@ def calculate_method_setpoint(method_id, table, controller, Method, MethodData, 
 
         if controller.method_start_time:
             if method_restart:
-                if controller.method_end_time and now > controller.method_end_time:
+                if end_time and now > end_time:
                     ended = True
                 else:
                     # Method has been instructed to restart

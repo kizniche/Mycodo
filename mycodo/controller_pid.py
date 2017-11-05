@@ -152,7 +152,6 @@ class PIDController(threading.Thread):
             self.method_type = method.method_type
             self.method_start_act = pid.method_start_time
             self.method_start_time = None
-            self.method_end_act = None
             self.method_end_time = None
 
             if self.method_type == 'Duration':
@@ -166,7 +165,6 @@ class PIDController(threading.Thread):
                     if method_data_repeat and method_data_repeat.duration_end:
                         self.method_end_time = now + datetime.timedelta(
                             seconds=float(method_data_repeat.duration_end))
-                        self.method_end_act = True
 
                     with session_scope(MYCODO_DB_PATH) as db_session:
                         mod_pid = db_session.query(PID)
