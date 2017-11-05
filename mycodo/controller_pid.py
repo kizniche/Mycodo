@@ -207,7 +207,8 @@ class PIDController(threading.Thread):
             while self.running:
 
                 if self.method_start_act == 'Ended':
-                    self.stop_controller(ended_normally=False, deactivate_pid=True)
+                    self.stop_controller(ended_normally=False,
+                                         deactivate_pid=True)
                     self.logger.warning(
                         "Method has ended. "
                         "Activate the PID controller to start it again.")

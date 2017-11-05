@@ -8,6 +8,7 @@
 ### Bugfixes
 
  - Fix display of PID setpoints on Graphs
+ - Fix issue acquiring ADC measurement
 
 
 ## 5.3.3 (2017-10-29)

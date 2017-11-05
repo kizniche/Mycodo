@@ -229,10 +229,6 @@ class SensorController(threading.Thread):
         else:
             self.multiplexer = None
 
-        if self.device in ['ADS1x15', 'MCP342x'] and self.location:
-            self.adc_lock_file = "/var/lock/mycodo_adc_bus{bus}_0x{i2c:02X}.pid".format(
-                bus=self.i2c_bus, i2c=self.i2c_address)
-
         # Set up edge detection of a GPIO pin
         if self.device == 'EDGE':
             if self.switch_edge == 'rising':
@@ -247,13 +243,17 @@ class SensorController(threading.Thread):
             self.lock_multiplexer()
 
         # Set up analog-to-digital converter
-        if self.device == 'ADS1x15':
-            self.adc = ADS1x15Read(self.i2c_address, self.i2c_bus,
-                                   self.adc_chan, self.adc_gain)
-        elif self.device == 'MCP342x':
-            self.adc = MCP342xRead(self.i2c_address, self.i2c_bus,
-                                   self.adc_chan, self.adc_gain,
-                                   self.adc_resolution)
+        if self.device in ['ADS1x15', 'MCP342x'] and self.location:
+            self.adc_lock_file = "/var/lock/mycodo_adc_bus{bus}_0x{i2c:02X}.pid".format(
+                bus=self.i2c_bus, i2c=self.i2c_address)
+
+            if self.device == 'ADS1x15':
+                self.adc = ADS1x15Read(self.i2c_address, self.i2c_bus,
+                                       self.adc_chan, self.adc_gain)
+            elif self.device == 'MCP342x':
+                self.adc = MCP342xRead(self.i2c_address, self.i2c_bus,
+                                       self.adc_chan, self.adc_gain,
+                                       self.adc_resolution)
         else:
             self.adc = None
 
@@ -722,24 +722,25 @@ class SensorController(threading.Thread):
         if self.mux_lock and self.mux_lock_acquired:
             self.mux_lock.release()
 
-    def read_adc(self, measurements):
+    def read_adc(self):
         """ Read voltage from ADC """
         try:
-            gotten = False
+            lock_acquired = False
             adc_lock = fasteners.InterProcessLock(self.adc_lock_file)
             for _ in range(600):
-                gotten = adc_lock.acquire(blocking=False)
-                if gotten:
+                lock_acquired = adc_lock.acquire(blocking=False)
+                if lock_acquired:
                     break
                 else:
                     time.sleep(0.1)
-            if not gotten:
+            if not lock_acquired:
                 self.logger.error(
                     "Unable to acquire lock: {lock}".format(
                         lock=self.adc_lock_file))
 
             # Get measurement from ADC
             measurements = self.adc.next()
+
             if measurements is not None:
                 # Get the voltage difference between min and max volts
                 diff_voltage = abs(self.adc_volts_max - self.adc_volts_min)
@@ -771,14 +772,17 @@ class SensorController(threading.Thread):
                 else:
                     measurements[self.adc_measure] = converted_units
 
-                if adc_lock and gotten:
+                if adc_lock and lock_acquired:
                     adc_lock.release()
+
+                return measurements
 
         except Exception as except_msg:
             self.logger.exception(
                 "Error while attempting to read adc: {err}".format(
                     err=except_msg))
-            return measurements
+
+        return None
 
     def update_measure(self):
         """
@@ -800,7 +804,7 @@ class SensorController(threading.Thread):
             self.lock_multiplexer()
 
         if self.adc:
-            measurements = self.read_adc(measurements)
+            measurements = self.read_adc()
         else:
             try:
                 # Get measurement from sensor
