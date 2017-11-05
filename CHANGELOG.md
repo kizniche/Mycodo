@@ -3,12 +3,13 @@
 ### Features
 
  - Replace deprecated LockFile with fasteners ([#260](https://github.com/kizniche/mycodo/issues/260))
- - Add Timer type: PWM duty cycle output using Method ([#262](https://github.com/kizniche/mycodo/issues/262))
+ - Add Timer type: PWM duty cycle output using Method ([#262](https://github.com/kizniche/mycodo/issues/262)), read more at [PWM Method](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#pwm-method) in the manual
 
 ### Bugfixes
 
  - Fix display of PID setpoints on Graphs
  - Fix issue acquiring ADC measurement
+ - Add 1 significant digit to ADC voltage measurements
 
 
 ## 5.3.3 (2017-10-29)

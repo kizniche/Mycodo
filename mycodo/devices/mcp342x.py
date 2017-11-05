@@ -49,7 +49,7 @@ class MCP342xRead(object):
         """
         if self.read():
             return None
-        return dict(voltage=float('{0:.2f}'.format(self._voltage)))
+        return dict(voltage=float('{0:.3f}'.format(self._voltage)))
 
 
 if __name__ == "__main__":

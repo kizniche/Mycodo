@@ -533,7 +533,7 @@ For *Daily Timers*, the start hour:minute can be set to turn a specific relay on
 
 #### PWM Method
 
-This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. Ensure your method stays between 0 and 100, because a negative or above 100 % duty cycle is not possible.
+This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. Ensure the values used in this method stay between 0 and 100.
 
 
 LCDs
@@ -646,12 +646,12 @@ echo "TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm
 Methods
 -------
 
-Methods allow different types of setpoint tracking in PID controllers.
+Methods enable Setpoint Tracking in PIDs and time-based duty cycle changes in timers.
 Normally, a PID controller will regulate an environmental condition to a
 specific setpoint. If you would like the setpoint to change over time,
-this is called setpoint tracking. Setpoint tracking is useful for
+this is called setpoint tracking. Setpoint Tracking is useful for
 applications such as reflow ovens, thermal cyclers (DNA replication),
-mimicking natural daily cycles, and more.
+mimicking natural daily cycles, and more. Methods may also be used to change a duty cycle over time when used with a Timer.
 
 ### Universal Options
 
@@ -674,17 +674,9 @@ over the period of days, weeks, or months.
 
 #### Duration Method
 
-A duration method allows a specific durations of time to dictate the
-setpoint. This is useful for when short periods of time are required in
-a method, such as those that take place over the course of a few minutes
-or hours. Each duration will stack on the previous duration, meaning a
-newly-added start setpoint will begin from the previous entry's end
-setpoint.
+A Duration Method allows a ***Setpoint*** (for PIDs) or ***Duty Cycle*** (for Timers) to be set after specific durations of time. Each new duration added will stack, meaning it will come after the previous duration, meaning a newly-added ***Start Setpoint*** will begin after the previous entry's ***End Setpoint***.
 
-If the "Repeat Method" option is used, this will cause the method to
-repeat once it has reached the end. If this option is used, no more
-durations may be added to the method. If the repeat option is deleted
-then more durations may be added.
+If the "Repeat Method" option is used, this will cause the method to repeat once it has reached the end. If this option is used, no more durations may be added to the method. If the repeat option is deleted then more durations may be added. For instance, if your method is 200 seconds total, if the Repeat Duration is set to 600 seconds, the method will repeat 3 times and then automatically turn off the PID or Timer.
 
 #### Daily (Time-Based) Method
 
