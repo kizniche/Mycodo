@@ -8,8 +8,12 @@
 ### Bugfixes
 
  - Fix display of PID setpoints on Graphs
- - Fix issue acquiring ADC measurement
- - Add 1 significant digit to ADC voltage measurements
+
+### Miscelaneous
+
+ - Update Korean translations
+ - Add 2 more significant digits to ADC voltage measurements
+ - Upgrade InfluxDB to v1.3.7
 
 
 ## 5.3.3 (2017-10-29)

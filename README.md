@@ -16,12 +16,13 @@ Mycodo has been used for cultivating mushrooms and plants, culturing microorgani
 
   - Complete: [Español (Spanish)](#espa%C3%B1ol-spanish)
   - Partial: [Français (French)](#fran%C3%A7ais-french), [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
+  - Change language under Configure -> Language
 
 ## Table of Contents
 
 - [What is PID Control?](#what-is-pid-control)
 - [Features](#features)
-- [Supported Sensors](#supported-sensors)
+- [Supported Inputs](#supported-inputs)
 - [Install](#install)
   - [Install Notes](#install-notes)
   - [Web Server Security](#web-server-security)
@@ -70,7 +71,7 @@ The top graph of the above screenshot visualizes the regulation of temperature i
 * Web Interface: Access using a web browser on your local network or anywhere in the world with an internet connection.
 * Secure Login: High-security login system utilizing the latest encryption and authorization standards.
 * Automated system upgrade: When a new version is released on github, an upgrade can be initiated from the web interface.
-* Languages: English, [Español (Spanish)](#espa%C3%B1ol-spanish) (partial: [Français (French)](#fran%C3%A7ais-french), [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean))
+* Languages: English, [Español (Spanish)](#espa%C3%B1ol-spanish) (partial: [Français (French)](#fran%C3%A7ais-french), [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)) (Change language under Configure -> Language)
 
 ## Supported Inputs
 
