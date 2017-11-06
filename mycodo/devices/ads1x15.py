@@ -55,7 +55,7 @@ class ADS1x15Read(object):
         """
         if self.read():
             return None
-        return dict(voltage=float('{0:.3f}'.format(self._voltage)))
+        return dict(voltage=float('{0:.4f}'.format(self._voltage)))
 
     def stop_sensor(self):
         self.running = False

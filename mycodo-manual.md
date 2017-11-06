@@ -53,9 +53,9 @@ Table of Contents
    - [Daemon Not Running](#daemon-not-running)
    - [More](#more)
 
-[Sensor and Device Setup](#sensor-and-device-setup)
+[Input and Device Setup](#input-and-device-setup)
 
-[Sensor Interfaces](#sensor-interfaces)
+[Input Interfaces](#input-interfaces)
 
    - [1-Wire](#1-wire)
    - [GPIO](#gpio)
@@ -66,7 +66,6 @@ Table of Contents
 [Device Setup](#device-setup)
 
    - [I<sup>2</sup>C Multiplexers](#i2c-multiplexers)
-   - [Analog to Digital Converters](#analog-to-digital-converters)
 
 [Device Specific Information](#device-specific-information)
 
@@ -533,7 +532,7 @@ For *Daily Timers*, the start hour:minute can be set to turn a specific relay on
 
 #### PWM Method
 
-This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. Ensure the values used in this method stay between 0 and 100.
+This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. While creating these methods, keep in mind a duty cycle is a percentage and the values must stay between 0 and 100.
 
 
 LCDs
@@ -960,15 +959,15 @@ Check out the [Diagnosing Mycodo Issues Wiki
 Page](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues) on
 github for more information about diagnosing issues.
 
-Sensor and Device Setup
+Input and Device Setup
 =======================
 
-Certain sensors will require extra steps to be taken in order to set up the interface for communication. This includes I<sup>2</sup>C, one-wire, and UART.
+Certain inputs will require extra steps to be taken in order to set up the interface for communication. This includes I<sup>2</sup>C, one-wire, and UART.
 
-Sensor Interfaces
+Input Interfaces
 -----------------
 
-Sensors are categorized below by their communication interface.
+Inputs are categorized below by their communication interface.
 
 ### 1-Wire
 
@@ -1014,6 +1013,16 @@ Find the line "enable_uart=0" and change it to "enable_uart=1", then reboot.
 
 The I<sup>2</sup>C interface should be enabled with `raspi-config`.
 
+**Analog to Digital Converters**
+
+An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A [voltage divider](https://learn.sparkfun.com/tutorials/voltage-dividers) may be necessary to attain your desired range.
+
+> [ADS1x15](#ads1x15): Analog-to-digital converter [link](https://www.adafruit.com/product/1085)
+
+> [MCP342x](#mcp342x): Analog-to-digital converter [link](http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316))
+
+**Sensors**
+
 > [AM2315](#am2315): Relative humidity, temperature [link](https://github.com/lexruee/tentacle_pi)
 
 > [Atlas Scientific pH](#atlas-scientific-ph): pH [link](https://www.atlas-scientific.com/ph.html)
@@ -1046,19 +1055,11 @@ Device Setup
 
 ### I<sup>2</sup>C Multiplexers
 
-All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some sensors may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.
+All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some inputs may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.
 
 > [TCA9548A](#tca9548a): I<sup>2</sup>C Multiplexer [link](https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview) (I<sup>2</sup>C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I<sup>2</sup>C address.
 
 > TCA9545A: I<sup>2</sup>C Bus Multiplexer [link](http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/) (I<sup>2</sup>C): This board works a little differently than the TCA9548A, above. This board actually creates 4 new I<sup>2</sup>C busses, each with their own selectable voltage, either 3.3 or 5.0 volts. Instructions to enable the Device Tree Overlay are at [https://github.com/camrex/i2c-mux-pca9545a](https://github.com/camrex/i2c-mux-pca9545a). Nothing else needs to be done in Mycodo after that except to select the correct I<sup>2</sup>C bus when configuring a sensor.
-
-### Analog to Digital Converters
-
-An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A [voltage divider](https://learn.sparkfun.com/tutorials/voltage-dividers) may be necessary to attain your desired range.
-
-> [ADS1x15](#ads1x15) [link](https://www.adafruit.com/product/1085) &plusmn;4.096 (I<sup>2</sup>C)
-
-> [MCP342x](#mcp342x) [link](http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)) &plusmn;2.048 (I<sup>2</sup>C)
 
 Device Specific Information
 ===========================

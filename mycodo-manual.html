@@ -384,8 +384,8 @@
 <li><a href="#daemon-not-running">Daemon Not Running</a></li>
 <li><a href="#more">More</a></li>
 </ul>
-<p><a href="#sensor-and-device-setup">Sensor and Device Setup</a></p>
-<p><a href="#sensor-interfaces">Sensor Interfaces</a></p>
+<p><a href="#input-and-device-setup">Input and Device Setup</a></p>
+<p><a href="#input-interfaces">Input Interfaces</a></p>
 <ul>
 <li><a href="#1-wire">1-Wire</a></li>
 <li><a href="#gpio">GPIO</a></li>
@@ -396,7 +396,6 @@
 <p><a href="#device-setup">Device Setup</a></p>
 <ul>
 <li><a href="#i2c-multiplexers">I<sup>2</sup>C Multiplexers</a></li>
-<li><a href="#analog-to-digital-converters">Analog to Digital Converters</a></li>
 </ul>
 <p><a href="#device-specific-information">Device Specific Information</a></p>
 <p><a href="#lcd-displays">LCD Displays</a></p>
@@ -1211,7 +1210,7 @@
 <p>For <em>Duration Timers</em>, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated.</p>
 <p>For <em>Daily Timers</em>, the start hour:minute can be set to turn a specific relay on or off at the specific time of day.</p>
 <h4 id="pwm-method">PWM Method</h4>
-<p>This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. Ensure the values used in this method stay between 0 and 100.</p>
+<p>This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. While creating these methods, keep in mind a duty cycle is a percentage and the values must stay between 0 and 100.</p>
 <h2 id="lcds">LCDs</h2>
 <p>Data may be output to a liquid crystal display (LCD) for easy viewing. Please see <a href="#lcd-displays">LCD Displays</a> for specific information regarding compatibility.</p>
 <table style="width:94%;">
@@ -1549,10 +1548,10 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 </ul>
 <h2 id="more">More</h2>
 <p>Check out the <a href="https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues">Diagnosing Mycodo Issues Wiki Page</a> on github for more information about diagnosing issues.</p>
-<h1 id="sensor-and-device-setup">Sensor and Device Setup</h1>
-<p>Certain sensors will require extra steps to be taken in order to set up the interface for communication. This includes I<sup>2</sup>C, one-wire, and UART.</p>
-<h2 id="sensor-interfaces">Sensor Interfaces</h2>
-<p>Sensors are categorized below by their communication interface.</p>
+<h1 id="input-and-device-setup">Input and Device Setup</h1>
+<p>Certain inputs will require extra steps to be taken in order to set up the interface for communication. This includes I<sup>2</sup>C, one-wire, and UART.</p>
+<h2 id="input-interfaces">Input Interfaces</h2>
+<p>Inputs are categorized below by their communication interface.</p>
 <h3 id="wire">1-Wire</h3>
 <p>The 1-wire interface should be configured with <a href="https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing">these instructions</a>.</p>
 <blockquote>
@@ -1589,6 +1588,15 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <p>Find the line “enable_uart=0” and change it to “enable_uart=1”, then reboot.</p>
 <h3 id="i2c">I<sup>2</sup>C</h3>
 <p>The I<sup>2</sup>C interface should be enabled with <code>raspi-config</code>.</p>
+<p><strong>Analog to Digital Converters</strong></p>
+<p>An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A <a href="https://learn.sparkfun.com/tutorials/voltage-dividers">voltage divider</a> may be necessary to attain your desired range.</p>
+<blockquote>
+<p><a href="#ads1x15">ADS1x15</a>: Analog-to-digital converter <a href="https://www.adafruit.com/product/1085">link</a></p>
+</blockquote>
+<blockquote>
+<p><a href="#mcp342x">MCP342x</a>: Analog-to-digital converter <a href="http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)">link</a></p>
+</blockquote>
+<p><strong>Sensors</strong></p>
 <blockquote>
 <p><a href="#am2315">AM2315</a>: Relative humidity, temperature <a href="https://github.com/lexruee/tentacle_pi">link</a></p>
 </blockquote>
@@ -1624,20 +1632,12 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <p>Examples of devices that can be used with edge detection: simple switches and buttons, PIR motion sensors, reed switches, hall effect sensors, float switches, and more.</p>
 <h2 id="device-setup">Device Setup</h2>
 <h3 id="i2c-multiplexers">I<sup>2</sup>C Multiplexers</h3>
-<p>All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some sensors may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.</p>
+<p>All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some inputs may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.</p>
 <blockquote>
 <p><a href="#tca9548a">TCA9548A</a>: I<sup>2</sup>C Multiplexer <a href="https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview">link</a> (I<sup>2</sup>C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I<sup>2</sup>C address.</p>
 </blockquote>
 <blockquote>
 <p>TCA9545A: I<sup>2</sup>C Bus Multiplexer <a href="http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/">link</a> (I<sup>2</sup>C): This board works a little differently than the TCA9548A, above. This board actually creates 4 new I<sup>2</sup>C busses, each with their own selectable voltage, either 3.3 or 5.0 volts. Instructions to enable the Device Tree Overlay are at <a href="https://github.com/camrex/i2c-mux-pca9545a" class="uri">https://github.com/camrex/i2c-mux-pca9545a</a>. Nothing else needs to be done in Mycodo after that except to select the correct I<sup>2</sup>C bus when configuring a sensor.</p>
-</blockquote>
-<h3 id="analog-to-digital-converters">Analog to Digital Converters</h3>
-<p>An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A <a href="https://learn.sparkfun.com/tutorials/voltage-dividers">voltage divider</a> may be necessary to attain your desired range.</p>
-<blockquote>
-<p><a href="#ads1x15">ADS1x15</a> <a href="https://www.adafruit.com/product/1085">link</a> ±4.096 (I<sup>2</sup>C)</p>
-</blockquote>
-<blockquote>
-<p><a href="#mcp342x">MCP342x</a> <a href="http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)">link</a> ±2.048 (I<sup>2</sup>C)</p>
 </blockquote>
 <h1 id="device-specific-information">Device Specific Information</h1>
 <h2 id="lcd-displays">LCD Displays</h2>
@@ -1822,7 +1822,7 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <li>Vin: 3V and a low supply</li>
 <li>Max current: 0.6mA.</li>
 </ul>
-<h2 id="analog-to-digital-converters-1">Analog to Digital Converters</h2>
+<h2 id="analog-to-digital-converters">Analog to Digital Converters</h2>
 <h3 id="ads1x15">ADS1x15</h3>
 <p>(ADS1015, ADS1115)</p>
 <h4 id="specifications-16">Specifications</h4>
