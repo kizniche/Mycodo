@@ -1,13 +1,16 @@
 ## 5.3.4 (Unreleased)
 
+Note: The Chirp light sensor scale has been inverted. Please adjust your settings accordingly to respond to 0 as darkness and 65535 as bright.
+
 ### Features
 
  - Replace deprecated LockFile with fasteners ([#260](https://github.com/kizniche/mycodo/issues/260))
- - Add Timer type: PWM duty cycle output using Method ([#262](https://github.com/kizniche/mycodo/issues/262)), read more at [PWM Method](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#pwm-method) in the manual
+ - Add Timer type: PWM duty cycle output using Method ([#262](https://github.com/kizniche/mycodo/issues/262)), read more: [PWM Method](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#pwm-method)
 
 ### Bugfixes
 
  - Fix display of PID setpoints on Graphs
+ - Invert Chirp light sensor scale (0=dark, 65535=bright)
 
 ### Miscelaneous
 

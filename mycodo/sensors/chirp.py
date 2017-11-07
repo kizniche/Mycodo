@@ -73,9 +73,13 @@ class ChirpSensor(AbstractSensor):
     def get_measurement(self):
         """ Gets the light, moisture, and temperature """
         lux = self.light()
+        if lux == 0:
+            new_lux = 65535.0
+        else:
+            new_lux = (1 - (lux / 65535.0)) * 65535.0
         moisture = self.moist()
         temperature = self.temp() / 10.0
-        return lux, moisture, temperature
+        return new_lux, moisture, temperature
 
     def read(self):
         """
