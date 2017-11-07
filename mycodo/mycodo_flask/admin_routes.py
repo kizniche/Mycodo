@@ -71,8 +71,9 @@ def admin_backup():
 
     if request.method == 'POST':
         if form_backup.backup.data:
-            cmd = '{pth}/mycodo/scripts/mycodo_wrapper backup-create ' \
-                  ' >> {log} 2>&1'.format(pth=INSTALL_DIRECTORY,
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper backup-create" \
+                  " | ts '[%Y-%m-%d %H:%M:%S]'" \
+                  " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                           log=BACKUP_LOG_FILE)
             subprocess.Popen(cmd, shell=True)
             flash(gettext(u"Backup in progress. It should complete within a "
@@ -90,11 +91,11 @@ def admin_backup():
                           u"completes."),
                   "success")
         elif form_backup.restore.data:
-            cmd = '{pth}/mycodo/scripts/mycodo_wrapper backup-restore ' \
-                  '{backup} >> {log} 2>&1'.format(
-                    pth=INSTALL_DIRECTORY,
-                    backup=form_backup.full_path.data,
-                    log=RESTORE_LOG_FILE)
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper backup-restore {backup}" \
+                  " | ts '[%Y-%m-%d %H:%M:%S]'" \
+                  " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
+                                          backup=form_backup.full_path.data,
+                                          log=RESTORE_LOG_FILE)
 
             subprocess.Popen(cmd, shell=True)
             flash(gettext(u"Restore in progress. It should complete within a "
@@ -207,9 +208,10 @@ def admin_upgrade():
 
     if request.method == 'POST':
         if form_upgrade.upgrade.data and upgrade_available:
-            cmd = '{pth}/mycodo/scripts/mycodo_wrapper upgrade >> {log} ' \
-                  '2>&1'.format(pth=INSTALL_DIRECTORY,
-                                log=UPGRADE_LOG_FILE)
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade" \
+                  " | ts '[%Y-%m-%d %H:%M:%S]'" \
+                  " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
+                                          log=UPGRADE_LOG_FILE)
             subprocess.Popen(cmd, shell=True)
             upgrade = 1
             flash(gettext(u"The upgrade has started. The daemon will be "

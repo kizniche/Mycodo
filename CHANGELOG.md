@@ -1,3 +1,10 @@
+## 5.3.5 (Unreleased)
+
+### Features
+
+ - Add timestamp to lines of the upgrade/backup/restore logs
+
+
 ## 5.3.4 (2017-11-06)
 
 Note: The Chirp light sensor scale has been inverted. Please adjust your settings accordingly to respond to 0 as darkness and 65535 as bright.
