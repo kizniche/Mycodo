@@ -27,6 +27,9 @@ class AbstractSensor(object):
     """
 
     def __init__(self):
+        self.avg_max = {}
+        self.avg_index = {}
+        self.avg_meas = {}
         self.running = True
 
     def __iter__(self):
@@ -57,6 +60,40 @@ class AbstractSensor(object):
         logger.error("{cls} did not overwrite the next() method.  All subclasses of the AbstractSensor class"
                      " are required to overwrite this method".format(cls=type(self).__name__))
         raise NotImplementedError
+
+    def filter_average(self, name, init_max=0, measurement=None):
+        """
+        Return the average of several recent measurements
+        Use to smooth erratic measurements
+
+        :param name: name of the measurement
+        :param init_max: initialize variables for this name
+        :param measurement: add measurement to pool and return average of past init_max measurements
+        :return: int or float, whichever measurements come in as
+        """
+        if name not in self.avg_max:
+            if init_max != 0 and init_max < 2:
+                logger.error("init_max must be greater than 1")
+            elif init_max > 1:
+                self.avg_max[name] = init_max
+                self.avg_meas[name] = []
+                self.avg_index[name] = 0
+
+        if measurement is None:
+            return
+
+        if 0 <= self.avg_index[name] < len(self.avg_meas[name]):
+            self.avg_meas[name][self.avg_index[name]] = measurement
+        else:
+            self.avg_meas[name].append(measurement)
+        average = sum(self.avg_meas[name]) / float(len(self.avg_meas[name]))
+
+        if self.avg_index[name] >= self.avg_max[name] - 1:
+            self.avg_index[name] = 0
+        else:
+            self.avg_index[name] += 1
+
+        return average
 
     def stop_sensor(self):
         """ Called by SensorController class when sensors are deactivated """

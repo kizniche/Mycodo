@@ -3,6 +3,7 @@
 ### Features
 
  - Add timestamp to lines of the upgrade/backup/restore logs
+ - Add sensor measurement smoothing to Chirp light sensor (module will soon expand to all sensors)
 
 
 ## 5.3.4 (2017-11-06)
