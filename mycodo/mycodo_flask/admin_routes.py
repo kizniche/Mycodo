@@ -14,7 +14,8 @@ from flask import url_for
 from flask_babel import gettext
 from pkg_resources import parse_version
 
-from mycodo import flaskforms
+from mycodo.mycodo_flask.forms import forms_misc
+
 from mycodo import flaskutils
 from mycodo.mycodo_flask.static_routes import inject_mycodo_version
 from mycodo.utils.statistics import return_stat_file_dict
@@ -53,7 +54,7 @@ def admin_backup():
     if not flaskutils.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
-    form_backup = flaskforms.Backup()
+    form_backup = forms_misc.Backup()
 
     backup_dirs_tmp = []
     if not os.path.isdir('/var/Mycodo-backups'):
@@ -176,8 +177,8 @@ def admin_upgrade():
         return render_template('admin/upgrade.html',
                                upgrade=upgrade)
 
-    form_backup = flaskforms.Backup()
-    form_upgrade = flaskforms.Upgrade()
+    form_backup = forms_misc.Backup()
+    form_upgrade = forms_misc.Upgrade()
 
     is_internet = True
     upgrade_available = False

@@ -17,7 +17,7 @@ from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import User
 
-from mycodo import flaskforms
+from mycodo.mycodo_flask.forms import forms_settings
 from mycodo import flaskutils
 from mycodo.devices.camera import count_cameras_opencv
 
@@ -48,7 +48,7 @@ def settings_alerts():
         return redirect(url_for('general_routes.home'))
 
     smtp = SMTP.query.first()
-    form_email_alert = flaskforms.EmailAlert()
+    form_email_alert = forms_settings.SettingsEmail()
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission('edit_settings'):
@@ -71,7 +71,7 @@ def settings_camera():
     if not flaskutils.user_has_permission('view_settings'):
         return redirect(url_for('general_routes.home'))
 
-    form_camera = flaskforms.SettingsCamera()
+    form_camera = forms_settings.SettingsCamera()
 
     camera = Camera.query.all()
     relay = Relay.query.all()
@@ -82,7 +82,10 @@ def settings_camera():
         camera_libraries.append(library)
         camera_types.append(camera_type)
 
-    opencv_devices = count_cameras_opencv()
+    try:
+        opencv_devices = count_cameras_opencv()
+    except Exception:
+        opencv_devices = 0
 
     pi_camera_enabled = False
     try:
@@ -122,7 +125,7 @@ def settings_general():
         return redirect(url_for('general_routes.home'))
 
     misc = Misc.query.first()
-    form_settings_general = flaskforms.SettingsGeneral()
+    form_settings_general = forms_settings.SettingsGeneral()
 
     languages_sorted = sorted(LANGUAGES.items(), key=operator.itemgetter(1))
 
@@ -150,9 +153,9 @@ def settings_users():
 
     users = User.query.all()
     user_roles = Role.query.all()
-    form_add_user = flaskforms.UserAdd()
-    form_mod_user = flaskforms.UserMod()
-    form_user_roles = flaskforms.UserRoles()
+    form_add_user = forms_settings.UserAdd()
+    form_mod_user = forms_settings.UserMod()
+    form_user_roles = forms_settings.UserRoles()
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission('edit_users'):

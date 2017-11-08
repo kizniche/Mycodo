@@ -23,10 +23,17 @@ from flask.blueprints import Blueprint
 
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.static_routes import inject_mycodo_version
-from mycodo import flaskforms
 from mycodo import flaskutils
 from mycodo_client import DaemonControl
 from mycodo_client import daemon_active
+
+from mycodo.mycodo_flask.forms import forms_graph
+from mycodo.mycodo_flask.forms import forms_input
+from mycodo.mycodo_flask.forms import forms_lcd
+from mycodo.mycodo_flask.forms import forms_misc
+from mycodo.mycodo_flask.forms import forms_output
+from mycodo.mycodo_flask.forms import forms_pid
+from mycodo.mycodo_flask.forms import forms_timer
 
 from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Camera
@@ -96,7 +103,7 @@ def page_camera():
     if not flaskutils.user_has_permission('view_camera'):
         return redirect(url_for('general_routes.home'))
 
-    form_camera = flaskforms.Camera()
+    form_camera = forms_misc.Camera()
     camera = Camera.query.all()
 
     # Check if a video stream is active
@@ -237,7 +244,7 @@ def page_export():
     """
     Export measurement data in CSV format
     """
-    export_options = flaskforms.ExportOptions()
+    export_options = forms_misc.ExportOptions()
     relay = Relay.query.all()
     sensor = Sensor.query.all()
     relay_choices = flaskutils.choices_id_name(relay)
@@ -280,12 +287,12 @@ def page_graph():
     Generate custom graphs to display sensor data retrieved from influxdb.
     """
     # Create form objects
-    form_add_graph = flaskforms.GraphAdd()
-    form_add_gauge = flaskforms.GaugeAdd()
-    form_mod_graph = flaskforms.GraphMod()
-    form_mod_gauge = flaskforms.GaugeMod()
-    form_del_graph = flaskforms.GraphDel()
-    form_order_graph = flaskforms.GraphOrder()
+    form_add_graph = forms_graph.GraphAdd()
+    form_add_gauge = forms_graph.GaugeAdd()
+    form_mod_graph = forms_graph.GraphMod()
+    form_mod_gauge = forms_graph.GaugeMod()
+    form_del_graph = forms_graph.GraphDel()
+    form_order_graph = forms_graph.GraphOrder()
 
     # Retrieve the order to display graphs
     display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
@@ -526,8 +533,8 @@ def page_lcd():
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
 
-    form_add_lcd = flaskforms.LCDAdd()
-    form_mod_lcd = flaskforms.LCDMod()
+    form_add_lcd = forms_lcd.LCDAdd()
+    form_mod_lcd = forms_lcd.LCDMod()
 
     measurements = MEASUREMENTS
 
@@ -619,7 +626,7 @@ def page_logview():
     if not flaskutils.user_has_permission('view_logs'):
         return redirect(url_for('general_routes.home'))
 
-    form_log_view = flaskforms.LogView()
+    form_log_view = forms_misc.LogView()
     log_output = None
     lines = 30
     logfile = ''
@@ -674,12 +681,12 @@ def page_pid():
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
 
-    form_add_pid = flaskforms.PIDAdd()
-    form_mod_pid_base = flaskforms.PIDModBase()
-    form_mod_pid_relay_raise = flaskforms.PIDModRelayRaise()
-    form_mod_pid_relay_lower = flaskforms.PIDModRelayLower()
-    form_mod_pid_pwm_raise = flaskforms.PIDModPWMRaise()
-    form_mod_pid_pwm_lower = flaskforms.PIDModPWMLower()
+    form_add_pid = forms_pid.PIDAdd()
+    form_mod_pid_base = forms_pid.PIDModBase()
+    form_mod_pid_relay_raise = forms_pid.PIDModRelayRaise()
+    form_mod_pid_relay_lower = forms_pid.PIDModRelayLower()
+    form_mod_pid_pwm_raise = forms_pid.PIDModPWMRaise()
+    form_mod_pid_pwm_lower = forms_pid.PIDModPWMLower()
 
     # Create list of file names from the pid_options directory
     # Used in generating the correct options for each PID
@@ -763,11 +770,11 @@ def page_output():
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
 
-    form_add_relay = flaskforms.RelayAdd()
-    form_mod_relay = flaskforms.RelayMod()
+    form_add_relay = forms_output.OutputAdd()
+    form_mod_relay = forms_output.OutputMod()
 
-    form_conditional = flaskforms.Conditional()
-    form_conditional_actions = flaskforms.ConditionalActions()
+    form_conditional = forms_misc.Conditional()
+    form_conditional_actions = forms_misc.ConditionalActions()
 
     # Create list of file names from the output_options directory
     # Used in generating the correct options for each relay/device
@@ -862,11 +869,11 @@ def page_input():
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
 
-    form_add_sensor = flaskforms.SensorAdd()
-    form_mod_sensor = flaskforms.SensorMod()
+    form_add_sensor = forms_input.InputAdd()
+    form_mod_sensor = forms_input.InputMod()
 
-    form_conditional = flaskforms.Conditional()
-    form_conditional_actions = flaskforms.ConditionalActions()
+    form_conditional = forms_misc.Conditional()
+    form_conditional_actions = forms_misc.ConditionalActions()
 
     # If DS18B20 sensors added, compile a list of detected sensors
     ds18b20_sensors = []
@@ -964,11 +971,11 @@ def page_timer():
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().timer)
 
-    form_timer_base = flaskforms.TimerBase()
-    form_timer_time_point = flaskforms.TimerTimePoint()
-    form_timer_time_span = flaskforms.TimerTimeSpan()
-    form_timer_duration = flaskforms.TimerDuration()
-    form_timer_pwm_method = flaskforms.TimerPWMMethod()
+    form_timer_base = forms_timer.TimerBase()
+    form_timer_time_point = forms_timer.TimerTimePoint()
+    form_timer_time_span = forms_timer.TimerTimeSpan()
+    form_timer_duration = forms_timer.TimerDuration()
+    form_timer_pwm_method = forms_timer.TimerPWMMethod()
 
     if request.method == 'POST':
         if not flaskutils.user_has_permission('edit_controllers'):

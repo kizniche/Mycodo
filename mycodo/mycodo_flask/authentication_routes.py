@@ -1,44 +1,37 @@
 # coding=utf-8
 """ flask views that deal with user authentication """
+
 import datetime
 import logging
 import socket
 import time
 import flask_login
-from flask import (
-    redirect,
-    request,
-    render_template,
-    flash,
-    session,
-    url_for,
-    make_response
-)
+
+from flask import redirect
+from flask import request
+from flask import render_template
+from flask import flash
+from flask import session
+from flask import url_for
+from flask import make_response
+
 from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 from flask.blueprints import Blueprint
 
-# Classes
-from mycodo.databases.models import (
-    AlembicVersion,
-    Misc,
-    User
-)
+from mycodo.databases.models import AlembicVersion
+from mycodo.databases.models import Misc
+from mycodo.databases.models import User
 
-# Functions
-from mycodo import flaskforms
+from mycodo.mycodo_flask.forms import forms_authentication
+
 from mycodo.flaskutils import flash_form_errors
-from mycodo.utils.utils import (
-    test_username,
-    test_password
-)
+from mycodo.utils.utils import test_username
+from mycodo.utils.utils import test_password
 
-# Config
-from mycodo.config import (
-    LOGIN_ATTEMPTS,
-    LOGIN_BAN_SECONDS,
-    LOGIN_LOG_FILE
-)
+from mycodo.config import LOGIN_ATTEMPTS
+from mycodo.config import LOGIN_BAN_SECONDS
+from mycodo.config import LOGIN_LOG_FILE
 
 blueprint = Blueprint(
     'authentication_routes',
@@ -69,8 +62,8 @@ def create_admin():
         response = clear_cookie_auth()
         return response
 
-    form_create_admin = flaskforms.CreateAdmin()
-    form_notice = flaskforms.InstallNotice()
+    form_create_admin = forms_authentication.CreateAdmin()
+    form_notice = forms_authentication.InstallNotice()
 
     if request.method == 'POST':
         form_name = request.form['form-name']
@@ -143,7 +136,7 @@ def do_login():
               "error")
         return redirect(url_for('general_routes.home'))
 
-    form_login = flaskforms.Login()
+    form_login = forms_authentication.Login()
 
     # Check if the user is banned from logging in (too many incorrect attempts)
     if banned_from_login():

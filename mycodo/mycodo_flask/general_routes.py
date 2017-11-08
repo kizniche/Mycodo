@@ -26,7 +26,8 @@ from flask.blueprints import Blueprint
 from flask_babel import gettext
 from flask_influxdb import InfluxDB
 
-from mycodo import flaskforms
+from mycodo.mycodo_flask.forms import forms_authentication
+
 from mycodo import flaskutils
 from mycodo.databases.models import Camera
 from mycodo.databases.models import DisplayOrder
@@ -87,7 +88,7 @@ def remote_admin(page):
         display_order = []
 
     if page == 'setup':
-        form_setup = flaskforms.RemoteSetup()
+        form_setup = forms_authentication.RemoteSetup()
         host_auth = {}
         for each_host in remote_hosts:
             host_auth[each_host.host] = flaskutils.auth_credentials(

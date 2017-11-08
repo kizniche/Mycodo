@@ -10,7 +10,7 @@ from flask import url_for
 from flask.blueprints import Blueprint
 
 from mycodo.mycodo_flask.static_routes import inject_mycodo_version
-from mycodo import flaskforms
+from mycodo.mycodo_flask.forms import forms_calibration
 from mycodo import flaskutils
 
 from mycodo.databases.models import Sensor
@@ -42,7 +42,9 @@ def calibration_select():
     """
     if not flaskutils.user_has_permission('edit_controllers'):
         return redirect(url_for('general_routes.home'))
-    form_calibration = flaskforms.Calibration()
+
+    form_calibration = forms_calibration.Calibration()
+
     if form_calibration.submit.data:
         route = 'calibration_routes.{page}'.format(
             page=form_calibration.selection.data)
@@ -60,7 +62,8 @@ def calibration_atlas_ph():
     if not flaskutils.user_has_permission('edit_controllers'):
         return redirect(url_for('general_routes.home'))
 
-    form_ph_calibrate = flaskforms.CalibrationAtlasph()
+    form_ph_calibrate = forms_calibration.CalibrationAtlasph()
+
     sensor = Sensor.query.filter_by(device='ATLAS_PH_UART').all()
     stage = 0
     next_stage = None

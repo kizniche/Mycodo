@@ -5,6 +5,14 @@
  - Add timestamp to lines of the upgrade/backup/restore logs
  - Add sensor measurement smoothing to Chirp light sensor (module will soon expand to all sensors)
 
+### Bugfixes
+
+ - Fix an issue loading the camera settings page without a camera disconnected
+
+### Miscellaneous
+
+ - Split flaskform.py into smaller files in Mycodo/mycodo/mycodo_flask/forms
+
 
 ## 5.3.4 (2017-11-06)
 
@@ -20,7 +28,7 @@ Note: The Chirp light sensor scale has been inverted. Please adjust your setting
  - Fix display of PID setpoints on Graphs
  - Invert Chirp light sensor scale (0=dark, 65535=bright)
 
-### Miscelaneous
+### Miscellaneous
 
  - Update Korean translations
  - Add 2 more significant digits to ADC voltage measurements
@@ -82,7 +90,7 @@ Input and Output Conditional commands may now include variables. There are 23 va
  - Prevent a PID from using the same Raise and Lower output
  - Prevent a currently-active PID from changing the output to a currently-used output
 
-### Miscelaneous
+### Miscellaneous
 
  - Update Readme and Wiki to fix outdated and erroneous information and improve coverage ([#285](https://github.com/kizniche/mycodo/issues/285))
 
