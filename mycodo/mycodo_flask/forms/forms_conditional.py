@@ -25,7 +25,7 @@ class Conditional(FlaskForm):
     name = StringField(lazy_gettext(u'Name'))
 
     # Relay conditional options
-    if_relay_id = StringField(lazy_gettext(u'If Relay ID'))
+    if_relay_id = StringField(lazy_gettext(u'If Relay'))
     if_relay_state = StringField(lazy_gettext(u'If Relay State'))
     if_relay_duration = DecimalField(lazy_gettext(u'If Relay Duration'))
 
@@ -52,13 +52,13 @@ class ConditionalActions(FlaskForm):
         'Conditional Action ID', widget=widgets.HiddenInput())
     do_action = StringField(lazy_gettext(u'Action to Perform'))
     do_action_string = StringField(lazy_gettext(u'Action String'))
-    do_relay_id = IntegerField(lazy_gettext(u'Relay'))
-    do_relay_state = StringField(lazy_gettext(u'Relay State'))
+    do_relay_id = IntegerField(lazy_gettext(u'Output'))
+    do_relay_state = StringField(lazy_gettext(u'Output State'))
     do_relay_duration = DecimalField(lazy_gettext(u'Duration'))
     do_camera_id = IntegerField(lazy_gettext(u'Camera'))
     do_camera_duration = DecimalField(lazy_gettext(u'Duration'))
-    do_lcd_id = IntegerField(lazy_gettext(u'LCD ID'))
-    do_pid_id = IntegerField(lazy_gettext(u'PID ID'))
+    do_lcd_id = IntegerField(lazy_gettext(u'LCD'))
+    do_pid_id = IntegerField(lazy_gettext(u'PID'))
     add_action = SubmitField(lazy_gettext(u'Add Action'))
     save_action = SubmitField(lazy_gettext(u'Save'))
     delete_action = SubmitField(lazy_gettext(u'Delete'))

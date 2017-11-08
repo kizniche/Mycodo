@@ -67,7 +67,7 @@ class MethodAdd(FlaskForm):
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
     relay_duration = IntegerField(lazy_gettext(u'Duration On (seconds)'))
-    relay_id = StringField(lazy_gettext(u'Relay ID'),)
+    relay_id = StringField(lazy_gettext(u'Output'),)
     relay_state = SelectField(
         lazy_gettext(u'Relay State'),
         choices=[
