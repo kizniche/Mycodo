@@ -7,11 +7,11 @@
 
 ### Bugfixes
 
- - Fix an issue loading the camera settings page without a camera disconnected
+ - Fix an issue loading the camera settings page without a camera connected
 
 ### Miscellaneous
 
- - Split flaskform.py into smaller files in Mycodo/mycodo/mycodo_flask/forms
+ - Split flaskform.py and flaskutils.py into smaller files for easier management
 
 
 ## 5.3.4 (2017-11-06)

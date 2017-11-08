@@ -25,7 +25,8 @@ from mycodo.databases.models import User
 
 from mycodo.mycodo_flask.forms import forms_authentication
 
-from mycodo.flaskutils import flash_form_errors
+from mycodo.mycodo_flask.utils import utils_general
+
 from mycodo.utils.utils import test_username
 from mycodo.utils.utils import test_password
 
@@ -115,7 +116,7 @@ def create_admin():
                               user=username,
                               err=except_msg), "error")
         else:
-            flash_form_errors(form_create_admin)
+            utils_general.flash_form_errors(form_create_admin)
 
     dismiss_notification = Misc.query.first().dismiss_notification
 

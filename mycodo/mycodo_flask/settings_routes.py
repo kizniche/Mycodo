@@ -18,7 +18,9 @@ from mycodo.databases.models import SMTP
 from mycodo.databases.models import User
 
 from mycodo.mycodo_flask.forms import forms_settings
-from mycodo import flaskutils
+from mycodo.mycodo_flask.utils import utils_general
+from mycodo.mycodo_flask.utils import utils_settings
+
 from mycodo.devices.camera import count_cameras_opencv
 
 from mycodo.config import CAMERAS
@@ -44,19 +46,19 @@ def inject_dictionary():
 @flask_login.login_required
 def settings_alerts():
     """ Display alert settings """
-    if not flaskutils.user_has_permission('view_settings'):
+    if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('general_routes.home'))
 
     smtp = SMTP.query.first()
     form_email_alert = forms_settings.SettingsEmail()
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission('edit_settings'):
+        if not utils_general.user_has_permission('edit_settings'):
             return redirect(url_for('general_routes.home'))
 
         form_name = request.form['form-name']
         if form_name == 'EmailAlert':
-            flaskutils.settings_alert_mod(form_email_alert)
+            utils_settings.settings_alert_mod(form_email_alert)
         return redirect(url_for('settings_routes.settings_alerts'))
 
     return render_template('settings/alerts.html',
@@ -68,7 +70,7 @@ def settings_alerts():
 @flask_login.login_required
 def settings_camera():
     """ Display camera settings """
-    if not flaskutils.user_has_permission('view_settings'):
+    if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('general_routes.home'))
 
     form_camera = forms_settings.SettingsCamera()
@@ -96,15 +98,15 @@ def settings_camera():
                      "{err}".format(err=e))
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission('edit_settings'):
+        if not utils_general.user_has_permission('edit_settings'):
             return redirect(url_for('general_routes.home'))
 
         if form_camera.camera_add.data:
-            flaskutils.camera_add(form_camera)
+            utils_settings.camera_add(form_camera)
         elif form_camera.camera_mod.data:
-            flaskutils.camera_mod(form_camera)
+            utils_settings.camera_mod(form_camera)
         elif form_camera.camera_del.data:
-            flaskutils.camera_del(form_camera)
+            utils_settings.camera_del(form_camera)
         return redirect(url_for('settings_routes.settings_camera'))
 
     return render_template('settings/camera.html',
@@ -121,7 +123,7 @@ def settings_camera():
 @flask_login.login_required
 def settings_general():
     """ Display general settings """
-    if not flaskutils.user_has_permission('view_settings'):
+    if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('general_routes.home'))
 
     misc = Misc.query.first()
@@ -130,12 +132,12 @@ def settings_general():
     languages_sorted = sorted(LANGUAGES.items(), key=operator.itemgetter(1))
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission('edit_settings'):
+        if not utils_general.user_has_permission('edit_settings'):
             return redirect(url_for('general_routes.home'))
 
         form_name = request.form['form-name']
         if form_name == 'General':
-            flaskutils.settings_general_mod(form_settings_general)
+            utils_settings.settings_general_mod(form_settings_general)
         return redirect(url_for('settings_routes.settings_general'))
 
     return render_template('settings/general.html',
@@ -148,7 +150,7 @@ def settings_general():
 @flask_login.login_required
 def settings_users():
     """ Display user settings """
-    if not flaskutils.user_has_permission('view_settings'):
+    if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('general_routes.home'))
 
     users = User.query.all()
@@ -158,21 +160,21 @@ def settings_users():
     form_user_roles = forms_settings.UserRoles()
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission('edit_users'):
+        if not utils_general.user_has_permission('edit_users'):
             return redirect(url_for('general_routes.home'))
 
         if form_add_user.add_user.data:
-            flaskutils.user_add(form_add_user)
+            utils_settings.user_add(form_add_user)
         elif form_mod_user.delete.data:
-            if flaskutils.user_del(form_mod_user) == 'logout':
+            if utils_settings.user_del(form_mod_user) == 'logout':
                 return redirect('/logout')
         elif form_mod_user.save.data:
-            if flaskutils.user_mod(form_mod_user) == 'logout':
+            if utils_settings.user_mod(form_mod_user) == 'logout':
                 return redirect('/logout')
         elif (form_user_roles.add_role.data or
                 form_user_roles.save_role.data or
                 form_user_roles.delete_role.data):
-            flaskutils.user_roles(form_user_roles)
+            utils_settings.user_roles(form_user_roles)
         return redirect(url_for('settings_routes.settings_users'))
 
     return render_template('settings/users.html',

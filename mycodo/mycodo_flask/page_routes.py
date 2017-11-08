@@ -23,10 +23,10 @@ from flask.blueprints import Blueprint
 
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.static_routes import inject_mycodo_version
-from mycodo import flaskutils
 from mycodo_client import DaemonControl
 from mycodo_client import daemon_active
 
+from mycodo.mycodo_flask.forms import forms_conditional
 from mycodo.mycodo_flask.forms import forms_graph
 from mycodo.mycodo_flask.forms import forms_input
 from mycodo.mycodo_flask.forms import forms_lcd
@@ -34,6 +34,15 @@ from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.forms import forms_output
 from mycodo.mycodo_flask.forms import forms_pid
 from mycodo.mycodo_flask.forms import forms_timer
+
+from mycodo.mycodo_flask.utils import utils_conditional
+from mycodo.mycodo_flask.utils import utils_general
+from mycodo.mycodo_flask.utils import utils_graph
+from mycodo.mycodo_flask.utils import utils_input
+from mycodo.mycodo_flask.utils import utils_lcd
+from mycodo.mycodo_flask.utils import utils_output
+from mycodo.mycodo_flask.utils import utils_pid
+from mycodo.mycodo_flask.utils import utils_timer
 
 from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Camera
@@ -100,7 +109,7 @@ def page_camera():
     Page to start/stop video stream or time-lapse, or capture a still image.
     Displays most recent still image and time-lapse image.
     """
-    if not flaskutils.user_has_permission('view_camera'):
+    if not utils_general.user_has_permission('view_camera'):
         return redirect(url_for('general_routes.home'))
 
     form_camera = forms_misc.Camera()
@@ -113,7 +122,7 @@ def page_camera():
             db.session.commit()
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission('edit_settings'):
+        if not utils_general.user_has_permission('edit_settings'):
             return redirect(url_for('page_routes.page_camera'))
 
         control = DaemonControl()
@@ -247,8 +256,8 @@ def page_export():
     export_options = forms_misc.ExportOptions()
     relay = Relay.query.all()
     sensor = Sensor.query.all()
-    relay_choices = flaskutils.choices_id_name(relay)
-    sensor_choices = flaskutils.choices_sensors(sensor)
+    relay_choices = utils_general.choices_id_name(relay)
+    sensor_choices = utils_general.choices_sensors(sensor)
 
     if request.method == 'POST':
         start_time = export_options.date_range.data.split(' - ')[0]
@@ -304,9 +313,9 @@ def page_graph():
     sensor = Sensor.query.all()
 
     # Retrieve all choices to populate form drop-down menu
-    pid_choices = flaskutils.choices_pids(pid)
-    output_choices = flaskutils.choices_outputs(relay)
-    sensor_choices = flaskutils.choices_sensors(sensor)
+    pid_choices = utils_general.choices_pids(pid)
+    output_choices = utils_general.choices_outputs(relay)
+    sensor_choices = utils_general.choices_sensors(sensor)
 
     # Add custom measurement and units to list (From linux command sensor)
     sensor_measurements = MEASUREMENT_UNITS
@@ -350,26 +359,26 @@ def page_graph():
 
     # Detect which form on the page was submitted
     if request.method == 'POST':
-        if not flaskutils.user_has_permission('edit_controllers'):
+        if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
 
         form_name = request.form['form-name']
         if form_name == 'modGraph':
-            flaskutils.graph_mod(form_mod_graph, request.form)
+            utils_graph.graph_mod(form_mod_graph, request.form)
         elif form_name == 'modGauge':
-            flaskutils.graph_mod(form_mod_gauge, request.form)
+            utils_graph.graph_mod(form_mod_gauge, request.form)
         elif form_name == 'delGraph':
-            flaskutils.graph_del(form_del_graph)
+            utils_graph.graph_del(form_del_graph)
         elif form_order_graph.orderGraphUp.data:
-            flaskutils.graph_reorder(form_order_graph.orderGraph_id.data,
-                                     display_order, 'up')
+            utils_graph.graph_reorder(form_order_graph.orderGraph_id.data,
+                                      display_order, 'up')
         elif form_order_graph.orderGraphDown.data:
-            flaskutils.graph_reorder(form_order_graph.orderGraph_id.data,
-                                     display_order, 'down')
+            utils_graph.graph_reorder(form_order_graph.orderGraph_id.data,
+                                      display_order, 'down')
         elif form_name == 'addGraph':
-            flaskutils.graph_add(form_add_graph, display_order)
+            utils_graph.graph_add(form_add_graph, display_order)
         elif form_name == 'addGauge':
-            flaskutils.graph_add(form_add_gauge, display_order)
+            utils_graph.graph_add(form_add_gauge, display_order)
         return redirect('/graph')
 
     return render_template('pages/graph.html',
@@ -398,7 +407,7 @@ def page_graph():
 def page_graph_async():
     """ Generate graphs using asynchronous data retrieval """
     sensor = Sensor.query.all()
-    sensor_choices = flaskutils.choices_sensors(sensor)
+    sensor_choices = utils_general.choices_sensors(sensor)
     sensor_choices_split = OrderedDict()
     for key in sensor_choices:
         order = key.split(",")
@@ -434,7 +443,7 @@ def page_help():
 @flask_login.login_required
 def page_info():
     """ Display page with system information from command line tools """
-    if not flaskutils.user_has_permission('view_stats'):
+    if not utils_general.user_has_permission('view_stats'):
         return redirect(url_for('general_routes.home'))
 
     uptime = subprocess.Popen(
@@ -546,27 +555,27 @@ def page_lcd():
                     {'LinuxCommand': [each_sensor.cmd_measurement]})
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission('edit_controllers'):
+        if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
 
         if form_add_lcd.add.data:
-            flaskutils.lcd_add(form_add_lcd.quantity.data)
+            utils_lcd.lcd_add(form_add_lcd.quantity.data)
         elif form_mod_lcd.save.data:
-            flaskutils.lcd_mod(form_mod_lcd)
+            utils_lcd.lcd_mod(form_mod_lcd)
         elif form_mod_lcd.delete.data:
-            flaskutils.lcd_del(form_mod_lcd.lcd_id.data)
+            utils_lcd.lcd_del(form_mod_lcd.lcd_id.data)
         elif form_mod_lcd.reorder_up.data:
-            flaskutils.lcd_reorder(form_mod_lcd.lcd_id.data,
+            utils_lcd.lcd_reorder(form_mod_lcd.lcd_id.data,
                                    display_order, 'up')
         elif form_mod_lcd.reorder_down.data:
-            flaskutils.lcd_reorder(form_mod_lcd.lcd_id.data,
+            utils_lcd.lcd_reorder(form_mod_lcd.lcd_id.data,
                                    display_order, 'down')
         elif form_mod_lcd.activate.data:
-            flaskutils.lcd_activate(form_mod_lcd.lcd_id.data)
+            utils_lcd.lcd_activate(form_mod_lcd.lcd_id.data)
         elif form_mod_lcd.deactivate.data:
-            flaskutils.lcd_deactivate(form_mod_lcd.lcd_id.data)
+            utils_lcd.lcd_deactivate(form_mod_lcd.lcd_id.data)
         elif form_mod_lcd.reset_flashing.data:
-            flaskutils.lcd_reset_flashing(form_mod_lcd.lcd_id.data)
+            utils_lcd.lcd_reset_flashing(form_mod_lcd.lcd_id.data)
         return redirect('/lcd')
 
     return render_template('pages/lcd.html',
@@ -623,7 +632,7 @@ def page_live():
 @flask_login.login_required
 def page_logview():
     """ Display the last (n) lines from a log file """
-    if not flaskutils.user_has_permission('view_logs'):
+    if not utils_general.user_has_permission('view_logs'):
         return redirect(url_for('general_routes.home'))
 
     form_log_view = forms_misc.LogView()
@@ -677,7 +686,7 @@ def page_pid():
     relay = Relay.query.all()
     sensor = Sensor.query.all()
 
-    sensor_choices = flaskutils.choices_sensors(sensor)
+    sensor_choices = utils_general.choices_sensors(sensor)
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
 
@@ -699,42 +708,42 @@ def page_pid():
         break
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission('edit_controllers'):
+        if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
 
         form_name = request.form['form-name']
         if form_name == 'addPID':
-            flaskutils.pid_add(form_add_pid)
+            utils_pid.pid_add(form_add_pid)
         elif form_name == 'modPID':
             if form_mod_pid_base.save.data:
-                flaskutils.pid_mod(form_mod_pid_base,
+                utils_pid.pid_mod(form_mod_pid_base,
                                    form_mod_pid_pwm_raise,
                                    form_mod_pid_pwm_lower,
                                    form_mod_pid_relay_raise,
                                    form_mod_pid_relay_lower)
             elif form_mod_pid_base.delete.data:
-                flaskutils.pid_del(
+                utils_pid.pid_del(
                     form_mod_pid_base.pid_id.data)
             elif form_mod_pid_base.reorder_up.data:
-                flaskutils.pid_reorder(
+                utils_pid.pid_reorder(
                     form_mod_pid_base.pid_id.data, display_order, 'up')
             elif form_mod_pid_base.reorder_down.data:
-                flaskutils.pid_reorder(
+                utils_pid.pid_reorder(
                     form_mod_pid_base.pid_id.data, display_order, 'down')
             elif form_mod_pid_base.activate.data:
-                flaskutils.pid_activate(
+                utils_pid.pid_activate(
                     form_mod_pid_base.pid_id.data)
             elif form_mod_pid_base.deactivate.data:
-                flaskutils.pid_deactivate(
+                utils_pid.pid_deactivate(
                     form_mod_pid_base.pid_id.data)
             elif form_mod_pid_base.hold.data:
-                flaskutils.pid_manipulate(
+                utils_pid.pid_manipulate(
                     form_mod_pid_base.pid_id.data, 'Hold')
             elif form_mod_pid_base.pause.data:
-                flaskutils.pid_manipulate(
+                utils_pid.pid_manipulate(
                     form_mod_pid_base.pid_id.data, 'Pause')
             elif form_mod_pid_base.resume.data:
-                flaskutils.pid_manipulate(
+                utils_pid.pid_manipulate(
                     form_mod_pid_base.pid_id.data, 'Resume')
 
         return redirect('/pid')
@@ -773,8 +782,8 @@ def page_output():
     form_add_relay = forms_output.OutputAdd()
     form_mod_relay = forms_output.OutputMod()
 
-    form_conditional = forms_misc.Conditional()
-    form_conditional_actions = forms_misc.ConditionalActions()
+    form_conditional = forms_conditional.Conditional()
+    form_conditional_actions = forms_conditional.ConditionalActions()
 
     # Create list of file names from the output_options directory
     # Used in generating the correct options for each relay/device
@@ -787,40 +796,41 @@ def page_output():
         break
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission('edit_controllers'):
+        if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('page_routes.page_output'))
 
         if form_add_relay.relay_add.data:
-            flaskutils.relay_add(form_add_relay)
+            utils_output.relay_add(form_add_relay)
         elif form_mod_relay.save.data:
-            flaskutils.relay_mod(form_mod_relay)
+            utils_output.relay_mod(form_mod_relay)
         elif form_mod_relay.delete.data:
-            flaskutils.relay_del(form_mod_relay)
+            utils_output.relay_del(form_mod_relay)
         elif form_mod_relay.order_up.data:
-            flaskutils.relay_reorder(form_mod_relay.relay_id.data,
-                                     display_order, 'up')
+            utils_output.relay_reorder(form_mod_relay.relay_id.data,
+                                       display_order, 'up')
         elif form_mod_relay.order_down.data:
-            flaskutils.relay_reorder(form_mod_relay.relay_id.data,
-                                     display_order, 'down')
+            utils_output.relay_reorder(form_mod_relay.relay_id.data,
+                                       display_order, 'down')
         elif form_conditional.add_cond.data:
-            flaskutils.conditional_add(form_conditional.conditional_type.data,
-                                       form_conditional.quantity.data)
+            utils_conditional.conditional_add(
+                form_conditional.conditional_type.data,
+                form_conditional.quantity.data)
         elif form_conditional.delete_cond.data:
-            flaskutils.conditional_mod(form_conditional, 'delete')
+            utils_conditional.conditional_mod(form_conditional, 'delete')
         elif form_conditional.save_cond.data:
-            flaskutils.conditional_mod(form_conditional, 'modify')
+            utils_conditional.conditional_mod(form_conditional, 'modify')
         elif form_conditional.activate_cond.data:
-            flaskutils.conditional_activate(form_conditional)
+            utils_conditional.conditional_activate(form_conditional)
         elif form_conditional.deactivate_cond.data:
-            flaskutils.conditional_deactivate(form_conditional)
+            utils_conditional.conditional_deactivate(form_conditional)
         elif form_conditional_actions.add_action.data:
-            flaskutils.conditional_action_add(form_conditional_actions)
+            utils_conditional.conditional_action_add(form_conditional_actions)
         elif form_conditional_actions.save_action.data:
-            flaskutils.conditional_action_mod(form_conditional_actions,
-                                              'modify')
+            utils_conditional.conditional_action_mod(form_conditional_actions,
+                                                     'modify')
         elif form_conditional_actions.delete_action.data:
-            flaskutils.conditional_action_mod(form_conditional_actions,
-                                              'delete')
+            utils_conditional.conditional_action_mod(form_conditional_actions,
+                                                     'delete')
         return redirect(url_for('page_routes.page_output'))
 
     return render_template('pages/output.html',
@@ -872,8 +882,8 @@ def page_input():
     form_add_sensor = forms_input.InputAdd()
     form_mod_sensor = forms_input.InputMod()
 
-    form_conditional = forms_misc.Conditional()
-    form_conditional_actions = forms_misc.ConditionalActions()
+    form_conditional = forms_conditional.Conditional()
+    form_conditional_actions = forms_conditional.ConditionalActions()
 
     # If DS18B20 sensors added, compile a list of detected sensors
     ds18b20_sensors = []
@@ -896,45 +906,45 @@ def page_input():
         break
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission('edit_controllers'):
+        if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('page_routes.page_input'))
 
         if form_add_sensor.sensorAddSubmit.data:
-            flaskutils.sensor_add(form_add_sensor)
+            utils_input.sensor_add(form_add_sensor)
         elif form_mod_sensor.modSensorSubmit.data:
-            flaskutils.sensor_mod(form_mod_sensor)
+            utils_input.sensor_mod(form_mod_sensor)
         elif form_mod_sensor.delSensorSubmit.data:
-            flaskutils.sensor_del(form_mod_sensor)
+            utils_input.sensor_del(form_mod_sensor)
         elif form_mod_sensor.orderSensorUp.data:
-            flaskutils.sensor_reorder(form_mod_sensor.modSensor_id.data,
+            utils_input.sensor_reorder(form_mod_sensor.modSensor_id.data,
                                       display_order, 'up')
         elif form_mod_sensor.orderSensorDown.data:
-            flaskutils.sensor_reorder(form_mod_sensor.modSensor_id.data,
+            utils_input.sensor_reorder(form_mod_sensor.modSensor_id.data,
                                       display_order, 'down')
         elif form_mod_sensor.activateSensorSubmit.data:
-            flaskutils.sensor_activate(form_mod_sensor)
+            utils_input.sensor_activate(form_mod_sensor)
         elif form_mod_sensor.deactivateSensorSubmit.data:
-            flaskutils.sensor_deactivate(form_mod_sensor)
+            utils_input.sensor_deactivate(form_mod_sensor)
 
         elif form_conditional.deactivate_cond.data:
-            flaskutils.conditional_deactivate(form_conditional)
+            utils_conditional.conditional_deactivate(form_conditional)
         elif form_conditional.activate_cond.data:
-            flaskutils.conditional_activate(form_conditional)
+            utils_conditional.conditional_activate(form_conditional)
         elif form_mod_sensor.sensorCondAddSubmit.data:
-            flaskutils.conditional_add(
+            utils_conditional.conditional_add(
                 'sensor', 1, sensor_id=form_mod_sensor.modSensor_id.data)
         elif form_conditional.delete_cond.data:
-            flaskutils.conditional_mod(form_conditional, 'delete')
+            utils_conditional.conditional_mod(form_conditional, 'delete')
         elif form_conditional.save_cond.data:
-            flaskutils.conditional_mod(form_conditional, 'modify')
+            utils_conditional.conditional_mod(form_conditional, 'modify')
         elif form_conditional_actions.add_action.data:
-            flaskutils.conditional_action_add(form_conditional_actions)
+            utils_conditional.conditional_action_add(form_conditional_actions)
         elif form_conditional_actions.save_action.data:
-            flaskutils.conditional_action_mod(form_conditional_actions,
-                                              'modify')
+            utils_conditional.conditional_action_mod(form_conditional_actions,
+                                                     'modify')
         elif form_conditional_actions.delete_action.data:
-            flaskutils.conditional_action_mod(form_conditional_actions,
-                                              'delete')
+            utils_conditional.conditional_action_mod(form_conditional_actions,
+                                                     'delete')
         return redirect(url_for('page_routes.page_input'))
 
     return render_template('pages/input.html',
@@ -967,7 +977,7 @@ def page_timer():
     method = Method.query.all()
     timer = Timer.query.all()
     relay = Relay.query.all()
-    output_choices = flaskutils.choices_outputs(relay)
+    output_choices = utils_general.choices_outputs(relay)
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().timer)
 
@@ -978,7 +988,7 @@ def page_timer():
     form_timer_pwm_method = forms_timer.TimerPWMMethod()
 
     if request.method == 'POST':
-        if not flaskutils.user_has_permission('edit_controllers'):
+        if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
 
         form_name = request.form['form-name']
@@ -994,26 +1004,26 @@ def page_timer():
                 form_timer = form_timer_pwm_method
 
         if form_name == 'addTimer' and form_timer:
-            flaskutils.timer_add(display_order,
+            utils_timer.timer_add(display_order,
                                  form_timer_base,
                                  form_timer)
         elif form_name == 'modTimer':
             if form_timer_base.delete.data:
-                flaskutils.timer_del(form_timer_base)
+                utils_timer.timer_del(form_timer_base)
             elif form_timer_base.order_up.data:
-                flaskutils.timer_reorder(form_timer_base.timer_id.data,
-                                         display_order, 'up')
+                utils_timer.timer_reorder(form_timer_base.timer_id.data,
+                                          display_order, 'up')
             elif form_timer_base.order_down.data:
-                flaskutils.timer_reorder(form_timer_base.timer_id.data,
-                                         display_order, 'down')
+                utils_timer.timer_reorder(form_timer_base.timer_id.data,
+                                          display_order, 'down')
             elif form_timer_base.activate.data:
-                flaskutils.timer_activate(form_timer_base)
+                utils_timer.timer_activate(form_timer_base)
             elif form_timer_base.deactivate.data:
-                flaskutils.timer_deactivate(form_timer_base)
+                utils_timer.timer_deactivate(form_timer_base)
             elif form_timer_base.modify.data:
                 if form_timer:
-                    flaskutils.timer_mod(form_timer_base,
-                                         form_timer)
+                    utils_timer.timer_mod(form_timer_base,
+                                          form_timer)
         return redirect('/timer')
 
     return render_template('pages/timer.html',
@@ -1032,7 +1042,7 @@ def page_timer():
 @flask_login.login_required
 def page_usage():
     """ Display relay usage (duration and energy usage/cost) """
-    if not flaskutils.user_has_permission('view_stats'):
+    if not utils_general.user_has_permission('view_stats'):
         return redirect(url_for('general_routes.home'))
 
     misc = Misc.query.first()
@@ -1061,7 +1071,7 @@ def page_usage():
 @flask_login.login_required
 def page_usage_reports():
     """ Display relay usage (duration and energy usage/cost) """
-    if not flaskutils.user_has_permission('view_stats'):
+    if not utils_general.user_has_permission('view_stats'):
         return redirect(url_for('general_routes.home'))
 
     report_location = os.path.normpath(USAGE_REPORTS_PATH)

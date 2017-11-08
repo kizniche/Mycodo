@@ -55,7 +55,7 @@ class LCDMod(FlaskForm):
             )]
     )
     period = DecimalField(
-        lazy_gettext(u'Period'),
+        lazy_gettext(u'Period (seconds)'),
         render_kw={"placeholder": lazy_gettext(u"Period")},
         validators=[validators.NumberRange(
             min=5,

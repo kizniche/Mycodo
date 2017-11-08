@@ -49,7 +49,7 @@ class PIDModBase(FlaskForm):
         validators=[DataRequired()]
     )
     period = DecimalField(
-        lazy_gettext(u'Period'),
+        lazy_gettext(u'Period (seconds)'),
         validators=[validators.NumberRange(
             min=5.0,
             max=86400.0

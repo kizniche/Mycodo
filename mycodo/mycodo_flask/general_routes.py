@@ -27,8 +27,10 @@ from flask_babel import gettext
 from flask_influxdb import InfluxDB
 
 from mycodo.mycodo_flask.forms import forms_authentication
+from mycodo.mycodo_flask.utils import utils_general
+from mycodo.mycodo_flask.utils import utils_remote_host
+from mycodo.mycodo_flask.utils.utils_general import gzipped
 
-from mycodo import flaskutils
 from mycodo.databases.models import Camera
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Relay
@@ -36,7 +38,6 @@ from mycodo.databases.models import Remote
 from mycodo.databases.models import Sensor
 from mycodo.databases.models import User
 from mycodo.devices.camera import CameraStream
-from mycodo.flaskutils import gzipped
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -77,7 +78,7 @@ def page_settings():
 @flask_login.login_required
 def remote_admin(page):
     """Return pages for remote administration"""
-    if not flaskutils.user_has_permission('edit_settings'):
+    if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     remote_hosts = Remote.query.all()
@@ -91,18 +92,18 @@ def remote_admin(page):
         form_setup = forms_authentication.RemoteSetup()
         host_auth = {}
         for each_host in remote_hosts:
-            host_auth[each_host.host] = flaskutils.auth_credentials(
+            host_auth[each_host.host] = utils_remote_host.auth_credentials(
                 each_host.host, each_host.username, each_host.password_hash)
 
         if request.method == 'POST':
             form_name = request.form['form-name']
             if form_name == 'setup':
                 if form_setup.add.data:
-                    flaskutils.remote_host_add(form_setup=form_setup,
-                                               display_order=display_order)
+                    utils_remote_host.remote_host_add(
+                        form_setup=form_setup, display_order=display_order)
             if form_name == 'mod_remote':
                 if form_setup.delete.data:
-                    flaskutils.remote_host_del(form_setup=form_setup)
+                    utils_remote_host.remote_host_del(form_setup=form_setup)
             return redirect('/remote/setup')
 
         return render_template('remote/setup.html',
@@ -416,7 +417,7 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
 @flask_login.login_required
 def output_mod(relay_id, state, out_type, amount):
     """Manipulate relay"""
-    if not flaskutils.user_has_permission('edit_controllers'):
+    if not utils_general.user_has_permission('edit_controllers'):
         return 'Insufficient user permissions to manipulate relays'
 
     daemon = DaemonControl()
@@ -445,7 +446,7 @@ def daemon_active():
 @flask_login.login_required
 def computer_command(action):
     """Execute one of several commands as root"""
-    if not flaskutils.user_has_permission('edit_settings'):
+    if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     try:

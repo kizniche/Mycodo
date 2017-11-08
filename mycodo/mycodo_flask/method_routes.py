@@ -22,8 +22,9 @@ from mycodo.databases.models import MethodData
 from mycodo.databases.models import Relay
 
 from mycodo.mycodo_flask.forms import forms_method
+from mycodo.mycodo_flask.utils import utils_general
+from mycodo.mycodo_flask.utils import utils_method
 
-from mycodo import flaskutils
 from mycodo.mycodo_flask.static_routes import inject_mycodo_version
 
 from mycodo.utils.system_pi import csv_to_list_of_int
@@ -194,7 +195,7 @@ def method_builder(method_id):
     Page to edit the details of each method
     This includes the (time, setpoint) data sets
     """
-    if not flaskutils.user_has_permission('edit_controllers'):
+    if not utils_general.user_has_permission('edit_controllers'):
         return redirect(url_for('method_routes.method_list'))
 
     relay = Relay.query.all()
@@ -208,7 +209,7 @@ def method_builder(method_id):
         return 'admin logged in'
     # Create new method
     elif method_id == '0':
-        form_fail = flaskutils.method_create(form_create_method)
+        form_fail = utils_method.method_create(form_create_method)
         new_method = Method.query.order_by(Method.id.desc()).first()
         if not form_fail:
             return redirect('/method-build/{method_id}'.format(
@@ -267,9 +268,9 @@ def method_builder(method_id):
         if request.method == 'POST':
             form_name = request.form['form-name']
             if form_name == 'addMethod':
-                form_fail = flaskutils.method_add(form_add_method)
+                form_fail = utils_method.method_add(form_add_method)
             elif form_name in ['modMethod', 'renameMethod']:
-                form_fail = flaskutils.method_mod(form_mod_method)
+                form_fail = utils_method.method_mod(form_mod_method)
             if (form_name in ['addMethod', 'modMethod', 'renameMethod'] and
                     not form_fail):
                 return redirect('/method-build/{method_id}'.format(
@@ -303,7 +304,7 @@ def method_delete(method_id):
         action=gettext(u"Delete"),
         controller=gettext(u"Method"))
 
-    if not flaskutils.user_has_permission('edit_settings'):
+    if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('method_routes.method_list'))
 
     try:

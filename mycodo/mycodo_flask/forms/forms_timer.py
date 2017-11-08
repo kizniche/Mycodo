@@ -34,7 +34,7 @@ class TimerBase(FlaskForm):
         lazy_gettext(u'Name'),
         validators=[DataRequired()]
     )
-    relay_id = StringField(lazy_gettext(u'Output ID'))
+    relay_id = StringField(lazy_gettext(u'Output'))
     create = SubmitField(lazy_gettext(u'Save'))
     modify = SubmitField(lazy_gettext(u'Save'))
     delete = SubmitField(lazy_gettext(u'Delete'))
@@ -91,5 +91,5 @@ class TimerDuration(FlaskForm):
 
 
 class TimerPWMMethod(FlaskForm):
-    method_id = StringField(lazy_gettext(u'Method ID'))
+    method_id = StringField(lazy_gettext(u'Method'))
     method_period = StringField(lazy_gettext(u'Period (seconds)'))

@@ -79,7 +79,7 @@ class InputMod(FlaskForm):
         )]
     )
     period = DecimalField(
-        lazy_gettext(u'Period'),
+        lazy_gettext(u'Period (seconds)'),
         validators=[DataRequired(),
                     validators.NumberRange(
             min=5.0,

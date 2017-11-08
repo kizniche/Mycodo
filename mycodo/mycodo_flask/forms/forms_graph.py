@@ -22,7 +22,6 @@ class GraphAdd(FlaskForm):
     graph_type = StringField('Type', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext(u'Name'),
-        render_kw={"placeholder": lazy_gettext(u"Graph Name")},
         validators=[DataRequired()]
     )
     pid_ids = SelectMultipleField(lazy_gettext(u'PIDs'))
@@ -37,7 +36,6 @@ class GraphAdd(FlaskForm):
     )
     height = IntegerField(
         lazy_gettext(u'Height (pixels)'),
-        render_kw={"placeholder": lazy_gettext(u"Height (pixels)")},
         validators=[validators.NumberRange(
             min=100,
             max=10000
@@ -45,7 +43,6 @@ class GraphAdd(FlaskForm):
     )
     xaxis_duration = IntegerField(
         lazy_gettext(u'x-Axis (minutes)'),
-        render_kw={"placeholder": lazy_gettext(u"X-Axis Duration")},
         validators=[validators.NumberRange(
             min=1,
             message=lazy_gettext(u"Number of minutes to display of past "
@@ -54,7 +51,6 @@ class GraphAdd(FlaskForm):
     )
     refresh_duration = IntegerField(
         lazy_gettext(u'Refresh (seconds)'),
-        render_kw={"placeholder": lazy_gettext(u"Refresh duration")},
         validators=[validators.NumberRange(
             min=1,
             message=lazy_gettext(u"Number of seconds to wait between acquiring"
@@ -71,7 +67,6 @@ class GaugeAdd(FlaskForm):
     graph_type = StringField('Type', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext(u'Name'),
-        render_kw={"placeholder": lazy_gettext(u"Name")},
         validators=[DataRequired()]
     )
     sensor_ids = SelectMultipleField(lazy_gettext(u'Measurement'))
@@ -84,7 +79,6 @@ class GaugeAdd(FlaskForm):
     )
     height = IntegerField(
         lazy_gettext(u'Height (pixels)'),
-        render_kw={"placeholder": lazy_gettext(u"Height (pixels)")},
         validators=[validators.NumberRange(
             min=100,
             max=10000
@@ -95,7 +89,6 @@ class GaugeAdd(FlaskForm):
     max_measure_age = DecimalField(lazy_gettext(u'Max Age (seconds)'))
     refresh_duration = IntegerField(
         lazy_gettext(u'Refresh (seconds)'),
-        render_kw={"placeholder": lazy_gettext(u"Refresh duration")},
         validators=[validators.NumberRange(
             min=1,
             message=lazy_gettext(u"Number of seconds to wait between acquiring"
@@ -110,7 +103,6 @@ class GraphMod(FlaskForm):
     graph_type = StringField('Type', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext(u'Name'),
-        render_kw={"placeholder": lazy_gettext(u"Graph Name")},
         validators=[DataRequired()]
     )
     pid_ids = SelectMultipleField(lazy_gettext(u'PIDs'))
@@ -125,7 +117,6 @@ class GraphMod(FlaskForm):
     )
     height = IntegerField(
         lazy_gettext(u'Height (pixels)'),
-        render_kw={"placeholder": lazy_gettext(u"Height (pixels)")},
         validators=[validators.NumberRange(
             min=100,
             max=10000
@@ -133,7 +124,6 @@ class GraphMod(FlaskForm):
     )
     xaxis_duration = IntegerField(
         lazy_gettext(u'x-Axis (minutes)'),
-        render_kw={"placeholder": lazy_gettext(u"X-Axis Duration")},
         validators=[validators.NumberRange(
             min=1,
             message=lazy_gettext(u"Number of minutes to display of past "
@@ -142,7 +132,6 @@ class GraphMod(FlaskForm):
     )
     refresh_duration = IntegerField(
         lazy_gettext(u'Refresh (seconds)'),
-        render_kw={"placeholder": lazy_gettext(u"Refresh duration")},
         validators=[validators.NumberRange(
             min=1,
             message=lazy_gettext(u"Number of seconds to wait between acquiring"

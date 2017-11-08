@@ -11,7 +11,8 @@ from flask.blueprints import Blueprint
 
 from mycodo.mycodo_flask.static_routes import inject_mycodo_version
 from mycodo.mycodo_flask.forms import forms_calibration
-from mycodo import flaskutils
+
+from mycodo.mycodo_flask.utils import utils_general
 
 from mycodo.databases.models import Sensor
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
@@ -40,7 +41,7 @@ def calibration_select():
     """
     Landing page to initially select the device to calibrate
     """
-    if not flaskutils.user_has_permission('edit_controllers'):
+    if not utils_general.user_has_permission('edit_controllers'):
         return redirect(url_for('general_routes.home'))
 
     form_calibration = forms_calibration.Calibration()
@@ -59,7 +60,7 @@ def calibration_atlas_ph():
     """
     Step-by-step tool for calibrating the Atlas Scientific pH sensor
     """
-    if not flaskutils.user_has_permission('edit_controllers'):
+    if not utils_general.user_has_permission('edit_controllers'):
         return redirect(url_for('general_routes.home'))
 
     form_ph_calibrate = forms_calibration.CalibrationAtlasph()
@@ -142,7 +143,7 @@ def calibration_atlas_ph_measure(sensor_id):
     Acquire a measurement from the Atlas Scientific pH sensor and return it
     Used during calibration to display the current pH to the user
     """
-    if not flaskutils.user_has_permission('edit_controllers'):
+    if not utils_general.user_has_permission('edit_controllers'):
         return redirect(url_for('page_routes.page_atlas_ph_calibrate'))
 
     selected_sensor = Sensor.query.filter_by(unique_id=sensor_id).first()

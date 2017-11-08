@@ -15,8 +15,8 @@ from flask_babel import gettext
 from pkg_resources import parse_version
 
 from mycodo.mycodo_flask.forms import forms_misc
+from mycodo.mycodo_flask.utils import utils_general
 
-from mycodo import flaskutils
 from mycodo.mycodo_flask.static_routes import inject_mycodo_version
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.system_pi import internet
@@ -51,7 +51,7 @@ def inject_dictionary():
 @flask_login.login_required
 def admin_backup():
     """ Load the backup management page """
-    if not flaskutils.user_has_permission('edit_settings'):
+    if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     form_backup = forms_misc.Backup()
@@ -113,7 +113,7 @@ def admin_backup():
 @flask_login.login_required
 def admin_statistics():
     """ Display collected statistics """
-    if not flaskutils.user_has_permission('view_stats'):
+    if not utils_general.user_has_permission('view_stats'):
         return redirect(url_for('general_routes.home'))
 
     try:
@@ -147,7 +147,7 @@ def admin_upgrade_status():
 @flask_login.login_required
 def admin_upgrade():
     """ Display any available upgrades and option to upgrade """
-    if not flaskutils.user_has_permission('edit_settings'):
+    if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     if not internet():
