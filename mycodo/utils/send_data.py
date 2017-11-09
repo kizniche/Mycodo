@@ -1,5 +1,4 @@
 # coding=utf-8
-
 import logging
 import os
 import smtplib
@@ -10,10 +9,8 @@ from email.mime.image import MIMEImage
 from email.mime.text import MIMEText
 from email import Encoders
 
-from system_pi import (
-    cmd_output,
-    set_user_grp
-)
+from system_pi import cmd_output
+from system_pi import set_user_grp
 
 logger = logging.getLogger("mycodo.notification")
 

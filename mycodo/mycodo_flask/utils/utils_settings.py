@@ -19,11 +19,11 @@ from mycodo.databases.models import Misc
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import User
+from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.utils import test_username
 from mycodo.utils.utils import test_password
 from mycodo.utils.send_data import send_email
 
-from mycodo.mycodo_flask.utils.utils_general import db_retrieve_table
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
@@ -393,7 +393,7 @@ def camera_del(form_camera):
     error = []
 
     camera = db_retrieve_table(
-        Camera, first=True, device_id=form_camera.camera_id.data)
+        Camera, device_id=form_camera.camera_id.data)
     if camera.timelapse_started:
         error.append("Cannot delete camera if a time-lapse is currently "
                      "using it. Stop the time-lapse and try again.")

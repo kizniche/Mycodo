@@ -7,17 +7,13 @@ import time
 from collections import OrderedDict
 from dateutil import relativedelta
 
-from mycodo.databases.models import (
-    Misc,
-    Relay
-)
+from mycodo.databases.models import Misc
+from mycodo.databases.models import Relay
 
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import relay_sec_on
-from mycodo.utils.system_pi import (
-    assure_path_exists,
-    set_user_grp
-)
+from mycodo.utils.system_pi import assure_path_exists
+from mycodo.utils.system_pi import set_user_grp
 
 from mycodo.config import USAGE_REPORTS_PATH
 

@@ -13,35 +13,29 @@ from collections import OrderedDict
 from influxdb import InfluxDBClient
 from sqlalchemy import func
 
-# Classes
-from mycodo.databases.models import (
-    AlembicVersion,
-    Conditional,
-    LCD,
-    Method,
-    PID,
-    Relay,
-    Sensor,
-    Timer,
-    User
-)
+from mycodo.databases.models import AlembicVersion
+from mycodo.databases.models import Conditional
+from mycodo.databases.models import LCD
+from mycodo.databases.models import Method
+from mycodo.databases.models import PID
+from mycodo.databases.models import Relay
+from mycodo.databases.models import Sensor
+from mycodo.databases.models import Timer
+from mycodo.databases.models import User
 
-# Functions
 from database import db_retrieve_table_daemon
 
-# Config
-from mycodo.config import (
-    ID_FILE,
-    MYCODO_VERSION,
-    SQL_DATABASE_MYCODO,
-    STATS_CSV,
-    STATS_DATABASE,
-    STATS_HOST,
-    STATS_INTERVAL,
-    STATS_PORT,
-    STATS_PASSWORD,
-    STATS_USER
-)
+from mycodo.config import ID_FILE
+from mycodo.config import MYCODO_VERSION
+from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.config import STATS_CSV
+from mycodo.config import STATS_DATABASE
+from mycodo.config import STATS_HOST
+from mycodo.config import STATS_INTERVAL
+from mycodo.config import STATS_PORT
+from mycodo.config import STATS_PASSWORD
+from mycodo.config import STATS_USER
+
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 

@@ -213,18 +213,6 @@ def user_has_permission(permission):
     return False
 
 
-def db_retrieve_table(table, first=False, device_id=''):
-    """ Return table data from database SQL query """
-    if first:
-        return_table = table.query.first()
-    elif device_id:
-        return_table = table.query.filter(
-            table.id == device_id).first()
-    else:
-        return_table = table.query.all()
-    return return_table
-
-
 def delete_entry_with_id(table, entry_id):
     """ Delete SQL database entry with specific id """
     try:
@@ -296,8 +284,8 @@ def gzipped(f):
             response.direct_passthrough = False
 
             if (response.status_code < 200 or
-                response.status_code >= 300 or
-                'Content-Encoding' in response.headers):
+                    response.status_code >= 300 or
+                    'Content-Encoding' in response.headers):
                 return response
             gzip_buffer = IO()
             gzip_file = gzip.GzipFile(mode='wb',
