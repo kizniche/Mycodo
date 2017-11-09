@@ -53,7 +53,7 @@
                 {{form_mod_pid_base.name(class_='form-control', value=each_pid.name, **{'title':_('Name for this PID controller.')})}}
               </div>
               <div class="col-xs-6 no-gutters">
-                <input class="form-control btn btn-default" title="UUID: {{each_pid.unique_id}}" disabled="" value="ID: {{each_pid.id}}, {{each_pid.pid_type}}, State:
+                <input class="form-control btn btn-default" title="UUID: {{each_pid.unique_id}}" disabled="" value="[{{'%02d' % each_pid.id}}]
                 {%- if each_pid.is_activated and not each_pid.is_paused %} {{_('Active')}}
                 {%- elif each_pid.is_activated and each_pid.is_paused %} {{_('Paused')}}
                 {%- elif each_pid.is_held %} {{_('On Hold')}}

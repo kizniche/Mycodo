@@ -257,7 +257,7 @@ def page_export():
     relay = Relay.query.all()
     sensor = Sensor.query.all()
     relay_choices = utils_general.choices_id_name(relay)
-    sensor_choices = utils_general.choices_sensors(sensor)
+    sensor_choices = utils_general.choices_inputs(sensor)
 
     if request.method == 'POST':
         start_time = export_options.date_range.data.split(' - ')[0]
@@ -315,7 +315,7 @@ def page_graph():
     # Retrieve all choices to populate form drop-down menu
     pid_choices = utils_general.choices_pids(pid)
     output_choices = utils_general.choices_outputs(relay)
-    sensor_choices = utils_general.choices_sensors(sensor)
+    sensor_choices = utils_general.choices_inputs(sensor)
 
     # Add custom measurement and units to list (From linux command sensor)
     sensor_measurements = MEASUREMENT_UNITS
@@ -407,7 +407,7 @@ def page_graph():
 def page_graph_async():
     """ Generate graphs using asynchronous data retrieval """
     sensor = Sensor.query.all()
-    sensor_choices = utils_general.choices_sensors(sensor)
+    sensor_choices = utils_general.choices_inputs(sensor)
     sensor_choices_split = OrderedDict()
     for key in sensor_choices:
         order = key.split(",")
@@ -686,7 +686,7 @@ def page_pid():
     relay = Relay.query.all()
     sensor = Sensor.query.all()
 
-    sensor_choices = utils_general.choices_sensors(sensor)
+    sensor_choices = utils_general.choices_inputs(sensor)
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
 

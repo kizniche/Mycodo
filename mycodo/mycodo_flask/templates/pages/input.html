@@ -58,7 +58,7 @@
           {{form_mod_sensor.name(class_='form-control', value=each_sensor.name, **{'title':_('A common name to distinguish this sensor from others')})}}
         </div>
         <div class="col-xs-5 col-sm-2">
-          <input class="form-control btn btn-default" disabled="" title="UUID: {{each_sensor.unique_id}}" value="{{each_sensor.device}} ({{each_sensor.id}})" type="text">
+          <input class="form-control btn btn-default" disabled="" title="UUID: {{each_sensor.unique_id}}" value="[{{'%02d' % each_sensor.id}}] {{each_sensor.device}}" type="text">
         </div>
         <div class="col-xs-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
         {% if each_sensor.is_activated -%}

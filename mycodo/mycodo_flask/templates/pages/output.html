@@ -72,6 +72,11 @@
 </script>
 
 <script>
+  function pad(num, size) {
+      var s = num+"";
+      while (s.length < size) s = "0" + s;
+      return s;
+  }
   function gpioState() {
     var url = '/gpiostate';
     $.getJSON(url,
@@ -82,14 +87,14 @@
               document.getElementById(relay_id + "-relay-state").className = "row active-background";
               if (state !== 'off') {
                 if (state === 'on') {
-                  document.getElementById(relay_id + "-input-relay-state").value = '(' + relay_id + ') {{_('Active')}}';
+                  document.getElementById(relay_id + "-input-relay-state").value = '[' + pad(relay_id, 2) + '] {{_('Active')}}';
                 } else {
-                  document.getElementById(relay_id + "-input-relay-state").value = '(' + relay_id + ') {{_('Active')}}, ' + state.toFixed(1) + '%';
+                  document.getElementById(relay_id + "-input-relay-state").value = '[' + pad(relay_id, 2) + '] {{_('Active')}} (' + state.toFixed(1) + '%)';
                 }
               }
               else {
                 document.getElementById(relay_id + "-relay-state").className = "row inactive-background";
-                document.getElementById(relay_id + "-input-relay-state").value = '(' + relay_id + ') {{_('Inactive')}}';
+                document.getElementById(relay_id + "-input-relay-state").value = '[' + pad(relay_id, 2) + '] {{_('Inactive')}}';
               }
             }
           );
@@ -185,7 +190,7 @@
             {{form_mod_relay.name(class_='form-control', value=each_relay.name, **{'title':_('Name')})}}
           </div>
           <div class="col-xs-5 col-sm-2 col-md-2 small-gutters">
-            <input class="form-control btn btn-default" disabled="" id="{{each_relay.id}}-input-relay-state" title="UUID: {{each_relay.unique_id}}" value="({{each_relay.id}}) {{ _('Unconfigured')}}" type="text">
+            <input class="form-control btn btn-default" disabled="" id="{{each_relay.id}}-input-relay-state" title="UUID: {{each_relay.unique_id}}" value="[{{'%02d' % each_relay.id}}] {{ _('Unconfigured')}}" type="text">
           </div>
           <div class="col-xs-5 col-xs-offset-2 col-sm-3 col-sm-offset-0 col-md-3 small-gutters">
             {% if each_relay.relay_type != 'pwm' -%}

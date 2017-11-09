@@ -6,7 +6,7 @@
         <option value="">{{_('No Methods Found')}} -></option>
       {%- else -%}
         {%- for each_method in method-%}
-          <option value="{{each_method.id}}">{{each_method.id}} ({{each_method.name}})</option>
+          <option value="{{each_method.id}}">[{{'%02d' % each_method.id}}] {{each_method.name}}</option>
         {%- endfor -%}
       {%- endif-%}
     </select>

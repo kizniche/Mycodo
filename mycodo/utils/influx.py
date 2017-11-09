@@ -4,7 +4,6 @@ import logging
 from uuid import UUID
 from influxdb import InfluxDBClient
 from mycodo.databases.models import Relay
-from mycodo.databases.models import Sensor
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 
@@ -13,7 +12,6 @@ from mycodo.config import INFLUXDB_PORT
 from mycodo.config import INFLUXDB_USER
 from mycodo.config import INFLUXDB_PASSWORD
 from mycodo.config import INFLUXDB_DATABASE
-from mycodo.config import MEASUREMENT_UNITS
 
 logger = logging.getLogger("mycodo.influxdb")
 

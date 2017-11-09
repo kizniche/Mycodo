@@ -21,7 +21,7 @@
         {{form_camera.camera_id(value=each_camera.id)}}
         <div class="row" style="border-bottom: 2px solid #ddd; padding: 1em 0;">
           <div class="col-xs-12 col-sm-3">
-            <input class="form-control" disabled="" value="{{each_camera.name}} (ID: {{each_camera.id}})" type="text">
+            <input class="form-control" disabled="" title="UUID: {{each_camera.unique_id}}" value="[{{'%02d' % each_camera.id}}] {{each_camera.name}}" type="text">
           </div>
           <div class="col-xs-12 col-sm-3">
             {{form_camera.capture_still(class_='form-control btn btn-default')}}

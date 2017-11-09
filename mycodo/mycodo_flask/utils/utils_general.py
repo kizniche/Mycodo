@@ -116,39 +116,35 @@ def controller_activate_deactivate(controller_action,
 # Choices
 #
 
-# return a dictionary of all available measurements
-# Used to produce a multi-select form input for creating/modifying custom graphs
-def choices_sensors(sensor):
+def choices_inputs(sensor):
+    """ populate form multi-select choices from Input entries """
     choices = OrderedDict()
-    # populate form multi-select choices for sensors and measurements
     for each_sensor in sensor:
         if each_sensor.device == 'LinuxCommand':
             value = '{id},{meas}'.format(
                 id=each_sensor.unique_id,
                 meas=each_sensor.cmd_measurement)
-            display = u'{dev_id} ({dev_name}) {name} ({unit})'.format(
-                dev_id=each_sensor.id,
-                dev_name=each_sensor.name,
-                name=each_sensor.cmd_measurement,
-                unit=each_sensor.cmd_measurement_units)
+            display = u'[{id:02d}] {name} ({meas})'.format(
+                id=each_sensor.id,
+                name=each_sensor.name,
+                meas=each_sensor.cmd_measurement)
             choices.update({value: display})
         else:
             for each_measurement in MEASUREMENTS[each_sensor.device]:
                 value = '{id},{meas}'.format(
                     id=each_sensor.unique_id,
                     meas=each_measurement)
-                display = u'{dev_id} ({dev_name}) {name} ({unit})'.format(
-                    dev_id=each_sensor.id,
-                    dev_name=each_sensor.name,
-                    name=MEASUREMENT_UNITS[each_measurement]['name'],
-                    unit=MEASUREMENT_UNITS[each_measurement]['unit'])
+                display = u'[{id:02d}] {name} ({meas})'.format(
+                    id=each_sensor.id,
+                    name=each_sensor.name,
+                    meas=MEASUREMENT_UNITS[each_measurement]['name'])
                 choices.update({value: display})
             # Display custom converted units for ADCs
             if each_sensor.device in ['ADS1x15', 'MCP342x']:
                 value = '{id},{meas}'.format(
                     id=each_sensor.unique_id,
                     meas=each_sensor.adc_measure)
-                display = u'{id} ({name}) {meas}'.format(
+                display = u'[{id:02d}] {name} ({meas})'.format(
                     id=each_sensor.id,
                     name=each_sensor.name,
                     meas=each_sensor.adc_measure)
@@ -157,36 +153,36 @@ def choices_sensors(sensor):
 
 
 def choices_outputs(output):
+    """ populate form multi-select choices from Output entries """
     choices = OrderedDict()
-    # populate form multi-select choices for output devices
     for each_output in output:
         if each_output.relay_type != 'pwm':
             value = '{id},duration_sec'.format(id=each_output.unique_id)
-            display = u'{id} ({name}) Output'.format(
+            display = u'[{id:02d}] {name} (Duration)'.format(
                 id=each_output.id, name=each_output.name)
             choices.update({value: display})
         elif each_output.relay_type == 'pwm':
             value = '{id},duty_cycle'.format(id=each_output.unique_id)
-            display = u'{id} ({name}) Duty Cycle'.format(
+            display = u'[{id:02d}] {name} (Duty Cycle)'.format(
                 id=each_output.id, name=each_output.name)
             choices.update({value: display})
     return choices
 
 
 def choices_pids(pid):
+    """ populate form multi-select choices from PID entries """
     choices = OrderedDict()
-    # populate form multi-select choices for sensors and measurements
     for each_pid in pid:
         value = '{id},setpoint'.format(id=each_pid.unique_id)
-        display = u'{id} ({name}) Setpoint'.format(
+        display = u'[{id:02d}] {name} (Setpoint)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
         value = '{id},pid_output'.format(id=each_pid.unique_id)
-        display = u'{id} ({name}) Output (Duration)'.format(
+        display = u'[{id:02d}] {name} (Output Duration)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
         value = '{id},duty_cycle'.format(id=each_pid.unique_id)
-        display = u'{id} ({name}) Output (Duty Cycle)'.format(
+        display = u'[{id:02d}] {name} (Output Duty Cycle)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
     return choices
@@ -197,7 +193,7 @@ def choices_id_name(table):
     choices = OrderedDict()
     for each_entry in table:
         value = each_entry.unique_id
-        display = u'{id} ({name})'.format(id=each_entry.id,
+        display = u'[{id:02d}] {name}'.format(id=each_entry.id,
                                           name=each_entry.name)
         choices.update({value: display})
     return choices

@@ -116,11 +116,11 @@
           {{form_timer_base.name(class_='form-control', value=each_timer.name, **{'title':_('Name')})}}
         </div>
         <div class="col-xs-5 col-sm-2">
-          <input class="form-control btn btn-default" disabled="" value="{{each_timer.id}}, {{each_timer.timer_type}},
-            {%- if each_timer.is_activated %} {{_('Active')}}
-            {%- else %} {{_('Inactive')}}
+          <input class="form-control btn btn-default" disabled="" value="[{{'%02d' % each_timer.id}}] {{each_timer.timer_type}} (
+            {%- if each_timer.is_activated %}{{_('Active')}}
+            {%- else %}{{_('Inactive')}}
             {%-endif -%}
-          " type="text">
+          )" type="text">
         </div>
         <div class="col-xs-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
           {%- if each_timer.is_activated %}

@@ -46,9 +46,9 @@
                 {{form_mod_lcd.name(class_='form-control', value=each_lcd.name, **{'title':_('Name for this PID controller.')})}}
               </div>
               <div class="col-xs-6 no-gutters">
-                <input class="form-control btn btn-default" title="ID: {{each_lcd.id}}" disabled="" value="ID: {{each_lcd.id}}, State:
-                {%- if each_lcd.is_activated -%} {{_('Active')}}
-                {%- else -%} {{_('Inactive')}}
+                <input class="form-control btn btn-default" title="UUID: {{each_lcd.id}}" disabled="" value="[{{'%02d' % each_lcd.id}}]
+                {%- if each_lcd.is_activated %} {{_('Active')}}
+                {%- else %} {{_('Inactive')}}
                 {%-endif -%}
                 " type="text">
               </div>
