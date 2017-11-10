@@ -1,4 +1,7 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
+#
+# From https://github.com/miguelgrinberg/flask-video-streaming
+#
 import io
 import time
 import picamera
@@ -6,9 +9,20 @@ from base_camera import BaseCamera
 
 
 class Camera(BaseCamera):
+    camera_options = None
+
+    @staticmethod
+    def set_camera_options(camera_options):
+        Camera.camera_options = camera_options
+
     @staticmethod
     def frames():
         with picamera.PiCamera() as camera:
+            camera.resolution = (Camera.camera_options.width,
+                                 Camera.camera_options.height)
+            camera.hflip = Camera.camera_options.hflip
+            camera.vflip = Camera.camera_options.vflip
+
             # let camera warm up
             time.sleep(2)
 

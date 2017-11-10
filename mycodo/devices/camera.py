@@ -21,72 +21,6 @@ from mycodo.config import INSTALL_DIRECTORY
 logger = logging.getLogger('mycodo.devices.picamera')
 
 
-class CameraStream(object):
-    thread = None  # background thread that reads frames from camera
-    frame = None  # current frame is stored here by background thread
-    last_access = 0  # time of last client access to the camera
-    terminate = False
-
-    def initialize(self):
-        if CameraStream.thread is None:
-            # start background frame thread
-            CameraStream.thread = threading.Thread(target=self._thread)
-            CameraStream.thread.start()
-
-            # wait until frames start to be available
-            while self.frame is None:
-                time.sleep(0)
-
-    @staticmethod
-    def is_running():
-        if CameraStream.thread is None:
-            return False
-        return True
-
-    @staticmethod
-    def terminate_controller():
-        CameraStream.terminate = True
-
-    def get_frame(self):
-        CameraStream.last_access = time.time()
-        self.initialize()
-        return self.frame
-
-    @classmethod
-    def _thread(cls):
-        try:
-            with picamera.PiCamera() as camera:
-                # camera setup
-                camera.resolution = (1024, 768)
-                camera.hflip = True
-                camera.vflip = True
-
-                # let camera warm up
-                camera.start_preview()
-                time.sleep(2)
-
-                stream = io.BytesIO()
-                for _ in camera.capture_continuous(stream, 'jpeg',
-                                                   use_video_port=True):
-                    # store frame
-                    stream.seek(0)
-                    cls.frame = stream.read()
-
-                    # reset stream for next frame
-                    stream.seek(0)
-                    stream.truncate()
-
-                    # if there hasn't been any clients asking for frames in
-                    # the last 10 seconds stop the thread
-                    if time.time() - cls.last_access > 10 or cls.terminate:
-                        break
-        except Exception as e:
-            logger.exception(
-                "{cls} raised an error during read() call: "
-                "{err}".format(cls=type(cls).__name__, err=e))
-        cls.thread = None
-
-
 #
 # Camera record
 #
@@ -228,14 +162,6 @@ def camera_record(record_type, settings, duration_sec=None):
 
 def count_cameras_opencv():
     """ Returns how many cameras are detected with opencv (cv2) """
-    # num_cameras = 0
-    # for i in range(10):
-    #     temp_camera = cv2.VideoCapture(i-1)
-    #     ret, _ = temp_camera.read()
-    #     if ret:
-    #         num_cameras += 1
-    # return num_cameras
-
     max_tested = 100
     for i in range(max_tested):
         temp_camera = cv2.VideoCapture(i)

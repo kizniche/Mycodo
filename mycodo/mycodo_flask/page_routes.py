@@ -158,10 +158,6 @@ def page_camera():
                 flash(gettext(
                     u"Cannot start stream if time-lapse is active."), "error")
                 return redirect('/camera')
-            # elif Camera.query.filter(Camera.stream_started).first():
-            #     flash(gettext(
-            #         u"Only one video stream is permitted at a time."), "error")
-            #     return redirect('/camera')
             else:
                 mod_camera.stream_started = True
                 db.session.commit()

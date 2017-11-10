@@ -155,14 +155,14 @@ def gen(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-@blueprint.route('/video_feed/<camera_type>/<device>')
+@blueprint.route('/video_feed/<unique_id>')
 @flask_login.login_required
-def video_feed(camera_type, device):
+def video_feed(unique_id):
     """Video streaming route. Put this in the src attribute of an img tag."""
-    camera_stream = import_module('mycodo.mycodo_flask.camera.camera_' + camera_type).Camera
-    if camera_type == 'opencv':
-        camera_stream.set_video_source(int(device))
-    return Response(gen(camera_stream(camera_type=camera_type, device=int(device))),
+    camera_options = db_retrieve_table_daemon(table=Camera, unique_id=unique_id)
+    camera_stream = import_module('mycodo.mycodo_flask.camera.camera_' + camera_options.library).Camera
+    camera_stream.set_camera_options(camera_options)
+    return Response(gen(camera_stream(unique_id=unique_id)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 

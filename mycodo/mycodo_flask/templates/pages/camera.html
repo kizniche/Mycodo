@@ -89,9 +89,9 @@
           <div style="padding-bottom: 1em">
             {{_('Video Stream')}}:
             {% if each_camera.library == 'opencv' %}
-            <br/><img style="max-width: 100%" src="/video_feed/opencv/{{each_camera.opencv_device}}">
+            <br/><img style="max-width: 100%" src="/video_feed/{{each_camera.unique_id}}">
             {% elif each_camera.library == 'picamera' %}
-            <br/><img style="max-width: 100%" src="/video_feed/picamera/0">
+            <br/><img style="max-width: 100%" src="/video_feed/{{each_camera.unique_id}}">
             {% endif %}
           </div>
         {%- endif -%}
