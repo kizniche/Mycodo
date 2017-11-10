@@ -156,6 +156,7 @@ def gen(camera):
 
 
 @blueprint.route('/video_feed/<camera_type>/<device>')
+@flask_login.login_required
 def video_feed(camera_type, device):
     """Video streaming route. Put this in the src attribute of an img tag."""
     camera_stream = import_module('mycodo.mycodo_flask.camera.camera_' + camera_type).Camera

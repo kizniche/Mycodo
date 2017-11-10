@@ -83,7 +83,7 @@ def test_routes_when_not_logged_in(testapp):
         'systemctl/shutdown',
         'timer',
         'usage',
-        'video_feed'
+        'video_feed/opencv/0'
     ]
     for route in routes:
         redirects_to_login_page(testapp=testapp, endpoint='/{add}'.format(add=route))
