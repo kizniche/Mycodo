@@ -6,7 +6,7 @@ import os
 import collections
 from datetime import timedelta
 
-MYCODO_VERSION = '5.3.4'
+MYCODO_VERSION = '5.3.5'
 ALEMBIC_VERSION = '214c6bb4603a'
 
 LANGUAGES = {

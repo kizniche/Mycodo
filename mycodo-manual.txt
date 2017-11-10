@@ -1467,10 +1467,10 @@ live data.
 Camera
 
 Once a cameras has been set up (in the Camera Settings), it may be used
-to capture still images, create time-lapses, and stream video (Pi camera
-only). Cameras may also be used with Conditional Statements to trigger a
-camera image or video capture (as well as the ability to email the
-image/video with a notification).
+to capture still images, create time-lapses, and stream video. Cameras
+may also be used by Conditional Statements to trigger a camera image or
+video capture (as well as the ability to email the image/video with a
+notification).
 
 
 Relay Usage

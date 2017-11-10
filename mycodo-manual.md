@@ -905,7 +905,7 @@ Camera
 
 Once a cameras has been set up (in the [Camera
 Settings](#camera-settings)), it may be used to capture still images,
-create time-lapses, and stream video (Pi camera only). Cameras may also be used with
+create time-lapses, and stream video. Cameras may also be used by
 [Conditional Statements](#conditional-statements) to trigger a camera
 image or video capture (as well as the ability to email the image/video
 with a notification).
