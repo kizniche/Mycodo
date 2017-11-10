@@ -606,20 +606,20 @@ Variable | Description
 ((input_period)) | The period (seconds) between condition
 ((input_altitude)) | Sensor measurement: altitude
 ((input_co2)) | Sensor measurement: CO2
-((input_dewpoint)) | Sensor measurement: dew point
 ((input_cpu_load_1m)) | Sensor measurement:  CPU load (1 min)
 ((input_cpu_load_5m)) | Sensor measurement: CPU load (5 min)
 ((input_cpu_load_15m)) | Sensor measurement: CPU load (15 min)
-((input_edge)) | Sensor measurement: edge detected (1 or -1)
+((input_dewpoint)) | Sensor measurement: dew point
 ((input_disk_space)) | Sensor measurement: disk space
+((input_edge)) | Sensor measurement: edge detected (1 or -1)
 ((input_humidity)) | Sensor measurement: humidity
 ((input_lux)) | Sensor measurement: lux
 ((input_moisture)) | Sensor measurement: moisture
 ((input_ph)) | Sensor measurement: ph
 ((input_pressure)) | Sensor measurement: pressure
 ((input_temperature)) | Sensor measurement: temperature
-((input_temperature_object)) | Sensor measurement: temperature (object)
 ((input_temperature_die)) | Sensor measurement: temperature (die)
+((input_temperature_object)) | Sensor measurement: temperature (object)
 ((input_voltage)) | Sensor measurement: voltage
 
 ##### Output Conditional command variables

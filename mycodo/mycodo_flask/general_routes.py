@@ -10,6 +10,7 @@ import os
 import subprocess
 import time
 import flask_login
+from importlib import import_module
 from RPi import GPIO
 from dateutil.parser import parse as date_parse
 from flask import Response
@@ -37,7 +38,6 @@ from mycodo.databases.models import Relay
 from mycodo.databases.models import Remote
 from mycodo.databases.models import Sensor
 from mycodo.databases.models import User
-from mycodo.devices.camera import CameraStream
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -147,11 +147,19 @@ def gen(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-@blueprint.route('/video_feed')
-@flask_login.login_required
-def video_feed():
+def gen(camera):
+    """Video streaming generator function."""
+    while True:
+        frame = camera.get_frame()
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+
+@blueprint.route('/video_feed/<camera_type>/<device>')
+def video_feed(camera_type, device):
     """Video streaming route. Put this in the src attribute of an img tag."""
-    return Response(gen(CameraStream()),
+    camera_stream = import_module('mycodo.mycodo_flask.camera.camera_' + camera_type).Camera
+    return Response(gen(camera_stream(opencv_device=int(device))),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 

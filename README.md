@@ -188,7 +188,7 @@ http://KyleGabriel.com
 
 ## Languages
 
-Mycodo has been translated (to varying degrees) to [Spanish (Español)](#espa%C3%B1ol-spanish), [French (Français)](#fran%C3%A7ais-french), and [Korean (한국어)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean). By default, mycodo will display the default language set by your browser. You may also force a language in the settings at ```[Gear Icon]``` -> ```Configure``` -> ```General``` -> ```Language```.
+Mycodo has been translated (to varying degrees) to [Spanish (Español)](#espa%C3%B1ol-spanish), [French (Français)](#fran%C3%A7ais-french), and [Korean (한국어)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean). By default, mycodo will display the default language set by your browser. You may also force a language in the settings at ```[Gear Icon]``` -> ```Configure``` -> ```General``` -> ```Language```
 
 ### Español (Spanish)
 

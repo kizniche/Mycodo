@@ -4,10 +4,12 @@
 
  - Add timestamp to lines of the upgrade/backup/restore logs
  - Add sensor measurement smoothing to Chirp light sensor (module will soon expand to all sensors)
+ - Add ability to stream video from USB cameras
 
 ### Bugfixes
 
  - Fix an issue loading the camera settings page without a camera connected
+ - Fix video streaming with Pi Camera ([#228](https://github.com/kizniche/mycodo/issues/228))
 
 ### Miscellaneous
 

@@ -47,9 +47,7 @@
             {% endif %}
           {%- endif %}
 
-          {% if not each_camera.timelapse_started and
-                    each_camera.camera_type == 'Raspberry Pi' and
-                    each_camera.library == 'picamera' %}
+          {% if not each_camera.timelapse_started %}
             <div class="col-xs-12 col-sm-3">
               {% if each_camera.stream_started -%}
                 {{form_camera.stop_stream(class_='form-control btn btn-default')}}
@@ -90,7 +88,11 @@
         {%- if each_camera.stream_started -%}
           <div style="padding-bottom: 1em">
             {{_('Video Stream')}}:
-            <img style="max-width: 100%" src="{{url_for('general_routes.video_feed')}}">
+            {% if each_camera.library == 'opencv' %}
+            <br/><img style="max-width: 100%" src="/video_feed/opencv/{{each_camera.opencv_device}}">
+            {% elif each_camera.library == 'picamera' %}
+            <br/><img style="max-width: 100%" src="/video_feed/picamera/0">
+            {% endif %}
           </div>
         {%- endif -%}
 
