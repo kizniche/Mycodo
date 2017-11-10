@@ -5,6 +5,7 @@
  - Add timestamp to lines of the upgrade/backup/restore logs
  - Add sensor measurement smoothing to Chirp light sensor (module will soon expand to all sensors)
  - Add ability to stream video from USB cameras
+ - Add ability to stream video from several cameras at the same time
 
 ### Bugfixes
 

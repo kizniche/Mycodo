@@ -7,7 +7,7 @@ from base_camera import BaseCamera
 
 class Camera(BaseCamera):
     @staticmethod
-    def frames(opencv_device):
+    def frames():
         with picamera.PiCamera() as camera:
             # let camera warm up
             time.sleep(2)

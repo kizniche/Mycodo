@@ -125,7 +125,7 @@ def page_camera():
             camera_record('photo', mod_camera)
         elif form_camera.start_timelapse.data:
             if mod_camera.stream_started:
-                flash(gettext(u"Cannot start time-lapse if stream is active."))
+                flash(gettext(u"Cannot start time-lapse if stream is active."), "error")
                 return redirect('/camera')
             now = time.time()
             mod_camera.timelapse_started = True
@@ -156,8 +156,12 @@ def page_camera():
         elif form_camera.start_stream.data:
             if mod_camera.timelapse_started:
                 flash(gettext(
-                    u"Cannot start stream if time-lapse is active."))
+                    u"Cannot start stream if time-lapse is active."), "error")
                 return redirect('/camera')
+            # elif Camera.query.filter(Camera.stream_started).first():
+            #     flash(gettext(
+            #         u"Only one video stream is permitted at a time."), "error")
+            #     return redirect('/camera')
             else:
                 mod_camera.stream_started = True
                 db.session.commit()

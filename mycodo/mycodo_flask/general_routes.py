@@ -160,7 +160,9 @@ def gen(camera):
 def video_feed(camera_type, device):
     """Video streaming route. Put this in the src attribute of an img tag."""
     camera_stream = import_module('mycodo.mycodo_flask.camera.camera_' + camera_type).Camera
-    return Response(gen(camera_stream(opencv_device=int(device))),
+    if camera_type == 'opencv':
+        camera_stream.set_video_source(int(device))
+    return Response(gen(camera_stream(camera_type=camera_type, device=int(device))),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 

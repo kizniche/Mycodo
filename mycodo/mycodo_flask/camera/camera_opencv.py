@@ -11,13 +11,10 @@ class Camera(BaseCamera):
         Camera.video_source = source
 
     @staticmethod
-    def frames(opencv_device):
-        if opencv_device is None:
-            raise RuntimeError('Cannot stream: No opencv device selected')
-
-        camera = cv2.VideoCapture(opencv_device)
+    def frames():
+        camera = cv2.VideoCapture(Camera.video_source)
         if not camera.isOpened():
-            raise RuntimeError('Could not start camera')
+            raise RuntimeError('Could not start camera.')
 
         while True:
             # read current frame
