@@ -1,3 +1,10 @@
+## 5.3.6 (Unreleased)
+
+### Bugfixes
+
+ - Fix inability to take a still image while a video stream is active
+
+
 ## 5.3.5 (2017-11-10)
 
 ### Features

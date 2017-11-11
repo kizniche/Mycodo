@@ -122,6 +122,10 @@ def page_camera():
         mod_camera = Camera.query.filter(
             Camera.id == form_camera.camera_id.data).first()
         if form_camera.capture_still.data:
+            if mod_camera.stream_started:
+                from mycodo.mycodo_flask.camera.camera_opencv import Camera as Cam
+                Cam(unique_id=mod_camera.unique_id).stop(mod_camera.unique_id)
+                time.sleep(1)
             camera_record('photo', mod_camera)
         elif form_camera.start_timelapse.data:
             if mod_camera.stream_started:

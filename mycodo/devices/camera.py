@@ -125,6 +125,7 @@ def camera_record(record_type, settings, duration_sec=None):
                 cv2.imwrite(path_file, img_orig)
 
             cap.release()
+
         elif record_type == 'video':
             # TODO: opencv video recording is currently not working. No idea why.
             try:

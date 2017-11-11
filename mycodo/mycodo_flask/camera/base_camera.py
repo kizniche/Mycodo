@@ -60,13 +60,17 @@ class BaseCamera(object):
     frame = {}  # current frame is stored here by background thread
     last_access = {}  # time of last client access to the camera
     event = {}
+    running = {}
 
     def __init__(self, unique_id=None):
         """Start the background camera thread if it isn't running yet."""
         self.unique_id = unique_id
         BaseCamera.event[self.unique_id] = CameraEvent()
+        BaseCamera.running[self.unique_id] = True
+
         if self.unique_id not in BaseCamera.thread:
             BaseCamera.thread[self.unique_id] = None
+
         if BaseCamera.thread[self.unique_id] is None:
             BaseCamera.last_access[self.unique_id] = time.time()
 
@@ -110,4 +114,12 @@ class BaseCamera(object):
                 frames_iterator.close()
                 print('Stopping camera thread due to inactivity')
                 break
+            if not BaseCamera.running[unique_id]:
+                frames_iterator.close()
+                print('Camera thread instructed to shut down')
+                break
         BaseCamera.thread[unique_id] = None
+
+    @staticmethod
+    def stop(unique_id):
+        BaseCamera.running[unique_id] = False
