@@ -171,13 +171,6 @@ def page_camera():
             else:
                 mod_camera.stream_started = True
                 db.session.commit()
-                # In my testing, color correction was better immediately
-                # after reading the first frame. Therefore, a photo is
-                # acquired before starting the video stream
-                if mod_camera.library == 'opencv':
-                    cap = cv2.VideoCapture(mod_camera.opencv_device)
-                    if cap.read():
-                        cap.release()
         elif form_camera.stop_stream.data:
             camera_stream = import_module(
                 'mycodo.mycodo_flask.camera.camera_{lib}'.format(

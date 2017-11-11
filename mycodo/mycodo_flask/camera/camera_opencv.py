@@ -17,6 +17,13 @@ class Camera(BaseCamera):
 
     @staticmethod
     def frames():
+        # In my testing, color correction was better immediately
+        # after starting the camera once. Therefore, the cam is
+        # started once before starting the video stream
+        cap = cv2.VideoCapture(Camera.camera_options.opencv_device)
+        if cap.read():
+            cap.release()
+
         camera = cv2.VideoCapture(Camera.camera_options.opencv_device)
         if not camera.isOpened():
             raise RuntimeError('Could not start camera.')
