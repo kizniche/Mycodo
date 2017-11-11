@@ -1,0 +1,25 @@
+<div class="form-group">
+  {{form_timer_pwm_method.method_id.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="method_id" name="method_id" title="" data-original-title="{{_('Select the method for determining the duty cycle')}}">
+      {%- if method == [] -%}
+        <option value="">{{_('No Methods Found')}} -></option>
+      {%- else -%}
+        {%- for each_method in method-%}
+          <option value="{{each_method.id}}">[{{'%02d' % each_method.id}}] {{each_method.name}}</option>
+        {%- endfor -%}
+      {%- endif-%}
+    </select>
+  </div>
+</div>
+{%- if method == [] -%}
+<div class="form-group">
+  <a href="/method" class="form-control btn btn-default" role="button">{{_('Manage Methods')}}</a>
+</div>
+{% endif %}
+<div class="form-group">
+  {{form_timer_pwm_method.method_period.label(class_='control-label')}}
+  <div>
+    {{form_timer_pwm_method.method_period(class_='form-control', value=15, **{'size':'6'})}}
+  </div>
+</div>

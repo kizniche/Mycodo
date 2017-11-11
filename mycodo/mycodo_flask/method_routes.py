@@ -5,39 +5,34 @@ import datetime
 import time
 import flask_login
 
-from flask import (
-    Blueprint,
-    flash,
-    jsonify,
-    redirect,
-    render_template,
-    request,
-    url_for
-)
+from flask import Blueprint
+from flask import flash
+from flask import jsonify
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import url_for
+
 from flask_babel import gettext
 from mycodo.mycodo_flask.extensions import db
-# Classes
-from mycodo.databases.models import (
-    DisplayOrder,
-    Method,
-    MethodData,
-    Relay
-)
 
-# Functions
-from mycodo import flaskforms
-from mycodo import flaskutils
+from mycodo.databases.models import DisplayOrder
+from mycodo.databases.models import Method
+from mycodo.databases.models import MethodData
+from mycodo.databases.models import Relay
+
+from mycodo.mycodo_flask.forms import forms_method
+from mycodo.mycodo_flask.utils import utils_general
+from mycodo.mycodo_flask.utils import utils_method
+
 from mycodo.mycodo_flask.static_routes import inject_mycodo_version
-from mycodo.utils.system_pi import (
-    csv_to_list_of_int,
-    get_sec,
-    list_to_csv
-)
 
-from mycodo.utils.method import (
-    sine_wave_y_out,
-    bezier_curve_y_out
-)
+from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import get_sec
+from mycodo.utils.system_pi import list_to_csv
+
+from mycodo.utils.method import sine_wave_y_out
+from mycodo.utils.method import bezier_curve_y_out
 
 logger = logging.getLogger('mycodo.mycodo_flask.methods')
 
@@ -182,7 +177,7 @@ def method_data(method_id):
 @flask_login.login_required
 def method_list():
     """ List all methods on one page with a graph for each """
-    form_create_method = flaskforms.MethodCreate()
+    form_create_method = forms_method.MethodCreate()
 
     method = Method.query.all()
     method_all = MethodData.query.all()
@@ -200,21 +195,21 @@ def method_builder(method_id):
     Page to edit the details of each method
     This includes the (time, setpoint) data sets
     """
-    if not flaskutils.user_has_permission('edit_controllers'):
+    if not utils_general.user_has_permission('edit_controllers'):
         return redirect(url_for('method_routes.method_list'))
 
     relay = Relay.query.all()
 
-    form_create_method = flaskforms.MethodCreate()
-    form_add_method = flaskforms.MethodAdd()
-    form_mod_method = flaskforms.MethodMod()
+    form_create_method = forms_method.MethodCreate()
+    form_add_method = forms_method.MethodAdd()
+    form_mod_method = forms_method.MethodMod()
 
     # Used in software tests to verify function is executing as admin
     if method_id == '-1':
         return 'admin logged in'
     # Create new method
     elif method_id == '0':
-        form_fail = flaskutils.method_create(form_create_method)
+        form_fail = utils_method.method_create(form_create_method)
         new_method = Method.query.order_by(Method.id.desc()).first()
         if not form_fail:
             return redirect('/method-build/{method_id}'.format(
@@ -273,9 +268,9 @@ def method_builder(method_id):
         if request.method == 'POST':
             form_name = request.form['form-name']
             if form_name == 'addMethod':
-                form_fail = flaskutils.method_add(form_add_method)
+                form_fail = utils_method.method_add(form_add_method)
             elif form_name in ['modMethod', 'renameMethod']:
-                form_fail = flaskutils.method_mod(form_mod_method)
+                form_fail = utils_method.method_mod(form_mod_method)
             if (form_name in ['addMethod', 'modMethod', 'renameMethod'] and
                     not form_fail):
                 return redirect('/method-build/{method_id}'.format(
@@ -309,7 +304,7 @@ def method_delete(method_id):
         action=gettext(u"Delete"),
         controller=gettext(u"Method"))
 
-    if not flaskutils.user_has_permission('edit_settings'):
+    if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('method_routes.method_list'))
 
     try:

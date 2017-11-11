@@ -35,7 +35,7 @@
 
     <form id='login_form' class="form-signin" name="login" action="/login" method="POST">
       <input type="hidden" name="form-name" value="login">
-      <h2 class="form-signin-heading">{{_("Mycodo Login")}}</h2>
+      <h2 class="form-signin-heading">Mycodo {{_("Login")}}</h2>
       <h4 style="text-align: center;">{{host}}</h4>
       {{ form_login.hidden_tag() }}
       {{ form_login.username.label(class_='sr-only') }}

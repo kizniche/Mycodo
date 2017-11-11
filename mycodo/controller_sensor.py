@@ -23,12 +23,12 @@
 #  Contact at kylegabriel.com
 
 import logging
+import fasteners
 import requests
 import threading
 import time
 import timeit
 import RPi.GPIO as GPIO
-from lockfile import LockFile
 
 from mycodo_client import DaemonControl
 from databases.models import Camera
@@ -223,13 +223,11 @@ class SensorController(threading.Thread):
             self.mux_address = int(str(self.mux_address_raw), 16)
             self.mux_lock = "/var/lock/mycodo_multiplexer_0x{i2c:02X}.pid".format(
                 i2c=self.mux_address)
+            self.mux_lock = fasteners.InterProcessLock(self.mux_lock)
+            self.mux_lock_acquired = False
             self.multiplexer = TCA9548A(self.mux_bus, self.mux_address)
         else:
             self.multiplexer = None
-
-        if self.device in ['ADS1x15', 'MCP342x'] and self.location:
-            self.adc_lock_file = "/var/lock/mycodo_adc_bus{bus}_0x{i2c:02X}.pid".format(
-                bus=self.i2c_bus, i2c=self.i2c_address)
 
         # Set up edge detection of a GPIO pin
         if self.device == 'EDGE':
@@ -240,16 +238,22 @@ class SensorController(threading.Thread):
             else:
                 self.switch_edge_gpio = GPIO.BOTH
 
-        self.lock_multiplexer()
+        # Lock multiplexer, if it's enabled
+        if self.multiplexer:
+            self.lock_multiplexer()
 
         # Set up analog-to-digital converter
-        if self.device == 'ADS1x15':
-            self.adc = ADS1x15Read(self.i2c_address, self.i2c_bus,
-                                   self.adc_chan, self.adc_gain)
-        elif self.device == 'MCP342x':
-            self.adc = MCP342xRead(self.i2c_address, self.i2c_bus,
-                                   self.adc_chan, self.adc_gain,
-                                   self.adc_resolution)
+        if self.device in ['ADS1x15', 'MCP342x'] and self.location:
+            self.adc_lock_file = "/var/lock/mycodo_adc_bus{bus}_0x{i2c:02X}.pid".format(
+                bus=self.i2c_bus, i2c=self.i2c_address)
+
+            if self.device == 'ADS1x15':
+                self.adc = ADS1x15Read(self.i2c_address, self.i2c_bus,
+                                       self.adc_chan, self.adc_gain)
+            elif self.device == 'MCP342x':
+                self.adc = MCP342xRead(self.i2c_address, self.i2c_bus,
+                                       self.adc_chan, self.adc_gain,
+                                       self.adc_resolution)
         else:
             self.adc = None
 
@@ -369,7 +373,8 @@ class SensorController(threading.Thread):
             raise Exception("'{device}' is not a valid device type.".format(
                 device=self.device))
 
-        self.unlock_multiplexer()
+        if self.multiplexer:
+            self.unlock_multiplexer()
 
         self.edge_reset_timer = time.time()
         self.sensor_timer = time.time()
@@ -681,37 +686,103 @@ class SensorController(threading.Thread):
 
     def lock_multiplexer(self):
         """ Acquire a multiplexer lock """
-        if self.multiplexer:
-            (lock_status,
-             lock_response) = self.setup_lock(self.mux_address,
-                                              self.mux_bus,
-                                              self.mux_lock)
-            if not lock_status:
-                self.logger.warning(
-                    "Could not acquire lock for multiplexer. Error: "
-                    "{err}".format(err=lock_response))
-                self.updateSuccess = False
-                return 1
-            self.logger.debug(
-                "Setting multiplexer ({add}) to channel {chan}".format(
+        self.mux_lock_acquired = False
+
+        for _ in range(600):
+            self.mux_lock_acquired = self.mux_lock.acquire(blocking=False)
+            if self.mux_lock_acquired:
+                break
+            else:
+                time.sleep(0.1)
+
+        if not self.mux_lock_acquired:
+            self.logger.error(
+                "Unable to acquire lock: {lock}".format(lock=self.mux_lock))
+
+        self.logger.debug(
+            "Setting multiplexer ({add}) to channel {chan}".format(
+                add=self.mux_address_string,
+                chan=self.mux_chan))
+
+        # Set multiplexer channel
+        (multiplexer_status,
+         multiplexer_response) = self.multiplexer.setup(self.mux_chan)
+
+        if not multiplexer_status:
+            self.logger.warning(
+                "Could not set channel with multiplexer at address {add}."
+                " Error: {err}".format(
                     add=self.mux_address_string,
-                    chan=self.mux_chan))
-            # Set multiplexer channel
-            (multiplexer_status,
-             multiplexer_response) = self.multiplexer.setup(self.mux_chan)
-            if not multiplexer_status:
-                self.logger.warning(
-                    "Could not set channel with multiplexer at address {add}."
-                    " Error: {err}".format(
-                        add=self.mux_address_string,
-                        err=multiplexer_response))
-                self.updateSuccess = False
-                return 1
+                    err=multiplexer_response))
+            self.updateSuccess = False
+            return 1
 
     def unlock_multiplexer(self):
         """ Remove a multiplexer lock """
-        if self.multiplexer:
-            self.release_lock(self.mux_address, self.mux_bus, self.mux_lock)
+        if self.mux_lock and self.mux_lock_acquired:
+            self.mux_lock.release()
+
+    def read_adc(self):
+        """ Read voltage from ADC """
+        try:
+            lock_acquired = False
+            adc_lock = fasteners.InterProcessLock(self.adc_lock_file)
+            for _ in range(600):
+                lock_acquired = adc_lock.acquire(blocking=False)
+                if lock_acquired:
+                    break
+                else:
+                    time.sleep(0.1)
+            if not lock_acquired:
+                self.logger.error(
+                    "Unable to acquire lock: {lock}".format(
+                        lock=self.adc_lock_file))
+
+            # Get measurement from ADC
+            measurements = self.adc.next()
+
+            if measurements is not None:
+                # Get the voltage difference between min and max volts
+                diff_voltage = abs(self.adc_volts_max - self.adc_volts_min)
+                # Ensure the voltage stays within the min/max bounds
+                if measurements['voltage'] < self.adc_volts_min:
+                    measured_voltage = self.adc_volts_min
+                elif measurements['voltage'] > self.adc_volts_max:
+                    measured_voltage = self.adc_volts_max
+                else:
+                    measured_voltage = measurements['voltage']
+                # Calculate the percentage of the voltage difference
+                percent_diff = ((measured_voltage - self.adc_volts_min) /
+                                diff_voltage)
+
+                # Get the units difference between min and max units
+                diff_units = abs(self.adc_units_max - self.adc_units_min)
+                # Calculate the measured units from the percent difference
+                if self.adc_inverse_unit_scale:
+                    converted_units = (self.adc_units_max -
+                                       (diff_units * percent_diff))
+                else:
+                    converted_units = (self.adc_units_min +
+                                       (diff_units * percent_diff))
+                # Ensure the units stay within the min/max bounds
+                if converted_units < self.adc_units_min:
+                    measurements[self.adc_measure] = self.adc_units_min
+                elif converted_units > self.adc_units_max:
+                    measurements[self.adc_measure] = self.adc_units_max
+                else:
+                    measurements[self.adc_measure] = converted_units
+
+                if adc_lock and lock_acquired:
+                    adc_lock.release()
+
+                return measurements
+
+        except Exception as except_msg:
+            self.logger.exception(
+                "Error while attempting to read adc: {err}".format(
+                    err=except_msg))
+
+        return None
 
     def update_measure(self):
         """
@@ -728,62 +799,12 @@ class SensorController(threading.Thread):
             self.updateSuccess = False
             return 1
 
-        self.lock_multiplexer()
+        # Lock multiplexer, if it's enabled
+        if self.multiplexer:
+            self.lock_multiplexer()
 
         if self.adc:
-            try:
-                # Acquire a lock for ADC
-                (lock_status,
-                 lock_response) = self.setup_lock(self.i2c_address,
-                                                  self.i2c_bus,
-                                                  self.adc_lock_file)
-                if not lock_status:
-                    self.logger.warning(
-                        "Could not acquire lock for multiplexer. Error: "
-                        "{err}".format(err=lock_response))
-                    self.updateSuccess = False
-                    return 1
-
-                # Get measurement from ADC
-                measurements = self.adc.next()
-                if measurements is not None:
-                    # Get the voltage difference between min and max volts
-                    diff_voltage = abs(self.adc_volts_max - self.adc_volts_min)
-                    # Ensure the voltage stays within the min/max bounds
-                    if measurements['voltage'] < self.adc_volts_min:
-                        measured_voltage = self.adc_volts_min
-                    elif measurements['voltage'] > self.adc_volts_max:
-                        measured_voltage = self.adc_volts_max
-                    else:
-                        measured_voltage = measurements['voltage']
-                    # Calculate the percentage of the voltage difference
-                    percent_diff = ((measured_voltage - self.adc_volts_min) /
-                                    diff_voltage)
-
-                    # Get the units difference between min and max units
-                    diff_units = abs(self.adc_units_max - self.adc_units_min)
-                    # Calculate the measured units from the percent difference
-                    if self.adc_inverse_unit_scale:
-                        converted_units = (self.adc_units_max -
-                                           (diff_units * percent_diff))
-                    else:
-                        converted_units = (self.adc_units_min +
-                                           (diff_units * percent_diff))
-                    # Ensure the units stay within the min/max bounds
-                    if converted_units < self.adc_units_min:
-                        measurements[self.adc_measure] = self.adc_units_min
-                    elif converted_units > self.adc_units_max:
-                        measurements[self.adc_measure] = self.adc_units_max
-                    else:
-                        measurements[self.adc_measure] = converted_units
-            except Exception as except_msg:
-                self.logger.exception(
-                    "Error while attempting to read adc: {err}".format(
-                        err=except_msg))
-            finally:
-                self.release_lock(self.i2c_address,
-                                  self.i2c_bus,
-                                  self.adc_lock_file)
+            measurements = self.read_adc()
         else:
             try:
                 # Get measurement from sensor
@@ -806,7 +827,8 @@ class SensorController(threading.Thread):
                     "Error while attempting to read sensor: {err}".format(
                         err=except_msg))
 
-        self.unlock_multiplexer()
+        if self.multiplexer:
+            self.unlock_multiplexer()
 
         if self.device_recognized and measurements is not None:
             self.measurement = Measurement(measurements)
@@ -815,53 +837,6 @@ class SensorController(threading.Thread):
             self.updateSuccess = False
 
         self.lastUpdate = time.time()
-
-    def setup_lock(self, i2c_address, i2c_bus, lockfile):
-        execution_timer = timeit.default_timer()
-        try:
-            self.lock[lockfile] = LockFile(lockfile)
-            while not self.lock[lockfile].i_am_locking():
-                try:
-                    self.logger.debug(
-                        "[Locking bus-{bus} 0x{i2c:02X}] Acquiring Lock: "
-                        "{lock}".format(
-                            bus=i2c_bus,
-                            i2c=i2c_address,
-                            lock=self.lock[lockfile].path))
-                    # wait up to 60 seconds
-                    self.lock[lockfile].acquire(timeout=60)
-                except Exception as e:
-                    self.logger.error(
-                        "{cls} raised an exception: {err}".format(
-                            cls=type(self).__name__, err=e))
-                    self.logger.exception(
-                        "[Locking bus-{bus} 0x{i2c:02X}] Waited 60 seconds. "
-                        "Breaking lock to acquire {lock}".format(
-                            bus=i2c_bus,
-                            i2c=i2c_address,
-                            lock=self.lock[lockfile].path))
-                    self.lock[lockfile].break_lock()
-                    self.lock[lockfile].acquire()
-            self.logger.debug(
-                "[Locking bus-{bus} 0x{i2c:02X}] Acquired Lock: "
-                "{lock}".format(
-                    bus=i2c_bus,
-                    i2c=i2c_address,
-                    lock=self.lock[lockfile].path))
-            self.logger.debug(
-                "[Locking bus-{bus} 0x{i2c:02X}] Executed in {ms:.1f} ms".format(
-                    bus=i2c_bus,
-                    i2c=i2c_address,
-                    ms=(timeit.default_timer()-execution_timer)*1000))
-            return 1, "Success"
-        except Exception as msg:
-            return 0, "Multiplexer Fail: {}".format(msg)
-
-    def release_lock(self, i2c_address, i2c_bus, lockfile):
-        self.logger.debug(
-            "[Locking bus-{bus} 0x{i2c:02X}] Releasing Lock: {lock}".format(
-                bus=i2c_bus, i2c=i2c_address, lock=lockfile))
-        self.lock[lockfile].release()
 
     def get_last_measurement(self, measurement_type):
         """

@@ -1,3 +1,61 @@
+## 5.3.6 (2017-11-11)
+
+### Features
+
+ - Allow camera options to be used for picamera library
+
+### Bugfixes
+
+ - Fix inability to take a still image while a video stream is active
+ - Make creating new user names case-insensitive
+ - Fix theme not saving when creating a new user
+
+### Miscellaneous
+
+ - Remove ability to change camera library after a camera has been added
+ - Update Korean translation
+
+
+## 5.3.5 (2017-11-10)
+
+### Features
+
+ - Add timestamp to lines of the upgrade/backup/restore logs
+ - Add sensor measurement smoothing to Chirp light sensor (module will soon expand to all sensors)
+ - Add ability to stream video from USB cameras
+ - Add ability to stream video from several cameras at the same time
+
+### Bugfixes
+
+ - Fix an issue loading the camera settings page without a camera connected
+ - Fix video streaming with Pi Camera ([#228](https://github.com/kizniche/mycodo/issues/228))
+
+### Miscellaneous
+
+ - Split flaskform.py and flaskutils.py into smaller files for easier management
+
+
+## 5.3.4 (2017-11-06)
+
+Note: The Chirp light sensor scale has been inverted. Please adjust your settings accordingly to respond to 0 as darkness and 65535 as bright.
+
+### Features
+
+ - Replace deprecated LockFile with fasteners ([#260](https://github.com/kizniche/mycodo/issues/260))
+ - Add Timer type: PWM duty cycle output using Method ([#262](https://github.com/kizniche/mycodo/issues/262)), read more: [PWM Method](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#pwm-method)
+
+### Bugfixes
+
+ - Fix display of PID setpoints on Graphs
+ - Invert Chirp light sensor scale (0=dark, 65535=bright)
+
+### Miscellaneous
+
+ - Update Korean translations
+ - Add 2 more significant digits to ADC voltage measurements
+ - Upgrade InfluxDB to v1.3.7
+
+
 ## 5.3.3 (2017-10-29)
 
 ### Features
@@ -53,7 +111,7 @@ Input and Output Conditional commands may now include variables. There are 23 va
  - Prevent a PID from using the same Raise and Lower output
  - Prevent a currently-active PID from changing the output to a currently-used output
 
-### Miscelaneous
+### Miscellaneous
 
  - Update Readme and Wiki to fix outdated and erroneous information and improve coverage ([#285](https://github.com/kizniche/mycodo/issues/285))
 

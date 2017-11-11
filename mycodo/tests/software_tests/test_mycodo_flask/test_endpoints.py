@@ -83,7 +83,7 @@ def test_routes_when_not_logged_in(testapp):
         'systemctl/shutdown',
         'timer',
         'usage',
-        'video_feed'
+        'video_feed/0'
     ]
     for route in routes:
         redirects_to_login_page(testapp=testapp, endpoint='/{add}'.format(add=route))
@@ -216,15 +216,14 @@ def sees_navbar(testapp):
         'Live Measurements',
         'Logout',
         'Mycodo Logs',
-        'PID Methods',
-        'PID Controllers',
-        'Output',
-        'Relay Usage',
-        'Relay Usage Reports',
+        'Methods',
+        'PID',
+        'Output Usage',
+        'Output Usage Reports',
         'Remote Admin',
         'Sensors',
         'System Information',
-        'Timers',
+        'Timer',
         'Upgrade'
     ]
     assert all(

@@ -2,7 +2,7 @@
 {% set active_page = "input" %}
 {% set help_page = ["input", _('Input')] %}
 
-{% block title %} - {{_('Sensors')}}{% endblock %}
+{% block title %} - {{_('Inputs')}}{% endblock %}
 
 {% block head %}{% endblock %}
 
@@ -58,7 +58,7 @@
           {{form_mod_sensor.name(class_='form-control', value=each_sensor.name, **{'title':_('A common name to distinguish this sensor from others')})}}
         </div>
         <div class="col-xs-5 col-sm-2">
-          <input class="form-control btn btn-default" disabled="" title="UUID: {{each_sensor.unique_id}}" value="{{each_sensor.device}} ({{each_sensor.id}})" type="text">
+          <input class="form-control btn btn-default" disabled="" title="UUID: {{each_sensor.unique_id}}" value="[{{'%02d' % each_sensor.id}}] {{each_sensor.device}}" type="text">
         </div>
         <div class="col-xs-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
         {% if each_sensor.is_activated -%}
@@ -193,7 +193,7 @@
         {% endfor %}
 
         {% if sensor_conditional %}
-          <h4>{{_('Sensor Conditionals')}} <a href="/help#conditional-statements" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+          <h4>{{_('Input Conditionals')}} <a href="/help#conditional-statements" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
           <p>{{_('Conditionals allow certain actions to be carried out when a certain set of conditions are met.')}}</p>
         {% endif %}
 

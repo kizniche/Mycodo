@@ -19,7 +19,7 @@
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
 
-from lockfile import LockFile
+import fasteners
 import logging
 import serial
 import smbus
@@ -36,7 +36,7 @@ class MHZ16Sensor(AbstractSensor):
     def __init__(self, interface, device_loc=None, baud_rate=None,
                  i2c_address=None, i2c_bus=None):
         super(MHZ16Sensor, self).__init__()
-        self.k30_lock_file = None
+        self.mhz16_lock_file = None
         self._co2 = 0
         self.interface = interface
 
@@ -47,8 +47,7 @@ class MHZ16Sensor(AbstractSensor):
             self.serial_device = is_device(device_loc)
             if self.serial_device:
                 try:
-                    self.k30_lock_file = "/var/lock/sen-mhz16-{}".format(device_loc.replace('/', ''))
-                    self.lock = LockFile(self.k30_lock_file)
+                    self.mhz16_lock_file = "/var/lock/sen-mhz16-{}".format(device_loc.replace('/', ''))
                     self.ser = serial.Serial(self.serial_device,
                                              baudrate=baud_rate,
                                              timeout=1)
@@ -150,20 +149,21 @@ class MHZ16Sensor(AbstractSensor):
 
                 # Acquire lock on MHZ16 to ensure more than one read isn't
                 # being attempted at once on the same interface
-                while not self.lock.i_am_locking():
-                    try:  # wait 60 seconds before breaking lock
-                        self.lock.acquire(timeout=60)
-                    except Exception as e:
-                        self.logger.error(
-                            "{cls} 60 second timeout, {lock} lock broken: "
-                            "{err}".format(
-                                cls=type(self).__name__,
-                                lock=self.k30_lock_file,
-                                err=e))
-                        self.lock.break_lock()
-                        self.lock.acquire()
-                self._co2 = self.get_measurement()
-                self.lock.release()
+                lock = fasteners.InterProcessLock(self.mhz16_lock_file)
+                lock_acquired = False
+
+                for _ in range(600):
+                    lock_acquired = lock.acquire(blocking=False)
+                    if lock_acquired:
+                        break
+                    else:
+                        time.sleep(0.1)
+
+                if lock_acquired:
+                    self._co2 = self.get_measurement()
+                    lock.release()
+                else:
+                    self.logger.error("Could not acquire MHZ16 lock")
 
             elif self.interface == 'I2C':
                 self._co2 = self.get_measurement()
@@ -176,8 +176,6 @@ class MHZ16Sensor(AbstractSensor):
             self.logger.error(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
-            if self.interface == 'UART':
-                self.lock.release()
         return 1
 
     def begin(self):

@@ -53,9 +53,9 @@ Table of Contents
    - [Daemon Not Running](#daemon-not-running)
    - [More](#more)
 
-[Sensor and Device Setup](#sensor-and-device-setup)
+[Input and Device Setup](#input-and-device-setup)
 
-[Sensor Interfaces](#sensor-interfaces)
+[Input Interfaces](#input-interfaces)
 
    - [1-Wire](#1-wire)
    - [GPIO](#gpio)
@@ -66,7 +66,6 @@ Table of Contents
 [Device Setup](#device-setup)
 
    - [I<sup>2</sup>C Multiplexers](#i2c-multiplexers)
-   - [Analog to Digital Converters](#analog-to-digital-converters)
 
 [Device Specific Information](#device-specific-information)
 
@@ -521,12 +520,20 @@ Integrator Max | The maximum allowed integrator value, for calculating Ki\_total
 Timers
 ------
 
-Timers enable a relay to be manipulated after specific durations of time
-or at a specific times of the day. For *Duration Timers*, both the on
-duration and the off duration can be defined and the timer will be
-turned on and off for those durations until deactivated. For *Daily
-Timers*, the start hour:minute can be set to turn a specific relay on or
-off at the specific time of day.
+Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will ***only*** do as instructed, therefore if you turn a relay *ON* from *Start Time* to *End Time* and you want that relay to turn *OFF* at the end of that period, you will need to create another timer that turns the relay *OFF* at *End Time* + 1 minute.
+
+ There are two types of timers, one for general outputs that turn on and off, and those that generate a PWM signal.
+
+#### General Output
+
+For *Duration Timers*, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated.
+
+For *Daily Timers*, the start hour:minute can be set to turn a specific relay on or off at the specific time of day.
+
+#### PWM Method
+
+This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. While creating these methods, keep in mind a duty cycle is a percentage and the values must stay between 0 and 100.
+
 
 LCDs
 ----
@@ -599,20 +606,20 @@ Variable | Description
 ((input_period)) | The period (seconds) between condition
 ((input_altitude)) | Sensor measurement: altitude
 ((input_co2)) | Sensor measurement: CO2
-((input_dewpoint)) | Sensor measurement: dew point
 ((input_cpu_load_1m)) | Sensor measurement:  CPU load (1 min)
 ((input_cpu_load_5m)) | Sensor measurement: CPU load (5 min)
 ((input_cpu_load_15m)) | Sensor measurement: CPU load (15 min)
-((input_edge)) | Sensor measurement: edge detected (1 or -1)
+((input_dewpoint)) | Sensor measurement: dew point
 ((input_disk_space)) | Sensor measurement: disk space
+((input_edge)) | Sensor measurement: edge detected (1 or -1)
 ((input_humidity)) | Sensor measurement: humidity
 ((input_lux)) | Sensor measurement: lux
 ((input_moisture)) | Sensor measurement: moisture
 ((input_ph)) | Sensor measurement: ph
 ((input_pressure)) | Sensor measurement: pressure
 ((input_temperature)) | Sensor measurement: temperature
-((input_temperature_object)) | Sensor measurement: temperature (object)
 ((input_temperature_die)) | Sensor measurement: temperature (die)
+((input_temperature_object)) | Sensor measurement: temperature (object)
 ((input_voltage)) | Sensor measurement: voltage
 
 ##### Output Conditional command variables
@@ -638,12 +645,12 @@ echo "TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm
 Methods
 -------
 
-Methods allow different types of setpoint tracking in PID controllers.
+Methods enable Setpoint Tracking in PIDs and time-based duty cycle changes in timers.
 Normally, a PID controller will regulate an environmental condition to a
 specific setpoint. If you would like the setpoint to change over time,
-this is called setpoint tracking. Setpoint tracking is useful for
+this is called setpoint tracking. Setpoint Tracking is useful for
 applications such as reflow ovens, thermal cyclers (DNA replication),
-mimicking natural daily cycles, and more.
+mimicking natural daily cycles, and more. Methods may also be used to change a duty cycle over time when used with a Timer.
 
 ### Universal Options
 
@@ -666,17 +673,9 @@ over the period of days, weeks, or months.
 
 #### Duration Method
 
-A duration method allows a specific durations of time to dictate the
-setpoint. This is useful for when short periods of time are required in
-a method, such as those that take place over the course of a few minutes
-or hours. Each duration will stack on the previous duration, meaning a
-newly-added start setpoint will begin from the previous entry's end
-setpoint.
+A Duration Method allows a ***Setpoint*** (for PIDs) or ***Duty Cycle*** (for Timers) to be set after specific durations of time. Each new duration added will stack, meaning it will come after the previous duration, meaning a newly-added ***Start Setpoint*** will begin after the previous entry's ***End Setpoint***.
 
-If the "Repeat Method" option is used, this will cause the method to
-repeat once it has reached the end. If this option is used, no more
-durations may be added to the method. If the repeat option is deleted
-then more durations may be added.
+If the "Repeat Method" option is used, this will cause the method to repeat once it has reached the end. If this option is used, no more durations may be added to the method. If the repeat option is deleted then more durations may be added. For instance, if your method is 200 seconds total, if the Repeat Duration is set to 600 seconds, the method will repeat 3 times and then automatically turn off the PID or Timer.
 
 #### Daily (Time-Based) Method
 
@@ -906,7 +905,7 @@ Camera
 
 Once a cameras has been set up (in the [Camera
 Settings](#camera-settings)), it may be used to capture still images,
-create time-lapses, and stream video (Pi camera only). Cameras may also be used with
+create time-lapses, and stream video. Cameras may also be used by
 [Conditional Statements](#conditional-statements) to trigger a camera
 image or video capture (as well as the ability to email the image/video
 with a notification).
@@ -960,15 +959,15 @@ Check out the [Diagnosing Mycodo Issues Wiki
 Page](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues) on
 github for more information about diagnosing issues.
 
-Sensor and Device Setup
+Input and Device Setup
 =======================
 
-Certain sensors will require extra steps to be taken in order to set up the interface for communication. This includes I<sup>2</sup>C, one-wire, and UART.
+Certain inputs will require extra steps to be taken in order to set up the interface for communication. This includes I<sup>2</sup>C, one-wire, and UART.
 
-Sensor Interfaces
+Input Interfaces
 -----------------
 
-Sensors are categorized below by their communication interface.
+Inputs are categorized below by their communication interface.
 
 ### 1-Wire
 
@@ -1014,6 +1013,16 @@ Find the line "enable_uart=0" and change it to "enable_uart=1", then reboot.
 
 The I<sup>2</sup>C interface should be enabled with `raspi-config`.
 
+**Analog to Digital Converters**
+
+An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A [voltage divider](https://learn.sparkfun.com/tutorials/voltage-dividers) may be necessary to attain your desired range.
+
+> [ADS1x15](#ads1x15): Analog-to-digital converter [link](https://www.adafruit.com/product/1085)
+
+> [MCP342x](#mcp342x): Analog-to-digital converter [link](http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316))
+
+**Sensors**
+
 > [AM2315](#am2315): Relative humidity, temperature [link](https://github.com/lexruee/tentacle_pi)
 
 > [Atlas Scientific pH](#atlas-scientific-ph): pH [link](https://www.atlas-scientific.com/ph.html)
@@ -1046,19 +1055,11 @@ Device Setup
 
 ### I<sup>2</sup>C Multiplexers
 
-All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some sensors may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.
+All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some inputs may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.
 
 > [TCA9548A](#tca9548a): I<sup>2</sup>C Multiplexer [link](https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview) (I<sup>2</sup>C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I<sup>2</sup>C address.
 
 > TCA9545A: I<sup>2</sup>C Bus Multiplexer [link](http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/) (I<sup>2</sup>C): This board works a little differently than the TCA9548A, above. This board actually creates 4 new I<sup>2</sup>C busses, each with their own selectable voltage, either 3.3 or 5.0 volts. Instructions to enable the Device Tree Overlay are at [https://github.com/camrex/i2c-mux-pca9545a](https://github.com/camrex/i2c-mux-pca9545a). Nothing else needs to be done in Mycodo after that except to select the correct I<sup>2</sup>C bus when configuring a sensor.
-
-### Analog to Digital Converters
-
-An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A [voltage divider](https://learn.sparkfun.com/tutorials/voltage-dividers) may be necessary to attain your desired range.
-
-> [ADS1x15](#ads1x15) [link](https://www.adafruit.com/product/1085) &plusmn;4.096 (I<sup>2</sup>C)
-
-> [MCP342x](#mcp342x) [link](http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)) &plusmn;2.048 (I<sup>2</sup>C)
 
 Device Specific Information
 ===========================

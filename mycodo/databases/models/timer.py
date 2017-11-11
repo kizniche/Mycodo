@@ -10,6 +10,10 @@ class Timer(CRUDMixin, db.Model):
     name = db.Column(db.Text, default='Timer')
     is_activated = db.Column(db.Boolean, default=False)
     timer_type = db.Column(db.Text, default=None)
+    method_id = db.Column(db.Integer, default=None)  # TODO: Add ForeignKey in next major release
+    method_start_time = db.Column(db.Text, default=None)
+    method_end_time = db.Column(db.Text, default=None)
+    method_period = db.Column(db.Float, default=None)
     relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)
     state = db.Column(db.Text, default=None)  # 'on' or 'off'
     time_start = db.Column(db.Text, default=None)

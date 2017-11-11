@@ -1,44 +1,40 @@
 # coding=utf-8
 """ flask views that deal with user authentication """
+
 import datetime
 import logging
 import socket
 import time
 import flask_login
-from flask import (
-    redirect,
-    request,
-    render_template,
-    flash,
-    session,
-    url_for,
-    make_response
-)
+
+from flask import redirect
+from flask import request
+from flask import render_template
+from flask import flash
+from flask import session
+from flask import url_for
+from flask import make_response
+
+from sqlalchemy import func
+
 from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 from flask.blueprints import Blueprint
 
-# Classes
-from mycodo.databases.models import (
-    AlembicVersion,
-    Misc,
-    User
-)
+from mycodo.databases.models import AlembicVersion
+from mycodo.databases.models import Misc
+from mycodo.databases.models import User
 
-# Functions
-from mycodo import flaskforms
-from mycodo.flaskutils import flash_form_errors
-from mycodo.utils.utils import (
-    test_username,
-    test_password
-)
+from mycodo.mycodo_flask.forms import forms_authentication
 
-# Config
-from mycodo.config import (
-    LOGIN_ATTEMPTS,
-    LOGIN_BAN_SECONDS,
-    LOGIN_LOG_FILE
-)
+from mycodo.mycodo_flask.utils import utils_general
+
+from mycodo.utils.utils import test_username
+from mycodo.utils.utils import test_password
+
+from mycodo.config import LOGIN_ATTEMPTS
+from mycodo.config import LOGIN_BAN_SECONDS
+from mycodo.config import LOGIN_LOG_FILE
 
 blueprint = Blueprint(
     'authentication_routes',
@@ -69,19 +65,15 @@ def create_admin():
         response = clear_cookie_auth()
         return response
 
-    form_create_admin = flaskforms.CreateAdmin()
-    form_notice = flaskforms.InstallNotice()
+    form_create_admin = forms_authentication.CreateAdmin()
+    form_notice = forms_authentication.InstallNotice()
 
     if request.method == 'POST':
         form_name = request.form['form-name']
         if form_name == 'acknowledge':
-            try:
-                mod_misc = Misc.query.first()
-                mod_misc.dismiss_notification = 1
-                db.session.commit()
-            except Exception as except_msg:
-                flash(gettext(u"Acknowledgement unable to be saved: "
-                              u"%(err)s", err=except_msg), "error")
+            mod_misc = Misc.query.first()
+            mod_misc.dismiss_notification = 1
+            db.session.commit()
         elif form_create_admin.validate():
             username = form_create_admin.username.data.lower()
             error = False
@@ -122,7 +114,7 @@ def create_admin():
                               user=username,
                               err=except_msg), "error")
         else:
-            flash_form_errors(form_create_admin)
+            utils_general.flash_form_errors(form_create_admin)
 
     dismiss_notification = Misc.query.first().dismiss_notification
 
@@ -143,7 +135,7 @@ def do_login():
               "error")
         return redirect(url_for('general_routes.home'))
 
-    form_login = flaskforms.Login()
+    form_login = forms_authentication.Login()
 
     # Check if the user is banned from logging in (too many incorrect attempts)
     if banned_from_login():
@@ -158,7 +150,7 @@ def do_login():
             user_ip = request.environ.get('REMOTE_ADDR', 'unknown address')
             if form_login.validate_on_submit():
                 user = User.query.filter(
-                    User.name == username).first()
+                    func.lower(User.name) == username).first()
                 if not user:
                     login_log(username, 'NA', user_ip, 'NOUSER')
                     failed_login()

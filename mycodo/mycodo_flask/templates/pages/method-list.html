@@ -69,7 +69,7 @@
       <div style="padding: 0.5em; margin-bottom: 1em; border: 2px solid #ddd; border-radius: 5px;">
         <div class="row" style="padding-bottom: 0.2em">
           <div class="col-xs-12 col-sm-6">
-            <input class="form-control btn btn-default" disabled="" value="{{each_method.method_type}} Method: {{each_method.name}} ({{each_method.id}})" type="text">
+            <input class="form-control btn btn-default" disabled="" value="[{{'%02d' % each_method.id}}] {{each_method.method_type}} Method: {{each_method.name}}" type="text">
           </div>
           <div class="col-xs-12 col-sm-3">
             <a href="/method-delete/{{each_method.id}}" class="form-control btn btn-default" role="button" onclick="return confirm('Are you sure you want to delete the Method &quot;{{each_method.name}}&quot;?')">Delete Method</a>

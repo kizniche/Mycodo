@@ -16,8 +16,7 @@
     <h4>{{_('Timers')}} <a href="/help#timers" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
     <p>
-      {{_('Timers enable relays to be turned on or off for specific durations of time or at specific times of the day.')}}
-      <br>Note: Timers will <i>only</i> do as instructed, therefore if you turn a relay <code>ON</code> from <code>Start Time</code> to <code>End Time</code> and you want that relay to turn off at the end of that period, you will need to create another timer that turns the relay <code>OFF</code> at <code>End Time + 1 minute</code>.
+      Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day.
     </p>
 
     <div style="clear: both; padding: 0.5em 0;"></div>
@@ -28,148 +27,69 @@
       <div class="collapse" id="collapseContainerTimerAdd" style="padding-top: 1em">
 
         <div class="form-inline">
-          <form method="post" action="/timer">
-            <input type="hidden" name="form-name" value="addTimer">
-            {{form_timer.csrf_token}}
-            <div>
-              <div class="form-group">
-                {{form_timer.name.label(class_='control-label')}}
-                <div>
-                  {{form_timer.name(class_='form-control')}}
-                </div>
-              </div>
-              <div class="form-group">
-                {{form_timer.timer_type_output.label(class_='control-label')}}
-                <div>
-                  <select class="form-control" id="timer_type_output" name="timer_type_output">
-                    <option value="">Select One</option>
-                    <option value="relay">Relay (ON/OFF)</option>
-                    <option value="pwm">PWM (Duty Cycle)</option>
-                  </select>
-                </div>
+
+        </div>
+
+        <form method="post" action="/timer">
+        <input type="hidden" name="form-name" value="addTimer">
+        {{form_timer_base.csrf_token}}
+        <div class="form-inline">
+
+          <div>
+            <div class="form-group">
+              {{form_timer_base.timer_type.label(class_='control-label')}}
+              <div>
+                {{form_timer_base.timer_type(class_='form-control')}}
               </div>
             </div>
+          </div>
 
-          <div style="display: none" id="timer_relay">
-
+          <div style="display: none" id="base_options">
             <div class="form-group">
-              {{form_timer.relay_id.label(class_='control-label')}}
+              {{form_timer_base.name.label(class_='control-label')}}
+              <div>
+                {{form_timer_base.name(class_='form-control')}}
+              </div>
+            </div>
+            <div class="form-group">
+              {{form_timer_base.relay_id.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="relay_id" name="relay_id">
-                {% for each_choice, value in output_choices.iteritems() if each_choice.split(',')[1] == 'duration_sec' -%}
+                {% for each_choice, value in output_choices.iteritems() -%}
                   <option value="{{each_choice.split(',')[0]}}">{{value}}</option>
                 {% endfor -%}
                 </select>
               </div>
             </div>
-            <div>
-              <label class="radio-inline">
-                <input type="radio" name="timer_type" id="inlineRadio1" value="time" checked>
-              </label>
-              <div class="form-group">
-                {{form_timer.state.label(class_='control-label')}}
-                <div>
-                  <select class="form-control" id="state" name="state">
-                    <option value="on">{{_('On')}}</option>
-                    <option value="off">{{_('Off')}}</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                {{form_timer.time_start.label(class_='control-label')}}
-                <div>
-                  <div class="input-group clockpicker">
-                    <input type="text" class="form-control" id="time_start" name="time_start" size="7" value="09:30">
-                    <span class="input-group-addon">
-                      <span class="glyphicon glyphicon-time"></span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class='control-label'></label>
-                <div>
-                  {% autoescape false %}
-                  ({{_('Optional: If On, for %(sec)s seconds', sec=form_timer.time_on_duration(class_='form-control', value=0.0, **{'size':'6'}))}})
-                  {% endautoescape %}
-                </div>
-              </div>
-            </div>
-            <div>
-              <label class="radio-inline">
-                <input type="radio" name="timer_type" id="inlineRadio1" value="timespan">
-              </label>
-              <div class="form-group">
-                {{form_timer.state.label(class_='control-label')}}
-                <div>
-                  <select class="form-control" id="state" name="state">
-                    <option value="on">{{_('On')}}</option>
-                    <option value="off">{{_('Off')}}</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                {{form_timer.time_start_duration.label(class_='control-label')}}
-                <div>
-                  <div class="input-group clockpicker">
-                    <input type="text" class="form-control" id="time_start_duration" name="time_start_duration" size="7" value="09:30">
-                    <span class="input-group-addon">
-                      <span class="glyphicon glyphicon-time"></span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <label></label>
-                <div>
-                  &rarr;
-                </div>
-              </div>
-              <div class="form-group">
-                {{form_timer.time_end_duration.label(class_='control-label')}}
-                <div>
-                  <div class="input-group clockpicker">
-                    <input type="text" class="form-control" id="time_end_duration" name="time_end_duration" size="7" value="18:00">
-                    <span class="input-group-addon">
-                      <span class="glyphicon glyphicon-time"></span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <label class="radio-inline">
-                <input type="radio" name="timer_type" id="inlineRadio2" value="duration">
-              </label>
-              <div class="form-group">
-                {{form_timer.duration_on.label(class_='control-label')}}
-                <div>
-                  {{form_timer.duration_on(class_='form-control', value=0.0, **{'size':'6'})}}
-                </div>
-              </div>
-              <div class="form-group">
-                {{form_timer.duration_off.label(class_='control-label')}}
-                <div>
-                  {{form_timer.duration_off(class_='form-control', value=0.0, **{'size':'6'})}}
-                </div>
-              </div>
-              <br/>
-              <div class="form-group">
-                <label class='control-label'></label>
-                <div>
-                  {{form_timer.create(class_='form-control btn btn-default')}}
-                </div>
-              </div>
-            </div>
-
           </div>
 
-          <div style="display: none" id="timer_pwm">
-            PWM Timer options not yet available
+          <div style="display: none" id="add_time_point">
+           {% include 'pages/timer_options/add_time_point.html' %}
           </div>
 
-          </form>
+          <div style="display: none" id="add_time_span">
+           {% include 'pages/timer_options/add_time_span.html' %}
+          </div>
+
+          <div style="display: none" id="add_duration">
+           {% include 'pages/timer_options/add_duration.html' %}
+          </div>
+
+          <div style="display: none" id="add_pwm_method">
+            {% include 'pages/timer_options/add_pwm_method.html' %}
+          </div>
+
+          <div style="display: none" id="add_button">
+            <div class="form-group">
+              <label class='control-label'></label>
+              <div>
+                {{form_timer_base.create(class_='form-control btn btn-default')}}
+              </div>
+            </div>
+          </div>
+
         </div>
+        </form>
 
       </div>
     </div>
@@ -182,8 +102,8 @@
     <div class="container" style="border: 2px solid #ddd;">
       <form method="post" action="/timer">
       <input type="hidden" name="form-name" value="modTimer">
-      {{form_timer.csrf_token}}
-      {{form_timer.timer_id(class_='form-control', value=each_timer.id)}}
+      {{form_timer_base.csrf_token}}
+      {{form_timer_base.timer_id(class_='form-control', value=each_timer.id)}}
       <div class="row {% if each_timer.is_activated -%}active-background
                       {% else -%}inactive-background
                       {% endif -%} small-gutters" style="border-bottom: 2px solid #ddd; padding: 0.5em;">
@@ -193,136 +113,48 @@
           </a>
         </div>
         <div class="col-xs-5 col-sm-3">
-          {{form_timer.name(class_='form-control', value=each_timer.name, **{'title':_('Name')})}}
+          {{form_timer_base.name(class_='form-control', value=each_timer.name, **{'title':_('Name')})}}
         </div>
         <div class="col-xs-5 col-sm-2">
-          <input class="form-control btn btn-default" disabled="" value="ID {{each_timer.id}},
-            {%- if each_timer.is_activated %} {{_('Active')}}
-            {%- else %} {{_('Inactive')}}
+          <input class="form-control btn btn-default" disabled="" value="[{{'%02d' % each_timer.id}}] {{each_timer.timer_type}} (
+            {%- if each_timer.is_activated %}{{_('Active')}}
+            {%- else %}{{_('Inactive')}}
             {%-endif -%}
-          " type="text">
+          )" type="text">
         </div>
         <div class="col-xs-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
           {%- if each_timer.is_activated %}
-            {{form_timer.deactivate(class_='form-control btn btn-default')}}
+            {{form_timer_base.deactivate(class_='form-control btn btn-default')}}
           {%- else %}
-            {{form_timer.activate(class_='form-control btn btn-default')}}
+            {{form_timer_base.activate(class_='form-control btn btn-default')}}
           {%- endif -%}
         </div>
         <div class="col-xs-3 col-sm-2">
-          {{form_timer.order_up(class_='form-control btn btn-default')}}
+          {{form_timer_base.order_up(class_='form-control btn btn-default')}}
         </div>
         <div class="col-xs-3 col-sm-2">
-          {{form_timer.order_down(class_='form-control btn btn-default')}}
+          {{form_timer_base.order_down(class_='form-control btn btn-default')}}
         </div>
       </div>
 
       <div class="row small-gutters collapse" id="collapseContainer{{each_timer.id}}" style="border-bottom: 2px solid #ddd; padding: 0.5em">
         <div class="col-xs-6 col-sm-4 col-sm-offset-4">
-          {{form_timer.modify(class_='form-control btn btn-default')}}
+          {{form_timer_base.modify(class_='form-control btn btn-default')}}
         </div>
         <div class="col-xs-6 col-sm-4">
-          {{form_timer.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Timer controller?")'})}}
-        </div>
-        <div class="col-xs-6 col-sm-3">
-          {{form_timer.relay_id.label(class_='control-label')}}
-          <div>
-            <select class="form-control" id="relay_id" name="relay_id">
-              <option value=""></option>
-            {% for each_choice, value in output_choices.iteritems() if each_choice.split(',')[1] == 'duration_sec' -%}
-              <option value="{{each_choice.split(',')[0]}}"{% if each_timer.relay_id == each_choice.split(',')[0] %} selected{% endif %}>{{value}}</option>
-            {% endfor -%}
-            </select>
-          </div>
+          {{form_timer_base.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Timer controller?")'})}}
         </div>
 
         {% if each_timer.timer_type == 'time' %}
-
-        <input type="hidden" name="timer_type" value="time">
-        <div class="col-xs-6 col-sm-2">
-          {{form_timer.state.label(class_='control-label')}}
-          <div>
-            <select class="form-control" id="state" name="state">
-              <option value="on"{% if each_timer.state == 'on' %} selected{% endif %}>{{_('On')}}</option>
-              <option value="off"{% if each_timer.state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
-            </select>
-          </div>
-        </div>
-        <div class="col-xs-6 col-sm-3 col-md-2">
-          {{form_timer.time_start.label(class_='control-label')}}
-          <div>
-            <div class="input-group clockpicker">
-              <input type="text" class="form-control" id="timeOn" name="time_start" size="4" value="{{each_timer.time_start}}">
-              <span class="input-group-addon">
-                <span class="glyphicon glyphicon-time"></span>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="col-xs-6 col-sm-3 col-md-2 col-lg-2">
-          <label class='control-label'>On sec. (optional)</label>
-          <div>
-            {{form_timer.time_on_duration(class_='form-control', value=each_timer.duration_on, **{'size':'4'})}}
-          </div>
-        </div>
-
+          {% include 'pages/timer_options/mod_time_point.html' %}
         {% elif each_timer.timer_type == 'timespan' %}
-
-        <input type="hidden" name="timer_type" value="time">
-        <div class="col-xs-6 col-sm-2">
-          {{form_timer.state.label(class_='control-label')}}
-          <div>
-            <select class="form-control" id="state" name="state">
-              <option value="on"{% if each_timer.state == 'on' %} selected{% endif %}>{{_('On')}}</option>
-              <option value="off"{% if each_timer.state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
-            </select>
-          </div>
-        </div>
-        <div class="col-xs-5 col-sm-3 col-md-2">
-          {{form_timer.time_start_duration.label(class_='control-label')}}
-          <div>
-            <div class="input-group clockpicker">
-              <input type="text" class="form-control" id="timeOn" name="time_start_duration" size="4" value="{{each_timer.time_start}}">
-              <span class="input-group-addon">
-                <span class="glyphicon glyphicon-time"></span>
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="col-xs-2 col-sm-1 text-center">
-          <label></label>
-          <div>
-            <span class="collapse-button{{each_timer.id}} fa fa-3x fa-long-arrow-right"></span>
-          </div>
-        </div>
-        <div class="col-xs-5 col-sm-3 col-md-2">
-          {{form_timer.time_end_duration.label(class_='control-label')}}
-          <div>
-            <div class="input-group clockpicker">
-              <input type="text" class="form-control" id="timeOn" name="time_end_duration" size="4" value="{{each_timer.time_end}}">
-              <span class="input-group-addon">
-                <span class="glyphicon glyphicon-time"></span>
-              </span>
-            </div>
-          </div>
-        </div>
-
+          {% include 'pages/timer_options/mod_time_span.html' %}
         {% elif each_timer.timer_type == 'duration' %}
-
-        <input type="hidden" name="timer_type" value="duration">
-        <div class="col-xs-3 col-sm-3 col-md-2 col-lg-1">
-          {{form_timer.duration_on.label(class_='control-label')}}
-          <div>
-            {{form_timer.duration_on(class_='form-control', value=each_timer.duration_on, **{'size':'6'})}}
-          </div>
-        </div>
-        <div class="col-xs-3 col-sm-3 col-md-2 col-lg-1">
-          {{form_timer.duration_off.label(class_='control-label')}}
-          <div>
-            {{form_timer.duration_off(class_='form-control', value=each_timer.duration_off, **{'size':'6'})}}
-          </div>
-        </div>
+          {% include 'pages/timer_options/mod_duration.html' %}
+        {% elif each_timer.timer_type == 'pwm_method' %}
+          {% include 'pages/timer_options/mod_pwm_method.html' %}
         {% endif %}
+
       </div>
       </form>
 
@@ -335,18 +167,46 @@
   {%- endif -%}
 
   <script>
-    $('#timer_type_output').on('change', function () {
-      if (this.value === 'relay') {
-        document.getElementById("timer_pwm").style.display = "none";
-        document.getElementById("timer_relay").style.display = "block";
+    $('#timer_type').on('change', function () {
+      if (this.value === 'time_point') {
+        document.getElementById("base_options").style.display = "block";
+        document.getElementById("add_time_point").style.display = "block";
+        document.getElementById("add_time_span").style.display = "none";
+        document.getElementById("add_duration").style.display = "none";
+        document.getElementById("add_pwm_method").style.display = "none";
+        document.getElementById("add_button").style.display = "block";
       }
-      else if (this.value === 'pwm') {
-        document.getElementById("timer_relay").style.display = "none";
-        document.getElementById("timer_pwm").style.display = "block";
+      else if (this.value === 'time_span') {
+        document.getElementById("base_options").style.display = "block";
+        document.getElementById("add_time_point").style.display = "none";
+        document.getElementById("add_time_span").style.display = "block";
+        document.getElementById("add_duration").style.display = "none";
+        document.getElementById("add_pwm_method").style.display = "none";
+        document.getElementById("add_button").style.display = "block";
+      }
+      else if (this.value === 'duration') {
+        document.getElementById("base_options").style.display = "block";
+        document.getElementById("add_time_point").style.display = "none";
+        document.getElementById("add_time_span").style.display = "none";
+        document.getElementById("add_duration").style.display = "block";
+        document.getElementById("add_pwm_method").style.display = "none";
+        document.getElementById("add_button").style.display = "block";
+      }
+      else if (this.value === 'pwm_method') {
+        document.getElementById("base_options").style.display = "block";
+        document.getElementById("add_time_point").style.display = "none";
+        document.getElementById("add_time_span").style.display = "none";
+        document.getElementById("add_duration").style.display = "none";
+        document.getElementById("add_pwm_method").style.display = "block";
+        document.getElementById("add_button").style.display = "block";
       }
       else if (this.value === '') {
-        document.getElementById("timer_relay").style.display = "none";
-        document.getElementById("timer_pwm").style.display = "none";
+        document.getElementById("base_options").style.display = "none";
+        document.getElementById("add_time_point").style.display = "none";
+        document.getElementById("add_time_span").style.display = "none";
+        document.getElementById("add_duration").style.display = "none";
+        document.getElementById("add_pwm_method").style.display = "none";
+        document.getElementById("add_button").style.display = "none";
       }
     });
   </script>

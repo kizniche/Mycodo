@@ -55,9 +55,9 @@ Troubleshooting
 -   Daemon Not Running
 -   More
 
-Sensor and Device Setup
+Input and Device Setup
 
-Sensor Interfaces
+Input Interfaces
 
 -   1-Wire
 -   GPIO
@@ -68,7 +68,6 @@ Sensor Interfaces
 Device Setup
 
 -   I2C Multiplexers
--   Analog to Digital Converters
 
 Device Specific Information
 
@@ -1000,12 +999,30 @@ resumes operation.
 
 Timers
 
-Timers enable a relay to be manipulated after specific durations of time
-or at a specific times of the day. For _Duration Timers_, both the on
-duration and the off duration can be defined and the timer will be
-turned on and off for those durations until deactivated. For _Daily
-Timers_, the start hour:minute can be set to turn a specific relay on or
-off at the specific time of day.
+Timers enable outputs to be manipulated after specific durations of time
+or at a specific times of the day. Timers will _ONLY_ do as instructed,
+therefore if you turn a relay _ON_ from _Start Time_ to _End Time_ and
+you want that relay to turn _OFF_ at the end of that period, you will
+need to create another timer that turns the relay _OFF_ at _End Time_ +
+1 minute.
+
+There are two types of timers, one for general outputs that turn on and
+off, and those that generate a PWM signal.
+
+General Output
+
+For _Duration Timers_, both the on duration and the off duration can be
+defined and the timer will be turned on and off for those durations
+until deactivated.
+
+For _Daily Timers_, the start hour:minute can be set to turn a specific
+relay on or off at the specific time of day.
+
+PWM Method
+
+This timer allows a method to be used to determine the duty cycle (as
+percent) of a PWM output. While creating these methods, keep in mind a
+duty cycle is a percentage and the values must stay between 0 and 100.
 
 
 LCDs
@@ -1126,17 +1143,17 @@ Input Conditional command variables
 
   ((input_co2))                Sensor measurement: CO2
 
-  ((input_dewpoint))           Sensor measurement: dew point
-
   ((input_cpu_load_1m))        Sensor measurement: CPU load (1 min)
 
   ((input_cpu_load_5m))        Sensor measurement: CPU load (5 min)
 
   ((input_cpu_load_15m))       Sensor measurement: CPU load (15 min)
 
-  ((input_edge))               Sensor measurement: edge detected (1 or -1)
+  ((input_dewpoint))           Sensor measurement: dew point
 
   ((input_disk_space))         Sensor measurement: disk space
+
+  ((input_edge))               Sensor measurement: edge detected (1 or -1)
 
   ((input_humidity))           Sensor measurement: humidity
 
@@ -1150,9 +1167,9 @@ Input Conditional command variables
 
   ((input_temperature))        Sensor measurement: temperature
 
-  ((input_temperature_object)) Sensor measurement: temperature (object)
-
   ((input_temperature_die))    Sensor measurement: temperature (die)
+
+  ((input_temperature_object)) Sensor measurement: temperature (object)
 
   ((input_voltage))            Sensor measurement: voltage
   -------------------------------------------------------------------------
@@ -1187,12 +1204,14 @@ Or for an Output Conditional:
 
 Methods
 
-Methods allow different types of setpoint tracking in PID controllers.
-Normally, a PID controller will regulate an environmental condition to a
-specific setpoint. If you would like the setpoint to change over time,
-this is called setpoint tracking. Setpoint tracking is useful for
-applications such as reflow ovens, thermal cyclers (DNA replication),
-mimicking natural daily cycles, and more.
+Methods enable Setpoint Tracking in PIDs and time-based duty cycle
+changes in timers. Normally, a PID controller will regulate an
+environmental condition to a specific setpoint. If you would like the
+setpoint to change over time, this is called setpoint tracking. Setpoint
+Tracking is useful for applications such as reflow ovens, thermal
+cyclers (DNA replication), mimicking natural daily cycles, and more.
+Methods may also be used to change a duty cycle over time when used with
+a Timer.
 
 Universal Options
 
@@ -1215,17 +1234,18 @@ over the period of days, weeks, or months.
 
 Duration Method
 
-A duration method allows a specific durations of time to dictate the
-setpoint. This is useful for when short periods of time are required in
-a method, such as those that take place over the course of a few minutes
-or hours. Each duration will stack on the previous duration, meaning a
-newly-added start setpoint will begin from the previous entry’s end
-setpoint.
+A Duration Method allows a _SETPOINT_ (for PIDs) or _DUTY CYCLE_ (for
+Timers) to be set after specific durations of time. Each new duration
+added will stack, meaning it will come after the previous duration,
+meaning a newly-added _START SETPOINT_ will begin after the previous
+entry’s _END SETPOINT_.
 
 If the “Repeat Method” option is used, this will cause the method to
 repeat once it has reached the end. If this option is used, no more
 durations may be added to the method. If the repeat option is deleted
-then more durations may be added.
+then more durations may be added. For instance, if your method is 200
+seconds total, if the Repeat Duration is set to 600 seconds, the method
+will repeat 3 times and then automatically turn off the PID or Timer.
 
 Daily (Time-Based) Method
 
@@ -1447,10 +1467,10 @@ live data.
 Camera
 
 Once a cameras has been set up (in the Camera Settings), it may be used
-to capture still images, create time-lapses, and stream video (Pi camera
-only). Cameras may also be used with Conditional Statements to trigger a
-camera image or video capture (as well as the ability to email the
-image/video with a notification).
+to capture still images, create time-lapses, and stream video. Cameras
+may also be used by Conditional Statements to trigger a camera image or
+video capture (as well as the ability to email the image/video with a
+notification).
 
 
 Relay Usage
@@ -1504,16 +1524,16 @@ information about diagnosing issues.
 
 
 
-SENSOR AND DEVICE SETUP
+INPUT AND DEVICE SETUP
 
 
-Certain sensors will require extra steps to be taken in order to set up
+Certain inputs will require extra steps to be taken in order to set up
 the interface for communication. This includes I2C, one-wire, and UART.
 
 
-Sensor Interfaces
+Input Interfaces
 
-Sensors are categorized below by their communication interface.
+Inputs are categorized below by their communication interface.
 
 1-Wire
 
@@ -1568,6 +1588,18 @@ I2C
 
 The I2C interface should be enabled with raspi-config.
 
+ANALOG TO DIGITAL CONVERTERS
+
+An analog to digital converter (ADC) allows the use of any analog sensor
+that outputs a variable voltage. A voltage divider may be necessary to
+attain your desired range.
+
+  ADS1x15: Analog-to-digital converter link
+
+  MCP342x: Analog-to-digital converter link
+
+SENSORS
+
   AM2315: Relative humidity, temperature link
 
   Atlas Scientific pH: pH link
@@ -1610,7 +1642,7 @@ Device Setup
 I2C Multiplexers
 
 All devices that connected to the Raspberry Pi by the I2C bus need to
-have a unique address in order to communicate. Some sensors may have the
+have a unique address in order to communicate. Some inputs may have the
 same address (such as the AM2315), which prevents more than one from
 being connected at the same time. Others may provide the ability to
 change the address, however the address range may be limited, which
@@ -1631,16 +1663,6 @@ multiple sensors with the same I2C address to be connected.
   https://github.com/camrex/i2c-mux-pca9545a. Nothing else needs to be
   done in Mycodo after that except to select the correct I2C bus when
   configuring a sensor.
-
-Analog to Digital Converters
-
-An analog to digital converter (ADC) allows the use of any analog sensor
-that outputs a variable voltage. A voltage divider may be necessary to
-attain your desired range.
-
-  ADS1x15 link ±4.096 (I2C)
-
-  MCP342x link ±2.048 (I2C)
 
 
 

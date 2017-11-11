@@ -21,7 +21,7 @@
         {{form_camera.camera_id(value=each_camera.id)}}
         <div class="row" style="border-bottom: 2px solid #ddd; padding: 1em 0;">
           <div class="col-xs-12 col-sm-3">
-            <input class="form-control" disabled="" value="{{each_camera.name}} (ID: {{each_camera.id}})" type="text">
+            <input class="form-control" disabled="" title="UUID: {{each_camera.unique_id}}" value="[{{'%02d' % each_camera.id}}] ({{each_camera.library}}) {{each_camera.name}}" type="text">
           </div>
           <div class="col-xs-12 col-sm-3">
             {{form_camera.capture_still(class_='form-control btn btn-default')}}
@@ -47,9 +47,7 @@
             {% endif %}
           {%- endif %}
 
-          {% if not each_camera.timelapse_started and
-                    each_camera.camera_type == 'Raspberry Pi' and
-                    each_camera.library == 'picamera' %}
+          {% if not each_camera.timelapse_started %}
             <div class="col-xs-12 col-sm-3">
               {% if each_camera.stream_started -%}
                 {{form_camera.stop_stream(class_='form-control btn btn-default')}}
@@ -90,7 +88,11 @@
         {%- if each_camera.stream_started -%}
           <div style="padding-bottom: 1em">
             {{_('Video Stream')}}:
-            <img style="max-width: 100%" src="{{url_for('general_routes.video_feed')}}">
+            {% if each_camera.library == 'opencv' %}
+            <br/><img style="max-width: 100%" src="/video_feed/{{each_camera.unique_id}}">
+            {% elif each_camera.library == 'picamera' %}
+            <br/><img style="max-width: 100%" src="/video_feed/{{each_camera.unique_id}}">
+            {% endif %}
           </div>
         {%- endif -%}
 

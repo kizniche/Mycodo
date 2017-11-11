@@ -9,7 +9,7 @@ if [ "$EUID" -ne 0 ] ; then
 fi
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../.." && pwd -P )
-APT_PKGS="apache2 gawk gcc git libapache2-mod-wsgi libav-tools libboost-python-dev libffi-dev libgtk2.0-0 libi2c-dev python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3 wget"
+APT_PKGS="apache2 gawk gcc git libapache2-mod-wsgi libav-tools libboost-python-dev libffi-dev libgtk2.0-0 libi2c-dev moreutils python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3 wget"
 
 cd ${INSTALL_DIRECTORY}
 
@@ -170,8 +170,8 @@ case "${1:-''}" in
     'update-influxdb')
         printf "\n#### Ensuring compatible version of influxdb is installed ####\n"
         INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
-        INSTALL_FILE="influxdb_1.3.3_armhf.deb"
-        CORRECT_VERSION="1.3.3-1"
+        INSTALL_FILE="influxdb_1.3.7_armhf.deb"
+        CORRECT_VERSION="1.3.7-1"
         CURRENT_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
         if [ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]; then
             echo "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed. Installing v${CORRECT_VERSION}..."

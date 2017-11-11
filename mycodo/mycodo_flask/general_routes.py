@@ -10,6 +10,7 @@ import os
 import subprocess
 import time
 import flask_login
+from importlib import import_module
 from RPi import GPIO
 from dateutil.parser import parse as date_parse
 from flask import Response
@@ -26,19 +27,19 @@ from flask.blueprints import Blueprint
 from flask_babel import gettext
 from flask_influxdb import InfluxDB
 
-from mycodo import flaskforms
-from mycodo import flaskutils
+from mycodo.mycodo_flask.forms import forms_authentication
+from mycodo.mycodo_flask.utils import utils_general
+from mycodo.mycodo_flask.utils import utils_remote_host
+from mycodo.mycodo_flask.utils.utils_general import gzipped
+
 from mycodo.databases.models import Camera
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Relay
 from mycodo.databases.models import Remote
 from mycodo.databases.models import Sensor
 from mycodo.databases.models import User
-from mycodo.devices.camera import CameraStream
-from mycodo.flaskutils import gzipped
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
-from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import query_string
 from mycodo.utils.system_pi import str_is_float
 
@@ -76,7 +77,7 @@ def page_settings():
 @flask_login.login_required
 def remote_admin(page):
     """Return pages for remote administration"""
-    if not flaskutils.user_has_permission('edit_settings'):
+    if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     remote_hosts = Remote.query.all()
@@ -87,21 +88,21 @@ def remote_admin(page):
         display_order = []
 
     if page == 'setup':
-        form_setup = flaskforms.RemoteSetup()
+        form_setup = forms_authentication.RemoteSetup()
         host_auth = {}
         for each_host in remote_hosts:
-            host_auth[each_host.host] = flaskutils.auth_credentials(
+            host_auth[each_host.host] = utils_remote_host.auth_credentials(
                 each_host.host, each_host.username, each_host.password_hash)
 
         if request.method == 'POST':
             form_name = request.form['form-name']
             if form_name == 'setup':
                 if form_setup.add.data:
-                    flaskutils.remote_host_add(form_setup=form_setup,
-                                               display_order=display_order)
+                    utils_remote_host.remote_host_add(
+                        form_setup=form_setup, display_order=display_order)
             if form_name == 'mod_remote':
                 if form_setup.delete.data:
-                    flaskutils.remote_host_del(form_setup=form_setup)
+                    utils_remote_host.remote_host_del(form_setup=form_setup)
             return redirect('/remote/setup')
 
         return render_template('remote/setup.html',
@@ -145,11 +146,14 @@ def gen(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-@blueprint.route('/video_feed')
+@blueprint.route('/video_feed/<unique_id>')
 @flask_login.login_required
-def video_feed():
+def video_feed(unique_id):
     """Video streaming route. Put this in the src attribute of an img tag."""
-    return Response(gen(CameraStream()),
+    camera_options = Camera.query.filter(Camera.unique_id == unique_id).first()
+    camera_stream = import_module('mycodo.mycodo_flask.camera.camera_' + camera_options.library).Camera
+    camera_stream.set_camera_options(camera_options)
+    return Response(gen(camera_stream(unique_id=unique_id)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
@@ -259,11 +263,9 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     dbcon = influx_db.connection
 
     if measurement == 'duration_sec':
-        name = db_retrieve_table_daemon(
-            Relay, unique_id=unique_id).name
+        name = Relay.query.filter(Relay.unique_id == unique_id).first().name
     else:
-        name = db_retrieve_table_daemon(
-            Sensor, unique_id=unique_id).name
+        name = Sensor.query.filter(Sensor.unique_id == unique_id).first().name
 
     utc_offset_timedelta = datetime.datetime.utcnow() - datetime.datetime.now()
     start = datetime.datetime.fromtimestamp(float(start_seconds))
@@ -415,7 +417,7 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
 @flask_login.login_required
 def output_mod(relay_id, state, out_type, amount):
     """Manipulate relay"""
-    if not flaskutils.user_has_permission('edit_controllers'):
+    if not utils_general.user_has_permission('edit_controllers'):
         return 'Insufficient user permissions to manipulate relays'
 
     daemon = DaemonControl()
@@ -444,7 +446,7 @@ def daemon_active():
 @flask_login.login_required
 def computer_command(action):
     """Execute one of several commands as root"""
-    if not flaskutils.user_has_permission('edit_settings'):
+    if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     try:

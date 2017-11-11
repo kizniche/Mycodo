@@ -1,19 +1,20 @@
 # coding=utf-8
+
+import fasteners
 import logging
 import serial
 import time
-from lockfile import LockFile
 from serial import SerialException
 
 from mycodo.config import ATLAS_PH_LOCK_FILE
-
-logger = logging.getLogger("mycodo.device.atlas_scientific_uart")
 
 
 class AtlasScientificUART:
     """A Class to communicate with Atlas Scientific sensors via UART"""
 
     def __init__(self, serial_device, baudrate=9600):
+        self.logger = logging.getLogger(
+            "mycodo.device.atlas_scientific_uart_{dev}".format(dev=serial_device))
         self.setup = True
         self.serial_device = serial_device
         try:
@@ -21,11 +22,11 @@ class AtlasScientificUART:
                                      baudrate=baudrate,
                                      timeout=0)
         except serial.SerialException as err:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when initializing: "
                 "{err}".format(cls=type(self).__name__, err=err))
             self.setup = False
-            logger.exception('Opening serial')
+            self.logger.exception('Opening serial')
 
     def read_line(self):
         """
@@ -48,29 +49,31 @@ class AtlasScientificUART:
         """ Send command and return reply """
         lock_file_amend = '{lf}.{dev}'.format(lf=ATLAS_PH_LOCK_FILE,
                                               dev=self.serial_device.replace("/", "-"))
-        lock = LockFile(lock_file_amend)
+
         try:
-            while not lock.i_am_locking():
-                try:
-                    lock.acquire(timeout=10)  # wait up to 10 seconds before breaking lock
-                except Exception as e:
-                    logger.exception(
-                        "{cls} 10 second timeout, {lock} lock broken: "
-                        "{err}".format(cls=type(self).__name__,
-                                       lock=lock_file_amend,
-                                       err=e))
-                    lock.break_lock()
-                    lock.acquire()
-            self.send_cmd(query_str)
-            time.sleep(1.3)
-            response = self.read_lines()
-            lock.release()
-            return response
+            lock = fasteners.InterProcessLock(lock_file_amend)
+            lock_acquired = False
+
+            for _ in range(600):
+                lock_acquired = lock.acquire(blocking=False)
+                if lock_acquired:
+                    break
+                else:
+                    time.sleep(0.1)
+
+            if lock_acquired:
+                self.send_cmd(query_str)
+                time.sleep(1.3)
+                response = self.read_lines()
+                lock.release()
+                return response
+            else:
+                self.logger.error("Could not acquire Atlas UART lock")
+
         except Exception as err:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=err))
-            lock.release()
             return None
 
     def read_lines(self):
@@ -88,10 +91,10 @@ class AtlasScientificUART:
             return lines
 
         except SerialException:
-            logger.exception('Read Lines')
+            self.logger.exception('Read Lines')
             return None
         except AttributeError:
-            logger.exception('UART device not initialized')
+            self.logger.exception('UART device not initialized')
             return None
 
     def send_cmd(self, cmd):
@@ -106,10 +109,10 @@ class AtlasScientificUART:
             self.ser.write(buf)
             return True
         except SerialException:
-            logger.exception('Send CMD')
+            self.logger.exception('Send CMD')
             return None
         except AttributeError:
-            logger.exception('UART device not initialized')
+            self.logger.exception('UART device not initialized')
             return None
 
 
@@ -133,6 +136,7 @@ def main():
                 print(device.query(input_str))
             except IOError:
                 print("Send command failed\n")
+
 
 if __name__ == "__main__":
     main()

@@ -1,19 +1,20 @@
 # coding=utf-8
 
 import logging
-import time
 import Adafruit_ADS1x15
-
-logger = logging.getLogger('mycodo.devices.ads1x15')
 
 
 class ADS1x15Read(object):
     """ Sensor  """
     def __init__(self, address, bus, channel, gain):
+        self.logger = logging.getLogger('mycodo.ads1x15-{bus}-{add}'.format(
+            bus=bus, add=address))
         self._voltage = None
         self.i2c_address = address
         self.i2c_bus = bus
         self.channel = channel
+        self.adc = Adafruit_ADS1x15.ADS1115(address=self.i2c_address,
+                                            busnum=self.i2c_bus)
 
         # Choose a gain of 1 for reading voltages from 0 to 4.09V.
         # Or pick a different gain to change the range of voltages that are read:
@@ -30,13 +31,10 @@ class ADS1x15Read(object):
     def read(self):
         """ Take measurement """
         try:
-            time.sleep(1)
-            adc = Adafruit_ADS1x15.ADS1115(address=self.i2c_address,
-                                           busnum=self.i2c_bus)
-            self._voltage = adc.read_adc(
+            self._voltage = self.adc.read_adc(
                 self.channel, gain=self.gain) / 10000.0
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an error during read() call: "
                 "{err}".format(cls=type(self).__name__, err=e))
             return 1
@@ -57,21 +55,18 @@ class ADS1x15Read(object):
         """
         if self.read():
             return None
-        response = {
-            'voltage': float("{}".format(self.voltage))
-        }
-        return response
+        return dict(voltage=float('{0:.4f}'.format(self._voltage)))
 
     def stop_sensor(self):
         self.running = False
 
 
 if __name__ == "__main__":
-    ads = ADS1x15Read(0, 0x48, 0, 1)
+    ads = ADS1x15Read(0x48, 1, 0, 1)
     print("Channel 0: {}".format(ads.next()))
-    ads = ADS1x15Read(0, 0x48, 1, 1)
+    ads = ADS1x15Read(0x48, 1, 1, 1)
     print("Channel 1: {}".format(ads.next()))
-    ads = ADS1x15Read(0, 0x48, 2, 1)
+    ads = ADS1x15Read(0x48, 1, 2, 1)
     print("Channel 2: {}".format(ads.next()))
-    ads = ADS1x15Read(0, 0x48, 3, 1)
+    ads = ADS1x15Read(0x48, 1, 3, 1)
     print("Channel 3: {}".format(ads.next()))

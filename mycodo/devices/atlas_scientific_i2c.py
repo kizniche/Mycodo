@@ -1,10 +1,11 @@
 # coding=utf-8
+
+import fasteners
 import fcntl  # used to access I2C parameters like addresses
 import io  # used to create file streams
 import logging
 import string  # helps parse strings
 import time  # used for sleep delay and timestamps
-from lockfile import LockFile
 
 from mycodo.utils.system_pi import str_is_float
 
@@ -74,40 +75,40 @@ class AtlasScientificI2C:
         """ Send command to board and read response """
         lock_file_amend = '{lf}.{dev}'.format(lf=ATLAS_PH_LOCK_FILE,
                                               dev=self.current_addr)
-        lock = LockFile(lock_file_amend)
         try:
-            while not lock.i_am_locking():
-                try:
-                    lock.acquire(timeout=10)  # wait up to 60 seconds before breaking lock
-                except Exception as e:
-                    self.logger.error(
-                        "{cls} 10 second timeout, {lock} lock broken: "
-                        "{err}".format(cls=type(self).__name__,
-                                       lock=ATLAS_PH_LOCK_FILE,
-                                       err=e))
-                    lock.break_lock()
-                    lock.acquire()
+            lock = fasteners.InterProcessLock(lock_file_amend)
+            lock_acquired = False
 
-            # write a command to the board, wait the correct timeout, and read the response
-            self.write(query_str)
+            for _ in range(600):
+                lock_acquired = lock.acquire(blocking=False)
+                if lock_acquired:
+                    break
+                else:
+                    time.sleep(0.1)
 
-            # the read and calibration commands require a longer timeout
-            if ((query_str.upper().startswith("R")) or
-                    (query_str.upper().startswith("CAL"))):
-                time.sleep(self.long_timeout)
-            elif query_str.upper().startswith("SLEEP"):
-                return "sleep mode"
+            if lock_acquired:
+                # write a command to the board, wait the correct timeout, and read the response
+                self.write(query_str)
+
+                # the read and calibration commands require a longer timeout
+                if ((query_str.upper().startswith("R")) or
+                        (query_str.upper().startswith("CAL"))):
+                    time.sleep(self.long_timeout)
+                elif query_str.upper().startswith("SLEEP"):
+                    return "sleep mode"
+                else:
+                    time.sleep(self.short_timeout)
+
+                response = self.read()
+                lock.release()
+                return response
             else:
-                time.sleep(self.short_timeout)
+                self.logger.error("Could not acquire Atlas I2C lock")
 
-            response = self.read()
-            lock.release()
-            return response
         except Exception as err:
-            # self.logger.exception(
-            #     "{cls} raised an exception when taking a reading: "
-            #     "{err}".format(cls=type(self).__name__, err=err))
-            lock.release()
+            self.logger.debug(
+                "{cls} raised an exception when taking a reading: "
+                "{err}".format(cls=type(self).__name__, err=err))
             return "error", err
 
     def close(self):
@@ -187,6 +188,7 @@ def main():
                 except IOError:
                     print("Query failed \n - Address may be invalid, use "
                           "List_addr command to see available addresses")
+
 
 if __name__ == "__main__":
     main()

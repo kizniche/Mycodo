@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from lockfile import LockFile
+import fasteners
 import logging
 import serial
 import time
@@ -92,30 +92,29 @@ class K30Sensor(AbstractSensor):
         if not self.serial_device:  # Don't measure if device isn't validated
             return None
 
-        lock = LockFile(self.k30_lock_file)
         try:
-            # Acquire lock on K30 to ensure more than one read isn't
-            # being attempted at once.
-            while not lock.i_am_locking():
-                try:  # wait 60 seconds before breaking lock
-                    lock.acquire(timeout=60)
-                except Exception as e:
-                    self.logger.error(
-                        "{cls} 60 second timeout, {lock} lock broken: "
-                        "{err}".format(
-                            cls=type(self).__name__,
-                            lock=self.k30_lock_file,
-                            err=e))
-                    lock.break_lock()
-                    lock.acquire()
-            self._co2 = self.get_measurement()
-            lock.release()
+            lock = fasteners.InterProcessLock(self.k30_lock_file)
+            lock_acquired = False
+
+            for _ in range(600):
+                lock_acquired = lock.acquire(blocking=False)
+                if lock_acquired:
+                    break
+                else:
+                    time.sleep(0.1)
+
+            if lock_acquired:
+                self._co2 = self.get_measurement()
+                lock.release()
+            else:
+                self.logger.error("Could not acquire K30 lock")
+
             if self._co2 is None:
                 return 1
             return  # success - no errors
+
         except Exception as e:
             self.logger.error(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
-            lock.release()
             return 1

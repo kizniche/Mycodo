@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from lockfile import LockFile
+import fasteners
 import logging
 import serial
 import time
@@ -16,7 +16,7 @@ class MHZ19Sensor(AbstractSensor):
         super(MHZ19Sensor, self).__init__()
         self.logger = logging.getLogger(
             "mycodo.sensors.mhz19.{dev}".format(dev=device_loc.replace('/', '')))
-        self.k30_lock_file = None
+        self.mhz19_lock_file = None
         self._co2 = 0
 
         # Check if device is valid
@@ -26,7 +26,7 @@ class MHZ19Sensor(AbstractSensor):
                 self.ser = serial.Serial(self.serial_device,
                                          baudrate=baud_rate,
                                          timeout=1)
-                self.k30_lock_file = "/var/lock/sen-mhz19-{}".format(device_loc.replace('/', ''))
+                self.mhz19_lock_file = "/var/lock/sen-mhz19-{}".format(device_loc.replace('/', ''))
             except serial.SerialException:
                 self.logger.exception('Opening serial')
         else:
@@ -92,27 +92,29 @@ class MHZ19Sensor(AbstractSensor):
         if not self.serial_device:  # Don't measure if device isn't validated
             return None
 
-        lock = LockFile(self.k30_lock_file)
         try:
             # Acquire lock on MHZ19 to ensure more than one read isn't
             # being attempted at once.
-            while not lock.i_am_locking():
-                try:  # wait 60 seconds before breaking lock
-                    lock.acquire(timeout=60)
-                except Exception as e:
-                    self.logger.error(
-                        "{cls} 60 second timeout, {lock} lock broken: "
-                        "{err}".format(
-                            cls=type(self).__name__,
-                            lock=self.k30_lock_file,
-                            err=e))
-                    lock.break_lock()
-                    lock.acquire()
-            self._co2 = self.get_measurement()
-            lock.release()
+            lock = fasteners.InterProcessLock(self.mhz19_lock_file)
+            lock_acquired = False
+
+            for _ in range(600):
+                lock_acquired = lock.acquire(blocking=False)
+                if lock_acquired:
+                    break
+                else:
+                    time.sleep(0.1)
+
+            if lock_acquired:
+                self._co2 = self.get_measurement()
+                lock.release()
+            else:
+                self.logger.error("Could not acquire MHZ19 lock")
+
             if self._co2 is None:
                 return 1
             return  # success - no errors
+
         except Exception as e:
             self.logger.error(
                 "{cls} raised an exception when taking a reading: "

@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 5.3.3 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade) [![DOI](https://zenodo.org/badge/30382555.svg)](https://zenodo.org/badge/latestdoi/30382555)
+### Latest version: 5.3.6 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade) [![DOI](https://zenodo.org/badge/30382555.svg)](https://zenodo.org/badge/latestdoi/30382555)
 
 #### [Mycodo Manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md) ([PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt))
 
@@ -16,12 +16,13 @@ Mycodo has been used for cultivating mushrooms and plants, culturing microorgani
 
   - Complete: [Español (Spanish)](#espa%C3%B1ol-spanish)
   - Partial: [Français (French)](#fran%C3%A7ais-french), [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
+  - Change language under Configure -> Language
 
 ## Table of Contents
 
 - [What is PID Control?](#what-is-pid-control)
 - [Features](#features)
-- [Supported Sensors](#supported-sensors)
+- [Supported Inputs](#supported-inputs)
 - [Install](#install)
   - [Install Notes](#install-notes)
   - [Web Server Security](#web-server-security)
@@ -59,41 +60,40 @@ The top graph of the above screenshot visualizes the regulation of temperature i
 
 ## Features
 
-* Web Interface - Access anywhere with an internet connection.
-* Relays (wired, 433MHz wireless, or linux commands) - Control electrical devices, manually and automatically
-* Sensors - Support for devices that measure temperature, humidity, CO<sub>2</sub>, atmospheric pressure, infrared heat, luminosity, magnetism, motion, pH, soil moisture, and more.
-* Analog to digital converter support - Read any analog sensor or signal.
-* Timers - Schedule the execution of actions at various times and intervals.
-* Conditional Statements - Execute actions based on inputs or measurements (such as email notification, relay actuation, camera recording, and more).
-* PID (Proportional Integral Derivative) Controller - Couple relays with sensors and regulate environmental conditions with prediction and precision.
-* Methods/Setpoint Tracking - Change an environmental condition over time (useful for reflow ovens, thermal cyclers, mimicking natural environmental changes, etc.)
-* LCDs - Display measurements and data on I2C-enabled displays (cheaper than a monitor)
-* I<sup>2</sup>C Multiplexer Support - Allow multiple devices/sensors with the same I<sup>2</sup>C address to be used simultaneously.
-* Camera support - Raspberry Pi Camera and USB cameras, to stream live video (only Pi cam), capture still images, and create time-lapses.
-* Automated system upgrade - When a new version is released on github, an upgrade can be initiated from the web interface.
-* Languages: English, [Español (Spanish)](#espa%C3%B1ol-spanish) (partial: [Français (French)](#fran%C3%A7ais-french), [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean))
+* Inputs: Periodically measure devices, such as analog-to-digital converters (ADCs), sensors (temperature, humidity, CO<sub>2</sub>, atmospheric pressure, infrared heat, luminosity, magnetism, motion, pH, soil moisture, and more.), or add your own.
+* Outputs: Manipulate the environment by switching GPIO pins High & Low, switching relays, generating PWM signals, email notifications, executing linux commands, and more.
+* PID Controllers - Couple inputs with outputs to create feedback loops in order to regulate environmental conditions.
+* Methods: Change the desired condition over time (useful for reflow ovens, thermal cyclers, mimicking natural environmental changes, etc.)
+* Timers: Schedule the execution of Outputs at various times and intervals.
+* LCDs: Output measurements and data on 16x2 and 20x4 I<sup>2</sup>C-enabled LCD displays
+* I<sup>2</sup>C Multiplexer Support: Allow multiple devices/sensors with the same I<sup>2</sup>C address to be used simultaneously.
+* Camera support: Raspberry Pi Camera and USB cameras, to stream live video (only Pi cam), capture still images and video, and create time-lapses.
+* Web Interface: Access using a web browser on your local network or anywhere in the world with an internet connection.
+* Secure Login: High-security login system utilizing the latest encryption and authorization standards.
+* Automated system upgrade: When a new version is released on github, an upgrade can be initiated from the web interface.
+* Languages: English, [Español (Spanish)](#espa%C3%B1ol-spanish) (partial: [Français (French)](#fran%C3%A7ais-french), [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)) (Change language under Configure -> Language)
 
-## Supported Sensors
+## Supported Inputs
 
-All supported sensors can be found under [Sensor Interfaces](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#sensor-interfaces)
+All supported Inputs can be found under [Sensor Interfaces](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#sensor-interfaces) and [Device Setup](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#device-setup).
 
 ## Install
 
-These install procedures have been tested to work with a Raspberry Pi following a fresh install of [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/) (Full or Lite version), with an active internet connection.
+These install procedures have been tested to work with the Raspberry Pi (versions Zero, 1, 2, and 3) following a fresh install of [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/) (Full or Lite version), with an active internet connection.
 
 ***Important:*** The most recent version of Raspbian has SSH disabled by default. SSH can be enabled for the first bootup by creating a blank file named ```ssh``` and placing it in the boot partition of the SD card. This will enable SSH access until either A. the system is rebooted, or B. SSH is fully-enabled with raspi-config (instructions below).
 
 ### Configure raspi-config
 
-**It's very important that you don't skip the file system expansion and reboot! This needs to be done before continuing or there won't be any free disk space.**
+**It's very important that you don't skip the file system expansion and reboot steps! These need to be done before continuing or there won't be enough free disk space to install Mycodo.**
 
-After writing Raspbian to an SD card and enabling ssh by creating the ```ssh``` file on the boot partition, insert the SD card into the Pi and power the system. When you SSH or log into a terminal for the first time (user: pi, password: raspberry), issue the following command to start raspi-config.
+After writing Raspbian to an SD card and enabling ssh by creating the ```ssh``` file on the boot partition, insert the SD card into the Pi and power the system. When you log in via SSH (I use PuTTy) to your Raspberry Pi's IP address for the first time (user: pi, password: raspberry), issue the following command to start raspi-config.
 
 ```sudo raspi-config```
 
 Then change the following settings
 
- + ```Change User Password```
+ + ```Change User Password``` (change the password from the default 'raspberry')
  + ```Localisation Options``` -> ```Change Locale``` (set and select en_US.UTF-8, if US)
  + ```Localisation Options``` -> ```Change Timezone```
  + ```Interfacing Options``` -> ```SSH``` -> ```Enable```
@@ -128,7 +128,7 @@ If you want write access to the mycodo files, add your user to the mycodo group,
 
 ```sudo usermod -a -G mycodo username```
 
-In certain circumstances after the initial install, the mycodo service will not be able to start because of a missing or corrupt package. I'm still trying to understand why this happens and how to prevent it. If you cannot start the daemon, try to reinstall the required python modules with the following command:
+In certain circumstances after the initial install or an upgrade, the mycodo daemon will not be able to start because of a missing or corrupt pip package. I'm still trying to understand why this happens and how to prevent it. If you cannot start the daemon, try to reinstall the required python modules with the following command:
 
 ```sudo ~/Mycodo/env/bin/pip install -r ~/Mycodo/install/requirements.txt --upgrade --force-reinstall --no-deps```
 
@@ -142,9 +142,9 @@ A minimal set of anonymous usage statistics are collected to help improve develo
 
 ## Web Server Security
 
-An SSL certificate will be generated and stored at ```~/Mycodo/mycodo/mycodo_flask/ssl_certs/``` during the install process. If you want to use your own SSL certificates, replace them with your own.
+An SSL certificate will be generated and stored at ```~/Mycodo/mycodo/mycodo_flask/ssl_certs/``` during the install process to allow HTTPS to be used to securely connect to the web interface. If you want to use your own SSL certificates, replace them with your own.
 
-The certificate that is automatically generated are set to expire in 365 days. If you would like to regenerate new certificate, delete the old certificates, create a new one, and restart the web server with the following commands.
+The certificate that is automatically generated are set to expire in 365 days. If you would like to regenerate new certificate, delete the old certificates, create a new one, and restart the web server with the following commands:
 
 ```
 rm -rf ~/Mycodo/mycodo/mycodo_flask/ssl_certs/*.pem
@@ -152,7 +152,7 @@ rm -rf ~/Mycodo/mycodo/mycodo_flask/ssl_certs/*.pem
 sudo /etc/init.d/apache2 restart
 ```
 
-If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the web UI at the ```https://``` address (opposed to ```http://```). You may receive a warning message about the security of your site, unless you add the certificate to your browser's trusted list.
+If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the web UI using the ```https://``` address prefix (opposed to ```http://```). You may receive a warning message about the security of your site, unless you add the certificate to your browser's trusted list.
 
 ## Upgrade
 
@@ -164,7 +164,7 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade
 
 ## Manual
 
-The Mycodo Manual may be viewed or downloaded as [Markdown](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md), [PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), or [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt)
+The Mycodo Manual may be viewed as [Markdown](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md), [PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), or [Plain Text](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt)
 
 ## License
 
@@ -188,7 +188,7 @@ http://KyleGabriel.com
 
 ## Languages
 
-Mycodo has been translated (to varying degrees) to [Spanish (Español)](#espa%C3%B1ol-spanish), [French (Français)](#fran%C3%A7ais-french), and [Korean (한국어)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean). By default, mycodo will display the default language set by your browser. You may also force a language in the settings at ```[Gear Icon]``` -> ```Configure``` -> ```General``` -> ```Language```.
+Mycodo has been translated (to varying degrees) to [Spanish (Español)](#espa%C3%B1ol-spanish), [French (Français)](#fran%C3%A7ais-french), and [Korean (한국어)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean). By default, mycodo will display the default language set by your browser. You may also force a language in the settings at ```[Gear Icon]``` -> ```Configure``` -> ```General``` -> ```Language```
 
 ### Español (Spanish)
 

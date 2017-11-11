@@ -21,6 +21,8 @@ class PID(CRUDMixin, db.Model):
     direction = db.Column(db.Text, default='Raise')  # Direction of regulation (raise, lower, both)
     setpoint = db.Column(db.Float, default=30.0)  # PID setpoint
     method_id = db.Column(db.Integer, db.ForeignKey('method.id'), default=None)
+    method_start_time = db.Column(db.Text, default=None)
+    method_end_time = db.Column(db.Text, default=None)
     p = db.Column(db.Float, default=1.0)  # Kp gain
     i = db.Column(db.Float, default=0.0)  # Ki gain
     d = db.Column(db.Float, default=0.0)  # Kd gain

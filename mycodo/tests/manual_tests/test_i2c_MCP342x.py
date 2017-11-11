@@ -7,9 +7,7 @@ import os
 import sys
 import smbus
 import time
-import timeit
 import RPi.GPIO as GPIO
-from lockfile import LockFile
 from MCP342x import MCP342x
 
 
@@ -27,52 +25,16 @@ class MCP342x_read(object):
         self.bus = smbus.SMBus(self.I2C_bus_number)
         self.lock_file = "/var/lock/mycodo_adc_0x{:02X}.pid".format(self.i2c_address)
 
-    def setup_lock(self):
-        self.execution_timer = timeit.default_timer()
-        try:
-            self.lock = LockFile(self.lock_file)
-            while not self.lock.i_am_locking():
-                try:
-                    self.logger.debug("[Analog->Digital Converter 0x{:02X}] "
-                                      "Acquiring Lock: {}".format(self.i2c_address,
-                                                                  self.lock.path))
-                    self.lock.acquire(timeout=60)  # wait up to 60 seconds
-                except Exception as e:
-                    self.logger.error("{cls} exception in read call.  Error: "
-                                      "{err}".format(cls=type(self).__name__, err=e))
-                    self.logger.warning(
-                        "[Analog->Digital Converter 0x{:02X}] Waited 60 "
-                        "seconds. Breaking lock to acquire {}".format(
-                            self.i2c_address, self.lock.path))
-                    self.lock.break_lock()
-                    self.lock.acquire()
-            self.logger.debug(
-                "[Analog->Digital Converter 0x{:02X}] Acquired Lock: "
-                "{}".format(self.i2c_address, self.lock.path))
-            self.logger.debug(
-                "[Analog->Digital Converter 0x{:02X}] Executed in "
-                "{}ms".format(self.i2c_address,
-                              (timeit.default_timer() - self.execution_timer) * 1000))
-            return 1, "Success"
-        except Exception as msg:
-            return 0, "Analog->Digital Converter Fail: {}".format(msg)
-
-    def release_lock(self):
-        self.lock.release()
-
     def read(self):
         try:
             time.sleep(0.1)
-            self.setup_lock()
             adc = MCP342x(self.bus, self.i2c_address,
                           channel=self.channel - 1,
                           gain=self.gain,
                           resolution=self.resolution)
             response = adc.convert_and_read()
-            self.release_lock()
             return 1, response
         except Exception as msg:
-            self.release_lock()
             return 0, "Fail: {}".format(msg)
 
 

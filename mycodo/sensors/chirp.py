@@ -18,6 +18,7 @@ class ChirpSensor(AbstractSensor):
         super(ChirpSensor, self).__init__()
         self.address = address
         self.bus = smbus.SMBus(bus)
+        self.filter_average('lux', init_max=5)
         self._lux = 0
         self._moisture = 0
         self._temperature = 0.0
@@ -72,7 +73,7 @@ class ChirpSensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the light, moisture, and temperature """
-        lux = self.light()
+        lux = self.filter_average('lux', measurement=self.light())
         moisture = self.moist()
         temperature = self.temp() / 10.0
         return lux, moisture, temperature
@@ -123,4 +124,8 @@ class ChirpSensor(AbstractSensor):
         # device I2C address, wait for 3 seconds, read 2 bytes from register 4
         self.bus.write_byte(self.address, 3)
         time.sleep(1.5)
-        return self.get_reg(4)
+        lux = self.get_reg(4)
+        if lux == 0:
+            return 65535.0
+        else:
+            return(1 - (lux / 65535.0)) * 65535.0

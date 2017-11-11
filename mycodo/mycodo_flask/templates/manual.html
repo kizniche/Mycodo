@@ -384,8 +384,8 @@
 <li><a href="#daemon-not-running">Daemon Not Running</a></li>
 <li><a href="#more">More</a></li>
 </ul>
-<p><a href="#sensor-and-device-setup">Sensor and Device Setup</a></p>
-<p><a href="#sensor-interfaces">Sensor Interfaces</a></p>
+<p><a href="#input-and-device-setup">Input and Device Setup</a></p>
+<p><a href="#input-interfaces">Input Interfaces</a></p>
 <ul>
 <li><a href="#1-wire">1-Wire</a></li>
 <li><a href="#gpio">GPIO</a></li>
@@ -396,7 +396,6 @@
 <p><a href="#device-setup">Device Setup</a></p>
 <ul>
 <li><a href="#i2c-multiplexers">I<sup>2</sup>C Multiplexers</a></li>
-<li><a href="#analog-to-digital-converters">Analog to Digital Converters</a></li>
 </ul>
 <p><a href="#device-specific-information">Device Specific Information</a></p>
 <p><a href="#lcd-displays">LCD Displays</a></p>
@@ -1205,7 +1204,13 @@
 </tbody>
 </table>
 <h2 id="timers">Timers</h2>
-<p>Timers enable a relay to be manipulated after specific durations of time or at a specific times of the day. For <em>Duration Timers</em>, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated. For <em>Daily Timers</em>, the start hour:minute can be set to turn a specific relay on or off at the specific time of day.</p>
+<p>Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will <strong><em>only</em></strong> do as instructed, therefore if you turn a relay <em>ON</em> from <em>Start Time</em> to <em>End Time</em> and you want that relay to turn <em>OFF</em> at the end of that period, you will need to create another timer that turns the relay <em>OFF</em> at <em>End Time</em> + 1 minute.</p>
+<p>There are two types of timers, one for general outputs that turn on and off, and those that generate a PWM signal.</p>
+<h4 id="general-output">General Output</h4>
+<p>For <em>Duration Timers</em>, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated.</p>
+<p>For <em>Daily Timers</em>, the start hour:minute can be set to turn a specific relay on or off at the specific time of day.</p>
+<h4 id="pwm-method">PWM Method</h4>
+<p>This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. While creating these methods, keep in mind a duty cycle is a percentage and the values must stay between 0 and 100.</p>
 <h2 id="lcds">LCDs</h2>
 <p>Data may be output to a liquid crystal display (LCD) for easy viewing. Please see <a href="#lcd-displays">LCD Displays</a> for specific information regarding compatibility.</p>
 <table style="width:94%;">
@@ -1350,28 +1355,28 @@
 <td style="text-align: left;">Sensor measurement: CO2</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((input_dewpoint))</td>
-<td style="text-align: left;">Sensor measurement: dew point</td>
-</tr>
-<tr class="even">
 <td style="text-align: left;">((input_cpu_load_1m))</td>
 <td style="text-align: left;">Sensor measurement: CPU load (1 min)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((input_cpu_load_5m))</td>
 <td style="text-align: left;">Sensor measurement: CPU load (5 min)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((input_cpu_load_15m))</td>
 <td style="text-align: left;">Sensor measurement: CPU load (15 min)</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left;">((input_edge))</td>
-<td style="text-align: left;">Sensor measurement: edge detected (1 or -1)</td>
-</tr>
 <tr class="even">
+<td style="text-align: left;">((input_dewpoint))</td>
+<td style="text-align: left;">Sensor measurement: dew point</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">((input_disk_space))</td>
 <td style="text-align: left;">Sensor measurement: disk space</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">((input_edge))</td>
+<td style="text-align: left;">Sensor measurement: edge detected (1 or -1)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">((input_humidity))</td>
@@ -1398,12 +1403,12 @@
 <td style="text-align: left;">Sensor measurement: temperature</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((input_temperature_object))</td>
-<td style="text-align: left;">Sensor measurement: temperature (object)</td>
-</tr>
-<tr class="even">
 <td style="text-align: left;">((input_temperature_die))</td>
 <td style="text-align: left;">Sensor measurement: temperature (die)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">((input_temperature_object))</td>
+<td style="text-align: left;">Sensor measurement: temperature (object)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">((input_voltage))</td>
@@ -1447,7 +1452,7 @@
 <p>Or for an Output Conditional:</p>
 <pre><code>echo &quot;TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm))&quot; &gt; /home/mycodo/test_output.txt</code></pre>
 <h2 id="methods">Methods</h2>
-<p>Methods allow different types of setpoint tracking in PID controllers. Normally, a PID controller will regulate an environmental condition to a specific setpoint. If you would like the setpoint to change over time, this is called setpoint tracking. Setpoint tracking is useful for applications such as reflow ovens, thermal cyclers (DNA replication), mimicking natural daily cycles, and more.</p>
+<p>Methods enable Setpoint Tracking in PIDs and time-based duty cycle changes in timers. Normally, a PID controller will regulate an environmental condition to a specific setpoint. If you would like the setpoint to change over time, this is called setpoint tracking. Setpoint Tracking is useful for applications such as reflow ovens, thermal cyclers (DNA replication), mimicking natural daily cycles, and more. Methods may also be used to change a duty cycle over time when used with a Timer.</p>
 <h3 id="universal-options">Universal Options</h3>
 <p>These options are shared with several method types.</p>
 <table>
@@ -1480,8 +1485,8 @@
 <h4 id="timedate-method">Time/Date Method</h4>
 <p>A time/date method allows a specific time/date span to dictate the setpoint. This is useful for long-running methods, that may take place over the period of days, weeks, or months.</p>
 <h4 id="duration-method">Duration Method</h4>
-<p>A duration method allows a specific durations of time to dictate the setpoint. This is useful for when short periods of time are required in a method, such as those that take place over the course of a few minutes or hours. Each duration will stack on the previous duration, meaning a newly-added start setpoint will begin from the previous entry’s end setpoint.</p>
-<p>If the “Repeat Method” option is used, this will cause the method to repeat once it has reached the end. If this option is used, no more durations may be added to the method. If the repeat option is deleted then more durations may be added.</p>
+<p>A Duration Method allows a <strong><em>Setpoint</em></strong> (for PIDs) or <strong><em>Duty Cycle</em></strong> (for Timers) to be set after specific durations of time. Each new duration added will stack, meaning it will come after the previous duration, meaning a newly-added <strong><em>Start Setpoint</em></strong> will begin after the previous entry’s <strong><em>End Setpoint</em></strong>.</p>
+<p>If the “Repeat Method” option is used, this will cause the method to repeat once it has reached the end. If this option is used, no more durations may be added to the method. If the repeat option is deleted then more durations may be added. For instance, if your method is 200 seconds total, if the Repeat Duration is set to 600 seconds, the method will repeat 3 times and then automatically turn off the PID or Timer.</p>
 <h4 id="daily-time-based-method">Daily (Time-Based) Method</h4>
 <p>The daily time-based method is similar to the time/date method, however it will repeat every day. Therefore, it is essential that only the span of one day be set in this method. Begin with the start time at 00:00:00 and end at 23:59:59 (or 00:00:00, which would be 24 hours from the start). The start time must be equal or greater than the previous end time.</p>
 <h4 id="daily-sine-wave-method">Daily (Sine Wave) Method</h4>
@@ -1523,7 +1528,7 @@
 <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it’s not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.</p>
 <p>Note: Live Graphs require measurements to be acquired, therefore at least one sensor needs to be added and activated in order to display live data.</p>
 <h2 id="camera">Camera</h2>
-<p>Once a cameras has been set up (in the <a href="#camera-settings">Camera Settings</a>), it may be used to capture still images, create time-lapses, and stream video (Pi camera only). Cameras may also be used with <a href="#conditional-statements">Conditional Statements</a> to trigger a camera image or video capture (as well as the ability to email the image/video with a notification).</p>
+<p>Once a cameras has been set up (in the <a href="#camera-settings">Camera Settings</a>), it may be used to capture still images, create time-lapses, and stream video. Cameras may also be used by <a href="#conditional-statements">Conditional Statements</a> to trigger a camera image or video capture (as well as the ability to email the image/video with a notification).</p>
 <h2 id="relay-usage">Relay Usage</h2>
 <p>Relay usage statistics are calculated for each relay, based on how long the relay has been powered, the current draw of the device connected to the relay, and other <a href="#relay-usage-settings">Relay Usage Settings</a>.</p>
 <h2 id="system-backup">System Backup</h2>
@@ -1543,10 +1548,10 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 </ul>
 <h2 id="more">More</h2>
 <p>Check out the <a href="https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues">Diagnosing Mycodo Issues Wiki Page</a> on github for more information about diagnosing issues.</p>
-<h1 id="sensor-and-device-setup">Sensor and Device Setup</h1>
-<p>Certain sensors will require extra steps to be taken in order to set up the interface for communication. This includes I<sup>2</sup>C, one-wire, and UART.</p>
-<h2 id="sensor-interfaces">Sensor Interfaces</h2>
-<p>Sensors are categorized below by their communication interface.</p>
+<h1 id="input-and-device-setup">Input and Device Setup</h1>
+<p>Certain inputs will require extra steps to be taken in order to set up the interface for communication. This includes I<sup>2</sup>C, one-wire, and UART.</p>
+<h2 id="input-interfaces">Input Interfaces</h2>
+<p>Inputs are categorized below by their communication interface.</p>
 <h3 id="wire">1-Wire</h3>
 <p>The 1-wire interface should be configured with <a href="https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing">these instructions</a>.</p>
 <blockquote>
@@ -1583,6 +1588,15 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <p>Find the line “enable_uart=0” and change it to “enable_uart=1”, then reboot.</p>
 <h3 id="i2c">I<sup>2</sup>C</h3>
 <p>The I<sup>2</sup>C interface should be enabled with <code>raspi-config</code>.</p>
+<p><strong>Analog to Digital Converters</strong></p>
+<p>An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A <a href="https://learn.sparkfun.com/tutorials/voltage-dividers">voltage divider</a> may be necessary to attain your desired range.</p>
+<blockquote>
+<p><a href="#ads1x15">ADS1x15</a>: Analog-to-digital converter <a href="https://www.adafruit.com/product/1085">link</a></p>
+</blockquote>
+<blockquote>
+<p><a href="#mcp342x">MCP342x</a>: Analog-to-digital converter <a href="http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)">link</a></p>
+</blockquote>
+<p><strong>Sensors</strong></p>
 <blockquote>
 <p><a href="#am2315">AM2315</a>: Relative humidity, temperature <a href="https://github.com/lexruee/tentacle_pi">link</a></p>
 </blockquote>
@@ -1618,20 +1632,12 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <p>Examples of devices that can be used with edge detection: simple switches and buttons, PIR motion sensors, reed switches, hall effect sensors, float switches, and more.</p>
 <h2 id="device-setup">Device Setup</h2>
 <h3 id="i2c-multiplexers">I<sup>2</sup>C Multiplexers</h3>
-<p>All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some sensors may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.</p>
+<p>All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some inputs may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.</p>
 <blockquote>
 <p><a href="#tca9548a">TCA9548A</a>: I<sup>2</sup>C Multiplexer <a href="https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview">link</a> (I<sup>2</sup>C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I<sup>2</sup>C address.</p>
 </blockquote>
 <blockquote>
 <p>TCA9545A: I<sup>2</sup>C Bus Multiplexer <a href="http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/">link</a> (I<sup>2</sup>C): This board works a little differently than the TCA9548A, above. This board actually creates 4 new I<sup>2</sup>C busses, each with their own selectable voltage, either 3.3 or 5.0 volts. Instructions to enable the Device Tree Overlay are at <a href="https://github.com/camrex/i2c-mux-pca9545a" class="uri">https://github.com/camrex/i2c-mux-pca9545a</a>. Nothing else needs to be done in Mycodo after that except to select the correct I<sup>2</sup>C bus when configuring a sensor.</p>
-</blockquote>
-<h3 id="analog-to-digital-converters">Analog to Digital Converters</h3>
-<p>An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A <a href="https://learn.sparkfun.com/tutorials/voltage-dividers">voltage divider</a> may be necessary to attain your desired range.</p>
-<blockquote>
-<p><a href="#ads1x15">ADS1x15</a> <a href="https://www.adafruit.com/product/1085">link</a> ±4.096 (I<sup>2</sup>C)</p>
-</blockquote>
-<blockquote>
-<p><a href="#mcp342x">MCP342x</a> <a href="http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)">link</a> ±2.048 (I<sup>2</sup>C)</p>
 </blockquote>
 <h1 id="device-specific-information">Device Specific Information</h1>
 <h2 id="lcd-displays">LCD Displays</h2>
@@ -1816,7 +1822,7 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <li>Vin: 3V and a low supply</li>
 <li>Max current: 0.6mA.</li>
 </ul>
-<h2 id="analog-to-digital-converters-1">Analog to Digital Converters</h2>
+<h2 id="analog-to-digital-converters">Analog to Digital Converters</h2>
 <h3 id="ads1x15">ADS1x15</h3>
 <p>(ADS1015, ADS1115)</p>
 <h4 id="specifications-16">Specifications</h4>

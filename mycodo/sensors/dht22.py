@@ -175,7 +175,7 @@ class DHT22Sensor(AbstractSensor):
                 self.get_measurement()
                 if self._humidity or self._temperature:
                     return  # success - no errors
-                time.sleep(3)
+                time.sleep(2)
 
             # Measurement failure, power cycle the sensor (if enabled)
             # Then try two more times to get a measurement
@@ -187,7 +187,7 @@ class DHT22Sensor(AbstractSensor):
                     self.get_measurement()
                     if self._humidity or self._temperature:
                         return  # success - no errors
-                    time.sleep(3)
+                    time.sleep(2)
 
             self.logger.debug("Could not acquire a measurement")
         except Exception as e:

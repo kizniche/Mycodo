@@ -60,7 +60,7 @@
 
         <div style="padding-right: 0.5em;">
           <div class="col-sx-12 text-right">
-            <span style="padding-right: 0.5em">{{each_graph.name}} ({{each_graph.id}})</span>
+            <span style="padding-right: 0.5em">[{{'%02d' % each_graph.id}}] {{each_graph.name}}</span>
             <button class="btn btn-default btn-sm" id="resetZoom{{chart_number}}">Reset Zoom</button>
             <button class="btn btn-default btn-sm" id="showhidebutton{{chart_number}}">Show/Hide All</button>
             <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
@@ -222,7 +222,7 @@
 
         <div style="padding-right: 0.5em;">
           <div class="col-sx-12 text-right">
-            <span style="padding-right: 0.5em">{{each_graph.name}} ({{each_graph.id}})</span>
+            <span style="padding-right: 0.5em">[{{'%02d' % each_graph.id}}] {{each_graph.name}}</span>
             <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer_gauge{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer_gauge{{chart_number}}">
               <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
             </button>
@@ -816,39 +816,40 @@
         {# Determine what y-axes are needed for PID setpoints #}
         {%- for each_pid in pid -%}
           {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id.split(',')[0] -%}
-            {%- set measurement = each_graph_pid_id.split(',')[1] -%}
-            {% if measurement == 'setpoint' %}
+            {%- set pid_measurement = each_graph_pid_id.split(',')[1] -%}
+            {%- if pid_measurement == 'setpoint' %}
               {%- for each_sensor in sensor if each_sensor.unique_id == each_pid.measurement.split(',')[0] -%}
-                {%- if each_pid.measurement in ['dewpoint',
-                                                'temperature',
-                                                'temperature_object',
-                                                'temperature_die'] -%}
+                {%- set sensor_measurement = each_pid.measurement.split(',')[1] -%}
+                {%- if sensor_measurement in ['dewpoint',
+                                              'temperature',
+                                              'temperature_object',
+                                              'temperature_die'] -%}
                   {%- do yaxis_temp.append(1) -%}
-                {%- elif each_pid.measurement == 'humidity' -%}
+                {%- elif sensor_measurement == 'humidity' -%}
                   {%- do yaxis_hum.append(1) -%}
-                {%- elif each_pid.measurement == 'co2' -%}
+                {%- elif sensor_measurement == 'co2' -%}
                   {%- do yaxis_co2.append(1) -%}
-                {%- elif each_pid.measurement == 'lux' -%}
+                {%- elif sensor_measurement == 'lux' -%}
                   {%- do yaxis_lux.append(1) -%}
-                {%- elif each_pid.measurement == 'moisture' -%}
+                {%- elif sensor_measurement == 'moisture' -%}
                   {%- do yaxis_moisture.append(1) -%}
-                {%- elif each_pid.measurement == 'ph' -%}
+                {%- elif sensor_measurement == 'ph' -%}
                   {%- do yaxis_ph.append(1) -%}
-                {%- elif each_pid.measurement == 'pressure' -%}
+                {%- elif sensor_measurement == 'pressure' -%}
                   {%- do yaxis_press.append(1) -%}
-                {%- elif each_pid.measurement == 'altitude' -%}
+                {%- elif sensor_measurement == 'altitude' -%}
                   {%- do yaxis_alt.append(1) -%}
-                {%- elif each_pid.measurement == 'voltage' -%}
+                {%- elif sensor_measurement == 'voltage' -%}
                   {%- do yaxis_volts.append(1) -%}
-                {%- elif each_pid.measurement == each_sensor.adc_measure -%}
+                {%- elif sensor_measurement == each_sensor.adc_measure -%}
                   {%- do yaxis_adc.append(each_sensor.adc_measure) -%}
                 {% elif each_sensor.device == 'LinuxCommand' and each_sensor.cmd_measurement not in yaxis_command -%}
                   {%- do yaxis_command.append(each_sensor.cmd_measurement) -%}
                 {%- endif -%}
               {%- endfor -%}
-            {% elif measurement == 'pid_output' %}
+            {% elif pid_measurement == 'pid_output' %}
               {%- do yaxis_relay.append(1) -%}
-            {% elif measurement == 'duty_cycle' %}
+            {% elif pid_measurement == 'duty_cycle' %}
               {%- do yaxis_duty_cycle.append(1) -%}
             {% endif %}
           {%- endfor -%}
@@ -880,12 +881,12 @@
             {% set count_series = [] -%}
 
             {% for each_sensor in sensor -%}
-              {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id == each_id_and_measure.split(',')[0] -%}
+              {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id == each_id_and_measure.split(',')[0] %}
             getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration*60}});
             getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
-                {% do count_series.append(1) %}
-              {% endfor %}
-            {%- endfor %}
+                {%- do count_series.append(1) %}
+              {%- endfor -%}
+            {%- endfor -%}
 
             {%- for each_relay in relay -%}
               {%- for each_graph_relay_id in graph_relay_ids if each_relay.unique_id == each_graph_relay_id.split(',')[0] %}

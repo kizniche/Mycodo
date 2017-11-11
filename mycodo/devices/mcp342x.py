@@ -4,12 +4,12 @@ import smbus
 import time
 from MCP342x import MCP342x
 
-logger = logging.getLogger('mycodo.devices.mcp342x')
-
 
 class MCP342xRead(object):
     """ Sensor """
     def __init__(self, address, bus, channel, gain, resolution):
+        self.logger = logging.getLogger('mycodo.mcp342x-{bus}-{add}'.format(
+            bus=bus, add=address))
         self._voltage = None
         self.i2c_address = address
         self.bus = smbus.SMBus(bus)
@@ -27,7 +27,7 @@ class MCP342xRead(object):
         try:
             self._voltage = self.adc.convert_and_read()
         except Exception as e:
-            logger.error(
+            self.logger.exception(
                 "{cls} raised exception during read(): "
                 "{err}".format(cls=type(self).__name__, err=e))
 
@@ -49,10 +49,7 @@ class MCP342xRead(object):
         """
         if self.read():
             return None
-        response = {
-            'voltage': float("{}".format(self.voltage))
-        }
-        return response
+        return dict(voltage=float('{0:.4f}'.format(self._voltage)))
 
 
 if __name__ == "__main__":

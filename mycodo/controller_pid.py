@@ -65,8 +65,7 @@ from mycodo_client import DaemonControl
 from utils.database import db_retrieve_table_daemon
 from utils.influx import read_last_influxdb
 from utils.influx import write_influxdb_value
-from utils.method import bezier_curve_y_out
-from utils.method import sine_wave_y_out
+from utils.method import calculate_method_setpoint
 
 from config import SQL_DATABASE_MYCODO
 
@@ -149,10 +148,10 @@ class PIDController(threading.Thread):
             method_data = db_retrieve_table_daemon(MethodData)
             method_data = method_data.filter(MethodData.method_id == self.method_id)
             method_data_repeat = method_data.filter(MethodData.duration_sec == 0).first()
+            pid = db_retrieve_table_daemon(PID, device_id=self.pid_id)
             self.method_type = method.method_type
-            self.method_start_act = method.start_time
+            self.method_start_act = pid.method_start_time
             self.method_start_time = None
-            self.method_end_act = None
             self.method_end_time = None
 
             if self.method_type == 'Duration':
@@ -166,23 +165,22 @@ class PIDController(threading.Thread):
                     if method_data_repeat and method_data_repeat.duration_end:
                         self.method_end_time = now + datetime.timedelta(
                             seconds=float(method_data_repeat.duration_end))
-                        self.method_end_act = True
 
                     with session_scope(MYCODO_DB_PATH) as db_session:
-                        mod_method = db_session.query(Method)
-                        mod_method = mod_method.filter(Method.id == self.method_id).first()
-                        mod_method.start_time = self.method_start_time
-                        mod_method.end_time = self.method_end_time
+                        mod_pid = db_session.query(PID)
+                        mod_pid = mod_pid.filter(PID.id == self.pid_id).first()
+                        mod_pid.method_start_time = self.method_start_time
+                        mod_pid.method_end_time = self.method_end_time
                         db_session.commit()
                 else:
                     # Method neither instructed to begin or not to
                     # Likely there was a daemon restart ot power failure
                     # Resume method with saved start_time
                     self.method_start_time = datetime.datetime.strptime(
-                        str(method.start_time), '%Y-%m-%d %H:%M:%S.%f')
+                        str(pid.method_start_time), '%Y-%m-%d %H:%M:%S.%f')
                     if method_data_repeat and method_data_repeat.duration_end:
                         self.method_end_time = datetime.datetime.strptime(
-                            str(method.end_time), '%Y-%m-%d %H:%M:%S.%f')
+                            str(pid.method_end_time), '%Y-%m-%d %H:%M:%S.%f')
                         if self.method_end_time > datetime.datetime.now():
                             self.logger.warning(
                                 "Resuming method {id}: started {start}, "
@@ -209,7 +207,8 @@ class PIDController(threading.Thread):
             while self.running:
 
                 if self.method_start_act == 'Ended':
-                    self.stop_controller(ended_normally=False, deactivate_pid=True)
+                    self.stop_controller(ended_normally=False,
+                                         deactivate_pid=True)
                     self.logger.warning(
                         "Method has ended. "
                         "Activate the PID controller to start it again.")
@@ -226,7 +225,21 @@ class PIDController(threading.Thread):
                         if self.last_measurement_success:
                             # Update setpoint using a method if one is selected
                             if self.method_id:
-                                self.calculate_method_setpoint(self.method_id)
+                                this_controller = db_retrieve_table_daemon(
+                                    PID, device_id=self.pid_id)
+                                setpoint, ended = calculate_method_setpoint(
+                                    self.method_id,
+                                    PID,
+                                    this_controller,
+                                    Method,
+                                    MethodData,
+                                    self.logger)
+                                if ended:
+                                    self.method_start_act = 'Ended'
+                                if setpoint is not None:
+                                    self.set_point = setpoint
+                                else:
+                                    self.set_point = self.default_set_point
 
                             write_setpoint_db = threading.Thread(
                                 target=write_influxdb_value,
@@ -425,10 +438,10 @@ class PIDController(threading.Thread):
 
                         # Ensure the duty cycle doesn't exceed the min/max
                         if (self.raise_max_duration and
-                                    self.raise_duty_cycle > self.raise_max_duration):
+                                self.raise_duty_cycle > self.raise_max_duration):
                             self.raise_duty_cycle = self.raise_max_duration
                         elif (self.raise_min_duration and
-                                      self.raise_duty_cycle < self.raise_min_duration):
+                                self.raise_duty_cycle < self.raise_min_duration):
                             self.raise_duty_cycle = self.raise_min_duration
 
                         self.logger.debug(
@@ -500,11 +513,11 @@ class PIDController(threading.Thread):
 
                         # Ensure the duty cycle doesn't exceed the min/max
                         if (self.lower_max_duration and
-                                    self.lower_duty_cycle > self.lower_max_duration):
-                            self.lower_duty_cycle = -self.lower_max_duration
+                                self.lower_duty_cycle > self.lower_max_duration):
+                            self.lower_duty_cycle = self.lower_max_duration
                         elif (self.lower_min_duration and
-                                      self.lower_duty_cycle < self.lower_min_duration):
-                            self.lower_duty_cycle = -self.lower_min_duration
+                                self.lower_duty_cycle < self.lower_min_duration):
+                            self.lower_duty_cycle = self.lower_min_duration
 
                         self.logger.debug(
                             "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output "
@@ -515,8 +528,7 @@ class PIDController(threading.Thread):
                                 dc=self.lower_duty_cycle))
 
                         # Turn back negative for proper logging
-                        if self.control_variable < 0:
-                            self.lower_duty_cycle = -self.lower_duty_cycle
+                        self.lower_duty_cycle = -self.lower_duty_cycle
 
                         # Activate pwm with calculated duty cycle
                         self.control.relay_on(
@@ -525,8 +537,7 @@ class PIDController(threading.Thread):
 
                         pid_entry_value = self.control_var_to_duty_cycle(
                             abs(self.control_variable))
-                        if self.control_variable < 0:
-                            pid_entry_value = -pid_entry_value
+                        pid_entry_value = -pid_entry_value
                         self.write_pid_output_influxdb('duty_cycle', pid_entry_value)
 
                     elif self.lower_relay_type in ['command', 'wired', 'wireless_433MHz_pi_switch']:
@@ -564,194 +575,6 @@ class PIDController(threading.Thread):
                 self.control.relay_off(self.raise_relay_id)
             if self.direction in ['lower', 'both'] and self.lower_relay_id:
                 self.control.relay_off(self.lower_relay_id)
-
-    def calculate_method_setpoint(self, method_id):
-        method = db_retrieve_table_daemon(Method)
-
-        method_key = method.filter(Method.id == method_id).first()
-
-        method_data = db_retrieve_table_daemon(MethodData)
-        method_data = method_data.filter(MethodData.method_id == method_id)
-
-        method_data_all = method_data.filter(MethodData.relay_id == None).all()
-        method_data_first = method_data.filter(MethodData.relay_id == None).first()
-
-        now = datetime.datetime.now()
-
-        # Calculate where the current time/date is within the time/date method
-        if method_key.method_type == 'Date':
-            for each_method in method_data_all:
-                start_time = datetime.datetime.strptime(each_method.time_start, '%Y-%m-%d %H:%M:%S')
-                end_time = datetime.datetime.strptime(each_method.time_end, '%Y-%m-%d %H:%M:%S')
-                if start_time < now < end_time:
-                    setpoint_start = each_method.setpoint_start
-                    if each_method.setpoint_end:
-                        setpoint_end = each_method.setpoint_end
-                    else:
-                        setpoint_end = each_method.setpoint_start
-
-                    setpoint_diff = abs(setpoint_end - setpoint_start)
-                    total_seconds = (end_time - start_time).total_seconds()
-                    part_seconds = (now - start_time).total_seconds()
-                    percent_total = part_seconds / total_seconds
-
-                    if setpoint_start < setpoint_end:
-                        new_setpoint = setpoint_start + (setpoint_diff * percent_total)
-                    else:
-                        new_setpoint = setpoint_start - (setpoint_diff * percent_total)
-
-                    self.logger.debug("[Method] Start: {start} End: {end}".format(
-                        start=start_time, end=end_time))
-                    self.logger.debug("[Method] Start: {start} End: {end}".format(
-                        start=setpoint_start, end=setpoint_end))
-                    self.logger.debug("[Method] Total: {tot} Part total: {par} ({per}%)".format(
-                        tot=total_seconds, par=part_seconds, per=percent_total))
-                    self.logger.debug("[Method] New Setpoint: {sp}".format(
-                        sp=new_setpoint))
-                    self.set_point = new_setpoint
-                    return 0
-
-        # Calculate where the current Hour:Minute:Seconds is within the Daily method
-        elif method_key.method_type == 'Daily':
-            daily_now = datetime.datetime.now().strftime('%H:%M:%S')
-            daily_now = datetime.datetime.strptime(str(daily_now), '%H:%M:%S')
-            for each_method in method_data_all:
-                start_time = datetime.datetime.strptime(each_method.time_start, '%H:%M:%S')
-                end_time = datetime.datetime.strptime(each_method.time_end, '%H:%M:%S')
-                if start_time < daily_now < end_time:
-                    setpoint_start = each_method.setpoint_start
-                    if each_method.setpoint_end:
-                        setpoint_end = each_method.setpoint_end
-                    else:
-                        setpoint_end = each_method.setpoint_start
-
-                    setpoint_diff = abs(setpoint_end-setpoint_start)
-                    total_seconds = (end_time-start_time).total_seconds()
-                    part_seconds = (daily_now-start_time).total_seconds()
-                    percent_total = part_seconds/total_seconds
-
-                    if setpoint_start < setpoint_end:
-                        new_setpoint = setpoint_start+(setpoint_diff*percent_total)
-                    else:
-                        new_setpoint = setpoint_start-(setpoint_diff*percent_total)
-
-                    self.logger.debug("[Method] Start: {start} End: {end}".format(
-                        start=start_time.strftime('%H:%M:%S'),
-                        end=end_time.strftime('%H:%M:%S')))
-                    self.logger.debug("[Method] Start: {start} End: {end}".format(
-                        start=setpoint_start, end=setpoint_end))
-                    self.logger.debug("[Method] Total: {tot} Part total: {par} ({per}%)".format(
-                        tot=total_seconds, par=part_seconds, per=percent_total))
-                    self.logger.debug("[Method] New Setpoint: {sp}".format(
-                        sp=new_setpoint))
-                    self.set_point = new_setpoint
-                    return 0
-
-        # Calculate sine y-axis value from the x-axis (seconds of the day)
-        elif method_key.method_type == 'DailySine':
-            new_setpoint = sine_wave_y_out(method_data_first.amplitude,
-                                           method_data_first.frequency,
-                                           method_data_first.shift_angle,
-                                           method_data_first.shift_y)
-            self.set_point = new_setpoint
-            return 0
-
-        # Calculate Bezier curve y-axis value from the x-axis (seconds of the day)
-        elif method_key.method_type == 'DailyBezier':
-            new_setpoint = bezier_curve_y_out(
-                method_data_first.shift_angle,
-                (method_data_first.x0, method_data_first.y0),
-                (method_data_first.x1, method_data_first.y1),
-                (method_data_first.x2, method_data_first.y2),
-                (method_data_first.x3, method_data_first.y3))
-            self.set_point = new_setpoint
-            return 0
-
-        # Calculate the duration in the method based on self.method_start_time
-        elif method_key.method_type == 'Duration':
-            if self.method_end_time and now > self.method_end_time:
-                self.method_start_act = 'Ended'
-            if self.method_start_act == 'Ended':
-                return 0
-
-            seconds_from_start = (now - self.method_start_time).total_seconds()
-            total_sec = 0
-            previous_total_sec = 0
-            previous_end = None
-            method_restart = False
-
-            for each_method in method_data_all:
-                # If duration_sec is 0, method has instruction to restart
-                if each_method.duration_sec == 0:
-                    method_restart = True
-                    self.set_point = previous_end
-                else:
-                    previous_end = each_method.setpoint_end
-
-                total_sec += each_method.duration_sec
-                if previous_total_sec <= seconds_from_start < total_sec:
-                    row_start_time = float(self.method_start_time.strftime('%s')) + previous_total_sec
-                    row_since_start_sec = (now - (self.method_start_time + datetime.timedelta(0, previous_total_sec))).total_seconds()
-                    percent_row = row_since_start_sec / each_method.duration_sec
-
-                    setpoint_start = each_method.setpoint_start
-                    if each_method.setpoint_end:
-                        setpoint_end = each_method.setpoint_end
-                    else:
-                        setpoint_end = each_method.setpoint_start
-                    setpoint_diff = abs(setpoint_end - setpoint_start)
-                    if setpoint_start < setpoint_end:
-                        new_setpoint = setpoint_start + (setpoint_diff * percent_row)
-                    else:
-                        new_setpoint = setpoint_start - (setpoint_diff * percent_row)
-
-                    self.logger.debug(
-                        "[Method] Start: {start} Seconds Since: {sec}".format(
-                            start=self.method_start_time, sec=seconds_from_start))
-                    self.logger.debug(
-                        "[Method] Start time of row: {start}".format(
-                            start=datetime.datetime.fromtimestamp(row_start_time)))
-                    self.logger.debug(
-                        "[Method] Sec since start of row: {sec}".format(
-                            sec=row_since_start_sec))
-                    self.logger.debug(
-                        "[Method] Percent of row: {per}".format(
-                            per=percent_row))
-                    self.logger.debug(
-                        "[Method] New Setpoint: {sp}".format(
-                            sp=new_setpoint))
-                    self.set_point = new_setpoint
-                    return 0
-                previous_total_sec = total_sec
-
-            if self.method_start_time:
-                if method_restart:
-                    if self.method_end_time and now > self.method_end_time:
-                        self.method_start_act = 'Ended'
-                    else:
-                        # Method has been instructed to restart
-                        self.method_start_time = datetime.datetime.now()
-                        with session_scope(MYCODO_DB_PATH) as db_session:
-                            mod_method = db_session.query(Method)
-                            mod_method = mod_method.filter(Method.id == self.method_id).first()
-                            mod_method.start_time = self.method_start_time
-                            db_session.commit()
-                            return 0
-                else:
-                    self.method_start_act = 'Ended'
-
-                if self.method_start_act == 'Ended':
-                    # Duration method has ended, reset method_start_time locally and in DB
-                    with session_scope(MYCODO_DB_PATH) as db_session:
-                        mod_method = db_session.query(Method).filter(
-                            Method.id == self.method_id).first()
-                        mod_method.start_time = 'Ended'
-                        mod_method.end_time = None
-                        db_session.commit()
-                    return 0
-
-        # Setpoint not needing to be calculated, use default setpoint
-        self.set_point = self.default_set_point
 
     def control_var_to_duty_cycle(self, control_variable):
         # Convert control variable to duty cycle
@@ -838,14 +661,15 @@ class PIDController(threading.Thread):
         # Unset method start time
         if self.method_id and ended_normally:
             with session_scope(MYCODO_DB_PATH) as db_session:
-                mod_method = db_session.query(Method).filter(
-                    Method.id == self.method_id).first()
-                mod_method.start_time = 'Ended'
-                mod_method.end_time = None
+                mod_pid = db_session.query(PID).filter(
+                    PID.id == self.pid_id).first()
+                mod_pid.method_start_time = 'Ended'
+                mod_pid.method_end_time = None
                 db_session.commit()
+
         if deactivate_pid:
             with session_scope(MYCODO_DB_PATH) as db_session:
-                mod_method = db_session.query(PID).filter(
+                mod_pid = db_session.query(PID).filter(
                     PID.id == self.pid_id).first()
-                mod_method.is_activated = False
+                mod_pid.is_activated = False
                 db_session.commit()

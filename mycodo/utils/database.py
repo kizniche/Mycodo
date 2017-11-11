@@ -1,7 +1,9 @@
 # coding=utf-8
 import logging
-from mycodo.databases.utils import session_scope
+import time
+from sqlite3 import OperationalError
 
+from mycodo.databases.utils import session_scope
 from mycodo.config import SQL_DATABASE_MYCODO
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -12,6 +14,7 @@ logger = logging.getLogger("mycodo.database")
 def db_retrieve_table(table, entry=None, device_id=None):
     """
     Return SQL database query object with optional filtering
+    Used in Flask (For daemon, see db_retrieve_table_daemon() below)
 
     If entry='first', only the first table entry is returned.
     If entry='all', all table entries are returned.
@@ -19,8 +22,7 @@ def db_retrieve_table(table, entry=None, device_id=None):
     Otherwise, the table object is returned.
     """
     if device_id:
-        return_table = table.query.filter(
-            table.id == device_id)
+        return_table = table.query.filter(table.id == device_id)
     else:
         return_table = table.query
 
@@ -35,26 +37,43 @@ def db_retrieve_table(table, entry=None, device_id=None):
 def db_retrieve_table_daemon(table, entry=None, device_id=None, unique_id=None):
     """
     Return SQL database query object with optional filtering
+    Used in daemon (For Flask, see db_retrieve_table() above)
+
     If entry='first', only the first table entry is returned.
     If entry='all', all table entries are returned.
     If device_id is set, the first entry with that device ID is returned.
     Otherwise, the table object is returned.
     """
-    with session_scope(MYCODO_DB_PATH) as new_session:
-        if device_id:
-            return_table = new_session.query(table).filter(
-                table.id == int(device_id))
-        elif unique_id:
-            return_table = new_session.query(table).filter(
-                table.unique_id == unique_id)
-        else:
-            return_table = new_session.query(table)
+    tries = 5
+    while tries > 0:
+        try:
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                if device_id:
+                    return_table = new_session.query(table).filter(
+                        table.id == int(device_id))
+                elif unique_id:
+                    return_table = new_session.query(table).filter(
+                        table.unique_id == unique_id)
+                else:
+                    return_table = new_session.query(table)
 
-        if entry == 'first' or device_id or unique_id:
-            return_table = return_table.first()
-        elif entry == 'all':
-            return_table = return_table.all()
+                if entry == 'first' or device_id or unique_id:
+                    return_table = return_table.first()
+                elif entry == 'all':
+                    return_table = return_table.all()
 
-        new_session.expunge_all()
-        new_session.close()
-    return return_table
+                new_session.expunge_all()
+                new_session.close()
+            return return_table
+        except OperationalError:
+            if tries == 1:
+                logger.exception(
+                    "Could not read the Mycodo database. "
+                    "Please submit a New Issue at "
+                    "https://github.com/kizniche/Mycodo/issues/new")
+            else:
+                logger.error(
+                    "The Mycodo database is locked. "
+                    "Trying to access again in 1 second...")
+                time.sleep(1)
+            tries -= 1

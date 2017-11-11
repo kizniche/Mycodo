@@ -14,8 +14,9 @@ from flask import url_for
 from flask_babel import gettext
 from pkg_resources import parse_version
 
-from mycodo import flaskforms
-from mycodo import flaskutils
+from mycodo.mycodo_flask.forms import forms_misc
+from mycodo.mycodo_flask.utils import utils_general
+
 from mycodo.mycodo_flask.static_routes import inject_mycodo_version
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.system_pi import internet
@@ -50,10 +51,10 @@ def inject_dictionary():
 @flask_login.login_required
 def admin_backup():
     """ Load the backup management page """
-    if not flaskutils.user_has_permission('edit_settings'):
+    if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
-    form_backup = flaskforms.Backup()
+    form_backup = forms_misc.Backup()
 
     backup_dirs_tmp = []
     if not os.path.isdir('/var/Mycodo-backups'):
@@ -71,8 +72,9 @@ def admin_backup():
 
     if request.method == 'POST':
         if form_backup.backup.data:
-            cmd = '{pth}/mycodo/scripts/mycodo_wrapper backup-create ' \
-                  ' >> {log} 2>&1'.format(pth=INSTALL_DIRECTORY,
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper backup-create" \
+                  " | ts '[%Y-%m-%d %H:%M:%S]'" \
+                  " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                           log=BACKUP_LOG_FILE)
             subprocess.Popen(cmd, shell=True)
             flash(gettext(u"Backup in progress. It should complete within a "
@@ -90,11 +92,11 @@ def admin_backup():
                           u"completes."),
                   "success")
         elif form_backup.restore.data:
-            cmd = '{pth}/mycodo/scripts/mycodo_wrapper backup-restore ' \
-                  '{backup} >> {log} 2>&1'.format(
-                    pth=INSTALL_DIRECTORY,
-                    backup=form_backup.full_path.data,
-                    log=RESTORE_LOG_FILE)
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper backup-restore {backup}" \
+                  " | ts '[%Y-%m-%d %H:%M:%S]'" \
+                  " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
+                                          backup=form_backup.full_path.data,
+                                          log=RESTORE_LOG_FILE)
 
             subprocess.Popen(cmd, shell=True)
             flash(gettext(u"Restore in progress. It should complete within a "
@@ -111,7 +113,7 @@ def admin_backup():
 @flask_login.login_required
 def admin_statistics():
     """ Display collected statistics """
-    if not flaskutils.user_has_permission('view_stats'):
+    if not utils_general.user_has_permission('view_stats'):
         return redirect(url_for('general_routes.home'))
 
     try:
@@ -145,7 +147,7 @@ def admin_upgrade_status():
 @flask_login.login_required
 def admin_upgrade():
     """ Display any available upgrades and option to upgrade """
-    if not flaskutils.user_has_permission('edit_settings'):
+    if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     if not internet():
@@ -175,8 +177,8 @@ def admin_upgrade():
         return render_template('admin/upgrade.html',
                                upgrade=upgrade)
 
-    form_backup = flaskforms.Backup()
-    form_upgrade = flaskforms.Upgrade()
+    form_backup = forms_misc.Backup()
+    form_upgrade = forms_misc.Upgrade()
 
     is_internet = True
     upgrade_available = False
@@ -207,9 +209,10 @@ def admin_upgrade():
 
     if request.method == 'POST':
         if form_upgrade.upgrade.data and upgrade_available:
-            cmd = '{pth}/mycodo/scripts/mycodo_wrapper upgrade >> {log} ' \
-                  '2>&1'.format(pth=INSTALL_DIRECTORY,
-                                log=UPGRADE_LOG_FILE)
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade" \
+                  " | ts '[%Y-%m-%d %H:%M:%S]'" \
+                  " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
+                                          log=UPGRADE_LOG_FILE)
             subprocess.Popen(cmd, shell=True)
             upgrade = 1
             flash(gettext(u"The upgrade has started. The daemon will be "

@@ -15,7 +15,6 @@ runSelfUpgrade() {
   function error_found {
     echo '2' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
     printf "\n\n"
-    date
     printf "#### ERROR ####\n"
     printf "There was an error detected during the upgrade. Please review the log at /var/log/mycodo/mycodoupgrade.log"
     exit 1
@@ -30,7 +29,6 @@ runSelfUpgrade() {
   TARBALL_FILE="mycodo-${UPDATE_VERSION}"
 
   printf "\n"
-  date
 
   if [ "${CURRENT_VERSION}" == "${UPDATE_VERSION}" ] ; then
     printf "Unable to upgrade. You currently have the latest release installed.\n"
@@ -177,7 +175,6 @@ runSelfUpgrade() {
 
 function error_found {
   printf "\n\n"
-  date
   printf "There was an error during the upgrade.\n"
   printf "Initial steps to try to fix:\n"
   printf "1. Reboot\n"
@@ -228,7 +225,6 @@ if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_post.sh ; then
 fi
 printf "Done.\n\n"
 
-date
 printf "Upgrade completed successfully without errors.\n"
 echo '0' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
 rm \$0
