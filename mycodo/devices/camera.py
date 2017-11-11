@@ -103,8 +103,8 @@ def camera_record(record_type, settings, duration_sec=None):
         cap.set(cv2.cv.CV_CAP_PROP_HUE, settings.hue)
         cap.set(cv2.cv.CV_CAP_PROP_SATURATION, settings.saturation)
 
-        # Discard 10 frames to allow camera to adjust to settings
-        for _ in range(10):
+        # Discard a few frames to allow camera to adjust to settings
+        for _ in range(2):
             cap.read()
 
         if record_type in ['photo', 'timelapse']:
