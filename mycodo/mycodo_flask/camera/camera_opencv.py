@@ -4,6 +4,7 @@
 #
 import cv2
 import imutils
+import time
 from base_camera import BaseCamera
 
 
@@ -43,6 +44,8 @@ class Camera(BaseCamera):
             if Camera.camera_options.rotation:
                 img = imutils.rotate_bound(
                     img, Camera.camera_options.rotation)
+
+            time.sleep(0.1)
 
             # encode as a jpeg image and return it
             yield cv2.imencode('.jpg', img)[1].tobytes()

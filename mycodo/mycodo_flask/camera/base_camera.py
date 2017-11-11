@@ -101,25 +101,32 @@ class BaseCamera(object):
     @classmethod
     def _thread(cls, unique_id):
         """Camera background thread."""
-        print('Starting camera thread')
+        print('[{id}] Starting camera thread'.format(id=unique_id))
         frames_iterator = cls.frames()
         for frame in frames_iterator:
             BaseCamera.frame[unique_id] = frame
             BaseCamera.event[unique_id].set()  # send signal to clients
             time.sleep(0)
 
-            # if there hasn't been any clients asking for frames in
-            # the last 5 seconds then stop the thread
-            if time.time() - BaseCamera.last_access[unique_id] > 5:
+            # if there haven't been any clients asking for frames in
+            # the last 10 seconds then stop the thread
+            if time.time() - BaseCamera.last_access[unique_id] > 10:
                 frames_iterator.close()
-                print('Stopping camera thread due to inactivity')
+                print('[{id}] Stopping camera thread due to '
+                      'inactivity'.format(id=unique_id))
                 break
             if not BaseCamera.running[unique_id]:
                 frames_iterator.close()
-                print('Camera thread instructed to shut down')
+                print('[{id}] Camera thread instructed to '
+                      'shut down'.format(id=unique_id))
                 break
         BaseCamera.thread[unique_id] = None
+        BaseCamera.running[unique_id] = False
 
     @staticmethod
     def stop(unique_id):
         BaseCamera.running[unique_id] = False
+
+    @staticmethod
+    def is_running(unique_id):
+        return BaseCamera.running[unique_id]

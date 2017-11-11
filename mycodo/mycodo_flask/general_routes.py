@@ -40,7 +40,6 @@ from mycodo.databases.models import Sensor
 from mycodo.databases.models import User
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
-from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import query_string
 from mycodo.utils.system_pi import str_is_float
 
@@ -147,19 +146,11 @@ def gen(camera):
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-def gen(camera):
-    """Video streaming generator function."""
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-
 @blueprint.route('/video_feed/<unique_id>')
 @flask_login.login_required
 def video_feed(unique_id):
     """Video streaming route. Put this in the src attribute of an img tag."""
-    camera_options = db_retrieve_table_daemon(table=Camera, unique_id=unique_id)
+    camera_options = Camera.query.filter(Camera.unique_id == unique_id).first()
     camera_stream = import_module('mycodo.mycodo_flask.camera.camera_' + camera_options.library).Camera
     camera_stream.set_camera_options(camera_options)
     return Response(gen(camera_stream(unique_id=unique_id)),
@@ -272,11 +263,9 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     dbcon = influx_db.connection
 
     if measurement == 'duration_sec':
-        name = db_retrieve_table_daemon(
-            Relay, unique_id=unique_id).name
+        name = Relay.query.filter(Relay.unique_id == unique_id).first().name
     else:
-        name = db_retrieve_table_daemon(
-            Sensor, unique_id=unique_id).name
+        name = Sensor.query.filter(Sensor.unique_id == unique_id).first().name
 
     utc_offset_timedelta = datetime.datetime.utcnow() - datetime.datetime.now()
     start = datetime.datetime.fromtimestamp(float(start_seconds))

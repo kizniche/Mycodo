@@ -1,5 +1,6 @@
 # coding=utf-8
 """ collection of Page endpoints """
+import cv2
 import datetime
 import flask_login
 import glob
@@ -11,6 +12,7 @@ import sys
 import time
 from collections import OrderedDict
 from flask_babel import gettext
+from importlib import import_module
 from w1thermsensor import W1ThermSensor
 
 from flask import flash
@@ -122,10 +124,14 @@ def page_camera():
         mod_camera = Camera.query.filter(
             Camera.id == form_camera.camera_id.data).first()
         if form_camera.capture_still.data:
+            # If a stream is active, stop the stream to take a photo
             if mod_camera.stream_started:
-                from mycodo.mycodo_flask.camera.camera_opencv import Camera as Cam
-                Cam(unique_id=mod_camera.unique_id).stop(mod_camera.unique_id)
-                time.sleep(1)
+                camera_stream = import_module(
+                    'mycodo.mycodo_flask.camera.camera_{lib}'.format(
+                        lib=mod_camera.library)).Camera
+                if camera_stream(unique_id=mod_camera.unique_id).is_running(mod_camera.unique_id):
+                    camera_stream(unique_id=mod_camera.unique_id).stop(mod_camera.unique_id)
+                time.sleep(2)
             camera_record('photo', mod_camera)
         elif form_camera.start_timelapse.data:
             if mod_camera.stream_started:
@@ -165,7 +171,19 @@ def page_camera():
             else:
                 mod_camera.stream_started = True
                 db.session.commit()
+                # In my testing, color correction was better immediately
+                # after reading the first frame. Therefore, a photo is
+                # acquired before starting the video stream
+                if mod_camera.library == 'opencv':
+                    cap = cv2.VideoCapture(mod_camera.opencv_device)
+                    if cap.read():
+                        cap.release()
         elif form_camera.stop_stream.data:
+            camera_stream = import_module(
+                'mycodo.mycodo_flask.camera.camera_{lib}'.format(
+                    lib=mod_camera.library)).Camera
+            if camera_stream(unique_id=mod_camera.unique_id).is_running(mod_camera.unique_id):
+                camera_stream(unique_id=mod_camera.unique_id).stop(mod_camera.unique_id)
             mod_camera.stream_started = False
             db.session.commit()
         return redirect('/camera')
