@@ -32,7 +32,7 @@ class Camera(BaseCamera):
 
             stream = io.BytesIO()
             for _ in camera.capture_continuous(stream, 'jpeg',
-                                                 use_video_port=True):
+                                               use_video_port=True):
                 # return current frame
                 stream.seek(0)
                 time.sleep(0.1)
