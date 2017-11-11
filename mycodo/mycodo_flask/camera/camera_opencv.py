@@ -33,7 +33,6 @@ class Camera(BaseCamera):
         while True:
             # read current frame
             _, img = camera.read()
-            camera.release()
 
             if Camera.camera_options.hflip and Camera.camera_options.vflip:
                 img = cv2.flip(img, -1)

@@ -22,16 +22,16 @@ class Camera(BaseCamera):
                                  Camera.camera_options.height)
             camera.hflip = Camera.camera_options.hflip
             camera.vflip = Camera.camera_options.vflip
-            camera.brightness = Camera.camera_options.brightness
-            camera.contrast = Camera.camera_options.contrast
-            camera.exposure_compensation = Camera.camera_options.exposure
-            camera.saturation = Camera.camera_options.saturation
+            camera.brightness = int(Camera.camera_options.brightness)
+            camera.contrast = int(Camera.camera_options.contrast)
+            camera.exposure_compensation = int(Camera.camera_options.exposure)
+            camera.saturation = int(Camera.camera_options.saturation)
 
             # let camera warm up
             time.sleep(2)
 
             stream = io.BytesIO()
-            for foo in camera.capture_continuous(stream, 'jpeg',
+            for _ in camera.capture_continuous(stream, 'jpeg',
                                                  use_video_port=True):
                 # return current frame
                 stream.seek(0)
