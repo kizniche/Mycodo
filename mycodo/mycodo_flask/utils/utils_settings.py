@@ -28,7 +28,6 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 
-from mycodo.config import CAMERAS
 from mycodo.config import INSTALL_DIRECTORY
 
 logger = logging.getLogger(__name__)
@@ -322,8 +321,20 @@ def camera_add(form_camera):
             flash("You must choose a unique name", "error")
             return redirect(url_for('settings_routes.settings_camera'))
         new_camera.name = form_camera.name.data
-        new_camera.camera_type = form_camera.camera_type.data
-        new_camera.library = CAMERAS[form_camera.camera_type.data]
+        new_camera.library = form_camera.library.data
+        if form_camera.library.data == 'opencv':
+            new_camera.brightness = 0.75
+            new_camera.contrast = 0.2
+            new_camera.exposure = 0.0
+            new_camera.gain = 0.0
+            new_camera.hue = 0.0
+            new_camera.saturation = 0.0
+            new_camera.white_balance = 0.0
+        elif form_camera.library.data == 'picamera':
+            new_camera.brightness = 50
+            new_camera.contrast = 0.0
+            new_camera.exposure = 0.0
+            new_camera.saturation = 0.0
         if not error:
             try:
                 new_camera.save()
@@ -345,8 +356,8 @@ def camera_mod(form_camera):
 
     try:
         if (Camera.query
-                    .filter(Camera.id != form_camera.camera_id.data)
-                    .filter(Camera.name == form_camera.name.data).count()):
+                .filter(Camera.id != form_camera.camera_id.data)
+                .filter(Camera.name == form_camera.name.data).count()):
             flash("You must choose a unique name", "error")
             return redirect(url_for('settings_routes.settings_camera'))
         if 0 > form_camera.rotation.data > 360:
@@ -356,31 +367,47 @@ def camera_mod(form_camera):
         mod_camera = Camera.query.filter(
             Camera.id == form_camera.camera_id.data).first()
         mod_camera.name = form_camera.name.data
-        mod_camera.camera_type = form_camera.camera_type.data
-        mod_camera.library = form_camera.library.data
-        mod_camera.opencv_device = form_camera.opencv_device.data
-        mod_camera.hflip = form_camera.hflip.data
-        mod_camera.vflip = form_camera.vflip.data
-        mod_camera.rotation = form_camera.rotation.data
-        mod_camera.height = form_camera.height.data
-        mod_camera.width = form_camera.width.data
-        mod_camera.brightness = form_camera.brightness.data
-        mod_camera.contrast = form_camera.contrast.data
-        mod_camera.exposure = form_camera.exposure.data
-        mod_camera.gain = form_camera.gain.data
-        mod_camera.hue = form_camera.hue.data
-        mod_camera.saturation = form_camera.saturation.data
-        mod_camera.white_balance = form_camera.white_balance.data
+
+        if mod_camera.library == 'opencv':
+            mod_camera.opencv_device = form_camera.opencv_device.data
+            mod_camera.hflip = form_camera.hflip.data
+            mod_camera.vflip = form_camera.vflip.data
+            mod_camera.rotation = form_camera.rotation.data
+            mod_camera.height = form_camera.height.data
+            mod_camera.width = form_camera.width.data
+            mod_camera.brightness = form_camera.brightness.data
+            mod_camera.contrast = form_camera.contrast.data
+            mod_camera.exposure = form_camera.exposure.data
+            mod_camera.gain = form_camera.gain.data
+            mod_camera.hue = form_camera.hue.data
+            mod_camera.saturation = form_camera.saturation.data
+            mod_camera.white_balance = form_camera.white_balance.data
+        elif mod_camera.library == 'picamera':
+            mod_camera.hflip = form_camera.hflip.data
+            mod_camera.vflip = form_camera.vflip.data
+            mod_camera.rotation = form_camera.rotation.data
+            mod_camera.height = form_camera.height.data
+            mod_camera.width = form_camera.width.data
+            mod_camera.brightness = form_camera.brightness.data
+            mod_camera.contrast = form_camera.contrast.data
+            mod_camera.exposure = form_camera.exposure.data
+            mod_camera.saturation = form_camera.saturation.data
+        else:
+            error.append("Unknown camera library")
+
         if form_camera.relay_id.data:
             mod_camera.relay_id = form_camera.relay_id.data
         else:
             mod_camera.relay_id = None
         mod_camera.cmd_pre_camera = form_camera.cmd_pre_camera.data
         mod_camera.cmd_post_camera = form_camera.cmd_post_camera.data
-        db.session.commit()
-        control = DaemonControl()
-        control.refresh_daemon_camera_settings()
+
+        if not error:
+            db.session.commit()
+            control = DaemonControl()
+            control.refresh_daemon_camera_settings()
     except Exception as except_msg:
+        logger.exception(1)
         error.append(except_msg)
 
     flash_success_errors(error, action, url_for('settings_routes.settings_camera'))

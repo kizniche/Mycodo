@@ -68,6 +68,10 @@ def camera_record(record_type, settings, duration_sec=None):
             camera.hflip = settings.hflip
             camera.vflip = settings.vflip
             camera.rotation = settings.rotation
+            camera.brightness = int(settings.brightness)
+            camera.contrast = int(settings.contrast)
+            camera.exposure_compensation = int(settings.exposure)
+            camera.saturation = int(settings.saturation)
             camera.start_preview()
             time.sleep(2)  # Camera warm-up time
 
@@ -99,9 +103,15 @@ def camera_record(record_type, settings, duration_sec=None):
         cap.set(cv2.cv.CV_CAP_PROP_HUE, settings.hue)
         cap.set(cv2.cv.CV_CAP_PROP_SATURATION, settings.saturation)
 
+        # Discard 10 frames to allow camera to adjust to settings
+        for _ in range(10):
+            cap.read()
+
         if record_type in ['photo', 'timelapse']:
             edited = False
             _, img_orig = cap.read()
+            cap.release()
+
             img_edited = img_orig.copy()
 
             if any((settings.hflip, settings.vflip, settings.rotation)):
@@ -121,8 +131,6 @@ def camera_record(record_type, settings, duration_sec=None):
                 cv2.imwrite(path_file, img_edited)
             else:
                 cv2.imwrite(path_file, img_orig)
-
-            cap.release()
 
         elif record_type == 'video':
             # TODO: opencv video recording is currently not working. No idea why.

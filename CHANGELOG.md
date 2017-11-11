@@ -1,8 +1,16 @@
 ## 5.3.6 (Unreleased)
 
+### Features
+
+ - Allow camera options to be used for picamera library
+
 ### Bugfixes
 
  - Fix inability to take a still image while a video stream is active
+
+### Miscellaneous
+
+ - Remove ability to change camera library after a camera has been added
 
 
 ## 5.3.5 (2017-11-10)

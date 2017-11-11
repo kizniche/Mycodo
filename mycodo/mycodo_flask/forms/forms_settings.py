@@ -26,7 +26,6 @@ from wtforms.fields.html5 import EmailField
 class SettingsCamera(FlaskForm):
     camera_id = IntegerField('Camera ID', widget=widgets.HiddenInput())
     name = StringField(lazy_gettext(u'Name'))
-    camera_type = StringField(lazy_gettext(u'Type'))
     library = StringField(lazy_gettext(u'Library'))
     opencv_device = IntegerField(lazy_gettext(u'OpenCV Device'))
     hflip = BooleanField(lazy_gettext(u'Flip image horizontally'))

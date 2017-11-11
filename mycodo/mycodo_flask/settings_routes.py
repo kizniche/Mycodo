@@ -23,7 +23,7 @@ from mycodo.mycodo_flask.utils import utils_settings
 
 from mycodo.devices.camera import count_cameras_opencv
 
-from mycodo.config import CAMERAS
+from mycodo.config import CAMERA_LIBRARIES
 from mycodo.config import LANGUAGES
 from mycodo.config import THEMES
 
@@ -78,12 +78,6 @@ def settings_camera():
     camera = Camera.query.all()
     relay = Relay.query.all()
 
-    camera_libraries = []
-    camera_types = []
-    for camera_type, library in CAMERAS.items():
-        camera_libraries.append(library)
-        camera_types.append(camera_type)
-
     try:
         opencv_devices = count_cameras_opencv()
     except Exception:
@@ -111,8 +105,7 @@ def settings_camera():
 
     return render_template('settings/camera.html',
                            camera=camera,
-                           camera_libraries=camera_libraries,
-                           camera_types=camera_types,
+                           camera_libraries=CAMERA_LIBRARIES,
                            form_camera=form_camera,
                            opencv_devices=opencv_devices,
                            pi_camera_enabled=pi_camera_enabled,

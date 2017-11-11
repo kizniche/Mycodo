@@ -7,7 +7,7 @@ import collections
 from datetime import timedelta
 
 MYCODO_VERSION = '5.3.5'
-ALEMBIC_VERSION = '214c6bb4603a'
+ALEMBIC_VERSION = '589ab40606d3'
 
 LANGUAGES = {
     'en': 'English',
@@ -265,10 +265,10 @@ DAEMON_PID_FILE = os.path.join(LOCK_PATH, 'mycodo.pid')
 LOCK_FILE_STREAM = os.path.join(LOCK_PATH, 'mycodo-camera-stream.pid')
 
 # Camera
-CAMERAS = {
-    'Raspberry Pi': 'picamera',
-    'USB Camera': 'opencv'
-}
+CAMERA_LIBRARIES = [
+    'picamera',
+    'opencv'
+]
 PATH_CAMERAS = os.path.join(INSTALL_DIRECTORY, 'cameras')
 
 # Influx sensor/device measurement database

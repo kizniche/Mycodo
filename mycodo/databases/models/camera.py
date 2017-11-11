@@ -10,19 +10,18 @@ class Camera(CRUDMixin, db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     name = db.Column(db.Text, unique=True, nullable=False)
-    camera_type = db.Column(db.Text, nullable=False)
     library = db.Column(db.Text, nullable=False)
     opencv_device = db.Column(db.Integer, default=0)
     hflip = db.Column(db.Boolean, default=False)  # Horizontal flip image
     vflip = db.Column(db.Boolean, default=False)  # Vertical flip image
     rotation = db.Column(db.Integer, default=0)  # Rotation degree (0-360)
-    height = db.Column(db.Integer, default=640)
-    width = db.Column(db.Integer, default=480)
-    brightness = db.Column(db.Float, default=0.75)
-    contrast = db.Column(db.Float, default=0.2)
-    exposure = db.Column(db.Float, default=0.0)
-    gain = db.Column(db.Float, default=0.0)
-    hue = db.Column(db.Float, default=0.0)
+    height = db.Column(db.Integer, default=480)
+    width = db.Column(db.Integer, default=640)
+    brightness = db.Column(db.Float, default=None)
+    contrast = db.Column(db.Float, default=None)
+    exposure = db.Column(db.Float, default=None)
+    gain = db.Column(db.Float, default=None)
+    hue = db.Column(db.Float, default=None)
     saturation = db.Column(db.Float, default=0.3)
     white_balance = db.Column(db.Float, default=0.0)
     relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Turn relay on during capture
@@ -38,4 +37,4 @@ class Camera(CRUDMixin, db.Model):
     timelapse_capture_number = db.Column(db.Integer, default=None)
 
     def __reper__(self):
-        return "<{cls}(id={s.id}, name='{s.name}', camera_type='{s.camera_type}')>".format(s=self, cls=self.__class__.__name__)
+        return "<{cls}(id={s.id}, name='{s.name}', library='{s.library}')>".format(s=self, cls=self.__class__.__name__)

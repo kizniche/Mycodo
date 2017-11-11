@@ -7,9 +7,7 @@
 
 {% block settings %}
   <!-- Route: /settings/camera -->
-  <h3 style="text-align: right; padding-bottom: 1.3em;">{{_('Camera Settings')}}</h3>
-
-  <p>Note: Not all camera settings will work with every camera.</p>
+  <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/help#camera-settings" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a> {{_('Camera Settings')}}</h3>
 
   <div class=text-right>
   <form class="form-inline" method="post" action="/settings/camera">
@@ -21,11 +19,11 @@
       </div>
     </div>
     <div class="form-group">
-      {{form_camera.camera_type.label(class_='control-label')}}
+      {{form_camera.library.label(class_='control-label')}}
       <div>
-        <select class="form-control" id="camera_type" name="camera_type" title="" data-original-title="Select the library to use to communicate with the camera.">
-          {%- for each_type in camera_types -%}
-            <option value="{{each_type}}">{{each_type}}</option>
+        <select class="form-control" id="library" name="library" title="" data-original-title="Select the library to use to communicate with the camera">
+          {%- for each_library in camera_libraries -%}
+            <option value="{{each_library}}">{{each_library}}</option>
           {%- endfor -%}
         </select>
       </div>
@@ -38,6 +36,8 @@
     </div>
   </form>
   </div>
+
+  <p style="text-align: right;">Note: Not all camera settings will work with every camera.</p>
 
   <div style="clear: both; padding: 1em 0;"></div>
 
@@ -61,47 +61,35 @@
           {{form_camera.camera_del(class_='form-control btn btn-default')}}
         </div>
       </div>
-      {% if not pi_camera_enabled and each_camera.camera_type == 'Raspberry Pi' %}
-        <div class="row" style="color: red; padding: 1em 1em;">
-          Raspberry Pi Camera support doesn't appear to be enabled on the Raspberry Pi. Please enable it with 'sudo raspi-config'
-        </div>
-      {% endif %}
       <div style="padding: 0.5em 0 0.25em 0" class="form-inline">
-        <div class="form-group">
-          {{form_camera.camera_type.label(class_='control-label')}}
-          <div>
-            <select class="form-control" id="camera_type" name="camera_type" title="" data-original-title="Select the type of camera.">
-              {%- for each_type in camera_types -%}
-                <option value="{{each_type}}"{% if each_camera.camera_type == each_type %} selected{% endif %}>{{each_type}}</option>
-              {%- endfor -%}
-            </select>
-          </div>
+      {% if each_camera.library == 'picamera' %}
+        {% if not pi_camera_enabled %}
+        <div class="row" style="color: red; padding: 1em 1em;">
+          Raspberry Pi Camera support doesn't appear to be enabled. Please enable it using 'sudo raspi-config'
         </div>
+        {% else %}
+          {% include 'settings/camera_options/picamera.html' %}
+        {% endif %}
+      {% endif %}
+
+      {% if each_camera.library == 'opencv' %}
+        {% include 'settings/camera_options/opencv.html' %}
+      {% endif %}
+
+        <div style="clear: both;"></div>
+
         <div class="form-group">
-          {{form_camera.library.label(class_='control-label')}}
+          {{form_camera.cmd_pre_camera.label(class_='control-label')}}
           <div>
-            <select class="form-control" id="library" name="library" title="" data-original-title="Select the library to use to communicate with the camera.">
-              {%- for each_library in camera_libraries -%}
-                <option value="{{each_library}}"{% if each_camera.library == each_library %} selected{% endif %}>{{each_library}}</option>
-              {%- endfor -%}
-            </select>
+            {{form_camera.cmd_pre_camera(class_='form-control', value=each_camera.cmd_pre_camera)}}
            </div>
         </div>
-      {% if each_camera.library == 'opencv' %}
         <div class="form-group">
-          {{form_camera.opencv_device.label(class_='control-label')}}
+          {{form_camera.cmd_post_camera.label(class_='control-label')}}
           <div>
-            <select class="form-control" id="opencv_device" name="opencv_device" title="" data-original-title="Select the opencv device (if using opencv).">
-              {% if not opencv_devices %}
-                <option value="0">No Devices</option>
-              {% endif %}
-              {% for device_id in range(opencv_devices) %}
-                <option value="{{device_id}}"{% if each_camera.opencv_device == device_id %} selected{% endif %}>Device: {{device_id}}</option>
-              {%- endfor -%}
-            </select>
-          </div>
+            {{form_camera.cmd_post_camera(class_='form-control', value=each_camera.cmd_post_camera)}}
+           </div>
         </div>
-      {% endif %}
         <div class="form-group">
           {{form_camera.relay_id.label(class_='control-label')}}
           <div>
@@ -116,78 +104,6 @@
               {%- endfor -%}
             </select>
           </div>
-        </div>
-        <div class="form-group">
-          {{form_camera.rotation.label(class_='control-label')}}
-          <div>
-            {{form_camera.rotation(class_='form-control', value=each_camera.rotation)}}
-           </div>
-        </div>
-        <div class="form-group">
-          {{form_camera.width.label(class_='control-label')}}
-          <div>
-            {{form_camera.width(class_='form-control', value=each_camera.width)}}
-           </div>
-        </div>
-        <div class="form-group">
-          {{form_camera.height.label(class_='control-label')}}
-          <div>
-            {{form_camera.height(class_='form-control', value=each_camera.height)}}
-           </div>
-        </div>
-        <div class="form-group">
-          {{form_camera.brightness.label(class_='control-label')}}
-          <div>
-            {{form_camera.brightness(class_='form-control', value=each_camera.brightness)}}
-           </div>
-        </div>
-        <div class="form-group">
-          {{form_camera.contrast.label(class_='control-label')}}
-          <div>
-            {{form_camera.contrast(class_='form-control', value=each_camera.contrast)}}
-           </div>
-        </div>
-        <div class="form-group">
-          {{form_camera.exposure.label(class_='control-label')}}
-          <div>
-            {{form_camera.exposure(class_='form-control', value=each_camera.exposure)}}
-           </div>
-        </div>
-        <div class="form-group">
-          {{form_camera.gain.label(class_='control-label')}}
-          <div>
-            {{form_camera.gain(class_='form-control', value=each_camera.gain)}}
-           </div>
-        </div>
-        <div class="form-group">
-          {{form_camera.hue.label(class_='control-label')}}
-          <div>
-            {{form_camera.hue(class_='form-control', value=each_camera.hue)}}
-           </div>
-        </div>
-        <div class="form-group">
-          {{form_camera.saturation.label(class_='control-label')}}
-          <div>
-            {{form_camera.saturation(class_='form-control', value=each_camera.saturation)}}
-           </div>
-        </div>
-        <div class="form-group">
-          {{form_camera.white_balance.label(class_='control-label')}}
-          <div>
-            {{form_camera.white_balance(class_='form-control', value=each_camera.white_balance)}}
-           </div>
-        </div>
-        <div class="form-group">
-          {{form_camera.cmd_pre_camera.label(class_='control-label')}}
-          <div>
-            {{form_camera.cmd_pre_camera(class_='form-control', value=each_camera.cmd_pre_camera)}}
-           </div>
-        </div>
-        <div class="form-group">
-          {{form_camera.cmd_post_camera.label(class_='control-label')}}
-          <div>
-            {{form_camera.cmd_post_camera(class_='form-control', value=each_camera.cmd_post_camera)}}
-           </div>
         </div>
 
         <div class="form-check">
