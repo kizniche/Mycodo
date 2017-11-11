@@ -1,4 +1,4 @@
-## 5.3.6 (Unreleased)
+## 5.3.6 (2017-11-11)
 
 ### Features
 
@@ -13,6 +13,7 @@
 ### Miscellaneous
 
  - Remove ability to change camera library after a camera has been added
+ - Update Korean translation
 
 
 ## 5.3.5 (2017-11-10)
