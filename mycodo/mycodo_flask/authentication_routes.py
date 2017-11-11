@@ -15,6 +15,8 @@ from flask import session
 from flask import url_for
 from flask import make_response
 
+from sqlalchemy import func
+
 from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 from flask.blueprints import Blueprint
@@ -69,13 +71,9 @@ def create_admin():
     if request.method == 'POST':
         form_name = request.form['form-name']
         if form_name == 'acknowledge':
-            try:
-                mod_misc = Misc.query.first()
-                mod_misc.dismiss_notification = 1
-                db.session.commit()
-            except Exception as except_msg:
-                flash(gettext(u"Acknowledgement unable to be saved: "
-                              u"%(err)s", err=except_msg), "error")
+            mod_misc = Misc.query.first()
+            mod_misc.dismiss_notification = 1
+            db.session.commit()
         elif form_create_admin.validate():
             username = form_create_admin.username.data.lower()
             error = False
@@ -152,7 +150,7 @@ def do_login():
             user_ip = request.environ.get('REMOTE_ADDR', 'unknown address')
             if form_login.validate_on_submit():
                 user = User.query.filter(
-                    User.name == username).first()
+                    func.lower(User.name) == username).first()
                 if not user:
                     login_log(username, 'NA', user_ip, 'NOUSER')
                     failed_login()

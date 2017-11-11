@@ -7,6 +7,8 @@
 ### Bugfixes
 
  - Fix inability to take a still image while a video stream is active
+ - Make creating new user names case-insensitive
+ - Fix theme not saving when creating a new user
 
 ### Miscellaneous
 

@@ -97,12 +97,14 @@ def user_add(form):
 
     if form.validate():
         new_user = User()
-        if not test_username(form.user_name.data):
+        new_user.name = form.user_name.data.lower()
+        if not test_username(new_user.name):
             error.append(gettext(
                 u"Invalid user name. Must be between 2 and 64 characters "
                 u"and only contain letters and numbers."))
 
-        if User.query.filter_by(email=form.email.data).count():
+        new_user.email = form.email.data
+        if User.query.filter_by(email=new_user.email).count():
             error.append(gettext(
                 u"Another user already has that email address."))
 
@@ -115,13 +117,11 @@ def user_add(form):
             error.append(gettext(u"Passwords do not match. Please try again."))
 
         if not error:
-            new_user.name = form.user_name.data
-            new_user.email = form.email.data
             new_user.set_password(form.password_new.data)
             role = Role.query.filter(
                 Role.name == form.addRole.data).first().id
             new_user.role = role
-            new_user.theme = 'slate'
+            new_user.theme = form.theme.data
             try:
                 new_user.save()
             except sqlalchemy.exc.OperationalError as except_msg:
@@ -149,14 +149,13 @@ def user_mod(form):
         if form.password_new.data != '':
             if not test_password(form.password_new.data):
                 error.append(gettext(u"Invalid password"))
-            if form.password_new.data == form.password_repeat.data:
-                mod_user.password_hash = bcrypt.hashpw(
-                    form.password_new.data.encode('utf-8'),
-                    bcrypt.gensalt())
-                if flask_login.current_user.id == form.user_id.data:
-                    logout_user = True
-            else:
+            if form.password_new.data != form.password_repeat.data:
                 error.append(gettext(u"Passwords do not match. Please try again."))
+            mod_user.password_hash = bcrypt.hashpw(
+                form.password_new.data.encode('utf-8'),
+                bcrypt.gensalt())
+            if flask_login.current_user.id == form.user_id.data:
+                logout_user = True
 
         if not error:
             role = Role.query.filter(
