@@ -78,7 +78,7 @@ def create_app(config=ProdConfig):
                 for key in LANGUAGES:
                     if key == user.language:
                         return key
-        except:
+        except AttributeError:  # Error during endpoint tests
             pass
         return request.accept_languages.best_match(LANGUAGES.keys())
 
