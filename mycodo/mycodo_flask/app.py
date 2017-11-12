@@ -72,11 +72,14 @@ def create_app(config=ProdConfig):
 
     @babel.localeselector
     def get_locale():
-        user = User.query.filter(User.id == flask_login.current_user.id).first()
-        if user and user.language != '':
-            for key in LANGUAGES:
-                if key == user.language:
-                    return key
+        try:
+            user = User.query.filter(User.id == flask_login.current_user.id).first()
+            if user and user.language != '':
+                for key in LANGUAGES:
+                    if key == user.language:
+                        return key
+        except:
+            pass
         return request.accept_languages.best_match(LANGUAGES.keys())
 
     @login_manager.user_loader

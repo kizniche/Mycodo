@@ -260,7 +260,8 @@ def settings_general_mod(form):
                 if force_https != form.force_https.data:
                     # Force HTTPS option changed.
                     # Reload web server with new settings.
-                    wsgi_file = INSTALL_DIRECTORY + '/mycodo_flask.wsgi'
+                    wsgi_file = '{inst_dir}/mycodo_flask.wsgi'.format(
+                        inst_dir=INSTALL_DIRECTORY)
                     with open(wsgi_file, 'a'):
                         os.utime(wsgi_file, None)
 
