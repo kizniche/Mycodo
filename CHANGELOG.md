@@ -1,3 +1,10 @@
+## 5.3.7 (Unreleased)
+
+### Bugfixes
+
+ - Fix language selection being applied globally (each user now has own language)
+
+
 ## 5.3.6 (2017-11-11)
 
 ### Features

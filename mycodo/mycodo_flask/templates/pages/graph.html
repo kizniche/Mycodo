@@ -13,7 +13,7 @@
   <script src="/static/js/modules/export-csv.js"></script>
   <script src="/static/js/modules/jspdf.min.js"></script>
   <script src="/static/js/modules/highcharts-export-clientside.js"></script>
-  {% if current_user.theme in ['cyborg', 'darkly', 'slate', 'sun', 'superhero'] %}
+  {% if current_user.theme in dark_themes %}
     <script src="/static/js/dark-unica.js"></script>
   {% endif %}
 
@@ -1594,7 +1594,7 @@
             },
             yAxis: 0,
               dial: {
-                backgroundColor: '{% if current_user.theme in ['cyborg', 'darkly', 'slate', 'sun', 'superhero'] %}#e3e4f4{% else %}#3e3f46{% endif %}',
+                backgroundColor: '{% if current_user.theme in dark_themes %}#e3e4f4{% else %}#3e3f46{% endif %}',
                 baseWidth: 5
             },
             tooltip: {

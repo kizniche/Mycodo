@@ -9,7 +9,7 @@
   <script src="/static/js/modules/export-csv.js"></script>
   <script src="/static/js/modules/jspdf.min.js"></script>
   <script src="/static/js/modules/highcharts-export-clientside.js"></script>
-  {% if current_user.theme in ['cyborg', 'darkly', 'slate', 'superhero'] %}
+  {% if current_user.theme in dark_themes %}
     <script src="/static/js/dark-unica.js"></script>
   {% endif %}
 

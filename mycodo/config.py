@@ -6,8 +6,8 @@ import os
 import collections
 from datetime import timedelta
 
-MYCODO_VERSION = '5.3.6'
-ALEMBIC_VERSION = '589ab40606d3'
+MYCODO_VERSION = '5.3.7'
+ALEMBIC_VERSION = '70b7016e107f'
 
 LANGUAGES = {
     'en': 'English',
@@ -240,6 +240,8 @@ THEMES = [
     ('united', 'United'),
     ('yeti', 'Yeti')
 ]
+
+THEMES_DARK = ['cyborg', 'darkly', 'slate', 'sun', 'superhero']
 
 # SQLite3 databases that stores users and settings
 DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')

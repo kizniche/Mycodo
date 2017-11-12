@@ -234,7 +234,6 @@ def settings_general_mod(form):
             try:
                 mod_misc = Misc.query.first()
                 force_https = mod_misc.force_https
-                mod_misc.language = form.language.data
                 mod_misc.force_https = form.force_https.data
                 mod_misc.hide_alert_success = form.hide_success.data
                 mod_misc.hide_alert_info = form.hide_info.data
@@ -250,6 +249,10 @@ def settings_general_mod(form):
                 mod_misc.relay_usage_report_day = form.relay_usage_report_day.data
                 mod_misc.relay_usage_report_hour = form.relay_usage_report_hour.data
                 mod_misc.stats_opt_out = form.stats_opt_out.data
+
+                mod_user = User.query.filter(User.id == flask_login.current_user.id).first()
+                mod_user.language = form.language.data
+
                 db.session.commit()
                 control = DaemonControl()
                 control.refresh_daemon_misc_settings()

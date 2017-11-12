@@ -25,7 +25,7 @@ from mycodo.mycodo_flask.forms import forms_method
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_method
 
-from mycodo.mycodo_flask.static_routes import inject_mycodo_version
+from mycodo.mycodo_flask.static_routes import inject_variables
 
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import get_sec
@@ -44,7 +44,7 @@ blueprint = Blueprint('method_routes',
 
 @blueprint.context_processor
 def inject_dictionary():
-    return inject_mycodo_version()
+    return inject_variables()
 
 
 @blueprint.route('/method-data/<method_id>')

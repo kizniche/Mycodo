@@ -24,7 +24,7 @@ from flask import url_for
 from flask.blueprints import Blueprint
 
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.static_routes import inject_mycodo_version
+from mycodo.mycodo_flask.static_routes import inject_variables
 from mycodo_client import DaemonControl
 from mycodo_client import daemon_active
 
@@ -93,7 +93,7 @@ blueprint = Blueprint('page_routes',
 
 @blueprint.context_processor
 def inject_dictionary():
-    return inject_mycodo_version()
+    return inject_variables()
 
 
 @blueprint.context_processor
