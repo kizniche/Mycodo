@@ -1,3 +1,12 @@
-{% include 'pages/input_options/TEMPLATE_DISABLED_I2C_ADDRESS.html' %}
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+  <label class="control-label">I2C Address</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{ _('The I2C address to access the device')}}">
+      <option value=""{% if each_sensor.location == '' %} selected{% endif %}></option>
+      <option value="0x5c"{% if each_sensor.location == '0x5c' %} selected{% endif %}>Address 0x5c</option>
+      <option value="0x57"{% if each_sensor.location == '0x57' %} selected{% endif %}>Address 0x57</option>
+    </select>
+  </div>
+</div>
 {% include 'pages/input_options/TEMPLATE_I2C_BUS.html' %}
 {% include 'pages/input_options/TEMPLATE_POWER_RELAY.html' %}

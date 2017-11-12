@@ -4,6 +4,10 @@
 
  - Fix language selection being applied globally (each user now has own language)
 
+### Miscellaneous
+
+ - Add 0x57 as new AM2315 I2C address ([#315](https://github.com/kizniche/mycodo/issues/315))
+
 
 ## 5.3.6 (2017-11-11)
 
