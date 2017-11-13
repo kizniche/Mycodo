@@ -1,8 +1,10 @@
 ## 5.4.0 (2017-11-12)
 
-This release has refactored how LCD display is handled, allowing an infinite number of data sets on a single LCD.
+This release has refactored how LCD displays are handled, now allowing an infinite number of data sets on a single LCD.
 
-Note: All LDCs will be deactivated during the upgrade. As a consequence, LCD displays will need to be reconfigured and reactivated. 
+Note: All LDCs will be deactivated during the upgrade. As a consequence, LCD displays will need to be reconfigured and reactivated.
+
+***Note 2: During the upgrade, the web interface will display "500 Internal Server Error." This is normal and you should give Mycodo 5 to 10 minutes (or longer) to complete the upgrade process before attempting to access the web interface again.***
 
 ### Features
 
