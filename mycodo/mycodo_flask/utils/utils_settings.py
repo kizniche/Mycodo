@@ -90,9 +90,10 @@ def user_roles(form):
 
 
 def user_add(form):
-    action = u'{action} {controller}'.format(
+    action = u'{action} {controller} {user}'.format(
         action=gettext(u"Add"),
-        controller=gettext(u"User"))
+        controller=gettext(u"User"),
+        user=form.user_name.data.lower())
     error = []
 
     if form.validate():
@@ -135,9 +136,12 @@ def user_add(form):
 
 
 def user_mod(form):
-    action = u'{action} {controller}'.format(
+    mod_user = User.query.filter(
+        User.id == form.user_id.data).first()
+    action = u'{action} {controller} {user}'.format(
         action=gettext(u"Modify"),
-        controller=gettext(u"User"))
+        controller=gettext(u"User"),
+        user=mod_user.name)
     error = []
 
     try:
@@ -157,6 +161,9 @@ def user_mod(form):
             if flask_login.current_user.id == form.user_id.data:
                 logout_user = True
 
+        if mod_user.role == 1 and mod_user.role != form.role.data:
+            error.append("Cannot change currently-logged in user's role from Admin")
+
         if not error:
             role = Role.query.filter(
                 Role.name == form.role.data).first().id
@@ -171,44 +178,28 @@ def user_mod(form):
     flash_success_errors(error, action, url_for('settings_routes.settings_users'))
 
 
-def delete_user(user_id):
-    """ Delete user from SQL database """
-    try:
-        user = User.query.filter(
-            User.id == user_id).first()
-        user_name = user.name
-        user.delete()
-        flash(gettext(u"%(msg)s",
-                      msg=u'{action} {user}'.format(
-                          action=gettext(u"Delete"),
-                          user=user_name)),
-              "success")
-        return 1
-    except sqlalchemy.orm.exc.NoResultFound:
-        flash(gettext(u"%(err)s",
-                      err=gettext(u"User not found")),
-              "error")
-        return 0
-
-
 def user_del(form):
-    """ Form request to delete a user """
-    user_name = None
-    try:
-        if form.validate():
-            user_name = User.query.filter(User.id == form.user_id.data).first().name
-            delete_user(form.user_id.data)
-            if form.user_id.data == flask_login.current_user.id:
-                return 'logout'
-        else:
-            flash_form_errors(form)
-    except Exception as except_msg:
-        flash(gettext(u"Error: %(msg)s",
-                      msg=u'{action} {user}: {err}'.format(
-                          action=gettext(u"Delete"),
-                          user=user_name,
-                          err=except_msg)),
-              "error")
+    """ Delete user from SQL database """
+    user_name = User.query.filter(User.id == form.user_id.data).first().name
+    action = u'{action} {controller} {user}'.format(
+        action=gettext(u"Delete"),
+        controller=gettext(u"User"),
+        user=user_name)
+    error = []
+
+    if form.user_id.data == flask_login.current_user.id:
+        error.append("Cannot delete the currently-logged in user")
+
+    if not error:
+        try:
+            user = User.query.filter(
+                User.id == form.user_id.data).first()
+            user.delete()
+            return 1
+        except sqlalchemy.orm.exc.NoResultFound:
+            return 0
+
+    flash_success_errors(error, action, url_for('settings_routes.settings_users'))
 
 
 #

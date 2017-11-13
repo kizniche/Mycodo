@@ -76,7 +76,7 @@ class LCDMod(FlaskForm):
         ],
         validators=[DataRequired()]
     )
-    add_display = SubmitField(lazy_gettext(u'Add Display'))
+    add_display = SubmitField(lazy_gettext(u'Add Display Set'))
     save = SubmitField(lazy_gettext(u'Save'))
     delete = SubmitField(lazy_gettext(u'Delete'))
     activate = SubmitField(lazy_gettext(u'Activate'))

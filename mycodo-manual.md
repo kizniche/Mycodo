@@ -550,7 +550,7 @@ I<sup>2</sup>C Address | Select the I<sup>2</sup>C to communicate with the LCD.
 Multiplexer I<sup>2</sup>C Address | If the LCD is connected to a multiplexer, select the multiplexer I<sup>2</sup>C address.
 Multiplexer Channel | If the LCD is connected to a multiplexer, select the multiplexer channel the LCD is connected to.
 Period | This is the period of time (in seconds) between redrawing the LCD with new data or stitching to the next set of displays (if multiple displays are used).
-Add Display | Add a set of display lines to the LCD.
+Add Display Set | Add a set of display lines to the LCD.
 Display Line \# | Select which measurement to display on each line of the LCD.
 
 Controller Functions

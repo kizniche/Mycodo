@@ -1,3 +1,10 @@
+## 5.4.1 (Unreleased)
+
+### Features
+
+ - Prevent currently-logged in user from: deleting own user, changing user role from Admin
+
+
 ## 5.4.0 (2017-11-12)
 
 This release has refactored how LCD displays are handled, now allowing an infinite number of data sets on a single LCD.

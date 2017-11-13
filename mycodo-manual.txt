@@ -1061,7 +1061,7 @@ next every set period.
                         the next set of displays (if multiple displays
                         are used).
 
-  Add Display           Add a set of display lines to the LCD.
+  Add Display Set       Add a set of display lines to the LCD.
 
   Display Line #        Select which measurement to display on each
                         line of the LCD.
