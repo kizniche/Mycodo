@@ -8,7 +8,6 @@
 ### Bugfixes
 
  - Fix inability to modify timer options ([#318](https://github.com/kizniche/mycodo/issues/318))
- - Fix settings language for user creation of endpoint tests
 
 
 ## 5.4.0 (2017-11-12)
