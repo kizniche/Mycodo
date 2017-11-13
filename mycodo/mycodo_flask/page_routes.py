@@ -1004,7 +1004,8 @@ def page_timer():
             utils_timer.timer_add(display_order,
                                  form_timer_base,
                                  form_timer)
-        elif form_name == 'modTimer':
+
+        elif form_name == 'modTimer' and form_timer:
             if form_timer_base.delete.data:
                 utils_timer.timer_del(form_timer_base)
             elif form_timer_base.order_up.data:
@@ -1018,10 +1019,8 @@ def page_timer():
             elif form_timer_base.deactivate.data:
                 utils_timer.timer_deactivate(form_timer_base)
             elif form_timer_base.modify.data:
-                if form_timer:
-                    utils_timer.timer_mod(form_timer_base,
-                                          form_timer)
-        return redirect('/timer')
+                utils_timer.timer_mod(form_timer_base, form_timer)
+        return redirect(url_for('page_routes.page_timer'))
 
     return render_template('pages/timer.html',
                            method=method,
