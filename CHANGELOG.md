@@ -1,4 +1,6 @@
-## 5.3.7 (Unreleased)
+## 5.4.0 (2017-11-12)
+
+This release will delete 
 
 ### Features
 
@@ -8,6 +10,7 @@
 ### Bugfixes
 
  - Fix language selection being applied globally (each user now has own language)
+ - Fix display of degree symbols on LCDs
 
 
 ## 5.3.6 (2017-11-11)

@@ -338,13 +338,13 @@ class LCDController(threading.Thread):
                 elif measurement:
                     value_length = len(str(
                         self.lcd_line[display_id][i]['measurement_value']))
-                    unit_length = len(self.list_sensors[measurement]['unit'])
+                    unit_length = len(self.list_sensors[measurement]['unit'].replace(u'°', u''))
                     name_length = number_characters - value_length - unit_length - 2
                     name_cropped = self.lcd_line[display_id][i]['name'].ljust(name_length)[:name_length]
                     self.lcd_string_line[i] = u'{name} {value} {unit}'.format(
                         name=name_cropped,
                         value=self.lcd_line[display_id][i]['measurement_value'],
-                        unit=self.list_sensors[measurement]['unit'])
+                        unit=self.list_sensors[measurement]['unit'].replace(u'°', u''))
                 else:
                     value_length = len(str(
                         self.lcd_line[display_id][i]['measurement_value']))
@@ -354,7 +354,7 @@ class LCDController(threading.Thread):
                         name=name_cropped,
                         value=self.lcd_line[display_id][i]['measurement_value'])
             else:
-                self.lcd_string_line[i] = 'ERROR: NO DATA'
+                self.lcd_string_line[display_id][i] = 'ERROR: NO DATA'
         except Exception as except_msg:
             self.logger.exception("Error: {err}".format(err=except_msg))
 

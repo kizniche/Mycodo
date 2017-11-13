@@ -27,6 +27,13 @@ def upgrade():
         batch_op.drop_column('line_4_sensor_id')
         batch_op.drop_column('line_4_measurement')
 
+    op.execute(
+        '''
+        UPDATE lcd
+        SET is_activated=0
+        '''
+    )
+
     op.create_table(
         'lcd_data',
         sa.Column('id', sa.Integer, nullable=False, unique=True),
