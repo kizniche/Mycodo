@@ -1,0 +1,10 @@
+/var/log/mycodo/*.log {
+        hourly
+        size 10M
+        create 644 mycodo mycodo
+        rotate 5
+        delaycompress
+        compress
+        notifempty
+        missingok
+}

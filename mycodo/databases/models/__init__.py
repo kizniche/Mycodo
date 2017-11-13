@@ -34,6 +34,7 @@ from .camera import Camera
 from .display_order import DisplayOrder
 from .graph import Graph
 from .lcd import LCD
+from .lcd import LCDData
 from .method import Method
 from .method import MethodData
 from .misc import Misc

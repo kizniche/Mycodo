@@ -1213,6 +1213,7 @@
 <p>This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. While creating these methods, keep in mind a duty cycle is a percentage and the values must stay between 0 and 100.</p>
 <h2 id="lcds">LCDs</h2>
 <p>Data may be output to a liquid crystal display (LCD) for easy viewing. Please see <a href="#lcd-displays">LCD Displays</a> for specific information regarding compatibility.</p>
+<p>There may be multiple displays created for each LCD. If there is only one display created for the LCD, it will refresh at the set period. If there is more than one display, it will cycle from one display to the next every set period.</p>
 <table style="width:94%;">
 <colgroup>
 <col style="width: 29%"></col>
@@ -1247,9 +1248,13 @@
 </tr>
 <tr class="even">
 <td style="text-align: left;">Period</td>
-<td style="text-align: left;">This is the period of time (in seconds) between redrawing the LCD with new data.</td>
+<td style="text-align: left;">This is the period of time (in seconds) between redrawing the LCD with new data or stitching to the next set of displays (if multiple displays are used).</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">Add Display</td>
+<td style="text-align: left;">Add a set of display lines to the LCD.</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">Display Line #</td>
 <td style="text-align: left;">Select which measurement to display on each line of the LCD.</td>
 </tr>

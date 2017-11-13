@@ -17,6 +17,7 @@ class Method(CRUDMixin, db.Model):
 
 class MethodData(CRUDMixin, db.Model):
     __tablename__ = "method_data"
+
     id = db.Column(db.Integer, unique=True, primary_key=True)
     method_id = db.Column(db.Integer, db.ForeignKey('method.id'), default=None)
     time_start = db.Column(db.Text, default=None)

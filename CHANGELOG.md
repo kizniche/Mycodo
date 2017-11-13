@@ -1,12 +1,13 @@
 ## 5.3.7 (Unreleased)
 
+### Features
+
+ - Add ability to cycle infinite sets of data on a single LCD display ([#316](https://github.com/kizniche/mycodo/issues/316))
+ - Add logrotate script to manage mycodo logs
+
 ### Bugfixes
 
  - Fix language selection being applied globally (each user now has own language)
-
-### Miscellaneous
-
- - Add 0x57 as new AM2315 I2C address ([#315](https://github.com/kizniche/mycodo/issues/315))
 
 
 ## 5.3.6 (2017-11-11)

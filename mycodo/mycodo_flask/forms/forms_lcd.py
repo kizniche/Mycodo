@@ -36,15 +36,18 @@ class LCDMod(FlaskForm):
         validators=[DataRequired()]
     )
     location = StringField(
-        lazy_gettext(u'I2C Address'),
+        "{op} ({unit})".format(op=lazy_gettext(u'Address'),
+                               unit=lazy_gettext(u'I<sup>2</sup>C')),
         validators=[DataRequired()]
     )
     i2c_bus = IntegerField(
-        lazy_gettext(u'I2C Bus'),
+        "{op} ({unit})".format(op=lazy_gettext(u'Bus'),
+                               unit=lazy_gettext(u'I<sup>2</sup>C')),
         validators=[DataRequired()]
     )
     multiplexer_address = StringField(
-        lazy_gettext(u'Multiplexer I2C Address')
+        "{op} ({unit})".format(op=lazy_gettext(u'Multiplexer Address'),
+                               unit=lazy_gettext(u'I<sup>2</sup>C'))
     )
     multiplexer_channel = IntegerField(
         lazy_gettext(u'Multiplexer Channel'),
@@ -73,6 +76,19 @@ class LCDMod(FlaskForm):
         ],
         validators=[DataRequired()]
     )
+    add_display = SubmitField(lazy_gettext(u'Add Display'))
+    save = SubmitField(lazy_gettext(u'Save'))
+    delete = SubmitField(lazy_gettext(u'Delete'))
+    activate = SubmitField(lazy_gettext(u'Activate'))
+    deactivate = SubmitField(lazy_gettext(u'Deactivate'))
+    reorder_up = SubmitField(lazy_gettext(u'Up'))
+    reorder_down = SubmitField(lazy_gettext(u'Down'))
+    reset_flashing = SubmitField(lazy_gettext(u'Reset Flashing'))
+
+
+class LCDModDisplay(FlaskForm):
+    lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
+    lcd_data_id = IntegerField('LCD Data ID', widget=widgets.HiddenInput())
     line_1_display = StringField(
         lazy_gettext(u'Line 1 Display')
     )
@@ -85,10 +101,5 @@ class LCDMod(FlaskForm):
     line_4_display = StringField(
         lazy_gettext(u'Line 4 Display')
     )
-    save = SubmitField(lazy_gettext(u'Save'))
-    delete = SubmitField(lazy_gettext(u'Delete'))
-    activate = SubmitField(lazy_gettext(u'Activate'))
-    deactivate = SubmitField(lazy_gettext(u'Deactivate'))
-    reorder_up = SubmitField(lazy_gettext(u'Up'))
-    reorder_down = SubmitField(lazy_gettext(u'Down'))
-    reset_flashing = SubmitField(lazy_gettext(u'Reset Flashing'))
+    save_display = SubmitField(lazy_gettext(u'Save'))
+    delete_display = SubmitField(lazy_gettext(u'Delete'))

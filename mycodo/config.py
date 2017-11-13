@@ -7,7 +7,7 @@ import collections
 from datetime import timedelta
 
 MYCODO_VERSION = '5.3.7'
-ALEMBIC_VERSION = '70b7016e107f'
+ALEMBIC_VERSION = '3c7c2b12389d'
 
 LANGUAGES = {
     'en': 'English',

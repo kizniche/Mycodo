@@ -221,8 +221,9 @@ def delete_entry_with_id(table, entry_id):
         db.session.delete(entries)
         db.session.commit()
         flash(gettext(u"%(msg)s",
-                      msg=u'{action} {id}'.format(
+                      msg=u'{action} {table} with ID: {id}'.format(
                           action=gettext(u"Delete"),
+                          table=table.__tablename__,
                           id=entry_id)),
               "success")
         return 1

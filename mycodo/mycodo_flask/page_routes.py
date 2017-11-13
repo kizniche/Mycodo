@@ -53,6 +53,7 @@ from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Graph
 from mycodo.databases.models import LCD
+from mycodo.databases.models import LCDData
 from mycodo.databases.models import Method
 from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
@@ -522,14 +523,16 @@ def page_info():
 def page_lcd():
     """ Display LCD output settings """
     lcd = LCD.query.all()
+    lcd_data = LCDData.query.all()
     pid = PID.query.all()
     relay = Relay.query.all()
     sensor = Sensor.query.all()
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
 
-    form_add_lcd = forms_lcd.LCDAdd()
-    form_mod_lcd = forms_lcd.LCDMod()
+    form_lcd_add = forms_lcd.LCDAdd()
+    form_lcd_mod = forms_lcd.LCDMod()
+    form_lcd_display = forms_lcd.LCDModDisplay()
 
     measurements = MEASUREMENTS
 
@@ -544,35 +547,43 @@ def page_lcd():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
 
-        if form_add_lcd.add.data:
-            utils_lcd.lcd_add(form_add_lcd.quantity.data)
-        elif form_mod_lcd.save.data:
-            utils_lcd.lcd_mod(form_mod_lcd)
-        elif form_mod_lcd.delete.data:
-            utils_lcd.lcd_del(form_mod_lcd.lcd_id.data)
-        elif form_mod_lcd.reorder_up.data:
-            utils_lcd.lcd_reorder(form_mod_lcd.lcd_id.data,
-                                   display_order, 'up')
-        elif form_mod_lcd.reorder_down.data:
-            utils_lcd.lcd_reorder(form_mod_lcd.lcd_id.data,
-                                   display_order, 'down')
-        elif form_mod_lcd.activate.data:
-            utils_lcd.lcd_activate(form_mod_lcd.lcd_id.data)
-        elif form_mod_lcd.deactivate.data:
-            utils_lcd.lcd_deactivate(form_mod_lcd.lcd_id.data)
-        elif form_mod_lcd.reset_flashing.data:
-            utils_lcd.lcd_reset_flashing(form_mod_lcd.lcd_id.data)
+        if form_lcd_add.add.data:
+            utils_lcd.lcd_add(form_lcd_add.quantity.data)
+        elif form_lcd_mod.save.data:
+            utils_lcd.lcd_mod(form_lcd_mod)
+        elif form_lcd_mod.delete.data:
+            utils_lcd.lcd_del(form_lcd_mod.lcd_id.data)
+        elif form_lcd_mod.reorder_up.data:
+            utils_lcd.lcd_reorder(form_lcd_mod.lcd_id.data,
+                                  display_order, 'up')
+        elif form_lcd_mod.reorder_down.data:
+            utils_lcd.lcd_reorder(form_lcd_mod.lcd_id.data,
+                                  display_order, 'down')
+        elif form_lcd_mod.activate.data:
+            utils_lcd.lcd_activate(form_lcd_mod.lcd_id.data)
+        elif form_lcd_mod.deactivate.data:
+            utils_lcd.lcd_deactivate(form_lcd_mod.lcd_id.data)
+        elif form_lcd_mod.reset_flashing.data:
+            utils_lcd.lcd_reset_flashing(form_lcd_mod.lcd_id.data)
+        elif form_lcd_mod.add_display.data:
+            utils_lcd.lcd_display_add(form_lcd_mod)
+        elif form_lcd_display.save_display.data:
+            utils_lcd.lcd_display_mod(form_lcd_display)
+        elif form_lcd_display.delete_display.data:
+            utils_lcd.lcd_display_del(form_lcd_display.lcd_data_id.data)
         return redirect('/lcd')
 
     return render_template('pages/lcd.html',
                            lcd=lcd,
+                           lcd_data=lcd_data,
                            measurements=measurements,
                            pid=pid,
                            relay=relay,
                            sensor=sensor,
                            displayOrder=display_order,
-                           form_add_lcd=form_add_lcd,
-                           form_mod_lcd=form_mod_lcd)
+                           form_lcd_add=form_lcd_add,
+                           form_lcd_mod=form_lcd_mod,
+                           form_lcd_display=form_lcd_display)
 
 
 @blueprint.route('/live', methods=('GET', 'POST'))

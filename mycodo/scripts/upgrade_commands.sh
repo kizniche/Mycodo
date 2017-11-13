@@ -9,7 +9,7 @@ if [ "$EUID" -ne 0 ] ; then
 fi
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../.." && pwd -P )
-APT_PKGS="apache2 gawk gcc git libapache2-mod-wsgi libav-tools libboost-python-dev libffi-dev libgtk2.0-0 libi2c-dev moreutils python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3 wget"
+APT_PKGS="apache2 gawk gcc git libapache2-mod-wsgi libav-tools libboost-python-dev libffi-dev libgtk2.0-0 libi2c-dev logrotate moreutils python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3 wget"
 
 cd ${INSTALL_DIRECTORY}
 
@@ -199,6 +199,14 @@ case "${1:-''}" in
             printf "#### Could not connect to Influxdb. Waiting 30 seconds then trying again...\n" &&
             sleep 30
         done
+    ;;
+    'update-logrotate')
+        printf "\n#### Installing logrotate script\n"
+        if [ -e /etc/cron.daily/logrotate ]; then
+            mv -f /etc/cron.daily/logrotate /etc/cron.hourly/
+        fi
+        cp -f ${INSTALL_DIRECTORY}/Mycodo/install/logrotate_mycodo /etc/logrotate.d/mycodo
+        printf "logrotate moved to cron.daily and logrotate script installed"
     ;;
     'update-mycodo-startup-script')
         printf "\n#### Enabling mycodo startup script\n"

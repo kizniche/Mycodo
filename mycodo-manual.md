@@ -540,6 +540,8 @@ LCDs
 
 Data may be output to a liquid crystal display (LCD) for easy viewing. Please see [LCD Displays](#lcd-displays) for specific information regarding compatibility.
 
+There may be multiple displays created for each LCD. If there is only one display created for the LCD, it will refresh at the set period. If there is more than one display, it will cycle from one display to the next every set period.
+
 Setting | Description
 -------------------- | ----------------------------------------------
 Reset Flashing | If the LCD is flashing to alert you because it was instructed to do so by a triggered Conditional Statement, use this button to stop the flashing.
@@ -547,7 +549,8 @@ Type | Select either a 16x2 or 20x4 character LCD display.
 I<sup>2</sup>C Address | Select the I<sup>2</sup>C to communicate with the LCD.
 Multiplexer I<sup>2</sup>C Address | If the LCD is connected to a multiplexer, select the multiplexer I<sup>2</sup>C address.
 Multiplexer Channel | If the LCD is connected to a multiplexer, select the multiplexer channel the LCD is connected to.
-Period | This is the period of time (in seconds) between redrawing the LCD with new data.
+Period | This is the period of time (in seconds) between redrawing the LCD with new data or stitching to the next set of displays (if multiple displays are used).
+Add Display | Add a set of display lines to the LCD.
 Display Line \# | Select which measurement to display on each line of the LCD.
 
 Controller Functions
