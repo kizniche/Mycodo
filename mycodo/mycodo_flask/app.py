@@ -1,7 +1,7 @@
 # coding=utf-8
 #
-#  mycodo_flask.py - Flask web server for Mycodo, for visualizing data,
-#                    configuring the system, and controlling the daemon.
+#  app.py - Flask web server for Mycodo, for visualizing data,
+#           configuring the system, and controlling the daemon.
 #
 
 import datetime
@@ -72,14 +72,12 @@ def create_app(config=ProdConfig):
 
     @babel.localeselector
     def get_locale():
-        try:
-            user = User.query.filter(User.id == flask_login.current_user.id).first()
-            if user and user.language != '':
-                for key in LANGUAGES:
-                    if key == user.language:
-                        return key
-        except AttributeError:  # Error during endpoint tests
-            pass
+        user = User.query.filter(
+            User.id == flask_login.current_user.id).first()
+        if user and user.language != '':
+            for key in LANGUAGES:
+                if key == user.language:
+                    return key
         return request.accept_languages.best_match(LANGUAGES.keys())
 
     @login_manager.user_loader

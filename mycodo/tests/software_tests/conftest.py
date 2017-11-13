@@ -84,6 +84,7 @@ def create_admin_user():
         user = UserFactory()
         user.name = 'admin'
         user.set_password('53CR3t_p4zZW0rD')
+        user.language = 'en'
         user.save()
         user.role = Role.query.filter_by(name='Admin').first().id
         user.save()
@@ -97,6 +98,7 @@ def create_guest_user():
         user.email = 'guest@email.com'
         user.set_password('53CR3t_p4zZW0rD')
         user.role = Role.query.filter_by(name='Guest').first().id
+        user.language = 'en'
         user.save()
 
 

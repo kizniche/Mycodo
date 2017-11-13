@@ -112,7 +112,7 @@ class SensorController(threading.Thread):
         threading.Thread.__init__(self)
 
         self.logger = logging.getLogger(
-            "mycodo.sensor_{id}".format(id=sensor_id))
+            "mycodo.input_{id}".format(id=sensor_id))
 
         self.stop_iteration_counter = 0
         self.thread_startup_timer = timeit.default_timer()
