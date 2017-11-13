@@ -3,6 +3,7 @@
 ### Features
 
  - Prevent currently-logged in user from: deleting own user, changing user role from Admin
+ - Force iPhone to open Mycodo as standalone web app instead of in Safari
 
 
 ## 5.4.0 (2017-11-12)
