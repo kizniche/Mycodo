@@ -1,6 +1,8 @@
 ## 5.4.0 (2017-11-12)
 
-This release will delete 
+This release has refactored how LCD display is handled, allowing an infinite number of data sets on a single LCD.
+
+Note: All LDCs will be deactivated during the upgrade. As a consequence, LCD displays will need to be reconfigured and reactivated. 
 
 ### Features
 
