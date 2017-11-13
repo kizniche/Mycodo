@@ -10,24 +10,20 @@ class AtlasPT1000Sensor(AbstractSensor):
     """ A sensor support class that monitors the PT1000's temperature """
 
     def __init__(self, interface, device_loc=None, baud_rate=None,
-                 i2c_address=None, i2c_bus=None):
+                 i2c_address=None, i2c_bus=None, testing=False):
         super(AtlasPT1000Sensor, self).__init__()
         self._temperature = 0.0
         self.interface = interface
+        self.device_loc = device_loc
+        self.baud_rate = baud_rate
+        self.i2c_address = i2c_address
+        self.i2c_bus = i2c_bus
+        self.atlas_sensor_uart = None
+        self.atlas_sensor_i2c = None
+        self.logger = None
 
-        if self.interface == 'UART':
-            self.logger = logging.getLogger(
-                "mycodo.sensors.atlas_pt1000_{loc}".format(loc=device_loc))
-            self.atlas_sensor_uart = AtlasScientificUART(
-                device_loc, baudrate=baud_rate)
-        elif self.interface == 'I2C':
-            self.logger = logging.getLogger(
-                "mycodo.sensors.atlas_pt1000_{bus}_{add}".format(
-                    bus=i2c_bus, add=i2c_address))
-            self.atlas_sensor_i2c = AtlasScientificI2C(
-                i2c_address=i2c_address, i2c_bus=i2c_bus)
-        else:
-            self.logger = logging.getLogger("mycodo.sensors.atlas_pt1000")
+        if not testing:
+            self.initialize_sensor()
 
     def __repr__(self):
         """  Representation of object """
@@ -63,6 +59,21 @@ class AtlasPT1000Sensor(AbstractSensor):
         if not self._temperature:  # update if needed
             self.read()
         return self._temperature
+
+    def initialize_sensor(self):
+        if self.interface == 'UART':
+            self.logger = logging.getLogger(
+                "mycodo.sensors.atlas_pt1000_{loc}".format(loc=self.device_loc))
+            self.atlas_sensor_uart = AtlasScientificUART(
+                self.device_loc, baudrate=self.baud_rate)
+        elif self.interface == 'I2C':
+            self.logger = logging.getLogger(
+                "mycodo.sensors.atlas_pt1000_{bus}_{add}".format(
+                    bus=self.i2c_bus, add=self.i2c_address))
+            self.atlas_sensor_i2c = AtlasScientificI2C(
+                i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
+        else:
+            self.logger = logging.getLogger("mycodo.sensors.atlas_pt1000")
 
     def get_measurement(self):
         """ Gets the Atlas PT1000's temperature in Celsius """

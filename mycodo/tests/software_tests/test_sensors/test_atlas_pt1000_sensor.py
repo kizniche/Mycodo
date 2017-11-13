@@ -8,6 +8,14 @@ from collections import Iterator
 from mycodo.sensors.atlas_pt1000 import AtlasPT1000Sensor
 
 
+class MockPlatformInDependentSensor(AtlasPT1000Sensor):
+    """ Example sensor """
+    @staticmethod
+    def read_sensor():
+        """ simulate a reading from a device """
+        fake_reading = "0.746"
+        return fake_reading
+
 # ----------------------------
 #   AtlasPT1000 tests
 # ----------------------------
