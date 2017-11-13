@@ -7,7 +7,7 @@
 
 ### Bugfixes
 
- - Fix inability to modify timer options
+ - Fix inability to modify timer options ([#318](https://github.com/kizniche/mycodo/issues/318))
 
 
 ## 5.4.0 (2017-11-12)
