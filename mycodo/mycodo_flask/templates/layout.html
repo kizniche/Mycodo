@@ -8,7 +8,41 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <link rel="icon" type="image/png" href="/static/img/favicon.png">
+    
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Mycodo {{mycodo_version}}">
+  <meta name="application-name" content="Mycodo {{mycodo_version}}">
+  <meta name="theme-color" content="#ffffff">
 
+  <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png" />   <!-- include this image in static/img/ folder -->
+    
+  <!-- the next script is for standalone webapp osx -->
+  <script type="text/javascript">
+    (function(document,navigator,standalone) {
+      // prevents links from apps from oppening in mobile safari
+      // this javascript must be the first script in your <head>
+      if ((standalone in navigator) && navigator[standalone]) {
+        var curnode, location=document.location, stop=/^(a|html)$/i;
+        document.addEventListener('click', function(e) {
+          curnode=e.target;
+          while (!(stop).test(curnode.nodeName)) {
+            curnode=curnode.parentNode;
+          }
+          // Condidions to do this only on links to your own app
+          // if you want all links, use if('href' in curnode) instead.
+          if(
+            'href' in curnode && // is a link
+            (chref=curnode.href).replace(location.href,'').indexOf('#') && // is not an anchor
+            (	!(/^[a-z\+\.\-]+:/i).test(chref) ||                       // either does not have a proper scheme (relative links)
+              chref.indexOf(location.protocol+'//'+location.host)===0 ) // or is in the same protocol and domain
+          ) {
+            e.preventDefault();
+            location.href = curnode.href;
+          }
+        },false);
+      }
+    })(document,window.navigator,'standalone');
+  </script>
   <title>{{host}}{% block title %}{% endblock %} - Mycodo {{mycodo_version}}</title>
 
   <link rel="stylesheet" href="/static/css/font-awesome.min.css">
