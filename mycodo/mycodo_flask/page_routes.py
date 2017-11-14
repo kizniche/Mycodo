@@ -311,13 +311,13 @@ def page_graph():
     # Add multi-select values as form choices, for validation
     form_mod_graph.pid_ids.choices = []
     form_mod_graph.relay_ids.choices = []
-    form_mod_graph.input_ids.choices = []
+    form_mod_graph.sensor_ids.choices = []
     for key, value in pid_choices.items():
         form_mod_graph.pid_ids.choices.append((key, value))
     for key, value in output_choices.items():
         form_mod_graph.relay_ids.choices.append((key, value))
     for key, value in input_choices.items():
-        form_mod_graph.input_ids.choices.append((key, value))
+        form_mod_graph.sensor_ids.choices.append((key, value))
 
     # Generate dictionary of custom colors for each graph
     colors_graph = dict_custom_colors()
@@ -599,7 +599,7 @@ def page_live():
     pid_display_order = csv_to_list_of_int(
         DisplayOrder.query.first().pid)
     input_display_order = csv_to_list_of_int(
-        DisplayOrder.query.first().input)
+        DisplayOrder.query.first().sensor)
 
     # Filter only activated inputs
     input_order_sorted = []
@@ -873,7 +873,7 @@ def page_input():
         Conditional.conditional_type == 'input').all()
     conditional_actions = ConditionalActions.query.all()
 
-    display_order = csv_to_list_of_int(DisplayOrder.query.first().input)
+    display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
 
     form_add_input = forms_input.InputAdd()
     form_mod_input = forms_input.InputMod()
