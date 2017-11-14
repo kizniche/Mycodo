@@ -122,7 +122,8 @@ class BME280Sensor(AbstractSensor):
              self._humidity,
              self._pressure,
              self._temperature) = self.get_measurement()
-            return  # success - no errors
+            if self._altitude is not None:
+                return  # success - no errors
         except Exception as e:
             self.logger.exception(
                 "{cls} raised an exception when taking a reading: "

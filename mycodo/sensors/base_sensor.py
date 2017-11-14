@@ -1,11 +1,11 @@
 # coding=utf-8
 """
 This module contains the AbstractSensor Class which acts as a template
-for all sensors.  It is not to be used directly.  The AbstractSensor Class
+for all inputs.  It is not to be used directly.  The AbstractSensor Class
 ensures that certain methods and instance variables are included in each
-Sensor.
+Input.
 
-All Sensors should inherit from this class and overwrite methods that raise
+All Inputs should inherit from this class and overwrite methods that raise
 NotImplementedErrors
 """
 import logging

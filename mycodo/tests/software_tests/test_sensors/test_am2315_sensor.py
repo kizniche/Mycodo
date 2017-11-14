@@ -47,9 +47,9 @@ def test_am2315_read_updates_temp():
         am2315 = AM2315Sensor(1, 1, testing=True)
 
         # test our read() function
-        assert am2315._dew_point == 0  # init value
-        assert am2315._humidity == 0  # init value
-        assert am2315._temperature == 0  # init value
+        assert am2315._dew_point is None  # init value
+        assert am2315._humidity is None  # init value
+        assert am2315._temperature is None  # init value
         assert not am2315.read()  # updating the value using our mock_measure side effect has no error
         assert am2315._dew_point == 20.0  # init value
         assert am2315._humidity == 33.0  # init value
@@ -79,9 +79,9 @@ def test_am2315_condition_properties():
         mock_measure.side_effect = [(20, 50, 67),  # first reading
                                     (22, 55, 52)]  # second reading
         am2315 = AM2315Sensor(1, 1, testing=True)
-        assert am2315._dew_point == 0  # initial value
-        assert am2315._humidity == 0  # initial value
-        assert am2315._temperature == 0  # initial value
+        assert am2315._dew_point is None  # initial value
+        assert am2315._humidity is None  # initial value
+        assert am2315._temperature is None  # initial value
         assert am2315.dew_point == 20.00  # first reading with auto update
         assert am2315.dew_point == 20.00  # same first reading, not updated yet
         assert am2315.humidity == 50.00  # first reading with auto update
@@ -96,14 +96,22 @@ def test_am2315_condition_properties():
 
 def test_am2315_special_method_str():
     """ expect a __str__ format """
-    assert "Dew Point: 0.00" in str(AM2315Sensor(1, 1, testing=True))
-    assert "Humidity: 0.00" in str(AM2315Sensor(1, 1, testing=True))
-    assert "Temperature: 0.00" in str(AM2315Sensor(1, 1, testing=True))
+    with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement') as mock_measure:
+        mock_measure.side_effect = [(0, 0, 0)]  # first reading
+        am2315 = AM2315Sensor(1, 1, testing=True)
+        am2315.read()
+        assert "Dew Point: 0.00" in str(am2315)
+        assert "Humidity: 0.00" in str(am2315)
+        assert "Temperature: 0.00" in str(am2315)
 
 
 def test_am2315_special_method_repr():
     """ expect a __repr__ format """
-    assert "<AM2315Sensor(dewpoint=0.00)(humidity=0.00)(temperature=0.00)>" in repr(AM2315Sensor(1, 1, testing=True))
+    with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement') as mock_measure:
+        mock_measure.side_effect = [(0, 0, 0)]  # first reading
+        am2315 = AM2315Sensor(1, 1, testing=True)
+        am2315.read()
+        assert "<AM2315Sensor(dewpoint=0.00)(humidity=0.00)(temperature=0.00)>" in repr(am2315)
 
 
 def test_am2315_raises_exception():
@@ -125,11 +133,11 @@ def test_am2315_read_returns_1_on_exception():
 #     with mock.patch('mycodo.sensors.am2315.open', mocked_open, create=True):
 #         assert AM2315Sensor.get_measurement() == 45.78  # value read / 1000
 
-# def test_am2315_read_logs_unknown_errors():
-#     """ verify that IOErrors are logged """
-#     with LogCapture() as log_cap:
-#         # force an Exception to be raised when get_measurement is called
-#         with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement', side_effect=Exception('msg')):
-#             AM2315Sensor(1, 1, testing=True).read()
-#     expected_logs = ('mycodo.sensors.am2315', 'ERROR', 'AM2315Sensor raised an exception when taking a reading: msg')
-#     assert expected_logs in log_cap.actual()
+def test_am2315_read_logs_unknown_errors():
+    """ verify that IOErrors are logged """
+    with LogCapture() as log_cap:
+        # force an Exception to be raised when get_measurement is called
+        with mock.patch('mycodo.sensors.am2315.AM2315Sensor.get_measurement', side_effect=Exception('msg')):
+            AM2315Sensor(1, 1, testing=True).read()
+    expected_logs = ('mycodo.sensors.am2315', 'ERROR', 'AM2315Sensor raised an exception when taking a reading: msg')
+    assert expected_logs in log_cap.actual()

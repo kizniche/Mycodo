@@ -1,5 +1,5 @@
 # coding=utf-8
-""" Tests for the BMP sensor class """
+""" Tests for the BMP180 sensor class """
 import mock
 import pytest
 from testfixtures import LogCapture
@@ -44,9 +44,9 @@ def test_bmp_read_updates_temp():
         mock_measure.side_effect = [(67, 33, 2000),
                                     (52, 59, 2500)]  # first reading, second reading
         bmp = BMP180Sensor(1)
-        assert bmp._altitude == 0  # initial values
-        assert bmp._pressure == 0
-        assert bmp._temperature == 0
+        assert bmp._altitude is None  # initial values
+        assert bmp._pressure is None
+        assert bmp._temperature is None
         assert not bmp.read()  # updating the value using our mock_measure side effect has no error
         assert bmp._altitude == 2000.0  # first values
         assert bmp._pressure == 33.0
@@ -76,9 +76,9 @@ def test_bmp_condition_properties():
         mock_measure.side_effect = [(67, 50, 3000),  # first reading
                                     (52, 55, 3500)]  # second reading
         bmp = BMP180Sensor(1)
-        assert bmp._altitude == 0  # initial values
-        assert bmp._pressure == 0
-        assert bmp._temperature == 0
+        assert bmp._altitude is None  # initial values
+        assert bmp._pressure is None
+        assert bmp._temperature is None
         assert bmp.altitude == 3000.00  # first reading with auto update
         assert bmp.altitude == 3000.00  # same first reading, not updated yet
         assert bmp.pressure == 50.00
@@ -93,14 +93,22 @@ def test_bmp_condition_properties():
 
 def test_bmp_special_method_str():
     """ expect a __str__ format """
-    assert "Altitude: 0.00" in str(BMP180Sensor(1))
-    assert "Pressure: 0" in str(BMP180Sensor(1))
-    assert "Temperature: 0.00" in str(BMP180Sensor(1))
+    with mock.patch('mycodo.sensors.bmp180.BMP180Sensor.get_measurement') as mock_measure:
+        mock_measure.side_effect = [(0, 0, 0)]  # first reading
+        bmp180 = BMP180Sensor(1)
+        bmp180.read()
+    assert "Altitude: 0.00" in str(bmp180)
+    assert "Pressure: 0" in str(bmp180)
+    assert "Temperature: 0.00" in str(bmp180)
 
 
 def test_bmp_special_method_repr():
     """ expect a __repr__ format """
-    assert "<BMP180Sensor(temperature=0.00)(pressure=0)(altitude=0.00)>" in repr(BMP180Sensor(1))
+    with mock.patch('mycodo.sensors.bmp180.BMP180Sensor.get_measurement') as mock_measure:
+        mock_measure.side_effect = [(0, 0, 0)]  # first reading
+        bmp180 = BMP180Sensor(1)
+        bmp180.read()
+        assert "<BMP180Sensor(temperature=0.00)(pressure=0)(altitude=0.00)>" in repr(bmp180)
 
 
 def test_bmp_raises_exception():

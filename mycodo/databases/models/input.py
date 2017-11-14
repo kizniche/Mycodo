@@ -9,7 +9,7 @@ class Input(CRUDMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
-    name = db.Column(db.Text, default='Sensor')
+    name = db.Column(db.Text, default='Input Name')
     is_activated = db.Column(db.Boolean, default=False)
     is_preset = db.Column(db.Boolean, default=False)  # Is config saved as a preset?
     preset_name = db.Column(db.Text, default=None)  # Name for preset

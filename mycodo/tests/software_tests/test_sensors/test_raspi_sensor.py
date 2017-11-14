@@ -44,7 +44,7 @@ def test_raspberry_pi_cpu_temp_read_updates_temp():
         rpi_cpu = RaspberryPiCPUTemp()
 
         # test our read() function
-        assert rpi_cpu._temperature == 0  # init value
+        assert rpi_cpu._temperature is None  # init value
         assert not rpi_cpu.read()  # updating the value using our mock_measure side effect has no error
         assert rpi_cpu._temperature == 67.0  # first value
         assert not rpi_cpu.read()  # updating the value using our mock_measure side effect has no error
@@ -66,7 +66,7 @@ def test_raspberry_pi_cpu_temp_temperature_property():
         # create our object
         mock_measure.side_effect = [67, 52]  # first reading, second reading
         rpi_cpu = RaspberryPiCPUTemp()
-        assert rpi_cpu._temperature == 0  # initial value
+        assert rpi_cpu._temperature is None  # initial value
         assert rpi_cpu.temperature == 67.00  # first reading with auto update
         assert rpi_cpu.temperature == 67.00  # same first reading, not updated yet
         assert not rpi_cpu.read()  # update (no errors)
@@ -75,12 +75,20 @@ def test_raspberry_pi_cpu_temp_temperature_property():
 
 def test_raspberry_pi_cpu_temp_special_method_str():
     """ expect a __str__ format """
-    assert "Temperature: 0.00" in str(RaspberryPiCPUTemp())
+    with mock.patch('mycodo.sensors.raspi.RaspberryPiCPUTemp.get_measurement') as mock_measure:
+        mock_measure.side_effect = [0, 0]  # first reading, second reading
+        rpi_cpu = RaspberryPiCPUTemp()
+        rpi_cpu.read()
+        assert "Temperature: 0.00" in str(rpi_cpu)
 
 
 def test_raspberry_pi_cpu_temp_special_method_repr():
     """ expect a __repr__ format """
-    assert "<RaspberryPiCPUTemp(temperature=0.00)>" in repr(RaspberryPiCPUTemp())
+    with mock.patch('mycodo.sensors.raspi.RaspberryPiCPUTemp.get_measurement') as mock_measure:
+        mock_measure.side_effect = [0, 0]  # first reading, second reading
+        rpi_cpu = RaspberryPiCPUTemp()
+        rpi_cpu.read()
+        assert "<RaspberryPiCPUTemp(temperature=0.00)>" in repr(rpi_cpu)
 
 
 def test_raspberry_pi_cpu_temp_raises_exception():
@@ -161,7 +169,7 @@ def test_raspberry_pi_gpu_temp_read_updates_temp():
 
         # create our object and test
         rpi_gpu = RaspberryPiGPUTemp()
-        assert rpi_gpu._temperature == 0  # initial value
+        assert rpi_gpu._temperature is None  # initial value
         assert not rpi_gpu.read()  # update 1
         assert rpi_gpu._temperature == 67.0  # first reading at the init
         assert not rpi_gpu.read()  # update 2
@@ -176,7 +184,7 @@ def test_raspberry_pi_gpu_temp_temperature_property():
 
         # create our object and test
         rpi_gpu = RaspberryPiGPUTemp()
-        assert rpi_gpu._temperature == 0  # initial value
+        assert rpi_gpu._temperature is None  # initial value
         assert rpi_gpu.temperature == 67.2  # first reading with auto update
         assert rpi_gpu.temperature == 67.2  # same reading, not updated yet
         assert not rpi_gpu.read()  # update (no errors)
@@ -187,7 +195,6 @@ def test_raspberry_pi_gpu_temp_next_returns_dict():
     """ Expect next() to return string: '{'measurement type':measurement value}' """
     with mock.patch('mycodo.sensors.raspi.subprocess') as mock_subprocess:
         mock_subprocess.check_output.side_effect = lambda n: "temp=42.8'C"
-
         rpi_gpu = RaspberryPiGPUTemp()
         assert rpi_gpu.next() == dict(temperature=42.80)
 
@@ -198,7 +205,6 @@ def test_raspberry_pi_gpu_temp_special_method_str():
         # create our object
         mock_measure.side_effect = [67.2, 52.5]  # first reading, second reading
         rpi_gpu = RaspberryPiGPUTemp()
-        assert "Temperature: 0.00" in str(rpi_gpu)  # initial value
         assert not rpi_gpu.read()  # update 1 (no errors)
         assert "Temperature: 67.20" in str(rpi_gpu)  # first reading
         assert not rpi_gpu.read()  # update 2 (no errors)
@@ -211,7 +217,6 @@ def test_raspberry_pi_gpu_temp_special_method_repr():
         # create our object
         mock_measure.side_effect = [67.2, 52.5]  # first reading, second reading
         rpi_gpu = RaspberryPiGPUTemp()
-        assert "<RaspberryPiGPUTemp(temperature=0.00)>" in repr(rpi_gpu)  # initial value
         assert not rpi_gpu.read()  # update 1 (no errors)
         assert "<RaspberryPiGPUTemp(temperature=67.20)>" in repr(rpi_gpu)  # first reading
         assert not rpi_gpu.read()  # update 2 (no errors)

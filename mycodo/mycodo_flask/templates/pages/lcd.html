@@ -180,13 +180,13 @@
             <select class="form-control" id="line_1_display" name="line_1_display">
               <option value=""{% if each_lcd_display.line_1_id == '' or each_lcd_display.line_1_measurement == '' %} selected{% endif %}></option>
               {%- for each_sensor in sensor -%}
-                <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_1_id == each_sensor.unique_id and each_lcd_display.line_1_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
+                <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_1_id == each_sensor.unique_id and each_lcd_display.line_1_measurement == 'sensor_time' %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
                 {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
                   {% if each_sensor.cmd_measurement == measure %}
-                    <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_1_id == each_sensor.unique_id and each_lcd_display.line_1_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
+                    <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_1_id == each_sensor.unique_id and each_lcd_display.line_1_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
                   {% else %}
                     {% for each_measurement in measure %}
-                      <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd_display.line_1_id == each_sensor.unique_id and each_lcd_display.line_1_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
+                      <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd_display.line_1_id == each_sensor.unique_id and each_lcd_display.line_1_measurement == each_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
                     {% endfor %}
                   {% endif %}
                 {% endfor %}
@@ -196,9 +196,9 @@
                 <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_1_id == each_pid.unique_id and each_lcd_display.line_1_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
               {%- endfor %}
               {%- for each_relay in relay -%}
-                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_1_id == each_relay.unique_id and each_lcd_display.line_1_measurement == 'relay_time' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
-                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_1_id == each_relay.unique_id and each_lcd_display.line_1_measurement == 'duration_sec' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): duration</option>
-                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_1_id == each_relay.unique_id and each_lcd_display.line_1_measurement == 'relay_state' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): state</option>
+                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_1_id == each_relay.unique_id and each_lcd_display.line_1_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
+                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_1_id == each_relay.unique_id and each_lcd_display.line_1_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): duration</option>
+                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_1_id == each_relay.unique_id and each_lcd_display.line_1_measurement == 'relay_state' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): state</option>
               {%- endfor %}
             </select>
           </div>
@@ -209,13 +209,13 @@
             <select class="form-control" id="line_2_display" name="line_2_display">
               <option value=""{% if each_lcd_display.line_2_id == '' or each_lcd_display.line_2_measurement == '' %} selected{% endif %}></option>
               {%- for each_sensor in sensor -%}
-                <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_2_id == each_sensor.unique_id and each_lcd_display.line_2_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
+                <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_2_id == each_sensor.unique_id and each_lcd_display.line_2_measurement == 'sensor_time' %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
                 {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
                   {% if each_sensor.cmd_measurement in measure['name'] %}
-                    <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_2_id == each_sensor.unique_id and each_lcd_display.line_2_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
+                    <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_2_id == each_sensor.unique_id and each_lcd_display.line_2_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
                   {% else %}
                     {% for each_measurement in measure %}
-                      <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd_display.line_2_id == each_sensor.unique_id and each_lcd_display.line_2_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
+                      <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd_display.line_2_id == each_sensor.unique_id and each_lcd_display.line_2_measurement == each_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
                     {% endfor %}
                   {% endif %}
                 {% endfor %}
@@ -225,9 +225,9 @@
                 <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_2_id == each_pid.unique_id and each_lcd_display.line_2_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
               {%- endfor %}
               {%- for each_relay in relay -%}
-                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_2_id == each_relay.unique_id and each_lcd_display.line_2_measurement == 'relay_time' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
-                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_2_id == each_relay.unique_id and each_lcd_display.line_2_measurement == 'duration_sec' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): duration</option>
-                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_2_id == each_relay.unique_id and each_lcd_display.line_2_measurement == 'relay_state' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): state</option>
+                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_2_id == each_relay.unique_id and each_lcd_display.line_2_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
+                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_2_id == each_relay.unique_id and each_lcd_display.line_2_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): duration</option>
+                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_2_id == each_relay.unique_id and each_lcd_display.line_2_measurement == 'relay_state' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): state</option>
               {%- endfor %}
             </select>
           </div>
@@ -241,13 +241,13 @@
             <select class="form-control" id="line_3_display" name="line_3_display">
               <option value=""{% if each_lcd_display.line_3_id == '' or each_lcd_display.line_3_measurement == '' %} selected{% endif %}></option>
               {%- for each_sensor in sensor -%}
-                <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_3_id == each_sensor.unique_id and each_lcd_display.line_3_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
+                <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_3_id == each_sensor.unique_id and each_lcd_display.line_3_measurement == 'sensor_time' %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
                 {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
                   {% if each_sensor.cmd_measurement in measure['name'] %}
-                    <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_3_id == each_sensor.unique_id and each_lcd_display.line_3_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
+                    <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_3_id == each_sensor.unique_id and each_lcd_display.line_3_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
                   {% else %}
                     {% for each_measurement in measure %}
-                      <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd_display.line_3_id == each_sensor.unique_id and each_lcd_display.line_3_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
+                      <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd_display.line_3_id == each_sensor.unique_id and each_lcd_display.line_3_measurement == each_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
                     {% endfor %}
                   {% endif %}
                 {% endfor %}
@@ -257,9 +257,9 @@
                 <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_3_id == each_pid.unique_id and each_lcd_display.line_3_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
               {%- endfor %}
               {%- for each_relay in relay -%}
-                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_3_id == each_relay.unique_id and each_lcd_display.line_3_measurement == 'relay_time' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
-                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_3_id == each_relay.unique_id and each_lcd_display.line_3_measurement == 'duration_sec' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): duration</option>
-                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_3_id == each_relay.unique_id and each_lcd_display.line_3_measurement == 'relay_state' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): state</option>
+                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_3_id == each_relay.unique_id and each_lcd_display.line_3_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
+                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_3_id == each_relay.unique_id and each_lcd_display.line_3_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): duration</option>
+                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_3_id == each_relay.unique_id and each_lcd_display.line_3_measurement == 'relay_state' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): state</option>
               {%- endfor %}
               </select>
           </div>
@@ -270,13 +270,13 @@
             <select class="form-control" id="line_4_display" name="line_4_display">
               <option value=""{% if each_lcd_display.line_4_id == '' or each_lcd_display.line_4_measurement == '' %} selected{% endif %}></option>
               {%- for each_sensor in sensor -%}
-                <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_4_id == each_sensor.unique_id and each_lcd_display.line_4_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
+                <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_4_id == each_sensor.unique_id and each_lcd_display.line_4_measurement == 'sensor_time' %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
                 {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
                   {% if each_sensor.cmd_measurement in measure['name'] %}
-                    <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_4_id == each_sensor.unique_id and each_lcd_display.line_4_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
+                    <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_4_id == each_sensor.unique_id and each_lcd_display.line_4_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
                   {% else %}
                     {% for each_measurement in measure %}
-                      <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd_display.line_4_id == each_sensor.unique_id and each_lcd_display.line_4_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
+                      <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd_display.line_4_id == each_sensor.unique_id and each_lcd_display.line_4_measurement == each_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
                     {% endfor %}
                   {% endif %}
                 {% endfor %}
@@ -286,9 +286,9 @@
                 <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_4_id == each_pid.unique_id and each_lcd_display.line_4_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
               {%- endfor %}
               {%- for each_relay in relay -%}
-                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_4_id == each_relay.unique_id and each_lcd_display.line_4_measurement == 'relay_time' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
-                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_4_id == each_relay.unique_id and each_lcd_display.line_4_measurement == 'duration_sec' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): duration</option>
-                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_4_id == each_relay.unique_id and each_lcd_display.line_4_measurement == 'relay_state' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): state</option>
+                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_4_id == each_relay.unique_id and each_lcd_display.line_4_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
+                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_4_id == each_relay.unique_id and each_lcd_display.line_4_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): duration</option>
+                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_4_id == each_relay.unique_id and each_lcd_display.line_4_measurement == 'relay_state' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): state</option>
               {%- endfor %}
               </select>
           </div>

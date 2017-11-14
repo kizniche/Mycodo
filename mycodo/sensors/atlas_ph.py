@@ -125,11 +125,10 @@ class AtlaspHSensor(AbstractSensor):
         """
         try:
             self._ph = self.get_measurement()
-            if self._ph is None:
-                return 1
-            return  # success - no errors
+            if self._ph is not None:
+                return # success - no errors
         except Exception as e:
             logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
-            return 1
+        return 1

@@ -13,7 +13,7 @@ class RaspberryPiCPUTemp(AbstractSensor):
 
     def __init__(self):
         super(RaspberryPiCPUTemp, self).__init__()
-        self._temperature = 0
+        self._temperature = None
 
     def __repr__(self):
         """  Representation of object """
@@ -38,7 +38,7 @@ class RaspberryPiCPUTemp(AbstractSensor):
     @property
     def temperature(self):
         """ CPU temperature in celsius """
-        if not self._temperature:  # update if needed
+        if self._temperature is None:  # update if needed
             self.read()
         return self._temperature
 
@@ -65,7 +65,8 @@ class RaspberryPiCPUTemp(AbstractSensor):
         """
         try:
             self._temperature = self.get_measurement()
-            return  # success - no errors
+            if self._temperature is not None:
+                return  # success - no errors
         except IOError as e:
             logger.error("{cls}.get_measurement() method raised IOError: "
                          "{err}".format(cls=type(self).__name__, err=e))
@@ -80,7 +81,7 @@ class RaspberryPiGPUTemp(AbstractSensor):
 
     def __init__(self):
         super(RaspberryPiGPUTemp, self).__init__()
-        self._temperature = 0
+        self._temperature = None
 
     def __repr__(self):
         """  Representation of object """
@@ -105,7 +106,7 @@ class RaspberryPiGPUTemp(AbstractSensor):
     @property
     def temperature(self):
         """ returns the last temperature """
-        if not self._temperature:  # update if needed
+        if self._temperature is None:  # update if needed
             self.read()
         return self._temperature
 
@@ -119,7 +120,8 @@ class RaspberryPiGPUTemp(AbstractSensor):
         """ updates the self._temperature """
         try:
             self._temperature = self.get_measurement()
-            return  # success - no errors
+            if self._temperature is not None:
+                return  # success - no errors
         except subprocess.CalledProcessError as e:
             logger.exception(
                 "{cls}.get_measurement() subprocess call raised: "

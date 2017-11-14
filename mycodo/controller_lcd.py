@@ -115,14 +115,14 @@ class LCDController(threading.Thread):
             self.list_pids = ['setpoint', 'pid_time']
             self.list_relays = ['duration_sec', 'relay_time', 'relay_state']
 
-            self.list_sensors = MEASUREMENT_UNITS
-            self.list_sensors.update(
+            self.list_inputs = MEASUREMENT_UNITS
+            self.list_inputs.update(
                 {'sensor_time': {'unit': None, 'name': 'Time'}})
 
-            # Add custom measurement and units to list (From linux command sensor)
-            sensor = db_retrieve_table_daemon(Sensor)
-            self.list_sensors = add_custom_measurements(
-                sensor, self.list_sensors, MEASUREMENT_UNITS)
+            # Add custom measurement and units to list (From linux command input)
+            input = db_retrieve_table_daemon(Input)
+            self.list_inputs = add_custom_measurements(
+                input, self.list_inputs, MEASUREMENT_UNITS)
 
             lcd_data = db_retrieve_table_daemon(
                 LCDData).filter(LCDData.lcd_id == lcd.id).all()
@@ -322,7 +322,7 @@ class LCDController(threading.Thread):
                     measurement = 'duration_sec'
                     self.lcd_line[display_id][i]['measurement_value'] = '{:.2f}'.format(
                         self.lcd_line[display_id][i]['measurement_value'])
-                elif self.lcd_line[display_id][i]['measurement'] in self.list_sensors:
+                elif self.lcd_line[display_id][i]['measurement'] in self.list_inputs:
                     measurement = self.lcd_line[display_id][i]['measurement']
 
                 # Produce the line that will be displayed on the LCD
@@ -338,13 +338,13 @@ class LCDController(threading.Thread):
                 elif measurement:
                     value_length = len(str(
                         self.lcd_line[display_id][i]['measurement_value']))
-                    unit_length = len(self.list_sensors[measurement]['unit'].replace(u'°', u''))
+                    unit_length = len(self.list_inputs[measurement]['unit'].replace(u'°', u''))
                     name_length = number_characters - value_length - unit_length - 2
                     name_cropped = self.lcd_line[display_id][i]['name'].ljust(name_length)[:name_length]
                     self.lcd_string_line[i] = u'{name} {value} {unit}'.format(
                         name=name_cropped,
                         value=self.lcd_line[display_id][i]['measurement_value'],
-                        unit=self.list_sensors[measurement]['unit'].replace(u'°', u''))
+                        unit=self.list_inputs[measurement]['unit'].replace(u'°', u''))
                 else:
                     value_length = len(str(
                         self.lcd_line[display_id][i]['measurement_value']))
@@ -398,11 +398,11 @@ class LCDController(threading.Thread):
                 table = Relay
             elif measurement in self.list_pids:
                 table = PID
-            elif measurement in self.list_sensors:
-                table = Sensor
-            sensor_line = db_retrieve_table_daemon(
+            elif measurement in self.list_inputs:
+                table = Input
+            input_line = db_retrieve_table_daemon(
                 table, unique_id=lcd_id)
-            self.lcd_line[display_id][line]['name'] = sensor_line.name
+            self.lcd_line[display_id][line]['name'] = input_line.name
             if 'time' in measurement:
                 self.lcd_line[display_id][line]['measurement'] = 'time'
 

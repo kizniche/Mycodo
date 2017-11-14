@@ -14,13 +14,15 @@ class BMP180Sensor(AbstractSensor):
 
     """
 
-    def __init__(self, bus):
+    def __init__(self, bus, testing=False):
         super(BMP180Sensor, self).__init__()
         self.I2C_bus_number = bus
-        self._altitude = 0.0
-        self._pressure = 0
-        self._temperature = 0.0
-        self.bmp = BMP085.BMP085(busnum=self.I2C_bus_number)
+        self._altitude = None
+        self._pressure = None
+        self._temperature = None
+
+        if not testing:
+            self.bmp = BMP085.BMP085(busnum=self.I2C_bus_number)
 
     def __repr__(self):
         """  Representation of object """
@@ -51,35 +53,24 @@ class BMP180Sensor(AbstractSensor):
                     pressure=int(self._pressure),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
-    def info(self):
-        conditions_measured = [
-            ("Temperature", "temperature", "float", "0.00",
-             self._temperature, self.temperature),
-            ("Pressure", "pressure", "int", "0",
-             self._pressure, self.pressure),
-            ("Altitude", "altitude", "float", "0.00",
-             self._altitude, self.altitude)
-        ]
-        return conditions_measured
-
     @property
     def altitude(self):
         """ BMP180/085 altitude in meters """
-        if not self._altitude:  # update if needed
+        if self._altitude is None:  # update if needed
             self.read()
         return self._altitude
 
     @property
     def pressure(self):
         """ BME180/085 pressure in Pascals """
-        if not self._pressure:  # update if needed
+        if self._pressure is None:  # update if needed
             self.read()
         return self._pressure
 
     @property
     def temperature(self):
         """ BMP180/085 temperature in Celsius """
-        if not self._temperature:  # update if needed
+        if self._temperature is None:  # update if needed
             self.read()
         return self._temperature
 
@@ -97,7 +88,8 @@ class BMP180Sensor(AbstractSensor):
         """
         try:
             self._temperature, self._pressure, self._altitude = self.get_measurement()
-            return  # success - no errors
+            if self._temperature is not None:
+                return  # success - no errors
         except Exception as e:
             logger.exception(
                 "{cls} raised an exception when taking a reading: "

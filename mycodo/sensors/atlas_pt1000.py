@@ -12,7 +12,8 @@ class AtlasPT1000Sensor(AbstractSensor):
     def __init__(self, interface, device_loc=None, baud_rate=None,
                  i2c_address=None, i2c_bus=None, testing=False):
         super(AtlasPT1000Sensor, self).__init__()
-        self._temperature = 0.0
+        self.logger = logging.getLogger("mycodo.sensors.atlas_pt1000")
+        self._temperature = None
         self.interface = interface
         self.device_loc = device_loc
         self.baud_rate = baud_rate
@@ -20,7 +21,6 @@ class AtlasPT1000Sensor(AbstractSensor):
         self.i2c_bus = i2c_bus
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
-        self.logger = None
 
         if not testing:
             self.initialize_sensor()
@@ -46,17 +46,10 @@ class AtlasPT1000Sensor(AbstractSensor):
             raise StopIteration  # required
         return dict(temperature=float('{0:.2f}'.format(self._temperature)))
 
-    def info(self):
-        conditions_measured = [
-            ("Temperature", "temperature", "float", "0.00",
-             self._temperature, self.temperature)
-        ]
-        return conditions_measured
-
     @property
     def temperature(self):
         """ CPU temperature in celsius """
-        if not self._temperature:  # update if needed
+        if self._temperature is None:  # update if needed
             self.read()
         return self._temperature
 
@@ -77,6 +70,7 @@ class AtlasPT1000Sensor(AbstractSensor):
 
     def get_measurement(self):
         """ Gets the Atlas PT1000's temperature in Celsius """
+        self._temperature = None
         temp = None
 
         if self.interface == 'UART':
