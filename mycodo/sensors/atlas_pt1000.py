@@ -1,7 +1,5 @@
 # coding=utf-8
 import logging
-from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.utils.system_pi import str_is_float
 from .base_sensor import AbstractSensor
 
@@ -54,6 +52,8 @@ class AtlasPT1000Sensor(AbstractSensor):
         return self._temperature
 
     def initialize_sensor(self):
+        from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
+        from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         if self.interface == 'UART':
             self.logger = logging.getLogger(
                 "mycodo.sensors.atlas_pt1000_{loc}".format(loc=self.device_loc))

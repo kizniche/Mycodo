@@ -1,8 +1,7 @@
 # coding=utf-8
 import logging
 import time
-from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
+
 from mycodo.mycodo_flask.calibration_routes import AtlasScientificCommand
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import str_is_float
@@ -15,19 +14,21 @@ class AtlaspHSensor(AbstractSensor):
     """A sensor support class that monitors the Atlas Scientific sensor pH"""
 
     def __init__(self, interface, device_loc=None, baud_rate=None,
-                 i2c_address=None, i2c_bus=None, sensor_sel=None, testing=False):
+                 i2c_address=None, i2c_bus=None, sensor_sel=None,
+                 testing=False):
         super(AtlaspHSensor, self).__init__()
         self._ph = None
         self.interface = interface
+        self.device_loc = device_loc
+        self.baud_rate = baud_rate
+        self.i2c_address = i2c_address
+        self.i2c_bus = i2c_bus
         self.sensor_sel = sensor_sel
+        self.atlas_sensor_uart = None
+        self.atlas_sensor_i2c = None
 
         if not testing:
-            if self.interface == 'UART':
-                self.atlas_sensor_uart = AtlasScientificUART(device_loc,
-                                                             baudrate=baud_rate)
-            elif self.interface == 'I2C':
-                self.atlas_sensor_i2c = AtlasScientificI2C(
-                    i2c_address=i2c_address, i2c_bus=i2c_bus)
+            self.initialize_sensor()
 
     def __repr__(self):
         """ Representation of object """
@@ -55,6 +56,16 @@ class AtlaspHSensor(AbstractSensor):
         if self._ph is None:  # update if needed
             self.read()
         return self._ph
+
+    def initialize_sensor(self):
+        from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
+        from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
+        if self.interface == 'UART':
+            self.atlas_sensor_uart = AtlasScientificUART(self.device_loc,
+                                                         baudrate=self.baud_rate)
+        elif self.interface == 'I2C':
+            self.atlas_sensor_i2c = AtlasScientificI2C(
+                i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
 
     def get_measurement(self):
         """ Gets the sensor's pH measurement via UART/I2C """
