@@ -26,6 +26,9 @@ class Conditional(CRUDMixin, db.Model):
     if_sensor_direction = db.Column(db.Text, default='')  # 'above' or 'below' setpoint
     if_sensor_setpoint = db.Column(db.Float, default=0.0)
 
+    def __repr__(self):
+        return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
+
 
 class ConditionalActions(CRUDMixin, db.Model):
     __tablename__ = "conditional_data"
@@ -44,4 +47,7 @@ class ConditionalActions(CRUDMixin, db.Model):
     do_camera_duration = db.Column(db.Float, default=0.0)
     do_lcd_id = db.Column(db.Integer, db.ForeignKey('lcd.id'), default=None)
     do_pid_id = db.Column(db.Integer, db.ForeignKey('pid.id'), default=None)
+
+    def __repr__(self):
+        return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 

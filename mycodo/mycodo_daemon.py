@@ -760,7 +760,7 @@ class DaemonController(threading.Thread):
             # Obtain database configuration options
             lcd = db_retrieve_table_daemon(LCD, entry='all')
             pid = db_retrieve_table_daemon(PID, entry='all')
-            input = db_retrieve_table_daemon(Input, entry='all')
+            input_dev = db_retrieve_table_daemon(Input, entry='all')
             timer = db_retrieve_table_daemon(Timer, entry='all')
 
             self.logger.debug("Starting relay controller")
@@ -774,7 +774,7 @@ class DaemonController(threading.Thread):
             self.logger.info("All activated timer controllers started")
 
             self.logger.debug("Starting all activated input controllers")
-            for each_input in input:
+            for each_input in input_dev:
                 if each_input.is_activated:
                     self.controller_activate('Input', each_input.id)
             self.logger.info("All activated input controllers started")

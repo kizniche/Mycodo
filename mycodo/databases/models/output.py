@@ -30,7 +30,7 @@ class Output(CRUDMixin, db.Model):
     pwm_hertz = db.Column(db.Integer, default=None)  # PWM Hertz
     pwm_library = db.Column(db.Text, default=None)  # Library to produce PWM
 
-    def __reper__(self):
+    def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
     def _is_setup(self):
@@ -64,4 +64,3 @@ class Output(CRUDMixin, db.Model):
         """
         if self.relay_type == 'wired' and self._is_setup():
             return self.trigger == GPIO.input(self.pin)
-

@@ -65,7 +65,7 @@ def calibration_atlas_ph():
 
     form_ph_calibrate = forms_calibration.CalibrationAtlasph()
 
-    input = Input.query.filter_by(device='ATLAS_PH_UART').all()
+    input_dev = Input.query.filter_by(device='ATLAS_PH_UART').all()
     stage = 0
     next_stage = None
     selected_input = None
@@ -130,7 +130,7 @@ def calibration_atlas_ph():
     return render_template('tools/calibration_atlas_ph.html',
                            complete_with_error=complete_with_error,
                            form_ph_calibrate=form_ph_calibrate,
-                           sensor=input,
+                           sensor=input_dev,
                            sensor_device_name=input_device_name,
                            selected_sensor=selected_input,
                            stage=stage)

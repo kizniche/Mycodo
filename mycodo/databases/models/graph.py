@@ -27,5 +27,5 @@ class Graph(CRUDMixin, db.Model):
     max_measure_age = db.Column(db.Float, default=120.0)
     range_colors = db.Column(db.Text, default='')  # Custom hex color values and gauge range
 
-    def __reper__(self):
+    def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

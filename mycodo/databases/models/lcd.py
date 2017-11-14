@@ -17,7 +17,7 @@ class LCD(CRUDMixin, db.Model):
     x_characters = db.Column(db.Integer, default=16)
     y_lines = db.Column(db.Integer, default=2)
 
-    def __reper__(self):
+    def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
 
@@ -39,5 +39,5 @@ class LCDData(CRUDMixin, db.Model):
     line_4_type = db.Column(db.Text, default='')
     line_4_measurement = db.Column(db.Text, default='')
 
-    def __reper__(self):
+    def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

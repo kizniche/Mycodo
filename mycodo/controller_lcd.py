@@ -120,9 +120,9 @@ class LCDController(threading.Thread):
                 {'sensor_time': {'unit': None, 'name': 'Time'}})
 
             # Add custom measurement and units to list (From linux command input)
-            input = db_retrieve_table_daemon(Input)
+            input_dev = db_retrieve_table_daemon(Input)
             self.list_inputs = add_custom_measurements(
-                input, self.list_inputs, MEASUREMENT_UNITS)
+                input_dev, self.list_inputs, MEASUREMENT_UNITS)
 
             lcd_data = db_retrieve_table_daemon(
                 LCDData).filter(LCDData.lcd_id == lcd.id).all()

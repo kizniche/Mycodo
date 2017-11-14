@@ -241,9 +241,9 @@ def page_export():
     """
     export_options = forms_misc.ExportOptions()
     output = Output.query.all()
-    input = Input.query.all()
+    input_dev = Input.query.all()
     output_choices = utils_general.choices_id_name(output)
-    input_choices = utils_general.choices_inputs(input)
+    input_choices = utils_general.choices_inputs(input_dev)
 
     if request.method == 'POST':
         start_time = export_options.date_range.data.split(' - ')[0]
@@ -296,17 +296,17 @@ def page_graph():
     graph = Graph.query.all()
     pid = PID.query.all()
     output = Output.query.all()
-    input = Input.query.all()
+    input_dev = Input.query.all()
 
     # Retrieve all choices to populate form drop-down menu
     pid_choices = utils_general.choices_pids(pid)
     output_choices = utils_general.choices_outputs(output)
-    input_choices = utils_general.choices_inputs(input)
+    input_choices = utils_general.choices_inputs(input_dev)
 
     # Add custom measurement and units to list (From linux command input)
     input_measurements = MEASUREMENT_UNITS
     input_measurements = add_custom_measurements(
-        input, input_measurements, MEASUREMENT_UNITS)
+        input_dev, input_measurements, MEASUREMENT_UNITS)
 
     # Add multi-select values as form choices, for validation
     form_mod_graph.pid_ids.choices = []
@@ -371,7 +371,7 @@ def page_graph():
                            graph=graph,
                            pid=pid,
                            relay=output,
-                           sensor=input,
+                           sensor=input_dev,
                            pid_choices=pid_choices,
                            output_choices=output_choices,
                            sensor_choices=input_choices,
@@ -392,8 +392,8 @@ def page_graph():
 @flask_login.login_required
 def page_graph_async():
     """ Generate graphs using asynchronous data retrieval """
-    input = Input.query.all()
-    input_choices = utils_general.choices_inputs(input)
+    input_dev = Input.query.all()
+    input_choices = utils_general.choices_inputs(input_dev)
     input_choices_split = OrderedDict()
     for key in input_choices:
         order = key.split(",")
@@ -410,7 +410,7 @@ def page_graph_async():
         selected_unique_id = Input.query.filter(Input.unique_id == selected_id).first().unique_id
 
     return render_template('pages/graph-async.html',
-                           sensor=input,
+                           sensor=input_dev,
                            sensor_choices=input_choices,
                            sensor_choices_split=input_choices_split,
                            selected_id=selected_id,
@@ -525,7 +525,7 @@ def page_lcd():
     lcd_data = LCDData.query.all()
     pid = PID.query.all()
     output = Output.query.all()
-    input = Input.query.all()
+    input_dev = Input.query.all()
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
 
@@ -536,7 +536,7 @@ def page_lcd():
     measurements = MEASUREMENTS
 
     # Add custom measurement and units to list (From linux command input)
-    for each_input in input:
+    for each_input in input_dev:
         if each_input.cmd_measurement and each_input.cmd_measurement not in MEASUREMENTS:
             if each_input.cmd_measurement and each_input.cmd_measurement_units:
                 measurements.update(
@@ -578,7 +578,7 @@ def page_lcd():
                            measurements=measurements,
                            pid=pid,
                            relay=output,
-                           sensor=input,
+                           sensor=input_dev,
                            displayOrder=display_order,
                            form_lcd_add=form_lcd_add,
                            form_lcd_mod=form_lcd_mod,
@@ -592,7 +592,7 @@ def page_live():
     # Retrieve tables for the data displayed on the live page
     pid = PID.query.all()
     output = Output.query.all()
-    input = Input.query.all()
+    input_dev = Input.query.all()
     timer = Timer.query.all()
 
     # Display orders
@@ -605,7 +605,7 @@ def page_live():
     input_order_sorted = []
     if input_display_order:
         for each_input_order in input_display_order:
-            for each_input in input:
+            for each_input in input_dev:
                 if (each_input_order == each_input.id and
                         each_input.is_activated):
                     input_order_sorted.append(each_input.id)
@@ -618,7 +618,7 @@ def page_live():
                            method=method,
                            pid=pid,
                            relay=output,
-                           sensor=input,
+                           sensor=input_dev,
                            timer=timer,
                            pidDisplayOrder=pid_display_order,
                            sensorDisplayOrderSorted=input_order_sorted)
@@ -680,9 +680,9 @@ def page_pid():
     method = Method.query.all()
     pid = PID.query.all()
     output = Output.query.all()
-    input = Input.query.all()
+    input_dev = Input.query.all()
 
-    input_choices = utils_general.choices_inputs(input)
+    input_choices = utils_general.choices_inputs(input_dev)
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
 
@@ -749,7 +749,7 @@ def page_pid():
                            pid=pid,
                            pid_templates=pid_templates,
                            relay=output,
-                           sensor=input,
+                           sensor=input_dev,
                            sensor_choices=input_choices,
                            displayOrder=display_order,
                            form_add_pid=form_add_pid,
@@ -866,7 +866,7 @@ def page_input():
     lcd = LCD.query.all()
     pid = PID.query.all()
     output = Output.query.all()
-    input = Input.query.all()
+    input_dev = Input.query.all()
     user = User.query.all()
 
     conditional = Conditional.query.filter(
@@ -960,7 +960,7 @@ def page_input():
                            multiplexer_channels=multiplexer_channels,
                            pid=pid,
                            relay=output,
-                           sensor=input,
+                           sensor=input_dev,
                            sensor_templates=input_templates,
                            units=MEASUREMENT_UNITS,
                            user=user)
@@ -1122,17 +1122,17 @@ def dict_custom_colors():
                 for each_set in each_graph.sensor_ids_measurements.split(';'):
                     input_unique_id = each_set.split(',')[0]
                     input_measure = each_set.split(',')[1]
-                    input = Input.query.filter_by(
+                    input_dev = Input.query.filter_by(
                         unique_id=input_unique_id).first()
                     if (index < len(each_graph.sensor_ids_measurements.split(';')) and
                             len(colors) > index):
                         color = colors[index]
                     else:
                         color = '#FF00AA'
-                    if input is not None:
+                    if input_dev is not None:
                         total.append({
                             'unique_id': input_unique_id,
-                            'name': input.name,
+                            'name': input_dev.name,
                             'measure': input_measure,
                             'color': color})
                         index += 1

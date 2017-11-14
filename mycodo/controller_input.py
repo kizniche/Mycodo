@@ -149,52 +149,52 @@ class InputController(threading.Thread):
 
         self.setup_input_conditionals()
 
-        input = db_retrieve_table_daemon(Input, device_id=self.input_id)
-        self.input_sel = input
-        self.unique_id = input.unique_id
-        self.i2c_bus = input.i2c_bus
-        self.location = input.location
-        self.power_output_id = input.power_relay_id
-        self.measurements = input.measurements
-        self.device = input.device
-        self.interface = input.interface
-        self.device_loc = input.device_loc
-        self.baud_rate = input.baud_rate
-        self.period = input.period
-        self.resolution = input.resolution
-        self.sensitivity = input.sensitivity
-        self.cmd_command = input.cmd_command
-        self.cmd_measurement = input.cmd_measurement
-        self.cmd_measurement_units = input.cmd_measurement_units
-        self.mux_address_raw = input.multiplexer_address
-        self.mux_bus = input.multiplexer_bus
-        self.mux_chan = input.multiplexer_channel
-        self.adc_chan = input.adc_channel
-        self.adc_gain = input.adc_gain
-        self.adc_resolution = input.adc_resolution
-        self.adc_measure = input.adc_measure
-        self.adc_measure_units = input.adc_measure_units
-        self.adc_volts_min = input.adc_volts_min
-        self.adc_volts_max = input.adc_volts_max
-        self.adc_units_min = input.adc_units_min
-        self.adc_units_max = input.adc_units_max
-        self.adc_inverse_unit_scale = input.adc_inverse_unit_scale
-        self.sht_clock_pin = input.sht_clock_pin
-        self.sht_voltage = input.sht_voltage
+        input_dev = db_retrieve_table_daemon(Input, device_id=self.input_id)
+        self.input_sel = input_dev
+        self.unique_id = input_dev.unique_id
+        self.i2c_bus = input_dev.i2c_bus
+        self.location = input_dev.location
+        self.power_output_id = input_dev.power_relay_id
+        self.measurements = input_dev.measurements
+        self.device = input_dev.device
+        self.interface = input_dev.interface
+        self.device_loc = input_dev.device_loc
+        self.baud_rate = input_dev.baud_rate
+        self.period = input_dev.period
+        self.resolution = input_dev.resolution
+        self.sensitivity = input_dev.sensitivity
+        self.cmd_command = input_dev.cmd_command
+        self.cmd_measurement = input_dev.cmd_measurement
+        self.cmd_measurement_units = input_dev.cmd_measurement_units
+        self.mux_address_raw = input_dev.multiplexer_address
+        self.mux_bus = input_dev.multiplexer_bus
+        self.mux_chan = input_dev.multiplexer_channel
+        self.adc_chan = input_dev.adc_channel
+        self.adc_gain = input_dev.adc_gain
+        self.adc_resolution = input_dev.adc_resolution
+        self.adc_measure = input_dev.adc_measure
+        self.adc_measure_units = input_dev.adc_measure_units
+        self.adc_volts_min = input_dev.adc_volts_min
+        self.adc_volts_max = input_dev.adc_volts_max
+        self.adc_units_min = input_dev.adc_units_min
+        self.adc_units_max = input_dev.adc_units_max
+        self.adc_inverse_unit_scale = input_dev.adc_inverse_unit_scale
+        self.sht_clock_pin = input_dev.sht_clock_pin
+        self.sht_voltage = input_dev.sht_voltage
 
         # Edge detection
-        self.switch_edge = input.switch_edge
-        self.switch_bouncetime = input.switch_bouncetime
-        self.switch_reset_period = input.switch_reset_period
+        self.switch_edge = input_dev.switch_edge
+        self.switch_bouncetime = input_dev.switch_bouncetime
+        self.switch_reset_period = input_dev.switch_reset_period
 
         # PWM and RPM options
-        self.weighting = input.weighting
-        self.rpm_pulses_per_rev = input.rpm_pulses_per_rev
-        self.sample_time = input.sample_time
+        self.weighting = input_dev.weighting
+        self.rpm_pulses_per_rev = input_dev.rpm_pulses_per_rev
+        self.sample_time = input_dev.sample_time
 
         # Output that will activate prior to input read
-        self.pre_output_id = input.pre_relay_id
-        self.pre_output_duration = input.pre_relay_duration
+        self.pre_output_id = input_dev.pre_relay_id
+        self.pre_output_duration = input_dev.pre_relay_duration
         self.pre_output_setup = False
         self.next_measurement = time.time()
         self.get_new_measurement = False
@@ -419,7 +419,7 @@ class InputController(threading.Thread):
                             self.pre_output_setup and
                             not self.pre_output_activated):
                         output_on = threading.Thread(
-                            target=self.control.output_on,
+                            target=self.control.relay_on,
                             args=(self.pre_output_id,
                                   self.pre_output_duration,))
                         output_on.start()

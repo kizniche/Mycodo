@@ -300,9 +300,9 @@ class PIDController(threading.Thread):
         input_unique_id = pid.measurement.split(',')[0]
         self.measurement = pid.measurement.split(',')[1]
 
-        input = db_retrieve_table_daemon(Input, unique_id=input_unique_id)
-        self.input_unique_id = input.unique_id
-        self.input_duration = input.period
+        input_dev = db_retrieve_table_daemon(Input, unique_id=input_unique_id)
+        self.input_unique_id = input_dev.unique_id
+        self.input_duration = input_dev.period
 
         try:
             self.raise_output_type = db_retrieve_table_daemon(
