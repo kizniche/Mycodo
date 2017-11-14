@@ -29,14 +29,16 @@ class BH1750Sensor(AbstractSensor):
     # Device is automatically set to Power Down after measurement.
     ONE_TIME_LOW_RES_MODE = 0x23
 
-    def __init__(self, address, bus, resolution, sensitivity):
+    def __init__(self, address, bus, resolution, sensitivity, testing=False):
         super(BH1750Sensor, self).__init__()
+        self._lux = None
         self.i2c_address = address
-        self.i2c_bus = smbus.SMBus(bus)
         self.resolution = resolution
-        self.power_down()
-        self.set_sensitivity(sensitivity=sensitivity)
-        self._lux = 0.0
+
+        if not testing:
+            self.i2c_bus = smbus.SMBus(bus)
+            self.power_down()
+            self.set_sensitivity(sensitivity=sensitivity)
 
     def __repr__(self):
         """  Representation of object """
@@ -57,21 +59,17 @@ class BH1750Sensor(AbstractSensor):
             raise StopIteration  # required
         return dict(lux=float('{0:.2f}'.format(self._lux)))
 
-    def info(self):
-        conditions_measured = [
-            ("Lux", "lux", "float", "0.00", self._lux, self.lux)
-        ]
-        return conditions_measured
-
     @property
     def lux(self):
         """ BH1750 luminosity in lux """
-        if not self._lux:  # update if needed
+        if self._lux is None:  # update if needed
             self.read()
         return self._lux
 
     def get_measurement(self):
         """ Gets the BH1750's lux """
+        self._lux = None
+
         if self.resolution == 0:
             return self.measure_low_res()
         elif self.resolution == 1:
@@ -87,7 +85,8 @@ class BH1750Sensor(AbstractSensor):
         """
         try:
             self._lux = self.get_measurement()
-            return  # success - no errors
+            if self._lux is not None:
+                return  # success - no errors
         except Exception as e:
             logger.exception(
                 "{cls} raised an exception when taking a reading: "

@@ -15,17 +15,19 @@ class AtlaspHSensor(AbstractSensor):
     """A sensor support class that monitors the Atlas Scientific sensor pH"""
 
     def __init__(self, interface, device_loc=None, baud_rate=None,
-                 i2c_address=None, i2c_bus=None, sensor_sel=None):
+                 i2c_address=None, i2c_bus=None, sensor_sel=None, testing=False):
         super(AtlaspHSensor, self).__init__()
-        self._ph = 0
+        self._ph = None
         self.interface = interface
         self.sensor_sel = sensor_sel
-        if self.interface == 'UART':
-            self.atlas_sensor_uart = AtlasScientificUART(device_loc,
-                                                         baudrate=baud_rate)
-        elif self.interface == 'I2C':
-            self.atlas_sensor_i2c = AtlasScientificI2C(
-                i2c_address=i2c_address, i2c_bus=i2c_bus)
+
+        if not testing:
+            if self.interface == 'UART':
+                self.atlas_sensor_uart = AtlasScientificUART(device_loc,
+                                                             baudrate=baud_rate)
+            elif self.interface == 'I2C':
+                self.atlas_sensor_i2c = AtlasScientificI2C(
+                    i2c_address=i2c_address, i2c_bus=i2c_bus)
 
     def __repr__(self):
         """ Representation of object """
@@ -47,21 +49,17 @@ class AtlaspHSensor(AbstractSensor):
             raise StopIteration  # required
         return dict(ph=float(self._ph))
 
-    def info(self):
-        conditions_measured = [
-            ("pH", "pH", "float", "0.00", self._ph, self.ph)
-        ]
-        return conditions_measured
-
     @property
     def ph(self):
         """ pH (potential hydrogen) in moles/liter """
-        if not self._ph:  # update if needed
+        if self._ph is None:  # update if needed
             self.read()
         return self._ph
 
     def get_measurement(self):
         """ Gets the sensor's pH measurement via UART/I2C """
+        self._ph = None
+
         try:
             if ',' in self.sensor_sel.calibrate_sensor_measure:
                 logger.debug("pH sensor set to calibrate temperature")
