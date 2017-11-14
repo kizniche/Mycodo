@@ -870,7 +870,7 @@ def page_input():
     user = User.query.all()
 
     conditional = Conditional.query.filter(
-        Conditional.conditional_type == 'input').all()
+        Conditional.conditional_type == 'sensor').all()
     conditional_actions = ConditionalActions.query.all()
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
