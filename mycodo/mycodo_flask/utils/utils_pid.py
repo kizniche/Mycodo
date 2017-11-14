@@ -16,7 +16,7 @@ from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Method
 from mycodo.databases.models import PID
 from mycodo.databases.models import Relay
-from mycodo.databases.models import Sensor
+from mycodo.databases.models import Input
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import list_to_csv
 
@@ -69,8 +69,8 @@ def pid_mod(form_mod_pid_base,
         flash_form_errors(form_mod_pid_base)
 
     sensor_unique_id = form_mod_pid_base.measurement.data.split(',')[0]
-    sensor = Sensor.query.filter(
-        Sensor.unique_id == sensor_unique_id).first()
+    sensor = Input.query.filter(
+        Input.unique_id == sensor_unique_id).first()
     if not sensor:
         error.append(gettext(u"A valid sensor is required"))
 
@@ -229,8 +229,8 @@ def has_required_pid_values(pid_id):
         flash(gettext(u"A valid Measurement is required"), "error")
         error = True
     sensor_unique_id = pid.measurement.split(',')[0]
-    sensor = Sensor.query.filter(
-        Sensor.unique_id == sensor_unique_id).first()
+    sensor = Input.query.filter(
+        Input.unique_id == sensor_unique_id).first()
     if not sensor:
         flash(gettext(u"A valid sensor is required"), "error")
         error = True
@@ -259,8 +259,8 @@ def pid_activate(pid_id):
         error, pid_id, pid.raise_relay_id, pid.lower_relay_id)
 
     sensor_unique_id = pid.measurement.split(',')[0]
-    sensor = Sensor.query.filter(
-        Sensor.unique_id == sensor_unique_id).first()
+    sensor = Input.query.filter(
+        Input.unique_id == sensor_unique_id).first()
 
     if not sensor.is_activated:
         error.append(gettext(

@@ -18,7 +18,7 @@ from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import LCD
 from mycodo.databases.models import PID
-from mycodo.databases.models import Sensor
+from mycodo.databases.models import Input
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import list_to_csv
 
@@ -35,20 +35,20 @@ logger = logging.getLogger(__name__)
 
 
 #
-# Sensor manipulation
+# Input manipulation
 #
 
 def sensor_add(form_add_sensor):
     action = u'{action} {controller}'.format(
         action=gettext(u"Add"),
-        controller=gettext(u"Sensor"))
+        controller=gettext(u"Input"))
     error = []
 
     if form_add_sensor.validate():
         for _ in range(0, form_add_sensor.numberSensors.data):
-            new_sensor = Sensor()
+            new_sensor = Input()
             new_sensor.device = form_add_sensor.sensor.data
-            new_sensor.name = '{name} Sensor'.format(name=form_add_sensor.sensor.data)
+            new_sensor.name = '{name} Input'.format(name=form_add_sensor.sensor.data)
             if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
                 new_sensor.i2c_bus = 1
                 new_sensor.multiplexer_bus = 1
@@ -86,7 +86,7 @@ def sensor_add(form_add_sensor):
             elif form_add_sensor.sensor.data == 'SIGNAL_RPM':
                 new_sensor.measurements = 'rpm'
 
-            # Environmental Sensors
+            # Environmental Inputs
             # Temperature
             elif form_add_sensor.sensor.data in ['ATLAS_PT1000_I2C',
                                                  'ATLAS_PT1000_UART',
@@ -204,7 +204,7 @@ def sensor_add(form_add_sensor):
                 db.session.commit()
 
                 flash(gettext(
-                    u"%(type)s Sensor with ID %(id)s (%(uuid)s) successfully added",
+                    u"%(type)s Input with ID %(id)s (%(uuid)s) successfully added",
                     type=form_add_sensor.sensor.data,
                     id=new_sensor.id,
                     uuid=new_sensor.unique_id),
@@ -221,12 +221,12 @@ def sensor_add(form_add_sensor):
 def sensor_mod(form_mod_sensor):
     action = u'{action} {controller}'.format(
         action=gettext(u"Modify"),
-        controller=gettext(u"Sensor"))
+        controller=gettext(u"Input"))
     error = []
 
     try:
-        mod_sensor = Sensor.query.filter(
-            Sensor.id == form_mod_sensor.modSensor_id.data).first()
+        mod_sensor = Input.query.filter(
+            Input.id == form_mod_sensor.modSensor_id.data).first()
 
         if mod_sensor.is_activated:
             error.append(gettext(
@@ -311,18 +311,18 @@ def sensor_mod(form_mod_sensor):
 def sensor_del(form_mod_sensor):
     action = u'{action} {controller}'.format(
         action=gettext(u"Delete"),
-        controller=gettext(u"Sensor"))
+        controller=gettext(u"Input"))
     error = []
 
     try:
-        sensor = Sensor.query.filter(
-            Sensor.id == form_mod_sensor.modSensor_id.data).first()
+        sensor = Input.query.filter(
+            Input.id == form_mod_sensor.modSensor_id.data).first()
         if sensor.is_activated:
             sensor_deactivate_associated_controllers(
                 form_mod_sensor.modSensor_id.data)
             controller_activate_deactivate(
                 'deactivate',
-                'Sensor',
+                'Input',
                 form_mod_sensor.modSensor_id.data)
 
         conditionals = Conditional.query.filter(
@@ -335,7 +335,7 @@ def sensor_del(form_mod_sensor):
             db.session.delete(each_cond)
         db.session.commit()
 
-        delete_entry_with_id(Sensor,
+        delete_entry_with_id(Input,
                              form_mod_sensor.modSensor_id.data)
         try:
             display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
@@ -353,7 +353,7 @@ def sensor_del(form_mod_sensor):
 def sensor_reorder(sensor_id, display_order, direction):
     action = u'{action} {controller}'.format(
         action=gettext(u"Reorder"),
-        controller=gettext(u"Sensor"))
+        controller=gettext(u"Input"))
     error = []
     try:
         status, reord_list = reorder(display_order,
@@ -370,8 +370,8 @@ def sensor_reorder(sensor_id, display_order, direction):
 
 
 def sensor_activate(form_mod_sensor):
-    sensor = Sensor.query.filter(
-        Sensor.id == form_mod_sensor.modSensor_id.data).first()
+    sensor = Input.query.filter(
+        Input.id == form_mod_sensor.modSensor_id.data).first()
     if (sensor.device != u'LinuxCommand' and
             not sensor.location and
             sensor.device not in DEVICES_DEFAULT_LOCATION):
@@ -383,7 +383,7 @@ def sensor_activate(form_mod_sensor):
         flash("Cannot activate sensor without a command set.", "error")
         return redirect(url_for('page_routes.page_input'))
     controller_activate_deactivate('activate',
-                                   'Sensor',
+                                   'Input',
                                    form_mod_sensor.modSensor_id.data)
 
 
@@ -391,13 +391,13 @@ def sensor_deactivate(form_mod_sensor):
     sensor_deactivate_associated_controllers(
         form_mod_sensor.modSensor_id.data)
     controller_activate_deactivate('deactivate',
-                                   'Sensor',
+                                   'Input',
                                    form_mod_sensor.modSensor_id.data)
 
 
 # Deactivate any active PID or LCD controllers using this sensor
 def sensor_deactivate_associated_controllers(sensor_id):
-    sensor_unique_id = Sensor.query.filter(Sensor.id == sensor_id).first().unique_id
+    sensor_unique_id = Input.query.filter(Input.id == sensor_id).first().unique_id
     pid = PID.query.filter(PID.is_activated == True).all()
     for each_pid in pid:
         if sensor_unique_id in each_pid.measurement:
@@ -417,9 +417,9 @@ def sensor_deactivate_associated_controllers(sensor_id):
 
 
 def check_refresh_conditional(sensor_id, cond_mod):
-    sensor = (Sensor.query
-              .filter(Sensor.id == sensor_id)
-              .filter(Sensor.is_activated == True)
+    sensor = (Input.query
+              .filter(Input.id == sensor_id)
+              .filter(Input.is_activated == True)
               ).first()
     if sensor:
         control = DaemonControl()

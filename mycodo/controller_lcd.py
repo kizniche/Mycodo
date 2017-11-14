@@ -61,7 +61,7 @@ from databases.models import LCD
 from databases.models import LCDData
 from databases.models import PID
 from databases.models import Relay
-from databases.models import Sensor
+from databases.models import Input
 from devices.tca9548a import TCA9548A
 from utils.database import db_retrieve_table_daemon
 from utils.influx import read_last_influxdb

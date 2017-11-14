@@ -43,14 +43,14 @@ from rpyc.utils.server import ThreadedServer
 from mycodo.controller_lcd import LCDController
 from mycodo.controller_pid import PIDController
 from mycodo.controller_relay import RelayController
-from mycodo.controller_sensor import SensorController
+from mycodo.controller_input import InputController
 from mycodo.controller_timer import TimerController
 
 from mycodo.databases.models import Camera
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
-from mycodo.databases.models import Sensor
+from mycodo.databases.models import Input
 from mycodo.databases.models import Timer
 
 from mycodo.databases.utils import session_scope
@@ -92,7 +92,7 @@ def mycodo_service(mycodo):
         def exposed_controller_activate(cont_type, cont_id):
             """
             Activates a controller
-            This may be a Sensor, PID, Timer, or LCD controllar
+            This may be a Input, PID, Timer, or LCD controllar
 
             """
             return mycodo.controller_activate(
@@ -102,7 +102,7 @@ def mycodo_service(mycodo):
         def exposed_controller_deactivate(cont_type, cont_id):
             """
             Deactivates a controller
-            This may be a Sensor, PID, Timer, or LCD controllar
+            This may be a Input, PID, Timer, or LCD controllar
 
             """
             return mycodo.controller_deactivate(
@@ -175,13 +175,13 @@ def mycodo_service(mycodo):
             return mycodo.refresh_daemon_misc_settings()
 
         @staticmethod
-        def exposed_refresh_sensor_conditionals(sensor_id,
+        def exposed_refresh_sensor_conditionals(input_id,
                                                 cond_mod):
             """
-            Instruct the sensor controller to refresh the settings of a
+            Instruct the input controller to refresh the settings of a
             conditional statement
             """
-            return mycodo.refresh_sensor_conditionals(sensor_id,
+            return mycodo.refresh_sensor_conditionals(input_id,
                                                       cond_mod)
 
         @staticmethod
@@ -294,11 +294,11 @@ class DaemonController(threading.Thread):
 
     All relay operations (turning on/off) is operated by one relay controller.
 
-    Each connected sensor has its own controller to collect all measurements
-    that particular sensor can produce and put then into an influxdb database.
+    Each connected input has its own controller to collect all measurements
+    that particular input can produce and put then into an influxdb database.
 
     Each PID controller is associated with only one measurement from one
-    sensor controller.
+    input controller.
 
     """
 
@@ -315,7 +315,7 @@ class DaemonController(threading.Thread):
             'LCD': {},
             'PID': {},
             'Relay': None,
-            'Sensor': {},
+            'Input': {},
             'Timer': {}
         }
         self.thread_shutdown_timer = None
@@ -433,9 +433,9 @@ class DaemonController(threading.Thread):
             elif cont_type == 'PID':
                 controller_manage['type'] = PID
                 controller_manage['function'] = PIDController
-            elif cont_type == 'Sensor':
-                controller_manage['type'] = Sensor
-                controller_manage['function'] = SensorController
+            elif cont_type == 'Input':
+                controller_manage['type'] = Input
+                controller_manage['function'] = InputController
             elif cont_type == 'Timer':
                 controller_manage['type'] = Timer
                 controller_manage['function'] = TimerController
@@ -516,9 +516,9 @@ class DaemonController(threading.Thread):
             for pid_id in self.controller['PID']:
                 if not self.controller['PID'][pid_id].is_running():
                     return "Error: PID ID {}".format(pid_id)
-            for sensor_id in self.controller['Sensor']:
-                if not self.controller['Sensor'][sensor_id].is_running():
-                    return "Error: Sensor ID {}".format(sensor_id)
+            for input_id in self.controller['Input']:
+                if not self.controller['Input'][input_id].is_running():
+                    return "Error: Input ID {}".format(input_id)
             for timer_id in self.controller['Timer']:
                 if not self.controller['Timer'][timer_id].is_running():
                     return "Error: Timer ID {}".format(timer_id)
@@ -623,11 +623,11 @@ class DaemonController(threading.Thread):
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def refresh_sensor_conditionals(self, sensor_id, cond_mod):
+    def refresh_sensor_conditionals(self, input_id, cond_mod):
         try:
-            return self.controller['Sensor'][sensor_id].setup_sensor_conditionals(cond_mod)
+            return self.controller['Input'][input_id].setup_sensor_conditionals(cond_mod)
         except Exception as except_msg:
-            message = "Could not refresh sensor conditionals:" \
+            message = "Could not refresh input conditionals:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
@@ -760,7 +760,7 @@ class DaemonController(threading.Thread):
             # Obtain database configuration options
             lcd = db_retrieve_table_daemon(LCD, entry='all')
             pid = db_retrieve_table_daemon(PID, entry='all')
-            sensor = db_retrieve_table_daemon(Sensor, entry='all')
+            input = db_retrieve_table_daemon(Input, entry='all')
             timer = db_retrieve_table_daemon(Timer, entry='all')
 
             self.logger.debug("Starting relay controller")
@@ -773,11 +773,11 @@ class DaemonController(threading.Thread):
                     self.controller_activate('Timer', each_timer.id)
             self.logger.info("All activated timer controllers started")
 
-            self.logger.debug("Starting all activated sensor controllers")
-            for each_sensor in sensor:
-                if each_sensor.is_activated:
-                    self.controller_activate('Sensor', each_sensor.id)
-            self.logger.info("All activated sensor controllers started")
+            self.logger.debug("Starting all activated input controllers")
+            for each_input in input:
+                if each_input.is_activated:
+                    self.controller_activate('Input', each_input.id)
+            self.logger.info("All activated input controllers started")
 
             self.logger.debug("Starting all activated PID controllers")
             for each_pid in pid:
@@ -800,7 +800,7 @@ class DaemonController(threading.Thread):
         try:
             lcd_controller_running = []
             pid_controller_running = []
-            sensor_controller_running = []
+            input_controller_running = []
             timer_controller_running = []
 
             for lcd_id in self.controller['LCD']:
@@ -813,10 +813,10 @@ class DaemonController(threading.Thread):
                     self.controller['PID'][pid_id].stop_controller(ended_normally=False)
                     pid_controller_running.append(pid_id)
 
-            for sensor_id in self.controller['Sensor']:
-                if self.controller['Sensor'][sensor_id].is_running():
-                    self.controller['Sensor'][sensor_id].stop_controller()
-                    sensor_controller_running.append(sensor_id)
+            for input_id in self.controller['Input']:
+                if self.controller['Input'][input_id].is_running():
+                    self.controller['Input'][input_id].stop_controller()
+                    input_controller_running.append(input_id)
 
             for timer_id in self.controller['Timer']:
                 if self.controller['Timer'][timer_id].is_running():
@@ -832,9 +832,9 @@ class DaemonController(threading.Thread):
                 self.controller['Timer'][timer_id].join()
             self.logger.info("All Timer controllers stopped")
 
-            for sensor_id in sensor_controller_running:
-                self.controller['Sensor'][sensor_id].join()
-            self.logger.info("All Sensor controllers stopped")
+            for input_id in input_controller_running:
+                self.controller['Input'][input_id].join()
+            self.logger.info("All Input controllers stopped")
 
             for pid_id in pid_controller_running:
                 self.controller['PID'][pid_id].join()

@@ -14,13 +14,13 @@ from mycodo.mycodo_flask.forms import forms_calibration
 
 from mycodo.mycodo_flask.utils import utils_general
 
-from mycodo.databases.models import Sensor
+from mycodo.databases.models import Input
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.utils.calibration import AtlasScientificCommand
 from mycodo.utils.system_pi import str_is_float
 
-from config import SENSORS
+from config import INPUTS
 
 logger = logging.getLogger('mycodo.mycodo_flask.calibration')
 
@@ -65,11 +65,11 @@ def calibration_atlas_ph():
 
     form_ph_calibrate = forms_calibration.CalibrationAtlasph()
 
-    sensor = Sensor.query.filter_by(device='ATLAS_PH_UART').all()
+    input = Input.query.filter_by(device='ATLAS_PH_UART').all()
     stage = 0
     next_stage = None
-    selected_sensor = None
-    sensor_device_name = None
+    selected_input = None
+    input_device_name = None
     complete_with_error = None
 
     if form_ph_calibrate.hidden_next_stage.data is not None:
@@ -77,35 +77,35 @@ def calibration_atlas_ph():
 
     # Clear Calibration memory
     if form_ph_calibrate.clear_calibration.data:
-        selected_sensor = Sensor.query.filter_by(
+        selected_input = Input.query.filter_by(
             unique_id=form_ph_calibrate.selected_sensor_id.data).first()
-        atlas_command = AtlasScientificCommand(selected_sensor)
+        atlas_command = AtlasScientificCommand(selected_input)
         status, message = atlas_command.calibrate('clear_calibration')
         if status:
             flash(message, "error")
         else:
             flash(message, "success")
-    # Begin calibration from Selected sensor
+    # Begin calibration from Selected input
     elif form_ph_calibrate.go_from_first_stage.data:
         stage = 1
-        selected_sensor = Sensor.query.filter_by(
+        selected_input = Input.query.filter_by(
             unique_id=form_ph_calibrate.selected_sensor_id.data).first()
-        if not selected_sensor:
-            flash('Sensor not found: {}'.format(
+        if not selected_input:
+            flash('Input not found: {}'.format(
                 form_ph_calibrate.selected_sensor_id.data), 'error')
         else:
-            for each_sensor in SENSORS:
-                if selected_sensor.device == each_sensor[0]:
-                    sensor_device_name = each_sensor[1]
-    # Continue calibration from selected sensor
+            for each_input in INPUTS:
+                if selected_input.device == each_input[0]:
+                    input_device_name = each_input[1]
+    # Continue calibration from selected input
     elif (form_ph_calibrate.go_to_next_stage.data or
             form_ph_calibrate.go_to_last_stage.data or
             next_stage > 1):
-        selected_sensor = Sensor.query.filter_by(
+        selected_input = Input.query.filter_by(
             unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
-        for each_sensor in SENSORS:
-            if selected_sensor.device == each_sensor[0]:
-                sensor_device_name = each_sensor[1]
+        for each_input in INPUTS:
+            if selected_input.device == each_input[0]:
+                input_device_name = each_input[1]
 
     if next_stage == 2:
         if form_ph_calibrate.temperature.data is None:
@@ -116,64 +116,64 @@ def calibration_atlas_ph():
             temp = '{temp:.2f}'.format(
                 temp=form_ph_calibrate.temperature.data)
             stage, complete_with_error = dual_commands_to_sensor(
-                selected_sensor, 'temperature', temp, 'continuous', 1)
+                selected_input, 'temperature', temp, 'continuous', 1)
     elif next_stage == 3:
         stage, complete_with_error = dual_commands_to_sensor(
-            selected_sensor, 'mid', '7.0', 'continuous', 2)
+            selected_input, 'mid', '7.0', 'continuous', 2)
     elif next_stage == 4:
         stage, complete_with_error = dual_commands_to_sensor(
-            selected_sensor, 'low', '4.0', 'continuous', 3)
+            selected_input, 'low', '4.0', 'continuous', 3)
     elif next_stage == 5:
         stage, complete_with_error = dual_commands_to_sensor(
-            selected_sensor, 'high', '10.0', 'end', 4)
+            selected_input, 'high', '10.0', 'end', 4)
 
     return render_template('tools/calibration_atlas_ph.html',
                            complete_with_error=complete_with_error,
                            form_ph_calibrate=form_ph_calibrate,
-                           sensor=sensor,
-                           sensor_device_name=sensor_device_name,
-                           selected_sensor=selected_sensor,
+                           sensor=input,
+                           sensor_device_name=input_device_name,
+                           selected_sensor=selected_input,
                            stage=stage)
 
 
-@blueprint.route('/calibration_atlas_ph_measure/<sensor_id>')
+@blueprint.route('/calibration_atlas_ph_measure/<input_id>')
 @flask_login.login_required
-def calibration_atlas_ph_measure(sensor_id):
+def calibration_atlas_ph_measure(input_id):
     """
-    Acquire a measurement from the Atlas Scientific pH sensor and return it
+    Acquire a measurement from the Atlas Scientific pH input and return it
     Used during calibration to display the current pH to the user
     """
     if not utils_general.user_has_permission('edit_controllers'):
         return redirect(url_for('page_routes.page_atlas_ph_calibrate'))
 
-    selected_sensor = Sensor.query.filter_by(unique_id=sensor_id).first()
+    selected_input = Input.query.filter_by(unique_id=input_id).first()
 
     ph = None
     error = None
 
-    if selected_sensor.interface == 'UART':
-        ph_sensor_uart = AtlasScientificUART(
-            selected_sensor.device_loc, baudrate=selected_sensor.baud_rate)
-        lines = ph_sensor_uart.query('R')
+    if selected_input.interface == 'UART':
+        ph_input_uart = AtlasScientificUART(
+            selected_input.device_loc, baudrate=selected_input.baud_rate)
+        lines = ph_input_uart.query('R')
         logger.debug("All Lines: {lines}".format(lines=lines))
 
         if 'check probe' in lines:
-            error = '"check probe" returned from sensor'
+            error = '"check probe" returned from input'
         elif not lines:
-            error = 'Nothing returned from sensor'
+            error = 'Nothing returned from input'
         elif str_is_float(lines[0]):
             ph = lines[0]
             logger.debug('Value[0] is float: {val}'.format(val=ph))
         else:
             error = 'Value[0] is not float or "check probe": {val}'.format(
                 val=lines[0])
-    elif selected_sensor.interface == 'I2C':
-        ph_sensor_i2c = AtlasScientificI2C(
-            i2c_address=selected_sensor.i2c_address,
-            i2c_bus=selected_sensor.i2c_bus)
-        ph_status, ph_str = ph_sensor_i2c.query('R')
+    elif selected_input.interface == 'I2C':
+        ph_input_i2c = AtlasScientificI2C(
+            i2c_address=selected_input.i2c_address,
+            i2c_bus=selected_input.i2c_bus)
+        ph_status, ph_str = ph_input_i2c.query('R')
         if ph_status == 'error':
-            error = "Sensor read unsuccessful: {err}".format(err=ph_str)
+            error = "Input read unsuccessful: {err}".format(err=ph_str)
         elif ph_status == 'success':
             ph = ph_str
 
@@ -184,7 +184,7 @@ def calibration_atlas_ph_measure(sensor_id):
         return ph
 
 
-def dual_commands_to_sensor(sensor_sel, first_cmd, amount,
+def dual_commands_to_sensor(input_sel, first_cmd, amount,
                             second_cmd, current_stage):
     """
     Handles the Atlas Scientific pH sensor calibration:
@@ -202,7 +202,7 @@ def dual_commands_to_sensor(sensor_sel, first_cmd, amount,
     else:
         unit = 'pH'
 
-    atlas_command = AtlasScientificCommand(sensor_sel)
+    atlas_command = AtlasScientificCommand(input_sel)
 
     first_status, first_return_str = atlas_command.calibrate(first_cmd, temperature=set_temp)
     info_str = "{act}: {lvl} ({amt} {unit}): {resp}".format(

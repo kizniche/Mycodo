@@ -4,7 +4,7 @@ from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
 
 
-class Sensor(CRUDMixin, db.Model):
+class Input(CRUDMixin, db.Model):
     __tablename__ = "sensor"
 
     id = db.Column(db.Integer, unique=True, primary_key=True)

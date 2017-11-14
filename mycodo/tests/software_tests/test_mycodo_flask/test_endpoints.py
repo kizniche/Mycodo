@@ -2,7 +2,7 @@
 """ functional tests for flask endpoints """
 import pytest
 import mock
-from mycodo.databases.models import Sensor
+from mycodo.databases.models import Input
 from mycodo.databases.models import User
 
 from mycodo.tests.software_tests.conftest import login_user

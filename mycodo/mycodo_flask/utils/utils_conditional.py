@@ -13,7 +13,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalActions
-from mycodo.databases.models import Sensor
+from mycodo.databases.models import Input
 from mycodo.utils.system_pi import is_int
 
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
@@ -27,7 +27,7 @@ def conditional_add(cond_type, quantity, sensor_id=None):
     if cond_type == 'relay':
         conditional_type = gettext(u"Relay")
     elif cond_type == 'sensor':
-        conditional_type = gettext(u"Sensor")
+        conditional_type = gettext(u"Input")
     else:
         error.append("Unrecognized conditional type: {cond_type}".format(
             cond_type=cond_type))
@@ -65,7 +65,7 @@ def conditional_mod(form, mod_type):
     if conditional_type == 'relay':
         cond_type = gettext(u"Relay")
     elif conditional_type == 'sensor':
-        cond_type = gettext(u"Sensor")
+        cond_type = gettext(u"Input")
     else:
         error.append("Unrecognized conditional type: {cond_type}".format(
             cond_type=form.conditional_type.data))
@@ -130,7 +130,7 @@ def conditional_action_add(form):
     if conditional_type == 'relay':
         cond_type = gettext(u"Relay")
     elif conditional_type == 'sensor':
-        cond_type = gettext(u"Sensor")
+        cond_type = gettext(u"Input")
     else:
         error.append("Unrecognized conditional type: {cond_type}".format(
             cond_type=form.conditional_type.data))
@@ -159,7 +159,7 @@ def conditional_action_mod(form, mod_type):
     if cond.conditional_type == 'relay':
         cond_type = gettext(u"Relay")
     elif cond.conditional_type == 'sensor':
-        cond_type = gettext(u"Sensor")
+        cond_type = gettext(u"Input")
     else:
         error.append("Unrecognized conditional type: {cond_type}".format(
             cond_type=form.conditional_type.data))
@@ -258,9 +258,9 @@ def conditional_deactivate(form):
 
 
 def check_refresh_conditional(sensor_id, cond_mod):
-    sensor = (Sensor.query
-              .filter(Sensor.id == sensor_id)
-              .filter(Sensor.is_activated == True)
+    sensor = (Input.query
+              .filter(Input.id == sensor_id)
+              .filter(Input.is_activated == True)
               ).first()
     if sensor:
         control = DaemonControl()

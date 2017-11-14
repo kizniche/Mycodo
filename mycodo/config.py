@@ -108,8 +108,8 @@ MEASUREMENT_UNITS = {
         'name': 'Voltage', 'meas': 'voltage', 'unit': u'volts'}
 }
 
-# Sensors and description
-SENSORS = [
+# Inputs and description
+INPUTS = [
     ('RPi', 'Raspberry Pi: CPU Temperature'),
     ('RPiCPULoad', 'Raspberry Pi: CPU Load'),
     ('RPiFreeSpace', 'Raspberry Pi: Free Disk Space'),

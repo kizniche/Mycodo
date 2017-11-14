@@ -195,9 +195,8 @@ def user_del(form):
             user = User.query.filter(
                 User.id == form.user_id.data).first()
             user.delete()
-            return 1
-        except sqlalchemy.orm.exc.NoResultFound:
-            return 0
+        except Exception as except_msg:
+            error.append(except_msg)
 
     flash_success_errors(error, action, url_for('settings_routes.settings_users'))
 

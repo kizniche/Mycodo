@@ -17,7 +17,7 @@ from wtforms import widgets
 
 from wtforms.validators import DataRequired
 
-from mycodo.config import SENSORS
+from mycodo.config import INPUTS
 
 
 class InputAdd(FlaskForm):
@@ -31,7 +31,7 @@ class InputAdd(FlaskForm):
     )
     sensor = SelectField(
         lazy_gettext(u'Sensor'),
-        choices=SENSORS,
+        choices=INPUTS,
         validators=[DataRequired()]
     )
     sensorAddSubmit = SubmitField(lazy_gettext(u'Add Device'))

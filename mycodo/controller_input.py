@@ -1,7 +1,7 @@
 # coding=utf-8
 #
-# controller_sensor.py - Sensor controller that manages reading sensors and
-#                        creating database entries
+# controller_input.py - Input controller that manages reading inputs and
+#                       creating database entries
 #
 #  Copyright (C) 2017  Kyle T. Gabriel
 #
@@ -36,7 +36,7 @@ from databases.models import Conditional
 from databases.models import ConditionalActions
 from databases.models import PID
 from databases.models import Relay
-from databases.models import Sensor
+from databases.models import Input
 from databases.models import SMTP
 
 from devices.tca9548a import TCA9548A
@@ -103,16 +103,16 @@ class Measurement:
         return self.rawData
 
 
-class SensorController(threading.Thread):
+class InputController(threading.Thread):
     """
-    Class for controlling the sensor
+    Class for controlling the input
 
     """
-    def __init__(self, ready, sensor_id):
+    def __init__(self, ready, input_id):
         threading.Thread.__init__(self)
 
         self.logger = logging.getLogger(
-            "mycodo.input_{id}".format(id=sensor_id))
+            "mycodo.input_{id}".format(id=input_id))
 
         self.stop_iteration_counter = 0
         self.thread_startup_timer = timeit.default_timer()
@@ -121,7 +121,7 @@ class SensorController(threading.Thread):
         self.lock = {}
         self.measurement = None
         self.updateSuccess = False
-        self.sensor_id = sensor_id
+        self.input_id = input_id
         self.control = DaemonControl()
         self.pause_loop = False
         self.verify_pause_loop = True
@@ -130,13 +130,13 @@ class SensorController(threading.Thread):
         self.cond_action_id = {}
         self.cond_name = {}
         self.cond_is_activated = {}
-        self.cond_if_sensor_period = {}
-        self.cond_if_sensor_measurement = {}
-        self.cond_if_sensor_edge_select = {}
-        self.cond_if_sensor_edge_detected = {}
-        self.cond_if_sensor_gpio_state = {}
-        self.cond_if_sensor_direction = {}
-        self.cond_if_sensor_setpoint = {}
+        self.cond_if_input_period = {}
+        self.cond_if_input_measurement = {}
+        self.cond_if_input_edge_select = {}
+        self.cond_if_input_edge_detected = {}
+        self.cond_if_input_gpio_state = {}
+        self.cond_if_input_direction = {}
+        self.cond_if_input_setpoint = {}
         self.cond_do_relay_id = {}
         self.cond_do_relay_state = {}
         self.cond_do_relay_duration = {}
@@ -147,54 +147,54 @@ class SensorController(threading.Thread):
         self.cond_timer = {}
         self.smtp_wait_timer = {}
 
-        self.setup_sensor_conditionals()
+        self.setup_input_conditionals()
 
-        sensor = db_retrieve_table_daemon(Sensor, device_id=self.sensor_id)
-        self.sensor_sel = sensor
-        self.unique_id = sensor.unique_id
-        self.i2c_bus = sensor.i2c_bus
-        self.location = sensor.location
-        self.power_relay_id = sensor.power_relay_id
-        self.measurements = sensor.measurements
-        self.device = sensor.device
-        self.interface = sensor.interface
-        self.device_loc = sensor.device_loc
-        self.baud_rate = sensor.baud_rate
-        self.period = sensor.period
-        self.resolution = sensor.resolution
-        self.sensitivity = sensor.sensitivity
-        self.cmd_command = sensor.cmd_command
-        self.cmd_measurement = sensor.cmd_measurement
-        self.cmd_measurement_units = sensor.cmd_measurement_units
-        self.mux_address_raw = sensor.multiplexer_address
-        self.mux_bus = sensor.multiplexer_bus
-        self.mux_chan = sensor.multiplexer_channel
-        self.adc_chan = sensor.adc_channel
-        self.adc_gain = sensor.adc_gain
-        self.adc_resolution = sensor.adc_resolution
-        self.adc_measure = sensor.adc_measure
-        self.adc_measure_units = sensor.adc_measure_units
-        self.adc_volts_min = sensor.adc_volts_min
-        self.adc_volts_max = sensor.adc_volts_max
-        self.adc_units_min = sensor.adc_units_min
-        self.adc_units_max = sensor.adc_units_max
-        self.adc_inverse_unit_scale = sensor.adc_inverse_unit_scale
-        self.sht_clock_pin = sensor.sht_clock_pin
-        self.sht_voltage = sensor.sht_voltage
+        input = db_retrieve_table_daemon(Input, device_id=self.input_id)
+        self.input_sel = input
+        self.unique_id = input.unique_id
+        self.i2c_bus = input.i2c_bus
+        self.location = input.location
+        self.power_relay_id = input.power_relay_id
+        self.measurements = input.measurements
+        self.device = input.device
+        self.interface = input.interface
+        self.device_loc = input.device_loc
+        self.baud_rate = input.baud_rate
+        self.period = input.period
+        self.resolution = input.resolution
+        self.sensitivity = input.sensitivity
+        self.cmd_command = input.cmd_command
+        self.cmd_measurement = input.cmd_measurement
+        self.cmd_measurement_units = input.cmd_measurement_units
+        self.mux_address_raw = input.multiplexer_address
+        self.mux_bus = input.multiplexer_bus
+        self.mux_chan = input.multiplexer_channel
+        self.adc_chan = input.adc_channel
+        self.adc_gain = input.adc_gain
+        self.adc_resolution = input.adc_resolution
+        self.adc_measure = input.adc_measure
+        self.adc_measure_units = input.adc_measure_units
+        self.adc_volts_min = input.adc_volts_min
+        self.adc_volts_max = input.adc_volts_max
+        self.adc_units_min = input.adc_units_min
+        self.adc_units_max = input.adc_units_max
+        self.adc_inverse_unit_scale = input.adc_inverse_unit_scale
+        self.sht_clock_pin = input.sht_clock_pin
+        self.sht_voltage = input.sht_voltage
 
         # Edge detection
-        self.switch_edge = sensor.switch_edge
-        self.switch_bouncetime = sensor.switch_bouncetime
-        self.switch_reset_period = sensor.switch_reset_period
+        self.switch_edge = input.switch_edge
+        self.switch_bouncetime = input.switch_bouncetime
+        self.switch_reset_period = input.switch_reset_period
 
         # PWM and RPM options
-        self.weighting = sensor.weighting
-        self.rpm_pulses_per_rev = sensor.rpm_pulses_per_rev
-        self.sample_time = sensor.sample_time
+        self.weighting = input.weighting
+        self.rpm_pulses_per_rev = input.rpm_pulses_per_rev
+        self.sample_time = input.sample_time
 
-        # Relay that will activate prior to sensor read
-        self.pre_relay_id = sensor.pre_relay_id
-        self.pre_relay_duration = sensor.pre_relay_duration
+        # Relay that will activate prior to input read
+        self.pre_relay_id = input.pre_relay_id
+        self.pre_relay_duration = input.pre_relay_duration
         self.pre_relay_setup = False
         self.next_measurement = time.time()
         self.get_new_measurement = False
@@ -259,112 +259,112 @@ class SensorController(threading.Thread):
 
         self.device_recognized = True
 
-        # Set up sensors or devices
+        # Set up inputs or devices
         if self.device in ['EDGE', 'ADS1x15', 'MCP342x']:
-            self.measure_sensor = None
+            self.measure_input = None
         elif self.device == 'MYCODO_RAM':
-            self.measure_sensor = MycodoRam()
+            self.measure_input = MycodoRam()
         elif self.device == 'RPiCPULoad':
-            self.measure_sensor = RaspberryPiCPULoad()
+            self.measure_input = RaspberryPiCPULoad()
         elif self.device == 'RPi':
-            self.measure_sensor = RaspberryPiCPUTemp()
+            self.measure_input = RaspberryPiCPUTemp()
         elif self.device == 'RPiFreeSpace':
-            self.measure_sensor = RaspberryPiFreeSpace(self.location)
+            self.measure_input = RaspberryPiFreeSpace(self.location)
         elif self.device == 'AM2302':
-            self.measure_sensor = DHT22Sensor(self.sensor_id,
+            self.measure_input = DHT22Sensor(self.input_id,
                                               int(self.location))
         elif self.device == 'AM2315':
-            self.measure_sensor = AM2315Sensor(self.sensor_id,
+            self.measure_input = AM2315Sensor(self.input_id,
                                                self.i2c_bus,
                                                power=self.power_relay_id)
         elif self.device == 'ATLAS_PH_I2C':
-            self.measure_sensor = AtlaspHSensor(self.interface,
+            self.measure_input = AtlaspHSensor(self.interface,
                                                 i2c_address=self.i2c_address,
                                                 i2c_bus=self.i2c_bus,
-                                                sensor_sel=self.sensor_sel)
+                                                sensor_sel=self.input_sel)
         elif self.device == 'ATLAS_PH_UART':
-            self.measure_sensor = AtlaspHSensor(self.interface,
+            self.measure_input = AtlaspHSensor(self.interface,
                                                 device_loc=self.device_loc,
                                                 baud_rate=self.baud_rate,
-                                                sensor_sel=self.sensor_sel)
+                                                sensor_sel=self.input_sel)
         elif self.device == 'ATLAS_PT1000_I2C':
-            self.measure_sensor = AtlasPT1000Sensor(self.interface,
+            self.measure_input = AtlasPT1000Sensor(self.interface,
                                                     i2c_address=self.i2c_address,
                                                     i2c_bus=self.i2c_bus)
         elif self.device == 'ATLAS_PT1000_UART':
-            self.measure_sensor = AtlasPT1000Sensor(self.interface,
+            self.measure_input = AtlasPT1000Sensor(self.interface,
                                                     device_loc=self.device_loc,
                                                     baud_rate=self.baud_rate)
         elif self.device == 'BH1750':
-            self.measure_sensor = BH1750Sensor(self.i2c_address,
+            self.measure_input = BH1750Sensor(self.i2c_address,
                                                self.i2c_bus,
                                                self.resolution,
                                                self.sensitivity)
         elif self.device == 'BME280':
-            self.measure_sensor = BME280Sensor(self.i2c_address,
+            self.measure_input = BME280Sensor(self.i2c_address,
                                                self.i2c_bus)
         # TODO: BMP is an old designation and will be removed in the future
         elif self.device in ['BMP', 'BMP180']:
-            self.measure_sensor = BMP180Sensor(self.i2c_bus)
+            self.measure_input = BMP180Sensor(self.i2c_bus)
         elif self.device == 'BMP280':
-            self.measure_sensor = BMP280Sensor(self.i2c_address,
+            self.measure_input = BMP280Sensor(self.i2c_address,
                                                self.i2c_bus)
         elif self.device == 'CHIRP':
-            self.measure_sensor = ChirpSensor(self.i2c_address,
+            self.measure_input = ChirpSensor(self.i2c_address,
                                               self.i2c_bus)
         elif self.device == 'DS18B20':
-            self.measure_sensor = DS18B20Sensor(self.location)
+            self.measure_input = DS18B20Sensor(self.location)
         elif self.device == 'DHT11':
-            self.measure_sensor = DHT11Sensor(self.sensor_id,
+            self.measure_input = DHT11Sensor(self.input_id,
                                               int(self.location),
                                               power=self.power_relay_id)
         elif self.device == 'DHT22':
-            self.measure_sensor = DHT22Sensor(self.sensor_id,
+            self.measure_input = DHT22Sensor(self.input_id,
                                               int(self.location),
                                               power=self.power_relay_id)
         elif self.device == 'HTU21D':
-            self.measure_sensor = HTU21DSensor(self.i2c_bus)
+            self.measure_input = HTU21DSensor(self.i2c_bus)
         elif self.device == 'K30_UART':
-            self.measure_sensor = K30Sensor(self.device_loc,
+            self.measure_input = K30Sensor(self.device_loc,
                                             baud_rate=self.baud_rate)
         elif self.device == 'MH_Z16_I2C':
-            self.measure_sensor = MHZ16Sensor(self.interface,
+            self.measure_input = MHZ16Sensor(self.interface,
                                               i2c_address=self.i2c_address,
                                               i2c_bus=self.i2c_bus)
         elif self.device == 'MH_Z16_UART':
-            self.measure_sensor = MHZ16Sensor(self.interface,
+            self.measure_input = MHZ16Sensor(self.interface,
                                               device_loc=self.device_loc,
                                               baud_rate=self.baud_rate)
         elif self.device == 'MH_Z19_UART':
-            self.measure_sensor = MHZ19Sensor(self.device_loc,
+            self.measure_input = MHZ19Sensor(self.device_loc,
                                               baud_rate=self.baud_rate)
         elif self.device == 'SHT1x_7x':
-            self.measure_sensor = SHT1x7xSensor(int(self.location),
+            self.measure_input = SHT1x7xSensor(int(self.location),
                                                 self.sht_clock_pin,
                                                 self.sht_voltage)
         elif self.device == 'SHT2x':
-            self.measure_sensor = SHT2xSensor(self.i2c_address,
+            self.measure_input = SHT2xSensor(self.i2c_address,
                                               self.i2c_bus)
         elif self.device == 'SIGNAL_PWM':
-            self.measure_sensor = PWMInput(int(self.location),
+            self.measure_input = PWMInput(int(self.location),
                                            self.weighting,
                                            self.sample_time)
         elif self.device == 'SIGNAL_RPM':
-            self.measure_sensor = RPMInput(int(self.location),
+            self.measure_input = RPMInput(int(self.location),
                                            self.weighting,
                                            self.rpm_pulses_per_rev,
                                            self.sample_time)
         elif self.device == 'TMP006':
-            self.measure_sensor = TMP006Sensor(self.i2c_address,
+            self.measure_input = TMP006Sensor(self.i2c_address,
                                                self.i2c_bus)
         elif self.device == 'TSL2561':
-            self.measure_sensor = TSL2561Sensor(self.i2c_address,
+            self.measure_input = TSL2561Sensor(self.i2c_address,
                                                 self.i2c_bus)
         elif self.device == 'TSL2591':
-            self.measure_sensor = TSL2591Sensor(self.i2c_address,
+            self.measure_input = TSL2591Sensor(self.i2c_address,
                                                 self.i2c_bus)
         elif self.device == 'LinuxCommand':
-            self.measure_sensor = LinuxCommand(self.cmd_command,
+            self.measure_input = LinuxCommand(self.cmd_command,
                                                self.cmd_measurement)
         else:
             self.device_recognized = False
@@ -377,7 +377,7 @@ class SensorController(threading.Thread):
             self.unlock_multiplexer()
 
         self.edge_reset_timer = time.time()
-        self.sensor_timer = time.time()
+        self.input_timer = time.time()
         self.running = False
         self.lastUpdate = None
 
@@ -427,13 +427,13 @@ class SensorController(threading.Thread):
                         self.pre_relay_timer = time.time() + self.pre_relay_duration
 
                     # If using a pre relay, wait for it to complete before
-                    # querying the sensor for a measurement
+                    # querying the input for a measurement
                     if self.get_new_measurement:
                         if ((self.pre_relay_setup and
                                 self.pre_relay_activated and
                                 time.time() < self.pre_relay_timer) or
                                 not self.pre_relay_setup):
-                            # Get measurement(s) from sensor
+                            # Get measurement(s) from input
                             self.update_measure()
                             # Add measurement(s) to influxdb
                             self.add_measure_influxdb()
@@ -442,17 +442,17 @@ class SensorController(threading.Thread):
 
                 for each_cond_id in self.cond_id:
                     if self.cond_is_activated[each_cond_id]:
-                        # Check sensor conditional if it has been activated
+                        # Check input conditional if it has been activated
                         if (self.device in ['EDGE'] and
-                                self.cond_if_sensor_edge_select[each_cond_id] == 'state' and
+                                self.cond_if_input_edge_select[each_cond_id] == 'state' and
                                 time.time() > self.cond_timer[each_cond_id]):
                             # Inputs that are triggered (switch, reed, hall, etc.)
-                            self.cond_timer[each_cond_id] = time.time() + self.cond_if_sensor_period[each_cond_id]
+                            self.cond_timer[each_cond_id] = time.time() + self.cond_if_input_period[each_cond_id]
                             self.check_conditionals(each_cond_id)
                         elif ((not self.cond_timer[each_cond_id] and self.trigger_cond) or
                                 time.time() > self.cond_timer[each_cond_id]):
-                            # Inputs that are not triggered (sensors)
-                            self.cond_timer[each_cond_id] = time.time() + self.cond_if_sensor_period[each_cond_id]
+                            # Inputs that are not triggered (inputs)
+                            self.cond_timer[each_cond_id] = time.time() + self.cond_if_input_period[each_cond_id]
                             self.check_conditionals(each_cond_id)
 
                 self.trigger_cond = False
@@ -493,7 +493,7 @@ class SensorController(threading.Thread):
 
     def check_conditionals(self, cond_id):
         """
-        Check if any sensor conditional statements are activated and
+        Check if any input conditional statements are activated and
         execute their actions if the conditional is true.
 
         For example, if measured temperature is above 30C, notify me@gmail.com
@@ -503,7 +503,7 @@ class SensorController(threading.Thread):
         :param cond_id: ID of conditional to check
         :type cond_id: str
         """
-        logger_cond = logging.getLogger("mycodo.sensor_cond_{id}".format(
+        logger_cond = logging.getLogger("mycodo.input_cond_{id}".format(
             id=cond_id))
         attachment_file = False
         attachment_type = False
@@ -511,7 +511,7 @@ class SensorController(threading.Thread):
         cond = db_retrieve_table_daemon(
             Conditional, device_id=cond_id, entry='first')
 
-        message = u"[Sensor Conditional: {name} ({id})]".format(
+        message = u"[Input Conditional: {name} ({id})]".format(
             name=cond.name,
             id=cond_id)
 
@@ -786,7 +786,7 @@ class SensorController(threading.Thread):
 
     def update_measure(self):
         """
-        Retrieve measurement from sensor
+        Retrieve measurement from input
 
         :return: None if success, 0 if fail
         :rtype: int or None
@@ -807,8 +807,8 @@ class SensorController(threading.Thread):
             measurements = self.read_adc()
         else:
             try:
-                # Get measurement from sensor
-                measurements = self.measure_sensor.next()
+                # Get measurement from input
+                measurements = self.measure_input.next()
                 # Reset StopIteration counter on successful read
                 if self.stop_iteration_counter:
                     self.stop_iteration_counter = 0
@@ -820,11 +820,11 @@ class SensorController(threading.Thread):
                     self.stop_iteration_counter = 0
                     self.logger.error(
                         "StopIteration raised. Possibly could not read "
-                        "sensor. Ensure it's connected properly and "
+                        "input. Ensure it's connected properly and "
                         "detected.")
             except Exception as except_msg:
                 self.logger.exception(
-                    "Error while attempting to read sensor: {err}".format(
+                    "Error while attempting to read input: {err}".format(
                         err=except_msg))
 
         if self.multiplexer:
@@ -840,12 +840,12 @@ class SensorController(threading.Thread):
 
     def get_last_measurement(self, measurement_type):
         """
-        Retrieve the latest sensor measurement
+        Retrieve the latest input measurement
 
-        :return: The latest sensor value or None if no data available
+        :return: The latest input value or None if no data available
         :rtype: float or None
 
-        :param measurement_type: Environmental condition of a sensor (e.g.
+        :param measurement_type: Environmental condition of a input (e.g.
             temperature, humidity, pressure, etc.)
         :type measurement_type: str
         """
@@ -872,18 +872,18 @@ class SensorController(threading.Thread):
                 args=(self.unique_id, 'edge', rising_or_falling,))
             write_db.start()
 
-            # Check sensor conditionals
+            # Check input conditionals
             for each_cond_id in self.cond_id:
                 if ((self.cond_is_activated[each_cond_id] and
-                     self.cond_if_sensor_edge_select[each_cond_id] == 'edge') and
-                        ((self.cond_if_sensor_edge_detected[each_cond_id] == 'rising' and
+                     self.cond_if_input_edge_select[each_cond_id] == 'edge') and
+                        ((self.cond_if_input_edge_detected[each_cond_id] == 'rising' and
                           rising_or_falling == 1) or
-                         (self.cond_if_sensor_edge_detected[each_cond_id] == 'falling' and
+                         (self.cond_if_input_edge_detected[each_cond_id] == 'falling' and
                           rising_or_falling == -1) or
-                         self.cond_if_sensor_edge_detected[each_cond_id] == 'both')):
+                         self.cond_if_input_edge_detected[each_cond_id] == 'both')):
                     self.check_conditionals(each_cond_id)
 
-    def setup_sensor_conditionals(self, cond_mod='setup'):
+    def setup_input_conditionals(self, cond_mod='setup'):
         # Signal to pause the main loop and wait for verification
         self.pause_loop = True
         while not self.verify_pause_loop:
@@ -893,19 +893,19 @@ class SensorController(threading.Thread):
         self.cond_action_id = {}
         self.cond_name = {}
         self.cond_is_activated = {}
-        self.cond_if_sensor_period = {}
-        self.cond_if_sensor_measurement = {}
-        self.cond_if_sensor_edge_select = {}
-        self.cond_if_sensor_edge_detected = {}
-        self.cond_if_sensor_gpio_state = {}
-        self.cond_if_sensor_direction = {}
-        self.cond_if_sensor_setpoint = {}
+        self.cond_if_input_period = {}
+        self.cond_if_input_measurement = {}
+        self.cond_if_input_edge_select = {}
+        self.cond_if_input_edge_detected = {}
+        self.cond_if_input_gpio_state = {}
+        self.cond_if_input_direction = {}
+        self.cond_if_input_setpoint = {}
 
-        sensor_conditional = db_retrieve_table_daemon(
+        input_conditional = db_retrieve_table_daemon(
             Conditional)
-        sensor_conditional = sensor_conditional.filter(
-            Conditional.sensor_id == self.sensor_id)
-        sensor_conditional = sensor_conditional.filter(
+        input_conditional = input_conditional.filter(
+            Conditional.sensor_id == self.input_id)
+        input_conditional = input_conditional.filter(
             Conditional.is_activated == True).all()
 
         if cond_mod == 'setup':
@@ -920,19 +920,19 @@ class SensorController(threading.Thread):
         else:
             return 1
 
-        for each_cond in sensor_conditional:
+        for each_cond in input_conditional:
             if cond_mod == 'setup':
                 self.logger.info(
                     "Activated Conditional ({id})".format(id=each_cond.id))
             self.cond_id[each_cond.id] = each_cond.id
             self.cond_is_activated[each_cond.id] = each_cond.is_activated
-            self.cond_if_sensor_period[each_cond.id] = each_cond.if_sensor_period
-            self.cond_if_sensor_measurement[each_cond.id] = each_cond.if_sensor_measurement
-            self.cond_if_sensor_edge_select[each_cond.id] = each_cond.if_sensor_edge_select
-            self.cond_if_sensor_edge_detected[each_cond.id] = each_cond.if_sensor_edge_detected
-            self.cond_if_sensor_gpio_state[each_cond.id] = each_cond.if_sensor_gpio_state
-            self.cond_if_sensor_direction[each_cond.id] = each_cond.if_sensor_direction
-            self.cond_if_sensor_setpoint[each_cond.id] = each_cond.if_sensor_setpoint
+            self.cond_if_input_period[each_cond.id] = each_cond.if_sensor_period
+            self.cond_if_input_measurement[each_cond.id] = each_cond.if_sensor_measurement
+            self.cond_if_input_edge_select[each_cond.id] = each_cond.if_sensor_edge_select
+            self.cond_if_input_edge_detected[each_cond.id] = each_cond.if_sensor_edge_detected
+            self.cond_if_input_gpio_state[each_cond.id] = each_cond.if_sensor_gpio_state
+            self.cond_if_input_direction[each_cond.id] = each_cond.if_sensor_direction
+            self.cond_if_input_setpoint[each_cond.id] = each_cond.if_sensor_setpoint
             self.cond_timer[each_cond.id] = time.time() + each_cond.if_sensor_period
             self.smtp_wait_timer[each_cond.id] = time.time() + 3600
 
@@ -945,5 +945,5 @@ class SensorController(threading.Thread):
     def stop_controller(self):
         self.thread_shutdown_timer = timeit.default_timer()
         if self.device not in ['EDGE', 'ADS1x15', 'MCP342x']:
-            self.measure_sensor.stop_sensor()
+            self.measure_input.stop_sensor()
         self.running = False

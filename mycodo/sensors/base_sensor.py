@@ -96,7 +96,7 @@ class AbstractSensor(object):
         return average
 
     def stop_sensor(self):
-        """ Called by SensorController class when sensors are deactivated """
+        """ Called by InputController class when sensors are deactivated """
         self.running = False
 
     def start_sensor(self):

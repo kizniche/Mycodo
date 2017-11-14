@@ -36,7 +36,7 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Relay
 from mycodo.databases.models import Remote
-from mycodo.databases.models import Sensor
+from mycodo.databases.models import Input
 from mycodo.databases.models import User
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
@@ -191,9 +191,9 @@ def download_file(dl_type, filename):
     return '', 204
 
 
-@blueprint.route('/last/<sensor_measure>/<sensor_id>/<sensor_period>')
+@blueprint.route('/last/<input_measure>/<input_id>/<input_period>')
 @flask_login.login_required
-def last_data(sensor_measure, sensor_id, sensor_period):
+def last_data(input_measure, input_id, input_period):
     """Return the most recent time and value from influxdb"""
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
@@ -201,8 +201,8 @@ def last_data(sensor_measure, sensor_id, sensor_period):
     dbcon = influx_db.connection
     try:
         query_str = query_string(
-            sensor_measure, sensor_id, value='LAST',
-            past_sec=sensor_period)
+            input_measure, input_id, value='LAST',
+            past_sec=input_period)
         if query_str == 1:
             return '', 204
         raw_data = dbcon.query(query_str).raw
@@ -224,10 +224,10 @@ def last_data(sensor_measure, sensor_id, sensor_period):
         return '', 204
 
 
-@blueprint.route('/past/<sensor_measure>/<sensor_id>/<past_seconds>')
+@blueprint.route('/past/<input_measure>/<input_id>/<past_seconds>')
 @flask_login.login_required
 @gzipped
-def past_data(sensor_measure, sensor_id, past_seconds):
+def past_data(input_measure, input_id, past_seconds):
     """Return data from past_seconds until present from influxdb"""
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
@@ -235,7 +235,7 @@ def past_data(sensor_measure, sensor_id, past_seconds):
     dbcon = influx_db.connection
     try:
         query_str = query_string(
-            sensor_measure, sensor_id, past_sec=past_seconds)
+            input_measure, input_id, past_sec=past_seconds)
         if query_str == 1:
             return '', 204
         raw_data = dbcon.query(query_str).raw
@@ -265,7 +265,7 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     if measurement == 'duration_sec':
         name = Relay.query.filter(Relay.unique_id == unique_id).first().name
     else:
-        name = Sensor.query.filter(Sensor.unique_id == unique_id).first().name
+        name = Input.query.filter(Input.unique_id == unique_id).first().name
 
     utc_offset_timedelta = datetime.datetime.utcnow() - datetime.datetime.now()
     start = datetime.datetime.fromtimestamp(float(start_seconds))
@@ -375,7 +375,7 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
     # If there are more than 700 points in the time frame, we need to group
     # data points into 700 groups with points averaged in each group.
     if count_points > 700:
-        # Average period between sensor reads
+        # Average period between input reads
         seconds_per_point = time_difference_seconds / count_points
         logger.debug('Seconds per point = {}'.format(seconds_per_point))
 

@@ -1,7 +1,7 @@
 # coding=utf-8
 #
 # controller_pid.py - PID controller that manages discrete control of a
-#                     regulation system of sensors, relays, and devices
+#                     regulation system of inputs, relays, and devices
 #
 #  Copyright (C) 2017  Kyle T. Gabriel
 #
@@ -59,7 +59,7 @@ from databases.models import Method
 from databases.models import MethodData
 from databases.models import PID
 from databases.models import Relay
-from databases.models import Sensor
+from databases.models import Input
 from databases.utils import session_scope
 from mycodo_client import DaemonControl
 from utils.database import db_retrieve_table_daemon
@@ -131,8 +131,8 @@ class PIDController(threading.Thread):
         self.default_set_point = None
         self.set_point = None
 
-        self.sensor_unique_id = None
-        self.sensor_duration = None
+        self.input_unique_id = None
+        self.input_duration = None
 
         self.raise_relay_type = None
         self.lower_relay_type = None
@@ -218,7 +218,7 @@ class PIDController(threading.Thread):
                     while t.time() > self.timer:
                         self.timer = self.timer + self.period
 
-                    # If PID is active, retrieve sensor measurement and update PID output
+                    # If PID is active, retrieve input measurement and update PID output
                     if self.is_activated and not self.is_paused:
                         self.get_last_measurement()
 
@@ -297,12 +297,12 @@ class PIDController(threading.Thread):
         self.default_set_point = pid.setpoint
         self.set_point = pid.setpoint
 
-        sensor_unique_id = pid.measurement.split(',')[0]
+        input_unique_id = pid.measurement.split(',')[0]
         self.measurement = pid.measurement.split(',')[1]
 
-        sensor = db_retrieve_table_daemon(Sensor, unique_id=sensor_unique_id)
-        self.sensor_unique_id = sensor.unique_id
-        self.sensor_duration = sensor.period
+        input = db_retrieve_table_daemon(Input, unique_id=input_unique_id)
+        self.input_unique_id = input.unique_id
+        self.input_duration = input.period
 
         try:
             self.raise_relay_type = db_retrieve_table_daemon(
@@ -325,7 +325,7 @@ class PIDController(threading.Thread):
         :rtype: float
 
         :param current_value: The input, or process, variable (the actual
-            measured condition by the sensor)
+            measured condition by the input)
         :type current_value: float
         """
         self.error = self.set_point - current_value
@@ -362,19 +362,19 @@ class PIDController(threading.Thread):
 
     def get_last_measurement(self):
         """
-        Retrieve the latest sensor measurement from InfluxDB
+        Retrieve the latest input measurement from InfluxDB
 
         :rtype: None
         """
         self.last_measurement_success = False
         # Get latest measurement (from within the past minute) from influxdb
         try:
-            if self.sensor_duration < 60:
+            if self.input_duration < 60:
                 duration = 60
             else:
-                duration = int(self.sensor_duration * 1.5)
+                duration = int(self.input_duration * 1.5)
             self.last_measurement = read_last_influxdb(
-                self.sensor_unique_id,
+                self.input_unique_id,
                 self.measurement,
                 duration)
             if self.last_measurement:

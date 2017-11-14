@@ -1,6 +1,5 @@
 # coding=utf-8
 """ collection of Page endpoints """
-import cv2
 import datetime
 import flask_login
 import glob
@@ -58,7 +57,7 @@ from mycodo.databases.models import Method
 from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
 from mycodo.databases.models import Relay
-from mycodo.databases.models import Sensor
+from mycodo.databases.models import Input
 from mycodo.databases.models import Timer
 from mycodo.databases.models import User
 
@@ -242,9 +241,9 @@ def page_export():
     """
     export_options = forms_misc.ExportOptions()
     relay = Relay.query.all()
-    sensor = Sensor.query.all()
+    input = Input.query.all()
     relay_choices = utils_general.choices_id_name(relay)
-    sensor_choices = utils_general.choices_inputs(sensor)
+    input_choices = utils_general.choices_inputs(input)
 
     if request.method == 'POST':
         start_time = export_options.date_range.data.split(' - ')[0]
@@ -273,14 +272,14 @@ def page_export():
                            end_picker=end_picker,
                            exportOptions=export_options,
                            relay_choices=relay_choices,
-                           sensor_choices=sensor_choices)
+                           sensor_choices=input_choices)
 
 
 @blueprint.route('/graph', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_graph():
     """
-    Generate custom graphs to display sensor data retrieved from influxdb.
+    Generate custom graphs to display input data retrieved from influxdb.
     """
     # Create form objects
     form_add_graph = forms_graph.GraphAdd()
@@ -297,28 +296,28 @@ def page_graph():
     graph = Graph.query.all()
     pid = PID.query.all()
     relay = Relay.query.all()
-    sensor = Sensor.query.all()
+    input = Input.query.all()
 
     # Retrieve all choices to populate form drop-down menu
     pid_choices = utils_general.choices_pids(pid)
     output_choices = utils_general.choices_outputs(relay)
-    sensor_choices = utils_general.choices_inputs(sensor)
+    input_choices = utils_general.choices_inputs(input)
 
-    # Add custom measurement and units to list (From linux command sensor)
-    sensor_measurements = MEASUREMENT_UNITS
-    sensor_measurements = add_custom_measurements(
-        sensor, sensor_measurements, MEASUREMENT_UNITS)
+    # Add custom measurement and units to list (From linux command input)
+    input_measurements = MEASUREMENT_UNITS
+    input_measurements = add_custom_measurements(
+        input, input_measurements, MEASUREMENT_UNITS)
 
     # Add multi-select values as form choices, for validation
     form_mod_graph.pid_ids.choices = []
     form_mod_graph.relay_ids.choices = []
-    form_mod_graph.sensor_ids.choices = []
+    form_mod_graph.input_ids.choices = []
     for key, value in pid_choices.items():
         form_mod_graph.pid_ids.choices.append((key, value))
     for key, value in output_choices.items():
         form_mod_graph.relay_ids.choices.append((key, value))
-    for key, value in sensor_choices.items():
-        form_mod_graph.sensor_ids.choices.append((key, value))
+    for key, value in input_choices.items():
+        form_mod_graph.input_ids.choices.append((key, value))
 
     # Generate dictionary of custom colors for each graph
     colors_graph = dict_custom_colors()
@@ -372,13 +371,13 @@ def page_graph():
                            graph=graph,
                            pid=pid,
                            relay=relay,
-                           sensor=sensor,
+                           sensor=input,
                            pid_choices=pid_choices,
                            output_choices=output_choices,
-                           sensor_choices=sensor_choices,
+                           sensor_choices=input_choices,
                            colors_graph=colors_graph,
                            colors_gauge=colors_gauge,
-                           sensor_measurements=sensor_measurements,
+                           sensor_measurements=input_measurements,
                            measurement_units=MEASUREMENT_UNITS,
                            displayOrder=display_order,
                            form_mod_graph=form_mod_graph,
@@ -393,13 +392,13 @@ def page_graph():
 @flask_login.login_required
 def page_graph_async():
     """ Generate graphs using asynchronous data retrieval """
-    sensor = Sensor.query.all()
-    sensor_choices = utils_general.choices_inputs(sensor)
-    sensor_choices_split = OrderedDict()
-    for key in sensor_choices:
+    input = Input.query.all()
+    input_choices = utils_general.choices_inputs(input)
+    input_choices_split = OrderedDict()
+    for key in input_choices:
         order = key.split(",")
-        # Separate sensor IDs and measurement types
-        sensor_choices_split.update({order[0]: order[1]})
+        # Separate input IDs and measurement types
+        input_choices_split.update({order[0]: order[1]})
 
     selected_id = None
     selected_measure = None
@@ -408,12 +407,12 @@ def page_graph_async():
     if request.method == 'POST':
         selected_id = request.form['selected_measure'].split(",")[0]
         selected_measure = request.form['selected_measure'].split(",")[1]
-        selected_unique_id = Sensor.query.filter(Sensor.unique_id == selected_id).first().unique_id
+        selected_unique_id = Input.query.filter(Input.unique_id == selected_id).first().unique_id
 
     return render_template('pages/graph-async.html',
-                           sensor=sensor,
-                           sensor_choices=sensor_choices,
-                           sensor_choices_split=sensor_choices_split,
+                           sensor=input,
+                           sensor_choices=input_choices,
+                           sensor_choices_split=input_choices_split,
                            selected_id=selected_id,
                            selected_measure=selected_measure,
                            selected_unique_id=selected_unique_id)
@@ -526,7 +525,7 @@ def page_lcd():
     lcd_data = LCDData.query.all()
     pid = PID.query.all()
     relay = Relay.query.all()
-    sensor = Sensor.query.all()
+    input = Input.query.all()
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
 
@@ -536,12 +535,12 @@ def page_lcd():
 
     measurements = MEASUREMENTS
 
-    # Add custom measurement and units to list (From linux command sensor)
-    for each_sensor in sensor:
-        if each_sensor.cmd_measurement and each_sensor.cmd_measurement not in MEASUREMENTS:
-            if each_sensor.cmd_measurement and each_sensor.cmd_measurement_units:
+    # Add custom measurement and units to list (From linux command input)
+    for each_input in input:
+        if each_input.cmd_measurement and each_input.cmd_measurement not in MEASUREMENTS:
+            if each_input.cmd_measurement and each_input.cmd_measurement_units:
                 measurements.update(
-                    {'LinuxCommand': [each_sensor.cmd_measurement]})
+                    {'LinuxCommand': [each_input.cmd_measurement]})
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
@@ -579,7 +578,7 @@ def page_lcd():
                            measurements=measurements,
                            pid=pid,
                            relay=relay,
-                           sensor=sensor,
+                           sensor=input,
                            displayOrder=display_order,
                            form_lcd_add=form_lcd_add,
                            form_lcd_mod=form_lcd_mod,
@@ -589,27 +588,27 @@ def page_lcd():
 @blueprint.route('/live', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_live():
-    """ Page of recent and updating sensor data """
+    """ Page of recent and updating input data """
     # Retrieve tables for the data displayed on the live page
     pid = PID.query.all()
     relay = Relay.query.all()
-    sensor = Sensor.query.all()
+    input = Input.query.all()
     timer = Timer.query.all()
 
     # Display orders
     pid_display_order = csv_to_list_of_int(
         DisplayOrder.query.first().pid)
-    sensor_display_order = csv_to_list_of_int(
-        DisplayOrder.query.first().sensor)
+    input_display_order = csv_to_list_of_int(
+        DisplayOrder.query.first().input)
 
-    # Filter only activated sensors
-    sensor_order_sorted = []
-    if sensor_display_order:
-        for each_sensor_order in sensor_display_order:
-            for each_sensor in sensor:
-                if (each_sensor_order == each_sensor.id and
-                        each_sensor.is_activated):
-                    sensor_order_sorted.append(each_sensor.id)
+    # Filter only activated inputs
+    input_order_sorted = []
+    if input_display_order:
+        for each_input_order in input_display_order:
+            for each_input in input:
+                if (each_input_order == each_input.id and
+                        each_input.is_activated):
+                    input_order_sorted.append(each_input.id)
 
     # Retrieve only parent method columns
     method = Method.query.all()
@@ -619,10 +618,10 @@ def page_live():
                            method=method,
                            pid=pid,
                            relay=relay,
-                           sensor=sensor,
+                           sensor=input,
                            timer=timer,
                            pidDisplayOrder=pid_display_order,
-                           sensorDisplayOrderSorted=sensor_order_sorted)
+                           sensorDisplayOrderSorted=input_order_sorted)
 
 
 @blueprint.route('/logview', methods=('GET', 'POST'))
@@ -681,9 +680,9 @@ def page_pid():
     method = Method.query.all()
     pid = PID.query.all()
     relay = Relay.query.all()
-    sensor = Sensor.query.all()
+    input = Input.query.all()
 
-    sensor_choices = utils_general.choices_inputs(sensor)
+    input_choices = utils_general.choices_inputs(input)
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
 
@@ -750,8 +749,8 @@ def page_pid():
                            pid=pid,
                            pid_templates=pid_templates,
                            relay=relay,
-                           sensor=sensor,
-                           sensor_choices=sensor_choices,
+                           sensor=input,
+                           sensor_choices=input_choices,
                            displayOrder=display_order,
                            form_add_pid=form_add_pid,
                            form_mod_pid_base=form_mod_pid_base,
@@ -849,7 +848,7 @@ def page_output():
 @blueprint.route('/input', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_input():
-    """ Display sensor settings """
+    """ Display input settings """
     # TCA9548A I2C multiplexer
     multiplexer_addresses = [
         '0x70',
@@ -867,69 +866,69 @@ def page_input():
     lcd = LCD.query.all()
     pid = PID.query.all()
     relay = Relay.query.all()
-    sensor = Sensor.query.all()
+    input = Input.query.all()
     user = User.query.all()
 
     conditional = Conditional.query.filter(
-        Conditional.conditional_type == 'sensor').all()
+        Conditional.conditional_type == 'input').all()
     conditional_actions = ConditionalActions.query.all()
 
-    display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
+    display_order = csv_to_list_of_int(DisplayOrder.query.first().input)
 
-    form_add_sensor = forms_input.InputAdd()
-    form_mod_sensor = forms_input.InputMod()
+    form_add_input = forms_input.InputAdd()
+    form_mod_input = forms_input.InputMod()
 
     form_conditional = forms_conditional.Conditional()
     form_conditional_actions = forms_conditional.ConditionalActions()
 
-    # If DS18B20 sensors added, compile a list of detected sensors
-    ds18b20_sensors = []
-    if Sensor.query.filter(Sensor.device == 'DS18B20').count():
+    # If DS18B20 inputs added, compile a list of detected inputs
+    ds18b20_inputs = []
+    if Input.query.filter(Input.device == 'DS18B20').count():
         try:
-            for each_sensor in W1ThermSensor.get_available_sensors():
-                ds18b20_sensors.append(each_sensor.id)
+            for each_input in W1ThermSensor.get_available_sensors():
+                ds18b20_inputs.append(each_input.id)
         except OSError:
-            flash("Unable to detect sensors in '/sys/bus/w1/devices'",
+            flash("Unable to detect inputs in '/sys/bus/w1/devices'",
                   "error")
 
     # Create list of file names from the input_options directory
-    # Used in generating the correct options for each sensor/device
-    sensor_templates = []
-    sensor_path = os.path.join(
+    # Used in generating the correct options for each input/device
+    input_templates = []
+    input_path = os.path.join(
         INSTALL_DIRECTORY,
         'mycodo/mycodo_flask/templates/pages/input_options')
-    for (_, _, file_names) in os.walk(sensor_path):
-        sensor_templates.extend(file_names)
+    for (_, _, file_names) in os.walk(input_path):
+        input_templates.extend(file_names)
         break
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('page_routes.page_input'))
 
-        if form_add_sensor.sensorAddSubmit.data:
-            utils_input.sensor_add(form_add_sensor)
-        elif form_mod_sensor.modSensorSubmit.data:
-            utils_input.sensor_mod(form_mod_sensor)
-        elif form_mod_sensor.delSensorSubmit.data:
-            utils_input.sensor_del(form_mod_sensor)
-        elif form_mod_sensor.orderSensorUp.data:
-            utils_input.sensor_reorder(form_mod_sensor.modSensor_id.data,
-                                      display_order, 'up')
-        elif form_mod_sensor.orderSensorDown.data:
-            utils_input.sensor_reorder(form_mod_sensor.modSensor_id.data,
-                                      display_order, 'down')
-        elif form_mod_sensor.activateSensorSubmit.data:
-            utils_input.sensor_activate(form_mod_sensor)
-        elif form_mod_sensor.deactivateSensorSubmit.data:
-            utils_input.sensor_deactivate(form_mod_sensor)
+        if form_add_input.sensorAddSubmit.data:
+            utils_input.sensor_add(form_add_input)
+        elif form_mod_input.modSensorSubmit.data:
+            utils_input.sensor_mod(form_mod_input)
+        elif form_mod_input.delSensorSubmit.data:
+            utils_input.sensor_del(form_mod_input)
+        elif form_mod_input.orderSensorUp.data:
+            utils_input.sensor_reorder(form_mod_input.modSensor_id.data,
+                                       display_order, 'up')
+        elif form_mod_input.orderSensorDown.data:
+            utils_input.sensor_reorder(form_mod_input.modSensor_id.data,
+                                       display_order, 'down')
+        elif form_mod_input.activateSensorSubmit.data:
+            utils_input.sensor_activate(form_mod_input)
+        elif form_mod_input.deactivateSensorSubmit.data:
+            utils_input.sensor_deactivate(form_mod_input)
 
         elif form_conditional.deactivate_cond.data:
             utils_conditional.conditional_deactivate(form_conditional)
         elif form_conditional.activate_cond.data:
             utils_conditional.conditional_activate(form_conditional)
-        elif form_mod_sensor.sensorCondAddSubmit.data:
+        elif form_mod_input.sensorCondAddSubmit.data:
             utils_conditional.conditional_add(
-                'sensor', 1, sensor_id=form_mod_sensor.modSensor_id.data)
+                'sensor', 1, sensor_id=form_mod_input.modSensor_id.data)
         elif form_conditional.delete_cond.data:
             utils_conditional.conditional_mod(form_conditional, 'delete')
         elif form_conditional.save_cond.data:
@@ -950,19 +949,19 @@ def page_input():
                            conditional_actions=conditional_actions,
                            conditional_actions_list=CONDITIONAL_ACTIONS,
                            displayOrder=display_order,
-                           ds18b20_sensors=ds18b20_sensors,
-                           form_add_sensor=form_add_sensor,
+                           ds18b20_sensors=ds18b20_inputs,
+                           form_add_sensor=form_add_input,
                            form_conditional=form_conditional,
                            form_conditional_actions=form_conditional_actions,
-                           form_mod_sensor=form_mod_sensor,
+                           form_mod_sensor=form_mod_input,
                            lcd=lcd,
                            measurements=MEASUREMENTS,
                            multiplexer_addresses=multiplexer_addresses,
                            multiplexer_channels=multiplexer_channels,
                            pid=pid,
                            relay=relay,
-                           sensor=sensor,
-                           sensor_templates=sensor_templates,
+                           sensor=input,
+                           sensor_templates=input_templates,
                            units=MEASUREMENT_UNITS,
                            user=user)
 
@@ -1121,20 +1120,20 @@ def dict_custom_colors():
             total = []
             if each_graph.sensor_ids_measurements:
                 for each_set in each_graph.sensor_ids_measurements.split(';'):
-                    sensor_unique_id = each_set.split(',')[0]
-                    sensor_measure = each_set.split(',')[1]
-                    sensor = Sensor.query.filter_by(
-                        unique_id=sensor_unique_id).first()
+                    input_unique_id = each_set.split(',')[0]
+                    input_measure = each_set.split(',')[1]
+                    input = Input.query.filter_by(
+                        unique_id=input_unique_id).first()
                     if (index < len(each_graph.sensor_ids_measurements.split(';')) and
                             len(colors) > index):
                         color = colors[index]
                     else:
                         color = '#FF00AA'
-                    if sensor is not None:
+                    if input is not None:
                         total.append({
-                            'unique_id': sensor_unique_id,
-                            'name': sensor.name,
-                            'measure': sensor_measure,
+                            'unique_id': input_unique_id,
+                            'name': input.name,
+                            'measure': input_measure,
                             'color': color})
                         index += 1
                 index_sum += index

@@ -42,7 +42,7 @@ from .pid import PID
 from .relay import Relay
 from .remote import Remote
 from .role import Role
-from .sensor import Sensor
+from .input import Input
 from .smtp import SMTP
 from .timer import Timer
 from .user import User
