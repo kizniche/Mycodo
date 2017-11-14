@@ -56,7 +56,7 @@ from mycodo.databases.models import LCDData
 from mycodo.databases.models import Method
 from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
-from mycodo.databases.models import Relay
+from mycodo.databases.models import Output
 from mycodo.databases.models import Input
 from mycodo.databases.models import Timer
 from mycodo.databases.models import User

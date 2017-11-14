@@ -1,13 +1,18 @@
-## 5.4.1 (2017-11-14)
+## 5.4.1 (Unreleased)
 
 ### Features
 
  - Prevent currently-logged in user from: deleting own user, changing user role from Admin
  - Force iPhone to open Mycodo bookmark as standalone web app instead of in Safari
+ - Refactor and add tests for all inputs ([#128](https://github.com/kizniche/mycodo/issues/128))
 
 ### Bugfixes
 
  - Fix inability to modify timer options ([#318](https://github.com/kizniche/mycodo/issues/318))
+
+### Miscellaneous
+
+ - Rename objects (warning: this may break some things. I tried to be thorough with testing)
 
 
 ## 5.4.0 (2017-11-12)

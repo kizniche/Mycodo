@@ -42,7 +42,7 @@ from rpyc.utils.server import ThreadedServer
 
 from mycodo.controller_lcd import LCDController
 from mycodo.controller_pid import PIDController
-from mycodo.controller_relay import RelayController
+from mycodo.controller_output import OutputController
 from mycodo.controller_input import InputController
 from mycodo.controller_timer import TimerController
 
@@ -187,7 +187,7 @@ def mycodo_service(mycodo):
         @staticmethod
         def exposed_relay_sec_currently_on(relay_id):
             """Turns the amount of time a relay has already been on"""
-            return mycodo.controller['Relay'].relay_sec_currently_on(relay_id)
+            return mycodo.controller['Output'].relay_sec_currently_on(relay_id)
 
         @staticmethod
         def exposed_relay_setup(action, relay_id):
@@ -216,7 +216,7 @@ def mycodo_service(mycodo):
         @staticmethod
         def exposed_relay_sec_currently_on(relay_id):
             """Turns the amount of time a relay has already been on"""
-            return mycodo.controller['Relay'].relay_sec_currently_on(relay_id)
+            return mycodo.controller['Output'].relay_sec_currently_on(relay_id)
 
         @staticmethod
         def exposed_relay_setup(action, relay_id):
@@ -314,7 +314,7 @@ class DaemonController(threading.Thread):
         self.controller = {
             'LCD': {},
             'PID': {},
-            'Relay': None,
+            'Output': None,
             'Input': {},
             'Timer': {}
         }
@@ -365,7 +365,7 @@ class DaemonController(threading.Thread):
                         generate_relay_usage_report()
                         self.refresh_daemon_misc_settings()
                     except Exception:
-                        self.logger.exception("Relay Usage Report Generation ERROR")
+                        self.logger.exception("Output Usage Report Generation ERROR")
 
                 # Log ram usage every 24 hours
                 if now > self.timer_ram_use:
@@ -522,8 +522,8 @@ class DaemonController(threading.Thread):
             for timer_id in self.controller['Timer']:
                 if not self.controller['Timer'][timer_id].is_running():
                     return "Error: Timer ID {}".format(timer_id)
-            if not self.controller['Relay'].is_running():
-                return "Error: Relay controller"
+            if not self.controller['Output'].is_running():
+                return "Error: Output controller"
         except Exception as except_msg:
             message = "Could not check running threads:" \
                       " {err}".format(err=except_msg)
@@ -641,7 +641,7 @@ class DaemonController(threading.Thread):
         :type trigger_conditionals: bool
         """
         try:
-            self.controller['Relay'].relay_on_off(
+            self.controller['Output'].relay_on_off(
                 relay_id,
                 'off',
                 trigger_conditionals=trigger_conditionals)
@@ -665,7 +665,7 @@ class DaemonController(threading.Thread):
         :type duty_cycle: float
         """
         try:
-            self.controller['Relay'].relay_on_off(
+            self.controller['Output'].relay_on_off(
                 relay_id,
                 'on',
                 duration=duration,
@@ -690,7 +690,7 @@ class DaemonController(threading.Thread):
         :type relay_id: str
         """
         try:
-            return self.controller['Relay'].relay_setup(action, relay_id)
+            return self.controller['Output'].relay_setup(action, relay_id)
         except Exception as except_msg:
             message = "Could not set up relay:" \
                       " {err}".format(err=except_msg)
@@ -704,7 +704,7 @@ class DaemonController(threading.Thread):
         :type relay_id: str
         """
         try:
-            return self.controller['Relay'].relay_state(relay_id)
+            return self.controller['Output'].relay_state(relay_id)
         except Exception as except_msg:
             message = "Could not query relay state:" \
                       " {err}".format(err=except_msg)
@@ -764,8 +764,8 @@ class DaemonController(threading.Thread):
             timer = db_retrieve_table_daemon(Timer, entry='all')
 
             self.logger.debug("Starting relay controller")
-            self.controller['Relay'] = RelayController()
-            self.controller['Relay'].start()
+            self.controller['Output'] = OutputController()
+            self.controller['Output'].start()
 
             self.logger.debug("Starting all activated timer controllers")
             for each_timer in timer:
@@ -840,8 +840,8 @@ class DaemonController(threading.Thread):
                 self.controller['PID'][pid_id].join()
             self.logger.info("All PID controllers stopped")
 
-            self.controller['Relay'].stop_controller()
-            self.controller['Relay'].join()
+            self.controller['Output'].stop_controller()
+            self.controller['Output'].join()
         except Exception as except_msg:
             message = "Could not stop all controllers:" \
                       " {err}".format(err=except_msg)

@@ -19,7 +19,7 @@ from mycodo.mycodo_flask.extensions import db
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
-from mycodo.databases.models import Relay
+from mycodo.databases.models import Output
 
 from mycodo.mycodo_flask.forms import forms_method
 from mycodo.mycodo_flask.utils import utils_general

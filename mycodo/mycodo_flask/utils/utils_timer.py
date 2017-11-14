@@ -8,7 +8,7 @@ from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 
 from mycodo.databases.models import DisplayOrder
-from mycodo.databases.models import Relay
+from mycodo.databases.models import Output
 from mycodo.databases.models import Timer
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import list_to_csv

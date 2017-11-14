@@ -39,7 +39,7 @@ from .method import Method
 from .method import MethodData
 from .misc import Misc
 from .pid import PID
-from .relay import Relay
+from .output import Output
 from .remote import Remote
 from .role import Role
 from .input import Input

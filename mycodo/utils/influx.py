@@ -3,7 +3,7 @@ import datetime
 import logging
 from uuid import UUID
 from influxdb import InfluxDBClient
-from mycodo.databases.models import Relay
+from mycodo.databases.models import Output
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 

@@ -34,7 +34,7 @@ from mycodo.mycodo_flask.utils.utils_general import gzipped
 
 from mycodo.databases.models import Camera
 from mycodo.databases.models import DisplayOrder
-from mycodo.databases.models import Relay
+from mycodo.databases.models import Output
 from mycodo.databases.models import Remote
 from mycodo.databases.models import Input
 from mycodo.databases.models import User

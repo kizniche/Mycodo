@@ -11,7 +11,7 @@ from flask_babel import gettext
 from mycodo.mycodo_client import DaemonControl
 
 from mycodo.databases.models import DisplayOrder
-from mycodo.databases.models import Relay
+from mycodo.databases.models import Output
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import list_to_csv

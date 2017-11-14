@@ -58,7 +58,7 @@ import timeit
 from databases.models import Method
 from databases.models import MethodData
 from databases.models import PID
-from databases.models import Relay
+from databases.models import Output
 from databases.models import Input
 from databases.utils import session_scope
 from mycodo_client import DaemonControl

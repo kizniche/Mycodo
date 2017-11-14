@@ -12,7 +12,7 @@ from flask.blueprints import Blueprint
 
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Misc
-from mycodo.databases.models import Relay
+from mycodo.databases.models import Output
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import User

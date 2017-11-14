@@ -8,7 +8,7 @@ from collections import OrderedDict
 from dateutil import relativedelta
 
 from mycodo.databases.models import Misc
-from mycodo.databases.models import Relay
+from mycodo.databases.models import Output
 
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import relay_sec_on

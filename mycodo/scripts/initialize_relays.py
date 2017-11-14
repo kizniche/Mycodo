@@ -26,7 +26,7 @@
 import RPi.GPIO as GPIO
 
 from mycodo.config import SQL_DATABASE_MYCODO
-from mycodo.databases.models import Relay
+from mycodo.databases.models import Output
 from mycodo.databases.utils import session_scope
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO

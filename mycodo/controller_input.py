@@ -35,40 +35,40 @@ from databases.models import Camera
 from databases.models import Conditional
 from databases.models import ConditionalActions
 from databases.models import PID
-from databases.models import Relay
+from databases.models import Output
 from databases.models import Input
 from databases.models import SMTP
 
 from devices.tca9548a import TCA9548A
 from devices.ads1x15 import ADS1x15Read
 from devices.mcp342x import MCP342xRead
-from sensors.mycodo_ram import MycodoRam
-from sensors.atlas_ph import AtlaspHSensor
-from sensors.atlas_pt1000 import AtlasPT1000Sensor
-from sensors.am2315 import AM2315Sensor
-from sensors.bh1750 import BH1750Sensor
-from sensors.bme280 import BME280Sensor
-from sensors.bmp180 import BMP180Sensor
-from sensors.bmp280 import BMP280Sensor
-from sensors.chirp import ChirpSensor
-from sensors.dht11 import DHT11Sensor
-from sensors.dht22 import DHT22Sensor
-from sensors.ds18b20 import DS18B20Sensor
-from sensors.htu21d import HTU21DSensor
-from sensors.k30 import K30Sensor
-from sensors.linux_command import LinuxCommand
-from sensors.mh_z16 import MHZ16Sensor
-from sensors.mh_z19 import MHZ19Sensor
-from sensors.raspi import RaspberryPiCPUTemp
-from sensors.raspi_cpuload import RaspberryPiCPULoad
-from sensors.raspi_freespace import RaspberryPiFreeSpace
-from sensors.tmp006 import TMP006Sensor
-from sensors.tsl2561 import TSL2561Sensor
-from sensors.tsl2591_sensor import TSL2591Sensor
-from sensors.sht1x_7x import SHT1x7xSensor
-from sensors.sht2x import SHT2xSensor
-from sensors.signal_pwm import PWMInput
-from sensors.signal_rpm import RPMInput
+from inputs.mycodo_ram import MycodoRam
+from inputs.atlas_ph import AtlaspHSensor
+from inputs.atlas_pt1000 import AtlasPT1000Sensor
+from inputs.am2315 import AM2315Sensor
+from inputs.bh1750 import BH1750Sensor
+from inputs.bme280 import BME280Sensor
+from inputs.bmp180 import BMP180Sensor
+from inputs.bmp280 import BMP280Sensor
+from inputs.chirp import ChirpSensor
+from inputs.dht11 import DHT11Sensor
+from inputs.dht22 import DHT22Sensor
+from inputs.ds18b20 import DS18B20Sensor
+from inputs.htu21d import HTU21DSensor
+from inputs.k30 import K30Sensor
+from inputs.linux_command import LinuxCommand
+from inputs.mh_z16 import MHZ16Sensor
+from inputs.mh_z19 import MHZ19Sensor
+from inputs.raspi import RaspberryPiCPUTemp
+from inputs.raspi_cpuload import RaspberryPiCPULoad
+from inputs.raspi_freespace import RaspberryPiFreeSpace
+from inputs.tmp006 import TMP006Sensor
+from inputs.tsl2561 import TSL2561Sensor
+from inputs.tsl2591_sensor import TSL2591Sensor
+from inputs.sht1x_7x import SHT1x7xSensor
+from inputs.sht2x import SHT2xSensor
+from inputs.signal_pwm import SignalPWMInput
+from inputs.signal_rpm import SignalRPMInput
 
 from devices.camera import camera_record
 from utils.database import db_retrieve_table_daemon
@@ -137,9 +137,9 @@ class InputController(threading.Thread):
         self.cond_if_input_gpio_state = {}
         self.cond_if_input_direction = {}
         self.cond_if_input_setpoint = {}
-        self.cond_do_relay_id = {}
-        self.cond_do_relay_state = {}
-        self.cond_do_relay_duration = {}
+        self.cond_do_output_id = {}
+        self.cond_do_output_state = {}
+        self.cond_do_output_duration = {}
         self.cond_execute_command = {}
         self.cond_email_notify = {}
         self.cond_do_lcd_id = {}
@@ -154,7 +154,7 @@ class InputController(threading.Thread):
         self.unique_id = input.unique_id
         self.i2c_bus = input.i2c_bus
         self.location = input.location
-        self.power_relay_id = input.power_relay_id
+        self.power_output_id = input.power_relay_id
         self.measurements = input.measurements
         self.device = input.device
         self.interface = input.interface
@@ -192,21 +192,21 @@ class InputController(threading.Thread):
         self.rpm_pulses_per_rev = input.rpm_pulses_per_rev
         self.sample_time = input.sample_time
 
-        # Relay that will activate prior to input read
-        self.pre_relay_id = input.pre_relay_id
-        self.pre_relay_duration = input.pre_relay_duration
-        self.pre_relay_setup = False
+        # Output that will activate prior to input read
+        self.pre_output_id = input.pre_relay_id
+        self.pre_output_duration = input.pre_relay_duration
+        self.pre_output_setup = False
         self.next_measurement = time.time()
         self.get_new_measurement = False
         self.trigger_cond = False
         self.measurement_acquired = False
-        self.pre_relay_activated = False
-        self.pre_relay_timer = time.time()
+        self.pre_output_activated = False
+        self.pre_output_timer = time.time()
 
-        relay = db_retrieve_table_daemon(Relay, entry='all')
-        for each_relay in relay:  # Check if relay ID actually exists
-            if each_relay.id == self.pre_relay_id and self.pre_relay_duration:
-                self.pre_relay_setup = True
+        output = db_retrieve_table_daemon(Output, entry='all')
+        for each_output in output:  # Check if output ID actually exists
+            if each_output.id == self.pre_output_id and self.pre_output_duration:
+                self.pre_output_setup = True
 
         smtp = db_retrieve_table_daemon(SMTP, entry='first')
         self.smtp_max_count = smtp.hourly_max
@@ -276,7 +276,7 @@ class InputController(threading.Thread):
         elif self.device == 'AM2315':
             self.measure_input = AM2315Sensor(self.input_id,
                                                self.i2c_bus,
-                                               power=self.power_relay_id)
+                                               power=self.power_output_id)
         elif self.device == 'ATLAS_PH_I2C':
             self.measure_input = AtlaspHSensor(self.interface,
                                                 i2c_address=self.i2c_address,
@@ -317,11 +317,11 @@ class InputController(threading.Thread):
         elif self.device == 'DHT11':
             self.measure_input = DHT11Sensor(self.input_id,
                                               int(self.location),
-                                              power=self.power_relay_id)
+                                              power=self.power_output_id)
         elif self.device == 'DHT22':
             self.measure_input = DHT22Sensor(self.input_id,
                                               int(self.location),
-                                              power=self.power_relay_id)
+                                              power=self.power_output_id)
         elif self.device == 'HTU21D':
             self.measure_input = HTU21DSensor(self.i2c_bus)
         elif self.device == 'K30_UART':
@@ -346,11 +346,11 @@ class InputController(threading.Thread):
             self.measure_input = SHT2xSensor(self.i2c_address,
                                               self.i2c_bus)
         elif self.device == 'SIGNAL_PWM':
-            self.measure_input = PWMInput(int(self.location),
+            self.measure_input = SignalPWMInput(int(self.location),
                                            self.weighting,
                                            self.sample_time)
         elif self.device == 'SIGNAL_RPM':
-            self.measure_input = RPMInput(int(self.location),
+            self.measure_input = SignalRPMInput(int(self.location),
                                            self.weighting,
                                            self.rpm_pulses_per_rev,
                                            self.sample_time)
@@ -413,31 +413,31 @@ class InputController(threading.Thread):
                         self.trigger_cond = True
                         self.next_measurement = time.time() + self.period
 
-                    # if signaled and a pre relay is set up correctly, turn the
-                    # relay on for the set duration
+                    # if signaled and a pre output is set up correctly, turn the
+                    # output on for the set duration
                     if (self.get_new_measurement and
-                            self.pre_relay_setup and
-                            not self.pre_relay_activated):
-                        relay_on = threading.Thread(
-                            target=self.control.relay_on,
-                            args=(self.pre_relay_id,
-                                  self.pre_relay_duration,))
-                        relay_on.start()
-                        self.pre_relay_activated = True
-                        self.pre_relay_timer = time.time() + self.pre_relay_duration
+                            self.pre_output_setup and
+                            not self.pre_output_activated):
+                        output_on = threading.Thread(
+                            target=self.control.output_on,
+                            args=(self.pre_output_id,
+                                  self.pre_output_duration,))
+                        output_on.start()
+                        self.pre_output_activated = True
+                        self.pre_output_timer = time.time() + self.pre_output_duration
 
-                    # If using a pre relay, wait for it to complete before
+                    # If using a pre output, wait for it to complete before
                     # querying the input for a measurement
                     if self.get_new_measurement:
-                        if ((self.pre_relay_setup and
-                                self.pre_relay_activated and
-                                time.time() < self.pre_relay_timer) or
-                                not self.pre_relay_setup):
+                        if ((self.pre_output_setup and
+                                self.pre_output_activated and
+                                time.time() < self.pre_output_timer) or
+                                not self.pre_output_setup):
                             # Get measurement(s) from input
                             self.update_measure()
                             # Add measurement(s) to influxdb
                             self.add_measure_influxdb()
-                            self.pre_relay_activated = False
+                            self.pre_output_activated = False
                             self.get_new_measurement = False
 
                 for each_cond_id in self.cond_id:
@@ -555,10 +555,10 @@ class InputController(threading.Thread):
             message += u" Conditional Action ({id}): {do_action}.".format(
                 id=cond_action.id, do_action=cond_action.do_action)
 
-            # Actuate relay
+            # Actuate output
             if (cond_action.do_relay_id and
                     cond_action.do_relay_state in ['on', 'off']):
-                message += u" Turn relay {id} {state}".format(
+                message += u" Turn output {id} {state}".format(
                         id=cond_action.do_relay_id,
                         state=cond_action.do_relay_state)
                 if (cond_action.do_relay_state == 'on' and
@@ -566,12 +566,12 @@ class InputController(threading.Thread):
                     message += u" for {sec} seconds".format(
                         sec=cond_action.do_relay_duration)
                 message += "."
-                relay_on_off = threading.Thread(
+                output_on_off = threading.Thread(
                     target=self.control.relay_on_off,
                     args=(cond_action.do_relay_id,
                           cond_action.do_relay_state,),
                     kwargs={'duration': cond_action.do_relay_duration})
-                relay_on_off.start()
+                output_on_off.start()
 
             # Execute command in shell
             elif cond_action.do_action == 'command':

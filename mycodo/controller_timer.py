@@ -32,7 +32,7 @@ import timeit
 from mycodo_client import DaemonControl
 from databases.models import Method
 from databases.models import MethodData
-from databases.models import Relay
+from databases.models import Output
 from databases.models import Timer
 from databases.utils import session_scope
 from utils.database import db_retrieve_table_daemon
