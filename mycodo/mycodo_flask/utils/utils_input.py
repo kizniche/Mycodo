@@ -241,7 +241,7 @@ def sensor_mod(form_mod_sensor):
         if ((form_mod_sensor.period.data < mod_sensor.pre_relay_duration) and
                 mod_sensor.pre_relay_duration):
             error.append(gettext(
-                u"The Read Period cannot be less than the Pre-Relay "
+                u"The Read Period cannot be less than the Pre Output "
                 u"Duration"))
         if (form_mod_sensor.device_loc.data and
                 not os.path.exists(form_mod_sensor.device_loc.data)):

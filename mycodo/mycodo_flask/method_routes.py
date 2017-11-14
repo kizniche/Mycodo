@@ -198,7 +198,7 @@ def method_builder(method_id):
     if not utils_general.user_has_permission('edit_controllers'):
         return redirect(url_for('method_routes.method_list'))
 
-    relay = Relay.query.all()
+    output = Output.query.all()
 
     form_create_method = forms_method.MethodCreate()
     form_add_method = forms_method.MethodAdd()
@@ -281,7 +281,7 @@ def method_builder(method_id):
 
         return render_template('pages/method-build.html',
                                method=method,
-                               relay=relay,
+                               relay=output,
                                method_data=method_data,
                                method_id=method_id,
                                last_end_time=last_end_time,

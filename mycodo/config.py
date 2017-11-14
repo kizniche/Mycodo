@@ -188,7 +188,7 @@ LIST_DEVICES_I2C = [
 
 # Conditional actions
 CONDITIONAL_ACTIONS = collections.OrderedDict([
-    ('relay', 'Relay'),
+    ('relay', 'Output'),
     ('command', 'Command'),
     ('activate_pid', 'Activate PID'),
     ('deactivate_pid', 'Deactivate PID'),

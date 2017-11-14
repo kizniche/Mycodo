@@ -160,23 +160,23 @@ def video_feed(unique_id):
 @blueprint.route('/gpiostate')
 @flask_login.login_required
 def gpio_state():
-    """Return the GPIO state, for relay page status"""
-    relay = Relay.query.all()
+    """Return the GPIO state, for output page status"""
+    output = Output.query.all()
     daemon_control = DaemonControl()
     state = {}
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    for each_relay in relay:
-        if each_relay.relay_type == 'wired' and -1 < each_relay.pin < 40:
-            GPIO.setup(each_relay.pin, GPIO.OUT)
-            if GPIO.input(each_relay.pin) == each_relay.trigger:
-                state[each_relay.id] = 'on'
+    for each_output in output:
+        if each_output.relay_type == 'wired' and -1 < each_output.pin < 40:
+            GPIO.setup(each_output.pin, GPIO.OUT)
+            if GPIO.input(each_output.pin) == each_output.trigger:
+                state[each_output.id] = 'on'
             else:
-                state[each_relay.id] = 'off'
-        elif (each_relay.relay_type == 'command' or
-                (each_relay.relay_type in ['pwm', 'wireless_433MHz_pi_switch'] and
-                 -1 < each_relay.pin < 40)):
-            state[each_relay.id] = daemon_control.relay_state(each_relay.id)
+                state[each_output.id] = 'off'
+        elif (each_output.relay_type == 'command' or
+                (each_output.relay_type in ['pwm', 'wireless_433MHz_pi_switch'] and
+                 -1 < each_output.pin < 40)):
+            state[each_output.id] = daemon_control.relay_state(each_output.id)
 
     return jsonify(state)
 
@@ -263,7 +263,7 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     dbcon = influx_db.connection
 
     if measurement == 'duration_sec':
-        name = Relay.query.filter(Relay.unique_id == unique_id).first().name
+        name = Output.query.filter(Output.unique_id == unique_id).first().name
     else:
         name = Input.query.filter(Input.unique_id == unique_id).first().name
 
@@ -413,20 +413,20 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
             return '', 204
 
 
-@blueprint.route('/output_mod/<relay_id>/<state>/<out_type>/<amount>')
+@blueprint.route('/output_mod/<output_id>/<state>/<out_type>/<amount>')
 @flask_login.login_required
-def output_mod(relay_id, state, out_type, amount):
-    """Manipulate relay"""
+def output_mod(output_id, state, out_type, amount):
+    """Manipulate output"""
     if not utils_general.user_has_permission('edit_controllers'):
-        return 'Insufficient user permissions to manipulate relays'
+        return 'Insufficient user permissions to manipulate outputs'
 
     daemon = DaemonControl()
     if (state in ['on', 'off'] and out_type == 'sec' and
             (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.relay_on_off(int(relay_id), state, float(amount))
+        return daemon.relay_on_off(int(output_id), state, float(amount))
     elif (state == 'on' and out_type == 'pwm' and
               (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.relay_on(int(relay_id), state, duty_cycle=float(amount))
+        return daemon.relay_on(int(output_id), state, duty_cycle=float(amount))
 
 
 @blueprint.route('/daemonactive')

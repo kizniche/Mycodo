@@ -42,13 +42,13 @@ def timer_add(display_order,
         error.append("Correct the inputs that are invalid and resubmit")
         flash_form_errors(form_add_timer)
 
-    relay = Relay.query.filter(
-        Relay.unique_id == form_add_timer_base.relay_id.data).first()
+    output = Output.query.filter(
+        Output.unique_id == form_add_timer_base.relay_id.data).first()
     if (form_add_timer_base.timer_type.data == 'pwm_method' and
-            relay.relay_type != 'pwm'):
+            output.relay_type != 'pwm'):
         error.append("PWM Method Timers require a PWM Output")
     elif (form_add_timer_base.timer_type.data != 'pwm_method' and
-            relay.relay_type == 'pwm'):
+            output.relay_type == 'pwm'):
         error.append("Time and Duration Timers require a non-PWM Output")
 
     new_timer = Timer()

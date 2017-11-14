@@ -113,7 +113,7 @@ class LCDController(threading.Thread):
                 self.multiplexer = None
 
             self.list_pids = ['setpoint', 'pid_time']
-            self.list_relays = ['duration_sec', 'relay_time', 'relay_state']
+            self.list_outputs = ['duration_sec', 'relay_time', 'relay_state']
 
             self.list_inputs = MEASUREMENT_UNITS
             self.list_inputs.update(
@@ -272,7 +272,7 @@ class LCDController(threading.Thread):
     def get_measurement(self, display_id, i):
         try:
             if self.lcd_line[display_id][i]['measurement'] == 'relay_state':
-                self.lcd_line[display_id][i]['measurement_value'] = self.relay_state(
+                self.lcd_line[display_id][i]['measurement_value'] = self.output_state(
                     self.lcd_line[display_id][i]['id'])
                 return True
             else:
@@ -380,10 +380,10 @@ class LCDController(threading.Thread):
             self.lcd_string_write(self.lcd_string_line[i], self.LCD_LINE[i])
 
     @staticmethod
-    def relay_state(relay_id):
-        relay = db_retrieve_table_daemon(Relay, unique_id=relay_id)
+    def output_state(output_id):
+        output = db_retrieve_table_daemon(Output, unique_id=output_id)
         GPIO.setmode(GPIO.BCM)
-        if GPIO.input(relay.pin) == relay.trigger:
+        if GPIO.input(output.pin) == output.trigger:
             gpio_state = 'On'
         else:
             gpio_state = 'Off'
@@ -394,8 +394,8 @@ class LCDController(threading.Thread):
         self.lcd_line[display_id][line]['measurement'] = measurement
         if lcd_id:
             table = None
-            if measurement in self.list_relays:
-                table = Relay
+            if measurement in self.list_outputs:
+                table = Output
             elif measurement in self.list_pids:
                 table = PID
             elif measurement in self.list_inputs:

@@ -14,7 +14,7 @@ Table of Contents
 [Settings](#settings)
 
    - [General Settings](#general-settings)
-   - [Relay Usage Settings](#relay-usage-settings)
+   - [Output Usage Settings](#output-usage-settings)
    - [Users](#users)
    - [User Roles](#user-roles)
    - [Alert Settings](#alert-settings)
@@ -44,7 +44,7 @@ Table of Contents
 
    - [Graphs](#graphs)
    - [Camera](#camera)
-   - [Relay Usage](#relay-usage)
+   - [Output Usage](#output-usage)
    - [System Backup](#system-backup)
    - [System Restore](#system-restore)
 
@@ -215,20 +215,20 @@ Hide warning alerts | Hide all warning alert boxes that appear at the top of the
 Opt-out of statistics | Turn off sending anonymous usage statistics. Please consider that this helps the development to leave on.
 
 
-Relay Usage Settings
+Output Usage Settings
 --------------------
 
-In order to calculate accurate relay usage statistics, a few
+In order to calculate accurate output usage statistics, a few
 characteristics of your electrical system needs to be know. These
 variables should describe the characteristics of the electrical system
 being used by the relays to operate electrical devices. Note: Proper
-relay usage calculations also rely on the correct current draw to be set
-for each relay (see [Relay Settings](#relays)).
+output usage calculations also rely on the correct current draw to be set
+for each output (see [Output Settings](#outputs)).
 
 Setting | Description
 -------------------- | ----------------------------------------------
-Max Amps | Set the maximum allowed amperage to be switched on at any given time. If a relay that's instructed to turn on will cause the sum of active devices to exceed this amount, the relay will not be allowed to turn on, to prevent any damage that may result from exceeding current limits.
-Voltage | Alternating current (AC) voltage that is switched by the relays. This is usually 120 or 240.
+Max Amps | Set the maximum allowed amperage to be switched on at any given time. If a output that's instructed to turn on will cause the sum of active devices to exceed this amount, the output will not be allowed to turn on, to prevent any damage that may result from exceeding current limits.
+Voltage | Alternating current (AC) voltage that is switched by the outputs. This is usually 120 or 240.
 Cost per kWh | This is how much you pay per kWh.
 Currency Unit | This is the unit used for the currency that pays for electricity.
 Day of Month | This is the day of the month (1-30) that the electricity meter is read (which will correspond to the electrical bill).
@@ -268,7 +268,7 @@ Four roles are provided by default, but custom roles may be created.
 
 <sup>1</sup>The ```Edit Controllers``` permission protects the editing of Graphs, LCDs, Methods, PIDs, Outputs, Inputs, and Timers.
 
-<sup>2</sup>The ```View Stats``` permission protects the viewing of usage statistics and the System Info and Relay Usage pages.
+<sup>2</sup>The ```View Stats``` permission protects the viewing of usage statistics and the System Info and Output Usage pages.
 
 Alert Settings
 --------------
@@ -300,7 +300,7 @@ Setting | Description
 Type | Select whether the camera is a Raspberry Pi Camera or a USB camera.
 Library | Select which library to use to communicate with the camera. The Raspberry Pi Camera uses picamera (and potentially opencv), and USB cameras should be set to opencv.
 OpenCV Device | Any devices detected by opencv will populate this dropdown list. If there are no values in this list, none were detected. If you have multiple opencv devices detected, try setting the camera to each device and take a photo to determine which camera is associated with which device.
-Relay ID | This relay will turn on during the capture of any still image (which includes timelapses).
+Output ID | This output will turn on during the capture of any still image (which includes timelapses).
 Rotate Image | The number of degrees to rotate the image.
 ... | Image Width, Image Height, Brightness, Contrast, Exposure, Gain, Hue, Saturation, White Balance. These options are self-explanatory. Not all options will work with all cameras.
 Pre Command | A command to execute (as user mycodo) before a still image is captured.
@@ -334,12 +334,12 @@ Deactivate | Deactivation stops measurements from being acquired from the sensor
 Save | Save the current configuration entered into the input boxes for a particular sensor.
 Delete | Delete a particular sensor.
 Up/Down | Move a particular sensor up or down in the order displayed.
-Power Relay | Select a relay that powers the sensor. This enables powering cycling (turn off then on) when the sensor returns 3 consecutive errors to attempt to fix the issue. Transistors may also be used instead of a relay (note: NPN transistors are preferred over PNP for powering sensors).
+Power Output | Select a output that powers the sensor. This enables powering cycling (turn off then on) when the sensor returns 3 consecutive errors to attempt to fix the issue. Transistors may also be used instead of a relay (note: NPN transistors are preferred over PNP for powering sensors).
 Location | Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I<sup>2</sup>C address. and channel if using the TCA9548A I<sup>2</sup>C multiplexer.
 I<sup>2</sup>C Bus | The bus to be used to communicate with the I<sup>2</sup>C address. If you're using an I<sup>2</sup>C multiplexer that provides multiple buses, this allows you to select which bus the sensor is connected to.
 Period | After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.
-Pre Relay | If you require a relay to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the relay number that will be activated. The relay will be activated for a duration defined by the Pre Duration, then once the relay turns off, a measurement by the sensor is made.
-Pre Relay Duration | This is the duration of time that the Pre Relay runs for before the sensor measurement is obtained.
+Pre Output | If you require a output to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the output number that will be activated. The output will be activated for a duration defined by the Pre Duration, then once the output turns off, a measurement by the sensor is made.
+Pre Output Duration | This is the duration of time that the Pre Output runs for before the sensor measurement is obtained.
 Command | A linux command (executed as the user 'mycodo') that the return value becomes the measurement
 Command Measurement | The measured condition (e.g. temperature, humidity, etc.) from the linux command
 Command Units | The units of the measurement condition from the linux command
@@ -402,7 +402,7 @@ Library | Select the method for producing the PWM signal. Hardware pins can prod
 BCM Pin | This is the GPIO that will output the PWM signal, using BCM numbering.
 Hertz | This is frequency of the PWM signal.
 Duty Cycle | This is the proportion of the time on to the time off, expressed in percent (0 - 100).
-Current Draw (amps) | This is the current draw, in amps, when the duty cycle is 100%. Note: this value should be calculated based on the voltage set in the [Relay Usage Settings](#relay-usage-settings).
+Current Draw (amps) | This is the current draw, in amps, when the duty cycle is 100%. Note: this value should be calculated based on the voltage set in the [Output Usage Settings](#output-usage-settings).
 
 #### Non-hardware PWM Pins
 
@@ -440,15 +440,15 @@ PWM output modulating alternating current (AC) at 99% duty cycle
 
 ![Schematic: PWM output modulating alternating current (AC) at 99% duty cycle](manual_images/Schematic-PWM-AC-99percent-duty-cycle.png)\ 
 
-### Relays
+### Outputs
 
-Relays are electromechanical or solid-state devices that enable a small voltage signal (such as from a microprocessor) to activate a much larger voltage, without exposing the low-voltage system to the dangers of the higher voltage.
+Outputs are electromechanical or solid-state devices that enable a small voltage signal (such as from a microprocessor) to activate a much larger voltage, without exposing the low-voltage system to the dangers of the higher voltage.
 
-Add and configure relays in the Relay tab. Relays must be properly set up before PID regulation can be achieved.
+Add and configure outputs in the Output tab. Outputs must be properly set up before PID regulation can be achieved.
 
 #### Wired 
 
-To set up a wired relay, set the "GPIO Pin" to the BCM GPIO number of each pin that activates each relay. *On Trigger* should be set to the signal that activates the relay (the device attached to vthe relay turns on). If your relay activates when the potential across the coil is 0-volts, set *On Trigger* to "Low", otherwise if your relay activates when the potential across the coil is 3.3-volts (or whatever switching voltage you are using, if not being driven by the GPIO pin), set it to "High".
+To set up a wired relay, set the "GPIO Pin" to the BCM GPIO number of each pin that activates each relay. *On Trigger* should be set to the signal that activates the relay (the device attached to the relay turns on). If your relay activates when the potential across the coil is 0-volts, set *On Trigger* to "Low", otherwise if your relay activates when the potential across the coil is 3.3-volts (or whatever switching voltage you are using, if not being driven by the GPIO pin), set it to "High".
 
 #### Wireless
 
@@ -460,23 +460,23 @@ Certain 433 MHz wireless relays may be used, however you will need to set the pi
 
 #### Command
 
-Another option for relay control is to execute a terminal command when the relay is turned on or off. Commands will be executed as the user 'mycodo'.
+Another option for output control is to execute a terminal command when the output is turned on or off. Commands will be executed as the user 'mycodo'.
 
-Wireless and Command Relay Note: Since the wireless protocol only allows 1-way communication to 433 MHz devices, wireless relays are assumed to be off until they are turned on, and therefore will appear red (off) when added. If a wireless relay is turned off or on outside Mycodo (by a remote, for instance), Mycodo will not be able to determine the state of the relay and will indicate whichever state the relay was last. This is, if Mycodo turns the wireless relay on, and a remote is used to turn the relay off, Mycodo will still assume the relay is on.
+Wireless and Command Output Note: Since the wireless protocol only allows 1-way communication to 433 MHz devices, wireless relays are assumed to be off until they are turned on, and therefore will appear red (off) when added. If a wireless relay is turned off or on outside Mycodo (by a remote, for instance), Mycodo will ***not*** be able to determine the state of the relay and will indicate whichever state the relay was last. This is, if Mycodo turns the wireless relay on, and a remote is used to turn the relay off, Mycodo will still assume the relay is on.
 
 Setting | Description
 -------------------- | ----------------------------------------------
-BCM Pin | This is the GPIO that will be the signal to the relay, using BCM numbering.
-On Trigger | This is the state of the GPIO to signal the relay to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you relay completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.
-WiringPi Pin | This is the GPIO that will be the signal to the relay, using WireingPi numbering.
+BCM Pin | This is the GPIO that will be the signal to the output, using BCM numbering.
+On Trigger | This is the state of the GPIO to signal the output to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you output completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.
+WiringPi Pin | This is the GPIO that will be the signal to the output, using WireingPi numbering.
 Protocol | This is the protocol to use to transmit via 433MHz. Default is 1, but if this doesn't work, increment the number.
 Pulse Length | This is the pulse length to transmit via 433MHz. Default is 189 ms.
 Bit Length | This is the bit length to transmit via 433MHz. Default is 24-bit.
-On Command | This is the command used to turn the relay on. For wireless relays, this is the numerical command to be transmitted, and for command relays this is the command to be executed. 
-Off Command | This is the command used to turn the relay off. For wireless relays, this is the numerical command to be transmitted, and for command relays this is the command to be executed. 
-Current Draw (amps) | The is the amount of current the device powered by the relay draws. Note: this value should be calculated based on the voltage set in the [Relay Usage Settings](#relay-usage-settings).
-Start State | This specifies whether the relay should be ON or OFF when mycodo initially starts. Wireless relays have an additional option 'Neither' which will not issue an on or off command when Mycodo starts or stops.
-Seconds to turn On | This is a way to turn a relay on for a specific duration of time. This can be useful for testing the relays and powered devices or the measured effects a device may have on an environmental condition.
+On Command | This is the command used to turn the output on. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. 
+Off Command | This is the command used to turn the output off. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. 
+Current Draw (amps) | The is the amount of current the device powered by the output draws. Note: this value should be calculated based on the voltage set in the [Output Usage Settings](#output-usage-settings).
+Start State | This specifies whether the output should be ON or OFF when mycodo initially starts. Wireless relays have an additional option 'Neither' which will not issue an on or off command when Mycodo starts or stops.
+Seconds to turn On | This is a way to turn a output on for a specific duration of time. This can be useful for testing the outputs and powered devices or the measured effects a device may have on an environmental condition.
 
 PIDs
 ----
@@ -498,19 +498,19 @@ resumes operation.
 Setting | Description
 -------------------- | ----------------------------------------------
 Activate/Deactivate | Turn a particular PID controller on or off.
-Pause | When paused, the PID will not turn on the associated relays, and settings can be changed without losing current PID output values.
-Hold | When held, the PID will turn on the associated relays, and settings can be changed without losing current PID output values.
+Pause | When paused, the PID will not turn on the associated outputs, and settings can be changed without losing current PID output values.
+Hold | When held, the PID will turn on the associated outputs, and settings can be changed without losing current PID output values.
 Resume | Resume a PID controller from being held or paused.
 Setpoint | This is the specific point you would like the environment to be regaulted at. For example, if you would like the humidity regulated to 60%, enter 60.
 Direction | This is the direction that you wish to regulate. For example, if you only require the temperature to be raised, set this to "Up," but if you require regulation up and down, set this to "Both."
-Period | This is the duration between when the PID relay turns off amd when the sensor takes another measurement, the PID is updated, and the relay is turned on again for another duration.
-Max Age | The time (in seconds) that the sensor measurement age is required to be less than. If the measurement is not younger than this age, the measurement is thrown out and the PID will not actuate the relay. This is a safety measure to ensure the PID is only using recent measurements.
-Raise Relay | This is the relay that will cause the particular environmental condition to rise. In the case of raising the temperature, this may be a heating pad or coil.
-Min Duration (raise) | This is the minimum that the PID output must be before the Up Relay turns on. If the PID output exceeds this minimum, the Up Relay will turn on for the PID output number of seconds.
-Max Duration (raise) | This is the maximum duration the Up Relay is allowed to turn on for. If the PID output exceeds this number, the Up Relay will turn on for no greater than this duration of time.
-Lower Relay | This is the relay that will cause the particular environmental condition to lower. In the case of lowering the CO<sub>2</sub>, this may be an exhaust fan.
-Min Duration (lower) | This is the minimum that the PID output must be before the Down Relay turns on. If the PID output exceeds this minimum, the Down Relay will turn on for the PID output number of seconds.
-Max Duration (lower) | This is the maximum duration the Down Relay is allowed to turn on for. if the PID output exceeds this number, the Down Relay will turn on for no greater than this duration of time.
+Period | This is the duration between when the PID acquires a measurement, the PID is updated, and the output is modulated.
+Max Age | The time (in seconds) that the sensor measurement age is required to be less than. If the measurement is not younger than this age, the measurement is thrown out and the PID will not actuate the output. This is a safety measure to ensure the PID is only using recent measurements.
+Raise Output | This is the output that will cause the particular environmental condition to rise. In the case of raising the temperature, this may be a heating pad or coil.
+Min Duration (raise) | This is the minimum that the PID output must be before the Up Output turns on. If the PID output exceeds this minimum, the Up Output will turn on for the PID output number of seconds.
+Max Duration (raise) | This is the maximum duration the Up Output is allowed to turn on for. If the PID output exceeds this number, the Up Output will turn on for no greater than this duration of time.
+Lower Output | This is the output that will cause the particular environmental condition to lower. In the case of lowering the CO<sub>2</sub>, this may be an exhaust fan.
+Min Duration (lower) | This is the minimum that the PID output must be before the Down Output turns on. If the PID output exceeds this minimum, the Down Output will turn on for the PID output number of seconds.
+Max Duration (lower) | This is the maximum duration the Down Output is allowed to turn on for. if the PID output exceeds this number, the Down Output will turn on for no greater than this duration of time.
 K~P~ | Proportional coefficient (non-negative). Accounts for present values of the error. For example, if the error is large and positive, the control output will also be large and positive.
 K~I~ | Integral coefficient (non-negative). Accounts for past values of the error. For example, if the current output is not sufficiently strong, the integral of the error will accumulate over time, and the controller will respond by applying a stronger action.
 K~D~ | Derivative coefficient (non-negative). Accounts for predicted future values of the error, based on its current rate of change.
@@ -520,7 +520,7 @@ Integrator Max | The maximum allowed integrator value, for calculating Ki\_total
 Timers
 ------
 
-Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will ***only*** do as instructed, therefore if you turn a relay *ON* from *Start Time* to *End Time* and you want that relay to turn *OFF* at the end of that period, you will need to create another timer that turns the relay *OFF* at *End Time* + 1 minute.
+Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will ***only*** do as instructed, therefore if you turn a output *ON* from *Start Time* to *End Time* and you want that output to turn *OFF* at the end of that period, you will need to create another timer that turns the output *OFF* at *End Time* + 1 minute.
 
  There are two types of timers, one for general outputs that turn on and off, and those that generate a PWM signal.
 
@@ -528,7 +528,7 @@ Timers enable outputs to be manipulated after specific durations of time or at a
 
 For *Duration Timers*, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated.
 
-For *Daily Timers*, the start hour:minute can be set to turn a specific relay on or off at the specific time of day.
+For *Daily Timers*, the start hour:minute can be set to turn a specific output on or off at the specific time of day.
 
 #### PWM Method
 
@@ -563,22 +563,22 @@ A conditional statement is a way to perform certain actions based on
 whether a condition is true. Conditional statements can be created for
 both inputs and outputs. Possible conditional statements include:
 
--   If Relay \#1 turns ON, turn Relay \#3 ON
--   If Relay \#1 turns ON, turn Relay \#4 ON for 40 seconds and notify
+-   If Output \#1 turns ON, turn Output \#3 ON
+-   If Output \#1 turns ON, turn Output \#4 ON for 40 seconds and notify
     critical-issue@domain.com
--   If Relay \#4 turns ON for 21 seconds, turn Relay \#5 ON for 50
+-   If Output \#4 turns ON for 21 seconds, turn Output \#5 ON for 50
     seconds
--   If Relay \#4 turns ON for 20 seconds, turn Relay \#1 OFF
--   If Humidity is Greater Than 80%, turn Relay \#4 ON for 40 seconds
--   If Humidity if Less Than 50%, turn Relay \#1 ON for 21 seconds,
+-   If Output \#4 turns ON for 20 seconds, turn Output \#1 OFF
+-   If Humidity is Greater Than 80%, turn Output \#4 ON for 40 seconds
+-   If Humidity if Less Than 50%, turn Output \#1 ON for 21 seconds,
     execute '/usr/local/bin/myscript.sh', and notify email@domain.com
 -   If Temperature if Greater Than 35 C, deactivate PID \#1
 
 Before activating any conditional statements or PID controllers, it's
 advised to thoroughly explore all possible scenarios and plan a
 configuration that eliminates conflicts. Then, trial run your
-configuration before connecting devices to the relays. Some devices or
-relays may respond atypically or fail when switched on and off in rapid
+configuration before connecting devices to the outputs. Some devices or
+outputs may respond atypically or fail when switched on and off in rapid
 succession. Therefore, avoid creating an [infinite
 loop](https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops)
 with conditional statements.
@@ -587,7 +587,7 @@ with conditional statements.
 
 Setting | Description
 -------------------- | ----------------------------------------------
-Relay | Turn a relay on, off, or on for a duration of time.
+Output | Turn a output on, off, or on for a duration of time.
 Command | Execute a command in the linux shell (as user mycodo).
 Activate PID | Activate a particular PID controller.
 Deactivate PID | Deactivate a particular PID controller.
@@ -814,11 +814,11 @@ cools).
 Add a sensor, then save the proper device and pin/address for each
 sensor and activate the sensor.
 
-Add two relays, then save each GPIO and On Trigger state.
+Add two outputs, then save each GPIO and On Trigger state.
 
 Add a PID, then select the newly-created sensor. Change *Setpoint* to
 the desired temperature, *Regulate Direction* to "Both". Set *Raise
-Relay* to the relay attached to the heating device and the *Lower Relay*
+Output* to the relay attached to the heating device and the *Lower Relay*
 to the relay attached to the cooling device.
 
 Set *K~P~* = 1, *K~I~* = 0, and *K~D~* = 0, then activate the PID.
@@ -874,8 +874,8 @@ A graphical data display that is useful for viewing data sets spanning
 relatively short periods of time (hours/days/weeks). Select a time frame
 to view data and continually updating data from new sensor measurements.
 Multiple graphs can be created on one page that enables a dashboard to
-be created of graphed sensor data. Each graphs may have one or more
-sensor measurement, relay duration, or PID setpoint rendered onto it.
+be created of graphed sensor data. Each graph may have one or more
+sensor measurement, output duration, or PID setpoint rendered onto it.
 Several live graph options exist, such as the time period (x-axis) and
 line colors, as well as navigation and data/image export options. To
 edit graph options, select the plus sign on the top-right of a graph.
@@ -913,12 +913,12 @@ create time-lapses, and stream video. Cameras may also be used by
 image or video capture (as well as the ability to email the image/video
 with a notification).
 
-Relay Usage
+Output Usage
 -----------
 
-Relay usage statistics are calculated for each relay, based on how long
-the relay has been powered, the current draw of the device connected to
-the relay, and other [Relay Usage Settings](#relay-usage-settings).
+Output usage statistics are calculated for each output, based on how long
+the output has been powered, the current draw of the device connected to
+the output, and other [Relay Usage Settings](#output-usage-settings).
 
 System Backup
 -------------

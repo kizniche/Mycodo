@@ -101,8 +101,8 @@ def pid_mod(form_mod_pid_base,
         mod_pid.method_id = None
 
     if form_mod_pid_base.raise_relay_id.data:
-        raise_relay_type = Relay.query.filter(
-            Relay.id == int(form_mod_pid_base.raise_relay_id.data)).first().relay_type
+        raise_relay_type = Output.query.filter(
+            Output.id == int(form_mod_pid_base.raise_relay_id.data)).first().relay_type
         if mod_pid.raise_relay_id == int(form_mod_pid_base.raise_relay_id.data):
             if raise_relay_type == 'pwm':
                 if not form_mod_pid_pwm_raise.validate():
@@ -130,8 +130,8 @@ def pid_mod(form_mod_pid_base,
         mod_pid.raise_relay_id = None
 
     if form_mod_pid_base.lower_relay_id.data:
-        lower_relay_type = Relay.query.filter(
-            Relay.id == int(form_mod_pid_base.lower_relay_id.data)).first().relay_type
+        lower_relay_type = Output.query.filter(
+            Output.id == int(form_mod_pid_base.lower_relay_id.data)).first().relay_type
         if mod_pid.lower_relay_id == int(form_mod_pid_base.lower_relay_id.data):
             if lower_relay_type == 'pwm':
                 if not form_mod_pid_pwm_lower.validate():
@@ -235,7 +235,7 @@ def has_required_pid_values(pid_id):
         flash(gettext(u"A valid sensor is required"), "error")
         error = True
     if not pid.raise_relay_id and not pid.lower_relay_id:
-        flash(gettext(u"A Raise Relay ID and/or a Lower Relay ID is "
+        flash(gettext(u"A Raise Output and/or a Lower Output is "
                       "required"), "error")
         error = True
     if error:

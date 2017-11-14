@@ -37,9 +37,9 @@ GPIO.setwarnings(False)
 # Start the session
 with session_scope(MYCODO_DB_PATH) as the_session:
     # Get all them relays
-    relays = the_session.query(Relay).all()
+    output = the_session.query(Output).all()
 
-    for each_relay in relays:
+    for each_relay in output:
         # Setup all the pins as an output
         GPIO.setup(each_relay.pin, GPIO.OUT)
 

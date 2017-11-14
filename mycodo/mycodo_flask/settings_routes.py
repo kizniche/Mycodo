@@ -76,7 +76,7 @@ def settings_camera():
     form_camera = forms_settings.SettingsCamera()
 
     camera = Camera.query.all()
-    relay = Relay.query.all()
+    output = Output.query.all()
 
     try:
         opencv_devices = count_cameras_opencv()
@@ -109,7 +109,7 @@ def settings_camera():
                            form_camera=form_camera,
                            opencv_devices=opencv_devices,
                            pi_camera_enabled=pi_camera_enabled,
-                           relay=relay)
+                           relay=output)
 
 
 @blueprint.route('/settings/general', methods=('GET', 'POST'))

@@ -135,16 +135,16 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
             logger.exception("Error parsing the last influx measurement")
 
 
-def relay_sec_on(relay_id, past_seconds):
-    """ Return the number of seconds a relay has been ON in the past number of seconds """
+def relay_sec_on(output_id, past_seconds):
+    """ Return the number of seconds a output has been ON in the past number of seconds """
     # Get the number of seconds ON stored in the database
-    relay = db_retrieve_table_daemon(Relay, device_id=relay_id)
+    output = db_retrieve_table_daemon(Output, device_id=output_id)
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE)
-    if not relay_id:
+    if not output_id:
         return None
 
-    query = query_string('duration_sec', relay.unique_id, value='SUM',
+    query = query_string('duration_sec', output.unique_id, value='SUM',
                          past_sec=past_seconds)
     output = client.query(query)
     sec_recorded_on = 0
@@ -152,14 +152,14 @@ def relay_sec_on(relay_id, past_seconds):
         sec_recorded_on = output.raw['series'][0]['values'][0][1]
 
     # Get the number of seconds not stored in the database (if currently on)
-    relay_time_on = 0
-    if relay.is_on():
+    output_time_on = 0
+    if output.is_on():
         control = DaemonControl()
-        relay_time_on = control.relay_sec_currently_on(relay_id)
+        output_time_on = control.relay_sec_currently_on(output_id)
 
     sec_currently_on = 0
-    if relay_time_on:
-        sec_currently_on = min(relay_time_on, past_seconds)
+    if output_time_on:
+        sec_currently_on = min(output_time_on, past_seconds)
 
     return sec_recorded_on + sec_currently_on
 

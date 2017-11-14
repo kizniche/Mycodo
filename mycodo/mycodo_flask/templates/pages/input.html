@@ -147,7 +147,7 @@
             <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
               {{form_mod_sensor.pre_relay_duration.label(class_='control-label')}}
               <div>
-                {{form_mod_sensor.pre_relay_duration(class_='form-control', value=each_sensor.pre_relay_duration, **{'title':_('If a Pre Relay is selected, set the duration (seconds) to turn the Pre Relay on for before every measurement is acquired.')})}}
+                {{form_mod_sensor.pre_relay_duration(class_='form-control', value=each_sensor.pre_relay_duration, **{'title':_('If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.')})}}
               </div>
             </div>
           {% endif -%}
@@ -223,7 +223,7 @@
               {{form_conditional.save_cond(class_='form-control btn btn-default')}}
             </div>
             <div class="col-xs-4 col-sm-3 col-md-3">
-              {{form_conditional.delete_cond(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Relay Conditional?")'})}}
+              {{form_conditional.delete_cond(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Output Conditional?")'})}}
             </div>
           </div>
 

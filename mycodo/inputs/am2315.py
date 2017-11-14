@@ -24,7 +24,7 @@ class AM2315Sensor(AbstractInput):
         self._humidity = None
         self._temperature = None
         self.I2C_bus_number = str(bus)
-        self.power_relay_id = power
+        self.power_output_id = power
         self.powered = False
         self.am = None
 
@@ -91,11 +91,11 @@ class AM2315Sensor(AbstractInput):
         temperature = None
 
         # Ensure if the power pin turns off, it is turned back on
-        if (self.power_relay_id and
-                not db_retrieve_table_daemon(Relay, device_id=self.power_relay_id).is_on()):
+        if (self.power_output_id and
+                not db_retrieve_table_daemon(Output, device_id=self.power_output_id).is_on()):
             self.logger.error(
-                'Sensor power relay {rel} detected as being off. '
-                'Turning on.'.format(rel=self.power_relay_id))
+                'Sensor power output {rel} detected as being off. '
+                'Turning on.'.format(rel=self.power_output_id))
             self.start_sensor()
             time.sleep(2)
 
@@ -110,7 +110,7 @@ class AM2315Sensor(AbstractInput):
 
         # Measurement failure, power cycle the sensor (if enabled)
         # Then try two more times to get a measurement
-        if self.power_relay_id is not None:
+        if self.power_output_id is not None:
             self.stop_sensor()
             time.sleep(2)
             self.start_sensor()
@@ -159,15 +159,15 @@ class AM2315Sensor(AbstractInput):
 
     def start_sensor(self):
         """ Turn the sensor on """
-        if self.power_relay_id:
+        if self.power_output_id:
             self.logger.info("Turning on sensor")
-            self.control.relay_on(self.power_relay_id, 0)
+            self.control.relay_on(self.power_output_id, 0)
             time.sleep(2)
             self.powered = True
 
     def stop_sensor(self):
         """ Turn the sensor off """
-        if self.power_relay_id:
+        if self.power_output_id:
             self.logger.info("Turning off sensor")
-            self.control.relay_off(self.power_relay_id)
+            self.control.relay_off(self.power_output_id)
             self.powered = False

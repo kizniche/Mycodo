@@ -24,8 +24,8 @@ from flask.blueprints import Blueprint
 
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.static_routes import inject_variables
-from mycodo_client import DaemonControl
-from mycodo_client import daemon_active
+from mycodo.mycodo_client import DaemonControl
+from mycodo.mycodo_client import daemon_active
 
 from mycodo.mycodo_flask.forms import forms_conditional
 from mycodo.mycodo_flask.forms import forms_graph
@@ -66,22 +66,22 @@ from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.tools import return_relay_usage
 
-from config import BACKUP_LOG_FILE
-from config import DAEMON_LOG_FILE
-from config import HTTP_LOG_FILE
-from config import KEEPUP_LOG_FILE
-from config import LOGIN_LOG_FILE
-from config import RESTORE_LOG_FILE
-from config import UPGRADE_LOG_FILE
+from mycodo.config import BACKUP_LOG_FILE
+from mycodo.config import DAEMON_LOG_FILE
+from mycodo.config import HTTP_LOG_FILE
+from mycodo.config import KEEPUP_LOG_FILE
+from mycodo.config import LOGIN_LOG_FILE
+from mycodo.config import RESTORE_LOG_FILE
+from mycodo.config import UPGRADE_LOG_FILE
 
-from config import CONDITIONAL_ACTIONS
-from config import DAEMON_PID_FILE
-from config import INSTALL_DIRECTORY
-from config import MEASUREMENTS
-from config import MEASUREMENT_UNITS
-from config import PATH_CAMERAS
+from mycodo.config import CONDITIONAL_ACTIONS
+from mycodo.config import DAEMON_PID_FILE
+from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import MEASUREMENTS
+from mycodo.config import MEASUREMENT_UNITS
+from mycodo.config import PATH_CAMERAS
 
-from config import USAGE_REPORTS_PATH
+from mycodo.config import USAGE_REPORTS_PATH
 
 logger = logging.getLogger('mycodo.mycodo_flask.pages')
 
@@ -240,9 +240,9 @@ def page_export():
     Export measurement data in CSV format
     """
     export_options = forms_misc.ExportOptions()
-    relay = Relay.query.all()
+    output = Output.query.all()
     input = Input.query.all()
-    relay_choices = utils_general.choices_id_name(relay)
+    output_choices = utils_general.choices_id_name(output)
     input_choices = utils_general.choices_inputs(input)
 
     if request.method == 'POST':
@@ -271,7 +271,7 @@ def page_export():
                            start_picker=start_picker,
                            end_picker=end_picker,
                            exportOptions=export_options,
-                           relay_choices=relay_choices,
+                           relay_choices=output_choices,
                            sensor_choices=input_choices)
 
 
@@ -295,12 +295,12 @@ def page_graph():
     # Retrieve tables from SQL database
     graph = Graph.query.all()
     pid = PID.query.all()
-    relay = Relay.query.all()
+    output = Output.query.all()
     input = Input.query.all()
 
     # Retrieve all choices to populate form drop-down menu
     pid_choices = utils_general.choices_pids(pid)
-    output_choices = utils_general.choices_outputs(relay)
+    output_choices = utils_general.choices_outputs(output)
     input_choices = utils_general.choices_inputs(input)
 
     # Add custom measurement and units to list (From linux command input)
@@ -370,7 +370,7 @@ def page_graph():
     return render_template('pages/graph.html',
                            graph=graph,
                            pid=pid,
-                           relay=relay,
+                           relay=output,
                            sensor=input,
                            pid_choices=pid_choices,
                            output_choices=output_choices,
@@ -524,7 +524,7 @@ def page_lcd():
     lcd = LCD.query.all()
     lcd_data = LCDData.query.all()
     pid = PID.query.all()
-    relay = Relay.query.all()
+    output = Output.query.all()
     input = Input.query.all()
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
@@ -577,7 +577,7 @@ def page_lcd():
                            lcd_data=lcd_data,
                            measurements=measurements,
                            pid=pid,
-                           relay=relay,
+                           relay=output,
                            sensor=input,
                            displayOrder=display_order,
                            form_lcd_add=form_lcd_add,
@@ -591,7 +591,7 @@ def page_live():
     """ Page of recent and updating input data """
     # Retrieve tables for the data displayed on the live page
     pid = PID.query.all()
-    relay = Relay.query.all()
+    output = Output.query.all()
     input = Input.query.all()
     timer = Timer.query.all()
 
@@ -617,7 +617,7 @@ def page_live():
                            measurement_units=MEASUREMENT_UNITS,
                            method=method,
                            pid=pid,
-                           relay=relay,
+                           relay=output,
                            sensor=input,
                            timer=timer,
                            pidDisplayOrder=pid_display_order,
@@ -679,7 +679,7 @@ def page_pid():
     """ Display PID settings """
     method = Method.query.all()
     pid = PID.query.all()
-    relay = Relay.query.all()
+    output = Output.query.all()
     input = Input.query.all()
 
     input_choices = utils_general.choices_inputs(input)
@@ -688,8 +688,8 @@ def page_pid():
 
     form_add_pid = forms_pid.PIDAdd()
     form_mod_pid_base = forms_pid.PIDModBase()
-    form_mod_pid_relay_raise = forms_pid.PIDModRelayRaise()
-    form_mod_pid_relay_lower = forms_pid.PIDModRelayLower()
+    form_mod_pid_output_raise = forms_pid.PIDModRelayRaise()
+    form_mod_pid_output_lower = forms_pid.PIDModRelayLower()
     form_mod_pid_pwm_raise = forms_pid.PIDModPWMRaise()
     form_mod_pid_pwm_lower = forms_pid.PIDModPWMLower()
 
@@ -715,8 +715,8 @@ def page_pid():
                 utils_pid.pid_mod(form_mod_pid_base,
                                    form_mod_pid_pwm_raise,
                                    form_mod_pid_pwm_lower,
-                                   form_mod_pid_relay_raise,
-                                   form_mod_pid_relay_lower)
+                                   form_mod_pid_output_raise,
+                                   form_mod_pid_output_lower)
             elif form_mod_pid_base.delete.data:
                 utils_pid.pid_del(
                     form_mod_pid_base.pid_id.data)
@@ -748,7 +748,7 @@ def page_pid():
                            method=method,
                            pid=pid,
                            pid_templates=pid_templates,
-                           relay=relay,
+                           relay=output,
                            sensor=input,
                            sensor_choices=input_choices,
                            displayOrder=display_order,
@@ -756,17 +756,17 @@ def page_pid():
                            form_mod_pid_base=form_mod_pid_base,
                            form_mod_pid_pwm_raise=form_mod_pid_pwm_raise,
                            form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,
-                           form_mod_pid_relay_raise=form_mod_pid_relay_raise,
-                           form_mod_pid_relay_lower=form_mod_pid_relay_lower)
+                           form_mod_pid_relay_raise=form_mod_pid_output_raise,
+                           form_mod_pid_relay_lower=form_mod_pid_output_lower)
 
 
 @blueprint.route('/output', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_output():
-    """ Display relay status and config """
+    """ Display output status and config """
     camera = Camera.query.all()
     lcd = LCD.query.all()
-    relay = Relay.query.all()
+    output = Output.query.all()
     user = User.query.all()
 
     conditional = Conditional.query.filter(
@@ -775,37 +775,37 @@ def page_output():
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
 
-    form_add_relay = forms_output.OutputAdd()
-    form_mod_relay = forms_output.OutputMod()
+    form_add_output = forms_output.OutputAdd()
+    form_mod_output = forms_output.OutputMod()
 
     form_conditional = forms_conditional.Conditional()
     form_conditional_actions = forms_conditional.ConditionalActions()
 
     # Create list of file names from the output_options directory
-    # Used in generating the correct options for each relay/device
-    relay_templates = []
-    relay_path = os.path.join(
+    # Used in generating the correct options for each output/device
+    output_templates = []
+    output_path = os.path.join(
         INSTALL_DIRECTORY,
         'mycodo/mycodo_flask/templates/pages/output_options')
-    for (_, _, file_names) in os.walk(relay_path):
-        relay_templates.extend(file_names)
+    for (_, _, file_names) in os.walk(output_path):
+        output_templates.extend(file_names)
         break
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('page_routes.page_output'))
 
-        if form_add_relay.relay_add.data:
-            utils_output.relay_add(form_add_relay)
-        elif form_mod_relay.save.data:
-            utils_output.relay_mod(form_mod_relay)
-        elif form_mod_relay.delete.data:
-            utils_output.relay_del(form_mod_relay)
-        elif form_mod_relay.order_up.data:
-            utils_output.relay_reorder(form_mod_relay.relay_id.data,
+        if form_add_output.relay_add.data:
+            utils_output.relay_add(form_add_output)
+        elif form_mod_output.save.data:
+            utils_output.relay_mod(form_mod_output)
+        elif form_mod_output.delete.data:
+            utils_output.relay_del(form_mod_output)
+        elif form_mod_output.order_up.data:
+            utils_output.relay_reorder(form_mod_output.relay_id.data,
                                        display_order, 'up')
-        elif form_mod_relay.order_down.data:
-            utils_output.relay_reorder(form_mod_relay.relay_id.data,
+        elif form_mod_output.order_down.data:
+            utils_output.relay_reorder(form_mod_output.relay_id.data,
                                        display_order, 'down')
         elif form_conditional.add_cond.data:
             utils_conditional.conditional_add(
@@ -837,11 +837,11 @@ def page_output():
                            displayOrder=display_order,
                            form_conditional=form_conditional,
                            form_conditional_actions=form_conditional_actions,
-                           form_add_relay=form_add_relay,
-                           form_mod_relay=form_mod_relay,
+                           form_add_relay=form_add_output,
+                           form_mod_relay=form_mod_output,
                            lcd=lcd,
-                           relay=relay,
-                           relay_templates=relay_templates,
+                           relay=output,
+                           relay_templates=output_templates,
                            user=user)
 
 
@@ -865,7 +865,7 @@ def page_input():
     camera = Camera.query.all()
     lcd = LCD.query.all()
     pid = PID.query.all()
-    relay = Relay.query.all()
+    output = Output.query.all()
     input = Input.query.all()
     user = User.query.all()
 
@@ -959,7 +959,7 @@ def page_input():
                            multiplexer_addresses=multiplexer_addresses,
                            multiplexer_channels=multiplexer_channels,
                            pid=pid,
-                           relay=relay,
+                           relay=output,
                            sensor=input,
                            sensor_templates=input_templates,
                            units=MEASUREMENT_UNITS,
@@ -972,8 +972,8 @@ def page_timer():
     """ Display Timer settings """
     method = Method.query.all()
     timer = Timer.query.all()
-    relay = Relay.query.all()
-    output_choices = utils_general.choices_outputs(relay)
+    output = Output.query.all()
+    output_choices = utils_general.choices_outputs(output)
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().timer)
 
@@ -1036,14 +1036,14 @@ def page_timer():
 @blueprint.route('/usage', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_usage():
-    """ Display relay usage (duration and energy usage/cost) """
+    """ Display output usage (duration and energy usage/cost) """
     if not utils_general.user_has_permission('view_stats'):
         return redirect(url_for('general_routes.home'))
 
     misc = Misc.query.first()
-    relay = Relay.query.all()
+    output = Output.query.all()
 
-    relay_stats = return_relay_usage(misc, relay)
+    output_stats = return_relay_usage(misc, output)
 
     day = misc.relay_usage_dayofmonth
     if 4 <= day <= 20 or 24 <= day <= 30:
@@ -1057,15 +1057,15 @@ def page_usage():
                            date_suffix=date_suffix,
                            display_order=display_order,
                            misc=misc,
-                           relay=relay,
-                           relay_stats=relay_stats,
+                           relay=output,
+                           relay_stats=output_stats,
                            timestamp=time.strftime("%c"))
 
 
 @blueprint.route('/usage_reports', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_usage_reports():
-    """ Display relay usage (duration and energy usage/cost) """
+    """ Display output usage (duration and energy usage/cost) """
     if not utils_general.user_has_permission('view_stats'):
         return redirect(url_for('general_routes.home'))
 
@@ -1141,18 +1141,18 @@ def dict_custom_colors():
             if each_graph.relay_ids:
                 index = 0
                 for each_set in each_graph.relay_ids.split(','):
-                    relay_unique_id = each_set.split(',')[0]
-                    relay = Relay.query.filter_by(
-                        unique_id=relay_unique_id).first()
+                    output_unique_id = each_set.split(',')[0]
+                    output = Output.query.filter_by(
+                        unique_id=output_unique_id).first()
                     if (index < len(each_graph.relay_ids.split(',')) and
                             len(colors) > index_sum + index):
                         color = colors[index_sum+index]
                     else:
                         color = '#FF00AA'
-                    if relay is not None:
+                    if output is not None:
                         total.append({
-                            'unique_id': relay_unique_id,
-                            'name': relay.name,
+                            'unique_id': output_unique_id,
+                            'name': output.name,
                             'measure': 'relay duration',
                             'color': color})
                         index += 1

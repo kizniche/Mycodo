@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 def conditional_add(cond_type, quantity, sensor_id=None):
     error = []
     if cond_type == 'relay':
-        conditional_type = gettext(u"Relay")
+        conditional_type = gettext(u"Output")
     elif cond_type == 'sensor':
         conditional_type = gettext(u"Input")
     else:
@@ -63,7 +63,7 @@ def conditional_mod(form, mod_type):
     conditional_type = Conditional.query.filter(
         Conditional.id == form.conditional_id.data).first().conditional_type
     if conditional_type == 'relay':
-        cond_type = gettext(u"Relay")
+        cond_type = gettext(u"Output")
     elif conditional_type == 'sensor':
         cond_type = gettext(u"Input")
     else:
@@ -128,7 +128,7 @@ def conditional_action_add(form):
     conditional_type = Conditional.query.filter(
         Conditional.id == form.conditional_id.data).first().conditional_type
     if conditional_type == 'relay':
-        cond_type = gettext(u"Relay")
+        cond_type = gettext(u"Output")
     elif conditional_type == 'sensor':
         cond_type = gettext(u"Input")
     else:
@@ -157,7 +157,7 @@ def conditional_action_mod(form, mod_type):
     cond = Conditional.query.filter(
         Conditional.id == form.conditional_id.data).first()
     if cond.conditional_type == 'relay':
-        cond_type = gettext(u"Relay")
+        cond_type = gettext(u"Output")
     elif cond.conditional_type == 'sensor':
         cond_type = gettext(u"Input")
     else:
