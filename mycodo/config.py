@@ -317,6 +317,7 @@ class TestConfig(object):
     SQLALCHEMY_DATABASE_URI = 'sqlite://'  # in-memory db only. tests drop the tables after they run
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    RATELIMIT_ENABLED = False
     SECRET_KEY = '1234'
     TESTING = True
     DEBUG = True
