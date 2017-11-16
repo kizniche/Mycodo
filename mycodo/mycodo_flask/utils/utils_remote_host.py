@@ -28,6 +28,22 @@ logger = logging.getLogger(__name__)
 # Authenticate remote hosts
 #
 
+
+def auth_credentials(address, user, password_hash):
+    credentials = {
+        'user': user,
+        'pw_hash': password_hash
+    }
+    url = 'https://{add}/auth/'.format(add=address)
+    try:
+        r = requests.get(url, params=credentials, verify=False)
+        return int(r.text)
+    except Exception as e:
+        logger.exception(
+            "'auth_credentials' raised an exception: {err}".format(err=e))
+        return 1
+
+
 def check_new_credentials(address, user, passw):
     credentials = {
         'user': user,
@@ -44,18 +60,18 @@ def check_new_credentials(address, user, passw):
         }
 
 
-def auth_credentials(address, user, password_hash):
+def remote_get_inputs(address, user, password_hash):
     credentials = {
         'user': user,
         'pw_hash': password_hash
     }
-    url = 'https://{add}/auth/'.format(add=address)
+    url = 'https://{add}/remote_get_inputs/'.format(add=address)
     try:
         r = requests.get(url, params=credentials, verify=False)
-        return int(r.text)
+        return r.text
     except Exception as e:
         logger.exception(
-            "'auth_credentials' raised an exception: {err}".format(err=e))
+            "'remote_get_inputs' raised an exception: {err}".format(err=e))
         return 1
 
 

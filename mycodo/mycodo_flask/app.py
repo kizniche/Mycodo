@@ -40,6 +40,7 @@ from mycodo.mycodo_flask import calibration_routes
 from mycodo.mycodo_flask import general_routes
 from mycodo.mycodo_flask import method_routes
 from mycodo.mycodo_flask import page_routes
+from mycodo.mycodo_flask import remote_admin_routes
 from mycodo.mycodo_flask import settings_routes
 from mycodo.mycodo_flask import static_routes
 
@@ -121,9 +122,9 @@ def register_extensions(app):
 
 def register_blueprints(_app):
     """ register blueprints to the app """
-    # Rate limit authentication blueprint requests to 10 per minute
+    # Limit authentication blueprint requests to 30 per minute
     limiter = Limiter(_app, key_func=get_remote_address)
-    limiter.limit("10/minute")(authentication_routes.blueprint)
+    limiter.limit("30/minute")(authentication_routes.blueprint)
 
     _app.register_blueprint(static_routes.blueprint)  # register static routes
     _app.register_blueprint(admin_routes.blueprint)  # register admin views
@@ -132,6 +133,7 @@ def register_blueprints(_app):
     _app.register_blueprint(general_routes.blueprint)  # register general routes
     _app.register_blueprint(method_routes.blueprint)  # register method views
     _app.register_blueprint(page_routes.blueprint)  # register page views
+    _app.register_blueprint(remote_admin_routes.blueprint)  # register remote admin views
     _app.register_blueprint(settings_routes.blueprint)  # register settings views
 
 

@@ -13,8 +13,12 @@
 
   <!-- Bootstrap core CSS -->
   <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+  {% if current_user.theme != '' %}
+    <link href="/static/css/bootstrap-themes/bootstrap-{{current_user.theme}}.min.css" rel="stylesheet">
+  {% endif %}
+
   {% if current_user.theme in dark_themes %}
-    <link href="/static/css/bootstrap-dark.min.css" rel="stylesheet">
     <link href="/static/css/custom-dark.css" rel="stylesheet">
   {% else %}
     <link href="/static/css/custom-light.css" rel="stylesheet">
@@ -33,10 +37,6 @@
   {% block head %}{% endblock %}
   </head>
   <body>
-
-    {% set navigation_bar_top = [
-      ('/remote/setup', 'setup', 'Setup')
-    ] -%}
     
     {% set active_page = active_page|default('setup') -%}
 
@@ -53,9 +53,11 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          {% for href, id, caption in navigation_bar_top %}
-            <li{% if id == active_page %} class="active"{% endif %}><a href="{{ href|e }}">{{caption|e}}</a></li>
-          {% endfor -%}
+
+            <li{% if active_page == 'setup' %} class="active"{% endif %}><a href="{{url_for('remote_admin_routes.remote_setup')}}">{{_('Setup')}}</a></li>
+
+            <li{% if active_page == 'input' %} class="active"{% endif %}><a href="{{url_for('remote_admin_routes.remote_input')}}">{{_('Input')}}</a></li>
+
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li{% if active_page == 'help' %} class="active"{% endif %}><a href="/">Exit</a></li>
