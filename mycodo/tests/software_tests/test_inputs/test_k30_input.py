@@ -14,8 +14,7 @@ from mycodo.inputs.k30 import K30Sensor
 def test_k30_iterates_using_in():
     """ Verify that a K30Sensor object can use the 'in' operator """
     with mock.patch('mycodo.inputs.k30.K30Sensor.get_measurement') as mock_measure:
-        mock_measure.side_effect = [67, 52, 37, 45]  # first reading, second reading
-
+        mock_measure.side_effect = [67, 52, 37, 45]
         k30 = K30Sensor(None, testing=True)
         expected_result_list = [dict(co2=67.00),
                                 dict(co2=52.00),
@@ -27,32 +26,28 @@ def test_k30_iterates_using_in():
 def test_k30__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
     with mock.patch('mycodo.inputs.k30.K30Sensor.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [67, 52]
         k30 = K30Sensor(None, testing=True)
-        # check __iter__ method return
+
         assert isinstance(k30.__iter__(), Iterator)
 
 
 def test_k30_read_updates_temp():
     """  Verify that K30Sensor(0x99, 1).read() gets the average temp """
     with mock.patch('mycodo.inputs.k30.K30Sensor.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [67, 52]
         k30 = K30Sensor(None, testing=True)
-        # test our read() function
-        assert k30._co2 is None  # init value
-        assert not k30.read()  # updating the value using our mock_measure side effect has no error
-        assert k30._co2 == 67.0  # first value
-        assert not k30.read()  # updating the value using our mock_measure side effect has no error
-        assert k30._co2 == 52.0  # second value
+        assert k30._co2 is None
+        assert not k30.read()
+        assert k30._co2 == 67.0
+        assert not k30.read()
+        assert k30._co2 == 52.0
 
 
 def test_k30_next_returns_dict():
     """ next returns dict(co2=float) """
     with mock.patch('mycodo.inputs.k30.K30Sensor.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [67, 52]
         k30 = K30Sensor(None, testing=True)
         assert k30.next() == dict(co2=67.00)
 
@@ -60,33 +55,30 @@ def test_k30_next_returns_dict():
 def test_k30_condition_properties():
     """ verify co2 property """
     with mock.patch('mycodo.inputs.k30.K30Sensor.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [67, 52]
         k30 = K30Sensor(None, testing=True)
-        assert k30._co2 is None  # initial value
-        assert k30.co2 == 67.00  # first reading with auto update
-        assert k30.co2 == 67.00  # same first reading, not updated yet
-        assert not k30.read()  # update (no errors)
-        assert k30.co2 == 52.00  # next reading
+        assert k30._co2 is None
+        assert k30.co2 == 67.00
+        assert k30.co2 == 67.00
+        assert not k30.read()
+        assert k30.co2 == 52.00
 
 
 def test_k30_special_method_str():
     """ expect a __str__ format """
     with mock.patch('mycodo.inputs.k30.K30Sensor.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [0.0]  # first reading
+        mock_measure.side_effect = [0.0]
         k30 = K30Sensor(None, testing=True)
-        k30.read()  # updating the value
+        k30.read()
         assert "CO2: 0.00" in str(k30)
 
 
 def test_k30_special_method_repr():
     """ expect a __repr__ format """
     with mock.patch('mycodo.inputs.k30.K30Sensor.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [0.0]  # first reading
+        mock_measure.side_effect = [0.0]
         k30 = K30Sensor(None, testing=True)
-        k30.read()  # updating the value
+        k30.read()
         assert "<K30Sensor(co2=0.00)>" in repr(k30)
 
 
@@ -106,7 +98,6 @@ def test_k30_read_returns_1_on_exception():
 def test_k30_read_logs_unknown_errors():
     """ verify that IOErrors are logged """
     with LogCapture() as log_cap:
-        # force an Exception to be raised when get_measurement is called
         with mock.patch('mycodo.inputs.k30.K30Sensor.get_measurement', side_effect=Exception('msg')):
             K30Sensor(None, testing=True).read()
     expected_logs = ('mycodo.inputs.k30', 'ERROR', 'K30Sensor raised an exception when taking a reading: msg')

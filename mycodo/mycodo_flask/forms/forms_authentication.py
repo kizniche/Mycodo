@@ -88,7 +88,6 @@ class RemoteSetup(FlaskForm):
     remote_id = IntegerField('Remote Host ID', widget=widgets.HiddenInput())
     host = StringField(
         lazy_gettext(u'Domain or IP Address'),
-        render_kw={"placeholder": "youraddress.com or 0.0.0.0"},
         validators=[DataRequired()]
     )
     username = StringField(

@@ -10,10 +10,16 @@ from flask import url_for
 from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 
+from mycodo.mycodo_flask.utils import utils_general
+
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Remote
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import list_to_csv
+
+from mycodo.mycodo_flask.utils.utils_general import add_display_order
+from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
+from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 
 logger = logging.getLogger(__name__)
 
@@ -43,18 +49,18 @@ def auth_credentials(address, user, password_hash):
         'user': user,
         'pw_hash': password_hash
     }
-    url = 'https://{}/auth/'.format(address)
+    url = 'https://{add}/auth/'.format(add=address)
     try:
         r = requests.get(url, params=credentials, verify=False)
         return int(r.text)
     except Exception as e:
-        logger.error(
+        logger.exception(
             "'auth_credentials' raised an exception: {err}".format(err=e))
         return 1
 
 
 def remote_host_add(form_setup, display_order):
-    if not user_has_permission('edit_settings'):
+    if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     if form_setup.validate():
@@ -96,7 +102,7 @@ def remote_host_add(form_setup, display_order):
 
 
 def remote_host_del(form_setup):
-    if not user_has_permission('edit_settings'):
+    if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     try:

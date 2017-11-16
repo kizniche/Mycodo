@@ -5,6 +5,7 @@
  - Prevent currently-logged in user from: deleting own user, changing user role from Admin
  - Force iPhone to open Mycodo bookmark as standalone web app instead of in Safari
  - Refactor and add tests for all inputs ([#128](https://github.com/kizniche/mycodo/issues/128))
+ - Add Flask-Limiter to limit authentication requests to 10 per minute (mainly for Remote Admin feature)
 
 ### Bugfixes
 

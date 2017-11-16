@@ -14,7 +14,7 @@ from mycodo.inputs.linux_command import LinuxCommand
 def test_linux_command_iterates_using_in():
     """ Verify that a LinuxCommand object can use the 'in' operator """
     with mock.patch('mycodo.inputs.linux_command.LinuxCommand.get_measurement') as mock_measure:
-        mock_measure.side_effect = [67, 52, 37, 45]  # first reading, second reading
+        mock_measure.side_effect = [67, 52, 37, 45]
         linux_command = LinuxCommand(None, 'measurement', testing=True)
         expected_result_list = [dict(measurement=67.00),
                                 dict(measurement=52.00),
@@ -26,32 +26,27 @@ def test_linux_command_iterates_using_in():
 def test_linux_command__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
     with mock.patch('mycodo.inputs.linux_command.LinuxCommand.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [67, 52]
         linux_command = LinuxCommand(None, 'measurement', testing=True)
-        # check __iter__ method return
         assert isinstance(linux_command.__iter__(), Iterator)
 
 
 def test_linux_command_read_updates_temp():
     """  Verify that LinuxCommand(0x99, 1).read() gets the average temp """
     with mock.patch('mycodo.inputs.linux_command.LinuxCommand.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [67, 52]
         linux_command = LinuxCommand(None, 'measurement', testing=True)
-        # test our read() function
-        assert linux_command._measurement is None  # init value
-        assert not linux_command.read()  # updating the value using our mock_measure side effect has no error
-        assert linux_command._measurement == 67.0  # first value
-        assert not linux_command.read()  # updating the value using our mock_measure side effect has no error
-        assert linux_command._measurement == 52.0  # second value
+        assert linux_command._measurement is None
+        assert not linux_command.read()
+        assert linux_command._measurement == 67.0
+        assert not linux_command.read()
+        assert linux_command._measurement == 52.0
 
 
 def test_linux_command_next_returns_dict():
     """ next returns dict(measurement=float) """
     with mock.patch('mycodo.inputs.linux_command.LinuxCommand.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [67, 52]
         linux_command = LinuxCommand(None, 'measurement', testing=True)
         assert linux_command.next() == dict(measurement=67.00)
 
@@ -59,33 +54,30 @@ def test_linux_command_next_returns_dict():
 def test_linux_command_condition_properties():
     """ verify measurement property """
     with mock.patch('mycodo.inputs.linux_command.LinuxCommand.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [67, 52]
         linux_command = LinuxCommand(None, 'measurement', testing=True)
-        assert linux_command._measurement is None  # initial value
-        assert linux_command.measurement == 67.00  # first reading with auto update
-        assert linux_command.measurement == 67.00  # same first reading, not updated yet
-        assert not linux_command.read()  # update (no errors)
-        assert linux_command.measurement == 52.00  # next reading
+        assert linux_command._measurement is None
+        assert linux_command.measurement == 67.00
+        assert linux_command.measurement == 67.00
+        assert not linux_command.read()
+        assert linux_command.measurement == 52.00
 
 
 def test_linux_command_special_method_str():
     """ expect a __str__ format """
     with mock.patch('mycodo.inputs.linux_command.LinuxCommand.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [0.0]  # first reading
+        mock_measure.side_effect = [0.0]
         linux_command = LinuxCommand(None, 'measurement', testing=True)
-        linux_command.read()  # updating the value
+        linux_command.read()
         assert "Measurement: 0.00" in str(linux_command)
 
 
 def test_linux_command_special_method_repr():
     """ expect a __repr__ format """
     with mock.patch('mycodo.inputs.linux_command.LinuxCommand.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [0.0]  # first reading
+        mock_measure.side_effect = [0.0]
         linux_command = LinuxCommand(None, 'measurement', testing=True)
-        linux_command.read()  # updating the value
+        linux_command.read()
         assert "<LinuxCommand(measurement=0.00)>" in repr(linux_command)
 
 
@@ -105,7 +97,6 @@ def test_linux_command_read_returns_1_on_exception():
 def test_linux_command_read_logs_unknown_errors():
     """ verify that IOErrors are logged """
     with LogCapture() as log_cap:
-        # force an Exception to be raised when get_measurement is called
         with mock.patch('mycodo.inputs.linux_command.LinuxCommand.get_measurement', side_effect=Exception('msg')):
             LinuxCommand(None, 'measurement', testing=True).read()
     expected_logs = ('mycodo.inputs.linux_command', 'ERROR', 'LinuxCommand raised an exception when taking a reading: msg')

@@ -18,7 +18,6 @@ def test_sht1x_7x_iterates_using_in():
                                     (25, 55, 3200),
                                     (27, 60, 3400),
                                     (30, 65, 3300)]
-
         sht1x_7x = SHT1x7xSensor(None, None, None, testing=True)
         expected_result_list = [dict(dewpoint=23.0, humidity=50.0, temperature=3000.0),
                                 dict(dewpoint=25.0, humidity=55.0, temperature=3200.0),
@@ -30,32 +29,29 @@ def test_sht1x_7x_iterates_using_in():
 def test_sht1x_7x__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
     with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200),
                                     (27, 60, 3400),
                                     (30, 65, 3300)]
         sht1x_7x = SHT1x7xSensor(None, None, None, testing=True)
-        # check __iter__ method return
         assert isinstance(sht1x_7x.__iter__(), Iterator)
 
 
 def test_sht1x_7x_read_updates_temp():
     """  Verify that SHT1x7xSensor(None, None, None, testing=True).read() gets the average temp """
     with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200)]
         sht1x_7x = SHT1x7xSensor(None, None, None, testing=True)
-        assert sht1x_7x._dew_point is None  # initial values
+        assert sht1x_7x._dew_point is None
         assert sht1x_7x._humidity is None
         assert sht1x_7x._temperature is None
-        assert not sht1x_7x.read()  # updating the value using our mock_measure side effect has no error
-        assert sht1x_7x._dew_point == 23.0  # first values
+        assert not sht1x_7x.read()
+        assert sht1x_7x._dew_point == 23.0
         assert sht1x_7x._humidity == 50.0
         assert sht1x_7x._temperature == 3000.0
-        assert not sht1x_7x.read()  # updating the value using our mock_measure side effect has no error
-        assert sht1x_7x._dew_point == 25.0  # second values
+        assert not sht1x_7x.read()
+        assert sht1x_7x._dew_point == 25.0
         assert sht1x_7x._humidity == 55.0
         assert sht1x_7x._temperature == 3200.0
 
@@ -63,7 +59,6 @@ def test_sht1x_7x_read_updates_temp():
 def test_sht1x_7x_next_returns_dict():
     """ next returns dict(altitude=float,pressure=int,temperature=float) """
     with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(23, 50, 3000)]
         sht1x_7x = SHT1x7xSensor(None, None, None, testing=True)
         assert sht1x_7x.next() == dict(dewpoint=23.0,
@@ -74,21 +69,20 @@ def test_sht1x_7x_next_returns_dict():
 def test_sht1x_7x_condition_properties():
     """ verify temperature property """
     with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200)]
         sht1x_7x = SHT1x7xSensor(None, None, None, testing=True)
         assert sht1x_7x._dew_point is None # initial values
         assert sht1x_7x._humidity is None
         assert sht1x_7x._temperature is None
-        assert sht1x_7x.dew_point == 23.0  # first reading with auto update
-        assert sht1x_7x.dew_point == 23.0  # same first reading, not updated yet
+        assert sht1x_7x.dew_point == 23.0
+        assert sht1x_7x.dew_point == 23.0
         assert sht1x_7x.humidity == 50.0
         assert sht1x_7x.humidity == 50.0
         assert sht1x_7x.temperature == 3000.0
         assert sht1x_7x.temperature == 3000.0
-        assert not sht1x_7x.read()  # update (no errors)
-        assert sht1x_7x.dew_point == 25.0  # next readings
+        assert not sht1x_7x.read()
+        assert sht1x_7x.dew_point == 25.0
         assert sht1x_7x.humidity == 55.0
         assert sht1x_7x.temperature == 3200.0
 
@@ -96,7 +90,7 @@ def test_sht1x_7x_condition_properties():
 def test_sht1x_7x_special_method_str():
     """ expect a __str__ format """
     with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement') as mock_measure:
-        mock_measure.side_effect = [(0, 0, 0)]  # first reading
+        mock_measure.side_effect = [(0, 0, 0)]
         sht1x_7x = SHT1x7xSensor(None, None, None, testing=True)
         sht1x_7x.read()
     assert "Dew Point: 0.00" in str(sht1x_7x)
@@ -107,7 +101,7 @@ def test_sht1x_7x_special_method_str():
 def test_sht1x_7x_special_method_repr():
     """ expect a __repr__ format """
     with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement') as mock_measure:
-        mock_measure.side_effect = [(0, 0, 0)]  # first reading
+        mock_measure.side_effect = [(0, 0, 0)]
         sht1x_7x = SHT1x7xSensor(None, None, None, testing=True)
         sht1x_7x.read()
         assert "<SHT1x7xSensor(dewpoint=0.00)(humidity=0.00)(temperature=0.00)>" in repr(sht1x_7x)
@@ -129,7 +123,6 @@ def test_sht1x_7x_read_returns_1_on_exception():
 def test_sht1x_7x_read_logs_unknown_errors():
     """ verify that IOErrors are logged """
     with LogCapture() as log_cap:
-        # force an Exception to be raised when get_measurement is called
         with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement',
                         side_effect=Exception('msg')):
             SHT1x7xSensor(None, None, None, testing=True).read()

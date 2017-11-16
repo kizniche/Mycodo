@@ -22,11 +22,13 @@ from flask_babel import gettext
 from flask.blueprints import Blueprint
 
 from mycodo.databases.models import AlembicVersion
+from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Misc
+from mycodo.databases.models import Remote
 from mycodo.databases.models import User
 
 from mycodo.mycodo_flask.forms import forms_authentication
-
+from mycodo.mycodo_flask.utils import utils_remote_host
 from mycodo.mycodo_flask.utils import utils_general
 
 from mycodo.utils.utils import test_username
@@ -35,6 +37,7 @@ from mycodo.utils.utils import test_password
 from mycodo.config import LOGIN_ATTEMPTS
 from mycodo.config import LOGIN_BAN_SECONDS
 from mycodo.config import LOGIN_LOG_FILE
+
 
 blueprint = Blueprint(
     'authentication_routes',
@@ -195,6 +198,63 @@ def logout():
 
     flash(gettext(u"Successfully logged out"), 'success')
     return response
+
+
+@blueprint.route('/remote/<page>', methods=('GET', 'POST'))
+@flask_login.login_required
+def remote_admin(page):
+    """Return pages for remote administration"""
+    if not utils_general.user_has_permission('edit_settings'):
+        return redirect(url_for('general_routes.home'))
+
+    remote_hosts = Remote.query.all()
+    display_order_unsplit = DisplayOrder.query.first().remote_host
+    if display_order_unsplit:
+        display_order = display_order_unsplit.split(",")
+    else:
+        display_order = []
+
+    if page == 'setup':
+        form_setup = forms_authentication.RemoteSetup()
+        host_auth = {}
+        for each_host in remote_hosts:
+            host_auth[each_host.host] = utils_remote_host.auth_credentials(
+                each_host.host, each_host.username, each_host.password_hash)
+
+        if request.method == 'POST':
+            form_name = request.form['form-name']
+            if form_name == 'setup':
+                if form_setup.add.data:
+                    utils_remote_host.remote_host_add(form_setup,
+                                                      display_order)
+            if form_name == 'mod_remote':
+                if form_setup.delete.data:
+                    utils_remote_host.remote_host_del(form_setup)
+            return redirect('/remote/setup')
+
+        return render_template('remote/setup.html',
+                               form_setup=form_setup,
+                               display_order=display_order,
+                               remote_hosts=remote_hosts,
+                               host_auth=host_auth)
+    else:
+        return render_template('404.html'), 404
+
+
+@blueprint.route('/auth/')
+def auth_remote():
+    """Checks authentication for remote admin"""
+    username = request.args.get('user')
+    password_hash = request.args.get('pw_hash')
+
+    user = User.query.filter(
+        User.name == username).first()
+
+    if (user and
+            user.roles.name == 'Admin' and
+            password_hash == user.password_hash):
+        return "0"
+    return "1"
 
 
 def admin_exists():

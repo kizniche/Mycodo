@@ -18,7 +18,6 @@ def test_raspi_cpuload_iterates_using_in():
                                     (25, 55, 3200),
                                     (27, 60, 3400),
                                     (30, 65, 3300)]
-
         raspi_cpuload = RaspberryPiCPULoad(testing=True)
         expected_result_list = [dict(cpu_load_1m=23.0, cpu_load_5m=50.0, cpu_load_15m=3000.0),
                                 dict(cpu_load_1m=25.0, cpu_load_5m=55.0, cpu_load_15m=3200.0),
@@ -30,32 +29,29 @@ def test_raspi_cpuload_iterates_using_in():
 def test_raspi_cpuload__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
     with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200),
                                     (27, 60, 3400),
                                     (30, 65, 3300)]
         raspi_cpuload = RaspberryPiCPULoad(testing=True)
-        # check __iter__ method return
         assert isinstance(raspi_cpuload.__iter__(), Iterator)
 
 
 def test_raspi_cpuload_read_updates_temp():
     """  Verify that RaspberryPiCPULoad(testing=True).read() gets the average temp """
     with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200)]
         raspi_cpuload = RaspberryPiCPULoad(testing=True)
-        assert raspi_cpuload._cpu_load_1m is None  # initial values
+        assert raspi_cpuload._cpu_load_1m is None
         assert raspi_cpuload._cpu_load_5m is None
         assert raspi_cpuload._cpu_load_15m is None
-        assert not raspi_cpuload.read()  # updating the value using our mock_measure side effect has no error
-        assert raspi_cpuload._cpu_load_1m == 23.0  # first values
+        assert not raspi_cpuload.read()
+        assert raspi_cpuload._cpu_load_1m == 23.0
         assert raspi_cpuload._cpu_load_5m == 50.0
         assert raspi_cpuload._cpu_load_15m == 3000.0
-        assert not raspi_cpuload.read()  # updating the value using our mock_measure side effect has no error
-        assert raspi_cpuload._cpu_load_1m == 25.0  # second values
+        assert not raspi_cpuload.read()
+        assert raspi_cpuload._cpu_load_1m == 25.0
         assert raspi_cpuload._cpu_load_5m == 55.0
         assert raspi_cpuload._cpu_load_15m == 3200.0
 
@@ -63,7 +59,6 @@ def test_raspi_cpuload_read_updates_temp():
 def test_raspi_cpuload_next_returns_dict():
     """ next returns dict(altitude=float,pressure=int,cpu_load_15m=float) """
     with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(23, 50, 3000)]
         raspi_cpuload = RaspberryPiCPULoad(testing=True)
         assert raspi_cpuload.next() == dict(cpu_load_1m=23.0,
@@ -74,21 +69,20 @@ def test_raspi_cpuload_next_returns_dict():
 def test_raspi_cpuload_condition_properties():
     """ verify cpu_load_15m property """
     with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200)]
         raspi_cpuload = RaspberryPiCPULoad(testing=True)
         assert raspi_cpuload._cpu_load_1m is None # initial values
         assert raspi_cpuload._cpu_load_5m is None
         assert raspi_cpuload._cpu_load_15m is None
-        assert raspi_cpuload.cpu_load_1m == 23.0  # first reading with auto update
-        assert raspi_cpuload.cpu_load_1m == 23.0  # same first reading, not updated yet
+        assert raspi_cpuload.cpu_load_1m == 23.0
+        assert raspi_cpuload.cpu_load_1m == 23.0
         assert raspi_cpuload.cpu_load_5m == 50.0
         assert raspi_cpuload.cpu_load_5m == 50.0
         assert raspi_cpuload.cpu_load_15m == 3000.0
         assert raspi_cpuload.cpu_load_15m == 3000.0
-        assert not raspi_cpuload.read()  # update (no errors)
-        assert raspi_cpuload.cpu_load_1m == 25.0  # next readings
+        assert not raspi_cpuload.read()
+        assert raspi_cpuload.cpu_load_1m == 25.0
         assert raspi_cpuload.cpu_load_5m == 55.0
         assert raspi_cpuload.cpu_load_15m == 3200.0
 
@@ -96,7 +90,7 @@ def test_raspi_cpuload_condition_properties():
 def test_raspi_cpuload_special_method_str():
     """ expect a __str__ format """
     with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement') as mock_measure:
-        mock_measure.side_effect = [(0, 0, 0)]  # first reading
+        mock_measure.side_effect = [(0, 0, 0)]
         raspi_cpuload = RaspberryPiCPULoad(testing=True)
         raspi_cpuload.read()
     assert "CPU Load (1m): 0.00" in str(raspi_cpuload)
@@ -107,7 +101,7 @@ def test_raspi_cpuload_special_method_str():
 def test_raspi_cpuload_special_method_repr():
     """ expect a __repr__ format """
     with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement') as mock_measure:
-        mock_measure.side_effect = [(0, 0, 0)]  # first reading
+        mock_measure.side_effect = [(0, 0, 0)]
         raspi_cpuload = RaspberryPiCPULoad(testing=True)
         raspi_cpuload.read()
         assert "<RaspberryPiCPULoad(cpu_load_1m=0.00)(cpu_load_5m=0.00)(cpu_load_15m=0.00)>" in repr(raspi_cpuload)
@@ -129,7 +123,6 @@ def test_raspi_cpuload_read_returns_1_on_exception():
 def test_raspi_cpuload_read_logs_unknown_errors():
     """ verify that IOErrors are logged """
     with LogCapture() as log_cap:
-        # force an Exception to be raised when get_measurement is called
         with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement',
                         side_effect=Exception('msg')):
             RaspberryPiCPULoad(testing=True).read()

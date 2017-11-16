@@ -18,6 +18,8 @@ from flask import url_for
 
 from flask_babel import Babel
 from flask_babel import gettext
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from flask_sslify import SSLify
 
 from werkzeug.contrib.profiler import ProfilerMiddleware
@@ -119,6 +121,10 @@ def register_extensions(app):
 
 def register_blueprints(_app):
     """ register blueprints to the app """
+    # Rate limit authentication blueprint requests to 10 per minute
+    limiter = Limiter(_app, key_func=get_remote_address)
+    limiter.limit("10/minute")(authentication_routes.blueprint)
+
     _app.register_blueprint(static_routes.blueprint)  # register static routes
     _app.register_blueprint(admin_routes.blueprint)  # register admin views
     _app.register_blueprint(authentication_routes.blueprint)  # register login/logout views

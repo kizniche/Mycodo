@@ -14,8 +14,7 @@ from mycodo.inputs.signal_rpm import SignalRPMInput
 def test_signal_rpm_iterates_using_in():
     """ Verify that a SignalRPMInput object can use the 'in' operator """
     with mock.patch('mycodo.inputs.signal_rpm.SignalRPMInput.get_measurement') as mock_measure:
-        mock_measure.side_effect = [67, 52, 37, 45]  # first reading, second reading
-
+        mock_measure.side_effect = [67, 52, 37, 45]
         signal_rpm = SignalRPMInput(None, None, None, None, testing=True)
         expected_result_list = [dict(rpm=67.00),
                                 dict(rpm=52.00),
@@ -27,32 +26,27 @@ def test_signal_rpm_iterates_using_in():
 def test_signal_rpm__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
     with mock.patch('mycodo.inputs.signal_rpm.SignalRPMInput.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [67, 52]
         signal_rpm = SignalRPMInput(None, None, None, None, testing=True)
-        # check __iter__ method return
         assert isinstance(signal_rpm.__iter__(), Iterator)
 
 
 def test_signal_rpm_read_updates_temp():
     """  Verify that SignalRPMInput(0x99, 1).read() gets the average temp """
     with mock.patch('mycodo.inputs.signal_rpm.SignalRPMInput.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [67, 52]
         signal_rpm = SignalRPMInput(None, None, None, None, testing=True)
-        # test our read() function
-        assert signal_rpm._rpm is None  # init value
-        assert not signal_rpm.read()  # updating the value using our mock_measure side effect has no error
-        assert signal_rpm._rpm == 67.0  # first value
-        assert not signal_rpm.read()  # updating the value using our mock_measure side effect has no error
-        assert signal_rpm._rpm == 52.0  # second value
+        assert signal_rpm._rpm is None
+        assert not signal_rpm.read()
+        assert signal_rpm._rpm == 67.0
+        assert not signal_rpm.read()
+        assert signal_rpm._rpm == 52.0
 
 
 def test_signal_rpm_next_returns_dict():
     """ next returns dict(rpm=float) """
     with mock.patch('mycodo.inputs.signal_rpm.SignalRPMInput.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [67, 52]
         signal_rpm = SignalRPMInput(None, None, None, None, testing=True)
         assert signal_rpm.next() == dict(rpm=67.00)
 
@@ -60,33 +54,30 @@ def test_signal_rpm_next_returns_dict():
 def test_signal_rpm_condition_properties():
     """ verify rpm property """
     with mock.patch('mycodo.inputs.signal_rpm.SignalRPMInput.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [67, 52]
         signal_rpm = SignalRPMInput(None, None, None, None, testing=True)
-        assert signal_rpm._rpm is None  # initial value
-        assert signal_rpm.rpm == 67.00  # first reading with auto update
-        assert signal_rpm.rpm == 67.00  # same first reading, not updated yet
-        assert not signal_rpm.read()  # update (no errors)
-        assert signal_rpm.rpm == 52.00  # next reading
+        assert signal_rpm._rpm is None
+        assert signal_rpm.rpm == 67.00
+        assert signal_rpm.rpm == 67.00
+        assert not signal_rpm.read()
+        assert signal_rpm.rpm == 52.00
 
 
 def test_signal_rpm_special_method_str():
     """ expect a __str__ format """
     with mock.patch('mycodo.inputs.signal_rpm.SignalRPMInput.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [0.0]  # first reading
+        mock_measure.side_effect = [0.0]
         signal_rpm = SignalRPMInput(None, None, None, None, testing=True)
-        signal_rpm.read()  # updating the value
+        signal_rpm.read()
         assert "RPM: 0.00" in str(signal_rpm)
 
 
 def test_signal_rpm_special_method_repr():
     """ expect a __repr__ format """
     with mock.patch('mycodo.inputs.signal_rpm.SignalRPMInput.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [0.0]  # first reading
+        mock_measure.side_effect = [0.0]
         signal_rpm = SignalRPMInput(None, None, None, None, testing=True)
-        signal_rpm.read()  # updating the value
+        signal_rpm.read()
         assert "<SignalRPMInput(rpm=0.00)>" in repr(signal_rpm)
 
 
@@ -106,7 +97,6 @@ def test_signal_rpm_read_returns_1_on_exception():
 def test_signal_rpm_read_logs_unknown_errors():
     """ verify that IOErrors are logged """
     with LogCapture() as log_cap:
-        # force an Exception to be raised when get_measurement is called
         with mock.patch('mycodo.inputs.signal_rpm.SignalRPMInput.get_measurement', side_effect=Exception('msg')):
             SignalRPMInput(None, None, None, None, testing=True).read()
     expected_logs = ('mycodo.inputs.signal_rpm', 'ERROR', 'SignalRPMInput raised an exception when taking a reading: msg')

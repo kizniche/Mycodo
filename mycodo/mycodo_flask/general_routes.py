@@ -19,23 +19,21 @@ from flask import flash
 from flask import jsonify
 from flask import make_response
 from flask import redirect
-from flask import render_template
+
 from flask import request
 from flask import send_from_directory
 from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 from flask_influxdb import InfluxDB
+from flask_limiter import Limiter
 
-from mycodo.mycodo_flask.forms import forms_authentication
+
 from mycodo.mycodo_flask.utils import utils_general
-from mycodo.mycodo_flask.utils import utils_remote_host
 from mycodo.mycodo_flask.utils.utils_general import gzipped
 
 from mycodo.databases.models import Camera
-from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Output
-from mycodo.databases.models import Remote
 from mycodo.databases.models import Input
 from mycodo.databases.models import User
 from mycodo.mycodo_client import DaemonControl
@@ -58,6 +56,8 @@ blueprint = Blueprint('general_routes',
 logger = logging.getLogger(__name__)
 influx_db = InfluxDB()
 
+limiter = Limiter()
+
 
 @blueprint.route('/')
 def home():
@@ -71,47 +71,6 @@ def home():
 @flask_login.login_required
 def page_settings():
     return redirect('settings/general')
-
-
-@blueprint.route('/remote/<page>', methods=('GET', 'POST'))
-@flask_login.login_required
-def remote_admin(page):
-    """Return pages for remote administration"""
-    if not utils_general.user_has_permission('edit_settings'):
-        return redirect(url_for('general_routes.home'))
-
-    remote_hosts = Remote.query.all()
-    display_order_unsplit = DisplayOrder.query.first().remote_host
-    if display_order_unsplit:
-        display_order = display_order_unsplit.split(",")
-    else:
-        display_order = []
-
-    if page == 'setup':
-        form_setup = forms_authentication.RemoteSetup()
-        host_auth = {}
-        for each_host in remote_hosts:
-            host_auth[each_host.host] = utils_remote_host.auth_credentials(
-                each_host.host, each_host.username, each_host.password_hash)
-
-        if request.method == 'POST':
-            form_name = request.form['form-name']
-            if form_name == 'setup':
-                if form_setup.add.data:
-                    utils_remote_host.remote_host_add(
-                        form_setup=form_setup, display_order=display_order)
-            if form_name == 'mod_remote':
-                if form_setup.delete.data:
-                    utils_remote_host.remote_host_del(form_setup=form_setup)
-            return redirect('/remote/setup')
-
-        return render_template('remote/setup.html',
-                               form_setup=form_setup,
-                               display_order=display_order,
-                               remote_hosts=remote_hosts,
-                               host_auth=host_auth)
-    else:
-        return render_template('404.html'), 404
 
 
 @blueprint.route('/camera/<camera_id>/<img_type>/<filename>')
@@ -488,21 +447,3 @@ def newremote():
                                hash=user.password_hash))
     return jsonify(status=1,
                    message="Unable to authenticate with user and password.")
-
-
-@blueprint.route('/auth/')
-def data():
-    """Checks authentication for remote admin"""
-    username = request.args.get('user')
-    password_hash = request.args.get('pw_hash')
-
-    user = User.query.filter(
-        User.name == username).first()
-
-    # TODO: Change sleep() to max requests per duration of time
-    time.sleep(1)  # Slow down requests (hackish, prevents brute force attack)
-    if (user and
-            user.roles.name == 'admin' and
-            password_hash == user.password_hash):
-        return "0"
-    return "1"

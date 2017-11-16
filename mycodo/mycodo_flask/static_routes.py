@@ -43,7 +43,7 @@ def inject_variables():
         control = DaemonControl()
         daemon_status = control.daemon_status()
     except Exception as e:
-        logger.error("URL for 'inject_mycodo_version' raised and error: "
+        logger.error("URL for 'inject_variables' raised and error: "
                      "{err}".format(err=e))
         daemon_status = '0'
 

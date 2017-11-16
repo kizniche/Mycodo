@@ -18,7 +18,6 @@ def test_bme_iterates_using_in():
                                     (52, 25, 55, 65, 3200),
                                     (37, 27, 60, 70, 3400),
                                     (45, 30, 65, 75, 3300)]
-
         bme = BME280Sensor(None, None, testing=True)
         expected_result_list = [dict(altitude=67.0, dewpoint=23.0, humidity=50.0, pressure=60, temperature=3000.0),
                                 dict(altitude=52.0, dewpoint=25.0, humidity=55.0, pressure=65, temperature=3200.0),
@@ -30,36 +29,33 @@ def test_bme_iterates_using_in():
 def test_bme__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
     with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(67, 23, 50, 60, 3000),
                                     (52, 25, 55, 65, 3200),
                                     (37, 27, 60, 70, 3400),
                                     (45, 30, 65, 75, 3300)]
         bme = BME280Sensor(None, None, testing=True)
-        # check __iter__ method return
         assert isinstance(bme.__iter__(), Iterator)
 
 
 def test_bme_read_updates_temp():
     """  Verify that BME280Sensor(None, None, testing=True).read() gets the average temp """
     with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(67, 23, 50, 60, 3000),
                                     (52, 25, 55, 65, 3200)]
         bme = BME280Sensor(None, None, testing=True)
-        assert bme._altitude is None  # initial values
+        assert bme._altitude is None
         assert bme._dew_point is None
         assert bme._humidity is None
         assert bme._pressure is None
         assert bme._temperature is None
-        assert not bme.read()  # updating the value using our mock_measure side effect has no error
-        assert bme._altitude == 67.0  # first values
+        assert not bme.read()
+        assert bme._altitude == 67.0
         assert bme._dew_point == 23.0
         assert bme._humidity == 50.0
         assert bme._pressure == 60
         assert bme._temperature == 3000.0
-        assert not bme.read()  # updating the value using our mock_measure side effect has no error
-        assert bme._altitude == 52.0  # second values
+        assert not bme.read()
+        assert bme._altitude == 52.0
         assert bme._dew_point == 25.0
         assert bme._humidity == 55.0
         assert bme._pressure == 65
@@ -69,7 +65,6 @@ def test_bme_read_updates_temp():
 def test_bme_next_returns_dict():
     """ next returns dict(altitude=float,pressure=int,temperature=float) """
     with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(67, 23, 50, 60, 3000)]
         bme = BME280Sensor(None, None, testing=True)
         assert bme.next() == dict(altitude=67.0,
@@ -82,17 +77,16 @@ def test_bme_next_returns_dict():
 def test_bme_condition_properties():
     """ verify temperature property """
     with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(67, 23, 50, 60, 3000),
                                     (52, 25, 55, 65, 3200)]
         bme = BME280Sensor(None, None, testing=True)
-        assert bme._altitude is None  # initial values
+        assert bme._altitude is None
         assert bme._dew_point is None
         assert bme._humidity is None
         assert bme._pressure is None
         assert bme._temperature is None
-        assert bme.altitude == 67.0  # first reading with auto update
-        assert bme.altitude == 67.0  # same first reading, not updated yet
+        assert bme.altitude == 67.0
+        assert bme.altitude == 67.0
         assert bme.dew_point == 23.0
         assert bme.dew_point == 23.0
         assert bme.humidity == 50.0
@@ -101,8 +95,8 @@ def test_bme_condition_properties():
         assert bme.pressure == 60
         assert bme.temperature == 3000.0
         assert bme.temperature == 3000.0
-        assert not bme.read()  # update (no errors)
-        assert bme.altitude == 52.0  # next readings
+        assert not bme.read()
+        assert bme.altitude == 52.0
         assert bme.dew_point == 25.0
         assert bme.humidity == 55.0
         assert bme.pressure == 65
@@ -112,7 +106,7 @@ def test_bme_condition_properties():
 def test_bme_special_method_str():
     """ expect a __str__ format """
     with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement') as mock_measure:
-        mock_measure.side_effect = [(0, 0, 0, 0, 0)]  # first reading
+        mock_measure.side_effect = [(0, 0, 0, 0, 0)]
         bme280 = BME280Sensor(None, None, testing=True)
         bme280.read()
     assert "Altitude: 0.00" in str(bme280)
@@ -125,7 +119,7 @@ def test_bme_special_method_str():
 def test_bme_special_method_repr():
     """ expect a __repr__ format """
     with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement') as mock_measure:
-        mock_measure.side_effect = [(0, 0, 0, 0, 0)]  # first reading
+        mock_measure.side_effect = [(0, 0, 0, 0, 0)]
         bme280 = BME280Sensor(None, None, testing=True)
         bme280.read()
         assert "<BME280Sensor(altitude=0.00)(dewpoint=0.00)(humidity=0.00)(pressure=0)(temperature=0.00)>" in repr(bme280)
@@ -147,7 +141,7 @@ def test_bme_read_returns_1_on_exception():
 def test_bme_read_logs_unknown_errors():
     """ verify that IOErrors are logged """
     with LogCapture() as log_cap:
-        # force an Exception to be raised when get_measurement is called
+
         with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement', side_effect=Exception('msg')):
             BME280Sensor(None, None, testing=True).read()
     expected_logs = ('mycodo.inputs.bme280', 'ERROR', 'BME280Sensor raised an exception when taking a reading: msg')

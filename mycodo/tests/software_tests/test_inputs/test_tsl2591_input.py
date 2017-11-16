@@ -14,7 +14,7 @@ from mycodo.inputs.tsl2591_sensor import TSL2591Sensor
 def test_tsl2591_sensor_iterates_using_in():
     """ Verify that a TSL2591Sensor object can use the 'in' operator """
     with mock.patch('mycodo.inputs.tsl2591_sensor.TSL2591Sensor.get_measurement') as mock_measure:
-        mock_measure.side_effect = [67, 52, 37, 45]  # first reading, second reading
+        mock_measure.side_effect = [67, 52, 37, 45]
 
         tsl2591_sensor = TSL2591Sensor(None, None, testing=True)
         expected_result_list = [dict(lux=67.00),
@@ -27,32 +27,29 @@ def test_tsl2591_sensor_iterates_using_in():
 def test_tsl2591_sensor__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
     with mock.patch('mycodo.inputs.tsl2591_sensor.TSL2591Sensor.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+
+        mock_measure.side_effect = [67, 52]
         tsl2591_sensor = TSL2591Sensor(None, None, testing=True)
-        # check __iter__ method return
+
         assert isinstance(tsl2591_sensor.__iter__(), Iterator)
 
 
 def test_tsl2591_sensor_read_updates_temp():
     """  Verify that TSL2591Sensor(0x99, 1).read() gets the average temp """
     with mock.patch('mycodo.inputs.tsl2591_sensor.TSL2591Sensor.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [67, 52]
         tsl2591_sensor = TSL2591Sensor(None, None, testing=True)
-        # test our read() function
-        assert tsl2591_sensor._lux is None  # init value
-        assert not tsl2591_sensor.read()  # updating the value using our mock_measure side effect has no error
-        assert tsl2591_sensor._lux == 67.0  # first value
-        assert not tsl2591_sensor.read()  # updating the value using our mock_measure side effect has no error
-        assert tsl2591_sensor._lux == 52.0  # second value
+        assert tsl2591_sensor._lux is None
+        assert not tsl2591_sensor.read()
+        assert tsl2591_sensor._lux == 67.0
+        assert not tsl2591_sensor.read()
+        assert tsl2591_sensor._lux == 52.0
 
 
 def test_tsl2591_sensor_next_returns_dict():
     """ next returns dict(lux=float) """
     with mock.patch('mycodo.inputs.tsl2591_sensor.TSL2591Sensor.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [67, 52]
         tsl2591_sensor = TSL2591Sensor(None, None, testing=True)
         assert tsl2591_sensor.next() == dict(lux=67.00)
 
@@ -60,33 +57,30 @@ def test_tsl2591_sensor_next_returns_dict():
 def test_tsl2591_sensor_condition_properties():
     """ verify lux property """
     with mock.patch('mycodo.inputs.tsl2591_sensor.TSL2591Sensor.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [67, 52]  # first reading, second reading
+        mock_measure.side_effect = [67, 52]
         tsl2591_sensor = TSL2591Sensor(None, None, testing=True)
-        assert tsl2591_sensor._lux is None  # initial value
-        assert tsl2591_sensor.lux == 67.00  # first reading with auto update
-        assert tsl2591_sensor.lux == 67.00  # same first reading, not updated yet
-        assert not tsl2591_sensor.read()  # update (no errors)
-        assert tsl2591_sensor.lux == 52.00  # next reading
+        assert tsl2591_sensor._lux is None
+        assert tsl2591_sensor.lux == 67.00
+        assert tsl2591_sensor.lux == 67.00
+        assert not tsl2591_sensor.read()
+        assert tsl2591_sensor.lux == 52.00
 
 
 def test_tsl2591_sensor_special_method_str():
     """ expect a __str__ format """
     with mock.patch('mycodo.inputs.tsl2591_sensor.TSL2591Sensor.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [0.0]  # first reading
+        mock_measure.side_effect = [0.0]
         tsl2591_sensor = TSL2591Sensor(None, None, testing=True)
-        tsl2591_sensor.read()  # updating the value
+        tsl2591_sensor.read()
         assert "Lux: 0.00" in str(tsl2591_sensor)
 
 
 def test_tsl2591_sensor_special_method_repr():
     """ expect a __repr__ format """
     with mock.patch('mycodo.inputs.tsl2591_sensor.TSL2591Sensor.get_measurement') as mock_measure:
-        # create our object
-        mock_measure.side_effect = [0.0]  # first reading
+        mock_measure.side_effect = [0.0]
         tsl2591_sensor = TSL2591Sensor(None, None, testing=True)
-        tsl2591_sensor.read()  # updating the value
+        tsl2591_sensor.read()
         assert "<TSL2591Sensor(lux=0.00)>" in repr(tsl2591_sensor)
 
 
@@ -106,7 +100,6 @@ def test_tsl2591_sensor_read_returns_1_on_exception():
 def test_tsl2591_sensor_read_logs_unknown_errors():
     """ verify that IOErrors are logged """
     with LogCapture() as log_cap:
-        # force an Exception to be raised when get_measurement is called
         with mock.patch('mycodo.inputs.tsl2591_sensor.TSL2591Sensor.get_measurement', side_effect=Exception('msg')):
             TSL2591Sensor(None, None, testing=True).read()
     expected_logs = ('mycodo.inputs.tsl2591_sensor', 'ERROR', 'TSL2591Sensor raised an exception when taking a reading: msg')

@@ -18,7 +18,6 @@ def test_htu21d_iterates_using_in():
                                     (25, 55, 3200),
                                     (27, 60, 3400),
                                     (30, 65, 3300)]
-
         htu21d = HTU21DSensor(None, testing=True)
         expected_result_list = [dict(dewpoint=23.0, humidity=50.0, temperature=3000.0),
                                 dict(dewpoint=25.0, humidity=55.0, temperature=3200.0),
@@ -30,32 +29,29 @@ def test_htu21d_iterates_using_in():
 def test_htu21d__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
     with mock.patch('mycodo.inputs.htu21d.HTU21DSensor.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200),
                                     (27, 60, 3400),
                                     (30, 65, 3300)]
         htu21d = HTU21DSensor(None, testing=True)
-        # check __iter__ method return
         assert isinstance(htu21d.__iter__(), Iterator)
 
 
 def test_htu21d_read_updates_temp():
     """  Verify that HTU21DSensor(None, testing=True).read() gets the average temp """
     with mock.patch('mycodo.inputs.htu21d.HTU21DSensor.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200)]
         htu21d = HTU21DSensor(None, testing=True)
-        assert htu21d._dew_point is None  # initial values
+        assert htu21d._dew_point is None
         assert htu21d._humidity is None
         assert htu21d._temperature is None
-        assert not htu21d.read()  # updating the value using our mock_measure side effect has no error
-        assert htu21d._dew_point == 23.0  # first values
+        assert not htu21d.read()
+        assert htu21d._dew_point == 23.0
         assert htu21d._humidity == 50.0
         assert htu21d._temperature == 3000.0
-        assert not htu21d.read()  # updating the value using our mock_measure side effect has no error
-        assert htu21d._dew_point == 25.0  # second values
+        assert not htu21d.read()
+        assert htu21d._dew_point == 25.0
         assert htu21d._humidity == 55.0
         assert htu21d._temperature == 3200.0
 
@@ -63,7 +59,6 @@ def test_htu21d_read_updates_temp():
 def test_htu21d_next_returns_dict():
     """ next returns dict(altitude=float,pressure=int,temperature=float) """
     with mock.patch('mycodo.inputs.htu21d.HTU21DSensor.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(23, 50, 3000)]
         htu21d = HTU21DSensor(None, testing=True)
         assert htu21d.next() == dict(dewpoint=23.0,
@@ -74,21 +69,20 @@ def test_htu21d_next_returns_dict():
 def test_htu21d_condition_properties():
     """ verify temperature property """
     with mock.patch('mycodo.inputs.htu21d.HTU21DSensor.get_measurement') as mock_measure:
-        # create our object
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200)]
         htu21d = HTU21DSensor(None, testing=True)
         assert htu21d._dew_point is None # initial values
         assert htu21d._humidity is None
         assert htu21d._temperature is None
-        assert htu21d.dew_point == 23.0  # first reading with auto update
-        assert htu21d.dew_point == 23.0  # same first reading, not updated yet
+        assert htu21d.dew_point == 23.0
+        assert htu21d.dew_point == 23.0
         assert htu21d.humidity == 50.0
         assert htu21d.humidity == 50.0
         assert htu21d.temperature == 3000.0
         assert htu21d.temperature == 3000.0
-        assert not htu21d.read()  # update (no errors)
-        assert htu21d.dew_point == 25.0  # next readings
+        assert not htu21d.read()
+        assert htu21d.dew_point == 25.0
         assert htu21d.humidity == 55.0
         assert htu21d.temperature == 3200.0
 
@@ -96,7 +90,7 @@ def test_htu21d_condition_properties():
 def test_htu21d_special_method_str():
     """ expect a __str__ format """
     with mock.patch('mycodo.inputs.htu21d.HTU21DSensor.get_measurement') as mock_measure:
-        mock_measure.side_effect = [(0, 0, 0)]  # first reading
+        mock_measure.side_effect = [(0, 0, 0)]
         htu21d = HTU21DSensor(None, testing=True)
         htu21d.read()
     assert "Dew Point: 0.00" in str(htu21d)
@@ -107,7 +101,7 @@ def test_htu21d_special_method_str():
 def test_htu21d_special_method_repr():
     """ expect a __repr__ format """
     with mock.patch('mycodo.inputs.htu21d.HTU21DSensor.get_measurement') as mock_measure:
-        mock_measure.side_effect = [(0, 0, 0)]  # first reading
+        mock_measure.side_effect = [(0, 0, 0)]
         htu21d = HTU21DSensor(None, testing=True)
         htu21d.read()
         assert "<HTU21DSensor(dewpoint=0.00)(humidity=0.00)(temperature=0.00)>" in repr(htu21d)
@@ -129,7 +123,6 @@ def test_htu21d_read_returns_1_on_exception():
 def test_htu21d_read_logs_unknown_errors():
     """ verify that IOErrors are logged """
     with LogCapture() as log_cap:
-        # force an Exception to be raised when get_measurement is called
         with mock.patch('mycodo.inputs.htu21d.HTU21DSensor.get_measurement',
                         side_effect=Exception('msg')):
             HTU21DSensor(None, testing=True).read()
