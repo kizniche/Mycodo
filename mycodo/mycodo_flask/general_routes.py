@@ -427,23 +427,3 @@ def computer_command(action):
         flash("System command '{cmd}' raised and error: "
               "{err}".format(cmd=action, err=e), "error")
         return redirect(url_for('general_routes.home'))
-
-
-@blueprint.route('/newremote/')
-def newremote():
-    """Verify authentication as a client computer to the remote admin"""
-    username = request.args.get('user')
-    pass_word = request.args.get('passw')
-
-    user = User.query.filter(
-        User.name == username).first()
-
-    # TODO: Change sleep() to max requests per duration of time
-    time.sleep(1)  # Slow down requests (hackish, prevent brute force attack)
-    if user:
-        if User().check_password(pass_word, user.password_hash) == user.password_hash:
-            return jsonify(status=0,
-                           message="{hash}".format(
-                               hash=user.password_hash))
-    return jsonify(status=1,
-                   message="Unable to authenticate with user and password.")

@@ -1,6 +1,6 @@
 # coding=utf-8
 """ flask views that deal with user authentication """
-
+import json
 import logging
 import socket
 import flask_login
@@ -50,7 +50,8 @@ def remote_input():
     else:
         display_order = []
 
-    import json
+    import urllib3
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     host_auth = {}
     host_inputs = {}
@@ -60,10 +61,10 @@ def remote_input():
             each_host.host, each_host.username, each_host.password_hash)
 
         # Return input information about each host
-        host_inputs[each_host.host] = utils_remote_host.remote_get_inputs(
-            each_host.host, each_host.username, each_host.password_hash)
-
-        host_inputs[each_host.host] = json.loads(host_inputs[each_host.host])
+        host_inputs[each_host.host] = json.loads(
+            utils_remote_host.remote_get_inputs(each_host.host,
+                                                each_host.username,
+                                                each_host.password_hash))
 
     return render_template('remote/input.html',
                            display_order=display_order,

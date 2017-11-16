@@ -11,6 +11,7 @@ from flask import redirect
 from flask import request
 from flask import render_template
 from flask import flash
+from flask import jsonify
 from flask import session
 from flask import url_for
 from flask import make_response
@@ -198,12 +199,46 @@ def logout():
     return response
 
 
+@blueprint.route('/newremote/')
+def newremote():
+    """Verify authentication as a client computer to the remote admin"""
+    username = request.args.get('user')
+    pass_word = request.args.get('passw')
+
+    user = User.query.filter(
+        User.name == username).first()
+
+    if user:
+        if User().check_password(pass_word, user.password_hash) == user.password_hash:
+            return jsonify(status=0,
+                           message="{hash}".format(
+                               hash=user.password_hash))
+    return jsonify(status=1,
+                   message="Unable to authenticate with user and password.")
+
+
 @blueprint.route('/auth/')
 def remote_auth():
     """Checks authentication for remote admin"""
     if is_user_pw_hash_authenticated(request):
         return "0"
     return "1"
+
+
+@blueprint.route('/remote_get_inputs/')
+def remote_get_inputs():
+    """Checks authentication for remote admin"""
+    if is_user_pw_hash_authenticated(request):
+        inputs = Input.query.all()
+        return_inputs = {}
+        for each_input in inputs:
+            return_inputs[each_input.id] = {}
+            return_inputs[each_input.id]['name'] = each_input.name
+            return_inputs[each_input.id]['device'] = each_input.device
+            return_inputs[each_input.id]['is_activated'] = each_input.is_activated
+
+        return jsonify(return_inputs)
+    return None
 
 
 def is_user_pw_hash_authenticated(received_request):
@@ -218,21 +253,6 @@ def is_user_pw_hash_authenticated(received_request):
             password_hash == user.password_hash):
         return True
     return False
-
-
-@blueprint.route('/remote_get_inputs/')
-def remote_get_inputs():
-    """Checks authentication for remote admin"""
-    if is_user_pw_hash_authenticated(request):
-        inputs = Input.query.all()
-        return_inputs = {}
-        for each_input in inputs:
-            return_inputs[each_input.id] = {}
-            return_inputs[each_input.id]['name'] = each_input.name
-            return_inputs[each_input.id]['name'] = each_input.device
-        from flask import jsonify
-        return jsonify(return_inputs)
-    return None
 
 
 def admin_exists():

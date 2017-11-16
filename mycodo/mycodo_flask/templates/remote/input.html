@@ -33,17 +33,25 @@
       {% endif %}
         </div>
       </div>
-      {% for each_input in host_inputs[each_host.host] %}
-      <div class="form-inline">
-        <div class="form-group">
-          Input ID: {{each_input}}
-        </div>
-        <div class="form-group">
-          Name: {{host_inputs[each_host.host][each_input]['name']}}
-        </div>
-      </div>
-      {% endfor %}
 
+      <div class="form-inline">
+      {% for each_input in host_inputs[each_host.host] %}
+        <div class="form-group" style="padding: 0.5em">
+          <div>
+            Input ID: {{each_input}}
+          </div>
+          <div>
+            Name: {{host_inputs[each_host.host][each_input]['name']}}
+          </div>
+          <div>
+            Device: {{host_inputs[each_host.host][each_input]['device']}}
+          </div>
+          <div>
+            Activated: {{host_inputs[each_host.host][each_input]['is_activated']}}
+          </div>
+        </div>
+      {% endfor %}
+      </div>
 
     {% endfor %}
 
