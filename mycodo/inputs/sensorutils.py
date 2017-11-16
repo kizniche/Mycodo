@@ -12,6 +12,10 @@ logger = logging.getLogger("mycodo.sensor_utils")
 
 def altitude(pressure_pa, sea_level_pa=101325.0):
     """Calculates the altitude in meters."""
+    if pressure_pa < 0:
+        logger.error("Erroneous Pressure to calculate altitude: "
+                     "{press} Pa".format(press=pressure_pa))
+        return None
     alt = 44330.0 * (1.0 - pow(pressure_pa / sea_level_pa, (1.0 / 5.255)))
     return alt
 

@@ -333,7 +333,7 @@ class LCDController(threading.Thread):
                         self.lcd_line[display_id][i]['time'].split(".")[0],
                         '%Y-%m-%dT%H:%M:%S')
                     utc_timestamp = calendar.timegm(utc_dt.timetuple())
-                    self.lcd_string_line[i] = str(
+                    self.lcd_string_line[display_id][i] = str(
                         datetime.datetime.fromtimestamp(utc_timestamp))
                 elif measurement:
                     value_length = len(str(
@@ -341,7 +341,7 @@ class LCDController(threading.Thread):
                     unit_length = len(self.list_inputs[measurement]['unit'].replace(u'°', u''))
                     name_length = number_characters - value_length - unit_length - 2
                     name_cropped = self.lcd_line[display_id][i]['name'].ljust(name_length)[:name_length]
-                    self.lcd_string_line[i] = u'{name} {value} {unit}'.format(
+                    self.lcd_string_line[display_id][i] = u'{name} {value} {unit}'.format(
                         name=name_cropped,
                         value=self.lcd_line[display_id][i]['measurement_value'],
                         unit=self.list_inputs[measurement]['unit'].replace(u'°', u''))
@@ -350,7 +350,7 @@ class LCDController(threading.Thread):
                         self.lcd_line[display_id][i]['measurement_value']))
                     name_length = number_characters - value_length - 1
                     name_cropped = self.lcd_line[display_id][i]['name'][:name_length]
-                    self.lcd_string_line[i] = u'{name} {value}'.format(
+                    self.lcd_string_line[display_id][i] = u'{name} {value}'.format(
                         name=name_cropped,
                         value=self.lcd_line[display_id][i]['measurement_value'])
             else:
@@ -376,8 +376,9 @@ class LCDController(threading.Thread):
                         add=self.multiplexer_address_string,
                         err=mult_response))
         self.lcd_init()
+        display_id = self.display_ids[self.display_count]
         for i in range(1, self.lcd_y_lines + 1):
-            self.lcd_string_write(self.lcd_string_line[i], self.LCD_LINE[i])
+            self.lcd_string_write(self.lcd_string_line[display_id][i], self.LCD_LINE[i])
 
     @staticmethod
     def output_state(output_id):

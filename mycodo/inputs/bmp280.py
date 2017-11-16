@@ -144,8 +144,12 @@ class BMP280Sensor(AbstractInput):
         :returns: None on success or 1 on error
         """
         try:
-            self._temperature, self._pressure, self._altitude = self.get_measurement()
-            if self._temperature is not None:
+            (self._temperature,
+             self._pressure,
+             self._altitude) = self.get_measurement()
+            if None not in [self._temperature,
+                            self._pressure,
+                            self._altitude]:
                 return  # success - no errors
         except Exception as e:
             logger.exception(
