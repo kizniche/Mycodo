@@ -208,13 +208,22 @@ def newremote():
     user = User.query.filter(
         User.name == username).first()
 
+    try:
+        with open('/var/www/mycodo/mycodo/mycodo_flask/ssl_certs/cert.pem', 'r') as cert:
+            certificate_data = cert.read()
+    except Exception:
+        certificate_data = None
+
     if user:
-        if User().check_password(pass_word, user.password_hash) == user.password_hash:
+        if User().check_password(
+                pass_word, user.password_hash) == user.password_hash:
             return jsonify(status=0,
                            message="{hash}".format(
-                               hash=user.password_hash))
+                               hash=user.password_hash),
+                           certificate=certificate_data)
     return jsonify(status=1,
-                   message="Unable to authenticate with user and password.")
+                   message="Unable to authenticate with user and password.",
+                   certificate=None)
 
 
 @blueprint.route('/auth/')

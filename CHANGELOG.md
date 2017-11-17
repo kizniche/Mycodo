@@ -15,6 +15,7 @@
 ### Miscellaneous
 
  - Rename objects (warning: this may break some things. I tried to be thorough with testing)
+ - Switch from using init.d to systemd for controlling apache2
 
 
 ## 5.4.0 (2017-11-12)

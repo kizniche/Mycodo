@@ -21,6 +21,8 @@ from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 
+from mycodo.config import STORED_SSL_CERTIFICATE_PATH
+
 logger = logging.getLogger(__name__)
 
 
@@ -34,8 +36,22 @@ def auth_credentials(address, user, password_hash):
         'user': user,
         'pw_hash': password_hash
     }
-    url = 'https://{add}/auth/'.format(add=address)
+    url = 'https://{add}/auth/'.format(
+        add=address, hash=password_hash, user=user)
+    certificate = '{path}/{file}'.format(path=STORED_SSL_CERTIFICATE_PATH,
+                                         file='{add}_cert.pem'.format(
+                                            add=address))
     try:
+        # import urllib3
+        # url_test = 'https://{add}/auth/?pw_hash={hash}&user={user}'.format(
+        #     add=address, hash=password_hash, user=user)
+        # http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED',
+        #                            ca_certs=certificate,
+        #                            assert_hostname=False)
+        # r = http.request('GET', url_test)
+        # logger.error("STATUS:", r.text)
+        # logger.error("Certificate verification NO HOSTNAME successful")
+
         r = requests.get(url, params=credentials, verify=False)
         return int(r.text)
     except Exception as e:
@@ -45,6 +61,14 @@ def auth_credentials(address, user, password_hash):
 
 
 def check_new_credentials(address, user, passw):
+    """
+    Authenticate a remote Mycodo install that will be used in this system's
+    Remote Admin dashboard.
+    The user name and password is sent, and if verified, the password hash
+    and SSL certificate is sent back.
+    The hash is used to authenticate and the certificate is used to perform
+    a verified SSL in subsequent connections.
+    """
     credentials = {
         'user': user,
         'passw': passw
@@ -56,7 +80,8 @@ def check_new_credentials(address, user, passw):
     except Exception as msg:
         return {
             'status': 1,
-            'message': "Error connecting to host: {err}".format(err=msg)
+            'message': "Error connecting to host: {err}".format(err=msg),
+            'certificate': None
         }
 
 
@@ -87,6 +112,18 @@ def remote_host_add(form_setup, display_order):
             if pw_check['status']:
                 flash(pw_check['message'], "error")
                 return 1
+
+            # Write remote certificate to file
+            public_key = '{path}/{file}'.format(path=STORED_SSL_CERTIFICATE_PATH,
+                                                file='{add}_cert.pem'.format(
+                                                    add=form_setup.host.data))
+
+            flash(pw_check['certificate'], "error")
+
+            file_handler = open(public_key, 'w')
+            file_handler.write(pw_check['certificate'])
+            file_handler.close()
+
             new_remote_host = Remote()
             new_remote_host.host = form_setup.host.data
             new_remote_host.username = form_setup.username.data

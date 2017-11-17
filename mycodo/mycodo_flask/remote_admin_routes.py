@@ -88,10 +88,6 @@ def remote_setup():
         display_order = []
 
     form_setup = forms_authentication.RemoteSetup()
-    host_auth = {}
-    for each_host in remote_hosts:
-        host_auth[each_host.host] = utils_remote_host.auth_credentials(
-            each_host.host, each_host.username, each_host.password_hash)
 
     if request.method == 'POST':
         if form_setup.add.data:
@@ -100,6 +96,11 @@ def remote_setup():
         elif form_setup.delete.data:
             utils_remote_host.remote_host_del(form_setup)
         return redirect('/remote/setup')
+
+    host_auth = {}
+    for each_host in remote_hosts:
+        host_auth[each_host.host] = utils_remote_host.auth_credentials(
+            each_host.host, each_host.username, each_host.password_hash)
 
     return render_template('remote/setup.html',
                            form_setup=form_setup,

@@ -103,7 +103,8 @@ case "${1:-''}" in
     ;;
     'restart-web-ui')
         printf "\n#### Restarting the Mycodo web server\n"
-        /etc/init.d/apache2 restart
+        service apache2 restart
+        sleep 5
 
         printf "\n#### Creating Mycodo database if it doesn't exist\n"
         # Attempt to connect to localhost 5 times, sleeping 60 seconds every fail

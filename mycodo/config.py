@@ -261,10 +261,14 @@ UPGRADE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupgrade.log')
 RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
 HTTP_LOG_FILE = '/var/log/apache2/error.log'
 
+# Lock files
 LOCK_PATH = '/var/lock'
 ATLAS_PH_LOCK_FILE = os.path.join(LOCK_PATH, 'sensor-atlas-ph.pid')
 DAEMON_PID_FILE = os.path.join(LOCK_PATH, 'mycodo.pid')
 LOCK_FILE_STREAM = os.path.join(LOCK_PATH, 'mycodo-camera-stream.pid')
+
+# Remote admin
+STORED_SSL_CERTIFICATE_PATH = os.path.join('/home/kiz/Mycodo/mycodo/mycodo_flask/ssl_certs/remote_admin')
 
 # Camera
 CAMERA_LIBRARIES = [
