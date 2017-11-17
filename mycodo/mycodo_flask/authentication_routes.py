@@ -157,7 +157,7 @@ def do_login():
                 login_log(username, 'NA', user_ip, 'NOUSER')
                 failed_login()
 
-            if (request.form['password_hash'] and
+            if (request.form.get('password_hash', None) and
                     user.password_hash == request.form['password_hash']):
                 # flask-login user
                 login_user = User()
@@ -165,7 +165,7 @@ def do_login():
                 flask_login.login_user(login_user, remember=False)
                 return "Logged in via Remote Admin"
 
-            if form_login.validate_on_submit():
+            elif form_login.validate_on_submit():
                 if User().check_password(
                         form_login.password.data,
                         user.password_hash) == user.password_hash:
