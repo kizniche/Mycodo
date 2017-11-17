@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import logging
 import requests
 import sqlalchemy
@@ -28,93 +29,80 @@ logger = logging.getLogger(__name__)
 
 
 #
-# Authenticate remote hosts
+# Remote host commands executed on Mycodo with Remote Admin Dashboard
 #
 
 
-def auth_credentials(address, user, password_hash):
+def remote_host_auth_page(address, user, password_hash, page):
+    """
+    Make request, receive response, and authenticate a remote Mycodo
+    connection. This checks if the HTTPS certificate matches the stored
+    certificate and the user and password hash matches
+
+    :param address: host name or IP address of remote Mycodo
+    :param user: User name of an admin on the remote Mycodo
+    :param password_hash: Hash of admin user's password
+    :param page: The page to return information from
+    :return: (1, None) for error, (0, json_data) on success
+    """
     try:
         ssl_cert_file = '{path}/{file}'.format(path=STORED_SSL_CERTIFICATE_PATH,
                                                file='{add}_cert.pem'.format(
                                                     add=address))
-        url_test = 'https://{add}/auth/?pw_hash={hash}&user={user}'.format(
-            add=address, hash=password_hash, user=user)
+        url = 'https://{add}/{page}/?pw_hash={hash}&user={user}'.format(
+            add=address, page=page, hash=password_hash, user=user)
 
-        # Require all certificate data matches, except hostname
+        # Require all certificate data matches stored certificate, except hostname
         http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED',
                                    ca_certs=ssl_cert_file,
                                    assert_hostname=False)
 
-        r = http.request('GET', url_test)
-        logger.error("STATUS: {}".format(r.data))
-        logger.error("Certificate verification NO HOSTNAME successful")
-        return int(r.data)
+        r = http.request('GET', url)
+        return 0, json.loads(r.data)
     except Exception as e:
         logger.exception(
-            "'auth_credentials' raised an exception: {err}".format(err=e))
-        return 1
+            "'remote_host_auth_page' raised an exception: {err}".format(err=e))
+        return 1, None
 
 
-def check_new_credentials(address, user, passw):
+def remote_host_add(form_setup, display_order):
     """
-    Authenticate a remote Mycodo install that will be used in this system's
+    Add a remote Mycodo to the Remote Admin Dashboard
+
+    Authenticate a remote Mycodo install that will be used on this system's
     Remote Admin dashboard.
     The user name and password is sent, and if verified, the password hash
     and SSL certificate is sent back.
     The hash is used to authenticate and the certificate is used to perform
-    a verified SSL in subsequent connections.
+    a verified SSL, in all subsequent connections.
     """
-    credentials = {
-        'user': user,
-        'passw': passw
-    }
-    url = 'https://{}/newremote/'.format(address)
-    try:
-        r = requests.get(url, params=credentials, verify=False)
-        return r.json()
-    except Exception as msg:
-        return {
-            'status': 1,
-            'message': "Error connecting to host: {err}".format(err=msg),
-            'certificate': None
-        }
-
-
-def remote_get_inputs(address, user, password_hash):
-    credentials = {
-        'user': user,
-        'pw_hash': password_hash
-    }
-    url = 'https://{add}/remote_get_inputs/'.format(add=address)
-    try:
-        r = requests.get(url, params=credentials, verify=False)
-        return r.text
-    except Exception as e:
-        logger.exception(
-            "'remote_get_inputs' raised an exception: {err}".format(err=e))
-        return 1
-
-
-def remote_host_add(form_setup, display_order):
     if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 
     if form_setup.validate():
         try:
-            pw_check = check_new_credentials(form_setup.host.data,
-                                             form_setup.username.data,
-                                             form_setup.password.data)
-            if pw_check['status']:
-                flash(pw_check['message'], "error")
+            # Send user and password to remote Mycodo to authenticate
+            credentials = {
+                'user': form_setup.username.data,
+                'passw': form_setup.password.data
+            }
+            url = 'https://{}/newremote/'.format(form_setup.host.data)
+            try:
+                pw_check = requests.get(url, params=credentials, verify=False).json()
+            except Exception:
+                return 1
+
+            if 'status' not in pw_check:
+                flash("Unknown response: {res}".format(res=pw_check), "error")
+                return 1
+            elif pw_check['status']:
+                flash(pw_check['error_msg'], "error")
                 return 1
 
             # Write remote certificate to file
             public_key = '{path}/{file}'.format(path=STORED_SSL_CERTIFICATE_PATH,
                                                 file='{add}_cert.pem'.format(
                                                     add=form_setup.host.data))
-
-            flash(pw_check['certificate'], "error")
-
             file_handler = open(public_key, 'w')
             file_handler.write(pw_check['certificate'])
             file_handler.close()
@@ -122,7 +110,7 @@ def remote_host_add(form_setup, display_order):
             new_remote_host = Remote()
             new_remote_host.host = form_setup.host.data
             new_remote_host.username = form_setup.username.data
-            new_remote_host.password_hash = pw_check['message']
+            new_remote_host.password_hash = pw_check['hash']
             try:
                 db.session.add(new_remote_host)
                 db.session.commit()
@@ -150,6 +138,7 @@ def remote_host_add(form_setup, display_order):
 
 
 def remote_host_del(form_setup):
+    """Delete a remote Mycodo from the Remote Admin Dashboard"""
     if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('general_routes.home'))
 

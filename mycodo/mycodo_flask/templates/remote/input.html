@@ -35,7 +35,8 @@
       </div>
 
       <div class="form-inline">
-      {% for each_input in host_inputs[each_host.host] %}
+      {% if host_inputs[each_host.host] %}
+        {% for each_input in host_inputs[each_host.host] %}
         <div class="form-group" style="padding: 0.5em">
           <div>
             Input ID: {{each_input}}
@@ -50,7 +51,10 @@
             Activated: {{host_inputs[each_host.host][each_input]['is_activated']}}
           </div>
         </div>
-      {% endfor %}
+        {% endfor %}
+      {% else %}
+        Error: No Data to Display (maybe too many requests too fast)
+      {% endif %}
       </div>
 
     {% endfor %}

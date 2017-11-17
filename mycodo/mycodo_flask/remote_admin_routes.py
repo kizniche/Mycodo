@@ -1,6 +1,5 @@
 # coding=utf-8
 """ flask views that deal with user authentication """
-import json
 import logging
 import socket
 import flask_login
@@ -50,21 +49,22 @@ def remote_input():
     else:
         display_order = []
 
-    import urllib3
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
     host_auth = {}
     host_inputs = {}
     for each_host in remote_hosts:
         # Return whether a hosts were authenticated
-        host_auth[each_host.host] = utils_remote_host.auth_credentials(
-            each_host.host, each_host.username, each_host.password_hash)
+        status, host_auth[each_host.host] = utils_remote_host.remote_host_auth_page(
+            each_host.host,
+            each_host.username,
+            each_host.password_hash,
+            'auth')
 
         # Return input information about each host
-        host_inputs[each_host.host] = json.loads(
-            utils_remote_host.remote_get_inputs(each_host.host,
-                                                each_host.username,
-                                                each_host.password_hash))
+        status, host_inputs[each_host.host] = utils_remote_host.remote_host_auth_page(
+            each_host.host,
+            each_host.username,
+            each_host.password_hash,
+            'remote_get_inputs')
 
     return render_template('remote/input.html',
                            display_order=display_order,
@@ -99,8 +99,11 @@ def remote_setup():
 
     host_auth = {}
     for each_host in remote_hosts:
-        host_auth[each_host.host] = utils_remote_host.auth_credentials(
-            each_host.host, each_host.username, each_host.password_hash)
+        status, host_auth[each_host.host] = utils_remote_host.remote_host_auth_page(
+            each_host.host,
+            each_host.username,
+            each_host.password_hash,
+            'auth')
 
     return render_template('remote/setup.html',
                            form_setup=form_setup,
