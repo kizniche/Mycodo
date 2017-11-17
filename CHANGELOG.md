@@ -7,6 +7,7 @@
  - Refactor and add tests for all inputs ([#128](https://github.com/kizniche/mycodo/issues/128))
  - Add Flask-Limiter to limit authentication requests to 10 per minute (mainly for Remote Admin feature)
  - Add first working iteration of data acquisition to the Remote Admin dashboard
+ - Add SSL certificate authentication with Remote Admin communication
 
 ### Bugfixes
 

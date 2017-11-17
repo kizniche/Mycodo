@@ -2,6 +2,7 @@
 import logging
 import requests
 import sqlalchemy
+import urllib3
 
 from flask import flash
 from flask import redirect
@@ -32,28 +33,22 @@ logger = logging.getLogger(__name__)
 
 
 def auth_credentials(address, user, password_hash):
-    credentials = {
-        'user': user,
-        'pw_hash': password_hash
-    }
-    url = 'https://{add}/auth/'.format(
-        add=address, hash=password_hash, user=user)
-    certificate = '{path}/{file}'.format(path=STORED_SSL_CERTIFICATE_PATH,
-                                         file='{add}_cert.pem'.format(
-                                            add=address))
     try:
-        # import urllib3
-        # url_test = 'https://{add}/auth/?pw_hash={hash}&user={user}'.format(
-        #     add=address, hash=password_hash, user=user)
-        # http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED',
-        #                            ca_certs=certificate,
-        #                            assert_hostname=False)
-        # r = http.request('GET', url_test)
-        # logger.error("STATUS:", r.text)
-        # logger.error("Certificate verification NO HOSTNAME successful")
+        ssl_cert_file = '{path}/{file}'.format(path=STORED_SSL_CERTIFICATE_PATH,
+                                               file='{add}_cert.pem'.format(
+                                                    add=address))
+        url_test = 'https://{add}/auth/?pw_hash={hash}&user={user}'.format(
+            add=address, hash=password_hash, user=user)
 
-        r = requests.get(url, params=credentials, verify=False)
-        return int(r.text)
+        # Require all certificate data matches, except hostname
+        http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED',
+                                   ca_certs=ssl_cert_file,
+                                   assert_hostname=False)
+
+        r = http.request('GET', url_test)
+        logger.error("STATUS: {}".format(r.data))
+        logger.error("Certificate verification NO HOSTNAME successful")
+        return int(r.data)
     except Exception as e:
         logger.exception(
             "'auth_credentials' raised an exception: {err}".format(err=e))
