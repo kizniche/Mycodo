@@ -150,13 +150,23 @@ def do_login():
         if request.method == 'POST':
             username = form_login.username.data.lower()
             user_ip = request.environ.get('REMOTE_ADDR', 'unknown address')
+            user = User.query.filter(
+                func.lower(User.name) == username).first()
+
+            if not user:
+                login_log(username, 'NA', user_ip, 'NOUSER')
+                failed_login()
+
+            if (request.form['password_hash'] and
+                    user.password_hash == request.form['password_hash']):
+                # flask-login user
+                login_user = User()
+                login_user.id = user.id
+                flask_login.login_user(login_user, remember=False)
+                return "Logged in via Remote Admin"
+
             if form_login.validate_on_submit():
-                user = User.query.filter(
-                    func.lower(User.name) == username).first()
-                if not user:
-                    login_log(username, 'NA', user_ip, 'NOUSER')
-                    failed_login()
-                elif User().check_password(
+                if User().check_password(
                         form_login.password.data,
                         user.password_hash) == user.password_hash:
 
@@ -228,41 +238,25 @@ def newremote():
 
 
 @blueprint.route('/auth/')
+@flask_login.login_required
 def remote_auth():
     """Checks authentication for remote admin"""
-    if is_user_pw_hash_authenticated(request):
-        return "0"
-    return "1"
+    return "0"
 
 
 @blueprint.route('/remote_get_inputs/')
+@flask_login.login_required
 def remote_get_inputs():
     """Checks authentication for remote admin"""
-    if is_user_pw_hash_authenticated(request):
-        inputs = Input.query.all()
-        return_inputs = {}
-        for each_input in inputs:
-            return_inputs[each_input.id] = {}
-            return_inputs[each_input.id]['name'] = each_input.name
-            return_inputs[each_input.id]['device'] = each_input.device
-            return_inputs[each_input.id]['is_activated'] = each_input.is_activated
+    inputs = Input.query.all()
+    return_inputs = {}
+    for each_input in inputs:
+        return_inputs[each_input.id] = {}
+        return_inputs[each_input.id]['name'] = each_input.name
+        return_inputs[each_input.id]['device'] = each_input.device
+        return_inputs[each_input.id]['is_activated'] = each_input.is_activated
 
-        return jsonify(return_inputs)
-    return None
-
-
-def is_user_pw_hash_authenticated(received_request):
-    username = received_request.args.get('user')
-    password_hash = received_request.args.get('pw_hash')
-
-    user = User.query.filter(
-        User.name == username).first()
-
-    if (user and
-            user.roles.name == 'Admin' and
-            password_hash == user.password_hash):
-        return True
-    return False
+    return jsonify(return_inputs)
 
 
 def admin_exists():

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-import json
 import logging
 import requests
 import sqlalchemy
 import urllib3
+
+from bs4 import BeautifulSoup
 
 from flask import flash
 from flask import redirect
@@ -46,19 +47,40 @@ def remote_host_auth_page(address, user, password_hash, page):
     :return: (1, None) for error, (0, json_data) on success
     """
     try:
+        # Require all certificate data matches stored certificate, except hostname
         ssl_cert_file = '{path}/{file}'.format(path=STORED_SSL_CERTIFICATE_PATH,
                                                file='{add}_cert.pem'.format(
-                                                    add=address))
-        url = 'https://{add}/{page}/?pw_hash={hash}&user={user}'.format(
-            add=address, page=page, hash=password_hash, user=user)
-
-        # Require all certificate data matches stored certificate, except hostname
+                                                   add=address))
         http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED',
                                    ca_certs=ssl_cert_file,
                                    assert_hostname=False)
 
-        r = http.request('GET', url)
-        return 0, json.loads(r.data)
+        # Get the login page
+        get_csrf_url = 'https://{add}/login'.format(add=address)
+        pre_login_page = http.request('GET', get_csrf_url)
+
+        # Parse login page to retrieve the csrf token of the login form
+        soup = BeautifulSoup(pre_login_page.data, 'html.parser')
+        csrf_token = ''
+        for n in soup.findAll('input'):
+            if n.get('id') == 'csrf_token':
+                csrf_token = n.get('value')
+
+        # Perform the login with the csrf token, user name, and stored password hash
+        login_url = 'https://{add}/login'.format(add=address)
+        login_page = http.request('POST', login_url,
+                                  fields={"csrf_token": csrf_token,
+                                          "username": user,
+                                          "password_hash": password_hash})
+
+        # Use cookie set by the login page to verify our session and keep us logged in
+        headers = {'cookie': login_page.getheader('set-cookie')}
+
+        # Test getting a page requiring to be logged in
+        logged_in_url = 'https://{add}/{page}/'.format(add=address, page=page)
+        logged_in_page = http.request('GET', logged_in_url, headers=headers)
+
+        return 0, logged_in_page.data
     except Exception as e:
         logger.exception(
             "'remote_host_auth_page' raised an exception: {err}".format(err=e))

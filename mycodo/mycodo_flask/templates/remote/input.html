@@ -26,7 +26,7 @@
           {{each_host.host}}
         </div>
         <div class="form-group">
-      {% if not host_auth[each_host.host] %}
+      {% if host_inputs[each_host.host] %}
           <img src="/static/img/on.png" style="width: 30px">
       {% else %}
           <img src="/static/img/off.png" style="width: 30px">
@@ -36,6 +36,7 @@
 
       <div class="form-inline">
       {% if host_inputs[each_host.host] %}
+
         {% for each_input in host_inputs[each_host.host] %}
         <div class="form-group" style="padding: 0.5em">
           <div>
@@ -52,6 +53,7 @@
           </div>
         </div>
         {% endfor %}
+
       {% else %}
         Error: No Data to Display (maybe too many requests too fast)
       {% endif %}
