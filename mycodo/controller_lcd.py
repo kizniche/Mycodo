@@ -224,7 +224,7 @@ class LCDController(threading.Thread):
                                     display_id,
                                     i)
                             else:
-                                self.lcd_string_line[display_id][i] = 'ID NOT FOUND'
+                                self.lcd_string_line[display_id][i] = u'ID NOT FOUND'
                         # Output lines to the LCD
                         self.output_lcds()
                     except KeyError:
@@ -354,7 +354,7 @@ class LCDController(threading.Thread):
                         name=name_cropped,
                         value=self.lcd_line[display_id][i]['measurement_value'])
             else:
-                self.lcd_string_line[display_id][i] = 'ERROR: NO DATA'
+                self.lcd_string_line[display_id][i] = u'ERROR: NO DATA'
         except Exception as except_msg:
             self.logger.exception("Error: {err}".format(err=except_msg))
 
