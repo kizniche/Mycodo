@@ -492,14 +492,10 @@ class OutputController(threading.Thread):
         conditionals = conditionals.filter(
             Conditional.is_activated == True)
 
-        self.logger.error("TEST01: {} {}".format(conditionals.all(), on_duration))
-
         if self.is_on(output_id):
             conditionals = conditionals.filter(
                 or_(Conditional.if_relay_state == 'on',
                     Conditional.if_relay_state == 'on_any'))
-
-            self.logger.error("TEST02: {} {}".format(conditionals.all(), on_duration))
 
             on_with_duration = and_(
                 Conditional.if_relay_state == 'on',
@@ -508,15 +504,11 @@ class OutputController(threading.Thread):
                 or_(Conditional.if_relay_state == 'on_any',
                     on_with_duration))
 
-            self.logger.error("TEST03: {} {}".format(conditionals.all(), on_duration))
-
         else:
             conditionals = conditionals.filter(
                 Conditional.if_relay_state == 'off')
 
         for each_conditional in conditionals.all():
-            self.logger.error("TEST04: {} {}".format(each_conditional.if_relay_duration, on_duration))
-
             conditional_actions = db_retrieve_table_daemon(ConditionalActions)
             conditional_actions = conditional_actions.filter(
                 ConditionalActions.conditional_id == each_conditional.id).all()
@@ -613,7 +605,7 @@ class OutputController(threading.Thread):
                 elif each_cond_action.do_action == 'video':
                     self.logger.error("Video action not currently implemented")
 
-                self.logger.info(u"{}".format(message))
+                self.logger.debug(u"{}".format(message))
 
     def all_outputs_initialize(self, outputs):
         for each_output in outputs:
