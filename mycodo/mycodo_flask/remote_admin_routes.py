@@ -18,7 +18,8 @@ from mycodo.databases.models import Remote
 from mycodo.mycodo_flask.forms import forms_authentication
 from mycodo.mycodo_flask.utils import utils_remote_host
 from mycodo.mycodo_flask.utils import utils_general
-
+from mycodo.mycodo_flask.utils.utils_remote_host import remote_log_in
+from mycodo.mycodo_flask.utils.utils_remote_host import remote_host_page
 
 blueprint = Blueprint(
     'remote_admin_routes',
@@ -54,11 +55,12 @@ def remote_input():
     host_inputs = {}
     for each_host in remote_hosts:
         # Return input information about each host
-        _, host_inputs[each_host.host] = utils_remote_host.remote_host_auth_page(
-            each_host.host,
-            each_host.username,
-            each_host.password_hash,
-            'remote_get_inputs')
+        headers = remote_log_in(
+            each_host.host, each_host.username, each_host.password_hash)
+
+        _, host_inputs[each_host.host] = remote_host_page(
+            each_host.host, headers, 'remote_get_inputs')
+
         host_inputs[each_host.host] = json.loads(host_inputs[each_host.host])
 
     return render_template('remote/input.html',
@@ -94,11 +96,11 @@ def remote_setup():
 
     host_auth = {}
     for each_host in remote_hosts:
-        _, host_auth[each_host.host] = utils_remote_host.remote_host_auth_page(
-            each_host.host,
-            each_host.username,
-            each_host.password_hash,
-            'auth')
+        headers = remote_log_in(
+            each_host.host, each_host.username, each_host.password_hash)
+
+        _, host_auth[each_host.host] = remote_host_page(
+            each_host.host, headers, 'auth')
 
     return render_template('remote/setup.html',
                            form_setup=form_setup,

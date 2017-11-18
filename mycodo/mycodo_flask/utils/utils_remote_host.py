@@ -34,17 +34,14 @@ logger = logging.getLogger(__name__)
 #
 
 
-def remote_host_auth_page(address, user, password_hash, page):
+def remote_log_in(address, user, password_hash):
     """
-    Make request, receive response, and authenticate a remote Mycodo
-    connection. This checks if the HTTPS certificate matches the stored
-    certificate and the user and password hash matches
+    Log in to Mycodo and return the cookie header for subsequent requests
 
     :param address: host name or IP address of remote Mycodo
     :param user: User name of an admin on the remote Mycodo
     :param password_hash: Hash of admin user's password
-    :param page: The page to return information from
-    :return: (1, None) for error, (0, json_data) on success
+    :return: header with session cookie (used by remote_host_page())
     """
     try:
         # Require all certificate data matches stored certificate, except hostname
@@ -55,26 +52,41 @@ def remote_host_auth_page(address, user, password_hash, page):
                                    ca_certs=ssl_cert_file,
                                    assert_hostname=False)
 
-        # Get the login page
-        get_csrf_url = 'https://{add}/login'.format(add=address)
-        pre_login_page = http.request('GET', get_csrf_url)
-
-        # Parse login page to retrieve the csrf token of the login form
-        soup = BeautifulSoup(pre_login_page.data, 'html.parser')
-        csrf_token = ''
-        for n in soup.findAll('input'):
-            if n.get('id') == 'csrf_token':
-                csrf_token = n.get('value')
-
         # Perform the login with the csrf token, user name, and stored password hash
-        login_url = 'https://{add}/login'.format(add=address)
+        login_url = 'https://{add}/remote_login'.format(add=address)
         login_page = http.request('POST', login_url,
-                                  fields={"csrf_token": csrf_token,
-                                          "username": user,
+                                  fields={"username": user,
                                           "password_hash": password_hash})
 
         # Use cookie set by the login page to verify our session and keep us logged in
         headers = {'cookie': login_page.getheader('set-cookie')}
+        return headers
+    except Exception:
+        return None
+
+
+def remote_host_page(address, headers, page):
+    """
+    Make request, receive response, and authenticate a remote Mycodo
+    connection. This checks if the HTTPS certificate matches the stored
+    certificate and the user and password hash matches
+
+    :param address: host name or IP address of remote Mycodo
+    :param headers: the header object returned from remote_log_in()
+    :param page: The page to return information from
+    :return: (1, None) for error, (0, json_data) on success
+    """
+    if not headers:
+        return 1, None
+
+    try:
+        # Require all certificate data matches stored certificate, except hostname
+        ssl_cert_file = '{path}/{file}'.format(path=STORED_SSL_CERTIFICATE_PATH,
+                                               file='{add}_cert.pem'.format(
+                                                   add=address))
+        http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED',
+                                   ca_certs=ssl_cert_file,
+                                   assert_hostname=False)
 
         # Test getting a page requiring to be logged in
         logged_in_url = 'https://{add}/{page}/'.format(add=address, page=page)

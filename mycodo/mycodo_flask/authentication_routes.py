@@ -126,6 +126,25 @@ def create_admin():
                            form_notice=form_notice)
 
 
+@blueprint.route('/remote_login', methods=('GET', 'POST'))
+def remote_admin_login():
+    """Authenticate Remote Admin login"""
+    password_hash = request.form.get('password_hash', None)
+    username = request.form.get('username', None)
+
+    if username and password_hash:
+        user = User.query.filter(
+            func.lower(User.name) == username).first()
+    else:
+        user = None
+
+    if user and user.password_hash == password_hash:
+        login_user = User()
+        login_user.id = user.id
+        flask_login.login_user(login_user, remember=False)
+        return "Logged in via Remote Admin"
+
+
 @blueprint.route('/login', methods=('GET', 'POST'))
 def do_login():
     """Authenticate users of the web-UI"""
@@ -156,15 +175,6 @@ def do_login():
             if not user:
                 login_log(username, 'NA', user_ip, 'NOUSER')
                 failed_login()
-
-            if (request.form.get('password_hash', None) and
-                    user.password_hash == request.form['password_hash']):
-                # flask-login user
-                login_user = User()
-                login_user.id = user.id
-                flask_login.login_user(login_user, remember=False)
-                return "Logged in via Remote Admin"
-
             elif form_login.validate_on_submit():
                 if User().check_password(
                         form_login.password.data,
