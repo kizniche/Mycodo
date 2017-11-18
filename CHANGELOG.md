@@ -1,3 +1,10 @@
+## 5.4.4 (Unreleased)
+
+### Features
+
+ - Add 12-volt DC fan control circuit to manual (@Theoi-Meteoroi) ([#184](https://github.com/kizniche/mycodo/issues/184))
+
+
 ## 5.4.3 (2017-11-18)
 
 ### Bugfixes

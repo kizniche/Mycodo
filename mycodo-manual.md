@@ -424,7 +424,15 @@ BCM Pin | PWM Channel | Raspberry Pi Version
 52 | 0 | Compute module only
 53 | 1 | Compute module only
 
-#### Schematics for AC modulation
+#### Schematics for DC Fan Control
+
+Below are hardware schematics that enable controlling direct current (DC) fans from the PWM output from Mycodo.
+
+PWM output controlling a 12-volt DC fan (such as a PC fan)
+
+![Schematic: PWM output modulating alternating current (AC) at 1% duty cycle](manual_images/Schematic-PWM-DC-12-volt-fan-control.png)\ 
+
+#### Schematics for AC Modulation
 
 Below are hardware schematics that enable the modulation of alternating current (AC) from the PWM output from Mycodo.
 
