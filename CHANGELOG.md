@@ -1,3 +1,10 @@
+## 5.4.3 (2017-11-18)
+
+### Bugfixes
+
+ - Fix Output Conditional triggering ([#323](https://github.com/kizniche/mycodo/issues/323))
+ 
+
 ## 5.4.2 (2017-11-18)
 
 ### Features
