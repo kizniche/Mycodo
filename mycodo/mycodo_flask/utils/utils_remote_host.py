@@ -4,8 +4,6 @@ import requests
 import sqlalchemy
 import urllib3
 
-from bs4 import BeautifulSoup
-
 from flask import flash
 from flask import redirect
 from flask import url_for
