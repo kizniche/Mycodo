@@ -2,7 +2,7 @@
 
 ### Features
 
- - Add 12-volt DC fan control circuit to manual (@Theoi-Meteoroi) ([#184](https://github.com/kizniche/mycodo/issues/184))
+ - Add 12-volt DC fan control circuit to manual (@Theoi-Meteoroi) ([#184](https://github.com/kizniche/mycodo/issues/184)) (See [Schematics for DC Fan Control](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#schematics-for-dc-fan-control))
 
 
 ## 5.4.3 (2017-11-18)
@@ -16,7 +16,7 @@
 
 ### Features
 
- - Add Output Conditional If option of "On (any duration)" ([#323](https://github.com/kizniche/mycodo/issues/323)) [Output Conditional Statement If Options](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#output-conditional-statement-if-options)
+ - Add Output Conditional If option of "On (any duration)" ([#323](https://github.com/kizniche/mycodo/issues/323)) (See [Output Conditional Statement If Options](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#output-conditional-statement-if-options))
 
 ### Bugfixes
 
