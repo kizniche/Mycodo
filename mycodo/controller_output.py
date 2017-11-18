@@ -484,18 +484,18 @@ class OutputController(threading.Thread):
     def check_conditionals(self, output_id, state=None, on_duration=None, duty_cycle=None):
         conditionals = db_retrieve_table_daemon(Conditional)
         conditionals = conditionals.filter(
-            Conditional.if_output_id == output_id)
+            Conditional.if_relay_id == output_id)
         conditionals = conditionals.filter(
             Conditional.is_activated == True)
 
         if self.is_on(output_id):
             conditionals = conditionals.filter(
-                Conditional.if_output_state == 'on')
+                Conditional.if_relay_state == 'on')
             conditionals = conditionals.filter(
-                Conditional.if_output_duration == on_duration)
+                Conditional.if_relay_duration == on_duration)
         else:
             conditionals = conditionals.filter(
-                Conditional.if_output_state == 'off')
+                Conditional.if_relay_state == 'off')
 
         for each_conditional in conditionals.all():
             conditional_actions = db_retrieve_table_daemon(ConditionalActions)
@@ -510,29 +510,29 @@ class OutputController(threading.Thread):
                     id=each_cond_action.id,
                     name=each_conditional.name)
 
-                if each_cond_action.do_action == 'output':
-                    if each_cond_action.do_output_id not in self.output_name:
+                if each_cond_action.do_action == 'relay':
+                    if each_cond_action.do_relay_id not in self.output_name:
                         message += u"Error: Invalid output ID {id}.".format(
-                            id=each_cond_action.do_output_id)
+                            id=each_cond_action.do_relay_id)
                     else:
                         message += u"If output {id} ({name}) turns {state}, Then ".format(
-                            id=each_conditional.if_output_id,
-                            name=self.output_name[each_conditional.if_output_id],
-                            state=each_conditional.if_output_state)
+                            id=each_conditional.if_relay_id,
+                            name=self.output_name[each_conditional.if_relay_id],
+                            state=each_conditional.if_relay_state)
                         message += u"turn output {id} ({name}) {state}".format(
-                            id=each_cond_action.do_output_id,
-                            name=self.output_name[each_cond_action.do_output_id],
-                            state=each_cond_action.do_output_state)
+                            id=each_cond_action.do_relay_id,
+                            name=self.output_name[each_cond_action.do_relay_id],
+                            state=each_cond_action.do_relay_state)
 
-                        if each_cond_action.do_output_duration == 0:
-                            self.output_on_off(each_cond_action.do_output_id,
-                                              each_cond_action.do_output_state)
+                        if each_cond_action.do_relay_duration == 0:
+                            self.output_on_off(each_cond_action.do_relay_id,
+                                              each_cond_action.do_relay_state)
                         else:
                             message += u" for {dur} seconds".format(
-                                dur=each_cond_action.do_output_duration)
-                            self.output_on_off(each_cond_action.do_output_id,
-                                              each_cond_action.do_output_state,
-                                              duration=each_cond_action.do_output_duration)
+                                dur=each_cond_action.do_relay_duration)
+                            self.output_on_off(each_cond_action.do_relay_id,
+                                              each_cond_action.do_relay_state,
+                                              duration=each_cond_action.do_relay_duration)
                     message += ".\n"
 
                 elif each_cond_action.do_action == 'command':

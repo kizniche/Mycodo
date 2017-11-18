@@ -382,7 +382,7 @@ def output_mod(output_id, state, out_type, amount):
     daemon = DaemonControl()
     if (state in ['on', 'off'] and out_type == 'sec' and
             (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.relay_on_off(int(output_id), state, float(amount))
+        return daemon.output_on_off(int(output_id), state, float(amount))
     elif (state == 'on' and out_type == 'pwm' and
               (str_is_float(amount) and float(amount) >= 0)):
         return daemon.relay_on(int(output_id), state, duty_cycle=float(amount))

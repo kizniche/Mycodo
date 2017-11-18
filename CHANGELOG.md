@@ -4,6 +4,7 @@
 
  - Fix display of first point of Daily Bezier method
  - Fix inability to use Daily Bezier method in PID ([#323](https://github.com/kizniche/mycodo/issues/323))
+ - Fix saving Output options and turning Outputs On and Off
 
 
 ## 5.4.1 (2017-11-12)

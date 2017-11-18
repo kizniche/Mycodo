@@ -567,7 +567,7 @@ class InputController(threading.Thread):
                         sec=cond_action.do_relay_duration)
                 message += "."
                 output_on_off = threading.Thread(
-                    target=self.control.relay_on_off,
+                    target=self.control.output_on_off,
                     args=(cond_action.do_relay_id,
                           cond_action.do_relay_state,),
                     kwargs={'duration': cond_action.do_relay_duration})

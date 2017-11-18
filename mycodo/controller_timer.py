@@ -174,7 +174,7 @@ class TimerController(threading.Thread):
                             self.duration_on = 0
                         self.logger.debug(message)
                         modulate_output = threading.Thread(
-                            target=self.control.relay_on_off,
+                            target=self.control.output_on_off,
                             args=(self.output_id,
                                   self.state,),
                             kwargs={'duration': self.duration_on})
@@ -194,7 +194,7 @@ class TimerController(threading.Thread):
                                     state=self.state,
                                     cstate=current_output_state)
                         modulate_output = threading.Thread(
-                            target=self.control.relay_on_off,
+                            target=self.control.output_on_off,
                             args=(self.output_id,
                                   self.state,))
                         modulate_output.start()

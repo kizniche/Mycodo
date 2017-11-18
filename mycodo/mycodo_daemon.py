@@ -79,7 +79,7 @@ def mycodo_service(mycodo):
         """
         Class to handle communication between the client (mycodo_client.py) and
         the daemon (mycodo_daemon.py). This also serves as how other controllers
-        (e.g. timers) communicate to the relay controller.
+        (e.g. timers) communicate to the output controller.
 
         """
 
@@ -186,23 +186,23 @@ def mycodo_service(mycodo):
 
         @staticmethod
         def exposed_relay_sec_currently_on(relay_id):
-            """Turns the amount of time a relay has already been on"""
+            """Turns the amount of time a output has already been on"""
             return mycodo.controller['Output'].relay_sec_currently_on(relay_id)
 
         @staticmethod
         def exposed_relay_setup(action, relay_id):
-            """Add, delete, or modify a relay in the running relay controller"""
-            return mycodo.relay_setup(action, relay_id)
+            """Add, delete, or modify a output in the running output controller"""
+            return mycodo.output_setup(action, relay_id)
 
         @staticmethod
         def exposed_relay_state(relay_id):
-            """Return the relay state (not pin but whether relay is on or off"""
-            return mycodo.relay_state(relay_id)
+            """Return the output state (not pin but whether output is on or off"""
+            return mycodo.output_state(relay_id)
 
         @staticmethod
         def exposed_relay_on(
                 relay_id, duration=0.0, min_off=0.0, duty_cycle=0.0):
-            """Turns relay on from the client"""
+            """Turns output on from the client"""
             return mycodo.relay_on(relay_id,
                                    duration=duration,
                                    min_off=min_off,
@@ -210,18 +210,18 @@ def mycodo_service(mycodo):
 
         @staticmethod
         def exposed_relay_off(relay_id, trigger_conditionals=True):
-            """Turns relay off from the client"""
+            """Turns output off from the client"""
             return mycodo.relay_off(relay_id, trigger_conditionals)
 
         @staticmethod
         def exposed_relay_sec_currently_on(relay_id):
-            """Turns the amount of time a relay has already been on"""
+            """Turns the amount of time a output has already been on"""
             return mycodo.controller['Output'].relay_sec_currently_on(relay_id)
 
         @staticmethod
         def exposed_relay_setup(action, relay_id):
-            """Add, delete, or modify a relay in the running relay controller"""
-            return mycodo.relay_setup(action, relay_id)
+            """Add, delete, or modify a output in the running output controller"""
+            return mycodo.output_setup(action, relay_id)
 
         @staticmethod
         def exposed_terminate_daemon():
@@ -292,7 +292,7 @@ class DaemonController(threading.Thread):
     Loop until the daemon is instructed to shut down.
     Signal each thread to shut down and wait for each thread to shut down.
 
-    All relay operations (turning on/off) is operated by one relay controller.
+    All output operations (turning on/off) is operated by one output controller.
 
     Each connected input has its own controller to collect all measurements
     that particular input can produce and put then into an influxdb database.
@@ -358,7 +358,7 @@ class DaemonController(threading.Thread):
                 except Exception:
                     self.logger.exception("Timelapse ERROR")
 
-                # Generate relay usage report
+                # Generate output usage report
                 if (self.relay_usage_report_gen and
                         now > self.relay_usage_report_next_gen):
                     try:
@@ -616,7 +616,7 @@ class DaemonController(threading.Thread):
                 str_next_report = time.strftime(
                     '%c', time.localtime(self.relay_usage_report_next_gen))
                 self.logger.debug(
-                    "Generating next relay usage report {time_date}".format(
+                    "Generating next output usage report {time_date}".format(
                         time_date=str_next_report))
         except Exception as except_msg:
             message = "Could not refresh misc settings:" \
@@ -633,31 +633,31 @@ class DaemonController(threading.Thread):
 
     def relay_off(self, relay_id, trigger_conditionals=True):
         """
-        Turn relay off using default relay controller
+        Turn output off using default output controller
 
-        :param relay_id: Unique ID for relay
+        :param relay_id: Unique ID for output
         :type relay_id: str
-        :param trigger_conditionals: Whether to trigger relay conditionals or not
+        :param trigger_conditionals: Whether to trigger output conditionals or not
         :type trigger_conditionals: bool
         """
         try:
-            self.controller['Output'].relay_on_off(
+            self.controller['Output'].output_on_off(
                 relay_id,
                 'off',
                 trigger_conditionals=trigger_conditionals)
             return "Turned off"
         except Exception as except_msg:
-            message = "Could not turn relay off:" \
+            message = "Could not turn output off:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
     def relay_on(self, relay_id, duration=0.0, min_off=0.0, duty_cycle=0.0):
         """
-        Turn relay on using default relay controller
+        Turn output on using default output controller
 
-        :param relay_id: Unique ID for relay
+        :param relay_id: Unique ID for output
         :type relay_id: str
-        :param duration: How long to turn the relay on
+        :param duration: How long to turn the output on
         :type duration: float
         :param min_off: Don't turn on if not off for at least this duration (0 = disabled)
         :type min_off: float
@@ -665,7 +665,7 @@ class DaemonController(threading.Thread):
         :type duty_cycle: float
         """
         try:
-            self.controller['Output'].relay_on_off(
+            self.controller['Output'].output_on_off(
                 relay_id,
                 'on',
                 duration=duration,
@@ -673,40 +673,40 @@ class DaemonController(threading.Thread):
                 duty_cycle=duty_cycle)
             return "Turned on"
         except Exception as except_msg:
-            message = "Could not turn relay on:" \
+            message = "Could not turn output on:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def relay_setup(self, action, relay_id):
+    def output_setup(self, action, relay_id):
         """
-        Setup relay in running relay controller
+        Setup output in running output controller
 
         :return: 0 for success, 1 for fail, with success for fail message
         :rtype: int, str
 
-        :param action: What action to perform on a specific relay ID
+        :param action: What action to perform on a specific output ID
         :type action: str
-        :param relay_id: Unique ID for relay
+        :param relay_id: Unique ID for output
         :type relay_id: str
         """
         try:
-            return self.controller['Output'].relay_setup(action, relay_id)
+            return self.controller['Output'].output_setup(action, relay_id)
         except Exception as except_msg:
-            message = "Could not set up relay:" \
+            message = "Could not set up output:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def relay_state(self, relay_id):
+    def output_state(self, relay_id):
         """
-        Return the relay state, wither "on" or "off"
+        Return the output state, wither "on" or "off"
 
-        :param relay_id: Unique ID for relay
+        :param relay_id: Unique ID for output
         :type relay_id: str
         """
         try:
-            return self.controller['Output'].relay_state(relay_id)
+            return self.controller['Output'].output_state(relay_id)
         except Exception as except_msg:
-            message = "Could not query relay state:" \
+            message = "Could not query output state:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
@@ -763,7 +763,7 @@ class DaemonController(threading.Thread):
             input_dev = db_retrieve_table_daemon(Input, entry='all')
             timer = db_retrieve_table_daemon(Timer, entry='all')
 
-            self.logger.debug("Starting relay controller")
+            self.logger.debug("Starting output controller")
             self.controller['Output'] = OutputController()
             self.controller['Output'].start()
 

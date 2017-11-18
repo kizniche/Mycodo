@@ -107,7 +107,7 @@ class DaemonControl:
                                               min_off=min_off,
                                               duty_cycle=duty_cycle)
 
-    def relay_on_off(self, relay_id, state, duration=0.0):
+    def output_on_off(self, relay_id, state, duration=0.0):
         if state == 'on':
             return self.relay_on(relay_id, duration)
         else:
