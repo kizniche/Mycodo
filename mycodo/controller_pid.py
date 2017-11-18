@@ -206,7 +206,8 @@ class PIDController(threading.Thread):
 
             while self.running:
 
-                if self.method_start_act == 'Ended':
+                if (self.method_start_act == 'Ended' and
+                        self.method_type == 'Duration'):
                     self.stop_controller(ended_normally=False,
                                          deactivate_pid=True)
                     self.logger.warning(
@@ -460,9 +461,12 @@ class PIDController(threading.Thread):
                             abs(self.control_variable))
                         if self.control_variable < 0:
                             pid_entry_value = -pid_entry_value
-                        self.write_pid_output_influxdb('duty_cycle', pid_entry_value)
+                        self.write_pid_output_influxdb(
+                            'duty_cycle', pid_entry_value)
 
-                    elif self.raise_output_type in ['command', 'wired', 'wireless_433MHz_pi_switch']:
+                    elif self.raise_output_type in ['command',
+                                                    'wired',
+                                                    'wireless_433MHz_pi_switch']:
                         # Ensure the output on duration doesn't exceed the set maximum
                         if (self.raise_max_duration and
                                 self.control_variable > self.raise_max_duration):
@@ -484,7 +488,8 @@ class PIDController(threading.Thread):
                                 duration=self.raise_seconds_on,
                                 min_off=self.raise_min_off_duration)
 
-                        self.write_pid_output_influxdb('pid_output', self.control_variable)
+                        self.write_pid_output_influxdb(
+                            'pid_output', self.control_variable)
 
                 else:
                     if self.raise_output_type == 'pwm':
@@ -520,8 +525,8 @@ class PIDController(threading.Thread):
                             self.lower_duty_cycle = self.lower_min_duration
 
                         self.logger.debug(
-                            "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output "
-                            "{id} to {dc:.1f}%".format(
+                            "Setpoint: {sp}, Control Variable: {cv}, "
+                            "Output: PWM output {id} to {dc:.1f}%".format(
                                 sp=self.set_point,
                                 cv=self.control_variable,
                                 id=self.lower_output_id,
@@ -540,7 +545,9 @@ class PIDController(threading.Thread):
                         pid_entry_value = -pid_entry_value
                         self.write_pid_output_influxdb('duty_cycle', pid_entry_value)
 
-                    elif self.lower_output_type in ['command', 'wired', 'wireless_433MHz_pi_switch']:
+                    elif self.lower_output_type in ['command',
+                                                    'wired',
+                                                    'wireless_433MHz_pi_switch']:
                         # Ensure the output on duration doesn't exceed the set maximum
                         if (self.lower_max_duration and
                                 abs(self.control_variable) > self.lower_max_duration):
@@ -561,7 +568,8 @@ class PIDController(threading.Thread):
                                 duration=self.lower_seconds_on,
                                 min_off=self.lower_min_off_duration)
 
-                        self.write_pid_output_influxdb('pid_output', self.control_variable)
+                        self.write_pid_output_influxdb(
+                            'pid_output', self.control_variable)
 
                 else:
                     if self.lower_output_type == 'pwm':

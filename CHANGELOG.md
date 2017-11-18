@@ -1,3 +1,11 @@
+## 5.4.2 (Unreleased)
+
+### Bugfixes
+
+ - Fix display of first point of Daily Bezier method
+ - Fix inability to use Daily Bezier method in PID ([#323](https://github.com/kizniche/mycodo/issues/323))
+
+
 ## 5.4.1 (2017-11-12)
 
 ### Features

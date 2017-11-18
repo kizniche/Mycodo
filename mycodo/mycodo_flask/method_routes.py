@@ -124,6 +124,8 @@ def method_data(method_id):
         for n in range(points_x):
             percent = n / float(points_x)
             second_of_day = percent * seconds_in_day
+            if second_of_day == 0:
+                continue
             y = bezier_curve_y_out(last_method_data.shift_angle,
                                    P0, P1, P2, P3,
                                    second_of_day)
