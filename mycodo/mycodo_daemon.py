@@ -200,13 +200,14 @@ def mycodo_service(mycodo):
             return mycodo.output_state(relay_id)
 
         @staticmethod
-        def exposed_relay_on(
-                relay_id, duration=0.0, min_off=0.0, duty_cycle=0.0):
+        def exposed_relay_on(relay_id, duration=0.0, min_off=0.0,
+                             duty_cycle=0.0, trigger_conditionals=True):
             """Turns output on from the client"""
             return mycodo.relay_on(relay_id,
                                    duration=duration,
                                    min_off=min_off,
-                                   duty_cycle=duty_cycle)
+                                   duty_cycle=duty_cycle,
+                                   trigger_conditionals=trigger_conditionals)
 
         @staticmethod
         def exposed_relay_off(relay_id, trigger_conditionals=True):
@@ -651,7 +652,8 @@ class DaemonController(threading.Thread):
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def relay_on(self, relay_id, duration=0.0, min_off=0.0, duty_cycle=0.0):
+    def relay_on(self, relay_id, duration=0.0, min_off=0.0,
+                 duty_cycle=0.0, trigger_conditionals=True):
         """
         Turn output on using default output controller
 
@@ -663,6 +665,8 @@ class DaemonController(threading.Thread):
         :type min_off: float
         :param duty_cycle: PWM duty cycle (0-100)
         :type duty_cycle: float
+        :param trigger_conditionals: bool
+        :type trigger_conditionals: Indicate whether to trigger conditional statements
         """
         try:
             self.controller['Output'].output_on_off(
@@ -670,7 +674,8 @@ class DaemonController(threading.Thread):
                 'on',
                 duration=duration,
                 min_off=min_off,
-                duty_cycle=duty_cycle)
+                duty_cycle=duty_cycle,
+                trigger_conditionals=trigger_conditionals)
             return "Turned on"
         except Exception as except_msg:
             message = "Could not turn output on:" \

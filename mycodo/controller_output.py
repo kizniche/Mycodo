@@ -29,6 +29,9 @@ import threading
 import time
 import timeit
 
+from sqlalchemy import and_
+from sqlalchemy import or_
+
 from mycodo_client import DaemonControl
 from databases.models import Conditional
 from databases.models import ConditionalActions
@@ -416,6 +419,7 @@ class OutputController(threading.Thread):
                                     duty_cycle=duty_cycle)
 
     def output_switch(self, output_id, state, duty_cycle=None):
+        """Conduct the actual execution of GPIO state change, PWM, or command execution"""
         if self.output_type[output_id] == 'wired':
             if state == 'on':
                 GPIO.output(self.output_pin[output_id],
@@ -490,9 +494,13 @@ class OutputController(threading.Thread):
 
         if self.is_on(output_id):
             conditionals = conditionals.filter(
-                Conditional.if_relay_state == 'on')
-            conditionals = conditionals.filter(
-                Conditional.if_relay_duration == on_duration)
+                or_(Conditional.if_relay_state == 'on',
+                    Conditional.if_relay_state == 'on_any'))
+            if on_duration:
+                conditionals = conditionals.filter(
+                    or_(Conditional.if_relay_state == 'on_any',
+                        and_(Conditional.if_relay_state == 'on',
+                             Conditional.if_relay_duration == on_duration)))
         else:
             conditionals = conditionals.filter(
                 Conditional.if_relay_state == 'off')
@@ -526,13 +534,13 @@ class OutputController(threading.Thread):
 
                         if each_cond_action.do_relay_duration == 0:
                             self.output_on_off(each_cond_action.do_relay_id,
-                                              each_cond_action.do_relay_state)
+                                               each_cond_action.do_relay_state)
                         else:
                             message += u" for {dur} seconds".format(
                                 dur=each_cond_action.do_relay_duration)
                             self.output_on_off(each_cond_action.do_relay_id,
-                                              each_cond_action.do_relay_state,
-                                              duration=each_cond_action.do_relay_duration)
+                                               each_cond_action.do_relay_state,
+                                               duration=each_cond_action.do_relay_duration)
                     message += ".\n"
 
                 elif each_cond_action.do_action == 'command':
@@ -589,10 +597,10 @@ class OutputController(threading.Thread):
 
                 # TODO: Implement photo/video actions for output conditionals
                 elif each_cond_action.do_action == 'photo':
-                    pass
+                    self.logger.error("Photo action not currently implemented")
 
                 elif each_cond_action.do_action == 'video':
-                    pass
+                    self.logger.error("Video action not currently implemented")
 
                 self.logger.debug(u"{}".format(message))
 

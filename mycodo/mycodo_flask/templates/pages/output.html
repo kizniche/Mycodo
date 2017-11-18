@@ -343,6 +343,7 @@
             <select class="form-control form-tooltip form-dropdown" id="if_relay_state" name="if_relay_state" data-placement="top" title="{{_('What action will trigger this conditional statement, on or off?')}}">
               <option value=""></option>
               <option value="on"{% if each_cond.if_relay_state == 'on' %} selected{% endif %}>{{_('On')}}</option>
+              <option value="on_any"{% if each_cond.if_relay_state == 'on_any' %} selected{% endif %}>{{_('On')}} ({{_('any duration')}})</option>
               <option value="off"{% if each_cond.if_relay_state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
             </select>
           </div>

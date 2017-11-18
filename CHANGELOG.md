@@ -1,4 +1,8 @@
-## 5.4.2 (Unreleased)
+## 5.4.2 (2017-11-18)
+
+### Features
+
+ - Add Relay Conditional If State of "On (any duration)" ([#323](https://github.com/kizniche/mycodo/issues/323)) [Output Conditional Statement If Options](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#output-conditional-if-options)
 
 ### Bugfixes
 
@@ -7,7 +11,7 @@
  - Fix saving Output options and turning Outputs On and Off
 
 
-## 5.4.1 (2017-11-12)
+## 5.4.1 (2017-11-17)
 
 ### Features
 

@@ -566,6 +566,7 @@ both inputs and outputs. Possible conditional statements include:
 -   If Output \#1 turns ON, turn Output \#3 ON
 -   If Output \#1 turns ON, turn Output \#4 ON for 40 seconds and notify
     critical-issue@domain.com
+-   If Output \#1 turns ON for any duration, turn Output \#4 ON
 -   If Output \#4 turns ON for 21 seconds, turn Output \#5 ON for 50
     seconds
 -   If Output \#4 turns ON for 20 seconds, turn Output \#1 OFF
@@ -582,6 +583,26 @@ outputs may respond atypically or fail when switched on and off in rapid
 succession. Therefore, avoid creating an [infinite
 loop](https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops)
 with conditional statements.
+
+### Input Conditional Statement If Options
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Measurement | The measurement that will be checked every Period.
+Greater Than | If the measurement is greater than the set Value.
+Less Than | If the measurement is less than the set Value.
+Value | The value that the measurement will be checked against (greater or less than).
+Period | The period (seconds) between conditional checks.
+
+### Output Conditional Statement If Options
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Output | The Output to monitor for a change of state.
+On | If the Output turns On (with or without a duration), the conditional will trigger.
+On (any duration) | If the Output turns On (for any duration), the conditional will trigger.
+Off | If the Output turns off, the conditional will trigger.
+Seconds | If "On" is selected, a optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.
 
 ### Conditional Statement Actions
 
