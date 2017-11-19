@@ -4,7 +4,7 @@ import logging
 import time
 from .base_input import AbstractInput
 
-logger = logging.getLogger("mycodo.inputs.signal_pwm")
+logger = logging.getLogger("mycodo.sensors.pwm")
 
 
 class ReadPWM:
@@ -15,7 +15,7 @@ class ReadPWM:
     pulse high time per cycle.
     """
 
-    def __init__(self, pi, gpio, weighting=0.0):
+    def __init__(self, pi, gpio, pigpio, weighting=0.0):
         """
         Instantiate with the Pi and gpio of the PWM signal
         to monitor.
@@ -26,10 +26,9 @@ class ReadPWM:
         the old reading has no effect.  This may be used to
         smooth the data.
         """
-        import pigpio
-        self.pigpio = pigpio
         self.pi = pi
         self.gpio = gpio
+        self.pigpio = pigpio
 
         if weighting < 0.0:
             weighting = 0.0
@@ -44,7 +43,7 @@ class ReadPWM:
         self._high = None
 
         pi.set_mode(gpio, pigpio.INPUT)
-        self._cb = pi.callback(gpio, pigpio.EITHER_EDGE, self._cbf)
+        self._cb = pi.callback(gpio, self.pigpio.EITHER_EDGE, self._cbf)
 
     def _cbf(self, gpio, level, tick):
         if level == 1:
@@ -70,7 +69,7 @@ class ReadPWM:
         if self._period is not None:
             return 1000000.0 / self._period
         else:
-            return None
+            return 0.0
 
     def pulse_width(self):
         """
@@ -79,7 +78,7 @@ class ReadPWM:
         if self._high is not None:
             return self._high
         else:
-            return None
+            return 0.0
 
     def duty_cycle(self):
         """
@@ -88,7 +87,7 @@ class ReadPWM:
         if self._high is not None:
             return 100.0 * self._high / self._period
         else:
-            return None
+            return 0.0
 
     def cancel(self):
         """
@@ -102,17 +101,16 @@ class SignalPWMInput(AbstractInput):
 
     def __init__(self, pin, weighting, sample_time, testing=False):
         super(SignalPWMInput, self).__init__()
-        self._frequency = None
-        self._pulse_width = None
-        self._duty_cycle = None
-
+        self._frequency = 0.0
+        self._pulse_width = 0.0
+        self._duty_cycle = 0.0
         self.pin = pin
         self.weighting = weighting
         self.sample_time = sample_time
 
         if not testing:
             import pigpio
-            self.pi = pigpio.pi()
+            self.pigpio = pigpio
 
     def __repr__(self):
         """  Representation of object """
@@ -144,21 +142,21 @@ class SignalPWMInput(AbstractInput):
     @property
     def frequency(self):
         """ frequency """
-        if self._frequency is None:  # update if needed
+        if not self._frequency:  # update if needed
             self.read()
         return self._frequency
 
     @property
     def pulse_width(self):
         """ pulse width """
-        if self._pulse_width is None:  # update if needed
+        if not self._pulse_width:  # update if needed
             self.read()
         return self._pulse_width
 
     @property
     def duty_cycle(self):
         """ duty cycle """
-        if self._duty_cycle is None:  # update if needed
+        if not self._duty_cycle:  # update if needed
             self.read()
         return self._duty_cycle
 
@@ -168,13 +166,14 @@ class SignalPWMInput(AbstractInput):
         self._pulse_width = None
         self._duty_cycle = None
 
-        read_pwm = ReadPWM(self.pi, self.pin, self.weighting)
+        pi = self.pigpio.pi()
+        read_pwm = ReadPWM(pi, self.pin, self.pigpio, self.weighting)
         time.sleep(self.sample_time)
         frequency = read_pwm.frequency()
         pulse_width = read_pwm.pulse_width()
         duty_cycle = read_pwm.duty_cycle()
         read_pwm.cancel()
-        self.pi.stop()
+        pi.stop()
         return frequency, int(pulse_width + 0.5), duty_cycle
 
     def read(self):
@@ -189,7 +188,10 @@ class SignalPWMInput(AbstractInput):
              self._duty_cycle) = self.get_measurement()
             if self._frequency is not None:
                 return  # success - no errors
-        except Exception as e:
-            logger.error("{cls} raised an exception when taking a reading: "
+        except IOError as e:
+            logger.error("{cls}.get_measurement() method raised IOError: "
                          "{err}".format(cls=type(self).__name__, err=e))
+        except Exception as e:
+            logger.exception("{cls} raised an exception when taking a reading: "
+                             "{err}".format(cls=type(self).__name__, err=e))
         return 1

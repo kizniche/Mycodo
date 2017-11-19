@@ -384,6 +384,8 @@ Stop PID | If the measurements of the two sensors differ by more than the set *D
 Output
 ------
 
+Outputs are various signals that can be generated that operate devices. An output can be a PWM signal, a simple HIGH/LOW signal to operate a relay, or a 433MHz signal to switch a radio frequency-operated relay, or an execution of a command on the linux system Mycodo runs on.
+
 ### PWM
 
 Pulse-width modulation (PWM) is a modulation technique used to encode a message into a pulsing signal, at a specific frequency in Hertz (Hz). The average value of voltage (and current) fed to the load is controlled by turning the switch between supply and load on and off at a fast rate. The longer the switch is on compared to the off periods, the higher the total power supplied to the load.
@@ -448,9 +450,9 @@ PWM output modulating alternating current (AC) at 99% duty cycle
 
 ![Schematic: PWM output modulating alternating current (AC) at 99% duty cycle](manual_images/Schematic-PWM-AC-99percent-duty-cycle.png)\ 
 
-### Outputs
+### Relays
 
-Outputs are electromechanical or solid-state devices that enable a small voltage signal (such as from a microprocessor) to activate a much larger voltage, without exposing the low-voltage system to the dangers of the higher voltage.
+Relays are electromechanical or solid-state devices that enable a small voltage signal (such as from a microprocessor) to activate a much larger voltage, without exposing the low-voltage system to the dangers of the higher voltage.
 
 Add and configure outputs in the Output tab. Outputs must be properly set up before PID regulation can be achieved.
 

@@ -204,7 +204,6 @@ class DHT22Sensor(AbstractInput):
                 time.sleep(2)
 
         self.logger.debug("Could not acquire a measurement")
-            
 
     def read(self):
         """

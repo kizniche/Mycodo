@@ -671,6 +671,11 @@ measurements is not within the range specified.
 
 Output
 
+Outputs are various signals that can be generated that operate devices.
+An output can be a PWM signal, a simple HIGH/LOW signal to operate a
+relay, or a 433MHz signal to switch a radio frequency-operated relay, or
+an execution of a command on the linux system Mycodo runs on.
+
 PWM
 
 Pulse-width modulation (PWM) is a modulation technique used to encode a
@@ -751,7 +756,17 @@ cycle setting will be used by all GPIO pins which share a PWM channel.
   52        0             Compute module only
   53        1             Compute module only
 
-Schematics for AC modulation
+Schematics for DC Fan Control
+
+Below are hardware schematics that enable controlling direct current
+(DC) fans from the PWM output from Mycodo.
+
+PWM output controlling a 12-volt DC fan (such as a PC fan)
+
+[Schematic: PWM output modulating alternating current (AC) at 1% duty
+cycle] 
+
+Schematics for AC Modulation
 
 Below are hardware schematics that enable the modulation of alternating
 current (AC) from the PWM output from Mycodo.
@@ -771,9 +786,9 @@ PWM output modulating alternating current (AC) at 99% duty cycle
 [Schematic: PWM output modulating alternating current (AC) at 99% duty
 cycle] 
 
-Outputs
+Relays
 
-Outputs are electromechanical or solid-state devices that enable a small
+Relays are electromechanical or solid-state devices that enable a small
 voltage signal (such as from a microprocessor) to activate a much larger
 voltage, without exposing the low-voltage system to the dangers of the
 higher voltage.
@@ -1081,6 +1096,7 @@ both inputs and outputs. Possible conditional statements include:
 -   If Output #1 turns ON, turn Output #3 ON
 -   If Output #1 turns ON, turn Output #4 ON for 40 seconds and notify
     critical-issue@domain.com
+-   If Output #1 turns ON for any duration, turn Output #4 ON
 -   If Output #4 turns ON for 21 seconds, turn Output #5 ON for 50
     seconds
 -   If Output #4 turns ON for 20 seconds, turn Output #1 OFF
@@ -1096,6 +1112,48 @@ configuration before connecting devices to the outputs. Some devices or
 outputs may respond atypically or fail when switched on and off in rapid
 succession. Therefore, avoid creating an infinite loop with conditional
 statements.
+
+Input Conditional Statement If Options
+
+  ---------------------------------------------------------------------
+  Setting               Description
+  --------------------- -----------------------------------------------
+  Measurement           The measurement that will be checked every
+                        Period.
+
+  Greater Than          If the measurement is greater than the set
+                        Value.
+
+  Less Than             If the measurement is less than the set Value.
+
+  Value                 The value that the measurement will be checked
+                        against (greater or less than).
+
+  Period                The period (seconds) between conditional
+                        checks.
+  ---------------------------------------------------------------------
+
+Output Conditional Statement If Options
+
+  ---------------------------------------------------------------------
+  Setting               Description
+  --------------------- -----------------------------------------------
+  Output                The Output to monitor for a change of state.
+
+  On                    If the Output turns On (with or without a
+                        duration), the conditional will trigger.
+
+  On (any duration)     If the Output turns On (for any duration), the
+                        conditional will trigger.
+
+  Off                   If the Output turns off, the conditional will
+                        trigger.
+
+  Seconds               If “On” is selected, a optional duration
+                        (seconds) may be set that will trigger the
+                        conditional only if the Output is turned on for
+                        this specific duration.
+  ---------------------------------------------------------------------
 
 Conditional Statement Actions
 
