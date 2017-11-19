@@ -4,7 +4,7 @@ import logging
 import time
 from .base_input import AbstractInput
 
-logger = logging.getLogger("mycodo.sensors.signal_pwm")
+logger = logging.getLogger("mycodo.inputs.signal_pwm")
 
 
 class ReadPWM:
@@ -101,9 +101,10 @@ class SignalPWMInput(AbstractInput):
 
     def __init__(self, pin, weighting, sample_time, testing=False):
         super(SignalPWMInput, self).__init__()
-        self._frequency = 0.0
-        self._pulse_width = 0.0
-        self._duty_cycle = 0.0
+        self._frequency = None
+        self._pulse_width = None
+        self._duty_cycle = None
+
         self.pin = pin
         self.weighting = weighting
         self.sample_time = sample_time
@@ -189,6 +190,6 @@ class SignalPWMInput(AbstractInput):
             if self._frequency is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception("{cls} raised an exception when taking a reading: "
-                             "{err}".format(cls=type(self).__name__, err=e))
+            logger.error("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
         return 1
