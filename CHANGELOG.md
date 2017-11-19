@@ -6,7 +6,8 @@
 
 ### Bugfixes
 
- - Fix PWM and RPM Signal Inputs ([#324](https://github.com/kizniche/mycodo/issues/324))
+ - Fix PWM Signal, RPM Signal, DHT22, and DHT11 Inputs ([#324](https://github.com/kizniche/mycodo/issues/324))
+ - Add Frequency, Duty Cycle, Pulse Width, and RPM to y-axis Graph display
 
 ### Miscellaneous
 
