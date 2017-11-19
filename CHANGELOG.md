@@ -6,7 +6,11 @@
 
 ### Bugfixes
 
- - Fix PWM Signal Input ([#324](https://github.com/kizniche/mycodo/issues/324))
+ - Fix PWM and RPM Signal Inputs ([#324](https://github.com/kizniche/mycodo/issues/324))
+
+### Miscellaneous
+
+ - Upgrade to InfluxDB from 1.3.7 to 1.4.2
 
 
 ## 5.4.3 (2017-11-18)

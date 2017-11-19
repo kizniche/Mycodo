@@ -11,7 +11,7 @@ class ReadRPM:
     A class to read pulses and calculate the RPM
     """
 
-    def __init__(self, pi, gpio, pulses_per_rev=1.0, weighting=0.0):
+    def __init__(self, pi, gpio, pigpio, pulses_per_rev=1.0, weighting=0.0):
         """
         Instantiate with the Pi and gpio of the RPM signal
         to monitor.
@@ -25,7 +25,6 @@ class ReadRPM:
         the old reading has no effect. This may be used to
         smooth the data.
         """
-        import pigpio
         self.pigpio = pigpio
         self.pi = pi
         self.gpio = gpio
@@ -44,10 +43,10 @@ class ReadRPM:
         self._high_tick = None
         self._period = None
 
-        pi.set_mode(gpio, pigpio.INPUT)
+        pi.set_mode(self.gpio, self.pigpio.INPUT)
 
-        self._cb = pi.callback(gpio, pigpio.RISING_EDGE, self._cbf)
-        pi.set_watchdog(gpio, self._watchdog)
+        self._cb = pi.callback(self.gpio, self.pigpio.RISING_EDGE, self._cbf)
+        pi.set_watchdog(self.gpio, self._watchdog)
 
     def _cbf(self, gpio, level, tick):
         if level == 1:  # Rising edge.
@@ -67,7 +66,7 @@ class ReadRPM:
         """
         Returns the RPM.
         """
-        RPM = None
+        RPM = 0
         if self._period is not None:
             RPM = 60000000.0 / (self._period * self.pulses_per_rev)
         return RPM
@@ -128,13 +127,15 @@ class SignalRPMInput(AbstractInput):
 
         pi = self.pigpio.pi()
         read_rpm = ReadRPM(
-            pi, self.pin, self.rpm_pulses_per_rev, self.weighting)
+            pi, self.pin, self.pigpio, self.rpm_pulses_per_rev, self.weighting)
         time.sleep(self.sample_time)
         rpm = read_rpm.RPM()
         read_rpm.cancel()
         pi.stop()
         if rpm:
             return int(rpm + 0.5)
+        elif rpm == 0:
+            return 0
         return None
 
     def read(self):
@@ -145,10 +146,9 @@ class SignalRPMInput(AbstractInput):
         """
         try:
             self._rpm = self.get_measurement()
-            if self._rpm is None:
-                return 1
-            return  # success - no errors
+            if self._rpm is not None:
+                return  # success - no errors
         except Exception as e:
-            logger.error("{cls} raised an exception when taking a reading: "
+            logger.exception("{cls} raised an exception when taking a reading: "
                          "{err}".format(cls=type(self).__name__, err=e))
         return 1
