@@ -34,31 +34,36 @@ class DHT11Sensor(AbstractInput):
         """
         super(DHT11Sensor, self).__init__()
         self.logger = logging.getLogger('mycodo.inputs.dht11')
+
         self._dew_point = None
         self._humidity = None
         self._temperature = None
 
-        self._temp_dew_point = None
-        self._temp_humidity = None
-        self._temp_temperature = None
+        self.temp_temperature = None
+        self.temp_humidity = None
+        self.temp_dew_point = None
+
+        self.power_relay_id = power
+        self.powered = False
 
         if not testing:
             import pigpio
             from mycodo.mycodo_client import DaemonControl
+
+            self.logger = logging.getLogger(
+                'mycodo.inputs.dht11_{id}'.format(id=sensor_id))
+
             self.control = DaemonControl()
 
             self.pigpio = pigpio
-            self.pi = pigpio.pi()
+            self.pi = self.pigpio.pi()
             self.gpio = gpio
-            self.power_relay_id = power
-            self.powered = False
 
             self.high_tick = None
             self.bit = None
             self.either_edge_cb = None
 
-            self.start_sensor()
-            time.sleep(2)
+        self.start_sensor()
 
     def __repr__(self):
         """  Representation of object """
@@ -114,6 +119,9 @@ class DHT11Sensor(AbstractInput):
         self._humidity = None
         self._temperature = None
 
+        import pigpio
+        self.pigpio = pigpio
+
         # Ensure if the power pin turns off, it is turned back on
         if (self.power_relay_id and
                 not db_retrieve_table_daemon(Output, device_id=self.power_relay_id).is_on()):
@@ -127,27 +135,11 @@ class DHT11Sensor(AbstractInput):
         # the first measurement fails if the sensor has just been powered
         # for the first time.
         for _ in range(2):
-            try:
-                try:
-                    self.setup()
-                except Exception as except_msg:
-                    self.logger.error(
-                        'Could not initialize sensor. Check if gpiod is running. '
-                        'Error: {msg}'.format(msg=except_msg))
-                self.pi.write(self.gpio, self.pigpio.LOW)
-                time.sleep(0.017)  # 17 ms
-                self.pi.set_mode(self.gpio, self.pigpio.INPUT)
-                self.pi.set_watchdog(self.gpio, 200)
-                time.sleep(0.2)
-                self._temp_dew_point = dewpoint(self._temp_temperature, self._temp_humidity)
-            except Exception as e:
-                self.logger.error(
-                    "Exception raised when taking a reading: {err}".format(
-                        err=e))
-            finally:
-                self.close()
-            if self._humidity is not None:
-                return self._temp_dew_point, self._temp_humidity, self._temp_temperature
+            self.measure_sensor()
+            if self.temp_dew_point is not None:
+                return (self.temp_dew_point,
+                        self.temp_humidity,
+                        self.temp_temperature)  # success - no errors
             time.sleep(2)
 
         # Measurement failure, power cycle the sensor (if enabled)
@@ -157,31 +149,14 @@ class DHT11Sensor(AbstractInput):
             time.sleep(2)
             self.start_sensor()
             for _ in range(2):
-                try:
-                    try:
-                        self.setup()
-                    except Exception as except_msg:
-                        self.logger.error(
-                            'Could not initialize sensor. Check if gpiod is running. '
-                            'Error: {msg}'.format(msg=except_msg))
-                    self.pi.write(self.gpio, self.pigpio.LOW)
-                    time.sleep(0.017)  # 17 ms
-                    self.pi.set_mode(self.gpio, self.pigpio.INPUT)
-                    self.pi.set_watchdog(self.gpio, 200)
-                    time.sleep(0.2)
-                    self._temp_dew_point = dewpoint(self._temp_temperature, self._temp_humidity)
-                except Exception as e:
-                    self.logger.error(
-                        "Exception raised when taking a reading: {err}".format(
-                            err=e))
-                finally:
-                    self.close()
-                if self._humidity is not None:
-                    return self._temp_dew_point, self._temp_humidity, self._temp_temperature
+                self.measure_sensor()
+                if self.temp_dew_point is not None:
+                    return (self.temp_dew_point,
+                            self.temp_humidity,
+                            self.temp_temperature)  # success - no errors
                 time.sleep(2)
 
         self.logger.debug("Could not acquire a measurement")
-
         return None, None, None
 
     def read(self):
@@ -192,14 +167,46 @@ class DHT11Sensor(AbstractInput):
         :returns: None on success or 1 on error
         """
         try:
-            self._dew_point, self._humidity, self._temperature = self.get_measurement()
+            (self._dew_point,
+             self._humidity,
+             self._temperature) = self.get_measurement()
             if self._dew_point is not None:
                 return  # success - no errors
         except Exception as e:
-            self.logger.error(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1
+
+    def measure_sensor(self):
+        self.temp_temperature = None
+        self.temp_humidity = None
+        self.temp_dew_point = None
+        try:
+            try:
+                self.setup()
+            except Exception as except_msg:
+                self.logger.error(
+                    'Could not initialize sensor. Check if gpiod is running. '
+                    'Error: {msg}'.format(msg=except_msg))
+            self.pi.write(self.gpio, self.pigpio.LOW)
+            time.sleep(0.017)  # 17 ms
+            self.pi.set_mode(self.gpio, self.pigpio.INPUT)
+            self.pi.set_watchdog(self.gpio, 200)
+            time.sleep(0.2)
+            if (self.temp_humidity is not None and
+                    self.temp_temperature is not None):
+                self.temp_dew_point = dewpoint(
+                    self.temp_temperature, self.temp_humidity)
+        except Exception as e:
+            self.logger.error(
+                "Exception raised when taking a reading: {err}".format(
+                    err=e))
+        finally:
+            self.close()
+            return (self.temp_dew_point,
+                    self.temp_humidity,
+                    self.temp_temperature)
 
     def setup(self):
         """
@@ -207,9 +214,8 @@ class DHT11Sensor(AbstractInput):
         Kills any watchdogs.
         Setup callbacks
         """
-        self._temp_humidity = None
-        self._temp_temperature = None
-        self._temp_dew_point = None
+        self._humidity = 0
+        self._temperature = 0
         self.high_tick = 0
         self.bit = 40
         self.either_edge_cb = None
@@ -252,16 +258,16 @@ class DHT11Sensor(AbstractInput):
             if self.bit == 39:
                 # 40th bit received
                 self.pi.set_watchdog(self.gpio, 0)
-                total = self._temp_humidity + self._temp_temperature
+                total = self._humidity + self._temperature
                 # is checksum ok ?
                 if not (total & 255) == self.checksum:
                     self.logger.error(
                         "Exception raised when taking a reading: "
                         "Bad Checksum.")
         elif 16 <= self.bit < 24:  # in temperature byte
-            self._temp_temperature = (self._temp_temperature << 1) + val
+            self.temp_temperature = (self.temp_temperature << 1) + val
         elif 0 <= self.bit < 8:  # in humidity byte
-            self._temp_humidity = (self._temp_humidity << 1) + val
+            self.temp_humidity = (self.temp_humidity << 1) + val
         self.bit += 1
 
     def _edge_fall(self, tick, diff):

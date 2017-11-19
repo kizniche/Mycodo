@@ -53,26 +53,31 @@ class DHT22Sensor(AbstractInput):
         self._humidity = None
         self._temperature = None
 
-        self._temp_dew_point = None
-        self._temp_humidity = None
-        self._temp_temperature = None
+        self.temp_temperature = None
+        self.temp_humidity = None
+        self.temp_dew_point = None
+
+        self.power_relay_id = power
+        self.powered = False
 
         if not testing:
             import pigpio
             from mycodo.mycodo_client import DaemonControl
+
+            self.logger = logging.getLogger(
+                'mycodo.inputs.dht22_{id}'.format(id=sensor_id))
+
             self.control = DaemonControl()
-    
+
             self.pigpio = pigpio
-            self.pi = pigpio.pi()
+            self.pi = self.pigpio.pi()
             self.gpio = gpio
-            self.power_relay_id = power
-            self.powered = False
-    
+
             self.bad_CS = 0  # Bad checksum count
             self.bad_SM = 0  # Short message count
             self.bad_MM = 0  # Missing message count
             self.bad_SR = 0  # Sensor reset count
-    
+
             # Power cycle if timeout > MAX_NO_RESPONSE
             self.MAX_NO_RESPONSE = 3
             self.no_response = None
@@ -80,8 +85,8 @@ class DHT22Sensor(AbstractInput):
             self.high_tick = None
             self.bit = None
             self.either_edge_cb = None
-    
-            self.start_sensor()
+
+        self.start_sensor()
 
     def __repr__(self):
         """  Representation of object """
@@ -137,6 +142,9 @@ class DHT22Sensor(AbstractInput):
         self._humidity = None
         self._temperature = None
 
+        import pigpio
+        self.pigpio = pigpio
+
         # Ensure if the power pin turns off, it is turned back on
         if (self.power_relay_id and
                 not db_retrieve_table_daemon(Output, device_id=self.power_relay_id).is_on()):
@@ -150,28 +158,12 @@ class DHT22Sensor(AbstractInput):
         # the first measurement fails if the sensor has just been powered
         # for the first time.
         for _ in range(3):
-            try:
-                try:
-                    self.setup()
-                except Exception as except_msg:
-                    self.logger.error(
-                        'Could not initialize sensor. Check if gpiod is running. '
-                        'Error: {msg}'.format(msg=except_msg))
-                self.pi.write(self.gpio, self.pigpio.LOW)
-                time.sleep(0.017)  # 17 ms
-                self.pi.set_mode(self.gpio, self.pigpio.INPUT)
-                self.pi.set_watchdog(self.gpio, 200)
-                time.sleep(0.2)
-                self._temp_dew_point = dewpoint(self._temp_temperature, self._temp_humidity)
-            except Exception as e:
-                self.logger.exception(
-                    "Exception when taking a reading: {err}".format(
-                        err=e))
-            finally:
-                self.close()
-            if self._humidity is not None:
-                return self._temp_dew_point, self._temp_humidity, self._temp_temperature
-            time.sleep(2)
+            self.measure_sensor()
+            if self.temp_dew_point is not None:
+                return (self.temp_dew_point,
+                        self.temp_humidity,
+                        self.temp_temperature) # success - no errors
+            time.sleep(3)
 
         # Measurement failure, power cycle the sensor (if enabled)
         # Then try two more times to get a measurement
@@ -180,30 +172,16 @@ class DHT22Sensor(AbstractInput):
             time.sleep(5)
             self.start_sensor()
             for _ in range(2):
-                try:
-                    try:
-                        self.setup()
-                    except Exception as except_msg:
-                        self.logger.error(
-                            'Could not initialize sensor. Check if gpiod is running. '
-                            'Error: {msg}'.format(msg=except_msg))
-                    self.pi.write(self.gpio, self.pigpio.LOW)
-                    time.sleep(0.017)  # 17 ms
-                    self.pi.set_mode(self.gpio, self.pigpio.INPUT)
-                    self.pi.set_watchdog(self.gpio, 200)
-                    time.sleep(0.2)
-                    self._temp_dew_point = dewpoint(self._temp_temperature, self._temp_humidity)
-                except Exception as e:
-                    self.logger.exception(
-                        "Exception when taking a reading: {err}".format(
-                            err=e))
-                finally:
-                    self.close()
-                if self._humidity is not None:
-                    return self._temp_dew_point, self._temp_humidity, self._temp_temperature
-                time.sleep(2)
+                self.measure_sensor()
+                if self.temp_dew_point is not None:
+                    return (self.temp_dew_point,
+                            self.temp_humidity,
+                            self.temp_temperature)  # success - no errors
+                time.sleep(3)
 
         self.logger.debug("Could not acquire a measurement")
+        return  None, None, None
+
 
     def read(self):
         """
@@ -213,14 +191,46 @@ class DHT22Sensor(AbstractInput):
         :returns: None on success or 1 on error
         """
         try:
-            self._dew_point, self._humidity, self._temperature = self.get_measurement()
+            (self._dew_point,
+             self._humidity,
+             self._temperature) = self.get_measurement()
             if self._dew_point is not None:
                 return  # success - no errors
         except Exception as e:
-            self.logger.error(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1
+
+    def measure_sensor(self):
+        self.temp_temperature = None
+        self.temp_humidity = None
+        self.temp_dew_point = None
+        try:
+            try:
+                self.setup()
+            except Exception as except_msg:
+                self.logger.error(
+                    'Could not initialize sensor. Check if gpiod is running. '
+                    'Error: {msg}'.format(msg=except_msg))
+            self.pi.write(self.gpio, self.pigpio.LOW)
+            time.sleep(0.017)  # 17 ms
+            self.pi.set_mode(self.gpio, self.pigpio.INPUT)
+            self.pi.set_watchdog(self.gpio, 200)
+            time.sleep(0.2)
+            if (self.temp_humidity is not None and
+                    self.temp_temperature is not None):
+                self.temp_dew_point = dewpoint(
+                    self.temp_temperature, self.temp_humidity)
+        except Exception as e:
+            self.logger.exception(
+                "Exception when taking a reading: {err}".format(
+                    err=e))
+        finally:
+            self.close()
+            return (self.temp_dew_point,
+                    self.temp_humidity,
+                    self.temp_temperature)
 
     def setup(self):
         """
@@ -228,9 +238,6 @@ class DHT22Sensor(AbstractInput):
         Kills any watchdogs.
         Setup callbacks
         """
-        self._temp_humidity = None
-        self._temp_temperature = None
-        self._temp_dew_point = None
         self.no_response = 0
         self.tov = None
         self.high_tick = 0
@@ -283,13 +290,13 @@ class DHT22Sensor(AbstractInput):
                 self.no_response = 0
                 total = self.hH + self.hL + self.tH + self.tL
                 if (total & 255) == self.CS:  # Is checksum ok?
-                    self._temp_humidity = ((self.hH << 8) + self.hL) * 0.1
+                    self.temp_humidity = ((self.hH << 8) + self.hL) * 0.1
                     if self.tH & 128:  # Negative temperature.
                         mult = -0.1
                         self.tH &= 127
                     else:
                         mult = 0.1
-                    self._temp_temperature = ((self.tH << 8) + self.tL) * mult
+                    self.temp_temperature = ((self.tH << 8) + self.tL) * mult
                     self.tov = time.time()
                 else:
                     self.bad_CS += 1

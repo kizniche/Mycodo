@@ -143,21 +143,21 @@ class SignalPWMInput(AbstractInput):
     @property
     def frequency(self):
         """ frequency """
-        if not self._frequency:  # update if needed
+        if self._frequency is None:  # update if needed
             self.read()
         return self._frequency
 
     @property
     def pulse_width(self):
         """ pulse width """
-        if not self._pulse_width:  # update if needed
+        if self._pulse_width is None:  # update if needed
             self.read()
         return self._pulse_width
 
     @property
     def duty_cycle(self):
         """ duty cycle """
-        if not self._duty_cycle:  # update if needed
+        if self._duty_cycle is None:  # update if needed
             self.read()
         return self._duty_cycle
 

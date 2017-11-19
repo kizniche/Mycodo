@@ -85,6 +85,7 @@ class SignalRPMInput(AbstractInput):
     def __init__(self, pin, weighting, rpm_pulses_per_rev, sample_time, testing=False):
         super(SignalRPMInput, self).__init__()
         self._rpm = None
+
         self.pin = pin
         self.weighting = weighting
         self.rpm_pulses_per_rev = rpm_pulses_per_rev
