@@ -910,11 +910,25 @@ A graphical data display that is useful for viewing data sets spanning
 relatively short periods of time (hours/days/weeks). Select a time frame
 to view data and continually updating data from new sensor measurements.
 Multiple graphs can be created on one page that enables a dashboard to
-be created of graphed sensor data. Each graph may have one or more
-sensor measurement, output duration, or PID setpoint rendered onto it.
-Several live graph options exist, such as the time period (x-axis) and
-line colors, as well as navigation and data/image export options. To
-edit graph options, select the plus sign on the top-right of a graph.
+be created of graphed sensor data. Each graph may have one or more data
+from inputs, outputs, or PIDs rendered onto it. To edit graph options,
+select the plus sign on the top-right of a graph.
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Width | The width of the graph on the page, in 1/12th increments. Mulstiple graphs can share the sme row if their combined fraction doesn't exceed 12/12.
+Height (pixels) | The height of the graph.
+x-Axis (minutes) | The duration to diaply on the x-axis of the graph.
+Enable Auto Refresh | Automatically refresh the data on the graph Refresh Period.
+Refresh Period (seconds) | The duration between acquisitions of new data to display on the graph.
+Inputs/Outputs/PIDs | The Inputs, Outputs, and PIDs to display on the graph.
+Enable Title | Show a title of the graph name.
+Enable Navbar | Show a slidable navigation bar at the bottom of the graph.
+Enable Export | Enable a button on the top right of the graph to allow exporting of the currently-displayed data as PNG, JPEG, PDF, SVG, CSV, XLS.
+Enable Range Selector | Show a set of navigation buttons at the top of the graph to quickly change the display duration.
+Enable Custom Colors | Use custom colors for Input, Output, and PID lines. Select the colors with the buttons that appear below this checkbox.
+Up / Down | Reorganize the graph placement by moving it one placement up or down.
+
 
 ### Asynchronous Graphs
 

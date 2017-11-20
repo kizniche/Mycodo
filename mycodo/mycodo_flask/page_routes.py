@@ -283,11 +283,9 @@ def page_graph():
     """
     # Create form objects
     form_add_graph = forms_graph.GraphAdd()
-    form_add_gauge = forms_graph.GaugeAdd()
     form_mod_graph = forms_graph.GraphMod()
+    form_add_gauge = forms_graph.GaugeAdd()
     form_mod_gauge = forms_graph.GaugeMod()
-    form_del_graph = forms_graph.GraphDel()
-    form_order_graph = forms_graph.GraphOrder()
 
     # Retrieve the order to display graphs
     display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
@@ -349,22 +347,32 @@ def page_graph():
             return redirect(url_for('general_routes.home'))
 
         form_name = request.form['form-name']
-        if form_name == 'modGraph':
-            utils_graph.graph_mod(form_mod_graph, request.form)
-        elif form_name == 'modGauge':
-            utils_graph.graph_mod(form_mod_gauge, request.form)
-        elif form_name == 'delGraph':
-            utils_graph.graph_del(form_del_graph)
-        elif form_order_graph.orderGraphUp.data:
-            utils_graph.graph_reorder(form_order_graph.orderGraph_id.data,
-                                      display_order, 'up')
-        elif form_order_graph.orderGraphDown.data:
-            utils_graph.graph_reorder(form_order_graph.orderGraph_id.data,
-                                      display_order, 'down')
-        elif form_name == 'addGraph':
+        if form_add_graph.save.data:
             utils_graph.graph_add(form_add_graph, display_order)
-        elif form_name == 'addGauge':
+        elif form_mod_graph.mod.data:
+            utils_graph.graph_mod(form_mod_graph, request.form)
+        elif form_mod_graph.delete.data:
+            utils_graph.graph_del(form_mod_graph)
+        elif form_mod_graph.order_up.data:
+            utils_graph.graph_reorder(form_mod_graph.graph_id.data,
+                                      display_order, 'up')
+        elif form_mod_graph.order_down.data:
+            utils_graph.graph_reorder(form_mod_graph.graph_id.data,
+                                      display_order, 'down')
+
+        elif form_add_gauge.save.data:
             utils_graph.graph_add(form_add_gauge, display_order)
+        elif form_mod_gauge.mod.data:
+            utils_graph.graph_mod(form_mod_gauge, request.form)
+        elif form_mod_gauge.delete.data:
+            utils_graph.graph_del(form_mod_gauge)
+        elif form_mod_gauge.order_up.data:
+            utils_graph.graph_reorder(form_mod_gauge.graph_id.data,
+                                      display_order, 'up')
+        elif form_mod_gauge.order_down.data:
+            utils_graph.graph_reorder(form_mod_gauge.graph_id.data,
+                                      display_order, 'down')
+
         return redirect('/graph')
 
     return render_template('pages/graph.html',
@@ -380,12 +388,10 @@ def page_graph():
                            sensor_measurements=input_measurements,
                            measurement_units=MEASUREMENT_UNITS,
                            displayOrder=display_order,
-                           form_mod_graph=form_mod_graph,
-                           form_mod_gauge=form_mod_gauge,
-                           form_del_graph=form_del_graph,
-                           form_order_graph=form_order_graph,
                            form_add_graph=form_add_graph,
-                           form_add_gauge=form_add_gauge)
+                           form_add_gauge=form_add_gauge,
+                           form_mod_graph=form_mod_graph,
+                           form_mod_gauge=form_mod_gauge)
 
 
 @blueprint.route('/graph-async', methods=('GET', 'POST'))

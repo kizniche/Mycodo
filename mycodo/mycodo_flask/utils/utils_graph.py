@@ -162,6 +162,8 @@ def graph_mod(form_mod_graph, request_form):
         mod_graph.height = form_mod_graph.height.data
         mod_graph.x_axis_duration = form_mod_graph.xaxis_duration.data
         mod_graph.refresh_duration = form_mod_graph.refresh_duration.data
+        mod_graph.enable_auto_refresh = form_mod_graph.enable_auto_refresh.data
+        mod_graph.enable_title = form_mod_graph.enable_title.data
         mod_graph.enable_navbar = form_mod_graph.enable_navbar.data
         mod_graph.enable_export = form_mod_graph.enable_export.data
         mod_graph.enable_rangeselect = form_mod_graph.enable_range.data

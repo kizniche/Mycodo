@@ -1624,7 +1624,69 @@
 <h2 id="graphs">Graphs</h2>
 <p>There are two different types of graphs, Live and Asynchronous.</p>
 <h3 id="live-graphs">Live Graphs</h3>
-<p>A graphical data display that is useful for viewing data sets spanning relatively short periods of time (hours/days/weeks). Select a time frame to view data and continually updating data from new sensor measurements. Multiple graphs can be created on one page that enables a dashboard to be created of graphed sensor data. Each graph may have one or more sensor measurement, output duration, or PID setpoint rendered onto it. Several live graph options exist, such as the time period (x-axis) and line colors, as well as navigation and data/image export options. To edit graph options, select the plus sign on the top-right of a graph.</p>
+<p>A graphical data display that is useful for viewing data sets spanning relatively short periods of time (hours/days/weeks). Select a time frame to view data and continually updating data from new sensor measurements. Multiple graphs can be created on one page that enables a dashboard to be created of graphed sensor data. Each graph may have one or more data from inputs, outputs, or PIDs rendered onto it. To edit graph options, select the plus sign on the top-right of a graph.</p>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Width</td>
+<td style="text-align: left;">The width of the graph on the page, in 1/12th increments. Mulstiple graphs can share the sme row if their combined fraction doesn’t exceed 12/12.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Height (pixels)</td>
+<td style="text-align: left;">The height of the graph.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">x-Axis (minutes)</td>
+<td style="text-align: left;">The duration to diaply on the x-axis of the graph.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Enable Auto Refresh</td>
+<td style="text-align: left;">Automatically refresh the data on the graph Refresh Period.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Refresh Period (seconds)</td>
+<td style="text-align: left;">The duration between acquisitions of new data to display on the graph.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Inputs/Outputs/PIDs</td>
+<td style="text-align: left;">The Inputs, Outputs, and PIDs to display on the graph.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Enable Title</td>
+<td style="text-align: left;">Show a title of the graph name.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Enable Navbar</td>
+<td style="text-align: left;">Show a slidable navigation bar at the bottom of the graph.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Enable Export</td>
+<td style="text-align: left;">Enable a button on the top right of the graph to allow exporting of the currently-displayed data as PNG, JPEG, PDF, SVG, CSV, XLS.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Enable Range Selector</td>
+<td style="text-align: left;">Show a set of navigation buttons at the top of the graph to quickly change the display duration.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Enable Custom Colors</td>
+<td style="text-align: left;">Use custom colors for Input, Output, and PID lines. Select the colors with the buttons that appear below this checkbox.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Up / Down</td>
+<td style="text-align: left;">Reorganize the graph placement by moving it one placement up or down.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="asynchronous-graphs">Asynchronous Graphs</h3>
 <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it’s not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.</p>
 <p>Note: Live Graphs require measurements to be acquired, therefore at least one sensor needs to be added and activated in order to display live data.</p>

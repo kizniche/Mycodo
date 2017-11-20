@@ -3,6 +3,7 @@
 ### Features
 
  - Add Freqency, Duty Cycle, Pulse Width, RPM, and Linux Command variables to Conditional commands ([#311](https://github.com/kizniche/mycodo/issues/311)) (See [Input Conditional command variables](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#input-conditional-command-variables))
+ - Add Graph options: Enable Auto Refresh and Enable Title
 
 ### Bugfixes
 
