@@ -637,24 +637,29 @@ Commands that are executed by conditional statements can now include variables. 
 Variable | Description
 --------------------------- | -------------------------------------------
 ((input_location)) | The Input location (such as GPIO pin, I2C address, etc.)
-((input_period)) | The period (seconds) between condition
-((input_altitude)) | Sensor measurement: altitude
-((input_co2)) | Sensor measurement: CO2
-((input_cpu_load_1m)) | Sensor measurement:  CPU load (1 min)
-((input_cpu_load_5m)) | Sensor measurement: CPU load (5 min)
-((input_cpu_load_15m)) | Sensor measurement: CPU load (15 min)
-((input_dewpoint)) | Sensor measurement: dew point
-((input_disk_space)) | Sensor measurement: disk space
-((input_edge)) | Sensor measurement: edge detected (1 or -1)
-((input_humidity)) | Sensor measurement: humidity
-((input_lux)) | Sensor measurement: lux
-((input_moisture)) | Sensor measurement: moisture
-((input_ph)) | Sensor measurement: ph
-((input_pressure)) | Sensor measurement: pressure
-((input_temperature)) | Sensor measurement: temperature
-((input_temperature_die)) | Sensor measurement: temperature (die)
-((input_temperature_object)) | Sensor measurement: temperature (object)
-((input_voltage)) | Sensor measurement: voltage
+((input_period)) | The period (seconds) between measurements
+((input_linux_command)) | Input measurement: Linux Command return value
+((input_altitude)) | Input measurement: altitude
+((input_co2)) | Input measurement: CO2
+((input_cpu_load_1m)) | Input measurement:  CPU load (1 min)
+((input_cpu_load_5m)) | Input measurement: CPU load (5 min)
+((input_cpu_load_15m)) | Input measurement: CPU load (15 min)
+((input_dewpoint)) | Input measurement: dew point
+((input_disk_space)) | Input measurement: disk space
+((input_duty_cycle)) | Input measurement: duty cycle
+((input_edge)) | Input measurement: edge detected (1 or -1)
+((input_frequency)) | Input measurement: frequency
+((input_humidity)) | Input measurement: humidity
+((input_lux)) | Input measurement: lux
+((input_moisture)) | Input measurement: moisture
+((input_ph)) | Input measurement: ph
+((input_pressure)) | Input measurement: pressure
+((input_pulse_width)) | Input measurement: pulse width
+((input_rpm)) | Input measurement: RPM
+((input_temperature)) | Input measurement: temperature
+((input_temperature_die)) | Input measurement: temperature (die)
+((input_temperature_object)) | Input measurement: temperature (object)
+((input_voltage)) | Input measurement: voltage
 
 ##### Output Conditional command variables
 Variable | Description

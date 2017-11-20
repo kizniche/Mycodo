@@ -272,100 +272,100 @@ class InputController(threading.Thread):
             self.measure_input = RaspberryPiFreeSpace(self.location)
         elif self.device == 'AM2302':
             self.measure_input = DHT22Sensor(self.input_id,
-                                              int(self.location))
+                                             int(self.location))
         elif self.device == 'AM2315':
             self.measure_input = AM2315Sensor(self.input_id,
-                                               self.i2c_bus,
-                                               power=self.power_output_id)
+                                              self.i2c_bus,
+                                              power=self.power_output_id)
         elif self.device == 'ATLAS_PH_I2C':
             self.measure_input = AtlaspHSensor(self.interface,
-                                                i2c_address=self.i2c_address,
-                                                i2c_bus=self.i2c_bus,
-                                                sensor_sel=self.input_sel)
+                                               i2c_address=self.i2c_address,
+                                               i2c_bus=self.i2c_bus,
+                                               sensor_sel=self.input_sel)
         elif self.device == 'ATLAS_PH_UART':
             self.measure_input = AtlaspHSensor(self.interface,
-                                                device_loc=self.device_loc,
-                                                baud_rate=self.baud_rate,
-                                                sensor_sel=self.input_sel)
+                                               device_loc=self.device_loc,
+                                               baud_rate=self.baud_rate,
+                                               sensor_sel=self.input_sel)
         elif self.device == 'ATLAS_PT1000_I2C':
             self.measure_input = AtlasPT1000Sensor(self.interface,
-                                                    i2c_address=self.i2c_address,
-                                                    i2c_bus=self.i2c_bus)
+                                                   i2c_address=self.i2c_address,
+                                                   i2c_bus=self.i2c_bus)
         elif self.device == 'ATLAS_PT1000_UART':
             self.measure_input = AtlasPT1000Sensor(self.interface,
-                                                    device_loc=self.device_loc,
-                                                    baud_rate=self.baud_rate)
+                                                   device_loc=self.device_loc,
+                                                   baud_rate=self.baud_rate)
         elif self.device == 'BH1750':
             self.measure_input = BH1750Sensor(self.i2c_address,
-                                               self.i2c_bus,
-                                               self.resolution,
-                                               self.sensitivity)
+                                              self.i2c_bus,
+                                              self.resolution,
+                                              self.sensitivity)
         elif self.device == 'BME280':
             self.measure_input = BME280Sensor(self.i2c_address,
-                                               self.i2c_bus)
+                                              self.i2c_bus)
         # TODO: BMP is an old designation and will be removed in the future
         elif self.device in ['BMP', 'BMP180']:
             self.measure_input = BMP180Sensor(self.i2c_bus)
         elif self.device == 'BMP280':
             self.measure_input = BMP280Sensor(self.i2c_address,
-                                               self.i2c_bus)
+                                              self.i2c_bus)
         elif self.device == 'CHIRP':
             self.measure_input = ChirpSensor(self.i2c_address,
-                                              self.i2c_bus)
+                                             self.i2c_bus)
         elif self.device == 'DS18B20':
             self.measure_input = DS18B20Sensor(self.location)
         elif self.device == 'DHT11':
             self.measure_input = DHT11Sensor(self.input_id,
-                                              int(self.location),
-                                              power=self.power_output_id)
+                                             int(self.location),
+                                             power=self.power_output_id)
         elif self.device == 'DHT22':
             self.measure_input = DHT22Sensor(self.input_id,
-                                              int(self.location),
-                                              power=self.power_output_id)
+                                             int(self.location),
+                                             power=self.power_output_id)
         elif self.device == 'HTU21D':
             self.measure_input = HTU21DSensor(self.i2c_bus)
         elif self.device == 'K30_UART':
             self.measure_input = K30Sensor(self.device_loc,
-                                            baud_rate=self.baud_rate)
+                                           baud_rate=self.baud_rate)
         elif self.device == 'MH_Z16_I2C':
             self.measure_input = MHZ16Sensor(self.interface,
-                                              i2c_address=self.i2c_address,
-                                              i2c_bus=self.i2c_bus)
+                                             i2c_address=self.i2c_address,
+                                             i2c_bus=self.i2c_bus)
         elif self.device == 'MH_Z16_UART':
             self.measure_input = MHZ16Sensor(self.interface,
-                                              device_loc=self.device_loc,
-                                              baud_rate=self.baud_rate)
+                                             device_loc=self.device_loc,
+                                             baud_rate=self.baud_rate)
         elif self.device == 'MH_Z19_UART':
             self.measure_input = MHZ19Sensor(self.device_loc,
-                                              baud_rate=self.baud_rate)
+                                             baud_rate=self.baud_rate)
         elif self.device == 'SHT1x_7x':
             self.measure_input = SHT1x7xSensor(int(self.location),
-                                                self.sht_clock_pin,
-                                                self.sht_voltage)
+                                               self.sht_clock_pin,
+                                               self.sht_voltage)
         elif self.device == 'SHT2x':
             self.measure_input = SHT2xSensor(self.i2c_address,
-                                              self.i2c_bus)
+                                             self.i2c_bus)
         elif self.device == 'SIGNAL_PWM':
             self.measure_input = SignalPWMInput(int(self.location),
-                                           self.weighting,
-                                           self.sample_time)
+                                                self.weighting,
+                                                self.sample_time)
         elif self.device == 'SIGNAL_RPM':
             self.measure_input = SignalRPMInput(int(self.location),
-                                           self.weighting,
-                                           self.rpm_pulses_per_rev,
-                                           self.sample_time)
+                                                self.weighting,
+                                                self.rpm_pulses_per_rev,
+                                                self.sample_time)
         elif self.device == 'TMP006':
             self.measure_input = TMP006Sensor(self.i2c_address,
-                                               self.i2c_bus)
+                                              self.i2c_bus)
         elif self.device == 'TSL2561':
             self.measure_input = TSL2561Sensor(self.i2c_address,
-                                                self.i2c_bus)
+                                               self.i2c_bus)
         elif self.device == 'TSL2591':
             self.measure_input = TSL2591Sensor(self.i2c_address,
-                                                self.i2c_bus)
+                                               self.i2c_bus)
         elif self.device == 'LinuxCommand':
             self.measure_input = LinuxCommand(self.cmd_command,
-                                               self.cmd_measurement)
+                                              self.cmd_measurement)
         else:
             self.device_recognized = False
             self.logger.debug("Device '{device}' not recognized".format(
@@ -575,17 +575,23 @@ class InputController(threading.Thread):
 
             # Execute command in shell
             elif cond_action.do_action == 'command':
-                message += u" Execute '{com}' ".format(
-                        com=cond_action.do_action_string)
 
+                # Replace string variables with actual values
                 command_str = cond_action.do_action_string
                 for each_measurement, each_value in self.measurement.values.items():
                     command_str = command_str.replace(
                         "((input_{var}))".format(var=each_measurement), str(each_value))
+                    if each_measurement == self.cmd_measurement:
+                        command_str = command_str.replace(
+                            "((input_linux_command))", str(self.location))
                 command_str = command_str.replace(
                     "((input_location))", str(self.location))
                 command_str = command_str.replace(
-                    "((input_period))", str(self.cond_if_sensor_period[cond_id]))
+                    "((input_period))", str(self.cond_if_input_period[cond_id]))
+
+                message += u" Execute '{com}' ".format(
+                    com=command_str)
+
                 _, _, cmd_status = cmd_output(command_str)
 
                 message += u"(Status: {stat}).".format(stat=cmd_status)
@@ -858,7 +864,7 @@ class InputController(threading.Thread):
         else:
             return None
 
-    def edge_detected(self, pin):
+    def edge_detected(self):
         gpio_state = GPIO.input(int(self.location))
         if time.time() > self.edge_reset_timer:
             self.edge_reset_timer = time.time()+self.switch_reset_period
