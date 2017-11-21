@@ -6,8 +6,8 @@ import os
 import collections
 from datetime import timedelta
 
-MYCODO_VERSION = '5.4.5'
-ALEMBIC_VERSION = '3dcf34dd7caf'
+MYCODO_VERSION = '5.4.6'
+ALEMBIC_VERSION = '8828a0074a44'
 
 LANGUAGES = {
     'en': 'English',

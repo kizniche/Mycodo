@@ -128,19 +128,20 @@ class LCDController(threading.Thread):
                 LCDData).filter(LCDData.lcd_id == lcd.id).all()
 
             self.lcd_string_line = {}
+            self.lcd_line = {}
+            self.lcd_max_age = {}
+
             for each_lcd_display in lcd_data:
                 self.display_ids.append(each_lcd_display.id)
                 self.lcd_string_line[each_lcd_display.id] = {}
+                self.lcd_line[each_lcd_display.id] = {}
+                self.lcd_max_age[each_lcd_display.id] = {}
+
                 for i in range(1, self.lcd_y_lines + 1):
                     self.lcd_string_line[each_lcd_display.id][i] = ''
-
-            self.lcd_line = {}
-            for each_lcd_display in lcd_data:
-                self.lcd_line[each_lcd_display.id] = {}
-                for i in range(1, self.lcd_y_lines + 1):
                     self.lcd_line[each_lcd_display.id][i] = {}
+                    self.lcd_max_age[each_lcd_display.id][i] = each_lcd_display.line_1_max_age
 
-            for each_lcd_display in lcd_data:
                 if self.lcd_y_lines in [2, 4]:
                     self.setup_lcd_line(
                         each_lcd_display.id,
@@ -279,11 +280,13 @@ class LCDController(threading.Thread):
                 if self.lcd_line[display_id][i]['measurement'] == 'time':
                     last_measurement = read_last_influxdb(
                         self.lcd_line[display_id][i]['id'],
-                        '/.*/')
+                        '/.*/',
+                        duration_sec=self.lcd_max_age[display_id][i])
                 else:
                     last_measurement = read_last_influxdb(
                         self.lcd_line[display_id][i]['id'],
-                        self.lcd_line[display_id][i]['measurement'])
+                        self.lcd_line[display_id][i]['measurement'],
+                        duration_sec=self.lcd_max_age[display_id][i])
                 if last_measurement:
                     self.lcd_line[display_id][i]['time'] = last_measurement[0]
                     self.lcd_line[display_id][i]['measurement_value'] = last_measurement[1]
@@ -326,7 +329,6 @@ class LCDController(threading.Thread):
                     measurement = self.lcd_line[display_id][i]['measurement']
 
                 # Produce the line that will be displayed on the LCD
-                number_characters = self.lcd_x_characters
                 if self.lcd_line[display_id][i]['measurement'] == 'time':
                     # Convert UTC timestamp to local timezone
                     utc_dt = datetime.datetime.strptime(
@@ -339,7 +341,7 @@ class LCDController(threading.Thread):
                     value_length = len(str(
                         self.lcd_line[display_id][i]['measurement_value']))
                     unit_length = len(self.list_inputs[measurement]['unit'].replace(u'°', u''))
-                    name_length = number_characters - value_length - unit_length - 2
+                    name_length = self.lcd_x_characters - value_length - unit_length - 2
                     name_cropped = self.lcd_line[display_id][i]['name'].ljust(name_length)[:name_length]
                     self.lcd_string_line[display_id][i] = u'{name} {value} {unit}'.format(
                         name=name_cropped,
@@ -348,13 +350,18 @@ class LCDController(threading.Thread):
                 else:
                     value_length = len(str(
                         self.lcd_line[display_id][i]['measurement_value']))
-                    name_length = number_characters - value_length - 1
+                    name_length = self.lcd_x_characters - value_length - 1
                     name_cropped = self.lcd_line[display_id][i]['name'][:name_length]
                     self.lcd_string_line[display_id][i] = u'{name} {value}'.format(
                         name=name_cropped,
                         value=self.lcd_line[display_id][i]['measurement_value'])
             else:
-                self.lcd_string_line[display_id][i] = u'ERROR: NO DATA'
+                error = u'NO DATA'
+                name_length = self.lcd_x_characters - len(error) - 1
+                name_cropped = self.lcd_line[display_id][i]['name'].ljust(name_length)[:name_length]
+                self.lcd_string_line[display_id][i] = 'u{name} {error}'.format(
+                    name=name_cropped, error=error)
+
         except Exception as except_msg:
             self.logger.exception("Error: {err}".format(err=except_msg))
 
