@@ -161,7 +161,9 @@ def user_mod(form):
             if flask_login.current_user.id == form.user_id.data:
                 logout_user = True
 
-        if mod_user.role == 1 and mod_user.role != form.role.data:
+        current_role = Role.query.filter(
+            Role.name == form.role.data).first()
+        if mod_user.role == 1 and mod_user.role != current_role.id:
             error.append("Cannot change currently-logged in user's role from Admin")
 
         if not error:

@@ -926,6 +926,10 @@ next every set period.
 
   Display Line #        Select which measurement to display on each
                         line of the LCD.
+
+  Max Age (seconds)     The maximum age the measurement is allowed to
+                        be. If no measurement was acquired in this time
+                        frame, the display will indicate “NO MEASURE”.
   ---------------------------------------------------------------------
 
 

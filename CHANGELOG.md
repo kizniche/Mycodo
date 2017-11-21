@@ -1,11 +1,22 @@
+## 5.4.6 (2017-11-21)
+
+### Features
+
+ - Add Max Age (seconds) to LCD line options
+ - Make LCDs collapsable in the web UI
+
+### Bugfixes
+
+ - Fix saving user theme ([#326](https://github.com/kizniche/mycodo/issues/326))
+
+
 ## 5.4.5 (2017-11-21)
 
 ### Features
 
  - Add Freqency, Duty Cycle, Pulse Width, RPM, and Linux Command variables to Conditional commands ([#311](https://github.com/kizniche/mycodo/issues/311)) (See [Input Conditional command variables](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#input-conditional-command-variables))
- - Add Graph options: Enable Auto Refresh and Enable Title
+ - Add Graph options: Enable Auto Refresh, Enable Title, and Enable X-Axis Reset ([#319](https://github.com/kizniche/mycodo/issues/319))
  - Add automatic checks for Mycodo updates (can be disabled in the configuration)
- - Add option to prevent automatic reset of graph x-axis ([#319](https://github.com/kizniche/mycodo/issues/319))
 
 ### Bugfixes
 

@@ -463,6 +463,7 @@ Multiplexer Channel | If the LCD is connected to a multiplexer, select the multi
 Period | This is the period of time (in seconds) between redrawing the LCD with new data or switching to the next set of displays (if multiple displays are used).
 Add Display Set | Add a set of display lines to the LCD.
 Display Line \# | Select which measurement to display on each line of the LCD.
+Max Age (seconds) | The maximum age the measurement is allowed to be. If no measurement was acquired in this time frame, the display will indicate "NO DATA".
 
 
 Controller Functions
