@@ -127,10 +127,10 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
             return [last_time, last_measurement]
         except KeyError:
             if duration_sec:
-                logger.error("No measurement available in the past "
+                logger.debug("No measurement available in the past "
                              "{sec} seconds.".format(sec=duration_sec))
             else:
-                logger.error("No measurement available.")
+                logger.debug("No measurement available.")
         except Exception:
             logger.exception("Error parsing the last influx measurement")
 

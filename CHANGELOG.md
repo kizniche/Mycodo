@@ -1,3 +1,11 @@
+## 5.4.7 (2017-11-21)
+
+### Bugfixes
+
+ - Fix flood of errors in the log if an LCD doesn't have a measurement to display
+ - Fix LCD display being offset one character when displaying errors
+
+
 ## 5.4.6 (2017-11-21)
 
 ### Features
