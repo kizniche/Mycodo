@@ -9,18 +9,11 @@ TABLE OF CONTENTS
 
 About Mycodo
 
+Brief Overview
+
 Frequently Asked Questions
 
 Upgrading
-
-Settings
-
--   General Settings
--   Output Usage Settings
--   Users
--   User Roles
--   Alert Settings
--   Camera Settings
 
 Controllers
 
@@ -42,6 +35,15 @@ PID Tuning
 -   Exact-Temperature Regulation
 -   High-Temperature Regulation
 
+Configuration Settings
+
+-   General Settings
+-   Output Usage Settings
+-   Users
+-   User Roles
+-   Alert Settings
+-   Camera Settings
+
 Miscellaneous
 
 -   Graphs
@@ -55,18 +57,13 @@ Troubleshooting
 -   Daemon Not Running
 -   More
 
-Input and Device Setup
-
-Input Interfaces
+Device Interfaces
 
 -   1-Wire
 -   GPIO
 -   UART
 -   I2C
 -   Edge Detection
-
-Device Setup
-
 -   I2C Multiplexers
 
 Device Specific Information
@@ -130,26 +127,78 @@ Diagrams
 ABOUT MYCODO
 
 
-Mycodo is a remote monitoring and automated regulation system with a
-focus on modulating environmental conditions. It was built to run on the
-Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install
-and set up.
+Mycodo is a system for acquiring and using sensor measurements in a
+feedback loop that controls a diverse set of outputs. This is commonly
+used for automated regulation of environmental conditions, such as
+temperature, humidity, CO2 concentration, and many more. It was built to
+run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy
+to install and set up.
 
-The core system coordinates a diverse set of responses to sensor
-measurements, including actions such as camera captures, email
-notifications, relay activation/deactivation, regulation with PID
-control, and more. Mycodo has been used for cultivating gourmet
-mushrooms, cultivating plants, culturing microorganisms, maintaining
-honey bee apiary homeostasis, incubating snake eggs and young animals,
-aging cheeses, fermenting foods, maintaining aquatic systems, and more.
+The system coordinates a diverse set of responses to sensor
+measurements, including actions such as relay switching, regulation by
+PID control, email notifications, camera captures, and more. Mycodo has
+been used for cultivating gourmet mushrooms, cultivating plants,
+culturing microorganisms, maintaining honey bee apiary homeostasis,
+incubating snake eggs and young animals, aging cheeses, fermenting
+foods, maintaining aquatic systems, and more.
 
-A proportional-derivative-integral (PID) controller is a control loop
-feedback mechanism used throughout industry for controlling systems. It
-efficiently brings a measurable condition, such as the temperature, to a
-desired state and maintains it there with little overshoot and
-oscillation. A well-tuned PID controller will raise to the setpoint
-quickly, have minimal overshoot, and maintain the setpoint with little
-oscillation.
+
+
+BRIEF OVERVIEW
+
+
+There are a number of different uses for Mycodo, from simple storing of
+sensor measurements, to regulating the environmental conditions of a
+physical space, to capturing motion-activated or timelapse photography.
+There are several componenets of the system that may be configured.
+
+
+Input
+
+Input controllers acquire measurements and store them in a time series
+database. Measurements taken by an Input Controller typically come from
+sensors, but Input Controllers may also be configured to use the return
+value of a linux command, making integrating new input systems very
+easy.
+
+
+Output
+
+Output Controllers produce changes to the general input/output (GPIO)
+pins of the Raspberry Pi or may be configured to execute linux commands
+in order to allow an unlimited number of extra potential uses. There are
+a few different types of outputs: simple switching of pins (HIGH/LOW),
+generating pulse-width modulatated (PWM) signals, switching 433 MHz
+wireless relays, and linux command execution. The most common setup is
+using a relay to switch electrical devices on and off.
+
+
+PID
+
+When Inputs and Outputs are combined, PID Controllers may be used to
+create a fedback loop that uses the Output device to modulate an
+environmental condition the Input detects. Certain Inputs may be coupled
+with certain Outputs to create a variety of different control and
+regulation applications. Beyond simple regulation, Methods may be used
+to create changing setpoints over time, enabling such things as thermal
+cyclers, reflow ovens, environmental simulation for terrariums, food and
+beverage fermenttion or curing, and cooking food (sous-vide), to name a
+few.
+
+
+Timer
+
+Timers can be set to trigger events based on specific dates and times or
+according to durations of time. Timers are fairly basic, but can be
+configured in very complex ways. Don’t underestimate a good timer.
+
+
+LCD
+
+LCDs may be set up to have a way to quickly view information, such as
+Input, Output, or PID controllers, and can be set to flash in case of
+triggered events, like an emergency, such as the temperature increasing
+beyond a certain point in an area that is supposed to be kept cold.
 
 
 
@@ -169,7 +218,7 @@ Here is how I generally set up Mycodo to monitor and regulate:
     The Raspberry Pi is capable of directly switching relays (using a
     3.3-volt signal), although opto-isolating the circuit is advisable.
     Be careful when selecting a relay not to exceed the current draw of
-    the Raspberry Pi’s PGIO.
+    the Raspberry Pi’s GPIO.
 3.  See the Device Specific Information for information about what
     sensors are supported. Acquire one or more of these sensors and
     relays and connect them to the Raspberry Pi according to the
@@ -202,13 +251,16 @@ _How do I add an input (like a sensor) to the system that’s not
 currently supported?_
 
 Currently, adding the ability to receive input that’s not currently
-supported to the system involves editing several files. There has been
-effort to make the addition process as simple as possible. See the
-Adding Support for a New Input Wiki page for how to do this.
+supported to the system can be achieved by two different methods.
 
-An alternate way to add an input is to create a linux script that
-obtains and returns a value when executed, then add a new input with the
-“Linux Command” option. This will periodically execute the command and
+The first involves editing several files. There has been effort to make
+the addition process as simple as possible. See the Adding Support for a
+New Input Wiki page for how to do this.
+
+The second way to add an input is to create a script that obtains and
+returns a numerical value when executed in the linux system of the
+Raspberry Pi. This script may be configured to be executed by a “Linux
+Command” Input type. This will periodically execute the command and
 store the returned value to the database for use with the rest of the
 Mycodo system.
 
@@ -219,8 +271,8 @@ PWM output signal from the PID?_
 
 Yes, as long as you have the proper hardware to do that. The PWM signal
 being produced by the PID should be handled appropriately, whether by a
-fast-switching solid state relay, an AC modulation ciruit, or something
-else.
+fast-switching solid state relay, an AC modulation ciruit, DC modulation
+circuit, or something else.
 
 ------------------------------------------------------------------------
 
@@ -247,212 +299,6 @@ in a terminal. A log of the upgrade process is created at
 /var/log/mycodo/mycodoupgrade.log
 
 sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade
-
-
-
-SETTINGS
-
-
-The settings menu, accessed by selecting the gear icon in the top-right,
-then the Configure link, is a general area for various system-wide
-configuration options.
-
-
-General Settings
-
-  ---------------------------------------------------------------------
-  Setting               Description
-  --------------------- -----------------------------------------------
-  Language              Set the language that will be displayed in the
-                        web user interface.
-
-  Force HTTPS           Require web browsers to use SSL/HTTPS. Any
-                        request to http:// will be redirected to
-                        https://.
-
-  Hide success alerts   Hide all success alert boxes that appear at the
-                        top of the page.
-
-  Hide info alerts      Hide all info alert boxes that appear at the
-                        top of the page.
-
-  Hide warning alerts   Hide all warning alert boxes that appear at the
-                        top of the page.
-
-  Opt-out of statistics Turn off sending anonymous usage statistics.
-                        Please consider that this helps the development
-                        to leave on.
-  ---------------------------------------------------------------------
-
-
-Output Usage Settings
-
-In order to calculate accurate output usage statistics, a few
-characteristics of your electrical system needs to be know. These
-variables should describe the characteristics of the electrical system
-being used by the relays to operate electrical devices. Note: Proper
-output usage calculations also rely on the correct current draw to be
-set for each output (see Output Settings).
-
-  ---------------------------------------------------------------------
-  Setting               Description
-  --------------------- -----------------------------------------------
-  Max Amps              Set the maximum allowed amperage to be switched
-                        on at any given time. If a output that’s
-                        instructed to turn on will cause the sum of
-                        active devices to exceed this amount, the
-                        output will not be allowed to turn on, to
-                        prevent any damage that may result from
-                        exceeding current limits.
-
-  Voltage               Alternating current (AC) voltage that is
-                        switched by the outputs. This is usually 120 or
-                        240.
-
-  Cost per kWh          This is how much you pay per kWh.
-
-  Currency Unit         This is the unit used for the currency that
-                        pays for electricity.
-
-  Day of Month          This is the day of the month (1-30) that the
-                        electricity meter is read (which will
-                        correspond to the electrical bill).
-  ---------------------------------------------------------------------
-
-
-Users
-
-Mycodo requires at least one Admin user for the login system to be
-enabled. If there isn’t an Admin user, the web server will redirect to
-an Admin Creation Form. This is the first page you see when starting
-Mycodo for the first time. After an Admin user has been created,
-additional users may be created from the User Settings page.
-
-  ---------------------------------------------------------------------
-  Setting               Description
-  --------------------- -----------------------------------------------
-  Username              Choose a user name that is between 2 and 64
-                        characters. The user name is case insensitive
-                        (all user names are converted to lower-case).
-
-  Email                 The email associated with the new account.
-
-  Password/Repeat       Choose a password that is between 6 and 64
-                        characters and only contain letters, numbers,
-                        and symbols.
-
-  Role                  Roles are a way of imposing access restrictions
-                        on users, to either allow or deny actions. See
-                        the table below for explanations of the four
-                        default Roles.
-  ---------------------------------------------------------------------
-
-
-User Roles
-
-Roles define the permissions of each user. There are 4 default roles
-that determine if a user can view or edit particular areas of Mycodo.
-Four roles are provided by default, but custom roles may be created.
-
-  Role               Admin   Editor   Monitor   Guest
-  ------------------ ------- -------- --------- -------
-  Edit Users         X                          
-  Edit Controllers   X       X                  
-  Edit Settings      X       X                  
-  View Settings      X       X        X         
-  View Camera        X       X        X         
-  View Stats         X       X        X         
-  View Logs          X       X        X         
-
-1The Edit Controllers permission protects the editing of Graphs, LCDs,
-Methods, PIDs, Outputs, Inputs, and Timers.
-
-2The View Stats permission protects the viewing of usage statistics and
-the System Info and Output Usage pages.
-
-
-Alert Settings
-
-Alert settings set up the credentials for sending email notifications.
-
-  ---------------------------------------------------------------------
-  Setting               Description
-  --------------------- -----------------------------------------------
-  SMTP Host             The SMTP server to use to send emails from.
-
-  SMTP Port             Port to communicate with the SMTP server (465
-                        for SSL, 587 for TSL).
-
-  Enable SSL            Check to emable SSL, uncheck to enable TSL.
-
-  SMTP User             The user name to send the email from. This can
-                        be just a name or the entire email address.
-
-  SMTP Password         The password for the user.
-
-  From Email            What the from email address be set as. This
-                        should be the actual email address for this
-                        user.
-
-  Max emails (per hour) Set the maximum number of emails that can be
-                        sent per hour. If more notifications are
-                        triggered within the hour and this number has
-                        been reached, the notifications will be
-                        discarded.
-
-  Send Test Email       Test the email configuration by sending a test
-                        email.
-  ---------------------------------------------------------------------
-
-
-Camera Settings
-
-Many cameras can be used simultaneously with Mycodo. Each camera needs
-to be set up in the camera settings, then may be used throughout the
-software. Note that not every option (such as Hue or White Balance) may
-be able to be used with your particular camera, due to manufacturer
-differences in hardware and software.
-
-  ---------------------------------------------------------------------
-  Setting               Description
-  --------------------- -----------------------------------------------
-  Type                  Select whether the camera is a Raspberry Pi
-                        Camera or a USB camera.
-
-  Library               Select which library to use to communicate with
-                        the camera. The Raspberry Pi Camera uses
-                        picamera (and potentially opencv), and USB
-                        cameras should be set to opencv.
-
-  OpenCV Device         Any devices detected by opencv will populate
-                        this dropdown list. If there are no values in
-                        this list, none were detected. If you have
-                        multiple opencv devices detected, try setting
-                        the camera to each device and take a photo to
-                        determine which camera is associated with which
-                        device.
-
-  Output ID             This output will turn on during the capture of
-                        any still image (which includes timelapses).
-
-  Rotate Image          The number of degrees to rotate the image.
-
-  …                     Image Width, Image Height, Brightness,
-                        Contrast, Exposure, Gain, Hue, Saturation,
-                        White Balance. These options are
-                        self-explanatory. Not all options will work
-                        with all cameras.
-
-  Pre Command           A command to execute (as user mycodo) before a
-                        still image is captured.
-
-  Post Command          A command to execute (as user mycodo) after a
-                        still image is captured.
-
-  Flip horizontally     Flip, or mirror, the image horizontally.
-
-  Flip vertically       Flip, or mirror, the image vertically.
-  ---------------------------------------------------------------------
 
 
 
@@ -1072,7 +918,7 @@ next every set period.
                         connected to.
 
   Period                This is the period of time (in seconds) between
-                        redrawing the LCD with new data or stitching to
+                        redrawing the LCD with new data or switching to
                         the next set of displays (if multiple displays
                         are used).
 
@@ -1352,7 +1198,9 @@ end (x0) will be automatically stretched or skewed to fit within a
 24-hour period and this method will repeat daily.
 
 
-PID Tuning
+
+PID TUNING
+
 
 PID Control Theory
 
@@ -1425,6 +1273,7 @@ systems will vary (e.g. airspace volume, degree of insulation, and the
 degree of impact from the connected device, etc.), each path will need
 to be adjusted through experimentation to produce an effective output.
 
+
 Quick Setup Examples
 
 These example setups are meant to illustrate how to configure regulation
@@ -1443,6 +1292,7 @@ setups had temperature PID values (up regulation) of _KP_ = 30, _KI_ =
 1.0, _KI_ = 0.2, and _KD_ = 0.5. Furthermore, these values may not have
 been optimal but they worked well for the conditions of my environmental
 chamber.
+
 
 Exact Temperature Regulation
 
@@ -1488,6 +1338,7 @@ oscillation. At this point, you should be fairly familiar with
 experimenting with the system and the _KD_ value can be experimented
 with once both _KP_ and _KI_ have been tuned.
 
+
 High Temperature Regulation
 
 Often the system can be simplified if two-way regulation is not needed.
@@ -1497,6 +1348,212 @@ system and only up-regulation can be used.
 Use the same configuration as the Exact Temperature Regulation example,
 except change _Regulate Direction_ to “Raise” and do not touch the “Down
 Relay” section.
+
+
+
+CONFIGURATION SETTINGS
+
+
+The settings menu, accessed by selecting the gear icon in the top-right,
+then the Configure link, is a general area for various system-wide
+configuration options.
+
+
+General Settings
+
+  ---------------------------------------------------------------------
+  Setting               Description
+  --------------------- -----------------------------------------------
+  Language              Set the language that will be displayed in the
+                        web user interface.
+
+  Force HTTPS           Require web browsers to use SSL/HTTPS. Any
+                        request to http:// will be redirected to
+                        https://.
+
+  Hide success alerts   Hide all success alert boxes that appear at the
+                        top of the page.
+
+  Hide info alerts      Hide all info alert boxes that appear at the
+                        top of the page.
+
+  Hide warning alerts   Hide all warning alert boxes that appear at the
+                        top of the page.
+
+  Opt-out of statistics Turn off sending anonymous usage statistics.
+                        Please consider that this helps the development
+                        to leave on.
+  ---------------------------------------------------------------------
+
+
+Output Usage Settings
+
+In order to calculate accurate output usage statistics, a few
+characteristics of your electrical system needs to be know. These
+variables should describe the characteristics of the electrical system
+being used by the relays to operate electrical devices. Note: Proper
+output usage calculations also rely on the correct current draw to be
+set for each output (see Output Settings).
+
+  ---------------------------------------------------------------------
+  Setting               Description
+  --------------------- -----------------------------------------------
+  Max Amps              Set the maximum allowed amperage to be switched
+                        on at any given time. If a output that’s
+                        instructed to turn on will cause the sum of
+                        active devices to exceed this amount, the
+                        output will not be allowed to turn on, to
+                        prevent any damage that may result from
+                        exceeding current limits.
+
+  Voltage               Alternating current (AC) voltage that is
+                        switched by the outputs. This is usually 120 or
+                        240.
+
+  Cost per kWh          This is how much you pay per kWh.
+
+  Currency Unit         This is the unit used for the currency that
+                        pays for electricity.
+
+  Day of Month          This is the day of the month (1-30) that the
+                        electricity meter is read (which will
+                        correspond to the electrical bill).
+  ---------------------------------------------------------------------
+
+
+Users
+
+Mycodo requires at least one Admin user for the login system to be
+enabled. If there isn’t an Admin user, the web server will redirect to
+an Admin Creation Form. This is the first page you see when starting
+Mycodo for the first time. After an Admin user has been created,
+additional users may be created from the User Settings page.
+
+  ---------------------------------------------------------------------
+  Setting               Description
+  --------------------- -----------------------------------------------
+  Username              Choose a user name that is between 2 and 64
+                        characters. The user name is case insensitive
+                        (all user names are converted to lower-case).
+
+  Email                 The email associated with the new account.
+
+  Password/Repeat       Choose a password that is between 6 and 64
+                        characters and only contain letters, numbers,
+                        and symbols.
+
+  Role                  Roles are a way of imposing access restrictions
+                        on users, to either allow or deny actions. See
+                        the table below for explanations of the four
+                        default Roles.
+  ---------------------------------------------------------------------
+
+
+User Roles
+
+Roles define the permissions of each user. There are 4 default roles
+that determine if a user can view or edit particular areas of Mycodo.
+Four roles are provided by default, but custom roles may be created.
+
+  Role               Admin   Editor   Monitor   Guest
+  ------------------ ------- -------- --------- -------
+  Edit Users         X                          
+  Edit Controllers   X       X                  
+  Edit Settings      X       X                  
+  View Settings      X       X        X         
+  View Camera        X       X        X         
+  View Stats         X       X        X         
+  View Logs          X       X        X         
+
+1The Edit Controllers permission protects the editing of Graphs, LCDs,
+Methods, PIDs, Outputs, Inputs, and Timers.
+
+2The View Stats permission protects the viewing of usage statistics and
+the System Info and Output Usage pages.
+
+
+Alert Settings
+
+Alert settings set up the credentials for sending email notifications.
+
+  ---------------------------------------------------------------------
+  Setting               Description
+  --------------------- -----------------------------------------------
+  SMTP Host             The SMTP server to use to send emails from.
+
+  SMTP Port             Port to communicate with the SMTP server (465
+                        for SSL, 587 for TSL).
+
+  Enable SSL            Check to emable SSL, uncheck to enable TSL.
+
+  SMTP User             The user name to send the email from. This can
+                        be just a name or the entire email address.
+
+  SMTP Password         The password for the user.
+
+  From Email            What the from email address be set as. This
+                        should be the actual email address for this
+                        user.
+
+  Max emails (per hour) Set the maximum number of emails that can be
+                        sent per hour. If more notifications are
+                        triggered within the hour and this number has
+                        been reached, the notifications will be
+                        discarded.
+
+  Send Test Email       Test the email configuration by sending a test
+                        email.
+  ---------------------------------------------------------------------
+
+
+Camera Settings
+
+Many cameras can be used simultaneously with Mycodo. Each camera needs
+to be set up in the camera settings, then may be used throughout the
+software. Note that not every option (such as Hue or White Balance) may
+be able to be used with your particular camera, due to manufacturer
+differences in hardware and software.
+
+  ---------------------------------------------------------------------
+  Setting               Description
+  --------------------- -----------------------------------------------
+  Type                  Select whether the camera is a Raspberry Pi
+                        Camera or a USB camera.
+
+  Library               Select which library to use to communicate with
+                        the camera. The Raspberry Pi Camera uses
+                        picamera (and potentially opencv), and USB
+                        cameras should be set to opencv.
+
+  OpenCV Device         Any devices detected by opencv will populate
+                        this dropdown list. If there are no values in
+                        this list, none were detected. If you have
+                        multiple opencv devices detected, try setting
+                        the camera to each device and take a photo to
+                        determine which camera is associated with which
+                        device.
+
+  Output ID             This output will turn on during the capture of
+                        any still image (which includes timelapses).
+
+  Rotate Image          The number of degrees to rotate the image.
+
+  …                     Image Width, Image Height, Brightness,
+                        Contrast, Exposure, Gain, Hue, Saturation,
+                        White Balance. These options are
+                        self-explanatory. Not all options will work
+                        with all cameras.
+
+  Pre Command           A command to execute (as user mycodo) before a
+                        still image is captured.
+
+  Post Command          A command to execute (as user mycodo) after a
+                        still image is captured.
+
+  Flip horizontally     Flip, or mirror, the image horizontally.
+
+  Flip vertically       Flip, or mirror, the image vertically.
+  ---------------------------------------------------------------------
 
 
 
@@ -1644,16 +1701,11 @@ information about diagnosing issues.
 
 
 
-INPUT AND DEVICE SETUP
+DEVICE INTERFACES
 
-
-Certain inputs will require extra steps to be taken in order to set up
-the interface for communication. This includes I2C, one-wire, and UART.
-
-
-Input Interfaces
 
 Inputs are categorized below by their communication interface.
+
 
 1-Wire
 
@@ -1662,11 +1714,13 @@ The 1-wire interface should be configured with these instructions.
   DS18B20: Temperature link (Also works with: DS18S20, DS1822, DS28EA00,
   DS1825/MAX31850K)
 
+
 GPIO
 
   DHT11, DHT22/AM2302: Relative humidity and temperature link
 
   SHT1x/SHT7x, SHT2x: Relative humidity and temperature link
+
 
 UART
 
@@ -1703,6 +1757,7 @@ sudo vi /boot/config.txt
 
 Find the line “enable_uart=0” and change it to “enable_uart=1”, then
 reboot.
+
 
 I2C
 
@@ -1756,8 +1811,6 @@ Examples of devices that can be used with edge detection: simple
 switches and buttons, PIR motion sensors, reed switches, hall effect
 sensors, float switches, and more.
 
-
-Device Setup
 
 I2C Multiplexers
 

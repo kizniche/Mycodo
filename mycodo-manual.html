@@ -340,17 +340,9 @@
 <h1 id="mycodo-manual">Mycodo Manual</h1>
 <h1 id="table-of-contents">Table of Contents</h1>
 <p><a href="#about-mycodo">About Mycodo</a></p>
+<p><a href="#brief-overview">Brief Overview</a></p>
 <p><a href="#frequently-asked-questions">Frequently Asked Questions</a></p>
 <p><a href="#upgrading">Upgrading</a></p>
-<p><a href="#settings">Settings</a></p>
-<ul>
-<li><a href="#general-settings">General Settings</a></li>
-<li><a href="#output-usage-settings">Output Usage Settings</a></li>
-<li><a href="#users">Users</a></li>
-<li><a href="#user-roles">User Roles</a></li>
-<li><a href="#alert-settings">Alert Settings</a></li>
-<li><a href="#camera-settings">Camera Settings</a></li>
-</ul>
 <p><a href="#controllers">Controllers</a></p>
 <ul>
 <li><a href="#input">Input</a></li>
@@ -371,6 +363,15 @@
 <li><a href="#exact-temperature-regulation">Exact-Temperature Regulation</a></li>
 <li><a href="#high-temperature-regulation">High-Temperature Regulation</a></li>
 </ul>
+<p><a href="#configuration-settings">Configuration Settings</a></p>
+<ul>
+<li><a href="#general-settings">General Settings</a></li>
+<li><a href="#output-usage-settings">Output Usage Settings</a></li>
+<li><a href="#users">Users</a></li>
+<li><a href="#user-roles">User Roles</a></li>
+<li><a href="#alert-settings">Alert Settings</a></li>
+<li><a href="#camera-settings">Camera Settings</a></li>
+</ul>
 <p><a href="#miscellaneous">Miscellaneous</a></p>
 <ul>
 <li><a href="#graphs">Graphs</a></li>
@@ -384,17 +385,13 @@
 <li><a href="#daemon-not-running">Daemon Not Running</a></li>
 <li><a href="#more">More</a></li>
 </ul>
-<p><a href="#input-and-device-setup">Input and Device Setup</a></p>
-<p><a href="#input-interfaces">Input Interfaces</a></p>
+<p><a href="#device-interfaces">Device Interfaces</a></p>
 <ul>
 <li><a href="#1-wire">1-Wire</a></li>
 <li><a href="#gpio">GPIO</a></li>
 <li><a href="#uart">UART</a></li>
 <li><a href="#i2c">I<sup>2</sup>C</a></li>
 <li><a href="#edge-detection">Edge Detection</a></li>
-</ul>
-<p><a href="#device-setup">Device Setup</a></p>
-<ul>
 <li><a href="#i2c-multiplexers">I<sup>2</sup>C Multiplexers</a></li>
 </ul>
 <p><a href="#device-specific-information">Device Specific Information</a></p>
@@ -451,15 +448,26 @@
 </ul>
 <hr />
 <h1 id="about-mycodo">About Mycodo</h1>
-<p>Mycodo is a remote monitoring and automated regulation system with a focus on modulating environmental conditions. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.</p>
-<p>The core system coordinates a diverse set of responses to sensor measurements, including actions such as camera captures, email notifications, relay activation/deactivation, regulation with PID control, and more. Mycodo has been used for cultivating gourmet mushrooms, cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs and young animals, aging cheeses, fermenting foods, maintaining aquatic systems, and more.</p>
-<p>A <a href="https://en.wikipedia.org/wiki/PID_controller">proportional-derivative-integral (PID) controller</a> is a control loop feedback mechanism used throughout industry for controlling systems. It efficiently brings a measurable condition, such as the temperature, to a desired state and maintains it there with little overshoot and oscillation. A well-tuned PID controller will raise to the setpoint quickly, have minimal overshoot, and maintain the setpoint with little oscillation.</p>
+<p>Mycodo is a system for acquiring and using sensor measurements in a feedback loop that controls a diverse set of outputs. This is commonly used for automated regulation of environmental conditions, such as temperature, humidity, CO2 concentration, and many more. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.</p>
+<p>The system coordinates a diverse set of responses to sensor measurements, including actions such as relay switching, regulation by <a href="https://en.wikipedia.org/wiki/PID_controller">PID control</a>, email notifications, camera captures, and more. Mycodo has been used for cultivating gourmet mushrooms, cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs and young animals, aging cheeses, fermenting foods, maintaining aquatic systems, and more.</p>
+<h1 id="brief-overview">Brief Overview</h1>
+<p>There are a number of different uses for Mycodo, from simple storing of sensor measurements, to regulating the environmental conditions of a physical space, to capturing motion-activated or timelapse photography. There are several componenets of the system that may be configured.</p>
+<h2 id="input">Input</h2>
+<p>Input controllers acquire measurements and store them in a <a href="https://en.wikipedia.org/wiki/Time_series_database">time series database</a>. Measurements taken by an Input Controller typically come from sensors, but Input Controllers may also be configured to use the return value of a linux command, making integrating new input systems very easy.</p>
+<h2 id="output">Output</h2>
+<p>Output Controllers produce changes to the general input/output (GPIO) pins of the Raspberry Pi or may be configured to execute linux commands in order to allow an unlimited number of extra potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulatated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off.</p>
+<h2 id="pid">PID</h2>
+<p>When Inputs and Outputs are combined, PID Controllers may be used to create a fedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermenttion or curing, and cooking food (<a href="https://en.wikipedia.org/wiki/Sous-vide">sous-vide</a>), to name a few.</p>
+<h2 id="timer">Timer</h2>
+<p>Timers can be set to trigger events based on specific dates and times or according to durations of time. Timers are fairly basic, but can be configured in very complex ways. Don’t underestimate a good timer.</p>
+<h2 id="lcd">LCD</h2>
+<p>LCDs may be set up to have a way to quickly view information, such as Input, Output, or PID controllers, and can be set to flash in case of triggered events, like an emergency, such as the temperature increasing beyond a certain point in an area that is supposed to be kept cold.</p>
 <h1 id="frequently-asked-questions">Frequently Asked Questions</h1>
 <p><em>Where do I even begin?</em></p>
 <p>Here is how I generally set up Mycodo to monitor and regulate:</p>
 <ol type="1">
 <li>Determine what environmental condition you want to measure or regulate. Consider the devices that must be coupled to achieve this. For instance, temperature regulation require a temperature sensor as the input and an electric heater as the output.</li>
-<li>Determine what relays you will need to power your electric devices. The Raspberry Pi is capable of directly switching relays (using a 3.3-volt signal), although opto-isolating the circuit is advisable. Be careful when selecting a relay not to exceed the current draw of the Raspberry Pi’s PGIO.</li>
+<li>Determine what relays you will need to power your electric devices. The Raspberry Pi is capable of directly switching relays (using a 3.3-volt signal), although opto-isolating the circuit is advisable. Be careful when selecting a relay not to exceed the current draw of the Raspberry Pi’s GPIO.</li>
 <li>See the <a href="#device-specific-information">Device Specific Information</a> for information about what sensors are supported. Acquire one or more of these sensors and relays and connect them to the Raspberry Pi according to the manufacturer’s instructions.</li>
 <li>On the <code>Input</code> page, create a new input using the dropdown to select the correct sensor or input device. Configure the input with the correct communication pins and other options. Activate the input to begin recording measurements to the database..</li>
 <li>Go to the <code>Data</code> -&gt; <code>Live Measurements</code> page to ensure there is recent data being acquired from the input.</li>
@@ -470,11 +478,12 @@
 </ol>
 <hr />
 <p><em>How do I add an input (like a sensor) to the system that’s not currently supported?</em></p>
-<p>Currently, adding the ability to receive input that’s not currently supported to the system involves editing several files. There has been effort to make the addition process as simple as possible. See the <a href="https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input">Adding Support for a New Input</a> Wiki page for how to do this.</p>
-<p>An alternate way to add an input is to create a linux script that obtains and returns a value when executed, then add a new input with the “Linux Command” option. This will periodically execute the command and store the returned value to the database for use with the rest of the Mycodo system.</p>
+<p>Currently, adding the ability to receive input that’s not currently supported to the system can be achieved by two different methods.</p>
+<p>The first involves editing several files. There has been effort to make the addition process as simple as possible. See the <a href="https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input">Adding Support for a New Input</a> Wiki page for how to do this.</p>
+<p>The second way to add an input is to create a script that obtains and returns a numerical value when executed in the linux system of the Raspberry Pi. This script may be configured to be executed by a “Linux Command” Input type. This will periodically execute the command and store the returned value to the database for use with the rest of the Mycodo system.</p>
 <hr />
 <p><em>Can I variably control the speed of motors or other devices with the PWM output signal from the PID?</em></p>
-<p>Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, an <a href="#schematics-for-ac-modulation">AC modulation ciruit</a>, or something else.</p>
+<p>Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, an <a href="#schematics-for-ac-modulation">AC modulation ciruit</a>, <a href="#schematics-for-dc-fan-control">DC modulation circuit</a>, or something else.</p>
 <hr />
 <p><em>What should I do if I have an issue?</em></p>
 <p>First, read the manual to make sure you understand how the system works and you’re using the system properly. ALso check out the <a href="https://github.com/kizniche/Mycodo/wiki">Wiki</a>. You may even want to look through recent <a href="https://github.com/kizniche/Mycodo/issues">Issues</a>. If you haven’t resolved your issue by this point, make a <a href="https://github.com/kizniche/Mycodo/issues/new">New Issue</a> describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid diagnostics.</p>
@@ -482,288 +491,9 @@
 <h1 id="upgrading">Upgrading</h1>
 <p>If you already have Mycodo installed (version &gt;= 4.0.0), you can perform an upgrade to the latest <a href="https://github.com/kizniche/Mycodo/releases">release</a> on github by either using the Upgrade option in the web UI (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at <code>/var/log/mycodo/mycodoupgrade.log</code></p>
 <p><code>sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade</code></p>
-<h1 id="settings">Settings</h1>
-<p>The settings menu, accessed by selecting the gear icon in the top-right, then the Configure link, is a general area for various system-wide configuration options.</p>
-<h2 id="general-settings">General Settings</h2>
-<table style="width:94%;">
-<colgroup>
-<col style="width: 29%"></col>
-<col style="width: 65%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Language</td>
-<td style="text-align: left;">Set the language that will be displayed in the web user interface.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Force HTTPS</td>
-<td style="text-align: left;">Require web browsers to use SSL/HTTPS. Any request to http:// will be redirected to https://.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Hide success alerts</td>
-<td style="text-align: left;">Hide all success alert boxes that appear at the top of the page.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Hide info alerts</td>
-<td style="text-align: left;">Hide all info alert boxes that appear at the top of the page.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Hide warning alerts</td>
-<td style="text-align: left;">Hide all warning alert boxes that appear at the top of the page.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Opt-out of statistics</td>
-<td style="text-align: left;">Turn off sending anonymous usage statistics. Please consider that this helps the development to leave on.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="output-usage-settings">Output Usage Settings</h2>
-<p>In order to calculate accurate output usage statistics, a few characteristics of your electrical system needs to be know. These variables should describe the characteristics of the electrical system being used by the relays to operate electrical devices. Note: Proper output usage calculations also rely on the correct current draw to be set for each output (see <a href="#outputs">Output Settings</a>).</p>
-<table style="width:94%;">
-<colgroup>
-<col style="width: 29%"></col>
-<col style="width: 65%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Max Amps</td>
-<td style="text-align: left;">Set the maximum allowed amperage to be switched on at any given time. If a output that’s instructed to turn on will cause the sum of active devices to exceed this amount, the output will not be allowed to turn on, to prevent any damage that may result from exceeding current limits.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Voltage</td>
-<td style="text-align: left;">Alternating current (AC) voltage that is switched by the outputs. This is usually 120 or 240.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Cost per kWh</td>
-<td style="text-align: left;">This is how much you pay per kWh.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Currency Unit</td>
-<td style="text-align: left;">This is the unit used for the currency that pays for electricity.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Day of Month</td>
-<td style="text-align: left;">This is the day of the month (1-30) that the electricity meter is read (which will correspond to the electrical bill).</td>
-</tr>
-</tbody>
-</table>
-<h2 id="users">Users</h2>
-<p>Mycodo requires at least one Admin user for the login system to be enabled. If there isn’t an Admin user, the web server will redirect to an Admin Creation Form. This is the first page you see when starting Mycodo for the first time. After an Admin user has been created, additional users may be created from the User Settings page.</p>
-<table style="width:94%;">
-<colgroup>
-<col style="width: 29%"></col>
-<col style="width: 65%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Username</td>
-<td style="text-align: left;">Choose a user name that is between 2 and 64 characters. The user name is case insensitive (all user names are converted to lower-case).</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Email</td>
-<td style="text-align: left;">The email associated with the new account.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Password/Repeat</td>
-<td style="text-align: left;">Choose a password that is between 6 and 64 characters and only contain letters, numbers, and symbols.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Role</td>
-<td style="text-align: left;">Roles are a way of imposing access restrictions on users, to either allow or deny actions. See the table below for explanations of the four default Roles.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="user-roles">User Roles</h2>
-<p>Roles define the permissions of each user. There are 4 default roles that determine if a user can view or edit particular areas of Mycodo. Four roles are provided by default, but custom roles may be created.</p>
-<table>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Role</th>
-<th style="text-align: left;">Admin</th>
-<th style="text-align: left;">Editor</th>
-<th style="text-align: left;">Monitor</th>
-<th style="text-align: left;">Guest</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Edit Users</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Edit Controllers</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Edit Settings</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">View Settings</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">View Camera</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">View Stats</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">View Logs</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;"></td>
-</tr>
-</tbody>
-</table>
-<p><sup>1</sup>The <code>Edit Controllers</code> permission protects the editing of Graphs, LCDs, Methods, PIDs, Outputs, Inputs, and Timers.</p>
-<p><sup>2</sup>The <code>View Stats</code> permission protects the viewing of usage statistics and the System Info and Output Usage pages.</p>
-<h2 id="alert-settings">Alert Settings</h2>
-<p>Alert settings set up the credentials for sending email notifications.</p>
-<table style="width:94%;">
-<colgroup>
-<col style="width: 29%"></col>
-<col style="width: 65%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">SMTP Host</td>
-<td style="text-align: left;">The SMTP server to use to send emails from.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">SMTP Port</td>
-<td style="text-align: left;">Port to communicate with the SMTP server (465 for SSL, 587 for TSL).</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Enable SSL</td>
-<td style="text-align: left;">Check to emable SSL, uncheck to enable TSL.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">SMTP User</td>
-<td style="text-align: left;">The user name to send the email from. This can be just a name or the entire email address.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">SMTP Password</td>
-<td style="text-align: left;">The password for the user.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">From Email</td>
-<td style="text-align: left;">What the from email address be set as. This should be the actual email address for this user.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Max emails (per hour)</td>
-<td style="text-align: left;">Set the maximum number of emails that can be sent per hour. If more notifications are triggered within the hour and this number has been reached, the notifications will be discarded.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Send Test Email</td>
-<td style="text-align: left;">Test the email configuration by sending a test email.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="camera-settings">Camera Settings</h2>
-<p>Many cameras can be used simultaneously with Mycodo. Each camera needs to be set up in the camera settings, then may be used throughout the software. Note that not every option (such as Hue or White Balance) may be able to be used with your particular camera, due to manufacturer differences in hardware and software.</p>
-<table style="width:94%;">
-<colgroup>
-<col style="width: 29%"></col>
-<col style="width: 65%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Type</td>
-<td style="text-align: left;">Select whether the camera is a Raspberry Pi Camera or a USB camera.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Library</td>
-<td style="text-align: left;">Select which library to use to communicate with the camera. The Raspberry Pi Camera uses picamera (and potentially opencv), and USB cameras should be set to opencv.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">OpenCV Device</td>
-<td style="text-align: left;">Any devices detected by opencv will populate this dropdown list. If there are no values in this list, none were detected. If you have multiple opencv devices detected, try setting the camera to each device and take a photo to determine which camera is associated with which device.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Output ID</td>
-<td style="text-align: left;">This output will turn on during the capture of any still image (which includes timelapses).</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Rotate Image</td>
-<td style="text-align: left;">The number of degrees to rotate the image.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">…</td>
-<td style="text-align: left;">Image Width, Image Height, Brightness, Contrast, Exposure, Gain, Hue, Saturation, White Balance. These options are self-explanatory. Not all options will work with all cameras.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Pre Command</td>
-<td style="text-align: left;">A command to execute (as user mycodo) before a still image is captured.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Post Command</td>
-<td style="text-align: left;">A command to execute (as user mycodo) after a still image is captured.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Flip horizontally</td>
-<td style="text-align: left;">Flip, or mirror, the image horizontally.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Flip vertically</td>
-<td style="text-align: left;">Flip, or mirror, the image vertically.</td>
-</tr>
-</tbody>
-</table>
 <h1 id="controllers">Controllers</h1>
 <p>Controllers are essentially modules that can be used to perform functions or communicate with other parts of Mycodo. Each controller performs a specific task or group of related tasks. There are also Controller Functions, which are larger functions of a controller or controllers and have been given their own sections.</p>
-<h2 id="input">Input</h2>
+<h2 id="input-1">Input</h2>
 <p>Inputs (such as sensors or analog signals) measure environmental and other characteristic conditions, which will be stored in an influxdb round-robin database. This database will provide recent measurements for <a href="#graphs">Graphs</a>, <a href="#lcds">LCDs</a>, <a href="#pids">PID Controllers</a>, <a href="#conditional-statements">Conditional Statements</a>, and other parts of Mycodo to operate from.</p>
 <p>Among the sensors is ‘Linux Command’. This is a way to use a custom script to return a value to be used within Mycodo, without having to edit the Mycodo code. Merely create your script and use this sensor to have the return value of the script be stored in the Mycodo database for use with PIDs and other parts of Mycodo that uses sensor measurements.</p>
 <table style="width:94%;">
@@ -929,7 +659,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="output">Output</h2>
+<h2 id="output-1">Output</h2>
 <p>Outputs are various signals that can be generated that operate devices. An output can be a PWM signal, a simple HIGH/LOW signal to operate a relay, or a 433MHz signal to switch a radio frequency-operated relay, or an execution of a command on the linux system Mycodo runs on.</p>
 <h3 id="pwm">PWM</h3>
 <p>Pulse-width modulation (PWM) is a modulation technique used to encode a message into a pulsing signal, at a specific frequency in Hertz (Hz). The average value of voltage (and current) fed to the load is controlled by turning the switch between supply and load on and off at a fast rate. The longer the switch is on compared to the off periods, the higher the total power supplied to the load.</p>
@@ -1253,7 +983,7 @@
 </tr>
 <tr class="even">
 <td style="text-align: left;">Period</td>
-<td style="text-align: left;">This is the period of time (in seconds) between redrawing the LCD with new data or stitching to the next set of displays (if multiple displays are used).</td>
+<td style="text-align: left;">This is the period of time (in seconds) between redrawing the LCD with new data or switching to the next set of displays (if multiple displays are used).</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Add Display Set</td>
@@ -1594,8 +1324,8 @@
 <p>The daily sine wave method defines the setpoint over the day based on a sinusoidal wave. The sine wave is defined by y = [A * sin(B * x + C)] + D, where A is amplitude, B is frequency, C is the angle shift, and D is the y-axis shift. This method will repeat daily.</p>
 <h4 id="daily-bezier-curve-method">Daily (Bezier Curve) Method</h4>
 <p>A daily Bezier curve method define the setpoint over the day based on a cubic Bezier curve. If unfamiliar with a Bezier curve, it is recommended you use the <a href="https://www.desmos.com/calculator/cahqdxeshd">graphical Bezier curve generator</a> and use the 8 variables it creates for 4 points (each a set of x and y). The x-axis start (x3) and end (x0) will be automatically stretched or skewed to fit within a 24-hour period and this method will repeat daily.</p>
-<h2 id="pid-tuning">PID Tuning</h2>
-<h3 id="pid-control-theory">PID Control Theory</h3>
+<h1 id="pid-tuning">PID Tuning</h1>
+<h2 id="pid-control-theory">PID Control Theory</h2>
 <p>The PID controller is the most common regulatory controller found in industrial settings, for it“s ability to handle both simple and complex regulation. The PID controller has three paths, the proportional, integral, and derivative.</p>
 <p>The <strong>P</strong>roportional takes the error and multiplies it by the constant K<sub>p</sub>, to yield an output value. When the error is large, there will be a large proportional output.</p>
 <p>The <strong>I</strong>ntegral takes the error and multiplies it by K<sub>i</sub>, then integrates it (K<sub>i</sub> · 1/s). As the error changes over time, the integral will continually sum it and multiply it by the constant K<sub>i</sub>. The integral is used to remove perpetual error in the control system. If using K<sub>p</sub> alone produces an output that produces a perpetual error (i.e. if the sensor measurement never reaches the Set Point), the integral will increase the output until the error decreases and the Set Point is reached.</p>
@@ -1605,10 +1335,10 @@
 <p>The output can be used a number of ways, however this controller was designed to use the output to affect the measured value (PV). This feedback loop, with a <em>properly tuned</em> PID controller, can achieve a set point in a short period of time, maintain regulation with little oscillation, and respond quickly to disturbance.</p>
 <p>Therefor, if one would be regulating temperature, the sensor would be a temperature sensor and the feedback device(s) would be able to heat and cool. If the temperature is lower than the Set Point, the output value would be positive and a heater would activate. The temperature would rise toward the desired temperature, causing the error to decrease and a lower output to be produced. This feedback loop would continue until the error reaches 0 (at which point the output would be 0). If the temperature continues to rise past the Set Point (this is may be acceptable, depending on the degree), the PID would produce a negative output, which could be used by the cooling device to bring the temperature back down, to reduce the error. If the temperature would normally lower without the aid of a cooling device, then the system can be simplified by omitting a cooler and allowing it to lower on its own.</p>
 <p>Implementing a controller that effectively utilizes <em>K<sub>P</sub></em>, <em>K<sub>I</sub></em>, and <em>K<sub>D</sub></em> can be challenging. Furthermore, it is often unnecessary. For instance, the <em>K<sub>I</sub></em> and <em>K<sub>D</sub></em> can be set to 0, effectively turning them off and producing the very popular and simple P controller. Also popular is the PI controller. It is recommended to start with only <em>K<sub>P</sub></em> activated, then experiment with <em>K<sub>P</sub></em> and <em>K<sub>I</sub></em>, before finally using all three. Because systems will vary (e.g. airspace volume, degree of insulation, and the degree of impact from the connected device, etc.), each path will need to be adjusted through experimentation to produce an effective output.</p>
-<h3 id="quick-setup-examples">Quick Setup Examples</h3>
+<h2 id="quick-setup-examples">Quick Setup Examples</h2>
 <p>These example setups are meant to illustrate how to configure regulation in particular directions, and not to achieve ideal values to configure your <em>K<sub>P</sub></em>, <em>K<sub>I</sub></em>, and <em>K<sub>D</sub></em> gains. There are a number of online resources that discuss techniques and methods that have been developed to determine ideal PID values (such as <a href="http://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops">here</a>, <a href="http://innovativecontrols.com/blog/basics-tuning-pid-loops">here</a>, <a href="https://hennulat.wordpress.com/2011/01/12/pid-loop-tuning-101/">here</a>, <a href="http://eas.uccs.edu/wang/ECE4330F12/PID-without-a-PhD.pdf">here</a>, and <a href="http://www.atmel.com/Images/doc2558.pdf">here</a>) and since there are no universal values that will work for every system, it is recommended to conduct your own research to understand the variables and essential to conduct your own experiments to effectively implement them.</p>
 <p>Provided merely as an example of the variance of PID values, one of my setups had temperature PID values (up regulation) of <em>K<sub>P</sub></em> = 30, <em>K<sub>I</sub></em> = 1.0, and <em>K<sub>D</sub></em> = 0.5, and humidity PID values (up regulation) of <em>K<sub>P</sub></em> = 1.0, <em>K<sub>I</sub></em> = 0.2, and <em>K<sub>D</sub></em> = 0.5. Furthermore, these values may not have been optimal but they worked well for the conditions of my environmental chamber.</p>
-<h3 id="exact-temperature-regulation">Exact Temperature Regulation</h3>
+<h2 id="exact-temperature-regulation">Exact Temperature Regulation</h2>
 <p>This will set up the system to raise and lower the temperature to a certain level with two regulatory devices (one that heats and one that cools).</p>
 <p>Add a sensor, then save the proper device and pin/address for each sensor and activate the sensor.</p>
 <p>Add two outputs, then save each GPIO and On Trigger state.</p>
@@ -1617,9 +1347,288 @@
 <p>If the temperature is lower than the Set Point, the heater should activate at some interval determined by the PID controller until the temperature rises to the set point. If the temperature goes higher than the Set Point (or Set Point + Buffer), the cooling device will activate until the temperature returns to the set point. If the temperature is not reaching the Set Point after a reasonable amount of time, increase the <em>K<sub>P</sub></em> value and see how that affects the system. Experiment with different configurations involving only <em>Read Interval</em> and <em>K<sub>P</sub></em> to achieve a good regulation. Avoid changing the <em>K<sub>I</sub></em> and <em>K<sub>D</sub></em> from 0 until a working regulation is achieved with <em>K<sub>P</sub></em> alone.</p>
 <p>View graphs in the 6 to 12 hour time span to identify how well the temperature is regulated to the Setpoint. What is meant by well-regulated will vary, depending on your specific application and tolerances. Most applications of a PID controller would like to see the proper temperature attained within a reasonable amount of time and with little oscillation around the Setpoint.</p>
 <p>Once regulation is achieved, experiment by reducing <em>K<sub>P</sub></em> slightly (~25%) and increasing <em>K<sub>I</sub></em> by a low amount to start, such as 0.1 (or lower, 0.01), then start the PID and observe how well the controller regulates. Slowly increase <em>K<sub>I</sub></em> until regulation becomes both quick and with little oscillation. At this point, you should be fairly familiar with experimenting with the system and the <em>K<sub>D</sub></em> value can be experimented with once both <em>K<sub>P</sub></em> and <em>K<sub>I</sub></em> have been tuned.</p>
-<h3 id="high-temperature-regulation">High Temperature Regulation</h3>
+<h2 id="high-temperature-regulation">High Temperature Regulation</h2>
 <p>Often the system can be simplified if two-way regulation is not needed. For instance, if cooling is unnecessary, this can be removed from the system and only up-regulation can be used.</p>
 <p>Use the same configuration as the <a href="#exact-temperature-regulation">Exact Temperature Regulation</a> example, except change <em>Regulate Direction</em> to “Raise” and do not touch the “Down Relay” section.</p>
+<h1 id="configuration-settings">Configuration Settings</h1>
+<p>The settings menu, accessed by selecting the gear icon in the top-right, then the Configure link, is a general area for various system-wide configuration options.</p>
+<h2 id="general-settings">General Settings</h2>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Language</td>
+<td style="text-align: left;">Set the language that will be displayed in the web user interface.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Force HTTPS</td>
+<td style="text-align: left;">Require web browsers to use SSL/HTTPS. Any request to http:// will be redirected to https://.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hide success alerts</td>
+<td style="text-align: left;">Hide all success alert boxes that appear at the top of the page.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hide info alerts</td>
+<td style="text-align: left;">Hide all info alert boxes that appear at the top of the page.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hide warning alerts</td>
+<td style="text-align: left;">Hide all warning alert boxes that appear at the top of the page.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Opt-out of statistics</td>
+<td style="text-align: left;">Turn off sending anonymous usage statistics. Please consider that this helps the development to leave on.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="output-usage-settings">Output Usage Settings</h2>
+<p>In order to calculate accurate output usage statistics, a few characteristics of your electrical system needs to be know. These variables should describe the characteristics of the electrical system being used by the relays to operate electrical devices. Note: Proper output usage calculations also rely on the correct current draw to be set for each output (see <a href="#outputs">Output Settings</a>).</p>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Max Amps</td>
+<td style="text-align: left;">Set the maximum allowed amperage to be switched on at any given time. If a output that’s instructed to turn on will cause the sum of active devices to exceed this amount, the output will not be allowed to turn on, to prevent any damage that may result from exceeding current limits.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Voltage</td>
+<td style="text-align: left;">Alternating current (AC) voltage that is switched by the outputs. This is usually 120 or 240.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cost per kWh</td>
+<td style="text-align: left;">This is how much you pay per kWh.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Currency Unit</td>
+<td style="text-align: left;">This is the unit used for the currency that pays for electricity.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Day of Month</td>
+<td style="text-align: left;">This is the day of the month (1-30) that the electricity meter is read (which will correspond to the electrical bill).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="users">Users</h2>
+<p>Mycodo requires at least one Admin user for the login system to be enabled. If there isn’t an Admin user, the web server will redirect to an Admin Creation Form. This is the first page you see when starting Mycodo for the first time. After an Admin user has been created, additional users may be created from the User Settings page.</p>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Username</td>
+<td style="text-align: left;">Choose a user name that is between 2 and 64 characters. The user name is case insensitive (all user names are converted to lower-case).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Email</td>
+<td style="text-align: left;">The email associated with the new account.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Password/Repeat</td>
+<td style="text-align: left;">Choose a password that is between 6 and 64 characters and only contain letters, numbers, and symbols.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Role</td>
+<td style="text-align: left;">Roles are a way of imposing access restrictions on users, to either allow or deny actions. See the table below for explanations of the four default Roles.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="user-roles">User Roles</h2>
+<p>Roles define the permissions of each user. There are 4 default roles that determine if a user can view or edit particular areas of Mycodo. Four roles are provided by default, but custom roles may be created.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Role</th>
+<th style="text-align: left;">Admin</th>
+<th style="text-align: left;">Editor</th>
+<th style="text-align: left;">Monitor</th>
+<th style="text-align: left;">Guest</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Edit Users</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Edit Controllers</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Edit Settings</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">View Settings</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">View Camera</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">View Stats</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">View Logs</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;">X</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<p><sup>1</sup>The <code>Edit Controllers</code> permission protects the editing of Graphs, LCDs, Methods, PIDs, Outputs, Inputs, and Timers.</p>
+<p><sup>2</sup>The <code>View Stats</code> permission protects the viewing of usage statistics and the System Info and Output Usage pages.</p>
+<h2 id="alert-settings">Alert Settings</h2>
+<p>Alert settings set up the credentials for sending email notifications.</p>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">SMTP Host</td>
+<td style="text-align: left;">The SMTP server to use to send emails from.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SMTP Port</td>
+<td style="text-align: left;">Port to communicate with the SMTP server (465 for SSL, 587 for TSL).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Enable SSL</td>
+<td style="text-align: left;">Check to emable SSL, uncheck to enable TSL.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SMTP User</td>
+<td style="text-align: left;">The user name to send the email from. This can be just a name or the entire email address.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SMTP Password</td>
+<td style="text-align: left;">The password for the user.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">From Email</td>
+<td style="text-align: left;">What the from email address be set as. This should be the actual email address for this user.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Max emails (per hour)</td>
+<td style="text-align: left;">Set the maximum number of emails that can be sent per hour. If more notifications are triggered within the hour and this number has been reached, the notifications will be discarded.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Send Test Email</td>
+<td style="text-align: left;">Test the email configuration by sending a test email.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="camera-settings">Camera Settings</h2>
+<p>Many cameras can be used simultaneously with Mycodo. Each camera needs to be set up in the camera settings, then may be used throughout the software. Note that not every option (such as Hue or White Balance) may be able to be used with your particular camera, due to manufacturer differences in hardware and software.</p>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Type</td>
+<td style="text-align: left;">Select whether the camera is a Raspberry Pi Camera or a USB camera.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Library</td>
+<td style="text-align: left;">Select which library to use to communicate with the camera. The Raspberry Pi Camera uses picamera (and potentially opencv), and USB cameras should be set to opencv.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">OpenCV Device</td>
+<td style="text-align: left;">Any devices detected by opencv will populate this dropdown list. If there are no values in this list, none were detected. If you have multiple opencv devices detected, try setting the camera to each device and take a photo to determine which camera is associated with which device.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Output ID</td>
+<td style="text-align: left;">This output will turn on during the capture of any still image (which includes timelapses).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Rotate Image</td>
+<td style="text-align: left;">The number of degrees to rotate the image.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">Image Width, Image Height, Brightness, Contrast, Exposure, Gain, Hue, Saturation, White Balance. These options are self-explanatory. Not all options will work with all cameras.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pre Command</td>
+<td style="text-align: left;">A command to execute (as user mycodo) before a still image is captured.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Post Command</td>
+<td style="text-align: left;">A command to execute (as user mycodo) after a still image is captured.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Flip horizontally</td>
+<td style="text-align: left;">Flip, or mirror, the image horizontally.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Flip vertically</td>
+<td style="text-align: left;">Flip, or mirror, the image vertically.</td>
+</tr>
+</tbody>
+</table>
 <h1 id="miscellaneous">Miscellaneous</h1>
 <h2 id="graphs">Graphs</h2>
 <p>There are two different types of graphs, Live and Asynchronous.</p>
@@ -1711,23 +1720,21 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 </ul>
 <h2 id="more">More</h2>
 <p>Check out the <a href="https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues">Diagnosing Mycodo Issues Wiki Page</a> on github for more information about diagnosing issues.</p>
-<h1 id="input-and-device-setup">Input and Device Setup</h1>
-<p>Certain inputs will require extra steps to be taken in order to set up the interface for communication. This includes I<sup>2</sup>C, one-wire, and UART.</p>
-<h2 id="input-interfaces">Input Interfaces</h2>
+<h1 id="device-interfaces">Device Interfaces</h1>
 <p>Inputs are categorized below by their communication interface.</p>
-<h3 id="wire">1-Wire</h3>
+<h2 id="wire">1-Wire</h2>
 <p>The 1-wire interface should be configured with <a href="https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing">these instructions</a>.</p>
 <blockquote>
 <p><a href="#ds18b20">DS18B20</a>: Temperature <a href="https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf">link</a> (Also works with: <a href="https://datasheets.maximintegrated.com/en/ds/DS18S20.pdf">DS18S20</a>, <a href="https://datasheets.maximintegrated.com/en/ds/DS1822.pdf">DS1822</a>, <a href="https://datasheets.maximintegrated.com/en/ds/DS28EA00.pdf">DS28EA00</a>, <a href="https://datasheets.maximintegrated.com/en/ds/DS1825.pdf">DS1825</a>/<a href="https://datasheets.maximintegrated.com/en/ds/MAX31850-MAX31851.pdf">MAX31850K</a>)</p>
 </blockquote>
-<h3 id="gpio">GPIO</h3>
+<h2 id="gpio">GPIO</h2>
 <blockquote>
 <p><a href="#dht11">DHT11</a>, <a href="#dht22">DHT22</a>/AM2302: Relative humidity and temperature <a href="https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring">link</a></p>
 </blockquote>
 <blockquote>
 <p><a href="#sht1x">SHT1x</a>/<a href="#sht7x">SHT7x</a>, SHT2x: Relative humidity and temperature <a href="https://github.com/mk-fg/sht-sensor">link</a></p>
 </blockquote>
-<h3 id="uart">UART</h3>
+<h2 id="uart">UART</h2>
 <blockquote>
 <p><a href="#atlas-scientific-ph">Atlas Scientific pH</a>: pH <a href="https://www.atlas-scientific.com/ph.html">link</a></p>
 </blockquote>
@@ -1749,7 +1756,7 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <p>Go to <code>Advanced Options</code> -&gt; <code>Serial</code> and disable. Then edit <code>/boot/config.txt</code></p>
 <p><code>sudo vi /boot/config.txt</code></p>
 <p>Find the line “enable_uart=0” and change it to “enable_uart=1”, then reboot.</p>
-<h3 id="i2c">I<sup>2</sup>C</h3>
+<h2 id="i2c">I<sup>2</sup>C</h2>
 <p>The I<sup>2</sup>C interface should be enabled with <code>raspi-config</code>.</p>
 <p><strong>Analog to Digital Converters</strong></p>
 <p>An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A <a href="https://learn.sparkfun.com/tutorials/voltage-dividers">voltage divider</a> may be necessary to attain your desired range.</p>
@@ -1793,8 +1800,7 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <h2 id="edge-detection">Edge Detection</h2>
 <p>The detection of a changing signal, for instance a simple switch completing a circuit, requires the use of edge detection. By detecting a rising edge (LOW to HIGH), a falling edge (HIGH to LOW), or both, actions or events can be triggered. The GPIO chosen to detect the signal should be equipped with an appropriate resistor that either pulls the GPIO up [to 5-volts] or down [to ground]. The option to enable the internal pull-up or pull-down resistors is not available for safety reasons. Use your own resistor to pull the GPIO high or low.</p>
 <p>Examples of devices that can be used with edge detection: simple switches and buttons, PIR motion sensors, reed switches, hall effect sensors, float switches, and more.</p>
-<h2 id="device-setup">Device Setup</h2>
-<h3 id="i2c-multiplexers">I<sup>2</sup>C Multiplexers</h3>
+<h2 id="i2c-multiplexers">I<sup>2</sup>C Multiplexers</h2>
 <p>All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some inputs may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.</p>
 <blockquote>
 <p><a href="#tca9548a">TCA9548A</a>: I<sup>2</sup>C Multiplexer <a href="https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview">link</a> (I<sup>2</sup>C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I<sup>2</sup>C address.</p>
