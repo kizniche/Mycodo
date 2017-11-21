@@ -359,7 +359,7 @@ class LCDController(threading.Thread):
                 error = u'NO DATA'
                 name_length = self.lcd_x_characters - len(error) - 1
                 name_cropped = self.lcd_line[display_id][i]['name'].ljust(name_length)[:name_length]
-                self.lcd_string_line[display_id][i] = 'u{name} {error}'.format(
+                self.lcd_string_line[display_id][i] = u'{name} {error}'.format(
                     name=name_cropped, error=error)
 
         except Exception as except_msg:
