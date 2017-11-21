@@ -823,6 +823,7 @@ Hide success alerts | Hide all success alert boxes that appear at the top of the
 Hide info alerts | Hide all info alert boxes that appear at the top of the page.
 Hide warning alerts | Hide all warning alert boxes that appear at the top of the page.
 Opt-out of statistics | Turn off sending anonymous usage statistics. Please consider that this helps the development to leave on.
+Check for Updates | Automatically check for updates every 2 days and notify through the web interface. If there is a new update, the Configure (Gear Icon) as well as the Upgrade menu will turn the color red.
 
 
 Output Usage Settings
@@ -944,6 +945,7 @@ x-Axis (minutes) | The duration to diaply on the x-axis of the graph.
 Enable Auto Refresh | Automatically refresh the data on the graph Refresh Period.
 Refresh Period (seconds) | The duration between acquisitions of new data to display on the graph.
 Inputs/Outputs/PIDs | The Inputs, Outputs, and PIDs to display on the graph.
+Enable X-Axis Reset | Reset the x-axis min/max every time new data comes in during the auto refresh.
 Enable Title | Show a title of the graph name.
 Enable Navbar | Show a slidable navigation bar at the bottom of the graph.
 Enable Export | Enable a button on the top right of the graph to allow exporting of the currently-displayed data as PNG, JPEG, PDF, SVG, CSV, XLS.

@@ -21,6 +21,9 @@ def upgrade():
         batch_op.add_column(sa.Column('enable_upgrade_check', sa.Boolean))
         batch_op.add_column(sa.Column('mycodo_upgrade_available', sa.Boolean))
 
+    with op.batch_alter_table("graph") as batch_op:
+        batch_op.add_column(sa.Column('enable_xaxis_reset', sa.Boolean))
+
     op.execute(
         '''
         UPDATE misc
@@ -35,8 +38,18 @@ def upgrade():
         '''
     )
 
+    op.execute(
+        '''
+        UPDATE graph
+        SET enable_xaxis_reset=1
+        '''
+    )
+
 
 def downgrade():
     with op.batch_alter_table("misc") as batch_op:
         batch_op.drop_column('enable_upgrade_check')
         batch_op.drop_column('mycodo_upgrade_available')
+
+    with op.batch_alter_table("graph") as batch_op:
+        batch_op.drop_column('enable_xaxis_reset')

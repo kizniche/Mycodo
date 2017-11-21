@@ -1383,6 +1383,12 @@ General Settings
   Opt-out of statistics Turn off sending anonymous usage statistics.
                         Please consider that this helps the development
                         to leave on.
+
+  Check for Updates     Automatically check for updates every 2 days
+                        and notify through the web interface. If there
+                        is a new update, the Configure (Gear Icon) as
+                        well as the Upgrade menu will turn the color
+                        red.
   ---------------------------------------------------------------------
 
 
@@ -1595,6 +1601,9 @@ select the plus sign on the top-right of a graph.
 
   Inputs/Outputs/PIDs   The Inputs, Outputs, and PIDs to display on the
                         graph.
+
+  Enable X-Axis Reset   Reset the x-axis min/max every time new data
+                        comes in during the auto refresh.
 
   Enable Title          Show a title of the graph name.
 

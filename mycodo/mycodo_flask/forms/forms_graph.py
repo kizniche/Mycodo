@@ -41,23 +41,24 @@ class GraphAdd(FlaskForm):
             max=10000
         )]
     )
-    xaxis_duration = IntegerField(
+    xaxis_duration = DecimalField(
         lazy_gettext(u'x-Axis (minutes)'),
         validators=[validators.NumberRange(
-            min=1,
+            min=0.1,
             message=lazy_gettext(u"Number of minutes to display of past "
                                  u"measurements.")
         )]
     )
-    refresh_duration = IntegerField(
+    refresh_duration = DecimalField(
         lazy_gettext(u'Refresh Period (seconds)'),
         validators=[validators.NumberRange(
-            min=1,
+            min=0.2,
             message=lazy_gettext(u"Number of seconds to wait between acquiring"
                                  u" any new measurements.")
         )]
     )
     enable_auto_refresh = BooleanField(lazy_gettext(u'Enable Auto Refresh'))
+    enable_xaxis_reset = BooleanField(lazy_gettext(u'Enable X-Axis Reset'))
     enable_title = BooleanField(lazy_gettext(u'Enable Title'))
     enable_navbar = BooleanField(lazy_gettext(u'Enable Navbar'))
     enable_export = BooleanField(lazy_gettext(u'Enable Export'))
@@ -89,23 +90,24 @@ class GraphMod(FlaskForm):
             max=10000
         )]
     )
-    xaxis_duration = IntegerField(
+    xaxis_duration = DecimalField(
         lazy_gettext(u'x-Axis (minutes)'),
         validators=[validators.NumberRange(
-            min=1,
+            min=0.1,
             message=lazy_gettext(u"Number of minutes to display of past "
                                  u"measurements.")
         )]
     )
-    refresh_duration = IntegerField(
+    refresh_duration = DecimalField(
         lazy_gettext(u'Refresh Period (seconds)'),
         validators=[validators.NumberRange(
-            min=1,
+            min=0.2,
             message=lazy_gettext(u"Number of seconds to wait between acquiring"
                                  u" any new measurements.")
         )]
     )
     enable_auto_refresh = BooleanField(lazy_gettext(u'Enable Auto Refresh'))
+    enable_xaxis_reset = BooleanField(lazy_gettext(u'Enable X-Axis Reset'))
     enable_title = BooleanField(lazy_gettext(u'Enable Title'))
     enable_navbar = BooleanField(lazy_gettext(u'Enable Navbar'))
     enable_export = BooleanField(lazy_gettext(u'Enable Export'))

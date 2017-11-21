@@ -164,26 +164,32 @@
             <div style="clear: both"></div>
             {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.</br>
 
-            <div class="form-group" style="padding-top: 1em">
-              <label class="form-check-label">
+            <div class="checkbox" style="padding-right: 1em">
+              <label>
+                <input class="form-check-input" id="enable_xaxis_reset" name="enable_xaxis_reset" type="checkbox" value="y"{% if each_graph.enable_xaxis_reset %} checked{% endif %}>
+                {{form_mod_graph.enable_xaxis_reset.label.text}}
+              </label>
+            </div>
+            <div class="checkbox" style="padding-right: 1em">
+              <label>
                 <input class="form-check-input" id="enable_title" name="enable_title" type="checkbox" value="y"{% if each_graph.enable_title %} checked{% endif %}>
                 {{form_mod_graph.enable_title.label.text}}
               </label>
             </div>
-            <div class="form-check">
-              <label class="form-check-label">
+            <div class="checkbox" style="padding-right: 1em">
+              <label>
                 <input class="form-check-input" id="enable_navbar" name="enable_navbar" type="checkbox" value="y"{% if each_graph.enable_navbar %} checked{% endif %}>
                 {{form_mod_graph.enable_navbar.label.text}}
               </label>
             </div>
-            <div class="form-check disabled">
-              <label class="form-check-label">
+            <div class="checkbox" style="padding-right: 1em">
+              <label>
                 <input class="form-check-input" id="enable_export" name="enable_export" type="checkbox" value="y"{% if each_graph.enable_export %} checked{% endif %}>
                 {{form_mod_graph.enable_export.label.text}}
               </label>
             </div>
-            <div class="form-check">
-              <label class="form-check-label">
+            <div class="checkbox" style="padding-right: 1em">
+              <label>
                 <input class="form-check-input" id="enable_range" name="enable_range" type="checkbox" value="y"{% if each_graph.enable_rangeselect %} checked{% endif %}>
                 {{form_mod_graph.enable_range.label.text}}
               </label>
@@ -489,6 +495,12 @@
 
         <div class="checkbox" style="padding-right: 1em">
           <label>
+            {{form_add_graph.enable_xaxis_reset(class_='form-control', value='y', checked=True)}}
+            {{form_add_graph.enable_xaxis_reset.label.text}}
+          </label>
+        </div>
+        <div class="checkbox" style="padding-right: 1em">
+          <label>
             {{form_add_graph.enable_title(class_='form-control')}}
             {{form_add_graph.enable_title.label.text}}
           </label>
@@ -709,7 +721,7 @@
     }
 
     // Retrieve chart data for the period since the last data acquisition (refresh period set by user)
-    function getLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, refresh_seconds) {
+    function getLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds) {
       setInterval(function () {
         // Build the URL
         // Instruct only to return data since the time of the last received data point
@@ -732,12 +744,14 @@
               }
               last_relay_time_mil[update_id] = new_time;
             }
-            // Ensure Reset Zoom button resets to the proper start and end times
-            chart_graph[chart_number].xAxis[0].update({min: new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)))}, false);
-            chart_graph[chart_number].xAxis[0].update({max: new Date().getTime()}, false);
-            // Update the new data time frame and redraw the chart
-            chart_graph[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min))), new Date().getTime(), true);
-            chart_graph[chart_number].xAxis[0].isDirty = true;
+            if (xaxis_reset) {
+                // Ensure Reset Zoom button resets to the proper start and end times
+                chart_graph[chart_number].xAxis[0].update({min: new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)))}, false);
+                chart_graph[chart_number].xAxis[0].update({max: new Date().getTime()}, false);
+                // Update the new data time frame and redraw the chart
+                chart_graph[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min))), new Date().getTime(), true);
+                chart_graph[chart_number].xAxis[0].isDirty = true;
+            }
           }
         );
       }, refresh_seconds * 1000);
@@ -920,7 +934,7 @@
               {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id == each_id_and_measure.split(',')[0] %}
             getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration*60}});
             {% if each_graph.enable_auto_refresh %}
-            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}});
             {% endif %}
                 {%- do count_series.append(1) %}
               {%- endfor -%}
@@ -930,7 +944,7 @@
               {%- for each_graph_relay_id in graph_relay_ids if each_relay.unique_id == each_graph_relay_id.split(',')[0] %}
             getPastData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_relay.unique_id}}', {{each_graph.x_axis_duration*60}});
             {% if each_graph.enable_auto_refresh %}
-            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_relay.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_relay.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}});
             {% endif %}
                 {%- do count_series.append(1) %}
               {%- endfor -%}
@@ -940,7 +954,7 @@
               {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id.split(',')[0] %}
             getPastData({{chart_number}}, {{count_series|count}}, '{{each_graph_pid_id.split(',')[1]}}', '{{each_pid.unique_id}}', {{each_graph.x_axis_duration*60}});
             {% if each_graph.enable_auto_refresh %}
-            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_pid_id.split(',')[1]}}', '{{each_pid.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_pid_id.split(',')[1]}}', '{{each_pid.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}});
             {% endif %}
                 {%- do count_series.append(1) %}
               {%- endfor -%}

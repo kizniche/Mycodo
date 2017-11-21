@@ -35,7 +35,6 @@ from mycodo.mycodo_flask.utils.utils_general import gzipped
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Output
 from mycodo.databases.models import Input
-from mycodo.databases.models import User
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
 from mycodo.utils.influx import query_string
@@ -154,6 +153,9 @@ def download_file(dl_type, filename):
 @flask_login.login_required
 def last_data(input_measure, input_id, input_period):
     """Return the most recent time and value from influxdb"""
+    if not str_is_float(input_period):
+        return '', 204
+
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
@@ -188,6 +190,9 @@ def last_data(input_measure, input_id, input_period):
 @gzipped
 def past_data(input_measure, input_id, past_seconds):
     """Return data from past_seconds until present from influxdb"""
+    if not str_is_float(past_seconds):
+        return '', 204
+
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE

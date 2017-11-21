@@ -55,6 +55,9 @@ def graph_add(form_add_graph, display_order):
         new_graph.height = form_add_graph.height.data
         new_graph.x_axis_duration = form_add_graph.xaxis_duration.data
         new_graph.refresh_duration = form_add_graph.refresh_duration.data
+        new_graph.enable_auto_refresh = form_add_graph.enable_auto_refresh.data
+        new_graph.enable_xaxis_reset = form_add_graph.enable_xaxis_reset.data
+        new_graph.enable_title = form_add_graph.enable_title.data
         new_graph.enable_navbar = form_add_graph.enable_navbar.data
         new_graph.enable_rangeselect = form_add_graph.enable_range.data
         new_graph.enable_export = form_add_graph.enable_export.data
@@ -163,6 +166,7 @@ def graph_mod(form_mod_graph, request_form):
         mod_graph.x_axis_duration = form_mod_graph.xaxis_duration.data
         mod_graph.refresh_duration = form_mod_graph.refresh_duration.data
         mod_graph.enable_auto_refresh = form_mod_graph.enable_auto_refresh.data
+        mod_graph.enable_xaxis_reset = form_mod_graph.enable_xaxis_reset.data
         mod_graph.enable_title = form_mod_graph.enable_title.data
         mod_graph.enable_navbar = form_mod_graph.enable_navbar.data
         mod_graph.enable_export = form_mod_graph.enable_export.data
