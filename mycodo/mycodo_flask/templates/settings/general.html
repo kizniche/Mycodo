@@ -90,6 +90,17 @@
       </div>
     </div>
     <div class="form-group">
+      {{form_settings_general.enable_upgrade_check.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      <div class="col-sm-8">
+        {%- if misc.enable_upgrade_check == true -%}
+          {{form_settings_general.enable_upgrade_check(checked=True)}}
+        {%- else -%}
+          {{form_settings_general.enable_upgrade_check()}}
+        {%- endif -%}
+        &nbsp;&nbsp;{{_('Check if you would like Mycodo to automatically check for upgrades.')}}
+      </div>
+    </div>
+    <div class="form-group">
       <div class="col-sm-4"></div>
       <div class="col-sm-8">
         <h3>{{_('Output Usage')}}</h3>

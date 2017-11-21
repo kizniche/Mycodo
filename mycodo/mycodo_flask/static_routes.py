@@ -55,7 +55,8 @@ def inject_variables():
                 hide_alert_success=misc.hide_alert_success,
                 hide_alert_info=misc.hide_alert_info,
                 hide_alert_warning=misc.hide_alert_warning,
-                hide_tooltips=misc.hide_tooltips)
+                hide_tooltips=misc.hide_tooltips,
+                upgrade_available = misc.mycodo_upgrade_available)
 
 
 @blueprint.route('/robots.txt')

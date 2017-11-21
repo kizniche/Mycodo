@@ -39,6 +39,7 @@ import rpyc
 from time import strptime  # Fix multithread bug in strptime
 from daemonize import Daemonize
 from rpyc.utils.server import ThreadedServer
+from pkg_resources import parse_version
 
 from mycodo.controller_lcd import LCDController
 from mycodo.controller_pid import PIDController
@@ -56,6 +57,7 @@ from mycodo.databases.models import Timer
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.github_release_info import github_releases
 from mycodo.utils.statistics import add_update_csv
 from mycodo.utils.statistics import recreate_stat_file
 from mycodo.utils.statistics import return_stat_file_dict
@@ -69,6 +71,7 @@ from mycodo.config import MYCODO_VERSION
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config import STATS_CSV
 from mycodo.config import STATS_INTERVAL
+from mycodo.config import UPGRADE_CHECK_INTERVAL
 
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -323,6 +326,8 @@ class DaemonController(threading.Thread):
         self.start_time = time.time()
         self.timer_ram_use = time.time()
         self.timer_stats = time.time() + 120
+        self.timer_upgrade = time.time() + 120
+        self.timer_upgrade_message = time.time()
 
         # Update camera settings
         self.camera = []
@@ -335,6 +340,7 @@ class DaemonController(threading.Thread):
         self.relay_usage_report_hour = None
         self.relay_usage_report_next_gen = None
         self.opt_out_statistics = None
+        self.enable_upgrade_check = None
         self.refresh_daemon_misc_settings()
 
         state = 'disabled' if self.opt_out_statistics else 'enabled'
@@ -352,40 +358,31 @@ class DaemonController(threading.Thread):
             while self.daemon_run:
                 now = time.time()
 
-                # Capture time-lapse image
-                try:
-                    for each_camera in self.camera:
-                        self.timelapse_check(each_camera, now)
-                except Exception:
-                    self.logger.exception("Timelapse ERROR")
-
-                # Generate output usage report
-                if (self.relay_usage_report_gen and
-                        now > self.relay_usage_report_next_gen):
-                    try:
-                        generate_relay_usage_report()
-                        self.refresh_daemon_misc_settings()
-                    except Exception:
-                        self.logger.exception("Output Usage Report Generation ERROR")
-
                 # Log ram usage every 24 hours
                 if now > self.timer_ram_use:
-                    try:
-                        self.timer_ram_use = now + 86400
-                        ram_mb = resource.getrusage(
-                            resource.RUSAGE_SELF).ru_maxrss / float(1000)
-                        self.logger.info("{ram:.2f} MB RAM in use".format(ram=ram_mb))
-                    except Exception:
-                        self.logger.exception("Free Ram ERROR")
+                    self.timer_ram_use = now + 86400
+                    self.log_ram_usage()
 
-                # collect and send anonymous statistics
+                # Capture time-lapse image (if enabled)
+                self.check_all_timelapses(now)
+
+                # Generate output usage report (if enabled)
+                if (self.relay_usage_report_gen and
+                        now > self.relay_usage_report_next_gen):
+                    generate_relay_usage_report()
+                    self.refresh_daemon_misc_settings()  # Update timer
+
+                # Collect and send anonymous statistics (if enabled)
                 if (not self.opt_out_statistics and
                         now > self.timer_stats):
-                    try:
-                        self.timer_stats = self.timer_stats + STATS_INTERVAL
-                        self.send_stats()
-                    except Exception:
-                        self.logger.exception("Stats ERROR")
+                    self.timer_stats = self.timer_stats + STATS_INTERVAL
+                    self.send_stats()
+
+                # Check if running the latest version (if enabled)
+                if now > self.timer_upgrade:
+                    self.timer_upgrade = self.timer_upgrade + UPGRADE_CHECK_INTERVAL
+                    if self.enable_upgrade_check:
+                        self.check_mycodo_upgrade_exists(now)
 
                 time.sleep(0.25)
         except Exception as except_msg:
@@ -599,19 +596,20 @@ class DaemonController(threading.Thread):
             self.logger.exception(message)
 
     def refresh_daemon_misc_settings(self):
+        old_time = self.relay_usage_report_next_gen
+        self.relay_usage_report_next_gen = next_schedule(
+            self.relay_usage_report_span,
+            self.relay_usage_report_day,
+            self.relay_usage_report_hour)
         try:
             self.logger.debug("Refreshing misc settings")
             misc = db_retrieve_table_daemon(Misc, entry='first')
             self.opt_out_statistics = misc.stats_opt_out
+            self.enable_upgrade_check = misc.enable_upgrade_check
             self.relay_usage_report_gen = misc.relay_usage_report_gen
             self.relay_usage_report_span = misc.relay_usage_report_span
             self.relay_usage_report_day = misc.relay_usage_report_day
             self.relay_usage_report_hour = misc.relay_usage_report_hour
-            old_time = self.relay_usage_report_next_gen
-            self.relay_usage_report_next_gen = next_schedule(
-                self.relay_usage_report_span,
-                self.relay_usage_report_day,
-                self.relay_usage_report_hour)
             if (self.relay_usage_report_gen and
                     old_time != self.relay_usage_report_next_gen):
                 str_next_report = time.strftime(
@@ -714,30 +712,6 @@ class DaemonController(threading.Thread):
             message = "Could not query output state:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
-
-    def send_stats(self):
-        """Collect and send statistics"""
-        try:
-            stat_dict = return_stat_file_dict(STATS_CSV)
-            if float(stat_dict['next_send']) < time.time():
-                add_update_csv(STATS_CSV, 'next_send', self.timer_stats)
-            else:
-                self.timer_stats = float(stat_dict['next_send'])
-        except Exception as msg:
-            self.logger.exception(
-                "Error: Could not read stats file. Regenerating. Message: "
-                "{msg}".format(msg=msg))
-            try:
-                os.remove(STATS_CSV)
-            except OSError:
-                pass
-            recreate_stat_file()
-        try:
-            send_anonymous_stats(self.start_time)
-        except Exception as except_msg:
-            self.logger.exception(
-                "Error: Could not send statistics: {err}".format(
-                    err=except_msg))
 
     def startup_stats(self):
         """Ensure existence of statistics file and save daemon startup time"""
@@ -861,11 +835,64 @@ class DaemonController(threading.Thread):
             time.sleep(0.1)
         return 1
 
+
+    #
+    # Timed functions
+    #
+
+    def log_ram_usage(self):
+        try:
+            ram_mb = resource.getrusage(
+                resource.RUSAGE_SELF).ru_maxrss / float(1000)
+            self.logger.info("{ram:.2f} MB RAM in use".format(ram=ram_mb))
+        except Exception:
+            self.logger.exception("Free Ram ERROR")
+
+    def check_mycodo_upgrade_exists(self, now):
+        """Check for any new Mycodo releases on github"""
+        releases = []
+        upgrade_available = False
+        try:
+            maj_version = int(MYCODO_VERSION.split('.')[0])
+            releases = github_releases(maj_version)
+        except Exception:
+            self.logger.error("Could not determine local mycodo version or "
+                              "online release versions. Upgrade checks can "
+                              "be disabled in the Mycodo configuration.")
+
+        try:
+            if len(releases):
+                if parse_version(releases[0]) > parse_version(MYCODO_VERSION):
+                    upgrade_available = True
+                    if now > self.timer_upgrade_message:
+                        # Only display message in log every 10 days
+                        self.timer_upgrade_message = time.time() + 864000
+                        self.logger.info(
+                            "A new version of Mycodo is available. Upgrade "
+                            "through the web interface under Config -> Upgrade. "
+                            "This message will repeat every 10 days unless "
+                            "Mycodo is upgraded or upgrade checks are disabled.")
+
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                mod_misc = new_session.query(Misc).first()
+                if mod_misc.mycodo_upgrade_available != upgrade_available:
+                    mod_misc.mycodo_upgrade_available = upgrade_available
+                    new_session.commit()
+        except Exception:
+            self.logger.exception("Mycodo Upgrade Check ERROR")
+
+    def check_all_timelapses(self, now):
+        try:
+            for each_camera in self.camera:
+                self.timelapse_check(each_camera, now)
+        except Exception:
+            self.logger.exception("Timelapse ERROR")
+
     def timelapse_check(self, camera, now):
         """ If time-lapses are active, take photo at predefined periods """
         try:
             if (camera.timelapse_started and
-                    now > camera.timelapse_end_time):
+                        now > camera.timelapse_end_time):
                 with session_scope(MYCODO_DB_PATH) as new_session:
                     mod_camera = new_session.query(Camera).filter(
                         Camera.id == camera.id).first()
@@ -881,7 +908,7 @@ class DaemonController(threading.Thread):
                 self.logger.debug(
                     "Camera {id}: End of time-lapse.".format(id=camera.id))
             elif ((camera.timelapse_started and not camera.timelapse_paused) and
-                    now > camera.timelapse_next_capture):
+                          now > camera.timelapse_next_capture):
                 # Ensure next capture is greater than now (in case of power failure/reboot)
                 next_capture = camera.timelapse_next_capture
                 capture_number = camera.timelapse_capture_number
@@ -904,6 +931,30 @@ class DaemonController(threading.Thread):
             message = "Could not execute timelapse:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
+
+    def send_stats(self):
+        """Collect and send statistics"""
+        try:
+            stat_dict = return_stat_file_dict(STATS_CSV)
+            if float(stat_dict['next_send']) < time.time():
+                add_update_csv(STATS_CSV, 'next_send', self.timer_stats)
+            else:
+                self.timer_stats = float(stat_dict['next_send'])
+        except Exception as msg:
+            self.logger.exception(
+                "Error: Could not read stats file. Regenerating. Message: "
+                "{msg}".format(msg=msg))
+            try:
+                os.remove(STATS_CSV)
+            except OSError:
+                pass
+            recreate_stat_file()
+        try:
+            send_anonymous_stats(self.start_time)
+        except Exception as except_msg:
+            self.logger.exception(
+                "Error: Could not send statistics: {err}".format(
+                    err=except_msg))
 
 
 class MycodoDaemon:

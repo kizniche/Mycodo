@@ -7,7 +7,7 @@ import collections
 from datetime import timedelta
 
 MYCODO_VERSION = '5.4.5'
-ALEMBIC_VERSION = '321038f2e101'
+ALEMBIC_VERSION = '3dcf34dd7caf'
 
 LANGUAGES = {
     'en': 'English',
@@ -297,6 +297,9 @@ ID_FILE = os.path.join(DATABASE_PATH, 'statistics.id')
 # Login restrictions
 LOGIN_ATTEMPTS = 5
 LOGIN_BAN_SECONDS = 600  # 10 minutes
+
+# Check for upgrade every 2 days (if enabled)
+UPGRADE_CHECK_INTERVAL = 172800
 
 
 class ProdConfig(object):

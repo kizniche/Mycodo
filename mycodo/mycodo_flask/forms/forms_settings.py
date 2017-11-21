@@ -133,6 +133,7 @@ class SettingsGeneral(FlaskForm):
             message=lazy_gettext(u"Hour Options: 0-23")
         )])
     stats_opt_out = BooleanField(lazy_gettext(u'Opt-out of statistics'))
+    enable_upgrade_check = BooleanField(lazy_gettext(u'Check for Updates'))
     Submit = SubmitField(lazy_gettext(u'Save'))
 
 
