@@ -1,3 +1,10 @@
+## 5.4.8 (Unreleased)
+
+### Features
+
+ - Add 1 minute, 5 minute, and 15 minute options to Graph Range Selector ([#319](https://github.com/kizniche/mycodo/issues/319))
+
+
 ## 5.4.7 (2017-11-21)
 
 ### Bugfixes

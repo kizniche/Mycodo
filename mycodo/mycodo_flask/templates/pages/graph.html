@@ -1267,6 +1267,18 @@
       rangeSelector: {
         enabled: {% if each_graph.enable_rangeselect %}true{% else %}false{% endif %},
         buttons: [{
+          count: 1,
+          type: 'minute',
+          text: '1m'
+        }, {
+          count: 5,
+          type: 'minute',
+          text: '5m'
+        }, {
+          count: 15,
+          type: 'minute',
+          text: '15m'
+        }, {
           count: 30,
           type: 'minute',
           text: '30m'
@@ -1276,32 +1288,16 @@
           text: '1h'
         }, {
           type: 'hour',
-          count: 3,
-          text: '3h'
-        }, {
-          type: 'hour',
           count: 6,
           text: '6h'
-        }, {
-          type: 'hour',
-          count: 12,
-          text: '12h'
         }, {
           type: 'day',
           count: 1,
           text: '1d'
         }, {
-          type: 'day',
-          count: 3,
-          text: '3d'
-        }, {
           type: 'week',
           count: 1,
           text: '1w'
-        }, {
-          type: 'week',
-          count: 2,
-          text: '2w'
         }, {
           type: 'month',
           count: 1,

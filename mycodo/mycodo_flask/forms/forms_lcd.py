@@ -87,22 +87,22 @@ class LCDMod(FlaskForm):
 class LCDModDisplay(FlaskForm):
     lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
     lcd_data_id = IntegerField('LCD Data ID', widget=widgets.HiddenInput())
-    line_1_display = StringField(lazy_gettext(u'Line 1 Display'))
+    line_1_display = StringField(lazy_gettext(u'Line 1'))
     line_1_max_age = DecimalField(
         lazy_gettext(u'Max Age (seconds)'),
         validators=[validators.NumberRange(min=1)]
     )
-    line_2_display = StringField(lazy_gettext(u'Line 2 Display'))
+    line_2_display = StringField(lazy_gettext(u'Line 2'))
     line_2_max_age = DecimalField(
         lazy_gettext(u'Max Age (seconds)'),
         validators=[validators.NumberRange(min=1)]
     )
-    line_3_display = StringField(lazy_gettext(u'Line 3 Display'))
+    line_3_display = StringField(lazy_gettext(u'Line 3'))
     line_3_max_age = DecimalField(
         lazy_gettext(u'Max Age (seconds)'),
         validators=[validators.NumberRange(min=1)]
     )
-    line_4_display = StringField(lazy_gettext(u'Line 4 Display'))
+    line_4_display = StringField(lazy_gettext(u'Line 4'))
     line_4_max_age = DecimalField(
         lazy_gettext(u'Max Age (seconds)'),
         validators=[validators.NumberRange(min=1)]
