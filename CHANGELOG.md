@@ -4,6 +4,10 @@
 
  - Add 1 minute, 5 minute, and 15 minute options to Graph Range Selector ([#319](https://github.com/kizniche/mycodo/issues/319))
 
+### Bugfixes
+
+ - Fix AM2315 sensor measurement acquisition ([#328](https://github.com/kizniche/mycodo/issues/328))
+
 
 ## 5.4.7 (2017-11-21)
 

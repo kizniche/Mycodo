@@ -1,13 +1,13 @@
 # coding=utf-8
 import logging
 import time
-from tentacle_pi import AM2315
+
 from sensorutils import dewpoint
 from .base_input import AbstractInput
 
 from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.mycodo_client import DaemonControl
+
 
 
 class AM2315Sensor(AbstractInput):
@@ -29,6 +29,8 @@ class AM2315Sensor(AbstractInput):
         self.am = None
 
         if not testing:
+            from tentacle_pi import AM2315
+            from mycodo.mycodo_client import DaemonControl
             self.control = DaemonControl()
             self.start_sensor()
             self.am = AM2315.AM2315(0x5c, "/dev/i2c-" + self.I2C_bus_number)
@@ -104,7 +106,7 @@ class AM2315Sensor(AbstractInput):
         # for the first time.
         for _ in range(2):
             dew_point, humidity, temperature = self.return_measurements()
-            if self._dew_point is not None:
+            if dew_point is not None:
                 return dew_point, humidity, temperature  # success - no errors
             time.sleep(2)
 
@@ -116,11 +118,12 @@ class AM2315Sensor(AbstractInput):
             self.start_sensor()
             for _ in range(2):
                 dew_point, humidity, temperature = self.return_measurements()
-                if self._dew_point is not None:
+                if dew_point is not None:
                     return dew_point, humidity, temperature  # success - no errors
                 time.sleep(2)
 
         self.logger.debug("Could not acquire a measurement")
+        return None, None, None
 
     def return_measurements(self):
         # Retry measurement if CRC fails
