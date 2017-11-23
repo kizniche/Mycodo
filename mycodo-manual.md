@@ -540,7 +540,7 @@ Commands that are executed by conditional statements can now include variables. 
 ##### Input Conditional command variables
 Variable | Description
 --------------------------- | -------------------------------------------
-((input_location)) | The Input location (such as GPIO pin, I2C address, etc.)
+((input_location)) | The Input location (such as GPIO pin, I<sup>2</sup>C address, etc.)
 ((input_period)) | The period (seconds) between measurements
 ((input_linux_command)) | Input measurement: Linux Command return value
 ((input_altitude)) | Input measurement: altitude
@@ -1222,6 +1222,18 @@ Temperature, Humidity Sensors
  - 10 mA max current use during conversion (while requesting data)
  - No more than 0.5 Hz sampling rate (once every 2 seconds)
 
+#### Notes
+
+From [@Theoi-Meteoroi](https://github.com/kizniche/Mycodo/issues/315#issuecomment-344798815) on GitHub:
+
+I figured out why this \[AM2315\] sensor is unreliable with Rpi3 hardware I<sup>2</sup>C. It is among a number of I<sup>2</sup>C devices that really hates the BCM2835 clock stretching blunder (hardware bug: [raspberrypi/linux#254](https://github.com/raspberrypi/linux/issues/254)). The wakeup attempts fail, consistently. I checked the bitstream with a sniffer, and see that the sensor may respond once out of 20 or so tries (or not at all) but only with a single byte returned. The solution is to use a software implementation of the I<sup>2</sup>C bus. You need to add pull-up resistors (4.7k is dandy) to 3.3v and install the i2c_gpio device overlay. Seems to work fine now, will run for a few days, but the CRC failures are gone and I get good readings, every time. And no twiddling the power for the sensor is required.
+
+To enable software I<sup>2</sup>C, add the following line to your ```/boot/config.txt```
+
+```dtoverlay=i2c-gpio,i2c_gpio_sda=23,i2c_gpio_scl=24,i2c_gpio_delay_us=4```
+
+After rebooting, a new I<sup>2</sup>C bus at /dev/i2c-2 should exist with SDA on pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate pull-up resistors before connecting any devices.
+
 ### DHT11
 
 #### Specifications
@@ -1341,7 +1353,7 @@ Pressure Sensors
 
 ### BME280
 
-The BME280 is the upgrade to the BMP085/BMP180/BMP183. It has a low altitude noise of 0.25m and the same fast conversion time. It has the same specifications, but can use either I2C or SPI.
+The BME280 is the upgrade to the BMP085/BMP180/BMP183. It has a low altitude noise of 0.25m and the same fast conversion time. It has the same specifications, but can use either I<sup>2</sup>C or SPI.
 
 #### Specifications
 
