@@ -9,7 +9,6 @@ from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
 
 
-
 class AM2315Sensor(AbstractInput):
     """
     A sensor support class that measures the AM2315's humidity and temperature
@@ -88,18 +87,17 @@ class AM2315Sensor(AbstractInput):
         self._dew_point = None
         self._humidity = None
         self._temperature = None
-        dew_point = None
-        humidity = None
-        temperature = None
 
         # Ensure if the power pin turns off, it is turned back on
-        if (self.power_output_id and
-                not db_retrieve_table_daemon(Output, device_id=self.power_output_id).is_on()):
-            self.logger.error(
-                'Sensor power output {rel} detected as being off. '
-                'Turning on.'.format(rel=self.power_output_id))
-            self.start_sensor()
-            time.sleep(2)
+        if self.power_output_id:
+            power_pin_is_on = db_retrieve_table_daemon(
+                Output, device_id=self.power_output_id).is_on()
+            if not power_pin_is_on:
+                self.logger.error(
+                    'Sensor power output {rel} detected as being off. '
+                    'Turning on.'.format(rel=self.power_output_id))
+                self.start_sensor()
+                time.sleep(2)
 
         # Try twice to get measurement. This prevents an anomaly where
         # the first measurement fails if the sensor has just been powered
@@ -112,14 +110,14 @@ class AM2315Sensor(AbstractInput):
 
         # Measurement failure, power cycle the sensor (if enabled)
         # Then try two more times to get a measurement
-        if self.power_output_id is not None:
+        if self.power_output_id:
             self.stop_sensor()
             time.sleep(2)
             self.start_sensor()
             for _ in range(2):
                 dew_point, humidity, temperature = self.return_measurements()
                 if dew_point is not None:
-                    return dew_point, humidity, temperature  # success - no errors
+                    return dew_point, humidity, temperature  # success
                 time.sleep(2)
 
         self.logger.debug("Could not acquire a measurement")
@@ -130,13 +128,14 @@ class AM2315Sensor(AbstractInput):
         for num_measure in range(3):
             temperature, humidity, crc_check = self.am.sense()
             if crc_check != 1:
-                self.logger.debug("Measurement {num} returned failed CRC".format(
-                    num=num_measure))
+                self.logger.debug(
+                    "Measurement {num} returned failed CRC".format(
+                        num=num_measure))
                 pass
             else:
                 dew_pt = dewpoint(temperature, humidity)
                 return dew_pt, humidity, temperature
-            time.sleep(3)
+            time.sleep(2)
 
         self.logger.error("All measurements returned failed CRC")
         return None, None, None

@@ -114,7 +114,7 @@ case "${1:-''}" in
             break ||
             # Else wait 60 seconds if localhost is not accepting connections
             # Everything below will begin executing if an error occurs before the break
-            printf "#### Could not connect to http://localhost. Waiting 60 seconds then trying again...\n" &&
+            printf "#### Could not connect to http://localhost. Waiting 60 seconds then trying again (up to 5 times)...\n" &&
             sleep 60 &&
             printf "#### Trying again...\n"
         done

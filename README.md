@@ -79,9 +79,11 @@ All supported Inputs can be found under [Sensor Interfaces](https://github.com/k
 
 ## Install
 
-These install procedures have been tested to work with the Raspberry Pi (versions Zero, 1, 2, and 3) following a fresh install of [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/) (Full or Lite version), with an active internet connection.
+These install procedures have been tested to work with the Raspberry Pi (versions Zero, 1, 2, and 3) following a fresh install of [Raspbian](https://www.raspberrypi.org/downloads/raspbian/) (Full or Lite version), with an active internet connection.
 
-***Important:*** The most recent version of Raspbian has SSH disabled by default. SSH can be enabled for the first bootup by creating a blank file named ```ssh``` and placing it in the boot partition of the SD card. This will enable SSH access until either A. the system is rebooted, or B. SSH is fully-enabled with raspi-config (instructions below).
+Latest version of Raspbian tested: Raspbian Stretch 2017-09-07
+
+***Important:*** Recently, Raspbian has SSH disabled by default. SSH can be enabled for the first bootup by creating a blank file named ```ssh``` and placing it in the boot partition of the SD card. This will enable SSH access until either A. the system is rebooted, or B. SSH is fully-enabled with raspi-config (instructions below).
 
 ### Configure raspi-config
 
