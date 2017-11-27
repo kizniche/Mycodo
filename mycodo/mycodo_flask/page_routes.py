@@ -346,30 +346,28 @@ def page_graph():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
 
-        form_name = request.form['form-name']
-        if form_add_graph.save.data:
+        if form_add_graph.graph_add.data:
             utils_graph.graph_add(form_add_graph, display_order)
-        elif form_mod_graph.mod.data:
+        elif form_mod_graph.graph_mod.data:
             utils_graph.graph_mod(form_mod_graph, request.form)
-        elif form_mod_graph.delete.data:
+        elif form_mod_graph.graph_del.data:
             utils_graph.graph_del(form_mod_graph)
-        elif form_mod_graph.order_up.data:
+        elif form_mod_graph.graph_order_up.data:
             utils_graph.graph_reorder(form_mod_graph.graph_id.data,
                                       display_order, 'up')
-        elif form_mod_graph.order_down.data:
+        elif form_mod_graph.graph_order_down.data:
             utils_graph.graph_reorder(form_mod_graph.graph_id.data,
                                       display_order, 'down')
-
-        elif form_add_gauge.save.data:
+        elif form_add_gauge.gauge_add.data:
             utils_graph.graph_add(form_add_gauge, display_order)
-        elif form_mod_gauge.mod.data:
+        elif form_mod_gauge.gauge_mod.data:
             utils_graph.graph_mod(form_mod_gauge, request.form)
-        elif form_mod_gauge.delete.data:
+        elif form_mod_gauge.gauge_del.data:
             utils_graph.graph_del(form_mod_gauge)
-        elif form_mod_gauge.order_up.data:
+        elif form_mod_gauge.gauge_order_up.data:
             utils_graph.graph_reorder(form_mod_gauge.graph_id.data,
                                       display_order, 'up')
-        elif form_mod_gauge.order_down.data:
+        elif form_mod_gauge.gauge_order_down.data:
             utils_graph.graph_reorder(form_mod_gauge.graph_id.data,
                                       display_order, 'down')
 

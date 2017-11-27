@@ -1,3 +1,10 @@
+## 5.4.9 (2017-11-27)
+
+### Bugfixes
+
+ - Fix adding Gauges ([#333](https://github.com/kizniche/mycodo/issues/333))
+
+
 ## 5.4.8 (2017-11-22)
 
 ### Features

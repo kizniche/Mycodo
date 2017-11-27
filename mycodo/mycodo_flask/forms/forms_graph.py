@@ -63,7 +63,7 @@ class GraphAdd(FlaskForm):
     enable_navbar = BooleanField(lazy_gettext(u'Enable Navbar'))
     enable_export = BooleanField(lazy_gettext(u'Enable Export'))
     enable_range = BooleanField(lazy_gettext(u'Enable Range Selector'))
-    save = SubmitField(lazy_gettext(u'Create'))
+    graph_add = SubmitField(lazy_gettext(u'Create'))
 
 
 class GraphMod(FlaskForm):
@@ -113,10 +113,10 @@ class GraphMod(FlaskForm):
     enable_export = BooleanField(lazy_gettext(u'Enable Export'))
     enable_range = BooleanField(lazy_gettext(u'Enable Range Selector'))
     use_custom_colors = BooleanField(lazy_gettext(u'Enable Custom Colors'))
-    mod = SubmitField(lazy_gettext(u'Save'))
-    delete = SubmitField(lazy_gettext(u'Delete'))
-    order_up = SubmitField(lazy_gettext(u'Up'))
-    order_down = SubmitField(lazy_gettext(u'Down'))
+    graph_mod = SubmitField(lazy_gettext(u'Save'))
+    graph_del = SubmitField(lazy_gettext(u'Delete'))
+    graph_order_up = SubmitField(lazy_gettext(u'Up'))
+    graph_order_down = SubmitField(lazy_gettext(u'Down'))
 
 
 class GaugeAdd(FlaskForm):
@@ -151,7 +151,7 @@ class GaugeAdd(FlaskForm):
                                  u" any new measurements.")
         )]
     )
-    save = SubmitField(lazy_gettext(u'Create'))
+    gauge_add = SubmitField(lazy_gettext(u'Create'))
 
 
 class GaugeMod(FlaskForm):
@@ -165,7 +165,7 @@ class GaugeMod(FlaskForm):
     y_axis_max = DecimalField(lazy_gettext(u'Gauge Max'))
     max_measure_age = DecimalField(lazy_gettext(u'Max Age (seconds)'))
     refresh_duration = IntegerField(lazy_gettext(u'Refresh (seconds)'))
-    mod = SubmitField(lazy_gettext(u'Save'))
-    delete = SubmitField(lazy_gettext(u'Delete'))
-    order_up = SubmitField(lazy_gettext(u'Up'))
-    order_down = SubmitField(lazy_gettext(u'Down'))
+    gauge_mod = SubmitField(lazy_gettext(u'Save'))
+    gauge_del = SubmitField(lazy_gettext(u'Delete'))
+    gauge_order_up = SubmitField(lazy_gettext(u'Up'))
+    gauge_order_down = SubmitField(lazy_gettext(u'Down'))

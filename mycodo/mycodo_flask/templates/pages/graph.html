@@ -215,14 +215,14 @@
 
           <div class="form-inline btn-group" style="padding-top: 1em;">
             <div class="form-group">
-              {{form_mod_graph.mod(class_='form-control btn btn-default')}}
+              {{form_mod_graph.graph_mod(class_='form-control btn btn-default')}}
             </div>
             <div class="form-group">
-              {{form_mod_graph.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this graph?")'})}}
+              {{form_mod_graph.graph_del(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this graph?")'})}}
             </div>
             <div class="form-group">
-              {{form_mod_graph.order_up(class_='form-control btn btn-default')}}
-              {{form_mod_graph.order_down(class_='form-control btn btn-default')}}
+              {{form_mod_graph.graph_order_up(class_='form-control btn btn-default')}}
+              {{form_mod_graph.graph_order_down(class_='form-control btn btn-default')}}
             </div>
           </div>
           </form>
@@ -370,18 +370,18 @@
 
             <div class="form-inline">
               <div class="form-group">
-                {{form_mod_gauge.mod(class_='form-control btn btn-default')}}
+                {{form_mod_gauge.gauge_mod(class_='form-control btn btn-default')}}
               </div>
             </div>
 
             <div class="form-inline" style="padding-top: 1em;">
               <div class="form-group">
-                {{form_mod_gauge.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this graph?")'})}}
+                {{form_mod_gauge.gauge_del(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this graph?")'})}}
               </div>
               <div class="form-group">
                 Reorder:
-                {{form_mod_gauge.order_up(class_='form-control btn btn-default')}}
-                {{form_mod_gauge.order_down(class_='form-control btn btn-default')}}
+                {{form_mod_gauge.gauge_order_up(class_='form-control btn btn-default')}}
+                {{form_mod_gauge.gauge_order_down(class_='form-control btn btn-default')}}
               </div>
             </div>
             </form>
@@ -526,7 +526,7 @@
       </div>
       <div class="form-inline btn-group">
         <div class="form-group">
-          {{form_add_graph.save(class_='form-control btn btn-default')}}
+          {{form_add_graph.graph_add(class_='form-control btn btn-default')}}
         </div>
       </div>
       </form>
@@ -610,7 +610,7 @@
       </div>
       <div class="form-inline btn-group">
         <div class="form-group">
-          {{form_add_gauge.save(class_='form-control btn btn-default')}}
+          {{form_add_gauge.gauge_add(class_='form-control btn btn-default')}}
         </div>
       </div>
       </form>
