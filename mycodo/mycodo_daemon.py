@@ -253,36 +253,36 @@ class ComThread(threading.Thread):
 
     def run(self):
         try:
-            # TODO: temporary for testing
-            rpyc_test_log = threading.Thread(
-                target=test_rpyc,
-                args=(self.logger,))
-            rpyc_test_log.start()
-
-            # TODO: change logging level (default is info for rpyc)
+            # Start RPYC server
             service = mycodo_service(self.mycodo)
             server = ThreadedServer(service, port=18813, logger=self.logger)
             server.start()
+
+            rpyc_monitor = threading.Thread(
+                target=monitor_rpyc,
+                args=(self.logger,))
+            rpyc_monitor.daemon = True
+            rpyc_monitor.start()
         except Exception as err:
             self.logger.exception(
-                "TESTING: ComThread: {msg}".format(msg=err))
+                "ERROR: ComThread: {msg}".format(msg=err))
 
 
-def test_rpyc(logger_rpyc):
-    running = True
-    log_timer = time.time() + 60
-    while running:
+def monitor_rpyc(logger_rpyc):
+    """Monitor whether the RPYC server is active or not"""
+    log_timer = time.time() + 1
+    while True:
         now = time.time()
         if now > log_timer:
             try:
                 c = rpyc.connect('localhost', 18813)
-                time.sleep(0.1)
+                time.sleep(0.5)
                 logger_rpyc.debug(
-                    "TESTING: (30 min timer) rpyc communication thread: "
+                    "RPYC communication thread (30-minute timer): "
                     "closed={stat}".format(stat=c.closed))
             except Exception as err:
                 logger_rpyc.exception(
-                    "TESTING: test_rpyc exception: {msg}".format(msg=err))
+                    "RPYC Exception: {msg}".format(msg=err))
             log_timer = log_timer + 1800
         time.sleep(1)
 

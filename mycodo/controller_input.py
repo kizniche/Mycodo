@@ -418,13 +418,14 @@ class InputController(threading.Thread):
                     if (self.get_new_measurement and
                             self.pre_output_setup and
                             not self.pre_output_activated):
+                        self.pre_output_timer = time.time() + self.pre_output_duration
+                        self.pre_output_activated = True
+
                         output_on = threading.Thread(
                             target=self.control.relay_on,
                             args=(self.pre_output_id,
                                   self.pre_output_duration,))
                         output_on.start()
-                        self.pre_output_activated = True
-                        self.pre_output_timer = time.time() + self.pre_output_duration
 
                     # If using a pre output, wait for it to complete before
                     # querying the input for a measurement
@@ -566,6 +567,7 @@ class InputController(threading.Thread):
                     message += u" for {sec} seconds".format(
                         sec=cond_action.do_relay_duration)
                 message += "."
+
                 output_on_off = threading.Thread(
                     target=self.control.output_on_off,
                     args=(cond_action.do_relay_id,
@@ -683,6 +685,7 @@ class InputController(threading.Thread):
             elif cond_action.do_action == 'flash_lcd':
                 message += u" Flashing LCD ({id}).".format(
                     id=cond_action.do_lcd_id)
+
                 start_flashing = threading.Thread(
                     target=self.control.flash_lcd,
                     args=(cond_action.do_lcd_id, 1,))
@@ -868,11 +871,13 @@ class InputController(threading.Thread):
         gpio_state = GPIO.input(int(self.location))
         if time.time() > self.edge_reset_timer:
             self.edge_reset_timer = time.time()+self.switch_reset_period
+
             if (self.switch_edge == 'rising' or
                     (self.switch_edge == 'both' and gpio_state)):
                 rising_or_falling = 1  # Rising edge detected
             else:
                 rising_or_falling = -1  # Falling edge detected
+
             write_db = threading.Thread(
                 target=write_influxdb_value,
                 args=(self.unique_id, 'edge', rising_or_falling,))

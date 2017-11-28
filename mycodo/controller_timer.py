@@ -163,6 +163,7 @@ class TimerController(threading.Thread):
                         int(self.start_minute) == datetime.datetime.now().minute):
                     # Ensure this is triggered only once at this specific time
                     if self.date_timer_not_executed:
+                        self.date_timer_not_executed = False
                         message = "At {st}, turn Output {id} {state}".format(
                             st=self.time_start,
                             id=self.output_id,
@@ -173,13 +174,13 @@ class TimerController(threading.Thread):
                         else:
                             self.duration_on = 0
                         self.logger.debug(message)
+
                         modulate_output = threading.Thread(
                             target=self.control.output_on_off,
                             args=(self.output_id,
                                   self.state,),
                             kwargs={'duration': self.duration_on})
                         modulate_output.start()
-                        self.date_timer_not_executed = False
                 elif not self.date_timer_not_executed:
                     self.date_timer_not_executed = True
 
