@@ -7,6 +7,7 @@
 ### Bugfixes
 
  - Change web UI restart command
+ - Fix issue saving Timer options ([#334](https://github.com/kizniche/mycodo/issues/334))
 
 
 ## 5.4.9 (2017-11-27)

@@ -54,14 +54,13 @@ def timer_add(display_order,
     new_timer = Timer()
     new_timer.name = form_add_timer_base.name.data
     new_timer.relay_id = form_add_timer_base.relay_id.data
-    if form_add_timer_base.timer_type.data == 'time_point':
-        new_timer.timer_type = 'time'
+    new_timer.timer_type = form_add_timer_base.timer_type.data
+    if form_add_timer_base.timer_type.data == 'time':
         new_timer.state = form_add_timer.state.data
         new_timer.time_start = form_add_timer.time_start.data
         new_timer.duration_on = form_add_timer.time_on_duration.data
         new_timer.duration_off = 0
-    elif form_add_timer_base.timer_type.data == 'time_span':
-        new_timer.timer_type = 'timespan'
+    elif form_add_timer_base.timer_type.data == 'timespan':
         new_timer.state = form_add_timer.state.data
         new_timer.time_start = form_add_timer.time_start_duration.data
         new_timer.time_end = form_add_timer.time_end_duration.data
@@ -70,11 +69,9 @@ def timer_add(display_order,
                 form_add_timer.duration_off.data <= 0):
             error.append(gettext(u"Durations must be greater than 0"))
         else:
-            new_timer.timer_type = 'duration'
             new_timer.duration_on = form_add_timer.duration_on.data
             new_timer.duration_off = form_add_timer.duration_off.data
     elif form_add_timer_base.timer_type.data == 'pwm_method':
-        new_timer.timer_type = 'pwm_method'
         new_timer.method_id = form_add_timer.method_id.data
         new_timer.method_period = form_add_timer.method_period.data
     else:

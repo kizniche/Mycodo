@@ -31,7 +31,6 @@
         </div>
 
         <form method="post" action="/timer">
-        <input type="hidden" name="form-name" value="addTimer">
         {{form_timer_base.csrf_token}}
         <div class="form-inline">
 
@@ -101,7 +100,6 @@
 
     <div class="container" style="border: 2px solid #ddd;">
       <form method="post" action="/timer">
-      <input type="hidden" name="form-name" value="modTimer">
       {{form_timer_base.csrf_token}}
       {{form_timer_base.timer_id(class_='form-control', value=each_timer.id)}}
       <div class="row {% if each_timer.is_activated -%}active-background
@@ -168,7 +166,7 @@
 
   <script>
     $('#timer_type').on('change', function () {
-      if (this.value === 'time_point') {
+      if (this.value === 'time') {
         document.getElementById("base_options").style.display = "block";
         document.getElementById("add_time_point").style.display = "block";
         document.getElementById("add_time_span").style.display = "none";
@@ -176,7 +174,7 @@
         document.getElementById("add_pwm_method").style.display = "none";
         document.getElementById("add_button").style.display = "block";
       }
-      else if (this.value === 'time_span') {
+      else if (this.value === 'timespan') {
         document.getElementById("base_options").style.display = "block";
         document.getElementById("add_time_point").style.display = "none";
         document.getElementById("add_time_span").style.display = "block";

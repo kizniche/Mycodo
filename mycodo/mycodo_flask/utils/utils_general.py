@@ -75,6 +75,8 @@ def controller_activate_deactivate(controller_action,
             Timer.id == int(controller_id)).first()
 
     if mod_controller is None:
+        flash("{type} Controller {id} doesn't exist".format(
+            type=controller_type, id=controller_id), "error")
         return redirect(url_for('general_routes.home'))
 
     try:
