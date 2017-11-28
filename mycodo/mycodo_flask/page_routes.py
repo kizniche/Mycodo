@@ -1023,7 +1023,7 @@ def page_timer():
                 form_timer = form_timer_pwm_method
             else:
                 flash("Unknown Timer type: {type}".format(
-                    type=form_timer_base.timer_type.data), "success")
+                    type=form_timer_base.timer_type.data), "error")
                 return redirect(url_for('page_routes.page_timer'))
 
         if form_timer_base.create.data:
@@ -1059,7 +1059,7 @@ def page_timer():
                            form_timer_pwm_method=form_timer_pwm_method)
 
 
-@blueprint.route('/usage', methods=('GET', 'POST'))
+@blueprint.route('/usage')
 @flask_login.login_required
 def page_usage():
     """ Display output usage (duration and energy usage/cost) """
@@ -1088,7 +1088,7 @@ def page_usage():
                            timestamp=time.strftime("%c"))
 
 
-@blueprint.route('/usage_reports', methods=('GET', 'POST'))
+@blueprint.route('/usage_reports')
 @flask_login.login_required
 def page_usage_reports():
     """ Display output usage (duration and energy usage/cost) """

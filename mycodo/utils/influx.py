@@ -144,18 +144,18 @@ def relay_sec_on(output_id, past_seconds):
     if not output_id:
         return None
 
-    query = query_string('duration_sec', output.unique_id, value='SUM',
-                         past_sec=past_seconds)
-    output = client.query(query)
-    sec_recorded_on = 0
-    if output:
-        sec_recorded_on = output.raw['series'][0]['values'][0][1]
-
     # Get the number of seconds not stored in the database (if currently on)
     output_time_on = 0
     if output.is_on():
         control = DaemonControl()
         output_time_on = control.relay_sec_currently_on(output_id)
+
+    query = query_string('duration_sec', output.unique_id, value='SUM',
+                         past_sec=past_seconds)
+    query_output = client.query(query)
+    sec_recorded_on = 0
+    if query_output:
+        sec_recorded_on = query_output.raw['series'][0]['values'][0][1]
 
     sec_currently_on = 0
     if output_time_on:
