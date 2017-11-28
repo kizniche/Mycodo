@@ -4,6 +4,10 @@
 
  - Add display of all detected I2C devices on the System Information page
 
+### Bugfixes
+
+ - Change web UI restart command
+
 
 ## 5.4.9 (2017-11-27)
 

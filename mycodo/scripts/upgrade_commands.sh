@@ -105,7 +105,7 @@ case "${1:-''}" in
     ;;
     'restart-web-ui')
         printf "\n#### Restarting the Mycodo web server\n"
-        service apache2 restart
+        apachectl restart
         sleep 5
 
         printf "\n#### Creating Mycodo database if it doesn't exist\n"

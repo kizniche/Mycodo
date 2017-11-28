@@ -11,6 +11,7 @@ import sys
 import time
 from collections import OrderedDict
 from flask_babel import gettext
+from glob import glob
 from importlib import import_module
 from w1thermsensor import W1ThermSensor
 
@@ -451,10 +452,8 @@ def page_info():
     (gpio_output, _) = gpio.communicate()
     gpio.wait()
 
-    i2c_devices = {}
-    i2cdetect_out = {}
     try:
-        from glob import glob
+        i2cdetect_out = {}
         i2c_devices = glob("/dev/i2c-*")
         for index, each_dev in enumerate(i2c_devices):
             i2c_devices[index] = int(each_dev.strip("/dev/i2c-"))
@@ -466,6 +465,8 @@ def page_info():
             df.wait()
     except Exception as er:
         flash("Error detecting I2C devices: {er}".format(er=er), "error")
+        i2c_devices = {}
+        i2cdetect_out = {}
 
     df = subprocess.Popen(
         "df -h", stdout=subprocess.PIPE, shell=True)
