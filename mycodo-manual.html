@@ -1881,7 +1881,7 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <p>I figured out why this [AM2315] sensor is unreliable with Rpi3 hardware I<sup>2</sup>C. It is among a number of I<sup>2</sup>C devices that really hates the BCM2835 clock stretching blunder (hardware bug: <a href="https://github.com/raspberrypi/linux/issues/254">raspberrypi/linux#254</a>). The wakeup attempts fail, consistently. I checked the bitstream with a sniffer, and see that the sensor may respond once out of 20 or so tries (or not at all) but only with a single byte returned. The solution is to use a software implementation of the I<sup>2</sup>C bus. You need to add pull-up resistors (4.7k is dandy) to 3.3v and install the i2c_gpio device overlay. Seems to work fine now, will run for a few days, but the CRC failures are gone and I get good readings, every time. And no twiddling the power for the sensor is required.</p>
 <p>To enable software I<sup>2</sup>C, add the following line to your <code>/boot/config.txt</code></p>
 <p><code>dtoverlay=i2c-gpio,i2c_gpio_sda=23,i2c_gpio_scl=24,i2c_gpio_delay_us=4</code></p>
-<p>After rebooting, a new I<sup>2</sup>C bus at /dev/i2c-2 should exist with SDA on pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate pull-up resistors before connecting any devices.</p>
+<p>After rebooting, a new I<sup>2</sup>C bus at /dev/i2c-3 should exist with SDA on pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate pull-up resistors before connecting any devices.</p>
 <h3 id="dht11">DHT11</h3>
 <h4 id="specifications-4">Specifications</h4>
 <ul>

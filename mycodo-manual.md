@@ -1232,7 +1232,7 @@ To enable software I<sup>2</sup>C, add the following line to your ```/boot/confi
 
 ```dtoverlay=i2c-gpio,i2c_gpio_sda=23,i2c_gpio_scl=24,i2c_gpio_delay_us=4```
 
-After rebooting, a new I<sup>2</sup>C bus at /dev/i2c-2 should exist with SDA on pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate pull-up resistors before connecting any devices.
+After rebooting, a new I<sup>2</sup>C bus at /dev/i2c-3 should exist with SDA on pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate pull-up resistors before connecting any devices.
 
 ### DHT11
 

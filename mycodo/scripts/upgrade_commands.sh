@@ -56,10 +56,12 @@ case "${1:-''}" in
 
         printf "\n#### Creating users and directories\n"
         useradd -M mycodo
-        adduser mycodo gpio
+
         adduser mycodo adm
-        adduser mycodo video
         adduser mycodo dialout
+        adduser mycodo gpio
+        adduser mycodo i2c
+        adduser mycodo video
 
         ln -sfn ${INSTALL_DIRECTORY}/Mycodo /var/www/mycodo
 

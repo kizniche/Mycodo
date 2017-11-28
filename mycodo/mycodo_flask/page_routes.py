@@ -451,6 +451,22 @@ def page_info():
     (gpio_output, _) = gpio.communicate()
     gpio.wait()
 
+    i2c_devices = {}
+    i2cdetect_out = {}
+    try:
+        from glob import glob
+        i2c_devices = glob("/dev/i2c-*")
+        for index, each_dev in enumerate(i2c_devices):
+            i2c_devices[index] = int(each_dev.strip("/dev/i2c-"))
+            df = subprocess.Popen(
+                "i2cdetect -y {dev}".format(dev=i2c_devices[index]),
+                stdout=subprocess.PIPE,
+                shell=True)
+            (i2cdetect_out[i2c_devices[index]], _) = df.communicate()
+            df.wait()
+    except Exception as er:
+        flash("Error detecting I2C devices: {er}".format(er=er), "error")
+
     df = subprocess.Popen(
         "df -h", stdout=subprocess.PIPE, shell=True)
     (df_output, _) = df.communicate()
@@ -510,6 +526,8 @@ def page_info():
                            database_version=database_version,
                            df=df_output,
                            free=free_output,
+                           i2c_devices=i2c_devices,
+                           i2cdetect_out=i2cdetect_out,
                            ifconfig=ifconfig_output,
                            pstree=pstree_output,
                            ram_use_daemon=ram_use_daemon,

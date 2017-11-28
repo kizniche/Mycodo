@@ -1,3 +1,10 @@
+## 5.4.10 (Unreleased)
+
+### Features
+
+ - Add display of all detected I2C devices on the System Information page
+
+
 ## 5.4.9 (2017-11-27)
 
 ### Bugfixes

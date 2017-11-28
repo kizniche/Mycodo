@@ -69,6 +69,23 @@
       </div>
     </div>
 
+    {% for each_i2c in i2c_devices %}
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        i2cdetect -y {{each_i2c}}
+      </div>
+      <div>
+        {%- if i2c_devices != "" -%}
+          <pre>{{i2cdetect_out[each_i2c]}}</pre>
+        {%- else -%}
+{{_('No I2C devices found. Enable with "sudo raspi-config"')}}:
+        {%- endif -%}
+      </div>
+    </div>
+
+    {% endfor %}
+
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em">
         df -h

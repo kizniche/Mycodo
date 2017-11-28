@@ -1961,7 +1961,7 @@ To enable software I2C, add the following line to your /boot/config.txt
 
 dtoverlay=i2c-gpio,i2c_gpio_sda=23,i2c_gpio_scl=24,i2c_gpio_delay_us=4
 
-After rebooting, a new I2C bus at /dev/i2c-2 should exist with SDA on
+After rebooting, a new I2C bus at /dev/i2c-3 should exist with SDA on
 pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate
 pull-up resistors before connecting any devices.
 
