@@ -1,3 +1,10 @@
+## 5.4.11 (2017-11-29)
+
+### Bugfixes
+
+ - Fix issue displaying Camera page
+
+
 ## 5.4.10 (2017-11-28)
 
 ### Features

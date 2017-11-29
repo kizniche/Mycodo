@@ -11,7 +11,6 @@ import sys
 import time
 from collections import OrderedDict
 from flask_babel import gettext
-from glob import glob
 from importlib import import_module
 from w1thermsensor import W1ThermSensor
 
@@ -454,7 +453,7 @@ def page_info():
 
     try:
         i2cdetect_out = {}
-        i2c_devices = glob("/dev/i2c-*")
+        i2c_devices = glob.glob("/dev/i2c-*")
         for index, each_dev in enumerate(i2c_devices):
             i2c_devices[index] = int(each_dev.strip("/dev/i2c-"))
             df = subprocess.Popen(

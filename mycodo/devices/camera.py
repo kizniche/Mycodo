@@ -109,8 +109,11 @@ def camera_record(record_type, settings, duration_sec=None):
 
         if record_type in ['photo', 'timelapse']:
             edited = False
-            _, img_orig = cap.read()
-            cap.release()
+            try:
+                _, img_orig = cap.read()
+                cap.release()
+            except Exception:
+                logger.exception(1)
 
             if not img_orig:
                 logger.error("Could not access camera")
