@@ -3,6 +3,7 @@
 ### Features
 
  - Complete Spanish translation
+ - Update korean translations
  - Add more translatable texts
 
 ### Bugfixes

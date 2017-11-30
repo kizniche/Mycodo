@@ -1,13 +1,11 @@
-# French translations for PROJECT.
-# Copyright (C) 2017 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+# French translations for Mycodo.
+# This file is distributed under the same license as the Mycodo project.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
+"Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-11-29 19:00-0500\n"
+"POT-Creation-Date: 2017-11-30 09:59-0500\n"
 "PO-Revision-Date: 2017-01-05 00:55-0500\n"
 "Last-Translator: \n"
 "Language: fr\n"
@@ -47,8 +45,12 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: config.py:87 mycodo_flask/templates/pages/graph.html:1070
+#: config.py:87 mycodo_flask/forms/forms_output.py:84
+#: mycodo_flask/templates/pages/graph.html:1070
 #: mycodo_flask/templates/pages/graph.html:1451
+#: mycodo_flask/templates/pages/live.html:170
+#: mycodo_flask/templates/pages/live.html:207
+#: mycodo_flask/templates/pages/output.html:254
 msgid "Duty Cycle"
 msgstr ""
 
@@ -622,7 +624,9 @@ msgid "Number of minutes to display of past measurements."
 msgstr ""
 
 #: mycodo_flask/forms/forms_graph.py:53 mycodo_flask/forms/forms_graph.py:102
-msgid "Refresh Period (seconds)"
+#: mycodo_flask/forms/forms_input.py:82 mycodo_flask/forms/forms_lcd.py:60
+#: mycodo_flask/forms/forms_pid.py:52 mycodo_flask/forms/forms_timer.py:86
+msgid "Period (seconds)"
 msgstr ""
 
 #: mycodo_flask/forms/forms_graph.py:56 mycodo_flask/forms/forms_graph.py:105
@@ -809,11 +813,6 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_input.py:75
 msgid "Pre Output Duration"
-msgstr ""
-
-#: mycodo_flask/forms/forms_input.py:82 mycodo_flask/forms/forms_lcd.py:60
-#: mycodo_flask/forms/forms_pid.py:52 mycodo_flask/forms/forms_timer.py:86
-msgid "Period (seconds)"
 msgstr ""
 
 #: mycodo_flask/forms/forms_input.py:89
@@ -1200,15 +1199,11 @@ msgid "Library"
 msgstr ""
 
 #: mycodo_flask/forms/forms_output.py:74
-msgid "Any Pin (<= 40 kHz)"
+msgid "Any Pin, <= 40 kHz"
 msgstr ""
 
 #: mycodo_flask/forms/forms_output.py:75
-msgid "Hardware Pin (<= 30 MHz)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_output.py:84
-msgid "Duty Cycle (%)"
+msgid "Hardware Pin, <= 30 MHz"
 msgstr ""
 
 #: mycodo_flask/forms/forms_pid.py:29
@@ -1593,6 +1588,8 @@ msgid "End Time"
 msgstr ""
 
 #: mycodo_flask/forms/forms_timer.py:81
+#: mycodo_flask/templates/pages/live.html:178
+#: mycodo_flask/templates/pages/live.html:215
 msgid "Off (seconds)"
 msgstr ""
 
@@ -1676,6 +1673,7 @@ msgid "Data"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:143
+#: mycodo_flask/templates/pages/live.html:3
 msgid "Live Measurements"
 msgstr ""
 
@@ -2219,10 +2217,6 @@ msgstr ""
 msgid "Inactive"
 msgstr ""
 
-#: mycodo_flask/templates/pages/live.html:3
-msgid "Live Leasurements"
-msgstr ""
-
 #: mycodo_flask/templates/pages/live.html:5
 msgid "Live"
 msgstr "Vivant"
@@ -2249,12 +2243,6 @@ msgstr ""
 msgid "On Duration (sec.)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/live.html:170
-#: mycodo_flask/templates/pages/live.html:207
-#, python-format
-msgid "Duty Cycle (%%)"
-msgstr ""
-
 #: mycodo_flask/templates/pages/live.html:173
 #: mycodo_flask/templates/pages/live.html:180
 #: mycodo_flask/templates/pages/live.html:210
@@ -2265,11 +2253,6 @@ msgstr ""
 #: mycodo_flask/templates/pages/live.html:173
 #: mycodo_flask/templates/pages/live.html:210
 msgid "Max"
-msgstr ""
-
-#: mycodo_flask/templates/pages/live.html:178
-#: mycodo_flask/templates/pages/live.html:215
-msgid "Off Duration (sec.)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/live.html:185
@@ -2910,7 +2893,8 @@ msgid ""
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid_options/relay_lower.html:17
-msgid "This relay will remain off for at least this duration fo time."
+#: mycodo_flask/templates/pages/pid_options/relay_raise.html:17
+msgid "This relay will remain off for at least this duration of time"
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid_options/relay_raise.html:5
@@ -2925,10 +2909,6 @@ msgid ""
 "The maximum duration (in seconds) allowed for the Raise Output to be on "
 "for, per period. If an On duration is above this value, the Raise Output "
 "will turn on for this set duration."
-msgstr ""
-
-#: mycodo_flask/templates/pages/pid_options/relay_raise.html:17
-msgid "This relay will remain off for at least this duration of time."
 msgstr ""
 
 #: mycodo_flask/templates/pages/timer_options/add_pwm_method.html:4
@@ -3201,7 +3181,7 @@ msgid "%(cont)s controller deactivated in SQL database"
 msgstr ""
 
 #: mycodo_flask/utils/utils_general.py:96
-#: mycodo_flask/utils/utils_general.py:113
+#: mycodo_flask/utils/utils_general.py:113 mycodo_flask/utils/utils_pid.py:339
 #: mycodo_flask/utils/utils_remote_host.py:165
 #: mycodo_flask/utils/utils_remote_host.py:169
 #: mycodo_flask/utils/utils_remote_host.py:173
@@ -3519,12 +3499,7 @@ msgstr ""
 msgid "Daemon response to PID controller %(act)s command: %(rval)s"
 msgstr ""
 
-#: mycodo_flask/utils/utils_pid.py:338
-#, python-format
-msgid "PID Error: %(msg)s"
-msgstr ""
-
-#: mycodo_flask/utils/utils_pid.py:354
+#: mycodo_flask/utils/utils_pid.py:356
 msgid ""
 "Cannot set output if it is already selected by another active PID "
 "controller"
@@ -3864,5 +3839,35 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "There was an error that occurred during the upgrade."
+#~ msgstr ""
+
+#~ msgid "Refresh Period (seconds)"
+#~ msgstr ""
+
+#~ msgid "Any Pin (<= 40 kHz)"
+#~ msgstr ""
+
+#~ msgid "Hardware Pin (<= 30 MHz)"
+#~ msgstr ""
+
+#~ msgid "Duty Cycle (%)"
+#~ msgstr ""
+
+#~ msgid "Live Leasurements"
+#~ msgstr ""
+
+#~ msgid "Duty Cycle (%%)"
+#~ msgstr ""
+
+#~ msgid "Off Duration (sec.)"
+#~ msgstr ""
+
+#~ msgid "This relay will remain off for at least this duration fo time."
+#~ msgstr ""
+
+#~ msgid "This relay will remain off for at least this duration of time."
+#~ msgstr ""
+
+#~ msgid "PID Error: %(msg)s"
 #~ msgstr ""
 
