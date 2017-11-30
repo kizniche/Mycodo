@@ -2,7 +2,7 @@
 """ functional tests for flask endpoints """
 import pytest
 import mock
-from mycodo.databases.models import Sensor
+from mycodo.databases.models import Input
 from mycodo.databases.models import User
 
 from mycodo.tests.software_tests.conftest import login_user
@@ -109,21 +109,22 @@ def test_routes_logged_in_as_admin(_, testapp):
         ('settings/camera', '<!-- Route: /settings/camera -->'),
         ('settings/general', '<!-- Route: /settings/general -->'),
         ('settings/users', '<!-- Route: /settings/users -->'),
+        ('calibration', '<!-- Route: /calibration -->'),
         ('camera', '<!-- Route: /camera -->'),
         ('export', '<!-- Route: /export -->'),
         ('graph', '<!-- Route: /graph -->'),
         ('graph-async', '<!-- Route: /graph-async -->'),
         ('help', '<h1 id="mycodo-manual">Mycodo Manual</h1>'),
         ('info', '<!-- Route: /info -->'),
+        ('input', '<!-- Route: /input -->'),
         ('lcd', '<!-- Route: /lcd -->'),
         ('live', '<!-- Route: /live -->'),
         ('logview', '<!-- Route: /logview -->'),
         ('method', '<!-- Route: /method -->'),
         ('method-build/-1', 'admin logged in'),
-        ('pid', '<!-- Route: /pid -->'),
         ('output', '<!-- Route: /output -->'),
+        ('pid', '<!-- Route: /pid -->'),
         ('remote/setup', '<!-- Route: /remote/setup -->'),
-        ('input', '<!-- Route: /input -->'),
         ('timer', '<!-- Route: /timer -->'),
         ('usage', '<!-- Route: /usage -->'),
         ('usage_reports', '<!-- Route: /usage_reports -->')
@@ -211,17 +212,17 @@ def sees_navbar(testapp):
         'Configure',
         'Data',
         'Export Measurements',
+        'Inputs',
         'Live Graphs',
         'LCDs',
         'Live Measurements',
         'Logout',
         'Mycodo Logs',
         'Methods',
-        'PID',
         'Output Usage',
         'Output Usage Reports',
+        'PID',
         'Remote Admin',
-        'Sensors',
         'System Information',
         'Timer',
         'Upgrade'

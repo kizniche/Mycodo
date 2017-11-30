@@ -11,12 +11,13 @@ class Method(CRUDMixin, db.Model):
     method_type = db.Column(db.Text, default='')
     method_order = db.Column(db.Text, default='')
 
-    def __reper__(self):
+    def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
 
 class MethodData(CRUDMixin, db.Model):
     __tablename__ = "method_data"
+
     id = db.Column(db.Integer, unique=True, primary_key=True)
     method_id = db.Column(db.Integer, db.ForeignKey('method.id'), default=None)
     time_start = db.Column(db.Text, default=None)
@@ -41,5 +42,5 @@ class MethodData(CRUDMixin, db.Model):
     x3 = db.Column(db.Float, default=None)
     y3 = db.Column(db.Float, default=None)
 
-    def __reper__(self):
+    def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

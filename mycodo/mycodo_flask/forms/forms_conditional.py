@@ -24,12 +24,12 @@ class Conditional(FlaskForm):
     quantity = IntegerField(lazy_gettext(u'Quantity'))
     name = StringField(lazy_gettext(u'Name'))
 
-    # Relay conditional options
-    if_relay_id = StringField(lazy_gettext(u'If Relay'))
-    if_relay_state = StringField(lazy_gettext(u'If Relay State'))
-    if_relay_duration = DecimalField(lazy_gettext(u'If Relay Duration'))
+    # Output conditional options
+    if_relay_id = StringField(lazy_gettext(u'If Output'))
+    if_relay_state = StringField(lazy_gettext(u'If Output State'))
+    if_relay_duration = DecimalField(lazy_gettext(u'If Output Duration'))
 
-    # Sensor conditional options
+    # Input conditional options
     if_sensor_period = DecimalField(lazy_gettext(u'Period'))
     if_sensor_measurement = StringField(lazy_gettext(u'Measurement'))
     if_sensor_edge_select = StringField(lazy_gettext(u'Edge or State'))

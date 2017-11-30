@@ -11,6 +11,7 @@ from flask import redirect
 from flask import request
 from flask import render_template
 from flask import flash
+from flask import jsonify
 from flask import session
 from flask import url_for
 from flask import make_response
@@ -22,11 +23,11 @@ from flask_babel import gettext
 from flask.blueprints import Blueprint
 
 from mycodo.databases.models import AlembicVersion
+from mycodo.databases.models import Input
 from mycodo.databases.models import Misc
 from mycodo.databases.models import User
 
 from mycodo.mycodo_flask.forms import forms_authentication
-
 from mycodo.mycodo_flask.utils import utils_general
 
 from mycodo.utils.utils import test_username
@@ -35,6 +36,7 @@ from mycodo.utils.utils import test_password
 from mycodo.config import LOGIN_ATTEMPTS
 from mycodo.config import LOGIN_BAN_SECONDS
 from mycodo.config import LOGIN_LOG_FILE
+
 
 blueprint = Blueprint(
     'authentication_routes',
@@ -124,6 +126,25 @@ def create_admin():
                            form_notice=form_notice)
 
 
+@blueprint.route('/remote_login', methods=('GET', 'POST'))
+def remote_admin_login():
+    """Authenticate Remote Admin login"""
+    password_hash = request.form.get('password_hash', None)
+    username = request.form.get('username', None)
+
+    if username and password_hash:
+        user = User.query.filter(
+            func.lower(User.name) == username).first()
+    else:
+        user = None
+
+    if user and user.password_hash == password_hash:
+        login_user = User()
+        login_user.id = user.id
+        flask_login.login_user(login_user, remember=False)
+        return "Logged in via Remote Admin"
+
+
 @blueprint.route('/login', methods=('GET', 'POST'))
 def do_login():
     """Authenticate users of the web-UI"""
@@ -148,13 +169,14 @@ def do_login():
         if request.method == 'POST':
             username = form_login.username.data.lower()
             user_ip = request.environ.get('REMOTE_ADDR', 'unknown address')
-            if form_login.validate_on_submit():
-                user = User.query.filter(
-                    func.lower(User.name) == username).first()
-                if not user:
-                    login_log(username, 'NA', user_ip, 'NOUSER')
-                    failed_login()
-                elif User().check_password(
+            user = User.query.filter(
+                func.lower(User.name) == username).first()
+
+            if not user:
+                login_log(username, 'NA', user_ip, 'NOUSER')
+                failed_login()
+            elif form_login.validate_on_submit():
+                if User().check_password(
                         form_login.password.data,
                         user.password_hash) == user.password_hash:
 
@@ -195,6 +217,56 @@ def logout():
 
     flash(gettext(u"Successfully logged out"), 'success')
     return response
+
+
+@blueprint.route('/newremote/')
+def newremote():
+    """Verify authentication as a client computer to the remote admin"""
+    username = request.args.get('user')
+    pass_word = request.args.get('passw')
+
+    user = User.query.filter(
+        User.name == username).first()
+
+    if user:
+        if User().check_password(
+                pass_word, user.password_hash) == user.password_hash:
+            try:
+                with open('/var/www/mycodo/mycodo/mycodo_flask/ssl_certs/cert.pem', 'r') as cert:
+                    certificate_data = cert.read()
+            except Exception:
+                certificate_data = None
+            return jsonify(status=0,
+                           error_msg=None,
+                           hash="{hash}".format(
+                               hash=user.password_hash),
+                           certificate=certificate_data)
+    return jsonify(status=1,
+                   error_msg="Unable to authenticate with user and password.",
+                   hash=None,
+                   certificate=None)
+
+
+@blueprint.route('/auth/')
+@flask_login.login_required
+def remote_auth():
+    """Checks authentication for remote admin"""
+    return "0"
+
+
+@blueprint.route('/remote_get_inputs/')
+@flask_login.login_required
+def remote_get_inputs():
+    """Checks authentication for remote admin"""
+    inputs = Input.query.all()
+    return_inputs = {}
+    for each_input in inputs:
+        return_inputs[each_input.id] = {}
+        return_inputs[each_input.id]['name'] = each_input.name
+        return_inputs[each_input.id]['device'] = each_input.device
+        return_inputs[each_input.id]['is_activated'] = each_input.is_activated
+
+    return jsonify(return_inputs)
 
 
 def admin_exists():

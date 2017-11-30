@@ -1,7 +1,7 @@
 # coding=utf-8
 #
-#  mycodo_flask.py - Flask web server for Mycodo, for visualizing data,
-#                    configuring the system, and controlling the daemon.
+#  app.py - Flask web server for Mycodo, for visualizing data,
+#           configuring the system, and controlling the daemon.
 #
 
 import datetime
@@ -18,6 +18,8 @@ from flask import url_for
 
 from flask_babel import Babel
 from flask_babel import gettext
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from flask_sslify import SSLify
 
 from werkzeug.contrib.profiler import ProfilerMiddleware
@@ -38,6 +40,7 @@ from mycodo.mycodo_flask import calibration_routes
 from mycodo.mycodo_flask import general_routes
 from mycodo.mycodo_flask import method_routes
 from mycodo.mycodo_flask import page_routes
+from mycodo.mycodo_flask import remote_admin_routes
 from mycodo.mycodo_flask import settings_routes
 from mycodo.mycodo_flask import static_routes
 
@@ -72,11 +75,16 @@ def create_app(config=ProdConfig):
 
     @babel.localeselector
     def get_locale():
-        misc = Misc.query.first()
-        if misc and misc.language != '':
-            for key in LANGUAGES:
-                if key == misc.language:
-                    return key
+        try:
+            user = User.query.filter(
+                User.id == flask_login.current_user.id).first()
+            if user and user.language != '':
+                for key in LANGUAGES:
+                    if key == user.language:
+                        return key
+        # Bypass endpoint test error "'AnonymousUserMixin' object has no attribute 'id'"
+        except AttributeError:
+            pass
         return request.accept_languages.best_match(LANGUAGES.keys())
 
     @login_manager.user_loader
@@ -114,6 +122,10 @@ def register_extensions(app):
 
 def register_blueprints(_app):
     """ register blueprints to the app """
+    # Limit authentication blueprint requests to 30 per minute
+    limiter = Limiter(_app, key_func=get_remote_address)
+    limiter.limit("30/minute")(authentication_routes.blueprint)
+
     _app.register_blueprint(static_routes.blueprint)  # register static routes
     _app.register_blueprint(admin_routes.blueprint)  # register admin views
     _app.register_blueprint(authentication_routes.blueprint)  # register login/logout views
@@ -121,6 +133,7 @@ def register_blueprints(_app):
     _app.register_blueprint(general_routes.blueprint)  # register general routes
     _app.register_blueprint(method_routes.blueprint)  # register method views
     _app.register_blueprint(page_routes.blueprint)  # register page views
+    _app.register_blueprint(remote_admin_routes.blueprint)  # register remote admin views
     _app.register_blueprint(settings_routes.blueprint)  # register settings views
 
 

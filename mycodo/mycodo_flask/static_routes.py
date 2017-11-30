@@ -11,13 +11,13 @@ from flask import request
 from flask import send_from_directory
 from flask import url_for
 from flask.blueprints import Blueprint
-from flask_babel import gettext
 
 from mycodo.databases.models import Misc
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.authentication_routes import admin_exists
 
 from mycodo.config import MYCODO_VERSION
+from mycodo.config import THEMES_DARK
 
 blueprint = Blueprint('static_routes',
                       __name__,
@@ -37,24 +37,26 @@ blueprint.before_request(before_request_admin_exist)
 
 
 @blueprint.context_processor
-def inject_mycodo_version():
+def inject_variables():
     """Variables to send with every page request"""
     try:
         control = DaemonControl()
         daemon_status = control.daemon_status()
     except Exception as e:
-        logger.error(gettext(u"URL for 'inject_mycodo_version' raised and "
-                             u"error: %(err)s", err=e))
+        logger.error("URL for 'inject_variables' raised and error: "
+                     "{err}".format(err=e))
         daemon_status = '0'
 
     misc = Misc.query.first()
     return dict(daemon_status=daemon_status,
+                dark_themes=THEMES_DARK,
                 mycodo_version=MYCODO_VERSION,
                 host=socket.gethostname(),
                 hide_alert_success=misc.hide_alert_success,
                 hide_alert_info=misc.hide_alert_info,
                 hide_alert_warning=misc.hide_alert_warning,
-                hide_tooltips=misc.hide_tooltips)
+                hide_tooltips=misc.hide_tooltips,
+                upgrade_available = misc.mycodo_upgrade_available)
 
 
 @blueprint.route('/robots.txt')

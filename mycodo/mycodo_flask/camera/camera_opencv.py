@@ -52,7 +52,7 @@ class Camera(BaseCamera):
                 img = imutils.rotate_bound(
                     img, Camera.camera_options.rotation)
 
-            time.sleep(0.1)
+            time.sleep(0.3)
 
             # encode as a jpeg image and return it
             yield cv2.imencode('.jpg', img)[1].tobytes()

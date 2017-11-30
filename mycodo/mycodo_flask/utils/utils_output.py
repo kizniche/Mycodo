@@ -11,7 +11,7 @@ from flask_babel import gettext
 from mycodo.mycodo_client import DaemonControl
 
 from mycodo.databases.models import DisplayOrder
-from mycodo.databases.models import Relay
+from mycodo.databases.models import Output
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import list_to_csv
@@ -25,14 +25,14 @@ logger = logging.getLogger(__name__)
 
 
 #
-# Manipulate relay settings while daemon is running
+# Manipulate output settings while daemon is running
 #
 
 def manipulate_relay(action, relay_id):
     """
-    Add, delete, and modify relay settings while the daemon is active
+    Add, delete, and modify output settings while the daemon is active
 
-    :param relay_id: relay ID in the SQL database
+    :param relay_id: output ID in the SQL database
     :type relay_id: str
     :param action: "add", "del", or "mod"
     :type action: str
@@ -42,29 +42,29 @@ def manipulate_relay(action, relay_id):
     if return_values and len(return_values) > 1:
         if return_values[0]:
             flash(gettext(u"%(err)s",
-                          err=u'{action} Relay: Daemon response: {msg}'.format(
+                          err=u'{action} Output: Daemon response: {msg}'.format(
                               action=action,
                               msg=return_values[1])),
                   "error")
         else:
             flash(gettext(u"%(err)s",
-                          err=u'{action} Relay: Daemon response: {msg}'.format(
+                          err=u'{action} Output: Daemon response: {msg}'.format(
                               action=gettext(action),
                               msg=return_values[1])),
                   "success")
     else:
         flash(gettext(u"%(err)s",
-                      err=u'{action} Relay: Could not connect to Daemon'.format(
+                      err=u'{action} Output: Could not connect to Daemon'.format(
                           action=action)),
               "error")
 
 
 #
-# Relay manipulation
+# Output manipulation
 #
 
 
-def relay_on_off(form_relay):
+def output_on_off(form_relay):
     action = u'{action} {controller}'.format(
         action=gettext(u"Actuate"),
         controller=gettext(u"Output"))
@@ -72,11 +72,11 @@ def relay_on_off(form_relay):
 
     try:
         control = DaemonControl()
-        relay = Relay.query.filter_by(id=form_relay.relay_id.data).first()
-        if relay.relay_type == 'wired' and int(form_relay.relay_pin.data) == 0:
-            error.append(gettext(u"Cannot modulate relay with a GPIO of 0"))
+        output = Output.query.filter_by(id=form_relay.relay_id.data).first()
+        if output.relay_type == 'wired' and int(form_relay.relay_pin.data) == 0:
+            error.append(gettext(u"Cannot modulate output with a GPIO of 0"))
         elif form_relay.on_submit.data:
-            if relay.relay_type in ['wired',
+            if output.relay_type in ['wired',
                                     'wireless_433MHz_pi_switch',
                                     'command']:
                 if float(form_relay.sec_on.data) <= 0:
@@ -84,14 +84,14 @@ def relay_on_off(form_relay):
                 else:
                     return_value = control.relay_on(form_relay.relay_id.data,
                                                     duration=float(form_relay.sec_on.data))
-                    flash(gettext(u"Relay turned on for %(sec)s seconds: %(rvalue)s",
+                    flash(gettext(u"Output turned on for %(sec)s seconds: %(rvalue)s",
                                   sec=form_relay.sec_on.data,
                                   rvalue=return_value),
                           "success")
-            if relay.relay_type == 'pwm':
+            if output.relay_type == 'pwm':
                 if int(form_relay.relay_pin.data) == 0:
                     error.append(gettext(u"Invalid pin"))
-                if relay.pwm_hertz <= 0:
+                if output.pwm_hertz <= 0:
                     error.append(gettext(u"PWM Hertz must be a positive value"))
                 if float(form_relay.pwm_duty_cycle_on.data) <= 0:
                     error.append(gettext(u"PWM duty cycle must be a positive value"))
@@ -100,7 +100,7 @@ def relay_on_off(form_relay):
                                                     duty_cycle=float(form_relay.pwm_duty_cycle_on.data))
                     flash(gettext(u"PWM set to %(dc)s%% at %(hertz)s Hz: %(rvalue)s",
                                   dc=float(form_relay.pwm_duty_cycle_on.data),
-                                  hertz=relay.pwm_hertz,
+                                  hertz=output.pwm_hertz,
                                   rvalue=return_value),
                           "success")
         elif form_relay.turn_on.data:
@@ -122,19 +122,19 @@ def relay_on_off(form_relay):
 
 
 #
-# Relay
+# Output
 #
 
 def relay_add(form_add_relay):
     action = u'{action} {controller}'.format(
         action=gettext(u"Add"),
-        controller=gettext(u"Relay"))
+        controller=gettext(u"Output"))
     error = []
 
     if is_int(form_add_relay.relay_quantity.data, check_range=[1, 20]):
         for _ in range(0, form_add_relay.relay_quantity.data):
             try:
-                new_relay = Relay()
+                new_relay = Output()
                 new_relay.relay_type = form_add_relay.relay_type.data
                 if form_add_relay.relay_type.data == 'wired':
                     new_relay.on_at_start = False
@@ -172,12 +172,12 @@ def relay_add(form_add_relay):
 def relay_mod(form_relay):
     action = u'{action} {controller}'.format(
         action=gettext(u"Modify"),
-        controller=gettext(u"Relay"))
+        controller=gettext(u"Output"))
     error = []
 
     try:
-        mod_relay = Relay.query.filter(
-            Relay.id == form_relay.relay_id.data).first()
+        mod_relay = Output.query.filter(
+            Output.id == form_relay.relay_id.data).first()
         mod_relay.name = form_relay.name.data
         if mod_relay.relay_type == 'wired':
             if not is_int(form_relay.gpio.data):
@@ -228,11 +228,11 @@ def relay_mod(form_relay):
 def relay_del(form_relay):
     action = u'{action} {controller}'.format(
         action=gettext(u"Delete"),
-        controller=gettext(u"Relay"))
+        controller=gettext(u"Output"))
     error = []
 
     try:
-        delete_entry_with_id(Relay,
+        delete_entry_with_id(Output,
                              form_relay.relay_id.data)
         display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
         display_order.remove(int(form_relay.relay_id.data))
@@ -247,7 +247,7 @@ def relay_del(form_relay):
 def relay_reorder(relay_id, display_order, direction):
     action = u'{action} {controller}'.format(
         action=gettext(u"Reorder"),
-        controller=gettext(u"Relay"))
+        controller=gettext(u"Output"))
     error = []
     try:
         status, reord_list = reorder(display_order,

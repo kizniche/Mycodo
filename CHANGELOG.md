@@ -1,3 +1,162 @@
+## 5.4.12 (Unreleased)
+
+### Features
+
+ - Complete Spanish translation
+ - Add more translatable texts
+
+### Bugfixes
+
+ - Fix selection of current language on General Config page
+
+
+## 5.4.11 (2017-11-29)
+
+### Bugfixes
+
+ - Fix issue displaying Camera page
+
+
+## 5.4.10 (2017-11-28)
+
+### Features
+
+ - Add display of all detected I2C devices on the System Information page
+
+### Bugfixes
+
+ - Change web UI restart command
+ - Fix issue saving Timer options ([#334](https://github.com/kizniche/mycodo/issues/334))
+ - Fix Output Usage error
+
+
+## 5.4.9 (2017-11-27)
+
+### Bugfixes
+
+ - Fix adding Gauges ([#333](https://github.com/kizniche/mycodo/issues/333))
+
+
+## 5.4.8 (2017-11-22)
+
+### Features
+
+ - Add 1 minute, 5 minute, and 15 minute options to Graph Range Selector ([#319](https://github.com/kizniche/mycodo/issues/319))
+
+### Bugfixes
+
+ - Fix AM2315 sensor measurement acquisition ([#328](https://github.com/kizniche/mycodo/issues/328))
+
+
+## 5.4.7 (2017-11-21)
+
+### Bugfixes
+
+ - Fix flood of errors in the log if an LCD doesn't have a measurement to display
+ - Fix LCD display being offset one character when displaying errors
+
+
+## 5.4.6 (2017-11-21)
+
+### Features
+
+ - Add Max Age (seconds) to LCD line options
+ - Make LCDs collapsable in the web UI
+
+### Bugfixes
+
+ - Fix saving user theme ([#326](https://github.com/kizniche/mycodo/issues/326))
+
+
+## 5.4.5 (2017-11-21)
+
+### Features
+
+ - Add Freqency, Duty Cycle, Pulse Width, RPM, and Linux Command variables to Conditional commands ([#311](https://github.com/kizniche/mycodo/issues/311)) (See [Input Conditional command variables](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#input-conditional-command-variables))
+ - Add Graph options: Enable Auto Refresh, Enable Title, and Enable X-Axis Reset ([#319](https://github.com/kizniche/mycodo/issues/319))
+ - Add automatic checks for Mycodo updates (can be disabled in the configuration)
+
+### Bugfixes
+
+ - Fix Input Conditional variable
+
+
+## 5.4.4 (2017-11-19)
+
+### Features
+
+ - Add 12-volt DC fan control circuit to manual (@Theoi-Meteoroi) ([#184](https://github.com/kizniche/mycodo/issues/184)) (See [Schematics for DC Fan Control](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#schematics-for-dc-fan-control))
+
+### Bugfixes
+
+ - Fix PWM Signal, RPM Signal, DHT22, and DHT11 Inputs ([#324](https://github.com/kizniche/mycodo/issues/324))
+ - Add Frequency, Duty Cycle, Pulse Width, and RPM to y-axis Graph display
+
+### Miscellaneous
+
+ - Upgrade InfluxDB from 1.3.7 to 1.4.2
+
+
+## 5.4.3 (2017-11-18)
+
+### Bugfixes
+
+ - Fix Output Conditional triggering ([#323](https://github.com/kizniche/mycodo/issues/323))
+ 
+
+## 5.4.2 (2017-11-18)
+
+### Features
+
+ - Add Output Conditional If option of "On (any duration)" ([#323](https://github.com/kizniche/mycodo/issues/323)) (See [Output Conditional Statement If Options](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#output-conditional-statement-if-options))
+
+### Bugfixes
+
+ - Fix display of first point of Daily Bezier method
+ - Fix inability to use Daily Bezier method in PID ([#323](https://github.com/kizniche/mycodo/issues/323))
+ - Fix saving Output options and turning Outputs On and Off
+
+
+## 5.4.1 (2017-11-17)
+
+### Features
+
+ - Prevent currently-logged in user from: deleting own user, changing user role from Admin
+ - Force iPhone to open Mycodo bookmark as standalone web app instead of in Safari
+ - Refactor and add tests for all inputs ([#128](https://github.com/kizniche/mycodo/issues/128))
+ - Add Flask-Limiter to limit authentication requests to 30 per minute (mainly for Remote Admin feature)
+ - Add first working iteration of data acquisition to the Remote Admin dashboard
+ - Add SSL certificate authentication with Remote Admin communication
+
+### Bugfixes
+
+ - Fix inability to modify timer options ([#318](https://github.com/kizniche/mycodo/issues/318))
+
+### Miscellaneous
+
+ - Rename objects (warning: this may break some things. I tried to be thorough with testing)
+ - Switch from using init.d to systemd for controlling apache2
+
+
+## 5.4.0 (2017-11-12)
+
+This release has refactored how LCD displays are handled, now allowing an infinite number of data sets on a single LCD.
+
+Note: All LDCs will be deactivated during the upgrade. As a consequence, LCD displays will need to be reconfigured and reactivated.
+
+***Note 2: During the upgrade, the web interface will display "500 Internal Server Error." This is normal and you should give Mycodo 5 to 10 minutes (or longer) to complete the upgrade process before attempting to access the web interface again.***
+
+### Features
+
+ - Add ability to cycle infinite sets of data on a single LCD display ([#316](https://github.com/kizniche/mycodo/issues/316))
+ - Add logrotate script to manage mycodo logs
+
+### Bugfixes
+
+ - Fix language selection being applied globally (each user now has own language)
+ - Fix display of degree symbols on LCDs
+
+
 ## 5.3.6 (2017-11-11)
 
 ### Features

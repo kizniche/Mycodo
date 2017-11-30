@@ -14,13 +14,16 @@ from flask import url_for
 from flask_babel import gettext
 from pkg_resources import parse_version
 
+from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.utils import utils_general
 
-from mycodo.mycodo_flask.static_routes import inject_mycodo_version
+from mycodo.mycodo_flask.static_routes import inject_variables
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.system_pi import internet
 from mycodo.utils.github_release_info import github_releases
+
+from mycodo.databases.models import Misc
 
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
@@ -44,7 +47,7 @@ blueprint = Blueprint(
 @blueprint.context_processor
 @flask_login.login_required
 def inject_dictionary():
-    return inject_mycodo_version()
+    return inject_variables()
 
 
 @blueprint.route('/admin/backup', methods=('GET', 'POST'))
@@ -77,19 +80,14 @@ def admin_backup():
                   " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                           log=BACKUP_LOG_FILE)
             subprocess.Popen(cmd, shell=True)
-            flash(gettext(u"Backup in progress. It should complete within a "
-                          u"few seconds to a few minutes. The backup will "
-                          u"appear on this page after it completes."),
+            flash(gettext(u"Backup in progress"),
                   "success")
         elif form_backup.delete.data:
             cmd = '{pth}/mycodo/scripts/mycodo_wrapper backup-delete {dir}' \
                   ' 2>&1'.format(pth=INSTALL_DIRECTORY,
                                  dir=form_backup.selected_dir.data)
             subprocess.Popen(cmd, shell=True)
-            flash(gettext(u"Deletion of backup in progress. It should "
-                          u"complete within a few seconds to a few minutes. "
-                          u"The backup will disappear on this page after it "
-                          u"completes."),
+            flash(gettext(u"Deletion of backup in progress"),
                   "success")
         elif form_backup.restore.data:
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper backup-restore {backup}" \
@@ -99,8 +97,7 @@ def admin_backup():
                                           log=RESTORE_LOG_FILE)
 
             subprocess.Popen(cmd, shell=True)
-            flash(gettext(u"Restore in progress. It should complete within a "
-                          u"few seconds to a few minutes."),
+            flash(gettext(u"Restore in progress"),
                   "success")
 
     return render_template('admin/backup.html',
@@ -207,6 +204,12 @@ def admin_upgrade():
         latest_release = '0.0.0'
         releases_behind = 0
 
+    # Update database to reflect the current upgrade status
+    mod_misc = Misc.query.first()
+    if mod_misc.mycodo_upgrade_available != upgrade_available:
+        mod_misc.mycodo_upgrade_available = upgrade_available
+        db.session.commit()
+
     if request.method == 'POST':
         if form_upgrade.upgrade.data and upgrade_available:
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade" \
@@ -215,8 +218,10 @@ def admin_upgrade():
                                           log=UPGRADE_LOG_FILE)
             subprocess.Popen(cmd, shell=True)
             upgrade = 1
-            flash(gettext(u"The upgrade has started. The daemon will be "
-                          u"stopped during the upgrade."), "success")
+            mod_misc = Misc.query.first()
+            mod_misc.mycodo_upgrade_available = False
+            db.session.commit()
+            flash(gettext(u"The upgrade has started"), "success")
         else:
             flash(gettext(u"You cannot upgrade if an upgrade is not available"),
                   "error")

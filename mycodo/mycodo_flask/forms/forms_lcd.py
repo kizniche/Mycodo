@@ -20,7 +20,6 @@ from wtforms.validators import DataRequired
 class LCDAdd(FlaskForm):
     quantity = IntegerField(
         lazy_gettext(u'Quantity'),
-        render_kw={"placeholder": lazy_gettext(u"Quantity")},
         validators=[validators.NumberRange(
             min=1,
             max=20
@@ -36,15 +35,18 @@ class LCDMod(FlaskForm):
         validators=[DataRequired()]
     )
     location = StringField(
-        lazy_gettext(u'I2C Address'),
+        "{op} ({unit})".format(op=lazy_gettext(u'Address'),
+                               unit=lazy_gettext(u'I<sup>2</sup>C')),
         validators=[DataRequired()]
     )
     i2c_bus = IntegerField(
-        lazy_gettext(u'I2C Bus'),
+        "{op} ({unit})".format(op=lazy_gettext(u'Bus'),
+                               unit=lazy_gettext(u'I<sup>2</sup>C')),
         validators=[DataRequired()]
     )
     multiplexer_address = StringField(
-        lazy_gettext(u'Multiplexer I2C Address')
+        "{op} ({unit})".format(op=lazy_gettext(u'Multiplexer Address'),
+                               unit=lazy_gettext(u'I<sup>2</sup>C'))
     )
     multiplexer_channel = IntegerField(
         lazy_gettext(u'Multiplexer Channel'),
@@ -56,7 +58,6 @@ class LCDMod(FlaskForm):
     )
     period = DecimalField(
         lazy_gettext(u'Period (seconds)'),
-        render_kw={"placeholder": lazy_gettext(u"Period")},
         validators=[validators.NumberRange(
             min=5,
             max=86400,
@@ -73,18 +74,7 @@ class LCDMod(FlaskForm):
         ],
         validators=[DataRequired()]
     )
-    line_1_display = StringField(
-        lazy_gettext(u'Line 1 Display')
-    )
-    line_2_display = StringField(
-        lazy_gettext(u'Line 2 Display')
-    )
-    line_3_display = StringField(
-        lazy_gettext(u'Line 3 Display')
-    )
-    line_4_display = StringField(
-        lazy_gettext(u'Line 4 Display')
-    )
+    add_display = SubmitField(lazy_gettext(u'Add Display Set'))
     save = SubmitField(lazy_gettext(u'Save'))
     delete = SubmitField(lazy_gettext(u'Delete'))
     activate = SubmitField(lazy_gettext(u'Activate'))
@@ -92,3 +82,30 @@ class LCDMod(FlaskForm):
     reorder_up = SubmitField(lazy_gettext(u'Up'))
     reorder_down = SubmitField(lazy_gettext(u'Down'))
     reset_flashing = SubmitField(lazy_gettext(u'Reset Flashing'))
+
+
+class LCDModDisplay(FlaskForm):
+    lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
+    lcd_data_id = IntegerField('LCD Data ID', widget=widgets.HiddenInput())
+    line_1_display = StringField(lazy_gettext(u'Line 1'))
+    line_1_max_age = DecimalField(
+        lazy_gettext(u'Max Age (seconds)'),
+        validators=[validators.NumberRange(min=1)]
+    )
+    line_2_display = StringField(lazy_gettext(u'Line 2'))
+    line_2_max_age = DecimalField(
+        lazy_gettext(u'Max Age (seconds)'),
+        validators=[validators.NumberRange(min=1)]
+    )
+    line_3_display = StringField(lazy_gettext(u'Line 3'))
+    line_3_max_age = DecimalField(
+        lazy_gettext(u'Max Age (seconds)'),
+        validators=[validators.NumberRange(min=1)]
+    )
+    line_4_display = StringField(lazy_gettext(u'Line 4'))
+    line_4_max_age = DecimalField(
+        lazy_gettext(u'Max Age (seconds)'),
+        validators=[validators.NumberRange(min=1)]
+    )
+    save_display = SubmitField(lazy_gettext(u'Save'))
+    delete_display = SubmitField(lazy_gettext(u'Delete'))

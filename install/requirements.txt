@@ -11,6 +11,7 @@ fasteners == 0.14.1
 Flask == 0.12.2
 Flask_Babel == 0.11.2
 Flask_InfluxDB == 0.1
+Flask_Limiter == 1.0.0
 Flask_Login == 0.4.0
 Flask_SQLAlchemy == 2.2
 Flask_SSLify

@@ -33,10 +33,10 @@
         type: 'GET',
         url: '/output_mod/' + btn_val,
         success: function(data) {
-            toastr['success']("Relay " + btn_val.split("/")[0] + ": " + data);
+            toastr['success']("Output " + btn_val.split("/")[0] + ": " + data);
         },
         error: function(data) {
-            toastr['error']("Relay " + btn_val.split("/")[0] + ": " + data);
+            toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
         }
     });
   }
@@ -251,7 +251,7 @@
         {% elif each_relay.relay_type == 'pwm' %}
 
           <div class="col-xs-12">
-            <label class='control-label'>Duty Cycle (%)</label>
+            <label class='control-label'>{{_('Duty Cycle')}} (%)</label>
           </div>
           <div class="col-xs-12 small-gutters">
             <div class="col-xs-4 col-sm-3 col-md-2 no-gutters">
@@ -308,7 +308,7 @@
             {{form_conditional.save_cond(class_='form-control btn btn-default')}}
           </div>
           <div class="col-xs-4 col-sm-3 col-md-3">
-            {{form_conditional.delete_cond(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Relay Conditional?")'})}}
+            {{form_conditional.delete_cond(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Output Conditional?")'})}}
           </div>
         </div>
       
@@ -343,6 +343,7 @@
             <select class="form-control form-tooltip form-dropdown" id="if_relay_state" name="if_relay_state" data-placement="top" title="{{_('What action will trigger this conditional statement, on or off?')}}">
               <option value=""></option>
               <option value="on"{% if each_cond.if_relay_state == 'on' %} selected{% endif %}>{{_('On')}}</option>
+              <option value="on_any"{% if each_cond.if_relay_state == 'on_any' %} selected{% endif %}>{{_('On')}} ({{_('any duration')}})</option>
               <option value="off"{% if each_cond.if_relay_state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
             </select>
           </div>

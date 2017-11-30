@@ -17,7 +17,7 @@ from wtforms import widgets
 
 from wtforms.validators import DataRequired
 
-from mycodo.config import SENSORS
+from mycodo.config import INPUTS
 
 
 class InputAdd(FlaskForm):
@@ -30,8 +30,8 @@ class InputAdd(FlaskForm):
         )]
     )
     sensor = SelectField(
-        lazy_gettext(u'Sensor'),
-        choices=SENSORS,
+        lazy_gettext(u'Input'),
+        choices=INPUTS,
         validators=[DataRequired()]
     )
     sensorAddSubmit = SubmitField(lazy_gettext(u'Add Device'))
@@ -50,7 +50,7 @@ class InputMod(FlaskForm):
     calibrate_sensor_measure = StringField(lazy_gettext(u'Calibration Measurement'))
     resolution = IntegerField(lazy_gettext(u'Resolution'))
     sensitivity = IntegerField(lazy_gettext(u'Sensitivity'))
-    power_relay_id = IntegerField(lazy_gettext(u'Power Relay'))
+    power_relay_id = IntegerField(lazy_gettext(u'Power Output'))
     multiplexer_address = StringField(lazy_gettext(u'Multiplexer (MX)'))
     multiplexer_bus = StringField(lazy_gettext(u'Mx I<sup>2</sup>C Bus'))
     multiplexer_channel = IntegerField(lazy_gettext(u'Mx Channel'))
@@ -70,9 +70,9 @@ class InputMod(FlaskForm):
     switch_edge = StringField(lazy_gettext(u'Edge'))
     switch_bounce_time = IntegerField(lazy_gettext(u'Bounce Time (ms)'))
     switch_reset_period = IntegerField(lazy_gettext(u'Reset Period'))
-    pre_relay_id = StringField(lazy_gettext(u'Pre Relay'))
+    pre_relay_id = StringField(lazy_gettext(u'Pre Output'))
     pre_relay_duration = DecimalField(
-        lazy_gettext(u'Pre Relay Duration'),
+        lazy_gettext(u'Pre Output Duration'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
@@ -96,7 +96,7 @@ class InputMod(FlaskForm):
             max=100,
             message=lazy_gettext(u"If using a SHT sensor, enter the GPIO "
                                  u"connected to the clock pin (using BCM "
-                                 u"numbering).")
+                                 u"numbering)")
         )]
     )
     sht_voltage = StringField(lazy_gettext(u'Voltage'))

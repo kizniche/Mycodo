@@ -71,8 +71,8 @@ class OutputMod(FlaskForm):
     pwm_library = SelectField(
         lazy_gettext(u'Library'),
         choices=[
-            ("pigpio_any", lazy_gettext(u'Any Pin (<= 40 kHz)')),
-            ("pigpio_hardware", lazy_gettext(u'Hardware Pin (<= 30 MHz)'))
+            ("pigpio_any", lazy_gettext(u'Any Pin, <= 40 kHz')),
+            ("pigpio_hardware", lazy_gettext(u'Hardware Pin, <= 30 MHz'))
         ],
         validators=[DataRequired()]
     )
@@ -81,7 +81,7 @@ class OutputMod(FlaskForm):
     order_up = SubmitField(lazy_gettext(u'Up'))
     order_down = SubmitField(lazy_gettext(u'Down'))
     pwm_duty_cycle_on = DecimalField(
-        lazy_gettext(u'Duty Cycle (%)'),
+        '{} (%)'.format(lazy_gettext(u'Duty Cycle')),
         validators=[Optional()]
     )
     on_submit = SubmitField(lazy_gettext(u'Turn On'))

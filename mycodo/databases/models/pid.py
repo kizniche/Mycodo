@@ -28,14 +28,14 @@ class PID(CRUDMixin, db.Model):
     d = db.Column(db.Float, default=0.0)  # Kd gain
     integrator_min = db.Column(db.Float, default=-100.0)
     integrator_max = db.Column(db.Float, default=100.0)
-    raise_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to raise the condition
+    raise_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Output to raise the condition
     raise_min_duration = db.Column(db.Float, default=0.0)
     raise_max_duration = db.Column(db.Float, default=0.0)
     raise_min_off_duration = db.Column(db.Float, default=0.0)
-    lower_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Relay to lower the condition
+    lower_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Output to lower the condition
     lower_min_duration = db.Column(db.Float, default=0.0)
     lower_max_duration = db.Column(db.Float, default=0.0)
     lower_min_off_duration = db.Column(db.Float, default=0.0)
 
-    def __reper__(self):
+    def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

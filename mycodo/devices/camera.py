@@ -103,14 +103,21 @@ def camera_record(record_type, settings, duration_sec=None):
         cap.set(cv2.cv.CV_CAP_PROP_HUE, settings.hue)
         cap.set(cv2.cv.CV_CAP_PROP_SATURATION, settings.saturation)
 
-        # Discard a few frames to allow camera to adjust to settings
-        for _ in range(2):
-            cap.read()
+        # # Discard a few frames to allow camera to adjust to settings
+        # for _ in range(2):
+        #     cap.read()
 
         if record_type in ['photo', 'timelapse']:
             edited = False
-            _, img_orig = cap.read()
-            cap.release()
+            try:
+                _, img_orig = cap.read()
+                cap.release()
+            except Exception:
+                logger.exception(1)
+
+            if not img_orig:
+                logger.error("Could not access camera")
+                return
 
             img_edited = img_orig.copy()
 

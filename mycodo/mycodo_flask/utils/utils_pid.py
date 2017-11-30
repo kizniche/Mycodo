@@ -15,8 +15,8 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Method
 from mycodo.databases.models import PID
-from mycodo.databases.models import Relay
-from mycodo.databases.models import Sensor
+from mycodo.databases.models import Output
+from mycodo.databases.models import Input
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import list_to_csv
 
@@ -69,8 +69,8 @@ def pid_mod(form_mod_pid_base,
         flash_form_errors(form_mod_pid_base)
 
     sensor_unique_id = form_mod_pid_base.measurement.data.split(',')[0]
-    sensor = Sensor.query.filter(
-        Sensor.unique_id == sensor_unique_id).first()
+    sensor = Input.query.filter(
+        Input.unique_id == sensor_unique_id).first()
     if not sensor:
         error.append(gettext(u"A valid sensor is required"))
 
@@ -101,8 +101,8 @@ def pid_mod(form_mod_pid_base,
         mod_pid.method_id = None
 
     if form_mod_pid_base.raise_relay_id.data:
-        raise_relay_type = Relay.query.filter(
-            Relay.id == int(form_mod_pid_base.raise_relay_id.data)).first().relay_type
+        raise_relay_type = Output.query.filter(
+            Output.id == int(form_mod_pid_base.raise_relay_id.data)).first().relay_type
         if mod_pid.raise_relay_id == int(form_mod_pid_base.raise_relay_id.data):
             if raise_relay_type == 'pwm':
                 if not form_mod_pid_pwm_raise.validate():
@@ -130,8 +130,8 @@ def pid_mod(form_mod_pid_base,
         mod_pid.raise_relay_id = None
 
     if form_mod_pid_base.lower_relay_id.data:
-        lower_relay_type = Relay.query.filter(
-            Relay.id == int(form_mod_pid_base.lower_relay_id.data)).first().relay_type
+        lower_relay_type = Output.query.filter(
+            Output.id == int(form_mod_pid_base.lower_relay_id.data)).first().relay_type
         if mod_pid.lower_relay_id == int(form_mod_pid_base.lower_relay_id.data):
             if lower_relay_type == 'pwm':
                 if not form_mod_pid_pwm_lower.validate():
@@ -229,13 +229,13 @@ def has_required_pid_values(pid_id):
         flash(gettext(u"A valid Measurement is required"), "error")
         error = True
     sensor_unique_id = pid.measurement.split(',')[0]
-    sensor = Sensor.query.filter(
-        Sensor.unique_id == sensor_unique_id).first()
+    sensor = Input.query.filter(
+        Input.unique_id == sensor_unique_id).first()
     if not sensor:
         flash(gettext(u"A valid sensor is required"), "error")
         error = True
     if not pid.raise_relay_id and not pid.lower_relay_id:
-        flash(gettext(u"A Raise Relay ID and/or a Lower Relay ID is "
+        flash(gettext(u"A Raise Output and/or a Lower Output is "
                       "required"), "error")
         error = True
     if error:
@@ -259,8 +259,8 @@ def pid_activate(pid_id):
         error, pid_id, pid.raise_relay_id, pid.lower_relay_id)
 
     sensor_unique_id = pid.measurement.split(',')[0]
-    sensor = Sensor.query.filter(
-        Sensor.unique_id == sensor_unique_id).first()
+    sensor = Input.query.filter(
+        Input.unique_id == sensor_unique_id).first()
 
     if not sensor.is_activated:
         error.append(gettext(
@@ -335,7 +335,9 @@ def pid_manipulate(pid_id, action):
             flash(gettext(u"Daemon response to PID controller %(act)s command: "
                           u"%(rval)s", act=action, rval=return_value), "success")
     except Exception as err:
-        flash(gettext(u"PID Error: %(msg)s", msg=err), "error")
+        flash(gettext(u"Error: %(err)s",
+                      err=u'PID: {msg}'.format(msg=err)),
+              "error")
 
 
 def can_set_relay(error, pid_id, raise_relay_id, lower_relay_id):

@@ -39,23 +39,25 @@ import rpyc
 from time import strptime  # Fix multithread bug in strptime
 from daemonize import Daemonize
 from rpyc.utils.server import ThreadedServer
+from pkg_resources import parse_version
 
 from mycodo.controller_lcd import LCDController
 from mycodo.controller_pid import PIDController
-from mycodo.controller_relay import RelayController
-from mycodo.controller_sensor import SensorController
+from mycodo.controller_output import OutputController
+from mycodo.controller_input import InputController
 from mycodo.controller_timer import TimerController
 
 from mycodo.databases.models import Camera
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
-from mycodo.databases.models import Sensor
+from mycodo.databases.models import Input
 from mycodo.databases.models import Timer
 
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.github_release_info import github_releases
 from mycodo.utils.statistics import add_update_csv
 from mycodo.utils.statistics import recreate_stat_file
 from mycodo.utils.statistics import return_stat_file_dict
@@ -69,6 +71,7 @@ from mycodo.config import MYCODO_VERSION
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config import STATS_CSV
 from mycodo.config import STATS_INTERVAL
+from mycodo.config import UPGRADE_CHECK_INTERVAL
 
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -79,7 +82,7 @@ def mycodo_service(mycodo):
         """
         Class to handle communication between the client (mycodo_client.py) and
         the daemon (mycodo_daemon.py). This also serves as how other controllers
-        (e.g. timers) communicate to the relay controller.
+        (e.g. timers) communicate to the output controller.
 
         """
 
@@ -92,7 +95,7 @@ def mycodo_service(mycodo):
         def exposed_controller_activate(cont_type, cont_id):
             """
             Activates a controller
-            This may be a Sensor, PID, Timer, or LCD controllar
+            This may be a Input, PID, Timer, or LCD controllar
 
             """
             return mycodo.controller_activate(
@@ -102,7 +105,7 @@ def mycodo_service(mycodo):
         def exposed_controller_deactivate(cont_type, cont_id):
             """
             Deactivates a controller
-            This may be a Sensor, PID, Timer, or LCD controllar
+            This may be a Input, PID, Timer, or LCD controllar
 
             """
             return mycodo.controller_deactivate(
@@ -175,53 +178,54 @@ def mycodo_service(mycodo):
             return mycodo.refresh_daemon_misc_settings()
 
         @staticmethod
-        def exposed_refresh_sensor_conditionals(sensor_id,
+        def exposed_refresh_sensor_conditionals(input_id,
                                                 cond_mod):
             """
-            Instruct the sensor controller to refresh the settings of a
+            Instruct the input controller to refresh the settings of a
             conditional statement
             """
-            return mycodo.refresh_sensor_conditionals(sensor_id,
+            return mycodo.refresh_sensor_conditionals(input_id,
                                                       cond_mod)
 
         @staticmethod
         def exposed_relay_sec_currently_on(relay_id):
-            """Turns the amount of time a relay has already been on"""
-            return mycodo.controller['Relay'].relay_sec_currently_on(relay_id)
+            """Turns the amount of time a output has already been on"""
+            return mycodo.controller['Output'].relay_sec_currently_on(relay_id)
 
         @staticmethod
         def exposed_relay_setup(action, relay_id):
-            """Add, delete, or modify a relay in the running relay controller"""
-            return mycodo.relay_setup(action, relay_id)
+            """Add, delete, or modify a output in the running output controller"""
+            return mycodo.output_setup(action, relay_id)
 
         @staticmethod
         def exposed_relay_state(relay_id):
-            """Return the relay state (not pin but whether relay is on or off"""
-            return mycodo.relay_state(relay_id)
+            """Return the output state (not pin but whether output is on or off"""
+            return mycodo.output_state(relay_id)
 
         @staticmethod
-        def exposed_relay_on(
-                relay_id, duration=0.0, min_off=0.0, duty_cycle=0.0):
-            """Turns relay on from the client"""
+        def exposed_relay_on(relay_id, duration=0.0, min_off=0.0,
+                             duty_cycle=0.0, trigger_conditionals=True):
+            """Turns output on from the client"""
             return mycodo.relay_on(relay_id,
                                    duration=duration,
                                    min_off=min_off,
-                                   duty_cycle=duty_cycle)
+                                   duty_cycle=duty_cycle,
+                                   trigger_conditionals=trigger_conditionals)
 
         @staticmethod
         def exposed_relay_off(relay_id, trigger_conditionals=True):
-            """Turns relay off from the client"""
+            """Turns output off from the client"""
             return mycodo.relay_off(relay_id, trigger_conditionals)
 
         @staticmethod
         def exposed_relay_sec_currently_on(relay_id):
-            """Turns the amount of time a relay has already been on"""
-            return mycodo.controller['Relay'].relay_sec_currently_on(relay_id)
+            """Turns the amount of time a output has already been on"""
+            return mycodo.controller['Output'].relay_sec_currently_on(relay_id)
 
         @staticmethod
         def exposed_relay_setup(action, relay_id):
-            """Add, delete, or modify a relay in the running relay controller"""
-            return mycodo.relay_setup(action, relay_id)
+            """Add, delete, or modify a output in the running output controller"""
+            return mycodo.output_setup(action, relay_id)
 
         @staticmethod
         def exposed_terminate_daemon():
@@ -249,36 +253,36 @@ class ComThread(threading.Thread):
 
     def run(self):
         try:
-            # TODO: temporary for testing
-            rpyc_test_log = threading.Thread(
-                target=test_rpyc,
-                args=(self.logger,))
-            rpyc_test_log.start()
-
-            # TODO: change logging level (default is info for rpyc)
+            # Start RPYC server
             service = mycodo_service(self.mycodo)
             server = ThreadedServer(service, port=18813, logger=self.logger)
             server.start()
+
+            rpyc_monitor = threading.Thread(
+                target=monitor_rpyc,
+                args=(self.logger,))
+            rpyc_monitor.daemon = True
+            rpyc_monitor.start()
         except Exception as err:
             self.logger.exception(
-                "TESTING: ComThread: {msg}".format(msg=err))
+                "ERROR: ComThread: {msg}".format(msg=err))
 
 
-def test_rpyc(logger_rpyc):
-    running = True
-    log_timer = time.time() + 60
-    while running:
+def monitor_rpyc(logger_rpyc):
+    """Monitor whether the RPYC server is active or not"""
+    log_timer = time.time() + 1
+    while True:
         now = time.time()
         if now > log_timer:
             try:
                 c = rpyc.connect('localhost', 18813)
-                time.sleep(0.1)
+                time.sleep(0.5)
                 logger_rpyc.debug(
-                    "TESTING: (30 min timer) rpyc communication thread: "
+                    "RPYC communication thread (30-minute timer): "
                     "closed={stat}".format(stat=c.closed))
             except Exception as err:
                 logger_rpyc.exception(
-                    "TESTING: test_rpyc exception: {msg}".format(msg=err))
+                    "RPYC Exception: {msg}".format(msg=err))
             log_timer = log_timer + 1800
         time.sleep(1)
 
@@ -292,13 +296,13 @@ class DaemonController(threading.Thread):
     Loop until the daemon is instructed to shut down.
     Signal each thread to shut down and wait for each thread to shut down.
 
-    All relay operations (turning on/off) is operated by one relay controller.
+    All output operations (turning on/off) is operated by one output controller.
 
-    Each connected sensor has its own controller to collect all measurements
-    that particular sensor can produce and put then into an influxdb database.
+    Each connected input has its own controller to collect all measurements
+    that particular input can produce and put then into an influxdb database.
 
     Each PID controller is associated with only one measurement from one
-    sensor controller.
+    input controller.
 
     """
 
@@ -314,14 +318,16 @@ class DaemonController(threading.Thread):
         self.controller = {
             'LCD': {},
             'PID': {},
-            'Relay': None,
-            'Sensor': {},
+            'Output': None,
+            'Input': {},
             'Timer': {}
         }
         self.thread_shutdown_timer = None
         self.start_time = time.time()
         self.timer_ram_use = time.time()
         self.timer_stats = time.time() + 120
+        self.timer_upgrade = time.time() + 120
+        self.timer_upgrade_message = time.time()
 
         # Update camera settings
         self.camera = []
@@ -334,6 +340,7 @@ class DaemonController(threading.Thread):
         self.relay_usage_report_hour = None
         self.relay_usage_report_next_gen = None
         self.opt_out_statistics = None
+        self.enable_upgrade_check = None
         self.refresh_daemon_misc_settings()
 
         state = 'disabled' if self.opt_out_statistics else 'enabled'
@@ -351,40 +358,31 @@ class DaemonController(threading.Thread):
             while self.daemon_run:
                 now = time.time()
 
-                # Capture time-lapse image
-                try:
-                    for each_camera in self.camera:
-                        self.timelapse_check(each_camera, now)
-                except Exception:
-                    self.logger.exception("Timelapse ERROR")
-
-                # Generate relay usage report
-                if (self.relay_usage_report_gen and
-                        now > self.relay_usage_report_next_gen):
-                    try:
-                        generate_relay_usage_report()
-                        self.refresh_daemon_misc_settings()
-                    except Exception:
-                        self.logger.exception("Relay Usage Report Generation ERROR")
-
                 # Log ram usage every 24 hours
                 if now > self.timer_ram_use:
-                    try:
-                        self.timer_ram_use = now + 86400
-                        ram_mb = resource.getrusage(
-                            resource.RUSAGE_SELF).ru_maxrss / float(1000)
-                        self.logger.info("{ram:.2f} MB RAM in use".format(ram=ram_mb))
-                    except Exception:
-                        self.logger.exception("Free Ram ERROR")
+                    self.timer_ram_use = now + 86400
+                    self.log_ram_usage()
 
-                # collect and send anonymous statistics
+                # Capture time-lapse image (if enabled)
+                self.check_all_timelapses(now)
+
+                # Generate output usage report (if enabled)
+                if (self.relay_usage_report_gen and
+                        now > self.relay_usage_report_next_gen):
+                    generate_relay_usage_report()
+                    self.refresh_daemon_misc_settings()  # Update timer
+
+                # Collect and send anonymous statistics (if enabled)
                 if (not self.opt_out_statistics and
                         now > self.timer_stats):
-                    try:
-                        self.timer_stats = self.timer_stats + STATS_INTERVAL
-                        self.send_stats()
-                    except Exception:
-                        self.logger.exception("Stats ERROR")
+                    self.timer_stats = self.timer_stats + STATS_INTERVAL
+                    self.send_stats()
+
+                # Check if running the latest version (if enabled)
+                if now > self.timer_upgrade:
+                    self.timer_upgrade = self.timer_upgrade + UPGRADE_CHECK_INTERVAL
+                    if self.enable_upgrade_check:
+                        self.check_mycodo_upgrade_exists(now)
 
                 time.sleep(0.25)
         except Exception as except_msg:
@@ -433,9 +431,9 @@ class DaemonController(threading.Thread):
             elif cont_type == 'PID':
                 controller_manage['type'] = PID
                 controller_manage['function'] = PIDController
-            elif cont_type == 'Sensor':
-                controller_manage['type'] = Sensor
-                controller_manage['function'] = SensorController
+            elif cont_type == 'Input':
+                controller_manage['type'] = Input
+                controller_manage['function'] = InputController
             elif cont_type == 'Timer':
                 controller_manage['type'] = Timer
                 controller_manage['function'] = TimerController
@@ -516,14 +514,14 @@ class DaemonController(threading.Thread):
             for pid_id in self.controller['PID']:
                 if not self.controller['PID'][pid_id].is_running():
                     return "Error: PID ID {}".format(pid_id)
-            for sensor_id in self.controller['Sensor']:
-                if not self.controller['Sensor'][sensor_id].is_running():
-                    return "Error: Sensor ID {}".format(sensor_id)
+            for input_id in self.controller['Input']:
+                if not self.controller['Input'][input_id].is_running():
+                    return "Error: Input ID {}".format(input_id)
             for timer_id in self.controller['Timer']:
                 if not self.controller['Timer'][timer_id].is_running():
                     return "Error: Timer ID {}".format(timer_id)
-            if not self.controller['Relay'].is_running():
-                return "Error: Relay controller"
+            if not self.controller['Output'].is_running():
+                return "Error: Output controller"
         except Exception as except_msg:
             message = "Could not check running threads:" \
                       " {err}".format(err=except_msg)
@@ -598,141 +596,122 @@ class DaemonController(threading.Thread):
             self.logger.exception(message)
 
     def refresh_daemon_misc_settings(self):
+        old_time = self.relay_usage_report_next_gen
+        self.relay_usage_report_next_gen = next_schedule(
+            self.relay_usage_report_span,
+            self.relay_usage_report_day,
+            self.relay_usage_report_hour)
         try:
             self.logger.debug("Refreshing misc settings")
             misc = db_retrieve_table_daemon(Misc, entry='first')
             self.opt_out_statistics = misc.stats_opt_out
+            self.enable_upgrade_check = misc.enable_upgrade_check
             self.relay_usage_report_gen = misc.relay_usage_report_gen
             self.relay_usage_report_span = misc.relay_usage_report_span
             self.relay_usage_report_day = misc.relay_usage_report_day
             self.relay_usage_report_hour = misc.relay_usage_report_hour
-            old_time = self.relay_usage_report_next_gen
-            self.relay_usage_report_next_gen = next_schedule(
-                self.relay_usage_report_span,
-                self.relay_usage_report_day,
-                self.relay_usage_report_hour)
             if (self.relay_usage_report_gen and
                     old_time != self.relay_usage_report_next_gen):
                 str_next_report = time.strftime(
                     '%c', time.localtime(self.relay_usage_report_next_gen))
                 self.logger.debug(
-                    "Generating next relay usage report {time_date}".format(
+                    "Generating next output usage report {time_date}".format(
                         time_date=str_next_report))
         except Exception as except_msg:
             message = "Could not refresh misc settings:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def refresh_sensor_conditionals(self, sensor_id, cond_mod):
+    def refresh_sensor_conditionals(self, input_id, cond_mod):
         try:
-            return self.controller['Sensor'][sensor_id].setup_sensor_conditionals(cond_mod)
+            return self.controller['Input'][input_id].setup_sensor_conditionals(cond_mod)
         except Exception as except_msg:
-            message = "Could not refresh sensor conditionals:" \
+            message = "Could not refresh input conditionals:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
     def relay_off(self, relay_id, trigger_conditionals=True):
         """
-        Turn relay off using default relay controller
+        Turn output off using default output controller
 
-        :param relay_id: Unique ID for relay
+        :param relay_id: Unique ID for output
         :type relay_id: str
-        :param trigger_conditionals: Whether to trigger relay conditionals or not
+        :param trigger_conditionals: Whether to trigger output conditionals or not
         :type trigger_conditionals: bool
         """
         try:
-            self.controller['Relay'].relay_on_off(
+            self.controller['Output'].output_on_off(
                 relay_id,
                 'off',
                 trigger_conditionals=trigger_conditionals)
             return "Turned off"
         except Exception as except_msg:
-            message = "Could not turn relay off:" \
+            message = "Could not turn output off:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def relay_on(self, relay_id, duration=0.0, min_off=0.0, duty_cycle=0.0):
+    def relay_on(self, relay_id, duration=0.0, min_off=0.0,
+                 duty_cycle=0.0, trigger_conditionals=True):
         """
-        Turn relay on using default relay controller
+        Turn output on using default output controller
 
-        :param relay_id: Unique ID for relay
+        :param relay_id: Unique ID for output
         :type relay_id: str
-        :param duration: How long to turn the relay on
+        :param duration: How long to turn the output on
         :type duration: float
         :param min_off: Don't turn on if not off for at least this duration (0 = disabled)
         :type min_off: float
         :param duty_cycle: PWM duty cycle (0-100)
         :type duty_cycle: float
+        :param trigger_conditionals: bool
+        :type trigger_conditionals: Indicate whether to trigger conditional statements
         """
         try:
-            self.controller['Relay'].relay_on_off(
+            self.controller['Output'].output_on_off(
                 relay_id,
                 'on',
                 duration=duration,
                 min_off=min_off,
-                duty_cycle=duty_cycle)
+                duty_cycle=duty_cycle,
+                trigger_conditionals=trigger_conditionals)
             return "Turned on"
         except Exception as except_msg:
-            message = "Could not turn relay on:" \
+            message = "Could not turn output on:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def relay_setup(self, action, relay_id):
+    def output_setup(self, action, relay_id):
         """
-        Setup relay in running relay controller
+        Setup output in running output controller
 
         :return: 0 for success, 1 for fail, with success for fail message
         :rtype: int, str
 
-        :param action: What action to perform on a specific relay ID
+        :param action: What action to perform on a specific output ID
         :type action: str
-        :param relay_id: Unique ID for relay
+        :param relay_id: Unique ID for output
         :type relay_id: str
         """
         try:
-            return self.controller['Relay'].relay_setup(action, relay_id)
+            return self.controller['Output'].output_setup(action, relay_id)
         except Exception as except_msg:
-            message = "Could not set up relay:" \
+            message = "Could not set up output:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def relay_state(self, relay_id):
+    def output_state(self, relay_id):
         """
-        Return the relay state, wither "on" or "off"
+        Return the output state, wither "on" or "off"
 
-        :param relay_id: Unique ID for relay
+        :param relay_id: Unique ID for output
         :type relay_id: str
         """
         try:
-            return self.controller['Relay'].relay_state(relay_id)
+            return self.controller['Output'].output_state(relay_id)
         except Exception as except_msg:
-            message = "Could not query relay state:" \
+            message = "Could not query output state:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
-
-    def send_stats(self):
-        """Collect and send statistics"""
-        try:
-            stat_dict = return_stat_file_dict(STATS_CSV)
-            if float(stat_dict['next_send']) < time.time():
-                add_update_csv(STATS_CSV, 'next_send', self.timer_stats)
-            else:
-                self.timer_stats = float(stat_dict['next_send'])
-        except Exception as msg:
-            self.logger.exception(
-                "Error: Could not read stats file. Regenerating. Message: "
-                "{msg}".format(msg=msg))
-            try:
-                os.remove(STATS_CSV)
-            except OSError:
-                pass
-            recreate_stat_file()
-        try:
-            send_anonymous_stats(self.start_time)
-        except Exception as except_msg:
-            self.logger.exception(
-                "Error: Could not send statistics: {err}".format(
-                    err=except_msg))
 
     def startup_stats(self):
         """Ensure existence of statistics file and save daemon startup time"""
@@ -760,12 +739,12 @@ class DaemonController(threading.Thread):
             # Obtain database configuration options
             lcd = db_retrieve_table_daemon(LCD, entry='all')
             pid = db_retrieve_table_daemon(PID, entry='all')
-            sensor = db_retrieve_table_daemon(Sensor, entry='all')
+            input_dev = db_retrieve_table_daemon(Input, entry='all')
             timer = db_retrieve_table_daemon(Timer, entry='all')
 
-            self.logger.debug("Starting relay controller")
-            self.controller['Relay'] = RelayController()
-            self.controller['Relay'].start()
+            self.logger.debug("Starting output controller")
+            self.controller['Output'] = OutputController()
+            self.controller['Output'].start()
 
             self.logger.debug("Starting all activated timer controllers")
             for each_timer in timer:
@@ -773,11 +752,11 @@ class DaemonController(threading.Thread):
                     self.controller_activate('Timer', each_timer.id)
             self.logger.info("All activated timer controllers started")
 
-            self.logger.debug("Starting all activated sensor controllers")
-            for each_sensor in sensor:
-                if each_sensor.is_activated:
-                    self.controller_activate('Sensor', each_sensor.id)
-            self.logger.info("All activated sensor controllers started")
+            self.logger.debug("Starting all activated input controllers")
+            for each_input in input_dev:
+                if each_input.is_activated:
+                    self.controller_activate('Input', each_input.id)
+            self.logger.info("All activated input controllers started")
 
             self.logger.debug("Starting all activated PID controllers")
             for each_pid in pid:
@@ -800,7 +779,7 @@ class DaemonController(threading.Thread):
         try:
             lcd_controller_running = []
             pid_controller_running = []
-            sensor_controller_running = []
+            input_controller_running = []
             timer_controller_running = []
 
             for lcd_id in self.controller['LCD']:
@@ -813,10 +792,10 @@ class DaemonController(threading.Thread):
                     self.controller['PID'][pid_id].stop_controller(ended_normally=False)
                     pid_controller_running.append(pid_id)
 
-            for sensor_id in self.controller['Sensor']:
-                if self.controller['Sensor'][sensor_id].is_running():
-                    self.controller['Sensor'][sensor_id].stop_controller()
-                    sensor_controller_running.append(sensor_id)
+            for input_id in self.controller['Input']:
+                if self.controller['Input'][input_id].is_running():
+                    self.controller['Input'][input_id].stop_controller()
+                    input_controller_running.append(input_id)
 
             for timer_id in self.controller['Timer']:
                 if self.controller['Timer'][timer_id].is_running():
@@ -832,16 +811,16 @@ class DaemonController(threading.Thread):
                 self.controller['Timer'][timer_id].join()
             self.logger.info("All Timer controllers stopped")
 
-            for sensor_id in sensor_controller_running:
-                self.controller['Sensor'][sensor_id].join()
-            self.logger.info("All Sensor controllers stopped")
+            for input_id in input_controller_running:
+                self.controller['Input'][input_id].join()
+            self.logger.info("All Input controllers stopped")
 
             for pid_id in pid_controller_running:
                 self.controller['PID'][pid_id].join()
             self.logger.info("All PID controllers stopped")
 
-            self.controller['Relay'].stop_controller()
-            self.controller['Relay'].join()
+            self.controller['Output'].stop_controller()
+            self.controller['Output'].join()
         except Exception as except_msg:
             message = "Could not stop all controllers:" \
                       " {err}".format(err=except_msg)
@@ -856,11 +835,64 @@ class DaemonController(threading.Thread):
             time.sleep(0.1)
         return 1
 
+
+    #
+    # Timed functions
+    #
+
+    def log_ram_usage(self):
+        try:
+            ram_mb = resource.getrusage(
+                resource.RUSAGE_SELF).ru_maxrss / float(1000)
+            self.logger.info("{ram:.2f} MB RAM in use".format(ram=ram_mb))
+        except Exception:
+            self.logger.exception("Free Ram ERROR")
+
+    def check_mycodo_upgrade_exists(self, now):
+        """Check for any new Mycodo releases on github"""
+        releases = []
+        upgrade_available = False
+        try:
+            maj_version = int(MYCODO_VERSION.split('.')[0])
+            releases = github_releases(maj_version)
+        except Exception:
+            self.logger.error("Could not determine local mycodo version or "
+                              "online release versions. Upgrade checks can "
+                              "be disabled in the Mycodo configuration.")
+
+        try:
+            if len(releases):
+                if parse_version(releases[0]) > parse_version(MYCODO_VERSION):
+                    upgrade_available = True
+                    if now > self.timer_upgrade_message:
+                        # Only display message in log every 10 days
+                        self.timer_upgrade_message = time.time() + 864000
+                        self.logger.info(
+                            "A new version of Mycodo is available. Upgrade "
+                            "through the web interface under Config -> Upgrade. "
+                            "This message will repeat every 10 days unless "
+                            "Mycodo is upgraded or upgrade checks are disabled.")
+
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                mod_misc = new_session.query(Misc).first()
+                if mod_misc.mycodo_upgrade_available != upgrade_available:
+                    mod_misc.mycodo_upgrade_available = upgrade_available
+                    new_session.commit()
+        except Exception:
+            self.logger.exception("Mycodo Upgrade Check ERROR")
+
+    def check_all_timelapses(self, now):
+        try:
+            for each_camera in self.camera:
+                self.timelapse_check(each_camera, now)
+        except Exception:
+            self.logger.exception("Timelapse ERROR")
+
     def timelapse_check(self, camera, now):
         """ If time-lapses are active, take photo at predefined periods """
         try:
             if (camera.timelapse_started and
-                    now > camera.timelapse_end_time):
+                        now > camera.timelapse_end_time):
                 with session_scope(MYCODO_DB_PATH) as new_session:
                     mod_camera = new_session.query(Camera).filter(
                         Camera.id == camera.id).first()
@@ -876,7 +908,7 @@ class DaemonController(threading.Thread):
                 self.logger.debug(
                     "Camera {id}: End of time-lapse.".format(id=camera.id))
             elif ((camera.timelapse_started and not camera.timelapse_paused) and
-                    now > camera.timelapse_next_capture):
+                          now > camera.timelapse_next_capture):
                 # Ensure next capture is greater than now (in case of power failure/reboot)
                 next_capture = camera.timelapse_next_capture
                 capture_number = camera.timelapse_capture_number
@@ -899,6 +931,30 @@ class DaemonController(threading.Thread):
             message = "Could not execute timelapse:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
+
+    def send_stats(self):
+        """Collect and send statistics"""
+        try:
+            stat_dict = return_stat_file_dict(STATS_CSV)
+            if float(stat_dict['next_send']) < time.time():
+                add_update_csv(STATS_CSV, 'next_send', self.timer_stats)
+            else:
+                self.timer_stats = float(stat_dict['next_send'])
+        except Exception as msg:
+            self.logger.exception(
+                "Error: Could not read stats file. Regenerating. Message: "
+                "{msg}".format(msg=msg))
+            try:
+                os.remove(STATS_CSV)
+            except OSError:
+                pass
+            recreate_stat_file()
+        try:
+            send_anonymous_stats(self.start_time)
+        except Exception as except_msg:
+            self.logger.exception(
+                "Error: Could not send statistics: {err}".format(
+                    err=except_msg))
 
 
 class MycodoDaemon:

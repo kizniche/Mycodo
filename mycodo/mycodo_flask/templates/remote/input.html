@@ -1,0 +1,66 @@
+{% extends "layout-remote.html" %}
+{% set active_page = "input" %}
+
+{% block title %} - Remote Admin - Inputs{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{%- block body %}
+  <!-- Route: /remote/input -->
+  <div class="container">
+    {% include 'flash_messages.html' %}
+
+    <div style="padding-bottom: 2em">
+      Remote Inputs
+    </div>
+
+    <div style="padding-bottom: 2em">
+      Note: This is currently a work-in-progress. It is highly unpolished and should only be thought of as a proof-of-concept.
+    </div>
+
+    {% for each_host in remote_hosts %}
+
+      <div class="form-inline">
+        <div class="form-group">
+          {{each_host.host}}
+        </div>
+        <div class="form-group">
+      {% if host_inputs[each_host.host] %}
+          <img src="/static/img/on.png" style="width: 30px">
+      {% else %}
+          <img src="/static/img/off.png" style="width: 30px">
+      {% endif %}
+        </div>
+      </div>
+
+      <div class="form-inline">
+      {% if host_inputs[each_host.host] %}
+
+        {% for each_input in host_inputs[each_host.host] %}
+        <div class="form-group" style="padding: 0.5em">
+          <div>
+            Input ID: {{each_input}}
+          </div>
+          <div>
+            Name: {{host_inputs[each_host.host][each_input]['name']}}
+          </div>
+          <div>
+            Device: {{host_inputs[each_host.host][each_input]['device']}}
+          </div>
+          <div>
+            Activated: {{host_inputs[each_host.host][each_input]['is_activated']}}
+          </div>
+        </div>
+        {% endfor %}
+
+      {% else %}
+        Error: No Data to Display (maybe too many requests too fast)
+      {% endif %}
+      </div>
+
+    {% endfor %}
+
+  </div>
+
+{% endblock -%}

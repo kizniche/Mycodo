@@ -2,6 +2,10 @@
 / Custom Light CSS
 */
 
+.nav .upgrade_available {
+    background: rgba(255, 0, 0, 0.24);
+}
+
 .active-background {
     background-color: #B3E2B6 !important
 }

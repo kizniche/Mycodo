@@ -13,7 +13,7 @@
   <script src="/static/js/modules/export-csv.js"></script>
   <script src="/static/js/modules/jspdf.min.js"></script>
   <script src="/static/js/modules/highcharts-export-clientside.js"></script>
-  {% if current_user.theme in ['cyborg', 'darkly', 'slate', 'sun', 'superhero'] %}
+  {% if current_user.theme in dark_themes %}
     <script src="/static/js/dark-unica.js"></script>
   {% endif %}
 
@@ -72,12 +72,12 @@
         <div id="container-graph-{{each_graph.id}}" style="height: {{each_graph.height}}px;"></div>
 
         <div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
+          <form method="post" action="/graph">
+          <input type="hidden" name="form-name" value="modGraph">
+          {{form_mod_graph.csrf_token}}
+          {{form_mod_graph.graph_id(value=each_graph.id)}}
+          {{form_mod_graph.graph_type(value=each_graph.graph_type)}}
           <div class="form-inline">
-            <form method="post" action="/graph">
-            <input type="hidden" name="form-name" value="modGraph">
-            {{form_mod_graph.csrf_token}}
-            {{form_mod_graph.graph_id(value=each_graph.id)}}
-            {{form_mod_graph.graph_type(value=each_graph.graph_type)}}
             <div class="form-group">
               {{form_mod_graph.name.label(class_='control-label')}}
               <div>
@@ -108,20 +108,28 @@
               </div>
             </div>
             <div class="form-group">
+              <label class="form-check-label">
+                <input class="form-check-input" id="enable_auto_refresh" name="enable_auto_refresh" type="checkbox" value="y"{% if each_graph.enable_auto_refresh %} checked{% endif %}>
+                {{form_mod_graph.enable_auto_refresh.label.text}}
+              </label>
+            </div>
+            <div class="form-group">
               {{form_mod_graph.refresh_duration.label(class_='control-label')}}
               <div>
                 {{form_mod_graph.refresh_duration(class_='form-control', value=each_graph.refresh_duration)}}
               </div>
             </div>
+          </div>
 
             <div style="clear: both"></div>
 
+          <div class="form-inline">
             <div class="form-group">
               {{form_mod_graph.sensor_ids.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-                {% if sensor_choices %}
-                  {% for each_choice, value in sensor_choices.iteritems() -%}
+                {% if choices_input %}
+                  {% for each_choice, value in choices_input.iteritems() -%}
                     <option value="{{each_choice}}"{%- if each_choice|string in each_graph.sensor_ids_measurements %} selected{%- endif -%}>{{value}}</option>
                   {% endfor -%}
                 {% endif %}
@@ -132,8 +140,8 @@
               {{form_mod_graph.relay_ids.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-                {% if output_choices %}
-                  {% for each_choice, value in output_choices.iteritems() -%}
+                {% if choices_output %}
+                  {% for each_choice, value in choices_output.iteritems() -%}
                     <option value="{{each_choice}}"{%- if each_choice|string in each_graph.relay_ids %} selected{%- endif -%}>{{value}}</option>
                   {% endfor -%}
                 {% endif %}
@@ -144,8 +152,8 @@
               {{form_mod_graph.pid_ids.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-                {% if pid_choices %}
-                  {% for each_choice, value in pid_choices.iteritems() -%}
+                {% if choices_pid %}
+                  {% for each_choice, value in choices_pid.iteritems() -%}
                     <option value="{{each_choice}}"{%- if each_choice|string in each_graph.pid_ids %} selected{%- endif -%}>{{value}}</option>
                   {% endfor -%}
                 {% endif %}
@@ -156,20 +164,32 @@
             <div style="clear: both"></div>
             {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.</br>
 
-            <div class="form-check" style="padding-top: 1em">
-              <label class="form-check-label">
+            <div class="checkbox" style="padding-right: 1em">
+              <label>
+                <input class="form-check-input" id="enable_xaxis_reset" name="enable_xaxis_reset" type="checkbox" value="y"{% if each_graph.enable_xaxis_reset %} checked{% endif %}>
+                {{form_mod_graph.enable_xaxis_reset.label.text}}
+              </label>
+            </div>
+            <div class="checkbox" style="padding-right: 1em">
+              <label>
+                <input class="form-check-input" id="enable_title" name="enable_title" type="checkbox" value="y"{% if each_graph.enable_title %} checked{% endif %}>
+                {{form_mod_graph.enable_title.label.text}}
+              </label>
+            </div>
+            <div class="checkbox" style="padding-right: 1em">
+              <label>
                 <input class="form-check-input" id="enable_navbar" name="enable_navbar" type="checkbox" value="y"{% if each_graph.enable_navbar %} checked{% endif %}>
                 {{form_mod_graph.enable_navbar.label.text}}
               </label>
             </div>
-            <div class="form-check disabled">
-              <label class="form-check-label">
+            <div class="checkbox" style="padding-right: 1em">
+              <label>
                 <input class="form-check-input" id="enable_export" name="enable_export" type="checkbox" value="y"{% if each_graph.enable_export %} checked{% endif %}>
                 {{form_mod_graph.enable_export.label.text}}
               </label>
             </div>
-            <div class="form-check">
-              <label class="form-check-label">
+            <div class="checkbox" style="padding-right: 1em">
+              <label>
                 <input class="form-check-input" id="enable_range" name="enable_range" type="checkbox" value="y"{% if each_graph.enable_rangeselect %} checked{% endif %}>
                 {{form_mod_graph.enable_range.label.text}}
               </label>
@@ -195,27 +215,17 @@
 
           <div class="form-inline btn-group" style="padding-top: 1em;">
             <div class="form-group">
-              {{form_mod_graph.Submit(class_='form-control btn btn-default')}}
-              </form>
+              {{form_mod_graph.graph_mod(class_='form-control btn btn-default')}}
             </div>
             <div class="form-group">
-              <form method="post" action="/graph">
-                <input type="hidden" name="form-name" value="delGraph">
-                {{form_del_graph.csrf_token}}
-                {{form_del_graph.graph_id(value=each_graph.id)}}
-                {{form_del_graph.Submit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this graph?")'})}}
-              </form>
+              {{form_mod_graph.graph_del(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this graph?")'})}}
             </div>
             <div class="form-group">
-              <form method="post" action="/graph">
-                Reorder: <input type="hidden" name="form-name" value="orderGraph">
-                {{form_order_graph.csrf_token}}
-                {{form_order_graph.orderGraph_id(value=each_graph.id)}}
-                {{form_order_graph.orderGraphUp(class_='form-control btn btn-default')}}
-                {{form_order_graph.orderGraphDown(class_='form-control btn btn-default')}}
-              </form>
+              {{form_mod_graph.graph_order_up(class_='form-control btn btn-default')}}
+              {{form_mod_graph.graph_order_down(class_='form-control btn btn-default')}}
             </div>
           </div>
+          </form>
         </div>
 
       {% elif each_graph.graph_type in ['gauge_angular', 'gauge_solid'] %}
@@ -258,7 +268,7 @@
                 {{form_mod_gauge.sensor_ids.label(class_='control-label')}}
                 <div>
                   <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;">
-                  {% for each_choice, value in sensor_choices.iteritems() -%}
+                  {% for each_choice, value in choices_input.iteritems() -%}
                     <option value="{{each_choice}}" {% if each_graph.sensor_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
                   {% endfor -%}
                   </select>
@@ -360,31 +370,22 @@
 
             <div class="form-inline">
               <div class="form-group">
-                {{form_mod_graph.Submit(class_='form-control btn btn-default')}}
+                {{form_mod_gauge.gauge_mod(class_='form-control btn btn-default')}}
               </div>
             </div>
-
-            </form>
 
             <div class="form-inline" style="padding-top: 1em;">
               <div class="form-group">
-                <form method="post" action="/graph">
-                  <input type="hidden" name="form-name" value="delGraph">
-                  {{form_del_graph.csrf_token}}
-                  {{form_del_graph.graph_id(value=each_graph.id)}}
-                  {{form_del_graph.Submit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this graph?")'})}}
-                </form>
+                {{form_mod_gauge.gauge_del(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this graph?")'})}}
               </div>
               <div class="form-group">
-                <form method="post" action="/graph">
-                  Reorder: <input type="hidden" name="form-name" value="orderGraph">
-                  {{form_order_graph.csrf_token}}
-                  {{form_order_graph.orderGraph_id(value=each_graph.id)}}
-                  {{form_order_graph.orderGraphUp(class_='form-control btn btn-default')}}
-                  {{form_order_graph.orderGraphDown(class_='form-control btn btn-default')}}
-                </form>
+                Reorder:
+                {{form_mod_gauge.gauge_order_up(class_='form-control btn btn-default')}}
+                {{form_mod_gauge.gauge_order_down(class_='form-control btn btn-default')}}
               </div>
             </div>
+            </form>
+
           </div>
 
       {% endif %}
@@ -440,6 +441,14 @@
             {{form_add_graph.xaxis_duration(class_='form-control', value=1440)}}
           </div>
         </div>
+          <div class="form-group">
+          <div class="checkbox">
+            <label>
+              {{form_add_graph.enable_auto_refresh(class_='form-control', value='y', checked=True)}}
+              {{form_add_graph.enable_auto_refresh.label.text}}
+            </label>
+          </div>
+        </div>
         <div class="form-group">
           {{form_add_graph.refresh_duration.label(class_='control-label')}}
           <div>
@@ -453,7 +462,7 @@
           {{form_add_graph.sensor_ids.label(class_='control-label')}}
           <div>
             <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-            {% for each_choice, value in sensor_choices.iteritems() -%}
+            {% for each_choice, value in choices_input.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
             {% endfor -%}
             </select>
@@ -463,7 +472,7 @@
           {{form_add_graph.relay_ids.label(class_='control-label')}}
           <div>
             <select class="form-control" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-            {% for each_choice, value in output_choices.iteritems() -%}
+            {% for each_choice, value in choices_output.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
             {% endfor -%}
             </select>
@@ -473,7 +482,7 @@
           {{form_add_graph.pid_ids.label(class_='control-label')}}
           <div>
             <select class="form-control" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-            {% for each_choice, value in pid_choices.iteritems() -%}
+            {% for each_choice, value in choices_pid.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
             {% endfor -%}
             </select>
@@ -484,6 +493,18 @@
 
         {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.</br>
 
+        <div class="checkbox" style="padding-right: 1em">
+          <label>
+            {{form_add_graph.enable_xaxis_reset(class_='form-control', value='y', checked=True)}}
+            {{form_add_graph.enable_xaxis_reset.label.text}}
+          </label>
+        </div>
+        <div class="checkbox" style="padding-right: 1em">
+          <label>
+            {{form_add_graph.enable_title(class_='form-control')}}
+            {{form_add_graph.enable_title.label.text}}
+          </label>
+        </div>
         <div class="checkbox" style="padding-right: 1em">
           <label>
             {{form_add_graph.enable_navbar(class_='form-control')}}
@@ -505,7 +526,7 @@
       </div>
       <div class="form-inline btn-group">
         <div class="form-group">
-          {{form_add_graph.Submit(class_='form-control btn btn-default')}}
+          {{form_add_graph.graph_add(class_='form-control btn btn-default')}}
         </div>
       </div>
       </form>
@@ -578,7 +599,7 @@
           {{form_add_gauge.sensor_ids.label(class_='control-label')}}
           <div>
             <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;">
-            {% for each_choice, value in sensor_choices.iteritems() -%}
+            {% for each_choice, value in choices_input.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
             {% endfor -%}
             </select>
@@ -589,7 +610,7 @@
       </div>
       <div class="form-inline btn-group">
         <div class="form-group">
-          {{form_add_gauge.Submit(class_='form-control btn btn-default')}}
+          {{form_add_gauge.gauge_add(class_='form-control btn btn-default')}}
         </div>
       </div>
       </form>
@@ -700,7 +721,7 @@
     }
 
     // Retrieve chart data for the period since the last data acquisition (refresh period set by user)
-    function getLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, refresh_seconds) {
+    function getLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds) {
       setInterval(function () {
         // Build the URL
         // Instruct only to return data since the time of the last received data point
@@ -719,16 +740,18 @@
               for (i = 0; i < data.length; i++) {
                 var new_date = new Date(data[i][0]);
                 var new_time = new_date.getTime();
-                chart_graph[chart_number].series[sensor].addPoint([new_time, data[i][1]], false, false);
+                chart_graph[chart_number].series[sensor].addPoint([new_time, data[i][1]], true, true);
               }
               last_relay_time_mil[update_id] = new_time;
             }
-            // Ensure Reset Zoom button resets to the proper start and end times
-            chart_graph[chart_number].xAxis[0].update({min: new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)))}, false);
-            chart_graph[chart_number].xAxis[0].update({max: new Date().getTime()}, false);
-            // Update the new data time frame and redraw the chart
-            chart_graph[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min))), new Date().getTime(), true);
-            chart_graph[chart_number].xAxis[0].isDirty = true;
+            if (xaxis_reset) {
+                // Ensure Reset Zoom button resets to the proper start and end times
+                chart_graph[chart_number].xAxis[0].update({min: new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)))}, false);
+                chart_graph[chart_number].xAxis[0].update({max: new Date().getTime()}, false);
+                // Update the new data time frame and redraw the chart
+                chart_graph[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min))), new Date().getTime(), true);
+                chart_graph[chart_number].xAxis[0].isDirty = true;
+            }
           }
         );
       }, refresh_seconds * 1000);
@@ -762,12 +785,15 @@
         {%- set yaxis_disk_space = [] -%}
         {%- set yaxis_duty_cycle = [] -%}
         {%- set yaxis_edge = [] -%}
+        {%- set yaxis_frequency = [] -%}
         {%- set yaxis_hum = [] -%}
         {%- set yaxis_lux = [] -%}
         {%- set yaxis_moisture = [] -%}
         {%- set yaxis_ph = [] -%}
         {%- set yaxis_press = [] -%}
+        {%- set yaxis_pulse_width = [] -%}
         {%- set yaxis_relay = [] -%}
+        {%- set yaxis_rpm = [] -%}
         {%- set yaxis_temp = [] -%}
         {%- set yaxis_volts = [] -%}
         {%- set yaxis_command = [] -%}
@@ -776,21 +802,24 @@
         {%- for each_sensor in sensor -%}
           {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id in each_id_and_measure.split(',')[0] -%}
             {%- set measurement = each_id_and_measure.split(',')[1] -%}
-            {%- if measurement in ['cpu_load_1m',
-                                   'cpu_load_5m',
-                                   'cpu_load_15m'] -%}
+            {%- if measurement == 'altitude' -%}
+              {%- do yaxis_alt.append(1) -%}
+            {%- elif measurement == 'co2' -%}
+              {%- do yaxis_co2.append(1) -%}
+            {%- elif measurement in ['cpu_load_1m',
+                                     'cpu_load_5m',
+                                     'cpu_load_15m'] -%}
               {%- do yaxis_cpu_load.append(1) -%}
             {%- elif measurement == 'disk_space' -%}
               {%- do yaxis_disk_space.append(1) -%}
-            {%- elif measurement in ['dewpoint',
-                                     'temperature',
-                                     'temperature_object',
-                                     'temperature_die'] -%}
-              {%- do yaxis_temp.append(1) -%}
+            {%- elif measurement == 'duty_cycle' -%}
+              {%- do yaxis_duty_cycle.append(1) -%}
+            {%- elif measurement == 'edge' -%}
+              {%- do yaxis_edge.append(1) -%}
+            {%- elif measurement == 'frequency' -%}
+              {%- do yaxis_frequency.append(1) -%}
             {%- elif measurement == 'humidity' -%}
               {%- do yaxis_hum.append(1) -%}
-            {%- elif measurement == 'co2' -%}
-              {%- do yaxis_co2.append(1) -%}
             {%- elif measurement == 'lux' -%}
               {%- do yaxis_lux.append(1) -%}
             {%- elif measurement == 'moisture' -%}
@@ -799,10 +828,15 @@
               {%- do yaxis_ph.append(1) -%}
             {%- elif measurement == 'pressure' -%}
               {%- do yaxis_press.append(1) -%}
-            {%- elif measurement == 'altitude' -%}
-              {%- do yaxis_alt.append(1) -%}
-            {%- elif measurement == 'edge' -%}
-              {%- do yaxis_edge.append(1) -%}
+            {%- elif measurement == 'pulse_width' -%}
+              {%- do yaxis_pulse_width.append(1) -%}
+            {%- elif measurement == 'rpm' -%}
+              {%- do yaxis_rpm.append(1) -%}
+            {%- elif measurement in ['temperature',
+                                     'temperature_object',
+                                     'temperature_die',
+                                     'dewpoint',] -%}
+              {%- do yaxis_temp.append(1) -%}
             {%- elif measurement == 'voltage' -%}
               {%- do yaxis_volts.append(1) -%}
             {%- elif measurement == each_sensor.adc_measure -%}
@@ -819,27 +853,43 @@
             {%- set pid_measurement = each_graph_pid_id.split(',')[1] -%}
             {%- if pid_measurement == 'setpoint' %}
               {%- for each_sensor in sensor if each_sensor.unique_id == each_pid.measurement.split(',')[0] -%}
-                {%- set sensor_measurement = each_pid.measurement.split(',')[1] -%}
-                {%- if sensor_measurement in ['dewpoint',
-                                              'temperature',
-                                              'temperature_object',
-                                              'temperature_die'] -%}
-                  {%- do yaxis_temp.append(1) -%}
-                {%- elif sensor_measurement == 'humidity' -%}
-                  {%- do yaxis_hum.append(1) -%}
-                {%- elif sensor_measurement == 'co2' -%}
-                  {%- do yaxis_co2.append(1) -%}
-                {%- elif sensor_measurement == 'lux' -%}
-                  {%- do yaxis_lux.append(1) -%}
-                {%- elif sensor_measurement == 'moisture' -%}
-                  {%- do yaxis_moisture.append(1) -%}
-                {%- elif sensor_measurement == 'ph' -%}
-                  {%- do yaxis_ph.append(1) -%}
-                {%- elif sensor_measurement == 'pressure' -%}
-                  {%- do yaxis_press.append(1) -%}
-                {%- elif sensor_measurement == 'altitude' -%}
+                {%- set measurement = each_pid.measurement.split(',')[1] -%}
+                {%- if measurement == 'altitude' -%}
                   {%- do yaxis_alt.append(1) -%}
-                {%- elif sensor_measurement == 'voltage' -%}
+                {%- elif measurement == 'co2' -%}
+                  {%- do yaxis_co2.append(1) -%}
+                {%- elif measurement in ['cpu_load_1m',
+                                         'cpu_load_5m',
+                                         'cpu_load_15m'] -%}
+                  {%- do yaxis_cpu_load.append(1) -%}
+                {%- elif measurement == 'disk_space' -%}
+                  {%- do yaxis_disk_space.append(1) -%}
+                {%- elif measurement == 'duty_cycle' -%}
+                  {%- do yaxis_duty_cycle.append(1) -%}
+                {%- elif measurement == 'edge' -%}
+                  {%- do yaxis_edge.append(1) -%}
+                {%- elif measurement == 'frequency' -%}
+                  {%- do yaxis_frequency.append(1) -%}
+                {%- elif measurement == 'humidity' -%}
+                  {%- do yaxis_hum.append(1) -%}
+                {%- elif measurement == 'lux' -%}
+                  {%- do yaxis_lux.append(1) -%}
+                {%- elif measurement == 'moisture' -%}
+                  {%- do yaxis_moisture.append(1) -%}
+                {%- elif measurement == 'ph' -%}
+                  {%- do yaxis_ph.append(1) -%}
+                {%- elif measurement == 'pressure' -%}
+                  {%- do yaxis_press.append(1) -%}
+                {%- elif measurement == 'pulse_width' -%}
+                  {%- do yaxis_pulse_width.append(1) -%}
+                {%- elif measurement == 'rpm' -%}
+                  {%- do yaxis_rpm.append(1) -%}
+                {%- elif measurement in ['temperature',
+                                         'temperature_object',
+                                         'temperature_die',
+                                         'dewpoint',] -%}
+                  {%- do yaxis_temp.append(1) -%}
+                {%- elif measurement == 'voltage' -%}
                   {%- do yaxis_volts.append(1) -%}
                 {%- elif sensor_measurement == each_sensor.adc_measure -%}
                   {%- do yaxis_adc.append(each_sensor.adc_measure) -%}
@@ -883,7 +933,9 @@
             {% for each_sensor in sensor -%}
               {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id == each_id_and_measure.split(',')[0] %}
             getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            {% if each_graph.enable_auto_refresh %}
+            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}});
+            {% endif %}
                 {%- do count_series.append(1) %}
               {%- endfor -%}
             {%- endfor -%}
@@ -891,7 +943,9 @@
             {%- for each_relay in relay -%}
               {%- for each_graph_relay_id in graph_relay_ids if each_relay.unique_id == each_graph_relay_id.split(',')[0] %}
             getPastData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_relay.unique_id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_relay.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            {% if each_graph.enable_auto_refresh %}
+            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_relay.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}});
+            {% endif %}
                 {%- do count_series.append(1) %}
               {%- endfor -%}
             {%- endfor -%}
@@ -899,7 +953,9 @@
             {%- for each_pid in pid -%}
               {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id.split(',')[0] %}
             getPastData({{chart_number}}, {{count_series|count}}, '{{each_graph_pid_id.split(',')[1]}}', '{{each_pid.unique_id}}', {{each_graph.x_axis_duration*60}});
-            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_pid_id.split(',')[1]}}', '{{each_pid.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.refresh_duration}});
+            {% if each_graph.enable_auto_refresh %}
+            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_pid_id.split(',')[1]}}', '{{each_pid.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}});
+            {% endif %}
                 {%- do count_series.append(1) %}
               {%- endfor -%}
             {%- endfor -%}
@@ -912,9 +968,11 @@
                   "{{each_color}}",
                  {%- endfor -%}],
       {%- endif -%}
-      // title: {
-      //   text: "{{each_graph.name}}"
-      // },
+      {% if each_graph.enable_title %}
+      title: {
+        text: "{{each_graph.name}}"
+      },
+      {% endif %}
       legend: {
         enabled: true
         // layout: 'vertical',
@@ -949,7 +1007,7 @@
       {%- if yaxis_relay -%}
         {
           title: {
-            text: '{{_('Relay Duration')}} (sec)'
+            text: '{{_('Output Duration')}} (sec)'
           },
           labels: {
             format: '{value}'
@@ -1030,6 +1088,18 @@
           id: 'edge'
         },
       {%- endif -%}
+      {%- if yaxis_frequency -%}
+        {
+          title: {
+            text: '{{_('Frequency')}} (Hz)'
+          },
+          labels: {
+            format: '{value}'
+          },
+          opposite: false,
+          id: 'frequency'
+        },
+      {%- endif -%}
       {%- if yaxis_hum -%}
         {
           title: {
@@ -1088,6 +1158,30 @@
           },
           opposite: false,
           id: 'pressure'
+        },
+      {%- endif -%}
+      {%- if yaxis_pulse_width -%}
+        {
+          title: {
+            text: '{{_('Pulse Width')}} (µs)'
+          },
+          labels: {
+            format: '{value}'
+          },
+          opposite: false,
+          id: 'pulse_width'
+        },
+      {%- endif -%}
+      {%- if yaxis_rpm -%}
+        {
+          title: {
+            text: '{{_('Revolutions Per Minute')}} (RPM)'
+          },
+          labels: {
+            format: '{value}'
+          },
+          opposite: false,
+          id: 'rpm'
         },
       {%- endif -%}
       {%- if yaxis_temp -%}
@@ -1173,6 +1267,18 @@
       rangeSelector: {
         enabled: {% if each_graph.enable_rangeselect %}true{% else %}false{% endif %},
         buttons: [{
+          count: 1,
+          type: 'minute',
+          text: '1m'
+        }, {
+          count: 5,
+          type: 'minute',
+          text: '5m'
+        }, {
+          count: 15,
+          type: 'minute',
+          text: '15m'
+        }, {
           count: 30,
           type: 'minute',
           text: '30m'
@@ -1182,32 +1288,16 @@
           text: '1h'
         }, {
           type: 'hour',
-          count: 3,
-          text: '3h'
-        }, {
-          type: 'hour',
           count: 6,
           text: '6h'
-        }, {
-          type: 'hour',
-          count: 12,
-          text: '12h'
         }, {
           type: 'day',
           count: 1,
           text: '1d'
         }, {
-          type: 'day',
-          count: 3,
-          text: '3d'
-        }, {
           type: 'week',
           count: 1,
           text: '1w'
-        }, {
-          type: 'week',
-          count: 2,
-          text: '2w'
         }, {
           type: 'month',
           count: 1,
@@ -1594,7 +1684,7 @@
             },
             yAxis: 0,
               dial: {
-                backgroundColor: '{% if current_user.theme in ['cyborg', 'darkly', 'slate', 'sun', 'superhero'] %}#e3e4f4{% else %}#3e3f46{% endif %}',
+                backgroundColor: '{% if current_user.theme in dark_themes %}#e3e4f4{% else %}#3e3f46{% endif %}',
                 baseWidth: 5
             },
             tooltip: {

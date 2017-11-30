@@ -101,13 +101,13 @@ class DaemonControl:
     def relay_off(self, relay_id, trigger_conditionals=True):
         return self.rpyc_client.root.relay_off(relay_id, trigger_conditionals)
 
-    def relay_on(self, relay_id, duration=0.0, min_off=0.0, duty_cycle=0.0):
-        return self.rpyc_client.root.relay_on(relay_id,
-                                              duration=duration,
-                                              min_off=min_off,
-                                              duty_cycle=duty_cycle)
+    def relay_on(self, relay_id, duration=0.0, min_off=0.0,
+                 duty_cycle=0.0, trigger_conditionals=True):
+        return self.rpyc_client.root.relay_on(
+            relay_id, duration=duration, min_off=min_off,
+            duty_cycle=duty_cycle, trigger_conditionals=trigger_conditionals)
 
-    def relay_on_off(self, relay_id, state, duration=0.0):
+    def output_on_off(self, relay_id, state, duration=0.0):
         if state == 'on':
             return self.relay_on(relay_id, duration)
         else:
@@ -152,11 +152,11 @@ def timeout_handler(signum, frame):  # Custom signal handler
 def parseargs(parser):
     parser.add_argument('--activatecontroller', nargs=2,
                         metavar=('CONTROLLER', 'ID'), type=str,
-                        help='Activate controller. Options: LCD, PID, Sensor, Timer',
+                        help='Activate controller. Options: LCD, PID, Input, Timer',
                         required=False)
     parser.add_argument('--deactivatecontroller', nargs=2,
                         metavar=('CONTROLLER', 'ID'), type=str,
-                        help='Deactivate controller. Options: LCD, PID, Sensor, Timer',
+                        help='Deactivate controller. Options: LCD, PID, Input, Timer',
                         required=False)
     parser.add_argument('-c', '--checkdaemon', action='store_true',
                         help="Check if all active daemon controllers are running")
@@ -214,9 +214,9 @@ if __name__ == "__main__":
 
     elif args.activatecontroller:
         if args.activatecontroller[0] not in ['LCD', 'Log', 'PID',
-                                              'Sensor', 'Timer']:
+                                              'Input', 'Timer']:
             logger.info("Invalid controller type. Options are LCD, Log, PID, "
-                        "Sensor, and Timer.")
+                        "Input, and Timer.")
         else:
             return_msg = daemon_control.controller_activate(
                 args.activatecontroller[0], args.activatecontroller[1])
@@ -228,9 +228,9 @@ if __name__ == "__main__":
 
     elif args.deactivatecontroller:
         if args.deactivatecontroller[0] not in ['LCD', 'Log', 'PID',
-                                                'Sensor', 'Timer']:
+                                                'Input', 'Timer']:
             logger.info("Invalid controller type. Options are LCD, Log, PID, "
-                        "Sensor, and Timer.")
+                        "Input, and Timer.")
         else:
             return_msg = daemon_control.controller_deactivate(
                 args.deactivatecontroller[0], args.deactivatecontroller[1])

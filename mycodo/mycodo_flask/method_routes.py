@@ -19,13 +19,13 @@ from mycodo.mycodo_flask.extensions import db
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
-from mycodo.databases.models import Relay
+from mycodo.databases.models import Output
 
 from mycodo.mycodo_flask.forms import forms_method
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_method
 
-from mycodo.mycodo_flask.static_routes import inject_mycodo_version
+from mycodo.mycodo_flask.static_routes import inject_variables
 
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import get_sec
@@ -44,7 +44,7 @@ blueprint = Blueprint('method_routes',
 
 @blueprint.context_processor
 def inject_dictionary():
-    return inject_mycodo_version()
+    return inject_variables()
 
 
 @blueprint.route('/method-data/<method_id>')
@@ -124,6 +124,8 @@ def method_data(method_id):
         for n in range(points_x):
             percent = n / float(points_x)
             second_of_day = percent * seconds_in_day
+            if second_of_day == 0:
+                continue
             y = bezier_curve_y_out(last_method_data.shift_angle,
                                    P0, P1, P2, P3,
                                    second_of_day)
@@ -198,7 +200,7 @@ def method_builder(method_id):
     if not utils_general.user_has_permission('edit_controllers'):
         return redirect(url_for('method_routes.method_list'))
 
-    relay = Relay.query.all()
+    output = Output.query.all()
 
     form_create_method = forms_method.MethodCreate()
     form_add_method = forms_method.MethodAdd()
@@ -281,7 +283,7 @@ def method_builder(method_id):
 
         return render_template('pages/method-build.html',
                                method=method,
-                               relay=relay,
+                               relay=output,
                                method_data=method_data,
                                method_id=method_id,
                                last_end_time=last_end_time,

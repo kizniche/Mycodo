@@ -9,7 +9,7 @@ if [ "$EUID" -ne 0 ] ; then
 fi
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../.." && pwd -P )
-APT_PKGS="apache2 gawk gcc git libapache2-mod-wsgi libav-tools libboost-python-dev libffi-dev libgtk2.0-0 libi2c-dev moreutils python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3 wget"
+APT_PKGS="apache2 gawk gcc git libapache2-mod-wsgi libav-tools libboost-python-dev libffi-dev libgtk2.0-0 libi2c-dev logrotate moreutils python-dev python-numpy python-opencv python-setuptools python-smbus sqlite3 wget"
 
 cd ${INSTALL_DIRECTORY}
 
@@ -56,10 +56,12 @@ case "${1:-''}" in
 
         printf "\n#### Creating users and directories\n"
         useradd -M mycodo
-        adduser mycodo gpio
+
         adduser mycodo adm
-        adduser mycodo video
         adduser mycodo dialout
+        adduser mycodo gpio
+        adduser mycodo i2c
+        adduser mycodo video
 
         ln -sfn ${INSTALL_DIRECTORY}/Mycodo /var/www/mycodo
 
@@ -103,7 +105,8 @@ case "${1:-''}" in
     ;;
     'restart-web-ui')
         printf "\n#### Restarting the Mycodo web server\n"
-        /etc/init.d/apache2 restart
+        apachectl restart
+        sleep 5
 
         printf "\n#### Creating Mycodo database if it doesn't exist\n"
         # Attempt to connect to localhost 5 times, sleeping 60 seconds every fail
@@ -113,7 +116,7 @@ case "${1:-''}" in
             break ||
             # Else wait 60 seconds if localhost is not accepting connections
             # Everything below will begin executing if an error occurs before the break
-            printf "#### Could not connect to http://localhost. Waiting 60 seconds then trying again...\n" &&
+            printf "#### Could not connect to http://localhost. Waiting 60 seconds then trying again (up to 5 times)...\n" &&
             sleep 60 &&
             printf "#### Trying again...\n"
         done
@@ -170,8 +173,8 @@ case "${1:-''}" in
     'update-influxdb')
         printf "\n#### Ensuring compatible version of influxdb is installed ####\n"
         INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
-        INSTALL_FILE="influxdb_1.3.7_armhf.deb"
-        CORRECT_VERSION="1.3.7-1"
+        INSTALL_FILE="influxdb_1.4.2_armhf.deb"
+        CORRECT_VERSION="1.4.2-1"
         CURRENT_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
         if [ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]; then
             echo "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed. Installing v${CORRECT_VERSION}..."
@@ -199,6 +202,14 @@ case "${1:-''}" in
             printf "#### Could not connect to Influxdb. Waiting 30 seconds then trying again...\n" &&
             sleep 30
         done
+    ;;
+    'update-logrotate')
+        printf "\n#### Installing logrotate script\n"
+        if [ -e /etc/cron.daily/logrotate ]; then
+            mv -f /etc/cron.daily/logrotate /etc/cron.hourly/
+        fi
+        cp -f ${INSTALL_DIRECTORY}/Mycodo/install/logrotate_mycodo /etc/logrotate.d/mycodo
+        printf "logrotate moved to cron.daily and logrotate script installed"
     ;;
     'update-mycodo-startup-script')
         printf "\n#### Enabling mycodo startup script\n"

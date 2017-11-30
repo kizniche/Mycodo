@@ -15,6 +15,7 @@ class User(UserMixin, CRUDMixin, db.Model):
     email = db.Column(db.VARCHAR(64), unique=True, index=True)
     role = db.Column(db.Integer, db.ForeignKey('roles.id'), default=None)
     theme = db.Column(db.VARCHAR(64))
+    language = db.Column(db.Text, default=None)  # Force the web interface to use a specific language
 
     roles = db.relationship("Role", back_populates="user")
 

@@ -18,8 +18,8 @@ from mycodo.databases.models import Conditional
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Method
 from mycodo.databases.models import PID
-from mycodo.databases.models import Relay
-from mycodo.databases.models import Sensor
+from mycodo.databases.models import Output
+from mycodo.databases.models import Input
 from mycodo.databases.models import Timer
 from mycodo.databases.models import User
 
@@ -236,14 +236,14 @@ def send_anonymous_stats(start_time):
         version_send = version_num.version_num if version_num else 'None'
         add_update_csv(STATS_CSV, 'alembic_version', version_send)
 
-        relays = db_retrieve_table_daemon(Relay)
-        add_update_csv(STATS_CSV, 'num_relays', get_count(relays))
+        outputs = db_retrieve_table_daemon(Output)
+        add_update_csv(STATS_CSV, 'num_relays', get_count(outputs))
 
-        sensors = db_retrieve_table_daemon(Sensor)
-        add_update_csv(STATS_CSV, 'num_sensors', get_count(sensors))
+        inputs = db_retrieve_table_daemon(Input)
+        add_update_csv(STATS_CSV, 'num_sensors', get_count(inputs))
         add_update_csv(STATS_CSV, 'num_sensors_active',
                        get_count(
-                           sensors.filter(Sensor.is_activated == True)))
+                           inputs.filter(Input.is_activated == True)))
 
         conditionals = db_retrieve_table_daemon(Conditional)
         add_update_csv(STATS_CSV, 'num_conditionals', get_count(conditionals))
@@ -313,7 +313,7 @@ def send_anonymous_stats(start_time):
         logger.debug("Sent anonymous usage statistics")
         return 0
     except requests.ConnectionError:
-        logger.error("Could not send anonymous usage statistics: Connection "
+        logger.debug("Could not send anonymous usage statistics: Connection "
                      "timed out (expected if there's no internet or the "
                      "server is down)")
     except Exception as except_msg:

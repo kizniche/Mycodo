@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 5.3.6 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade) [![DOI](https://zenodo.org/badge/30382555.svg)](https://zenodo.org/badge/latestdoi/30382555)
+### Latest version: 5.4.11 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade) [![DOI](https://zenodo.org/badge/30382555.svg)](https://zenodo.org/badge/latestdoi/30382555)
 
 #### [Mycodo Manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md) ([PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt))
 
@@ -79,9 +79,11 @@ All supported Inputs can be found under [Sensor Interfaces](https://github.com/k
 
 ## Install
 
-These install procedures have been tested to work with the Raspberry Pi (versions Zero, 1, 2, and 3) following a fresh install of [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/) (Full or Lite version), with an active internet connection.
+These install procedures have been tested to work with the Raspberry Pi (versions Zero, 1, 2, and 3) following a fresh install of [Raspbian](https://www.raspberrypi.org/downloads/raspbian/) (Full or Lite version), with an active internet connection.
 
-***Important:*** The most recent version of Raspbian has SSH disabled by default. SSH can be enabled for the first bootup by creating a blank file named ```ssh``` and placing it in the boot partition of the SD card. This will enable SSH access until either A. the system is rebooted, or B. SSH is fully-enabled with raspi-config (instructions below).
+Latest version of Raspbian tested: Raspbian Stretch 2017-09-07
+
+***Important:*** Recently, Raspbian has SSH disabled by default. SSH can be enabled for the first bootup by creating a blank file named ```ssh``` and placing it in the boot partition of the SD card. This will enable SSH access until either A. the system is rebooted, or B. SSH is fully-enabled with raspi-config (instructions below).
 
 ### Configure raspi-config
 

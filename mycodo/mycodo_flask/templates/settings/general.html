@@ -18,7 +18,7 @@
         <select class="form-control form-tooltip form-dropdown" data-placement="top" id="language" name="language" title="{{_('Selecting a language will override the web browser\'s language.')}}">
           <option value="">Browser Default</option>
           {% for each_language in languages %}
-            <option value="{{each_language[0]}}"{% if misc.language == each_language[0] %} selected{% endif %}>{{each_language[1].decode('utf-8')}}</option>
+            <option value="{{each_language[0]}}"{% if current_language == each_language[0] %} selected{% endif %}>{{each_language[1].decode('utf-8')}}</option>
           {% endfor %}
         </select>
       </div>
@@ -90,9 +90,20 @@
       </div>
     </div>
     <div class="form-group">
+      {{form_settings_general.enable_upgrade_check.label(class_='col-sm-4 control-label checkbox-nopad')}}
+      <div class="col-sm-8">
+        {%- if misc.enable_upgrade_check == true -%}
+          {{form_settings_general.enable_upgrade_check(checked=True)}}
+        {%- else -%}
+          {{form_settings_general.enable_upgrade_check()}}
+        {%- endif -%}
+        &nbsp;&nbsp;{{_('Check if you would like Mycodo to automatically check for upgrades.')}}
+      </div>
+    </div>
+    <div class="form-group">
       <div class="col-sm-4"></div>
       <div class="col-sm-8">
-        <h3>{{_('Relay Usage')}}</h3>
+        <h3>{{_('Output Usage')}}</h3>
       </div>
     </div>
     <div class="form-group">

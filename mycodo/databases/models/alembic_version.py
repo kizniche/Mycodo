@@ -9,5 +9,5 @@ class AlembicVersion(CRUDMixin, db.Model):
 
     version_num = db.Column(db.String(32), primary_key=True, nullable=False, default=config.ALEMBIC_VERSION)
 
-    def __reper__(self):
+    def __repr__(self):
         return "<{cls}(version_number={s.version_num})>".format(s=self, cls=self.__class__.__name__)

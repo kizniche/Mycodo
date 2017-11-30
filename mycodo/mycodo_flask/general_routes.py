@@ -19,25 +19,22 @@ from flask import flash
 from flask import jsonify
 from flask import make_response
 from flask import redirect
-from flask import render_template
+
 from flask import request
 from flask import send_from_directory
 from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 from flask_influxdb import InfluxDB
+from flask_limiter import Limiter
 
-from mycodo.mycodo_flask.forms import forms_authentication
+
 from mycodo.mycodo_flask.utils import utils_general
-from mycodo.mycodo_flask.utils import utils_remote_host
 from mycodo.mycodo_flask.utils.utils_general import gzipped
 
 from mycodo.databases.models import Camera
-from mycodo.databases.models import DisplayOrder
-from mycodo.databases.models import Relay
-from mycodo.databases.models import Remote
-from mycodo.databases.models import Sensor
-from mycodo.databases.models import User
+from mycodo.databases.models import Output
+from mycodo.databases.models import Input
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
 from mycodo.utils.influx import query_string
@@ -58,6 +55,8 @@ blueprint = Blueprint('general_routes',
 logger = logging.getLogger(__name__)
 influx_db = InfluxDB()
 
+limiter = Limiter()
+
 
 @blueprint.route('/')
 def home():
@@ -71,47 +70,6 @@ def home():
 @flask_login.login_required
 def page_settings():
     return redirect('settings/general')
-
-
-@blueprint.route('/remote/<page>', methods=('GET', 'POST'))
-@flask_login.login_required
-def remote_admin(page):
-    """Return pages for remote administration"""
-    if not utils_general.user_has_permission('edit_settings'):
-        return redirect(url_for('general_routes.home'))
-
-    remote_hosts = Remote.query.all()
-    display_order_unsplit = DisplayOrder.query.first().remote_host
-    if display_order_unsplit:
-        display_order = display_order_unsplit.split(",")
-    else:
-        display_order = []
-
-    if page == 'setup':
-        form_setup = forms_authentication.RemoteSetup()
-        host_auth = {}
-        for each_host in remote_hosts:
-            host_auth[each_host.host] = utils_remote_host.auth_credentials(
-                each_host.host, each_host.username, each_host.password_hash)
-
-        if request.method == 'POST':
-            form_name = request.form['form-name']
-            if form_name == 'setup':
-                if form_setup.add.data:
-                    utils_remote_host.remote_host_add(
-                        form_setup=form_setup, display_order=display_order)
-            if form_name == 'mod_remote':
-                if form_setup.delete.data:
-                    utils_remote_host.remote_host_del(form_setup=form_setup)
-            return redirect('/remote/setup')
-
-        return render_template('remote/setup.html',
-                               form_setup=form_setup,
-                               display_order=display_order,
-                               remote_hosts=remote_hosts,
-                               host_auth=host_auth)
-    else:
-        return render_template('404.html'), 404
 
 
 @blueprint.route('/camera/<camera_id>/<img_type>/<filename>')
@@ -160,23 +118,23 @@ def video_feed(unique_id):
 @blueprint.route('/gpiostate')
 @flask_login.login_required
 def gpio_state():
-    """Return the GPIO state, for relay page status"""
-    relay = Relay.query.all()
+    """Return the GPIO state, for output page status"""
+    output = Output.query.all()
     daemon_control = DaemonControl()
     state = {}
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    for each_relay in relay:
-        if each_relay.relay_type == 'wired' and -1 < each_relay.pin < 40:
-            GPIO.setup(each_relay.pin, GPIO.OUT)
-            if GPIO.input(each_relay.pin) == each_relay.trigger:
-                state[each_relay.id] = 'on'
+    for each_output in output:
+        if each_output.relay_type == 'wired' and -1 < each_output.pin < 40:
+            GPIO.setup(each_output.pin, GPIO.OUT)
+            if GPIO.input(each_output.pin) == each_output.trigger:
+                state[each_output.id] = 'on'
             else:
-                state[each_relay.id] = 'off'
-        elif (each_relay.relay_type == 'command' or
-                (each_relay.relay_type in ['pwm', 'wireless_433MHz_pi_switch'] and
-                 -1 < each_relay.pin < 40)):
-            state[each_relay.id] = daemon_control.relay_state(each_relay.id)
+                state[each_output.id] = 'off'
+        elif (each_output.relay_type == 'command' or
+                (each_output.relay_type in ['pwm', 'wireless_433MHz_pi_switch'] and
+                 -1 < each_output.pin < 40)):
+            state[each_output.id] = daemon_control.relay_state(each_output.id)
 
     return jsonify(state)
 
@@ -191,18 +149,21 @@ def download_file(dl_type, filename):
     return '', 204
 
 
-@blueprint.route('/last/<sensor_measure>/<sensor_id>/<sensor_period>')
+@blueprint.route('/last/<input_measure>/<input_id>/<input_period>')
 @flask_login.login_required
-def last_data(sensor_measure, sensor_id, sensor_period):
+def last_data(input_measure, input_id, input_period):
     """Return the most recent time and value from influxdb"""
+    if not str_is_float(input_period):
+        return '', 204
+
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
     try:
         query_str = query_string(
-            sensor_measure, sensor_id, value='LAST',
-            past_sec=sensor_period)
+            input_measure, input_id, value='LAST',
+            past_sec=input_period)
         if query_str == 1:
             return '', 204
         raw_data = dbcon.query(query_str).raw
@@ -224,18 +185,21 @@ def last_data(sensor_measure, sensor_id, sensor_period):
         return '', 204
 
 
-@blueprint.route('/past/<sensor_measure>/<sensor_id>/<past_seconds>')
+@blueprint.route('/past/<input_measure>/<input_id>/<past_seconds>')
 @flask_login.login_required
 @gzipped
-def past_data(sensor_measure, sensor_id, past_seconds):
+def past_data(input_measure, input_id, past_seconds):
     """Return data from past_seconds until present from influxdb"""
+    if not str_is_float(past_seconds):
+        return '', 204
+
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
     try:
         query_str = query_string(
-            sensor_measure, sensor_id, past_sec=past_seconds)
+            input_measure, input_id, past_sec=past_seconds)
         if query_str == 1:
             return '', 204
         raw_data = dbcon.query(query_str).raw
@@ -263,9 +227,9 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     dbcon = influx_db.connection
 
     if measurement == 'duration_sec':
-        name = Relay.query.filter(Relay.unique_id == unique_id).first().name
+        name = Output.query.filter(Output.unique_id == unique_id).first().name
     else:
-        name = Sensor.query.filter(Sensor.unique_id == unique_id).first().name
+        name = Input.query.filter(Input.unique_id == unique_id).first().name
 
     utc_offset_timedelta = datetime.datetime.utcnow() - datetime.datetime.now()
     start = datetime.datetime.fromtimestamp(float(start_seconds))
@@ -375,7 +339,7 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
     # If there are more than 700 points in the time frame, we need to group
     # data points into 700 groups with points averaged in each group.
     if count_points > 700:
-        # Average period between sensor reads
+        # Average period between input reads
         seconds_per_point = time_difference_seconds / count_points
         logger.debug('Seconds per point = {}'.format(seconds_per_point))
 
@@ -413,20 +377,20 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
             return '', 204
 
 
-@blueprint.route('/output_mod/<relay_id>/<state>/<out_type>/<amount>')
+@blueprint.route('/output_mod/<output_id>/<state>/<out_type>/<amount>')
 @flask_login.login_required
-def output_mod(relay_id, state, out_type, amount):
-    """Manipulate relay"""
+def output_mod(output_id, state, out_type, amount):
+    """Manipulate output"""
     if not utils_general.user_has_permission('edit_controllers'):
-        return 'Insufficient user permissions to manipulate relays'
+        return 'Insufficient user permissions to manipulate outputs'
 
     daemon = DaemonControl()
     if (state in ['on', 'off'] and out_type == 'sec' and
             (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.relay_on_off(int(relay_id), state, float(amount))
+        return daemon.output_on_off(int(output_id), state, float(amount))
     elif (state == 'on' and out_type == 'pwm' and
               (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.relay_on(int(relay_id), state, duty_cycle=float(amount))
+        return daemon.relay_on(int(output_id), state, duty_cycle=float(amount))
 
 
 @blueprint.route('/daemonactive')
@@ -468,41 +432,3 @@ def computer_command(action):
         flash("System command '{cmd}' raised and error: "
               "{err}".format(cmd=action, err=e), "error")
         return redirect(url_for('general_routes.home'))
-
-
-@blueprint.route('/newremote/')
-def newremote():
-    """Verify authentication as a client computer to the remote admin"""
-    username = request.args.get('user')
-    pass_word = request.args.get('passw')
-
-    user = User.query.filter(
-        User.name == username).first()
-
-    # TODO: Change sleep() to max requests per duration of time
-    time.sleep(1)  # Slow down requests (hackish, prevent brute force attack)
-    if user:
-        if User().check_password(pass_word, user.password_hash) == user.password_hash:
-            return jsonify(status=0,
-                           message="{hash}".format(
-                               hash=user.password_hash))
-    return jsonify(status=1,
-                   message="Unable to authenticate with user and password.")
-
-
-@blueprint.route('/auth/')
-def data():
-    """Checks authentication for remote admin"""
-    username = request.args.get('user')
-    password_hash = request.args.get('pw_hash')
-
-    user = User.query.filter(
-        User.name == username).first()
-
-    # TODO: Change sleep() to max requests per duration of time
-    time.sleep(1)  # Slow down requests (hackish, prevents brute force attack)
-    if (user and
-            user.roles.name == 'admin' and
-            password_hash == user.password_hash):
-        return "0"
-    return "1"

@@ -2,6 +2,10 @@
 / Custom Dark CSS
 */
 
+.nav .upgrade_available {
+    background: #b10000;
+}
+
 .active-background {
     background-color: #002202 !important
 }

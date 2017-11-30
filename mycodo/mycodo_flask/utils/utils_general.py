@@ -21,7 +21,7 @@ from mycodo.mycodo_client import DaemonControl
 
 from mycodo.databases.models import LCD
 from mycodo.databases.models import PID
-from mycodo.databases.models import Sensor
+from mycodo.databases.models import Input
 from mycodo.databases.models import Timer
 from mycodo.databases.models import User
 
@@ -43,7 +43,7 @@ def controller_activate_deactivate(controller_action,
 
     :param controller_action: Activate or deactivate
     :type controller_action: str
-    :param controller_type: The controller type (LCD, PID, Sensor, Timer)
+    :param controller_type: The controller type (LCD, PID, Input, Timer)
     :type controller_type: str
     :param controller_id: Controller with ID to activate or deactivate
     :type controller_id: str
@@ -56,7 +56,7 @@ def controller_activate_deactivate(controller_action,
     translated_names = {
         "LCD": gettext(u"LCD"),
         "PID": gettext(u"PID"),
-        "Sensor": gettext(u"Sensor"),
+        "Input": gettext(u"Input"),
         "Timer": gettext(u"Timer")
     }
 
@@ -67,14 +67,16 @@ def controller_activate_deactivate(controller_action,
     elif controller_type == 'PID':
         mod_controller = PID.query.filter(
             PID.id == int(controller_id)).first()
-    elif controller_type == 'Sensor':
-        mod_controller = Sensor.query.filter(
-            Sensor.id == int(controller_id)).first()
+    elif controller_type == 'Input':
+        mod_controller = Input.query.filter(
+            Input.id == int(controller_id)).first()
     elif controller_type == 'Timer':
         mod_controller = Timer.query.filter(
             Timer.id == int(controller_id)).first()
 
     if mod_controller is None:
+        flash("{type} Controller {id} doesn't exist".format(
+            type=controller_type, id=controller_id), "error")
         return redirect(url_for('general_routes.home'))
 
     try:
@@ -116,38 +118,38 @@ def controller_activate_deactivate(controller_action,
 # Choices
 #
 
-def choices_inputs(sensor):
+def choices_inputs(inputs):
     """ populate form multi-select choices from Input entries """
     choices = OrderedDict()
-    for each_sensor in sensor:
-        if each_sensor.device == 'LinuxCommand':
+    for each_input in inputs:
+        if each_input.device == 'LinuxCommand':
             value = '{id},{meas}'.format(
-                id=each_sensor.unique_id,
-                meas=each_sensor.cmd_measurement)
+                id=each_input.unique_id,
+                meas=each_input.cmd_measurement)
             display = u'[{id:02d}] {name} ({meas})'.format(
-                id=each_sensor.id,
-                name=each_sensor.name,
-                meas=each_sensor.cmd_measurement)
+                id=each_input.id,
+                name=each_input.name,
+                meas=each_input.cmd_measurement)
             choices.update({value: display})
         else:
-            for each_measurement in MEASUREMENTS[each_sensor.device]:
+            for each_measurement in MEASUREMENTS[each_input.device]:
                 value = '{id},{meas}'.format(
-                    id=each_sensor.unique_id,
+                    id=each_input.unique_id,
                     meas=each_measurement)
                 display = u'[{id:02d}] {name} ({meas})'.format(
-                    id=each_sensor.id,
-                    name=each_sensor.name,
+                    id=each_input.id,
+                    name=each_input.name,
                     meas=MEASUREMENT_UNITS[each_measurement]['name'])
                 choices.update({value: display})
             # Display custom converted units for ADCs
-            if each_sensor.device in ['ADS1x15', 'MCP342x']:
+            if each_input.device in ['ADS1x15', 'MCP342x']:
                 value = '{id},{meas}'.format(
-                    id=each_sensor.unique_id,
-                    meas=each_sensor.adc_measure)
+                    id=each_input.unique_id,
+                    meas=each_input.adc_measure)
                 display = u'[{id:02d}] {name} ({meas})'.format(
-                    id=each_sensor.id,
-                    name=each_sensor.name,
-                    meas=each_sensor.adc_measure)
+                    id=each_input.id,
+                    name=each_input.name,
+                    meas=each_input.adc_measure)
                 choices.update({value: display})
     return choices
 
@@ -221,8 +223,9 @@ def delete_entry_with_id(table, entry_id):
         db.session.delete(entries)
         db.session.commit()
         flash(gettext(u"%(msg)s",
-                      msg=u'{action} {id}'.format(
+                      msg=u'{action} {table} with ID: {id}'.format(
                           action=gettext(u"Delete"),
+                          table=table.__tablename__,
                           id=entry_id)),
               "success")
         return 1

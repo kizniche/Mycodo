@@ -5,8 +5,8 @@
 {% block title %} - {{_('LCD')}}{% endblock %}
 
 {% block body %}
-  <!-- Route: /lcd -->
-  <div class="container">
+<!-- Route: /lcd -->
+<div class="container">
   {% include 'flash_messages.html' %}
 
   <h4>{{_('LCDs')}} <a href="/help#lcd" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
@@ -17,283 +17,357 @@
 
   <div class="row small-gutters" style="padding-left: 1em">
     <form method="post" action="/lcd">
-    {{form_add_lcd.hidden_tag()}}
+    {{form_lcd_add.hidden_tag()}}
     <div class="col-xs-6 col-sm-2 col-lg-2 no-gutters">
-      {{form_add_lcd.quantity(class_='form-control', value=1, type="number", **{'rel':'tooltip','title':_('How many LCD controllers to add')})}}
+      {{form_lcd_add.quantity(class_='form-control', value=1, type="number", **{'rel':'tooltip','title':_('How many LCD controllers to add?')})}}
     </div>
     <div class="col-xs-6 col-sm-2 col-lg-2 no-gutters">
-      {{form_add_lcd.add(class_='form-control btn btn-default')}}
+      {{form_lcd_add.add(class_='form-control btn btn-default')}}
     </div>
     </form>
   </div>
 
   <div style="clear: both; padding:1em 0;"></div>
 
-    {%- if displayOrder -%}
-    {%- for order in displayOrder -%}
-      {%- for each_lcd in lcd if each_lcd.id == order-%}
+  {%- if displayOrder -%}
+  {%- for order in displayOrder -%}
+    {%- for each_lcd in lcd if each_lcd.id == order-%}
 
-        <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
-          <form method="post" action="/lcd">
-          {{form_mod_lcd.csrf_token}}
-          {{form_mod_lcd.lcd_id(value=each_lcd.id)}}
-          <div class="{% if each_lcd.is_activated -%}active-background
-                      {%- else -%}inactive-background
-                      {% endif %} row small-gutters" style="border-bottom: 2px solid #ddd; padding: 0.5em">
+  <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
+    <form method="post" action="/lcd">
+    {{form_lcd_mod.csrf_token}}
+    {{form_lcd_mod.lcd_id(value=each_lcd.id)}}
+    <div class="{% if each_lcd.is_activated -%}active-background
+                {%- else -%}inactive-background
+                {% endif %} row small-gutters" style="border-bottom: 2px solid #ddd; padding: 0.5em">
 
-            <div class="col-xs-12">
-              <div class="col-xs-6 col-md-6 no-gutters">
-                {{form_mod_lcd.name(class_='form-control', value=each_lcd.name, **{'title':_('Name for this PID controller.')})}}
-              </div>
-              <div class="col-xs-6 no-gutters">
-                <input class="form-control btn btn-default" title="UUID: {{each_lcd.id}}" disabled="" value="[{{'%02d' % each_lcd.id}}]
-                {%- if each_lcd.is_activated %} {{_('Active')}}
-                {%- else %} {{_('Inactive')}}
-                {%-endif -%}
-                " type="text">
-              </div>
-            </div>
-            <div class="col-xs-12 col-sm-4 small-gutters">
-              <div class="col-xs-6 col-sm-6 no-gutters">
-                {%- if each_lcd.is_activated %}
-                  {{form_mod_lcd.deactivate(class_='form-control btn btn-default')}}
-                {%- else %}
-                  {{form_mod_lcd.activate(class_='form-control btn btn-default')}}
-                {%- endif -%}
-              </div>
-              <div class="col-xs-6 col-sm-6 no-gutters">
-                {{form_mod_lcd.reset_flashing(class_='form-control btn btn-default')}}
-              </div>
-            </div>
-            <div class="col-xs-12 col-sm-4 small-gutters">
-              <div class="col-xs-6 col-sm-6 no-gutters">
-                {{form_mod_lcd.reorder_up(class_='form-control btn btn-default')}}
-              </div>
-              <div class="col-xs-6 col-sm-6 no-gutters">
-                {{form_mod_lcd.reorder_down(class_='form-control btn btn-default')}}
-              </div>
-            </div>
-            <div class="col-xs-12 col-sm-4 small-gutters">
-              <div class="col-xs-6 col-sm-6 no-gutters">
-                {{form_mod_lcd.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this LCD controller?")'})}}
-              </div>
-              <div class="col-xs-6 col-sm-6 no-gutters">
-                {{form_mod_lcd.save(class_='form-control btn btn-default')}}
-              </div>
-            </div>
-          </div>
-
-          <div class="row small-gutters">
-            <div class="col-xs-6 col-sm-3">
-              <label>{{_('LCD Type')}}</label>
-              <div>
-                <select class="form-control" id="lcd_type" name="lcd_type">
-                  <option value="16x2"{% if each_lcd.x_characters == 16 and each_lcd.y_lines == 2 %} selected{% endif %}>16x2</option>
-                  <option value="20x4"{% if each_lcd.x_characters == 20 and each_lcd.y_lines == 4 %} selected{% endif %}>20x4</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-xs-6 col-sm-3">
-              <label>{{_('LCD I<sup>2</sup>C Address')}}</label>
-              <div>
-                <select class="form-control" id="location" name="location">
-                  <option value=""></option>
-                  {%- for address in range(0, 8) %}
-                    <option value="2{{address}}"{% if each_lcd.location == (20 + address)|string %} selected{% endif %}>0x2{{address}}</option>
-                  {%- endfor %}
-                  <option value="0x38"{% if each_lcd.location == '0x38' %} selected{% endif %}>0x38</option>
-                  <option value="0x39"{% if each_lcd.location == '0x39' %} selected{% endif %}>0x39</option>
-                  <option value="0x3A"{% if each_lcd.location == '0x3A' %} selected{% endif %}>0x3A</option>
-                  <option value="0x3B"{% if each_lcd.location == '0x3B' %} selected{% endif %}>0x3B</option>
-                  <option value="0x3C"{% if each_lcd.location == '0x3C' %} selected{% endif %}>0x3C</option>
-                  <option value="0x3D"{% if each_lcd.location == '0x3D' %} selected{% endif %}>0x3D</option>
-                  <option value="0x3E"{% if each_lcd.location == '0x3E' %} selected{% endif %}>0x3E</option>
-                  <option value="0x3F"{% if each_lcd.location == '0x3F' %} selected{% endif %}>0x3F</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-xs-6 col-sm-3">
-              <label>{{_('LCD I<sup>2</sup>C Bus')}}</label>
-              <div>
-                {{form_mod_lcd.i2c_bus(class_='form-control', value=each_lcd.i2c_bus)}}
-              </div>
-            </div>
-            <div class="col-xs-6 col-sm-3">
-              <label>{{_('Period')}}</label>
-              <div>
-                {{form_mod_lcd.period(class_='form-control', value=each_lcd.period)}}
-              </div>
-            </div>
-          </div>
-          <div class="row small-gutters">
-            <div class="col-xs-6 col-sm-3">
-              <label>{{_('Multiplexer I<sup>2</sup>C Address')}}</label>
-              <div>
-                <select class="form-control" id="multiplexer_address" name="multiplexer_address">
-                  <option value=""{% if each_lcd.multiplexer_address == '0' %} selected{% endif %}>Disabled</option>
-                  <option value="0x70"{% if each_lcd.multiplexer_address == '0x70' %} selected{% endif %}>0x70</option>
-                  <option value="0x71"{% if each_lcd.multiplexer_address == '0x71' %} selected{% endif %}>0x71</option>
-                  <option value="0x72"{% if each_lcd.multiplexer_address == '0x72' %} selected{% endif %}>0x72</option>
-                  <option value="0x73"{% if each_lcd.multiplexer_address == '0x73' %} selected{% endif %}>0x73</option>
-                  <option value="0x74"{% if each_lcd.multiplexer_address == '0x74' %} selected{% endif %}>0x74</option>
-                  <option value="0x75"{% if each_lcd.multiplexer_address == '0x75' %} selected{% endif %}>0x75</option>
-                  <option value="0x76"{% if each_lcd.multiplexer_address == '0x76' %} selected{% endif %}>0x76</option>
-                  <option value="0x77"{% if each_lcd.multiplexer_address == '0x77' %} selected{% endif %}>0x77</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-xs-6 col-sm-3">
-              <label>{{_('Multiplexer Channel')}}</label>
-              <div>
-                <select class="form-control" id="multiplexer_channel" name="multiplexer_channel">
-                  <option value="0"{% if each_lcd.multiplexer_channel == 0 %} selected{% endif %}>None</option>
-                  <option value="1"{% if each_lcd.multiplexer_channel == 1 %} selected{% endif %}>1</option>
-                  <option value="2"{% if each_lcd.multiplexer_channel == 2 %} selected{% endif %}>2</option>
-                  <option value="3"{% if each_lcd.multiplexer_channel == 3 %} selected{% endif %}>3</option>
-                  <option value="4"{% if each_lcd.multiplexer_channel == 4 %} selected{% endif %}>4</option>
-                  <option value="5"{% if each_lcd.multiplexer_channel == 5 %} selected{% endif %}>5</option>
-                  <option value="6"{% if each_lcd.multiplexer_channel == 6 %} selected{% endif %}>6</option>
-                  <option value="7"{% if each_lcd.multiplexer_channel == 7 %} selected{% endif %}>7</option>
-                  <option value="8"{% if each_lcd.multiplexer_channel == 8 %} selected{% endif %}>8</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="row small-gutters" style="padding-bottom: 0.3em">
-            <div class="col-xs-12 col-sm-6">
-              {{form_mod_lcd.line_1_display.label(class_='control-label')}}
-              <div>
-                <select class="form-control" id="line_1_display" name="line_1_display">
-                  <option value=""{% if each_lcd.line_1_sensor_id == '' or each_lcd.line_1_measurement == '' %} selected{% endif %}></option>
-                  {%- for each_sensor in sensor -%}
-                    <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd.line_1_sensor_id == each_sensor.unique_id and each_lcd.line_1_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
-                    {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
-                      {% if each_sensor.cmd_measurement == measure %}
-                        <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd.line_1_sensor_id == each_sensor.unique_id and each_lcd.line_1_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
-                      {% else %}
-                        {% for each_measurement in measure %}
-                          <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd.line_1_sensor_id == each_sensor.unique_id and each_lcd.line_1_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
-                        {% endfor %}
-                      {% endif %}
-                    {% endfor %}
-                  {%- endfor %}
-                  {%- for each_pid in pid -%}
-                    <option value="{{each_pid.unique_id}},pid_time"{% if each_lcd.line_1_sensor_id == each_pid.unique_id and each_lcd.line_1_measurement == 'pid_time' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): timestamp</option>
-                    <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd.line_1_sensor_id == each_pid.unique_id and each_lcd.line_1_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
-                  {%- endfor %}
-                  {%- for each_relay in relay -%}
-                    <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd.line_1_sensor_id == each_relay.unique_id and each_lcd.line_1_measurement == 'relay_time' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
-                    <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd.line_1_sensor_id == each_relay.unique_id and each_lcd.line_1_measurement == 'duration_sec' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): duration</option>
-                    <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd.line_1_sensor_id == each_relay.unique_id and each_lcd.line_1_measurement == 'relay_state' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): state</option>
-                  {%- endfor %}
-                </select>
-              </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-              {{form_mod_lcd.line_2_display.label(class_='control-label')}}
-              <div>
-                <select class="form-control" id="line_2_display" name="line_2_display">
-                  <option value=""{% if each_lcd.line_2_sensor_id == '' or each_lcd.line_2_measurement == '' %} selected{% endif %}></option>
-                  {%- for each_sensor in sensor -%}
-                    <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd.line_2_sensor_id == each_sensor.unique_id and each_lcd.line_2_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
-                    {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
-                      {% if each_sensor.cmd_measurement in measure['name'] %}
-                        <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd.line_2_sensor_id == each_sensor.unique_id and each_lcd.line_2_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
-                      {% else %}
-                        {% for each_measurement in measure %}
-                          <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd.line_2_sensor_id == each_sensor.unique_id and each_lcd.line_2_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
-                        {% endfor %}
-                      {% endif %}
-                    {% endfor %}
-                  {%- endfor %}
-                  {%- for each_pid in pid -%}
-                    <option value="{{each_pid.unique_id}},pid_time"{% if each_lcd.line_2_sensor_id == each_pid.unique_id and each_lcd.line_2_measurement == 'pid_time' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): timestamp</option>
-                    <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd.line_2_sensor_id == each_pid.unique_id and each_lcd.line_2_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
-                  {%- endfor %}
-                  {%- for each_relay in relay -%}
-                    <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd.line_2_sensor_id == each_relay.unique_id and each_lcd.line_2_measurement == 'relay_time' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
-                    <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd.line_2_sensor_id == each_relay.unique_id and each_lcd.line_2_measurement == 'duration_sec' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): duration</option>
-                    <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd.line_2_sensor_id == each_relay.unique_id and each_lcd.line_2_measurement == 'relay_state' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): state</option>
-                  {%- endfor %}
-                </select>
-              </div>
-            </div>
-
-          {%- if each_lcd.y_lines == 4 -%}
-
-            <div class="col-xs-12 col-sm-6">
-              {{form_mod_lcd.line_3_display.label(class_='control-label')}}
-              <div>
-                <select class="form-control" id="line_3_display" name="line_3_display">
-                  <option value=""{% if each_lcd.line_3_sensor_id == '' or each_lcd.line_3_measurement == '' %} selected{% endif %}></option>
-                  {%- for each_sensor in sensor -%}
-                    <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd.line_3_sensor_id == each_sensor.unique_id and each_lcd.line_3_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
-                    {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
-                      {% if each_sensor.cmd_measurement in measure['name'] %}
-                        <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd.line_3_sensor_id == each_sensor.unique_id and each_lcd.line_3_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
-                      {% else %}
-                        {% for each_measurement in measure %}
-                          <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd.line_3_sensor_id == each_sensor.unique_id and each_lcd.line_3_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
-                        {% endfor %}
-                      {% endif %}
-                    {% endfor %}
-                  {%- endfor %}
-                  {%- for each_pid in pid -%}
-                    <option value="{{each_pid.unique_id}},pid_time"{% if each_lcd.line_3_sensor_id == each_pid.unique_id and each_lcd.line_3_measurement == 'pid_time' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): timestamp</option>
-                    <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd.line_3_sensor_id == each_pid.unique_id and each_lcd.line_3_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
-                  {%- endfor %}
-                  {%- for each_relay in relay -%}
-                    <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd.line_3_sensor_id == each_relay.unique_id and each_lcd.line_3_measurement == 'relay_time' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
-                    <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd.line_3_sensor_id == each_relay.unique_id and each_lcd.line_3_measurement == 'duration_sec' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): duration</option>
-                    <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd.line_3_sensor_id == each_relay.unique_id and each_lcd.line_3_measurement == 'relay_state' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): state</option>
-                  {%- endfor %}
-                  </select>
-              </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-              {{form_mod_lcd.line_4_display.label(class_='control-label')}}
-              <div>
-                <select class="form-control" id="line_4_display" name="line_4_display">
-                  <option value=""{% if each_lcd.line_4_sensor_id == '' or each_lcd.line_4_measurement == '' %} selected{% endif %}></option>
-                  {%- for each_sensor in sensor -%}
-                    <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd.line_4_sensor_id == each_sensor.unique_id and each_lcd.line_4_measurement == 'sensor_time' %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
-                    {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
-                      {% if each_sensor.cmd_measurement in measure['name'] %}
-                        <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd.line_4_sensor_id == each_sensor.unique_id and each_lcd.line_4_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
-                      {% else %}
-                        {% for each_measurement in measure %}
-                          <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd.line_4_sensor_id == each_sensor.unique_id and each_lcd.line_4_measurement == each_measurement %} selected{% endif %}>Sensor {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
-                        {% endfor %}
-                      {% endif %}
-                    {% endfor %}
-                  {%- endfor %}
-                  {%- for each_pid in pid -%}
-                    <option value="{{each_pid.unique_id}},pid_time"{% if each_lcd.line_4_sensor_id == each_pid.unique_id and each_lcd.line_4_measurement == 'pid_time' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): timestamp</option>
-                    <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd.line_4_sensor_id == each_pid.unique_id and each_lcd.line_4_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
-                  {%- endfor %}
-                  {%- for each_relay in relay -%}
-                    <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd.line_4_sensor_id == each_relay.unique_id and each_lcd.line_4_measurement == 'relay_time' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
-                    <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd.line_4_sensor_id == each_relay.unique_id and each_lcd.line_4_measurement == 'duration_sec' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): duration</option>
-                    <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd.line_4_sensor_id == each_relay.unique_id and each_lcd.line_4_measurement == 'relay_state' %} selected{% endif %}>Relay {{each_relay.id}} ({{each_relay.name}}): state</option>
-                  {%- endfor %}
-                  </select>
-              </div>
-            </div>
-
+      <div class="col-xs-12">
+        <div class="col-xs-2 col-sm-1 text-center icon-fh">
+          <a data-toggle="collapse" href="#collapseContainer{{each_lcd.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_lcd.id}}">
+            <span class="collapse-button{{each_lcd.id}} fa fa-3x fa-plus-square"></span>
+          </a>
+        </div>
+        <div class="col-xs-5 col-sm-6 no-gutters">
+          {{form_lcd_mod.name(class_='form-control', value=each_lcd.name, **{'title':_('Name for this PID controller')})}}
+        </div>
+        <div class="col-xs-5 no-gutters">
+          <input class="form-control btn btn-default" title="UUID: {{each_lcd.id}}" disabled="" value="[{{'%02d' % each_lcd.id}}]
+          {%- if each_lcd.is_activated %} {{_('Active')}}
+          {%- else %} {{_('Inactive')}}
+          {%-endif -%}
+          " type="text">
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-4 small-gutters">
+        <div class="col-xs-6 col-sm-6 no-gutters">
+          {%- if each_lcd.is_activated %}
+            {{form_lcd_mod.deactivate(class_='form-control btn btn-default')}}
+          {%- else %}
+            {{form_lcd_mod.activate(class_='form-control btn btn-default')}}
           {%- endif -%}
+        </div>
+        <div class="col-xs-6 col-sm-6 no-gutters">
+          {{form_lcd_mod.reset_flashing(class_='form-control btn btn-default')}}
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-4 small-gutters">
+        <div class="col-xs-6 col-sm-6 no-gutters">
+          {{form_lcd_mod.reorder_up(class_='form-control btn btn-default')}}
+        </div>
+        <div class="col-xs-6 col-sm-6 no-gutters">
+          {{form_lcd_mod.reorder_down(class_='form-control btn btn-default')}}
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-4 small-gutters">
+        <div class="col-xs-6 col-sm-6 no-gutters">
+          {{form_lcd_mod.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this LCD controller?")'})}}
+        </div>
+        <div class="col-xs-6 col-sm-6 no-gutters">
+          {{form_lcd_mod.save(class_='form-control btn btn-default')}}
+        </div>
+      </div>
+    </div>
 
+    <div class="collapse" id="collapseContainer{{each_lcd.id}}">
+
+      <div class="row small-gutters">
+        <div class="col-xs-6 col-sm-3">
+          {{form_lcd_mod.lcd_type.label(class_='control-label')}}
+          <div>
+            <select class="form-control" id="lcd_type" name="lcd_type">
+              <option value="16x2"{% if each_lcd.x_characters == 16 and each_lcd.y_lines == 2 %} selected{% endif %}>16x2</option>
+              <option value="20x4"{% if each_lcd.x_characters == 20 and each_lcd.y_lines == 4 %} selected{% endif %}>20x4</option>
+            </select>
           </div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+          {{form_lcd_mod.location.label(class_='control-label')}}
+          <div>
+            <select class="form-control" id="location" name="location">
+              <option value=""></option>
+              {%- for address in range(0, 8) %}
+                <option value="2{{address}}"{% if each_lcd.location == (20 + address)|string %} selected{% endif %}>0x2{{address}}</option>
+              {%- endfor %}
+              <option value="0x38"{% if each_lcd.location == '0x38' %} selected{% endif %}>0x38</option>
+              <option value="0x39"{% if each_lcd.location == '0x39' %} selected{% endif %}>0x39</option>
+              <option value="0x3A"{% if each_lcd.location == '0x3A' %} selected{% endif %}>0x3A</option>
+              <option value="0x3B"{% if each_lcd.location == '0x3B' %} selected{% endif %}>0x3B</option>
+              <option value="0x3C"{% if each_lcd.location == '0x3C' %} selected{% endif %}>0x3C</option>
+              <option value="0x3D"{% if each_lcd.location == '0x3D' %} selected{% endif %}>0x3D</option>
+              <option value="0x3E"{% if each_lcd.location == '0x3E' %} selected{% endif %}>0x3E</option>
+              <option value="0x3F"{% if each_lcd.location == '0x3F' %} selected{% endif %}>0x3F</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+          {{form_lcd_mod.i2c_bus.label(class_='control-label')}}
+          <div>
+            {{form_lcd_mod.i2c_bus(class_='form-control', value=each_lcd.i2c_bus)}}
+          </div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+          {{form_lcd_mod.period.label(class_='control-label')}}
+          <div>
+            {{form_lcd_mod.period(class_='form-control', value=each_lcd.period)}}
+          </div>
+        </div>
+      </div>
+      <div class="row small-gutters">
+        <div class="col-xs-6 col-sm-3">
+          {{form_lcd_mod.multiplexer_address.label(class_='control-label')}}
+          <div>
+            <select class="form-control" id="multiplexer_address" name="multiplexer_address">
+              <option value=""{% if each_lcd.multiplexer_address == '0' %} selected{% endif %}>Disabled</option>
+              <option value="0x70"{% if each_lcd.multiplexer_address == '0x70' %} selected{% endif %}>0x70</option>
+              <option value="0x71"{% if each_lcd.multiplexer_address == '0x71' %} selected{% endif %}>0x71</option>
+              <option value="0x72"{% if each_lcd.multiplexer_address == '0x72' %} selected{% endif %}>0x72</option>
+              <option value="0x73"{% if each_lcd.multiplexer_address == '0x73' %} selected{% endif %}>0x73</option>
+              <option value="0x74"{% if each_lcd.multiplexer_address == '0x74' %} selected{% endif %}>0x74</option>
+              <option value="0x75"{% if each_lcd.multiplexer_address == '0x75' %} selected{% endif %}>0x75</option>
+              <option value="0x76"{% if each_lcd.multiplexer_address == '0x76' %} selected{% endif %}>0x76</option>
+              <option value="0x77"{% if each_lcd.multiplexer_address == '0x77' %} selected{% endif %}>0x77</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-6 col-sm-3">
+          {{form_lcd_mod.multiplexer_channel.label(class_='control-label')}}
+          <div>
+            <select class="form-control" id="multiplexer_channel" name="multiplexer_channel">
+              <option value="0"{% if each_lcd.multiplexer_channel == 0 %} selected{% endif %}>None</option>
+              <option value="1"{% if each_lcd.multiplexer_channel == 1 %} selected{% endif %}>1</option>
+              <option value="2"{% if each_lcd.multiplexer_channel == 2 %} selected{% endif %}>2</option>
+              <option value="3"{% if each_lcd.multiplexer_channel == 3 %} selected{% endif %}>3</option>
+              <option value="4"{% if each_lcd.multiplexer_channel == 4 %} selected{% endif %}>4</option>
+              <option value="5"{% if each_lcd.multiplexer_channel == 5 %} selected{% endif %}>5</option>
+              <option value="6"{% if each_lcd.multiplexer_channel == 6 %} selected{% endif %}>6</option>
+              <option value="7"{% if each_lcd.multiplexer_channel == 7 %} selected{% endif %}>7</option>
+              <option value="8"{% if each_lcd.multiplexer_channel == 8 %} selected{% endif %}>8</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row small-gutters" style="padding: 1em 0 0.3em 0">
+        <div class="col-xs-12 col-sm-3">
+          {{form_lcd_mod.add_display(class_='form-control btn btn-default')}}
+        </div>
+      </div>
+      </form>
 
-          </form>
+      {% for each_lcd_display in lcd_data if each_lcd_display.lcd_id == each_lcd.id %}
+
+      <div class="row small-gutters" style="border-top: 2px solid #ddd;">
+
+        <div class="col-xs-12">
+          <label>Display Set {{loop.index}}</label>
         </div>
 
-        <div style="clear: both; padding:1em 0;"></div>
+        <form method="post" action="/lcd">
+        {{form_lcd_display.csrf_token}}
+        {{form_lcd_display.lcd_id(value=each_lcd.id)}}
+        {{form_lcd_display.lcd_data_id(value=each_lcd_display.id)}}
 
-      {%- endfor -%}
-    {%- endfor -%}
-    {%- endif -%}
+        <div class="col-xs-12 col-sm-9 small-gutters">
+          {{form_lcd_display.line_1_display.label(class_='control-label')}}
+          <div>
+            <select class="form-control" id="line_1_display" name="line_1_display">
+              <option value=""{% if each_lcd_display.line_1_id == '' or each_lcd_display.line_1_measurement == '' %} selected{% endif %}></option>
+              {%- for each_sensor in sensor -%}
+                <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_1_id == each_sensor.unique_id and each_lcd_display.line_1_measurement == 'sensor_time' %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
+                {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
+                  {% if each_sensor.cmd_measurement == measure %}
+                    <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_1_id == each_sensor.unique_id and each_lcd_display.line_1_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
+                  {% else %}
+                    {% for each_measurement in measure %}
+                      <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd_display.line_1_id == each_sensor.unique_id and each_lcd_display.line_1_measurement == each_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
+                    {% endfor %}
+                  {% endif %}
+                {% endfor %}
+              {%- endfor %}
+              {%- for each_pid in pid -%}
+                <option value="{{each_pid.unique_id}},pid_time"{% if each_lcd_display.line_1_id == each_pid.unique_id and each_lcd_display.line_1_measurement == 'pid_time' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): timestamp</option>
+                <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_1_id == each_pid.unique_id and each_lcd_display.line_1_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
+              {%- endfor %}
+              {%- for each_relay in relay -%}
+                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_1_id == each_relay.unique_id and each_lcd_display.line_1_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
+                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_1_id == each_relay.unique_id and each_lcd_display.line_1_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): duration</option>
+                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_1_id == each_relay.unique_id and each_lcd_display.line_1_measurement == 'relay_state' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): state</option>
+              {%- endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-3 small-gutters">
+          {{form_lcd_display.line_1_max_age.label(class_='control-label')}}
+          <div>
+            {{form_lcd_display.line_1_max_age(class_='form-control', value=each_lcd_display.line_1_max_age)}}
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-9 small-gutters">
+          {{form_lcd_display.line_2_display.label(class_='control-label')}}
+          <div>
+            <select class="form-control" id="line_2_display" name="line_2_display">
+              <option value=""{% if each_lcd_display.line_2_id == '' or each_lcd_display.line_2_measurement == '' %} selected{% endif %}></option>
+              {%- for each_sensor in sensor -%}
+                <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_2_id == each_sensor.unique_id and each_lcd_display.line_2_measurement == 'sensor_time' %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
+                {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
+                  {% if each_sensor.cmd_measurement in measure['name'] %}
+                    <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_2_id == each_sensor.unique_id and each_lcd_display.line_2_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
+                  {% else %}
+                    {% for each_measurement in measure %}
+                      <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd_display.line_2_id == each_sensor.unique_id and each_lcd_display.line_2_measurement == each_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
+                    {% endfor %}
+                  {% endif %}
+                {% endfor %}
+              {%- endfor %}
+              {%- for each_pid in pid -%}
+                <option value="{{each_pid.unique_id}},pid_time"{% if each_lcd_display.line_2_id == each_pid.unique_id and each_lcd_display.line_2_measurement == 'pid_time' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): timestamp</option>
+                <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_2_id == each_pid.unique_id and each_lcd_display.line_2_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
+              {%- endfor %}
+              {%- for each_relay in relay -%}
+                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_2_id == each_relay.unique_id and each_lcd_display.line_2_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
+                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_2_id == each_relay.unique_id and each_lcd_display.line_2_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): duration</option>
+                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_2_id == each_relay.unique_id and each_lcd_display.line_2_measurement == 'relay_state' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): state</option>
+              {%- endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-3 small-gutters">
+          {{form_lcd_display.line_2_max_age.label(class_='control-label')}}
+          <div>
+            {{form_lcd_display.line_2_max_age(class_='form-control', value=each_lcd_display.line_2_max_age)}}
+          </div>
+        </div>
+
+        {%- if each_lcd.y_lines == 4 -%}
+
+        <div class="col-xs-12 col-sm-9 small-gutters">
+          {{form_lcd_display.line_3_display.label(class_='control-label')}}
+          <div>
+            <select class="form-control" id="line_3_display" name="line_3_display">
+              <option value=""{% if each_lcd_display.line_3_id == '' or each_lcd_display.line_3_measurement == '' %} selected{% endif %}></option>
+              {%- for each_sensor in sensor -%}
+                <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_3_id == each_sensor.unique_id and each_lcd_display.line_3_measurement == 'sensor_time' %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
+                {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
+                  {% if each_sensor.cmd_measurement in measure['name'] %}
+                    <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_3_id == each_sensor.unique_id and each_lcd_display.line_3_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
+                  {% else %}
+                    {% for each_measurement in measure %}
+                      <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd_display.line_3_id == each_sensor.unique_id and each_lcd_display.line_3_measurement == each_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
+                    {% endfor %}
+                  {% endif %}
+                {% endfor %}
+              {%- endfor %}
+              {%- for each_pid in pid -%}
+                <option value="{{each_pid.unique_id}},pid_time"{% if each_lcd_display.line_3_id == each_pid.unique_id and each_lcd_display.line_3_measurement == 'pid_time' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): timestamp</option>
+                <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_3_id == each_pid.unique_id and each_lcd_display.line_3_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
+              {%- endfor %}
+              {%- for each_relay in relay -%}
+                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_3_id == each_relay.unique_id and each_lcd_display.line_3_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
+                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_3_id == each_relay.unique_id and each_lcd_display.line_3_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): duration</option>
+                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_3_id == each_relay.unique_id and each_lcd_display.line_3_measurement == 'relay_state' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): state</option>
+              {%- endfor %}
+              </select>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-3 small-gutters">
+          {{form_lcd_display.line_3_max_age.label(class_='control-label')}}
+          <div>
+            {{form_lcd_display.line_3_max_age(class_='form-control', value=each_lcd_display.line_3_max_age)}}
+          </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-9 small-gutters">
+          {{form_lcd_display.line_4_display.label(class_='control-label')}}
+          <div>
+            <select class="form-control" id="line_4_display" name="line_4_display">
+              <option value=""{% if each_lcd_display.line_4_id == '' or each_lcd_display.line_4_measurement == '' %} selected{% endif %}></option>
+              {%- for each_sensor in sensor -%}
+                <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_4_id == each_sensor.unique_id and each_lcd_display.line_4_measurement == 'sensor_time' %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
+                {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
+                  {% if each_sensor.cmd_measurement in measure['name'] %}
+                    <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_4_id == each_sensor.unique_id and each_lcd_display.line_4_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
+                  {% else %}
+                    {% for each_measurement in measure %}
+                      <option value="{{each_sensor.unique_id}},{{each_measurement}}"{% if each_lcd_display.line_4_id == each_sensor.unique_id and each_lcd_display.line_4_measurement == each_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_measurement}}</option>
+                    {% endfor %}
+                  {% endif %}
+                {% endfor %}
+              {%- endfor %}
+              {%- for each_pid in pid -%}
+                <option value="{{each_pid.unique_id}},pid_time"{% if each_lcd_display.line_4_id == each_pid.unique_id and each_lcd_display.line_4_measurement == 'pid_time' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): timestamp</option>
+                <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_4_id == each_pid.unique_id and each_lcd_display.line_4_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
+              {%- endfor %}
+              {%- for each_relay in relay -%}
+                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_4_id == each_relay.unique_id and each_lcd_display.line_4_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
+                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_4_id == each_relay.unique_id and each_lcd_display.line_4_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): duration</option>
+                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_4_id == each_relay.unique_id and each_lcd_display.line_4_measurement == 'relay_state' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): state</option>
+              {%- endfor %}
+              </select>
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-3 small-gutters">
+          {{form_lcd_display.line_4_max_age.label(class_='control-label')}}
+          <div>
+            {{form_lcd_display.line_4_max_age(class_='form-control', value=each_lcd_display.line_4_max_age)}}
+          </div>
+        </div>
+
+        {% endif %}
+
+        <div class="col-xs-12 col-sm-3 no-gutters">
+          <div>
+            {{form_lcd_display.save_display(class_='form-control btn btn-default')}}
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-3 no-gutters">
+          <div>
+            {{form_lcd_display.delete_display(class_='form-control btn btn-default')}}
+          </div>
+        </div>
+
+        </form>
+
+      </div>
+
+      {% endfor %}
+
+    </div>
 
   </div>
+  <div style="clear: both; padding:0.5em;"></div>
+
+    {%- endfor -%}
+  {%- endfor -%}
+  {%- endif -%}
+
+  </div>
+
+  <script>
+    $('.collapse').on('show.bs.collapse', function(){
+      $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
+    }).on('hide.bs.collapse', function(){
+      $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
+    });
+  </script>
 
 {% endblock %}

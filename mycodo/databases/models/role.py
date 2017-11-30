@@ -18,6 +18,6 @@ class Role(CRUDMixin, db.Model):
 
     user = db.relationship("User", back_populates="roles")
 
-    def __reper__(self):
+    def __repr__(self):
         return "<{cls}(id={s.id}, name='{s.name}')>".format(s=self, cls=self.__class__.__name__)
 

@@ -6,7 +6,7 @@
 
 {% block head %}
   <script src="/static/js/highcharts.js"></script>
-  {% if current_user.theme in ['cyborg', 'darkly', 'slate', 'superhero'] %}
+  {% if current_user.theme in dark_themes %}
     <script src="/static/js/dark-unica.js"></script>
   {% endif %}
 {% endblock %}
@@ -239,10 +239,10 @@
     {%- if method_relay -%}
     <div class="row" style="margin: 1em 0 0 0; padding: 1em; border: 2px solid #ddd; border-radius: 5px;">
       <div class="col-xs-12">
-        <h3>{{_('Relay Modulation')}}</h3>
+        <h3>{{_('Output Modulation')}}</h3>
       </div>
       <div class="col-xs-12" style="padding-bottom: 1em">
-        <span style="font-weight: bold; color: red">{{_('Note: This feature is currently not implemented. These relays will NOT be modulated if applied to a PID. This will be implemented soon.')}}</span>
+        <span style="font-weight: bold; color: red">{{_('Note: This feature is currently not implemented. These outputs will NOT be modulated if applied to a PID. This will be implemented soon.')}}</span>
       </div>
     {%- endif -%}
 

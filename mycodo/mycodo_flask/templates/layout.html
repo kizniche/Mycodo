@@ -8,6 +8,37 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <link rel="icon" type="image/png" href="/static/img/favicon.png">
+    
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Mycodo {{mycodo_version}}">
+  <meta name="application-name" content="Mycodo {{mycodo_version}}">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png" />
+  <script type="text/javascript">
+    (function(document,navigator,standalone) {
+      // prevents links from apps from opening in mobile safari
+      // this javascript must be the first script in your <head>
+      if ((standalone in navigator) && navigator[standalone]) {
+        var curnode, location=document.location, stop=/^(a|html)$/i;
+        document.addEventListener('click', function(e) {
+          curnode=e.target;
+          while (!(stop).test(curnode.nodeName)) {
+            curnode=curnode.parentNode;
+          }
+          if(
+            'href' in curnode && // is a link
+            (chref=curnode.href).replace(location.href,'').indexOf('#') && // is not an anchor
+            (	!(/^[a-z\+\.\-]+:/i).test(chref) ||                       // either does not have a proper scheme (relative links)
+              chref.indexOf(location.protocol+'//'+location.host)===0 ) // or is in the same protocol and domain
+          ) {
+            e.preventDefault();
+            location.href = curnode.href;
+          }
+        },false);
+      }
+    })(document,window.navigator,'standalone');
+  </script>
 
   <title>{{host}}{% block title %}{% endblock %} - Mycodo {{mycodo_version}}</title>
 
@@ -20,7 +51,7 @@
     <link href="/static/css/bootstrap-themes/bootstrap-{{current_user.theme}}.min.css" rel="stylesheet">
   {% endif %}
 
-  {% if current_user.theme in ['cyborg', 'darkly', 'slate', 'sun', 'superhero'] %}
+  {% if current_user.theme in dark_themes %}
     <link href="/static/css/custom-dark.css" rel="stylesheet">
   {% else %}
     <link href="/static/css/custom-light.css" rel="stylesheet">
@@ -151,15 +182,15 @@
               </ul>
             </li>
 
-            <li class="dropdown{% if active_page in ['info', 'logview', 'settings'] %} active{% endif %}">
+            <li class="dropdown{% if upgrade_available %} upgrade_available{% elif active_page in ['backup', 'info', 'logview', 'settings', 'upgrade'] %} active{% endif %}">
               <a style="padding-top: 10px !important;" href="#" class="dropdown-toggle" style="padding-top: 0.2em; padding-bottom: 0.2em" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="gi-2x glyphicon glyphicon-cog"></span></a>
               <ul class="dropdown-menu">
                 <li{% if active_page == 'settings' %} class="active"{% endif %}><a href="{{url_for('settings_routes.settings_general')}}"><i class="fa fa-sliders icon-fw"></i> {{_('Configure')}}</a></li>
                 <li{% if active_page == 'logview' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_logview')}}"><i class="glyphicon glyphicon-book icon-fw"></i> {{_('Mycodo Logs')}}</a></li>
                 <li{% if active_page == 'info' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_info')}}"><i class="glyphicon glyphicon-info-sign icon-fw"></i> {{_('System Information')}}</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="/admin/upgrade"><i class="glyphicon glyphicon-open"></i> {{_('Upgrade')}}</a></li>
-                <li><a href="/admin/backup"><i class=" glyphicon glyphicon-floppy-saved"></i> {{_('Backup/Restore')}}</a></li>
+                <li{% if upgrade_available %} class="upgrade_available"{% elif active_page == 'upgrade' %} class="active"{% endif %}><a href="/admin/upgrade"><i class="glyphicon glyphicon-open"></i> {{_('Upgrade')}}</a></li>
+                <li{% if active_page == 'backup' %} class="active"{% endif %}><a href="/admin/backup"><i class=" glyphicon glyphicon-floppy-saved"></i> {{_('Backup/Restore')}}</a></li>
                 <li role="separator" class="divider"></li>
                 <li><a href="/systemctl/restart"onclick='return confirm("Confirm restarting the system")'><i class="glyphicon glyphicon-repeat icon-fw"></i> {{_('Restart System')}}</a></li>
                 <li><a href="/systemctl/shutdown"onclick='return confirm("Confirm shutting down the system")'><i class="glyphicon glyphicon-off icon-fw"></i> {{_('Shutdown System')}}</a></li>

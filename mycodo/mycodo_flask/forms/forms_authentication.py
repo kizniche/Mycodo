@@ -65,10 +65,9 @@ class Login(FlaskForm):
 class LogView(FlaskForm):
     lines = IntegerField(
         lazy_gettext(u'Number of Lines'),
-        render_kw={'placeholder': lazy_gettext(u'Lines')},
         validators=[validators.NumberRange(
             min=1,
-            message=lazy_gettext(u'Number of lines should be greater than 0.')
+            message=lazy_gettext(u'Number of lines should be greater than 0')
         )]
     )
     loglogin = SubmitField(lazy_gettext(u'Login Log'))
@@ -88,7 +87,6 @@ class RemoteSetup(FlaskForm):
     remote_id = IntegerField('Remote Host ID', widget=widgets.HiddenInput())
     host = StringField(
         lazy_gettext(u'Domain or IP Address'),
-        render_kw={"placeholder": "youraddress.com or 0.0.0.0"},
         validators=[DataRequired()]
     )
     username = StringField(

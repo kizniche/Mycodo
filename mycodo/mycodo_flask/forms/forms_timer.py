@@ -23,8 +23,8 @@ class TimerBase(FlaskForm):
         lazy_gettext(u'Timer Type'),
         choices=[
             ('', lazy_gettext(u'Select a Timer Type')),
-            ('time_point', lazy_gettext(u'Daily Time Point')),
-            ('time_span', lazy_gettext(u'Daily Time Span')),
+            ('time', lazy_gettext(u'Daily Time Point')),
+            ('timespan', lazy_gettext(u'Daily Time Span')),
             ('duration', lazy_gettext(u'Duration')),
             ('pwm_method', lazy_gettext(u'PWM Method (Duty Cycle)'))
         ],
@@ -54,7 +54,6 @@ class TimerTimePoint(FlaskForm):
         validators=[DataRequired()]
     )
     time_start = StringField(lazy_gettext(u'Start Time'))
-    time_start_duration = StringField(lazy_gettext(u'Start Time'))
     time_on_duration = DecimalField(
         lazy_gettext(u'On (seconds)'),
         validators=[validators.NumberRange(
@@ -73,16 +72,8 @@ class TimerTimeSpan(FlaskForm):
         ],
         validators=[DataRequired()]
     )
-    time_start = StringField(lazy_gettext(u'Start Time'))
     time_start_duration = StringField(lazy_gettext(u'Start Time'))
     time_end_duration = StringField(lazy_gettext(u'End Time'))
-    time_on_duration = DecimalField(
-        lazy_gettext(u'On (seconds)'),
-        validators=[validators.NumberRange(
-            min=0,
-            max=86400
-        )]
-    )
 
 
 class TimerDuration(FlaskForm):

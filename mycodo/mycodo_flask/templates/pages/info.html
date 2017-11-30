@@ -48,7 +48,7 @@
 
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em">
-        uname
+        Kernel Information: uname -a
       </div>
       <div>
         <pre>{{uname}}</pre>
@@ -57,7 +57,7 @@
 
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em">
-        gpio readall
+        General-Purpose Input/Output (GPIO) Pins: gpio readall
       </div>
       <div>
         {%- if gpio_readall != "" -%}
@@ -69,9 +69,22 @@
       </div>
     </div>
 
+    {% for each_i2c in i2c_devices %}
+
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em">
-        df -h
+        I<sup>2</sup>C Bus {{each_i2c}}: i2cdetect -y {{each_i2c}}
+      </div>
+      <div>
+        <pre>{{i2cdetect_out[each_i2c]}}</pre>
+      </div>
+    </div>
+
+    {% endfor %}
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        Disk Usage: df -h
       </div>
       <div>
         <pre>{{df}}</pre>
@@ -80,7 +93,7 @@
 
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em">
-        free -h
+        Memory: free -h
       </div>
       <div>
         <pre>{{free}}</pre>
@@ -89,7 +102,7 @@
 
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em">
-        ifconfig -a
+        Network: ifconfig -a
       </div>
       <div>
         <pre>{{ifconfig}}</pre>
@@ -100,7 +113,7 @@
 
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em">
-        pstree -p {{daemon_pid}} (daemon and threads)
+        Processes (daemon and threads): pstree -p {{daemon_pid}}
       </div>
       <div>
         <pre>{{pstree}}</pre>
@@ -109,7 +122,7 @@
 
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em">
-        top -b -H -n 1 -p {{daemon_pid}} (daemon and threads)
+        Processes (daemon and threads): top -b -H -n 1 -p {{daemon_pid}}
       </div>
       <div>
         <pre>{{top}}</pre>

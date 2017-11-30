@@ -12,7 +12,7 @@ from flask.blueprints import Blueprint
 
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Misc
-from mycodo.databases.models import Relay
+from mycodo.databases.models import Output
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import User
@@ -27,7 +27,7 @@ from mycodo.config import CAMERA_LIBRARIES
 from mycodo.config import LANGUAGES
 from mycodo.config import THEMES
 
-from mycodo.mycodo_flask.static_routes import inject_mycodo_version
+from mycodo.mycodo_flask.static_routes import inject_variables
 
 logger = logging.getLogger('mycodo.mycodo_flask.settings')
 
@@ -39,7 +39,7 @@ blueprint = Blueprint('settings_routes',
 
 @blueprint.context_processor
 def inject_dictionary():
-    return inject_mycodo_version()
+    return inject_variables()
 
 
 @blueprint.route('/settings/alerts', methods=('GET', 'POST'))
@@ -76,7 +76,7 @@ def settings_camera():
     form_camera = forms_settings.SettingsCamera()
 
     camera = Camera.query.all()
-    relay = Relay.query.all()
+    output = Output.query.all()
 
     try:
         opencv_devices = count_cameras_opencv()
@@ -109,7 +109,7 @@ def settings_camera():
                            form_camera=form_camera,
                            opencv_devices=opencv_devices,
                            pi_camera_enabled=pi_camera_enabled,
-                           relay=relay)
+                           relay=output)
 
 
 @blueprint.route('/settings/general', methods=('GET', 'POST'))
@@ -136,6 +136,7 @@ def settings_general():
     return render_template('settings/general.html',
                            misc=misc,
                            languages=languages_sorted,
+                           current_language=flask_login.current_user.language,
                            form_settings_general=form_settings_general)
 
 

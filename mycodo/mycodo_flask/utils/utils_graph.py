@@ -27,37 +27,40 @@ logger = logging.getLogger(__name__)
 # Graph
 #
 
-def graph_add(form_add_graph, display_order):
+def graph_add(form_add, display_order):
     action = u'{action} {controller}'.format(
         action=gettext(u"Add"),
         controller=gettext(u"Graph"))
     error = []
     new_graph = Graph()
 
-    if (form_add_graph.graph_type.data == 'graph' and
-            (form_add_graph.name.data and
-                 form_add_graph.width.data and
-                 form_add_graph.height.data and
-                 form_add_graph.xaxis_duration.data and
-                 form_add_graph.refresh_duration.data)):
-        new_graph.graph_type = form_add_graph.graph_type.data
-        new_graph.name = form_add_graph.name.data
-        if form_add_graph.pid_ids.data:
-            pid_ids_joined = ";".join(form_add_graph.pid_ids.data)
+    if (form_add.graph_type.data == 'graph' and
+            (form_add.name.data and
+                 form_add.width.data and
+                 form_add.height.data and
+                 form_add.xaxis_duration.data and
+                 form_add.refresh_duration.data)):
+        new_graph.graph_type = form_add.graph_type.data
+        new_graph.name = form_add.name.data
+        if form_add.pid_ids.data:
+            pid_ids_joined = ";".join(form_add.pid_ids.data)
             new_graph.pid_ids = pid_ids_joined
-        if form_add_graph.relay_ids.data:
-            relay_ids_joined = ";".join(form_add_graph.relay_ids.data)
+        if form_add.relay_ids.data:
+            relay_ids_joined = ";".join(form_add.relay_ids.data)
             new_graph.relay_ids = relay_ids_joined
-        if form_add_graph.sensor_ids.data:
-            sensor_ids_joined = ";".join(form_add_graph.sensor_ids.data)
+        if form_add.sensor_ids.data:
+            sensor_ids_joined = ";".join(form_add.sensor_ids.data)
             new_graph.sensor_ids_measurements = sensor_ids_joined
-        new_graph.width = form_add_graph.width.data
-        new_graph.height = form_add_graph.height.data
-        new_graph.x_axis_duration = form_add_graph.xaxis_duration.data
-        new_graph.refresh_duration = form_add_graph.refresh_duration.data
-        new_graph.enable_navbar = form_add_graph.enable_navbar.data
-        new_graph.enable_rangeselect = form_add_graph.enable_range.data
-        new_graph.enable_export = form_add_graph.enable_export.data
+        new_graph.width = form_add.width.data
+        new_graph.height = form_add.height.data
+        new_graph.x_axis_duration = form_add.xaxis_duration.data
+        new_graph.refresh_duration = form_add.refresh_duration.data
+        new_graph.enable_auto_refresh = form_add.enable_auto_refresh.data
+        new_graph.enable_xaxis_reset = form_add.enable_xaxis_reset.data
+        new_graph.enable_title = form_add.enable_title.data
+        new_graph.enable_navbar = form_add.enable_navbar.data
+        new_graph.enable_rangeselect = form_add.enable_range.data
+        new_graph.enable_export = form_add.enable_export.data
         try:
             new_graph.save()
             flash(gettext(
@@ -72,21 +75,21 @@ def graph_add(form_add_graph, display_order):
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
-    elif (form_add_graph.graph_type.data in ['gauge_angular', 'gauge_solid'] and
-              form_add_graph.sensor_ids.data):
-        if form_add_graph.graph_type.data == 'gauge_solid':
+    elif (form_add.graph_type.data in ['gauge_angular', 'gauge_solid'] and
+              form_add.sensor_ids.data):
+        if form_add.graph_type.data == 'gauge_solid':
             new_graph.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
-        elif form_add_graph.graph_type.data == 'gauge_angular':
+        elif form_add.graph_type.data == 'gauge_angular':
             new_graph.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
-        new_graph.graph_type = form_add_graph.graph_type.data
-        new_graph.name = form_add_graph.name.data
-        new_graph.width = form_add_graph.width.data
-        new_graph.height = form_add_graph.height.data
-        new_graph.max_measure_age = form_add_graph.max_measure_age.data
-        new_graph.refresh_duration = form_add_graph.refresh_duration.data
-        new_graph.y_axis_min = form_add_graph.y_axis_min.data
-        new_graph.y_axis_max = form_add_graph.y_axis_max.data
-        new_graph.sensor_ids_measurements = form_add_graph.sensor_ids.data[0]
+        new_graph.graph_type = form_add.graph_type.data
+        new_graph.name = form_add.name.data
+        new_graph.width = form_add.width.data
+        new_graph.height = form_add.height.data
+        new_graph.max_measure_age = form_add.max_measure_age.data
+        new_graph.refresh_duration = form_add.refresh_duration.data
+        new_graph.y_axis_min = form_add.y_axis_min.data
+        new_graph.y_axis_max = form_add.y_axis_max.data
+        new_graph.sensor_ids_measurements = form_add.sensor_ids.data[0]
         try:
             new_graph.save()
             flash(gettext(
@@ -102,7 +105,7 @@ def graph_add(form_add_graph, display_order):
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
     else:
-        flash_form_errors(form_add_graph)
+        flash_form_errors(form_add)
         return
 
     flash_success_errors(error, action, url_for('page_routes.page_graph'))
@@ -162,6 +165,9 @@ def graph_mod(form_mod_graph, request_form):
         mod_graph.height = form_mod_graph.height.data
         mod_graph.x_axis_duration = form_mod_graph.xaxis_duration.data
         mod_graph.refresh_duration = form_mod_graph.refresh_duration.data
+        mod_graph.enable_auto_refresh = form_mod_graph.enable_auto_refresh.data
+        mod_graph.enable_xaxis_reset = form_mod_graph.enable_xaxis_reset.data
+        mod_graph.enable_title = form_mod_graph.enable_title.data
         mod_graph.enable_navbar = form_mod_graph.enable_navbar.data
         mod_graph.enable_export = form_mod_graph.enable_export.data
         mod_graph.enable_rangeselect = form_mod_graph.enable_range.data
@@ -264,19 +270,17 @@ def graph_del(form_del_graph):
         controller=gettext(u"Graph"))
     error = []
 
-    if form_del_graph.validate():
-        try:
-            delete_entry_with_id(Graph,
-                                 form_del_graph.graph_id.data)
-            display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
-            display_order.remove(int(form_del_graph.graph_id.data))
-            DisplayOrder.query.first().graph = list_to_csv(display_order)
-            db.session.commit()
-        except Exception as except_msg:
-            error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_graph'))
-    else:
-        flash_form_errors(form_del_graph)
+    try:
+        delete_entry_with_id(Graph,
+                             form_del_graph.graph_id.data)
+        display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
+        display_order.remove(int(form_del_graph.graph_id.data))
+        DisplayOrder.query.first().graph = list_to_csv(display_order)
+        db.session.commit()
+    except Exception as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('page_routes.page_graph'))
+
 
 
 def graph_reorder(graph_id, display_order, direction):

@@ -41,26 +41,82 @@ class GraphAdd(FlaskForm):
             max=10000
         )]
     )
-    xaxis_duration = IntegerField(
-        lazy_gettext(u'x-Axis (minutes)'),
+    xaxis_duration = DecimalField(
+        lazy_gettext(u'X-Axis (minutes)'),
         validators=[validators.NumberRange(
-            min=1,
+            min=0.1,
             message=lazy_gettext(u"Number of minutes to display of past "
                                  u"measurements.")
         )]
     )
-    refresh_duration = IntegerField(
-        lazy_gettext(u'Refresh (seconds)'),
+    refresh_duration = DecimalField(
+        lazy_gettext(u'Period (seconds)'),
         validators=[validators.NumberRange(
-            min=1,
+            min=0.2,
             message=lazy_gettext(u"Number of seconds to wait between acquiring"
                                  u" any new measurements.")
         )]
     )
+    enable_auto_refresh = BooleanField(lazy_gettext(u'Enable Auto Refresh'))
+    enable_xaxis_reset = BooleanField(lazy_gettext(u'Enable X-Axis Reset'))
+    enable_title = BooleanField(lazy_gettext(u'Enable Title'))
     enable_navbar = BooleanField(lazy_gettext(u'Enable Navbar'))
     enable_export = BooleanField(lazy_gettext(u'Enable Export'))
     enable_range = BooleanField(lazy_gettext(u'Enable Range Selector'))
-    Submit = SubmitField(lazy_gettext(u'Create'))
+    graph_add = SubmitField(lazy_gettext(u'Create'))
+
+
+class GraphMod(FlaskForm):
+    graph_id = IntegerField('Graph ID', widget=widgets.HiddenInput())
+    graph_type = StringField('Type', widget=widgets.HiddenInput())
+    name = StringField(
+        lazy_gettext(u'Name'),
+        validators=[DataRequired()]
+    )
+    pid_ids = SelectMultipleField(lazy_gettext(u'PIDs'))
+    relay_ids = SelectMultipleField(lazy_gettext(u'Outputs'))
+    sensor_ids = SelectMultipleField(lazy_gettext(u'Inputs'))
+    width = IntegerField(
+        lazy_gettext(u'Width'),
+        validators=[validators.NumberRange(
+            min=1,
+            max=12
+        )]
+    )
+    height = IntegerField(
+        lazy_gettext(u'Height (pixels)'),
+        validators=[validators.NumberRange(
+            min=100,
+            max=10000
+        )]
+    )
+    xaxis_duration = DecimalField(
+        lazy_gettext(u'X-Axis (minutes)'),
+        validators=[validators.NumberRange(
+            min=0.1,
+            message=lazy_gettext(u"Number of minutes to display of past "
+                                 u"measurements.")
+        )]
+    )
+    refresh_duration = DecimalField(
+        lazy_gettext(u'Period (seconds)'),
+        validators=[validators.NumberRange(
+            min=0.2,
+            message=lazy_gettext(u"Number of seconds to wait between acquiring"
+                                 u" any new measurements.")
+        )]
+    )
+    enable_auto_refresh = BooleanField(lazy_gettext(u'Enable Auto Refresh'))
+    enable_xaxis_reset = BooleanField(lazy_gettext(u'Enable X-Axis Reset'))
+    enable_title = BooleanField(lazy_gettext(u'Enable Title'))
+    enable_navbar = BooleanField(lazy_gettext(u'Enable Navbar'))
+    enable_export = BooleanField(lazy_gettext(u'Enable Export'))
+    enable_range = BooleanField(lazy_gettext(u'Enable Range Selector'))
+    use_custom_colors = BooleanField(lazy_gettext(u'Enable Custom Colors'))
+    graph_mod = SubmitField(lazy_gettext(u'Save'))
+    graph_del = SubmitField(lazy_gettext(u'Delete'))
+    graph_order_up = SubmitField(lazy_gettext(u'Up'))
+    graph_order_down = SubmitField(lazy_gettext(u'Down'))
 
 
 class GaugeAdd(FlaskForm):
@@ -95,54 +151,7 @@ class GaugeAdd(FlaskForm):
                                  u" any new measurements.")
         )]
     )
-    Submit = SubmitField(lazy_gettext(u'Create'))
-
-
-class GraphMod(FlaskForm):
-    graph_id = IntegerField('Graph ID', widget=widgets.HiddenInput())
-    graph_type = StringField('Type', widget=widgets.HiddenInput())
-    name = StringField(
-        lazy_gettext(u'Name'),
-        validators=[DataRequired()]
-    )
-    pid_ids = SelectMultipleField(lazy_gettext(u'PIDs'))
-    relay_ids = SelectMultipleField(lazy_gettext(u'Outputs'))
-    sensor_ids = SelectMultipleField(lazy_gettext(u'Inputs'))
-    width = IntegerField(
-        lazy_gettext(u'Width'),
-        validators=[validators.NumberRange(
-            min=1,
-            max=12
-        )]
-    )
-    height = IntegerField(
-        lazy_gettext(u'Height (pixels)'),
-        validators=[validators.NumberRange(
-            min=100,
-            max=10000
-        )]
-    )
-    xaxis_duration = IntegerField(
-        lazy_gettext(u'x-Axis (minutes)'),
-        validators=[validators.NumberRange(
-            min=1,
-            message=lazy_gettext(u"Number of minutes to display of past "
-                                 u"measurements.")
-        )]
-    )
-    refresh_duration = IntegerField(
-        lazy_gettext(u'Refresh (seconds)'),
-        validators=[validators.NumberRange(
-            min=1,
-            message=lazy_gettext(u"Number of seconds to wait between acquiring"
-                                 u" any new measurements.")
-        )]
-    )
-    enable_navbar = BooleanField(lazy_gettext(u'Enable Navbar'))
-    enable_export = BooleanField(lazy_gettext(u'Enable Export'))
-    enable_range = BooleanField(lazy_gettext(u'Enable Range Selector'))
-    use_custom_colors = BooleanField(lazy_gettext(u'Enable Custom Colors'))
-    Submit = SubmitField(lazy_gettext(u'Save'))
+    gauge_add = SubmitField(lazy_gettext(u'Create'))
 
 
 class GaugeMod(FlaskForm):
@@ -156,15 +165,7 @@ class GaugeMod(FlaskForm):
     y_axis_max = DecimalField(lazy_gettext(u'Gauge Max'))
     max_measure_age = DecimalField(lazy_gettext(u'Max Age (seconds)'))
     refresh_duration = IntegerField(lazy_gettext(u'Refresh (seconds)'))
-    Submit = SubmitField(lazy_gettext(u'Save'))
-
-
-class GraphDel(FlaskForm):
-    graph_id = IntegerField('Graph ID', widget=widgets.HiddenInput())
-    Submit = SubmitField(lazy_gettext(u'Delete'))
-
-
-class GraphOrder(FlaskForm):
-    orderGraph_id = IntegerField('Graph ID', widget=widgets.HiddenInput())
-    orderGraphUp = SubmitField(lazy_gettext(u'Up'))
-    orderGraphDown = SubmitField(lazy_gettext(u'Down'))
+    gauge_mod = SubmitField(lazy_gettext(u'Save'))
+    gauge_del = SubmitField(lazy_gettext(u'Delete'))
+    gauge_order_up = SubmitField(lazy_gettext(u'Up'))
+    gauge_order_down = SubmitField(lazy_gettext(u'Down'))

@@ -13,7 +13,7 @@
 
     <h4>{{_('Inputs')}} <a href="/help#input" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
-    <p>{{_('Inputs, such as sensors or ADC signals, enable measuring conditions in the environment. Add, configure, and activate sensors to begin recording measurements to the database and allow them to be used throughout Mycodo.')}}</p>
+    <p>{{_('Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.')}}</p>
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
@@ -55,7 +55,7 @@
           </a>
         </div>
         <div class="col-xs-5 col-sm-3">
-          {{form_mod_sensor.name(class_='form-control', value=each_sensor.name, **{'title':_('A common name to distinguish this sensor from others')})}}
+          {{form_mod_sensor.name(class_='form-control', value=each_sensor.name, **{'title':_('A common name to distinguish this input from others')})}}
         </div>
         <div class="col-xs-5 col-sm-2">
           <input class="form-control btn btn-default" disabled="" title="UUID: {{each_sensor.unique_id}}" value="[{{'%02d' % each_sensor.id}}] {{each_sensor.device}}" type="text">
@@ -71,7 +71,7 @@
             {%- do has_active_lcd.append(1) -%}
           {%- endfor -%}
           {% if has_active_pid or has_active_lcd -%}
-            {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("There are currently active PID or LCD controllers that rely on this sensor to be active. If you deactivate this sensor, all active PID and LCD controllers that use it will be deactivated. Select OK to deactivate this sensor and all associated PID and LCD controllers, otherwise click Cancel to leave them active.")'})}}
+            {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("There are currently active PID or LCD controllers that rely on this input to be active. If you deactivate this input, all active PID and LCD controllers that use it will be deactivated. Select OK to deactivate this input and all associated PID and LCD controllers, otherwise click Cancel to leave them active.")'})}}
           {% else -%}
             {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default')}}
           {% endif -%}
@@ -105,9 +105,9 @@
           </div>
           <div class="col-xs-6 col-sm-4">
             {% if has_active_pid or has_active_lcd -%}
-              {{form_mod_sensor.delSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Note: there are currently active PID or LCD controlelrs that rely on this sensor to operate. Deleting it will deactivate these sensors. Are you sure you want to delete this sensor?")'})}}
+              {{form_mod_sensor.delSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Note: there are currently active PID or LCD controlelrs that rely on this input to operate. Deleting it will deactivate these inputs. Are you sure you want to delete this input?")'})}}
             {% else -%}
-              {{form_mod_sensor.delSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this sensor?")'})}}
+              {{form_mod_sensor.delSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this input?")'})}}
             {% endif -%}
           </div>
 
@@ -127,7 +127,7 @@
             <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
               {{form_mod_sensor.period.label(class_='control-label')}}
               <div>
-                {{form_mod_sensor.period(class_='form-control', value=each_sensor.period, **{'title':_('The duration (seconds) between sensor reads')})}}
+                {{form_mod_sensor.period(class_='form-control', value=each_sensor.period, **{'title':_('The duration (seconds) between input reads')})}}
               </div>
             </div>
           {% endif -%}
@@ -147,7 +147,7 @@
             <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
               {{form_mod_sensor.pre_relay_duration.label(class_='control-label')}}
               <div>
-                {{form_mod_sensor.pre_relay_duration(class_='form-control', value=each_sensor.pre_relay_duration, **{'title':_('If a Pre Relay is selected, set the duration (seconds) to turn the Pre Relay on for before every measurement is acquired.')})}}
+                {{form_mod_sensor.pre_relay_duration(class_='form-control', value=each_sensor.pre_relay_duration, **{'title':_('If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.')})}}
               </div>
             </div>
           {% endif -%}
@@ -223,7 +223,7 @@
               {{form_conditional.save_cond(class_='form-control btn btn-default')}}
             </div>
             <div class="col-xs-4 col-sm-3 col-md-3">
-              {{form_conditional.delete_cond(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Relay Conditional?")'})}}
+              {{form_conditional.delete_cond(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Output Conditional?")'})}}
             </div>
           </div>
 
@@ -278,7 +278,7 @@
               <label class='control-label'>Measurement</label>
               <div>
                 <input type="hidden" class="form-control" id="if_sensor_edge_detected" name="if_sensor_edge_detected" value="">
-                <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_measurement" name="if_sensor_measurement" title="{{_('The measurement from the sensor to test the following conditional logic')}}.">
+                <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_measurement" name="if_sensor_measurement" title="{{_('The measurement from the input to test the following conditional logic')}}.">
                   <option value=""></option>
                   {% for key, measurements in measurements.items() if each_sensor.device == key %}
                     {% for each_measure in measurements %}
@@ -311,7 +311,7 @@
             <div class="col-xs-6 col-sm-2 col-md-2 col-lg-1">
               <label class='control-label'>Value</label>
               <div>
-                {{form_conditional.if_sensor_setpoint(class_='form-control', value=each_cond.if_sensor_setpoint, **{'title':_('What value to check the measurement against.'), 'size':'3'})}}
+                {{form_conditional.if_sensor_setpoint(class_='form-control', value=each_cond.if_sensor_setpoint, **{'title':_('What value to check the measurement against?'), 'size':'3'})}}
               </div>
             </div>
 
@@ -320,7 +320,7 @@
             <div class="col-xs-4 col-xs-offset-2 col-sm-2 col-md-2 col-xs-offset-1 col-lg-2 col-lg-offset-1">
               <label class='control-label'>Period</label>
               <div>
-                {{form_conditional.if_sensor_period(class_='form-control', value=each_cond.if_sensor_period, **{'title':_('The duration (seconds) between checking whether the conditional is true. Set to 0 to check after every sensor measurement.'), 'size':'3'})}}
+                {{form_conditional.if_sensor_period(class_='form-control', value=each_cond.if_sensor_period, **{'title':_('The duration (seconds) between checking whether the conditional is true. Set to 0 to check after every input measurement.'), 'size':'3'})}}
               </div>
             </div>
           </div>

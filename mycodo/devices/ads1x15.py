@@ -5,7 +5,7 @@ import Adafruit_ADS1x15
 
 
 class ADS1x15Read(object):
-    """ Sensor  """
+    """ ADC Read """
     def __init__(self, address, bus, channel, gain):
         self.logger = logging.getLogger('mycodo.ads1x15-{bus}-{add}'.format(
             bus=bus, add=address))

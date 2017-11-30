@@ -6,7 +6,7 @@ from MCP342x import MCP342x
 
 
 class MCP342xRead(object):
-    """ Sensor """
+    """ ADC Read """
     def __init__(self, address, bus, channel, gain, resolution):
         self.logger = logging.getLogger('mycodo.mcp342x-{bus}-{add}'.format(
             bus=bus, add=address))

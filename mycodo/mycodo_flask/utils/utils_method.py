@@ -106,8 +106,8 @@ def validate_method_data(form_data, this_method):
             if (not form_data.relay_time.data or
                     not form_data.relay_id.data or
                     not form_data.relay_state.data):
-                flash(gettext(u"Required: Date/Time, Relay ID, and Relay "
-                              "State"), "error")
+                flash(gettext(u"Required: Date/Time, Output, and Output "
+                              u"State"), "error")
                 return 1
             try:
                 datetime.strptime(form_data.relay_time.data,
@@ -120,7 +120,7 @@ def validate_method_data(form_data, this_method):
             if (not form_data.duration.data or
                     not form_data.relay_id.data or
                     not form_data.relay_state.data):
-                flash(gettext(u"Required: Relay ID, Relay State, and Relay Duration"),
+                flash(gettext(u"Required: Output, Output State, and Output Duration"),
                       "error")
                 return 1
             if not is_positive_integer(form_data.relay_duration.data):

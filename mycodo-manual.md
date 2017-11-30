@@ -7,19 +7,12 @@ Table of Contents
 
 [About Mycodo](#about-mycodo)
 
+[Brief Overview](#brief-overview)
+
 [Frequently Asked Questions](#frequently-asked-questions)
 
 [Upgrading](#upgrading)
 
-[Settings](#settings)
-
-   - [General Settings](#general-settings)
-   - [Relay Usage Settings](#relay-usage-settings)
-   - [Users](#users)
-   - [User Roles](#user-roles)
-   - [Alert Settings](#alert-settings)
-   - [Camera Settings](#camera-settings)
-    
 [Controllers](#controllers)
 
    - [Input](#input)
@@ -32,7 +25,7 @@ Table of Contents
 
    - [Conditional Statements](#conditional-statements)
    - [Methods](#methods)
-    
+
 [PID Tuning](#pid-tuning)
 
    - [PID Control Theory](#pid-control-theory)
@@ -40,11 +33,20 @@ Table of Contents
    - [Exact-Temperature Regulation](#exact-temperature-regulation)
    - [High-Temperature Regulation](#high-temperature-regulation)
 
+[Configuration Settings](#configuration-settings)
+
+   - [General Settings](#general-settings)
+   - [Output Usage Settings](#output-usage-settings)
+   - [Users](#users)
+   - [User Roles](#user-roles)
+   - [Alert Settings](#alert-settings)
+   - [Camera Settings](#camera-settings)
+
 [Miscellaneous](#miscellaneous)
 
    - [Graphs](#graphs)
    - [Camera](#camera)
-   - [Relay Usage](#relay-usage)
+   - [Output Usage](#output-usage)
    - [System Backup](#system-backup)
    - [System Restore](#system-restore)
 
@@ -53,18 +55,13 @@ Table of Contents
    - [Daemon Not Running](#daemon-not-running)
    - [More](#more)
 
-[Input and Device Setup](#input-and-device-setup)
-
-[Input Interfaces](#input-interfaces)
+[Device Interfaces](#device-interfaces)
 
    - [1-Wire](#1-wire)
    - [GPIO](#gpio)
    - [UART](#uart)
    - [I<sup>2</sup>C](#i2c)
    - [Edge Detection](#edge-detection)
-
-[Device Setup](#device-setup)
-
    - [I<sup>2</sup>C Multiplexers](#i2c-multiplexers)
 
 [Device Specific Information](#device-specific-information)
@@ -126,27 +123,41 @@ Table of Contents
 About Mycodo
 ============
 
-Mycodo is a remote monitoring and automated regulation system with a
-focus on modulating environmental conditions. It was built to run on the
-Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install
-and set up.
+Mycodo is a system for acquiring and using sensor measurements in a feedback loop that controls a diverse set of outputs. This is commonly used for automated regulation of environmental conditions, such as temperature, humidity, CO2 concentration, and many more. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.
 
-The core system coordinates a diverse set of responses to sensor
-measurements, including actions such as camera captures, email
-notifications, relay activation/deactivation, regulation with PID
-control, and more. Mycodo has been used for cultivating gourmet
-mushrooms, cultivating plants, culturing microorganisms, maintaining
-honey bee apiary homeostasis, incubating snake eggs and young animals,
-aging cheeses, fermenting foods, maintaining aquatic systems, and more.
+The system coordinates a diverse set of responses to sensor measurements, including actions such as relay switching, regulation by [PID control](https://en.wikipedia.org/wiki/PID_controller), email notifications, camera captures, and more. Mycodo has been used for cultivating gourmet mushrooms, cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs and young animals, aging cheeses, fermenting foods, maintaining aquatic systems, and more.
 
-A [proportional-derivative-integral (PID)
-controller](https://en.wikipedia.org/wiki/PID_controller) is a control
-loop feedback mechanism used throughout industry for controlling
-systems. It efficiently brings a measurable condition, such as the
-temperature, to a desired state and maintains it there with little
-overshoot and oscillation. A well-tuned PID controller will raise to the
-setpoint quickly, have minimal overshoot, and maintain the setpoint with
-little oscillation.
+Brief Overview
+==============
+
+There are a number of different uses for Mycodo, from simple storing of sensor measurements, to regulating the environmental conditions of a physical space, to capturing motion-activated or timelapse photography. There are several componenets of the system that may be configured.
+
+Input
+-----
+
+Input controllers acquire measurements and store them in a [time series database](https://en.wikipedia.org/wiki/Time_series_database). Measurements taken by an Input Controller typically come from sensors, but Input Controllers may also be configured to use the return value of a linux command, making integrating new input systems very easy.
+
+Output
+------
+
+Output Controllers produce changes to the general input/output (GPIO) pins of the Raspberry Pi or may be configured to execute linux commands in order to allow an unlimited number of extra potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulatated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off. 
+
+PID
+---
+
+When Inputs and Outputs are combined, PID Controllers may be used to create a fedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermenttion or curing, and cooking food ([sous-vide](https://en.wikipedia.org/wiki/Sous-vide)), to name a few.
+
+
+Timer
+-----
+
+Timers can be set to trigger events based on specific dates and times or according to durations of time. Timers are fairly basic, but can be configured in very complex ways. Don't underestimate a good timer.
+
+LCD
+---
+
+LCDs may be set up to have a way to quickly view information, such as Input, Output, or PID controllers, and can be set to flash in case of triggered events, like an emergency, such as the temperature increasing beyond a certain point in an area that is supposed to be kept cold.
+
 
 Frequently Asked Questions
 ==========================
@@ -156,7 +167,7 @@ Frequently Asked Questions
 Here is how I generally set up Mycodo to monitor and regulate:
 
 1.  Determine what environmental condition you want to measure or regulate. Consider the devices that must be coupled to achieve this. For instance, temperature regulation require a temperature sensor as the input and an electric heater as the output.
-2.  Determine what relays you will need to power your electric devices. The Raspberry Pi is capable of directly switching relays (using a 3.3-volt signal), although opto-isolating the circuit is advisable. Be careful when selecting a relay not to exceed the current draw of the Raspberry Pi’s PGIO.
+2.  Determine what relays you will need to power your electric devices. The Raspberry Pi is capable of directly switching relays (using a 3.3-volt signal), although opto-isolating the circuit is advisable. Be careful when selecting a relay not to exceed the current draw of the Raspberry Pi’s GPIO.
 3.  See the [Device Specific Information](#device-specific-information) for information about what sensors are supported. Acquire one or more of these sensors and relays and connect them to the Raspberry Pi according to the manufacturer’s instructions.
 4.  On the ```Input```  page, create a new input using the dropdown to select the correct sensor or input device. Configure the input with the correct communication pins and other options. Activate the input to begin recording measurements to the database..
 5.  Go to the ```Data``` -> ```Live Measurements``` page to ensure there is recent data being acquired from the input.
@@ -169,15 +180,17 @@ Here is how I generally set up Mycodo to monitor and regulate:
 
 *How do I add an input (like a sensor) to the system that's not currently supported?*
 
-Currently, adding the ability to receive input that's not currently supported to the system involves editing several files. There has been effort to make the addition process as simple as possible. See the [Adding Support for a New Input](https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input) Wiki page for how to do this.
+Currently, adding the ability to receive input that's not currently supported to the system can be achieved by two different methods.
 
-An alternate way to add an input is to create a linux script that obtains and returns a value when executed, then add a new input with the "Linux Command" option. This will periodically execute the command and store the returned value to the database for use with the rest of the Mycodo system.
+The first involves editing several files. There has been effort to make the addition process as simple as possible. See the [Adding Support for a New Input](https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input) Wiki page for how to do this.
+
+The second way to add an input is to create a script that obtains and returns a numerical value when executed in the linux system of the Raspberry Pi. This script may be configured to be executed by a "Linux Command" Input type. This will periodically execute the command and store the returned value to the database for use with the rest of the Mycodo system.
 
 * * * * *
 
 *Can I variably control the speed of motors or other devices with the PWM output signal from the PID?*
 
-Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, an [AC modulation ciruit](#schematics-for-ac-modulation), or something else.
+Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, an [AC modulation ciruit](#schematics-for-ac-modulation), [DC modulation circuit](#schematics-for-dc-fan-control), or something else.
 
 * * * * *
 
@@ -187,6 +200,7 @@ First, read the manual to make sure you understand how the system works and you'
 
 * * * * *
 
+
 Upgrading
 =========
 
@@ -194,119 +208,6 @@ If you already have Mycodo installed (version >= 4.0.0), you can perform an upgr
 
 ```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade```
 
-Settings
-========
-
-The settings menu, accessed by selecting the gear icon in the top-right,
-then the Configure link, is a general area for various system-wide
-configuration options.
-
-
-General Settings
-----------------
-
-Setting | Description
--------------------- | ----------------------------------------------
-Language | Set the language that will be displayed in the web user interface.
-Force HTTPS | Require web browsers to use SSL/HTTPS. Any request to http:// will be redirected to https://.
-Hide success alerts | Hide all success alert boxes that appear at the top of the page.
-Hide info alerts | Hide all info alert boxes that appear at the top of the page.
-Hide warning alerts | Hide all warning alert boxes that appear at the top of the page.
-Opt-out of statistics | Turn off sending anonymous usage statistics. Please consider that this helps the development to leave on.
-
-
-Relay Usage Settings
---------------------
-
-In order to calculate accurate relay usage statistics, a few
-characteristics of your electrical system needs to be know. These
-variables should describe the characteristics of the electrical system
-being used by the relays to operate electrical devices. Note: Proper
-relay usage calculations also rely on the correct current draw to be set
-for each relay (see [Relay Settings](#relays)).
-
-Setting | Description
--------------------- | ----------------------------------------------
-Max Amps | Set the maximum allowed amperage to be switched on at any given time. If a relay that's instructed to turn on will cause the sum of active devices to exceed this amount, the relay will not be allowed to turn on, to prevent any damage that may result from exceeding current limits.
-Voltage | Alternating current (AC) voltage that is switched by the relays. This is usually 120 or 240.
-Cost per kWh | This is how much you pay per kWh.
-Currency Unit | This is the unit used for the currency that pays for electricity.
-Day of Month | This is the day of the month (1-30) that the electricity meter is read (which will correspond to the electrical bill).
-
-Users
------
-
-Mycodo requires at least one Admin user for the login system to be
-enabled. If there isn't an Admin user, the web server will redirect to
-an Admin Creation Form. This is the first page you see when starting
-Mycodo for the first time. After an Admin user has been created,
-additional users may be created from the User Settings page.
-
-Setting | Description
--------------------- | ----------------------------------------------
-Username | Choose a user name that is between 2 and 64 characters. The user name is case insensitive (all user names are converted to lower-case).
-Email | The email associated with the new account.
-Password/Repeat | Choose a password that is between 6 and 64 characters and only contain letters, numbers, and symbols.
-Role | Roles are a way of imposing access restrictions on users, to either allow or deny actions. See the table below for explanations of the four default Roles.
-
-User Roles
-----------
-
-Roles define the permissions of each user. There are 4 default roles
-that determine if a user can view or edit particular areas of Mycodo.
-Four roles are provided by default, but custom roles may be created.
-
-| Role | Admin | Editor | Monitor | Guest |
-| ------ | ------ | ------ | ------ | ------ |
-| Edit Users       | X | | | |
-| Edit Controllers | X | X | | |
-| Edit Settings    | X | X | | |
-| View Settings    | X | X | X | |
-| View Camera      | X | X | X | |
-| View Stats       | X | X | X | |
-| View Logs        | X | X | X | |
-
-<sup>1</sup>The ```Edit Controllers``` permission protects the editing of Graphs, LCDs, Methods, PIDs, Outputs, Inputs, and Timers.
-
-<sup>2</sup>The ```View Stats``` permission protects the viewing of usage statistics and the System Info and Relay Usage pages.
-
-Alert Settings
---------------
-
-Alert settings set up the credentials for sending email notifications.
-
-Setting | Description
--------------------- | ----------------------------------------------
-SMTP Host | The SMTP server to use to send emails from.
-SMTP Port | Port to communicate with the SMTP server (465 for SSL, 587 for TSL).
-Enable SSL | Check to emable SSL, uncheck to enable TSL.
-SMTP User | The user name to send the email from. This can be just a name or the entire email address.
-SMTP Password | The password for the user.
-From Email | What the from email address be set as. This should be the actual email address for this user.
-Max emails (per hour) | Set the maximum number of emails that can be sent per hour. If more notifications are triggered within the hour and this number has been reached, the notifications will be discarded.
-Send Test Email | Test the email configuration by sending a test email.
-
-Camera Settings
----------------
-
-Many cameras can be used simultaneously with Mycodo. Each camera needs
-to be set up in the camera settings, then may be used throughout the
-software. Note that not every option (such as Hue or White Balance) may
-be able to be used with your particular camera, due to manufacturer
-differences in hardware and software.
-
-Setting | Description
--------------------- | ----------------------------------------------
-Type | Select whether the camera is a Raspberry Pi Camera or a USB camera.
-Library | Select which library to use to communicate with the camera. The Raspberry Pi Camera uses picamera (and potentially opencv), and USB cameras should be set to opencv.
-OpenCV Device | Any devices detected by opencv will populate this dropdown list. If there are no values in this list, none were detected. If you have multiple opencv devices detected, try setting the camera to each device and take a photo to determine which camera is associated with which device.
-Relay ID | This relay will turn on during the capture of any still image (which includes timelapses).
-Rotate Image | The number of degrees to rotate the image.
-... | Image Width, Image Height, Brightness, Contrast, Exposure, Gain, Hue, Saturation, White Balance. These options are self-explanatory. Not all options will work with all cameras.
-Pre Command | A command to execute (as user mycodo) before a still image is captured.
-Post Command | A command to execute (as user mycodo) after a still image is captured.
-Flip horizontally | Flip, or mirror, the image horizontally.
-Flip vertically | Flip, or mirror, the image vertically.
 
 Controllers
 ===========
@@ -334,12 +235,12 @@ Deactivate | Deactivation stops measurements from being acquired from the sensor
 Save | Save the current configuration entered into the input boxes for a particular sensor.
 Delete | Delete a particular sensor.
 Up/Down | Move a particular sensor up or down in the order displayed.
-Power Relay | Select a relay that powers the sensor. This enables powering cycling (turn off then on) when the sensor returns 3 consecutive errors to attempt to fix the issue. Transistors may also be used instead of a relay (note: NPN transistors are preferred over PNP for powering sensors).
+Power Output | Select a output that powers the sensor. This enables powering cycling (turn off then on) when the sensor returns 3 consecutive errors to attempt to fix the issue. Transistors may also be used instead of a relay (note: NPN transistors are preferred over PNP for powering sensors).
 Location | Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I<sup>2</sup>C address. and channel if using the TCA9548A I<sup>2</sup>C multiplexer.
 I<sup>2</sup>C Bus | The bus to be used to communicate with the I<sup>2</sup>C address. If you're using an I<sup>2</sup>C multiplexer that provides multiple buses, this allows you to select which bus the sensor is connected to.
 Period | After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.
-Pre Relay | If you require a relay to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the relay number that will be activated. The relay will be activated for a duration defined by the Pre Duration, then once the relay turns off, a measurement by the sensor is made.
-Pre Relay Duration | This is the duration of time that the Pre Relay runs for before the sensor measurement is obtained.
+Pre Output | If you require a output to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the output number that will be activated. The output will be activated for a duration defined by the Pre Duration, then once the output turns off, a measurement by the sensor is made.
+Pre Output Duration | This is the duration of time that the Pre Output runs for before the sensor measurement is obtained.
 Command | A linux command (executed as the user 'mycodo') that the return value becomes the measurement
 Command Measurement | The measured condition (e.g. temperature, humidity, etc.) from the linux command
 Command Units | The units of the measurement condition from the linux command
@@ -384,6 +285,8 @@ Stop PID | If the measurements of the two sensors differ by more than the set *D
 Output
 ------
 
+Outputs are various signals that can be generated that operate devices. An output can be a PWM signal, a simple HIGH/LOW signal to operate a relay, or a 433MHz signal to switch a radio frequency-operated relay, or an execution of a command on the linux system Mycodo runs on.
+
 ### PWM
 
 Pulse-width modulation (PWM) is a modulation technique used to encode a message into a pulsing signal, at a specific frequency in Hertz (Hz). The average value of voltage (and current) fed to the load is controlled by turning the switch between supply and load on and off at a fast rate. The longer the switch is on compared to the off periods, the higher the total power supplied to the load.
@@ -402,7 +305,7 @@ Library | Select the method for producing the PWM signal. Hardware pins can prod
 BCM Pin | This is the GPIO that will output the PWM signal, using BCM numbering.
 Hertz | This is frequency of the PWM signal.
 Duty Cycle | This is the proportion of the time on to the time off, expressed in percent (0 - 100).
-Current Draw (amps) | This is the current draw, in amps, when the duty cycle is 100%. Note: this value should be calculated based on the voltage set in the [Relay Usage Settings](#relay-usage-settings).
+Current Draw (amps) | This is the current draw, in amps, when the duty cycle is 100%. Note: this value should be calculated based on the voltage set in the [Output Usage Settings](#output-usage-settings).
 
 #### Non-hardware PWM Pins
 
@@ -424,7 +327,15 @@ BCM Pin | PWM Channel | Raspberry Pi Version
 52 | 0 | Compute module only
 53 | 1 | Compute module only
 
-#### Schematics for AC modulation
+#### Schematics for DC Fan Control
+
+Below are hardware schematics that enable controlling direct current (DC) fans from the PWM output from Mycodo.
+
+PWM output controlling a 12-volt DC fan (such as a PC fan)
+
+![Schematic: PWM output modulating alternating current (AC) at 1% duty cycle](manual_images/Schematic-PWM-DC-12-volt-fan-control.png)\ 
+
+#### Schematics for AC Modulation
 
 Below are hardware schematics that enable the modulation of alternating current (AC) from the PWM output from Mycodo.
 
@@ -444,11 +355,11 @@ PWM output modulating alternating current (AC) at 99% duty cycle
 
 Relays are electromechanical or solid-state devices that enable a small voltage signal (such as from a microprocessor) to activate a much larger voltage, without exposing the low-voltage system to the dangers of the higher voltage.
 
-Add and configure relays in the Relay tab. Relays must be properly set up before PID regulation can be achieved.
+Add and configure outputs in the Output tab. Outputs must be properly set up before PID regulation can be achieved.
 
 #### Wired 
 
-To set up a wired relay, set the "GPIO Pin" to the BCM GPIO number of each pin that activates each relay. *On Trigger* should be set to the signal that activates the relay (the device attached to vthe relay turns on). If your relay activates when the potential across the coil is 0-volts, set *On Trigger* to "Low", otherwise if your relay activates when the potential across the coil is 3.3-volts (or whatever switching voltage you are using, if not being driven by the GPIO pin), set it to "High".
+To set up a wired relay, set the "GPIO Pin" to the BCM GPIO number of each pin that activates each relay. *On Trigger* should be set to the signal that activates the relay (the device attached to the relay turns on). If your relay activates when the potential across the coil is 0-volts, set *On Trigger* to "Low", otherwise if your relay activates when the potential across the coil is 3.3-volts (or whatever switching voltage you are using, if not being driven by the GPIO pin), set it to "High".
 
 #### Wireless
 
@@ -460,23 +371,23 @@ Certain 433 MHz wireless relays may be used, however you will need to set the pi
 
 #### Command
 
-Another option for relay control is to execute a terminal command when the relay is turned on or off. Commands will be executed as the user 'mycodo'.
+Another option for output control is to execute a terminal command when the output is turned on or off. Commands will be executed as the user 'mycodo'.
 
-Wireless and Command Relay Note: Since the wireless protocol only allows 1-way communication to 433 MHz devices, wireless relays are assumed to be off until they are turned on, and therefore will appear red (off) when added. If a wireless relay is turned off or on outside Mycodo (by a remote, for instance), Mycodo will not be able to determine the state of the relay and will indicate whichever state the relay was last. This is, if Mycodo turns the wireless relay on, and a remote is used to turn the relay off, Mycodo will still assume the relay is on.
+Wireless and Command Output Note: Since the wireless protocol only allows 1-way communication to 433 MHz devices, wireless relays are assumed to be off until they are turned on, and therefore will appear red (off) when added. If a wireless relay is turned off or on outside Mycodo (by a remote, for instance), Mycodo will ***not*** be able to determine the state of the relay and will indicate whichever state the relay was last. This is, if Mycodo turns the wireless relay on, and a remote is used to turn the relay off, Mycodo will still assume the relay is on.
 
 Setting | Description
 -------------------- | ----------------------------------------------
-BCM Pin | This is the GPIO that will be the signal to the relay, using BCM numbering.
-On Trigger | This is the state of the GPIO to signal the relay to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you relay completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.
-WiringPi Pin | This is the GPIO that will be the signal to the relay, using WireingPi numbering.
+BCM Pin | This is the GPIO that will be the signal to the output, using BCM numbering.
+On Trigger | This is the state of the GPIO to signal the output to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you output completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.
+WiringPi Pin | This is the GPIO that will be the signal to the output, using WireingPi numbering.
 Protocol | This is the protocol to use to transmit via 433MHz. Default is 1, but if this doesn't work, increment the number.
 Pulse Length | This is the pulse length to transmit via 433MHz. Default is 189 ms.
 Bit Length | This is the bit length to transmit via 433MHz. Default is 24-bit.
-On Command | This is the command used to turn the relay on. For wireless relays, this is the numerical command to be transmitted, and for command relays this is the command to be executed. 
-Off Command | This is the command used to turn the relay off. For wireless relays, this is the numerical command to be transmitted, and for command relays this is the command to be executed. 
-Current Draw (amps) | The is the amount of current the device powered by the relay draws. Note: this value should be calculated based on the voltage set in the [Relay Usage Settings](#relay-usage-settings).
-Start State | This specifies whether the relay should be ON or OFF when mycodo initially starts. Wireless relays have an additional option 'Neither' which will not issue an on or off command when Mycodo starts or stops.
-Seconds to turn On | This is a way to turn a relay on for a specific duration of time. This can be useful for testing the relays and powered devices or the measured effects a device may have on an environmental condition.
+On Command | This is the command used to turn the output on. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. 
+Off Command | This is the command used to turn the output off. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. 
+Current Draw (amps) | The is the amount of current the device powered by the output draws. Note: this value should be calculated based on the voltage set in the [Output Usage Settings](#output-usage-settings).
+Start State | This specifies whether the output should be ON or OFF when mycodo initially starts. Wireless relays have an additional option 'Neither' which will not issue an on or off command when Mycodo starts or stops.
+Seconds to turn On | This is a way to turn a output on for a specific duration of time. This can be useful for testing the outputs and powered devices or the measured effects a device may have on an environmental condition.
 
 PIDs
 ----
@@ -498,19 +409,19 @@ resumes operation.
 Setting | Description
 -------------------- | ----------------------------------------------
 Activate/Deactivate | Turn a particular PID controller on or off.
-Pause | When paused, the PID will not turn on the associated relays, and settings can be changed without losing current PID output values.
-Hold | When held, the PID will turn on the associated relays, and settings can be changed without losing current PID output values.
+Pause | When paused, the PID will not turn on the associated outputs, and settings can be changed without losing current PID output values.
+Hold | When held, the PID will turn on the associated outputs, and settings can be changed without losing current PID output values.
 Resume | Resume a PID controller from being held or paused.
 Setpoint | This is the specific point you would like the environment to be regaulted at. For example, if you would like the humidity regulated to 60%, enter 60.
 Direction | This is the direction that you wish to regulate. For example, if you only require the temperature to be raised, set this to "Up," but if you require regulation up and down, set this to "Both."
-Period | This is the duration between when the PID relay turns off amd when the sensor takes another measurement, the PID is updated, and the relay is turned on again for another duration.
-Max Age | The time (in seconds) that the sensor measurement age is required to be less than. If the measurement is not younger than this age, the measurement is thrown out and the PID will not actuate the relay. This is a safety measure to ensure the PID is only using recent measurements.
-Raise Relay | This is the relay that will cause the particular environmental condition to rise. In the case of raising the temperature, this may be a heating pad or coil.
-Min Duration (raise) | This is the minimum that the PID output must be before the Up Relay turns on. If the PID output exceeds this minimum, the Up Relay will turn on for the PID output number of seconds.
-Max Duration (raise) | This is the maximum duration the Up Relay is allowed to turn on for. If the PID output exceeds this number, the Up Relay will turn on for no greater than this duration of time.
-Lower Relay | This is the relay that will cause the particular environmental condition to lower. In the case of lowering the CO<sub>2</sub>, this may be an exhaust fan.
-Min Duration (lower) | This is the minimum that the PID output must be before the Down Relay turns on. If the PID output exceeds this minimum, the Down Relay will turn on for the PID output number of seconds.
-Max Duration (lower) | This is the maximum duration the Down Relay is allowed to turn on for. if the PID output exceeds this number, the Down Relay will turn on for no greater than this duration of time.
+Period | This is the duration between when the PID acquires a measurement, the PID is updated, and the output is modulated.
+Max Age | The time (in seconds) that the sensor measurement age is required to be less than. If the measurement is not younger than this age, the measurement is thrown out and the PID will not actuate the output. This is a safety measure to ensure the PID is only using recent measurements.
+Raise Output | This is the output that will cause the particular environmental condition to rise. In the case of raising the temperature, this may be a heating pad or coil.
+Min Duration (raise) | This is the minimum that the PID output must be before the Up Output turns on. If the PID output exceeds this minimum, the Up Output will turn on for the PID output number of seconds.
+Max Duration (raise) | This is the maximum duration the Up Output is allowed to turn on for. If the PID output exceeds this number, the Up Output will turn on for no greater than this duration of time.
+Lower Output | This is the output that will cause the particular environmental condition to lower. In the case of lowering the CO<sub>2</sub>, this may be an exhaust fan.
+Min Duration (lower) | This is the minimum that the PID output must be before the Down Output turns on. If the PID output exceeds this minimum, the Down Output will turn on for the PID output number of seconds.
+Max Duration (lower) | This is the maximum duration the Down Output is allowed to turn on for. if the PID output exceeds this number, the Down Output will turn on for no greater than this duration of time.
 K~P~ | Proportional coefficient (non-negative). Accounts for present values of the error. For example, if the error is large and positive, the control output will also be large and positive.
 K~I~ | Integral coefficient (non-negative). Accounts for past values of the error. For example, if the current output is not sufficiently strong, the integral of the error will accumulate over time, and the controller will respond by applying a stronger action.
 K~D~ | Derivative coefficient (non-negative). Accounts for predicted future values of the error, based on its current rate of change.
@@ -520,7 +431,7 @@ Integrator Max | The maximum allowed integrator value, for calculating Ki\_total
 Timers
 ------
 
-Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will ***only*** do as instructed, therefore if you turn a relay *ON* from *Start Time* to *End Time* and you want that relay to turn *OFF* at the end of that period, you will need to create another timer that turns the relay *OFF* at *End Time* + 1 minute.
+Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will ***only*** do as instructed, therefore if you turn a output *ON* from *Start Time* to *End Time* and you want that output to turn *OFF* at the end of that period, you will need to create another timer that turns the output *OFF* at *End Time* + 1 minute.
 
  There are two types of timers, one for general outputs that turn on and off, and those that generate a PWM signal.
 
@@ -528,7 +439,7 @@ Timers enable outputs to be manipulated after specific durations of time or at a
 
 For *Duration Timers*, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated.
 
-For *Daily Timers*, the start hour:minute can be set to turn a specific relay on or off at the specific time of day.
+For *Daily Timers*, the start hour:minute can be set to turn a specific output on or off at the specific time of day.
 
 #### PWM Method
 
@@ -540,6 +451,8 @@ LCDs
 
 Data may be output to a liquid crystal display (LCD) for easy viewing. Please see [LCD Displays](#lcd-displays) for specific information regarding compatibility.
 
+There may be multiple displays created for each LCD. If there is only one display created for the LCD, it will refresh at the set period. If there is more than one display, it will cycle from one display to the next every set period.
+
 Setting | Description
 -------------------- | ----------------------------------------------
 Reset Flashing | If the LCD is flashing to alert you because it was instructed to do so by a triggered Conditional Statement, use this button to stop the flashing.
@@ -547,11 +460,15 @@ Type | Select either a 16x2 or 20x4 character LCD display.
 I<sup>2</sup>C Address | Select the I<sup>2</sup>C to communicate with the LCD.
 Multiplexer I<sup>2</sup>C Address | If the LCD is connected to a multiplexer, select the multiplexer I<sup>2</sup>C address.
 Multiplexer Channel | If the LCD is connected to a multiplexer, select the multiplexer channel the LCD is connected to.
-Period | This is the period of time (in seconds) between redrawing the LCD with new data.
+Period | This is the period of time (in seconds) between redrawing the LCD with new data or switching to the next set of displays (if multiple displays are used).
+Add Display Set | Add a set of display lines to the LCD.
 Display Line \# | Select which measurement to display on each line of the LCD.
+Max Age (seconds) | The maximum age the measurement is allowed to be. If no measurement was acquired in this time frame, the display will indicate "NO DATA".
+
 
 Controller Functions
 ====================
+
 
 Conditional Statements
 ----------------------
@@ -560,31 +477,52 @@ A conditional statement is a way to perform certain actions based on
 whether a condition is true. Conditional statements can be created for
 both inputs and outputs. Possible conditional statements include:
 
--   If Relay \#1 turns ON, turn Relay \#3 ON
--   If Relay \#1 turns ON, turn Relay \#4 ON for 40 seconds and notify
+-   If Output \#1 turns ON, turn Output \#3 ON
+-   If Output \#1 turns ON, turn Output \#4 ON for 40 seconds and notify
     critical-issue@domain.com
--   If Relay \#4 turns ON for 21 seconds, turn Relay \#5 ON for 50
+-   If Output \#1 turns ON for any duration, turn Output \#4 ON
+-   If Output \#4 turns ON for 21 seconds, turn Output \#5 ON for 50
     seconds
--   If Relay \#4 turns ON for 20 seconds, turn Relay \#1 OFF
--   If Humidity is Greater Than 80%, turn Relay \#4 ON for 40 seconds
--   If Humidity if Less Than 50%, turn Relay \#1 ON for 21 seconds,
+-   If Output \#4 turns ON for 20 seconds, turn Output \#1 OFF
+-   If Humidity is Greater Than 80%, turn Output \#4 ON for 40 seconds
+-   If Humidity if Less Than 50%, turn Output \#1 ON for 21 seconds,
     execute '/usr/local/bin/myscript.sh', and notify email@domain.com
 -   If Temperature if Greater Than 35 C, deactivate PID \#1
 
 Before activating any conditional statements or PID controllers, it's
 advised to thoroughly explore all possible scenarios and plan a
 configuration that eliminates conflicts. Then, trial run your
-configuration before connecting devices to the relays. Some devices or
-relays may respond atypically or fail when switched on and off in rapid
+configuration before connecting devices to the outputs. Some devices or
+outputs may respond atypically or fail when switched on and off in rapid
 succession. Therefore, avoid creating an [infinite
 loop](https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops)
 with conditional statements.
+
+### Input Conditional Statement If Options
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Measurement | The measurement that will be checked every Period.
+Greater Than | If the measurement is greater than the set Value.
+Less Than | If the measurement is less than the set Value.
+Value | The value that the measurement will be checked against (greater or less than).
+Period | The period (seconds) between conditional checks.
+
+### Output Conditional Statement If Options
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Output | The Output to monitor for a change of state.
+On | If the Output turns On (with or without a duration), the conditional will trigger.
+On (any duration) | If the Output turns On (for any duration), the conditional will trigger.
+Off | If the Output turns off, the conditional will trigger.
+Seconds | If "On" is selected, a optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.
 
 ### Conditional Statement Actions
 
 Setting | Description
 -------------------- | ----------------------------------------------
-Relay | Turn a relay on, off, or on for a duration of time.
+Output | Turn a output on, off, or on for a duration of time.
 Command | Execute a command in the linux shell (as user mycodo).
 Activate PID | Activate a particular PID controller.
 Deactivate PID | Deactivate a particular PID controller.
@@ -602,25 +540,30 @@ Commands that are executed by conditional statements can now include variables. 
 ##### Input Conditional command variables
 Variable | Description
 --------------------------- | -------------------------------------------
-((input_location)) | The Input location (such as GPIO pin, I2C address, etc.)
-((input_period)) | The period (seconds) between condition
-((input_altitude)) | Sensor measurement: altitude
-((input_co2)) | Sensor measurement: CO2
-((input_cpu_load_1m)) | Sensor measurement:  CPU load (1 min)
-((input_cpu_load_5m)) | Sensor measurement: CPU load (5 min)
-((input_cpu_load_15m)) | Sensor measurement: CPU load (15 min)
-((input_dewpoint)) | Sensor measurement: dew point
-((input_disk_space)) | Sensor measurement: disk space
-((input_edge)) | Sensor measurement: edge detected (1 or -1)
-((input_humidity)) | Sensor measurement: humidity
-((input_lux)) | Sensor measurement: lux
-((input_moisture)) | Sensor measurement: moisture
-((input_ph)) | Sensor measurement: ph
-((input_pressure)) | Sensor measurement: pressure
-((input_temperature)) | Sensor measurement: temperature
-((input_temperature_die)) | Sensor measurement: temperature (die)
-((input_temperature_object)) | Sensor measurement: temperature (object)
-((input_voltage)) | Sensor measurement: voltage
+((input_location)) | The Input location (such as GPIO pin, I<sup>2</sup>C address, etc.)
+((input_period)) | The period (seconds) between measurements
+((input_linux_command)) | Input measurement: Linux Command return value
+((input_altitude)) | Input measurement: altitude
+((input_co2)) | Input measurement: CO2
+((input_cpu_load_1m)) | Input measurement:  CPU load (1 min)
+((input_cpu_load_5m)) | Input measurement: CPU load (5 min)
+((input_cpu_load_15m)) | Input measurement: CPU load (15 min)
+((input_dewpoint)) | Input measurement: dew point
+((input_disk_space)) | Input measurement: disk space
+((input_duty_cycle)) | Input measurement: duty cycle
+((input_edge)) | Input measurement: edge detected (1 or -1)
+((input_frequency)) | Input measurement: frequency
+((input_humidity)) | Input measurement: humidity
+((input_lux)) | Input measurement: lux
+((input_moisture)) | Input measurement: moisture
+((input_ph)) | Input measurement: ph
+((input_pressure)) | Input measurement: pressure
+((input_pulse_width)) | Input measurement: pulse width
+((input_rpm)) | Input measurement: RPM
+((input_temperature)) | Input measurement: temperature
+((input_temperature_die)) | Input measurement: temperature (die)
+((input_temperature_object)) | Input measurement: temperature (object)
+((input_voltage)) | Input measurement: voltage
 
 ##### Output Conditional command variables
 Variable | Description
@@ -704,9 +647,10 @@ start (x3) and end (x0) will be automatically stretched or skewed to fit
 within a 24-hour period and this method will repeat daily.
 
 PID Tuning
-----------
+==========
 
-### PID Control Theory
+PID Control Theory
+------------------
 
 The PID controller is the most common regulatory controller found in
 industrial settings, for it"s ability to handle both simple and complex
@@ -779,7 +723,8 @@ of insulation, and the degree of impact from the connected device,
 etc.), each path will need to be adjusted through experimentation to
 produce an effective output.
 
-### Quick Setup Examples
+Quick Setup Examples
+--------------------
 
 These example setups are meant to illustrate how to configure regulation
 in particular directions, and not to achieve ideal values to configure
@@ -802,7 +747,8 @@ setups had temperature PID values (up regulation) of *K~P~* = 30, *K~I~*
 may not have been optimal but they worked well for the conditions of my
 environmental chamber.
 
-### Exact Temperature Regulation
+Exact Temperature Regulation
+----------------------------
 
 This will set up the system to raise and lower the temperature to a
 certain level with two regulatory devices (one that heats and one that
@@ -811,11 +757,11 @@ cools).
 Add a sensor, then save the proper device and pin/address for each
 sensor and activate the sensor.
 
-Add two relays, then save each GPIO and On Trigger state.
+Add two outputs, then save each GPIO and On Trigger state.
 
 Add a PID, then select the newly-created sensor. Change *Setpoint* to
 the desired temperature, *Regulate Direction* to "Both". Set *Raise
-Relay* to the relay attached to the heating device and the *Lower Relay*
+Output* to the relay attached to the heating device and the *Lower Relay*
 to the relay attached to the cooling device.
 
 Set *K~P~* = 1, *K~I~* = 0, and *K~D~* = 0, then activate the PID.
@@ -846,7 +792,8 @@ and with little oscillation. At this point, you should be fairly
 familiar with experimenting with the system and the *K~D~* value can be
 experimented with once both *K~P~* and *K~I~* have been tuned.
 
-### High Temperature Regulation
+High Temperature Regulation
+---------------------------
 
 Often the system can be simplified if two-way regulation is not needed.
 For instance, if cooling is unnecessary, this can be removed from the
@@ -856,6 +803,122 @@ Use the same configuration as the [Exact Temperature
 Regulation](#exact-temperature-regulation) example, except change
 *Regulate Direction* to "Raise" and do not touch the "Down Relay"
 section.
+
+
+Configuration Settings
+======================
+
+The settings menu, accessed by selecting the gear icon in the top-right,
+then the Configure link, is a general area for various system-wide
+configuration options.
+
+
+General Settings
+----------------
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Language | Set the language that will be displayed in the web user interface.
+Force HTTPS | Require web browsers to use SSL/HTTPS. Any request to http:// will be redirected to https://.
+Hide success alerts | Hide all success alert boxes that appear at the top of the page.
+Hide info alerts | Hide all info alert boxes that appear at the top of the page.
+Hide warning alerts | Hide all warning alert boxes that appear at the top of the page.
+Opt-out of statistics | Turn off sending anonymous usage statistics. Please consider that this helps the development to leave on.
+Check for Updates | Automatically check for updates every 2 days and notify through the web interface. If there is a new update, the Configure (Gear Icon) as well as the Upgrade menu will turn the color red.
+
+
+Output Usage Settings
+--------------------
+
+In order to calculate accurate output usage statistics, a few
+characteristics of your electrical system needs to be know. These
+variables should describe the characteristics of the electrical system
+being used by the relays to operate electrical devices. Note: Proper
+output usage calculations also rely on the correct current draw to be set
+for each output (see [Output Settings](#outputs)).
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Max Amps | Set the maximum allowed amperage to be switched on at any given time. If a output that's instructed to turn on will cause the sum of active devices to exceed this amount, the output will not be allowed to turn on, to prevent any damage that may result from exceeding current limits.
+Voltage | Alternating current (AC) voltage that is switched by the outputs. This is usually 120 or 240.
+Cost per kWh | This is how much you pay per kWh.
+Currency Unit | This is the unit used for the currency that pays for electricity.
+Day of Month | This is the day of the month (1-30) that the electricity meter is read (which will correspond to the electrical bill).
+
+Users
+-----
+
+Mycodo requires at least one Admin user for the login system to be
+enabled. If there isn't an Admin user, the web server will redirect to
+an Admin Creation Form. This is the first page you see when starting
+Mycodo for the first time. After an Admin user has been created,
+additional users may be created from the User Settings page.
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Username | Choose a user name that is between 2 and 64 characters. The user name is case insensitive (all user names are converted to lower-case).
+Email | The email associated with the new account.
+Password/Repeat | Choose a password that is between 6 and 64 characters and only contain letters, numbers, and symbols.
+Role | Roles are a way of imposing access restrictions on users, to either allow or deny actions. See the table below for explanations of the four default Roles.
+
+User Roles
+----------
+
+Roles define the permissions of each user. There are 4 default roles
+that determine if a user can view or edit particular areas of Mycodo.
+Four roles are provided by default, but custom roles may be created.
+
+| Role | Admin | Editor | Monitor | Guest |
+| ------ | ------ | ------ | ------ | ------ |
+| Edit Users       | X | | | |
+| Edit Controllers | X | X | | |
+| Edit Settings    | X | X | | |
+| View Settings    | X | X | X | |
+| View Camera      | X | X | X | |
+| View Stats       | X | X | X | |
+| View Logs        | X | X | X | |
+
+<sup>1</sup>The ```Edit Controllers``` permission protects the editing of Graphs, LCDs, Methods, PIDs, Outputs, Inputs, and Timers.
+
+<sup>2</sup>The ```View Stats``` permission protects the viewing of usage statistics and the System Info and Output Usage pages.
+
+Alert Settings
+--------------
+
+Alert settings set up the credentials for sending email notifications.
+
+Setting | Description
+-------------------- | ----------------------------------------------
+SMTP Host | The SMTP server to use to send emails from.
+SMTP Port | Port to communicate with the SMTP server (465 for SSL, 587 for TSL).
+Enable SSL | Check to emable SSL, uncheck to enable TSL.
+SMTP User | The user name to send the email from. This can be just a name or the entire email address.
+SMTP Password | The password for the user.
+From Email | What the from email address be set as. This should be the actual email address for this user.
+Max emails (per hour) | Set the maximum number of emails that can be sent per hour. If more notifications are triggered within the hour and this number has been reached, the notifications will be discarded.
+Send Test Email | Test the email configuration by sending a test email.
+
+Camera Settings
+---------------
+
+Many cameras can be used simultaneously with Mycodo. Each camera needs
+to be set up in the camera settings, then may be used throughout the
+software. Note that not every option (such as Hue or White Balance) may
+be able to be used with your particular camera, due to manufacturer
+differences in hardware and software.
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Type | Select whether the camera is a Raspberry Pi Camera or a USB camera.
+Library | Select which library to use to communicate with the camera. The Raspberry Pi Camera uses picamera (and potentially opencv), and USB cameras should be set to opencv.
+OpenCV Device | Any devices detected by opencv will populate this dropdown list. If there are no values in this list, none were detected. If you have multiple opencv devices detected, try setting the camera to each device and take a photo to determine which camera is associated with which device.
+Output ID | This output will turn on during the capture of any still image (which includes timelapses).
+Rotate Image | The number of degrees to rotate the image.
+... | Image Width, Image Height, Brightness, Contrast, Exposure, Gain, Hue, Saturation, White Balance. These options are self-explanatory. Not all options will work with all cameras.
+Pre Command | A command to execute (as user mycodo) before a still image is captured.
+Post Command | A command to execute (as user mycodo) after a still image is captured.
+Flip horizontally | Flip, or mirror, the image horizontally.
+Flip vertically | Flip, or mirror, the image vertically.
 
 Miscellaneous
 =============
@@ -871,11 +934,26 @@ A graphical data display that is useful for viewing data sets spanning
 relatively short periods of time (hours/days/weeks). Select a time frame
 to view data and continually updating data from new sensor measurements.
 Multiple graphs can be created on one page that enables a dashboard to
-be created of graphed sensor data. Each graphs may have one or more
-sensor measurement, relay duration, or PID setpoint rendered onto it.
-Several live graph options exist, such as the time period (x-axis) and
-line colors, as well as navigation and data/image export options. To
-edit graph options, select the plus sign on the top-right of a graph.
+be created of graphed sensor data. Each graph may have one or more data
+from inputs, outputs, or PIDs rendered onto it. To edit graph options,
+select the plus sign on the top-right of a graph.
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Width | The width of the graph on the page, in 1/12th increments. Mulstiple graphs can share the sme row if their combined fraction doesn't exceed 12/12.
+Height (pixels) | The height of the graph.
+x-Axis (minutes) | The duration to diaply on the x-axis of the graph.
+Enable Auto Refresh | Automatically refresh the data on the graph Refresh Period.
+Refresh Period (seconds) | The duration between acquisitions of new data to display on the graph.
+Inputs/Outputs/PIDs | The Inputs, Outputs, and PIDs to display on the graph.
+Enable X-Axis Reset | Reset the x-axis min/max every time new data comes in during the auto refresh.
+Enable Title | Show a title of the graph name.
+Enable Navbar | Show a slidable navigation bar at the bottom of the graph.
+Enable Export | Enable a button on the top right of the graph to allow exporting of the currently-displayed data as PNG, JPEG, PDF, SVG, CSV, XLS.
+Enable Range Selector | Show a set of navigation buttons at the top of the graph to quickly change the display duration.
+Enable Custom Colors | Use custom colors for Input, Output, and PID lines. Select the colors with the buttons that appear below this checkbox.
+Up / Down | Reorganize the graph placement by moving it one placement up or down.
+
 
 ### Asynchronous Graphs
 
@@ -910,12 +988,12 @@ create time-lapses, and stream video. Cameras may also be used by
 image or video capture (as well as the ability to email the image/video
 with a notification).
 
-Relay Usage
+Output Usage
 -----------
 
-Relay usage statistics are calculated for each relay, based on how long
-the relay has been powered, the current draw of the device connected to
-the relay, and other [Relay Usage Settings](#relay-usage-settings).
+Output usage statistics are calculated for each output, based on how long
+the output has been powered, the current draw of the device connected to
+the output, and other [Relay Usage Settings](#output-usage-settings).
 
 System Backup
 -------------
@@ -959,29 +1037,28 @@ Check out the [Diagnosing Mycodo Issues Wiki
 Page](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues) on
 github for more information about diagnosing issues.
 
-Input and Device Setup
-=======================
 
-Certain inputs will require extra steps to be taken in order to set up the interface for communication. This includes I<sup>2</sup>C, one-wire, and UART.
-
-Input Interfaces
------------------
+Device Interfaces
+=================
 
 Inputs are categorized below by their communication interface.
 
-### 1-Wire
+1-Wire
+------
 
 The 1-wire interface should be configured with [these instructions](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing).
 
 > [DS18B20](#ds18b20): Temperature [link](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf) (Also works with: [DS18S20](https://datasheets.maximintegrated.com/en/ds/DS18S20.pdf), [DS1822](https://datasheets.maximintegrated.com/en/ds/DS1822.pdf), [DS28EA00](https://datasheets.maximintegrated.com/en/ds/DS28EA00.pdf), [DS1825](https://datasheets.maximintegrated.com/en/ds/DS1825.pdf)/[MAX31850K](https://datasheets.maximintegrated.com/en/ds/MAX31850-MAX31851.pdf))
 
-### GPIO
+GPIO
+----
 
 > [DHT11](#dht11), [DHT22](#dht22)/AM2302: Relative humidity and temperature [link](https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring)
 
 > [SHT1x](#sht1x)/[SHT7x](#sht7x), SHT2x: Relative humidity and temperature [link](https://github.com/mk-fg/sht-sensor)
 
-### UART
+UART
+----
 
 > [Atlas Scientific pH](#atlas-scientific-ph): pH [link](https://www.atlas-scientific.com/ph.html)
 
@@ -1009,7 +1086,8 @@ Go to ```Advanced Options``` -> ```Serial``` and disable. Then edit ```/boot/con
 
 Find the line "enable_uart=0" and change it to "enable_uart=1", then reboot.
 
-### I<sup>2</sup>C
+I<sup>2</sup>C
+--------------
 
 The I<sup>2</sup>C interface should be enabled with `raspi-config`.
 
@@ -1050,16 +1128,15 @@ The detection of a changing signal, for instance a simple switch completing a ci
 
 Examples of devices that can be used with edge detection: simple switches and buttons, PIR motion sensors, reed switches, hall effect sensors, float switches, and more.
 
-Device Setup
-------------
-
-### I<sup>2</sup>C Multiplexers
+I<sup>2</sup>C Multiplexers
+---------------------------
 
 All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some inputs may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.
 
 > [TCA9548A](#tca9548a): I<sup>2</sup>C Multiplexer [link](https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview) (I<sup>2</sup>C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I<sup>2</sup>C address.
 
 > TCA9545A: I<sup>2</sup>C Bus Multiplexer [link](http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/) (I<sup>2</sup>C): This board works a little differently than the TCA9548A, above. This board actually creates 4 new I<sup>2</sup>C busses, each with their own selectable voltage, either 3.3 or 5.0 volts. Instructions to enable the Device Tree Overlay are at [https://github.com/camrex/i2c-mux-pca9545a](https://github.com/camrex/i2c-mux-pca9545a). Nothing else needs to be done in Mycodo after that except to select the correct I<sup>2</sup>C bus when configuring a sensor.
+
 
 Device Specific Information
 ===========================
@@ -1144,6 +1221,18 @@ Temperature, Humidity Sensors
  - 3.5 to 5.5V power and I/O
  - 10 mA max current use during conversion (while requesting data)
  - No more than 0.5 Hz sampling rate (once every 2 seconds)
+
+#### Notes
+
+From [@Theoi-Meteoroi](https://github.com/kizniche/Mycodo/issues/315#issuecomment-344798815) on GitHub:
+
+I figured out why this \[AM2315\] sensor is unreliable with Rpi3 hardware I<sup>2</sup>C. It is among a number of I<sup>2</sup>C devices that really hates the BCM2835 clock stretching blunder (hardware bug: [raspberrypi/linux#254](https://github.com/raspberrypi/linux/issues/254)). The wakeup attempts fail, consistently. I checked the bitstream with a sniffer, and see that the sensor may respond once out of 20 or so tries (or not at all) but only with a single byte returned. The solution is to use a software implementation of the I<sup>2</sup>C bus. You need to add pull-up resistors (4.7k is dandy) to 3.3v and install the i2c_gpio device overlay. Seems to work fine now, will run for a few days, but the CRC failures are gone and I get good readings, every time. And no twiddling the power for the sensor is required.
+
+To enable software I<sup>2</sup>C, add the following line to your ```/boot/config.txt```
+
+```dtoverlay=i2c-gpio,i2c_gpio_sda=23,i2c_gpio_scl=24,i2c_gpio_delay_us=4```
+
+After rebooting, a new I<sup>2</sup>C bus at /dev/i2c-3 should exist with SDA on pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate pull-up resistors before connecting any devices.
 
 ### DHT11
 
@@ -1264,7 +1353,7 @@ Pressure Sensors
 
 ### BME280
 
-The BME280 is the upgrade to the BMP085/BMP180/BMP183. It has a low altitude noise of 0.25m and the same fast conversion time. It has the same specifications, but can use either I2C or SPI.
+The BME280 is the upgrade to the BMP085/BMP180/BMP183. It has a low altitude noise of 0.25m and the same fast conversion time. It has the same specifications, but can use either I<sup>2</sup>C or SPI.
 
 #### Specifications
 

@@ -34,14 +34,15 @@ from .camera import Camera
 from .display_order import DisplayOrder
 from .graph import Graph
 from .lcd import LCD
+from .lcd import LCDData
 from .method import Method
 from .method import MethodData
 from .misc import Misc
 from .pid import PID
-from .relay import Relay
+from .output import Output
 from .remote import Remote
 from .role import Role
-from .sensor import Sensor
+from .input import Input
 from .smtp import SMTP
 from .timer import Timer
 from .user import User
