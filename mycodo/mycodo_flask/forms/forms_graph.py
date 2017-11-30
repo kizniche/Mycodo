@@ -42,7 +42,7 @@ class GraphAdd(FlaskForm):
         )]
     )
     xaxis_duration = DecimalField(
-        lazy_gettext(u'x-Axis (minutes)'),
+        lazy_gettext(u'X-Axis (minutes)'),
         validators=[validators.NumberRange(
             min=0.1,
             message=lazy_gettext(u"Number of minutes to display of past "
@@ -50,7 +50,7 @@ class GraphAdd(FlaskForm):
         )]
     )
     refresh_duration = DecimalField(
-        lazy_gettext(u'Refresh Period (seconds)'),
+        lazy_gettext(u'Period (seconds)'),
         validators=[validators.NumberRange(
             min=0.2,
             message=lazy_gettext(u"Number of seconds to wait between acquiring"
@@ -91,7 +91,7 @@ class GraphMod(FlaskForm):
         )]
     )
     xaxis_duration = DecimalField(
-        lazy_gettext(u'x-Axis (minutes)'),
+        lazy_gettext(u'X-Axis (minutes)'),
         validators=[validators.NumberRange(
             min=0.1,
             message=lazy_gettext(u"Number of minutes to display of past "
@@ -99,7 +99,7 @@ class GraphMod(FlaskForm):
         )]
     )
     refresh_duration = DecimalField(
-        lazy_gettext(u'Refresh Period (seconds)'),
+        lazy_gettext(u'Period (seconds)'),
         validators=[validators.NumberRange(
             min=0.2,
             message=lazy_gettext(u"Number of seconds to wait between acquiring"

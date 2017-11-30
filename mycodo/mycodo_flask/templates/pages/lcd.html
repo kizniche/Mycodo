@@ -19,7 +19,7 @@
     <form method="post" action="/lcd">
     {{form_lcd_add.hidden_tag()}}
     <div class="col-xs-6 col-sm-2 col-lg-2 no-gutters">
-      {{form_lcd_add.quantity(class_='form-control', value=1, type="number", **{'rel':'tooltip','title':_('How many LCD controllers to add')})}}
+      {{form_lcd_add.quantity(class_='form-control', value=1, type="number", **{'rel':'tooltip','title':_('How many LCD controllers to add?')})}}
     </div>
     <div class="col-xs-6 col-sm-2 col-lg-2 no-gutters">
       {{form_lcd_add.add(class_='form-control btn btn-default')}}
@@ -48,7 +48,7 @@
           </a>
         </div>
         <div class="col-xs-5 col-sm-6 no-gutters">
-          {{form_lcd_mod.name(class_='form-control', value=each_lcd.name, **{'title':_('Name for this PID controller.')})}}
+          {{form_lcd_mod.name(class_='form-control', value=each_lcd.name, **{'title':_('Name for this PID controller')})}}
         </div>
         <div class="col-xs-5 no-gutters">
           <input class="form-control btn btn-default" title="UUID: {{each_lcd.id}}" disabled="" value="[{{'%02d' % each_lcd.id}}]

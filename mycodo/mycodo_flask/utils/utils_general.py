@@ -118,38 +118,38 @@ def controller_activate_deactivate(controller_action,
 # Choices
 #
 
-def choices_inputs(sensor):
+def choices_inputs(inputs):
     """ populate form multi-select choices from Input entries """
     choices = OrderedDict()
-    for each_sensor in sensor:
-        if each_sensor.device == 'LinuxCommand':
+    for each_input in inputs:
+        if each_input.device == 'LinuxCommand':
             value = '{id},{meas}'.format(
-                id=each_sensor.unique_id,
-                meas=each_sensor.cmd_measurement)
+                id=each_input.unique_id,
+                meas=each_input.cmd_measurement)
             display = u'[{id:02d}] {name} ({meas})'.format(
-                id=each_sensor.id,
-                name=each_sensor.name,
-                meas=each_sensor.cmd_measurement)
+                id=each_input.id,
+                name=each_input.name,
+                meas=each_input.cmd_measurement)
             choices.update({value: display})
         else:
-            for each_measurement in MEASUREMENTS[each_sensor.device]:
+            for each_measurement in MEASUREMENTS[each_input.device]:
                 value = '{id},{meas}'.format(
-                    id=each_sensor.unique_id,
+                    id=each_input.unique_id,
                     meas=each_measurement)
                 display = u'[{id:02d}] {name} ({meas})'.format(
-                    id=each_sensor.id,
-                    name=each_sensor.name,
+                    id=each_input.id,
+                    name=each_input.name,
                     meas=MEASUREMENT_UNITS[each_measurement]['name'])
                 choices.update({value: display})
             # Display custom converted units for ADCs
-            if each_sensor.device in ['ADS1x15', 'MCP342x']:
+            if each_input.device in ['ADS1x15', 'MCP342x']:
                 value = '{id},{meas}'.format(
-                    id=each_sensor.unique_id,
-                    meas=each_sensor.adc_measure)
+                    id=each_input.unique_id,
+                    meas=each_input.adc_measure)
                 display = u'[{id:02d}] {name} ({meas})'.format(
-                    id=each_sensor.id,
-                    name=each_sensor.name,
-                    meas=each_sensor.adc_measure)
+                    id=each_input.id,
+                    name=each_input.name,
+                    meas=each_input.adc_measure)
                 choices.update({value: display})
     return choices
 

@@ -96,7 +96,7 @@ class InputMod(FlaskForm):
             max=100,
             message=lazy_gettext(u"If using a SHT sensor, enter the GPIO "
                                  u"connected to the clock pin (using BCM "
-                                 u"numbering).")
+                                 u"numbering)")
         )]
     )
     sht_voltage = StringField(lazy_gettext(u'Voltage'))

@@ -5,6 +5,7 @@
 import os
 import collections
 from datetime import timedelta
+from flask_babel import lazy_gettext
 
 MYCODO_VERSION = '5.4.11'
 ALEMBIC_VERSION = '8828a0074a44'
@@ -59,53 +60,77 @@ MEASUREMENTS = {
 # Unit abbreviation for each measurement
 MEASUREMENT_UNITS = {
     'altitude': {
-        'name': 'Altitude', 'meas': 'altitude', 'unit': u'm'},
+        'name': lazy_gettext(u'Altitude'),
+        'meas': 'altitude', 'unit': u'm'},
     'co2': {
-        'name': 'CO2', 'meas': 'co2', 'unit': u'ppmv'},
+        'name': lazy_gettext(u'CO2'),
+        'meas': 'co2', 'unit': u'ppmv'},
     'dewpoint': {
-        'name': 'Dewpoint', 'meas': 'temperature', 'unit': u'°C'},
+        'name': lazy_gettext(u'Dewpoint'),
+        'meas': 'temperature', 'unit': u'°C'},
     'cpu_load_1m': {
-        'name': 'CPU Load', 'meas': 'cpu_load', 'unit': u'1 min'},
+        'name': lazy_gettext(u'CPU Load'),
+        'meas': 'cpu_load', 'unit': u'1 min'},
     'cpu_load_5m': {
-        'name': 'CPU Load', 'meas': 'cpu_load', 'unit': u'5 min'},
+        'name': lazy_gettext(u'CPU Load'),
+        'meas': 'cpu_load', 'unit': u'5 min'},
     'cpu_load_15m': {
-        'name': 'CPU Load', 'meas': 'cpu_load', 'unit': u'15 min'},
+        'name': lazy_gettext(u'CPU Load'),
+        'meas': 'cpu_load', 'unit': u'15 min'},
     'disk_space': {
-        'name': 'Disk', 'meas': 'disk_space', 'unit': u'MB'},
+        'name': lazy_gettext(u'Disk'),
+        'meas': 'disk_space', 'unit': u'MB'},
     'duration_sec': {
-        'name': 'Duration', 'meas': 'duration_sec', 'unit': u'sec'},
+        'name': lazy_gettext(u'Duration'),
+        'meas': 'duration_sec', 'unit': u'sec'},
     'duty_cycle': {
-        'name': 'Duty Cycle', 'meas': 'duty_cycle', 'unit': u'%'},
+        'name': lazy_gettext(u'Duty Cycle'),
+        'meas': 'duty_cycle', 'unit': u'%'},
     'edge': {
-        'name': 'Edge', 'meas': 'edge', 'unit': u'edge'},
+        'name': lazy_gettext(u'Edge'),
+        'meas': 'edge', 'unit': u'edge'},
     'frequency': {
-        'name': 'Frequency', 'meas': 'frequency', 'unit': u'Hz'},
+        'name': lazy_gettext(u'Frequency'),
+        'meas': 'frequency', 'unit': u'Hz'},
     'humidity': {
-        'name': 'Humidity', 'meas': 'humidity', 'unit': u'%'},
+        'name': lazy_gettext(u'Humidity'),
+        'meas': 'humidity', 'unit': u'%'},
     'lux': {
-        'name': 'Light', 'meas': 'lux', 'unit': u'lx'},
+        'name': lazy_gettext(u'Light'),
+        'meas': 'lux', 'unit': u'lx'},
     'moisture': {
-        'name': 'Moisture', 'meas': 'moisture', 'unit': u'moisture'},
+        'name': lazy_gettext(u'Moisture'),
+        'meas': 'moisture', 'unit': u'moisture'},
     'ph': {
-        'name': 'pH', 'meas': 'ph', 'unit': u'pH'},
+        'name': lazy_gettext(u'pH'),
+        'meas': 'ph', 'unit': u'pH'},
     'pid_output': {
-        'name': 'PID Output', 'meas': 'pid_output', 'unit': u'sec'},
+        'name': lazy_gettext(u'PID Output'),
+        'meas': 'pid_output', 'unit': u'sec'},
     'pressure': {
-        'name': 'Pressure', 'meas': 'pressure', 'unit': u'Pa'},
+        'name': lazy_gettext(u'Pressure'),
+        'meas': 'pressure', 'unit': u'Pa'},
     'pulse_width': {
-        'name': 'Pulse Width', 'meas': 'pulse_width', 'unit': u'µs'},
+        'name': lazy_gettext(u'Pulse Width'),
+        'meas': 'pulse_width', 'unit': u'µs'},
     'rpm': {
-        'name': 'Revolutions Per Minute', 'meas': 'rpm', 'unit': u'rpm'},
+        'name': lazy_gettext(u'Revolutions Per Minute'),
+        'meas': 'rpm', 'unit': u'rpm'},
     'setpoint': {
-        'name': 'Setpoint', 'meas': 'setpoint', 'unit': u''},
+        'name': lazy_gettext(u'Setpoint'),
+        'meas': 'setpoint', 'unit': u''},
     'temperature': {
-        'name': 'Temperature', 'meas': 'temperature', 'unit': u'°C'},
+        'name': lazy_gettext(u'Temperature'),
+        'meas': 'temperature', 'unit': u'°C'},
     'temperature_object': {
-        'name': 'Temperature (Obj)', 'meas': 'temperature', 'unit': u'°C'},
+        'name': lazy_gettext(u'Temperature (Obj)'),
+        'meas': 'temperature', 'unit': u'°C'},
     'temperature_die': {
-        'name': 'Temperature (Die)', 'meas': 'temperature', 'unit': u'°C'},
+        'name': lazy_gettext(u'Temperature (Die)'),
+        'meas': 'temperature', 'unit': u'°C'},
     'voltage': {
-        'name': 'Voltage', 'meas': 'voltage', 'unit': u'volts'}
+        'name': lazy_gettext(u'Voltage'),
+        'meas': 'voltage', 'unit': u'volts'}
 }
 
 # Inputs and description
@@ -188,16 +213,16 @@ LIST_DEVICES_I2C = [
 
 # Conditional actions
 CONDITIONAL_ACTIONS = collections.OrderedDict([
-    ('relay', 'Output'),
-    ('command', 'Command'),
-    ('activate_pid', 'Activate PID'),
-    ('deactivate_pid', 'Deactivate PID'),
-    ('email', 'Email'),
-    ('flash_lcd', 'Flash LCD'),
-    ('photo', 'Photo'),
-    ('photo_email', 'Email Photo'),
-    ('video', 'Video'),
-    ('video_email', 'Email Video')
+    ('relay', lazy_gettext(u'Output')),
+    ('command', lazy_gettext(u'Command')),
+    ('activate_pid', lazy_gettext(u'Activate PID')),
+    ('deactivate_pid', lazy_gettext(u'Deactivate PID')),
+    ('email', lazy_gettext(u'Email')),
+    ('flash_lcd', lazy_gettext(u'Flash LCD')),
+    ('photo', lazy_gettext(u'Photo')),
+    ('photo_email', lazy_gettext(u'Email Photo')),
+    ('video', lazy_gettext(u'Video')),
+    ('video_email', lazy_gettext(u'Email Video'))
 ])
 
 # User Roles
@@ -268,7 +293,8 @@ DAEMON_PID_FILE = os.path.join(LOCK_PATH, 'mycodo.pid')
 LOCK_FILE_STREAM = os.path.join(LOCK_PATH, 'mycodo-camera-stream.pid')
 
 # Remote admin
-STORED_SSL_CERTIFICATE_PATH = os.path.join('/home/kiz/Mycodo/mycodo/mycodo_flask/ssl_certs/remote_admin')
+STORED_SSL_CERTIFICATE_PATH = os.path.join(
+    INSTALL_DIRECTORY, 'mycodo/mycodo_flask/ssl_certs/remote_admin')
 
 # Camera
 CAMERA_LIBRARIES = [

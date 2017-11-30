@@ -50,7 +50,7 @@
                       {% endif %} row small-gutters" style="border-bottom: 2px solid #ddd; padding: 0.5em;">
             <div class="col-xs-12 small-gutters">
               <div class="col-xs-6 col-md-6 no-gutters">
-                {{form_mod_pid_base.name(class_='form-control', value=each_pid.name, **{'title':_('Name for this PID controller.')})}}
+                {{form_mod_pid_base.name(class_='form-control', value=each_pid.name, **{'title':_('Name for this PID controller')})}}
               </div>
               <div class="col-xs-6 no-gutters">
                 <input class="form-control btn btn-default" title="UUID: {{each_pid.unique_id}}" disabled="" value="[{{'%02d' % each_pid.id}}]

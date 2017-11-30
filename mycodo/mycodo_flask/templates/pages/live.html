@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "live" %}
-{% set help_page = ["live-measurements", _('Live Leasurements')] %}
+{% set help_page = ["live-measurements", _('Live Measurements')] %}
 
 {% block title %} - {{_('Live')}}{% endblock %}
 
@@ -167,7 +167,7 @@
               {% if each_pid.pid_type != 'pwm' -%}
                 {{_('On Duration (sec.)')}}
               {% else -%}
-                {{_('Duty Cycle (%%)')}}
+                {{_('Duty Cycle')}} (%)
               {% endif %}
             <div>
               {{_('Min')}}: {{each_pid.raise_min_duration}}, {{_('Max')}}: {{each_pid.raise_max_duration}}
@@ -175,7 +175,7 @@
           </div>
           {% if each_pid.pid_type != 'pwm' -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
-            {{_('Off Duration (sec.)')}}
+            {{_('Off (seconds)')}}
             <div>
               {{_('Min')}}: {{each_pid.raise_min_off_duration}}
             </div>
@@ -204,7 +204,7 @@
             {% if each_pid.pid_type != 'pwm' -%}
               {{_('On Duration (sec.)')}}
             {% else -%}
-              {{_('Duty Cycle (%%)')}}
+              {{_('Duty Cycle')}} (%)
             {% endif %}
             <div>
               {{_('Min')}}: {{each_pid.lower_min_duration}}, {{_('Max')}}: {{each_pid.lower_max_duration}}
@@ -212,7 +212,7 @@
           </div>
           {% if each_pid.pid_type != 'pwm' -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
-            {{_('Off Duration (sec.)')}}
+            {{_('Off (seconds)')}}
             <div>
               {{_('Min')}}: {{each_pid.lower_min_off_duration}}
             </div>

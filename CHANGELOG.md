@@ -1,3 +1,15 @@
+## 5.4.12 (Unreleased)
+
+### Features
+
+ - Complete Spanish translation
+ - Add more translatable texts
+
+### Bugfixes
+
+ - Fix selection of current language on General Config page
+
+
 ## 5.4.11 (2017-11-29)
 
 ### Bugfixes
