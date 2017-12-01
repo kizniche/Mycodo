@@ -21,6 +21,7 @@ def add_custom_measurements(sensor, measurements, measurement_units):
                         'name': each_sensor.cmd_measurement}})
     return measurements
 
+
 def time_between_range(start_time, end_time):
     """
     Check if the current time is between start_time and end_time
@@ -44,14 +45,17 @@ def time_between_range(start_time, end_time):
     return 0  # No now not within range
 
 
-def cmd_output(command, su_mycodo=True):
+def cmd_output(command, su_mycodo=True, stdout_pipe=True):
     """
     Executed command and returns a list of lines from the output
     """
     full_cmd = '{}'.format(command)
     if su_mycodo:
         full_cmd = 'su mycodo && {}'.format(command)
-    cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
+    if stdout_pipe:
+        cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
+    else:
+        cmd = subprocess.Popen(full_cmd, shell=True)
     cmd_out, cmd_err = cmd.communicate()
     cmd_status = cmd.wait()
     return cmd_out, cmd_err, cmd_status

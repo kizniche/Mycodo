@@ -27,6 +27,7 @@ class SettingsCamera(FlaskForm):
     camera_id = IntegerField('Camera ID', widget=widgets.HiddenInput())
     name = StringField(lazy_gettext(u'Name'))
     library = StringField(lazy_gettext(u'Library'))
+    device = StringField(lazy_gettext(u'Device'))
     opencv_device = IntegerField(lazy_gettext(u'OpenCV Device'))
     hflip = BooleanField(lazy_gettext(u'Flip image horizontally'))
     vflip = BooleanField(lazy_gettext(u'Flip image vertically'))

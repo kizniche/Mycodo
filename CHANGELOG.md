@@ -1,3 +1,10 @@
+## 5.4.12 (Unreleased)
+
+### Features
+
+ - Add fswebcam as a camera library for acquiring images from USB cameras
+
+
 ## 5.4.11 (2017-11-29)
 
 ### Bugfixes

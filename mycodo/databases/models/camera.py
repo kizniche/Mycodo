@@ -11,6 +11,7 @@ class Camera(CRUDMixin, db.Model):
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     name = db.Column(db.Text, unique=True, nullable=False)
     library = db.Column(db.Text, nullable=False)
+    device = db.Column(db.Text, nullable=False, default='/dev/video0')
     opencv_device = db.Column(db.Integer, default=0)
     hflip = db.Column(db.Boolean, default=False)  # Horizontal flip image
     vflip = db.Column(db.Boolean, default=False)  # Vertical flip image

@@ -9,10 +9,9 @@ import os
 import picamera
 import time
 
-from mycodo.utils.system_pi import (
-    assure_path_exists,
-    set_user_grp
-)
+from mycodo.utils.system_pi import assure_path_exists
+from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.system_pi import set_user_grp
 
 from mycodo.config import INSTALL_DIRECTORY
 
@@ -33,7 +32,8 @@ def camera_record(record_type, settings, duration_sec=None):
     :return:
     """
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    root_path = assure_path_exists(os.path.join(INSTALL_DIRECTORY, 'cameras'))
+    root_path = os.path.abspath(os.path.join(INSTALL_DIRECTORY, 'cameras'))
+    assure_path_exists(root_path)
     camera_path = assure_path_exists(
         os.path.join(root_path, '{id}-{uid}'.format(id=settings.id,
                                                     uid=settings.unique_id)))
@@ -42,7 +42,7 @@ def camera_record(record_type, settings, duration_sec=None):
         filename = u'Still-{cam_id}-{cam}-{ts}.jpg'.format(
             cam_id=settings.id,
             cam=settings.name,
-            ts=timestamp)
+            ts=timestamp).replace(" ", "_")
     elif record_type == 'timelapse':
         save_path = assure_path_exists(os.path.join(camera_path, 'timelapse'))
         start = datetime.datetime.fromtimestamp(
@@ -51,12 +51,12 @@ def camera_record(record_type, settings, duration_sec=None):
             cam_id=settings.id,
             cam=settings.name,
             st=start,
-            cn=settings.timelapse_capture_number)
+            cn=settings.timelapse_capture_number).replace(" ", "_")
     elif record_type == 'video':
         save_path = assure_path_exists(os.path.join(camera_path, 'video'))
         filename = u'Video-{cam}-{ts}.h264'.format(
             cam=settings.name,
-            ts=timestamp)
+            ts=timestamp).replace(" ", "_")
     else:
         return
 
@@ -83,6 +83,24 @@ def camera_record(record_type, settings, duration_sec=None):
                 camera.stop_recording()
             else:
                 return
+
+    elif settings.library == 'fswebcam':
+        cmd = "/usr/bin/fswebcam --device {dev} --resolution {w}x{h} --set brightness={bt}% " \
+              "--no-banner --save {file}".format(dev=settings.device,
+                                                 w=settings.width,
+                                                 h=settings.height,
+                                                 bt=settings.brightness,
+                                                 file=path_file)
+        if settings.hflip:
+            cmd += " --flip h"
+        if settings.vflip:
+            cmd += " --flip h"
+        if settings.rotation:
+            cmd += " --rotate {angle}".format(angle=settings.rotation)
+
+        logger.error(cmd)
+        out, err, status = cmd_output(cmd, stdout_pipe=False, su_mycodo=False)
+        logger.error("TEST01: {}; {}; {}".format(out, err, status))
 
     elif settings.library == 'opencv':
         cap = cv2.VideoCapture(settings.opencv_device)

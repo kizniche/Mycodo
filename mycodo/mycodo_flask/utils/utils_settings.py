@@ -326,6 +326,9 @@ def camera_add(form_camera):
             new_camera.hue = 0.0
             new_camera.saturation = 0.0
             new_camera.white_balance = 0.0
+        elif form_camera.library.data == 'fswebcam':
+            new_camera.device = '/dev/video0'
+            new_camera.brightness = 50
         elif form_camera.library.data == 'picamera':
             new_camera.brightness = 50
             new_camera.contrast = 0.0
@@ -364,7 +367,14 @@ def camera_mod(form_camera):
             Camera.id == form_camera.camera_id.data).first()
         mod_camera.name = form_camera.name.data
 
-        if mod_camera.library == 'opencv':
+        if mod_camera.library == 'fswebcam':
+            mod_camera.hflip = form_camera.hflip.data
+            mod_camera.vflip = form_camera.vflip.data
+            mod_camera.rotation = form_camera.rotation.data
+            mod_camera.height = form_camera.height.data
+            mod_camera.width = form_camera.width.data
+            mod_camera.brightness = form_camera.brightness.data
+        elif mod_camera.library == 'opencv':
             mod_camera.opencv_device = form_camera.opencv_device.data
             mod_camera.hflip = form_camera.hflip.data
             mod_camera.vflip = form_camera.vflip.data

@@ -7,7 +7,7 @@ import collections
 from datetime import timedelta
 
 MYCODO_VERSION = '5.4.11'
-ALEMBIC_VERSION = '8828a0074a44'
+ALEMBIC_VERSION = '234283cc67f4'
 
 LANGUAGES = {
     'en': 'English',
@@ -273,6 +273,7 @@ STORED_SSL_CERTIFICATE_PATH = os.path.join('/home/kiz/Mycodo/mycodo/mycodo_flask
 # Camera
 CAMERA_LIBRARIES = [
     'picamera',
+    'fswebcam',
     'opencv'
 ]
 PATH_CAMERAS = os.path.join(INSTALL_DIRECTORY, 'cameras')

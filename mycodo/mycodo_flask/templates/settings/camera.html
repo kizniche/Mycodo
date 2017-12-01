@@ -74,6 +74,8 @@
 
       {% if each_camera.library == 'opencv' %}
         {% include 'settings/camera_options/opencv.html' %}
+      {% elif each_camera.library == 'fswebcam' %}
+        {% include 'settings/camera_options/fswebcam.html' %}
       {% endif %}
 
         <div style="clear: both;"></div>
