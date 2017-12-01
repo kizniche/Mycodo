@@ -30,14 +30,14 @@ class Camera(FlaskForm):
         lazy_gettext(u'Interval (seconds)'),
         validators=[validators.NumberRange(
             min=0,
-            message=lazy_gettext(u'Photo Interval must be a positive value.')
+            message=lazy_gettext(u'Photo Interval must be a positive value')
         )]
     )
     timelapse_runtime_sec = DecimalField(
         lazy_gettext(u'Run Time (seconds)'),
         validators=[validators.NumberRange(
             min=0,
-            message=lazy_gettext(u'Total Run Time must be a positive value.')
+            message=lazy_gettext(u'Total Run Time must be a positive value')
         )]
     )
     start_stream = SubmitField(lazy_gettext(u'Start Stream'))
@@ -74,7 +74,7 @@ class LogView(FlaskForm):
         render_kw={'placeholder': lazy_gettext(u'Lines')},
         validators=[validators.NumberRange(
             min=1,
-            message=lazy_gettext(u'Number of lines should be greater than 0.')
+            message=lazy_gettext(u'Number of lines should be greater than 0')
         )]
     )
     loglogin = SubmitField(lazy_gettext(u'Login Log'))

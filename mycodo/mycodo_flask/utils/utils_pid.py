@@ -335,7 +335,9 @@ def pid_manipulate(pid_id, action):
             flash(gettext(u"Daemon response to PID controller %(act)s command: "
                           u"%(rval)s", act=action, rval=return_value), "success")
     except Exception as err:
-        flash(gettext(u"PID Error: %(msg)s", msg=err), "error")
+        flash(gettext(u"Error: %(err)s",
+                      err=u'PID: {msg}'.format(msg=err)),
+              "error")
 
 
 def can_set_relay(error, pid_id, raise_relay_id, lower_relay_id):

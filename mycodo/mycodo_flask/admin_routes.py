@@ -80,19 +80,14 @@ def admin_backup():
                   " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                           log=BACKUP_LOG_FILE)
             subprocess.Popen(cmd, shell=True)
-            flash(gettext(u"Backup in progress. It should complete within a "
-                          u"few seconds to a few minutes. The backup will "
-                          u"appear on this page after it completes."),
+            flash(gettext(u"Backup in progress"),
                   "success")
         elif form_backup.delete.data:
             cmd = '{pth}/mycodo/scripts/mycodo_wrapper backup-delete {dir}' \
                   ' 2>&1'.format(pth=INSTALL_DIRECTORY,
                                  dir=form_backup.selected_dir.data)
             subprocess.Popen(cmd, shell=True)
-            flash(gettext(u"Deletion of backup in progress. It should "
-                          u"complete within a few seconds to a few minutes. "
-                          u"The backup will disappear on this page after it "
-                          u"completes."),
+            flash(gettext(u"Deletion of backup in progress"),
                   "success")
         elif form_backup.restore.data:
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper backup-restore {backup}" \
@@ -102,8 +97,7 @@ def admin_backup():
                                           log=RESTORE_LOG_FILE)
 
             subprocess.Popen(cmd, shell=True)
-            flash(gettext(u"Restore in progress. It should complete within a "
-                          u"few seconds to a few minutes."),
+            flash(gettext(u"Restore in progress"),
                   "success")
 
     return render_template('admin/backup.html',
@@ -227,8 +221,7 @@ def admin_upgrade():
             mod_misc = Misc.query.first()
             mod_misc.mycodo_upgrade_available = False
             db.session.commit()
-            flash(gettext(u"The upgrade has started. The daemon will be "
-                          u"stopped during the upgrade."), "success")
+            flash(gettext(u"The upgrade has started"), "success")
         else:
             flash(gettext(u"You cannot upgrade if an upgrade is not available"),
                   "error")

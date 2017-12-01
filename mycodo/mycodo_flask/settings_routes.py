@@ -136,6 +136,7 @@ def settings_general():
     return render_template('settings/general.html',
                            misc=misc,
                            languages=languages_sorted,
+                           current_language=flask_login.current_user.language,
                            form_settings_general=form_settings_general)
 
 

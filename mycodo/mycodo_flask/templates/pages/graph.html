@@ -128,8 +128,8 @@
               {{form_mod_graph.sensor_ids.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-                {% if sensor_choices %}
-                  {% for each_choice, value in sensor_choices.iteritems() -%}
+                {% if choices_input %}
+                  {% for each_choice, value in choices_input.iteritems() -%}
                     <option value="{{each_choice}}"{%- if each_choice|string in each_graph.sensor_ids_measurements %} selected{%- endif -%}>{{value}}</option>
                   {% endfor -%}
                 {% endif %}
@@ -140,8 +140,8 @@
               {{form_mod_graph.relay_ids.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-                {% if output_choices %}
-                  {% for each_choice, value in output_choices.iteritems() -%}
+                {% if choices_output %}
+                  {% for each_choice, value in choices_output.iteritems() -%}
                     <option value="{{each_choice}}"{%- if each_choice|string in each_graph.relay_ids %} selected{%- endif -%}>{{value}}</option>
                   {% endfor -%}
                 {% endif %}
@@ -152,8 +152,8 @@
               {{form_mod_graph.pid_ids.label(class_='control-label')}}
               <div>
                 <select class="form-control" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-                {% if pid_choices %}
-                  {% for each_choice, value in pid_choices.iteritems() -%}
+                {% if choices_pid %}
+                  {% for each_choice, value in choices_pid.iteritems() -%}
                     <option value="{{each_choice}}"{%- if each_choice|string in each_graph.pid_ids %} selected{%- endif -%}>{{value}}</option>
                   {% endfor -%}
                 {% endif %}
@@ -268,7 +268,7 @@
                 {{form_mod_gauge.sensor_ids.label(class_='control-label')}}
                 <div>
                   <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;">
-                  {% for each_choice, value in sensor_choices.iteritems() -%}
+                  {% for each_choice, value in choices_input.iteritems() -%}
                     <option value="{{each_choice}}" {% if each_graph.sensor_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
                   {% endfor -%}
                   </select>
@@ -462,7 +462,7 @@
           {{form_add_graph.sensor_ids.label(class_='control-label')}}
           <div>
             <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-            {% for each_choice, value in sensor_choices.iteritems() -%}
+            {% for each_choice, value in choices_input.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
             {% endfor -%}
             </select>
@@ -472,7 +472,7 @@
           {{form_add_graph.relay_ids.label(class_='control-label')}}
           <div>
             <select class="form-control" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-            {% for each_choice, value in output_choices.iteritems() -%}
+            {% for each_choice, value in choices_output.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
             {% endfor -%}
             </select>
@@ -482,7 +482,7 @@
           {{form_add_graph.pid_ids.label(class_='control-label')}}
           <div>
             <select class="form-control" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
-            {% for each_choice, value in pid_choices.iteritems() -%}
+            {% for each_choice, value in choices_pid.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
             {% endfor -%}
             </select>
@@ -599,7 +599,7 @@
           {{form_add_gauge.sensor_ids.label(class_='control-label')}}
           <div>
             <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;">
-            {% for each_choice, value in sensor_choices.iteritems() -%}
+            {% for each_choice, value in choices_input.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
             {% endfor -%}
             </select>

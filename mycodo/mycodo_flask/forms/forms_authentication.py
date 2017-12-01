@@ -65,10 +65,9 @@ class Login(FlaskForm):
 class LogView(FlaskForm):
     lines = IntegerField(
         lazy_gettext(u'Number of Lines'),
-        render_kw={'placeholder': lazy_gettext(u'Lines')},
         validators=[validators.NumberRange(
             min=1,
-            message=lazy_gettext(u'Number of lines should be greater than 0.')
+            message=lazy_gettext(u'Number of lines should be greater than 0')
         )]
     )
     loglogin = SubmitField(lazy_gettext(u'Login Log'))

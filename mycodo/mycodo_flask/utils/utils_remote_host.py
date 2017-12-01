@@ -43,9 +43,10 @@ def remote_log_in(address, user, password_hash):
     """
     try:
         # Require all certificate data matches stored certificate, except hostname
-        ssl_cert_file = '{path}/{file}'.format(path=STORED_SSL_CERTIFICATE_PATH,
-                                               file='{add}_cert.pem'.format(
-                                                   add=address))
+        ssl_cert_file = '{path}/{file}'.format(
+            path=STORED_SSL_CERTIFICATE_PATH,
+            file='{add}_cert.pem'.format(
+                add=address))
         http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED',
                                    ca_certs=ssl_cert_file,
                                    assert_hostname=False)
@@ -78,10 +79,11 @@ def remote_host_page(address, headers, page):
         return 1, None
 
     try:
-        # Require all certificate data matches stored certificate, except hostname
-        ssl_cert_file = '{path}/{file}'.format(path=STORED_SSL_CERTIFICATE_PATH,
-                                               file='{add}_cert.pem'.format(
-                                                   add=address))
+        # Require certificate data matches stored certificate, except hostname
+        ssl_cert_file = '{path}/{file}'.format(
+            path=STORED_SSL_CERTIFICATE_PATH,
+            file='{add}_cert.pem'.format(
+                add=address))
         http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED',
                                    ca_certs=ssl_cert_file,
                                    assert_hostname=False)
@@ -120,7 +122,8 @@ def remote_host_add(form_setup, display_order):
             }
             url = 'https://{}/newremote/'.format(form_setup.host.data)
             try:
-                pw_check = requests.get(url, params=credentials, verify=False).json()
+                pw_check = requests.get(
+                    url, params=credentials, verify=False).json()
             except Exception:
                 return 1
 
@@ -132,9 +135,10 @@ def remote_host_add(form_setup, display_order):
                 return 1
 
             # Write remote certificate to file
-            public_key = '{path}/{file}'.format(path=STORED_SSL_CERTIFICATE_PATH,
-                                                file='{add}_cert.pem'.format(
-                                                    add=form_setup.host.data))
+            public_key = '{path}/{file}'.format(
+                path=STORED_SSL_CERTIFICATE_PATH,
+                file='{add}_cert.pem'.format(
+                add=form_setup.host.data))
             file_handler = open(public_key, 'w')
             file_handler.write(pw_check['certificate'])
             file_handler.close()
@@ -146,8 +150,8 @@ def remote_host_add(form_setup, display_order):
             try:
                 db.session.add(new_remote_host)
                 db.session.commit()
-                flash(gettext(u"Remote Host %(host)s with ID %(id)s (%(uuid)s)"
-                              u" successfully added",
+                flash(gettext(u"Remote Host %(host)s with ID %(id)s "
+                              u"(%(uuid)s) successfully added",
                               host=form_setup.host.data,
                               id=new_remote_host.id,
                               uuid=new_remote_host.unique_id),
@@ -157,13 +161,16 @@ def remote_host_add(form_setup, display_order):
                     display_order, new_remote_host.id)
                 db.session.commit()
             except sqlalchemy.exc.OperationalError as except_msg:
-                flash(gettext(u"Remote Host Error: %(msg)s", msg=except_msg),
+                flash(gettext(u"Error: %(err)s",
+                              err=u'Remote Host Add: {msg}'.format(msg=except_msg)),
                       "error")
             except sqlalchemy.exc.IntegrityError as except_msg:
-                flash(gettext(u"Remote Host Error: %(msg)s", msg=except_msg),
+                flash(gettext(u"Error: %(err)s",
+                              err=u'Remote Host Add: {msg}'.format(msg=except_msg)),
                       "error")
         except Exception as except_msg:
-            flash(gettext(u"Remote Host Error: %(msg)s", msg=except_msg),
+            flash(gettext(u"Error: %(err)s",
+                          err=u'Remote Host Add: {msg}'.format(msg=except_msg)),
                   "error")
     else:
         flash_form_errors(form_setup)
@@ -177,9 +184,12 @@ def remote_host_del(form_setup):
     try:
         delete_entry_with_id(Remote,
                              form_setup.remote_id.data)
-        display_order = csv_to_list_of_int(DisplayOrder.query.first().remote_host)
+        display_order = csv_to_list_of_int(
+            DisplayOrder.query.first().remote_host)
         display_order.remove(int(form_setup.remote_id.data))
         DisplayOrder.query.first().remote_host = list_to_csv(display_order)
         db.session.commit()
     except Exception as except_msg:
-        flash(gettext(u"Remote Host Error: %(msg)s", msg=except_msg), "error")
+        flash(gettext(u"Error: %(err)s",
+                      err=u'Remote Host Delete: {msg}'.format(msg=except_msg)),
+              "error")

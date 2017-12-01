@@ -297,8 +297,8 @@ def page_graph():
     input_dev = Input.query.all()
 
     # Retrieve all choices to populate form drop-down menu
-    pid_choices = utils_general.choices_pids(pid)
-    output_choices = utils_general.choices_outputs(output)
+    choices_pid = utils_general.choices_pids(pid)
+    choices_output = utils_general.choices_outputs(output)
     input_choices = utils_general.choices_inputs(input_dev)
 
     # Add custom measurement and units to list (From linux command input)
@@ -310,9 +310,9 @@ def page_graph():
     form_mod_graph.pid_ids.choices = []
     form_mod_graph.relay_ids.choices = []
     form_mod_graph.sensor_ids.choices = []
-    for key, value in pid_choices.items():
+    for key, value in choices_pid.items():
         form_mod_graph.pid_ids.choices.append((key, value))
-    for key, value in output_choices.items():
+    for key, value in choices_output.items():
         form_mod_graph.relay_ids.choices.append((key, value))
     for key, value in input_choices.items():
         form_mod_graph.sensor_ids.choices.append((key, value))
@@ -374,13 +374,13 @@ def page_graph():
         return redirect('/graph')
 
     return render_template('pages/graph.html',
+                           choices_input=input_choices,
+                           choices_output=choices_output,
+                           choices_pid=choices_pid,
                            graph=graph,
                            pid=pid,
                            relay=output,
                            sensor=input_dev,
-                           pid_choices=pid_choices,
-                           output_choices=output_choices,
-                           sensor_choices=input_choices,
                            colors_graph=colors_graph,
                            colors_gauge=colors_gauge,
                            sensor_measurements=input_measurements,

@@ -1,13 +1,11 @@
-# Korean translations for PROJECT.
-# Copyright (C) 2017 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2017.
+# Korean translations for Mycodo.
+# This file is distributed under the same license as the Mycodo project.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
+"Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-11-11 18:43-0500\n"
+"POT-Creation-Date: 2017-11-30 09:59-0500\n"
 "PO-Revision-Date: 2017-11-11 18:34-0500\n"
 "Last-Translator: \n"
 "Language: ko\n"
@@ -16,101 +14,263 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.3.4\n"
+"Generated-By: Babel 2.5.1\n"
 
-#: mycodo_flask/admin_routes.py:80
-msgid ""
-"Backup in progress. It should complete within a few seconds to a few "
-"minutes. The backup will appear on this page after it completes."
-msgstr "백업이 진행중입니다. 몇 초에서 몇 분 이내에 완료될 것입니다. 완료 후 이 페이지에 백업이 표시될 것입니다."
+#: config.py:63 mycodo_flask/templates/pages/graph.html:1022
+msgid "Altitude"
+msgstr "고도"
 
-#: mycodo_flask/admin_routes.py:89
-msgid ""
-"Deletion of backup in progress. It should complete within a few seconds "
-"to a few minutes. The backup will disappear on this page after it "
-"completes."
-msgstr "백업 삭제 진행중입니다. 몇 초에서 몇 분 이내에 완료되어야합니다. 완료 후 이 페이지에 백업이 없어질 것입니다."
+#: config.py:66
+msgid "CO2"
+msgstr ""
 
-#: mycodo_flask/admin_routes.py:102
-msgid ""
-"Restore in progress. It should complete within a few seconds to a few "
-"minutes."
-msgstr "복원이 진행중입니다. 몇 초에서 몇 분 이내에 완료될 것입니다."
+#: config.py:69
+msgid "Dewpoint"
+msgstr ""
 
-#: mycodo_flask/admin_routes.py:154
+#: config.py:72 config.py:75 config.py:78
+#: mycodo_flask/templates/pages/graph.html:1034
+#, fuzzy
+msgid "CPU Load"
+msgstr "CPU Load"
+
+#: config.py:81
+msgid "Disk"
+msgstr ""
+
+#: config.py:84 mycodo_flask/forms/forms_conditional.py:57
+#: mycodo_flask/forms/forms_conditional.py:59
+#: mycodo_flask/forms/forms_timer.py:28
+#: mycodo_flask/templates/pages/graph.html:1440
+#: mycodo_flask/templates/pages/method-list.html:40
+msgid "Duration"
+msgstr "시속시간"
+
+#: config.py:87 mycodo_flask/forms/forms_output.py:84
+#: mycodo_flask/templates/pages/graph.html:1070
+#: mycodo_flask/templates/pages/graph.html:1451
+#: mycodo_flask/templates/pages/live.html:170
+#: mycodo_flask/templates/pages/live.html:207
+#: mycodo_flask/templates/pages/output.html:254
+msgid "Duty Cycle"
+msgstr ""
+
+#: config.py:90 mycodo_flask/forms/forms_input.py:70
+#: mycodo_flask/templates/pages/graph.html:1082
+msgid "Edge"
+msgstr "엣지"
+
+#: config.py:93 mycodo_flask/forms/forms_method.py:50
+#: mycodo_flask/templates/pages/graph.html:1094
+msgid "Frequency"
+msgstr "주파수"
+
+#: config.py:96
+msgid "Humidity"
+msgstr ""
+
+#: config.py:99
+msgid "Light"
+msgstr ""
+
+#: config.py:102 mycodo_flask/templates/pages/graph.html:1130
+msgid "Moisture"
+msgstr ""
+
+#: config.py:105 mycodo_flask/templates/pages/graph.html:1142
+msgid "pH"
+msgstr ""
+
+#: config.py:108
+msgid "PID Output"
+msgstr ""
+
+#: config.py:111 mycodo_flask/templates/pages/graph.html:1154
+msgid "Pressure"
+msgstr ""
+
+#: config.py:114 mycodo_flask/templates/pages/graph.html:1166
+msgid "Pulse Width"
+msgstr ""
+
+#: config.py:117 mycodo_flask/templates/pages/graph.html:1178
+msgid "Revolutions Per Minute"
+msgstr ""
+
+#: config.py:120 mycodo_flask/forms/forms_conditional.py:39
+#: mycodo_flask/forms/forms_pid.py:66
+#: mycodo_flask/templates/pages/graph.html:1429
+msgid "Setpoint"
+msgstr "세트 포인트"
+
+#: config.py:123 mycodo_flask/forms/forms_calibration.py:42
+#: mycodo_flask/templates/pages/graph.html:1190
+msgid "Temperature"
+msgstr "온도"
+
+#: config.py:126
+msgid "Temperature (Obj)"
+msgstr ""
+
+#: config.py:129
+msgid "Temperature (Die)"
+msgstr ""
+
+#: config.py:132 mycodo_flask/forms/forms_input.py:102
+#: mycodo_flask/forms/forms_settings.py:122
+#: mycodo_flask/templates/pages/graph.html:1202
+msgid "Voltage"
+msgstr "전압"
+
+#: config.py:216 mycodo_flask/forms/forms_conditional.py:55
+#: mycodo_flask/forms/forms_method.py:70
+#: mycodo_flask/forms/forms_settings.py:44 mycodo_flask/forms/forms_timer.py:37
+#: mycodo_flask/templates/layout.html:150
+#: mycodo_flask/templates/pages/graph.html:1440
+#: mycodo_flask/templates/pages/graph.html:1451
+#: mycodo_flask/templates/pages/method_options/build_daily.html:47
+#: mycodo_flask/templates/pages/method_options/build_date.html:46
+#: mycodo_flask/templates/pages/method_options/build_duration.html:40
+#: mycodo_flask/templates/pages/output.html:3
+#: mycodo_flask/utils/utils_conditional.py:28
+#: mycodo_flask/utils/utils_conditional.py:66
+#: mycodo_flask/utils/utils_conditional.py:131
+#: mycodo_flask/utils/utils_conditional.py:160
+#: mycodo_flask/utils/utils_output.py:70 mycodo_flask/utils/utils_output.py:131
+#: mycodo_flask/utils/utils_output.py:175
+#: mycodo_flask/utils/utils_output.py:231
+#: mycodo_flask/utils/utils_output.py:250
+msgid "Output"
+msgstr "출력"
+
+#: config.py:217 mycodo_flask/calibration_routes.py:219
+#: mycodo_flask/forms/forms_input.py:57
+msgid "Command"
+msgstr "코맨드"
+
+#: config.py:218
+msgid "Activate PID"
+msgstr ""
+
+#: config.py:219
+msgid "Deactivate PID"
+msgstr ""
+
+#: config.py:220 mycodo_flask/forms/forms_authentication.py:30
+#: mycodo_flask/forms/forms_authentication.py:31
+#: mycodo_flask/forms/forms_settings.py:83
+#: mycodo_flask/forms/forms_settings.py:169
+#: mycodo_flask/forms/forms_settings.py:205
+#: mycodo_flask/forms/forms_settings.py:206
+msgid "Email"
+msgstr "이메일"
+
+#: config.py:221
+msgid "Flash LCD"
+msgstr ""
+
+#: config.py:222
+msgid "Photo"
+msgstr ""
+
+#: config.py:223
+msgid "Email Photo"
+msgstr ""
+
+#: config.py:224
+msgid "Video"
+msgstr ""
+
+#: config.py:225
+msgid "Email Video"
+msgstr ""
+
+#: mycodo_flask/admin_routes.py:83
+msgid "Backup in progress"
+msgstr ""
+
+#: mycodo_flask/admin_routes.py:90
+msgid "Deletion of backup in progress"
+msgstr ""
+
+#: mycodo_flask/admin_routes.py:100
+msgid "Restore in progress"
+msgstr ""
+
+#: mycodo_flask/admin_routes.py:151
 msgid ""
 "Upgrade functionality is disabled because an internet connection was "
 "unable to be detected"
 msgstr "인터넷 연결을 감지 할 수 없어 업그레이드 기능을 해제시켰습니다"
 
-#: mycodo_flask/admin_routes.py:174
+#: mycodo_flask/admin_routes.py:171
 msgid ""
 "There was an error encountered during the upgrade process. Check the "
 "upgrade log for details."
 msgstr "업그레이드 진행도중 오류가 발생했습니다. 자세한 내용은 업그레이드 로그를 확인하십시오."
 
-#: mycodo_flask/admin_routes.py:192
+#: mycodo_flask/admin_routes.py:189
 msgid "Could not determine local mycodo version or online release versions"
 msgstr "로컬 mycodo 버전 또는 온라인 릴리스 버전을 확인할 수 없습니다"
 
-#: mycodo_flask/admin_routes.py:218
-msgid "The upgrade has started. The daemon will be stopped during the upgrade."
-msgstr "업그레이드가 시작되었습니다. 데몬은 업그레이드 도중 중지됩니다."
+#: mycodo_flask/admin_routes.py:224
+msgid "The upgrade has started"
+msgstr ""
 
-#: mycodo_flask/admin_routes.py:221
+#: mycodo_flask/admin_routes.py:226
 msgid "You cannot upgrade if an upgrade is not available"
 msgstr "업그레이드를 사용 할 수 없을때 업그레이드 할 수 없습니다"
 
-#: mycodo_flask/app.py:91
+#: mycodo_flask/app.py:99
 msgid "Please log in to access this page"
 msgstr "이 페이지에 액세스하려면 로그인하십시오"
 
-#: mycodo_flask/authentication_routes.py:58
+#: mycodo_flask/authentication_routes.py:60
 msgid "Cannot access admin creation form if an admin user already exists."
 msgstr "관리 사용자가 이미있는 경우 관리자 작성 양식에 액세스 할 수 없습니다."
 
-#: mycodo_flask/authentication_routes.py:81
-#: mycodo_flask/utils/utils_settings.py:115
-#: mycodo_flask/utils/utils_settings.py:153
+#: mycodo_flask/authentication_routes.py:83
+#: mycodo_flask/utils/utils_settings.py:118
+#: mycodo_flask/utils/utils_settings.py:157
 msgid "Passwords do not match. Please try again."
 msgstr "비밀번호가 일치하지 않습니다. 다시 시도하십시오."
 
-#: mycodo_flask/authentication_routes.py:85
-#: mycodo_flask/utils/utils_settings.py:101
+#: mycodo_flask/authentication_routes.py:87
+#: mycodo_flask/utils/utils_settings.py:103
 msgid ""
 "Invalid user name. Must be between 2 and 64 characters and only contain "
 "letters and numbers."
 msgstr "잘못된 사용자 이름. 2 자에서 64 자 사이의 문자와 숫자 만 포함해야합니다."
 
-#: mycodo_flask/authentication_routes.py:91
-#: mycodo_flask/utils/utils_settings.py:110
+#: mycodo_flask/authentication_routes.py:93
+#: mycodo_flask/utils/utils_settings.py:113
 msgid ""
 "Invalid password. Must be between 6 and 64 characters and only contain "
 "letters, numbers, and symbols."
 msgstr "유효하지 않은 비밀번호. 6 자에서 64 자 사이의 문자 여야하며 문자, 숫자 및 기호 만 포함해야합니다."
 
-#: mycodo_flask/authentication_routes.py:108
+#: mycodo_flask/authentication_routes.py:110
 #, python-format
 msgid "User '%(user)s' successfully created. Please log in below."
-msgstr "'%(user)s' 사용자가 성공적으로 생성되었습니다. 아래에 로그인 하십시오."
+msgstr "'%(user)s' 사용자가 만들어졌습니다. 아래에 로그인 하십시오."
 
-#: mycodo_flask/authentication_routes.py:113
+#: mycodo_flask/authentication_routes.py:115
 #, python-format
 msgid "Failed to create user '%(user)s': %(err)s"
-msgstr "'%(user)s' 사용자를 생성하지 못했습니다: %(err)s"
+msgstr "'%(user)s' 사용자를 만들지 못했습니다: %(err)s"
 
-#: mycodo_flask/authentication_routes.py:134
+#: mycodo_flask/authentication_routes.py:155
 msgid "Cannot access login page if you're already logged in"
 msgstr "이미 로그인 되있는 상태에서 로그인 페이지를 액세스 할 수 없습니다"
 
-#: mycodo_flask/authentication_routes.py:145
+#: mycodo_flask/authentication_routes.py:166
 #, python-format
 msgid ""
 "Too many failed login attempts. Please wait %(min)s minutes before "
 "attempting to log in again"
 msgstr "로그인 실패 횟수 제한 초과. 다시 로그인을 시도하려면 %(min)s 분 기다려주십시오"
 
-#: mycodo_flask/authentication_routes.py:196
+#: mycodo_flask/authentication_routes.py:218
 msgid "Successfully logged out"
 msgstr "성공적으로 로그 아웃했습니다"
 
@@ -120,7 +280,7 @@ msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "유효한 온도 값이 필요합니다: %(temp)s 가 유효하지 않습니다."
 
 #: mycodo_flask/calibration_routes.py:209
-#: mycodo_flask/templates/layout.html:128
+#: mycodo_flask/templates/layout.html:159
 #: mycodo_flask/templates/tools/calibration.html:3
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:3
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:108
@@ -131,37 +291,36 @@ msgstr "유효한 온도 값이 필요합니다: %(temp)s 가 유효하지 않�
 msgid "Calibration"
 msgstr "캘리브레이션"
 
-#: mycodo_flask/calibration_routes.py:219 mycodo_flask/forms/forms_input.py:57
-msgid "Command"
-msgstr "코맨드"
-
-#: mycodo_flask/general_routes.py:461
+#: mycodo_flask/general_routes.py:425
 msgid "System rebooting in 10 seconds"
 msgstr "10 초 안에 시스템 재부팅"
 
-#: mycodo_flask/general_routes.py:463
+#: mycodo_flask/general_routes.py:427
 msgid "System shutting down in 10 seconds"
 msgstr "10 초 안에 시스템 종료"
 
 #: mycodo_flask/forms/forms_conditional.py:43
 #: mycodo_flask/forms/forms_conditional.py:64
-#: mycodo_flask/forms/forms_graph.py:164 mycodo_flask/forms/forms_input.py:104
-#: mycodo_flask/forms/forms_lcd.py:89 mycodo_flask/forms/forms_method.py:122
+#: mycodo_flask/forms/forms_graph.py:117 mycodo_flask/forms/forms_graph.py:169
+#: mycodo_flask/forms/forms_input.py:104 mycodo_flask/forms/forms_lcd.py:79
+#: mycodo_flask/forms/forms_lcd.py:111 mycodo_flask/forms/forms_method.py:122
 #: mycodo_flask/forms/forms_output.py:80 mycodo_flask/forms/forms_pid.py:100
-#: mycodo_flask/forms/forms_settings.py:48
-#: mycodo_flask/forms/forms_settings.py:158
-#: mycodo_flask/forms/forms_settings.py:233
-#: mycodo_flask/forms/forms_timer.py:40 mycodo_flask/method_routes.py:304
-#: mycodo_flask/utils/utils_graph.py:263 mycodo_flask/utils/utils_input.py:313
-#: mycodo_flask/utils/utils_lcd.py:117 mycodo_flask/utils/utils_method.py:495
+#: mycodo_flask/forms/forms_settings.py:49
+#: mycodo_flask/forms/forms_settings.py:160
+#: mycodo_flask/forms/forms_settings.py:235
+#: mycodo_flask/forms/forms_timer.py:40 mycodo_flask/method_routes.py:306
+#: mycodo_flask/utils/utils_graph.py:269 mycodo_flask/utils/utils_input.py:314
+#: mycodo_flask/utils/utils_lcd.py:97 mycodo_flask/utils/utils_lcd.py:287
+#: mycodo_flask/utils/utils_method.py:495
 #: mycodo_flask/utils/utils_output.py:230 mycodo_flask/utils/utils_pid.py:182
 #: mycodo_flask/utils/utils_settings.py:47
+#: mycodo_flask/utils/utils_settings.py:187
 #: mycodo_flask/utils/utils_settings.py:417
-#: mycodo_flask/utils/utils_timer.py:153
+#: mycodo_flask/utils/utils_timer.py:150
 msgid "Delete"
 msgstr "삭제"
 
-#: mycodo_flask/forms/forms_timer.py:94 mycodo_flask/method_routes.py:305
+#: mycodo_flask/forms/forms_timer.py:85 mycodo_flask/method_routes.py:307
 #: mycodo_flask/utils/utils_method.py:148
 #: mycodo_flask/utils/utils_method.py:210
 #: mycodo_flask/utils/utils_method.py:376
@@ -177,45 +336,31 @@ msgstr "스트림이 활성화되어 있을때 타임랩스를 시작할 수 없
 msgid "Cannot start stream if time-lapse is active."
 msgstr "타임랩스가 활성화되어 있을때 스트림을 시작할수 없습니다."
 
-#: mycodo_flask/static_routes.py:46
-#, python-format
-msgid "URL for 'inject_mycodo_version' raised and error: %(err)s"
-msgstr "'inject_mycodo_version' 에 대한 URL 발생 및 오류: %(err)s"
-
 #: mycodo_flask/forms/forms_authentication.py:26
 #: mycodo_flask/forms/forms_authentication.py:27
 #: mycodo_flask/forms/forms_authentication.py:49
 #: mycodo_flask/forms/forms_authentication.py:50
-#: mycodo_flask/forms/forms_authentication.py:95
-#: mycodo_flask/forms/forms_settings.py:163
+#: mycodo_flask/forms/forms_authentication.py:93
+#: mycodo_flask/forms/forms_settings.py:165
 msgid "Username"
 msgstr "사용자 이름"
-
-#: mycodo_flask/forms/forms_authentication.py:30
-#: mycodo_flask/forms/forms_authentication.py:31
-#: mycodo_flask/forms/forms_settings.py:82
-#: mycodo_flask/forms/forms_settings.py:167
-#: mycodo_flask/forms/forms_settings.py:203
-#: mycodo_flask/forms/forms_settings.py:204
-msgid "Email"
-msgstr "이메일"
 
 #: mycodo_flask/forms/forms_authentication.py:34
 #: mycodo_flask/forms/forms_authentication.py:35
 #: mycodo_flask/forms/forms_authentication.py:54
 #: mycodo_flask/forms/forms_authentication.py:55
-#: mycodo_flask/forms/forms_authentication.py:99
-#: mycodo_flask/forms/forms_settings.py:78
-#: mycodo_flask/forms/forms_settings.py:174
-#: mycodo_flask/forms/forms_settings.py:209
+#: mycodo_flask/forms/forms_authentication.py:97
+#: mycodo_flask/forms/forms_settings.py:79
+#: mycodo_flask/forms/forms_settings.py:176
+#: mycodo_flask/forms/forms_settings.py:211
 msgid "Password"
 msgstr "패스워드"
 
 #: mycodo_flask/forms/forms_authentication.py:38
 #: mycodo_flask/forms/forms_authentication.py:39
-#: mycodo_flask/forms/forms_settings.py:186
-#: mycodo_flask/forms/forms_settings.py:224
-#: mycodo_flask/forms/forms_settings.py:225
+#: mycodo_flask/forms/forms_settings.py:188
+#: mycodo_flask/forms/forms_settings.py:226
+#: mycodo_flask/forms/forms_settings.py:227
 msgid "Repeat Password"
 msgstr "패스워드 다시 입력"
 
@@ -228,64 +373,59 @@ msgstr "기억하기"
 msgid "Number of Lines"
 msgstr "라인 개수"
 
-#: mycodo_flask/forms/forms_authentication.py:68
-#: mycodo_flask/forms/forms_misc.py:74
-msgid "Lines"
-msgstr "라인"
-
-#: mycodo_flask/forms/forms_authentication.py:71
+#: mycodo_flask/forms/forms_authentication.py:70
 #: mycodo_flask/forms/forms_misc.py:77
-msgid "Number of lines should be greater than 0."
-msgstr "라인 개수는 0보다 커야합니다."
+msgid "Number of lines should be greater than 0"
+msgstr ""
 
-#: mycodo_flask/forms/forms_authentication.py:74
+#: mycodo_flask/forms/forms_authentication.py:73
 #: mycodo_flask/forms/forms_misc.py:80
 msgid "Login Log"
 msgstr "로그인 로그"
 
-#: mycodo_flask/forms/forms_authentication.py:75
+#: mycodo_flask/forms/forms_authentication.py:74
 #: mycodo_flask/forms/forms_misc.py:81
 msgid "HTTP Log"
 msgstr "HTTP 로그"
 
-#: mycodo_flask/forms/forms_authentication.py:76
+#: mycodo_flask/forms/forms_authentication.py:75
 #: mycodo_flask/forms/forms_misc.py:82
 msgid "Daemon Log"
 msgstr "데몬 로그"
 
-#: mycodo_flask/forms/forms_authentication.py:77
+#: mycodo_flask/forms/forms_authentication.py:76
 #: mycodo_flask/forms/forms_misc.py:83
 msgid "Backup Log"
 msgstr "백업 로그"
 
-#: mycodo_flask/forms/forms_authentication.py:78
+#: mycodo_flask/forms/forms_authentication.py:77
 #: mycodo_flask/forms/forms_misc.py:84
 msgid "KeepUp Log"
 msgstr "KeepUp 로그"
 
-#: mycodo_flask/forms/forms_authentication.py:79
+#: mycodo_flask/forms/forms_authentication.py:78
 #: mycodo_flask/forms/forms_misc.py:85
 msgid "Upgrade Log"
 msgstr "업그레이드 로그"
 
-#: mycodo_flask/forms/forms_authentication.py:80
+#: mycodo_flask/forms/forms_authentication.py:79
 #: mycodo_flask/forms/forms_misc.py:86
 msgid "Restore Log"
 msgstr "복원 로그"
 
-#: mycodo_flask/forms/forms_authentication.py:90
+#: mycodo_flask/forms/forms_authentication.py:89
 msgid "Domain or IP Address"
 msgstr "도메인 또는 IP 주소"
 
-#: mycodo_flask/forms/forms_authentication.py:102
+#: mycodo_flask/forms/forms_authentication.py:100
 msgid "Add Host"
 msgstr "호스트 더하기"
 
-#: mycodo_flask/forms/forms_authentication.py:103
+#: mycodo_flask/forms/forms_authentication.py:101
 msgid "Delete Host"
 msgstr "호스트 삭제"
 
-#: mycodo_flask/forms/forms_authentication.py:107
+#: mycodo_flask/forms/forms_authentication.py:105
 msgid "I Understand"
 msgstr "나는 이해한다"
 
@@ -301,11 +441,6 @@ msgstr "아틀라스 pH 센서"
 msgid "Clear Calibration"
 msgstr "캘리브레이션 지우기"
 
-#: mycodo_flask/forms/forms_calibration.py:42
-#: mycodo_flask/templates/pages/graph.html:1096
-msgid "Temperature"
-msgstr "온도"
-
 #: mycodo_flask/forms/forms_calibration.py:45
 msgid "Begin Calibration"
 msgstr "캘리브레이션 시작하기"
@@ -317,50 +452,47 @@ msgstr "다음 단계로 진행"
 
 #: mycodo_flask/forms/forms_conditional.py:24
 #: mycodo_flask/forms/forms_input.py:25 mycodo_flask/forms/forms_input.py:26
-#: mycodo_flask/forms/forms_lcd.py:22 mycodo_flask/forms/forms_lcd.py:23
-#: mycodo_flask/forms/forms_output.py:23 mycodo_flask/forms/forms_output.py:26
-#: mycodo_flask/forms/forms_pid.py:22 mycodo_flask/forms/forms_pid.py:23
+#: mycodo_flask/forms/forms_lcd.py:22 mycodo_flask/forms/forms_output.py:23
+#: mycodo_flask/forms/forms_output.py:26 mycodo_flask/forms/forms_pid.py:22
+#: mycodo_flask/forms/forms_pid.py:23
 #: mycodo_flask/templates/pages/output.html:146
 #: mycodo_flask/templates/pages/output.html:164
-#: mycodo_flask/templates/pages/output_pwm.html:67
 msgid "Quantity"
 msgstr "수량"
 
 #: mycodo_flask/forms/forms_conditional.py:25
-#: mycodo_flask/forms/forms_graph.py:24 mycodo_flask/forms/forms_graph.py:69
-#: mycodo_flask/forms/forms_graph.py:105 mycodo_flask/forms/forms_graph.py:151
-#: mycodo_flask/forms/forms_input.py:43 mycodo_flask/forms/forms_lcd.py:35
+#: mycodo_flask/forms/forms_graph.py:24 mycodo_flask/forms/forms_graph.py:73
+#: mycodo_flask/forms/forms_graph.py:125 mycodo_flask/forms/forms_graph.py:160
+#: mycodo_flask/forms/forms_input.py:43 mycodo_flask/forms/forms_lcd.py:34
 #: mycodo_flask/forms/forms_method.py:19 mycodo_flask/forms/forms_method.py:88
 #: mycodo_flask/forms/forms_output.py:34 mycodo_flask/forms/forms_pid.py:35
 #: mycodo_flask/forms/forms_settings.py:28 mycodo_flask/forms/forms_timer.py:34
 #: mycodo_flask/templates/pages/input.html:213
 #: mycodo_flask/templates/pages/output.html:190
 #: mycodo_flask/templates/pages/output.html:298
-#: mycodo_flask/templates/pages/output_pwm.html:93
-#: mycodo_flask/templates/pages/timer.html:116
+#: mycodo_flask/templates/pages/timer.html:114
 #: mycodo_flask/templates/pages/usage.html:24
 msgid "Name"
 msgstr "이름"
 
 #: mycodo_flask/forms/forms_conditional.py:28
-msgid "If Relay"
+msgid "If Output"
 msgstr ""
 
 #: mycodo_flask/forms/forms_conditional.py:29
-msgid "If Relay State"
-msgstr "만약 릴레이 상태가"
+msgid "If Output State"
+msgstr ""
 
 #: mycodo_flask/forms/forms_conditional.py:30
-msgid "If Relay Duration"
-msgstr "만약 릴레이 지속 기간이"
+msgid "If Output Duration"
+msgstr ""
 
 #: mycodo_flask/forms/forms_conditional.py:33
-#: mycodo_flask/forms/forms_lcd.py:59 mycodo_flask/templates/pages/lcd.html:122
 msgid "Period"
 msgstr "기간"
 
 #: mycodo_flask/forms/forms_conditional.py:34
-#: mycodo_flask/forms/forms_graph.py:72 mycodo_flask/forms/forms_graph.py:152
+#: mycodo_flask/forms/forms_graph.py:128 mycodo_flask/forms/forms_graph.py:161
 #: mycodo_flask/forms/forms_input.py:58 mycodo_flask/forms/forms_input.py:63
 #: mycodo_flask/forms/forms_pid.py:39
 #: mycodo_flask/templates/pages/live.html:113
@@ -373,7 +505,7 @@ msgstr "전압 에지 상태"
 
 #: mycodo_flask/forms/forms_conditional.py:36
 msgid "Edge Detected"
-msgstr "전압 에지 감지  "
+msgstr "전압 에지 감지"
 
 #: mycodo_flask/forms/forms_conditional.py:37
 msgid "GPIO State"
@@ -384,26 +516,21 @@ msgstr "GPIO 상태"
 msgid "Direction"
 msgstr "방향"
 
-#: mycodo_flask/forms/forms_conditional.py:39
-#: mycodo_flask/forms/forms_pid.py:66
-#: mycodo_flask/templates/pages/graph.html:1339
-msgid "Setpoint"
-msgstr "세트 포인트"
-
 #: mycodo_flask/forms/forms_conditional.py:41
 #: mycodo_flask/forms/forms_input.py:111
 msgid "Add Conditional"
-msgstr "조건부를 더하시오."
+msgstr "조건부 더하기"
 
 #: mycodo_flask/forms/forms_conditional.py:42
 #: mycodo_flask/forms/forms_conditional.py:63
-#: mycodo_flask/forms/forms_graph.py:145 mycodo_flask/forms/forms_graph.py:159
-#: mycodo_flask/forms/forms_input.py:103 mycodo_flask/forms/forms_lcd.py:88
-#: mycodo_flask/forms/forms_method.py:121 mycodo_flask/forms/forms_output.py:79
-#: mycodo_flask/forms/forms_pid.py:96 mycodo_flask/forms/forms_settings.py:47
-#: mycodo_flask/forms/forms_settings.py:136
-#: mycodo_flask/forms/forms_settings.py:157
-#: mycodo_flask/forms/forms_settings.py:232
+#: mycodo_flask/forms/forms_graph.py:116 mycodo_flask/forms/forms_graph.py:168
+#: mycodo_flask/forms/forms_input.py:103 mycodo_flask/forms/forms_lcd.py:78
+#: mycodo_flask/forms/forms_lcd.py:110 mycodo_flask/forms/forms_method.py:121
+#: mycodo_flask/forms/forms_output.py:79 mycodo_flask/forms/forms_pid.py:96
+#: mycodo_flask/forms/forms_settings.py:48
+#: mycodo_flask/forms/forms_settings.py:138
+#: mycodo_flask/forms/forms_settings.py:159
+#: mycodo_flask/forms/forms_settings.py:234
 #: mycodo_flask/forms/forms_timer.py:38 mycodo_flask/forms/forms_timer.py:39
 #: mycodo_flask/templates/pages/method_options/build_daily_bezier.html:66
 #: mycodo_flask/templates/pages/method_options/build_daily_sine.html:35
@@ -411,14 +538,14 @@ msgid "Save"
 msgstr "저장"
 
 #: mycodo_flask/forms/forms_conditional.py:44
-#: mycodo_flask/forms/forms_input.py:105 mycodo_flask/forms/forms_lcd.py:90
+#: mycodo_flask/forms/forms_input.py:105 mycodo_flask/forms/forms_lcd.py:80
 #: mycodo_flask/forms/forms_pid.py:101 mycodo_flask/forms/forms_timer.py:41
-#: mycodo_flask/utils/utils_lcd.py:154
+#: mycodo_flask/utils/utils_lcd.py:148
 msgid "Activate"
 msgstr "활성화"
 
 #: mycodo_flask/forms/forms_conditional.py:45
-#: mycodo_flask/forms/forms_input.py:106 mycodo_flask/forms/forms_lcd.py:91
+#: mycodo_flask/forms/forms_input.py:106 mycodo_flask/forms/forms_lcd.py:81
 #: mycodo_flask/forms/forms_pid.py:102 mycodo_flask/forms/forms_timer.py:42
 msgid "Deactivate"
 msgstr "비활성화"
@@ -431,32 +558,13 @@ msgstr "실행하다"
 msgid "Action String"
 msgstr "액션 스트링"
 
-#: mycodo_flask/forms/forms_conditional.py:55
-#: mycodo_flask/forms/forms_method.py:70
-#: mycodo_flask/forms/forms_settings.py:43 mycodo_flask/forms/forms_timer.py:37
-#: mycodo_flask/templates/layout.html:119
-#: mycodo_flask/templates/pages/graph.html:1350
-#: mycodo_flask/templates/pages/graph.html:1361
-#: mycodo_flask/templates/pages/output.html:3
-#: mycodo_flask/utils/utils_output.py:70
-msgid "Output"
-msgstr "출력"
-
 #: mycodo_flask/forms/forms_conditional.py:56
 msgid "Output State"
-msgstr ""
-
-#: mycodo_flask/forms/forms_conditional.py:57
-#: mycodo_flask/forms/forms_conditional.py:59
-#: mycodo_flask/forms/forms_timer.py:28
-#: mycodo_flask/templates/pages/graph.html:1350
-#: mycodo_flask/templates/pages/method-list.html:40
-msgid "Duration"
-msgstr "시속시간"
+msgstr "출력 상태"
 
 #: mycodo_flask/forms/forms_conditional.py:58
 #: mycodo_flask/templates/pages/camera.html:5
-#: mycodo_flask/utils/utils_settings.py:314
+#: mycodo_flask/utils/utils_settings.py:311
 #: mycodo_flask/utils/utils_settings.py:353
 #: mycodo_flask/utils/utils_settings.py:418
 msgid "Camera"
@@ -465,13 +573,13 @@ msgstr "카메라"
 #: mycodo_flask/forms/forms_conditional.py:60
 #: mycodo_flask/templates/pages/lcd.html:5
 #: mycodo_flask/utils/utils_general.py:57 mycodo_flask/utils/utils_lcd.py:38
-#: mycodo_flask/utils/utils_lcd.py:62 mycodo_flask/utils/utils_lcd.py:118
-#: mycodo_flask/utils/utils_lcd.py:136 mycodo_flask/utils/utils_lcd.py:155
+#: mycodo_flask/utils/utils_lcd.py:65 mycodo_flask/utils/utils_lcd.py:98
+#: mycodo_flask/utils/utils_lcd.py:130 mycodo_flask/utils/utils_lcd.py:149
 msgid "LCD"
 msgstr "LCD"
 
 #: mycodo_flask/forms/forms_conditional.py:61
-#: mycodo_flask/templates/layout.html:121
+#: mycodo_flask/templates/layout.html:152
 #: mycodo_flask/templates/pages/pid.html:5
 #: mycodo_flask/utils/utils_general.py:58 mycodo_flask/utils/utils_pid.py:40
 #: mycodo_flask/utils/utils_pid.py:65 mycodo_flask/utils/utils_pid.py:183
@@ -483,106 +591,129 @@ msgstr "PID"
 msgid "Add Action"
 msgstr "활동  추가"
 
-#: mycodo_flask/forms/forms_graph.py:27 mycodo_flask/forms/forms_graph.py:108
+#: mycodo_flask/forms/forms_graph.py:27 mycodo_flask/forms/forms_graph.py:76
 msgid "PIDs"
-msgstr ""
+msgstr "PID"
 
-#: mycodo_flask/forms/forms_graph.py:28 mycodo_flask/forms/forms_graph.py:109
+#: mycodo_flask/forms/forms_graph.py:28 mycodo_flask/forms/forms_graph.py:77
 #: mycodo_flask/templates/pages/output.html:5
 msgid "Outputs"
-msgstr ""
+msgstr "출력"
 
-#: mycodo_flask/forms/forms_graph.py:29 mycodo_flask/forms/forms_graph.py:110
+#: mycodo_flask/forms/forms_graph.py:29 mycodo_flask/forms/forms_graph.py:78
 #: mycodo_flask/templates/pages/input.html:5
 #: mycodo_flask/templates/pages/input.html:14
 msgid "Inputs"
-msgstr ""
+msgstr "입력"
 
-#: mycodo_flask/forms/forms_graph.py:31 mycodo_flask/forms/forms_graph.py:74
-#: mycodo_flask/forms/forms_graph.py:112 mycodo_flask/forms/forms_graph.py:153
+#: mycodo_flask/forms/forms_graph.py:31 mycodo_flask/forms/forms_graph.py:80
+#: mycodo_flask/forms/forms_graph.py:130 mycodo_flask/forms/forms_graph.py:162
 msgid "Width"
 msgstr "폭"
 
-#: mycodo_flask/forms/forms_graph.py:38 mycodo_flask/forms/forms_graph.py:81
-#: mycodo_flask/forms/forms_graph.py:119 mycodo_flask/forms/forms_graph.py:154
+#: mycodo_flask/forms/forms_graph.py:38 mycodo_flask/forms/forms_graph.py:87
+#: mycodo_flask/forms/forms_graph.py:137 mycodo_flask/forms/forms_graph.py:163
 msgid "Height (pixels)"
 msgstr "높이 (픽셀)"
 
-#: mycodo_flask/forms/forms_graph.py:45 mycodo_flask/forms/forms_graph.py:126
-msgid "x-Axis (minutes)"
-msgstr "x축/엑스-액시스 (분)"
+#: mycodo_flask/forms/forms_graph.py:45 mycodo_flask/forms/forms_graph.py:94
+msgid "X-Axis (minutes)"
+msgstr ""
 
-#: mycodo_flask/forms/forms_graph.py:48 mycodo_flask/forms/forms_graph.py:129
+#: mycodo_flask/forms/forms_graph.py:48 mycodo_flask/forms/forms_graph.py:97
 msgid "Number of minutes to display of past measurements."
 msgstr "지난 과거 측정수에 대해 디스플레이할 분(minutes) 수."
 
-#: mycodo_flask/forms/forms_graph.py:53 mycodo_flask/forms/forms_graph.py:91
-#: mycodo_flask/forms/forms_graph.py:134 mycodo_flask/forms/forms_graph.py:158
-msgid "Refresh (seconds)"
-msgstr "새로고침 (분)"
+#: mycodo_flask/forms/forms_graph.py:53 mycodo_flask/forms/forms_graph.py:102
+#: mycodo_flask/forms/forms_input.py:82 mycodo_flask/forms/forms_lcd.py:60
+#: mycodo_flask/forms/forms_pid.py:52 mycodo_flask/forms/forms_timer.py:86
+msgid "Period (seconds)"
+msgstr "기간 (초)"
 
-#: mycodo_flask/forms/forms_graph.py:56 mycodo_flask/forms/forms_graph.py:94
-#: mycodo_flask/forms/forms_graph.py:137
+#: mycodo_flask/forms/forms_graph.py:56 mycodo_flask/forms/forms_graph.py:105
+#: mycodo_flask/forms/forms_graph.py:150
 msgid "Number of seconds to wait between acquiring any new measurements."
 msgstr "새 측정 값을 확보 할 때까지 기다리는 시간 (초)입니다."
 
-#: mycodo_flask/forms/forms_graph.py:60 mycodo_flask/forms/forms_graph.py:141
+#: mycodo_flask/forms/forms_graph.py:60 mycodo_flask/forms/forms_graph.py:109
+msgid "Enable Auto Refresh"
+msgstr ""
+
+#: mycodo_flask/forms/forms_graph.py:61 mycodo_flask/forms/forms_graph.py:110
+msgid "Enable X-Axis Reset"
+msgstr ""
+
+#: mycodo_flask/forms/forms_graph.py:62 mycodo_flask/forms/forms_graph.py:111
+msgid "Enable Title"
+msgstr ""
+
+#: mycodo_flask/forms/forms_graph.py:63 mycodo_flask/forms/forms_graph.py:112
 msgid "Enable Navbar"
 msgstr "Navbar 사용"
 
-#: mycodo_flask/forms/forms_graph.py:61 mycodo_flask/forms/forms_graph.py:142
+#: mycodo_flask/forms/forms_graph.py:64 mycodo_flask/forms/forms_graph.py:113
 msgid "Enable Export"
 msgstr "내보내기 사용"
 
-#: mycodo_flask/forms/forms_graph.py:62 mycodo_flask/forms/forms_graph.py:143
+#: mycodo_flask/forms/forms_graph.py:65 mycodo_flask/forms/forms_graph.py:114
 msgid "Enable Range Selector"
 msgstr "범위 선택기 사용"
 
-#: mycodo_flask/forms/forms_graph.py:63 mycodo_flask/forms/forms_graph.py:98
+#: mycodo_flask/forms/forms_graph.py:66 mycodo_flask/forms/forms_graph.py:154
 #: mycodo_flask/utils/utils_method.py:147
 msgid "Create"
 msgstr "생성"
 
-#: mycodo_flask/forms/forms_graph.py:87 mycodo_flask/forms/forms_graph.py:155
+#: mycodo_flask/forms/forms_graph.py:115
+msgid "Enable Custom Colors"
+msgstr "사용자 정의 색상 사용"
+
+#: mycodo_flask/forms/forms_graph.py:118 mycodo_flask/forms/forms_graph.py:170
+#: mycodo_flask/forms/forms_input.py:107 mycodo_flask/forms/forms_lcd.py:82
+#: mycodo_flask/forms/forms_output.py:81 mycodo_flask/forms/forms_pid.py:103
+#: mycodo_flask/forms/forms_timer.py:43
+msgid "Up"
+msgstr "위"
+
+#: mycodo_flask/forms/forms_graph.py:119 mycodo_flask/forms/forms_graph.py:171
+#: mycodo_flask/forms/forms_input.py:108 mycodo_flask/forms/forms_lcd.py:83
+#: mycodo_flask/forms/forms_output.py:82 mycodo_flask/forms/forms_pid.py:104
+#: mycodo_flask/forms/forms_timer.py:44
+msgid "Down"
+msgstr "아래"
+
+#: mycodo_flask/forms/forms_graph.py:143 mycodo_flask/forms/forms_graph.py:164
 msgid "Gauge Min"
 msgstr "게이지 최소"
 
-#: mycodo_flask/forms/forms_graph.py:88 mycodo_flask/forms/forms_graph.py:156
+#: mycodo_flask/forms/forms_graph.py:144 mycodo_flask/forms/forms_graph.py:165
 msgid "Gauge Max"
 msgstr "게이지 최대"
 
-#: mycodo_flask/forms/forms_graph.py:89 mycodo_flask/forms/forms_graph.py:157
+#: mycodo_flask/forms/forms_graph.py:145 mycodo_flask/forms/forms_graph.py:166
+#: mycodo_flask/forms/forms_lcd.py:92 mycodo_flask/forms/forms_lcd.py:97
+#: mycodo_flask/forms/forms_lcd.py:102 mycodo_flask/forms/forms_lcd.py:107
 #: mycodo_flask/forms/forms_pid.py:59
 msgid "Max Age (seconds)"
 msgstr "만료시간 (초)"
 
-#: mycodo_flask/forms/forms_graph.py:144
-msgid "Enable Custom Colors"
-msgstr "사용자 정의 색상 사용"
-
-#: mycodo_flask/forms/forms_graph.py:169 mycodo_flask/forms/forms_input.py:107
-#: mycodo_flask/forms/forms_lcd.py:92 mycodo_flask/forms/forms_output.py:81
-#: mycodo_flask/forms/forms_pid.py:103 mycodo_flask/forms/forms_timer.py:43
-msgid "Up"
-msgstr "위"
-
-#: mycodo_flask/forms/forms_graph.py:170 mycodo_flask/forms/forms_input.py:108
-#: mycodo_flask/forms/forms_lcd.py:93 mycodo_flask/forms/forms_output.py:82
-#: mycodo_flask/forms/forms_pid.py:104 mycodo_flask/forms/forms_timer.py:44
-msgid "Down"
-msgstr "아래"
+#: mycodo_flask/forms/forms_graph.py:147 mycodo_flask/forms/forms_graph.py:167
+msgid "Refresh (seconds)"
+msgstr "새로고침 (분)"
 
 #: mycodo_flask/forms/forms_input.py:33
-#: mycodo_flask/templates/tools/calibration_atlas_ph.html:3
+#: mycodo_flask/templates/layout-remote.html:59
+#: mycodo_flask/templates/layout.html:148
+#: mycodo_flask/templates/pages/input.html:3
 #: mycodo_flask/utils/utils_conditional.py:30
 #: mycodo_flask/utils/utils_conditional.py:68
 #: mycodo_flask/utils/utils_conditional.py:133
 #: mycodo_flask/utils/utils_conditional.py:162
-#: mycodo_flask/utils/utils_general.py:59 mycodo_flask/utils/utils_input.py:44
-#: mycodo_flask/utils/utils_input.py:224 mycodo_flask/utils/utils_input.py:314
-#: mycodo_flask/utils/utils_input.py:356
-msgid "Sensor"
-msgstr "센서"
+#: mycodo_flask/utils/utils_general.py:59 mycodo_flask/utils/utils_input.py:45
+#: mycodo_flask/utils/utils_input.py:225 mycodo_flask/utils/utils_input.py:315
+#: mycodo_flask/utils/utils_input.py:357
+msgid "Input"
+msgstr "입력"
 
 #: mycodo_flask/forms/forms_input.py:37
 msgid "Add Device"
@@ -617,8 +748,8 @@ msgid "Sensitivity"
 msgstr "감도"
 
 #: mycodo_flask/forms/forms_input.py:53
-msgid "Power Relay"
-msgstr "파워 릴레이"
+msgid "Power Output"
+msgstr ""
 
 #: mycodo_flask/forms/forms_input.py:54
 msgid "Multiplexer (MX)"
@@ -640,7 +771,7 @@ msgstr "유닛"
 msgid "Channel"
 msgstr "채너"
 
-#: mycodo_flask/forms/forms_input.py:61 mycodo_flask/forms/forms_settings.py:39
+#: mycodo_flask/forms/forms_input.py:61 mycodo_flask/forms/forms_settings.py:40
 #: mycodo_flask/templates/pages/live.html:150
 msgid "Gain"
 msgstr "Gain"
@@ -669,11 +800,6 @@ msgstr "유닛 최대"
 msgid "Inverse Unit Scale"
 msgstr "역 유닛 스케일"
 
-#: mycodo_flask/forms/forms_input.py:70
-#: mycodo_flask/templates/pages/graph.html:1024
-msgid "Edge"
-msgstr "엣지"
-
 #: mycodo_flask/forms/forms_input.py:71
 msgid "Bounce Time (ms)"
 msgstr "바운스 타임 (ms)"
@@ -683,16 +809,11 @@ msgid "Reset Period"
 msgstr "기간 재설정"
 
 #: mycodo_flask/forms/forms_input.py:73
-msgid "Pre Relay"
-msgstr "Pre 릴레이"
+msgid "Pre Output"
+msgstr ""
 
 #: mycodo_flask/forms/forms_input.py:75
-msgid "Pre Relay Duration"
-msgstr "Pre 릴레이 지속 시간"
-
-#: mycodo_flask/forms/forms_input.py:82 mycodo_flask/forms/forms_lcd.py:58
-#: mycodo_flask/forms/forms_pid.py:52 mycodo_flask/forms/forms_timer.py:95
-msgid "Period (seconds)"
+msgid "Pre Output Duration"
 msgstr ""
 
 #: mycodo_flask/forms/forms_input.py:89
@@ -714,64 +835,67 @@ msgstr "클럭 핀"
 #: mycodo_flask/forms/forms_input.py:97
 msgid ""
 "If using a SHT sensor, enter the GPIO connected to the clock pin (using "
-"BCM numbering)."
-msgstr "SHT 센서를 사용하는 경우 클럭 핀에 연결된 GPIO를 입력하십시오 (BCM 번호 매기기 사용)."
+"BCM numbering)"
+msgstr ""
 
-#: mycodo_flask/forms/forms_input.py:102
-#: mycodo_flask/forms/forms_settings.py:121
-#: mycodo_flask/templates/pages/graph.html:1108
-msgid "Voltage"
-msgstr "전압"
-
-#: mycodo_flask/forms/forms_lcd.py:29
+#: mycodo_flask/forms/forms_lcd.py:28
 msgid "Add LCDs"
-msgstr "LCD 를 더하시오."
+msgstr "LCD 더하기"
 
-#: mycodo_flask/forms/forms_lcd.py:39
-msgid "I2C Address"
-msgstr "I2C 주소"
+#: mycodo_flask/forms/forms_lcd.py:38
+msgid "Address"
+msgstr ""
+
+#: mycodo_flask/forms/forms_lcd.py:39 mycodo_flask/forms/forms_lcd.py:44
+#: mycodo_flask/forms/forms_lcd.py:49
+msgid "I<sup>2</sup>C"
+msgstr ""
 
 #: mycodo_flask/forms/forms_lcd.py:43
-msgid "I2C Bus"
-msgstr "I2C 버스"
+msgid "Bus"
+msgstr ""
 
-#: mycodo_flask/forms/forms_lcd.py:47
-msgid "Multiplexer I2C Address"
-msgstr "멀티플렉서 I2C 주소"
+#: mycodo_flask/forms/forms_lcd.py:48
+msgid "Multiplexer Address"
+msgstr ""
 
-#: mycodo_flask/forms/forms_lcd.py:50 mycodo_flask/templates/pages/lcd.html:146
+#: mycodo_flask/forms/forms_lcd.py:52
 msgid "Multiplexer Channel"
 msgstr "멀티플렉서 채널"
 
-#: mycodo_flask/forms/forms_lcd.py:63
+#: mycodo_flask/forms/forms_lcd.py:64
 msgid ""
 "Duration between calculating LCD output and applying to regulation must "
 "be between 5 and 86400 seconds."
 msgstr "LCD 출력 계산과 규정 적용 사이의 지속 시간은 5 ~ 86400 초 사이 여야합니다."
 
-#: mycodo_flask/forms/forms_lcd.py:69 mycodo_flask/templates/pages/lcd.html:88
+#: mycodo_flask/forms/forms_lcd.py:70
 msgid "LCD Type"
 msgstr "LCD 타입"
 
 #: mycodo_flask/forms/forms_lcd.py:77
-msgid "Line 1 Display"
-msgstr "라인 1 디스플레이"
+msgid "Add Display Set"
+msgstr ""
 
-#: mycodo_flask/forms/forms_lcd.py:80
-msgid "Line 2 Display"
-msgstr "라인 2 디스플레이"
-
-#: mycodo_flask/forms/forms_lcd.py:83
-msgid "Line 3 Display"
-msgstr "라인 3 디스플레이"
-
-#: mycodo_flask/forms/forms_lcd.py:86
-msgid "Line 4 Display"
-msgstr "라인 4 디스플레이"
-
-#: mycodo_flask/forms/forms_lcd.py:94
+#: mycodo_flask/forms/forms_lcd.py:84
 msgid "Reset Flashing"
 msgstr "깜박임 재설정"
+
+#: mycodo_flask/forms/forms_lcd.py:90
+msgid "Line 1"
+msgstr ""
+
+#: mycodo_flask/forms/forms_lcd.py:95
+msgid "Line 2"
+msgstr ""
+
+#: mycodo_flask/forms/forms_lcd.py:100
+msgid "Line 3"
+msgstr ""
+
+#: mycodo_flask/forms/forms_lcd.py:105
+msgid "Line 4"
+msgstr ""
 
 #: mycodo_flask/forms/forms_method.py:20
 msgid "Method Type"
@@ -817,10 +941,6 @@ msgstr "종료 후 (초)"
 msgid "Amplitude"
 msgstr "Amplitude"
 
-#: mycodo_flask/forms/forms_method.py:50
-msgid "Frequency"
-msgstr "주파수"
-
 #: mycodo_flask/forms/forms_method.py:51
 msgid "Angle Shift (0 to 360)"
 msgstr "각도 이동 (0 ~ 360)"
@@ -857,7 +977,7 @@ msgstr "끄다"
 
 #: mycodo_flask/forms/forms_method.py:79
 msgid "Add to Method"
-msgstr "방법을 더하시오."
+msgstr "메소드로 더하기"
 
 #: mycodo_flask/forms/forms_method.py:80
 msgid "Restart at Beginning"
@@ -868,22 +988,10 @@ msgid "End Setpoint"
 msgstr "마지막 세트포인트"
 
 #: mycodo_flask/forms/forms_method.py:117
-#: mycodo_flask/templates/pages/method_options/build_daily.html:47
-#: mycodo_flask/templates/pages/method_options/build_date.html:46
-#: mycodo_flask/templates/pages/method_options/build_duration.html:40
-#: mycodo_flask/utils/utils_conditional.py:28
-#: mycodo_flask/utils/utils_conditional.py:66
-#: mycodo_flask/utils/utils_conditional.py:131
-#: mycodo_flask/utils/utils_conditional.py:160
-#: mycodo_flask/utils/utils_output.py:131
-#: mycodo_flask/utils/utils_output.py:175
-#: mycodo_flask/utils/utils_output.py:231
-#: mycodo_flask/utils/utils_output.py:250
 msgid "Relay"
 msgstr "릴레이"
 
 #: mycodo_flask/forms/forms_method.py:119
-#: mycodo_flask/templates/pages/graph.html:952
 msgid "Relay Duration"
 msgstr "릴레이 지속 시간"
 
@@ -916,16 +1024,16 @@ msgid "Interval (seconds)"
 msgstr "간격 (초)"
 
 #: mycodo_flask/forms/forms_misc.py:33
-msgid "Photo Interval must be a positive value."
-msgstr "사진 간격은 양수 여야합니다."
+msgid "Photo Interval must be a positive value"
+msgstr ""
 
 #: mycodo_flask/forms/forms_misc.py:37
 msgid "Run Time (seconds)"
 msgstr "런 타임 (초)"
 
 #: mycodo_flask/forms/forms_misc.py:40
-msgid "Total Run Time must be a positive value."
-msgstr "총 실행 기간은 양수 여야합니다."
+msgid "Total Run Time must be a positive value"
+msgstr ""
 
 #: mycodo_flask/forms/forms_misc.py:43
 msgid "Start Stream"
@@ -958,6 +1066,10 @@ msgstr "시간 범위 일/월/년도 시간:분"
 #: mycodo_flask/forms/forms_misc.py:64
 msgid "Export"
 msgstr "수출"
+
+#: mycodo_flask/forms/forms_misc.py:74
+msgid "Lines"
+msgstr "라인"
 
 #: mycodo_flask/forms/forms_misc.py:94
 msgid "Upgrade Mycodo"
@@ -1048,48 +1160,33 @@ msgid "Neither"
 msgstr "어느쪽도 아닌"
 
 #: mycodo_flask/forms/forms_output.py:65 mycodo_flask/forms/forms_timer.py:51
-#: mycodo_flask/forms/forms_timer.py:71
+#: mycodo_flask/forms/forms_timer.py:70
 #: mycodo_flask/templates/pages/input.html:368
 #: mycodo_flask/templates/pages/output.html:345
-#: mycodo_flask/templates/pages/output.html:403
+#: mycodo_flask/templates/pages/output.html:346
+#: mycodo_flask/templates/pages/output.html:404
 #: mycodo_flask/templates/pages/output_options/command.html:18
 #: mycodo_flask/templates/pages/output_options/wired.html:20
 #: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:42
-#: mycodo_flask/templates/pages/timer_options/add_relay.html:30
-#: mycodo_flask/templates/pages/timer_options/add_relay.html:63
 #: mycodo_flask/templates/pages/timer_options/add_time_point.html:5
-#: mycodo_flask/templates/pages/timer_options/add_time_range.html:6
 #: mycodo_flask/templates/pages/timer_options/add_time_span.html:5
-#: mycodo_flask/templates/pages/timer_options/mod_relay.html:22
-#: mycodo_flask/templates/pages/timer_options/mod_relay.html:52
-#: mycodo_flask/templates/pages/timer_options/mod_time_point.html:18
-#: mycodo_flask/templates/pages/timer_options/mod_time_range.html:18
-#: mycodo_flask/templates/pages/timer_options/mod_time_span.html:18
-#: mycodo_flask/templates/pages/timer_options/relay.html:19
-#: mycodo_flask/templates/pages/timer_options/relay.html:52
+#: mycodo_flask/templates/pages/timer_options/mod_time_point.html:25
+#: mycodo_flask/templates/pages/timer_options/mod_time_span.html:25
 msgid "On"
 msgstr "켜다"
 
 #: mycodo_flask/forms/forms_output.py:66 mycodo_flask/forms/forms_timer.py:52
-#: mycodo_flask/forms/forms_timer.py:72
+#: mycodo_flask/forms/forms_timer.py:71
 #: mycodo_flask/templates/pages/input.html:369
-#: mycodo_flask/templates/pages/output.html:346
-#: mycodo_flask/templates/pages/output.html:404
+#: mycodo_flask/templates/pages/output.html:347
+#: mycodo_flask/templates/pages/output.html:405
 #: mycodo_flask/templates/pages/output_options/command.html:19
 #: mycodo_flask/templates/pages/output_options/wired.html:21
 #: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:43
-#: mycodo_flask/templates/pages/timer_options/add_relay.html:31
-#: mycodo_flask/templates/pages/timer_options/add_relay.html:64
 #: mycodo_flask/templates/pages/timer_options/add_time_point.html:6
-#: mycodo_flask/templates/pages/timer_options/add_time_range.html:7
 #: mycodo_flask/templates/pages/timer_options/add_time_span.html:6
-#: mycodo_flask/templates/pages/timer_options/mod_relay.html:23
-#: mycodo_flask/templates/pages/timer_options/mod_relay.html:53
-#: mycodo_flask/templates/pages/timer_options/mod_time_point.html:19
-#: mycodo_flask/templates/pages/timer_options/mod_time_range.html:19
-#: mycodo_flask/templates/pages/timer_options/mod_time_span.html:19
-#: mycodo_flask/templates/pages/timer_options/relay.html:20
-#: mycodo_flask/templates/pages/timer_options/relay.html:53
+#: mycodo_flask/templates/pages/timer_options/mod_time_point.html:26
+#: mycodo_flask/templates/pages/timer_options/mod_time_span.html:26
 msgid "Off"
 msgstr "끄다"
 
@@ -1103,20 +1200,16 @@ msgid "Library"
 msgstr "라이브러리"
 
 #: mycodo_flask/forms/forms_output.py:74
-msgid "Any Pin (<= 40 kHz)"
-msgstr "모든 핀 (<= 40kHz)"
+msgid "Any Pin, <= 40 kHz"
+msgstr ""
 
 #: mycodo_flask/forms/forms_output.py:75
-msgid "Hardware Pin (<= 30 MHz)"
-msgstr "하드웨어 핀 (<= 30 MHz)"
-
-#: mycodo_flask/forms/forms_output.py:84
-msgid "Duty Cycle (%)"
-msgstr "듀티 사이클 (%)"
+msgid "Hardware Pin, <= 30 MHz"
+msgstr ""
 
 #: mycodo_flask/forms/forms_pid.py:29
 msgid "Add PIDs"
-msgstr "PID 를 더하시오."
+msgstr "PID 더하기"
 
 #: mycodo_flask/forms/forms_pid.py:45
 msgid "Raise"
@@ -1154,12 +1247,12 @@ msgstr "적분기 최대값"
 #: mycodo_flask/forms/forms_pid.py:92
 #: mycodo_flask/templates/pages/live.html:161
 msgid "Output (Raise)"
-msgstr ""
+msgstr "출력 (Raise)"
 
 #: mycodo_flask/forms/forms_pid.py:93
 #: mycodo_flask/templates/pages/live.html:198
 msgid "Output (Lower)"
-msgstr ""
+msgstr "출력 (Lower)"
 
 #: mycodo_flask/forms/forms_pid.py:97
 msgid "Hold"
@@ -1214,240 +1307,248 @@ msgid "Max Duty Cycle (Lower)"
 msgstr "최대 듀티 사이클 (낮추다)"
 
 #: mycodo_flask/forms/forms_settings.py:30
+msgid "Device"
+msgstr ""
+
+#: mycodo_flask/forms/forms_settings.py:31
 msgid "OpenCV Device"
 msgstr "OpenCV 디바이스"
 
-#: mycodo_flask/forms/forms_settings.py:31
+#: mycodo_flask/forms/forms_settings.py:32
 msgid "Flip image horizontally"
 msgstr "이미지 가로로 뒤집기"
 
-#: mycodo_flask/forms/forms_settings.py:32
+#: mycodo_flask/forms/forms_settings.py:33
 msgid "Flip image vertically"
 msgstr "이미지 세로로 뒤집기"
 
-#: mycodo_flask/forms/forms_settings.py:33
+#: mycodo_flask/forms/forms_settings.py:34
 msgid "Rotate Image"
 msgstr "이미지 회전"
 
-#: mycodo_flask/forms/forms_settings.py:34
+#: mycodo_flask/forms/forms_settings.py:35
 msgid "Image Height"
 msgstr "이미지 높이"
 
-#: mycodo_flask/forms/forms_settings.py:35
+#: mycodo_flask/forms/forms_settings.py:36
 msgid "Image Width"
 msgstr "이미지 너비"
 
-#: mycodo_flask/forms/forms_settings.py:36
+#: mycodo_flask/forms/forms_settings.py:37
 msgid "Brightness"
 msgstr "명도"
 
-#: mycodo_flask/forms/forms_settings.py:37
+#: mycodo_flask/forms/forms_settings.py:38
 msgid "Contrast"
 msgstr "대조"
 
-#: mycodo_flask/forms/forms_settings.py:38
+#: mycodo_flask/forms/forms_settings.py:39
 msgid "Exposure"
 msgstr "노출"
 
-#: mycodo_flask/forms/forms_settings.py:40
+#: mycodo_flask/forms/forms_settings.py:41
 msgid "Hue"
 msgstr "색조"
 
-#: mycodo_flask/forms/forms_settings.py:41
+#: mycodo_flask/forms/forms_settings.py:42
 msgid "Saturation"
 msgstr "채도"
 
-#: mycodo_flask/forms/forms_settings.py:42
+#: mycodo_flask/forms/forms_settings.py:43
 msgid "White Balance"
 msgstr "화이트 밸런스"
 
-#: mycodo_flask/forms/forms_settings.py:44
+#: mycodo_flask/forms/forms_settings.py:45
 msgid "Pre Command"
 msgstr "사전 코멘드"
 
-#: mycodo_flask/forms/forms_settings.py:45
+#: mycodo_flask/forms/forms_settings.py:46
 msgid "Post Command"
 msgstr "사후 코멘드"
 
-#: mycodo_flask/forms/forms_settings.py:46
+#: mycodo_flask/forms/forms_settings.py:47
 msgid "Add Camera"
 msgstr "카메라를 설치하시오"
 
-#: mycodo_flask/forms/forms_settings.py:57
 #: mycodo_flask/forms/forms_settings.py:58
+#: mycodo_flask/forms/forms_settings.py:59
 msgid "SMTP Host"
 msgstr "단순 메일 전송 프로토콜 (SMTP) 호스트"
 
-#: mycodo_flask/forms/forms_settings.py:62
 #: mycodo_flask/forms/forms_settings.py:63
+#: mycodo_flask/forms/forms_settings.py:64
 msgid "SMTP Port"
 msgstr "단순 메일 전송 프로토콜 (SMTP) 포트"
 
-#: mycodo_flask/forms/forms_settings.py:67
+#: mycodo_flask/forms/forms_settings.py:68
 msgid "Port should be between 1 and 65535"
 msgstr "포트 값은 1 과 65535 사이여야 합니다"
 
-#: mycodo_flask/forms/forms_settings.py:72
 #: mycodo_flask/forms/forms_settings.py:73
+#: mycodo_flask/forms/forms_settings.py:74
 msgid "SMTP User"
 msgstr "단순 메일 전송 프로토콜 (SMTP) 사용자"
 
-#: mycodo_flask/forms/forms_settings.py:77
+#: mycodo_flask/forms/forms_settings.py:78
 msgid "SMTP Password"
 msgstr "단순 메일 전송 프로토콜 (SMTP) 패스워드"
 
-#: mycodo_flask/forms/forms_settings.py:81
+#: mycodo_flask/forms/forms_settings.py:82
 msgid "From Email"
 msgstr "이메일로부터"
 
-#: mycodo_flask/forms/forms_settings.py:89
 #: mycodo_flask/forms/forms_settings.py:90
+#: mycodo_flask/forms/forms_settings.py:91
 msgid "Max emails (per hour)"
 msgstr "최대수 이메일 (시간당)"
 
-#: mycodo_flask/forms/forms_settings.py:93
+#: mycodo_flask/forms/forms_settings.py:94
 msgid "Must have at least one message able to be sent per hour."
 msgstr "시간당 전송될 메시지가 최소한 하나가 필요합니다."
 
-#: mycodo_flask/forms/forms_settings.py:97
+#: mycodo_flask/forms/forms_settings.py:98
 msgid "Send Test Email"
 msgstr "테스트 이메일 보내기"
 
-#: mycodo_flask/forms/forms_settings.py:99
+#: mycodo_flask/forms/forms_settings.py:100
 msgid "Test Email To"
 msgstr "테스트 이메일 수신자"
 
-#: mycodo_flask/forms/forms_settings.py:100
+#: mycodo_flask/forms/forms_settings.py:101
 msgid "To Email Address"
 msgstr "보낼 이메일 주소"
 
-#: mycodo_flask/forms/forms_settings.py:114
+#: mycodo_flask/forms/forms_settings.py:115
 msgid "Language"
 msgstr "언어"
 
-#: mycodo_flask/forms/forms_settings.py:115
+#: mycodo_flask/forms/forms_settings.py:116
 msgid "Force HTTPS"
 msgstr "강제 HTTPS"
 
-#: mycodo_flask/forms/forms_settings.py:116
+#: mycodo_flask/forms/forms_settings.py:117
 msgid "Hide success messages"
 msgstr "완료 메시지 숨기기"
 
-#: mycodo_flask/forms/forms_settings.py:117
+#: mycodo_flask/forms/forms_settings.py:118
 msgid "Hide info messages"
 msgstr "인포메이션 메시지 숨기기"
 
-#: mycodo_flask/forms/forms_settings.py:118
+#: mycodo_flask/forms/forms_settings.py:119
 msgid "Hide warning messages"
 msgstr "경고 메시지 숨기기"
 
-#: mycodo_flask/forms/forms_settings.py:119
+#: mycodo_flask/forms/forms_settings.py:120
 msgid "Hide Form Tooltips"
 msgstr "폼 툴팁 숨기기"
 
-#: mycodo_flask/forms/forms_settings.py:120
+#: mycodo_flask/forms/forms_settings.py:121
 msgid "Max Amps"
 msgstr "최대 암페어"
 
-#: mycodo_flask/forms/forms_settings.py:122
+#: mycodo_flask/forms/forms_settings.py:123
 msgid "Cost per kWh"
 msgstr "kWh 당 비용"
 
-#: mycodo_flask/forms/forms_settings.py:123
+#: mycodo_flask/forms/forms_settings.py:124
 msgid "Currency Unit"
 msgstr "통화 단위"
 
-#: mycodo_flask/forms/forms_settings.py:124
+#: mycodo_flask/forms/forms_settings.py:125
 msgid "Day of Month"
 msgstr "요일"
 
-#: mycodo_flask/forms/forms_settings.py:125
+#: mycodo_flask/forms/forms_settings.py:126
 msgid "Generate Usage/Cost Report"
 msgstr "사용량 생성 / 비용 보고서"
 
-#: mycodo_flask/forms/forms_settings.py:126
+#: mycodo_flask/forms/forms_settings.py:127
 msgid "Time Span to Generate"
 msgstr "생성 할 시간 범위"
 
-#: mycodo_flask/forms/forms_settings.py:127
+#: mycodo_flask/forms/forms_settings.py:128
 msgid "Day of Week/Month to Generate"
 msgstr "생성 할 요일 / 월"
 
-#: mycodo_flask/forms/forms_settings.py:129
+#: mycodo_flask/forms/forms_settings.py:130
 msgid "Hour of Day to Generate"
 msgstr "생성 할 시간"
 
-#: mycodo_flask/forms/forms_settings.py:133
-#: mycodo_flask/templates/settings/general.html:158
+#: mycodo_flask/forms/forms_settings.py:134
+#: mycodo_flask/templates/settings/general.html:169
 msgid "Hour Options: 0-23"
 msgstr "시간 옵션: 0-23"
 
-#: mycodo_flask/forms/forms_settings.py:135
+#: mycodo_flask/forms/forms_settings.py:136
 msgid "Opt-out of statistics"
 msgstr "통계 선택 해제"
 
-#: mycodo_flask/forms/forms_settings.py:145
+#: mycodo_flask/forms/forms_settings.py:137
+msgid "Check for Updates"
+msgstr ""
+
+#: mycodo_flask/forms/forms_settings.py:147
 msgid "Role Name"
 msgstr "역할 이름"
 
-#: mycodo_flask/forms/forms_settings.py:148
+#: mycodo_flask/forms/forms_settings.py:150
 #: mycodo_flask/templates/tools/logview.html:3
 msgid "View Logs"
 msgstr "로그 보기"
 
-#: mycodo_flask/forms/forms_settings.py:149
+#: mycodo_flask/forms/forms_settings.py:151
 msgid "View Stats"
 msgstr "통계 보기"
 
-#: mycodo_flask/forms/forms_settings.py:150
+#: mycodo_flask/forms/forms_settings.py:152
 msgid "View Camera"
 msgstr "카메라 보기"
 
-#: mycodo_flask/forms/forms_settings.py:151
+#: mycodo_flask/forms/forms_settings.py:153
 msgid "View Settings"
 msgstr "설정 보기"
 
-#: mycodo_flask/forms/forms_settings.py:152
+#: mycodo_flask/forms/forms_settings.py:154
 msgid "Edit Users"
 msgstr "사용자 수정"
 
-#: mycodo_flask/forms/forms_settings.py:153
+#: mycodo_flask/forms/forms_settings.py:155
 msgid "Edit Controllers"
 msgstr "컨트롤러 수정"
 
-#: mycodo_flask/forms/forms_settings.py:154
+#: mycodo_flask/forms/forms_settings.py:156
 msgid "Edit Settings"
 msgstr "설정 옵션"
 
-#: mycodo_flask/forms/forms_settings.py:156
+#: mycodo_flask/forms/forms_settings.py:158
 msgid "Add Role"
 msgstr "역할 추가"
 
-#: mycodo_flask/forms/forms_settings.py:178
-#: mycodo_flask/forms/forms_settings.py:215
+#: mycodo_flask/forms/forms_settings.py:180
+#: mycodo_flask/forms/forms_settings.py:217
 msgid "Passwords must match"
 msgstr "비밀번호가 일치해야합니다"
 
-#: mycodo_flask/forms/forms_settings.py:181
-#: mycodo_flask/forms/forms_settings.py:219
+#: mycodo_flask/forms/forms_settings.py:183
+#: mycodo_flask/forms/forms_settings.py:221
 msgid "Password must be 6 or more characters"
 msgstr "비밀번호는 6 자 이상이어야합니다"
 
-#: mycodo_flask/forms/forms_settings.py:190
-#: mycodo_flask/forms/forms_settings.py:228
+#: mycodo_flask/forms/forms_settings.py:192
+#: mycodo_flask/forms/forms_settings.py:230
 msgid "Role"
 msgstr "역할"
 
-#: mycodo_flask/forms/forms_settings.py:194
-#: mycodo_flask/forms/forms_settings.py:231
+#: mycodo_flask/forms/forms_settings.py:196
+#: mycodo_flask/forms/forms_settings.py:233
 msgid "Theme"
 msgstr "테마"
 
-#: mycodo_flask/forms/forms_settings.py:197
+#: mycodo_flask/forms/forms_settings.py:199
 msgid "Add User"
 msgstr "사용자 더하기"
 
-#: mycodo_flask/forms/forms_settings.py:210
+#: mycodo_flask/forms/forms_settings.py:212
 msgid "New Password"
 msgstr "새로운 패스워드"
 
@@ -1457,11 +1558,12 @@ msgstr "타이머 타입"
 
 #: mycodo_flask/forms/forms_timer.py:25
 msgid "Select a Timer Type"
-msgstr ""
+msgstr "타이머 타입 선택"
 
 #: mycodo_flask/forms/forms_timer.py:26
+#, fuzzy
 msgid "Daily Time Point"
-msgstr ""
+msgstr "일일 타임 포인트"
 
 #: mycodo_flask/forms/forms_timer.py:27
 msgid "Daily Time Span"
@@ -1469,27 +1571,27 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_timer.py:29
 msgid "PWM Method (Duty Cycle)"
-msgstr ""
+msgstr "PWM 메서드 (듀티 사이클)"
 
-#: mycodo_flask/forms/forms_timer.py:49 mycodo_flask/forms/forms_timer.py:69
+#: mycodo_flask/forms/forms_timer.py:49 mycodo_flask/forms/forms_timer.py:68
 msgid "State"
 msgstr "상태"
 
-#: mycodo_flask/forms/forms_timer.py:56 mycodo_flask/forms/forms_timer.py:57
-#: mycodo_flask/forms/forms_timer.py:76 mycodo_flask/forms/forms_timer.py:77
+#: mycodo_flask/forms/forms_timer.py:56 mycodo_flask/forms/forms_timer.py:75
 msgid "Start Time"
 msgstr "스타트 시간"
 
-#: mycodo_flask/forms/forms_timer.py:59 mycodo_flask/forms/forms_timer.py:80
-#: mycodo_flask/forms/forms_timer.py:89
+#: mycodo_flask/forms/forms_timer.py:58 mycodo_flask/forms/forms_timer.py:80
 msgid "On (seconds)"
 msgstr "켜기 (초)"
 
-#: mycodo_flask/forms/forms_timer.py:78
+#: mycodo_flask/forms/forms_timer.py:76
 msgid "End Time"
 msgstr "종료 시간"
 
-#: mycodo_flask/forms/forms_timer.py:90
+#: mycodo_flask/forms/forms_timer.py:81
+#: mycodo_flask/templates/pages/live.html:178
+#: mycodo_flask/templates/pages/live.html:215
 msgid "Off (seconds)"
 msgstr "끄기 (초)"
 
@@ -1534,6 +1636,10 @@ msgstr "정보"
 msgid "Error"
 msgstr "오류"
 
+#: mycodo_flask/templates/layout-remote.html:57
+msgid "Setup"
+msgstr ""
+
 #: mycodo_flask/templates/layout-settings.html:24
 #, fuzzy
 msgid "General"
@@ -1549,144 +1655,145 @@ msgid "Alerts"
 msgstr "알림"
 
 #: mycodo_flask/templates/layout-settings.html:29
-#: mycodo_flask/templates/layout.html:129
+#: mycodo_flask/templates/layout.html:160
 #: mycodo_flask/templates/pages/camera.html:3
 msgid "Cameras"
 msgstr "카메라"
 
-#: mycodo_flask/templates/layout.html:46 mycodo_flask/templates/layout.html:55
-#: mycodo_flask/templates/layout.html:104
+#: mycodo_flask/templates/layout.html:77 mycodo_flask/templates/layout.html:86
+#: mycodo_flask/templates/layout.html:135
 msgid "Daemon is Not Running"
 msgstr "데몬이 실행되고 있지 않습니다"
 
-#: mycodo_flask/templates/layout.html:51 mycodo_flask/templates/layout.html:104
+#: mycodo_flask/templates/layout.html:82 mycodo_flask/templates/layout.html:135
 msgid "Daemon is Running"
 msgstr "데몬이 실행 중입니다"
 
-#: mycodo_flask/templates/layout.html:61
+#: mycodo_flask/templates/layout.html:92
 msgid "Cannot Check Daemon Status"
 msgstr "데몬 상태를 체크할 수 없음"
 
-#: mycodo_flask/templates/layout.html:110
+#: mycodo_flask/templates/layout.html:141
 msgid "Data"
 msgstr "데이타"
 
-#: mycodo_flask/templates/layout.html:112
+#: mycodo_flask/templates/layout.html:143
+#: mycodo_flask/templates/pages/live.html:3
 msgid "Live Measurements"
 msgstr "라이브 측정"
 
-#: mycodo_flask/templates/layout.html:113
+#: mycodo_flask/templates/layout.html:144
 #: mycodo_flask/templates/pages/graph.html:3
 msgid "Live Graphs"
 msgstr "라이브 그래프"
 
-#: mycodo_flask/templates/layout.html:114
+#: mycodo_flask/templates/layout.html:145
 #: mycodo_flask/templates/pages/graph-async.html:3
 #: mycodo_flask/templates/pages/graph-async.html:25
 msgid "Asynchronous Graphs"
 msgstr "비동기 그래프"
 
-#: mycodo_flask/templates/layout.html:117
-#: mycodo_flask/templates/pages/input.html:3
-msgid "Input"
-msgstr "입력"
-
-#: mycodo_flask/templates/layout.html:123
+#: mycodo_flask/templates/layout.html:154
 #: mycodo_flask/utils/utils_general.py:60 mycodo_flask/utils/utils_timer.py:35
-#: mycodo_flask/utils/utils_timer.py:100 mycodo_flask/utils/utils_timer.py:154
-#: mycodo_flask/utils/utils_timer.py:173
+#: mycodo_flask/utils/utils_timer.py:97 mycodo_flask/utils/utils_timer.py:151
+#: mycodo_flask/utils/utils_timer.py:170
 msgid "Timer"
 msgstr "타이머"
 
-#: mycodo_flask/templates/layout.html:126
+#: mycodo_flask/templates/layout.html:157
 msgid "More"
 msgstr "더"
 
-#: mycodo_flask/templates/layout.html:130
+#: mycodo_flask/templates/layout.html:161
 #: mycodo_flask/templates/tools/export.html:3
 msgid "Export Measurements"
 msgstr "수출 측정"
 
-#: mycodo_flask/templates/layout.html:131
+#: mycodo_flask/templates/layout.html:162
 #: mycodo_flask/templates/pages/lcd.html:3
 #: mycodo_flask/templates/pages/lcd.html:12
 msgid "LCDs"
 msgstr "LCD"
 
-#: mycodo_flask/templates/layout.html:132
+#: mycodo_flask/templates/layout.html:163
 #: mycodo_flask/templates/pages/method-build.html:3
 #: mycodo_flask/templates/pages/method-list.html:3
 #: mycodo_flask/templates/pages/method-list.html:19
 msgid "Methods"
-msgstr ""
+msgstr "메서드"
 
-#: mycodo_flask/templates/layout.html:133
+#: mycodo_flask/templates/layout.html:164
+#: mycodo_flask/templates/pages/usage.html:3
+#: mycodo_flask/templates/pages/usage.html:12
+#: mycodo_flask/templates/pages/usage_reports.html:3
+#: mycodo_flask/templates/settings/general.html:106
 msgid "Output Usage"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:134
+#: mycodo_flask/templates/layout.html:165
+#: mycodo_flask/templates/pages/usage_reports.html:12
 msgid "Output Usage Reports"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:144
+#: mycodo_flask/templates/layout.html:175
 msgid "Help"
 msgstr "도움"
 
-#: mycodo_flask/templates/layout.html:146
+#: mycodo_flask/templates/layout.html:177
 msgid "Mycodo Manual"
 msgstr "Mycodo 매뉴얼"
 
-#: mycodo_flask/templates/layout.html:148
+#: mycodo_flask/templates/layout.html:179
 #, fuzzy
 msgid "Submit an Issue"
 msgstr "문제점 보고하기"
 
-#: mycodo_flask/templates/layout.html:149
+#: mycodo_flask/templates/layout.html:180
 msgid "Mycodo on Github"
 msgstr "Github 의 Mycodo"
 
-#: mycodo_flask/templates/layout.html:150
+#: mycodo_flask/templates/layout.html:181
 msgid "Changelog"
 msgstr "체인지로그"
 
-#: mycodo_flask/templates/layout.html:157
+#: mycodo_flask/templates/layout.html:188
 msgid "Configure"
 msgstr "구성"
 
-#: mycodo_flask/templates/layout.html:158
+#: mycodo_flask/templates/layout.html:189
 msgid "Mycodo Logs"
 msgstr "Mycodo 로그"
 
-#: mycodo_flask/templates/layout.html:159
+#: mycodo_flask/templates/layout.html:190
 msgid "System Information"
 msgstr "시스템 인포메이션"
 
-#: mycodo_flask/templates/layout.html:161
+#: mycodo_flask/templates/layout.html:192
 msgid "Upgrade"
 msgstr "업그레이드"
 
 #: mycodo_flask/templates/admin/backup.html:3
-#: mycodo_flask/templates/layout.html:162
+#: mycodo_flask/templates/layout.html:193
 msgid "Backup/Restore"
 msgstr "백업/복원"
 
-#: mycodo_flask/templates/layout.html:164
-msgid "Restart Computer"
-msgstr "컴퓨터 다시시작"
+#: mycodo_flask/templates/layout.html:195
+msgid "Restart System"
+msgstr ""
 
-#: mycodo_flask/templates/layout.html:165
-msgid "Shutdown Computer"
-msgstr "컴퓨터 종료"
+#: mycodo_flask/templates/layout.html:196
+msgid "Shutdown System"
+msgstr ""
 
-#: mycodo_flask/templates/layout.html:167
+#: mycodo_flask/templates/layout.html:198
 msgid "Remote Admin"
 msgstr "원격 관리자"
 
-#: mycodo_flask/templates/layout.html:169
+#: mycodo_flask/templates/layout.html:200
 msgid "Logout"
 msgstr "로그아웃"
 
-#: mycodo_flask/templates/login.html:12
+#: mycodo_flask/templates/login.html:12 mycodo_flask/templates/login.html:38
 msgid "Login"
 msgstr "로그인"
 
@@ -1694,28 +1801,24 @@ msgstr "로그인"
 msgid "You're logged in already!"
 msgstr "이미 로그인하셨습니다!"
 
-#: mycodo_flask/templates/login.html:38
-msgid "Mycodo Login"
-msgstr "Mycodo 로그인"
-
 #: mycodo_flask/templates/login.html:46
 msgid "Remember me (90 days)"
-msgstr ""
+msgstr "내 로그인 기억하기 (90일)"
 
 #: mycodo_flask/templates/login.html:48
 msgid "Sign in"
-msgstr ""
+msgstr "로그인"
 
 #: mycodo_flask/templates/admin/statistics.html:6
 msgid "Statistics"
-msgstr ""
+msgstr "통계"
 
 #: mycodo_flask/templates/admin/statistics.html:10
 msgid "Collected Statistics"
-msgstr ""
+msgstr "통계 자료"
 
 #: mycodo_flask/templates/admin/upgrade.html:55
-msgid "Mycodo is currently in the process of an upgrade."
+msgid "Mycodo is currently in the process of an upgrade"
 msgstr ""
 
 #: mycodo_flask/templates/admin/upgrade.html:56
@@ -1743,7 +1846,7 @@ msgid ""
 msgstr ""
 
 #: mycodo_flask/templates/admin/upgrade.html:65
-msgid "There was an error that occurred during the upgrade."
+msgid "There was an error that occurred during the upgrade"
 msgstr ""
 
 #: mycodo_flask/templates/admin/upgrade.html:66
@@ -1779,137 +1882,118 @@ msgstr ""
 
 #: mycodo_flask/templates/admin/upgrade.html:112
 msgid "Current to latest versions"
-msgstr ""
+msgstr "최신 버전"
 
 #: mycodo_flask/templates/admin/upgrade.html:120
+#, fuzzy
 msgid "current"
-msgstr ""
+msgstr "현재"
 
 #: mycodo_flask/templates/admin/upgrade.html:120
 msgid "latest"
-msgstr ""
+msgstr "최근"
 
 #: mycodo_flask/templates/pages/camera.html:32
 msgid "Create Timelapse"
-msgstr ""
+msgstr "Timelapse 만들기"
 
 #: mycodo_flask/templates/pages/camera.html:90
 msgid "Video Stream"
-msgstr ""
+msgstr "비디오 스트림"
 
 #: mycodo_flask/templates/pages/camera.html:101
 msgid "Timelapse Parameters"
-msgstr ""
+msgstr "타임랩스 매개 변수"
 
 #: mycodo_flask/templates/pages/camera.html:113
 msgid "Last Timelapse"
-msgstr ""
+msgstr "마지막 타임랩스"
 
 #: mycodo_flask/templates/pages/camera.html:120
 msgid "Last Still"
-msgstr ""
+msgstr "마지막 스틸"
 
 #: mycodo_flask/templates/pages/graph-async.html:18
 msgid "Asynchronous Graph"
-msgstr ""
+msgstr "비동기 그래프"
 
 #: mycodo_flask/templates/pages/graph.html:22
-#: mycodo_flask/utils/utils_graph.py:33 mycodo_flask/utils/utils_graph.py:114
-#: mycodo_flask/utils/utils_graph.py:264 mycodo_flask/utils/utils_graph.py:285
+#: mycodo_flask/utils/utils_graph.py:33 mycodo_flask/utils/utils_graph.py:117
+#: mycodo_flask/utils/utils_graph.py:270 mycodo_flask/utils/utils_graph.py:289
 msgid "Graph"
 msgstr "그래프"
 
-#: mycodo_flask/templates/pages/graph.html:157
-#: mycodo_flask/templates/pages/graph.html:485
+#: mycodo_flask/templates/pages/graph.html:165
+#: mycodo_flask/templates/pages/graph.html:494
 msgid ""
 "Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more "
 "than one"
-msgstr ""
+msgstr "하나 이상의 키를 선택하려면 <kbd>Ctrl</kbd> 또는 <kbd>&#8984;</kbd> 키를 누르고 계십시오"
 
-#: mycodo_flask/templates/pages/graph.html:404
+#: mycodo_flask/templates/pages/graph.html:405
 msgid "New Graph"
-msgstr ""
+msgstr "새로운 그래프"
 
-#: mycodo_flask/templates/pages/graph.html:406
+#: mycodo_flask/templates/pages/graph.html:407
 msgid "New Gauge"
-msgstr ""
+msgstr "새로운 게이지"
 
-#: mycodo_flask/templates/pages/graph.html:417
+#: mycodo_flask/templates/pages/graph.html:418
 msgid "Graph Name"
 msgstr "그래프 이름"
 
-#: mycodo_flask/templates/pages/graph.html:531
+#: mycodo_flask/templates/pages/graph.html:552
 msgid "Gauge Name"
+msgstr "게이지 이름"
+
+#: mycodo_flask/templates/pages/graph.html:1010
+msgid "Output Duration"
 msgstr ""
 
-#: mycodo_flask/templates/pages/graph.html:964
-msgid "Altitude"
-msgstr ""
-
-#: mycodo_flask/templates/pages/graph.html:976
-msgid "CPU Load"
-msgstr ""
-
-#: mycodo_flask/templates/pages/graph.html:1000
+#: mycodo_flask/templates/pages/graph.html:1058
 msgid "MegaBytes"
-msgstr ""
+msgstr "메가 바이트"
 
-#: mycodo_flask/templates/pages/graph.html:1012
-#: mycodo_flask/templates/pages/graph.html:1361
-msgid "Duty Cycle"
-msgstr ""
-
-#: mycodo_flask/templates/pages/graph.html:1036
+#: mycodo_flask/templates/pages/graph.html:1106
 msgid "Relative Humidity"
-msgstr ""
+msgstr "상대 습도"
 
-#: mycodo_flask/templates/pages/graph.html:1048
+#: mycodo_flask/templates/pages/graph.html:1118
 msgid "Luminosity"
-msgstr ""
-
-#: mycodo_flask/templates/pages/graph.html:1060
-msgid "Moisture"
-msgstr ""
-
-#: mycodo_flask/templates/pages/graph.html:1072
-msgid "pH"
-msgstr ""
-
-#: mycodo_flask/templates/pages/graph.html:1084
-msgid "Pressure"
-msgstr ""
+msgstr "밝기"
 
 #: mycodo_flask/templates/pages/info.html:13
 msgid "Mycodo Version:"
-msgstr ""
+msgstr "Mycodo 버전:"
 
 #: mycodo_flask/templates/pages/info.html:14
 msgid "Database Version"
-msgstr ""
+msgstr "데이타베이스 버전"
 
 #: mycodo_flask/templates/pages/info.html:20
 msgid "Daemon Status"
-msgstr ""
+msgstr "데몬 상태"
 
 #: mycodo_flask/templates/pages/info.html:21
 msgid "Running"
 msgstr "실행 중"
 
 #: mycodo_flask/templates/pages/info.html:22
+#, fuzzy
 msgid "Not Running"
-msgstr ""
+msgstr "실행되지 않음"
 
 #: mycodo_flask/templates/pages/info.html:25
 msgid "Daemon Process ID"
-msgstr ""
+msgstr "데몬 프로세스 ID"
 
 #: mycodo_flask/templates/pages/info.html:26
 msgid "Daemon RAM Usage"
-msgstr ""
+msgstr "데몬 RAM 사용량"
 
 #: mycodo_flask/templates/pages/info.html:27
 msgid "Daemon Virtualenv"
-msgstr ""
+msgstr "데몬 Virtualenv"
 
 #: mycodo_flask/templates/pages/info.html:28
 #: mycodo_flask/templates/pages/info.html:34
@@ -1919,7 +2003,7 @@ msgstr "네"
 #: mycodo_flask/templates/pages/info.html:29
 #: mycodo_flask/templates/pages/info.html:35
 msgid "No"
-msgstr ""
+msgstr "아니오"
 
 #: mycodo_flask/templates/pages/info.html:32
 msgid "Frontend RAM Usage"
@@ -1937,17 +2021,18 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:16
 msgid ""
-"Inputs, such as sensors or ADC signals, enable measuring conditions in "
-"the environment. Add, configure, and activate sensors to begin recording "
-"measurements to the database and allow them to be used throughout Mycodo."
+"Inputs, such as sensors, ADC signals, or even a response from a command, "
+"enable measuring conditions in the environment or elsewhere. Add, "
+"configure, and activate inputs to begin recording measurements to the "
+"database and allow them to be used throughout Mycodo."
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:58
-msgid "A common name to distinguish this sensor from others"
-msgstr "이 센서를 다른것들과 구분시킬수 있는 이름."
+msgid "A common name to distinguish this input from others"
+msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:130
-msgid "The duration (seconds) between sensor reads"
+msgid "The duration (seconds) between input reads"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:139
@@ -1956,8 +2041,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:150
 msgid ""
-"If a Pre Relay is selected, set the duration (seconds) to turn the Pre "
-"Relay on for before every measurement is acquired."
+"If a Pre Output is selected, set the duration (seconds) to turn the Pre "
+"Output on for before every measurement is acquired."
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:159
@@ -1969,18 +2054,6 @@ msgstr ""
 #: mycodo_flask/templates/pages/pid.html:184
 #: mycodo_flask/templates/pages/pid.html:207
 #: mycodo_flask/templates/pages/pid.html:234
-#: mycodo_flask/templates/pages/pid_options/command.html:74
-#: mycodo_flask/templates/pages/pid_options/command.html:106
-#: mycodo_flask/templates/pages/pid_options/output_pwm.html:7
-#: mycodo_flask/templates/pages/pid_options/output_pwm.html:33
-#: mycodo_flask/templates/pages/pid_options/output_relay.html:7
-#: mycodo_flask/templates/pages/pid_options/output_relay.html:39
-#: mycodo_flask/templates/pages/pid_options/pwm.html:7
-#: mycodo_flask/templates/pages/pid_options/pwm.html:33
-#: mycodo_flask/templates/pages/pid_options/relay.html:7
-#: mycodo_flask/templates/pages/pid_options/relay.html:39
-#: mycodo_flask/templates/pages/pid_options/script.html:101
-#: mycodo_flask/templates/pages/pid_options/script.html:133
 msgid "Disabled"
 msgstr ""
 
@@ -2040,7 +2113,7 @@ msgid "LOW (0 volts)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:281
-msgid "The measurement from the sensor to test the following conditional logic"
+msgid "The measurement from the input to test the following conditional logic"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:304
@@ -2058,47 +2131,47 @@ msgid "Less Than"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:314
-msgid "What value to check the measurement against."
+msgid "What value to check the measurement against?"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:323
 msgid ""
 "The duration (seconds) between checking whether the conditional is true. "
-"Set to 0 to check after every sensor measurement."
+"Set to 0 to check after every input measurement."
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:346
 #: mycodo_flask/templates/pages/input.html:524
-#: mycodo_flask/templates/pages/output.html:381
-#: mycodo_flask/templates/pages/output.html:500
+#: mycodo_flask/templates/pages/output.html:382
+#: mycodo_flask/templates/pages/output.html:501
 msgid "The action to perform when the conditional is True"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:357
-#: mycodo_flask/templates/pages/output.html:392
+#: mycodo_flask/templates/pages/output.html:393
 msgid "What relay to manipulate"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:366
-#: mycodo_flask/templates/pages/output.html:401
+#: mycodo_flask/templates/pages/output.html:402
 msgid "Turn the relay on or off"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:374
-#: mycodo_flask/templates/pages/output.html:409
+#: mycodo_flask/templates/pages/output.html:410
 msgid "How long to turn the relay on (optional)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:382
 #: mycodo_flask/templates/pages/input.html:406
-#: mycodo_flask/templates/pages/output.html:428
+#: mycodo_flask/templates/pages/output.html:429
 msgid "LCD to flash"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:394
 #: mycodo_flask/templates/pages/input.html:430
 #: mycodo_flask/templates/pages/input.html:467
-#: mycodo_flask/templates/pages/output.html:416
+#: mycodo_flask/templates/pages/output.html:417
 msgid "Email address to notify"
 msgstr ""
 
@@ -2106,19 +2179,19 @@ msgstr ""
 #: mycodo_flask/templates/pages/input.html:439
 #: mycodo_flask/templates/pages/input.html:451
 #: mycodo_flask/templates/pages/input.html:476
-#: mycodo_flask/templates/pages/output.html:440
-#: mycodo_flask/templates/pages/output.html:452
+#: mycodo_flask/templates/pages/output.html:441
+#: mycodo_flask/templates/pages/output.html:453
 msgid "Camera to capture with"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:460
 #: mycodo_flask/templates/pages/input.html:485
-#: mycodo_flask/templates/pages/output.html:461
+#: mycodo_flask/templates/pages/output.html:462
 msgid "Duration to record video (sec)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:492
-#: mycodo_flask/templates/pages/output.html:468
+#: mycodo_flask/templates/pages/output.html:469
 msgid "Command to execute (as user \"mycodo\")"
 msgstr ""
 
@@ -2129,45 +2202,27 @@ msgid ""
 msgstr ""
 
 #: mycodo_flask/templates/pages/lcd.html:22
-msgid "How many LCD controllers to add"
+msgid "How many LCD controllers to add?"
 msgstr ""
 
-#: mycodo_flask/templates/pages/lcd.html:46
+#: mycodo_flask/templates/pages/lcd.html:51
 #: mycodo_flask/templates/pages/pid.html:53
-msgid "Name for this PID controller."
+msgid "Name for this PID controller"
 msgstr ""
 
-#: mycodo_flask/templates/pages/lcd.html:50
+#: mycodo_flask/templates/pages/lcd.html:55
 #: mycodo_flask/templates/pages/output.html:90
 #: mycodo_flask/templates/pages/output.html:92
-#: mycodo_flask/templates/pages/output_pwm.html:18
 #: mycodo_flask/templates/pages/pid.html:57
-#: mycodo_flask/templates/pages/timer.html:120
+#: mycodo_flask/templates/pages/timer.html:118
 msgid "Active"
 msgstr "작동"
 
-#: mycodo_flask/templates/pages/lcd.html:51
+#: mycodo_flask/templates/pages/lcd.html:56
 #: mycodo_flask/templates/pages/output.html:97
-#: mycodo_flask/templates/pages/output_pwm.html:22
 #: mycodo_flask/templates/pages/pid.html:60
-#: mycodo_flask/templates/pages/timer.html:121
+#: mycodo_flask/templates/pages/timer.html:119
 msgid "Inactive"
-msgstr ""
-
-#: mycodo_flask/templates/pages/lcd.html:97
-msgid "LCD I<sup>2</sup>C Address"
-msgstr ""
-
-#: mycodo_flask/templates/pages/lcd.html:116
-msgid "LCD I<sup>2</sup>C Bus"
-msgstr ""
-
-#: mycodo_flask/templates/pages/lcd.html:130
-msgid "Multiplexer I<sup>2</sup>C Address"
-msgstr ""
-
-#: mycodo_flask/templates/pages/live.html:3
-msgid "Live Leasurements"
 msgstr ""
 
 #: mycodo_flask/templates/pages/live.html:5
@@ -2176,7 +2231,7 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/live.html:107
 #, python-format
-msgid "%(type)s Sensor, %(sec)s second interval"
+msgid "%(type)s Input, %(sec)s second interval"
 msgstr ""
 
 #: mycodo_flask/templates/pages/live.html:113
@@ -2196,12 +2251,6 @@ msgstr ""
 msgid "On Duration (sec.)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/live.html:170
-#: mycodo_flask/templates/pages/live.html:207
-#, python-format
-msgid "Duty Cycle (%%)"
-msgstr ""
-
 #: mycodo_flask/templates/pages/live.html:173
 #: mycodo_flask/templates/pages/live.html:180
 #: mycodo_flask/templates/pages/live.html:210
@@ -2214,11 +2263,6 @@ msgstr ""
 msgid "Max"
 msgstr ""
 
-#: mycodo_flask/templates/pages/live.html:178
-#: mycodo_flask/templates/pages/live.html:215
-msgid "Off Duration (sec.)"
-msgstr ""
-
 #: mycodo_flask/templates/pages/live.html:185
 #: mycodo_flask/templates/pages/live.html:222
 msgid "Current Draw"
@@ -2227,39 +2271,40 @@ msgstr ""
 #: mycodo_flask/templates/pages/live.html:187
 #: mycodo_flask/templates/pages/live.html:224
 msgid "amps"
-msgstr ""
+msgstr "암페어"
 
 #: mycodo_flask/templates/pages/live.html:235
+#, fuzzy
 msgid "Method Enabled"
-msgstr ""
+msgstr "메소드 사용중"
 
 #: mycodo_flask/templates/pages/method-build.html:5
 #: mycodo_flask/templates/pages/method-build.html:32
 msgid "Method-Builder"
-msgstr ""
+msgstr "메소드-빌더"
 
 #: mycodo_flask/templates/pages/method-build.html:26
 msgid "Back to Method Management"
-msgstr ""
+msgstr "메소드 관리로 돌아가기"
 
 #: mycodo_flask/templates/pages/method-build.html:242
-msgid "Relay Modulation"
+msgid "Output Modulation"
 msgstr ""
 
 #: mycodo_flask/templates/pages/method-build.html:245
 msgid ""
-"Note: This feature is currently not implemented. These relays will NOT be"
-" modulated if applied to a PID. This will be implemented soon."
+"Note: This feature is currently not implemented. These outputs will NOT "
+"be modulated if applied to a PID. This will be implemented soon."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method-build.html:291
 #: mycodo_flask/templates/pages/method-build.html:302
 msgid "Modulate the selected relay."
-msgstr ""
+msgstr "선택한 릴레이를 조절하십시오."
 
 #: mycodo_flask/templates/pages/method-list.html:5
 msgid "Method List"
-msgstr ""
+msgstr "메소드 리스트"
 
 #: mycodo_flask/templates/pages/method-list.html:21
 msgid ""
@@ -2271,23 +2316,24 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/method-list.html:39
 msgid "Time/Date"
-msgstr ""
+msgstr "시간/날짜"
 
 #: mycodo_flask/templates/pages/method-list.html:41
 msgid "Daily (Time-Based)"
-msgstr ""
+msgstr "매일 (시간 기준)"
 
 #: mycodo_flask/templates/pages/method-list.html:42
 msgid "Daily (Sine Wave)"
-msgstr ""
+msgstr "매일 (사인파)"
 
 #: mycodo_flask/templates/pages/method-list.html:43
 msgid "Daily (Bezier Curve)"
-msgstr ""
+msgstr "매일 (베 지어 곡선)"
 
 #: mycodo_flask/templates/pages/method-list.html:60
+#, fuzzy
 msgid "No Saved Methods Exist"
-msgstr ""
+msgstr "저장된 메소드 없음"
 
 #: mycodo_flask/templates/pages/method-list.html:62
 msgid "Saved Methods"
@@ -2295,11 +2341,11 @@ msgstr "저장된 메소드"
 
 #: mycodo_flask/templates/pages/output.html:105
 msgid "No Connection"
-msgstr ""
+msgstr "커넥션 없음"
 
 #: mycodo_flask/templates/pages/output.html:136
 msgid "Output Devices"
-msgstr ""
+msgstr "출력 디바이스"
 
 #: mycodo_flask/templates/pages/output.html:138
 msgid ""
@@ -2311,20 +2357,20 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/output.html:149
 msgid "Output Type"
-msgstr ""
+msgstr "출력 타입"
 
 #: mycodo_flask/templates/pages/output.html:193
-#: mycodo_flask/templates/pages/output_pwm.html:96
 msgid "Unconfigured"
-msgstr ""
+msgstr "구성되지 않음"
 
 #: mycodo_flask/templates/pages/output.html:233
 msgid "The number of amps the output device draws (at 120/240 VAC)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/output.html:281
+#, fuzzy
 msgid "Conditionals"
-msgstr ""
+msgstr "Conditionals"
 
 #: mycodo_flask/templates/pages/output.html:327
 msgid "Trigger this conditional to act when this relay turns on or off"
@@ -2334,41 +2380,14 @@ msgstr ""
 msgid "What action will trigger this conditional statement, on or off?"
 msgstr ""
 
-#: mycodo_flask/templates/pages/output.html:358
+#: mycodo_flask/templates/pages/output.html:346
+msgid "any duration"
+msgstr ""
+
+#: mycodo_flask/templates/pages/output.html:359
 msgid ""
 "(Optional) Set this to a specific duration of time if the conditional "
 "should trigger when the relay On duration equals this amount"
-msgstr ""
-
-#: mycodo_flask/templates/pages/output_pwm.html:3
-#: mycodo_flask/templates/pages/output_pwm.html:5
-msgid "PWM"
-msgstr ""
-
-#: mycodo_flask/templates/pages/output_pwm.html:57
-msgid "Pulse Width Modulation (PWM)"
-msgstr ""
-
-#: mycodo_flask/templates/pages/output_pwm.html:59
-msgid "PWM..."
-msgstr ""
-
-#: mycodo_flask/templates/pages/output_options/pwm.html:16
-#: mycodo_flask/templates/pages/output_pwm.html:124
-msgid "The GPIO pin (using BCM numbering) to output the PWM signal"
-msgstr ""
-
-#: mycodo_flask/templates/pages/output_options/pwm.html:22
-#: mycodo_flask/templates/pages/output_pwm.html:130
-msgid "The Hertz to output the PWM signal (0 - 70,000)"
-msgstr ""
-
-#: mycodo_flask/templates/pages/output_pwm.html:137
-msgid "The number of amps the device connected to the pwm draws (at 120/240 VAC)"
-msgstr ""
-
-#: mycodo_flask/templates/pages/output_pwm.html:150
-msgid "Select the duty cycle for the PWM when turned on (0.0 - 100.0)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:3
@@ -2385,11 +2404,11 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:58
 msgid "Paused"
-msgstr ""
+msgstr "일시중지"
 
 #: mycodo_flask/templates/pages/pid.html:59
 msgid "On Hold"
-msgstr ""
+msgstr "보류"
 
 #: mycodo_flask/templates/pages/pid.html:110
 msgid "Select the measurement to use as the PID input"
@@ -2400,17 +2419,12 @@ msgid "Choose the direction(s) to regulate"
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:131
-#: mycodo_flask/templates/pages/pid_options/command.html:21
-#: mycodo_flask/templates/pages/pid_options/script.html:48
 msgid ""
 "The duration between calculating a new PID output to power the raise and "
 "lower relays."
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:137
-#: mycodo_flask/templates/pages/pid_options/command.html:27
-#: mycodo_flask/templates/pages/pid_options/input_sensor.html:38
-#: mycodo_flask/templates/pages/pid_options/script.html:54
 msgid ""
 "Maximum allowable sensor measurement age (to allow the PID controller to "
 "manipulate relays, the sensor measurement must have occurred in the past "
@@ -2418,72 +2432,45 @@ msgid ""
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:144
-#: mycodo_flask/templates/pages/pid_options/command.html:33
-#: mycodo_flask/templates/pages/pid_options/options_pid.html:21
-#: mycodo_flask/templates/pages/pid_options/script.html:60
 msgid ""
 "This is the desired state of a perticular environmental condition. For "
 "instance, this could be the desired temperature in Celsius."
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:150
-#: mycodo_flask/templates/pages/pid_options/command.html:39
-#: mycodo_flask/templates/pages/pid_options/options_pid.html:27
-#: mycodo_flask/templates/pages/pid_options/script.html:66
+#, fuzzy
 msgid "Proportional gain"
-msgstr ""
+msgstr "Proportional 게인"
 
 #: mycodo_flask/templates/pages/pid.html:156
-#: mycodo_flask/templates/pages/pid_options/command.html:45
-#: mycodo_flask/templates/pages/pid_options/options_pid.html:33
-#: mycodo_flask/templates/pages/pid_options/script.html:72
+#, fuzzy
 msgid "Integral gain"
-msgstr ""
+msgstr "Integral 게인"
 
 #: mycodo_flask/templates/pages/pid.html:162
-#: mycodo_flask/templates/pages/pid_options/command.html:51
-#: mycodo_flask/templates/pages/pid_options/options_pid.html:39
-#: mycodo_flask/templates/pages/pid_options/script.html:78
+#, fuzzy
 msgid "Derivative gain"
-msgstr ""
+msgstr "Derivative 게인"
 
 #: mycodo_flask/templates/pages/pid.html:168
-#: mycodo_flask/templates/pages/pid_options/command.html:57
-#: mycodo_flask/templates/pages/pid_options/options_pid.html:45
-#: mycodo_flask/templates/pages/pid_options/script.html:84
 msgid ""
 "Limit the integrator minimum, for calculating Ki_total: (Ki_total = Ki * "
 "integrator; and PID output = Kp_total + Ki_total + Kd_total)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:174
-#: mycodo_flask/templates/pages/pid_options/command.html:63
-#: mycodo_flask/templates/pages/pid_options/options_pid.html:51
-#: mycodo_flask/templates/pages/pid_options/script.html:90
 msgid ""
 "Limit the integrator maximum, for calculating Ki_total: (Ki_total = Ki * "
 "integrator; and PID output = Kp_total + Ki_total + Kd_total)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:183
-#: mycodo_flask/templates/pages/pid_options/command.html:73
-#: mycodo_flask/templates/pages/pid_options/output_pwm.html:6
-#: mycodo_flask/templates/pages/pid_options/output_relay.html:6
-#: mycodo_flask/templates/pages/pid_options/pwm.html:6
-#: mycodo_flask/templates/pages/pid_options/relay.html:6
-#: mycodo_flask/templates/pages/pid_options/script.html:100
 msgid ""
 "The output that will raise the selected environmental condition (Measure "
 "Type)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:206
-#: mycodo_flask/templates/pages/pid_options/command.html:105
-#: mycodo_flask/templates/pages/pid_options/output_pwm.html:32
-#: mycodo_flask/templates/pages/pid_options/output_relay.html:38
-#: mycodo_flask/templates/pages/pid_options/pwm.html:32
-#: mycodo_flask/templates/pages/pid_options/relay.html:38
-#: mycodo_flask/templates/pages/pid_options/script.html:132
 msgid ""
 "The output that will lower the selected environmental condition (Measure "
 "Type)"
@@ -2496,7 +2483,6 @@ msgid ""
 msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:232
-#: mycodo_flask/templates/pages/timer_options/pwm_method.html:7
 msgid "No methods exist. Create one with this button"
 msgstr ""
 
@@ -2507,9 +2493,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/pid.html:250
 #: mycodo_flask/templates/pages/timer_options/add_pwm_method.html:17
-#: mycodo_flask/templates/pages/timer_options/pwm_method.html:18
 msgid "Manage Methods"
-msgstr ""
+msgstr "메소드 관리"
 
 #: mycodo_flask/templates/pages/timer.html:3
 #: mycodo_flask/templates/pages/timer.html:5
@@ -2519,48 +2504,42 @@ msgstr "타이머"
 
 #: mycodo_flask/templates/pages/timer.html:25
 msgid "New Timer"
-msgstr ""
-
-#: mycodo_flask/templates/pages/usage.html:3
-#: mycodo_flask/templates/pages/usage.html:12
-#: mycodo_flask/templates/pages/usage_reports.html:3
-#: mycodo_flask/templates/settings/general.html:95
-msgid "Relay Usage"
-msgstr "릴레이 사용"
+msgstr "새로운 타이머"
 
 #: mycodo_flask/templates/pages/usage.html:5
 msgid "Usage"
-msgstr ""
+msgstr "사용량"
 
 #: mycodo_flask/templates/pages/usage.html:23
 msgid "ID"
-msgstr ""
+msgstr "아이디"
 
 #: mycodo_flask/templates/pages/usage.html:26
 msgid "Past Day"
-msgstr ""
+msgstr "지난 날"
 
 #: mycodo_flask/templates/pages/usage.html:27
 msgid "Past Week"
-msgstr ""
+msgstr "지난 주"
 
 #: mycodo_flask/templates/pages/usage.html:28
 #: mycodo_flask/templates/pages/usage.html:29
 msgid "Past Month"
-msgstr ""
+msgstr "지난 달"
 
 #: mycodo_flask/templates/pages/usage.html:29
+#, fuzzy
 msgid "From"
-msgstr ""
+msgstr "에서"
 
 #: mycodo_flask/templates/pages/usage.html:30
 msgid "Past Year"
-msgstr ""
+msgstr "작년"
 
 #: mycodo_flask/templates/pages/usage.html:39
 #: mycodo_flask/templates/pages/usage.html:73
 msgid "Duration On (hours)"
-msgstr ""
+msgstr "듀레이션 On (시간)"
 
 #: mycodo_flask/templates/pages/usage.html:48
 #: mycodo_flask/templates/pages/usage.html:82
@@ -2577,16 +2556,12 @@ msgstr "비용"
 
 #: mycodo_flask/templates/pages/usage_reports.html:5
 msgid "Usage Reports"
-msgstr ""
-
-#: mycodo_flask/templates/pages/usage_reports.html:12
-msgid "Relay Usage Reports"
-msgstr "릴레이 사용 보고서"
+msgstr "사용 보고서"
 
 #: mycodo_flask/templates/pages/usage_reports.html:17
 msgid ""
-"No Reports. Go to <a href=\"%(loc)\">Relay Usage Options</a> to schedule "
-"a report to be generated."
+"No Reports. Go to <a href=\"%(loc)\">Output Usage Options</a> to schedule"
+" a report to be generated."
 msgstr ""
 
 #: mycodo_flask/templates/pages/input_options/ADS1x15.html:4
@@ -2635,16 +2610,6 @@ msgstr ""
 msgid ""
 "Wait a period of time (seconds) after the first edge detection to begin "
 "detecting again"
-msgstr ""
-
-#: mycodo_flask/templates/pages/input_options/GPIO_PIN.html:4
-#: mycodo_flask/templates/pages/input_options/TEMPLATE_GPIO_PIN.html:4
-msgid "The GPIO pin (BCM numbering) to access the device"
-msgstr ""
-
-#: mycodo_flask/templates/pages/input_options/I2C_BUS.html:4
-#: mycodo_flask/templates/pages/input_options/TEMPLATE_I2C_BUS.html:4
-msgid "The I2C bus to access the device"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input_options/LinuxCommand.html:4
@@ -2719,16 +2684,23 @@ msgstr ""
 msgid "Inverse the scale (example: a high measurement returns a low unit value)"
 msgstr ""
 
+#: mycodo_flask/templates/pages/input_options/TEMPLATE_GPIO_PIN.html:4
+msgid "The GPIO pin (BCM numbering) to access the device"
+msgstr ""
+
+#: mycodo_flask/templates/pages/input_options/TEMPLATE_I2C_BUS.html:4
+msgid "The I2C bus to access the device"
+msgstr ""
+
 #: mycodo_flask/templates/pages/input_options/TEMPLATE_POWER_RELAY.html:4
 msgid "The relay used to power the device"
 msgstr ""
 
 #: mycodo_flask/templates/pages/input_options/TEMPLATE_UART_BAUD.html:4
 msgid "The UART baud rate"
-msgstr ""
+msgstr "UART 보 레이트"
 
 #: mycodo_flask/templates/pages/input_options/TEMPLATE_UART_DEVICE.html:4
-#: mycodo_flask/templates/pages/sensor_options/K30.html:4
 msgid "The UART device location configured for this sensor/device"
 msgstr ""
 
@@ -2748,17 +2720,20 @@ msgid ""
 msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_daily.html:48
+#, fuzzy
 msgid ""
-"Activate or deactivate a relay at a specific time of day. Hour and minute"
-" (HH:MM) here is defined as the time of day. For example, 3:05 PM would "
-"be \"15:05\"."
+"Activate or deactivate an output at a specific time of day. Hour and "
+"minute (HH:MM) here is defined as the time of day. For example, 3:05 PM "
+"would be \"15:05\"."
 msgstr ""
+"특정 시간에 릴레이를 활성화 또는 비활성화하십시오. 여기 시간과 분 (HH:MM) 은 시간으로 정의됩니다. 예를 들어 오후 3시 "
+"5분은 \"15:05\" 로 입력합니다."
 
 #: mycodo_flask/templates/pages/method_options/build_daily.html:59
 #: mycodo_flask/templates/pages/method_options/build_date.html:60
 #: mycodo_flask/templates/pages/method_options/build_duration.html:46
 msgid "Modulate the selected relay"
-msgstr ""
+msgstr "선택한 릴레이 조정"
 
 #: mycodo_flask/templates/pages/method_options/build_daily_bezier.html:3
 msgid ""
@@ -2803,10 +2778,10 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_duration.html:41
 msgid ""
-"Activate or deactivate a relay within this method at a specific duration."
-" Duration here is defined as the amount of time since the beginning of "
-"the method. For example, 60 seconds would execute the relay modulation 60"
-" seconds after the start of the method."
+"Activate or deactivate an output within this method at a specific "
+"duration. Duration here is defined as the amount of time since the "
+"beginning of the method. For example, 60 seconds would execute the output"
+" modulation 60 seconds after the start of the method."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_duration.html:77
@@ -2851,10 +2826,18 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/pwm.html:8
 msgid "Any Pin, <= 40kHz"
-msgstr ""
+msgstr "모든 핀, <= 40kHz"
 
 #: mycodo_flask/templates/pages/output_options/pwm.html:9
 msgid "Hardware Pin, <= 30MHz"
+msgstr "하드웨어 핀, <= 30MHz"
+
+#: mycodo_flask/templates/pages/output_options/pwm.html:16
+msgid "The GPIO pin (using BCM numbering) to output the PWM signal"
+msgstr ""
+
+#: mycodo_flask/templates/pages/output_options/pwm.html:22
+msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/wired.html:4
@@ -2891,103 +2874,6 @@ msgstr "무선 433 MHz On 명령"
 msgid "Wireless 433 MHz Off command"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid_options/command.html:5
-msgid "Enter a linux command that returns a value to be used for the PID input"
-msgstr ""
-
-#: mycodo_flask/templates/pages/pid_options/command.html:11
-#: mycodo_flask/templates/pages/pid_options/options_pid.html:5
-#: mycodo_flask/templates/pages/pid_options/script.html:38
-msgid "What direction to regulate the chosen environmental condition?"
-msgstr ""
-
-#: mycodo_flask/templates/pages/pid_options/command.html:84
-#: mycodo_flask/templates/pages/pid_options/output_relay.html:17
-#: mycodo_flask/templates/pages/pid_options/relay.html:17
-#: mycodo_flask/templates/pages/pid_options/relay_raise.html:5
-#: mycodo_flask/templates/pages/pid_options/script.html:111
-msgid ""
-"The minimum duration (in seconds) required for the Raise Relay to "
-"activate. If an On duration is below this value, the Raise Relay will not"
-" turn on."
-msgstr ""
-
-#: mycodo_flask/templates/pages/pid_options/command.html:90
-#: mycodo_flask/templates/pages/pid_options/output_relay.html:23
-#: mycodo_flask/templates/pages/pid_options/relay.html:23
-#: mycodo_flask/templates/pages/pid_options/relay_raise.html:11
-#: mycodo_flask/templates/pages/pid_options/script.html:117
-msgid ""
-"The maximum duration (in seconds) allowed for the Raise Relay to be on "
-"for, per period. If an On duration is above this value, the Raise Relay "
-"will turn on for this set duration."
-msgstr ""
-
-#: mycodo_flask/templates/pages/pid_options/command.html:96
-#: mycodo_flask/templates/pages/pid_options/output_relay.html:29
-#: mycodo_flask/templates/pages/pid_options/relay.html:29
-#: mycodo_flask/templates/pages/pid_options/relay_raise.html:17
-#: mycodo_flask/templates/pages/pid_options/script.html:123
-msgid "This relay will remain off for at least this duration of time."
-msgstr ""
-
-#: mycodo_flask/templates/pages/pid_options/command.html:116
-#: mycodo_flask/templates/pages/pid_options/output_relay.html:49
-#: mycodo_flask/templates/pages/pid_options/relay.html:49
-#: mycodo_flask/templates/pages/pid_options/relay_lower.html:5
-#: mycodo_flask/templates/pages/pid_options/script.html:143
-msgid ""
-"The minimum duration (in seconds) required for the Lower Relay to "
-"activate. If an On duration is below this value, the Lower Relay will not"
-" turn on."
-msgstr ""
-
-#: mycodo_flask/templates/pages/pid_options/command.html:122
-#: mycodo_flask/templates/pages/pid_options/output_relay.html:55
-#: mycodo_flask/templates/pages/pid_options/relay.html:55
-#: mycodo_flask/templates/pages/pid_options/relay_lower.html:11
-#: mycodo_flask/templates/pages/pid_options/script.html:149
-msgid ""
-"The maximum duration (in seconds) allowed for the Lower Relay to be on "
-"for, per period. If an ON duration is above this value, the Lower Relay "
-"will turn on for this set duration."
-msgstr ""
-
-#: mycodo_flask/templates/pages/pid_options/command.html:128
-#: mycodo_flask/templates/pages/pid_options/output_relay.html:61
-#: mycodo_flask/templates/pages/pid_options/relay.html:61
-#: mycodo_flask/templates/pages/pid_options/relay_lower.html:17
-#: mycodo_flask/templates/pages/pid_options/script.html:155
-msgid "This relay will remain off for at least this duration fo time."
-msgstr ""
-
-#: mycodo_flask/templates/pages/pid_options/input_command.html:5
-#: mycodo_flask/templates/pages/pid_options/input_command.html:11
-msgid ""
-"Enter a linux command (executed as user mycodo) that returns a value to "
-"be used for the PID input"
-msgstr ""
-
-#: mycodo_flask/templates/pages/pid_options/input_sensor.html:6
-#: mycodo_flask/templates/pages/pid_options/input_sensor.html:17
-#: mycodo_flask/templates/pages/pid_options/script.html:6
-#: mycodo_flask/templates/pages/pid_options/script.html:17
-msgid "Must Select One"
-msgstr ""
-
-#: mycodo_flask/templates/pages/pid_options/input_sensor.html:16
-#: mycodo_flask/templates/pages/pid_options/script.html:16
-msgid "Select the environmental condition to regulate"
-msgstr ""
-
-#: mycodo_flask/templates/pages/pid_options/options_pid.html:15
-msgid "The duration between calculating a new PID output"
-msgstr ""
-
-#: mycodo_flask/templates/pages/pid_options/output_pwm.html:17
-#: mycodo_flask/templates/pages/pid_options/output_pwm.html:43
-#: mycodo_flask/templates/pages/pid_options/pwm.html:17
-#: mycodo_flask/templates/pages/pid_options/pwm.html:43
 #: mycodo_flask/templates/pages/pid_options/pwm_lower.html:5
 #: mycodo_flask/templates/pages/pid_options/pwm_raise.html:5
 #, python-format
@@ -2996,17 +2882,6 @@ msgid ""
 " is the value that will be used."
 msgstr "최소 듀티 사이클 (in %%). 듀티 사이클이 이 값보다 낮으면 지금 입력된 값이 사용됩니다"
 
-#: mycodo_flask/templates/pages/pid_options/output_pwm.html:23
-#: mycodo_flask/templates/pages/pid_options/pwm.html:23
-#: mycodo_flask/templates/pages/pid_options/pwm_raise.html:11
-#, python-format
-msgid ""
-"The maximum duty cycle (in %%). If a duty cycle is above this value, this"
-" is the value that will be used."
-msgstr "최대 듀티 사이클 (in %%). 듀티 사이클이 이 값보다 높으면 지금 입력된 값이 사용됩니다"
-
-#: mycodo_flask/templates/pages/pid_options/output_pwm.html:49
-#: mycodo_flask/templates/pages/pid_options/pwm.html:49
 #: mycodo_flask/templates/pages/pid_options/pwm_lower.html:11
 #, python-format
 msgid ""
@@ -3014,30 +2889,73 @@ msgid ""
 " is the value that will be used."
 msgstr "최대 듀티 사이클 (in %%). 듀티 사이클이 이 값보다 낮으면 지금 입력된 값이 사용됩니다"
 
+#: mycodo_flask/templates/pages/pid_options/pwm_raise.html:11
+#, python-format
+msgid ""
+"The maximum duty cycle (in %%). If a duty cycle is above this value, this"
+" is the value that will be used."
+msgstr "최대 듀티 사이클 (in %%). 듀티 사이클이 이 값보다 높으면 지금 입력된 값이 사용됩니다"
+
+#: mycodo_flask/templates/pages/pid_options/relay_lower.html:5
+msgid ""
+"The minimum duration (in seconds) required for the Lower Output to "
+"activate. If an On duration is below this value, the Lower Output will "
+"not turn on."
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid_options/relay_lower.html:11
+msgid ""
+"The maximum duration (in seconds) allowed for the Lower Output to be on "
+"for, per period. If an ON duration is above this value, the Lower Output "
+"will turn on for this set duration."
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid_options/relay_lower.html:17
+#: mycodo_flask/templates/pages/pid_options/relay_raise.html:17
+msgid "This relay will remain off for at least this duration of time"
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid_options/relay_raise.html:5
+msgid ""
+"The minimum duration (in seconds) required for the Raise Output to "
+"activate. If an On duration is below this value, the Raise Output will "
+"not turn on."
+msgstr ""
+
+#: mycodo_flask/templates/pages/pid_options/relay_raise.html:11
+msgid ""
+"The maximum duration (in seconds) allowed for the Raise Output to be on "
+"for, per period. If an On duration is above this value, the Raise Output "
+"will turn on for this set duration."
+msgstr ""
+
 #: mycodo_flask/templates/pages/timer_options/add_pwm_method.html:4
 #: mycodo_flask/templates/pages/timer_options/mod_pwm_method.html:24
-#: mycodo_flask/templates/pages/timer_options/pwm_method.html:5
 msgid "Select the method for determining the duty cycle"
 msgstr ""
 
 #: mycodo_flask/templates/pages/timer_options/add_pwm_method.html:6
 #: mycodo_flask/templates/pages/timer_options/mod_pwm_method.html:26
 msgid "No Methods Found"
-msgstr ""
+msgstr "메서드 찾지못함"
 
-#: mycodo_flask/templates/pages/timer_options/add_relay.html:50
 #: mycodo_flask/templates/pages/timer_options/add_time_point.html:25
-#: mycodo_flask/templates/pages/timer_options/relay.html:39
-#, python-format
+#, fuzzy, python-format
 msgid "Optional: If On, for %(sec)s seconds"
+msgstr "옵션: On 인 경우 %(sec) 초 동안"
+
+#: mycodo_flask/templates/pages/timer_options/mod_duration.html:12
+#: mycodo_flask/templates/pages/timer_options/mod_time_point.html:12
+#: mycodo_flask/templates/pages/timer_options/mod_time_span.html:12
+msgid "No Duration Outputs Found"
 msgstr ""
 
 #: mycodo_flask/templates/pages/timer_options/mod_pwm_method.html:12
 msgid "No PWM Outputs Found"
-msgstr ""
+msgstr "PWM 출력 없음"
 
 #: mycodo_flask/templates/settings/alerts.html:4
-#: mycodo_flask/utils/utils_settings.py:276
+#: mycodo_flask/utils/utils_settings.py:273
 msgid "Alert Settings"
 msgstr "알림 설정"
 
@@ -3048,7 +2966,7 @@ msgstr "알림 설정"
 
 #: mycodo_flask/templates/settings/alerts.html:24
 msgid "465 for SSL, 587 for TSL"
-msgstr "SSL 에는 465, TSL 에는 587."
+msgstr "SSL 에 465, TSL 에 587"
 
 #: mycodo_flask/templates/settings/alerts.html:41
 msgid "Usually your full email address"
@@ -3059,8 +2977,9 @@ msgid "Only enter a password here if you wish to change it"
 msgstr "패스워드 변경하고 싶다면 여기 패스워드를 입력하십시오"
 
 #: mycodo_flask/templates/settings/alerts.html:59
+#, fuzzy
 msgid "Maximum number of alerts that can be emailed per hour."
-msgstr "시간당 이메일로 전송될 최대 알림 수"
+msgstr "매시간 이메일 알림 최대 알림 수."
 
 #: mycodo_flask/templates/settings/camera.html:4
 #: mycodo_flask/templates/settings/camera.html:6
@@ -3075,7 +2994,7 @@ msgstr "이 카메라의 이름"
 #: mycodo_flask/templates/settings/general.html:4
 #: mycodo_flask/templates/settings/general.html:6
 #: mycodo_flask/templates/settings/general.html:10
-#: mycodo_flask/utils/utils_settings.py:222
+#: mycodo_flask/utils/utils_settings.py:214
 msgid "General Settings"
 msgstr "일반 설정"
 
@@ -3119,37 +3038,41 @@ msgstr ""
 msgid "View collected statistics"
 msgstr "수집 된 통계 보기"
 
-#: mycodo_flask/templates/settings/general.html:101
+#: mycodo_flask/templates/settings/general.html:100
+msgid "Check if you would like Mycodo to automatically check for upgrades."
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:112
 msgid "Set the maximum allowed amperage to be switched on at any given time"
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:107
+#: mycodo_flask/templates/settings/general.html:118
 msgid "Set the voltage used to power the devices powered by the relays"
-msgstr ""
+msgstr "릴레이에 의해 작동하는 장치를 켜기위한 전압을 설정하십시오"
 
-#: mycodo_flask/templates/settings/general.html:113
+#: mycodo_flask/templates/settings/general.html:124
 msgid "Set the cost per kilowatt-hour"
 msgstr "와트 당 비용 설정"
 
-#: mycodo_flask/templates/settings/general.html:119
+#: mycodo_flask/templates/settings/general.html:130
 msgid "Set the unit of currency used to pay for the electricity"
 msgstr "전기에 대한 값을 지불할때  사용할 통화(돈) 단위 설정"
 
-#: mycodo_flask/templates/settings/general.html:125
+#: mycodo_flask/templates/settings/general.html:136
 msgid "Set a day of the month to calculate monthly power usage"
 msgstr "전력 사용량을 계산 하는 날짜를 설정"
 
-#: mycodo_flask/templates/settings/general.html:136
+#: mycodo_flask/templates/settings/general.html:147
 msgid ""
 "Automatically generate relay usage reports on a daily/weekly/monthly "
 "schedule"
 msgstr "일일/주간/월간 일정에 릴레이 사용 현황 보고서를 자동으로 생성"
 
-#: mycodo_flask/templates/settings/general.html:142
+#: mycodo_flask/templates/settings/general.html:153
 msgid "How often to generate a report"
 msgstr "자주 보고서를 생성 하는 방법"
 
-#: mycodo_flask/templates/settings/general.html:152
+#: mycodo_flask/templates/settings/general.html:163
 msgid "Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28"
 msgstr "날짜 옵션 : 매일 : 1-7 (1 = 월요일), 월간 : 1-28"
 
@@ -3162,6 +3085,10 @@ msgstr "관리자 설정"
 #: mycodo_flask/templates/settings/users.html:128
 msgid "Roles"
 msgstr "역할"
+
+#: mycodo_flask/templates/tools/calibration_atlas_ph.html:3
+msgid "Sensor"
+msgstr "센서"
 
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:13
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:16
@@ -3191,7 +3118,7 @@ msgstr "센서를 찾을 수 없음"
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:189
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:219
 msgid "Calibration Failed"
-msgstr ""
+msgstr "캘리브레이션 실패"
 
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:105
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:129
@@ -3199,20 +3126,20 @@ msgstr ""
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:190
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:226
 msgid "Refer to the logs for details"
-msgstr ""
+msgstr "더 상세한 내용은 로그를 보십시오"
 
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:109
 msgid ""
 "Ensure all pH calibration solutions are the same temperature. Enter the "
 "temperature (in Celsius) of your solutions, then click Continue."
-msgstr ""
+msgstr "모든 pH 보정 용액이 같은 온도인지 확인하십시오. 솔루션의 온도 (섭씨)를 입력하고 계속을 클릭하십시오."
 
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:133
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:164
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:195
 #, python-format
 msgid "Insert the probe into the pH %(ph)s solution, then click Ready"
-msgstr ""
+msgstr "프로브를 pH %(ph)s 용액에 넣은 다음 준비를 클릭하십시오"
 
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:147
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:178
@@ -3226,24 +3153,25 @@ msgstr "준비"
 msgid ""
 "Remove the pH probe from the pH %(ph)s solution and rinse it with "
 "distilled water"
-msgstr ""
+msgstr "pH %(ph)s 용액에서 pH 프로브를 제거하고 증류수로 헹구십시오"
 
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:219
 msgid "Calibration Succeeded"
-msgstr ""
+msgstr "캘리브레이션 성공"
 
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:228
 msgid "Calibration Complete"
-msgstr ""
+msgstr "캘리브레이션 완료"
 
 #: mycodo_flask/utils/utils_conditional.py:36
 #: mycodo_flask/utils/utils_conditional.py:139
-#: mycodo_flask/utils/utils_graph.py:32 mycodo_flask/utils/utils_input.py:43
-#: mycodo_flask/utils/utils_lcd.py:37 mycodo_flask/utils/utils_method.py:209
+#: mycodo_flask/utils/utils_graph.py:32 mycodo_flask/utils/utils_input.py:44
+#: mycodo_flask/utils/utils_lcd.py:37 mycodo_flask/utils/utils_lcd.py:205
+#: mycodo_flask/utils/utils_method.py:209
 #: mycodo_flask/utils/utils_output.py:130 mycodo_flask/utils/utils_pid.py:39
 #: mycodo_flask/utils/utils_settings.py:43
 #: mycodo_flask/utils/utils_settings.py:94
-#: mycodo_flask/utils/utils_settings.py:313
+#: mycodo_flask/utils/utils_settings.py:310
 #: mycodo_flask/utils/utils_timer.py:34
 msgid "Add"
 msgstr "더하다"
@@ -3257,108 +3185,132 @@ msgstr "조건부"
 
 #: mycodo_flask/utils/utils_conditional.py:74
 #: mycodo_flask/utils/utils_conditional.py:168
+#: mycodo_flask/utils/utils_lcd.py:230
 msgid "Mod"
 msgstr "개조 (Mod)"
 
-#: mycodo_flask/utils/utils_general.py:85
+#: mycodo_flask/utils/utils_general.py:87
 #, python-format
 msgid "%(cont)s controller activated in SQL database"
-msgstr "SQL 데이타베이스에서 %(cont)s 컨트롤러가 작동 되었습니다."
+msgstr "SQL 데이타베이스의 %(cont)s 컨트롤러가 작동 되었습니다"
 
-#: mycodo_flask/utils/utils_general.py:89
+#: mycodo_flask/utils/utils_general.py:91
 #, python-format
 msgid "%(cont)s controller deactivated in SQL database"
-msgstr "SQL 데이타베이스에서 %(cont)s 컨트롤러가 해체 되었습니다."
+msgstr "SQL 데이타베이스의 %(cont)s 컨트롤러가 비활성화 되었습니다"
 
-#: mycodo_flask/utils/utils_general.py:94
-#: mycodo_flask/utils/utils_general.py:111
+#: mycodo_flask/utils/utils_general.py:96
+#: mycodo_flask/utils/utils_general.py:113 mycodo_flask/utils/utils_pid.py:339
+#: mycodo_flask/utils/utils_remote_host.py:165
+#: mycodo_flask/utils/utils_remote_host.py:169
+#: mycodo_flask/utils/utils_remote_host.py:173
+#: mycodo_flask/utils/utils_remote_host.py:194
 #, python-format
 msgid "Error: %(err)s"
 msgstr "오류: %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:225
-#: mycodo_flask/utils/utils_general.py:238
-#: mycodo_flask/utils/utils_general.py:258
-#: mycodo_flask/utils/utils_general.py:264 mycodo_flask/utils/utils_lcd.py:201
-#: mycodo_flask/utils/utils_lcd.py:203 mycodo_flask/utils/utils_settings.py:183
+#: mycodo_flask/utils/utils_general.py:227
+#: mycodo_flask/utils/utils_general.py:241
+#: mycodo_flask/utils/utils_general.py:261
+#: mycodo_flask/utils/utils_general.py:267 mycodo_flask/utils/utils_lcd.py:198
+#: mycodo_flask/utils/utils_lcd.py:200
 #, python-format
 msgid "%(msg)s"
 msgstr "%(msg)s"
 
-#: mycodo_flask/utils/utils_general.py:231
+#: mycodo_flask/utils/utils_general.py:233
 #: mycodo_flask/utils/utils_output.py:45 mycodo_flask/utils/utils_output.py:52
 #: mycodo_flask/utils/utils_output.py:57
-#: mycodo_flask/utils/utils_settings.py:189
 #, python-format
 msgid "%(err)s"
 msgstr "%(err)s"
 
-#: mycodo_flask/utils/utils_general.py:249
+#: mycodo_flask/utils/utils_general.py:234
+#, python-format
+msgid "Entry with ID %(id)s not found"
+msgstr ""
+
+#: mycodo_flask/utils/utils_general.py:252
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr "%(field)s 에 오류 발생 - %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:340
+#: mycodo_flask/utils/utils_general.py:343
 msgid "Cannot move above the first item in the list"
 msgstr "목록의 첫 번째 아이템 위로 이동할 수 없습니다"
 
-#: mycodo_flask/utils/utils_general.py:344
+#: mycodo_flask/utils/utils_general.py:347
 msgid "Cannot move below the last item in the list"
 msgstr "목록의 마지막 아이템 밑으로 이동할 수 없습니다"
 
-#: mycodo_flask/utils/utils_graph.py:63 mycodo_flask/utils/utils_graph.py:92
+#: mycodo_flask/utils/utils_graph.py:66 mycodo_flask/utils/utils_graph.py:95
 #, python-format
 msgid "Graph with ID %(id)s successfully added"
-msgstr "ID %(id)s 또한 그래프가 성공적으로 추가되었습니다."
+msgstr "ID %(id)s 와 그래프가 성공적으로 추가됨"
 
-#: mycodo_flask/utils/utils_graph.py:113 mycodo_flask/utils/utils_input.py:223
-#: mycodo_flask/utils/utils_lcd.py:61 mycodo_flask/utils/utils_method.py:375
+#: mycodo_flask/utils/utils_graph.py:116 mycodo_flask/utils/utils_input.py:224
+#: mycodo_flask/utils/utils_lcd.py:64 mycodo_flask/utils/utils_method.py:375
 #: mycodo_flask/utils/utils_output.py:174 mycodo_flask/utils/utils_pid.py:64
 #: mycodo_flask/utils/utils_settings.py:45
-#: mycodo_flask/utils/utils_settings.py:139
-#: mycodo_flask/utils/utils_settings.py:221
-#: mycodo_flask/utils/utils_settings.py:275
+#: mycodo_flask/utils/utils_settings.py:142
+#: mycodo_flask/utils/utils_settings.py:213
+#: mycodo_flask/utils/utils_settings.py:272
 #: mycodo_flask/utils/utils_settings.py:352
-#: mycodo_flask/utils/utils_timer.py:99
+#: mycodo_flask/utils/utils_timer.py:96
 msgid "Modify"
 msgstr "수정"
 
-#: mycodo_flask/utils/utils_graph.py:284 mycodo_flask/utils/utils_input.py:355
-#: mycodo_flask/utils/utils_lcd.py:135 mycodo_flask/utils/utils_output.py:249
-#: mycodo_flask/utils/utils_pid.py:206 mycodo_flask/utils/utils_timer.py:172
+#: mycodo_flask/utils/utils_graph.py:288 mycodo_flask/utils/utils_input.py:356
+#: mycodo_flask/utils/utils_lcd.py:129 mycodo_flask/utils/utils_output.py:249
+#: mycodo_flask/utils/utils_pid.py:206 mycodo_flask/utils/utils_timer.py:169
 msgid "Reorder"
 msgstr "순서 변경"
 
-#: mycodo_flask/utils/utils_input.py:206
+#: mycodo_flask/utils/utils_input.py:207
 #, python-format
-msgid "%(type)s Sensor with ID %(id)s (%(uuid)s) successfully added"
-msgstr "아이디 %(id)s (%(uuid)s) 와 %(type)s 센서가 성공적으로 설치 되었습니다."
+msgid "%(type)s Input with ID %(id)s (%(uuid)s) successfully added"
+msgstr ""
 
-#: mycodo_flask/utils/utils_input.py:232
+#: mycodo_flask/utils/utils_input.py:233
 msgid "Deactivate sensor controller before modifying its settings"
 msgstr "설정을 수정하기 전에 센서 컨트롤러를 비활성화 시키십시오"
 
-#: mycodo_flask/utils/utils_input.py:237
+#: mycodo_flask/utils/utils_input.py:238
 msgid ""
 "Choose a Read Period equal to or greater than 7. The AM2315 may become "
 "unresponsive if the period is below 7."
 msgstr "읽기주기를 7보다 크거나 같게 선택하십시오. 기간이 7보다 작으면 AM2315 가 응답하지 않을 수 있습니다."
 
-#: mycodo_flask/utils/utils_input.py:243
-msgid "The Read Period cannot be less than the Pre-Relay Duration"
+#: mycodo_flask/utils/utils_input.py:244
+msgid "The Read Period cannot be less than the Pre Output Duration"
 msgstr ""
 
-#: mycodo_flask/utils/utils_input.py:248
+#: mycodo_flask/utils/utils_input.py:249
 msgid "Invalid device or improper permissions to read device"
 msgstr "잘못된 디바이스 이거나 장치를 읽을 수있는 적절한 권한이 없습니다"
 
-#: mycodo_flask/utils/utils_lcd.py:70
+#: mycodo_flask/utils/utils_lcd.py:71 mycodo_flask/utils/utils_lcd.py:104
+#: mycodo_flask/utils/utils_lcd.py:212 mycodo_flask/utils/utils_lcd.py:237
+#: mycodo_flask/utils/utils_lcd.py:245
 msgid "Deactivate LCD controller before modifying its settings."
 msgstr "설정을 수정하기 전에 LCD 컨트롤러를 비활성화하십시오."
 
-#: mycodo_flask/utils/utils_lcd.py:176
-msgid "Cannot activate controller if the associated sensor controller is inactive"
-msgstr "연결된 센서 컨트롤러가 비활성 상태 인 경우 컨트롤러를 활성화 할 수 없습니다"
+#: mycodo_flask/utils/utils_lcd.py:173
+msgid "Cannot activate LCD if there are blank lines"
+msgstr ""
+
+#: mycodo_flask/utils/utils_lcd.py:206 mycodo_flask/utils/utils_lcd.py:231
+#: mycodo_flask/utils/utils_lcd.py:288
+msgid "Display"
+msgstr ""
+
+#: mycodo_flask/utils/utils_lcd.py:299
+msgid "Deactivate LCD controller before modifying its settings"
+msgstr ""
+
+#: mycodo_flask/utils/utils_lcd.py:302
+msgid "The last display cannot be deleted"
+msgstr ""
 
 #: mycodo_flask/utils/utils_method.py:31
 msgid "Duration must be a positive integer"
@@ -3401,16 +3353,16 @@ msgid "Required: Duration must be positive"
 msgstr "필수 : 기간은 양수 여야합니다"
 
 #: mycodo_flask/utils/utils_method.py:109
-msgid "Required: Date/Time, Relay ID, and Relay State"
-msgstr "필수 : 날짜 / 시간, 릴레이 ID 및 릴레이 상태"
+msgid "Required: Date/Time, Output, and Output State"
+msgstr ""
 
 #: mycodo_flask/utils/utils_method.py:116
 msgid "Invalid Date/Time format. Correct format: DD-MM-YYYY HH:MM:SS"
 msgstr "날짜 / 시간 형식이 잘못되었습니다. 올바른 형식 : 일-월-년도 시간 : 분 : 초"
 
 #: mycodo_flask/utils/utils_method.py:123
-msgid "Required: Relay ID, Relay State, and Relay Duration"
-msgstr "필수 : 릴레이 ID, 릴레이 상태 및 릴레이 지속 시간"
+msgid "Required: Output, Output State, and Output Duration"
+msgstr ""
 
 #: mycodo_flask/utils/utils_method.py:132
 msgid "Required: Time, Relay ID, and Relay State"
@@ -3418,11 +3370,11 @@ msgstr "필수 : 시간, 릴레이 ID 및 릴레이 상태"
 
 #: mycodo_flask/utils/utils_method.py:232
 msgid "Error: Angle Shift is out of range. It must be <= 0 and <= 360."
-msgstr "오류 : 각도 시프트가 범위를 벗어났습니다. 값은 <= 0 및 <= 360 이어야합니다"
+msgstr "오류 : 앵글 시프트가 범위를 벗어남. 값은 <= 0 와 <= 360 이어야 합니다."
 
 #: mycodo_flask/utils/utils_method.py:236
 msgid "Error: X0 must be greater than X3."
-msgstr "오류: X0 는 X3 보다 커야합니다"
+msgstr "오류: X0 는 X3 보다 커야합니다."
 
 #: mycodo_flask/utils/utils_method.py:281
 #, python-format
@@ -3474,8 +3426,8 @@ msgid "Actuate"
 msgstr "작동"
 
 #: mycodo_flask/utils/utils_output.py:77
-msgid "Cannot modulate relay with a GPIO of 0"
-msgstr "GPIO가 0 인 릴레이를 변조 할 수 없음"
+msgid "Cannot modulate output with a GPIO of 0"
+msgstr ""
 
 #: mycodo_flask/utils/utils_output.py:83
 msgid "Value must be greater than 0"
@@ -3483,8 +3435,8 @@ msgstr "값은 0보다 커야합니다"
 
 #: mycodo_flask/utils/utils_output.py:87
 #, python-format
-msgid "Relay turned on for %(sec)s seconds: %(rvalue)s"
-msgstr "%(sec)s 초 동안 릴레이가 켜졌습니다: %(rvalue)s"
+msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
+msgstr ""
 
 #: mycodo_flask/utils/utils_output.py:93
 msgid "Invalid pin"
@@ -3543,14 +3495,15 @@ msgid "A valid Measurement is required"
 msgstr "유효한 측정이 필요합니다"
 
 #: mycodo_flask/utils/utils_pid.py:238
-msgid "A Raise Relay ID and/or a Lower Relay ID is required"
-msgstr "높이는 릴레이 아이디와 낮추는 릴레이 아이디가 필요합니다."
+msgid "A Raise Output and/or a Lower Output is required"
+msgstr ""
 
 #: mycodo_flask/utils/utils_pid.py:266
+#, fuzzy
 msgid ""
 "Cannot activate PID controller if the associated sensor controller is "
 "inactive"
-msgstr "관련된 센서 컨드롤러가 꺼져있을땐 PID 컨트롤러를 작동 시킬수 없습니다. "
+msgstr "관련 센서 컨드롤러가 비활성화 되어있는 상태에서 PID 컨트롤러를 작동 시킬수 없습니다"
 
 #: mycodo_flask/utils/utils_pid.py:273
 msgid ""
@@ -3568,64 +3521,375 @@ msgstr "잘못된 PID 동작: %(act)s"
 msgid "Daemon response to PID controller %(act)s command: %(rval)s"
 msgstr "PID 컨트롤러에 대한 데몬 응답 %(act)s 코멘드: %(rval)s"
 
-#: mycodo_flask/utils/utils_pid.py:338
-#, python-format
-msgid "PID Error: %(msg)s"
-msgstr "PID 오류: %(msg)s"
-
-#: mycodo_flask/utils/utils_pid.py:354
+#: mycodo_flask/utils/utils_pid.py:356
 msgid ""
 "Cannot set output if it is already selected by another active PID "
 "controller"
 msgstr "다른 활성 PID 컨트롤러가 이미 출력을 선택한 상태에서 설정할 수 없습니다"
 
-#: mycodo_flask/utils/utils_remote_host.py:75
+#: mycodo_flask/utils/utils_remote_host.py:153
 #, python-format
 msgid "Remote Host %(host)s with ID %(id)s (%(uuid)s) successfully added"
 msgstr "원격 호스트 %(host)s 또한 %(id)s (%(uuid)s) 가 성공적으로 추가되었습니다"
-
-#: mycodo_flask/utils/utils_remote_host.py:86
-#: mycodo_flask/utils/utils_remote_host.py:89
-#: mycodo_flask/utils/utils_remote_host.py:92
-#: mycodo_flask/utils/utils_remote_host.py:110
-#, python-format
-msgid "Remote Host Error: %(msg)s"
-msgstr "원격 호스트 오류발생: %(msg)s"
 
 #: mycodo_flask/utils/utils_settings.py:51
 msgid "User Role"
 msgstr "사용자 권한"
 
 #: mycodo_flask/utils/utils_settings.py:95
-#: mycodo_flask/utils/utils_settings.py:140
+#: mycodo_flask/utils/utils_settings.py:143
+#: mycodo_flask/utils/utils_settings.py:188
 msgid "User"
 msgstr "사용자"
 
-#: mycodo_flask/utils/utils_settings.py:106
+#: mycodo_flask/utils/utils_settings.py:109
 msgid "Another user already has that email address."
 msgstr "다른 사용자가 이미 해당 이메일 주소를 가지고 있습니다."
 
-#: mycodo_flask/utils/utils_settings.py:151
+#: mycodo_flask/utils/utils_settings.py:155
 msgid "Invalid password"
 msgstr "유효하지 않은 비밀번호"
 
-#: mycodo_flask/utils/utils_settings.py:208
-#, python-format
-msgid "Error: %(msg)s"
-msgstr "오류: %(msg)s"
-
-#: mycodo_flask/utils/utils_settings.py:288
+#: mycodo_flask/utils/utils_settings.py:285
 #, python-format
 msgid ""
 "Test email sent to %(recip)s. Check your inbox to see if it was "
 "successful."
-msgstr "%(recip)s 에게 테스트 이메일을 전송하였습니다. 받은 편지함을 확인해 주십시오."
+msgstr "%(recip)s 으로 테스트 이메일을 보냈습니다. 받은 편지함을 확인해 주십시오."
 
-#: mycodo_flask/utils/utils_timer.py:71
+#: mycodo_flask/utils/utils_timer.py:70
 msgid "Durations must be greater than 0"
 msgstr "지속 시간은 0보다 커야합니다"
 
-#: mycodo_flask/utils/utils_timer.py:114
+#: mycodo_flask/utils/utils_timer.py:111
 msgid "Deactivate timer controller before modifying its settings"
 msgstr "설정을 수정하기 전에 타이머 컨트롤러를 비활성화하십시오"
+
+#~ msgid ""
+#~ "Backup in progress. It should complete"
+#~ " within a few seconds to a few"
+#~ " minutes. The backup will appear on"
+#~ " this page after it completes."
+#~ msgstr "백업이 진행중입니다. 몇 초에서 몇 분 이내에 완료될 것입니다. 완료 후 이 페이지에 백업이 표시될 것입니다."
+
+#~ msgid ""
+#~ "Deletion of backup in progress. It "
+#~ "should complete within a few seconds "
+#~ "to a few minutes. The backup will"
+#~ " disappear on this page after it "
+#~ "completes."
+#~ msgstr "백업 삭제 진행중입니다. 몇 초에서 몇 분 이내에 완료되어야합니다. 완료 후 이 페이지에 백업이 없어질 것입니다."
+
+#~ msgid ""
+#~ "Restore in progress. It should complete"
+#~ " within a few seconds to a few"
+#~ " minutes."
+#~ msgstr "복원이 진행중입니다. 몇 초에서 몇 분 이내에 완료될 것입니다."
+
+#~ msgid "The upgrade has started. The daemon will be stopped during the upgrade."
+#~ msgstr "업그레이드가 시작되었습니다. 데몬은 업그레이드 도중 중지됩니다."
+
+#~ msgid "URL for 'inject_mycodo_version' raised and error: %(err)s"
+#~ msgstr "'inject_mycodo_version' 에 대한 URL 발생 및 오류: %(err)s"
+
+#~ msgid "If Relay"
+#~ msgstr "만약 릴레이"
+
+#~ msgid "If Relay State"
+#~ msgstr "만약 릴레이 상태가"
+
+#~ msgid "If Relay Duration"
+#~ msgstr "만약 릴레이 지속 기간이"
+
+#~ msgid "Power Relay"
+#~ msgstr "파워 릴레이"
+
+#~ msgid "Pre Relay"
+#~ msgstr "Pre 릴레이"
+
+#~ msgid "Pre Relay Duration"
+#~ msgstr "Pre 릴레이 지속 시간"
+
+#~ msgid "I2C Address"
+#~ msgstr "I2C 주소"
+
+#~ msgid "I2C Bus"
+#~ msgstr "I2C 버스"
+
+#~ msgid "Multiplexer I2C Address"
+#~ msgstr "멀티플렉서 I2C 주소"
+
+#~ msgid "Line 1 Display"
+#~ msgstr "라인 1 디스플레이"
+
+#~ msgid "Line 2 Display"
+#~ msgstr "라인 2 디스플레이"
+
+#~ msgid "Line 3 Display"
+#~ msgstr "라인 3 디스플레이"
+
+#~ msgid "Line 4 Display"
+#~ msgstr "라인 4 디스플레이"
+
+#~ msgid "Restart Computer"
+#~ msgstr "컴퓨터 다시시작"
+
+#~ msgid "Shutdown Computer"
+#~ msgstr "컴퓨터 종료"
+
+#~ msgid "Mycodo Login"
+#~ msgstr "Mycodo 로그인"
+
+#~ msgid ""
+#~ "Inputs, such as sensors or ADC "
+#~ "signals, enable measuring conditions in "
+#~ "the environment. Add, configure, and "
+#~ "activate sensors to begin recording "
+#~ "measurements to the database and allow"
+#~ " them to be used throughout Mycodo."
+#~ msgstr ""
+
+#~ msgid "A common name to distinguish this sensor from others"
+#~ msgstr "이 센서를 다른 센서들로부터 구분 시키기 위한 닉네임"
+
+#~ msgid "The duration (seconds) between sensor reads"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "If a Pre Relay is selected, set"
+#~ " the duration (seconds) to turn the"
+#~ " Pre Relay on for before every "
+#~ "measurement is acquired."
+#~ msgstr ""
+
+#~ msgid "The measurement from the sensor to test the following conditional logic"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The duration (seconds) between checking "
+#~ "whether the conditional is true. Set "
+#~ "to 0 to check after every sensor"
+#~ " measurement."
+#~ msgstr ""
+
+#~ msgid "LCD I<sup>2</sup>C Address"
+#~ msgstr ""
+
+#~ msgid "LCD I<sup>2</sup>C Bus"
+#~ msgstr ""
+
+#~ msgid "Multiplexer I<sup>2</sup>C Address"
+#~ msgstr ""
+
+#~ msgid "%(type)s Sensor, %(sec)s second interval"
+#~ msgstr ""
+
+#~ msgid "Relay Modulation"
+#~ msgstr "릴레이 변조"
+
+#~ msgid ""
+#~ "Note: This feature is currently not "
+#~ "implemented. These relays will NOT be"
+#~ " modulated if applied to a PID. "
+#~ "This will be implemented soon."
+#~ msgstr ""
+
+#~ msgid "PWM"
+#~ msgstr "PWM"
+
+#~ msgid "Pulse Width Modulation (PWM)"
+#~ msgstr "펄스 폭 변조 (PWM)"
+
+#~ msgid "PWM..."
+#~ msgstr "PWM..."
+
+#~ msgid ""
+#~ "The number of amps the device "
+#~ "connected to the pwm draws (at "
+#~ "120/240 VAC)"
+#~ msgstr ""
+
+#~ msgid "Select the duty cycle for the PWM when turned on (0.0 - 100.0)"
+#~ msgstr ""
+
+#~ msgid "Relay Usage"
+#~ msgstr "릴레이 사용"
+
+#~ msgid "Relay Usage Reports"
+#~ msgstr "릴레이 사용 보고서"
+
+#~ msgid ""
+#~ "No Reports. Go to <a "
+#~ "href=\"%(loc)\">Relay Usage Options</a> to "
+#~ "schedule a report to be generated."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Activate or deactivate a relay at "
+#~ "a specific time of day. Hour and"
+#~ " minute (HH:MM) here is defined as"
+#~ " the time of day. For example, "
+#~ "3:05 PM would be \"15:05\"."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Activate or deactivate a relay within"
+#~ " this method at a specific duration."
+#~ " Duration here is defined as the "
+#~ "amount of time since the beginning "
+#~ "of the method. For example, 60 "
+#~ "seconds would execute the relay "
+#~ "modulation 60 seconds after the start"
+#~ " of the method."
+#~ msgstr ""
+
+#~ msgid "Enter a linux command that returns a value to be used for the PID input"
+#~ msgstr ""
+
+#~ msgid "What direction to regulate the chosen environmental condition?"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The minimum duration (in seconds) "
+#~ "required for the Raise Relay to "
+#~ "activate. If an On duration is "
+#~ "below this value, the Raise Relay "
+#~ "will not turn on."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The maximum duration (in seconds) "
+#~ "allowed for the Raise Relay to be"
+#~ " on for, per period. If an On"
+#~ " duration is above this value, the"
+#~ " Raise Relay will turn on for "
+#~ "this set duration."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The minimum duration (in seconds) "
+#~ "required for the Lower Relay to "
+#~ "activate. If an On duration is "
+#~ "below this value, the Lower Relay "
+#~ "will not turn on."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The maximum duration (in seconds) "
+#~ "allowed for the Lower Relay to be"
+#~ " on for, per period. If an ON"
+#~ " duration is above this value, the"
+#~ " Lower Relay will turn on for "
+#~ "this set duration."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Enter a linux command (executed as "
+#~ "user mycodo) that returns a value "
+#~ "to be used for the PID input"
+#~ msgstr ""
+
+#~ msgid "Must Select One"
+#~ msgstr "선택"
+
+#~ msgid "Select the environmental condition to regulate"
+#~ msgstr ""
+
+#~ msgid "The duration between calculating a new PID output"
+#~ msgstr ""
+
+#~ msgid "%(type)s Sensor with ID %(id)s (%(uuid)s) successfully added"
+#~ msgstr "아이디 %(id)s (%(uuid)s) 와 %(type)s 센서가 성공적으로 추가됨"
+
+#~ msgid "The Read Period cannot be less than the Pre-Relay Duration"
+#~ msgstr "읽기 기간은 사전 릴레이 기간보다 짧을 수 없습니다"
+
+#~ msgid ""
+#~ "Cannot activate controller if the "
+#~ "associated sensor controller is inactive"
+#~ msgstr "연결된 센서 컨트롤러가 비활성 상태 인 경우 컨트롤러를 활성화 할 수 없습니다"
+
+#~ msgid "Required: Date/Time, Relay ID, and Relay State"
+#~ msgstr "필수 : 날짜 / 시간, 릴레이 ID 및 릴레이 상태"
+
+#~ msgid "Required: Relay ID, Relay State, and Relay Duration"
+#~ msgstr "필수 : 릴레이 ID, 릴레이 상태 및 릴레이 지속 시간"
+
+#~ msgid "Cannot modulate relay with a GPIO of 0"
+#~ msgstr "GPIO가 0 인 릴레이를 변조 할 수 없음"
+
+#~ msgid "Relay turned on for %(sec)s seconds: %(rvalue)s"
+#~ msgstr "%(sec)s 초 동안 릴레이가 켜졌습니다: %(rvalue)s"
+
+#~ msgid "A Raise Relay ID and/or a Lower Relay ID is required"
+#~ msgstr "Raise 릴레이 아이디와 Lower 릴레이 아이디가 필요함"
+
+#~ msgid "Remote Host Error: %(msg)s"
+#~ msgstr "원격 호스트 오류발생: %(msg)s"
+
+#~ msgid "Error: %(msg)s"
+#~ msgstr "오류: %(msg)s"
+
+#~ msgid "x-Axis (minutes)"
+#~ msgstr "x축/엑스-액시스 (분)"
+
+#~ msgid ""
+#~ "If using a SHT sensor, enter the"
+#~ " GPIO connected to the clock pin "
+#~ "(using BCM numbering)."
+#~ msgstr "SHT 센서를 사용하는 경우 클럭 핀에 연결된 GPIO를 입력하십시오 (BCM 번호 매기기 사용)."
+
+#~ msgid "Photo Interval must be a positive value."
+#~ msgstr "사진 간격은 양수 여야합니다."
+
+#~ msgid "Total Run Time must be a positive value."
+#~ msgstr "총 실행 기간은 양수 여야합니다."
+
+#~ msgid "What value to check the measurement against."
+#~ msgstr ""
+
+#~ msgid "How many LCD controllers to add"
+#~ msgstr ""
+
+#~ msgid "Name for this PID controller."
+#~ msgstr ""
+
+#~ msgid "Number of lines should be greater than 0."
+#~ msgstr "라인 개수는 0보다 커야합니다."
+
+#~ msgid "Mycodo is currently in the process of an upgrade."
+#~ msgstr "Mycodo는 현재 업그레이드 중입니다."
+
+#~ msgid "There was an error that occurred during the upgrade."
+#~ msgstr ""
+
+#~ msgid "Refresh Period (seconds)"
+#~ msgstr ""
+
+#~ msgid "Any Pin (<= 40 kHz)"
+#~ msgstr "모든 핀 (<= 40kHz)"
+
+#~ msgid "Hardware Pin (<= 30 MHz)"
+#~ msgstr "하드웨어 핀 (<= 30 MHz)"
+
+#~ msgid "Duty Cycle (%)"
+#~ msgstr "듀티 사이클 (%)"
+
+#~ msgid "Live Leasurements"
+#~ msgstr ""
+
+#~ msgid "Duty Cycle (%%)"
+#~ msgstr ""
+
+#~ msgid "Off Duration (sec.)"
+#~ msgstr ""
+
+#~ msgid "This relay will remain off for at least this duration fo time."
+#~ msgstr ""
+
+#~ msgid "This relay will remain off for at least this duration of time."
+#~ msgstr ""
+
+#~ msgid "PID Error: %(msg)s"
+#~ msgstr "PID 오류: %(msg)s"
 

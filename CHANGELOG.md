@@ -2,6 +2,19 @@
 
 ### Features
 
+ - Complete Spanish translation
+ - Update korean translations
+ - Add more translatable texts
+
+### Bugfixes
+
+ - Fix selection of current language on General Config page
+
+
+## 5.4.12 (Unreleased)
+
+### Features
+
  - Add fswebcam as a camera library for acquiring images from USB cameras
 
 
