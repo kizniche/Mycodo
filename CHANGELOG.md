@@ -2,6 +2,7 @@
 
 ### Features
 
+ - Add fswebcam as a camera library for acquiring images from USB cameras
  - Complete Spanish translation
  - Update korean translations
  - Add more translatable texts
