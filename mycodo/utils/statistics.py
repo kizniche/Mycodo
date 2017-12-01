@@ -185,7 +185,6 @@ def recreate_stat_file():
         ['stat', 'value'],
         ['id', stat_id],
         ['uptime', 0.0],
-        ['next_send', time.time() + STATS_INTERVAL],
         ['RPi_revision', get_pi_revision()],
         ['Mycodo_revision', MYCODO_VERSION],
         ['alembic_version', 0],
