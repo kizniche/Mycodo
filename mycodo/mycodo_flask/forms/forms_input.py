@@ -30,7 +30,6 @@ class InputAdd(FlaskForm):
         )]
     )
     sensor = SelectField(
-        lazy_gettext(u'Input'),
         choices=INPUTS,
         validators=[DataRequired()]
     )

@@ -19,9 +19,10 @@ from flask_babel import gettext
 
 from mycodo.mycodo_client import DaemonControl
 
-from mycodo.databases.models import LCD
-from mycodo.databases.models import PID
 from mycodo.databases.models import Input
+from mycodo.databases.models import LCD
+from mycodo.databases.models import Math
+from mycodo.databases.models import PID
 from mycodo.databases.models import Timer
 from mycodo.databases.models import User
 
@@ -43,7 +44,7 @@ def controller_activate_deactivate(controller_action,
 
     :param controller_action: Activate or deactivate
     :type controller_action: str
-    :param controller_type: The controller type (LCD, PID, Input, Timer)
+    :param controller_type: The controller type (LCD, Math, PID, Input, Timer)
     :type controller_type: str
     :param controller_id: Controller with ID to activate or deactivate
     :type controller_id: str
@@ -54,22 +55,26 @@ def controller_activate_deactivate(controller_action,
     activated = bool(controller_action == 'activate')
 
     translated_names = {
-        "LCD": gettext(u"LCD"),
-        "PID": gettext(u"PID"),
         "Input": gettext(u"Input"),
+        "LCD": gettext(u"LCD"),
+        "Math": gettext(u"Math"),
+        "PID": gettext(u"PID"),
         "Timer": gettext(u"Timer")
     }
 
     mod_controller = None
-    if controller_type == 'LCD':
+    if controller_type == 'Input':
+        mod_controller = Input.query.filter(
+            Input.id == int(controller_id)).first()
+    elif controller_type == 'LCD':
         mod_controller = LCD.query.filter(
             LCD.id == int(controller_id)).first()
+    elif controller_type == 'Math':
+        mod_controller = Math.query.filter(
+            Math.id == int(controller_id)).first()
     elif controller_type == 'PID':
         mod_controller = PID.query.filter(
             PID.id == int(controller_id)).first()
-    elif controller_type == 'Input':
-        mod_controller = Input.query.filter(
-            Input.id == int(controller_id)).first()
     elif controller_type == 'Timer':
         mod_controller = Timer.query.filter(
             Timer.id == int(controller_id)).first()

@@ -31,6 +31,7 @@ from mycodo.mycodo_flask.forms import forms_conditional
 from mycodo.mycodo_flask.forms import forms_graph
 from mycodo.mycodo_flask.forms import forms_input
 from mycodo.mycodo_flask.forms import forms_lcd
+from mycodo.mycodo_flask.forms import forms_math
 from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.forms import forms_output
 from mycodo.mycodo_flask.forms import forms_pid
@@ -41,6 +42,7 @@ from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_graph
 from mycodo.mycodo_flask.utils import utils_input
 from mycodo.mycodo_flask.utils import utils_lcd
+from mycodo.mycodo_flask.utils import utils_math
 from mycodo.mycodo_flask.utils import utils_output
 from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.mycodo_flask.utils import utils_timer
@@ -53,6 +55,7 @@ from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Graph
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
+from mycodo.databases.models import Math
 from mycodo.databases.models import Method
 from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
@@ -299,7 +302,7 @@ def page_graph():
     # Retrieve all choices to populate form drop-down menu
     choices_pid = utils_general.choices_pids(pid)
     choices_output = utils_general.choices_outputs(output)
-    input_choices = utils_general.choices_inputs(input_dev)
+    choices_input = utils_general.choices_inputs(input_dev)
 
     # Add custom measurement and units to list (From linux command input)
     input_measurements = MEASUREMENT_UNITS
@@ -314,7 +317,7 @@ def page_graph():
         form_mod_graph.pid_ids.choices.append((key, value))
     for key, value in choices_output.items():
         form_mod_graph.relay_ids.choices.append((key, value))
-    for key, value in input_choices.items():
+    for key, value in choices_input.items():
         form_mod_graph.sensor_ids.choices.append((key, value))
 
     # Generate dictionary of custom colors for each graph
@@ -374,7 +377,7 @@ def page_graph():
         return redirect('/graph')
 
     return render_template('pages/graph.html',
-                           choices_input=input_choices,
+                           choices_input=choices_input,
                            choices_output=choices_output,
                            choices_pid=choices_pid,
                            graph=graph,
@@ -735,10 +738,10 @@ def page_pid():
         elif form_name == 'modPID':
             if form_mod_pid_base.save.data:
                 utils_pid.pid_mod(form_mod_pid_base,
-                                   form_mod_pid_pwm_raise,
-                                   form_mod_pid_pwm_lower,
-                                   form_mod_pid_output_raise,
-                                   form_mod_pid_output_lower)
+                                  form_mod_pid_pwm_raise,
+                                  form_mod_pid_pwm_lower,
+                                  form_mod_pid_output_raise,
+                                  form_mod_pid_output_lower)
             elif form_mod_pid_base.delete.data:
                 utils_pid.pid_del(
                     form_mod_pid_base.pid_id.data)
@@ -870,7 +873,7 @@ def page_output():
 @blueprint.route('/input', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_input():
-    """ Display input settings """
+    """ Display input page """
     # TCA9548A I2C multiplexer
     multiplexer_addresses = [
         '0x70',
@@ -986,6 +989,60 @@ def page_input():
                            sensor_templates=input_templates,
                            units=MEASUREMENT_UNITS,
                            user=user)
+
+
+@blueprint.route('/math', methods=('GET', 'POST'))
+@flask_login.login_required
+def page_math():
+    """ Display math page """
+    math = Math.query.all()
+    input = Input.query.all()
+
+    choices_input = utils_general.choices_inputs(input)
+
+    display_order = csv_to_list_of_int(DisplayOrder.query.first().math)
+
+    form_add_math = forms_math.MathAdd()
+    form_mod_math = forms_math.MathMod()
+
+    math_templates = []
+    math_path = os.path.join(
+        INSTALL_DIRECTORY,
+        'mycodo/mycodo_flask/templates/pages/math_options')
+    for (_, _, file_names) in os.walk(math_path):
+        math_templates.extend(file_names)
+        break
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_controllers'):
+            return redirect(url_for('page_routes.page_math'))
+
+        if form_add_math.add.data:
+            utils_math.math_add(form_add_math)
+        elif form_mod_math.mod.data:
+            utils_math.math_mod(form_mod_math)
+        elif form_mod_math.delete.data:
+            utils_math.math_del(form_mod_math)
+        elif form_mod_math.order_up.data:
+            utils_math.math_reorder(form_mod_math.math_id.data,
+                                    display_order, 'up')
+        elif form_mod_math.order_down.data:
+            utils_math.math_reorder(form_mod_math.math_id.data,
+                                    display_order, 'down')
+        elif form_mod_math.activate.data:
+            utils_math.math_activate(form_mod_math)
+        elif form_mod_math.deactivate.data:
+            utils_math.math_deactivate(form_mod_math)
+        return redirect(url_for('page_routes.page_math'))
+
+    return render_template('pages/math.html',
+                           choices_input=choices_input,
+                           display_order=display_order,
+                           form_add_math=form_add_math,
+                           form_mod_math=form_mod_math,
+                           input=input,
+                           math=math,
+                           math_templates=math_templates)
 
 
 @blueprint.route('/timer', methods=('GET', 'POST'))

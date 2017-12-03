@@ -147,6 +147,8 @@
             </li>
             <li{% if active_page == 'input' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_input')}}">{{_('Input')}}</a></li>
 
+            <li{% if active_page == 'math' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_math')}}">{{_('Math')}}</a></li>
+
             <li{% if active_page == 'output' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_output')}}">{{_('Output')}}</a></li>
 
             <li{% if active_page == 'pid' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_pid')}}">{{_('PID')}}</a></li>

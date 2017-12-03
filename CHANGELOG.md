@@ -2,6 +2,7 @@
 
 ### Features
 
+ - Add Math Controller (Math in menu) to perform math on Input data
  - Add fswebcam as a camera library for acquiring images from USB cameras
  - Complete Spanish translation
  - Update korean translations

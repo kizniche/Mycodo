@@ -9,6 +9,7 @@ class DisplayOrder(CRUDMixin, db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     graph = db.Column(db.Text, default='')
     lcd = db.Column(db.Text, default='')
+    math = db.Column(db.Text, default='')
     method = db.Column(db.Text, default='')
     pid = db.Column(db.Text, default='')
     relay = db.Column(db.Text, default='')

@@ -7,8 +7,8 @@ import collections
 from datetime import timedelta
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '5.4.11'
-ALEMBIC_VERSION = '234283cc67f4'
+MYCODO_VERSION = '5.4.12'
+ALEMBIC_VERSION = 'b9712d4ec64e'
 
 LANGUAGES = {
     'en': 'English',
@@ -168,6 +168,10 @@ INPUTS = [
     ('HTU21D', 'Temperature/Humidity: HTU21D'),
     ('SHT1x_7x', 'Temperature/Humidity: SHT 10/11/15/71/75'),
     ('SHT2x', 'Temperature/Humidity: SHT 21/25')
+]
+
+MATHS = [
+    ('average', 'Average')
 ]
 
 # Sensors and description
