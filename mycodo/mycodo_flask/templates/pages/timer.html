@@ -30,8 +30,6 @@
 
         </div>
 
-        <form method="post" action="/timer">
-        {{form_timer_base.csrf_token}}
         <div class="form-inline">
 
           <div>
@@ -39,25 +37,6 @@
               {{form_timer_base.timer_type.label(class_='control-label')}}
               <div>
                 {{form_timer_base.timer_type(class_='form-control')}}
-              </div>
-            </div>
-          </div>
-
-          <div style="display: none" id="base_options">
-            <div class="form-group">
-              {{form_timer_base.name.label(class_='control-label')}}
-              <div>
-                {{form_timer_base.name(class_='form-control')}}
-              </div>
-            </div>
-            <div class="form-group">
-              {{form_timer_base.relay_id.label(class_='control-label')}}
-              <div>
-                <select class="form-control" id="relay_id" name="relay_id">
-                {% for each_choice, value in output_choices.iteritems() -%}
-                  <option value="{{each_choice.split(',')[0]}}">{{value}}</option>
-                {% endfor -%}
-                </select>
               </div>
             </div>
           </div>
@@ -78,17 +57,7 @@
             {% include 'pages/timer_options/add_pwm_method.html' %}
           </div>
 
-          <div style="display: none" id="add_button">
-            <div class="form-group">
-              <label class='control-label'></label>
-              <div>
-                {{form_timer_base.create(class_='form-control btn btn-default')}}
-              </div>
-            </div>
-          </div>
-
         </div>
-        </form>
 
       </div>
     </div>
@@ -167,7 +136,6 @@
   <script>
     $('#timer_type').on('change', function () {
       if (this.value === 'time') {
-        document.getElementById("base_options").style.display = "block";
         document.getElementById("add_time_point").style.display = "block";
         document.getElementById("add_time_span").style.display = "none";
         document.getElementById("add_duration").style.display = "none";
@@ -175,7 +143,6 @@
         document.getElementById("add_button").style.display = "block";
       }
       else if (this.value === 'timespan') {
-        document.getElementById("base_options").style.display = "block";
         document.getElementById("add_time_point").style.display = "none";
         document.getElementById("add_time_span").style.display = "block";
         document.getElementById("add_duration").style.display = "none";
@@ -183,7 +150,6 @@
         document.getElementById("add_button").style.display = "block";
       }
       else if (this.value === 'duration') {
-        document.getElementById("base_options").style.display = "block";
         document.getElementById("add_time_point").style.display = "none";
         document.getElementById("add_time_span").style.display = "none";
         document.getElementById("add_duration").style.display = "block";
@@ -191,7 +157,6 @@
         document.getElementById("add_button").style.display = "block";
       }
       else if (this.value === 'pwm_method') {
-        document.getElementById("base_options").style.display = "block";
         document.getElementById("add_time_point").style.display = "none";
         document.getElementById("add_time_span").style.display = "none";
         document.getElementById("add_duration").style.display = "none";
@@ -199,7 +164,6 @@
         document.getElementById("add_button").style.display = "block";
       }
       else if (this.value === '') {
-        document.getElementById("base_options").style.display = "none";
         document.getElementById("add_time_point").style.display = "none";
         document.getElementById("add_time_span").style.display = "none";
         document.getElementById("add_duration").style.display = "none";

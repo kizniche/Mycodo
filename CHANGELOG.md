@@ -10,6 +10,7 @@
 ### Bugfixes
 
  - Fix selection of current language on General Config page
+ - Fix saving options when adding a Timer
 
 
 ## 5.4.12 (Unreleased)
