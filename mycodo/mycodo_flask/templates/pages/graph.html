@@ -127,7 +127,7 @@
             <div class="form-group">
               {{form_mod_graph.sensor_ids.label(class_='control-label')}}
               <div>
-                <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+                <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
                 {% if choices_input %}
                   {% for each_choice, value in choices_input.iteritems() -%}
                   <option value="{{each_choice}}"{%- if each_choice|string in each_graph.sensor_ids_measurements %} selected{%- endif -%}>{{value}}</option>
@@ -139,9 +139,23 @@
               </div>
             </div>
             <div class="form-group">
+              {{form_mod_graph.math_ids.label(class_='control-label')}}
+              <div>
+                <select class="form-control" id="math_ids" name="math_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+                {% if choices_math %}
+                  {% for each_choice, value in choices_math.iteritems() -%}
+                  <option value="{{each_choice}}"{%- if each_choice|string in each_graph.math_ids %} selected{%- endif -%}>{{value}}</option>
+                  {% endfor -%}
+                {% else %}
+                  <option value="">No Maths Available</option>
+                {% endif %}
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
               {{form_mod_graph.relay_ids.label(class_='control-label')}}
               <div>
-                <select class="form-control" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+                <select class="form-control" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
                 {% if choices_output %}
                   {% for each_choice, value in choices_output.iteritems() -%}
                   <option value="{{each_choice}}"{%- if each_choice|string in each_graph.relay_ids %} selected{%- endif -%}>{{value}}</option>
@@ -155,7 +169,7 @@
             <div class="form-group">
               {{form_mod_graph.pid_ids.label(class_='control-label')}}
               <div>
-                <select class="form-control" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+                <select class="form-control" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
                 {% if choices_pid %}
                   {% for each_choice, value in choices_pid.iteritems() -%}
                     <option value="{{each_choice}}"{%- if each_choice|string in each_graph.pid_ids %} selected{%- endif -%}>{{value}}</option>
@@ -467,7 +481,7 @@
         <div class="form-group">
           {{form_add_graph.sensor_ids.label(class_='control-label')}}
           <div>
-            <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+            <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
             {% if choices_input %}
               {% for each_choice, value in choices_input.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
@@ -479,9 +493,23 @@
           </div>
         </div>
         <div class="form-group">
+          {{form_add_graph.math_ids.label(class_='control-label')}}
+          <div>
+            <select class="form-control" id="math_ids" name="math_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+            {% if choices_math %}
+              {% for each_choice, value in choices_math.iteritems() -%}
+              <option value="{{each_choice}}">{{value}}</option>
+              {% endfor -%}
+            {% else %}
+              <option value="">No Maths Available</option>
+            {% endif %}
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
           {{form_add_graph.relay_ids.label(class_='control-label')}}
           <div>
-            <select class="form-control" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+            <select class="form-control" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
             {% if choices_output %}
               {% for each_choice, value in choices_output.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
@@ -495,7 +523,7 @@
         <div class="form-group">
           {{form_add_graph.pid_ids.label(class_='control-label')}}
           <div>
-            <select class="form-control" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([count_measurements[0], relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+            <select class="form-control" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
             {% if choices_pid %}
               {% for each_choice, value in choices_pid.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
@@ -786,6 +814,7 @@
       {%- for each_graph in graph if each_graph.id == order -%}
 
         {% set graph_sensor_ids = each_graph.sensor_ids_measurements.split(';') %}
+        {% set graph_math_ids = each_graph.math_ids.split(';') %}
 
         {% if each_graph.graph_type == 'graph' %}
 
@@ -797,6 +826,7 @@
          # Measurements with the same units will use the same y-axis
          #}
         {%- set yaxis_adc = [] -%}
+        {%- set yaxis_math = [] -%}
         {%- set yaxis_alt = [] -%}
         {%- set yaxis_cpu_load = [] -%}
         {%- set yaxis_co2 = [] -%}
@@ -861,6 +891,54 @@
               {%- do yaxis_adc.append(each_sensor.adc_measure) -%}
             {%- elif each_sensor.device == 'LinuxCommand' -%}
               {%- do yaxis_command.append(each_sensor.cmd_measurement) -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endfor %}
+
+
+        {# Determine what y-axes are needed for math measurements #}
+        {%- for each_math in math -%}
+          {%- for each_id in graph_math_ids if each_math.unique_id in each_id -%}
+            {%- set measurement = each_math.measure -%}
+            {%- if measurement == 'altitude' -%}
+              {%- do yaxis_alt.append(1) -%}
+            {%- elif measurement == 'co2' -%}
+              {%- do yaxis_co2.append(1) -%}
+            {%- elif measurement in ['cpu_load_1m',
+                                     'cpu_load_5m',
+                                     'cpu_load_15m'] -%}
+              {%- do yaxis_cpu_load.append(1) -%}
+            {%- elif measurement == 'disk_space' -%}
+              {%- do yaxis_disk_space.append(1) -%}
+            {%- elif measurement == 'duty_cycle' -%}
+              {%- do yaxis_duty_cycle.append(1) -%}
+            {%- elif measurement == 'edge' -%}
+              {%- do yaxis_edge.append(1) -%}
+            {%- elif measurement == 'frequency' -%}
+              {%- do yaxis_frequency.append(1) -%}
+            {%- elif measurement == 'humidity' -%}
+              {%- do yaxis_hum.append(1) -%}
+            {%- elif measurement == 'lux' -%}
+              {%- do yaxis_lux.append(1) -%}
+            {%- elif measurement == 'moisture' -%}
+              {%- do yaxis_moisture.append(1) -%}
+            {%- elif measurement == 'ph' -%}
+              {%- do yaxis_ph.append(1) -%}
+            {%- elif measurement == 'pressure' -%}
+              {%- do yaxis_press.append(1) -%}
+            {%- elif measurement == 'pulse_width' -%}
+              {%- do yaxis_pulse_width.append(1) -%}
+            {%- elif measurement == 'rpm' -%}
+              {%- do yaxis_rpm.append(1) -%}
+            {%- elif measurement in ['temperature',
+                                     'temperature_object',
+                                     'temperature_die',
+                                     'dewpoint',] -%}
+              {%- do yaxis_temp.append(1) -%}
+            {%- elif measurement == 'voltage' -%}
+              {%- do yaxis_volts.append(1) -%}
+            {%- else -%}
+              {%- do yaxis_math.append(each_math.unique_id) -%}
             {%- endif -%}
           {%- endfor -%}
         {%- endfor %}
@@ -953,6 +1031,16 @@
             getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration*60}});
             {% if each_graph.enable_auto_refresh %}
             getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}});
+            {% endif %}
+                {%- do count_series.append(1) %}
+              {%- endfor -%}
+            {%- endfor -%}
+
+            {% for each_math in math -%}
+              {%- for each_id in graph_math_ids if each_math.unique_id == each_id %}
+            getPastData({{chart_number}}, {{count_series|count}}, '{{each_math.measure}}', '{{each_math.unique_id}}', {{each_graph.x_axis_duration*60}});
+            {% if each_graph.enable_auto_refresh %}
+            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_math.measure}}', '{{each_math.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}});
             {% endif %}
                 {%- do count_series.append(1) %}
               {%- endfor -%}
@@ -1238,6 +1326,20 @@
           id: '{{each_adc_measure}}'
         },
       {%- endfor -%}
+      {%- for each_math_measure in yaxis_math -%}
+        {% for each_math in math if each_math_measure == each_math.unique_id %}
+        {
+          title: {
+            text: '{{each_math.measure}} ({{each_math.measure_units}})'
+          },
+          labels: {
+            format: '{value}'
+          },
+          opposite: false,
+          id: '{{each_math.measure}}'
+        },
+        {% endfor %}
+      {%- endfor -%}
       {%- for each_cmd_measure in yaxis_command -%}
         {
           title: {
@@ -1393,6 +1495,27 @@
               },
             {%- endif -%}
           {%- endfor -%}
+        {%- endfor -%}
+      {% endfor %}
+
+      {% for each_math in math -%}
+        {%- for each_id in graph_math_ids if each_math.unique_id == each_id -%}
+          {
+            name: '{{each_math.name}} {% if each_math.measure in measurement_units %}{{measurement_units[each_math.measure]['name']}} ({{measurement_units[each_math.measure]['unit']}}){% else %}{{each_math.measure}}{% endif %}',
+            type: 'line',
+            tooltip: {
+              {% if each_math.measure in measurement_units and measurement_units[each_math.measure]['meas'] == 'temperature' %}
+              pointFormatter: function () {
+                return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
+              },
+              {% else %}
+              valueSuffix: ' {% if each_math.measure in measurement_units %}{{measurement_units[each_math.measure]['unit']}}{% else %}{{each_math.measure_units}}{% endif %}',
+              valueDecimals: 2
+              {% endif %}
+            },
+            yAxis: '{{each_math.measure}}',
+            data: []
+          },
         {%- endfor -%}
       {% endfor %}
 

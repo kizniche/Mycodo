@@ -159,6 +159,20 @@ def choices_inputs(inputs):
     return choices
 
 
+def choices_maths(maths):
+    """ populate form multi-select choices from Math entries """
+    choices = OrderedDict()
+    for each_math in maths:
+        value = '{id}'.format(
+            id=each_math.unique_id)
+        display = u'[{id:02d}] {name} ({meas})'.format(
+            id=each_math.id,
+            name=each_math.name,
+            meas=each_math.measure)
+        choices.update({value: display})
+    return choices
+
+
 def choices_outputs(output):
     """ populate form multi-select choices from Output entries """
     choices = OrderedDict()

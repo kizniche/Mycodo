@@ -20,6 +20,17 @@ def upgrade():
     with op.batch_alter_table("displayorder") as batch_op:
         batch_op.add_column(sa.Column('math', sa.Text))
 
+    with op.batch_alter_table("graph") as batch_op:
+        batch_op.add_column(sa.Column('math_ids', sa.Text))
+
+    op.execute(
+        '''
+        UPDATE graph
+        SET math_ids=''
+        WHERE math_ids IS NULL
+        '''
+    )
+
     op.create_table(
         'math',
         sa.Column('id', sa.Integer, nullable=False, unique=True),
@@ -27,8 +38,11 @@ def upgrade():
         sa.Column('name', sa.Text),
         sa.Column('math_type', sa.Text),
         sa.Column('is_activated', sa.Boolean),
-        sa.Column('period', sa.Float),
         sa.Column('inputs', sa.Text),
+        sa.Column('period', sa.Float),
+        sa.Column('max_measure_age', sa.Integer),
+        sa.Column('measure', sa.Text),
+        sa.Column('measure_units', sa.Text),
         sa.PrimaryKeyConstraint('id'), keep_existing=True)
 
 
@@ -37,3 +51,6 @@ def downgrade():
 
     with op.batch_alter_table("displayorder") as batch_op:
         batch_op.drop_column('math')
+
+    with op.batch_alter_table("graph") as batch_op:
+        batch_op.drop_column('math_ids')

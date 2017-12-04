@@ -295,14 +295,16 @@ def page_graph():
 
     # Retrieve tables from SQL database
     graph = Graph.query.all()
-    pid = PID.query.all()
-    output = Output.query.all()
     input_dev = Input.query.all()
+    math = Math.query.all()
+    output = Output.query.all()
+    pid = PID.query.all()
 
     # Retrieve all choices to populate form drop-down menu
-    choices_pid = utils_general.choices_pids(pid)
-    choices_output = utils_general.choices_outputs(output)
     choices_input = utils_general.choices_inputs(input_dev)
+    choices_math = utils_general.choices_maths(math)
+    choices_output = utils_general.choices_outputs(output)
+    choices_pid = utils_general.choices_pids(pid)
 
     # Add custom measurement and units to list (From linux command input)
     input_measurements = MEASUREMENT_UNITS
@@ -310,9 +312,12 @@ def page_graph():
         input_dev, input_measurements, MEASUREMENT_UNITS)
 
     # Add multi-select values as form choices, for validation
+    form_mod_graph.math_ids.choices = []
     form_mod_graph.pid_ids.choices = []
     form_mod_graph.relay_ids.choices = []
     form_mod_graph.sensor_ids.choices = []
+    for key, value in choices_math.items():
+        form_mod_graph.math_ids.choices.append((key, value))
     for key, value in choices_pid.items():
         form_mod_graph.pid_ids.choices.append((key, value))
     for key, value in choices_output.items():
@@ -378,9 +383,11 @@ def page_graph():
 
     return render_template('pages/graph.html',
                            choices_input=choices_input,
+                           choices_math=choices_math,
                            choices_output=choices_output,
                            choices_pid=choices_pid,
                            graph=graph,
+                           math=math,
                            pid=pid,
                            relay=output,
                            sensor=input_dev,

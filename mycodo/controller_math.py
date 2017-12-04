@@ -1,6 +1,7 @@
 # coding=utf-8
 #
-# controller_math.py - Math controller that performs math on Inputs
+# controller_math.py - Math controller that performs math on Inputs and
+#                      creates a new value
 #
 #  Copyright (C) 2017  Kyle T. Gabriel
 #
@@ -29,6 +30,8 @@ import timeit
 
 from databases.models import Math
 from utils.database import db_retrieve_table_daemon
+from utils.influx import read_last_influxdb
+from utils.influx import write_influxdb_value
 
 
 class MathController(threading.Thread):
@@ -50,8 +53,13 @@ class MathController(threading.Thread):
         math = db_retrieve_table_daemon(Math, device_id=self.math_id)
         self.math_unique_id = math.unique_id
         self.name = math.name
+        self.math_type = math.math_type
         self.is_activated = math.is_activated
         self.period = math.period
+        self.inputs = math.inputs
+        self.max_measure_age = math.max_measure_age
+        self.measure = math.measure
+        self.measure_units = math.measure_units
 
         self.timer = t.time() + self.period
 
@@ -64,15 +72,42 @@ class MathController(threading.Thread):
 
             while self.running:
 
-                if t.time() > self.timer:
+                if self.is_activated and t.time() > self.timer:
                     # Ensure the timer ends in the future
                     while t.time() > self.timer:
                         self.timer = self.timer + self.period
 
                     # If PID is active, retrieve input measurement and update PID output
-                    if self.is_activated:
-                        pass
-                        # Do stuff
+                    if self.math_type == 'average' and self.inputs:
+                        missing_measure = False
+                        measurements = []
+                        inputs_list = self.inputs.split(';')
+                        for each_input_set in inputs_list:
+                            input_id = each_input_set.split(',')[0]
+                            input_measure = each_input_set.split(',')[1]
+                            last_measurement = read_last_influxdb(
+                                input_id,
+                                input_measure,
+                                self.max_measure_age)
+                            if not last_measurement:
+                                missing_measure = True
+                            else:
+                                measurements.append(last_measurement[1])
+
+                        if not missing_measure:
+                            average = sum(measurements)/float(len(measurements))
+                            write_math_db = threading.Thread(
+                                target=write_influxdb_value,
+                                args=(self.math_unique_id,
+                                      self.measure,
+                                      average,))
+                            write_math_db.start()
+
+                        else:
+                            self.logger.error(
+                                "One or more inputs were not within the "
+                                "Max Age that has been set. Ensure all "
+                                "Inputs are operating properly.")
 
                 t.sleep(0.1)
 

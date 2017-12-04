@@ -42,6 +42,9 @@ def graph_add(form_add, display_order):
                  form_add.refresh_duration.data)):
         new_graph.graph_type = form_add.graph_type.data
         new_graph.name = form_add.name.data
+        if form_add.math_ids.data:
+            math_ids_joined = ";".join(form_add.math_ids.data)
+            new_graph.math_ids = math_ids_joined
         if form_add.pid_ids.data:
             pid_ids_joined = ";".join(form_add.pid_ids.data)
             new_graph.pid_ids = pid_ids_joined
@@ -142,6 +145,12 @@ def graph_mod(form_mod_graph, request_form):
 
         mod_graph.use_custom_colors = form_mod_graph.use_custom_colors.data
         mod_graph.name = form_mod_graph.name.data
+
+        if form_mod_graph.math_ids.data:
+            math_ids_joined = ";".join(form_mod_graph.math_ids.data)
+            mod_graph.math_ids = math_ids_joined
+        else:
+            mod_graph.math_ids = ''
 
         if form_mod_graph.pid_ids.data:
             pid_ids_joined = ";".join(form_mod_graph.pid_ids.data)

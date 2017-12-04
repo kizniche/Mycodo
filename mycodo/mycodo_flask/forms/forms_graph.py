@@ -24,6 +24,7 @@ class GraphAdd(FlaskForm):
         lazy_gettext(u'Name'),
         validators=[DataRequired()]
     )
+    math_ids = SelectMultipleField(lazy_gettext(u'Maths'))
     pid_ids = SelectMultipleField(lazy_gettext(u'PIDs'))
     relay_ids = SelectMultipleField(lazy_gettext(u'Outputs'))
     sensor_ids = SelectMultipleField(lazy_gettext(u'Inputs'))
@@ -73,6 +74,7 @@ class GraphMod(FlaskForm):
         lazy_gettext(u'Name'),
         validators=[DataRequired()]
     )
+    math_ids = SelectMultipleField(lazy_gettext(u'Maths'))
     pid_ids = SelectMultipleField(lazy_gettext(u'PIDs'))
     relay_ids = SelectMultipleField(lazy_gettext(u'Outputs'))
     sensor_ids = SelectMultipleField(lazy_gettext(u'Inputs'))

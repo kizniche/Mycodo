@@ -13,7 +13,7 @@
 
     <h4>{{_('Math')}} <a href="/help#math" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
-    <p>{{_('Math can be performed on one or more inputs in order to produce a modified value')}}</p>
+    <p>{{_('Math can be performed on one or more Inputs in order to produce a new value')}}</p>
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
@@ -116,17 +116,9 @@
           </div>
         </div>
 
-        <div style="padding: 0.5em;" class="row small-gutters">
-          <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
-            {{form_mod_math.period.label(class_='control-label')}}
-            <div>
-              {{form_mod_math.period(class_='form-control', value=each_math.period, **{'title':_('The duration (seconds) between math calculations')})}}
-            </div>
-          </div>
-          {% for each_math_template in math_templates if each_math_template[:-5] == each_math.device %}
-            {% include 'pages/math_options/'+each_math_template %}
-          {% endfor %}
-        </div>
+        {% for each_math_template in math_templates if each_math_template[:-5] == each_math.math_type %}
+          {% include 'pages/math_options/'+each_math_template %}
+        {% endfor %}
 
         </form>
 

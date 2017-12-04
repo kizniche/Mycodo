@@ -16,6 +16,7 @@ Table of Contents
 [Controllers](#controllers)
 
    - [Input](#input)
+   - [Math](#math)
    - [Output](#output)
    - [PIDs](#pids)
    - [Timers](#timers)
@@ -282,6 +283,48 @@ Difference | This is the maximum measured measurement difference between the two
 Notification | If the measurements of the two sensors differ by more than the set *Difference*, an email will be sent to the address in the *Notification* field.
 Stop PID | If the measurements of the two sensors differ by more than the set *Difference*, the PID controller will turn off.
 
+Math
+----
+
+Math controllers allow one or more Inputs to have math applied to produce a new value that may be used within Mycodo. 
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Input | Select the Inputs to use with the particular Math controller
+Period (seconds) | The duration of time between calculating and storing a new value
+Max Age (seconds) | The maximum allowed age of the Input measurements. If an Input measurement is older than this period, the calculation is cancelled and the new value is not stored in the database. Consequently, if another controller has a Max Age set and cannot retrieve a current Math value, it will cease functioning. A PID controller, for instance, may stop regulating if there is no new Math value created, preventing the PID controller from continuing to run when it should not.
+Measurement | This is the condition being measured. If all of the selected inputs are Temperature, this should also be temperature. Keep in mind that if you use the pre-defined measurements, it will add these to the current y-axis on a Graph. For instance, if you select two Temeprature measurements, make sure you set Measurement to 'temperature' (lowercase 't') in order to make it use the same y-axis as the other temperatures. A list of the pre-defined measurements that may be used is below.
+Units | This is the units to display along with the measurement, on Graphs. If a pre-defined measurement is used, this field will default to the units associated with that measurement.
+
+### Pre-defined Measurements
+
+Measurement | Units
+--------------------------- | -------------------------------------------
+altitude | m
+co2 | ppmv
+dewpoint | °C
+cpu_load_1m | 1 min
+cpu_load_5m | 5 min
+cpu_load_15m | 15 min
+disk_space | MB
+duration_sec | sec
+duty_cycle | %
+edge | edge
+frequency | Hz
+humidity | %
+lux | lx
+moisture | moisture
+ph | pH
+pid_output | sec
+pressure ':Pa
+pulse_width | µs
+rpm | 'rpm
+setpoint | 
+temperature | °C
+temperature_object | °C
+temperature_die | '°C
+voltage | volts
+
 Output
 ------
 
@@ -538,6 +581,7 @@ Email Video | Capture a video and email it as an attachment to the an email addr
 Commands that are executed by conditional statements can now include variables. To use, just place the variable name, including "((" and "))" in your command, and it will be replaced with the variable's value before execution. See the tables below for the currently-supported variables.
 
 ##### Input Conditional command variables
+
 Variable | Description
 --------------------------- | -------------------------------------------
 ((input_location)) | The Input location (such as GPIO pin, I<sup>2</sup>C address, etc.)

@@ -80,6 +80,9 @@ def math_mod(form_mod_math):
         if not error:
             mod_math.name = form_mod_math.name.data
             mod_math.period = form_mod_math.period.data
+            mod_math.measure = form_mod_math.measure.data
+            mod_math.measure_units = form_mod_math.measure_units.data
+            mod_math.max_measure_age = form_mod_math.max_measure_age.data
 
             if form_mod_math.inputs.data:
                 inputs_joined = ";".join(form_mod_math.inputs.data)

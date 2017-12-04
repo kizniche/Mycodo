@@ -14,6 +14,9 @@ class Math(CRUDMixin, db.Model):
     is_activated = db.Column(db.Boolean, default=False)
     period = db.Column(db.Float, default=15.0)  # Duration between readings
     inputs = db.Column(db.Text, default='')
+    max_measure_age = db.Column(db.Integer, default=60.0)
+    measure = db.Column(db.Text, default='Measurement')
+    measure_units = db.Column(db.Text, default='unit')
 
     def is_active(self):
         """
