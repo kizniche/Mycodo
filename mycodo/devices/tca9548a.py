@@ -4,18 +4,29 @@ import logging
 import smbus
 import time
 
+
 logger = logging.getLogger('mycodo.devices.tca9548a')
 
 
 class TCA9548A(object):
-    def __init__(self, bus, address=0x70, ):
+    def __init__(self, bus, address=0x70):
         self.i2c_address = address
         self.i2c_bus = bus
         self.bus = smbus.SMBus(self.i2c_bus)
+        self.channel_byte = {
+            0: 0b00000001,
+            1: 0b00000010,
+            2: 0b00000100,
+            3: 0b00001000,
+            4: 0b00010000,
+            5: 0b00100000,
+            6: 0b01000000,
+            7: 0b10000000
+        }
 
     def setup(self, channel):
         try:
-            self.bus.write_byte(self.i2c_address, channel)
+            self.bus.write_byte(self.i2c_address, self.channel_byte[channel])
             return 1, "Success"
         except Exception as msg:
             logger.exception(

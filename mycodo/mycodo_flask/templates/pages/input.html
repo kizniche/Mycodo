@@ -174,7 +174,7 @@
               {{form_mod_sensor.multiplexer_channel.label(class_='control-label')}}
               <div>
                 <select class="form-control form-tooltip form-dropdown" data-placement="top" id="multiplexer_channel" name="multiplexer_channel" rel="tooltip" title="{{_('If a multiplexer address is selected, select the channel connected to your target device')}}.">
-                  <option value="0"{% if each_sensor.multiplexer_channel == 0 %} selected{% endif %}>{{_('Disabled')}}</option>
+                  <option value=""{% if each_sensor.multiplexer_channel == '' %} selected{% endif %}>{{_('Disabled')}}</option>
                 {% for each_mp_chan in multiplexer_channels %}
                   <option value="{{each_mp_chan}}"{% if each_sensor.multiplexer_channel == each_mp_chan %} selected{% endif %}>{{_('Channel %(channel)s', channel=each_mp_chan)}}</option>
                 {% endfor %}

@@ -892,7 +892,7 @@ def page_input():
         '0x76',
         '0x77'
     ]
-    multiplexer_channels = list(range(0, 9))
+    multiplexer_channels = list(range(0, 8))
 
     camera = Camera.query.all()
     lcd = LCD.query.all()

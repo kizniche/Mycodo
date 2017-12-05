@@ -12,8 +12,18 @@ import sys
 import time
 import argparse
 
-import RPi.GPIO as GPIO
 import smbus
+
+channel_byte = {
+    0: 0b00000001,
+    1: 0b00000010,
+    2: 0b00000100,
+    3: 0b00001000,
+    4: 0b00010000,
+    5: 0b00100000,
+    6: 0b01000000,
+    7: 0b10000000
+}
 
 
 def I2C_setup(i2c_bus, i2c_address, i2c_channel_setup):
@@ -40,7 +50,7 @@ def menu():
 
     args = parser.parse_args()
 
-    I2C_setup(args.bus, args.address, args.channel)
+    I2C_setup(args.bus, args.address, channel_byte[args.channel])
 
 
 if __name__ == "__main__":

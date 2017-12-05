@@ -13,10 +13,15 @@
 
 ### Bugfixes
 
+ - Fix TCA9548A multiplexer channel issues ([#330](https://github.com/kizniche/mycodo/issues/330))
  - Fix selection of current language on General Config page
  - Fix saving options when adding a Timer
  - Fix Graph display of Lowering Output durations as negative values
  - Fix double-logging of output durations
+
+### Miscellaneous
+
+ - Update Manual with Math Controller information
 
 
 ## 5.4.12 (Unreleased)
