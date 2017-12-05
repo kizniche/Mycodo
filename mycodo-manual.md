@@ -286,7 +286,13 @@ Stop PID | If the measurements of the two sensors differ by more than the set *D
 Math
 ----
 
-Math controllers allow one or more Inputs to have math applied to produce a new value that may be used within Mycodo. 
+Math controllers allow one or more Inputs to have math applied to produce a new value that may be used within Mycodo.
+
+
+Type | Description
+--------- | ----------------------------------------------
+Average | Calculates the average of several Inputs.
+
 
 Setting | Description
 -------------------- | ----------------------------------------------
@@ -299,7 +305,7 @@ Units | This is the units to display along with the measurement, on Graphs. If a
 ### Pre-defined Measurements
 
 Measurement | Units
---------------------------- | -------------------------------------------
+----------- | -----
 altitude | m
 co2 | ppmv
 dewpoint | °C
@@ -316,13 +322,13 @@ lux | lx
 moisture | moisture
 ph | pH
 pid_output | sec
-pressure ':Pa
+pressure | Pa
 pulse_width | µs
-rpm | 'rpm
-setpoint | 
+rpm | rpm
+setpoint | None
 temperature | °C
 temperature_object | °C
-temperature_die | '°C
+temperature_die | °C
 voltage | volts
 
 Output

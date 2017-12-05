@@ -346,6 +346,7 @@
 <p><a href="#controllers">Controllers</a></p>
 <ul>
 <li><a href="#input">Input</a></li>
+<li><a href="#math">Math</a></li>
 <li><a href="#output">Output</a></li>
 <li><a href="#pids">PIDs</a></li>
 <li><a href="#timers">Timers</a></li>
@@ -656,6 +657,163 @@
 <tr class="even">
 <td style="text-align: left;">Stop PID</td>
 <td style="text-align: left;">If the measurements of the two sensors differ by more than the set <em>Difference</em>, the PID controller will turn off.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="math">Math</h2>
+<p>Math controllers allow one or more Inputs to have math applied to produce a new value that may be used within Mycodo.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Average</td>
+<td style="text-align: left;">Calculates the average of several Inputs.</td>
+</tr>
+</tbody>
+</table>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Input</td>
+<td style="text-align: left;">Select the Inputs to use with the particular Math controller</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Period (seconds)</td>
+<td style="text-align: left;">The duration of time between calculating and storing a new value</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Max Age (seconds)</td>
+<td style="text-align: left;">The maximum allowed age of the Input measurements. If an Input measurement is older than this period, the calculation is cancelled and the new value is not stored in the database. Consequently, if another controller has a Max Age set and cannot retrieve a current Math value, it will cease functioning. A PID controller, for instance, may stop regulating if there is no new Math value created, preventing the PID controller from continuing to run when it should not.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Measurement</td>
+<td style="text-align: left;">This is the condition being measured. If all of the selected inputs are Temperature, this should also be temperature. Keep in mind that if you use the pre-defined measurements, it will add these to the current y-axis on a Graph. For instance, if you select two Temeprature measurements, make sure you set Measurement to ‘temperature’ (lowercase ‘t’) in order to make it use the same y-axis as the other temperatures. A list of the pre-defined measurements that may be used is below.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Units</td>
+<td style="text-align: left;">This is the units to display along with the measurement, on Graphs. If a pre-defined measurement is used, this field will default to the units associated with that measurement.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pre-defined-measurements">Pre-defined Measurements</h3>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Measurement</th>
+<th style="text-align: left;">Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">altitude</td>
+<td style="text-align: left;">m</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">co2</td>
+<td style="text-align: left;">ppmv</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">dewpoint</td>
+<td style="text-align: left;">°C</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cpu_load_1m</td>
+<td style="text-align: left;">1 min</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cpu_load_5m</td>
+<td style="text-align: left;">5 min</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cpu_load_15m</td>
+<td style="text-align: left;">15 min</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">disk_space</td>
+<td style="text-align: left;">MB</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">duration_sec</td>
+<td style="text-align: left;">sec</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">duty_cycle</td>
+<td style="text-align: left;">%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">edge</td>
+<td style="text-align: left;">edge</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">frequency</td>
+<td style="text-align: left;">Hz</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">humidity</td>
+<td style="text-align: left;">%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">lux</td>
+<td style="text-align: left;">lx</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">moisture</td>
+<td style="text-align: left;">moisture</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ph</td>
+<td style="text-align: left;">pH</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pid_output</td>
+<td style="text-align: left;">sec</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pressure</td>
+<td style="text-align: left;">Pa</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pulse_width</td>
+<td style="text-align: left;">µs</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rpm</td>
+<td style="text-align: left;">rpm</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">setpoint</td>
+<td style="text-align: left;">None</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">temperature</td>
+<td style="text-align: left;">°C</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">temperature_object</td>
+<td style="text-align: left;">°C</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">temperature_die</td>
+<td style="text-align: left;">°C</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">voltage</td>
+<td style="text-align: left;">volts</td>
 </tr>
 </tbody>
 </table>

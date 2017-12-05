@@ -99,10 +99,7 @@ class OutputController(threading.Thread):
 
             outputs = db_retrieve_table_daemon(Output, entry='all')
             self.all_outputs_initialize(outputs)
-            # Turn all outputs off
-            self.all_outputs_off()
-            # Turn outputs on that are set to be on at start
-            self.all_outputs_on()
+            self.all_outputs_set_state()  # Turn outputs on that are set to be on at start
             self.logger.debug("Outputs Initialized")
 
         except Exception as except_msg:
@@ -134,20 +131,12 @@ class OutputController(threading.Thread):
                                   'off',))
                         turn_output_off.start()
 
-                        if self.output_last_duration[output_id] > 0:
-                            duration = float(self.output_last_duration[output_id])
-                            timestamp = datetime.datetime.utcnow() - datetime.timedelta(seconds=duration)
-                            write_db = threading.Thread(
-                                target=write_influxdb_value,
-                                args=(self.output_unique_id[output_id],
-                                      'duration_sec',
-                                      duration,
-                                      timestamp,))
-                            write_db.start()
-
-                time.sleep(0.10)
+                time.sleep(0.1)
         finally:
-            self.all_outputs_off()
+            # Turn all outputs off
+            for each_output_id in self.output_id:
+                self.output_on_off(
+                    each_output_id, 'off', trigger_conditionals=False)
             self.cleanup_gpio()
             self.running = False
             self.logger.info(
@@ -155,10 +144,10 @@ class OutputController(threading.Thread):
                     (timeit.default_timer() - self.thread_shutdown_timer)*1000))
 
     def output_on_off(self, output_id, state,
-                     duration=0.0,
-                     min_off=0.0,
-                     duty_cycle=0.0,
-                     trigger_conditionals=True):
+                      duration=0.0,
+                      min_off=0.0,
+                      duty_cycle=0.0,
+                      trigger_conditionals=True):
         """
         Turn a output on or off
         The GPIO may be either HIGH or LOW to activate a output. This trigger
@@ -195,9 +184,8 @@ class OutputController(threading.Thread):
         if state == 'on':
 
             # Check if pin is valid
-            if (self.output_type[output_id] in ['pwm',
-                                              'wired',
-                                              'wireless_433MHz_pi_switch'] and
+            if (self.output_type[output_id] in [
+                    'pwm', 'wired', 'wireless_433MHz_pi_switch'] and
                     self.output_pin[output_id] is None):
                 self.logger.warning(
                     u"Invalid pin for output {id} ({name}): {pin}.".format(
@@ -207,9 +195,8 @@ class OutputController(threading.Thread):
                 return 1
 
             # Check if max amperage will be exceeded
-            if self.output_type[output_id] in ['command',
-                                             'wired',
-                                             'wireless_433MHz_pi_switch']:
+            if self.output_type[output_id] in [
+                    'command', 'wired', 'wireless_433MHz_pi_switch']:
                 current_amps = self.current_amp_load()
                 max_amps = db_retrieve_table_daemon(Misc, entry='first').max_amps
                 if current_amps + self.output_amps[output_id] > max_amps:
@@ -229,7 +216,8 @@ class OutputController(threading.Thread):
                 current_time = datetime.datetime.now()
                 if (min_off and not self.is_on(output_id) and
                         current_time > self.output_on_until[output_id]):
-                    off_seconds = (current_time - self.output_on_until[output_id]).total_seconds()
+                    off_seconds = (current_time -
+                                   self.output_on_until[output_id]).total_seconds()
                     if off_seconds < min_off:
                         self.logger.debug(
                             u"Output {id} ({name}) instructed to turn on by PID, "
@@ -243,17 +231,21 @@ class OutputController(threading.Thread):
                         return 1
 
             # Turn output on for a duration
-            if (self.output_type[output_id] in ['command',
-                                              'wired',
-                                              'wireless_433MHz_pi_switch'] and
-                    duration):
+            if (self.output_type[output_id] in [
+                    'command', 'wired', 'wireless_433MHz_pi_switch'] and
+                    duration != 0):
                 time_now = datetime.datetime.now()
+
+                # Output is already on for a duration
                 if self.is_on(output_id) and self.output_on_duration[output_id]:
+
                     if self.output_on_until[output_id] > time_now:
-                        remaining_time = (self.output_on_until[output_id] - time_now).total_seconds()
+                        remaining_time = (self.output_on_until[output_id] -
+                                          time_now).total_seconds()
                     else:
                         remaining_time = 0
-                    time_on = self.output_last_duration[output_id] - remaining_time
+
+                    time_on = abs(self.output_last_duration[output_id]) - remaining_time
                     self.logger.debug(
                         u"Output {rid} ({rname}) is already on for a duration "
                         u"of {ron:.2f} seconds (with {rremain:.2f} seconds "
@@ -262,41 +254,49 @@ class OutputController(threading.Thread):
                         u"duration to {rnewon:.2f} seconds.".format(
                             rid=self.output_id[output_id],
                             rname=self.output_name[output_id],
-                            ron=self.output_last_duration[output_id],
+                            ron=abs(self.output_last_duration[output_id]),
                             rremain=remaining_time,
                             rbeenon=time_on,
-                            rnewon=duration))
-                    self.output_on_until[output_id] = time_now + datetime.timedelta(seconds=duration)
+                            rnewon=abs(duration)))
+                    self.output_on_until[output_id] = (
+                            time_now + datetime.timedelta(seconds=abs(duration)))
                     self.output_last_duration[output_id] = duration
 
                     if time_on > 0:
                         # Write the duration the output was ON to the
                         # database at the timestamp it turned ON
-                        duration = float(time_on)
-                        timestamp = datetime.datetime.utcnow() - datetime.timedelta(seconds=duration)
+                        duration_on = float(time_on)
+                        timestamp = (datetime.datetime.utcnow() -
+                                     datetime.timedelta(seconds=duration_on))
                         write_db = threading.Thread(
                             target=write_influxdb_value,
                             args=(self.output_unique_id[output_id],
                                   'duration_sec',
-                                  duration,
+                                  duration_on,
                                   timestamp,))
                         write_db.start()
 
                     return 0
+
+                # Output is on, but not for a duration
                 elif self.is_on(output_id) and not self.output_on_duration:
                     self.output_on_duration[output_id] = True
-                    self.output_on_until[output_id] = time_now + datetime.timedelta(seconds=duration)
+                    self.output_on_until[output_id] = (
+                            time_now + datetime.timedelta(seconds=abs(duration)))
                     self.output_last_duration[output_id] = duration
                     self.logger.debug(
                         u"Output {id} ({name}) is currently on without a "
-                        u"duration. Turning into a duration  of {dur:.1f} "
+                        u"duration. Turning into a duration of {dur:.1f} "
                         u"seconds.".format(
                             id=self.output_id[output_id],
                             name=self.output_name[output_id],
-                            dur=duration))
+                            dur=abs(duration)))
                     return 0
+
+                # Output is not already on
                 else:
-                    self.output_on_until[output_id] = time_now + datetime.timedelta(seconds=duration)
+                    self.output_on_until[output_id] = (
+                            time_now + datetime.timedelta(seconds=abs(duration)))
                     self.output_on_duration[output_id] = True
                     self.output_last_duration[output_id] = duration
                     self.logger.debug(
@@ -304,13 +304,12 @@ class OutputController(threading.Thread):
                         u"seconds.".format(
                             id=self.output_id[output_id],
                             name=self.output_name[output_id],
-                            dur=duration))
+                            dur=abs(duration)))
                     self.output_switch(output_id, 'on')
 
             # Just turn output on
-            elif self.output_type[output_id] in ['command',
-                                               'wired',
-                                               'wireless_433MHz_pi_switch']:
+            elif self.output_type[output_id] in [
+                    'command', 'wired', 'wireless_433MHz_pi_switch']:
                 if self.is_on(output_id):
                     self.logger.warning(
                         u"Output {id} ({name}) is already on.".format(
@@ -356,9 +355,8 @@ class OutputController(threading.Thread):
         elif state == 'off':
             if not self._is_setup(output_id):
                 return
-            if (self.output_type[output_id] in ['pwm',
-                                              'wired',
-                                              'wireless_433MHz_pi_switch'] and
+            if (self.output_type[output_id] in [
+                    'pwm', 'wired', 'wireless_433MHz_pi_switch'] and
                     self.output_pin[output_id] is None):
                 return
 
@@ -373,9 +371,11 @@ class OutputController(threading.Thread):
                     self.pwm_time_turned_on[output_id] is not None):
                 # Write the duration the PWM was ON to the database
                 # at the timestamp it turned ON
-                duration = (datetime.datetime.now() - self.pwm_time_turned_on[output_id]).total_seconds()
+                duration_on = (datetime.datetime.now() -
+                               self.pwm_time_turned_on[output_id]).total_seconds()
                 self.pwm_time_turned_on[output_id] = None
-                timestamp = datetime.datetime.utcnow() - datetime.timedelta(seconds=duration)
+                timestamp = (datetime.datetime.utcnow() -
+                             datetime.timedelta(seconds=duration_on))
                 write_db = threading.Thread(
                     target=write_influxdb_value,
                     args=(self.output_unique_id[output_id],
@@ -387,28 +387,41 @@ class OutputController(threading.Thread):
             # Write output duration on to database
             elif (self.output_time_turned_on[output_id] is not None or
                     self.output_on_duration[output_id]):
-                duration = 0
+                duration_sec = None
+                timestamp = None
                 if self.output_on_duration[output_id]:
                     remaining_time = 0
                     time_now = datetime.datetime.now()
+
                     if self.output_on_until[output_id] > time_now:
-                        remaining_time = (self.output_on_until[output_id] - time_now).total_seconds()
-                    duration = self.output_last_duration[output_id] - remaining_time
+                        remaining_time = (self.output_on_until[output_id] -
+                                          time_now).total_seconds()
+                    duration_sec = (abs(self.output_last_duration[output_id]) -
+                                    remaining_time)
+                    timestamp = (datetime.datetime.utcnow() -
+                                 datetime.timedelta(seconds=duration_sec))
+
+                    # Store negative duration if a negative duration is received
+                    if self.output_last_duration[output_id] < 0:
+                        duration_sec = -duration_sec
+
                     self.output_on_duration[output_id] = False
                     self.output_on_until[output_id] = datetime.datetime.now()
 
                 if self.output_time_turned_on[output_id] is not None:
                     # Write the duration the output was ON to the database
                     # at the timestamp it turned ON
-                    duration = (datetime.datetime.now() - self.output_time_turned_on[output_id]).total_seconds()
+                    duration_sec = (datetime.datetime.now() -
+                                    self.output_time_turned_on[output_id]).total_seconds()
+                    timestamp = (datetime.datetime.utcnow() -
+                                 datetime.timedelta(seconds=duration_sec))
                     self.output_time_turned_on[output_id] = None
 
-                timestamp = datetime.datetime.utcnow() - datetime.timedelta(seconds=duration)
                 write_db = threading.Thread(
                     target=write_influxdb_value,
                     args=(self.output_unique_id[output_id],
                           'duration_sec',
-                          duration,
+                          duration_sec,
                           timestamp,))
                 write_db.start()
 
@@ -637,17 +650,7 @@ class OutputController(threading.Thread):
             self.logger.debug(u"{id} ({name}) Initialized".format(
                 id=each_output.id, name=each_output.name))
 
-    def all_outputs_off(self):
-        """Turn all outputs off"""
-        for each_output_id in self.output_id:
-            if (self.output_on_at_start[each_output_id] is None or
-                    self.output_type[each_output_id] == 'pwm'):
-                pass  # Don't turn off
-            else:
-                self.output_on_off(each_output_id, 'off',
-                                  trigger_conditionals=False)
-
-    def all_outputs_on(self):
+    def all_outputs_set_state(self):
         """Turn all outputs on that are set to be on at startup"""
         for each_output_id in self.output_id:
             if (self.output_on_at_start[each_output_id] is None or
@@ -655,10 +658,10 @@ class OutputController(threading.Thread):
                 pass  # Don't turn on or off
             elif self.output_on_at_start[each_output_id]:
                 self.output_on_off(each_output_id, 'on',
-                                  trigger_conditionals=False)
-            elif not self.output_on_at_start[each_output_id]:
+                                   trigger_conditionals=False)
+            else:
                 self.output_on_off(each_output_id, 'off',
-                                  trigger_conditionals=False)
+                                   trigger_conditionals=False)
 
     def cleanup_gpio(self):
         for each_output_pin in self.output_pin:
@@ -784,10 +787,15 @@ class OutputController(threading.Thread):
             if self.output_on_duration[output_id]:
                 remaining_time = 0
                 if self.output_on_until[output_id] > time_now:
-                    remaining_time = (self.output_on_until[output_id] - time_now).total_seconds()
-                sec_currently_on = self.output_last_duration[output_id] - remaining_time
+                    remaining_time = (self.output_on_until[output_id] -
+                                      time_now).total_seconds()
+                sec_currently_on = (
+                        abs(self.output_last_duration[output_id]) -
+                        remaining_time)
             elif self.output_time_turned_on[output_id]:
-                sec_currently_on = (time_now - self.output_time_turned_on[output_id]).total_seconds()
+                sec_currently_on = (
+                        time_now -
+                        self.output_time_turned_on[output_id]).total_seconds()
             return sec_currently_on
 
     def output_setup(self, action, output_id):
@@ -879,7 +887,7 @@ class OutputController(threading.Thread):
                         self.output_trigger[output_id] == GPIO.input(self.output_pin[output_id])):
                     return 'on'
             elif self.output_type[output_id] in ['command',
-                                               'wireless_433MHz_pi_switch']:
+                                                 'wireless_433MHz_pi_switch']:
                 if self.output_time_turned_on[output_id]:
                     return 'on'
             elif self.output_type[output_id] == 'pwm':
@@ -899,7 +907,7 @@ class OutputController(threading.Thread):
                 self._is_setup(output_id)):
             return self.output_trigger[output_id] == GPIO.input(self.output_pin[output_id])
         elif self.output_type[output_id] in ['command',
-                                           'wireless_433MHz_pi_switch']:
+                                             'wireless_433MHz_pi_switch']:
             if self.output_time_turned_on[output_id]:
                 return True
         elif self.output_type[output_id] == 'pwm':
@@ -923,7 +931,7 @@ class OutputController(threading.Thread):
             GPIO.setup(self.output_pin[output_id], GPIO.OUT)
             return True
         elif self.output_type[output_id] in ['command',
-                                           'wireless_433MHz_pi_switch']:
+                                             'wireless_433MHz_pi_switch']:
             return True
         elif self.output_type[output_id] == 'pwm':
             if output_id in self.pwm_output:

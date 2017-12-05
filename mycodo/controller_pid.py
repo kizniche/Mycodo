@@ -553,10 +553,10 @@ class PIDController(threading.Thread):
                                 abs(self.control_variable) > self.lower_max_duration):
                             self.lower_seconds_on = self.lower_max_duration
                         else:
-                            self.lower_seconds_on = abs(float("{0:.2f}".format(
-                                self.control_variable)))
+                            self.lower_seconds_on = float("{0:.2f}".format(
+                                self.control_variable))
 
-                        if self.lower_seconds_on > self.lower_min_duration:
+                        if abs(self.lower_seconds_on) > self.lower_min_duration:
                             # Activate lower_output for a duration
                             self.logger.debug("Setpoint: {sp} Output: {cv} to "
                                               "output {id}".format(

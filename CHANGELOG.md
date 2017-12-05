@@ -8,11 +8,15 @@
  - Complete Spanish translation
  - Update korean translations
  - Add more translatable texts
+ - Make PIDs collapsible
+ - Refactor daemon controller handling and daemonize threads
 
 ### Bugfixes
 
  - Fix selection of current language on General Config page
  - Fix saving options when adding a Timer
+ - Fix Graph display of Lowering Output durations as negative values
+ - Fix double-logging of output durations
 
 
 ## 5.4.12 (Unreleased)
