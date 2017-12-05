@@ -34,8 +34,7 @@ printf "\n#### Restore of backup $1 initiated $NOW ####\n"
 printf "#### Stopping Daemon and HTTP server ####\n"
 service mycodo stop
 sleep 2
-${INSTALL_DIRECTORY}/Mycodo/env/bin/python ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/restart_daemon.py
-/etc/init.d/apache2 stop
+apachectl stop
 
 /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh initialize
 

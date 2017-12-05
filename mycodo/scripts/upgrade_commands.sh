@@ -136,9 +136,8 @@ case "${1:-''}" in
     ;;
     'update-alembic')
         printf "\n#### Upgrading database with alembic\n"
-        source ${INSTALL_DIRECTORY}/Mycodo/env/bin/activate
         cd ${INSTALL_DIRECTORY}/Mycodo/databases
-        alembic upgrade head
+        ${INSTALL_DIRECTORY}/Mycodo/env/bin/alembic upgrade head
     ;;
     'update-apache2')
         printf "\n#### Installing and configuring apache2 web server\n"
