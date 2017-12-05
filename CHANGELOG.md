@@ -1,4 +1,4 @@
-## 5.4.12 (Unreleased)
+## 5.4.12 (2017-12-05)
 
 ### Features
 
@@ -22,13 +22,6 @@
 ### Miscellaneous
 
  - Update Manual with Math Controller information
-
-
-## 5.4.12 (Unreleased)
-
-### Features
-
- - Add fswebcam as a camera library for acquiring images from USB cameras
 
 
 ## 5.4.11 (2017-11-29)
