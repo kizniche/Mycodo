@@ -208,6 +208,8 @@ printf "Done.\n"
 
 sleep 30
 
+cd ${INSTALL_DIRECTORY}/Mycodo
+
 if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh initialize ; then
   printf "Failed: Error while running initialization.\n"
   error_found
