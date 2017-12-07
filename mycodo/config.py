@@ -7,8 +7,8 @@ import collections
 from datetime import timedelta
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '5.4.14'
-ALEMBIC_VERSION = 'b9712d4ec64e'
+MYCODO_VERSION = '5.4.15'
+ALEMBIC_VERSION = '8b36095c6cf9'
 
 LANGUAGES = {
     'en': 'English',
@@ -16,9 +16,6 @@ LANGUAGES = {
     'es': 'Español (Spanish)',
     'ko': '한국어 (Korean)'
 }
-
-# Install path, the parent directory this script resides
-INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
 
 # Measurements for each sensor/device
 MEASUREMENTS = {
@@ -171,7 +168,8 @@ INPUTS = [
 ]
 
 MATHS = [
-    ('average', 'Average')
+    ('average', 'Measurement Average'),
+    ('verification', 'Measurement Verification')
 ]
 
 # Sensors and description
@@ -271,6 +269,9 @@ THEMES = [
 ]
 
 THEMES_DARK = ['cyborg', 'darkly', 'slate', 'sun', 'superhero']
+
+# Install path, the parent directory this script resides
+INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
 
 # SQLite3 databases that stores users and settings
 DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')

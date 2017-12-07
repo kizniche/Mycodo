@@ -521,9 +521,18 @@ Math
 Math controllers allow one or more Inputs to have math applied to
 produce a new value that may be used within Mycodo.
 
-  Type      Description
-  --------- -------------------------------------------
-  Average   Calculates the average of several Inputs.
+  ----------------------------------------------------------
+  Type       Description
+  ---------- -----------------------------------------------
+  Measuremen Calculates the average of several Inputs.
+  t          
+  Average    
+
+  Measuremen Ensures the greatest difference between any
+  t          selected Inputs is less than Max Difference.
+  Verificati The stored value is the average of the selected
+  on         Inputs.
+  ----------------------------------------------------------
 
   ---------------------------------------------------------------------
   Setting               Description
@@ -562,6 +571,10 @@ produce a new value that may be used within Mycodo.
                         measurement, on Graphs. If a pre-defined
                         measurement is used, this field will default to
                         the units associated with that measurement.
+
+  Max Difference        If the difference between any selected Input is
+                        greater than this value, no new value will be
+                        stored in the database.
   ---------------------------------------------------------------------
 
 Pre-defined Measurements

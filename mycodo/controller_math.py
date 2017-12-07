@@ -60,6 +60,7 @@ class MathController(threading.Thread):
         self.max_measure_age = math.max_measure_age
         self.measure = math.measure
         self.measure_units = math.measure_units
+        self.max_difference = math.max_difference
 
         self.timer = t.time() + self.period
 
@@ -72,30 +73,16 @@ class MathController(threading.Thread):
 
             while self.running:
 
-                if self.is_activated and t.time() > self.timer:
+                if self.is_activated and self.inputs and t.time() > self.timer:
                     # Ensure the timer ends in the future
                     while t.time() > self.timer:
                         self.timer = self.timer + self.period
 
                     # If PID is active, retrieve input measurement and update PID output
-                    if self.math_type == 'average' and self.inputs:
-                        missing_measure = False
-                        measurements = []
-                        inputs_list = self.inputs.split(';')
-                        for each_input_set in inputs_list:
-                            input_id = each_input_set.split(',')[0]
-                            input_measure = each_input_set.split(',')[1]
-                            last_measurement = read_last_influxdb(
-                                input_id,
-                                input_measure,
-                                self.max_measure_age)
-                            if not last_measurement:
-                                missing_measure = True
-                            else:
-                                measurements.append(last_measurement[1])
-
-                        if not missing_measure:
-                            average = sum(measurements)/float(len(measurements))
+                    if self.math_type == 'average':
+                        success, measurements = self.get_measurements()
+                        if success:
+                            average = sum(measurements) / float(len(measurements))
                             write_math_db = threading.Thread(
                                 target=write_influxdb_value,
                                 args=(self.math_unique_id,
@@ -109,6 +96,18 @@ class MathController(threading.Thread):
                                 "Max Age that has been set. Ensure all "
                                 "Inputs are operating properly.")
 
+                    elif self.math_type == 'verification':
+                        success, measurements = self.get_measurements()
+                        if success:
+                            if max(measurements) - min(measurements) < self.max_difference:
+                                average = sum(measurements) / float(len(measurements))
+                                write_math_db = threading.Thread(
+                                    target=write_influxdb_value,
+                                    args=(self.math_unique_id,
+                                          self.measure,
+                                          average,))
+                                write_math_db.start()
+
                 t.sleep(0.1)
 
             self.running = False
@@ -117,6 +116,22 @@ class MathController(threading.Thread):
         except Exception as except_msg:
                 self.logger.exception("Run Error: {err}".format(
                     err=except_msg))
+
+    def get_measurements(self):
+        measurements = []
+        inputs_list = self.inputs.split(';')
+        for each_input_set in inputs_list:
+            input_id = each_input_set.split(',')[0]
+            input_measure = each_input_set.split(',')[1]
+            last_measurement = read_last_influxdb(
+                input_id,
+                input_measure,
+                self.max_measure_age)
+            if not last_measurement:
+                return False, None
+            else:
+                measurements.append(last_measurement[1])
+        return True, measurements
 
     def is_running(self):
         return self.running

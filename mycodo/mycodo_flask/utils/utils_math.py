@@ -62,11 +62,18 @@ def math_add(form_add_math):
         flash_form_errors(form_add_math)
 
 
-def math_mod(form_mod_math):
+def math_mod(form_mod_math, form_mod_type=None):
     action = u'{action} {controller}'.format(
         action=gettext(u"Modify"),
         controller=gettext(u"Math"))
     error = []
+
+    if not form_mod_math.validate():
+        error.append(gettext("Error in form field(s)"))
+        flash_form_errors(form_mod_math)
+
+    if len(form_mod_math.inputs.data) < 2:
+        error.append("At least two Inputs must be selected")
 
     try:
         mod_math = Math.query.filter(
@@ -77,19 +84,26 @@ def math_mod(form_mod_math):
                 u"Deactivate Math controller before modifying its "
                 u"settings"))
 
-        if not error:
-            mod_math.name = form_mod_math.name.data
-            mod_math.period = form_mod_math.period.data
-            mod_math.measure = form_mod_math.measure.data
-            mod_math.measure_units = form_mod_math.measure_units.data
-            mod_math.max_measure_age = form_mod_math.max_measure_age.data
+        mod_math.name = form_mod_math.name.data
+        mod_math.period = form_mod_math.period.data
+        mod_math.measure = form_mod_math.measure.data
+        mod_math.measure_units = form_mod_math.measure_units.data
+        mod_math.max_measure_age = form_mod_math.max_measure_age.data
 
-            if form_mod_math.inputs.data:
-                inputs_joined = ";".join(form_mod_math.inputs.data)
-                mod_math.inputs = inputs_joined
+        if mod_math.math_type == 'verification' and form_mod_type:
+            if not form_mod_type.validate():
+                error.append(gettext("Error in form field(s)"))
+                flash_form_errors(form_mod_type)
             else:
-                mod_math.inputs = ''
+                mod_math.max_difference = form_mod_type.max_difference.data
 
+        if form_mod_math.inputs.data:
+            inputs_joined = ";".join(form_mod_math.inputs.data)
+            mod_math.inputs = inputs_joined
+        else:
+            mod_math.inputs = ''
+
+        if not error:
             db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)

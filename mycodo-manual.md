@@ -291,7 +291,8 @@ Math controllers allow one or more Inputs to have math applied to produce a new 
 
 Type | Description
 --------- | ----------------------------------------------
-Average | Calculates the average of several Inputs.
+Measurement Average | Calculates the average of several Inputs.
+Measurement Verification | Ensures the greatest difference between any selected Inputs is less than Max Difference. The stored value is the average of the selected Inputs.
 
 
 Setting | Description
@@ -301,6 +302,7 @@ Period (seconds) | The duration of time between calculating and storing a new va
 Max Age (seconds) | The maximum allowed age of the Input measurements. If an Input measurement is older than this period, the calculation is cancelled and the new value is not stored in the database. Consequently, if another controller has a Max Age set and cannot retrieve a current Math value, it will cease functioning. A PID controller, for instance, may stop regulating if there is no new Math value created, preventing the PID controller from continuing to run when it should not.
 Measurement | This is the condition being measured. If all of the selected inputs are Temperature, this should also be temperature. Keep in mind that if you use the pre-defined measurements, it will add these to the current y-axis on a Graph. For instance, if you select two Temeprature measurements, make sure you set Measurement to 'temperature' (lowercase 't') in order to make it use the same y-axis as the other temperatures. A list of the pre-defined measurements that may be used is below.
 Units | This is the units to display along with the measurement, on Graphs. If a pre-defined measurement is used, this field will default to the units associated with that measurement.
+Max Difference | If the difference between any selected Input is greater than this value, no new value will be stored in the database.
 
 ### Pre-defined Measurements
 

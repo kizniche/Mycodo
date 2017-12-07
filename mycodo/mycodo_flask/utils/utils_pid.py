@@ -66,6 +66,7 @@ def pid_mod(form_mod_pid_base,
     error = []
 
     if not form_mod_pid_base.validate():
+        error.append(gettext("Error in form field(s)"))
         flash_form_errors(form_mod_pid_base)
 
     sensor_unique_id = form_mod_pid_base.measurement.data.split(',')[0]
@@ -106,12 +107,14 @@ def pid_mod(form_mod_pid_base,
         if mod_pid.raise_relay_id == int(form_mod_pid_base.raise_relay_id.data):
             if raise_relay_type == 'pwm':
                 if not form_mod_pid_pwm_raise.validate():
+                    error.append(gettext("Error in form field(s)"))
                     flash_form_errors(form_mod_pid_pwm_raise)
                 else:
                     mod_pid.raise_min_duration = form_mod_pid_pwm_raise.raise_min_duty_cycle.data
                     mod_pid.raise_max_duration = form_mod_pid_pwm_raise.raise_max_duty_cycle.data
             else:
                 if not form_mod_pid_relay_raise.validate():
+                    error.append(gettext("Error in form field(s)"))
                     flash_form_errors(form_mod_pid_relay_raise)
                 else:
                     mod_pid.raise_min_duration = form_mod_pid_relay_raise.raise_min_duration.data
@@ -135,12 +138,14 @@ def pid_mod(form_mod_pid_base,
         if mod_pid.lower_relay_id == int(form_mod_pid_base.lower_relay_id.data):
             if lower_relay_type == 'pwm':
                 if not form_mod_pid_pwm_lower.validate():
+                    error.append(gettext("Error in form field(s)"))
                     flash_form_errors(form_mod_pid_pwm_lower)
                 else:
                     mod_pid.lower_min_duration = form_mod_pid_pwm_lower.lower_min_duty_cycle.data
                     mod_pid.lower_max_duration = form_mod_pid_pwm_lower.lower_max_duty_cycle.data
             else:
                 if not form_mod_pid_relay_lower.validate():
+                    error.append(gettext("Error in form field(s)"))
                     flash_form_errors(form_mod_pid_relay_lower)
                 else:
                     mod_pid.lower_min_duration = form_mod_pid_relay_lower.lower_min_duration.data
@@ -159,7 +164,7 @@ def pid_mod(form_mod_pid_base,
         mod_pid.lower_relay_id = None
 
     if (mod_pid.raise_relay_id and mod_pid.lower_relay_id and
-                mod_pid.raise_relay_id == mod_pid.lower_relay_id):
+            mod_pid.raise_relay_id == mod_pid.lower_relay_id):
         error.append(gettext(u"Raise and lower outputs cannot be the same"))
 
     try:

@@ -1,5 +1,9 @@
 ## 5.4.15 (Unreleased)
 
+### Features
+
+ - Add Math controller type: Measurement Verification
+
 ### Bugfixes
 
  - Fix Atlas pH sensor calibration
@@ -10,7 +14,7 @@
 ### Features
 
  - Add Math Controller (Math in menu) to perform math on Input data
- - Add first Math controller type: Average (averages Inputs) ([#328](https://github.com/kizniche/mycodo/issues/328))
+ - Add first Math controller type: Measurement Average (averages Inputs) ([#328](https://github.com/kizniche/mycodo/issues/328))
  - Add fswebcam as a camera library for acquiring images from USB cameras
  - Complete Spanish translation
  - Update korean translations

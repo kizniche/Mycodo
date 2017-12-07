@@ -33,16 +33,31 @@ class MathMod(FlaskForm):
     math_id = IntegerField('Math ID', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext(u'Name'),
-        validators=[DataRequired()]
-    )
-    period = DecimalField(lazy_gettext(u'Period (seconds)'))
-    inputs = SelectMultipleField(lazy_gettext(u'Input'))
-    max_measure_age = IntegerField(lazy_gettext(u'Max Age (seconds)'))
-    measure = StringField(lazy_gettext(u'Measurement'))
-    measure_units = StringField(lazy_gettext(u'Units'))
+        validators=[DataRequired()])
+    period = DecimalField(
+        lazy_gettext(u'Period (seconds)'),
+        validators=[DataRequired()])
+    inputs = SelectMultipleField(
+        lazy_gettext(u'Input'),
+        validators=[DataRequired()])
+    max_measure_age = IntegerField(
+        lazy_gettext(u'Max Age (seconds)'),
+        validators=[DataRequired()])
+    measure = StringField(
+        lazy_gettext(u'Measurement'),
+        validators=[DataRequired()])
+    measure_units = StringField(
+        lazy_gettext(u'Units'),
+        validators=[DataRequired()])
     mod = SubmitField(lazy_gettext(u'Save'))
     delete = SubmitField(lazy_gettext(u'Delete'))
     activate = SubmitField(lazy_gettext(u'Activate'))
     deactivate = SubmitField(lazy_gettext(u'Deactivate'))
     order_up = SubmitField(lazy_gettext(u'Up'))
     order_down = SubmitField(lazy_gettext(u'Down'))
+
+
+class MathModVerification(FlaskForm):
+    max_difference = DecimalField(
+        lazy_gettext(u'Max Difference'),
+        validators=[DataRequired()])

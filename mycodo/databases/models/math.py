@@ -17,6 +17,7 @@ class Math(CRUDMixin, db.Model):
     max_measure_age = db.Column(db.Integer, default=60.0)
     measure = db.Column(db.Text, default='Measurement')
     measure_units = db.Column(db.Text, default='unit')
+    max_difference = db.Column(db.Float, default=10.0)  # Maximum difference between any measurements
 
     def is_active(self):
         """

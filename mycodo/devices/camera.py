@@ -22,7 +22,7 @@ logger = logging.getLogger('mycodo.devices.picamera')
 # Camera record
 #
 
-def camera_record(record_type, settings, duration_sec=None):
+def camera_record(record_type, settings, duration_sec=None, flash=None):
     """
     Record still/timelapse images, and video
 
@@ -127,14 +127,15 @@ def camera_record(record_type, settings, duration_sec=None):
 
         if record_type in ['photo', 'timelapse']:
             edited = False
-            try:
-                _, img_orig = cap.read()
-                cap.release()
-            except Exception:
-                logger.exception(1)
+            return_val, img_orig = cap.read()
+            cap.release()
 
-            if not img_orig:
-                logger.error("Could not access camera")
+            if not return_val:
+                err = "Could not access camera It may not be supported " \
+                      "by opencv."
+                logger.error(err)
+                if flash:
+                    flash(err, "error")
                 return
 
             img_edited = img_orig.copy()

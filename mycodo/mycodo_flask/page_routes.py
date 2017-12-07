@@ -86,7 +86,7 @@ from mycodo.config import PATH_CAMERAS
 
 from mycodo.config import USAGE_REPORTS_PATH
 
-logger = logging.getLogger('mycodo.mycodo_flask.pages')
+logger = logging.getLogger('mycodo.mycodo_flask.page_routes')
 
 blueprint = Blueprint('page_routes',
                       __name__,
@@ -135,7 +135,7 @@ def page_camera():
                 if camera_stream(unique_id=mod_camera.unique_id).is_running(mod_camera.unique_id):
                     camera_stream(unique_id=mod_camera.unique_id).stop(mod_camera.unique_id)
                 time.sleep(2)
-            camera_record('photo', mod_camera)
+            camera_record('photo', mod_camera, flash=flash)
         elif form_camera.start_timelapse.data:
             if mod_camera.stream_started:
                 flash(gettext(u"Cannot start time-lapse if stream is active."), "error")
@@ -1003,14 +1003,21 @@ def page_input():
 def page_math():
     """ Display math page """
     math = Math.query.all()
-    input = Input.query.all()
+    input_dev = Input.query.all()
 
-    choices_input = utils_general.choices_inputs(input)
+    choices_input = utils_general.choices_inputs(input_dev)
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().math)
 
     form_add_math = forms_math.MathAdd()
     form_mod_math = forms_math.MathMod()
+    form_mod_verification = forms_math.MathModVerification()
+
+    # convert dict to list of tuples
+    choices = []
+    for each_key, each_value in choices_input.iteritems():
+        choices.append((each_key, each_value))
+    form_mod_math.inputs.choices = choices
 
     math_templates = []
     math_path = os.path.join(
@@ -1027,7 +1034,12 @@ def page_math():
         if form_add_math.add.data:
             utils_math.math_add(form_add_math)
         elif form_mod_math.mod.data:
-            utils_math.math_mod(form_mod_math)
+            math_type = Math.query.filter(
+                Math.id == form_mod_math.math_id.data).first().math_type
+            if math_type == 'verification':
+                utils_math.math_mod(form_mod_math, form_mod_verification)
+            else:
+                utils_math.math_mod(form_mod_math)
         elif form_mod_math.delete.data:
             utils_math.math_del(form_mod_math)
         elif form_mod_math.order_up.data:
@@ -1047,7 +1059,8 @@ def page_math():
                            display_order=display_order,
                            form_add_math=form_add_math,
                            form_mod_math=form_mod_math,
-                           input=input,
+                           form_mod_verification=form_mod_verification,
+                           input=input_dev,
                            math=math,
                            math_templates=math_templates)
 

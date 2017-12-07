@@ -662,7 +662,11 @@
 </table>
 <h2 id="math">Math</h2>
 <p>Math controllers allow one or more Inputs to have math applied to produce a new value that may be used within Mycodo.</p>
-<table>
+<table style="width:79%;">
+<colgroup>
+<col style="width: 13%"></col>
+<col style="width: 65%"></col>
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Type</th>
@@ -671,8 +675,12 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Average</td>
+<td style="text-align: left;">Measurement Average</td>
 <td style="text-align: left;">Calculates the average of several Inputs.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Measurement Verification</td>
+<td style="text-align: left;">Ensures the greatest difference between any selected Inputs is less than Max Difference. The stored value is the average of the selected Inputs.</td>
 </tr>
 </tbody>
 </table>
@@ -707,6 +715,10 @@
 <tr class="odd">
 <td style="text-align: left;">Units</td>
 <td style="text-align: left;">This is the units to display along with the measurement, on Graphs. If a pre-defined measurement is used, this field will default to the units associated with that measurement.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Max Difference</td>
+<td style="text-align: left;">If the difference between any selected Input is greater than this value, no new value will be stored in the database.</td>
 </tr>
 </tbody>
 </table>
