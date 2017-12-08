@@ -524,14 +524,18 @@ produce a new value that may be used within Mycodo.
   ----------------------------------------------------------
   Type       Description
   ---------- -----------------------------------------------
-  Measuremen Calculates the average of several Inputs.
-  t          
-  Average    
+  Average    Stores the average of the selected Inputs
 
-  Measuremen Ensures the greatest difference between any
-  t          selected Inputs is less than Max Difference.
-  Verificati The stored value is the average of the selected
-  on         Inputs.
+  Largest    Stores the largest measurement from the
+             selected Inputs
+
+  Smallest   Stores the smallest measurement from the
+             selected Inputs
+
+  Verificati Ensures the greatest difference between any
+  on         selected Inputs is less than Max Difference,
+             and if so, stores the average of the selected
+             Inputs
   ----------------------------------------------------------
 
   ---------------------------------------------------------------------

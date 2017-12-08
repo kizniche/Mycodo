@@ -168,8 +168,10 @@ INPUTS = [
 ]
 
 MATHS = [
-    ('average', 'Measurement Average'),
-    ('verification', 'Measurement Verification')
+    ('average', 'Average'),
+    ('largest', 'Largest'),
+    ('smallest', 'Smallest'),
+    ('verification', 'Verification')
 ]
 
 # Sensors and description

@@ -291,8 +291,10 @@ Math controllers allow one or more Inputs to have math applied to produce a new 
 
 Type | Description
 --------- | ----------------------------------------------
-Measurement Average | Calculates the average of several Inputs.
-Measurement Verification | Ensures the greatest difference between any selected Inputs is less than Max Difference. The stored value is the average of the selected Inputs.
+Average | Stores the average of the selected Inputs
+Largest | Stores the largest measurement from the selected Inputs
+Smallest | Stores the smallest measurement from the selected Inputs
+Verification | Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected Inputs
 
 
 Setting | Description

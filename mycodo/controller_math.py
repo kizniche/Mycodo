@@ -83,30 +83,38 @@ class MathController(threading.Thread):
                         success, measurements = self.get_measurements()
                         if success:
                             average = sum(measurements) / float(len(measurements))
-                            write_math_db = threading.Thread(
-                                target=write_influxdb_value,
-                                args=(self.math_unique_id,
-                                      self.measure,
-                                      average,))
-                            write_math_db.start()
-
+                            self.write_measurement(self.math_unique_id,
+                                                   self.measure,
+                                                   average)
                         else:
                             self.logger.error(
                                 "One or more inputs were not within the "
                                 "Max Age that has been set. Ensure all "
                                 "Inputs are operating properly.")
 
-                    elif self.math_type == 'verification':
+                    elif self.math_type == 'largest':
                         success, measurements = self.get_measurements()
                         if success:
-                            if max(measurements) - min(measurements) < self.max_difference:
-                                average = sum(measurements) / float(len(measurements))
-                                write_math_db = threading.Thread(
-                                    target=write_influxdb_value,
-                                    args=(self.math_unique_id,
-                                          self.measure,
-                                          average,))
-                                write_math_db.start()
+                            self.write_measurement(self.math_unique_id,
+                                                   self.measure,
+                                                   max(measurements))
+
+                    elif self.math_type == 'smallest':
+                        success, measurements = self.get_measurements()
+                        if success:
+                            self.write_measurement(self.math_unique_id,
+                                                   self.measure,
+                                                   min(measurements))
+
+                    elif self.math_type == 'verification':
+                        success, measurements = self.get_measurements()
+                        if (success and
+                                max(measurements) - min(measurements) <
+                                self.max_difference):
+                            average = sum(measurements) / float(len(measurements))
+                            self.write_measurement(self.math_unique_id,
+                                                   self.measure,
+                                                   average)
 
                 t.sleep(0.1)
 
@@ -132,6 +140,15 @@ class MathController(threading.Thread):
             else:
                 measurements.append(last_measurement[1])
         return True, measurements
+
+    @staticmethod
+    def write_measurement(unique_id, measurement, value):
+        write_math_db = threading.Thread(
+            target=write_influxdb_value,
+            args=(unique_id,
+                  measurement,
+                  value,))
+        write_math_db.start()
 
     def is_running(self):
         return self.running
