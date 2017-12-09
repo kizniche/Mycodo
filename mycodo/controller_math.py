@@ -155,10 +155,6 @@ class MathController(threading.Thread):
                         psypi = SI.state("DBT", dbt_kelvin, "WBT", wbt_kelvin, pressure_pa)
 
                         # print("The dry bulb temperature is ", psypi[0])
-                        # print("The specific enthalpy is ", psypi[1])
-                        # print("The relative humidity is ", psypi[2])
-                        # print("The specific volume is ", psypi[3])
-                        # print("The humidity ratio is ", psypi[4])
                         # print("The wet bulb temperature is ", psypi[5])
 
                         self.write_measurement(self.math_unique_id,
