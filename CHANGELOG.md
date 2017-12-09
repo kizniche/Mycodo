@@ -1,8 +1,12 @@
 ## 5.4.16 (Unreleased)
 
+### Features
+
+ - More detailed 'incorrect database' error message on System Information page
+
 ### Bugfixes
 
- - Fix Math measurement list length on Graph page
+ - Fix measurement list length on Graph page
 
 
 ## 5.4.15 (2017-12-08)

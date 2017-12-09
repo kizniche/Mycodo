@@ -69,6 +69,7 @@ from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.tools import return_relay_usage
 
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import HTTP_LOG_FILE
@@ -76,10 +77,10 @@ from mycodo.config import KEEPUP_LOG_FILE
 from mycodo.config import LOGIN_LOG_FILE
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import UPGRADE_LOG_FILE
-
-from mycodo.config import CONDITIONAL_ACTIONS
 from mycodo.config import DAEMON_PID_FILE
-from mycodo.config import INSTALL_DIRECTORY
+
+from mycodo.config import ALEMBIC_VERSION
+from mycodo.config import CONDITIONAL_ACTIONS
 from mycodo.config import MEASUREMENTS
 from mycodo.config import MEASUREMENT_UNITS
 from mycodo.config import PATH_CAMERAS
@@ -497,9 +498,8 @@ def page_info():
         with open(DAEMON_PID_FILE, 'r') as pid_file:
             daemon_pid = int(pid_file.read())
 
-    database_version = []
-    for each_ver in AlembicVersion.query.all():
-        database_version.append(each_ver.version_num)
+    database_version = AlembicVersion.query.first().version_num
+    correct_database_version = ALEMBIC_VERSION
 
     virtualenv_flask = False
     if hasattr(sys, 'real_prefix'):
@@ -534,6 +534,7 @@ def page_info():
                            daemon_up=daemon_up,
                            gpio_readall=gpio_output,
                            database_version=database_version,
+                           correct_database_version=correct_database_version,
                            df=df_output,
                            free=free_output,
                            i2c_devices=i2c_devices,

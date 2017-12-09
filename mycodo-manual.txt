@@ -1820,6 +1820,37 @@ Daemon Not Running
     suggestions, submit a New Mycodo Issue on github.
 
 
+Incorrect Database Version
+
+-   Check the System Information page (from the web UI: select [Gear
+    Icon] -> System Information or select the mycodo logo in
+    the top-left).
+-   An incorrect database version error means the version stored in the
+    Mycodo settings database (~/Mycodo/databases/mycodo.db) is not
+    correct for the latest version of Mycodo, determined in the Mycodo
+    config file (~/Mycodo/config.py).
+-   This can be caused by an error in the upgrade process from an older
+    database version to a newer version, or from a database that did not
+    upgrade during the Mycodo upgrade process.
+-   Check the Upgrade Log for any issues that may have occurred. The log
+    is located at /var/log/mycodo/mycodoupgrade.log but may also be
+    accessed from the web UI (if you’re able to): select [Gear Icon] ->
+    Mycodo Logs -> Upgrade Log.
+-   Sometimes issues may not immediately present themselves. It is not
+    uncommon to be experiencing a database issue that was actually
+    introduced several Mycodo versions ago, before the latest upgrade.
+-   Because of the nature of how many versions the database can be in,
+    correcting a database issue may be very difficult. It may be much
+    easier to delete your database and let Mycodo generate a new one.
+-   Use the following commands to rename your database and restart the
+    web UI. If both commands are successful, refresh your web UI page in
+    your browser in order to generate a new database and create a new
+    Admin user.
+
+    mv ~/Mycodo/databases/mycodo.db ~/Mycodo/databases/mycodo.db.backup
+    sudo service apache2 restart
+
+
 More
 
 Check out the Diagnosing Mycodo Issues Wiki Page on github for more

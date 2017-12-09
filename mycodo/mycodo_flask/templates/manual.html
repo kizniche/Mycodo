@@ -1924,6 +1924,18 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <li>Daemon Lock File: If the daemon is not running, make sure the daemon lock file is deleted at <code>/var/lock/mycodo.pid</code>. The daemon cannot start if the lock file is present.</li>
 <li>If a solution could not be found after investigating the above suggestions, submit a <a href="https://github.com/kizniche/Mycodo/issues/new">New Mycodo Issue</a> on github.</li>
 </ul>
+<h2 id="incorrect-database-version">Incorrect Database Version</h2>
+<ul>
+<li>Check the System Information page (from the web UI: select [Gear Icon] -&gt; System Information or select the mycodo logo in the top-left).</li>
+<li>An incorrect database version error means the version stored in the Mycodo settings database (~/Mycodo/databases/mycodo.db) is not correct for the latest version of Mycodo, determined in the Mycodo config file (~/Mycodo/config.py).</li>
+<li>This can be caused by an error in the upgrade process from an older database version to a newer version, or from a database that did not upgrade during the Mycodo upgrade process.</li>
+<li>Check the Upgrade Log for any issues that may have occurred. The log is located at <code>/var/log/mycodo/mycodoupgrade.log</code> but may also be accessed from the web UI (if you’re able to): select [Gear Icon] -&gt; Mycodo Logs -&gt; Upgrade Log.</li>
+<li>Sometimes issues may not immediately present themselves. It is not uncommon to be experiencing a database issue that was actually introduced several Mycodo versions ago, before the latest upgrade.</li>
+<li>Because of the nature of how many versions the database can be in, correcting a database issue may be very difficult. It may be much easier to delete your database and let Mycodo generate a new one.</li>
+<li>Use the following commands to rename your database and restart the web UI. If both commands are successful, refresh your web UI page in your browser in order to generate a new database and create a new Admin user.</li>
+</ul>
+<pre><code>mv ~/Mycodo/databases/mycodo.db ~/Mycodo/databases/mycodo.db.backup
+sudo service apache2 restart</code></pre>
 <h2 id="more">More</h2>
 <p>Check out the <a href="https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues">Diagnosing Mycodo Issues Wiki Page</a> on github for more information about diagnosing issues.</p>
 <h1 id="device-interfaces">Device Interfaces</h1>
