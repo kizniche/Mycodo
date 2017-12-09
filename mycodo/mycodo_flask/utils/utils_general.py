@@ -167,10 +167,15 @@ def choices_maths(maths):
             value = '{id},{measure}'.format(
                 id=each_math.unique_id,
                 measure=each_measurement)
+
+            if each_measurement in MEASUREMENT_UNITS:
+                measurement_display = MEASUREMENT_UNITS[each_measurement]['name']
+            else:
+                measurement_display = each_measurement
             display = u'[{id:02d}] {name} ({meas})'.format(
                 id=each_math.id,
                 name=each_math.name,
-                meas=each_measurement)
+                meas=measurement_display)
             choices.update({value: display})
     return choices
 
