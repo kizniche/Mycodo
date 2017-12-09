@@ -1,3 +1,10 @@
+## 5.4.16 (Unreleased)
+
+### Bugfixes
+
+ - Fix Math measurement list length on Graph page
+
+
 ## 5.4.15 (2017-12-08)
 
 ### Features

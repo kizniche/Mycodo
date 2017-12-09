@@ -27,17 +27,6 @@
   {% include 'flash_messages.html' %}
   </div>
 
-  {%- set count_measurements = [0] -%}
-
-  {%- for each_sensor in sensor -%}
-    {% for each_measure in each_sensor.measurements.split(',') %}
-      {% if count_measurements.append(count_measurements.pop() + 1) %}{% endif %}
-    {%- endfor -%}
-    {% if each_sensor.device in ['ADS1x15', 'MCP342x'] %}
-      {% if count_measurements.append(count_measurements.pop() + 1) %}{% endif %}
-    {% endif %}
-  {%- endfor %}
-
   <div style="padding: 0 1.5em 0 1em">
 
   <div class="row">
@@ -127,13 +116,13 @@
             <div class="form-group">
               {{form_mod_graph.sensor_ids.label(class_='control-label')}}
               <div>
-                <select class="form-control btn-default" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+                <select class="form-control btn-default" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
                 {% if choices_input %}
                   {% for each_choice, value in choices_input.iteritems() -%}
                   <option value="{{each_choice}}"{%- if each_choice|string in each_graph.sensor_ids_measurements %} selected{%- endif -%}>{{value}}</option>
                   {% endfor -%}
                 {% else %}
-                  <option value="">No Inputs Available</option>
+                  <option value="">{{_('None Available')}}</option>
                 {% endif %}
                 </select>
               </div>
@@ -141,13 +130,13 @@
             <div class="form-group">
               {{form_mod_graph.math_ids.label(class_='control-label')}}
               <div>
-                <select class="form-control btn-default" id="math_ids" name="math_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+                <select class="form-control btn-default" id="math_ids" name="math_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
                 {% if choices_math %}
                   {% for each_choice, value in choices_math.iteritems() -%}
                   <option value="{{each_choice}}"{%- if each_choice|string in each_graph.math_ids %} selected{%- endif -%}>{{value}}</option>
                   {% endfor -%}
                 {% else %}
-                  <option value="">No Maths Available</option>
+                  <option value="">{{_('None Available')}}</option>
                 {% endif %}
                 </select>
               </div>
@@ -155,13 +144,13 @@
             <div class="form-group">
               {{form_mod_graph.relay_ids.label(class_='control-label')}}
               <div>
-                <select class="form-control btn-default" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+                <select class="form-control btn-default" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
                 {% if choices_output %}
                   {% for each_choice, value in choices_output.iteritems() -%}
                   <option value="{{each_choice}}"{%- if each_choice|string in each_graph.relay_ids %} selected{%- endif -%}>{{value}}</option>
                   {% endfor -%}
                 {% else %}
-                  <option value="">No Outputs Available</option>
+                  <option value="">{{_('None Available')}}</option>
                 {% endif %}
                 </select>
               </div>
@@ -169,13 +158,13 @@
             <div class="form-group">
               {{form_mod_graph.pid_ids.label(class_='control-label')}}
               <div>
-                <select class="form-control btn-default" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+                <select class="form-control btn-default" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
                 {% if choices_pid %}
                   {% for each_choice, value in choices_pid.iteritems() -%}
                     <option value="{{each_choice}}"{%- if each_choice|string in each_graph.pid_ids %} selected{%- endif -%}>{{value}}</option>
                   {% endfor -%}
                 {% else %}
-                  <option value="">No PIDs Available</option>
+                  <option value="">{{_('None Available')}}</option>
                 {% endif %}
                 </select>
               </div>
@@ -481,13 +470,13 @@
         <div class="form-group">
           {{form_add_graph.sensor_ids.label(class_='control-label')}}
           <div>
-            <select class="form-control btn-default" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+            <select class="form-control btn-default" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
             {% if choices_input %}
               {% for each_choice, value in choices_input.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
               {% endfor -%}
             {% else %}
-              <option value="">No Inputs Available</option>
+              <option value="">{{_('None Available')}}</option>
             {% endif %}
             </select>
           </div>
@@ -495,13 +484,13 @@
         <div class="form-group">
           {{form_add_graph.math_ids.label(class_='control-label')}}
           <div>
-            <select class="form-control btn-default" id="math_ids" name="math_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+            <select class="form-control btn-default" id="math_ids" name="math_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
             {% if choices_math %}
               {% for each_choice, value in choices_math.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
               {% endfor -%}
             {% else %}
-              <option value="">No Maths Available</option>
+              <option value="">{{_('None Available')}}</option>
             {% endif %}
             </select>
           </div>
@@ -509,13 +498,13 @@
         <div class="form-group">
           {{form_add_graph.relay_ids.label(class_='control-label')}}
           <div>
-            <select class="form-control btn-default" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+            <select class="form-control btn-default" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
             {% if choices_output %}
               {% for each_choice, value in choices_output.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
               {% endfor -%}
             {% else %}
-              <option value="">No Outputs Available</option>
+              <option value="">{{_('None Available')}}</option>
             {% endif %}
             </select>
           </div>
@@ -523,13 +512,13 @@
         <div class="form-group">
           {{form_add_graph.pid_ids.label(class_='control-label')}}
           <div>
-            <select class="form-control btn-default" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([count_measurements[0], math|length, relay|length, pid|length] | sort(reverse=True))[0]}}" multiple>
+            <select class="form-control btn-default" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
             {% if choices_pid %}
               {% for each_choice, value in choices_pid.iteritems() -%}
               <option value="{{each_choice}}">{{value}}</option>
               {% endfor -%}
             {% else %}
-              <option value="">No PIDs Available</option>
+              <option value="">{{_('None Available')}}</option>
             {% endif %}
             </select>
           </div>
