@@ -92,6 +92,9 @@ MEASUREMENT_UNITS = {
     'humidity': {
         'name': lazy_gettext(u'Humidity'),
         'meas': 'humidity', 'unit': u'%'},
+    'humidity_ratio': {
+        'name': lazy_gettext(u'Humidity Ratio'),
+        'meas': 'humidity_ratio', 'unit': u'kg/kg'},
     'lux': {
         'name': lazy_gettext(u'Light'),
         'meas': 'lux', 'unit': u'lx'},
@@ -116,6 +119,12 @@ MEASUREMENT_UNITS = {
     'setpoint': {
         'name': lazy_gettext(u'Setpoint'),
         'meas': 'setpoint', 'unit': u''},
+    'specific_enthalpy': {
+        'name': lazy_gettext(u'Specific Enthalpy'),
+        'meas': 'specific_enthalpy', 'unit': u'kJ/kg'},
+    'specific_volume': {
+        'name': lazy_gettext(u'Specific Volume'),
+        'meas': 'specific_volume', 'unit': u'm^3/kg'},
     'temperature': {
         'name': lazy_gettext(u'Temperature'),
         'meas': 'temperature', 'unit': u'°C'},

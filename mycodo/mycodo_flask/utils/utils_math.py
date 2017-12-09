@@ -40,7 +40,7 @@ def math_add(form_add_math):
         new_math.math_type = form_add_math.math_type.data
 
         if new_math.math_type == 'humidity':
-            new_math.measure = 'humidity'
+            new_math.measure = 'humidity,humidity_ratio,specific_enthalpy,specific_volume'
             new_math.measure_units = '%'
 
         try:

@@ -36,10 +36,10 @@ def graph_add(form_add, display_order):
 
     if (form_add.graph_type.data == 'graph' and
             (form_add.name.data and
-                 form_add.width.data and
-                 form_add.height.data and
-                 form_add.xaxis_duration.data and
-                 form_add.refresh_duration.data)):
+             form_add.width.data and
+             form_add.height.data and
+             form_add.xaxis_duration.data and
+             form_add.refresh_duration.data)):
         new_graph.graph_type = form_add.graph_type.data
         new_graph.name = form_add.name.data
         if form_add.math_ids.data:

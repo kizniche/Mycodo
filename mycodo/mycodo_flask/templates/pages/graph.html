@@ -835,6 +835,7 @@
         {%- set yaxis_edge = [] -%}
         {%- set yaxis_frequency = [] -%}
         {%- set yaxis_hum = [] -%}
+        {%- set yaxis_humidity_ratio = [] -%}
         {%- set yaxis_lux = [] -%}
         {%- set yaxis_moisture = [] -%}
         {%- set yaxis_ph = [] -%}
@@ -842,6 +843,8 @@
         {%- set yaxis_pulse_width = [] -%}
         {%- set yaxis_relay = [] -%}
         {%- set yaxis_rpm = [] -%}
+        {%- set yaxis_specific_enthalpy = [] -%}
+        {%- set yaxis_specific_volume = [] -%}
         {%- set yaxis_temp = [] -%}
         {%- set yaxis_volts = [] -%}
         {%- set yaxis_command = [] -%}
@@ -868,6 +871,8 @@
               {%- do yaxis_frequency.append(1) -%}
             {%- elif measurement == 'humidity' -%}
               {%- do yaxis_hum.append(1) -%}
+            {%- elif measurement == 'humidity_ratio' -%}
+              {%- do yaxis_humidity_ratio.append(1) -%}
             {%- elif measurement == 'lux' -%}
               {%- do yaxis_lux.append(1) -%}
             {%- elif measurement == 'moisture' -%}
@@ -880,6 +885,10 @@
               {%- do yaxis_pulse_width.append(1) -%}
             {%- elif measurement == 'rpm' -%}
               {%- do yaxis_rpm.append(1) -%}
+            {%- elif measurement == 'specific_enthalpy' -%}
+              {%- do yaxis_specific_enthalpy.append(1) -%}
+            {%- elif measurement == 'specific_volume' -%}
+              {%- do yaxis_specific_volume.append(1) -%}
             {%- elif measurement in ['temperature',
                                      'temperature_object',
                                      'temperature_die',
@@ -898,8 +907,8 @@
 
         {# Determine what y-axes are needed for math measurements #}
         {%- for each_math in math -%}
-          {%- for each_id in graph_math_ids if each_math.unique_id in each_id -%}
-            {%- set measurement = each_math.measure -%}
+          {%- for each_id_and_measure in graph_math_ids if each_math.unique_id in each_id_and_measure.split(',')[0] -%}
+            {%- set measurement = each_id_and_measure.split(',')[1] -%}
             {%- if measurement == 'altitude' -%}
               {%- do yaxis_alt.append(1) -%}
             {%- elif measurement == 'co2' -%}
@@ -918,6 +927,8 @@
               {%- do yaxis_frequency.append(1) -%}
             {%- elif measurement == 'humidity' -%}
               {%- do yaxis_hum.append(1) -%}
+            {%- elif measurement == 'humidity_ratio' -%}
+              {%- do yaxis_humidity_ratio.append(1) -%}
             {%- elif measurement == 'lux' -%}
               {%- do yaxis_lux.append(1) -%}
             {%- elif measurement == 'moisture' -%}
@@ -930,6 +941,10 @@
               {%- do yaxis_pulse_width.append(1) -%}
             {%- elif measurement == 'rpm' -%}
               {%- do yaxis_rpm.append(1) -%}
+            {%- elif measurement == 'specific_enthalpy' -%}
+              {%- do yaxis_specific_enthalpy.append(1) -%}
+            {%- elif measurement == 'specific_volume' -%}
+              {%- do yaxis_specific_volume.append(1) -%}
             {%- elif measurement in ['temperature',
                                      'temperature_object',
                                      'temperature_die',
@@ -968,6 +983,8 @@
                   {%- do yaxis_frequency.append(1) -%}
                 {%- elif measurement == 'humidity' -%}
                   {%- do yaxis_hum.append(1) -%}
+                {%- elif measurement == 'humidity_ratio' -%}
+                  {%- do yaxis_humidity_ratio.append(1) -%}
                 {%- elif measurement == 'lux' -%}
                   {%- do yaxis_lux.append(1) -%}
                 {%- elif measurement == 'moisture' -%}
@@ -980,6 +997,10 @@
                   {%- do yaxis_pulse_width.append(1) -%}
                 {%- elif measurement == 'rpm' -%}
                   {%- do yaxis_rpm.append(1) -%}
+                {%- elif measurement == 'specific_enthalpy' -%}
+                  {%- do yaxis_specific_enthalpy.append(1) -%}
+                {%- elif measurement == 'specific_volume' -%}
+                  {%- do yaxis_specific_volume.append(1) -%}
                 {%- elif measurement in ['temperature',
                                          'temperature_object',
                                          'temperature_die',
@@ -1037,10 +1058,10 @@
             {%- endfor -%}
 
             {% for each_math in math -%}
-              {%- for each_id in graph_math_ids if each_math.unique_id == each_id %}
-            getPastData({{chart_number}}, {{count_series|count}}, '{{each_math.measure}}', '{{each_math.unique_id}}', {{each_graph.x_axis_duration*60}});
+              {%- for each_id_and_measure in graph_math_ids if each_math.unique_id == each_id_and_measure.split(',')[0] %}
+            getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_math.unique_id}}', {{each_graph.x_axis_duration*60}});
             {% if each_graph.enable_auto_refresh %}
-            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_math.measure}}', '{{each_math.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}});
+            getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_math.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}});
             {% endif %}
                 {%- do count_series.append(1) %}
               {%- endfor -%}
@@ -1218,6 +1239,18 @@
           id: 'humidity'
         },
       {%- endif -%}
+      {%- if yaxis_humidity_ratio -%}
+        {
+          title: {
+            text: '{{_('Relative Humidity Ratio')}} (kg/kg)'
+          },
+          labels: {
+            format: '{value}'
+          },
+          opposite: false,
+          id: 'humidity_ratio'
+        },
+      {%- endif -%}
       {%- if yaxis_lux -%}
         {
           title: {
@@ -1288,6 +1321,30 @@
           },
           opposite: false,
           id: 'rpm'
+        },
+      {%- endif -%}
+      {%- if yaxis_specific_enthalpy -%}
+        {
+          title: {
+            text: '{{_('Specific Enthalpy')}} (kJ/kg)'
+          },
+          labels: {
+            format: '{value}'
+          },
+          opposite: false,
+          id: 'specific_enthalpy'
+        },
+      {%- endif -%}
+      {%- if yaxis_specific_volume -%}
+        {
+          title: {
+            text: '{{_('Specific Volume')}} (m^3/kg)'
+          },
+          labels: {
+            format: '{value}'
+          },
+          opposite: false,
+          id: 'specific_volume'
         },
       {%- endif -%}
       {%- if yaxis_temp -%}
@@ -1499,21 +1556,21 @@
       {% endfor %}
 
       {% for each_math in math -%}
-        {%- for each_id in graph_math_ids if each_math.unique_id == each_id -%}
+        {%- for each_id_and_measure in graph_math_ids if each_math.unique_id == each_id_and_measure.split(',')[0] -%}
           {
-            name: '{{each_math.name}} {% if each_math.measure in measurement_units %}{{measurement_units[each_math.measure]['name']}} ({{measurement_units[each_math.measure]['unit']}}){% else %}{{each_math.measure}}{% endif %}',
+            name: '{{each_math.name}} {% if each_id_and_measure.split(',')[1] in measurement_units %}{{measurement_units[each_id_and_measure.split(',')[1]]['name']}} ({{measurement_units[each_id_and_measure.split(',')[1]]['unit']}}){% else %}{{each_id_and_measure.split(',')[1]}}{% endif %}',
             type: 'line',
             tooltip: {
-              {% if each_math.measure in measurement_units and measurement_units[each_math.measure]['meas'] == 'temperature' %}
+              {% if each_id_and_measure.split(',')[1] in measurement_units and measurement_units[each_id_and_measure.split(',')[1]]['meas'] == 'temperature' %}
               pointFormatter: function () {
                 return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
               },
               {% else %}
-              valueSuffix: ' {% if each_math.measure in measurement_units %}{{measurement_units[each_math.measure]['unit']}}{% else %}{{each_math.measure_units}}{% endif %}',
+              valueSuffix: ' {% if each_id_and_measure.split(',')[1] in measurement_units %}{{measurement_units[each_id_and_measure.split(',')[1]]['unit']}}{% else %}{{each_math.measure_units}}{% endif %}',
               valueDecimals: 2
               {% endif %}
             },
-            yAxis: '{{each_math.measure}}',
+            yAxis: '{{each_id_and_measure.split(',')[1]}}',
             data: []
           },
         {%- endfor -%}

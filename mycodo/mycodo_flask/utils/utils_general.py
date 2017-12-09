@@ -163,13 +163,15 @@ def choices_maths(maths):
     """ populate form multi-select choices from Math entries """
     choices = OrderedDict()
     for each_math in maths:
-        value = '{id}'.format(
-            id=each_math.unique_id)
-        display = u'[{id:02d}] {name} ({meas})'.format(
-            id=each_math.id,
-            name=each_math.name,
-            meas=each_math.measure)
-        choices.update({value: display})
+        for each_measurement in each_math.measure.split(','):
+            value = '{id},{measure}'.format(
+                id=each_math.unique_id,
+                measure=each_measurement)
+            display = u'[{id:02d}] {name} ({meas})'.format(
+                id=each_math.id,
+                name=each_math.name,
+                meas=each_measurement)
+            choices.update({value: display})
     return choices
 
 

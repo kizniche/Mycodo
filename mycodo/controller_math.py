@@ -161,22 +161,22 @@ class MathController(threading.Thread):
                         # print("The humidity ratio is ", psypi[4])
                         # print("The wet bulb temperature is ", psypi[5])
 
-                        # self.write_measurement(self.math_unique_id,
-                        #                        'specific_enthalpy',
-                        #                        psypi[1])
+                        self.write_measurement(self.math_unique_id,
+                                               'specific_enthalpy',
+                                               psypi[1])
 
                         percent_relative_humidity = psypi[2] * 100
                         self.write_measurement(self.math_unique_id,
                                                'humidity',
                                                percent_relative_humidity)
 
-                        # self.write_measurement(self.math_unique_id,
-                        #                        'specific_volume',
-                        #                        psypi[3])
-                        #
-                        # self.write_measurement(self.math_unique_id,
-                        #                        'humidity_ratio',
-                        #                        psypi[4])
+                        self.write_measurement(self.math_unique_id,
+                                               'specific_volume',
+                                               psypi[3])
+
+                        self.write_measurement(self.math_unique_id,
+                                               'humidity_ratio',
+                                               psypi[4])
 
                 t.sleep(0.1)
 
