@@ -18,13 +18,21 @@ class Math(CRUDMixin, db.Model):
     measure = db.Column(db.Text, default='Measurement')
     measure_units = db.Column(db.Text, default='unit')
     max_difference = db.Column(db.Float, default=10.0)  # Maximum difference between any measurements
+    
+    # Humidity calculation
+    dry_bulb_t_id = db.Column(db.Text, default=None)
+    dry_bulb_t_measure = db.Column(db.Text, default=None)
+    wet_bulb_t_id = db.Column(db.Text, default=None)
+    wet_bulb_t_measure = db.Column(db.Text, default=None)
+    pressure_pa_id = db.Column(db.Text, default=None)
+    pressure_pa_measure = db.Column(db.Text, default=None)
 
     def is_active(self):
         """
         :return: Whether the sensor is currently activated
         :rtype: bool
         """
-        return self.is_activated
+        return is_activated
 
     def __repr__(self):
-        return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
+        return "<{cls}(id={s.id})>".format(s=self, cls=__class__.__name__)

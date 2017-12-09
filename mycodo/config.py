@@ -169,8 +169,9 @@ INPUTS = [
 
 MATHS = [
     ('average', 'Average'),
-    ('largest', 'Largest'),
-    ('smallest', 'Smallest'),
+    ('maximum', 'Maximum'),
+    ('minimum', 'Minimum'),
+    ('humidity', 'Humidity'),
     ('verification', 'Verification')
 ]
 
@@ -233,20 +234,16 @@ CONDITIONAL_ACTIONS = collections.OrderedDict([
 USER_ROLES = [
     dict(id=1, name='Admin',
          edit_settings=True, edit_controllers=True, edit_users=True,
-         view_settings=True, view_camera=True, view_stats=True,
-         view_logs=True),
+         view_settings=True, view_camera=True, view_stats=True, view_logs=True),
     dict(id=2, name='Editor',
          edit_settings=True, edit_controllers=True, edit_users=False,
-         view_settings=True, view_camera=True, view_stats=True,
-         view_logs=True),
+         view_settings=True, view_camera=True, view_stats=True, view_logs=True),
     dict(id=3, name='Monitor',
          edit_settings=False, edit_controllers=False, edit_users=False,
-         view_settings=True, view_camera=True, view_stats=True,
-         view_logs=True),
+         view_settings=True, view_camera=True, view_stats=True, view_logs=True),
     dict(id=4, name='Guest',
          edit_settings=False, edit_controllers=False, edit_users=False,
-         view_settings=False, view_camera=False, view_stats=False,
-         view_logs=False)
+         view_settings=False, view_camera=False, view_stats=False, view_logs=False)
 ]
 
 # Web UI themes

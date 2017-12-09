@@ -526,10 +526,14 @@ produce a new value that may be used within Mycodo.
   ---------- -----------------------------------------------
   Average    Stores the average of the selected Inputs
 
-  Largest    Stores the largest measurement from the
+  Humidity   Calculates and stores the percent relative
+             humidity from the dry-bulb and wet-bulb
+             temperatures, and optional pressure
+
+  Maximum    Stores the largest measurement from the
              selected Inputs
 
-  Smallest   Stores the smallest measurement from the
+  Minimum    Stores the smallest measurement from the
              selected Inputs
 
   Verificati Ensures the greatest difference between any
@@ -579,6 +583,19 @@ produce a new value that may be used within Mycodo.
   Max Difference        If the difference between any selected Input is
                         greater than this value, no new value will be
                         stored in the database.
+
+  Dry-Bulb Temperature  The measurement that will serve as the dry-bulb
+                        temperature (this is the warmer of the two
+                        temperature measurements)
+
+  Wet-Bulb Temperature  The measurement that will serve as the wet-bulb
+                        temperature (this is the colder of the two
+                        temperature measurements)
+
+  Pressure              This is an optional pressure measurement that
+                        can be used to calculate the percent relative
+                        humidity. If disabled, a default 101325 Pa will
+                        be used in the calculation.
   ---------------------------------------------------------------------
 
 Pre-defined Measurements

@@ -9,6 +9,7 @@ from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 
 from mycodo.databases.models import DisplayOrder
+from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import list_to_csv
@@ -37,6 +38,10 @@ def math_add(form_add_math):
         new_math = Math()
         new_math.name = 'Math {name}'.format(name=form_add_math.math_type.data)
         new_math.math_type = form_add_math.math_type.data
+
+        if new_math.math_type == 'humidity':
+            new_math.measure = 'humidity'
+            new_math.measure_units = '%'
 
         try:
             new_math.save()
@@ -72,9 +77,6 @@ def math_mod(form_mod_math, form_mod_type=None):
         error.append(gettext("Error in form field(s)"))
         flash_form_errors(form_mod_math)
 
-    if len(form_mod_math.inputs.data) < 2:
-        error.append("At least two Inputs must be selected")
-
     try:
         mod_math = Math.query.filter(
             Math.id == form_mod_math.math_id.data).first()
@@ -84,24 +86,60 @@ def math_mod(form_mod_math, form_mod_type=None):
                 u"Deactivate Math controller before modifying its "
                 u"settings"))
 
+        if not form_mod_type:
+            raise ValueError('form_mod_type is not defined')
+        if not form_mod_type.validate():
+            error.append(gettext("Error in form field(s)"))
+            flash_form_errors(form_mod_type)
+
         mod_math.name = form_mod_math.name.data
         mod_math.period = form_mod_math.period.data
-        mod_math.measure = form_mod_math.measure.data
-        mod_math.measure_units = form_mod_math.measure_units.data
         mod_math.max_measure_age = form_mod_math.max_measure_age.data
 
-        if mod_math.math_type == 'verification' and form_mod_type:
-            if not form_mod_type.validate():
-                error.append(gettext("Error in form field(s)"))
-                flash_form_errors(form_mod_type)
+        if mod_math.math_type in ['average',
+                                  'maximum',
+                                  'minimum',
+                                  'verification']:
+            if len(form_mod_type.inputs.data) < 2:
+                error.append("At least two Inputs must be selected")
+            if form_mod_type.inputs.data:
+                inputs_joined = ";".join(form_mod_type.inputs.data)
+                mod_math.inputs = inputs_joined
             else:
-                mod_math.max_difference = form_mod_type.max_difference.data
+                mod_math.inputs = ''
+            mod_math.measure = form_mod_type.measure.data
+            mod_math.measure_units = form_mod_type.measure_units.data
 
-        if form_mod_math.inputs.data:
-            inputs_joined = ";".join(form_mod_math.inputs.data)
-            mod_math.inputs = inputs_joined
-        else:
-            mod_math.inputs = ''
+        elif mod_math.math_type == 'humidity':
+            mod_math.dry_bulb_t_id = form_mod_type.dry_bulb_temperature.data.split(',')[0]
+            dbt_input = Input.query.filter(
+                Input.unique_id == mod_math.dry_bulb_t_id).first()
+            if not dbt_input or 'temperature' not in dbt_input.measurements:
+                error.append("Invalid dry-bulb temperature selection")
+            mod_math.dry_bulb_t_measure = form_mod_type.dry_bulb_temperature.data.split(',')[1]
+
+            mod_math.wet_bulb_t_id = form_mod_type.wet_bulb_temperature.data.split(',')[0]
+            wbt_input = Input.query.filter(
+                Input.unique_id == mod_math.dry_bulb_t_id).first()
+            if not wbt_input or 'temperature' not in wbt_input.measurements:
+                error.append("Invalid wet-bulb temperature selection")
+            mod_math.wet_bulb_t_measure = form_mod_type.wet_bulb_temperature.data.split(',')[1]
+
+            if form_mod_type.pressure.data:
+                mod_math.pressure_pa_id = form_mod_type.pressure.data.split(',')[0]
+                pressure_input = Input.query.filter(
+                    Input.unique_id == mod_math.pressure_pa_id).first()
+                if not pressure_input or 'pressure' not in pressure_input.measurements:
+                    error.append("Invalid pressure selection")
+                mod_math.pressure_pa_measure = form_mod_type.pressure.data.split(',')[1]
+            else:
+                mod_math.pressure_pa_id = None
+                mod_math.pressure_pa_measure = None
+
+        elif mod_math.math_type == 'verification':
+            mod_math.max_difference = form_mod_type.max_difference.data
+            mod_math.measure = form_mod_type.measure.data
+            mod_math.measure_units = form_mod_type.measure_units.data
 
         if not error:
             db.session.commit()

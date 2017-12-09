@@ -37,17 +37,8 @@ class MathMod(FlaskForm):
     period = DecimalField(
         lazy_gettext(u'Period (seconds)'),
         validators=[DataRequired()])
-    inputs = SelectMultipleField(
-        lazy_gettext(u'Input'),
-        validators=[DataRequired()])
     max_measure_age = IntegerField(
         lazy_gettext(u'Max Age (seconds)'),
-        validators=[DataRequired()])
-    measure = StringField(
-        lazy_gettext(u'Measurement'),
-        validators=[DataRequired()])
-    measure_units = StringField(
-        lazy_gettext(u'Units'),
         validators=[DataRequired()])
     mod = SubmitField(lazy_gettext(u'Save'))
     delete = SubmitField(lazy_gettext(u'Delete'))
@@ -57,7 +48,38 @@ class MathMod(FlaskForm):
     order_down = SubmitField(lazy_gettext(u'Down'))
 
 
+class MathModMultiInput(FlaskForm):
+    inputs = SelectMultipleField(
+        lazy_gettext(u'Inputs'),
+        validators=[DataRequired()])
+    measure = StringField(
+        lazy_gettext(u'Measurement'),
+        validators=[DataRequired()])
+    measure_units = StringField(
+        lazy_gettext(u'Units'),
+        validators=[DataRequired()])
+
+
+class MathModHumidity(FlaskForm):
+    dry_bulb_temperature = StringField(
+        lazy_gettext(u'Dry Bulb Temperature'),
+        validators=[DataRequired()])
+    wet_bulb_temperature = StringField(
+        lazy_gettext(u'Wet Bulb Temperature'),
+        validators=[DataRequired()])
+    pressure = StringField(lazy_gettext(u'Pressure (optional)'))
+
+
 class MathModVerification(FlaskForm):
     max_difference = DecimalField(
         lazy_gettext(u'Max Difference'),
+        validators=[DataRequired()])
+    inputs = SelectMultipleField(
+        lazy_gettext(u'Inputs'),
+        validators=[DataRequired()])
+    measure = StringField(
+        lazy_gettext(u'Measurement'),
+        validators=[DataRequired()])
+    measure_units = StringField(
+        lazy_gettext(u'Units'),
         validators=[DataRequired()])

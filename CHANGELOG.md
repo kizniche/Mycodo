@@ -2,7 +2,7 @@
 
 ### Features
 
- - Add Math controller types: Verification, Largest, and Smallest
+ - Add Math controller types: Humidity, Maximum, Minimum, and Verification ([#335](https://github.com/kizniche/mycodo/issues/335))
 
 ### Bugfixes
 

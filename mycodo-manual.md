@@ -292,8 +292,9 @@ Math controllers allow one or more Inputs to have math applied to produce a new 
 Type | Description
 --------- | ----------------------------------------------
 Average | Stores the average of the selected Inputs
-Largest | Stores the largest measurement from the selected Inputs
-Smallest | Stores the smallest measurement from the selected Inputs
+Humidity | Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure
+Maximum | Stores the largest measurement from the selected Inputs
+Minimum | Stores the smallest measurement from the selected Inputs
 Verification | Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected Inputs
 
 
@@ -305,6 +306,9 @@ Max Age (seconds) | The maximum allowed age of the Input measurements. If an Inp
 Measurement | This is the condition being measured. If all of the selected inputs are Temperature, this should also be temperature. Keep in mind that if you use the pre-defined measurements, it will add these to the current y-axis on a Graph. For instance, if you select two Temeprature measurements, make sure you set Measurement to 'temperature' (lowercase 't') in order to make it use the same y-axis as the other temperatures. A list of the pre-defined measurements that may be used is below.
 Units | This is the units to display along with the measurement, on Graphs. If a pre-defined measurement is used, this field will default to the units associated with that measurement.
 Max Difference | If the difference between any selected Input is greater than this value, no new value will be stored in the database.
+Dry-Bulb Temperature | The measurement that will serve as the dry-bulb temperature (this is the warmer of the two temperature measurements)
+Wet-Bulb Temperature | The measurement that will serve as the wet-bulb temperature (this is the colder of the two temperature measurements)
+Pressure | This is an optional pressure measurement that can be used to calculate the percent relative humidity. If disabled, a default 101325 Pa will be used in the calculation.
 
 ### Pre-defined Measurements
 

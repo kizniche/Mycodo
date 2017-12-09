@@ -679,14 +679,18 @@
 <td style="text-align: left;">Stores the average of the selected Inputs</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Largest</td>
-<td style="text-align: left;">Stores the largest measurement from the selected Inputs</td>
+<td style="text-align: left;">Humidity</td>
+<td style="text-align: left;">Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Smallest</td>
-<td style="text-align: left;">Stores the smallest measurement from the selected Inputs</td>
+<td style="text-align: left;">Maximum</td>
+<td style="text-align: left;">Stores the largest measurement from the selected Inputs</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">Minimum</td>
+<td style="text-align: left;">Stores the smallest measurement from the selected Inputs</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">Verification</td>
 <td style="text-align: left;">Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected Inputs</td>
 </tr>
@@ -727,6 +731,18 @@
 <tr class="even">
 <td style="text-align: left;">Max Difference</td>
 <td style="text-align: left;">If the difference between any selected Input is greater than this value, no new value will be stored in the database.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dry-Bulb Temperature</td>
+<td style="text-align: left;">The measurement that will serve as the dry-bulb temperature (this is the warmer of the two temperature measurements)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Wet-Bulb Temperature</td>
+<td style="text-align: left;">The measurement that will serve as the wet-bulb temperature (this is the colder of the two temperature measurements)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pressure</td>
+<td style="text-align: left;">This is an optional pressure measurement that can be used to calculate the percent relative humidity. If disabled, a default 101325 Pa will be used in the calculation.</td>
 </tr>
 </tbody>
 </table>
