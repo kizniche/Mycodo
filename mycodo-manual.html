@@ -1927,7 +1927,7 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <h2 id="incorrect-database-version">Incorrect Database Version</h2>
 <ul>
 <li>Check the System Information page (from the web UI: select [Gear Icon] -&gt; System Information or select the mycodo logo in the top-left).</li>
-<li>An incorrect database version error means the version stored in the Mycodo settings database (~/Mycodo/databases/mycodo.db) is not correct for the latest version of Mycodo, determined in the Mycodo config file (~/Mycodo/config.py).</li>
+<li>An incorrect database version error means the version stored in the Mycodo settings database (<code>~/Mycodo/databases/mycodo.db</code>) is not correct for the latest version of Mycodo, determined in the Mycodo config file (<code>~/Mycodo/config.py</code>).</li>
 <li>This can be caused by an error in the upgrade process from an older database version to a newer version, or from a database that did not upgrade during the Mycodo upgrade process.</li>
 <li>Check the Upgrade Log for any issues that may have occurred. The log is located at <code>/var/log/mycodo/mycodoupgrade.log</code> but may also be accessed from the web UI (if you’re able to): select [Gear Icon] -&gt; Mycodo Logs -&gt; Upgrade Log.</li>
 <li>Sometimes issues may not immediately present themselves. It is not uncommon to be experiencing a database issue that was actually introduced several Mycodo versions ago, before the latest upgrade.</li>
