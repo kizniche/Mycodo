@@ -50,20 +50,27 @@
                               'temperature',
                               'temperature_die',
                               'temperature_object'] -%}
-      {%- for each_sensor in sensor if each_sensor.is_activated -%}
-        {%- set measurement_list = each_sensor.measurements.split(',') -%}
+      {%- for each_input in sensor if each_input.is_activated -%}
+        {%- set measurement_list = each_input.measurements.split(',') -%}
         {%- for each_measurement in measurement_list %}
           {%- set c_to_f = 'true' if each_measurement in temperatures else 'false' %}
-          {% if each_sensor.device == 'LinuxCommand' -%}
-          liveTextData('{{each_sensor.unique_id}}', '{{each_sensor.cmd_measurement}}', 1800, {{c_to_f}});
+          {% if each_input.device == 'LinuxCommand' -%}
+          liveTextData('{{each_input.unique_id}}', '{{each_input.cmd_measurement}}', 1800, {{c_to_f}});
           {% else -%}
-          liveTextData('{{each_sensor.unique_id}}', '{{each_measurement}}', 1800, {{c_to_f}});
-          {% endif %}
+          liveTextData('{{each_input.unique_id}}', '{{each_measurement}}', 1800, {{c_to_f}});
+          {% endif -%}
           {%- if each_measurement == 'voltage' %}
-            liveTextData('{{each_sensor.unique_id}}', '{{each_sensor.adc_measure}}', 1800, {{c_to_f}});
+            liveTextData('{{each_input.unique_id}}', '{{each_input.adc_measure}}', 1800, {{c_to_f}});
           {%- endif -%}
         {%- endfor -%}
+      {%- endfor -%}
 
+      {%- for each_math in math if each_math.is_activated -%}
+        {%- set measurement_list = each_math.measure.split(',') -%}
+        {%- for each_measurement in measurement_list %}
+          {%- set c_to_f = 'true' if each_measurement in temperatures else 'false' %}
+          liveTextData('{{each_math.unique_id}}', '{{each_measurement}}', 1800, {{c_to_f}});
+        {%- endfor -%}
       {%- endfor -%}
     });
   </script>
@@ -74,26 +81,25 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    {%- if sensorDisplayOrderSorted|length == 0 -%}
+    {%- if inputs_sorted|length == 0 -%}
     <div>
-      No Inputs Activated. <a href="/input">Click here</a> to go to the Input page. Read the <a href="/help">Manual</a> to become more familiar with the system and configuration options.
+      {{_('No Inputs Activated')}}. <a href="/input">Click here</a> to go to the Input page. Read the <a href="/help">Manual</a> to become more familiar with the system and configuration options.
     </div>
     {%- endif -%}
 
-    {%- if sensorDisplayOrderSorted -%}
-    {%- for sensor_order in sensorDisplayOrderSorted -%}
+    {%- for each_input_sorted in inputs_sorted -%}
       {%- set collapse_container_number = loop.index -%}
 
-      {%- for each_sensor in sensor if each_sensor.id == sensor_order -%}
+      {%- for each_input in sensor if each_input.id == each_input_sorted -%}
 
     <div style="padding: 0.5em; margin-bottom: 0.7em; border: 2px solid #ddd; border-radius: 5px;">
 
       <div class="row">
         <div class="col-xs-12 col-sm-6 text-left">
           {%- set sensor_has_pid = [] -%}
-          {%- if pidDisplayOrder -%}
-            {%- for pid_order in pidDisplayOrder -%}
-              {%- for each_pid in pid if each_pid.id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_sensor.unique_id -%}
+          {%- if pid_display_order -%}
+            {%- for pid_order in pid_display_order -%}
+              {%- for each_pid in pid if each_pid.id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_input.unique_id -%}
                 {%- do sensor_has_pid.append(1) -%}
               {%- endfor -%}
             {%- endfor -%}
@@ -101,10 +107,10 @@
           {%- if sensor_has_pid -%}
             <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{collapse_container_number}}" aria-expanded="false" aria-controls="collapseContainer{{collapse_container_number}}"><span class='collapse-button{{collapse_container_number}} fa fa-2x fa-plus-square'></span></a>
           {%- endif -%}
-          {{each_sensor.name}} ({{each_sensor.id}})
-          {%- if each_sensor.device != 'EDGE' -%}
+          {{each_input.name}} ({{each_input.id}})
+          {%- if each_input.device != 'EDGE' -%}
             <div>
-               {{_('%(type)s Input, %(sec)s second interval', type=each_sensor.device, sec=each_sensor.period)}}
+               {{_('%(type)s Input, %(sec)s second interval', type=each_input.device, sec=each_input.period)}}
             </div>
           {%- endif -%}
         </div>
@@ -112,30 +118,30 @@
         <div class="col-xs-12 col-sm-6 text-right">
           {{_('Measurement')}} | {{_('Timestamp')}}
           <div>
-            {% for each_measure in each_sensor.measurements.split(',') if each_sensor.device != 'LinuxCommand' %}
+            {% for each_measure in each_input.measurements.split(',') if each_input.device != 'LinuxCommand' %}
               {% if each_measure and measurement_units[each_measure]['meas'] == 'temperature' %}
-                <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}} (<span id="{{each_sensor.unique_id}}-{{each_measure}}-value-F">0.0</span> &deg;F)
+                <b><span id="{{each_input.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}} (<span id="{{each_input.unique_id}}-{{each_measure}}-value-F">0.0</span> &deg;F)
                   {%- if each_measure == 'dewpoint' %} DP
                   {% elif each_measure == 'temperature_object' %} Obj
                   {% elif each_measure == 'temperature_die' %} Die
-                  {%- endif -%}</b> | <span id="{{each_sensor.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
+                  {%- endif -%}</b> | <span id="{{each_input.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
               {% else %}
-                <b><span id="{{each_sensor.unique_id}}-{{each_measure}}-value">0.0</span> {% if each_measure != '' %}{{measurement_units[each_measure]['unit']}}{% endif %}</b> | <span id="{{each_sensor.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
+                <b><span id="{{each_input.unique_id}}-{{each_measure}}-value">0.0</span> {% if each_measure != '' %}{{measurement_units[each_measure]['unit']}}{% endif %}</b> | <span id="{{each_input.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
               {% endif %}
             {% endfor %}
-            {%- if each_sensor.device in ['ADS1x15', 'MCP342x'] %}
-              <b><span id="{{each_sensor.unique_id}}-{{each_sensor.adc_measure}}-value">0.0</span> {{each_sensor.adc_measure_units}} {{each_sensor.adc_measure}}</b> | <span id="{{each_sensor.unique_id}}-{{each_sensor.adc_measure}}-time">&lt;{{_('Please wait')}}&gt;</span>
+            {%- if each_input.device in ['ADS1x15', 'MCP342x'] %}
+              <b><span id="{{each_input.unique_id}}-{{each_input.adc_measure}}-value">0.0</span> {{each_input.adc_measure_units}} {{each_input.adc_measure}}</b> | <span id="{{each_input.unique_id}}-{{each_input.adc_measure}}-time">&lt;{{_('Please wait')}}&gt;</span>
             {% endif %}
-            {%- if each_sensor.device == 'LinuxCommand' %}
-              <b><span id="{{each_sensor.unique_id}}-{{each_sensor.cmd_measurement}}-value">0.0</span> {{each_sensor.cmd_measurement_units}} {{each_sensor.cmd_measurement}}</b> | <span id="{{each_sensor.unique_id}}-{{each_sensor.cmd_measurement}}-time">&lt;{{_('Please wait')}}&gt;</span>
+            {%- if each_input.device == 'LinuxCommand' %}
+              <b><span id="{{each_input.unique_id}}-{{each_input.cmd_measurement}}-value">0.0</span> {{each_input.cmd_measurement_units}} {{each_input.cmd_measurement}}</b> | <span id="{{each_input.unique_id}}-{{each_input.cmd_measurement}}-time">&lt;{{_('Please wait')}}&gt;</span>
             {% endif %}
           </div>
         </div>
       </div>
 
-        {%- if pidDisplayOrder -%}
-        {%- for pid_order in pidDisplayOrder -%}
-          {%- for each_pid in pid if each_pid.id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_sensor.unique_id -%}
+        {%- if pid_display_order -%}
+        {%- for pid_order in pid_display_order -%}
+          {%- for each_pid in pid if each_pid.id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_input.unique_id -%}
 
       <div class="collapse" id="collapseContainer{{collapse_container_number}}" style="padding: 0.5em 0;">
 
@@ -154,13 +160,13 @@
           </div>
         </div>
 
-            {%- for rel in relay if rel.id == each_pid.raise_relay_id -%}
+            {%- for each_output in output if each_output.id == each_pid.raise_relay_id -%}
 
         <div class="row" style="padding-top: 0.5em">
           <div class="col-xs-12 col-sm-3 col-md-2">
             {{_('Output (Raise)')}}
             <div>
-              {{rel.name}} ({{rel.id}})
+              {{each_output.name}} ({{each_output.id}})
             </div>
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
@@ -184,20 +190,20 @@
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Current Draw')}}
             <div>
-              {{rel.amps}} {{_('amps')}}
+              {{each_output.amps}} {{_('amps')}}
             </div>
           </div>
         </div>
 
             {%- endfor -%}
 
-            {%- for rel in relay if rel.id == each_pid.lower_relay_id -%}
+            {%- for each_output in output if each_output.id == each_pid.lower_relay_id -%}
 
         <div class="row" style="padding-top: 0.5em">
           <div class="col-xs-12 col-sm-3 col-md-2">
             {{_('Output (Lower)')}}
             <div>
-              {{rel.name}} ({{rel.id}})
+              {{each_output.name}} ({{each_output.id}})
             </div>
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
@@ -221,7 +227,7 @@
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Current Draw')}}
             <div>
-              {{rel.amps}} {{_('amps')}}
+              {{each_output.amps}} {{_('amps')}}
             </div>
           </div>
         </div>
@@ -248,7 +254,165 @@
 
       {%- endfor -%}
     {%- endfor -%}
-    {%- endif -%}
+
+
+    {%- for each_math_sorted in maths_sorted -%}
+      {%- set collapse_container_number = loop.index -%}
+
+      {%- for each_math in math if each_math.id == each_math_sorted -%}
+
+    <div style="padding: 0.5em; margin-bottom: 0.7em; border: 2px solid #ddd; border-radius: 5px;">
+
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 text-left">
+          {%- set sensor_has_pid = [] -%}
+          {%- if pid_display_order -%}
+            {%- for pid_order in pid_display_order -%}
+              {%- for each_pid in pid if each_pid.id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_math.unique_id -%}
+                {%- do sensor_has_pid.append(1) -%}
+              {%- endfor -%}
+            {%- endfor -%}
+          {%- endif -%}
+          {%- if sensor_has_pid -%}
+            <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{collapse_container_number}}" aria-expanded="false" aria-controls="collapseContainer{{collapse_container_number}}"><span class='collapse-button{{collapse_container_number}} fa fa-2x fa-plus-square'></span></a>
+          {%- endif -%}
+          {{each_math.name}} ({{each_math.id}})
+        </div>
+
+        <div class="col-xs-12 col-sm-6 text-right">
+          {{_('Measurement')}} | {{_('Timestamp')}}
+          <div>
+            {% for each_measure in each_math.measure.split(',') %}
+              {% if each_measure and measurement_units[each_measure]['meas'] == 'temperature' %}
+                <b><span id="{{each_math.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}} (<span id="{{each_math.unique_id}}-{{each_measure}}-value-F">0.0</span> &deg;F)
+                  {%- if each_measure == 'dewpoint' %} DP
+                  {% elif each_measure == 'temperature_object' %} Obj
+                  {% elif each_measure == 'temperature_die' %} Die
+                  {%- endif -%}</b> | <span id="{{each_math.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
+              {% else %}
+                <b><span id="{{each_math.unique_id}}-{{each_measure}}-value">0.0</span> {% if each_measure != '' %}{{measurement_units[each_measure]['unit']}}{% endif %}</b> | <span id="{{each_math.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+        {%- if pid_display_order -%}
+        {%- for pid_order in pid_display_order -%}
+          {%- for each_pid in pid if each_pid.id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_math.unique_id -%}
+
+      <div class="collapse" id="collapseContainer{{collapse_container_number}}" style="padding: 0.5em 0;">
+
+        <div class="row" style="padding-top: 0.5em">
+          <div class="col-xs-12 col-sm-6">
+            {{each_pid.name}} ({{each_pid.id}})
+            <div>
+              Every {{each_pid.period}} seconds, apply PID to {% if each_pid.direction == 'both' -%}raise or lower{%- else -%}{{each_pid.direction}}{%- endif %} {{each_pid.measurement.split(',')[1]}} to {{each_pid.setpoint}}
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-6">
+            {{_('Gain')}}
+            <div>
+              K<sub>P</sub>: {{each_pid.p}}, K<sub>I</sub>: {{each_pid.i}}, K<sub>D</sub>: {{each_pid.d}}
+            </div>
+          </div>
+        </div>
+
+            {%- for each_output in output if each_output.id == each_pid.raise_relay_id -%}
+
+        <div class="row" style="padding-top: 0.5em">
+          <div class="col-xs-12 col-sm-3 col-md-2">
+            {{_('Output (Raise)')}}
+            <div>
+              {{each_output.name}} ({{each_output.id}})
+            </div>
+          </div>
+          <div class="col-xs-4 col-sm-3 col-md-2">
+              {% if each_pid.pid_type != 'pwm' -%}
+                {{_('On Duration (sec.)')}}
+              {% else -%}
+                {{_('Duty Cycle')}} (%)
+              {% endif %}
+            <div>
+              {{_('Min')}}: {{each_pid.raise_min_duration}}, {{_('Max')}}: {{each_pid.raise_max_duration}}
+             </div>
+          </div>
+          {% if each_pid.pid_type != 'pwm' -%}
+          <div class="col-xs-4 col-sm-3 col-md-2">
+            {{_('Off (seconds)')}}
+            <div>
+              {{_('Min')}}: {{each_pid.raise_min_off_duration}}
+            </div>
+          </div>
+          {% endif %}
+          <div class="col-xs-4 col-sm-3 col-md-2">
+            {{_('Current Draw')}}
+            <div>
+              {{each_output.amps}} {{_('amps')}}
+            </div>
+          </div>
+        </div>
+
+            {%- endfor -%}
+
+            {%- for each_output in output if each_output.id == each_pid.lower_relay_id -%}
+
+        <div class="row" style="padding-top: 0.5em">
+          <div class="col-xs-12 col-sm-3 col-md-2">
+            {{_('Output (Lower)')}}
+            <div>
+              {{each_output.name}} ({{each_output.id}})
+            </div>
+          </div>
+          <div class="col-xs-4 col-sm-3 col-md-2">
+            {% if each_pid.pid_type != 'pwm' -%}
+              {{_('On Duration (sec.)')}}
+            {% else -%}
+              {{_('Duty Cycle')}} (%)
+            {% endif %}
+            <div>
+              {{_('Min')}}: {{each_pid.lower_min_duration}}, {{_('Max')}}: {{each_pid.lower_max_duration}}
+            </div>
+          </div>
+          {% if each_pid.pid_type != 'pwm' -%}
+          <div class="col-xs-4 col-sm-3 col-md-2">
+            {{_('Off (seconds)')}}
+            <div>
+              {{_('Min')}}: {{each_pid.lower_min_off_duration}}
+            </div>
+          </div>
+          {% endif %}
+          <div class="col-xs-4 col-sm-3 col-md-2">
+            {{_('Current Draw')}}
+            <div>
+              {{each_output.amps}} {{_('amps')}}
+            </div>
+          </div>
+        </div>
+
+            {%- endfor -%}
+
+            {%- for each_method in method if each_method.id == each_pid.method_id -%}
+
+        <div class="row">
+          <div class="col-xs-12">
+            {{_('Method Enabled')}}: <a href="/method-build/{{each_method.id}}">{{each_method.name}} ({{each_method.id}})</a>
+          </div>
+        </div>
+
+            {%- endfor -%}
+
+      </div>
+
+          {%- endfor -%}
+        {%- endfor -%}
+        {%- endif -%}
+
+    </div>
+
+      {%- endfor -%}
+    {%- endfor -%}
+
 
   </div>
 

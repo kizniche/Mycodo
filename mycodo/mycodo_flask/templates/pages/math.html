@@ -117,7 +117,7 @@
 
         {%- set sensor_conditional = [] -%}
 
-        {%- for each_cond in conditional if each_cond.conditional_type == 'math' -%}
+        {%- for each_cond in conditional if each_cond.math_id == each_math.id -%}
           {%- do sensor_conditional.append(1) -%}
         {% endfor %}
 

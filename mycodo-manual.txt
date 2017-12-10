@@ -1828,7 +1828,7 @@ Incorrect Database Version
 -   An incorrect database version error means the version stored in the
     Mycodo settings database (~/Mycodo/databases/mycodo.db) is not
     correct for the latest version of Mycodo, determined in the Mycodo
-    config file (~/Mycodo/config.py).
+    config file (~/Mycodo/mycodo/config.py).
 -   This can be caused by an error in the upgrade process from an older
     database version to a newer version, or from a database that did not
     upgrade during the Mycodo upgrade process.

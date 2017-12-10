@@ -23,7 +23,7 @@ from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 logger = logging.getLogger(__name__)
 
 
-def conditional_add(cond_type, quantity, sensor_id=None, math_id=None):
+def conditional_add(cond_type, quantity, page_url, sensor_id=None, math_id=None):
     error = []
     if cond_type == 'relay':
         conditional_type = gettext(u"Output")
@@ -59,18 +59,14 @@ def conditional_add(cond_type, quantity, sensor_id=None, math_id=None):
 
                 if cond_type == 'sensor':
                     check_refresh_conditional(
-                        'sensor',
-                        sensor_id,
-                        'add')
+                        sensor_id, 'sensor', 'add', page_url)
                 elif cond_type == 'math':
                     check_refresh_conditional(
-                        'math',
-                        math_id,
-                        'add')
-    flash_success_errors(error, action, url_for('page_routes.page_output'))
+                        math_id, 'math', 'add', page_url)
+    flash_success_errors(error, action, page_url)
 
 
-def conditional_mod(form, mod_type):
+def conditional_mod(form, mod_type, page_url):
     error = []
     conditional_type = Conditional.query.filter(
         Conditional.id == form.conditional_id.data).first().conditional_type
@@ -101,14 +97,10 @@ def conditional_mod(form, mod_type):
 
             if conditional_type == 'sensor':
                 check_refresh_conditional(
-                    'sensor',
-                    form.sensor_id.data,
-                    'del')
+                    form.sensor_id.data, 'sensor', 'del', page_url)
             elif conditional_type == 'math':
                 check_refresh_conditional(
-                    'math',
-                    form.sensor_id.data,
-                    'del')
+                    form.sensor_id.data, 'math', 'del', page_url)
 
         elif mod_type == 'modify':
             try:
@@ -143,19 +135,15 @@ def conditional_mod(form, mod_type):
 
             if conditional_type == 'sensor':
                 check_refresh_conditional(
-                    'sensor',
-                    form.sensor_id.data,
-                    'mod')
+                    form.sensor_id.data, 'sensor', 'mod', page_url)
             elif conditional_type == 'math':
                 check_refresh_conditional(
-                    'math',
-                    form.sensor_id.data,
-                    'mod')
+                    form.sensor_id.data, 'math', 'mod', page_url)
 
-    flash_success_errors(error, action, url_for('page_routes.page_output'))
+    flash_success_errors(error, action, page_url)
 
 
-def conditional_action_add(form):
+def conditional_action_add(form, page_url):
     error = []
     conditional_type = Conditional.query.filter(
         Conditional.id == form.conditional_id.data).first().conditional_type
@@ -183,10 +171,10 @@ def conditional_action_add(form):
         error.append(except_msg)
     except sqlalchemy.exc.IntegrityError as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_output'))
+    flash_success_errors(error, action, page_url)
 
 
-def conditional_action_mod(form, mod_type):
+def conditional_action_mod(form, mod_type, page_url):
     error = []
     cond = Conditional.query.filter(
         Conditional.id == form.conditional_id.data).first()
@@ -266,65 +254,108 @@ def conditional_action_mod(form, mod_type):
 
         if cond.conditional_type == 'sensor':
             check_refresh_conditional(
-                'sensor',
-                cond.sensor_id,
-                'mod')
+                cond.sensor_id, 'sensor', 'mod', page_url)
         elif cond.conditional_type == 'math':
             check_refresh_conditional(
-                'math',
-                cond.math_id,
-                'mod')
-    flash_success_errors(error, action, url_for('page_routes.page_output'))
+                cond.math_id, 'math', 'mod', page_url)
+    flash_success_errors(error, action, page_url)
 
 
-def conditional_activate(form):
+def conditional_activate(form, page_url):
+    error = []
     cond = Conditional.query.filter(
         Conditional.id == form.conditional_id.data).first()
+
+    if cond.conditional_type == 'relay':
+        cond_type = gettext(u"Output")
+    elif cond.conditional_type == 'sensor':
+        cond_type = gettext(u"Input")
+    elif cond.conditional_type == 'math':
+        cond_type = gettext(u"Math")
+    else:
+        error.append("Unrecognized conditional type: {cond_type}".format(
+            cond_type=cond.conditional_type))
+        cond_type = None
+    action = u'{action} {controller} ({cond_type})'.format(
+        action=gettext(u"Activate"),
+        controller=gettext(u"Conditional"),
+        cond_type=cond_type)
+
     cond.is_activated = True
     db.session.commit()
     if cond.conditional_type == 'sensor':
         check_refresh_conditional(
-            'sensor',
-            form.sensor_id.data,
-            'mod')
+            form.sensor_id.data, 'sensor', 'mod', page_url)
     elif cond.conditional_type == 'math':
         check_refresh_conditional(
-            'math',
-            form.sensor_id.data,
-            'mod')
+            form.sensor_id.data, 'math', 'mod', page_url)
+    flash_success_errors(error, action, page_url)
 
 
-def conditional_deactivate(form):
+def conditional_deactivate(form, page_url):
+    error = []
     cond = Conditional.query.filter(
         Conditional.id == form.conditional_id.data).first()
+
+    if cond.conditional_type == 'relay':
+        cond_type = gettext(u"Output")
+    elif cond.conditional_type == 'sensor':
+        cond_type = gettext(u"Input")
+    elif cond.conditional_type == 'math':
+        cond_type = gettext(u"Math")
+    else:
+        error.append("Unrecognized conditional type: {cond_type}".format(
+            cond_type=cond.conditional_type))
+        cond_type = None
+    action = u'{action} {controller} ({cond_type})'.format(
+        action=gettext(u"Deactivate"),
+        controller=gettext(u"Conditional"),
+        cond_type=cond_type)
+
     cond.is_activated = False
     db.session.commit()
+
     if cond.conditional_type == 'sensor':
         check_refresh_conditional(
-            'sensor',
-            form.sensor_id.data,
-            'mod')
+            form.sensor_id.data, 'sensor', 'mod', page_url)
     elif cond.conditional_type == 'math':
         check_refresh_conditional(
-            'math',
-            form.sensor_id.data,
-            'mod')
+            form.sensor_id.data, 'math', 'mod', page_url)
+    flash_success_errors(error, action, page_url)
 
 
-def check_refresh_conditional(sensor_id, cont_type, cond_mod):
+def check_refresh_conditional(cont_id, cont_type, cond_mod, page_url):
+    error = []
+    if cont_type == 'relay':
+        cond_type_print = gettext(u"Output")
+    elif cont_type == 'sensor':
+        cond_type_print = gettext(u"Input")
+    elif cont_type == 'math':
+        cond_type_print = gettext(u"Math")
+    else:
+        error.append("Unrecognized conditional type: {cond_type}".format(
+            cond_type=cont_type))
+        cond_type_print = None
+    action = u'{action} {controller} ({cond_type})'.format(
+        action=gettext(u"Refresh"),
+        controller=gettext(u"Conditional"),
+        cond_type=cond_type_print)
+
     if cont_type == 'sensor':
         sensor = (Input.query
-                  .filter(Input.id == sensor_id)
+                  .filter(Input.id == cont_id)
                   .filter(Input.is_activated == True)
                   ).first()
         if sensor:
             control = DaemonControl()
-            control.refresh_sensor_conditionals(sensor_id, cond_mod)
+            control.refresh_input_conditionals(cont_id, cond_mod)
     if cont_type == 'math':
         math = (Math.query
-                .filter(Input.id == sensor_id)
-                .filter(Input.is_activated == True)
+                .filter(Math.id == cont_id)
+                .filter(Math.is_activated == True)
                 ).first()
         if math:
             control = DaemonControl()
-            control.refresh_math_conditionals(sensor_id, cond_mod)
+            control.refresh_math_conditionals(cont_id, cond_mod)
+
+    flash_success_errors(error, action, page_url)

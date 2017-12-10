@@ -1093,7 +1093,7 @@ Troubleshooting
 ## Incorrect Database Version
 
 -   Check the System Information page (from the web UI: select \[Gear Icon\] -> System Information or select the mycodo logo in the top-left).
--   An incorrect database version error means the version stored in the Mycodo settings database (`````~/Mycodo/databases/mycodo.db`````) is not correct for the latest version of Mycodo, determined in the Mycodo config file (`````~/Mycodo/config.py`````).
+-   An incorrect database version error means the version stored in the Mycodo settings database (`````~/Mycodo/databases/mycodo.db`````) is not correct for the latest version of Mycodo, determined in the Mycodo config file (`````~/Mycodo/mycodo/config.py`````).
 -   This can be caused by an error in the upgrade process from an older database version to a newer version, or from a database that did not upgrade during the Mycodo upgrade process.
 -   Check the Upgrade Log for any issues that may have occurred. The log is located at ```/var/log/mycodo/mycodoupgrade.log``` but may also be accessed from the web UI (if you're able to): select \[Gear Icon\] -> Mycodo Logs -> Upgrade Log.
 -   Sometimes issues may not immediately present themselves. It is not uncommon to be experiencing a database issue that was actually introduced several Mycodo versions ago, before the latest upgrade.

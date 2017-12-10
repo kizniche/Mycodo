@@ -156,19 +156,19 @@ class DHT22Sensor(AbstractInput):
         # Try twice to get measurement. This prevents an anomaly where
         # the first measurement fails if the sensor has just been powered
         # for the first time.
-        for _ in range(3):
+        for _ in range(4):
             self.measure_sensor()
             if self.temp_dew_point is not None:
                 return (self.temp_dew_point,
                         self.temp_humidity,
-                        self.temp_temperature) # success - no errors
-            time.sleep(3)
+                        self.temp_temperature)  # success - no errors
+            time.sleep(2)
 
         # Measurement failure, power cycle the sensor (if enabled)
         # Then try two more times to get a measurement
         if self.power_relay_id is not None:
             self.stop_sensor()
-            time.sleep(5)
+            time.sleep(3)
             self.start_sensor()
             for _ in range(2):
                 self.measure_sensor()
@@ -176,11 +176,10 @@ class DHT22Sensor(AbstractInput):
                     return (self.temp_dew_point,
                             self.temp_humidity,
                             self.temp_temperature)  # success - no errors
-                time.sleep(3)
+                time.sleep(2)
 
         self.logger.debug("Could not acquire a measurement")
-        return  None, None, None
-
+        return None, None, None
 
     def read(self):
         """

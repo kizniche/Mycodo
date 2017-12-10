@@ -180,14 +180,24 @@ def mycodo_service(mycodo):
             return mycodo.refresh_daemon_misc_settings()
 
         @staticmethod
-        def exposed_refresh_sensor_conditionals(input_id,
-                                                cond_mod):
+        def exposed_refresh_math_conditionals(math_id,
+                                              cond_mod):
             """
-            Instruct the input controller to refresh the settings of a
-            conditional statement
+            Instruct the math controller to refresh the settings of
+            conditional statements
             """
-            return mycodo.refresh_sensor_conditionals(input_id,
-                                                      cond_mod)
+            return mycodo.refresh_math_conditionals(math_id,
+                                                    cond_mod)
+
+        @staticmethod
+        def exposed_refresh_input_conditionals(input_id,
+                                               cond_mod):
+            """
+            Instruct the input controller to refresh the settings of
+            conditional statements
+            """
+            return mycodo.refresh_input_conditionals(input_id,
+                                                     cond_mod)
 
         @staticmethod
         def exposed_relay_state(relay_id):
@@ -637,7 +647,15 @@ class DaemonController(threading.Thread):
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def refresh_sensor_conditionals(self, input_id, cond_mod):
+    def refresh_math_conditionals(self, math_id, cond_mod):
+        try:
+            return self.controller['Math'][math_id].setup_sensor_conditionals(cond_mod)
+        except Exception as except_msg:
+            message = "Could not refresh math conditionals:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+
+    def refresh_input_conditionals(self, input_id, cond_mod):
         try:
             return self.controller['Input'][input_id].setup_sensor_conditionals(cond_mod)
         except Exception as except_msg:

@@ -247,7 +247,7 @@ def check_conditionals(self, cond_id, measurements, control,
                 args=(cond_action.do_lcd_id, 1,))
             start_flashing.start()
 
-    logger_cond.info(message)
+    logger_cond.debug(message)
 
 
 def get_last_measurement(unique_id, measurement, duration_sec):

@@ -626,35 +626,49 @@ def page_live():
     pid = PID.query.all()
     output = Output.query.all()
     input_dev = Input.query.all()
+    math = Math.query.all()
     timer = Timer.query.all()
 
     # Display orders
-    pid_display_order = csv_to_list_of_int(
-        DisplayOrder.query.first().pid)
     input_display_order = csv_to_list_of_int(
         DisplayOrder.query.first().sensor)
+    math_display_order = csv_to_list_of_int(
+        DisplayOrder.query.first().math)
+    pid_display_order = csv_to_list_of_int(
+        DisplayOrder.query.first().pid)
 
-    # Filter only activated inputs
-    input_order_sorted = []
+    # Filter only activated input controllers
+    inputs_sorted = []
     if input_display_order:
         for each_input_order in input_display_order:
             for each_input in input_dev:
                 if (each_input_order == each_input.id and
                         each_input.is_activated):
-                    input_order_sorted.append(each_input.id)
+                    inputs_sorted.append(each_input.id)
+
+    # Filter only activated math controllers
+    maths_sorted = []
+    if input_display_order:
+        for each_math_order in math_display_order:
+            for each_math in math:
+                if (each_math_order == each_math.id and
+                        each_math.is_activated):
+                    maths_sorted.append(each_math.id)
 
     # Retrieve only parent method columns
     method = Method.query.all()
 
     return render_template('pages/live.html',
                            measurement_units=MEASUREMENT_UNITS,
+                           math=math,
                            method=method,
+                           output=output,
                            pid=pid,
-                           relay=output,
                            sensor=input_dev,
                            timer=timer,
-                           pidDisplayOrder=pid_display_order,
-                           sensorDisplayOrderSorted=input_order_sorted)
+                           pid_display_order=pid_display_order,
+                           inputs_sorted=inputs_sorted,
+                           maths_sorted=maths_sorted)
 
 
 @blueprint.route('/logview', methods=('GET', 'POST'))
@@ -840,26 +854,40 @@ def page_output():
         elif form_mod_output.order_down.data:
             utils_output.relay_reorder(form_mod_output.relay_id.data,
                                        display_order, 'down')
+
         elif form_conditional.add_cond.data:
             utils_conditional.conditional_add(
                 form_conditional.conditional_type.data,
-                form_conditional.quantity.data)
+                form_conditional.quantity.data,
+                url_for('page_routes.page_output'))
         elif form_conditional.delete_cond.data:
-            utils_conditional.conditional_mod(form_conditional, 'delete')
+            utils_conditional.conditional_mod(
+                form_conditional, 'delete',
+                url_for('page_routes.page_output'))
         elif form_conditional.save_cond.data:
-            utils_conditional.conditional_mod(form_conditional, 'modify')
+            utils_conditional.conditional_mod(
+                form_conditional, 'modify',
+                url_for('page_routes.page_output'))
         elif form_conditional.activate_cond.data:
-            utils_conditional.conditional_activate(form_conditional)
+            utils_conditional.conditional_activate(
+                form_conditional,
+                url_for('page_routes.page_output'))
         elif form_conditional.deactivate_cond.data:
-            utils_conditional.conditional_deactivate(form_conditional)
+            utils_conditional.conditional_deactivate(
+                form_conditional,
+                url_for('page_routes.page_output'))
         elif form_conditional_actions.add_action.data:
-            utils_conditional.conditional_action_add(form_conditional_actions)
+            utils_conditional.conditional_action_add(
+                form_conditional_actions,
+                url_for('page_routes.page_output'))
         elif form_conditional_actions.save_action.data:
-            utils_conditional.conditional_action_mod(form_conditional_actions,
-                                                     'modify')
+            utils_conditional.conditional_action_mod(
+                form_conditional_actions, 'modify',
+                url_for('page_routes.page_output'))
         elif form_conditional_actions.delete_action.data:
-            utils_conditional.conditional_action_mod(form_conditional_actions,
-                                                     'delete')
+            utils_conditional.conditional_action_mod(
+                form_conditional_actions, 'delete',
+                url_for('page_routes.page_output'))
         return redirect(url_for('page_routes.page_output'))
 
     return render_template('pages/output.html',
@@ -956,24 +984,38 @@ def page_input():
             utils_input.sensor_deactivate(form_mod_input)
 
         elif form_conditional.deactivate_cond.data:
-            utils_conditional.conditional_deactivate(form_conditional)
+            utils_conditional.conditional_deactivate(
+                form_conditional,
+                url_for('page_routes.page_input'))
         elif form_conditional.activate_cond.data:
-            utils_conditional.conditional_activate(form_conditional)
+            utils_conditional.conditional_activate(
+                form_conditional,
+                url_for('page_routes.page_input'))
         elif form_mod_input.sensorCondAddSubmit.data:
             utils_conditional.conditional_add(
-                'sensor', 1, sensor_id=form_mod_input.modSensor_id.data)
+                'sensor', 1,
+                url_for('page_routes.page_input'),
+                sensor_id = form_mod_input.modSensor_id.data)
         elif form_conditional.delete_cond.data:
-            utils_conditional.conditional_mod(form_conditional, 'delete')
+            utils_conditional.conditional_mod(
+                form_conditional, 'delete',
+                url_for('page_routes.page_input'))
         elif form_conditional.save_cond.data:
-            utils_conditional.conditional_mod(form_conditional, 'modify')
+            utils_conditional.conditional_mod(
+                form_conditional, 'modify',
+                url_for('page_routes.page_input'))
         elif form_conditional_actions.add_action.data:
-            utils_conditional.conditional_action_add(form_conditional_actions)
+            utils_conditional.conditional_action_add(
+                form_conditional_actions,
+                url_for('page_routes.page_input'))
         elif form_conditional_actions.save_action.data:
-            utils_conditional.conditional_action_mod(form_conditional_actions,
-                                                     'modify')
+            utils_conditional.conditional_action_mod(
+                form_conditional_actions, 'modify',
+                url_for('page_routes.page_input'))
         elif form_conditional_actions.delete_action.data:
-            utils_conditional.conditional_action_mod(form_conditional_actions,
-                                                     'delete')
+            utils_conditional.conditional_action_mod(
+                form_conditional_actions, 'delete',
+                url_for('page_routes.page_input'))
         return redirect(url_for('page_routes.page_input'))
 
     return render_template('pages/input.html',
@@ -1070,24 +1112,38 @@ def page_math():
             utils_math.math_deactivate(form_mod_math)
 
         elif form_conditional.deactivate_cond.data:
-            utils_conditional.conditional_deactivate(form_conditional)
+            utils_conditional.conditional_deactivate(
+                form_conditional,
+                url_for('page_routes.page_math'))
         elif form_conditional.activate_cond.data:
-            utils_conditional.conditional_activate(form_conditional)
+            utils_conditional.conditional_activate(
+                form_conditional,
+                url_for('page_routes.page_math'))
         elif form_mod_math.conditional_add.data:
             utils_conditional.conditional_add(
-                'math', 1, math_id=form_mod_math.math_id.data)
+                'math', 1,
+                url_for('page_routes.page_math'),
+                math_id=form_mod_math.math_id.data)
         elif form_conditional.delete_cond.data:
-            utils_conditional.conditional_mod(form_conditional, 'delete')
+            utils_conditional.conditional_mod(
+                form_conditional, 'delete',
+                url_for('page_routes.page_math'))
         elif form_conditional.save_cond.data:
-            utils_conditional.conditional_mod(form_conditional, 'modify')
+            utils_conditional.conditional_mod(
+                form_conditional, 'modify',
+                url_for('page_routes.page_math'))
         elif form_conditional_actions.add_action.data:
-            utils_conditional.conditional_action_add(form_conditional_actions)
+            utils_conditional.conditional_action_add(
+                form_conditional_actions,
+                url_for('page_routes.page_math'))
         elif form_conditional_actions.save_action.data:
-            utils_conditional.conditional_action_mod(form_conditional_actions,
-                                                     'modify')
+            utils_conditional.conditional_action_mod(
+                form_conditional_actions, 'modify',
+                url_for('page_routes.page_math'))
         elif form_conditional_actions.delete_action.data:
-            utils_conditional.conditional_action_mod(form_conditional_actions,
-                                                     'delete')
+            utils_conditional.conditional_action_mod(
+                form_conditional_actions, 'delete',
+                url_for('page_routes.page_math'))
         return redirect(url_for('page_routes.page_math'))
 
     return render_template('pages/math.html',

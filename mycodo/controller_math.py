@@ -323,7 +323,7 @@ class MathController(threading.Thread):
         for each_cond in input_conditional:
             if cond_mod == 'setup':
                 self.logger.info(
-                    "Activated Conditional ({id})".format(id=each_cond.id))
+                    "Activated Math Conditional {id}".format(id=each_cond.id))
             self.cond_id[each_cond.id] = each_cond.id
             self.cond_is_activated[each_cond.id] = each_cond.is_activated
             self.cond_if_input_period[each_cond.id] = each_cond.if_sensor_period

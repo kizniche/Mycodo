@@ -311,7 +311,7 @@ class OutputController(threading.Thread):
             elif self.output_type[output_id] in [
                     'command', 'wired', 'wireless_433MHz_pi_switch']:
                 if self.is_on(output_id):
-                    self.logger.warning(
+                    self.logger.debug(
                         u"Output {id} ({name}) is already on.".format(
                             id=self.output_id[output_id],
                             name=self.output_name[output_id]))
