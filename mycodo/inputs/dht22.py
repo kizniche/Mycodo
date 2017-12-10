@@ -29,7 +29,7 @@ class DHT22Sensor(AbstractInput):
     gpio ------------+
 
     """
-    def __init__(self, sensor_id, gpio, power=None, testing=False):
+    def __init__(self, gpio, power=None, testing=False):
         """
         :param gpio: gpio pin number
         :type gpio: int
@@ -64,8 +64,7 @@ class DHT22Sensor(AbstractInput):
             import pigpio
             from mycodo.mycodo_client import DaemonControl
 
-            self.logger = logging.getLogger(
-                'mycodo.inputs.dht22_{id}'.format(id=sensor_id))
+            self.logger = logging.getLogger('mycodo.inputs.dht22')
 
             self.control = DaemonControl()
 

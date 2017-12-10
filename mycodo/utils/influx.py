@@ -1,6 +1,7 @@
 # coding=utf-8
 import datetime
 import logging
+import threading
 from uuid import UUID
 from influxdb import InfluxDBClient
 from mycodo.databases.models import Output
@@ -14,6 +15,25 @@ from mycodo.config import INFLUXDB_PASSWORD
 from mycodo.config import INFLUXDB_DATABASE
 
 logger = logging.getLogger("mycodo.influxdb")
+
+
+def add_measure_influxdb(unique_id, measurements):
+    """
+    Add a measurement entries to InfluxDB
+
+    :param unique_id:
+    :param measurements:
+    :return: None
+    """
+    data = []
+    for each_measurement, each_value in measurements.values.items():
+        data.append(format_influxdb_data(unique_id,
+                                         each_measurement,
+                                         each_value))
+    write_db = threading.Thread(
+        target=write_influxdb_list,
+        args=(data,))
+    write_db.start()
 
 
 def format_influxdb_data(device_id, measure_type, value, timestamp=None):

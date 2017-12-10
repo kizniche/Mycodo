@@ -2,7 +2,9 @@
 
 ### Features
 
- - More detailed 'incorrect database' error message on System Information page
+ - Add the ability to use Conditionals with Math controllers
+ - Add "None Found Last x Seconds" to Conditional options (trigger action if a measurement was not found within the last x seconds)
+ - More detailed 'incorrect database version' error message on System Information page
 
 ### Bugfixes
 

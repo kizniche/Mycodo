@@ -46,6 +46,7 @@ class MathMod(FlaskForm):
     deactivate = SubmitField(lazy_gettext(u'Deactivate'))
     order_up = SubmitField(lazy_gettext(u'Up'))
     order_down = SubmitField(lazy_gettext(u'Down'))
+    conditional_add = SubmitField(lazy_gettext(u'Add Conditional'))
 
 
 class MathModMultiInput(FlaskForm):

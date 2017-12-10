@@ -22,7 +22,7 @@
   <div class="form-group">
     {{form_mod_verification.inputs.label(class_='control-label')}}
     <div>
-      <select class="form-control btn-default" id="inputs" name="inputs" style="width: 100%;" size="{{count_measurements[0]}}" multiple>
+      <select class="form-control btn-default" id="inputs" name="inputs" style="width: 100%;" size="{{choices_input|length}}" multiple>
       {% if choices_input %}
         {% for each_choice, value in choices_input.iteritems() -%}
         <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>

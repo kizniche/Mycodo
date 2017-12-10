@@ -188,12 +188,12 @@
 
         {%- set sensor_conditional = [] -%}
 
-        {%- for each_cond in conditional if each_cond.sensor_id == each_sensor.id -%}
+        {%- for each_cond in conditional if each_cond.conditional_type == 'sensor' -%}
           {%- do sensor_conditional.append(1) -%}
         {% endfor %}
 
         {% if sensor_conditional %}
-          <h4>{{_('Input Conditionals')}} <a href="/help#conditional-statements" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+          <h4>{{_('Conditionals')}} <a href="/help#conditional-statements" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
           <p>{{_('Conditionals allow certain actions to be carried out when a certain set of conditions are met.')}}</p>
         {% endif %}
 
@@ -301,10 +301,11 @@
              <div class="col-xs-5 col-sm-3 col-md-2 col-lg-2">
               <label class='control-label' style="padding-top: 1em"></label>
               <div>
-                  <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_direction" name="if_sensor_direction" title="{{_('The conditional is true when the measured condition is greater than or less than the set value.')}}">
+                  <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_direction" name="if_sensor_direction" title="{{_('The conditional is true when the measured condition is greater than or less than the set value, or the measurement timestamp is greater than the value of seconds')}}">
                     <option value=""></option>
                     <option value="above"{% if each_cond.if_sensor_direction == 'above' %} selected{% endif %}>{{_('Greater Than')}}</option>
                     <option value="below"{% if each_cond.if_sensor_direction == 'below' %} selected{% endif %}>{{_('Less Than')}}</option>
+                    <option value="none_found"{% if each_cond.if_sensor_direction == 'none_found' %} selected{% endif %}>{{_('None Found Last x Seconds')}}</option>
                   </select>
               </div>
             </div>

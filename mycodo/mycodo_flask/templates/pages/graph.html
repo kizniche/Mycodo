@@ -1556,7 +1556,7 @@
               },
               {% else %}
               valueSuffix: ' {% if each_id_and_measure.split(',')[1] in measurement_units %}{{measurement_units[each_id_and_measure.split(',')[1]]['unit']}}{% else %}{{each_math.measure_units}}{% endif %}',
-              valueDecimals: 2
+              valueDecimals: 3
               {% endif %}
             },
             yAxis: '{{each_id_and_measure.split(',')[1]}}',

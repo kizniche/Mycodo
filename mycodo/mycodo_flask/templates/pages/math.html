@@ -86,18 +86,10 @@
           <div class="col-xs-6 col-sm-4">
             {{form_mod_math.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this math?")'})}}
           </div>
+          <div class="col-xs-12 col-sm-4">
+              {{form_mod_math.conditional_add(class_='form-control btn btn-default')}}
+            </div>
         </div>
-
-        {%- set count_measurements = [0] -%}
-
-        {%- for each_input in input -%}
-          {% for each_measure in each_input.measurements.split(',') %}
-            {% if count_measurements.append(count_measurements.pop() + 1) %}{% endif %}
-          {%- endfor -%}
-          {% if each_input.device in ['ADS1x15', 'MCP342x'] %}
-            {% if count_measurements.append(count_measurements.pop() + 1) %}{% endif %}
-          {% endif %}
-        {%- endfor %}
 
         <div style="padding: 0.5em" class="row small-gutters">
           <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
@@ -122,6 +114,316 @@
         {% endfor %}
 
         </form>
+
+        {%- set sensor_conditional = [] -%}
+
+        {%- for each_cond in conditional if each_cond.conditional_type == 'math' -%}
+          {%- do sensor_conditional.append(1) -%}
+        {% endfor %}
+
+        {% if sensor_conditional %}
+          <h4>{{_('Conditionals')}} <a href="/help#conditional-statements" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+          <p>{{_('Conditionals allow certain actions to be carried out when a certain set of conditions are met.')}}</p>
+        {% endif %}
+
+        {%- for each_cond in conditional if each_cond.math_id == each_math.id -%}
+
+        <div class="container" style="width: 100%; border: 2px solid #ddd; border-radius: 5px;">
+
+          <form method="post" action="/math">
+          {{form_conditional.csrf_token}}
+          {{form_conditional.sensor_id(class_='form-control', value=each_math.id)}}
+          {{form_conditional.conditional_id(class_='form-control', value=each_cond.id)}}
+
+          <div class="row small-gutters {% if each_cond.is_activated -%}active-background
+                            {% else -%}inactive-background
+                            {% endif -%}" style="padding-top: 0.2em; padding-bottom: 0.5em;">
+            <div class="col-xs-12 col-sm-3 col-md-3">
+              {{form_conditional.name(class_='form-control', value=each_cond.name, **{'title':each_cond.id})}}
+            </div>
+            <div class="col-xs-4 col-sm-3 col-md-3">
+              {%- if each_cond.is_activated %}
+                {{form_conditional.deactivate_cond(class_='form-control btn btn-default')}}
+              {%- else %}
+                {{form_conditional.activate_cond(class_='form-control btn btn-default')}}
+              {%- endif -%}
+            </div>
+            <div class="col-xs-4 col-sm-3 col-md-3">
+              {{form_conditional.save_cond(class_='form-control btn btn-default')}}
+            </div>
+            <div class="col-xs-4 col-sm-3 col-md-3">
+              {{form_conditional.delete_cond(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Output Conditional?")'})}}
+            </div>
+          </div>
+
+          <div class="row small-gutters {% if each_cond.is_activated -%}active-background
+                                        {% else -%}inactive-background
+                                        {% endif -%}" style="border-bottom: 2px solid #ddd; padding-bottom: 0.2em">
+            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 text-center">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <div>
+                <label class='control-label'>If</label>
+              </div>
+            </div>
+
+            <div class="col-xs-11 col-sm-3 col-md-3 col-lg-2">
+              <label class='control-label'>Measurement</label>
+              <div>
+                <input type="hidden" class="form-control" id="if_sensor_edge_detected" name="if_sensor_edge_detected" value="">
+                <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_measurement" name="if_sensor_measurement" title="{{_('The measurement from the input to test the following conditional logic')}}.">
+                  <option value=""></option>
+                {% for each_measure in each_math.measure.split(',') %}{{each_math.measure}}
+                  <option value="{{each_measure}}"{% if each_cond.if_sensor_measurement == each_measure %} selected{% endif %}>{% if each_measure in units %}{{units[each_measure]['name']}} ({{units[each_measure]['unit']}}){% else %}{{each_math.measure}} ({{each_math.measure_units}}){% endif %}</option>
+                {%- endfor -%}
+                </select>
+              </div>
+            </div>
+            <div class="col-xs-1 col-sm-1 col-md-1 text-center">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <div>
+                <label class='control-label'>Is</label>
+              </div>
+            </div>
+
+             <div class="col-xs-5 col-sm-3 col-md-2 col-lg-2">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <div>
+                  <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_direction" name="if_sensor_direction" title="{{_('The conditional is true when the measured condition is greater than or less than the set value, or the measurement timestamp is greater than the value of seconds')}}">
+                    <option value=""></option>
+                    <option value="above"{% if each_cond.if_sensor_direction == 'above' %} selected{% endif %}>{{_('Greater Than')}}</option>
+                    <option value="below"{% if each_cond.if_sensor_direction == 'below' %} selected{% endif %}>{{_('Less Than')}}</option>
+                    <option value="none_found"{% if each_cond.if_sensor_direction == 'none_found' %} selected{% endif %}>{{_('None Found Last x Seconds')}}</option>
+                  </select>
+              </div>
+            </div>
+            <div class="col-xs-6 col-sm-2 col-md-2 col-lg-1">
+              <label class='control-label'>Value</label>
+              <div>
+                {{form_conditional.if_sensor_setpoint(class_='form-control', value=each_cond.if_sensor_setpoint, **{'title':_('What value to check the measurement against?'), 'size':'3'})}}
+              </div>
+            </div>
+
+            <div class="col-xs-4 col-xs-offset-2 col-sm-2 col-md-2 col-xs-offset-1 col-lg-2 col-lg-offset-1">
+              <label class='control-label'>Period</label>
+              <div>
+                {{form_conditional.if_sensor_period(class_='form-control', value=each_cond.if_sensor_period, **{'title':_('The duration (seconds) between checking whether the conditional is true. Set to 0 to check after every input measurement.'), 'size':'3'})}}
+              </div>
+            </div>
+          </div>
+
+          </form>
+
+          {% for each_cond_action in conditional_actions if each_cond_action.conditional_id == each_cond.id %}
+
+          <form method="post" action="/math">
+          {{form_conditional_actions.csrf_token}}
+          {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.id)}}
+          {{form_conditional_actions.conditional_action_id(class_='form-control', value=each_cond_action.id)}}
+
+          <div class="row small-gutters" style="padding-top: 0.3em">
+            <div class="col-xs-1 col-sm-1 col-md-1 text-center">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <div>
+                ({{loop.index}})
+              </div>
+            </div>
+            <div class="col-xs-3 col-sm-2 col-md-2">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <select class="form-control form-tooltip form-dropdown" id="do_action" name="do_action" data-placement="top" title="{{_('The action to perform when the conditional is True')}}">
+                {% for each_action, each_action_string in conditional_actions_list.items() %}
+                  <option value="{{each_action}}"{% if each_cond_action.do_action == each_action %} selected{% endif %}>{{_(each_action_string)}}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+          {% if each_cond_action.do_action == 'relay' %}
+
+            <div class="col-xs-4 col-sm-2 col-md-3">
+              {{form_conditional_actions.do_relay_id.label(class_='control-label')}}
+              <select class="form-control form-tooltip form-dropdown" id="do_relay_id" name="do_relay_id" data-placement="top" title="{{_('What relay to manipulate')}}">
+                <option value=""></option>
+                {%- for each_output in output -%}
+                  <option value="{{each_output.id}}"{% if each_cond_action.do_relay_id == each_output.id %} selected{% endif %}>{{each_output.id}} ({{each_output.name}})</option>
+                {%- endfor -%}
+              </select>
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-2">
+              <label class='control-label'>Turn</label>
+              <select class="form-control form-tooltip form-dropdown" id="do_relay_state" name="do_relay_state" data-placement="top" title="{{_('Turn the relay on or off')}}">
+                <option value=""></option>
+                <option value="on"{% if each_cond_action.do_relay_state == 'on' %} selected{% endif %}>{{_('On')}}</option>
+                <option value="off"{% if each_cond_action.do_relay_state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
+              </select>
+            </div>
+            <div class="col-xs-2 col-sm-1 col-md-2">
+              <label class='control-label'>Sec.</label>
+              {{form_conditional_actions.do_relay_duration(class_='form-control', value=each_cond_action.do_relay_duration, **{'title':_('How long to turn the relay on (optional)'), 'size':'3'})}}
+            </div>
+            <div class="col-xs-1 hidden-sm hidden-md hidden-lg"></div>
+
+          {% elif each_cond_action.do_action in ['activate_pid', 'deactivate_pid'] %}
+
+            <div class="col-xs-4 col-sm-5 col-md-7">
+              <label class='control-label'>PID</label>
+              <select class="form-control form-tooltip form-dropdown" id="do_pid_id" name="do_pid_id" data-placement="top" title="{{_('LCD to flash')}}">
+                <option value=""></option>
+                {%- for each_pid in pid -%}
+                  <option value="{{each_pid.id}}"{% if each_cond_action.do_pid_id == each_pid.id %} selected{% endif %}>{{each_pid.id}} ({{each_pid.name}})</option>
+                {%- endfor -%}
+              </select>
+            </div>
+
+          {% elif each_cond_action.do_action == 'email' %}
+
+            <div class="col-xs-4 col-sm-5 col-md-7">
+              <label class='control-label'>Email</label>
+              <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
+                <option value=""></option>
+                {%- for each_user in user -%}
+                  <option value="{{each_user.email}}"{% if each_cond_action.do_action_string == each_user.email %} selected{% endif %}>{{each_user.email}}</option>
+                {%- endfor -%}
+              </select>
+            </div>
+
+          {% elif each_cond_action.do_action == 'flash_lcd' %}
+
+            <div class="col-xs-4 col-sm-5 col-md-7">
+              <label class='control-label'>LCD</label>
+              <select class="form-control form-tooltip form-dropdown" id="do_lcd_id" name="do_lcd_id" data-placement="top" title="{{_('LCD to flash')}}">
+                <option value=""></option>
+                {%- for each_lcd in lcd -%}
+                  <option value="{{each_lcd.id}}"{% if each_cond_action.do_lcd_id == each_lcd.id %} selected{% endif %}>{{each_lcd.id}} ({{each_lcd.name}})</option>
+                {%- endfor -%}
+              </select>
+            </div>
+
+          {% elif each_cond_action.do_action == 'photo' %}
+
+            <div class="col-xs-4 col-sm-5 col-md-7">
+              <label class='control-label'>Camera</label>
+              <select class="form-control form-tooltip form-dropdown" id="do_camera_id" name="do_camera_id" data-placement="top" title="{{_('Camera to capture with')}}">
+                <option value=""></option>
+                {%- for each_camera in camera -%}
+                  <option value="{{each_camera.id}}"{% if each_cond_action.do_camera_id == each_camera.id %} selected{% endif %}>{{each_camera.id}} ({{each_camera.name}})</option>
+                {%- endfor -%}
+              </select>
+            </div>
+
+          {% elif each_cond_action.do_action == 'photo_email' %}
+
+            <div class="col-xs-2 col-sm-3 col-md-4">
+              <label class='control-label'>Email</label>
+              <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
+                <option value=""></option>
+                {%- for each_user in user -%}
+                  <option value="{{each_user.email}}"{% if each_cond_action.do_action_string == each_user.email %} selected{% endif %}>{{each_user.email}}</option>
+                {%- endfor -%}
+              </select>
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-3">
+              <label class='control-label'>Camera</label>
+              <select class="form-control form-tooltip form-dropdown" id="do_camera_id" name="do_camera_id" data-placement="top" title="{{_('Camera to capture with')}}">
+                <option value=""></option>
+                {%- for each_camera in camera -%}
+                  <option value="{{each_camera.id}}"{% if each_cond_action.do_camera_id == each_camera.id %} selected{% endif %}>{{each_camera.id}} ({{each_camera.name}})</option>
+                {%- endfor -%}
+              </select>
+            </div>
+
+          {% elif each_cond_action.do_action == 'video' %}
+
+            <div class="col-xs-2 col-sm-3 col-md-5">
+              <label class='control-label'>Camera</label>
+              <select class="form-control form-tooltip form-dropdown" id="do_camera_id" name="do_camera_id" data-placement="top" title="{{_('Camera to capture with')}}">
+                <option value=""></option>
+                {%- for each_camera in camera -%}
+                  <option value="{{each_camera.id}}"{% if each_cond_action.do_camera_id == each_camera.id %} selected{% endif %}>{{each_camera.id}} ({{each_camera.name}})</option>
+                {%- endfor -%}
+              </select>
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-2">
+              {{form_conditional_actions.do_camera_duration.label(class_='control-label')}}
+              {{form_conditional_actions.do_camera_duration(class_='form-control', value=each_cond_action.do_camera_duration, **{'title':_('Duration to record video (sec)')})}}
+            </div>
+
+          {% elif each_cond_action.do_action == 'video_email' %}
+
+            <div class="col-xs-1 col-sm-1 col-md-1">
+              <label class='control-label'>Email</label>
+              <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
+                <option value=""></option>
+                {%- for each_user in user -%}
+                  <option value="{{each_user.email}}"{% if each_cond_action.do_action_string == each_user.email %} selected{% endif %}>{{each_user.email}}</option>
+                {%- endfor -%}
+              </select>
+            </div>
+            <div class="col-xs-2 col-sm-3 col-md-5">
+              <label class='control-label'>Camera</label>
+              <select class="form-control form-tooltip form-dropdown" id="do_camera_id" name="do_camera_id" data-placement="top" title="{{_('Camera to capture with')}}">
+                <option value=""></option>
+                {%- for each_camera in camera -%}
+                  <option value="{{each_camera.id}}"{% if each_cond_action.do_camera_id == each_camera.id %} selected{% endif %}>{{each_camera.id}} ({{each_camera.name}})</option>
+                {%- endfor -%}
+              </select>
+            </div>
+            <div class="col-xs-1 col-sm-1 col-md-1">
+              {{form_conditional_actions.do_camera_duration.label(class_='control-label')}}
+              {{form_conditional_actions.do_camera_duration(class_='form-control', value=each_cond_action.do_camera_duration, **{'title':_('Duration to record video (sec)')})}}
+            </div>
+
+          {% elif each_cond_action.do_action == 'command' %}
+
+            <div class="col-xs-4 col-sm-5 col-md-7">
+              <label class='control-label'>Command</label>
+              {{form_conditional_actions.do_action_string(class_='form-control', value=each_cond_action.do_action_string, **{'title':_('Command to execute (as user "mycodo")')})}}
+            </div>
+
+          {% endif %}
+
+            <div class="col-xs-2 col-sm-2 col-md-1">
+              <label class='control-label' style="padding-top: 1em"></label>
+              {{form_conditional_actions.save_action(class_='form-control btn btn-default')}}
+            </div>
+            <div class="col-xs-2 col-sm-2 col-md-1">
+              <label class='control-label' style="padding-top: 1em"></label>
+              {{form_conditional_actions.delete_action(class_='form-control btn btn-default')}}
+            </div>
+          </div>
+
+          </form>
+
+          {% endfor %}
+
+          <form method="post" action="/math">
+          {{form_conditional_actions.csrf_token}}
+          {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.id)}}
+
+          <div class="row small-gutters" style="padding-bottom: 1em">
+            <div class="col-xs-2 col-sm-2 col-md-1 text-center">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <div>
+                Action
+              </div>
+            </div>
+            <div class="col-xs-6 col-sm-4 col-md-2">
+              <label class='control-label' style="padding-top: 1em"></label>
+              <select class="form-control form-tooltip form-dropdown" id="do_action" name="do_action" data-placement="top" title="{{_('The action to perform when the conditional is True')}}">
+                {% for each_action, each_action_string in conditional_actions_list.items() %}
+                  <option value="{{each_action}}">{{_(each_action_string)}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-2">
+              <label class='control-label' style="padding-top: 1em"></label>
+              {{form_conditional_actions.add_action(class_='form-control btn btn-default')}}
+            </div>
+          </div>
+          </form>
+        </div>
+
+        <div style="clear: both; padding: 0.5em 0;"></div>
+
+      {%- endfor -%}
 
       </div> <!- collapse container end ->
 

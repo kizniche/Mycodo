@@ -1003,8 +1003,18 @@ def page_input():
 @flask_login.login_required
 def page_math():
     """ Display math page """
-    math = Math.query.all()
+    camera = Camera.query.all()
     input_dev = Input.query.all()
+    math = Math.query.all()
+    output = Output.query.all()
+    user = User.query.all()
+
+    conditional = Conditional.query.filter(
+        Conditional.conditional_type == 'math').all()
+    conditional_actions = ConditionalActions.query.all()
+
+    form_conditional = forms_conditional.Conditional()
+    form_conditional_actions = forms_conditional.ConditionalActions()
 
     choices_input = utils_general.choices_inputs(input_dev)
 
@@ -1058,9 +1068,32 @@ def page_math():
             utils_math.math_activate(form_mod_math)
         elif form_mod_math.deactivate.data:
             utils_math.math_deactivate(form_mod_math)
+
+        elif form_conditional.deactivate_cond.data:
+            utils_conditional.conditional_deactivate(form_conditional)
+        elif form_conditional.activate_cond.data:
+            utils_conditional.conditional_activate(form_conditional)
+        elif form_mod_math.conditional_add.data:
+            utils_conditional.conditional_add(
+                'math', 1, math_id=form_mod_math.math_id.data)
+        elif form_conditional.delete_cond.data:
+            utils_conditional.conditional_mod(form_conditional, 'delete')
+        elif form_conditional.save_cond.data:
+            utils_conditional.conditional_mod(form_conditional, 'modify')
+        elif form_conditional_actions.add_action.data:
+            utils_conditional.conditional_action_add(form_conditional_actions)
+        elif form_conditional_actions.save_action.data:
+            utils_conditional.conditional_action_mod(form_conditional_actions,
+                                                     'modify')
+        elif form_conditional_actions.delete_action.data:
+            utils_conditional.conditional_action_mod(form_conditional_actions,
+                                                     'delete')
         return redirect(url_for('page_routes.page_math'))
 
     return render_template('pages/math.html',
+                           conditional=conditional,
+                           conditional_actions=conditional_actions,
+                           conditional_actions_list=CONDITIONAL_ACTIONS,
                            choices_input=choices_input,
                            display_order=display_order,
                            form_add_math=form_add_math,
@@ -1068,9 +1101,15 @@ def page_math():
                            form_mod_multi=form_mod_multi,
                            form_mod_humidity=form_mod_humidity,
                            form_mod_verification=form_mod_verification,
+                           form_conditional=form_conditional,
+                           form_conditional_actions=form_conditional_actions,
+                           camera=camera,
                            input=input_dev,
                            math=math,
-                           math_templates=math_templates)
+                           output=output,
+                           math_templates=math_templates,
+                           units=MEASUREMENT_UNITS,
+                           user=user)
 
 
 @blueprint.route('/timer', methods=('GET', 'POST'))

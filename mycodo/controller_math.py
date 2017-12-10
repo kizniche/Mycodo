@@ -25,16 +25,45 @@
 
 import logging
 import threading
-import time as t
+import time
 import timeit
 
 import utils.psypy as SI
 
+from mycodo_client import DaemonControl
+from databases.models import Camera
+from databases.models import Conditional
+from databases.models import ConditionalActions
+from databases.models import Input
 from databases.models import Math
+from databases.models import PID
+from databases.models import SMTP
+from utils.conditional import check_conditionals
 from utils.database import db_retrieve_table_daemon
+from utils.influx import add_measure_influxdb
 from utils.influx import read_last_influxdb
-from utils.influx import write_influxdb_value
 from utils.system_pi import celsius_to_kelvin
+
+
+class Measurement:
+    """
+    Class for holding all measurement values in a dictionary.
+    The dictionary is formatted in the following way:
+
+    {'measurement type':measurement value}
+
+    Measurement type: The environmental or physical condition
+    being measured, such as 'temperature', or 'pressure'.
+
+    Measurement value: The actual measurement of the condition.
+    """
+
+    def __init__(self, raw_data):
+        self.rawData = raw_data
+
+    @property
+    def values(self):
+        return self.rawData
 
 
 class MathController(threading.Thread):
@@ -47,16 +76,25 @@ class MathController(threading.Thread):
 
         self.logger = logging.getLogger("mycodo.math_{id}".format(id=math_id))
 
+        self.measurements = None
         self.running = False
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
         self.ready = ready
-        self.math_id = math_id
+        self.pause_loop = False
+        self.verify_pause_loop = True
+        self.control = DaemonControl()
 
+        smtp = db_retrieve_table_daemon(SMTP, entry='first')
+        self.smtp_max_count = smtp.hourly_max
+        self.email_count = 0
+        self.allowed_to_send_notice = True
+
+        self.math_id = math_id
         math = db_retrieve_table_daemon(Math, device_id=self.math_id)
 
         # General variables
-        self.math_unique_id = math.unique_id
+        self.unique_id = math.unique_id
         self.name = math.name
         self.math_type = math.math_type
         self.is_activated = math.is_activated
@@ -79,7 +117,27 @@ class MathController(threading.Thread):
         self.pressure_pa_id = math.pressure_pa_id
         self.pressure_pa_measure = math.pressure_pa_measure
 
-        self.timer = t.time() + self.period
+        self.cond_id = {}
+        self.cond_action_id = {}
+        self.cond_name = {}
+        self.cond_is_activated = {}
+        self.cond_if_input_period = {}
+        self.cond_if_input_measurement = {}
+        self.cond_if_input_direction = {}
+        self.cond_if_input_setpoint = {}
+        self.cond_do_output_id = {}
+        self.cond_do_output_state = {}
+        self.cond_do_output_duration = {}
+        self.cond_execute_command = {}
+        self.cond_email_notify = {}
+        self.cond_do_lcd_id = {}
+        self.cond_do_camera_id = {}
+        self.cond_timer = {}
+        self.smtp_wait_timer = {}
+
+        self.setup_conditionals()
+
+        self.timer = time.time() + self.period
 
     def run(self):
         try:
@@ -89,49 +147,64 @@ class MathController(threading.Thread):
             self.ready.set()
 
             while self.running:
+                # Pause loop to modify conditional statements.
+                # Prevents execution of conditional while variables are
+                # being modified.
+                if self.pause_loop:
+                    self.verify_pause_loop = True
+                    while self.pause_loop:
+                        time.sleep(0.1)
 
-                if self.is_activated and t.time() > self.timer:
+                if self.is_activated and time.time() > self.timer:
                     # Ensure the timer ends in the future
-                    while t.time() > self.timer:
+                    while time.time() > self.timer:
                         self.timer = self.timer + self.period
 
                     # If PID is active, retrieve input measurement and update PID output
                     if self.math_type == 'average':
-                        success, measurements = self.get_measurements_from_str(self.inputs)
+                        success, measure = self.get_measurements_from_str(self.inputs)
                         if success:
-                            average = sum(measurements) / float(len(measurements))
-                            self.write_measurement(self.math_unique_id,
-                                                   self.measure,
-                                                   average)
+                            measure_dict = {
+                                self.measure: float('{0:.4f}'.format(
+                                    sum(measure) / float(len(measure))))
+                            }
+                            self.measurements = Measurement(measure_dict)
+                            add_measure_influxdb(self.unique_id, self.measurements)
                         else:
                             self.logger.error(
                                 "One or more inputs were not within the "
                                 "Max Age that has been set. Ensure all "
                                 "Inputs are operating properly.")
 
-                    elif self.math_type == 'largest':
-                        success, measurements = self.get_measurements_from_str(self.inputs)
+                    elif self.math_type == 'maximum':
+                        success, measure = self.get_measurements_from_str(self.inputs)
                         if success:
-                            self.write_measurement(self.math_unique_id,
-                                                   self.measure,
-                                                   max(measurements))
+                            measure_dict = {
+                                self.measure: float('{0:.4f}'.format(max(measure)))
+                            }
+                            self.measurements = Measurement(measure_dict)
+                            add_measure_influxdb(self.unique_id, self.measurements)
 
-                    elif self.math_type == 'smallest':
-                        success, measurements = self.get_measurements_from_str(self.inputs)
+                    elif self.math_type == 'minimum':
+                        success, measure = self.get_measurements_from_str(self.inputs)
                         if success:
-                            self.write_measurement(self.math_unique_id,
-                                                   self.measure,
-                                                   min(measurements))
+                            measure_dict = {
+                                self.measure: float('{0:.4f}'.format(min(measure)))
+                            }
+                            self.measurements = Measurement(measure_dict)
+                            add_measure_influxdb(self.unique_id, self.measurements)
 
                     elif self.math_type == 'verification':
                         success, measurements = self.get_measurements_from_str(self.inputs)
                         if (success and
                                 max(measurements) - min(measurements) <
                                 self.max_difference):
-                            average = sum(measurements) / float(len(measurements))
-                            self.write_measurement(self.math_unique_id,
-                                                   self.measure,
-                                                   average)
+                            measure_dict = {
+                                self.measure: float('{0:.4f}'.format(
+                                    sum(measurements) / float(len(measurements))))
+                            }
+                            self.measurements = Measurement(measure_dict)
+                            add_measure_influxdb(self.unique_id, self.measurements)
 
                     elif self.math_type == 'humidity':
                         pressure_pa = 101325
@@ -154,27 +227,32 @@ class MathController(threading.Thread):
 
                         psypi = SI.state("DBT", dbt_kelvin, "WBT", wbt_kelvin, pressure_pa)
 
+                        percent_relative_humidity = psypi[2] * 100
+
                         # print("The dry bulb temperature is ", psypi[0])
                         # print("The wet bulb temperature is ", psypi[5])
 
-                        self.write_measurement(self.math_unique_id,
-                                               'specific_enthalpy',
-                                               psypi[1])
+                        measure_dict = dict(
+                            specific_enthalpy=float('{0:.5f}'.format(psypi[1])),
+                            humidity=float('{0:.5f}'.format(percent_relative_humidity)),
+                            specific_volume=float('{0:.5f}'.format(psypi[3])),
+                            humidity_ratio=float('{0:.5f}'.format(psypi[4])))
+                        self.measurements = Measurement(measure_dict)
+                        add_measure_influxdb(self.unique_id, self.measurements)
 
-                        percent_relative_humidity = psypi[2] * 100
-                        self.write_measurement(self.math_unique_id,
-                                               'humidity',
-                                               percent_relative_humidity)
+                for each_cond_id in self.cond_id:
+                    if self.cond_is_activated[each_cond_id]:
+                        # Check input conditional if it has been activated
+                        if time.time() > self.cond_timer[each_cond_id]:
+                            self.cond_timer[each_cond_id] = (
+                                    time.time() +
+                                    self.cond_if_input_period[each_cond_id])
+                            check_conditionals(
+                                self, each_cond_id, self.measurements, self.control,
+                                Camera, Conditional, ConditionalActions,
+                                Input, Math, PID, SMTP)
 
-                        self.write_measurement(self.math_unique_id,
-                                               'specific_volume',
-                                               psypi[3])
-
-                        self.write_measurement(self.math_unique_id,
-                                               'humidity_ratio',
-                                               psypi[4])
-
-                t.sleep(0.1)
+                time.sleep(0.1)
 
             self.running = False
             self.logger.info("Deactivated in {:.1f} ms".format(
@@ -208,14 +286,55 @@ class MathController(threading.Thread):
             return False, None
         return True, measurement
 
-    @staticmethod
-    def write_measurement(unique_id, measurement, value):
-        write_math_db = threading.Thread(
-            target=write_influxdb_value,
-            args=(unique_id,
-                  measurement,
-                  value,))
-        write_math_db.start()
+    def setup_conditionals(self, cond_mod='setup'):
+        # Signal to pause the main loop and wait for verification
+        self.pause_loop = True
+        while not self.verify_pause_loop:
+            time.sleep(0.1)
+
+        self.cond_id = {}
+        self.cond_action_id = {}
+        self.cond_name = {}
+        self.cond_is_activated = {}
+        self.cond_if_input_period = {}
+        self.cond_if_input_measurement = {}
+        self.cond_if_input_direction = {}
+        self.cond_if_input_setpoint = {}
+
+        input_conditional = db_retrieve_table_daemon(
+            Conditional)
+        input_conditional = input_conditional.filter(
+            Conditional.math_id == self.math_id)
+        input_conditional = input_conditional.filter(
+            Conditional.is_activated == True).all()
+
+        if cond_mod == 'setup':
+            self.cond_timer = {}
+            self.smtp_wait_timer = {}
+        elif cond_mod == 'add':
+            self.logger.debug("Added Conditional")
+        elif cond_mod == 'del':
+            self.logger.debug("Deleted Conditional")
+        elif cond_mod == 'mod':
+            self.logger.debug("Modified Conditional")
+        else:
+            return 1
+
+        for each_cond in input_conditional:
+            if cond_mod == 'setup':
+                self.logger.info(
+                    "Activated Conditional ({id})".format(id=each_cond.id))
+            self.cond_id[each_cond.id] = each_cond.id
+            self.cond_is_activated[each_cond.id] = each_cond.is_activated
+            self.cond_if_input_period[each_cond.id] = each_cond.if_sensor_period
+            self.cond_if_input_measurement[each_cond.id] = each_cond.if_sensor_measurement
+            self.cond_if_input_direction[each_cond.id] = each_cond.if_sensor_direction
+            self.cond_if_input_setpoint[each_cond.id] = each_cond.if_sensor_setpoint
+            self.cond_timer[each_cond.id] = time.time() + each_cond.if_sensor_period
+            self.smtp_wait_timer[each_cond.id] = time.time() + 3600
+
+        self.pause_loop = False
+        self.verify_pause_loop = False
 
     def is_running(self):
         return self.running
@@ -223,4 +342,3 @@ class MathController(threading.Thread):
     def stop_controller(self):
         self.thread_shutdown_timer = timeit.default_timer()
         self.running = False
-
