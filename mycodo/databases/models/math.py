@@ -22,7 +22,7 @@ class Math(CRUDMixin, db.Model):
 
     # Multi-input options
     inputs = db.Column(db.Text, default='')
-    
+
     # Humidity calculation
     dry_bulb_t_id = db.Column(db.Text, default=None)
     dry_bulb_t_measure = db.Column(db.Text, default=None)

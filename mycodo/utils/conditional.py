@@ -204,7 +204,7 @@ def check_conditionals(self, cond_id, measurements, control,
 
         elif cond_action.do_action in ['email',
                                        'photo_email',
-                                       'video_email']:            
+                                       'video_email']:
             if (self.email_count >= self.smtp_max_count and
                     time.time() < self.smtp_wait_timer[cond_id]):
                 allowed_to_send_notice = False
