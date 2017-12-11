@@ -556,6 +556,7 @@ def page_lcd():
     """ Display LCD output settings """
     lcd = LCD.query.all()
     lcd_data = LCDData.query.all()
+    math = Math.query.all()
     pid = PID.query.all()
     output = Output.query.all()
     input_dev = Input.query.all()
@@ -608,6 +609,7 @@ def page_lcd():
     return render_template('pages/lcd.html',
                            lcd=lcd,
                            lcd_data=lcd_data,
+                           math=math,
                            measurements=measurements,
                            pid=pid,
                            relay=output,

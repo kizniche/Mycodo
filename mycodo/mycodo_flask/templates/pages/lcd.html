@@ -203,10 +203,19 @@
                   {% endif %}
                 {% endfor %}
               {%- endfor %}
+
+              {%- for each_math in math -%}
+                <option value="{{each_math.unique_id}},math_time"{% if each_lcd_display.line_1_id == each_math.unique_id and each_lcd_display.line_1_measurement == 'math_time' %} selected{% endif %}>Math {{each_math.id}} ({{each_math.name}}): timestamp</option>
+                {% for each_measure in each_math.measure.split(',') %}
+                <option value="{{each_math.unique_id}},{{each_measure}}"{% if each_lcd_display.line_1_id == each_math.unique_id and each_lcd_display.line_1_measurement == each_measure %} selected{% endif %}>Math {{each_math.id}} ({{each_math.name}}): {{each_measure}}</option>
+                {% endfor %}
+              {%- endfor %}
+
               {%- for each_pid in pid -%}
                 <option value="{{each_pid.unique_id}},pid_time"{% if each_lcd_display.line_1_id == each_pid.unique_id and each_lcd_display.line_1_measurement == 'pid_time' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): timestamp</option>
                 <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_1_id == each_pid.unique_id and each_lcd_display.line_1_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
               {%- endfor %}
+
               {%- for each_relay in relay -%}
                 <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_1_id == each_relay.unique_id and each_lcd_display.line_1_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
                 <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_1_id == each_relay.unique_id and each_lcd_display.line_1_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): duration</option>
@@ -239,10 +248,19 @@
                   {% endif %}
                 {% endfor %}
               {%- endfor %}
+
+              {%- for each_math in math -%}
+                <option value="{{each_math.unique_id}},math_time"{% if each_lcd_display.line_2_id == each_math.unique_id and each_lcd_display.line_2_measurement == 'math_time' %} selected{% endif %}>Math {{each_math.id}} ({{each_math.name}}): timestamp</option>
+                {% for each_measure in each_math.measure.split(',') %}
+                <option value="{{each_math.unique_id}},{{each_measure}}"{% if each_lcd_display.line_2_id == each_math.unique_id and each_lcd_display.line_2_measurement == each_measure %} selected{% endif %}>Math {{each_math.id}} ({{each_math.name}}): {{each_measure}}</option>
+                {% endfor %}
+              {%- endfor %}
+
               {%- for each_pid in pid -%}
                 <option value="{{each_pid.unique_id}},pid_time"{% if each_lcd_display.line_2_id == each_pid.unique_id and each_lcd_display.line_2_measurement == 'pid_time' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): timestamp</option>
                 <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_2_id == each_pid.unique_id and each_lcd_display.line_2_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
               {%- endfor %}
+
               {%- for each_relay in relay -%}
                 <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_2_id == each_relay.unique_id and each_lcd_display.line_2_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
                 <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_2_id == each_relay.unique_id and each_lcd_display.line_2_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): duration</option>
@@ -277,10 +295,19 @@
                   {% endif %}
                 {% endfor %}
               {%- endfor %}
+
+              {%- for each_math in math -%}
+                <option value="{{each_math.unique_id}},math_time"{% if each_lcd_display.line_3_id == each_math.unique_id and each_lcd_display.line_3_measurement == 'math_time' %} selected{% endif %}>Math {{each_math.id}} ({{each_math.name}}): timestamp</option>
+                {% for each_measure in each_math.measure.split(',') %}
+                <option value="{{each_math.unique_id}},{{each_measure}}"{% if each_lcd_display.line_3_id == each_math.unique_id and each_lcd_display.line_3_measurement == each_measure %} selected{% endif %}>Math {{each_math.id}} ({{each_math.name}}): {{each_measure}}</option>
+                {% endfor %}
+              {%- endfor %}
+
               {%- for each_pid in pid -%}
                 <option value="{{each_pid.unique_id}},pid_time"{% if each_lcd_display.line_3_id == each_pid.unique_id and each_lcd_display.line_3_measurement == 'pid_time' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): timestamp</option>
                 <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_3_id == each_pid.unique_id and each_lcd_display.line_3_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
               {%- endfor %}
+
               {%- for each_relay in relay -%}
                 <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_3_id == each_relay.unique_id and each_lcd_display.line_3_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
                 <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_3_id == each_relay.unique_id and each_lcd_display.line_3_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): duration</option>
@@ -313,10 +340,19 @@
                   {% endif %}
                 {% endfor %}
               {%- endfor %}
+
+              {%- for each_math in math -%}
+                <option value="{{each_math.unique_id}},math_time"{% if each_lcd_display.line_4_id == each_math.unique_id and each_lcd_display.line_4_measurement == 'math_time' %} selected{% endif %}>Math {{each_math.id}} ({{each_math.name}}): timestamp</option>
+                {% for each_measure in each_math.measure.split(',') %}
+                <option value="{{each_math.unique_id}},{{each_measure}}"{% if each_lcd_display.line_4_id == each_math.unique_id and each_lcd_display.line_4_measurement == each_measure %} selected{% endif %}>Math {{each_math.id}} ({{each_math.name}}): {{each_measure}}</option>
+                {% endfor %}
+              {%- endfor %}
+
               {%- for each_pid in pid -%}
                 <option value="{{each_pid.unique_id}},pid_time"{% if each_lcd_display.line_4_id == each_pid.unique_id and each_lcd_display.line_4_measurement == 'pid_time' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): timestamp</option>
                 <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_4_id == each_pid.unique_id and each_lcd_display.line_4_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): setpoint</option>
               {%- endfor %}
+
               {%- for each_relay in relay -%}
                 <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_4_id == each_relay.unique_id and each_lcd_display.line_4_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): timestamp</option>
                 <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_4_id == each_relay.unique_id and each_lcd_display.line_4_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): duration</option>
