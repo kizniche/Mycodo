@@ -131,7 +131,7 @@ def choices_inputs(inputs):
             value = '{id},{meas}'.format(
                 id=each_input.unique_id,
                 meas=each_input.cmd_measurement)
-            display = u'[{id:02d}] {name} ({meas})'.format(
+            display = u'[Input {id:02d}] {name} ({meas})'.format(
                 id=each_input.id,
                 name=each_input.name,
                 meas=each_input.cmd_measurement)
@@ -141,7 +141,7 @@ def choices_inputs(inputs):
                 value = '{id},{meas}'.format(
                     id=each_input.unique_id,
                     meas=each_measurement)
-                display = u'[{id:02d}] {name} ({meas})'.format(
+                display = u'[Input {id:02d}] {name} ({meas})'.format(
                     id=each_input.id,
                     name=each_input.name,
                     meas=MEASUREMENT_UNITS[each_measurement]['name'])
@@ -151,7 +151,7 @@ def choices_inputs(inputs):
                 value = '{id},{meas}'.format(
                     id=each_input.unique_id,
                     meas=each_input.adc_measure)
-                display = u'[{id:02d}] {name} ({meas})'.format(
+                display = u'[Input {id:02d}] {name} ({meas})'.format(
                     id=each_input.id,
                     name=each_input.name,
                     meas=each_input.adc_measure)
@@ -172,7 +172,7 @@ def choices_maths(maths):
                 measurement_display = MEASUREMENT_UNITS[each_measurement]['name']
             else:
                 measurement_display = each_measurement
-            display = u'[{id:02d}] {name} ({meas})'.format(
+            display = u'[Math {id:02d}] {name} ({meas})'.format(
                 id=each_math.id,
                 name=each_math.name,
                 meas=measurement_display)
@@ -186,12 +186,12 @@ def choices_outputs(output):
     for each_output in output:
         if each_output.relay_type != 'pwm':
             value = '{id},duration_sec'.format(id=each_output.unique_id)
-            display = u'[{id:02d}] {name} (Duration)'.format(
+            display = u'[Output {id:02d}] {name} (Duration)'.format(
                 id=each_output.id, name=each_output.name)
             choices.update({value: display})
         elif each_output.relay_type == 'pwm':
             value = '{id},duty_cycle'.format(id=each_output.unique_id)
-            display = u'[{id:02d}] {name} (Duty Cycle)'.format(
+            display = u'[Output {id:02d}] {name} (Duty Cycle)'.format(
                 id=each_output.id, name=each_output.name)
             choices.update({value: display})
     return choices
@@ -202,15 +202,15 @@ def choices_pids(pid):
     choices = OrderedDict()
     for each_pid in pid:
         value = '{id},setpoint'.format(id=each_pid.unique_id)
-        display = u'[{id:02d}] {name} (Setpoint)'.format(
+        display = u'[PID {id:02d}] {name} (Setpoint)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
         value = '{id},pid_output'.format(id=each_pid.unique_id)
-        display = u'[{id:02d}] {name} (Output Duration)'.format(
+        display = u'[PID {id:02d}] {name} (Output Duration)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
         value = '{id},duty_cycle'.format(id=each_pid.unique_id)
-        display = u'[{id:02d}] {name} (Output Duty Cycle)'.format(
+        display = u'[PID {id:02d}] {name} (Output Duty Cycle)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
     return choices

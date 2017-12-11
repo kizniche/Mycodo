@@ -729,9 +729,9 @@ def page_pid():
     method = Method.query.all()
     pid = PID.query.all()
     output = Output.query.all()
-    input_dev = Input.query.all()
 
-    input_choices = utils_general.choices_inputs(input_dev)
+    input_choices = utils_general.choices_inputs(Input.query.all())
+    math_choices = utils_general.choices_maths(Math.query.all())
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
 
@@ -794,12 +794,12 @@ def page_pid():
         return redirect('/pid')
 
     return render_template('pages/pid.html',
+                           math_choices=math_choices,
                            method=method,
                            pid=pid,
                            pid_templates=pid_templates,
                            relay=output,
-                           sensor=input_dev,
-                           sensor_choices=input_choices,
+                           input_choices=input_choices,
                            displayOrder=display_order,
                            form_add_pid=form_add_pid,
                            form_mod_pid_base=form_mod_pid_base,
