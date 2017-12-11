@@ -6,6 +6,7 @@
  - Add ability to use Math Controllers with LCDs and PIDs
  - Add Math Controllers to Live page
  - Add "None Found Last x Seconds" to Conditional options (trigger action if a measurement was not found within the last x seconds)
+ - Add Restart Daemon option to the Config menu
  - More detailed 'incorrect database version' error message on System Information page
 
 ### Bugfixes
