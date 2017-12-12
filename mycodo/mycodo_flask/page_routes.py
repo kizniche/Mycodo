@@ -629,6 +629,7 @@ def page_live():
     output = Output.query.all()
     input_dev = Input.query.all()
     math = Math.query.all()
+    method = Method.query.all()
     timer = Timer.query.all()
 
     # Display orders
@@ -657,16 +658,19 @@ def page_live():
                         each_math.is_activated):
                     maths_sorted.append(each_math.id)
 
-    # Retrieve only parent method columns
-    method = Method.query.all()
+    # Store all output types
+    output_type = {}
+    for each_output in output:
+        output_type[each_output.id] = each_output.relay_type
 
     return render_template('pages/live.html',
                            measurement_units=MEASUREMENT_UNITS,
                            math=math,
                            method=method,
                            output=output,
+                           output_type=output_type,
                            pid=pid,
-                           sensor=input_dev,
+                           input=input_dev,
                            timer=timer,
                            pid_display_order=pid_display_order,
                            inputs_sorted=inputs_sorted,

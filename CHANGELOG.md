@@ -12,6 +12,7 @@
 ### Bugfixes
 
  - Fix measurement list length on Graph page
+ - Fix PWM output display on Live page
 
 
 ## 5.4.15 (2017-12-08)

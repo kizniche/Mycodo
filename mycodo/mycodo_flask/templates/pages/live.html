@@ -50,7 +50,7 @@
                               'temperature',
                               'temperature_die',
                               'temperature_object'] -%}
-      {%- for each_input in sensor if each_input.is_activated -%}
+      {%- for each_input in input if each_input.is_activated -%}
         {%- set measurement_list = each_input.measurements.split(',') -%}
         {%- for each_measurement in measurement_list %}
           {%- set c_to_f = 'true' if each_measurement in temperatures else 'false' %}
@@ -90,27 +90,27 @@
     {%- for each_input_sorted in inputs_sorted -%}
       {%- set collapse_container_number = loop.index -%}
 
-      {%- for each_input in sensor if each_input.id == each_input_sorted -%}
+      {%- for each_input in input if each_input.id == each_input_sorted -%}
 
     <div style="padding: 0.5em; margin-bottom: 0.7em; border: 2px solid #ddd; border-radius: 5px;">
 
       <div class="row">
         <div class="col-xs-12 col-sm-6 text-left">
-          {%- set sensor_has_pid = [] -%}
+          {%- set input_has_pid = [] -%}
           {%- if pid_display_order -%}
             {%- for pid_order in pid_display_order -%}
               {%- for each_pid in pid if each_pid.id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_input.unique_id -%}
-                {%- do sensor_has_pid.append(1) -%}
+                {%- do input_has_pid.append(1) -%}
               {%- endfor -%}
             {%- endfor -%}
           {%- endif -%}
-          {%- if sensor_has_pid -%}
+          {%- if input_has_pid -%}
             <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{collapse_container_number}}" aria-expanded="false" aria-controls="collapseContainer{{collapse_container_number}}"><span class='collapse-button{{collapse_container_number}} fa fa-2x fa-plus-square'></span></a>
           {%- endif -%}
           {{each_input.name}} ({{each_input.id}})
           {%- if each_input.device != 'EDGE' -%}
             <div>
-               {{_('%(type)s Input, %(sec)s second interval', type=each_input.device, sec=each_input.period)}}
+               {{_('Input (%(type)s), %(sec)s second interval', type=each_input.device, sec=each_input.period)}}
             </div>
           {%- endif -%}
         </div>
@@ -170,16 +170,18 @@
             </div>
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
-              {% if each_pid.pid_type != 'pwm' -%}
-                {{_('On Duration (sec.)')}}
-              {% else -%}
+              {% if each_pid.raise_relay_id in output_type and
+                    output_type[each_pid.raise_relay_id] == 'pwm' -%}
                 {{_('Duty Cycle')}} (%)
+              {% else -%}
+                {{_('On Duration (sec.)')}}
               {% endif %}
             <div>
               {{_('Min')}}: {{each_pid.raise_min_duration}}, {{_('Max')}}: {{each_pid.raise_max_duration}}
              </div>
           </div>
-          {% if each_pid.pid_type != 'pwm' -%}
+          {% if each_pid.raise_relay_id in output_type and
+                output_type[each_pid.raise_relay_id] != 'pwm' -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Off (seconds)')}}
             <div>
@@ -207,16 +209,18 @@
             </div>
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
-            {% if each_pid.pid_type != 'pwm' -%}
-              {{_('On Duration (sec.)')}}
-            {% else -%}
+            {% if each_pid.lower_relay_id in output_type and
+                  output_type[each_pid.lower_relay_id] == 'pwm' -%}
               {{_('Duty Cycle')}} (%)
+            {% else -%}
+              {{_('On Duration (sec.)')}}
             {% endif %}
             <div>
               {{_('Min')}}: {{each_pid.lower_min_duration}}, {{_('Max')}}: {{each_pid.lower_max_duration}}
             </div>
           </div>
-          {% if each_pid.pid_type != 'pwm' -%}
+          {% if each_pid.lower_relay_id in output_type and
+                output_type[each_pid.lower_relay_id] != 'pwm' -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Off (seconds)')}}
             <div>
@@ -265,18 +269,21 @@
 
       <div class="row">
         <div class="col-xs-12 col-sm-6 text-left">
-          {%- set sensor_has_pid = [] -%}
+          {%- set math_has_pid = [] -%}
           {%- if pid_display_order -%}
             {%- for pid_order in pid_display_order -%}
               {%- for each_pid in pid if each_pid.id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_math.unique_id -%}
-                {%- do sensor_has_pid.append(1) -%}
+                {%- do math_has_pid.append(1) -%}
               {%- endfor -%}
             {%- endfor -%}
           {%- endif -%}
-          {%- if sensor_has_pid -%}
+          {%- if math_has_pid -%}
             <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{collapse_container_number}}" aria-expanded="false" aria-controls="collapseContainer{{collapse_container_number}}"><span class='collapse-button{{collapse_container_number}} fa fa-2x fa-plus-square'></span></a>
           {%- endif -%}
           {{each_math.name}} ({{each_math.id}})
+          <div>
+            {{_('Math (%(type)s), %(sec)s second interval', type=each_math.math_type, sec=each_math.period)}}
+          </div>
         </div>
 
         <div class="col-xs-12 col-sm-6 text-right">
@@ -328,16 +335,18 @@
             </div>
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
-              {% if each_pid.pid_type != 'pwm' -%}
-                {{_('On Duration (sec.)')}}
-              {% else -%}
+              {% if each_pid.raise_relay_id in output_type and
+                    output_type[each_pid.raise_relay_id] == 'pwm' -%}
                 {{_('Duty Cycle')}} (%)
+              {% else -%}
+                {{_('On Duration (sec.)')}}
               {% endif %}
             <div>
               {{_('Min')}}: {{each_pid.raise_min_duration}}, {{_('Max')}}: {{each_pid.raise_max_duration}}
              </div>
           </div>
-          {% if each_pid.pid_type != 'pwm' -%}
+          {% if each_pid.raise_relay_id in output_type and
+                output_type[each_pid.raise_relay_id] != 'pwm' -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Off (seconds)')}}
             <div>
@@ -365,16 +374,18 @@
             </div>
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
-            {% if each_pid.pid_type != 'pwm' -%}
-              {{_('On Duration (sec.)')}}
-            {% else -%}
+            {% if each_pid.lower_relay_id in output_type and
+                  output_type[each_pid.lower_relay_id] == 'pwm' -%}
               {{_('Duty Cycle')}} (%)
+            {% else -%}
+              {{_('On Duration (sec.)')}}
             {% endif %}
             <div>
               {{_('Min')}}: {{each_pid.lower_min_duration}}, {{_('Max')}}: {{each_pid.lower_max_duration}}
             </div>
           </div>
-          {% if each_pid.pid_type != 'pwm' -%}
+          {% if each_pid.lower_relay_id in output_type and
+                output_type[each_pid.lower_relay_id] != 'pwm' -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Off (seconds)')}}
             <div>
