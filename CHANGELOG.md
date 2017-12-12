@@ -2,6 +2,7 @@
 
 ### Features
 
+ - Add new Math controller type: Median
  - Add the ability to use Conditionals with Math controllers
  - Add ability to use Math Controllers with LCDs and PIDs
  - Add Math Controllers to Live page

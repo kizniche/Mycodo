@@ -28,6 +28,7 @@ import threading
 import time
 import timeit
 
+from statistics import median
 import utils.psypy as SI
 
 from mycodo_client import DaemonControl
@@ -175,6 +176,15 @@ class MathController(threading.Thread):
                                 "One or more inputs were not within the "
                                 "Max Age that has been set. Ensure all "
                                 "Inputs are operating properly.")
+
+                    elif self.math_type == 'median':
+                        success, measure = self.get_measurements_from_str(self.inputs)
+                        if success:
+                            measure_dict = {
+                                self.measure: float('{0:.4f}'.format(median(measure)))
+                            }
+                            self.measurements = Measurement(measure_dict)
+                            add_measure_influxdb(self.unique_id, self.measurements)
 
                     elif self.math_type == 'maximum':
                         success, measure = self.get_measurements_from_str(self.inputs)

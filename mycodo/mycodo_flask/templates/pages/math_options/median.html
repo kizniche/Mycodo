@@ -1,0 +1,30 @@
+<div style="padding: 0.5em" class="row small-gutters">
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    {{form_mod_multi.measure.label(class_='control-label')}}
+    <div>
+      {{form_mod_multi.measure(class_='form-control', value=each_math.measure, **{'title':_('What condition is being measured (e.g. Temperature)?')})}}
+    </div>
+  </div>
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    {{form_mod_multi.measure_units.label(class_='control-label')}}
+    <div>
+      {{form_mod_multi.measure_units(class_='form-control', value=each_math.measure_units, **{'title':_('What are the units of the condition being measured (e.g. Celsius)?')})}}
+    </div>
+  </div>
+</div>
+<div class="form-inline">
+  <div class="form-group">
+    {{form_mod_multi.inputs.label(class_='control-label')}}
+    <div>
+      <select class="form-control btn-default" id="inputs" name="inputs" style="width: 100%;" size="{{choices_input|length}}" multiple>
+      {% if choices_input %}
+        {% for each_choice, value in choices_input.iteritems() -%}
+        <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
+        {% endfor -%}
+      {% else %}
+        <option value="">{{_('None Available')}}</option>
+      {% endif %}
+      </select>
+    </div>
+  </div>
+</div>

@@ -97,6 +97,7 @@ def math_mod(form_mod_math, form_mod_type=None):
         mod_math.max_measure_age = form_mod_math.max_measure_age.data
 
         if mod_math.math_type in ['average',
+                                  'median',
                                   'maximum',
                                   'minimum',
                                   'verification']:

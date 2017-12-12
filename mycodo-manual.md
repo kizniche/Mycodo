@@ -291,10 +291,11 @@ Math controllers allow one or more Inputs to have math applied to produce a new 
 
 Type | Description
 --------- | ----------------------------------------------
-Average | Stores the average of the selected Inputs
-Humidity | Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure
+Average | Stores the statistical mean of the selected Inputs
+Median | Stores the statistical median from the selected Inputs
 Maximum | Stores the largest measurement from the selected Inputs
 Minimum | Stores the smallest measurement from the selected Inputs
+Humidity | Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure
 Verification | Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected Inputs
 
 
