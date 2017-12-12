@@ -66,11 +66,7 @@
           {%- for each_pid in pid if each_pid.measurement.split(',')[0] == each_sensor.unique_id and each_pid.is_activated -%}
             {%- do has_active_pid.append(1) -%}
           {%- endfor -%}
-          {%- set has_active_lcd = [] -%}
-          {%- for each_lcd in lcd if each_lcd.is_activated and (each_lcd.line_1_sensor_id == each_sensor.id or each_lcd.line_2_sensor_id == each_sensor.id or each_lcd.line_3_sensor_id == each_sensor.id or each_lcd.line_4_sensor_id == each_sensor.id) -%}
-            {%- do has_active_lcd.append(1) -%}
-          {%- endfor -%}
-          {% if has_active_pid or has_active_lcd -%}
+          {% if has_active_pid -%}
             {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("There are currently active PID or LCD controllers that rely on this input to be active. If you deactivate this input, all active PID and LCD controllers that use it will be deactivated. Select OK to deactivate this input and all associated PID and LCD controllers, otherwise click Cancel to leave them active.")'})}}
           {% else -%}
             {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default')}}

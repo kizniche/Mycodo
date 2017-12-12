@@ -649,7 +649,7 @@ class DaemonController(threading.Thread):
 
     def refresh_math_conditionals(self, math_id, cond_mod):
         try:
-            return self.controller['Math'][math_id].setup_sensor_conditionals(cond_mod)
+            return self.controller['Math'][math_id].setup_conditionals(cond_mod)
         except Exception as except_msg:
             message = "Could not refresh math conditionals:" \
                       " {err}".format(err=except_msg)
@@ -657,7 +657,7 @@ class DaemonController(threading.Thread):
 
     def refresh_input_conditionals(self, input_id, cond_mod):
         try:
-            return self.controller['Input'][input_id].setup_sensor_conditionals(cond_mod)
+            return self.controller['Input'][input_id].setup_conditionals(cond_mod)
         except Exception as except_msg:
             message = "Could not refresh input conditionals:" \
                       " {err}".format(err=except_msg)

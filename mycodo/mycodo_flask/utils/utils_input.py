@@ -409,10 +409,10 @@ def sensor_deactivate_associated_controllers(input_id):
 
     # Deactivate any activated LCDs using this input
     for each_lcd_data in LCDData.query.all():
-        if input_id in [each_lcd_data.line_1_id,
-                        each_lcd_data.line_2_id,
-                        each_lcd_data.line_3_id,
-                        each_lcd_data.line_4_id]:
+        if sensor_unique_id in [each_lcd_data.line_1_id,
+                                each_lcd_data.line_2_id,
+                                each_lcd_data.line_3_id,
+                                each_lcd_data.line_4_id]:
             lcd = LCD.query.filter(LCD.id == each_lcd_data.lcd_id).first()
             if lcd.is_activated:
                 controller_activate_deactivate('deactivate',
