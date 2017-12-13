@@ -308,9 +308,9 @@ def page_graph():
     choices_pid = utils_general.choices_pids(pid)
 
     # Add custom measurement and units to list (From linux command input)
-    input_measurements = MEASUREMENT_UNITS
-    input_measurements = add_custom_measurements(
-        input_dev, input_measurements, MEASUREMENT_UNITS)
+    dict_measurements = MEASUREMENT_UNITS
+    dict_measurements = add_custom_measurements(
+        input_dev, dict_measurements, MEASUREMENT_UNITS)
 
     # Add multi-select values as form choices, for validation
     form_mod_graph.math_ids.choices = []
@@ -397,7 +397,7 @@ def page_graph():
                            sensor=input_dev,
                            colors_graph=colors_graph,
                            colors_gauge=colors_gauge,
-                           sensor_measurements=input_measurements,
+                           dict_measurements=dict_measurements,
                            measurement_units=MEASUREMENT_UNITS,
                            displayOrder=display_order,
                            form_add_graph=form_add_graph,

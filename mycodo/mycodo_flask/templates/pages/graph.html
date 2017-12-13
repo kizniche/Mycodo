@@ -1397,7 +1397,7 @@
       {%- for each_cmd_measure in yaxis_command -%}
         {
           title: {
-            text: '{{each_cmd_measure}} ({{sensor_measurements[each_cmd_measure]['unit']}})'
+            text: '{{each_cmd_measure}} ({{dict_measurements[each_cmd_measure]['unit']}})'
           },
           labels: {
             format: '{value}'
@@ -1712,8 +1712,8 @@
               {%- for each_id_and_measure in graph_sensor_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
             getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.max_measure_age}}, false);
             repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}}, false);
-            {% set measure_name = each_graph_pid_id.split(',')[1]|safe %}
-            {% set measure_unit = input_measurements[each_graph_pid_id.split(',')[1]]['unit']|safe %}
+            {% set measure_name = each_id_and_measure.split(',')[1]|safe %}
+            {% set measure_unit = dict_measurements[each_id_and_measure.split(',')[1]]['unit']|safe %}
               {%- endfor -%}
             {%- endfor -%}
           }
@@ -1840,8 +1840,8 @@
               {%- for each_id_and_measure in graph_sensor_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
             getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.max_measure_age}}, false);
             repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}}, false);
-            {% set measure_name = each_graph_pid_id.split(',')[1]|safe %}
-            {% set measure_unit = input_measurements[each_graph_pid_id.split(',')[1]]['unit']|safe %}
+            {% set measure_name = each_id_and_measure.split(',')[1]|safe %}
+            {% set measure_unit = dict_measurements[each_id_and_measure.split(',')[1]]['unit']|safe %}
               {%- endfor -%}
             {%- endfor -%}            }
           },
