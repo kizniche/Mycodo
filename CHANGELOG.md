@@ -6,6 +6,7 @@
  - Add the ability to use Conditionals with Math controllers
  - Add ability to use Math Controllers with LCDs and PIDs
  - Add Math Controllers to Live page
+ - Add Math and PID Controllers to Gauge measurement selection ([#342](https://github.com/kizniche/mycodo/issues/342))
  - Add "None Found Last x Seconds" to Conditional options (trigger action if a measurement was not found within the last x seconds)
  - Add Restart Daemon option to the Config menu
  - More detailed 'incorrect database version' error message on System Information page
@@ -14,6 +15,7 @@
 
  - Fix measurement list length on Graph page
  - Fix PWM output display on Live page
+ - Fix issue changing Gauge type ([#342](https://github.com/kizniche/mycodo/issues/342))
 
 
 ## 5.4.15 (2017-12-08)

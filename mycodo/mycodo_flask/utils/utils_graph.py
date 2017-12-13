@@ -181,7 +181,26 @@ def graph_mod(form_mod_graph, request_form):
         mod_graph.enable_export = form_mod_graph.enable_export.data
         mod_graph.enable_rangeselect = form_mod_graph.enable_range.data
 
+    # If a gauge type is changed, the color format must change
+    elif (form_mod_graph.graph_type.data in ['gauge_angular', 'gauge_solid'] and
+            mod_graph.graph_type != form_mod_graph.graph_type.data):
+        mod_graph.graph_type = form_mod_graph.graph_type.data
+        if form_mod_graph.graph_type.data == 'gauge_solid':
+            mod_graph.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
+        elif form_mod_graph.graph_type.data == 'gauge_angular':
+            mod_graph.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
+        try:
+            db.session.commit()
+        except sqlalchemy.exc.OperationalError as except_msg:
+            error.append(except_msg)
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            error.append(except_msg)
+
     elif form_mod_graph.graph_type.data in ['gauge_angular', 'gauge_solid']:
+        if mod_graph.graph_type != form_mod_graph.graph_type.data:
+            mod_graph.graph_type = form_mod_graph.graph_type.data
+
+
         colors_hex = {}
         f = request_form
         sorted_colors_string = ""

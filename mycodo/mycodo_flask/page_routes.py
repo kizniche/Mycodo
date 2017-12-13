@@ -331,24 +331,27 @@ def page_graph():
 
     # Retrieve custom colors for gauges
     colors_gauge = OrderedDict()
-    for each_graph in graph:
-        if each_graph.range_colors:  # Split into list
-            color_areas = each_graph.range_colors.split(';')
-        else:  # Create empty list
-            color_areas = []
-        total = []
-        if each_graph.graph_type == 'gauge_angular':
-            for each_range in color_areas:
-                total.append({
-                    'low': each_range.split(',')[0],
-                    'high': each_range.split(',')[1],
-                    'hex': each_range.split(',')[2]})
-        elif each_graph.graph_type == 'gauge_solid':
-            for each_range in color_areas:
-                total.append({
-                    'stop': each_range.split(',')[0],
-                    'hex': each_range.split(',')[1]})
-        colors_gauge.update({each_graph.id: total})
+    try:
+        for each_graph in graph:
+            if each_graph.range_colors:  # Split into list
+                color_areas = each_graph.range_colors.split(';')
+            else:  # Create empty list
+                color_areas = []
+            total = []
+            if each_graph.graph_type == 'gauge_angular':
+                for each_range in color_areas:
+                    total.append({
+                        'low': each_range.split(',')[0],
+                        'high': each_range.split(',')[1],
+                        'hex': each_range.split(',')[2]})
+            elif each_graph.graph_type == 'gauge_solid':
+                for each_range in color_areas:
+                    total.append({
+                        'stop': each_range.split(',')[0],
+                        'hex': each_range.split(',')[1]})
+            colors_gauge.update({each_graph.id: total})
+    except IndexError:
+        flash("Colors Index Error", "error")
 
     # Detect which form on the page was submitted
     if request.method == 'POST':
