@@ -77,68 +77,72 @@ class MathController(threading.Thread):
 
         self.logger = logging.getLogger("mycodo.math_{id}".format(id=math_id))
 
-        self.measurements = None
-        self.running = False
-        self.thread_startup_timer = timeit.default_timer()
-        self.thread_shutdown_timer = 0
-        self.ready = ready
-        self.pause_loop = False
-        self.verify_pause_loop = True
-        self.control = DaemonControl()
+        try:
+            self.measurements = None
+            self.running = False
+            self.thread_startup_timer = timeit.default_timer()
+            self.thread_shutdown_timer = 0
+            self.ready = ready
+            self.pause_loop = False
+            self.verify_pause_loop = True
+            self.control = DaemonControl()
 
-        smtp = db_retrieve_table_daemon(SMTP, entry='first')
-        self.smtp_max_count = smtp.hourly_max
-        self.email_count = 0
-        self.allowed_to_send_notice = True
+            smtp = db_retrieve_table_daemon(SMTP, entry='first')
+            self.smtp_max_count = smtp.hourly_max
+            self.email_count = 0
+            self.allowed_to_send_notice = True
 
-        self.math_id = math_id
-        math = db_retrieve_table_daemon(Math, device_id=self.math_id)
+            self.math_id = math_id
+            math = db_retrieve_table_daemon(Math, device_id=self.math_id)
 
-        # General variables
-        self.unique_id = math.unique_id
-        self.name = math.name
-        self.math_type = math.math_type
-        self.is_activated = math.is_activated
-        self.period = math.period
-        self.max_measure_age = math.max_measure_age
-        self.measure = math.measure
-        self.measure_units = math.measure_units
+            # General variables
+            self.unique_id = math.unique_id
+            self.name = math.name
+            self.math_type = math.math_type
+            self.is_activated = math.is_activated
+            self.period = math.period
+            self.max_measure_age = math.max_measure_age
+            self.measure = math.measure
+            self.measure_units = math.measure_units
 
-        # Average, Maximum, Minimum variables
-        self.inputs = math.inputs
+            # Average, Maximum, Minimum variables
+            self.inputs = math.inputs
 
-        # Verification variables
-        self.max_difference = math.max_difference
+            # Verification variables
+            self.max_difference = math.max_difference
 
-        # Humidity variables
-        self.dry_bulb_t_id = math.dry_bulb_t_id
-        self.dry_bulb_t_measure = math.dry_bulb_t_measure
-        self.wet_bulb_t_id = math.wet_bulb_t_id
-        self.wet_bulb_t_measure = math.wet_bulb_t_measure
-        self.pressure_pa_id = math.pressure_pa_id
-        self.pressure_pa_measure = math.pressure_pa_measure
+            # Humidity variables
+            self.dry_bulb_t_id = math.dry_bulb_t_id
+            self.dry_bulb_t_measure = math.dry_bulb_t_measure
+            self.wet_bulb_t_id = math.wet_bulb_t_id
+            self.wet_bulb_t_measure = math.wet_bulb_t_measure
+            self.pressure_pa_id = math.pressure_pa_id
+            self.pressure_pa_measure = math.pressure_pa_measure
 
-        self.cond_id = {}
-        self.cond_action_id = {}
-        self.cond_name = {}
-        self.cond_is_activated = {}
-        self.cond_if_input_period = {}
-        self.cond_if_input_measurement = {}
-        self.cond_if_input_direction = {}
-        self.cond_if_input_setpoint = {}
-        self.cond_do_output_id = {}
-        self.cond_do_output_state = {}
-        self.cond_do_output_duration = {}
-        self.cond_execute_command = {}
-        self.cond_email_notify = {}
-        self.cond_do_lcd_id = {}
-        self.cond_do_camera_id = {}
-        self.cond_timer = {}
-        self.smtp_wait_timer = {}
+            self.cond_id = {}
+            self.cond_action_id = {}
+            self.cond_name = {}
+            self.cond_is_activated = {}
+            self.cond_if_input_period = {}
+            self.cond_if_input_measurement = {}
+            self.cond_if_input_direction = {}
+            self.cond_if_input_setpoint = {}
+            self.cond_do_output_id = {}
+            self.cond_do_output_state = {}
+            self.cond_do_output_duration = {}
+            self.cond_execute_command = {}
+            self.cond_email_notify = {}
+            self.cond_do_lcd_id = {}
+            self.cond_do_camera_id = {}
+            self.cond_timer = {}
+            self.smtp_wait_timer = {}
 
-        self.setup_conditionals()
+            self.setup_conditionals()
 
-        self.timer = time.time() + self.period
+            self.timer = time.time() + self.period
+        except Exception as except_msg:
+            self.logger.exception("Init Error: {err}".format(
+                err=except_msg))
 
     def run(self):
         try:
@@ -172,10 +176,7 @@ class MathController(threading.Thread):
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)
                         else:
-                            self.logger.error(
-                                "One or more inputs were not within the "
-                                "Max Age that has been set. Ensure all "
-                                "Inputs are operating properly.")
+                            self.error_not_within_max_age()
 
                     elif self.math_type == 'median':
                         success, measure = self.get_measurements_from_str(self.inputs)
@@ -185,6 +186,8 @@ class MathController(threading.Thread):
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)
+                        else:
+                            self.error_not_within_max_age()
 
                     elif self.math_type == 'maximum':
                         success, measure = self.get_measurements_from_str(self.inputs)
@@ -194,6 +197,8 @@ class MathController(threading.Thread):
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)
+                        else:
+                            self.error_not_within_max_age()
 
                     elif self.math_type == 'minimum':
                         success, measure = self.get_measurements_from_str(self.inputs)
@@ -203,6 +208,8 @@ class MathController(threading.Thread):
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)
+                        else:
+                            self.error_not_within_max_age()
 
                     elif self.math_type == 'verification':
                         success, measurements = self.get_measurements_from_str(self.inputs)
@@ -215,40 +222,54 @@ class MathController(threading.Thread):
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)
+                        else:
+                            self.error_not_within_max_age()
 
                     elif self.math_type == 'humidity':
+                        measure_temps_good = False
+                        measure_press_good = False
                         pressure_pa = 101325
+
                         success_dbt, dry_bulb_t = self.get_measurements_from_id(
                             self.dry_bulb_t_id, self.dry_bulb_t_measure)
                         success_wbt, wet_bulb_t = self.get_measurements_from_id(
                             self.wet_bulb_t_id, self.wet_bulb_t_measure)
-                        if not success_dbt or not success_wbt:
-                            break
+                        if success_dbt and success_wbt:
+                            measure_temps_good = True
 
                         if self.pressure_pa_id and self.pressure_pa_measure:
                             success_pa, pressure = self.get_measurements_from_id(
                                 self.pressure_pa_id, self.pressure_pa_measure)
-                            pressure_pa = int(pressure[1])
-                            if not success_pa:
-                                break
+                            if success_pa:
+                                pressure_pa = int(pressure[1])
+                                measure_press_good = True
 
-                        dbt_kelvin = celsius_to_kelvin(float(dry_bulb_t[1]))
-                        wbt_kelvin = celsius_to_kelvin(float(wet_bulb_t[1]))
+                        if (measure_temps_good and
+                                ((self.pressure_pa_id and self.pressure_pa_measure and measure_press_good) or
+                                 (not self.pressure_pa_id or not self.pressure_pa_measure))
+                                ):
 
-                        psypi = SI.state("DBT", dbt_kelvin, "WBT", wbt_kelvin, pressure_pa)
+                            dbt_kelvin = celsius_to_kelvin(float(dry_bulb_t[1]))
+                            wbt_kelvin = celsius_to_kelvin(float(wet_bulb_t[1]))
 
-                        percent_relative_humidity = psypi[2] * 100
+                            psypi = SI.state("DBT", dbt_kelvin,
+                                             "WBT", wbt_kelvin,
+                                             pressure_pa)
 
-                        # print("The dry bulb temperature is ", psypi[0])
-                        # print("The wet bulb temperature is ", psypi[5])
+                            percent_relative_humidity = psypi[2] * 100
 
-                        measure_dict = dict(
-                            specific_enthalpy=float('{0:.5f}'.format(psypi[1])),
-                            humidity=float('{0:.5f}'.format(percent_relative_humidity)),
-                            specific_volume=float('{0:.5f}'.format(psypi[3])),
-                            humidity_ratio=float('{0:.5f}'.format(psypi[4])))
-                        self.measurements = Measurement(measure_dict)
-                        add_measure_influxdb(self.unique_id, self.measurements)
+                            # Dry bulb temperature: psypi[0])
+                            # Wet bulb temperature: psypi[5])
+
+                            measure_dict = dict(
+                                specific_enthalpy=float('{0:.5f}'.format(psypi[1])),
+                                humidity=float('{0:.5f}'.format(percent_relative_humidity)),
+                                specific_volume=float('{0:.5f}'.format(psypi[3])),
+                                humidity_ratio=float('{0:.5f}'.format(psypi[4])))
+                            self.measurements = Measurement(measure_dict)
+                            add_measure_influxdb(self.unique_id, self.measurements)
+                        else:
+                            self.error_not_within_max_age()
 
                 for each_cond_id in self.cond_id:
                     if self.cond_is_activated[each_cond_id]:
@@ -270,6 +291,11 @@ class MathController(threading.Thread):
         except Exception as except_msg:
             self.logger.exception("Run Error: {err}".format(
                 err=except_msg))
+
+    def error_not_within_max_age(self):
+        self.logger.error(
+            "One or more inputs were not within the Max Age that has been "
+            "set. Ensure all Inputs are operating properly.")
 
     def get_measurements_from_str(self, inputs):
         measurements = []

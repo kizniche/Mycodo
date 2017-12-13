@@ -263,7 +263,7 @@ def send_anonymous_stats(start_time):
         add_update_csv(STATS_CSV, 'num_lcds_active',
                        get_count(lcds.filter(LCD.is_activated == True)))
 
-        math = db_retrieve_table_daemon(LCD)
+        math = db_retrieve_table_daemon(Math)
         add_update_csv(STATS_CSV, 'num_maths', get_count(math))
         add_update_csv(STATS_CSV, 'num_maths_active',
                        get_count(math.filter(Math.is_activated == True)))
