@@ -268,8 +268,8 @@ class MathController(threading.Thread):
             self.logger.info("Deactivated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
         except Exception as except_msg:
-                self.logger.exception("Run Error: {err}".format(
-                    err=except_msg))
+            self.logger.exception("Run Error: {err}".format(
+                err=except_msg))
 
     def get_measurements_from_str(self, inputs):
         measurements = []
