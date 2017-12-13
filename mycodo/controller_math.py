@@ -1,7 +1,7 @@
 # coding=utf-8
 #
 # controller_math.py - Math controller that performs math on other controllers
-#                      and creates a new value
+#                      to create new values
 #
 #  Copyright (C) 2017  Kyle T. Gabriel
 #
