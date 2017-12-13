@@ -178,7 +178,7 @@ INPUTS = [
 
 MATHS = [
     ('average', 'Average'),
-    ('median', 'Mediam'),
+    ('median', 'Median'),
     ('maximum', 'Maximum'),
     ('minimum', 'Minimum'),
     ('humidity', 'Humidity'),
