@@ -81,6 +81,7 @@ from mycodo.config import DAEMON_PID_FILE
 
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import CONDITIONAL_ACTIONS
+from mycodo.config import LIST_DEVICES_I2C
 from mycodo.config import MEASUREMENTS
 from mycodo.config import MEASUREMENT_UNITS
 from mycodo.config import PATH_CAMERAS
@@ -466,20 +467,21 @@ def page_info():
     gpio.wait()
 
     try:
-        i2cdetect_out = {}
         i2c_devices = glob.glob("/dev/i2c-*")
+        i2c_devices_sorted = OrderedDict()
         for index, each_dev in enumerate(i2c_devices):
-            i2c_devices[index] = int(each_dev.strip("/dev/i2c-"))
             df = subprocess.Popen(
-                "i2cdetect -y {dev}".format(dev=i2c_devices[index]),
+                "i2cdetect -y {dev}".format(dev=int(each_dev.strip("/dev/i2c-"))),
                 stdout=subprocess.PIPE,
                 shell=True)
-            (i2cdetect_out[i2c_devices[index]], _) = df.communicate()
+            (out, _) = df.communicate()
             df.wait()
+            i2c_devices_sorted[int(each_dev.strip("/dev/i2c-"))] = out
     except Exception as er:
         flash("Error detecting I2C devices: {er}".format(er=er), "error")
-        i2c_devices = {}
-        i2cdetect_out = {}
+        i2c_devices_sorted = {}
+
+    i2c_devices_sorted = OrderedDict(sorted(i2c_devices_sorted.items()))
 
     df = subprocess.Popen(
         "df -h", stdout=subprocess.PIPE, shell=True)
@@ -540,8 +542,7 @@ def page_info():
                            correct_database_version=correct_database_version,
                            df=df_output,
                            free=free_output,
-                           i2c_devices=i2c_devices,
-                           i2cdetect_out=i2cdetect_out,
+                           i2c_devices_sorted=i2c_devices_sorted,
                            ifconfig=ifconfig_output,
                            pstree=pstree_output,
                            ram_use_daemon=ram_use_daemon,
@@ -939,6 +940,8 @@ def page_input():
     input_dev = Input.query.all()
     user = User.query.all()
 
+    list_devices_i2c = LIST_DEVICES_I2C
+
     conditional = Conditional.query.filter(
         Conditional.conditional_type == 'sensor').all()
     conditional_actions = ConditionalActions.query.all()
@@ -1039,6 +1042,7 @@ def page_input():
                            form_conditional_actions=form_conditional_actions,
                            form_mod_sensor=form_mod_input,
                            lcd=lcd,
+                           list_devices_i2c=list_devices_i2c,
                            measurements=MEASUREMENTS,
                            multiplexer_addresses=multiplexer_addresses,
                            multiplexer_channels=multiplexer_channels,

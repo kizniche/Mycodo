@@ -16,6 +16,12 @@
  - Fix measurement list length on Graph page
  - Fix PWM output display on Live page
  - Fix issue changing Gauge type ([#342](https://github.com/kizniche/mycodo/issues/342))
+ - Fix display of multiplexer options for I2C devices
+ - Fix display order of I2C busses on System Information page
+
+### Miscellaneous
+
+ - Add new multiplexer overlay option to manual ([#184](https://github.com/kizniche/mycodo/issues/184))
 
 
 ## 5.4.15 (2017-12-08)

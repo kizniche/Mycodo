@@ -1990,6 +1990,17 @@ multiple sensors with the same I2C address to be connected.
   to be connected to each multiplexer. 8 multiplexers x 8 channels = 64
   devices/sensors with the same I2C address.
 
+Note: The TCA9548A/PCA9548A can be set up in two ways. Either by A)
+connecting the multiplexer to an already-existing I2C bus, or B)
+creating a dtoverlay to create a new I2C bus for each multiplexer
+channel. Method A can be used with the multiplexer options already
+existing in Mycodo, however option B benefits by allowing the linux
+driver to handle channel switching and being able to see every device on
+every bus at once in Mycodo’s System Information page. To enable option
+B, visit GPIO-pca9548 to get the code and latest install instructions.
+If successfully set up, there will be 8 new I2C busses on the
+Config -> System Information page.
+
   TCA9545A: I2C Bus Multiplexer link (I2C): This board works a little
   differently than the TCA9548A, above. This board actually creates 4
   new I2C busses, each with their own selectable voltage, either 3.3 or

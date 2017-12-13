@@ -67,18 +67,18 @@
       </div>
     </div>
 
-    {% for each_i2c in i2c_devices %}
+    {% for each_i2c_dev in i2c_devices_sorted %}
 
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em">
-        I<sup>2</sup>C Bus {{each_i2c}}: i2cdetect -y {{each_i2c}}
+        I<sup>2</sup>C Bus {{each_i2c_dev}}: i2cdetect -y {{each_i2c_dev}}
       </div>
       <div>
-        <pre>{{i2cdetect_out[each_i2c]}}</pre>
+        <pre>{{i2c_devices_sorted[each_i2c_dev]}}</pre>
       </div>
     </div>
 
-    {% endfor %}
+  {% endfor %}
 
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em">
