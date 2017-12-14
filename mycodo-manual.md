@@ -18,7 +18,7 @@ Table of Contents
    - [Input](#input)
    - [Math](#math)
    - [Output](#output)
-   - [PIDs](#pids)
+   - [Functions](#functions)
    - [Timers](#timers)
    - [LCDs](#lcds)
  
@@ -447,8 +447,12 @@ Current Draw (amps) | The is the amount of current the device powered by the out
 Start State | This specifies whether the output should be ON or OFF when mycodo initially starts. Wireless relays have an additional option 'Neither' which will not issue an on or off command when Mycodo starts or stops.
 Seconds to turn On | This is a way to turn a output on for a specific duration of time. This can be useful for testing the outputs and powered devices or the measured effects a device may have on an environmental condition.
 
-PIDs
-----
+Functions
+---------
+
+Functions couple Inputs with Outputs to perform specific tasks. For example, this could be regulation of temperature with a temperature sensor and heater with a PID Controller.
+
+### PID Controller
 
 A [proportional-derivative-integral (PID)
 controller](https://en.wikipedia.org/wiki/PID_controller) is a control

@@ -348,7 +348,7 @@
 <li><a href="#input">Input</a></li>
 <li><a href="#math">Math</a></li>
 <li><a href="#output">Output</a></li>
-<li><a href="#pids">PIDs</a></li>
+<li><a href="#functions">Functions</a></li>
 <li><a href="#timers">Timers</a></li>
 <li><a href="#lcds">LCDs</a></li>
 </ul>
@@ -1043,7 +1043,9 @@
 </tr>
 </tbody>
 </table>
-<h2 id="pids">PIDs</h2>
+<h2 id="functions">Functions</h2>
+<p>Functions couple Inputs with Outputs to perform specific tasks. For example, this could be regulation of temperature with a temperature sensor and heater with a PID Controller.</p>
+<h3 id="pid-controller">PID Controller</h3>
 <p>A <a href="https://en.wikipedia.org/wiki/PID_controller">proportional-derivative-integral (PID) controller</a> is a control loop feedback mechanism used throughout industry for controlling systems. It efficiently brings a measurable condition, such as the temperature, to a desired state and maintains it there with little overshoot and oscillation. A well-tuned PID controller will raise to the setpoint quickly, have minimal overshoot, and maintain the setpoint with little oscillation.</p>
 <p>PID settings may be changed while the PID is activated and the new settings will take effect immediately. If settings are changed while the controller is paused, the values will be used once the controller resumes operation.</p>
 <table style="width:94%;">
@@ -2025,9 +2027,9 @@ sudo service apache2 restart</code></pre>
 <h2 id="i2c-multiplexers">I<sup>2</sup>C Multiplexers</h2>
 <p>All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some inputs may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.</p>
 <blockquote>
-<p>TCA9548A: I<sup>2</sup>C Multiplexer <a href="https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview">link</a> (I<sup>2</sup>C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I<sup>2</sup>C address.</p>
+<p>TCA9548A/PCA9548A: I<sup>2</sup>C Multiplexer <a href="https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview">link</a> (I<sup>2</sup>C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I<sup>2</sup>C address.</p>
 </blockquote>
-<p>Note: The TCA9548A/PCA9548A can be set up in two ways. Either by A) connecting the multiplexer to an already-existing I<sup>2</sup>C bus, or B) creating a dtoverlay to create a new I<sup>2</sup>C bus for each multiplexer channel. Method A can be used with the multiplexer options already existing in Mycodo, however option B benefits by allowing the linux driver to handle channel switching and being able to see every device on every bus at once in Mycodo’s System Information page. To enable option B, visit <a href="https://github.com/Theoi-Meteoroi/GPIO-pca9548">GPIO-pca9548</a> to get the code and latest install instructions. If successfully set up, there will be 8 new I<sup>2</sup>C busses on the <code>Config -&gt; System Information</code> page.</p>
+<p>Note: The TCA9548A/PCA9548A can be set up in two ways. Either by A) connecting the multiplexer to an already-existing I<sup>2</sup>C bus and configuring each device manually in Mycodo, or B) (the easier and safer option) creating a dtoverlay to produce a new I<sup>2</sup>C bus device for each multiplexer channel. Method A can be used with the multiplexer options already existing in Mycodo, however option B benefits by allowing the linux driver to handle channel switching and being able to see every device on every bus at once in Mycodo’s System Information page. To enable option B, visit <a href="https://github.com/Theoi-Meteoroi/GPIO-pca9548">GPIO-pca9548</a> to get the code and latest install instructions. If successfully set up, there will be 8 new I<sup>2</sup>C busses on the <code>Config -&gt; System Information</code> page.</p>
 <blockquote>
 <p>TCA9545A: I<sup>2</sup>C Bus Multiplexer <a href="http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/">link</a> (I<sup>2</sup>C): This board works a little differently than the TCA9548A, above. This board actually creates 4 new I<sup>2</sup>C busses, each with their own selectable voltage, either 3.3 or 5.0 volts. Instructions to enable the Device Tree Overlay are at <a href="https://github.com/camrex/i2c-mux-pca9545a" class="uri">https://github.com/camrex/i2c-mux-pca9545a</a>. Nothing else needs to be done in Mycodo after that except to select the correct I<sup>2</sup>C bus when configuring a sensor.</p>
 </blockquote>

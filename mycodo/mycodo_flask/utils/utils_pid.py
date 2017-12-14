@@ -20,7 +20,6 @@ from mycodo.databases.models import Input
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import list_to_csv
 
-from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
@@ -33,28 +32,6 @@ logger = logging.getLogger(__name__)
 #
 # PID manipulation
 #
-
-def pid_add(form_add_pid):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"PID"))
-    error = []
-
-    if form_add_pid.validate():
-        for _ in range(0, form_add_pid.numberPIDs.data):
-            try:
-                new_pid = PID().save()
-                display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
-                DisplayOrder.query.first().pid = add_display_order(
-                    display_order, new_pid.id)
-                db.session.commit()
-            except sqlalchemy.exc.OperationalError as except_msg:
-                error.append(except_msg)
-            except sqlalchemy.exc.IntegrityError as except_msg:
-                error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_pid'))
-    else:
-        flash_form_errors(form_add_pid)
 
 
 def pid_mod(form_mod_pid_base,
@@ -179,7 +156,7 @@ def pid_mod(form_mod_pid_base,
                     resp=return_value), "success")
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_pid'))
+    flash_success_errors(error, action, url_for('page_routes.page_function'))
 
 
 def pid_del(pid_id):
@@ -203,7 +180,7 @@ def pid_del(pid_id):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_pid'))
+    flash_success_errors(error, action, url_for('page_routes.page_function'))
 
 
 def pid_reorder(pid_id, display_order, direction):
@@ -222,7 +199,7 @@ def pid_reorder(pid_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_pid'))
+    flash_success_errors(error, action, url_for('page_routes.page_function'))
 
 
 # TODO: Add more settings-checks before allowing controller to be activated
@@ -249,7 +226,7 @@ def has_required_pid_values(pid_id):
 
 def pid_activate(pid_id):
     if has_required_pid_values(pid_id):
-        return redirect(url_for('page_routes.page_pid'))
+        return redirect(url_for('page_routes.page_function'))
 
     action = '{action} {controller}'.format(
         action=gettext(u"Actuate"),
@@ -294,7 +271,7 @@ def pid_activate(pid_id):
                                        'PID',
                                        pid_id)
 
-    flash_success_errors(error, action, url_for('page_routes.page_pid'))
+    flash_success_errors(error, action, url_for('page_routes.page_function'))
 
 
 def pid_deactivate(pid_id):

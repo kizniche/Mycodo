@@ -19,7 +19,7 @@ from wtforms.validators import DataRequired
 
 
 class GraphAdd(FlaskForm):
-    graph_type = StringField('Type', widget=widgets.HiddenInput())
+    graph_type = StringField('Graph Type', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext(u'Name'),
         validators=[DataRequired()]

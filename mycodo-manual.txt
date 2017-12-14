@@ -20,7 +20,7 @@ Controllers
 -   Input
 -   Math
 -   Output
--   PIDs
+-   Functions
 -   Timers
 -   LCDs
 
@@ -861,7 +861,13 @@ is on.
   ---------------------------------------------------------------------
 
 
-PIDs
+Functions
+
+Functions couple Inputs with Outputs to perform specific tasks. For
+example, this could be regulation of temperature with a temperature
+sensor and heater with a PID Controller.
+
+PID Controller
 
 A proportional-derivative-integral (PID) controller is a control loop
 feedback mechanism used throughout industry for controlling systems. It
@@ -1984,22 +1990,23 @@ limits by how many you can use at the same time. I2C multiplexers are
 extremely clever and useful in these scenarios because they allow
 multiple sensors with the same I2C address to be connected.
 
-  TCA9548A: I2C Multiplexer link (I2C): Has 8 selectable addresses, so 8
-  multiplexers can be connected to one Raspberry Pi. Each multiplexer
-  has 8 channels, allowing up to 8 devices/sensors with the same address
-  to be connected to each multiplexer. 8 multiplexers x 8 channels = 64
-  devices/sensors with the same I2C address.
+  TCA9548A/PCA9548A: I2C Multiplexer link (I2C): Has 8 selectable
+  addresses, so 8 multiplexers can be connected to one Raspberry Pi.
+  Each multiplexer has 8 channels, allowing up to 8 devices/sensors with
+  the same address to be connected to each multiplexer. 8 multiplexers x
+  8 channels = 64 devices/sensors with the same I2C address.
 
 Note: The TCA9548A/PCA9548A can be set up in two ways. Either by A)
-connecting the multiplexer to an already-existing I2C bus, or B)
-creating a dtoverlay to create a new I2C bus for each multiplexer
-channel. Method A can be used with the multiplexer options already
-existing in Mycodo, however option B benefits by allowing the linux
-driver to handle channel switching and being able to see every device on
-every bus at once in Mycodo’s System Information page. To enable option
-B, visit GPIO-pca9548 to get the code and latest install instructions.
-If successfully set up, there will be 8 new I2C busses on the
-Config -> System Information page.
+connecting the multiplexer to an already-existing I2C bus and
+configuring each device manually in Mycodo, or B) (the easier and safer
+option) creating a dtoverlay to produce a new I2C bus device for each
+multiplexer channel. Method A can be used with the multiplexer options
+already existing in Mycodo, however option B benefits by allowing the
+linux driver to handle channel switching and being able to see every
+device on every bus at once in Mycodo’s System Information page. To
+enable option B, visit GPIO-pca9548 to get the code and latest install
+instructions. If successfully set up, there will be 8 new I2C busses on
+the Config -> System Information page.
 
   TCA9545A: I2C Bus Multiplexer link (I2C): This board works a little
   differently than the TCA9548A, above. This board actually creates 4

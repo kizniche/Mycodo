@@ -6,6 +6,7 @@
 
 ### Miscellaneous
 
+ - Place PID Controllers in a subcategory of new section called Functions
  - Don't disable an LCD when an Input that's using it is disabled
 
 

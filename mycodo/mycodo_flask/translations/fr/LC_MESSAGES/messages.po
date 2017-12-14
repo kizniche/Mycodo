@@ -579,7 +579,7 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_conditional.py:61
 #: mycodo_flask/templates/layout.html:152
-#: mycodo_flask/templates/pages/pid.html:5
+#: mycodo_flask/templates/pages/function.html:5
 #: mycodo_flask/utils/utils_general.py:58 mycodo_flask/utils/utils_pid.py:40
 #: mycodo_flask/utils/utils_pid.py:65 mycodo_flask/utils/utils_pid.py:183
 #: mycodo_flask/utils/utils_pid.py:207 mycodo_flask/utils/utils_pid.py:251
@@ -2043,9 +2043,9 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/input.html:160
 #: mycodo_flask/templates/pages/input.html:177
-#: mycodo_flask/templates/pages/pid.html:184
-#: mycodo_flask/templates/pages/pid.html:207
-#: mycodo_flask/templates/pages/pid.html:234
+#: mycodo_flask/templates/pages/function.html:184
+#: mycodo_flask/templates/pages/function.html:207
+#: mycodo_flask/templates/pages/function.html:234
 msgid "Disabled"
 msgstr ""
 
@@ -2198,21 +2198,21 @@ msgid "How many LCD controllers to add?"
 msgstr ""
 
 #: mycodo_flask/templates/pages/lcd.html:51
-#: mycodo_flask/templates/pages/pid.html:53
+#: mycodo_flask/templates/pages/function.html:53
 msgid "Name for this PID controller"
 msgstr ""
 
 #: mycodo_flask/templates/pages/lcd.html:55
 #: mycodo_flask/templates/pages/output.html:90
 #: mycodo_flask/templates/pages/output.html:92
-#: mycodo_flask/templates/pages/pid.html:57
+#: mycodo_flask/templates/pages/function.html:57
 #: mycodo_flask/templates/pages/timer.html:118
 msgid "Active"
 msgstr ""
 
 #: mycodo_flask/templates/pages/lcd.html:56
 #: mycodo_flask/templates/pages/output.html:97
-#: mycodo_flask/templates/pages/pid.html:60
+#: mycodo_flask/templates/pages/function.html:60
 #: mycodo_flask/templates/pages/timer.html:119
 msgid "Inactive"
 msgstr ""
@@ -2379,105 +2379,105 @@ msgid ""
 "should trigger when the relay On duration equals this amount"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:3
-#: mycodo_flask/templates/pages/pid.html:16
+#: mycodo_flask/templates/pages/function.html:3
+#: mycodo_flask/templates/pages/function.html:16
 msgid "PID Controllers"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:18
+#: mycodo_flask/templates/pages/function.html:18
 msgid ""
 "PID controllers couple an input with a device connected to an output to "
 "regulate an environmental condition. For example, this could be a heater "
 "and a temperature sensor, allowing the regulation of temperature."
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:58
+#: mycodo_flask/templates/pages/function.html:58
 msgid "Paused"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:59
+#: mycodo_flask/templates/pages/function.html:59
 msgid "On Hold"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:110
+#: mycodo_flask/templates/pages/function.html:110
 msgid "Select the measurement to use as the PID input"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:121
+#: mycodo_flask/templates/pages/function.html:121
 msgid "Choose the direction(s) to regulate"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:131
+#: mycodo_flask/templates/pages/function.html:131
 msgid ""
 "The duration between calculating a new PID output to power the raise and "
 "lower relays."
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:137
+#: mycodo_flask/templates/pages/function.html:137
 msgid ""
 "Maximum allowable sensor measurement age (to allow the PID controller to "
 "manipulate relays, the sensor measurement must have occurred in the past "
 "x seconds)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:144
+#: mycodo_flask/templates/pages/function.html:144
 msgid ""
 "This is the desired state of a perticular environmental condition. For "
 "instance, this could be the desired temperature in Celsius."
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:150
+#: mycodo_flask/templates/pages/function.html:150
 msgid "Proportional gain"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:156
+#: mycodo_flask/templates/pages/function.html:156
 msgid "Integral gain"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:162
+#: mycodo_flask/templates/pages/function.html:162
 msgid "Derivative gain"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:168
+#: mycodo_flask/templates/pages/function.html:168
 msgid ""
 "Limit the integrator minimum, for calculating Ki_total: (Ki_total = Ki * "
 "integrator; and PID output = Kp_total + Ki_total + Kd_total)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:174
+#: mycodo_flask/templates/pages/function.html:174
 msgid ""
 "Limit the integrator maximum, for calculating Ki_total: (Ki_total = Ki * "
 "integrator; and PID output = Kp_total + Ki_total + Kd_total)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:183
+#: mycodo_flask/templates/pages/function.html:183
 msgid ""
 "The output that will raise the selected environmental condition (Measure "
 "Type)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:206
+#: mycodo_flask/templates/pages/function.html:206
 msgid ""
 "The output that will lower the selected environmental condition (Measure "
 "Type)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:230
+#: mycodo_flask/templates/pages/function.html:230
 msgid ""
 "Select the method to use when calculating the setpoint. When enabled, the"
 " setpoint(s) of the method override the PID setpoint above."
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:232
+#: mycodo_flask/templates/pages/function.html:232
 msgid "No methods exist. Create one with this button"
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:245
+#: mycodo_flask/templates/pages/function.html:245
 #: mycodo_flask/templates/pages/timer_options/mod_pwm_method.html:36
 msgid "Invalid saved method. Save another method from this list."
 msgstr ""
 
-#: mycodo_flask/templates/pages/pid.html:250
+#: mycodo_flask/templates/pages/function.html:250
 #: mycodo_flask/templates/pages/timer_options/add_pwm_method.html:17
 msgid "Manage Methods"
 msgstr ""

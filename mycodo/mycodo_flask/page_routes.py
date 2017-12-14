@@ -28,6 +28,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_client import daemon_active
 
 from mycodo.mycodo_flask.forms import forms_conditional
+from mycodo.mycodo_flask.forms import forms_function
 from mycodo.mycodo_flask.forms import forms_graph
 from mycodo.mycodo_flask.forms import forms_input
 from mycodo.mycodo_flask.forms import forms_lcd
@@ -38,6 +39,7 @@ from mycodo.mycodo_flask.forms import forms_pid
 from mycodo.mycodo_flask.forms import forms_timer
 
 from mycodo.mycodo_flask.utils import utils_conditional
+from mycodo.mycodo_flask.utils import utils_function
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_graph
 from mycodo.mycodo_flask.utils import utils_input
@@ -730,10 +732,10 @@ def page_logview():
                            log_output=log_output)
 
 
-@blueprint.route('/pid', methods=('GET', 'POST'))
+@blueprint.route('/function', methods=('GET', 'POST'))
 @flask_login.login_required
-def page_pid():
-    """ Display PID settings """
+def page_function():
+    """ Display Function settings """
     method = Method.query.all()
     pid = PID.query.all()
     output = Output.query.all()
@@ -743,7 +745,7 @@ def page_pid():
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
 
-    form_add_pid = forms_pid.PIDAdd()
+    form_add_function = forms_function.FunctionAdd()
     form_mod_pid_base = forms_pid.PIDModBase()
     form_mod_pid_output_raise = forms_pid.PIDModRelayRaise()
     form_mod_pid_output_lower = forms_pid.PIDModRelayLower()
@@ -764,9 +766,13 @@ def page_pid():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
 
-        form_name = request.form['form-name']
-        if form_name == 'addPID':
-            utils_pid.pid_add(form_add_pid)
+        if 'form-name' in request.form:
+            form_name = request.form['form-name']
+        else:
+            form_name = None
+
+        if form_add_function.func_add.data:
+            utils_function.func_add(form_add_function)
         elif form_name == 'modPID':
             if form_mod_pid_base.save.data:
                 utils_pid.pid_mod(form_mod_pid_base,
@@ -799,9 +805,9 @@ def page_pid():
                 utils_pid.pid_manipulate(
                     form_mod_pid_base.pid_id.data, 'Resume')
 
-        return redirect('/pid')
+        return redirect('/function')
 
-    return render_template('pages/pid.html',
+    return render_template('pages/function.html',
                            math_choices=math_choices,
                            method=method,
                            pid=pid,
@@ -809,7 +815,7 @@ def page_pid():
                            relay=output,
                            input_choices=input_choices,
                            displayOrder=display_order,
-                           form_add_pid=form_add_pid,
+                           form_add_function=form_add_function,
                            form_mod_pid_base=form_mod_pid_base,
                            form_mod_pid_pwm_raise=form_mod_pid_pwm_raise,
                            form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,

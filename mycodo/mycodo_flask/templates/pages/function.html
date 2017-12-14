@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
-{% set active_page = "pid" %}
-{% set help_page = ["pids", _('PID Controllers')] %}
+{% set active_page = "function" %}
+{% set help_page = ["functions", _('Functions')] %}
 
-{% block title %} - {{_('PID')}}{% endblock %}
+{% block title %} - {{_('Function')}}{% endblock %}
 
 {% block head %}
   <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-clockpicker.min.css">
@@ -13,21 +13,22 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <h4>{{_('PID Controllers')}} <a href="/help#pids" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <h4>{{_('Functions')}} <a href="/help#functions" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
-    <p>{{_('PID controllers couple an input with a device connected to an output to regulate an environmental condition. For example, this could be a heater and a temperature sensor, allowing the regulation of temperature.')}}</p>
+    <p>{{_('Functions conduct complex tasks, often coupling one or more <a href="/input">Inputs</a> with <a href="/output">Outputs</a> to do specific things. For example, this could be using a PID Controller to create a feedback loop with a temperature sensor and heater in order to regulate temperature.')}}</p>
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
     <div class="row small-gutters" style="padding-left: 1em">
-      <form method="post" action="/pid">
-      <input type="hidden" name="form-name" value="addPID">
-      {{form_add_pid.hidden_tag()}}
-      <div class="col-xs-2 col-sm-1 no-gutters">
-        {{form_add_pid.numberPIDs(class_='form-control', value=1, type="number")}}
+      <form method="post" action="/function">
+      {{form_mod_pid_base.csrf_token}}
+      <div class="col-xs-6 col-md-4 col-sm-2 col-lg-2">
+        <select class="form-control" id="func_type" name="func_type">
+          <option value="pid">PID Controller</option>
+        </select>
       </div>
       <div class="col-xs-5 col-sm-3 col-lg-2 no-gutters">
-        {{form_add_pid.pidAddSubmit(class_='form-control btn btn-default')}}
+        {{form_add_function.func_add(class_='form-control btn btn-default')}}
       </div>
       </form>
     </div>
@@ -39,7 +40,7 @@
       {%- for each_pid in pid if each_pid.id == order -%}
 
         <div class="container" style="margin-bottom: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
-          <form method="post" action="/pid">
+          <form method="post" action="/function">
           <input type="hidden" name="form-name" value="modPID">
           {{form_mod_pid_base.csrf_token}}
           {{form_mod_pid_base.pid_id(value=each_pid.id)}}
@@ -58,7 +59,7 @@
                 {{form_mod_pid_base.name(class_='form-control', value=each_pid.name, **{'title':_('Name for this PID controller')})}}
               </div>
               <div class="col-xs-6 no-gutters">
-                <input class="form-control btn btn-default" title="UUID: {{each_pid.unique_id}}" disabled="" value="[{{'%02d' % each_pid.id}}]
+                <input class="form-control btn btn-default" title="UUID: {{each_pid.unique_id}}" disabled="" value="[PID {{'%02d' % each_pid.id}}]
                 {%- if each_pid.is_activated and not each_pid.is_paused %} {{_('Active')}}
                 {%- elif each_pid.is_activated and each_pid.is_paused %} {{_('Paused')}}
                 {%- elif each_pid.is_held %} {{_('On Hold')}}
