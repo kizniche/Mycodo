@@ -1,3 +1,14 @@
+## 5.4.17 (Unreleased)
+
+### Bugfixes
+
+ - Fix Input conditional refresh upon settings change
+
+### Miscellaneous
+
+ - Don't disable an LCD when an Input that's using it is disabled
+
+
 ## 5.4.16 (2017-12-13)
 
 ### Features

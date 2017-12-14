@@ -67,7 +67,7 @@
             {%- do has_active_pid.append(1) -%}
           {%- endfor -%}
           {% if has_active_pid -%}
-            {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("There are currently active PID or LCD controllers that rely on this input to be active. If you deactivate this input, all active PID and LCD controllers that use it will be deactivated. Select OK to deactivate this input and all associated PID and LCD controllers, otherwise click Cancel to leave them active.")'})}}
+            {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("There are currently active PID controllers that rely on this Input to be active. Select OK to deactivate this input and all associated PID controllers, otherwise click Cancel to leave them active.")'})}}
           {% else -%}
             {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default')}}
           {% endif -%}

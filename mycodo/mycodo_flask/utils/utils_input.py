@@ -407,18 +407,6 @@ def sensor_deactivate_associated_controllers(input_id):
                                            'PID',
                                            each_pid.id)
 
-    # Deactivate any activated LCDs using this input
-    for each_lcd_data in LCDData.query.all():
-        if sensor_unique_id in [each_lcd_data.line_1_id,
-                                each_lcd_data.line_2_id,
-                                each_lcd_data.line_3_id,
-                                each_lcd_data.line_4_id]:
-            lcd = LCD.query.filter(LCD.id == each_lcd_data.lcd_id).first()
-            if lcd.is_activated:
-                controller_activate_deactivate('deactivate',
-                                               'LCD',
-                                               lcd.id)
-
 
 def check_refresh_conditional(sensor_id, cond_mod):
     sensor = (Input.query
@@ -427,4 +415,4 @@ def check_refresh_conditional(sensor_id, cond_mod):
               ).first()
     if sensor:
         control = DaemonControl()
-        control.refresh_sensor_conditionals(sensor_id, cond_mod)
+        control.refresh_input_conditionals(sensor_id, cond_mod)
