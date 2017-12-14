@@ -1,0 +1,87 @@
+<form method="post" action="/graph">
+  <div class="form-inline">
+    <input type="hidden" name="form-name" value="addGauge">
+    {{form_add_gauge.csrf_token}}
+    <div class="form-group">
+      {{form_add_gauge.graph_type.label(class_='control-label')}}
+      <div>
+        <select class="form-control" id="graph_type" name="graph_type">
+          <option value="gauge_angular">Angular Gauge</option>
+          <option value="gauge_solid">Solid Gauge</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_add_gauge.name.label(class_='control-label')}}
+      <div>
+        {{form_add_gauge.name(class_='form-control', value=_('Gauge Name'))}}
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_add_gauge.width.label(class_='control-label')}}
+      <div>
+        <select class="form-control" id="width" name="width">
+          {% for n in range(1, 13) %}
+            <option value="{{n}}"{% if n == 4 %} selected{% endif %}>{{n}}/12</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_add_gauge.height.label(class_='control-label')}}
+      <div>
+        {{form_add_gauge.height(class_='form-control', value=200)}}
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_add_gauge.y_axis_min.label(class_='control-label')}}
+      <div>
+        {{form_add_gauge.y_axis_min(class_='form-control', value=0)}}
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_add_gauge.y_axis_max.label(class_='control-label')}}
+      <div>
+        {{form_add_gauge.y_axis_max(class_='form-control', value=1000)}}
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_add_gauge.max_measure_age.label(class_='control-label')}}
+      <div>
+        {{form_add_gauge.max_measure_age(class_='form-control', value=120)}}
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_add_gauge.refresh_duration.label(class_='control-label')}}
+      <div>
+        {{form_add_gauge.refresh_duration(class_='form-control', value=10)}}
+      </div>
+    </div>
+
+    <div style="clear: both"></div>
+
+    <div class="form-group">
+      {{form_add_gauge.sensor_ids.label(class_='control-label')}}
+      <div>
+        <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;">
+        {% for each_choice, value in choices_input.iteritems() -%}
+          <option value="{{each_choice}}">{{value}}</option>
+        {% endfor -%}
+        {% for each_choice, value in choices_math.iteritems() -%}
+          <option value="{{each_choice}}">{{value}}</option>
+        {% endfor -%}
+        {% for each_choice, value in choices_pid.iteritems() -%}
+          <option value="{{each_choice}}">{{value}}</option>
+        {% endfor -%}
+        </select>
+      </div>
+    </div>
+
+    <div style="clear: both"></div>
+  </div>
+  <div class="form-inline btn-group">
+    <div class="form-group">
+      {{form_add_gauge.gauge_add(class_='form-control btn btn-default')}}
+    </div>
+  </div>
+</form>

@@ -1,0 +1,127 @@
+  chart_gauge[{{chart_number}}] = new Highcharts.chart({
+    chart: {
+      renderTo: 'container-gauge-{{each_graph.id}}',
+      type: 'gauge',
+      plotBackgroundColor: null,
+      plotBackgroundImage: null,
+      plotBorderWidth: 0,
+      plotShadow: false,
+      events: {
+        load: function () {
+        {% for each_sensor in sensor -%}
+          {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id == each_id_and_measure.split(',')[0] %}
+        getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.max_measure_age}}, false);
+        repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}}, false);
+        {%- if not each_sensor.adc_measure -%}
+          {% set measure_name = measurement_units[graph_sensor_ids[0].split(',')[1]]['name']|safe %}
+          {% set measure_unit = measurement_units[graph_sensor_ids[0].split(',')[1]]['unit']|safe %}
+        {%- else -%}
+          {% set measure_name = each_sensor.adc_measure|safe %}
+          {% set measure_unit = each_sensor.adc_measure_units|safe %}
+        {% endif %}
+          {%- endfor -%}
+        {%- endfor -%}
+
+        {% for each_math in math -%}
+          {%- for each_id_and_measure in graph_sensor_ids if each_math.unique_id == each_id_and_measure.split(',')[0] %}
+        getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.max_measure_age}}, false);
+        repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}}, false);
+        {% set measure_name = each_math.measure|safe %}
+        {% set measure_unit = each_math.measure_units|safe %}
+          {%- endfor -%}
+        {%- endfor -%}
+
+        {%- for each_pid in pid -%}
+          {%- for each_id_and_measure in graph_sensor_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
+        getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.max_measure_age}}, false);
+        repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}}, false);
+        {% set measure_name = each_id_and_measure.split(',')[1]|safe %}
+        {% set measure_unit = dict_measurements[each_id_and_measure.split(',')[1]]['unit']|safe %}
+          {%- endfor -%}
+        {%- endfor -%}            }
+      },
+      spacingTop: 0,
+      spacingLeft: 0,
+      spacingRight: 0,
+      spacingBottom: 0
+    },
+
+    title: null,
+
+    exporting: {
+      enabled: false
+    },
+
+    pane: {
+        startAngle: -150,
+        endAngle: 150,
+        background: [{
+            backgroundColor: '#c1c1c1',
+            borderWidth: 0,
+            outerRadius: '105%',
+            innerRadius: '103%'
+        }]
+    },
+
+    // the value axis
+    yAxis: {
+        min: {{each_graph.y_axis_min}},
+        max: {{each_graph.y_axis_max}},
+        title: {
+          text: '{{measure_name}} ({{measure_unit}})',
+          y: 20
+        },
+
+        minColor: "#3e3f46",
+        maxColor: "#3e3f46",
+
+        minorTickInterval: 'auto',
+        minorTickWidth: 1,
+        minorTickLength: 10,
+        minorTickPosition: 'inside',
+        minorTickColor: '#666',
+
+        tickPixelInterval: 30,
+        tickWidth: 2,
+        tickPosition: 'inside',
+        tickLength: 10,
+        tickColor: '#666',
+        labels: {
+            step: 2,
+            rotation: 'auto'
+        },
+        plotBands: [
+          {% for n in range(colors_gauge[each_graph.id]|length) %}
+            {% set index = '{0:0>2}'.format(n) %}
+        {
+            from: {{colors_gauge[each_graph.id][n]['low']}},
+            to: {{colors_gauge[each_graph.id][n]['high']}},
+            color: '{{colors_gauge[each_graph.id][n]['hex']}}'
+        },
+          {% endfor %}
+        ]
+    },
+
+    series: [{
+        name: '{{measure_name}}',
+        data: [null],
+        dataLabels: {
+          style: {"fontSize": "14px"},
+          format: '{point.y:,.1f}'
+        },
+        yAxis: 0,
+          dial: {
+            backgroundColor: '{% if current_user.theme in dark_themes %}#e3e4f4{% else %}#3e3f46{% endif %}',
+            baseWidth: 5
+        },
+        tooltip: {
+            valueSuffix: ' {{measure_unit}}'
+        }
+    }],
+
+    credits: {
+      enabled: false,
+      href: "https://github.com/kizniche/Mycodo",
+      text: "Mycodo"
+    }
+  });
