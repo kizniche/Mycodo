@@ -297,7 +297,7 @@
                   {% elif each_measure == 'temperature_die' %} Die
                   {%- endif -%}</b> | <span id="{{each_math.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
               {% else %}
-                <b><span id="{{each_math.unique_id}}-{{each_measure}}-value">0.0</span> {% if each_measure != '' %}{{measurement_units[each_measure]['unit']}}{% endif %}</b> | <span id="{{each_math.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
+                <b><span id="{{each_math.unique_id}}-{{each_measure}}-value">0.0</span> {% if each_measure != '' %}{{each_math.measure_units}}{% endif %}</b> | <span id="{{each_math.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
               {% endif %}
             {% endfor %}
           </div>
