@@ -125,7 +125,7 @@ def test_routes_logged_in_as_admin(_, testapp):
         ('method', '<!-- Route: /method -->'),
         ('method-build/-1', 'admin logged in'),
         ('output', '<!-- Route: /output -->'),
-        ('pid', '<!-- Route: /pid -->'),
+        ('function', '<!-- Route: /function -->'),
         ('remote/setup', '<!-- Route: /remote/setup -->'),
         ('timer', '<!-- Route: /timer -->'),
         ('usage', '<!-- Route: /usage -->'),
