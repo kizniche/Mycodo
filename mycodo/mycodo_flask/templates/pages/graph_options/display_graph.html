@@ -144,6 +144,7 @@
   {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id.split(',')[0] -%}
     {%- set pid_measurement = each_graph_pid_id.split(',')[1] -%}
     {%- if pid_measurement == 'setpoint' %}
+
       {%- for each_sensor in sensor if each_sensor.unique_id == each_pid.measurement.split(',')[0] -%}
         {%- set measurement = each_pid.measurement.split(',')[1] -%}
         {%- if measurement == 'altitude' -%}
@@ -195,6 +196,57 @@
           {%- do yaxis_command.append(each_sensor.cmd_measurement) -%}
         {%- endif -%}
       {%- endfor -%}
+
+      {%- for each_math in math if each_math.unique_id == each_pid.measurement.split(',')[0] -%}
+        {%- set measurement = each_pid.measurement.split(',')[1] -%}
+        {%- if measurement == 'altitude' -%}
+          {%- do yaxis_alt.append(1) -%}
+        {%- elif measurement == 'co2' -%}
+          {%- do yaxis_co2.append(1) -%}
+        {%- elif measurement in ['cpu_load_1m',
+                                 'cpu_load_5m',
+                                 'cpu_load_15m'] -%}
+          {%- do yaxis_cpu_load.append(1) -%}
+        {%- elif measurement == 'disk_space' -%}
+          {%- do yaxis_disk_space.append(1) -%}
+        {%- elif measurement == 'duty_cycle' -%}
+          {%- do yaxis_duty_cycle.append(1) -%}
+        {%- elif measurement == 'edge' -%}
+          {%- do yaxis_edge.append(1) -%}
+        {%- elif measurement == 'frequency' -%}
+          {%- do yaxis_frequency.append(1) -%}
+        {%- elif measurement == 'humidity' -%}
+          {%- do yaxis_hum.append(1) -%}
+        {%- elif measurement == 'humidity_ratio' -%}
+          {%- do yaxis_humidity_ratio.append(1) -%}
+        {%- elif measurement == 'lux' -%}
+          {%- do yaxis_lux.append(1) -%}
+        {%- elif measurement == 'moisture' -%}
+          {%- do yaxis_moisture.append(1) -%}
+        {%- elif measurement == 'ph' -%}
+          {%- do yaxis_ph.append(1) -%}
+        {%- elif measurement == 'pressure' -%}
+          {%- do yaxis_press.append(1) -%}
+        {%- elif measurement == 'pulse_width' -%}
+          {%- do yaxis_pulse_width.append(1) -%}
+        {%- elif measurement == 'rpm' -%}
+          {%- do yaxis_rpm.append(1) -%}
+        {%- elif measurement == 'specific_enthalpy' -%}
+          {%- do yaxis_specific_enthalpy.append(1) -%}
+        {%- elif measurement == 'specific_volume' -%}
+          {%- do yaxis_specific_volume.append(1) -%}
+        {%- elif measurement in ['temperature',
+                                 'temperature_object',
+                                 'temperature_die',
+                                 'dewpoint',] -%}
+          {%- do yaxis_temp.append(1) -%}
+        {%- elif measurement == 'voltage' -%}
+          {%- do yaxis_volts.append(1) -%}
+        {%- else -%}
+      {%- do yaxis_pid.append(each_math.unique_id) -%}
+        {%- endif -%}
+      {%- endfor -%}
+
     {% elif pid_measurement == 'pid_output' %}
       {%- do yaxis_relay.append(1) -%}
     {% elif pid_measurement == 'duty_cycle' %}
@@ -545,6 +597,20 @@
       },
     {%- endfor -%}
     {%- for each_math_measure in yaxis_math -%}
+      {% for each_math in math if each_math_measure == each_math.unique_id %}
+      {
+        title: {
+          text: '{{each_math.measure}} ({{each_math.measure_units}})'
+        },
+        labels: {
+          format: '{value}'
+        },
+        opposite: false,
+        id: '{{each_math.measure}}'
+      },
+      {% endfor %}
+    {%- endfor -%}
+    {%- for each_math_measure in yaxis_pid -%}
       {% for each_math in math if each_math_measure == each_math.unique_id %}
       {
         title: {

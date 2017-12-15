@@ -12,6 +12,8 @@
  - Fix display of Math data on LCDs ([#343](https://github.com/kizniche/mycodo/issues/343))
  - Fix LCD Max Age only working for first line
  - Fix display of Math data on LCDs
+ - Fix issue displaying some Graph page configurations
+ - Fix issue with PID recording negative durations
 
 ### Miscellaneous
 

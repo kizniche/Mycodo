@@ -234,13 +234,13 @@ def pid_activate(pid_id):
     error = can_set_relay(
         error, pid_id, pid.raise_relay_id, pid.lower_relay_id)
 
-    sensor_unique_id = pid.measurement.split(',')[0]
-    sensor = Input.query.filter(
-        Input.unique_id == sensor_unique_id).first()
+    device_unique_id = pid.measurement.split(',')[0]
+    input = Input.query.filter(
+        Input.unique_id == device_unique_id).first()
     math = Math.query.filter(
         Math.unique_id == device_unique_id).first()
 
-    if not sensor.is_activated:
+    if (input and not input.is_activated) or (math and not math.is_activated):
         error.append(gettext(
             u"Cannot activate PID controller if the associated sensor "
             u"controller is inactive"))

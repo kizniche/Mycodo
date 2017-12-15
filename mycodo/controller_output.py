@@ -262,12 +262,17 @@ class OutputController(threading.Thread):
                             time_now + datetime.timedelta(seconds=abs(duration)))
                     self.output_last_duration[output_id] = duration
 
+                    # Write the duration the output was ON to the
+                    # database at the timestamp it turned ON
                     if time_on > 0:
-                        # Write the duration the output was ON to the
-                        # database at the timestamp it turned ON
-                        duration_on = float(time_on)
+                        # Make sure the recorded value is recorded negatieve
+                        # if instructed to do so
+                        if self.output_last_duration[output_id] < 0:
+                            duration_on = float(-time_on)
+                        else:
+                            duration_on = float(time_on)
                         timestamp = (datetime.datetime.utcnow() -
-                                     datetime.timedelta(seconds=duration_on))
+                                     datetime.timedelta(seconds=abs(duration_on)))
                         write_db = threading.Thread(
                             target=write_influxdb_value,
                             args=(self.output_unique_id[output_id],
