@@ -196,12 +196,13 @@ class PIDController(threading.Thread):
     def run(self):
         try:
             self.running = True
-            self.logger.info("Activated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_startup_timer) * 1000))
+            startup_str = "Activated in {:.1f} ms".format(
+                (timeit.default_timer() - self.thread_startup_timer) * 1000)
             if self.is_paused:
-                self.logger.info("Paused")
+                startup_str += ", started Paused"
             elif self.is_held:
-                self.logger.info("Held")
+                startup_str += ", started Held"
+            self.logger.info(startup_str)
             self.ready.set()
 
             while self.running:

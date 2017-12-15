@@ -1,13 +1,21 @@
 ## 5.4.17 (Unreleased)
 
+### Features
+
+ - Add Decimal Places toption to LCD lines
+
 ### Bugfixes
 
  - Fix Input conditional refresh upon settings change
- - Fix display of Math controllers with atypical measurements on Live page
+ - Fix display of Math controllers with atypical measurements on Live page ([#343](https://github.com/kizniche/mycodo/issues/343))
+ - Fix inability to use Math controller values with PID Controllers ([#343](https://github.com/kizniche/mycodo/issues/343))
+ - Fix display of Math data on LCDs ([#343](https://github.com/kizniche/mycodo/issues/343))
+ - Fix LCD Max Age only working for first line
+ - Fix display of Math data on LCDs
 
 ### Miscellaneous
 
- - Place PID Controllers in a subcategory of new section called Functions
+ - Place PID Controllers in a subcategory of new section called Function
  - Don't disable an LCD when an Input that's using it is disabled
 
 

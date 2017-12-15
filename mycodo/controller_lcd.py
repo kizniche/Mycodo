@@ -57,11 +57,12 @@ import timeit
 import RPi.GPIO as GPIO
 import datetime
 
+from databases.models import Input
 from databases.models import LCD
 from databases.models import LCDData
-from databases.models import PID
+from databases.models import Math
 from databases.models import Output
-from databases.models import Input
+from databases.models import PID
 from devices.tca9548a import TCA9548A
 from utils.database import db_retrieve_table_daemon
 from utils.influx import read_last_influxdb
@@ -130,39 +131,48 @@ class LCDController(threading.Thread):
             self.lcd_string_line = {}
             self.lcd_line = {}
             self.lcd_max_age = {}
+            self.lcd_decimal_places = {}
 
             for each_lcd_display in lcd_data:
                 self.display_ids.append(each_lcd_display.id)
                 self.lcd_string_line[each_lcd_display.id] = {}
                 self.lcd_line[each_lcd_display.id] = {}
                 self.lcd_max_age[each_lcd_display.id] = {}
+                self.lcd_decimal_places[each_lcd_display.id] = {}
 
                 for i in range(1, self.lcd_y_lines + 1):
                     self.lcd_string_line[each_lcd_display.id][i] = ''
                     self.lcd_line[each_lcd_display.id][i] = {}
-                    self.lcd_max_age[each_lcd_display.id][i] = each_lcd_display.line_1_max_age
+                    if i == 1:
+                        self.lcd_max_age[each_lcd_display.id][i] = each_lcd_display.line_1_max_age
+                        self.lcd_decimal_places[each_lcd_display.id][i] = each_lcd_display.line_1_decimal_places
+                    elif i == 2:
+                        self.lcd_max_age[each_lcd_display.id][i] = each_lcd_display.line_2_max_age
+                        self.lcd_decimal_places[each_lcd_display.id][i] = each_lcd_display.line_2_decimal_places
+                    elif i == 3:
+                        self.lcd_max_age[each_lcd_display.id][i] = each_lcd_display.line_3_max_age
+                        self.lcd_decimal_places[each_lcd_display.id][i] = each_lcd_display.line_3_decimal_places
+                    elif i == 4:
+                        self.lcd_max_age[each_lcd_display.id][i] = each_lcd_display.line_4_max_age
+                        self.lcd_decimal_places[each_lcd_display.id][i] = each_lcd_display.line_4_decimal_places
 
                 if self.lcd_y_lines in [2, 4]:
                     self.setup_lcd_line(
-                        each_lcd_display.id,
-                        1,
+                        each_lcd_display.id, 1,
                         each_lcd_display.line_1_id,
                         each_lcd_display.line_1_measurement)
                     self.setup_lcd_line(
-                        each_lcd_display.id,
-                        2,
+                        each_lcd_display.id, 2,
                         each_lcd_display.line_2_id,
                         each_lcd_display.line_2_measurement)
 
                 if self.lcd_y_lines == 4:
                     self.setup_lcd_line(
-                        each_lcd_display.id,
-                        3,
+                        each_lcd_display.id, 3,
                         each_lcd_display.line_3_id,
                         each_lcd_display.line_3_measurement)
                     self.setup_lcd_line(
-                        each_lcd_display.id,
-                        4,
+                        each_lcd_display.id, 4,
                         each_lcd_display.line_4_id,
                         each_lcd_display.line_4_measurement)
 
@@ -272,12 +282,12 @@ class LCDController(threading.Thread):
 
     def get_measurement(self, display_id, i):
         try:
-            if self.lcd_line[display_id][i]['measurement'] == 'relay_state':
-                self.lcd_line[display_id][i]['measurement_value'] = self.output_state(
+            if self.lcd_line[display_id][i]['measure'] == 'relay_state':
+                self.lcd_line[display_id][i]['measure_val'] = self.output_state(
                     self.lcd_line[display_id][i]['id'])
                 return True
             else:
-                if self.lcd_line[display_id][i]['measurement'] == 'time':
+                if self.lcd_line[display_id][i]['measure'] == 'time':
                     last_measurement = read_last_influxdb(
                         self.lcd_line[display_id][i]['id'],
                         '/.*/',
@@ -285,23 +295,27 @@ class LCDController(threading.Thread):
                 else:
                     last_measurement = read_last_influxdb(
                         self.lcd_line[display_id][i]['id'],
-                        self.lcd_line[display_id][i]['measurement'],
+                        self.lcd_line[display_id][i]['measure'],
                         duration_sec=self.lcd_max_age[display_id][i])
                 if last_measurement:
                     self.lcd_line[display_id][i]['time'] = last_measurement[0]
-                    self.lcd_line[display_id][i]['measurement_value'] = last_measurement[1]
+                    if self.lcd_decimal_places[display_id][i] == 0:
+                        self.lcd_line[display_id][i]['measure_val'] = int(last_measurement[1])
+                    else:
+                        self.lcd_line[display_id][i]['measure_val'] = round(
+                            last_measurement[1], self.lcd_decimal_places[display_id][i])
                     utc_dt = datetime.datetime.strptime(
                         self.lcd_line[display_id][i]['time'].split(".")[0],
                         '%Y-%m-%dT%H:%M:%S')
                     utc_timestamp = calendar.timegm(utc_dt.timetuple())
                     local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
                     self.logger.debug("Latest {}: {} @ {}".format(
-                        self.lcd_line[display_id][i]['measurement'],
-                        self.lcd_line[display_id][i]['measurement_value'], local_timestamp))
+                        self.lcd_line[display_id][i]['measure'],
+                        self.lcd_line[display_id][i]['measure_val'], local_timestamp))
                     return True
                 else:
                     self.lcd_line[display_id][i]['time'] = None
-                    self.lcd_line[display_id][i]['measurement_value'] = None
+                    self.lcd_line[display_id][i]['measure_val'] = None
                     self.logger.debug("No data returned from influxdb")
             return False
         except Exception as except_msg:
@@ -315,21 +329,21 @@ class LCDController(threading.Thread):
             if last_measurement_success:
                 # Determine if the LCD output will have a value unit
                 measurement = ''
-                if self.lcd_line[display_id][i]['measurement'] == 'setpoint':
+                if self.lcd_line[display_id][i]['measure'] == 'setpoint':
                     pid = db_retrieve_table_daemon(
                         PID, unique_id=self.lcd_line[display_id][i]['id'])
                     measurement = pid.measurement.split(',')[1]
-                    self.lcd_line[display_id][i]['measurement_value'] = '{:.2f}'.format(
-                        self.lcd_line[display_id][i]['measurement_value'])
-                elif self.lcd_line[display_id][i]['measurement'] == 'duration_sec':
+                    self.lcd_line[display_id][i]['measure_val'] = '{:.2f}'.format(
+                        self.lcd_line[display_id][i]['measure_val'])
+                elif self.lcd_line[display_id][i]['measure'] == 'duration_sec':
                     measurement = 'duration_sec'
-                    self.lcd_line[display_id][i]['measurement_value'] = '{:.2f}'.format(
-                        self.lcd_line[display_id][i]['measurement_value'])
-                elif self.lcd_line[display_id][i]['measurement'] in self.list_inputs:
-                    measurement = self.lcd_line[display_id][i]['measurement']
+                    self.lcd_line[display_id][i]['measure_val'] = '{:.2f}'.format(
+                        self.lcd_line[display_id][i]['measure_val'])
+                elif self.lcd_line[display_id][i]['measure'] in self.list_inputs:
+                    measurement = self.lcd_line[display_id][i]['measure']
 
                 # Produce the line that will be displayed on the LCD
-                if self.lcd_line[display_id][i]['measurement'] == 'time':
+                if self.lcd_line[display_id][i]['measure'] == 'time':
                     # Convert UTC timestamp to local timezone
                     utc_dt = datetime.datetime.strptime(
                         self.lcd_line[display_id][i]['time'].split(".")[0],
@@ -339,22 +353,22 @@ class LCDController(threading.Thread):
                         datetime.datetime.fromtimestamp(utc_timestamp))
                 elif measurement:
                     value_length = len(str(
-                        self.lcd_line[display_id][i]['measurement_value']))
-                    unit_length = len(self.list_inputs[measurement]['unit'].replace(u'°', u''))
+                        self.lcd_line[display_id][i]['measure_val']))
+                    unit_length = len(self.lcd_line[display_id][i]['unit'].replace(u'°', u''))
                     name_length = self.lcd_x_characters - value_length - unit_length - 2
                     name_cropped = self.lcd_line[display_id][i]['name'].ljust(name_length)[:name_length]
                     self.lcd_string_line[display_id][i] = u'{name} {value} {unit}'.format(
                         name=name_cropped,
-                        value=self.lcd_line[display_id][i]['measurement_value'],
-                        unit=self.list_inputs[measurement]['unit'].replace(u'°', u''))
+                        value=self.lcd_line[display_id][i]['measure_val'],
+                        unit=self.lcd_line[display_id][i]['unit'].replace(u'°', u''))
                 else:
                     value_length = len(str(
-                        self.lcd_line[display_id][i]['measurement_value']))
+                        self.lcd_line[display_id][i]['measure_val']))
                     name_length = self.lcd_x_characters - value_length - 1
                     name_cropped = self.lcd_line[display_id][i]['name'][:name_length]
                     self.lcd_string_line[display_id][i] = u'{name} {value}'.format(
                         name=name_cropped,
-                        value=self.lcd_line[display_id][i]['measurement_value'])
+                        value=self.lcd_line[display_id][i]['measure_val'])
             else:
                 error = u'NO DATA'
                 name_length = self.lcd_x_characters - len(error) - 1
@@ -399,20 +413,42 @@ class LCDController(threading.Thread):
 
     def setup_lcd_line(self, display_id, line, lcd_id, measurement):
         self.lcd_line[display_id][line]['id'] = lcd_id
-        self.lcd_line[display_id][line]['measurement'] = measurement
-        if lcd_id:
-            table = None
-            if measurement in self.list_outputs:
-                table = Output
-            elif measurement in self.list_pids:
-                table = PID
-            elif measurement in self.list_inputs:
-                table = Input
-            input_line = db_retrieve_table_daemon(
-                table, unique_id=lcd_id)
-            self.lcd_line[display_id][line]['name'] = input_line.name
-            if 'time' in measurement:
-                self.lcd_line[display_id][line]['measurement'] = 'time'
+        self.lcd_line[display_id][line]['unit'] = None
+        self.lcd_line[display_id][line]['measure'] = measurement
+        if not lcd_id:
+            return
+
+        table = None
+
+        # Find what controller the unique_id of the line belongs to,
+        # then determine the unit
+        if (db_retrieve_table_daemon(Output, unique_id=lcd_id) and
+                measurement in self.list_outputs):
+            self.lcd_line[display_id][line]['unit'] = self.list_inputs[measurement]['unit']
+            table = Output
+        elif (db_retrieve_table_daemon(PID, unique_id=lcd_id) and
+                measurement in self.list_pids):
+            self.lcd_line[display_id][line]['unit'] = self.list_inputs[measurement]['unit']
+            table = PID
+        elif (db_retrieve_table_daemon(Input, unique_id=lcd_id) and
+                measurement in self.list_inputs):
+            self.lcd_line[display_id][line]['unit'] = self.list_inputs[measurement]['unit']
+            table = Input
+        elif db_retrieve_table_daemon(Math, unique_id=lcd_id):
+            if measurement in self.list_inputs:
+                self.lcd_line[display_id][line]['unit'] = self.list_inputs[measurement]['unit']
+            else:
+                self.lcd_line[display_id][line]['unit'] = db_retrieve_table_daemon(
+                    Math, unique_id=lcd_id).measure_units
+            table = Math
+        else:
+            self.logger.error("Unique ID not found in any controller")
+
+        dev_name = db_retrieve_table_daemon(
+            table, unique_id=lcd_id)
+        self.lcd_line[display_id][line]['name'] = dev_name.name
+        if 'time' in measurement:
+            self.lcd_line[display_id][line]['measure'] = 'time'
 
     def flash_lcd(self, state):
         """ Enable the LCD to begin or end flashing """

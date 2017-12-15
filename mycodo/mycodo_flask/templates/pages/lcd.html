@@ -186,7 +186,7 @@
         {{form_lcd_display.lcd_id(value=each_lcd.id)}}
         {{form_lcd_display.lcd_data_id(value=each_lcd_display.id)}}
 
-        <div class="col-xs-12 col-sm-9 small-gutters">
+        <div class="col-xs-12 col-sm-6 small-gutters">
           {{form_lcd_display.line_1_display.label(class_='control-label')}}
           <div>
             <select class="form-control" id="line_1_display" name="line_1_display">
@@ -230,8 +230,14 @@
             {{form_lcd_display.line_1_max_age(class_='form-control', value=each_lcd_display.line_1_max_age)}}
           </div>
         </div>
+        <div class="col-xs-12 col-sm-3 small-gutters">
+          {{form_lcd_display.line_1_decimal_places.label(class_='control-label')}}
+          <div>
+            {{form_lcd_display.line_1_decimal_places(class_='form-control', value=each_lcd_display.line_1_decimal_places)}}
+          </div>
+        </div>
 
-        <div class="col-xs-12 col-sm-9 small-gutters">
+        <div class="col-xs-12 col-sm-6 small-gutters">
           {{form_lcd_display.line_2_display.label(class_='control-label')}}
           <div>
             <select class="form-control" id="line_2_display" name="line_2_display">
@@ -275,10 +281,16 @@
             {{form_lcd_display.line_2_max_age(class_='form-control', value=each_lcd_display.line_2_max_age)}}
           </div>
         </div>
+        <div class="col-xs-12 col-sm-3 small-gutters">
+          {{form_lcd_display.line_2_decimal_places.label(class_='control-label')}}
+          <div>
+            {{form_lcd_display.line_2_decimal_places(class_='form-control', value=each_lcd_display.line_2_decimal_places)}}
+          </div>
+        </div>
 
         {%- if each_lcd.y_lines == 4 -%}
 
-        <div class="col-xs-12 col-sm-9 small-gutters">
+        <div class="col-xs-12 col-sm-6 small-gutters">
           {{form_lcd_display.line_3_display.label(class_='control-label')}}
           <div>
             <select class="form-control" id="line_3_display" name="line_3_display">
@@ -322,8 +334,14 @@
             {{form_lcd_display.line_3_max_age(class_='form-control', value=each_lcd_display.line_3_max_age)}}
           </div>
         </div>
+        <div class="col-xs-12 col-sm-3 small-gutters">
+          {{form_lcd_display.line_3_decimal_places.label(class_='control-label')}}
+          <div>
+            {{form_lcd_display.line_3_decimal_places(class_='form-control', value=each_lcd_display.line_3_decimal_places)}}
+          </div>
+        </div>
 
-        <div class="col-xs-12 col-sm-9 small-gutters">
+        <div class="col-xs-12 col-sm-6 small-gutters">
           {{form_lcd_display.line_4_display.label(class_='control-label')}}
           <div>
             <select class="form-control" id="line_4_display" name="line_4_display">
@@ -365,6 +383,12 @@
           {{form_lcd_display.line_4_max_age.label(class_='control-label')}}
           <div>
             {{form_lcd_display.line_4_max_age(class_='form-control', value=each_lcd_display.line_4_max_age)}}
+          </div>
+        </div>
+        <div class="col-xs-12 col-sm-3 small-gutters">
+          {{form_lcd_display.line_4_decimal_places.label(class_='control-label')}}
+          <div>
+            {{form_lcd_display.line_4_decimal_places(class_='form-control', value=each_lcd_display.line_4_decimal_places)}}
           </div>
         </div>
 

@@ -44,16 +44,8 @@ def pid_mod(form_mod_pid_base,
     error = []
 
     if not form_mod_pid_base.validate():
-        error.append(gettext("Error in form field(s)"))
+        error.append(gettext(u"Error in form field(s)"))
         flash_form_errors(form_mod_pid_base)
-
-    device_unique_id = form_mod_pid_base.measurement.data.split(',')[0]
-    sensor = Input.query.filter(
-        Input.unique_id == device_unique_id).first()
-    math = Math.query.filter(
-        Math.unique_id == device_unique_id).first()
-    if not sensor and not math:
-        error.append(gettext(u"A valid Input or Math is required"))
 
     mod_pid = PID.query.filter(
         PID.id == form_mod_pid_base.pid_id.data).first()
@@ -87,14 +79,14 @@ def pid_mod(form_mod_pid_base,
         if mod_pid.raise_relay_id == int(form_mod_pid_base.raise_relay_id.data):
             if raise_relay_type == 'pwm':
                 if not form_mod_pid_pwm_raise.validate():
-                    error.append(gettext("Error in form field(s)"))
+                    error.append(gettext(u"Error in form field(s)"))
                     flash_form_errors(form_mod_pid_pwm_raise)
                 else:
                     mod_pid.raise_min_duration = form_mod_pid_pwm_raise.raise_min_duty_cycle.data
                     mod_pid.raise_max_duration = form_mod_pid_pwm_raise.raise_max_duty_cycle.data
             else:
                 if not form_mod_pid_relay_raise.validate():
-                    error.append(gettext("Error in form field(s)"))
+                    error.append(gettext(u"Error in form field(s)"))
                     flash_form_errors(form_mod_pid_relay_raise)
                 else:
                     mod_pid.raise_min_duration = form_mod_pid_relay_raise.raise_min_duration.data
@@ -118,14 +110,14 @@ def pid_mod(form_mod_pid_base,
         if mod_pid.lower_relay_id == int(form_mod_pid_base.lower_relay_id.data):
             if lower_relay_type == 'pwm':
                 if not form_mod_pid_pwm_lower.validate():
-                    error.append(gettext("Error in form field(s)"))
+                    error.append(gettext(u"Error in form field(s)"))
                     flash_form_errors(form_mod_pid_pwm_lower)
                 else:
                     mod_pid.lower_min_duration = form_mod_pid_pwm_lower.lower_min_duty_cycle.data
                     mod_pid.lower_max_duration = form_mod_pid_pwm_lower.lower_max_duty_cycle.data
             else:
                 if not form_mod_pid_relay_lower.validate():
-                    error.append(gettext("Error in form field(s)"))
+                    error.append(gettext(u"Error in form field(s)"))
                     flash_form_errors(form_mod_pid_relay_lower)
                 else:
                     mod_pid.lower_min_duration = form_mod_pid_relay_lower.lower_min_duration.data
@@ -210,14 +202,13 @@ def has_required_pid_values(pid_id):
     pid = PID.query.filter(
         PID.id == pid_id).first()
     error = False
-    if not pid.measurement:
+    device_unique_id = pid.measurement.split(',')[0]
+    input = Input.query.filter(
+        Input.unique_id == device_unique_id).first()
+    math = Math.query.filter(
+        Math.unique_id == device_unique_id).first()
+    if (not input and not math) or not pid.measurement:
         flash(gettext(u"A valid Measurement is required"), "error")
-        error = True
-    sensor_unique_id = pid.measurement.split(',')[0]
-    sensor = Input.query.filter(
-        Input.unique_id == sensor_unique_id).first()
-    if not sensor:
-        flash(gettext(u"A valid sensor is required"), "error")
         error = True
     if not pid.raise_relay_id and not pid.lower_relay_id:
         flash(gettext(u"A Raise Output and/or a Lower Output is "
@@ -246,6 +237,8 @@ def pid_activate(pid_id):
     sensor_unique_id = pid.measurement.split(',')[0]
     sensor = Input.query.filter(
         Input.unique_id == sensor_unique_id).first()
+    math = Math.query.filter(
+        Math.unique_id == device_unique_id).first()
 
     if not sensor.is_activated:
         error.append(gettext(
