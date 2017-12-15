@@ -119,7 +119,7 @@
           {{_('Measurement')}} | {{_('Timestamp')}}
           <div>
             {% for each_measure in each_input.measurements.split(',') if each_input.device != 'LinuxCommand' %}
-              {% if each_measure and measurement_units[each_measure]['meas'] == 'temperature' %}
+              {% if each_measure and each_measure in measurement_units and measurement_units[each_measure]['meas'] == 'temperature' %}
                 <b><span id="{{each_input.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}} (<span id="{{each_input.unique_id}}-{{each_measure}}-value-F">0.0</span> &deg;F)
                   {%- if each_measure == 'dewpoint' %} DP
                   {% elif each_measure == 'temperature_object' %} Obj
@@ -290,7 +290,7 @@
           {{_('Measurement')}} | {{_('Timestamp')}}
           <div>
             {% for each_measure in each_math.measure.split(',') %}
-              {% if each_measure and measurement_units[each_measure]['meas'] == 'temperature' %}
+              {% if each_measure and each_measure in measurement_units and measurement_units[each_measure]['meas'] == 'temperature' %}
                 <b><span id="{{each_math.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}} (<span id="{{each_math.unique_id}}-{{each_measure}}-value-F">0.0</span> &deg;F)
                   {%- if each_measure == 'dewpoint' %} DP
                   {% elif each_measure == 'temperature_object' %} Obj

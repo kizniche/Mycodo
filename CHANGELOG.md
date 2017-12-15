@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix Input conditional refresh upon settings change
+ - Fix display of Math controllers with atypical measurements on Live page
 
 ### Miscellaneous
 
