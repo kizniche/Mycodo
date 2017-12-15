@@ -1078,6 +1078,7 @@ def page_math():
     form_conditional_actions = forms_conditional.ConditionalActions()
 
     choices_input = utils_general.choices_inputs(input_dev)
+    choices_math = utils_general.choices_maths(math)
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().math)
 
@@ -1170,6 +1171,7 @@ def page_math():
                            conditional_actions=conditional_actions,
                            conditional_actions_list=CONDITIONAL_ACTIONS,
                            choices_input=choices_input,
+                           choices_math=choices_math,
                            display_order=display_order,
                            form_add_math=form_add_math,
                            form_mod_math=form_mod_math,

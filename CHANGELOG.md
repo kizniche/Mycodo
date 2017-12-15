@@ -1,9 +1,14 @@
 ## 5.4.19 (Unreleased)
 
+### Features
+
+ - Add ability to use other Math controller outputs as Math controller inputs
+
 ### Bugfixes
 
  - Fix not deleting associated Math Conditionals when a Math controller is deleted
  - Fix displaying LCD lines for Controllers/Measurements that no longer exist
+ - Fix improper WBT input-checking for humidity math controller
 
 
 ## 5.4.18 (2017-12-15)

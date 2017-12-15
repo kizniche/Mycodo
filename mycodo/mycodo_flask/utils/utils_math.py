@@ -117,14 +117,18 @@ def math_mod(form_mod_math, form_mod_type=None):
             mod_math.dry_bulb_t_id = form_mod_type.dry_bulb_temperature.data.split(',')[0]
             dbt_input = Input.query.filter(
                 Input.unique_id == mod_math.dry_bulb_t_id).first()
-            if not dbt_input or 'temperature' not in dbt_input.measurements:
+            dbt_math = Input.query.filter(
+                Math.unique_id == mod_math.dry_bulb_t_id).first()
+            if (not dbt_input and not dbt_math) and 'temperature' not in dbt_input.measurements:
                 error.append("Invalid dry-bulb temperature selection")
             mod_math.dry_bulb_t_measure = form_mod_type.dry_bulb_temperature.data.split(',')[1]
 
             mod_math.wet_bulb_t_id = form_mod_type.wet_bulb_temperature.data.split(',')[0]
             wbt_input = Input.query.filter(
-                Input.unique_id == mod_math.dry_bulb_t_id).first()
-            if not wbt_input or 'temperature' not in wbt_input.measurements:
+                Input.unique_id == mod_math.wet_bulb_t_id).first()
+            wbt_math = Input.query.filter(
+                Math.unique_id == mod_math.wet_bulb_t_id).first()
+            if (not wbt_input and not wbt_math) and 'temperature' not in wbt_input.measurements:
                 error.append("Invalid wet-bulb temperature selection")
             mod_math.wet_bulb_t_measure = form_mod_type.wet_bulb_temperature.data.split(',')[1]
 

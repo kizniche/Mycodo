@@ -17,8 +17,11 @@
     {{form_mod_multi.inputs.label(class_='control-label')}}
     <div>
       <select class="form-control btn-default" id="inputs" name="inputs" style="width: 100%;" size="{{choices_input|length}}" multiple>
-      {% if choices_input %}
+      {% if choices_input or choices_math %}
         {% for each_choice, value in choices_input.iteritems() -%}
+        <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
+        {% endfor -%}
+        {% for each_choice, value in choices_math.iteritems() -%}
         <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
         {% endfor -%}
       {% else %}

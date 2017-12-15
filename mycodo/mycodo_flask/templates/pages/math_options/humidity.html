@@ -4,9 +4,12 @@
     <div>
       <select class="form-control" id="dry_bulb_temperature" name="dry_bulb_temperature">
         <option value="">{{_('Select One')}}</option>
-      {% if choices_input %}
+      {% if choices_input or choices_math %}
         {% for each_choice, value in choices_input.iteritems() -%}
         <option value="{{each_choice}}"{%- if each_math.dry_bulb_t_id == each_choice.split(',')[0] and each_math.dry_bulb_t_measure == each_choice.split(',')[1] %} selected{%- endif -%}>{{value}}</option>
+        {% endfor -%}
+        {% for each_choice, value in choices_math.iteritems() -%}
+        <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
         {% endfor -%}
       {% else %}
         <option value="">{{_('None Available')}}</option>
@@ -19,9 +22,12 @@
     <div>
       <select class="form-control" id="wet_bulb_temperature" name="wet_bulb_temperature">
         <option value="">{{_('Select One')}}</option>
-      {% if choices_input %}
+      {% if choices_input or choices_math %}
         {% for each_choice, value in choices_input.iteritems() -%}
         <option value="{{each_choice}}"{%- if each_math.wet_bulb_t_id == each_choice.split(',')[0] and each_math.wet_bulb_t_measure == each_choice.split(',')[1] %} selected{%- endif -%}>{{value}}</option>
+        {% endfor -%}
+        {% for each_choice, value in choices_math.iteritems() -%}
+        <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
         {% endfor -%}
       {% else %}
         <option value="">{{_('None Available')}}</option>
@@ -34,9 +40,12 @@
     <div>
       <select class="form-control" id="pressure" name="pressure">
         <option value="">{{_('Disabled')}}</option>
-      {% if choices_input %}
+      {% if choices_input or choices_math %}
         {% for each_choice, value in choices_input.iteritems() -%}
         <option value="{{each_choice}}"{%- if each_math.pressure_pa_id == each_choice.split(',')[0] and each_math.pressure_pa_measure == each_choice.split(',')[1] %} selected{%- endif -%}>{{value}}</option>
+        {% endfor -%}
+        {% for each_choice, value in choices_math.iteritems() -%}
+        <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
         {% endfor -%}
       {% else %}
         <option value="">{{_('None Available')}}</option>
