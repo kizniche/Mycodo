@@ -571,7 +571,6 @@ class PIDController(threading.Thread):
                                 duration=self.lower_seconds_on,
                                 min_off=self.lower_min_off_duration)
 
-                        self.logger.error("TEST01: {}".format(self.control_variable))
                         self.write_pid_output_influxdb(
                             'pid_output', self.control_variable)
 

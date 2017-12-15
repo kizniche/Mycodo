@@ -1,4 +1,4 @@
-## 5.4.17 (Unreleased)
+## 5.4.17 (2017-12-14)
 
 ### Features
 
@@ -14,6 +14,7 @@
  - Fix display of Math data on LCDs
  - Fix issue displaying some Graph page configurations
  - Fix issue with PID recording negative durations
+ - Fix Date Methods ([#344](https://github.com/kizniche/mycodo/issues/344))
 
 ### Miscellaneous
 

@@ -54,13 +54,13 @@
     </div>
   </div>
 
-  <div class="col-sm-6 col-md-4">
+  <div class="col-sm-6 col-md-3">
     {{form_add_method.relay_id.label(class_='control-label')}}
     <div>
       <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relay_id" name="relay_id" title="{{_('Modulate the selected relay')}}.">
         <option value=""></option>
-        {% for rel in relay -%}
-          <option value="{{rel.id}}">{{rel.id}} ({{rel.name}})</option>
+        {% for each_output in output -%}
+          <option value="{{each_output.id}}">[{{each_output.id}}] {{each_output.name}}</option>
         {% endfor -%}
       </select>
     </div>
@@ -71,7 +71,7 @@
       {{form_add_method.relay_state(class_='form-control')}}
     </div>
   </div>
-  <div class="col-sm-3 col-md-2">
+  <div class="col-sm-3 col-md-3">
     {{form_add_method.relay_duration.label(class_='control-label')}}
     <div>
       {{form_add_method.relay_duration(class_='form-control')}}
