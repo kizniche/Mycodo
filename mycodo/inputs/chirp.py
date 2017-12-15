@@ -23,8 +23,6 @@ class ChirpSensor(AbstractInput):
         self.address = address
 
         if not testing:
-            extra = {'id': 'b{b}_a{a}'.format(b=bus, a=address)}
-            self.logger = logging.LoggerAdapter(logger, extra)
             self.bus = smbus.SMBus(bus)
             self.filter_average('lux', init_max=5)
 
