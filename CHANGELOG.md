@@ -1,3 +1,10 @@
+## 5.4.18 (2017-12-15)
+
+### Bugfixes
+
+ - Fix error on Live page if no Math controllers exist
+
+
 ## 5.4.17 (2017-12-14)
 
 ### Features

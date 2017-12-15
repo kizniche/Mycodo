@@ -657,7 +657,7 @@ def page_live():
 
     # Filter only activated math controllers
     maths_sorted = []
-    if input_display_order:
+    if input_display_order and math_display_order:
         for each_math_order in math_display_order:
             for each_math in math:
                 if (each_math_order == each_math.id and
