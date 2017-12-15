@@ -2,7 +2,7 @@
 
 ### Bugfixes
 
- - Fix error on Live page if no Math controllers exist
+ - Fix error on Live page if no Math controllers exist ([#345](https://github.com/kizniche/mycodo/issues/345))
 
 
 ## 5.4.17 (2017-12-14)
