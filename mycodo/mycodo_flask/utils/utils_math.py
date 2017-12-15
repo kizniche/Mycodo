@@ -8,6 +8,8 @@ from flask import url_for
 from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 
+from mycodo.databases.models import Conditional
+from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
@@ -164,6 +166,17 @@ def math_del(form_mod_math):
                 'deactivate',
                 'Math',
                 form_mod_math.math_id.data)
+
+        # Delete any conditionals associated with the controller
+        conditionals = Conditional.query.filter(
+            Conditional.math_id == form_mod_math.math_id.data).all()
+        for each_cond in conditionals:
+            conditional_actions = ConditionalActions.query.filter(
+                ConditionalActions.conditional_id == each_cond.id).all()
+            for each_cond_action in conditional_actions:
+                db.session.delete(each_cond_action)
+            db.session.delete(each_cond)
+        db.session.commit()
 
         delete_entry_with_id(Math, form_mod_math.math_id.data)
         try:

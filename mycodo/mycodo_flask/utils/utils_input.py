@@ -326,6 +326,7 @@ def sensor_del(form_mod_sensor):
                 'Input',
                 form_mod_sensor.modSensor_id.data)
 
+        # Delete any conditionals associated with the controller
         conditionals = Conditional.query.filter(
             Conditional.sensor_id == form_mod_sensor.modSensor_id.data).all()
         for each_cond in conditionals:

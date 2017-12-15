@@ -1,3 +1,10 @@
+## 5.4.19 (Unreleased)
+
+### Bugfixes
+
+ - Fix not deleting associated Math Conditionals when a Math controller is deleted
+
+
 ## 5.4.18 (2017-12-15)
 
 ### Bugfixes

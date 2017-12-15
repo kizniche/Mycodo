@@ -166,8 +166,8 @@ def pid_del(pid_id):
         if pid.is_activated:
             pid_deactivate(pid_id)
 
-        delete_entry_with_id(PID,
-                             pid_id)
+        delete_entry_with_id(PID, pid_id)
+
         display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
         display_order.remove(int(pid_id))
         DisplayOrder.query.first().pid = list_to_csv(display_order)
