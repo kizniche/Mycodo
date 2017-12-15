@@ -51,6 +51,7 @@
 import calendar
 import logging
 import smbus
+import sqlalchemy
 import threading
 import time
 import timeit
@@ -229,7 +230,7 @@ class LCDController(threading.Thread):
                         # Acquire all measurements to be displayed on the LCD
                         display_id = self.display_ids[self.display_count]
                         for i in range(1, self.lcd_y_lines + 1):
-                            if self.lcd_line[display_id][i]['id']:
+                            if self.lcd_line[display_id][i]['id'] and self.lcd_line[display_id][i]['setup']:
                                 self.create_lcd_line(
                                     self.get_measurement(display_id, i),
                                     display_id,
@@ -412,10 +413,13 @@ class LCDController(threading.Thread):
         return gpio_state
 
     def setup_lcd_line(self, display_id, line, lcd_id, measurement):
+        self.lcd_line[display_id][line]['setup'] = False
         self.lcd_line[display_id][line]['id'] = lcd_id
+        self.lcd_line[display_id][line]['name'] = None
         self.lcd_line[display_id][line]['unit'] = None
         self.lcd_line[display_id][line]['measure'] = measurement
         if not lcd_id:
+
             return
 
         table = None
@@ -444,11 +448,18 @@ class LCDController(threading.Thread):
         else:
             self.logger.error("Unique ID not found in any controller")
 
-        dev_name = db_retrieve_table_daemon(
-            table, unique_id=lcd_id)
+        try:
+            dev_name = db_retrieve_table_daemon(
+                table, unique_id=lcd_id)
+        except sqlalchemy.exc.InvalidRequestError:
+            self.logger.error("Invalid table")
+            return
+
         self.lcd_line[display_id][line]['name'] = dev_name.name
         if 'time' in measurement:
             self.lcd_line[display_id][line]['measure'] = 'time'
+
+        self.lcd_line[display_id][line]['setup'] = True
 
     def flash_lcd(self, state):
         """ Enable the LCD to begin or end flashing """

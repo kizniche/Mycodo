@@ -16,8 +16,6 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import DisplayOrder
-from mycodo.databases.models import LCD
-from mycodo.databases.models import LCDData
 from mycodo.databases.models import PID
 from mycodo.databases.models import Input
 from mycodo.utils.system_pi import csv_to_list_of_int
@@ -39,7 +37,7 @@ logger = logging.getLogger(__name__)
 # Input manipulation
 #
 
-def sensor_add(form_add_sensor):
+def input_add(form_add_sensor):
     action = u'{action} {controller}'.format(
         action=gettext(u"Add"),
         controller=gettext(u"Input"))
@@ -219,7 +217,7 @@ def sensor_add(form_add_sensor):
         flash_form_errors(form_add_sensor)
 
 
-def sensor_mod(form_mod_sensor):
+def input_mod(form_mod_sensor):
     action = u'{action} {controller}'.format(
         action=gettext(u"Modify"),
         controller=gettext(u"Input"))
@@ -309,26 +307,24 @@ def sensor_mod(form_mod_sensor):
     flash_success_errors(error, action, url_for('page_routes.page_input'))
 
 
-def sensor_del(form_mod_sensor):
+def input_del(form_mod_sensor):
     action = u'{action} {controller}'.format(
         action=gettext(u"Delete"),
         controller=gettext(u"Input"))
     error = []
 
+    input_id = form_mod_sensor.modSensor_id.data
+
     try:
-        sensor = Input.query.filter(
-            Input.id == form_mod_sensor.modSensor_id.data).first()
-        if sensor.is_activated:
-            sensor_deactivate_associated_controllers(
-                form_mod_sensor.modSensor_id.data)
-            controller_activate_deactivate(
-                'deactivate',
-                'Input',
-                form_mod_sensor.modSensor_id.data)
+        input_dev = Input.query.filter(
+            Input.id == input_id).first()
+        if input_dev.is_activated:
+            input_deactivate_associated_controllers(input_id)
+            controller_activate_deactivate('deactivate', 'Input', input_id)
 
         # Delete any conditionals associated with the controller
         conditionals = Conditional.query.filter(
-            Conditional.sensor_id == form_mod_sensor.modSensor_id.data).all()
+            Conditional.input_id == input_id).all()
         for each_cond in conditionals:
             conditional_actions = ConditionalActions.query.filter(
                 ConditionalActions.conditional_id == each_cond.id).all()
@@ -337,11 +333,10 @@ def sensor_del(form_mod_sensor):
             db.session.delete(each_cond)
         db.session.commit()
 
-        delete_entry_with_id(Input,
-                             form_mod_sensor.modSensor_id.data)
+        delete_entry_with_id(Input, input_id)
         try:
             display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
-            display_order.remove(int(form_mod_sensor.modSensor_id.data))
+            display_order.remove(int(input_id))
             DisplayOrder.query.first().sensor = list_to_csv(display_order)
         except Exception:  # id not in list
             pass
@@ -352,15 +347,14 @@ def sensor_del(form_mod_sensor):
     flash_success_errors(error, action, url_for('page_routes.page_input'))
 
 
-def sensor_reorder(sensor_id, display_order, direction):
+def input_reorder(input_id, display_order, direction):
     action = u'{action} {controller}'.format(
         action=gettext(u"Reorder"),
         controller=gettext(u"Input"))
     error = []
+
     try:
-        status, reord_list = reorder(display_order,
-                                     sensor_id,
-                                     direction)
+        status, reord_list = reorder(display_order, input_id, direction)
         if status == 'success':
             DisplayOrder.query.first().sensor = ','.join(map(str, reord_list))
             db.session.commit()
@@ -371,34 +365,30 @@ def sensor_reorder(sensor_id, display_order, direction):
     flash_success_errors(error, action, url_for('page_routes.page_input'))
 
 
-def sensor_activate(form_mod_sensor):
-    sensor = Input.query.filter(
-        Input.id == form_mod_sensor.modSensor_id.data).first()
-    if (sensor.device != u'LinuxCommand' and
-            not sensor.location and
-            sensor.device not in DEVICES_DEFAULT_LOCATION):
-        flash("Cannot activate sensor without the GPIO/I2C Address/Port "
+def input_activate(form_mod_sensor):
+    input_id = form_mod_sensor.modSensor_id.data
+    input_dev = Input.query.filter(Input.id == input_id).first()
+    if (input_dev.device != u'LinuxCommand' and
+            not input_dev.location and
+            input_dev.device not in DEVICES_DEFAULT_LOCATION):
+        flash("Cannot activate Input without the GPIO/I2C Address/Port "
               "to communicate with it set.", "error")
         return redirect(url_for('page_routes.page_input'))
-    elif (sensor.device == u'LinuxCommand' and
-            sensor.cmd_command is ''):
-        flash("Cannot activate sensor without a command set.", "error")
+    elif (input_dev.device == u'LinuxCommand' and
+          input_dev.cmd_command is ''):
+        flash("Cannot activate Input without a command set.", "error")
         return redirect(url_for('page_routes.page_input'))
-    controller_activate_deactivate('activate',
-                                   'Input',
-                                   form_mod_sensor.modSensor_id.data)
+    controller_activate_deactivate('activate', 'Input',  input_id)
 
 
-def sensor_deactivate(form_mod_sensor):
-    sensor_deactivate_associated_controllers(
-        form_mod_sensor.modSensor_id.data)
-    controller_activate_deactivate('deactivate',
-                                   'Input',
-                                   form_mod_sensor.modSensor_id.data)
+def input_deactivate(form_mod_sensor):
+    input_id = form_mod_sensor.modSensor_id.data
+    input_deactivate_associated_controllers(input_id)
+    controller_activate_deactivate('deactivate', 'Input', input_id)
 
 
 # Deactivate any active PID or LCD controllers using this sensor
-def sensor_deactivate_associated_controllers(input_id):
+def input_deactivate_associated_controllers(input_id):
     # Deactivate any activated PIDs using this input
     sensor_unique_id = Input.query.filter(Input.id == input_id).first().unique_id
     pid = PID.query.filter(PID.is_activated == True).all()
@@ -409,11 +399,11 @@ def sensor_deactivate_associated_controllers(input_id):
                                            each_pid.id)
 
 
-def check_refresh_conditional(sensor_id, cond_mod):
+def check_refresh_conditional(input_id, cond_mod):
     sensor = (Input.query
-              .filter(Input.id == sensor_id)
+              .filter(Input.id == input_id)
               .filter(Input.is_activated == True)
               ).first()
     if sensor:
         control = DaemonControl()
-        control.refresh_input_conditionals(sensor_id, cond_mod)
+        control.refresh_input_conditionals(input_id, cond_mod)

@@ -859,16 +859,16 @@ def page_output():
             return redirect(url_for('page_routes.page_output'))
 
         if form_add_output.relay_add.data:
-            utils_output.relay_add(form_add_output)
+            utils_output.output_add(form_add_output)
         elif form_mod_output.save.data:
-            utils_output.relay_mod(form_mod_output)
+            utils_output.output_mod(form_mod_output)
         elif form_mod_output.delete.data:
-            utils_output.relay_del(form_mod_output)
+            utils_output.output_del(form_mod_output)
         elif form_mod_output.order_up.data:
-            utils_output.relay_reorder(form_mod_output.relay_id.data,
+            utils_output.output_reorder(form_mod_output.relay_id.data,
                                        display_order, 'up')
         elif form_mod_output.order_down.data:
-            utils_output.relay_reorder(form_mod_output.relay_id.data,
+            utils_output.output_reorder(form_mod_output.relay_id.data,
                                        display_order, 'down')
 
         elif form_conditional.add_cond.data:
@@ -985,21 +985,21 @@ def page_input():
             return redirect(url_for('page_routes.page_input'))
 
         if form_add_input.sensorAddSubmit.data:
-            utils_input.sensor_add(form_add_input)
+            utils_input.input_add(form_add_input)
         elif form_mod_input.modSensorSubmit.data:
-            utils_input.sensor_mod(form_mod_input)
+            utils_input.input_mod(form_mod_input)
         elif form_mod_input.delSensorSubmit.data:
-            utils_input.sensor_del(form_mod_input)
+            utils_input.input_del(form_mod_input)
         elif form_mod_input.orderSensorUp.data:
-            utils_input.sensor_reorder(form_mod_input.modSensor_id.data,
+            utils_input.input_reorder(form_mod_input.modSensor_id.data,
                                        display_order, 'up')
         elif form_mod_input.orderSensorDown.data:
-            utils_input.sensor_reorder(form_mod_input.modSensor_id.data,
+            utils_input.input_reorder(form_mod_input.modSensor_id.data,
                                        display_order, 'down')
         elif form_mod_input.activateSensorSubmit.data:
-            utils_input.sensor_activate(form_mod_input)
+            utils_input.input_activate(form_mod_input)
         elif form_mod_input.deactivateSensorSubmit.data:
-            utils_input.sensor_deactivate(form_mod_input)
+            utils_input.input_deactivate(form_mod_input)
 
         elif form_conditional.deactivate_cond.data:
             utils_conditional.conditional_deactivate(
