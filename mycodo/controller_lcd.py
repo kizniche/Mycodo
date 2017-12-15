@@ -419,7 +419,6 @@ class LCDController(threading.Thread):
         self.lcd_line[display_id][line]['unit'] = None
         self.lcd_line[display_id][line]['measure'] = measurement
         if not lcd_id:
-
             return
 
         table = None
@@ -446,13 +445,13 @@ class LCDController(threading.Thread):
                     Math, unique_id=lcd_id).measure_units
             table = Math
         else:
-            self.logger.error("Unique ID not found in any controller")
+            self.logger.error("Line {line}: Unique ID not found in any controller".format(line=line))
 
         try:
             dev_name = db_retrieve_table_daemon(
                 table, unique_id=lcd_id)
         except sqlalchemy.exc.InvalidRequestError:
-            self.logger.error("Invalid table")
+            self.logger.error("Line {line}: Invalid table".format(line=line))
             return
 
         self.lcd_line[display_id][line]['name'] = dev_name.name
