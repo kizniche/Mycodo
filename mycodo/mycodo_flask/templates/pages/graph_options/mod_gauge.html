@@ -36,6 +36,8 @@
         {{form_mod_gauge.sensor_ids.label(class_='control-label')}}
         <div>
           <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;">
+            <option value="">{{_('Select One')}}</option>
+          {% if choices_input or choices_math or choices_pid %}
           {% for each_choice, value in choices_input.iteritems() -%}
             <option value="{{each_choice}}" {% if each_graph.sensor_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
           {% endfor -%}
@@ -45,6 +47,9 @@
           {% for each_choice, value in choices_pid.iteritems() -%}
             <option value="{{each_choice}}" {% if each_graph.sensor_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
           {% endfor -%}
+          {% else %}
+            <option value="">{{_('None Available')}}</option>
+          {% endif %}
           </select>
         </div>
       </div>

@@ -3,6 +3,7 @@
 ### Features
 
  - Add ability to use other Math controller outputs as Math controller inputs
+ - Add checks to ensure a measurement is selected for Gauges
 
 ### Bugfixes
 
@@ -22,7 +23,7 @@
 
 ### Features
 
- - Add Decimal Places toption to LCD lines
+ - Add Decimal Places option to LCD lines
 
 ### Bugfixes
 
