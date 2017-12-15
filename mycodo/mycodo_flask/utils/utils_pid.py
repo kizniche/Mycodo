@@ -13,6 +13,7 @@ from flask_babel import gettext
 from mycodo.mycodo_client import DaemonControl
 
 from mycodo.databases.models import DisplayOrder
+from mycodo.databases.models import Math
 from mycodo.databases.models import Method
 from mycodo.databases.models import PID
 from mycodo.databases.models import Output
@@ -46,11 +47,13 @@ def pid_mod(form_mod_pid_base,
         error.append(gettext("Error in form field(s)"))
         flash_form_errors(form_mod_pid_base)
 
-    sensor_unique_id = form_mod_pid_base.measurement.data.split(',')[0]
+    device_unique_id = form_mod_pid_base.measurement.data.split(',')[0]
     sensor = Input.query.filter(
-        Input.unique_id == sensor_unique_id).first()
-    if not sensor:
-        error.append(gettext(u"A valid sensor is required"))
+        Input.unique_id == device_unique_id).first()
+    math = Math.query.filter(
+        Math.unique_id == device_unique_id).first()
+    if not sensor and not math:
+        error.append(gettext(u"A valid Input or Math is required"))
 
     mod_pid = PID.query.filter(
         PID.id == form_mod_pid_base.pid_id.data).first()
