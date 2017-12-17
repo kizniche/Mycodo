@@ -181,7 +181,7 @@ def main():
         # if not a special keyword, pass commands straight to board
         else:
             if len(input_str) == 0:
-                print "Please input valid command."
+                print("Please input valid command.")
             else:
                 try:
                     print(device.query(input_str))

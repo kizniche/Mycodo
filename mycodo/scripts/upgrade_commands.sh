@@ -130,6 +130,14 @@ case "${1:-''}" in
             printf "#### Virtualenv already exists, skipping creation\n"
         fi
     ;;
+    'setup-virtualenv-python3')
+        if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env_py3 ]; then
+            pip install virtualenv --upgrade
+            virtualenv --system-site-packages -p python3 ${INSTALL_DIRECTORY}/Mycodo/env_py3
+        else
+            printf "## Virtualenv already exists, skipping creation\n"
+        fi
+    ;;
     'uninstall-apt-pip')
         printf "\n#### Uninstalling apt version of pip (if installed)\n"
         apt-get purge -y python-pip
@@ -232,9 +240,17 @@ case "${1:-''}" in
         if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env ]; then
             printf "\n#### Error: Virtualenv doesn't exist. Create with $0 setup-virtualenv\n"
         else
-            source ${INSTALL_DIRECTORY}/Mycodo/env/bin/activate
             ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install --upgrade pip
             ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install --upgrade -r ${INSTALL_DIRECTORY}/Mycodo/install/requirements.txt
+        fi
+    ;;
+    'update-pip-packages-py3')
+        printf "\n#### Installing pip requirements from requirements-py3.txt\n"
+        if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env_py3 ]; then
+            printf "\n## Error: Virtualenv doesn't exist. Create with $0 setup-virtualenv-py3\n"
+        else
+            ${INSTALL_DIRECTORY}/Mycodo/env_py3/bin/pip3 install --upgrade pip setuptools
+            ${INSTALL_DIRECTORY}/Mycodo/env_py3/bin/pip3 install --upgrade -r ${INSTALL_DIRECTORY}/Mycodo/install/requirements-py3.txt
         fi
     ;;
     'update-permissions')
