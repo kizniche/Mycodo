@@ -6,6 +6,7 @@ from mycodo import config
 
 class AlembicVersion(CRUDMixin, db.Model):
     __tablename__ = "alembic_version"
+    __table_args__ = {'extend_existing': True}
 
     version_num = db.Column(db.String(32), primary_key=True, nullable=False, default=config.ALEMBIC_VERSION)
 

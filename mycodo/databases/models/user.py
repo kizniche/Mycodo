@@ -8,6 +8,7 @@ from mycodo.databases import CRUDMixin
 
 class User(UserMixin, CRUDMixin, db.Model):
     __tablename__ = "users"
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.VARCHAR(64), unique=True, index=True)
