@@ -24,6 +24,7 @@ class LCD(CRUDMixin, db.Model):
 
 class LCDData(CRUDMixin, db.Model):
     __tablename__ = "lcd_data"
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     lcd_id = db.Column(db.Integer, db.ForeignKey('lcd.id'), default=None)
