@@ -5,9 +5,11 @@
       {% if not opencv_devices %}
         <option value="">No Devices Detected</option>
       {% endif %}
+      {% if opencv_devices %}
       {% for device_id in range(opencv_devices) %}
         <option value="{{device_id}}"{% if each_camera.opencv_device == device_id %} selected{% endif %}>OpenVC Device: {{device_id}}</option>
       {%- endfor -%}
+      {% endif %}
     </select>
   </div>
 </div>

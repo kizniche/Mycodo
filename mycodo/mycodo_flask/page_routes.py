@@ -457,16 +457,22 @@ def page_info():
         "uptime", stdout=subprocess.PIPE, shell=True)
     (uptime_output, _) = uptime.communicate()
     uptime.wait()
+    if uptime_output:
+        uptime_output = uptime_output.decode("utf-8")
 
     uname = subprocess.Popen(
         "uname -a", stdout=subprocess.PIPE, shell=True)
     (uname_output, _) = uname.communicate()
     uname.wait()
+    if uname_output:
+        uname_output = uname_output.decode("utf-8")
 
     gpio = subprocess.Popen(
         "gpio readall", stdout=subprocess.PIPE, shell=True)
     (gpio_output, _) = gpio.communicate()
     gpio.wait()
+    if gpio_output:
+        gpio_output = gpio_output.decode("utf-8")
 
     try:
         i2c_devices = glob.glob("/dev/i2c-*")
@@ -478,7 +484,8 @@ def page_info():
                 shell=True)
             (out, _) = df.communicate()
             df.wait()
-            i2c_devices_sorted[int(each_dev.strip("/dev/i2c-"))] = out.decode("utf-8")
+            if out:
+                i2c_devices_sorted[int(each_dev.strip("/dev/i2c-"))] = out.decode("utf-8")
     except Exception as er:
         flash("Error detecting I2C devices: {er}".format(er=er), "error")
         i2c_devices_sorted = {}
@@ -489,16 +496,22 @@ def page_info():
         "df -h", stdout=subprocess.PIPE, shell=True)
     (df_output, _) = df.communicate()
     df.wait()
+    if df_output:
+        df_output = df_output.decode("utf-8")
 
     free = subprocess.Popen(
         "free -h", stdout=subprocess.PIPE, shell=True)
     (free_output, _) = free.communicate()
     free.wait()
+    if free_output:
+        free_output = free_output.decode("utf-8")
 
     ifconfig = subprocess.Popen(
         "ifconfig -a", stdout=subprocess.PIPE, shell=True)
     (ifconfig_output, _) = ifconfig.communicate()
     ifconfig.wait()
+    if ifconfig_output:
+        ifconfig_output = ifconfig_output.decode("utf-8")
 
     daemon_pid = None
     if os.path.exists(DAEMON_PID_FILE):
@@ -525,11 +538,15 @@ def page_info():
             "pstree -p {pid}".format(pid=daemon_pid), stdout=subprocess.PIPE, shell=True)
         (pstree_output, _) = pstree.communicate()
         pstree.wait()
+        if pstree_output:
+            pstree_output = pstree_output.decode("utf-8")
 
         top = subprocess.Popen(
             "top -bH -n 1 -p {pid}".format(pid=daemon_pid), stdout=subprocess.PIPE, shell=True)
         (top_output, _) = top.communicate()
         top.wait()
+        if top_output:
+            top_output = top_output.decode("utf-8")
     else:
         ram_use_daemon = 0
 
@@ -541,20 +558,20 @@ def page_info():
     return render_template('pages/info.html',
                            daemon_pid=daemon_pid,
                            daemon_up=daemon_up,
-                           gpio_readall=gpio_output.decode("utf-8"),
+                           gpio_readall=gpio_output,
                            database_version=database_version,
                            correct_database_version=correct_database_version,
-                           df=df_output.decode("utf-8"),
-                           free=free_output.decode("utf-8"),
+                           df=df_output,
+                           free=free_output,
                            i2c_devices_sorted=i2c_devices_sorted,
-                           ifconfig=ifconfig_output.decode("utf-8"),
-                           pstree=pstree_output.decode("utf-8"),
+                           ifconfig=ifconfig_output,
+                           pstree=pstree_output,
                            python_version=python_version,
                            ram_use_daemon=ram_use_daemon,
                            ram_use_flask=ram_use_flask,
-                           top=top_output.decode("utf-8"),
-                           uname=uname_output.decode("utf-8"),
-                           uptime=uptime_output.decode("utf-8"),
+                           top=top_output,
+                           uname=uname_output,
+                           uptime=uptime_output,
                            virtualenv_daemon=virtualenv_daemon,
                            virtualenv_flask=virtualenv_flask)
 
