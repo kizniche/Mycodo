@@ -179,7 +179,7 @@ def do_login():
             elif form_login.validate_on_submit():
                 if User().check_password(
                         form_login.password.data,
-                        user.password_hash).decode("utf-8")  == user.password_hash:
+                        user.password_hash).decode("utf-8") == user.password_hash:
 
                     user = User.query.filter(User.name == username).first()
                     role_name = Role.query.filter(Role.id == user.role).first().name
