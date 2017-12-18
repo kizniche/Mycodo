@@ -49,28 +49,28 @@
 # <http://code.activestate.com/recipes/577231-discrete-lcd-controller/>
 
 import calendar
+import datetime
 import logging
-import smbus
-import sqlalchemy
 import threading
 import time
 import timeit
+
 import RPi.GPIO as GPIO
-import datetime
+import smbus
+import sqlalchemy
 
-from databases.models import Input
-from databases.models import LCD
-from databases.models import LCDData
-from databases.models import Math
-from databases.models import Output
-from databases.models import PID
-from devices.tca9548a import TCA9548A
-from utils.database import db_retrieve_table_daemon
-from utils.influx import read_last_influxdb
-from utils.system_pi import add_custom_measurements
-
-from config import MEASUREMENT_UNITS
-from config import MYCODO_VERSION
+from mycodo.config import MEASUREMENT_UNITS
+from mycodo.config import MYCODO_VERSION
+from mycodo.databases.models import Input
+from mycodo.databases.models import LCD
+from mycodo.databases.models import LCDData
+from mycodo.databases.models import Math
+from mycodo.databases.models import Output
+from mycodo.databases.models import PID
+from mycodo.devices.tca9548a import TCA9548A
+from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.system_pi import add_custom_measurements
 
 
 class LCDController(threading.Thread):

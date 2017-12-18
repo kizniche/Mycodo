@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 import logging
-import sqlalchemy
-import flask_login
 from collections import OrderedDict
 from datetime import datetime
 
+import flask_login
+import sqlalchemy
 from flask import flash
 from flask import redirect
 from flask import url_for
-
-from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 
-from mycodo.mycodo_client import DaemonControl
-
+from mycodo.config import MEASUREMENTS
+from mycodo.config import MEASUREMENT_UNITS
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
@@ -21,9 +19,8 @@ from mycodo.databases.models import PID
 from mycodo.databases.models import Role
 from mycodo.databases.models import Timer
 from mycodo.databases.models import User
-
-from mycodo.config import MEASUREMENT_UNITS
-from mycodo.config import MEASUREMENTS
+from mycodo.mycodo_client import DaemonControl
+from mycodo.mycodo_flask.extensions import db
 
 logger = logging.getLogger(__name__)
 

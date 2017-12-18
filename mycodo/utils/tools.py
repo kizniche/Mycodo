@@ -2,20 +2,19 @@
 import csv
 import datetime
 import logging
-import os
 import time
 from collections import OrderedDict
+
+import os
 from dateutil import relativedelta
 
+from mycodo.config import USAGE_REPORTS_PATH
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
-
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import relay_sec_on
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import set_user_grp
-
-from mycodo.config import USAGE_REPORTS_PATH
 
 logger = logging.getLogger("mycodo.tools")
 

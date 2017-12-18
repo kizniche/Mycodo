@@ -3,7 +3,7 @@ import logging
 import time
 
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-from mycodo.devices.atlas_scientific_uart import AtlasScientificUART\
+from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 
 logger = logging.getLogger("mycodo.atlas_scientific")
 

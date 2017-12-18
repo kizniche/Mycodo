@@ -21,8 +21,9 @@
 #
 #  Contact at kylegabriel.com
 
-import re
 import sys
+
+import re
 
 
 def is_email(email):

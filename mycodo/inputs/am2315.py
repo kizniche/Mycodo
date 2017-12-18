@@ -1,16 +1,14 @@
 # coding=utf-8
 import logging
 import math
-import quick2wire.i2c as i2c
 import time
 
-from .sensorutils import dewpoint
-from .base_input import AbstractInput
+import quick2wire.i2c as i2c
 
 from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
-
-
+from .base_input import AbstractInput
+from .sensorutils import dewpoint
 
 """
 Copyright 2014 Matt Heitzenroder

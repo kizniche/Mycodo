@@ -1,15 +1,14 @@
 # coding=utf-8
-
-import fasteners
 import fcntl  # used to access I2C parameters like addresses
-import io  # used to create file streams
 import logging
 import string  # helps parse strings
 import time  # used for sleep delay and timestamps
 
-from mycodo.utils.system_pi import str_is_float
+import fasteners
+import io  # used to create file streams
 
 from mycodo.config import ATLAS_PH_LOCK_FILE
+from mycodo.utils.system_pi import str_is_float
 
 
 class AtlasScientificI2C:

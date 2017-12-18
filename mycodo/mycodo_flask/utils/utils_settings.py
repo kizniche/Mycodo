@@ -1,34 +1,30 @@
 # -*- coding: utf-8 -*-
 import logging
+
 import bcrypt
+import flask_login
 import os
 import sqlalchemy
-import flask_login
-
 from flask import flash
 from flask import redirect
 from flask import url_for
-
-from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 
-from mycodo.mycodo_client import DaemonControl
-
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import User
-from mycodo.utils.database import db_retrieve_table
-from mycodo.utils.utils import test_username
-from mycodo.utils.utils import test_password
-from mycodo.utils.send_data import send_email
-
+from mycodo.mycodo_client import DaemonControl
+from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-
-from mycodo.config import INSTALL_DIRECTORY
+from mycodo.utils.database import db_retrieve_table
+from mycodo.utils.send_data import send_email
+from mycodo.utils.utils import test_password
+from mycodo.utils.utils import test_username
 
 logger = logging.getLogger(__name__)
 

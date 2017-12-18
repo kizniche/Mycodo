@@ -1,32 +1,62 @@
 # coding=utf-8
 """ collection of Page endpoints """
 import datetime
-import flask_login
 import glob
 import logging
-import os
 import resource
 import subprocess
 import sys
 import time
 from collections import OrderedDict
-from flask_babel import gettext
 from importlib import import_module
-from w1thermsensor import W1ThermSensor
 
+import flask_login
+import os
 from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
-
 from flask.blueprints import Blueprint
+from flask_babel import gettext
+from w1thermsensor import W1ThermSensor
 
-from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.static_routes import inject_variables
+from mycodo.config import ALEMBIC_VERSION
+from mycodo.config import BACKUP_LOG_FILE
+from mycodo.config import CONDITIONAL_ACTIONS
+from mycodo.config import DAEMON_LOG_FILE
+from mycodo.config import DAEMON_PID_FILE
+from mycodo.config import HTTP_LOG_FILE
+from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import KEEPUP_LOG_FILE
+from mycodo.config import LIST_DEVICES_I2C
+from mycodo.config import LOGIN_LOG_FILE
+from mycodo.config import MEASUREMENTS
+from mycodo.config import MEASUREMENT_UNITS
+from mycodo.config import PATH_CAMERAS
+from mycodo.config import RESTORE_LOG_FILE
+from mycodo.config import UPGRADE_LOG_FILE
+from mycodo.config import USAGE_REPORTS_PATH
+from mycodo.databases.models import AlembicVersion
+from mycodo.databases.models import Camera
+from mycodo.databases.models import Conditional
+from mycodo.databases.models import ConditionalActions
+from mycodo.databases.models import DisplayOrder
+from mycodo.databases.models import Graph
+from mycodo.databases.models import Input
+from mycodo.databases.models import LCD
+from mycodo.databases.models import LCDData
+from mycodo.databases.models import Math
+from mycodo.databases.models import Method
+from mycodo.databases.models import Misc
+from mycodo.databases.models import Output
+from mycodo.databases.models import PID
+from mycodo.databases.models import Timer
+from mycodo.databases.models import User
+from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_client import daemon_active
-
+from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_conditional
 from mycodo.mycodo_flask.forms import forms_function
 from mycodo.mycodo_flask.forms import forms_graph
@@ -37,7 +67,7 @@ from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.forms import forms_output
 from mycodo.mycodo_flask.forms import forms_pid
 from mycodo.mycodo_flask.forms import forms_timer
-
+from mycodo.mycodo_flask.static_routes import inject_variables
 from mycodo.mycodo_flask.utils import utils_conditional
 from mycodo.mycodo_flask.utils import utils_function
 from mycodo.mycodo_flask.utils import utils_general
@@ -48,47 +78,9 @@ from mycodo.mycodo_flask.utils import utils_math
 from mycodo.mycodo_flask.utils import utils_output
 from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.mycodo_flask.utils import utils_timer
-
-from mycodo.databases.models import AlembicVersion
-from mycodo.databases.models import Camera
-from mycodo.databases.models import Conditional
-from mycodo.databases.models import ConditionalActions
-from mycodo.databases.models import DisplayOrder
-from mycodo.databases.models import Graph
-from mycodo.databases.models import LCD
-from mycodo.databases.models import LCDData
-from mycodo.databases.models import Math
-from mycodo.databases.models import Method
-from mycodo.databases.models import Misc
-from mycodo.databases.models import PID
-from mycodo.databases.models import Output
-from mycodo.databases.models import Input
-from mycodo.databases.models import Timer
-from mycodo.databases.models import User
-
-from mycodo.devices.camera import camera_record
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.tools import return_relay_usage
-
-from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import BACKUP_LOG_FILE
-from mycodo.config import DAEMON_LOG_FILE
-from mycodo.config import HTTP_LOG_FILE
-from mycodo.config import KEEPUP_LOG_FILE
-from mycodo.config import LOGIN_LOG_FILE
-from mycodo.config import RESTORE_LOG_FILE
-from mycodo.config import UPGRADE_LOG_FILE
-from mycodo.config import DAEMON_PID_FILE
-
-from mycodo.config import ALEMBIC_VERSION
-from mycodo.config import CONDITIONAL_ACTIONS
-from mycodo.config import LIST_DEVICES_I2C
-from mycodo.config import MEASUREMENTS
-from mycodo.config import MEASUREMENT_UNITS
-from mycodo.config import PATH_CAMERAS
-
-from mycodo.config import USAGE_REPORTS_PATH
 
 logger = logging.getLogger('mycodo.mycodo_flask.page_routes')
 

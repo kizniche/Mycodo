@@ -1,7 +1,7 @@
 # coding=utf-8
 import logging
 import sys
-# TODO: Rename to rpi_rf to reflect proper name (no longer pi_switch)
+
 from rpi_rf import RFDevice
 
 logger = logging.getLogger("mycodo.device.433mhz_pi_switch")

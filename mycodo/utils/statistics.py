@@ -1,29 +1,18 @@
 # coding=utf-8
 import csv
-import geocoder
 import logging
-import os
 import pwd
-import random
-import requests
 import resource
 import string
 import time
 from collections import OrderedDict
+
+import geocoder
+import os
+import random
+import requests
 from influxdb import InfluxDBClient
 from sqlalchemy import func
-
-from mycodo.databases.models import AlembicVersion
-from mycodo.databases.models import Conditional
-from mycodo.databases.models import LCD
-from mycodo.databases.models import Math
-from mycodo.databases.models import Method
-from mycodo.databases.models import PID
-from mycodo.databases.models import Output
-from mycodo.databases.models import Input
-from mycodo.databases.models import Timer
-
-from .database import db_retrieve_table_daemon
 
 from mycodo.config import ID_FILE
 from mycodo.config import MYCODO_VERSION
@@ -31,10 +20,19 @@ from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config import STATS_CSV
 from mycodo.config import STATS_DATABASE
 from mycodo.config import STATS_HOST
-from mycodo.config import STATS_PORT
 from mycodo.config import STATS_PASSWORD
+from mycodo.config import STATS_PORT
 from mycodo.config import STATS_USER
-
+from mycodo.databases.models import AlembicVersion
+from mycodo.databases.models import Conditional
+from mycodo.databases.models import Input
+from mycodo.databases.models import LCD
+from mycodo.databases.models import Math
+from mycodo.databases.models import Method
+from mycodo.databases.models import Output
+from mycodo.databases.models import PID
+from mycodo.databases.models import Timer
+from mycodo.utils.database import db_retrieve_table_daemon
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 

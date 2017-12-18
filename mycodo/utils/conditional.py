@@ -2,6 +2,7 @@
 import logging
 import threading
 import time
+
 import RPi.GPIO as GPIO
 
 from mycodo.devices.camera import camera_record

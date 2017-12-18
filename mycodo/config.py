@@ -3,9 +3,10 @@
 #  config.py - Global Mycodo configuration settings
 #
 import binascii
-import os
 import collections
 from datetime import timedelta
+
+import os
 from flask_babel import lazy_gettext
 
 MYCODO_VERSION = '5.5.0'

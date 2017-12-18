@@ -5,13 +5,11 @@
 
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
-
 from wtforms import DecimalField
 from wtforms import SelectField
-from wtforms import SubmitField
 from wtforms import StringField
+from wtforms import SubmitField
 from wtforms import widgets
-
 from wtforms.validators import DataRequired
 
 from mycodo.config import CALIBRATION_DEVICES

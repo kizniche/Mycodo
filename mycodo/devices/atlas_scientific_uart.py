@@ -1,9 +1,9 @@
 # coding=utf-8
+import logging
+import time
 
 import fasteners
-import logging
 import serial
-import time
 from serial import SerialException
 
 from mycodo.config import ATLAS_PH_LOCK_FILE

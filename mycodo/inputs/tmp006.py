@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+
 from .base_input import AbstractInput
 
 logger = logging.getLogger("mycodo.inputs.tmp006")

@@ -1,28 +1,24 @@
 # -*- coding: utf-8 -*-
 import logging
+
 import requests
 import sqlalchemy
 import urllib3
-
 from flask import flash
 from flask import redirect
 from flask import url_for
-
-from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 
-from mycodo.mycodo_flask.utils import utils_general
-
+from mycodo.config import STORED_SSL_CERTIFICATE_PATH
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Remote
-from mycodo.utils.system_pi import csv_to_list_of_int
-from mycodo.utils.system_pi import list_to_csv
-
+from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
-
-from mycodo.config import STORED_SSL_CERTIFICATE_PATH
+from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
 

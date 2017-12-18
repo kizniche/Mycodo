@@ -5,39 +5,33 @@ import datetime
 import logging
 import socket
 import time
-import flask_login
 
-from flask import redirect
-from flask import request
-from flask import render_template
+import flask_login
 from flask import flash
 from flask import jsonify
+from flask import make_response
+from flask import redirect
+from flask import render_template
+from flask import request
 from flask import session
 from flask import url_for
-from flask import make_response
-
+from flask.blueprints import Blueprint
+from flask_babel import gettext
 from sqlalchemy import func
 
-from mycodo.mycodo_flask.extensions import db
-from flask_babel import gettext
-from flask.blueprints import Blueprint
-
+from mycodo.config import LOGIN_ATTEMPTS
+from mycodo.config import LOGIN_BAN_SECONDS
+from mycodo.config import LOGIN_LOG_FILE
 from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Input
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Role
 from mycodo.databases.models import User
-
+from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_authentication
 from mycodo.mycodo_flask.utils import utils_general
-
-from mycodo.utils.utils import test_username
 from mycodo.utils.utils import test_password
-
-from mycodo.config import LOGIN_ATTEMPTS
-from mycodo.config import LOGIN_BAN_SECONDS
-from mycodo.config import LOGIN_LOG_FILE
-
+from mycodo.utils.utils import test_username
 
 blueprint = Blueprint(
     'authentication_routes',

@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
-import sqlalchemy
 
+import sqlalchemy
 from flask import flash
 from flask import url_for
-
-from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 
 from mycodo.databases.models import Conditional
@@ -13,15 +11,15 @@ from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
-from mycodo.utils.system_pi import csv_to_list_of_int
-from mycodo.utils.system_pi import list_to_csv
-
+from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
+from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
 

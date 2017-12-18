@@ -1,33 +1,29 @@
 # coding=utf-8
 """ collection of Page endpoints """
 import logging
-import operator
-import flask_login
 
+import flask_login
+import operator
 from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
 from flask.blueprints import Blueprint
 
+from mycodo.config import CAMERA_LIBRARIES
+from mycodo.config import LANGUAGES
+from mycodo.config import THEMES
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import User
-
+from mycodo.devices.camera import count_cameras_opencv
 from mycodo.mycodo_flask.forms import forms_settings
+from mycodo.mycodo_flask.static_routes import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_settings
-
-from mycodo.devices.camera import count_cameras_opencv
-
-from mycodo.config import CAMERA_LIBRARIES
-from mycodo.config import LANGUAGES
-from mycodo.config import THEMES
-
-from mycodo.mycodo_flask.static_routes import inject_variables
 
 logger = logging.getLogger('mycodo.mycodo_flask.settings')
 

@@ -22,8 +22,9 @@
 
 import logging
 import time
-from .sensorutils import dewpoint
+
 from .base_input import AbstractInput
+from .sensorutils import dewpoint
 
 logger = logging.getLogger("mycodo.inputs.htu21d")
 

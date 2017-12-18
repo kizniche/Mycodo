@@ -4,7 +4,7 @@ This version of Mycodo, 5.5.0, migrates from Python 2.7 to Python 3.4. Although 
 
 ### Features
 
- - Migrate from Python 2.7 to Python 3.4 ([#253](https://github.com/kizniche/mycodo/issues/253))
+ - Migrate from Python 2.7.9 to Python 3.4.2 ([#253](https://github.com/kizniche/mycodo/issues/253))
 
 
 ## 5.4.19 (2017-12-15)

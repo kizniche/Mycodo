@@ -30,6 +30,7 @@ influxdb == 5.0.0
 # pi_switch == 0.4.0  # Python 2.7 - For 433 MHz communication
 pyserial == 3.4
 python-dateutil
+requests
 rpyc == 3.4.4
 SQLAlchemy == 1.2.0b3
 WTForms == 2.1
@@ -40,7 +41,7 @@ Adafruit_ADS1x15
 Adafruit_BMP
 Adafruit_GPIO
 Adafruit_TMP
-MCP342x == 0.3.3
+MCP342x == 0.3.4
 picamera == 1.13
 quick2wire-api  # Replaces tentacle_pi
 RPi.GPIO

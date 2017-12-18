@@ -1,6 +1,8 @@
 # coding=utf-8
 import logging
+
 import os
+
 from .base_input import AbstractInput
 
 logger = logging.getLogger("mycodo.inputs.raspi_freespace")

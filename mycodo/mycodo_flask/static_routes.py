@@ -4,6 +4,7 @@ from __future__ import print_function
 import logging
 import socket
 import traceback
+
 from flask import current_app
 from flask import redirect
 from flask import render_template
@@ -12,12 +13,11 @@ from flask import send_from_directory
 from flask import url_for
 from flask.blueprints import Blueprint
 
+from mycodo.config import MYCODO_VERSION
+from mycodo.config import THEMES_DARK
 from mycodo.databases.models import Misc
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.authentication_routes import admin_exists
-
-from mycodo.config import MYCODO_VERSION
-from mycodo.config import THEMES_DARK
 
 blueprint = Blueprint('static_routes',
                       __name__,

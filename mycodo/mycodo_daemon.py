@@ -33,29 +33,32 @@ import resource
 import threading
 import time
 import timeit
-import rpyc
-# Don't remove the next line. It's required to not crash strptime
-# that's used in the controllers. I've tested with and without this line.
-from time import strptime  # Fix multithread bug in strptime
-from daemonize import Daemonize
-from rpyc.utils.server import ThreadedServer
-from pkg_resources import parse_version
 
+import rpyc
+from daemonize import Daemonize
+from pkg_resources import parse_version
+from rpyc.utils.server import ThreadedServer
+
+from mycodo.config import DAEMON_LOG_FILE
+from mycodo.config import DAEMON_PID_FILE
+from mycodo.config import MYCODO_VERSION
+from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.config import STATS_CSV
+from mycodo.config import STATS_INTERVAL
+from mycodo.config import UPGRADE_CHECK_INTERVAL
+from mycodo.controller_input import InputController
 from mycodo.controller_lcd import LCDController
 from mycodo.controller_math import MathController
-from mycodo.controller_pid import PIDController
 from mycodo.controller_output import OutputController
-from mycodo.controller_input import InputController
+from mycodo.controller_pid import PIDController
 from mycodo.controller_timer import TimerController
-
 from mycodo.databases.models import Camera
+from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
 from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
-from mycodo.databases.models import Input
 from mycodo.databases.models import Timer
-
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -66,15 +69,6 @@ from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.statistics import send_anonymous_stats
 from mycodo.utils.tools import generate_relay_usage_report
 from mycodo.utils.tools import next_schedule
-
-from mycodo.config import DAEMON_LOG_FILE
-from mycodo.config import DAEMON_PID_FILE
-from mycodo.config import MYCODO_VERSION
-from mycodo.config import SQL_DATABASE_MYCODO
-from mycodo.config import STATS_CSV
-from mycodo.config import STATS_INTERVAL
-from mycodo.config import UPGRADE_CHECK_INTERVAL
-
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 

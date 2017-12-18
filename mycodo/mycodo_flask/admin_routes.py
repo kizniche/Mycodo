@@ -1,9 +1,10 @@
 # coding=utf-8
 """ collection of Admin endpoints """
 import logging
-import os
 import subprocess
+
 import flask_login
+import os
 from flask import Blueprint
 from flask import flash
 from flask import make_response
@@ -14,17 +15,6 @@ from flask import url_for
 from flask_babel import gettext
 from pkg_resources import parse_version
 
-from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.forms import forms_misc
-from mycodo.mycodo_flask.utils import utils_general
-
-from mycodo.mycodo_flask.static_routes import inject_variables
-from mycodo.utils.statistics import return_stat_file_dict
-from mycodo.utils.system_pi import internet
-from mycodo.utils.github_release_info import github_releases
-
-from mycodo.databases.models import Misc
-
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
 from mycodo.config import INSTALL_DIRECTORY
@@ -33,6 +23,14 @@ from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import STATS_CSV
 from mycodo.config import UPGRADE_INIT_FILE
 from mycodo.config import UPGRADE_LOG_FILE
+from mycodo.databases.models import Misc
+from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.forms import forms_misc
+from mycodo.mycodo_flask.static_routes import inject_variables
+from mycodo.mycodo_flask.utils import utils_general
+from mycodo.utils.github_release_info import github_releases
+from mycodo.utils.statistics import return_stat_file_dict
+from mycodo.utils.system_pi import internet
 
 logger = logging.getLogger('mycodo.mycodo_flask.admin')
 

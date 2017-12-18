@@ -4,10 +4,11 @@ from __future__ import print_function
 import calendar
 import datetime
 import logging
-import os
 import subprocess
-import flask_login
 from importlib import import_module
+
+import flask_login
+import os
 from RPi import GPIO
 from dateutil.parser import parse as date_parse
 from flask import Response
@@ -16,7 +17,6 @@ from flask import flash
 from flask import jsonify
 from flask import redirect
 from flask import send_file
-
 from flask import send_from_directory
 from flask import url_for
 from flask.blueprints import Blueprint
@@ -25,22 +25,20 @@ from flask_csv import send_csv
 from flask_influxdb import InfluxDB
 from flask_limiter import Limiter
 
-from mycodo.mycodo_flask.utils import utils_general
-
-from mycodo.databases.models import Camera
-from mycodo.databases.models import Output
-from mycodo.databases.models import Input
-from mycodo.mycodo_client import DaemonControl
-from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
-from mycodo.utils.influx import query_string
-from mycodo.utils.system_pi import str_is_float
-
-from mycodo.config import INFLUXDB_USER
-from mycodo.config import INFLUXDB_PASSWORD
 from mycodo.config import INFLUXDB_DATABASE
+from mycodo.config import INFLUXDB_PASSWORD
+from mycodo.config import INFLUXDB_USER
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LOG_PATH
 from mycodo.config import PATH_CAMERAS
+from mycodo.databases.models import Camera
+from mycodo.databases.models import Input
+from mycodo.databases.models import Output
+from mycodo.mycodo_client import DaemonControl
+from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
+from mycodo.mycodo_flask.utils import utils_general
+from mycodo.utils.influx import query_string
+from mycodo.utils.system_pi import str_is_float
 
 blueprint = Blueprint('general_routes',
                       __name__,

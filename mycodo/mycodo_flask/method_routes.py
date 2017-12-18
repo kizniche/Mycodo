@@ -1,10 +1,10 @@
 # coding=utf-8
 """ collection of Method endpoints """
-import logging
 import datetime
+import logging
 import time
-import flask_login
 
+import flask_login
 from flask import Blueprint
 from flask import flash
 from flask import jsonify
@@ -12,27 +12,22 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
-
 from flask_babel import gettext
-from mycodo.mycodo_flask.extensions import db
 
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
 from mycodo.databases.models import Output
-
+from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_method
+from mycodo.mycodo_flask.static_routes import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_method
-
-from mycodo.mycodo_flask.static_routes import inject_variables
-
+from mycodo.utils.method import bezier_curve_y_out
+from mycodo.utils.method import sine_wave_y_out
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import get_sec
 from mycodo.utils.system_pi import list_to_csv
-
-from mycodo.utils.method import sine_wave_y_out
-from mycodo.utils.method import bezier_curve_y_out
 
 logger = logging.getLogger('mycodo.mycodo_flask.methods')
 

@@ -1,11 +1,12 @@
 # coding=utf-8
-import logging
 import datetime
 import grp
-import os
+import logging
 import pwd
 import socket
 import subprocess
+
+import os
 
 logger = logging.getLogger("mycodo.system_pi")
 

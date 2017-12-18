@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+
 from mycodo.utils.system_pi import str_is_float
 from .base_input import AbstractInput
 

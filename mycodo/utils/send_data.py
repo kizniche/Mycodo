@@ -1,9 +1,10 @@
 # coding=utf-8
 import email
 import logging
-import os
 import smtplib
 import socket
+
+import os
 
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import set_user_grp

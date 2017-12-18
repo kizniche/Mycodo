@@ -1,24 +1,20 @@
 # -*- coding: utf-8 -*-
 import logging
+
 import sqlalchemy
-
-from flask import url_for
-
-from sqlalchemy import and_
-from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
-
-from mycodo.mycodo_client import DaemonControl
+from sqlalchemy import and_
 
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
-from mycodo.utils.system_pi import is_int
-
+from mycodo.mycodo_client import DaemonControl
+from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
+from mycodo.utils.system_pi import is_int
 
 logger = logging.getLogger(__name__)
 
