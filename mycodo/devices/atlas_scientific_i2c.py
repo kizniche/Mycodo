@@ -142,12 +142,12 @@ def main():
     print(">> Pressing ctrl-c will stop the polling")
 
     while True:
-        input_str = raw_input("Enter command: ")
+        input_str = input("Enter command: ")
 
         if input_str.upper().startswith("LIST_ADDR"):
             devices = device.list_i2c_devices()
             for i in range(len(devices)):
-                print devices[i]
+                print(devices[i])
 
         # address command lets you change which address the Raspberry Pi will poll
         elif input_str.upper().startswith("ADDRESS"):
@@ -181,7 +181,7 @@ def main():
         # if not a special keyword, pass commands straight to board
         else:
             if len(input_str) == 0:
-                print "Please input valid command."
+                print("Please input valid command.")
             else:
                 try:
                     print(device.query(input_str))

@@ -289,7 +289,7 @@ def monitor_rpyc(logger_rpyc):
         time.sleep(1)
 
 
-class DaemonController(threading.Thread):
+class DaemonController:
     """
     Mycodo daemon
 
@@ -309,7 +309,6 @@ class DaemonController(threading.Thread):
     """
 
     def __init__(self):
-        threading.Thread.__init__(self)
         self.logger = logging.getLogger("mycodo.daemon")
         self.logger.info("Mycodo daemon v{ver} starting".format(ver=MYCODO_VERSION))
 
@@ -418,7 +417,7 @@ class DaemonController(threading.Thread):
         self.terminated = True
 
         # Wait for the client to receive the response before it disconnects
-        time.sleep(0.25)
+        time.sleep(1)
 
     def controller_activate(self, cont_type, cont_id):
         """
@@ -990,7 +989,7 @@ class MycodoDaemon:
             # Start communication thread for receiving commands from mycodo_client.py
             ct.start()
             # Start daemon thread that manages all controllers
-            self.mycodo.start()
+            self.mycodo.run()
         except Exception:
             self.logger.exception("ERROR Starting Mycodo Daemon")
 

@@ -3,7 +3,7 @@ import logging
 import time
 
 from .base_input import AbstractInput
-from sensorutils import dewpoint
+from .sensorutils import dewpoint
 from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
 

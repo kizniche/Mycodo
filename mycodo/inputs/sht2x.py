@@ -2,7 +2,7 @@
 # From https://github.com/ControlEverythingCommunity/SHT25/blob/master/Python/SHT25.py
 import logging
 import time
-from sensorutils import dewpoint
+from .sensorutils import dewpoint
 from .base_input import AbstractInput
 
 logger = logging.getLogger("mycodo.inputs.sht2x")

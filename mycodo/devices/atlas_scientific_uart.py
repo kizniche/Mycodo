@@ -117,8 +117,8 @@ class AtlasScientificUART:
 
 
 def main():
-    device_str = raw_input("Device? (e.g. '/dev/ttyS0'): ")
-    baud_str = raw_input("Baud rate? (e.g. '9600'): ")
+    device_str = input("Device? (e.g. '/dev/ttyS0'): ")
+    baud_str = input("Baud rate? (e.g. '9600'): ")
 
     device = AtlasScientificUART(device_str, baudrate=int(baud_str))
 
@@ -127,10 +127,10 @@ def main():
     print(">> Pressing ctrl-c will stop the polling")
 
     while True:
-        input_str = raw_input("Enter command: ")
+        input_str = input("Enter command: ")
 
         if len(input_str) == 0:
-            print "Please input valid command."
+            print("Please input valid command.")
         else:
             try:
                 print(device.query(input_str))

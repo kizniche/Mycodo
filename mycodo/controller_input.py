@@ -23,7 +23,7 @@
 #  Contact at kylegabriel.com
 
 import logging
-import fasteners
+# import fasteners
 import requests
 import threading
 import time

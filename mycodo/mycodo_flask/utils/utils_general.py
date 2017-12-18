@@ -6,7 +6,7 @@ import sqlalchemy
 import flask_login
 from collections import OrderedDict
 from datetime import datetime
-from cStringIO import StringIO as IO
+from io import StringIO as IO
 
 from flask import after_this_request
 from flask import flash
