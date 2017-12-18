@@ -1,7 +1,6 @@
 # coding=utf-8
 from __future__ import print_function
 
-from io import StringIO
 import calendar
 import csv
 import datetime
@@ -10,14 +9,15 @@ import os
 import subprocess
 import flask_login
 from importlib import import_module
+from io import StringIO
 from RPi import GPIO
 from dateutil.parser import parse as date_parse
 from flask import Response
 from flask import current_app
 from flask import flash
 from flask import jsonify
-from flask import make_response
 from flask import redirect
+from flask import send_file
 
 from flask import send_from_directory
 from flask import url_for
@@ -85,9 +85,7 @@ def camera_img(camera_id, img_type, filename):
             files = []
         if filename in files:
             path_file = os.path.join(path, filename)
-            resp = make_response(open(path_file).read())
-            resp.content_type = "image/jpeg"
-            return resp
+            return send_file(path_file, mimetype='image/jpeg')
 
     return "Image not found"
 
