@@ -6,6 +6,7 @@ from mycodo.databases import CRUDMixin
 class Role(CRUDMixin, db.Model):
     __tablename__ = "roles"
     __table_args__ = {'extend_existing': True}
+    __abstract__ = True
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)

@@ -25,7 +25,7 @@ import struct
 import time
 from .base_input import AbstractInput
 
-from sensorutils import is_device
+from .sensorutils import is_device
 
 
 class MHZ16Sensor(AbstractInput):

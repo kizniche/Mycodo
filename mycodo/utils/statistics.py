@@ -21,9 +21,8 @@ from mycodo.databases.models import PID
 from mycodo.databases.models import Output
 from mycodo.databases.models import Input
 from mycodo.databases.models import Timer
-from mycodo.databases.models import User
 
-from database import db_retrieve_table_daemon
+from .database import db_retrieve_table_daemon
 
 from mycodo.config import ID_FILE
 from mycodo.config import MYCODO_VERSION
@@ -31,7 +30,6 @@ from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config import STATS_CSV
 from mycodo.config import STATS_DATABASE
 from mycodo.config import STATS_HOST
-from mycodo.config import STATS_INTERVAL
 from mycodo.config import STATS_PORT
 from mycodo.config import STATS_PASSWORD
 from mycodo.config import STATS_USER
@@ -104,7 +102,7 @@ def add_update_csv(csv_file, key, value):
 
         uid_gid = pwd.getpwnam('mycodo').pw_uid
         os.chown(csv_file, uid_gid, uid_gid)
-        os.chmod(csv_file, 0664)
+        os.chmod(csv_file, 0o664)
         os.remove(temp_file_name)  # delete backed-up original
     except Exception as except_msg:
         logger.exception('[Statistics] Could not update stat csv: '
@@ -169,11 +167,11 @@ def recreate_stat_file():
     uid_gid = pwd.getpwnam('mycodo').pw_uid
     if not os.path.isfile(ID_FILE):
         anonymous_id = ''.join([random.choice(
-            string.ascii_letters + string.digits) for _ in xrange(12)])
+            string.ascii_letters + string.digits) for _ in range(12)])
         with open(ID_FILE, 'w') as write_file:
             write_file.write('{}'.format(anonymous_id))
         os.chown(ID_FILE, uid_gid, uid_gid)
-        os.chmod(ID_FILE, 0664)
+        os.chmod(ID_FILE, 0o664)
 
     with open(ID_FILE, 'r') as read_file:
         stat_id = read_file.readline().strip()
@@ -191,8 +189,6 @@ def recreate_stat_file():
         ['country', 'None'],
         ['daemon_startup_seconds', 0.0],
         ['ram_use_mb', 0.0],
-        ['num_users_admin', 0],
-        ['num_users_guest', 0],
         ['num_lcds', 0],
         ['num_lcds_active', 0],
         ['num_methods', 0],
@@ -213,7 +209,7 @@ def recreate_stat_file():
         for row in new_stat_data:
             write_csv.writerow(row)
     os.chown(STATS_CSV, uid_gid, uid_gid)
-    os.chmod(STATS_CSV, 0664)
+    os.chmod(STATS_CSV, 0o664)
 
 
 def send_anonymous_stats(start_time):
@@ -279,21 +275,6 @@ def send_anonymous_stats(start_time):
         add_update_csv(STATS_CSV, 'ram_use_mb',
                        resource.getrusage(
                            resource.RUSAGE_SELF).ru_maxrss / float(1000))
-
-        user_count = 0
-        admin_count = 0
-        # TODO: More specific exception or remove try
-        try:
-            users = db_retrieve_table_daemon(User, entry='all')
-            for each_user in users:
-                user_count += 1
-                if each_user.role == 1:
-                    admin_count += 1
-        except Exception:
-            pass
-        add_update_csv(STATS_CSV, 'num_users_admin', admin_count)
-        add_update_csv(STATS_CSV, 'num_users_guest',
-                       user_count - admin_count)
 
         add_update_csv(STATS_CSV, 'Mycodo_revision', MYCODO_VERSION)
 

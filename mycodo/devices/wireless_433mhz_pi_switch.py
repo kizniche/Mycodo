@@ -1,8 +1,8 @@
 # coding=utf-8
 import logging
 import sys
-from pi_switch import RCSwitchReceiver
-from pi_switch import RCSwitchSender
+# TODO: Rename to rpi_rf to reflect proper name (no longer pi_switch)
+from rpi_rf import RFDevice
 
 logger = logging.getLogger("mycodo.device.433mhz_pi_switch")
 
@@ -15,14 +15,13 @@ class Transmit433MHz:
         self.pin = pin
         self.protocol = protocol
         self.pulse_length = pulse_length
-        self.bit_length = bit_length
-
         self.num = 0
+        self.timestamp = None
 
     def enable_receive(self):
         try:
-            self.device = RCSwitchReceiver()
-            self.device.enableReceive(self.pin)
+            self.device = RFDevice(self.pin)
+            self.device.enable_rx()
             self.num = 0
         except Exception as err:
             logger.exception(
@@ -31,34 +30,32 @@ class Transmit433MHz:
 
     def receive_available(self):
         try:
-            if self.device.available():
-                received_value = self.device.getReceivedValue()
-                if received_value:
-                    self.num += 1
-                    bit_length = self.device.getReceivedBitlength()
-                    delay = self.device.getReceivedDelay()
-                    protocol = self.device.getReceivedProtocol()
-                    return self.num, received_value, bit_length, delay, protocol
-            return 0, 0, 0, 0, 0
+            if self.device.rx_code_timestamp != self.timestamp:
+                self.timestamp = self.device.rx_code_timestamp
+                command = self.device.rx_code
+                pulse_length = self.device.rx_pulselength
+                protocol = self.device.rx_proto
+                return self.num, command, pulse_length, protocol
+            return 0, 0, 0, 0
         except Exception as err:
             logger.exception(
                 "{cls} raised an exception when receiving: "
                 "{err}".format(cls=type(self).__name__, err=err))
 
-    def reset_available(self):
-        self.device.resetAvailable()
-
     def transmit(self, cmd):
         try:
             self.device = RCSwitchSender()
-            self.device.setProtocol(self.protocol)
-            self.device.setPulseLength(self.pulse_length)
-            self.device.enableTransmit(self.pin)
-            self.device.sendDecimal(cmd, self.bit_length)  # switch on
+            self.device = RFDevice(self.pin)
+            self.device.enable_tx()
+            self.device.tx_code(cmd, self.protocol, self.pulse_length)
+            self.cleanup()
         except Exception as err:
             logger.exception(
                 "{cls} raised an exception when transmitting: "
                 "{err}".format(cls=type(self).__name__, err=err))
+
+    def cleanup(self):
+        self.device.cleanup()
 
 
 def is_int(test_var, check_range=None):
@@ -86,41 +83,36 @@ def main():
     print(">>   2. Listen for commands.")
     print(">> Pressing ctrl-c to stop")
 
-    cmd_str = raw_input("Select 1 or 2: ")
+    cmd_str = input("Select 1 or 2: ")
     if not is_int(cmd_str, check_range=[1, 2]):
         print("Invalid option")
         sys.exit(1)
 
     if int(cmd_str) == 1:
-        pin = raw_input("Pin connected to transmitter: ")
+        pin = input("Pin connected to transmitter: ")
         if not is_int(pin):
             print("Invalid option. Must be integer.")
             sys.exit(1)
-        protocol = raw_input("Protocol (Default: 1): ")
+        protocol = input("Protocol (Default: 1): ")
         if not is_int(protocol):
             print("Invalid option. Must be integer.")
             sys.exit(1)
-        pulse_length = raw_input("Pulse Length (Default: 189): ")
+        pulse_length = input("Pulse Length (Default: 189): ")
         if not is_int(pulse_length):
             print("Invalid option. Must be integer.")
             sys.exit(1)
-        bit_length = raw_input("Bit Length (Default: 24): ")
-        if not is_int(bit_length):
-            print("Invalid option. Must be integer.")
-            sys.exit(1)
-        send_str = raw_input("What numerical command to send: ")
+        send_str = input("What numerical command to send: ")
         if not is_int(send_str):
             print("Invalid option. Must be integer.")
             sys.exit(1)
         device = Transmit433MHz(int(pin),
                                 protocol=int(protocol),
-                                pulse_length=int(pulse_length),
-                                bit_length=int(bit_length))
+                                pulse_length=int(pulse_length))
         device.transmit(int(send_str))
         print("Command sent: {}".format(int(send_str)))
 
     elif int(cmd_str) == 2:
-        pin = raw_input("Pin connected to receiver: ")
+        pin = input("Pin connected to receiver: ")
         if not is_int(pin):
             print("Invalid option. Must be integer.")
             sys.exit(1)
@@ -130,14 +122,15 @@ def main():
         print("Receiver listening. Press a button on your remote or use your "
               "transmitter near the receiver.")
 
-        while True:
-            num, rec_value, bit_length, delay, protocol = device.receive_available()
-            if rec_value:
-                print("Received[{}]: {}".format(num, rec_value))
-                print("Bit Length: {} bit".format(bit_length))
-                print("Delay: {}".format(delay))
-                print("Protocol: {}\n".format(protocol))
-            device.reset_available()
+        try:
+            while True:
+                num, rec_value, pulse_length, protocol = device.receive_available()
+                if rec_value:
+                    print("Received[{}]: {}".format(num, rec_value))
+                    print("Pulse Length: {}".format(pulse_length))
+                    print("Protocol: {}\n".format(protocol))
+        except KeyboardInterrupt:
+            device.cleanup()
 
 if __name__ == "__main__":
     main()

@@ -81,7 +81,7 @@ def main():
 
     # main loop
     while True:
-        cmd_input = raw_input("Enter command: ")
+        cmd_input = input("Enter command: ")
 
         # address command lets you change which address the Raspberry Pi will poll
         if cmd_input.upper().startswith("ADDRESS"):

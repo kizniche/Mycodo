@@ -26,8 +26,8 @@ def session_scope(db_uri):
         yield session
         session.commit()
     except Exception as e:
-        logger.error("Error raised in session_scope.  Session will be rolled back: "
-                     "db_uri='{uri}', error='{err}'".format(uri=db_uri, err=e))
+        logger.exception("Error raised in session_scope.  Session will be rolled back: "
+                         "db_uri='{uri}', error='{err}'".format(uri=db_uri, err=e))
         session.rollback()
         raise
     finally:
