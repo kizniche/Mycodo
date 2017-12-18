@@ -14,7 +14,7 @@ function error_found {
     exit 1
 }
 
-CURRENT_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
+CURRENT_VERSION=$(${INSTALL_DIRECTORY}/Mycodo/env_py3/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
 NOW=$(date +"%Y-%m-%d_%H-%M-%S")
 TMP_DIR="/var/tmp/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
 BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
