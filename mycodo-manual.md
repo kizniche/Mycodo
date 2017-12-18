@@ -45,6 +45,7 @@ Table of Contents
 
 [Miscellaneous](#miscellaneous)
 
+   - [Live Measurements](#live-measurements)
    - [Graphs](#graphs)
    - [Camera](#camera)
    - [Output Usage](#output-usage)
@@ -985,6 +986,11 @@ Flip vertically | Flip, or mirror, the image vertically.
 
 Miscellaneous
 =============
+
+Live Measurements
+-----------------
+
+The Live Measurements page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Math controllers. If there is nothing displayed on the Live Measurements page, ensure an Input or Math controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.
 
 Graphs
 ------
