@@ -217,7 +217,7 @@ class AM2315Sensor(AbstractInput):
         self._dew_point = None
         self._humidity = None
         self._temperature = None
-        self.I2C_bus_number = int(bus)
+        self.I2C_bus_number = bus
         self.power_output_id = power
         self.powered = False
         self.am = None
