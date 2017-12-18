@@ -27,7 +27,6 @@ from flask_influxdb import InfluxDB
 from flask_limiter import Limiter
 
 from mycodo.mycodo_flask.utils import utils_general
-from mycodo.mycodo_flask.utils.utils_general import gzipped
 
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Output
@@ -184,7 +183,6 @@ def last_data(input_measure, input_id, input_period):
 
 @blueprint.route('/past/<input_measure>/<input_id>/<past_seconds>')
 @flask_login.login_required
-@gzipped
 def past_data(input_measure, input_id, past_seconds):
     """Return data from past_seconds until present from influxdb"""
     if not str_is_float(past_seconds):
@@ -212,7 +210,6 @@ def past_data(input_measure, input_id, past_seconds):
 
 @blueprint.route('/export_data/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')
 @flask_login.login_required
-@gzipped
 def export_data(measurement, unique_id, start_seconds, end_seconds):
     """
     Return data from start_seconds to end_seconds from influxdb.
@@ -267,7 +264,6 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
 
 @blueprint.route('/async/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')
 @flask_login.login_required
-@gzipped
 def async_data(measurement, unique_id, start_seconds, end_seconds):
     """
     Return data from start_seconds to end_seconds from influxdb.

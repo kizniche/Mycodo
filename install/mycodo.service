@@ -4,8 +4,8 @@ After=syslog.target network.target influxd.service
 
 [Service]
 Type=forking
-ExecStart=/var/www/mycodo/env/bin/python /var/www/mycodo/mycodo/mycodo_daemon.py
-ExecStop=/var/www/mycodo/env/bin/python /var/www/mycodo/mycodo/mycodo_client.py -t
+ExecStart=/var/www/mycodo/env_py3/bin/python /var/www/mycodo/mycodo/mycodo_daemon.py
+ExecStop=/var/www/mycodo/env_py3/bin/python /var/www/mycodo/mycodo/mycodo_client.py -t
 ExecReload=/bin/kill -HUP $MAINPID
 
 [Install]

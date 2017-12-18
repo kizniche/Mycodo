@@ -721,7 +721,7 @@ def page_logview():
                 command, stdout=subprocess.PIPE, shell=True)
             (log_output, _) = log.communicate()
             log.wait()
-            log_output = unicode(log_output, 'utf-8')
+            log_output = str(log_output, 'utf-8')
         else:
             log_output = 404
 
@@ -1090,7 +1090,7 @@ def page_math():
 
     # convert dict to list of tuples
     choices = []
-    for each_key, each_value in choices_input.iteritems():
+    for each_key, each_value in choices_input.items():
         choices.append((each_key, each_value))
     form_mod_multi.inputs.choices = choices
     form_mod_verification.inputs.choices = choices

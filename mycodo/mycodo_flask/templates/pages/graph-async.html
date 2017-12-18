@@ -30,7 +30,7 @@
     <div class="form-inline">
       <div class="form-group">
         <select class="form-control" id="selected_measure" name="selected_measure">
-        {% for each_choice, value in sensor_choices.iteritems() -%}
+        {% for each_choice, value in sensor_choices.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
         {% endfor -%}
         </select>

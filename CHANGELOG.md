@@ -1,3 +1,10 @@
+## 5.5.0 (Unreleased)
+
+### Features
+
+ - Move from Python 2.7 to Python 3.4 ([#253](https://github.com/kizniche/mycodo/issues/253))
+
+
 ## 5.4.19 (2017-12-15)
 
 ### Features

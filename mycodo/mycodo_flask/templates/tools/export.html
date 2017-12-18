@@ -23,10 +23,10 @@
         {{exportOptions.measurement.label(class_='control-label')}}
         <div>
           <select class="form-control" id="measurement" name="measurement">
-          {% for each_choice, value in sensor_choices.iteritems() -%}
+          {% for each_choice, value in sensor_choices.items() -%}
             <option value="{{each_choice}}">{{value}}</option>
           {% endfor -%}
-          {% for each_choice, value in relay_choices.iteritems() -%}
+          {% for each_choice, value in relay_choices.items() -%}
             <option value="{{each_choice}},duration_sec">{{value}} Output duration</option>
           {% endfor -%}
           </select>

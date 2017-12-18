@@ -7,7 +7,7 @@ import collections
 from datetime import timedelta
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '5.4.20'
+MYCODO_VERSION = '5.5.0'
 ALEMBIC_VERSION = '41fbe7fcc8b0'
 
 LANGUAGES = {

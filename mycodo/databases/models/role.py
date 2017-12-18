@@ -6,7 +6,7 @@ from mycodo.databases import CRUDMixin
 class Role(CRUDMixin, db.Model):
     __tablename__ = "roles"
     __table_args__ = {'extend_existing': True}
-    __abstract__ = True
+    # __abstract__ = True
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
@@ -18,7 +18,7 @@ class Role(CRUDMixin, db.Model):
     view_stats = db.Column(db.Boolean, nullable=False, default=False)
     view_logs = db.Column(db.Boolean, nullable=False, default=False)
 
-    user = db.relationship("User", back_populates="roles")
+    # user = db.relationship("User", back_populates="roles")
 
     def __repr__(self):
         return "<{cls}(id={s.id}, name='{s.name}')>".format(s=self, cls=self.__class__.__name__)

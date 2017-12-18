@@ -117,10 +117,10 @@
                 <div>
                   <select class="form-control" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the PID input')}}">
                     <option value="">None Selected</option>
-                  {% for each_choice, value in input_choices.iteritems() -%}
+                  {% for each_choice, value in input_choices.items() -%}
                     <option value="{{each_choice}}"{% if each_pid.measurement == each_choice %} selected{% endif %}>{{value}}</option>
                   {% endfor -%}
-                  {% for each_choice, value in math_choices.iteritems() -%}
+                  {% for each_choice, value in math_choices.items() -%}
                     <option value="{{each_choice}}"{% if each_pid.measurement == each_choice %} selected{% endif %}>{{value}}</option>
                   {% endfor -%}
                   </select>

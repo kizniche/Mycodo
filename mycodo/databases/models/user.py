@@ -9,7 +9,7 @@ from mycodo.databases import CRUDMixin
 class User(UserMixin, CRUDMixin, db.Model):
     __tablename__ = "users"
     __table_args__ = {'extend_existing': True}
-    __abstract__ = True
+    # __abstract__ = True
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.VARCHAR(64), unique=True, index=True)
@@ -19,7 +19,7 @@ class User(UserMixin, CRUDMixin, db.Model):
     theme = db.Column(db.VARCHAR(64))
     language = db.Column(db.Text, default=None)  # Force the web interface to use a specific language
 
-    roles = db.relationship("Role", back_populates="user")
+    # roles = db.relationship("Role", back_populates="user")
 
     def __repr__(self):
         output = "<User: <name='{name}', email='{email}' is_admin='{isadmin}'>"

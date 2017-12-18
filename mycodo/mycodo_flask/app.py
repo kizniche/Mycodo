@@ -18,6 +18,7 @@ from flask import url_for
 
 from flask_babel import Babel
 from flask_babel import gettext
+from flask_compress import Compress
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_sslify import SSLify
@@ -105,6 +106,9 @@ def create_app(config=ProdConfig):
 def register_extensions(app):
     """ register extensions to the app """
     app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
+
+    compress = Compress()
+    compress.init_app(app)
 
     db.init_app(app)
     influx_db.init_app(app)  # attach influx db
