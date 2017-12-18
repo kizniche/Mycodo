@@ -1,10 +1,13 @@
 # Ensure python3 and dev is installed:
 # Command: sudo apt-get install python3 python3-dev
 
+# Testing
 testfixtures
 mock
 pytest == 3.3.1
 factory_boy == 2.8.1
+webtest == 2.0.29
+
 alembic == 0.9.6
 argparse == 1.4.0
 bcrypt == 3.1.4
