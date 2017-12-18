@@ -177,10 +177,15 @@ def do_login():
                 login_log(username, 'NA', user_ip, 'NOUSER')
                 failed_login()
             elif form_login.validate_on_submit():
-                if User().check_password(
-                        form_login.password.data,
-                        user.password_hash).decode("utf-8") == user.password_hash:
+                matched_hash = User().check_password(
+                    form_login.password.data, user.password_hash)
 
+                # Encode stored password hash if it's a str
+                password_hash = user.password_hash
+                if isinstance(user.password_hash, str):
+                    password_hash = user.password_hash.encode('utf-8')
+
+                if matched_hash == password_hash:
                     user = User.query.filter(User.name == username).first()
                     role_name = Role.query.filter(Role.id == user.role).first().name
                     login_log(username, role_name, user_ip, 'LOGIN')

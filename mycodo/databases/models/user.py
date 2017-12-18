@@ -9,7 +9,6 @@ from mycodo.databases import CRUDMixin
 class User(UserMixin, CRUDMixin, db.Model):
     __tablename__ = "users"
     __table_args__ = {'extend_existing': True}
-    # __abstract__ = True
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.VARCHAR(64), unique=True, index=True)
@@ -27,20 +26,19 @@ class User(UserMixin, CRUDMixin, db.Model):
 
     def set_password(self, new_password):
         """ saves a password hash  """
-        self.password_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+        if isinstance(new_password, str):
+            new_password = new_password.encode('utf-8')
+        self.password_hash = bcrypt.hashpw(new_password, bcrypt.gensalt())
 
     @staticmethod
     def check_password(password, hashed_password):
         """ validates a password """
-        # Check type of password hashed_password to determine if it should be encoded or decoded
+        # Check type of password hashed_password to determine if it is a str
+        # and should be encoded
         if isinstance(password, str):
             password = password.encode('utf-8')
-        # elif isinstance(password, bytes):
-        #     password = password.decode('utf-8')
-            
         if isinstance(hashed_password, str):
             hashed_password = hashed_password.encode('utf-8')
-        # elif isinstance(hashed_password, bytes):
-        #     hashed_password = hashed_password.decode('utf-8')
+
         hashes_match = bcrypt.hashpw(password, hashed_password)
         return hashes_match
