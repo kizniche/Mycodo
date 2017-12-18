@@ -2,14 +2,12 @@
 from __future__ import print_function
 
 import calendar
-import csv
 import datetime
 import logging
 import os
 import subprocess
 import flask_login
 from importlib import import_module
-from io import StringIO
 from RPi import GPIO
 from dateutil.parser import parse as date_parse
 from flask import Response
@@ -23,6 +21,7 @@ from flask import send_from_directory
 from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
+from flask_csv import send_csv
 from flask_influxdb import InfluxDB
 from flask_limiter import Limiter
 
@@ -243,23 +242,20 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     if not raw_data:
         return '', 204
 
-    def iter_csv(data_in):
-        line = StringIO.StringIO()
-        writer = csv.writer(line)
-        write_header = ('timestamp (UTC)', '{name} {meas} ({id})'.format(
-            name=name.encode('utf8'), meas=measurement, id=unique_id))
-        writer.writerow(write_header)
-        for csv_line in data_in:
-            writer.writerow((csv_line[0][:-4], csv_line[1]))
-            line.seek(0)
-            yield line.read()
-            line.truncate(0)
+    # Generate column names
+    col_1 = "timestamp (UTC)"
+    col_2 = '{name} {meas} ({id})'.format(
+        name=name, meas=measurement, id=unique_id)
+    csv_filename = '{id}_{meas}.csv'.format(id=unique_id, meas=measurement)
 
-    response = Response(iter_csv(raw_data['series'][0]['values']),
-                        mimetype='text/csv')
-    response.headers['Content-Disposition'] = 'attachment; filename={id}_{meas}.csv'.format(
-        id=unique_id, meas=measurement)
-    return response
+    # Populate list of dictionary entries for each column to convert to CSV
+    # and send to the user to download
+    csv_data = []
+    for each_data in raw_data['series'][0]['values']:
+        csv_data.append({col_1: str(each_data[0][:-4]).replace('T', ' '),
+                         col_2: each_data[1]})
+
+    return send_csv(csv_data, csv_filename, [col_1, col_2])
 
 
 @blueprint.route('/async/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')

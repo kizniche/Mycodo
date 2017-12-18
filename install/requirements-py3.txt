@@ -16,6 +16,7 @@ fasteners == 0.14.1
 Flask == 0.12.2
 Flask_Babel == 0.11.2
 Flask_Compress == 1.4.0
+Flask_CSV == 1.0.1
 Flask_InfluxDB == 0.1
 Flask_Limiter == 1.0.1
 Flask_Login == 0.4.1
