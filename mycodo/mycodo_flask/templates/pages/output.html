@@ -84,17 +84,19 @@
         if (jqXHR.status !== 204) {
           $.each(data,
             function(relay_id, state) {
-              document.getElementById(relay_id + "-relay-state").className = "row active-background";
-              if (state !== 'off') {
-                if (state === 'on') {
-                  document.getElementById(relay_id + "-input-relay-state").value = '[' + pad(relay_id, 2) + '] {{_('Active')}}';
-                } else {
-                  document.getElementById(relay_id + "-input-relay-state").value = '[' + pad(relay_id, 2) + '] {{_('Active')}} (' + state.toFixed(1) + '%)';
+              if (state !== null) {
+                document.getElementById(relay_id + "-relay-state").className = "row active-background";
+                if (state !== 'off') {
+                  if (state === 'on') {
+                    document.getElementById(relay_id + "-input-relay-state").value = '[' + pad(relay_id, 2) + '] {{_('Active')}}';
+                  } else {
+                    document.getElementById(relay_id + "-input-relay-state").value = '[' + pad(relay_id, 2) + '] {{_('Active')}} (' + state.toFixed(1) + '%)';
+                  }
                 }
-              }
-              else {
-                document.getElementById(relay_id + "-relay-state").className = "row inactive-background";
-                document.getElementById(relay_id + "-input-relay-state").value = '[' + pad(relay_id, 2) + '] {{_('Inactive')}}';
+                else {
+                  document.getElementById(relay_id + "-relay-state").className = "row inactive-background";
+                  document.getElementById(relay_id + "-input-relay-state").value = '[' + pad(relay_id, 2) + '] {{_('Inactive')}}';
+                }
               }
             }
           );
@@ -116,8 +118,10 @@
   }
 
   {% set relay_has_gpio = [] %}
-  {% for each_relay in relay if -1 < each_relay.pin < 40 -%}
-    {% do relay_has_gpio.append(1) %}
+  {% for each_relay in relay %}
+    {% if each_relay.pin and -1 < each_relay.pin < 40 -%}
+      {% do relay_has_gpio.append(1) %}
+    {% endif %}
   {%- endfor -%}
   {% if relay_has_gpio -%}
   $(function() {
