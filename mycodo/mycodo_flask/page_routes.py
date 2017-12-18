@@ -478,7 +478,7 @@ def page_info():
                 shell=True)
             (out, _) = df.communicate()
             df.wait()
-            i2c_devices_sorted[int(each_dev.strip("/dev/i2c-"))] = out
+            i2c_devices_sorted[int(each_dev.strip("/dev/i2c-"))] = out.decode("utf-8")
     except Exception as er:
         flash("Error detecting I2C devices: {er}".format(er=er), "error")
         i2c_devices_sorted = {}
@@ -536,22 +536,25 @@ def page_info():
     ram_use_flask = resource.getrusage(
         resource.RUSAGE_SELF).ru_maxrss / float(1000)
 
+    python_version = sys.version
+
     return render_template('pages/info.html',
                            daemon_pid=daemon_pid,
                            daemon_up=daemon_up,
-                           gpio_readall=gpio_output,
+                           gpio_readall=gpio_output.decode("utf-8"),
                            database_version=database_version,
                            correct_database_version=correct_database_version,
-                           df=df_output,
-                           free=free_output,
+                           df=df_output.decode("utf-8"),
+                           free=free_output.decode("utf-8"),
                            i2c_devices_sorted=i2c_devices_sorted,
-                           ifconfig=ifconfig_output,
-                           pstree=pstree_output,
+                           ifconfig=ifconfig_output.decode("utf-8"),
+                           pstree=pstree_output.decode("utf-8"),
+                           python_version=python_version,
                            ram_use_daemon=ram_use_daemon,
                            ram_use_flask=ram_use_flask,
-                           top=top_output,
-                           uname=uname_output,
-                           uptime=uptime_output,
+                           top=top_output.decode("utf-8"),
+                           uname=uname_output.decode("utf-8"),
+                           uptime=uptime_output.decode("utf-8"),
                            virtualenv_daemon=virtualenv_daemon,
                            virtualenv_flask=virtualenv_flask)
 
