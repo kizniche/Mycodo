@@ -5,7 +5,7 @@ python:
   - 3.4
 before_install:
   - sudo apt-get update
-  - sudo apt-get install -y libboost-python-dev gawk git libapache2-mod-wsgi-py3 libav-tools libffi-dev libi2c-dev python3 python3-dev python3-numpy python-opencv python3-smbus sqlite3 swig
+  - sudo apt-get install -y libboost-python-dev gawk git libapache2-mod-wsgi-py3 libav-tools libffi-dev libi2c-dev python3 python3-dev python3-numpy python-opencv sqlite3 swig
   - git clone --recursive https://github.com/WiringPi/WiringPi-Python.git && cd WiringPi-Python && git submodule update --init && cd WiringPi && ./build && cd ../..
   - wget abyz.co.uk/rpi/pigpio/pigpio.zip && unzip pigpio.zip && cd ./PIGPIO && make -j4 && sudo make install && cd ..
   - pip install --upgrade pip webtest
@@ -14,6 +14,7 @@ before_install:
   - influx -execute "CREATE DATABASE mycodo_db"
   - influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
 install:
+  - sed -i '/MCP342x/d' install/requirements-py3.txt
   - sed -i '/picamera/d' install/requirements-py3.txt
   - pip3 install --upgrade -r install/requirements-py3.txt
 virtualenv:
