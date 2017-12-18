@@ -22,4 +22,3 @@ class Role(CRUDMixin, db.Model):
 
     def __repr__(self):
         return "<{cls}(id={s.id}, name='{s.name}')>".format(s=self, cls=self.__class__.__name__)
-

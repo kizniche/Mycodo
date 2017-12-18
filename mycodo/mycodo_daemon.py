@@ -252,22 +252,27 @@ class ComThread(threading.Thread):
         self.logger = logging.getLogger("mycodo.rpyc")
         self.logger.setLevel(logging.WARNING)
         self.mycodo = mycodo
+        self.server = None
+        self.rpyc_monitor = None
 
     def run(self):
         try:
             # Start RPYC server
             service = mycodo_service(self.mycodo)
-            server = ThreadedServer(service, port=18813, logger=self.logger)
-            server.start()
+            self.server = ThreadedServer(service, port=18813, logger=self.logger)
+            self.server.start()
 
-            rpyc_monitor = threading.Thread(
-                target=monitor_rpyc,
-                args=(self.logger,))
-            rpyc_monitor.daemon = True
-            rpyc_monitor.start()
+            # self.rpyc_monitor = threading.Thread(
+            #     target=monitor_rpyc,
+            #     args=(self.logger,))
+            # self.rpyc_monitor.daemon = True
+            # self.rpyc_monitor.start()
         except Exception as err:
             self.logger.exception(
                 "ERROR: ComThread: {msg}".format(msg=err))
+
+    def close(self):
+        self.server.close()
 
 
 def monitor_rpyc(logger_rpyc):
@@ -990,6 +995,8 @@ class MycodoDaemon:
             ct.start()
             # Start daemon thread that manages all controllers
             self.mycodo.run()
+            # Stop communication thread after daemon has stopped
+            ct.close()
         except Exception:
             self.logger.exception("ERROR Starting Mycodo Daemon")
 

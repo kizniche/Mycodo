@@ -1,14 +1,13 @@
 # coding=utf-8
 from __future__ import print_function
 
-import StringIO  # not python 3 compatible
+from io import StringIO
 import calendar
 import csv
 import datetime
 import logging
 import os
 import subprocess
-import time
 import flask_login
 from importlib import import_module
 from RPi import GPIO
@@ -20,14 +19,12 @@ from flask import jsonify
 from flask import make_response
 from flask import redirect
 
-from flask import request
 from flask import send_from_directory
 from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 from flask_influxdb import InfluxDB
 from flask_limiter import Limiter
-
 
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils.utils_general import gzipped
