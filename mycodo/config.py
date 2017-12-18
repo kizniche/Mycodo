@@ -2,6 +2,7 @@
 #
 #  config.py - Global Mycodo configuration settings
 #
+import binascii
 import os
 import collections
 from datetime import timedelta
@@ -355,8 +356,9 @@ class ProdConfig(object):
     # Ensure file containing the Flask secret_key exists
     FLASK_SECRET_KEY_PATH = os.path.join(DATABASE_PATH, 'flask_secret_key')
     if not os.path.isfile(FLASK_SECRET_KEY_PATH):
+        secret_key = binascii.hexlify(os.urandom(32)).decode()
         with open(FLASK_SECRET_KEY_PATH, 'w') as file:
-            file.write(os.urandom(24))
+            file.write(secret_key)
     SECRET_KEY = open(FLASK_SECRET_KEY_PATH, 'rb').read()
 
 
