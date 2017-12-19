@@ -47,7 +47,7 @@ Table of Contents
 
    - [Live Measurements](#live-measurements)
    - [Graphs](#graphs)
-   - [Export](#export)
+   - [Export / Import](#export-import)
    - [Camera](#camera)
    - [Output Usage](#output-usage)
    - [System Backup](#system-backup)
@@ -1049,8 +1049,8 @@ Note: Live Graphs require measurements to be acquired, therefore at
 least one sensor needs to be added and activated in order to display
 live data.
 
-Export
-------
+Export / Import
+---------------
 
 Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.
 

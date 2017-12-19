@@ -155,7 +155,7 @@
             <li class="dropdown{% if active_page in ['camera', 'export', 'lcd', 'method_list', 'calibration', 'usage', 'usage_reports'] %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('More')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li{% if active_page == 'export' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_export')}}"><i class="glyphicon glyphicon-save-file icon-fw"></i> {{_('Export')}}</a></li>
+                <li{% if active_page == 'export' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_export')}}"><i class="glyphicon glyphicon-save-file icon-fw"></i> {{_('Export/Import')}}</a></li>
                 <li{% if active_page == 'method_list' %} class="active"{% endif %}><a href="{{url_for('method_routes.method_list')}}"><i class="fa fa-line-chart icon-fw"></i> {{_('Methods')}}</a></li>
                 <li{% if active_page == 'lcd' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_lcd')}}"><i class="fa fa-desktop icon-fw"></i> {{_('LCDs')}}</a></li>
                 <li{% if active_page == 'camera' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_camera')}}"><i class="glyphicon glyphicon-camera icon-fw"></i> {{_('Cameras')}}</a></li>

@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 {% set active_page = "export" %}
-{% set help_page = ["export", _('Export')] %}
+{% set help_page = ["export-import", _('Export/Import')] %}
 
-{% block title %} - {{_('Export')}}{% endblock %}
+{% block title %} - {{_('Export / Import')}}{% endblock %}
 
 {% block head %}
 <script type="text/javascript" src="/static/js/moment.min.js"></script>
@@ -15,7 +15,7 @@
 <div class="container">
   {% include 'flash_messages.html' %}
 
-  <h4>{{_('Export')}} <a href="/help#export" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+  <h4>{{_('Export / Import')}} <a href="/help#export" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
   <h4 style="padding-top: 2em">Export Measurement Data as CSV</h4>
 
