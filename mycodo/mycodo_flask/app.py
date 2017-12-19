@@ -112,7 +112,7 @@ def register_extensions(app):
     with app.app_context():
         db.create_all()
         populate_db()
-        alembic_upgrade_db()
+        # alembic_upgrade_db()
 
         # Check user option to force all web connections to use SSL
         misc = Misc.query.first()

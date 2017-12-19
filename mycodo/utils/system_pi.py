@@ -79,41 +79,9 @@ def internet(host="8.8.8.8", port=53, timeout=3):
     return False
 
 
-def assure_path_exists(path):
-    """ Create path if it doesn't exist """
-    if not os.path.exists(path):
-        os.makedirs(path)
-        os.chmod(path, 0774)
-        set_user_grp(path, 'mycodo', 'mycodo')
-    return path
-
-
-def csv_to_list_of_int(str_csv):
-    """ return a list of integers from a string of csv integers """
-    if str_csv:
-        list_int = []
-        for x in str_csv.split(','):
-            try:
-                list_int.append(int(x))
-            except:
-                pass
-        return list_int
-
-
-def list_to_csv(display_order):
-    str_csv = [str(i) for i in display_order]
-    return ','.join(str_csv)
-
-
-def find_owner(filename):
-    """ Return the owner of a file """
-    return pwd.getpwuid(os.stat(filename).st_uid).pw_name
-
-
-def get_sec(time_str):
-    """ Convert HH:MM:SS string into number of seconds """
-    h, m, s = time_str.split(':')
-    return int(h) * 3600 + int(m) * 60 + int(s)
+#
+# Type checking
+#
 
 
 def str_is_float(text):
@@ -145,8 +113,63 @@ def is_int(test_var, check_range=None):
     return True
 
 
+#
+# File toold
+#
+
+
+def assure_path_exists(path):
+    """ Create path if it doesn't exist """
+    if not os.path.exists(path):
+        os.makedirs(path)
+        os.chmod(path, 0774)
+        set_user_grp(path, 'mycodo', 'mycodo')
+    return path
+
+
+def find_owner(filename):
+    """ Return the owner of a file """
+    return pwd.getpwuid(os.stat(filename).st_uid).pw_name
+
+
 def set_user_grp(filepath, user, group):
     """ Set the UID and GUID of a file """
     uid = pwd.getpwnam(user).pw_uid
     gid = grp.getgrnam(group).gr_gid
     os.chown(filepath, uid, gid)
+
+
+#
+# Converters
+#
+
+def celsius_to_kelvin(celsius):
+    try:
+        kelvin = celsius + 273.15
+        return kelvin
+    except TypeError:
+        logger.error("Input must be an int or float")
+
+
+def csv_to_list_of_int(str_csv):
+    """ return a list of integers from a string of csv integers """
+    if str_csv:
+        list_int = []
+        for x in str_csv.split(','):
+            try:
+                list_int.append(int(x))
+            except:
+                pass
+        return list_int
+
+
+def list_to_csv(display_order):
+    str_csv = [str(i) for i in display_order]
+    return ','.join(str_csv)
+
+
+def get_sec(time_str):
+    """ Convert HH:MM:SS string into number of seconds """
+    h, m, s = time_str.split(':')
+    return int(h) * 3600 + int(m) * 60 + int(s)
+

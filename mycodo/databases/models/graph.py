@@ -11,6 +11,7 @@ class Graph(CRUDMixin, db.Model):
     name = db.Column(db.Text, default='Graph')
     pid_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
     relay_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
+    math_ids = db.Column(db.Text, default='')  # store IDs to display
     sensor_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
     width = db.Column(db.Integer, default=100)  # Width of page (in percent)
     height = db.Column(db.Integer, default=400)  # Height (in pixels)

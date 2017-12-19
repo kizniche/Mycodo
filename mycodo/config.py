@@ -7,8 +7,8 @@ import collections
 from datetime import timedelta
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '5.4.11'
-ALEMBIC_VERSION = '234283cc67f4'
+MYCODO_VERSION = '5.4.19'
+ALEMBIC_VERSION = '41fbe7fcc8b0'
 
 LANGUAGES = {
     'en': 'English',
@@ -16,9 +16,6 @@ LANGUAGES = {
     'es': 'Español (Spanish)',
     'ko': '한국어 (Korean)'
 }
-
-# Install path, the parent directory this script resides
-INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
 
 # Measurements for each sensor/device
 MEASUREMENTS = {
@@ -95,6 +92,9 @@ MEASUREMENT_UNITS = {
     'humidity': {
         'name': lazy_gettext(u'Humidity'),
         'meas': 'humidity', 'unit': u'%'},
+    'humidity_ratio': {
+        'name': lazy_gettext(u'Humidity Ratio'),
+        'meas': 'humidity_ratio', 'unit': u'kg/kg'},
     'lux': {
         'name': lazy_gettext(u'Light'),
         'meas': 'lux', 'unit': u'lx'},
@@ -119,6 +119,12 @@ MEASUREMENT_UNITS = {
     'setpoint': {
         'name': lazy_gettext(u'Setpoint'),
         'meas': 'setpoint', 'unit': u''},
+    'specific_enthalpy': {
+        'name': lazy_gettext(u'Specific Enthalpy'),
+        'meas': 'specific_enthalpy', 'unit': u'kJ/kg'},
+    'specific_volume': {
+        'name': lazy_gettext(u'Specific Volume'),
+        'meas': 'specific_volume', 'unit': u'm^3/kg'},
     'temperature': {
         'name': lazy_gettext(u'Temperature'),
         'meas': 'temperature', 'unit': u'°C'},
@@ -168,6 +174,15 @@ INPUTS = [
     ('HTU21D', 'Temperature/Humidity: HTU21D'),
     ('SHT1x_7x', 'Temperature/Humidity: SHT 10/11/15/71/75'),
     ('SHT2x', 'Temperature/Humidity: SHT 21/25')
+]
+
+MATHS = [
+    ('average', 'Average'),
+    ('median', 'Median'),
+    ('maximum', 'Maximum'),
+    ('minimum', 'Minimum'),
+    ('humidity', 'Humidity'),
+    ('verification', 'Verification')
 ]
 
 # Sensors and description
@@ -229,20 +244,16 @@ CONDITIONAL_ACTIONS = collections.OrderedDict([
 USER_ROLES = [
     dict(id=1, name='Admin',
          edit_settings=True, edit_controllers=True, edit_users=True,
-         view_settings=True, view_camera=True, view_stats=True,
-         view_logs=True),
+         view_settings=True, view_camera=True, view_stats=True, view_logs=True),
     dict(id=2, name='Editor',
          edit_settings=True, edit_controllers=True, edit_users=False,
-         view_settings=True, view_camera=True, view_stats=True,
-         view_logs=True),
+         view_settings=True, view_camera=True, view_stats=True, view_logs=True),
     dict(id=3, name='Monitor',
          edit_settings=False, edit_controllers=False, edit_users=False,
-         view_settings=True, view_camera=True, view_stats=True,
-         view_logs=True),
+         view_settings=True, view_camera=True, view_stats=True, view_logs=True),
     dict(id=4, name='Guest',
          edit_settings=False, edit_controllers=False, edit_users=False,
-         view_settings=False, view_camera=False, view_stats=False,
-         view_logs=False)
+         view_settings=False, view_camera=False, view_stats=False, view_logs=False)
 ]
 
 # Web UI themes
@@ -267,6 +278,9 @@ THEMES = [
 ]
 
 THEMES_DARK = ['cyborg', 'darkly', 'slate', 'sun', 'superhero']
+
+# Install path, the parent directory this script resides
+INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
 
 # SQLite3 databases that stores users and settings
 DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')

@@ -55,6 +55,7 @@ import threading
 import time as t
 import timeit
 
+from databases.models import Math
 from databases.models import Method
 from databases.models import MethodData
 from databases.models import PID
@@ -131,7 +132,7 @@ class PIDController(threading.Thread):
         self.default_set_point = None
         self.set_point = None
 
-        self.input_unique_id = None
+        self.dev_unique_id = None
         self.input_duration = None
 
         self.raise_output_type = None
@@ -196,12 +197,13 @@ class PIDController(threading.Thread):
     def run(self):
         try:
             self.running = True
-            self.logger.info("Activated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_startup_timer) * 1000))
+            startup_str = "Activated in {:.1f} ms".format(
+                (timeit.default_timer() - self.thread_startup_timer) * 1000)
             if self.is_paused:
-                self.logger.info("Paused")
+                startup_str += ", started Paused"
             elif self.is_held:
-                self.logger.info("Held")
+                startup_str += ", started Held"
+            self.logger.info(startup_str)
             self.ready.set()
 
             while self.running:
@@ -298,12 +300,17 @@ class PIDController(threading.Thread):
         self.default_set_point = pid.setpoint
         self.set_point = pid.setpoint
 
-        input_unique_id = pid.measurement.split(',')[0]
+        dev_unique_id = pid.measurement.split(',')[0]
         self.measurement = pid.measurement.split(',')[1]
 
-        input_dev = db_retrieve_table_daemon(Input, unique_id=input_unique_id)
-        self.input_unique_id = input_dev.unique_id
-        self.input_duration = input_dev.period
+        input_dev = db_retrieve_table_daemon(Input, unique_id=dev_unique_id)
+        math = db_retrieve_table_daemon(Math, unique_id=dev_unique_id)
+        if input_dev:
+            self.dev_unique_id = input_dev.unique_id
+            self.input_duration = input_dev.period
+        elif math:
+            self.dev_unique_id = math.unique_id
+            self.input_duration = math.period
 
         try:
             self.raise_output_type = db_retrieve_table_daemon(
@@ -368,16 +375,12 @@ class PIDController(threading.Thread):
         :rtype: None
         """
         self.last_measurement_success = False
-        # Get latest measurement (from within the past minute) from influxdb
+        # Get latest measurement from influxdb
         try:
-            if self.input_duration < 60:
-                duration = 60
-            else:
-                duration = int(self.input_duration * 1.5)
             self.last_measurement = read_last_influxdb(
-                self.input_unique_id,
+                self.dev_unique_id,
                 self.measurement,
-                duration)
+                int(self.max_measure_age))
             if self.last_measurement:
                 self.last_time = self.last_measurement[0]
                 self.last_measurement = self.last_measurement[1]
@@ -391,7 +394,7 @@ class PIDController(threading.Thread):
                     meas=self.measurement,
                     last=self.last_measurement,
                     ts=local_timestamp))
-                if calendar.timegm(t.gmtime())-utc_timestamp > self.max_measure_age:
+                if calendar.timegm(t.gmtime()) - utc_timestamp > self.max_measure_age:
                     self.logger.error(
                         "Last measurement was {last_sec} seconds ago, however"
                         " the maximum measurement age is set to {max_sec}"
@@ -553,10 +556,10 @@ class PIDController(threading.Thread):
                                 abs(self.control_variable) > self.lower_max_duration):
                             self.lower_seconds_on = self.lower_max_duration
                         else:
-                            self.lower_seconds_on = abs(float("{0:.2f}".format(
-                                self.control_variable)))
+                            self.lower_seconds_on = float("{0:.2f}".format(
+                                self.control_variable))
 
-                        if self.lower_seconds_on > self.lower_min_duration:
+                        if abs(self.lower_seconds_on) > self.lower_min_duration:
                             # Activate lower_output for a duration
                             self.logger.debug("Setpoint: {sp} Output: {cv} to "
                                               "output {id}".format(

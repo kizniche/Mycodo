@@ -9,10 +9,14 @@ class DisplayOrder(CRUDMixin, db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     graph = db.Column(db.Text, default='')
     lcd = db.Column(db.Text, default='')
+    math = db.Column(db.Text, default='')
     method = db.Column(db.Text, default='')
+    # TODO: Change to "function" (also make sure everything works with new name)
     pid = db.Column(db.Text, default='')
+    # TODO: Change to "output"
     relay = db.Column(db.Text, default='')
     remote_host = db.Column(db.Text, default='')
+    # TODO: Change to "input"
     sensor = db.Column(db.Text, default='')
     timer = db.Column(db.Text, default='')
 

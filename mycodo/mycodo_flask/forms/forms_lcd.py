@@ -92,20 +92,36 @@ class LCDModDisplay(FlaskForm):
         lazy_gettext(u'Max Age (seconds)'),
         validators=[validators.NumberRange(min=1)]
     )
+    line_1_decimal_places = IntegerField(
+        lazy_gettext(u'Decimal Places'),
+        validators=[validators.NumberRange(min=0)]
+    )
     line_2_display = StringField(lazy_gettext(u'Line 2'))
     line_2_max_age = DecimalField(
         lazy_gettext(u'Max Age (seconds)'),
         validators=[validators.NumberRange(min=1)]
+    )
+    line_2_decimal_places = IntegerField(
+        lazy_gettext(u'Decimal Places'),
+        validators=[validators.NumberRange(min=0)]
     )
     line_3_display = StringField(lazy_gettext(u'Line 3'))
     line_3_max_age = DecimalField(
         lazy_gettext(u'Max Age (seconds)'),
         validators=[validators.NumberRange(min=1)]
     )
+    line_3_decimal_places = IntegerField(
+        lazy_gettext(u'Decimal Places'),
+        validators=[validators.NumberRange(min=0)]
+    )
     line_4_display = StringField(lazy_gettext(u'Line 4'))
     line_4_max_age = DecimalField(
         lazy_gettext(u'Max Age (seconds)'),
         validators=[validators.NumberRange(min=1)]
+    )
+    line_4_decimal_places = IntegerField(
+        lazy_gettext(u'Decimal Places'),
+        validators=[validators.NumberRange(min=0)]
     )
     save_display = SubmitField(lazy_gettext(u'Save'))
     delete_display = SubmitField(lazy_gettext(u'Delete'))

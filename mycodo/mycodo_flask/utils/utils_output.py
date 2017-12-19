@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 # Manipulate output settings while daemon is running
 #
 
-def manipulate_relay(action, relay_id):
+def manipulate_output(action, relay_id):
     """
     Add, delete, and modify output settings while the daemon is active
 
@@ -125,7 +125,7 @@ def output_on_off(form_relay):
 # Output
 #
 
-def relay_add(form_add_relay):
+def output_add(form_add_relay):
     action = u'{action} {controller}'.format(
         action=gettext(u"Add"),
         controller=gettext(u"Output"))
@@ -155,7 +155,7 @@ def relay_add(form_add_relay):
                 DisplayOrder.query.first().relay = add_display_order(
                     display_order, new_relay.id)
                 db.session.commit()
-                manipulate_relay('Add', new_relay.id)
+                manipulate_output('Add', new_relay.id)
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
@@ -169,7 +169,7 @@ def relay_add(form_add_relay):
     flash_success_errors(error, action, url_for('page_routes.page_output'))
 
 
-def relay_mod(form_relay):
+def output_mod(form_relay):
     action = u'{action} {controller}'.format(
         action=gettext(u"Modify"),
         controller=gettext(u"Output"))
@@ -219,13 +219,13 @@ def relay_mod(form_relay):
 
         if not error:
             db.session.commit()
-            manipulate_relay('Modify', form_relay.relay_id.data)
+            manipulate_output('Modify', form_relay.relay_id.data)
     except Exception as except_msg:
         error.append(except_msg)
     flash_success_errors(error, action, url_for('page_routes.page_output'))
 
 
-def relay_del(form_relay):
+def output_del(form_relay):
     action = u'{action} {controller}'.format(
         action=gettext(u"Delete"),
         controller=gettext(u"Output"))
@@ -238,13 +238,13 @@ def relay_del(form_relay):
         display_order.remove(int(form_relay.relay_id.data))
         DisplayOrder.query.first().relay = list_to_csv(display_order)
         db.session.commit()
-        manipulate_relay('Delete', form_relay.relay_id.data)
+        manipulate_output('Delete', form_relay.relay_id.data)
     except Exception as except_msg:
         error.append(except_msg)
     flash_success_errors(error, action, url_for('page_routes.page_output'))
 
 
-def relay_reorder(relay_id, display_order, direction):
+def output_reorder(relay_id, display_order, direction):
     action = u'{action} {controller}'.format(
         action=gettext(u"Reorder"),
         controller=gettext(u"Output"))

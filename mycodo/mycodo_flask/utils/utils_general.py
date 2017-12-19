@@ -19,9 +19,10 @@ from flask_babel import gettext
 
 from mycodo.mycodo_client import DaemonControl
 
-from mycodo.databases.models import LCD
-from mycodo.databases.models import PID
 from mycodo.databases.models import Input
+from mycodo.databases.models import LCD
+from mycodo.databases.models import Math
+from mycodo.databases.models import PID
 from mycodo.databases.models import Timer
 from mycodo.databases.models import User
 
@@ -43,7 +44,7 @@ def controller_activate_deactivate(controller_action,
 
     :param controller_action: Activate or deactivate
     :type controller_action: str
-    :param controller_type: The controller type (LCD, PID, Input, Timer)
+    :param controller_type: The controller type (LCD, Math, PID, Input, Timer)
     :type controller_type: str
     :param controller_id: Controller with ID to activate or deactivate
     :type controller_id: str
@@ -54,22 +55,26 @@ def controller_activate_deactivate(controller_action,
     activated = bool(controller_action == 'activate')
 
     translated_names = {
-        "LCD": gettext(u"LCD"),
-        "PID": gettext(u"PID"),
         "Input": gettext(u"Input"),
+        "LCD": gettext(u"LCD"),
+        "Math": gettext(u"Math"),
+        "PID": gettext(u"PID"),
         "Timer": gettext(u"Timer")
     }
 
     mod_controller = None
-    if controller_type == 'LCD':
+    if controller_type == 'Input':
+        mod_controller = Input.query.filter(
+            Input.id == int(controller_id)).first()
+    elif controller_type == 'LCD':
         mod_controller = LCD.query.filter(
             LCD.id == int(controller_id)).first()
+    elif controller_type == 'Math':
+        mod_controller = Math.query.filter(
+            Math.id == int(controller_id)).first()
     elif controller_type == 'PID':
         mod_controller = PID.query.filter(
             PID.id == int(controller_id)).first()
-    elif controller_type == 'Input':
-        mod_controller = Input.query.filter(
-            Input.id == int(controller_id)).first()
     elif controller_type == 'Timer':
         mod_controller = Timer.query.filter(
             Timer.id == int(controller_id)).first()
@@ -126,7 +131,7 @@ def choices_inputs(inputs):
             value = '{id},{meas}'.format(
                 id=each_input.unique_id,
                 meas=each_input.cmd_measurement)
-            display = u'[{id:02d}] {name} ({meas})'.format(
+            display = u'[Input {id:02d}] {name} ({meas})'.format(
                 id=each_input.id,
                 name=each_input.name,
                 meas=each_input.cmd_measurement)
@@ -136,7 +141,7 @@ def choices_inputs(inputs):
                 value = '{id},{meas}'.format(
                     id=each_input.unique_id,
                     meas=each_measurement)
-                display = u'[{id:02d}] {name} ({meas})'.format(
+                display = u'[Input {id:02d}] {name} ({meas})'.format(
                     id=each_input.id,
                     name=each_input.name,
                     meas=MEASUREMENT_UNITS[each_measurement]['name'])
@@ -146,11 +151,32 @@ def choices_inputs(inputs):
                 value = '{id},{meas}'.format(
                     id=each_input.unique_id,
                     meas=each_input.adc_measure)
-                display = u'[{id:02d}] {name} ({meas})'.format(
+                display = u'[Input {id:02d}] {name} ({meas})'.format(
                     id=each_input.id,
                     name=each_input.name,
                     meas=each_input.adc_measure)
                 choices.update({value: display})
+    return choices
+
+
+def choices_maths(maths):
+    """ populate form multi-select choices from Math entries """
+    choices = OrderedDict()
+    for each_math in maths:
+        for each_measurement in each_math.measure.split(','):
+            value = '{id},{measure}'.format(
+                id=each_math.unique_id,
+                measure=each_measurement)
+
+            if each_measurement in MEASUREMENT_UNITS:
+                measurement_display = MEASUREMENT_UNITS[each_measurement]['name']
+            else:
+                measurement_display = each_measurement
+            display = u'[Math {id:02d}] {name} ({meas})'.format(
+                id=each_math.id,
+                name=each_math.name,
+                meas=measurement_display)
+            choices.update({value: display})
     return choices
 
 
@@ -160,12 +186,12 @@ def choices_outputs(output):
     for each_output in output:
         if each_output.relay_type != 'pwm':
             value = '{id},duration_sec'.format(id=each_output.unique_id)
-            display = u'[{id:02d}] {name} (Duration)'.format(
+            display = u'[Output {id:02d}] {name} (Duration)'.format(
                 id=each_output.id, name=each_output.name)
             choices.update({value: display})
         elif each_output.relay_type == 'pwm':
             value = '{id},duty_cycle'.format(id=each_output.unique_id)
-            display = u'[{id:02d}] {name} (Duty Cycle)'.format(
+            display = u'[Output {id:02d}] {name} (Duty Cycle)'.format(
                 id=each_output.id, name=each_output.name)
             choices.update({value: display})
     return choices
@@ -176,15 +202,15 @@ def choices_pids(pid):
     choices = OrderedDict()
     for each_pid in pid:
         value = '{id},setpoint'.format(id=each_pid.unique_id)
-        display = u'[{id:02d}] {name} (Setpoint)'.format(
+        display = u'[PID {id:02d}] {name} (Setpoint)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
         value = '{id},pid_output'.format(id=each_pid.unique_id)
-        display = u'[{id:02d}] {name} (Output Duration)'.format(
+        display = u'[PID {id:02d}] {name} (Output Duration)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
         value = '{id},duty_cycle'.format(id=each_pid.unique_id)
-        display = u'[{id:02d}] {name} (Output Duty Cycle)'.format(
+        display = u'[PID {id:02d}] {name} (Output Duty Cycle)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
     return choices

@@ -10,14 +10,18 @@ class Conditional(CRUDMixin, db.Model):
     name = db.Column(db.Text, default='Conditional Name')
     conditional_type = db.Column(db.Text, default=None)
     is_activated = db.Column(db.Boolean, default=False)
+
+    # TODO: Make one variable 'unique_id' instead of non-unique ID, in next major version
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'), default=None)  # Which sensor does this belong?
+    math_id = db.Column(db.Integer, db.ForeignKey('math.id'), default=None)  # Which sensor does this belong?
 
     # Relay options
     if_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Watch this relay for action
     if_relay_state = db.Column(db.Text, default='')  # What action to watch relay for
     if_relay_duration = db.Column(db.Float, default=0.0)
 
-    # Sensor options
+    # Sensor/Math options
+    # TODO: Make variable names more generic in next major version change
     if_sensor_period = db.Column(db.Float, default=60.0)
     if_sensor_measurement = db.Column(db.Text, default='')  # which measurement to monitor
     if_sensor_edge_select = db.Column(db.Text, default='edge')  # monitor Rising, Falling, or Both switch edges

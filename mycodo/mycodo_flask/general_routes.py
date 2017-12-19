@@ -414,7 +414,7 @@ def computer_command(action):
         return redirect(url_for('general_routes.home'))
 
     try:
-        if action not in ['restart', 'shutdown']:
+        if action not in ['restart', 'shutdown', 'daemon_restart']:
             flash("Unrecognized command: {action}".format(
                 action=action), "success")
             return redirect('/settings')
@@ -425,6 +425,8 @@ def computer_command(action):
             flash(gettext(u"System rebooting in 10 seconds"), "success")
         elif action == 'shutdown':
             flash(gettext(u"System shutting down in 10 seconds"), "success")
+        elif action == 'daemon_restart':
+            flash(gettext(u"Command to restart the daemon sent"), "success")
         return redirect('/settings')
     except Exception as e:
         logger.error("System command '{cmd}' raised and error: "

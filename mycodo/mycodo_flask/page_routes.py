@@ -28,19 +28,23 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_client import daemon_active
 
 from mycodo.mycodo_flask.forms import forms_conditional
+from mycodo.mycodo_flask.forms import forms_function
 from mycodo.mycodo_flask.forms import forms_graph
 from mycodo.mycodo_flask.forms import forms_input
 from mycodo.mycodo_flask.forms import forms_lcd
+from mycodo.mycodo_flask.forms import forms_math
 from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.forms import forms_output
 from mycodo.mycodo_flask.forms import forms_pid
 from mycodo.mycodo_flask.forms import forms_timer
 
 from mycodo.mycodo_flask.utils import utils_conditional
+from mycodo.mycodo_flask.utils import utils_function
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_graph
 from mycodo.mycodo_flask.utils import utils_input
 from mycodo.mycodo_flask.utils import utils_lcd
+from mycodo.mycodo_flask.utils import utils_math
 from mycodo.mycodo_flask.utils import utils_output
 from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.mycodo_flask.utils import utils_timer
@@ -53,6 +57,7 @@ from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Graph
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
+from mycodo.databases.models import Math
 from mycodo.databases.models import Method
 from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
@@ -66,6 +71,7 @@ from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.tools import return_relay_usage
 
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import HTTP_LOG_FILE
@@ -73,17 +79,18 @@ from mycodo.config import KEEPUP_LOG_FILE
 from mycodo.config import LOGIN_LOG_FILE
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import UPGRADE_LOG_FILE
-
-from mycodo.config import CONDITIONAL_ACTIONS
 from mycodo.config import DAEMON_PID_FILE
-from mycodo.config import INSTALL_DIRECTORY
+
+from mycodo.config import ALEMBIC_VERSION
+from mycodo.config import CONDITIONAL_ACTIONS
+from mycodo.config import LIST_DEVICES_I2C
 from mycodo.config import MEASUREMENTS
 from mycodo.config import MEASUREMENT_UNITS
 from mycodo.config import PATH_CAMERAS
 
 from mycodo.config import USAGE_REPORTS_PATH
 
-logger = logging.getLogger('mycodo.mycodo_flask.pages')
+logger = logging.getLogger('mycodo.mycodo_flask.page_routes')
 
 blueprint = Blueprint('page_routes',
                       __name__,
@@ -132,7 +139,7 @@ def page_camera():
                 if camera_stream(unique_id=mod_camera.unique_id).is_running(mod_camera.unique_id):
                     camera_stream(unique_id=mod_camera.unique_id).stop(mod_camera.unique_id)
                 time.sleep(2)
-            camera_record('photo', mod_camera)
+            camera_record('photo', mod_camera, flash=flash)
         elif form_camera.start_timelapse.data:
             if mod_camera.stream_started:
                 flash(gettext(u"Cannot start time-lapse if stream is active."), "error")
@@ -292,29 +299,34 @@ def page_graph():
 
     # Retrieve tables from SQL database
     graph = Graph.query.all()
-    pid = PID.query.all()
-    output = Output.query.all()
     input_dev = Input.query.all()
+    math = Math.query.all()
+    output = Output.query.all()
+    pid = PID.query.all()
 
     # Retrieve all choices to populate form drop-down menu
-    choices_pid = utils_general.choices_pids(pid)
+    choices_input = utils_general.choices_inputs(input_dev)
+    choices_math = utils_general.choices_maths(math)
     choices_output = utils_general.choices_outputs(output)
-    input_choices = utils_general.choices_inputs(input_dev)
+    choices_pid = utils_general.choices_pids(pid)
 
     # Add custom measurement and units to list (From linux command input)
-    input_measurements = MEASUREMENT_UNITS
-    input_measurements = add_custom_measurements(
-        input_dev, input_measurements, MEASUREMENT_UNITS)
+    dict_measurements = MEASUREMENT_UNITS
+    dict_measurements = add_custom_measurements(
+        input_dev, dict_measurements, MEASUREMENT_UNITS)
 
     # Add multi-select values as form choices, for validation
+    form_mod_graph.math_ids.choices = []
     form_mod_graph.pid_ids.choices = []
     form_mod_graph.relay_ids.choices = []
     form_mod_graph.sensor_ids.choices = []
+    for key, value in choices_math.items():
+        form_mod_graph.math_ids.choices.append((key, value))
     for key, value in choices_pid.items():
         form_mod_graph.pid_ids.choices.append((key, value))
     for key, value in choices_output.items():
         form_mod_graph.relay_ids.choices.append((key, value))
-    for key, value in input_choices.items():
+    for key, value in choices_input.items():
         form_mod_graph.sensor_ids.choices.append((key, value))
 
     # Generate dictionary of custom colors for each graph
@@ -322,24 +334,27 @@ def page_graph():
 
     # Retrieve custom colors for gauges
     colors_gauge = OrderedDict()
-    for each_graph in graph:
-        if each_graph.range_colors:  # Split into list
-            color_areas = each_graph.range_colors.split(';')
-        else:  # Create empty list
-            color_areas = []
-        total = []
-        if each_graph.graph_type == 'gauge_angular':
-            for each_range in color_areas:
-                total.append({
-                    'low': each_range.split(',')[0],
-                    'high': each_range.split(',')[1],
-                    'hex': each_range.split(',')[2]})
-        elif each_graph.graph_type == 'gauge_solid':
-            for each_range in color_areas:
-                total.append({
-                    'stop': each_range.split(',')[0],
-                    'hex': each_range.split(',')[1]})
-        colors_gauge.update({each_graph.id: total})
+    try:
+        for each_graph in graph:
+            if each_graph.range_colors:  # Split into list
+                color_areas = each_graph.range_colors.split(';')
+            else:  # Create empty list
+                color_areas = []
+            total = []
+            if each_graph.graph_type == 'gauge_angular':
+                for each_range in color_areas:
+                    total.append({
+                        'low': each_range.split(',')[0],
+                        'high': each_range.split(',')[1],
+                        'hex': each_range.split(',')[2]})
+            elif each_graph.graph_type == 'gauge_solid':
+                for each_range in color_areas:
+                    total.append({
+                        'stop': each_range.split(',')[0],
+                        'hex': each_range.split(',')[1]})
+            colors_gauge.update({each_graph.id: total})
+    except IndexError:
+        flash("Colors Index Error", "error")
 
     # Detect which form on the page was submitted
     if request.method == 'POST':
@@ -374,16 +389,18 @@ def page_graph():
         return redirect('/graph')
 
     return render_template('pages/graph.html',
-                           choices_input=input_choices,
+                           choices_input=choices_input,
+                           choices_math=choices_math,
                            choices_output=choices_output,
                            choices_pid=choices_pid,
                            graph=graph,
+                           math=math,
                            pid=pid,
                            relay=output,
                            sensor=input_dev,
                            colors_graph=colors_graph,
                            colors_gauge=colors_gauge,
-                           sensor_measurements=input_measurements,
+                           dict_measurements=dict_measurements,
                            measurement_units=MEASUREMENT_UNITS,
                            displayOrder=display_order,
                            form_add_graph=form_add_graph,
@@ -452,20 +469,21 @@ def page_info():
     gpio.wait()
 
     try:
-        i2cdetect_out = {}
         i2c_devices = glob.glob("/dev/i2c-*")
+        i2c_devices_sorted = OrderedDict()
         for index, each_dev in enumerate(i2c_devices):
-            i2c_devices[index] = int(each_dev.strip("/dev/i2c-"))
             df = subprocess.Popen(
-                "i2cdetect -y {dev}".format(dev=i2c_devices[index]),
+                "i2cdetect -y {dev}".format(dev=int(each_dev.strip("/dev/i2c-"))),
                 stdout=subprocess.PIPE,
                 shell=True)
-            (i2cdetect_out[i2c_devices[index]], _) = df.communicate()
+            (out, _) = df.communicate()
             df.wait()
+            i2c_devices_sorted[int(each_dev.strip("/dev/i2c-"))] = out
     except Exception as er:
         flash("Error detecting I2C devices: {er}".format(er=er), "error")
-        i2c_devices = {}
-        i2cdetect_out = {}
+        i2c_devices_sorted = {}
+
+    i2c_devices_sorted = OrderedDict(sorted(i2c_devices_sorted.items()))
 
     df = subprocess.Popen(
         "df -h", stdout=subprocess.PIPE, shell=True)
@@ -487,9 +505,8 @@ def page_info():
         with open(DAEMON_PID_FILE, 'r') as pid_file:
             daemon_pid = int(pid_file.read())
 
-    database_version = []
-    for each_ver in AlembicVersion.query.all():
-        database_version.append(each_ver.version_num)
+    database_version = AlembicVersion.query.first().version_num
+    correct_database_version = ALEMBIC_VERSION
 
     virtualenv_flask = False
     if hasattr(sys, 'real_prefix'):
@@ -524,10 +541,10 @@ def page_info():
                            daemon_up=daemon_up,
                            gpio_readall=gpio_output,
                            database_version=database_version,
+                           correct_database_version=correct_database_version,
                            df=df_output,
                            free=free_output,
-                           i2c_devices=i2c_devices,
-                           i2cdetect_out=i2cdetect_out,
+                           i2c_devices_sorted=i2c_devices_sorted,
                            ifconfig=ifconfig_output,
                            pstree=pstree_output,
                            ram_use_daemon=ram_use_daemon,
@@ -545,6 +562,7 @@ def page_lcd():
     """ Display LCD output settings """
     lcd = LCD.query.all()
     lcd_data = LCDData.query.all()
+    math = Math.query.all()
     pid = PID.query.all()
     output = Output.query.all()
     input_dev = Input.query.all()
@@ -597,6 +615,7 @@ def page_lcd():
     return render_template('pages/lcd.html',
                            lcd=lcd,
                            lcd_data=lcd_data,
+                           math=math,
                            measurements=measurements,
                            pid=pid,
                            relay=output,
@@ -615,35 +634,53 @@ def page_live():
     pid = PID.query.all()
     output = Output.query.all()
     input_dev = Input.query.all()
+    math = Math.query.all()
+    method = Method.query.all()
     timer = Timer.query.all()
 
     # Display orders
-    pid_display_order = csv_to_list_of_int(
-        DisplayOrder.query.first().pid)
     input_display_order = csv_to_list_of_int(
         DisplayOrder.query.first().sensor)
+    math_display_order = csv_to_list_of_int(
+        DisplayOrder.query.first().math)
+    pid_display_order = csv_to_list_of_int(
+        DisplayOrder.query.first().pid)
 
-    # Filter only activated inputs
-    input_order_sorted = []
+    # Filter only activated input controllers
+    inputs_sorted = []
     if input_display_order:
         for each_input_order in input_display_order:
             for each_input in input_dev:
                 if (each_input_order == each_input.id and
                         each_input.is_activated):
-                    input_order_sorted.append(each_input.id)
+                    inputs_sorted.append(each_input.id)
 
-    # Retrieve only parent method columns
-    method = Method.query.all()
+    # Filter only activated math controllers
+    maths_sorted = []
+    if input_display_order and math_display_order:
+        for each_math_order in math_display_order:
+            for each_math in math:
+                if (each_math_order == each_math.id and
+                        each_math.is_activated):
+                    maths_sorted.append(each_math.id)
+
+    # Store all output types
+    output_type = {}
+    for each_output in output:
+        output_type[each_output.id] = each_output.relay_type
 
     return render_template('pages/live.html',
                            measurement_units=MEASUREMENT_UNITS,
+                           math=math,
                            method=method,
+                           output=output,
+                           output_type=output_type,
                            pid=pid,
-                           relay=output,
-                           sensor=input_dev,
+                           input=input_dev,
                            timer=timer,
-                           pidDisplayOrder=pid_display_order,
-                           sensorDisplayOrderSorted=input_order_sorted)
+                           pid_display_order=pid_display_order,
+                           inputs_sorted=inputs_sorted,
+                           maths_sorted=maths_sorted)
 
 
 @blueprint.route('/logview', methods=('GET', 'POST'))
@@ -695,20 +732,20 @@ def page_logview():
                            log_output=log_output)
 
 
-@blueprint.route('/pid', methods=('GET', 'POST'))
+@blueprint.route('/function', methods=('GET', 'POST'))
 @flask_login.login_required
-def page_pid():
-    """ Display PID settings """
+def page_function():
+    """ Display Function settings """
     method = Method.query.all()
     pid = PID.query.all()
     output = Output.query.all()
-    input_dev = Input.query.all()
 
-    input_choices = utils_general.choices_inputs(input_dev)
+    input_choices = utils_general.choices_inputs(Input.query.all())
+    math_choices = utils_general.choices_maths(Math.query.all())
 
     display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
 
-    form_add_pid = forms_pid.PIDAdd()
+    form_add_function = forms_function.FunctionAdd()
     form_mod_pid_base = forms_pid.PIDModBase()
     form_mod_pid_output_raise = forms_pid.PIDModRelayRaise()
     form_mod_pid_output_lower = forms_pid.PIDModRelayLower()
@@ -729,16 +766,20 @@ def page_pid():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
 
-        form_name = request.form['form-name']
-        if form_name == 'addPID':
-            utils_pid.pid_add(form_add_pid)
+        if 'form-name' in request.form:
+            form_name = request.form['form-name']
+        else:
+            form_name = None
+
+        if form_add_function.func_add.data:
+            utils_function.func_add(form_add_function)
         elif form_name == 'modPID':
             if form_mod_pid_base.save.data:
                 utils_pid.pid_mod(form_mod_pid_base,
-                                   form_mod_pid_pwm_raise,
-                                   form_mod_pid_pwm_lower,
-                                   form_mod_pid_output_raise,
-                                   form_mod_pid_output_lower)
+                                  form_mod_pid_pwm_raise,
+                                  form_mod_pid_pwm_lower,
+                                  form_mod_pid_output_raise,
+                                  form_mod_pid_output_lower)
             elif form_mod_pid_base.delete.data:
                 utils_pid.pid_del(
                     form_mod_pid_base.pid_id.data)
@@ -764,17 +805,17 @@ def page_pid():
                 utils_pid.pid_manipulate(
                     form_mod_pid_base.pid_id.data, 'Resume')
 
-        return redirect('/pid')
+        return redirect('/function')
 
-    return render_template('pages/pid.html',
+    return render_template('pages/function.html',
+                           math_choices=math_choices,
                            method=method,
                            pid=pid,
                            pid_templates=pid_templates,
                            relay=output,
-                           sensor=input_dev,
-                           sensor_choices=input_choices,
+                           input_choices=input_choices,
                            displayOrder=display_order,
-                           form_add_pid=form_add_pid,
+                           form_add_function=form_add_function,
                            form_mod_pid_base=form_mod_pid_base,
                            form_mod_pid_pwm_raise=form_mod_pid_pwm_raise,
                            form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,
@@ -818,37 +859,51 @@ def page_output():
             return redirect(url_for('page_routes.page_output'))
 
         if form_add_output.relay_add.data:
-            utils_output.relay_add(form_add_output)
+            utils_output.output_add(form_add_output)
         elif form_mod_output.save.data:
-            utils_output.relay_mod(form_mod_output)
+            utils_output.output_mod(form_mod_output)
         elif form_mod_output.delete.data:
-            utils_output.relay_del(form_mod_output)
+            utils_output.output_del(form_mod_output)
         elif form_mod_output.order_up.data:
-            utils_output.relay_reorder(form_mod_output.relay_id.data,
+            utils_output.output_reorder(form_mod_output.relay_id.data,
                                        display_order, 'up')
         elif form_mod_output.order_down.data:
-            utils_output.relay_reorder(form_mod_output.relay_id.data,
+            utils_output.output_reorder(form_mod_output.relay_id.data,
                                        display_order, 'down')
+
         elif form_conditional.add_cond.data:
             utils_conditional.conditional_add(
                 form_conditional.conditional_type.data,
-                form_conditional.quantity.data)
+                form_conditional.quantity.data,
+                url_for('page_routes.page_output'))
         elif form_conditional.delete_cond.data:
-            utils_conditional.conditional_mod(form_conditional, 'delete')
+            utils_conditional.conditional_mod(
+                form_conditional, 'delete',
+                url_for('page_routes.page_output'))
         elif form_conditional.save_cond.data:
-            utils_conditional.conditional_mod(form_conditional, 'modify')
+            utils_conditional.conditional_mod(
+                form_conditional, 'modify',
+                url_for('page_routes.page_output'))
         elif form_conditional.activate_cond.data:
-            utils_conditional.conditional_activate(form_conditional)
+            utils_conditional.conditional_activate(
+                form_conditional,
+                url_for('page_routes.page_output'))
         elif form_conditional.deactivate_cond.data:
-            utils_conditional.conditional_deactivate(form_conditional)
+            utils_conditional.conditional_deactivate(
+                form_conditional,
+                url_for('page_routes.page_output'))
         elif form_conditional_actions.add_action.data:
-            utils_conditional.conditional_action_add(form_conditional_actions)
+            utils_conditional.conditional_action_add(
+                form_conditional_actions,
+                url_for('page_routes.page_output'))
         elif form_conditional_actions.save_action.data:
-            utils_conditional.conditional_action_mod(form_conditional_actions,
-                                                     'modify')
+            utils_conditional.conditional_action_mod(
+                form_conditional_actions, 'modify',
+                url_for('page_routes.page_output'))
         elif form_conditional_actions.delete_action.data:
-            utils_conditional.conditional_action_mod(form_conditional_actions,
-                                                     'delete')
+            utils_conditional.conditional_action_mod(
+                form_conditional_actions, 'delete',
+                url_for('page_routes.page_output'))
         return redirect(url_for('page_routes.page_output'))
 
     return render_template('pages/output.html',
@@ -870,7 +925,7 @@ def page_output():
 @blueprint.route('/input', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_input():
-    """ Display input settings """
+    """ Display input page """
     # TCA9548A I2C multiplexer
     multiplexer_addresses = [
         '0x70',
@@ -882,7 +937,7 @@ def page_input():
         '0x76',
         '0x77'
     ]
-    multiplexer_channels = list(range(0, 9))
+    multiplexer_channels = list(range(0, 8))
 
     camera = Camera.query.all()
     lcd = LCD.query.all()
@@ -890,6 +945,8 @@ def page_input():
     output = Output.query.all()
     input_dev = Input.query.all()
     user = User.query.all()
+
+    list_devices_i2c = LIST_DEVICES_I2C
 
     conditional = Conditional.query.filter(
         Conditional.conditional_type == 'sensor').all()
@@ -928,41 +985,55 @@ def page_input():
             return redirect(url_for('page_routes.page_input'))
 
         if form_add_input.sensorAddSubmit.data:
-            utils_input.sensor_add(form_add_input)
+            utils_input.input_add(form_add_input)
         elif form_mod_input.modSensorSubmit.data:
-            utils_input.sensor_mod(form_mod_input)
+            utils_input.input_mod(form_mod_input)
         elif form_mod_input.delSensorSubmit.data:
-            utils_input.sensor_del(form_mod_input)
+            utils_input.input_del(form_mod_input)
         elif form_mod_input.orderSensorUp.data:
-            utils_input.sensor_reorder(form_mod_input.modSensor_id.data,
+            utils_input.input_reorder(form_mod_input.modSensor_id.data,
                                        display_order, 'up')
         elif form_mod_input.orderSensorDown.data:
-            utils_input.sensor_reorder(form_mod_input.modSensor_id.data,
+            utils_input.input_reorder(form_mod_input.modSensor_id.data,
                                        display_order, 'down')
         elif form_mod_input.activateSensorSubmit.data:
-            utils_input.sensor_activate(form_mod_input)
+            utils_input.input_activate(form_mod_input)
         elif form_mod_input.deactivateSensorSubmit.data:
-            utils_input.sensor_deactivate(form_mod_input)
+            utils_input.input_deactivate(form_mod_input)
 
         elif form_conditional.deactivate_cond.data:
-            utils_conditional.conditional_deactivate(form_conditional)
+            utils_conditional.conditional_deactivate(
+                form_conditional,
+                url_for('page_routes.page_input'))
         elif form_conditional.activate_cond.data:
-            utils_conditional.conditional_activate(form_conditional)
+            utils_conditional.conditional_activate(
+                form_conditional,
+                url_for('page_routes.page_input'))
         elif form_mod_input.sensorCondAddSubmit.data:
             utils_conditional.conditional_add(
-                'sensor', 1, sensor_id=form_mod_input.modSensor_id.data)
+                'sensor', 1,
+                url_for('page_routes.page_input'),
+                sensor_id = form_mod_input.modSensor_id.data)
         elif form_conditional.delete_cond.data:
-            utils_conditional.conditional_mod(form_conditional, 'delete')
+            utils_conditional.conditional_mod(
+                form_conditional, 'delete',
+                url_for('page_routes.page_input'))
         elif form_conditional.save_cond.data:
-            utils_conditional.conditional_mod(form_conditional, 'modify')
+            utils_conditional.conditional_mod(
+                form_conditional, 'modify',
+                url_for('page_routes.page_input'))
         elif form_conditional_actions.add_action.data:
-            utils_conditional.conditional_action_add(form_conditional_actions)
+            utils_conditional.conditional_action_add(
+                form_conditional_actions,
+                url_for('page_routes.page_input'))
         elif form_conditional_actions.save_action.data:
-            utils_conditional.conditional_action_mod(form_conditional_actions,
-                                                     'modify')
+            utils_conditional.conditional_action_mod(
+                form_conditional_actions, 'modify',
+                url_for('page_routes.page_input'))
         elif form_conditional_actions.delete_action.data:
-            utils_conditional.conditional_action_mod(form_conditional_actions,
-                                                     'delete')
+            utils_conditional.conditional_action_mod(
+                form_conditional_actions, 'delete',
+                url_for('page_routes.page_input'))
         return redirect(url_for('page_routes.page_input'))
 
     return render_template('pages/input.html',
@@ -977,6 +1048,7 @@ def page_input():
                            form_conditional_actions=form_conditional_actions,
                            form_mod_sensor=form_mod_input,
                            lcd=lcd,
+                           list_devices_i2c=list_devices_i2c,
                            measurements=MEASUREMENTS,
                            multiplexer_addresses=multiplexer_addresses,
                            multiplexer_channels=multiplexer_channels,
@@ -984,6 +1056,135 @@ def page_input():
                            relay=output,
                            sensor=input_dev,
                            sensor_templates=input_templates,
+                           units=MEASUREMENT_UNITS,
+                           user=user)
+
+
+@blueprint.route('/math', methods=('GET', 'POST'))
+@flask_login.login_required
+def page_math():
+    """ Display math page """
+    camera = Camera.query.all()
+    input_dev = Input.query.all()
+    math = Math.query.all()
+    output = Output.query.all()
+    user = User.query.all()
+
+    conditional = Conditional.query.filter(
+        Conditional.conditional_type == 'math').all()
+    conditional_actions = ConditionalActions.query.all()
+
+    form_conditional = forms_conditional.Conditional()
+    form_conditional_actions = forms_conditional.ConditionalActions()
+
+    choices_input = utils_general.choices_inputs(input_dev)
+    choices_math = utils_general.choices_maths(math)
+
+    display_order = csv_to_list_of_int(DisplayOrder.query.first().math)
+
+    form_add_math = forms_math.MathAdd()
+    form_mod_math = forms_math.MathMod()
+    form_mod_multi = forms_math.MathModMultiInput()
+    form_mod_humidity = forms_math.MathModHumidity()
+    form_mod_verification = forms_math.MathModVerification()
+
+    # convert dict to list of tuples
+    choices = []
+    for each_key, each_value in choices_input.iteritems():
+        choices.append((each_key, each_value))
+    form_mod_multi.inputs.choices = choices
+    form_mod_verification.inputs.choices = choices
+
+    math_templates = []
+    math_path = os.path.join(
+        INSTALL_DIRECTORY,
+        'mycodo/mycodo_flask/templates/pages/math_options')
+    for (_, _, file_names) in os.walk(math_path):
+        math_templates.extend(file_names)
+        break
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_controllers'):
+            return redirect(url_for('page_routes.page_math'))
+
+        if form_add_math.add.data:
+            utils_math.math_add(form_add_math)
+        elif form_mod_math.mod.data:
+            math_type = Math.query.filter(
+                Math.id == form_mod_math.math_id.data).first().math_type
+            if math_type == 'humidity':
+                utils_math.math_mod(form_mod_math, form_mod_humidity)
+            elif math_type == 'verification':
+                utils_math.math_mod(form_mod_math, form_mod_verification)
+            else:
+                utils_math.math_mod(form_mod_math, form_mod_multi)
+        elif form_mod_math.delete.data:
+            utils_math.math_del(form_mod_math)
+        elif form_mod_math.order_up.data:
+            utils_math.math_reorder(form_mod_math.math_id.data,
+                                    display_order, 'up')
+        elif form_mod_math.order_down.data:
+            utils_math.math_reorder(form_mod_math.math_id.data,
+                                    display_order, 'down')
+        elif form_mod_math.activate.data:
+            utils_math.math_activate(form_mod_math)
+        elif form_mod_math.deactivate.data:
+            utils_math.math_deactivate(form_mod_math)
+
+        elif form_conditional.deactivate_cond.data:
+            utils_conditional.conditional_deactivate(
+                form_conditional,
+                url_for('page_routes.page_math'))
+        elif form_conditional.activate_cond.data:
+            utils_conditional.conditional_activate(
+                form_conditional,
+                url_for('page_routes.page_math'))
+        elif form_mod_math.conditional_add.data:
+            utils_conditional.conditional_add(
+                'math', 1,
+                url_for('page_routes.page_math'),
+                math_id=form_mod_math.math_id.data)
+        elif form_conditional.delete_cond.data:
+            utils_conditional.conditional_mod(
+                form_conditional, 'delete',
+                url_for('page_routes.page_math'))
+        elif form_conditional.save_cond.data:
+            utils_conditional.conditional_mod(
+                form_conditional, 'modify',
+                url_for('page_routes.page_math'))
+        elif form_conditional_actions.add_action.data:
+            utils_conditional.conditional_action_add(
+                form_conditional_actions,
+                url_for('page_routes.page_math'))
+        elif form_conditional_actions.save_action.data:
+            utils_conditional.conditional_action_mod(
+                form_conditional_actions, 'modify',
+                url_for('page_routes.page_math'))
+        elif form_conditional_actions.delete_action.data:
+            utils_conditional.conditional_action_mod(
+                form_conditional_actions, 'delete',
+                url_for('page_routes.page_math'))
+        return redirect(url_for('page_routes.page_math'))
+
+    return render_template('pages/math.html',
+                           conditional=conditional,
+                           conditional_actions=conditional_actions,
+                           conditional_actions_list=CONDITIONAL_ACTIONS,
+                           choices_input=choices_input,
+                           choices_math=choices_math,
+                           display_order=display_order,
+                           form_add_math=form_add_math,
+                           form_mod_math=form_mod_math,
+                           form_mod_multi=form_mod_multi,
+                           form_mod_humidity=form_mod_humidity,
+                           form_mod_verification=form_mod_verification,
+                           form_conditional=form_conditional,
+                           form_conditional_actions=form_conditional_actions,
+                           camera=camera,
+                           input=input_dev,
+                           math=math,
+                           output=output,
+                           math_templates=math_templates,
                            units=MEASUREMENT_UNITS,
                            user=user)
 

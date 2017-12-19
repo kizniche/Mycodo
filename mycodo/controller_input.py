@@ -34,9 +34,10 @@ from mycodo_client import DaemonControl
 from databases.models import Camera
 from databases.models import Conditional
 from databases.models import ConditionalActions
-from databases.models import PID
-from databases.models import Output
 from databases.models import Input
+from databases.models import Math
+from databases.models import Output
+from databases.models import PID
 from databases.models import SMTP
 
 from devices.tca9548a import TCA9548A
@@ -70,14 +71,10 @@ from inputs.sht2x import SHT2xSensor
 from inputs.signal_pwm import SignalPWMInput
 from inputs.signal_rpm import SignalRPMInput
 
-from devices.camera import camera_record
+from utils.conditional import check_conditionals
 from utils.database import db_retrieve_table_daemon
-from utils.influx import format_influxdb_data
-from utils.influx import read_last_influxdb
-from utils.influx import write_influxdb_list
+from utils.influx import add_measure_influxdb
 from utils.influx import write_influxdb_value
-from utils.send_data import send_email
-from utils.system_pi import cmd_output
 
 from config import LIST_DEVICES_I2C
 
@@ -147,7 +144,7 @@ class InputController(threading.Thread):
         self.cond_timer = {}
         self.smtp_wait_timer = {}
 
-        self.setup_input_conditionals()
+        self.setup_conditionals()
 
         input_dev = db_retrieve_table_daemon(Input, device_id=self.input_id)
         self.input_sel = input_dev
@@ -271,11 +268,9 @@ class InputController(threading.Thread):
         elif self.device == 'RPiFreeSpace':
             self.measure_input = RaspberryPiFreeSpace(self.location)
         elif self.device == 'AM2302':
-            self.measure_input = DHT22Sensor(self.input_id,
-                                             int(self.location))
+            self.measure_input = DHT22Sensor(int(self.location))
         elif self.device == 'AM2315':
-            self.measure_input = AM2315Sensor(self.input_id,
-                                              self.i2c_bus,
+            self.measure_input = AM2315Sensor(self.i2c_bus,
                                               power=self.power_output_id)
         elif self.device == 'ATLAS_PH_I2C':
             self.measure_input = AtlaspHSensor(self.interface,
@@ -319,8 +314,7 @@ class InputController(threading.Thread):
                                              int(self.location),
                                              power=self.power_output_id)
         elif self.device == 'DHT22':
-            self.measure_input = DHT22Sensor(self.input_id,
-                                             int(self.location),
+            self.measure_input = DHT22Sensor(int(self.location),
                                              power=self.power_output_id)
         elif self.device == 'HTU21D':
             self.measure_input = HTU21DSensor(self.i2c_bus)
@@ -437,7 +431,8 @@ class InputController(threading.Thread):
                             # Get measurement(s) from input
                             self.update_measure()
                             # Add measurement(s) to influxdb
-                            self.add_measure_influxdb()
+                            if self.updateSuccess:
+                                add_measure_influxdb(self.unique_id, self.measurement)
                             self.pre_output_activated = False
                             self.get_new_measurement = False
 
@@ -449,12 +444,18 @@ class InputController(threading.Thread):
                                 time.time() > self.cond_timer[each_cond_id]):
                             # Inputs that are triggered (switch, reed, hall, etc.)
                             self.cond_timer[each_cond_id] = time.time() + self.cond_if_input_period[each_cond_id]
-                            self.check_conditionals(each_cond_id)
+                            check_conditionals(
+                                self, each_cond_id, self.measurements, self.control,
+                                Camera, Conditional, ConditionalActions,
+                                Input, Math, PID, SMTP)
                         elif ((not self.cond_timer[each_cond_id] and self.trigger_cond) or
                                 time.time() > self.cond_timer[each_cond_id]):
                             # Inputs that are not triggered (inputs)
                             self.cond_timer[each_cond_id] = time.time() + self.cond_if_input_period[each_cond_id]
-                            self.check_conditionals(each_cond_id)
+                            check_conditionals(
+                                self, each_cond_id, self.measurements, self.control,
+                                Camera, Conditional, ConditionalActions,
+                                Input, Math, PID, SMTP)
 
                 self.trigger_cond = False
 
@@ -474,224 +475,6 @@ class InputController(threading.Thread):
         except Exception as except_msg:
             self.logger.exception("Error: {err}".format(
                 err=except_msg))
-
-    def add_measure_influxdb(self):
-        """
-        Add a measurement entries to InfluxDB
-
-        :rtype: None
-        """
-        if self.updateSuccess:
-            data = []
-            for each_measurement, each_value in self.measurement.values.items():
-                data.append(format_influxdb_data(self.unique_id,
-                                                 each_measurement,
-                                                 each_value))
-            write_db = threading.Thread(
-                target=write_influxdb_list,
-                args=(data,))
-            write_db.start()
-
-    def check_conditionals(self, cond_id):
-        """
-        Check if any input conditional statements are activated and
-        execute their actions if the conditional is true.
-
-        For example, if measured temperature is above 30C, notify me@gmail.com
-
-        :rtype: None
-
-        :param cond_id: ID of conditional to check
-        :type cond_id: str
-        """
-        logger_cond = logging.getLogger("mycodo.input_cond_{id}".format(
-            id=cond_id))
-        attachment_file = False
-        attachment_type = False
-
-        cond = db_retrieve_table_daemon(
-            Conditional, device_id=cond_id, entry='first')
-
-        message = u"[Input Conditional: {name} ({id})]".format(
-            name=cond.name,
-            id=cond_id)
-
-        if cond.if_sensor_direction:
-            last_measurement = self.get_last_measurement(
-                cond.if_sensor_measurement)
-            if (last_measurement and
-                    ((cond.if_sensor_direction == 'above' and
-                        last_measurement > cond.if_sensor_setpoint) or
-                     (cond.if_sensor_direction == 'below' and
-                        last_measurement < cond.if_sensor_setpoint))):
-
-                message += u" {meas}: {value} ".format(
-                    meas=cond.if_sensor_measurement,
-                    value=last_measurement)
-                if cond.if_sensor_direction == 'above':
-                    message += "(>"
-                elif cond.if_sensor_direction == 'below':
-                    message += "(<"
-                message += u" {sp} set value).".format(
-                    sp=cond.if_sensor_setpoint)
-            else:
-                logger_cond.debug("Last measurement not found")
-                return 1
-        elif cond.if_sensor_edge_detected:
-            if cond.if_sensor_edge_select == 'edge':
-                message += u" {edge} Edge Detected.".format(
-                    edge=cond.if_sensor_edge_detected)
-            elif cond.if_sensor_edge_select == 'state':
-                if GPIO.input(int(self.location)) == cond.if_sensor_gpio_state:
-                    message += u" {state} GPIO State Detected.".format(
-                        state=cond.if_sensor_gpio_state)
-                else:
-                    return 0
-
-        cond_actions = db_retrieve_table_daemon(ConditionalActions)
-        cond_actions = cond_actions.filter(
-            ConditionalActions.conditional_id == cond_id).all()
-
-        for cond_action in cond_actions:
-            message += u" Conditional Action ({id}): {do_action}.".format(
-                id=cond_action.id, do_action=cond_action.do_action)
-
-            # Actuate output
-            if (cond_action.do_relay_id and
-                    cond_action.do_relay_state in ['on', 'off']):
-                message += u" Turn output {id} {state}".format(
-                        id=cond_action.do_relay_id,
-                        state=cond_action.do_relay_state)
-                if (cond_action.do_relay_state == 'on' and
-                        cond_action.do_relay_duration):
-                    message += u" for {sec} seconds".format(
-                        sec=cond_action.do_relay_duration)
-                message += "."
-
-                output_on_off = threading.Thread(
-                    target=self.control.output_on_off,
-                    args=(cond_action.do_relay_id,
-                          cond_action.do_relay_state,),
-                    kwargs={'duration': cond_action.do_relay_duration})
-                output_on_off.start()
-
-            # Execute command in shell
-            elif cond_action.do_action == 'command':
-
-                # Replace string variables with actual values
-                command_str = cond_action.do_action_string
-                for each_measurement, each_value in self.measurement.values.items():
-                    command_str = command_str.replace(
-                        "((input_{var}))".format(var=each_measurement), str(each_value))
-                    if each_measurement == self.cmd_measurement:
-                        command_str = command_str.replace(
-                            "((input_linux_command))", str(self.location))
-                command_str = command_str.replace(
-                    "((input_location))", str(self.location))
-                command_str = command_str.replace(
-                    "((input_period))", str(self.cond_if_input_period[cond_id]))
-
-                message += u" Execute '{com}' ".format(
-                    com=command_str)
-
-                _, _, cmd_status = cmd_output(command_str)
-
-                message += u"(Status: {stat}).".format(stat=cmd_status)
-
-            # Capture photo
-            elif cond_action.do_action in ['photo', 'photo_email']:
-                message += u"  Capturing photo with camera ({id}).".format(
-                    id=cond_action.do_camera_id)
-                camera_still = db_retrieve_table_daemon(
-                    Camera, device_id=cond_action.do_camera_id)
-                attachment_file = camera_record('photo', camera_still)
-
-            # Capture video
-            elif cond_action.do_action in ['video', 'video_email']:
-                message += u"  Capturing video with camera ({id}).".format(
-                    id=cond_action.do_camera_id)
-                camera_stream = db_retrieve_table_daemon(
-                    Camera, device_id=cond_action.do_camera_id)
-                attachment_file = camera_record(
-                    'video', camera_stream,
-                    duration_sec=cond_action.do_camera_duration)
-
-            # Activate PID controller
-            elif cond_action.do_action == 'activate_pid':
-                message += u" Activate PID ({id}).".format(
-                    id=cond_action.do_pid_id)
-                pid = db_retrieve_table_daemon(
-                    PID, device_id=cond_action.do_pid_id, entry='first')
-                if pid.is_activated:
-                    message += u" Notice: PID is already active!"
-                else:
-                    activate_pid = threading.Thread(
-                        target=self.control.controller_activate,
-                        args=('PID',
-                              cond_action.do_pid_id,))
-                    activate_pid.start()
-
-            # Deactivate PID controller
-            elif cond_action.do_action == 'deactivate_pid':
-                message += u" Deactivate PID ({id}).".format(
-                    id=cond_action.do_pid_id)
-                pid = db_retrieve_table_daemon(
-                    PID, device_id=cond_action.do_pid_id, entry='first')
-                if not pid.is_activated:
-                    message += u" Notice: PID is already inactive!"
-                else:
-                    deactivate_pid = threading.Thread(
-                        target=self.control.controller_deactivate,
-                        args=('PID',
-                              cond_action.do_pid_id,))
-                    deactivate_pid.start()
-
-            elif cond_action.do_action in ['email',
-                                           'photo_email',
-                                           'video_email']:
-                if (self.email_count >= self.smtp_max_count and
-                        time.time() < self.smtp_wait_timer[cond_id]):
-                    self.allowed_to_send_notice = False
-                else:
-                    if time.time() > self.smtp_wait_timer[cond_id]:
-                        self.email_count = 0
-                        self.smtp_wait_timer[cond_id] = time.time() + 3600
-                    self.allowed_to_send_notice = True
-                self.email_count += 1
-
-                # If the emails per hour limit has not been exceeded
-                if self.allowed_to_send_notice:
-                    message += u" Notify {email}.".format(
-                        email=cond_action.do_action_string)
-                    # attachment_type != False indicates to
-                    # attach a photo or video
-                    if cond_action.do_action == 'photo_email':
-                        message += u" Photo attached to email."
-                        attachment_type = 'still'
-                    elif cond_action.do_action == 'video_email':
-                        message += u" Video attached to email."
-                        attachment_type = 'video'
-
-                    smtp = db_retrieve_table_daemon(SMTP, entry='first')
-                    send_email(smtp.host, smtp.ssl, smtp.port,
-                               smtp.user, smtp.passw, smtp.email_from,
-                               cond_action.do_action_string, message,
-                               attachment_file, attachment_type)
-                else:
-                    logger_cond.debug(
-                        "Wait {sec:.0f} seconds to email again.".format(
-                            sec=self.smtp_wait_timer[cond_id]-time.time()))
-
-            elif cond_action.do_action == 'flash_lcd':
-                message += u" Flashing LCD ({id}).".format(
-                    id=cond_action.do_lcd_id)
-
-                start_flashing = threading.Thread(
-                    target=self.control.flash_lcd,
-                    args=(cond_action.do_lcd_id, 1,))
-                start_flashing.start()
-
-        logger_cond.debug(message)
 
     def lock_multiplexer(self):
         """ Acquire a multiplexer lock """
@@ -847,26 +630,6 @@ class InputController(threading.Thread):
 
         self.lastUpdate = time.time()
 
-    def get_last_measurement(self, measurement_type):
-        """
-        Retrieve the latest input measurement
-
-        :return: The latest input value or None if no data available
-        :rtype: float or None
-
-        :param measurement_type: Environmental condition of a input (e.g.
-            temperature, humidity, pressure, etc.)
-        :type measurement_type: str
-        """
-        last_measurement = read_last_influxdb(
-            self.unique_id, measurement_type, int(self.period * 1.5))
-
-        if last_measurement:
-            last_value = last_measurement[1]
-            return last_value
-        else:
-            return None
-
     def edge_detected(self):
         gpio_state = GPIO.input(int(self.location))
         if time.time() > self.edge_reset_timer:
@@ -892,9 +655,12 @@ class InputController(threading.Thread):
                          (self.cond_if_input_edge_detected[each_cond_id] == 'falling' and
                           rising_or_falling == -1) or
                          self.cond_if_input_edge_detected[each_cond_id] == 'both')):
-                    self.check_conditionals(each_cond_id)
+                    check_conditionals(
+                        self, each_cond_id, self.measurements, self.control,
+                        Camera, Conditional, ConditionalActions,
+                        Input, Math, PID, SMTP)
 
-    def setup_input_conditionals(self, cond_mod='setup'):
+    def setup_conditionals(self, cond_mod='setup'):
         # Signal to pause the main loop and wait for verification
         self.pause_loop = True
         while not self.verify_pause_loop:
@@ -934,7 +700,7 @@ class InputController(threading.Thread):
         for each_cond in input_conditional:
             if cond_mod == 'setup':
                 self.logger.info(
-                    "Activated Conditional ({id})".format(id=each_cond.id))
+                    "Activated Input Conditional {id}".format(id=each_cond.id))
             self.cond_id[each_cond.id] = each_cond.id
             self.cond_is_activated[each_cond.id] = each_cond.is_activated
             self.cond_if_input_period[each_cond.id] = each_cond.if_sensor_period

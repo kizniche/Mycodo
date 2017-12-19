@@ -42,6 +42,7 @@ from rpyc.utils.server import ThreadedServer
 from pkg_resources import parse_version
 
 from mycodo.controller_lcd import LCDController
+from mycodo.controller_math import MathController
 from mycodo.controller_pid import PIDController
 from mycodo.controller_output import OutputController
 from mycodo.controller_input import InputController
@@ -49,6 +50,7 @@ from mycodo.controller_timer import TimerController
 
 from mycodo.databases.models import Camera
 from mycodo.databases.models import LCD
+from mycodo.databases.models import Math
 from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
 from mycodo.databases.models import Input
@@ -178,24 +180,24 @@ def mycodo_service(mycodo):
             return mycodo.refresh_daemon_misc_settings()
 
         @staticmethod
-        def exposed_refresh_sensor_conditionals(input_id,
-                                                cond_mod):
+        def exposed_refresh_math_conditionals(math_id,
+                                              cond_mod):
             """
-            Instruct the input controller to refresh the settings of a
-            conditional statement
+            Instruct the math controller to refresh the settings of
+            conditional statements
             """
-            return mycodo.refresh_sensor_conditionals(input_id,
-                                                      cond_mod)
+            return mycodo.refresh_math_conditionals(math_id,
+                                                    cond_mod)
 
         @staticmethod
-        def exposed_relay_sec_currently_on(relay_id):
-            """Turns the amount of time a output has already been on"""
-            return mycodo.controller['Output'].relay_sec_currently_on(relay_id)
-
-        @staticmethod
-        def exposed_relay_setup(action, relay_id):
-            """Add, delete, or modify a output in the running output controller"""
-            return mycodo.output_setup(action, relay_id)
+        def exposed_refresh_input_conditionals(input_id,
+                                               cond_mod):
+            """
+            Instruct the input controller to refresh the settings of
+            conditional statements
+            """
+            return mycodo.refresh_input_conditionals(input_id,
+                                                     cond_mod)
 
         @staticmethod
         def exposed_relay_state(relay_id):
@@ -315,13 +317,29 @@ class DaemonController(threading.Thread):
         self.daemon_startup_time = None
         self.daemon_run = True
         self.terminated = False
+
+        # Controller object that will store the thread objects for each
+        # controller
         self.controller = {
-            'LCD': {},
-            'PID': {},
+            # May only launch a single thread for this controller
             'Output': None,
+            # May launch multiple threads per each of these controllers
             'Input': {},
+            'LCD': {},
+            'Math': {},
+            'PID': {},
             'Timer': {}
         }
+
+        # Controllers that may launch multiple threads
+        # Order matters for starting and shutting down
+        self.cont_types = [
+            'Timer',
+            'Input',
+            'Math',
+            'PID',
+            'LCD',
+        ]
         self.thread_shutdown_timer = None
         self.start_time = time.time()
         self.timer_ram_use = time.time()
@@ -428,6 +446,9 @@ class DaemonController(threading.Thread):
             if cont_type == 'LCD':
                 controller_manage['type'] = LCD
                 controller_manage['function'] = LCDController
+            elif cont_type == 'Math':
+                controller_manage['type'] = Math
+                controller_manage['function'] = MathController
             elif cont_type == 'PID':
                 controller_manage['type'] = PID
                 controller_manage['function'] = PIDController
@@ -447,6 +468,7 @@ class DaemonController(threading.Thread):
             if controller:
                 self.controller[cont_type][cont_id] = controller_manage['function'](
                     ready, cont_id)
+                self.controller[cont_type][cont_id].daemon = True
                 self.controller[cont_type][cont_id].start()
                 ready.wait()  # wait for thread to return ready
                 return 0, "{type} controller with ID {id} " \
@@ -511,6 +533,9 @@ class DaemonController(threading.Thread):
             for lcd_id in self.controller['LCD']:
                 if not self.controller['LCD'][lcd_id].is_running():
                     return "Error: LCD ID {}".format(lcd_id)
+            for math_id in self.controller['Math']:
+                if not self.controller['Math'][math_id].is_running():
+                    return "Error: Math ID {}".format(math_id)
             for pid_id in self.controller['PID']:
                 if not self.controller['PID'][pid_id].is_running():
                     return "Error: PID ID {}".format(pid_id)
@@ -622,9 +647,17 @@ class DaemonController(threading.Thread):
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def refresh_sensor_conditionals(self, input_id, cond_mod):
+    def refresh_math_conditionals(self, math_id, cond_mod):
         try:
-            return self.controller['Input'][input_id].setup_sensor_conditionals(cond_mod)
+            return self.controller['Math'][math_id].setup_conditionals(cond_mod)
+        except Exception as except_msg:
+            message = "Could not refresh math conditionals:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+
+    def refresh_input_conditionals(self, input_id, cond_mod):
+        try:
+            return self.controller['Input'][input_id].setup_conditionals(cond_mod)
         except Exception as except_msg:
             message = "Could not refresh input conditionals:" \
                       " {err}".format(err=except_msg)
@@ -737,38 +770,32 @@ class DaemonController(threading.Thread):
         """
         try:
             # Obtain database configuration options
-            lcd = db_retrieve_table_daemon(LCD, entry='all')
-            pid = db_retrieve_table_daemon(PID, entry='all')
-            input_dev = db_retrieve_table_daemon(Input, entry='all')
-            timer = db_retrieve_table_daemon(Timer, entry='all')
+            db_tables = {
+                'Timer': db_retrieve_table_daemon(Timer, entry='all'),
+                'Input': db_retrieve_table_daemon(Input, entry='all'),
+                'Math': db_retrieve_table_daemon(Math, entry='all'),
+                'PID': db_retrieve_table_daemon(PID, entry='all'),
+                'LCD': db_retrieve_table_daemon(LCD, entry='all')
+            }
 
             self.logger.debug("Starting output controller")
             self.controller['Output'] = OutputController()
+            self.controller['Output'].daemon = True
             self.controller['Output'].start()
 
-            self.logger.debug("Starting all activated timer controllers")
-            for each_timer in timer:
-                if each_timer.is_activated:
-                    self.controller_activate('Timer', each_timer.id)
-            self.logger.info("All activated timer controllers started")
+            time.sleep(0.5)
 
-            self.logger.debug("Starting all activated input controllers")
-            for each_input in input_dev:
-                if each_input.is_activated:
-                    self.controller_activate('Input', each_input.id)
-            self.logger.info("All activated input controllers started")
+            for each_controller in self.cont_types:
+                self.logger.debug(
+                    "Starting all activated {type} controllers".format(
+                        type=each_controller))
+                for each_entry in db_tables[each_controller]:
+                    if each_entry.is_activated:
+                        self.controller_activate(each_controller, each_entry.id)
+                self.logger.info(
+                    "All activated {type} controllers started".format(
+                        type=each_controller))
 
-            self.logger.debug("Starting all activated PID controllers")
-            for each_pid in pid:
-                if each_pid.is_activated:
-                    self.controller_activate('PID', each_pid.id)
-            self.logger.info("All activated PID controllers started")
-
-            self.logger.debug("Starting all activated LCD controllers")
-            for each_lcd in lcd:
-                if each_lcd.is_activated:
-                    self.controller_activate('LCD', each_lcd.id)
-            self.logger.info("All activated LCD controllers started")
         except Exception as except_msg:
             message = "Could not start all controllers:" \
                       " {err}".format(err=except_msg)
@@ -776,55 +803,42 @@ class DaemonController(threading.Thread):
 
     def stop_all_controllers(self):
         """Stop all running controllers"""
+        controller_running = {}
+
+        # Reverse the list to shut down each controller in the
+        # reverse order they were started in
+        for each_controller in list(reversed(self.cont_types)):
+            controller_running[each_controller] = []
+            for cont_id in self.controller[each_controller]:
+                try:
+                    if self.controller[each_controller][cont_id].is_running():
+                        self.controller[each_controller][cont_id].stop_controller()
+                        controller_running[each_controller].append(cont_id)
+                except Exception as err:
+                    self.logger.info(
+                        "{type} controller {id} thread had an issue "
+                        "stopping: {err}".format(
+                            type=each_controller, id=cont_id, err=err))
+
+        for each_controller in list(reversed(self.cont_types)):
+            for cont_id in controller_running[each_controller]:
+                try:
+                    self.controller[each_controller][cont_id].join()
+                except Exception as err:
+                    self.logger.info(
+                        "{type} controller {id} thread had an issue being "
+                        "joined: {err}".format(
+                            type=each_controller, id=cont_id, err=err))
+            self.logger.info(
+                "All {type} controllers stopped".format(type=each_controller))
+
         try:
-            lcd_controller_running = []
-            pid_controller_running = []
-            input_controller_running = []
-            timer_controller_running = []
-
-            for lcd_id in self.controller['LCD']:
-                if self.controller['LCD'][lcd_id].is_running():
-                    self.controller['LCD'][lcd_id].stop_controller()
-                    lcd_controller_running.append(lcd_id)
-
-            for pid_id in self.controller['PID']:
-                if self.controller['PID'][pid_id].is_running():
-                    self.controller['PID'][pid_id].stop_controller(ended_normally=False)
-                    pid_controller_running.append(pid_id)
-
-            for input_id in self.controller['Input']:
-                if self.controller['Input'][input_id].is_running():
-                    self.controller['Input'][input_id].stop_controller()
-                    input_controller_running.append(input_id)
-
-            for timer_id in self.controller['Timer']:
-                if self.controller['Timer'][timer_id].is_running():
-                    self.controller['Timer'][timer_id].stop_controller()
-                    timer_controller_running.append(timer_id)
-
-            # Wait for the threads to finish
-            for lcd_id in lcd_controller_running:
-                self.controller['LCD'][lcd_id].join()
-            self.logger.info("All LCD controllers stopped")
-
-            for timer_id in timer_controller_running:
-                self.controller['Timer'][timer_id].join()
-            self.logger.info("All Timer controllers stopped")
-
-            for input_id in input_controller_running:
-                self.controller['Input'][input_id].join()
-            self.logger.info("All Input controllers stopped")
-
-            for pid_id in pid_controller_running:
-                self.controller['PID'][pid_id].join()
-            self.logger.info("All PID controllers stopped")
-
             self.controller['Output'].stop_controller()
-            self.controller['Output'].join()
-        except Exception as except_msg:
-            message = "Could not stop all controllers:" \
-                      " {err}".format(err=except_msg)
-            self.logger.exception(message)
+            self.controller['Output'].join(15)  # Give each thread 15 seconds to stop
+        except Exception as err:
+            self.logger.info(
+                "Output controller had an issue stopping: {err}".format(
+                    err=err))
 
     def terminate_daemon(self):
         """Instruct the daemon to shut down"""

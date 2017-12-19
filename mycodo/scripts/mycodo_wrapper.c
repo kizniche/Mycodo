@@ -41,34 +41,27 @@ int main(int argc, char *argv[]) {
 			strncat(restoreScript, cmd, sizeof(restoreScript));
 			system(restoreScript);
 
-        } else if (strcmp(argv[1], "mycodo_restart_debug") == 0) {
-
-			sprintf(cmd, "service mycodo stop");
-			system(cmd);
-			sprintf(cmd, "/../../env/bin/Python /../mycodo_daemon.py -d");
-			system(cmd);
-			
-		} else if (strcmp(argv[1], "restart") == 0) {
+        } else if (strcmp(argv[1], "restart") == 0) {
 
 			sprintf(cmd, "sleep 10 && shutdown now -r");
 			system(cmd);
 
-		} else if (strcmp(argv[1], "mycodo_restart") == 0) {
+		} else if (strcmp(argv[1], "shutdown") == 0) {
+
+            sprintf(cmd, "sleep 10 && shutdown now -h");
+            system(cmd);
+
+		} else if (strcmp(argv[1], "daemon_restart") == 0) {
 
 			sprintf(cmd, "service mycodo restart");
 			system(cmd);
 			
-			} else if (strcmp(argv[1], "shutdown") == 0) {
-
-			sprintf(cmd, "sleep 10 && shutdown now -h");
-			system(cmd);
-
-		} else if (strcmp(argv[1], "mycodo_start") == 0) {
+        } else if (strcmp(argv[1], "daemon_start") == 0) {
 
 			sprintf(cmd, "service mycodo start");
 			system(cmd);
 
-		} else if (strcmp(argv[1], "mycodo_stop") == 0) {
+		} else if (strcmp(argv[1], "daemon_stop") == 0) {
 
 			sprintf(cmd, "service mycodo stop");
 			system(cmd);
@@ -96,10 +89,10 @@ int main(int argc, char *argv[]) {
         printf("   backup-create:              Create Mycodo backup\n");
 		printf("   backup-delete [DIRECTORY]:  Delete Mycodo backup [DIRECTORY]\n");
 		printf("   backup-restore [DIRECTORY]: Restore Mycodo from backup [DIRECTORY]\n");
-		printf("   mycodo_restart:             Restart the mycodo daemon in normal mode\n");
-		printf("   mycodo_restart_debug:       Restart the mycodo daemon in debug mode\n");
-		printf("   mycodo_start:               Start the mycodo daemon\n");
-		printf("   mycodo_stop:                Stop the mycodo daemon\n");
+		printf("   daemon_restart:             Restart the mycodo daemon in normal mode\n");
+		printf("   daemon_restart_debug:       Restart the mycodo daemon in debug mode\n");
+		printf("   daemon_start:               Start the mycodo daemon\n");
+		printf("   daemon_stop:                Stop the mycodo daemon\n");
 		printf("   restart:                    Restart the computer after a 10 second pause\n");
 		printf("   shutdown:                   Shutdown the computer after a 10 second pause\n");
 		printf("   upgrade:                    Upgrade Mycodo to the latest version on github\n");

@@ -36,12 +36,15 @@ def graph_add(form_add, display_order):
 
     if (form_add.graph_type.data == 'graph' and
             (form_add.name.data and
-                 form_add.width.data and
-                 form_add.height.data and
-                 form_add.xaxis_duration.data and
-                 form_add.refresh_duration.data)):
+             form_add.width.data and
+             form_add.height.data and
+             form_add.xaxis_duration.data and
+             form_add.refresh_duration.data)):
         new_graph.graph_type = form_add.graph_type.data
         new_graph.name = form_add.name.data
+        if form_add.math_ids.data:
+            math_ids_joined = ";".join(form_add.math_ids.data)
+            new_graph.math_ids = math_ids_joined
         if form_add.pid_ids.data:
             pid_ids_joined = ";".join(form_add.pid_ids.data)
             new_graph.pid_ids = pid_ids_joined
@@ -62,21 +65,24 @@ def graph_add(form_add, display_order):
         new_graph.enable_rangeselect = form_add.enable_range.data
         new_graph.enable_export = form_add.enable_export.data
         try:
-            new_graph.save()
-            flash(gettext(
-                u"Graph with ID %(id)s successfully added",
-                id=new_graph.id),
-                "success")
+            if not error:
+                new_graph.save()
+                flash(gettext(
+                    u"Graph with ID %(id)s successfully added",
+                    id=new_graph.id),
+                    "success")
 
-            DisplayOrder.query.first().graph = add_display_order(
-                display_order, new_graph.id)
-            db.session.commit()
+                DisplayOrder.query.first().graph = add_display_order(
+                    display_order, new_graph.id)
+                db.session.commit()
         except sqlalchemy.exc.OperationalError as except_msg:
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
     elif (form_add.graph_type.data in ['gauge_angular', 'gauge_solid'] and
               form_add.sensor_ids.data):
+        if not form_add.sensor_ids.data[0]:
+            error.append("A valid Measurement must be selected")
         if form_add.graph_type.data == 'gauge_solid':
             new_graph.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
         elif form_add.graph_type.data == 'gauge_angular':
@@ -91,15 +97,16 @@ def graph_add(form_add, display_order):
         new_graph.y_axis_max = form_add.y_axis_max.data
         new_graph.sensor_ids_measurements = form_add.sensor_ids.data[0]
         try:
-            new_graph.save()
-            flash(gettext(
-                u"Graph with ID %(id)s successfully added",
-                id=new_graph.id),
-                "success")
+            if not error:
+                new_graph.save()
+                flash(gettext(
+                    u"Gauge with ID %(id)s successfully added",
+                    id=new_graph.id),
+                    "success")
 
-            DisplayOrder.query.first().graph = add_display_order(
-                display_order, new_graph.id)
-            db.session.commit()
+                DisplayOrder.query.first().graph = add_display_order(
+                    display_order, new_graph.id)
+                db.session.commit()
         except sqlalchemy.exc.OperationalError as except_msg:
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
@@ -143,6 +150,12 @@ def graph_mod(form_mod_graph, request_form):
         mod_graph.use_custom_colors = form_mod_graph.use_custom_colors.data
         mod_graph.name = form_mod_graph.name.data
 
+        if form_mod_graph.math_ids.data:
+            math_ids_joined = ";".join(form_mod_graph.math_ids.data)
+            mod_graph.math_ids = math_ids_joined
+        else:
+            mod_graph.math_ids = ''
+
         if form_mod_graph.pid_ids.data:
             pid_ids_joined = ";".join(form_mod_graph.pid_ids.data)
             mod_graph.pid_ids = pid_ids_joined
@@ -172,7 +185,26 @@ def graph_mod(form_mod_graph, request_form):
         mod_graph.enable_export = form_mod_graph.enable_export.data
         mod_graph.enable_rangeselect = form_mod_graph.enable_range.data
 
+    # If a gauge type is changed, the color format must change
+    elif (form_mod_graph.graph_type.data in ['gauge_angular', 'gauge_solid'] and
+            mod_graph.graph_type != form_mod_graph.graph_type.data):
+        mod_graph.graph_type = form_mod_graph.graph_type.data
+        if form_mod_graph.graph_type.data == 'gauge_solid':
+            mod_graph.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
+        elif form_mod_graph.graph_type.data == 'gauge_angular':
+            mod_graph.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
+        try:
+            if not error:
+                db.session.commit()
+        except sqlalchemy.exc.OperationalError as except_msg:
+            error.append(except_msg)
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            error.append(except_msg)
+
     elif form_mod_graph.graph_type.data in ['gauge_angular', 'gauge_solid']:
+        if mod_graph.graph_type != form_mod_graph.graph_type.data:
+            mod_graph.graph_type = form_mod_graph.graph_type.data
+
         colors_hex = {}
         f = request_form
         sorted_colors_string = ""
@@ -245,11 +277,11 @@ def graph_mod(form_mod_graph, request_form):
         mod_graph.y_axis_min = form_mod_graph.y_axis_min.data
         mod_graph.y_axis_max = form_mod_graph.y_axis_max.data
         mod_graph.max_measure_age = form_mod_graph.max_measure_age.data
-        if form_mod_graph.sensor_ids.data:
+        if form_mod_graph.sensor_ids.data[0]:
             sensor_ids_joined = ";".join(form_mod_graph.sensor_ids.data)
             mod_graph.sensor_ids_measurements = sensor_ids_joined
         else:
-            mod_graph.sensor_ids_measurements = ''
+            error.append("A valid Measurement must be selected")
     else:
         flash_form_errors(form_mod_graph)
 

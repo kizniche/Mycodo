@@ -1,22 +1,109 @@
-## 5.4.12 (Unreleased)
+## 5.4.19 (2017-12-15)
 
 ### Features
 
+ - Add ability to use other Math controller outputs as Math controller inputs
+ - Add checks to ensure a measurement is selected for Gauges
+
+### Bugfixes
+
+ - Fix not deleting associated Math Conditionals when a Math controller is deleted
+ - Fix displaying LCD lines for Controllers/Measurements that no longer exist
+ - Fix improper WBT input-checking for humidity math controller
+
+
+## 5.4.18 (2017-12-15)
+
+### Bugfixes
+
+ - Fix error on Live page if no Math controllers exist ([#345](https://github.com/kizniche/mycodo/issues/345))
+
+
+## 5.4.17 (2017-12-14)
+
+### Features
+
+ - Add Decimal Places option to LCD lines
+
+### Bugfixes
+
+ - Fix Input conditional refresh upon settings change
+ - Fix display of Math controllers with atypical measurements on Live page ([#343](https://github.com/kizniche/mycodo/issues/343))
+ - Fix inability to use Math controller values with PID Controllers ([#343](https://github.com/kizniche/mycodo/issues/343))
+ - Fix display of Math data on LCDs ([#343](https://github.com/kizniche/mycodo/issues/343))
+ - Fix LCD Max Age only working for first line
+ - Fix display of Math data on LCDs
+ - Fix issue displaying some Graph page configurations
+ - Fix issue with PID recording negative durations
+ - Fix Date Methods ([#344](https://github.com/kizniche/mycodo/issues/344))
+
+### Miscellaneous
+
+ - Place PID Controllers in a subcategory of new section called Function
+ - Don't disable an LCD when an Input that's using it is disabled
+
+
+## 5.4.16 (2017-12-13)
+
+### Features
+
+ - Add new Math controller type: Median
+ - Add the ability to use Conditionals with Math controllers
+ - Add ability to use Math Controllers with LCDs and PIDs
+ - Add Math Controllers to Live page
+ - Add Math and PID Controllers to Gauge measurement selection ([#342](https://github.com/kizniche/mycodo/issues/342))
+ - Add "None Found Last x Seconds" to Conditional options (trigger action if a measurement was not found within the last x seconds)
+ - Add Restart Daemon option to the Config menu
+ - More detailed 'incorrect database version' error message on System Information page
+
+### Bugfixes
+
+ - Fix measurement list length on Graph page
+ - Fix PWM output display on Live page
+ - Fix issue changing Gauge type ([#342](https://github.com/kizniche/mycodo/issues/342))
+ - Fix display of multiplexer options for I2C devices
+ - Fix display order of I2C busses on System Information page
+
+### Miscellaneous
+
+ - Add new multiplexer overlay option to manual ([#184](https://github.com/kizniche/mycodo/issues/184))
+
+
+## 5.4.15 (2017-12-08)
+
+### Features
+
+ - Add Math controller types: Humidity, Maximum, Minimum, and Verification ([#335](https://github.com/kizniche/mycodo/issues/335))
+
+### Bugfixes
+
+ - Fix Atlas pH sensor calibration
+
+
+## 5.4.14 (2017-12-05)
+
+### Features
+
+ - Add Math Controller (Math in menu) to perform math on Input data
+ - Add first Math controller type: Average ([#328](https://github.com/kizniche/mycodo/issues/328))
  - Add fswebcam as a camera library for acquiring images from USB cameras
  - Complete Spanish translation
  - Update korean translations
  - Add more translatable texts
+ - Make PIDs collapsible
+ - Refactor daemon controller handling and daemonize threads
 
 ### Bugfixes
 
+ - Fix TCA9548A multiplexer channel issues ([#330](https://github.com/kizniche/mycodo/issues/330))
  - Fix selection of current language on General Config page
+ - Fix saving options when adding a Timer
+ - Fix Graph display of Lowering Output durations as negative values
+ - Fix double-logging of output durations
 
+### Miscellaneous
 
-## 5.4.12 (Unreleased)
-
-### Features
-
- - Add fswebcam as a camera library for acquiring images from USB cameras
+ - Update Manual with Math Controller information
 
 
 ## 5.4.11 (2017-11-29)

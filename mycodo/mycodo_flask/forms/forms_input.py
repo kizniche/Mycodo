@@ -30,7 +30,6 @@ class InputAdd(FlaskForm):
         )]
     )
     sensor = SelectField(
-        lazy_gettext(u'Input'),
         choices=INPUTS,
         validators=[DataRequired()]
     )
@@ -106,6 +105,4 @@ class InputMod(FlaskForm):
     deactivateSensorSubmit = SubmitField(lazy_gettext(u'Deactivate'))
     orderSensorUp = SubmitField(lazy_gettext(u'Up'))
     orderSensorDown = SubmitField(lazy_gettext(u'Down'))
-
-    conditional_type = StringField('Conditional Type', widget=widgets.HiddenInput())
     sensorCondAddSubmit = SubmitField(lazy_gettext(u'Add Conditional'))

@@ -78,7 +78,7 @@
 
         {%- elif method.method_type == "Date" -%}
 
-          {% include 'pages/method_options/build_duration.html' %}
+          {% include 'pages/method_options/build_date.html' %}
 
         {%- elif method.method_type == "Daily" -%}
 
@@ -290,8 +290,8 @@
           <div>
             <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relay_id" name="relay_id" title="{{_('Modulate the selected relay.')}}">
               <option value="">Disabled</option>
-              {% for each_relay in relay -%}
-                <option value="{{each_relay.id}}"{%- if each_relay.id == each_method.relay_id -%} selected{%- endif -%}>{{each_relay.id}} ({{each_relay.name}})</option>
+              {% for each_output in output -%}
+                <option value="{{each_output.id}}"{%- if each_output.id == each_method.relay_id -%} selected{%- endif -%}>{{each_output.id}} ({{each_output.name}})</option>
               {% endfor -%}
             </select>
           </div>

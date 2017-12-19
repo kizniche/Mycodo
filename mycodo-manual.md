@@ -16,8 +16,9 @@ Table of Contents
 [Controllers](#controllers)
 
    - [Input](#input)
+   - [Math](#math)
    - [Output](#output)
-   - [PIDs](#pids)
+   - [Functions](#functions)
    - [Timers](#timers)
    - [LCDs](#lcds)
  
@@ -282,6 +283,63 @@ Difference | This is the maximum measured measurement difference between the two
 Notification | If the measurements of the two sensors differ by more than the set *Difference*, an email will be sent to the address in the *Notification* field.
 Stop PID | If the measurements of the two sensors differ by more than the set *Difference*, the PID controller will turn off.
 
+Math
+----
+
+Math controllers allow one or more Inputs to have math applied to produce a new value that may be used within Mycodo.
+
+
+Type | Description
+--------- | ----------------------------------------------
+Average | Stores the statistical mean of the selected Inputs
+Median | Stores the statistical median from the selected Inputs
+Maximum | Stores the largest measurement from the selected Inputs
+Minimum | Stores the smallest measurement from the selected Inputs
+Humidity | Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure
+Verification | Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected Inputs
+
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Input | Select the Inputs to use with the particular Math controller
+Period (seconds) | The duration of time between calculating and storing a new value
+Max Age (seconds) | The maximum allowed age of the Input measurements. If an Input measurement is older than this period, the calculation is cancelled and the new value is not stored in the database. Consequently, if another controller has a Max Age set and cannot retrieve a current Math value, it will cease functioning. A PID controller, for instance, may stop regulating if there is no new Math value created, preventing the PID controller from continuing to run when it should not.
+Measurement | This is the condition being measured. If all of the selected inputs are Temperature, this should also be temperature. Keep in mind that if you use the pre-defined measurements, it will add these to the current y-axis on a Graph. For instance, if you select two Temeprature measurements, make sure you set Measurement to 'temperature' (lowercase 't') in order to make it use the same y-axis as the other temperatures. A list of the pre-defined measurements that may be used is below.
+Units | This is the units to display along with the measurement, on Graphs. If a pre-defined measurement is used, this field will default to the units associated with that measurement.
+Max Difference | If the difference between any selected Input is greater than this value, no new value will be stored in the database.
+Dry-Bulb Temperature | The measurement that will serve as the dry-bulb temperature (this is the warmer of the two temperature measurements)
+Wet-Bulb Temperature | The measurement that will serve as the wet-bulb temperature (this is the colder of the two temperature measurements)
+Pressure | This is an optional pressure measurement that can be used to calculate the percent relative humidity. If disabled, a default 101325 Pa will be used in the calculation.
+
+### Pre-defined Measurements
+
+Measurement | Units
+----------- | -----
+altitude | m
+co2 | ppmv
+dewpoint | °C
+cpu_load_1m | 1 min
+cpu_load_5m | 5 min
+cpu_load_15m | 15 min
+disk_space | MB
+duration_sec | sec
+duty_cycle | %
+edge | edge
+frequency | Hz
+humidity | %
+lux | lx
+moisture | moisture
+ph | pH
+pid_output | sec
+pressure | Pa
+pulse_width | µs
+rpm | rpm
+setpoint | None
+temperature | °C
+temperature_object | °C
+temperature_die | °C
+voltage | volts
+
 Output
 ------
 
@@ -389,8 +447,12 @@ Current Draw (amps) | The is the amount of current the device powered by the out
 Start State | This specifies whether the output should be ON or OFF when mycodo initially starts. Wireless relays have an additional option 'Neither' which will not issue an on or off command when Mycodo starts or stops.
 Seconds to turn On | This is a way to turn a output on for a specific duration of time. This can be useful for testing the outputs and powered devices or the measured effects a device may have on an environmental condition.
 
-PIDs
-----
+Functions
+---------
+
+Functions couple Inputs with Outputs to perform specific tasks. For example, this could be regulation of temperature with a temperature sensor and heater with a PID Controller.
+
+### PID Controller
 
 A [proportional-derivative-integral (PID)
 controller](https://en.wikipedia.org/wiki/PID_controller) is a control
@@ -538,6 +600,7 @@ Email Video | Capture a video and email it as an attachment to the an email addr
 Commands that are executed by conditional statements can now include variables. To use, just place the variable name, including "((" and "))" in your command, and it will be replaced with the variable's value before execution. See the tables below for the currently-supported variables.
 
 ##### Input Conditional command variables
+
 Variable | Description
 --------------------------- | -------------------------------------------
 ((input_location)) | The Input location (such as GPIO pin, I<sup>2</sup>C address, etc.)
@@ -1031,6 +1094,23 @@ Troubleshooting
     suggestions, submit a [New Mycodo
     Issue](https://github.com/kizniche/Mycodo/issues/new) on github.
 
+
+## Incorrect Database Version
+
+-   Check the System Information page (from the web UI: select \[Gear Icon\] -> System Information or select the mycodo logo in the top-left).
+-   An incorrect database version error means the version stored in the Mycodo settings database (`````~/Mycodo/databases/mycodo.db`````) is not correct for the latest version of Mycodo, determined in the Mycodo config file (`````~/Mycodo/mycodo/config.py`````).
+-   This can be caused by an error in the upgrade process from an older database version to a newer version, or from a database that did not upgrade during the Mycodo upgrade process.
+-   Check the Upgrade Log for any issues that may have occurred. The log is located at ```/var/log/mycodo/mycodoupgrade.log``` but may also be accessed from the web UI (if you're able to): select \[Gear Icon\] -> Mycodo Logs -> Upgrade Log.
+-   Sometimes issues may not immediately present themselves. It is not uncommon to be experiencing a database issue that was actually introduced several Mycodo versions ago, before the latest upgrade.
+-   Because of the nature of how many versions the database can be in, correcting a database issue may be very difficult. It may be much easier to delete your database and let Mycodo generate a new one.
+-   Use the following commands to rename your database and restart the web UI. If both commands are successful, refresh your web UI page in your browser in order to generate a new database and create a new Admin user.
+
+```
+mv ~/Mycodo/databases/mycodo.db ~/Mycodo/databases/mycodo.db.backup
+sudo service apache2 restart
+``` 
+
+
 ## More
 
 Check out the [Diagnosing Mycodo Issues Wiki
@@ -1133,7 +1213,9 @@ I<sup>2</sup>C Multiplexers
 
 All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some inputs may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.
 
-> [TCA9548A](#tca9548a): I<sup>2</sup>C Multiplexer [link](https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview) (I<sup>2</sup>C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I<sup>2</sup>C address.
+> TCA9548A/PCA9548A: I<sup>2</sup>C Multiplexer [link](https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview) (I<sup>2</sup>C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I<sup>2</sup>C address.
+
+Note: The TCA9548A/PCA9548A can be set up in two ways. Either by A) connecting the multiplexer to an already-existing I<sup>2</sup>C bus and configuring each device manually in Mycodo, or B) (the easier and safer option) creating a dtoverlay to produce a new I<sup>2</sup>C bus device for each multiplexer channel. Method A can be used with the multiplexer options already existing in Mycodo, however option B benefits by allowing the linux driver to handle channel switching and being able to see every device on every bus at once in Mycodo's System Information page. To enable option B, visit [GPIO-pca9548](https://github.com/Theoi-Meteoroi/GPIO-pca9548) to get the code and latest install instructions. If successfully set up, there will be 8 new I<sup>2</sup>C busses on the ```Config -> System Information``` page.
 
 > TCA9545A: I<sup>2</sup>C Bus Multiplexer [link](http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/) (I<sup>2</sup>C): This board works a little differently than the TCA9548A, above. This board actually creates 4 new I<sup>2</sup>C busses, each with their own selectable voltage, either 3.3 or 5.0 volts. Instructions to enable the Device Tree Overlay are at [https://github.com/camrex/i2c-mux-pca9545a](https://github.com/camrex/i2c-mux-pca9545a). Nothing else needs to be done in Mycodo after that except to select the correct I<sup>2</sup>C bus when configuring a sensor.
 

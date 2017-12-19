@@ -135,10 +135,9 @@ case "${1:-''}" in
         apt-get purge -y python-pip
     ;;
     'update-alembic')
-        printf "\n#### Upgrading database with alembic\n"
-        source ${INSTALL_DIRECTORY}/Mycodo/env/bin/activate
+        printf "\n#### Upgrading Mycodo database with alembic\n"
         cd ${INSTALL_DIRECTORY}/Mycodo/databases
-        alembic upgrade head
+        ${INSTALL_DIRECTORY}/Mycodo/env/bin/alembic upgrade head
     ;;
     'update-apache2')
         printf "\n#### Installing and configuring apache2 web server\n"
@@ -146,7 +145,7 @@ case "${1:-''}" in
         ln -sf ${INSTALL_DIRECTORY}/Mycodo/install/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
     ;;
     'update-apt')
-        printf "\n#### Updating apt repositories\n"
+        printf "\n\n#### Updating apt repositories\n"
         apt-get update
     ;;
     'update-cron')

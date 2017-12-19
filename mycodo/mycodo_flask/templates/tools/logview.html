@@ -11,7 +11,7 @@
       <input type="hidden" name="form-name" value="logview">
       {{form_log_view.hidden_tag()}}
       <div class="form-group">
-        Display last {{form_log_view.lines(class_='form-control',type="number",value=lines)}} lines from
+        {{_('Lines')}}: {{form_log_view.lines(class_='form-control',type="number",value=lines)}}
       </div>
       <div class="form-group">
         {{form_log_view.loglogin(class_='form-control btn btn-default')}}

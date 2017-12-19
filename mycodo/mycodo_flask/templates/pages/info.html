@@ -11,12 +11,10 @@
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em; font-size: 1.3em">
         {{_('Mycodo Version:')}} <span style="color: #4E9258; font-weight: bold;">{{mycodo_version}}</span>
-        <br>{{_('Database Version')}}: <span style="color: #4E9258; font-weight: bold;">
-        {%- for each_ver in database_version %}
-          {%- if each_ver != '' %}{{each_ver}}
-          {%- else %}None
-          {% endif %}
-        {% endfor %}</span>
+        <br>{{_('Database Version')}}:&nbsp;
+        {%- if database_version == correct_database_version -%}<span style="color: #4E9258; font-weight: bold;">{{database_version}}</span>
+            {%- else -%}<span style="color: #F70D1A; font-weight: bold;">{{database_version}}</span> (Incorrect Version. Should be {{correct_database_version}}) <a href="/help#incorrect-database-version"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a>
+            {%- endif -%}
         <br>{{_('Daemon Status')}}:&nbsp
         {%- if daemon_status == "alive" %}<span style="color: #4E9258; font-weight: bold;">{{_('Running')}}</span>
         {%- else %}<span style="color: #F70D1A; font-weight: bold;">{{_('Not Running')}}</span> <a href="/help#daemon-not-running"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a>
@@ -69,18 +67,18 @@
       </div>
     </div>
 
-    {% for each_i2c in i2c_devices %}
+    {% for each_i2c_dev in i2c_devices_sorted %}
 
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em">
-        I<sup>2</sup>C Bus {{each_i2c}}: i2cdetect -y {{each_i2c}}
+        I<sup>2</sup>C Bus {{each_i2c_dev}}: i2cdetect -y {{each_i2c_dev}}
       </div>
       <div>
-        <pre>{{i2cdetect_out[each_i2c]}}</pre>
+        <pre>{{i2c_devices_sorted[each_i2c_dev]}}</pre>
       </div>
     </div>
 
-    {% endfor %}
+  {% endfor %}
 
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em">

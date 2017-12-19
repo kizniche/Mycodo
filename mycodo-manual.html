@@ -346,8 +346,9 @@
 <p><a href="#controllers">Controllers</a></p>
 <ul>
 <li><a href="#input">Input</a></li>
+<li><a href="#math">Math</a></li>
 <li><a href="#output">Output</a></li>
-<li><a href="#pids">PIDs</a></li>
+<li><a href="#functions">Functions</a></li>
 <li><a href="#timers">Timers</a></li>
 <li><a href="#lcds">LCDs</a></li>
 </ul>
@@ -659,6 +660,203 @@
 </tr>
 </tbody>
 </table>
+<h2 id="math">Math</h2>
+<p>Math controllers allow one or more Inputs to have math applied to produce a new value that may be used within Mycodo.</p>
+<table style="width:79%;">
+<colgroup>
+<col style="width: 13%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Average</td>
+<td style="text-align: left;">Stores the statistical mean of the selected Inputs</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Median</td>
+<td style="text-align: left;">Stores the statistical median from the selected Inputs</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Maximum</td>
+<td style="text-align: left;">Stores the largest measurement from the selected Inputs</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Minimum</td>
+<td style="text-align: left;">Stores the smallest measurement from the selected Inputs</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Humidity</td>
+<td style="text-align: left;">Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Verification</td>
+<td style="text-align: left;">Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected Inputs</td>
+</tr>
+</tbody>
+</table>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Input</td>
+<td style="text-align: left;">Select the Inputs to use with the particular Math controller</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Period (seconds)</td>
+<td style="text-align: left;">The duration of time between calculating and storing a new value</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Max Age (seconds)</td>
+<td style="text-align: left;">The maximum allowed age of the Input measurements. If an Input measurement is older than this period, the calculation is cancelled and the new value is not stored in the database. Consequently, if another controller has a Max Age set and cannot retrieve a current Math value, it will cease functioning. A PID controller, for instance, may stop regulating if there is no new Math value created, preventing the PID controller from continuing to run when it should not.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Measurement</td>
+<td style="text-align: left;">This is the condition being measured. If all of the selected inputs are Temperature, this should also be temperature. Keep in mind that if you use the pre-defined measurements, it will add these to the current y-axis on a Graph. For instance, if you select two Temeprature measurements, make sure you set Measurement to ‘temperature’ (lowercase ‘t’) in order to make it use the same y-axis as the other temperatures. A list of the pre-defined measurements that may be used is below.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Units</td>
+<td style="text-align: left;">This is the units to display along with the measurement, on Graphs. If a pre-defined measurement is used, this field will default to the units associated with that measurement.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Max Difference</td>
+<td style="text-align: left;">If the difference between any selected Input is greater than this value, no new value will be stored in the database.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dry-Bulb Temperature</td>
+<td style="text-align: left;">The measurement that will serve as the dry-bulb temperature (this is the warmer of the two temperature measurements)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Wet-Bulb Temperature</td>
+<td style="text-align: left;">The measurement that will serve as the wet-bulb temperature (this is the colder of the two temperature measurements)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pressure</td>
+<td style="text-align: left;">This is an optional pressure measurement that can be used to calculate the percent relative humidity. If disabled, a default 101325 Pa will be used in the calculation.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pre-defined-measurements">Pre-defined Measurements</h3>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Measurement</th>
+<th style="text-align: left;">Units</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">altitude</td>
+<td style="text-align: left;">m</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">co2</td>
+<td style="text-align: left;">ppmv</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">dewpoint</td>
+<td style="text-align: left;">°C</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cpu_load_1m</td>
+<td style="text-align: left;">1 min</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cpu_load_5m</td>
+<td style="text-align: left;">5 min</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">cpu_load_15m</td>
+<td style="text-align: left;">15 min</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">disk_space</td>
+<td style="text-align: left;">MB</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">duration_sec</td>
+<td style="text-align: left;">sec</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">duty_cycle</td>
+<td style="text-align: left;">%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">edge</td>
+<td style="text-align: left;">edge</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">frequency</td>
+<td style="text-align: left;">Hz</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">humidity</td>
+<td style="text-align: left;">%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">lux</td>
+<td style="text-align: left;">lx</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">moisture</td>
+<td style="text-align: left;">moisture</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ph</td>
+<td style="text-align: left;">pH</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pid_output</td>
+<td style="text-align: left;">sec</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pressure</td>
+<td style="text-align: left;">Pa</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pulse_width</td>
+<td style="text-align: left;">µs</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rpm</td>
+<td style="text-align: left;">rpm</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">setpoint</td>
+<td style="text-align: left;">None</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">temperature</td>
+<td style="text-align: left;">°C</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">temperature_object</td>
+<td style="text-align: left;">°C</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">temperature_die</td>
+<td style="text-align: left;">°C</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">voltage</td>
+<td style="text-align: left;">volts</td>
+</tr>
+</tbody>
+</table>
 <h2 id="output-1">Output</h2>
 <p>Outputs are various signals that can be generated that operate devices. An output can be a PWM signal, a simple HIGH/LOW signal to operate a relay, or a 433MHz signal to switch a radio frequency-operated relay, or an execution of a command on the linux system Mycodo runs on.</p>
 <h3 id="pwm">PWM</h3>
@@ -845,7 +1043,9 @@
 </tr>
 </tbody>
 </table>
-<h2 id="pids">PIDs</h2>
+<h2 id="functions">Functions</h2>
+<p>Functions couple Inputs with Outputs to perform specific tasks. For example, this could be regulation of temperature with a temperature sensor and heater with a PID Controller.</p>
+<h3 id="pid-controller">PID Controller</h3>
 <p>A <a href="https://en.wikipedia.org/wiki/PID_controller">proportional-derivative-integral (PID) controller</a> is a control loop feedback mechanism used throughout industry for controlling systems. It efficiently brings a measurable condition, such as the temperature, to a desired state and maintains it there with little overshoot and oscillation. A well-tuned PID controller will raise to the setpoint quickly, have minimal overshoot, and maintain the setpoint with little oscillation.</p>
 <p>PID settings may be changed while the PID is activated and the new settings will take effect immediately. If settings are changed while the controller is paused, the values will be used once the controller resumes operation.</p>
 <table style="width:94%;">
@@ -1730,6 +1930,18 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <li>Daemon Lock File: If the daemon is not running, make sure the daemon lock file is deleted at <code>/var/lock/mycodo.pid</code>. The daemon cannot start if the lock file is present.</li>
 <li>If a solution could not be found after investigating the above suggestions, submit a <a href="https://github.com/kizniche/Mycodo/issues/new">New Mycodo Issue</a> on github.</li>
 </ul>
+<h2 id="incorrect-database-version">Incorrect Database Version</h2>
+<ul>
+<li>Check the System Information page (from the web UI: select [Gear Icon] -&gt; System Information or select the mycodo logo in the top-left).</li>
+<li>An incorrect database version error means the version stored in the Mycodo settings database (<code>~/Mycodo/databases/mycodo.db</code>) is not correct for the latest version of Mycodo, determined in the Mycodo config file (<code>~/Mycodo/mycodo/config.py</code>).</li>
+<li>This can be caused by an error in the upgrade process from an older database version to a newer version, or from a database that did not upgrade during the Mycodo upgrade process.</li>
+<li>Check the Upgrade Log for any issues that may have occurred. The log is located at <code>/var/log/mycodo/mycodoupgrade.log</code> but may also be accessed from the web UI (if you’re able to): select [Gear Icon] -&gt; Mycodo Logs -&gt; Upgrade Log.</li>
+<li>Sometimes issues may not immediately present themselves. It is not uncommon to be experiencing a database issue that was actually introduced several Mycodo versions ago, before the latest upgrade.</li>
+<li>Because of the nature of how many versions the database can be in, correcting a database issue may be very difficult. It may be much easier to delete your database and let Mycodo generate a new one.</li>
+<li>Use the following commands to rename your database and restart the web UI. If both commands are successful, refresh your web UI page in your browser in order to generate a new database and create a new Admin user.</li>
+</ul>
+<pre><code>mv ~/Mycodo/databases/mycodo.db ~/Mycodo/databases/mycodo.db.backup
+sudo service apache2 restart</code></pre>
 <h2 id="more">More</h2>
 <p>Check out the <a href="https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues">Diagnosing Mycodo Issues Wiki Page</a> on github for more information about diagnosing issues.</p>
 <h1 id="device-interfaces">Device Interfaces</h1>
@@ -1815,8 +2027,9 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <h2 id="i2c-multiplexers">I<sup>2</sup>C Multiplexers</h2>
 <p>All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to have a unique address in order to communicate. Some inputs may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I<sup>2</sup>C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I<sup>2</sup>C address to be connected.</p>
 <blockquote>
-<p><a href="#tca9548a">TCA9548A</a>: I<sup>2</sup>C Multiplexer <a href="https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview">link</a> (I<sup>2</sup>C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I<sup>2</sup>C address.</p>
+<p>TCA9548A/PCA9548A: I<sup>2</sup>C Multiplexer <a href="https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview">link</a> (I<sup>2</sup>C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I<sup>2</sup>C address.</p>
 </blockquote>
+<p>Note: The TCA9548A/PCA9548A can be set up in two ways. Either by A) connecting the multiplexer to an already-existing I<sup>2</sup>C bus and configuring each device manually in Mycodo, or B) (the easier and safer option) creating a dtoverlay to produce a new I<sup>2</sup>C bus device for each multiplexer channel. Method A can be used with the multiplexer options already existing in Mycodo, however option B benefits by allowing the linux driver to handle channel switching and being able to see every device on every bus at once in Mycodo’s System Information page. To enable option B, visit <a href="https://github.com/Theoi-Meteoroi/GPIO-pca9548">GPIO-pca9548</a> to get the code and latest install instructions. If successfully set up, there will be 8 new I<sup>2</sup>C busses on the <code>Config -&gt; System Information</code> page.</p>
 <blockquote>
 <p>TCA9545A: I<sup>2</sup>C Bus Multiplexer <a href="http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/">link</a> (I<sup>2</sup>C): This board works a little differently than the TCA9548A, above. This board actually creates 4 new I<sup>2</sup>C busses, each with their own selectable voltage, either 3.3 or 5.0 volts. Instructions to enable the Device Tree Overlay are at <a href="https://github.com/camrex/i2c-mux-pca9545a" class="uri">https://github.com/camrex/i2c-mux-pca9545a</a>. Nothing else needs to be done in Mycodo after that except to select the correct I<sup>2</sup>C bus when configuring a sensor.</p>
 </blockquote>

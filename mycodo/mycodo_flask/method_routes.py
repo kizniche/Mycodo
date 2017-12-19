@@ -283,7 +283,7 @@ def method_builder(method_id):
 
         return render_template('pages/method-build.html',
                                method=method,
-                               relay=output,
+                               output=output,
                                method_data=method_data,
                                method_id=method_id,
                                last_end_time=last_end_time,

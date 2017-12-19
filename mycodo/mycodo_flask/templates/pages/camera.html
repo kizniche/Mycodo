@@ -19,7 +19,7 @@
         <form method="post" action="/camera">
         {{form_camera.csrf_token}}
         {{form_camera.camera_id(value=each_camera.id)}}
-        <div class="row" style="border-bottom: 2px solid #ddd; padding: 1em 0;">
+        <div class="row small-gutters" style="border-bottom: 2px solid #ddd; padding: 0.1em 0;">
           <div class="col-xs-12 col-sm-3">
             <input class="form-control" disabled="" title="UUID: {{each_camera.unique_id}}" value="[{{'%02d' % each_camera.id}}] ({{each_camera.library}}) {{each_camera.name}}" type="text">
           </div>
@@ -47,7 +47,8 @@
             {% endif %}
           {%- endif %}
 
-          {% if not each_camera.timelapse_started %}
+          {% if each_camera.library in ['opencv', 'picamera'] and
+                not each_camera.timelapse_started %}
             <div class="col-xs-12 col-sm-3">
               {% if each_camera.stream_started -%}
                 {{form_camera.stop_stream(class_='form-control btn btn-default')}}
@@ -59,7 +60,7 @@
 
         </div>
 
-        <div class="collapse" id="collapseContainerTimelapse-{{each_camera.id}}" style="padding: 1em 0 1em 1em">
+        <div class="row small-gutters collapse" id="collapseContainerTimelapse-{{each_camera.id}}" style="padding: 0.5em 0 0.5em 1em">
           <div class="form-inline">
             Time-lapse parameters:
           </div>
@@ -85,19 +86,18 @@
           </div>
         </div>
 
-        {%- if each_camera.stream_started -%}
-          <div style="padding-bottom: 1em">
+        <div class="row small-gutters">
+
+        {%- if each_camera.library in ['opencv', 'picamera'] and
+               each_camera.stream_started -%}
+          <div>
             {{_('Video Stream')}}:
-            {% if each_camera.library == 'opencv' %}
             <br/><img style="max-width: 100%" src="/video_feed/{{each_camera.unique_id}}">
-            {% elif each_camera.library == 'picamera' %}
-            <br/><img style="max-width: 100%" src="/video_feed/{{each_camera.unique_id}}">
-            {% endif %}
           </div>
         {%- endif -%}
 
         {% if each_camera.timelapse_started %}
-          <div style="margin-top: 0.75em;">
+          <div>
             {{_('Timelapse Parameters')}}:
             <br>Time-lapse: {% if each_camera.timelapse_paused %}Paused{% else %}Running{% endif %}
             <br/>Start time: {{format_timestamp(each_camera.timelapse_start_time)}}
@@ -109,23 +109,21 @@
         {% endif %}
 
         {% if latest_img_tl[each_camera.id] %}
-          <div class="container-timelapse-{{each_camera.id}}" style="margin-top: 0.75em;">
+          <div class="container-timelapse-{{each_camera.id}}">
             {{_('Last Timelapse')}}: {{latest_img_tl_ts[each_camera.id]}}
             <br/><a href="/camera/{{each_camera.id}}/timelapse/{{latest_img_tl[each_camera.id]}}" target="_blank"><img style="max-width: 100%" src="/camera/{{each_camera.id}}/timelapse/{{latest_img_tl[each_camera.id]}}"></a>
           </div>
         {% endif %}
 
         {% if latest_img_still[each_camera.id] %}
-          <div class="container-still-{{each_camera.id}}" style="margin-top: 0.75em;">
+          <div class="container-still-{{each_camera.id}}">
             {{_('Last Still')}}: {{latest_img_still_ts[each_camera.id]}}
             <br/><a href="/camera/{{each_camera.id}}/still/{{latest_img_still[each_camera.id]}}" target="_blank"><img style="max-width: 100%" src="/camera/{{each_camera.id}}/still/{{latest_img_still[each_camera.id]}}"></a>
           </div>
         {% endif %}
-        </form>
+        </div>
 
-        {% if latest_img_tl[each_camera.id] or latest_img_still[each_camera.id] %}
-          <div style="clear: both; padding-top: 1em;"></div>
-        {% endif %}
+        </form>
 
       </div>
 

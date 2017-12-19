@@ -13,6 +13,7 @@ from flask_babel import gettext
 from mycodo.mycodo_client import DaemonControl
 
 from mycodo.databases.models import DisplayOrder
+from mycodo.databases.models import Math
 from mycodo.databases.models import Method
 from mycodo.databases.models import PID
 from mycodo.databases.models import Output
@@ -20,7 +21,6 @@ from mycodo.databases.models import Input
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import list_to_csv
 
-from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
@@ -34,28 +34,6 @@ logger = logging.getLogger(__name__)
 # PID manipulation
 #
 
-def pid_add(form_add_pid):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"PID"))
-    error = []
-
-    if form_add_pid.validate():
-        for _ in range(0, form_add_pid.numberPIDs.data):
-            try:
-                new_pid = PID().save()
-                display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
-                DisplayOrder.query.first().pid = add_display_order(
-                    display_order, new_pid.id)
-                db.session.commit()
-            except sqlalchemy.exc.OperationalError as except_msg:
-                error.append(except_msg)
-            except sqlalchemy.exc.IntegrityError as except_msg:
-                error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_pid'))
-    else:
-        flash_form_errors(form_add_pid)
-
 
 def pid_mod(form_mod_pid_base,
             form_mod_pid_pwm_raise, form_mod_pid_pwm_lower,
@@ -66,13 +44,8 @@ def pid_mod(form_mod_pid_base,
     error = []
 
     if not form_mod_pid_base.validate():
+        error.append(gettext(u"Error in form field(s)"))
         flash_form_errors(form_mod_pid_base)
-
-    sensor_unique_id = form_mod_pid_base.measurement.data.split(',')[0]
-    sensor = Input.query.filter(
-        Input.unique_id == sensor_unique_id).first()
-    if not sensor:
-        error.append(gettext(u"A valid sensor is required"))
 
     mod_pid = PID.query.filter(
         PID.id == form_mod_pid_base.pid_id.data).first()
@@ -106,12 +79,14 @@ def pid_mod(form_mod_pid_base,
         if mod_pid.raise_relay_id == int(form_mod_pid_base.raise_relay_id.data):
             if raise_relay_type == 'pwm':
                 if not form_mod_pid_pwm_raise.validate():
+                    error.append(gettext(u"Error in form field(s)"))
                     flash_form_errors(form_mod_pid_pwm_raise)
                 else:
                     mod_pid.raise_min_duration = form_mod_pid_pwm_raise.raise_min_duty_cycle.data
                     mod_pid.raise_max_duration = form_mod_pid_pwm_raise.raise_max_duty_cycle.data
             else:
                 if not form_mod_pid_relay_raise.validate():
+                    error.append(gettext(u"Error in form field(s)"))
                     flash_form_errors(form_mod_pid_relay_raise)
                 else:
                     mod_pid.raise_min_duration = form_mod_pid_relay_raise.raise_min_duration.data
@@ -135,12 +110,14 @@ def pid_mod(form_mod_pid_base,
         if mod_pid.lower_relay_id == int(form_mod_pid_base.lower_relay_id.data):
             if lower_relay_type == 'pwm':
                 if not form_mod_pid_pwm_lower.validate():
+                    error.append(gettext(u"Error in form field(s)"))
                     flash_form_errors(form_mod_pid_pwm_lower)
                 else:
                     mod_pid.lower_min_duration = form_mod_pid_pwm_lower.lower_min_duty_cycle.data
                     mod_pid.lower_max_duration = form_mod_pid_pwm_lower.lower_max_duty_cycle.data
             else:
                 if not form_mod_pid_relay_lower.validate():
+                    error.append(gettext(u"Error in form field(s)"))
                     flash_form_errors(form_mod_pid_relay_lower)
                 else:
                     mod_pid.lower_min_duration = form_mod_pid_relay_lower.lower_min_duration.data
@@ -159,7 +136,7 @@ def pid_mod(form_mod_pid_base,
         mod_pid.lower_relay_id = None
 
     if (mod_pid.raise_relay_id and mod_pid.lower_relay_id and
-                mod_pid.raise_relay_id == mod_pid.lower_relay_id):
+            mod_pid.raise_relay_id == mod_pid.lower_relay_id):
         error.append(gettext(u"Raise and lower outputs cannot be the same"))
 
     try:
@@ -174,7 +151,7 @@ def pid_mod(form_mod_pid_base,
                     resp=return_value), "success")
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_pid'))
+    flash_success_errors(error, action, url_for('page_routes.page_function'))
 
 
 def pid_del(pid_id):
@@ -189,8 +166,8 @@ def pid_del(pid_id):
         if pid.is_activated:
             pid_deactivate(pid_id)
 
-        delete_entry_with_id(PID,
-                             pid_id)
+        delete_entry_with_id(PID, pid_id)
+
         display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
         display_order.remove(int(pid_id))
         DisplayOrder.query.first().pid = list_to_csv(display_order)
@@ -198,7 +175,7 @@ def pid_del(pid_id):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_pid'))
+    flash_success_errors(error, action, url_for('page_routes.page_function'))
 
 
 def pid_reorder(pid_id, display_order, direction):
@@ -217,7 +194,7 @@ def pid_reorder(pid_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_pid'))
+    flash_success_errors(error, action, url_for('page_routes.page_function'))
 
 
 # TODO: Add more settings-checks before allowing controller to be activated
@@ -225,14 +202,13 @@ def has_required_pid_values(pid_id):
     pid = PID.query.filter(
         PID.id == pid_id).first()
     error = False
-    if not pid.measurement:
+    device_unique_id = pid.measurement.split(',')[0]
+    input = Input.query.filter(
+        Input.unique_id == device_unique_id).first()
+    math = Math.query.filter(
+        Math.unique_id == device_unique_id).first()
+    if (not input and not math) or not pid.measurement:
         flash(gettext(u"A valid Measurement is required"), "error")
-        error = True
-    sensor_unique_id = pid.measurement.split(',')[0]
-    sensor = Input.query.filter(
-        Input.unique_id == sensor_unique_id).first()
-    if not sensor:
-        flash(gettext(u"A valid sensor is required"), "error")
         error = True
     if not pid.raise_relay_id and not pid.lower_relay_id:
         flash(gettext(u"A Raise Output and/or a Lower Output is "
@@ -244,7 +220,7 @@ def has_required_pid_values(pid_id):
 
 def pid_activate(pid_id):
     if has_required_pid_values(pid_id):
-        return redirect(url_for('page_routes.page_pid'))
+        return redirect(url_for('page_routes.page_function'))
 
     action = '{action} {controller}'.format(
         action=gettext(u"Actuate"),
@@ -258,11 +234,13 @@ def pid_activate(pid_id):
     error = can_set_relay(
         error, pid_id, pid.raise_relay_id, pid.lower_relay_id)
 
-    sensor_unique_id = pid.measurement.split(',')[0]
-    sensor = Input.query.filter(
-        Input.unique_id == sensor_unique_id).first()
+    device_unique_id = pid.measurement.split(',')[0]
+    input = Input.query.filter(
+        Input.unique_id == device_unique_id).first()
+    math = Math.query.filter(
+        Math.unique_id == device_unique_id).first()
 
-    if not sensor.is_activated:
+    if (input and not input.is_activated) or (math and not math.is_activated):
         error.append(gettext(
             u"Cannot activate PID controller if the associated sensor "
             u"controller is inactive"))
@@ -289,7 +267,7 @@ def pid_activate(pid_id):
                                        'PID',
                                        pid_id)
 
-    flash_success_errors(error, action, url_for('page_routes.page_pid'))
+    flash_success_errors(error, action, url_for('page_routes.page_function'))
 
 
 def pid_deactivate(pid_id):

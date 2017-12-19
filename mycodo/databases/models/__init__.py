@@ -35,6 +35,7 @@ from .display_order import DisplayOrder
 from .graph import Graph
 from .lcd import LCD
 from .lcd import LCDData
+from .math import Math
 from .method import Method
 from .method import MethodData
 from .misc import Misc

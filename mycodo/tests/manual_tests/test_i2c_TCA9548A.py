@@ -12,35 +12,45 @@ import sys
 import time
 import argparse
 
-import RPi.GPIO as GPIO
 import smbus
 
+channel_byte = {
+    0: 0b00000001,
+    1: 0b00000010,
+    2: 0b00000100,
+    3: 0b00001000,
+    4: 0b00010000,
+    5: 0b00100000,
+    6: 0b01000000,
+    7: 0b10000000
+}
 
-def I2C_setup(multiplexer_i2c_address, i2c_channel_setup):
-    I2C_address = 0x70 + multiplexer_i2c_address % 10
-    if GPIO.RPI_REVISION in [2, 3]:
-        I2C_bus_number = 1
-    else:
-        I2C_bus_number = 0
 
-    bus = smbus.SMBus(I2C_bus_number)
-    bus.write_byte(I2C_address, i2c_channel_setup)
+def I2C_setup(i2c_bus, i2c_address, i2c_channel_setup):
+    address = 0x70 + i2c_address % 10
+    bus = smbus.SMBus(i2c_bus)
+    bus.write_byte(address, i2c_channel_setup)
     time.sleep(0.1)
-    print("TCA9548A I2C channel status:{}".format(bin(bus.read_byte(I2C_address))))
+    print("TCA9548A I2C channel status:{}".format(bin(bus.read_byte(address))))
 
 
 def menu():
-    parser = argparse.ArgumentParser(description='Select channel of TCA9548A I2C multiplexer')
+    parser = argparse.ArgumentParser(description='Select channel of TCA9548A '
+                                                 'I2C multiplexer')
     parser.add_argument('-a', '--address', metavar='ADDRESS', type=int,
-                        help="The I2C address of the multiplexer (only last two characters, for instance, if 0x70, enter '70'.",
+                        help="The I2C address of the multiplexer (only last "
+                             "two characters, for instance, if 0x70, enter '70'.",
+                        required=True)
+    parser.add_argument('-b', '--bus', metavar='BUS', type=int,
+                        help="The I2C bus of the multiplexer.",
                         required=True)
     parser.add_argument('-c', '--channel', metavar='CHANNEL', type=int,
-                        help="Which channel to switch to (Options: 1-8).",
+                        help="Which channel to switch to (Options: 0-7).",
                         required=True)
 
     args = parser.parse_args()
 
-    I2C_setup(args.address, args.channel - 1)
+    I2C_setup(args.bus, args.address, channel_byte[args.channel])
 
 
 if __name__ == "__main__":

@@ -16,7 +16,7 @@ class AM2315Sensor(AbstractInput):
 
     """
 
-    def __init__(self, sensor_id, bus, power=None, testing=False):
+    def __init__(self, bus, power=None, testing=False):
         super(AM2315Sensor, self).__init__()
         self.logger = logging.getLogger('mycodo.inputs.am2315')
         self._dew_point = None

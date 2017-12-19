@@ -24,6 +24,7 @@ pyserial == 3.4
 python-dateutil
 RPi.GPIO
 rpyc == 3.4.4
+statistics == 1.0.3.5
 SQLAlchemy == 1.2.0b3
 WTForms == 2.1
 
@@ -38,4 +39,4 @@ Adafruit_ADS1x15
 Adafruit_BMP
 Adafruit_GPIO
 Adafruit_TMP
-MCP342x
+MCP342x == 0.3.3

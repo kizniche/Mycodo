@@ -1,0 +1,149 @@
+<form method="post" action="/graph">
+  <div class="form-inline">
+    <input type="hidden" name="form-name" value="addGraph">
+    {{form_add_graph.graph_type(value='graph')}}
+    {{form_add_graph.csrf_token}}
+    <div class="form-group">
+      {{form_add_graph.name.label(class_='control-label')}}
+      <div>
+        {{form_add_graph.name(class_='form-control', value=_('Graph Name'))}}
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_add_graph.width.label(class_='control-label')}}
+      <div>
+        <select class="form-control" id="width" name="width">
+          {% for n in range(1, 12) %}
+            <option value="{{n}}">{{n}}/12</option>
+          {% endfor %}
+          <option value="12" selected>12/12</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_add_graph.height.label(class_='control-label')}}
+      <div>
+        {{form_add_graph.height(class_='form-control', value=400)}}
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_add_graph.xaxis_duration.label(class_='control-label')}}
+      <div>
+        {{form_add_graph.xaxis_duration(class_='form-control', value=1440)}}
+      </div>
+    </div>
+      <div class="form-group">
+      <div class="checkbox">
+        <label>
+          {{form_add_graph.enable_auto_refresh(class_='form-control', value='y', checked=True)}}
+          {{form_add_graph.enable_auto_refresh.label.text}}
+        </label>
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_add_graph.refresh_duration.label(class_='control-label')}}
+      <div>
+        {{form_add_graph.refresh_duration(class_='form-control', value=60)}}
+      </div>
+    </div>
+
+    <div style="clear: both"></div>
+
+    <div class="form-group">
+      {{form_add_graph.sensor_ids.label(class_='control-label')}}
+      <div>
+        <select class="form-control btn-default" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
+        {% if choices_input %}
+          {% for each_choice, value in choices_input.iteritems() -%}
+          <option value="{{each_choice}}">{{value}}</option>
+          {% endfor -%}
+        {% else %}
+          <option value="">{{_('None Available')}}</option>
+        {% endif %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_add_graph.math_ids.label(class_='control-label')}}
+      <div>
+        <select class="form-control btn-default" id="math_ids" name="math_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
+        {% if choices_math %}
+          {% for each_choice, value in choices_math.iteritems() -%}
+          <option value="{{each_choice}}">{{value}}</option>
+          {% endfor -%}
+        {% else %}
+          <option value="">{{_('None Available')}}</option>
+        {% endif %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_add_graph.relay_ids.label(class_='control-label')}}
+      <div>
+        <select class="form-control btn-default" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
+        {% if choices_output %}
+          {% for each_choice, value in choices_output.iteritems() -%}
+          <option value="{{each_choice}}">{{value}}</option>
+          {% endfor -%}
+        {% else %}
+          <option value="">{{_('None Available')}}</option>
+        {% endif %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      {{form_add_graph.pid_ids.label(class_='control-label')}}
+      <div>
+        <select class="form-control btn-default" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
+        {% if choices_pid %}
+          {% for each_choice, value in choices_pid.iteritems() -%}
+          <option value="{{each_choice}}">{{value}}</option>
+          {% endfor -%}
+        {% else %}
+          <option value="">{{_('None Available')}}</option>
+        {% endif %}
+        </select>
+      </div>
+    </div>
+
+    <div style="clear: both"></div>
+
+    {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.</br>
+
+    <div class="checkbox" style="padding-right: 1em">
+      <label>
+        {{form_add_graph.enable_xaxis_reset(class_='form-control', value='y', checked=True)}}
+        {{form_add_graph.enable_xaxis_reset.label.text}}
+      </label>
+    </div>
+    <div class="checkbox" style="padding-right: 1em">
+      <label>
+        {{form_add_graph.enable_title(class_='form-control')}}
+        {{form_add_graph.enable_title.label.text}}
+      </label>
+    </div>
+    <div class="checkbox" style="padding-right: 1em">
+      <label>
+        {{form_add_graph.enable_navbar(class_='form-control')}}
+        {{form_add_graph.enable_navbar.label.text}}
+      </label>
+    </div>
+    <div class="checkbox" style="padding-right: 1em">
+      <label>
+        {{form_add_graph.enable_export(class_='form-control')}}
+        {{form_add_graph.enable_export.label.text}}
+      </label>
+    </div>
+    <div class="checkbox">
+      <label>
+        {{form_add_graph.enable_range(class_='form-control')}}
+        {{form_add_graph.enable_range.label.text}}
+      </label>
+    </div>
+  </div>
+  <div class="form-inline btn-group">
+    <div class="form-group">
+      {{form_add_graph.graph_add(class_='form-control btn btn-default')}}
+    </div>
+  </div>
+</form>

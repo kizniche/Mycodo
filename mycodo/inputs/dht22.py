@@ -29,7 +29,7 @@ class DHT22Sensor(AbstractInput):
     gpio ------------+
 
     """
-    def __init__(self, sensor_id, gpio, power=None, testing=False):
+    def __init__(self, gpio, power=None, testing=False):
         """
         :param gpio: gpio pin number
         :type gpio: int
@@ -64,8 +64,7 @@ class DHT22Sensor(AbstractInput):
             import pigpio
             from mycodo.mycodo_client import DaemonControl
 
-            self.logger = logging.getLogger(
-                'mycodo.inputs.dht22_{id}'.format(id=sensor_id))
+            self.logger = logging.getLogger('mycodo.inputs.dht22')
 
             self.control = DaemonControl()
 
@@ -157,19 +156,19 @@ class DHT22Sensor(AbstractInput):
         # Try twice to get measurement. This prevents an anomaly where
         # the first measurement fails if the sensor has just been powered
         # for the first time.
-        for _ in range(3):
+        for _ in range(4):
             self.measure_sensor()
             if self.temp_dew_point is not None:
                 return (self.temp_dew_point,
                         self.temp_humidity,
-                        self.temp_temperature) # success - no errors
-            time.sleep(3)
+                        self.temp_temperature)  # success - no errors
+            time.sleep(2)
 
         # Measurement failure, power cycle the sensor (if enabled)
         # Then try two more times to get a measurement
         if self.power_relay_id is not None:
             self.stop_sensor()
-            time.sleep(5)
+            time.sleep(3)
             self.start_sensor()
             for _ in range(2):
                 self.measure_sensor()
@@ -177,11 +176,10 @@ class DHT22Sensor(AbstractInput):
                     return (self.temp_dew_point,
                             self.temp_humidity,
                             self.temp_temperature)  # success - no errors
-                time.sleep(3)
+                time.sleep(2)
 
         self.logger.debug("Could not acquire a measurement")
-        return  None, None, None
-
+        return None, None, None
 
     def read(self):
         """

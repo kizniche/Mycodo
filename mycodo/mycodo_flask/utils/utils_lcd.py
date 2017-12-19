@@ -248,34 +248,43 @@ def lcd_display_mod(form):
 
             mod_lcd_data = LCDData.query.filter(
                 LCDData.id == form.lcd_data_id.data).first()
+
             if form.line_1_display.data:
                 mod_lcd_data.line_1_id = form.line_1_display.data.split(",")[0]
                 mod_lcd_data.line_1_measurement = form.line_1_display.data.split(",")[1]
                 mod_lcd_data.line_1_max_age = form.line_1_max_age.data
+                mod_lcd_data.line_1_decimal_places = form.line_1_decimal_places.data
             else:
                 mod_lcd_data.line_1_id = ''
                 mod_lcd_data.line_1_measurement = ''
+
             if form.line_2_display.data:
                 mod_lcd_data.line_2_id = form.line_2_display.data.split(",")[0]
                 mod_lcd_data.line_2_measurement = form.line_2_display.data.split(",")[1]
                 mod_lcd_data.line_2_max_age = form.line_2_max_age.data
+                mod_lcd_data.line_2_decimal_places = form.line_2_decimal_places.data
             else:
                 mod_lcd_data.line_2_id = ''
                 mod_lcd_data.line_2_measurement = ''
+
             if form.line_3_display.data:
                 mod_lcd_data.line_3_id = form.line_3_display.data.split(",")[0]
                 mod_lcd_data.line_3_measurement = form.line_3_display.data.split(",")[1]
                 mod_lcd_data.line_3_max_age = form.line_3_max_age.data
+                mod_lcd_data.line_3_decimal_places = form.line_3_decimal_places.data
             else:
                 mod_lcd_data.line_3_id = ''
                 mod_lcd_data.line_3_measurement = ''
+
             if form.line_4_display.data:
                 mod_lcd_data.line_4_id = form.line_4_display.data.split(",")[0]
                 mod_lcd_data.line_4_measurement = form.line_4_display.data.split(",")[1]
                 mod_lcd_data.line_4_max_age = form.line_4_max_age.data
+                mod_lcd_data.line_4_decimal_places = form.line_4_decimal_places.data
             else:
                 mod_lcd_data.line_4_id = ''
                 mod_lcd_data.line_4_measurement = ''
+
             db.session.commit()
         except Exception as except_msg:
             error.append(except_msg)

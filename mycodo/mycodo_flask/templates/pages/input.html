@@ -66,12 +66,8 @@
           {%- for each_pid in pid if each_pid.measurement.split(',')[0] == each_sensor.unique_id and each_pid.is_activated -%}
             {%- do has_active_pid.append(1) -%}
           {%- endfor -%}
-          {%- set has_active_lcd = [] -%}
-          {%- for each_lcd in lcd if each_lcd.is_activated and (each_lcd.line_1_sensor_id == each_sensor.id or each_lcd.line_2_sensor_id == each_sensor.id or each_lcd.line_3_sensor_id == each_sensor.id or each_lcd.line_4_sensor_id == each_sensor.id) -%}
-            {%- do has_active_lcd.append(1) -%}
-          {%- endfor -%}
-          {% if has_active_pid or has_active_lcd -%}
-            {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("There are currently active PID or LCD controllers that rely on this input to be active. If you deactivate this input, all active PID and LCD controllers that use it will be deactivated. Select OK to deactivate this input and all associated PID and LCD controllers, otherwise click Cancel to leave them active.")'})}}
+          {% if has_active_pid -%}
+            {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default',**{'onclick':'return confirm("There are currently active PID controllers that rely on this Input to be active. Select OK to deactivate this input and all associated PID controllers, otherwise click Cancel to leave them active.")'})}}
           {% else -%}
             {{form_mod_sensor.deactivateSensorSubmit(class_='form-control btn btn-default')}}
           {% endif -%}
@@ -152,7 +148,7 @@
             </div>
           {% endif -%}
 
-          {% if each_sensor.device in ['AM2315', 'ATLAS_PT1000', 'BME280', 'BMP', 'HTU21D', 'TSL2561', 'TMP006', 'ADS1x15', 'MCP342x', 'SHT2x'] -%}
+          {% if each_sensor.device in list_devices_i2c -%}
             <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
               {{form_mod_sensor.multiplexer_address.label(class_='control-label')}}
               <div>
@@ -174,7 +170,7 @@
               {{form_mod_sensor.multiplexer_channel.label(class_='control-label')}}
               <div>
                 <select class="form-control form-tooltip form-dropdown" data-placement="top" id="multiplexer_channel" name="multiplexer_channel" rel="tooltip" title="{{_('If a multiplexer address is selected, select the channel connected to your target device')}}.">
-                  <option value="0"{% if each_sensor.multiplexer_channel == 0 %} selected{% endif %}>{{_('Disabled')}}</option>
+                  <option value=""{% if each_sensor.multiplexer_channel == '' %} selected{% endif %}>{{_('Disabled')}}</option>
                 {% for each_mp_chan in multiplexer_channels %}
                   <option value="{{each_mp_chan}}"{% if each_sensor.multiplexer_channel == each_mp_chan %} selected{% endif %}>{{_('Channel %(channel)s', channel=each_mp_chan)}}</option>
                 {% endfor %}
@@ -188,12 +184,12 @@
 
         {%- set sensor_conditional = [] -%}
 
-        {%- for each_cond in conditional if each_cond.sensor_id == each_sensor.id -%}
+        {%- for each_cond in conditional if each_cond.conditional_type == 'sensor' -%}
           {%- do sensor_conditional.append(1) -%}
         {% endfor %}
 
         {% if sensor_conditional %}
-          <h4>{{_('Input Conditionals')}} <a href="/help#conditional-statements" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+          <h4>{{_('Conditionals')}} <a href="/help#conditional-statements" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
           <p>{{_('Conditionals allow certain actions to be carried out when a certain set of conditions are met.')}}</p>
         {% endif %}
 
@@ -301,10 +297,11 @@
              <div class="col-xs-5 col-sm-3 col-md-2 col-lg-2">
               <label class='control-label' style="padding-top: 1em"></label>
               <div>
-                  <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_direction" name="if_sensor_direction" title="{{_('The conditional is true when the measured condition is greater than or less than the set value.')}}">
+                  <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_direction" name="if_sensor_direction" title="{{_('The conditional is true when the measured condition is greater than or less than the set value, or the measurement timestamp is greater than the value of seconds')}}">
                     <option value=""></option>
                     <option value="above"{% if each_cond.if_sensor_direction == 'above' %} selected{% endif %}>{{_('Greater Than')}}</option>
                     <option value="below"{% if each_cond.if_sensor_direction == 'below' %} selected{% endif %}>{{_('Less Than')}}</option>
+                    <option value="none_found"{% if each_cond.if_sensor_direction == 'none_found' %} selected{% endif %}>{{_('None Found Last x Seconds')}}</option>
                   </select>
               </div>
             </div>

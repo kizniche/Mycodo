@@ -1,3 +1,31 @@
+<form method="post" action="/timer">
+{{form_timer_base.csrf_token}}
+<input type="hidden" name="timer_type" value="duration">
+<div class="form-group">
+  {{form_timer_base.name.label(class_='control-label')}}
+  <div>
+    {{form_timer_base.name(class_='form-control')}}
+  </div>
+</div>
+<div class="form-group">
+  {{form_timer_base.relay_id.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="relay_id" name="relay_id">
+    {%- set duration_output_exists = [] -%}
+    {% for each_choice, value in output_choices.iteritems() if each_choice.split(',')[1] == 'duration_sec' -%}
+      {%- do duration_output_exists.append(1) -%}
+    {%- endfor -%}
+
+    {% if not duration_output_exists %}
+      <option value="">{{_('No Duration Outputs Found')}}</option>
+    {% else %}
+      {% for each_choice, value in output_choices.iteritems() if each_choice.split(',')[1] == 'duration_sec' -%}
+        <option value="{{each_choice.split(',')[0]}}">{{value}}</option>
+      {% endfor -%}
+    {% endif %}
+    </select>
+  </div>
+</div>
 <div class="form-group">
   {{form_timer_duration.duration_on.label(class_='control-label')}}
   <div>
@@ -10,3 +38,10 @@
     {{form_timer_duration.duration_off(class_='form-control', value=0.0, **{'size':'6'})}}
   </div>
 </div>
+<div>
+  <label class='control-label'></label>
+  <div>
+    {{form_timer_base.create(class_='form-control btn btn-default')}}
+  </div>
+</div>
+</form>

@@ -2,6 +2,7 @@
 """ collection of Page endpoints """
 import flask_login
 import logging
+from sqlalchemy import or_
 from flask_babel import gettext
 from flask import flash
 from flask import redirect
@@ -65,7 +66,9 @@ def calibration_atlas_ph():
 
     form_ph_calibrate = forms_calibration.CalibrationAtlasph()
 
-    input_dev = Input.query.filter_by(device='ATLAS_PH_UART').all()
+    input_dev = Input.query.filter(
+        or_(Input.device == 'ATLAS_PH_UART',
+            Input.device == 'ATLAS_PH_I2C')).all()
     stage = 0
     next_stage = None
     selected_input = None
@@ -85,6 +88,7 @@ def calibration_atlas_ph():
             flash(message, "error")
         else:
             flash(message, "success")
+
     # Begin calibration from Selected input
     elif form_ph_calibrate.go_from_first_stage.data:
         stage = 1
@@ -97,6 +101,7 @@ def calibration_atlas_ph():
             for each_input in INPUTS:
                 if selected_input.device == each_input[0]:
                     input_device_name = each_input[1]
+
     # Continue calibration from selected input
     elif (form_ph_calibrate.go_to_next_stage.data or
             form_ph_calibrate.go_to_last_stage.data or
