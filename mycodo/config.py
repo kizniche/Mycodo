@@ -315,8 +315,7 @@ STORED_SSL_CERTIFICATE_PATH = os.path.join(
 # Camera
 CAMERA_LIBRARIES = [
     'picamera',
-    'fswebcam',
-    'opencv'
+    'fswebcam'
 ]
 PATH_CAMERAS = os.path.join(INSTALL_DIRECTORY, 'cameras')
 

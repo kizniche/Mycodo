@@ -6,7 +6,7 @@ Create Date: 2017-12-18 18:45:33.229610
 
 """
 import os
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = 'efc722490ac7'
@@ -42,6 +42,25 @@ def upgrade():
     MYCODO_FLASK_WSGI_PATH = os.path.join(INSTALL_DIRECTORY, 'mycodo_flask.wsgi')
     with open(MYCODO_FLASK_WSGI_PATH, 'a'):
         os.utime(MYCODO_FLASK_WSGI_PATH, None)
+
+    # Disable all timelapses for cameras that use the opencv library
+    op.execute(
+        '''
+        UPDATE camera
+        SET timelapse_started=0
+        WHERE library='opencv'
+        AND timelapse_started=1
+        '''
+    )
+
+    op.execute(
+        '''
+        UPDATE camera
+        SET timelapse_started=0
+        WHERE library='opencv'
+        AND timelapse_started=1
+        '''
+    )
 
 
 def downgrade():
