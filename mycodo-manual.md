@@ -47,6 +47,7 @@ Table of Contents
 
    - [Live Measurements](#live-measurements)
    - [Graphs](#graphs)
+   - [Export](#export)
    - [Camera](#camera)
    - [Output Usage](#output-usage)
    - [System Backup](#system-backup)
@@ -1047,6 +1048,13 @@ time only another \~50kb is downloaded.
 Note: Live Graphs require measurements to be acquired, therefore at
 least one sensor needs to be added and activated in order to display
 live data.
+
+Export
+------
+
+Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.
+
+Settings may be exported as a ZIP file containing the Mycodo settings database (sqlite). Importing of this ZIP file will be supported in the future.
 
 Camera
 ------
