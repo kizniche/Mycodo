@@ -41,7 +41,7 @@ Adafruit_ADS1x15
 Adafruit_BMP
 Adafruit_GPIO
 Adafruit_TMP
-MCP342x == 0.3.4
+MCP342x == 0.3.3
 picamera == 1.13
 quick2wire-api  # Replaces tentacle_pi
 RPi.GPIO

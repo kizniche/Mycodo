@@ -47,7 +47,7 @@ Table of Contents
 
    - [Live Measurements](#live-measurements)
    - [Graphs](#graphs)
-   - [Export / Import](#export-import)
+   - [Export / Import](#export--import)
    - [Camera](#camera)
    - [Output Usage](#output-usage)
    - [System Backup](#system-backup)
