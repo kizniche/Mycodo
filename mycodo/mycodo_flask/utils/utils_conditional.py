@@ -217,7 +217,7 @@ def conditional_action_mod(form, mod_type, page_url):
                 if (form.do_action.data == 'video_email' and
                         Camera.query.filter(
                             and_(Camera.id == form.do_camera_id.data,
-                                 Camera.library == 'opencv')).count()):
+                                 Camera.library != 'picamera')).count()):
                     error.append('Only Pi Cameras can record video')
             elif form.do_action.data == 'flash_lcd':
                 if form.do_lcd_id.data:
@@ -233,7 +233,7 @@ def conditional_action_mod(form, mod_type, page_url):
                 if form.do_camera_id.data:
                     if (Camera.query.filter(
                             and_(Camera.id == form.do_camera_id.data,
-                                 Camera.library == 'opencv')).count()):
+                                 Camera.library != 'picamera')).count()):
                         error.append('Only Pi Cameras can record video')
                     mod_action.do_camera_id = form.do_camera_id.data
                 else:

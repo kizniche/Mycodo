@@ -19,7 +19,6 @@ from mycodo.databases.models import Output
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import User
-from mycodo.devices.camera import count_cameras_opencv
 from mycodo.mycodo_flask.forms import forms_settings
 from mycodo.mycodo_flask.static_routes import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
@@ -74,11 +73,6 @@ def settings_camera():
     camera = Camera.query.all()
     output = Output.query.all()
 
-    try:
-        opencv_devices = count_cameras_opencv()
-    except Exception:
-        opencv_devices = 0
-
     pi_camera_enabled = False
     try:
         if 'start_x=1' in open('/boot/config.txt').read():
@@ -103,7 +97,6 @@ def settings_camera():
                            camera=camera,
                            camera_libraries=CAMERA_LIBRARIES,
                            form_camera=form_camera,
-                           opencv_devices=opencv_devices,
                            pi_camera_enabled=pi_camera_enabled,
                            relay=output)
 
