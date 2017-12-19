@@ -147,10 +147,10 @@ def admin_upgrade_status():
             command, stdout=subprocess.PIPE, shell=True)
         (log_output, _) = log.communicate()
         log.wait()
-        log_output = str(log_output, 'utf-8')
+        log_output = log_output.decode("utf-8")
     else:
-        log_output = str('Upgrade log not found. If an upgrade was just '
-                             'initialized, please wait...', 'utf-8')
+        log_output = 'Upgrade log not found. If an upgrade was just ' \
+                     'initialized, please wait...'
     response = make_response(log_output)
     response.headers["content-type"] = "text/plain"
     return response

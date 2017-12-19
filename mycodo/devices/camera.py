@@ -98,9 +98,9 @@ def camera_record(record_type, settings, duration_sec=None, flash=None):
         if settings.rotation:
             cmd += " --rotate {angle}".format(angle=settings.rotation)
 
-        logger.error(cmd)
+        # logger.error(cmd)
         out, err, status = cmd_output(cmd, stdout_pipe=False, su_mycodo=False)
-        logger.error("TEST01: {}; {}; {}".format(out, err, status))
+        # logger.error("TEST01: {}; {}; {}".format(out, err, status))
 
     elif settings.library == 'opencv':
         return

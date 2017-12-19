@@ -60,7 +60,7 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
             socket.gethostname())
         msg['From'] = smtp_email_from
         msg['To'] = email_to
-        msg_body = email.mime.text.MIMEText(message.decode('utf-8'), 'plain', 'utf-8')
+        msg_body = email.mime.text.MIMEText(message.encode('utf-8'), 'plain', 'utf-8')
         msg.attach(msg_body)
 
         if attachment_file and attachment_type == 'still':
@@ -78,7 +78,7 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
             f = open(attachment_file, 'rb').read()
             video = email.mime.base.MIMEBase('application', 'octet-stream')
             video.set_payload(f)
-            email.Encoders.encode_base64(video)
+            email.encoders.encode_base64(video)
             video.add_header('Content-Disposition',
                              'attachment; filename="{}"'.format(
                                  os.path.basename(attachment_file)))
