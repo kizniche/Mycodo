@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 import logging
 import time
 import zipfile
@@ -8,12 +9,15 @@ import os
 from flask import send_file
 from flask import url_for
 from flask_babel import gettext
+from werkzeug.utils import secure_filename
 
 from mycodo.config import ALEMBIC_VERSION
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
+from mycodo.utils.system_pi import assure_path_exists
 
 logger = logging.getLogger(__name__)
 
@@ -94,14 +98,112 @@ def import_settings(form):
         controller=gettext(u"Settings"))
     error = []
 
-    error.append('Import Settings not currently enabled')
-
     if form.validate():
         try:
+            correct_format = 'Mycodo_Settings_MYCODOVERSION_DBVERSION.zip'
+            upload_folder = os.path.join(INSTALL_DIRECTORY, 'upload')
+            mycodo_database_name = 'mycodo.db'
+            full_path = None
+
+            if not form.settings_import_file.data:
+                error.append('No file present')
+            elif form.settings_import_file.data.filename == '':
+                error.append('No file name')
+            else:
+                # Split the uploaded file into parts
+                file_name = form.settings_import_file.data.filename
+                name = file_name.rsplit('.', 1)[0]
+                extension = file_name.rsplit('.', 1)[1].lower()
+                name_split = name.rsplit('_', 3)
+
+                # Split the correctly-formatted filename into parts
+                correct_name = correct_format.rsplit('.', 1)[0]
+                correct_name_1 = correct_name.rsplit('_', 3)[0]
+                correct_name_2 = correct_name.rsplit('_', 3)[1]
+                correct_extension = correct_format.rsplit('.', 1)[1].lower()
+
+                # Compare the uploaded filename parts to the correct parts
+                try:
+                    if name_split[0] != correct_name_1:
+                        error.append(
+                            "Invalid file name: {n}: {fn} != {cn}.".format(
+                                n=file_name,
+                                fn=name_split[0],
+                                cn=correct_name_1))
+                        error.append("Correct format is: {fmt}".format(
+                            fmt=correct_format))
+                    elif name_split[1] != correct_name_2:
+                        error.append(
+                            "Invalid file name: {n}: {fn} != {cn}".format(
+                                n=file_name,
+                                fn=name_split[1],
+                                cn=correct_name_2))
+                        error.append("Correct format is: {fmt}".format(
+                            fmt=correct_format))
+                    elif extension != correct_extension:
+                        error.append("Extension not 'zip'")
+                    elif name_split[2] != MYCODO_VERSION:
+                        error.append("Invalid Mycodo version: {fv} != {mv}. "
+                                     "This database can only be imported to "
+                                     "Mycodo version {mver}".format(
+                            fv=name_split[2],
+                            mv=MYCODO_VERSION,
+                            mver=name_split[2]))
+                    elif name_split[3] != ALEMBIC_VERSION:
+                        error.append("Invalid database version: {fv} != {dv}."
+                                     " This database can only be imported to"
+                                     " Mycodo version {mver}".format(
+                            fv=name_split[3],
+                            dv=ALEMBIC_VERSION,
+                            mver=name_split[2]))
+                except Exception as err:
+                    error.append(
+                        "Exception while verifying file name: {err}".format(err=err))
+
             if not error:
-                pass
+                # Save file to upload directory
+                filename = secure_filename(form.settings_import_file.data.filename)
+                full_path = os.path.join(upload_folder, filename)
+                assure_path_exists(upload_folder)
+                form.settings_import_file.data.save(os.path.join(upload_folder, filename))
+
+                # Check if contents of zip file are correct
+                try:
+                    file_list = zipfile.ZipFile(full_path, 'r').namelist()
+                    if len(file_list) > 1:
+                        error.append("Incorrect number of files in zip: "
+                                     "{an} != 1".format(an=len(file_list)))
+                    elif file_list[0] != mycodo_database_name:
+                        error.append("Incorrect file in zip: {af} != {cf}".format(
+                            af=file_list[0], cf=mycodo_database_name))
+                except Exception as err:
+                    error.append("Exception while opening zip file: {err}".format(err=err))
+
+            if not error:
+                # Unzip file
+                try:
+                    zip_ref = zipfile.ZipFile(full_path, 'r')
+                    zip_ref.extractall(upload_folder)
+                    zip_ref.close()
+                except Exception as err:
+                    error.append("Exception while extracting zip file: {err}".format(err=err))
+
+            if not error:
+                try:
+                    # Backup current database and replace with extracted mycodo.db
+                    imported_database = os.path.join(upload_folder, mycodo_database_name)
+                    backup_name = SQL_DATABASE_MYCODO + '.backup_' + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                    os.rename(SQL_DATABASE_MYCODO, backup_name)
+                    os.rename(imported_database, SQL_DATABASE_MYCODO)
+
+                    os.remove(full_path)  # Delete uploaded zip file
+
+                    return backup_name  # Success!
+                except Exception as err:
+                    error.append("Exception while replacing database: {err}".format(err=err))
+
         except Exception as err:
-            error.append("Error: {}".format(err))
+            error.append("Exception: {}".format(err))
     else:
         flash_form_errors(form)
         return

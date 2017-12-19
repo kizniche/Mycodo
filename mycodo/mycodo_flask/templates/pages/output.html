@@ -2,7 +2,7 @@
 {% set active_page = "output" %}
 {% set help_page = ["output", _('Output')] %}
 
-{% block title %} - {{_('Outputs')}}{% endblock %}
+{% block title %} - {{_('Output')}}{% endblock %}
 
 {% block head %}
 <link href="/static/css/toastr.min.css" rel="stylesheet"/>
@@ -137,7 +137,7 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <h4>{{_('Output Devices')}} <a href="/help#output" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <h4>{{_('Output')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
     <p>{{_('Output devices enable Mycodo to manipulate things through the use of relays (wired and wireless), PWM signals, and executing commands. When linked to a PID controller, with an input, output devices can be used for feedback regulation.')}}</p>
 

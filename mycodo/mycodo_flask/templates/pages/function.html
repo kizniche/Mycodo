@@ -13,7 +13,7 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <h4>{{_('Functions')}} <a href="/help#functions" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <h4>{{_('Functions')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
     <p>{{_('Functions conduct complex tasks, often coupling one or more <a href="/input">Inputs</a> with <a href="/output">Outputs</a> to do specific things. For example, this could be using a PID Controller to create a feedback loop with a temperature sensor and heater in order to regulate temperature.')}}</p>
 

@@ -15,7 +15,7 @@
 <div class="container">
   {% include 'flash_messages.html' %}
 
-  <h4>{{_('Export / Import')}} <a href="/help#export" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+  <h4>{{_('Export / Import')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
   <h4 style="padding-top: 2em">Export Measurement Data as CSV</h4>
 
@@ -26,7 +26,7 @@
   <form method="post" action="/export">
   {{form_export_measurements.csrf_token}}
   <div class="row" style="padding-top: 1em">
-    <div class="col-sm-6">
+    <div class="col-xs-12 col-sm-6 col-md-5">
       {{form_export_measurements.measurement.label(class_='control-label')}}
       <div>
         <select class="form-control" id="measurement" name="measurement">
@@ -42,15 +42,15 @@
         </select>
       </div>
     </div>
-    <div class="col-sm-4">
+    <div class="col-xs-12 col-sm-6 col-md-4">
       {{form_export_measurements.date_range.label(class_='control-label')}}
       <div>
         <input class="form-control" type="text" name="date_range" value="{{start_picker}} - {{end_picker}}" />
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-xm-12 col-sm-6 col-md-4">
+  <div class="form-inline">
+    <div class="form-group">
       {{form_export_measurements.export_data_csv(class_='form-control btn btn-default')}}
     </div>
   </div>
@@ -62,8 +62,8 @@
 
   <form method="post" action="/export">
   {{form_export_settings.csrf_token}}
-  <div class="row">
-    <div class="col-xm-12 col-sm-6 col-md-4">
+  <div class="form-inline">
+    <div class="form-group">
       {{form_export_settings.export_settings_zip(class_='form-control btn btn-default')}}
     </div>
   </div>
@@ -73,17 +73,19 @@
 
   <p>This will allow a ZIP file containing the settings database (sqlite3) to be uploaded and replace the current settings. Note: This will override all settings and users and log all current users out.</p>
 
-  <form method="post" action="/export">
+  <form method="post" action="/export" enctype=multipart/form-data>
   {{form_import_settings.csrf_token}}
-  <div class="row">
-    <div class="col-xs-6 col-sm-8 col-md-4">
-      {{form_import_settings.settings_import_file(class_='form-control')}}
+  <div class="form-inline">
+    <div class="form-group fileinput fileinput-new" data-provides="fileinput">
+      <span class="btn btn-default btn-file"><input id="settings_import_file" name="settings_import_file" type="file" /></span>
     </div>
-    <div class="col-xs-6 col-sm-8 col-md-4">
+    <div class="form-group">
       {{form_import_settings.settings_import_upload(class_='form-control btn btn-default')}}
     </div>
   </div>
   </form>
+
+  <div style="padding-top: 2em"></div>
 
 </div>
 

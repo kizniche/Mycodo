@@ -265,7 +265,9 @@ def page_export():
             else:
                 flash('Unknown error creating zipped settings database', 'error')
         elif form_import_settings.settings_import_upload.data:
-            utils_export.import_settings(form_import_settings)
+            backup_file = utils_export.import_settings(form_import_settings)
+            if backup_file:
+                return redirect(url_for('authentication_routes.logout'))
 
     # Generate start end end times for date/time picker
     end_picker = datetime.datetime.now().strftime('%m/%d/%Y %H:%M')
