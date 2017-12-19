@@ -6,6 +6,7 @@
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
 from wtforms import DecimalField
+from wtforms import FileField
 from wtforms import HiddenField
 from wtforms import IntegerField
 from wtforms import StringField
@@ -54,13 +55,20 @@ class DaemonControl(FlaskForm):
 
 
 #
-# Export Options
+# Export/Import Options
 #
 
-class ExportOptions(FlaskForm):
+class ExportMeasurements(FlaskForm):
     measurement = StringField(lazy_gettext(u'Measurement to Export'))
     date_range = StringField(lazy_gettext(u'Time Range DD/MM/YYYY HH:MM'))
-    Export = SubmitField(lazy_gettext(u'Export'))
+    export_data_csv = SubmitField(lazy_gettext(u'Export Data as CSV'))
+
+class ExportSettings(FlaskForm):
+    export_settings_zip = SubmitField(lazy_gettext(u'Export Settings'))
+
+class ImportSettings(FlaskForm):
+    settings_import_file = FileField('Upload')
+    settings_import_upload = SubmitField(lazy_gettext(u'Import Settings'))
 
 
 #

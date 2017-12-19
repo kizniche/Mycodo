@@ -33,6 +33,7 @@ from mycodo.config import LOG_PATH
 from mycodo.config import PATH_CAMERAS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Input
+from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
@@ -217,10 +218,18 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
 
-    if measurement == 'duration_sec':
-        name = Output.query.filter(Output.unique_id == unique_id).first().name
+    output = Output.query.filter(Output.unique_id == unique_id).first()
+    input = Input.query.filter(Input.unique_id == unique_id).first()
+    math = Math.query.filter(Math.unique_id == unique_id).first()
+
+    if output:
+        name = output.name
+    elif input:
+        name = input.name
+    elif math:
+        name = math.name
     else:
-        name = Input.query.filter(Input.unique_id == unique_id).first().name
+        name = None
 
     utc_offset_timedelta = datetime.datetime.utcnow() - datetime.datetime.now()
     start = datetime.datetime.fromtimestamp(float(start_seconds))
@@ -234,14 +243,16 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
         measurement, unique_id,
         start_str=start_str, end_str=end_str)
     if query_str == 1:
-        return '', 204
+        flash('Invalid query string', 'error')
+        return redirect(url_for('page_routes.page_export'))
     raw_data = dbcon.query(query_str).raw
 
-    if not raw_data:
-        return '', 204
+    if not raw_data or 'series' not in raw_data:
+        flash('No measurements to export in this time period', 'error')
+        return redirect(url_for('page_routes.page_export'))
 
     # Generate column names
-    col_1 = "timestamp (UTC)"
+    col_1 = 'timestamp (UTC)'
     col_2 = '{name} {meas} ({id})'.format(
         name=name, meas=measurement, id=unique_id)
     csv_filename = '{id}_{meas}.csv'.format(id=unique_id, meas=measurement)

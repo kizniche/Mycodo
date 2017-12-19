@@ -2,6 +2,8 @@
 {% set active_page = "graph" %}
 {% set help_page = ["live-graphs", _('Live Graphs')] %}
 
+{% block title %} - {{_('Graph')}}{% endblock %}
+
 {% block head %}
 
   <script src="/static/js/highstock.src.js"></script>
@@ -17,9 +19,7 @@
     <script src="/static/js/dark-unica.js"></script>
   {% endif %}
 
-{% endblock %}  
-
-{% block title %} - {{_('Graph')}}{% endblock %}
+{% endblock %}
 
 {% block body %}
   <!-- Route: /graph -->

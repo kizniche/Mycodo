@@ -1,6 +1,8 @@
 {% extends "layout.html" %}
 {% set active_page = "export" %}
-{% block title %} - {{_('Export Measurements')}}{% endblock %}
+{% set help_page = ["export", _('Export')] %}
+
+{% block title %} - {{_('Export')}}{% endblock %}
 
 {% block head %}
 <script type="text/javascript" src="/static/js/moment.min.js"></script>
@@ -9,59 +11,93 @@
 {% endblock %}
 
 {% block body %}
-  <!-- Route: /export -->
-  <div class="container"> 
-    {% include 'flash_messages.html' %}
+<!-- Route: /export -->
+<div class="container">
+  {% include 'flash_messages.html' %}
 
-    <p>This is an experimental log generator (work-in-progress). It will export all measurements found within the date/time range in comma-separated value (CSV) format (as timestamp, measurement). If a download doesn't begin after the Export button is pressed (i.e. the page just refreshes), that means no data was available for the selected measurement and range.</p>
-    <p>Note 1: Requesting large data sets may take a long time to process.</p>
-    <p>Note 2: Dates and times are stored in influxdb as UTC, therefore you will need to adjust to your time zone for the local time.</p>
+  <h4>{{_('Export')}} <a href="/help#export" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
-    <div class="row" style="padding-top: 1em">
-      <form method="post" action="/export">
-      <div class="col-sm-6">
-        {{exportOptions.measurement.label(class_='control-label')}}
-        <div>
-          <select class="form-control" id="measurement" name="measurement">
-          {% for each_choice, value in sensor_choices.items() -%}
-            <option value="{{each_choice}}">{{value}}</option>
-          {% endfor -%}
-          {% for each_choice, value in relay_choices.items() -%}
-            <option value="{{each_choice}},duration_sec">{{value}} Output duration</option>
-          {% endfor -%}
-          </select>
-        </div>
-      </div>
-      <div class="col-sm-4">
-        {{exportOptions.date_range.label(class_='control-label')}}
-        <div>
-          <input class="form-control" type="text" name="date_range" value="{{start_picker}} - {{end_picker}}" />
-        </div>
+  <h4 style="padding-top: 2em">Export Measurement Data as CSV</h4>
+
+  <p>This will export all measurements found within the date/time range in comma-separated value (CSV) format (as timestamp, measurement).</p>
+  <p>Note 1: Requesting large data sets may take a long time to process.</p>
+  <p>Note 2: Dates and times are stored in influxdb as UTC, therefore you will need to adjust to your time zone for the local time.</p>
+
+  <form method="post" action="/export">
+  {{form_export_measurements.csrf_token}}
+  <div class="row" style="padding-top: 1em">
+    <div class="col-sm-6">
+      {{form_export_measurements.measurement.label(class_='control-label')}}
+      <div>
+        <select class="form-control" id="measurement" name="measurement">
+        {% for each_choice, value in input_choices.items() -%}
+          <option value="{{each_choice}}">{{value}}</option>
+        {% endfor -%}
+        {% for each_choice, value in math_choices.items() -%}
+          <option value="{{each_choice}}">{{value}}</option>
+        {% endfor -%}
+        {% for each_choice, value in output_choices.items()  -%}
+          <option value="{{each_choice}}">{{value}}</option>
+        {% endfor -%}
+        </select>
       </div>
     </div>
-    <div class="row">
-      <div class="col-sm-2">
-        <label class='control-label'></label>
-        <div>
-          {{exportOptions.Export(class_='form-control btn btn-default')}}
-        </div>
+    <div class="col-sm-4">
+      {{form_export_measurements.date_range.label(class_='control-label')}}
+      <div>
+        <input class="form-control" type="text" name="date_range" value="{{start_picker}} - {{end_picker}}" />
       </div>
-      </form>
     </div>
-
-    <script type="text/javascript">
-    $(function() {
-        $('input[name="date_range"]').daterangepicker({
-            timePicker: true,
-            timePicker24Hour: true,
-            timePickerIncrement: 1,
-            locale: {
-                format: 'MM/DD/YYYY HH:mm'
-            }
-        });
-    });
-    </script>
-
   </div>
+  <div class="row">
+    <div class="col-xm-12 col-sm-6 col-md-4">
+      {{form_export_measurements.export_data_csv(class_='form-control btn btn-default')}}
+    </div>
+  </div>
+  </form>
+
+  <h4 style="padding-top: 2em">Export Settings Data as ZIP</h4>
+
+  <p>This will create a ZIP file containing the settings database (sqlite3) containing the Mycodo configuration and user information.</p>
+
+  <form method="post" action="/export">
+  {{form_export_settings.csrf_token}}
+  <div class="row">
+    <div class="col-xm-12 col-sm-6 col-md-4">
+      {{form_export_settings.export_settings_zip(class_='form-control btn btn-default')}}
+    </div>
+  </div>
+  </form>
+
+  <h4 style="padding-top: 2em">Import Settings Data from ZIP</h4>
+
+  <p>This will allow a ZIP file containing the settings database (sqlite3) to be uploaded and replace the current settings. Note: This will override all settings and users and log all current users out.</p>
+
+  <form method="post" action="/export">
+  {{form_import_settings.csrf_token}}
+  <div class="row">
+    <div class="col-xs-6 col-sm-8 col-md-4">
+      {{form_import_settings.settings_import_file(class_='form-control')}}
+    </div>
+    <div class="col-xs-6 col-sm-8 col-md-4">
+      {{form_import_settings.settings_import_upload(class_='form-control btn btn-default')}}
+    </div>
+  </div>
+  </form>
+
+</div>
+
+<script type="text/javascript">
+$(function() {
+    $('input[name="date_range"]').daterangepicker({
+        timePicker: true,
+        timePicker24Hour: true,
+        timePickerIncrement: 1,
+        locale: {
+            format: 'MM/DD/YYYY HH:mm'
+        }
+    });
+});
+</script>
 
 {% endblock %}

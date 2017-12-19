@@ -7,6 +7,7 @@ Also with this release, opencv has been disabled. I have yet to successfully imp
 ### Features
 
  - Migrate from Python 2.7.9 to Python 3.4.2 ([#253](https://github.com/kizniche/mycodo/issues/253))
+ - Add ability to export settings database to back up or import on other Mycodo installs (import coming soon)
 
 ### Miscellaneous
 

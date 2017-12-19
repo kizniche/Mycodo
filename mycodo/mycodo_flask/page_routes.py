@@ -69,6 +69,7 @@ from mycodo.mycodo_flask.forms import forms_pid
 from mycodo.mycodo_flask.forms import forms_timer
 from mycodo.mycodo_flask.static_routes import inject_variables
 from mycodo.mycodo_flask.utils import utils_conditional
+from mycodo.mycodo_flask.utils import utils_export
 from mycodo.mycodo_flask.utils import utils_function
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_graph
@@ -236,30 +237,35 @@ def page_camera():
 @flask_login.login_required
 def page_export():
     """
-    Export measurement data in CSV format
+    Export/Import measurement and settings data
     """
-    export_options = forms_misc.ExportOptions()
+    form_export_measurements = forms_misc.ExportMeasurements()
+    form_export_settings = forms_misc.ExportSettings()
+    form_import_settings = forms_misc.ImportSettings()
+
     output = Output.query.all()
     input_dev = Input.query.all()
-    output_choices = utils_general.choices_id_name(output)
+    math = Math.query.all()
+    output_choices = utils_general.choices_outputs(output)
     input_choices = utils_general.choices_inputs(input_dev)
+    math_choices = utils_general.choices_maths(math)
 
     if request.method == 'POST':
-        start_time = export_options.date_range.data.split(' - ')[0]
-        start_seconds = int(time.mktime(
-            time.strptime(start_time, '%m/%d/%Y %H:%M')))
-        end_time = export_options.date_range.data.split(' - ')[1]
-        end_seconds = int(time.mktime(
-            time.strptime(end_time, '%m/%d/%Y %H:%M')))
+        if not utils_general.user_has_permission('edit_controllers'):
+            return redirect(url_for('general_routes.home'))
 
-        unique_id = export_options.measurement.data.split(',')[0]
-        measurement = export_options.measurement.data.split(',')[1]
-
-        url = '/export_data/{meas}/{id}/{start}/{end}'.format(
-            meas=measurement,
-            id=unique_id,
-            start=start_seconds, end=end_seconds)
-        return redirect(url)
+        if form_export_measurements.export_data_csv.data:
+            url = utils_export.export_measurements(form_export_measurements)
+            if url:
+                return redirect(url)
+        elif form_export_settings.export_settings_zip.data:
+            file_send = utils_export.export_settings(form_export_settings)
+            if file_send:
+                return file_send
+            else:
+                flash('Unknown error creating zipped settings database', 'error')
+        elif form_import_settings.settings_import_upload.data:
+            utils_export.import_settings(form_import_settings)
 
     # Generate start end end times for date/time picker
     end_picker = datetime.datetime.now().strftime('%m/%d/%Y %H:%M')
@@ -269,9 +275,12 @@ def page_export():
     return render_template('tools/export.html',
                            start_picker=start_picker,
                            end_picker=end_picker,
-                           exportOptions=export_options,
-                           relay_choices=output_choices,
-                           sensor_choices=input_choices)
+                           form_export_measurements=form_export_measurements,
+                           form_export_settings=form_export_settings,
+                           form_import_settings=form_import_settings,
+                           output_choices=output_choices,
+                           input_choices=input_choices,
+                           math_choices=math_choices)
 
 
 @blueprint.route('/graph', methods=('GET', 'POST'))

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#  config.py - Global Mycodo configuration settings
+#  config.py - Global Mycodo settings
 #
 import binascii
 import collections
