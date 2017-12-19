@@ -2,6 +2,8 @@
 
 This version of Mycodo, 5.5.0, migrates from Python 2.7 to Python 3.4. Although most parts of the system have been tested to work, there are many potential setting combinations that are untested (for instance, I do not own every sensor that Mycodo supports). Additionally, there may be issues restoring a previous version of Mycodo after performing the upgrade to Mycodo versions => 5.5.0. Because of this, it is highly recommended to not upgrade a production system. That is, if you rely on your system to work, ***DO NOT UPGRADE***. Wait until your system is no longer performing critical tasks to upgrade, in order to allow yourself the ability to thoroughly test your particular configuration works as expected.
 
+Also in this release is the disabling of opencv. I have yet to successfully implement a Python 3-compatible version of opencv that doesn't require an extremely long compiling process.
+
 ### Features
 
  - Migrate from Python 2.7.9 to Python 3.4.2 ([#253](https://github.com/kizniche/mycodo/issues/253))

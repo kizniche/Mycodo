@@ -10,7 +10,7 @@ import os
 from flask_babel import lazy_gettext
 
 MYCODO_VERSION = '5.5.0'
-ALEMBIC_VERSION = '41fbe7fcc8b0'
+ALEMBIC_VERSION = 'efc722490ac7'
 
 LANGUAGES = {
     'en': 'English',
