@@ -189,7 +189,7 @@
                 <li{% if active_page == 'info' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_info')}}"><i class="glyphicon glyphicon-info-sign icon-fw"></i> {{_('System Information')}}</a></li>
                 <li role="separator" class="divider"></li>
                 <li{% if upgrade_available %} class="upgrade_available"{% elif active_page == 'upgrade' %} class="active"{% endif %}><a href="/admin/upgrade"><i class="glyphicon glyphicon-open"></i> {{_('Upgrade')}}</a></li>
-                <li{% if active_page == 'backup' %} class="active"{% endif %}><a href="/admin/backup"><i class=" glyphicon glyphicon-floppy-saved"></i> {{_('Backup/Restore')}}</a></li>
+                <li{% if active_page == 'backup' %} class="active"{% endif %}><a href="/admin/backup"><i class=" glyphicon glyphicon-floppy-saved"></i> {{_('Backup / Restore')}}</a></li>
                 <li role="separator" class="divider"></li>
                 <li><a href="/systemctl/daemon_restart"onclick='return confirm("Confirm restarting the daemon")'><i class="glyphicon glyphicon-repeat icon-fw"></i> {{_('Restart Daemon')}}</a></li>
                 <li role="separator" class="divider"></li>

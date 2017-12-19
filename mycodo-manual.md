@@ -50,8 +50,7 @@ Table of Contents
    - [Export / Import](#export--import)
    - [Camera](#camera)
    - [Output Usage](#output-usage)
-   - [System Backup](#system-backup)
-   - [System Restore](#system-restore)
+   - [Backup / Restore](#sbackup--restore)
    - [System Information](#system-information)
 
 [Troubleshooting](#troubleshooting)
@@ -1073,16 +1072,12 @@ Output usage statistics are calculated for each output, based on how long
 the output has been powered, the current draw of the device connected to
 the output, and other [Relay Usage Settings](#output-usage-settings).
 
-System Backup
--------------
+Backup / Restore
+----------------
 
-A backup is made to /var/Mycodo-backups when the system is upgraded
-through the web interface or the upgrade script.
+A backup is made to /var/Mycodo-backups when the system is upgraded or through the web interface on the Config -> Backup / Restore page.
 
-System Restore
---------------
-
-If you need to restore a backup, this can be done on the Config -> Backup/Restore page. Find the backup you would like restored and press the Restore button beside it. A restore can also be initialized through the command line. Use the foloowing commands to initialize a restore, changing the appropriate directory names, 'user' to your user name, and TIME and COMMIT to the appropriate text found as the directory names in /var/Mycodo-backups/
+If you need to restore a backup, this can be done on the Config -> Backup / Restore page. Find the backup you would like restored and press the Restore button beside it. A restore can also be initialized through the command line. Use the foloowing commands to initialize a restore, changing the appropriate directory names, 'user' to your user name, and TIME and COMMIT to the appropriate text found as the directory names in /var/Mycodo-backups/
 
     sudo mv /home/user/Mycodo /home/user/Mycodo_old
     sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo

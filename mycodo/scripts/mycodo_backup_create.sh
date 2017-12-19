@@ -24,7 +24,7 @@ printf "\n#### Create backup initiated $NOW ####\n"
 mkdir -p /var/Mycodo-backups
 
 printf "Backing up current Mycodo from ${INSTALL_DIRECTORY}/Mycodo to ${TMP_DIR}..."
-if ! rsync -avq --exclude=cameras --exclude=env --exclude=old ${INSTALL_DIRECTORY}/Mycodo ${TMP_DIR} ; then
+if ! rsync -avq --exclude=cameras --exclude=env --exclude=env_py3 ${INSTALL_DIRECTORY}/Mycodo ${TMP_DIR} ; then
     printf "Failed: Error while trying to back up current Mycodo install from ${INSTALL_DIRECTORY}/Mycodo to ${BACKUP_DIR}.\n"
     error_found
 fi
