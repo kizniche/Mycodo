@@ -1,14 +1,14 @@
 ## 5.5.0 (Unreleased)
 
-With the release of 5.5.0, Mycodo becomes modern by migrating from Python 2.7.9 to Python 3.5.3 (for Raspbian Stretch, if on Raspbian Jessie it will be 3.4.2).
+With the release of 5.5.0, Mycodo becomes modern by migrating from Python 2.7.9 to Python 3.5.3 (for Raspbian Stretch, if on Raspbian Jessie it will be Python 3.4.2).
 
 If you rely on your system to work, it is highly recommended that you ***DO NOT UPGRADE***. Wait until your system is no longer performing critical tasks to upgrade, in order to allow yourself the ability to thoroughly test your particular configuration works as expected. Although most parts of the system have been tested to work, there is, as always, the potential for unforseen issues (for instance, not every sensor that Mycodo supports has physically been tested). Read the following notes carefully to determine if you want to upgrade to 5.5.0 and newer versions.
 
-***It will no longer be possible to restore a pre-5.5.0 backup***
-***All users will be logged out of the web user interface***
+***It will no longer be possible to restore a pre-5.5.0 backup from the web UI***
+***All users will be logged out of the web UI during the upgrade***
 ***OpenCV has been removed as a camera module***
 
-No restoring of pre-5.5.0 backups: The automatic method of restoring backups to pre-5.5.0 versions will not work properly. This is due to moving of pip virtual environments during the restore and the post-5.5.0 (python3) virtualenv not being compatible with the pre-5.5.0 virtualenv (python2). Restores can still be done manually from the command line, and will need the following command to be executed to rebuild the pre-5.5.0 virtualenv (python2):
+No restoring of pre-5.5.0 backups from the web UI: The automatic method of restoring backups to pre-5.5.0 versions will not work properly. This is due to moving of pip virtual environments during the restore and the post-5.5.0 (python3) virtualenv not being compatible with the pre-5.5.0 virtualenv (python2). Restores can still be done manually from the command line, and will need the following command to be executed to rebuild the pre-5.5.0 virtualenv (python2):
 
 ```bash
 # Stop daemon and web interace
@@ -19,7 +19,7 @@ sudo service apache2 stop
 sudo mv ~/Mycodo /var/Mycodo-backups/Mycodo-backup-2017-12-25_11-59-59-5.5.0
 
 # Copy a backup to the install directory
-sudo cp -r /var/Mycodo-backups/Mycodo-backup-2017-12-08_21-32-30-5.4.14
+sudo cp -r /var/Mycodo-backups/Mycodo-backup-2017-12-08_21-32-30-5.4.14 ~/Mycodo
 
 # Create the virtualenv
 sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh setup-virtualenv
@@ -32,7 +32,11 @@ sudo service mycodo start
 sudo service apache2 start
 ```
 
-All users will be logged out: Another consequence of changing from Python 2 to 3 is current browser cookies will cause the web user interface to error. Therefore, all users will be logged out after upgrading to >= 5.5.0.
+All users will be logged out during the upgrade: Another consequence of changing from Python 2 to 3 is current browser cookies will cause the web user interface to error. Therefore, all users will be logged out after upgrading to >= 5.5.0. This will cause some strange behavior that may be misconstrued as a failed upgrade:
+ 
+ 1. The upgrade log will not update during the upgrade. Give the upgrade ample time to finish, or monitor the upgrade log from the command line.
+ 
+ 2. After the upgrade is successful, the upgrade log box on the Upgrade page will redirect to the login page. Do not log in through the log box, but rather refresh the entire page to be redirected to the login page.
 
 OpenCV has been disabled: A Python 3-compatible binary version of opencv, whoch doesn't require an extremely long (hours) compiling process, is unfortunately unavailable. Therefore, if you know of a library or module that can successfully acquire an image from your webcam (you have tested to work), create a [new issue](https://github.com/kizniche/Mycodo/issues/new) with the details of how you acquired the image and we can determine if the method can be integrated into Mycddo.
 
