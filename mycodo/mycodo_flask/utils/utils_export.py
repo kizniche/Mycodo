@@ -117,13 +117,19 @@ def export_influxdb(form):
                 error.append("Could not determine Influxdb version")
 
             if not status and influxd_version:
-                # Zip all files in the influx_backup directory and send to user
+                # Zip all files in the influx_backup directory
                 data = io.BytesIO()
                 with zipfile.ZipFile(data, mode='w') as z:
                     for root, dirs, files in os.walk(influx_backup_dir):
                         for filename in files:
                             z.write(os.path.join(influx_backup_dir, filename), filename)
                 data.seek(0)
+
+                # Delete influxdb directory if it exists
+                if os.path.isdir(influx_backup_dir):
+                    shutil.rmtree(influx_backup_dir)
+
+                # Send zip file to user
                 return send_file(
                     data,
                     mimetype='application/zip',
