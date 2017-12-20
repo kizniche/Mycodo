@@ -84,7 +84,7 @@ def admin_backup():
                       " | ts '[%Y-%m-%d %H:%M:%S]'" \
                       " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                               log=BACKUP_LOG_FILE)
-                out, _, _ = cmd_output(cmd)
+                subprocess.Popen(cmd, shell=True)
                 flash(gettext(u"Backup in progress"), "success")
             else:
                 flash(
@@ -103,7 +103,7 @@ def admin_backup():
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper backup-delete {dir}" \
                   " 2>&1".format(pth=INSTALL_DIRECTORY,
                                  dir=form_backup.selected_dir.data)
-            out, _, _ = cmd_output(cmd)
+            subprocess.Popen(cmd, shell=True)
             flash(gettext(u"Deletion of backup in progress"),
                   "success")
 
@@ -113,7 +113,7 @@ def admin_backup():
                   " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                           backup=form_backup.full_path.data,
                                           log=RESTORE_LOG_FILE)
-            out, _, _ = cmd_output(cmd)
+            subprocess.Popen(cmd, shell=True)
             flash(gettext(u"Restore in progress"),
                   "success")
 
@@ -250,7 +250,7 @@ def admin_upgrade():
                       " | ts '[%Y-%m-%d %H:%M:%S]'" \
                       " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                               log=UPGRADE_LOG_FILE)
-                out, _, _ = cmd_output(cmd)
+                subprocess.Popen(cmd, shell=True)
 
                 upgrade = 1
                 flash(gettext(u"The upgrade (from master branch) has started"), "success")
@@ -259,7 +259,7 @@ def admin_upgrade():
                       " | ts '[%Y-%m-%d %H:%M:%S]'" \
                       " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                               log=UPGRADE_LOG_FILE)
-                out, _, _ = cmd_output(cmd)
+                subprocess.Popen(cmd, shell=True)
 
                 upgrade = 1
                 mod_misc = Misc.query.first()
