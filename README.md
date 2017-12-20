@@ -87,7 +87,7 @@ Latest version of Raspbian tested: Raspbian Stretch Nov/2017 version (2017-11-29
 
 **It's very important that you don't skip the file system expansion and reboot steps! These need to be done before continuing or there won't be enough free disk space to install Mycodo.**
 
-After writing Raspbian to an SD card, booting Raspbian, and logging in, issue the following command to start raspi-config.
+After writing Raspbian to an SD card and enabling ssh by creating a file named ```ssh``` on the boot partition, insert the SD card into the Pi and power the system. Whether you log in with the GUI or terminal via SSH to your Raspberry Pi's IP address for the first time (user: pi, password: raspberry), issue the following command to start raspi-config and set the following options.
 
 ```sudo raspi-config```
 
@@ -104,7 +104,7 @@ Then change the following settings
 
 ### Install Mycodo
 
-Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web user interface.
+Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web UI.
 
 ```
 sudo apt-get install -y jq

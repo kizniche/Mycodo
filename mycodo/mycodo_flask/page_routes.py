@@ -19,7 +19,6 @@ from flask import request
 from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
-from w1thermsensor import W1ThermSensor
 
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import BACKUP_LOG_FILE
@@ -1002,6 +1001,7 @@ def page_input():
     # If DS18B20 inputs added, compile a list of detected inputs
     ds18b20_inputs = []
     if Input.query.filter(Input.device == 'DS18B20').count():
+        from w1thermsensor import W1ThermSensor
         try:
             for each_input in W1ThermSensor.get_available_sensors():
                 ds18b20_inputs.append(each_input.id)
