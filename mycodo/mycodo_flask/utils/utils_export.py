@@ -6,6 +6,7 @@ import zipfile
 
 import io
 import os
+import shutil
 from flask import send_file
 from flask import url_for
 from flask_babel import gettext
@@ -18,6 +19,7 @@ from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.system_pi import assure_path_exists
+from mycodo.utils.system_pi import cmd_output
 
 logger = logging.getLogger(__name__)
 
@@ -78,6 +80,57 @@ def export_settings(form):
                 attachment_filename='Mycodo_Settings_{mver}_{aver}.zip'.format(
                     mver=MYCODO_VERSION, aver=ALEMBIC_VERSION)
             )
+        except Exception as err:
+            error.append("Error: {}".format(err))
+    else:
+        flash_form_errors(form)
+        return
+
+    flash_success_errors(error, action, url_for('page_routes.page_export'))
+
+
+def export_influxdb(form):
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Export"),
+        controller=gettext(u"Measurements"))
+    error = []
+
+    if form.validate():
+        try:
+            influx_backup_dir = os.path.join(INSTALL_DIRECTORY, 'influx_backup')
+
+            # Delete influxdb directory if it exists
+            if os.path.isdir(influx_backup_dir):
+                shutil.rmtree(influx_backup_dir)
+
+            # Create new directory (make sure it's empty)
+            assure_path_exists(influx_backup_dir)
+
+            cmd = "/usr/bin/influxd backup -database mycodo_db {path}".format(path=influx_backup_dir)
+            _, _, status = cmd_output(cmd, su_mycodo=False)
+
+            influxd_version_out, _, _ = cmd_output('/usr/bin/influxd version', su_mycodo=False)
+            if influxd_version_out:
+                influxd_version = influxd_version_out.decode('utf-8').split(' ')[1]
+            else:
+                influxd_version = None
+                error.append("Could not determine Influxdb version")
+
+            if not status and influxd_version:
+                # Zip all files in the influx_backup directory and send to user
+                data = io.BytesIO()
+                with zipfile.ZipFile(data, mode='w') as z:
+                    for root, dirs, files in os.walk(influx_backup_dir):
+                        for filename in files:
+                            z.write(os.path.join(influx_backup_dir, filename), filename)
+                data.seek(0)
+                return send_file(
+                    data,
+                    mimetype='application/zip',
+                    as_attachment=True,
+                    attachment_filename='Mycodo_Influxdb_{idbv}.zip'.format(
+                        idbv=influxd_version)
+                )
         except Exception as err:
             error.append("Error: {}".format(err))
     else:

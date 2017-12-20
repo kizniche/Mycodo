@@ -56,6 +56,19 @@
   </div>
   </form>
 
+  <h4 style="padding-top: 2em">Export Influxdb Database and Metastore as ZIP</h4>
+
+  <p>This will create a ZIP file containing the Influxdb meatastore and database containing all measurement data.</p>
+
+  <form method="post" action="/export">
+  {{form_export_influxdb.csrf_token}}
+  <div class="form-inline">
+    <div class="form-group">
+      {{form_export_influxdb.export_influxdb_zip(class_='form-control btn btn-default')}}
+    </div>
+  </div>
+  </form>
+
   <h4 style="padding-top: 2em">Export Settings Data as ZIP</h4>
 
   <p>This will create a ZIP file containing the settings database (sqlite3) containing the Mycodo configuration and user information.</p>

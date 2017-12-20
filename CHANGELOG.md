@@ -9,9 +9,11 @@ Also with this release, opencv has been disabled. I have yet to successfully imp
 ### Features
 
  - Migrate from Python 2.7.9 to Python 3.4.2 ([#253](https://github.com/kizniche/mycodo/issues/253))
- - Add ability to export and import settings database for backup or to transfer to other Mycodo installs
+ - Add ability to export and import settings database for backup or to transfer to other Mycodo installs ([#348](https://github.com/kizniche/mycodo/issues/348))
+ - Add ability to export Influxdb Measurement database and metastore ([#348](https://github.com/kizniche/mycodo/issues/348))
  - Add size of each backup (in MB) on Backup / Restore page
  - Add check to make sure there is enough free space before performing a backup/upgrade
+ - Fix deleting Inputs ([#250](https://github.com/kizniche/mycodo/issues/250))
 
 ### Miscellaneous
 

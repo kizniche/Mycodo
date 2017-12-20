@@ -241,6 +241,7 @@ def page_export():
     """
     form_export_measurements = forms_misc.ExportMeasurements()
     form_export_settings = forms_misc.ExportSettings()
+    form_export_influxdb = forms_misc.ExportInfluxdb()
     form_import_settings = forms_misc.ImportSettings()
 
     output = Output.query.all()
@@ -268,6 +269,13 @@ def page_export():
             backup_file = utils_export.import_settings(form_import_settings)
             if backup_file:
                 return redirect(url_for('authentication_routes.logout'))
+        elif form_export_influxdb.export_influxdb_zip.data:
+            file_send = utils_export.export_influxdb(form_export_influxdb)
+            if file_send:
+                return file_send
+            else:
+                flash('Unknown error creating zipped influxdb database '
+                      'and metastore', 'error')
 
     # Generate start end end times for date/time picker
     end_picker = datetime.datetime.now().strftime('%m/%d/%Y %H:%M')
@@ -277,6 +285,7 @@ def page_export():
     return render_template('tools/export.html',
                            start_picker=start_picker,
                            end_picker=end_picker,
+                           form_export_influxdb=form_export_influxdb,
                            form_export_measurements=form_export_measurements,
                            form_export_settings=form_export_settings,
                            form_import_settings=form_import_settings,

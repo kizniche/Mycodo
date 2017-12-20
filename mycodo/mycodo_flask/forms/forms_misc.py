@@ -66,6 +66,9 @@ class ExportMeasurements(FlaskForm):
 class ExportSettings(FlaskForm):
     export_settings_zip = SubmitField(lazy_gettext(u'Export Settings'))
 
+class ExportInfluxdb(FlaskForm):
+    export_influxdb_zip = SubmitField(lazy_gettext(u'Export Influxdb'))
+
 class ImportSettings(FlaskForm):
     settings_import_file = FileField('Upload')
     settings_import_upload = SubmitField(lazy_gettext(u'Import Settings'))
