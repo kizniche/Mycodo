@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-12-19 19:33-0500\n"
+"POT-Creation-Date: 2017-12-20 16:39-0500\n"
 "PO-Revision-Date: 2017-01-05 00:55-0500\n"
 "Last-Translator: \n"
 "Language: fr\n"
@@ -16,29 +16,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.5.1\n"
 
-#: config.py:62
+#: config.py:67
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:362
 msgid "Altitude"
 msgstr ""
 
-#: config.py:65
+#: config.py:70
 msgid "CO2"
 msgstr ""
 
-#: config.py:68
+#: config.py:73
 msgid "Dewpoint"
 msgstr ""
 
-#: config.py:71 config.py:74 config.py:77
+#: config.py:76 config.py:79 config.py:82
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:374
 msgid "CPU Load"
 msgstr ""
 
-#: config.py:80
+#: config.py:85
 msgid "Disk"
 msgstr ""
 
-#: config.py:83 mycodo_flask/forms/forms_conditional.py:56
+#: config.py:88 mycodo_flask/forms/forms_conditional.py:56
 #: mycodo_flask/forms/forms_conditional.py:58
 #: mycodo_flask/forms/forms_timer.py:26
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:850
@@ -46,7 +46,7 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: config.py:86 mycodo_flask/forms/forms_output.py:82
+#: config.py:91 mycodo_flask/forms/forms_output.py:82
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:410
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:861
 #: mycodo_flask/templates/pages/live.html:175
@@ -57,93 +57,93 @@ msgstr ""
 msgid "Duty Cycle"
 msgstr ""
 
-#: config.py:89 mycodo_flask/forms/forms_input.py:67
+#: config.py:94 mycodo_flask/forms/forms_input.py:67
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:422
 msgid "Edge"
 msgstr ""
 
-#: config.py:92 mycodo_flask/forms/forms_method.py:49
+#: config.py:97 mycodo_flask/forms/forms_method.py:49
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:434
 msgid "Frequency"
 msgstr ""
 
-#: config.py:95
+#: config.py:100
 msgid "Humidity"
 msgstr ""
 
-#: config.py:98
+#: config.py:103
 msgid "Humidity Ratio"
 msgstr ""
 
-#: config.py:101
+#: config.py:106
 msgid "Light"
 msgstr ""
 
-#: config.py:104
+#: config.py:109
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:482
 msgid "Moisture"
 msgstr ""
 
-#: config.py:107
+#: config.py:112
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:494
 msgid "pH"
 msgstr ""
 
-#: config.py:110
+#: config.py:115
 msgid "PID Output"
 msgstr ""
 
-#: config.py:113
+#: config.py:118 mycodo_flask/forms/forms_math.py:67
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:506
 msgid "Pressure"
 msgstr ""
 
-#: config.py:116
+#: config.py:121
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:518
 msgid "Pulse Width"
 msgstr ""
 
-#: config.py:119
+#: config.py:124
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:530
 msgid "Revolutions Per Minute"
 msgstr ""
 
-#: config.py:122 mycodo_flask/forms/forms_conditional.py:38
+#: config.py:127 mycodo_flask/forms/forms_conditional.py:38
 #: mycodo_flask/forms/forms_pid.py:64
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:839
 msgid "Setpoint"
 msgstr ""
 
-#: config.py:125
+#: config.py:130
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:542
 msgid "Specific Enthalpy"
 msgstr ""
 
-#: config.py:128
+#: config.py:133
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:554
 msgid "Specific Volume"
 msgstr ""
 
-#: config.py:131 mycodo_flask/forms/forms_calibration.py:40
+#: config.py:136 mycodo_flask/forms/forms_calibration.py:40
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:566
 msgid "Temperature"
 msgstr ""
 
-#: config.py:134
+#: config.py:139
 msgid "Temperature (Obj)"
 msgstr ""
 
-#: config.py:137
+#: config.py:142
 msgid "Temperature (Die)"
 msgstr ""
 
-#: config.py:140 mycodo_flask/forms/forms_input.py:99
+#: config.py:145 mycodo_flask/forms/forms_input.py:99
 #: mycodo_flask/forms/forms_settings.py:120
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:578
 msgid "Voltage"
 msgstr ""
 
-#: config.py:233 mycodo_flask/forms/forms_conditional.py:54
+#: config.py:238 mycodo_flask/forms/forms_conditional.py:54
 #: mycodo_flask/forms/forms_method.py:69
 #: mycodo_flask/forms/forms_settings.py:42 mycodo_flask/forms/forms_timer.py:35
 #: mycodo_flask/templates/layout.html:151
@@ -169,20 +169,20 @@ msgstr ""
 msgid "Output"
 msgstr ""
 
-#: config.py:234 mycodo_flask/calibration_routes.py:222
+#: config.py:239 mycodo_flask/calibration_routes.py:222
 #: mycodo_flask/forms/forms_input.py:54
 msgid "Command"
 msgstr ""
 
-#: config.py:235
+#: config.py:240
 msgid "Activate PID"
 msgstr ""
 
-#: config.py:236
+#: config.py:241
 msgid "Deactivate PID"
 msgstr ""
 
-#: config.py:237 mycodo_flask/forms/forms_authentication.py:28
+#: config.py:242 mycodo_flask/forms/forms_authentication.py:28
 #: mycodo_flask/forms/forms_authentication.py:29
 #: mycodo_flask/forms/forms_settings.py:81
 #: mycodo_flask/forms/forms_settings.py:167
@@ -191,59 +191,63 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: config.py:238
+#: config.py:243
 msgid "Flash LCD"
 msgstr ""
 
-#: config.py:239
+#: config.py:244
 msgid "Photo"
 msgstr ""
 
-#: config.py:240
+#: config.py:245
 msgid "Email Photo"
 msgstr ""
 
-#: config.py:241
+#: config.py:246
 msgid "Video"
 msgstr ""
 
-#: config.py:242
+#: config.py:247
 msgid "Email Video"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:86
+#: mycodo_flask/admin_routes.py:88
 msgid "Backup in progress"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:105
+#: mycodo_flask/admin_routes.py:107
 msgid "Deletion of backup in progress"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:116
+#: mycodo_flask/admin_routes.py:117
 msgid "Restore in progress"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:167
+#: mycodo_flask/admin_routes.py:168
 msgid ""
 "Upgrade functionality is disabled because an internet connection was "
 "unable to be detected"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:187
+#: mycodo_flask/admin_routes.py:188
 msgid ""
 "There was an error encountered during the upgrade process. Check the "
 "upgrade log for details."
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:205
-msgid "Could not determine local mycodo version or online release versions"
+#: mycodo_flask/admin_routes.py:207
+msgid "Could not determine local mycodo version or online release versions: {err}"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:255
+#: mycodo_flask/admin_routes.py:256
+msgid "The upgrade (from master branch) has started"
+msgstr ""
+
+#: mycodo_flask/admin_routes.py:268
 msgid "The upgrade has started"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:257
+#: mycodo_flask/admin_routes.py:270
 msgid "You cannot upgrade if an upgrade is not available"
 msgstr ""
 
@@ -358,11 +362,11 @@ msgstr ""
 msgid "Method"
 msgstr "Méthode"
 
-#: mycodo_flask/page_routes.py:138
+#: mycodo_flask/page_routes.py:137
 msgid "Cannot start time-lapse if stream is active."
 msgstr ""
 
-#: mycodo_flask/page_routes.py:168
+#: mycodo_flask/page_routes.py:167
 msgid "Cannot start stream if time-lapse is active."
 msgstr ""
 
@@ -399,47 +403,47 @@ msgid "remember"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:65
-#: mycodo_flask/forms/forms_misc.py:83
+#: mycodo_flask/forms/forms_misc.py:89
 msgid "Number of Lines"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:68
-#: mycodo_flask/forms/forms_misc.py:87
+#: mycodo_flask/forms/forms_misc.py:93
 msgid "Number of lines should be greater than 0"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:71
-#: mycodo_flask/forms/forms_misc.py:90
+#: mycodo_flask/forms/forms_misc.py:96
 msgid "Login Log"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:72
-#: mycodo_flask/forms/forms_misc.py:91
+#: mycodo_flask/forms/forms_misc.py:97
 msgid "HTTP Log"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:73
-#: mycodo_flask/forms/forms_misc.py:92
+#: mycodo_flask/forms/forms_misc.py:98
 msgid "Daemon Log"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:74
-#: mycodo_flask/forms/forms_misc.py:93
+#: mycodo_flask/forms/forms_misc.py:99
 msgid "Backup Log"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:75
-#: mycodo_flask/forms/forms_misc.py:94
+#: mycodo_flask/forms/forms_misc.py:100
 msgid "KeepUp Log"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:76
-#: mycodo_flask/forms/forms_misc.py:95
+#: mycodo_flask/forms/forms_misc.py:101
 msgid "Upgrade Log"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:77
-#: mycodo_flask/forms/forms_misc.py:96
+#: mycodo_flask/forms/forms_misc.py:102
 msgid "Restore Log"
 msgstr ""
 
@@ -525,7 +529,7 @@ msgstr ""
 #: mycodo_flask/forms/forms_conditional.py:33
 #: mycodo_flask/forms/forms_graph.py:128 mycodo_flask/forms/forms_graph.py:161
 #: mycodo_flask/forms/forms_input.py:55 mycodo_flask/forms/forms_input.py:60
-#: mycodo_flask/forms/forms_math.py:52 mycodo_flask/forms/forms_math.py:77
+#: mycodo_flask/forms/forms_math.py:52 mycodo_flask/forms/forms_math.py:79
 #: mycodo_flask/forms/forms_pid.py:37
 #: mycodo_flask/templates/pages/live.html:119
 #: mycodo_flask/templates/pages/live.html:290
@@ -644,7 +648,7 @@ msgid "Outputs"
 msgstr ""
 
 #: mycodo_flask/forms/forms_graph.py:28 mycodo_flask/forms/forms_graph.py:78
-#: mycodo_flask/forms/forms_math.py:49 mycodo_flask/forms/forms_math.py:74
+#: mycodo_flask/forms/forms_math.py:49 mycodo_flask/forms/forms_math.py:76
 #: mycodo_flask/templates/pages/input.html:5
 #: mycodo_flask/templates/pages/input.html:14
 msgid "Inputs"
@@ -938,7 +942,7 @@ msgstr ""
 msgid "Add Math Controller"
 msgstr ""
 
-#: mycodo_flask/forms/forms_math.py:55 mycodo_flask/forms/forms_math.py:80
+#: mycodo_flask/forms/forms_math.py:55 mycodo_flask/forms/forms_math.py:82
 msgid "Units"
 msgstr ""
 
@@ -950,11 +954,11 @@ msgstr ""
 msgid "Wet Bulb Temperature"
 msgstr ""
 
-#: mycodo_flask/forms/forms_math.py:66
-msgid "Pressure (optional)"
+#: mycodo_flask/forms/forms_math.py:68
+msgid "optional"
 msgstr ""
 
-#: mycodo_flask/forms/forms_math.py:71
+#: mycodo_flask/forms/forms_math.py:73
 msgid "Max Difference"
 msgstr ""
 
@@ -1135,32 +1139,36 @@ msgstr ""
 msgid "Export Settings"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:70
-msgid "Export Influxdb"
-msgstr ""
-
-#: mycodo_flask/forms/forms_misc.py:74
+#: mycodo_flask/forms/forms_misc.py:71
 msgid "Import Settings"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:84
+#: mycodo_flask/forms/forms_misc.py:74
+msgid "Export Influxdb"
+msgstr ""
+
+#: mycodo_flask/forms/forms_misc.py:78
+msgid "Import Influxdb"
+msgstr ""
+
+#: mycodo_flask/forms/forms_misc.py:90
 #: mycodo_flask/templates/tools/logview.html:14
 msgid "Lines"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:104
+#: mycodo_flask/forms/forms_misc.py:110
 msgid "Upgrade Mycodo"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:112
+#: mycodo_flask/forms/forms_misc.py:118
 msgid "Create Backup"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:113
+#: mycodo_flask/forms/forms_misc.py:119
 msgid "Restore Backup"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:114
+#: mycodo_flask/forms/forms_misc.py:120
 msgid "Delete Backup"
 msgstr ""
 
@@ -1823,9 +1831,10 @@ msgid "More"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:158
+#: mycodo_flask/templates/tools/export.html:3
 #: mycodo_flask/templates/tools/export.html:5
 #: mycodo_flask/templates/tools/export.html:18
-msgid "Export / Import"
+msgid "Export Import"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:159
@@ -1896,7 +1905,7 @@ msgstr "Surclassement"
 #: mycodo_flask/templates/admin/backup.html:5
 #: mycodo_flask/templates/admin/backup.html:12
 #: mycodo_flask/templates/layout.html:192
-msgid "Backup / Restore"
+msgid "Backup Restore"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:196
@@ -1988,17 +1997,17 @@ msgid ""
 "functionality."
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:73
+#: mycodo_flask/templates/admin/upgrade.html:93
 msgid ""
 "No internet connection detected. To upgrade Mycodo automatically, you "
 "will need an internet connection. Refresh the page when one is connected."
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:79
+#: mycodo_flask/templates/admin/upgrade.html:99
 msgid "No upgrade is available. You are running the latest release, version"
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:93
+#: mycodo_flask/templates/admin/upgrade.html:113
 msgid ""
 "Click the button below to begin the upgrade process. Note: An upgrade "
 "often takes several minutes, and in rare cases hours, to complete. During"
@@ -2009,15 +2018,15 @@ msgid ""
 "verified it works as expected)."
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:112
+#: mycodo_flask/templates/admin/upgrade.html:132
 msgid "Current to latest versions"
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:120
+#: mycodo_flask/templates/admin/upgrade.html:140
 msgid "current"
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:120
+#: mycodo_flask/templates/admin/upgrade.html:140
 msgid "latest"
 msgstr ""
 
@@ -3407,10 +3416,6 @@ msgstr ""
 msgid "Calibration Complete"
 msgstr ""
 
-#: mycodo_flask/templates/tools/export.html:3
-msgid "Export/Import"
-msgstr ""
-
 #: mycodo_flask/utils/utils_conditional.py:35
 #: mycodo_flask/utils/utils_conditional.py:157
 #: mycodo_flask/utils/utils_function.py:25 mycodo_flask/utils/utils_graph.py:30
@@ -3445,21 +3450,26 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
-#: mycodo_flask/utils/utils_export.py:33 mycodo_flask/utils/utils_export.py:66
-#: mycodo_flask/utils/utils_export.py:94
+#: mycodo_flask/utils/utils_export.py:38 mycodo_flask/utils/utils_export.py:75
+#: mycodo_flask/utils/utils_export.py:111
 msgid "Export"
 msgstr ""
 
-#: mycodo_flask/utils/utils_export.py:34 mycodo_flask/utils/utils_export.py:95
+#: mycodo_flask/utils/utils_export.py:39 mycodo_flask/utils/utils_export.py:112
 msgid "Measurements"
 msgstr ""
 
-#: mycodo_flask/utils/utils_export.py:67 mycodo_flask/utils/utils_export.py:157
+#: mycodo_flask/utils/utils_export.py:76 mycodo_flask/utils/utils_export.py:185
 msgid "Settings"
 msgstr ""
 
-#: mycodo_flask/utils/utils_export.py:156
+#: mycodo_flask/utils/utils_export.py:184
+#: mycodo_flask/utils/utils_export.py:320
 msgid "Import"
+msgstr ""
+
+#: mycodo_flask/utils/utils_export.py:321
+msgid "Influxdb"
 msgstr ""
 
 #: mycodo_flask/utils/utils_general.py:85
@@ -4245,5 +4255,20 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "A valid sensor is required"
+#~ msgstr ""
+
+#~ msgid "Could not determine local mycodo version or online release versions"
+#~ msgstr ""
+
+#~ msgid "Pressure (optional)"
+#~ msgstr ""
+
+#~ msgid "Export / Import"
+#~ msgstr ""
+
+#~ msgid "Backup / Restore"
+#~ msgstr ""
+
+#~ msgid "Export/Import"
 #~ msgstr ""
 

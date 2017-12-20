@@ -61,11 +61,16 @@ A Python 3-compatible binary version of opencv, whoch doesn't require an extreme
  - Add ability to export and import Influxdb (measurements) database and metastore ([#348](https://github.com/kizniche/mycodo/issues/348))
  - Add size of each backup (in MB) on Backup / Restore page
  - Add check to make sure there is enough free space before performing a backup/upgrade
+
+### Bugfixes
+
  - Fix deleting Inputs ([#250](https://github.com/kizniche/mycodo/issues/250))
+ - Fix 500 error if 1-wire isn't enabled
 
 ### Miscellaneous
 
  - Disable the use of the opencv camera library
+ - Update translations
 
 
 ## 5.4.19 (2017-12-15)

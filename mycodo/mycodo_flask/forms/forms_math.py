@@ -63,7 +63,9 @@ class MathModHumidity(FlaskForm):
     wet_bulb_temperature = StringField(
         lazy_gettext(u'Wet Bulb Temperature'),
         validators=[DataRequired()])
-    pressure = StringField(lazy_gettext(u'Pressure (optional)'))
+    pressure = StringField(
+        '{press} ({opt})'.format(press=lazy_gettext(u'Pressure'),
+                                 opt=lazy_gettext(u'optional')))
 
 
 class MathModVerification(FlaskForm):

@@ -283,6 +283,12 @@ def import_settings(form):
 
             if not error:
                 try:
+                    # Stop Mycodo daemon (backend)
+                    cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
+                          "daemon_stop".format(
+                        pth=INSTALL_DIRECTORY)
+                    out, _, _ = cmd_output(cmd)
+
                     # Backup current database and replace with extracted mycodo.db
                     imported_database = os.path.join(
                         tmp_folder, mycodo_database_name)
@@ -291,6 +297,12 @@ def import_settings(form):
                             datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
                     os.rename(SQL_DATABASE_MYCODO, backup_name)
                     os.rename(imported_database, SQL_DATABASE_MYCODO)
+
+                    # Start Mycodo daemon (backend)
+                    cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
+                          "daemon_stop".format(
+                        pth=INSTALL_DIRECTORY)
+                    out, _, _ = cmd_output(cmd)
 
                     # Delete tmp directory if it exists
                     if os.path.isdir(tmp_folder):
