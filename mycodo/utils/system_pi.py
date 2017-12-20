@@ -136,7 +136,7 @@ def can_perform_backup():
     Returns value sin bytes
     """
     free_before = get_directory_free_space('/var/Mycodo-backups')
-    backup_size = get_directory_size(INSTALL_DIRECTORY, exclude=['env', 'env_py3', 'cameras'])
+    backup_size = get_directory_size(INSTALL_DIRECTORY, exclude=['env', 'cameras'])
     free_after = free_before - backup_size
     return backup_size, free_before, free_after
 

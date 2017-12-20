@@ -51,13 +51,13 @@ ${INSTALL_CMD} update-packages
 
 ${INSTALL_CMD} setup-virtualenv-py3
 
-${INSTALL_CMD} update-pip-py3
+${INSTALL_CMD} update-pip3
 
 ${INSTALL_CMD} update-gpiod
 
 ${INSTALL_CMD} update-wiringpi
 
-${INSTALL_CMD} update-pip-packages-py3
+${INSTALL_CMD} update-pip3-packages
 
 ${INSTALL_CMD} update-influxdb
 
@@ -71,7 +71,7 @@ ${INSTALL_CMD} generate-ssl-certs
 
 ${INSTALL_CMD} update-mycodo-startup-script
 
-${INSTALL_CMD} compile-translations-py3
+${INSTALL_CMD} compile-translations
 
 ${INSTALL_CMD} update-cron
 
@@ -81,7 +81,7 @@ ${INSTALL_CMD} restart-web-ui
 
 ${INSTALL_CMD} update-permissions
 
-${INSTALL_CMD} restart-daemon-py3
+${INSTALL_CMD} restart-daemon
 
 trap : 0
 

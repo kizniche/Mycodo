@@ -1,8 +1,13 @@
+# Ensure python3 and dev is installed:
+# Command: sudo apt-get install python3 python3-dev
+
+# Testing
 testfixtures
 mock
-pytest == 3.2.3
+pytest == 3.3.1
 factory_boy == 2.8.1
-future
+webtest == 2.0.29
+
 alembic == 0.9.6
 argparse == 1.4.0
 bcrypt == 3.1.4
@@ -10,33 +15,38 @@ daemonize == 2.4.7
 fasteners == 0.14.1
 Flask == 0.12.2
 Flask_Babel == 0.11.2
+Flask_Compress == 1.4.0
+Flask_CSV == 1.0.1
 Flask_InfluxDB == 0.1
-Flask_Limiter == 1.0.0
-Flask_Login == 0.4.0
-Flask_SQLAlchemy == 2.2
+Flask_Limiter == 1.0.1
+Flask_Login == 0.4.1
+Flask_SQLAlchemy == 2.3.2
 Flask_SSLify
 Flask_WTF == 0.14.2
-geocoder == 1.32.1
-imutils == 0.4.3
-influxdb == 4.1.1
-pi_switch == 0.4.0
+geocoder == 1.33
+imutils == 0.4.4
+influxdb == 5.0.0
+# numpy  # necessary for imutils in camera.py
+# pi_switch == 0.4.0  # Python 2.7 - For 433 MHz communication
 pyserial == 3.4
 python-dateutil
-RPi.GPIO
+requests
 rpyc == 3.4.4
-statistics == 1.0.3.5
 SQLAlchemy == 1.2.0b3
 WTForms == 2.1
 
-# Devices/sensors
--e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591
--e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280
-picamera == 1.13
-sht_sensor == 17.5.5
-tentacle_pi == 0.6.2
-w1thermsensor == 1.0.4
+# Devices and Sensors
+aosong  # Replaces tentacle_pi
 Adafruit_ADS1x15
 Adafruit_BMP
 Adafruit_GPIO
 Adafruit_TMP
 MCP342x == 0.3.3
+picamera == 1.13
+quick2wire-api  # Replaces tentacle_pi
+RPi.GPIO
+rpi-rf  # Replaces pi_switch
+sht_sensor == 17.5.5
+# tentacle_pi == 0.6.2  # Python 2.7 - For AM2315 and TSL2561
+tsl2561  # Replaces tentacle_pi
+w1thermsensor == 1.0.5

@@ -17,6 +17,7 @@ from pkg_resources import parse_version
 
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
+from mycodo.config import FORCE_UPGRADE_MASTER
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import RESTORE_LOG_FILE
@@ -184,8 +185,8 @@ def admin_upgrade():
 
     if upgrade:
         if upgrade == 2:
-            flash(gettext(u"There was an error encountered during the upgrade "
-                          u"process. Check the upgrade log for details."),
+            flash(gettext(u"There was an error encountered during the upgrade"
+                          u" process. Check the upgrade log for details."),
                   "error")
         return render_template('admin/upgrade.html',
                                upgrade=upgrade)
@@ -201,9 +202,10 @@ def admin_upgrade():
     try:
         maj_version = int(MYCODO_VERSION.split('.')[0])
         releases = github_releases(maj_version)
-    except Exception:
+    except Exception as err:
         flash(gettext(u"Could not determine local mycodo version or "
-                      u"online release versions"), "error")
+                      u"online release versions: {err}".format(err=err)),
+              "error")
     if len(releases):
         latest_release = releases[0]
         current_releases = []
@@ -227,7 +229,8 @@ def admin_upgrade():
         db.session.commit()
 
     if request.method == 'POST':
-        if form_upgrade.upgrade.data and upgrade_available:
+        if (form_upgrade.upgrade.data and
+                (upgrade_available or FORCE_UPGRADE_MASTER)):
             backup_size, free_before, free_after = can_perform_backup()
             if free_after / 1000000 < 50:
                 flash(
@@ -242,6 +245,14 @@ def admin_upgrade():
                                       size_free=free_before / 1000000,
                                       size_after=free_after / 1000000),
                     'error')
+            elif FORCE_UPGRADE_MASTER:
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-master" \
+                      " | ts '[%Y-%m-%d %H:%M:%S]'" \
+                      " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
+                                              log=UPGRADE_LOG_FILE)
+                subprocess.Popen(cmd, shell=True)
+                upgrade = 1
+                flash(gettext(u"The upgrade (from master branch) has started"), "success")
             else:
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade" \
                       " | ts '[%Y-%m-%d %H:%M:%S]'" \
@@ -258,6 +269,7 @@ def admin_upgrade():
                   "error")
 
     return render_template('admin/upgrade.html',
+                           force_upgrade_master=FORCE_UPGRADE_MASTER,
                            form_backup=form_backup,
                            form_upgrade=form_upgrade,
                            current_release=MYCODO_VERSION,

@@ -33,17 +33,17 @@ ${INSTALL_CMD} update-apt
 
 ${INSTALL_CMD} update-packages
 
-${INSTALL_CMD} update-pip-py3
+${INSTALL_CMD} update-pip3
 
-${INSTALL_CMD} update-pip-packages-py3
+${INSTALL_CMD} update-pip3-packages
 
 ${INSTALL_CMD} update-influxdb
 
-${INSTALL_CMD} update-alembic-py3
+${INSTALL_CMD} update-alembic
 
 ${INSTALL_CMD} update-mycodo-startup-script
 
-${INSTALL_CMD} compile-translations-py3
+${INSTALL_CMD} compile-translations
 
 ${INSTALL_CMD} update-cron
 
@@ -51,4 +51,4 @@ ${INSTALL_CMD} initialize
 
 ${INSTALL_CMD} restart-web-ui
 
-${INSTALL_CMD} restart-daemon-py3
+${INSTALL_CMD} restart-daemon
