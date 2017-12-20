@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 import logging
-import subprocess
+import socket
 import time
 import zipfile
 
@@ -87,8 +87,11 @@ def export_settings(form):
                 data,
                 mimetype='application/zip',
                 as_attachment=True,
-                attachment_filename='Mycodo_{mver}_Settings_{aver}.zip'.format(
-                    mver=MYCODO_VERSION, aver=ALEMBIC_VERSION)
+                attachment_filename=
+                    'Mycodo_{mver}_Settings_{aver}_{host}_{dt}.zip'.format(
+                        mver=MYCODO_VERSION, aver=ALEMBIC_VERSION,
+                        host=socket.gethostname().replace(' ', ''),
+                        dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
             )
         except Exception as err:
             error.append("Error: {}".format(err))
@@ -151,8 +154,11 @@ def export_influxdb(form):
                     data,
                     mimetype='application/zip',
                     as_attachment=True,
-                    attachment_filename='Mycodo_{mv}_Influxdb_{iv}.zip'.format(
-                        mv=MYCODO_VERSION, iv=influxd_version)
+                    attachment_filename=
+                        'Mycodo_{mv}_Influxdb_{iv}_{host}_{dt}.zip'.format(
+                            mv=MYCODO_VERSION, iv=influxd_version,
+                            host=socket.gethostname().replace(' ', ''),
+                            dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
                 )
         except Exception as err:
             error.append("Error: {}".format(err))
@@ -181,7 +187,7 @@ def import_settings(form):
 
     if form.validate():
         try:
-            correct_format = 'Mycodo_MYCODOVERSION_Settings_DBVERSION.zip'
+            correct_format = 'Mycodo_MYCODOVERSION_Settings_DBVERSION_HOST_DATETIME.zip'
             upload_folder = os.path.join(INSTALL_DIRECTORY, 'upload')
             tmp_folder = os.path.join(upload_folder, 'mycodo_db_tmp')
             mycodo_database_name = 'mycodo.db'
@@ -317,7 +323,7 @@ def import_influxdb(form):
 
     if form.validate():
         try:
-            correct_format = 'Mycodo_MYCODOVERSION_Influxdb_INFLUXVERSION.zip'
+            correct_format = 'Mycodo_MYCODOVERSION_Influxdb_INFLUXVERSION_HOST_DATETIME.zip'
             upload_folder = os.path.join(INSTALL_DIRECTORY, 'upload')
             tmp_folder = os.path.join(upload_folder, 'mycodo_influx_tmp')
             full_path = None
