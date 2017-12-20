@@ -952,20 +952,24 @@ class DaemonController:
                 add_update_csv(STATS_CSV, 'next_send', self.timer_stats)
             else:
                 self.timer_stats = float(stat_dict['next_send'])
-        except Exception as msg:
-            self.logger.exception(
-                "Error: Could not read stats file. Regenerating. Message: "
-                "{msg}".format(msg=msg))
+        except KeyError:
+            self.logger.info(
+                "Regenerating stats file")
             try:
                 os.remove(STATS_CSV)
             except OSError:
                 pass
             recreate_stat_file()
+        except Exception as except_msg:
+            self.logger.exception(
+                "Error reading stats file: {err}".format(
+                    err=except_msg))
+
         try:
             send_anonymous_stats(self.start_time)
         except Exception as except_msg:
             self.logger.exception(
-                "Error: Could not send statistics: {err}".format(
+                "Could not send statistics: {err}".format(
                     err=except_msg))
 
 

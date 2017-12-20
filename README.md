@@ -81,15 +81,13 @@ All supported Inputs can be found under [Sensor Interfaces](https://github.com/k
 
 These install procedures have been tested to work with the Raspberry Pi (versions Zero, 1, 2, and 3) following a fresh install of [Raspbian](https://www.raspberrypi.org/downloads/raspbian/) (Full or Lite version), with an active internet connection.
 
-Latest version of Raspbian tested: Raspbian Stretch 2017-09-07
-
-***Important:*** Recently, Raspbian has SSH disabled by default. SSH can be enabled for the first bootup by creating a blank file named ```ssh``` and placing it in the boot partition of the SD card. This will enable SSH access until either A. the system is rebooted, or B. SSH is fully-enabled with raspi-config (instructions below).
+Latest version of Raspbian tested: Raspbian Stretch Nov/2017 version (2017-11-29)
 
 ### Configure raspi-config
 
 **It's very important that you don't skip the file system expansion and reboot steps! These need to be done before continuing or there won't be enough free disk space to install Mycodo.**
 
-After writing Raspbian to an SD card and enabling ssh by creating the ```ssh``` file on the boot partition, insert the SD card into the Pi and power the system. When you log in via SSH (I use PuTTy) to your Raspberry Pi's IP address for the first time (user: pi, password: raspberry), issue the following command to start raspi-config.
+After writing Raspbian to an SD card, booting Raspbian, and logging in, issue the following command to start raspi-config.
 
 ```sudo raspi-config```
 
@@ -106,7 +104,7 @@ Then change the following settings
 
 ### Install Mycodo
 
-Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web UI. If you require a custom setup, examine and modify this script and accompanying scripts accordingly. If you do not require a custom setup, just run the install script with the following commands.
+Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web user interface.
 
 ```
 sudo apt-get install -y jq
