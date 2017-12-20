@@ -122,7 +122,7 @@ case "${1:-''}" in
             printf "#### Trying again...\n"
         done
     ;;
-    'setup-virtualenv-py3')
+    'setup-virtualenv')
         if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env ]; then
             pip install virtualenv --upgrade
             virtualenv --system-site-packages -p python3 ${INSTALL_DIRECTORY}/Mycodo/env

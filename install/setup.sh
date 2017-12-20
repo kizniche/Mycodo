@@ -49,7 +49,7 @@ ${INSTALL_CMD} uninstall-apt-pip
 
 ${INSTALL_CMD} update-packages
 
-${INSTALL_CMD} setup-virtualenv-py3
+${INSTALL_CMD} setup-virtualenv
 
 ${INSTALL_CMD} update-pip3
 

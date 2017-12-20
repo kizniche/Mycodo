@@ -71,7 +71,7 @@ def upgrade():
 
     # Setup the python 3.4 virtualenv for Mycodo version >= 5.0.0
     full_cmd = "/bin/bash {pth}/mycodo/scripts/upgrade_commands.sh " \
-               "setup-virtualenv-py3".format(pth=INSTALL_DIRECTORY)
+               "setup-virtualenv".format(pth=INSTALL_DIRECTORY)
     cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
     cmd_out, cmd_err = cmd.communicate()
     cmd_status = cmd.wait()

@@ -1,16 +1,46 @@
 ## 5.5.0 (Unreleased)
 
-Mycodo 5.5.0 brings a migration from Python 2.7.9 to Python 3.4.2. Although most parts of the system have been tested to work, there are many potential configurations that are untested (for instance, I do not own every sensor that Mycodo supports). Additionally, there may be issues restoring a lesser version (< 5.5.0) after performing an upgrade to a Mycodo version => 5.5.0 (though this should work). Because of this, it is highly recommended, if you rely on your system to work, ***DO NOT UPGRADE***. Wait until your system is no longer performing critical tasks to upgrade, in order to allow yourself the ability to thoroughly test your particular configuration works as expected.
+With the release of 5.5.0, Mycodo becomes modern by migrating from Python 2.7.9 to Python 3.5.3 (for Raspbian Stretch, if on Raspbian Jessie it will be 3.4.2).
 
-A consequence of changing from Python 2 to 3 is current browser cookies will cause the web user interface to error. Because of this, all users will be logged out after upgrading to >= 5.5.0.
+If you rely on your system to work, it is highly recommended that you ***DO NOT UPGRADE***. Wait until your system is no longer performing critical tasks to upgrade, in order to allow yourself the ability to thoroughly test your particular configuration works as expected. Although most parts of the system have been tested to work, there is, as always, the potential for unforseen issues (for instance, not every sensor that Mycodo supports has physically been tested). Read the following notes carefully to determine if you want to upgrade to 5.5.0 and newer versions.
 
-With this release, there are the new features of exporting and importing both the Mycodo settings database and InfluxDB measurement database. These can also be imported back into Mycodo. Currently, while the InfluxDB database may be imported into any other version of Mycodo, importing the Mycodo settings database can only be performed on the same version of Mycodo. In the future there is expected to be the ability to upgrade or downgrade the Mycodo settings database to allow it to be used across different versions of Mycodo. 
+***It will no longer be possible to restore a pre-5.5.0 backup***
+***All users will be logged out of the web user interface***
+***OpenCV has been removed as a camera module***
 
-Also with this release, opencv has been disabled. A Python 3-compatible binary version of opencv, whoch doesn't require an extremely long (hours) compiling process is unavailable. Because of this setback, effort will be put into improving support for cameras. Therefore, if you know of a library or module that can successfully acquire an image from your webcam (you have tested to work), contact me and I'll look into integrating it into Mycodo.
+No restoring of pre-5.5.0 backups: The automatic method of restoring backups to pre-5.5.0 versions will not work properly. This is due to moving of pip virtual environments during the restore and the post-5.5.0 (python3) virtualenv not being compatible with the pre-5.5.0 virtualenv (python2). Restores can still be done manually from the command line, and will need the following command to be executed to rebuild the pre-5.5.0 virtualenv (python2):
+
+```bash
+# Stop daemon and web interace
+sudo service mycodo stop
+sudo service apache2 stop
+
+# Move current Mycodo install to backup location
+sudo mv ~/Mycodo /var/Mycodo-backups/Mycodo-backup-2017-12-25_11-59-59-5.5.0
+
+# Copy a backup to the install directory
+sudo cp -r /var/Mycodo-backups/Mycodo-backup-2017-12-08_21-32-30-5.4.14
+
+# Create the virtualenv
+sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh setup-virtualenv
+
+# Run upgrade_post.sh script to set everything up
+sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
+
+# Start daemon and web interace
+sudo service mycodo start
+sudo service apache2 start
+```
+
+All users will be logged out: Another consequence of changing from Python 2 to 3 is current browser cookies will cause the web user interface to error. Therefore, all users will be logged out after upgrading to >= 5.5.0.
+
+OpenCV has been disabled: A Python 3-compatible binary version of opencv, whoch doesn't require an extremely long (hours) compiling process, is unfortunately unavailable. Therefore, if you know of a library or module that can successfully acquire an image from your webcam (you have tested to work), create a [new issue](https://github.com/kizniche/Mycodo/issues/new) with the details of how you acquired the image and we can determine if the method can be integrated into Mycddo.
+
+With this release, there are the new features of exporting and importing both the Mycodo settings database and InfluxDB measurement database, which may be used as a backup and imported back into Mycodo at a later timer. Currently, the InfluxDB database may be imported into any other version of Mycodo, and the Mycodo settings database may only be imported to the same version of Mycodo. Automatic upgrading or downgrading of the database to allow cross-version compatibility of these backups will be included in a future release. For the meantime, if you need to restore Mycodo settings to a perticular Mycodo version, you can download the tar.gz of that particular [Release](https://github.com/kizniche/Mycodo/releases), extract, install normally, import the Mycodo settings database, then perform an upgrade to the latest release.
 
 ### Features
 
- - Migrate from Python 2.7.9 to Python 3.4.2 ([#253](https://github.com/kizniche/mycodo/issues/253))
+ - Migrate from Python 2 to Python 3 ([#253](https://github.com/kizniche/mycodo/issues/253))
  - Add ability to export and import Mycodo (settings) database ([#348](https://github.com/kizniche/mycodo/issues/348))
  - Add ability to export and import Influxdb (measurements) database and metastore ([#348](https://github.com/kizniche/mycodo/issues/348))
  - Add size of each backup (in MB) on Backup / Restore page

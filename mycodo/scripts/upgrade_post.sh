@@ -19,7 +19,7 @@ rm ${INSTALL_DIRECTORY}/databases/statistics.csv
 
 ${INSTALL_CMD} update-swap-size
 
-${INSTALL_CMD} setup-virtualenv-py3
+${INSTALL_CMD} setup-virtualenv
 
 ${INSTALL_CMD} update-gpiod
 
