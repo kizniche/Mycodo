@@ -97,7 +97,7 @@ def camera_record(record_type, settings, duration_sec=None):
             cmd += " --rotate {angle}".format(angle=settings.rotation)
 
         # logger.error(cmd)
-        out, err, status = cmd_output(cmd, stdout_pipe=False, su_mycodo=False)
+        out, err, status = cmd_output(cmd, stdout_pipe=False)
         # logger.error("TEST01: {}; {}; {}".format(out, err, status))
 
     try:

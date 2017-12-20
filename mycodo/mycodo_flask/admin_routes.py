@@ -32,6 +32,7 @@ from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.github_release_info import github_releases
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.system_pi import can_perform_backup
+from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import get_directory_size
 from mycodo.utils.system_pi import internet
 
@@ -83,7 +84,7 @@ def admin_backup():
                       " | ts '[%Y-%m-%d %H:%M:%S]'" \
                       " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                               log=BACKUP_LOG_FILE)
-                subprocess.Popen(cmd, shell=True)
+                out, _, _ = cmd_output(cmd)
                 flash(gettext(u"Backup in progress"), "success")
             else:
                 flash(
@@ -99,10 +100,10 @@ def admin_backup():
                     'error')
 
         elif form_backup.delete.data:
-            cmd = '{pth}/mycodo/scripts/mycodo_wrapper backup-delete {dir}' \
-                  ' 2>&1'.format(pth=INSTALL_DIRECTORY,
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper backup-delete {dir}" \
+                  " 2>&1".format(pth=INSTALL_DIRECTORY,
                                  dir=form_backup.selected_dir.data)
-            subprocess.Popen(cmd, shell=True)
+            out, _, _ = cmd_output(cmd)
             flash(gettext(u"Deletion of backup in progress"),
                   "success")
 
@@ -112,8 +113,7 @@ def admin_backup():
                   " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                           backup=form_backup.full_path.data,
                                           log=RESTORE_LOG_FILE)
-
-            subprocess.Popen(cmd, shell=True)
+            out, _, _ = cmd_output(cmd)
             flash(gettext(u"Restore in progress"),
                   "success")
 
@@ -250,7 +250,8 @@ def admin_upgrade():
                       " | ts '[%Y-%m-%d %H:%M:%S]'" \
                       " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                               log=UPGRADE_LOG_FILE)
-                subprocess.Popen(cmd, shell=True)
+                out, _, _ = cmd_output(cmd)
+
                 upgrade = 1
                 flash(gettext(u"The upgrade (from master branch) has started"), "success")
             else:
@@ -258,7 +259,8 @@ def admin_upgrade():
                       " | ts '[%Y-%m-%d %H:%M:%S]'" \
                       " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                               log=UPGRADE_LOG_FILE)
-                subprocess.Popen(cmd, shell=True)
+                out, _, _ = cmd_output(cmd)
+
                 upgrade = 1
                 mod_misc = Misc.query.first()
                 mod_misc.mycodo_upgrade_available = False

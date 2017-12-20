@@ -125,10 +125,10 @@ def export_influxdb(form):
 
             cmd = "/usr/bin/influxd backup -database mycodo_db {path}".format(
                 path=influx_backup_dir)
-            _, _, status = cmd_output(cmd, su_mycodo=False)
+            _, _, status = cmd_output(cmd)
 
             influxd_version_out, _, _ = cmd_output(
-                '/usr/bin/influxd version', su_mycodo=False)
+                '/usr/bin/influxd version')
             if influxd_version_out:
                 influxd_version = influxd_version_out.decode('utf-8').split(' ')[1]
             else:
@@ -412,26 +412,26 @@ def import_influxdb(form):
                     cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
                           "daemon_stop".format(
                         pth=INSTALL_DIRECTORY)
-                    out, _, _ = cmd_output(cmd, su_mycodo=False)
+                    out, _, _ = cmd_output(cmd)
 
                     cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
                           "influxdb_stop".format(
                         pth=INSTALL_DIRECTORY)
-                    out, _, _ = cmd_output(cmd, su_mycodo=False)
+                    out, _, _ = cmd_output(cmd)
 
                     # Import the mestastore and database
                     output_successes = []
                     cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
                           "influxdb_restore_metastore {dir}".format(
                         pth=INSTALL_DIRECTORY, dir=tmp_folder)
-                    out, _, _ = cmd_output(cmd, su_mycodo=False)
+                    out, _, _ = cmd_output(cmd)
                     if out:
                         output_successes.append(out.decode('utf-8'))
 
                     cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
                           "influxdb_restore_database {dir}".format(
                         pth=INSTALL_DIRECTORY, dir=tmp_folder)
-                    out, _, _ = cmd_output(cmd, su_mycodo=False)
+                    out, _, _ = cmd_output(cmd)
                     if out:
                         output_successes.append(out.decode('utf-8'))
 
@@ -439,14 +439,14 @@ def import_influxdb(form):
                     cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
                           "influxdb_start".format(
                         pth=INSTALL_DIRECTORY)
-                    out, _, _ = cmd_output(cmd, su_mycodo=False)
+                    out, _, _ = cmd_output(cmd)
 
                     time.sleep(2)
 
                     cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
                           "daemon_start".format(
                         pth=INSTALL_DIRECTORY)
-                    out, _, _ = cmd_output(cmd, su_mycodo=False)
+                    out, _, _ = cmd_output(cmd)
 
                     # Delete tmp directory if it exists
                     if os.path.isdir(tmp_folder):

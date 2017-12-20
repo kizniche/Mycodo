@@ -5,7 +5,10 @@ Revises: 41fbe7fcc8b0
 Create Date: 2017-12-18 18:45:33.229610
 
 """
+import subprocess
+
 import os
+import shutil
 from alembic import op
 
 # revision identifiers, used by Alembic.
@@ -62,7 +65,17 @@ def upgrade():
         '''
     )
 
+    # Delete Python 2.7 virtualenv
+    del_env_path = os.path.join(INSTALL_DIRECTORY, 'env')
+    shutil.rmtree(del_env_path)
 
+    # Build the python 3.4 virtualenv
+    full_cmd = "/bin/bash {pth}/mycodo/scripts/update_commands.sh " \
+               "setup-virtualenv-py3".format(pth=INSTALL_DIRECTORY,)
+    cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
+    cmd_out, cmd_err = cmd.communicate()
+    cmd_status = cmd.wait()
+    print(cmd_out)
 
 
 def downgrade():
