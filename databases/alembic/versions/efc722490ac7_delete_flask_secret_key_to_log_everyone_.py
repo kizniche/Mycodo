@@ -77,6 +77,14 @@ def upgrade():
     cmd_status = cmd.wait()
     print(cmd_out)
 
+    # Prevent a bug in apt-get from crashing when enabling wsgi by uninstalling
+    # apache2 and reinstalling it with libapache2-mod-wsgi-py3
+    full_cmd = "/usr/bin/apt-get remove -y apache2".format(pth=INSTALL_DIRECTORY)
+    cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
+    cmd_out, cmd_err = cmd.communicate()
+    cmd_status = cmd.wait()
+    print(cmd_out)
+
 
 def downgrade():
     pass

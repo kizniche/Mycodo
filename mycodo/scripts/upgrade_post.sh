@@ -25,13 +25,13 @@ ${INSTALL_CMD} update-gpiod
 
 ${INSTALL_CMD} update-wiringpi
 
-${INSTALL_CMD} update-apache2
-
-${INSTALL_CMD} update-logrotate
-
 ${INSTALL_CMD} update-apt
 
 ${INSTALL_CMD} update-packages
+
+${INSTALL_CMD} update-apache2
+
+${INSTALL_CMD} update-logrotate
 
 ${INSTALL_CMD} update-pip3
 
