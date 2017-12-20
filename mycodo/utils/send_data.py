@@ -1,16 +1,13 @@
 # coding=utf-8
+import email
 import logging
-import os
 import smtplib
 import socket
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email.mime.image import MIMEImage
-from email.mime.text import MIMEText
-from email import Encoders
 
-from system_pi import cmd_output
-from system_pi import set_user_grp
+import os
+
+from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.system_pi import set_user_grp
 
 logger = logging.getLogger("mycodo.notification")
 
@@ -58,17 +55,17 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
             server.ehlo()
             server.starttls()
         server.login(smtp_user, smtp_pass)
-        msg = MIMEMultipart()
+        msg = email.mime.multipart.MIMEMultipart()
         msg['Subject'] = "Mycodo Notification ({})".format(
             socket.gethostname())
         msg['From'] = smtp_email_from
         msg['To'] = email_to
-        msg_body = MIMEText(message.decode('utf-8'), 'plain', 'utf-8')
+        msg_body = email.mime.text.MIMEText(message.encode('utf-8'), 'plain', 'utf-8')
         msg.attach(msg_body)
 
         if attachment_file and attachment_type == 'still':
             img_data = open(attachment_file, 'rb').read()
-            image = MIMEImage(img_data,
+            image = email.mime.image.MIMEImage(img_data,
                               name=os.path.basename(attachment_file))
             msg.attach(image)
         elif attachment_file and attachment_type == 'video':
@@ -79,9 +76,9 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
                     attachment_file, out_filename))
             set_user_grp(out_filename, 'mycodo', 'mycodo')
             f = open(attachment_file, 'rb').read()
-            video = MIMEBase('application', 'octet-stream')
+            video = email.mime.base.MIMEBase('application', 'octet-stream')
             video.set_payload(f)
-            Encoders.encode_base64(video)
+            email.encoders.encode_base64(video)
             video.add_header('Content-Disposition',
                              'attachment; filename="{}"'.format(
                                  os.path.basename(attachment_file)))

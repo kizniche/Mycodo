@@ -8,7 +8,7 @@
 {% block settings %}
   <!-- Route: /admin/statistics -->
   <p><u>{{_('Collected Statistics')}}</u></p>
-  {% for key, value in statistics.iteritems() if key != 'stat' %}
+  {% for key, value in statistics.items() if key != 'stat' %}
     <div>{{ key }}: {{ value }}</div>
   {% endfor %}
 

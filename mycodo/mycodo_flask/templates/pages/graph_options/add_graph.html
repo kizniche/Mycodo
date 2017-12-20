@@ -54,7 +54,7 @@
       <div>
         <select class="form-control btn-default" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
         {% if choices_input %}
-          {% for each_choice, value in choices_input.iteritems() -%}
+          {% for each_choice, value in choices_input.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
           {% endfor -%}
         {% else %}
@@ -68,7 +68,7 @@
       <div>
         <select class="form-control btn-default" id="math_ids" name="math_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
         {% if choices_math %}
-          {% for each_choice, value in choices_math.iteritems() -%}
+          {% for each_choice, value in choices_math.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
           {% endfor -%}
         {% else %}
@@ -82,7 +82,7 @@
       <div>
         <select class="form-control btn-default" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
         {% if choices_output %}
-          {% for each_choice, value in choices_output.iteritems() -%}
+          {% for each_choice, value in choices_output.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
           {% endfor -%}
         {% else %}
@@ -96,7 +96,7 @@
       <div>
         <select class="form-control btn-default" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
         {% if choices_pid %}
-          {% for each_choice, value in choices_pid.iteritems() -%}
+          {% for each_choice, value in choices_pid.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
           {% endfor -%}
         {% else %}

@@ -1,7 +1,9 @@
 # coding=utf-8
 import logging
 import time
+
 from w1thermsensor import W1ThermSensor
+
 from .base_input import AbstractInput
 
 logger = logging.getLogger("mycodo.inputs.ds18b20")

@@ -1,9 +1,9 @@
 # coding=utf-8
 import argparse
 import logging
-import smbus
 import time
 
+import smbus
 
 logger = logging.getLogger('mycodo.devices.tca9548a')
 

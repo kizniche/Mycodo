@@ -28,7 +28,7 @@ An error occurred that prevented Mycodo from being installed!
 
 Please contact the developer by submitting a bug report at
 https://github.com/kizniche/Mycodo/issues with the pertinent
-excerpts from the setup log located at Mycodo/install/setup.log
+excerpts from the setup log located at ${INSTALL_DIRECTORY}/install/setup.log
 '
     echo "An error occurred. Exiting..." >&2
     exit 1
@@ -49,15 +49,15 @@ ${INSTALL_CMD} uninstall-apt-pip
 
 ${INSTALL_CMD} update-packages
 
-${INSTALL_CMD} update-pip
+${INSTALL_CMD} setup-virtualenv-py3
 
-${INSTALL_CMD} setup-virtualenv
+${INSTALL_CMD} update-pip-py3
 
 ${INSTALL_CMD} update-gpiod
 
 ${INSTALL_CMD} update-wiringpi
 
-${INSTALL_CMD} update-pip-packages
+${INSTALL_CMD} update-pip-packages-py3
 
 ${INSTALL_CMD} update-influxdb
 
@@ -71,7 +71,7 @@ ${INSTALL_CMD} generate-ssl-certs
 
 ${INSTALL_CMD} update-mycodo-startup-script
 
-${INSTALL_CMD} compile-translations
+${INSTALL_CMD} compile-translations-py3
 
 ${INSTALL_CMD} update-cron
 
@@ -81,14 +81,14 @@ ${INSTALL_CMD} restart-web-ui
 
 ${INSTALL_CMD} update-permissions
 
-${INSTALL_CMD} restart-daemon
+${INSTALL_CMD} restart-daemon-py3
 
 trap : 0
 
 IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
 
 if [[ -z ${IP} ]]; then
-  IP="your.IP.here"
+  IP="your.IP.address.here"
 fi
 
 date
@@ -97,6 +97,6 @@ echo >&2 "
 ** Mycodo successfully installed without errors! **
 ***************************************************
 
-Go to https://${IP}/, or whatever your Pi's
+Go to https://${IP}/, or whatever your Raspberry Pi's
 IP address is, to create an admin user and log in.
 "

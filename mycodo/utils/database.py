@@ -3,8 +3,8 @@ import logging
 import time
 from sqlite3 import OperationalError
 
-from mycodo.databases.utils import session_scope
 from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.databases.utils import session_scope
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 

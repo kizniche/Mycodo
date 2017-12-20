@@ -1,7 +1,8 @@
 # coding=utf-8
 import logging
-import smbus
 import time
+
+import smbus
 from MCP342x import MCP342x
 
 

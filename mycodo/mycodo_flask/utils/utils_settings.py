@@ -1,34 +1,30 @@
 # -*- coding: utf-8 -*-
 import logging
+
 import bcrypt
+import flask_login
 import os
 import sqlalchemy
-import flask_login
-
 from flask import flash
 from flask import redirect
 from flask import url_for
-
-from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 
-from mycodo.mycodo_client import DaemonControl
-
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import User
-from mycodo.utils.database import db_retrieve_table
-from mycodo.utils.utils import test_username
-from mycodo.utils.utils import test_password
-from mycodo.utils.send_data import send_email
-
+from mycodo.mycodo_client import DaemonControl
+from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-
-from mycodo.config import INSTALL_DIRECTORY
+from mycodo.utils.database import db_retrieve_table
+from mycodo.utils.send_data import send_email
+from mycodo.utils.utils import test_password
+from mycodo.utils.utils import test_username
 
 logger = logging.getLogger(__name__)
 
@@ -318,15 +314,7 @@ def camera_add(form_camera):
             return redirect(url_for('settings_routes.settings_camera'))
         new_camera.name = form_camera.name.data
         new_camera.library = form_camera.library.data
-        if form_camera.library.data == 'opencv':
-            new_camera.brightness = 0.75
-            new_camera.contrast = 0.2
-            new_camera.exposure = 0.0
-            new_camera.gain = 0.0
-            new_camera.hue = 0.0
-            new_camera.saturation = 0.0
-            new_camera.white_balance = 0.0
-        elif form_camera.library.data == 'fswebcam':
+        if form_camera.library.data == 'fswebcam':
             new_camera.device = '/dev/video0'
             new_camera.brightness = 50
         elif form_camera.library.data == 'picamera':
@@ -374,20 +362,6 @@ def camera_mod(form_camera):
             mod_camera.height = form_camera.height.data
             mod_camera.width = form_camera.width.data
             mod_camera.brightness = form_camera.brightness.data
-        elif mod_camera.library == 'opencv':
-            mod_camera.opencv_device = form_camera.opencv_device.data
-            mod_camera.hflip = form_camera.hflip.data
-            mod_camera.vflip = form_camera.vflip.data
-            mod_camera.rotation = form_camera.rotation.data
-            mod_camera.height = form_camera.height.data
-            mod_camera.width = form_camera.width.data
-            mod_camera.brightness = form_camera.brightness.data
-            mod_camera.contrast = form_camera.contrast.data
-            mod_camera.exposure = form_camera.exposure.data
-            mod_camera.gain = form_camera.gain.data
-            mod_camera.hue = form_camera.hue.data
-            mod_camera.saturation = form_camera.saturation.data
-            mod_camera.white_balance = form_camera.white_balance.data
         elif mod_camera.library == 'picamera':
             mod_camera.hflip = form_camera.hflip.data
             mod_camera.vflip = form_camera.vflip.data

@@ -23,13 +23,14 @@
 #
 #  Contact at kylegabriel.com
 
-import logging
 import argparse
 import datetime
-import rpyc
+import logging
 import signal
 import socket
 import sys
+
+import rpyc
 
 logging.basicConfig(
     stream=sys.stdout,

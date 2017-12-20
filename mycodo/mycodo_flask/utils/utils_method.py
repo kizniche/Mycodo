@@ -4,19 +4,17 @@ from datetime import datetime
 
 from flask import flash
 from flask import url_for
-
-from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
-from mycodo.utils.system_pi import csv_to_list_of_int
-from mycodo.utils.system_pi import list_to_csv
-
+from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
+from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
 

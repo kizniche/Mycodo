@@ -1,9 +1,10 @@
 # coding=utf-8
 """ collection of Admin endpoints """
 import logging
-import os
 import subprocess
+
 import flask_login
+import os
 from flask import Blueprint
 from flask import flash
 from flask import make_response
@@ -14,17 +15,6 @@ from flask import url_for
 from flask_babel import gettext
 from pkg_resources import parse_version
 
-from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.forms import forms_misc
-from mycodo.mycodo_flask.utils import utils_general
-
-from mycodo.mycodo_flask.static_routes import inject_variables
-from mycodo.utils.statistics import return_stat_file_dict
-from mycodo.utils.system_pi import internet
-from mycodo.utils.github_release_info import github_releases
-
-from mycodo.databases.models import Misc
-
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
 from mycodo.config import INSTALL_DIRECTORY
@@ -33,6 +23,16 @@ from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import STATS_CSV
 from mycodo.config import UPGRADE_INIT_FILE
 from mycodo.config import UPGRADE_LOG_FILE
+from mycodo.databases.models import Misc
+from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.forms import forms_misc
+from mycodo.mycodo_flask.static_routes import inject_variables
+from mycodo.mycodo_flask.utils import utils_general
+from mycodo.utils.github_release_info import github_releases
+from mycodo.utils.statistics import return_stat_file_dict
+from mycodo.utils.system_pi import can_perform_backup
+from mycodo.utils.system_pi import get_directory_size
+from mycodo.utils.system_pi import internet
 
 logger = logging.getLogger('mycodo.mycodo_flask.admin')
 
@@ -70,18 +70,33 @@ def admin_backup():
     full_paths = []
     for each_dir in backup_dirs_tmp:
         if each_dir.startswith("Mycodo-backup-"):
-            backup_dirs.append(each_dir)
-            full_paths.append(os.path.join(BACKUP_PATH, each_dir))
+            full_path = os.path.join(BACKUP_PATH, each_dir)
+            backup_dirs.append((each_dir, get_directory_size(full_path) / 1000000.0))
+            full_paths.append(full_path)
 
     if request.method == 'POST':
         if form_backup.backup.data:
-            cmd = "{pth}/mycodo/scripts/mycodo_wrapper backup-create" \
-                  " | ts '[%Y-%m-%d %H:%M:%S]'" \
-                  " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
-                                          log=BACKUP_LOG_FILE)
-            subprocess.Popen(cmd, shell=True)
-            flash(gettext(u"Backup in progress"),
-                  "success")
+            backup_size, free_before, free_after = can_perform_backup()
+            if free_after / 1000000 > 50:
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper backup-create" \
+                      " | ts '[%Y-%m-%d %H:%M:%S]'" \
+                      " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
+                                              log=BACKUP_LOG_FILE)
+                subprocess.Popen(cmd, shell=True)
+                flash(gettext(u"Backup in progress"), "success")
+            else:
+                flash(
+                    "Not enough free space to perform a backup. A backup "
+                    "requires {size_bu:.1f} MB but there is only "
+                    "{size_free:.1f} MB available, which would leave "
+                    "{size_after:.1f} MB after the backup. If the free space "
+                    "after a backup is less than 50 MB, the backup cannot "
+                    "proceed. Free up space by deleting current "
+                    "backups.".format(size_bu=backup_size / 1000000,
+                                      size_free=free_before / 1000000,
+                                      size_after=free_after / 1000000),
+                    'error')
+
         elif form_backup.delete.data:
             cmd = '{pth}/mycodo/scripts/mycodo_wrapper backup-delete {dir}' \
                   ' 2>&1'.format(pth=INSTALL_DIRECTORY,
@@ -89,6 +104,7 @@ def admin_backup():
             subprocess.Popen(cmd, shell=True)
             flash(gettext(u"Deletion of backup in progress"),
                   "success")
+
         elif form_backup.restore.data:
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper backup-restore {backup}" \
                   " | ts '[%Y-%m-%d %H:%M:%S]'" \
@@ -131,10 +147,10 @@ def admin_upgrade_status():
             command, stdout=subprocess.PIPE, shell=True)
         (log_output, _) = log.communicate()
         log.wait()
-        log_output = unicode(log_output, 'utf-8')
+        log_output = log_output.decode("utf-8")
     else:
-        log_output = unicode('Upgrade log not found. If an upgrade was just '
-                             'initialized, please wait...', 'utf-8')
+        log_output = 'Upgrade log not found. If an upgrade was just ' \
+                     'initialized, please wait...'
     response = make_response(log_output)
     response.headers["content-type"] = "text/plain"
     return response
@@ -212,16 +228,31 @@ def admin_upgrade():
 
     if request.method == 'POST':
         if form_upgrade.upgrade.data and upgrade_available:
-            cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade" \
-                  " | ts '[%Y-%m-%d %H:%M:%S]'" \
-                  " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
-                                          log=UPGRADE_LOG_FILE)
-            subprocess.Popen(cmd, shell=True)
-            upgrade = 1
-            mod_misc = Misc.query.first()
-            mod_misc.mycodo_upgrade_available = False
-            db.session.commit()
-            flash(gettext(u"The upgrade has started"), "success")
+            backup_size, free_before, free_after = can_perform_backup()
+            if free_after / 1000000 < 50:
+                flash(
+                    "A backup must be performed during an upgrade and there "
+                    "is not enough free space to perform a backup. A backup "
+                    "requires {size_bu:.1f} MB but there is only "
+                    "{size_free:.1f} MB available, which would leave "
+                    "{size_after:.1f} MB after the backup. If the free space "
+                    "after a backup is less than 50 MB, the backup cannot "
+                    "proceed. Free up space by deleting current "
+                    "backups.".format(size_bu=backup_size / 1000000,
+                                      size_free=free_before / 1000000,
+                                      size_after=free_after / 1000000),
+                    'error')
+            else:
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade" \
+                      " | ts '[%Y-%m-%d %H:%M:%S]'" \
+                      " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
+                                              log=UPGRADE_LOG_FILE)
+                subprocess.Popen(cmd, shell=True)
+                upgrade = 1
+                mod_misc = Misc.query.first()
+                mod_misc.mycodo_upgrade_available = False
+                db.session.commit()
+                flash(gettext(u"The upgrade has started"), "success")
         else:
             flash(gettext(u"You cannot upgrade if an upgrade is not available"),
                   "error")

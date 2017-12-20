@@ -1,9 +1,9 @@
 # coding=utf-8
 import logging
 import resource
-from .base_input import AbstractInput
 
 from mycodo.mycodo_client import DaemonControl
+from .base_input import AbstractInput
 
 logger = logging.getLogger("mycodo.inputs.mycodo_ram")
 

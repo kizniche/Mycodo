@@ -9,7 +9,7 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <h4>{{_('Output Usage')}} <a href="/help#output-usage" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <h4>{{_('Output Usage')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
@@ -32,7 +32,7 @@
         {% if display_order -%}
           {%- for order in display_order -%}
             {%- for each_relay in relay if each_relay.id == order and each_relay.relay_type != 'pwm' -%}
-              {% for key, value in relay_stats.iteritems() if key == each_relay.id -%}
+              {% for key, value in relay_stats.items() if key == each_relay.id -%}
                 <tr>
                   <td>{{each_relay.id}}</td>
                   <td>{{each_relay.name}}</td>

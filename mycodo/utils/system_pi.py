@@ -1,11 +1,14 @@
 # coding=utf-8
-import logging
 import datetime
 import grp
-import os
+import logging
 import pwd
 import socket
 import subprocess
+
+import os
+
+from mycodo.config import INSTALL_DIRECTORY
 
 logger = logging.getLogger("mycodo.system_pi")
 
@@ -114,7 +117,7 @@ def is_int(test_var, check_range=None):
 
 
 #
-# File toold
+# File tools
 #
 
 
@@ -122,14 +125,49 @@ def assure_path_exists(path):
     """ Create path if it doesn't exist """
     if not os.path.exists(path):
         os.makedirs(path)
-        os.chmod(path, 0774)
+        os.chmod(path, 0o774)
         set_user_grp(path, 'mycodo', 'mycodo')
     return path
+
+
+def can_perform_backup():
+    """
+    Ensure there is enough space to perform a backup
+    Returns value sin bytes
+    """
+    free_before = get_directory_free_space('/var/Mycodo-backups')
+    backup_size = get_directory_size(INSTALL_DIRECTORY, exclude=['env', 'env_py3', 'cameras'])
+    free_after = free_before - backup_size
+    return backup_size, free_before, free_after
 
 
 def find_owner(filename):
     """ Return the owner of a file """
     return pwd.getpwuid(os.stat(filename).st_uid).pw_name
+
+
+def get_directory_free_space(path):
+    statvfs = os.statvfs(path)
+    return statvfs.f_frsize * statvfs.f_bavail
+
+
+def get_directory_size(start_path='.', exclude=[]):
+    """
+    Returns the size of a directory
+    A list of directories may be excluded
+    """
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(start_path):
+        skip_dir = False
+        for each_exclusion in exclude:
+            test_exclude = os.path.join(start_path, each_exclusion)
+            if dirpath.startswith(test_exclude + '/'):
+                skip_dir = True
+        if not skip_dir:
+            for f in filenames:
+                fp = os.path.join(dirpath, f)
+                total_size += os.path.getsize(fp)
+    return total_size
 
 
 def set_user_grp(filepath, user, group):

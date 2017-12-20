@@ -1,6 +1,7 @@
 # coding=utf-8
 import logging
 import time
+
 from .base_input import AbstractInput
 
 logger = logging.getLogger("mycodo.inputs.signal_rpm")

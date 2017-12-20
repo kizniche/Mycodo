@@ -4,9 +4,10 @@
 # Based on the BMP280 driver with BME280 changes provided by
 # David J Taylor, Edinburgh (www.satsignal.eu)
 import logging
-from sensorutils import dewpoint
-from sensorutils import altitude
+
 from .base_input import AbstractInput
+from .sensorutils import altitude
+from .sensorutils import dewpoint
 
 
 class BME280Sensor(AbstractInput):

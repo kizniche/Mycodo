@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 #
-#  config.py - Global Mycodo configuration settings
+#  config.py - Global Mycodo settings
 #
-import os
+import binascii
 import collections
 from datetime import timedelta
+
+import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '5.4.19'
-ALEMBIC_VERSION = '41fbe7fcc8b0'
+MYCODO_VERSION = '5.5.0'
+ALEMBIC_VERSION = 'efc722490ac7'
 
 LANGUAGES = {
     'en': 'English',
@@ -313,8 +315,7 @@ STORED_SSL_CERTIFICATE_PATH = os.path.join(
 # Camera
 CAMERA_LIBRARIES = [
     'picamera',
-    'fswebcam',
-    'opencv'
+    'fswebcam'
 ]
 PATH_CAMERAS = os.path.join(INSTALL_DIRECTORY, 'cameras')
 
@@ -355,8 +356,9 @@ class ProdConfig(object):
     # Ensure file containing the Flask secret_key exists
     FLASK_SECRET_KEY_PATH = os.path.join(DATABASE_PATH, 'flask_secret_key')
     if not os.path.isfile(FLASK_SECRET_KEY_PATH):
+        secret_key = binascii.hexlify(os.urandom(32)).decode()
         with open(FLASK_SECRET_KEY_PATH, 'w') as file:
-            file.write(os.urandom(24))
+            file.write(secret_key)
     SECRET_KEY = open(FLASK_SECRET_KEY_PATH, 'rb').read()
 
 

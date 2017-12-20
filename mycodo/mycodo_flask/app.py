@@ -5,35 +5,30 @@
 #
 
 import datetime
-import os
 import sys
 
 import flask_login
-
-from flask import flash
+import os
 from flask import Flask
+from flask import flash
 from flask import redirect
 from flask import request
 from flask import url_for
-
 from flask_babel import Babel
 from flask_babel import gettext
+from flask_compress import Compress
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_sslify import SSLify
-
-from werkzeug.contrib.profiler import ProfilerMiddleware
 from werkzeug.contrib.profiler import MergeStream
+from werkzeug.contrib.profiler import ProfilerMiddleware
 
-from mycodo.databases.models import alembic_upgrade_db
-from mycodo.databases.models import populate_db
+from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import LANGUAGES
+from mycodo.config import ProdConfig
 from mycodo.databases.models import Misc
 from mycodo.databases.models import User
-
-from mycodo.config import ProdConfig
-from mycodo.config import LANGUAGES
-from mycodo.config import INSTALL_DIRECTORY
-
+from mycodo.databases.models import populate_db
 from mycodo.mycodo_flask import admin_routes
 from mycodo.mycodo_flask import authentication_routes
 from mycodo.mycodo_flask import calibration_routes
@@ -43,10 +38,9 @@ from mycodo.mycodo_flask import page_routes
 from mycodo.mycodo_flask import remote_admin_routes
 from mycodo.mycodo_flask import settings_routes
 from mycodo.mycodo_flask import static_routes
-
+from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.general_routes import influx_db
 from mycodo.utils.system_pi import assure_path_exists
-from mycodo.mycodo_flask.extensions import db
 
 
 def create_app(config=ProdConfig):
@@ -105,6 +99,9 @@ def create_app(config=ProdConfig):
 def register_extensions(app):
     """ register extensions to the app """
     app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
+
+    compress = Compress()
+    compress.init_app(app)
 
     db.init_app(app)
     influx_db.init_app(app)  # attach influx db

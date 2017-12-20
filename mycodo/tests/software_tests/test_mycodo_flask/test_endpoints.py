@@ -215,7 +215,7 @@ def sees_navbar(testapp):
         'Cameras',
         'Configure',
         'Data',
-        'Export Measurements',
+        'Export',
         'Func',
         'Inputs',
         'Live Graphs',

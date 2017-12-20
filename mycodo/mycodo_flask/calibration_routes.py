@@ -1,27 +1,25 @@
 # coding=utf-8
 """ collection of Page endpoints """
-import flask_login
 import logging
-from sqlalchemy import or_
-from flask_babel import gettext
+
+import flask_login
 from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import url_for
 from flask.blueprints import Blueprint
+from flask_babel import gettext
+from sqlalchemy import or_
 
-from mycodo.mycodo_flask.static_routes import inject_variables
-from mycodo.mycodo_flask.forms import forms_calibration
-
-from mycodo.mycodo_flask.utils import utils_general
-
+from mycodo.config import INPUTS
 from mycodo.databases.models import Input
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
+from mycodo.mycodo_flask.forms import forms_calibration
+from mycodo.mycodo_flask.static_routes import inject_variables
+from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.calibration import AtlasScientificCommand
 from mycodo.utils.system_pi import str_is_float
-
-from config import INPUTS
 
 logger = logging.getLogger('mycodo.mycodo_flask.calibration')
 

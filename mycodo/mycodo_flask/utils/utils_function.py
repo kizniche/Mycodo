@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 import logging
+
 import sqlalchemy
-
 from flask import url_for
-
-from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import PID
-from mycodo.utils.system_pi import csv_to_list_of_int
-
+from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
+from mycodo.utils.system_pi import csv_to_list_of_int
 
 logger = logging.getLogger(__name__)
 

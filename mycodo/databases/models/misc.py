@@ -5,6 +5,7 @@ from mycodo.mycodo_flask.extensions import db
 
 class Misc(CRUDMixin, db.Model):
     __tablename__ = "misc"
+    __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     dismiss_notification = db.Column(db.Boolean, default=False)  # Dismiss login page license notice

@@ -3,9 +3,11 @@
 # Author: Vitally Tezhe
 import logging
 import time
+
 import Adafruit_GPIO.I2C as I2C
-from sensorutils import altitude
+
 from .base_input import AbstractInput
+from .sensorutils import altitude
 
 # Operating Modes
 BMP280_ULTRALOWPOWER = 0

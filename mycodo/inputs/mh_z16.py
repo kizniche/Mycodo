@@ -1,5 +1,5 @@
 # coding=utf-8
-
+#
 # I2C code created in part by:
 # Author: Tiequan Shao (info@sandboxelectronics.com)
 # License: CC BY-NC-SA 3.0
@@ -19,13 +19,14 @@
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
 
-import fasteners
 import logging
-import struct
 import time
-from .base_input import AbstractInput
 
-from sensorutils import is_device
+import fasteners
+import struct
+
+from .base_input import AbstractInput
+from .sensorutils import is_device
 
 
 class MHZ16Sensor(AbstractInput):

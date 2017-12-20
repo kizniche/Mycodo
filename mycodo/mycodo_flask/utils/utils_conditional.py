@@ -1,24 +1,20 @@
 # -*- coding: utf-8 -*-
 import logging
+
 import sqlalchemy
-
-from flask import url_for
-
-from sqlalchemy import and_
-from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
-
-from mycodo.mycodo_client import DaemonControl
+from sqlalchemy import and_
 
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
-from mycodo.utils.system_pi import is_int
-
+from mycodo.mycodo_client import DaemonControl
+from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
+from mycodo.utils.system_pi import is_int
 
 logger = logging.getLogger(__name__)
 
@@ -221,7 +217,7 @@ def conditional_action_mod(form, mod_type, page_url):
                 if (form.do_action.data == 'video_email' and
                         Camera.query.filter(
                             and_(Camera.id == form.do_camera_id.data,
-                                 Camera.library == 'opencv')).count()):
+                                 Camera.library != 'picamera')).count()):
                     error.append('Only Pi Cameras can record video')
             elif form.do_action.data == 'flash_lcd':
                 if form.do_lcd_id.data:
@@ -237,7 +233,7 @@ def conditional_action_mod(form, mod_type, page_url):
                 if form.do_camera_id.data:
                     if (Camera.query.filter(
                             and_(Camera.id == form.do_camera_id.data,
-                                 Camera.library == 'opencv')).count()):
+                                 Camera.library != 'picamera')).count()):
                         error.append('Only Pi Cameras can record video')
                     mod_action.do_camera_id = form.do_camera_id.data
                 else:

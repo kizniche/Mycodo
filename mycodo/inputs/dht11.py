@@ -2,10 +2,10 @@
 import logging
 import time
 
-from .base_input import AbstractInput
-from sensorutils import dewpoint
 from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
+from .base_input import AbstractInput
+from .sensorutils import dewpoint
 
 
 class DHT11Sensor(AbstractInput):

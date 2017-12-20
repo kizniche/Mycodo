@@ -1,7 +1,9 @@
 # coding=utf-8
 import logging
-import smbus
 import time
+
+import smbus
+
 from .base_input import AbstractInput
 
 logger = logging.getLogger("mycodo.inputs.bh1750")

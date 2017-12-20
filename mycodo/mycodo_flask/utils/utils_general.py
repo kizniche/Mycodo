@@ -1,33 +1,26 @@
 # -*- coding: utf-8 -*-
 import logging
-import functools
-import gzip
-import sqlalchemy
-import flask_login
 from collections import OrderedDict
 from datetime import datetime
-from cStringIO import StringIO as IO
 
-from flask import after_this_request
+import flask_login
+import sqlalchemy
 from flask import flash
 from flask import redirect
-from flask import request
 from flask import url_for
-
-from mycodo.mycodo_flask.extensions import db
 from flask_babel import gettext
 
-from mycodo.mycodo_client import DaemonControl
-
+from mycodo.config import MEASUREMENTS
+from mycodo.config import MEASUREMENT_UNITS
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
 from mycodo.databases.models import PID
+from mycodo.databases.models import Role
 from mycodo.databases.models import Timer
 from mycodo.databases.models import User
-
-from mycodo.config import MEASUREMENT_UNITS
-from mycodo.config import MEASUREMENTS
+from mycodo.mycodo_client import DaemonControl
+from mycodo.mycodo_flask.extensions import db
 
 logger = logging.getLogger(__name__)
 
@@ -229,13 +222,14 @@ def choices_id_name(table):
 
 def user_has_permission(permission):
     user = User.query.filter(User.name == flask_login.current_user.name).first()
-    if ((permission == 'edit_settings' and user.roles.edit_settings) or
-        (permission == 'edit_controllers' and user.roles.edit_controllers) or
-        (permission == 'edit_users' and user.roles.edit_users) or
-        (permission == 'view_settings' and user.roles.view_settings) or
-        (permission == 'view_camera' and user.roles.view_camera) or
-        (permission == 'view_stats' and user.roles.view_stats) or
-        (permission == 'view_logs' and user.roles.view_logs)):
+    role = Role.query.filter(Role.id == user.role).first()
+    if ((permission == 'edit_settings' and role.edit_settings) or
+        (permission == 'edit_controllers' and role.edit_controllers) or
+        (permission == 'edit_users' and role.edit_users) or
+        (permission == 'view_settings' and role.view_settings) or
+        (permission == 'view_camera' and role.view_camera) or
+        (permission == 'view_stats' and role.view_stats) or
+        (permission == 'view_logs' and role.view_logs)):
         return True
     flash("You don't have permission to do that", "error")
     return False
@@ -293,46 +287,6 @@ def flash_success_errors(error, action, redirect_url):
         flash(gettext(u"%(msg)s",
                       msg=action),
               "success")
-
-
-def gzipped(f):
-    """
-    Allows gzipping the response of any view.
-    Just add '@gzipped' after the '@app'.
-    Used mainly for sending large amounts of data for graphs.
-    """
-    @functools.wraps(f)
-    def view_func(*args, **kwargs):
-        @after_this_request
-        def zipper(response):
-            accept_encoding = request.headers.get('Accept-Encoding', '')
-
-            if 'gzip' not in accept_encoding.lower():
-                return response
-
-            response.direct_passthrough = False
-
-            if (response.status_code < 200 or
-                    response.status_code >= 300 or
-                    'Content-Encoding' in response.headers):
-                return response
-            gzip_buffer = IO()
-            gzip_file = gzip.GzipFile(mode='wb',
-                                      fileobj=gzip_buffer)
-
-            gzip_file.write(response.data)
-            gzip_file.close()
-
-            response.data = gzip_buffer.getvalue()
-            response.headers['Content-Encoding'] = 'gzip'
-            response.headers['Vary'] = 'Accept-Encoding'
-            response.headers['Content-Length'] = len(response.data)
-
-            return response
-
-        return f(*args, **kwargs)
-
-    return view_func
 
 
 def add_display_order(display_order, device_id):

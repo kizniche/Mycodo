@@ -3,23 +3,21 @@
 import json
 import logging
 import socket
+
 import flask_login
-
 from flask import redirect
-from flask import request
 from flask import render_template
+from flask import request
 from flask import url_for
-
 from flask.blueprints import Blueprint
 
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Remote
-
 from mycodo.mycodo_flask.forms import forms_authentication
-from mycodo.mycodo_flask.utils import utils_remote_host
 from mycodo.mycodo_flask.utils import utils_general
-from mycodo.mycodo_flask.utils.utils_remote_host import remote_log_in
+from mycodo.mycodo_flask.utils import utils_remote_host
 from mycodo.mycodo_flask.utils.utils_remote_host import remote_host_page
+from mycodo.mycodo_flask.utils.utils_remote_host import remote_log_in
 
 blueprint = Blueprint(
     'remote_admin_routes',

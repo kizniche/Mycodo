@@ -4,8 +4,8 @@
 
 import logging
 import math
+
 import os
-import stat
 
 logger = logging.getLogger("mycodo.sensor_utils")
 

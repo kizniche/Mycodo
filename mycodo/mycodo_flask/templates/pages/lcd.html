@@ -9,7 +9,7 @@
 <div class="container">
   {% include 'flash_messages.html' %}
 
-  <h4>{{_('LCDs')}} <a href="/help#lcd" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+  <h4>{{_('LCDs')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
   <p>{{_('LCDs allow the display of data for easy viewing and for displaying alerts to conditional events you configure (flash the LCD).')}}</p>
 
@@ -193,7 +193,7 @@
               <option value=""{% if each_lcd_display.line_1_id == '' or each_lcd_display.line_1_measurement == '' %} selected{% endif %}></option>
               {%- for each_sensor in sensor -%}
                 <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_1_id == each_sensor.unique_id and each_lcd_display.line_1_measurement == 'sensor_time' %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
-                {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
+                {% for each_device, measure in measurements.items() if each_sensor.device == each_device %}
                   {% if each_sensor.cmd_measurement == measure %}
                     <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_1_id == each_sensor.unique_id and each_lcd_display.line_1_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
                   {% else %}
@@ -244,7 +244,7 @@
               <option value=""{% if each_lcd_display.line_2_id == '' or each_lcd_display.line_2_measurement == '' %} selected{% endif %}></option>
               {%- for each_sensor in sensor -%}
                 <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_2_id == each_sensor.unique_id and each_lcd_display.line_2_measurement == 'sensor_time' %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
-                {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
+                {% for each_device, measure in measurements.items() if each_sensor.device == each_device %}
                   {% if each_sensor.cmd_measurement in measure['name'] %}
                     <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_2_id == each_sensor.unique_id and each_lcd_display.line_2_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
                   {% else %}
@@ -297,7 +297,7 @@
               <option value=""{% if each_lcd_display.line_3_id == '' or each_lcd_display.line_3_measurement == '' %} selected{% endif %}></option>
               {%- for each_sensor in sensor -%}
                 <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_3_id == each_sensor.unique_id and each_lcd_display.line_3_measurement == 'sensor_time' %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
-                {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
+                {% for each_device, measure in measurements.items() if each_sensor.device == each_device %}
                   {% if each_sensor.cmd_measurement in measure['name'] %}
                     <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_3_id == each_sensor.unique_id and each_lcd_display.line_3_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
                   {% else %}
@@ -348,7 +348,7 @@
               <option value=""{% if each_lcd_display.line_4_id == '' or each_lcd_display.line_4_measurement == '' %} selected{% endif %}></option>
               {%- for each_sensor in sensor -%}
                 <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_4_id == each_sensor.unique_id and each_lcd_display.line_4_measurement == 'sensor_time' %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): timestamp</option>
-                {% for each_device, measure in measurements.iteritems() if each_sensor.device == each_device %}
+                {% for each_device, measure in measurements.items() if each_sensor.device == each_device %}
                   {% if each_sensor.cmd_measurement in measure['name'] %}
                     <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_4_id == each_sensor.unique_id and each_lcd_display.line_4_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
                   {% else %}

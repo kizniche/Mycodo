@@ -1,11 +1,11 @@
 # coding=utf-8
-
-import fasteners
 import logging
 import time
-from .base_input import AbstractInput
 
-from sensorutils import is_device
+import fasteners
+
+from .base_input import AbstractInput
+from .sensorutils import is_device
 
 
 class K30Sensor(AbstractInput):

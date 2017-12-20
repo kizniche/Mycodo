@@ -1,51 +1,45 @@
 # coding=utf-8
 from __future__ import print_function
 
-import StringIO  # not python 3 compatible
 import calendar
-import csv
 import datetime
 import logging
-import os
 import subprocess
-import time
-import flask_login
 from importlib import import_module
+
+import flask_login
+import os
 from RPi import GPIO
 from dateutil.parser import parse as date_parse
 from flask import Response
 from flask import current_app
 from flask import flash
 from flask import jsonify
-from flask import make_response
 from flask import redirect
-
-from flask import request
+from flask import send_file
 from flask import send_from_directory
 from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
+from flask_csv import send_csv
 from flask_influxdb import InfluxDB
 from flask_limiter import Limiter
 
-
-from mycodo.mycodo_flask.utils import utils_general
-from mycodo.mycodo_flask.utils.utils_general import gzipped
-
-from mycodo.databases.models import Camera
-from mycodo.databases.models import Output
-from mycodo.databases.models import Input
-from mycodo.mycodo_client import DaemonControl
-from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
-from mycodo.utils.influx import query_string
-from mycodo.utils.system_pi import str_is_float
-
-from mycodo.config import INFLUXDB_USER
-from mycodo.config import INFLUXDB_PASSWORD
 from mycodo.config import INFLUXDB_DATABASE
+from mycodo.config import INFLUXDB_PASSWORD
+from mycodo.config import INFLUXDB_USER
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LOG_PATH
 from mycodo.config import PATH_CAMERAS
+from mycodo.databases.models import Camera
+from mycodo.databases.models import Input
+from mycodo.databases.models import Math
+from mycodo.databases.models import Output
+from mycodo.mycodo_client import DaemonControl
+from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
+from mycodo.mycodo_flask.utils import utils_general
+from mycodo.utils.influx import query_string
+from mycodo.utils.system_pi import str_is_float
 
 blueprint = Blueprint('general_routes',
                       __name__,
@@ -89,9 +83,7 @@ def camera_img(camera_id, img_type, filename):
             files = []
         if filename in files:
             path_file = os.path.join(path, filename)
-            resp = make_response(open(path_file).read())
-            resp.content_type = "image/jpeg"
-            return resp
+            return send_file(path_file, mimetype='image/jpeg')
 
     return "Image not found"
 
@@ -125,7 +117,7 @@ def gpio_state():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     for each_output in output:
-        if each_output.relay_type == 'wired' and -1 < each_output.pin < 40:
+        if each_output.relay_type == 'wired' and each_output.pin and -1 < each_output.pin < 40:
             GPIO.setup(each_output.pin, GPIO.OUT)
             if GPIO.input(each_output.pin) == each_output.trigger:
                 state[each_output.id] = 'on'
@@ -135,6 +127,8 @@ def gpio_state():
                 (each_output.relay_type in ['pwm', 'wireless_433MHz_pi_switch'] and
                  -1 < each_output.pin < 40)):
             state[each_output.id] = daemon_control.relay_state(each_output.id)
+        else:
+            state[each_output.id] = None
 
     return jsonify(state)
 
@@ -187,7 +181,6 @@ def last_data(input_measure, input_id, input_period):
 
 @blueprint.route('/past/<input_measure>/<input_id>/<past_seconds>')
 @flask_login.login_required
-@gzipped
 def past_data(input_measure, input_id, past_seconds):
     """Return data from past_seconds until present from influxdb"""
     if not str_is_float(past_seconds):
@@ -215,7 +208,6 @@ def past_data(input_measure, input_id, past_seconds):
 
 @blueprint.route('/export_data/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')
 @flask_login.login_required
-@gzipped
 def export_data(measurement, unique_id, start_seconds, end_seconds):
     """
     Return data from start_seconds to end_seconds from influxdb.
@@ -226,10 +218,18 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
 
-    if measurement == 'duration_sec':
-        name = Output.query.filter(Output.unique_id == unique_id).first().name
+    output = Output.query.filter(Output.unique_id == unique_id).first()
+    input = Input.query.filter(Input.unique_id == unique_id).first()
+    math = Math.query.filter(Math.unique_id == unique_id).first()
+
+    if output:
+        name = output.name
+    elif input:
+        name = input.name
+    elif math:
+        name = math.name
     else:
-        name = Input.query.filter(Input.unique_id == unique_id).first().name
+        name = None
 
     utc_offset_timedelta = datetime.datetime.utcnow() - datetime.datetime.now()
     start = datetime.datetime.fromtimestamp(float(start_seconds))
@@ -243,34 +243,32 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
         measurement, unique_id,
         start_str=start_str, end_str=end_str)
     if query_str == 1:
-        return '', 204
+        flash('Invalid query string', 'error')
+        return redirect(url_for('page_routes.page_export'))
     raw_data = dbcon.query(query_str).raw
 
-    if not raw_data:
-        return '', 204
+    if not raw_data or 'series' not in raw_data:
+        flash('No measurements to export in this time period', 'error')
+        return redirect(url_for('page_routes.page_export'))
 
-    def iter_csv(data_in):
-        line = StringIO.StringIO()
-        writer = csv.writer(line)
-        write_header = ('timestamp (UTC)', '{name} {meas} ({id})'.format(
-            name=name.encode('utf8'), meas=measurement, id=unique_id))
-        writer.writerow(write_header)
-        for csv_line in data_in:
-            writer.writerow((csv_line[0][:-4], csv_line[1]))
-            line.seek(0)
-            yield line.read()
-            line.truncate(0)
+    # Generate column names
+    col_1 = 'timestamp (UTC)'
+    col_2 = '{name} {meas} ({id})'.format(
+        name=name, meas=measurement, id=unique_id)
+    csv_filename = '{id}_{meas}.csv'.format(id=unique_id, meas=measurement)
 
-    response = Response(iter_csv(raw_data['series'][0]['values']),
-                        mimetype='text/csv')
-    response.headers['Content-Disposition'] = 'attachment; filename={id}_{meas}.csv'.format(
-        id=unique_id, meas=measurement)
-    return response
+    # Populate list of dictionary entries for each column to convert to CSV
+    # and send to the user to download
+    csv_data = []
+    for each_data in raw_data['series'][0]['values']:
+        csv_data.append({col_1: str(each_data[0][:-4]).replace('T', ' '),
+                         col_2: each_data[1]})
+
+    return send_csv(csv_data, csv_filename, [col_1, col_2])
 
 
 @blueprint.route('/async/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')
 @flask_login.login_required
-@gzipped
 def async_data(measurement, unique_id, start_seconds, end_seconds):
     """
     Return data from start_seconds to end_seconds from influxdb.

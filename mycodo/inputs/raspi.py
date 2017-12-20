@@ -3,6 +3,7 @@ from __future__ import division
 
 import logging
 import subprocess
+
 from .base_input import AbstractInput
 
 logger = logging.getLogger("mycodo.inputs.raspi")

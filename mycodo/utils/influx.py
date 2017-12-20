@@ -3,16 +3,17 @@ import datetime
 import logging
 import threading
 from uuid import UUID
+
 from influxdb import InfluxDBClient
+
+from mycodo.config import INFLUXDB_DATABASE
+from mycodo.config import INFLUXDB_HOST
+from mycodo.config import INFLUXDB_PASSWORD
+from mycodo.config import INFLUXDB_PORT
+from mycodo.config import INFLUXDB_USER
 from mycodo.databases.models import Output
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
-
-from mycodo.config import INFLUXDB_HOST
-from mycodo.config import INFLUXDB_PORT
-from mycodo.config import INFLUXDB_USER
-from mycodo.config import INFLUXDB_PASSWORD
-from mycodo.config import INFLUXDB_DATABASE
 
 logger = logging.getLogger("mycodo.influxdb")
 

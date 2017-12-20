@@ -14,7 +14,6 @@ class CRUDMixin(object):
 
     def save(self):
         """ creates the model in the database """
-
         try:
             db.session.add(self)
             db.session.commit()

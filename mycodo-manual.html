@@ -375,11 +375,14 @@
 </ul>
 <p><a href="#miscellaneous">Miscellaneous</a></p>
 <ul>
+<li><a href="#live-measurements">Live Measurements</a></li>
 <li><a href="#graphs">Graphs</a></li>
+<li><a href="#export">Export</a></li>
 <li><a href="#camera">Camera</a></li>
 <li><a href="#output-usage">Output Usage</a></li>
 <li><a href="#system-backup">System Backup</a></li>
 <li><a href="#system-restore">System Restore</a></li>
+<li><a href="#system-information">System Information</a></li>
 </ul>
 <p><a href="#troubleshooting">Troubleshooting</a></p>
 <ul>
@@ -1801,11 +1804,11 @@
 </tr>
 <tr class="even">
 <td style="text-align: left;">Library</td>
-<td style="text-align: left;">Select which library to use to communicate with the camera. The Raspberry Pi Camera uses picamera (and potentially opencv), and USB cameras should be set to opencv.</td>
+<td style="text-align: left;">Select which library to use to communicate with the camera. The Raspberry Pi Camera uses picamera, and USB cameras should be set to fswebcam.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">OpenCV Device</td>
-<td style="text-align: left;">Any devices detected by opencv will populate this dropdown list. If there are no values in this list, none were detected. If you have multiple opencv devices detected, try setting the camera to each device and take a photo to determine which camera is associated with which device.</td>
+<td style="text-align: left;">Device</td>
+<td style="text-align: left;">The device to use to connect to the camera. fswebcam is the only library that uses this option.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Output ID</td>
@@ -1838,6 +1841,8 @@
 </tbody>
 </table>
 <h1 id="miscellaneous">Miscellaneous</h1>
+<h2 id="live-measurements">Live Measurements</h2>
+<p>The Live Measurements page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Math controllers. If there is nothing displayed on the Live Measurements page, ensure an Input or Math controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.</p>
 <h2 id="graphs">Graphs</h2>
 <p>There are two different types of graphs, Live and Asynchronous.</p>
 <h3 id="live-graphs">Live Graphs</h3>
@@ -1911,6 +1916,9 @@
 <h3 id="asynchronous-graphs">Asynchronous Graphs</h3>
 <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it’s not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.</p>
 <p>Note: Live Graphs require measurements to be acquired, therefore at least one sensor needs to be added and activated in order to display live data.</p>
+<h2 id="export">Export</h2>
+<p>Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.</p>
+<p>Settings may be exported as a ZIP file containing the Mycodo settings database (sqlite). Importing of this ZIP file will be supported in the future.</p>
 <h2 id="camera">Camera</h2>
 <p>Once a cameras has been set up (in the <a href="#camera-settings">Camera Settings</a>), it may be used to capture still images, create time-lapses, and stream video. Cameras may also be used by <a href="#conditional-statements">Conditional Statements</a> to trigger a camera image or video capture (as well as the ability to email the image/video with a notification).</p>
 <h2 id="output-usage">Output Usage</h2>
@@ -1918,10 +1926,46 @@
 <h2 id="system-backup">System Backup</h2>
 <p>A backup is made to /var/Mycodo-backups when the system is upgraded through the web interface or the upgrade script.</p>
 <h2 id="system-restore">System Restore</h2>
-<p>If you need to restore a backup, do the following, changing the appropriate directory names with these commands, changing ‘user’ to your user name:</p>
+<p>If you need to restore a backup, this can be done on the Config -&gt; Backup/Restore page. Find the backup you would like restored and press the Restore button beside it. A restore can also be initialized through the command line. Use the foloowing commands to initialize a restore, changing the appropriate directory names, ‘user’ to your user name, and TIME and COMMIT to the appropriate text found as the directory names in /var/Mycodo-backups/</p>
 <pre><code>sudo mv /home/user/Mycodo /home/user/Mycodo_old
 sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
 sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
+<h2 id="system-information">System Information</h2>
+<p>This page serves to provide information about the Mycodo frontend and backend as well as the linux system it’s running on. Several commands and their output are listed to give the user information about how their system is running.</p>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Command</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Mycodo Version</td>
+<td style="text-align: left;">The current version of Mycodo, reported by the configuration file.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Python Version</td>
+<td style="text-align: left;">The version of python currently running the web user interface.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Database Version</td>
+<td style="text-align: left;">The current version of the settings database. If the current version is different from what it should be, an error will appear indicating the issue and a link to find out more information about the issue.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Daemon Status</td>
+<td style="text-align: left;">This will be a green “Running” or a red “Stopped”. Additionally, the Mycodo version and hostname text at the top-left of the screen May be Green, Yellow, or Red to indicate the status. Green = daemon running, yellow = unable to connect, and red = daemon not running.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">…</td>
+<td style="text-align: left;">Several other status indicators and commands are listed to provide information about the health of the system. Use these in addition to others to investigate software or hardware issues.</td>
+</tr>
+</tbody>
+</table>
 <h1 id="troubleshooting">Troubleshooting</h1>
 <h2 id="daemon-not-running">Daemon Not Running</h2>
 <ul>

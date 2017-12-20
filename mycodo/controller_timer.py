@@ -29,17 +29,16 @@ import threading
 import time
 import timeit
 
-from mycodo_client import DaemonControl
-from databases.models import Method
-from databases.models import MethodData
-from databases.models import Output
-from databases.models import Timer
-from databases.utils import session_scope
-from utils.database import db_retrieve_table_daemon
-from utils.method import calculate_method_setpoint
-from utils.system_pi import time_between_range
-
-from config import SQL_DATABASE_MYCODO
+from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.databases.models import Method
+from mycodo.databases.models import MethodData
+from mycodo.databases.models import Output
+from mycodo.databases.models import Timer
+from mycodo.databases.utils import session_scope
+from mycodo.mycodo_client import DaemonControl
+from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.method import calculate_method_setpoint
+from mycodo.utils.system_pi import time_between_range
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 

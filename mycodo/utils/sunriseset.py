@@ -23,11 +23,12 @@
 #         = (180/pi)*atan(0.91764 * tan((pi/180)*L)) to give a degree
 #         answer with a degree input for L.
 
-from dateutil.parser import parse
-from dateutil import tz
+import datetime
 import logging
 import math
-import datetime
+
+from dateutil import tz
+from dateutil.parser import parse
 
 logger = logging.getLogger("mycodo.sun_rise_set")
 

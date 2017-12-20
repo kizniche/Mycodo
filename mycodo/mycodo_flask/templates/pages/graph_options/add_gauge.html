@@ -66,13 +66,13 @@
         <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;">
           <option value="">{{_('Select One')}}</option>
         {% if choices_input or choices_math or choices_pid %}
-          {% for each_choice, value in choices_input.iteritems() -%}
+          {% for each_choice, value in choices_input.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
           {% endfor -%}
-          {% for each_choice, value in choices_math.iteritems() -%}
+          {% for each_choice, value in choices_math.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
           {% endfor -%}
-          {% for each_choice, value in choices_pid.iteritems() -%}
+          {% for each_choice, value in choices_pid.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
           {% endfor -%}
         {% else %}

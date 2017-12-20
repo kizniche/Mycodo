@@ -12,14 +12,14 @@
   <div>
     <select class="form-control" id="relay_id" name="relay_id">
     {%- set pwm_output_exists = [] -%}
-    {% for each_choice, value in output_choices.iteritems() if each_choice.split(',')[1] == 'duty_cycle' -%}
+    {% for each_choice, value in output_choices.items() if each_choice.split(',')[1] == 'duty_cycle' -%}
       {%- do pwm_output_exists.append(1) -%}
     {%- endfor -%}
 
     {% if not pwm_output_exists %}
       <option value="">{{_('No PWM Outputs Found')}}</option>
     {% else %}
-      {% for each_choice, value in output_choices.iteritems() if each_choice.split(',')[1] == 'duty_cycle' -%}
+      {% for each_choice, value in output_choices.items() if each_choice.split(',')[1] == 'duty_cycle' -%}
         <option value="{{each_choice.split(',')[0]}}">{{value}}</option>
       {% endfor -%}
     {% endif %}

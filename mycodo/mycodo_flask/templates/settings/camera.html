@@ -62,6 +62,7 @@
         </div>
       </div>
       <div style="padding: 0.5em 0 0.25em 0" class="form-inline">
+
       {% if each_camera.library == 'picamera' %}
         {% if not pi_camera_enabled %}
         <div class="row" style="color: red; padding: 1em 1em;">
@@ -70,9 +71,7 @@
         {% else %}
           {% include 'settings/camera_options/picamera.html' %}
         {% endif %}
-      {% endif %}
-
-      {% if each_camera.library == 'opencv' %}
+      {% elif each_camera.library == 'opencv' %}
         {% include 'settings/camera_options/opencv.html' %}
       {% elif each_camera.library == 'fswebcam' %}
         {% include 'settings/camera_options/fswebcam.html' %}

@@ -5,38 +5,33 @@ import datetime
 import logging
 import socket
 import time
-import flask_login
 
-from flask import redirect
-from flask import request
-from flask import render_template
+import flask_login
 from flask import flash
 from flask import jsonify
+from flask import make_response
+from flask import redirect
+from flask import render_template
+from flask import request
 from flask import session
 from flask import url_for
-from flask import make_response
-
-from sqlalchemy import func
-
-from mycodo.mycodo_flask.extensions import db
-from flask_babel import gettext
 from flask.blueprints import Blueprint
-
-from mycodo.databases.models import AlembicVersion
-from mycodo.databases.models import Input
-from mycodo.databases.models import Misc
-from mycodo.databases.models import User
-
-from mycodo.mycodo_flask.forms import forms_authentication
-from mycodo.mycodo_flask.utils import utils_general
-
-from mycodo.utils.utils import test_username
-from mycodo.utils.utils import test_password
+from flask_babel import gettext
+from sqlalchemy import func
 
 from mycodo.config import LOGIN_ATTEMPTS
 from mycodo.config import LOGIN_BAN_SECONDS
 from mycodo.config import LOGIN_LOG_FILE
-
+from mycodo.databases.models import AlembicVersion
+from mycodo.databases.models import Input
+from mycodo.databases.models import Misc
+from mycodo.databases.models import Role
+from mycodo.databases.models import User
+from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.forms import forms_authentication
+from mycodo.mycodo_flask.utils import utils_general
+from mycodo.utils.utils import test_password
+from mycodo.utils.utils import test_username
 
 blueprint = Blueprint(
     'authentication_routes',
@@ -163,7 +158,7 @@ def do_login():
         flash(gettext(
             u"Too many failed login attempts. Please wait %(min)s "
             u"minutes before attempting to log in again",
-            min=(int(LOGIN_BAN_SECONDS - session['ban_time_left']) / 60) + 1),
+            min=int((LOGIN_BAN_SECONDS - session['ban_time_left']) / 60) + 1),
                 "info")
     else:
         if request.method == 'POST':
@@ -176,11 +171,18 @@ def do_login():
                 login_log(username, 'NA', user_ip, 'NOUSER')
                 failed_login()
             elif form_login.validate_on_submit():
-                if User().check_password(
-                        form_login.password.data,
-                        user.password_hash) == user.password_hash:
+                matched_hash = User().check_password(
+                    form_login.password.data, user.password_hash)
 
-                    login_log(username, user.roles.name, user_ip, 'LOGIN')
+                # Encode stored password hash if it's a str
+                password_hash = user.password_hash
+                if isinstance(user.password_hash, str):
+                    password_hash = user.password_hash.encode('utf-8')
+
+                if matched_hash == password_hash:
+                    user = User.query.filter(User.name == username).first()
+                    role_name = Role.query.filter(Role.id == user.role).first().name
+                    login_log(username, role_name, user_ip, 'LOGIN')
 
                     # flask-login user
                     login_user = User()
@@ -190,7 +192,9 @@ def do_login():
 
                     return redirect(url_for('general_routes.home'))
                 else:
-                    login_log(username, user.roles.name, user_ip, 'FAIL')
+                    user = User.query.filter(User.name == username).first()
+                    role_name = Role.query.filter(Role.id == user.role).first().name
+                    login_log(username, role_name, user_ip, 'FAIL')
                     failed_login()
             else:
                 login_log(username, 'NA', user_ip, 'FAIL')
@@ -206,8 +210,10 @@ def do_login():
 @flask_login.login_required
 def logout():
     """Log out of the web-ui"""
-    login_log(flask_login.current_user.name,
-              flask_login.current_user.roles.name,
+    user = User.query.filter(User.name == flask_login.current_user.name).first()
+    role_name = Role.query.filter(Role.id == user.role).first().name
+    login_log(user.name,
+              role_name,
               request.environ.get('REMOTE_ADDR', 'unknown address'),
               'LOGOUT')
     # flask-login logout

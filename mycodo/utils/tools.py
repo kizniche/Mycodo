@@ -2,20 +2,19 @@
 import csv
 import datetime
 import logging
-import os
 import time
 from collections import OrderedDict
+
+import os
 from dateutil import relativedelta
 
+from mycodo.config import USAGE_REPORTS_PATH
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
-
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import relay_sec_on
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import set_user_grp
-
-from mycodo.config import USAGE_REPORTS_PATH
 
 logger = logging.getLogger("mycodo.tools")
 
@@ -212,7 +211,7 @@ def generate_relay_usage_report():
                     each_output = output.filter(Output.id == key).first()
                     w.writerow([each_output.id,
                                 each_output.unique_id,
-                                unicode(each_output.name).encode("utf-8"),
+                                str(each_output.name).encode("utf-8"),
                                 'hours_on',
                                 value['1d']['hours_on'],
                                 value['1w']['hours_on'],
@@ -221,7 +220,7 @@ def generate_relay_usage_report():
                                 value['1y']['hours_on']])
                     w.writerow([each_output.id,
                                 each_output.unique_id,
-                                unicode(each_output.name).encode("utf-8"),
+                                str(each_output.name).encode("utf-8"),
                                 'kwh',
                                 value['1d']['kwh'],
                                 value['1w']['kwh'],
@@ -230,7 +229,7 @@ def generate_relay_usage_report():
                                 value['1y']['kwh']])
                     w.writerow([each_output.id,
                                 each_output.unique_id,
-                                unicode(each_output.name).encode("utf-8"),
+                                str(each_output.name).encode("utf-8"),
                                 'cost',
                                 value['1d']['cost'],
                                 value['1w']['cost'],

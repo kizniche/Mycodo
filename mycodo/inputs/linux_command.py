@@ -2,9 +2,10 @@
 from __future__ import division
 
 import logging
-from .base_input import AbstractInput
+
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import str_is_float
+from .base_input import AbstractInput
 
 logger = logging.getLogger("mycodo.inputs.linux_command")
 

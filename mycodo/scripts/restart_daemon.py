@@ -1,9 +1,9 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 import argparse
-import os
 import logging
 import time
+
+import os
 
 DAEMON_PID_FILE = '/var/lock/mycodo.pid'
 LOG_FILE = '/var/log/mycodo/mycodokeepup.log'

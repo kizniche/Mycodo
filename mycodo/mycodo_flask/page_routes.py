@@ -1,32 +1,62 @@
 # coding=utf-8
 """ collection of Page endpoints """
 import datetime
-import flask_login
 import glob
 import logging
-import os
 import resource
 import subprocess
 import sys
 import time
 from collections import OrderedDict
-from flask_babel import gettext
 from importlib import import_module
-from w1thermsensor import W1ThermSensor
 
+import flask_login
+import os
 from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
-
 from flask.blueprints import Blueprint
+from flask_babel import gettext
+from w1thermsensor import W1ThermSensor
 
-from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.static_routes import inject_variables
+from mycodo.config import ALEMBIC_VERSION
+from mycodo.config import BACKUP_LOG_FILE
+from mycodo.config import CONDITIONAL_ACTIONS
+from mycodo.config import DAEMON_LOG_FILE
+from mycodo.config import DAEMON_PID_FILE
+from mycodo.config import HTTP_LOG_FILE
+from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import KEEPUP_LOG_FILE
+from mycodo.config import LIST_DEVICES_I2C
+from mycodo.config import LOGIN_LOG_FILE
+from mycodo.config import MEASUREMENTS
+from mycodo.config import MEASUREMENT_UNITS
+from mycodo.config import PATH_CAMERAS
+from mycodo.config import RESTORE_LOG_FILE
+from mycodo.config import UPGRADE_LOG_FILE
+from mycodo.config import USAGE_REPORTS_PATH
+from mycodo.databases.models import AlembicVersion
+from mycodo.databases.models import Camera
+from mycodo.databases.models import Conditional
+from mycodo.databases.models import ConditionalActions
+from mycodo.databases.models import DisplayOrder
+from mycodo.databases.models import Graph
+from mycodo.databases.models import Input
+from mycodo.databases.models import LCD
+from mycodo.databases.models import LCDData
+from mycodo.databases.models import Math
+from mycodo.databases.models import Method
+from mycodo.databases.models import Misc
+from mycodo.databases.models import Output
+from mycodo.databases.models import PID
+from mycodo.databases.models import Timer
+from mycodo.databases.models import User
+from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_client import daemon_active
-
+from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_conditional
 from mycodo.mycodo_flask.forms import forms_function
 from mycodo.mycodo_flask.forms import forms_graph
@@ -37,8 +67,9 @@ from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.forms import forms_output
 from mycodo.mycodo_flask.forms import forms_pid
 from mycodo.mycodo_flask.forms import forms_timer
-
+from mycodo.mycodo_flask.static_routes import inject_variables
 from mycodo.mycodo_flask.utils import utils_conditional
+from mycodo.mycodo_flask.utils import utils_export
 from mycodo.mycodo_flask.utils import utils_function
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_graph
@@ -48,47 +79,9 @@ from mycodo.mycodo_flask.utils import utils_math
 from mycodo.mycodo_flask.utils import utils_output
 from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.mycodo_flask.utils import utils_timer
-
-from mycodo.databases.models import AlembicVersion
-from mycodo.databases.models import Camera
-from mycodo.databases.models import Conditional
-from mycodo.databases.models import ConditionalActions
-from mycodo.databases.models import DisplayOrder
-from mycodo.databases.models import Graph
-from mycodo.databases.models import LCD
-from mycodo.databases.models import LCDData
-from mycodo.databases.models import Math
-from mycodo.databases.models import Method
-from mycodo.databases.models import Misc
-from mycodo.databases.models import PID
-from mycodo.databases.models import Output
-from mycodo.databases.models import Input
-from mycodo.databases.models import Timer
-from mycodo.databases.models import User
-
-from mycodo.devices.camera import camera_record
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.tools import return_relay_usage
-
-from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import BACKUP_LOG_FILE
-from mycodo.config import DAEMON_LOG_FILE
-from mycodo.config import HTTP_LOG_FILE
-from mycodo.config import KEEPUP_LOG_FILE
-from mycodo.config import LOGIN_LOG_FILE
-from mycodo.config import RESTORE_LOG_FILE
-from mycodo.config import UPGRADE_LOG_FILE
-from mycodo.config import DAEMON_PID_FILE
-
-from mycodo.config import ALEMBIC_VERSION
-from mycodo.config import CONDITIONAL_ACTIONS
-from mycodo.config import LIST_DEVICES_I2C
-from mycodo.config import MEASUREMENTS
-from mycodo.config import MEASUREMENT_UNITS
-from mycodo.config import PATH_CAMERAS
-
-from mycodo.config import USAGE_REPORTS_PATH
 
 logger = logging.getLogger('mycodo.mycodo_flask.page_routes')
 
@@ -244,30 +237,45 @@ def page_camera():
 @flask_login.login_required
 def page_export():
     """
-    Export measurement data in CSV format
+    Export/Import measurement and settings data
     """
-    export_options = forms_misc.ExportOptions()
+    form_export_measurements = forms_misc.ExportMeasurements()
+    form_export_settings = forms_misc.ExportSettings()
+    form_export_influxdb = forms_misc.ExportInfluxdb()
+    form_import_settings = forms_misc.ImportSettings()
+
     output = Output.query.all()
     input_dev = Input.query.all()
-    output_choices = utils_general.choices_id_name(output)
+    math = Math.query.all()
+    output_choices = utils_general.choices_outputs(output)
     input_choices = utils_general.choices_inputs(input_dev)
+    math_choices = utils_general.choices_maths(math)
 
     if request.method == 'POST':
-        start_time = export_options.date_range.data.split(' - ')[0]
-        start_seconds = int(time.mktime(
-            time.strptime(start_time, '%m/%d/%Y %H:%M')))
-        end_time = export_options.date_range.data.split(' - ')[1]
-        end_seconds = int(time.mktime(
-            time.strptime(end_time, '%m/%d/%Y %H:%M')))
+        if not utils_general.user_has_permission('edit_controllers'):
+            return redirect(url_for('general_routes.home'))
 
-        unique_id = export_options.measurement.data.split(',')[0]
-        measurement = export_options.measurement.data.split(',')[1]
-
-        url = '/export_data/{meas}/{id}/{start}/{end}'.format(
-            meas=measurement,
-            id=unique_id,
-            start=start_seconds, end=end_seconds)
-        return redirect(url)
+        if form_export_measurements.export_data_csv.data:
+            url = utils_export.export_measurements(form_export_measurements)
+            if url:
+                return redirect(url)
+        elif form_export_settings.export_settings_zip.data:
+            file_send = utils_export.export_settings(form_export_settings)
+            if file_send:
+                return file_send
+            else:
+                flash('Unknown error creating zipped settings database', 'error')
+        elif form_import_settings.settings_import_upload.data:
+            backup_file = utils_export.import_settings(form_import_settings)
+            if backup_file:
+                return redirect(url_for('authentication_routes.logout'))
+        elif form_export_influxdb.export_influxdb_zip.data:
+            file_send = utils_export.export_influxdb(form_export_influxdb)
+            if file_send:
+                return file_send
+            else:
+                flash('Unknown error creating zipped influxdb database '
+                      'and metastore', 'error')
 
     # Generate start end end times for date/time picker
     end_picker = datetime.datetime.now().strftime('%m/%d/%Y %H:%M')
@@ -277,9 +285,13 @@ def page_export():
     return render_template('tools/export.html',
                            start_picker=start_picker,
                            end_picker=end_picker,
-                           exportOptions=export_options,
-                           relay_choices=output_choices,
-                           sensor_choices=input_choices)
+                           form_export_influxdb=form_export_influxdb,
+                           form_export_measurements=form_export_measurements,
+                           form_export_settings=form_export_settings,
+                           form_import_settings=form_import_settings,
+                           output_choices=output_choices,
+                           input_choices=input_choices,
+                           math_choices=math_choices)
 
 
 @blueprint.route('/graph', methods=('GET', 'POST'))
@@ -457,16 +469,22 @@ def page_info():
         "uptime", stdout=subprocess.PIPE, shell=True)
     (uptime_output, _) = uptime.communicate()
     uptime.wait()
+    if uptime_output:
+        uptime_output = uptime_output.decode("utf-8")
 
     uname = subprocess.Popen(
         "uname -a", stdout=subprocess.PIPE, shell=True)
     (uname_output, _) = uname.communicate()
     uname.wait()
+    if uname_output:
+        uname_output = uname_output.decode("utf-8")
 
     gpio = subprocess.Popen(
         "gpio readall", stdout=subprocess.PIPE, shell=True)
     (gpio_output, _) = gpio.communicate()
     gpio.wait()
+    if gpio_output:
+        gpio_output = gpio_output.decode("utf-8")
 
     try:
         i2c_devices = glob.glob("/dev/i2c-*")
@@ -478,7 +496,8 @@ def page_info():
                 shell=True)
             (out, _) = df.communicate()
             df.wait()
-            i2c_devices_sorted[int(each_dev.strip("/dev/i2c-"))] = out
+            if out:
+                i2c_devices_sorted[int(each_dev.strip("/dev/i2c-"))] = out.decode("utf-8")
     except Exception as er:
         flash("Error detecting I2C devices: {er}".format(er=er), "error")
         i2c_devices_sorted = {}
@@ -489,16 +508,22 @@ def page_info():
         "df -h", stdout=subprocess.PIPE, shell=True)
     (df_output, _) = df.communicate()
     df.wait()
+    if df_output:
+        df_output = df_output.decode("utf-8")
 
     free = subprocess.Popen(
         "free -h", stdout=subprocess.PIPE, shell=True)
     (free_output, _) = free.communicate()
     free.wait()
+    if free_output:
+        free_output = free_output.decode("utf-8")
 
     ifconfig = subprocess.Popen(
         "ifconfig -a", stdout=subprocess.PIPE, shell=True)
     (ifconfig_output, _) = ifconfig.communicate()
     ifconfig.wait()
+    if ifconfig_output:
+        ifconfig_output = ifconfig_output.decode("utf-8")
 
     daemon_pid = None
     if os.path.exists(DAEMON_PID_FILE):
@@ -525,16 +550,22 @@ def page_info():
             "pstree -p {pid}".format(pid=daemon_pid), stdout=subprocess.PIPE, shell=True)
         (pstree_output, _) = pstree.communicate()
         pstree.wait()
+        if pstree_output:
+            pstree_output = pstree_output.decode("utf-8")
 
         top = subprocess.Popen(
             "top -bH -n 1 -p {pid}".format(pid=daemon_pid), stdout=subprocess.PIPE, shell=True)
         (top_output, _) = top.communicate()
         top.wait()
+        if top_output:
+            top_output = top_output.decode("utf-8")
     else:
         ram_use_daemon = 0
 
     ram_use_flask = resource.getrusage(
         resource.RUSAGE_SELF).ru_maxrss / float(1000)
+
+    python_version = sys.version
 
     return render_template('pages/info.html',
                            daemon_pid=daemon_pid,
@@ -547,6 +578,7 @@ def page_info():
                            i2c_devices_sorted=i2c_devices_sorted,
                            ifconfig=ifconfig_output,
                            pstree=pstree_output,
+                           python_version=python_version,
                            ram_use_daemon=ram_use_daemon,
                            ram_use_flask=ram_use_flask,
                            top=top_output,
@@ -721,7 +753,7 @@ def page_logview():
                 command, stdout=subprocess.PIPE, shell=True)
             (log_output, _) = log.communicate()
             log.wait()
-            log_output = unicode(log_output, 'utf-8')
+            log_output = str(log_output, 'utf-8')
         else:
             log_output = 404
 
@@ -1090,7 +1122,7 @@ def page_math():
 
     # convert dict to list of tuples
     choices = []
-    for each_key, each_value in choices_input.iteritems():
+    for each_key, each_value in choices_input.items():
         choices.append((each_key, each_value))
     form_mod_multi.inputs.choices = choices
     form_mod_verification.inputs.choices = choices

@@ -22,7 +22,7 @@
   <div class="container">
   {% include 'flash_messages.html' %}
 
-    <h4>{{_('Asynchronous Graphs')}} <a href="/help#asynchronous-graphs" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <h4>{{_('Asynchronous Graphs')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
     <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph.</p>
 
@@ -30,7 +30,7 @@
     <div class="form-inline">
       <div class="form-group">
         <select class="form-control" id="selected_measure" name="selected_measure">
-        {% for each_choice, value in sensor_choices.iteritems() -%}
+        {% for each_choice, value in sensor_choices.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
         {% endfor -%}
         </select>

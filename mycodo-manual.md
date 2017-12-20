@@ -45,11 +45,13 @@ Table of Contents
 
 [Miscellaneous](#miscellaneous)
 
+   - [Live Measurements](#live-measurements)
    - [Graphs](#graphs)
+   - [Export / Import](#export--import)
    - [Camera](#camera)
    - [Output Usage](#output-usage)
-   - [System Backup](#system-backup)
-   - [System Restore](#system-restore)
+   - [Backup / Restore](#sbackup--restore)
+   - [System Information](#system-information)
 
 [Troubleshooting](#troubleshooting)
 
@@ -973,8 +975,8 @@ differences in hardware and software.
 Setting | Description
 -------------------- | ----------------------------------------------
 Type | Select whether the camera is a Raspberry Pi Camera or a USB camera.
-Library | Select which library to use to communicate with the camera. The Raspberry Pi Camera uses picamera (and potentially opencv), and USB cameras should be set to opencv.
-OpenCV Device | Any devices detected by opencv will populate this dropdown list. If there are no values in this list, none were detected. If you have multiple opencv devices detected, try setting the camera to each device and take a photo to determine which camera is associated with which device.
+Library | Select which library to use to communicate with the camera. The Raspberry Pi Camera uses picamera, and USB cameras should be set to fswebcam.
+Device | The device to use to connect to the camera. fswebcam is the only library that uses this option.
 Output ID | This output will turn on during the capture of any still image (which includes timelapses).
 Rotate Image | The number of degrees to rotate the image.
 ... | Image Width, Image Height, Brightness, Contrast, Exposure, Gain, Hue, Saturation, White Balance. These options are self-explanatory. Not all options will work with all cameras.
@@ -985,6 +987,11 @@ Flip vertically | Flip, or mirror, the image vertically.
 
 Miscellaneous
 =============
+
+Live Measurements
+-----------------
+
+The Live Measurements page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Math controllers. If there is nothing displayed on the Live Measurements page, ensure an Input or Math controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.
 
 Graphs
 ------
@@ -1041,6 +1048,13 @@ Note: Live Graphs require measurements to be acquired, therefore at
 least one sensor needs to be added and activated in order to display
 live data.
 
+Export / Import
+---------------
+
+Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.
+
+Settings may be exported as a ZIP file containing the Mycodo settings database (sqlite). Importing of this ZIP file will be supported in the future.
+
 Camera
 ------
 
@@ -1058,22 +1072,30 @@ Output usage statistics are calculated for each output, based on how long
 the output has been powered, the current draw of the device connected to
 the output, and other [Relay Usage Settings](#output-usage-settings).
 
-System Backup
--------------
+Backup / Restore
+----------------
 
-A backup is made to /var/Mycodo-backups when the system is upgraded
-through the web interface or the upgrade script.
+A backup is made to /var/Mycodo-backups when the system is upgraded or through the web interface on the Config -> Backup / Restore page.
 
-System Restore
---------------
-
-If you need to restore a backup, do the following, changing the
-appropriate directory names with these commands, changing 'user' to your
-user name:
+If you need to restore a backup, this can be done on the Config -> Backup / Restore page. Find the backup you would like restored and press the Restore button beside it. A restore can also be initialized through the command line. Use the foloowing commands to initialize a restore, changing the appropriate directory names, 'user' to your user name, and TIME and COMMIT to the appropriate text found as the directory names in /var/Mycodo-backups/
 
     sudo mv /home/user/Mycodo /home/user/Mycodo_old
     sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
     sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
+
+
+System Information
+------------------
+
+This page serves to provide information about the Mycodo frontend and backend as well as the linux system it's running on. Several commands and their output are listed to give the user information about how their system is running.
+
+Command | Description
+-------------------- | ----------------------------------------------
+Mycodo Version | The current version of Mycodo, reported by the configuration file.
+Python Version | The version of python currently running the web user interface.
+Database Version | The current version of the settings database. If the current version is different from what it should be, an error will appear indicating the issue and a link to find out more information about the issue.
+Daemon Status | This will be a green "Running" or a red "Stopped". Additionally, the Mycodo version and hostname text at the top-left of the screen May be Green, Yellow, or Red to indicate the status. Green = daemon running, yellow = unable to connect, and red = daemon not running.
+... | Several other status indicators and commands are listed to provide information about the health of the system. Use these in addition to others to investigate software or hardware issues.
 
 Troubleshooting
 ===============
