@@ -21,12 +21,26 @@ runSelfUpgrade() {
   }
 
   NOW=$(date +"%Y-%m-%d_%H-%M-%S")
-  CURRENT_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
+  CURRENT_VERSION=$(${INSTALL_DIRECTORY}/env_py3/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
   BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
-  UPDATE_URL=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 5 2>&1)
-  UPDATE_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 5 -v 2>&1)
+  UPDATE_VERSION=$(${INSTALL_DIRECTORY}/env_py3/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 5 -v 2>&1)
   MYCODO_NEW_TMP_DIR="/tmp/Mycodo-${UPDATE_VERSION}"
+
+# Begin selection for upgrade type
+# Only one of the following two blocks of code can be uncommented.
+# Be sure this matches the same uncommented block of code, below.
+
+# Uncomment the following block to upgrade to the latest commit (Not Release)
+
+#  UPDATE_URL="https://github.com/kizniche/Mycodo/archive/master.tar.gz"
+#  TARBALL_FILE="Mycodo-master"
+
+# Uncomment the following block to upgrade to the latest Release (Not latest commit on GIT master)
+
+  UPDATE_URL=$(${INSTALL_DIRECTORY}/env_py3/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 5 2>&1)
   TARBALL_FILE="mycodo-${UPDATE_VERSION}"
+
+# End selection for upgrade type
 
   printf "\n"
 

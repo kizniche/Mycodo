@@ -48,12 +48,12 @@ def time_between_range(start_time, end_time):
     return 0  # No now not within range
 
 
-def cmd_output(command, su_mycodo=True, stdout_pipe=True):
+def cmd_output(command, su_mycodo=False, stdout_pipe=True):
     """
     Executed command and returns a list of lines from the output
     """
     full_cmd = '{}'.format(command)
-    if su_mycodo:
+    if su_mycodo:  # TODO: Remove su as I don't beleive it works
         full_cmd = 'su mycodo && {}'.format(command)
     if stdout_pipe:
         cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
