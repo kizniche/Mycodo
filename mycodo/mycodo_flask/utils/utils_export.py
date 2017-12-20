@@ -80,7 +80,8 @@ def export_settings(form):
         try:
             data = io.BytesIO()
             with zipfile.ZipFile(data, mode='w') as z:
-                z.write(SQL_DATABASE_MYCODO, os.path.basename(SQL_DATABASE_MYCODO))
+                z.write(SQL_DATABASE_MYCODO,
+                        os.path.basename(SQL_DATABASE_MYCODO))
             data.seek(0)
             return send_file(
                 data,
@@ -119,10 +120,12 @@ def export_influxdb(form):
             # Create new directory (make sure it's empty)
             assure_path_exists(influx_backup_dir)
 
-            cmd = "/usr/bin/influxd backup -database mycodo_db {path}".format(path=influx_backup_dir)
+            cmd = "/usr/bin/influxd backup -database mycodo_db {path}".format(
+                path=influx_backup_dir)
             _, _, status = cmd_output(cmd, su_mycodo=False)
 
-            influxd_version_out, _, _ = cmd_output('/usr/bin/influxd version', su_mycodo=False)
+            influxd_version_out, _, _ = cmd_output(
+                '/usr/bin/influxd version', su_mycodo=False)
             if influxd_version_out:
                 influxd_version = influxd_version_out.decode('utf-8').split(' ')[1]
             else:
@@ -135,7 +138,8 @@ def export_influxdb(form):
                 with zipfile.ZipFile(data, mode='w') as z:
                     for root, dirs, files in os.walk(influx_backup_dir):
                         for filename in files:
-                            z.write(os.path.join(influx_backup_dir, filename), filename)
+                            z.write(os.path.join(influx_backup_dir, filename),
+                                    filename)
                 data.seek(0)
 
                 # Delete influxdb directory if it exists
@@ -240,11 +244,13 @@ def import_settings(form):
 
             if not error:
                 # Save file to upload directory
-                filename = secure_filename(form.settings_import_file.data.filename)
+                filename = secure_filename(
+                    form.settings_import_file.data.filename)
                 full_path = os.path.join(tmp_folder, filename)
                 assure_path_exists(upload_folder)
                 assure_path_exists(tmp_folder)
-                form.settings_import_file.data.save(os.path.join(tmp_folder, filename))
+                form.settings_import_file.data.save(
+                    os.path.join(tmp_folder, filename))
 
                 # Check if contents of zip file are correct
                 try:
@@ -256,7 +262,8 @@ def import_settings(form):
                         error.append("Incorrect file in zip: {af} != {cf}".format(
                             af=file_list[0], cf=mycodo_database_name))
                 except Exception as err:
-                    error.append("Exception while opening zip file: {err}".format(err=err))
+                    error.append("Exception while opening zip file: "
+                                 "{err}".format(err=err))
 
             if not error:
                 # Unzip file
@@ -265,13 +272,17 @@ def import_settings(form):
                     zip_ref.extractall(tmp_folder)
                     zip_ref.close()
                 except Exception as err:
-                    error.append("Exception while extracting zip file: {err}".format(err=err))
+                    error.append("Exception while extracting zip file: "
+                                 "{err}".format(err=err))
 
             if not error:
                 try:
                     # Backup current database and replace with extracted mycodo.db
-                    imported_database = os.path.join(tmp_folder, mycodo_database_name)
-                    backup_name = SQL_DATABASE_MYCODO + '.backup_' + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                    imported_database = os.path.join(
+                        tmp_folder, mycodo_database_name)
+                    backup_name = (
+                            SQL_DATABASE_MYCODO + '.backup_' +
+                            datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
                     os.rename(SQL_DATABASE_MYCODO, backup_name)
                     os.rename(imported_database, SQL_DATABASE_MYCODO)
 
@@ -281,7 +292,8 @@ def import_settings(form):
 
                     return backup_name  # Success!
                 except Exception as err:
-                    error.append("Exception while replacing database: {err}".format(err=err))
+                    error.append("Exception while replacing database: "
+                                 "{err}".format(err=err))
 
         except Exception as err:
             error.append("Exception: {}".format(err))
@@ -349,15 +361,18 @@ def import_influxdb(form):
                         error.append("Extension not 'zip'")
                 except Exception as err:
                     error.append(
-                        "Exception while verifying file name: {err}".format(err=err))
+                        "Exception while verifying file name: "
+                        "{err}".format(err=err))
 
             if not error:
                 # Save file to upload directory
-                filename = secure_filename(form.influxdb_import_file.data.filename)
+                filename = secure_filename(
+                    form.influxdb_import_file.data.filename)
                 full_path = os.path.join(tmp_folder, filename)
                 assure_path_exists(tmp_folder)
                 assure_path_exists(tmp_folder)
-                form.influxdb_import_file.data.save(os.path.join(tmp_folder, filename))
+                form.influxdb_import_file.data.save(
+                    os.path.join(tmp_folder, filename))
 
                 # Check if contents of zip file are correct
                 try:
@@ -371,7 +386,8 @@ def import_influxdb(form):
                             "Databases not found: No 'mycodo_db.autogen.*' "
                             "files found in archive")
                 except Exception as err:
-                    error.append("Exception while opening zip file: {err}".format(err=err))
+                    error.append("Exception while opening zip file: "
+                                 "{err}".format(err=err))
 
             if not error:
                 # Unzip file
@@ -380,7 +396,8 @@ def import_influxdb(form):
                     zip_ref.extractall(tmp_folder)
                     zip_ref.close()
                 except Exception as err:
-                    error.append("Exception while extracting zip file: {err}".format(err=err))
+                    error.append("Exception while extracting zip file: "
+                                 "{err}".format(err=err))
 
             if not error:
                 try:
@@ -430,10 +447,14 @@ def import_influxdb(form):
                         shutil.rmtree(tmp_folder)
 
                     if all(output_successes):  # Success!
-                        output_successes.append("Both metastore and database successfully restored")
+                        output_successes.append(
+                            "InfluxDB metastore and database successfully "
+                            "imported")
                         return output_successes
                 except Exception as err:
-                    error.append("Exception while importing metastore and database: {err}".format(err=err))
+                    error.append(
+                        "Exception while importing metastore and database: "
+                        "{err}".format(err=err))
 
         except Exception as err:
             error.append("Exception: {}".format(err))
