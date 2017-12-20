@@ -29,6 +29,8 @@ import time
 import timeit
 from statistics import median
 
+import urllib3
+
 import mycodo.utils.psypy as SI
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
@@ -174,6 +176,8 @@ class MathController(threading.Thread):
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)
+                        elif measure:
+                            self.logger.error(measure)
                         else:
                             self.error_not_within_max_age()
 
@@ -185,6 +189,8 @@ class MathController(threading.Thread):
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)
+                        elif measure:
+                            self.logger.error(measure)
                         else:
                             self.error_not_within_max_age()
 
@@ -196,6 +202,8 @@ class MathController(threading.Thread):
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)
+                        elif measure:
+                            self.logger.error(measure)
                         else:
                             self.error_not_within_max_age()
 
@@ -207,6 +215,8 @@ class MathController(threading.Thread):
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)
+                        elif measure:
+                            self.logger.error(measure)
                         else:
                             self.error_not_within_max_age()
 
@@ -221,6 +231,8 @@ class MathController(threading.Thread):
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)
+                        elif measure:
+                            self.logger.error(measure)
                         else:
                             self.error_not_within_max_age()
 
@@ -297,20 +309,25 @@ class MathController(threading.Thread):
             "set. Ensure all Inputs are operating properly.")
 
     def get_measurements_from_str(self, inputs):
-        measurements = []
-        inputs_list = inputs.split(';')
-        for each_input_set in inputs_list:
-            input_id = each_input_set.split(',')[0]
-            input_measure = each_input_set.split(',')[1]
-            last_measurement = read_last_influxdb(
-                input_id,
-                input_measure,
-                self.max_measure_age)
-            if not last_measurement:
-                return False, None
-            else:
-                measurements.append(last_measurement[1])
-        return True, measurements
+        try:
+            measurements = []
+            inputs_list = inputs.split(';')
+            for each_input_set in inputs_list:
+                input_id = each_input_set.split(',')[0]
+                input_measure = each_input_set.split(',')[1]
+                last_measurement = read_last_influxdb(
+                    input_id,
+                    input_measure,
+                    self.max_measure_age)
+                if not last_measurement:
+                    return False, None
+                else:
+                    measurements.append(last_measurement[1])
+            return True, measurements
+        except ConnectionRefusedError:
+            return False, "Influxdb: ConnectionRefusedError"
+        except urllib3.exceptions.NewConnectionError:
+            return False, "Influxdb: urllib3.exceptions.NewConnectionError"
 
     def get_measurements_from_id(self, measure_id, measure_name):
         measurement = read_last_influxdb(

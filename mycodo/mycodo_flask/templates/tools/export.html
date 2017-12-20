@@ -85,9 +85,9 @@
   </div>
   </form>
 
-  <h4 style="padding-top: 2em">Export Settings Data as ZIP</h4>
+  <h4 style="padding-top: 2em">Export Mycodo Settings Data as ZIP</h4>
 
-  <p>This will create a ZIP file containing the settings database (sqlite3) containing the Mycodo configuration and user information.</p>
+  <p>This will create a ZIP file containing the Mycodo settings database containing the Mycodo configuration and user information.</p>
 
   <form method="post" action="/export">
   {{form_export_settings.csrf_token}}
@@ -98,9 +98,9 @@
   </div>
   </form>
 
-  <h4 style="padding-top: 2em">Import Settings Data from ZIP</h4>
+  <h4 style="padding-top: 2em">Import Mycodo Settings Data from ZIP</h4>
 
-  <p>This will allow a ZIP file containing the settings database (sqlite3) to be uploaded and replace the current settings. Note: This will override all settings and users and log all current users out.</p>
+  <p>This will allow a ZIP file containing the Mycodo settings database to be uploaded and replace the current settings. Note: This will override all settings and user accounts and log you out from the web UI. A backup of the current database will be created in the database directory (~/Mycodo/databases/mycodo.db.backup_DATE_TIME).</p>
 
   <form method="post" action="/export" enctype=multipart/form-data>
   {{form_import_settings.csrf_token}}

@@ -34,6 +34,7 @@ Also with this release, opencv has been disabled. I have yet to successfully imp
  - Fix not deleting associated Math Conditionals when a Math controller is deleted
  - Fix displaying LCD lines for Controllers/Measurements that no longer exist
  - Fix improper WBT input-checking for humidity math controller
+ - Fix issue where Math controller could crash ([#335](https://github.com/kizniche/mycodo/issues/335))
 
 
 ## 5.4.18 (2017-12-15)
