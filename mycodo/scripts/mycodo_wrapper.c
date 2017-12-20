@@ -11,7 +11,12 @@ int main(int argc, char *argv[]) {
 	char cmd[255];
 
 	if (argc > 1) {
-		if (strcmp(argv[1], "backup-create") == 0) {
+		if (strcmp(argv[1], "apt-get-remove") == 0 && (argc > 2)) {
+
+			sprintf(cmd, "/usr/bin/apt-get remove -y %s", argv[2]);
+			system(cmd);
+
+		} else if (strcmp(argv[1], "backup-create") == 0) {
 
 		    char path[255];
             strncpy(path, argv[0], sizeof(path));
