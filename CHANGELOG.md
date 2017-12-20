@@ -4,8 +4,12 @@ With the release of 5.5.0, Mycodo becomes modern by migrating from Python 2.7.9 
 
 If you rely on your system to work, it is highly recommended that you ***DO NOT UPGRADE***. Wait until your system is no longer performing critical tasks to upgrade, in order to allow yourself the ability to thoroughly test your particular configuration works as expected. Although most parts of the system have been tested to work, there is, as always, the potential for unforseen issues (for instance, not every sensor that Mycodo supports has physically been tested). Read the following notes carefully to determine if you want to upgrade to 5.5.0 and newer versions.
 
+### Notes
+
 ***It will no longer be possible to restore a pre-5.5.0 backup from the web UI***
+
 ***All users will be logged out of the web UI during the upgrade***
+
 ***OpenCV has been removed as a camera module***
 
 No restoring of pre-5.5.0 backups from the web UI: The automatic method of restoring backups to pre-5.5.0 versions will not work properly. This is due to moving of pip virtual environments during the restore and the post-5.5.0 (python3) virtualenv not being compatible with the pre-5.5.0 virtualenv (python2). Restores can still be done manually from the command line, and will need the following command to be executed to rebuild the pre-5.5.0 virtualenv (python2):
