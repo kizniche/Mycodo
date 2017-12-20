@@ -377,11 +377,10 @@
 <ul>
 <li><a href="#live-measurements">Live Measurements</a></li>
 <li><a href="#graphs">Graphs</a></li>
-<li><a href="#export">Export</a></li>
+<li><a href="#export-import">Export-Import</a></li>
 <li><a href="#camera">Camera</a></li>
 <li><a href="#output-usage">Output Usage</a></li>
-<li><a href="#system-backup">System Backup</a></li>
-<li><a href="#system-restore">System Restore</a></li>
+<li><a href="#sbackup-restore">Backup-Restore</a></li>
 <li><a href="#system-information">System Information</a></li>
 </ul>
 <p><a href="#troubleshooting">Troubleshooting</a></p>
@@ -1916,17 +1915,16 @@
 <h3 id="asynchronous-graphs">Asynchronous Graphs</h3>
 <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it’s not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.</p>
 <p>Note: Live Graphs require measurements to be acquired, therefore at least one sensor needs to be added and activated in order to display live data.</p>
-<h2 id="export">Export</h2>
-<p>Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.</p>
-<p>Settings may be exported as a ZIP file containing the Mycodo settings database (sqlite). Importing of this ZIP file will be supported in the future.</p>
+<h2 id="export-import">Export-Import</h2>
+<p>Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps. Additionally, the entire measurement database (influxdb) may be exported as a backup. Future support for importing the measurement database is in the works to easily restore and move measurement databases among Mycodo installs.</p>
+<p>Mycodo settings may be exported as a ZIP file containing the Mycodo settings database (sqlite). This ZIP file may be used to restore the settings database to another Mycodo install, as long as the Mycodo version and database versions are the same. Future support for installing older (or newer) databases and performing an automatic upgrade/downgrade is in the works.</p>
 <h2 id="camera">Camera</h2>
 <p>Once a cameras has been set up (in the <a href="#camera-settings">Camera Settings</a>), it may be used to capture still images, create time-lapses, and stream video. Cameras may also be used by <a href="#conditional-statements">Conditional Statements</a> to trigger a camera image or video capture (as well as the ability to email the image/video with a notification).</p>
 <h2 id="output-usage">Output Usage</h2>
 <p>Output usage statistics are calculated for each output, based on how long the output has been powered, the current draw of the device connected to the output, and other <a href="#output-usage-settings">Relay Usage Settings</a>.</p>
-<h2 id="system-backup">System Backup</h2>
-<p>A backup is made to /var/Mycodo-backups when the system is upgraded through the web interface or the upgrade script.</p>
-<h2 id="system-restore">System Restore</h2>
-<p>If you need to restore a backup, this can be done on the Config -&gt; Backup/Restore page. Find the backup you would like restored and press the Restore button beside it. A restore can also be initialized through the command line. Use the foloowing commands to initialize a restore, changing the appropriate directory names, ‘user’ to your user name, and TIME and COMMIT to the appropriate text found as the directory names in /var/Mycodo-backups/</p>
+<h2 id="backup-restore">Backup-Restore</h2>
+<p>A backup is made to /var/Mycodo-backups when the system is upgraded or through the web interface on the Config -&gt; Backup / Restore page.</p>
+<p>If you need to restore a backup, this can be done on the Config -&gt; Backup / Restore page. Find the backup you would like restored and press the Restore button beside it. A restore can also be initialized through the command line. Use the foloowing commands to initialize a restore, changing the appropriate directory names, ‘user’ to your user name, and TIME and COMMIT to the appropriate text found as the directory names in /var/Mycodo-backups/</p>
 <pre><code>sudo mv /home/user/Mycodo /home/user/Mycodo_old
 sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
 sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>

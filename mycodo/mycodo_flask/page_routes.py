@@ -241,8 +241,9 @@ def page_export():
     """
     form_export_measurements = forms_misc.ExportMeasurements()
     form_export_settings = forms_misc.ExportSettings()
-    form_export_influxdb = forms_misc.ExportInfluxdb()
     form_import_settings = forms_misc.ImportSettings()
+    form_export_influxdb = forms_misc.ExportInfluxdb()
+    form_import_influxdb = forms_misc.ImportInfluxdb()
 
     output = Output.query.all()
     input_dev = Input.query.all()
@@ -276,6 +277,11 @@ def page_export():
             else:
                 flash('Unknown error creating zipped influxdb database '
                       'and metastore', 'error')
+        elif form_import_influxdb.influxdb_import_upload.data:
+            restore_output_list = utils_export.import_influxdb(form_import_influxdb)
+            if restore_output_list:
+                for each_out in restore_output_list:
+                    flash(each_out, 'success')
 
     # Generate start end end times for date/time picker
     end_picker = datetime.datetime.now().strftime('%m/%d/%Y %H:%M')
@@ -288,6 +294,7 @@ def page_export():
                            form_export_influxdb=form_export_influxdb,
                            form_export_measurements=form_export_measurements,
                            form_export_settings=form_export_settings,
+                           form_import_influxdb=form_import_influxdb,
                            form_import_settings=form_import_settings,
                            output_choices=output_choices,
                            input_choices=input_choices,

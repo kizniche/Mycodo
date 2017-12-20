@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 import logging
+import subprocess
 import time
 import zipfile
 
@@ -29,6 +30,10 @@ logger = logging.getLogger(__name__)
 #
 
 def export_measurements(form):
+    """
+    Take user input to query the InfluxDB and return a CSV file of timestamps
+    and measurement values
+    """
     action = u'{action} {controller}'.format(
         action=gettext(u"Export"),
         controller=gettext(u"Measurements"))
@@ -62,6 +67,10 @@ def export_measurements(form):
 
 
 def export_settings(form):
+    """
+    Save the Mycodo settings database (mycodo.db) to a zip file and serve it
+    to the user
+    """
     action = u'{action} {controller}'.format(
         action=gettext(u"Export"),
         controller=gettext(u"Settings"))
@@ -77,7 +86,7 @@ def export_settings(form):
                 data,
                 mimetype='application/zip',
                 as_attachment=True,
-                attachment_filename='Mycodo_Settings_{mver}_{aver}.zip'.format(
+                attachment_filename='Mycodo_{mver}_Settings_{aver}.zip'.format(
                     mver=MYCODO_VERSION, aver=ALEMBIC_VERSION)
             )
         except Exception as err:
@@ -90,6 +99,10 @@ def export_settings(form):
 
 
 def export_influxdb(form):
+    """
+    Save the InfluxDB metastore and mycodo_db database to a zip file and serve
+    it to the user
+    """
     action = u'{action} {controller}'.format(
         action=gettext(u"Export"),
         controller=gettext(u"Measurements"))
@@ -134,8 +147,8 @@ def export_influxdb(form):
                     data,
                     mimetype='application/zip',
                     as_attachment=True,
-                    attachment_filename='Mycodo_Influxdb_{idbv}.zip'.format(
-                        idbv=influxd_version)
+                    attachment_filename='Mycodo_{mv}_Influxdb_{iv}.zip'.format(
+                        mv=MYCODO_VERSION, iv=influxd_version)
                 )
         except Exception as err:
             error.append("Error: {}".format(err))
@@ -152,6 +165,11 @@ def export_influxdb(form):
 #
 
 def import_settings(form):
+    """
+    Receive a zip file contatining a Mycodo settings database that was
+    exported with export_settings(), then back up the current Mycodo settings
+    database and implement the one form the zip in its's place.
+    """
     action = u'{action} {controller}'.format(
         action=gettext(u"Import"),
         controller=gettext(u"Settings"))
@@ -159,8 +177,9 @@ def import_settings(form):
 
     if form.validate():
         try:
-            correct_format = 'Mycodo_Settings_MYCODOVERSION_DBVERSION.zip'
+            correct_format = 'Mycodo_MYCODOVERSION_Settings_DBVERSION.zip'
             upload_folder = os.path.join(INSTALL_DIRECTORY, 'upload')
+            tmp_folder = os.path.join(upload_folder, 'mycodo_db_tmp')
             mycodo_database_name = 'mycodo.db'
             full_path = None
 
@@ -178,7 +197,7 @@ def import_settings(form):
                 # Split the correctly-formatted filename into parts
                 correct_name = correct_format.rsplit('.', 1)[0]
                 correct_name_1 = correct_name.rsplit('_', 3)[0]
-                correct_name_2 = correct_name.rsplit('_', 3)[1]
+                correct_name_2 = correct_name.rsplit('_', 3)[2]
                 correct_extension = correct_format.rsplit('.', 1)[1].lower()
 
                 # Compare the uploaded filename parts to the correct parts
@@ -191,30 +210,30 @@ def import_settings(form):
                                 cn=correct_name_1))
                         error.append("Correct format is: {fmt}".format(
                             fmt=correct_format))
-                    elif name_split[1] != correct_name_2:
+                    elif name_split[2] != correct_name_2:
                         error.append(
                             "Invalid file name: {n}: {fn} != {cn}".format(
                                 n=file_name,
-                                fn=name_split[1],
+                                fn=name_split[2],
                                 cn=correct_name_2))
                         error.append("Correct format is: {fmt}".format(
                             fmt=correct_format))
                     elif extension != correct_extension:
                         error.append("Extension not 'zip'")
-                    elif name_split[2] != MYCODO_VERSION:
+                    elif name_split[1] != MYCODO_VERSION:
                         error.append("Invalid Mycodo version: {fv} != {mv}. "
                                      "This database can only be imported to "
                                      "Mycodo version {mver}".format(
-                            fv=name_split[2],
+                            fv=name_split[1],
                             mv=MYCODO_VERSION,
-                            mver=name_split[2]))
+                            mver=name_split[1]))
                     elif name_split[3] != ALEMBIC_VERSION:
                         error.append("Invalid database version: {fv} != {dv}."
                                      " This database can only be imported to"
                                      " Mycodo version {mver}".format(
                             fv=name_split[3],
                             dv=ALEMBIC_VERSION,
-                            mver=name_split[2]))
+                            mver=name_split[1]))
                 except Exception as err:
                     error.append(
                         "Exception while verifying file name: {err}".format(err=err))
@@ -222,9 +241,10 @@ def import_settings(form):
             if not error:
                 # Save file to upload directory
                 filename = secure_filename(form.settings_import_file.data.filename)
-                full_path = os.path.join(upload_folder, filename)
+                full_path = os.path.join(tmp_folder, filename)
                 assure_path_exists(upload_folder)
-                form.settings_import_file.data.save(os.path.join(upload_folder, filename))
+                assure_path_exists(tmp_folder)
+                form.settings_import_file.data.save(os.path.join(tmp_folder, filename))
 
                 # Check if contents of zip file are correct
                 try:
@@ -242,7 +262,7 @@ def import_settings(form):
                 # Unzip file
                 try:
                     zip_ref = zipfile.ZipFile(full_path, 'r')
-                    zip_ref.extractall(upload_folder)
+                    zip_ref.extractall(tmp_folder)
                     zip_ref.close()
                 except Exception as err:
                     error.append("Exception while extracting zip file: {err}".format(err=err))
@@ -250,14 +270,155 @@ def import_settings(form):
             if not error:
                 try:
                     # Backup current database and replace with extracted mycodo.db
-                    imported_database = os.path.join(upload_folder, mycodo_database_name)
+                    imported_database = os.path.join(tmp_folder, mycodo_database_name)
                     backup_name = SQL_DATABASE_MYCODO + '.backup_' + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
                     os.rename(SQL_DATABASE_MYCODO, backup_name)
                     os.rename(imported_database, SQL_DATABASE_MYCODO)
 
-                    os.remove(full_path)  # Delete uploaded zip file
+                    # Delete tmp directory if it exists
+                    if os.path.isdir(tmp_folder):
+                        shutil.rmtree(tmp_folder)
 
                     return backup_name  # Success!
+                except Exception as err:
+                    error.append("Exception while replacing database: {err}".format(err=err))
+
+        except Exception as err:
+            error.append("Exception: {}".format(err))
+    else:
+        flash_form_errors(form)
+        return
+
+    flash_success_errors(error, action, url_for('page_routes.page_export'))
+
+
+def import_influxdb(form):
+    """
+    Receive a zip file contatining influx metastore and database that was
+    exported with export_influxdb(), then import the metastore and database
+    in InfluxDB.
+    """
+    action = u'{action} {controller}'.format(
+        action=gettext(u"Import"),
+        controller=gettext(u"Influxdb"))
+    error = []
+
+    if form.validate():
+        try:
+            correct_format = 'Mycodo_MYCODOVERSION_Influxdb_INFLUXVERSION.zip'
+            upload_folder = os.path.join(INSTALL_DIRECTORY, 'upload')
+            tmp_folder = os.path.join(upload_folder, 'mycodo_influx_tmp')
+            full_path = None
+
+            if not form.influxdb_import_file.data:
+                error.append('No file present')
+            elif form.influxdb_import_file.data.filename == '':
+                error.append('No file name')
+            else:
+                # Split the uploaded file into parts
+                file_name = form.influxdb_import_file.data.filename
+                name = file_name.rsplit('.', 1)[0]
+                extension = file_name.rsplit('.', 1)[1].lower()
+                name_split = name.rsplit('_', 3)
+
+                # Split the correctly-formatted filename into parts
+                correct_name = correct_format.rsplit('.', 1)[0]
+                correct_name_1 = correct_name.rsplit('_', 3)[0]
+                correct_name_2 = correct_name.rsplit('_', 3)[2]
+                correct_extension = correct_format.rsplit('.', 1)[1].lower()
+
+                # Compare the uploaded filename parts to the correct parts
+                try:
+                    if name_split[0] != correct_name_1:
+                        error.append(
+                            "Invalid file name: {n}: {fn} != {cn}.".format(
+                                n=file_name,
+                                fn=name_split[0],
+                                cn=correct_name_1))
+                        error.append("Correct format is: {fmt}".format(
+                            fmt=correct_format))
+                    elif name_split[2] != correct_name_2:
+                        error.append(
+                            "Invalid file name: {n}: {fn} != {cn}".format(
+                                n=file_name,
+                                fn=name_split[2],
+                                cn=correct_name_2))
+                        error.append("Correct format is: {fmt}".format(
+                            fmt=correct_format))
+                    elif extension != correct_extension:
+                        error.append("Extension not 'zip'")
+                except Exception as err:
+                    error.append(
+                        "Exception while verifying file name: {err}".format(err=err))
+
+            if not error:
+                # Save file to upload directory
+                filename = secure_filename(form.influxdb_import_file.data.filename)
+                full_path = os.path.join(tmp_folder, filename)
+                assure_path_exists(tmp_folder)
+                assure_path_exists(tmp_folder)
+                form.influxdb_import_file.data.save(os.path.join(tmp_folder, filename))
+
+                # Check if contents of zip file are correct
+                try:
+                    file_list = zipfile.ZipFile(full_path, 'r').namelist()
+                    if not any("meta." in s for s in file_list):
+                        error.append(
+                            "Metastore not found: No 'meta.*' files found "
+                            "in archive")
+                    elif not any("mycodo_db.autogen." in s for s in file_list):
+                        error.append(
+                            "Databases not found: No 'mycodo_db.autogen.*' "
+                            "files found in archive")
+                except Exception as err:
+                    error.append("Exception while opening zip file: {err}".format(err=err))
+
+            if not error:
+                # Unzip file
+                try:
+                    zip_ref = zipfile.ZipFile(full_path, 'r')
+                    zip_ref.extractall(tmp_folder)
+                    zip_ref.close()
+                except Exception as err:
+                    error.append("Exception while extracting zip file: {err}".format(err=err))
+
+            if not error:
+                try:
+                    # Stop influxdb from running (must be stopped to restore database)
+                    cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
+                          "influxdb_stop".format(
+                        pth=INSTALL_DIRECTORY)
+                    out, _, _ = cmd_output(cmd, su_mycodo=False)
+
+                    # Import the mestastore and database
+                    output_successes = []
+                    cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
+                          "influxdb_restore_metastore {dir}".format(
+                        pth=INSTALL_DIRECTORY, dir=tmp_folder)
+                    out, _, _ = cmd_output(cmd, su_mycodo=False)
+                    if out:
+                        output_successes.append(out.decode('utf-8'))
+
+                    cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
+                          "influxdb_restore_database {dir}".format(
+                        pth=INSTALL_DIRECTORY, dir=tmp_folder)
+                    out, _, _ = cmd_output(cmd, su_mycodo=False)
+                    if out:
+                        output_successes.append(out.decode('utf-8'))
+
+                    # Start influxdb
+                    cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
+                          "influxdb_start".format(
+                        pth=INSTALL_DIRECTORY)
+                    out, _, _ = cmd_output(cmd, su_mycodo=False)
+
+                    # Delete tmp directory if it exists
+                    if os.path.isdir(tmp_folder):
+                        shutil.rmtree(tmp_folder)
+
+                    if all(output_successes):  # Success!
+                        output_successes.append("Both metastore and database successfully restored")
+                        return output_successes
                 except Exception as err:
                     error.append("Exception while replacing database: {err}".format(err=err))
 

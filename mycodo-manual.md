@@ -47,10 +47,10 @@ Table of Contents
 
    - [Live Measurements](#live-measurements)
    - [Graphs](#graphs)
-   - [Export / Import](#export--import)
+   - [Export-Import](#export-import)
    - [Camera](#camera)
    - [Output Usage](#output-usage)
-   - [Backup / Restore](#sbackup--restore)
+   - [Backup-Restore](#sbackup-restore)
    - [System Information](#system-information)
 
 [Troubleshooting](#troubleshooting)
@@ -1048,12 +1048,12 @@ Note: Live Graphs require measurements to be acquired, therefore at
 least one sensor needs to be added and activated in order to display
 live data.
 
-Export / Import
+Export-Import
 ---------------
 
-Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.
+Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps. Additionally, the entire measurement database (influxdb) may be exported as a backup. Future support for importing the measurement database is in the works to easily restore and move measurement databases among Mycodo installs.
 
-Settings may be exported as a ZIP file containing the Mycodo settings database (sqlite). Importing of this ZIP file will be supported in the future.
+Mycodo settings may be exported as a ZIP file containing the Mycodo settings database (sqlite). This ZIP file may be used to restore the settings database to another Mycodo install, as long as the Mycodo version and database versions are the same. Future support for installing older (or newer) databases and performing an automatic upgrade/downgrade is in the works.
 
 Camera
 ------
@@ -1072,7 +1072,7 @@ Output usage statistics are calculated for each output, based on how long
 the output has been powered, the current draw of the device connected to
 the output, and other [Relay Usage Settings](#output-usage-settings).
 
-Backup / Restore
+Backup-Restore
 ----------------
 
 A backup is made to /var/Mycodo-backups when the system is upgraded or through the web interface on the Config -> Backup / Restore page.

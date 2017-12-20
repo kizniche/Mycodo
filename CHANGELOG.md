@@ -4,13 +4,15 @@ This version of Mycodo, 5.5.0, migrates from Python 2.7 to Python 3.4. Although 
 
 A consequence of changing from Python 2 to Python 3 is current browser cookies will cause the web user interface to return an error. Because of this, all users will be logged out after upgrading to >= 5.5.0.
 
+With this release, there are the new features of exporting and importing both the Mycodo settings database and InfluxDB measurement database. These can also be imported back into Mycodo. Currently, while the InfluxDB database may be imported into any other version of Mycodo, importing the settings database can only be performed on the same version of Mycodo. However, in the future there will be the ability to upgrade or downgrade the Mycodo settings database to allow it to be used across different versions of Mycodo. 
+
 Also with this release, opencv has been disabled. I have yet to successfully implement a Python 3-compatible version of opencv that doesn't require an extremely long compiling process (hours). Because of this setback, I will put extra effort into improving support for cameras. Therefore, if you know of a library or module that can successfully acquire an image from your webcam (you have tested to work), contact me and I'll look into integrating it into Mycodo.
 
 ### Features
 
  - Migrate from Python 2.7.9 to Python 3.4.2 ([#253](https://github.com/kizniche/mycodo/issues/253))
- - Add ability to export and import settings database for backup or to transfer to other Mycodo installs ([#348](https://github.com/kizniche/mycodo/issues/348))
- - Add ability to export Influxdb Measurement database and metastore ([#348](https://github.com/kizniche/mycodo/issues/348))
+ - Add ability to export and import Mycodo (settings) database ([#348](https://github.com/kizniche/mycodo/issues/348))
+ - Add ability to export and import Influxdb (measurements) database and metastore ([#348](https://github.com/kizniche/mycodo/issues/348))
  - Add size of each backup (in MB) on Backup / Restore page
  - Add check to make sure there is enough free space before performing a backup/upgrade
  - Fix deleting Inputs ([#250](https://github.com/kizniche/mycodo/issues/250))

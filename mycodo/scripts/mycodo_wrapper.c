@@ -66,6 +66,31 @@ int main(int argc, char *argv[]) {
 			sprintf(cmd, "service mycodo stop");
 			system(cmd);
 
+		} else if (strcmp(argv[1], "influxdb_restart") == 0) {
+
+			sprintf(cmd, "service influxdb restart");
+			system(cmd);
+
+        } else if (strcmp(argv[1], "influxdb_start") == 0) {
+
+			sprintf(cmd, "service influxdb start");
+			system(cmd);
+
+		} else if (strcmp(argv[1], "influxdb_stop") == 0) {
+
+			sprintf(cmd, "service influxdb stop");
+			system(cmd);
+
+		} else if (strcmp(argv[1], "influxdb_restore_metastore") == 0 && (argc > 2)) {
+
+			sprintf(cmd, "influxd restore -metadir /var/lib/influxdb/meta %s", argv[2]);
+			system(cmd);
+
+		} else if (strcmp(argv[1], "influxdb_restore_database") == 0 && (argc > 2)) {
+
+			sprintf(cmd, "influxd restore -database mycodo_db -datadir /var/lib/influxdb/data %s", argv[2]);
+			system(cmd);
+
 		} else if (strcmp(argv[1], "upgrade") == 0) {
 
             char path[255];
