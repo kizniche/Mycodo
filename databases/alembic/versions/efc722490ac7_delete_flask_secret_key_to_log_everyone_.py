@@ -70,7 +70,7 @@ def upgrade():
     shutil.rmtree(del_env_path)
 
     # Build the python 3.4 virtualenv
-    full_cmd = "/bin/bash {pth}/mycodo/scripts/update_commands.sh " \
+    full_cmd = "/bin/bash {pth}/mycodo/scripts/upgrade_commands.sh " \
                "setup-virtualenv-py3".format(pth=INSTALL_DIRECTORY,)
     cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
     cmd_out, cmd_err = cmd.communicate()
