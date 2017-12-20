@@ -71,7 +71,7 @@
 
   <h4 style="padding-top: 2em">Import InfluxDB Database and Metastore from ZIP</h4>
 
-  <p>This will allow a ZIP file containing the Influxdb meatastore and database to be uploaded and added to the current Influxdb database of measurements.</p>
+  <p>This will allow a ZIP file containing the Influxdb meatastore and database to be uploaded and added to the current Influxdb database of measurements. InfluxDB and the Mycodo daemon (backend) will be stopped momentarily while the import takes place.</p>
 
   <form method="post" action="/export" enctype=multipart/form-data>
   {{form_import_influxdb.csrf_token}}

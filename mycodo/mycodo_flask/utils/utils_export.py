@@ -384,7 +384,13 @@ def import_influxdb(form):
 
             if not error:
                 try:
-                    # Stop influxdb from running (must be stopped to restore database)
+                    # Stop influxdb and Mycodo daemon (backend) from
+                    # running (influxdb must be stopped to restore database)
+                    cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
+                          "daemon_stop".format(
+                        pth=INSTALL_DIRECTORY)
+                    out, _, _ = cmd_output(cmd, su_mycodo=False)
+
                     cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
                           "influxdb_stop".format(
                         pth=INSTALL_DIRECTORY)
@@ -406,9 +412,16 @@ def import_influxdb(form):
                     if out:
                         output_successes.append(out.decode('utf-8'))
 
-                    # Start influxdb
+                    # Start influxdb and Mycodo daemon (backend)
                     cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
                           "influxdb_start".format(
+                        pth=INSTALL_DIRECTORY)
+                    out, _, _ = cmd_output(cmd, su_mycodo=False)
+
+                    time.sleep(2)
+
+                    cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
+                          "daemon_start".format(
                         pth=INSTALL_DIRECTORY)
                     out, _, _ = cmd_output(cmd, su_mycodo=False)
 
@@ -420,7 +433,7 @@ def import_influxdb(form):
                         output_successes.append("Both metastore and database successfully restored")
                         return output_successes
                 except Exception as err:
-                    error.append("Exception while replacing database: {err}".format(err=err))
+                    error.append("Exception while importing metastore and database: {err}".format(err=err))
 
         except Exception as err:
             error.append("Exception: {}".format(err))
