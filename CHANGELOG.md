@@ -6,6 +6,8 @@ If you rely on your system to work, it is highly recommended that you ***DO NOT 
 
 ### Issues
 
+***You may experience an error during the upgrade that doesn't allow it to complete***
+
 ***It will no longer be possible to restore a pre-5.5.0 backup from the web UI***
 
 ***All users will be logged out of the web UI during the upgrade***
@@ -13,6 +15,14 @@ If you rely on your system to work, it is highly recommended that you ***DO NOT 
 ***OpenCV has been removed as a camera module***
 
 See the details about each issue, below.
+
+### Error durring upgrade
+
+If you experience an error during the upgrade that doesn't allow the upgrade to complete, issue the following command to attempt to resume and complete the upgrade:
+
+```bash
+sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
+```
 
 #### No restoring of pre-5.5.0 backups from the web UI
 

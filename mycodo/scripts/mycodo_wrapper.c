@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
 	if (argc > 1) {
 		if (strcmp(argv[1], "apt-get-remove") == 0 && (argc > 2)) {
 
-			sprintf(cmd, "/usr/bin/apt-get remove -y %s", argv[2]);
+			sprintf(cmd, "apt-get remove -y %s", argv[2]);
 			system(cmd);
 
 		} else if (strcmp(argv[1], "backup-create") == 0) {

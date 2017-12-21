@@ -66,40 +66,36 @@ def upgrade():
     )
 
     # Initialize
-    full_cmd = "{pth}/mycodo/scripts/upgrade_commands.sh " \
-               "initialize".format(pth=INSTALL_DIRECTORY)
-    cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
-    cmd_out, cmd_err = cmd.communicate()
-    cmd_status = cmd.wait()
-    print(cmd_out)
+    cmd_str = "{pth}/mycodo/scripts/upgrade_commands.sh " \
+              "initialize".format(pth=INSTALL_DIRECTORY)
+    cmd = subprocess.Popen(cmd_str, shell=True)
+    cmd.communicate()
+    cmd.wait()
 
     # Set Permissions
-    full_cmd = "/bin/bash {pth}/mycodo/scripts/upgrade_commands.sh " \
-               "update-permissions".format(pth=INSTALL_DIRECTORY)
-    cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
-    cmd_out, cmd_err = cmd.communicate()
-    cmd_status = cmd.wait()
-    print(cmd_out)
+    cmd_str = "/bin/bash {pth}/mycodo/scripts/upgrade_commands.sh " \
+              "update-permissions".format(pth=INSTALL_DIRECTORY)
+    cmd = subprocess.Popen(cmd_str, shell=True)
+    cmd.communicate()
+    cmd.wait()
 
     # Remove apache2
-    full_cmd = "/bin/bash {pth}/mycodo/scripts/mycodo_wrapper " \
-               "apt-get-remove apache2".format(pth=INSTALL_DIRECTORY)
-    cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
-    cmd_out, cmd_err = cmd.communicate()
-    cmd_status = cmd.wait()
-    print(cmd_out)
+    cmd_str = "/bin/bash {pth}/mycodo/scripts/mycodo_wrapper " \
+              "apt-get-remove apache2".format(pth=INSTALL_DIRECTORY)
+    cmd = subprocess.Popen(cmd_str, shell=True)
+    cmd.communicate()
+    cmd.wait()
 
     # Delete the Python 2.7 virtualenv from Mycodo version < 5.0.0
     del_env_path = os.path.join(INSTALL_DIRECTORY, 'env')
     shutil.rmtree(del_env_path)
 
     # Setup the python 3.4 virtualenv for Mycodo version >= 5.0.0
-    full_cmd = "/bin/bash {pth}/mycodo/scripts/upgrade_commands.sh " \
-               "setup-virtualenv".format(pth=INSTALL_DIRECTORY)
-    cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
-    cmd_out, cmd_err = cmd.communicate()
-    cmd_status = cmd.wait()
-    print(cmd_out)
+    cmd_str = "/bin/bash {pth}/mycodo/scripts/upgrade_commands.sh " \
+              "setup-virtualenv".format(pth=INSTALL_DIRECTORY)
+    cmd = subprocess.Popen(cmd_str, shell=True)
+    cmd.communicate()
+    cmd.wait()
 
 
 def downgrade():
