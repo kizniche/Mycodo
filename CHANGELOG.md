@@ -1,4 +1,4 @@
-## 5.5.0 (Unreleased)
+## 5.5.0 (2017-12-20)
 
 With the release of 5.5.0, Mycodo becomes modern by migrating from Python 2.7.9 to Python 3 (3.5.3 if on Raspbian Stretch, 3.4.2 if on Raspbian Jessie).
 
@@ -21,6 +21,7 @@ See the details about each issue, below.
 I found that occasionally the upgrade will spontaneously stop without error. I've seen it happen during an apt-get install and during a pip upgrade. It does not seem consistent, therefore it wasn't able to be fixed. If you experience an error during the upgrade that doesn't allow the upgrade to complete, issue the following command to attempt to resume and complete the upgrade. If that doesn't fix it, you may have to install Mycodo from scratch.
 
 ```bash
+sudo dpkg --configure -a
 sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
 ```
 

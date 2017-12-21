@@ -9,8 +9,8 @@ if [ "$EUID" -ne 0 ] ; then
 fi
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../.." && pwd -P )
-APT_PKGS="apache2 fswebcam gawk gcc git libapache2-mod-wsgi-py3 libav-tools libboost-python-dev \
-          libffi-dev libgtk2.0-0 libi2c-dev logrotate moreutils python-setuptools \
+APT_PKGS="apache2 fswebcam gawk gcc git libapache2-mod-wsgi-py3 libav-tools \
+          libffi-dev libi2c-dev logrotate moreutils python-setuptools \
           python3 python3-dev python3-numpy python3-pigpio python3-smbus sqlite3 wget"
 
 cd ${INSTALL_DIRECTORY}
