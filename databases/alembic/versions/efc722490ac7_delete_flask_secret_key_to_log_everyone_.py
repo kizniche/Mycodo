@@ -65,6 +65,10 @@ def upgrade():
         '''
     )
 
+    # Uninstall apache2
+    subprocess.check_call(['apt-get', 'remove', '-y', 'apache2'],
+               stdout=open(os.devnull, 'wb'), stderr=subprocess.STDOUT)
+
     # Delete the Python 2.7 virtualenv from Mycodo version < 5.0.0
     del_env_path = os.path.join(INSTALL_DIRECTORY, 'env')
     shutil.rmtree(del_env_path)
