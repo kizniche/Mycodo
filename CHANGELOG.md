@@ -18,7 +18,7 @@ See the details about each issue, below.
 
 ### Error durring upgrade
 
-If you experience an error during the upgrade that doesn't allow the upgrade to complete, issue the following command to attempt to resume and complete the upgrade:
+I found that occasionally the upgrade will spontaneously stop without error. I've seen it happen during an apt-get install and during a pip upgrade. It does not seem consistent, therefore it wasn't able to be fixed. If you experience an error during the upgrade that doesn't allow the upgrade to complete, issue the following command to attempt to resume and complete the upgrade. If that doesn't fix it, you may have to install Mycodo from scratch.
 
 ```bash
 sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh

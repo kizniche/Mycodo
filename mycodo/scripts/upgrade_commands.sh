@@ -50,12 +50,7 @@ case "${1:-''}" in
         ln -s server.crt cert.pem
     ;;
     'initialize')
-        printf "\n#### Compiling mycodo_wrapper\n"
-        gcc ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
-        chown root:mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
-        chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
-
-        printf "\n#### Creating users and directories\n"
+        printf "\n#### Creating mycodo user\n"
         useradd -M mycodo
 
         adduser mycodo adm
@@ -64,6 +59,12 @@ case "${1:-''}" in
         adduser mycodo i2c
         adduser mycodo video
 
+        printf "\n#### Compiling mycodo_wrapper\n"
+        gcc ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
+        chown root:mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
+        chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
+
+        printf "\n#### Creating files and directories\n"
         ln -sfn ${INSTALL_DIRECTORY}/Mycodo /var/www/mycodo
 
         mkdir -p /var/log/mycodo

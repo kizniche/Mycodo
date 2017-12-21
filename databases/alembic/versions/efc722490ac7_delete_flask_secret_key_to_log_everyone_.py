@@ -65,27 +65,6 @@ def upgrade():
         '''
     )
 
-    # Initialize
-    cmd_str = "{pth}/mycodo/scripts/upgrade_commands.sh " \
-              "initialize".format(pth=INSTALL_DIRECTORY)
-    cmd = subprocess.Popen(cmd_str, shell=True)
-    cmd.communicate()
-    cmd.wait()
-
-    # Set Permissions
-    cmd_str = "/bin/bash {pth}/mycodo/scripts/upgrade_commands.sh " \
-              "update-permissions".format(pth=INSTALL_DIRECTORY)
-    cmd = subprocess.Popen(cmd_str, shell=True)
-    cmd.communicate()
-    cmd.wait()
-
-    # Remove apache2
-    cmd_str = "/bin/bash {pth}/mycodo/scripts/mycodo_wrapper " \
-              "apt-get-remove apache2".format(pth=INSTALL_DIRECTORY)
-    cmd = subprocess.Popen(cmd_str, shell=True)
-    cmd.communicate()
-    cmd.wait()
-
     # Delete the Python 2.7 virtualenv from Mycodo version < 5.0.0
     del_env_path = os.path.join(INSTALL_DIRECTORY, 'env')
     shutil.rmtree(del_env_path)
