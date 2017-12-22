@@ -5,6 +5,7 @@ import sqlalchemy
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.databases.models import Conditional
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import PID
 from mycodo.mycodo_flask.extensions import db
@@ -31,10 +32,23 @@ def func_add(form_add_func):
             if form_add_func.func_type.data == 'pid':
                 new_func = PID().save()
                 if not error:
-                    display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
+                    display_order = csv_to_list_of_int(
+                        DisplayOrder.query.first().pid)
                     DisplayOrder.query.first().pid = add_display_order(
                         display_order, new_func.id)
                     db.session.commit()
+            elif form_add_func.func_type.data in ['conditional_measurement',
+                                                  'conditional_output']:
+                new_func = Conditional()
+                new_func.conditional_type = form_add_func.func_type.data
+                new_func.save()
+                if not error:
+                    display_order = csv_to_list_of_int(
+                        DisplayOrder.query.first().conditional)
+                    DisplayOrder.query.first().conditional = add_display_order(
+                        display_order, new_func.id)
+                    db.session.commit()
+
         except sqlalchemy.exc.OperationalError as except_msg:
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:

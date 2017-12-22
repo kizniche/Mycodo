@@ -32,13 +32,8 @@ import fasteners
 import requests
 
 from mycodo.config import LIST_DEVICES_I2C
-from mycodo.databases.models import Camera
-from mycodo.databases.models import Conditional
-from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import Input
-from mycodo.databases.models import Math
 from mycodo.databases.models import Output
-from mycodo.databases.models import PID
 from mycodo.databases.models import SMTP
 from mycodo.devices.ads1x15 import ADS1x15Read
 from mycodo.devices.mcp342x import MCP342xRead
@@ -71,7 +66,6 @@ from mycodo.inputs.tmp006 import TMP006Sensor
 from mycodo.inputs.tsl2561 import TSL2561Sensor
 from mycodo.inputs.tsl2591_sensor import TSL2591Sensor
 from mycodo.mycodo_client import DaemonControl
-from mycodo.utils.conditional import check_conditionals
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measure_influxdb
 from mycodo.utils.influx import write_influxdb_value
@@ -120,29 +114,6 @@ class InputController(threading.Thread):
         self.control = DaemonControl()
         self.pause_loop = False
         self.verify_pause_loop = True
-
-        self.cond_id = {}
-        self.cond_action_id = {}
-        self.cond_name = {}
-        self.cond_is_activated = {}
-        self.cond_if_input_period = {}
-        self.cond_if_input_measurement = {}
-        self.cond_if_input_edge_select = {}
-        self.cond_if_input_edge_detected = {}
-        self.cond_if_input_gpio_state = {}
-        self.cond_if_input_direction = {}
-        self.cond_if_input_setpoint = {}
-        self.cond_do_output_id = {}
-        self.cond_do_output_state = {}
-        self.cond_do_output_duration = {}
-        self.cond_execute_command = {}
-        self.cond_email_notify = {}
-        self.cond_do_lcd_id = {}
-        self.cond_do_camera_id = {}
-        self.cond_timer = {}
-        self.smtp_wait_timer = {}
-
-        self.setup_conditionals()
 
         input_dev = db_retrieve_table_daemon(Input, device_id=self.input_id)
         self.input_sel = input_dev
@@ -434,27 +405,6 @@ class InputController(threading.Thread):
                             self.pre_output_activated = False
                             self.get_new_measurement = False
 
-                for each_cond_id in self.cond_id:
-                    if self.cond_is_activated[each_cond_id]:
-                        # Check input conditional if it has been activated
-                        if (self.device in ['EDGE'] and
-                                self.cond_if_input_edge_select[each_cond_id] == 'state' and
-                                time.time() > self.cond_timer[each_cond_id]):
-                            # Inputs that are triggered (switch, reed, hall, etc.)
-                            self.cond_timer[each_cond_id] = time.time() + self.cond_if_input_period[each_cond_id]
-                            check_conditionals(
-                                self, each_cond_id, self.measurements, self.control,
-                                Camera, Conditional, ConditionalActions,
-                                Input, Math, PID, SMTP)
-                        elif ((not self.cond_timer[each_cond_id] and self.trigger_cond) or
-                                time.time() > self.cond_timer[each_cond_id]):
-                            # Inputs that are not triggered (inputs)
-                            self.cond_timer[each_cond_id] = time.time() + self.cond_if_input_period[each_cond_id]
-                            check_conditionals(
-                                self, each_cond_id, self.measurements, self.control,
-                                Camera, Conditional, ConditionalActions,
-                                Input, Math, PID, SMTP)
-
                 self.trigger_cond = False
 
                 time.sleep(0.1)
@@ -644,75 +594,7 @@ class InputController(threading.Thread):
                 args=(self.unique_id, 'edge', rising_or_falling,))
             write_db.start()
 
-            # Check input conditionals
-            for each_cond_id in self.cond_id:
-                if ((self.cond_is_activated[each_cond_id] and
-                     self.cond_if_input_edge_select[each_cond_id] == 'edge') and
-                        ((self.cond_if_input_edge_detected[each_cond_id] == 'rising' and
-                          rising_or_falling == 1) or
-                         (self.cond_if_input_edge_detected[each_cond_id] == 'falling' and
-                          rising_or_falling == -1) or
-                         self.cond_if_input_edge_detected[each_cond_id] == 'both')):
-                    check_conditionals(
-                        self, each_cond_id, self.measurements, self.control,
-                        Camera, Conditional, ConditionalActions,
-                        Input, Math, PID, SMTP)
-
-    def setup_conditionals(self, cond_mod='setup'):
-        # Signal to pause the main loop and wait for verification
-        self.pause_loop = True
-        while not self.verify_pause_loop:
-            time.sleep(0.1)
-
-        self.cond_id = {}
-        self.cond_action_id = {}
-        self.cond_name = {}
-        self.cond_is_activated = {}
-        self.cond_if_input_period = {}
-        self.cond_if_input_measurement = {}
-        self.cond_if_input_edge_select = {}
-        self.cond_if_input_edge_detected = {}
-        self.cond_if_input_gpio_state = {}
-        self.cond_if_input_direction = {}
-        self.cond_if_input_setpoint = {}
-
-        input_conditional = db_retrieve_table_daemon(
-            Conditional)
-        input_conditional = input_conditional.filter(
-            Conditional.sensor_id == self.input_id)
-        input_conditional = input_conditional.filter(
-            Conditional.is_activated == True).all()
-
-        if cond_mod == 'setup':
-            self.cond_timer = {}
-            self.smtp_wait_timer = {}
-        elif cond_mod == 'add':
-            self.logger.debug("Added Conditional")
-        elif cond_mod == 'del':
-            self.logger.debug("Deleted Conditional")
-        elif cond_mod == 'mod':
-            self.logger.debug("Modified Conditional")
-        else:
-            return 1
-
-        for each_cond in input_conditional:
-            if cond_mod == 'setup':
-                self.logger.info(
-                    "Activated Input Conditional {id}".format(id=each_cond.id))
-            self.cond_id[each_cond.id] = each_cond.id
-            self.cond_is_activated[each_cond.id] = each_cond.is_activated
-            self.cond_if_input_period[each_cond.id] = each_cond.if_sensor_period
-            self.cond_if_input_measurement[each_cond.id] = each_cond.if_sensor_measurement
-            self.cond_if_input_edge_select[each_cond.id] = each_cond.if_sensor_edge_select
-            self.cond_if_input_edge_detected[each_cond.id] = each_cond.if_sensor_edge_detected
-            self.cond_if_input_gpio_state[each_cond.id] = each_cond.if_sensor_gpio_state
-            self.cond_if_input_direction[each_cond.id] = each_cond.if_sensor_direction
-            self.cond_if_input_setpoint[each_cond.id] = each_cond.if_sensor_setpoint
-            self.cond_timer[each_cond.id] = time.time() + each_cond.if_sensor_period
-            self.smtp_wait_timer[each_cond.id] = time.time() + 3600
-
-        self.pause_loop = False
-        self.verify_pause_loop = False
+            # TODO: Add edge-detection conditional-checking
 
     def is_running(self):
         return self.running

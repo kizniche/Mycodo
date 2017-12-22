@@ -8,6 +8,7 @@ class DisplayOrder(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
+    conditional = db.Column(db.Text, default='')
     graph = db.Column(db.Text, default='')
     lcd = db.Column(db.Text, default='')
     math = db.Column(db.Text, default='')

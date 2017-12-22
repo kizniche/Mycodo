@@ -22,8 +22,10 @@
 #
 #  Contact at kylegabriel.com
 
-import os
 import sys
+
+import os
+
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
@@ -46,12 +48,14 @@ from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config import STATS_CSV
 from mycodo.config import STATS_INTERVAL
 from mycodo.config import UPGRADE_CHECK_INTERVAL
+from mycodo.controller_conditional import ConditionalController
 from mycodo.controller_input import InputController
 from mycodo.controller_lcd import LCDController
 from mycodo.controller_math import MathController
 from mycodo.controller_output import OutputController
 from mycodo.controller_pid import PIDController
 from mycodo.controller_timer import TimerController
+from mycodo.databases.models import Conditional
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
@@ -174,24 +178,12 @@ def mycodo_service(mycodo):
             return mycodo.refresh_daemon_misc_settings()
 
         @staticmethod
-        def exposed_refresh_math_conditionals(math_id,
-                                              cond_mod):
-            """
-            Instruct the math controller to refresh the settings of
-            conditional statements
-            """
-            return mycodo.refresh_math_conditionals(math_id,
-                                                    cond_mod)
-
-        @staticmethod
-        def exposed_refresh_input_conditionals(input_id,
-                                               cond_mod):
+        def exposed_refresh_conditional(input_id, cond_mod):
             """
             Instruct the input controller to refresh the settings of
             conditional statements
             """
-            return mycodo.refresh_input_conditionals(input_id,
-                                                     cond_mod)
+            return mycodo.refresh_conditional(input_id, cond_mod)
 
         @staticmethod
         def exposed_relay_state(relay_id):
@@ -322,6 +314,7 @@ class DaemonController:
             # May only launch a single thread for this controller
             'Output': None,
             # May launch multiple threads per each of these controllers
+            'Conditional': {},
             'Input': {},
             'LCD': {},
             'Math': {},
@@ -336,6 +329,7 @@ class DaemonController:
             'Input',
             'Math',
             'PID',
+            'Conditional',
             'LCD',
         ]
         self.thread_shutdown_timer = None
@@ -453,6 +447,9 @@ class DaemonController:
             elif cont_type == 'Input':
                 controller_manage['type'] = Input
                 controller_manage['function'] = InputController
+            elif cont_type == 'Conditional':
+                controller_manage['type'] = Conditional
+                controller_manage['function'] = ConditionalController
             elif cont_type == 'Timer':
                 controller_manage['type'] = Timer
                 controller_manage['function'] = TimerController
@@ -540,6 +537,9 @@ class DaemonController:
             for input_id in self.controller['Input']:
                 if not self.controller['Input'][input_id].is_running():
                     return "Error: Input ID {}".format(input_id)
+            for conditional_id in self.controller['Conditional']:
+                if not self.controller['Conditional'][conditional_id].is_running():
+                    return "Error: Conditional ID {}".format(conditional_id)
             for timer_id in self.controller['Timer']:
                 if not self.controller['Timer'][timer_id].is_running():
                     return "Error: Timer ID {}".format(timer_id)
@@ -645,19 +645,11 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def refresh_math_conditionals(self, math_id, cond_mod):
+    def refresh_conditional(self, cond_id, cond_mod):
         try:
-            return self.controller['Math'][math_id].setup_conditionals(cond_mod)
+            return self.controller['Conditional'][cond_id].setup_conditionals(cond_mod)
         except Exception as except_msg:
-            message = "Could not refresh math conditionals:" \
-                      " {err}".format(err=except_msg)
-            self.logger.exception(message)
-
-    def refresh_input_conditionals(self, input_id, cond_mod):
-        try:
-            return self.controller['Input'][input_id].setup_conditionals(cond_mod)
-        except Exception as except_msg:
-            message = "Could not refresh input conditionals:" \
+            message = "Could not refresh conditional:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
@@ -769,6 +761,7 @@ class DaemonController:
         try:
             # Obtain database configuration options
             db_tables = {
+                'Conditional': db_retrieve_table_daemon(Conditional, entry='all'),
                 'Timer': db_retrieve_table_daemon(Timer, entry='all'),
                 'Input': db_retrieve_table_daemon(Input, entry='all'),
                 'Math': db_retrieve_table_daemon(Math, entry='all'),

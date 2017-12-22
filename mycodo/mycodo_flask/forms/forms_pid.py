@@ -15,18 +15,6 @@ from wtforms import widgets
 from wtforms.validators import DataRequired
 
 
-class PIDAdd(FlaskForm):
-    numberPIDs = IntegerField(
-        lazy_gettext('Quantity'),
-        render_kw={"placeholder": lazy_gettext("Quantity")},
-        validators=[validators.NumberRange(
-            min=1,
-            max=20
-        )]
-    )
-    pidAddSubmit = SubmitField(lazy_gettext('Add PIDs'))
-
-
 class PIDModBase(FlaskForm):
     pid_id = IntegerField('PID ID', widget=widgets.HiddenInput())
     name = StringField(
@@ -91,15 +79,15 @@ class PIDModBase(FlaskForm):
     lower_relay_id = StringField(lazy_gettext('Output (Lower)'))
     method_id = IntegerField(
         'Setpoint Tracking Method', widget=widgets.HiddenInput())
-    save = SubmitField(lazy_gettext('Save'))
-    hold = SubmitField(lazy_gettext('Hold'))
-    pause = SubmitField(lazy_gettext('Pause'))
-    resume = SubmitField(lazy_gettext('Resume'))
-    delete = SubmitField(lazy_gettext('Delete'))
-    activate = SubmitField(lazy_gettext('Activate'))
-    deactivate = SubmitField(lazy_gettext('Deactivate'))
-    reorder_up = SubmitField(lazy_gettext('Up'))
-    reorder_down = SubmitField(lazy_gettext('Down'))
+    pid_mod = SubmitField(lazy_gettext('Save'))
+    pid_hold = SubmitField(lazy_gettext('Hold'))
+    pid_pause = SubmitField(lazy_gettext('Pause'))
+    pid_resume = SubmitField(lazy_gettext('Resume'))
+    pid_delete = SubmitField(lazy_gettext('Delete'))
+    pid_activate = SubmitField(lazy_gettext('Activate'))
+    pid_deactivate = SubmitField(lazy_gettext('Deactivate'))
+    pid_order_up = SubmitField(lazy_gettext('Up'))
+    pid_order_down = SubmitField(lazy_gettext('Down'))
 
 
 class PIDModRelayRaise(FlaskForm):

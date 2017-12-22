@@ -10,6 +10,8 @@ With the release of 5.5.0, Mycodo becomes modern by migrating from Python 2.7.9 
 
 ***All users will be logged out of the web UI during the upgrade***
 
+***All Conditionals will be deactivated and need reconfiguring***
+
 ***OpenCV has been removed as a camera module***
 
 If you rely on your system to work, it is highly recommended that you ***DO NOT UPGRADE***. Wait until your system is no longer performing critical tasks to upgrade, in order to allow yourself the ability to thoroughly test your particular configuration works as expected. Although most parts of the system have been tested to work, there is, as always, the potential for unforseen issues (for instance, not every sensor that Mycodo supports has physically been tested). Read the following notes carefully to determine if you want to upgrade to 5.5.0 and newer versions.
@@ -39,6 +41,10 @@ Another consequence of changing from Python 2 to 3 is current browser cookies wi
  
  2. After the upgrade is successful, the upgrade log box on the Upgrade page will redirect to the login page. Do not log in through the log box, but rather refresh the entire page to be redirected to the login page.
 
+#### All Conditionals will be deactivated
+
+The Conditional code has been refactored to make them more modular. As a result, some conditionals will need to be reconfigured before they will operate corectly. Therefore, after the upgrade, reconfigure them appropriately, then reactivate them.
+
 #### OpenCV has been disabled
 
 A Python 3-compatible binary version of opencv, whoch doesn't require an extremely long (hours) compiling process, is unfortunately unavailable. Therefore, if you know of a library or module that can successfully acquire an image from your webcam (you have tested to work), create a [new issue](https://github.com/kizniche/Mycodo/issues/new) with the details of how you acquired the image and we can determine if the method can be integrated into Mycddo.
@@ -51,6 +57,8 @@ A Python 3-compatible binary version of opencv, whoch doesn't require an extreme
  - Add ability to export and import Influxdb (measurements) database and metastore ([#348](https://github.com/kizniche/mycodo/issues/348))
  - Add size of each backup (in MB) on Backup / Restore page
  - Add check to make sure there is enough free space before performing a backup/upgrade
+ - Add dedicated, modular Conditional controller (separate from Input/Math controllers) ([#346](https://github.com/kizniche/mycodo/issues/346))
+ - Add PID oututs as Conditional inputs
 
 ### Bugfixes
 
@@ -61,6 +69,8 @@ A Python 3-compatible binary version of opencv, whoch doesn't require an extreme
 
  - Disable the use of the opencv camera library
  - Update translations
+ - Combine Input and Math pages
+ - Move Conditionals with PIDs on Function page
 
 
 ## 5.4.19 (2017-12-15)

@@ -21,7 +21,7 @@ class MathAdd(FlaskForm):
         choices=MATHS,
         validators=[DataRequired()]
     )
-    add = SubmitField(lazy_gettext('Add Math'))
+    math_add = SubmitField(lazy_gettext('Add Math'))
 
 
 class MathMod(FlaskForm):
@@ -35,13 +35,12 @@ class MathMod(FlaskForm):
     max_measure_age = IntegerField(
         lazy_gettext('Max Age (seconds)'),
         validators=[DataRequired()])
-    mod = SubmitField(lazy_gettext('Save'))
-    delete = SubmitField(lazy_gettext('Delete'))
-    activate = SubmitField(lazy_gettext('Activate'))
-    deactivate = SubmitField(lazy_gettext('Deactivate'))
-    order_up = SubmitField(lazy_gettext('Up'))
-    order_down = SubmitField(lazy_gettext('Down'))
-    conditional_add = SubmitField(lazy_gettext('Add Conditional'))
+    math_mod = SubmitField(lazy_gettext('Save'))
+    math_delete = SubmitField(lazy_gettext('Delete'))
+    math_activate = SubmitField(lazy_gettext('Activate'))
+    math_deactivate = SubmitField(lazy_gettext('Deactivate'))
+    math_order_up = SubmitField(lazy_gettext('Up'))
+    math_order_down = SubmitField(lazy_gettext('Down'))
 
 
 class MathModMultiInput(FlaskForm):

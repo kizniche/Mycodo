@@ -138,7 +138,7 @@
           <ul class="nav navbar-nav">
 
             <li class="dropdown{% if active_page in ['live', 'graph', 'graph_async'] %} active{% endif %}">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Data')}}<span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Info')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li{% if active_page == 'live' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_live')}}"><i class="glyphicon glyphicon-play icon-fw"></i> {{_('Live Measurements')}}</a></li>
                 <li{% if active_page == 'graph' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_graph')}}"><i class="fa fa-area-chart icon-fw"></i> {{_('Live Graphs')}}</a></li>
@@ -146,8 +146,7 @@
               </ul>
             </li>
 
-            <li{% if active_page == 'input' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_input')}}">{{_('Input')}}</a></li>
-            <li{% if active_page == 'math' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_math')}}">{{_('Math')}}</a></li>
+            <li{% if active_page == 'data' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_data')}}">{{_('Data')}}</a></li>
             <li{% if active_page == 'output' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_output')}}">{{_('Output')}}</a></li>
             <li{% if active_page == 'function' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_function')}}">{{_('Function')}}</a></li>
             <li{% if active_page == 'timer' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_timer')}}">{{_('Timer')}}</a></li>

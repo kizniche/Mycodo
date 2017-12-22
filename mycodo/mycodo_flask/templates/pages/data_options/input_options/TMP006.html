@@ -1,0 +1,17 @@
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+  <label class="control-label">I2C Address</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{_('The I2C address to access the device')}}">
+      <option value=""{% if each_input.location == '' %} selected{% endif %}></option>
+      <option value="0x40"{% if each_input.location == '0x40' %} selected{% endif %}>Address 0x40</option>
+      <option value="0x41"{% if each_input.location == '0x41' %} selected{% endif %}>Address 0x41</option>
+      <option value="0x42"{% if each_input.location == '0x42' %} selected{% endif %}>Address 0x42</option>
+      <option value="0x43"{% if each_input.location == '0x43' %} selected{% endif %}>Address 0x43</option>
+      <option value="0x44"{% if each_input.location == '0x44' %} selected{% endif %}>Address 0x44</option>
+      <option value="0x45"{% if each_input.location == '0x45' %} selected{% endif %}>Address 0x45</option>
+      <option value="0x46"{% if each_input.location == '0x46' %} selected{% endif %}>Address 0x46</option>
+      <option value="0x44"{% if each_input.location == '0x44' %} selected{% endif %}>Address 0x47</option>
+    </select>
+  </div>
+</div>
+{% include 'pages/data_options/input_options/TEMPLATE_I2C_BUS.html' %}

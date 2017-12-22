@@ -1,0 +1,18 @@
+<div class="col-xs-6 col-sm-3 col-md-6">
+  {{form_mod_input.cmd_command.label(class_='control-label')}}
+  <div>
+    {{form_mod_input.cmd_command(class_='form-control', value=each_input.cmd_command, **{'title':_('The command to executed (as user mycodo) to return a measurement value')})}}
+  </div>
+</div>
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+  {{form_mod_input.cmd_measurement.label(class_='control-label')}}
+  <div>
+    {{form_mod_input.cmd_measurement(class_='form-control', value=each_input.cmd_measurement, **{'title':'The condition being measured'})}}
+  </div>
+</div>
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+  {{form_mod_input.cmd_measurement_units.label(class_='control-label')}}
+  <div>
+    {{form_mod_input.cmd_measurement_units(class_='form-control', value=each_input.cmd_measurement_units, **{'title':'The units of the condition being measured'})}}
+  </div>
+</div>

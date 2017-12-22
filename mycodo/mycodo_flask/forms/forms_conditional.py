@@ -29,6 +29,7 @@ class Conditional(FlaskForm):
     if_relay_duration = DecimalField(lazy_gettext('If Output Duration'))
 
     # Input conditional options
+    measurement = StringField(lazy_gettext('Measurement'))
     if_sensor_period = DecimalField(lazy_gettext('Period'))
     if_sensor_measurement = StringField(lazy_gettext('Measurement'))
     if_sensor_edge_select = StringField(lazy_gettext('Edge or State'))

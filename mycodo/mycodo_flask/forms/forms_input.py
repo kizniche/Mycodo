@@ -19,23 +19,15 @@ from mycodo.config import INPUTS
 
 
 class InputAdd(FlaskForm):
-    numberSensors = IntegerField(
-        lazy_gettext('Quantity'),
-        render_kw={"placeholder": lazy_gettext("Quantity")},
-        validators=[validators.NumberRange(
-            min=1,
-            max=20
-        )]
-    )
-    sensor = SelectField(
+    input_type = SelectField(
         choices=INPUTS,
         validators=[DataRequired()]
     )
-    sensorAddSubmit = SubmitField(lazy_gettext('Add Input'))
+    input_add = SubmitField(lazy_gettext('Add Input'))
 
 
 class InputMod(FlaskForm):
-    modSensor_id = IntegerField('Input ID', widget=widgets.HiddenInput())
+    input_id = IntegerField('Input ID', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext('Name'),
         validators=[DataRequired()]
@@ -97,10 +89,10 @@ class InputMod(FlaskForm):
         )]
     )
     sht_voltage = StringField(lazy_gettext('Voltage'))
-    modSensorSubmit = SubmitField(lazy_gettext('Save'))
-    delSensorSubmit = SubmitField(lazy_gettext('Delete'))
-    activateSensorSubmit = SubmitField(lazy_gettext('Activate'))
-    deactivateSensorSubmit = SubmitField(lazy_gettext('Deactivate'))
-    orderSensorUp = SubmitField(lazy_gettext('Up'))
-    orderSensorDown = SubmitField(lazy_gettext('Down'))
-    sensorCondAddSubmit = SubmitField(lazy_gettext('Add Conditional'))
+
+    input_mod = SubmitField(lazy_gettext('Save'))
+    input_delete = SubmitField(lazy_gettext('Delete'))
+    input_activate = SubmitField(lazy_gettext('Activate'))
+    input_deactivate = SubmitField(lazy_gettext('Deactivate'))
+    input_order_up = SubmitField(lazy_gettext('Up'))
+    input_order_down = SubmitField(lazy_gettext('Down'))
