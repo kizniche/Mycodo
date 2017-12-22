@@ -128,7 +128,7 @@ case "${1:-''}" in
     'setup-virtualenv')
         if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env ]; then
             pip install virtualenv --upgrade
-            virtualenv --system-site-packages -p python3 ${INSTALL_DIRECTORY}/Mycodo/env
+            virtualenv --system-site-packages -p /usr/bin/python3.5 ${INSTALL_DIRECTORY}/Mycodo/env
         else
             printf "## Virtualenv already exists, skipping creation\n"
         fi
