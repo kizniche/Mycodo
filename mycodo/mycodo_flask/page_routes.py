@@ -551,8 +551,8 @@ def page_info():
         virtualenv_flask = True
 
     virtualenv_daemon = False
-    pstree_output = None
-    top_output = None
+    pstree_daemon_output = None
+    top_daemon_output = None
     daemon_up = daemon_active()
     if daemon_up:
         control = DaemonControl()
