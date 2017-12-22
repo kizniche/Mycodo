@@ -104,7 +104,7 @@ Then change the following settings
 
 ### Install Mycodo
 
-Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and modify the default apache2 configuration to host the Mycodo web UI.
+Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and configure nginx to host the Mycodo web UI.
 
 ```
 sudo apt-get install -y jq
@@ -149,7 +149,8 @@ The certificate that is automatically generated are set to expire in 365 days. I
 ```
 rm -rf ~/Mycodo/mycodo/mycodo_flask/ssl_certs/*.pem
 /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh generate-ssl-certs
-sudo /etc/init.d/apache2 restart
+sudo service nginx restart
+sudo service mycodoflask restart
 ```
 
 If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the web UI using the ```https://``` address prefix (opposed to ```http://```). You may receive a warning message about the security of your site, unless you add the certificate to your browser's trusted list.

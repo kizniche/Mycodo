@@ -73,7 +73,7 @@ sudo /bin/bash ~/upgrade_mycodo_5.sh</pre>
       <p>MANUAL UPGRADE MODE</p>
       <p>FORCE_UPGRADE_MASTER has been set to True in ~/Mycodo/config.py.</p>
       <p>Pressing upgrade below will perform an upgrade from the <a href="https://github.com/kizniche/Mycodo/archive/master.tar.gz">master.tar.gz</a> archive of the <a href="https://github.com/kizniche/Mycodo/tree/master">Mycodo master branch</a> instead of the Release version.</p>
-      <p>If you would like to upgrade to the latest Release version instead, set <code>FORCE_UPGRADE_MASTER = False</code> in ~/Mycodo/mycodo/config.py, restart the web UI with the <code>sudo service apache2 restart</code> command, then refresh this page.</p>
+      <p>If you would like to upgrade to the latest Release version instead, set <code>FORCE_UPGRADE_MASTER = False</code> in ~/Mycodo/mycodo/config.py, restart the web UI with the <code>sudo service mycodoflask restart</code> command, then refresh this page.</p>
     </div>
     <div class="form-inline" style="padding-bottom: 1em">
       <form method="post" action="/admin/upgrade">

@@ -63,7 +63,7 @@ ${INSTALL_CMD} update-influxdb
 
 ${INSTALL_CMD} update-influxdb-db-user
 
-${INSTALL_CMD} update-apache2
+${INSTALL_CMD} update-web-server
 
 ${INSTALL_CMD} update-logrotate
 
@@ -77,7 +77,7 @@ ${INSTALL_CMD} update-cron
 
 ${INSTALL_CMD} initialize
 
-${INSTALL_CMD} restart-web-ui
+${INSTALL_CMD} restart-web-server
 
 ${INSTALL_CMD} update-permissions
 

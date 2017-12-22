@@ -9,9 +9,9 @@ if [ "$EUID" -ne 0 ] ; then
 fi
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../.." && pwd -P )
-APT_PKGS="apache2 fswebcam gawk gcc git libapache2-mod-wsgi-py3 libav-tools \
-          libffi-dev libi2c-dev logrotate moreutils python-setuptools \
-          python3 python3-dev python3-numpy python3-pigpio python3-smbus sqlite3 wget"
+APT_PKGS="fswebcam gawk gcc git libav-tools libffi-dev libi2c-dev logrotate \
+          moreutils nginx python-setuptools python3 python3-dev python3-numpy \
+          python3-pigpio python3-smbus sqlite3 wget"
 
 cd ${INSTALL_DIRECTORY}
 
@@ -105,12 +105,12 @@ case "${1:-''}" in
         ${INSTALL_DIRECTORY}/Mycodo/env/bin/python ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/restart_daemon.py
         service mycodo start
     ;;
-    'restart-web-ui')
-        printf "\n#### Restarting the Mycodo web server\n"
-        killall apache2
+    'restart-web-server')
+        printf "\n#### Restarting the mycodoflask web server\n"
+        service nginx restart
+        service mycodoflask restart
+
         sleep 5
-        service apache2 start
-        sleep 10
 
         printf "\n#### Creating Mycodo database if it doesn't exist\n"
         # Attempt to connect to localhost 5 times, sleeping 60 seconds every fail
@@ -142,10 +142,12 @@ case "${1:-''}" in
         cd ${INSTALL_DIRECTORY}/Mycodo/databases
         ${INSTALL_DIRECTORY}/Mycodo/env/bin/alembic upgrade head
     ;;
-    'update-apache2')
-        printf "\n#### Installing and configuring apache2 web server\n"
-        a2enmod wsgi ssl
-        ln -sf ${INSTALL_DIRECTORY}/Mycodo/install/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
+    'update-web-server')
+        printf "\n#### Installing and configuring nginx web server\n"
+        ln -sf ${INSTALL_DIRECTORY}/Mycodo/install/mycodoflask_nginx.conf /etc/nginx/sites-enabled/000-default.conf
+        systemctl disable mycodoflask.service
+        rm -rf /etc/systemd/system/mycodoflask.service
+        systemctl enable ${INSTALL_DIRECTORY}/Mycodo/install/mycodoflask.service
     ;;
     'update-apt')
         printf "\n\n#### Updating apt repositories\n"
@@ -222,6 +224,7 @@ case "${1:-''}" in
     'update-packages')
         printf "\n#### Installing prerequisite apt packages and update pip\n"
         apt-get update -y
+        apt-get remove -y apache2
         apt-get install -y ${APT_PKGS}
         easy_install pip
         pip install --upgrade pip

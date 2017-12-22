@@ -27,29 +27,7 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
 
 #### No restoring of pre-5.5.0 backups from the web UI
 
-The automatic method of restoring backups to pre-5.5.0 versions will not work properly. This is due to moving of pip virtual environments during the restore and the post-5.5.0 (python3) virtualenv not being compatible with the pre-5.5.0 virtualenv (python2). Restores can still be done manually from the command line, and will need the following command to be executed to rebuild the pre-5.5.0 virtualenv (python2):
-
-```bash
-# Stop daemon and web interace
-sudo service mycodo stop
-sudo service apache2 stop
-
-# Move current Mycodo install to backup location
-sudo mv ~/Mycodo /var/Mycodo-backups/Mycodo-backup-2017-12-25_11-59-59-5.5.0
-
-# Copy a backup to the install directory
-sudo cp -r /var/Mycodo-backups/Mycodo-backup-2017-12-08_21-32-30-5.4.14 ~/Mycodo
-
-# Create the virtualenv
-sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh setup-virtualenv
-
-# Run upgrade_post.sh script to set everything up
-sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
-
-# Start daemon and web interace
-sudo service mycodo start
-sudo service apache2 start
-```
+Restoring backups of pre-5.5.0 versions will not work properly. This is due to moving of pip virtual environments during the restore, post-5.5.0 (python3) virtualenv not being compatible with the pre-5.5.0 virtualenv (python2), and moving from the apache2 web server to nginx.
 
 Also with this release, there are the new features of exporting and importing both the Mycodo settings database and InfluxDB measurement database, which may be used as a backup and imported back into Mycodo at a later timer. Currently, the InfluxDB database may be imported into any other version of Mycodo, and the Mycodo settings database may only be imported to the same version of Mycodo. Automatic upgrading or downgrading of the database to allow cross-version compatibility of these backups will be included in a future release. For the meantime, if you need to restore Mycodo settings to a perticular Mycodo version, you can download the tar.gz of that particular [Release](https://github.com/kizniche/Mycodo/releases), extract, install normally, import the Mycodo settings database, then perform an upgrade to the latest release.
 

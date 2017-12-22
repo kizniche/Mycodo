@@ -305,7 +305,7 @@ KEEPUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodokeepup.log')
 BACKUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodobackup.log')
 UPGRADE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupgrade.log')
 RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
-HTTP_LOG_FILE = '/var/log/apache2/error.log'
+HTTP_LOG_FILE = '/var/log/nginx/error.log'
 
 # Lock files
 LOCK_PATH = '/var/lock'

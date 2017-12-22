@@ -1129,7 +1129,7 @@ Troubleshooting
 
 ```
 mv ~/Mycodo/databases/mycodo.db ~/Mycodo/databases/mycodo.db.backup
-sudo service apache2 restart
+sudo service mycodoflask restart
 ``` 
 
 
