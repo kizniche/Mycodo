@@ -881,6 +881,14 @@ def page_function():
         elif form_conditional.save_cond.data:
             utils_conditional.conditional_mod(
                 form_conditional, 'modify')
+        elif form_conditional.order_up_cond.data:
+            utils_conditional.conditional_reorder(
+                form_conditional.conditional_id.data,
+                display_order_conditional, 'up')
+        elif form_conditional.order_down_cond.data:
+            utils_conditional.conditional_reorder(
+                form_conditional.conditional_id.data,
+                display_order_conditional, 'down')
 
         # Conditioal Actions form actions
         elif form_conditional_actions.add_action.data:

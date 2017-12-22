@@ -43,6 +43,8 @@ class Conditional(FlaskForm):
     delete_cond = SubmitField(lazy_gettext('Delete'))
     activate_cond = SubmitField(lazy_gettext('Activate'))
     deactivate_cond = SubmitField(lazy_gettext('Deactivate'))
+    order_up_cond = SubmitField(lazy_gettext('Up'))
+    order_down_cond = SubmitField(lazy_gettext('Down'))
 
 
 class ConditionalActions(FlaskForm):

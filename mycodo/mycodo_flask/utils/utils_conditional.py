@@ -9,11 +9,13 @@ from sqlalchemy import and_
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalActions
+from mycodo.databases.models import DisplayOrder
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
+from mycodo.mycodo_flask.utils.utils_general import reorder
 
 logger = logging.getLogger(__name__)
 
@@ -165,6 +167,24 @@ def conditional_action_mod(form, mod_type):
 
         check_refresh_conditional(cond.sensor_id, 'mod')
 
+    flash_success_errors(error, action, url_for('page_routes.page_function'))
+
+
+def conditional_reorder(cond_id, display_order, direction):
+    action = '{action} {controller}'.format(
+        action=gettext("Reorder"),
+        controller=gettext("Conditional"))
+    error = []
+
+    try:
+        status, reord_list = reorder(display_order, cond_id, direction)
+        if status == 'success':
+            DisplayOrder.query.first().conditional = ','.join(map(str, reord_list))
+            db.session.commit()
+        elif status == 'error':
+            error.append(reord_list)
+    except Exception as except_msg:
+        error.append(except_msg)
     flash_success_errors(error, action, url_for('page_routes.page_function'))
 
 

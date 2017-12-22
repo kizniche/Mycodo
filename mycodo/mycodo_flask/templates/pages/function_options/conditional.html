@@ -26,17 +26,23 @@
         </div>
       </div>
 
-      <div class="col-xs-12 col-sm-2 no-gutters">
+      <div class="col-xs-12 col-sm-6 col-md-2 no-gutters">
         {%- if each_cond.is_activated %}
           {{form_conditional.deactivate_cond(class_='form-control btn btn-default')}}
         {%- else %}
           {{form_conditional.activate_cond(class_='form-control btn btn-default')}}
         {%- endif -%}
       </div>
-      <div class="col-xs-6 col-sm-2">
+      <div class="col-xs-6 col-sm-3 col-md-1">
+        {{form_conditional.order_up_cond(class_='form-control btn btn-default')}}
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-1">
+        {{form_conditional.order_down_cond(class_='form-control btn btn-default')}}
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-1">
         {{form_conditional.save_cond(class_='form-control btn btn-default')}}
       </div>
-      <div class="col-xs-6 col-sm-2">
+      <div class="col-xs-6 col-sm-3 col-md-1">
         {{form_conditional.delete_cond(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Output Conditional?")'})}}
       </div>
     </div>
