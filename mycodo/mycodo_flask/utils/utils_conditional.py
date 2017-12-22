@@ -22,18 +22,18 @@ logger = logging.getLogger(__name__)
 def conditional_add(cond_type, quantity, page_url, sensor_id=None, math_id=None):
     error = []
     if cond_type == 'relay':
-        conditional_type = gettext(u"Output")
+        conditional_type = gettext("Output")
     elif cond_type == 'sensor':
-        conditional_type = gettext(u"Input")
+        conditional_type = gettext("Input")
     elif cond_type == 'math':
-        conditional_type = gettext(u"Math")
+        conditional_type = gettext("Math")
     else:
         error.append("Unrecognized conditional type: {cond_type}".format(
             cond_type=cond_type))
         conditional_type = None
-    action = u'{action} {controller} ({type})'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"Conditional"),
+    action = '{action} {controller} ({type})'.format(
+        action=gettext("Add"),
+        controller=gettext("Conditional"),
         type=conditional_type)
 
     if not error:
@@ -67,18 +67,18 @@ def conditional_mod(form, mod_type, page_url):
     conditional_type = Conditional.query.filter(
         Conditional.id == form.conditional_id.data).first().conditional_type
     if conditional_type == 'relay':
-        cond_type = gettext(u"Output")
+        cond_type = gettext("Output")
     elif conditional_type == 'sensor':
-        cond_type = gettext(u"Input")
+        cond_type = gettext("Input")
     elif conditional_type == 'math':
-        cond_type = gettext(u"Math")
+        cond_type = gettext("Math")
     else:
         error.append("Unrecognized conditional type: {cond_type}".format(
             cond_type=form.conditional_type.data))
         cond_type = None
-    action = u'{action} {controller} ({cond_type})'.format(
-        action=gettext(u"Mod"),
-        controller=gettext(u"Conditional"),
+    action = '{action} {controller} ({cond_type})'.format(
+        action=gettext("Mod"),
+        controller=gettext("Conditional"),
         cond_type=cond_type)
 
     if not error:
@@ -144,18 +144,18 @@ def conditional_action_add(form, page_url):
     conditional_type = Conditional.query.filter(
         Conditional.id == form.conditional_id.data).first().conditional_type
     if conditional_type == 'relay':
-        cond_type = gettext(u"Output")
+        cond_type = gettext("Output")
     elif conditional_type == 'sensor':
-        cond_type = gettext(u"Input")
+        cond_type = gettext("Input")
     elif conditional_type == 'math':
-        cond_type = gettext(u"Math")
+        cond_type = gettext("Math")
     else:
         error.append("Unrecognized conditional type: {cond_type}".format(
             cond_type=form.conditional_type.data))
         cond_type = None
-    action = u'{action} {controller} ({cond_type})'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"Conditional"),
+    action = '{action} {controller} ({cond_type})'.format(
+        action=gettext("Add"),
+        controller=gettext("Conditional"),
         cond_type=cond_type)
 
     try:
@@ -175,18 +175,18 @@ def conditional_action_mod(form, mod_type, page_url):
     cond = Conditional.query.filter(
         Conditional.id == form.conditional_id.data).first()
     if cond.conditional_type == 'relay':
-        cond_type = gettext(u"Output")
+        cond_type = gettext("Output")
     elif cond.conditional_type == 'sensor':
-        cond_type = gettext(u"Input")
+        cond_type = gettext("Input")
     elif cond.conditional_type == 'math':
-        cond_type = gettext(u"Math")
+        cond_type = gettext("Math")
     else:
         error.append("Unrecognized conditional type: {cond_type}".format(
             cond_type=form.conditional_type.data))
         cond_type = None
-    action = u'{action} {controller} ({cond_type})'.format(
-        action=gettext(u"Mod"),
-        controller=gettext(u"Conditional"),
+    action = '{action} {controller} ({cond_type})'.format(
+        action=gettext("Mod"),
+        controller=gettext("Conditional"),
         cond_type=cond_type)
 
     if mod_type == 'delete':
@@ -263,18 +263,18 @@ def conditional_activate(form, page_url):
         Conditional.id == form.conditional_id.data).first()
 
     if cond.conditional_type == 'relay':
-        cond_type = gettext(u"Output")
+        cond_type = gettext("Output")
     elif cond.conditional_type == 'sensor':
-        cond_type = gettext(u"Input")
+        cond_type = gettext("Input")
     elif cond.conditional_type == 'math':
-        cond_type = gettext(u"Math")
+        cond_type = gettext("Math")
     else:
         error.append("Unrecognized conditional type: {cond_type}".format(
             cond_type=cond.conditional_type))
         cond_type = None
-    action = u'{action} {controller} ({cond_type})'.format(
-        action=gettext(u"Activate"),
-        controller=gettext(u"Conditional"),
+    action = '{action} {controller} ({cond_type})'.format(
+        action=gettext("Activate"),
+        controller=gettext("Conditional"),
         cond_type=cond_type)
 
     cond.is_activated = True
@@ -294,18 +294,18 @@ def conditional_deactivate(form, page_url):
         Conditional.id == form.conditional_id.data).first()
 
     if cond.conditional_type == 'relay':
-        cond_type = gettext(u"Output")
+        cond_type = gettext("Output")
     elif cond.conditional_type == 'sensor':
-        cond_type = gettext(u"Input")
+        cond_type = gettext("Input")
     elif cond.conditional_type == 'math':
-        cond_type = gettext(u"Math")
+        cond_type = gettext("Math")
     else:
         error.append("Unrecognized conditional type: {cond_type}".format(
             cond_type=cond.conditional_type))
         cond_type = None
-    action = u'{action} {controller} ({cond_type})'.format(
-        action=gettext(u"Deactivate"),
-        controller=gettext(u"Conditional"),
+    action = '{action} {controller} ({cond_type})'.format(
+        action=gettext("Deactivate"),
+        controller=gettext("Conditional"),
         cond_type=cond_type)
 
     cond.is_activated = False
@@ -323,18 +323,18 @@ def conditional_deactivate(form, page_url):
 def check_refresh_conditional(cont_id, cont_type, cond_mod, page_url):
     error = []
     if cont_type == 'relay':
-        cond_type_print = gettext(u"Output")
+        cond_type_print = gettext("Output")
     elif cont_type == 'sensor':
-        cond_type_print = gettext(u"Input")
+        cond_type_print = gettext("Input")
     elif cont_type == 'math':
-        cond_type_print = gettext(u"Math")
+        cond_type_print = gettext("Math")
     else:
         error.append("Unrecognized conditional type: {cond_type}".format(
             cond_type=cont_type))
         cond_type_print = None
-    action = u'{action} {controller} ({cond_type})'.format(
-        action=gettext(u"Refresh"),
-        controller=gettext(u"Conditional"),
+    action = '{action} {controller} ({cond_type})'.format(
+        action=gettext("Refresh"),
+        controller=gettext("Conditional"),
         cond_type=cond_type_print)
 
     if cont_type == 'sensor':

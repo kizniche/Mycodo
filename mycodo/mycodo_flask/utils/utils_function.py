@@ -21,9 +21,9 @@ logger = logging.getLogger(__name__)
 #
 
 def func_add(form_add_func):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"Function"))
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Function"))
     error = []
 
     if form_add_func.validate():

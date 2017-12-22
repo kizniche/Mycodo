@@ -29,9 +29,9 @@ logger = logging.getLogger(__name__)
 #
 
 def math_add(form_add_math):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"Math"))
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Math"))
     error = []
 
     if form_add_math.validate():
@@ -53,7 +53,7 @@ def math_add(form_add_math):
             db.session.commit()
 
             flash(gettext(
-                u"%(type)s Math with ID %(id)s (%(uuid)s) successfully added",
+                "%(type)s Math with ID %(id)s (%(uuid)s) successfully added",
                 type=form_add_math.math_type.data,
                 id=new_math.id,
                 uuid=new_math.unique_id),
@@ -68,9 +68,9 @@ def math_add(form_add_math):
 
 
 def math_mod(form_mod_math, form_mod_type=None):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Modify"),
-        controller=gettext(u"Math"))
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Math"))
     error = []
 
     if not form_mod_math.validate():
@@ -83,8 +83,8 @@ def math_mod(form_mod_math, form_mod_type=None):
 
         if mod_math.is_activated:
             error.append(gettext(
-                u"Deactivate Math controller before modifying its "
-                u"settings"))
+                "Deactivate Math controller before modifying its "
+                "settings"))
 
         if not form_mod_type:
             raise ValueError('form_mod_type is not defined')
@@ -155,9 +155,9 @@ def math_mod(form_mod_math, form_mod_type=None):
 
 
 def math_del(form_mod_math):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Delete"),
-        controller=gettext(u"Math"))
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Math"))
     error = []
 
     try:
@@ -195,9 +195,9 @@ def math_del(form_mod_math):
 
 
 def math_reorder(math_id, display_order, direction):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Reorder"),
-        controller=gettext(u"Math"))
+    action = '{action} {controller}'.format(
+        action=gettext("Reorder"),
+        controller=gettext("Math"))
     error = []
     try:
         status, reord_list = reorder(display_order,

@@ -20,8 +20,8 @@ from mycodo.config import INPUTS
 
 class InputAdd(FlaskForm):
     numberSensors = IntegerField(
-        lazy_gettext(u'Quantity'),
-        render_kw={"placeholder": lazy_gettext(u"Quantity")},
+        lazy_gettext('Quantity'),
+        render_kw={"placeholder": lazy_gettext("Quantity")},
         validators=[validators.NumberRange(
             min=1,
             max=20
@@ -31,76 +31,76 @@ class InputAdd(FlaskForm):
         choices=INPUTS,
         validators=[DataRequired()]
     )
-    sensorAddSubmit = SubmitField(lazy_gettext(u'Add Input'))
+    sensorAddSubmit = SubmitField(lazy_gettext('Add Input'))
 
 
 class InputMod(FlaskForm):
     modSensor_id = IntegerField('Input ID', widget=widgets.HiddenInput())
     name = StringField(
-        lazy_gettext(u'Name'),
+        lazy_gettext('Name'),
         validators=[DataRequired()]
     )
-    i2c_bus = IntegerField(lazy_gettext(u'I<sup>2</sup>C Bus'))
-    location = StringField(lazy_gettext(u'Location'))
-    baud_rate = IntegerField(lazy_gettext(u'Baud Rate'))
-    device_loc = StringField(lazy_gettext(u'Device Location'))
-    calibrate_sensor_measure = StringField(lazy_gettext(u'Calibration Measurement'))
-    resolution = IntegerField(lazy_gettext(u'Resolution'))
-    sensitivity = IntegerField(lazy_gettext(u'Sensitivity'))
-    power_relay_id = IntegerField(lazy_gettext(u'Power Output'))
-    multiplexer_address = StringField(lazy_gettext(u'Multiplexer (MX)'))
-    multiplexer_bus = StringField(lazy_gettext(u'Mx I<sup>2</sup>C Bus'))
-    multiplexer_channel = IntegerField(lazy_gettext(u'Mx Channel'))
-    cmd_command = StringField(lazy_gettext(u'Command'))
-    cmd_measurement = StringField(lazy_gettext(u'Measurement'))
-    cmd_measurement_units = StringField(lazy_gettext(u'Unit'))
-    adc_channel = IntegerField(lazy_gettext(u'Channel'))
-    adc_gain = IntegerField(lazy_gettext(u'Gain'))
-    adc_resolution = IntegerField(lazy_gettext(u'Resolution'))
-    adc_measurement = StringField(lazy_gettext(u'Measurement'))
-    adc_measurement_units = StringField(lazy_gettext(u'Measurement Units'))
-    adc_volts_min = DecimalField(lazy_gettext(u'Volts Min'))
-    adc_volts_max = DecimalField(lazy_gettext(u'Volts Max'))
-    adc_units_min = DecimalField(lazy_gettext(u'Units Min'))
-    adc_units_max = DecimalField(lazy_gettext(u'Units Max'))
-    adc_inverse_unit_scale = BooleanField(lazy_gettext(u'Inverse Unit Scale'))
-    switch_edge = StringField(lazy_gettext(u'Edge'))
-    switch_bounce_time = IntegerField(lazy_gettext(u'Bounce Time (ms)'))
-    switch_reset_period = IntegerField(lazy_gettext(u'Reset Period'))
-    pre_relay_id = StringField(lazy_gettext(u'Pre Output'))
+    i2c_bus = IntegerField(lazy_gettext('I<sup>2</sup>C Bus'))
+    location = StringField(lazy_gettext('Location'))
+    baud_rate = IntegerField(lazy_gettext('Baud Rate'))
+    device_loc = StringField(lazy_gettext('Device Location'))
+    calibrate_sensor_measure = StringField(lazy_gettext('Calibration Measurement'))
+    resolution = IntegerField(lazy_gettext('Resolution'))
+    sensitivity = IntegerField(lazy_gettext('Sensitivity'))
+    power_relay_id = IntegerField(lazy_gettext('Power Output'))
+    multiplexer_address = StringField(lazy_gettext('Multiplexer (MX)'))
+    multiplexer_bus = StringField(lazy_gettext('Mx I<sup>2</sup>C Bus'))
+    multiplexer_channel = IntegerField(lazy_gettext('Mx Channel'))
+    cmd_command = StringField(lazy_gettext('Command'))
+    cmd_measurement = StringField(lazy_gettext('Measurement'))
+    cmd_measurement_units = StringField(lazy_gettext('Unit'))
+    adc_channel = IntegerField(lazy_gettext('Channel'))
+    adc_gain = IntegerField(lazy_gettext('Gain'))
+    adc_resolution = IntegerField(lazy_gettext('Resolution'))
+    adc_measurement = StringField(lazy_gettext('Measurement'))
+    adc_measurement_units = StringField(lazy_gettext('Measurement Units'))
+    adc_volts_min = DecimalField(lazy_gettext('Volts Min'))
+    adc_volts_max = DecimalField(lazy_gettext('Volts Max'))
+    adc_units_min = DecimalField(lazy_gettext('Units Min'))
+    adc_units_max = DecimalField(lazy_gettext('Units Max'))
+    adc_inverse_unit_scale = BooleanField(lazy_gettext('Inverse Unit Scale'))
+    switch_edge = StringField(lazy_gettext('Edge'))
+    switch_bounce_time = IntegerField(lazy_gettext('Bounce Time (ms)'))
+    switch_reset_period = IntegerField(lazy_gettext('Reset Period'))
+    pre_relay_id = StringField(lazy_gettext('Pre Output'))
     pre_relay_duration = DecimalField(
-        lazy_gettext(u'Pre Output Duration'),
+        lazy_gettext('Pre Output Duration'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
         )]
     )
     period = DecimalField(
-        lazy_gettext(u'Period (seconds)'),
+        lazy_gettext('Period (seconds)'),
         validators=[DataRequired(),
                     validators.NumberRange(
             min=5.0,
             max=86400.0
         )]
     )
-    weighting = DecimalField(lazy_gettext(u'Weighting'))
-    rpm_pulses_per_rev = DecimalField(lazy_gettext(u'Pulses Per Rev'))
-    sample_time = DecimalField(lazy_gettext(u'Sample Time (seconds)'))
+    weighting = DecimalField(lazy_gettext('Weighting'))
+    rpm_pulses_per_rev = DecimalField(lazy_gettext('Pulses Per Rev'))
+    sample_time = DecimalField(lazy_gettext('Sample Time (seconds)'))
     sht_clock_pin = IntegerField(
-        lazy_gettext(u'Clock Pin'),
+        lazy_gettext('Clock Pin'),
         validators=[validators.NumberRange(
             min=0,
             max=100,
-            message=lazy_gettext(u"If using a SHT sensor, enter the GPIO "
-                                 u"connected to the clock pin (using BCM "
-                                 u"numbering)")
+            message=lazy_gettext("If using a SHT sensor, enter the GPIO "
+                                 "connected to the clock pin (using BCM "
+                                 "numbering)")
         )]
     )
-    sht_voltage = StringField(lazy_gettext(u'Voltage'))
-    modSensorSubmit = SubmitField(lazy_gettext(u'Save'))
-    delSensorSubmit = SubmitField(lazy_gettext(u'Delete'))
-    activateSensorSubmit = SubmitField(lazy_gettext(u'Activate'))
-    deactivateSensorSubmit = SubmitField(lazy_gettext(u'Deactivate'))
-    orderSensorUp = SubmitField(lazy_gettext(u'Up'))
-    orderSensorDown = SubmitField(lazy_gettext(u'Down'))
-    sensorCondAddSubmit = SubmitField(lazy_gettext(u'Add Conditional'))
+    sht_voltage = StringField(lazy_gettext('Voltage'))
+    modSensorSubmit = SubmitField(lazy_gettext('Save'))
+    delSensorSubmit = SubmitField(lazy_gettext('Delete'))
+    activateSensorSubmit = SubmitField(lazy_gettext('Activate'))
+    deactivateSensorSubmit = SubmitField(lazy_gettext('Deactivate'))
+    orderSensorUp = SubmitField(lazy_gettext('Up'))
+    orderSensorDown = SubmitField(lazy_gettext('Down'))
+    sensorCondAddSubmit = SubmitField(lazy_gettext('Add Conditional'))

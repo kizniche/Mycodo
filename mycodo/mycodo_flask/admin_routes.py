@@ -85,7 +85,7 @@ def admin_backup():
                       " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                               log=BACKUP_LOG_FILE)
                 subprocess.Popen(cmd, shell=True)
-                flash(gettext(u"Backup in progress"), "success")
+                flash(gettext("Backup in progress"), "success")
             else:
                 flash(
                     "Not enough free space to perform a backup. A backup "
@@ -104,7 +104,7 @@ def admin_backup():
                   " 2>&1".format(pth=INSTALL_DIRECTORY,
                                  dir=form_backup.selected_dir.data)
             subprocess.Popen(cmd, shell=True)
-            flash(gettext(u"Deletion of backup in progress"),
+            flash(gettext("Deletion of backup in progress"),
                   "success")
 
         elif form_backup.restore.data:
@@ -114,7 +114,7 @@ def admin_backup():
                                           backup=form_backup.full_path.data,
                                           log=RESTORE_LOG_FILE)
             subprocess.Popen(cmd, shell=True)
-            flash(gettext(u"Restore in progress"),
+            flash(gettext("Restore in progress"),
                   "success")
 
     return render_template('admin/backup.html',
@@ -165,8 +165,8 @@ def admin_upgrade():
         return redirect(url_for('general_routes.home'))
 
     if not internet():
-        flash(gettext(u"Upgrade functionality is disabled because an internet "
-                      u"connection was unable to be detected"),
+        flash(gettext("Upgrade functionality is disabled because an internet "
+                      "connection was unable to be detected"),
               "error")
         return render_template('admin/upgrade.html',
                                is_internet=False)
@@ -185,8 +185,8 @@ def admin_upgrade():
 
     if upgrade:
         if upgrade == 2:
-            flash(gettext(u"There was an error encountered during the upgrade"
-                          u" process. Check the upgrade log for details."),
+            flash(gettext("There was an error encountered during the upgrade"
+                          " process. Check the upgrade log for details."),
                   "error")
         return render_template('admin/upgrade.html',
                                upgrade=upgrade)
@@ -203,8 +203,8 @@ def admin_upgrade():
         maj_version = int(MYCODO_VERSION.split('.')[0])
         releases = github_releases(maj_version)
     except Exception as err:
-        flash(gettext(u"Could not determine local mycodo version or "
-                      u"online release versions: {err}".format(err=err)),
+        flash(gettext("Could not determine local mycodo version or "
+                      "online release versions: {err}".format(err=err)),
               "error")
     if len(releases):
         latest_release = releases[0]
@@ -253,7 +253,7 @@ def admin_upgrade():
                 subprocess.Popen(cmd, shell=True)
 
                 upgrade = 1
-                flash(gettext(u"The upgrade (from master branch) has started"), "success")
+                flash(gettext("The upgrade (from master branch) has started"), "success")
             else:
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade" \
                       " | ts '[%Y-%m-%d %H:%M:%S]'" \
@@ -265,9 +265,9 @@ def admin_upgrade():
                 mod_misc = Misc.query.first()
                 mod_misc.mycodo_upgrade_available = False
                 db.session.commit()
-                flash(gettext(u"The upgrade has started"), "success")
+                flash(gettext("The upgrade has started"), "success")
         else:
-            flash(gettext(u"You cannot upgrade if an upgrade is not available"),
+            flash(gettext("You cannot upgrade if an upgrade is not available"),
                   "error")
 
     return render_template('admin/upgrade.html',

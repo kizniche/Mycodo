@@ -17,37 +17,37 @@ from wtforms.validators import DataRequired
 
 class LCDAdd(FlaskForm):
     quantity = IntegerField(
-        lazy_gettext(u'Quantity'),
+        lazy_gettext('Quantity'),
         validators=[validators.NumberRange(
             min=1,
             max=20
         )]
     )
-    add = SubmitField(lazy_gettext(u'Add LCDs'))
+    add = SubmitField(lazy_gettext('Add LCDs'))
 
 
 class LCDMod(FlaskForm):
     lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
     name = StringField(
-        lazy_gettext(u'Name'),
+        lazy_gettext('Name'),
         validators=[DataRequired()]
     )
     location = StringField(
-        "{op} ({unit})".format(op=lazy_gettext(u'Address'),
-                               unit=lazy_gettext(u'I<sup>2</sup>C')),
+        "{op} ({unit})".format(op=lazy_gettext('Address'),
+                               unit=lazy_gettext('I<sup>2</sup>C')),
         validators=[DataRequired()]
     )
     i2c_bus = IntegerField(
-        "{op} ({unit})".format(op=lazy_gettext(u'Bus'),
-                               unit=lazy_gettext(u'I<sup>2</sup>C')),
+        "{op} ({unit})".format(op=lazy_gettext('Bus'),
+                               unit=lazy_gettext('I<sup>2</sup>C')),
         validators=[DataRequired()]
     )
     multiplexer_address = StringField(
-        "{op} ({unit})".format(op=lazy_gettext(u'Multiplexer Address'),
-                               unit=lazy_gettext(u'I<sup>2</sup>C'))
+        "{op} ({unit})".format(op=lazy_gettext('Multiplexer Address'),
+                               unit=lazy_gettext('I<sup>2</sup>C'))
     )
     multiplexer_channel = IntegerField(
-        lazy_gettext(u'Multiplexer Channel'),
+        lazy_gettext('Multiplexer Channel'),
         validators=[
             validators.NumberRange(
                 min=0,
@@ -55,71 +55,71 @@ class LCDMod(FlaskForm):
             )]
     )
     period = DecimalField(
-        lazy_gettext(u'Period (seconds)'),
+        lazy_gettext('Period (seconds)'),
         validators=[validators.NumberRange(
             min=5,
             max=86400,
-            message=lazy_gettext(u"Duration between calculating LCD output "
-                                 u"and applying to regulation must be between "
-                                 u"5 and 86400 seconds.")
+            message=lazy_gettext("Duration between calculating LCD output "
+                                 "and applying to regulation must be between "
+                                 "5 and 86400 seconds.")
         )]
     )
     lcd_type = SelectField(
-        lazy_gettext(u'LCD Type'),
+        lazy_gettext('LCD Type'),
         choices=[
             ('16x2', '16x2'),
             ('20x4', '20x4')
         ],
         validators=[DataRequired()]
     )
-    add_display = SubmitField(lazy_gettext(u'Add Display Set'))
-    save = SubmitField(lazy_gettext(u'Save'))
-    delete = SubmitField(lazy_gettext(u'Delete'))
-    activate = SubmitField(lazy_gettext(u'Activate'))
-    deactivate = SubmitField(lazy_gettext(u'Deactivate'))
-    reorder_up = SubmitField(lazy_gettext(u'Up'))
-    reorder_down = SubmitField(lazy_gettext(u'Down'))
-    reset_flashing = SubmitField(lazy_gettext(u'Reset Flashing'))
+    add_display = SubmitField(lazy_gettext('Add Display Set'))
+    save = SubmitField(lazy_gettext('Save'))
+    delete = SubmitField(lazy_gettext('Delete'))
+    activate = SubmitField(lazy_gettext('Activate'))
+    deactivate = SubmitField(lazy_gettext('Deactivate'))
+    reorder_up = SubmitField(lazy_gettext('Up'))
+    reorder_down = SubmitField(lazy_gettext('Down'))
+    reset_flashing = SubmitField(lazy_gettext('Reset Flashing'))
 
 
 class LCDModDisplay(FlaskForm):
     lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
     lcd_data_id = IntegerField('LCD Data ID', widget=widgets.HiddenInput())
-    line_1_display = StringField(lazy_gettext(u'Line 1'))
+    line_1_display = StringField(lazy_gettext('Line 1'))
     line_1_max_age = DecimalField(
-        lazy_gettext(u'Max Age (seconds)'),
+        lazy_gettext('Max Age (seconds)'),
         validators=[validators.NumberRange(min=1)]
     )
     line_1_decimal_places = IntegerField(
-        lazy_gettext(u'Decimal Places'),
+        lazy_gettext('Decimal Places'),
         validators=[validators.NumberRange(min=0)]
     )
-    line_2_display = StringField(lazy_gettext(u'Line 2'))
+    line_2_display = StringField(lazy_gettext('Line 2'))
     line_2_max_age = DecimalField(
-        lazy_gettext(u'Max Age (seconds)'),
+        lazy_gettext('Max Age (seconds)'),
         validators=[validators.NumberRange(min=1)]
     )
     line_2_decimal_places = IntegerField(
-        lazy_gettext(u'Decimal Places'),
+        lazy_gettext('Decimal Places'),
         validators=[validators.NumberRange(min=0)]
     )
-    line_3_display = StringField(lazy_gettext(u'Line 3'))
+    line_3_display = StringField(lazy_gettext('Line 3'))
     line_3_max_age = DecimalField(
-        lazy_gettext(u'Max Age (seconds)'),
+        lazy_gettext('Max Age (seconds)'),
         validators=[validators.NumberRange(min=1)]
     )
     line_3_decimal_places = IntegerField(
-        lazy_gettext(u'Decimal Places'),
+        lazy_gettext('Decimal Places'),
         validators=[validators.NumberRange(min=0)]
     )
-    line_4_display = StringField(lazy_gettext(u'Line 4'))
+    line_4_display = StringField(lazy_gettext('Line 4'))
     line_4_max_age = DecimalField(
-        lazy_gettext(u'Max Age (seconds)'),
+        lazy_gettext('Max Age (seconds)'),
         validators=[validators.NumberRange(min=1)]
     )
     line_4_decimal_places = IntegerField(
-        lazy_gettext(u'Decimal Places'),
+        lazy_gettext('Decimal Places'),
         validators=[validators.NumberRange(min=0)]
     )
-    save_display = SubmitField(lazy_gettext(u'Save'))
-    delete_display = SubmitField(lazy_gettext(u'Delete'))
+    save_display = SubmitField(lazy_gettext('Save'))
+    delete_display = SubmitField(lazy_gettext('Delete'))

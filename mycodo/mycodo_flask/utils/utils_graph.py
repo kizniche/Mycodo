@@ -26,9 +26,9 @@ logger = logging.getLogger(__name__)
 #
 
 def graph_add(form_add, display_order):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"Graph"))
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Graph"))
     error = []
     new_graph = Graph()
 
@@ -66,7 +66,7 @@ def graph_add(form_add, display_order):
             if not error:
                 new_graph.save()
                 flash(gettext(
-                    u"Graph with ID %(id)s successfully added",
+                    "Graph with ID %(id)s successfully added",
                     id=new_graph.id),
                     "success")
 
@@ -98,7 +98,7 @@ def graph_add(form_add, display_order):
             if not error:
                 new_graph.save()
                 flash(gettext(
-                    u"Gauge with ID %(id)s successfully added",
+                    "Gauge with ID %(id)s successfully added",
                     id=new_graph.id),
                     "success")
 
@@ -117,9 +117,9 @@ def graph_add(form_add, display_order):
 
 
 def graph_mod(form_mod_graph, request_form):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Modify"),
-        controller=gettext(u"Graph"))
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Graph"))
     error = []
 
     mod_graph = Graph.query.filter(
@@ -295,9 +295,9 @@ def graph_mod(form_mod_graph, request_form):
 
 
 def graph_del(form_del_graph):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Delete"),
-        controller=gettext(u"Graph"))
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Graph"))
     error = []
 
     try:
@@ -314,9 +314,9 @@ def graph_del(form_del_graph):
 
 
 def graph_reorder(graph_id, display_order, direction):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Reorder"),
-        controller=gettext(u"Graph"))
+    action = '{action} {controller}'.format(
+        action=gettext("Reorder"),
+        controller=gettext("Graph"))
     error = []
     try:
         status, reord_list = reorder(display_order,

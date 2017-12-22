@@ -18,68 +18,68 @@ from wtforms.validators import Optional
 
 
 class OutputAdd(FlaskForm):
-    relay_quantity = IntegerField(lazy_gettext(u'Quantity'))
-    relay_type = StringField(lazy_gettext(u'Type'))
-    relay_add = SubmitField(lazy_gettext(u'Add Output Device'))
-    relay_cond_quantity = IntegerField(lazy_gettext(u'Quantity'))
-    relay_cond_add = SubmitField(lazy_gettext(u'Add Relay Conditional'))
+    relay_quantity = IntegerField(lazy_gettext('Quantity'))
+    relay_type = StringField(lazy_gettext('Type'))
+    relay_add = SubmitField(lazy_gettext('Add Output Device'))
+    relay_cond_quantity = IntegerField(lazy_gettext('Quantity'))
+    relay_cond_add = SubmitField(lazy_gettext('Add Relay Conditional'))
 
 
 class OutputMod(FlaskForm):
     relay_id = IntegerField('Relay ID', widget=widgets.HiddenInput())
     relay_pin = HiddenField('Relay Pin')
     name = StringField(
-        lazy_gettext(u'Name'),
+        lazy_gettext('Name'),
         validators=[DataRequired()]
     )
-    gpio = IntegerField(lazy_gettext(u'BCM Pin'))
-    wiringpi_pin = IntegerField(lazy_gettext(u'WiringPi Pin'))
-    protocol = IntegerField(lazy_gettext(u'Protocol'))
-    pulse_length = IntegerField(lazy_gettext(u'Pulse Length'))
-    bit_length = IntegerField(lazy_gettext(u'Bit length'))
-    on_command = StringField(lazy_gettext(u'On Command'))
-    off_command = StringField(lazy_gettext(u'Off Command'))
+    gpio = IntegerField(lazy_gettext('BCM Pin'))
+    wiringpi_pin = IntegerField(lazy_gettext('WiringPi Pin'))
+    protocol = IntegerField(lazy_gettext('Protocol'))
+    pulse_length = IntegerField(lazy_gettext('Pulse Length'))
+    bit_length = IntegerField(lazy_gettext('Bit length'))
+    on_command = StringField(lazy_gettext('On Command'))
+    off_command = StringField(lazy_gettext('Off Command'))
     amps = DecimalField(
-        lazy_gettext(u'Current Draw (amps)'),
+        lazy_gettext('Current Draw (amps)'),
         validators=[validators.NumberRange(
             min=0,
             max=50,
-            message=lazy_gettext(u"The current draw of the device connected "
-                                 u"to this relay, in amps.")
+            message=lazy_gettext("The current draw of the device connected "
+                                 "to this relay, in amps.")
         )]
     )
     trigger = SelectField(
-        lazy_gettext(u'On Trigger'),
+        lazy_gettext('On Trigger'),
         choices=[
-            ("1", lazy_gettext(u'High')),
-            ("0", lazy_gettext(u'Low'))
+            ("1", lazy_gettext('High')),
+            ("0", lazy_gettext('Low'))
         ],
         validators=[Optional()]
     )
     on_at_start = SelectField(
-        lazy_gettext(u'Start State'),
+        lazy_gettext('Start State'),
         choices=[
-            ("-1", lazy_gettext(u'Neither')),
-            ("1", lazy_gettext(u'On')),
-            ("0", lazy_gettext(u'Off'))
+            ("-1", lazy_gettext('Neither')),
+            ("1", lazy_gettext('On')),
+            ("0", lazy_gettext('Off'))
         ],
         validators=[DataRequired()]
     )
-    pwm_hertz = IntegerField(lazy_gettext(u'Frequency (Hertz)'))
+    pwm_hertz = IntegerField(lazy_gettext('Frequency (Hertz)'))
     pwm_library = SelectField(
-        lazy_gettext(u'Library'),
+        lazy_gettext('Library'),
         choices=[
-            ("pigpio_any", lazy_gettext(u'Any Pin, <= 40 kHz')),
-            ("pigpio_hardware", lazy_gettext(u'Hardware Pin, <= 30 MHz'))
+            ("pigpio_any", lazy_gettext('Any Pin, <= 40 kHz')),
+            ("pigpio_hardware", lazy_gettext('Hardware Pin, <= 30 MHz'))
         ],
         validators=[DataRequired()]
     )
-    save = SubmitField(lazy_gettext(u'Save'))
-    delete = SubmitField(lazy_gettext(u'Delete'))
-    order_up = SubmitField(lazy_gettext(u'Up'))
-    order_down = SubmitField(lazy_gettext(u'Down'))
+    save = SubmitField(lazy_gettext('Save'))
+    delete = SubmitField(lazy_gettext('Delete'))
+    order_up = SubmitField(lazy_gettext('Up'))
+    order_down = SubmitField(lazy_gettext('Down'))
     pwm_duty_cycle_on = DecimalField(
-        '{} (%)'.format(lazy_gettext(u'Duty Cycle')),
+        '{} (%)'.format(lazy_gettext('Duty Cycle')),
         validators=[Optional()]
     )
-    on_submit = SubmitField(lazy_gettext(u'Turn On'))
+    on_submit = SubmitField(lazy_gettext('Turn On'))

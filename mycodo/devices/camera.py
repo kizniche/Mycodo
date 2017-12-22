@@ -37,7 +37,7 @@ def camera_record(record_type, settings, duration_sec=None):
                                                     uid=settings.unique_id)))
     if record_type == 'photo':
         save_path = assure_path_exists(os.path.join(camera_path, 'still'))
-        filename = u'Still-{cam_id}-{cam}-{ts}.jpg'.format(
+        filename = 'Still-{cam_id}-{cam}-{ts}.jpg'.format(
             cam_id=settings.id,
             cam=settings.name,
             ts=timestamp).replace(" ", "_")
@@ -45,14 +45,14 @@ def camera_record(record_type, settings, duration_sec=None):
         save_path = assure_path_exists(os.path.join(camera_path, 'timelapse'))
         start = datetime.datetime.fromtimestamp(
             settings.timelapse_start_time).strftime("%Y-%m-%d_%H-%M-%S")
-        filename = u'Timelapse-{cam_id}-{cam}-{st}-img-{cn:05d}.jpg'.format(
+        filename = 'Timelapse-{cam_id}-{cam}-{st}-img-{cn:05d}.jpg'.format(
             cam_id=settings.id,
             cam=settings.name,
             st=start,
             cn=settings.timelapse_capture_number).replace(" ", "_")
     elif record_type == 'video':
         save_path = assure_path_exists(os.path.join(camera_path, 'video'))
-        filename = u'Video-{cam}-{ts}.h264'.format(
+        filename = 'Video-{cam}-{ts}.h264'.format(
             cam=settings.name,
             ts=timestamp).replace(" ", "_")
     else:

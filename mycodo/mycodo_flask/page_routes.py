@@ -136,7 +136,7 @@ def page_camera():
             camera_record('photo', mod_camera, flash=flash)
         elif form_camera.start_timelapse.data:
             if mod_camera.stream_started:
-                flash(gettext(u"Cannot start time-lapse if stream is active."), "error")
+                flash(gettext("Cannot start time-lapse if stream is active."), "error")
                 return redirect('/camera')
             now = time.time()
             mod_camera.timelapse_started = True
@@ -167,7 +167,7 @@ def page_camera():
         elif form_camera.start_stream.data:
             if mod_camera.timelapse_started:
                 flash(gettext(
-                    u"Cannot start stream if time-lapse is active."), "error")
+                    "Cannot start stream if time-lapse is active."), "error")
                 return redirect('/camera')
             else:
                 mod_camera.stream_started = True

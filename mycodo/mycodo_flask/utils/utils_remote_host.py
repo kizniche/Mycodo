@@ -146,8 +146,8 @@ def remote_host_add(form_setup, display_order):
             try:
                 db.session.add(new_remote_host)
                 db.session.commit()
-                flash(gettext(u"Remote Host %(host)s with ID %(id)s "
-                              u"(%(uuid)s) successfully added",
+                flash(gettext("Remote Host %(host)s with ID %(id)s "
+                              "(%(uuid)s) successfully added",
                               host=form_setup.host.data,
                               id=new_remote_host.id,
                               uuid=new_remote_host.unique_id),
@@ -157,16 +157,16 @@ def remote_host_add(form_setup, display_order):
                     display_order, new_remote_host.id)
                 db.session.commit()
             except sqlalchemy.exc.OperationalError as except_msg:
-                flash(gettext(u"Error: %(err)s",
-                              err=u'Remote Host Add: {msg}'.format(msg=except_msg)),
+                flash(gettext("Error: %(err)s",
+                              err='Remote Host Add: {msg}'.format(msg=except_msg)),
                       "error")
             except sqlalchemy.exc.IntegrityError as except_msg:
-                flash(gettext(u"Error: %(err)s",
-                              err=u'Remote Host Add: {msg}'.format(msg=except_msg)),
+                flash(gettext("Error: %(err)s",
+                              err='Remote Host Add: {msg}'.format(msg=except_msg)),
                       "error")
         except Exception as except_msg:
-            flash(gettext(u"Error: %(err)s",
-                          err=u'Remote Host Add: {msg}'.format(msg=except_msg)),
+            flash(gettext("Error: %(err)s",
+                          err='Remote Host Add: {msg}'.format(msg=except_msg)),
                   "error")
     else:
         flash_form_errors(form_setup)
@@ -186,6 +186,6 @@ def remote_host_del(form_setup):
         DisplayOrder.query.first().remote_host = list_to_csv(display_order)
         db.session.commit()
     except Exception as except_msg:
-        flash(gettext(u"Error: %(err)s",
-                      err=u'Remote Host Delete: {msg}'.format(msg=except_msg)),
+        flash(gettext("Error: %(err)s",
+                      err='Remote Host Delete: {msg}'.format(msg=except_msg)),
               "error")

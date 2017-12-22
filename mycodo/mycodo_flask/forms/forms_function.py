@@ -14,4 +14,4 @@ class FunctionAdd(FlaskForm):
     func_type = StringField(
         'Func Type',
         validators=[DataRequired()])
-    func_add = SubmitField(lazy_gettext(u'Add Function'))
+    func_add = SubmitField(lazy_gettext('Add Function'))

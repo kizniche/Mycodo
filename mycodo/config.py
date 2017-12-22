@@ -64,86 +64,86 @@ MEASUREMENTS = {
 # Unit abbreviation for each measurement
 MEASUREMENT_UNITS = {
     'altitude': {
-        'name': lazy_gettext(u'Altitude'),
-        'meas': 'altitude', 'unit': u'm'},
+        'name': lazy_gettext('Altitude'),
+        'meas': 'altitude', 'unit': 'm'},
     'co2': {
-        'name': lazy_gettext(u'CO2'),
-        'meas': 'co2', 'unit': u'ppmv'},
+        'name': lazy_gettext('CO2'),
+        'meas': 'co2', 'unit': 'ppmv'},
     'dewpoint': {
-        'name': lazy_gettext(u'Dewpoint'),
-        'meas': 'temperature', 'unit': u'°C'},
+        'name': lazy_gettext('Dewpoint'),
+        'meas': 'temperature', 'unit': '°C'},
     'cpu_load_1m': {
-        'name': lazy_gettext(u'CPU Load'),
-        'meas': 'cpu_load', 'unit': u'1 min'},
+        'name': lazy_gettext('CPU Load'),
+        'meas': 'cpu_load', 'unit': '1 min'},
     'cpu_load_5m': {
-        'name': lazy_gettext(u'CPU Load'),
-        'meas': 'cpu_load', 'unit': u'5 min'},
+        'name': lazy_gettext('CPU Load'),
+        'meas': 'cpu_load', 'unit': '5 min'},
     'cpu_load_15m': {
-        'name': lazy_gettext(u'CPU Load'),
-        'meas': 'cpu_load', 'unit': u'15 min'},
+        'name': lazy_gettext('CPU Load'),
+        'meas': 'cpu_load', 'unit': '15 min'},
     'disk_space': {
-        'name': lazy_gettext(u'Disk'),
-        'meas': 'disk_space', 'unit': u'MB'},
+        'name': lazy_gettext('Disk'),
+        'meas': 'disk_space', 'unit': 'MB'},
     'duration_sec': {
-        'name': lazy_gettext(u'Duration'),
-        'meas': 'duration_sec', 'unit': u'sec'},
+        'name': lazy_gettext('Duration'),
+        'meas': 'duration_sec', 'unit': 'sec'},
     'duty_cycle': {
-        'name': lazy_gettext(u'Duty Cycle'),
-        'meas': 'duty_cycle', 'unit': u'%'},
+        'name': lazy_gettext('Duty Cycle'),
+        'meas': 'duty_cycle', 'unit': '%'},
     'edge': {
-        'name': lazy_gettext(u'Edge'),
-        'meas': 'edge', 'unit': u'edge'},
+        'name': lazy_gettext('Edge'),
+        'meas': 'edge', 'unit': 'edge'},
     'frequency': {
-        'name': lazy_gettext(u'Frequency'),
-        'meas': 'frequency', 'unit': u'Hz'},
+        'name': lazy_gettext('Frequency'),
+        'meas': 'frequency', 'unit': 'Hz'},
     'humidity': {
-        'name': lazy_gettext(u'Humidity'),
-        'meas': 'humidity', 'unit': u'%'},
+        'name': lazy_gettext('Humidity'),
+        'meas': 'humidity', 'unit': '%'},
     'humidity_ratio': {
-        'name': lazy_gettext(u'Humidity Ratio'),
-        'meas': 'humidity_ratio', 'unit': u'kg/kg'},
+        'name': lazy_gettext('Humidity Ratio'),
+        'meas': 'humidity_ratio', 'unit': 'kg/kg'},
     'lux': {
-        'name': lazy_gettext(u'Light'),
-        'meas': 'lux', 'unit': u'lx'},
+        'name': lazy_gettext('Light'),
+        'meas': 'lux', 'unit': 'lx'},
     'moisture': {
-        'name': lazy_gettext(u'Moisture'),
-        'meas': 'moisture', 'unit': u'moisture'},
+        'name': lazy_gettext('Moisture'),
+        'meas': 'moisture', 'unit': 'moisture'},
     'ph': {
-        'name': lazy_gettext(u'pH'),
-        'meas': 'ph', 'unit': u'pH'},
+        'name': lazy_gettext('pH'),
+        'meas': 'ph', 'unit': 'pH'},
     'pid_output': {
-        'name': lazy_gettext(u'PID Output'),
-        'meas': 'pid_output', 'unit': u'sec'},
+        'name': lazy_gettext('PID Output'),
+        'meas': 'pid_output', 'unit': 'sec'},
     'pressure': {
-        'name': lazy_gettext(u'Pressure'),
-        'meas': 'pressure', 'unit': u'Pa'},
+        'name': lazy_gettext('Pressure'),
+        'meas': 'pressure', 'unit': 'Pa'},
     'pulse_width': {
-        'name': lazy_gettext(u'Pulse Width'),
-        'meas': 'pulse_width', 'unit': u'µs'},
+        'name': lazy_gettext('Pulse Width'),
+        'meas': 'pulse_width', 'unit': 'µs'},
     'rpm': {
-        'name': lazy_gettext(u'Revolutions Per Minute'),
-        'meas': 'rpm', 'unit': u'rpm'},
+        'name': lazy_gettext('Revolutions Per Minute'),
+        'meas': 'rpm', 'unit': 'rpm'},
     'setpoint': {
-        'name': lazy_gettext(u'Setpoint'),
+        'name': lazy_gettext('Setpoint'),
         'meas': 'setpoint', 'unit': u''},
     'specific_enthalpy': {
-        'name': lazy_gettext(u'Specific Enthalpy'),
-        'meas': 'specific_enthalpy', 'unit': u'kJ/kg'},
+        'name': lazy_gettext('Specific Enthalpy'),
+        'meas': 'specific_enthalpy', 'unit': 'kJ/kg'},
     'specific_volume': {
-        'name': lazy_gettext(u'Specific Volume'),
-        'meas': 'specific_volume', 'unit': u'm^3/kg'},
+        'name': lazy_gettext('Specific Volume'),
+        'meas': 'specific_volume', 'unit': 'm^3/kg'},
     'temperature': {
-        'name': lazy_gettext(u'Temperature'),
-        'meas': 'temperature', 'unit': u'°C'},
+        'name': lazy_gettext('Temperature'),
+        'meas': 'temperature', 'unit': '°C'},
     'temperature_object': {
-        'name': lazy_gettext(u'Temperature (Obj)'),
-        'meas': 'temperature', 'unit': u'°C'},
+        'name': lazy_gettext('Temperature (Obj)'),
+        'meas': 'temperature', 'unit': '°C'},
     'temperature_die': {
-        'name': lazy_gettext(u'Temperature (Die)'),
-        'meas': 'temperature', 'unit': u'°C'},
+        'name': lazy_gettext('Temperature (Die)'),
+        'meas': 'temperature', 'unit': '°C'},
     'voltage': {
-        'name': lazy_gettext(u'Voltage'),
-        'meas': 'voltage', 'unit': u'volts'}
+        'name': lazy_gettext('Voltage'),
+        'meas': 'voltage', 'unit': 'volts'}
 }
 
 # Inputs and description
@@ -235,16 +235,16 @@ LIST_DEVICES_I2C = [
 
 # Conditional actions
 CONDITIONAL_ACTIONS = collections.OrderedDict([
-    ('relay', lazy_gettext(u'Output')),
-    ('command', lazy_gettext(u'Command')),
-    ('activate_pid', lazy_gettext(u'Activate PID')),
-    ('deactivate_pid', lazy_gettext(u'Deactivate PID')),
-    ('email', lazy_gettext(u'Email')),
-    ('flash_lcd', lazy_gettext(u'Flash LCD')),
-    ('photo', lazy_gettext(u'Photo')),
-    ('photo_email', lazy_gettext(u'Email Photo')),
-    ('video', lazy_gettext(u'Video')),
-    ('video_email', lazy_gettext(u'Email Video'))
+    ('relay', lazy_gettext('Output')),
+    ('command', lazy_gettext('Command')),
+    ('activate_pid', lazy_gettext('Activate PID')),
+    ('deactivate_pid', lazy_gettext('Deactivate PID')),
+    ('email', lazy_gettext('Email')),
+    ('flash_lcd', lazy_gettext('Flash LCD')),
+    ('photo', lazy_gettext('Photo')),
+    ('photo_email', lazy_gettext('Email Photo')),
+    ('video', lazy_gettext('Video')),
+    ('video_email', lazy_gettext('Email Video'))
 ])
 
 # User Roles

@@ -21,20 +21,20 @@ from wtforms.validators import DataRequired
 
 class CreateAdmin(FlaskForm):
     username = StringField(
-        lazy_gettext(u'Username'),
-        render_kw={"placeholder": lazy_gettext(u'Username')},
+        lazy_gettext('Username'),
+        render_kw={"placeholder": lazy_gettext('Username')},
         validators=[DataRequired()])
     email = StringField(
-        lazy_gettext(u'Email'),
-        render_kw={"placeholder": lazy_gettext(u'Email')},
+        lazy_gettext('Email'),
+        render_kw={"placeholder": lazy_gettext('Email')},
         validators=[DataRequired()])
     password = PasswordField(
-        lazy_gettext(u'Password'),
-        render_kw={"placeholder": lazy_gettext(u'Password')},
+        lazy_gettext('Password'),
+        render_kw={"placeholder": lazy_gettext('Password')},
         validators=[DataRequired()])
     password_repeat = PasswordField(
-        lazy_gettext(u'Repeat Password'),
-        render_kw={"placeholder": lazy_gettext(u'Repeat Password')},
+        lazy_gettext('Repeat Password'),
+        render_kw={"placeholder": lazy_gettext('Repeat Password')},
         validators=[DataRequired()])
 
 
@@ -44,16 +44,16 @@ class CreateAdmin(FlaskForm):
 
 class Login(FlaskForm):
     username = StringField(
-        lazy_gettext(u'Username'),
-        render_kw={"placeholder": lazy_gettext(u"Username")},
+        lazy_gettext('Username'),
+        render_kw={"placeholder": lazy_gettext("Username")},
         validators=[DataRequired()]
     )
     password = PasswordField(
-        lazy_gettext(u'Password'),
-        render_kw={"placeholder": lazy_gettext(u"Password")},
+        lazy_gettext('Password'),
+        render_kw={"placeholder": lazy_gettext("Password")},
         validators=[DataRequired()]
     )
-    remember = BooleanField(lazy_gettext(u'remember'))
+    remember = BooleanField(lazy_gettext('remember'))
 
 
 #
@@ -62,19 +62,19 @@ class Login(FlaskForm):
 
 class LogView(FlaskForm):
     lines = IntegerField(
-        lazy_gettext(u'Number of Lines'),
+        lazy_gettext('Number of Lines'),
         validators=[validators.NumberRange(
             min=1,
-            message=lazy_gettext(u'Number of lines should be greater than 0')
+            message=lazy_gettext('Number of lines should be greater than 0')
         )]
     )
-    loglogin = SubmitField(lazy_gettext(u'Login Log'))
-    loghttp = SubmitField(lazy_gettext(u'HTTP Log'))
-    logdaemon = SubmitField(lazy_gettext(u'Daemon Log'))
-    logbackup = SubmitField(lazy_gettext(u'Backup Log'))
-    logkeepup = SubmitField(lazy_gettext(u'KeepUp Log'))
-    logupgrade = SubmitField(lazy_gettext(u'Upgrade Log'))
-    logrestore = SubmitField(lazy_gettext(u'Restore Log'))
+    loglogin = SubmitField(lazy_gettext('Login Log'))
+    loghttp = SubmitField(lazy_gettext('HTTP Log'))
+    logdaemon = SubmitField(lazy_gettext('Daemon Log'))
+    logbackup = SubmitField(lazy_gettext('Backup Log'))
+    logkeepup = SubmitField(lazy_gettext('KeepUp Log'))
+    logupgrade = SubmitField(lazy_gettext('Upgrade Log'))
+    logrestore = SubmitField(lazy_gettext('Restore Log'))
 
 
 #
@@ -84,20 +84,20 @@ class LogView(FlaskForm):
 class RemoteSetup(FlaskForm):
     remote_id = IntegerField('Remote Host ID', widget=widgets.HiddenInput())
     host = StringField(
-        lazy_gettext(u'Domain or IP Address'),
+        lazy_gettext('Domain or IP Address'),
         validators=[DataRequired()]
     )
     username = StringField(
-        lazy_gettext(u'Username'),
+        lazy_gettext('Username'),
         validators=[DataRequired()]
     )
     password = PasswordField(
-        lazy_gettext(u'Password'),
+        lazy_gettext('Password'),
         validators=[DataRequired()]
     )
-    add = SubmitField(lazy_gettext(u'Add Host'))
-    delete = SubmitField(lazy_gettext(u'Delete Host'))
+    add = SubmitField(lazy_gettext('Add Host'))
+    delete = SubmitField(lazy_gettext('Delete Host'))
 
 
 class InstallNotice(FlaskForm):
-    acknowledge = SubmitField(lazy_gettext(u'I Understand'))
+    acknowledge = SubmitField(lazy_gettext('I Understand'))

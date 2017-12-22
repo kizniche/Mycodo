@@ -34,9 +34,9 @@ def export_measurements(form):
     Take user input to query the InfluxDB and return a CSV file of timestamps
     and measurement values
     """
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Export"),
-        controller=gettext(u"Measurements"))
+    action = '{action} {controller}'.format(
+        action=gettext("Export"),
+        controller=gettext("Measurements"))
     error = []
 
     if form.validate():
@@ -71,9 +71,9 @@ def export_settings(form):
     Save the Mycodo settings database (mycodo.db) to a zip file and serve it
     to the user
     """
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Export"),
-        controller=gettext(u"Settings"))
+    action = '{action} {controller}'.format(
+        action=gettext("Export"),
+        controller=gettext("Settings"))
     error = []
 
     try:
@@ -103,9 +103,9 @@ def export_influxdb(form):
     Save the InfluxDB metastore and mycodo_db database to a zip file and serve
     it to the user
     """
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Export"),
-        controller=gettext(u"Measurements"))
+    action = '{action} {controller}'.format(
+        action=gettext("Export"),
+        controller=gettext("Measurements"))
     error = []
 
     try:
@@ -172,9 +172,9 @@ def import_settings(form):
     exported with export_settings(), then back up the current Mycodo settings
     database and implement the one form the zip in its's place.
     """
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Import"),
-        controller=gettext(u"Settings"))
+    action = '{action} {controller}'.format(
+        action=gettext("Import"),
+        controller=gettext("Settings"))
     error = []
 
     try:
@@ -316,9 +316,9 @@ def import_influxdb(form):
     exported with export_influxdb(), then import the metastore and database
     in InfluxDB.
     """
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Import"),
-        controller=gettext(u"Influxdb"))
+    action = '{action} {controller}'.format(
+        action=gettext("Import"),
+        controller=gettext("Influxdb"))
     error = []
 
     try:

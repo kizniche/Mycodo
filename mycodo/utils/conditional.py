@@ -43,7 +43,7 @@ def check_conditionals(self, cond_id, measurements, control,
     cond = db_retrieve_table_daemon(
         Conditional, device_id=cond_id, entry='first')
 
-    message = u"[Conditional: {name} ({id})]".format(
+    message = "[Conditional: {name} ({id})]".format(
         name=cond.name,
         id=cond_id)
 
@@ -53,7 +53,7 @@ def check_conditionals(self, cond_id, measurements, control,
         Math, device_id=cond_id, entry='first')
 
     if not input_dev and not math:
-        message += u" Error: Controller not Input or Math"
+        message += " Error: Controller not Input or Math"
         logger_cond.error(message)
         return
 
@@ -64,8 +64,8 @@ def check_conditionals(self, cond_id, measurements, control,
                 self.unique_id, cond.if_sensor_measurement, duration_seconds)
             if last_measurement:
                 return  # Don't trigger "measurement not found"
-            message += u" {meas} measurement not found in the past" \
-                       u" {value} seconds.".format(
+            message += " {meas} measurement not found in the past" \
+                       " {value} seconds.".format(
                         meas=cond.if_sensor_measurement,
                         value=duration_seconds)
 
@@ -82,26 +82,26 @@ def check_conditionals(self, cond_id, measurements, control,
                   (cond.if_sensor_direction == 'below' and
                    last_measurement < cond.if_sensor_setpoint)):
 
-                message += u" {meas}: {value} ".format(
+                message += " {meas}: {value} ".format(
                     meas=cond.if_sensor_measurement,
                     value=last_measurement)
                 if cond.if_sensor_direction == 'above':
                     message += "(>"
                 elif cond.if_sensor_direction == 'below':
                     message += "(<"
-                message += u" {sp} set value).".format(
+                message += " {sp} set value).".format(
                     sp=cond.if_sensor_setpoint)
             else:
                 return  # Not triggered
     elif cond.if_sensor_edge_detected:
         if cond.if_sensor_edge_select == 'edge':
-            message += u" {edge} Edge Detected.".format(
+            message += " {edge} Edge Detected.".format(
                 edge=cond.if_sensor_edge_detected)
         elif cond.if_sensor_edge_select == 'state':
             if (input_dev and
                     input_dev.location and
                     GPIO.input(int(input_dev.location)) == cond.if_sensor_gpio_state):
-                message += u" {state} GPIO State Detected.".format(
+                message += " {state} GPIO State Detected.".format(
                     state=cond.if_sensor_gpio_state)
 
     cond_actions = db_retrieve_table_daemon(ConditionalActions)
@@ -109,18 +109,18 @@ def check_conditionals(self, cond_id, measurements, control,
         ConditionalActions.conditional_id == cond_id).all()
 
     for cond_action in cond_actions:
-        message += u" Conditional Action ({id}): {do_action}.".format(
+        message += " Conditional Action ({id}): {do_action}.".format(
             id=cond_action.id, do_action=cond_action.do_action)
 
         # Actuate output
         if (cond_action.do_relay_id and
                 cond_action.do_relay_state in ['on', 'off']):
-            message += u" Turn output {id} {state}".format(
+            message += " Turn output {id} {state}".format(
                 id=cond_action.do_relay_id,
                 state=cond_action.do_relay_state)
             if (cond_action.do_relay_state == 'on' and
                     cond_action.do_relay_duration):
-                message += u" for {sec} seconds".format(
+                message += " for {sec} seconds".format(
                     sec=cond_action.do_relay_duration)
             message += "."
 
@@ -148,16 +148,16 @@ def check_conditionals(self, cond_id, measurements, control,
             command_str = command_str.replace(
                 "((period))", str(cond.cond_if_input_period[cond_id]))
 
-            message += u" Execute '{com}' ".format(
+            message += " Execute '{com}' ".format(
                 com=command_str)
 
             _, _, cmd_status = cmd_output(command_str)
 
-            message += u"(Status: {stat}).".format(stat=cmd_status)
+            message += "(Status: {stat}).".format(stat=cmd_status)
 
         # Capture photo
         elif cond_action.do_action in ['photo', 'photo_email']:
-            message += u"  Capturing photo with camera ({id}).".format(
+            message += "  Capturing photo with camera ({id}).".format(
                 id=cond_action.do_camera_id)
             camera_still = db_retrieve_table_daemon(
                 Camera, device_id=cond_action.do_camera_id)
@@ -165,7 +165,7 @@ def check_conditionals(self, cond_id, measurements, control,
 
         # Capture video
         elif cond_action.do_action in ['video', 'video_email']:
-            message += u"  Capturing video with camera ({id}).".format(
+            message += "  Capturing video with camera ({id}).".format(
                 id=cond_action.do_camera_id)
             camera_stream = db_retrieve_table_daemon(
                 Camera, device_id=cond_action.do_camera_id)
@@ -175,12 +175,12 @@ def check_conditionals(self, cond_id, measurements, control,
 
         # Activate PID controller
         elif cond_action.do_action == 'activate_pid':
-            message += u" Activate PID ({id}).".format(
+            message += " Activate PID ({id}).".format(
                 id=cond_action.do_pid_id)
             pid = db_retrieve_table_daemon(
                 PID, device_id=cond_action.do_pid_id, entry='first')
             if pid.is_activated:
-                message += u" Notice: PID is already active!"
+                message += " Notice: PID is already active!"
             else:
                 activate_pid = threading.Thread(
                     target=control.controller_activate,
@@ -190,12 +190,12 @@ def check_conditionals(self, cond_id, measurements, control,
 
         # Deactivate PID controller
         elif cond_action.do_action == 'deactivate_pid':
-            message += u" Deactivate PID ({id}).".format(
+            message += " Deactivate PID ({id}).".format(
                 id=cond_action.do_pid_id)
             pid = db_retrieve_table_daemon(
                 PID, device_id=cond_action.do_pid_id, entry='first')
             if not pid.is_activated:
-                message += u" Notice: PID is already inactive!"
+                message += " Notice: PID is already inactive!"
             else:
                 deactivate_pid = threading.Thread(
                     target=control.controller_deactivate,
@@ -218,15 +218,15 @@ def check_conditionals(self, cond_id, measurements, control,
 
             # If the emails per hour limit has not been exceeded
             if allowed_to_send_notice:
-                message += u" Notify {email}.".format(
+                message += " Notify {email}.".format(
                     email=cond_action.do_action_string)
                 # attachment_type != False indicates to
                 # attach a photo or video
                 if cond_action.do_action == 'photo_email':
-                    message += u" Photo attached to email."
+                    message += " Photo attached to email."
                     attachment_type = 'still'
                 elif cond_action.do_action == 'video_email':
-                    message += u" Video attached to email."
+                    message += " Video attached to email."
                     attachment_type = 'video'
 
                 smtp = db_retrieve_table_daemon(SMTP, entry='first')
@@ -240,7 +240,7 @@ def check_conditionals(self, cond_id, measurements, control,
                         sec=self.smtp_wait_timer[cond_id] - time.time()))
 
         elif cond_action.do_action == 'flash_lcd':
-            message += u" Flashing LCD ({id}).".format(
+            message += " Flashing LCD ({id}).".format(
                 id=cond_action.do_lcd_id)
 
             start_flashing = threading.Thread(

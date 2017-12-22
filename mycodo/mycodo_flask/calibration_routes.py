@@ -112,7 +112,7 @@ def calibration_atlas_ph():
 
     if next_stage == 2:
         if form_ph_calibrate.temperature.data is None:
-            flash(gettext(u"A valid temperature is required: %(temp)s is invalid.",
+            flash(gettext("A valid temperature is required: %(temp)s is invalid.",
                           temp=form_ph_calibrate.temperature.data), "error")
             stage = 1
         else:
@@ -209,7 +209,7 @@ def dual_commands_to_sensor(input_sel, first_cmd, amount,
 
     first_status, first_return_str = atlas_command.calibrate(first_cmd, temperature=set_temp)
     info_str = "{act}: {lvl} ({amt} {unit}): {resp}".format(
-        act=gettext(u'Calibration'), lvl=first_cmd, amt=amount, unit=unit, resp=first_return_str)
+        act=gettext('Calibration'), lvl=first_cmd, amt=amount, unit=unit, resp=first_return_str)
 
     if first_status:
         flash(info_str, "error")
@@ -219,7 +219,7 @@ def dual_commands_to_sensor(input_sel, first_cmd, amount,
         flash(info_str, "success")
         second_status, second_return_str = atlas_command.calibrate(second_cmd)
         second_info_str = "{act}: {cmd}: {resp}".format(
-            act=gettext(u'Command'), cmd=second_cmd, resp=second_return_str)
+            act=gettext('Command'), cmd=second_cmd, resp=second_return_str)
         if second_status:
             flash(second_info_str, "error")
             return_error = second_return_str

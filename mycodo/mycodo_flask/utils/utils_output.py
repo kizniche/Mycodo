@@ -38,20 +38,20 @@ def manipulate_output(action, relay_id):
     return_values = control.relay_setup(action, relay_id)
     if return_values and len(return_values) > 1:
         if return_values[0]:
-            flash(gettext(u"%(err)s",
-                          err=u'{action} Output: Daemon response: {msg}'.format(
+            flash(gettext("%(err)s",
+                          err='{action} Output: Daemon response: {msg}'.format(
                               action=action,
                               msg=return_values[1])),
                   "error")
         else:
-            flash(gettext(u"%(err)s",
-                          err=u'{action} Output: Daemon response: {msg}'.format(
+            flash(gettext("%(err)s",
+                          err='{action} Output: Daemon response: {msg}'.format(
                               action=gettext(action),
                               msg=return_values[1])),
                   "success")
     else:
-        flash(gettext(u"%(err)s",
-                      err=u'{action} Output: Could not connect to Daemon'.format(
+        flash(gettext("%(err)s",
+                      err='{action} Output: Could not connect to Daemon'.format(
                           action=action)),
               "error")
 
@@ -62,55 +62,55 @@ def manipulate_output(action, relay_id):
 
 
 def output_on_off(form_relay):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Actuate"),
-        controller=gettext(u"Output"))
+    action = '{action} {controller}'.format(
+        action=gettext("Actuate"),
+        controller=gettext("Output"))
     error = []
 
     try:
         control = DaemonControl()
         output = Output.query.filter_by(id=form_relay.relay_id.data).first()
         if output.relay_type == 'wired' and int(form_relay.relay_pin.data) == 0:
-            error.append(gettext(u"Cannot modulate output with a GPIO of 0"))
+            error.append(gettext("Cannot modulate output with a GPIO of 0"))
         elif form_relay.on_submit.data:
             if output.relay_type in ['wired',
                                     'wireless_433MHz_pi_switch',
                                     'command']:
                 if float(form_relay.sec_on.data) <= 0:
-                    error.append(gettext(u"Value must be greater than 0"))
+                    error.append(gettext("Value must be greater than 0"))
                 else:
                     return_value = control.relay_on(form_relay.relay_id.data,
                                                     duration=float(form_relay.sec_on.data))
-                    flash(gettext(u"Output turned on for %(sec)s seconds: %(rvalue)s",
+                    flash(gettext("Output turned on for %(sec)s seconds: %(rvalue)s",
                                   sec=form_relay.sec_on.data,
                                   rvalue=return_value),
                           "success")
             if output.relay_type == 'pwm':
                 if int(form_relay.relay_pin.data) == 0:
-                    error.append(gettext(u"Invalid pin"))
+                    error.append(gettext("Invalid pin"))
                 if output.pwm_hertz <= 0:
-                    error.append(gettext(u"PWM Hertz must be a positive value"))
+                    error.append(gettext("PWM Hertz must be a positive value"))
                 if float(form_relay.pwm_duty_cycle_on.data) <= 0:
-                    error.append(gettext(u"PWM duty cycle must be a positive value"))
+                    error.append(gettext("PWM duty cycle must be a positive value"))
                 if not error:
                     return_value = control.relay_on(form_relay.relay_id.data,
                                                     duty_cycle=float(form_relay.pwm_duty_cycle_on.data))
-                    flash(gettext(u"PWM set to %(dc)s%% at %(hertz)s Hz: %(rvalue)s",
+                    flash(gettext("PWM set to %(dc)s%% at %(hertz)s Hz: %(rvalue)s",
                                   dc=float(form_relay.pwm_duty_cycle_on.data),
                                   hertz=output.pwm_hertz,
                                   rvalue=return_value),
                           "success")
         elif form_relay.turn_on.data:
             return_value = control.relay_on(form_relay.relay_id.data, 0)
-            flash(gettext(u"Output turned on: %(rvalue)s",
+            flash(gettext("Output turned on: %(rvalue)s",
                           rvalue=return_value), "success")
         elif form_relay.turn_off.data:
             return_value = control.relay_off(form_relay.relay_id.data)
-            flash(gettext(u"Output turned off: %(rvalue)s",
+            flash(gettext("Output turned off: %(rvalue)s",
                           rvalue=return_value), "success")
     except ValueError as except_msg:
         error.append('{err}: {msg}'.format(
-            err=gettext(u"Invalid value"),
+            err=gettext("Invalid value"),
             msg=except_msg))
     except Exception as except_msg:
         error.append(except_msg)
@@ -123,9 +123,9 @@ def output_on_off(form_relay):
 #
 
 def output_add(form_add_relay):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"Output"))
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Output"))
     error = []
 
     if is_int(form_add_relay.relay_quantity.data, check_range=[1, 20]):
@@ -158,18 +158,18 @@ def output_add(form_add_relay):
             except sqlalchemy.exc.IntegrityError as except_msg:
                 error.append(except_msg)
     else:
-        error_msg = u"{error}. {accepted_values}: 1-20".format(
-            error=gettext(u"Invalid quantity"),
-            accepted_values=gettext(u"Acceptable values")
+        error_msg = "{error}. {accepted_values}: 1-20".format(
+            error=gettext("Invalid quantity"),
+            accepted_values=gettext("Acceptable values")
         )
         error.append(error_msg)
     flash_success_errors(error, action, url_for('page_routes.page_output'))
 
 
 def output_mod(form_relay):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Modify"),
-        controller=gettext(u"Output"))
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Output"))
     error = []
 
     try:
@@ -223,9 +223,9 @@ def output_mod(form_relay):
 
 
 def output_del(form_relay):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Delete"),
-        controller=gettext(u"Output"))
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Output"))
     error = []
 
     try:
@@ -242,9 +242,9 @@ def output_del(form_relay):
 
 
 def output_reorder(relay_id, display_order, direction):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Reorder"),
-        controller=gettext(u"Output"))
+    action = '{action} {controller}'.format(
+        action=gettext("Reorder"),
+        controller=gettext("Output"))
     error = []
     try:
         status, reord_list = reorder(display_order,

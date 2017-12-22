@@ -1,5 +1,5 @@
 [Unit]
-Description=Unicorn Daemon for Mycodo flask frontend (web UI)
+Description=gunicorn daemon for Mycodo flask frontend
 After=network.target
 
 [Service]

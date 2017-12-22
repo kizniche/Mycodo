@@ -34,9 +34,9 @@ logger = logging.getLogger(__name__)
 #
 
 def input_add(form_add_sensor):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"Input"))
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Input"))
     error = []
 
     if form_add_sensor.validate():
@@ -199,7 +199,7 @@ def input_add(form_add_sensor):
                 db.session.commit()
 
                 flash(gettext(
-                    u"%(type)s Input with ID %(id)s (%(uuid)s) successfully added",
+                    "%(type)s Input with ID %(id)s (%(uuid)s) successfully added",
                     type=form_add_sensor.sensor.data,
                     id=new_sensor.id,
                     uuid=new_sensor.unique_id),
@@ -214,9 +214,9 @@ def input_add(form_add_sensor):
 
 
 def input_mod(form_mod_sensor):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Modify"),
-        controller=gettext(u"Input"))
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Input"))
     error = []
 
     try:
@@ -225,23 +225,23 @@ def input_mod(form_mod_sensor):
 
         if mod_sensor.is_activated:
             error.append(gettext(
-                u"Deactivate sensor controller before modifying its "
-                u"settings"))
+                "Deactivate sensor controller before modifying its "
+                "settings"))
         if (mod_sensor.device == 'AM2315' and
                 form_mod_sensor.period.data < 7):
             error.append(gettext(
-                u"Choose a Read Period equal to or greater than 7. The "
-                u"AM2315 may become unresponsive if the period is "
-                u"below 7."))
+                "Choose a Read Period equal to or greater than 7. The "
+                "AM2315 may become unresponsive if the period is "
+                "below 7."))
         if ((form_mod_sensor.period.data < mod_sensor.pre_relay_duration) and
                 mod_sensor.pre_relay_duration):
             error.append(gettext(
-                u"The Read Period cannot be less than the Pre Output "
-                u"Duration"))
+                "The Read Period cannot be less than the Pre Output "
+                "Duration"))
         if (form_mod_sensor.device_loc.data and
                 not os.path.exists(form_mod_sensor.device_loc.data)):
             error.append(gettext(
-                u"Invalid device or improper permissions to read device"))
+                "Invalid device or improper permissions to read device"))
 
         if not error:
             mod_sensor.name = form_mod_sensor.name.data
@@ -304,9 +304,9 @@ def input_mod(form_mod_sensor):
 
 
 def input_del(form_mod_sensor):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Delete"),
-        controller=gettext(u"Input"))
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Input"))
     error = []
 
     input_id = form_mod_sensor.modSensor_id.data
@@ -344,9 +344,9 @@ def input_del(form_mod_sensor):
 
 
 def input_reorder(input_id, display_order, direction):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Reorder"),
-        controller=gettext(u"Input"))
+    action = '{action} {controller}'.format(
+        action=gettext("Reorder"),
+        controller=gettext("Input"))
     error = []
 
     try:
@@ -364,13 +364,13 @@ def input_reorder(input_id, display_order, direction):
 def input_activate(form_mod_sensor):
     input_id = form_mod_sensor.modSensor_id.data
     input_dev = Input.query.filter(Input.id == input_id).first()
-    if (input_dev.device != u'LinuxCommand' and
+    if (input_dev.device != 'LinuxCommand' and
             not input_dev.location and
             input_dev.device not in DEVICES_DEFAULT_LOCATION):
         flash("Cannot activate Input without the GPIO/I2C Address/Port "
               "to communicate with it set.", "error")
         return redirect(url_for('page_routes.page_input'))
-    elif (input_dev.device == u'LinuxCommand' and
+    elif (input_dev.device == 'LinuxCommand' and
           input_dev.cmd_command is ''):
         flash("Cannot activate Input without a command set.", "error")
         return redirect(url_for('page_routes.page_input'))

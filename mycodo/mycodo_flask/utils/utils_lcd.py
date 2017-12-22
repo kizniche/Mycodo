@@ -30,9 +30,9 @@ logger = logging.getLogger(__name__)
 #
 
 def lcd_add(quantity):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"LCD"))
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("LCD"))
     error = []
     for _ in range(0, quantity):
         try:
@@ -57,16 +57,16 @@ def lcd_add(quantity):
 
 
 def lcd_mod(form_mod_lcd):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Modify"),
-        controller=gettext(u"LCD"))
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("LCD"))
     error = []
 
     lcd = LCD.query.filter(
         LCD.id == form_mod_lcd.lcd_id.data).first()
     if lcd.is_activated:
-        error.append(gettext(u"Deactivate LCD controller before modifying"
-                             u" its settings."))
+        error.append(gettext("Deactivate LCD controller before modifying"
+                             " its settings."))
 
     if not error:
         if form_mod_lcd.validate():
@@ -90,16 +90,16 @@ def lcd_mod(form_mod_lcd):
 
 
 def lcd_del(lcd_id):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Delete"),
-        controller=gettext(u"LCD"))
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("LCD"))
     error = []
 
     lcd = LCD.query.filter(
         LCD.id == lcd_id).first()
     if lcd.is_activated:
-        error.append(gettext(u"Deactivate LCD controller before modifying "
-                             u"its settings."))
+        error.append(gettext("Deactivate LCD controller before modifying "
+                             "its settings."))
 
     if not error:
         try:
@@ -122,9 +122,9 @@ def lcd_del(lcd_id):
 
 
 def lcd_reorder(lcd_id, display_order, direction):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Reorder"),
-        controller=gettext(u"LCD"))
+    action = '{action} {controller}'.format(
+        action=gettext("Reorder"),
+        controller=gettext("LCD"))
     error = []
     try:
         status, reord_list = reorder(display_order,
@@ -141,9 +141,9 @@ def lcd_reorder(lcd_id, display_order, direction):
 
 
 def lcd_activate(lcd_id):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Activate"),
-        controller=gettext(u"LCD"))
+    action = '{action} {controller}'.format(
+        action=gettext("Activate"),
+        controller=gettext("LCD"))
     error = []
 
     try:
@@ -168,7 +168,7 @@ def lcd_activate(lcd_id):
 
         if blank_line_detected:
             error.append(gettext(
-                u"Cannot activate LCD if there are blank lines"))
+                "Cannot activate LCD if there are blank lines"))
 
         if not error:
             controller_activate_deactivate(
@@ -192,22 +192,22 @@ def lcd_reset_flashing(lcd_id):
     return_value, return_msg = control.flash_lcd(
         lcd_id, 0)
     if return_value:
-        flash(gettext(u"%(msg)s", msg=return_msg), "success")
+        flash(gettext("%(msg)s", msg=return_msg), "success")
     else:
-        flash(gettext(u"%(msg)s", msg=return_msg), "error")
+        flash(gettext("%(msg)s", msg=return_msg), "error")
 
 
 def lcd_display_add(form):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"Display"))
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Display"))
     error = []
 
     lcd = LCD.query.filter(
         LCD.id == form.lcd_id.data).first()
     if lcd.is_activated:
-        error.append(gettext(u"Deactivate LCD controller before modifying"
-                             u" its settings."))
+        error.append(gettext("Deactivate LCD controller before modifying"
+                             " its settings."))
 
     if not error:
         try:
@@ -223,24 +223,24 @@ def lcd_display_add(form):
 
 
 def lcd_display_mod(form):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Mod"),
-        controller=gettext(u"Display"))
+    action = '{action} {controller}'.format(
+        action=gettext("Mod"),
+        controller=gettext("Display"))
     error = []
 
     lcd = LCD.query.filter(
         LCD.id == form.lcd_id.data).first()
     if lcd.is_activated:
-        error.append(gettext(u"Deactivate LCD controller before modifying"
-                             u" its settings."))
+        error.append(gettext("Deactivate LCD controller before modifying"
+                             " its settings."))
 
     if not error:
         try:
             mod_lcd = LCD.query.filter(
                 LCD.id == form.lcd_id.data).first()
             if mod_lcd.is_activated:
-                flash(gettext(u"Deactivate LCD controller before modifying"
-                              u" its settings."), "error")
+                flash(gettext("Deactivate LCD controller before modifying"
+                              " its settings."), "error")
                 return redirect('/lcd')
 
             mod_lcd_data = LCDData.query.filter(
@@ -289,9 +289,9 @@ def lcd_display_mod(form):
 
 
 def lcd_display_del(lcd_data_id, delete_last=False):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Delete"),
-        controller=gettext(u"Display"))
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Display"))
     error = []
 
     lcd_data_this = LCDData.query.filter(
@@ -302,10 +302,10 @@ def lcd_display_del(lcd_data_id, delete_last=False):
         LCD.id == lcd_data_this.lcd_id).first()
 
     if lcd.is_activated:
-        error.append(gettext(u"Deactivate LCD controller before modifying"
-                             u" its settings"))
+        error.append(gettext("Deactivate LCD controller before modifying"
+                             " its settings"))
     if not delete_last and len(lcd_data_all) < 2:
-        error.append(gettext(u"The last display cannot be deleted"))
+        error.append(gettext("The last display cannot be deleted"))
 
     if not error:
         try:

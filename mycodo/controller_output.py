@@ -188,7 +188,7 @@ class OutputController(threading.Thread):
                     'pwm', 'wired', 'wireless_433MHz_pi_switch'] and
                     self.output_pin[output_id] is None):
                 self.logger.warning(
-                    u"Invalid pin for output {id} ({name}): {pin}.".format(
+                    "Invalid pin for output {id} ({name}): {pin}.".format(
                         id=self.output_id[output_id],
                         name=self.output_name[output_id],
                         pin=self.output_pin[output_id]))
@@ -201,9 +201,9 @@ class OutputController(threading.Thread):
                 max_amps = db_retrieve_table_daemon(Misc, entry='first').max_amps
                 if current_amps + self.output_amps[output_id] > max_amps:
                     self.logger.warning(
-                        u"Cannot turn output {} ({}) On. If this output turns on, "
-                        u"there will be {} amps being drawn, which exceeds the "
-                        u"maximum set draw of {} amps.".format(
+                        "Cannot turn output {} ({}) On. If this output turns on, "
+                        "there will be {} amps being drawn, which exceeds the "
+                        "maximum set draw of {} amps.".format(
                             self.output_id[output_id],
                             self.output_name[output_id],
                             current_amps,
@@ -220,10 +220,10 @@ class OutputController(threading.Thread):
                                    self.output_on_until[output_id]).total_seconds()
                     if off_seconds < min_off:
                         self.logger.debug(
-                            u"Output {id} ({name}) instructed to turn on by PID, "
-                            u"however the minimum off period of {min_off_sec} "
-                            u"seconds has not been reached yet (it has only been "
-                            u"off for {off_sec} seconds).".format(
+                            "Output {id} ({name}) instructed to turn on by PID, "
+                            "however the minimum off period of {min_off_sec} "
+                            "seconds has not been reached yet (it has only been "
+                            "off for {off_sec} seconds).".format(
                                 id=self.output_id[output_id],
                                 name=self.output_name[output_id],
                                 min_off_sec=min_off,
@@ -247,11 +247,11 @@ class OutputController(threading.Thread):
 
                     time_on = abs(self.output_last_duration[output_id]) - remaining_time
                     self.logger.debug(
-                        u"Output {rid} ({rname}) is already on for a duration "
-                        u"of {ron:.2f} seconds (with {rremain:.2f} seconds "
-                        u"remaining). Recording the amount of time the output "
-                        u"has been on ({rbeenon:.2f} sec) and updating the on "
-                        u"duration to {rnewon:.2f} seconds.".format(
+                        "Output {rid} ({rname}) is already on for a duration "
+                        "of {ron:.2f} seconds (with {rremain:.2f} seconds "
+                        "remaining). Recording the amount of time the output "
+                        "has been on ({rbeenon:.2f} sec) and updating the on "
+                        "duration to {rnewon:.2f} seconds.".format(
                             rid=self.output_id[output_id],
                             rname=self.output_name[output_id],
                             ron=abs(self.output_last_duration[output_id]),
@@ -290,9 +290,9 @@ class OutputController(threading.Thread):
                             time_now + datetime.timedelta(seconds=abs(duration)))
                     self.output_last_duration[output_id] = duration
                     self.logger.debug(
-                        u"Output {id} ({name}) is currently on without a "
-                        u"duration. Turning into a duration of {dur:.1f} "
-                        u"seconds.".format(
+                        "Output {id} ({name}) is currently on without a "
+                        "duration. Turning into a duration of {dur:.1f} "
+                        "seconds.".format(
                             id=self.output_id[output_id],
                             name=self.output_name[output_id],
                             dur=abs(duration)))
@@ -305,8 +305,8 @@ class OutputController(threading.Thread):
                     self.output_on_duration[output_id] = True
                     self.output_last_duration[output_id] = duration
                     self.logger.debug(
-                        u"Output {id} ({name}) on for {dur:.1f} "
-                        u"seconds.".format(
+                        "Output {id} ({name}) on for {dur:.1f} "
+                        "seconds.".format(
                             id=self.output_id[output_id],
                             name=self.output_name[output_id],
                             dur=abs(duration)))
@@ -317,7 +317,7 @@ class OutputController(threading.Thread):
                     'command', 'wired', 'wireless_433MHz_pi_switch']:
                 if self.is_on(output_id):
                     self.logger.debug(
-                        u"Output {id} ({name}) is already on.".format(
+                        "Output {id} ({name}) is already on.".format(
                             id=self.output_id[output_id],
                             name=self.output_name[output_id]))
                     return 1
@@ -327,7 +327,7 @@ class OutputController(threading.Thread):
                     # it eventually turns off.
                     self.output_time_turned_on[output_id] = datetime.datetime.now()
                     self.logger.debug(
-                        u"Output {id} ({name}) ON at {timeon}.".format(
+                        "Output {id} ({name}) ON at {timeon}.".format(
                             id=self.output_id[output_id],
                             name=self.output_name[output_id],
                             timeon=self.output_time_turned_on[output_id]))
@@ -337,11 +337,11 @@ class OutputController(threading.Thread):
             elif self.output_type[output_id] == 'pwm':
                 # Record the time the PWM was turned on
                 if self.pwm_hertz[output_id] <= 0:
-                    self.logger.warning(u"PWM Hertz must be a positive value")
+                    self.logger.warning("PWM Hertz must be a positive value")
                     return 1
                 self.pwm_time_turned_on[output_id] = datetime.datetime.now()
                 self.logger.debug(
-                    u"PWM {id} ({name}) ON with a duty cycle of {dc:.2f}% at {hertz} Hz".format(
+                    "PWM {id} ({name}) ON with a duty cycle of {dc:.2f}% at {hertz} Hz".format(
                         id=self.output_id[output_id],
                         name=self.output_name[output_id],
                         dc=abs(duty_cycle),
@@ -367,7 +367,7 @@ class OutputController(threading.Thread):
 
             self.output_switch(output_id, 'off')
 
-            self.logger.debug(u"Output {id} ({name}) turned off.".format(
+            self.logger.debug("Output {id} ({name}) turned off.".format(
                     id=self.output_id[output_id],
                     name=self.output_name[output_id]))
 
@@ -464,8 +464,8 @@ class OutputController(threading.Thread):
             else:
                 return
             self.logger.debug(
-                u"Output {state} command returned: "
-                u"{stat}: '{ret}'".format(
+                "Output {state} command returned: "
+                "{stat}: '{ret}'".format(
                     state=state,
                     stat=cmd_status,
                     ret=cmd_return))
@@ -534,21 +534,21 @@ class OutputController(threading.Thread):
             for each_cond_action in conditional_actions:
                 now = time.time()
                 timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
-                message = u"{ts}\n[Output Conditional {id}] {name}\n".format(
+                message = "{ts}\n[Output Conditional {id}] {name}\n".format(
                     ts=timestamp,
                     id=each_cond_action.id,
                     name=each_conditional.name)
 
                 if each_cond_action.do_action == 'relay':
                     if each_cond_action.do_relay_id not in self.output_name:
-                        message += u"Error: Invalid output ID {id}.".format(
+                        message += "Error: Invalid output ID {id}.".format(
                             id=each_cond_action.do_relay_id)
                     else:
-                        message += u"If output {id} ({name}) turns {state}, Then ".format(
+                        message += "If output {id} ({name}) turns {state}, Then ".format(
                             id=each_conditional.if_relay_id,
                             name=self.output_name[each_conditional.if_relay_id],
                             state=each_conditional.if_relay_state)
-                        message += u"turn output {id} ({name}) {state}".format(
+                        message += "turn output {id} ({name}) {state}".format(
                             id=each_cond_action.do_relay_id,
                             name=self.output_name[each_cond_action.do_relay_id],
                             state=each_cond_action.do_relay_state)
@@ -557,7 +557,7 @@ class OutputController(threading.Thread):
                             self.output_on_off(each_cond_action.do_relay_id,
                                                each_cond_action.do_relay_state)
                         else:
-                            message += u" for {dur} seconds".format(
+                            message += " for {dur} seconds".format(
                                 dur=each_cond_action.do_relay_duration)
                             self.output_on_off(each_cond_action.do_relay_id,
                                                each_cond_action.do_relay_state,
@@ -566,7 +566,7 @@ class OutputController(threading.Thread):
 
                 elif each_cond_action.do_action == 'command':
                     # Execute command as user mycodo
-                    message += u"Execute: '{}'. ".format(
+                    message += "Execute: '{}'. ".format(
                         each_cond_action.do_action_string)
 
                     # Check command for variables to replace with values
@@ -581,7 +581,7 @@ class OutputController(threading.Thread):
                         "((output_pwm))", str(duty_cycle))
                     _, _, cmd_status = cmd_output(command_str)
 
-                    message += u"Status: {}. ".format(cmd_status)
+                    message += "Status: {}. ".format(cmd_status)
 
                 elif each_cond_action.do_action == 'email':
                     if (self.email_count >= self.smtp_max_count and
@@ -595,7 +595,7 @@ class OutputController(threading.Thread):
                     self.email_count += 1
 
                     if self.allowed_to_send_notice:
-                        message += u"Notify {}.".format(
+                        message += "Notify {}.".format(
                             each_cond_action.email_notify)
 
                         smtp = db_retrieve_table_daemon(SMTP, entry='first')
@@ -623,7 +623,7 @@ class OutputController(threading.Thread):
                 elif each_cond_action.do_action == 'video':
                     self.logger.error("Video action not currently implemented")
 
-                self.logger.debug(u"{}".format(message))
+                self.logger.debug("{}".format(message))
 
     def all_outputs_initialize(self, outputs):
         for each_output in outputs:
@@ -652,7 +652,7 @@ class OutputController(threading.Thread):
             if self.output_pin[each_output.id] is not None:
                 self.setup_pin(each_output.id)
 
-            self.logger.debug(u"{id} ({name}) Initialized".format(
+            self.logger.debug("{id} ({name}) Initialized".format(
                 id=each_output.id, name=each_output.name))
 
     def all_outputs_set_state(self):
@@ -720,7 +720,7 @@ class OutputController(threading.Thread):
             if self.output_pin[output_id]:
                 self.setup_pin(output.id)
 
-            message = u"Output {id} ({name}) initialized".format(
+            message = "Output {id} ({name}) initialized".format(
                 id=self.output_id[output_id],
                 name=self.output_name[output_id])
             self.logger.debug(message)
@@ -752,7 +752,7 @@ class OutputController(threading.Thread):
             self.output_switch(output_id, 'off')
 
         try:
-            self.logger.debug(u"Output {id} ({name}) Deleted.".format(
+            self.logger.debug("Output {id} ({name}) Deleted.".format(
                 id=self.output_id[output_id], name=self.output_name[output_id]))
             self.output_id.pop(output_id, None)
             self.output_unique_id.pop(output_id, None)
