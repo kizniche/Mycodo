@@ -43,7 +43,7 @@ Another consequence of changing from Python 2 to 3 is current browser cookies wi
 
 #### All Conditionals will be deactivated
 
-The Conditional code has been refactored to make them more modular. As a result, some conditionals will need to be reconfigured before they will operate corectly. Therefore, after the upgrade, reconfigure them appropriately, then reactivate them.
+The Conditional code has been refactored to make them more modular. Because some conditionals will need to be reconfigured before they will operate corectly, all conditionals have been deactivated. Therefore, after the upgrade, reconfigure them appropriately, then reactivate them. All conditionals have been moved to the Function page.
 
 #### OpenCV has been disabled
 
