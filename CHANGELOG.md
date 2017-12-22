@@ -68,6 +68,7 @@ A Python 3-compatible binary version of opencv, whoch doesn't require an extreme
 ### Features
 
  - Migrate from Python 2 to Python 3 ([#253](https://github.com/kizniche/mycodo/issues/253))
+ - Migrate from apache2 to nginx + gunicorn ([#352](https://github.com/kizniche/mycodo/issues/352))
  - Add ability to export and import Mycodo (settings) database ([#348](https://github.com/kizniche/mycodo/issues/348))
  - Add ability to export and import Influxdb (measurements) database and metastore ([#348](https://github.com/kizniche/mycodo/issues/348))
  - Add size of each backup (in MB) on Backup / Restore page

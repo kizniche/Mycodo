@@ -112,9 +112,10 @@ def register_extensions(app):
         # alembic_upgrade_db()
 
         # Check user option to force all web connections to use SSL
-        misc = Misc.query.first()
-        if misc and misc.force_https:
-            SSLify(app)
+        # This is currently disabled to allow nginx+gunicorn to work properly forcing SSL
+        # misc = Misc.query.first()
+        # if misc and misc.force_https:
+        SSLify(app)
 
 
 def register_blueprints(_app):
