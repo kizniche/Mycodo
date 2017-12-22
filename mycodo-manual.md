@@ -15,8 +15,7 @@ Table of Contents
 
 [Controllers](#controllers)
 
-   - [Input](#input)
-   - [Math](#math)
+   - [Data](#data)
    - [Output](#output)
    - [Functions](#functions)
    - [Timers](#timers)
@@ -135,29 +134,29 @@ Brief Overview
 
 There are a number of different uses for Mycodo, from simple storing of sensor measurements, to regulating the environmental conditions of a physical space, to capturing motion-activated or timelapse photography. There are several componenets of the system that may be configured.
 
-Input
------
+Input/Math Controllers
+----------------------
 
-Input controllers acquire measurements and store them in a [time series database](https://en.wikipedia.org/wiki/Time_series_database). Measurements taken by an Input Controller typically come from sensors, but Input Controllers may also be configured to use the return value of a linux command, making integrating new input systems very easy.
+Input/Math controllers acquire measurements and store them in a [time series database](https://en.wikipedia.org/wiki/Time_series_database). Measurements taken by an Input Controller typically come from sensors, but Input Controllers may also be configured to use the return value of a linux command, making integrating new input systems very easy.
 
-Output
-------
+Output Controllers
+------------------
 
 Output Controllers produce changes to the general input/output (GPIO) pins of the Raspberry Pi or may be configured to execute linux commands in order to allow an unlimited number of extra potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulatated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off. 
 
-PID
----
+PID Controllers
+---------------
 
 When Inputs and Outputs are combined, PID Controllers may be used to create a fedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermenttion or curing, and cooking food ([sous-vide](https://en.wikipedia.org/wiki/Sous-vide)), to name a few.
 
 
-Timer
------
+Timer Controllers
+-----------------
 
 Timers can be set to trigger events based on specific dates and times or according to durations of time. Timers are fairly basic, but can be configured in very complex ways. Don't underestimate a good timer.
 
-LCD
----
+LCD Controllers
+---------------
 
 LCDs may be set up to have a way to quickly view information, such as Input, Output, or PID controllers, and can be set to flash in case of triggered events, like an emergency, such as the temperature increasing beyond a certain point in an area that is supposed to be kept cold.
 
@@ -221,8 +220,12 @@ performs a specific task or group of related tasks. There are also
 Controller Functions, which are larger functions of a controller or
 controllers and have been given their own sections.
 
-Input
------
+Data
+----
+
+Data includes controllers that produce and store data in the measurement database. Input controllers generally acquire measurements from sensors, but they may also come from executed commands. Math controllers, on the other hand, perform math on already-stored values to create new values that are stored.
+
+### Input
 
 Inputs (such as sensors or analog signals) measure environmental and other characteristic conditions, which will be stored in an influxdb round-robin database. This database will provide recent measurements for [Graphs](#graphs), [LCDs](#lcds), [PID Controllers](#pids), [Conditional Statements](#conditional-statements), and other parts of Mycodo to operate from.
 
@@ -263,30 +266,7 @@ Units Max | Analog-to-digital converter only: This is similar to the Min option 
 Weighting | The This is a number between 0 and 1 and indicates how much the old reading affects the new reading.  It defaults to 0 which means the old reading has no effect.  This may be used to smooth the data.
 Pulses Per Rev | The number of pulses for a complete revolution.
 
-
-### Sensor Verification
-
-Sensor verification was introduced in an earlier version and was broken
-when the system moved to its new software framework. It was a great
-feature, and it's planned to be integrated into the latest version.
-
-This allows the verification of a sensor's measurement with another
-sensor's measurement. This feature is best utilized when you have two
-sensors in the same location (ideally as close as possible). One sensor
-(host) should be set up to use the other sensor (slave) to verify. The
-host sensor should be used to operate the PID, as one feature of the
-verification is the ability to disable the PID if the difference between
-measurements is not within the range specified.
-
-Setting | Description
--------------------- | ----------------------------------------------
-GPIO | This is the sensor that will be used to verify the sensor measurement. The sensor will be read directly after the first sensor's measurement to verify whether the sensors have similar measurements.
-Difference | This is the maximum measured measurement difference between the two sensors before an action is triggered (either notify by email or prevent PID from operating; more below).
-Notification | If the measurements of the two sensors differ by more than the set *Difference*, an email will be sent to the address in the *Notification* field.
-Stop PID | If the measurements of the two sensors differ by more than the set *Difference*, the PID controller will turn off.
-
-Math
-----
+### Math
 
 Math controllers allow one or more Inputs to have math applied to produce a new value that may be used within Mycodo.
 
@@ -313,7 +293,7 @@ Dry-Bulb Temperature | The measurement that will serve as the dry-bulb temperatu
 Wet-Bulb Temperature | The measurement that will serve as the wet-bulb temperature (this is the colder of the two temperature measurements)
 Pressure | This is an optional pressure measurement that can be used to calculate the percent relative humidity. If disabled, a default 101325 Pa will be used in the calculation.
 
-### Pre-defined Measurements
+#### Pre-defined Measurements
 
 Measurement | Units
 ----------- | -----

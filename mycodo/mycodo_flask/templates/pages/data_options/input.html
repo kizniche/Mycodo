@@ -1,3 +1,6 @@
+<h4>{{_('Input')}} <a href="/help#input" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+<p>{{_('Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.')}}</p>
+
 {%- if display_order_input -%}
 {%- for order in display_order_input -%}
   {%- for each_input in input if each_input.id == order -%}
