@@ -71,7 +71,7 @@
 
   <h4 style="padding-top: 2em">Import InfluxDB Database and Metastore from ZIP</h4>
 
-  <p>This will allow a ZIP file containing the InfluxDB meatastore and database to be uploaded and combined with the current Influxdb database of measurements. InfluxDB and the Mycodo daemon (backend) will be stopped momentarily while the import takes place.</p>
+  <p>This will allow a ZIP file containing the InfluxDB meatastore and database to be uploaded and overwirite the current Influxdb database of measurements. Again, all data will be replaced (i.e. destroyed) by the imported backup. It is advised to export your current data before importing a previous backup if you don't want to lose this data. In the future, there will be an option to combine imported data with the current data. InfluxDB and the Mycodo daemon (backend) will be stopped momentarily while the import takes place.</p>
 
   <form method="post" action="/export" enctype=multipart/form-data>
   {{form_import_influxdb.csrf_token}}

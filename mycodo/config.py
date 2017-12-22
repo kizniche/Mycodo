@@ -305,11 +305,13 @@ KEEPUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodokeepup.log')
 BACKUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodobackup.log')
 UPGRADE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupgrade.log')
 RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
-HTTP_LOG_FILE = '/var/log/nginx/error.log'
+HTTP_ACCESS_LOG_FILE = '/var/log/nginx/access.log'
+HTTP_ERROR_LOG_FILE = '/var/log/nginx/error.log'
 
 # Lock files
 LOCK_PATH = '/var/lock'
 ATLAS_PH_LOCK_FILE = os.path.join(LOCK_PATH, 'sensor-atlas-ph.pid')
+FRONTEND_PID_FILE = os.path.join(LOCK_PATH, 'mycodoflask.pid')
 DAEMON_PID_FILE = os.path.join(LOCK_PATH, 'mycodo.pid')
 LOCK_FILE_STREAM = os.path.join(LOCK_PATH, 'mycodo-camera-stream.pid')
 

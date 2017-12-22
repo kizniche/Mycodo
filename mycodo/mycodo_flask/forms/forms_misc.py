@@ -94,7 +94,8 @@ class LogView(FlaskForm):
         )]
     )
     loglogin = SubmitField(lazy_gettext(u'Login Log'))
-    loghttp = SubmitField(lazy_gettext(u'HTTP Log'))
+    loghttp_access = SubmitField(lazy_gettext(u'HTTP Access'))
+    loghttp_error = SubmitField(lazy_gettext(u'HTTP Error'))
     logdaemon = SubmitField(lazy_gettext(u'Daemon Log'))
     logbackup = SubmitField(lazy_gettext(u'Backup Log'))
     logkeepup = SubmitField(lazy_gettext(u'KeepUp Log'))

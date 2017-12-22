@@ -21,7 +21,7 @@ class MathAdd(FlaskForm):
         choices=MATHS,
         validators=[DataRequired()]
     )
-    add = SubmitField(lazy_gettext(u'Add Math Controller'))
+    add = SubmitField(lazy_gettext(u'Add Math'))
 
 
 class MathMod(FlaskForm):

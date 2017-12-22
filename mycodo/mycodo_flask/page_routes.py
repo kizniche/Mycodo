@@ -25,7 +25,9 @@ from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import CONDITIONAL_ACTIONS
 from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DAEMON_PID_FILE
-from mycodo.config import HTTP_LOG_FILE
+from mycodo.config import FRONTEND_PID_FILE
+from mycodo.config import HTTP_ACCESS_LOG_FILE
+from mycodo.config import HTTP_ERROR_LOG_FILE
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import KEEPUP_LOG_FILE
 from mycodo.config import LIST_DEVICES_I2C
@@ -536,6 +538,11 @@ def page_info():
         with open(DAEMON_PID_FILE, 'r') as pid_file:
             daemon_pid = int(pid_file.read())
 
+    frontend_pid = None
+    if os.path.exists(FRONTEND_PID_FILE):
+        with open(FRONTEND_PID_FILE, 'r') as pid_file:
+            frontend_pid = int(pid_file.read())
+
     database_version = AlembicVersion.query.first().version_num
     correct_database_version = ALEMBIC_VERSION
 
@@ -552,21 +559,35 @@ def page_info():
         ram_use_daemon = control.ram_use()
         virtualenv_daemon = control.is_in_virtualenv()
 
-        pstree = subprocess.Popen(
+        pstree_damon = subprocess.Popen(
             "pstree -p {pid}".format(pid=daemon_pid), stdout=subprocess.PIPE, shell=True)
-        (pstree_output, _) = pstree.communicate()
-        pstree.wait()
-        if pstree_output:
-            pstree_output = pstree_output.decode("utf-8")
+        (pstree_daemon_output, _) = pstree_damon.communicate()
+        pstree_damon.wait()
+        if pstree_daemon_output:
+            pstree_daemon_output = pstree_daemon_output.decode("utf-8")
 
-        top = subprocess.Popen(
+        top_daemon = subprocess.Popen(
             "top -bH -n 1 -p {pid}".format(pid=daemon_pid), stdout=subprocess.PIPE, shell=True)
-        (top_output, _) = top.communicate()
-        top.wait()
-        if top_output:
-            top_output = top_output.decode("utf-8")
+        (top_daemon_output, _) = top_daemon.communicate()
+        top_daemon.wait()
+        if top_daemon_output:
+            top_daemon_output = top_daemon_output.decode("utf-8")
     else:
         ram_use_daemon = 0
+
+    pstree_damon = subprocess.Popen(
+        "pstree -p {pid}".format(pid=frontend_pid), stdout=subprocess.PIPE, shell=True)
+    (pstree_frontend_output, _) = pstree_damon.communicate()
+    pstree_damon.wait()
+    if pstree_frontend_output:
+        pstree_frontend_output = pstree_frontend_output.decode("utf-8")
+
+    top_frontend = subprocess.Popen(
+        "top -bH -n 1 -p {pid}".format(pid=frontend_pid), stdout=subprocess.PIPE, shell=True)
+    (top_frontend_output, _) = top_frontend.communicate()
+    top_frontend.wait()
+    if top_frontend_output:
+        top_frontend_output = top_frontend_output.decode("utf-8")
 
     ram_use_flask = resource.getrusage(
         resource.RUSAGE_SELF).ru_maxrss / float(1000)
@@ -583,11 +604,13 @@ def page_info():
                            free=free_output,
                            i2c_devices_sorted=i2c_devices_sorted,
                            ifconfig=ifconfig_output,
-                           pstree=pstree_output,
+                           pstree_daemon=pstree_daemon_output,
+                           pstree_frontend=pstree_frontend_output,
                            python_version=python_version,
                            ram_use_daemon=ram_use_daemon,
                            ram_use_flask=ram_use_flask,
-                           top=top_output,
+                           top_daemon=top_daemon_output,
+                           top_frontend=top_frontend_output,
                            uname=uname_output,
                            uptime=uptime_output,
                            virtualenv_daemon=virtualenv_daemon,
@@ -738,8 +761,10 @@ def page_logview():
 
         if form_log_view.loglogin.data:
             logfile = LOGIN_LOG_FILE
-        elif form_log_view.loghttp.data:
-            logfile = HTTP_LOG_FILE
+        elif form_log_view.loghttp_access.data:
+            logfile = HTTP_ACCESS_LOG_FILE
+        elif form_log_view.loghttp_error.data:
+            logfile = HTTP_ERROR_LOG_FILE
         elif form_log_view.logdaemon.data:
             logfile = DAEMON_LOG_FILE
         elif form_log_view.logkeepup.data:

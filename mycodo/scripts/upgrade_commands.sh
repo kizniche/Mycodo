@@ -144,9 +144,10 @@ case "${1:-''}" in
     ;;
     'update-web-server')
         printf "\n#### Installing and configuring nginx web server\n"
-        ln -sf ${INSTALL_DIRECTORY}/Mycodo/install/mycodoflask_nginx.conf /etc/nginx/sites-enabled/000-default.conf
         systemctl disable mycodoflask.service
         rm -rf /etc/systemd/system/mycodoflask.service
+        ln -sf ${INSTALL_DIRECTORY}/Mycodo/install/mycodoflask_nginx.conf /etc/nginx/sites-enabled/default
+        systemctl enable nginx
         systemctl enable ${INSTALL_DIRECTORY}/Mycodo/install/mycodoflask.service
     ;;
     'update-apt')
@@ -229,6 +230,19 @@ case "${1:-''}" in
         easy_install pip
         pip install --upgrade pip
     ;;
+    'update-permissions')
+        printf "\n#### Setting permissions\n"
+        chown -LR mycodo.mycodo ${INSTALL_DIRECTORY}/Mycodo
+        chown -R mycodo.mycodo /var/log/mycodo
+        chown -R mycodo.mycodo /var/Mycodo-backups
+        chown -R influxdb.influxdb /var/lib/influxdb/data/
+
+        find ${INSTALL_DIRECTORY}/Mycodo -type d -exec chmod u+wx,g+wx {} +
+        find ${INSTALL_DIRECTORY}/Mycodo -type f -exec chmod u+w,g+w,o+r {} +
+
+        chown root:mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
+        chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
+    ;;
     'update-pip')
         printf "\n#### Updating pip\n"
         ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install --upgrade pip
@@ -245,18 +259,6 @@ case "${1:-''}" in
             ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip3 install --upgrade pip setuptools
             ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip3 install --upgrade -r ${INSTALL_DIRECTORY}/Mycodo/install/requirements.txt
         fi
-    ;;
-    'update-permissions')
-        printf "\n#### Setting permissions\n"
-        chown -LR mycodo.mycodo ${INSTALL_DIRECTORY}/Mycodo
-        chown -R mycodo.mycodo /var/log/mycodo
-        chown -R mycodo.mycodo /var/Mycodo-backups
-
-        find ${INSTALL_DIRECTORY}/Mycodo -type d -exec chmod u+wx,g+wx {} +
-        find ${INSTALL_DIRECTORY}/Mycodo -type f -exec chmod u+w,g+w,o+r {} +
-
-        chown root:mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
-        chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
     ;;
     'update-swap-size')
         printf "\n#### Checking if swap size is 100 MB and needs to be changed to 512 MB\n"

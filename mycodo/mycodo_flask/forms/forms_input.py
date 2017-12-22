@@ -31,7 +31,7 @@ class InputAdd(FlaskForm):
         choices=INPUTS,
         validators=[DataRequired()]
     )
-    sensorAddSubmit = SubmitField(lazy_gettext(u'Add Device'))
+    sensorAddSubmit = SubmitField(lazy_gettext(u'Add Input'))
 
 
 class InputMod(FlaskForm):

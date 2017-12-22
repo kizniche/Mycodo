@@ -90,6 +90,8 @@ int main(int argc, char *argv[]) {
 
 			sprintf(cmd, "influxd restore -database mycodo_db -datadir /var/lib/influxdb/data %s", argv[2]);
 			system(cmd);
+			sprintf(cmd, "chown -R influxdb.influxdb /var/lib/influxdb/data");
+			system(cmd);
 
 		} else if (strcmp(argv[1], "upgrade") == 0) {
 
