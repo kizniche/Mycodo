@@ -3,8 +3,8 @@ Description=Unicorn Daemon for Mycodo flask frontend (web UI)
 After=network.target
 
 [Service]
-User=pi
-Group=www-data
+User=mycodo
+Group=mycodo
 WorkingDirectory=/var/www/mycodo
 ExecStart=/var/www/mycodo/env/bin/gunicorn --workers 1 --bind unix:/var/www/mycodo/mycodoflask_socket.sock mycodoflask_wsgi:app
 
