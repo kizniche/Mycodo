@@ -21,27 +21,27 @@ from wtforms import widgets
 
 class Camera(FlaskForm):
     camera_id = IntegerField('Camera ID', widget=widgets.HiddenInput())
-    capture_still = SubmitField(lazy_gettext(u'Capture Still'))
-    start_timelapse = SubmitField(lazy_gettext(u'Start Timelapse'))
-    pause_timelapse = SubmitField(lazy_gettext(u'Pause Timelapse'))
-    resume_timelapse = SubmitField(lazy_gettext(u'Resume Timelapse'))
-    stop_timelapse = SubmitField(lazy_gettext(u'Stop Timelapse'))
+    capture_still = SubmitField(lazy_gettext('Capture Still'))
+    start_timelapse = SubmitField(lazy_gettext('Start Timelapse'))
+    pause_timelapse = SubmitField(lazy_gettext('Pause Timelapse'))
+    resume_timelapse = SubmitField(lazy_gettext('Resume Timelapse'))
+    stop_timelapse = SubmitField(lazy_gettext('Stop Timelapse'))
     timelapse_interval = DecimalField(
-        lazy_gettext(u'Interval (seconds)'),
+        lazy_gettext('Interval (seconds)'),
         validators=[validators.NumberRange(
             min=0,
-            message=lazy_gettext(u'Photo Interval must be a positive value')
+            message=lazy_gettext('Photo Interval must be a positive value')
         )]
     )
     timelapse_runtime_sec = DecimalField(
-        lazy_gettext(u'Run Time (seconds)'),
+        lazy_gettext('Run Time (seconds)'),
         validators=[validators.NumberRange(
             min=0,
-            message=lazy_gettext(u'Total Run Time must be a positive value')
+            message=lazy_gettext('Total Run Time must be a positive value')
         )]
     )
-    start_stream = SubmitField(lazy_gettext(u'Start Stream'))
-    stop_stream = SubmitField(lazy_gettext(u'Stop Stream'))
+    start_stream = SubmitField(lazy_gettext('Start Stream'))
+    stop_stream = SubmitField(lazy_gettext('Stop Stream'))
 
 
 #
@@ -49,9 +49,9 @@ class Camera(FlaskForm):
 #
 
 class DaemonControl(FlaskForm):
-    stop = SubmitField(lazy_gettext(u'Stop Daemon'))
-    start = SubmitField(lazy_gettext(u'Start Daemon'))
-    restart = SubmitField(lazy_gettext(u'Restart Daemon'))
+    stop = SubmitField(lazy_gettext('Stop Daemon'))
+    start = SubmitField(lazy_gettext('Start Daemon'))
+    restart = SubmitField(lazy_gettext('Restart Daemon'))
 
 
 #
@@ -59,19 +59,25 @@ class DaemonControl(FlaskForm):
 #
 
 class ExportMeasurements(FlaskForm):
-    measurement = StringField(lazy_gettext(u'Measurement to Export'))
-    date_range = StringField(lazy_gettext(u'Time Range DD/MM/YYYY HH:MM'))
-    export_data_csv = SubmitField(lazy_gettext(u'Export Data as CSV'))
+    measurement = StringField(lazy_gettext('Measurement to Export'))
+    date_range = StringField(lazy_gettext('Time Range DD/MM/YYYY HH:MM'))
+    export_data_csv = SubmitField(lazy_gettext('Export Data as CSV'))
 
 class ExportSettings(FlaskForm):
-    export_settings_zip = SubmitField(lazy_gettext(u'Export Settings'))
-
-class ExportInfluxdb(FlaskForm):
-    export_influxdb_zip = SubmitField(lazy_gettext(u'Export Influxdb'))
+    export_settings_zip = SubmitField(lazy_gettext('Export Settings'))
 
 class ImportSettings(FlaskForm):
     settings_import_file = FileField('Upload')
-    settings_import_upload = SubmitField(lazy_gettext(u'Import Settings'))
+    settings_import_upload = SubmitField(lazy_gettext('Import Settings'))
+
+class ExportInfluxdb(FlaskForm):
+    export_influxdb_zip = SubmitField(lazy_gettext('Export Influxdb'))
+
+class ImportInfluxdb(FlaskForm):
+    influxdb_import_file = FileField('Upload')
+    influxdb_import_upload = SubmitField(lazy_gettext('Import Influxdb'))
+
+
 
 
 #
@@ -80,20 +86,21 @@ class ImportSettings(FlaskForm):
 
 class LogView(FlaskForm):
     lines = IntegerField(
-        lazy_gettext(u'Number of Lines'),
-        render_kw={'placeholder': lazy_gettext(u'Lines')},
+        lazy_gettext('Number of Lines'),
+        render_kw={'placeholder': lazy_gettext('Lines')},
         validators=[validators.NumberRange(
             min=1,
-            message=lazy_gettext(u'Number of lines should be greater than 0')
+            message=lazy_gettext('Number of lines should be greater than 0')
         )]
     )
-    loglogin = SubmitField(lazy_gettext(u'Login Log'))
-    loghttp = SubmitField(lazy_gettext(u'HTTP Log'))
-    logdaemon = SubmitField(lazy_gettext(u'Daemon Log'))
-    logbackup = SubmitField(lazy_gettext(u'Backup Log'))
-    logkeepup = SubmitField(lazy_gettext(u'KeepUp Log'))
-    logupgrade = SubmitField(lazy_gettext(u'Upgrade Log'))
-    logrestore = SubmitField(lazy_gettext(u'Restore Log'))
+    loglogin = SubmitField(lazy_gettext('Login Log'))
+    loghttp_access = SubmitField(lazy_gettext('HTTP Access'))
+    loghttp_error = SubmitField(lazy_gettext('HTTP Error'))
+    logdaemon = SubmitField(lazy_gettext('Daemon Log'))
+    logbackup = SubmitField(lazy_gettext('Backup Log'))
+    logkeepup = SubmitField(lazy_gettext('KeepUp Log'))
+    logupgrade = SubmitField(lazy_gettext('Upgrade Log'))
+    logrestore = SubmitField(lazy_gettext('Restore Log'))
 
 
 #
@@ -101,7 +108,7 @@ class LogView(FlaskForm):
 #
 
 class Upgrade(FlaskForm):
-    upgrade = SubmitField(lazy_gettext(u'Upgrade Mycodo'))
+    upgrade = SubmitField(lazy_gettext('Upgrade Mycodo'))
 
 
 #
@@ -109,8 +116,8 @@ class Upgrade(FlaskForm):
 #
 
 class Backup(FlaskForm):
-    backup = SubmitField(lazy_gettext(u'Create Backup'))
-    restore = SubmitField(lazy_gettext(u'Restore Backup'))
-    delete = SubmitField(lazy_gettext(u'Delete Backup'))
+    backup = SubmitField(lazy_gettext('Create Backup'))
+    restore = SubmitField(lazy_gettext('Restore Backup'))
+    delete = SubmitField(lazy_gettext('Delete Backup'))
     full_path = HiddenField()
     selected_dir = HiddenField()

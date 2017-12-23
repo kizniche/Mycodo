@@ -12,6 +12,7 @@ from flask_babel import gettext
 
 from mycodo.config import MEASUREMENTS
 from mycodo.config import MEASUREMENT_UNITS
+from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
@@ -48,15 +49,19 @@ def controller_activate_deactivate(controller_action,
     activated = bool(controller_action == 'activate')
 
     translated_names = {
-        "Input": gettext(u"Input"),
-        "LCD": gettext(u"LCD"),
-        "Math": gettext(u"Math"),
-        "PID": gettext(u"PID"),
-        "Timer": gettext(u"Timer")
+        "Conditional": gettext("Conditional"),
+        "Input": gettext("Input"),
+        "LCD": gettext("LCD"),
+        "Math": gettext("Math"),
+        "PID": gettext("PID"),
+        "Timer": gettext("Timer")
     }
 
     mod_controller = None
-    if controller_type == 'Input':
+    if controller_type == 'Conditional':
+        mod_controller = Conditional.query.filter(
+            Conditional.id == int(controller_id)).first()
+    elif controller_type == 'Input':
         mod_controller = Input.query.filter(
             Input.id == int(controller_id)).first()
     elif controller_type == 'LCD':
@@ -82,16 +87,16 @@ def controller_activate_deactivate(controller_action,
         db.session.commit()
 
         if activated:
-            flash(gettext(u"%(cont)s controller activated in SQL database",
+            flash(gettext("%(cont)s controller activated in SQL database",
                           cont=translated_names[controller_type]),
                   "success")
         else:
-            flash(gettext(u"%(cont)s controller deactivated in SQL database",
+            flash(gettext("%(cont)s controller deactivated in SQL database",
                           cont=translated_names[controller_type]),
                   "success")
     except Exception as except_msg:
-        flash(gettext(u"Error: %(err)s",
-                      err=u'SQL: {msg}'.format(msg=except_msg)),
+        flash(gettext("Error: %(err)s",
+                      err='SQL: {msg}'.format(msg=except_msg)),
               "error")
 
     try:
@@ -107,8 +112,8 @@ def controller_activate_deactivate(controller_action,
         else:
             flash("{err}".format(err=return_values[1]), "success")
     except Exception as except_msg:
-        flash(gettext(u"Error: %(err)s",
-                      err=u'Daemon: {msg}'.format(msg=except_msg)),
+        flash(gettext("Error: %(err)s",
+                      err='Daemon: {msg}'.format(msg=except_msg)),
               "error")
 
 
@@ -124,7 +129,7 @@ def choices_inputs(inputs):
             value = '{id},{meas}'.format(
                 id=each_input.unique_id,
                 meas=each_input.cmd_measurement)
-            display = u'[Input {id:02d}] {name} ({meas})'.format(
+            display = '[Input {id:02d}] {name} ({meas})'.format(
                 id=each_input.id,
                 name=each_input.name,
                 meas=each_input.cmd_measurement)
@@ -134,7 +139,7 @@ def choices_inputs(inputs):
                 value = '{id},{meas}'.format(
                     id=each_input.unique_id,
                     meas=each_measurement)
-                display = u'[Input {id:02d}] {name} ({meas})'.format(
+                display = '[Input {id:02d}] {name} ({meas})'.format(
                     id=each_input.id,
                     name=each_input.name,
                     meas=MEASUREMENT_UNITS[each_measurement]['name'])
@@ -144,7 +149,7 @@ def choices_inputs(inputs):
                 value = '{id},{meas}'.format(
                     id=each_input.unique_id,
                     meas=each_input.adc_measure)
-                display = u'[Input {id:02d}] {name} ({meas})'.format(
+                display = '[Input {id:02d}] {name} ({meas})'.format(
                     id=each_input.id,
                     name=each_input.name,
                     meas=each_input.adc_measure)
@@ -165,7 +170,7 @@ def choices_maths(maths):
                 measurement_display = MEASUREMENT_UNITS[each_measurement]['name']
             else:
                 measurement_display = each_measurement
-            display = u'[Math {id:02d}] {name} ({meas})'.format(
+            display = '[Math {id:02d}] {name} ({meas})'.format(
                 id=each_math.id,
                 name=each_math.name,
                 meas=measurement_display)
@@ -179,12 +184,12 @@ def choices_outputs(output):
     for each_output in output:
         if each_output.relay_type != 'pwm':
             value = '{id},duration_sec'.format(id=each_output.unique_id)
-            display = u'[Output {id:02d}] {name} (Duration)'.format(
+            display = '[Output {id:02d}] {name} (Duration)'.format(
                 id=each_output.id, name=each_output.name)
             choices.update({value: display})
         elif each_output.relay_type == 'pwm':
             value = '{id},duty_cycle'.format(id=each_output.unique_id)
-            display = u'[Output {id:02d}] {name} (Duty Cycle)'.format(
+            display = '[Output {id:02d}] {name} (Duty Cycle)'.format(
                 id=each_output.id, name=each_output.name)
             choices.update({value: display})
     return choices
@@ -195,15 +200,15 @@ def choices_pids(pid):
     choices = OrderedDict()
     for each_pid in pid:
         value = '{id},setpoint'.format(id=each_pid.unique_id)
-        display = u'[PID {id:02d}] {name} (Setpoint)'.format(
+        display = '[PID {id:02d}] {name} (Setpoint)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
         value = '{id},pid_output'.format(id=each_pid.unique_id)
-        display = u'[PID {id:02d}] {name} (Output Duration)'.format(
+        display = '[PID {id:02d}] {name} (Output Duration)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
         value = '{id},duty_cycle'.format(id=each_pid.unique_id)
-        display = u'[PID {id:02d}] {name} (Output Duty Cycle)'.format(
+        display = '[PID {id:02d}] {name} (Output Duty Cycle)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
     return choices
@@ -214,7 +219,7 @@ def choices_id_name(table):
     choices = OrderedDict()
     for each_entry in table:
         value = each_entry.unique_id
-        display = u'[{id:02d}] {name}'.format(id=each_entry.id,
+        display = '[{id:02d}] {name}'.format(id=each_entry.id,
                                           name=each_entry.name)
         choices.update({value: display})
     return choices
@@ -242,23 +247,23 @@ def delete_entry_with_id(table, entry_id):
             table.id == entry_id).first()
         db.session.delete(entries)
         db.session.commit()
-        flash(gettext(u"%(msg)s",
-                      msg=u'{action} {table} with ID: {id}'.format(
-                          action=gettext(u"Delete"),
+        flash(gettext("%(msg)s",
+                      msg='{action} {table} with ID: {id}'.format(
+                          action=gettext("Delete"),
                           table=table.__tablename__,
                           id=entry_id)),
               "success")
         return 1
     except sqlalchemy.orm.exc.NoResultFound:
-        flash(gettext(u"%(err)s",
-                      err=gettext(u"Entry with ID %(id)s not found",
+        flash(gettext("%(err)s",
+                      err=gettext("Entry with ID %(id)s not found",
                                   id=entry_id)),
               "error")
-        flash(gettext(u"%(msg)s",
-                      msg=u'{action} {id}: {err}'.format(
-                          action=gettext(u"Delete"),
+        flash(gettext("%(msg)s",
+                      msg='{action} {id}: {err}'.format(
+                          action=gettext("Delete"),
                           id=entry_id,
-                          err=gettext(u"Entry with ID %(id)s not found",
+                          err=gettext("Entry with ID %(id)s not found",
                                       id=entry_id))),
               "success")
         return 0
@@ -268,7 +273,7 @@ def flash_form_errors(form):
     """ Flashes form errors for easier display """
     for field, errors in form.errors.items():
         for error in errors:
-            flash(gettext(u"Error in the %(field)s field - %(err)s",
+            flash(gettext("Error in the %(field)s field - %(err)s",
                           field=getattr(form, field).label.text,
                           err=error),
                   "error")
@@ -277,14 +282,14 @@ def flash_form_errors(form):
 def flash_success_errors(error, action, redirect_url):
     if error:
         for each_error in error:
-            flash(gettext(u"%(msg)s",
-                          msg=u'{action}: {err}'.format(
+            flash(gettext("%(msg)s",
+                          msg='{action}: {err}'.format(
                               action=action,
                               err=each_error)),
                   "error")
         return redirect(redirect_url)
     else:
-        flash(gettext(u"%(msg)s",
+        flash(gettext("%(msg)s",
                       msg=action),
               "success")
 
@@ -320,11 +325,11 @@ def reorder_list(modified_list, item, direction):
     from_position = modified_list.index(item)
     if direction == "up":
         if from_position == 0:
-            return 'error', gettext(u'Cannot move above the first item in the list')
+            return 'error', gettext('Cannot move above the first item in the list')
         to_position = from_position - 1
     elif direction == 'down':
         if from_position == len(modified_list) - 1:
-            return 'error', gettext(u'Cannot move below the last item in the list')
+            return 'error', gettext('Cannot move below the last item in the list')
         to_position = from_position + 1
     else:
         return 'error', []

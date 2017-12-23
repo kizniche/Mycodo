@@ -48,12 +48,12 @@ def time_between_range(start_time, end_time):
     return 0  # No now not within range
 
 
-def cmd_output(command, su_mycodo=True, stdout_pipe=True):
+def cmd_output(command, su_mycodo=False, stdout_pipe=True):
     """
     Executed command and returns a list of lines from the output
     """
     full_cmd = '{}'.format(command)
-    if su_mycodo:
+    if su_mycodo:  # TODO: Remove su as I don't beleive it works
         full_cmd = 'su mycodo && {}'.format(command)
     if stdout_pipe:
         cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
@@ -136,7 +136,7 @@ def can_perform_backup():
     Returns value sin bytes
     """
     free_before = get_directory_free_space('/var/Mycodo-backups')
-    backup_size = get_directory_size(INSTALL_DIRECTORY, exclude=['env', 'env_py3', 'cameras'])
+    backup_size = get_directory_size(INSTALL_DIRECTORY, exclude=['env', 'cameras'])
     free_after = free_before - backup_size
     return backup_size, free_before, free_after
 

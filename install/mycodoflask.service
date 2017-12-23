@@ -1,0 +1,21 @@
+[Unit]
+Description=gunicorn daemon for Mycodo flask frontend
+After=network.target
+
+[Service]
+User=mycodo
+Group=mycodo
+WorkingDirectory=/var/www/mycodo/mycodo
+ExecStart=/var/www/mycodo/env/bin/gunicorn \
+--workers 2 \
+--worker-class gthread \
+--threads 2 \
+--pid /var/lock/mycodoflask.pid \
+--bind unix:/var/www/mycodo/mycodo/mycodoflask_socket.sock start_flask_ui:app
+
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+
+
+[Install]
+WantedBy=multi-user.target

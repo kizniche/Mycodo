@@ -29,9 +29,9 @@ logger = logging.getLogger(__name__)
 #
 
 def math_add(form_add_math):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"Math"))
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Math"))
     error = []
 
     if form_add_math.validate():
@@ -53,7 +53,7 @@ def math_add(form_add_math):
             db.session.commit()
 
             flash(gettext(
-                u"%(type)s Math with ID %(id)s (%(uuid)s) successfully added",
+                "%(type)s Math with ID %(id)s (%(uuid)s) successfully added",
                 type=form_add_math.math_type.data,
                 id=new_math.id,
                 uuid=new_math.unique_id),
@@ -62,15 +62,15 @@ def math_add(form_add_math):
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_input'))
+        flash_success_errors(error, action, url_for('page_routes.page_data'))
     else:
         flash_form_errors(form_add_math)
 
 
 def math_mod(form_mod_math, form_mod_type=None):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Modify"),
-        controller=gettext(u"Math"))
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Math"))
     error = []
 
     if not form_mod_math.validate():
@@ -83,8 +83,8 @@ def math_mod(form_mod_math, form_mod_type=None):
 
         if mod_math.is_activated:
             error.append(gettext(
-                u"Deactivate Math controller before modifying its "
-                u"settings"))
+                "Deactivate Math controller before modifying its "
+                "settings"))
 
         if not form_mod_type:
             raise ValueError('form_mod_type is not defined')
@@ -151,13 +151,13 @@ def math_mod(form_mod_math, form_mod_type=None):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_input'))
+    flash_success_errors(error, action, url_for('page_routes.page_data'))
 
 
 def math_del(form_mod_math):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Delete"),
-        controller=gettext(u"Math"))
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Math"))
     error = []
 
     try:
@@ -191,13 +191,13 @@ def math_del(form_mod_math):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_input'))
+    flash_success_errors(error, action, url_for('page_routes.page_data'))
 
 
 def math_reorder(math_id, display_order, direction):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Reorder"),
-        controller=gettext(u"Math"))
+    action = '{action} {controller}'.format(
+        action=gettext("Reorder"),
+        controller=gettext("Math"))
     error = []
     try:
         status, reord_list = reorder(display_order,
@@ -210,7 +210,7 @@ def math_reorder(math_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_input'))
+    flash_success_errors(error, action, url_for('page_routes.page_data'))
 
 
 def math_activate(form_mod_math):

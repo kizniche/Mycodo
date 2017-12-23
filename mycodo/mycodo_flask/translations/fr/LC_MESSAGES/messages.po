@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-12-19 19:33-0500\n"
+"POT-Creation-Date: 2017-12-20 16:39-0500\n"
 "PO-Revision-Date: 2017-01-05 00:55-0500\n"
 "Last-Translator: \n"
 "Language: fr\n"
@@ -16,29 +16,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.5.1\n"
 
-#: config.py:62
+#: config.py:67
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:362
 msgid "Altitude"
 msgstr ""
 
-#: config.py:65
+#: config.py:70
 msgid "CO2"
 msgstr ""
 
-#: config.py:68
+#: config.py:73
 msgid "Dewpoint"
 msgstr ""
 
-#: config.py:71 config.py:74 config.py:77
+#: config.py:76 config.py:79 config.py:82
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:374
 msgid "CPU Load"
 msgstr ""
 
-#: config.py:80
+#: config.py:85
 msgid "Disk"
 msgstr ""
 
-#: config.py:83 mycodo_flask/forms/forms_conditional.py:56
+#: config.py:88 mycodo_flask/forms/forms_conditional.py:56
 #: mycodo_flask/forms/forms_conditional.py:58
 #: mycodo_flask/forms/forms_timer.py:26
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:850
@@ -46,7 +46,7 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: config.py:86 mycodo_flask/forms/forms_output.py:82
+#: config.py:91 mycodo_flask/forms/forms_output.py:82
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:410
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:861
 #: mycodo_flask/templates/pages/live.html:175
@@ -57,93 +57,93 @@ msgstr ""
 msgid "Duty Cycle"
 msgstr ""
 
-#: config.py:89 mycodo_flask/forms/forms_input.py:67
+#: config.py:94 mycodo_flask/forms/forms_input.py:67
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:422
 msgid "Edge"
 msgstr ""
 
-#: config.py:92 mycodo_flask/forms/forms_method.py:49
+#: config.py:97 mycodo_flask/forms/forms_method.py:49
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:434
 msgid "Frequency"
 msgstr ""
 
-#: config.py:95
+#: config.py:100
 msgid "Humidity"
 msgstr ""
 
-#: config.py:98
+#: config.py:103
 msgid "Humidity Ratio"
 msgstr ""
 
-#: config.py:101
+#: config.py:106
 msgid "Light"
 msgstr ""
 
-#: config.py:104
+#: config.py:109
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:482
 msgid "Moisture"
 msgstr ""
 
-#: config.py:107
+#: config.py:112
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:494
 msgid "pH"
 msgstr ""
 
-#: config.py:110
+#: config.py:115
 msgid "PID Output"
 msgstr ""
 
-#: config.py:113
+#: config.py:118 mycodo_flask/forms/forms_math.py:67
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:506
 msgid "Pressure"
 msgstr ""
 
-#: config.py:116
+#: config.py:121
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:518
 msgid "Pulse Width"
 msgstr ""
 
-#: config.py:119
+#: config.py:124
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:530
 msgid "Revolutions Per Minute"
 msgstr ""
 
-#: config.py:122 mycodo_flask/forms/forms_conditional.py:38
+#: config.py:127 mycodo_flask/forms/forms_conditional.py:38
 #: mycodo_flask/forms/forms_pid.py:64
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:839
 msgid "Setpoint"
 msgstr ""
 
-#: config.py:125
+#: config.py:130
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:542
 msgid "Specific Enthalpy"
 msgstr ""
 
-#: config.py:128
+#: config.py:133
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:554
 msgid "Specific Volume"
 msgstr ""
 
-#: config.py:131 mycodo_flask/forms/forms_calibration.py:40
+#: config.py:136 mycodo_flask/forms/forms_calibration.py:40
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:566
 msgid "Temperature"
 msgstr ""
 
-#: config.py:134
+#: config.py:139
 msgid "Temperature (Obj)"
 msgstr ""
 
-#: config.py:137
+#: config.py:142
 msgid "Temperature (Die)"
 msgstr ""
 
-#: config.py:140 mycodo_flask/forms/forms_input.py:99
+#: config.py:145 mycodo_flask/forms/forms_input.py:99
 #: mycodo_flask/forms/forms_settings.py:120
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:578
 msgid "Voltage"
 msgstr ""
 
-#: config.py:233 mycodo_flask/forms/forms_conditional.py:54
+#: config.py:238 mycodo_flask/forms/forms_conditional.py:54
 #: mycodo_flask/forms/forms_method.py:69
 #: mycodo_flask/forms/forms_settings.py:42 mycodo_flask/forms/forms_timer.py:35
 #: mycodo_flask/templates/layout.html:151
@@ -169,20 +169,20 @@ msgstr ""
 msgid "Output"
 msgstr ""
 
-#: config.py:234 mycodo_flask/calibration_routes.py:222
+#: config.py:239 mycodo_flask/calibration_routes.py:222
 #: mycodo_flask/forms/forms_input.py:54
 msgid "Command"
 msgstr ""
 
-#: config.py:235
+#: config.py:240
 msgid "Activate PID"
 msgstr ""
 
-#: config.py:236
+#: config.py:241
 msgid "Deactivate PID"
 msgstr ""
 
-#: config.py:237 mycodo_flask/forms/forms_authentication.py:28
+#: config.py:242 mycodo_flask/forms/forms_authentication.py:28
 #: mycodo_flask/forms/forms_authentication.py:29
 #: mycodo_flask/forms/forms_settings.py:81
 #: mycodo_flask/forms/forms_settings.py:167
@@ -191,59 +191,63 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: config.py:238
+#: config.py:243
 msgid "Flash LCD"
 msgstr ""
 
-#: config.py:239
+#: config.py:244
 msgid "Photo"
 msgstr ""
 
-#: config.py:240
+#: config.py:245
 msgid "Email Photo"
 msgstr ""
 
-#: config.py:241
+#: config.py:246
 msgid "Video"
 msgstr ""
 
-#: config.py:242
+#: config.py:247
 msgid "Email Video"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:86
+#: mycodo_flask/admin_routes.py:88
 msgid "Backup in progress"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:105
+#: mycodo_flask/admin_routes.py:107
 msgid "Deletion of backup in progress"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:116
+#: mycodo_flask/admin_routes.py:117
 msgid "Restore in progress"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:167
+#: mycodo_flask/admin_routes.py:168
 msgid ""
 "Upgrade functionality is disabled because an internet connection was "
 "unable to be detected"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:187
+#: mycodo_flask/admin_routes.py:188
 msgid ""
 "There was an error encountered during the upgrade process. Check the "
 "upgrade log for details."
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:205
-msgid "Could not determine local mycodo version or online release versions"
+#: mycodo_flask/admin_routes.py:207
+msgid "Could not determine local mycodo version or online release versions: {err}"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:255
+#: mycodo_flask/admin_routes.py:256
+msgid "The upgrade (from master branch) has started"
+msgstr ""
+
+#: mycodo_flask/admin_routes.py:268
 msgid "The upgrade has started"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:257
+#: mycodo_flask/admin_routes.py:270
 msgid "You cannot upgrade if an upgrade is not available"
 msgstr ""
 
@@ -358,11 +362,11 @@ msgstr ""
 msgid "Method"
 msgstr "Méthode"
 
-#: mycodo_flask/page_routes.py:138
+#: mycodo_flask/page_routes.py:137
 msgid "Cannot start time-lapse if stream is active."
 msgstr ""
 
-#: mycodo_flask/page_routes.py:168
+#: mycodo_flask/page_routes.py:167
 msgid "Cannot start stream if time-lapse is active."
 msgstr ""
 
@@ -399,47 +403,47 @@ msgid "remember"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:65
-#: mycodo_flask/forms/forms_misc.py:83
+#: mycodo_flask/forms/forms_misc.py:89
 msgid "Number of Lines"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:68
-#: mycodo_flask/forms/forms_misc.py:87
+#: mycodo_flask/forms/forms_misc.py:93
 msgid "Number of lines should be greater than 0"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:71
-#: mycodo_flask/forms/forms_misc.py:90
+#: mycodo_flask/forms/forms_misc.py:96
 msgid "Login Log"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:72
-#: mycodo_flask/forms/forms_misc.py:91
+#: mycodo_flask/forms/forms_misc.py:97
 msgid "HTTP Log"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:73
-#: mycodo_flask/forms/forms_misc.py:92
+#: mycodo_flask/forms/forms_misc.py:98
 msgid "Daemon Log"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:74
-#: mycodo_flask/forms/forms_misc.py:93
+#: mycodo_flask/forms/forms_misc.py:99
 msgid "Backup Log"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:75
-#: mycodo_flask/forms/forms_misc.py:94
+#: mycodo_flask/forms/forms_misc.py:100
 msgid "KeepUp Log"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:76
-#: mycodo_flask/forms/forms_misc.py:95
+#: mycodo_flask/forms/forms_misc.py:101
 msgid "Upgrade Log"
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:77
-#: mycodo_flask/forms/forms_misc.py:96
+#: mycodo_flask/forms/forms_misc.py:102
 msgid "Restore Log"
 msgstr ""
 
@@ -525,7 +529,7 @@ msgstr ""
 #: mycodo_flask/forms/forms_conditional.py:33
 #: mycodo_flask/forms/forms_graph.py:128 mycodo_flask/forms/forms_graph.py:161
 #: mycodo_flask/forms/forms_input.py:55 mycodo_flask/forms/forms_input.py:60
-#: mycodo_flask/forms/forms_math.py:52 mycodo_flask/forms/forms_math.py:77
+#: mycodo_flask/forms/forms_math.py:52 mycodo_flask/forms/forms_math.py:79
 #: mycodo_flask/forms/forms_pid.py:37
 #: mycodo_flask/templates/pages/live.html:119
 #: mycodo_flask/templates/pages/live.html:290
@@ -644,7 +648,7 @@ msgid "Outputs"
 msgstr ""
 
 #: mycodo_flask/forms/forms_graph.py:28 mycodo_flask/forms/forms_graph.py:78
-#: mycodo_flask/forms/forms_math.py:49 mycodo_flask/forms/forms_math.py:74
+#: mycodo_flask/forms/forms_math.py:49 mycodo_flask/forms/forms_math.py:76
 #: mycodo_flask/templates/pages/input.html:5
 #: mycodo_flask/templates/pages/input.html:14
 msgid "Inputs"
@@ -938,7 +942,7 @@ msgstr ""
 msgid "Add Math Controller"
 msgstr ""
 
-#: mycodo_flask/forms/forms_math.py:55 mycodo_flask/forms/forms_math.py:80
+#: mycodo_flask/forms/forms_math.py:55 mycodo_flask/forms/forms_math.py:82
 msgid "Units"
 msgstr ""
 
@@ -950,11 +954,11 @@ msgstr ""
 msgid "Wet Bulb Temperature"
 msgstr ""
 
-#: mycodo_flask/forms/forms_math.py:66
-msgid "Pressure (optional)"
+#: mycodo_flask/forms/forms_math.py:68
+msgid "optional"
 msgstr ""
 
-#: mycodo_flask/forms/forms_math.py:71
+#: mycodo_flask/forms/forms_math.py:73
 msgid "Max Difference"
 msgstr ""
 
@@ -1135,32 +1139,36 @@ msgstr ""
 msgid "Export Settings"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:70
-msgid "Export Influxdb"
-msgstr ""
-
-#: mycodo_flask/forms/forms_misc.py:74
+#: mycodo_flask/forms/forms_misc.py:71
 msgid "Import Settings"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:84
+#: mycodo_flask/forms/forms_misc.py:74
+msgid "Export Influxdb"
+msgstr ""
+
+#: mycodo_flask/forms/forms_misc.py:78
+msgid "Import Influxdb"
+msgstr ""
+
+#: mycodo_flask/forms/forms_misc.py:90
 #: mycodo_flask/templates/tools/logview.html:14
 msgid "Lines"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:104
+#: mycodo_flask/forms/forms_misc.py:110
 msgid "Upgrade Mycodo"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:112
+#: mycodo_flask/forms/forms_misc.py:118
 msgid "Create Backup"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:113
+#: mycodo_flask/forms/forms_misc.py:119
 msgid "Restore Backup"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:114
+#: mycodo_flask/forms/forms_misc.py:120
 msgid "Delete Backup"
 msgstr ""
 
@@ -1823,9 +1831,10 @@ msgid "More"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:158
+#: mycodo_flask/templates/tools/export.html:3
 #: mycodo_flask/templates/tools/export.html:5
 #: mycodo_flask/templates/tools/export.html:18
-msgid "Export / Import"
+msgid "Export Import"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:159
@@ -1896,7 +1905,7 @@ msgstr "Surclassement"
 #: mycodo_flask/templates/admin/backup.html:5
 #: mycodo_flask/templates/admin/backup.html:12
 #: mycodo_flask/templates/layout.html:192
-msgid "Backup / Restore"
+msgid "Backup Restore"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:196
@@ -1988,17 +1997,17 @@ msgid ""
 "functionality."
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:73
+#: mycodo_flask/templates/admin/upgrade.html:93
 msgid ""
 "No internet connection detected. To upgrade Mycodo automatically, you "
 "will need an internet connection. Refresh the page when one is connected."
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:79
+#: mycodo_flask/templates/admin/upgrade.html:99
 msgid "No upgrade is available. You are running the latest release, version"
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:93
+#: mycodo_flask/templates/admin/upgrade.html:113
 msgid ""
 "Click the button below to begin the upgrade process. Note: An upgrade "
 "often takes several minutes, and in rare cases hours, to complete. During"
@@ -2009,15 +2018,15 @@ msgid ""
 "verified it works as expected)."
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:112
+#: mycodo_flask/templates/admin/upgrade.html:132
 msgid "Current to latest versions"
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:120
+#: mycodo_flask/templates/admin/upgrade.html:140
 msgid "current"
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:120
+#: mycodo_flask/templates/admin/upgrade.html:140
 msgid "latest"
 msgstr ""
 
@@ -3407,10 +3416,6 @@ msgstr ""
 msgid "Calibration Complete"
 msgstr ""
 
-#: mycodo_flask/templates/tools/export.html:3
-msgid "Export/Import"
-msgstr ""
-
 #: mycodo_flask/utils/utils_conditional.py:35
 #: mycodo_flask/utils/utils_conditional.py:157
 #: mycodo_flask/utils/utils_function.py:25 mycodo_flask/utils/utils_graph.py:30
@@ -3445,21 +3450,26 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
-#: mycodo_flask/utils/utils_export.py:33 mycodo_flask/utils/utils_export.py:66
-#: mycodo_flask/utils/utils_export.py:94
+#: mycodo_flask/utils/utils_export.py:38 mycodo_flask/utils/utils_export.py:75
+#: mycodo_flask/utils/utils_export.py:111
 msgid "Export"
 msgstr ""
 
-#: mycodo_flask/utils/utils_export.py:34 mycodo_flask/utils/utils_export.py:95
+#: mycodo_flask/utils/utils_export.py:39 mycodo_flask/utils/utils_export.py:112
 msgid "Measurements"
 msgstr ""
 
-#: mycodo_flask/utils/utils_export.py:67 mycodo_flask/utils/utils_export.py:157
+#: mycodo_flask/utils/utils_export.py:76 mycodo_flask/utils/utils_export.py:185
 msgid "Settings"
 msgstr ""
 
-#: mycodo_flask/utils/utils_export.py:156
+#: mycodo_flask/utils/utils_export.py:184
+#: mycodo_flask/utils/utils_export.py:320
 msgid "Import"
+msgstr ""
+
+#: mycodo_flask/utils/utils_export.py:321
+msgid "Influxdb"
 msgstr ""
 
 #: mycodo_flask/utils/utils_general.py:85
@@ -3853,397 +3863,4 @@ msgstr ""
 #: mycodo_flask/utils/utils_timer.py:109
 msgid "Deactivate timer controller before modifying its settings"
 msgstr ""
-
-#~ msgid ""
-#~ "Backup in progress. It should complete"
-#~ " within a few seconds to a few"
-#~ " minutes. The backup will appear on"
-#~ " this page after it completes."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Deletion of backup in progress. It "
-#~ "should complete within a few seconds "
-#~ "to a few minutes. The backup will"
-#~ " disappear on this page after it "
-#~ "completes."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Restore in progress. It should complete"
-#~ " within a few seconds to a few"
-#~ " minutes."
-#~ msgstr ""
-
-#~ msgid "The upgrade has started. The daemon will be stopped during the upgrade."
-#~ msgstr ""
-
-#~ msgid "URL for 'inject_mycodo_version' raised and error: %(err)s"
-#~ msgstr ""
-
-#~ msgid "If Relay"
-#~ msgstr ""
-
-#~ msgid "If Relay State"
-#~ msgstr ""
-
-#~ msgid "If Relay Duration"
-#~ msgstr ""
-
-#~ msgid "Power Relay"
-#~ msgstr ""
-
-#~ msgid "Pre Relay"
-#~ msgstr ""
-
-#~ msgid "Pre Relay Duration"
-#~ msgstr ""
-
-#~ msgid "I2C Address"
-#~ msgstr ""
-
-#~ msgid "I2C Bus"
-#~ msgstr ""
-
-#~ msgid "Multiplexer I2C Address"
-#~ msgstr ""
-
-#~ msgid "Line 1 Display"
-#~ msgstr ""
-
-#~ msgid "Line 2 Display"
-#~ msgstr ""
-
-#~ msgid "Line 3 Display"
-#~ msgstr ""
-
-#~ msgid "Line 4 Display"
-#~ msgstr ""
-
-#~ msgid "Restart Computer"
-#~ msgstr "Redémarrer l'ordinateur"
-
-#~ msgid "Shutdown Computer"
-#~ msgstr "Éteindre l'ordinateur"
-
-#~ msgid "Mycodo Login"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Inputs, such as sensors or ADC "
-#~ "signals, enable measuring conditions in "
-#~ "the environment. Add, configure, and "
-#~ "activate sensors to begin recording "
-#~ "measurements to the database and allow"
-#~ " them to be used throughout Mycodo."
-#~ msgstr ""
-
-#~ msgid "A common name to distinguish this sensor from others"
-#~ msgstr ""
-
-#~ msgid "The duration (seconds) between sensor reads"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "If a Pre Relay is selected, set"
-#~ " the duration (seconds) to turn the"
-#~ " Pre Relay on for before every "
-#~ "measurement is acquired."
-#~ msgstr ""
-
-#~ msgid "The measurement from the sensor to test the following conditional logic"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The duration (seconds) between checking "
-#~ "whether the conditional is true. Set "
-#~ "to 0 to check after every sensor"
-#~ " measurement."
-#~ msgstr ""
-
-#~ msgid "LCD I<sup>2</sup>C Address"
-#~ msgstr ""
-
-#~ msgid "LCD I<sup>2</sup>C Bus"
-#~ msgstr ""
-
-#~ msgid "Multiplexer I<sup>2</sup>C Address"
-#~ msgstr ""
-
-#~ msgid "%(type)s Sensor, %(sec)s second interval"
-#~ msgstr ""
-
-#~ msgid "Relay Modulation"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Note: This feature is currently not "
-#~ "implemented. These relays will NOT be"
-#~ " modulated if applied to a PID. "
-#~ "This will be implemented soon."
-#~ msgstr ""
-
-#~ msgid "PWM"
-#~ msgstr ""
-
-#~ msgid "Pulse Width Modulation (PWM)"
-#~ msgstr ""
-
-#~ msgid "PWM..."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The number of amps the device "
-#~ "connected to the pwm draws (at "
-#~ "120/240 VAC)"
-#~ msgstr ""
-
-#~ msgid "Select the duty cycle for the PWM when turned on (0.0 - 100.0)"
-#~ msgstr ""
-
-#~ msgid "Relay Usage"
-#~ msgstr ""
-
-#~ msgid "Relay Usage Reports"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "No Reports. Go to <a "
-#~ "href=\"%(loc)\">Relay Usage Options</a> to "
-#~ "schedule a report to be generated."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Activate or deactivate a relay at "
-#~ "a specific time of day. Hour and"
-#~ " minute (HH:MM) here is defined as"
-#~ " the time of day. For example, "
-#~ "3:05 PM would be \"15:05\"."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Activate or deactivate a relay within"
-#~ " this method at a specific duration."
-#~ " Duration here is defined as the "
-#~ "amount of time since the beginning "
-#~ "of the method. For example, 60 "
-#~ "seconds would execute the relay "
-#~ "modulation 60 seconds after the start"
-#~ " of the method."
-#~ msgstr ""
-
-#~ msgid "Enter a linux command that returns a value to be used for the PID input"
-#~ msgstr ""
-
-#~ msgid "What direction to regulate the chosen environmental condition?"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The minimum duration (in seconds) "
-#~ "required for the Raise Relay to "
-#~ "activate. If an On duration is "
-#~ "below this value, the Raise Relay "
-#~ "will not turn on."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The maximum duration (in seconds) "
-#~ "allowed for the Raise Relay to be"
-#~ " on for, per period. If an On"
-#~ " duration is above this value, the"
-#~ " Raise Relay will turn on for "
-#~ "this set duration."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The minimum duration (in seconds) "
-#~ "required for the Lower Relay to "
-#~ "activate. If an On duration is "
-#~ "below this value, the Lower Relay "
-#~ "will not turn on."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The maximum duration (in seconds) "
-#~ "allowed for the Lower Relay to be"
-#~ " on for, per period. If an ON"
-#~ " duration is above this value, the"
-#~ " Lower Relay will turn on for "
-#~ "this set duration."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Enter a linux command (executed as "
-#~ "user mycodo) that returns a value "
-#~ "to be used for the PID input"
-#~ msgstr ""
-
-#~ msgid "Must Select One"
-#~ msgstr ""
-
-#~ msgid "Select the environmental condition to regulate"
-#~ msgstr ""
-
-#~ msgid "The duration between calculating a new PID output"
-#~ msgstr ""
-
-#~ msgid "%(type)s Sensor with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr ""
-
-#~ msgid "The Read Period cannot be less than the Pre-Relay Duration"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Cannot activate controller if the "
-#~ "associated sensor controller is inactive"
-#~ msgstr ""
-
-#~ msgid "Required: Date/Time, Relay ID, and Relay State"
-#~ msgstr ""
-
-#~ msgid "Required: Relay ID, Relay State, and Relay Duration"
-#~ msgstr ""
-
-#~ msgid "Cannot modulate relay with a GPIO of 0"
-#~ msgstr ""
-
-#~ msgid "Relay turned on for %(sec)s seconds: %(rvalue)s"
-#~ msgstr ""
-
-#~ msgid "A Raise Relay ID and/or a Lower Relay ID is required"
-#~ msgstr ""
-
-#~ msgid "Remote Host Error: %(msg)s"
-#~ msgstr ""
-
-#~ msgid "Error: %(msg)s"
-#~ msgstr ""
-
-#~ msgid "x-Axis (minutes)"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "If using a SHT sensor, enter the"
-#~ " GPIO connected to the clock pin "
-#~ "(using BCM numbering)."
-#~ msgstr ""
-
-#~ msgid "Photo Interval must be a positive value."
-#~ msgstr ""
-
-#~ msgid "Total Run Time must be a positive value."
-#~ msgstr ""
-
-#~ msgid "What value to check the measurement against."
-#~ msgstr ""
-
-#~ msgid "How many LCD controllers to add"
-#~ msgstr ""
-
-#~ msgid "Name for this PID controller."
-#~ msgstr ""
-
-#~ msgid "Number of lines should be greater than 0."
-#~ msgstr ""
-
-#~ msgid "Mycodo is currently in the process of an upgrade."
-#~ msgstr ""
-
-#~ msgid "There was an error that occurred during the upgrade."
-#~ msgstr ""
-
-#~ msgid "Refresh Period (seconds)"
-#~ msgstr ""
-
-#~ msgid "Any Pin (<= 40 kHz)"
-#~ msgstr ""
-
-#~ msgid "Hardware Pin (<= 30 MHz)"
-#~ msgstr ""
-
-#~ msgid "Duty Cycle (%)"
-#~ msgstr ""
-
-#~ msgid "Live Leasurements"
-#~ msgstr ""
-
-#~ msgid "Duty Cycle (%%)"
-#~ msgstr ""
-
-#~ msgid "Off Duration (sec.)"
-#~ msgstr ""
-
-#~ msgid "This relay will remain off for at least this duration fo time."
-#~ msgstr ""
-
-#~ msgid "This relay will remain off for at least this duration of time."
-#~ msgstr ""
-
-#~ msgid "PID Error: %(msg)s"
-#~ msgstr ""
-
-#~ msgid "Export Measurements"
-#~ msgstr ""
-
-#~ msgid "Backup/Restore"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "An upgrade often takes several minutes,"
-#~ " and in some cases longer, to "
-#~ "complete. Give the process ample time"
-#~ " to run before doing anything. When"
-#~ " the upgrade has successfully finished, "
-#~ "the daemon status indicator at the "
-#~ "top left will change from red to"
-#~ " green. You can monitor the upgrade"
-#~ " progress with the life log view, "
-#~ "below, by navigating to Configure -> "
-#~ "Mycodo Logs -> Upgrade Log, or by"
-#~ " opening /var/log/mycodo/mycodoupgrade.log."
-#~ msgstr ""
-
-#~ msgid "Input Conditionals"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The conditional is true when the "
-#~ "measured condition is greater than or"
-#~ " less than the set value."
-#~ msgstr ""
-
-#~ msgid "%(type)s Input, %(sec)s second interval"
-#~ msgstr ""
-
-#~ msgid "Output Devices"
-#~ msgstr ""
-
-#~ msgid "PID Controllers"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "PID controllers couple an input with "
-#~ "a device connected to an output to"
-#~ " regulate an environmental condition. For"
-#~ " example, this could be a heater "
-#~ "and a temperature sensor, allowing the"
-#~ " regulation of temperature."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Maximum allowable sensor measurement age "
-#~ "(to allow the PID controller to "
-#~ "manipulate relays, the sensor measurement "
-#~ "must have occurred in the past x"
-#~ " seconds)"
-#~ msgstr ""
-
-#~ msgid "What condition is being measured by the ADC?"
-#~ msgstr ""
-
-#~ msgid "What are the units of the condition being measured by the ADC?"
-#~ msgstr ""
-
-#~ msgid "A valid sensor is required"
-#~ msgstr ""
 

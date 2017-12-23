@@ -18,42 +18,42 @@ from wtforms.validators import DataRequired
 class TimerBase(FlaskForm):
     timer_id = IntegerField('Timer ID', widget=widgets.HiddenInput())
     timer_type = SelectField(
-        lazy_gettext(u'Timer Type'),
+        lazy_gettext('Timer Type'),
         choices=[
-            ('', lazy_gettext(u'Select a Timer Type')),
-            ('time', lazy_gettext(u'Daily Time Point')),
-            ('timespan', lazy_gettext(u'Daily Time Span')),
-            ('duration', lazy_gettext(u'Duration')),
-            ('pwm_method', lazy_gettext(u'PWM Method (Duty Cycle)'))
+            ('', lazy_gettext('Select a Timer Type')),
+            ('time', lazy_gettext('Daily Time Point')),
+            ('timespan', lazy_gettext('Daily Time Span')),
+            ('duration', lazy_gettext('Duration')),
+            ('pwm_method', lazy_gettext('PWM Method (Duty Cycle)'))
         ],
         validators=[DataRequired()]
     )
     name = StringField(
-        lazy_gettext(u'Name'),
+        lazy_gettext('Name'),
         validators=[DataRequired()]
     )
-    relay_id = StringField(lazy_gettext(u'Output'))
-    create = SubmitField(lazy_gettext(u'Save'))
-    modify = SubmitField(lazy_gettext(u'Save'))
-    delete = SubmitField(lazy_gettext(u'Delete'))
-    activate = SubmitField(lazy_gettext(u'Activate'))
-    deactivate = SubmitField(lazy_gettext(u'Deactivate'))
-    order_up = SubmitField(lazy_gettext(u'Up'))
-    order_down = SubmitField(lazy_gettext(u'Down'))
+    relay_id = StringField(lazy_gettext('Output'))
+    create = SubmitField(lazy_gettext('Save'))
+    modify = SubmitField(lazy_gettext('Save'))
+    delete = SubmitField(lazy_gettext('Delete'))
+    activate = SubmitField(lazy_gettext('Activate'))
+    deactivate = SubmitField(lazy_gettext('Deactivate'))
+    order_up = SubmitField(lazy_gettext('Up'))
+    order_down = SubmitField(lazy_gettext('Down'))
 
 
 class TimerTimePoint(FlaskForm):
     state = SelectField(
-        lazy_gettext(u'State'),
+        lazy_gettext('State'),
         choices=[
-            ('on', lazy_gettext(u'On')),
-            ('off', lazy_gettext(u'Off'))
+            ('on', lazy_gettext('On')),
+            ('off', lazy_gettext('Off'))
         ],
         validators=[DataRequired()]
     )
-    time_start = StringField(lazy_gettext(u'Start Time'))
+    time_start = StringField(lazy_gettext('Start Time'))
     time_on_duration = DecimalField(
-        lazy_gettext(u'On (seconds)'),
+        lazy_gettext('On (seconds)'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
@@ -63,22 +63,22 @@ class TimerTimePoint(FlaskForm):
 
 class TimerTimeSpan(FlaskForm):
     state = SelectField(
-        lazy_gettext(u'State'),
+        lazy_gettext('State'),
         choices=[
-            ('on', lazy_gettext(u'On')),
-            ('off', lazy_gettext(u'Off'))
+            ('on', lazy_gettext('On')),
+            ('off', lazy_gettext('Off'))
         ],
         validators=[DataRequired()]
     )
-    time_start_duration = StringField(lazy_gettext(u'Start Time'))
-    time_end_duration = StringField(lazy_gettext(u'End Time'))
+    time_start_duration = StringField(lazy_gettext('Start Time'))
+    time_end_duration = StringField(lazy_gettext('End Time'))
 
 
 class TimerDuration(FlaskForm):
-    duration_on = DecimalField(lazy_gettext(u'On (seconds)'))
-    duration_off = DecimalField(lazy_gettext(u'Off (seconds)'))
+    duration_on = DecimalField(lazy_gettext('On (seconds)'))
+    duration_off = DecimalField(lazy_gettext('Off (seconds)'))
 
 
 class TimerPWMMethod(FlaskForm):
-    method_id = StringField(lazy_gettext(u'Method'))
-    method_period = StringField(lazy_gettext(u'Period (seconds)'))
+    method_id = StringField(lazy_gettext('Method'))
+    method_period = StringField(lazy_gettext('Period (seconds)'))

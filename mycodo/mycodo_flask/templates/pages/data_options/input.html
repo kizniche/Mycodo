@@ -1,0 +1,153 @@
+<h4>{{_('Input')}} <a href="/help#input" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+<p>{{_('Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.')}}</p>
+
+{%- if display_order_input -%}
+{%- for order in display_order_input -%}
+  {%- for each_input in input if each_input.id == order -%}
+
+<div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
+
+  <form method="post" action="/data">
+    {{form_mod_input.csrf_token}}
+    {{form_mod_input.input_id(value=each_input.id)}}
+
+  <div class="row {% if each_input.is_activated -%}active-background
+                  {% else -%}inactive-background
+                  {% endif %} small-gutters" style="padding: 0.5em">
+
+    <div class="col-xs-2 col-sm-1 text-center icon-fh">
+      <a data-toggle="collapse" href="#collapseContainer-input-{{each_input.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_input.id}}">
+        <span class="collapse-button{{each_input.id}} fa fa-3x fa-plus-square"></span>
+      </a>
+    </div>
+    <div class="col-xs-5 col-sm-3">
+      {{form_mod_input.name(class_='form-control', value=each_input.name, **{'title':_('A common name to distinguish this input from others')})}}
+    </div>
+    <div class="col-xs-5 col-sm-2">
+      <input class="form-control btn btn-default" disabled="" title="UUID: {{each_input.unique_id}}" value="[{{'%02d' % each_input.id}}] {{each_input.device}}" type="text">
+    </div>
+    <div class="col-xs-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
+    {% if each_input.is_activated -%}
+      {%- set has_active_pid = [] -%}
+      {%- for each_pid in pid if each_pid.measurement.split(',')[0] == each_input.unique_id and each_pid.is_activated -%}
+        {%- do has_active_pid.append(1) -%}
+      {%- endfor -%}
+      {% if has_active_pid -%}
+        {{form_mod_input.input_deactivate(class_='form-control btn btn-default',**{'onclick':'return confirm("There are currently active PID controllers that rely on this Input to be active. Select OK to deactivate this input and all associated PID controllers, otherwise click Cancel to leave them active.")'})}}
+      {% else -%}
+        {{form_mod_input.input_deactivate(class_='form-control btn btn-default')}}
+      {% endif -%}
+    {% else -%}
+      {{form_mod_input.input_activate(class_='form-control btn btn-default')}}
+    {% endif -%}
+    </div>
+
+    <div class="col-xs-3 col-sm-2">
+      {{form_mod_input.input_order_up(class_='form-control btn btn-default')}}
+    </div>
+    <div class="col-xs-3 col-sm-2">
+      {{form_mod_input.input_order_down(class_='form-control btn btn-default')}}
+    </div>
+
+  </div>
+
+  <div class="collapse" id="collapseContainer-input-{{each_input.id}}">
+
+    {% if each_input.device in ['RPiCPULoad', 'RPiFreeSpace'] -%}
+      <input id="pre_relay_id" name="pre_relay_id" type="hidden" value="0">
+      <input id="pre_relay_duration" name="pre_relay_duration" type="hidden" value="0">
+    {% endif -%}
+
+    <div class="row small-gutters">
+      <div class="col-xs-6 col-sm-4">
+        {{form_mod_input.input_mod(class_='form-control btn btn-default')}}
+      </div>
+      <div class="col-xs-6 col-sm-4">
+        {% if has_active_pid or has_active_lcd -%}
+          {{form_mod_input.input_delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Note: there are currently active PID or LCD controlelrs that rely on this input to operate. Deleting it will deactivate these inputs. Are you sure you want to delete this input?")'})}}
+        {% else -%}
+          {{form_mod_input.input_delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this input?")'})}}
+        {% endif -%}
+      </div>
+    </div>
+
+    <div style="padding: 0.5em;" class="row small-gutters">
+      {% for each_input_templates in input_templates if each_input_templates[:-5] == each_input.device %}
+        {% include 'pages/data_options/input_options/'+each_input_templates %}
+      {% endfor %}
+
+      {% if each_input.device != 'EDGE' -%}
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+          {{form_mod_input.period.label(class_='control-label')}}
+          <div>
+            {{form_mod_input.period(class_='form-control', value=each_input.period, **{'title':_('The duration (seconds) between input reads')})}}
+          </div>
+        </div>
+      {% endif -%}
+
+      {% if each_input.device not in ['EDGE', 'RPi', 'RPiCPULoad', 'RPiFreeSpace', 'MYCODO_RAM'] -%}
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+          {{form_mod_input.pre_relay_id.label(class_='control-label')}}
+          <div>
+            <select class="form-control form-tooltip form-dropdown" data-placement="top" id="pre_relay_id" name="pre_relay_id" title="{{_('Turn the selected relay on before taking every measurement')}}.">
+              <option value="">Disabled</option>
+              {% for each_output in output -%}
+                <option value="{{each_output.id}}"{% if each_input.pre_relay_id == each_output.id %} selected{% endif %}>{{each_output.id}} ({{each_output.name}})</option>
+              {% endfor -%}
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+          {{form_mod_input.pre_relay_duration.label(class_='control-label')}}
+          <div>
+            {{form_mod_input.pre_relay_duration(class_='form-control', value=each_input.pre_relay_duration, **{'title':_('If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.')})}}
+          </div>
+        </div>
+      {% endif -%}
+
+      {% if each_input.device in list_devices_i2c -%}
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+          {{form_mod_input.multiplexer_address.label(class_='control-label')}}
+          <div>
+            <select class="form-control form-tooltip form-dropdown" data-placement="top" id="multiplexer_address" name="multiplexer_address" title="{{_('The I2C address of the multiplexer (if used)')}}.">
+              <option value=""{% if each_input.multiplexer_address == '' %} selected{% endif %}>{{_('Disabled')}}</option>
+            {% for each_mp_add in multiplexer_addresses %}
+              <option value="{{each_mp_add}}"{% if each_input.multiplexer_address == each_mp_add %} selected{% endif %}>{{_('I2C Address %(address)s', address=each_mp_add)}}</option>
+            {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+          {{form_mod_input.multiplexer_bus.label(class_='control-label')}}
+          <div>
+            {{form_mod_input.multiplexer_bus(class_='form-control', value=each_input.multiplexer_bus, **{'title':_('Which I2C bus is this multiplexer connected?')})}}
+          </div>
+        </div>
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+          {{form_mod_input.multiplexer_channel.label(class_='control-label')}}
+          <div>
+            <select class="form-control form-tooltip form-dropdown" data-placement="top" id="multiplexer_channel" name="multiplexer_channel" rel="tooltip" title="{{_('If a multiplexer address is selected, select the channel connected to your target device')}}.">
+              <option value=""{% if each_input.multiplexer_channel == '' %} selected{% endif %}>{{_('Disabled')}}</option>
+            {% for each_mp_chan in multiplexer_channels %}
+              <option value="{{each_mp_chan}}"{% if each_input.multiplexer_channel == each_mp_chan %} selected{% endif %}>{{_('Channel %(channel)s', channel=each_mp_chan)}}</option>
+            {% endfor %}
+            </select>
+          </div>
+        </div>
+      {% endif -%}
+    </div>
+
+    </form>
+
+
+  </div> <!- collapse container end ->
+
+</div>
+
+{%- endfor -%}
+
+<div style="clear: both; padding-bottom: 0.5em;"></div>
+
+{%- endfor -%}
+{%- endif -%}
+

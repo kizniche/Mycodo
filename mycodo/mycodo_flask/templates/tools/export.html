@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 {% set active_page = "export" %}
-{% set help_page = ["export--import", _('Export/Import')] %}
+{% set help_page = ["export-import", _('Export Import')] %}
 
-{% block title %} - {{_('Export / Import')}}{% endblock %}
+{% block title %} - {{_('Export Import')}}{% endblock %}
 
 {% block head %}
 <script type="text/javascript" src="/static/js/moment.min.js"></script>
@@ -15,7 +15,7 @@
 <div class="container">
   {% include 'flash_messages.html' %}
 
-  <h4>{{_('Export / Import')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+  <h4>{{_('Export Import')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
 
   <h4 style="padding-top: 2em">Export Measurement Data as CSV</h4>
 
@@ -56,9 +56,9 @@
   </div>
   </form>
 
-  <h4 style="padding-top: 2em">Export Influxdb Database and Metastore as ZIP</h4>
+  <h4 style="padding-top: 2em">Export InfluxDB Database and Metastore as ZIP</h4>
 
-  <p>This will create a ZIP file containing the Influxdb meatastore and database containing all measurement data.</p>
+  <p>This will create a ZIP file containing the InfluxDB meatastore and database containing all measurement data.</p>
 
   <form method="post" action="/export">
   {{form_export_influxdb.csrf_token}}
@@ -69,9 +69,25 @@
   </div>
   </form>
 
-  <h4 style="padding-top: 2em">Export Settings Data as ZIP</h4>
+  <h4 style="padding-top: 2em">Import InfluxDB Database and Metastore from ZIP</h4>
 
-  <p>This will create a ZIP file containing the settings database (sqlite3) containing the Mycodo configuration and user information.</p>
+  <p>This will allow a ZIP file containing the InfluxDB meatastore and database to be uploaded and overwirite the current Influxdb database of measurements. Again, all data will be replaced (i.e. destroyed) by the imported backup. It is advised to export your current data before importing a previous backup if you don't want to lose this data. In the future, there will be an option to combine imported data with the current data. InfluxDB and the Mycodo daemon (backend) will be stopped momentarily while the import takes place.</p>
+
+  <form method="post" action="/export" enctype=multipart/form-data>
+  {{form_import_influxdb.csrf_token}}
+  <div class="form-inline">
+    <div class="form-group fileinput fileinput-new" data-provides="fileinput">
+      <span class="btn btn-default btn-file"><input id="influxdb_import_file" name="influxdb_import_file" type="file" /></span>
+    </div>
+    <div class="form-group">
+      {{form_import_influxdb.influxdb_import_upload(class_='form-control btn btn-default')}}
+    </div>
+  </div>
+  </form>
+
+  <h4 style="padding-top: 2em">Export Mycodo Settings Data as ZIP</h4>
+
+  <p>This will create a ZIP file containing the Mycodo settings database containing the Mycodo configuration and user information.</p>
 
   <form method="post" action="/export">
   {{form_export_settings.csrf_token}}
@@ -82,9 +98,9 @@
   </div>
   </form>
 
-  <h4 style="padding-top: 2em">Import Settings Data from ZIP</h4>
+  <h4 style="padding-top: 2em">Import Mycodo Settings Data from ZIP</h4>
 
-  <p>This will allow a ZIP file containing the settings database (sqlite3) to be uploaded and replace the current settings. Note: This will override all settings and users and log all current users out.</p>
+  <p>This will allow a ZIP file containing the Mycodo settings database to be uploaded and replace the current settings. Note: This will override all settings and user accounts and log you out from the web UI. A backup of the current database will be created in the database directory (~/Mycodo/databases/mycodo.db.backup_DATE_TIME).</p>
 
   <form method="post" action="/export" enctype=multipart/form-data>
   {{form_import_settings.csrf_token}}

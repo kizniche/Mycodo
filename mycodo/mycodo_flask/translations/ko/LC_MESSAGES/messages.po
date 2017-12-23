@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-12-19 19:33-0500\n"
+"POT-Creation-Date: 2017-12-20 16:39-0500\n"
 "PO-Revision-Date: 2017-12-18 22:46-0500\n"
 "Last-Translator: \n"
 "Language: ko\n"
@@ -16,30 +16,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.5.1\n"
 
-#: config.py:62
+#: config.py:67
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:362
 msgid "Altitude"
 msgstr "고도"
 
-#: config.py:65
+#: config.py:70
 msgid "CO2"
 msgstr "CO2"
 
-#: config.py:68
+#: config.py:73
 msgid "Dewpoint"
 msgstr "이슬점"
 
-#: config.py:71 config.py:74 config.py:77
+#: config.py:76 config.py:79 config.py:82
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:374
 #, fuzzy
 msgid "CPU Load"
 msgstr "CPU Load"
 
-#: config.py:80
+#: config.py:85
 msgid "Disk"
 msgstr "디스크"
 
-#: config.py:83 mycodo_flask/forms/forms_conditional.py:56
+#: config.py:88 mycodo_flask/forms/forms_conditional.py:56
 #: mycodo_flask/forms/forms_conditional.py:58
 #: mycodo_flask/forms/forms_timer.py:26
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:850
@@ -47,7 +47,7 @@ msgstr "디스크"
 msgid "Duration"
 msgstr "시속시간"
 
-#: config.py:86 mycodo_flask/forms/forms_output.py:82
+#: config.py:91 mycodo_flask/forms/forms_output.py:82
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:410
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:861
 #: mycodo_flask/templates/pages/live.html:175
@@ -58,93 +58,93 @@ msgstr "시속시간"
 msgid "Duty Cycle"
 msgstr "듀티 사이클"
 
-#: config.py:89 mycodo_flask/forms/forms_input.py:67
+#: config.py:94 mycodo_flask/forms/forms_input.py:67
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:422
 msgid "Edge"
 msgstr "엣지"
 
-#: config.py:92 mycodo_flask/forms/forms_method.py:49
+#: config.py:97 mycodo_flask/forms/forms_method.py:49
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:434
 msgid "Frequency"
 msgstr "주파수"
 
-#: config.py:95
+#: config.py:100
 msgid "Humidity"
 msgstr "습기"
 
-#: config.py:98
+#: config.py:103
 msgid "Humidity Ratio"
 msgstr ""
 
-#: config.py:101
+#: config.py:106
 msgid "Light"
 msgstr "빛"
 
-#: config.py:104
+#: config.py:109
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:482
 msgid "Moisture"
 msgstr "수분"
 
-#: config.py:107
+#: config.py:112
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:494
 msgid "pH"
 msgstr "pH"
 
-#: config.py:110
+#: config.py:115
 msgid "PID Output"
 msgstr "PID 출력"
 
-#: config.py:113
+#: config.py:118 mycodo_flask/forms/forms_math.py:67
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:506
 msgid "Pressure"
 msgstr "압력"
 
-#: config.py:116
+#: config.py:121
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:518
 msgid "Pulse Width"
 msgstr "펄스 폭"
 
-#: config.py:119
+#: config.py:124
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:530
 msgid "Revolutions Per Minute"
 msgstr "레볼루션 (분)"
 
-#: config.py:122 mycodo_flask/forms/forms_conditional.py:38
+#: config.py:127 mycodo_flask/forms/forms_conditional.py:38
 #: mycodo_flask/forms/forms_pid.py:64
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:839
 msgid "Setpoint"
 msgstr "세트 포인트"
 
-#: config.py:125
+#: config.py:130
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:542
 msgid "Specific Enthalpy"
 msgstr ""
 
-#: config.py:128
+#: config.py:133
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:554
 msgid "Specific Volume"
 msgstr ""
 
-#: config.py:131 mycodo_flask/forms/forms_calibration.py:40
+#: config.py:136 mycodo_flask/forms/forms_calibration.py:40
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:566
 msgid "Temperature"
 msgstr "온도"
 
-#: config.py:134
+#: config.py:139
 msgid "Temperature (Obj)"
 msgstr "온도 (Obj)"
 
-#: config.py:137
+#: config.py:142
 msgid "Temperature (Die)"
 msgstr "온도 (Die)"
 
-#: config.py:140 mycodo_flask/forms/forms_input.py:99
+#: config.py:145 mycodo_flask/forms/forms_input.py:99
 #: mycodo_flask/forms/forms_settings.py:120
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:578
 msgid "Voltage"
 msgstr "전압"
 
-#: config.py:233 mycodo_flask/forms/forms_conditional.py:54
+#: config.py:238 mycodo_flask/forms/forms_conditional.py:54
 #: mycodo_flask/forms/forms_method.py:69
 #: mycodo_flask/forms/forms_settings.py:42 mycodo_flask/forms/forms_timer.py:35
 #: mycodo_flask/templates/layout.html:151
@@ -170,20 +170,20 @@ msgstr "전압"
 msgid "Output"
 msgstr "출력"
 
-#: config.py:234 mycodo_flask/calibration_routes.py:222
+#: config.py:239 mycodo_flask/calibration_routes.py:222
 #: mycodo_flask/forms/forms_input.py:54
 msgid "Command"
 msgstr "코맨드"
 
-#: config.py:235
+#: config.py:240
 msgid "Activate PID"
 msgstr "PID 켜기"
 
-#: config.py:236
+#: config.py:241
 msgid "Deactivate PID"
 msgstr "PID 끄기"
 
-#: config.py:237 mycodo_flask/forms/forms_authentication.py:28
+#: config.py:242 mycodo_flask/forms/forms_authentication.py:28
 #: mycodo_flask/forms/forms_authentication.py:29
 #: mycodo_flask/forms/forms_settings.py:81
 #: mycodo_flask/forms/forms_settings.py:167
@@ -192,59 +192,63 @@ msgstr "PID 끄기"
 msgid "Email"
 msgstr "이메일"
 
-#: config.py:238
+#: config.py:243
 msgid "Flash LCD"
 msgstr "Flash LCD"
 
-#: config.py:239
+#: config.py:244
 msgid "Photo"
 msgstr "사진"
 
-#: config.py:240
+#: config.py:245
 msgid "Email Photo"
 msgstr "사진 이메일로 보내기"
 
-#: config.py:241
+#: config.py:246
 msgid "Video"
 msgstr "비디오"
 
-#: config.py:242
+#: config.py:247
 msgid "Email Video"
 msgstr "비디오 이메일"
 
-#: mycodo_flask/admin_routes.py:86
+#: mycodo_flask/admin_routes.py:88
 msgid "Backup in progress"
 msgstr "백업 진행중"
 
-#: mycodo_flask/admin_routes.py:105
+#: mycodo_flask/admin_routes.py:107
 msgid "Deletion of backup in progress"
 msgstr "진행중인 백업 삭제"
 
-#: mycodo_flask/admin_routes.py:116
+#: mycodo_flask/admin_routes.py:117
 msgid "Restore in progress"
 msgstr "복원을 실행하는 중입니다"
 
-#: mycodo_flask/admin_routes.py:167
+#: mycodo_flask/admin_routes.py:168
 msgid ""
 "Upgrade functionality is disabled because an internet connection was "
 "unable to be detected"
 msgstr "인터넷 연결을 감지 할 수 없어 업그레이드 기능을 해제시켰습니다"
 
-#: mycodo_flask/admin_routes.py:187
+#: mycodo_flask/admin_routes.py:188
 msgid ""
 "There was an error encountered during the upgrade process. Check the "
 "upgrade log for details."
 msgstr "업그레이드 진행도중 오류가 발생했습니다. 자세한 내용은 업그레이드 로그를 확인하십시오."
 
-#: mycodo_flask/admin_routes.py:205
-msgid "Could not determine local mycodo version or online release versions"
-msgstr "로컬 mycodo 버전 또는 온라인 릴리스 버전을 확인할 수 없습니다"
+#: mycodo_flask/admin_routes.py:207
+msgid "Could not determine local mycodo version or online release versions: {err}"
+msgstr ""
 
-#: mycodo_flask/admin_routes.py:255
+#: mycodo_flask/admin_routes.py:256
+msgid "The upgrade (from master branch) has started"
+msgstr ""
+
+#: mycodo_flask/admin_routes.py:268
 msgid "The upgrade has started"
 msgstr "업그레이드를 시작했습니다"
 
-#: mycodo_flask/admin_routes.py:257
+#: mycodo_flask/admin_routes.py:270
 msgid "You cannot upgrade if an upgrade is not available"
 msgstr "업그레이드를 사용 할 수 없을때 업그레이드 할 수 없습니다"
 
@@ -359,11 +363,11 @@ msgstr "삭제"
 msgid "Method"
 msgstr "방법"
 
-#: mycodo_flask/page_routes.py:138
+#: mycodo_flask/page_routes.py:137
 msgid "Cannot start time-lapse if stream is active."
 msgstr "스트림이 활성화되어 있을때 타임랩스를 시작할 수 없습니다."
 
-#: mycodo_flask/page_routes.py:168
+#: mycodo_flask/page_routes.py:167
 msgid "Cannot start stream if time-lapse is active."
 msgstr "타임랩스가 활성화되어 있을때 스트림을 시작할수 없습니다."
 
@@ -400,47 +404,47 @@ msgid "remember"
 msgstr "기억하기"
 
 #: mycodo_flask/forms/forms_authentication.py:65
-#: mycodo_flask/forms/forms_misc.py:83
+#: mycodo_flask/forms/forms_misc.py:89
 msgid "Number of Lines"
 msgstr "라인 개수"
 
 #: mycodo_flask/forms/forms_authentication.py:68
-#: mycodo_flask/forms/forms_misc.py:87
+#: mycodo_flask/forms/forms_misc.py:93
 msgid "Number of lines should be greater than 0"
 msgstr "줄 갯수는 0보다 커야합니다"
 
 #: mycodo_flask/forms/forms_authentication.py:71
-#: mycodo_flask/forms/forms_misc.py:90
+#: mycodo_flask/forms/forms_misc.py:96
 msgid "Login Log"
 msgstr "로그인 로그"
 
 #: mycodo_flask/forms/forms_authentication.py:72
-#: mycodo_flask/forms/forms_misc.py:91
+#: mycodo_flask/forms/forms_misc.py:97
 msgid "HTTP Log"
 msgstr "HTTP 로그"
 
 #: mycodo_flask/forms/forms_authentication.py:73
-#: mycodo_flask/forms/forms_misc.py:92
+#: mycodo_flask/forms/forms_misc.py:98
 msgid "Daemon Log"
 msgstr "데몬 로그"
 
 #: mycodo_flask/forms/forms_authentication.py:74
-#: mycodo_flask/forms/forms_misc.py:93
+#: mycodo_flask/forms/forms_misc.py:99
 msgid "Backup Log"
 msgstr "백업 로그"
 
 #: mycodo_flask/forms/forms_authentication.py:75
-#: mycodo_flask/forms/forms_misc.py:94
+#: mycodo_flask/forms/forms_misc.py:100
 msgid "KeepUp Log"
 msgstr "KeepUp 로그"
 
 #: mycodo_flask/forms/forms_authentication.py:76
-#: mycodo_flask/forms/forms_misc.py:95
+#: mycodo_flask/forms/forms_misc.py:101
 msgid "Upgrade Log"
 msgstr "업그레이드 로그"
 
 #: mycodo_flask/forms/forms_authentication.py:77
-#: mycodo_flask/forms/forms_misc.py:96
+#: mycodo_flask/forms/forms_misc.py:102
 msgid "Restore Log"
 msgstr "로그 복원"
 
@@ -529,7 +533,7 @@ msgstr "기간"
 #: mycodo_flask/forms/forms_conditional.py:33
 #: mycodo_flask/forms/forms_graph.py:128 mycodo_flask/forms/forms_graph.py:161
 #: mycodo_flask/forms/forms_input.py:55 mycodo_flask/forms/forms_input.py:60
-#: mycodo_flask/forms/forms_math.py:52 mycodo_flask/forms/forms_math.py:77
+#: mycodo_flask/forms/forms_math.py:52 mycodo_flask/forms/forms_math.py:79
 #: mycodo_flask/forms/forms_pid.py:37
 #: mycodo_flask/templates/pages/live.html:119
 #: mycodo_flask/templates/pages/live.html:290
@@ -648,7 +652,7 @@ msgid "Outputs"
 msgstr "출력"
 
 #: mycodo_flask/forms/forms_graph.py:28 mycodo_flask/forms/forms_graph.py:78
-#: mycodo_flask/forms/forms_math.py:49 mycodo_flask/forms/forms_math.py:74
+#: mycodo_flask/forms/forms_math.py:49 mycodo_flask/forms/forms_math.py:76
 #: mycodo_flask/templates/pages/input.html:5
 #: mycodo_flask/templates/pages/input.html:14
 msgid "Inputs"
@@ -943,7 +947,7 @@ msgstr "라인 4"
 msgid "Add Math Controller"
 msgstr ""
 
-#: mycodo_flask/forms/forms_math.py:55 mycodo_flask/forms/forms_math.py:80
+#: mycodo_flask/forms/forms_math.py:55 mycodo_flask/forms/forms_math.py:82
 msgid "Units"
 msgstr ""
 
@@ -955,11 +959,11 @@ msgstr ""
 msgid "Wet Bulb Temperature"
 msgstr ""
 
-#: mycodo_flask/forms/forms_math.py:66
-msgid "Pressure (optional)"
+#: mycodo_flask/forms/forms_math.py:68
+msgid "optional"
 msgstr ""
 
-#: mycodo_flask/forms/forms_math.py:71
+#: mycodo_flask/forms/forms_math.py:73
 msgid "Max Difference"
 msgstr ""
 
@@ -1140,32 +1144,36 @@ msgstr ""
 msgid "Export Settings"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:70
-msgid "Export Influxdb"
-msgstr ""
-
-#: mycodo_flask/forms/forms_misc.py:74
+#: mycodo_flask/forms/forms_misc.py:71
 msgid "Import Settings"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:84
+#: mycodo_flask/forms/forms_misc.py:74
+msgid "Export Influxdb"
+msgstr ""
+
+#: mycodo_flask/forms/forms_misc.py:78
+msgid "Import Influxdb"
+msgstr ""
+
+#: mycodo_flask/forms/forms_misc.py:90
 #: mycodo_flask/templates/tools/logview.html:14
 msgid "Lines"
 msgstr "라인"
 
-#: mycodo_flask/forms/forms_misc.py:104
+#: mycodo_flask/forms/forms_misc.py:110
 msgid "Upgrade Mycodo"
 msgstr "마이코도 업그레이드"
 
-#: mycodo_flask/forms/forms_misc.py:112
+#: mycodo_flask/forms/forms_misc.py:118
 msgid "Create Backup"
 msgstr "백업 생성"
 
-#: mycodo_flask/forms/forms_misc.py:113
+#: mycodo_flask/forms/forms_misc.py:119
 msgid "Restore Backup"
 msgstr "백업 복원"
 
-#: mycodo_flask/forms/forms_misc.py:114
+#: mycodo_flask/forms/forms_misc.py:120
 msgid "Delete Backup"
 msgstr "백업 삭제"
 
@@ -1832,9 +1840,10 @@ msgid "More"
 msgstr "더"
 
 #: mycodo_flask/templates/layout.html:158
+#: mycodo_flask/templates/tools/export.html:3
 #: mycodo_flask/templates/tools/export.html:5
 #: mycodo_flask/templates/tools/export.html:18
-msgid "Export / Import"
+msgid "Export Import"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:159
@@ -1907,7 +1916,7 @@ msgstr "업그레이드"
 #: mycodo_flask/templates/admin/backup.html:5
 #: mycodo_flask/templates/admin/backup.html:12
 #: mycodo_flask/templates/layout.html:192
-msgid "Backup / Restore"
+msgid "Backup Restore"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:196
@@ -2001,17 +2010,17 @@ msgid ""
 "functionality."
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:73
+#: mycodo_flask/templates/admin/upgrade.html:93
 msgid ""
 "No internet connection detected. To upgrade Mycodo automatically, you "
 "will need an internet connection. Refresh the page when one is connected."
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:79
+#: mycodo_flask/templates/admin/upgrade.html:99
 msgid "No upgrade is available. You are running the latest release, version"
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:93
+#: mycodo_flask/templates/admin/upgrade.html:113
 msgid ""
 "Click the button below to begin the upgrade process. Note: An upgrade "
 "often takes several minutes, and in rare cases hours, to complete. During"
@@ -2022,16 +2031,16 @@ msgid ""
 "verified it works as expected)."
 msgstr ""
 
-#: mycodo_flask/templates/admin/upgrade.html:112
+#: mycodo_flask/templates/admin/upgrade.html:132
 msgid "Current to latest versions"
 msgstr "최신 버전"
 
-#: mycodo_flask/templates/admin/upgrade.html:120
+#: mycodo_flask/templates/admin/upgrade.html:140
 #, fuzzy
 msgid "current"
 msgstr "현재"
 
-#: mycodo_flask/templates/admin/upgrade.html:120
+#: mycodo_flask/templates/admin/upgrade.html:140
 msgid "latest"
 msgstr "최근"
 
@@ -3447,10 +3456,6 @@ msgstr "캘리브레이션 성공"
 msgid "Calibration Complete"
 msgstr "캘리브레이션 완료"
 
-#: mycodo_flask/templates/tools/export.html:3
-msgid "Export/Import"
-msgstr ""
-
 #: mycodo_flask/utils/utils_conditional.py:35
 #: mycodo_flask/utils/utils_conditional.py:157
 #: mycodo_flask/utils/utils_function.py:25 mycodo_flask/utils/utils_graph.py:30
@@ -3485,21 +3490,26 @@ msgstr "개조 (Mod)"
 msgid "Refresh"
 msgstr ""
 
-#: mycodo_flask/utils/utils_export.py:33 mycodo_flask/utils/utils_export.py:66
-#: mycodo_flask/utils/utils_export.py:94
+#: mycodo_flask/utils/utils_export.py:38 mycodo_flask/utils/utils_export.py:75
+#: mycodo_flask/utils/utils_export.py:111
 msgid "Export"
 msgstr "수출"
 
-#: mycodo_flask/utils/utils_export.py:34 mycodo_flask/utils/utils_export.py:95
+#: mycodo_flask/utils/utils_export.py:39 mycodo_flask/utils/utils_export.py:112
 msgid "Measurements"
 msgstr ""
 
-#: mycodo_flask/utils/utils_export.py:67 mycodo_flask/utils/utils_export.py:157
+#: mycodo_flask/utils/utils_export.py:76 mycodo_flask/utils/utils_export.py:185
 msgid "Settings"
 msgstr ""
 
-#: mycodo_flask/utils/utils_export.py:156
+#: mycodo_flask/utils/utils_export.py:184
+#: mycodo_flask/utils/utils_export.py:320
 msgid "Import"
+msgstr ""
+
+#: mycodo_flask/utils/utils_export.py:321
+msgid "Influxdb"
 msgstr ""
 
 #: mycodo_flask/utils/utils_general.py:85
@@ -3896,233 +3906,4 @@ msgstr "지속 시간은 0보다 커야합니다"
 #: mycodo_flask/utils/utils_timer.py:109
 msgid "Deactivate timer controller before modifying its settings"
 msgstr "설정을 수정하기 전에 타이머 컨트롤러를 비활성화하십시오"
-
-#~ msgid ""
-#~ "Backup in progress. It should complete"
-#~ " within a few seconds to a few"
-#~ " minutes. The backup will appear on"
-#~ " this page after it completes."
-#~ msgstr "백업이 진행중입니다. 몇 초에서 몇 분 이내에 완료될 것입니다. 완료 후 이 페이지에 백업이 표시될 것입니다."
-
-#~ msgid ""
-#~ "Deletion of backup in progress. It "
-#~ "should complete within a few seconds "
-#~ "to a few minutes. The backup will"
-#~ " disappear on this page after it "
-#~ "completes."
-#~ msgstr "백업 삭제 진행중입니다. 몇 초에서 몇 분 이내에 완료되어야합니다. 완료 후 이 페이지에 백업이 없어질 것입니다."
-
-#~ msgid ""
-#~ "Restore in progress. It should complete"
-#~ " within a few seconds to a few"
-#~ " minutes."
-#~ msgstr "복원이 진행중입니다. 몇 초에서 몇 분 이내에 완료될 것입니다."
-
-#~ msgid "The upgrade has started. The daemon will be stopped during the upgrade."
-#~ msgstr "업그레이드가 시작되었습니다. 데몬은 업그레이드 도중 중지됩니다."
-
-#~ msgid "URL for 'inject_mycodo_version' raised and error: %(err)s"
-#~ msgstr "'inject_mycodo_version' 에 대한 URL 발생 및 오류: %(err)s"
-
-#~ msgid "If Relay"
-#~ msgstr "만약 릴레이"
-
-#~ msgid "If Relay State"
-#~ msgstr "만약 릴레이 상태가"
-
-#~ msgid "If Relay Duration"
-#~ msgstr "만약 릴레이 지속 기간이"
-
-#~ msgid "Power Relay"
-#~ msgstr "파워 릴레이"
-
-#~ msgid "Pre Relay"
-#~ msgstr "Pre 릴레이"
-
-#~ msgid "Pre Relay Duration"
-#~ msgstr "Pre 릴레이 지속 시간"
-
-#~ msgid "I2C Address"
-#~ msgstr "I2C 주소"
-
-#~ msgid "I2C Bus"
-#~ msgstr "I2C 버스"
-
-#~ msgid "Multiplexer I2C Address"
-#~ msgstr "멀티플렉서 I2C 주소"
-
-#~ msgid "Line 1 Display"
-#~ msgstr "라인 1 디스플레이"
-
-#~ msgid "Line 2 Display"
-#~ msgstr "라인 2 디스플레이"
-
-#~ msgid "Line 3 Display"
-#~ msgstr "라인 3 디스플레이"
-
-#~ msgid "Line 4 Display"
-#~ msgstr "라인 4 디스플레이"
-
-#~ msgid "Restart Computer"
-#~ msgstr "컴퓨터 다시시작"
-
-#~ msgid "Shutdown Computer"
-#~ msgstr "컴퓨터 종료"
-
-#~ msgid "Mycodo Login"
-#~ msgstr "Mycodo 로그인"
-
-#~ msgid "A common name to distinguish this sensor from others"
-#~ msgstr "이 센서를 다른 센서들로부터 구분 시키기 위한 닉네임"
-
-#~ msgid "Relay Modulation"
-#~ msgstr "릴레이 변조"
-
-#~ msgid "PWM"
-#~ msgstr "PWM"
-
-#~ msgid "Pulse Width Modulation (PWM)"
-#~ msgstr "펄스 폭 변조 (PWM)"
-
-#~ msgid "PWM..."
-#~ msgstr "PWM..."
-
-#~ msgid "Relay Usage"
-#~ msgstr "릴레이 사용"
-
-#~ msgid "Relay Usage Reports"
-#~ msgstr "릴레이 사용 보고서"
-
-#~ msgid "Must Select One"
-#~ msgstr "선택"
-
-#~ msgid "%(type)s Sensor with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "아이디 %(id)s (%(uuid)s) 와 %(type)s 센서가 성공적으로 추가됨"
-
-#~ msgid "The Read Period cannot be less than the Pre-Relay Duration"
-#~ msgstr "읽기 기간은 사전 릴레이 기간보다 짧을 수 없습니다"
-
-#~ msgid ""
-#~ "Cannot activate controller if the "
-#~ "associated sensor controller is inactive"
-#~ msgstr "연결된 센서 컨트롤러가 비활성 상태 인 경우 컨트롤러를 활성화 할 수 없습니다"
-
-#~ msgid "Required: Date/Time, Relay ID, and Relay State"
-#~ msgstr "필수 : 날짜 / 시간, 릴레이 ID 및 릴레이 상태"
-
-#~ msgid "Required: Relay ID, Relay State, and Relay Duration"
-#~ msgstr "필수 : 릴레이 ID, 릴레이 상태 및 릴레이 지속 시간"
-
-#~ msgid "Cannot modulate relay with a GPIO of 0"
-#~ msgstr "GPIO가 0 인 릴레이를 변조 할 수 없음"
-
-#~ msgid "Relay turned on for %(sec)s seconds: %(rvalue)s"
-#~ msgstr "%(sec)s 초 동안 릴레이가 켜졌습니다: %(rvalue)s"
-
-#~ msgid "A Raise Relay ID and/or a Lower Relay ID is required"
-#~ msgstr "Raise 릴레이 아이디와 Lower 릴레이 아이디가 필요함"
-
-#~ msgid "Remote Host Error: %(msg)s"
-#~ msgstr "원격 호스트 오류발생: %(msg)s"
-
-#~ msgid "Error: %(msg)s"
-#~ msgstr "오류: %(msg)s"
-
-#~ msgid "x-Axis (minutes)"
-#~ msgstr "x축/엑스-액시스 (분)"
-
-#~ msgid ""
-#~ "If using a SHT sensor, enter the"
-#~ " GPIO connected to the clock pin "
-#~ "(using BCM numbering)."
-#~ msgstr "SHT 센서를 사용하는 경우 클럭 핀에 연결된 GPIO를 입력하십시오 (BCM 번호 매기기 사용)."
-
-#~ msgid "Photo Interval must be a positive value."
-#~ msgstr "사진 간격은 양수 여야합니다."
-
-#~ msgid "Total Run Time must be a positive value."
-#~ msgstr "총 실행 기간은 양수 여야합니다."
-
-#~ msgid "Number of lines should be greater than 0."
-#~ msgstr "라인 개수는 0보다 커야합니다."
-
-#~ msgid "Mycodo is currently in the process of an upgrade."
-#~ msgstr "Mycodo는 현재 업그레이드 중입니다."
-
-#~ msgid "Any Pin (<= 40 kHz)"
-#~ msgstr "모든 핀 (<= 40kHz)"
-
-#~ msgid "Hardware Pin (<= 30 MHz)"
-#~ msgstr "하드웨어 핀 (<= 30 MHz)"
-
-#~ msgid "Duty Cycle (%)"
-#~ msgstr "듀티 사이클 (%)"
-
-#~ msgid "PID Error: %(msg)s"
-#~ msgstr "PID 오류: %(msg)s"
-
-#~ msgid "Export Measurements"
-#~ msgstr "수출 측정"
-
-#~ msgid "Backup/Restore"
-#~ msgstr "백업/복원"
-
-#~ msgid ""
-#~ "An upgrade often takes several minutes,"
-#~ " and in some cases longer, to "
-#~ "complete. Give the process ample time"
-#~ " to run before doing anything. When"
-#~ " the upgrade has successfully finished, "
-#~ "the daemon status indicator at the "
-#~ "top left will change from red to"
-#~ " green. You can monitor the upgrade"
-#~ " progress with the life log view, "
-#~ "below, by navigating to Configure -> "
-#~ "Mycodo Logs -> Upgrade Log, or by"
-#~ " opening /var/log/mycodo/mycodoupgrade.log."
-#~ msgstr ""
-
-#~ msgid "Input Conditionals"
-#~ msgstr "출력 conditional"
-
-#~ msgid ""
-#~ "The conditional is true when the "
-#~ "measured condition is greater than or"
-#~ " less than the set value."
-#~ msgstr ""
-
-#~ msgid "%(type)s Input, %(sec)s second interval"
-#~ msgstr ""
-
-#~ msgid "Output Devices"
-#~ msgstr "출력 디바이스"
-
-#~ msgid "PID Controllers"
-#~ msgstr "PID 컨트롤러"
-
-#~ msgid ""
-#~ "PID controllers couple an input with "
-#~ "a device connected to an output to"
-#~ " regulate an environmental condition. For"
-#~ " example, this could be a heater "
-#~ "and a temperature sensor, allowing the"
-#~ " regulation of temperature."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Maximum allowable sensor measurement age "
-#~ "(to allow the PID controller to "
-#~ "manipulate relays, the sensor measurement "
-#~ "must have occurred in the past x"
-#~ " seconds)"
-#~ msgstr ""
-
-#~ msgid "What condition is being measured by the ADC?"
-#~ msgstr ""
-
-#~ msgid "What are the units of the condition being measured by the ADC?"
-#~ msgstr ""
-
-#~ msgid "A valid sensor is required"
-#~ msgstr "검증된 센서가 필요합니다"
 

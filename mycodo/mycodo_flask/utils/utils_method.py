@@ -26,10 +26,10 @@ logger = logging.getLogger(__name__)
 def is_positive_integer(number_string):
     try:
         if int(number_string) < 0:
-            flash(gettext(u"Duration must be a positive integer"), "error")
+            flash(gettext("Duration must be a positive integer"), "error")
             return False
     except ValueError:
-        flash(gettext(u"Duration must be a valid integer"), "error")
+        flash(gettext("Duration must be a valid integer"), "error")
         return False
     return True
 
@@ -40,8 +40,8 @@ def validate_method_data(form_data, this_method):
             if (not form_data.time_start.data or
                     not form_data.time_end.data or
                     form_data.setpoint_start.data == ''):
-                flash(gettext(u"Required: Start date/time, end date/time, "
-                              u"start setpoint"), "error")
+                flash(gettext("Required: Start date/time, end date/time, "
+                              "start setpoint"), "error")
                 return 1
             try:
                 start_time = datetime.strptime(form_data.time_start.data,
@@ -49,20 +49,20 @@ def validate_method_data(form_data, this_method):
                 end_time = datetime.strptime(form_data.time_end.data,
                                              '%Y-%m-%d %H:%M:%S')
             except ValueError:
-                flash(gettext(u"Invalid Date/Time format. Correct format: "
-                              u"DD/MM/YYYY HH:MM:SS"), "error")
+                flash(gettext("Invalid Date/Time format. Correct format: "
+                              "DD/MM/YYYY HH:MM:SS"), "error")
                 return 1
             if end_time <= start_time:
-                flash(gettext(u"The end time/date must be after the start "
-                              u"time/date."), "error")
+                flash(gettext("The end time/date must be after the start "
+                              "time/date."), "error")
                 return 1
 
         elif this_method.method_type == 'Daily':
             if (not form_data.daily_time_start.data or
                     not form_data.daily_time_end.data or
                     form_data.setpoint_start.data == ''):
-                flash(gettext(u"Required: Start time, end time, start "
-                              u"setpoint"), "error")
+                flash(gettext("Required: Start time, end time, start "
+                              "setpoint"), "error")
                 return 1
             try:
                 start_time = datetime.strptime(form_data.daily_time_start.data,
@@ -70,11 +70,11 @@ def validate_method_data(form_data, this_method):
                 end_time = datetime.strptime(form_data.daily_time_end.data,
                                              '%H:%M:%S')
             except ValueError:
-                flash(gettext(u"Invalid Date/Time format. Correct format: "
-                              u"HH:MM:SS"), "error")
+                flash(gettext("Invalid Date/Time format. Correct format: "
+                              "HH:MM:SS"), "error")
                 return 1
             if end_time <= start_time:
-                flash(gettext(u"The end time must be after the start time."),
+                flash(gettext("The end time must be after the start time."),
                       "error")
                 return 1
 
@@ -91,11 +91,11 @@ def validate_method_data(form_data, this_method):
                 pass
             if (not form_data.duration.data or
                     not form_data.setpoint_start.data):
-                flash(gettext(u"Required: Duration, start setpoint"),
+                flash(gettext("Required: Duration, start setpoint"),
                       "error")
                 return 1
             if not is_positive_integer(form_data.duration.data):
-                flash(gettext(u"Required: Duration must be positive"),
+                flash(gettext("Required: Duration must be positive"),
                       "error")
                 return 1
 
@@ -104,21 +104,21 @@ def validate_method_data(form_data, this_method):
             if (not form_data.relay_time.data or
                     not form_data.relay_id.data or
                     not form_data.relay_state.data):
-                flash(gettext(u"Required: Date/Time, Output, and Output "
-                              u"State"), "error")
+                flash(gettext("Required: Date/Time, Output, and Output "
+                              "State"), "error")
                 return 1
             try:
                 datetime.strptime(form_data.relay_time.data,
                                   '%Y-%m-%d %H:%M:%S')
             except ValueError:
-                flash(gettext(u"Invalid Date/Time format. Correct format: "
-                              u"DD-MM-YYYY HH:MM:SS"), "error")
+                flash(gettext("Invalid Date/Time format. Correct format: "
+                              "DD-MM-YYYY HH:MM:SS"), "error")
                 return 1
         elif this_method.method_type == 'Duration':
             if (not form_data.duration.data or
                     not form_data.relay_id.data or
                     not form_data.relay_state.data):
-                flash(gettext(u"Required: Output, Output State, and Output Duration"),
+                flash(gettext("Required: Output, Output State, and Output Duration"),
                       "error")
                 return 1
             if not is_positive_integer(form_data.relay_duration.data):
@@ -127,23 +127,23 @@ def validate_method_data(form_data, this_method):
             if (not form_data.relay_daily_time.data or
                     not form_data.relay_id.data or
                     not form_data.relay_state.data):
-                flash(gettext(u"Required: Time, Relay ID, and Relay State"),
+                flash(gettext("Required: Time, Relay ID, and Relay State"),
                       "error")
                 return 1
             try:
                 datetime.strptime(form_data.relay_daily_time.data,
                                   '%H:%M:%S')
             except ValueError:
-                flash(gettext(u"Invalid Date/Time format. Correct format: "
-                              u"HH:MM:SS"), "error")
+                flash(gettext("Invalid Date/Time format. Correct format: "
+                              "HH:MM:SS"), "error")
                 return 1
 
 
 def method_create(form_create_method):
     """ Create new method table entry (all data stored in method_data table) """
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Create"),
-        controller=gettext(u"Method"))
+    action = '{action} {controller}'.format(
+        action=gettext("Create"),
+        controller=gettext("Method"))
     error = []
 
     try:
@@ -203,9 +203,9 @@ def method_create(form_create_method):
 
 def method_add(form_add_method):
     """ Add line to method_data table """
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"Method"))
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Method"))
     error = []
 
     method = Method.query.filter(Method.id == form_add_method.method_id.data).first()
@@ -227,11 +227,11 @@ def method_add(form_add_method):
 
         elif method.method_type == 'DailyBezier':
             if not 0 <= form_add_method.shift_angle.data <= 360:
-                flash(gettext(u"Error: Angle Shift is out of range. It must be "
-                              u"<= 0 and <= 360."), "error")
+                flash(gettext("Error: Angle Shift is out of range. It must be "
+                              "<= 0 and <= 360."), "error")
                 return 1
             if form_add_method.x0.data <= form_add_method.x3.data:
-                flash(gettext(u"Error: X0 must be greater than X3."), "error")
+                flash(gettext("Error: X0 must be greater than X3."), "error")
                 return 1
             add_method_data = MethodData.query.filter(
                 MethodData.method_id == form_add_method.method_id.data).first()
@@ -276,10 +276,10 @@ def method_add(form_add_method):
                                                                  '%H:%M:%S')
 
                     if start_time < last_method_end_time:
-                        flash(gettext(u"The new entry start time (%(st)s) "
-                                      u"cannot overlap the last entry's end "
-                                      u"time (%(et)s). Note: They may be the "
-                                      u"same time.",
+                        flash(gettext("The new entry start time (%(st)s) "
+                                      "cannot overlap the last entry's end "
+                                      "time (%(et)s). Note: They may be the "
+                                      "same time.",
                                       st=last_method_end_time,
                                       et=start_time),
                               "error")
@@ -334,32 +334,32 @@ def method_add(form_add_method):
 
         if form_add_method.method_select.data == 'setpoint':
             if method.method_type == 'Date':
-                flash(gettext(u"Added duration to method from %(st)s to "
-                              u"%(end)s", st=start_time, end=end_time),
+                flash(gettext("Added duration to method from %(st)s to "
+                              "%(end)s", st=start_time, end=end_time),
                       "success")
             elif method.method_type == 'Daily':
-                flash(gettext(u"Added duration to method from %(st)s to "
-                              u"%(end)s",
+                flash(gettext("Added duration to method from %(st)s to "
+                              "%(end)s",
                               st=start_time.strftime('%H:%M:%S'),
                               end=end_time.strftime('%H:%M:%S')),
                       "success")
             elif method.method_type == 'Duration':
                 if form_add_method.restart.data:
-                    flash(gettext(u"Added method restart"), "success")
+                    flash(gettext("Added method restart"), "success")
                 else:
-                    flash(gettext(u"Added duration to method for %(sec)s seconds",
+                    flash(gettext("Added duration to method for %(sec)s seconds",
                                   sec=form_add_method.duration.data), "success")
         elif form_add_method.method_select.data == 'relay':
             if method.method_type == 'Date':
-                flash(gettext(u"Added relay modulation to method at start "
-                              u"time: %(tm)s", tm=start_time), "success")
+                flash(gettext("Added relay modulation to method at start "
+                              "time: %(tm)s", tm=start_time), "success")
             elif method.method_type == 'Daily':
-                flash(gettext(u"Added relay modulation to method at start "
-                              u"time: %(tm)s",
+                flash(gettext("Added relay modulation to method at start "
+                              "time: %(tm)s",
                               tm=start_time.strftime('%H:%M:%S')), "success")
             elif method.method_type == 'Duration':
-                flash(gettext(u"Added relay modulation to method at start "
-                              u"time: %(tm)s",
+                flash(gettext("Added relay modulation to method at start "
+                              "time: %(tm)s",
                               tm=form_add_method.duration.data), "success")
 
     except Exception as except_msg:
@@ -369,9 +369,9 @@ def method_add(form_add_method):
 
 
 def method_mod(form_mod_method):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Modify"),
-        controller=gettext(u"Method"))
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Method"))
     error = []
 
     method = Method.query.filter(
@@ -425,9 +425,9 @@ def method_mod(form_mod_method):
                         previous_method.time_end, '%Y-%m-%d %H:%M:%S')
                     if previous_end_time is not None and start_time < previous_end_time:
                         error.append(
-                            gettext(u"The entry start time (%(st)s) cannot "
-                                    u"overlap the previous entry's end time "
-                                    u"(%(et)s)",
+                            gettext("The entry start time (%(st)s) cannot "
+                                    "overlap the previous entry's end time "
+                                    "(%(et)s)",
                                     st=start_time, et=previous_end_time))
 
                 if next_method is not None and next_method.time_start is not None:
@@ -435,9 +435,9 @@ def method_mod(form_mod_method):
                         next_method.time_start, '%Y-%m-%d %H:%M:%S')
                     if next_start_time is not None and end_time > next_start_time:
                         error.append(
-                            gettext(u"The entry end time (%(et)s) cannot "
-                                    u"overlap the next entry's start time "
-                                    u"(%(st)s)",
+                            gettext("The entry end time (%(et)s) cannot "
+                                    "overlap the next entry's start time "
+                                    "(%(st)s)",
                                     et=end_time, st=next_start_time))
 
                 method_data.time_start = start_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -489,9 +489,9 @@ def method_mod(form_mod_method):
 
 
 def method_del(method_id):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Delete"),
-        controller=gettext(u"Method"))
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Method"))
     error = []
 
     try:

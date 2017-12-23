@@ -1,5 +1,7 @@
 #!/bin/bash
 
+ARG=$1
+
 if [ "$EUID" -ne 0 ] ; then
   printf "Please run as root.\n"
   exit 1
@@ -21,21 +23,31 @@ runSelfUpgrade() {
   }
 
   NOW=$(date +"%Y-%m-%d_%H-%M-%S")
-  CURRENT_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
+  CURRENT_VERSION=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
   BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
-  UPDATE_URL=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 5 2>&1)
-  UPDATE_VERSION=$(python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 5 -v 2>&1)
+  UPDATE_VERSION=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 5 -v 2>&1)
   MYCODO_NEW_TMP_DIR="/tmp/Mycodo-${UPDATE_VERSION}"
+  UPDATE_URL=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 5 2>&1)
   TARBALL_FILE="mycodo-${UPDATE_VERSION}"
 
   printf "\n"
 
-  if [ "${CURRENT_VERSION}" == "${UPDATE_VERSION}" ] ; then
-    printf "Unable to upgrade. You currently have the latest release installed.\n"
-    error_found
+  # If this script is executed with the 'force-upgrade-master' argument,
+  # an upgrade will be performed with the latest git commit from the repo
+  # master instead of the release version
+
+  if [ "$ARG" == "force-upgrade-master" ]; then
+    printf "\nUpgrade script executed with the 'force-upgrade-master' argument. Upgrading from github repo master.\n"
+    UPDATE_URL="https://github.com/kizniche/Mycodo/archive/master.tar.gz"
+    TARBALL_FILE="Mycodo-master"
   else
-    printf "\nInstalled version: ${CURRENT_VERSION}\n"
-    printf "Latest version: ${UPDATE_VERSION}\n"
+    if [ "${CURRENT_VERSION}" == "${UPDATE_VERSION}" ] ; then
+      printf "Unable to upgrade. You currently have the latest release installed.\n"
+      error_found
+    else
+      printf "\nInstalled version: ${CURRENT_VERSION}\n"
+      printf "Latest version: ${UPDATE_VERSION}\n"
+    fi
   fi
 
   if [ "${UPDATE_URL}" == "None" ] ; then

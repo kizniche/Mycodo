@@ -9,9 +9,9 @@ if [ "$EUID" -ne 0 ] ; then
 fi
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../.." && pwd -P )
-APT_PKGS="apache2 fswebcam gawk gcc git libapache2-mod-wsgi-py3 libav-tools libboost-python-dev \
-          libffi-dev libgtk2.0-0 libi2c-dev logrotate moreutils python3 python3-dev \
-          python3-numpy python3-pigpio python3-smbus sqlite3 wget"
+APT_PKGS="fswebcam gawk gcc git libav-tools libffi-dev libi2c-dev logrotate \
+          moreutils nginx python-setuptools python3 python3-dev python3-numpy \
+          python3-pigpio python3-smbus sqlite3 wget"
 
 cd ${INSTALL_DIRECTORY}
 
@@ -26,11 +26,6 @@ case "${1:-''}" in
         printf "\n#### Compiling Translations\n"
         cd ${INSTALL_DIRECTORY}/Mycodo/mycodo
         ${INSTALL_DIRECTORY}/Mycodo/env/bin/pybabel compile -d mycodo_flask/translations
-    ;;
-    'compile-translations-py3')
-        printf "\n#### Compiling Translations\n"
-        cd ${INSTALL_DIRECTORY}/Mycodo/mycodo
-        ${INSTALL_DIRECTORY}/Mycodo/env_py3/bin/pybabel compile -d mycodo_flask/translations
     ;;
     'generate-ssl-certs')
         printf "\n#### Generating SSL certificates at ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
@@ -55,12 +50,7 @@ case "${1:-''}" in
         ln -s server.crt cert.pem
     ;;
     'initialize')
-        printf "\n#### Compiling mycodo_wrapper\n"
-        gcc ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
-        chown root:mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
-        chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
-
-        printf "\n#### Creating users and directories\n"
+        printf "\n#### Creating mycodo user\n"
         useradd -M mycodo
 
         adduser mycodo adm
@@ -69,6 +59,12 @@ case "${1:-''}" in
         adduser mycodo i2c
         adduser mycodo video
 
+        printf "\n#### Compiling mycodo_wrapper\n"
+        gcc ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper.c -o ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
+        chown root:mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
+        chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
+
+        printf "\n#### Creating files and directories\n"
         ln -sfn ${INSTALL_DIRECTORY}/Mycodo /var/www/mycodo
 
         mkdir -p /var/log/mycodo
@@ -109,16 +105,11 @@ case "${1:-''}" in
         ${INSTALL_DIRECTORY}/Mycodo/env/bin/python ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/restart_daemon.py
         service mycodo start
     ;;
-    'restart-daemon-py3')
-        printf "\n#### Restarting the Mycodo daemon\n"
-        service mycodo stop
-        sleep 2
-        ${INSTALL_DIRECTORY}/Mycodo/env_py3/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/restart_daemon.py
-        service mycodo start
-    ;;
-    'restart-web-ui')
-        printf "\n#### Restarting the Mycodo web server\n"
-        apachectl restart
+    'restart-web-server')
+        printf "\n#### Restarting the mycodoflask web server\n"
+        service nginx restart
+        service mycodoflask restart
+
         sleep 5
 
         printf "\n#### Creating Mycodo database if it doesn't exist\n"
@@ -136,17 +127,8 @@ case "${1:-''}" in
     ;;
     'setup-virtualenv')
         if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env ]; then
-            printf "\n#### Creating virtualenv\n"
             pip install virtualenv --upgrade
-            virtualenv --system-site-packages ${INSTALL_DIRECTORY}/Mycodo/env
-        else
-            printf "#### Virtualenv already exists, skipping creation\n"
-        fi
-    ;;
-    'setup-virtualenv-py3')
-        if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env_py3 ]; then
-            pip install virtualenv --upgrade
-            virtualenv --system-site-packages -p python3 ${INSTALL_DIRECTORY}/Mycodo/env_py3
+            virtualenv --system-site-packages -p /usr/bin/python3.5 ${INSTALL_DIRECTORY}/Mycodo/env
         else
             printf "## Virtualenv already exists, skipping creation\n"
         fi
@@ -160,15 +142,13 @@ case "${1:-''}" in
         cd ${INSTALL_DIRECTORY}/Mycodo/databases
         ${INSTALL_DIRECTORY}/Mycodo/env/bin/alembic upgrade head
     ;;
-    'update-alembic-py3')
-        printf "\n#### Upgrading Mycodo database with alembic\n"
-        cd ${INSTALL_DIRECTORY}/Mycodo/databases
-        ${INSTALL_DIRECTORY}/Mycodo/env_py3/bin/alembic upgrade head
-    ;;
-    'update-apache2')
-        printf "\n#### Installing and configuring apache2 web server\n"
-        a2enmod wsgi ssl
-        ln -sf ${INSTALL_DIRECTORY}/Mycodo/install/mycodo_flask_apache.conf /etc/apache2/sites-enabled/000-default.conf
+    'update-web-server')
+        printf "\n#### Installing and configuring nginx web server\n"
+        systemctl disable mycodoflask.service
+        rm -rf /etc/systemd/system/mycodoflask.service
+        ln -sf ${INSTALL_DIRECTORY}/Mycodo/install/mycodoflask_nginx.conf /etc/nginx/sites-enabled/default
+        systemctl enable nginx
+        systemctl enable ${INSTALL_DIRECTORY}/Mycodo/install/mycodoflask.service
     ;;
     'update-apt')
         printf "\n\n#### Updating apt repositories\n"
@@ -245,47 +225,40 @@ case "${1:-''}" in
     'update-packages')
         printf "\n#### Installing prerequisite apt packages and update pip\n"
         apt-get update -y
+        apt-get remove -y apache2
         apt-get install -y ${APT_PKGS}
         easy_install pip
         pip install --upgrade pip
-    ;;
-    'update-pip')
-        printf "\n#### Updating pip\n"
-        ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install --upgrade pip
-    ;;
-    'update-pip-py3')
-        printf "\n#### Updating pip3\n"
-        ${INSTALL_DIRECTORY}/Mycodo/env_py3/bin/pip3 install --upgrade pip
-    ;;
-    'update-pip-packages')
-        printf "\n#### Installing pip requirements from requirements.txt\n"
-        if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env ]; then
-            printf "\n#### Error: Virtualenv doesn't exist. Create with $0 setup-virtualenv\n"
-        else
-            ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install --upgrade pip setuptools
-            ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install --upgrade -r ${INSTALL_DIRECTORY}/Mycodo/install/requirements.txt
-        fi
-    ;;
-    'update-pip-packages-py3')
-        printf "\n#### Installing pip requirements from requirements-py3.txt\n"
-        if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env_py3 ]; then
-            printf "\n## Error: Virtualenv doesn't exist. Create with $0 setup-virtualenv-py3\n"
-        else
-            ${INSTALL_DIRECTORY}/Mycodo/env_py3/bin/pip3 install --upgrade pip setuptools
-            ${INSTALL_DIRECTORY}/Mycodo/env_py3/bin/pip3 install --upgrade -r ${INSTALL_DIRECTORY}/Mycodo/install/requirements-py3.txt
-        fi
     ;;
     'update-permissions')
         printf "\n#### Setting permissions\n"
         chown -LR mycodo.mycodo ${INSTALL_DIRECTORY}/Mycodo
         chown -R mycodo.mycodo /var/log/mycodo
         chown -R mycodo.mycodo /var/Mycodo-backups
+        chown -R influxdb.influxdb /var/lib/influxdb/data/
 
         find ${INSTALL_DIRECTORY}/Mycodo -type d -exec chmod u+wx,g+wx {} +
         find ${INSTALL_DIRECTORY}/Mycodo -type f -exec chmod u+w,g+w,o+r {} +
 
         chown root:mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
         chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
+    ;;
+    'update-pip')
+        printf "\n#### Updating pip\n"
+        ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install --upgrade pip
+    ;;
+    'update-pip3')
+        printf "\n#### Updating pip3\n"
+        ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip3 install --upgrade pip
+    ;;
+    'update-pip3-packages')
+        printf "\n#### Installing pip requirements from requirements.txt\n"
+        if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env ]; then
+            printf "\n## Error: Virtualenv doesn't exist. Create with $0 setup-virtualenv\n"
+        else
+            ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip3 install --upgrade pip setuptools
+            ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip3 install --upgrade -r ${INSTALL_DIRECTORY}/Mycodo/install/requirements.txt
+        fi
     ;;
     'update-swap-size')
         printf "\n#### Checking if swap size is 100 MB and needs to be changed to 512 MB\n"
@@ -308,6 +281,9 @@ case "${1:-''}" in
     ;;
     'upgrade')
         /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh
+    ;;
+    'upgrade-master')
+        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh force-upgrade-master
     ;;
     *)
         printf "Unrecognized command\n"

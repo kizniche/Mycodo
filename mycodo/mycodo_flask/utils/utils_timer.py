@@ -28,9 +28,9 @@ logger = logging.getLogger(__name__)
 def timer_add(display_order,
               form_add_timer_base,
               form_add_timer):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"Timer"))
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Timer"))
     error = []
 
     if not form_add_timer_base.validate():
@@ -65,7 +65,7 @@ def timer_add(display_order,
     elif form_add_timer_base.timer_type.data == 'duration':
         if (form_add_timer.duration_on.data <= 0 or
                 form_add_timer.duration_off.data <= 0):
-            error.append(gettext(u"Durations must be greater than 0"))
+            error.append(gettext("Durations must be greater than 0"))
         else:
             new_timer.duration_on = form_add_timer.duration_on.data
             new_timer.duration_off = form_add_timer.duration_off.data
@@ -90,9 +90,9 @@ def timer_add(display_order,
 
 
 def timer_mod(form_mod_timer_base, form_mod_timer):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Modify"),
-        controller=gettext(u"Timer"))
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Timer"))
     error = []
 
     if not form_mod_timer_base.validate():
@@ -106,8 +106,8 @@ def timer_mod(form_mod_timer_base, form_mod_timer):
         mod_timer = Timer.query.filter(
             Timer.id == form_mod_timer_base.timer_id.data).first()
         if mod_timer.is_activated:
-            error.append(gettext(u"Deactivate timer controller before "
-                                 u"modifying its settings"))
+            error.append(gettext("Deactivate timer controller before "
+                                 "modifying its settings"))
         else:
             mod_timer.name = form_mod_timer_base.name.data
             if form_mod_timer_base.relay_id.data:
@@ -144,9 +144,9 @@ def timer_mod(form_mod_timer_base, form_mod_timer):
 
 
 def timer_del(form_timer):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Delete"),
-        controller=gettext(u"Timer"))
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Timer"))
     error = []
 
     try:
@@ -163,9 +163,9 @@ def timer_del(form_timer):
 
 
 def timer_reorder(timer_id, display_order, direction):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Reorder"),
-        controller=gettext(u"Timer"))
+    action = '{action} {controller}'.format(
+        action=gettext("Reorder"),
+        controller=gettext("Timer"))
     error = []
     try:
         status, reord_list = reorder(display_order,

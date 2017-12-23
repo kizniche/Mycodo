@@ -90,7 +90,7 @@ def create_app(config=ProdConfig):
 
     @login_manager.unauthorized_handler
     def unauthorized():
-        flash(gettext(u'Please log in to access this page'), "error")
+        flash(gettext('Please log in to access this page'), "error")
         return redirect(url_for('authentication_routes.do_login'))
 
     return app
@@ -112,16 +112,17 @@ def register_extensions(app):
         # alembic_upgrade_db()
 
         # Check user option to force all web connections to use SSL
-        misc = Misc.query.first()
-        if misc and misc.force_https:
-            SSLify(app)
+        # This is currently disabled to allow nginx+gunicorn to work properly forcing SSL
+        # misc = Misc.query.first()
+        # if misc and misc.force_https:
+        SSLify(app)
 
 
 def register_blueprints(_app):
     """ register blueprints to the app """
-    # Limit authentication blueprint requests to 30 per minute
+    # Limit authentication blueprint requests to 60 per minute
     limiter = Limiter(_app, key_func=get_remote_address)
-    limiter.limit("30/minute")(authentication_routes.blueprint)
+    limiter.limit("60/minute")(authentication_routes.blueprint)
 
     _app.register_blueprint(static_routes.blueprint)  # register static routes
     _app.register_blueprint(admin_routes.blueprint)  # register admin views

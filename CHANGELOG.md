@@ -1,23 +1,76 @@
-## 5.5.0 (Unreleased)
+## 5.5.0 (2017-12-20)
 
-This version of Mycodo, 5.5.0, migrates from Python 2.7 to Python 3.4. Although most parts of the system have been tested to work, there are many potential setting combinations that are untested (for instance, I do not own every sensor that Mycodo supports). Additionally, there may be issues restoring a previous version of Mycodo after performing the upgrade to Mycodo versions => 5.5.0. Because of this, it is highly recommended to not upgrade a production system. That is, if you rely on your system to work, ***DO NOT UPGRADE***. Wait until your system is no longer performing critical tasks to upgrade, in order to allow yourself the ability to thoroughly test your particular configuration works as expected.
+With the release of 5.5.0, Mycodo becomes modern by migrating from Python 2.7.9 to Python 3 (3.5.3 if on Raspbian Stretch, 3.4.2 if on Raspbian Jessie). This release also beings a big switching from apache2 + mod_wsgi to nginx + gunicorn as the web server.
 
-A consequence of changing from Python 2 to Python 3 is current browser cookies will cause the web user interface to return an error. Because of this, all users will be logged out after upgrading to >= 5.5.0.
+### Issues
 
-Also with this release, opencv has been disabled. I have yet to successfully implement a Python 3-compatible version of opencv that doesn't require an extremely long compiling process (hours). Because of this setback, I will put extra effort into improving support for cameras. Therefore, if you know of a library or module that can successfully acquire an image from your webcam (you have tested to work), contact me and I'll look into integrating it into Mycodo.
+***You may experience an error during the upgrade that doesn't allow it to complete***
+
+***It will no longer be possible to restore pre-5.5.0 backups***
+
+***All users will be logged out of the web UI during the upgrade***
+
+***All Conditionals will be deactivated and need reconfiguring***
+
+***OpenCV has been removed as a camera module***
+
+If you rely on your system to work, it is highly recommended that you ***DO NOT UPGRADE***. Wait until your system is no longer performing critical tasks to upgrade, in order to allow yourself the ability to thoroughly test your particular configuration works as expected. Although most parts of the system have been tested to work, there is, as always, the potential for unforseen issues (for instance, not every sensor that Mycodo supports has physically been tested). Read the following notes carefully to determine if you want to upgrade to 5.5.0 and newer versions.
+
+See the details about each issue, below.
+
+### Error durring upgrade
+
+I found that occasionally the upgrade will spontaneously stop without error. I've seen it happen during an apt-get install and during a pip upgrade. It does not seem consistent, therefore it wasn't able to be fixed. If you experience an error during the upgrade that doesn't allow the upgrade to complete, issue the following command to attempt to resume and complete the upgrade. If that doesn't fix it, you may have to install Mycodo from scratch.
+
+```bash
+sudo dpkg --configure -a
+sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
+```
+
+#### No restoring of pre-5.5.0 backups from the web UI
+
+Restoring backups of pre-5.5.0 versions will not work. This is due to moving of pip virtual environments during the restore, post-5.5.0 (python3) virtualenv not being compatible with the pre-5.5.0 virtualenv (python2), and moving from the apache2 web server to nginx. If you absolutely need to restore a backup, it must be done manually. Create a new github issue to get asistance with this.
+
+Also with this release, there are the new features of exporting and importing both the Mycodo settings database and InfluxDB measurement database, which may be used as a backup and imported back into Mycodo at a later timer. Currently, the InfluxDB database may be imported into any other version of Mycodo, and the Mycodo settings database may only be imported to the same version of Mycodo. Automatic upgrading or downgrading of the database to allow cross-version compatibility of these backups will be included in a future release. For the meantime, if you need to restore Mycodo settings to a perticular Mycodo version, you can download the tar.gz of that particular [Release](https://github.com/kizniche/Mycodo/releases), extract, install normally, import the Mycodo settings database, then perform an upgrade to the latest release.
+
+#### All users will be logged out during the upgrade
+
+Another consequence of changing from Python 2 to 3 is current browser cookies will cause the web user interface to error. Therefore, all users will be logged out after upgrading to >= 5.5.0. This will cause some strange behavior that may be misconstrued as a failed upgrade:
+ 
+ 1. The upgrade log will not update during the upgrade. Give the upgrade ample time to finish, or monitor the upgrade log from the command line.
+ 
+ 2. After the upgrade is successful, the upgrade log box on the Upgrade page will redirect to the login page. Do not log in through the log box, but rather refresh the entire page to be redirected to the login page.
+
+#### All Conditionals will be deactivated
+
+The Conditional code has been refactored to make them more modular. Because some conditionals will need to be reconfigured before they will operate corectly, all conditionals have been deactivated. Therefore, after the upgrade, reconfigure them appropriately, then reactivate them. All conditionals have been moved to the Function page.
+
+#### OpenCV has been disabled
+
+A Python 3-compatible binary version of opencv, whoch doesn't require an extremely long (hours) compiling process, is unfortunately unavailable. Therefore, if you know of a library or module that can successfully acquire an image from your webcam (you have tested to work), create a [new issue](https://github.com/kizniche/Mycodo/issues/new) with the details of how you acquired the image and we can determine if the method can be integrated into Mycddo.
 
 ### Features
 
- - Migrate from Python 2.7.9 to Python 3.4.2 ([#253](https://github.com/kizniche/mycodo/issues/253))
- - Add ability to export and import settings database for backup or to transfer to other Mycodo installs ([#348](https://github.com/kizniche/mycodo/issues/348))
- - Add ability to export Influxdb Measurement database and metastore ([#348](https://github.com/kizniche/mycodo/issues/348))
+ - Migrate from Python 2 to Python 3 ([#253](https://github.com/kizniche/mycodo/issues/253))
+ - Migrate from apache2 to nginx + gunicorn ([#352](https://github.com/kizniche/mycodo/issues/352))
+ - Add ability to export and import Mycodo (settings) database ([#348](https://github.com/kizniche/mycodo/issues/348))
+ - Add ability to export and import Influxdb (measurements) database and metastore ([#348](https://github.com/kizniche/mycodo/issues/348))
  - Add size of each backup (in MB) on Backup / Restore page
  - Add check to make sure there is enough free space before performing a backup/upgrade
+ - Add dedicated, modular Conditional controller (separate from Input/Math controllers) ([#346](https://github.com/kizniche/mycodo/issues/346))
+ - Add PID oututs as Conditional inputs
+
+### Bugfixes
+
  - Fix deleting Inputs ([#250](https://github.com/kizniche/mycodo/issues/250))
+ - Fix 500 error if 1-wire isn't enabled
 
 ### Miscellaneous
 
  - Disable the use of the opencv camera library
+ - Update translations
+ - Combine Input and Math pages
+ - Move Conditionals with PIDs on Function page
 
 
 ## 5.4.19 (2017-12-15)
@@ -32,6 +85,7 @@ Also with this release, opencv has been disabled. I have yet to successfully imp
  - Fix not deleting associated Math Conditionals when a Math controller is deleted
  - Fix displaying LCD lines for Controllers/Measurements that no longer exist
  - Fix improper WBT input-checking for humidity math controller
+ - Fix issue where Math controller could crash ([#335](https://github.com/kizniche/mycodo/issues/335))
 
 
 ## 5.4.18 (2017-12-15)

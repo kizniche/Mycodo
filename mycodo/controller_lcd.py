@@ -212,7 +212,7 @@ class LCDController(threading.Thread):
             if self.lcd_initilized:
                 self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION),
                                       self.LCD_LINE[1])
-                self.lcd_string_write(u'Start {}'.format(
+                self.lcd_string_write('Start {}'.format(
                     self.lcd_name), self.LCD_LINE[2])
         except Exception as except_msg:
             self.logger.exception("Error: {err}".format(err=except_msg))
@@ -236,7 +236,7 @@ class LCDController(threading.Thread):
                                     display_id,
                                     i)
                             else:
-                                self.lcd_string_line[display_id][i] = u'ID NOT FOUND'
+                                self.lcd_string_line[display_id][i] = 'ID NOT FOUND'
                         # Output lines to the LCD
                         self.output_lcds()
                     except KeyError:
@@ -275,7 +275,7 @@ class LCDController(threading.Thread):
             self.lcd_init()  # Blank LCD
             self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION),
                                   self.LCD_LINE[1])
-            self.lcd_string_write(u'Stop {}'.format(self.lcd_name),
+            self.lcd_string_write('Stop {}'.format(self.lcd_name),
                                   self.LCD_LINE[2])
             self.logger.info("Deactivated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
@@ -355,26 +355,26 @@ class LCDController(threading.Thread):
                 elif measurement:
                     value_length = len(str(
                         self.lcd_line[display_id][i]['measure_val']))
-                    unit_length = len(self.lcd_line[display_id][i]['unit'].replace(u'°', u''))
+                    unit_length = len(self.lcd_line[display_id][i]['unit'].replace('°', u''))
                     name_length = self.lcd_x_characters - value_length - unit_length - 2
                     name_cropped = self.lcd_line[display_id][i]['name'].ljust(name_length)[:name_length]
-                    self.lcd_string_line[display_id][i] = u'{name} {value} {unit}'.format(
+                    self.lcd_string_line[display_id][i] = '{name} {value} {unit}'.format(
                         name=name_cropped,
                         value=self.lcd_line[display_id][i]['measure_val'],
-                        unit=self.lcd_line[display_id][i]['unit'].replace(u'°', u''))
+                        unit=self.lcd_line[display_id][i]['unit'].replace('°', u''))
                 else:
                     value_length = len(str(
                         self.lcd_line[display_id][i]['measure_val']))
                     name_length = self.lcd_x_characters - value_length - 1
                     name_cropped = self.lcd_line[display_id][i]['name'][:name_length]
-                    self.lcd_string_line[display_id][i] = u'{name} {value}'.format(
+                    self.lcd_string_line[display_id][i] = '{name} {value}'.format(
                         name=name_cropped,
                         value=self.lcd_line[display_id][i]['measure_val'])
             else:
-                error = u'NO DATA'
+                error = 'NO DATA'
                 name_length = self.lcd_x_characters - len(error) - 1
                 name_cropped = self.lcd_line[display_id][i]['name'].ljust(name_length)[:name_length]
-                self.lcd_string_line[display_id][i] = u'{name} {error}'.format(
+                self.lcd_string_line[display_id][i] = '{name} {error}'.format(
                     name=name_cropped, error=error)
 
         except Exception as except_msg:

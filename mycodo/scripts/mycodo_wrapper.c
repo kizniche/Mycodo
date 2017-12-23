@@ -66,6 +66,33 @@ int main(int argc, char *argv[]) {
 			sprintf(cmd, "service mycodo stop");
 			system(cmd);
 
+		} else if (strcmp(argv[1], "influxdb_restart") == 0) {
+
+			sprintf(cmd, "service influxdb restart");
+			system(cmd);
+
+        } else if (strcmp(argv[1], "influxdb_start") == 0) {
+
+			sprintf(cmd, "service influxdb start");
+			system(cmd);
+
+		} else if (strcmp(argv[1], "influxdb_stop") == 0) {
+
+			sprintf(cmd, "service influxdb stop");
+			system(cmd);
+
+		} else if (strcmp(argv[1], "influxdb_restore_metastore") == 0 && (argc > 2)) {
+
+			sprintf(cmd, "influxd restore -metadir /var/lib/influxdb/meta %s", argv[2]);
+			system(cmd);
+
+		} else if (strcmp(argv[1], "influxdb_restore_database") == 0 && (argc > 2)) {
+
+			sprintf(cmd, "influxd restore -database mycodo_db -datadir /var/lib/influxdb/data %s", argv[2]);
+			system(cmd);
+			sprintf(cmd, "chown -R influxdb.influxdb /var/lib/influxdb/data");
+			system(cmd);
+
 		} else if (strcmp(argv[1], "upgrade") == 0) {
 
             char path[255];
@@ -76,6 +103,18 @@ int main(int argc, char *argv[]) {
 			strncpy(updateScript, "/bin/bash ", sizeof(updateScript));
 			strncat(updateScript, path, sizeof(updateScript));
 			strncat(updateScript, "/upgrade_commands.sh upgrade", sizeof(updateScript));
+			system(updateScript);
+
+		} else if (strcmp(argv[1], "upgrade-master") == 0) {
+
+            char path[255];
+            strncpy(path, argv[0], sizeof(path));
+            dirname(path);
+
+			char updateScript[255];
+			strncpy(updateScript, "/bin/bash ", sizeof(updateScript));
+			strncat(updateScript, path, sizeof(updateScript));
+			strncat(updateScript, "/upgrade_commands.sh upgrade-master", sizeof(updateScript));
 			system(updateScript);
 
 		}
@@ -96,6 +135,7 @@ int main(int argc, char *argv[]) {
 		printf("   restart:                    Restart the computer after a 10 second pause\n");
 		printf("   shutdown:                   Shutdown the computer after a 10 second pause\n");
 		printf("   upgrade:                    Upgrade Mycodo to the latest version on github\n");
+		printf("   upgrade-master:             Upgrade Mycodo to the latest master branch on github\n");
 	}
 
 	return 0;

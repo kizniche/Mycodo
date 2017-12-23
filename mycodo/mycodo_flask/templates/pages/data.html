@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% set active_page = "data" %}
+{% set help_page = ["data", _('Data')] %}
+
+{% block title %} - {{_('Data')}}{% endblock %}
+
+{% block head %}{% endblock %}
+
+{%- block body %}
+  <!-- Route: /data -->
+  <div class="container">
+    {% include 'flash_messages.html' %}
+
+    <h4>{{_('Data')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <p>{{_('Data are individual pieces of information stored for later use. They may be values acquired from sensors, signals from analog-to-digital controllers, a response from a command, or even math performed on other data to produce an average, to name a few. Add, configure, and activate Inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.')}}</p>
+
+    <div style="clear: both; padding: 0.5em 0;"></div>
+
+    <div class="row small-gutters" style="padding-left: 1em">
+      <form id="new_sensor_form" method="post" action="/data">
+      <input type="hidden" name="form-name" value="addSensor">
+      {{form_add_input.hidden_tag()}}
+      <div class="col-xs-12 col-sm-6 col-md-4 no-gutters">
+        {{form_add_input.input_type(class_='form-control')}}
+      </div>
+      <div class="col-xs-12 col-sm-3 col-md-2 no-gutters">
+        {{form_add_input.input_add(class_='form-control btn btn-default')}}
+      </div>
+      </form>
+    </div>
+
+    <div class="row small-gutters" style="padding: 0.5em 0 0 1em">
+      <form id="new_math_form" method="post" action="/data">
+      {{form_add_math.hidden_tag()}}
+      <div class="col-xs-12 col-sm-6 col-md-4 no-gutters">
+        {{form_add_math.math_type(class_='form-control')}}
+      </div>
+      <div class="col-xs-12 col-sm-3 col-md-2 no-gutters">
+        {{form_add_math.math_add(class_='form-control btn btn-default')}}
+      </div>
+      </form>
+    </div>
+
+    <div style="clear: both; padding: 0.5em 0;"></div>
+
+    {% if input %}
+      {% include 'pages/data_options/input.html' %}
+    {% endif %}
+
+    {% if math %}
+      {% include 'pages/data_options/math.html' %}
+    {% endif %}
+
+  </div>
+
+  <div style="clear: both; padding-bottom: 1.5em;"></div>
+
+  <script>
+    $('.collapse').on('show.bs.collapse', function(){
+      $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
+    }).on('hide.bs.collapse', function(){
+      $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
+    });
+  </script>
+
+{% endblock -%}

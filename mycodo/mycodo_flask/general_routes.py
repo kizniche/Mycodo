@@ -420,11 +420,11 @@ def computer_command(action):
                 path=INSTALL_DIRECTORY, action=action)
         subprocess.Popen(cmd, shell=True)
         if action == 'restart':
-            flash(gettext(u"System rebooting in 10 seconds"), "success")
+            flash(gettext("System rebooting in 10 seconds"), "success")
         elif action == 'shutdown':
-            flash(gettext(u"System shutting down in 10 seconds"), "success")
+            flash(gettext("System shutting down in 10 seconds"), "success")
         elif action == 'daemon_restart':
-            flash(gettext(u"Command to restart the daemon sent"), "success")
+            flash(gettext("Command to restart the daemon sent"), "success")
         return redirect('/settings')
     except Exception as e:
         logger.error("System command '{cmd}' raised and error: "

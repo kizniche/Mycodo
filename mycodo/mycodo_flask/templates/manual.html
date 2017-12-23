@@ -345,8 +345,7 @@
 <p><a href="#upgrading">Upgrading</a></p>
 <p><a href="#controllers">Controllers</a></p>
 <ul>
-<li><a href="#input">Input</a></li>
-<li><a href="#math">Math</a></li>
+<li><a href="#data">Data</a></li>
 <li><a href="#output">Output</a></li>
 <li><a href="#functions">Functions</a></li>
 <li><a href="#timers">Timers</a></li>
@@ -377,11 +376,10 @@
 <ul>
 <li><a href="#live-measurements">Live Measurements</a></li>
 <li><a href="#graphs">Graphs</a></li>
-<li><a href="#export">Export</a></li>
+<li><a href="#export-import">Export-Import</a></li>
 <li><a href="#camera">Camera</a></li>
 <li><a href="#output-usage">Output Usage</a></li>
-<li><a href="#system-backup">System Backup</a></li>
-<li><a href="#system-restore">System Restore</a></li>
+<li><a href="#sbackup-restore">Backup-Restore</a></li>
 <li><a href="#system-information">System Information</a></li>
 </ul>
 <p><a href="#troubleshooting">Troubleshooting</a></p>
@@ -456,15 +454,15 @@
 <p>The system coordinates a diverse set of responses to sensor measurements, including actions such as relay switching, regulation by <a href="https://en.wikipedia.org/wiki/PID_controller">PID control</a>, email notifications, camera captures, and more. Mycodo has been used for cultivating gourmet mushrooms, cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs and young animals, aging cheeses, fermenting foods, maintaining aquatic systems, and more.</p>
 <h1 id="brief-overview">Brief Overview</h1>
 <p>There are a number of different uses for Mycodo, from simple storing of sensor measurements, to regulating the environmental conditions of a physical space, to capturing motion-activated or timelapse photography. There are several componenets of the system that may be configured.</p>
-<h2 id="input">Input</h2>
-<p>Input controllers acquire measurements and store them in a <a href="https://en.wikipedia.org/wiki/Time_series_database">time series database</a>. Measurements taken by an Input Controller typically come from sensors, but Input Controllers may also be configured to use the return value of a linux command, making integrating new input systems very easy.</p>
-<h2 id="output">Output</h2>
+<h2 id="inputmath-controllers">Input/Math Controllers</h2>
+<p>Input/Math controllers acquire measurements and store them in a <a href="https://en.wikipedia.org/wiki/Time_series_database">time series database</a>. Measurements taken by an Input Controller typically come from sensors, but Input Controllers may also be configured to use the return value of a linux command, making integrating new input systems very easy.</p>
+<h2 id="output-controllers">Output Controllers</h2>
 <p>Output Controllers produce changes to the general input/output (GPIO) pins of the Raspberry Pi or may be configured to execute linux commands in order to allow an unlimited number of extra potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulatated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off.</p>
-<h2 id="pid">PID</h2>
+<h2 id="pid-controllers">PID Controllers</h2>
 <p>When Inputs and Outputs are combined, PID Controllers may be used to create a fedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermenttion or curing, and cooking food (<a href="https://en.wikipedia.org/wiki/Sous-vide">sous-vide</a>), to name a few.</p>
-<h2 id="timer">Timer</h2>
+<h2 id="timer-controllers">Timer Controllers</h2>
 <p>Timers can be set to trigger events based on specific dates and times or according to durations of time. Timers are fairly basic, but can be configured in very complex ways. Don’t underestimate a good timer.</p>
-<h2 id="lcd">LCD</h2>
+<h2 id="lcd-controllers">LCD Controllers</h2>
 <p>LCDs may be set up to have a way to quickly view information, such as Input, Output, or PID controllers, and can be set to flash in case of triggered events, like an emergency, such as the temperature increasing beyond a certain point in an area that is supposed to be kept cold.</p>
 <h1 id="frequently-asked-questions">Frequently Asked Questions</h1>
 <p><em>Where do I even begin?</em></p>
@@ -497,7 +495,9 @@
 <p><code>sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade</code></p>
 <h1 id="controllers">Controllers</h1>
 <p>Controllers are essentially modules that can be used to perform functions or communicate with other parts of Mycodo. Each controller performs a specific task or group of related tasks. There are also Controller Functions, which are larger functions of a controller or controllers and have been given their own sections.</p>
-<h2 id="input-1">Input</h2>
+<h2 id="data">Data</h2>
+<p>Data includes controllers that produce and store data in the measurement database. Input controllers generally acquire measurements from sensors, but they may also come from executed commands. Math controllers, on the other hand, perform math on already-stored values to create new values that are stored.</p>
+<h3 id="input">Input</h3>
 <p>Inputs (such as sensors or analog signals) measure environmental and other characteristic conditions, which will be stored in an influxdb round-robin database. This database will provide recent measurements for <a href="#graphs">Graphs</a>, <a href="#lcds">LCDs</a>, <a href="#pids">PID Controllers</a>, <a href="#conditional-statements">Conditional Statements</a>, and other parts of Mycodo to operate from.</p>
 <p>Among the sensors is ‘Linux Command’. This is a way to use a custom script to return a value to be used within Mycodo, without having to edit the Mycodo code. Merely create your script and use this sensor to have the return value of the script be stored in the Mycodo database for use with PIDs and other parts of Mycodo that uses sensor measurements.</p>
 <table style="width:94%;">
@@ -630,40 +630,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="sensor-verification">Sensor Verification</h3>
-<p>Sensor verification was introduced in an earlier version and was broken when the system moved to its new software framework. It was a great feature, and it’s planned to be integrated into the latest version.</p>
-<p>This allows the verification of a sensor’s measurement with another sensor’s measurement. This feature is best utilized when you have two sensors in the same location (ideally as close as possible). One sensor (host) should be set up to use the other sensor (slave) to verify. The host sensor should be used to operate the PID, as one feature of the verification is the ability to disable the PID if the difference between measurements is not within the range specified.</p>
-<table style="width:94%;">
-<colgroup>
-<col style="width: 29%"></col>
-<col style="width: 65%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">GPIO</td>
-<td style="text-align: left;">This is the sensor that will be used to verify the sensor measurement. The sensor will be read directly after the first sensor’s measurement to verify whether the sensors have similar measurements.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Difference</td>
-<td style="text-align: left;">This is the maximum measured measurement difference between the two sensors before an action is triggered (either notify by email or prevent PID from operating; more below).</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Notification</td>
-<td style="text-align: left;">If the measurements of the two sensors differ by more than the set <em>Difference</em>, an email will be sent to the address in the <em>Notification</em> field.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Stop PID</td>
-<td style="text-align: left;">If the measurements of the two sensors differ by more than the set <em>Difference</em>, the PID controller will turn off.</td>
-</tr>
-</tbody>
-</table>
-<h2 id="math">Math</h2>
+<h3 id="math">Math</h3>
 <p>Math controllers allow one or more Inputs to have math applied to produce a new value that may be used within Mycodo.</p>
 <table style="width:79%;">
 <colgroup>
@@ -753,7 +720,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="pre-defined-measurements">Pre-defined Measurements</h3>
+<h4 id="pre-defined-measurements">Pre-defined Measurements</h4>
 <table>
 <thead>
 <tr class="header">
@@ -860,7 +827,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="output-1">Output</h2>
+<h2 id="output">Output</h2>
 <p>Outputs are various signals that can be generated that operate devices. An output can be a PWM signal, a simple HIGH/LOW signal to operate a relay, or a 433MHz signal to switch a radio frequency-operated relay, or an execution of a command on the linux system Mycodo runs on.</p>
 <h3 id="pwm">PWM</h3>
 <p>Pulse-width modulation (PWM) is a modulation technique used to encode a message into a pulsing signal, at a specific frequency in Hertz (Hz). The average value of voltage (and current) fed to the load is controlled by turning the switch between supply and load on and off at a fast rate. The longer the switch is on compared to the off periods, the higher the total power supplied to the load.</p>
@@ -1916,17 +1883,17 @@
 <h3 id="asynchronous-graphs">Asynchronous Graphs</h3>
 <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it’s not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.</p>
 <p>Note: Live Graphs require measurements to be acquired, therefore at least one sensor needs to be added and activated in order to display live data.</p>
-<h2 id="export">Export</h2>
+<h2 id="export-import">Export-Import</h2>
 <p>Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.</p>
-<p>Settings may be exported as a ZIP file containing the Mycodo settings database (sqlite). Importing of this ZIP file will be supported in the future.</p>
+<p>Additionally, the entire measurement database (influxdb) may be exported as a ZIP file backup. This ZIP may be imported back in any Mycodo system to restore these measurements. Note that an import will override the corrent data (i.e. destroying it).</p>
+<p>Mycodo settings may be exported as a ZIP file containing the Mycodo settings database (sqlite). This ZIP file may be used to restore the settings database to another Mycodo install, as long as the Mycodo version and database versions are the same. Future support for installing older (or newer) databases and performing an automatic upgrade/downgrade is in the works.</p>
 <h2 id="camera">Camera</h2>
 <p>Once a cameras has been set up (in the <a href="#camera-settings">Camera Settings</a>), it may be used to capture still images, create time-lapses, and stream video. Cameras may also be used by <a href="#conditional-statements">Conditional Statements</a> to trigger a camera image or video capture (as well as the ability to email the image/video with a notification).</p>
 <h2 id="output-usage">Output Usage</h2>
 <p>Output usage statistics are calculated for each output, based on how long the output has been powered, the current draw of the device connected to the output, and other <a href="#output-usage-settings">Relay Usage Settings</a>.</p>
-<h2 id="system-backup">System Backup</h2>
-<p>A backup is made to /var/Mycodo-backups when the system is upgraded through the web interface or the upgrade script.</p>
-<h2 id="system-restore">System Restore</h2>
-<p>If you need to restore a backup, this can be done on the Config -&gt; Backup/Restore page. Find the backup you would like restored and press the Restore button beside it. A restore can also be initialized through the command line. Use the foloowing commands to initialize a restore, changing the appropriate directory names, ‘user’ to your user name, and TIME and COMMIT to the appropriate text found as the directory names in /var/Mycodo-backups/</p>
+<h2 id="backup-restore">Backup-Restore</h2>
+<p>A backup is made to /var/Mycodo-backups when the system is upgraded or through the web interface on the Config -&gt; Backup / Restore page.</p>
+<p>If you need to restore a backup, this can be done on the Config -&gt; Backup / Restore page. Find the backup you would like restored and press the Restore button beside it. A restore can also be initialized through the command line. Use the foloowing commands to initialize a restore, changing the appropriate directory names, ‘user’ to your user name, and TIME and COMMIT to the appropriate text found as the directory names in /var/Mycodo-backups/</p>
 <pre><code>sudo mv /home/user/Mycodo /home/user/Mycodo_old
 sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
 sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
@@ -1985,7 +1952,7 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <li>Use the following commands to rename your database and restart the web UI. If both commands are successful, refresh your web UI page in your browser in order to generate a new database and create a new Admin user.</li>
 </ul>
 <pre><code>mv ~/Mycodo/databases/mycodo.db ~/Mycodo/databases/mycodo.db.backup
-sudo service apache2 restart</code></pre>
+sudo service mycodoflask restart</code></pre>
 <h2 id="more">More</h2>
 <p>Check out the <a href="https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues">Diagnosing Mycodo Issues Wiki Page</a> on github for more information about diagnosing issues.</p>
 <h1 id="device-interfaces">Device Interfaces</h1>

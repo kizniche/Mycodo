@@ -17,6 +17,7 @@ from pkg_resources import parse_version
 
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
+from mycodo.config import FORCE_UPGRADE_MASTER
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import RESTORE_LOG_FILE
@@ -31,6 +32,7 @@ from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.github_release_info import github_releases
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.system_pi import can_perform_backup
+from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import get_directory_size
 from mycodo.utils.system_pi import internet
 
@@ -83,7 +85,7 @@ def admin_backup():
                       " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                               log=BACKUP_LOG_FILE)
                 subprocess.Popen(cmd, shell=True)
-                flash(gettext(u"Backup in progress"), "success")
+                flash(gettext("Backup in progress"), "success")
             else:
                 flash(
                     "Not enough free space to perform a backup. A backup "
@@ -98,11 +100,11 @@ def admin_backup():
                     'error')
 
         elif form_backup.delete.data:
-            cmd = '{pth}/mycodo/scripts/mycodo_wrapper backup-delete {dir}' \
-                  ' 2>&1'.format(pth=INSTALL_DIRECTORY,
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper backup-delete {dir}" \
+                  " 2>&1".format(pth=INSTALL_DIRECTORY,
                                  dir=form_backup.selected_dir.data)
             subprocess.Popen(cmd, shell=True)
-            flash(gettext(u"Deletion of backup in progress"),
+            flash(gettext("Deletion of backup in progress"),
                   "success")
 
         elif form_backup.restore.data:
@@ -111,9 +113,8 @@ def admin_backup():
                   " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                           backup=form_backup.full_path.data,
                                           log=RESTORE_LOG_FILE)
-
             subprocess.Popen(cmd, shell=True)
-            flash(gettext(u"Restore in progress"),
+            flash(gettext("Restore in progress"),
                   "success")
 
     return render_template('admin/backup.html',
@@ -164,8 +165,8 @@ def admin_upgrade():
         return redirect(url_for('general_routes.home'))
 
     if not internet():
-        flash(gettext(u"Upgrade functionality is disabled because an internet "
-                      u"connection was unable to be detected"),
+        flash(gettext("Upgrade functionality is disabled because an internet "
+                      "connection was unable to be detected"),
               "error")
         return render_template('admin/upgrade.html',
                                is_internet=False)
@@ -184,8 +185,8 @@ def admin_upgrade():
 
     if upgrade:
         if upgrade == 2:
-            flash(gettext(u"There was an error encountered during the upgrade "
-                          u"process. Check the upgrade log for details."),
+            flash(gettext("There was an error encountered during the upgrade"
+                          " process. Check the upgrade log for details."),
                   "error")
         return render_template('admin/upgrade.html',
                                upgrade=upgrade)
@@ -201,9 +202,10 @@ def admin_upgrade():
     try:
         maj_version = int(MYCODO_VERSION.split('.')[0])
         releases = github_releases(maj_version)
-    except Exception:
-        flash(gettext(u"Could not determine local mycodo version or "
-                      u"online release versions"), "error")
+    except Exception as err:
+        flash(gettext("Could not determine local mycodo version or "
+                      "online release versions: {err}".format(err=err)),
+              "error")
     if len(releases):
         latest_release = releases[0]
         current_releases = []
@@ -227,7 +229,8 @@ def admin_upgrade():
         db.session.commit()
 
     if request.method == 'POST':
-        if form_upgrade.upgrade.data and upgrade_available:
+        if (form_upgrade.upgrade.data and
+                (upgrade_available or FORCE_UPGRADE_MASTER)):
             backup_size, free_before, free_after = can_perform_backup()
             if free_after / 1000000 < 50:
                 flash(
@@ -242,22 +245,33 @@ def admin_upgrade():
                                       size_free=free_before / 1000000,
                                       size_after=free_after / 1000000),
                     'error')
+            elif FORCE_UPGRADE_MASTER:
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-master" \
+                      " | ts '[%Y-%m-%d %H:%M:%S]'" \
+                      " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
+                                              log=UPGRADE_LOG_FILE)
+                subprocess.Popen(cmd, shell=True)
+
+                upgrade = 1
+                flash(gettext("The upgrade (from master branch) has started"), "success")
             else:
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade" \
                       " | ts '[%Y-%m-%d %H:%M:%S]'" \
                       " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                               log=UPGRADE_LOG_FILE)
                 subprocess.Popen(cmd, shell=True)
+
                 upgrade = 1
                 mod_misc = Misc.query.first()
                 mod_misc.mycodo_upgrade_available = False
                 db.session.commit()
-                flash(gettext(u"The upgrade has started"), "success")
+                flash(gettext("The upgrade has started"), "success")
         else:
-            flash(gettext(u"You cannot upgrade if an upgrade is not available"),
+            flash(gettext("You cannot upgrade if an upgrade is not available"),
                   "error")
 
     return render_template('admin/upgrade.html',
+                           force_upgrade_master=FORCE_UPGRADE_MASTER,
                            form_backup=form_backup,
                            form_upgrade=form_upgrade,
                            current_release=MYCODO_VERSION,

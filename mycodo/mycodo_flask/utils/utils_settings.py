@@ -36,15 +36,15 @@ logger = logging.getLogger(__name__)
 def user_roles(form):
     action = None
     if form.add_role.data:
-        action = gettext(u"Add")
+        action = gettext("Add")
     elif form.save_role.data:
-        action = gettext(u"Modify")
+        action = gettext("Modify")
     elif form.delete_role.data:
-        action = gettext(u"Delete")
+        action = gettext("Delete")
 
-    action = u'{action} {controller}'.format(
+    action = '{action} {controller}'.format(
         action=action,
-        controller=gettext(u"User Role"))
+        controller=gettext("User Role"))
     error = []
 
     if not error:
@@ -86,9 +86,9 @@ def user_roles(form):
 
 
 def user_add(form):
-    action = u'{action} {controller} {user}'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"User"),
+    action = '{action} {controller} {user}'.format(
+        action=gettext("Add"),
+        controller=gettext("User"),
         user=form.user_name.data.lower())
     error = []
 
@@ -97,21 +97,21 @@ def user_add(form):
         new_user.name = form.user_name.data.lower()
         if not test_username(new_user.name):
             error.append(gettext(
-                u"Invalid user name. Must be between 2 and 64 characters "
-                u"and only contain letters and numbers."))
+                "Invalid user name. Must be between 2 and 64 characters "
+                "and only contain letters and numbers."))
 
         new_user.email = form.email.data
         if User.query.filter_by(email=new_user.email).count():
             error.append(gettext(
-                u"Another user already has that email address."))
+                "Another user already has that email address."))
 
         if not test_password(form.password_new.data):
             error.append(gettext(
-                u"Invalid password. Must be between 6 and 64 characters "
-                u"and only contain letters, numbers, and symbols."))
+                "Invalid password. Must be between 6 and 64 characters "
+                "and only contain letters, numbers, and symbols."))
 
         if form.password_new.data != form.password_repeat.data:
-            error.append(gettext(u"Passwords do not match. Please try again."))
+            error.append(gettext("Passwords do not match. Please try again."))
 
         if not error:
             new_user.set_password(form.password_new.data)
@@ -134,9 +134,9 @@ def user_add(form):
 def user_mod(form):
     mod_user = User.query.filter(
         User.id == form.user_id.data).first()
-    action = u'{action} {controller} {user}'.format(
-        action=gettext(u"Modify"),
-        controller=gettext(u"User"),
+    action = '{action} {controller} {user}'.format(
+        action=gettext("Modify"),
+        controller=gettext("User"),
         user=mod_user.name)
     error = []
 
@@ -148,9 +148,9 @@ def user_mod(form):
         logout_user = False
         if form.password_new.data != '':
             if not test_password(form.password_new.data):
-                error.append(gettext(u"Invalid password"))
+                error.append(gettext("Invalid password"))
             if form.password_new.data != form.password_repeat.data:
-                error.append(gettext(u"Passwords do not match. Please try again."))
+                error.append(gettext("Passwords do not match. Please try again."))
             mod_user.password_hash = bcrypt.hashpw(
                 form.password_new.data.encode('utf-8'),
                 bcrypt.gensalt())
@@ -179,9 +179,9 @@ def user_mod(form):
 def user_del(form):
     """ Delete user from SQL database """
     user_name = User.query.filter(User.id == form.user_id.data).first().name
-    action = u'{action} {controller} {user}'.format(
-        action=gettext(u"Delete"),
-        controller=gettext(u"User"),
+    action = '{action} {controller} {user}'.format(
+        action=gettext("Delete"),
+        controller=gettext("User"),
         user=user_name)
     error = []
 
@@ -205,9 +205,9 @@ def user_del(form):
 
 def settings_general_mod(form):
     """ Modify General settings """
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Modify"),
-        controller=gettext(u"General Settings"))
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("General Settings"))
     error = []
 
     if form.validate():
@@ -264,9 +264,9 @@ def settings_general_mod(form):
 
 def settings_alert_mod(form_mod_alert):
     """ Modify Alert settings """
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Modify"),
-        controller=gettext(u"Alert Settings"))
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Alert Settings"))
     error = []
 
     try:
@@ -277,9 +277,9 @@ def settings_alert_mod(form_mod_alert):
                     mod_smtp.host, mod_smtp.ssl, mod_smtp.port,
                     mod_smtp.user, mod_smtp.passw, mod_smtp.email_from,
                     form_mod_alert.send_test_to_email.data,
-                    u"This is a test email from Mycodo")
-                flash(gettext(u"Test email sent to %(recip)s. Check your "
-                              u"inbox to see if it was successful.",
+                    "This is a test email from Mycodo")
+                flash(gettext("Test email sent to %(recip)s. Check your "
+                              "inbox to see if it was successful.",
                               recip=form_mod_alert.send_test_to_email.data),
                       "success")
                 return redirect(url_for('settings_routes.settings_alerts'))
@@ -302,9 +302,9 @@ def settings_alert_mod(form_mod_alert):
 
 
 def camera_add(form_camera):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Add"),
-        controller=gettext(u"Camera"))
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Camera"))
     error = []
 
     if form_camera.validate():
@@ -336,9 +336,9 @@ def camera_add(form_camera):
 
 
 def camera_mod(form_camera):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Modify"),
-        controller=gettext(u"Camera"))
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Camera"))
     error = []
 
     try:
@@ -394,9 +394,9 @@ def camera_mod(form_camera):
 
 
 def camera_del(form_camera):
-    action = u'{action} {controller}'.format(
-        action=gettext(u"Delete"),
-        controller=gettext(u"Camera"))
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Camera"))
     error = []
 
     camera = db_retrieve_table(

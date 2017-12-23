@@ -116,7 +116,7 @@
         Processes (daemon and threads): pstree -p {{daemon_pid}}
       </div>
       <div>
-        <pre>{{pstree}}</pre>
+        <pre>{{pstree_daemon}}</pre>
       </div>
     </div>
 
@@ -125,11 +125,29 @@
         Processes (daemon and threads): top -b -H -n 1 -p {{daemon_pid}}
       </div>
       <div>
-        <pre>{{top}}</pre>
+        <pre>{{top_daemon}}</pre>
       </div>
     </div>
 
   {% endif %}
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        Processes (frontend and threads): pstree -p {{daemon_pid}}
+      </div>
+      <div>
+        <pre>{{pstree_frontend}}</pre>
+      </div>
+    </div>
+
+    <div style="padding-bottom: 1.5em">
+      <div style="padding-bottom: 0.5em">
+        Processes (fronetend and threads): top -b -H -n 1 -p {{daemon_pid}}
+      </div>
+      <div>
+        <pre>{{top_frontend}}</pre>
+      </div>
+    </div>
 
   </div>
 

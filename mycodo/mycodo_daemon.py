@@ -22,8 +22,10 @@
 #
 #  Contact at kylegabriel.com
 
-import os
 import sys
+
+import os
+
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
@@ -46,6 +48,7 @@ from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config import STATS_CSV
 from mycodo.config import STATS_INTERVAL
 from mycodo.config import UPGRADE_CHECK_INTERVAL
+from mycodo.controller_conditional import ConditionalController
 from mycodo.controller_input import InputController
 from mycodo.controller_lcd import LCDController
 from mycodo.controller_math import MathController
@@ -174,24 +177,12 @@ def mycodo_service(mycodo):
             return mycodo.refresh_daemon_misc_settings()
 
         @staticmethod
-        def exposed_refresh_math_conditionals(math_id,
-                                              cond_mod):
-            """
-            Instruct the math controller to refresh the settings of
-            conditional statements
-            """
-            return mycodo.refresh_math_conditionals(math_id,
-                                                    cond_mod)
-
-        @staticmethod
-        def exposed_refresh_input_conditionals(input_id,
-                                               cond_mod):
+        def exposed_refresh_conditionals(cond_id):
             """
             Instruct the input controller to refresh the settings of
             conditional statements
             """
-            return mycodo.refresh_input_conditionals(input_id,
-                                                     cond_mod)
+            return mycodo.refresh_conditionals(cond_id)
 
         @staticmethod
         def exposed_relay_state(relay_id):
@@ -320,6 +311,7 @@ class DaemonController:
         # controller
         self.controller = {
             # May only launch a single thread for this controller
+            'Conditional': None,
             'Output': None,
             # May launch multiple threads per each of these controllers
             'Input': {},
@@ -463,6 +455,7 @@ class DaemonController:
             # Check if the controller ID actually exists and start it
             controller = db_retrieve_table_daemon(controller_manage['type'],
                                                   device_id=cont_id)
+
             if controller:
                 self.controller[cont_type][cont_id] = controller_manage['function'](
                     ready, cont_id)
@@ -545,6 +538,8 @@ class DaemonController:
                     return "Error: Timer ID {}".format(timer_id)
             if not self.controller['Output'].is_running():
                 return "Error: Output controller"
+            if not self.controller['Conditional'].is_running():
+                return "Error: Conditional controller"
         except Exception as except_msg:
             message = "Could not check running threads:" \
                       " {err}".format(err=except_msg)
@@ -645,19 +640,11 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def refresh_math_conditionals(self, math_id, cond_mod):
+    def refresh_conditionals(self, cond_id):
         try:
-            return self.controller['Math'][math_id].setup_conditionals(cond_mod)
+            return self.controller['Conditional'].setup_conditionals()
         except Exception as except_msg:
-            message = "Could not refresh math conditionals:" \
-                      " {err}".format(err=except_msg)
-            self.logger.exception(message)
-
-    def refresh_input_conditionals(self, input_id, cond_mod):
-        try:
-            return self.controller['Input'][input_id].setup_conditionals(cond_mod)
-        except Exception as except_msg:
-            message = "Could not refresh input conditionals:" \
+            message = "Could not refresh conditional:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
@@ -776,7 +763,7 @@ class DaemonController:
                 'LCD': db_retrieve_table_daemon(LCD, entry='all')
             }
 
-            self.logger.debug("Starting output controller")
+            self.logger.debug("Starting Output controller")
             self.controller['Output'] = OutputController()
             self.controller['Output'].daemon = True
             self.controller['Output'].start()
@@ -793,6 +780,13 @@ class DaemonController:
                 self.logger.info(
                     "All activated {type} controllers started".format(
                         type=each_controller))
+
+            time.sleep(0.5)
+
+            self.logger.debug("Starting Conditional controller")
+            self.controller['Conditional'] = ConditionalController()
+            self.controller['Conditional'].daemon = True
+            self.controller['Conditional'].start()
 
         except Exception as except_msg:
             message = "Could not start all controllers:" \
@@ -952,20 +946,24 @@ class DaemonController:
                 add_update_csv(STATS_CSV, 'next_send', self.timer_stats)
             else:
                 self.timer_stats = float(stat_dict['next_send'])
-        except Exception as msg:
-            self.logger.exception(
-                "Error: Could not read stats file. Regenerating. Message: "
-                "{msg}".format(msg=msg))
+        except KeyError:
+            self.logger.info(
+                "Regenerating stats file")
             try:
                 os.remove(STATS_CSV)
             except OSError:
                 pass
             recreate_stat_file()
+        except Exception as except_msg:
+            self.logger.exception(
+                "Error reading stats file: {err}".format(
+                    err=except_msg))
+
         try:
             send_anonymous_stats(self.start_time)
         except Exception as except_msg:
             self.logger.exception(
-                "Error: Could not send statistics: {err}".format(
+                "Could not send statistics: {err}".format(
                     err=except_msg))
 
 

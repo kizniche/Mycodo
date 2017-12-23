@@ -29,16 +29,12 @@ import time
 import timeit
 from statistics import median
 
+import urllib3
+
 import mycodo.utils.psypy as SI
-from mycodo.databases.models import Camera
-from mycodo.databases.models import Conditional
-from mycodo.databases.models import ConditionalActions
-from mycodo.databases.models import Input
 from mycodo.databases.models import Math
-from mycodo.databases.models import PID
 from mycodo.databases.models import SMTP
 from mycodo.mycodo_client import DaemonControl
-from mycodo.utils.conditional import check_conditionals
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measure_influxdb
 from mycodo.utils.influx import read_last_influxdb
@@ -118,26 +114,6 @@ class MathController(threading.Thread):
             self.pressure_pa_id = math.pressure_pa_id
             self.pressure_pa_measure = math.pressure_pa_measure
 
-            self.cond_id = {}
-            self.cond_action_id = {}
-            self.cond_name = {}
-            self.cond_is_activated = {}
-            self.cond_if_input_period = {}
-            self.cond_if_input_measurement = {}
-            self.cond_if_input_direction = {}
-            self.cond_if_input_setpoint = {}
-            self.cond_do_output_id = {}
-            self.cond_do_output_state = {}
-            self.cond_do_output_duration = {}
-            self.cond_execute_command = {}
-            self.cond_email_notify = {}
-            self.cond_do_lcd_id = {}
-            self.cond_do_camera_id = {}
-            self.cond_timer = {}
-            self.smtp_wait_timer = {}
-
-            self.setup_conditionals()
-
             self.timer = time.time() + self.period
         except Exception as except_msg:
             self.logger.exception("Init Error: {err}".format(
@@ -174,6 +150,8 @@ class MathController(threading.Thread):
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)
+                        elif measure:
+                            self.logger.error(measure)
                         else:
                             self.error_not_within_max_age()
 
@@ -185,6 +163,8 @@ class MathController(threading.Thread):
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)
+                        elif measure:
+                            self.logger.error(measure)
                         else:
                             self.error_not_within_max_age()
 
@@ -196,6 +176,8 @@ class MathController(threading.Thread):
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)
+                        elif measure:
+                            self.logger.error(measure)
                         else:
                             self.error_not_within_max_age()
 
@@ -207,6 +189,8 @@ class MathController(threading.Thread):
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)
+                        elif measure:
+                            self.logger.error(measure)
                         else:
                             self.error_not_within_max_age()
 
@@ -221,6 +205,8 @@ class MathController(threading.Thread):
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)
+                        elif measure:
+                            self.logger.error(measure)
                         else:
                             self.error_not_within_max_age()
 
@@ -270,18 +256,6 @@ class MathController(threading.Thread):
                         else:
                             self.error_not_within_max_age()
 
-                for each_cond_id in self.cond_id:
-                    if self.cond_is_activated[each_cond_id]:
-                        # Check input conditional if it has been activated
-                        if time.time() > self.cond_timer[each_cond_id]:
-                            self.cond_timer[each_cond_id] = (
-                                    time.time() +
-                                    self.cond_if_input_period[each_cond_id])
-                            check_conditionals(
-                                self, each_cond_id, self.measurements, self.control,
-                                Camera, Conditional, ConditionalActions,
-                                Input, Math, PID, SMTP)
-
                 time.sleep(0.1)
 
             self.running = False
@@ -297,20 +271,25 @@ class MathController(threading.Thread):
             "set. Ensure all Inputs are operating properly.")
 
     def get_measurements_from_str(self, inputs):
-        measurements = []
-        inputs_list = inputs.split(';')
-        for each_input_set in inputs_list:
-            input_id = each_input_set.split(',')[0]
-            input_measure = each_input_set.split(',')[1]
-            last_measurement = read_last_influxdb(
-                input_id,
-                input_measure,
-                self.max_measure_age)
-            if not last_measurement:
-                return False, None
-            else:
-                measurements.append(last_measurement[1])
-        return True, measurements
+        try:
+            measurements = []
+            inputs_list = inputs.split(';')
+            for each_input_set in inputs_list:
+                input_id = each_input_set.split(',')[0]
+                input_measure = each_input_set.split(',')[1]
+                last_measurement = read_last_influxdb(
+                    input_id,
+                    input_measure,
+                    self.max_measure_age)
+                if not last_measurement:
+                    return False, None
+                else:
+                    measurements.append(last_measurement[1])
+            return True, measurements
+        except ConnectionRefusedError:
+            return False, "Influxdb: ConnectionRefusedError"
+        except urllib3.exceptions.NewConnectionError:
+            return False, "Influxdb: urllib3.exceptions.NewConnectionError"
 
     def get_measurements_from_id(self, measure_id, measure_name):
         measurement = read_last_influxdb(
@@ -320,56 +299,6 @@ class MathController(threading.Thread):
         if not measurement:
             return False, None
         return True, measurement
-
-    def setup_conditionals(self, cond_mod='setup'):
-        # Signal to pause the main loop and wait for verification
-        self.pause_loop = True
-        while not self.verify_pause_loop:
-            time.sleep(0.1)
-
-        self.cond_id = {}
-        self.cond_action_id = {}
-        self.cond_name = {}
-        self.cond_is_activated = {}
-        self.cond_if_input_period = {}
-        self.cond_if_input_measurement = {}
-        self.cond_if_input_direction = {}
-        self.cond_if_input_setpoint = {}
-
-        input_conditional = db_retrieve_table_daemon(
-            Conditional)
-        input_conditional = input_conditional.filter(
-            Conditional.math_id == self.math_id)
-        input_conditional = input_conditional.filter(
-            Conditional.is_activated == True).all()
-
-        if cond_mod == 'setup':
-            self.cond_timer = {}
-            self.smtp_wait_timer = {}
-        elif cond_mod == 'add':
-            self.logger.debug("Added Conditional")
-        elif cond_mod == 'del':
-            self.logger.debug("Deleted Conditional")
-        elif cond_mod == 'mod':
-            self.logger.debug("Modified Conditional")
-        else:
-            return 1
-
-        for each_cond in input_conditional:
-            if cond_mod == 'setup':
-                self.logger.info(
-                    "Activated Math Conditional {id}".format(id=each_cond.id))
-            self.cond_id[each_cond.id] = each_cond.id
-            self.cond_is_activated[each_cond.id] = each_cond.is_activated
-            self.cond_if_input_period[each_cond.id] = each_cond.if_sensor_period
-            self.cond_if_input_measurement[each_cond.id] = each_cond.if_sensor_measurement
-            self.cond_if_input_direction[each_cond.id] = each_cond.if_sensor_direction
-            self.cond_if_input_setpoint[each_cond.id] = each_cond.if_sensor_setpoint
-            self.cond_timer[each_cond.id] = time.time() + each_cond.if_sensor_period
-            self.smtp_wait_timer[each_cond.id] = time.time() + 3600
-
-        self.pause_loop = False
-        self.verify_pause_loop = False
 
     def is_running(self):
         return self.running

@@ -1,0 +1,24 @@
+{% include 'pages/data_options/input_options/TEMPLATE_GPIO_PIN.html' %}
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+  {{form_mod_input.switch_edge.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="switch_edge" name="switch_edge" title="{{_('Edge detection: low to high (rising), high to low (falling), or both')}}">
+      <option value="rising"{% if each_input.switch_edge == "rising" %} selected{% endif %}>Rising</option>
+      <option value="falling"{% if each_input.switch_edge == "falling" %} selected{% endif %}>Falling</option>
+      <option value="both"{% if each_input.switch_edge == "both" %} selected{% endif %}>Both</option>
+    </select>
+  </div>
+</div>
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+  {{form_mod_input.switch_bounce_time.label(class_='control-label')}}
+  <div>
+    {{form_mod_input.switch_bounce_time(class_='form-control', value=each_input.switch_bouncetime, **{'title':_('The amount of time (miliseconds) to bounce the input signal')})}}
+  </div>
+</div>
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+  {{form_mod_input.switch_reset_period.label(class_='control-label')}}
+  <div>
+    {{form_mod_input.switch_reset_period(class_='form-control', value=each_input.switch_reset_period, **{'title':_('Wait a period of time (seconds) after the first edge detection to begin detecting again')})}}
+  </div>
+</div>
+<input id="period" name="period" type="hidden" value="10">

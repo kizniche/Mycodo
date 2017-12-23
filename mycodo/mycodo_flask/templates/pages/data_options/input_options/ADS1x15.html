@@ -1,0 +1,40 @@
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+  <label class="control-label">I<sup>2</sup>C Address</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{_('The I2C address to access the device')}}">
+      <option value=""></option>
+      <option value="0x48"{% if each_input.location == '0x48' %} selected{% endif %}>Address 0x48</option>
+      <option value="0x49"{% if each_input.location == '0x49' %} selected{% endif %}>Address 0x49</option>
+      <option value="0x4A"{% if each_input.location == '0x4A' %} selected{% endif %}>Address 0x4A</option>
+      <option value="0x4B"{% if each_input.location == '0x4B' %} selected{% endif %}>Address 0x4B</option>
+    </select>
+  </div>
+</div>
+{% include 'pages/data_options/input_options/TEMPLATE_I2C_BUS.html' %}
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+  <label class="control-label">Channel</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_channel" name="adc_channel" title="{{_('The channel of the analog to digital converter.')}}">
+      <option value=""></option>
+      <option value="0"{% if each_input.adc_channel == 0 %} selected{% endif %}>Channel 1</option>
+      <option value="1"{% if each_input.adc_channel == 1 %} selected{% endif %}>Channel 2</option>
+      <option value="2"{% if each_input.adc_channel == 2 %} selected{% endif %}>Channel 3</option>
+      <option value="3"{% if each_input.adc_channel == 3 %} selected{% endif %}>Channel 4</option>
+    </select>
+  </div>
+</div>
+<div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+  <label class="control-label">Gain</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_gain" name="adc_gain" title="{{_('Adjust the gain to change the measurable voltage range. See ADC documentation for details.')}}">
+      <option value=""></option>
+      <option value="1"{% if each_input.adc_gain == 1 %} selected{% endif %}>1</option>
+      <option value="2"{% if each_input.adc_gain == 2 %} selected{% endif %}>2</option>
+      <option value="3"{% if each_input.adc_gain == 3 %} selected{% endif %}>3</option>
+      <option value="4"{% if each_input.adc_gain == 4 %} selected{% endif %}>4</option>
+      <option value="8"{% if each_input.adc_gain == 8 %} selected{% endif %}>8</option>
+      <option value="16"{% if each_input.adc_gain == 16 %} selected{% endif %}>16</option>
+    </select>
+  </div>
+</div>
+{% include 'pages/data_options/input_options/TEMPLATE_ADC_OPTIONS.html' %}

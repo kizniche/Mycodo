@@ -12,6 +12,8 @@ class Conditional(CRUDMixin, db.Model):
     conditional_type = db.Column(db.Text, default=None)
     is_activated = db.Column(db.Boolean, default=False)
 
+    measurement = db.Column(db.Text, default='')  # Measurement and ID to check
+
     # TODO: Make one variable 'unique_id' instead of non-unique ID, in next major version
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'), default=None)  # Which sensor does this belong?
     math_id = db.Column(db.Integer, db.ForeignKey('math.id'), default=None)  # Which sensor does this belong?
