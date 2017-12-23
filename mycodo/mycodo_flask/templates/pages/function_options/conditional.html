@@ -7,7 +7,6 @@
 
   <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
     <form method="post" action="/function">
-    <input type="hidden" name="form-name" value="modConditional">
     {{form_conditional.csrf_token}}
     {{form_conditional.conditional_id(class_='form-control', value=each_cond.id)}}
 
@@ -60,7 +59,6 @@
       {% for each_cond_action in conditional_actions if each_cond_action.conditional_id == each_cond.id %}
 
       <form method="post" action="/function">
-      <input type="hidden" name="form-name" value="modConditionalActions">
       {{form_conditional_actions.csrf_token}}
       {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.id)}}
       {{form_conditional_actions.conditional_action_id(class_='form-control', value=each_cond_action.id)}}
@@ -201,7 +199,7 @@
       <form method="post" action="/function">
       {{form_conditional_actions.csrf_token}}
       {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.id)}}
-      <div class="row small-gutters" style="padding-bottom: 0.5em">
+      <div class="row small-gutters" style="padding-bottom: 0.2em">
         <div class="col-xs-6 col-sm-4 col-md-2">
           <label class='control-label'>{{_('Action')}}</label>
           <select class="form-control form-tooltip form-dropdown" id="do_action" name="do_action" data-placement="top" title="{{_('The action to perform when the conditional is True')}}">

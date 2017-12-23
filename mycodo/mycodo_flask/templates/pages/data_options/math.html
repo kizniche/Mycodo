@@ -68,9 +68,6 @@
         </div>
       </div>
     </div>
-    <div style="padding: 0.5em" class="row">
-    {{_('See <a href="/help#pre-defined-measurements" target="_blank">Pre-Defined Measurements</a> for a list of Measurements that may be used. You may also create your own Measurement and Units.')}}
-    </div>
 
     {% for each_math_template in math_templates if each_math_template[:-5] == each_math.math_type %}
       {% include 'pages/data_options/math_options/'+each_math_template %}
