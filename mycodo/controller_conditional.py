@@ -59,10 +59,6 @@ class ConditionalController(threading.Thread):
             self.verify_pause_loop = True
             self.control = DaemonControl()
 
-            # TODO: Replaces cond_if_input_measurement, sensor_id, and math_id
-            # Stores CSV string in format of "Unique_ID,Measurement"
-            self.cond_measurement = None
-
             self.cond_is_activated = {}
             self.cond_period = {}
             self.cond_timer = {}

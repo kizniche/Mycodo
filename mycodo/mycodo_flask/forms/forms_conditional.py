@@ -25,18 +25,19 @@ class Conditional(FlaskForm):
 
     # Output conditional options
     if_relay_id = StringField(lazy_gettext('If Output'))
-    if_relay_state = StringField(lazy_gettext('If Output State'))
-    if_relay_duration = DecimalField(lazy_gettext('If Output Duration'))
+    if_relay_state = StringField(lazy_gettext('State'))
+    if_relay_duration = DecimalField(lazy_gettext('Duration (seconds)'))
 
     # Input conditional options
-    measurement = StringField(lazy_gettext('Measurement'))
-    if_sensor_period = DecimalField(lazy_gettext('Period'))
-    if_sensor_measurement = StringField(lazy_gettext('Measurement'))
+    if_sensor_measurement = StringField(lazy_gettext('If Measurement'))
+    if_sensor_direction = StringField(lazy_gettext('State'))
+    if_sensor_setpoint = DecimalField(lazy_gettext('Value'))
+    if_sensor_period = DecimalField(lazy_gettext('Period (seconds)'))
+
+    # Edge detection
     if_sensor_edge_select = StringField(lazy_gettext('Edge or State'))
     if_sensor_edge_detected = StringField(lazy_gettext('Edge Detected'))
     if_sensor_gpio_state = IntegerField(lazy_gettext('GPIO State'))
-    if_sensor_direction = StringField(lazy_gettext('Direction'))
-    if_sensor_setpoint = DecimalField(lazy_gettext('Setpoint'))
 
     add_cond = SubmitField(lazy_gettext('Add Conditional'))
     save_cond = SubmitField(lazy_gettext('Save'))

@@ -17,7 +17,7 @@ Table of Contents
 
    - [Data](#data)
    - [Output](#output)
-   - [Functions](#functions)
+   - [Function](#function)
    - [Timers](#timers)
    - [LCDs](#lcds)
  
@@ -429,7 +429,7 @@ Current Draw (amps) | The is the amount of current the device powered by the out
 Start State | This specifies whether the output should be ON or OFF when mycodo initially starts. Wireless relays have an additional option 'Neither' which will not issue an on or off command when Mycodo starts or stops.
 Seconds to turn On | This is a way to turn a output on for a specific duration of time. This can be useful for testing the outputs and powered devices or the measured effects a device may have on an environmental condition.
 
-Functions
+Function
 ---------
 
 Functions couple Inputs with Outputs to perform specific tasks. For example, this could be regulation of temperature with a temperature sensor and heater with a PID Controller.
@@ -542,13 +542,12 @@ succession. Therefore, avoid creating an [infinite
 loop](https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops)
 with conditional statements.
 
-### Input Conditional Statement If Options
+### Measurement Conditional Statement If Options
 
 Setting | Description
 -------------------- | ----------------------------------------------
-Measurement | The measurement that will be checked every Period.
-Greater Than | If the measurement is greater than the set Value.
-Less Than | If the measurement is less than the set Value.
+If Measurement | The measurement that will be checked every Period.
+State | The conditional will trigger if the measurement Greater Than or Less Than the set Value, or if the measurement age is greater than the Value (in seconds).
 Value | The value that the measurement will be checked against (greater or less than).
 Period | The period (seconds) between conditional checks.
 
@@ -557,10 +556,16 @@ Period | The period (seconds) between conditional checks.
 Setting | Description
 -------------------- | ----------------------------------------------
 Output | The Output to monitor for a change of state.
-On | If the Output turns On (with or without a duration), the conditional will trigger.
-On (any duration) | If the Output turns On (for any duration), the conditional will trigger.
-Off | If the Output turns off, the conditional will trigger.
-Seconds | If "On" is selected, a optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.
+State | If the state of the output changes to On or Off the conditional will trigger. If "On (any duration) is selected, th trigger will occur no matter how long the output turns on for, whereas if only "On" is selected, the conditional will trigger only when the output turns on for a duration of time equal to the set "Duration (seconds)".
+Duration (seconds) | If "On" is selected, a optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.
+
+### Edge Conditional Statement If Options
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Edge Detected | The conditional will be triggered if a change in state is detected, either Rising when the state changes from LOW (0 volts) to HIGH (3.5 volts) or Falling when the state changes from HIGH (3.3 volts) to LOW (0 volts), or Both (Rising and Falling).
+GPIO State | The conditional will trigger if the GPIO state of HIGH (3.3 volts) or LOW (0 volts) is detected every Period.
+Period (seconds) | If GPIO State is selected, how often to check the state of the GPIO.
 
 ### Conditional Statement Actions
 

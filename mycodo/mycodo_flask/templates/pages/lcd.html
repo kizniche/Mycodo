@@ -48,7 +48,7 @@
           </a>
         </div>
         <div class="col-xs-5 col-sm-6 no-gutters">
-          {{form_lcd_mod.name(class_='form-control', value=each_lcd.name, **{'title':_('Name for this PID controller')})}}
+          {{form_lcd_mod.name(class_='form-control', value=each_lcd.name, **{'title':_('A name to distinguish this from others')})}}
         </div>
         <div class="col-xs-5 no-gutters">
           <input class="form-control btn btn-default" title="UUID: {{each_lcd.id}}" disabled="" value="[{{'%02d' % each_lcd.id}}]
@@ -80,7 +80,7 @@
       </div>
       <div class="col-xs-12 col-sm-4 small-gutters">
         <div class="col-xs-6 col-sm-6 no-gutters">
-          {{form_lcd_mod.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this LCD controller?")'})}}
+          {{form_lcd_mod.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
         </div>
         <div class="col-xs-6 col-sm-6 no-gutters">
           {{form_lcd_mod.save(class_='form-control btn btn-default')}}

@@ -21,7 +21,7 @@
       </a>
     </div>
     <div class="col-xs-5 col-sm-3">
-      {{form_mod_math.name(class_='form-control', value=each_math.name, **{'title':_('A common name to distinguish this math from others')})}}
+      {{form_mod_math.name(class_='form-control', value=each_math.name, **{'title':_('A name to distinguish this from others')})}}
     </div>
     <div class="col-xs-5 col-sm-2">
       <input class="form-control btn btn-default" disabled="" title="UUID: {{each_math.unique_id}}" value="[{{'%02d' % each_math.id}}] {{each_math.math_type}}" type="text">
@@ -50,7 +50,7 @@
         {{form_mod_math.math_mod(class_='form-control btn btn-default')}}
       </div>
       <div class="col-xs-6 col-sm-4">
-        {{form_mod_math.math_delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this math?")'})}}
+        {{form_mod_math.math_delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
     </div>
 

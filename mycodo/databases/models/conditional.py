@@ -12,8 +12,6 @@ class Conditional(CRUDMixin, db.Model):
     conditional_type = db.Column(db.Text, default=None)
     is_activated = db.Column(db.Boolean, default=False)
 
-    measurement = db.Column(db.Text, default='')  # Measurement and ID to check
-
     # TODO: Make one variable 'unique_id' instead of non-unique ID, in next major version
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'), default=None)  # Which sensor does this belong?
     math_id = db.Column(db.Integer, db.ForeignKey('math.id'), default=None)  # Which sensor does this belong?
@@ -24,7 +22,7 @@ class Conditional(CRUDMixin, db.Model):
     if_relay_duration = db.Column(db.Float, default=0.0)
 
     # Sensor/Math options
-    # TODO: Make variable names more generic in next major version change
+    # TODO: Make variable names more generic in next major version change sensor->measurement
     if_sensor_period = db.Column(db.Float, default=60.0)
     if_sensor_measurement = db.Column(db.Text, default='')  # which measurement to monitor
     if_sensor_edge_select = db.Column(db.Text, default='edge')  # monitor Rising, Falling, or Both switch edges

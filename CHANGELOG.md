@@ -71,6 +71,7 @@ A Python 3-compatible binary version of opencv, whoch doesn't require an extreme
  - Update translations
  - Combine Input and Math pages
  - Move Conditionals with PIDs on Function page
+ - Show tooltips by default
 
 
 ## 5.4.19 (2017-12-15)

@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "function" %}
-{% set help_page = ["functions", _('Functions')] %}
+{% set help_page = ["function", _('Function')] %}
 
 {% block title %} - {{_('Function')}}{% endblock %}
 
@@ -14,19 +14,19 @@
     {% include 'flash_messages.html' %}
 
     <h4>{{_('Functions')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
-
-    <p>{{_('Functions conduct complex tasks, often coupling one or more <a href="/input">Inputs</a> with <a href="/output">Outputs</a> to do specific things. For example, this could be using a PID Controller to create a feedback loop with a temperature sensor and heater in order to regulate temperature.')}}</p>
+    <p>{{_('Functions conduct complex tasks, often coupling one or more <a href="/data">Data</a> sources with <a href="/output">Outputs</a>. For example, this could be using a PID Controller to create a feedback loop with a temperature sensor and heater in order to regulate temperature.')}}</p>
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
     <div class="row small-gutters">
       <form method="post" action="/function">
       {{form_mod_pid_base.csrf_token}}
-      <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+      <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
         <select class="form-control" id="func_type" name="func_type">
           <option value="pid">PID Controller</option>
           <option value="conditional_measurement">Measurement Conditional</option>
           <option value="conditional_output">Output Conditional</option>
+          <option value="conditional_edge">Edge Conditional</option>
         </select>
       </div>
       <div class="col-xs-5 col-sm-3 col-lg-2 no-gutters">

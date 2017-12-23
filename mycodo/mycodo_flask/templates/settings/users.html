@@ -86,7 +86,7 @@
         {{form_mod_user.save(class_='form-control btn btn-default')}}
       </div>
       <div class="col-xs-4 col-sm-4 col-md-1">
-        {{form_mod_user.delete(class_='form-control btn btn-default', **{'onclick':'return confirm("Are you sure you want to delete this user?")'})}}
+        {{form_mod_user.delete(class_='form-control btn btn-default', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
     </div>
 
@@ -189,7 +189,7 @@
           {{form_user_roles.save_role(class_='form-control btn btn-default')}}
         </div>
         <div class="col-xs-4 col-sm-4 col-md-1">
-          {{form_user_roles.delete_role(class_='form-control btn btn-default', **{'onclick':'return confirm("Are you sure you want to delete this role?")'})}}
+          {{form_user_roles.delete_role(class_='form-control btn btn-default', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
         </div>
       </div>
 

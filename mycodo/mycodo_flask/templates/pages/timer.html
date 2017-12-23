@@ -26,9 +26,7 @@
 
       <div class="collapse" id="collapseContainerTimerAdd" style="padding-top: 1em">
 
-        <div class="form-inline">
-
-        </div>
+        <div class="form-inline"></div>
 
         <div class="form-inline">
 
@@ -80,7 +78,7 @@
           </a>
         </div>
         <div class="col-xs-5 col-sm-3">
-          {{form_timer_base.name(class_='form-control', value=each_timer.name, **{'title':_('Name')})}}
+          {{form_timer_base.name(class_='form-control', value=each_timer.name, **{'title':_('A name to distinguish this from others')})}}
         </div>
         <div class="col-xs-5 col-sm-2">
           <input class="form-control btn btn-default" disabled="" value="[{{'%02d' % each_timer.id}}] {{each_timer.timer_type}} (
@@ -109,7 +107,7 @@
           {{form_timer_base.modify(class_='form-control btn btn-default')}}
         </div>
         <div class="col-xs-6 col-sm-4">
-          {{form_timer_base.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Timer controller?")'})}}
+          {{form_timer_base.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
         </div>
 
         {% if each_timer.timer_type == 'time' %}
