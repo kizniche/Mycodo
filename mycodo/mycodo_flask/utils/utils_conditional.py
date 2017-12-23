@@ -35,7 +35,7 @@ def conditional_mod(form):
 
         cond_mod.name = form.name.data
 
-        if cond_mod.conditional_type in ['relay', 'conditional_output']:
+        if cond_mod.conditional_type == 'conditional_output':
             if form.if_relay_id.data:
                 cond_mod.if_relay_id = form.if_relay_id.data
             else:
@@ -43,18 +43,39 @@ def conditional_mod(form):
                 cond_mod.if_relay_state = form.if_relay_state.data
             cond_mod.if_relay_duration = form.if_relay_duration.data
 
-        else:
-            if form.measurement.data:
-                cond_mod.measurement = form.measurement.data
-            else:
-                error.append("Must select a measurement")
-            cond_mod.if_sensor_period = form.if_sensor_period.data
+        elif cond_mod.conditional_type == 'conditional_measurement':
+            if not form.if_sensor_measurement.data:
+                error.append("{meas} must be set".format(meas=form.if_sensor_measurement.label.text))
+            if not form.if_sensor_direction.data:
+                error.append("{dir} must be set".format(dir=form.if_sensor_direction.label.text))
             cond_mod.if_sensor_measurement = form.if_sensor_measurement.data
-            # cond_mod.if_sensor_edge_select = form.if_sensor_edge_select.data
-            # cond_mod.if_sensor_edge_detected = form.if_sensor_edge_detected.data
-            # cond_mod.if_sensor_gpio_state = form.if_sensor_gpio_state.data
             cond_mod.if_sensor_direction = form.if_sensor_direction.data
             cond_mod.if_sensor_setpoint = form.if_sensor_setpoint.data
+            cond_mod.if_sensor_period = form.if_sensor_period.data
+        elif cond_mod.conditional_type == 'conditional_edge':
+            if (form.if_sensor_edge_select.data == 'edge' and
+                    not form.if_sensor_edge_detected.data):
+                error.append("If the {edge} radio button is selected,"
+                             " {edge} must be set".format(
+                    edge=form.if_sensor_edge_detected.label.text))
+
+            if (form.if_sensor_edge_select.data == 'state' and
+                    not form.if_sensor_gpio_state.data):
+                error.append("If the {gpio} radio button is selected,"
+                             " {gpio} must be set".format(
+                    gpio=form.if_sensor_gpio_state.label.text))
+
+            if (form.if_sensor_edge_select.data == 'state' and
+                    form.if_sensor_period.data <= 0):
+                error.append("If the {state} radio button is selected,"
+                             " {per} must be greater than 1".format(
+                        state=form.if_sensor_gpio_state.label.text,
+                        per=form.if_sensor_period.label.text))
+
+            cond_mod.if_sensor_edge_select = form.if_sensor_edge_select.data
+            cond_mod.if_sensor_edge_detected = form.if_sensor_edge_detected.data
+            cond_mod.if_sensor_gpio_state = form.if_sensor_gpio_state.data
+            cond_mod.if_sensor_period = form.if_sensor_period.data
 
         if not error:
             db.session.commit()

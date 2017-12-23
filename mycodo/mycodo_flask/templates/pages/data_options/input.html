@@ -21,7 +21,7 @@
       </a>
     </div>
     <div class="col-xs-5 col-sm-3">
-      {{form_mod_input.name(class_='form-control', value=each_input.name, **{'title':_('A common name to distinguish this input from others')})}}
+      {{form_mod_input.name(class_='form-control', value=each_input.name, **{'title':_('A name to distinguish this from others')})}}
     </div>
     <div class="col-xs-5 col-sm-2">
       <input class="form-control btn btn-default" disabled="" title="UUID: {{each_input.unique_id}}" value="[{{'%02d' % each_input.id}}] {{each_input.device}}" type="text">
@@ -64,9 +64,9 @@
       </div>
       <div class="col-xs-6 col-sm-4">
         {% if has_active_pid or has_active_lcd -%}
-          {{form_mod_input.input_delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Note: there are currently active PID or LCD controlelrs that rely on this input to operate. Deleting it will deactivate these inputs. Are you sure you want to delete this input?")'})}}
+          {{form_mod_input.input_delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Note: there are currently an active PID that relies on this to operate. Deleting it will deactivate the PID. Are you sure you want to delete this?")'})}}
         {% else -%}
-          {{form_mod_input.input_delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this input?")'})}}
+          {{form_mod_input.input_delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
         {% endif -%}
       </div>
     </div>

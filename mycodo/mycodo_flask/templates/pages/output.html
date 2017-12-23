@@ -181,7 +181,7 @@
             </a>
           </div>
           <div class="col-xs-5 col-sm-3 col-md-3 small-gutters">
-            {{form_mod_relay.name(class_='form-control', value=each_relay.name, **{'title':_('Name')})}}
+            {{form_mod_relay.name(class_='form-control', value=each_relay.name, **{'title':_('A name to distinguish this from others')})}}
           </div>
           <div class="col-xs-5 col-sm-2 col-md-2 small-gutters">
             <input class="form-control btn btn-default" disabled="" id="{{each_relay.id}}-input-relay-state" title="UUID: {{each_relay.unique_id}}" value="[{{'%02d' % each_relay.id}}] {{ _('Unconfigured')}}" type="text">
@@ -214,7 +214,7 @@
             {{form_mod_relay.save(class_='form-control btn btn-default')}}
           </div>
           <div class="col-xs-3 col-sm-3 col-md-4">
-            {{form_mod_relay.delete(class_='form-control btn btn-default', **{'onclick':'return confirm("Are you sure you want to delete this relay?")'})}}
+            {{form_mod_relay.delete(class_='form-control btn btn-default', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
           </div>
 
         {% for each_relay_template in relay_templates if each_relay_template[:-5] == each_relay.relay_type %}

@@ -8,8 +8,9 @@ Create Date: 2017-12-22 11:21:15.742584
 from alembic import op
 import sqlalchemy as sa
 
+import os
 import sys
-sys.path.append("/var/www/mycodo")
+sys.path.append(os.path.abspath(os.path.join(__file__, "../../../..")))
 from mycodo.databases.models import Conditional
 from mycodo.utils.database import db_retrieve_table_daemon
 
@@ -34,9 +35,6 @@ def create_order_str():
 def upgrade():
     with op.batch_alter_table("displayorder") as batch_op:
         batch_op.add_column(sa.Column('conditional', sa.TEXT))
-
-    with op.batch_alter_table("conditional") as batch_op:
-        batch_op.add_column(sa.Column('measurement', sa.TEXT))
 
     op.execute(
         '''
@@ -80,6 +78,3 @@ def upgrade():
 def downgrade():
     with op.batch_alter_table("displayorder") as batch_op:
         batch_op.drop_column('conditional')
-
-    with op.batch_alter_table("conditional") as batch_op:
-        batch_op.drop_column('measurement')
