@@ -579,6 +579,8 @@ def page_info():
         with open(FRONTEND_PID_FILE, 'r') as pid_file:
             frontend_pid = int(pid_file.read())
 
+    pstree_frontend_output = None
+    top_frontend_output = None
     if frontend_pid:
         pstree_damon = subprocess.Popen(
             "pstree -p {pid}".format(pid=frontend_pid), stdout=subprocess.PIPE, shell=True)
