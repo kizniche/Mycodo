@@ -114,6 +114,7 @@ class OutputController(threading.Thread):
             self.logger.info(
                 "Output controller activated in {:.1f} ms".format(
                     (timeit.default_timer() - self.thread_startup_timer)*1000))
+
             while self.running:
                 current_time = datetime.datetime.now()
                 for output_id in self.output_id:

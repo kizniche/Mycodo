@@ -129,9 +129,8 @@ class DaemonControl:
     def refresh_daemon_misc_settings(self):
         return self.rpyc_client.root.refresh_daemon_misc_settings()
 
-    def refresh_conditional(self, cond_id, cond_mod):
-        return self.rpyc_client.root.refresh_conditional(
-            cond_id, cond_mod)
+    def refresh_conditionals(self, cond_id):
+        return self.rpyc_client.root.refresh_conditionals(cond_id)
 
     def terminate_daemon(self):
         return self.rpyc_client.root.terminate_daemon()

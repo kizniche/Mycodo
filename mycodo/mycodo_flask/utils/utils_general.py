@@ -12,6 +12,7 @@ from flask_babel import gettext
 
 from mycodo.config import MEASUREMENTS
 from mycodo.config import MEASUREMENT_UNITS
+from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
@@ -48,6 +49,7 @@ def controller_activate_deactivate(controller_action,
     activated = bool(controller_action == 'activate')
 
     translated_names = {
+        "Conditional": gettext("Conditional"),
         "Input": gettext("Input"),
         "LCD": gettext("LCD"),
         "Math": gettext("Math"),
@@ -56,7 +58,10 @@ def controller_activate_deactivate(controller_action,
     }
 
     mod_controller = None
-    if controller_type == 'Input':
+    if controller_type == 'Conditional':
+        mod_controller = Conditional.query.filter(
+            Conditional.id == int(controller_id)).first()
+    elif controller_type == 'Input':
         mod_controller = Input.query.filter(
             Input.id == int(controller_id)).first()
     elif controller_type == 'LCD':

@@ -317,17 +317,6 @@ def input_del(form_mod_sensor):
             input_deactivate_associated_controllers(input_id)
             controller_activate_deactivate('deactivate', 'Input', input_id)
 
-        # Delete any conditionals associated with the controller
-        conditionals = Conditional.query.filter(
-            Conditional.sensor_id == input_id).all()
-        for each_cond in conditionals:
-            conditional_actions = ConditionalActions.query.filter(
-                ConditionalActions.conditional_id == each_cond.id).all()
-            for each_cond_action in conditional_actions:
-                db.session.delete(each_cond_action)
-            db.session.delete(each_cond)
-        db.session.commit()
-
         delete_entry_with_id(Input, input_id)
         try:
             display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)

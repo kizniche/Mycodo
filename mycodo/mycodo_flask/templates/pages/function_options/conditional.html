@@ -43,13 +43,13 @@
         {{form_conditional.save_cond(class_='form-control btn btn-default')}}
       </div>
       <div class="col-xs-6 col-sm-3 col-md-1">
-        {{form_conditional.delete_cond(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Output Conditional?")'})}}
+        {{form_conditional.delete_cond(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this Conditional?")'})}}
       </div>
     </div>
 
-    {% if each_cond.conditional_type in ['relay', 'conditional_output'] %}
+    {% if each_cond.conditional_type == 'conditional_output' %}
       {% include 'pages/function_options/conditional_options/output.html' %}
-    {% else %}
+    {% elif each_cond.conditional_type == 'conditional_measurement' %}
       {% include 'pages/function_options/conditional_options/measurement.html' %}
     {% endif %}
 
@@ -135,6 +135,18 @@
           </select>
         </div>
 
+      {% elif each_cond_action.do_action == 'photo_email' %}
+
+        <div class="col-sm-5 col-md-7">
+          <label class='control-label'>{{_('Email Address')}}</label>
+          <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
+            <option value=""></option>
+            {%- for each_user in user -%}
+              <option value="{{each_user.email}}"{% if each_cond_action.do_action_string == each_user.email %} selected{% endif %}>{{each_user.email}}</option>
+            {%- endfor -%}
+          </select>
+        </div>
+
       {% elif each_cond_action.do_action == 'video' %}
 
         <div class="col-sm-3 col-md-5">
@@ -149,6 +161,18 @@
         <div class="col-sm-2 col-md-2">
           {{form_conditional_actions.do_camera_duration.label(class_='control-label')}}
           {{form_conditional_actions.do_camera_duration(class_='form-control', value=each_cond_action.do_camera_duration, **{'title':_('Duration to record video (sec)')})}}
+        </div>
+
+      {% elif each_cond_action.do_action == 'video_email' %}
+
+        <div class="col-sm-5 col-md-7">
+          <label class='control-label'>{{_('Email Address')}}</label>
+          <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
+            <option value=""></option>
+            {%- for each_user in user -%}
+              <option value="{{each_user.email}}"{% if each_cond_action.do_action_string == each_user.email %} selected{% endif %}>{{each_user.email}}</option>
+            {%- endfor -%}
+          </select>
         </div>
 
       {% elif each_cond_action.do_action == 'command' %}

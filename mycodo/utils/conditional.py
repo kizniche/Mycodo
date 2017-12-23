@@ -14,7 +14,7 @@ from mycodo.utils.system_pi import cmd_output
 logger = logging.getLogger("mycodo.utils.conditional")
 
 
-def check_conditionals(self, cond_id, measurements, control,
+def check_conditionals(self, cond_id, control,
                        Camera, Conditional, ConditionalActions, Input, Math, PID, SMTP):
     """
     Check if any input conditional statements are activated and
@@ -24,7 +24,6 @@ def check_conditionals(self, cond_id, measurements, control,
 
     :param self:
     :param cond_id:
-    :param measurements:
     :param control:
     :param Camera:
     :param Conditional:
@@ -47,52 +46,65 @@ def check_conditionals(self, cond_id, measurements, control,
         name=cond.name,
         id=cond_id)
 
-    input_dev = db_retrieve_table_daemon(
-        Input, device_id=cond_id, entry='first')
-    math = db_retrieve_table_daemon(
-        Math, device_id=cond_id, entry='first')
+    device_id = cond.measurement.split(',')[0]
+    measurement = cond.measurement.split(',')[0]
+    direction = cond.if_sensor_direction
+    setpoint = cond.if_sensor_setpoint
 
-    if not input_dev and not math:
-        message += " Error: Controller not Input or Math"
+    input_dev = db_retrieve_table_daemon(
+        Input, device_id=device_id, entry='first')
+    math = db_retrieve_table_daemon(
+        Math, device_id=device_id, entry='first')
+    pid = db_retrieve_table_daemon(
+        PID, device_id=device_id, entry='first')
+
+    if not input_dev and not math and not pid:
+        message += " Error: Controller not Input, Math, or PID"
         logger_cond.error(message)
         return
 
-    if cond.if_sensor_direction:
-        if cond.if_sensor_direction == 'none_found':
-            duration_seconds = cond.if_sensor_setpoint
+    last_measurement = None
+
+    if direction and device_id and measurement:
+        if direction == 'none_found':
+            duration_seconds = setpoint
             last_measurement = get_last_measurement(
-                self.unique_id, cond.if_sensor_measurement, duration_seconds)
-            if last_measurement:
-                return  # Don't trigger "measurement not found"
-            message += " {meas} measurement not found in the past" \
-                       " {value} seconds.".format(
-                        meas=cond.if_sensor_measurement,
-                        value=duration_seconds)
+                device_id, measurement, duration_seconds)
+            if not last_measurement:
+                # Triggered
+                message += " {meas} measurement not found in the past" \
+                           " {value} seconds.".format(
+                            meas=measurement,
+                            value=duration_seconds)
+            else:
+                # Not triggered
+                return
 
         else:
             last_measurement = get_last_measurement(
-                self.unique_id,
-                cond.if_sensor_measurement,
+                device_id,
+                measurement,
                 int(self.period * 1.5))
             if not last_measurement:
                 logger_cond.debug("Last measurement not found")
                 return
-            elif ((cond.if_sensor_direction == 'above' and
-                   last_measurement > cond.if_sensor_setpoint) or
-                  (cond.if_sensor_direction == 'below' and
-                   last_measurement < cond.if_sensor_setpoint)):
+            elif ((direction == 'above' and
+                   last_measurement > setpoint) or
+                  (direction == 'below' and
+                   last_measurement < setpoint)):
 
                 message += " {meas}: {value} ".format(
-                    meas=cond.if_sensor_measurement,
+                    meas=measurement,
                     value=last_measurement)
-                if cond.if_sensor_direction == 'above':
+                if direction == 'above':
                     message += "(>"
-                elif cond.if_sensor_direction == 'below':
+                elif direction == 'below':
                     message += "(<"
                 message += " {sp} set value).".format(
-                    sp=cond.if_sensor_setpoint)
+                    sp=setpoint)
             else:
                 return  # Not triggered
+
     elif cond.if_sensor_edge_detected:
         if cond.if_sensor_edge_select == 'edge':
             message += " {edge} Edge Detected.".format(
@@ -103,6 +115,9 @@ def check_conditionals(self, cond_id, measurements, control,
                     GPIO.input(int(input_dev.location)) == cond.if_sensor_gpio_state):
                 message += " {state} GPIO State Detected.".format(
                     state=cond.if_sensor_gpio_state)
+
+    # If the code hasn't returned by now, the conditional has been triggered
+    # and the code below will be executed
 
     cond_actions = db_retrieve_table_daemon(ConditionalActions)
     cond_actions = cond_actions.filter(
@@ -136,17 +151,22 @@ def check_conditionals(self, cond_id, measurements, control,
 
             # Replace string variables with actual values
             command_str = cond_action.do_action_string
-            for each_measurement, each_value in measurements.values.items():
+            if last_measurement:
                 command_str = command_str.replace(
-                    "(({var}))".format(var=each_measurement), str(each_value))
-                if input_dev and each_measurement == input_dev.cmd_measurement:
-                    command_str = command_str.replace(
-                        "((linux_command))", str(input_dev.location))
+                    "(({var}))".format(var=measurement), str(last_measurement))
+
+            # If measurement is from an Input, and the measurment is
+            # linux_command or location, replace with that variable
+            if input_dev and measurement == input_dev.cmd_measurement:
+                command_str = command_str.replace(
+                    "((linux_command))", str(input_dev.location))
             if input_dev:
                 command_str = command_str.replace(
                     "((location))", str(input_dev.location))
+
+            # Replacement string is the conditional period
             command_str = command_str.replace(
-                "((period))", str(cond.cond_if_input_period[cond_id]))
+                "((period))", str(cond.cond_period))
 
             message += " Execute '{com}' ".format(
                 com=command_str)

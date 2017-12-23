@@ -494,23 +494,27 @@ def page_info():
     if gpio_output:
         gpio_output = gpio_output.decode("utf-8")
 
+    # Search for /dev/i2c- devices and compile a sorted dictionary of each
+    # device's integer device number and the corresponding 'i2cdetect -y ID'
+    # output for display on the info page
+    i2c_devices_sorted = {}
     try:
         i2c_devices = glob.glob("/dev/i2c-*")
         i2c_devices_sorted = OrderedDict()
         for index, each_dev in enumerate(i2c_devices):
+            device_int = int(each_dev.strip("/dev/i2c-"))
             df = subprocess.Popen(
-                "i2cdetect -y {dev}".format(dev=int(each_dev.strip("/dev/i2c-"))),
+                "i2cdetect -y {dev}".format(dev=device_int),
                 stdout=subprocess.PIPE,
                 shell=True)
             (out, _) = df.communicate()
             df.wait()
             if out:
-                i2c_devices_sorted[int(each_dev.strip("/dev/i2c-"))] = out.decode("utf-8")
+                i2c_devices_sorted[device_int] = out.decode("utf-8")
     except Exception as er:
         flash("Error detecting I2C devices: {er}".format(er=er), "error")
-        i2c_devices_sorted = {}
-
-    i2c_devices_sorted = OrderedDict(sorted(i2c_devices_sorted.items()))
+    finally:
+        i2c_devices_sorted = OrderedDict(sorted(i2c_devices_sorted.items()))
 
     df = subprocess.Popen(
         "df -h", stdout=subprocess.PIPE, shell=True)
@@ -533,22 +537,17 @@ def page_info():
     if ifconfig_output:
         ifconfig_output = ifconfig_output.decode("utf-8")
 
-    daemon_pid = None
-    if os.path.exists(DAEMON_PID_FILE):
-        with open(DAEMON_PID_FILE, 'r') as pid_file:
-            daemon_pid = int(pid_file.read())
-
-    frontend_pid = None
-    if os.path.exists(FRONTEND_PID_FILE):
-        with open(FRONTEND_PID_FILE, 'r') as pid_file:
-            frontend_pid = int(pid_file.read())
-
     database_version = AlembicVersion.query.first().version_num
     correct_database_version = ALEMBIC_VERSION
 
     virtualenv_flask = False
     if hasattr(sys, 'real_prefix'):
         virtualenv_flask = True
+
+    daemon_pid = None
+    if os.path.exists(DAEMON_PID_FILE):
+        with open(DAEMON_PID_FILE, 'r') as pid_file:
+            daemon_pid = int(pid_file.read())
 
     virtualenv_daemon = False
     pstree_daemon_output = None
@@ -575,19 +574,25 @@ def page_info():
     else:
         ram_use_daemon = 0
 
-    pstree_damon = subprocess.Popen(
-        "pstree -p {pid}".format(pid=frontend_pid), stdout=subprocess.PIPE, shell=True)
-    (pstree_frontend_output, _) = pstree_damon.communicate()
-    pstree_damon.wait()
-    if pstree_frontend_output:
-        pstree_frontend_output = pstree_frontend_output.decode("utf-8")
+    frontend_pid = None
+    if os.path.exists(FRONTEND_PID_FILE):
+        with open(FRONTEND_PID_FILE, 'r') as pid_file:
+            frontend_pid = int(pid_file.read())
 
-    top_frontend = subprocess.Popen(
-        "top -bH -n 1 -p {pid}".format(pid=frontend_pid), stdout=subprocess.PIPE, shell=True)
-    (top_frontend_output, _) = top_frontend.communicate()
-    top_frontend.wait()
-    if top_frontend_output:
-        top_frontend_output = top_frontend_output.decode("utf-8")
+    if frontend_pid:
+        pstree_damon = subprocess.Popen(
+            "pstree -p {pid}".format(pid=frontend_pid), stdout=subprocess.PIPE, shell=True)
+        (pstree_frontend_output, _) = pstree_damon.communicate()
+        pstree_damon.wait()
+        if pstree_frontend_output:
+            pstree_frontend_output = pstree_frontend_output.decode("utf-8")
+
+        top_frontend = subprocess.Popen(
+            "top -bH -n 1 -p {pid}".format(pid=frontend_pid), stdout=subprocess.PIPE, shell=True)
+        (top_frontend_output, _) = top_frontend.communicate()
+        top_frontend.wait()
+        if top_frontend_output:
+            top_frontend_output = top_frontend_output.decode("utf-8")
 
     ram_use_flask = resource.getrusage(
         resource.RUSAGE_SELF).ru_maxrss / float(1000)
@@ -804,8 +809,9 @@ def page_function():
     input_dev = Input.query.all()
     math = Math.query.all()
     method = Method.query.all()
-    pid = PID.query.all()
     output = Output.query.all()
+    pid = PID.query.all()
+    user = User.query.all()
 
     input_choices = utils_general.choices_inputs(Input.query.all())
     math_choices = utils_general.choices_maths(Math.query.all())
@@ -876,11 +882,11 @@ def page_function():
             utils_conditional.conditional_activate(
                 form_conditional)
         elif form_conditional.delete_cond.data:
-            utils_conditional.conditional_mod(
-                form_conditional, 'delete')
+            utils_conditional.conditional_del(
+                form_conditional)
         elif form_conditional.save_cond.data:
             utils_conditional.conditional_mod(
-                form_conditional, 'modify')
+                form_conditional)
         elif form_conditional.order_up_cond.data:
             utils_conditional.conditional_reorder(
                 form_conditional.conditional_id.data,
@@ -896,10 +902,10 @@ def page_function():
                 form_conditional_actions)
         elif form_conditional_actions.save_action.data:
             utils_conditional.conditional_action_mod(
-                form_conditional_actions, 'modify')
+                form_conditional_actions)
         elif form_conditional_actions.delete_action.data:
-            utils_conditional.conditional_action_mod(
-                form_conditional_actions, 'delete')
+            utils_conditional.conditional_action_del(
+                form_conditional_actions)
 
         return redirect('/function')
 
@@ -926,7 +932,8 @@ def page_function():
                            output=output,
                            pid=pid,
                            pid_choices=pid_choices,
-                           units=MEASUREMENT_UNITS)
+                           units=MEASUREMENT_UNITS,
+                           user=user)
 
 
 @blueprint.route('/output', methods=('GET', 'POST'))

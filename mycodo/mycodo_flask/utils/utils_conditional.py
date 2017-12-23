@@ -16,72 +16,98 @@ from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactiva
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
+from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
 
 
-def conditional_mod(form, mod_type):
+def conditional_mod(form):
     error = []
-    conditional_type = Conditional.query.filter(
-        Conditional.id == form.conditional_id.data).first().conditional_type
     action = '{action} {controller}'.format(
         action=gettext("Mod"),
         controller=gettext("Conditional"))
 
-    if mod_type == 'delete':
-        if not error:
-            delete_entry_with_id(Conditional,
-                                 form.conditional_id.data)
-            conditional_actions = ConditionalActions.query.filter(
-                ConditionalActions.conditional_id == form.conditional_id.data).all()
-            for each_cond_action in conditional_actions:
-                db.session.delete(each_cond_action)
-            db.session.commit()
-            check_refresh_conditional(form.sensor_id.data,  'del')
+    try:
+        cond_mod = Conditional.query.filter(
+            Conditional.id == form.conditional_id.data).first()
+        is_activated = cond_mod.is_activated
 
-    elif mod_type == 'modify':
-        try:
-            cond_mod = Conditional.query.filter(
-                Conditional.id == form.conditional_id.data).first()
-            cond_mod.name = form.name.data
+        cond_mod.name = form.name.data
 
-            if conditional_type in ['relay', 'conditional_output']:
-                if form.if_relay_id.data:
-                    cond_mod.if_relay_id = form.if_relay_id.data
-                else:
-                    cond_mod.if_relay_id = None
-                    cond_mod.if_relay_state = form.if_relay_state.data
-                cond_mod.if_relay_duration = form.if_relay_duration.data
-
+        if cond_mod.conditional_type in ['relay', 'conditional_output']:
+            if form.if_relay_id.data:
+                cond_mod.if_relay_id = form.if_relay_id.data
             else:
-                if form.measurement.data:
-                    cond_mod.measurement = form.measurement.data
-                else:
-                    error.append("Must select a measurement")
-                cond_mod.if_sensor_period = form.if_sensor_period.data
-                cond_mod.if_sensor_measurement = form.if_sensor_measurement.data
-                # cond_mod.if_sensor_edge_select = form.if_sensor_edge_select.data
-                # cond_mod.if_sensor_edge_detected = form.if_sensor_edge_detected.data
-                # cond_mod.if_sensor_gpio_state = form.if_sensor_gpio_state.data
-                cond_mod.if_sensor_direction = form.if_sensor_direction.data
-                cond_mod.if_sensor_setpoint = form.if_sensor_setpoint.data
+                cond_mod.if_relay_id = None
+                cond_mod.if_relay_state = form.if_relay_state.data
+            cond_mod.if_relay_duration = form.if_relay_duration.data
 
-            if not error:
-                db.session.commit()
-                check_refresh_conditional(form.sensor_id.data, 'mod')
+        else:
+            if form.measurement.data:
+                cond_mod.measurement = form.measurement.data
+            else:
+                error.append("Must select a measurement")
+            cond_mod.if_sensor_period = form.if_sensor_period.data
+            cond_mod.if_sensor_measurement = form.if_sensor_measurement.data
+            # cond_mod.if_sensor_edge_select = form.if_sensor_edge_select.data
+            # cond_mod.if_sensor_edge_detected = form.if_sensor_edge_detected.data
+            # cond_mod.if_sensor_gpio_state = form.if_sensor_gpio_state.data
+            cond_mod.if_sensor_direction = form.if_sensor_direction.data
+            cond_mod.if_sensor_setpoint = form.if_sensor_setpoint.data
 
-        except sqlalchemy.exc.OperationalError as except_msg:
-            error.append(except_msg)
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            error.append(except_msg)
+        if not error:
+            db.session.commit()
+
+        if is_activated:
+            check_refresh_conditional(form.conditional_id.data)
+
+    except sqlalchemy.exc.OperationalError as except_msg:
+        error.append(except_msg)
+    except sqlalchemy.exc.IntegrityError as except_msg:
+        error.append(except_msg)
+    except Exception as except_msg:
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('page_routes.page_function'))
+
+
+def conditional_del(form):
+    error = []
+    action = '{action} {controller}'.format(
+        action=gettext("Mod"),
+        controller=gettext("Conditional"))
+
+    try:
+        if not error:
+            cond = Conditional.query.filter(
+                Conditional.id == form.conditional_id.data).first()
+            conditional_actions = ConditionalActions.query.filter(
+                ConditionalActions.conditional_id == cond.id).all()
+            for each_cond_action in conditional_actions:
+                delete_entry_with_id(ConditionalActions, each_cond_action.id)
+            delete_entry_with_id(Conditional, cond.id)
+
+            try:
+                display_order = csv_to_list_of_int(DisplayOrder.query.first().conditional)
+                display_order.remove(int(cond.id))
+                DisplayOrder.query.first().conditional = list_to_csv(display_order)
+            except Exception:  # id not in list
+                pass
+            db.session.commit()
+
+    except sqlalchemy.exc.OperationalError as except_msg:
+        error.append(except_msg)
+    except sqlalchemy.exc.IntegrityError as except_msg:
+        error.append(except_msg)
+    except Exception as except_msg:
+        error.append(except_msg)
 
     flash_success_errors(error, action, url_for('page_routes.page_function'))
 
 
 def conditional_action_add(form):
     error = []
-    conditional_type = Conditional.query.filter(
-        Conditional.id == form.conditional_id.data).first().conditional_type
     action = '{action} {controller}'.format(
         action=gettext("Add"),
         controller=gettext("Conditional"))
@@ -95,77 +121,109 @@ def conditional_action_add(form):
         error.append(except_msg)
     except sqlalchemy.exc.IntegrityError as except_msg:
         error.append(except_msg)
+    except Exception as except_msg:
+        error.append(except_msg)
+
+    is_activated = Conditional.query.filter(
+        Conditional.id == form.conditional_id.data).first().conditional_type
+    if is_activated:
+        check_refresh_conditional(form.conditional_id.data, 'mod')
+
     flash_success_errors(error, action, url_for('page_routes.page_function'))
 
 
-def conditional_action_mod(form, mod_type):
+def conditional_action_mod(form):
     error = []
-    cond = Conditional.query.filter(
-        Conditional.id == form.conditional_id.data).first()
     action = '{action} {controller}'.format(
         action=gettext("Mod"),
         controller=gettext("Conditional"))
 
-    if mod_type == 'delete':
-        delete_entry_with_id(ConditionalActions,
-                             form.conditional_action_id.data)
-    elif mod_type == 'modify':
-        try:
-            mod_action = ConditionalActions.query.filter(
-                ConditionalActions.id == form.conditional_action_id.data).first()
-            mod_action.do_action = form.do_action.data
-            if form.do_action.data == 'relay':
-                if form.do_relay_id.data:
-                    mod_action.do_relay_id = form.do_relay_id.data
-                else:
-                    mod_action.do_relay_id = None
-                mod_action.do_relay_state = form.do_relay_state.data
-                mod_action.do_relay_duration = form.do_relay_duration.data
-            elif form.do_action.data == 'deactivate_pid':
-                if form.do_pid_id.data:
-                    mod_action.do_pid_id = form.do_pid_id.data
-                else:
-                    mod_action.do_pid_id = None
-            elif form.do_action.data == 'email':
-                mod_action.do_action_string = form.do_action_string.data
-            elif form.do_action.data in ['photo_email', 'video_email']:
-                mod_action.do_action_string = form.do_action_string.data
-                mod_action.do_camera_id = form.do_camera_id.data
-                if (form.do_action.data == 'video_email' and
-                        Camera.query.filter(
-                            and_(Camera.id == form.do_camera_id.data,
-                                 Camera.library != 'picamera')).count()):
-                    error.append('Only Pi Cameras can record video')
-            elif form.do_action.data == 'flash_lcd':
-                if form.do_lcd_id.data:
-                    mod_action.do_lcd_id = form.do_lcd_id.data
-                else:
-                    mod_action.do_lcd_id = None
-            elif form.do_action.data == 'photo':
-                if form.do_camera_id.data:
-                    mod_action.do_camera_id = form.do_camera_id.data
-                else:
-                    mod_action.do_camera_id = None
-            elif form.do_action.data == 'video':
-                if form.do_camera_id.data:
-                    if (Camera.query.filter(
-                            and_(Camera.id == form.do_camera_id.data,
-                                 Camera.library != 'picamera')).count()):
-                        error.append('Only Pi Cameras can record video')
-                    mod_action.do_camera_id = form.do_camera_id.data
-                else:
-                    mod_action.do_camera_id = None
-                mod_action.do_camera_duration = form.do_camera_duration.data
-            elif form.do_action.data == 'command':
-                mod_action.do_action_string = form.do_action_string.data
-            if not error:
-                db.session.commit()
-        except sqlalchemy.exc.OperationalError as except_msg:
-            error.append(except_msg)
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            error.append(except_msg)
+    cond_id = form.conditional_id.data
 
-        check_refresh_conditional(cond.sensor_id, 'mod')
+    try:
+        mod_action = ConditionalActions.query.filter(
+            ConditionalActions.id == form.conditional_action_id.data).first()
+        mod_action.do_action = form.do_action.data
+        if form.do_action.data == 'relay':
+            if form.do_relay_id.data:
+                mod_action.do_relay_id = form.do_relay_id.data
+            else:
+                mod_action.do_relay_id = None
+            mod_action.do_relay_state = form.do_relay_state.data
+            mod_action.do_relay_duration = form.do_relay_duration.data
+        elif form.do_action.data == 'deactivate_pid':
+            if form.do_pid_id.data:
+                mod_action.do_pid_id = form.do_pid_id.data
+            else:
+                mod_action.do_pid_id = None
+        elif form.do_action.data == 'email':
+            mod_action.do_action_string = form.do_action_string.data
+        elif form.do_action.data in ['photo_email', 'video_email']:
+            mod_action.do_action_string = form.do_action_string.data
+            mod_action.do_camera_id = form.do_camera_id.data
+            if (form.do_action.data == 'video_email' and
+                    Camera.query.filter(
+                        and_(Camera.id == form.do_camera_id.data,
+                             Camera.library != 'picamera')).count()):
+                error.append('Only Pi Cameras can record video')
+        elif form.do_action.data == 'flash_lcd':
+            if form.do_lcd_id.data:
+                mod_action.do_lcd_id = form.do_lcd_id.data
+            else:
+                mod_action.do_lcd_id = None
+        elif form.do_action.data == 'photo':
+            if form.do_camera_id.data:
+                mod_action.do_camera_id = form.do_camera_id.data
+            else:
+                mod_action.do_camera_id = None
+        elif form.do_action.data == 'video':
+            if form.do_camera_id.data:
+                if (Camera.query.filter(
+                        and_(Camera.id == form.do_camera_id.data,
+                             Camera.library != 'picamera')).count()):
+                    error.append('Only Pi Cameras can record video')
+                mod_action.do_camera_id = form.do_camera_id.data
+            else:
+                mod_action.do_camera_id = None
+            mod_action.do_camera_duration = form.do_camera_duration.data
+        elif form.do_action.data == 'command':
+            mod_action.do_action_string = form.do_action_string.data
+
+        if not error:
+            db.session.commit()
+
+            cond = Conditional.query.filter(
+                Conditional.id == form.conditional_id.data).first()
+            if cond.is_activated:
+                check_refresh_conditional(cond_id, 'mod')
+
+    except sqlalchemy.exc.OperationalError as except_msg:
+        error.append(except_msg)
+    except sqlalchemy.exc.IntegrityError as except_msg:
+        error.append(except_msg)
+    except Exception as except_msg:
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('page_routes.page_function'))
+
+
+def conditional_action_del(form):
+    error = []
+    action = '{action} {controller}'.format(
+        action=gettext("Mod"),
+        controller=gettext("Conditional"))
+
+    try:
+        cond_action = Conditional.query.filter(
+            ConditionalActions.id == form.conditional_id.data).first()
+        delete_entry_with_id(ConditionalActions, cond_action.id)
+
+    except sqlalchemy.exc.OperationalError as except_msg:
+        error.append(except_msg)
+    except sqlalchemy.exc.IntegrityError as except_msg:
+        error.append(except_msg)
+    except Exception as except_msg:
+        error.append(except_msg)
 
     flash_success_errors(error, action, url_for('page_routes.page_function'))
 
@@ -185,6 +243,7 @@ def conditional_reorder(cond_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
+
     flash_success_errors(error, action, url_for('page_routes.page_function'))
 
 
@@ -198,13 +257,16 @@ def conditional_deactivate(form):
     controller_activate_deactivate('deactivate', 'Conditional', dev_id)
 
 
-def check_refresh_conditional(cont_id, cond_mod):
+def check_refresh_conditional(cond_id):
     error = []
     action = '{action} {controller}'.format(
         action=gettext("Refresh"),
         controller=gettext("Conditional"))
 
-    control = DaemonControl()
-    control.refresh_conditional(cont_id, cond_mod)
+    cond = Conditional.query.filter(
+        Conditional.id == cond_id).first()
 
-    flash_success_errors(error, action, url_for('page_routes.page_function'))
+    if cond.controller_type not in ['relay', 'conditional_output']:
+        control = DaemonControl()
+        control.refresh_conditionals(cond_id)
+        flash_success_errors(error, action, url_for('page_routes.page_function'))

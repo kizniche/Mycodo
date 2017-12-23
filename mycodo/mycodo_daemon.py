@@ -55,7 +55,6 @@ from mycodo.controller_math import MathController
 from mycodo.controller_output import OutputController
 from mycodo.controller_pid import PIDController
 from mycodo.controller_timer import TimerController
-from mycodo.databases.models import Conditional
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
@@ -178,12 +177,12 @@ def mycodo_service(mycodo):
             return mycodo.refresh_daemon_misc_settings()
 
         @staticmethod
-        def exposed_refresh_conditional(input_id, cond_mod):
+        def exposed_refresh_conditionals(cond_id):
             """
             Instruct the input controller to refresh the settings of
             conditional statements
             """
-            return mycodo.refresh_conditional(input_id, cond_mod)
+            return mycodo.refresh_conditionals(cond_id)
 
         @staticmethod
         def exposed_relay_state(relay_id):
@@ -312,9 +311,9 @@ class DaemonController:
         # controller
         self.controller = {
             # May only launch a single thread for this controller
+            'Conditional': None,
             'Output': None,
             # May launch multiple threads per each of these controllers
-            'Conditional': {},
             'Input': {},
             'LCD': {},
             'Math': {},
@@ -329,7 +328,6 @@ class DaemonController:
             'Input',
             'Math',
             'PID',
-            'Conditional',
             'LCD',
         ]
         self.thread_shutdown_timer = None
@@ -447,9 +445,6 @@ class DaemonController:
             elif cont_type == 'Input':
                 controller_manage['type'] = Input
                 controller_manage['function'] = InputController
-            elif cont_type == 'Conditional':
-                controller_manage['type'] = Conditional
-                controller_manage['function'] = ConditionalController
             elif cont_type == 'Timer':
                 controller_manage['type'] = Timer
                 controller_manage['function'] = TimerController
@@ -460,6 +455,7 @@ class DaemonController:
             # Check if the controller ID actually exists and start it
             controller = db_retrieve_table_daemon(controller_manage['type'],
                                                   device_id=cont_id)
+
             if controller:
                 self.controller[cont_type][cont_id] = controller_manage['function'](
                     ready, cont_id)
@@ -537,14 +533,13 @@ class DaemonController:
             for input_id in self.controller['Input']:
                 if not self.controller['Input'][input_id].is_running():
                     return "Error: Input ID {}".format(input_id)
-            for conditional_id in self.controller['Conditional']:
-                if not self.controller['Conditional'][conditional_id].is_running():
-                    return "Error: Conditional ID {}".format(conditional_id)
             for timer_id in self.controller['Timer']:
                 if not self.controller['Timer'][timer_id].is_running():
                     return "Error: Timer ID {}".format(timer_id)
             if not self.controller['Output'].is_running():
                 return "Error: Output controller"
+            if not self.controller['Conditional'].is_running():
+                return "Error: Conditional controller"
         except Exception as except_msg:
             message = "Could not check running threads:" \
                       " {err}".format(err=except_msg)
@@ -645,9 +640,9 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def refresh_conditional(self, cond_id, cond_mod):
+    def refresh_conditionals(self, cond_id):
         try:
-            return self.controller['Conditional'][cond_id].setup_conditionals(cond_mod)
+            return self.controller['Conditional'].setup_conditionals()
         except Exception as except_msg:
             message = "Could not refresh conditional:" \
                       " {err}".format(err=except_msg)
@@ -761,7 +756,6 @@ class DaemonController:
         try:
             # Obtain database configuration options
             db_tables = {
-                'Conditional': db_retrieve_table_daemon(Conditional, entry='all'),
                 'Timer': db_retrieve_table_daemon(Timer, entry='all'),
                 'Input': db_retrieve_table_daemon(Input, entry='all'),
                 'Math': db_retrieve_table_daemon(Math, entry='all'),
@@ -769,7 +763,7 @@ class DaemonController:
                 'LCD': db_retrieve_table_daemon(LCD, entry='all')
             }
 
-            self.logger.debug("Starting output controller")
+            self.logger.debug("Starting Output controller")
             self.controller['Output'] = OutputController()
             self.controller['Output'].daemon = True
             self.controller['Output'].start()
@@ -786,6 +780,13 @@ class DaemonController:
                 self.logger.info(
                     "All activated {type} controllers started".format(
                         type=each_controller))
+
+            time.sleep(0.5)
+
+            self.logger.debug("Starting Conditional controller")
+            self.controller['Conditional'] = ConditionalController()
+            self.controller['Conditional'].daemon = True
+            self.controller['Conditional'].start()
 
         except Exception as except_msg:
             message = "Could not start all controllers:" \

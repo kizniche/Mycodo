@@ -52,6 +52,30 @@ def upgrade():
         '''
     )
 
+    op.execute(
+        '''
+        UPDATE conditional
+        SET conditional_type='conditional_output'
+        WHERE conditional_type='relay'
+        '''
+    )
+
+    op.execute(
+        '''
+        UPDATE conditional
+        SET conditional_type='conditional_measurement'
+        WHERE conditional_type='sensor'
+        '''
+    )
+
+    op.execute(
+        '''
+        UPDATE conditional
+        SET conditional_type='conditional_measurement'
+        WHERE conditional_type='math'
+        '''
+    )
+
 
 def downgrade():
     with op.batch_alter_table("displayorder") as batch_op:
