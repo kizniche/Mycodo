@@ -101,7 +101,7 @@
 
       {% elif each_cond_action.do_action == 'email' %}
 
-        <div class="col-sm-5 col-md-7">
+        <div class="col-sm-6 col-md-8">
           <label class='control-label'>{{_('Email Address')}}</label>
           <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
             <option value=""></option>
@@ -113,7 +113,7 @@
 
       {% elif each_cond_action.do_action == 'flash_lcd' %}
 
-        <div class="col-sm-5 col-md-7">
+        <div class="col-sm-6 col-md-8">
           <label class='control-label'>{{_('LCD')}}</label>
           <select class="form-control form-tooltip form-dropdown" id="do_lcd_id" name="do_lcd_id" data-placement="top" title="{{_('LCD to flash')}}">
             <option value=""></option>
@@ -125,7 +125,7 @@
 
       {% elif each_cond_action.do_action == 'photo' %}
 
-        <div class="col-sm-5 col-md-7">
+        <div class="col-sm-6 col-md-8">
           <label class='control-label'>{{_('Camera')}}</label>
           <select class="form-control form-tooltip form-dropdown" id="do_camera_id" name="do_camera_id" data-placement="top" title="{{_('Camera to capture with')}}">
             <option value=""></option>
@@ -137,7 +137,7 @@
 
       {% elif each_cond_action.do_action == 'photo_email' %}
 
-        <div class="col-sm-5 col-md-7">
+        <div class="col-sm-6 col-md-8">
           <label class='control-label'>{{_('Email Address')}}</label>
           <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
             <option value=""></option>
@@ -158,14 +158,14 @@
             {%- endfor -%}
           </select>
         </div>
-        <div class="col-sm-2 col-md-2">
+        <div class="col-sm-3 col-md-3">
           {{form_conditional_actions.do_camera_duration.label(class_='control-label')}}
           {{form_conditional_actions.do_camera_duration(class_='form-control', value=each_cond_action.do_camera_duration, **{'title':_('Duration to record video (sec)')})}}
         </div>
 
       {% elif each_cond_action.do_action == 'video_email' %}
 
-        <div class="col-sm-5 col-md-7">
+        <div class="col-sm-6 col-md-8">
           <label class='control-label'>{{_('Email Address')}}</label>
           <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
             <option value=""></option>
@@ -177,7 +177,7 @@
 
       {% elif each_cond_action.do_action == 'command' %}
 
-        <div class="col-sm-5 col-md-7">
+        <div class="col-sm-6 col-md-8">
           <label class='control-label'>{{_('Command')}}</label>
           {{form_conditional_actions.do_action_string(class_='form-control', value=each_cond_action.do_action_string, **{'title':_('Command to execute (as user "mycodo")')})}}
         </div>

@@ -127,7 +127,7 @@ def conditional_action_add(form):
     is_activated = Conditional.query.filter(
         Conditional.id == form.conditional_id.data).first().conditional_type
     if is_activated:
-        check_refresh_conditional(form.conditional_id.data, 'mod')
+        check_refresh_conditional(form.conditional_id.data)
 
     flash_success_errors(error, action, url_for('page_routes.page_function'))
 
@@ -195,7 +195,7 @@ def conditional_action_mod(form):
             cond = Conditional.query.filter(
                 Conditional.id == form.conditional_id.data).first()
             if cond.is_activated:
-                check_refresh_conditional(cond_id, 'mod')
+                check_refresh_conditional(cond_id)
 
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)
