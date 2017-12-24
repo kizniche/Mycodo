@@ -49,7 +49,7 @@ Table of Contents
    - [Export-Import](#export-import)
    - [Camera](#camera)
    - [Output Usage](#output-usage)
-   - [Backup-Restore](#sbackup-restore)
+   - [Backup-Restore](#backup-restore)
    - [System Information](#system-information)
 
 [Troubleshooting](#troubleshooting)
@@ -132,7 +132,7 @@ The system coordinates a diverse set of responses to sensor measurements, includ
 Brief Overview
 ==============
 
-There are a number of different uses for Mycodo, from simple storing of sensor measurements, to regulating the environmental conditions of a physical space, to capturing motion-activated or timelapse photography. There are several componenets of the system that may be configured.
+There are a number of different uses for Mycodo, from simple storing of sensor measurements, to regulating the environmental conditions of a physical space, to capturing motion-activated or timelapse photography. There are several components of the system that may be configured.
 
 Input/Math Controllers
 ----------------------
@@ -142,12 +142,12 @@ Input/Math controllers acquire measurements and store them in a [time series dat
 Output Controllers
 ------------------
 
-Output Controllers produce changes to the general input/output (GPIO) pins of the Raspberry Pi or may be configured to execute linux commands in order to allow an unlimited number of extra potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulatated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off. 
+Output Controllers produce changes to the general input/output (GPIO) pins of the Raspberry Pi or may be configured to execute linux commands in order to allow an unlimited number of extra potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off. 
 
 PID Controllers
 ---------------
 
-When Inputs and Outputs are combined, PID Controllers may be used to create a fedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermenttion or curing, and cooking food ([sous-vide](https://en.wikipedia.org/wiki/Sous-vide)), to name a few.
+When Inputs and Outputs are combined, PID Controllers may be used to create a feedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermentation or curing, and cooking food ([sous-vide](https://en.wikipedia.org/wiki/Sous-vide)), to name a few.
 
 
 Timer Controllers
@@ -192,7 +192,7 @@ The second way to add an input is to create a script that obtains and returns a 
 
 *Can I variably control the speed of motors or other devices with the PWM output signal from the PID?*
 
-Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, an [AC modulation ciruit](#schematics-for-ac-modulation), [DC modulation circuit](#schematics-for-dc-fan-control), or something else.
+Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, an [AC modulation circuit](#schematics-for-ac-modulation), [DC modulation circuit](#schematics-for-dc-fan-control), or something else.
 
 * * * * *
 
@@ -227,7 +227,7 @@ Data includes controllers that produce and store data in the measurement databas
 
 ### Input
 
-Inputs (such as sensors or analog signals) measure environmental and other characteristic conditions, which will be stored in an influxdb round-robin database. This database will provide recent measurements for [Graphs](#graphs), [LCDs](#lcds), [PID Controllers](#pids), [Conditional Statements](#conditional-statements), and other parts of Mycodo to operate from.
+Inputs (such as sensors or analog signals) measure environmental and other characteristic conditions, which will be stored in an influxdb round-robin database. This database will provide recent measurements for [Graphs](#graphs), [LCDs](#lcds), [PID Controllers](#pid-controllers), [Conditional Statements](#conditional-statements), and other parts of Mycodo to operate from.
 
 Among the sensors is 'Linux Command'. This is a way to use a custom script to return a value to be used
 within Mycodo, without having to edit the Mycodo code. Merely create your script and use this sensor to
@@ -286,7 +286,7 @@ Setting | Description
 Input | Select the Inputs to use with the particular Math controller
 Period (seconds) | The duration of time between calculating and storing a new value
 Max Age (seconds) | The maximum allowed age of the Input measurements. If an Input measurement is older than this period, the calculation is cancelled and the new value is not stored in the database. Consequently, if another controller has a Max Age set and cannot retrieve a current Math value, it will cease functioning. A PID controller, for instance, may stop regulating if there is no new Math value created, preventing the PID controller from continuing to run when it should not.
-Measurement | This is the condition being measured. If all of the selected inputs are Temperature, this should also be temperature. Keep in mind that if you use the pre-defined measurements, it will add these to the current y-axis on a Graph. For instance, if you select two Temeprature measurements, make sure you set Measurement to 'temperature' (lowercase 't') in order to make it use the same y-axis as the other temperatures. A list of the pre-defined measurements that may be used is below.
+Measurement | This is the condition being measured. For instance, if all of the selected measurements are temperature, this should also be temperature. A list of the pre-defined measurements that may be used is below.
 Units | This is the units to display along with the measurement, on Graphs. If a pre-defined measurement is used, this field will default to the units associated with that measurement.
 Max Difference | If the difference between any selected Input is greater than this value, no new value will be stored in the database.
 Dry-Bulb Temperature | The measurement that will serve as the dry-bulb temperature (this is the warmer of the two temperature measurements)
@@ -295,20 +295,23 @@ Pressure | This is an optional pressure measurement that can be used to calculat
 
 #### Pre-defined Measurements
 
+If a pre-defined measurement is used, the newly-generated value will use that default y-axes on a Graph. For instance, if two temperature measurements are selected for averaging, and Measurement is set to 'temperature' (lowercase 't'), the new average value will use the same y-axis as the other temperatures.
+
 Measurement | Units
 ----------- | -----
 altitude | m
 co2 | ppmv
-dewpoint | °C
 cpu_load_1m | 1 min
 cpu_load_5m | 5 min
 cpu_load_15m | 15 min
+dewpoint | °C
 disk_space | MB
 duration_sec | sec
 duty_cycle | %
 edge | edge
 frequency | Hz
 humidity | %
+humidity_ratio | kg/kg
 lux | lx
 moisture | moisture
 ph | pH
@@ -317,9 +320,11 @@ pressure | Pa
 pulse_width | µs
 rpm | rpm
 setpoint | None
+specific_enthalpy | kJ/kg
+specific_volume | m<sup>3</sup>/kg
 temperature | °C
-temperature_object | °C
 temperature_die | °C
+temperature_object | °C
 voltage | volts
 
 Output
@@ -419,7 +424,7 @@ Setting | Description
 -------------------- | ----------------------------------------------
 BCM Pin | This is the GPIO that will be the signal to the output, using BCM numbering.
 On Trigger | This is the state of the GPIO to signal the output to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you output completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.
-WiringPi Pin | This is the GPIO that will be the signal to the output, using WireingPi numbering.
+WiringPi Pin | This is the GPIO that will be the signal to the output, using WiringPi numbering.
 Protocol | This is the protocol to use to transmit via 433MHz. Default is 1, but if this doesn't work, increment the number.
 Pulse Length | This is the pulse length to transmit via 433MHz. Default is 189 ms.
 Bit Length | This is the bit length to transmit via 433MHz. Default is 24-bit.
@@ -530,7 +535,7 @@ both inputs and outputs. Possible conditional statements include:
 -   If Output \#4 turns ON for 20 seconds, turn Output \#1 OFF
 -   If Humidity is Greater Than 80%, turn Output \#4 ON for 40 seconds
 -   If Humidity if Less Than 50%, turn Output \#1 ON for 21 seconds,
-    execute '/usr/local/bin/myscript.sh', and notify email@domain.com
+    execute '/usr/local/bin/script.sh', and notify email@domain.com
 -   If Temperature if Greater Than 35 C, deactivate PID \#1
 
 Before activating any conditional statements or PID controllers, it's
@@ -887,7 +892,7 @@ characteristics of your electrical system needs to be know. These
 variables should describe the characteristics of the electrical system
 being used by the relays to operate electrical devices. Note: Proper
 output usage calculations also rely on the correct current draw to be set
-for each output (see [Output Settings](#outputs)).
+for each output (see [Output Settings](#output)).
 
 Setting | Description
 -------------------- | ----------------------------------------------
@@ -943,7 +948,7 @@ Setting | Description
 -------------------- | ----------------------------------------------
 SMTP Host | The SMTP server to use to send emails from.
 SMTP Port | Port to communicate with the SMTP server (465 for SSL, 587 for TSL).
-Enable SSL | Check to emable SSL, uncheck to enable TSL.
+Enable SSL | Check to enable SSL, uncheck to enable TSL.
 SMTP User | The user name to send the email from. This can be just a name or the entire email address.
 SMTP Password | The password for the user.
 From Email | What the from email address be set as. This should be the actual email address for this user.
@@ -997,9 +1002,9 @@ select the plus sign on the top-right of a graph.
 
 Setting | Description
 -------------------- | ----------------------------------------------
-Width | The width of the graph on the page, in 1/12th increments. Mulstiple graphs can share the sme row if their combined fraction doesn't exceed 12/12.
+Width | The width of the graph on the page, in 1/12th increments. Multiple graphs can share the sme row if their combined fraction doesn't exceed 12/12.
 Height (pixels) | The height of the graph.
-x-Axis (minutes) | The duration to diaply on the x-axis of the graph.
+x-Axis (minutes) | The duration to display on the x-axis of the graph.
 Enable Auto Refresh | Automatically refresh the data on the graph Refresh Period.
 Refresh Period (seconds) | The duration between acquisitions of new data to display on the graph.
 Inputs/Outputs/PIDs | The Inputs, Outputs, and PIDs to display on the graph.
@@ -1040,7 +1045,7 @@ Export-Import
 
 Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.
 
-Additionally, the entire measurement database (influxdb) may be exported as a ZIP file backup. This ZIP may be imported back in any Mycodo system to restore these measurements. Note that an import will override the corrent data (i.e. destroying it).
+Additionally, the entire measurement database (influxdb) may be exported as a ZIP file backup. This ZIP may be imported back in any Mycodo system to restore these measurements. Note that an import will override the current data (i.e. destroying it).
 
 Mycodo settings may be exported as a ZIP file containing the Mycodo settings database (sqlite). This ZIP file may be used to restore the settings database to another Mycodo install, as long as the Mycodo version and database versions are the same. Future support for installing older (or newer) databases and performing an automatic upgrade/downgrade is in the works.
 
@@ -1066,7 +1071,7 @@ Backup-Restore
 
 A backup is made to /var/Mycodo-backups when the system is upgraded or through the web interface on the Config -> Backup / Restore page.
 
-If you need to restore a backup, this can be done on the Config -> Backup / Restore page. Find the backup you would like restored and press the Restore button beside it. A restore can also be initialized through the command line. Use the foloowing commands to initialize a restore, changing the appropriate directory names, 'user' to your user name, and TIME and COMMIT to the appropriate text found as the directory names in /var/Mycodo-backups/
+If you need to restore a backup, this can be done on the Config -> Backup / Restore page. Find the backup you would like restored and press the Restore button beside it. A restore can also be initialized through the command line. Use the following commands to initialize a restore, changing the appropriate directory names, 'user' to your user name, and TIME and COMMIT to the appropriate text found as the directory names in /var/Mycodo-backups/
 
     sudo mv /home/user/Mycodo /home/user/Mycodo_old
     sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
@@ -1302,8 +1307,8 @@ how hot or cold the object is.
  - Usable temperature range: -40&deg;C to 125&deg;C
  - Optimal operating voltage of 3.3V to 5V (tolerant up to 7V max)
 
-Temperature, Humidity Sensors
------------------------------
+Temperature Humidity Sensors
+----------------------------
 
 ### AM2315
 
@@ -1452,7 +1457,7 @@ The BME280 is the upgrade to the BMP085/BMP180/BMP183. It has a low altitude noi
 
  - 300-1100 hPa (9000m to -500m above sea level)
  - -40 to +85&deg;C operational range
- - &plusmn;3% humidity accuracy tollerance
+ - &plusmn;3% humidity accuracy tolerance
  - &plusmn;1% humidity hysteresis
  - &plusmn;1 hPa pressure accuracy
  - &plusmn;2&deg;C temperature accuracy
