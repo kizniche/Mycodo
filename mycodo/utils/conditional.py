@@ -37,8 +37,6 @@ def check_conditionals(self, cond_id, control,
     """
     logger_cond = logging.getLogger("mycodo.utils.conditional_{id}".format(
         id=cond_id))
-    attachment_file = False
-    attachment_type = False
 
     cond = db_retrieve_table_daemon(
         Conditional, device_id=cond_id, entry='first')
@@ -145,15 +143,59 @@ def check_conditionals(self, cond_id, control,
     # If the code hasn't returned by now, the conditional has been triggered
     # and the actions for that conditional should be executed
     trigger_conditional_actions(self, message, cond_id, device_id, device_measurement, control,
-                                Camera, Conditional, PID, SMTP, last_measurement=last_measurement)
+                                Camera, Conditional, ConditionalActions, Input, Math, Output, PID, SMTP,
+                                last_measurement=last_measurement)
 
 
 def trigger_conditional_actions(self, message, cond_id, device_id, device_measurement, control,
-                                Camera, ConditionalActions, PID, SMTP, last_measurement=None):
+                                Camera, Conditional, ConditionalActions, Input, Math, Output, PID, SMTP,
+                                last_measurement=None):
+    """
+    If a Conditional has been triggered, this function will execute
+    the Conditional Actions
+
+    :param self: 
+    :param message:
+    :param cond_id:
+    :param device_id:
+    :param device_measurement:
+    :param control:
+    :param Camera:
+    :param Conditional:
+    :param ConditionalActions:
+    :param Input:
+    :param Math:
+    :param Output:
+    :param PID:
+    :param SMTP:
+    :param last_measurement:
+    :return:
+    """
+    logger_cond = logging.getLogger("mycodo.utils.conditional_actions_{id}".format(
+        id=cond_id))
 
     cond_actions = db_retrieve_table_daemon(ConditionalActions)
     cond_actions = cond_actions.filter(
         ConditionalActions.conditional_id == cond_id).all()
+
+    attachment_file = False
+    attachment_type = False
+    device = None
+
+    input_dev = db_retrieve_table_daemon(
+        Input, unique_id=device_id, entry='first')
+    if input_dev:
+        device = input_dev
+
+    math = db_retrieve_table_daemon(
+        Math, unique_id=device_id, entry='first')
+    if math:
+        device = math
+
+    pid = db_retrieve_table_daemon(
+        PID, unique_id=device_id, entry='first')
+    if pid:
+        device = pid
 
     for cond_action in cond_actions:
         message += " Conditional Action ({id}): {do_action}.".format(
@@ -185,7 +227,8 @@ def trigger_conditional_actions(self, message, cond_id, device_id, device_measur
             command_str = cond_action.do_action_string
             if last_measurement:
                 command_str = command_str.replace(
-                    "((measure_{var}))".format(var=device_measurement), str(last_measurement))
+                    "((measure_{var}))".format(
+                        var=device_measurement), str(last_measurement))
 
             # If measurement is from an Input, and the measurement is
             # linux_command or location, replace with that variable
@@ -196,9 +239,11 @@ def trigger_conditional_actions(self, message, cond_id, device_id, device_measur
                 command_str = command_str.replace(
                     "((measure_location))", str(input_dev.location))
 
-            # Replacement string is the conditional period
-            command_str = command_str.replace(
-                "((measure_period))", str(period))
+            # Replacement string is the device period
+            # Must be Input, Math, or PID
+            if device and device.period:
+                command_str = command_str.replace(
+                    "((measure_period))", str(device.period))
 
             message += " Execute '{com}' ".format(
                 com=command_str)

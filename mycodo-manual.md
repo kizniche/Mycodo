@@ -602,7 +602,7 @@ echo "TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm
 
 Variable | Description
 --------------------------- | -------------------------------------------
-((measure_location)) | The Input location (such as GPIO pin, I<sup>2</sup>C address, etc.)
+((measure_location)) | (Input only) the location (such as GPIO pin, I<sup>2</sup>C address, etc.)
 ((measure_period)) | The period (seconds) between measurements
 ((measure_linux_command)) | Input measurement: Linux Command return value
 ((measure_altitude)) | Input measurement: altitude
