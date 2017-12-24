@@ -94,7 +94,7 @@ def mycodo_service(mycodo):
         def exposed_controller_activate(cont_type, cont_id):
             """
             Activates a controller
-            This may be a Input, PID, Timer, or LCD controllar
+            This may be a Input, PID, Timer, or LCD controller
 
             """
             return mycodo.controller_activate(
@@ -104,7 +104,7 @@ def mycodo_service(mycodo):
         def exposed_controller_deactivate(cont_type, cont_id):
             """
             Deactivates a controller
-            This may be a Input, PID, Timer, or LCD controllar
+            This may be a Input, PID, Timer, or LCD controller
 
             """
             return mycodo.controller_deactivate(
@@ -177,12 +177,12 @@ def mycodo_service(mycodo):
             return mycodo.refresh_daemon_misc_settings()
 
         @staticmethod
-        def exposed_refresh_conditionals(cond_id):
+        def exposed_refresh_conditionals():
             """
             Instruct the input controller to refresh the settings of
             conditional statements
             """
-            return mycodo.refresh_conditionals(cond_id)
+            return mycodo.refresh_conditionals()
 
         @staticmethod
         def exposed_relay_state(relay_id):
@@ -640,7 +640,7 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def refresh_conditionals(self, cond_id):
+    def refresh_conditionals(self):
         try:
             return self.controller['Conditional'].setup_conditionals()
         except Exception as except_msg:

@@ -29,7 +29,7 @@
   <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2">
     {{form_conditional.if_sensor_direction.label(class_='control-label')}}
     <div>
-      <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_direction" name="if_sensor_direction" title="{{_('The conditional is true when the measured condition is greater than or less than the set value, or the measurement timestamp is greater than the value of seconds')}}">
+      <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_direction" name="if_sensor_direction" title="{{_('The conditional is triggered when the measured condition is greater than or less than the set value, or the measurement timestamp is greater than the value of seconds')}}">
         <option value="">{{_('Select One')}}</option>
         <option value="above"{% if each_cond.if_sensor_direction == 'above' %} selected{% endif %}>{{_('Greater Than')}}</option>
         <option value="below"{% if each_cond.if_sensor_direction == 'below' %} selected{% endif %}>{{_('Less Than')}}</option>

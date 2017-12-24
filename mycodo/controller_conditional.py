@@ -34,6 +34,7 @@ from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
+from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import SMTP
 from mycodo.mycodo_client import DaemonControl
@@ -51,22 +52,24 @@ class ConditionalController(threading.Thread):
 
         self.logger = logging.getLogger("mycodo.conditional")
 
-        try:
-            self.running = False
-            self.thread_startup_timer = timeit.default_timer()
-            self.thread_shutdown_timer = 0
-            self.pause_loop = False
-            self.verify_pause_loop = True
-            self.control = DaemonControl()
+        self.running = False
+        self.thread_startup_timer = timeit.default_timer()
+        self.thread_shutdown_timer = 0
+        self.pause_loop = False
+        self.verify_pause_loop = True
+        self.control = DaemonControl()
 
-            self.cond_is_activated = {}
-            self.cond_period = {}
-            self.cond_timer = {}
+        self.cond_is_activated = {}
+        self.cond_period = {}
+        self.cond_timer = {}
 
-            self.setup_conditionals()
-        except Exception as except_msg:
-            self.logger.exception("Init Error: {err}".format(
-                err=except_msg))
+        self.smtp_max_count = db_retrieve_table_daemon(
+            SMTP, entry='first').hourly_max
+        self.email_count = 0
+        self.allowed_to_send_notice = True
+        self.smtp_wait_timer = {}
+
+        self.setup_conditionals()
 
     def run(self):
         try:
@@ -93,7 +96,7 @@ class ConditionalController(threading.Thread):
                         check_conditionals(
                             self, each_cond_id, self.control,
                             Camera, Conditional, ConditionalActions,
-                            Input, Math, PID, SMTP)
+                            Input, Math, Output, PID, SMTP)
 
                 time.sleep(0.1)
 
@@ -124,6 +127,9 @@ class ConditionalController(threading.Thread):
             self.cond_is_activated[each_cond.id] = each_cond.is_activated
             self.cond_period[each_cond.id] = each_cond.if_sensor_period
             self.cond_timer[each_cond.id] = time.time() + self.cond_period[each_cond.id]
+            self.smtp_wait_timer[each_cond.id] = time.time() + 3600
+
+        self.logger.info("Conditional settings refreshed")
 
         self.pause_loop = False
         self.verify_pause_loop = False

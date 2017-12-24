@@ -879,13 +879,13 @@ def page_function():
         # Conditioal form actions
         elif form_conditional.deactivate_cond.data:
             utils_conditional.conditional_deactivate(
-                form_conditional)
+                form_conditional.conditional_id.data)
         elif form_conditional.activate_cond.data:
             utils_conditional.conditional_activate(
-                form_conditional)
+                form_conditional.conditional_id.data)
         elif form_conditional.delete_cond.data:
             utils_conditional.conditional_del(
-                form_conditional)
+                form_conditional.conditional_id.data)
         elif form_conditional.save_cond.data:
             utils_conditional.conditional_mod(
                 form_conditional)
@@ -898,7 +898,7 @@ def page_function():
                 form_conditional.conditional_id.data,
                 display_order_conditional, 'down')
 
-        # Conditioal Actions form actions
+        # Conditional Actions form actions
         elif form_conditional_actions.add_action.data:
             utils_conditional.conditional_action_add(
                 form_conditional_actions)

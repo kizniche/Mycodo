@@ -42,7 +42,7 @@
         {{form_conditional.save_cond(class_='form-control btn btn-default')}}
       </div>
       <div class="col-xs-6 col-sm-3 col-md-1">
-        {{form_conditional.delete_cond(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        {{form_conditional.delete_cond(class_='form-control btn btn-default', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
     </div>
 
@@ -67,15 +67,11 @@
 
       <div class="row small-gutters">
         <div class="col-sm-2 col-md-2">
-          <label class='control-label'>{{_('Action')}} [{{loop.index}}]</label>
-          <select class="form-control form-tooltip form-dropdown" id="do_action" name="do_action" data-placement="top" title="{{_('The action to perform when the conditional is True')}}">
-            {% for each_action, each_action_string in conditional_actions_list.items() %}
-              <option value="{{each_action}}"{% if each_cond_action.do_action == each_action %} selected{% endif %}>{{_(each_action_string)}}</option>
-            {% endfor %}
-          </select>
+          <label class='control-label' style="padding-top: 1em"></label>
+          <input class="form-control btn btn-default" disabled="" value="[{{loop.index}}] {{each_cond_action.do_action}}" type="text">
         </div>
 
-      {% if each_cond_action.do_action == 'relay' %}
+      {% if each_cond_action.do_action == 'output' %}
 
         <div class="col-sm-3 col-md-4">
           {{form_conditional_actions.do_relay_id.label(class_='control-label')}}
@@ -190,7 +186,7 @@
         </div>
         <div class="col-sm-2 col-md-1">
           <label class='control-label' style="padding-top: 1em"></label>
-          {{form_conditional_actions.delete_action(class_='form-control btn btn-default')}}
+          {{form_conditional_actions.delete_action(class_='form-control btn btn-default', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
         </div>
       </div>
 
@@ -201,9 +197,8 @@
       <form method="post" action="/function">
       {{form_conditional_actions.csrf_token}}
       {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.id)}}
-      <div class="row small-gutters" style="padding-bottom: 0.2em">
+      <div class="row small-gutters" style="padding: 0.2em 0 0.2em 0.1em">
         <div class="col-xs-6 col-sm-4 col-md-2">
-          <label class='control-label'>{{_('Action')}}</label>
           <select class="form-control form-tooltip form-dropdown" id="do_action" name="do_action" data-placement="top" title="{{_('The action to perform when the conditional is True')}}">
             {% for each_action, each_action_string in conditional_actions_list.items() %}
               <option value="{{each_action}}">{{_(each_action_string)}}</option>
@@ -211,7 +206,6 @@
           </select>
         </div>
         <div class="col-xs-4 col-sm-4 col-md-2">
-          <label class='control-label' style="padding-top: 1em"></label>
           {{form_conditional_actions.add_action(class_='form-control btn btn-default')}}
         </div>
       </div>

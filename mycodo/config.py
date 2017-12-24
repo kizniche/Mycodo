@@ -234,17 +234,18 @@ LIST_DEVICES_I2C = [
 ]
 
 # Conditional actions
+# TODO: Some have been disabled until they can be properly tested
 CONDITIONAL_ACTIONS = collections.OrderedDict([
-    ('relay', lazy_gettext('Output')),
+    ('output', lazy_gettext('Output')),
     ('command', lazy_gettext('Command')),
     ('activate_pid', lazy_gettext('Activate PID')),
     ('deactivate_pid', lazy_gettext('Deactivate PID')),
     ('email', lazy_gettext('Email')),
     ('flash_lcd', lazy_gettext('Flash LCD')),
     ('photo', lazy_gettext('Photo')),
-    ('photo_email', lazy_gettext('Email Photo')),
-    ('video', lazy_gettext('Video')),
-    ('video_email', lazy_gettext('Email Video'))
+    # ('photo_email', lazy_gettext('Email Photo')),
+    # ('video', lazy_gettext('Video')),
+    # ('video_email', lazy_gettext('Email Video'))
 ])
 
 # User Roles

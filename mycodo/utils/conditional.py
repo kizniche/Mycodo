@@ -15,7 +15,7 @@ logger = logging.getLogger("mycodo.utils.conditional")
 
 
 def check_conditionals(self, cond_id, control,
-                       Camera, Conditional, ConditionalActions, Input, Math, PID, SMTP):
+                       Camera, Conditional, ConditionalActions, Input, Math, Output, PID, SMTP):
     """
     Check if any input conditional statements are activated and
     execute their actions if the conditional is true.
@@ -30,6 +30,7 @@ def check_conditionals(self, cond_id, control,
     :param ConditionalActions:
     :param Input:
     :param Math:
+    :param Output:
     :param PID:
     :param SMTP:
     :return:
@@ -46,45 +47,64 @@ def check_conditionals(self, cond_id, control,
         name=cond.name,
         id=cond_id)
 
-    device_id = cond.measurement.split(',')[0]
-    measurement = cond.measurement.split(',')[0]
+    device_id = cond.if_sensor_measurement.split(',')[0]
+    device_measurement = cond.if_sensor_measurement.split(',')[1]
     direction = cond.if_sensor_direction
     setpoint = cond.if_sensor_setpoint
+    period = cond.if_sensor_period
+
+    device = None
 
     input_dev = db_retrieve_table_daemon(
-        Input, device_id=device_id, entry='first')
-    math = db_retrieve_table_daemon(
-        Math, device_id=device_id, entry='first')
-    pid = db_retrieve_table_daemon(
-        PID, device_id=device_id, entry='first')
+        Input, unique_id=device_id, entry='first')
+    if input_dev:
+        device = input_dev
 
-    if not input_dev and not math and not pid:
-        message += " Error: Controller not Input, Math, or PID"
+    math = db_retrieve_table_daemon(
+        Math, unique_id=device_id, entry='first')
+    if math:
+        device = math
+
+    output = db_retrieve_table_daemon(
+        Output, unique_id=device_id, entry='first')
+    if output:
+        device = output
+
+    pid = db_retrieve_table_daemon(
+        PID, unique_id=device_id, entry='first')
+    if pid:
+        device = pid
+
+    if not device:
+        message += " Error: Controller not Input, Math, Output, or PID"
         logger_cond.error(message)
         return
 
     last_measurement = None
 
-    if direction and device_id and measurement:
+    if direction and device_id and device_measurement:
+
+        # Check if there hasn't been a measurement in the last set number
+        # of seconds. If not, trigger conditional
         if direction == 'none_found':
             duration_seconds = setpoint
             last_measurement = get_last_measurement(
-                device_id, measurement, duration_seconds)
+                device_id, device_measurement, duration_seconds)
             if not last_measurement:
-                # Triggered
-                message += " {meas} measurement not found in the past" \
+                message += " {meas} measurement for device ID {id} not found in the past" \
                            " {value} seconds.".format(
-                            meas=measurement,
+                            meas=device_measurement,
+                            id=device_id,
                             value=duration_seconds)
             else:
-                # Not triggered
                 return
 
+        # Check if last measurement is greater or less than the set value
         else:
             last_measurement = get_last_measurement(
                 device_id,
                 measurement,
-                int(self.period * 1.5))
+                int(period * 1.5))
             if not last_measurement:
                 logger_cond.debug("Last measurement not found")
                 return
@@ -105,19 +125,31 @@ def check_conditionals(self, cond_id, control,
             else:
                 return  # Not triggered
 
+    # If the edge detection variable is set, calling this function will
+    # trigger an edge detection event. This will merely produce the correct
+    # message based on the edge detection settings.
     elif cond.if_sensor_edge_detected:
         if cond.if_sensor_edge_select == 'edge':
             message += " {edge} Edge Detected.".format(
                 edge=cond.if_sensor_edge_detected)
         elif cond.if_sensor_edge_select == 'state':
-            if (input_dev and
-                    input_dev.location and
-                    GPIO.input(int(input_dev.location)) == cond.if_sensor_gpio_state):
+            if (output and
+                    output.pin and
+                    GPIO.input(int(output.pin)) == cond.if_sensor_gpio_state):
                 message += " {state} GPIO State Detected.".format(
                     state=cond.if_sensor_gpio_state)
+        else:
+            # Not configured correctly or GPIO state not verified
+            return
 
     # If the code hasn't returned by now, the conditional has been triggered
-    # and the code below will be executed
+    # and the actions for that conditional should be executed
+    trigger_conditional_actions(self, message, cond_id, device_id, device_measurement, control,
+                                Camera, Conditional, PID, SMTP, last_measurement=last_measurement)
+
+
+def trigger_conditional_actions(self, message, cond_id, device_id, device_measurement, control,
+                                Camera, ConditionalActions, PID, SMTP, last_measurement=None):
 
     cond_actions = db_retrieve_table_daemon(ConditionalActions)
     cond_actions = cond_actions.filter(
@@ -128,7 +160,7 @@ def check_conditionals(self, cond_id, control,
             id=cond_action.id, do_action=cond_action.do_action)
 
         # Actuate output
-        if (cond_action.do_relay_id and
+        if (cond_action.do_action == 'output' and cond_action.do_relay_id and
                 cond_action.do_relay_state in ['on', 'off']):
             message += " Turn output {id} {state}".format(
                 id=cond_action.do_relay_id,
@@ -155,7 +187,7 @@ def check_conditionals(self, cond_id, control,
                 command_str = command_str.replace(
                     "(({var}))".format(var=measurement), str(last_measurement))
 
-            # If measurement is from an Input, and the measurment is
+            # If measurement is from an Input, and the measurement is
             # linux_command or location, replace with that variable
             if input_dev and measurement == input_dev.cmd_measurement:
                 command_str = command_str.replace(
@@ -166,7 +198,7 @@ def check_conditionals(self, cond_id, control,
 
             # Replacement string is the conditional period
             command_str = command_str.replace(
-                "((period))", str(cond.cond_period))
+                "((period))", str(period))
 
             message += " Execute '{com}' ".format(
                 com=command_str)
@@ -228,16 +260,16 @@ def check_conditionals(self, cond_id, control,
                                        'video_email']:
             if (self.email_count >= self.smtp_max_count and
                     time.time() < self.smtp_wait_timer[cond_id]):
-                allowed_to_send_notice = False
+                self.allowed_to_send_notice = False
             else:
                 if time.time() > self.smtp_wait_timer[cond_id]:
                     self.email_count = 0
                     self.smtp_wait_timer[cond_id] = time.time() + 3600
-                allowed_to_send_notice = True
+                self.allowed_to_send_notice = True
             self.email_count += 1
 
             # If the emails per hour limit has not been exceeded
-            if allowed_to_send_notice:
+            if self.allowed_to_send_notice:
                 message += " Notify {email}.".format(
                     email=cond_action.do_action_string)
                 # attachment_type != False indicates to

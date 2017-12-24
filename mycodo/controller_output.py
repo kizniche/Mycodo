@@ -540,7 +540,7 @@ class OutputController(threading.Thread):
                     id=each_cond_action.id,
                     name=each_conditional.name)
 
-                if each_cond_action.do_action == 'relay':
+                if each_cond_action.do_action == 'output':
                     if each_cond_action.do_relay_id not in self.output_name:
                         message += "Error: Invalid output ID {id}.".format(
                             id=each_cond_action.do_relay_id)

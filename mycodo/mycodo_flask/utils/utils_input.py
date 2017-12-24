@@ -381,13 +381,3 @@ def input_deactivate_associated_controllers(input_id):
             controller_activate_deactivate('deactivate',
                                            'PID',
                                            each_pid.id)
-
-
-def check_refresh_conditional(input_id, cond_mod):
-    sensor = (Input.query
-              .filter(Input.id == input_id)
-              .filter(Input.is_activated == True)
-              ).first()
-    if sensor:
-        control = DaemonControl()
-        control.refresh_input_conditionals(input_id, cond_mod)

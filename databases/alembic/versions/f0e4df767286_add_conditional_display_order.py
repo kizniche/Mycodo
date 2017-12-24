@@ -74,6 +74,14 @@ def upgrade():
         '''
     )
 
+    op.execute(
+        '''
+        UPDATE conditional_data
+        SET do_action='output'
+        WHERE do_action='relay'
+        '''
+    )
+
 
 def downgrade():
     with op.batch_alter_table("displayorder") as batch_op:
