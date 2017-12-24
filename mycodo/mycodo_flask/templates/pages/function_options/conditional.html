@@ -1,6 +1,3 @@
-<h4>{{_('Conditionals')}} <a href="/help#conditional-statements"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
-<p>{{_('Conditionals allow certain actions to be carried out when a certain set of conditions are met.')}} See the <a href="/help#conditional-statements">manual</a> for more information.</p>
-
 {%- if display_order_conditional -%}
 {%- for order in display_order_conditional -%}
   {%- for each_cond in conditional if each_cond.id == order  -%}

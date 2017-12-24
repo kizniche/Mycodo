@@ -1,6 +1,3 @@
-<h4>{{_('PID Controllers')}} <a href="/help#pids" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
-<p>{{_('PID controllers couple an input with a device connected to an output to regulate an environmental condition. For example, this could be a heater and a temperature sensor, allowing the regulation of temperature.')}}</p>
-
 {%- if display_order_pid -%}
 {%- for order in display_order_pid -%}
   {%- for each_pid in pid if each_pid.id == order -%}

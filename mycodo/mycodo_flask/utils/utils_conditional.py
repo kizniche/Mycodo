@@ -157,34 +157,34 @@ def conditional_action_mod(form):
         mod_action = ConditionalActions.query.filter(
             ConditionalActions.id == form.conditional_action_id.data).first()
 
-        if form.do_action.data == 'output':
+        if mod_action.do_action == 'output':
             mod_action.do_relay_id = form.do_relay_id.data
             mod_action.do_relay_state = form.do_relay_state.data
             mod_action.do_relay_duration = form.do_relay_duration.data
 
-        elif form.do_action.data in ['activate_pid',
-                                     'deactivate_pid']:
+        elif mod_action.do_action in ['activate_pid',
+                                      'deactivate_pid']:
             mod_action.do_pid_id = form.do_pid_id.data
 
-        elif form.do_action.data == 'email':
+        elif mod_action.do_action == 'email':
             mod_action.do_action_string = form.do_action_string.data
 
-        elif form.do_action.data in ['photo_email',
-                                     'video_email']:
+        elif mod_action.do_action in ['photo_email',
+                                      'video_email']:
             mod_action.do_action_string = form.do_action_string.data
             mod_action.do_camera_id = form.do_camera_id.data
 
-        elif form.do_action.data == 'flash_lcd':
+        elif mod_action.do_action == 'flash_lcd':
             mod_action.do_lcd_id = form.do_lcd_id.data
 
-        elif form.do_action.data == 'photo':
+        elif mod_action.do_action == 'photo':
             mod_action.do_camera_id = form.do_camera_id.data
 
-        elif form.do_action.data == 'video':
+        elif mod_action.do_action == 'video':
             mod_action.do_camera_id = form.do_camera_id.data
             mod_action.do_camera_duration = form.do_camera_duration.data
 
-        elif form.do_action.data == 'command':
+        elif mod_action.do_action == 'command':
             mod_action.do_action_string = form.do_action_string.data
 
         if not error:
@@ -261,12 +261,19 @@ def conditional_activate(cond_id):
     conditional_type = mod_cond.conditional_type
     mod_cond.is_activated = True
 
+    # Check for errors in the Conditional settings
     if conditional_type == 'conditional_edge':
         error = check_cond_edge(mod_cond, error)
     elif conditional_type == 'conditional_measurement':
         error = check_cond_measurements(mod_cond, error)
     elif conditional_type == 'conditional_output':
         error = check_cond_output(mod_cond, error)
+
+    # Check for errors in each Conditional Action
+    cond_actions = ConditionalActions.query.filter(
+        ConditionalActions.conditional_id == cond_id).all()
+    for each_action in cond_actions:
+        error = check_cond_actions(each_action, error)
 
     if not error:
         db.session.commit()
@@ -313,23 +320,29 @@ def check_refresh_conditional(cond_id):
 
 def check_form_actions(form, error):
     """Check if the Conditional Actions form inputs are valid"""
+    cond_action = ConditionalActions.query.filter(
+        ConditionalActions.id == form.conditional_action_id.data).first()
 
-    if form.do_action.data == 'output':
+    if cond_action.do_action == 'command':
+        if not form.do_action_string.data or form.do_action_string.data == '':
+            error.append("Command must be set")
+
+    elif cond_action.do_action == 'output':
         if not form.do_relay_id.data or form.do_relay_id.data == '':
             error.append("Output must be set")
         if not form.do_relay_state.data or form.do_relay_state.data == '':
             error.append("State must be set")
 
-    elif form.do_action.data in ['activate_pid',
-                                 'deactivate_pid']:
+    elif cond_action.do_action in ['activate_pid',
+                                   'deactivate_pid']:
         if not form.do_pid_id.data or form.do_pid_id.data == '':
             error.append("PID must be set")
 
-    elif form.do_action.data == 'email':
+    elif cond_action.do_action == 'email':
         if not form.do_action_string.data or form.do_action_string.data == '':
             error.append("Email must be set")
 
-    elif form.do_action.data in ['photo_email', 'video_email']:
+    elif cond_action.do_action in ['photo_email', 'video_email']:
         if not form.do_action_string.data or form.do_action_string.data == '':
             error.append("Email must be set")
         if not form.do_camera_id.data or form.do_camera_id.data == '':
@@ -340,20 +353,66 @@ def check_form_actions(form, error):
                          Camera.library != 'picamera')).count()):
             error.append('Only Pi Cameras can record video')
 
-    elif form.do_action.data == 'flash_lcd':
+    elif cond_action.do_action == 'flash_lcd':
         if not form.do_lcd_id.data:
             error.append("LCD must be set")
 
-    elif form.do_action.data == 'photo':
+    elif cond_action.do_action == 'photo':
         if not form.do_camera_id.data or form.do_camera_id.data == '':
             error.append("Camera must be set")
 
-    elif form.do_action.data == 'video':
+    elif cond_action.do_action == 'video':
         if not form.do_camera_id.data or form.do_camera_id.data == '':
             error.append("Camera must be set")
 
     return error
 
+
+def check_cond_actions(cond_action, error):
+    """Check if the Conditional Actions form inputs are valid"""
+    if cond_action.do_action == 'command':
+        if not cond_action.do_action_string or cond_action.do_action_string == '':
+            error.append("Command must be set")
+
+    elif cond_action.do_action == 'output':
+        if not cond_action.do_relay_id or cond_action.do_relay_id == '':
+            error.append("Output must be set")
+        if not cond_action.do_relay_state or cond_action.do_relay_state == '':
+            error.append("State must be set")
+
+    elif cond_action.do_action in ['activate_pid',
+                                 'deactivate_pid']:
+        if not cond_action.do_pid_id or cond_action.do_pid_id == '':
+            error.append("PID must be set")
+
+    elif cond_action.do_action == 'email':
+        if not cond_action.do_action_string or cond_action.do_action_string == '':
+            error.append("Email must be set")
+
+    elif cond_action.do_action in ['photo_email', 'video_email']:
+        if not cond_action.do_action_string or cond_action.do_action_string == '':
+            error.append("Email must be set")
+        if not cond_action.do_camera_id or cond_action.do_camera_id == '':
+            error.append("Camera must be set")
+        if (cond_action.do_action == 'video_email' and
+                Camera.query.filter(
+                    and_(Camera.id == cond_action.do_camera_id,
+                         Camera.library != 'picamera')).count()):
+            error.append('Only Pi Cameras can record video')
+
+    elif cond_action.do_action == 'flash_lcd':
+        if not cond_action.do_lcd_id:
+            error.append("LCD must be set")
+
+    elif cond_action.do_action == 'photo':
+        if not cond_action.do_camera_id or cond_action.do_camera_id == '':
+            error.append("Camera must be set")
+
+    elif cond_action.do_action == 'video':
+        if not cond_action.do_camera_id or cond_action.do_camera_id == '':
+            error.append("Camera must be set")
+
+    return error
 
 
 def check_form_edge(form, error):
@@ -363,19 +422,23 @@ def check_form_edge(form, error):
         error.append("If the {edge} radio button is selected,"
                      " {edge} must be set".format(
             edge=form.if_sensor_edge_detected.label.text))
+
     if (form.if_sensor_edge_select.data == 'state' and
             not form.if_sensor_gpio_state.data):
         error.append("If the {gpio} radio button is selected,"
                      " {gpio} must be set".format(
             gpio=form.if_sensor_gpio_state.label.text))
+
     if (form.if_sensor_edge_select.data == 'state' and
             form.if_sensor_period.data <= 0):
         error.append("If the {state} radio button is selected,"
                      " {per} must be greater than 1".format(
             state=form.if_sensor_gpio_state.label.text,
             per=form.if_sensor_period.label.text))
+
     if form.if_sensor_edge_select.data not in ['state', 'edge']:
         error.append("A radio button selection must be made")
+
     return error
 
 
@@ -385,14 +448,17 @@ def check_cond_edge(cond, error):
             not cond.if_sensor_edge_detected):
         error.append("If the Edge Detected radio button is selected,"
                      " Edge Detected must be set")
+
     if (cond.if_sensor_edge_select == 'state' and
             not cond.if_sensor_gpio_state):
         error.append("If the GPIO State radio button is selected,"
                      " a GPIO State must be set")
+
     if (cond.if_sensor_edge_select == 'state' and
             cond.if_sensor_period <= 0):
         error.append("If the GPIO State radio button is selected,"
                      " Period must be greater than 1")
+
     if cond.if_sensor_edge_select not in ['state', 'edge']:
         error.append("A radio button selection must be made")
 
@@ -404,9 +470,11 @@ def check_form_measurements(form, error):
     if not form.if_sensor_measurement.data:
         error.append("{meas} must be set".format(
             meas=form.if_sensor_measurement.label.text))
+
     if not form.if_sensor_direction.data:
         error.append("{dir} must be set".format(
             dir=form.if_sensor_direction.label.text))
+
     return error
 
 
@@ -415,9 +483,11 @@ def check_cond_measurements(cond, error):
     if not cond.if_sensor_measurement:
         error.append("Measurement must be set".format(
             meas=cond.if_sensor_measurement))
+
     if not cond.if_sensor_direction:
         error.append("State must be set".format(
             dir=cond.if_sensor_direction))
+
     return error
 
 
@@ -426,9 +496,11 @@ def check_form_output(form, error):
     if not form.if_relay_id.data:
         error.append("{id} must be set".format(
             id=form.if_relay_id.label.text))
+
     if not form.if_relay_state.data:
         error.append("{id} must be set".format(
             id=form.if_relay_state.label.text))
+
     return error
 
 
@@ -436,6 +508,8 @@ def check_cond_output(cond, error):
     """Checks if the saved variables have any errors"""
     if not cond.if_relay_id:
         error.append("An Output must be set")
+
     if not cond.if_relay_state:
         error.append("A State must be set")
+
     return error

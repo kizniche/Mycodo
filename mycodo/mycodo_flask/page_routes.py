@@ -876,7 +876,7 @@ def page_function():
             utils_pid.pid_manipulate(
                 form_mod_pid_base.pid_id.data, 'Resume')
 
-        # Conditioal form actions
+        # Conditional form actions
         elif form_conditional.deactivate_cond.data:
             utils_conditional.conditional_deactivate(
                 form_conditional.conditional_id.data)

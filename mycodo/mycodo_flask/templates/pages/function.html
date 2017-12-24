@@ -24,9 +24,9 @@
       <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
         <select class="form-control" id="func_type" name="func_type">
           <option value="pid">PID Controller</option>
-          <option value="conditional_measurement">Measurement Conditional</option>
-          <option value="conditional_output">Output Conditional</option>
-          <option value="conditional_edge">Edge Conditional</option>
+          <option value="conditional_measurement">Conditional: Measurement</option>
+          <option value="conditional_output">Conditional: Output</option>
+          <option value="conditional_edge">Conditional: Edge</option>
         </select>
       </div>
       <div class="col-xs-5 col-sm-3 col-lg-2 no-gutters">
@@ -38,10 +38,14 @@
     <div style="clear: both; padding: 1em 0;"></div>
 
   {% if pid %}
+    <h4>{{_('PID Controllers')}} <a href="/help#pids" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <p>{{_('PID controllers couple an input with a device connected to an output to regulate an environmental condition. For example, this could be a heater and a temperature sensor, allowing the regulation of temperature.')}}</p>
     {% include 'pages/function_options/pid.html' %}
   {% endif %}
 
   {% if conditional %}
+    <h4>{{_('Conditional')}} <a href="/help#conditional-statements"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <p>{{_('Conditionals allow certain actions to be carried out when a certain set of conditions are met.')}} See the <a href="/help#conditional-statements">manual</a> for more information.</p>
     {% include 'pages/function_options/conditional.html' %}
   {% endif %}
 

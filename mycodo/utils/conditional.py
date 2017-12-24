@@ -155,21 +155,21 @@ def trigger_conditional_actions(self, message, cond_id, device_id, device_measur
     the Conditional Actions
 
     :param self: 
-    :param message:
-    :param cond_id:
-    :param device_id:
-    :param device_measurement:
-    :param control:
-    :param Camera:
-    :param Conditional:
-    :param ConditionalActions:
-    :param Input:
-    :param Math:
-    :param Output:
-    :param PID:
-    :param SMTP:
-    :param last_measurement:
-    :return:
+    :param message: 
+    :param cond_id: 
+    :param device_id: 
+    :param device_measurement: 
+    :param control: 
+    :param Camera: 
+    :param Conditional: 
+    :param ConditionalActions: 
+    :param Input: 
+    :param Math: 
+    :param Output: 
+    :param PID: 
+    :param SMTP: 
+    :param last_measurement: 
+    :return: 
     """
     logger_cond = logging.getLogger("mycodo.utils.conditional_actions_{id}".format(
         id=cond_id))
