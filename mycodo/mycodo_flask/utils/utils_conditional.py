@@ -169,7 +169,8 @@ def conditional_action_mod(form):
         elif form.do_action.data == 'email':
             mod_action.do_action_string = form.do_action_string.data
 
-        elif form.do_action.data in ['photo_email', 'video_email']:
+        elif form.do_action.data in ['photo_email',
+                                     'video_email']:
             mod_action.do_action_string = form.do_action_string.data
             mod_action.do_camera_id = form.do_camera_id.data
 

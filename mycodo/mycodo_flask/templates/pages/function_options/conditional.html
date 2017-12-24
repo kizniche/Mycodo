@@ -190,6 +190,12 @@
         </div>
       </div>
 
+      {% if each_cond_action.do_action == 'command' %}
+        <div class="col-xs-12">
+          See <a href="/help#conditional-statement-variables">Conditional Statement Variables</a> for a list of replaceable variables able to be used in commands.
+        </div>
+      {% endif %}
+
       </form>
 
       {% endfor %}

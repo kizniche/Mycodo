@@ -103,7 +103,7 @@ def check_conditionals(self, cond_id, control,
         else:
             last_measurement = get_last_measurement(
                 device_id,
-                measurement,
+                device_measurement,
                 int(period * 1.5))
             if not last_measurement:
                 logger_cond.debug("Last measurement not found")
@@ -114,7 +114,7 @@ def check_conditionals(self, cond_id, control,
                    last_measurement < setpoint)):
 
                 message += " {meas}: {value} ".format(
-                    meas=measurement,
+                    meas=device_measurement,
                     value=last_measurement)
                 if direction == 'above':
                     message += "(>"
@@ -185,20 +185,20 @@ def trigger_conditional_actions(self, message, cond_id, device_id, device_measur
             command_str = cond_action.do_action_string
             if last_measurement:
                 command_str = command_str.replace(
-                    "(({var}))".format(var=measurement), str(last_measurement))
+                    "((measure_{var}))".format(var=device_measurement), str(last_measurement))
 
             # If measurement is from an Input, and the measurement is
             # linux_command or location, replace with that variable
-            if input_dev and measurement == input_dev.cmd_measurement:
+            if input_dev and device_measurement == input_dev.cmd_measurement:
                 command_str = command_str.replace(
-                    "((linux_command))", str(input_dev.location))
+                    "((measure_linux_command))", str(input_dev.location))
             if input_dev:
                 command_str = command_str.replace(
-                    "((location))", str(input_dev.location))
+                    "((measure_location))", str(input_dev.location))
 
             # Replacement string is the conditional period
             command_str = command_str.replace(
-                "((period))", str(period))
+                "((measure_period))", str(period))
 
             message += " Execute '{com}' ".format(
                 com=command_str)
