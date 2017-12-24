@@ -337,15 +337,15 @@
             </div>
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
-              {% if each_pid.raise_relay_id in output_type and
-                    output_type[each_pid.raise_relay_id] == 'pwm' -%}
-                {{_('Duty Cycle')}} (%)
-              {% else -%}
-                {{_('On Duration (sec.)')}}
-              {% endif %}
-            <div>
-              {{_('Min')}}: {{each_pid.raise_min_duration}}, {{_('Max')}}: {{each_pid.raise_max_duration}}
-             </div>
+            {% if each_pid.raise_relay_id in output_type and
+                  output_type[each_pid.raise_relay_id] == 'pwm' -%}
+              {{_('Duty Cycle')}} (%)
+            {% else -%}
+              {{_('On Duration (sec.)')}}
+            {% endif %}
+          <div>
+            {{_('Min')}}: {{each_pid.raise_min_duration}}, {{_('Max')}}: {{each_pid.raise_max_duration}}
+           </div>
           </div>
           {% if each_pid.raise_relay_id in output_type and
                 output_type[each_pid.raise_relay_id] != 'pwm' -%}

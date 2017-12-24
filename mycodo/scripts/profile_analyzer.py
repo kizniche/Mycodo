@@ -9,13 +9,16 @@
 # and uncomment the following line in create_app():
 # app = setup_profiler(app)
 #
+# Stop nginx (we need the flask app to use port 443)
+# sudo service nginx stop
+#
 # Start the flask app in debug mode with the command:
-# sudo python ./Mycodo/mycodo/start_flask_ui.py -d
+# sudo ~/Mycodo/env/bin/python ~/Mycodo/mycodo/start_flask_ui.py -d
 #
 # Navigate to a few pages, then stop the flask app (ctrl+c)
 #
 # Use the log file created from flask with this program:
-# ./Mycodo/mycodo/scripts/profile_analyzer -f ./Mycodo/profile-2017-02-27_18:15:26/profile.log
+# ~/Mycodo/env/bin/python ~/Mycodo/mycodo/scripts/profile_analyzer.py -f ~/Mycodo/profile-2017-02-27_18:15:26/profile.log
 #
 # Use the -n flag to show full request names instead shortened versions
 #
@@ -56,9 +59,10 @@ def analyze(args):
     for page, times in parsed_data.items():
         avg = None
         median = None
-        if len(times) == 2:
-            avg = times[1]
-        elif len(times) > 2:
+        if len(times) == 1:
+            avg = times[0]
+            median = times[0]
+        elif len(times) > 1:
             # remove first time (first load is slow and throws off calculations)
             times_except_first = times[1:]
             # average
@@ -84,7 +88,10 @@ def analyze(args):
     logger.info("")
     logger.info("Analyzed Profile Data (times in seconds). avg and median exclude the 1st time.")
     logger.info("")
-    logger.info("Request                   Quantity      1st      avg   median")
+    if args.full_name:
+        logger.info("Request                                                               Quantity      1st      avg   median")
+    else:
+        logger.info("Request                            Quantity      1st      avg   median")
 
     for each_line in analyzed_data:
         str_avg = ''
@@ -96,11 +103,11 @@ def analyze(args):
 
         if args.full_name:
             logger.info("{pg}".format(pg=each_line[0]))
-            logger.info("{pg:26} {nr:7} {fms:8.3f} {av:8} {med:8}".format(
-                pg='', nr=each_line[1], fms= each_line[2], av=str_avg, med=str_median))
+            logger.info("{pg:70} {nr:7} {fms:8.3f} {av:8} {med:8}".format(
+                pg='', nr=each_line[1], fms=each_line[2], av=str_avg, med=str_median))
         else:
-            logger.info("{pg:26} {nr:7} {fms:8.3f} {av:8} {med:8}".format(
-                pg=each_line[0][:26], nr=each_line[1], fms= each_line[2], av=str_avg, med=str_median))
+            logger.info("{pg:35} {nr:7} {fms:8.3f} {av:8} {med:8}".format(
+                pg=each_line[0][:35], nr=each_line[1], fms= each_line[2], av=str_avg, med=str_median))
 
 
 def extant_file(x):

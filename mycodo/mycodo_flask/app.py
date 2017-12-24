@@ -109,12 +109,16 @@ def register_extensions(app):
     with app.app_context():
         db.create_all()
         populate_db()
+
+        # This is disabled because there's a bug that messes up user databases
+        # The upgrade script will execute alembic to upgrade the database
         # alembic_upgrade_db()
 
+        # This is disabled to allow nginx+gunicorn to work properly forcing SSL
         # Check user option to force all web connections to use SSL
-        # This is currently disabled to allow nginx+gunicorn to work properly forcing SSL
         # misc = Misc.query.first()
         # if misc and misc.force_https:
+        #     SSLify(app)
         SSLify(app)
 
 
