@@ -347,7 +347,7 @@
 <ul>
 <li><a href="#data">Data</a></li>
 <li><a href="#output">Output</a></li>
-<li><a href="#functions">Functions</a></li>
+<li><a href="#function">Function</a></li>
 <li><a href="#timers">Timers</a></li>
 <li><a href="#lcds">LCDs</a></li>
 </ul>
@@ -379,7 +379,7 @@
 <li><a href="#export-import">Export-Import</a></li>
 <li><a href="#camera">Camera</a></li>
 <li><a href="#output-usage">Output Usage</a></li>
-<li><a href="#sbackup-restore">Backup-Restore</a></li>
+<li><a href="#backup-restore">Backup-Restore</a></li>
 <li><a href="#system-information">System Information</a></li>
 </ul>
 <p><a href="#troubleshooting">Troubleshooting</a></p>
@@ -453,13 +453,13 @@
 <p>Mycodo is a system for acquiring and using sensor measurements in a feedback loop that controls a diverse set of outputs. This is commonly used for automated regulation of environmental conditions, such as temperature, humidity, CO2 concentration, and many more. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.</p>
 <p>The system coordinates a diverse set of responses to sensor measurements, including actions such as relay switching, regulation by <a href="https://en.wikipedia.org/wiki/PID_controller">PID control</a>, email notifications, camera captures, and more. Mycodo has been used for cultivating gourmet mushrooms, cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs and young animals, aging cheeses, fermenting foods, maintaining aquatic systems, and more.</p>
 <h1 id="brief-overview">Brief Overview</h1>
-<p>There are a number of different uses for Mycodo, from simple storing of sensor measurements, to regulating the environmental conditions of a physical space, to capturing motion-activated or timelapse photography. There are several componenets of the system that may be configured.</p>
+<p>There are a number of different uses for Mycodo, from simple storing of sensor measurements, to regulating the environmental conditions of a physical space, to capturing motion-activated or timelapse photography. There are several components of the system that may be configured.</p>
 <h2 id="inputmath-controllers">Input/Math Controllers</h2>
 <p>Input/Math controllers acquire measurements and store them in a <a href="https://en.wikipedia.org/wiki/Time_series_database">time series database</a>. Measurements taken by an Input Controller typically come from sensors, but Input Controllers may also be configured to use the return value of a linux command, making integrating new input systems very easy.</p>
 <h2 id="output-controllers">Output Controllers</h2>
-<p>Output Controllers produce changes to the general input/output (GPIO) pins of the Raspberry Pi or may be configured to execute linux commands in order to allow an unlimited number of extra potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulatated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off.</p>
+<p>Output Controllers produce changes to the general input/output (GPIO) pins of the Raspberry Pi or may be configured to execute linux commands in order to allow an unlimited number of extra potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off.</p>
 <h2 id="pid-controllers">PID Controllers</h2>
-<p>When Inputs and Outputs are combined, PID Controllers may be used to create a fedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermenttion or curing, and cooking food (<a href="https://en.wikipedia.org/wiki/Sous-vide">sous-vide</a>), to name a few.</p>
+<p>When Inputs and Outputs are combined, PID Controllers may be used to create a feedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermentation or curing, and cooking food (<a href="https://en.wikipedia.org/wiki/Sous-vide">sous-vide</a>), to name a few.</p>
 <h2 id="timer-controllers">Timer Controllers</h2>
 <p>Timers can be set to trigger events based on specific dates and times or according to durations of time. Timers are fairly basic, but can be configured in very complex ways. Don’t underestimate a good timer.</p>
 <h2 id="lcd-controllers">LCD Controllers</h2>
@@ -485,7 +485,7 @@
 <p>The second way to add an input is to create a script that obtains and returns a numerical value when executed in the linux system of the Raspberry Pi. This script may be configured to be executed by a “Linux Command” Input type. This will periodically execute the command and store the returned value to the database for use with the rest of the Mycodo system.</p>
 <hr />
 <p><em>Can I variably control the speed of motors or other devices with the PWM output signal from the PID?</em></p>
-<p>Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, an <a href="#schematics-for-ac-modulation">AC modulation ciruit</a>, <a href="#schematics-for-dc-fan-control">DC modulation circuit</a>, or something else.</p>
+<p>Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, an <a href="#schematics-for-ac-modulation">AC modulation circuit</a>, <a href="#schematics-for-dc-fan-control">DC modulation circuit</a>, or something else.</p>
 <hr />
 <p><em>What should I do if I have an issue?</em></p>
 <p>First, read the manual to make sure you understand how the system works and you’re using the system properly. ALso check out the <a href="https://github.com/kizniche/Mycodo/wiki">Wiki</a>. You may even want to look through recent <a href="https://github.com/kizniche/Mycodo/issues">Issues</a>. If you haven’t resolved your issue by this point, make a <a href="https://github.com/kizniche/Mycodo/issues/new">New Issue</a> describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid diagnostics.</p>
@@ -498,7 +498,7 @@
 <h2 id="data">Data</h2>
 <p>Data includes controllers that produce and store data in the measurement database. Input controllers generally acquire measurements from sensors, but they may also come from executed commands. Math controllers, on the other hand, perform math on already-stored values to create new values that are stored.</p>
 <h3 id="input">Input</h3>
-<p>Inputs (such as sensors or analog signals) measure environmental and other characteristic conditions, which will be stored in an influxdb round-robin database. This database will provide recent measurements for <a href="#graphs">Graphs</a>, <a href="#lcds">LCDs</a>, <a href="#pids">PID Controllers</a>, <a href="#conditional-statements">Conditional Statements</a>, and other parts of Mycodo to operate from.</p>
+<p>Inputs (such as sensors or analog signals) measure environmental and other characteristic conditions, which will be stored in an influxdb round-robin database. This database will provide recent measurements for <a href="#graphs">Graphs</a>, <a href="#lcds">LCDs</a>, <a href="#pid-controllers">PID Controllers</a>, <a href="#conditional-statements">Conditional Statements</a>, and other parts of Mycodo to operate from.</p>
 <p>Among the sensors is ‘Linux Command’. This is a way to use a custom script to return a value to be used within Mycodo, without having to edit the Mycodo code. Merely create your script and use this sensor to have the return value of the script be stored in the Mycodo database for use with PIDs and other parts of Mycodo that uses sensor measurements.</p>
 <table style="width:94%;">
 <colgroup>
@@ -696,7 +696,7 @@
 </tr>
 <tr class="even">
 <td style="text-align: left;">Measurement</td>
-<td style="text-align: left;">This is the condition being measured. If all of the selected inputs are Temperature, this should also be temperature. Keep in mind that if you use the pre-defined measurements, it will add these to the current y-axis on a Graph. For instance, if you select two Temeprature measurements, make sure you set Measurement to ‘temperature’ (lowercase ‘t’) in order to make it use the same y-axis as the other temperatures. A list of the pre-defined measurements that may be used is below.</td>
+<td style="text-align: left;">This is the condition being measured. For instance, if all of the selected measurements are temperature, this should also be temperature. A list of the pre-defined measurements that may be used is below.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Units</td>
@@ -721,6 +721,7 @@
 </tbody>
 </table>
 <h4 id="pre-defined-measurements">Pre-defined Measurements</h4>
+<p>If a pre-defined measurement is used, the newly-generated value will use that default y-axes on a Graph. For instance, if two temperature measurements are selected for averaging, and Measurement is set to ‘temperature’ (lowercase ‘t’), the new average value will use the same y-axis as the other temperatures.</p>
 <table>
 <thead>
 <tr class="header">
@@ -738,20 +739,20 @@
 <td style="text-align: left;">ppmv</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">dewpoint</td>
-<td style="text-align: left;">°C</td>
-</tr>
-<tr class="even">
 <td style="text-align: left;">cpu_load_1m</td>
 <td style="text-align: left;">1 min</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">cpu_load_5m</td>
 <td style="text-align: left;">5 min</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">cpu_load_15m</td>
 <td style="text-align: left;">15 min</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">dewpoint</td>
+<td style="text-align: left;">°C</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">disk_space</td>
@@ -778,43 +779,51 @@
 <td style="text-align: left;">%</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">humidity_ratio</td>
+<td style="text-align: left;">kg/kg</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">lux</td>
 <td style="text-align: left;">lx</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">moisture</td>
 <td style="text-align: left;">moisture</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">ph</td>
 <td style="text-align: left;">pH</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">pid_output</td>
 <td style="text-align: left;">sec</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">pressure</td>
 <td style="text-align: left;">Pa</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">pulse_width</td>
 <td style="text-align: left;">µs</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">rpm</td>
 <td style="text-align: left;">rpm</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">setpoint</td>
 <td style="text-align: left;">None</td>
 </tr>
+<tr class="even">
+<td style="text-align: left;">specific_enthalpy</td>
+<td style="text-align: left;">kJ/kg</td>
+</tr>
 <tr class="odd">
-<td style="text-align: left;">temperature</td>
-<td style="text-align: left;">°C</td>
+<td style="text-align: left;">specific_volume</td>
+<td style="text-align: left;">m<sup>3</sup>/kg</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">temperature_object</td>
+<td style="text-align: left;">temperature</td>
 <td style="text-align: left;">°C</td>
 </tr>
 <tr class="odd">
@@ -822,6 +831,10 @@
 <td style="text-align: left;">°C</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">temperature_object</td>
+<td style="text-align: left;">°C</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">voltage</td>
 <td style="text-align: left;">volts</td>
 </tr>
@@ -977,7 +990,7 @@
 </tr>
 <tr class="odd">
 <td style="text-align: left;">WiringPi Pin</td>
-<td style="text-align: left;">This is the GPIO that will be the signal to the output, using WireingPi numbering.</td>
+<td style="text-align: left;">This is the GPIO that will be the signal to the output, using WiringPi numbering.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Protocol</td>
@@ -1013,7 +1026,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="functions">Functions</h2>
+<h2 id="function">Function</h2>
 <p>Functions couple Inputs with Outputs to perform specific tasks. For example, this could be regulation of temperature with a temperature sensor and heater with a PID Controller.</p>
 <h3 id="pid-controller">PID Controller</h3>
 <p>A <a href="https://en.wikipedia.org/wiki/PID_controller">proportional-derivative-integral (PID) controller</a> is a control loop feedback mechanism used throughout industry for controlling systems. It efficiently brings a measurable condition, such as the temperature, to a desired state and maintains it there with little overshoot and oscillation. A well-tuned PID controller will raise to the setpoint quickly, have minimal overshoot, and maintain the setpoint with little oscillation.</p>
@@ -1179,11 +1192,11 @@
 <li>If Output #4 turns ON for 21 seconds, turn Output #5 ON for 50 seconds</li>
 <li>If Output #4 turns ON for 20 seconds, turn Output #1 OFF</li>
 <li>If Humidity is Greater Than 80%, turn Output #4 ON for 40 seconds</li>
-<li>If Humidity if Less Than 50%, turn Output #1 ON for 21 seconds, execute ‘/usr/local/bin/myscript.sh’, and notify email@domain.com</li>
+<li>If Humidity if Less Than 50%, turn Output #1 ON for 21 seconds, execute ‘/usr/local/bin/script.sh’, and notify email@domain.com</li>
 <li>If Temperature if Greater Than 35 C, deactivate PID #1</li>
 </ul>
 <p>Before activating any conditional statements or PID controllers, it’s advised to thoroughly explore all possible scenarios and plan a configuration that eliminates conflicts. Then, trial run your configuration before connecting devices to the outputs. Some devices or outputs may respond atypically or fail when switched on and off in rapid succession. Therefore, avoid creating an <a href="https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops">infinite loop</a> with conditional statements.</p>
-<h3 id="input-conditional-statement-if-options">Input Conditional Statement If Options</h3>
+<h3 id="measurement-conditional-statement-if-options">Measurement Conditional Statement If Options</h3>
 <table style="width:94%;">
 <colgroup>
 <col style="width: 29%"></col>
@@ -1197,24 +1210,24 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Measurement</td>
-<td style="text-align: left;">The measurement that will be checked every Period.</td>
+<td style="text-align: left;">If Measurement</td>
+<td style="text-align: left;">The measurement that will be checked every Period. By default, a measurement will only be checked for in the past 120 seconds, unless “None Found Last x seconds” in which case the Value will determine the measurement age. The takeaway from this is if a measurement is more than 120 seconds</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Greater Than</td>
-<td style="text-align: left;">If the measurement is greater than the set Value.</td>
+<td style="text-align: left;">State</td>
+<td style="text-align: left;">The conditional will trigger if the measurement Greater Than or Less Than the set Value, or if “No Measurement” is set and the measurement age is greater than Max Age.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Less Than</td>
-<td style="text-align: left;">If the measurement is less than the set Value.</td>
-</tr>
-<tr class="even">
 <td style="text-align: left;">Value</td>
 <td style="text-align: left;">The value that the measurement will be checked against (greater or less than).</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left;">Period</td>
+<tr class="even">
+<td style="text-align: left;">Period (seconds)</td>
 <td style="text-align: left;">The period (seconds) between conditional checks.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Max Age (seconds)</td>
+<td style="text-align: left;">The maximum age the measurement can be. If a measurement isn’t available within this time frame, the conditional will not trigger. The only exception is if State is set to “No Measurement”, which will cause the conditional to trigger when there is no measurement available.</td>
 </tr>
 </tbody>
 </table>
@@ -1236,20 +1249,39 @@
 <td style="text-align: left;">The Output to monitor for a change of state.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">On</td>
-<td style="text-align: left;">If the Output turns On (with or without a duration), the conditional will trigger.</td>
+<td style="text-align: left;">State</td>
+<td style="text-align: left;">If the state of the output changes to On or Off the conditional will trigger. If “On (any duration) is selected, th trigger will occur no matter how long the output turns on for, whereas if only”On&quot; is selected, the conditional will trigger only when the output turns on for a duration of time equal to the set “Duration (seconds)”.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">On (any duration)</td>
-<td style="text-align: left;">If the Output turns On (for any duration), the conditional will trigger.</td>
+<td style="text-align: left;">Duration (seconds)</td>
+<td style="text-align: left;">If “On” is selected, a optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="edge-conditional-statement-if-options">Edge Conditional Statement If Options</h3>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Edge Detected</td>
+<td style="text-align: left;">The conditional will be triggered if a change in state is detected, either Rising when the state changes from LOW (0 volts) to HIGH (3.5 volts) or Falling when the state changes from HIGH (3.3 volts) to LOW (0 volts), or Both (Rising and Falling).</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Off</td>
-<td style="text-align: left;">If the Output turns off, the conditional will trigger.</td>
+<td style="text-align: left;">GPIO State</td>
+<td style="text-align: left;">The conditional will trigger if the GPIO state of HIGH (3.3 volts) or LOW (0 volts) is detected every Period.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Seconds</td>
-<td style="text-align: left;">If “On” is selected, a optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.</td>
+<td style="text-align: left;">Period (seconds)</td>
+<td style="text-align: left;">If GPIO State is selected, how often to check the state of the GPIO.</td>
 </tr>
 </tbody>
 </table>
@@ -1310,7 +1342,11 @@
 </table>
 <h3 id="conditional-statement-variables">Conditional Statement variables</h3>
 <p>Commands that are executed by conditional statements can now include variables. To use, just place the variable name, including “((” and “))” in your command, and it will be replaced with the variable’s value before execution. See the tables below for the currently-supported variables.</p>
-<h5 id="input-conditional-command-variables">Input Conditional command variables</h5>
+<p>It is recommended to output a test string to a text file to verify the output is as expected, with a command such as the following (for a Conditional using the Raspberry Pi CPU temperature Input as the measurement):</p>
+<pre><code>echo &quot;TEST: ((measure_temperature)), ((measure_location)), ((measure_period))&quot; &gt; /home/mycodo/test_measure.txt</code></pre>
+<p>Or for an Output Conditional:</p>
+<pre><code>echo &quot;TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm))&quot; &gt; /home/mycodo/test_output.txt</code></pre>
+<h5 id="measurement-conditional-command-variables">Measurement Conditional command variables</h5>
 <table>
 <colgroup>
 <col style="width: 38%"></col>
@@ -1324,99 +1360,99 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">((input_location))</td>
-<td style="text-align: left;">The Input location (such as GPIO pin, I<sup>2</sup>C address, etc.)</td>
+<td style="text-align: left;">((measure_location))</td>
+<td style="text-align: left;">(Input only) the location (such as GPIO pin, I<sup>2</sup>C address, etc.)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((input_period))</td>
+<td style="text-align: left;">((measure_period))</td>
 <td style="text-align: left;">The period (seconds) between measurements</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((input_linux_command))</td>
+<td style="text-align: left;">((measure_linux_command))</td>
 <td style="text-align: left;">Input measurement: Linux Command return value</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((input_altitude))</td>
+<td style="text-align: left;">((measure_altitude))</td>
 <td style="text-align: left;">Input measurement: altitude</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((input_co2))</td>
+<td style="text-align: left;">((measure_co2))</td>
 <td style="text-align: left;">Input measurement: CO2</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((input_cpu_load_1m))</td>
+<td style="text-align: left;">((measure_cpu_load_1m))</td>
 <td style="text-align: left;">Input measurement: CPU load (1 min)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((input_cpu_load_5m))</td>
+<td style="text-align: left;">((measure_cpu_load_5m))</td>
 <td style="text-align: left;">Input measurement: CPU load (5 min)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((input_cpu_load_15m))</td>
+<td style="text-align: left;">((measure_cpu_load_15m))</td>
 <td style="text-align: left;">Input measurement: CPU load (15 min)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((input_dewpoint))</td>
+<td style="text-align: left;">((measure_dewpoint))</td>
 <td style="text-align: left;">Input measurement: dew point</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((input_disk_space))</td>
+<td style="text-align: left;">((measure_disk_space))</td>
 <td style="text-align: left;">Input measurement: disk space</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((input_duty_cycle))</td>
+<td style="text-align: left;">((measure_duty_cycle))</td>
 <td style="text-align: left;">Input measurement: duty cycle</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((input_edge))</td>
+<td style="text-align: left;">((measure_edge))</td>
 <td style="text-align: left;">Input measurement: edge detected (1 or -1)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((input_frequency))</td>
+<td style="text-align: left;">((measure_frequency))</td>
 <td style="text-align: left;">Input measurement: frequency</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((input_humidity))</td>
+<td style="text-align: left;">((measure_humidity))</td>
 <td style="text-align: left;">Input measurement: humidity</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((input_lux))</td>
+<td style="text-align: left;">((measure_lux))</td>
 <td style="text-align: left;">Input measurement: lux</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((input_moisture))</td>
+<td style="text-align: left;">((measure_moisture))</td>
 <td style="text-align: left;">Input measurement: moisture</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((input_ph))</td>
+<td style="text-align: left;">((measure_ph))</td>
 <td style="text-align: left;">Input measurement: ph</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((input_pressure))</td>
+<td style="text-align: left;">((measure_pressure))</td>
 <td style="text-align: left;">Input measurement: pressure</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((input_pulse_width))</td>
+<td style="text-align: left;">((measure_pulse_width))</td>
 <td style="text-align: left;">Input measurement: pulse width</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((input_rpm))</td>
+<td style="text-align: left;">((measure_rpm))</td>
 <td style="text-align: left;">Input measurement: RPM</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((input_temperature))</td>
+<td style="text-align: left;">((measure_temperature))</td>
 <td style="text-align: left;">Input measurement: temperature</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((input_temperature_die))</td>
+<td style="text-align: left;">((measure_temperature_die))</td>
 <td style="text-align: left;">Input measurement: temperature (die)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((input_temperature_object))</td>
+<td style="text-align: left;">((measure_temperature_object))</td>
 <td style="text-align: left;">Input measurement: temperature (object)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((input_voltage))</td>
+<td style="text-align: left;">((measure_voltage))</td>
 <td style="text-align: left;">Input measurement: voltage</td>
 </tr>
 </tbody>
@@ -1452,10 +1488,6 @@
 </tr>
 </tbody>
 </table>
-<p>It is recommended to output a test string to a text file to verify the output is as expected, with a command such as the following (for a Raspberry Pi CPU temperature Input Conditional):</p>
-<pre><code>echo &quot;TEST: ((input_temperature)), ((input_location)), ((input_period))&quot; &gt; /home/mycodo/test_input.txt</code></pre>
-<p>Or for an Output Conditional:</p>
-<pre><code>echo &quot;TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm))&quot; &gt; /home/mycodo/test_output.txt</code></pre>
 <h2 id="methods">Methods</h2>
 <p>Methods enable Setpoint Tracking in PIDs and time-based duty cycle changes in timers. Normally, a PID controller will regulate an environmental condition to a specific setpoint. If you would like the setpoint to change over time, this is called setpoint tracking. Setpoint Tracking is useful for applications such as reflow ovens, thermal cyclers (DNA replication), mimicking natural daily cycles, and more. Methods may also be used to change a duty cycle over time when used with a Timer.</p>
 <h3 id="universal-options">Universal Options</h3>
@@ -1570,7 +1602,7 @@
 </tbody>
 </table>
 <h2 id="output-usage-settings">Output Usage Settings</h2>
-<p>In order to calculate accurate output usage statistics, a few characteristics of your electrical system needs to be know. These variables should describe the characteristics of the electrical system being used by the relays to operate electrical devices. Note: Proper output usage calculations also rely on the correct current draw to be set for each output (see <a href="#outputs">Output Settings</a>).</p>
+<p>In order to calculate accurate output usage statistics, a few characteristics of your electrical system needs to be know. These variables should describe the characteristics of the electrical system being used by the relays to operate electrical devices. Note: Proper output usage calculations also rely on the correct current draw to be set for each output (see <a href="#output">Output Settings</a>).</p>
 <table style="width:94%;">
 <colgroup>
 <col style="width: 29%"></col>
@@ -1727,7 +1759,7 @@
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Enable SSL</td>
-<td style="text-align: left;">Check to emable SSL, uncheck to enable TSL.</td>
+<td style="text-align: left;">Check to enable SSL, uncheck to enable TSL.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">SMTP User</td>
@@ -1828,7 +1860,7 @@
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">Width</td>
-<td style="text-align: left;">The width of the graph on the page, in 1/12th increments. Mulstiple graphs can share the sme row if their combined fraction doesn’t exceed 12/12.</td>
+<td style="text-align: left;">The width of the graph on the page, in 1/12th increments. Multiple graphs can share the sme row if their combined fraction doesn’t exceed 12/12.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Height (pixels)</td>
@@ -1836,7 +1868,7 @@
 </tr>
 <tr class="odd">
 <td style="text-align: left;">x-Axis (minutes)</td>
-<td style="text-align: left;">The duration to diaply on the x-axis of the graph.</td>
+<td style="text-align: left;">The duration to display on the x-axis of the graph.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Enable Auto Refresh</td>
@@ -1885,7 +1917,7 @@
 <p>Note: Live Graphs require measurements to be acquired, therefore at least one sensor needs to be added and activated in order to display live data.</p>
 <h2 id="export-import">Export-Import</h2>
 <p>Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.</p>
-<p>Additionally, the entire measurement database (influxdb) may be exported as a ZIP file backup. This ZIP may be imported back in any Mycodo system to restore these measurements. Note that an import will override the corrent data (i.e. destroying it).</p>
+<p>Additionally, the entire measurement database (influxdb) may be exported as a ZIP file backup. This ZIP may be imported back in any Mycodo system to restore these measurements. Note that an import will override the current data (i.e. destroying it).</p>
 <p>Mycodo settings may be exported as a ZIP file containing the Mycodo settings database (sqlite). This ZIP file may be used to restore the settings database to another Mycodo install, as long as the Mycodo version and database versions are the same. Future support for installing older (or newer) databases and performing an automatic upgrade/downgrade is in the works.</p>
 <h2 id="camera">Camera</h2>
 <p>Once a cameras has been set up (in the <a href="#camera-settings">Camera Settings</a>), it may be used to capture still images, create time-lapses, and stream video. Cameras may also be used by <a href="#conditional-statements">Conditional Statements</a> to trigger a camera image or video capture (as well as the ability to email the image/video with a notification).</p>
@@ -1893,7 +1925,7 @@
 <p>Output usage statistics are calculated for each output, based on how long the output has been powered, the current draw of the device connected to the output, and other <a href="#output-usage-settings">Relay Usage Settings</a>.</p>
 <h2 id="backup-restore">Backup-Restore</h2>
 <p>A backup is made to /var/Mycodo-backups when the system is upgraded or through the web interface on the Config -&gt; Backup / Restore page.</p>
-<p>If you need to restore a backup, this can be done on the Config -&gt; Backup / Restore page. Find the backup you would like restored and press the Restore button beside it. A restore can also be initialized through the command line. Use the foloowing commands to initialize a restore, changing the appropriate directory names, ‘user’ to your user name, and TIME and COMMIT to the appropriate text found as the directory names in /var/Mycodo-backups/</p>
+<p>If you need to restore a backup, this can be done on the Config -&gt; Backup / Restore page. Find the backup you would like restored and press the Restore button beside it. A restore can also be initialized through the command line. Use the following commands to initialize a restore, changing the appropriate directory names, ‘user’ to your user name, and TIME and COMMIT to the appropriate text found as the directory names in /var/Mycodo-backups/</p>
 <pre><code>sudo mv /home/user/Mycodo /home/user/Mycodo_old
 sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
 sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
@@ -2090,7 +2122,7 @@ sudo service mycodoflask restart</code></pre>
 <li>Usable temperature range: -40°C to 125°C</li>
 <li>Optimal operating voltage of 3.3V to 5V (tolerant up to 7V max)</li>
 </ul>
-<h2 id="temperature-humidity-sensors">Temperature, Humidity Sensors</h2>
+<h2 id="temperature-humidity-sensors">Temperature Humidity Sensors</h2>
 <h3 id="am2315">AM2315</h3>
 <h4 id="specifications-3">Specifications</h4>
 <ul>
@@ -2202,7 +2234,7 @@ sudo service mycodoflask restart</code></pre>
 <ul>
 <li>300-1100 hPa (9000m to -500m above sea level)</li>
 <li>-40 to +85°C operational range</li>
-<li>±3% humidity accuracy tollerance</li>
+<li>±3% humidity accuracy tolerance</li>
 <li>±1% humidity hysteresis</li>
 <li>±1 hPa pressure accuracy</li>
 <li>±2°C temperature accuracy</li>

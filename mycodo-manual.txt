@@ -19,7 +19,7 @@ Controllers
 
 -   Data
 -   Output
--   Functions
+-   Function
 -   Timers
 -   LCDs
 
@@ -152,7 +152,7 @@ BRIEF OVERVIEW
 There are a number of different uses for Mycodo, from simple storing of
 sensor measurements, to regulating the environmental conditions of a
 physical space, to capturing motion-activated or timelapse photography.
-There are several componenets of the system that may be configured.
+There are several components of the system that may be configured.
 
 
 Input/Math Controllers
@@ -170,7 +170,7 @@ Output Controllers produce changes to the general input/output (GPIO)
 pins of the Raspberry Pi or may be configured to execute linux commands
 in order to allow an unlimited number of extra potential uses. There are
 a few different types of outputs: simple switching of pins (HIGH/LOW),
-generating pulse-width modulatated (PWM) signals, switching 433 MHz
+generating pulse-width modulated (PWM) signals, switching 433 MHz
 wireless relays, and linux command execution. The most common setup is
 using a relay to switch electrical devices on and off.
 
@@ -178,13 +178,13 @@ using a relay to switch electrical devices on and off.
 PID Controllers
 
 When Inputs and Outputs are combined, PID Controllers may be used to
-create a fedback loop that uses the Output device to modulate an
+create a feedback loop that uses the Output device to modulate an
 environmental condition the Input detects. Certain Inputs may be coupled
 with certain Outputs to create a variety of different control and
 regulation applications. Beyond simple regulation, Methods may be used
 to create changing setpoints over time, enabling such things as thermal
 cyclers, reflow ovens, environmental simulation for terrariums, food and
-beverage fermenttion or curing, and cooking food (sous-vide), to name a
+beverage fermentation or curing, and cooking food (sous-vide), to name a
 few.
 
 
@@ -273,8 +273,8 @@ PWM output signal from the PID?_
 
 Yes, as long as you have the proper hardware to do that. The PWM signal
 being produced by the PID should be handled appropriately, whether by a
-fast-switching solid state relay, an AC modulation ciruit, DC modulation
-circuit, or something else.
+fast-switching solid state relay, an AC modulation circuit, DC
+modulation circuit, or something else.
 
 ------------------------------------------------------------------------
 
@@ -537,16 +537,10 @@ produce a new value that may be used within Mycodo.
                         preventing the PID controller from continuing
                         to run when it should not.
 
-  Measurement           This is the condition being measured. If all of
-                        the selected inputs are Temperature, this
-                        should also be temperature. Keep in mind that
-                        if you use the pre-defined measurements, it
-                        will add these to the current y-axis on a
-                        Graph. For instance, if you select two
-                        Temeprature measurements, make sure you set
-                        Measurement to ‘temperature’ (lowercase ‘t’) in
-                        order to make it use the same y-axis as the
-                        other temperatures. A list of the pre-defined
+  Measurement           This is the condition being measured. For
+                        instance, if all of the selected measurements
+                        are temperature, this should also be
+                        temperature. A list of the pre-defined
                         measurements that may be used is below.
 
   Units                 This is the units to display along with the
@@ -574,20 +568,27 @@ produce a new value that may be used within Mycodo.
 
 Pre-defined Measurements
 
+If a pre-defined measurement is used, the newly-generated value will use
+that default y-axes on a Graph. For instance, if two temperature
+measurements are selected for averaging, and Measurement is set to
+‘temperature’ (lowercase ‘t’), the new average value will use the same
+y-axis as the other temperatures.
+
   Measurement          Units
   -------------------- ----------
   altitude             m
   co2                  ppmv
-  dewpoint             °C
   cpu_load_1m          1 min
   cpu_load_5m          5 min
   cpu_load_15m         15 min
+  dewpoint             °C
   disk_space           MB
   duration_sec         sec
   duty_cycle           %
   edge                 edge
   frequency            Hz
   humidity             %
+  humidity_ratio       kg/kg
   lux                  lx
   moisture             moisture
   ph                   pH
@@ -596,9 +597,11 @@ Pre-defined Measurements
   pulse_width          µs
   rpm                  rpm
   setpoint             None
+  specific_enthalpy    kJ/kg
+  specific_volume      m3/kg
   temperature          °C
-  temperature_object   °C
   temperature_die      °C
+  temperature_object   °C
   voltage              volts
 
 
@@ -790,7 +793,7 @@ is on.
                         this to LOW.
 
   WiringPi Pin          This is the GPIO that will be the signal to the
-                        output, using WireingPi numbering.
+                        output, using WiringPi numbering.
 
   Protocol              This is the protocol to use to transmit via
                         433MHz. Default is 1, but if this doesn’t work,
@@ -831,7 +834,7 @@ is on.
   ---------------------------------------------------------------------
 
 
-Functions
+Function
 
 Functions couple Inputs with Outputs to perform specific tasks. For
 example, this could be regulation of temperature with a temperature
@@ -1045,7 +1048,7 @@ both inputs and outputs. Possible conditional statements include:
 -   If Output #4 turns ON for 20 seconds, turn Output #1 OFF
 -   If Humidity is Greater Than 80%, turn Output #4 ON for 40 seconds
 -   If Humidity if Less Than 50%, turn Output #1 ON for 21 seconds,
-    execute ‘/usr/local/bin/myscript.sh’, and notify email@domain.com
+    execute ‘/usr/local/bin/script.sh’, and notify email@domain.com
 -   If Temperature if Greater Than 35 C, deactivate PID #1
 
 Before activating any conditional statements or PID controllers, it’s
@@ -1056,24 +1059,37 @@ outputs may respond atypically or fail when switched on and off in rapid
 succession. Therefore, avoid creating an infinite loop with conditional
 statements.
 
-Input Conditional Statement If Options
+Measurement Conditional Statement If Options
 
   ---------------------------------------------------------------------
   Setting               Description
   --------------------- -----------------------------------------------
-  Measurement           The measurement that will be checked every
-                        Period.
+  If Measurement        The measurement that will be checked every
+                        Period. By default, a measurement will only be
+                        checked for in the past 120 seconds, unless
+                        “None Found Last x seconds” in which case the
+                        Value will determine the measurement age. The
+                        takeaway from this is if a measurement is more
+                        than 120 seconds
 
-  Greater Than          If the measurement is greater than the set
-                        Value.
-
-  Less Than             If the measurement is less than the set Value.
+  State                 The conditional will trigger if the measurement
+                        Greater Than or Less Than the set Value, or if
+                        “No Measurement” is set and the measurement age
+                        is greater than Max Age.
 
   Value                 The value that the measurement will be checked
                         against (greater or less than).
 
-  Period                The period (seconds) between conditional
+  Period (seconds)      The period (seconds) between conditional
                         checks.
+
+  Max Age (seconds)     The maximum age the measurement can be. If a
+                        measurement isn’t available within this time
+                        frame, the conditional will not trigger. The
+                        only exception is if State is set to “No
+                        Measurement”, which will cause the conditional
+                        to trigger when there is no measurement
+                        available.
   ---------------------------------------------------------------------
 
 Output Conditional Statement If Options
@@ -1083,19 +1099,39 @@ Output Conditional Statement If Options
   --------------------- -----------------------------------------------
   Output                The Output to monitor for a change of state.
 
-  On                    If the Output turns On (with or without a
-                        duration), the conditional will trigger.
+  State                 If the state of the output changes to On or Off
+                        the conditional will trigger. If “On (any
+                        duration) is selected, th trigger will occur no
+                        matter how long the output turns on for,
+                        whereas if only”On" is selected, the
+                        conditional will trigger only when the output
+                        turns on for a duration of time equal to the
+                        set “Duration (seconds)”.
 
-  On (any duration)     If the Output turns On (for any duration), the
-                        conditional will trigger.
-
-  Off                   If the Output turns off, the conditional will
-                        trigger.
-
-  Seconds               If “On” is selected, a optional duration
+  Duration (seconds)    If “On” is selected, a optional duration
                         (seconds) may be set that will trigger the
                         conditional only if the Output is turned on for
                         this specific duration.
+  ---------------------------------------------------------------------
+
+Edge Conditional Statement If Options
+
+  ---------------------------------------------------------------------
+  Setting               Description
+  --------------------- -----------------------------------------------
+  Edge Detected         The conditional will be triggered if a change
+                        in state is detected, either Rising when the
+                        state changes from LOW (0 volts) to HIGH (3.5
+                        volts) or Falling when the state changes from
+                        HIGH (3.3 volts) to LOW (0 volts), or Both
+                        (Rising and Falling).
+
+  GPIO State            The conditional will trigger if the GPIO state
+                        of HIGH (3.3 volts) or LOW (0 volts) is
+                        detected every Period.
+
+  Period (seconds)      If GPIO State is selected, how often to check
+                        the state of the GPIO.
   ---------------------------------------------------------------------
 
 Conditional Statement Actions
@@ -1140,60 +1176,72 @@ in your command, and it will be replaced with the variable’s value
 before execution. See the tables below for the currently-supported
 variables.
 
-Input Conditional command variables
+It is recommended to output a test string to a text file to verify the
+output is as expected, with a command such as the following (for a
+Conditional using the Raspberry Pi CPU temperature Input as the
+measurement):
+
+    echo "TEST: ((measure_temperature)), ((measure_location)), ((measure_period))" > /home/mycodo/test_measure.txt
+
+Or for an Output Conditional:
+
+    echo "TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm))" > /home/mycodo/test_output.txt
+
+Measurement Conditional command variables
 
   -------------------------------------------------------------------------
   Variable                     Description
   ---------------------------- --------------------------------------------
-  ((input_location))           The Input location (such as GPIO pin, I2C
-                               address, etc.)
+  ((measure_location))         (Input only) the location (such as GPIO pin,
+                               I2C address, etc.)
 
-  ((input_period))             The period (seconds) between measurements
+  ((measure_period))           The period (seconds) between measurements
 
-  ((input_linux_command))      Input measurement: Linux Command return
+  ((measure_linux_command))    Input measurement: Linux Command return
                                value
 
-  ((input_altitude))           Input measurement: altitude
+  ((measure_altitude))         Input measurement: altitude
 
-  ((input_co2))                Input measurement: CO2
+  ((measure_co2))              Input measurement: CO2
 
-  ((input_cpu_load_1m))        Input measurement: CPU load (1 min)
+  ((measure_cpu_load_1m))      Input measurement: CPU load (1 min)
 
-  ((input_cpu_load_5m))        Input measurement: CPU load (5 min)
+  ((measure_cpu_load_5m))      Input measurement: CPU load (5 min)
 
-  ((input_cpu_load_15m))       Input measurement: CPU load (15 min)
+  ((measure_cpu_load_15m))     Input measurement: CPU load (15 min)
 
-  ((input_dewpoint))           Input measurement: dew point
+  ((measure_dewpoint))         Input measurement: dew point
 
-  ((input_disk_space))         Input measurement: disk space
+  ((measure_disk_space))       Input measurement: disk space
 
-  ((input_duty_cycle))         Input measurement: duty cycle
+  ((measure_duty_cycle))       Input measurement: duty cycle
 
-  ((input_edge))               Input measurement: edge detected (1 or -1)
+  ((measure_edge))             Input measurement: edge detected (1 or -1)
 
-  ((input_frequency))          Input measurement: frequency
+  ((measure_frequency))        Input measurement: frequency
 
-  ((input_humidity))           Input measurement: humidity
+  ((measure_humidity))         Input measurement: humidity
 
-  ((input_lux))                Input measurement: lux
+  ((measure_lux))              Input measurement: lux
 
-  ((input_moisture))           Input measurement: moisture
+  ((measure_moisture))         Input measurement: moisture
 
-  ((input_ph))                 Input measurement: ph
+  ((measure_ph))               Input measurement: ph
 
-  ((input_pressure))           Input measurement: pressure
+  ((measure_pressure))         Input measurement: pressure
 
-  ((input_pulse_width))        Input measurement: pulse width
+  ((measure_pulse_width))      Input measurement: pulse width
 
-  ((input_rpm))                Input measurement: RPM
+  ((measure_rpm))              Input measurement: RPM
 
-  ((input_temperature))        Input measurement: temperature
+  ((measure_temperature))      Input measurement: temperature
 
-  ((input_temperature_die))    Input measurement: temperature (die)
+  ((measure_temperature_die))  Input measurement: temperature (die)
 
-  ((input_temperature_object)) Input measurement: temperature (object)
+  ((measure_temperature_object Input measurement: temperature (object)
+  ))                           
 
-  ((input_voltage))            Input measurement: voltage
+  ((measure_voltage))          Input measurement: voltage
   -------------------------------------------------------------------------
 
 Output Conditional command variables
@@ -1212,16 +1260,6 @@ Output Conditional command variables
   ((output_pwm))               The PWM duty cycle the output turned on for
                                (will return 0 if not applicable)
   -------------------------------------------------------------------------
-
-It is recommended to output a test string to a text file to verify the
-output is as expected, with a command such as the following (for a
-Raspberry Pi CPU temperature Input Conditional):
-
-    echo "TEST: ((input_temperature)), ((input_location)), ((input_period))" > /home/mycodo/test_input.txt
-
-Or for an Output Conditional:
-
-    echo "TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm))" > /home/mycodo/test_output.txt
 
 
 Methods
@@ -1587,7 +1625,7 @@ Alert settings set up the credentials for sending email notifications.
   SMTP Port             Port to communicate with the SMTP server (465
                         for SSL, 587 for TSL).
 
-  Enable SSL            Check to emable SSL, uncheck to enable TSL.
+  Enable SSL            Check to enable SSL, uncheck to enable TSL.
 
   SMTP User             The user name to send the email from. This can
                         be just a name or the entire email address.
@@ -1687,13 +1725,13 @@ select the plus sign on the top-right of a graph.
   Setting               Description
   --------------------- -----------------------------------------------
   Width                 The width of the graph on the page, in 1/12th
-                        increments. Mulstiple graphs can share the sme
+                        increments. Multiple graphs can share the sme
                         row if their combined fraction doesn’t exceed
                         12/12.
 
   Height (pixels)       The height of the graph.
 
-  x-Axis (minutes)      The duration to diaply on the x-axis of the
+  x-Axis (minutes)      The duration to display on the x-axis of the
                         graph.
 
   Enable Auto Refresh   Automatically refresh the data on the graph
@@ -1761,7 +1799,7 @@ exported as CSV with their corresponding timestamps.
 Additionally, the entire measurement database (influxdb) may be exported
 as a ZIP file backup. This ZIP may be imported back in any Mycodo system
 to restore these measurements. Note that an import will override the
-corrent data (i.e. destroying it).
+current data (i.e. destroying it).
 
 Mycodo settings may be exported as a ZIP file containing the Mycodo
 settings database (sqlite). This ZIP file may be used to restore the
@@ -1795,7 +1833,7 @@ through the web interface on the Config -> Backup / Restore page.
 If you need to restore a backup, this can be done on the Config ->
 Backup / Restore page. Find the backup you would like restored and press
 the Restore button beside it. A restore can also be initialized through
-the command line. Use the foloowing commands to initialize a restore,
+the command line. Use the following commands to initialize a restore,
 changing the appropriate directory names, ‘user’ to your user name, and
 TIME and COMMIT to the appropriate text found as the directory names in
 /var/Mycodo-backups/
@@ -2124,7 +2162,7 @@ Specifications
 -   Optimal operating voltage of 3.3V to 5V (tolerant up to 7V max)
 
 
-Temperature, Humidity Sensors
+Temperature Humidity Sensors
 
 AM2315
 
@@ -2297,7 +2335,7 @@ Specifications
 
 -   300-1100 hPa (9000m to -500m above sea level)
 -   -40 to +85°C operational range
--   ±3% humidity accuracy tollerance
+-   ±3% humidity accuracy tolerance
 -   ±1% humidity hysteresis
 -   ±1 hPa pressure accuracy
 -   ±2°C temperature accuracy

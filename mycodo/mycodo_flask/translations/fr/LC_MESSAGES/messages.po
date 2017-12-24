@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-12-23 16:51-0500\n"
+"POT-Creation-Date: 2017-12-24 15:21-0500\n"
 "PO-Revision-Date: 2017-01-05 00:55-0500\n"
 "Last-Translator: \n"
 "Language: fr\n"
@@ -38,8 +38,8 @@ msgstr ""
 msgid "Disk"
 msgstr ""
 
-#: config.py:88 mycodo_flask/forms/forms_conditional.py:60
-#: mycodo_flask/forms/forms_conditional.py:62
+#: config.py:88 mycodo_flask/forms/forms_conditional.py:61
+#: mycodo_flask/forms/forms_conditional.py:63
 #: mycodo_flask/forms/forms_timer.py:26
 #: mycodo_flask/templates/pages/graph_options/display_graph.html:850
 #: mycodo_flask/templates/pages/method-list.html:40
@@ -142,7 +142,7 @@ msgstr ""
 msgid "Voltage"
 msgstr ""
 
-#: config.py:238 mycodo_flask/forms/forms_conditional.py:58
+#: config.py:239 mycodo_flask/forms/forms_conditional.py:59
 #: mycodo_flask/forms/forms_method.py:69
 #: mycodo_flask/forms/forms_settings.py:42 mycodo_flask/forms/forms_timer.py:35
 #: mycodo_flask/templates/layout.html:150
@@ -161,21 +161,21 @@ msgstr ""
 msgid "Output"
 msgstr ""
 
-#: config.py:239 mycodo_flask/calibration_routes.py:222
+#: config.py:240 mycodo_flask/calibration_routes.py:222
 #: mycodo_flask/forms/forms_input.py:46
-#: mycodo_flask/templates/pages/function_options/conditional.html:181
+#: mycodo_flask/templates/pages/function_options/conditional.html:174
 msgid "Command"
 msgstr ""
 
-#: config.py:240
+#: config.py:241
 msgid "Activate PID"
 msgstr ""
 
-#: config.py:241
+#: config.py:242
 msgid "Deactivate PID"
 msgstr ""
 
-#: config.py:242 mycodo_flask/forms/forms_authentication.py:28
+#: config.py:243 mycodo_flask/forms/forms_authentication.py:28
 #: mycodo_flask/forms/forms_authentication.py:29
 #: mycodo_flask/forms/forms_settings.py:81
 #: mycodo_flask/forms/forms_settings.py:167
@@ -184,24 +184,12 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: config.py:243
+#: config.py:244
 msgid "Flash LCD"
 msgstr ""
 
-#: config.py:244
-msgid "Photo"
-msgstr ""
-
 #: config.py:245
-msgid "Email Photo"
-msgstr ""
-
-#: config.py:246
-msgid "Video"
-msgstr ""
-
-#: config.py:247
-msgid "Email Video"
+msgid "Photo"
 msgstr ""
 
 #: mycodo_flask/admin_routes.py:88
@@ -326,8 +314,8 @@ msgstr ""
 msgid "Command to restart the daemon sent"
 msgstr ""
 
-#: mycodo_flask/forms/forms_conditional.py:44
-#: mycodo_flask/forms/forms_conditional.py:67
+#: mycodo_flask/forms/forms_conditional.py:45
+#: mycodo_flask/forms/forms_conditional.py:68
 #: mycodo_flask/forms/forms_graph.py:117 mycodo_flask/forms/forms_graph.py:169
 #: mycodo_flask/forms/forms_input.py:94 mycodo_flask/forms/forms_lcd.py:77
 #: mycodo_flask/forms/forms_lcd.py:125 mycodo_flask/forms/forms_math.py:39
@@ -529,24 +517,32 @@ msgstr ""
 msgid "Period (seconds)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_conditional.py:38
-msgid "Edge or State"
+#: mycodo_flask/forms/forms_conditional.py:36
+#: mycodo_flask/forms/forms_graph.py:145 mycodo_flask/forms/forms_graph.py:166
+#: mycodo_flask/forms/forms_lcd.py:90 mycodo_flask/forms/forms_lcd.py:99
+#: mycodo_flask/forms/forms_lcd.py:108 mycodo_flask/forms/forms_lcd.py:117
+#: mycodo_flask/forms/forms_math.py:36 mycodo_flask/forms/forms_pid.py:45
+msgid "Max Age (seconds)"
 msgstr ""
 
 #: mycodo_flask/forms/forms_conditional.py:39
-msgid "Edge Detected"
+msgid "Edge or State"
 msgstr ""
 
 #: mycodo_flask/forms/forms_conditional.py:40
+msgid "Edge Detected"
+msgstr ""
+
+#: mycodo_flask/forms/forms_conditional.py:41
 msgid "GPIO State"
 msgstr ""
 
-#: mycodo_flask/forms/forms_conditional.py:42
+#: mycodo_flask/forms/forms_conditional.py:43
 msgid "Add Conditional"
 msgstr ""
 
-#: mycodo_flask/forms/forms_conditional.py:43
-#: mycodo_flask/forms/forms_conditional.py:66
+#: mycodo_flask/forms/forms_conditional.py:44
+#: mycodo_flask/forms/forms_conditional.py:67
 #: mycodo_flask/forms/forms_graph.py:116 mycodo_flask/forms/forms_graph.py:168
 #: mycodo_flask/forms/forms_input.py:93 mycodo_flask/forms/forms_lcd.py:76
 #: mycodo_flask/forms/forms_lcd.py:124 mycodo_flask/forms/forms_math.py:38
@@ -561,21 +557,24 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: mycodo_flask/forms/forms_conditional.py:45
+#: mycodo_flask/forms/forms_conditional.py:46
 #: mycodo_flask/forms/forms_input.py:95 mycodo_flask/forms/forms_lcd.py:78
 #: mycodo_flask/forms/forms_math.py:40 mycodo_flask/forms/forms_pid.py:87
-#: mycodo_flask/forms/forms_timer.py:39 mycodo_flask/utils/utils_lcd.py:145
+#: mycodo_flask/forms/forms_timer.py:39
+#: mycodo_flask/utils/utils_conditional.py:257
+#: mycodo_flask/utils/utils_lcd.py:145
 msgid "Activate"
 msgstr ""
 
-#: mycodo_flask/forms/forms_conditional.py:46
+#: mycodo_flask/forms/forms_conditional.py:47
 #: mycodo_flask/forms/forms_input.py:96 mycodo_flask/forms/forms_lcd.py:79
 #: mycodo_flask/forms/forms_math.py:41 mycodo_flask/forms/forms_pid.py:88
 #: mycodo_flask/forms/forms_timer.py:40
+#: mycodo_flask/utils/utils_conditional.py:290
 msgid "Deactivate"
 msgstr ""
 
-#: mycodo_flask/forms/forms_conditional.py:47
+#: mycodo_flask/forms/forms_conditional.py:48
 #: mycodo_flask/forms/forms_graph.py:118 mycodo_flask/forms/forms_graph.py:170
 #: mycodo_flask/forms/forms_input.py:97 mycodo_flask/forms/forms_lcd.py:80
 #: mycodo_flask/forms/forms_math.py:42 mycodo_flask/forms/forms_output.py:79
@@ -583,7 +582,7 @@ msgstr ""
 msgid "Up"
 msgstr ""
 
-#: mycodo_flask/forms/forms_conditional.py:48
+#: mycodo_flask/forms/forms_conditional.py:49
 #: mycodo_flask/forms/forms_graph.py:119 mycodo_flask/forms/forms_graph.py:171
 #: mycodo_flask/forms/forms_input.py:98 mycodo_flask/forms/forms_lcd.py:81
 #: mycodo_flask/forms/forms_math.py:43 mycodo_flask/forms/forms_output.py:80
@@ -591,30 +590,30 @@ msgstr ""
 msgid "Down"
 msgstr ""
 
-#: mycodo_flask/forms/forms_conditional.py:56
+#: mycodo_flask/forms/forms_conditional.py:57
 msgid "Action to Perform"
 msgstr ""
 
-#: mycodo_flask/forms/forms_conditional.py:57
+#: mycodo_flask/forms/forms_conditional.py:58
 msgid "Action String"
 msgstr ""
 
-#: mycodo_flask/forms/forms_conditional.py:59
+#: mycodo_flask/forms/forms_conditional.py:60
 msgid "Output State"
 msgstr ""
 
-#: mycodo_flask/forms/forms_conditional.py:61
+#: mycodo_flask/forms/forms_conditional.py:62
 #: mycodo_flask/templates/pages/camera.html:5
-#: mycodo_flask/templates/pages/function_options/conditional.html:129
-#: mycodo_flask/templates/pages/function_options/conditional.html:153
+#: mycodo_flask/templates/pages/function_options/conditional.html:122
+#: mycodo_flask/templates/pages/function_options/conditional.html:146
 #: mycodo_flask/utils/utils_settings.py:307
 #: mycodo_flask/utils/utils_settings.py:341
 #: mycodo_flask/utils/utils_settings.py:399
 msgid "Camera"
 msgstr "Caméra"
 
-#: mycodo_flask/forms/forms_conditional.py:63
-#: mycodo_flask/templates/pages/function_options/conditional.html:117
+#: mycodo_flask/forms/forms_conditional.py:64
+#: mycodo_flask/templates/pages/function_options/conditional.html:110
 #: mycodo_flask/templates/pages/lcd.html:5
 #: mycodo_flask/utils/utils_general.py:54 mycodo_flask/utils/utils_lcd.py:35
 #: mycodo_flask/utils/utils_lcd.py:62 mycodo_flask/utils/utils_lcd.py:95
@@ -622,14 +621,14 @@ msgstr "Caméra"
 msgid "LCD"
 msgstr ""
 
-#: mycodo_flask/forms/forms_conditional.py:64
+#: mycodo_flask/forms/forms_conditional.py:65
 #: mycodo_flask/utils/utils_general.py:56 mycodo_flask/utils/utils_pid.py:39
 #: mycodo_flask/utils/utils_pid.py:156 mycodo_flask/utils/utils_pid.py:180
 #: mycodo_flask/utils/utils_pid.py:223
 msgid "PID"
 msgstr ""
 
-#: mycodo_flask/forms/forms_conditional.py:65
+#: mycodo_flask/forms/forms_conditional.py:66
 msgid "Add Action"
 msgstr ""
 
@@ -725,13 +724,6 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_graph.py:144 mycodo_flask/forms/forms_graph.py:165
 msgid "Gauge Max"
-msgstr ""
-
-#: mycodo_flask/forms/forms_graph.py:145 mycodo_flask/forms/forms_graph.py:166
-#: mycodo_flask/forms/forms_lcd.py:90 mycodo_flask/forms/forms_lcd.py:99
-#: mycodo_flask/forms/forms_lcd.py:108 mycodo_flask/forms/forms_lcd.py:117
-#: mycodo_flask/forms/forms_math.py:36 mycodo_flask/forms/forms_pid.py:45
-msgid "Max Age (seconds)"
 msgstr ""
 
 #: mycodo_flask/forms/forms_graph.py:147 mycodo_flask/forms/forms_graph.py:167
@@ -1238,7 +1230,7 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_output.py:63 mycodo_flask/forms/forms_timer.py:49
 #: mycodo_flask/forms/forms_timer.py:68
-#: mycodo_flask/templates/pages/function_options/conditional.html:93
+#: mycodo_flask/templates/pages/function_options/conditional.html:86
 #: mycodo_flask/templates/pages/function_options/conditional_options/output.html:25
 #: mycodo_flask/templates/pages/function_options/conditional_options/output.html:26
 #: mycodo_flask/templates/pages/output.html:192
@@ -1254,7 +1246,7 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_output.py:64 mycodo_flask/forms/forms_timer.py:50
 #: mycodo_flask/forms/forms_timer.py:69
-#: mycodo_flask/templates/pages/function_options/conditional.html:94
+#: mycodo_flask/templates/pages/function_options/conditional.html:87
 #: mycodo_flask/templates/pages/function_options/conditional_options/output.html:27
 #: mycodo_flask/templates/pages/output.html:196
 #: mycodo_flask/templates/pages/output_options/command.html:19
@@ -1297,7 +1289,7 @@ msgid "Lower"
 msgstr ""
 
 #: mycodo_flask/forms/forms_pid.py:33
-#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:18
+#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:38
 msgid "Both"
 msgstr ""
 
@@ -1718,7 +1710,7 @@ msgstr ""
 #: mycodo_flask/templates/pages/data_options/input.html:1
 #: mycodo_flask/utils/utils_general.py:53 mycodo_flask/utils/utils_input.py:39
 #: mycodo_flask/utils/utils_input.py:218 mycodo_flask/utils/utils_input.py:308
-#: mycodo_flask/utils/utils_input.py:347
+#: mycodo_flask/utils/utils_input.py:337
 msgid "Input"
 msgstr ""
 
@@ -2037,6 +2029,37 @@ msgid ""
 "with a temperature sensor and heater in order to regulate temperature."
 msgstr ""
 
+#: mycodo_flask/templates/pages/function.html:41
+msgid "PID Controllers"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function.html:42
+msgid ""
+"PID controllers couple an input with a device connected to an output to "
+"regulate an environmental condition. For example, this could be a heater "
+"and a temperature sensor, allowing the regulation of temperature."
+msgstr ""
+
+#: mycodo_flask/templates/pages/function.html:47
+#: mycodo_flask/utils/utils_conditional.py:30
+#: mycodo_flask/utils/utils_conditional.py:80
+#: mycodo_flask/utils/utils_conditional.py:123
+#: mycodo_flask/utils/utils_conditional.py:153
+#: mycodo_flask/utils/utils_conditional.py:210
+#: mycodo_flask/utils/utils_conditional.py:237
+#: mycodo_flask/utils/utils_conditional.py:258
+#: mycodo_flask/utils/utils_conditional.py:291
+#: mycodo_flask/utils/utils_conditional.py:309
+#: mycodo_flask/utils/utils_general.py:52
+msgid "Conditional"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function.html:48
+msgid ""
+"Conditionals allow certain actions to be carried out when a certain set "
+"of conditions are met."
+msgstr ""
+
 #: mycodo_flask/templates/pages/graph-async.html:18
 msgid "Asynchronous Graph"
 msgstr ""
@@ -2127,8 +2150,8 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/data_options/input.html:24
 #: mycodo_flask/templates/pages/data_options/math.html:24
-#: mycodo_flask/templates/pages/function_options/conditional.html:24
-#: mycodo_flask/templates/pages/function_options/pid.html:25
+#: mycodo_flask/templates/pages/function_options/conditional.html:21
+#: mycodo_flask/templates/pages/function_options/pid.html:22
 #: mycodo_flask/templates/pages/graph_options/mod_gauge.html:23
 #: mycodo_flask/templates/pages/graph_options/mod_graph.html:25
 #: mycodo_flask/templates/pages/lcd.html:51
@@ -2138,7 +2161,7 @@ msgstr ""
 msgid "A name to distinguish this from others"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:30
+#: mycodo_flask/templates/pages/function_options/pid.html:27
 #: mycodo_flask/templates/pages/lcd.html:55
 #: mycodo_flask/templates/pages/output.html:91
 #: mycodo_flask/templates/pages/output.html:93
@@ -2146,7 +2169,7 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:33
+#: mycodo_flask/templates/pages/function_options/pid.html:30
 #: mycodo_flask/templates/pages/lcd.html:56
 #: mycodo_flask/templates/pages/output.html:98
 #: mycodo_flask/templates/pages/timer.html:86
@@ -2411,9 +2434,9 @@ msgstr ""
 #: mycodo_flask/templates/pages/data_options/input.html:113
 #: mycodo_flask/templates/pages/data_options/input.html:130
 #: mycodo_flask/templates/pages/data_options/math_options/humidity.html:42
-#: mycodo_flask/templates/pages/function_options/pid.html:162
-#: mycodo_flask/templates/pages/function_options/pid.html:185
-#: mycodo_flask/templates/pages/function_options/pid.html:212
+#: mycodo_flask/templates/pages/function_options/pid.html:159
+#: mycodo_flask/templates/pages/function_options/pid.html:182
+#: mycodo_flask/templates/pages/function_options/pid.html:209
 #: mycodo_flask/templates/pages/math_options/humidity.html:42
 msgid "Disabled"
 msgstr ""
@@ -2634,6 +2657,7 @@ msgstr ""
 #: mycodo_flask/templates/pages/data_options/math_options/median.html:31
 #: mycodo_flask/templates/pages/data_options/math_options/minimum.html:31
 #: mycodo_flask/templates/pages/data_options/math_options/verification.html:37
+#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:20
 #: mycodo_flask/templates/pages/graph_options/add_gauge.html:79
 #: mycodo_flask/templates/pages/graph_options/add_graph.html:61
 #: mycodo_flask/templates/pages/graph_options/add_graph.html:75
@@ -2657,6 +2681,7 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/data_options/math_options/humidity.html:6
 #: mycodo_flask/templates/pages/data_options/math_options/humidity.html:24
+#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:15
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:9
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:33
 #: mycodo_flask/templates/pages/function_options/conditional_options/output.html:8
@@ -2673,200 +2698,173 @@ msgstr ""
 msgid "The maximum allowed difference between any selected measurements"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:1
-msgid "Conditionals"
-msgstr ""
-
-#: mycodo_flask/templates/pages/function_options/conditional.html:2
-msgid ""
-"Conditionals allow certain actions to be carried out when a certain set "
-"of conditions are met."
-msgstr ""
-
-#: mycodo_flask/templates/pages/function_options/conditional.html:70
-#: mycodo_flask/templates/pages/function_options/conditional.html:206
-msgid "Action"
-msgstr ""
-
-#: mycodo_flask/templates/pages/function_options/conditional.html:71
-#: mycodo_flask/templates/pages/function_options/conditional.html:207
-msgid "The action to perform when the conditional is True"
-msgstr ""
-
-#: mycodo_flask/templates/pages/function_options/conditional.html:82
+#: mycodo_flask/templates/pages/function_options/conditional.html:75
 msgid "What relay to manipulate"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:90
+#: mycodo_flask/templates/pages/function_options/conditional.html:83
 msgid "Turn"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:91
+#: mycodo_flask/templates/pages/function_options/conditional.html:84
 msgid "Turn the relay on or off"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:98
+#: mycodo_flask/templates/pages/function_options/conditional.html:91
 msgid "Seconds"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:99
+#: mycodo_flask/templates/pages/function_options/conditional.html:92
 msgid "How long to turn the relay on (optional)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:105
-#: mycodo_flask/templates/pages/function_options/conditional.html:141
-#: mycodo_flask/templates/pages/function_options/conditional.html:169
+#: mycodo_flask/templates/pages/function_options/conditional.html:98
+#: mycodo_flask/templates/pages/function_options/conditional.html:134
+#: mycodo_flask/templates/pages/function_options/conditional.html:162
 msgid "Email Address"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:106
-#: mycodo_flask/templates/pages/function_options/conditional.html:142
-#: mycodo_flask/templates/pages/function_options/conditional.html:170
+#: mycodo_flask/templates/pages/function_options/conditional.html:99
+#: mycodo_flask/templates/pages/function_options/conditional.html:135
+#: mycodo_flask/templates/pages/function_options/conditional.html:163
 msgid "Email address to notify"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:118
+#: mycodo_flask/templates/pages/function_options/conditional.html:111
 msgid "LCD to flash"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:130
-#: mycodo_flask/templates/pages/function_options/conditional.html:154
+#: mycodo_flask/templates/pages/function_options/conditional.html:123
+#: mycodo_flask/templates/pages/function_options/conditional.html:147
 msgid "Camera to capture with"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:163
+#: mycodo_flask/templates/pages/function_options/conditional.html:156
 msgid "Duration to record video (sec)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:182
+#: mycodo_flask/templates/pages/function_options/conditional.html:175
 msgid "Command to execute (as user \"mycodo\")"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:1
-msgid "PID Controllers"
+#: mycodo_flask/templates/pages/function_options/conditional.html:205
+msgid "The action to perform when the conditional is True"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:2
-msgid ""
-"PID controllers couple an input with a device connected to an output to "
-"regulate an environmental condition. For example, this could be a heater "
-"and a temperature sensor, allowing the regulation of temperature."
-msgstr ""
-
-#: mycodo_flask/templates/pages/function_options/pid.html:31
+#: mycodo_flask/templates/pages/function_options/pid.html:28
 msgid "Paused"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:32
+#: mycodo_flask/templates/pages/function_options/pid.html:29
 msgid "On Hold"
 msgstr ""
 
+#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:8
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:8
-#: mycodo_flask/templates/pages/function_options/pid.html:85
+#: mycodo_flask/templates/pages/function_options/pid.html:82
 msgid "Select the measurement to use as the input"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:99
+#: mycodo_flask/templates/pages/function_options/pid.html:96
 msgid "Choose the direction(s) to regulate"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:109
+#: mycodo_flask/templates/pages/function_options/pid.html:106
 msgid ""
 "The duration between calculating a new PID output to power the raise and "
 "lower relays."
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:115
+#: mycodo_flask/templates/pages/function_options/pid.html:112
 msgid ""
 "Maximum allowable measurement age (to allow the PID controller to "
 "manipulate relays, the measurement must have occurred in the past x "
 "seconds)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:122
+#: mycodo_flask/templates/pages/function_options/pid.html:119
 msgid ""
 "This is the desired state of a perticular environmental condition. For "
 "instance, this could be the desired temperature in Celsius."
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:128
+#: mycodo_flask/templates/pages/function_options/pid.html:125
 msgid "Proportional gain"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:134
+#: mycodo_flask/templates/pages/function_options/pid.html:131
 msgid "Integral gain"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:140
+#: mycodo_flask/templates/pages/function_options/pid.html:137
 msgid "Derivative gain"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:146
+#: mycodo_flask/templates/pages/function_options/pid.html:143
 msgid ""
 "Limit the integrator minimum, for calculating Ki_total: (Ki_total = Ki * "
 "integrator; and PID output = Kp_total + Ki_total + Kd_total)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:152
+#: mycodo_flask/templates/pages/function_options/pid.html:149
 msgid ""
 "Limit the integrator maximum, for calculating Ki_total: (Ki_total = Ki * "
 "integrator; and PID output = Kp_total + Ki_total + Kd_total)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:161
+#: mycodo_flask/templates/pages/function_options/pid.html:158
 msgid ""
 "The output that will raise the selected environmental condition (Measure "
 "Type)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:184
+#: mycodo_flask/templates/pages/function_options/pid.html:181
 msgid ""
 "The output that will lower the selected environmental condition (Measure "
 "Type)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:208
+#: mycodo_flask/templates/pages/function_options/pid.html:205
 msgid ""
 "Select the method to use when calculating the setpoint. When enabled, the"
 " setpoint(s) of the method override the PID setpoint above."
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:210
+#: mycodo_flask/templates/pages/function_options/pid.html:207
 msgid "No methods exist. Create one with this button"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:223
+#: mycodo_flask/templates/pages/function_options/pid.html:220
 #: mycodo_flask/templates/pages/timer_options/mod_pwm_method.html:36
 msgid "Invalid saved method. Save another method from this list."
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:228
+#: mycodo_flask/templates/pages/function_options/pid.html:225
 #: mycodo_flask/templates/pages/timer_options/add_pwm_method.html:45
 msgid "Manage Methods"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:14
+#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:34
 msgid "Detect low to high (rising), high to low (falling), or both?"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:16
+#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:36
 msgid "Rising"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:17
+#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:37
 msgid "Falling"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:34
+#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:54
 msgid "HIGH (3.3 volts)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:35
+#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:55
 msgid "LOW (0 volts)"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:43
-#: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:50
+#: mycodo_flask/templates/pages/function_options/conditional_options/edge.html:63
 msgid "The duration (seconds) between checking whether the conditional is true"
 msgstr ""
 
@@ -2876,25 +2874,33 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:32
 msgid ""
-"The conditional is true when the measured condition is greater than or "
-"less than the set value, or the measurement timestamp is greater than the"
-" value of seconds"
+"The conditional is triggered when the measured condition is greater than "
+"or less than the set value, or the measurement timestamp is greater than "
+"the value of seconds"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:34
-msgid "Greater Than"
+msgid "Greater Than (>)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:35
-msgid "Less Than"
+msgid "Less Than (<)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:36
-msgid "None Found Last x Seconds"
+msgid "No Measurement"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:43
 msgid "What value to check the measurement against?"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:50
+msgid "The duration between checking whether the conditional is true"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:57
+msgid "Do not accept measurements older than this age"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/output.html:7
@@ -3417,26 +3423,15 @@ msgstr ""
 msgid "Calibration Complete"
 msgstr ""
 
-#: mycodo_flask/utils/utils_conditional.py:28
-#: mycodo_flask/utils/utils_conditional.py:99
-#: mycodo_flask/utils/utils_conditional.py:159
-#: mycodo_flask/utils/utils_conditional.py:234
+#: mycodo_flask/utils/utils_conditional.py:29
+#: mycodo_flask/utils/utils_conditional.py:79
+#: mycodo_flask/utils/utils_conditional.py:152
+#: mycodo_flask/utils/utils_conditional.py:209
 #: mycodo_flask/utils/utils_lcd.py:227
 msgid "Mod"
 msgstr ""
 
-#: mycodo_flask/utils/utils_conditional.py:29
-#: mycodo_flask/utils/utils_conditional.py:100
-#: mycodo_flask/utils/utils_conditional.py:134
-#: mycodo_flask/utils/utils_conditional.py:160
-#: mycodo_flask/utils/utils_conditional.py:235
-#: mycodo_flask/utils/utils_conditional.py:255
-#: mycodo_flask/utils/utils_conditional.py:285
-#: mycodo_flask/utils/utils_general.py:52
-msgid "Conditional"
-msgstr ""
-
-#: mycodo_flask/utils/utils_conditional.py:133
+#: mycodo_flask/utils/utils_conditional.py:122
 #: mycodo_flask/utils/utils_function.py:26 mycodo_flask/utils/utils_graph.py:30
 #: mycodo_flask/utils/utils_input.py:38 mycodo_flask/utils/utils_lcd.py:34
 #: mycodo_flask/utils/utils_lcd.py:202 mycodo_flask/utils/utils_math.py:33
@@ -3449,15 +3444,15 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: mycodo_flask/utils/utils_conditional.py:254
-#: mycodo_flask/utils/utils_graph.py:318 mycodo_flask/utils/utils_input.py:346
+#: mycodo_flask/utils/utils_conditional.py:236
+#: mycodo_flask/utils/utils_graph.py:318 mycodo_flask/utils/utils_input.py:336
 #: mycodo_flask/utils/utils_lcd.py:126 mycodo_flask/utils/utils_math.py:199
 #: mycodo_flask/utils/utils_output.py:246 mycodo_flask/utils/utils_pid.py:179
 #: mycodo_flask/utils/utils_timer.py:167
 msgid "Reorder"
 msgstr ""
 
-#: mycodo_flask/utils/utils_conditional.py:284
+#: mycodo_flask/utils/utils_conditional.py:308
 msgid "Refresh"
 msgstr ""
 
