@@ -132,6 +132,10 @@ class DaemonControl:
     def refresh_conditionals(self):
         return self.rpyc_client.root.refresh_conditionals()
 
+    def trigger_conditional_actions(self, conditional_id, message=''):
+        return self.rpyc_client.root.trigger_conditional_actions(
+            conditional_id, message)
+
     def terminate_daemon(self):
         return self.rpyc_client.root.terminate_daemon()
 

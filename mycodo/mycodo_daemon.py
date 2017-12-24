@@ -215,6 +215,11 @@ def mycodo_service(mycodo):
             return mycodo.output_setup(action, relay_id)
 
         @staticmethod
+        def exposed_trigger_conditional_actions(conditional_id, message=''):
+            """Return the output state (not pin but whether output is on or off"""
+            return mycodo.trigger_conditional_actions(conditional_id, message)
+
+        @staticmethod
         def exposed_terminate_daemon():
             """Instruct the daemon to shut down"""
             return mycodo.terminate_daemon()
@@ -831,6 +836,15 @@ class DaemonController:
             self.logger.info(
                 "Output controller had an issue stopping: {err}".format(
                     err=err))
+
+    def trigger_conditional_actions(self, conditional_id, message=''):
+        try:
+            return self.controller['Conditional'].trigger_conditional_actions(
+                conditional_id, message=message)
+        except Exception as except_msg:
+            message = "Could not trigger Conditional Actions:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def terminate_daemon(self):
         """Instruct the daemon to shut down"""

@@ -287,7 +287,7 @@ def conditional_deactivate(cond_id):
     """Deactivate a Conditional"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Activate"),
+        action=gettext("Deactivate"),
         controller=gettext("Conditional"))
 
     mod_cond = Conditional.query.filter(
