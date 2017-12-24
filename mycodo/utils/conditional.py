@@ -142,33 +142,33 @@ def check_conditionals(self, cond_id, control,
 
     # If the code hasn't returned by now, the conditional has been triggered
     # and the actions for that conditional should be executed
-    trigger_conditional_actions(self, message, cond_id, device_id, device_measurement, control,
-                                Camera, Conditional, ConditionalActions, Input, Math, Output, PID, SMTP,
-                                last_measurement=last_measurement)
+    trigger_conditional_actions(self, cond_id, device_id, device_measurement, control,
+                                Camera, ConditionalActions, Input, Math, PID, SMTP,
+                                message=message, last_measurement=last_measurement)
 
 
-def trigger_conditional_actions(self, message, cond_id, device_id, device_measurement, control,
-                                Camera, Conditional, ConditionalActions, Input, Math, Output, PID, SMTP,
-                                last_measurement=None):
+def trigger_conditional_actions(
+        self, cond_id, device_id, device_measurement, control,
+        Camera, ConditionalActions, Input, Math, PID, SMTP,
+        message='', last_measurement=None):
     """
     If a Conditional has been triggered, this function will execute
     the Conditional Actions
 
-    :param self: 
-    :param message: 
-    :param cond_id: 
-    :param device_id: 
-    :param device_measurement: 
-    :param control: 
-    :param Camera: 
-    :param Conditional: 
-    :param ConditionalActions: 
-    :param Input: 
-    :param Math: 
-    :param Output: 
-    :param PID: 
-    :param SMTP: 
-    :param last_measurement: 
+    :param self: self from the Controller class
+    :param cond_id: The ID of the Conditional
+    :param device_id: The unique ID associated with the device_measurement
+    :param device_measurement: The measurement (i.e. "temperature")
+    :param control: The Daemon control function
+    :param Camera: Camera database model
+    :param Conditional: Conditional database model
+    :param ConditionalActions: ConditionalActions database model
+    :param Input: Input database model
+    :param Math: Math database model
+    :param PID: PID database model
+    :param SMTP: SMTP database model
+    :param message: The message generated from the conditional check
+    :param last_measurement: The last measurement value
     :return: 
     """
     logger_cond = logging.getLogger("mycodo.utils.conditional_actions_{id}".format(
