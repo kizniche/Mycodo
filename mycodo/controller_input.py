@@ -22,6 +22,7 @@
 #
 #  Contact at kylegabriel.com
 
+import datetime
 import logging
 import threading
 import time
@@ -32,6 +33,7 @@ import fasteners
 import requests
 
 from mycodo.config import LIST_DEVICES_I2C
+from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
@@ -117,6 +119,7 @@ class InputController(threading.Thread):
 
         input_dev = db_retrieve_table_daemon(Input, device_id=self.input_id)
         self.input_sel = input_dev
+        self.id = input_dev.id
         self.unique_id = input_dev.unique_id
         self.i2c_bus = input_dev.i2c_bus
         self.location = input_dev.location
@@ -586,15 +589,37 @@ class InputController(threading.Thread):
             if (self.switch_edge == 'rising' or
                     (self.switch_edge == 'both' and gpio_state)):
                 rising_or_falling = 1  # Rising edge detected
+                state_str = 'Rising'
             else:
                 rising_or_falling = -1  # Falling edge detected
+                state_str = 'Falling'
 
             write_db = threading.Thread(
                 target=write_influxdb_value,
                 args=(self.unique_id, 'edge', rising_or_falling,))
             write_db.start()
 
-            # TODO: Add edge-detection conditional-checking
+            conditionals = db_retrieve_table_daemon(Conditional)
+            conditionals = conditionals.filter(
+                Conditional.conditional_type == 'conditional_edge')
+            conditionals = conditionals.filter(
+                Conditional.if_sensor_measurement == self.unique_id)
+            conditionals = conditionals.filter(
+                Conditional.is_activated == True)
+
+            for each_conditional in conditionals.all():
+                now = time.time()
+                timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
+                message = "{ts}\n[Conditional {cid} ({cname})] Input {oid} ({name}) {state} edge detected".format(
+                    ts=timestamp,
+                    cid=each_conditional.id,
+                    cname=each_conditional.name,
+                    name=each_conditional.name,
+                    oid=self.id,
+                    state=state_str)
+
+                self.control.trigger_conditional_actions(
+                    each_conditional.id, message=message)
 
     def is_running(self):
         return self.running

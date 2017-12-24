@@ -79,17 +79,17 @@ def conditional_del(cond_id):
         action=gettext("Mod"),
         controller=gettext("Conditional"))
 
-    # Deactivate conditional
-    conditional_deactivate(cond_id)
+    cond = Conditional.query.filter(
+        Conditional.id == cond_id).first()
 
-    # Refresh conditional controller
-    check_refresh_conditional(cond_id)
+    # Deactivate conditional if active
+    if cond.is_activated:
+        conditional_deactivate(cond_id)
 
     try:
         if not error:
             # Delete conditional
-            cond = Conditional.query.filter(
-                Conditional.id == cond_id).first()
+
             conditional_actions = ConditionalActions.query.filter(
                 ConditionalActions.conditional_id == cond.id).all()
             for each_cond_action in conditional_actions:
@@ -311,7 +311,8 @@ def check_refresh_conditional(cond_id):
     cond = Conditional.query.filter(
         Conditional.id == cond_id).first()
 
-    if cond.conditional_type == 'conditional_measurement':
+    if cond.conditional_type in ['conditional_edge',
+                                 'conditional_measurement']:
         control = DaemonControl()
         control.refresh_conditionals()
 
@@ -417,6 +418,10 @@ def check_cond_actions(cond_action, error):
 
 def check_form_edge(form, error):
     """Checks if the submitted form has any errors"""
+    if not form.if_sensor_measurement.data or form.if_sensor_measurement.data == '':
+        error.append("{meas} must be set".format(
+            meas=form.if_sensor_measurement.label.text))
+
     if (form.if_sensor_edge_select.data == 'edge' and
             not form.if_sensor_edge_detected.data):
         error.append("If the {edge} radio button is selected,"
@@ -444,6 +449,9 @@ def check_form_edge(form, error):
 
 def check_cond_edge(cond, error):
     """Checks if the saved variables have any errors"""
+    if not cond.if_sensor_measurement or cond.if_sensor_measurement == '':
+        error.append("Measurement must be set")
+
     if (cond.if_sensor_edge_select == 'edge' and
             not cond.if_sensor_edge_detected):
         error.append("If the Edge Detected radio button is selected,"

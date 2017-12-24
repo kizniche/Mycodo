@@ -24,12 +24,15 @@
 #  Contact at kylegabriel.com
 #
 
+import datetime
 import logging
 import threading
 import time
 import timeit
 
 import RPi.GPIO as GPIO
+from sqlalchemy import and_
+from sqlalchemy import or_
 
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
@@ -49,8 +52,21 @@ from mycodo.utils.system_pi import cmd_output
 
 class ConditionalController(threading.Thread):
     """
-    Class to operate discrete PID controller
+    Class to operate Conditional controller
 
+    Conditionals are conditional statements that can either be True or False
+    When a conditional is True, one or more actions associated with that
+    conditional are executed.
+
+    The main loop in this class will continually check if the timers for
+    Measurement Conditionals have elapsed, then check if any of the
+    conditionals are True with the check_conditionals() function. If any are
+    True, trigger_conditional_actions() will be ran to execute all actions
+    associated with that particular conditional.
+
+    Edge and Output conditionals are triggered from
+    the Input and Output controllers, respectively, and the
+    trigger_conditional_actions() function in this class will be ran.
     """
     def __init__(self):
         threading.Thread.__init__(self)
@@ -114,6 +130,12 @@ class ConditionalController(threading.Thread):
                 err=except_msg))
 
     def setup_conditionals(self):
+        """
+        Refresh the conditional settings
+
+        This is ran in response to settings being changed in the database
+        by the web UI
+        """
         # Signal to pause the main loop and wait for verification
         self.pause_loop = True
         while not self.verify_pause_loop:
@@ -124,11 +146,16 @@ class ConditionalController(threading.Thread):
         self.cond_timer = {}
         self.smtp_wait_timer = {}
 
-        # Only check 'measurement' conditionals
+        # Only check edge (state only) and measurement conditionals
         # 'output' conditionals are checked in the Output Controller
+        edge_with_state = and_(
+            Conditional.conditional_type == 'conditional_edge',
+            Conditional.if_sensor_edge_select == 'state')
+
         conditional = db_retrieve_table_daemon(
             Conditional).filter(
-            Conditional.conditional_type == 'conditional_measurement').all()
+            or_(Conditional.conditional_type == 'conditional_measurement',
+                edge_with_state)).all()
 
         for each_cond in conditional:
             self.cond_is_activated[each_cond.id] = each_cond.is_activated
@@ -161,7 +188,10 @@ class ConditionalController(threading.Thread):
         cond = db_retrieve_table_daemon(
             Conditional, device_id=cond_id, entry='first')
 
-        message = "[Conditional: {name} ({id})]".format(
+        now = time.time()
+        timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
+        message = "{ts}\n[Conditional {id} ({name})]".format(
+            ts=timestamp,
             name=cond.name,
             id=cond_id)
 
@@ -200,7 +230,9 @@ class ConditionalController(threading.Thread):
 
         last_measurement = None
 
-        if direction and device_id and device_measurement:
+        # Check Measurement Conditionals
+        if (cond.conditional_type == 'conditional_measurement' and
+                direction and device_id and device_measurement):
 
             # Check if there hasn't been a measurement in the last set number
             # of seconds. If not, trigger conditional
@@ -208,7 +240,7 @@ class ConditionalController(threading.Thread):
                 last_measurement = self.get_last_measurement(
                     device_id, device_measurement, max_age)
                 if not last_measurement:
-                    message += " {meas} measurement for device ID {id} not found in the past" \
+                    message += " Measurement {meas} for device ID {id} not found in the past" \
                                " {value} seconds.".format(
                         meas=device_measurement,
                         id=device_id,
@@ -230,14 +262,14 @@ class ConditionalController(threading.Thread):
                       (direction == 'below' and
                        last_measurement < setpoint)):
 
-                    message += " {meas}: {value} ".format(
+                    message += " Measurement {meas}: {value} ".format(
                         meas=device_measurement,
                         value=last_measurement)
                     if direction == 'above':
-                        message += "(>"
+                        message += ">"
                     elif direction == 'below':
-                        message += "(<"
-                    message += " {sp} set value).".format(
+                        message += "<"
+                    message += " {sp} (set value).".format(
                         sp=setpoint)
                 else:
                     return  # Not triggered
@@ -245,16 +277,12 @@ class ConditionalController(threading.Thread):
         # If the edge detection variable is set, calling this function will
         # trigger an edge detection event. This will merely produce the correct
         # message based on the edge detection settings.
-        elif cond.if_sensor_edge_detected:
-            if cond.if_sensor_edge_select == 'edge':
-                message += " {edge} Edge Detected.".format(
-                    edge=cond.if_sensor_edge_detected)
-            elif cond.if_sensor_edge_select == 'state':
-                if (output and
-                        output.pin and
-                        GPIO.input(int(output.pin)) == cond.if_sensor_gpio_state):
-                    message += " {state} GPIO State Detected.".format(
-                        state=cond.if_sensor_gpio_state)
+        elif cond.conditional_type == 'conditional_edge':
+            if (input_dev and
+                    input_dev.location and
+                    GPIO.input(int(input_dev.pin)) == cond.if_sensor_gpio_state):
+                message += " {state} GPIO State Detected.".format(
+                    state=cond.if_sensor_gpio_state)
             else:
                 # Not configured correctly or GPIO state not verified
                 return
@@ -309,7 +337,7 @@ class ConditionalController(threading.Thread):
                 device = pid
 
         for cond_action in cond_actions:
-            message += " Conditional Action ({id}): {do_action}.".format(
+            message += "\n[Conditional Action {id}]:".format(
                 id=cond_action.id, do_action=cond_action.do_action)
 
             # Actuate output

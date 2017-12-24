@@ -33,7 +33,6 @@ from sqlalchemy import and_
 from sqlalchemy import or_
 
 from mycodo.databases.models import Conditional
-from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
@@ -41,7 +40,6 @@ from mycodo.devices.wireless_433mhz_pi_switch import Transmit433MHz
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import write_influxdb_value
-from mycodo.utils.send_data import send_email
 from mycodo.utils.system_pi import cmd_output
 
 
@@ -505,12 +503,20 @@ class OutputController(threading.Thread):
                 self.pwm_state[output_id] = None
 
     def check_conditionals(self, output_id, state=None, on_duration=None, duty_cycle=None):
+        """
+        This function is executed whenever an output is turned on or off
+        It is responsible for executing Output Conditionals
+        """
         conditionals = db_retrieve_table_daemon(Conditional)
+        conditionals = conditionals.filter(
+            Conditional.conditional_type == 'conditional_output')
         conditionals = conditionals.filter(
             Conditional.if_relay_id == output_id)
         conditionals = conditionals.filter(
             Conditional.is_activated == True)
 
+        # Find any Output Conditionals with the output_id of the output that
+        # just changed its state
         if self.is_on(output_id):
             conditionals = conditionals.filter(
                 or_(Conditional.if_relay_state == 'on',
@@ -530,114 +536,18 @@ class OutputController(threading.Thread):
         # Execute the Conditional Actions for each Output Conditional
         # for this particular Output device
         for each_conditional in conditionals.all():
-
             now = time.time()
             timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
-            message = "{ts}\n[Output Conditional {id}] {name}\n".format(
+            message = "{ts}\n[Conditional {cid} ({cname})] Output {oid} ({name}) {state}".format(
                 ts=timestamp,
-                id=each_conditional.id,
-                name=each_conditional.name)
+                cid=each_conditional.id,
+                cname=each_conditional.name,
+                name=each_conditional.name,
+                oid=output_id,
+                state=each_conditional.if_relay_state)
 
             self.control.trigger_conditional_actions(
                 each_conditional.id, message=message)
-
-            # conditional_actions = db_retrieve_table_daemon(ConditionalActions)
-            # conditional_actions = conditional_actions.filter(
-            #     ConditionalActions.conditional_id == each_conditional.id).all()
-            #
-            # for each_cond_action in conditional_actions:
-            #     now = time.time()
-            #     timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
-            #     message = "{ts}\n[Output Conditional {id}] {name}\n".format(
-            #         ts=timestamp,
-            #         id=each_cond_action.id,
-            #         name=each_conditional.name)
-            #
-            #     if each_cond_action.do_action == 'output':
-            #         if each_cond_action.do_relay_id not in self.output_name:
-            #             message += "Error: Invalid output ID {id}.".format(
-            #                 id=each_cond_action.do_relay_id)
-            #         else:
-            #             message += "If output {id} ({name}) turns {state}, Then ".format(
-            #                 id=each_conditional.if_relay_id,
-            #                 name=self.output_name[each_conditional.if_relay_id],
-            #                 state=each_conditional.if_relay_state)
-            #             message += "turn output {id} ({name}) {state}".format(
-            #                 id=each_cond_action.do_relay_id,
-            #                 name=self.output_name[each_cond_action.do_relay_id],
-            #                 state=each_cond_action.do_relay_state)
-            #
-            #             if each_cond_action.do_relay_duration == 0:
-            #                 self.output_on_off(each_cond_action.do_relay_id,
-            #                                    each_cond_action.do_relay_state)
-            #             else:
-            #                 message += " for {dur} seconds".format(
-            #                     dur=each_cond_action.do_relay_duration)
-            #                 self.output_on_off(each_cond_action.do_relay_id,
-            #                                    each_cond_action.do_relay_state,
-            #                                    duration=each_cond_action.do_relay_duration)
-            #         message += ".\n"
-            #
-            #     elif each_cond_action.do_action == 'command':
-            #         # Execute command as user mycodo
-            #         message += "Execute: '{}'. ".format(
-            #             each_cond_action.do_action_string)
-            #
-            #         # Check command for variables to replace with values
-            #         command_str = each_cond_action.do_action_string
-            #         command_str = command_str.replace(
-            #             "((output_pin))", str(self.output_pin[output_id]))
-            #         command_str = command_str.replace(
-            #             "((output_action))", str(state))
-            #         command_str = command_str.replace(
-            #             "((output_duration))", str(on_duration))
-            #         command_str = command_str.replace(
-            #             "((output_pwm))", str(duty_cycle))
-            #         _, _, cmd_status = cmd_output(command_str)
-            #
-            #         message += "Status: {}. ".format(cmd_status)
-            #
-            #     elif each_cond_action.do_action == 'email':
-            #         if (self.email_count >= self.smtp_max_count and
-            #                 time.time() < self.smtp_wait_time):
-            #             self.allowed_to_send_notice = False
-            #         else:
-            #             if time.time() > self.smtp_wait_time:
-            #                 self.email_count = 0
-            #                 self.smtp_wait_time = time.time() + 3600
-            #             self.allowed_to_send_notice = True
-            #         self.email_count += 1
-            #
-            #         if self.allowed_to_send_notice:
-            #             message += "Notify {}.".format(
-            #                 each_cond_action.email_notify)
-            #
-            #             smtp = db_retrieve_table_daemon(SMTP, entry='first')
-            #             send_email(
-            #                 smtp.host, smtp.ssl, smtp.port, smtp.user,
-            #                 smtp.passw, smtp.email_from,
-            #                 each_cond_action.do_action_string, message)
-            #         else:
-            #             self.logger.debug(
-            #                 "[Output Conditional {}] True: {:.0f} seconds "
-            #                 "left to be allowed to email again.".format(
-            #                     each_conditional.id,
-            #                     self.smtp_wait_time-time.time()))
-            #
-            #     elif each_cond_action.do_action == 'flash_lcd':
-            #         start_flashing = threading.Thread(
-            #             target=self.control.flash_lcd,
-            #             args=(each_cond_action.do_lcd_id, 1,))
-            #         start_flashing.start()
-            #
-            #     # TODO: Implement photo/video actions for output conditionals
-            #     elif each_cond_action.do_action == 'photo':
-            #         self.logger.error("Photo action not currently implemented")
-            #
-            #     elif each_cond_action.do_action == 'video':
-            #         self.logger.error("Video action not currently implemented")
-            #
-            #     self.logger.debug("{}".format(message))
 
     def all_outputs_initialize(self, outputs):
         for each_output in outputs:
