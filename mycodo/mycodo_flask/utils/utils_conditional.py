@@ -49,6 +49,7 @@ def conditional_mod(form):
             cond_mod.if_sensor_direction = form.if_sensor_direction.data
             cond_mod.if_sensor_setpoint = form.if_sensor_setpoint.data
             cond_mod.if_sensor_period = form.if_sensor_period.data
+            cond_mod.if_sensor_max_age = form.if_sensor_max_age.data
 
         elif cond_mod.conditional_type == 'conditional_output':
             error = check_form_output(form, error)
@@ -310,8 +311,7 @@ def check_refresh_conditional(cond_id):
     cond = Conditional.query.filter(
         Conditional.id == cond_id).first()
 
-    if (cond.conditional_type == 'conditional_measurement' and
-            cond.is_activated):
+    if cond.conditional_type == 'conditional_measurement':
         control = DaemonControl()
         control.refresh_conditionals()
 
@@ -467,26 +467,40 @@ def check_cond_edge(cond, error):
 
 def check_form_measurements(form, error):
     """Checks if the submitted form has any errors"""
-    if not form.if_sensor_measurement.data:
+    if not form.if_sensor_measurement.data or form.if_sensor_measurement.data == '':
         error.append("{meas} must be set".format(
             meas=form.if_sensor_measurement.label.text))
 
-    if not form.if_sensor_direction.data:
+    if not form.if_sensor_direction.data or form.if_sensor_direction.data == '':
         error.append("{dir} must be set".format(
             dir=form.if_sensor_direction.label.text))
+
+    if not form.if_sensor_period.data or form.if_sensor_period.data <= 0:
+        error.append("{dir} must be greater than 0".format(
+            dir=form.if_sensor_period.label.text))
+
+    if not form.if_sensor_max_age.data or form.if_sensor_max_age.data <= 0:
+        error.append("{dir} must be greater than 0".format(
+            dir=form.if_sensor_max_age.label.text))
 
     return error
 
 
 def check_cond_measurements(cond, error):
     """Checks if the saved variables have any errors"""
-    if not cond.if_sensor_measurement:
+    if not cond.if_sensor_measurement or cond.if_sensor_measurement == '':
         error.append("Measurement must be set".format(
             meas=cond.if_sensor_measurement))
 
-    if not cond.if_sensor_direction:
+    if not cond.if_sensor_direction or cond.if_sensor_direction == '':
         error.append("State must be set".format(
             dir=cond.if_sensor_direction))
+
+    if not cond.if_sensor_period or cond.if_sensor_period <= 0:
+        error.append("Period must be greater than 0")
+
+    if not cond.if_sensor_max_age or cond.if_sensor_max_age <= 0:
+        error.append("Max Age must be greater than 0")
 
     return error
 
@@ -506,10 +520,10 @@ def check_form_output(form, error):
 
 def check_cond_output(cond, error):
     """Checks if the saved variables have any errors"""
-    if not cond.if_relay_id:
+    if not cond.if_relay_id or cond.if_relay_id == '':
         error.append("An Output must be set")
 
-    if not cond.if_relay_state:
+    if not cond.if_relay_state or cond.if_relay_state == '':
         error.append("A State must be set")
 
     return error

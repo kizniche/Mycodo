@@ -36,11 +36,21 @@ def upgrade():
     with op.batch_alter_table("displayorder") as batch_op:
         batch_op.add_column(sa.Column('conditional', sa.TEXT))
 
+    with op.batch_alter_table("conditional") as batch_op:
+        batch_op.add_column(sa.Column('if_sensor_max_age', sa.Integer))
+
     op.execute(
         '''
         UPDATE displayorder
         SET conditional='{}'
         '''.format(create_order_str())
+    )
+
+    op.execute(
+        '''
+        UPDATE conditional
+        SET if_sensor_max_age=120
+        '''
     )
 
     op.execute(
@@ -86,3 +96,6 @@ def upgrade():
 def downgrade():
     with op.batch_alter_table("displayorder") as batch_op:
         batch_op.drop_column('conditional')
+
+    with op.batch_alter_table("conditional") as batch_op:
+        batch_op.drop_column('if_sensor_max_age')

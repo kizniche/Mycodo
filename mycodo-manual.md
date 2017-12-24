@@ -546,10 +546,11 @@ with conditional statements.
 
 Setting | Description
 -------------------- | ----------------------------------------------
-If Measurement | The measurement that will be checked every Period.
-State | The conditional will trigger if the measurement Greater Than or Less Than the set Value, or if the measurement age is greater than the Value (in seconds).
+If Measurement | The measurement that will be checked every Period. By default, a measurement will only be checked for in the past 120 seconds, unless "None Found Last x seconds" in which case the Value will determine the measurement age. The takeaway from this is if a measurement is more than 120 seconds 
+State | The conditional will trigger if the measurement Greater Than or Less Than the set Value, or if "No Measurement" is set and the measurement age is greater than Max Age.
 Value | The value that the measurement will be checked against (greater or less than).
-Period | The period (seconds) between conditional checks.
+Period (seconds) | The period (seconds) between conditional checks.
+Max Age (seconds) | The maximum age the measurement can be. If a measurement isn't available within this time frame, the conditional will not trigger. The only exception is if State is set to "No Measurement", which will cause the conditional to trigger when there is no measurement available.
 
 ### Output Conditional Statement If Options
 

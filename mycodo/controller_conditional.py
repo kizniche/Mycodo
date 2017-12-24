@@ -89,7 +89,7 @@ class ConditionalController(threading.Thread):
                 # Check each activated conditional if it's timer has elapsed
                 for each_cond_id in self.cond_is_activated:
                     if (self.cond_is_activated[each_cond_id] and
-                            time.time() > self.cond_timer[each_cond_id]):
+                        self.cond_timer[each_cond_id] < time.time()):
                         while self.cond_timer[each_cond_id] < time.time():
                             self.cond_timer[each_cond_id] += self.cond_period[each_cond_id]
 
@@ -116,6 +116,7 @@ class ConditionalController(threading.Thread):
         self.cond_is_activated = {}
         self.cond_period = {}
         self.cond_timer = {}
+        self.smtp_wait_timer = {}
 
         # Only check 'measurement' conditionals
         # 'output' conditionals are checked in the Output Controller

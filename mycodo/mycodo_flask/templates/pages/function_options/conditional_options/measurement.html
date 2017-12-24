@@ -2,7 +2,7 @@
                               {% else -%}inactive-background
                               {% endif -%}" style="border-bottom: 2px solid #ddd; padding-bottom: 0.2em">
 
-  <div class="col-xs-11 col-md-5 col-lg-4">
+  <div class="col-xs-11 col-md-4 col-lg-4">
     {{form_conditional.if_sensor_measurement.label(class_='control-label')}}
     <div>
       <select class="form-control" id="if_sensor_measurement" name="if_sensor_measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
@@ -26,28 +26,35 @@
     </div>
   </div>
 
-  <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2">
+  <div class="col-xs-6 col-sm-3 col-md-2 col-lg-2">
     {{form_conditional.if_sensor_direction.label(class_='control-label')}}
     <div>
       <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_direction" name="if_sensor_direction" title="{{_('The conditional is triggered when the measured condition is greater than or less than the set value, or the measurement timestamp is greater than the value of seconds')}}">
         <option value="">{{_('Select One')}}</option>
         <option value="above"{% if each_cond.if_sensor_direction == 'above' %} selected{% endif %}>{{_('Greater Than')}}</option>
         <option value="below"{% if each_cond.if_sensor_direction == 'below' %} selected{% endif %}>{{_('Less Than')}}</option>
-        <option value="none_found"{% if each_cond.if_sensor_direction == 'none_found' %} selected{% endif %}>{{_('None Found Last x Seconds')}}</option>
+        <option value="none_found"{% if each_cond.if_sensor_direction == 'none_found' %} selected{% endif %}>{{_('No Measurement')}}</option>
       </select>
     </div>
   </div>
-  <div class="col-xs-5 col-sm-4 col-md-2 col-lg-1">
+  <div class="col-xs-6 col-sm-3 col-md-1 col-lg-1">
     {{form_conditional.if_sensor_setpoint.label(class_='control-label')}}
     <div>
-      {{form_conditional.if_sensor_setpoint(class_='form-control', value=each_cond.if_sensor_setpoint, **{'title':_('What value to check the measurement against?'), 'size':'3'})}}
+      {{form_conditional.if_sensor_setpoint(class_='form-control', value=each_cond.if_sensor_setpoint, **{'title':_('What value to check the measurement against?')})}}
     </div>
   </div>
 
-  <div class="col-xs-6 col-sm-4 col-md-2 col-lg-2">
+  <div class="col-xs-6 col-sm-3 col-md-2 col-lg-2">
     {{form_conditional.if_sensor_period.label(class_='control-label')}}
     <div>
-      {{form_conditional.if_sensor_period(class_='form-control', value=each_cond.if_sensor_period, **{'title':_('The duration (seconds) between checking whether the conditional is true'), 'size':'3'})}}
+      {{form_conditional.if_sensor_period(class_='form-control', value=each_cond.if_sensor_period, **{'title':_('The duration between checking whether the conditional is true')})}}
+    </div>
+  </div>
+
+  <div class="col-xs-6 col-sm-3 col-md-2 col-lg-2">
+    {{form_conditional.if_sensor_max_age.label(class_='control-label')}}
+    <div>
+      {{form_conditional.if_sensor_max_age(class_='form-control', value=each_cond.if_sensor_max_age, **{'title':_('Do not accept measurements older than this age')})}}
     </div>
   </div>
 </div>

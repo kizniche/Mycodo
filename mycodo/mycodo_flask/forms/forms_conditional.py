@@ -33,6 +33,7 @@ class Conditional(FlaskForm):
     if_sensor_direction = StringField(lazy_gettext('State'))
     if_sensor_setpoint = DecimalField(lazy_gettext('Value'))
     if_sensor_period = DecimalField(lazy_gettext('Period (seconds)'))
+    if_sensor_max_age = DecimalField(lazy_gettext('Max Age (seconds)'))
 
     # Edge detection
     if_sensor_edge_select = StringField(lazy_gettext('Edge or State'))

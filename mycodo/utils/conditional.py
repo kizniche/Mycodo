@@ -49,7 +49,7 @@ def check_conditionals(self, cond_id, control,
     device_measurement = cond.if_sensor_measurement.split(',')[1]
     direction = cond.if_sensor_direction
     setpoint = cond.if_sensor_setpoint
-    period = cond.if_sensor_period
+    max_age = cond.if_sensor_max_age
 
     device = None
 
@@ -85,15 +85,14 @@ def check_conditionals(self, cond_id, control,
         # Check if there hasn't been a measurement in the last set number
         # of seconds. If not, trigger conditional
         if direction == 'none_found':
-            duration_seconds = setpoint
             last_measurement = get_last_measurement(
-                device_id, device_measurement, duration_seconds)
+                device_id, device_measurement, max_age)
             if not last_measurement:
                 message += " {meas} measurement for device ID {id} not found in the past" \
                            " {value} seconds.".format(
                             meas=device_measurement,
                             id=device_id,
-                            value=duration_seconds)
+                            value=max_age)
             else:
                 return
 
@@ -102,7 +101,7 @@ def check_conditionals(self, cond_id, control,
             last_measurement = get_last_measurement(
                 device_id,
                 device_measurement,
-                int(period * 1.5))
+                max_age)
             if not last_measurement:
                 logger_cond.debug("Last measurement not found")
                 return
@@ -161,7 +160,6 @@ def trigger_conditional_actions(
     :param device_measurement: The measurement (i.e. "temperature")
     :param control: The Daemon control function
     :param Camera: Camera database model
-    :param Conditional: Conditional database model
     :param ConditionalActions: ConditionalActions database model
     :param Input: Input database model
     :param Math: Math database model
