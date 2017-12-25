@@ -14,7 +14,7 @@
       {% if edge_sensor %}
         <option value="">{{_('Select One')}}</option>
         {% for each_choice, value in input_choices.items() if each_choice.split(',')[1] == 'edge' -%}
-        <option value="{{each_choice.split(',')[0]}}"{% if each_cond.if_sensor_measurement == each_choice %} selected{% endif %}>{{value}}</option>
+        <option value="{{each_choice.split(',')[0]}}"{% if each_cond.if_sensor_measurement == each_choice.split(',')[0] %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
       {% else %}
         <option value="">{{_('None Available')}}</option>

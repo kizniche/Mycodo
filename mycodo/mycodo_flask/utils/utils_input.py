@@ -232,8 +232,9 @@ def input_mod(form_mod_sensor):
                 "Choose a Read Period equal to or greater than 7. The "
                 "AM2315 may become unresponsive if the period is "
                 "below 7."))
-        if ((form_mod_sensor.period.data < mod_sensor.pre_relay_duration) and
-                mod_sensor.pre_relay_duration):
+        if (mod_sensor.device != 'EDGE' and
+                (form_mod_sensor.period.data < mod_sensor.pre_relay_duration and
+                mod_sensor.pre_relay_duration)):
             error.append(gettext(
                 "The Read Period cannot be less than the Pre Output "
                 "Duration"))

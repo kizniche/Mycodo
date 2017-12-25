@@ -41,6 +41,14 @@ def upgrade():
 
     op.execute(
         '''
+        UPDATE sensor
+        SET device='BMP180'
+        WHERE device='BMP'
+        '''
+    )
+
+    op.execute(
+        '''
         UPDATE displayorder
         SET conditional='{}'
         '''.format(create_order_str())

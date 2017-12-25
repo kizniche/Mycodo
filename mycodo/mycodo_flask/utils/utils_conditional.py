@@ -37,6 +37,7 @@ def conditional_mod(form):
         if cond_mod.conditional_type == 'conditional_edge':
             error = check_form_edge(form, error)
 
+            cond_mod.if_sensor_measurement = form.if_sensor_measurement.data
             cond_mod.if_sensor_edge_select = form.if_sensor_edge_select.data
             cond_mod.if_sensor_edge_detected = form.if_sensor_edge_detected.data
             cond_mod.if_sensor_gpio_state = form.if_sensor_gpio_state.data

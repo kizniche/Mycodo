@@ -270,8 +270,7 @@ class InputController(threading.Thread):
         elif self.device == 'BME280':
             self.measure_input = BME280Sensor(self.i2c_address,
                                               self.i2c_bus)
-        # TODO: BMP is an old designation and will be removed in the future
-        elif self.device in ['BMP', 'BMP180']:
+        elif self.device in ['BMP180']:
             self.measure_input = BMP180Sensor(self.i2c_bus)
         elif self.device == 'BMP280':
             self.measure_input = BMP280Sensor(self.i2c_address,
@@ -581,7 +580,16 @@ class InputController(threading.Thread):
 
         self.lastUpdate = time.time()
 
-    def edge_detected(self):
+    def edge_detected(self, bcm_pin):
+        """
+        Callback function from GPIO.add_event_detect() for when an edge is detected
+
+        Write rising (1) or falling (-1) edge to influxdb database
+        Trigger any conditionals that match the rising/falling/both edge
+
+        :param bcm_pin: BMC pin of rising/falling edge (required parameter)
+        :return: None
+        """
         gpio_state = GPIO.input(int(self.location))
         if time.time() > self.edge_reset_timer:
             self.edge_reset_timer = time.time()+self.switch_reset_period
@@ -608,18 +616,23 @@ class InputController(threading.Thread):
                 Conditional.is_activated == True)
 
             for each_conditional in conditionals.all():
-                now = time.time()
-                timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
-                message = "{ts}\n[Conditional {cid} ({cname})] Input {oid} ({name}) {state} edge detected".format(
-                    ts=timestamp,
-                    cid=each_conditional.id,
-                    cname=each_conditional.name,
-                    name=each_conditional.name,
-                    oid=self.id,
-                    state=state_str)
+                if each_conditional.if_sensor_edge_detected in ['both', state_str.lower()]:
+                    now = time.time()
+                    timestamp = datetime.datetime.fromtimestamp(
+                        now).strftime('%Y-%m-%d %H-%M-%S')
+                    message = "{ts}\n[Conditional {cid} ({cname})] " \
+                              "Input {oid} ({name}) {state} edge detected " \
+                              "on pin {pin} (BCM)".format(
+                        ts=timestamp,
+                        cid=each_conditional.id,
+                        cname=each_conditional.name,
+                        name=each_conditional.name,
+                        oid=self.id,
+                        state=state_str,
+                        pin=bcm_pin)
 
-                self.control.trigger_conditional_actions(
-                    each_conditional.id, message=message)
+                    self.control.trigger_conditional_actions(
+                        each_conditional.id, message=message)
 
     def is_running(self):
         return self.running
