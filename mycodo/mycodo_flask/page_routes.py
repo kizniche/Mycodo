@@ -815,9 +815,9 @@ def page_function():
     pid = PID.query.all()
     user = User.query.all()
 
-    input_choices = utils_general.choices_inputs(Input.query.all())
-    math_choices = utils_general.choices_maths(Math.query.all())
-    pid_choices = utils_general.choices_pids(PID.query.all())
+    choices_input = utils_general.choices_inputs(input_dev)
+    choices_math = utils_general.choices_maths(math)
+    choices_pid = utils_general.choices_pids(pid)
 
     display_order_conditional = csv_to_list_of_int(DisplayOrder.query.first().conditional)
     display_order_pid = csv_to_list_of_int(DisplayOrder.query.first().pid)
@@ -834,11 +834,6 @@ def page_function():
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('general_routes.home'))
-
-        if 'form-name' in request.form:
-            form_name = request.form['form-name']
-        else:
-            form_name = None
 
         # Add a new function
         if form_add_function.func_add.data:
@@ -912,6 +907,9 @@ def page_function():
         return redirect('/function')
 
     return render_template('pages/function.html',
+                           choices_input=choices_input,
+                           choices_math=choices_math,
+                           choices_pid=choices_pid,
                            conditional=conditional,
                            conditional_actions=conditional_actions,
                            conditional_actions_list=CONDITIONAL_ACTIONS,
@@ -926,14 +924,11 @@ def page_function():
                            form_mod_pid_relay_raise=form_mod_pid_output_raise,
                            form_mod_pid_relay_lower=form_mod_pid_output_lower,
                            input=input_dev,
-                           input_choices=input_choices,
                            math=math,
-                           math_choices=math_choices,
                            measurements=MEASUREMENTS,
                            method=method,
                            output=output,
                            pid=pid,
-                           pid_choices=pid_choices,
                            units=MEASUREMENT_UNITS,
                            user=user)
 

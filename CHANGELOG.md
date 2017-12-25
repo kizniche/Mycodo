@@ -63,6 +63,7 @@ A Python 3 compatible binary version of opencv, whoch doesn't require an extreme
  - Fix deleting Inputs ([#250](https://github.com/kizniche/mycodo/issues/250))
  - Fix 500 error if 1-wire support isn't enabled
  - Fix Edge Detection Input callback function missing required parameter
+ - Fix LCD display of Output duty cycle
 
 ### Miscellaneous
 

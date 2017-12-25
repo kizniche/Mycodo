@@ -314,8 +314,11 @@ def check_refresh_conditional(cond_id):
 
     if cond.conditional_type in ['conditional_edge',
                                  'conditional_measurement']:
-        control = DaemonControl()
-        control.refresh_conditionals()
+        try:
+            control = DaemonControl()
+            control.refresh_conditionals()
+        except Exception as msg:
+            error.append("Exception: {err}".format(err=msg))
 
     flash_success_errors(error, action, url_for('page_routes.page_function'))
 

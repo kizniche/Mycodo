@@ -7,13 +7,13 @@
     <div>
       <select class="form-control" id="if_sensor_measurement" name="if_sensor_measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
           <option value="">{{_('Select One')}}</option>
-        {% for each_choice, value in input_choices.items() if each_choice.split(',')[1] != 'edge' -%}
+        {% for each_choice, value in choices_input.items() if each_choice.split(',')[1] != 'edge' -%}
           <option value="{{each_choice}}"{% if each_cond.if_sensor_measurement == each_choice %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
-        {% for each_choice, value in math_choices.items() -%}
+        {% for each_choice, value in choices_math.items() -%}
           <option value="{{each_choice}}"{% if each_cond.if_sensor_measurement == each_choice %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
-        {% for each_choice, value in pid_choices.items() -%}
+        {% for each_choice, value in choices_pid.items() -%}
           <option value="{{each_choice}}"{% if each_cond.if_sensor_measurement == each_choice %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
         </select>
