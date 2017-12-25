@@ -336,6 +336,7 @@ class ConditionalController(threading.Thread):
             if pid:
                 device = pid
 
+        send_email_at_end = None
         for cond_action in cond_actions:
             message += "\n[Conditional Action {id}]:".format(
                 id=cond_action.id, do_action=cond_action.do_action)
@@ -457,6 +458,7 @@ class ConditionalController(threading.Thread):
 
                 # If the emails per hour limit has not been exceeded
                 if self.allowed_to_send_notice:
+                    send_email_at_end = cond_action.do_action_string
                     message += " Notify {email}.".format(
                         email=cond_action.do_action_string)
                     # attachment_type != False indicates to
@@ -467,14 +469,8 @@ class ConditionalController(threading.Thread):
                     elif cond_action.do_action == 'video_email':
                         message += " Video attached to email."
                         attachment_type = 'video'
-
-                    smtp = db_retrieve_table_daemon(SMTP, entry='first')
-                    send_email(smtp.host, smtp.ssl, smtp.port,
-                               smtp.user, smtp.passw, smtp.email_from,
-                               cond_action.do_action_string, message,
-                               attachment_file, attachment_type)
                 else:
-                    logger_cond.debug(
+                    logger_cond.error(
                         "Wait {sec:.0f} seconds to email again.".format(
                             sec=self.smtp_wait_timer[cond_id] - time.time()))
 
@@ -486,6 +482,16 @@ class ConditionalController(threading.Thread):
                     target=self.control.flash_lcd,
                     args=(cond_action.do_lcd_id, 1,))
                 start_flashing.start()
+
+        # Send email after all conditional actions have been checked
+        # In order to append all action messages to send in the email
+        # send_email_at_end will be None or the TO email address
+        if send_email_at_end:
+            smtp = db_retrieve_table_daemon(SMTP, entry='first')
+            send_email(smtp.host, smtp.ssl, smtp.port,
+                       smtp.user, smtp.passw, smtp.email_from,
+                       send_email_at_end, message,
+                       attachment_file, attachment_type)
 
         logger_cond.debug(message)
 

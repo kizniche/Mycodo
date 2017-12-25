@@ -66,6 +66,8 @@ A Python 3 compatible binary version of opencv, whoch doesn't require an extreme
  - Fix 500 error if 1-wire support isn't enabled
  - Fix Edge Detection Input callback function missing required parameter
  - Fix LCD display of Output duty cycle
+ - Fix email notification
+ - Make Conditional email notification send after last Action to include all Actions in message
 
 ### Miscellaneous
 
