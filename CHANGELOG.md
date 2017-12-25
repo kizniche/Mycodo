@@ -1,14 +1,14 @@
-## 5.5.0 (2017-12-25)
+## 4.5.0 (2017-12-25)
 
 Merry Christmas!
 
-With the release of 5.5.0, Mycodo becomes modern by migrating from Python 2.7.9 to Python 3 (3.5.3 if on Raspbian Stretch, 3.4.2 if on Raspbian Jessie). This release also brings a big switch from apache2+mod_wsgi to nginx+gunicorn as the web server.
+With the release of 4.5.0, Mycodo becomes modern by migrating from Python 2.7.9 to Python 3 (3.5.3 if on Raspbian Stretch, 3.4.2 if on Raspbian Jessie). This release also brings a big switch from apache2+mod_wsgi to nginx+gunicorn as the web server.
 
 ### Issues
 
 ***You may experience an error during the upgrade that doesn't allow it to complete***
 
-***It will no longer be possible to restore pre-5.5.0 backups***
+***It will no longer be possible to restore pre-4.5.0 backups***
 
 ***All users will be logged out of the web UI during the upgrade***
 
@@ -16,9 +16,9 @@ With the release of 5.5.0, Mycodo becomes modern by migrating from Python 2.7.9 
 
 ***OpenCV has been removed as a camera module***
 
-If you rely on your system to work, it is highly recommended that you ***DO NOT UPGRADE***. Wait until your system is no longer performing critical tasks to upgrade, in order to allow yourself the ability to thoroughly test your particular configuration works as expected, and top perform a fresh install if the upgrade fails. Although most parts of the system have been tested to work, there is, as always, the potential for unforeseen issues (for instance, not every sensor that Mycodo supports has physically been tested). Read the following notes carefully to determine if you want to upgrade to 5.5.0 and newer versions.
+If you rely on your system to work, it is highly recommended that you ***DO NOT UPGRADE***. Wait until your system is no longer performing critical tasks to upgrade, in order to allow yourself the ability to thoroughly test your particular configuration works as expected, and top perform a fresh install if the upgrade fails. Although most parts of the system have been tested to work, there is, as always, the potential for unforeseen issues (for instance, not every sensor that Mycodo supports has physically been tested). Read the following notes carefully to determine if you want to upgrade to 4.5.0 and newer versions.
 
-#### Failure during the upgrade to >= 5.5.0
+#### Failure during the upgrade to >= 4.5.0
 
 I found that occasionally the upgrade will spontaneously stop without an indication of the issue. I've seen it happen during an apt-get install and during a pip upgrade. It does not seem consistent, and there were no erorrs, therefore it wasn't able to be fixed. If you experience an error during the upgrade that doesn't allow the upgrade to complete, issue the following commands to attempt to resume and complete the upgrade. If that doesn't fix it, you may have to install Mycodo from scratch.
 
@@ -27,15 +27,15 @@ sudo dpkg --configure -a
 sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
 ```
 
-#### No restoring of pre-5.5.0 backups
+#### No restoring of pre-4.5.0 backups
 
-Restoring pre-5.5.0 backups will not work. This is due to the moving of the pip virtual environments during the restore, the post-5.5.0 (python3) virtualenv not being compatible with the pre-5.5.0 virtualenv (python2), and moving from the apache2 web server to nginx. If you absolutely need to restore a backup, it must be done manually. Create a new github issue to get asistance with this.
+Restoring pre-4.5.0 backups will not work. This is due to the moving of the pip virtual environments during the restore, the post-4.5.0 (python3) virtualenv not being compatible with the pre-4.5.0 virtualenv (python2), and moving from the apache2 web server to nginx. If you absolutely need to restore a backup, it must be done manually. Create a new github issue to get asistance with this.
 
 Also with this release, exporting and importing both the Mycodo settings database and InfluxDB measurement database has been added. These may be imported back into Mycodo at a later timer. Currently, the InfluxDB (measurement) database may be imported into any other version of Mycodo, and the Mycodo (settings) database may only be imported to the same version of Mycodo. Automatic upgrading or downgrading of the Mycodo database to allow cross-version compatibility will be included in a future release. For the meantime, if you need to restore Mycodo settings to a particular Mycodo version, you can do the following: download the tar.gz of the particular [Mycodo Release](https://github.com/kizniche/Mycodo/releases) compatible with your database backup, extract, install normally, import the Mycodo settings database, then perform an upgrade of Mycodo to the latest release.
 
 #### All users will be logged out during the upgrade
 
-Another consequence of changing from Python 2 to 3 is current browser cookies will cause an error with the web user interface. Therefore, all users will be logged out after upgrading to >= 5.5.0. This will cause some strange behavior that may be misconstrued as a failed upgrade:
+Another consequence of changing from Python 2 to 3 is current browser cookies will cause an error with the web user interface. Therefore, all users will be logged out after upgrading to >= 4.5.0. This will cause some strange behavior that may be misconstrued as a failed upgrade:
  
  1. The upgrade log will not update during the upgrade. Give the upgrade ample time to finish, or monitor the upgrade log from the command line.
  
