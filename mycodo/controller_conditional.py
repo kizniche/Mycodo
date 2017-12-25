@@ -189,7 +189,7 @@ class ConditionalController(threading.Thread):
             Conditional, device_id=cond_id, entry='first')
 
         now = time.time()
-        timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
+        timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
         message = "{ts}\n[Conditional {id} ({name})]".format(
             ts=timestamp,
             name=cond.name,

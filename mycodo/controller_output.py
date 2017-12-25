@@ -537,7 +537,7 @@ class OutputController(threading.Thread):
         # for this particular Output device
         for each_conditional in conditionals.all():
             now = time.time()
-            timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
+            timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
             message = "{ts}\n[Conditional {cid} ({cname})] Output {oid} ({name}) {state}".format(
                 ts=timestamp,
                 cid=each_conditional.id,
