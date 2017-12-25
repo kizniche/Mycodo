@@ -18,7 +18,7 @@ With the release of 5.5.0, Mycodo becomes modern by migrating from Python 2.7.9 
 
 If you rely on your system to work, it is highly recommended that you ***DO NOT UPGRADE***. Wait until your system is no longer performing critical tasks to upgrade, in order to allow yourself the ability to thoroughly test your particular configuration works as expected, and top perform a fresh install if the upgrade fails. Although most parts of the system have been tested to work, there is, as always, the potential for unforeseen issues (for instance, not every sensor that Mycodo supports has physically been tested). Read the following notes carefully to determine if you want to upgrade to 5.5.0 and newer versions.
 
-### Failure during the upgrade to >= 5.5.0
+#### Failure during the upgrade to >= 5.5.0
 
 I found that occasionally the upgrade will spontaneously stop without an indication of the issue. I've seen it happen during an apt-get install and during a pip upgrade. It does not seem consistent, and there were no erorrs, therefore it wasn't able to be fixed. If you experience an error during the upgrade that doesn't allow the upgrade to complete, issue the following commands to attempt to resume and complete the upgrade. If that doesn't fix it, you may have to install Mycodo from scratch.
 
