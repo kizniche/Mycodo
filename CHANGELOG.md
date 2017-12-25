@@ -1,3 +1,11 @@
+## 5.5.1 (Unreleased)
+
+### Bugfixes
+
+ - Fix inability to send Conditional email notification to multiple recipients
+ - Fix inability to select LCDs as Conditional Actions
+
+
 ## 5.5.0 (2017-12-25)
 
 Merry Christmas!

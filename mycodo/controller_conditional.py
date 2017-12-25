@@ -38,6 +38,7 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import Input
+from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
@@ -182,7 +183,7 @@ class ConditionalController(threading.Thread):
         :param cond_id: The Conditional ID to check
         :return:
         """
-        logger_cond = logging.getLogger("mycodo.utils.conditional_{id}".format(
+        logger_cond = logging.getLogger("mycodo.conditional_{id}".format(
             id=cond_id))
 
         cond = db_retrieve_table_daemon(
@@ -284,7 +285,7 @@ class ConditionalController(threading.Thread):
                 message += " {state} GPIO State Detected.".format(
                     state=cond.if_sensor_gpio_state)
             else:
-                # Not configured correctly or GPIO state not verified
+                logger_cond.error("GPIO not configured correctly or GPIO state not verified")
                 return
 
         # If the code hasn't returned by now, the conditional has been triggered
@@ -308,17 +309,23 @@ class ConditionalController(threading.Thread):
         :param last_measurement: The last measurement value
         :return:
         """
-        logger_cond = logging.getLogger("mycodo.utils.conditional_actions_{id}".format(
+        logger_cond = logging.getLogger("mycodo.conditional_{id}".format(
             id=cond_id))
 
-        cond_actions = db_retrieve_table_daemon(ConditionalActions)
-        cond_actions = cond_actions.filter(
-            ConditionalActions.conditional_id == cond_id).all()
+        # List of all email notification recipients
+        # List is appended with TO email addresses when an email Action is
+        # encountered. An email is sent to all recipients after all actions
+        # have been executed.
+        email_recipients = []
 
         attachment_file = False
         attachment_type = False
         input_dev = None
         device = None
+
+        cond_actions = db_retrieve_table_daemon(ConditionalActions)
+        cond_actions = cond_actions.filter(
+            ConditionalActions.conditional_id == cond_id).all()
 
         if device_id:
             input_dev = db_retrieve_table_daemon(
@@ -336,7 +343,6 @@ class ConditionalController(threading.Thread):
             if pid:
                 device = pid
 
-        send_email_at_end = None
         for cond_action in cond_actions:
             message += "\n[Conditional Action {id}]:".format(
                 id=cond_action.id, do_action=cond_action.do_action)
@@ -458,7 +464,7 @@ class ConditionalController(threading.Thread):
 
                 # If the emails per hour limit has not been exceeded
                 if self.allowed_to_send_notice:
-                    send_email_at_end = cond_action.do_action_string
+                    email_recipients.append(cond_action.do_action_string)
                     message += " Notify {email}.".format(
                         email=cond_action.do_action_string)
                     # attachment_type != False indicates to
@@ -475,8 +481,11 @@ class ConditionalController(threading.Thread):
                             sec=self.smtp_wait_timer[cond_id] - time.time()))
 
             elif cond_action.do_action == 'flash_lcd':
-                message += " Flashing LCD ({id}).".format(
-                    id=cond_action.do_lcd_id)
+                lcd = db_retrieve_table_daemon(
+                    LCD, device_id=cond_action.do_lcd_id)
+                message += " Flash LCD {id} ({name}).".format(
+                    id=lcd.id,
+                    name=lcd.name)
 
                 start_flashing = threading.Thread(
                     target=self.control.flash_lcd,
@@ -486,11 +495,11 @@ class ConditionalController(threading.Thread):
         # Send email after all conditional actions have been checked
         # In order to append all action messages to send in the email
         # send_email_at_end will be None or the TO email address
-        if send_email_at_end:
+        if email_recipients:
             smtp = db_retrieve_table_daemon(SMTP, entry='first')
             send_email(smtp.host, smtp.ssl, smtp.port,
                        smtp.user, smtp.passw, smtp.email_from,
-                       send_email_at_end, message,
+                       email_recipients, message,
                        attachment_file, attachment_type)
 
         logger_cond.debug(message)

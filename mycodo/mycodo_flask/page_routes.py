@@ -809,6 +809,7 @@ def page_function():
     conditional = Conditional.query.all()
     conditional_actions = ConditionalActions.query.all()
     input_dev = Input.query.all()
+    lcd = LCD.query.all()
     math = Math.query.all()
     method = Method.query.all()
     output = Output.query.all()
@@ -924,6 +925,7 @@ def page_function():
                            form_mod_pid_relay_raise=form_mod_pid_output_raise,
                            form_mod_pid_relay_lower=form_mod_pid_output_lower,
                            input=input_dev,
+                           lcd=lcd,
                            math=math,
                            measurements=MEASUREMENTS,
                            method=method,
