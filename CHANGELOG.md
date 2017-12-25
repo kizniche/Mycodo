@@ -1,4 +1,6 @@
-## 5.5.0 (2017-12-20)
+## 5.5.0 (2017-12-25)
+
+Merry Christmas!
 
 With the release of 5.5.0, Mycodo becomes modern by migrating from Python 2.7.9 to Python 3 (3.5.3 if on Raspbian Stretch, 3.4.2 if on Raspbian Jessie). This release also brings a big switch from apache2+mod_wsgi to nginx+gunicorn as the web server.
 
@@ -14,7 +16,7 @@ With the release of 5.5.0, Mycodo becomes modern by migrating from Python 2.7.9 
 
 ***OpenCV has been removed as a camera module***
 
-If you rely on your system to work, it is highly recommended that you ***DO NOT UPGRADE***. Wait until your system is no longer performing critical tasks to upgrade, in order to allow yourself the ability to thoroughly test your particular configuration works as expected, and top perform a fresh install if the upgrade fails. Although most parts of the system have been tested to work, there is, as always, the potential for unforseen issues (for instance, not every sensor that Mycodo supports has physically been tested). Read the following notes carefully to determine if you want to upgrade to 5.5.0 and newer versions.
+If you rely on your system to work, it is highly recommended that you ***DO NOT UPGRADE***. Wait until your system is no longer performing critical tasks to upgrade, in order to allow yourself the ability to thoroughly test your particular configuration works as expected, and top perform a fresh install if the upgrade fails. Although most parts of the system have been tested to work, there is, as always, the potential for unforeseen issues (for instance, not every sensor that Mycodo supports has physically been tested). Read the following notes carefully to determine if you want to upgrade to 5.5.0 and newer versions.
 
 ### Failure during the upgrade to >= 5.5.0
 
