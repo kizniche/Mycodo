@@ -1,3 +1,10 @@
+## 5.5.2 (Unreleased)
+
+### Bugfixes
+
+ - Add more log lines to find out exactly which part makes the end of an upgrade hang
+
+
 ## 5.5.1 (2017-12-25)
 
 ### Bugfixes
