@@ -480,7 +480,8 @@ class ConditionalController(threading.Thread):
                         "Wait {sec:.0f} seconds to email again.".format(
                             sec=self.smtp_wait_timer[cond_id] - time.time()))
 
-            elif cond_action.do_action == 'flash_lcd':
+            # TODO: rename flash_lcd in user databases to flash_lcd_on
+            elif cond_action.do_action in ['flash_lcd', 'flash_lcd_on']:
                 lcd = db_retrieve_table_daemon(
                     LCD, device_id=cond_action.do_lcd_id)
                 message += " Flash LCD On {id} ({name}).".format(
