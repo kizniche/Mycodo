@@ -189,8 +189,7 @@ def lcd_deactivate(lcd_id):
 
 def lcd_reset_flashing(lcd_id):
     control = DaemonControl()
-    return_value, return_msg = control.flash_lcd(
-        lcd_id, 0)
+    return_value, return_msg = control.lcd_flash(lcd_id, False)
     if return_value:
         flash(gettext("%(msg)s", msg=return_msg), "success")
     else:

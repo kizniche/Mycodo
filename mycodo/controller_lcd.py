@@ -460,7 +460,7 @@ class LCDController(threading.Thread):
 
         self.lcd_line[display_id][line]['setup'] = True
 
-    def flash_lcd(self, state):
+    def lcd_flash(self, state):
         """ Enable the LCD to begin or end flashing """
         if state:
             self.flash_lcd_on = True
@@ -473,10 +473,10 @@ class LCDController(threading.Thread):
 
     def lcd_backlight(self, state):
         """ Turn the backlight on or off """
-        if state == 1:
+        if state:
             self.lcd_is_on = True
             self.lcd_byte(0x01, self.LCD_CMD, self.LCD_BACKLIGHT)
-        elif state == 0:
+        else:
             self.lcd_is_on = False
             self.lcd_byte(0x01, self.LCD_CMD, self.LCD_BACKLIGHT_OFF)
 

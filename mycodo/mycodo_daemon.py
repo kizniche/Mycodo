@@ -86,9 +86,14 @@ def mycodo_service(mycodo):
         """
 
         @staticmethod
-        def exposed_flash_lcd(lcd_id, state):
+        def exposed_lcd_backlight(lcd_id, state):
+            """Turns an LCD backlight on or off"""
+            return mycodo.lcd_backlight(lcd_id, state)
+
+        @staticmethod
+        def exposed_lcd_flash(lcd_id, state):
             """Starts or stops an LCD from flashing (alarm)"""
-            return mycodo.flash_lcd(lcd_id, state)
+            return mycodo.lcd_flash(lcd_id, state)
 
         @staticmethod
         def exposed_controller_activate(cont_type, cont_id):
@@ -551,7 +556,32 @@ class DaemonController:
             self.logger.exception(message)
             return "Exception: {msg}".format(msg=except_msg)
 
-    def flash_lcd(self, lcd_id, state):
+    def lcd_backlight(self, lcd_id, state):
+        """
+        Turn on or off the LCD backlight
+
+        :return: success or error message
+        :rtype: str
+
+        :param lcd_id: Which LCD controller ID is to be affected?
+        :type lcd_id: str
+        :param state: Turn flashing on (1) or off (0)
+        :type state: bool
+
+        """
+        try:
+            return self.controller['LCD'][lcd_id].lcd_backlight(state)
+        except KeyError:
+            message = "Cannot stop flashing, LCD not running"
+            self.logger.exception(message)
+            return 0, message
+        except Exception as except_msg:
+            message = "Could not flash LCD:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+
+
+    def lcd_flash(self, lcd_id, state):
         """
         Begin or end a repeated flashing of an LCD
 
@@ -560,12 +590,12 @@ class DaemonController:
 
         :param lcd_id: Which LCD controller ID is to be affected?
         :type lcd_id: str
-        :param state: Turn flashing on (1) or off (0)
-        :type state: int
+        :param state: Turn flashing on (1/True) or off (0/False)
+        :type state: bool
 
         """
         try:
-            return self.controller['LCD'][lcd_id].flash_lcd(state)
+            return self.controller['LCD'][lcd_id].lcd_flash(state)
         except KeyError:
             message = "Cannot stop flashing, LCD not running"
             self.logger.exception(message)

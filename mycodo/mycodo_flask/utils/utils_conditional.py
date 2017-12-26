@@ -176,7 +176,10 @@ def conditional_action_mod(form):
             mod_action.do_action_string = form.do_action_string.data
             mod_action.do_camera_id = form.do_camera_id.data
 
-        elif mod_action.do_action == 'flash_lcd':
+        elif mod_action.do_action in ['flash_lcd',
+                                      'flash_lcd_off',
+                                      'lcd_backlight_off',
+                                      'lcd_backlight_on']:
             mod_action.do_lcd_id = form.do_lcd_id.data
 
         elif mod_action.do_action == 'photo':

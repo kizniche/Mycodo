@@ -483,13 +483,49 @@ class ConditionalController(threading.Thread):
             elif cond_action.do_action == 'flash_lcd':
                 lcd = db_retrieve_table_daemon(
                     LCD, device_id=cond_action.do_lcd_id)
-                message += " Flash LCD {id} ({name}).".format(
+                message += " Flash LCD On {id} ({name}).".format(
                     id=lcd.id,
                     name=lcd.name)
 
                 start_flashing = threading.Thread(
                     target=self.control.flash_lcd,
-                    args=(cond_action.do_lcd_id, 1,))
+                    args=(cond_action.do_lcd_id, True,))
+                start_flashing.start()
+
+            elif cond_action.do_action == 'flash_lcd_off':
+                lcd = db_retrieve_table_daemon(
+                    LCD, device_id=cond_action.do_lcd_id)
+                message += " Flash LCD Off {id} ({name}).".format(
+                    id=lcd.id,
+                    name=lcd.name)
+
+                start_flashing = threading.Thread(
+                    target=self.control.flash_lcd,
+                    args=(cond_action.do_lcd_id, False,))
+                start_flashing.start()
+
+            elif cond_action.do_action == 'lcd_backlight_off':
+                lcd = db_retrieve_table_daemon(
+                    LCD, device_id=cond_action.do_lcd_id)
+                message += " LCD Backlight Off {id} ({name}).".format(
+                    id=lcd.id,
+                    name=lcd.name)
+
+                start_flashing = threading.Thread(
+                    target=self.control.lcd_backlight,
+                    args=(cond_action.do_lcd_id, False,))
+                start_flashing.start()
+
+            elif cond_action.do_action == 'lcd_backlight_on':
+                lcd = db_retrieve_table_daemon(
+                    LCD, device_id=cond_action.do_lcd_id)
+                message += " LCD Backlight On {id} ({name}).".format(
+                    id=lcd.id,
+                    name=lcd.name)
+
+                start_flashing = threading.Thread(
+                    target=self.control.lcd_backlight,
+                    args=(cond_action.do_lcd_id, True,))
                 start_flashing.start()
 
         # Send email after all conditional actions have been checked

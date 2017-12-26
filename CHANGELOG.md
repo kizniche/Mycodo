@@ -1,5 +1,9 @@
 ## 5.5.2 (Unreleased)
 
+### Features
+
+ - Add Conditional Actions: Flash LCD Off, LCD Backlight On, LCD Backlight Off ([#363](https://github.com/kizniche/mycodo/issues/363))
+
 ### Bugfixes
 
  - Add more log lines to find out exactly which part makes the end of an upgrade hang

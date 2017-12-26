@@ -1,0 +1,111 @@
+{% if each_cond_action.do_action == 'output' %}
+
+<div class="col-sm-3 col-md-4">
+  {{form_conditional_actions.do_relay_id.label(class_='control-label')}}
+  <select class="form-control form-tooltip form-dropdown" id="do_relay_id" name="do_relay_id" data-placement="top" title="{{_('What relay to manipulate')}}">
+    <option value=""></option>
+    {%- for each_output in output if each_output.relay_type != 'pwm' -%}
+      <option value="{{each_output.id}}"{% if each_cond_action.do_relay_id == each_output.id %} selected{% endif %}>{{each_output.id}} ({{each_output.name}})</option>
+    {%- endfor -%}
+  </select>
+</div>
+<div class="col-sm-2 col-md-2">
+  <label class='control-label'>{{_('Turn')}}</label>
+  <select class="form-control form-tooltip form-dropdown" id="do_relay_state" name="do_relay_state" data-placement="top" title="{{_('Turn the relay on or off')}}">
+    <option value=""></option>
+    <option value="on"{% if each_cond_action.do_relay_state == 'on' %} selected{% endif %}>{{_('On')}}</option>
+    <option value="off"{% if each_cond_action.do_relay_state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
+  </select>
+</div>
+<div class="col-sm-1 col-md-2">
+  <label class='control-label'>{{_('Seconds')}}</label>
+  {{form_conditional_actions.do_relay_duration(class_='form-control', value=each_cond_action.do_relay_duration, **{'title':_('How long to turn the relay on (optional)'), 'size':'3'})}}
+</div>
+
+{% elif each_cond_action.do_action == 'email' %}
+
+<div class="col-sm-6 col-md-8">
+  <label class='control-label'>{{_('Email Address')}}</label>
+  <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
+    <option value=""></option>
+    {%- for each_user in user -%}
+      <option value="{{each_user.email}}"{% if each_cond_action.do_action_string == each_user.email %} selected{% endif %}>{{each_user.email}}</option>
+    {%- endfor -%}
+  </select>
+</div>
+
+{% elif each_cond_action.do_action in ['flash_lcd',
+                                       'flash_lcd_off',
+                                       'lcd_backlight_off',
+                                       'lcd_backlight_on'] %}
+
+<div class="col-sm-6 col-md-8">
+  <label class='control-label'>{{_('LCD')}}</label>
+  <select class="form-control form-tooltip form-dropdown" id="do_lcd_id" name="do_lcd_id" data-placement="top" title="{{_('LCD to flash')}}">
+    <option value=""></option>
+    {%- for each_lcd in lcd -%}
+      <option value="{{each_lcd.id}}"{% if each_cond_action.do_lcd_id == each_lcd.id %} selected{% endif %}>{{each_lcd.id}} ({{each_lcd.name}})</option>
+    {%- endfor -%}
+  </select>
+</div>
+
+{% elif each_cond_action.do_action == 'photo' %}
+
+<div class="col-sm-6 col-md-8">
+  <label class='control-label'>{{_('Camera')}}</label>
+  <select class="form-control form-tooltip form-dropdown" id="do_camera_id" name="do_camera_id" data-placement="top" title="{{_('Camera to capture with')}}">
+    <option value=""></option>
+    {%- for each_camera in camera -%}
+      <option value="{{each_camera.id}}"{% if each_cond_action.do_camera_id == each_camera.id %} selected{% endif %}>{{each_camera.id}} ({{each_camera.name}})</option>
+    {%- endfor -%}
+  </select>
+</div>
+
+{% elif each_cond_action.do_action == 'photo_email' %}
+
+<div class="col-sm-6 col-md-8">
+  <label class='control-label'>{{_('Email Address')}}</label>
+  <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
+    <option value=""></option>
+    {%- for each_user in user -%}
+      <option value="{{each_user.email}}"{% if each_cond_action.do_action_string == each_user.email %} selected{% endif %}>{{each_user.email}}</option>
+    {%- endfor -%}
+  </select>
+</div>
+
+{% elif each_cond_action.do_action == 'video' %}
+
+<div class="col-sm-3 col-md-5">
+  <label class='control-label'>{{_('Camera')}}</label>
+  <select class="form-control form-tooltip form-dropdown" id="do_camera_id" name="do_camera_id" data-placement="top" title="{{_('Camera to capture with')}}">
+    <option value=""></option>
+    {%- for each_camera in camera -%}
+      <option value="{{each_camera.id}}"{% if each_cond_action.do_camera_id == each_camera.id %} selected{% endif %}>{{each_camera.id}} ({{each_camera.name}})</option>
+    {%- endfor -%}
+  </select>
+</div>
+<div class="col-sm-3 col-md-3">
+  {{form_conditional_actions.do_camera_duration.label(class_='control-label')}}
+  {{form_conditional_actions.do_camera_duration(class_='form-control', value=each_cond_action.do_camera_duration, **{'title':_('Duration to record video (sec)')})}}
+</div>
+
+{% elif each_cond_action.do_action == 'video_email' %}
+
+<div class="col-sm-6 col-md-8">
+  <label class='control-label'>{{_('Email Address')}}</label>
+  <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
+    <option value=""></option>
+    {%- for each_user in user -%}
+      <option value="{{each_user.email}}"{% if each_cond_action.do_action_string == each_user.email %} selected{% endif %}>{{each_user.email}}</option>
+    {%- endfor -%}
+  </select>
+</div>
+
+{% elif each_cond_action.do_action == 'command' %}
+
+<div class="col-sm-6 col-md-8">
+  <label class='control-label'>{{_('Command')}}</label>
+  {{form_conditional_actions.do_action_string(class_='form-control', value=each_cond_action.do_action_string, **{'title':_('Command to execute (as user "mycodo")')})}}
+</div>
+
+{% endif %}

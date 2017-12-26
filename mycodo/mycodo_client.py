@@ -78,8 +78,11 @@ class DaemonControl:
     def daemon_status(self):
         return self.rpyc_client.root.daemon_status()
 
-    def flash_lcd(self, lcd_id, state):
-        return self.rpyc_client.root.flash_lcd(lcd_id, state)
+    def lcd_backlight(self, lcd_id, state):
+        return self.rpyc_client.root.lcd_backlight(lcd_id, state)
+
+    def lcd_flash(self, lcd_id, state):
+        return self.rpyc_client.root.lcd_flash(lcd_id, state)
 
     def is_in_virtualenv(self):
         return self.rpyc_client.root.is_in_virtualenv()
