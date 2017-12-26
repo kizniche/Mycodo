@@ -87,7 +87,7 @@ class MHZ19Sensor(AbstractInput):
         if lock_acquired:
             self.ser.flushInput()
             time.sleep(1)
-            self.ser.write("\xff\x01\x86\x00\x00\x00\x00\x00\x79")
+            self.ser.write("\xff\x01\x86\x00\x00\x00\x00\x00\x79".encode())
             time.sleep(.01)
             resp = self.ser.read(9)
             if len(resp) != 0:

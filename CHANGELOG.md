@@ -1,4 +1,4 @@
-## 5.5.1 (Unreleased)
+## 5.5.1 (2017-12-25)
 
 ### Bugfixes
 
@@ -6,6 +6,7 @@
  - Fix inability to select LCDs as Conditional Actions
  - Fix BME280 sensor module ([#358](https://github.com/kizniche/mycodo/issues/358))
  - Fix TSL2591 sensor module
+ - Fix MHZ16/MHZ19 unicode errors (still investigating other potential issues reading these sensors)
 
 
 ## 5.5.0 (2017-12-25)
