@@ -91,8 +91,8 @@ class MHZ19Sensor(AbstractInput):
             time.sleep(.01)
             resp = self.ser.read(9)
             if len(resp) != 0:
-                high = ord(resp[2])
-                low = ord(resp[3])
+                high = resp[2]
+                low = resp[3]
                 co2 = (high * 256) + low
             lock.release()
         else:
