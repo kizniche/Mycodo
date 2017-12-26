@@ -4,6 +4,8 @@
 
  - Fix inability to send Conditional email notification to multiple recipients
  - Fix inability to select LCDs as Conditional Actions
+ - Fix BME280 sensor module ([#358](https://github.com/kizniche/mycodo/issues/358))
+ - Fix TSL2591 sensor module
 
 
 ## 5.5.0 (2017-12-25)
