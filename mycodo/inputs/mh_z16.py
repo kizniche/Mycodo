@@ -131,12 +131,12 @@ class MHZ16Sensor(AbstractInput):
             if lock_acquired:
                 self.ser.flushInput()
                 time.sleep(1)
-                self.ser.write("\xff\x01\x86\x00\x00\x00\x00\x00\x79".encode())
+                self.ser.write(bytearray([0xff, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79]))
                 time.sleep(.01)
                 resp = self.ser.read(9)
                 if len(resp) != 0:
-                    high_level = struct.unpack('B', resp[2])[0]
-                    low_level = struct.unpack('B', resp[3])[0]
+                    high_level = resp[2]
+                    low_level = resp[3]
                     co2 = high_level * 256 + low_level
                 lock.release()
             else:
