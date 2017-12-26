@@ -3,6 +3,8 @@
 ### Bugfixes
 
  - Add more log lines to find out exactly which part makes the end of an upgrade hang
+ - Fix MHZ16/19 UART communication ([#359](https://github.com/kizniche/mycodo/issues/359))
+ - Fix missing I2C devices from System Information page ([#354](https://github.com/kizniche/mycodo/issues/354))
 
 
 ## 5.5.1 (2017-12-25)
