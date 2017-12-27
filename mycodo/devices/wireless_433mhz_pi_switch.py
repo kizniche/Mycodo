@@ -44,7 +44,6 @@ class Transmit433MHz:
 
     def transmit(self, cmd):
         try:
-            self.device = RCSwitchSender()
             self.device = RFDevice(self.pin)
             self.device.enable_tx()
             self.device.tx_code(cmd, self.protocol, self.pulse_length)
