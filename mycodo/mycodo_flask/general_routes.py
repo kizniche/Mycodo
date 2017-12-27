@@ -125,6 +125,7 @@ def gpio_state():
                 state[each_output.id] = 'off'
         elif (each_output.relay_type == 'command' or
                 (each_output.relay_type in ['pwm', 'wireless_433MHz_pi_switch'] and
+                 each_output.pin and
                  -1 < each_output.pin < 40)):
             state[each_output.id] = daemon_control.relay_state(each_output.id)
         else:
