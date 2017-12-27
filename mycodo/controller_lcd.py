@@ -94,9 +94,6 @@ class LCDController(threading.Thread):
         self.display_ids = []
         self.display_count = 0
 
-        self.pause_loop = False
-        self.verify_pause_loop = True
-
         try:
             lcd = db_retrieve_table_daemon(LCD, device_id=self.lcd_id)
             self.lcd_name = lcd.name
@@ -228,13 +225,6 @@ class LCDController(threading.Thread):
             self.ready.set()
 
             while self.running:
-                # Pause loop to reset LCD.
-                # Prevents writing to LCD while resetting the LCD
-                if self.pause_loop:
-                    self.verify_pause_loop = True
-                    while self.pause_loop:
-                        time.sleep(0.1)
-
                 if (self.lcd_is_on and
                         self.lcd_initilized and
                         time.time() > self.timer):
@@ -269,6 +259,10 @@ class LCDController(threading.Thread):
                             self.display_count = 0
 
                     self.timer = time.time() + self.lcd_period
+
+                elif not self.lcd_is_on:
+                    # Turn backlight off
+                    self.lcd_byte(0x01, self.LCD_CMD, self.LCD_BACKLIGHT_OFF)
 
                 if self.flash_lcd_on:
                     if time.time() > self.backlight_timer:
@@ -477,37 +471,20 @@ class LCDController(threading.Thread):
         """ Enable the LCD to begin or end flashing """
         if state:
             self.flash_lcd_on = True
-            return 1, "LCD {} flashing turned on".format(self.lcd_id)
+            return 1, "LCD {} Flashing Turned On".format(self.lcd_id)
         else:
-            # Signal to pause the main loop and wait for verification
-            self.pause_loop = True
-            while not self.verify_pause_loop:
-                time.sleep(0.1)
-
-            # Reset LCD states such as flashing or backlight off
-            self.output_lcds()
             self.flash_lcd_on = False
-
-            self.pause_loop = False
-            self.verify_pause_loop = False
-            return 1, "LCD {} flashing turned off".format(self.lcd_id)
+            self.lcd_backlight(True)
+            return 1, "LCD {} Reset".format(self.lcd_id)
 
     def lcd_backlight(self, state):
         """ Turn the backlight on or off """
-        # Signal to pause the main loop and wait for verification
-        self.pause_loop = True
-        while not self.verify_pause_loop:
-            time.sleep(0.1)
-
         if state:
             self.lcd_is_on = True
             self.lcd_byte(0x01, self.LCD_CMD, self.LCD_BACKLIGHT)
+            self.timer = time.time() - 1  # Induce LCD to update after turning backlight on
         else:
-            self.lcd_is_on = False
-            self.lcd_byte(0x01, self.LCD_CMD, self.LCD_BACKLIGHT_OFF)
-
-        self.pause_loop = False
-        self.verify_pause_loop = False
+            self.lcd_is_on = False  # Instruct LCD backlight to turn off
 
     def lcd_init(self):
         """ Initialize LCD display """

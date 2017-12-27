@@ -79,7 +79,7 @@ class LCDMod(FlaskForm):
     deactivate = SubmitField(lazy_gettext('Deactivate'))
     reorder_up = SubmitField(lazy_gettext('Up'))
     reorder_down = SubmitField(lazy_gettext('Down'))
-    reset_flashing = SubmitField(lazy_gettext('Reset Flashing'))
+    reset_flashing = SubmitField(lazy_gettext('Reset LCD'))
 
 
 class LCDModDisplay(FlaskForm):
