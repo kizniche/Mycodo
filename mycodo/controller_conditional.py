@@ -489,7 +489,7 @@ class ConditionalController(threading.Thread):
                     name=lcd.name)
 
                 start_flashing = threading.Thread(
-                    target=self.control.flash_lcd,
+                    target=self.control.lcd_flash,
                     args=(cond_action.do_lcd_id, True,))
                 start_flashing.start()
 
@@ -501,7 +501,7 @@ class ConditionalController(threading.Thread):
                     name=lcd.name)
 
                 start_flashing = threading.Thread(
-                    target=self.control.flash_lcd,
+                    target=self.control.lcd_flash,
                     args=(cond_action.do_lcd_id, False,))
                 start_flashing.start()
 
