@@ -108,8 +108,11 @@ case "${1:-''}" in
     'restart-web-server')
         printf "\n#### Restarting nginx"
         service nginx restart
-        printf "\n#### Restarting mycodoflask"
-        service mycodoflask restart
+
+        sleep 1
+
+        printf "\n#### Reloading mycodoflask"
+        service mycodoflask reload
 
         sleep 5
 

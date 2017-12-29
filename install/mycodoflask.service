@@ -16,6 +16,5 @@ ExecStart=/var/www/mycodo/env/bin/gunicorn \
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
 
-
 [Install]
 WantedBy=multi-user.target
