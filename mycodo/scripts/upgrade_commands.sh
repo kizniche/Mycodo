@@ -106,17 +106,10 @@ case "${1:-''}" in
         service mycodo start
     ;;
     'restart-web-server')
-        printf "\n#### Stopping nginx"
-        service nginx stop
-        printf "\n#### Stopping mycodoflask"
-        service mycodoflask stop
-
-        sleep 1
-
-        printf "\n#### Starting nginx"
-        service nginx start
-        printf "\n#### Starting mycodoflask"
-        service mycodoflask start
+        printf "\n#### Reloading nginx"
+        service nginx reload
+        printf "\n#### Reloading mycodoflask"
+        service mycodoflask reload
 
         sleep 5
 

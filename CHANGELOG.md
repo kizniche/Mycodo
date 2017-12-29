@@ -1,3 +1,10 @@
+## 5.5.3 (Unreleased)
+
+### Bugfixes
+
+ - Fix issue with web UI and daemon not restarting properly after upgrade
+
+
 ## 5.5.2 (2017-12-27)
 
 ### Features
