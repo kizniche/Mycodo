@@ -238,7 +238,7 @@ if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh update-permi
 fi
 
 printf "\n\nRunning post-upgrade script...\n"
-if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_post.sh ; then
+if ! nohup ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_post.sh ; then
   printf "Failed: Error while running post-upgrade script.\n"
   error_found
 fi
@@ -248,7 +248,7 @@ printf "Upgrade completed successfully without errors.\n"
 echo '0' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
 rm \$0
 EOF
-  exec /bin/bash /tmp/upgrade_mycodo_stagetwo.sh
+  /user/bin/nohup /bin/bash /tmp/upgrade_mycodo_stagetwo.sh
 }
 
 runSelfUpgrade

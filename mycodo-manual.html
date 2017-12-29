@@ -454,18 +454,12 @@
 <p>The system coordinates a diverse set of responses to sensor measurements, including actions such as relay switching, regulation by <a href="https://en.wikipedia.org/wiki/PID_controller">PID control</a>, email notifications, camera captures, and more. Mycodo has been used for cultivating gourmet mushrooms, cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs and young animals, aging cheeses, fermenting foods, maintaining aquatic systems, and more.</p>
 <h1 id="brief-overview">Brief Overview</h1>
 <p>There are a number of different uses for Mycodo, from simple storing of sensor measurements, to regulating the environmental conditions of a physical space, to capturing motion-activated or timelapse photography. There are several components of the system that may be configured.</p>
-<h2 id="inputmath-controllers">Input/Math Controllers</h2>
 <p>Input/Math controllers acquire measurements and store them in a <a href="https://en.wikipedia.org/wiki/Time_series_database">time series database</a>. Measurements taken by an Input Controller typically come from sensors, but Input Controllers may also be configured to use the return value of a linux command, making integrating new input systems very easy.</p>
-<h2 id="output-controllers">Output Controllers</h2>
 <p>Output Controllers produce changes to the general input/output (GPIO) pins of the Raspberry Pi or may be configured to execute linux commands in order to allow an unlimited number of extra potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off.</p>
-<h2 id="pid-controllers">PID Controllers</h2>
 <p>When Inputs and Outputs are combined, PID Controllers may be used to create a feedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermentation or curing, and cooking food (<a href="https://en.wikipedia.org/wiki/Sous-vide">sous-vide</a>), to name a few.</p>
-<h2 id="timer-controllers">Timer Controllers</h2>
 <p>Timers can be set to trigger events based on specific dates and times or according to durations of time. Timers are fairly basic, but can be configured in very complex ways. Don’t underestimate a good timer.</p>
-<h2 id="lcd-controllers">LCD Controllers</h2>
-<p>LCDs may be set up to have a way to quickly view information, such as Input, Output, or PID controllers, and can be set to flash in case of triggered events, like an emergency, such as the temperature increasing beyond a certain point in an area that is supposed to be kept cold.</p>
 <h1 id="frequently-asked-questions">Frequently Asked Questions</h1>
-<p><em>Where do I even begin?</em></p>
+<p><em>How do I set up simple regulation?</em></p>
 <p>Here is how I generally set up Mycodo to monitor and regulate:</p>
 <ol type="1">
 <li>Determine what environmental condition you want to measure or regulate. Consider the devices that must be coupled to achieve this. For instance, temperature regulation require a temperature sensor as the input and an electric heater as the output.</li>
@@ -488,7 +482,7 @@
 <p>Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, an <a href="#schematics-for-ac-modulation">AC modulation circuit</a>, <a href="#schematics-for-dc-fan-control">DC modulation circuit</a>, or something else.</p>
 <hr />
 <p><em>What should I do if I have an issue?</em></p>
-<p>First, read the manual to make sure you understand how the system works and you’re using the system properly. ALso check out the <a href="https://github.com/kizniche/Mycodo/wiki">Wiki</a>. You may even want to look through recent <a href="https://github.com/kizniche/Mycodo/issues">Issues</a>. If you haven’t resolved your issue by this point, make a <a href="https://github.com/kizniche/Mycodo/issues/new">New Issue</a> describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid diagnostics.</p>
+<p>First, read the manual to make sure you understand how the system works and you’re using the system properly. ALso check out the <a href="https://github.com/kizniche/Mycodo/wiki">Wiki</a>. You may even want to look through recent <a href="https://github.com/kizniche/Mycodo/issues">Issues</a>. If you haven’t resolved your issue by this point, make a <a href="https://github.com/kizniche/Mycodo/issues/new">New Issue</a> describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid in diagnosing the issue.</p>
 <hr />
 <h1 id="upgrading">Upgrading</h1>
 <p>If you already have Mycodo installed (version &gt;= 4.0.0), you can perform an upgrade to the latest <a href="https://github.com/kizniche/Mycodo/releases">release</a> on github by either using the Upgrade option in the web UI (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at <code>/var/log/mycodo/mycodoupgrade.log</code></p>
@@ -498,8 +492,8 @@
 <h2 id="data">Data</h2>
 <p>Data includes controllers that produce and store data in the measurement database. Input controllers generally acquire measurements from sensors, but they may also come from executed commands. Math controllers, on the other hand, perform math on already-stored values to create new values that are stored.</p>
 <h3 id="input">Input</h3>
-<p>Inputs (such as sensors or analog signals) measure environmental and other characteristic conditions, which will be stored in an influxdb round-robin database. This database will provide recent measurements for <a href="#graphs">Graphs</a>, <a href="#lcds">LCDs</a>, <a href="#pid-controllers">PID Controllers</a>, <a href="#conditional-statements">Conditional Statements</a>, and other parts of Mycodo to operate from.</p>
-<p>Among the sensors is ‘Linux Command’. This is a way to use a custom script to return a value to be used within Mycodo, without having to edit the Mycodo code. Merely create your script and use this sensor to have the return value of the script be stored in the Mycodo database for use with PIDs and other parts of Mycodo that uses sensor measurements.</p>
+<p>Inputs (such as sensors or analog signals) measure environmental conditions, which will be stored in a time-series database (InfluxDB). This database will provide measurements for <a href="#graphs">Graphs</a>, <a href="#lcds">LCDs</a>, <a href="#pid-controllers">PID Controllers</a>, <a href="#conditional-statements">Conditional Statements</a>, and other parts of Mycodo to operate from.</p>
+<p>In addition to several supported sensors and devices, a Linux command may be specified that will be executed and the return value stored in the measurement database to be used throughout the Mycodo system.</p>
 <table style="width:94%;">
 <colgroup>
 <col style="width: 29%"></col>
@@ -885,9 +879,9 @@
 </tbody>
 </table>
 <h4 id="non-hardware-pwm-pins">Non-hardware PWM Pins</h4>
-<p>If using any non-hardware PWM pin (see table below for hardware PWM pins), then there are only certain frequencies that can be used. These frequencies are 40000, 20000, 10000, 8000, 5000, 4000, 2500, 2000, 1600, 1250, 1000, 800, 500, 400, 250, 200, 100, and 50 Hz. If you attempt to set a frequency that is not listed here, the nearest frequency from this list will be used.</p>
+<p>When using non-hardware PWM pins, there are only certain frequencies that can be used. These frequencies in Hertz are 40000, 20000, 10000, 8000, 5000, 4000, 2500, 2000, 1600, 1250, 1000, 800, 500, 400, 250, 200, 100, and 50 Hz. If you attempt to set a frequency that is not listed here, the nearest frequency from this list will be used.</p>
 <h4 id="hardware-pwm-pins">Hardware PWM Pins</h4>
-<p>The exact frequency may be set when using a hardware PWM pin. The same PWM channel is available on multiple GPIO. The latest frequency and duty cycle setting will be used by all GPIO pins which share a PWM channel.</p>
+<p>The exact frequency may be set when using hardware PWM pins. The same PWM channel is available on multiple GPIO. The latest frequency and duty cycle setting will be used by all GPIO pins which share a PWM channel.</p>
 <table>
 <thead>
 <tr class="header">
