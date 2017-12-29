@@ -111,8 +111,8 @@ case "${1:-''}" in
 
         sleep 1
 
-        printf "\n#### Reloading mycodoflask"
-        service mycodoflask reload
+        printf "\n#### Restarting mycodoflask"
+        service mycodoflask restart
 
         sleep 5
 

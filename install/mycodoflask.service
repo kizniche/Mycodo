@@ -1,5 +1,5 @@
 [Unit]
-Description=gunicorn daemon for Mycodo flask frontend
+Description=gunicorn daemon for Mycodo flask web user interface
 After=network.target
 
 [Service]
@@ -11,7 +11,7 @@ ExecStart=/var/www/mycodo/env/bin/gunicorn \
 --worker-class gthread \
 --threads 2 \
 --pid /var/lock/mycodoflask.pid \
---bind unix:/var/www/mycodo/mycodo/mycodoflask_socket.sock start_flask_ui:app
+--bind unix:/var/run/mycodoflask.sock start_flask_ui:app
 
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
