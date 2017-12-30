@@ -50,3 +50,5 @@ ${INSTALL_CMD} update-cron
 ${INSTALL_CMD} initialize
 
 ${INSTALL_CMD} restart-daemon
+
+${INSTALL_CMD} restart-web-server

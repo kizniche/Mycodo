@@ -245,9 +245,6 @@ fi
 printf "Done.\n\n"
 
 printf "Upgrade completed successfully without errors.\n"
-printf "The web server will now be restarted. If it doesn't restart properly, execute 'sudo service mycodoflask restart' from the command line or restart your Pi in order to access the web UI.\n"
-
-${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh restart-web-server
 
 echo '0' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
 rm \$0
