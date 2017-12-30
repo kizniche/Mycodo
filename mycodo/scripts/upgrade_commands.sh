@@ -109,7 +109,7 @@ case "${1:-''}" in
         printf "\n#### Restarting nginx"
         service nginx restart
 
-        sleep 1
+        sleep 5
 
         printf "\n#### Restarting mycodoflask"
         service mycodoflask restart

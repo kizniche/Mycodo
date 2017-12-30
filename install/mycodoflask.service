@@ -3,7 +3,7 @@ Description=gunicorn daemon for Mycodo flask web user interface
 After=network.target
 
 [Service]
-User=mycodo
+User=root
 Group=mycodo
 WorkingDirectory=/var/www/mycodo/mycodo
 ExecStart=/var/www/mycodo/env/bin/gunicorn \
