@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix issue with web UI and daemon not restarting properly after upgrade
+ - Fix issue with the log not updating properly on the Upgrade page
 
 
 ## 5.5.2 (2017-12-27)
