@@ -376,9 +376,9 @@ class DaemonController:
             while self.daemon_run:
                 now = time.time()
 
-                # Log ram usage every 24 hours
+                # Log ram usage every 5 days
                 if now > self.timer_ram_use:
-                    self.timer_ram_use = now + 86400
+                    self.timer_ram_use = now + 432000
                     self.log_ram_usage()
 
                 # Capture time-lapse image (if enabled)
@@ -984,25 +984,20 @@ class DaemonController:
 
     def send_stats(self):
         """Collect and send statistics"""
+        # Check if stats file exists, recreate if not
         try:
-            stat_dict = return_stat_file_dict(STATS_CSV)
-            if float(stat_dict['next_send']) < time.time():
-                add_update_csv(STATS_CSV, 'next_send', self.timer_stats)
-            else:
-                self.timer_stats = float(stat_dict['next_send'])
-        except KeyError:
-            self.logger.info(
-                "Regenerating stats file")
+            return_stat_file_dict(STATS_CSV)
+        except Exception as except_msg:
+            self.logger.exception(
+                "Error reading stats file: {err}".format(
+                    err=except_msg))
             try:
                 os.remove(STATS_CSV)
             except OSError:
                 pass
             recreate_stat_file()
-        except Exception as except_msg:
-            self.logger.exception(
-                "Error reading stats file: {err}".format(
-                    err=except_msg))
 
+        # Send stats
         try:
             send_anonymous_stats(self.start_time)
         except Exception as except_msg:
