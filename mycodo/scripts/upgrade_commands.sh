@@ -148,14 +148,6 @@ case "${1:-''}" in
         cd ${INSTALL_DIRECTORY}/Mycodo/databases
         ${INSTALL_DIRECTORY}/Mycodo/env/bin/alembic upgrade head
     ;;
-    'update-web-server')
-        printf "\n#### Installing and configuring nginx web server\n"
-        systemctl disable mycodoflask.service
-        rm -rf /etc/systemd/system/mycodoflask.service
-        ln -sf ${INSTALL_DIRECTORY}/Mycodo/install/mycodoflask_nginx.conf /etc/nginx/sites-enabled/default
-        systemctl enable nginx
-        systemctl enable ${INSTALL_DIRECTORY}/Mycodo/install/mycodoflask.service
-    ;;
     'update-apt')
         printf "\n\n#### Updating apt repositories\n"
         apt-get update
@@ -249,10 +241,6 @@ case "${1:-''}" in
         chown root:mycodo ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
         chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
     ;;
-    'update-pip')
-        printf "\n#### Updating pip\n"
-        ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip install --upgrade pip
-    ;;
     'update-pip3')
         printf "\n#### Updating pip3\n"
         ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip3 install --upgrade pip
@@ -276,6 +264,14 @@ case "${1:-''}" in
         else
             printf "#### Swap not currently set to 100 MB. Not changing.\n"
         fi
+    ;;
+    'update-web-server')
+        printf "\n#### Installing and configuring nginx web server\n"
+        systemctl disable mycodoflask.service
+        rm -rf /etc/systemd/system/mycodoflask.service
+        ln -sf ${INSTALL_DIRECTORY}/Mycodo/install/mycodoflask_nginx.conf /etc/nginx/sites-enabled/default
+        systemctl enable nginx
+        systemctl enable ${INSTALL_DIRECTORY}/Mycodo/install/mycodoflask.service
     ;;
     'update-wiringpi')
         printf "\n#### Installing wiringpi\n"

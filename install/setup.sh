@@ -63,8 +63,6 @@ ${INSTALL_CMD} update-influxdb
 
 ${INSTALL_CMD} update-influxdb-db-user
 
-${INSTALL_CMD} update-web-server
-
 ${INSTALL_CMD} update-logrotate
 
 ${INSTALL_CMD} generate-ssl-certs
@@ -76,6 +74,11 @@ ${INSTALL_CMD} compile-translations
 ${INSTALL_CMD} update-cron
 
 ${INSTALL_CMD} initialize
+
+${INSTALL_CMD} update-web-server
+
+service nginx restart
+service mycodoflask restart
 
 ${INSTALL_CMD} restart-web-server
 
