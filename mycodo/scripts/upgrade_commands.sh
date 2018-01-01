@@ -130,11 +130,13 @@ case "${1:-''}" in
         done
     ;;
     'setup-virtualenv')
-        if [ ! -d ${INSTALL_DIRECTORY}/Mycodo/env ]; then
+        printf "\n#### Checking python 3 virtualenv\n"
+        if [ ! -e ${INSTALL_DIRECTORY}/Mycodo/env/bin/python3 ]; then
             pip install virtualenv --upgrade
+            rm -rf ${INSTALL_DIRECTORY}/Mycodo/env
             virtualenv --system-site-packages -p /usr/bin/python3.5 ${INSTALL_DIRECTORY}/Mycodo/env
         else
-            printf "## Virtualenv already exists, skipping creation\n"
+            printf "#### Virtualenv already exists, skipping creation\n"
         fi
     ;;
     'uninstall-apt-pip')

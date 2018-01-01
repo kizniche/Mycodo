@@ -1,3 +1,10 @@
+## 5.5.4 (Unreleased)
+
+### Bugfixes
+
+ - Fix issue with proper python 3 virtualenv ([#362](https://github.com/kizniche/mycodo/issues/362))
+
+
 ## 5.5.3 (2017-12-29)
 
 ### Bugfixes
