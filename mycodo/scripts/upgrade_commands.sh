@@ -27,7 +27,7 @@ case "${1:-''}" in
         cd ${INSTALL_DIRECTORY}/Mycodo/mycodo
         ${INSTALL_DIRECTORY}/Mycodo/env/bin/pybabel compile -d mycodo_flask/translations
     ;;
-    'generate-ssl-certs')
+    'ssl-certs-generate')
         printf "\n#### Generating SSL certificates at ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
         mkdir -p ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs
         cd ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs/
@@ -48,6 +48,14 @@ case "${1:-''}" in
         # TODO: Change to appropriate names in the future
         ln -s server.key privkey.pem
         ln -s server.crt cert.pem
+    ;;
+    'ssl-certs-regenerate')
+        printf "\n#### Regenerating SSL certificates at ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs\n"
+        rm -rf ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs/*.pem
+        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh ssl-certs-generate
+        /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh initialize
+        sudo service nginx restart
+        sudo service mycodoflask restart
     ;;
     'initialize')
         printf "\n#### Creating mycodo user\n"

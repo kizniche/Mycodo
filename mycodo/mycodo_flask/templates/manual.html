@@ -343,17 +343,13 @@
 <p><a href="#brief-overview">Brief Overview</a></p>
 <p><a href="#frequently-asked-questions">Frequently Asked Questions</a></p>
 <p><a href="#upgrading">Upgrading</a></p>
-<p><a href="#controllers">Controllers</a></p>
+<p><a href="#features">Features</a></p>
 <ul>
 <li><a href="#data">Data</a></li>
 <li><a href="#output">Output</a></li>
 <li><a href="#function">Function</a></li>
 <li><a href="#timers">Timers</a></li>
 <li><a href="#lcds">LCDs</a></li>
-</ul>
-<p><a href="#controller-functions">Controller Functions</a></p>
-<ul>
-<li><a href="#conditional-statements">Conditional Statements</a></li>
 <li><a href="#methods">Methods</a></li>
 </ul>
 <p><a href="#pid-tuning">PID Tuning</a></p>
@@ -450,45 +446,46 @@
 </ul>
 <hr />
 <h1 id="about-mycodo">About Mycodo</h1>
-<p>Mycodo is a system for acquiring and using sensor measurements in a feedback loop that controls a diverse set of outputs. This is commonly used for automated regulation of environmental conditions, such as temperature, humidity, CO2 concentration, and many more. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.</p>
-<p>The system coordinates a diverse set of responses to sensor measurements, including actions such as relay switching, regulation by <a href="https://en.wikipedia.org/wiki/PID_controller">PID control</a>, email notifications, camera captures, and more. Mycodo has been used for cultivating gourmet mushrooms, cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs and young animals, aging cheeses, fermenting foods, maintaining aquatic systems, and more.</p>
+<p>Mycodo is an automated monitoring and regulation system that was built to run on the []Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) (versions Zero, 1, 2, and 3).</p>
+<p>Orignially designed to cultivate edible mushrooms, Mycodo has grown to include the ability to do much more, including cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating animals and eggs, maintaining aquatic systems, aging cheeses, fermenting foods and tobacco, cooking food (vous-vide), and more.</p>
+<p>The system comprises a backend (daemon) and a frontend (user interface). The backend conducts measurements from sensors and devices, then coordinate a diverse set of responses to those measurements, including the ability to modulate outputs (relays, PWM, wireless outlets), regulate environmental conditions with electrical devices under PID control (steady regulation or changing over time), schedule timers, capture photos and stream video, trigger actions when measurements meet certain conditions (modulate relays, execute commands, notify by email, etc.), and more. The frontend is a web interface that enables easy navigation and configuration from any browser-enabled device.</p>
 <h1 id="brief-overview">Brief Overview</h1>
-<p>There are a number of different uses for Mycodo, from simple storing of sensor measurements, to regulating the environmental conditions of a physical space, to capturing motion-activated or timelapse photography. There are several components of the system that may be configured.</p>
-<p>Input/Math controllers acquire measurements and store them in a <a href="https://en.wikipedia.org/wiki/Time_series_database">time series database</a>. Measurements taken by an Input Controller typically come from sensors, but Input Controllers may also be configured to use the return value of a linux command, making integrating new input systems very easy.</p>
-<p>Output Controllers produce changes to the general input/output (GPIO) pins of the Raspberry Pi or may be configured to execute linux commands in order to allow an unlimited number of extra potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off.</p>
-<p>When Inputs and Outputs are combined, PID Controllers may be used to create a feedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermentation or curing, and cooking food (<a href="https://en.wikipedia.org/wiki/Sous-vide">sous-vide</a>), to name a few.</p>
+<p>There are a number of different uses for Mycodo. Some users simply store sensor measurements to monitor conditons remotely from their phone, others regulate the environmental conditions of a physical space, while others capture motion-activated or timelapse photography, and more.</p>
+<p>Input controllers acquire measurements and store them in a <a href="https://en.wikipedia.org/wiki/Time_series_database">time series database</a>. Measurements typically come from sensors, but may also be configured to use the return value of a linux command, making integrating new inputs very easy.</p>
+<p>Output controllers produce changes to the general input/output (GPIO) pins or may be configured to execute linux commands in order to allow an unlimited number of potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off.</p>
+<p>When Inputs and Outputs are combined, PID controllers may be used to create a feedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermentation or curing, and cooking food (<a href="https://en.wikipedia.org/wiki/Sous-vide">sous-vide</a>), to name a few.</p>
 <p>Timers can be set to trigger events based on specific dates and times or according to durations of time. Timers are fairly basic, but can be configured in very complex ways. Don’t underestimate a good timer.</p>
 <h1 id="frequently-asked-questions">Frequently Asked Questions</h1>
 <p><em>How do I set up simple regulation?</em></p>
 <p>Here is how I generally set up Mycodo to monitor and regulate:</p>
 <ol type="1">
 <li>Determine what environmental condition you want to measure or regulate. Consider the devices that must be coupled to achieve this. For instance, temperature regulation require a temperature sensor as the input and an electric heater as the output.</li>
-<li>Determine what relays you will need to power your electric devices. The Raspberry Pi is capable of directly switching relays (using a 3.3-volt signal), although opto-isolating the circuit is advisable. Be careful when selecting a relay not to exceed the current draw of the Raspberry Pi’s GPIO.</li>
+<li>Determine what relays you will need to power your electric devices. The Raspberry Pi is capable of directly switching relays (using a 3.3-volt signal), although opto-isolating the circuit is advisable. Be careful when selecting a relay not to exceed the current draw of the Raspberry Pi’s GPIO pins.</li>
 <li>See the <a href="#device-specific-information">Device Specific Information</a> for information about what sensors are supported. Acquire one or more of these sensors and relays and connect them to the Raspberry Pi according to the manufacturer’s instructions.</li>
-<li>On the <code>Input</code> page, create a new input using the dropdown to select the correct sensor or input device. Configure the input with the correct communication pins and other options. Activate the input to begin recording measurements to the database..</li>
-<li>Go to the <code>Data</code> -&gt; <code>Live Measurements</code> page to ensure there is recent data being acquired from the input.</li>
-<li>On the <code>Ouput</code> -&gt; <code>Devices</code> page, add a relay and configure the GPIO pin that switches it, whether the relay switches On when the signal is HIGH or LOW, and what state (On or Off) to set the relay when Mycodo starts. A pulse-width modulated (PWM) output may also be used..</li>
-<li>Test the relay by switching it On and Off or generating a PWM signal from the <code>Output</code> -&gt; <code>Devices</code> page and make sure the device connected to the relay turns On when you select “On”, and Off when you select “Off”.</li>
-<li>On the <code>PID</code> -&gt; <code>PID Controllers</code> page, create a PID controller with the appropriate input, output, and other parameters.</li>
-<li>On the <code>Data</code> -&gt; <code>Live Graphs</code> page, create a graph that includes the input measurement, the output that is being used by the PID, and the PID setpoint. This provides a good visualization for tuning the PID. See <a href="#quick-setup-examples">Quick Setup Examples</a> for tuning tips.</li>
+<li>On the <code>Data</code> page, create a new input using the dropdown to select the correct sensor or input device. Configure the input with the correct communication pins and other options. Activate the input to begin recording measurements to the database..</li>
+<li>Go to the <code>Info</code> -&gt; <code>Live Measurements</code> page to ensure there is recent data being acquired from the input.</li>
+<li>On the <code>Ouput</code> page, add a relay and configure the GPIO pin that switches it, whether the relay switches On when the signal is HIGH or LOW, and what state (On or Off) to set the relay when Mycodo starts. A pulse-width modulated (PWM) output may also be used..</li>
+<li>Test the relay by switching it On and Off or generating a PWM signal from the <code>Output</code> page and make sure the device connected to the relay turns On when you select “On”, and Off when you select “Off”.</li>
+<li>On the <code>Function</code> page, create a PID controller with the appropriate input, output, and other parameters.</li>
+<li>On the <code>Info</code> -&gt; <code>Live Graphs</code> page, create a graph that includes the input measurement, the output that is being used by the PID, and the PID setpoint. This provides a good visualization for tuning the PID. See <a href="#quick-setup-examples">Quick Setup Examples</a> for a greater detail of this process and tuning tips.</li>
 </ol>
 <hr />
-<p><em>How do I add an input (like a sensor) to the system that’s not currently supported?</em></p>
-<p>Currently, adding the ability to receive input that’s not currently supported to the system can be achieved by two different methods.</p>
-<p>The first involves editing several files. There has been effort to make the addition process as simple as possible. See the <a href="https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input">Adding Support for a New Input</a> Wiki page for how to do this.</p>
-<p>The second way to add an input is to create a script that obtains and returns a numerical value when executed in the linux system of the Raspberry Pi. This script may be configured to be executed by a “Linux Command” Input type. This will periodically execute the command and store the returned value to the database for use with the rest of the Mycodo system.</p>
+<p><em>How do I add an Input (like a sensor) to the system that’s not currently supported?</em></p>
+<p>Currently, adding an Input device that’s not currently supported can be achieved by two different methods:</p>
+<p>The first involves editing several files. There has been effort to make the addition process as simple as possible. See the <a href="https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input">Adding Support for a New Input</a> Wiki page for how to do this. All changes will be lost during an upgrade, therefore it is suggested to make a GitHub pull request with your changes to permanently integrate them into Mycodo.</p>
+<p>The second way to add an Input is to create a script that obtains and returns a numerical value when executed in the linux system of the Raspberry Pi. This script may be configured to be executed by a “Linux Command” Input type. This will periodically execute the command and store the returned value to the database for use with the rest of the Mycodo system.</p>
 <hr />
-<p><em>Can I variably control the speed of motors or other devices with the PWM output signal from the PID?</em></p>
+<p><em>Can I variably-control the speed of motors or other devices with the PWM output signal from the PID?</em></p>
 <p>Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, an <a href="#schematics-for-ac-modulation">AC modulation circuit</a>, <a href="#schematics-for-dc-fan-control">DC modulation circuit</a>, or something else.</p>
 <hr />
 <p><em>What should I do if I have an issue?</em></p>
-<p>First, read the manual to make sure you understand how the system works and you’re using the system properly. ALso check out the <a href="https://github.com/kizniche/Mycodo/wiki">Wiki</a>. You may even want to look through recent <a href="https://github.com/kizniche/Mycodo/issues">Issues</a>. If you haven’t resolved your issue by this point, make a <a href="https://github.com/kizniche/Mycodo/issues/new">New Issue</a> describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid in diagnosing the issue.</p>
+<p>First, read though this manual to make sure you understand how the system works and you’re using the system properly. Also check out the <a href="https://github.com/kizniche/Mycodo/wiki">Mycodo Wiki</a>. You may even want to look through recent <a href="https://github.com/kizniche/Mycodo/issues">GitHub Issues</a>. If you haven’t resolved your issue by this point, make a <a href="https://github.com/kizniche/Mycodo/issues/new">New GitHub Issue</a> describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid in diagnosing the issue.</p>
 <hr />
 <h1 id="upgrading">Upgrading</h1>
-<p>If you already have Mycodo installed (version &gt;= 4.0.0), you can perform an upgrade to the latest <a href="https://github.com/kizniche/Mycodo/releases">release</a> on github by either using the Upgrade option in the web UI (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at <code>/var/log/mycodo/mycodoupgrade.log</code></p>
+<p>If you already have Mycodo installed (version &gt;= 4.0.0), you can perform an upgrade to the latest <a href="https://github.com/kizniche/Mycodo/releases">Mycodo Release</a> by either using the Upgrade option in the web interface (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at <code>/var/log/mycodo/mycodoupgrade.log</code></p>
 <p><code>sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade</code></p>
-<h1 id="controllers">Controllers</h1>
-<p>Controllers are essentially modules that can be used to perform functions or communicate with other parts of Mycodo. Each controller performs a specific task or group of related tasks. There are also Controller Functions, which are larger functions of a controller or controllers and have been given their own sections.</p>
+<h1 id="features">Features</h1>
+<p>The following sections describe the essential modules of Mycodo that can be used to perform functions or communicate with other parts of Mycodo. Each section performs specific tasks or groups of related tasks.</p>
 <h2 id="data">Data</h2>
 <p>Data includes controllers that produce and store data in the measurement database. Input controllers generally acquire measurements from sensors, but they may also come from executed commands. Math controllers, on the other hand, perform math on already-stored values to create new values that are stored.</p>
 <h3 id="input">Input</h3>
@@ -843,7 +840,7 @@
 <p>Switching has to be done several times a minute in an electric stove; 120 Hz in a lamp dimmer; between a few kilohertz (kHz) to tens of kHz for a motor drive; and well into the tens or hundreds of kHz in audio amplifiers and computer power supplies.</p>
 </blockquote>
 <p>The term duty cycle describes the proportion of ‘on’ time to the regular interval or ‘period’ of time; a low duty cycle corresponds to low power, because the power is off for most of the time. Duty cycle is expressed in percent, 100% being fully on.</p>
-<p>Currently, PWM is very new in Mycodo and does not have many features. PWM pins can be set up in the Output -&gt; Devices page, then it may be used by a PWM PID Controller.</p>
+<p>PWM pins can be set up on the Output page, then it may be used by a PWM PID Controller.</p>
 <table style="width:94%;">
 <colgroup>
 <col style="width: 29%"></col>
@@ -1115,69 +1112,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="timers">Timers</h2>
-<p>Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will <strong><em>only</em></strong> do as instructed, therefore if you turn a output <em>ON</em> from <em>Start Time</em> to <em>End Time</em> and you want that output to turn <em>OFF</em> at the end of that period, you will need to create another timer that turns the output <em>OFF</em> at <em>End Time</em> + 1 minute.</p>
-<p>There are two types of timers, one for general outputs that turn on and off, and those that generate a PWM signal.</p>
-<h4 id="general-output">General Output</h4>
-<p>For <em>Duration Timers</em>, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated.</p>
-<p>For <em>Daily Timers</em>, the start hour:minute can be set to turn a specific output on or off at the specific time of day.</p>
-<h4 id="pwm-method">PWM Method</h4>
-<p>This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. While creating these methods, keep in mind a duty cycle is a percentage and the values must stay between 0 and 100.</p>
-<h2 id="lcds">LCDs</h2>
-<p>Data may be output to a liquid crystal display (LCD) for easy viewing. Please see <a href="#lcd-displays">LCD Displays</a> for specific information regarding compatibility.</p>
-<p>There may be multiple displays created for each LCD. If there is only one display created for the LCD, it will refresh at the set period. If there is more than one display, it will cycle from one display to the next every set period.</p>
-<table style="width:94%;">
-<colgroup>
-<col style="width: 29%"></col>
-<col style="width: 65%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Reset Flashing</td>
-<td style="text-align: left;">If the LCD is flashing to alert you because it was instructed to do so by a triggered Conditional Statement, use this button to stop the flashing.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Type</td>
-<td style="text-align: left;">Select either a 16x2 or 20x4 character LCD display.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">I<sup>2</sup>C Address</td>
-<td style="text-align: left;">Select the I<sup>2</sup>C to communicate with the LCD.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Multiplexer I<sup>2</sup>C Address</td>
-<td style="text-align: left;">If the LCD is connected to a multiplexer, select the multiplexer I<sup>2</sup>C address.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Multiplexer Channel</td>
-<td style="text-align: left;">If the LCD is connected to a multiplexer, select the multiplexer channel the LCD is connected to.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Period</td>
-<td style="text-align: left;">This is the period of time (in seconds) between redrawing the LCD with new data or switching to the next set of displays (if multiple displays are used).</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Add Display Set</td>
-<td style="text-align: left;">Add a set of display lines to the LCD.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Display Line #</td>
-<td style="text-align: left;">Select which measurement to display on each line of the LCD.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Max Age (seconds)</td>
-<td style="text-align: left;">The maximum age the measurement is allowed to be. If no measurement was acquired in this time frame, the display will indicate “NO DATA”.</td>
-</tr>
-</tbody>
-</table>
-<h1 id="controller-functions">Controller Functions</h1>
-<h2 id="conditional-statements">Conditional Statements</h2>
+<h3 id="conditional-statements">Conditional Statements</h3>
 <p>A conditional statement is a way to perform certain actions based on whether a condition is true. Conditional statements can be created for both inputs and outputs. Possible conditional statements include:</p>
 <ul>
 <li>If Output #1 turns ON, turn Output #3 ON</li>
@@ -1190,7 +1125,7 @@
 <li>If Temperature if Greater Than 35 C, deactivate PID #1</li>
 </ul>
 <p>Before activating any conditional statements or PID controllers, it’s advised to thoroughly explore all possible scenarios and plan a configuration that eliminates conflicts. Then, trial run your configuration before connecting devices to the outputs. Some devices or outputs may respond atypically or fail when switched on and off in rapid succession. Therefore, avoid creating an <a href="https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops">infinite loop</a> with conditional statements.</p>
-<h3 id="measurement-conditional-statement-if-options">Measurement Conditional Statement If Options</h3>
+<h4 id="measurement-conditional-statement-if-options">Measurement Conditional Statement If Options</h4>
 <table style="width:94%;">
 <colgroup>
 <col style="width: 29%"></col>
@@ -1225,7 +1160,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="output-conditional-statement-if-options">Output Conditional Statement If Options</h3>
+<h4 id="output-conditional-statement-if-options">Output Conditional Statement If Options</h4>
 <table style="width:94%;">
 <colgroup>
 <col style="width: 29%"></col>
@@ -1252,7 +1187,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="edge-conditional-statement-if-options">Edge Conditional Statement If Options</h3>
+<h4 id="edge-conditional-statement-if-options">Edge Conditional Statement If Options</h4>
 <table style="width:94%;">
 <colgroup>
 <col style="width: 29%"></col>
@@ -1279,7 +1214,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="conditional-statement-actions">Conditional Statement Actions</h3>
+<h4 id="conditional-statement-actions">Conditional Statement Actions</h4>
 <table style="width:94%;">
 <colgroup>
 <col style="width: 29%"></col>
@@ -1334,7 +1269,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="conditional-statement-variables">Conditional Statement variables</h3>
+<h4 id="conditional-statement-variables">Conditional Statement variables</h4>
 <p>Commands that are executed by conditional statements can now include variables. To use, just place the variable name, including “((” and “))” in your command, and it will be replaced with the variable’s value before execution. See the tables below for the currently-supported variables.</p>
 <p>It is recommended to output a test string to a text file to verify the output is as expected, with a command such as the following (for a Conditional using the Raspberry Pi CPU temperature Input as the measurement):</p>
 <pre><code>echo &quot;TEST: ((measure_temperature)), ((measure_location)), ((measure_period))&quot; &gt; /home/mycodo/test_measure.txt</code></pre>
@@ -1479,6 +1414,67 @@
 <tr class="even">
 <td style="text-align: left;">((output_pwm))</td>
 <td style="text-align: left;">The PWM duty cycle the output turned on for (will return 0 if not applicable)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="timers">Timers</h2>
+<p>Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will <strong><em>only</em></strong> do as instructed, therefore if you turn a output <em>ON</em> from <em>Start Time</em> to <em>End Time</em> and you want that output to turn <em>OFF</em> at the end of that period, you will need to create another timer that turns the output <em>OFF</em> at <em>End Time</em> + 1 minute.</p>
+<p>There are two types of timers, one for general outputs that turn on and off, and those that generate a PWM signal.</p>
+<h4 id="general-output">General Output</h4>
+<p>For <em>Duration Timers</em>, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated.</p>
+<p>For <em>Daily Timers</em>, the start hour:minute can be set to turn a specific output on or off at the specific time of day.</p>
+<h4 id="pwm-method">PWM Method</h4>
+<p>This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. While creating these methods, keep in mind a duty cycle is a percentage and the values must stay between 0 and 100.</p>
+<h2 id="lcds">LCDs</h2>
+<p>Data may be output to a liquid crystal display (LCD) for easy viewing. Please see <a href="#lcd-displays">LCD Displays</a> for specific information regarding compatibility.</p>
+<p>There may be multiple displays created for each LCD. If there is only one display created for the LCD, it will refresh at the set period. If there is more than one display, it will cycle from one display to the next every set period.</p>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Reset Flashing</td>
+<td style="text-align: left;">If the LCD is flashing to alert you because it was instructed to do so by a triggered Conditional Statement, use this button to stop the flashing.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Type</td>
+<td style="text-align: left;">Select either a 16x2 or 20x4 character LCD display.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">I<sup>2</sup>C Address</td>
+<td style="text-align: left;">Select the I<sup>2</sup>C to communicate with the LCD.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Multiplexer I<sup>2</sup>C Address</td>
+<td style="text-align: left;">If the LCD is connected to a multiplexer, select the multiplexer I<sup>2</sup>C address.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Multiplexer Channel</td>
+<td style="text-align: left;">If the LCD is connected to a multiplexer, select the multiplexer channel the LCD is connected to.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Period</td>
+<td style="text-align: left;">This is the period of time (in seconds) between redrawing the LCD with new data or switching to the next set of displays (if multiple displays are used).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Add Display Set</td>
+<td style="text-align: left;">Add a set of display lines to the LCD.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Display Line #</td>
+<td style="text-align: left;">Select which measurement to display on each line of the LCD.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Max Age (seconds)</td>
+<td style="text-align: left;">The maximum age the measurement is allowed to be. If no measurement was acquired in this time frame, the display will indicate “NO DATA”.</td>
 </tr>
 </tbody>
 </table>
@@ -1962,7 +1958,7 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <h1 id="troubleshooting">Troubleshooting</h1>
 <h2 id="daemon-not-running">Daemon Not Running</h2>
 <ul>
-<li>Check the Logs: From the <code>[Gear Icon]</code> -&gt; <code>Mycodo Logs</code> page, check the Daemon Log for any errors. If the issue began after an upgrade, also check the Upgrade Log for indications of an issue.</li>
+<li>Check the Logs: From the <code>Configure [Gear Icon]</code> -&gt; <code>Mycodo Logs</code> page, check the Daemon Log for any errors. If the issue began after an upgrade, also check the Upgrade Log for indications of an issue.</li>
 <li>Determine if the Daemon is Running: Execute <code>ps aux | grep '/var/www/mycodo/env/bin/python /var/www/mycodo/mycodo/mycodo_daemon.py'</code> in a terminal and look for an entry to be returned. If nothing is returned, the daemon is not running.</li>
 <li>Daemon Lock File: If the daemon is not running, make sure the daemon lock file is deleted at <code>/var/lock/mycodo.pid</code>. The daemon cannot start if the lock file is present.</li>
 <li>If a solution could not be found after investigating the above suggestions, submit a <a href="https://github.com/kizniche/Mycodo/issues/new">New Mycodo Issue</a> on github.</li>

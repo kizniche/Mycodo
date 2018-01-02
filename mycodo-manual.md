@@ -13,17 +13,13 @@ Table of Contents
 
 [Upgrading](#upgrading)
 
-[Controllers](#controllers)
+[Features](#features)
 
    - [Data](#data)
    - [Output](#output)
    - [Function](#function)
    - [Timers](#timers)
    - [LCDs](#lcds)
- 
-[Controller Functions](#controller-functions)
-
-   - [Conditional Statements](#conditional-statements)
    - [Methods](#methods)
 
 [PID Tuning](#pid-tuning)
@@ -125,23 +121,24 @@ Table of Contents
 About Mycodo
 ============
 
-Mycodo is a system for acquiring and using sensor measurements in a feedback loop that controls a diverse set of outputs. This is commonly used for automated regulation of environmental conditions, such as temperature, humidity, CO2 concentration, and many more. It was built to run on the Raspberry Pi (versions Zero, 1, 2, and 3) and aims to be easy to install and set up.
+Mycodo is an automated monitoring and regulation system that was built to run on the []Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) (versions Zero, 1, 2, and 3).
 
-The system coordinates a diverse set of responses to sensor measurements, including actions such as relay switching, regulation by [PID control](https://en.wikipedia.org/wiki/PID_controller), email notifications, camera captures, and more. Mycodo has been used for cultivating gourmet mushrooms, cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating snake eggs and young animals, aging cheeses, fermenting foods, maintaining aquatic systems, and more.
+Orignially designed to cultivate edible mushrooms, Mycodo has grown to include the ability to do much more, including cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating animals and eggs, maintaining aquatic systems, aging cheeses, fermenting foods and tobacco, cooking food (vous-vide), and more.
+
+The system comprises a backend (daemon) and a frontend (user interface). The backend conducts measurements from sensors and devices, then coordinate a diverse set of responses to those measurements, including the ability to modulate outputs (relays, PWM, wireless outlets), regulate environmental conditions with electrical devices under PID control (steady regulation or changing over time), schedule timers, capture photos and stream video, trigger actions when measurements meet certain conditions (modulate relays, execute commands, notify by email, etc.), and more. The frontend is a web interface that enables easy navigation and configuration from any browser-enabled device.
 
 Brief Overview
 ==============
 
-There are a number of different uses for Mycodo, from simple storing of sensor measurements, to regulating the environmental conditions of a physical space, to capturing motion-activated or timelapse photography. There are several components of the system that may be configured.
+There are a number of different uses for Mycodo. Some users simply store sensor measurements to monitor conditons remotely from their phone, others regulate the environmental conditions of a physical space, while others capture motion-activated or timelapse photography, and more.
 
-Input/Math controllers acquire measurements and store them in a [time series database](https://en.wikipedia.org/wiki/Time_series_database). Measurements taken by an Input Controller typically come from sensors, but Input Controllers may also be configured to use the return value of a linux command, making integrating new input systems very easy.
+Input controllers acquire measurements and store them in a [time series database](https://en.wikipedia.org/wiki/Time_series_database). Measurements typically come from sensors, but may also be configured to use the return value of a linux command, making integrating new inputs very easy.
 
-Output Controllers produce changes to the general input/output (GPIO) pins of the Raspberry Pi or may be configured to execute linux commands in order to allow an unlimited number of extra potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off. 
+Output controllers produce changes to the general input/output (GPIO) pins or may be configured to execute linux commands in order to allow an unlimited number of potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off. 
 
-When Inputs and Outputs are combined, PID Controllers may be used to create a feedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermentation or curing, and cooking food ([sous-vide](https://en.wikipedia.org/wiki/Sous-vide)), to name a few.
+When Inputs and Outputs are combined, PID controllers may be used to create a feedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermentation or curing, and cooking food ([sous-vide](https://en.wikipedia.org/wiki/Sous-vide)), to name a few.
 
 Timers can be set to trigger events based on specific dates and times or according to durations of time. Timers are fairly basic, but can be configured in very complex ways. Don't underestimate a good timer.
-
 
 Frequently Asked Questions
 ==========================
@@ -151,28 +148,28 @@ Frequently Asked Questions
 Here is how I generally set up Mycodo to monitor and regulate:
 
 1.  Determine what environmental condition you want to measure or regulate. Consider the devices that must be coupled to achieve this. For instance, temperature regulation require a temperature sensor as the input and an electric heater as the output.
-2.  Determine what relays you will need to power your electric devices. The Raspberry Pi is capable of directly switching relays (using a 3.3-volt signal), although opto-isolating the circuit is advisable. Be careful when selecting a relay not to exceed the current draw of the Raspberry Pi’s GPIO.
+2.  Determine what relays you will need to power your electric devices. The Raspberry Pi is capable of directly switching relays (using a 3.3-volt signal), although opto-isolating the circuit is advisable. Be careful when selecting a relay not to exceed the current draw of the Raspberry Pi’s GPIO pins.
 3.  See the [Device Specific Information](#device-specific-information) for information about what sensors are supported. Acquire one or more of these sensors and relays and connect them to the Raspberry Pi according to the manufacturer’s instructions.
-4.  On the ```Input```  page, create a new input using the dropdown to select the correct sensor or input device. Configure the input with the correct communication pins and other options. Activate the input to begin recording measurements to the database..
-5.  Go to the ```Data``` -> ```Live Measurements``` page to ensure there is recent data being acquired from the input.
-6.  On the ```Ouput``` -> ```Devices```  page, add a relay and configure the GPIO pin that switches it, whether the relay switches On when the signal is HIGH or LOW, and what state (On or Off) to set the relay when Mycodo starts. A pulse-width modulated (PWM) output may also be used..
-7.  Test the relay by switching it On and Off or generating a PWM signal from the ```Output``` -> ```Devices``` page and make sure the device connected to the relay turns On when you select "On", and Off when you select "Off".
-8.  On the ```PID``` -> ```PID Controllers``` page, create a PID controller with the appropriate input, output, and other parameters.
-9.  On the ```Data``` -> ```Live Graphs``` page, create a graph that includes the input measurement, the output that is being used by the PID, and the PID setpoint. This provides a good visualization for tuning the PID. See [Quick Setup Examples](#quick-setup-examples) for tuning tips.
+4.  On the ```Data``` page, create a new input using the dropdown to select the correct sensor or input device. Configure the input with the correct communication pins and other options. Activate the input to begin recording measurements to the database..
+5.  Go to the ```Info``` -> ```Live Measurements``` page to ensure there is recent data being acquired from the input.
+6.  On the ```Ouput``` page, add a relay and configure the GPIO pin that switches it, whether the relay switches On when the signal is HIGH or LOW, and what state (On or Off) to set the relay when Mycodo starts. A pulse-width modulated (PWM) output may also be used..
+7.  Test the relay by switching it On and Off or generating a PWM signal from the ```Output``` page and make sure the device connected to the relay turns On when you select "On", and Off when you select "Off".
+8.  On the ```Function``` page, create a PID controller with the appropriate input, output, and other parameters.
+9.  On the ```Info``` -> ```Live Graphs``` page, create a graph that includes the input measurement, the output that is being used by the PID, and the PID setpoint. This provides a good visualization for tuning the PID. See [Quick Setup Examples](#quick-setup-examples) for a greater detail of this process and tuning tips.
 
 * * * * *
 
-*How do I add an input (like a sensor) to the system that's not currently supported?*
+*How do I add an Input (like a sensor) to the system that's not currently supported?*
 
-Currently, adding the ability to receive input that's not currently supported to the system can be achieved by two different methods.
+Currently, adding an Input device that's not currently supported can be achieved by two different methods:
 
-The first involves editing several files. There has been effort to make the addition process as simple as possible. See the [Adding Support for a New Input](https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input) Wiki page for how to do this.
+The first involves editing several files. There has been effort to make the addition process as simple as possible. See the [Adding Support for a New Input](https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input) Wiki page for how to do this. All changes will be lost during an upgrade, therefore it is suggested to make a GitHub pull request with your changes to permanently integrate them into Mycodo.
 
-The second way to add an input is to create a script that obtains and returns a numerical value when executed in the linux system of the Raspberry Pi. This script may be configured to be executed by a "Linux Command" Input type. This will periodically execute the command and store the returned value to the database for use with the rest of the Mycodo system.
+The second way to add an Input is to create a script that obtains and returns a numerical value when executed in the linux system of the Raspberry Pi. This script may be configured to be executed by a "Linux Command" Input type. This will periodically execute the command and store the returned value to the database for use with the rest of the Mycodo system.
 
 * * * * *
 
-*Can I variably control the speed of motors or other devices with the PWM output signal from the PID?*
+*Can I variably-control the speed of motors or other devices with the PWM output signal from the PID?*
 
 Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, an [AC modulation circuit](#schematics-for-ac-modulation), [DC modulation circuit](#schematics-for-dc-fan-control), or something else.
 
@@ -180,7 +177,7 @@ Yes, as long as you have the proper hardware to do that. The PWM signal being pr
 
 *What should I do if I have an issue?*
 
-First, read the manual to make sure you understand how the system works and you're using the system properly. ALso check out the [Wiki](https://github.com/kizniche/Mycodo/wiki). You may even want to look through recent [Issues](https://github.com/kizniche/Mycodo/issues). If you haven't resolved your issue by this point, make a [New Issue](https://github.com/kizniche/Mycodo/issues/new) describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid in diagnosing the issue.
+First, read though this manual to make sure you understand how the system works and you're using the system properly. Also check out the [Mycodo Wiki](https://github.com/kizniche/Mycodo/wiki). You may even want to look through recent [GitHub Issues](https://github.com/kizniche/Mycodo/issues). If you haven't resolved your issue by this point, make a [New GitHub Issue](https://github.com/kizniche/Mycodo/issues/new) describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid in diagnosing the issue.
 
 * * * * *
 
@@ -188,19 +185,15 @@ First, read the manual to make sure you understand how the system works and you'
 Upgrading
 =========
 
-If you already have Mycodo installed (version >= 4.0.0), you can perform an upgrade to the latest [release](https://github.com/kizniche/Mycodo/releases) on github by either using the Upgrade option in the web UI (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at ```/var/log/mycodo/mycodoupgrade.log```
+If you already have Mycodo installed (version >= 4.0.0), you can perform an upgrade to the latest [Mycodo Release](https://github.com/kizniche/Mycodo/releases) by either using the Upgrade option in the web interface (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at ```/var/log/mycodo/mycodoupgrade.log```
 
 ```sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade```
 
 
-Controllers
-===========
+Features
+========
 
-Controllers are essentially modules that can be used to perform
-functions or communicate with other parts of Mycodo. Each controller
-performs a specific task or group of related tasks. There are also
-Controller Functions, which are larger functions of a controller or
-controllers and have been given their own sections.
+The following sections describe the essential modules of Mycodo that can be used to perform functions or communicate with other parts of Mycodo. Each section performs specific tasks or groups of related tasks.
 
 Data
 ----
@@ -321,7 +314,7 @@ The PWM switching frequency has to be much higher than what would affect the loa
 
 The term duty cycle describes the proportion of 'on' time to the regular interval or 'period' of time; a low duty cycle corresponds to low power, because the power is off for most of the time. Duty cycle is expressed in percent, 100% being fully on.
 
-Currently, PWM is very new in Mycodo and does not have many features. PWM pins can be set up in the Output -> Devices page, then it may be used by a PWM PID Controller.
+PWM pins can be set up on the Output page, then it may be used by a PWM PID Controller.
 
 Setting | Description
 -------------------- | ----------------------------------------------
@@ -456,50 +449,7 @@ K~D~ | Derivative coefficient (non-negative). Accounts for predicted future valu
 Integrator Min | The minimum allowed integrator value, for calculating Ki\_total: (Ki\_total = Ki \* integrator; and PID output = Kp\_total + Ki\_total + Kd\_total)
 Integrator Max | The maximum allowed integrator value, for calculating Ki\_total: (Ki\_total = Ki \* integrator; and PID output = Kp\_total + Ki\_total + Kd\_total)
 
-Timers
-------
-
-Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will ***only*** do as instructed, therefore if you turn a output *ON* from *Start Time* to *End Time* and you want that output to turn *OFF* at the end of that period, you will need to create another timer that turns the output *OFF* at *End Time* + 1 minute.
-
- There are two types of timers, one for general outputs that turn on and off, and those that generate a PWM signal.
-
-#### General Output
-
-For *Duration Timers*, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated.
-
-For *Daily Timers*, the start hour:minute can be set to turn a specific output on or off at the specific time of day.
-
-#### PWM Method
-
-This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. While creating these methods, keep in mind a duty cycle is a percentage and the values must stay between 0 and 100.
-
-
-LCDs
-----
-
-Data may be output to a liquid crystal display (LCD) for easy viewing. Please see [LCD Displays](#lcd-displays) for specific information regarding compatibility.
-
-There may be multiple displays created for each LCD. If there is only one display created for the LCD, it will refresh at the set period. If there is more than one display, it will cycle from one display to the next every set period.
-
-Setting | Description
--------------------- | ----------------------------------------------
-Reset Flashing | If the LCD is flashing to alert you because it was instructed to do so by a triggered Conditional Statement, use this button to stop the flashing.
-Type | Select either a 16x2 or 20x4 character LCD display.
-I<sup>2</sup>C Address | Select the I<sup>2</sup>C to communicate with the LCD.
-Multiplexer I<sup>2</sup>C Address | If the LCD is connected to a multiplexer, select the multiplexer I<sup>2</sup>C address.
-Multiplexer Channel | If the LCD is connected to a multiplexer, select the multiplexer channel the LCD is connected to.
-Period | This is the period of time (in seconds) between redrawing the LCD with new data or switching to the next set of displays (if multiple displays are used).
-Add Display Set | Add a set of display lines to the LCD.
-Display Line \# | Select which measurement to display on each line of the LCD.
-Max Age (seconds) | The maximum age the measurement is allowed to be. If no measurement was acquired in this time frame, the display will indicate "NO DATA".
-
-
-Controller Functions
-====================
-
-
-Conditional Statements
-----------------------
+### Conditional Statements
 
 A conditional statement is a way to perform certain actions based on
 whether a condition is true. Conditional statements can be created for
@@ -526,7 +476,7 @@ succession. Therefore, avoid creating an [infinite
 loop](https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops)
 with conditional statements.
 
-### Measurement Conditional Statement If Options
+#### Measurement Conditional Statement If Options
 
 Setting | Description
 -------------------- | ----------------------------------------------
@@ -536,7 +486,7 @@ Value | The value that the measurement will be checked against (greater or less 
 Period (seconds) | The period (seconds) between conditional checks.
 Max Age (seconds) | The maximum age the measurement can be. If a measurement isn't available within this time frame, the conditional will not trigger. The only exception is if State is set to "No Measurement", which will cause the conditional to trigger when there is no measurement available.
 
-### Output Conditional Statement If Options
+#### Output Conditional Statement If Options
 
 Setting | Description
 -------------------- | ----------------------------------------------
@@ -544,7 +494,7 @@ Output | The Output to monitor for a change of state.
 State | If the state of the output changes to On or Off the conditional will trigger. If "On (any duration) is selected, th trigger will occur no matter how long the output turns on for, whereas if only "On" is selected, the conditional will trigger only when the output turns on for a duration of time equal to the set "Duration (seconds)".
 Duration (seconds) | If "On" is selected, a optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.
 
-### Edge Conditional Statement If Options
+#### Edge Conditional Statement If Options
 
 Setting | Description
 -------------------- | ----------------------------------------------
@@ -552,7 +502,7 @@ Edge Detected | The conditional will be triggered if a change in state is detect
 GPIO State | The conditional will trigger if the GPIO state of HIGH (3.3 volts) or LOW (0 volts) is detected every Period.
 Period (seconds) | If GPIO State is selected, how often to check the state of the GPIO.
 
-### Conditional Statement Actions
+#### Conditional Statement Actions
 
 Setting | Description
 -------------------- | ----------------------------------------------
@@ -567,7 +517,7 @@ Email Photo | Capture a photo and email it as an attachment to the an email addr
 Video | Capture a video of a set duration with the selected camera.
 Email Video | Capture a video and email it as an attachment to the an email address.
 
-### Conditional Statement variables
+#### Conditional Statement variables
 
 Commands that are executed by conditional statements can now include variables. To use, just place the variable name, including "((" and "))" in your command, and it will be replaced with the variable's value before execution. See the tables below for the currently-supported variables.
 
@@ -620,6 +570,45 @@ Variable | Description
 ((output_action)) | The state change of the output (turned on = 1, turned off = 0)
 ((output_duration)) | The number of seconds the output turned on for (will return 0 if not applicable)
 ((output_pwm)) | The PWM duty cycle the output turned on for (will return 0 if not applicable)
+
+
+Timers
+------
+
+Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will ***only*** do as instructed, therefore if you turn a output *ON* from *Start Time* to *End Time* and you want that output to turn *OFF* at the end of that period, you will need to create another timer that turns the output *OFF* at *End Time* + 1 minute.
+
+ There are two types of timers, one for general outputs that turn on and off, and those that generate a PWM signal.
+
+#### General Output
+
+For *Duration Timers*, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated.
+
+For *Daily Timers*, the start hour:minute can be set to turn a specific output on or off at the specific time of day.
+
+#### PWM Method
+
+This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. While creating these methods, keep in mind a duty cycle is a percentage and the values must stay between 0 and 100.
+
+
+LCDs
+----
+
+Data may be output to a liquid crystal display (LCD) for easy viewing. Please see [LCD Displays](#lcd-displays) for specific information regarding compatibility.
+
+There may be multiple displays created for each LCD. If there is only one display created for the LCD, it will refresh at the set period. If there is more than one display, it will cycle from one display to the next every set period.
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Reset Flashing | If the LCD is flashing to alert you because it was instructed to do so by a triggered Conditional Statement, use this button to stop the flashing.
+Type | Select either a 16x2 or 20x4 character LCD display.
+I<sup>2</sup>C Address | Select the I<sup>2</sup>C to communicate with the LCD.
+Multiplexer I<sup>2</sup>C Address | If the LCD is connected to a multiplexer, select the multiplexer I<sup>2</sup>C address.
+Multiplexer Channel | If the LCD is connected to a multiplexer, select the multiplexer channel the LCD is connected to.
+Period | This is the period of time (in seconds) between redrawing the LCD with new data or switching to the next set of displays (if multiple displays are used).
+Add Display Set | Add a set of display lines to the LCD.
+Display Line \# | Select which measurement to display on each line of the LCD.
+Max Age (seconds) | The maximum age the measurement is allowed to be. If no measurement was acquired in this time frame, the display will indicate "NO DATA".
+
 
 Methods
 -------
@@ -1075,7 +1064,7 @@ Troubleshooting
 
 ## Daemon Not Running
 
--   Check the Logs: From the ```[Gear Icon]``` -> ```Mycodo Logs``` page, check the Daemon Log
+-   Check the Logs: From the ```Configure [Gear Icon]``` -> ```Mycodo Logs``` page, check the Daemon Log
     for any errors. If the issue began after an upgrade, also check the
     Upgrade Log for indications of an issue.
 -   Determine if the Daemon is Running: Execute

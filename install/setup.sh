@@ -67,7 +67,7 @@ ${INSTALL_CMD} update-influxdb-db-user
 
 ${INSTALL_CMD} update-logrotate
 
-${INSTALL_CMD} generate-ssl-certs
+${INSTALL_CMD} ssl-certs-generate
 
 ${INSTALL_CMD} update-mycodo-startup-script
 
