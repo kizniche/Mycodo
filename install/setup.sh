@@ -20,15 +20,17 @@ exec 2>&1
 abort()
 {
     echo >&2 '
-*******************************
-*** ERROR: Install Aborted! ***
-*******************************
+************************************
+** ERROR: Mycodo Install Aborted! **
+************************************
 
-An error occurred that prevented Mycodo from being installed!
+An error occurred that may have prevented Mycodo from
+being installed properly!
 
-Please contact the developer by submitting a bug report at
-https://github.com/kizniche/Mycodo/issues with the pertinent
-excerpts from the setup log located at ${INSTALL_DIRECTORY}/install/setup.log
+Please contact the developer by submitting a bug report
+at https://github.com/kizniche/Mycodo/issues with the
+pertinent excerpts from the setup log located at:
+${INSTALL_DIRECTORY}/install/setup.log
 '
     echo "An error occurred. Exiting..." >&2
     exit 1
@@ -75,12 +77,11 @@ ${INSTALL_CMD} update-cron
 
 ${INSTALL_CMD} initialize
 
-${INSTALL_CMD} update-web-server
+${INSTALL_CMD} web-server-update
 
-service nginx restart
-service mycodoflask restart
+${INSTALL_CMD} web-server-restart
 
-${INSTALL_CMD} restart-web-server
+${INSTALL_CMD} web-server-connect
 
 ${INSTALL_CMD} update-permissions
 

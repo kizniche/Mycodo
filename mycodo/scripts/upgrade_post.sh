@@ -29,7 +29,7 @@ ${INSTALL_CMD} update-apt
 
 ${INSTALL_CMD} update-packages
 
-${INSTALL_CMD} update-web-server
+${INSTALL_CMD} web-server-update
 
 ${INSTALL_CMD} update-logrotate
 
@@ -51,4 +51,6 @@ ${INSTALL_CMD} initialize
 
 ${INSTALL_CMD} restart-daemon
 
-${INSTALL_CMD} restart-web-server
+${INSTALL_CMD} web-server-reload
+
+${INSTALL_CMD} web-server-connect

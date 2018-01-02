@@ -105,33 +105,10 @@ case "${1:-''}" in
         ${INSTALL_DIRECTORY}/Mycodo/env/bin/python ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/restart_daemon.py
         service mycodo start
     ;;
-    'restart-web-server')
-        printf "\n#### Reloading nginx"
-        service nginx reload
-
-        sleep 5
-
-        printf "\n#### Reloading mycodoflask"
-        service mycodoflask reload
-
-        sleep 5
-
-        printf "\n#### Creating Mycodo database if it doesn't exist\n"
-        # Attempt to connect to localhost 5 times, sleeping 60 seconds every fail
-        for _ in {1..5}; do
-            wget --quiet --no-check-certificate -p http://localhost/ -O /dev/null &&
-            printf "#### Successfully connected to http://localhost\n" &&
-            break ||
-            # Else wait 60 seconds if localhost is not accepting connections
-            # Everything below will begin executing if an error occurs before the break
-            printf "#### Could not connect to http://localhost. Waiting 60 seconds then trying again (up to 5 times)...\n" &&
-            sleep 60 &&
-            printf "#### Trying again...\n"
-        done
-    ;;
     'setup-virtualenv')
         printf "\n#### Checking python 3 virtualenv\n"
         if [ ! -e ${INSTALL_DIRECTORY}/Mycodo/env/bin/python3 ]; then
+            printf "#### Virtualenv doesn't exist. Creating...\n"
             pip install virtualenv --upgrade
             rm -rf ${INSTALL_DIRECTORY}/Mycodo/env
             virtualenv --system-site-packages -p /usr/bin/python3.5 ${INSTALL_DIRECTORY}/Mycodo/env
@@ -144,7 +121,7 @@ case "${1:-''}" in
         apt-get purge -y python-pip
     ;;
     'update-alembic')
-        printf "\n#### Upgrading Mycodo database with alembic\n"
+        printf "\n#### Upgrading Mycodo database with alembic (if needed)\n"
         cd ${INSTALL_DIRECTORY}/Mycodo/databases
         ${INSTALL_DIRECTORY}/Mycodo/env/bin/alembic upgrade head
     ;;
@@ -209,10 +186,11 @@ case "${1:-''}" in
     'update-logrotate')
         printf "\n#### Installing logrotate script\n"
         if [ -e /etc/cron.daily/logrotate ]; then
+            printf "#### logrotate moved to cron.daily\n"
             mv -f /etc/cron.daily/logrotate /etc/cron.hourly/
         fi
         cp -f ${INSTALL_DIRECTORY}/Mycodo/install/logrotate_mycodo /etc/logrotate.d/mycodo
-        printf "logrotate moved to cron.daily and logrotate script installed"
+        printf "#### logrotate script installed\n"
     ;;
     'update-mycodo-startup-script')
         printf "\n#### Enabling mycodo startup script\n"
@@ -242,7 +220,7 @@ case "${1:-''}" in
         chmod 4770 ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/mycodo_wrapper
     ;;
     'update-pip3')
-        printf "\n#### Updating pip3\n"
+        printf "\n#### Updating pip\n"
         ${INSTALL_DIRECTORY}/Mycodo/env/bin/pip3 install --upgrade pip
     ;;
     'update-pip3-packages')
@@ -265,14 +243,6 @@ case "${1:-''}" in
             printf "#### Swap not currently set to 100 MB. Not changing.\n"
         fi
     ;;
-    'update-web-server')
-        printf "\n#### Installing and configuring nginx web server\n"
-        systemctl disable mycodoflask.service
-        rm -rf /etc/systemd/system/mycodoflask.service
-        ln -sf ${INSTALL_DIRECTORY}/Mycodo/install/mycodoflask_nginx.conf /etc/nginx/sites-enabled/default
-        systemctl enable nginx
-        systemctl enable ${INSTALL_DIRECTORY}/Mycodo/install/mycodoflask.service
-    ;;
     'update-wiringpi')
         printf "\n#### Installing wiringpi\n"
         git clone git://git.drogon.net/wiringPi ${INSTALL_DIRECTORY}/Mycodo/install/wiringPi
@@ -287,7 +257,43 @@ case "${1:-''}" in
     'upgrade-master')
         /bin/bash ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_mycodo_release.sh force-upgrade-master
     ;;
+    'web-server-connect')
+        printf "\n#### Connecting to http://localhost (creates Mycodo database if it doesn't exist)\n"
+        # Attempt to connect to localhost 5 times, sleeping 60 seconds every fail
+        for _ in {1..5}; do
+            wget --quiet --no-check-certificate -p http://localhost/ -O /dev/null &&
+            printf "#### Successfully connected to http://localhost\n" &&
+            break ||
+            # Else wait 60 seconds if localhost is not accepting connections
+            # Everything below will begin executing if an error occurs before the break
+            printf "#### Could not connect to http://localhost. Waiting 60 seconds then trying again (up to 5 times)...\n" &&
+            sleep 60 &&
+            printf "#### Trying again...\n"
+        done
+    ;;
+    'web-server-reload')
+        printf "\n#### Restarting nginx"
+        service nginx restart
+        sleep 5
+        printf "\n#### Reloading mycodoflask"
+        service mycodoflask reload
+    ;;
+    'web-server-restart')
+        printf "\n#### Restarting nginx"
+        service nginx restart
+        sleep 5
+        printf "\n#### Restarting mycodoflask"
+        service mycodoflask restart
+    ;;
+    'web-server-update')
+        printf "\n#### Installing and configuring nginx web server\n"
+        systemctl disable mycodoflask.service
+        rm -rf /etc/systemd/system/mycodoflask.service
+        ln -sf ${INSTALL_DIRECTORY}/Mycodo/install/mycodoflask_nginx.conf /etc/nginx/sites-enabled/default
+        systemctl enable nginx
+        systemctl enable ${INSTALL_DIRECTORY}/Mycodo/install/mycodoflask.service
+    ;;
     *)
-        printf "Unrecognized command\n"
+        printf "Error: Unrecognized command\n"
     ;;
 esac
