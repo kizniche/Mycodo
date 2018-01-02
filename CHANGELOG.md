@@ -4,6 +4,7 @@
 
  - Fix issue with proper python 3 virtualenv ([#362](https://github.com/kizniche/mycodo/issues/362))
  - Fix starting web server during install
+ - Fix issue with gunicorn worker timeouts on Raspberry Pi Zeros ([#365](https://github.com/kizniche/mycodo/issues/365))
 
 
 ## 5.5.3 (2017-12-29)
