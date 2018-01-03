@@ -11,7 +11,7 @@ INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../.." && pwd -P )
 cd ${INSTALL_DIRECTORY}
 
 runSelfUpgrade() {
-  INSTALL_DIRECTORY=$( cd -P /var/www/mycodo/.. && pwd -P )
+  INSTALL_DIRECTORY=$( cd -P /var/mycodo-root/.. && pwd -P )
   echo '1' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
 
   function error_found {

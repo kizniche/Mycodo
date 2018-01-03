@@ -13,7 +13,7 @@ elif [ ! -d $1 ]; then
     exit 2
 fi
 
-INSTALL_DIRECTORY=$( cd -P /var/www/mycodo/.. && pwd -P )
+INSTALL_DIRECTORY=$( cd -P /var/mycodo-root/.. && pwd -P )
 echo '1' > ${INSTALL_DIRECTORY}/Mycodo/.restore
 
 function error_found {

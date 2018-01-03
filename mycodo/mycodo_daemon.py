@@ -1,3 +1,4 @@
+#!/usr/bin/mycodo-python
 # -*- coding: utf-8 -*-
 #
 #  mycodo_daemon.py - Daemon for managing Mycodo controllers, such as sensors,

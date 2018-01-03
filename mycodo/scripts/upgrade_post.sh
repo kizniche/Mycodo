@@ -12,7 +12,7 @@ INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
 cd ${INSTALL_DIRECTORY}
 
-ln -sf ${INSTALL_DIRECTORY} /var/www/mycodo
+${INSTALL_CMD} create-symlinks
 
 printf "\n#### Removing statistics file\n"
 rm ${INSTALL_DIRECTORY}/databases/statistics.csv

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/mycodo-python
 # -*- coding: utf-8 -*-
 #
 #  mycodo_client.py - Client for mycodo daemon. Communicates with daemon

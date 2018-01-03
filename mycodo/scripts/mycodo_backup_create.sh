@@ -5,7 +5,7 @@ if [ "$EUID" -ne 0 ] ; then
     exit 1
 fi
 
-INSTALL_DIRECTORY=$( cd -P /var/www/mycodo/.. && pwd -P )
+INSTALL_DIRECTORY=$( cd -P /var/mycodo-root/.. && pwd -P )
 
 function error_found {
     date

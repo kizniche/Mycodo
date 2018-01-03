@@ -72,7 +72,8 @@ class AtlaspHSensor(AbstractInput):
         self._ph = None
 
         try:
-            if ',' in self.sensor_sel.calibrate_sensor_measure:
+            if (self.sensor_sel.calibrate_sensor_measure and
+                    ',' in self.sensor_sel.calibrate_sensor_measure):
                 logger.debug("pH sensor set to calibrate temperature")
 
                 device_id = self.sensor_sel.calibrate_sensor_measure.split(',')[0]

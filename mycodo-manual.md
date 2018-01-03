@@ -1074,7 +1074,7 @@ Troubleshooting
     for any errors. If the issue began after an upgrade, also check the
     Upgrade Log for indications of an issue.
 -   Determine if the Daemon is Running: Execute
-    `ps aux | grep '/var/www/mycodo/env/bin/python /var/www/mycodo/mycodo/mycodo_daemon.py'`
+    `ps aux | grep '/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_daemon.py'`
     in a terminal and look for an entry to be returned. If nothing is
     returned, the daemon is not running.
 -   Daemon Lock File: If the daemon is not running, make sure the daemon
