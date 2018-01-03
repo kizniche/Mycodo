@@ -296,7 +296,8 @@ class ConditionalController(threading.Thread):
 
     def trigger_conditional_actions(self, cond_id,
                                     message='', last_measurement=None,
-                                    device_id=None, device_measurement=None):
+                                    device_id=None, device_measurement=None,
+                                    output_state=None, on_duration=None, duty_cycle=None):
         """
         If a Conditional has been triggered, this function will execute
         the Conditional Actions
@@ -307,6 +308,9 @@ class ConditionalController(threading.Thread):
         :param device_measurement: The measurement (i.e. "temperature")
         :param message: The message generated from the conditional check
         :param last_measurement: The last measurement value
+        :param output_state: If output conditional, the output state (on/off) to trigger the action
+        :param on_duration: If output conditional, the ON duration
+        :param duty_cycle: If output conditional, the duty cycle
         :return:
         """
         logger_cond = logging.getLogger("mycodo.conditional_{id}".format(
@@ -321,6 +325,7 @@ class ConditionalController(threading.Thread):
         attachment_file = False
         attachment_type = False
         input_dev = None
+        output = None
         device = None
 
         cond_actions = db_retrieve_table_daemon(ConditionalActions)
@@ -337,6 +342,11 @@ class ConditionalController(threading.Thread):
                 Math, unique_id=device_id, entry='first')
             if math:
                 device = math
+
+            output = db_retrieve_table_daemon(
+                Output, unique_id=device_id, entry='first')
+            if output:
+                device = output
 
             pid = db_retrieve_table_daemon(
                 PID, unique_id=device_id, entry='first')
@@ -384,6 +394,21 @@ class ConditionalController(threading.Thread):
                 if input_dev:
                     command_str = command_str.replace(
                         "((measure_location))", str(input_dev.location))
+
+                # Check command for output variables to replace
+                if output:
+                    if output.pin:
+                        command_str = command_str.replace(
+                            "((output_pin))", str(output.pin))
+                    if output_state:
+                        command_str = command_str.replace(
+                            "((output_action))", str(output_state))
+                    if on_duration:
+                        command_str = command_str.replace(
+                            "((output_duration))", str(on_duration))
+                    if duty_cycle:
+                        command_str = command_str.replace(
+                            "((output_pwm))", str(duty_cycle))
 
                 # Replacement string is the device period
                 # Must be Input, Math, or PID

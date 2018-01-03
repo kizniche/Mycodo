@@ -547,7 +547,8 @@ class OutputController(threading.Thread):
                 state=each_conditional.if_relay_state)
 
             self.control.trigger_conditional_actions(
-                each_conditional.id, message=message)
+                each_conditional.id, message=message,
+                output_state=state, on_duration=on_duration, duty_cycle=duty_cycle)
 
     def all_outputs_initialize(self, outputs):
         for each_output in outputs:
