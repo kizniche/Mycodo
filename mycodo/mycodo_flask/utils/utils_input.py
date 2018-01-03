@@ -83,9 +83,8 @@ def input_add(form_add_sensor):
         # Environmental Inputs
         # Temperature
         elif form_add_sensor.input_type.data in ['ATLAS_PT1000_I2C',
-                                             'ATLAS_PT1000_UART',
-                                             'DS18B20',
-                                             'TMP006']:
+                                                 'ATLAS_PT1000_UART',
+                                                 'DS18B20', 'TMP006']:
             new_sensor.measurements = 'temperature'
             if form_add_sensor.input_type.data == 'ATLAS_PT1000_I2C':
                 new_sensor.interface = 'I2C'
@@ -105,8 +104,8 @@ def input_add(form_add_sensor):
 
         # Temperature/Humidity
         elif form_add_sensor.input_type.data in ['AM2315', 'DHT11',
-                                             'DHT22', 'HTU21D',
-                                             'SHT1x_7x', 'SHT2x']:
+                                                 'DHT22', 'HTU21D',
+                                                 'SHT1x_7x', 'SHT2x']:
             new_sensor.measurements = 'temperature,humidity,dewpoint'
             if form_add_sensor.input_type.data == 'AM2315':
                 new_sensor.location = '0x5c'
@@ -126,8 +125,8 @@ def input_add(form_add_sensor):
             new_sensor.location = '0x63'
             new_sensor.interface = 'I2C'
         elif form_add_sensor.input_type.data in ['K30_UART',
-                                             'MH_Z16_UART',
-                                             'MH_Z19_UART']:
+                                                 'MH_Z16_UART',
+                                                 'MH_Z19_UART']:
             new_sensor.measurements = 'co2'
             new_sensor.location = 'Tx/Rx'
             new_sensor.interface = 'UART'
@@ -154,8 +153,8 @@ def input_add(form_add_sensor):
 
         # Pressure
         elif form_add_sensor.input_type.data in ['BME280',
-                                             'BMP180',
-                                             'BMP280']:
+                                                 'BMP180',
+                                                 'BMP280']:
             if form_add_sensor.input_type.data == 'BME280':
                 new_sensor.measurements = 'temperature,humidity,' \
                                           'dewpoint,pressure,altitude'
@@ -165,7 +164,9 @@ def input_add(form_add_sensor):
                 new_sensor.location = '0x77'
 
         # Light
-        elif form_add_sensor.input_type.data in ['BH1750', 'TSL2561', 'TSL2591']:
+        elif form_add_sensor.input_type.data in ['BH1750',
+                                                 'TSL2561',
+                                                 'TSL2591']:
             new_sensor.measurements = 'lux'
             if form_add_sensor.input_type.data == 'BH1750':
                 new_sensor.location = '0x23'
@@ -320,7 +321,8 @@ def input_del(form_mod_sensor):
 
         delete_entry_with_id(Input, input_id)
         try:
-            display_order = csv_to_list_of_int(DisplayOrder.query.first().sensor)
+            display_order = csv_to_list_of_int(
+                DisplayOrder.query.first().sensor)
             display_order.remove(int(input_id))
             DisplayOrder.query.first().sensor = list_to_csv(display_order)
         except Exception:  # id not in list
@@ -375,7 +377,8 @@ def input_deactivate(form_mod_sensor):
 # Deactivate any active PID or LCD controllers using this sensor
 def input_deactivate_associated_controllers(input_id):
     # Deactivate any activated PIDs using this input
-    sensor_unique_id = Input.query.filter(Input.id == input_id).first().unique_id
+    sensor_unique_id = Input.query.filter(
+        Input.id == input_id).first().unique_id
     pid = PID.query.filter(PID.is_activated == True).all()
     for each_pid in pid:
         if sensor_unique_id in each_pid.measurement:

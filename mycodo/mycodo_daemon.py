@@ -221,11 +221,11 @@ def mycodo_service(mycodo):
 
         @staticmethod
         def exposed_trigger_conditional_actions(
-                conditional_id, message='', output_state=None,
+                conditional_id, message='', edge=None, output_state=None,
                 on_duration=None, duty_cycle=None):
             """Return the output state (not pin but whether output is on or off"""
             return mycodo.trigger_conditional_actions(
-                conditional_id, message, output_state=output_state,
+                conditional_id, message, edge=edge, output_state=output_state,
                 on_duration=on_duration, duty_cycle=duty_cycle)
 
         @staticmethod
@@ -871,13 +871,14 @@ class DaemonController:
                 "Output controller had an issue stopping: {err}".format(
                     err=err))
 
-    def trigger_conditional_actions(self, conditional_id, message='',
-                                    output_state=None, on_duration=None,
-                                    duty_cycle=None):
+    def trigger_conditional_actions(
+            self, conditional_id, message='', edge=None,
+            output_state=None, on_duration=None, duty_cycle=None):
         try:
             return self.controller['Conditional'].trigger_conditional_actions(
-                conditional_id, message=message, output_state=output_state,
-                on_duration=on_duration, duty_cycle=duty_cycle)
+                conditional_id, message=message, edge=edge,
+                output_state=output_state, on_duration=on_duration,
+                duty_cycle=duty_cycle)
         except Exception as except_msg:
             message = "Could not trigger Conditional Actions:" \
                       " {err}".format(err=except_msg)

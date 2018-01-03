@@ -183,6 +183,9 @@ class ConditionalController(threading.Thread):
         :param cond_id: The Conditional ID to check
         :return:
         """
+        last_measurement = None
+        gpio_state = None
+
         logger_cond = logging.getLogger("mycodo.conditional_{id}".format(
             id=cond_id))
 
@@ -228,8 +231,6 @@ class ConditionalController(threading.Thread):
             message += " Error: Controller not Input, Math, Output, or PID"
             logger_cond.error(message)
             return
-
-        last_measurement = None
 
         # Check Measurement Conditionals
         if (cond.conditional_type == 'conditional_measurement' and
@@ -279,10 +280,16 @@ class ConditionalController(threading.Thread):
         # trigger an edge detection event. This will merely produce the correct
         # message based on the edge detection settings.
         elif cond.conditional_type == 'conditional_edge':
+            try:
+                gpio_state = GPIO.input(int(input_dev.pin))
+            except:
+                gpio_state = None
+                logger_cond.error("Exception reading the GPIO pin")
             if (input_dev and
                     input_dev.location and
-                    GPIO.input(int(input_dev.pin)) == cond.if_sensor_gpio_state):
-                message += " {state} GPIO State Detected.".format(
+                    gpio_state is not None and
+                    gpio_state == cond.if_sensor_gpio_state):
+                message += " GPIO State Detected (state = {state}).".format(
                     state=cond.if_sensor_gpio_state)
             else:
                 logger_cond.error("GPIO not configured correctly or GPIO state not verified")
@@ -290,13 +297,14 @@ class ConditionalController(threading.Thread):
 
         # If the code hasn't returned by now, the conditional has been triggered
         # and the actions for that conditional should be executed
-        self.trigger_conditional_actions(cond_id,
-            message=message, last_measurement=last_measurement,
-            device_id=device_id, device_measurement=device_measurement)
+        self.trigger_conditional_actions(
+            cond_id, message=message, last_measurement=last_measurement,
+            device_id=device_id, device_measurement=device_measurement,
+            edge=gpio_state)
 
     def trigger_conditional_actions(self, cond_id,
                                     message='', last_measurement=None,
-                                    device_id=None, device_measurement=None,
+                                    device_id=None, device_measurement=None, edge=None,
                                     output_state=None, on_duration=None, duty_cycle=None):
         """
         If a Conditional has been triggered, this function will execute
@@ -305,9 +313,10 @@ class ConditionalController(threading.Thread):
         :param self: self from the Controller class
         :param cond_id: The ID of the Conditional
         :param device_id: The unique ID associated with the device_measurement
-        :param device_measurement: The measurement (i.e. "temperature")
         :param message: The message generated from the conditional check
         :param last_measurement: The last measurement value
+        :param device_measurement: The measurement (i.e. "temperature")
+        :param edge: If edge conditional, rise/on (1) or fall/off (0)
         :param output_state: If output conditional, the output state (on/off) to trigger the action
         :param on_duration: If output conditional, the ON duration
         :param duty_cycle: If output conditional, the duty cycle
@@ -381,21 +390,23 @@ class ConditionalController(threading.Thread):
 
                 # Replace string variables with actual values
                 command_str = cond_action.do_action_string
+
+                # Replace measurement variables
                 if last_measurement:
                     command_str = command_str.replace(
                         "((measure_{var}))".format(
                             var=device_measurement), str(last_measurement))
-
-                # If measurement is from an Input, and the measurement is
-                # linux_command or location, replace with that variable
-                if input_dev and device_measurement == input_dev.cmd_measurement:
+                if device and device.period:
                     command_str = command_str.replace(
-                        "((measure_linux_command))", str(input_dev.location))
+                        "((measure_period))", str(device.period))
                 if input_dev:
                     command_str = command_str.replace(
                         "((measure_location))", str(input_dev.location))
+                if input_dev and device_measurement == input_dev.cmd_measurement:
+                    command_str = command_str.replace(
+                        "((measure_linux_command))", str(input_dev.location))
 
-                # Check command for output variables to replace
+                # Replace output variables
                 if output:
                     if output.pin:
                         command_str = command_str.replace(
@@ -410,18 +421,17 @@ class ConditionalController(threading.Thread):
                         command_str = command_str.replace(
                             "((output_pwm))", str(duty_cycle))
 
-                # Replacement string is the device period
-                # Must be Input, Math, or PID
-                if device and device.period:
+                # Replace edge variables
+                if edge:
                     command_str = command_str.replace(
-                        "((measure_period))", str(device.period))
+                        "((edge_state))", str(edge))
 
                 message += " Execute '{com}' ".format(
                     com=command_str)
 
                 _, _, cmd_status = cmd_output(command_str)
 
-                message += "(Status: {stat}).".format(stat=cmd_status)
+                message += "(return status: {stat}).".format(stat=cmd_status)
 
             # Capture photo
             elif cond_action.do_action in ['photo', 'photo_email']:

@@ -598,9 +598,11 @@ class InputController(threading.Thread):
                     (self.switch_edge == 'both' and gpio_state)):
                 rising_or_falling = 1  # Rising edge detected
                 state_str = 'Rising'
+                conditional_edge = 1
             else:
                 rising_or_falling = -1  # Falling edge detected
                 state_str = 'Falling'
+                conditional_edge = 0
 
             write_db = threading.Thread(
                 target=write_influxdb_value,
@@ -632,7 +634,8 @@ class InputController(threading.Thread):
                         pin=bcm_pin)
 
                     self.control.trigger_conditional_actions(
-                        each_conditional.id, message=message)
+                        each_conditional.id, message=message,
+                        edge=conditional_edge)
 
     def is_running(self):
         return self.running

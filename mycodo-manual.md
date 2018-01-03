@@ -537,8 +537,8 @@ echo "TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm
 
 Variable | Description
 --------------------------- | -------------------------------------------
-((measure_location)) | (Input only) the location (such as GPIO pin, I<sup>2</sup>C address, etc.)
-((measure_period)) | The period (seconds) between measurements
+((measure_location)) | Input location (such as GPIO pin, I<sup>2</sup>C address, etc.)
+((measure_period)) | The period (seconds) between measurements (input, math, or PID)
 ((measure_linux_command)) | Input measurement: Linux Command return value
 ((measure_altitude)) | Input measurement: altitude
 ((measure_co2)) | Input measurement: CO2
@@ -570,6 +570,12 @@ Variable | Description
 ((output_action)) | The state change of the output (turned on = 1, turned off = 0)
 ((output_duration)) | The number of seconds the output turned on for (will return 0 if not applicable)
 ((output_pwm)) | The PWM duty cycle the output turned on for (will return 0 if not applicable)
+
+##### Edge Conditional command variables
+
+Variable | Description
+--------------------------- | -------------------------------------------
+((edge_state)) | The state of the GPIO pin (on = 1, off = 0)
 
 
 Timers

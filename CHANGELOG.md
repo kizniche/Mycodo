@@ -1,5 +1,9 @@
 ## 5.5.4 (Unreleased)
 
+### Features
+
+ - Add ability to replace edge variable in edge conditional command action
+
 ### Bugfixes
 
  - Fix issue with proper python 3 virtualenv ([#362](https://github.com/kizniche/mycodo/issues/362))

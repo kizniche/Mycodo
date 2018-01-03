@@ -136,10 +136,10 @@ class DaemonControl:
         return self.rpyc_client.root.refresh_conditionals()
 
     def trigger_conditional_actions(
-            self, conditional_id, message='', output_state=None,
-            on_duration=None, duty_cycle=None):
+            self, conditional_id, message='', edge=None,
+            output_state=None, on_duration=None, duty_cycle=None):
         return self.rpyc_client.root.trigger_conditional_actions(
-            conditional_id, message, output_state=output_state,
+            conditional_id, message, edge=edge, output_state=output_state,
             on_duration=on_duration, duty_cycle=duty_cycle)
 
     def terminate_daemon(self):
