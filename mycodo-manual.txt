@@ -1090,10 +1090,11 @@ Measurement Conditional command variables
   -------------------------------------------------------------------------
   Variable                     Description
   ---------------------------- --------------------------------------------
-  ((measure_location))         (Input only) the location (such as GPIO pin,
-                               I2C address, etc.)
+  ((measure_location))         Input location (such as GPIO pin, I2C
+                               address, etc.)
 
   ((measure_period))           The period (seconds) between measurements
+                               (input, math, or PID)
 
   ((measure_linux_command))    Input measurement: Linux Command return
                                value
@@ -1158,6 +1159,12 @@ Output Conditional command variables
   ((output_pwm))               The PWM duty cycle the output turned on for
                                (will return 0 if not applicable)
   -------------------------------------------------------------------------
+
+Edge Conditional command variables
+
+  Variable         Description
+  ---------------- ------------------------------------------------------------
+  ((edge_state))   The state of the GPIO pin (on/rising = 1, off/falling = 0)
 
 
 Timers

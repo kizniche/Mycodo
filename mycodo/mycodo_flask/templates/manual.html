@@ -1290,11 +1290,11 @@
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">((measure_location))</td>
-<td style="text-align: left;">(Input only) the location (such as GPIO pin, I<sup>2</sup>C address, etc.)</td>
+<td style="text-align: left;">Input location (such as GPIO pin, I<sup>2</sup>C address, etc.)</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">((measure_period))</td>
-<td style="text-align: left;">The period (seconds) between measurements</td>
+<td style="text-align: left;">The period (seconds) between measurements (input, math, or PID)</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">((measure_linux_command))</td>
@@ -1414,6 +1414,21 @@
 <tr class="even">
 <td style="text-align: left;">((output_pwm))</td>
 <td style="text-align: left;">The PWM duty cycle the output turned on for (will return 0 if not applicable)</td>
+</tr>
+</tbody>
+</table>
+<h5 id="edge-conditional-command-variables">Edge Conditional command variables</h5>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">((edge_state))</td>
+<td style="text-align: left;">The state of the GPIO pin (on/rising = 1, off/falling = 0)</td>
 </tr>
 </tbody>
 </table>

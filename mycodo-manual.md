@@ -575,7 +575,7 @@ Variable | Description
 
 Variable | Description
 --------------------------- | -------------------------------------------
-((edge_state)) | The state of the GPIO pin (on = 1, off = 0)
+((edge_state)) | The state of the GPIO pin (on/rising = 1, off/falling = 0)
 
 
 Timers
