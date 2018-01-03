@@ -8,11 +8,20 @@ if [ "$EUID" -ne 0 ] ; then
   exit 1
 fi
 
-MYCODO_PATH=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd -P )
+# Required apt packages. This has only been tested with Raspbian for the
+# Raspberry Pi but should work with most debian-based systems.
 APT_PKGS="fswebcam gawk gcc git libav-tools libffi-dev libi2c-dev logrotate \
           moreutils nginx python-setuptools python3 python3-dev python3-numpy \
           python3-pigpio python3-smbus sqlite3 wget"
 
+# Get the Mycodo root directory
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+MYCODO_PATH="$( cd -P "$( dirname "${SOURCE}" )/../.." && pwd )"
 cd ${MYCODO_PATH}
 
 case "${1:-''}" in
@@ -298,17 +307,17 @@ case "${1:-''}" in
         done
     ;;
     'web-server-reload')
-        printf "\n#### Restarting nginx"
+        printf "\n#### Restarting nginx\n"
         service nginx restart
         sleep 5
-        printf "\n#### Reloading mycodoflask"
+        printf "#### Reloading mycodoflask\n"
         service mycodoflask reload
     ;;
     'web-server-restart')
-        printf "\n#### Restarting nginx"
+        printf "\n#### Restarting nginx\n"
         service nginx restart
         sleep 5
-        printf "\n#### Restarting mycodoflask"
+        printf "#### Restarting mycodoflask\n"
         service mycodoflask restart
     ;;
     'web-server-update')
