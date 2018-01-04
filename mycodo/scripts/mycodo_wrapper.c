@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
 
 			sprintf(cmd, "service mycodo restart");
 			system(cmd);
-			
+
         } else if (strcmp(argv[1], "daemon_start") == 0) {
 
 			sprintf(cmd, "service mycodo start");
@@ -66,7 +66,12 @@ int main(int argc, char *argv[]) {
 			sprintf(cmd, "service mycodo stop");
 			system(cmd);
 
-		} else if (strcmp(argv[1], "influxdb_restart") == 0) {
+		} else if (strcmp(argv[1], "frontend_reload") == 0) {
+
+			sprintf(cmd, "service mycodoflask reload");
+			system(cmd);
+
+        } else if (strcmp(argv[1], "influxdb_restart") == 0) {
 
 			sprintf(cmd, "service influxdb restart");
 			system(cmd);

@@ -1,3 +1,10 @@
+## 5.5.6 (Unreleased)
+
+### Features
+
+ - Add ability to restart the frontend from the web UI
+
+
 ## 5.5.5 (2018-01-04)
 
 ### Bugfixes
