@@ -1,3 +1,10 @@
+## 5.5.5 (Unreleased)
+
+### Bugfixes
+
+ - Fix IP address of user login log entries
+
+
 ## 5.5.4 (2018-01-03)
 
 ### Features

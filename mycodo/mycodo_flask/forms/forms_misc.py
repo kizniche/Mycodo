@@ -86,21 +86,21 @@ class ImportInfluxdb(FlaskForm):
 
 class LogView(FlaskForm):
     lines = IntegerField(
-        lazy_gettext('Number of Lines'),
+        'Number of Lines',
         render_kw={'placeholder': lazy_gettext('Lines')},
         validators=[validators.NumberRange(
             min=1,
             message=lazy_gettext('Number of lines should be greater than 0')
         )]
     )
-    loglogin = SubmitField(lazy_gettext('Login Log'))
-    loghttp_access = SubmitField(lazy_gettext('HTTP Access'))
-    loghttp_error = SubmitField(lazy_gettext('HTTP Error'))
-    logdaemon = SubmitField(lazy_gettext('Daemon Log'))
-    logbackup = SubmitField(lazy_gettext('Backup Log'))
-    logkeepup = SubmitField(lazy_gettext('KeepUp Log'))
-    logupgrade = SubmitField(lazy_gettext('Upgrade Log'))
-    logrestore = SubmitField(lazy_gettext('Restore Log'))
+    loglogin = SubmitField(lazy_gettext('Login'))
+    loghttp_access = SubmitField(lazy_gettext('Web Access'))
+    loghttp_error = SubmitField(lazy_gettext('Web Error'))
+    logdaemon = SubmitField(lazy_gettext('Daemon'))
+    logbackup = SubmitField(lazy_gettext('Backup'))
+    logkeepup = SubmitField(lazy_gettext('KeepUp'))
+    logupgrade = SubmitField(lazy_gettext('Upgrade'))
+    logrestore = SubmitField(lazy_gettext('Restore'))
 
 
 #

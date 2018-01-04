@@ -7,35 +7,41 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <form class="form-inline" method="post" action="/logview">
+    <p>{{_('Select the number of lines to display from the end of a log')}}</p>
+
+    <form class="row" method="post" action="/logview">
       <input type="hidden" name="form-name" value="logview">
       {{form_log_view.hidden_tag()}}
-      <div class="form-group">
-        {{_('Lines')}}: {{form_log_view.lines(class_='form-control',type="number",value=lines)}}
+      <div class="col-xs-12 col-sm-2">
+        {{form_log_view.lines(class_='form-control', type="number", value=lines)}}
       </div>
-      <div class="form-group">
-        {{form_log_view.loglogin(class_='form-control btn btn-default')}}
-      </div>
-      <div class="form-group">
-        {{form_log_view.loghttp_access(class_='form-control btn btn-default')}}
-      </div>
-      <div class="form-group">
-        {{form_log_view.loghttp_error(class_='form-control btn btn-default')}}
-      </div>
-      <div class="form-group">
-        {{form_log_view.logdaemon(class_='form-control btn btn-default')}}
-      </div>
-      <div class="form-group">
-        {{form_log_view.logkeepup(class_='form-control btn btn-default')}}
-      </div>
-      <div class="form-group">
-        {{form_log_view.logbackup(class_='form-control btn btn-default')}}
-      </div>
-      <div class="form-group">
-        {{form_log_view.logrestore(class_='form-control btn btn-default')}}
-      </div>
-      <div class="form-group">
-        {{form_log_view.logupgrade(class_='form-control btn btn-default')}}
+      <div class="col-xs-12 col-sm-10">
+        <div class="form-inline">
+          <div class="form-group">
+            {{form_log_view.loglogin(class_='form-control btn btn-default')}}
+          </div>
+          <div class="form-group">
+            {{form_log_view.loghttp_access(class_='form-control btn btn-default')}}
+          </div>
+          <div class="form-group">
+            {{form_log_view.loghttp_error(class_='form-control btn btn-default')}}
+          </div>
+          <div class="form-group">
+            {{form_log_view.logdaemon(class_='form-control btn btn-default')}}
+          </div>
+          <div class="form-group">
+            {{form_log_view.logkeepup(class_='form-control btn btn-default')}}
+          </div>
+          <div class="form-group">
+            {{form_log_view.logbackup(class_='form-control btn btn-default')}}
+          </div>
+          <div class="form-group">
+            {{form_log_view.logrestore(class_='form-control btn btn-default')}}
+          </div>
+          <div class="form-group">
+            {{form_log_view.logupgrade(class_='form-control btn btn-default')}}
+          </div>
+        </div>
       </div>
     </form>
 

@@ -163,7 +163,7 @@ def do_login():
     else:
         if request.method == 'POST':
             username = form_login.username.data.lower()
-            user_ip = request.environ.get('REMOTE_ADDR', 'unknown address')
+            user_ip = request.environ.get('HTTP_X_FORWARDED_FOR', 'unknown address')
             user = User.query.filter(
                 func.lower(User.name) == username).first()
 
