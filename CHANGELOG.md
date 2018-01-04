@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix IP address of user login log entries
+ - Fix issue reading DHT11 sensor ([#370](https://github.com/kizniche/mycodo/issues/370))
 
 
 ## 5.5.4 (2018-01-03)

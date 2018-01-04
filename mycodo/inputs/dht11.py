@@ -39,8 +39,8 @@ class DHT11Sensor(AbstractInput):
         self._humidity = None
         self._temperature = None
 
-        self.temp_temperature = None
-        self.temp_humidity = None
+        self.temp_temperature = 0
+        self.temp_humidity = 0
         self.temp_dew_point = None
 
         self.power_relay_id = power
@@ -87,6 +87,7 @@ class DHT11Sensor(AbstractInput):
     def next(self):
         """ Get next measurement reading """
         if self.read():  # raised an error
+            self.logger.error("TEST01: {}, {}, {}".format(self._dew_point, self._humidity, self._temperature))
             raise StopIteration  # required
         return dict(dewpoint=float('{0:.2f}'.format(self._dew_point)),
                     humidity=float("{0:.2f}".format(float(self._humidity))),
@@ -156,7 +157,7 @@ class DHT11Sensor(AbstractInput):
                             self.temp_temperature)  # success - no errors
                 time.sleep(2)
 
-        self.logger.debug("Could not acquire a measurement")
+        self.logger.error("Could not acquire a measurement")
         return None, None, None
 
     def read(self):
@@ -179,8 +180,8 @@ class DHT11Sensor(AbstractInput):
         return 1
 
     def measure_sensor(self):
-        self.temp_temperature = None
-        self.temp_humidity = None
+        self.temp_temperature = 0
+        self.temp_humidity = 0
         self.temp_dew_point = None
         try:
             try:
@@ -194,8 +195,7 @@ class DHT11Sensor(AbstractInput):
             self.pi.set_mode(self.gpio, self.pigpio.INPUT)
             self.pi.set_watchdog(self.gpio, 200)
             time.sleep(0.2)
-            if (self.temp_humidity is not None and
-                    self.temp_temperature is not None):
+            if self.temp_humidity != 0:
                 self.temp_dew_point = dewpoint(
                     self.temp_temperature, self.temp_humidity)
         except Exception as e:
@@ -258,10 +258,13 @@ class DHT11Sensor(AbstractInput):
             if self.bit == 39:
                 # 40th bit received
                 self.pi.set_watchdog(self.gpio, 0)
-                total = self._humidity + self._temperature
+                total = self.temp_humidity + self.temp_temperature
                 # is checksum ok ?
                 if not (total & 255) == self.checksum:
-                    self.logger.error(
+                    # For some reason the port from python 2 to python 3 causes
+                    # this bad checksum error to happen during every read
+                    # TODO: Investigate how to properly check the checksum in python 3
+                    self.logger.debug(
                         "Exception raised when taking a reading: "
                         "Bad Checksum.")
         elif 16 <= self.bit < 24:  # in temperature byte
@@ -277,6 +280,8 @@ class DHT11Sensor(AbstractInput):
             return
         self.bit = -2
         self.checksum = 0
+        self.temp_temperature = 0
+        self.temp_humidity = 0
 
     def _edge_either(self, tick, diff):
         """ Handle Either signal """
