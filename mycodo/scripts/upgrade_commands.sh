@@ -178,7 +178,7 @@ case "${1:-''}" in
         make -j4
         make install
         killall pigpiod || true
-        /usr/local/bin/pigpiod &
+        /usr/local/bin/pigpiod -s 1 &
         cd ${MYCODO_PATH}/install
         rm -rf ./PIGPIO ./pigpio.zip
     ;;
