@@ -6,9 +6,9 @@
 
 #### [Mycodo Manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md) ([PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt))
 
-Mycodo is an automated monitoring and regulation system that was built to run on the []Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) (versions Zero, 1, 2, and 3).
+Mycodo is an automated monitoring and regulation system that was built to run on the [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) (versions Zero, 1, 2, and 3).
 
-Orignially designed to cultivate edible mushrooms, Mycodo has grown to include the ability to do much more, including cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating animals and eggs, maintaining aquatic systems, aging cheeses, fermenting foods and tobacco, cooking food (vous-vide), and more.
+Originally designed to cultivate edible mushrooms, Mycodo has grown to include the ability to do much more, including cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating animals and eggs, maintaining aquatic systems, aging cheeses, fermenting foods and tobacco, cooking food (vous-vide), and more.
 
 The system comprises a backend (daemon) and a frontend (user interface). The backend conducts measurements from sensors and devices, then coordinate a diverse set of responses to those measurements, including the ability to modulate outputs (relays, PWM, wireless outlets), regulate environmental conditions with electrical devices under PID control (steady regulation or changing over time), schedule timers, capture photos and stream video, trigger actions when measurements meet certain conditions (modulate relays, execute commands, notify by email, etc.), and more. The frontend is a web interface that enables easy navigation and configuration from any browser-enabled device.
 
