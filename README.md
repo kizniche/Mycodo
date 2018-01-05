@@ -170,7 +170,7 @@ The Mycodo Manual may be viewed as [Markdown](https://github.com/kizniche/Mycodo
 
 ## Donate
 
-I have always made Mycodo free, and I don't intend on changing that to make a profit. However, if you would like to make a donation, you can find several options to do so at [KyleGabriel.com/donate](kylegabriel.com/donate)
+I have always made Mycodo free, and I don't intend on changing that to make a profit. However, if you would like to make a donation, you can find several options to do so at [KyleGabriel.com/donate](http://kylegabriel.com/donate)
 
 
 ## Links
