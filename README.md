@@ -28,25 +28,24 @@ The system comprises a backend (daemon) and a frontend (user interface). The bac
   - [Web Server Security](#web-server-security)
 - [Upgrade](#upgrade)
 - [Manual](#manual)
-- [License](#license)
+- [Donate](#donate)
 - [Links](#links)
+- [License](#license)
 
-[Languages](#languages-1)
+- [Languages](#languages-1)
+  - [Español (Spanish)](#espa%C3%B1ol-spanish)
+  - [Français (French)](#fran%C3%A7ais-french)
+  - [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
 
-- [Español (Spanish)](#espa%C3%B1ol-spanish)
-- [Français (French)](#fran%C3%A7ais-french)
-- [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
-
-[From the Wiki](#from-the-wiki)
-
-- [Backup and Restore](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore)
-- [Diagnosing Issues](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues)
-- [Directory Structure](https://github.com/kizniche/Mycodo/wiki/Directory-Structure)
-- [Preserving Custom Code](https://github.com/kizniche/Mycodo/wiki/Preserving-Custom-Code)
-- [Screenshots](https://github.com/kizniche/Mycodo/wiki/Screenshots)
-- [Testing](https://github.com/kizniche/Mycodo/wiki/Testing)
-- [TODO](https://github.com/kizniche/Mycodo/wiki/TODO)
-- [Translations](https://github.com/kizniche/Mycodo/wiki/Translations)
+- [From the Wiki](#from-the-wiki)
+  - [Backup and Restore](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore)
+  - [Diagnosing Issues](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues)
+  - [Directory Structure](https://github.com/kizniche/Mycodo/wiki/Directory-Structure)
+  - [Preserving Custom Code](https://github.com/kizniche/Mycodo/wiki/Preserving-Custom-Code)
+  - [Screenshots](https://github.com/kizniche/Mycodo/wiki/Screenshots)
+  - [Testing](https://github.com/kizniche/Mycodo/wiki/Testing)
+  - [TODO](https://github.com/kizniche/Mycodo/wiki/TODO)
+  - [Translations](https://github.com/kizniche/Mycodo/wiki/Translations)
 
 ## What is PID Control?
 
@@ -168,15 +167,10 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade
 
 The Mycodo Manual may be viewed as [Markdown](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md), [PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), or [Plain Text](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt)
 
-## License
 
-Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+## Donate
 
-Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.en.html) for more details.
-
-A full copy of the GNU General Public License can be found at <a href="http://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">http://www.gnu.org/licenses/gpl-3.0.en.html</a>
-
-This software includes third party open source software components: Discrete PID Controller. Each of these software components have their own license. Please see Mycodo/mycodo/controller_PID.py for license information.
+I have always made Mycodo free, and I don't intend on changing that to make a profit. However, if you would like to make a donation, you can find several options to do so at [KyleGabriel.com/donate](kylegabriel.com/donate)
 
 
 ## Links
@@ -186,6 +180,17 @@ Thanks for using and supporting Mycodo, however it may not be the latest version
 https://github.com/kizniche/Mycodo
 
 http://KyleGabriel.com
+
+
+## License
+
+Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.en.html) for more details.
+
+A full copy of the GNU General Public License can be found at <a href="http://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">http://www.gnu.org/licenses/gpl-3.0.en.html</a>
+
+This software includes third party open source software components: Discrete PID Controller. Each of these software components have their own license. Please see Mycodo/mycodo/controller_PID.py for license information.
 
 
 ## Languages

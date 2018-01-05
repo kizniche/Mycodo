@@ -4,6 +4,10 @@
 
  - Add ability to restart the frontend from the web UI
 
+### Bugfixes
+
+- Attempt to fix issue where DHT22 sensor may become unresponsive
+
 
 ## 5.5.5 (2018-01-04)
 

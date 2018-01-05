@@ -2,6 +2,8 @@
 import logging
 import time
 
+import pigpio
+
 from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
 from .base_input import AbstractInput
@@ -60,18 +62,18 @@ class DHT22Sensor(AbstractInput):
         self.power_relay_id = power
         self.powered = False
 
+        self.pi = None
+
         if not testing:
-            import pigpio
             from mycodo.mycodo_client import DaemonControl
 
             self.logger = logging.getLogger('mycodo.inputs.dht22')
 
             self.control = DaemonControl()
 
-            self.pigpio = pigpio
-            self.pi = self.pigpio.pi()
-            self.gpio = gpio
+            self.pi = pigpio.pi()
 
+            self.gpio = gpio
             self.bad_CS = 0  # Bad checksum count
             self.bad_SM = 0  # Short message count
             self.bad_MM = 0  # Missing message count
@@ -141,9 +143,6 @@ class DHT22Sensor(AbstractInput):
         self._humidity = None
         self._temperature = None
 
-        import pigpio
-        self.pigpio = pigpio
-
         # Ensure if the power pin turns off, it is turned back on
         if (self.power_relay_id and
                 not db_retrieve_table_daemon(Output, device_id=self.power_relay_id).is_on()):
@@ -204,16 +203,23 @@ class DHT22Sensor(AbstractInput):
         self.temp_temperature = None
         self.temp_humidity = None
         self.temp_dew_point = None
+
+        self.close()
+        time.sleep(0.2)
+
         try:
-            try:
-                self.setup()
-            except Exception as except_msg:
-                self.logger.error(
-                    'Could not initialize sensor. Check if gpiod is running. '
-                    'Error: {msg}'.format(msg=except_msg))
-            self.pi.write(self.gpio, self.pigpio.LOW)
+            self.setup()
+        except Exception as except_msg:
+            self.logger.exception(
+                'Could not initialize sensor. Check if pigpiod is running. '
+                'Error: {msg}'.format(msg=except_msg))
+
+        time.sleep(0.2)
+
+        try:
+            self.pi.write(self.gpio, pigpio.LOW)
             time.sleep(0.017)  # 17 ms
-            self.pi.set_mode(self.gpio, self.pigpio.INPUT)
+            self.pi.set_mode(self.gpio, pigpio.INPUT)
             self.pi.set_watchdog(self.gpio, 200)
             time.sleep(0.2)
             if (self.temp_humidity is not None and
@@ -226,9 +232,6 @@ class DHT22Sensor(AbstractInput):
                     err=e))
         finally:
             self.close()
-            return (self.temp_dew_point,
-                    self.temp_humidity,
-                    self.temp_temperature)
 
     def setup(self):
         """
@@ -241,14 +244,14 @@ class DHT22Sensor(AbstractInput):
         self.high_tick = 0
         self.bit = 40
         self.either_edge_cb = None
-        self.pi.set_pull_up_down(self.gpio, self.pigpio.PUD_OFF)
+        self.pi.set_pull_up_down(self.gpio, pigpio.PUD_OFF)
         self.pi.set_watchdog(self.gpio, 0)  # Kill any watchdogs
         self.register_callbacks()
 
     def register_callbacks(self):
         """ Monitors RISING_EDGE changes using callback """
         self.either_edge_cb = self.pi.callback(self.gpio,
-                                               self.pigpio.EITHER_EDGE,
+                                               pigpio.EITHER_EDGE,
                                                self.either_edge_callback)
 
     def either_edge_callback(self, gpio, level, tick):
@@ -260,12 +263,12 @@ class DHT22Sensor(AbstractInput):
         humidity low, temperature high, temperature low, checksum.
         """
         level_handlers = {
-            self.pigpio.FALLING_EDGE: self._edge_fall,
-            self.pigpio.RISING_EDGE: self._edge_rise,
-            self.pigpio.EITHER_EDGE: self._edge_either
+            pigpio.FALLING_EDGE: self._edge_fall,
+            pigpio.RISING_EDGE: self._edge_rise,
+            pigpio.EITHER_EDGE: self._edge_either
         }
         handler = level_handlers[level]
-        diff = self.pigpio.tickDiff(self.high_tick, tick)
+        diff = pigpio.tickDiff(self.high_tick, tick)
         handler(tick, diff)
 
     def _edge_rise(self, tick, diff):
