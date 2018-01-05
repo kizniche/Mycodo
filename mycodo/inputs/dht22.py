@@ -15,13 +15,15 @@ class DHT22Sensor(AbstractInput):
     A sensor support class that measures the DHT22's humidity and temperature
     and calculates the dew point
 
+    An adaptation of DHT22 code from https://github.com/joan2937/pigpio
+
     The sensor is also known as the AM2302.
-    The sensor can be powered from the Pi 3V3 or the Pi 5V rail.
-    Powering from the 3V3 rail is simpler and safer.  You may need
-    to power from 5V if the sensor is connected via a long cable.
-    For 3V3 operation connect pin 1 to 3V3 and pin 4 to ground.
+    The sensor can be powered from the Pi 3.3-volt or 5-volt rail.
+    Powering from the 3.3-volt rail is simpler and safer.  You may need
+    to power from 5 if the sensor is connected via a long cable.
+    For 3.3-volt operation connect pin 1 to 3.3 volts and pin 4 to ground.
     Connect pin 2 to a gpio.
-    For 5V operation connect pin 1 to 5V and pin 4 to ground.
+    For 5-volt operation connect pin 1 to the 5 volts and pin 4 to ground.
     The following pin 2 connection works for me.  Use at YOUR OWN RISK.
 
     5V--5K_resistor--+--10K_resistor--Ground
