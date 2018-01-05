@@ -122,7 +122,6 @@ class AM2315:
         c = self.verify_crc(t)
 
         if crc != c:
-            assert(0)
             self.lastError = 'CRC error in sensor data.'
             return None, None
 
