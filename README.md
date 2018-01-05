@@ -32,20 +32,21 @@ The system comprises a backend (daemon) and a frontend (user interface). The bac
 - [Links](#links)
 - [License](#license)
 
-- [Languages](#languages-1)
-  - [Español (Spanish)](#espa%C3%B1ol-spanish)
-  - [Français (French)](#fran%C3%A7ais-french)
-  - [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
+[Languages](#languages-1)
 
-- [From the Wiki](#from-the-wiki)
-  - [Backup and Restore](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore)
-  - [Diagnosing Issues](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues)
-  - [Directory Structure](https://github.com/kizniche/Mycodo/wiki/Directory-Structure)
-  - [Preserving Custom Code](https://github.com/kizniche/Mycodo/wiki/Preserving-Custom-Code)
-  - [Screenshots](https://github.com/kizniche/Mycodo/wiki/Screenshots)
-  - [Testing](https://github.com/kizniche/Mycodo/wiki/Testing)
-  - [TODO](https://github.com/kizniche/Mycodo/wiki/TODO)
-  - [Translations](https://github.com/kizniche/Mycodo/wiki/Translations)
+- [Español (Spanish)](#espa%C3%B1ol-spanish)
+- [Français (French)](#fran%C3%A7ais-french)
+- [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
+
+[From the Wiki](#from-the-wiki)
+ - [Backup and Restore](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore)
+ - [Diagnosing Issues](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues)
+ - [Directory Structure](https://github.com/kizniche/Mycodo/wiki/Directory-Structure)
+ - [Preserving Custom Code](https://github.com/kizniche/Mycodo/wiki/Preserving-Custom-Code)
+ - [Screenshots](https://github.com/kizniche/Mycodo/wiki/Screenshots)
+ - [Testing](https://github.com/kizniche/Mycodo/wiki/Testing)
+ - [TODO](https://github.com/kizniche/Mycodo/wiki/TODO)
+ - [Translations](https://github.com/kizniche/Mycodo/wiki/Translations)
 
 ## What is PID Control?
 
