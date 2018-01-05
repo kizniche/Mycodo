@@ -5,7 +5,7 @@
 import io
 import time
 import picamera
-from base_camera import BaseCamera
+from mycodo.mycodo_flask.camera.base_camera import BaseCamera
 
 
 class Camera(BaseCamera):

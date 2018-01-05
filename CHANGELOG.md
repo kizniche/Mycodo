@@ -7,6 +7,7 @@
 ### Bugfixes
 
 - Attempt to fix issue where DHT22 sensor may become unresponsive
+- Fix inability to stream video from PiCamera
 
 
 ## 5.5.5 (2018-01-04)
