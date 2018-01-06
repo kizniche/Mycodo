@@ -36,12 +36,12 @@ from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.mycodo_client import DaemonControl
-from mycodo.mycodo_flask.authentication_routes import clear_cookie_auth
+from mycodo.mycodo_flask.routes_authentication import clear_cookie_auth
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.influx import query_string
 from mycodo.utils.system_pi import str_is_float
 
-blueprint = Blueprint('general_routes',
+blueprint = Blueprint('routes_general',
                       __name__,
                       static_folder='../static',
                       template_folder='../templates')
@@ -56,7 +56,7 @@ limiter = Limiter()
 def home():
     """Load the default landing page"""
     if flask_login.current_user.is_authenticated:
-        return redirect(url_for('page_routes.page_live'))
+        return redirect(url_for('routes_page.page_live'))
     return clear_cookie_auth()
 
 
@@ -245,12 +245,12 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
         start_str=start_str, end_str=end_str)
     if query_str == 1:
         flash('Invalid query string', 'error')
-        return redirect(url_for('page_routes.page_export'))
+        return redirect(url_for('routes_page.page_export'))
     raw_data = dbcon.query(query_str).raw
 
     if not raw_data or 'series' not in raw_data:
         flash('No measurements to export in this time period', 'error')
-        return redirect(url_for('page_routes.page_export'))
+        return redirect(url_for('routes_page.page_export'))
 
     # Generate column names
     col_1 = 'timestamp (UTC)'
@@ -410,7 +410,7 @@ def daemon_active():
 def computer_command(action):
     """Execute one of several commands as root"""
     if not utils_general.user_has_permission('edit_settings'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     try:
         if action not in ['restart', 'shutdown', 'daemon_restart', 'frontend_reload']:
@@ -434,4 +434,4 @@ def computer_command(action):
                      "{err}".format(cmd=action, err=e))
         flash("System command '{cmd}' raised and error: "
               "{err}".format(cmd=action, err=e), "error")
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))

@@ -20,13 +20,13 @@ from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import User
 from mycodo.mycodo_flask.forms import forms_settings
-from mycodo.mycodo_flask.static_routes import inject_variables
+from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_settings
 
 logger = logging.getLogger('mycodo.mycodo_flask.settings')
 
-blueprint = Blueprint('settings_routes',
+blueprint = Blueprint('routes_settings',
                       __name__,
                       static_folder='../static',
                       template_folder='../templates')
@@ -42,19 +42,19 @@ def inject_dictionary():
 def settings_alerts():
     """ Display alert settings """
     if not utils_general.user_has_permission('view_settings'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     smtp = SMTP.query.first()
     form_email_alert = forms_settings.SettingsEmail()
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_settings'):
-            return redirect(url_for('general_routes.home'))
+            return redirect(url_for('routes_general.home'))
 
         form_name = request.form['form-name']
         if form_name == 'EmailAlert':
             utils_settings.settings_alert_mod(form_email_alert)
-        return redirect(url_for('settings_routes.settings_alerts'))
+        return redirect(url_for('routes_settings.settings_alerts'))
 
     return render_template('settings/alerts.html',
                            smtp=smtp,
@@ -66,7 +66,7 @@ def settings_alerts():
 def settings_camera():
     """ Display camera settings """
     if not utils_general.user_has_permission('view_settings'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     form_camera = forms_settings.SettingsCamera()
 
@@ -83,7 +83,7 @@ def settings_camera():
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_settings'):
-            return redirect(url_for('general_routes.home'))
+            return redirect(url_for('routes_general.home'))
 
         if form_camera.camera_add.data:
             utils_settings.camera_add(form_camera)
@@ -91,7 +91,7 @@ def settings_camera():
             utils_settings.camera_mod(form_camera)
         elif form_camera.camera_del.data:
             utils_settings.camera_del(form_camera)
-        return redirect(url_for('settings_routes.settings_camera'))
+        return redirect(url_for('routes_settings.settings_camera'))
 
     return render_template('settings/camera.html',
                            camera=camera,
@@ -106,7 +106,7 @@ def settings_camera():
 def settings_general():
     """ Display general settings """
     if not utils_general.user_has_permission('view_settings'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     misc = Misc.query.first()
     form_settings_general = forms_settings.SettingsGeneral()
@@ -115,12 +115,12 @@ def settings_general():
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_settings'):
-            return redirect(url_for('general_routes.home'))
+            return redirect(url_for('routes_general.home'))
 
         form_name = request.form['form-name']
         if form_name == 'General':
             utils_settings.settings_general_mod(form_settings_general)
-        return redirect(url_for('settings_routes.settings_general'))
+        return redirect(url_for('routes_settings.settings_general'))
 
     return render_template('settings/general.html',
                            misc=misc,
@@ -134,7 +134,7 @@ def settings_general():
 def settings_users():
     """ Display user settings """
     if not utils_general.user_has_permission('view_settings'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     users = User.query.all()
     user_roles = Role.query.all()
@@ -144,7 +144,7 @@ def settings_users():
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_users'):
-            return redirect(url_for('general_routes.home'))
+            return redirect(url_for('routes_general.home'))
 
         if form_add_user.add_user.data:
             utils_settings.user_add(form_add_user)
@@ -158,7 +158,7 @@ def settings_users():
                 form_user_roles.save_role.data or
                 form_user_roles.delete_role.data):
             utils_settings.user_roles(form_user_roles)
-        return redirect(url_for('settings_routes.settings_users'))
+        return redirect(url_for('routes_settings.settings_users'))
 
     return render_template('settings/users.html',
                            themes=THEMES,

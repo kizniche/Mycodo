@@ -115,7 +115,7 @@ def output_on_off(form_relay):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_output'))
+    flash_success_errors(error, action, url_for('routes_page.page_output'))
 
 
 #
@@ -163,7 +163,7 @@ def output_add(form_add_relay):
             accepted_values=gettext("Acceptable values")
         )
         error.append(error_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_output'))
+    flash_success_errors(error, action, url_for('routes_page.page_output'))
 
 
 def output_mod(form_relay):
@@ -219,7 +219,7 @@ def output_mod(form_relay):
             manipulate_output('Modify', form_relay.relay_id.data)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_output'))
+    flash_success_errors(error, action, url_for('routes_page.page_output'))
 
 
 def output_del(form_relay):
@@ -238,7 +238,7 @@ def output_del(form_relay):
         manipulate_output('Delete', form_relay.relay_id.data)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_output'))
+    flash_success_errors(error, action, url_for('routes_page.page_output'))
 
 
 def output_reorder(relay_id, display_order, direction):
@@ -257,4 +257,4 @@ def output_reorder(relay_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_output'))
+    flash_success_errors(error, action, url_for('routes_page.page_output'))

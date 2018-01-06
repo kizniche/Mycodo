@@ -198,7 +198,7 @@ def method_create(form_create_method):
     except Exception as except_msg:
 
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('method_routes.method_list'))
+    flash_success_errors(error, action, url_for('routes_method.method_list'))
 
 
 def method_add(form_add_method):
@@ -365,7 +365,7 @@ def method_add(form_add_method):
     except Exception as except_msg:
         logger.exception(1)
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('method_routes.method_list'))
+    flash_success_errors(error, action, url_for('routes_method.method_list'))
 
 
 def method_mod(form_mod_method):
@@ -485,7 +485,7 @@ def method_mod(form_mod_method):
 
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('method_routes.method_list'))
+    flash_success_errors(error, action, url_for('routes_method.method_list'))
 
 
 def method_del(method_id):
@@ -499,4 +499,4 @@ def method_del(method_id):
                              method_id)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('method_routes.method_list'))
+    flash_success_errors(error, action, url_for('routes_method.method_list'))

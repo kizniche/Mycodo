@@ -70,7 +70,7 @@ def conditional_mod(form):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_function'))
+    flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
 def conditional_del(cond_id):
@@ -113,7 +113,7 @@ def conditional_del(cond_id):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_function'))
+    flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
 def conditional_action_add(form):
@@ -143,7 +143,7 @@ def conditional_action_add(form):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_function'))
+    flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
 def conditional_action_mod(form):
@@ -204,7 +204,7 @@ def conditional_action_mod(form):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_function'))
+    flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
 def conditional_action_del(form):
@@ -232,7 +232,7 @@ def conditional_action_del(form):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_function'))
+    flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
 def conditional_reorder(cond_id, display_order, direction):
@@ -252,7 +252,7 @@ def conditional_reorder(cond_id, display_order, direction):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_function'))
+    flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
 def conditional_activate(cond_id):
@@ -285,7 +285,7 @@ def conditional_activate(cond_id):
         db.session.commit()
         check_refresh_conditional(cond_id)
 
-    flash_success_errors(error, action, url_for('page_routes.page_function'))
+    flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
 def conditional_deactivate(cond_id):
@@ -303,7 +303,7 @@ def conditional_deactivate(cond_id):
         db.session.commit()
         check_refresh_conditional(cond_id)
 
-    flash_success_errors(error, action, url_for('page_routes.page_function'))
+    flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
 def check_refresh_conditional(cond_id):
@@ -324,7 +324,7 @@ def check_refresh_conditional(cond_id):
         except Exception as msg:
             error.append("Exception: {err}".format(err=msg))
 
-    flash_success_errors(error, action, url_for('page_routes.page_function'))
+    flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
 def check_form_actions(form, error):

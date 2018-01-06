@@ -20,7 +20,7 @@ from mycodo.mycodo_flask.utils.utils_remote_host import remote_host_page
 from mycodo.mycodo_flask.utils.utils_remote_host import remote_log_in
 
 blueprint = Blueprint(
-    'remote_admin_routes',
+    'routes_remote_admin',
     __name__,
     static_folder='../static',
     template_folder='../templates'
@@ -40,7 +40,7 @@ def inject_hostname():
 def remote_input():
     """Returns input information for remote administration"""
     if not utils_general.user_has_permission('edit_settings'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     remote_hosts = Remote.query.all()
     display_order_unsplit = DisplayOrder.query.first().remote_host
@@ -73,7 +73,7 @@ def remote_input():
 def remote_setup():
     """Return pages for remote administration"""
     if not utils_general.user_has_permission('edit_settings'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     remote_hosts = Remote.query.all()
     display_order_unsplit = DisplayOrder.query.first().remote_host

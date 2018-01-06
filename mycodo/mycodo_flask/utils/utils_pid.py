@@ -147,7 +147,7 @@ def pid_mod(form_mod_pid_base,
                     resp=return_value), "success")
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_function'))
+    flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
 def pid_del(pid_id):
@@ -171,7 +171,7 @@ def pid_del(pid_id):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_function'))
+    flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
 def pid_reorder(pid_id, display_order, direction):
@@ -190,7 +190,7 @@ def pid_reorder(pid_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_function'))
+    flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
 # TODO: Add more settings-checks before allowing controller to be activated
@@ -216,7 +216,7 @@ def has_required_pid_values(pid_id):
 
 def pid_activate(pid_id):
     if has_required_pid_values(pid_id):
-        return redirect(url_for('page_routes.page_function'))
+        return redirect(url_for('routes_page.page_function'))
 
     action = '{action} {controller}'.format(
         action=gettext("Actuate"),
@@ -263,7 +263,7 @@ def pid_activate(pid_id):
                                        'PID',
                                        pid_id)
 
-    flash_success_errors(error, action, url_for('page_routes.page_function'))
+    flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
 def pid_deactivate(pid_id):

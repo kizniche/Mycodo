@@ -1,3 +1,10 @@
+## 5.5.7 (Unreleased)
+
+### Bugfixes
+
+- Fix forcing of HTTPS via user configuration
+
+
 ## 5.5.6 (2018-01-05)
 
 ### Features

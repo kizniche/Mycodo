@@ -82,7 +82,7 @@ def user_roles(form):
             else:
                 delete_entry_with_id(Role,
                                      form.role_id.data)
-    flash_success_errors(error, action, url_for('settings_routes.settings_users'))
+    flash_success_errors(error, action, url_for('routes_settings.settings_users'))
 
 
 def user_add(form):
@@ -126,7 +126,7 @@ def user_add(form):
             except sqlalchemy.exc.IntegrityError as except_msg:
                 error.append(except_msg)
 
-        flash_success_errors(error, action, url_for('settings_routes.settings_users'))
+        flash_success_errors(error, action, url_for('routes_settings.settings_users'))
     else:
         flash_form_errors(form)
 
@@ -173,7 +173,7 @@ def user_mod(form):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('settings_routes.settings_users'))
+    flash_success_errors(error, action, url_for('routes_settings.settings_users'))
 
 
 def user_del(form):
@@ -196,7 +196,7 @@ def user_del(form):
         except Exception as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('settings_routes.settings_users'))
+    flash_success_errors(error, action, url_for('routes_settings.settings_users'))
 
 
 #
@@ -257,7 +257,7 @@ def settings_general_mod(form):
             except Exception as except_msg:
                 error.append(except_msg)
 
-        flash_success_errors(error, action, url_for('settings_routes.settings_general'))
+        flash_success_errors(error, action, url_for('routes_settings.settings_general'))
     else:
         flash_form_errors(form)
 
@@ -282,7 +282,7 @@ def settings_alert_mod(form_mod_alert):
                               "inbox to see if it was successful.",
                               recip=form_mod_alert.send_test_to_email.data),
                       "success")
-                return redirect(url_for('settings_routes.settings_alerts'))
+                return redirect(url_for('routes_settings.settings_alerts'))
             else:
                 mod_smtp.host = form_mod_alert.smtp_host.data
                 mod_smtp.port = form_mod_alert.smtp_port.data
@@ -298,7 +298,7 @@ def settings_alert_mod(form_mod_alert):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('settings_routes.settings_alerts'))
+    flash_success_errors(error, action, url_for('routes_settings.settings_alerts'))
 
 
 def camera_add(form_camera):
@@ -311,7 +311,7 @@ def camera_add(form_camera):
         new_camera = Camera()
         if Camera.query.filter(Camera.name == form_camera.name.data).count():
             flash("You must choose a unique name", "error")
-            return redirect(url_for('settings_routes.settings_camera'))
+            return redirect(url_for('routes_settings.settings_camera'))
         new_camera.name = form_camera.name.data
         new_camera.library = form_camera.library.data
         if form_camera.library.data == 'fswebcam':
@@ -330,7 +330,7 @@ def camera_add(form_camera):
             except sqlalchemy.exc.IntegrityError  as except_msg:
                 error.append(except_msg)
 
-        flash_success_errors(error, action, url_for('settings_routes.settings_camera'))
+        flash_success_errors(error, action, url_for('routes_settings.settings_camera'))
     else:
         flash_form_errors(form_camera)
 
@@ -346,10 +346,10 @@ def camera_mod(form_camera):
                 .filter(Camera.id != form_camera.camera_id.data)
                 .filter(Camera.name == form_camera.name.data).count()):
             flash("You must choose a unique name", "error")
-            return redirect(url_for('settings_routes.settings_camera'))
+            return redirect(url_for('routes_settings.settings_camera'))
         if 0 > form_camera.rotation.data > 360:
             flash("Rotation must be between 0 and 360 degrees", "error")
-            return redirect(url_for('settings_routes.settings_camera'))
+            return redirect(url_for('routes_settings.settings_camera'))
 
         mod_camera = Camera.query.filter(
             Camera.id == form_camera.camera_id.data).first()
@@ -390,7 +390,7 @@ def camera_mod(form_camera):
         logger.exception(1)
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('settings_routes.settings_camera'))
+    flash_success_errors(error, action, url_for('routes_settings.settings_camera'))
 
 
 def camera_del(form_camera):
@@ -412,4 +412,4 @@ def camera_del(form_camera):
         except Exception as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('settings_routes.settings_camera'))
+    flash_success_errors(error, action, url_for('routes_settings.settings_camera'))

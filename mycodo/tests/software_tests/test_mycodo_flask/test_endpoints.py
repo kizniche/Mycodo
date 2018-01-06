@@ -92,7 +92,7 @@ def test_routes_when_not_logged_in(testapp):
 # ---------------------------
 #   Tests Logged in as Admin
 # ---------------------------
-@mock.patch('mycodo.mycodo_flask.authentication_routes.login_log')
+@mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_routes_logged_in_as_admin(_, testapp):
     """ Verifies behavior of these endpoints for a logged in admin user """
     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
@@ -135,7 +135,7 @@ def test_routes_logged_in_as_admin(_, testapp):
         assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
 
 
-# @mock.patch('mycodo.mycodo_flask.authentication_routes.login_log')
+# @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 # def test_add_sensor_logged_in_as_admin(_, testapp):
 #     """ Verifies adding a sensor as a logged in admin user """
 #     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
@@ -155,7 +155,7 @@ def test_routes_logged_in_as_admin(_, testapp):
 # ---------------------------
 #   Tests Logged in as Guest
 # ---------------------------
-@mock.patch('mycodo.mycodo_flask.authentication_routes.login_log')
+@mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_routes_logged_in_as_guest(_, testapp):
     """ Verifies behavior of these endpoints for a logged in guest user """
     login_user(testapp, 'guest', '53CR3t_p4zZW0rD')

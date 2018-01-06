@@ -44,7 +44,7 @@ def controller_activate_deactivate(controller_action,
     :type controller_id: str
     """
     if not user_has_permission('edit_controllers'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     activated = bool(controller_action == 'activate')
 
@@ -80,7 +80,7 @@ def controller_activate_deactivate(controller_action,
     if mod_controller is None:
         flash("{type} Controller {id} doesn't exist".format(
             type=controller_type, id=controller_id), "error")
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     try:
         mod_controller.is_activated = activated

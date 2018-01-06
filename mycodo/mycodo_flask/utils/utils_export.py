@@ -63,7 +63,7 @@ def export_measurements(form):
         flash_form_errors(form)
         return
 
-    flash_success_errors(error, action, url_for('page_routes.page_export'))
+    flash_success_errors(error, action, url_for('routes_page.page_export'))
 
 
 def export_settings(form):
@@ -95,7 +95,7 @@ def export_settings(form):
     except Exception as err:
         error.append("Error: {}".format(err))
 
-    flash_success_errors(error, action, url_for('page_routes.page_export'))
+    flash_success_errors(error, action, url_for('routes_page.page_export'))
 
 
 def export_influxdb(form):
@@ -158,7 +158,7 @@ def export_influxdb(form):
     except Exception as err:
         error.append("Error: {}".format(err))
 
-    flash_success_errors(error, action, url_for('page_routes.page_export'))
+    flash_success_errors(error, action, url_for('routes_page.page_export'))
 
 
 
@@ -307,7 +307,7 @@ def import_settings(form):
     except Exception as err:
         error.append("Exception: {}".format(err))
 
-    flash_success_errors(error, action, url_for('page_routes.page_export'))
+    flash_success_errors(error, action, url_for('routes_page.page_export'))
 
 
 def import_influxdb(form):
@@ -464,4 +464,4 @@ def import_influxdb(form):
     except Exception as err:
         error.append("Exception: {}".format(err))
 
-    flash_success_errors(error, action, url_for('page_routes.page_export'))
+    flash_success_errors(error, action, url_for('routes_page.page_export'))

@@ -53,7 +53,7 @@ def lcd_add(quantity):
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_lcd'))
+        flash_success_errors(error, action, url_for('routes_page.page_lcd'))
 
 
 def lcd_mod(form_mod_lcd):
@@ -86,7 +86,7 @@ def lcd_mod(form_mod_lcd):
                 error.append(except_msg)
         else:
             flash_form_errors(form_mod_lcd)
-    flash_success_errors(error, action, url_for('page_routes.page_lcd'))
+    flash_success_errors(error, action, url_for('routes_page.page_lcd'))
 
 
 def lcd_del(lcd_id):
@@ -118,7 +118,7 @@ def lcd_del(lcd_id):
             db.session.commit()
         except Exception as except_msg:
             error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_lcd'))
+    flash_success_errors(error, action, url_for('routes_page.page_lcd'))
 
 
 def lcd_reorder(lcd_id, display_order, direction):
@@ -137,7 +137,7 @@ def lcd_reorder(lcd_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_lcd'))
+    flash_success_errors(error, action, url_for('routes_page.page_lcd'))
 
 
 def lcd_activate(lcd_id):
@@ -177,7 +177,7 @@ def lcd_activate(lcd_id):
                 lcd_id)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_lcd'))
+    flash_success_errors(error, action, url_for('routes_page.page_lcd'))
 
 
 def lcd_deactivate(lcd_id):
@@ -218,7 +218,7 @@ def lcd_display_add(form):
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_lcd'))
+    flash_success_errors(error, action, url_for('routes_page.page_lcd'))
 
 
 def lcd_display_mod(form):
@@ -284,7 +284,7 @@ def lcd_display_mod(form):
             db.session.commit()
         except Exception as except_msg:
             error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_lcd'))
+    flash_success_errors(error, action, url_for('routes_page.page_lcd'))
 
 
 def lcd_display_del(lcd_data_id, delete_last=False):
@@ -313,4 +313,4 @@ def lcd_display_del(lcd_data_id, delete_last=False):
             db.session.commit()
         except Exception as except_msg:
             error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_lcd'))
+    flash_success_errors(error, action, url_for('routes_page.page_lcd'))

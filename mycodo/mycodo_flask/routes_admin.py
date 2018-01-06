@@ -27,7 +27,7 @@ from mycodo.config import UPGRADE_LOG_FILE
 from mycodo.databases.models import Misc
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_misc
-from mycodo.mycodo_flask.static_routes import inject_variables
+from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.github_release_info import github_releases
 from mycodo.utils.statistics import return_stat_file_dict
@@ -39,7 +39,7 @@ from mycodo.utils.system_pi import internet
 logger = logging.getLogger('mycodo.mycodo_flask.admin')
 
 blueprint = Blueprint(
-    'admin_routes',
+    'routes_admin',
     __name__,
     static_folder='../static',
     template_folder='../templates'
@@ -57,7 +57,7 @@ def inject_dictionary():
 def admin_backup():
     """ Load the backup management page """
     if not utils_general.user_has_permission('edit_settings'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     form_backup = forms_misc.Backup()
 
@@ -128,7 +128,7 @@ def admin_backup():
 def admin_statistics():
     """ Display collected statistics """
     if not utils_general.user_has_permission('view_stats'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     try:
         statistics = return_stat_file_dict(STATS_CSV)
@@ -162,7 +162,7 @@ def admin_upgrade_status():
 def admin_upgrade():
     """ Display any available upgrades and option to upgrade """
     if not utils_general.user_has_permission('edit_settings'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     if not internet():
         flash(gettext("Upgrade functionality is disabled because an internet "

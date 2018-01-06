@@ -17,9 +17,9 @@ from mycodo.config import MYCODO_VERSION
 from mycodo.config import THEMES_DARK
 from mycodo.databases.models import Misc
 from mycodo.mycodo_client import DaemonControl
-from mycodo.mycodo_flask.authentication_routes import admin_exists
+from mycodo.mycodo_flask.routes_authentication import admin_exists
 
-blueprint = Blueprint('static_routes',
+blueprint = Blueprint('routes_static',
                       __name__,
                       static_folder='../static',
                       template_folder='../templates')
@@ -32,7 +32,7 @@ def before_request_admin_exist():
     Ensure databases exist and at least one user is in the user database.
     """
     if not admin_exists():
-        return redirect(url_for("authentication_routes.create_admin"))
+        return redirect(url_for("routes_authentication.create_admin"))
 blueprint.before_request(before_request_admin_exist)
 
 

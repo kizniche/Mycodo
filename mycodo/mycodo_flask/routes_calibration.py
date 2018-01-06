@@ -16,14 +16,14 @@ from mycodo.databases.models import Input
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.mycodo_flask.forms import forms_calibration
-from mycodo.mycodo_flask.static_routes import inject_variables
+from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.calibration import AtlasScientificCommand
 from mycodo.utils.system_pi import str_is_float
 
 logger = logging.getLogger('mycodo.mycodo_flask.calibration')
 
-blueprint = Blueprint('calibration_routes',
+blueprint = Blueprint('routes_calibration',
                       __name__,
                       static_folder='../static',
                       template_folder='../templates')
@@ -41,12 +41,12 @@ def calibration_select():
     Landing page to initially select the device to calibrate
     """
     if not utils_general.user_has_permission('edit_controllers'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     form_calibration = forms_calibration.Calibration()
 
     if form_calibration.submit.data:
-        route = 'calibration_routes.{page}'.format(
+        route = 'routes_calibration.{page}'.format(
             page=form_calibration.selection.data)
         return redirect(url_for(route))
     return render_template('tools/calibration.html',
@@ -60,7 +60,7 @@ def calibration_atlas_ph():
     Step-by-step tool for calibrating the Atlas Scientific pH sensor
     """
     if not utils_general.user_has_permission('edit_controllers'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     form_ph_calibrate = forms_calibration.CalibrationAtlasph()
 
@@ -147,7 +147,7 @@ def calibration_atlas_ph_measure(input_id):
     Used during calibration to display the current pH to the user
     """
     if not utils_general.user_has_permission('edit_controllers'):
-        return redirect(url_for('page_routes.page_atlas_ph_calibrate'))
+        return redirect(url_for('routes_page.page_atlas_ph_calibrate'))
 
     selected_input = Input.query.filter_by(unique_id=input_id).first()
 

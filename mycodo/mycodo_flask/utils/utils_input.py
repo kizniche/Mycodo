@@ -208,7 +208,7 @@ def input_add(form_add_sensor):
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_data'))
+        flash_success_errors(error, action, url_for('routes_page.page_data'))
     else:
         flash_form_errors(form_add_sensor)
 
@@ -301,7 +301,7 @@ def input_mod(form_mod_sensor):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_data'))
 
 
 def input_del(form_mod_sensor):
@@ -331,7 +331,7 @@ def input_del(form_mod_sensor):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_data'))
 
 
 def input_reorder(input_id, display_order, direction):
@@ -349,7 +349,7 @@ def input_reorder(input_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_data'))
 
 
 def input_activate(form_mod_sensor):
@@ -360,11 +360,11 @@ def input_activate(form_mod_sensor):
             input_dev.device not in DEVICES_DEFAULT_LOCATION):
         flash("Cannot activate Input without the GPIO/I2C Address/Port "
               "to communicate with it set.", "error")
-        return redirect(url_for('page_routes.page_data'))
+        return redirect(url_for('routes_page.page_data'))
     elif (input_dev.device == 'LinuxCommand' and
           input_dev.cmd_command is ''):
         flash("Cannot activate Input without a command set.", "error")
-        return redirect(url_for('page_routes.page_data'))
+        return redirect(url_for('routes_page.page_data'))
     controller_activate_deactivate('activate', 'Input',  input_id)
 
 

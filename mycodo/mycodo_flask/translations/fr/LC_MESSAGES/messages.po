@@ -161,7 +161,7 @@ msgstr ""
 msgid "Output"
 msgstr ""
 
-#: config.py:240 mycodo_flask/calibration_routes.py:222
+#: config.py:240 mycodo_flask/routes_calibration.py:222
 #: mycodo_flask/forms/forms_input.py:46
 #: mycodo_flask/templates/pages/function_options/conditional.html:174
 msgid "Command"
@@ -192,43 +192,43 @@ msgstr ""
 msgid "Photo"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:88
+#: mycodo_flask/routes_admin.py:88
 msgid "Backup in progress"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:107
+#: mycodo_flask/routes_admin.py:107
 msgid "Deletion of backup in progress"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:117
+#: mycodo_flask/routes_admin.py:117
 msgid "Restore in progress"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:168
+#: mycodo_flask/routes_admin.py:168
 msgid ""
 "Upgrade functionality is disabled because an internet connection was "
 "unable to be detected"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:188
+#: mycodo_flask/routes_admin.py:188
 msgid ""
 "There was an error encountered during the upgrade process. Check the "
 "upgrade log for details."
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:207
+#: mycodo_flask/routes_admin.py:207
 msgid "Could not determine local mycodo version or online release versions: {err}"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:256
+#: mycodo_flask/routes_admin.py:256
 msgid "The upgrade (from master branch) has started"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:268
+#: mycodo_flask/routes_admin.py:268
 msgid "The upgrade has started"
 msgstr ""
 
-#: mycodo_flask/admin_routes.py:270
+#: mycodo_flask/routes_admin.py:270
 msgid "You cannot upgrade if an upgrade is not available"
 msgstr ""
 
@@ -236,61 +236,61 @@ msgstr ""
 msgid "Please log in to access this page"
 msgstr ""
 
-#: mycodo_flask/authentication_routes.py:55
+#: mycodo_flask/routes_authentication.py:55
 msgid "Cannot access admin creation form if an admin user already exists."
 msgstr ""
 
-#: mycodo_flask/authentication_routes.py:78
+#: mycodo_flask/routes_authentication.py:78
 #: mycodo_flask/utils/utils_settings.py:114
 #: mycodo_flask/utils/utils_settings.py:153
 msgid "Passwords do not match. Please try again."
 msgstr ""
 
-#: mycodo_flask/authentication_routes.py:82
+#: mycodo_flask/routes_authentication.py:82
 #: mycodo_flask/utils/utils_settings.py:99
 msgid ""
 "Invalid user name. Must be between 2 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
 
-#: mycodo_flask/authentication_routes.py:88
+#: mycodo_flask/routes_authentication.py:88
 #: mycodo_flask/utils/utils_settings.py:109
 msgid ""
 "Invalid password. Must be between 6 and 64 characters and only contain "
 "letters, numbers, and symbols."
 msgstr ""
 
-#: mycodo_flask/authentication_routes.py:105
+#: mycodo_flask/routes_authentication.py:105
 #, python-format
 msgid "User '%(user)s' successfully created. Please log in below."
 msgstr ""
 
-#: mycodo_flask/authentication_routes.py:110
+#: mycodo_flask/routes_authentication.py:110
 #, python-format
 msgid "Failed to create user '%(user)s': %(err)s"
 msgstr ""
 
-#: mycodo_flask/authentication_routes.py:150
+#: mycodo_flask/routes_authentication.py:150
 msgid "Cannot access login page if you're already logged in"
 msgstr ""
 
-#: mycodo_flask/authentication_routes.py:161
+#: mycodo_flask/routes_authentication.py:161
 #, python-format
 msgid ""
 "Too many failed login attempts. Please wait %(min)s minutes before "
 "attempting to log in again"
 msgstr ""
 
-#: mycodo_flask/authentication_routes.py:224
+#: mycodo_flask/routes_authentication.py:224
 msgid "Successfully logged out"
 msgstr ""
 
-#: mycodo_flask/calibration_routes.py:115
+#: mycodo_flask/routes_calibration.py:115
 #, python-format
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr ""
 
-#: mycodo_flask/calibration_routes.py:212
+#: mycodo_flask/routes_calibration.py:212
 #: mycodo_flask/templates/layout.html:161
 #: mycodo_flask/templates/tools/calibration.html:3
 #: mycodo_flask/templates/tools/calibration_atlas_ph.html:3
@@ -302,15 +302,15 @@ msgstr ""
 msgid "Calibration"
 msgstr ""
 
-#: mycodo_flask/general_routes.py:423
+#: mycodo_flask/routes_general.py:423
 msgid "System rebooting in 10 seconds"
 msgstr ""
 
-#: mycodo_flask/general_routes.py:425
+#: mycodo_flask/routes_general.py:425
 msgid "System shutting down in 10 seconds"
 msgstr ""
 
-#: mycodo_flask/general_routes.py:427
+#: mycodo_flask/routes_general.py:427
 msgid "Command to restart the daemon sent"
 msgstr ""
 
@@ -323,7 +323,7 @@ msgstr ""
 #: mycodo_flask/forms/forms_pid.py:86 mycodo_flask/forms/forms_settings.py:47
 #: mycodo_flask/forms/forms_settings.py:158
 #: mycodo_flask/forms/forms_settings.py:233
-#: mycodo_flask/forms/forms_timer.py:38 mycodo_flask/method_routes.py:301
+#: mycodo_flask/forms/forms_timer.py:38 mycodo_flask/routes_method.py:301
 #: mycodo_flask/utils/utils_graph.py:299 mycodo_flask/utils/utils_input.py:307
 #: mycodo_flask/utils/utils_lcd.py:94 mycodo_flask/utils/utils_lcd.py:293
 #: mycodo_flask/utils/utils_math.py:159 mycodo_flask/utils/utils_method.py:493
@@ -335,7 +335,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: mycodo_flask/forms/forms_timer.py:83 mycodo_flask/method_routes.py:302
+#: mycodo_flask/forms/forms_timer.py:83 mycodo_flask/routes_method.py:302
 #: mycodo_flask/utils/utils_method.py:146
 #: mycodo_flask/utils/utils_method.py:208
 #: mycodo_flask/utils/utils_method.py:374
@@ -343,11 +343,11 @@ msgstr ""
 msgid "Method"
 msgstr "Méthode"
 
-#: mycodo_flask/page_routes.py:139
+#: mycodo_flask/routes_page.py:139
 msgid "Cannot start time-lapse if stream is active."
 msgstr ""
 
-#: mycodo_flask/page_routes.py:169
+#: mycodo_flask/routes_page.py:169
 msgid "Cannot start stream if time-lapse is active."
 msgstr ""
 

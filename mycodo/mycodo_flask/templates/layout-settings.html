@@ -21,12 +21,12 @@
     <div class="row row-offcanvas row-offcanvas-left">
       <div class="col-sm-2 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
         <ul class="nav nav-sidebar">
-          <li{% if active_settings == 'general' %} class="active"{% endif %}><a href="{{url_for('settings_routes.settings_general')}}"><i class="glyphicon glyphicon-globe"></i>&nbsp;&nbsp;{{_('General')}}</a></li>
-          <li{% if active_settings == 'users' %} class="active"{% endif %}><a href="{{url_for('settings_routes.settings_users')}}"><i class="fa fa-users"></i>&nbsp;&nbsp;{{_('Users')}}</a></li>
+          <li{% if active_settings == 'general' %} class="active"{% endif %}><a href="{{url_for('routes_settings.settings_general')}}"><i class="glyphicon glyphicon-globe"></i>&nbsp;&nbsp;{{_('General')}}</a></li>
+          <li{% if active_settings == 'users' %} class="active"{% endif %}><a href="{{url_for('routes_settings.settings_users')}}"><i class="fa fa-users"></i>&nbsp;&nbsp;{{_('Users')}}</a></li>
         </ul>
         <ul class="nav nav-sidebar">
-          <li{% if active_settings == 'alerts' %} class="active"{% endif %}><a href="{{url_for('settings_routes.settings_alerts')}}"><i class="glyphicon glyphicon-alert"></i>&nbsp;&nbsp;{{_('Alerts')}}</a></li>
-          <li{% if active_settings == 'camera' %} class="active"{% endif %}><a href="{{url_for('settings_routes.settings_camera')}}"><i class="glyphicon glyphicon-camera"></i>&nbsp;&nbsp;{{_('Cameras')}}</a></li>
+          <li{% if active_settings == 'alerts' %} class="active"{% endif %}><a href="{{url_for('routes_settings.settings_alerts')}}"><i class="glyphicon glyphicon-alert"></i>&nbsp;&nbsp;{{_('Alerts')}}</a></li>
+          <li{% if active_settings == 'camera' %} class="active"{% endif %}><a href="{{url_for('routes_settings.settings_camera')}}"><i class="glyphicon glyphicon-camera"></i>&nbsp;&nbsp;{{_('Cameras')}}</a></li>
         </ul>
       </div><!--/span-->
       <div class="col-sm-9 col-md-10 main">

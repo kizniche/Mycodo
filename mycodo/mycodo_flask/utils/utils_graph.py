@@ -113,7 +113,7 @@ def graph_add(form_add, display_order):
         flash_form_errors(form_add)
         return
 
-    flash_success_errors(error, action, url_for('page_routes.page_graph'))
+    flash_success_errors(error, action, url_for('routes_page.page_graph'))
 
 
 def graph_mod(form_mod_graph, request_form):
@@ -291,7 +291,7 @@ def graph_mod(form_mod_graph, request_form):
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_graph'))
+    flash_success_errors(error, action, url_for('routes_page.page_graph'))
 
 
 def graph_del(form_del_graph):
@@ -309,7 +309,7 @@ def graph_del(form_del_graph):
         db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_graph'))
+    flash_success_errors(error, action, url_for('routes_page.page_graph'))
 
 
 
@@ -329,4 +329,4 @@ def graph_reorder(graph_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_graph'))
+    flash_success_errors(error, action, url_for('routes_page.page_graph'))

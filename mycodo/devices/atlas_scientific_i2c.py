@@ -50,9 +50,12 @@ class AtlasScientificI2C:
         self.current_addr = addr
 
     def write(self, cmd):
-        # appends the null character and sends the string over I2C
-        cmd += "\00"
-        self.file_write.write(cmd)
+        cmd += "\00"  # append the null character
+
+        if type(cmd) is str:
+            cmd = cmd.encode()  # If str, convert to byte
+
+        self.file_write.write(cmd)  # send the command over I2C
 
     def read(self, num_of_bytes=31):
         # reads a specified number of bytes from I2C, then parses and displays the result
@@ -86,7 +89,8 @@ class AtlasScientificI2C:
                     time.sleep(0.1)
 
             if lock_acquired:
-                # write a command to the board, wait the correct timeout, and read the response
+                # write a command to the board, wait the correct timeout,
+                # and read the response
                 self.write(query_str)
 
                 # the read and calibration commands require a longer timeout

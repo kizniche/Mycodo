@@ -29,17 +29,18 @@ from mycodo.config import ProdConfig
 from mycodo.databases.models import Misc
 from mycodo.databases.models import User
 from mycodo.databases.models import populate_db
-from mycodo.mycodo_flask import admin_routes
-from mycodo.mycodo_flask import authentication_routes
-from mycodo.mycodo_flask import calibration_routes
-from mycodo.mycodo_flask import general_routes
-from mycodo.mycodo_flask import method_routes
-from mycodo.mycodo_flask import page_routes
-from mycodo.mycodo_flask import remote_admin_routes
-from mycodo.mycodo_flask import settings_routes
-from mycodo.mycodo_flask import static_routes
+from mycodo.databases.utils import session_scope
+from mycodo.mycodo_flask import routes_admin
+from mycodo.mycodo_flask import routes_authentication
+from mycodo.mycodo_flask import routes_calibration
+from mycodo.mycodo_flask import routes_general
+from mycodo.mycodo_flask import routes_method
+from mycodo.mycodo_flask import routes_page
+from mycodo.mycodo_flask import routes_remote_admin
+from mycodo.mycodo_flask import routes_settings
+from mycodo.mycodo_flask import routes_static
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.general_routes import influx_db
+from mycodo.mycodo_flask.routes_general import influx_db
 from mycodo.utils.system_pi import assure_path_exists
 
 
@@ -54,15 +55,35 @@ def create_app(config=ProdConfig):
     app = Flask(__name__)
     app.config.from_object(config)
 
-    login_manager = flask_login.LoginManager()
-    login_manager.init_app(app)
+    register_extensions(app)
+    register_blueprints(app)
+
+    return app
+
+
+def register_extensions(app):
+    """ register extensions to the app """
+    app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
 
     # Uncomment to enable profiler
     # See scripts/profile_analyzer.py to analyze output
     # app = setup_profiler(app)
 
-    register_extensions(app)
-    register_blueprints(app)
+    # Check user option to force all web connections to use SSL
+    with session_scope(app.config['MYCODO_DB_PATH']) as new_session:
+        misc = new_session.query(Misc).first()
+        if misc and misc.force_https:
+            SSLify(app)
+
+    compress = Compress()
+    compress.init_app(app)
+
+    db.init_app(app)
+    influx_db.init_app(app)  # attach influx db
+
+    # Limit authentication blueprint requests to 60 per minute
+    limiter = Limiter(app, key_func=get_remote_address)
+    limiter.limit("60/minute")(routes_authentication.blueprint)
 
     # Translations
     babel = Babel(app)
@@ -81,6 +102,10 @@ def create_app(config=ProdConfig):
             pass
         return request.accept_languages.best_match(LANGUAGES.keys())
 
+    # Login Manager
+    login_manager = flask_login.LoginManager()
+    login_manager.init_app(app)
+
     @login_manager.user_loader
     def user_loader(user_id):
         user = User.query.filter(User.id == user_id).first()
@@ -91,20 +116,7 @@ def create_app(config=ProdConfig):
     @login_manager.unauthorized_handler
     def unauthorized():
         flash(gettext('Please log in to access this page'), "error")
-        return redirect(url_for('authentication_routes.do_login'))
-
-    return app
-
-
-def register_extensions(app):
-    """ register extensions to the app """
-    app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
-
-    compress = Compress()
-    compress.init_app(app)
-
-    db.init_app(app)
-    influx_db.init_app(app)  # attach influx db
+        return redirect(url_for('routes_authentication.do_login'))
 
     with app.app_context():
         db.create_all()
@@ -114,29 +126,18 @@ def register_extensions(app):
         # The upgrade script will execute alembic to upgrade the database
         # alembic_upgrade_db()
 
-        # This is disabled to allow nginx+gunicorn to work properly forcing SSL
-        # Check user option to force all web connections to use SSL
-        # misc = Misc.query.first()
-        # if misc and misc.force_https:
-        #     SSLify(app)
-        SSLify(app)
-
 
 def register_blueprints(_app):
     """ register blueprints to the app """
-    # Limit authentication blueprint requests to 60 per minute
-    limiter = Limiter(_app, key_func=get_remote_address)
-    limiter.limit("60/minute")(authentication_routes.blueprint)
-
-    _app.register_blueprint(static_routes.blueprint)  # register static routes
-    _app.register_blueprint(admin_routes.blueprint)  # register admin views
-    _app.register_blueprint(authentication_routes.blueprint)  # register login/logout views
-    _app.register_blueprint(calibration_routes.blueprint)  # register calibration views
-    _app.register_blueprint(general_routes.blueprint)  # register general routes
-    _app.register_blueprint(method_routes.blueprint)  # register method views
-    _app.register_blueprint(page_routes.blueprint)  # register page views
-    _app.register_blueprint(remote_admin_routes.blueprint)  # register remote admin views
-    _app.register_blueprint(settings_routes.blueprint)  # register settings views
+    _app.register_blueprint(routes_admin.blueprint)  # register admin views
+    _app.register_blueprint(routes_authentication.blueprint)  # register login/logout views
+    _app.register_blueprint(routes_calibration.blueprint)  # register calibration views
+    _app.register_blueprint(routes_general.blueprint)  # register general routes
+    _app.register_blueprint(routes_method.blueprint)  # register method views
+    _app.register_blueprint(routes_page.blueprint)  # register page views
+    _app.register_blueprint(routes_remote_admin.blueprint)  # register remote admin views
+    _app.register_blueprint(routes_settings.blueprint)  # register settings views
+    _app.register_blueprint(routes_static.blueprint)  # register static routes
 
 
 def setup_profiler(app):

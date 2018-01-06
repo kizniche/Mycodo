@@ -68,7 +68,7 @@ from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.forms import forms_output
 from mycodo.mycodo_flask.forms import forms_pid
 from mycodo.mycodo_flask.forms import forms_timer
-from mycodo.mycodo_flask.static_routes import inject_variables
+from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_conditional
 from mycodo.mycodo_flask.utils import utils_export
 from mycodo.mycodo_flask.utils import utils_function
@@ -84,9 +84,9 @@ from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.tools import return_relay_usage
 
-logger = logging.getLogger('mycodo.mycodo_flask.page_routes')
+logger = logging.getLogger('mycodo.mycodo_flask.routes_page')
 
-blueprint = Blueprint('page_routes',
+blueprint = Blueprint('routes_page',
                       __name__,
                       static_folder='../static',
                       template_folder='../templates')
@@ -112,14 +112,14 @@ def page_camera():
     Displays most recent still image and time-lapse image.
     """
     if not utils_general.user_has_permission('view_camera'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     form_camera = forms_misc.Camera()
     camera = Camera.query.all()
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_settings'):
-            return redirect(url_for('page_routes.page_camera'))
+            return redirect(url_for('routes_page.page_camera'))
 
         control = DaemonControl()
         mod_camera = Camera.query.filter(
@@ -255,7 +255,7 @@ def page_export():
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
-            return redirect(url_for('general_routes.home'))
+            return redirect(url_for('routes_general.home'))
 
         if form_export_measurements.export_data_csv.data:
             url = utils_export.export_measurements(form_export_measurements)
@@ -270,7 +270,7 @@ def page_export():
         elif form_import_settings.settings_import_upload.data:
             backup_file = utils_export.import_settings(form_import_settings)
             if backup_file:
-                return redirect(url_for('authentication_routes.logout'))
+                return redirect(url_for('routes_authentication.logout'))
         elif form_export_influxdb.export_influxdb_zip.data:
             file_send = utils_export.export_influxdb(form_export_influxdb)
             if file_send:
@@ -379,7 +379,7 @@ def page_graph():
     # Detect which form on the page was submitted
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
-            return redirect(url_for('general_routes.home'))
+            return redirect(url_for('routes_general.home'))
 
         if form_add_graph.graph_add.data:
             utils_graph.graph_add(form_add_graph, display_order)
@@ -471,7 +471,7 @@ def page_help():
 def page_info():
     """ Display page with system information from command line tools """
     if not utils_general.user_has_permission('view_stats'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     uptime = subprocess.Popen(
         "uptime", stdout=subprocess.PIPE, shell=True)
@@ -652,7 +652,7 @@ def page_lcd():
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
-            return redirect(url_for('general_routes.home'))
+            return redirect(url_for('routes_general.home'))
 
         if form_lcd_add.add.data:
             utils_lcd.lcd_add(form_lcd_add.quantity.data)
@@ -756,7 +756,7 @@ def page_live():
 def page_logview():
     """ Display the last (n) lines from a log file """
     if not utils_general.user_has_permission('view_logs'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     form_log_view = forms_misc.LogView()
     log_output = None
@@ -834,7 +834,7 @@ def page_function():
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
-            return redirect(url_for('general_routes.home'))
+            return redirect(url_for('routes_general.home'))
 
         # Add a new function
         if form_add_function.func_add.data:
@@ -961,7 +961,7 @@ def page_output():
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
-            return redirect(url_for('page_routes.page_output'))
+            return redirect(url_for('routes_page.page_output'))
 
         if form_add_output.relay_add.data:
             utils_output.output_add(form_add_output)
@@ -976,7 +976,7 @@ def page_output():
             utils_output.output_reorder(form_mod_output.relay_id.data,
                                        display_order, 'down')
 
-        return redirect(url_for('page_routes.page_output'))
+        return redirect(url_for('routes_page.page_output'))
 
     return render_template('pages/output.html',
                            camera=camera,
@@ -1074,7 +1074,7 @@ def page_data():
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
-            return redirect(url_for('page_routes.page_data'))
+            return redirect(url_for('routes_page.page_data'))
 
         # Input forms
         if form_add_input.input_add.data:
@@ -1119,7 +1119,7 @@ def page_data():
         elif form_mod_math.math_deactivate.data:
             utils_math.math_deactivate(form_mod_math)
 
-        return redirect(url_for('page_routes.page_data'))
+        return redirect(url_for('routes_page.page_data'))
 
     return render_template('pages/data.html',
                            choices_input=choices_input,
@@ -1170,7 +1170,7 @@ def page_timer():
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
-            return redirect(url_for('general_routes.home'))
+            return redirect(url_for('routes_general.home'))
 
         form_timer = None
         if form_timer_base.create.data or form_timer_base.modify.data:
@@ -1185,7 +1185,7 @@ def page_timer():
             else:
                 flash("Unknown Timer type: {type}".format(
                     type=form_timer_base.timer_type.data), "error")
-                return redirect(url_for('page_routes.page_timer'))
+                return redirect(url_for('routes_page.page_timer'))
 
         if form_timer_base.create.data:
             utils_timer.timer_add(display_order,
@@ -1206,7 +1206,7 @@ def page_timer():
         elif form_timer_base.deactivate.data:
             utils_timer.timer_deactivate(form_timer_base)
 
-        return redirect(url_for('page_routes.page_timer'))
+        return redirect(url_for('routes_page.page_timer'))
 
     return render_template('pages/timer.html',
                            method=method,
@@ -1225,7 +1225,7 @@ def page_timer():
 def page_usage():
     """ Display output usage (duration and energy usage/cost) """
     if not utils_general.user_has_permission('view_stats'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     misc = Misc.query.first()
     output = Output.query.all()
@@ -1254,7 +1254,7 @@ def page_usage():
 def page_usage_reports():
     """ Display output usage (duration and energy usage/cost) """
     if not utils_general.user_has_permission('view_stats'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     report_location = os.path.normpath(USAGE_REPORTS_PATH)
     reports = [0, 0]

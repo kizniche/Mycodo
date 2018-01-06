@@ -54,9 +54,9 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
 
-            <li{% if active_page == 'setup' %} class="active"{% endif %}><a href="{{url_for('remote_admin_routes.remote_setup')}}">{{_('Setup')}}</a></li>
+            <li{% if active_page == 'setup' %} class="active"{% endif %}><a href="{{url_for('routes_remote_admin.remote_setup')}}">{{_('Setup')}}</a></li>
 
-            <li{% if active_page == 'input' %} class="active"{% endif %}><a href="{{url_for('remote_admin_routes.remote_input')}}">{{_('Input')}}</a></li>
+            <li{% if active_page == 'input' %} class="active"{% endif %}><a href="{{url_for('routes_remote_admin.remote_input')}}">{{_('Input')}}</a></li>
 
           </ul>
           <ul class="nav navbar-nav navbar-right">

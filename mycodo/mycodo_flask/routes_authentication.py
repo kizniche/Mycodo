@@ -34,7 +34,7 @@ from mycodo.utils.utils import test_password
 from mycodo.utils.utils import test_username
 
 blueprint = Blueprint(
-    'authentication_routes',
+    'routes_authentication',
     __name__,
     static_folder='../static',
     template_folder='../templates'
@@ -55,7 +55,7 @@ def create_admin():
         flash(gettext(
             "Cannot access admin creation form if an admin user "
             "already exists."), "error")
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     # If login token cookie from previous session exists, delete
     if request.cookies.get('remember_token'):
@@ -91,7 +91,7 @@ def create_admin():
                       "error")
                 error = True
             if error:
-                return redirect(url_for('general_routes.home'))
+                return redirect(url_for('routes_general.home'))
 
             new_user = User()
             new_user.name = username
@@ -105,7 +105,7 @@ def create_admin():
                 flash(gettext("User '%(user)s' successfully created. Please "
                               "log in below.", user=username),
                       "success")
-                return redirect(url_for('authentication_routes.do_login'))
+                return redirect(url_for('routes_authentication.do_login'))
             except Exception as except_msg:
                 flash(gettext("Failed to create user '%(user)s': %(err)s",
                               user=username,
@@ -149,7 +149,7 @@ def do_login():
     elif flask_login.current_user.is_authenticated:
         flash(gettext("Cannot access login page if you're already logged in"),
               "error")
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     form_login = forms_authentication.Login()
 
@@ -190,7 +190,7 @@ def do_login():
                     remember_me = True if form_login.remember.data else False
                     flask_login.login_user(login_user, remember=remember_me)
 
-                    return redirect(url_for('general_routes.home'))
+                    return redirect(url_for('routes_general.home'))
                 else:
                     user = User.query.filter(User.name == username).first()
                     role_name = Role.query.filter(Role.id == user.role).first().name

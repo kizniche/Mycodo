@@ -107,7 +107,7 @@ def remote_host_add(form_setup, display_order):
     a verified SSL, in all subsequent connections.
     """
     if not utils_general.user_has_permission('edit_settings'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     if form_setup.validate():
         try:
@@ -175,7 +175,7 @@ def remote_host_add(form_setup, display_order):
 def remote_host_del(form_setup):
     """Delete a remote Mycodo from the Remote Admin Dashboard"""
     if not utils_general.user_has_permission('edit_settings'):
-        return redirect(url_for('general_routes.home'))
+        return redirect(url_for('routes_general.home'))
 
     try:
         delete_entry_with_id(Remote,

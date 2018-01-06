@@ -86,7 +86,7 @@ def timer_add(display_order,
         except sqlalchemy.exc.IntegrityError  as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_timer'))
+    flash_success_errors(error, action, url_for('routes_page.page_timer'))
 
 
 def timer_mod(form_mod_timer_base, form_mod_timer):
@@ -140,7 +140,7 @@ def timer_mod(form_mod_timer_base, form_mod_timer):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_timer'))
+    flash_success_errors(error, action, url_for('routes_page.page_timer'))
 
 
 def timer_del(form_timer):
@@ -159,7 +159,7 @@ def timer_del(form_timer):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_timer'))
+    flash_success_errors(error, action, url_for('routes_page.page_timer'))
 
 
 def timer_reorder(timer_id, display_order, direction):
@@ -178,7 +178,7 @@ def timer_reorder(timer_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_timer'))
+    flash_success_errors(error, action, url_for('routes_page.page_timer'))
 
 
 def timer_activate(form_timer):

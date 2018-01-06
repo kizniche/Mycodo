@@ -20,7 +20,7 @@ from mycodo.databases.models import MethodData
 from mycodo.databases.models import Output
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_method
-from mycodo.mycodo_flask.static_routes import inject_variables
+from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_method
 from mycodo.utils.method import bezier_curve_y_out
@@ -31,7 +31,7 @@ from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger('mycodo.mycodo_flask.methods')
 
-blueprint = Blueprint('method_routes',
+blueprint = Blueprint('routes_method',
                       __name__,
                       static_folder='../static',
                       template_folder='../templates')
@@ -193,7 +193,7 @@ def method_builder(method_id):
     This includes the (time, setpoint) data sets
     """
     if not utils_general.user_has_permission('edit_controllers'):
-        return redirect(url_for('method_routes.method_list'))
+        return redirect(url_for('routes_method.method_list'))
 
     output = Output.query.all()
 
@@ -302,7 +302,7 @@ def method_delete(method_id):
         controller=gettext("Method"))
 
     if not utils_general.user_has_permission('edit_settings'):
-        return redirect(url_for('method_routes.method_list'))
+        return redirect(url_for('routes_method.method_list'))
 
     try:
         MethodData.query.filter(
@@ -318,4 +318,4 @@ def method_delete(method_id):
         flash("Error: {action}: {err}".format(action=action,
                                               err=except_msg),
               "error")
-    return redirect(url_for('method_routes.method_list'))
+    return redirect(url_for('routes_method.method_list'))

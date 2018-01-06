@@ -54,6 +54,6 @@ def func_add(form_add_func):
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
-        flash_success_errors(error, action, url_for('page_routes.page_function'))
+        flash_success_errors(error, action, url_for('routes_page.page_function'))
     else:
         flash_form_errors(form_add_func)
