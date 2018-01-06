@@ -69,6 +69,14 @@ def register_extensions(app):
     # See scripts/profile_analyzer.py to analyze output
     # app = setup_profiler(app)
 
+    # Check user option to force all web connections to use SSL
+    # If URI is empty, pytest is running, don't query database
+    if app.config['SQLALCHEMY_DATABASE_URI'] != 'sqlite://':
+        with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
+            misc = new_session.query(Misc).first()
+            if misc and misc.force_https:
+                SSLify(app)
+
     compress = Compress()
     compress.init_app(app)
 
@@ -119,14 +127,6 @@ def register_extensions(app):
         # This is disabled because there's a bug that messes up user databases
         # The upgrade script will execute alembic to upgrade the database
         # alembic_upgrade_db()
-
-    # Check user option to force all web connections to use SSL
-    # If URI is empty, pytest is running, don't query database
-    # if app.config['SQLALCHEMY_DATABASE_URI'] != 'sqlite://':
-    with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
-        misc = new_session.query(Misc).first()
-        if misc and misc.force_https:
-            SSLify(app)
 
 
 def register_blueprints(_app):
