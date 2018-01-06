@@ -70,7 +70,7 @@ def register_extensions(app):
     # app = setup_profiler(app)
 
     # Check user option to force all web connections to use SSL
-    with session_scope(app.config['MYCODO_DB_PATH']) as new_session:
+    with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
         misc = new_session.query(Misc).first()
         if misc and misc.force_https:
             SSLify(app)
