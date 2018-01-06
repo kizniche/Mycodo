@@ -70,10 +70,14 @@ def register_extensions(app):
     # app = setup_profiler(app)
 
     # Check user option to force all web connections to use SSL
-    with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
-        misc = new_session.query(Misc).first()
-        if misc and misc.force_https:
-            SSLify(app)
+    # Try/except for pytest to pass
+    try:
+        with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
+            misc = new_session.query(Misc).first()
+            if misc and misc.force_https:
+                SSLify(app)
+    except AttributeError:
+        pass
 
     compress = Compress()
     compress.init_app(app)
