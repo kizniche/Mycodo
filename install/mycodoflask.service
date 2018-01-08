@@ -7,7 +7,7 @@ User=root
 Group=mycodo
 WorkingDirectory=/var/mycodo-root/mycodo
 ExecStart=/var/mycodo-root/env/bin/gunicorn \
---workers 2 \
+--workers 1 \
 --worker-class gthread \
 --threads 2 \
 --timeout 90 \

@@ -1,3 +1,10 @@
+## 5.5.8 (Unreleased)
+
+### Miscellaneous
+
+ - Reduce gunicorn (web UI) workers from 2 to 1
+
+
 ## 5.5.7 (2018-01-08)
 
 ### Bugfixes
