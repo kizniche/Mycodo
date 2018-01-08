@@ -57,7 +57,8 @@ class AtlasPT1000Sensor(AbstractInput):
         from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         if self.interface == 'UART':
             self.logger = logging.getLogger(
-                "mycodo.inputs.atlas_pt1000_{loc}".format(loc=self.device_loc))
+                "mycodo.inputs.atlas_pt1000_{loc}".format(
+                    loc=self.device_loc))
             self.atlas_sensor_uart = AtlasScientificUART(
                 self.device_loc, baudrate=self.baud_rate)
         elif self.interface == 'I2C':
@@ -83,10 +84,12 @@ class AtlasPT1000Sensor(AbstractInput):
                     self.logger.error('"check probe" returned from sensor')
                 elif str_is_float(lines[0]):
                     temp = float(lines[0])
-                    self.logger.debug('Value[0] is float: {val}'.format(val=temp))
+                    self.logger.debug(
+                        'Value[0] is float: {val}'.format(val=temp))
                 else:
-                    self.logger.error('Value[0] is not float or "check probe": '
-                                      '{val}'.format(val=lines[0]))
+                    self.logger.error(
+                        'Value[0] is not float or "check probe": '
+                        '{val}'.format(val=lines[0]))
             else:
                 self.logger.error('UART device is not set up. '
                                   'Check the log for errors.')
@@ -95,8 +98,9 @@ class AtlasPT1000Sensor(AbstractInput):
             if self.atlas_sensor_i2c.setup:
                 temp_status, temp_str = self.atlas_sensor_i2c.query('R')
                 if temp_status == 'error':
-                    self.logger.error("Sensor read unsuccessful: {err}".format(
-                        err=temp_str))
+                    self.logger.error(
+                        "Sensor read unsuccessful: {err}".format(
+                            err=temp_str))
                 elif temp_status == 'success':
                     temp = float(temp_str)
             else:

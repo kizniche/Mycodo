@@ -20,8 +20,6 @@ from flask_compress import Compress
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_sslify import SSLify
-from werkzeug.contrib.profiler import MergeStream
-from werkzeug.contrib.profiler import ProfilerMiddleware
 
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LANGUAGES
@@ -77,17 +75,19 @@ def register_extensions(app):
             if misc and misc.force_https:
                 SSLify(app)
 
+    # Compress app responses with gzip
     compress = Compress()
     compress.init_app(app)
 
+    # Influx db time-series database
     db.init_app(app)
-    influx_db.init_app(app)  # attach influx db
+    influx_db.init_app(app)
 
     # Limit authentication blueprint requests to 60 per minute
     limiter = Limiter(app, key_func=get_remote_address)
     limiter.limit("60/minute")(routes_authentication.blueprint)
 
-    # Translations
+    # Language translations
     babel = Babel(app)
 
     @babel.localeselector
@@ -104,7 +104,7 @@ def register_extensions(app):
             pass
         return request.accept_languages.best_match(LANGUAGES.keys())
 
-    # Login Manager
+    # User login management
     login_manager = flask_login.LoginManager()
     login_manager.init_app(app)
 
@@ -120,6 +120,7 @@ def register_extensions(app):
         flash(gettext('Please log in to access this page'), "error")
         return redirect(url_for('routes_authentication.do_login'))
 
+    # Create and populate database if it doesn't exist
     with app.app_context():
         db.create_all()
         populate_db()
@@ -129,17 +130,17 @@ def register_extensions(app):
         # alembic_upgrade_db()
 
 
-def register_blueprints(_app):
+def register_blueprints(app):
     """ register blueprints to the app """
-    _app.register_blueprint(routes_admin.blueprint)  # register admin views
-    _app.register_blueprint(routes_authentication.blueprint)  # register login/logout views
-    _app.register_blueprint(routes_calibration.blueprint)  # register calibration views
-    _app.register_blueprint(routes_general.blueprint)  # register general routes
-    _app.register_blueprint(routes_method.blueprint)  # register method views
-    _app.register_blueprint(routes_page.blueprint)  # register page views
-    _app.register_blueprint(routes_remote_admin.blueprint)  # register remote admin views
-    _app.register_blueprint(routes_settings.blueprint)  # register settings views
-    _app.register_blueprint(routes_static.blueprint)  # register static routes
+    app.register_blueprint(routes_admin.blueprint)  # register admin views
+    app.register_blueprint(routes_authentication.blueprint)  # register login/logout views
+    app.register_blueprint(routes_calibration.blueprint)  # register calibration views
+    app.register_blueprint(routes_general.blueprint)  # register general routes
+    app.register_blueprint(routes_method.blueprint)  # register method views
+    app.register_blueprint(routes_page.blueprint)  # register page views
+    app.register_blueprint(routes_remote_admin.blueprint)  # register remote admin views
+    app.register_blueprint(routes_settings.blueprint)  # register settings views
+    app.register_blueprint(routes_static.blueprint)  # register static routes
 
 
 def setup_profiler(app):
@@ -148,6 +149,8 @@ def setup_profiler(app):
     Outputs to file and stream
     See profile_analyzer.py in Mycodo/mycodo/scripts/
     """
+    from werkzeug.contrib.profiler import MergeStream
+    from werkzeug.contrib.profiler import ProfilerMiddleware
     app.config['PROFILE'] = True
     new = 'profile-{dt:%Y-%m-%d_%H:%M:%S}'.format(
         dt=datetime.datetime.now())

@@ -50,24 +50,23 @@ class AtlasScientificI2C:
         self.current_addr = addr
 
     def write(self, cmd):
-        cmd += "\00"  # append the null character
-
+        """ Append the null character and send the command over I2C"""
+        cmd += "\00"
         if type(cmd) is str:
-            cmd = cmd.encode()  # If str, convert to byte
-
-        self.file_write.write(cmd)  # send the command over I2C
+            cmd = cmd.encode()
+        self.file_write.write(cmd)
 
     def read(self, num_of_bytes=31):
-        # reads a specified number of bytes from I2C, then parses and displays the result
+        """ Read a specified number of bytes from I2C, then parse and display the result """
         res = self.file_read.read(num_of_bytes)  # read from the board
-        response = filter(lambda x: x != '\x00', res)  # remove the null characters to get the response
+        response = list(filter(lambda x: x != '\x00', res.decode()))  # remove the null characters to get the response
         if ord(response[0]) == 1:  # if the response isn't an error
             # change MSB to 0 for all received characters except the first and get a list of characters
             char_list = map(lambda x: chr(ord(x) & ~0x80), list(response[1:]))
             # NOTE: having to change the MSB to 0 is a glitch in the raspberry pi, and you shouldn't have to do this!
             str_float = ''.join(char_list)
             if str_is_float(str_float):
-                return "success", ''.join(char_list)  # convert the char list to a string and returns it
+                return "success", str_float  # convert the char list to a string and returns it
             else:
                 return "error", "returned string does not represent a float value: {str}".format(str=str_float)
         else:
@@ -119,6 +118,7 @@ class AtlasScientificI2C:
         self.file_write.close()
 
     def list_i2c_devices(self):
+        """ Determine the addresses of conencted I2C devices """
         prev_addr = self.current_addr  # save the current address so we can restore it after
         i2c_devices = []
         for i in range(0, 128):

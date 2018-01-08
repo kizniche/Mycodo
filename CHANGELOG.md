@@ -4,6 +4,7 @@
 
 - Fix forcing of HTTPS via user configuration
 - Fix inability to save Gauge Refresh Period option ([#376](https://github.com/kizniche/mycodo/issues/376))
+- Fix Atlas input module issues ([#369](https://github.com/kizniche/mycodo/issues/369))
 
 
 ## 5.5.6 (2018-01-05)
