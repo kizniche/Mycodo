@@ -70,7 +70,7 @@ def register_extensions(app):
     # app = setup_profiler(app)
 
     # Check user option to force all web connections to use SSL
-    # If URI is empty, pytest is running, don't query database
+    # Fail if the URI is empty (pytest is running)
     if app.config['SQLALCHEMY_DATABASE_URI'] != 'sqlite://':
         with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
             misc = new_session.query(Misc).first()

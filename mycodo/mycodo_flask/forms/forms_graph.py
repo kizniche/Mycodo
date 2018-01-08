@@ -143,7 +143,7 @@ class GaugeAdd(FlaskForm):
     y_axis_min = DecimalField(lazy_gettext('Gauge Min'))
     y_axis_max = DecimalField(lazy_gettext('Gauge Max'))
     max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
-    refresh_duration = IntegerField(
+    refresh_duration = DecimalField(
         lazy_gettext('Refresh (seconds)'),
         validators=[validators.NumberRange(
             min=1,
@@ -164,7 +164,7 @@ class GaugeMod(FlaskForm):
     y_axis_min = DecimalField(lazy_gettext('Gauge Min'))
     y_axis_max = DecimalField(lazy_gettext('Gauge Max'))
     max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
-    refresh_duration = IntegerField(lazy_gettext('Refresh (seconds)'))
+    refresh_duration = DecimalField(lazy_gettext('Refresh (seconds)'))
     gauge_mod = SubmitField(lazy_gettext('Save'))
     gauge_del = SubmitField(lazy_gettext('Delete'))
     gauge_order_up = SubmitField(lazy_gettext('Up'))
