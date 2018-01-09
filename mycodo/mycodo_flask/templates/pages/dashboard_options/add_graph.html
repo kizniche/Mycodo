@@ -1,6 +1,5 @@
-<form method="post" action="/graph">
+<form method="post" action="/dashboard">
   <div class="form-inline">
-    <input type="hidden" name="form-name" value="addGraph">
     {{form_add_graph.graph_type(value='graph')}}
     {{form_add_graph.csrf_token}}
     <div class="form-group">
@@ -108,7 +107,7 @@
 
     <div style="clear: both"></div>
 
-    {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.</br>
+    {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.<br/>
 
     <div class="checkbox" style="padding-right: 1em">
       <label>

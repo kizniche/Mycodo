@@ -137,12 +137,12 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
 
-            <li class="dropdown{% if active_page in ['live', 'graph', 'graph_async'] %} active{% endif %}">
+            <li class="dropdown{% if active_page in ['dashboard', 'live', 'graph_async'] %} active{% endif %}">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Info')}}<span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li{% if active_page == 'live' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_live')}}"><i class="glyphicon glyphicon-play icon-fw"></i> {{_('Live Measurements')}}</a></li>
-                <li{% if active_page == 'graph' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_graph')}}"><i class="fa fa-area-chart icon-fw"></i> {{_('Live Graphs')}}</a></li>
-                <li{% if active_page == 'graph_async' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_graph_async')}}"><i class="glyphicon glyphicon-transfer icon-fw"></i> {{_('Asynchronous Graphs')}}</a></li>
+                <li{% if active_page == 'dashboard' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_dashboard')}}"><i class="fa fa-area-chart icon-fw"></i> {{_('Dashboard')}}</a></li>
+                <li{% if active_page == 'live' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_live')}}"><i class="glyphicon glyphicon-play icon-fw"></i> {{_('Live Measurements')}}</a></li>
+                <li{% if active_page == 'graph_async' %} class="active"{% endif %}><a href="{{url_for('page_routes.page_graph_async')}}"><i class="glyphicon glyphicon-transfer icon-fw"></i> {{_('Asynchronous Graphs')}}</a></li>
               </ul>
             </li>
 

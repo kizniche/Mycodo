@@ -8,7 +8,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.databases.models import DisplayOrder
-from mycodo.databases.models import Graph
+from mycodo.databases.models import Dashboard
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
@@ -22,16 +22,17 @@ logger = logging.getLogger(__name__)
 
 
 #
-# Graph
+# Dashboard
 #
 
 def graph_add(form_add, display_order):
     action = '{action} {controller}'.format(
         action=gettext("Add"),
-        controller=gettext("Graph"))
+        controller=gettext("Dashboard"))
     error = []
-    new_graph = Graph()
+    new_graph = Dashboard()
 
+    # Graph
     if (form_add.graph_type.data == 'graph' and
             (form_add.name.data and
              form_add.width.data and
@@ -66,7 +67,7 @@ def graph_add(form_add, display_order):
             if not error:
                 new_graph.save()
                 flash(gettext(
-                    "Graph with ID %(id)s successfully added",
+                    "Dashboard with ID %(id)s successfully added",
                     id=new_graph.id),
                     "success")
 
@@ -77,6 +78,8 @@ def graph_add(form_add, display_order):
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
+
+    # Gauge
     elif (form_add.graph_type.data in ['gauge_angular', 'gauge_solid'] and
               form_add.sensor_ids.data):
         if not form_add.sensor_ids.data[0]:
@@ -94,6 +97,11 @@ def graph_add(form_add, display_order):
         new_graph.y_axis_min = form_add.y_axis_min.data
         new_graph.y_axis_max = form_add.y_axis_max.data
         new_graph.sensor_ids_measurements = form_add.sensor_ids.data[0]
+
+    # Gauge
+    elif (form_add.graph_type.data == 'camera' and
+          form_add.sensor_ids.data):
+
         try:
             if not error:
                 new_graph.save()
@@ -113,17 +121,17 @@ def graph_add(form_add, display_order):
         flash_form_errors(form_add)
         return
 
-    flash_success_errors(error, action, url_for('routes_page.page_graph'))
+    flash_success_errors(error, action, url_for('page_routes.page_dashboard'))
 
 
 def graph_mod(form_mod_graph, request_form):
     action = '{action} {controller}'.format(
         action=gettext("Modify"),
-        controller=gettext("Graph"))
+        controller=gettext("Dashboard"))
     error = []
 
-    mod_graph = Graph.query.filter(
-        Graph.id == form_mod_graph.graph_id.data).first()
+    mod_graph = Dashboard.query.filter(
+        Dashboard.id == form_mod_graph.graph_id.data).first()
 
     def is_rgb_color(color_hex):
         return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
@@ -291,17 +299,17 @@ def graph_mod(form_mod_graph, request_form):
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_graph'))
+    flash_success_errors(error, action, url_for('page_routes.page_dashboard'))
 
 
 def graph_del(form_del_graph):
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
-        controller=gettext("Graph"))
+        controller=gettext("Dashboard"))
     error = []
 
     try:
-        delete_entry_with_id(Graph,
+        delete_entry_with_id(Dashboard,
                              form_del_graph.graph_id.data)
         display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
         display_order.remove(int(form_del_graph.graph_id.data))
@@ -309,14 +317,14 @@ def graph_del(form_del_graph):
         db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_graph'))
+    flash_success_errors(error, action, url_for('page_routes.page_dashboard'))
 
 
 
 def graph_reorder(graph_id, display_order, direction):
     action = '{action} {controller}'.format(
         action=gettext("Reorder"),
-        controller=gettext("Graph"))
+        controller=gettext("Dashboard"))
     error = []
     try:
         status, reord_list = reorder(display_order,
@@ -329,4 +337,4 @@ def graph_reorder(graph_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_graph'))
+    flash_success_errors(error, action, url_for('page_routes.page_dashboard'))

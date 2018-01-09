@@ -11,8 +11,7 @@
 
 <div class="collapse" id="collapseContainer_gauge{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
 
-  <form method="post" action="/graph">
-    <input type="hidden" name="form-name" value="modGauge">
+  <form method="post" action="/dashboard">
     {{form_mod_gauge.csrf_token}}
     {{form_mod_gauge.graph_id(value=each_graph.id)}}
 

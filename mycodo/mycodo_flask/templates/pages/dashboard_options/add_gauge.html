@@ -1,6 +1,5 @@
-<form method="post" action="/graph">
+<form method="post" action="/dashboard">
   <div class="form-inline">
-    <input type="hidden" name="form-name" value="addGauge">
     {{form_add_gauge.csrf_token}}
     <div class="form-group">
       {{form_add_gauge.graph_type.label(class_='control-label')}}
