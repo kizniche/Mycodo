@@ -13,8 +13,7 @@
 
 <div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
 
-  <form method="post" action="/graph">
-    <input type="hidden" name="form-name" value="modGraph">
+  <form method="post" action="/dashboard">
     {{form_mod_graph.csrf_token}}
     {{form_mod_graph.graph_id(value=each_graph.id)}}
     {{form_mod_graph.graph_type(value=each_graph.graph_type)}}
@@ -123,7 +122,7 @@
       </div>
 
       <div style="clear: both"></div>
-      {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.</br>
+      {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.<br/>
 
       <div class="checkbox" style="padding-right: 1em">
         <label>

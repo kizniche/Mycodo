@@ -47,11 +47,15 @@
 
       {% if each_graph.graph_type == 'graph' %}
 
-        {% include 'pages/graph_options/mod_graph.html' %}
+        {% include 'pages/dashboard_options/mod_graph.html' %}
 
       {% elif each_graph.graph_type in ['gauge_angular', 'gauge_solid'] %}
 
-        {% include 'pages/graph_options/mod_gauge.html' %}
+        {% include 'pages/dashboard_options/mod_gauge.html' %}
+
+      {% elif each_graph.graph_type == 'camera' %}
+
+        {% include 'pages/dashboard_options/mod_camera.html' %}
 
       {% endif %}
 
@@ -72,11 +76,15 @@
     <a data-toggle="collapse" href="#collapseContainerGraphAdd_gauge" aria-expanded="false" aria-controls="collapseContainerGraphAdd_gauge" class="btn btn-default" role="button">{{_('New Gauge')}}</a>
 
     <div class="collapse" id="collapseContainerGraphAdd" style="padding-top: 1em">
-      {% include 'pages/graph_options/add_graph.html' %}
+      {% include 'pages/dashboard_options/add_graph.html' %}
     </div>
 
     <div class="collapse" id="collapseContainerGraphAdd_gauge" style="padding-top: 1em">
-      {% include 'pages/graph_options/add_gauge.html' %}
+      {% include 'pages/dashboard_options/add_gauge.html' %}
+    </div>
+
+    <div class="collapse" id="collapseContainerGraphAdd_gauge" style="padding-top: 1em">
+      {% include 'pages/dashboard_options/add_camera.html' %}
     </div>
 
   </div>
@@ -229,11 +237,13 @@ $(document).ready(function() {
       {% set graph_sensor_ids = each_graph.sensor_ids_measurements.split(';') %}
 
       {% if each_graph.graph_type == 'graph' %}
-        {% include 'pages/graph_options/display_graph.html' %}
+        {% include 'pages/dashboard_options/display_graph.html' %}
       {% elif each_graph.graph_type == 'gauge_solid' %}
-        {% include 'pages/graph_options/display_gauge_solid.html' %}
+        {% include 'pages/dashboard_options/display_gauge_solid.html' %}
       {% elif each_graph.graph_type == 'gauge_angular' %}
-        {% include 'pages/graph_options/display_gauge_angular.html' %}
+        {% include 'pages/dashboard_options/display_gauge_angular.html' %}
+      {% elif each_graph.graph_type == 'camera' %}
+        {% include 'pages/dashboard_options/display_camera.html' %}
       {% endif %}
 
     {%- endfor -%}

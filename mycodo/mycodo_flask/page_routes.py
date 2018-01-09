@@ -43,7 +43,7 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import DisplayOrder
-from mycodo.databases.models import Graph
+from mycodo.databases.models import Dashboard
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
@@ -302,13 +302,15 @@ def page_export():
                            math_choices=math_choices)
 
 
-@blueprint.route('/graph', methods=('GET', 'POST'))
+@blueprint.route('/dashboard', methods=('GET', 'POST'))
 @flask_login.login_required
-def page_graph():
+def page_dashboard():
     """
-    Generate custom graphs to display input data retrieved from influxdb.
+    Generate custom dashboard with various data
     """
     # Create form objects
+    form_add_camera = forms_graph.CameraAdd()
+    form_mod_camera = forms_graph.CameraMod()
     form_add_graph = forms_graph.GraphAdd()
     form_mod_graph = forms_graph.GraphMod()
     form_add_gauge = forms_graph.GaugeAdd()
@@ -318,13 +320,15 @@ def page_graph():
     display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
 
     # Retrieve tables from SQL database
-    graph = Graph.query.all()
+    camera = Camera.query.all()
+    graph = Dashboard.query.all()
     input_dev = Input.query.all()
     math = Math.query.all()
     output = Output.query.all()
     pid = PID.query.all()
 
     # Retrieve all choices to populate form drop-down menu
+    choices_camera = utils_general.choices_id_name(camera)
     choices_input = utils_general.choices_inputs(input_dev)
     choices_math = utils_general.choices_maths(math)
     choices_output = utils_general.choices_outputs(output)
@@ -408,7 +412,8 @@ def page_graph():
 
         return redirect('/graph')
 
-    return render_template('pages/graph.html',
+    return render_template('pages/dashboard.html',
+                           choices_camera=choices_camera,
                            choices_input=choices_input,
                            choices_math=choices_math,
                            choices_output=choices_output,
@@ -423,8 +428,10 @@ def page_graph():
                            dict_measurements=dict_measurements,
                            measurement_units=MEASUREMENT_UNITS,
                            displayOrder=display_order,
+                           form_add_camera=form_add_camera,
                            form_add_graph=form_add_graph,
                            form_add_gauge=form_add_gauge,
+                           form_mod_camera=form_mod_camera,
                            form_mod_graph=form_mod_graph,
                            form_mod_gauge=form_mod_gauge)
 
@@ -1286,7 +1293,7 @@ def dict_custom_colors():
     color_count = OrderedDict()
 
     try:
-        graph = Graph.query.all()
+        graph = Dashboard.query.all()
         for each_graph in graph:
             # Get current saved colors
             if each_graph.custom_colors:  # Split into list

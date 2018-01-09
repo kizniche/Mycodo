@@ -32,7 +32,7 @@ from .conditional import ConditionalActions
 from .alembic_version import AlembicVersion
 from .camera import Camera
 from .display_order import DisplayOrder
-from .graph import Graph
+from .dashboard import Dashboard
 from .lcd import LCD
 from .lcd import LCDData
 from .math import Math
