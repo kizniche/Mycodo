@@ -1782,9 +1782,17 @@ Cameras may be added to keep a continuous view on areas.
   Refresh (seconds)     The duration between acquisitions of new data
                         to display on the graph.
 
-  Save Image            If selected, the image will be saved as a new
-                        file name. If not selected, the image file will
-                        be overwritten each time it’s acquired.
+  Acquire Image (and    Acquire a new images and save the previous
+  save new file)        image.
+
+  Acquire Image (and    Acquire a new image but erase the previous
+  erase last file)      image.
+
+  Display Live Video    Automatically start a video stream and display
+  Stream                it.
+
+  Display Latest        Display the latest timelapse image that exists.
+  Timelapse Image       
 
   Add Timestamp         Append a timestamp to the image.
   ---------------------------------------------------------------------

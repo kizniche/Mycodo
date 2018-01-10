@@ -277,10 +277,15 @@ $(document).ready(function() {
   }
 
   function repeat_get_image_cam(camera_unique_id, period_sec, image_type) {
-    get_image_cam(camera_unique_id, image_type);
-    setInterval(function () {
-      get_image_cam(camera_unique_id, image_type)
-    }, period_sec * 1000);
+    if (image_type === 'stream') {
+      document.getElementById(camera_unique_id + "-image-src").src = "/video_feed/" + camera_unique_id;
+      document.getElementById(camera_unique_id + "-timestamp").innerHTML = 'Live Stream';
+    } else {
+      get_image_cam(camera_unique_id, image_type);
+      setInterval(function () {
+          get_image_cam(camera_unique_id, image_type)
+      }, period_sec * 1000);
+    }
   }
 
   // Change opacity of all chart colors

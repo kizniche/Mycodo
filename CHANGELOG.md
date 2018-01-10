@@ -2,7 +2,7 @@
 
 ### Features
 
- - Add ability to add cameras to the Dashboard (formerly Live Graphs page)
+ - Add ability to add Camera modules to the Dashboard (formerly Live Graphs page)
 
 ### Miscellaneous
 

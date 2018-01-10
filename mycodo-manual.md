@@ -1007,7 +1007,10 @@ Setting | Description
 Width | The width of the dashboard object on the page, in 1/12th increments. Multiple dashboard object can share the sme row if their combined fraction doesn't exceed 12/12.
 Height (pixels) | The height of the dashboard object.
 Refresh (seconds) | The duration between acquisitions of new data to display on the graph.
-Save Image | If selected, the image will be saved as a new file name. If not selected, the image file will be overwritten each time it's acquired.
+Acquire Image (and save new file) | Acquire a new images and save the previous image.
+Acquire Image (and erase last file) | Acquire a new image but erase the previous image.
+Display Live Video Stream | Automatically start a video stream and display it.
+Display Latest Timelapse Image | Display the latest timelapse image that exists.
 Add Timestamp | Append a timestamp to the image.
 
 

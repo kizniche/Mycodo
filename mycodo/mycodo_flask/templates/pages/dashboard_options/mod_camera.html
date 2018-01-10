@@ -44,9 +44,10 @@
         {{form_add_camera.camera_image_type.label(class_='control-label')}}
         <div>
           <select class="form-control" id="camera_image_type" name="camera_image_type">
-            <option value="new_img"{% if each_graph.camera_image_type == 'new_image' %} selected{% endif %}>Acquire Image (and save new file)</option>
-            <option value="tmp_img"{% if each_graph.camera_image_type == 'tmp_img' %} selected{% endif %}>Acquire Image (and erase last file)</option>
-            <option value="timelapse"{% if each_graph.camera_image_type == 'timelapse' %} selected{% endif %}>Display Latest Timelapse Image</option>
+            <option value="new_img"{% if each_graph.camera_image_type == 'new_image' %} selected{% endif %}>{{_('Acquire Image (and save new file)')}}</option>
+            <option value="tmp_img"{% if each_graph.camera_image_type == 'tmp_img' %} selected{% endif %}>{{_('Acquire Image (and erase last file)')}}</option>
+            <option value="stream"{% if each_graph.camera_image_type == 'stream' %} selected{% endif %}>{{_('Display Live Video Stream')}}</option>
+            <option value="timelapse"{% if each_graph.camera_image_type == 'timelapse' %} selected{% endif %}>{{_('Display Latest Timelapse Image')}}</option>
           </select>
         </div>
       </div>

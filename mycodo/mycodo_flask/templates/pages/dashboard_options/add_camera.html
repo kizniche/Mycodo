@@ -53,9 +53,10 @@
       {{form_add_camera.camera_image_type.label(class_='control-label')}}
       <div>
         <select class="form-control" id="camera_image_type" name="camera_image_type">
-          <option value="new_image">Acquire New Image (save new images)</option>
-          <option value="tmp_img">Acquire New Image (overwrite image)</option>
-          <option value="timlapse">Display Latest Timelapse Image</option>
+          <option value="new_image">{{_('Acquire Image (and save new file)')}}</option>
+          <option value="tmp_img">{{_('Acquire Image (and erase last file)')}}</option>
+          <option value="stream">{{_('Display Live Video Stream')}}</option>
+          <option value="timlapse">{{_('Display Latest Timelapse Image')}}</option>
         </select>
       </div>
     </div>
