@@ -66,11 +66,11 @@ def page_settings():
     return redirect('settings/general')
 
 
-@blueprint.route('/camera/<camera_id>/<img_type>/<filename>')
+@blueprint.route('/camera/<camera_unique_id>/<img_type>/<filename>')
 @flask_login.login_required
-def camera_img(camera_id, img_type, filename):
+def camera_img(camera_unique_id, img_type, filename):
     """Return an image from stills or timelapses"""
-    camera = Camera.query.filter(Camera.id == int(camera_id)).first()
+    camera = Camera.query.filter(Camera.unique_id == camera_unique_id).first()
     camera_path = os.path.join(PATH_CAMERAS, '{id}-{uid}'.format(
             id=camera.id, uid=camera.unique_id))
 

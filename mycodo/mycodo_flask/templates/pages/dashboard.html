@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
-{% set active_page = "graph" %}
-{% set help_page = ["live-graphs", _('Live Graphs')] %}
+{% set active_page = "dashboard" %}
+{% set help_page = ["dashboard", _('Dashboard')] %}
 
-{% block title %} - {{_('Graph')}}{% endblock %}
+{% block title %} - {{_('Dashboard')}}{% endblock %}
 
 {% block head %}
 
@@ -22,7 +22,7 @@
 {% endblock %}
 
 {% block body %}
-  <!-- Route: /graph -->
+  <!-- Route: /dashboard -->
   <div class="container">
   {% include 'flash_messages.html' %}
   </div>
@@ -73,17 +73,19 @@
   <div class="container" style="padding-bottom: 1em;">
     <a data-toggle="collapse" href="#collapseContainerGraphAdd" aria-expanded="false" aria-controls="collapseContainerGraphAdd" class="btn btn-default" role="button">{{_('New Graph')}}</a>
 
-    <a data-toggle="collapse" href="#collapseContainerGraphAdd_gauge" aria-expanded="false" aria-controls="collapseContainerGraphAdd_gauge" class="btn btn-default" role="button">{{_('New Gauge')}}</a>
+    <a data-toggle="collapse" href="#collapseContainerGaugeAdd" aria-expanded="false" aria-controls="collapseContainerGaugeAdd" class="btn btn-default" role="button">{{_('New Gauge')}}</a>
+
+    <a data-toggle="collapse" href="#collapseContainerCameraAdd" aria-expanded="false" aria-controls="collapseContainerCameraAdd" class="btn btn-default" role="button">{{_('New Camera')}}</a>
 
     <div class="collapse" id="collapseContainerGraphAdd" style="padding-top: 1em">
       {% include 'pages/dashboard_options/add_graph.html' %}
     </div>
 
-    <div class="collapse" id="collapseContainerGraphAdd_gauge" style="padding-top: 1em">
+    <div class="collapse" id="collapseContainerGaugeAdd" style="padding-top: 1em">
       {% include 'pages/dashboard_options/add_gauge.html' %}
     </div>
 
-    <div class="collapse" id="collapseContainerGraphAdd_gauge" style="padding-top: 1em">
+    <div class="collapse" id="collapseContainerCameraAdd" style="padding-top: 1em">
       {% include 'pages/dashboard_options/add_camera.html' %}
     </div>
 
@@ -98,14 +100,22 @@ $('.collapse').on('show.bs.collapse', function(){
   $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
 });
 
+$('#collapseContainerCameraAdd').on('shown.bs.collapse', function () {
+  $('#collapseContainerGraphAdd').collapse('hide');
+  $('#collapseContainerGaugeaAdd').collapse('hide');
+  document.getElementById('collapseContainerCameraAdd').scrollIntoView();
+});
+
 $('#collapseContainerGraphAdd').on('shown.bs.collapse', function () {
-  $('#collapseContainerGraphAdd_gauge').collapse('hide');
+  $('#collapseContainerGaugeAdd').collapse('hide');
+  $('#collapseContainerCameraAdd').collapse('hide');
   document.getElementById('collapseContainerGraphAdd').scrollIntoView();
 });
 
-$('#collapseContainerGraphAdd_gauge').on('shown.bs.collapse', function () {
+$('#collapseContainerGaugeAdd').on('shown.bs.collapse', function () {
   $('#collapseContainerGraphAdd').collapse('hide');
-  document.getElementById('collapseContainerGraphAdd_gauge').scrollIntoView();
+  $('#collapseContainerCameraAdd').collapse('hide');
+  document.getElementById('collapseContainerGaugeAdd').scrollIntoView();
 });
 
 Highcharts.setOptions({

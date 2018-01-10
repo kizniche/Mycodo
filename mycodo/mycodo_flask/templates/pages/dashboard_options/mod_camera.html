@@ -1,15 +1,17 @@
 <div style="padding-right: 0.5em;">
   <div class="col-sx-12 text-right">
-    <span style="padding-right: 0.5em">[{{'%02d' % each_graph.id}}] {{each_graph.name}}</span>
-    <button class="btn btn-default btn-sm" id="resetZoom{{chart_number}}">Reset Zoom</button>
-    <button class="btn btn-default btn-sm" id="showhidebutton{{chart_number}}">Show/Hide All</button>
+    <span style="padding-right: 0.5em">{{latest_img_still_ts[each_graph.camera_id]}} [{{'%02d' % each_graph.id}}] {{each_graph.name}}</span>
     <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
       <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
     </button>
   </div>
 </div>
 
-<div id="container-graph-{{each_graph.id}}" style="height: {{each_graph.height}}px;"></div>
+<div id="container-graph-{{each_graph.id}}" style="height: {{each_graph.height}}px;">
+{% if latest_img_still[each_graph.camera_id] %}
+  <a href="/camera/{{each_graph.camera_id}}/still/{{latest_img_still[each_graph.camera_id]}}" target="_blank"><img style="max-height: 100%; max-width: 100%" src="/camera/{{each_graph.camera_id}}/still/{{latest_img_still[each_graph.camera_id]}}"></a>
+{% endif %}
+</div>
 
 <div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
 
@@ -32,7 +34,7 @@
             <option value="">{{_('Select One')}}</option>
           {% if choices_camera %}
           {% for each_choice, value in choices_camera.items() -%}
-            <option value="{{each_choice}}" {% if each_graph.sensor_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
+            <option value="{{each_choice}}" {% if each_graph.camera_id == each_choice %}selected{% endif %}>{{value}}</option>
           {% endfor -%}
           {% else %}
             <option value="">{{_('None Available')}}</option>

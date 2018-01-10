@@ -177,7 +177,7 @@ class CameraAdd(FlaskForm):
         lazy_gettext('Name'),
         validators=[DataRequired()]
     )
-    sensor_ids = SelectMultipleField(lazy_gettext('Camera'))
+    camera_id = StringField(lazy_gettext('Camera'))
     width = IntegerField(
         lazy_gettext('Width'),
         validators=[validators.NumberRange(
@@ -200,6 +200,8 @@ class CameraAdd(FlaskForm):
                                  " any new measurements.")
         )]
     )
+    camera_save_image = BooleanField(lazy_gettext('Save Images'))
+    camera_timestamp = BooleanField(lazy_gettext('Add Timestamp'))
     camera_add = SubmitField(lazy_gettext('Create'))
 
 
@@ -207,10 +209,12 @@ class CameraMod(FlaskForm):
     graph_id = IntegerField('Graph ID', widget=widgets.HiddenInput())
     graph_type = StringField('Type', widget=widgets.HiddenInput())
     name = StringField(lazy_gettext('Name'))
-    sensor_ids = SelectMultipleField(lazy_gettext('Camera'))
+    camera_id = StringField(lazy_gettext('Camera'))
     width = IntegerField(lazy_gettext('Width'))
     height = IntegerField(lazy_gettext('Height (pixels)'))
     refresh_duration = IntegerField(lazy_gettext('Refresh (seconds)'))
+    camera_save_image = BooleanField(lazy_gettext('Save Images'))
+    camera_timestamp = BooleanField(lazy_gettext('Add Timestamp'))
     camera_mod = SubmitField(lazy_gettext('Save'))
     camera_del = SubmitField(lazy_gettext('Delete'))
     camera_order_up = SubmitField(lazy_gettext('Up'))

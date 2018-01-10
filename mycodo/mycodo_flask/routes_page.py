@@ -60,7 +60,7 @@ from mycodo.mycodo_client import daemon_active
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_conditional
 from mycodo.mycodo_flask.forms import forms_function
-from mycodo.mycodo_flask.forms import forms_graph
+from mycodo.mycodo_flask.forms import forms_dashboard
 from mycodo.mycodo_flask.forms import forms_input
 from mycodo.mycodo_flask.forms import forms_lcd
 from mycodo.mycodo_flask.forms import forms_math
@@ -73,7 +73,7 @@ from mycodo.mycodo_flask.utils import utils_conditional
 from mycodo.mycodo_flask.utils import utils_export
 from mycodo.mycodo_flask.utils import utils_function
 from mycodo.mycodo_flask.utils import utils_general
-from mycodo.mycodo_flask.utils import utils_graph
+from mycodo.mycodo_flask.utils import utils_dashboard
 from mycodo.mycodo_flask.utils import utils_input
 from mycodo.mycodo_flask.utils import utils_lcd
 from mycodo.mycodo_flask.utils import utils_math
@@ -183,44 +183,10 @@ def page_camera():
         return redirect('/camera')
 
     # Get the full path and timestamps of latest still and time-lapse images
-    latest_img_still_ts = {}
-    latest_img_still = {}
-    latest_img_tl_ts = {}
-    latest_img_tl = {}
-    for each_camera in camera:
-        camera_path = os.path.join(PATH_CAMERAS, '{id}-{uid}'.format(
-            id=each_camera.id, uid=each_camera.unique_id))
-        try:
-            latest_still_img_full_path = max(glob.iglob(
-                '{path}/still/Still-{cam_id}-*.jpg'.format(
-                    path=camera_path,
-                    cam_id=each_camera.id)),
-                key=os.path.getmtime)
-        except ValueError:
-            latest_still_img_full_path = None
-        if latest_still_img_full_path:
-            ts = os.path.getmtime(latest_still_img_full_path)
-            latest_img_still_ts[each_camera.id] = datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
-            latest_img_still[each_camera.id] = os.path.basename(latest_still_img_full_path)
-        else:
-            latest_img_still[each_camera.id] = None
-
-        try:
-            latest_time_lapse_img_full_path = max(glob.iglob(
-                '{path}/timelapse/Timelapse-{cam_id}-*.jpg'.format(
-                    path=camera_path,
-                    cam_id=each_camera.id)),
-                key=os.path.getmtime)
-        except ValueError:
-            latest_time_lapse_img_full_path = None
-        if latest_time_lapse_img_full_path:
-            ts = os.path.getmtime(latest_time_lapse_img_full_path)
-            latest_img_tl_ts[each_camera.id] = datetime.datetime.fromtimestamp(
-                ts).strftime("%Y-%m-%d %H:%M:%S")
-            latest_img_tl[each_camera.id] = os.path.basename(
-                latest_time_lapse_img_full_path)
-        else:
-            latest_img_tl[each_camera.id] = None
+    (latest_img_still_ts,
+    latest_img_still,
+    latest_img_tl_ts,
+    latest_img_tl) = utils_general.get_camera_image_info()
 
     time_now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
@@ -309,12 +275,12 @@ def page_dashboard():
     Generate custom dashboard with various data
     """
     # Create form objects
-    form_add_camera = forms_graph.CameraAdd()
-    form_mod_camera = forms_graph.CameraMod()
-    form_add_graph = forms_graph.GraphAdd()
-    form_mod_graph = forms_graph.GraphMod()
-    form_add_gauge = forms_graph.GaugeAdd()
-    form_mod_gauge = forms_graph.GaugeMod()
+    form_add_camera = forms_dashboard.CameraAdd()
+    form_mod_camera = forms_dashboard.CameraMod()
+    form_add_graph = forms_dashboard.GraphAdd()
+    form_mod_graph = forms_dashboard.GraphMod()
+    form_add_gauge = forms_dashboard.GaugeAdd()
+    form_mod_gauge = forms_dashboard.GaugeMod()
 
     # Retrieve the order to display graphs
     display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
@@ -385,32 +351,52 @@ def page_dashboard():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_general.home'))
 
-        if form_add_graph.graph_add.data:
-            utils_graph.graph_add(form_add_graph, display_order)
-        elif form_mod_graph.graph_mod.data:
-            utils_graph.graph_mod(form_mod_graph, request.form)
-        elif form_mod_graph.graph_del.data:
-            utils_graph.graph_del(form_mod_graph)
-        elif form_mod_graph.graph_order_up.data:
-            utils_graph.graph_reorder(form_mod_graph.graph_id.data,
-                                      display_order, 'up')
-        elif form_mod_graph.graph_order_down.data:
-            utils_graph.graph_reorder(form_mod_graph.graph_id.data,
-                                      display_order, 'down')
-        elif form_add_gauge.gauge_add.data:
-            utils_graph.graph_add(form_add_gauge, display_order)
-        elif form_mod_gauge.gauge_mod.data:
-            utils_graph.graph_mod(form_mod_gauge, request.form)
-        elif form_mod_gauge.gauge_del.data:
-            utils_graph.graph_del(form_mod_gauge)
-        elif form_mod_gauge.gauge_order_up.data:
-            utils_graph.graph_reorder(form_mod_gauge.graph_id.data,
-                                      display_order, 'up')
-        elif form_mod_gauge.gauge_order_down.data:
-            utils_graph.graph_reorder(form_mod_gauge.graph_id.data,
-                                      display_order, 'down')
+        # Camera
+        if form_add_camera.camera_add.data:
+            utils_dashboard.graph_add(form_add_camera, display_order)
+        elif form_mod_camera.camera_mod.data:
+            utils_dashboard.graph_mod(form_mod_camera, None)
+        elif form_mod_camera.camera_del.data:
+            utils_dashboard.graph_del(form_mod_camera)
+        elif form_mod_camera.camera_order_up.data:
+            utils_dashboard.graph_reorder(form_mod_camera.graph_id.data,
+                                          display_order, 'up')
+        elif form_mod_camera.camera_order_down.data:
+            utils_dashboard.graph_reorder(form_mod_camera.graph_id.data,
+                                          display_order, 'down')
 
-        return redirect('/graph')
+        # Graph
+        elif form_add_graph.graph_add.data:
+            utils_dashboard.graph_add(form_add_graph, display_order)
+        elif form_mod_graph.graph_mod.data:
+            utils_dashboard.graph_mod(form_mod_graph, request.form)
+        elif form_mod_graph.graph_del.data:
+            utils_dashboard.graph_del(form_mod_graph)
+        elif form_mod_graph.graph_order_up.data:
+            utils_dashboard.graph_reorder(form_mod_graph.graph_id.data,
+                                          display_order, 'up')
+        elif form_mod_graph.graph_order_down.data:
+            utils_dashboard.graph_reorder(form_mod_graph.graph_id.data,
+                                          display_order, 'down')
+
+        # Gauge
+        elif form_add_gauge.gauge_add.data:
+            utils_dashboard.graph_add(form_add_gauge, display_order)
+        elif form_mod_gauge.gauge_mod.data:
+            utils_dashboard.graph_mod(form_mod_gauge, request.form)
+        elif form_mod_gauge.gauge_del.data:
+            utils_dashboard.graph_del(form_mod_gauge)
+        elif form_mod_gauge.gauge_order_up.data:
+            utils_dashboard.graph_reorder(form_mod_gauge.graph_id.data,
+                                          display_order, 'up')
+        elif form_mod_gauge.gauge_order_down.data:
+            utils_dashboard.graph_reorder(form_mod_gauge.graph_id.data,
+                                          display_order, 'down')
+
+        return redirect('/dashboard')
+
+    # Get the full path and timestamps of latest still and time-lapse images
+    (latest_img_still_ts, latest_img_still, _, _) = utils_general.get_camera_image_info()
 
     return render_template('pages/dashboard.html',
                            choices_camera=choices_camera,
@@ -433,7 +419,9 @@ def page_dashboard():
                            form_add_gauge=form_add_gauge,
                            form_mod_camera=form_mod_camera,
                            form_mod_graph=form_mod_graph,
-                           form_mod_gauge=form_mod_gauge)
+                           form_mod_gauge=form_mod_gauge,
+                           latest_img_still_ts=latest_img_still_ts,
+                           latest_img_still=latest_img_still)
 
 
 @blueprint.route('/graph-async', methods=('GET', 'POST'))

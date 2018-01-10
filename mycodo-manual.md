@@ -40,8 +40,9 @@ Table of Contents
 
 [Miscellaneous](#miscellaneous)
 
+   - [Dashboard](#dashboard)
    - [Live Measurements](#live-measurements)
-   - [Graphs](#graphs)
+   - [Asynchronous Graphs](#asynchronous-graphs)
    - [Export-Import](#export-import)
    - [Camera](#camera)
    - [Output Usage](#output-usage)
@@ -954,17 +955,12 @@ Flip vertically | Flip, or mirror, the image vertically.
 Miscellaneous
 =============
 
-Live Measurements
------------------
+Dashboard
+---------
 
-The Live Measurements page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Math controllers. If there is nothing displayed on the Live Measurements page, ensure an Input or Math controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.
+The dashboard is where you can add pieces of data for easy viewing. It is highly customizable and provides an easy way to see exactly what data you want to see on one screen.
 
-Graphs
-------
-
-There are two different types of graphs, Live and Asynchronous.
-
-### Live Graphs
+### Graphs
 
 A graphical data display that is useful for viewing data sets spanning
 relatively short periods of time (hours/days/weeks). Select a time frame
@@ -976,11 +972,11 @@ select the plus sign on the top-right of a graph.
 
 Setting | Description
 -------------------- | ----------------------------------------------
-Width | The width of the graph on the page, in 1/12th increments. Multiple graphs can share the sme row if their combined fraction doesn't exceed 12/12.
-Height (pixels) | The height of the graph.
+Width | The width of the dashboard object on the page, in 1/12th increments. Multiple dashboard object can share the sme row if their combined fraction doesn't exceed 12/12.
+Height (pixels) | The height of the dashboard object.
 x-Axis (minutes) | The duration to display on the x-axis of the graph.
 Enable Auto Refresh | Automatically refresh the data on the graph Refresh Period.
-Refresh Period (seconds) | The duration between acquisitions of new data to display on the graph.
+Refresh (seconds) | The duration between acquisitions of new data to display on the graph.
 Inputs/Outputs/PIDs | The Inputs, Outputs, and PIDs to display on the graph.
 Enable X-Axis Reset | Reset the x-axis min/max every time new data comes in during the auto refresh.
 Enable Title | Show a title of the graph name.
@@ -988,10 +984,41 @@ Enable Navbar | Show a slidable navigation bar at the bottom of the graph.
 Enable Export | Enable a button on the top right of the graph to allow exporting of the currently-displayed data as PNG, JPEG, PDF, SVG, CSV, XLS.
 Enable Range Selector | Show a set of navigation buttons at the top of the graph to quickly change the display duration.
 Enable Custom Colors | Use custom colors for Input, Output, and PID lines. Select the colors with the buttons that appear below this checkbox.
-Up / Down | Reorganize the graph placement by moving it one placement up or down.
+
+### Gauges
+
+Gauges are visual objects that allow one to quickly see what the latest measurement is of an input. An example that you may be familiar with is a speedometer in a car.
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Width | The width of the dashboard object on the page, in 1/12th increments. Multiple dashboard object can share the sme row if their combined fraction doesn't exceed 12/12.
+Height (pixels) | The height of the dashboard object.
+Refresh (seconds) | The duration between acquisitions of new data to display on the graph.
+Max Age (seconds) | The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.
+Gauge Min | The lowest value of the gauge.
+Gauge Max | The highest value of the gauge.
+
+### Cameras
+
+Cameras may be added to keep a continuous view on areas.
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Width | The width of the dashboard object on the page, in 1/12th increments. Multiple dashboard object can share the sme row if their combined fraction doesn't exceed 12/12.
+Height (pixels) | The height of the dashboard object.
+Refresh (seconds) | The duration between acquisitions of new data to display on the graph.
+Save Image | If selected, the image will be saved as a new file name. If not selected, the image file will be overwritten each time it's acquired.
+Add Timestamp | Append a timestamp to the image.
 
 
-### Asynchronous Graphs
+Live Measurements
+-----------------
+
+The Live Measurements page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Math controllers. If there is nothing displayed on the Live Measurements page, ensure an Input or Math controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.
+
+
+Asynchronous Graphs
+-------------------
 
 A graphical data display that is useful for viewing data sets spanning
 relatively long periods of time (weeks/months/years), which could be
@@ -1015,7 +1042,7 @@ least one sensor needs to be added and activated in order to display
 live data.
 
 Export-Import
----------------
+-------------
 
 Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.
 

@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+import glob
 import logging
 from collections import OrderedDict
 from datetime import datetime
 
 import flask_login
+import os
 import sqlalchemy
 from flask import flash
 from flask import redirect
@@ -12,6 +14,8 @@ from flask_babel import gettext
 
 from mycodo.config import MEASUREMENTS
 from mycodo.config import MEASUREMENT_UNITS
+from mycodo.config import PATH_CAMERAS
+from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
@@ -372,3 +376,51 @@ def test_sql():
                         epm=(factor_info / avg_run_time) * 60.0))
     except Exception as msg:
         logger.error("Error creating entries: {err}".format(err=msg))
+
+
+def get_camera_image_info():
+    """ Retrieve information about the latest camera images """
+    latest_img_still_ts = {}
+    latest_img_still = {}
+    latest_img_tl_ts = {}
+    latest_img_tl = {}
+
+    camera = Camera.query.all()
+
+    for each_camera in camera:
+        camera_path = os.path.join(PATH_CAMERAS, '{id}-{uid}'.format(
+            id=each_camera.id, uid=each_camera.unique_id))
+        try:
+            latest_still_img_full_path = max(glob.iglob(
+                '{path}/still/Still-{cam_id}-*.jpg'.format(
+                    path=camera_path,
+                    cam_id=each_camera.id)),
+                key=os.path.getmtime)
+        except ValueError:
+            latest_still_img_full_path = None
+        if latest_still_img_full_path:
+            ts = os.path.getmtime(latest_still_img_full_path)
+            latest_img_still_ts[each_camera.unique_id] = datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
+            latest_img_still[each_camera.unique_id] = os.path.basename(latest_still_img_full_path)
+        else:
+            latest_img_still[each_camera.unique_id] = None
+
+        try:
+            latest_time_lapse_img_full_path = max(glob.iglob(
+                '{path}/timelapse/Timelapse-{cam_id}-*.jpg'.format(
+                    path=camera_path,
+                    cam_id=each_camera.id)),
+                key=os.path.getmtime)
+        except ValueError:
+            latest_time_lapse_img_full_path = None
+        if latest_time_lapse_img_full_path:
+            ts = os.path.getmtime(latest_time_lapse_img_full_path)
+            latest_img_tl_ts[each_camera.unique_id] = datetime.fromtimestamp(
+                ts).strftime("%Y-%m-%d %H:%M:%S")
+            latest_img_tl[each_camera.unique_id] = os.path.basename(
+                latest_time_lapse_img_full_path)
+        else:
+            latest_img_tl[each_camera.unique_id] = None
+
+    return (latest_img_still_ts, latest_img_still,
+            latest_img_tl_ts, latest_img_tl)

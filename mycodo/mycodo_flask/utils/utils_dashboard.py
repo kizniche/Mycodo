@@ -98,9 +98,17 @@ def graph_add(form_add, display_order):
         new_graph.y_axis_max = form_add.y_axis_max.data
         new_graph.sensor_ids_measurements = form_add.sensor_ids.data[0]
 
-    # Gauge
+    # Camera
     elif (form_add.graph_type.data == 'camera' and
-          form_add.sensor_ids.data):
+          form_add.camera_id.data):
+        new_graph.graph_type = form_add.graph_type.data
+        new_graph.name = form_add.name.data
+        new_graph.width = form_add.width.data
+        new_graph.height = form_add.height.data
+        new_graph.refresh_duration = form_add.refresh_duration.data
+        new_graph.camera_id = form_add.camera_id.data
+        new_graph.camera_save_image = form_add.camera_save_image.data
+        new_graph.camera_timestamp = form_add.camera_timestamp.data
 
         try:
             if not error:
@@ -121,7 +129,7 @@ def graph_add(form_add, display_order):
         flash_form_errors(form_add)
         return
 
-    flash_success_errors(error, action, url_for('page_routes.page_dashboard'))
+    flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
 
 
 def graph_mod(form_mod_graph, request_form):
@@ -136,6 +144,7 @@ def graph_mod(form_mod_graph, request_form):
     def is_rgb_color(color_hex):
         return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
 
+    # Graph Mod
     if form_mod_graph.graph_type.data == 'graph':
         # Get variable number of color inputs, turn into CSV string
         colors = {}
@@ -207,10 +216,8 @@ def graph_mod(form_mod_graph, request_form):
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
 
+    # Gauge Mod
     elif form_mod_graph.graph_type.data in ['gauge_angular', 'gauge_solid']:
-        if mod_graph.graph_type != form_mod_graph.graph_type.data:
-            mod_graph.graph_type = form_mod_graph.graph_type.data
-
         colors_hex = {}
         f = request_form
         sorted_colors_string = ""
@@ -275,7 +282,6 @@ def graph_mod(form_mod_graph, request_form):
                 error.append(err_msg)
 
         mod_graph.range_colors = sorted_colors_string
-        mod_graph.graph_type = form_mod_graph.graph_type.data
         mod_graph.name = form_mod_graph.name.data
         mod_graph.width = form_mod_graph.width.data
         mod_graph.height = form_mod_graph.height.data
@@ -288,6 +294,17 @@ def graph_mod(form_mod_graph, request_form):
             mod_graph.sensor_ids_measurements = sensor_ids_joined
         else:
             error.append("A valid Measurement must be selected")
+
+    # Camera Mod
+    elif form_mod_graph.graph_type.data == 'camera':
+        mod_graph.name = form_mod_graph.name.data
+        mod_graph.width = form_mod_graph.width.data
+        mod_graph.height = form_mod_graph.height.data
+        mod_graph.refresh_duration = form_mod_graph.refresh_duration.data
+        mod_graph.camera_id = form_mod_graph.camera_id.data
+        mod_graph.camera_save_image = form_mod_graph.camera_save_image.data
+        mod_graph.camera_timestamp = form_mod_graph.camera_timestamp.data
+
     else:
         flash_form_errors(form_mod_graph)
 
@@ -299,7 +316,7 @@ def graph_mod(form_mod_graph, request_form):
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('page_routes.page_dashboard'))
+    flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
 
 
 def graph_del(form_del_graph):
@@ -317,7 +334,7 @@ def graph_del(form_del_graph):
         db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_dashboard'))
+    flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
 
 
 
@@ -337,4 +354,4 @@ def graph_reorder(graph_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('page_routes.page_dashboard'))
+    flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
