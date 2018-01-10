@@ -439,7 +439,7 @@ class ConditionalController(threading.Thread):
                     id=cond_action.do_camera_id)
                 camera_still = db_retrieve_table_daemon(
                     Camera, device_id=cond_action.do_camera_id)
-                attachment_file = camera_record('photo', camera_still)
+                attachment_file = camera_record('photo', camera_still.unique_id)
 
             # Capture video
             elif cond_action.do_action in ['video', 'video_email']:
@@ -448,7 +448,7 @@ class ConditionalController(threading.Thread):
                 camera_stream = db_retrieve_table_daemon(
                     Camera, device_id=cond_action.do_camera_id)
                 attachment_file = camera_record(
-                    'video', camera_stream,
+                    'video', camera_stream.unique_id,
                     duration_sec=cond_action.do_camera_duration)
 
             # Activate PID controller

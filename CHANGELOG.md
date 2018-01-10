@@ -1,5 +1,9 @@
 ## 5.5.8 (Unreleased)
 
+### Features
+
+ - Add ability to add cameras to the Dashboard (formerly Live Graphs page)
+
 ### Miscellaneous
 
  - Reduce gunicorn (web UI) workers from 2 to 1

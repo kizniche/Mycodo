@@ -35,6 +35,7 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.databases.models import Output
+from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.routes_authentication import clear_cookie_auth
 from mycodo.mycodo_flask.utils import utils_general
@@ -68,7 +69,7 @@ def page_settings():
 
 @blueprint.route('/camera/<camera_unique_id>/<img_type>/<filename>')
 @flask_login.login_required
-def camera_img(camera_unique_id, img_type, filename):
+def camera_img_return_path(camera_unique_id, img_type, filename):
     """Return an image from stills or timelapses"""
     camera = Camera.query.filter(Camera.unique_id == camera_unique_id).first()
     camera_path = os.path.join(PATH_CAMERAS, '{id}-{uid}'.format(
@@ -86,6 +87,31 @@ def camera_img(camera_unique_id, img_type, filename):
             return send_file(path_file, mimetype='image/jpeg')
 
     return "Image not found"
+
+
+@blueprint.route('/acquire_camera_image/<camera_unique_id>')
+@flask_login.login_required
+def camera_img_acquire(camera_unique_id):
+    """Capture an image and resturn the filename"""
+    path, filename = camera_record('photo', camera_unique_id)
+    image_path = os.path.join(path, filename)
+    timestamp = os.path.getctime(image_path)
+    date_time = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+    return_values = '["{}","{}"]'.format(filename, date_time)
+    return Response(return_values, mimetype='text/json')
+
+
+@blueprint.route('/acquire_camera_image_tmp/<camera_unique_id>')
+@flask_login.login_required
+def camera_img_acquire_tmp(camera_unique_id):
+    """Capture an image and resturn the filename"""
+    tmp_filename = '{id}_tmp.jpg'.format(id=camera_unique_id)
+    path, filename = camera_record('photo', camera_unique_id, tmp_filename=tmp_filename)
+    image_path = os.path.join(path, filename)
+    timestamp = os.path.getctime(image_path)
+    date_time = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+    return_values = '["{}","{}"]'.format(filename, date_time)
+    return Response(return_values, mimetype='text/json')
 
 
 def gen(camera):

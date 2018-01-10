@@ -985,7 +985,7 @@ class DaemonController:
                 self.logger.debug(
                     "Camera {id}: Capturing time-lapse image".format(id=camera.id))
                 # Capture image
-                camera_record('timelapse', camera)
+                camera_record('timelapse', camera.unique_id)
         except Exception as except_msg:
             message = "Could not execute timelapse:" \
                       " {err}".format(err=except_msg)

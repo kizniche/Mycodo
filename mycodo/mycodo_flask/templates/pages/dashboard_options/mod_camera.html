@@ -1,6 +1,6 @@
 <div style="padding-right: 0.5em;">
   <div class="col-sx-12 text-right">
-    <span style="padding-right: 0.5em">{{latest_img_still_ts[each_graph.camera_id]}} [{{'%02d' % each_graph.id}}] {{each_graph.name}}</span>
+    <span style="padding-right: 0.5em"><span id="{{each_graph.camera_id}}-timestamp">{{latest_img_still_ts[each_graph.camera_id]}}</span> [{{'%02d' % each_graph.id}}] {{each_graph.name}}</span>
     <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
       <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
     </button>
@@ -9,7 +9,7 @@
 
 <div id="container-graph-{{each_graph.id}}" style="height: {{each_graph.height}}px;">
 {% if latest_img_still[each_graph.camera_id] %}
-  <a href="/camera/{{each_graph.camera_id}}/still/{{latest_img_still[each_graph.camera_id]}}" target="_blank"><img style="max-height: 100%; max-width: 100%" src="/camera/{{each_graph.camera_id}}/still/{{latest_img_still[each_graph.camera_id]}}"></a>
+  <a id="{{each_graph.camera_id}}-image-href" href="" target="_blank"><img id="{{each_graph.camera_id}}-image-src" style="max-height: 100%; max-width: 100%" src=""></a>
 {% endif %}
 </div>
 

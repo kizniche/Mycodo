@@ -9,6 +9,8 @@ import os
 import picamera
 
 from mycodo.config import INSTALL_DIRECTORY
+from mycodo.databases.models import Camera
+from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import set_user_grp
@@ -20,7 +22,7 @@ logger = logging.getLogger('mycodo.devices.picamera')
 # Camera record
 #
 
-def camera_record(record_type, settings, duration_sec=None):
+def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     """
     Record still/timelapse images, and video
 
@@ -29,6 +31,7 @@ def camera_record(record_type, settings, duration_sec=None):
     :param duration_sec: video duration
     :return:
     """
+    settings = db_retrieve_table_daemon(Camera, unique_id=unique_id)
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     root_path = os.path.abspath(os.path.join(INSTALL_DIRECTORY, 'cameras'))
     assure_path_exists(root_path)
@@ -57,6 +60,9 @@ def camera_record(record_type, settings, duration_sec=None):
             ts=timestamp).replace(" ", "_")
     else:
         return
+
+    if tmp_filename:
+        filename = tmp_filename
 
     path_file = os.path.join(save_path, filename)
 
@@ -102,6 +108,7 @@ def camera_record(record_type, settings, duration_sec=None):
 
     try:
         set_user_grp(path_file, 'mycodo', 'mycodo')
+        return save_path, filename
     except Exception as e:
         logger.exception(
             "Exception raised in 'camera_record' when setting user grp: "
