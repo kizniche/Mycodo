@@ -1,6 +1,6 @@
 <div style="padding-right: 0.5em;">
   <div class="col-sx-12 text-right">
-    <span style="padding-right: 0.5em"><span id="{{each_graph.camera_id}}-timestamp">{{latest_img_still_ts[each_graph.camera_id]}}</span> [{{'%02d' % each_graph.id}}] {{each_graph.name}}</span>
+    <span style="padding-right: 0.5em"><span id="{{each_graph.camera_id}}-timestamp"></span> [{{'%02d' % each_graph.id}}] {{each_graph.name}}</span>
     <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
       <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
     </button>
@@ -8,9 +8,7 @@
 </div>
 
 <div id="container-graph-{{each_graph.id}}" style="height: {{each_graph.height}}px;">
-{% if latest_img_still[each_graph.camera_id] %}
   <a id="{{each_graph.camera_id}}-image-href" href="" target="_blank"><img id="{{each_graph.camera_id}}-image-src" style="max-height: 100%; max-width: 100%" src=""></a>
-{% endif %}
 </div>
 
 <div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
@@ -42,7 +40,16 @@
           </select>
         </div>
       </div>
-
+      <div class="form-group">
+        {{form_add_camera.camera_image_type.label(class_='control-label')}}
+        <div>
+          <select class="form-control" id="camera_image_type" name="camera_image_type">
+            <option value="new_img"{% if each_graph.camera_image_type == 'new_image' %} selected{% endif %}>Acquire Image (and save new file)</option>
+            <option value="tmp_img"{% if each_graph.camera_image_type == 'tmp_img' %} selected{% endif %}>Acquire Image (and erase last file)</option>
+            <option value="timelapse"{% if each_graph.camera_image_type == 'timelapse' %} selected{% endif %}>Display Latest Timelapse Image</option>
+          </select>
+        </div>
+      </div>
       <div class="form-group">
         {{form_mod_camera.width.label(class_='control-label')}}
         <div>
@@ -72,12 +79,6 @@
 
     <div class="form-inline">
 
-      <div class="checkbox" style="padding-right: 1em">
-        <label>
-          <input class="form-check-input" id="camera_save_image" name="camera_save_image" type="checkbox" value="y"{% if each_graph.camera_save_image %} checked{% endif %}>
-          {{form_mod_camera.camera_save_image.label.text}}
-        </label>
-      </div>
       <div class="checkbox" style="padding-right: 1em">
         <label>
           <input class="form-check-input" id="camera_timestamp" name="camera_timestamp" type="checkbox" value="y"{% if each_graph.camera_timestamp %} checked{% endif %}>

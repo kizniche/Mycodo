@@ -200,7 +200,7 @@ class CameraAdd(FlaskForm):
                                  " any new measurements.")
         )]
     )
-    camera_save_image = BooleanField(lazy_gettext('Save Images'))
+    camera_image_type = StringField(lazy_gettext('Image Display Type'))
     camera_timestamp = BooleanField(lazy_gettext('Add Timestamp'))
     camera_add = SubmitField(lazy_gettext('Create'))
 
@@ -213,7 +213,7 @@ class CameraMod(FlaskForm):
     width = IntegerField(lazy_gettext('Width'))
     height = IntegerField(lazy_gettext('Height (pixels)'))
     refresh_duration = IntegerField(lazy_gettext('Refresh (seconds)'))
-    camera_save_image = BooleanField(lazy_gettext('Save Images'))
+    camera_image_type = StringField(lazy_gettext('Image Display Type'))
     camera_timestamp = BooleanField(lazy_gettext('Add Timestamp'))
     camera_mod = SubmitField(lazy_gettext('Save'))
     camera_del = SubmitField(lazy_gettext('Delete'))

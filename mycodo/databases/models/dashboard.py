@@ -37,7 +37,7 @@ class Dashboard(CRUDMixin, db.Model):
 
     # Camera options
     camera_id = db.Column(db.Text, default='')  # store camera ID to display
-    camera_save_image = db.Column(db.Boolean, default=False)  # Save new image every capture or overwrite previous
+    camera_image_type = db.Column(db.Text, default='')  # save new image, overwrite old, display last timelapse
     camera_timestamp = db.Column(db.Boolean, default=True)  # Append a timestamp to the camera image
 
     def __repr__(self):

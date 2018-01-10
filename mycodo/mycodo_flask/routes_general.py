@@ -89,29 +89,33 @@ def camera_img_return_path(camera_unique_id, img_type, filename):
     return "Image not found"
 
 
-@blueprint.route('/acquire_camera_image/<camera_unique_id>')
+@blueprint.route('/camera_acquire_image/<image_type>/<camera_unique_id>')
 @flask_login.login_required
-def camera_img_acquire(camera_unique_id):
+def camera_img_acquire(image_type, camera_unique_id):
     """Capture an image and resturn the filename"""
-    path, filename = camera_record('photo', camera_unique_id)
-    image_path = os.path.join(path, filename)
-    timestamp = os.path.getctime(image_path)
-    date_time = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-    return_values = '["{}","{}"]'.format(filename, date_time)
-    return Response(return_values, mimetype='text/json')
-
-
-@blueprint.route('/acquire_camera_image_tmp/<camera_unique_id>')
-@flask_login.login_required
-def camera_img_acquire_tmp(camera_unique_id):
-    """Capture an image and resturn the filename"""
-    tmp_filename = '{id}_tmp.jpg'.format(id=camera_unique_id)
+    if image_type == 'new':
+        tmp_filename = None
+    elif image_type == 'tmp':
+        tmp_filename = '{id}_tmp.jpg'.format(id=camera_unique_id)
+    else:
+        return
     path, filename = camera_record('photo', camera_unique_id, tmp_filename=tmp_filename)
     image_path = os.path.join(path, filename)
     timestamp = os.path.getctime(image_path)
     date_time = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
     return_values = '["{}","{}"]'.format(filename, date_time)
     return Response(return_values, mimetype='text/json')
+
+
+@blueprint.route('/camera_latest_timelapse/<camera_unique_id>')
+@flask_login.login_required
+def camera_img_latest_timelapse(camera_unique_id):
+    """Capture an image and resturn the filename"""
+    _, _, tl_ts, tl_path = utils_general.get_camera_image_info()
+    if camera_unique_id in tl_path:
+        return_values = '["{}","{}"]'.format(tl_path[camera_unique_id],
+                                             tl_ts[camera_unique_id])
+        return Response(return_values, mimetype='text/json')
 
 
 def gen(camera):

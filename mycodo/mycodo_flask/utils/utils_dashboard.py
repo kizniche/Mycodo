@@ -107,7 +107,7 @@ def graph_add(form_add, display_order):
         new_graph.height = form_add.height.data
         new_graph.refresh_duration = form_add.refresh_duration.data
         new_graph.camera_id = form_add.camera_id.data
-        new_graph.camera_save_image = form_add.camera_save_image.data
+        new_graph.camera_image_type = form_add.camera_image_type.data
         new_graph.camera_timestamp = form_add.camera_timestamp.data
 
         try:
@@ -302,7 +302,7 @@ def graph_mod(form_mod_graph, request_form):
         mod_graph.height = form_mod_graph.height.data
         mod_graph.refresh_duration = form_mod_graph.refresh_duration.data
         mod_graph.camera_id = form_mod_graph.camera_id.data
-        mod_graph.camera_save_image = form_mod_graph.camera_save_image.data
+        mod_graph.camera_image_type = form_mod_graph.camera_image_type.data
         mod_graph.camera_timestamp = form_mod_graph.camera_timestamp.data
 
     else:

@@ -395,9 +395,6 @@ def page_dashboard():
 
         return redirect('/dashboard')
 
-    # Get the full path and timestamps of latest still and time-lapse images
-    (latest_img_still_ts, latest_img_still, _, _) = utils_general.get_camera_image_info()
-
     return render_template('pages/dashboard.html',
                            choices_camera=choices_camera,
                            choices_input=choices_input,
@@ -419,9 +416,7 @@ def page_dashboard():
                            form_add_gauge=form_add_gauge,
                            form_mod_camera=form_mod_camera,
                            form_mod_graph=form_mod_graph,
-                           form_mod_gauge=form_mod_gauge,
-                           latest_img_still_ts=latest_img_still_ts,
-                           latest_img_still=latest_img_still)
+                           form_mod_gauge=form_mod_gauge)
 
 
 @blueprint.route('/graph-async', methods=('GET', 'POST'))

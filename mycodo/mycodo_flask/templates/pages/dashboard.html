@@ -235,11 +235,18 @@ $(document).ready(function() {
   }
 
    // capture image and update the image
-  function get_image_cam(camera_unique_id, save_image) {
-    if (save_image === 'False'){
-      var url = '/acquire_camera_image_tmp/' + camera_unique_id;
-    } else {
-      var url = '/acquire_camera_image/' + camera_unique_id;
+  function get_image_cam(camera_unique_id, image_type) {
+    var url = '';
+    var image_type_str = '';
+    if (image_type === 'tmp_img') {
+      url = '/camera_acquire_image/tmp/' + camera_unique_id;
+      image_type_str = 'still'
+    } else if (image_type === 'new_img') {
+      url = '/camera_acquire_image/new/' + camera_unique_id;
+      image_type_str = 'still'
+    } else if (image_type === 'timelapse') {
+      url = '/camera_latest_timelapse/' + camera_unique_id;
+      image_type_str = 'timelapse'
     }
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
@@ -250,9 +257,15 @@ $(document).ready(function() {
         else {
           var filename = data[0];
           var timestamp = data[1];
-          document.getElementById(camera_unique_id + "-image-src").src = "/camera/" + camera_unique_id + "/still/" + filename;
-          document.getElementById(camera_unique_id + "-image-href").href = "/camera/" + camera_unique_id + "/still/" + filename;
-          document.getElementById(camera_unique_id + "-timestamp").innerHTML = timestamp;
+          var timestamp_str = ''
+          if (image_type_str === 'still') {
+            timestamp_str = 'Still: ' + timestamp
+          } else if (image_type_str === 'timelapse') {
+            timestamp_str = 'Timelapse: ' + timestamp
+          }
+          document.getElementById(camera_unique_id + "-image-src").src = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename;
+          document.getElementById(camera_unique_id + "-image-href").href = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename;
+          document.getElementById(camera_unique_id + "-timestamp").innerHTML = timestamp_str;
         }
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -263,10 +276,10 @@ $(document).ready(function() {
     });
   }
 
-  function repeat_get_image_cam(camera_unique_id, period_sec, save_image) {
-    get_image_cam(camera_unique_id, save_image)
+  function repeat_get_image_cam(camera_unique_id, period_sec, image_type) {
+    get_image_cam(camera_unique_id, image_type);
     setInterval(function () {
-      get_image_cam(camera_unique_id, save_image)
+      get_image_cam(camera_unique_id, image_type)
     }, period_sec * 1000);
   }
 
