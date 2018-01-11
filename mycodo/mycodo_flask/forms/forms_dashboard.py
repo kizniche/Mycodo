@@ -202,6 +202,7 @@ class CameraAdd(FlaskForm):
     )
     camera_image_type = StringField(lazy_gettext('Image Display Type'))
     camera_timestamp = BooleanField(lazy_gettext('Add Timestamp'))
+    camera_max_age = IntegerField(lazy_gettext('Max Age (seconds)'))
     camera_add = SubmitField(lazy_gettext('Create'))
 
 
@@ -215,6 +216,7 @@ class CameraMod(FlaskForm):
     refresh_duration = IntegerField(lazy_gettext('Refresh (seconds)'))
     camera_image_type = StringField(lazy_gettext('Image Display Type'))
     camera_timestamp = BooleanField(lazy_gettext('Add Timestamp'))
+    camera_max_age = IntegerField(lazy_gettext('Max Age (seconds)'))
     camera_mod = SubmitField(lazy_gettext('Save'))
     camera_del = SubmitField(lazy_gettext('Delete'))
     camera_order_up = SubmitField(lazy_gettext('Up'))

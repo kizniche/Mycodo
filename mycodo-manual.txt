@@ -1782,6 +1782,9 @@ Cameras may be added to keep a continuous view on areas.
   Refresh (seconds)     The duration between acquisitions of new data
                         to display on the graph.
 
+  Max Age (seconds)     The maximum allowed age of the image timestamp
+                        before a “No Recent Image” message is returned.
+
   Acquire Image (and    Acquire a new images and save the previous
   save new file)        image.
 

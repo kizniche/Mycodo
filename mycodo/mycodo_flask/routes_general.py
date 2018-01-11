@@ -40,6 +40,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.routes_authentication import clear_cookie_auth
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.influx import query_string
+from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import str_is_float
 
 blueprint = Blueprint('routes_general',
@@ -72,8 +73,9 @@ def page_settings():
 def camera_img_return_path(camera_unique_id, img_type, filename):
     """Return an image from stills or timelapses"""
     camera = Camera.query.filter(Camera.unique_id == camera_unique_id).first()
-    camera_path = os.path.join(PATH_CAMERAS, '{id}-{uid}'.format(
-            id=camera.id, uid=camera.unique_id))
+    camera_path = assure_path_exists(
+        os.path.join(PATH_CAMERAS, '{uid}'.format(
+            id=camera.id, uid=camera.unique_id)))
 
     if img_type in ['still', 'timelapse']:
         path = os.path.join(camera_path, img_type)
@@ -89,9 +91,9 @@ def camera_img_return_path(camera_unique_id, img_type, filename):
     return "Image not found"
 
 
-@blueprint.route('/camera_acquire_image/<image_type>/<camera_unique_id>')
+@blueprint.route('/camera_acquire_image/<image_type>/<camera_unique_id>/<max_age>')
 @flask_login.login_required
-def camera_img_acquire(image_type, camera_unique_id):
+def camera_img_acquire(image_type, camera_unique_id, max_age):
     """Capture an image and resturn the filename"""
     if image_type == 'new':
         tmp_filename = None
@@ -101,21 +103,39 @@ def camera_img_acquire(image_type, camera_unique_id):
         return
     path, filename = camera_record('photo', camera_unique_id, tmp_filename=tmp_filename)
     image_path = os.path.join(path, filename)
+    time_max_age = datetime.datetime.now() - datetime.timedelta(seconds=int(max_age))
     timestamp = os.path.getctime(image_path)
-    date_time = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-    return_values = '["{}","{}"]'.format(filename, date_time)
+    if datetime.datetime.fromtimestamp(timestamp) > time_max_age:
+        date_time = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+        return_values = '["{}","{}"]'.format(filename, date_time)
+    else:
+        return_values = '["max_age_exceeded"]'
     return Response(return_values, mimetype='text/json')
 
 
-@blueprint.route('/camera_latest_timelapse/<camera_unique_id>')
+@blueprint.route('/camera_latest_timelapse/<camera_unique_id>/<max_age>')
 @flask_login.login_required
-def camera_img_latest_timelapse(camera_unique_id):
+def camera_img_latest_timelapse(camera_unique_id, max_age):
     """Capture an image and resturn the filename"""
     _, _, tl_ts, tl_path = utils_general.get_camera_image_info()
-    if camera_unique_id in tl_path:
-        return_values = '["{}","{}"]'.format(tl_path[camera_unique_id],
-                                             tl_ts[camera_unique_id])
-        return Response(return_values, mimetype='text/json')
+    if camera_unique_id in tl_path and tl_path[camera_unique_id]:
+        camera_path = assure_path_exists(
+            os.path.join(PATH_CAMERAS, '{uid}/timelapse'.format(
+                uid=camera_unique_id)))
+        image_path_full = os.path.join(camera_path, tl_path[camera_unique_id])
+        try:
+            timestamp = os.path.getctime(image_path_full)
+            time_max_age = datetime.datetime.now() - datetime.timedelta(seconds=int(max_age))
+            if datetime.datetime.fromtimestamp(timestamp) > time_max_age:
+                return_values = '["{}","{}"]'.format(tl_path[camera_unique_id],
+                                                     tl_ts[camera_unique_id])
+            else:
+                return_values = '["max_age_exceeded"]'
+        except FileNotFoundError:
+            return_values = '["file_not_found"]'
+    else:
+        return_values = '["file_not_found"]'
+    return Response(return_values, mimetype='text/json')
 
 
 def gen(camera):

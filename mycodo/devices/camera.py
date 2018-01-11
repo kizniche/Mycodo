@@ -36,8 +36,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     root_path = os.path.abspath(os.path.join(INSTALL_DIRECTORY, 'cameras'))
     assure_path_exists(root_path)
     camera_path = assure_path_exists(
-        os.path.join(root_path, '{id}-{uid}'.format(id=settings.id,
-                                                    uid=settings.unique_id)))
+        os.path.join(root_path, '{uid}'.format(uid=settings.unique_id)))
     if record_type == 'photo':
         save_path = assure_path_exists(os.path.join(camera_path, 'still'))
         filename = 'Still-{cam_id}-{cam}-{ts}.jpg'.format(
@@ -102,9 +101,8 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         if settings.rotation:
             cmd += " --rotate {angle}".format(angle=settings.rotation)
 
-        # logger.error(cmd)
         out, err, status = cmd_output(cmd, stdout_pipe=False)
-        # logger.error("TEST01: {}; {}; {}".format(out, err, status))
+        # logger.error("TEST01: {}; {}; {}; {}".format(cmd, out, err, status))
 
     try:
         set_user_grp(path_file, 'mycodo', 'mycodo')

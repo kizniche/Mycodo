@@ -1007,6 +1007,7 @@ Setting | Description
 Width | The width of the dashboard object on the page, in 1/12th increments. Multiple dashboard object can share the sme row if their combined fraction doesn't exceed 12/12.
 Height (pixels) | The height of the dashboard object.
 Refresh (seconds) | The duration between acquisitions of new data to display on the graph.
+Max Age (seconds) | The maximum allowed age of the image timestamp before a "No Recent Image" message is returned.
 Acquire Image (and save new file) | Acquire a new images and save the previous image.
 Acquire Image (and erase last file) | Acquire a new image but erase the previous image.
 Display Live Video Stream | Automatically start a video stream and display it.

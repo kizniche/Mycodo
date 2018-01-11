@@ -74,20 +74,15 @@
           {{form_mod_camera.refresh_duration(class_='form-control', value=each_graph.refresh_duration)}}
         </div>
       </div>
-    </div>
-
-      <div style="clear: both"></div>
-
-    <div class="form-inline">
-
-      <div class="checkbox" style="padding-right: 1em">
-        <label>
-          <input class="form-check-input" id="camera_timestamp" name="camera_timestamp" type="checkbox" value="y"{% if each_graph.camera_timestamp %} checked{% endif %}>
-          {{form_mod_camera.camera_timestamp.label.text}}
-        </label>
+      <div class="form-group">
+        {{form_mod_camera.camera_max_age.label(class_='control-label')}}
+        <div>
+          {{form_mod_camera.camera_max_age(class_='form-control', value=each_graph.camera_max_age)}}
+        </div>
       </div>
-
     </div>
+
+    <div style="clear: both"></div>
 
     <div class="form-inline btn-group" style="padding-top: 1em;">
       <div class="form-group">
