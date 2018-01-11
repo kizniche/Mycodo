@@ -1,8 +1,12 @@
-## 5.5.8 (Unreleased)
+## 5.5.8 (2018-01-11)
 
 ### Features
 
  - Add ability to add Camera modules to the Dashboard (formerly Live Graphs page)
+
+### Bugfixes
+
+- Fix issue with new installations failing to start the flask frontend ([#379](https://github.com/kizniche/mycodo/issues/379))
 
 ### Miscellaneous
 
