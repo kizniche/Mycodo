@@ -6,7 +6,8 @@
 
 ### Bugfixes
 
-- Fix issue with new installations failing to start the flask frontend ([#379](https://github.com/kizniche/mycodo/issues/379))
+ - Fix issue with new installations failing to start the flask frontend ([#379](https://github.com/kizniche/mycodo/issues/379))
+ - Fix issue with services starting on Pi Zeros ([#379](https://github.com/kizniche/mycodo/issues/379))
 
 ### Miscellaneous
 

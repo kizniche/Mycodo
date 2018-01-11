@@ -10,7 +10,7 @@ ExecStart=/var/mycodo-root/env/bin/gunicorn \
 --workers 1 \
 --worker-class gthread \
 --threads 2 \
---timeout 90 \
+--timeout 300 \
 --pid /var/lock/mycodoflask.pid \
 --bind unix:/var/run/mycodoflask.sock start_flask_ui:app
 
