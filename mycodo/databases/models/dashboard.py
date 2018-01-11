@@ -38,7 +38,6 @@ class Dashboard(CRUDMixin, db.Model):
     # Camera options
     camera_id = db.Column(db.Text, default='')  # store camera ID to display
     camera_image_type = db.Column(db.Text, default='')  # save new image, overwrite old, display last timelapse
-    camera_timestamp = db.Column(db.Boolean, default=True)  # Append a timestamp to the camera image
     camera_max_age = db.Column(db.Integer, default=360)  # max camera image age before "No new image" shown
 
     def __repr__(self):

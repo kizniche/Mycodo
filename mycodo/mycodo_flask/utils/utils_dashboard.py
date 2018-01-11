@@ -109,7 +109,6 @@ def graph_add(form_add, display_order):
         new_graph.camera_max_age = form_add.camera_max_age.data
         new_graph.camera_id = form_add.camera_id.data
         new_graph.camera_image_type = form_add.camera_image_type.data
-        new_graph.camera_timestamp = form_add.camera_timestamp.data
 
         try:
             if not error:
@@ -305,7 +304,6 @@ def graph_mod(form_mod_graph, request_form):
         mod_graph.camera_max_age = form_mod_graph.camera_max_age.data
         mod_graph.camera_id = form_mod_graph.camera_id.data
         mod_graph.camera_image_type = form_mod_graph.camera_image_type.data
-        mod_graph.camera_timestamp = form_mod_graph.camera_timestamp.data
 
     else:
         flash_form_errors(form_mod_graph)

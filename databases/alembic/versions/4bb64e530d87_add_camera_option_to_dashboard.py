@@ -20,7 +20,6 @@ def upgrade():
     with op.batch_alter_table("graph") as batch_op:
         batch_op.add_column(sa.Column('camera_id', sa.Text))
         batch_op.add_column(sa.Column('camera_image_type', sa.Text))
-        batch_op.add_column(sa.Column('camera_timestamp', sa.Boolean))
         batch_op.add_column(sa.Column('camera_max_age', sa.Integer))
 
 
@@ -28,5 +27,4 @@ def downgrade():
     with op.batch_alter_table("graph") as batch_op:
         batch_op.drop_column('camera_id')
         batch_op.drop_column('camera_image_type')
-        batch_op.drop_column('camera_timestamp')
         batch_op.drop_column('camera_max_age')
