@@ -66,26 +66,34 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     path_file = os.path.join(save_path, filename)
 
     if settings.library == 'picamera':
-        with picamera.PiCamera() as camera:
-            camera.resolution = (settings.width, settings.height)
-            camera.hflip = settings.hflip
-            camera.vflip = settings.vflip
-            camera.rotation = settings.rotation
-            camera.brightness = int(settings.brightness)
-            camera.contrast = int(settings.contrast)
-            camera.exposure_compensation = int(settings.exposure)
-            camera.saturation = int(settings.saturation)
-            camera.start_preview()
-            time.sleep(2)  # Camera warm-up time
+        # Try 5 times to access the pi camera (in case another process is accessing it)
+        for _ in range(5):
+            try:
+                with picamera.PiCamera() as camera:
+                    camera.resolution = (settings.width, settings.height)
+                    camera.hflip = settings.hflip
+                    camera.vflip = settings.vflip
+                    camera.rotation = settings.rotation
+                    camera.brightness = int(settings.brightness)
+                    camera.contrast = int(settings.contrast)
+                    camera.exposure_compensation = int(settings.exposure)
+                    camera.saturation = int(settings.saturation)
+                    camera.start_preview()
+                    time.sleep(2)  # Camera warm-up time
 
-            if record_type in ['photo', 'timelapse']:
-                camera.capture(path_file, use_video_port=True)
-            elif record_type == 'video':
-                camera.start_recording(path_file, format='h264', quality=20)
-                camera.wait_recording(duration_sec)
-                camera.stop_recording()
-            else:
-                return
+                    if record_type in ['photo', 'timelapse']:
+                        camera.capture(path_file, use_video_port=True)
+                    elif record_type == 'video':
+                        camera.start_recording(path_file, format='h264', quality=20)
+                        camera.wait_recording(duration_sec)
+                        camera.stop_recording()
+                    else:
+                        return
+                    break
+            except picamera.exc.PiCameraMMALError:
+                # 'out of resources' error when the camera is already open by picamera
+                pass
+            time.sleep(1)
 
     elif settings.library == 'fswebcam':
         cmd = "/usr/bin/fswebcam --device {dev} --resolution {w}x{h} --set brightness={bt}% " \
