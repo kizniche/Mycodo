@@ -1,8 +1,9 @@
-## 5.5.9 (Unreleased)
+## 5.5.9 (2018-01-14)
 
 ### Bugfixes
 
  - Fix issue generating output usage reports ([#380](https://github.com/kizniche/mycodo/issues/380))
+ - Fix inability to save Edge Conditionals ([#381](https://github.com/kizniche/mycodo/issues/381))
 
 
 ## 5.5.8 (2018-01-11)

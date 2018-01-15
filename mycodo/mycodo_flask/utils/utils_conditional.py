@@ -437,7 +437,7 @@ def check_form_edge(form, error):
             edge=form.if_sensor_edge_detected.label.text))
 
     if (form.if_sensor_edge_select.data == 'state' and
-            not form.if_sensor_gpio_state.data):
+            form.if_sensor_gpio_state.data == ''):
         error.append("If the {gpio} radio button is selected,"
                      " {gpio} must be set".format(
             gpio=form.if_sensor_gpio_state.label.text))
