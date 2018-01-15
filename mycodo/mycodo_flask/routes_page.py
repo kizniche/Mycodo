@@ -82,7 +82,7 @@ from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.mycodo_flask.utils import utils_timer
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import csv_to_list_of_int
-from mycodo.utils.tools import return_relay_usage
+from mycodo.utils.tools import return_output_usage
 
 logger = logging.getLogger('mycodo.mycodo_flask.routes_page')
 
@@ -1220,7 +1220,7 @@ def page_usage():
     misc = Misc.query.first()
     output = Output.query.all()
 
-    output_stats = return_relay_usage(misc, output)
+    output_stats = return_output_usage(misc, output)
 
     day = misc.relay_usage_dayofmonth
     if 4 <= day <= 20 or 24 <= day <= 30:

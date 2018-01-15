@@ -1,3 +1,10 @@
+## 5.5.9 (Unreleased)
+
+### Bugfixes
+
+ - Fix issue generating output usage reports ([#380](https://github.com/kizniche/mycodo/issues/380))
+
+
 ## 5.5.8 (2018-01-11)
 
 ### Features

@@ -156,7 +156,7 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
             logger.exception("Error parsing the last influx measurement")
 
 
-def relay_sec_on(output_id, past_seconds):
+def output_sec_on(output_id, past_seconds):
     """ Return the number of seconds a output has been ON in the past number of seconds """
     # Get the number of seconds ON stored in the database
     output = db_retrieve_table_daemon(Output, device_id=output_id)
@@ -169,7 +169,7 @@ def relay_sec_on(output_id, past_seconds):
     output_time_on = 0
     if output.is_on():
         control = DaemonControl()
-        output_time_on = control.relay_sec_currently_on(output_id)
+        output_time_on = control.output_sec_currently_on(output_id)
 
     query = query_string('duration_sec', output.unique_id, value='SUM',
                          past_sec=past_seconds)

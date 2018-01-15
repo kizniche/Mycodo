@@ -117,8 +117,8 @@ class DaemonControl:
         else:
             return self.relay_off(relay_id)
 
-    def relay_sec_currently_on(self, relay_id):
-        return self.rpyc_client.root.relay_sec_currently_on(relay_id)
+    def output_sec_currently_on(self, relay_id):
+        return self.rpyc_client.root.output_sec_currently_on(relay_id)
 
     def relay_setup(self, action, relay_id):
         return self.rpyc_client.root.relay_setup(action, relay_id)

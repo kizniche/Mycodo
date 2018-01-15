@@ -12,7 +12,7 @@ from mycodo.config import USAGE_REPORTS_PATH
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import relay_sec_on
+from mycodo.utils.influx import output_sec_on
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import set_user_grp
 
@@ -72,7 +72,7 @@ def next_schedule(time_span='daily', set_day=None, set_hour=None):
         return future_time_test
 
 
-def return_relay_usage(table_misc, table_outputs):
+def return_output_usage(table_misc, table_outputs):
     """ Return output usage and cost """
     date_now = datetime.date.today()
     time_now = datetime.datetime.now()
@@ -104,11 +104,11 @@ def return_relay_usage(table_misc, table_outputs):
 
     for each_output in table_outputs:
         if each_output.relay_type != 'pwm':
-            past_1d_hours = relay_sec_on(each_output.id, 86400) / 3600
-            past_1w_hours = relay_sec_on(each_output.id, 604800) / 3600
-            past_1m_hours = relay_sec_on(each_output.id, 2629743) / 3600
-            past_1m_date_hours = relay_sec_on(each_output.id, int(past_month_seconds)) / 3600
-            past_1y_hours = relay_sec_on(each_output.id, 31556926) / 3600
+            past_1d_hours = output_sec_on(each_output.id, 86400) / 3600
+            past_1w_hours = output_sec_on(each_output.id, 604800) / 3600
+            past_1m_hours = output_sec_on(each_output.id, 2629743) / 3600
+            past_1m_date_hours = output_sec_on(each_output.id, int(past_month_seconds)) / 3600
+            past_1y_hours = output_sec_on(each_output.id, 31556926) / 3600
 
             past_1d_kwh = table_misc.relay_usage_volts * each_output.amps * past_1d_hours / 1000
             past_1w_kwh = table_misc.relay_usage_volts * each_output.amps * past_1w_hours / 1000
@@ -176,7 +176,7 @@ def generate_relay_usage_report():
 
         misc = db_retrieve_table_daemon(Misc, entry='first')
         output = db_retrieve_table_daemon(Output)
-        output_usage = return_relay_usage(misc, output.all())
+        output_usage = return_output_usage(misc, output.all())
 
         timestamp = time.strftime("%Y-%m-%d_%H-%M")
         file_name = 'output_usage_report_{ts}.csv'.format(ts=timestamp)

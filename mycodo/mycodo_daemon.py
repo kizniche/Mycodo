@@ -211,9 +211,9 @@ def mycodo_service(mycodo):
             return mycodo.relay_off(relay_id, trigger_conditionals)
 
         @staticmethod
-        def exposed_relay_sec_currently_on(relay_id):
+        def exposed_output_sec_currently_on(relay_id):
             """Turns the amount of time a output has already been on"""
-            return mycodo.controller['Output'].relay_sec_currently_on(relay_id)
+            return mycodo.controller['Output'].output_sec_currently_on(relay_id)
 
         @staticmethod
         def exposed_relay_setup(action, relay_id):
