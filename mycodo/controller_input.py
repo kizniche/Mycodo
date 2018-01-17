@@ -372,18 +372,20 @@ class InputController(threading.Thread):
                         time.sleep(0.1)
 
                 if self.device not in ['EDGE']:
+                    now = time.time()
                     # Signal that a measurement needs to be obtained
-                    if time.time() > self.next_measurement and not self.get_new_measurement:
+                    if now > self.next_measurement and not self.get_new_measurement:
                         self.get_new_measurement = True
                         self.trigger_cond = True
-                        self.next_measurement = time.time() + self.period
+                        while self.next_measurement < now:
+                            self.next_measurement += self.period
 
                     # if signaled and a pre output is set up correctly, turn the
                     # output on for the set duration
                     if (self.get_new_measurement and
                             self.pre_output_setup and
                             not self.pre_output_activated):
-                        self.pre_output_timer = time.time() + self.pre_output_duration
+                        self.pre_output_timer = now + self.pre_output_duration
                         self.pre_output_activated = True
 
                         output_on = threading.Thread(
@@ -397,7 +399,7 @@ class InputController(threading.Thread):
                     if self.get_new_measurement:
                         if ((self.pre_output_setup and
                                 self.pre_output_activated and
-                                time.time() < self.pre_output_timer) or
+                                now < self.pre_output_timer) or
                                 not self.pre_output_setup):
                             # Get measurement(s) from input
                             self.update_measure()

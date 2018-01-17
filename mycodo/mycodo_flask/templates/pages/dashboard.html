@@ -275,8 +275,9 @@ $(document).ready(function() {
           } else {
             // The image is available and younger than the max age
             var timestamp = data[1];
-            document.getElementById(camera_unique_id + "-image-src").src = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename;
-            document.getElementById(camera_unique_id + "-image-href").href = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename;
+            var image_no_cache_timestamp = Date.now();
+            document.getElementById(camera_unique_id + "-image-src").src = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename + "?" + image_no_cache_timestamp;
+            document.getElementById(camera_unique_id + "-image-href").href = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename + "?" + image_no_cache_timestamp;
             document.getElementById(camera_unique_id + "-timestamp").innerHTML = timestamp_str + timestamp;
           }
         }
