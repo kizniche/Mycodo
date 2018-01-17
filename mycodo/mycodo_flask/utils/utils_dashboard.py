@@ -63,11 +63,14 @@ def graph_add(form_add, display_order):
         new_graph.enable_navbar = form_add.enable_navbar.data
         new_graph.enable_rangeselect = form_add.enable_range.data
         new_graph.enable_export = form_add.enable_export.data
+        new_graph.enable_manual_y_axis = form_add.enable_manual_y_axis.data
+        new_graph.y_axis_min = form_add.y_axis_min.data
+        new_graph.y_axis_max = form_add.y_axis_max.data
         try:
             if not error:
                 new_graph.save()
                 flash(gettext(
-                    "Dashboard with ID %(id)s successfully added",
+                    "Graph with ID %(id)s successfully added",
                     id=new_graph.id),
                     "success")
 
@@ -97,6 +100,21 @@ def graph_add(form_add, display_order):
         new_graph.y_axis_min = form_add.y_axis_min.data
         new_graph.y_axis_max = form_add.y_axis_max.data
         new_graph.sensor_ids_measurements = form_add.sensor_ids.data[0]
+        try:
+            if not error:
+                new_graph.save()
+                flash(gettext(
+                    "Gauge with ID %(id)s successfully added",
+                    id=new_graph.id),
+                    "success")
+
+                DisplayOrder.query.first().graph = add_display_order(
+                    display_order, new_graph.id)
+                db.session.commit()
+        except sqlalchemy.exc.OperationalError as except_msg:
+            error.append(except_msg)
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            error.append(except_msg)
 
     # Camera
     elif (form_add.graph_type.data == 'camera' and
@@ -109,26 +127,25 @@ def graph_add(form_add, display_order):
         new_graph.camera_max_age = form_add.camera_max_age.data
         new_graph.camera_id = form_add.camera_id.data
         new_graph.camera_image_type = form_add.camera_image_type.data
+        try:
+            if not error:
+                new_graph.save()
+                flash(gettext(
+                    "Camera with ID %(id)s successfully added",
+                    id=new_graph.id),
+                    "success")
+
+                DisplayOrder.query.first().graph = add_display_order(
+                    display_order, new_graph.id)
+                db.session.commit()
+        except sqlalchemy.exc.OperationalError as except_msg:
+            error.append(except_msg)
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            error.append(except_msg)
 
     else:
         flash_form_errors(form_add)
         return
-
-    try:
-        if not error:
-            new_graph.save()
-            flash(gettext(
-                "Gauge with ID %(id)s successfully added",
-                id=new_graph.id),
-                "success")
-
-            DisplayOrder.query.first().graph = add_display_order(
-                display_order, new_graph.id)
-            db.session.commit()
-    except sqlalchemy.exc.OperationalError as except_msg:
-        error.append(except_msg)
-    except sqlalchemy.exc.IntegrityError as except_msg:
-        error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
 
@@ -200,6 +217,9 @@ def graph_mod(form_mod_graph, request_form):
         mod_graph.enable_navbar = form_mod_graph.enable_navbar.data
         mod_graph.enable_export = form_mod_graph.enable_export.data
         mod_graph.enable_rangeselect = form_mod_graph.enable_range.data
+        mod_graph.enable_manual_y_axis = form_mod_graph.enable_manual_y_axis.data
+        mod_graph.y_axis_min = form_mod_graph.y_axis_min.data
+        mod_graph.y_axis_max = form_mod_graph.y_axis_max.data
 
     # If a gauge type is changed, the color format must change
     elif (form_mod_graph.graph_type.data in ['gauge_angular', 'gauge_solid'] and

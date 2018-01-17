@@ -59,6 +59,24 @@
           {{form_mod_graph.refresh_duration(class_='form-control', value=each_graph.refresh_duration)}}
         </div>
       </div>
+      <div class="form-group">
+        <label class="form-check-label">
+          <input class="form-check-input" id="enable_manual_y_axis" name="enable_manual_y_axis" type="checkbox" value="y"{% if each_graph.enable_manual_y_axis %} checked{% endif %}>
+          {{form_mod_graph.enable_manual_y_axis.label.text}}
+        </label>
+      </div>
+      <div class="form-group">
+        {{form_mod_graph.y_axis_min.label(class_='control-label')}}
+        <div>
+          {{form_mod_graph.y_axis_min(class_='form-control', value=each_graph.y_axis_min)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_mod_graph.y_axis_max.label(class_='control-label')}}
+        <div>
+          {{form_mod_graph.y_axis_max(class_='form-control', value=each_graph.y_axis_max)}}
+        </div>
+      </div>
     </div>
 
       <div style="clear: both"></div>

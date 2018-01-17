@@ -1,5 +1,9 @@
 ## 5.5.10 (Unreleased)
 
+### Features
+
+ - Add ability to set graph y-axis minimum/maximum ([#384](https://github.com/kizniche/mycodo/issues/384))
+
 ### Bugfixes
 
  - Fix inability to activate Edge Conditionals ([#381](https://github.com/kizniche/mycodo/issues/381))

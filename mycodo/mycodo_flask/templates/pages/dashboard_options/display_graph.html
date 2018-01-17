@@ -346,6 +346,9 @@
     yAxis: [
     {%- if yaxis_relay -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Output Duration')}} (sec)'
         },
@@ -358,6 +361,9 @@
     {%- endif -%}
     {%- if yaxis_alt -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Altitude')}} (m)'
         },
@@ -370,6 +376,9 @@
     {%- endif -%}
     {%- if yaxis_cpu_load -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('CPU Load')}}'
         },
@@ -382,6 +391,9 @@
     {%- endif -%}
     {%- if yaxis_co2 -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: 'CO<sub>2</sub> (ppmv)'
         },
@@ -394,6 +406,9 @@
     {%- endif -%}
     {%- if yaxis_disk_space -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('MegaBytes')}} (MB)'
         },
@@ -406,6 +421,9 @@
     {%- endif -%}
     {%- if yaxis_duty_cycle -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Duty Cycle')}} (%)'
         },
@@ -418,6 +436,9 @@
     {%- endif -%}
     {%- if yaxis_edge -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Edge')}}'
         },
@@ -430,6 +451,9 @@
     {%- endif -%}
     {%- if yaxis_frequency -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Frequency')}} (Hz)'
         },
@@ -442,6 +466,9 @@
     {%- endif -%}
     {%- if yaxis_hum -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Relative Humidity')}} (%)'
         },
@@ -454,6 +481,9 @@
     {%- endif -%}
     {%- if yaxis_humidity_ratio -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Relative Humidity Ratio')}} (kg/kg)'
         },
@@ -466,6 +496,9 @@
     {%- endif -%}
     {%- if yaxis_lux -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Luminosity')}} (lx)'
         },
@@ -478,6 +511,9 @@
     {%- endif -%}
     {%- if yaxis_moisture -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Moisture')}}'
         },
@@ -490,6 +526,9 @@
     {%- endif -%}
     {%- if yaxis_ph -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('pH')}}'
         },
@@ -502,6 +541,9 @@
     {%- endif -%}
     {%- if yaxis_press -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Pressure')}} (Pa)'
         },
@@ -514,6 +556,9 @@
     {%- endif -%}
     {%- if yaxis_pulse_width -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Pulse Width')}} (µs)'
         },
@@ -526,6 +571,9 @@
     {%- endif -%}
     {%- if yaxis_rpm -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Revolutions Per Minute')}} (RPM)'
         },
@@ -538,6 +586,9 @@
     {%- endif -%}
     {%- if yaxis_specific_enthalpy -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Specific Enthalpy')}} (kJ/kg)'
         },
@@ -550,6 +601,9 @@
     {%- endif -%}
     {%- if yaxis_specific_volume -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Specific Volume')}} (m^3/kg)'
         },
@@ -562,6 +616,9 @@
     {%- endif -%}
     {%- if yaxis_temp -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Temperature')}} (°C)'
         },
@@ -574,6 +631,9 @@
     {%- endif -%}
     {%- if yaxis_volts -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{_('Voltage')}}'
         },
@@ -586,6 +646,9 @@
     {%- endif -%}
     {%- for each_adc_measure in yaxis_adc -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{each_adc_measure}}'
         },
@@ -599,6 +662,9 @@
     {%- for each_math_measure in yaxis_math -%}
       {% for each_math in math if each_math_measure == each_math.unique_id %}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{each_math.measure}} ({{each_math.measure_units}})'
         },
@@ -613,6 +679,9 @@
     {%- for each_math_measure in yaxis_pid -%}
       {% for each_math in math if each_math_measure == each_math.unique_id %}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{each_math.measure}} ({{each_math.measure_units}})'
         },
@@ -626,6 +695,9 @@
     {%- endfor -%}
     {%- for each_cmd_measure in yaxis_command -%}
       {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
         title: {
           text: '{{each_cmd_measure}} ({{dict_measurements[each_cmd_measure]['unit']}})'
         },

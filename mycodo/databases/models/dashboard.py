@@ -28,12 +28,15 @@ class Dashboard(CRUDMixin, db.Model):
     enable_title = db.Column(db.Boolean, default=False)  # Show title on graph
     enable_auto_refresh = db.Column(db.Boolean, default=True)  # Automatically update graph
     enable_xaxis_reset = db.Column(db.Boolean, default=True)  # Reset the graph x-axis min/max on update
+    enable_manual_y_axis = db.Column(db.Boolean, default=True)  # Manual selection of y-axis min/max
 
     # Gauge options
-    y_axis_min = db.Column(db.Float, default=None)  # Gauge minimum
-    y_axis_max = db.Column(db.Float, default=None)  # Gauge maximum
     max_measure_age = db.Column(db.Float, default=120.0)  # Only show measurements if they are younger than this age
     range_colors = db.Column(db.Text, default='')  # Custom hex color values and gauge range
+
+    # Graph and Gauge options
+    y_axis_min = db.Column(db.Float, default=None)  # x-axis minimum
+    y_axis_max = db.Column(db.Float, default=None)  # x-axis maximum
 
     # Camera options
     camera_id = db.Column(db.Text, default='')  # store camera ID to display

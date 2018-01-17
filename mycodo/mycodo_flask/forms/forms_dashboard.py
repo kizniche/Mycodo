@@ -62,6 +62,9 @@ class GraphAdd(FlaskForm):
     enable_navbar = BooleanField(lazy_gettext('Enable Navbar'))
     enable_export = BooleanField(lazy_gettext('Enable Export'))
     enable_range = BooleanField(lazy_gettext('Enable Range Selector'))
+    enable_manual_y_axis = BooleanField(lazy_gettext('Manual Y-Axis Min/Max'))
+    y_axis_min = DecimalField(lazy_gettext('Y-Axis Minimum'))
+    y_axis_max = DecimalField(lazy_gettext('Y-Axis Maximum'))
     graph_add = SubmitField(lazy_gettext('Create'))
 
 
@@ -112,6 +115,9 @@ class GraphMod(FlaskForm):
     enable_navbar = BooleanField(lazy_gettext('Enable Navbar'))
     enable_export = BooleanField(lazy_gettext('Enable Export'))
     enable_range = BooleanField(lazy_gettext('Enable Range Selector'))
+    enable_manual_y_axis = BooleanField(lazy_gettext('Manual Y-Axis Min/Max'))
+    y_axis_min = DecimalField(lazy_gettext('Y-Axis Minimum'))
+    y_axis_max = DecimalField(lazy_gettext('Y-Axis Maximum'))
     use_custom_colors = BooleanField(lazy_gettext('Enable Custom Colors'))
     graph_mod = SubmitField(lazy_gettext('Save'))
     graph_del = SubmitField(lazy_gettext('Delete'))
