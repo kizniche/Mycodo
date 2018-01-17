@@ -103,7 +103,7 @@ def calibration_atlas_ph():
     # Continue calibration from selected input
     elif (form_ph_calibrate.go_to_next_stage.data or
             form_ph_calibrate.go_to_last_stage.data or
-            next_stage > 1):
+            (next_stage is not None and next_stage > 1)):
         selected_input = Input.query.filter_by(
             unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
         for each_input in INPUTS:
