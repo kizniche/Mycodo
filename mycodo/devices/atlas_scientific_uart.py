@@ -105,6 +105,8 @@ class AtlasScientificUART:
         :return:
         """
         buf = "{cmd}\r".format(cmd=cmd)  # add carriage return
+        if type(buf) is str:
+            buf = buf.encode()
         try:
             self.ser.write(buf)
             return True

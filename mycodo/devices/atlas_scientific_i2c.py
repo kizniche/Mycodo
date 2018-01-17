@@ -154,13 +154,13 @@ def main():
 
         # address command lets you change which address the Raspberry Pi will poll
         elif input_str.upper().startswith("ADDRESS"):
-            addr = int(string.split(input_str, ',')[1])
+            addr = int(input_str.split(',')[1])
             device.set_i2c_address(addr)
             print("I2C address set to " + str(addr))
 
         # continuous polling command automatically polls the board
         elif input_str.upper().startswith("POLL"):
-            delay_time = float(string.split(input_str, ',')[1])
+            delay_time = float(input_str.split(',')[1])
 
             # check for polling time being too short, change it to the minimum timeout if too short
             if delay_time < device.long_timeout:
@@ -169,7 +169,7 @@ def main():
                 delay_time = device.long_timeout
 
             # get the information of the board you're polling
-            info = string.split(device.query("I"), ",")[1]
+            info = device.query("I").split(",")[1]
             print("Polling {sen} sensor every {sec:.2f} seconds, "
                   "press ctrl-c to stop polling".format(
                     sen=info, sec=delay_time))
