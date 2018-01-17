@@ -110,24 +110,25 @@ def graph_add(form_add, display_order):
         new_graph.camera_id = form_add.camera_id.data
         new_graph.camera_image_type = form_add.camera_image_type.data
 
-        try:
-            if not error:
-                new_graph.save()
-                flash(gettext(
-                    "Gauge with ID %(id)s successfully added",
-                    id=new_graph.id),
-                    "success")
-
-                DisplayOrder.query.first().graph = add_display_order(
-                    display_order, new_graph.id)
-                db.session.commit()
-        except sqlalchemy.exc.OperationalError as except_msg:
-            error.append(except_msg)
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            error.append(except_msg)
     else:
         flash_form_errors(form_add)
         return
+
+    try:
+        if not error:
+            new_graph.save()
+            flash(gettext(
+                "Gauge with ID %(id)s successfully added",
+                id=new_graph.id),
+                "success")
+
+            DisplayOrder.query.first().graph = add_display_order(
+                display_order, new_graph.id)
+            db.session.commit()
+    except sqlalchemy.exc.OperationalError as except_msg:
+        error.append(except_msg)
+    except sqlalchemy.exc.IntegrityError as except_msg:
+        error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
 

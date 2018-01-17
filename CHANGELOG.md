@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix inability to activate Edge Conditionals ([#381](https://github.com/kizniche/mycodo/issues/381))
+ - Fix inability to add new gauges or graphs to the dashboard ([#384](https://github.com/kizniche/mycodo/issues/384))
 
 
 ## 5.5.9 (2018-01-14)
