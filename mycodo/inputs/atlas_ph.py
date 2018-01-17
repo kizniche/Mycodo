@@ -62,7 +62,7 @@ class AtlaspHSensor(AbstractInput):
         from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         if self.interface == 'UART':
             self.logger = logging.getLogger(
-                "mycodo.inputs.atlas_ph_{loc}".format(
+                "mycodo.inputs.atlas_ph_{uart}".format(
                     uart=self.device_loc))
             self.atlas_sensor_uart = AtlasScientificUART(self.device_loc,
                                                          baudrate=self.baud_rate)
