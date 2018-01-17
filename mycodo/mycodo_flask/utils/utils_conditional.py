@@ -466,7 +466,7 @@ def check_cond_edge(cond, error):
                      " Edge Detected must be set")
 
     if (cond.if_sensor_edge_select == 'state' and
-            not cond.if_sensor_gpio_state):
+            cond.if_sensor_gpio_state is None):
         error.append("If the GPIO State radio button is selected,"
                      " a GPIO State must be set")
 

@@ -1,3 +1,10 @@
+## 5.5.10 (Unreleased)
+
+### Bugfixes
+
+ - Fix inability to activate Edge Conditionals ([#381](https://github.com/kizniche/mycodo/issues/381))
+
+
 ## 5.5.9 (2018-01-14)
 
 ### Bugfixes
