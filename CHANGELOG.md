@@ -3,6 +3,7 @@
 ### Features
 
  - Add ability to set graph y-axis minimum/maximum ([#384](https://github.com/kizniche/mycodo/issues/384))
+ - Improve Dashboard Object creation/manipulation user interaction
 
 ### Bugfixes
 

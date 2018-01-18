@@ -14,18 +14,18 @@
 <div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
 
   <form method="post" action="/dashboard">
-    {{form_mod_graph.csrf_token}}
-    {{form_mod_graph.graph_id(value=each_graph.id)}}
-    {{form_mod_graph.graph_type(value=each_graph.graph_type)}}
+    {{form_base.csrf_token}}
+    {{form_base.dashboard_id(value=each_graph.id)}}
+    <input type="hidden" name="dashboard_type" value="{{each_graph.graph_type}}">
     <div class="form-inline">
       <div class="form-group">
-        {{form_mod_graph.name.label(class_='control-label')}}
+        {{form_base.name.label(class_='control-label')}}
         <div>
-          {{form_mod_graph.name(class_='form-control', value=each_graph.name, **{'title':_('A name to distinguish this from others')})}}
+          {{form_base.name(class_='form-control', value=each_graph.name, **{'title':_('A name to distinguish this from others')})}}
         </div>
       </div>
       <div class="form-group">
-        {{form_mod_graph.width.label(class_='control-label')}}
+        {{form_graph.width.label(class_='control-label')}}
         <div>
           <select class="form-control" id="width" name="width">
             {% for n in range(1, 12) %}
@@ -36,45 +36,45 @@
         </div>
       </div>
       <div class="form-group">
-        {{form_mod_graph.height.label(class_='control-label')}}
+        {{form_graph.height.label(class_='control-label')}}
         <div>
-          {{form_mod_graph.height(class_='form-control', value=each_graph.height)}}
+          {{form_graph.height(class_='form-control', value=each_graph.height)}}
         </div>
       </div>
       <div class="form-group">
-        {{form_mod_graph.xaxis_duration.label(class_='control-label')}}
+        {{form_graph.xaxis_duration.label(class_='control-label')}}
         <div>
-          {{form_mod_graph.xaxis_duration(class_='form-control', value=each_graph.x_axis_duration)}}
+          {{form_graph.xaxis_duration(class_='form-control', value=each_graph.x_axis_duration)}}
         </div>
       </div>
       <div class="form-group">
         <label class="form-check-label">
           <input class="form-check-input" id="enable_auto_refresh" name="enable_auto_refresh" type="checkbox" value="y"{% if each_graph.enable_auto_refresh %} checked{% endif %}>
-          {{form_mod_graph.enable_auto_refresh.label.text}}
+          {{form_graph.enable_auto_refresh.label.text}}
         </label>
       </div>
       <div class="form-group">
-        {{form_mod_graph.refresh_duration.label(class_='control-label')}}
+        {{form_graph.refresh_duration.label(class_='control-label')}}
         <div>
-          {{form_mod_graph.refresh_duration(class_='form-control', value=each_graph.refresh_duration)}}
+          {{form_graph.refresh_duration(class_='form-control', value=each_graph.refresh_duration)}}
         </div>
       </div>
       <div class="form-group">
         <label class="form-check-label">
           <input class="form-check-input" id="enable_manual_y_axis" name="enable_manual_y_axis" type="checkbox" value="y"{% if each_graph.enable_manual_y_axis %} checked{% endif %}>
-          {{form_mod_graph.enable_manual_y_axis.label.text}}
+          {{form_graph.enable_manual_y_axis.label.text}}
         </label>
       </div>
       <div class="form-group">
-        {{form_mod_graph.y_axis_min.label(class_='control-label')}}
+        {{form_graph.y_axis_min.label(class_='control-label')}}
         <div>
-          {{form_mod_graph.y_axis_min(class_='form-control', value=each_graph.y_axis_min)}}
+          {{form_graph.y_axis_min(class_='form-control', value=each_graph.y_axis_min)}}
         </div>
       </div>
       <div class="form-group">
-        {{form_mod_graph.y_axis_max.label(class_='control-label')}}
+        {{form_graph.y_axis_max.label(class_='control-label')}}
         <div>
-          {{form_mod_graph.y_axis_max(class_='form-control', value=each_graph.y_axis_max)}}
+          {{form_graph.y_axis_max(class_='form-control', value=each_graph.y_axis_max)}}
         </div>
       </div>
     </div>
@@ -83,7 +83,7 @@
 
     <div class="form-inline">
       <div class="form-group">
-        {{form_mod_graph.sensor_ids.label(class_='control-label')}}
+        {{form_graph.sensor_ids.label(class_='control-label')}}
         <div>
           <select class="form-control btn-default" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
           {% if choices_input %}
@@ -97,7 +97,7 @@
         </div>
       </div>
       <div class="form-group">
-        {{form_mod_graph.math_ids.label(class_='control-label')}}
+        {{form_graph.math_ids.label(class_='control-label')}}
         <div>
           <select class="form-control btn-default" id="math_ids" name="math_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
           {% if choices_math %}
@@ -111,7 +111,7 @@
         </div>
       </div>
       <div class="form-group">
-        {{form_mod_graph.relay_ids.label(class_='control-label')}}
+        {{form_graph.relay_ids.label(class_='control-label')}}
         <div>
           <select class="form-control btn-default" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
           {% if choices_output %}
@@ -125,7 +125,7 @@
         </div>
       </div>
       <div class="form-group">
-        {{form_mod_graph.pid_ids.label(class_='control-label')}}
+        {{form_graph.pid_ids.label(class_='control-label')}}
         <div>
           <select class="form-control btn-default" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
           {% if choices_pid %}
@@ -145,37 +145,37 @@
       <div class="checkbox" style="padding-right: 1em">
         <label>
           <input class="form-check-input" id="enable_xaxis_reset" name="enable_xaxis_reset" type="checkbox" value="y"{% if each_graph.enable_xaxis_reset %} checked{% endif %}>
-          {{form_mod_graph.enable_xaxis_reset.label.text}}
+          {{form_graph.enable_xaxis_reset.label.text}}
         </label>
       </div>
       <div class="checkbox" style="padding-right: 1em">
         <label>
           <input class="form-check-input" id="enable_title" name="enable_title" type="checkbox" value="y"{% if each_graph.enable_title %} checked{% endif %}>
-          {{form_mod_graph.enable_title.label.text}}
+          {{form_graph.enable_title.label.text}}
         </label>
       </div>
       <div class="checkbox" style="padding-right: 1em">
         <label>
           <input class="form-check-input" id="enable_navbar" name="enable_navbar" type="checkbox" value="y"{% if each_graph.enable_navbar %} checked{% endif %}>
-          {{form_mod_graph.enable_navbar.label.text}}
+          {{form_graph.enable_navbar.label.text}}
         </label>
       </div>
       <div class="checkbox" style="padding-right: 1em">
         <label>
           <input class="form-check-input" id="enable_export" name="enable_export" type="checkbox" value="y"{% if each_graph.enable_export %} checked{% endif %}>
-          {{form_mod_graph.enable_export.label.text}}
+          {{form_graph.enable_export.label.text}}
         </label>
       </div>
       <div class="checkbox" style="padding-right: 1em">
         <label>
           <input class="form-check-input" id="enable_range" name="enable_range" type="checkbox" value="y"{% if each_graph.enable_rangeselect %} checked{% endif %}>
-          {{form_mod_graph.enable_range.label.text}}
+          {{form_graph.enable_range.label.text}}
         </label>
       </div>
       <div class="form-check disabled" style="padding-top: 1em">
         <label class="form-check-label">
           <input class="form-check-input" id="colors_custom" name="use_custom_colors" type="checkbox" value="y"{% if each_graph.use_custom_colors %} checked{% endif %}>
-          {{form_mod_graph.use_custom_colors.label.text}}
+          {{form_graph.use_custom_colors.label.text}}
         </label>
       </div>
 
@@ -193,14 +193,14 @@
 
     <div class="form-inline btn-group" style="padding-top: 1em;">
       <div class="form-group">
-        {{form_mod_graph.graph_mod(class_='form-control btn btn-default')}}
+        {{form_base.modify(class_='form-control btn btn-default')}}
       </div>
       <div class="form-group">
-        {{form_mod_graph.graph_del(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        {{form_base.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
       <div class="form-group">
-        {{form_mod_graph.graph_order_up(class_='form-control btn btn-default')}}
-        {{form_mod_graph.graph_order_down(class_='form-control btn btn-default')}}
+        {{form_base.order_up(class_='form-control btn btn-default')}}
+        {{form_base.order_down(class_='form-control btn btn-default')}}
       </div>
     </div>
   </form>

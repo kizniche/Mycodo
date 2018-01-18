@@ -1713,6 +1713,14 @@ select the plus sign on the top-right of a graph.
   Refresh (seconds)     The duration between acquisitions of new data
                         to display on the graph.
 
+  Manual Y-Axis Min/Max Set the minimum and maximum y-axis of all
+                        measurements of a particular graph to Y-Axis
+                        Minimum and Y-Axis Maximum.
+
+  Y-Axis Minimum        The minimum value of all y-axes on the graph.
+
+  Y-Axis Maximum        The maximum value of all y-axes on the graph.
+
   Inputs/Outputs/PIDs   The Inputs, Outputs, and PIDs to display on the
                         graph.
 

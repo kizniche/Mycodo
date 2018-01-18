@@ -39,19 +39,19 @@
             </div>
           </div>
 
-          <div style="display: none" id="add_time_point">
+          <div class="add_timer" style="display: none" id="time">
            {% include 'pages/timer_options/add_time_point.html' %}
           </div>
 
-          <div style="display: none" id="add_time_span">
+          <div class="add_timer" style="display: none" id="timespan">
            {% include 'pages/timer_options/add_time_span.html' %}
           </div>
 
-          <div style="display: none" id="add_duration">
+          <div class="add_timer" style="display: none" id="duration">
            {% include 'pages/timer_options/add_duration.html' %}
           </div>
 
-          <div style="display: none" id="add_pwm_method">
+          <div class="add_timer" style="display: none" id="pwm_method">
             {% include 'pages/timer_options/add_pwm_method.html' %}
           </div>
 
@@ -133,41 +133,13 @@
 
   <script>
     $('#timer_type').on('change', function () {
-      if (this.value === 'time') {
-        document.getElementById("add_time_point").style.display = "block";
-        document.getElementById("add_time_span").style.display = "none";
-        document.getElementById("add_duration").style.display = "none";
-        document.getElementById("add_pwm_method").style.display = "none";
-        document.getElementById("add_button").style.display = "block";
-      }
-      else if (this.value === 'timespan') {
-        document.getElementById("add_time_point").style.display = "none";
-        document.getElementById("add_time_span").style.display = "block";
-        document.getElementById("add_duration").style.display = "none";
-        document.getElementById("add_pwm_method").style.display = "none";
-        document.getElementById("add_button").style.display = "block";
-      }
-      else if (this.value === 'duration') {
-        document.getElementById("add_time_point").style.display = "none";
-        document.getElementById("add_time_span").style.display = "none";
-        document.getElementById("add_duration").style.display = "block";
-        document.getElementById("add_pwm_method").style.display = "none";
-        document.getElementById("add_button").style.display = "block";
-      }
-      else if (this.value === 'pwm_method') {
-        document.getElementById("add_time_point").style.display = "none";
-        document.getElementById("add_time_span").style.display = "none";
-        document.getElementById("add_duration").style.display = "none";
-        document.getElementById("add_pwm_method").style.display = "block";
-        document.getElementById("add_button").style.display = "block";
-      }
-      else if (this.value === '') {
-        document.getElementById("add_time_point").style.display = "none";
-        document.getElementById("add_time_span").style.display = "none";
-        document.getElementById("add_duration").style.display = "none";
-        document.getElementById("add_pwm_method").style.display = "none";
-        document.getElementById("add_button").style.display = "none";
-      }
+        var x = document.getElementsByClassName("add_timer");  // Find the elements
+        for(var i = 0; i < x.length; i++){
+          x[i].style.display = "none";    // Change the content
+        }
+        if (this.value !== '') {
+          document.getElementById(this.value).style.display = "block";
+        }
     });
   </script>
   <script type="text/javascript" src="/static/js/bootstrap-clockpicker.min.js"></script>

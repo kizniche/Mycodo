@@ -275,12 +275,10 @@ def page_dashboard():
     Generate custom dashboard with various data
     """
     # Create form objects
-    form_add_camera = forms_dashboard.CameraAdd()
-    form_mod_camera = forms_dashboard.CameraMod()
-    form_add_graph = forms_dashboard.GraphAdd()
-    form_mod_graph = forms_dashboard.GraphMod()
-    form_add_gauge = forms_dashboard.GaugeAdd()
-    form_mod_gauge = forms_dashboard.GaugeMod()
+    form_base = forms_dashboard.DashboardBase()
+    form_camera = forms_dashboard.DashboardCamera()
+    form_graph = forms_dashboard.DashboardGraph()
+    form_gauge = forms_dashboard.DashboardGauge()
 
     # Retrieve the order to display graphs
     display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
@@ -306,18 +304,18 @@ def page_dashboard():
         input_dev, dict_measurements, MEASUREMENT_UNITS)
 
     # Add multi-select values as form choices, for validation
-    form_mod_graph.math_ids.choices = []
-    form_mod_graph.pid_ids.choices = []
-    form_mod_graph.relay_ids.choices = []
-    form_mod_graph.sensor_ids.choices = []
+    form_graph.math_ids.choices = []
+    form_graph.pid_ids.choices = []
+    form_graph.relay_ids.choices = []
+    form_graph.sensor_ids.choices = []
     for key, value in choices_math.items():
-        form_mod_graph.math_ids.choices.append((key, value))
+        form_graph.math_ids.choices.append((key, value))
     for key, value in choices_pid.items():
-        form_mod_graph.pid_ids.choices.append((key, value))
+        form_graph.pid_ids.choices.append((key, value))
     for key, value in choices_output.items():
-        form_mod_graph.relay_ids.choices.append((key, value))
+        form_graph.relay_ids.choices.append((key, value))
     for key, value in choices_input.items():
-        form_mod_graph.sensor_ids.choices.append((key, value))
+        form_graph.sensor_ids.choices.append((key, value))
 
     # Generate dictionary of custom colors for each graph
     colors_graph = dict_custom_colors()
@@ -351,47 +349,75 @@ def page_dashboard():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_general.home'))
 
-        # Camera
-        if form_add_camera.camera_add.data:
-            utils_dashboard.dashboard_add(form_add_camera, display_order)
-        elif form_mod_camera.camera_mod.data:
-            utils_dashboard.dashboard_mod(form_mod_camera, None)
-        elif form_mod_camera.camera_del.data:
-            utils_dashboard.dashboard_del(form_mod_camera)
-        elif form_mod_camera.camera_order_up.data:
-            utils_dashboard.dashboard_reorder(form_mod_camera.graph_id.data,
-                                              display_order, 'up')
-        elif form_mod_camera.camera_order_down.data:
-            utils_dashboard.dashboard_reorder(form_mod_camera.graph_id.data,
-                                              display_order, 'down')
+        form_dashboard_object = None
+        if form_base.create.data or form_base.modify.data:
+            if form_base.dashboard_type.data == 'graph':
+                form_dashboard_object = form_graph
+            elif form_base.dashboard_type.data == 'gauge':
+                form_dashboard_object = form_gauge
+            elif form_base.dashboard_type.data == 'camera':
+                form_dashboard_object = form_camera
+            else:
+                flash("Unknown Dashboard Object type: {type}".format(
+                    type=form_base.dashboard_type.data), "error")
+                return redirect(url_for('routes_page.page_dashboard'))
 
-        # Gauge
-        elif form_add_gauge.gauge_add.data:
-            utils_dashboard.dashboard_add(form_add_gauge, display_order)
-        elif form_mod_gauge.gauge_mod.data:
-            utils_dashboard.dashboard_mod(form_mod_gauge, request.form)
-        elif form_mod_gauge.gauge_del.data:
-            utils_dashboard.dashboard_del(form_mod_gauge)
-        elif form_mod_gauge.gauge_order_up.data:
-            utils_dashboard.dashboard_reorder(form_mod_gauge.graph_id.data,
-                                              display_order, 'up')
-        elif form_mod_gauge.gauge_order_down.data:
-            utils_dashboard.dashboard_reorder(form_mod_gauge.graph_id.data,
-                                              display_order, 'down')
+        if form_base.create.data:
+            utils_dashboard.dashboard_add(
+                form_base, form_dashboard_object, display_order)
+        elif form_base.modify.data:
+            utils_dashboard.dashboard_mod(
+                form_base, form_dashboard_object, request.form)
+        elif form_base.delete.data:
+            utils_dashboard.dashboard_del(form_base)
+        elif form_base.order_up.data:
+            utils_dashboard.dashboard_reorder(
+                form_base.dashboard_id.data, display_order, 'up')
+        elif form_base.order_down.data:
+            utils_dashboard.dashboard_reorder(
+                form_base.dashboard_id.data, display_order, 'down')
 
-        # Graph
-        elif form_add_graph.graph_add.data:
-            utils_dashboard.dashboard_add(form_add_graph, display_order)
-        elif form_mod_graph.graph_mod.data:
-            utils_dashboard.dashboard_mod(form_mod_graph, request.form)
-        elif form_mod_graph.graph_del.data:
-            utils_dashboard.dashboard_del(form_mod_graph)
-        elif form_mod_graph.graph_order_up.data:
-            utils_dashboard.dashboard_reorder(form_mod_graph.graph_id.data,
-                                              display_order, 'up')
-        elif form_mod_graph.graph_order_down.data:
-            utils_dashboard.dashboard_reorder(form_mod_graph.graph_id.data,
-                                              display_order, 'down')
+        # # Camera
+        # if form_add_camera.camera_add.data:
+        #     utils_dashboard.dashboard_add(form_add_camera, display_order)
+        # elif form_mod_camera.camera_mod.data:
+        #     utils_dashboard.dashboard_mod(form_mod_camera, None)
+        # elif form_mod_camera.camera_del.data:
+        #     utils_dashboard.dashboard_del(form_mod_camera)
+        # elif form_mod_camera.camera_order_up.data:
+        #     utils_dashboard.dashboard_reorder(form_mod_camera.graph_id.data,
+        #                                       display_order, 'up')
+        # elif form_mod_camera.camera_order_down.data:
+        #     utils_dashboard.dashboard_reorder(form_mod_camera.graph_id.data,
+        #                                       display_order, 'down')
+        #
+        # # Gauge
+        # elif form_add_gauge.gauge_add.data:
+        #     utils_dashboard.dashboard_add(form_add_gauge, display_order)
+        # elif form_mod_gauge.gauge_mod.data:
+        #     utils_dashboard.dashboard_mod(form_mod_gauge, request.form)
+        # elif form_mod_gauge.gauge_del.data:
+        #     utils_dashboard.dashboard_del(form_mod_gauge)
+        # elif form_mod_gauge.gauge_order_up.data:
+        #     utils_dashboard.dashboard_reorder(form_mod_gauge.graph_id.data,
+        #                                       display_order, 'up')
+        # elif form_mod_gauge.gauge_order_down.data:
+        #     utils_dashboard.dashboard_reorder(form_mod_gauge.graph_id.data,
+        #                                       display_order, 'down')
+        #
+        # # Graph
+        # elif form_add_graph.graph_add.data:
+        #     utils_dashboard.dashboard_add(form_add_graph, display_order)
+        # elif form_mod_graph.graph_mod.data:
+        #     utils_dashboard.dashboard_mod(form_mod_graph, request.form)
+        # elif form_mod_graph.graph_del.data:
+        #     utils_dashboard.dashboard_del(form_mod_graph)
+        # elif form_mod_graph.graph_order_up.data:
+        #     utils_dashboard.dashboard_reorder(form_mod_graph.graph_id.data,
+        #                                       display_order, 'up')
+        # elif form_mod_graph.graph_order_down.data:
+        #     utils_dashboard.dashboard_reorder(form_mod_graph.graph_id.data,
+        #                                       display_order, 'down')
 
         return redirect('/dashboard')
 
@@ -411,12 +437,10 @@ def page_dashboard():
                            dict_measurements=dict_measurements,
                            measurement_units=MEASUREMENT_UNITS,
                            displayOrder=display_order,
-                           form_add_camera=form_add_camera,
-                           form_add_graph=form_add_graph,
-                           form_add_gauge=form_add_gauge,
-                           form_mod_camera=form_mod_camera,
-                           form_mod_graph=form_mod_graph,
-                           form_mod_gauge=form_mod_gauge)
+                           form_base=form_base,
+                           form_camera=form_camera,
+                           form_graph=form_graph,
+                           form_gauge=form_gauge)
 
 
 @blueprint.route('/graph-async', methods=('GET', 'POST'))

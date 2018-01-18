@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 # Dashboard
 #
 
-def dashboard_add(form_add, display_order):
+def dashboard_add(form_base, form_object, display_order):
     """
     Add an item to the dashboard
 
@@ -35,45 +35,46 @@ def dashboard_add(form_add, display_order):
         action=gettext("Add"),
         controller=gettext("Dashboard"))
     error = []
+
     new_graph = Dashboard()
+    new_graph.graph_type = form_base.dashboard_type.data
+    new_graph.name = form_base.name.data
 
     # Graph
-    if (form_add.graph_type.data == 'graph' and
-            (form_add.name.data and
-             form_add.width.data and
-             form_add.height.data and
-             form_add.xaxis_duration.data and
-             form_add.refresh_duration.data)):
+    if (form_base.dashboard_type.data == 'graph' and
+            (form_base.name.data and
+             form_object.width.data and
+             form_object.height.data and
+             form_object.xaxis_duration.data and
+             form_object.refresh_duration.data)):
 
-        error = graph_error_check(form_add, error)
+        error = graph_error_check(form_object, error)
 
-        new_graph.graph_type = form_add.graph_type.data
-        new_graph.name = form_add.name.data
-        if form_add.math_ids.data:
-            math_ids_joined = ";".join(form_add.math_ids.data)
+        if form_object.math_ids.data:
+            math_ids_joined = ";".join(form_object.math_ids.data)
             new_graph.math_ids = math_ids_joined
-        if form_add.pid_ids.data:
-            pid_ids_joined = ";".join(form_add.pid_ids.data)
+        if form_object.pid_ids.data:
+            pid_ids_joined = ";".join(form_object.pid_ids.data)
             new_graph.pid_ids = pid_ids_joined
-        if form_add.relay_ids.data:
-            relay_ids_joined = ";".join(form_add.relay_ids.data)
+        if form_object.relay_ids.data:
+            relay_ids_joined = ";".join(form_object.relay_ids.data)
             new_graph.relay_ids = relay_ids_joined
-        if form_add.sensor_ids.data:
-            sensor_ids_joined = ";".join(form_add.sensor_ids.data)
+        if form_object.sensor_ids.data:
+            sensor_ids_joined = ";".join(form_object.sensor_ids.data)
             new_graph.sensor_ids_measurements = sensor_ids_joined
-        new_graph.width = form_add.width.data
-        new_graph.height = form_add.height.data
-        new_graph.x_axis_duration = form_add.xaxis_duration.data
-        new_graph.refresh_duration = form_add.refresh_duration.data
-        new_graph.enable_auto_refresh = form_add.enable_auto_refresh.data
-        new_graph.enable_xaxis_reset = form_add.enable_xaxis_reset.data
-        new_graph.enable_title = form_add.enable_title.data
-        new_graph.enable_navbar = form_add.enable_navbar.data
-        new_graph.enable_rangeselect = form_add.enable_range.data
-        new_graph.enable_export = form_add.enable_export.data
-        new_graph.enable_manual_y_axis = form_add.enable_manual_y_axis.data
-        new_graph.y_axis_min = form_add.y_axis_min.data
-        new_graph.y_axis_max = form_add.y_axis_max.data
+        new_graph.width = form_object.width.data
+        new_graph.height = form_object.height.data
+        new_graph.x_axis_duration = form_object.xaxis_duration.data
+        new_graph.refresh_duration = form_object.refresh_duration.data
+        new_graph.enable_auto_refresh = form_object.enable_auto_refresh.data
+        new_graph.enable_xaxis_reset = form_object.enable_xaxis_reset.data
+        new_graph.enable_title = form_object.enable_title.data
+        new_graph.enable_navbar = form_object.enable_navbar.data
+        new_graph.enable_rangeselect = form_object.enable_range.data
+        new_graph.enable_export = form_object.enable_export.data
+        new_graph.enable_manual_y_axis = form_object.enable_manual_y_axis.data
+        new_graph.y_axis_min = form_object.y_axis_min.data
+        new_graph.y_axis_max = form_object.y_axis_max.data
 
         try:
             if not error:
@@ -92,24 +93,22 @@ def dashboard_add(form_add, display_order):
             error.append(except_msg)
 
     # Gauge
-    elif (form_add.graph_type.data in ['gauge_angular', 'gauge_solid'] and
-              form_add.sensor_ids.data):
+    elif (form_base.dashboard_type.data in ['gauge_angular', 'gauge_solid'] and
+          form_object.sensor_ids.data):
 
-        error = gauge_error_check(form_add, error)
+        error = gauge_error_check(form_object, error)
 
-        if form_add.graph_type.data == 'gauge_solid':
+        if form_base.dashboard_type.data == 'gauge_solid':
             new_graph.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
-        elif form_add.graph_type.data == 'gauge_angular':
+        elif form_base.dashboard_type.data == 'gauge_angular':
             new_graph.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
-        new_graph.graph_type = form_add.graph_type.data
-        new_graph.name = form_add.name.data
-        new_graph.width = form_add.width.data
-        new_graph.height = form_add.height.data
-        new_graph.max_measure_age = form_add.max_measure_age.data
-        new_graph.refresh_duration = form_add.refresh_duration.data
-        new_graph.y_axis_min = form_add.y_axis_min.data
-        new_graph.y_axis_max = form_add.y_axis_max.data
-        new_graph.sensor_ids_measurements = form_add.sensor_ids.data[0]
+        new_graph.width = form_object.width.data
+        new_graph.height = form_object.height.data
+        new_graph.max_measure_age = form_object.max_measure_age.data
+        new_graph.refresh_duration = form_object.refresh_duration.data
+        new_graph.y_axis_min = form_object.y_axis_min.data
+        new_graph.y_axis_max = form_object.y_axis_max.data
+        new_graph.sensor_ids_measurements = form_object.sensor_ids.data[0]
         try:
             if not error:
                 new_graph.save()
@@ -127,16 +126,15 @@ def dashboard_add(form_add, display_order):
             error.append(except_msg)
 
     # Camera
-    elif (form_add.graph_type.data == 'camera' and
-          form_add.camera_id.data):
-        new_graph.graph_type = form_add.graph_type.data
-        new_graph.name = form_add.name.data
-        new_graph.width = form_add.width.data
-        new_graph.height = form_add.height.data
-        new_graph.refresh_duration = form_add.refresh_duration.data
-        new_graph.camera_max_age = form_add.camera_max_age.data
-        new_graph.camera_id = form_add.camera_id.data
-        new_graph.camera_image_type = form_add.camera_image_type.data
+    elif (form_base.dashboard_type.data == 'camera' and
+          form_object.camera_id.data):
+
+        new_graph.width = form_object.width.data
+        new_graph.height = form_object.height.data
+        new_graph.refresh_duration = form_object.refresh_duration.data
+        new_graph.camera_max_age = form_object.camera_max_age.data
+        new_graph.camera_id = form_object.camera_id.data
+        new_graph.camera_image_type = form_object.camera_image_type.data
         try:
             if not error:
                 new_graph.save()
@@ -154,30 +152,34 @@ def dashboard_add(form_add, display_order):
             error.append(except_msg)
 
     else:
-        flash_form_errors(form_add)
+        flash_form_errors(form_base)
         return
 
     flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
 
 
-def dashboard_mod(form_mod_graph, request_form):
+def dashboard_mod(form_base, form_object, request_form):
     """Modify the settings of an item on the dashboard"""
     action = '{action} {controller}'.format(
         action=gettext("Modify"),
         controller=gettext("Dashboard"))
     error = []
 
-    mod_graph = Dashboard.query.filter(
-        Dashboard.id == form_mod_graph.graph_id.data).first()
-
     def is_rgb_color(color_hex):
         return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
 
-    # Graph Mod
-    if form_mod_graph.graph_type.data == 'graph':
-        # Get variable number of color inputs, turn into CSV string
-        error = graph_error_check(form_mod_graph, error)
+    error = graph_error_check(form_object, error)
 
+    mod_graph = Dashboard.query.filter(
+        Dashboard.id == form_base.dashboard_id.data).first()
+    mod_graph.name = form_base.name.data
+
+    # Graph Mod
+    if form_base.dashboard_type.data == 'graph':
+
+        error = graph_error_check(form_object, error)
+
+        # Get variable number of color inputs, turn into CSV string
         colors = {}
         short_list = []
         f = request_form
@@ -193,67 +195,66 @@ def dashboard_mod(form_mod_graph, request_form):
         sorted_colors_string = ",".join(short_list)
         mod_graph.custom_colors = sorted_colors_string
 
-        mod_graph.use_custom_colors = form_mod_graph.use_custom_colors.data
-        mod_graph.name = form_mod_graph.name.data
+        mod_graph.use_custom_colors = form_object.use_custom_colors.data
 
-        if form_mod_graph.math_ids.data:
-            math_ids_joined = ";".join(form_mod_graph.math_ids.data)
+        if form_object.math_ids.data:
+            math_ids_joined = ";".join(form_object.math_ids.data)
             mod_graph.math_ids = math_ids_joined
         else:
             mod_graph.math_ids = ''
 
-        if form_mod_graph.pid_ids.data:
-            pid_ids_joined = ";".join(form_mod_graph.pid_ids.data)
+        if form_object.pid_ids.data:
+            pid_ids_joined = ";".join(form_object.pid_ids.data)
             mod_graph.pid_ids = pid_ids_joined
         else:
             mod_graph.pid_ids = ''
 
-        if form_mod_graph.relay_ids.data:
-            relay_ids_joined = ";".join(form_mod_graph.relay_ids.data)
+        if form_object.relay_ids.data:
+            relay_ids_joined = ";".join(form_object.relay_ids.data)
             mod_graph.relay_ids = relay_ids_joined
         else:
             mod_graph.relay_ids = ''
 
-        if form_mod_graph.sensor_ids.data:
-            sensor_ids_joined = ";".join(form_mod_graph.sensor_ids.data)
+        if form_object.sensor_ids.data:
+            sensor_ids_joined = ";".join(form_object.sensor_ids.data)
             mod_graph.sensor_ids_measurements = sensor_ids_joined
         else:
             mod_graph.sensor_ids_measurements = ''
 
-        mod_graph.width = form_mod_graph.width.data
-        mod_graph.height = form_mod_graph.height.data
-        mod_graph.x_axis_duration = form_mod_graph.xaxis_duration.data
-        mod_graph.refresh_duration = form_mod_graph.refresh_duration.data
-        mod_graph.enable_auto_refresh = form_mod_graph.enable_auto_refresh.data
-        mod_graph.enable_xaxis_reset = form_mod_graph.enable_xaxis_reset.data
-        mod_graph.enable_title = form_mod_graph.enable_title.data
-        mod_graph.enable_navbar = form_mod_graph.enable_navbar.data
-        mod_graph.enable_export = form_mod_graph.enable_export.data
-        mod_graph.enable_rangeselect = form_mod_graph.enable_range.data
-        mod_graph.enable_manual_y_axis = form_mod_graph.enable_manual_y_axis.data
-        mod_graph.y_axis_min = form_mod_graph.y_axis_min.data
-        mod_graph.y_axis_max = form_mod_graph.y_axis_max.data
+        mod_graph.width = form_object.width.data
+        mod_graph.height = form_object.height.data
+        mod_graph.x_axis_duration = form_object.xaxis_duration.data
+        mod_graph.refresh_duration = form_object.refresh_duration.data
+        mod_graph.enable_auto_refresh = form_object.enable_auto_refresh.data
+        mod_graph.enable_xaxis_reset = form_object.enable_xaxis_reset.data
+        mod_graph.enable_title = form_object.enable_title.data
+        mod_graph.enable_navbar = form_object.enable_navbar.data
+        mod_graph.enable_export = form_object.enable_export.data
+        mod_graph.enable_rangeselect = form_object.enable_range.data
+        mod_graph.enable_manual_y_axis = form_object.enable_manual_y_axis.data
+        mod_graph.y_axis_min = form_object.y_axis_min.data
+        mod_graph.y_axis_max = form_object.y_axis_max.data
 
     # If a gauge type is changed, the color format must change
-    elif (form_mod_graph.graph_type.data in ['gauge_angular', 'gauge_solid'] and
-            mod_graph.graph_type != form_mod_graph.graph_type.data):
-        error = gauge_error_check(form_mod_graph, error)
+    elif (form_base.dashboard_type.data in ['gauge_angular', 'gauge_solid'] and
+            mod_graph.graph_type != form_base.dashboard_type.data):
 
-        mod_graph.graph_type = form_mod_graph.graph_type.data
-        if form_mod_graph.graph_type.data == 'gauge_solid':
+        mod_graph.graph_type = form_base.dashboard_type.data
+        if form_base.dashboard_type.data == 'gauge_solid':
             mod_graph.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
-        elif form_mod_graph.graph_type.data == 'gauge_angular':
+        elif form_base.dashboard_type.data == 'gauge_angular':
             mod_graph.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
 
     # Gauge Mod
-    elif form_mod_graph.graph_type.data in ['gauge_angular', 'gauge_solid']:
-        error = gauge_error_check(form_mod_graph, error)
+    elif form_base.dashboard_type.data in ['gauge_angular', 'gauge_solid']:
+
+        error = gauge_error_check(form_object, error)
 
         colors_hex = {}
         f = request_form
         sorted_colors_string = ""
 
-        if form_mod_graph.graph_type.data == 'gauge_angular':
+        if form_base.dashboard_type.data == 'gauge_angular':
             # Combine all color form inputs to dictionary
             for key in f.keys():
                 if ('color_hex_number' in key or
@@ -273,7 +274,7 @@ def dashboard_mod(form_mod_graph, request_form):
                     for value in f.getlist(key):
                         colors_hex[int(key[17:])]['high'] = value
 
-        elif form_mod_graph.graph_type.data == 'gauge_solid':
+        elif form_base.dashboard_type.data == 'gauge_solid':
             # Combine all color form inputs to dictionary
             for key in f.keys():
                 if ('color_hex_number' in key or
@@ -292,12 +293,12 @@ def dashboard_mod(form_mod_graph, request_form):
         # Build string of colors and associated gauge values
         for i, _ in enumerate(colors_hex):
             try:
-                if form_mod_graph.graph_type.data == 'gauge_angular':
+                if form_base.dashboard_type.data == 'gauge_angular':
                     sorted_colors_string += "{},{},{}".format(
                         colors_hex[i]['low'],
                         colors_hex[i]['high'],
                         colors_hex[i]['hex'])
-                elif form_mod_graph.graph_type.data == 'gauge_solid':
+                elif form_base.dashboard_type.data == 'gauge_solid':
                     try:
                         if 0 > colors_hex[i]['stop'] > 1:
                             error.append("Color stops must be between 0 and 1")
@@ -313,31 +314,29 @@ def dashboard_mod(form_mod_graph, request_form):
                 error.append(err_msg)
 
         mod_graph.range_colors = sorted_colors_string
-        mod_graph.name = form_mod_graph.name.data
-        mod_graph.width = form_mod_graph.width.data
-        mod_graph.height = form_mod_graph.height.data
-        mod_graph.refresh_duration = form_mod_graph.refresh_duration.data
-        mod_graph.y_axis_min = form_mod_graph.y_axis_min.data
-        mod_graph.y_axis_max = form_mod_graph.y_axis_max.data
-        mod_graph.max_measure_age = form_mod_graph.max_measure_age.data
-        if form_mod_graph.sensor_ids.data[0]:
-            sensor_ids_joined = ";".join(form_mod_graph.sensor_ids.data)
+        mod_graph.width = form_object.width.data
+        mod_graph.height = form_object.height.data
+        mod_graph.refresh_duration = form_object.refresh_duration.data
+        mod_graph.y_axis_min = form_object.y_axis_min.data
+        mod_graph.y_axis_max = form_object.y_axis_max.data
+        mod_graph.max_measure_age = form_object.max_measure_age.data
+        if form_object.sensor_ids.data[0]:
+            sensor_ids_joined = ";".join(form_object.sensor_ids.data)
             mod_graph.sensor_ids_measurements = sensor_ids_joined
         else:
             error.append("A valid Measurement must be selected")
 
     # Camera Mod
-    elif form_mod_graph.graph_type.data == 'camera':
-        mod_graph.name = form_mod_graph.name.data
-        mod_graph.width = form_mod_graph.width.data
-        mod_graph.height = form_mod_graph.height.data
-        mod_graph.refresh_duration = form_mod_graph.refresh_duration.data
-        mod_graph.camera_max_age = form_mod_graph.camera_max_age.data
-        mod_graph.camera_id = form_mod_graph.camera_id.data
-        mod_graph.camera_image_type = form_mod_graph.camera_image_type.data
+    elif form_base.dashboard_type.data == 'camera':
+        mod_graph.width = form_object.width.data
+        mod_graph.height = form_object.height.data
+        mod_graph.refresh_duration = form_object.refresh_duration.data
+        mod_graph.camera_max_age = form_object.camera_max_age.data
+        mod_graph.camera_id = form_object.camera_id.data
+        mod_graph.camera_image_type = form_object.camera_image_type.data
 
     else:
-        flash_form_errors(form_mod_graph)
+        flash_form_errors(form_base)
 
     if not error:
         try:
@@ -350,7 +349,7 @@ def dashboard_mod(form_mod_graph, request_form):
     flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
 
 
-def dashboard_del(form_del_graph):
+def dashboard_del(form_base):
     """Delete an item on the dashboard"""
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
@@ -359,9 +358,9 @@ def dashboard_del(form_del_graph):
 
     try:
         delete_entry_with_id(Dashboard,
-                             form_del_graph.graph_id.data)
+                             form_base.dashboard_id.data)
         display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
-        display_order.remove(int(form_del_graph.graph_id.data))
+        display_order.remove(int(form_base.dashboard_id.data))
         DisplayOrder.query.first().graph = list_to_csv(display_order)
         db.session.commit()
     except Exception as except_msg:
@@ -370,7 +369,7 @@ def dashboard_del(form_del_graph):
 
 
 
-def dashboard_reorder(graph_id, display_order, direction):
+def dashboard_reorder(dashboard_id, display_order, direction):
     """reorder something on the dashboard"""
     action = '{action} {controller}'.format(
         action=gettext("Reorder"),
@@ -378,7 +377,7 @@ def dashboard_reorder(graph_id, display_order, direction):
     error = []
     try:
         status, reord_list = reorder(display_order,
-                                     graph_id,
+                                     dashboard_id,
                                      direction)
         if status == 'success':
             DisplayOrder.query.first().graph = ','.join(map(str, reord_list))

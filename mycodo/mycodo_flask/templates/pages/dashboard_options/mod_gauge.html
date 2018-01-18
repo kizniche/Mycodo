@@ -12,18 +12,18 @@
 <div class="collapse" id="collapseContainer_gauge{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
 
   <form method="post" action="/dashboard">
-    {{form_mod_gauge.csrf_token}}
-    {{form_mod_gauge.graph_id(value=each_graph.id)}}
-
+    {{form_base.csrf_token}}
+    {{form_base.dashboard_id(value=each_graph.id)}}
+    <input type="hidden" name="dashboard_type" value="{{each_graph.graph_type}}">
     <div class="form-inline">
       <div class="form-group">
-        {{form_mod_gauge.name.label(class_='control-label')}}
+        {{form_base.name.label(class_='control-label')}}
         <div>
-          {{form_mod_gauge.name(class_='form-control', value=each_graph.name, **{'title':_('A name to distinguish this from others')})}}
+          {{form_base.name(class_='form-control', value=each_graph.name, **{'title':_('A name to distinguish this from others')})}}
         </div>
       </div>
       <div class="form-group">
-        {{form_mod_gauge.graph_type.label(class_='control-label')}}
+        {{form_base.dashboard_type.label(class_='control-label')}}
         <div>
           <select class="form-control" id="graph_type" name="graph_type">
             <option value="gauge_angular"{% if each_graph.graph_type == 'gauge_angular' %} selected{% endif %}>Angular Gauge</option>
@@ -32,7 +32,7 @@
         </div>
       </div>
       <div class="form-group">
-        {{form_mod_gauge.sensor_ids.label(class_='control-label')}}
+        {{form_gauge.sensor_ids.label(class_='control-label')}}
         <div>
           <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;">
             <option value="">{{_('Select One')}}</option>
@@ -53,7 +53,7 @@
         </div>
       </div>
       <div class="form-group">
-        {{form_mod_gauge.width.label(class_='control-label')}}
+        {{form_gauge.width.label(class_='control-label')}}
         <div>
           <select class="form-control" id="width" name="width">
             {% for n in range(1, 13) %}
@@ -63,33 +63,33 @@
         </div>
       </div>
       <div class="form-group">
-        {{form_mod_gauge.height.label(class_='control-label')}}
+        {{form_gauge.height.label(class_='control-label')}}
         <div>
-          {{form_mod_gauge.height(class_='form-control', value=each_graph.height)}}
+          {{form_gauge.height(class_='form-control', value=each_graph.height)}}
         </div>
       </div>
       <div class="form-group">
-        {{form_mod_gauge.max_measure_age.label(class_='control-label')}}
+        {{form_gauge.max_measure_age.label(class_='control-label')}}
         <div>
-          {{form_mod_gauge.max_measure_age(class_='form-control', value=each_graph.max_measure_age)}}
+          {{form_gauge.max_measure_age(class_='form-control', value=each_graph.max_measure_age)}}
         </div>
       </div>
       <div class="form-group">
-        {{form_mod_gauge.refresh_duration.label(class_='control-label')}}
+        {{form_gauge.refresh_duration.label(class_='control-label')}}
         <div>
-          {{form_mod_gauge.refresh_duration(class_='form-control', value=each_graph.refresh_duration)}}
+          {{form_gauge.refresh_duration(class_='form-control', value=each_graph.refresh_duration)}}
         </div>
       </div>
       <div class="form-group">
-        {{form_mod_gauge.y_axis_min.label(class_='control-label')}}
+        {{form_gauge.y_axis_min.label(class_='control-label')}}
         <div>
-          {{form_mod_gauge.y_axis_min(class_='form-control', value=each_graph.y_axis_min)}}
+          {{form_gauge.y_axis_min(class_='form-control', value=each_graph.y_axis_min)}}
         </div>
       </div>
       <div class="form-group">
-        {{form_mod_gauge.y_axis_max.label(class_='control-label')}}
+        {{form_gauge.y_axis_max.label(class_='control-label')}}
         <div>
-          {{form_mod_gauge.y_axis_max(class_='form-control', value=each_graph.y_axis_max)}}
+          {{form_gauge.y_axis_max(class_='form-control', value=each_graph.y_axis_max)}}
         </div>
       </div>
     </div>
@@ -148,18 +148,18 @@
 
     <div class="form-inline">
       <div class="form-group">
-        {{form_mod_gauge.gauge_mod(class_='form-control btn btn-default')}}
+        {{form_base.modify(class_='form-control btn btn-default')}}
       </div>
     </div>
 
     <div class="form-inline" style="padding-top: 1em;">
       <div class="form-group">
-        {{form_mod_gauge.gauge_del(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        {{form_base.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
       <div class="form-group">
         Reorder:
-        {{form_mod_gauge.gauge_order_up(class_='form-control btn btn-default')}}
-        {{form_mod_gauge.gauge_order_down(class_='form-control btn btn-default')}}
+        {{form_base.order_up(class_='form-control btn btn-default')}}
+        {{form_base.order_down(class_='form-control btn btn-default')}}
       </div>
     </div>
   </form>
