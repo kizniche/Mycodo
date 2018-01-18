@@ -977,6 +977,9 @@ Height (pixels) | The height of the dashboard object.
 x-Axis (minutes) | The duration to display on the x-axis of the graph.
 Enable Auto Refresh | Automatically refresh the data on the graph Refresh Period.
 Refresh (seconds) | The duration between acquisitions of new data to display on the graph.
+Manual Y-Axis Min/Max | Set the minimum and maximum y-axis of all measurements of a particular graph to Y-Axis Minimum and Y-Axis Maximum.
+Y-Axis Minimum | The minimum value of all y-axes on the graph.
+Y-Axis Maximum | The maximum value of all y-axes on the graph.
 Inputs/Outputs/PIDs | The Inputs, Outputs, and PIDs to display on the graph.
 Enable X-Axis Reset | Reset the x-axis min/max every time new data comes in during the auto refresh.
 Enable Title | Show a title of the graph name.

@@ -353,45 +353,45 @@ def page_dashboard():
 
         # Camera
         if form_add_camera.camera_add.data:
-            utils_dashboard.graph_add(form_add_camera, display_order)
+            utils_dashboard.dashboard_add(form_add_camera, display_order)
         elif form_mod_camera.camera_mod.data:
-            utils_dashboard.graph_mod(form_mod_camera, None)
+            utils_dashboard.dashboard_mod(form_mod_camera, None)
         elif form_mod_camera.camera_del.data:
-            utils_dashboard.graph_del(form_mod_camera)
+            utils_dashboard.dashboard_del(form_mod_camera)
         elif form_mod_camera.camera_order_up.data:
-            utils_dashboard.graph_reorder(form_mod_camera.graph_id.data,
-                                          display_order, 'up')
+            utils_dashboard.dashboard_reorder(form_mod_camera.graph_id.data,
+                                              display_order, 'up')
         elif form_mod_camera.camera_order_down.data:
-            utils_dashboard.graph_reorder(form_mod_camera.graph_id.data,
-                                          display_order, 'down')
-
-        # Graph
-        elif form_add_graph.graph_add.data:
-            utils_dashboard.graph_add(form_add_graph, display_order)
-        elif form_mod_graph.graph_mod.data:
-            utils_dashboard.graph_mod(form_mod_graph, request.form)
-        elif form_mod_graph.graph_del.data:
-            utils_dashboard.graph_del(form_mod_graph)
-        elif form_mod_graph.graph_order_up.data:
-            utils_dashboard.graph_reorder(form_mod_graph.graph_id.data,
-                                          display_order, 'up')
-        elif form_mod_graph.graph_order_down.data:
-            utils_dashboard.graph_reorder(form_mod_graph.graph_id.data,
-                                          display_order, 'down')
+            utils_dashboard.dashboard_reorder(form_mod_camera.graph_id.data,
+                                              display_order, 'down')
 
         # Gauge
         elif form_add_gauge.gauge_add.data:
-            utils_dashboard.graph_add(form_add_gauge, display_order)
+            utils_dashboard.dashboard_add(form_add_gauge, display_order)
         elif form_mod_gauge.gauge_mod.data:
-            utils_dashboard.graph_mod(form_mod_gauge, request.form)
+            utils_dashboard.dashboard_mod(form_mod_gauge, request.form)
         elif form_mod_gauge.gauge_del.data:
-            utils_dashboard.graph_del(form_mod_gauge)
+            utils_dashboard.dashboard_del(form_mod_gauge)
         elif form_mod_gauge.gauge_order_up.data:
-            utils_dashboard.graph_reorder(form_mod_gauge.graph_id.data,
-                                          display_order, 'up')
+            utils_dashboard.dashboard_reorder(form_mod_gauge.graph_id.data,
+                                              display_order, 'up')
         elif form_mod_gauge.gauge_order_down.data:
-            utils_dashboard.graph_reorder(form_mod_gauge.graph_id.data,
-                                          display_order, 'down')
+            utils_dashboard.dashboard_reorder(form_mod_gauge.graph_id.data,
+                                              display_order, 'down')
+
+        # Graph
+        elif form_add_graph.graph_add.data:
+            utils_dashboard.dashboard_add(form_add_graph, display_order)
+        elif form_mod_graph.graph_mod.data:
+            utils_dashboard.dashboard_mod(form_mod_graph, request.form)
+        elif form_mod_graph.graph_del.data:
+            utils_dashboard.dashboard_del(form_mod_graph)
+        elif form_mod_graph.graph_order_up.data:
+            utils_dashboard.dashboard_reorder(form_mod_graph.graph_id.data,
+                                              display_order, 'up')
+        elif form_mod_graph.graph_order_down.data:
+            utils_dashboard.dashboard_reorder(form_mod_graph.graph_id.data,
+                                              display_order, 'down')
 
         return redirect('/dashboard')
 

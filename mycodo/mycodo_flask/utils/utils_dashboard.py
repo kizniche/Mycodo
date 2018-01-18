@@ -25,7 +25,12 @@ logger = logging.getLogger(__name__)
 # Dashboard
 #
 
-def graph_add(form_add, display_order):
+def dashboard_add(form_add, display_order):
+    """
+    Add an item to the dashboard
+
+    Either Graph, Gauge, or Camera
+    """
     action = '{action} {controller}'.format(
         action=gettext("Add"),
         controller=gettext("Dashboard"))
@@ -39,6 +44,9 @@ def graph_add(form_add, display_order):
              form_add.height.data and
              form_add.xaxis_duration.data and
              form_add.refresh_duration.data)):
+
+        error = graph_error_check(form_add, error)
+
         new_graph.graph_type = form_add.graph_type.data
         new_graph.name = form_add.name.data
         if form_add.math_ids.data:
@@ -66,6 +74,7 @@ def graph_add(form_add, display_order):
         new_graph.enable_manual_y_axis = form_add.enable_manual_y_axis.data
         new_graph.y_axis_min = form_add.y_axis_min.data
         new_graph.y_axis_max = form_add.y_axis_max.data
+
         try:
             if not error:
                 new_graph.save()
@@ -85,8 +94,9 @@ def graph_add(form_add, display_order):
     # Gauge
     elif (form_add.graph_type.data in ['gauge_angular', 'gauge_solid'] and
               form_add.sensor_ids.data):
-        if not form_add.sensor_ids.data[0]:
-            error.append("A valid Measurement must be selected")
+
+        error = gauge_error_check(form_add, error)
+
         if form_add.graph_type.data == 'gauge_solid':
             new_graph.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
         elif form_add.graph_type.data == 'gauge_angular':
@@ -150,7 +160,8 @@ def graph_add(form_add, display_order):
     flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
 
 
-def graph_mod(form_mod_graph, request_form):
+def dashboard_mod(form_mod_graph, request_form):
+    """Modify the settings of an item on the dashboard"""
     action = '{action} {controller}'.format(
         action=gettext("Modify"),
         controller=gettext("Dashboard"))
@@ -165,6 +176,8 @@ def graph_mod(form_mod_graph, request_form):
     # Graph Mod
     if form_mod_graph.graph_type.data == 'graph':
         # Get variable number of color inputs, turn into CSV string
+        error = graph_error_check(form_mod_graph, error)
+
         colors = {}
         short_list = []
         f = request_form
@@ -224,21 +237,18 @@ def graph_mod(form_mod_graph, request_form):
     # If a gauge type is changed, the color format must change
     elif (form_mod_graph.graph_type.data in ['gauge_angular', 'gauge_solid'] and
             mod_graph.graph_type != form_mod_graph.graph_type.data):
+        error = gauge_error_check(form_mod_graph, error)
+
         mod_graph.graph_type = form_mod_graph.graph_type.data
         if form_mod_graph.graph_type.data == 'gauge_solid':
             mod_graph.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
         elif form_mod_graph.graph_type.data == 'gauge_angular':
             mod_graph.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
-        try:
-            if not error:
-                db.session.commit()
-        except sqlalchemy.exc.OperationalError as except_msg:
-            error.append(except_msg)
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            error.append(except_msg)
 
     # Gauge Mod
     elif form_mod_graph.graph_type.data in ['gauge_angular', 'gauge_solid']:
+        error = gauge_error_check(form_mod_graph, error)
+
         colors_hex = {}
         f = request_form
         sorted_colors_string = ""
@@ -247,8 +257,8 @@ def graph_mod(form_mod_graph, request_form):
             # Combine all color form inputs to dictionary
             for key in f.keys():
                 if ('color_hex_number' in key or
-                            'color_low_number' in key or
-                            'color_high_number' in key):
+                        'color_low_number' in key or
+                        'color_high_number' in key):
                     if int(key[17:]) not in colors_hex:
                         colors_hex[int(key[17:])] = {}
                 if 'color_hex_number' in key:
@@ -267,7 +277,7 @@ def graph_mod(form_mod_graph, request_form):
             # Combine all color form inputs to dictionary
             for key in f.keys():
                 if ('color_hex_number' in key or
-                            'color_stop_number' in key):
+                        'color_stop_number' in key):
                     if int(key[17:]) not in colors_hex:
                         colors_hex[int(key[17:])] = {}
                 if 'color_hex_number' in key:
@@ -340,7 +350,8 @@ def graph_mod(form_mod_graph, request_form):
     flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
 
 
-def graph_del(form_del_graph):
+def dashboard_del(form_del_graph):
+    """Delete an item on the dashboard"""
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
         controller=gettext("Dashboard"))
@@ -359,7 +370,8 @@ def graph_del(form_del_graph):
 
 
 
-def graph_reorder(graph_id, display_order, direction):
+def dashboard_reorder(graph_id, display_order, direction):
+    """reorder something on the dashboard"""
     action = '{action} {controller}'.format(
         action=gettext("Reorder"),
         controller=gettext("Dashboard"))
@@ -376,3 +388,19 @@ def graph_reorder(graph_id, display_order, direction):
     except Exception as except_msg:
         error.append(except_msg)
     flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
+
+
+def graph_error_check(form, error):
+    """Determine if there are any errors in the graph form"""
+    if (form.enable_manual_y_axis.data and
+            (form.y_axis_min.data is None or
+             form.y_axis_max.data is None)):
+        error.append("If Manual Y-Axis is selected, Minimum and Maximum must be set")
+    return error
+
+
+def gauge_error_check(form, error):
+    """Determine if there are any errors in the gauge form"""
+    if not form.sensor_ids.data[0]:
+        error.append("A valid Measurement must be selected")
+    return error

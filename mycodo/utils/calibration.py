@@ -40,10 +40,13 @@ class AtlasScientificCommand:
         """Return the board version of the Atlas Scientific pH sensor"""
         info = None
 
-        if self.interface == 'UART':
-            info = self.ph_sensor_uart.query('i')[0]
-        elif self.interface == 'I2C':
-            info = self.ph_sensor_i2c.query('i')
+        try:
+            if self.interface == 'UART':
+                info = self.ph_sensor_uart.query('i')[0]
+            elif self.interface == 'I2C':
+                info = self.ph_sensor_i2c.query('i')
+        except TypeError:
+            logger.exception("Unable to determine board version of Atlas sensor")
 
         # Check first letter of info response
         # "P" indicates a legacy board version
