@@ -448,29 +448,24 @@ def page_dashboard():
 def page_graph_async():
     """ Generate graphs using asynchronous data retrieval """
     input_dev = Input.query.all()
+    math = Math.query.all()
+
     input_choices = utils_general.choices_inputs(input_dev)
-    input_choices_split = OrderedDict()
-    for key in input_choices:
-        order = key.split(",")
-        # Separate input IDs and measurement types
-        input_choices_split.update({order[0]: order[1]})
+    math_choices = utils_general.choices_maths(math)
 
     selected_id = None
     selected_measure = None
-    selected_unique_id = None
 
     if request.method == 'POST':
         selected_id = request.form['selected_measure'].split(",")[0]
         selected_measure = request.form['selected_measure'].split(",")[1]
-        selected_unique_id = Input.query.filter(Input.unique_id == selected_id).first().unique_id
 
     return render_template('pages/graph-async.html',
-                           sensor=input_dev,
-                           sensor_choices=input_choices,
-                           sensor_choices_split=input_choices_split,
+                           input=input_dev,
+                           input_choices=input_choices,
+                           math_choices=math_choices,
                            selected_id=selected_id,
-                           selected_measure=selected_measure,
-                           selected_unique_id=selected_unique_id)
+                           selected_measure=selected_measure)
 
 
 @blueprint.route('/help', methods=('GET', 'POST'))
