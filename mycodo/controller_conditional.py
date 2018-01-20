@@ -200,7 +200,12 @@ class ConditionalController(threading.Thread):
             id=cond_id)
 
         device_id = cond.if_sensor_measurement.split(',')[0]
-        device_measurement = cond.if_sensor_measurement.split(',')[1]
+
+        if len(cond.if_sensor_measurement.split(',')) > 1:
+            device_measurement = cond.if_sensor_measurement.split(',')[1]
+        else:
+            device_measurement = None
+
         direction = cond.if_sensor_direction
         setpoint = cond.if_sensor_setpoint
         max_age = cond.if_sensor_max_age
