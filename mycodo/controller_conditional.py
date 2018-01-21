@@ -81,9 +81,9 @@ class ConditionalController(threading.Thread):
         self.verify_pause_loop = True
         self.control = DaemonControl()
 
-        self.cond_is_activated = {}
-        self.cond_period = {}
-        self.cond_timer = {}
+        self.is_activated = {}
+        self.period = {}
+        self.timer = {}
 
         self.smtp_max_count = db_retrieve_table_daemon(
             SMTP, entry='first').hourly_max
@@ -96,7 +96,8 @@ class ConditionalController(threading.Thread):
     def run(self):
         try:
             self.running = True
-            self.logger.info("Conditional controller activated in {:.1f} ms".format(
+            self.logger.info(
+                "Conditional controller activated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_startup_timer) * 1000))
 
             while self.running:
@@ -109,23 +110,25 @@ class ConditionalController(threading.Thread):
                         time.sleep(0.1)
 
                 # Check each activated conditional
-                for each_cond_id in self.cond_is_activated:
+                for each_id in self.is_activated:
 
                     # Check if the timer has elapsed
-                    if (self.cond_is_activated[each_cond_id] and
-                        self.cond_timer[each_cond_id] < time.time()):
+                    if (self.is_activated[each_id] and
+                        self.timer[each_id] < time.time()):
 
                         # Update timer
-                        while self.cond_timer[each_cond_id] < time.time():
-                            self.cond_timer[each_cond_id] += self.cond_period[each_cond_id]
+                        while self.timer[each_id] < time.time():
+                            self.timer[each_id] += self.period[each_id]
 
-                        self.check_conditionals(each_cond_id)
+                        self.check_conditionals(each_id)
 
                 time.sleep(0.1)
 
             self.running = False
-            self.logger.info("Conditional controller deactivated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
+            self.logger.info(
+                "Conditional controller deactivated in {:.1f} ms".format(
+                    (timeit.default_timer() -
+                     self.thread_shutdown_timer) * 1000))
         except Exception as except_msg:
             self.logger.exception("Run Error: {err}".format(
                 err=except_msg))
@@ -142,9 +145,9 @@ class ConditionalController(threading.Thread):
         while not self.verify_pause_loop:
             time.sleep(0.1)
 
-        self.cond_is_activated = {}
-        self.cond_period = {}
-        self.cond_timer = {}
+        self.is_activated = {}
+        self.period = {}
+        self.timer = {}
         self.smtp_wait_timer = {}
 
         # Only check edge (state only) and measurement conditionals
@@ -159,9 +162,9 @@ class ConditionalController(threading.Thread):
                 edge_with_state)).all()
 
         for each_cond in conditional:
-            self.cond_is_activated[each_cond.id] = each_cond.is_activated
-            self.cond_period[each_cond.id] = each_cond.if_sensor_period
-            self.cond_timer[each_cond.id] = time.time() + self.cond_period[each_cond.id]
+            self.is_activated[each_cond.id] = each_cond.is_activated
+            self.period[each_cond.id] = each_cond.if_sensor_period
+            self.timer[each_cond.id] = time.time() + self.period[each_cond.id]
             self.smtp_wait_timer[each_cond.id] = time.time() + 3600
 
         self.logger.info("Conditional settings refreshed")

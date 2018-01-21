@@ -17,8 +17,15 @@
             <span class="collapse-button{{each_cond.id}} fa fa-3x fa-plus-square"></span>
           </a>
         </div>
-        <div class="col-xs-10 no-gutters">
+        <div class="col-xs-6 no-gutters">
           {{form_conditional.name(class_='form-control', value=each_cond.name, **{'title':_('A name to distinguish this from others')})}}
+        </div>
+        <div class="col-xs-4 no-gutters">
+          <input class="form-control btn btn-default" disabled="" value="[{{'%02d' % each_cond.id}}]
+          {%- if each_cond.is_activated %} {{_('Active')}}
+          {%- else %} {{_('Inactive')}}
+          {%-endif -%}
+          " type="text">
         </div>
       </div>
 
