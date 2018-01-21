@@ -37,7 +37,6 @@ def dashboard_add(form_base, form_object, display_order):
     error = []
 
     new_graph = Dashboard()
-    new_graph.graph_type = form_base.dashboard_type.data
     new_graph.name = form_base.name.data
 
     # Graph
@@ -49,6 +48,8 @@ def dashboard_add(form_base, form_object, display_order):
              form_object.refresh_duration.data)):
 
         error = graph_error_check(form_object, error)
+
+        new_graph.graph_type = form_base.dashboard_type.data
 
         if form_object.math_ids.data:
             math_ids_joined = ";".join(form_object.math_ids.data)
@@ -93,14 +94,16 @@ def dashboard_add(form_base, form_object, display_order):
             error.append(except_msg)
 
     # Gauge
-    elif (form_base.dashboard_type.data in ['gauge_angular', 'gauge_solid'] and
+    elif (form_base.dashboard_type.data == 'gauge' and
           form_object.sensor_ids.data):
 
         error = gauge_error_check(form_object, error)
 
-        if form_base.dashboard_type.data == 'gauge_solid':
+        new_graph.graph_type = form_object.gauge_type.data
+
+        if form_object.gauge_type.data == 'gauge_solid':
             new_graph.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
-        elif form_base.dashboard_type.data == 'gauge_angular':
+        elif form_object.gauge_type.data == 'gauge_angular':
             new_graph.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
         new_graph.width = form_object.width.data
         new_graph.height = form_object.height.data
@@ -129,6 +132,7 @@ def dashboard_add(form_base, form_object, display_order):
     elif (form_base.dashboard_type.data == 'camera' and
           form_object.camera_id.data):
 
+        new_graph.graph_type = form_base.dashboard_type.data
         new_graph.width = form_object.width.data
         new_graph.height = form_object.height.data
         new_graph.refresh_duration = form_object.refresh_duration.data
@@ -167,8 +171,6 @@ def dashboard_mod(form_base, form_object, request_form):
 
     def is_rgb_color(color_hex):
         return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
-
-    error = graph_error_check(form_object, error)
 
     mod_graph = Dashboard.query.filter(
         Dashboard.id == form_base.dashboard_id.data).first()
@@ -236,17 +238,17 @@ def dashboard_mod(form_base, form_object, request_form):
         mod_graph.y_axis_max = form_object.y_axis_max.data
 
     # If a gauge type is changed, the color format must change
-    elif (form_base.dashboard_type.data in ['gauge_angular', 'gauge_solid'] and
-            mod_graph.graph_type != form_base.dashboard_type.data):
+    elif (form_base.dashboard_type.data == 'gauge' and
+            mod_graph.graph_type != form_object.gauge_type.data):
 
-        mod_graph.graph_type = form_base.dashboard_type.data
-        if form_base.dashboard_type.data == 'gauge_solid':
+        mod_graph.graph_type = form_object.gauge_type.data
+        if form_object.gauge_type.data == 'gauge_solid':
             mod_graph.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
-        elif form_base.dashboard_type.data == 'gauge_angular':
+        elif form_object.gauge_type.data == 'gauge_angular':
             mod_graph.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
 
     # Gauge Mod
-    elif form_base.dashboard_type.data in ['gauge_angular', 'gauge_solid']:
+    elif form_base.dashboard_type.data == 'gauge':
 
         error = gauge_error_check(form_object, error)
 
@@ -254,7 +256,7 @@ def dashboard_mod(form_base, form_object, request_form):
         f = request_form
         sorted_colors_string = ""
 
-        if form_base.dashboard_type.data == 'gauge_angular':
+        if form_object.gauge_type.data == 'gauge_angular':
             # Combine all color form inputs to dictionary
             for key in f.keys():
                 if ('color_hex_number' in key or
@@ -274,7 +276,7 @@ def dashboard_mod(form_base, form_object, request_form):
                     for value in f.getlist(key):
                         colors_hex[int(key[17:])]['high'] = value
 
-        elif form_base.dashboard_type.data == 'gauge_solid':
+        elif form_object.gauge_type.data == 'gauge_solid':
             # Combine all color form inputs to dictionary
             for key in f.keys():
                 if ('color_hex_number' in key or
@@ -293,12 +295,12 @@ def dashboard_mod(form_base, form_object, request_form):
         # Build string of colors and associated gauge values
         for i, _ in enumerate(colors_hex):
             try:
-                if form_base.dashboard_type.data == 'gauge_angular':
+                if form_object.gauge_type.data == 'gauge_angular':
                     sorted_colors_string += "{},{},{}".format(
                         colors_hex[i]['low'],
                         colors_hex[i]['high'],
                         colors_hex[i]['hex'])
-                elif form_base.dashboard_type.data == 'gauge_solid':
+                elif form_object.gauge_type.data == 'gauge_solid':
                     try:
                         if 0 > colors_hex[i]['stop'] > 1:
                             error.append("Color stops must be between 0 and 1")

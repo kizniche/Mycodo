@@ -13,9 +13,9 @@
       <div>
         <select class="form-control" id="width" name="width">
           {% for n in range(1, 12) %}
-            <option value="{{n}}">{{n}}/12</option>
+            <option value="{{n}}"{% if n == 6 %} selected{% endif %}>{{n}}/12</option>
           {% endfor %}
-          <option value="12" selected>12/12</option>
+          <option value="12">12/12</option>
         </select>
       </div>
     </div>
@@ -62,7 +62,7 @@
           <option value="new_image">{{_('Acquire Image (and save new file)')}}</option>
           <option value="tmp_img">{{_('Acquire Image (and erase last file)')}}</option>
           <option value="stream">{{_('Display Live Video Stream')}}</option>
-          <option value="timlapse">{{_('Display Latest Timelapse Image')}}</option>
+          <option value="timelapse">{{_('Display Latest Timelapse Image')}}</option>
         </select>
       </div>
     </div>

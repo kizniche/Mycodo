@@ -14,7 +14,7 @@
   <form method="post" action="/dashboard">
     {{form_base.csrf_token}}
     {{form_base.dashboard_id(value=each_graph.id)}}
-    <input type="hidden" name="dashboard_type" value="{{each_graph.graph_type}}">
+    <input type="hidden" name="dashboard_type" value="gauge">
     <div class="form-inline">
       <div class="form-group">
         {{form_base.name.label(class_='control-label')}}
@@ -23,9 +23,9 @@
         </div>
       </div>
       <div class="form-group">
-        {{form_base.dashboard_type.label(class_='control-label')}}
+        {{form_gauge.gauge_type.label(class_='control-label')}}
         <div>
-          <select class="form-control" id="graph_type" name="graph_type">
+          <select class="form-control" id="gauge_type" name="gauge_type">
             <option value="gauge_angular"{% if each_graph.graph_type == 'gauge_angular' %} selected{% endif %}>Angular Gauge</option>
             <option value="gauge_solid"{% if each_graph.graph_type == 'gauge_solid' %} selected{% endif %}>Solid Gauge</option>
           </select>

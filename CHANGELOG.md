@@ -1,5 +1,12 @@
 ## 5.5.10 (2018-01-20)
 
+### Bugfixes
+
+ - Fix issues with Dashboard Gauges ([#391](https://github.com/kizniche/mycodo/issues/391))
+
+
+## 5.5.10 (2018-01-20)
+
 ### Features
 
  - Add ability to set graph y-axis minimum/maximum ([#384](https://github.com/kizniche/mycodo/issues/384))

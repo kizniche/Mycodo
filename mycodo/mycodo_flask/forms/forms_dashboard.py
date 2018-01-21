@@ -88,6 +88,14 @@ class DashboardGraph(FlaskForm):
 
 
 class DashboardGauge(FlaskForm):
+    gauge_type = SelectField(
+        lazy_gettext('Gauge Type'),
+        choices=[
+            ('gauge_angular', lazy_gettext('Angular Gauge')),
+            ('gauge_solid', lazy_gettext('Solid Gauge'))
+        ],
+        validators=[DataRequired()]
+    )
     sensor_ids = SelectMultipleField(lazy_gettext('Measurement'))
     width = IntegerField(
         lazy_gettext('Width'),
