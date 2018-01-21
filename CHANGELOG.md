@@ -3,7 +3,7 @@
 ### Bugfixes
 
  - Fix issues with Dashboard Gauges ([#391](https://github.com/kizniche/mycodo/issues/391))
-
+ - Fix issues with Dashboard Cameras
 
 ## 5.5.10 (2018-01-20)
 

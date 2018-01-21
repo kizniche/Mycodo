@@ -230,7 +230,7 @@ $(document).ready(function() {
   }
 
    // capture image and update the image
-  function get_image_cam(camera_unique_id, image_type, max_age) {
+  function get_image_cam(dashboard_id, camera_unique_id, image_type, max_age) {
     var url = '';
     var image_type_str = '';
     if (image_type === 'tmp_img') {
@@ -246,8 +246,8 @@ $(document).ready(function() {
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status === 204) {
-          document.getElementById(camera_unique_id + "-image-src").src = "static/img/image_error.png";
-          document.getElementById(camera_unique_id + "-image-href").href = "static/img/image_error.png";
+          document.getElementById(dashboard_id + "-image-src").src = "static/img/image_error.png";
+          document.getElementById(dashboard_id + "-image-href").href = "static/img/image_error.png";
         }
         else {
           var timestamp_str = '';
@@ -259,40 +259,40 @@ $(document).ready(function() {
           var filename = data[0];
           if (filename === 'max_age_exceeded') {
             // The image timestamp is older than the maximum allowable age
-            document.getElementById(camera_unique_id + "-image-src").src = "static/img/image_max_age.png";
-            document.getElementById(camera_unique_id + "-image-href").href = "static/img/image_max_age.png";
-            document.getElementById(camera_unique_id + "-timestamp").innerHTML = timestamp_str + "Max Age Exceeded";
+            document.getElementById(dashboard_id + "-image-src").src = "static/img/image_max_age.png";
+            document.getElementById(dashboard_id + "-image-href").href = "static/img/image_max_age.png";
+            document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + "Max Age Exceeded";
           } else if (filename === 'file_not_found') {
             // No image was found in the directory
-            document.getElementById(camera_unique_id + "-image-src").src = "static/img/image_error.png";
-            document.getElementById(camera_unique_id + "-image-href").href = "static/img/image_error.png";
-            document.getElementById(camera_unique_id + "-timestamp").innerHTML = timestamp_str + "File Not Found";
+            document.getElementById(dashboard_id + "-image-src").src = "static/img/image_error.png";
+            document.getElementById(dashboard_id + "-image-href").href = "static/img/image_error.png";
+            document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + "File Not Found";
           } else {
             // The image is available and younger than the max age
             var timestamp = data[1];
             var image_no_cache_timestamp = Date.now();
-            document.getElementById(camera_unique_id + "-image-src").src = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename + "?" + image_no_cache_timestamp;
-            document.getElementById(camera_unique_id + "-image-href").href = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename + "?" + image_no_cache_timestamp;
-            document.getElementById(camera_unique_id + "-timestamp").innerHTML = timestamp_str + timestamp;
+            document.getElementById(dashboard_id + "-image-src").src = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename + "?" + image_no_cache_timestamp;
+            document.getElementById(dashboard_id + "-image-href").href = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename + "?" + image_no_cache_timestamp;
+            document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + timestamp;
           }
         }
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {
-        document.getElementById(camera_unique_id + "-image-src").src = "static/img/image_error.png";
-        document.getElementById(camera_unique_id + "-image-href").href = "static/img/image_error.png";
-        document.getElementById(camera_unique_id + "-timestamp").innerHTML = "Error Getting Image";
+        document.getElementById(dashboard_id + "-image-src").src = "static/img/image_error.png";
+        document.getElementById(dashboard_id + "-image-href").href = "static/img/image_error.png";
+        document.getElementById(dashboard_id + "-timestamp").innerHTML = "Error Getting Image";
       }
     });
   }
 
-  function repeat_get_image_cam(camera_unique_id, period_sec, image_type, max_age) {
+  function repeat_get_image_cam(dashboard_id, camera_unique_id, period_sec, image_type, max_age) {
     if (image_type === 'stream') {
-      document.getElementById(camera_unique_id + "-image-src").src = "/video_feed/" + camera_unique_id;
-      document.getElementById(camera_unique_id + "-timestamp").innerHTML = 'Live Stream';
+      document.getElementById(dashboard_id + "-image-src").src = "/video_feed/" + camera_unique_id;
+      document.getElementById(dashboard_id + "-timestamp").innerHTML = 'Live Stream';
     } else {
-      get_image_cam(camera_unique_id, image_type, max_age);
+      get_image_cam(dashboard_id, camera_unique_id, image_type, max_age);
       setInterval(function () {
-          get_image_cam(camera_unique_id, image_type, max_age)
+          get_image_cam(dashboard_id, camera_unique_id, image_type, max_age)
       }, period_sec * 1000);
     }
   }

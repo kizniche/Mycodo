@@ -1,6 +1,6 @@
 <div style="padding-right: 0.5em;">
   <div class="col-sx-12 text-right">
-    <span style="padding-right: 0.5em"><span id="{{each_graph.camera_id}}-timestamp"></span> [{{'%02d' % each_graph.id}}] {{each_graph.name}}</span>
+    <span style="padding-right: 0.5em"><span id="{{each_graph.id}}-timestamp"></span> [{{'%02d' % each_graph.id}}] {{each_graph.name}}</span>
     <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
       <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
     </button>
@@ -8,7 +8,7 @@
 </div>
 
 <div id="container-graph-{{each_graph.id}}" style="height: {{each_graph.height}}px;">
-  <a id="{{each_graph.camera_id}}-image-href" href="" target="_blank"><img id="{{each_graph.camera_id}}-image-src" style="max-height: 100%; max-width: 100%" src=""></a>
+  <a id="{{each_graph.id}}-image-href" href="" target="_blank"><img id="{{each_graph.id}}-image-src" style="max-height: 100%; max-width: 100%" src=""></a>
 </div>
 
 <div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
