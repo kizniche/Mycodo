@@ -56,6 +56,13 @@ def input_add(form_add_sensor):
             new_sensor.cmd_measurement = 'Condition'
             new_sensor.cmd_measurement_units = 'unit'
 
+        # Server is up or down
+        elif form_add_sensor.input_type.data in ['SERVER_PING',
+                                                 'SERVER_PORT_OPEN']:
+            new_sensor.measurements = 'boolean'
+            new_sensor.location = '127.0.0.1'
+            new_sensor.period = 3600
+
         # Process monitors
         elif form_add_sensor.input_type.data == 'MYCODO_RAM':
             new_sensor.measurements = 'disk_space'
@@ -292,6 +299,10 @@ def input_mod(form_mod_sensor):
             mod_sensor.weighting = form_mod_sensor.weighting.data
             mod_sensor.rpm_pulses_per_rev = form_mod_sensor.rpm_pulses_per_rev.data
             mod_sensor.sample_time = form_mod_sensor.sample_time.data
+            # Server options
+            mod_sensor.port = form_mod_sensor.port.data
+            mod_sensor.times_check = form_mod_sensor.times_check.data
+            mod_sensor.deadline = form_mod_sensor.deadline.data
             # SHT sensor options
             if form_mod_sensor.sht_clock_pin.data:
                 mod_sensor.sht_clock_pin = form_mod_sensor.sht_clock_pin.data

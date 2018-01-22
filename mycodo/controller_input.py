@@ -60,6 +60,8 @@ from mycodo.inputs.mycodo_ram import MycodoRam
 from mycodo.inputs.raspi import RaspberryPiCPUTemp
 from mycodo.inputs.raspi_cpuload import RaspberryPiCPULoad
 from mycodo.inputs.raspi_freespace import RaspberryPiFreeSpace
+from mycodo.inputs.server_ping import ServerPing
+from mycodo.inputs.server_port_open import ServerPortOpen
 from mycodo.inputs.sht1x_7x import SHT1x7xSensor
 from mycodo.inputs.sht2x import SHT2xSensor
 from mycodo.inputs.signal_pwm import SignalPWMInput
@@ -160,6 +162,11 @@ class InputController(threading.Thread):
         self.weighting = input_dev.weighting
         self.rpm_pulses_per_rev = input_dev.rpm_pulses_per_rev
         self.sample_time = input_dev.sample_time
+
+        # Server options
+        self.port = input_dev.port
+        self.times_check = input_dev.times_check
+        self.deadline = input_dev.deadline
 
         # Output that will activate prior to input read
         self.pre_output_id = input_dev.pre_relay_id
@@ -331,6 +338,13 @@ class InputController(threading.Thread):
         elif self.device == 'LinuxCommand':
             self.measure_input = LinuxCommand(self.cmd_command,
                                               self.cmd_measurement)
+        elif self.device == 'SERVER_PING':
+            self.measure_input = ServerPing(self.location,
+                                            self.times_check,
+                                            self.deadline)
+        elif self.device == 'SERVER_PORT_OPEN':
+            self.measure_input = ServerPortOpen(self.location,
+                                                self.port)
         else:
             self.device_recognized = False
             self.logger.debug("Device '{device}' not recognized".format(

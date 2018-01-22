@@ -2,22 +2,24 @@
 from __future__ import division
 
 import logging
+import os
 
-from mycodo.utils.system_pi import cmd_output
-from mycodo.utils.system_pi import str_is_float
 from .base_input import AbstractInput
 
-logger = logging.getLogger("mycodo.inputs.linux_command")
+logger = logging.getLogger("mycodo.inputs.server_port_open")
 
 
-class LinuxCommand(AbstractInput):
-    """ A sensor support class that returns a value from a command """
+class ServerPortOpen(AbstractInput):
+    """
+    A sensor support class that pings a server and returns 1 if it's up
+    and 0 if it's down.
+    """
 
-    def __init__(self, command, condition, testing=False):
-        super(LinuxCommand, self).__init__()
+    def __init__(self, host, port, testing=False):
+        super(ServerPortOpen, self).__init__()
         self._measurement = None
-        self.command = command
-        self.condition = str(condition)
+        self.host = host
+        self.port = port
 
     def __repr__(self):
         """  Representation of object """
@@ -27,17 +29,17 @@ class LinuxCommand(AbstractInput):
 
     def __str__(self):
         """ Return command output """
-        return "Measurement: {}".format("{0:.2f}".format(self._measurement))
+        return "Boolean: {}".format("{0}".format(self._measurement))
 
     def __iter__(self):  # must return an iterator
-        """ LinuxCommand iterates through executing a command """
+        """ ServerPing iterates through pinging a server """
         return self
 
     def next(self):
         """ Get next measurement """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return {self.condition: float('{0:.2f}'.format(self._measurement))}
+        return {'boolean': float('{0}'.format(self._measurement))}
 
     @property
     def measurement(self):
@@ -50,14 +52,13 @@ class LinuxCommand(AbstractInput):
         """ Determine if the return value of the command is a number """
         self._measurement = None
 
-        out, _, _ = cmd_output(self.command)
-        if str_is_float(out):
-            return float(out)
+        response = os.system(
+            "nc -zv {host} {port} > /dev/null 2>&1".format(
+                port=self.port,  host=self.host))
+        if response == 0:
+            return 1  # Server is up
         else:
-            logger.error("The command returned a non-numerical value. "
-                         "Ensure only one numerical value is returned "
-                         "by the command.")
-            return None
+            return 0  # Server is down
 
     def read(self):
         """

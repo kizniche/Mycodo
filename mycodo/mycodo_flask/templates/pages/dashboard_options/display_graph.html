@@ -9,6 +9,7 @@
 {%- set yaxis_adc = [] -%}
 {%- set yaxis_math = [] -%}
 {%- set yaxis_alt = [] -%}
+{%- set yaxis_boolean = [] -%}
 {%- set yaxis_cpu_load = [] -%}
 {%- set yaxis_co2 = [] -%}
 {%- set yaxis_disk_space = [] -%}
@@ -36,6 +37,8 @@
     {%- set measurement = each_id_and_measure.split(',')[1] -%}
     {%- if measurement == 'altitude' -%}
       {%- do yaxis_alt.append(1) -%}
+    {%- elif measurement == 'boolean' -%}
+      {%- do yaxis_boolean.append(1) -%}
     {%- elif measurement == 'co2' -%}
       {%- do yaxis_co2.append(1) -%}
     {%- elif measurement in ['cpu_load_1m',
@@ -92,6 +95,8 @@
     {%- set measurement = each_id_and_measure.split(',')[1] -%}
     {%- if measurement == 'altitude' -%}
       {%- do yaxis_alt.append(1) -%}
+    {%- elif measurement == 'boolean' -%}
+      {%- do yaxis_boolean.append(1) -%}
     {%- elif measurement == 'co2' -%}
       {%- do yaxis_co2.append(1) -%}
     {%- elif measurement in ['cpu_load_1m',
@@ -149,6 +154,8 @@
         {%- set measurement = each_pid.measurement.split(',')[1] -%}
         {%- if measurement == 'altitude' -%}
           {%- do yaxis_alt.append(1) -%}
+        {%- elif measurement == 'boolean' -%}
+          {%- do yaxis_boolean.append(1) -%}
         {%- elif measurement == 'co2' -%}
           {%- do yaxis_co2.append(1) -%}
         {%- elif measurement in ['cpu_load_1m',
@@ -201,6 +208,8 @@
         {%- set measurement = each_pid.measurement.split(',')[1] -%}
         {%- if measurement == 'altitude' -%}
           {%- do yaxis_alt.append(1) -%}
+        {%- elif measurement == 'boolean' -%}
+          {%- do yaxis_boolean.append(1) -%}
         {%- elif measurement == 'co2' -%}
           {%- do yaxis_co2.append(1) -%}
         {%- elif measurement in ['cpu_load_1m',
@@ -372,6 +381,21 @@
         },
         opposite: false,
         id: 'altitude'
+      },
+    {%- endif -%}
+    {%- if yaxis_boolean -%}
+      {
+        {% if each_graph.enable_manual_y_axis %}
+        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% endif %}
+        title: {
+          text: '{{_('Boolean')}}'
+        },
+        labels: {
+          format: '{value}'
+        },
+        opposite: false,
+        id: 'boolean'
       },
     {%- endif -%}
     {%- if yaxis_cpu_load -%}

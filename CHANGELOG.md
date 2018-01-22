@@ -1,3 +1,10 @@
+## 5.5.12 (2018-01-21)
+
+### Features
+
+ - Add two new Inputs: Server Ping and Server Port Open ([#389](https://github.com/kizniche/mycodo/issues/389))
+
+
 ## 5.5.11 (2018-01-21)
 
 ### Bugfixes

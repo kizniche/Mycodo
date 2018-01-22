@@ -89,6 +89,10 @@ class InputMod(FlaskForm):
         )]
     )
     sht_voltage = StringField(lazy_gettext('Voltage'))
+    host = StringField(lazy_gettext('Host'))
+    port = IntegerField(lazy_gettext('Port'))
+    times_check = IntegerField(lazy_gettext('Times to Check'))
+    deadline = IntegerField(lazy_gettext('Deadline (seconds)'))
 
     input_mod = SubmitField(lazy_gettext('Save'))
     input_delete = SubmitField(lazy_gettext('Delete'))

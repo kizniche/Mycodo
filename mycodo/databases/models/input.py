@@ -68,6 +68,11 @@ class Input(CRUDMixin, db.Model):
     rpm_pulses_per_rev = db.Column(db.Float, default=1.0)
     sample_time = db.Column(db.Float, default=2.0)
 
+    # Server options
+    port = db.Column(db.Integer, default=80)
+    times_check = db.Column(db.Integer, default=1)
+    deadline = db.Column(db.Integer, default=2)
+
     def is_active(self):
         """
         :return: Whether the sensor is currently activated

@@ -9,8 +9,8 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '5.5.11'
-ALEMBIC_VERSION = '15f825bca2f5'
+MYCODO_VERSION = '5.5.12'
+ALEMBIC_VERSION = 'b7acb4de5e00'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -52,6 +52,8 @@ MEASUREMENTS = {
     'RPi': ['temperature'],
     'RPiCPULoad': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m'],
     'RPiFreeSpace': ['disk_space'],
+    'SERVER_PING': ['boolean'],
+    'SERVER_PORT_OPEN': ['boolean'],
     'SHT1x_7x': ['dewpoint', 'humidity', 'temperature'],
     'SHT2x': ['dewpoint', 'humidity', 'temperature'],
     'SIGNAL_PWM': ['frequency', 'pulse_width', 'duty_cycle'],
@@ -66,6 +68,9 @@ MEASUREMENT_UNITS = {
     'altitude': {
         'name': lazy_gettext('Altitude'),
         'meas': 'altitude', 'unit': 'm'},
+    'boolean': {
+        'name': lazy_gettext('Boolean'),
+        'meas': 'boolean', 'unit': u''},
     'co2': {
         'name': lazy_gettext('CO2'),
         'meas': 'co2', 'unit': 'ppmv'},
@@ -155,6 +160,8 @@ INPUTS = [
     ('SIGNAL_RPM', 'Raspberry Pi: Revolutions Per Minute (RPM)'),
     ('MYCODO_RAM', 'Mycodo: Daemon RAM Usage'),
     ('LinuxCommand', 'Linux Command'),
+    ('SERVER_PING', 'Server Ping'),
+    ('SERVER_PORT_OPEN', 'Server Port Open'),
     ('ADS1x15', 'Analog-to-Digital Converter: ADS1x15'),
     ('MCP342x', 'Analog-to-Digital Converter: MCP342x'),
     ('EDGE', 'Edge Detection: Simple Switch'),
