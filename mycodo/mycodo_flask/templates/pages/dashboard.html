@@ -311,7 +311,7 @@ $(document).ready(function() {
     {%- set chart_number = loop.index -%}
     {%- for each_graph in graph if each_graph.id == order -%}
 
-      {% set graph_sensor_ids = each_graph.sensor_ids_measurements.split(';') %}
+      {% set graph_input_ids = each_graph.sensor_ids_measurements.split(';') %}
 
       {% if each_graph.graph_type == 'graph' %}
         {% include 'pages/dashboard_options/display_graph.html' %}

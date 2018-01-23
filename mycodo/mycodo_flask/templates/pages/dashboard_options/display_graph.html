@@ -17,7 +17,7 @@
           {% set count_series = [] -%}
 
           {% for each_input in input -%}
-            {%- for each_id_and_measure in graph_sensor_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
+            {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
           getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_input.unique_id}}', {{each_graph.x_axis_duration*60}});
           {% if each_graph.enable_auto_refresh %}
           getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_input.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}});
@@ -166,7 +166,7 @@
 
     series: [
     {% for each_input in input -%}
-      {%- for each_id_and_measure in graph_sensor_ids if each_input.unique_id == each_id_and_measure.split(',')[0] -%}
+      {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] -%}
 
         {% if each_input.device == 'LinuxCommand' %}
           {
