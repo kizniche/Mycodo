@@ -8,6 +8,10 @@
 
  - Fix inability to change Input Period ([#393](https://github.com/kizniche/mycodo/issues/393))
 
+### Miscellaneous
+
+ - Add Input Template for the [Wiki](https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input)
+
 
 ## 5.5.12 (2018-01-21)
 
