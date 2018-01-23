@@ -45,6 +45,10 @@
 
       <div style="border: 2px solid #ddd; border-radius: 5px;">
 
+      {% for id, axes in y_axes.items() if id == each_graph.id and each_graph.graph_type in ['graph', 'gauge_angular', 'gauge_solid'] %}
+        <!--Dashboard {{each_graph.id}} y-axes: {{axes|safe}}-->
+      {% endfor %}
+
       {% if each_graph.graph_type == 'graph' %}
 
         {% include 'pages/dashboard_options/mod_graph.html' %}

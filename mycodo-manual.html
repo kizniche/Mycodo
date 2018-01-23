@@ -537,7 +537,7 @@
 <td style="text-align: left;">The bus to be used to communicate with the I<sup>2</sup>C address. If you’re using an I<sup>2</sup>C multiplexer that provides multiple buses, this allows you to select which bus the sensor is connected to.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Period</td>
+<td style="text-align: left;">Period (seconds)</td>
 <td style="text-align: left;">After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.</td>
 </tr>
 <tr class="even">
@@ -545,7 +545,7 @@
 <td style="text-align: left;">If you require a output to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the output number that will be activated. The output will be activated for a duration defined by the Pre Duration, then once the output turns off, a measurement by the sensor is made.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Pre Output Duration</td>
+<td style="text-align: left;">Pre Output Duration (seconds)</td>
 <td style="text-align: left;">This is the duration of time that the Pre Output runs for before the sensor measurement is obtained.</td>
 </tr>
 <tr class="even">
@@ -569,7 +569,7 @@
 <td style="text-align: left;">Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly called <a href="http://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing">debouncing a signal</a>. and may be necessary if using a mechanical circuit.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Reset Period</td>
+<td style="text-align: left;">Reset Period (seconds)</td>
 <td style="text-align: left;">Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.</td>
 </tr>
 <tr class="even">
@@ -619,6 +619,18 @@
 <tr class="odd">
 <td style="text-align: left;">Pulses Per Rev</td>
 <td style="text-align: left;">The number of pulses for a complete revolution.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Port</td>
+<td style="text-align: left;">The server port to be queried (Server Port Open input).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Times to Check</td>
+<td style="text-align: left;">The number of times to attempt to ping a server (Server Ping input).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Deadline (seconds)</td>
+<td style="text-align: left;">The maximum amount of time to wait for each ping attempt, after which 0 (offline) will be returned (Server Ping input).</td>
 </tr>
 </tbody>
 </table>
@@ -727,106 +739,110 @@
 <td style="text-align: left;">m</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">boolean</td>
+<td style="text-align: left;">None</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">co2</td>
 <td style="text-align: left;">ppmv</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">cpu_load_1m</td>
 <td style="text-align: left;">1 min</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">cpu_load_5m</td>
 <td style="text-align: left;">5 min</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">cpu_load_15m</td>
 <td style="text-align: left;">15 min</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">dewpoint</td>
 <td style="text-align: left;">°C</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">disk_space</td>
 <td style="text-align: left;">MB</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">duration_sec</td>
 <td style="text-align: left;">sec</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">duty_cycle</td>
 <td style="text-align: left;">%</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">edge</td>
 <td style="text-align: left;">edge</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">frequency</td>
 <td style="text-align: left;">Hz</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">humidity</td>
 <td style="text-align: left;">%</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">humidity_ratio</td>
 <td style="text-align: left;">kg/kg</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">lux</td>
 <td style="text-align: left;">lx</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">moisture</td>
 <td style="text-align: left;">moisture</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">ph</td>
 <td style="text-align: left;">pH</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">pid_output</td>
 <td style="text-align: left;">sec</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">pressure</td>
 <td style="text-align: left;">Pa</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">pulse_width</td>
 <td style="text-align: left;">µs</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">rpm</td>
 <td style="text-align: left;">rpm</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">setpoint</td>
 <td style="text-align: left;">None</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">specific_enthalpy</td>
 <td style="text-align: left;">kJ/kg</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">specific_volume</td>
 <td style="text-align: left;">m<sup>3</sup>/kg</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">temperature</td>
 <td style="text-align: left;">°C</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">temperature_die</td>
 <td style="text-align: left;">°C</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">temperature_object</td>
 <td style="text-align: left;">°C</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">voltage</td>
 <td style="text-align: left;">volts</td>
 </tr>
@@ -1306,82 +1322,86 @@
 <td style="text-align: left;">Input measurement: altitude</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">((measure_boolean))</td>
+<td style="text-align: left;">Input measurement: boolean</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">((measure_co2))</td>
 <td style="text-align: left;">Input measurement: CO2</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_cpu_load_1m))</td>
 <td style="text-align: left;">Input measurement: CPU load (1 min)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_cpu_load_5m))</td>
 <td style="text-align: left;">Input measurement: CPU load (5 min)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_cpu_load_15m))</td>
 <td style="text-align: left;">Input measurement: CPU load (15 min)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_dewpoint))</td>
 <td style="text-align: left;">Input measurement: dew point</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_disk_space))</td>
 <td style="text-align: left;">Input measurement: disk space</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_duty_cycle))</td>
 <td style="text-align: left;">Input measurement: duty cycle</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_edge))</td>
 <td style="text-align: left;">Input measurement: edge detected (1 or -1)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_frequency))</td>
 <td style="text-align: left;">Input measurement: frequency</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_humidity))</td>
 <td style="text-align: left;">Input measurement: humidity</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_lux))</td>
 <td style="text-align: left;">Input measurement: lux</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_moisture))</td>
 <td style="text-align: left;">Input measurement: moisture</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_ph))</td>
 <td style="text-align: left;">Input measurement: ph</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_pressure))</td>
 <td style="text-align: left;">Input measurement: pressure</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_pulse_width))</td>
 <td style="text-align: left;">Input measurement: pulse width</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_rpm))</td>
 <td style="text-align: left;">Input measurement: RPM</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_temperature))</td>
 <td style="text-align: left;">Input measurement: temperature</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_temperature_die))</td>
 <td style="text-align: left;">Input measurement: temperature (die)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_temperature_object))</td>
 <td style="text-align: left;">Input measurement: temperature (object)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_voltage))</td>
 <td style="text-align: left;">Input measurement: voltage</td>
 </tr>

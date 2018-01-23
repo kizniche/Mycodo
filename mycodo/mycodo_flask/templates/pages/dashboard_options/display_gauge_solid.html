@@ -4,16 +4,16 @@
       type: 'solidgauge',
       events: {
         load: function () {
-          {% for each_sensor in sensor -%}
-            {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id == each_id_and_measure.split(',')[0] %}
+          {% for each_input in input -%}
+            {%- for each_id_and_measure in graph_sensor_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
           getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.max_measure_age}}, false);
           repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}}, false);
-          {%- if not each_sensor.adc_measure -%}
+          {%- if not each_input.adc_measure -%}
             {% set measure_name = measurement_units[graph_sensor_ids[0].split(',')[1]]['name']|safe %}
             {% set measure_unit = measurement_units[graph_sensor_ids[0].split(',')[1]]['unit']|safe %}
           {%- else -%}
-            {% set measure_name = each_sensor.adc_measure|safe %}
-            {% set measure_unit = each_sensor.adc_measure_units|safe %}
+            {% set measure_name = each_input.adc_measure|safe %}
+            {% set measure_unit = each_input.adc_measure_units|safe %}
           {% endif %}
             {%- endfor -%}
           {%- endfor -%}

@@ -34,7 +34,6 @@ from mycodo.config import LIST_DEVICES_I2C
 from mycodo.config import LOGIN_LOG_FILE
 from mycodo.config import MEASUREMENTS
 from mycodo.config import MEASUREMENT_UNITS
-from mycodo.config import PATH_CAMERAS
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import UPGRADE_LOG_FILE
 from mycodo.config import USAGE_REPORTS_PATH
@@ -299,9 +298,11 @@ def page_dashboard():
     choices_pid = utils_general.choices_pids(pid)
 
     # Add custom measurement and units to list (From linux command input)
-    dict_measurements = MEASUREMENT_UNITS
     dict_measurements = add_custom_measurements(
-        input_dev, dict_measurements, MEASUREMENT_UNITS)
+        input_dev, math, MEASUREMENT_UNITS)
+
+    # Generage a dictionary of lists of y-axes for each graph/gauge
+    y_axes = utils_dashboard.graph_y_axes(dict_measurements)
 
     # Add multi-select values as form choices, for validation
     form_graph.math_ids.choices = []
@@ -349,6 +350,7 @@ def page_dashboard():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_general.home'))
 
+        # Determine which form was submitted
         form_dashboard_object = None
         if form_base.create.data or form_base.modify.data:
             if form_base.dashboard_type.data == 'graph':
@@ -377,48 +379,6 @@ def page_dashboard():
             utils_dashboard.dashboard_reorder(
                 form_base.dashboard_id.data, display_order, 'down')
 
-        # # Camera
-        # if form_add_camera.camera_add.data:
-        #     utils_dashboard.dashboard_add(form_add_camera, display_order)
-        # elif form_mod_camera.camera_mod.data:
-        #     utils_dashboard.dashboard_mod(form_mod_camera, None)
-        # elif form_mod_camera.camera_del.data:
-        #     utils_dashboard.dashboard_del(form_mod_camera)
-        # elif form_mod_camera.camera_order_up.data:
-        #     utils_dashboard.dashboard_reorder(form_mod_camera.graph_id.data,
-        #                                       display_order, 'up')
-        # elif form_mod_camera.camera_order_down.data:
-        #     utils_dashboard.dashboard_reorder(form_mod_camera.graph_id.data,
-        #                                       display_order, 'down')
-        #
-        # # Gauge
-        # elif form_add_gauge.gauge_add.data:
-        #     utils_dashboard.dashboard_add(form_add_gauge, display_order)
-        # elif form_mod_gauge.gauge_mod.data:
-        #     utils_dashboard.dashboard_mod(form_mod_gauge, request.form)
-        # elif form_mod_gauge.gauge_del.data:
-        #     utils_dashboard.dashboard_del(form_mod_gauge)
-        # elif form_mod_gauge.gauge_order_up.data:
-        #     utils_dashboard.dashboard_reorder(form_mod_gauge.graph_id.data,
-        #                                       display_order, 'up')
-        # elif form_mod_gauge.gauge_order_down.data:
-        #     utils_dashboard.dashboard_reorder(form_mod_gauge.graph_id.data,
-        #                                       display_order, 'down')
-        #
-        # # Graph
-        # elif form_add_graph.graph_add.data:
-        #     utils_dashboard.dashboard_add(form_add_graph, display_order)
-        # elif form_mod_graph.graph_mod.data:
-        #     utils_dashboard.dashboard_mod(form_mod_graph, request.form)
-        # elif form_mod_graph.graph_del.data:
-        #     utils_dashboard.dashboard_del(form_mod_graph)
-        # elif form_mod_graph.graph_order_up.data:
-        #     utils_dashboard.dashboard_reorder(form_mod_graph.graph_id.data,
-        #                                       display_order, 'up')
-        # elif form_mod_graph.graph_order_down.data:
-        #     utils_dashboard.dashboard_reorder(form_mod_graph.graph_id.data,
-        #                                       display_order, 'down')
-
         return redirect('/dashboard')
 
     return render_template('pages/dashboard.html',
@@ -430,8 +390,8 @@ def page_dashboard():
                            graph=graph,
                            math=math,
                            pid=pid,
-                           relay=output,
-                           sensor=input_dev,
+                           output=output,
+                           input=input_dev,
                            colors_graph=colors_graph,
                            colors_gauge=colors_gauge,
                            dict_measurements=dict_measurements,
@@ -440,7 +400,8 @@ def page_dashboard():
                            form_base=form_base,
                            form_camera=form_camera,
                            form_graph=form_graph,
-                           form_gauge=form_gauge)
+                           form_gauge=form_gauge,
+                           y_axes=y_axes)
 
 
 @blueprint.route('/graph-async', methods=('GET', 'POST'))

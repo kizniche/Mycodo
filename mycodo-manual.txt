@@ -357,7 +357,7 @@ the measurement database to be used throughout the Mycodo system.
                         that provides multiple buses, this allows you
                         to select which bus the sensor is connected to.
 
-  Period                After the sensor is successfully read and a
+  Period (seconds)      After the sensor is successfully read and a
                         database entry is made, this is the duration of
                         time waited until the sensor is measured again.
 
@@ -371,7 +371,7 @@ the measurement database to be used throughout the Mycodo system.
                         measurement by the sensor is made.
 
   Pre Output Duration   This is the duration of time that the Pre
-                        Output runs for before the sensor measurement
+  (seconds)             Output runs for before the sensor measurement
                         is obtained.
 
   Command               A linux command (executed as the user ‘mycodo’)
@@ -398,7 +398,7 @@ the measurement database to be used throughout the Mycodo system.
                         be necessary if using a mechanical circuit.
 
   Reset Period          Edge sensors only: This is the period of time
-                        after an edge detection that another edge will
+  (seconds)             after an edge detection that another edge will
                         not be recorded. This enables devices such as
                         PIR motion sensors that may stay activated for
                         longer periods of time.
@@ -465,6 +465,16 @@ the measurement database to be used throughout the Mycodo system.
                         smooth the data.
 
   Pulses Per Rev        The number of pulses for a complete revolution.
+
+  Port                  The server port to be queried (Server Port Open
+                        input).
+
+  Times to Check        The number of times to attempt to ping a server
+                        (Server Ping input).
+
+  Deadline (seconds)    The maximum amount of time to wait for each
+                        ping attempt, after which 0 (offline) will be
+                        returned (Server Ping input).
   ---------------------------------------------------------------------
 
 Math
@@ -558,6 +568,7 @@ y-axis as the other temperatures.
   Measurement          Units
   -------------------- ----------
   altitude             m
+  boolean              None
   co2                  ppmv
   cpu_load_1m          1 min
   cpu_load_5m          5 min
@@ -1101,6 +1112,8 @@ Measurement Conditional command variables
                                value
 
   ((measure_altitude))         Input measurement: altitude
+
+  ((measure_boolean))          Input measurement: boolean
 
   ((measure_co2))              Input measurement: CO2
 

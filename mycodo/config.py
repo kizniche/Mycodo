@@ -70,13 +70,16 @@ MEASUREMENT_UNITS = {
         'meas': 'altitude', 'unit': 'm'},
     'boolean': {
         'name': lazy_gettext('Boolean'),
-        'meas': 'boolean', 'unit': u''},
+        'meas': 'boolean', 'unit': ''},
     'co2': {
         'name': lazy_gettext('CO2'),
         'meas': 'co2', 'unit': 'ppmv'},
     'dewpoint': {
         'name': lazy_gettext('Dewpoint'),
         'meas': 'temperature', 'unit': '°C'},
+    'cpu_load': {
+        'name': lazy_gettext('CPU Load'),
+        'meas': 'cpu_load', 'unit': ''},
     'cpu_load_1m': {
         'name': lazy_gettext('CPU Load'),
         'meas': 'cpu_load', 'unit': '1 min'},

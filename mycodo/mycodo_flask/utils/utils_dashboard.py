@@ -7,8 +7,13 @@ from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.databases.models import DisplayOrder
+from mycodo.config import MEASUREMENT_UNITS
 from mycodo.databases.models import Dashboard
+from mycodo.databases.models import DisplayOrder
+from mycodo.databases.models import Input
+from mycodo.databases.models import Math
+from mycodo.databases.models import Output
+from mycodo.databases.models import PID
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
@@ -370,7 +375,6 @@ def dashboard_del(form_base):
     flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
 
 
-
 def dashboard_reorder(dashboard_id, display_order, direction):
     """reorder something on the dashboard"""
     action = '{action} {controller}'.format(
@@ -405,3 +409,71 @@ def gauge_error_check(form, error):
     if not form.sensor_ids.data[0]:
         error.append("A valid Measurement must be selected")
     return error
+
+
+def graph_y_axes(dict_measurements):
+    """ Determine which y-axes to use for each Graph """
+    y_axes = {}
+
+    graph = Dashboard.query.all()
+    input_dev = Input.query.all()
+    math = Math.query.all()
+    output = Output.query.all()
+    pid = PID.query.all()
+
+    devices_list = [input_dev, math, output, pid]
+
+    # Iterate through each Dashboard object
+    for each_graph in graph:
+
+        # Iterate through device tables
+        for all_devices in devices_list:
+
+            if all_devices == input_dev:
+                ids_and_measures = each_graph.sensor_ids_measurements.split(';')
+            elif all_devices == math:
+                ids_and_measures = each_graph.math_ids.split(';')
+            elif all_devices == output:
+                ids_and_measures = each_graph.relay_ids.split(';')
+            elif all_devices == pid:
+                ids_and_measures = each_graph.pid_ids.split(';')
+            else:
+                ids_and_measures = []
+
+            # Iterate through each set of ID and measurement of the dashboard element
+            for each_id_measure in ids_and_measures:
+                if len(each_id_measure.split(',')) == 2:
+                    if each_graph.id not in y_axes:
+                        y_axes[each_graph.id] = []
+
+                    unique_id = each_id_measure.split(',')[0]
+                    measurement = each_id_measure.split(',')[1]
+
+                    # Iterate through each device entry
+                    for each_device in all_devices:
+
+                        # If the ID saved to the dashboard element matches the table entry ID
+                        if each_device.unique_id == unique_id:
+
+                            # Add duration_sec
+                            # TODO: rename 'pid_output' to 'duration_sec'
+                            if measurement == 'pid_output':
+                                if 'duration_sec' not in y_axes[each_graph.id]:
+                                    y_axes[each_graph.id].append('duration_sec')
+
+                            # Find the y-axis the setpoint applies to
+                            elif measurement == 'setpoint':
+                                for each_input in input_dev:
+                                    if each_input.unique_id == each_device.measurement.split(',')[0]:
+                                        pid_measurement = each_device.measurement.split(',')[1]
+                                        if pid_measurement in dict_measurements:
+                                            measure_short = dict_measurements[pid_measurement]['meas']
+                                            if measure_short not in y_axes[each_graph.id]:
+                                                y_axes[each_graph.id].append(measure_short)
+
+                            # Append all other measurements if they don't already exist
+                            elif measurement in dict_measurements:
+                                measure_short = dict_measurements[measurement]['meas']
+                                if measure_short not in y_axes[each_graph.id]:
+                                    y_axes[each_graph.id].append(measure_short)
+    return y_axes

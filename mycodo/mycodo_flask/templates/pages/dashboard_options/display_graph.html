@@ -1,280 +1,6 @@
 {% set graph_math_ids = each_graph.math_ids.split(';') %}
-{% set graph_relay_ids = each_graph.relay_ids.split(';') %}
+{% set graph_output_ids = each_graph.relay_ids.split(';') %}
 {% set graph_pid_ids = each_graph.pid_ids.split(';') %}
-
-{#
- # All possible y-axes available for use.
- # Measurements with the same units will use the same y-axis
- #}
-{%- set yaxis_adc = [] -%}
-{%- set yaxis_math = [] -%}
-{%- set yaxis_alt = [] -%}
-{%- set yaxis_boolean = [] -%}
-{%- set yaxis_cpu_load = [] -%}
-{%- set yaxis_co2 = [] -%}
-{%- set yaxis_disk_space = [] -%}
-{%- set yaxis_duty_cycle = [] -%}
-{%- set yaxis_edge = [] -%}
-{%- set yaxis_frequency = [] -%}
-{%- set yaxis_hum = [] -%}
-{%- set yaxis_humidity_ratio = [] -%}
-{%- set yaxis_lux = [] -%}
-{%- set yaxis_moisture = [] -%}
-{%- set yaxis_ph = [] -%}
-{%- set yaxis_press = [] -%}
-{%- set yaxis_pulse_width = [] -%}
-{%- set yaxis_relay = [] -%}
-{%- set yaxis_rpm = [] -%}
-{%- set yaxis_specific_enthalpy = [] -%}
-{%- set yaxis_specific_volume = [] -%}
-{%- set yaxis_temp = [] -%}
-{%- set yaxis_volts = [] -%}
-{%- set yaxis_command = [] -%}
-
-{# Determine what y-axes are needed for input controllers #}
-{%- for each_sensor in sensor -%}
-  {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id in each_id_and_measure.split(',')[0] -%}
-    {%- set measurement = each_id_and_measure.split(',')[1] -%}
-    {%- if measurement == 'altitude' -%}
-      {%- do yaxis_alt.append(1) -%}
-    {%- elif measurement == 'boolean' -%}
-      {%- do yaxis_boolean.append(1) -%}
-    {%- elif measurement == 'co2' -%}
-      {%- do yaxis_co2.append(1) -%}
-    {%- elif measurement in ['cpu_load_1m',
-                             'cpu_load_5m',
-                             'cpu_load_15m'] -%}
-      {%- do yaxis_cpu_load.append(1) -%}
-    {%- elif measurement == 'disk_space' -%}
-      {%- do yaxis_disk_space.append(1) -%}
-    {%- elif measurement == 'duty_cycle' -%}
-      {%- do yaxis_duty_cycle.append(1) -%}
-    {%- elif measurement == 'edge' -%}
-      {%- do yaxis_edge.append(1) -%}
-    {%- elif measurement == 'frequency' -%}
-      {%- do yaxis_frequency.append(1) -%}
-    {%- elif measurement == 'humidity' -%}
-      {%- do yaxis_hum.append(1) -%}
-    {%- elif measurement == 'humidity_ratio' -%}
-      {%- do yaxis_humidity_ratio.append(1) -%}
-    {%- elif measurement == 'lux' -%}
-      {%- do yaxis_lux.append(1) -%}
-    {%- elif measurement == 'moisture' -%}
-      {%- do yaxis_moisture.append(1) -%}
-    {%- elif measurement == 'ph' -%}
-      {%- do yaxis_ph.append(1) -%}
-    {%- elif measurement == 'pressure' -%}
-      {%- do yaxis_press.append(1) -%}
-    {%- elif measurement == 'pulse_width' -%}
-      {%- do yaxis_pulse_width.append(1) -%}
-    {%- elif measurement == 'rpm' -%}
-      {%- do yaxis_rpm.append(1) -%}
-    {%- elif measurement == 'specific_enthalpy' -%}
-      {%- do yaxis_specific_enthalpy.append(1) -%}
-    {%- elif measurement == 'specific_volume' -%}
-      {%- do yaxis_specific_volume.append(1) -%}
-    {%- elif measurement in ['temperature',
-                             'temperature_object',
-                             'temperature_die',
-                             'dewpoint',] -%}
-      {%- do yaxis_temp.append(1) -%}
-    {%- elif measurement == 'voltage' -%}
-      {%- do yaxis_volts.append(1) -%}
-    {%- elif measurement == each_sensor.adc_measure -%}
-      {%- do yaxis_adc.append(each_sensor.adc_measure) -%}
-    {%- elif each_sensor.device == 'LinuxCommand' -%}
-      {%- do yaxis_command.append(each_sensor.cmd_measurement) -%}
-    {%- endif -%}
-  {%- endfor -%}
-{%- endfor %}
-
-
-{# Determine what y-axes are needed for math controllers #}
-{%- for each_math in math -%}
-  {%- for each_id_and_measure in graph_math_ids if each_math.unique_id in each_id_and_measure.split(',')[0] -%}
-    {%- set measurement = each_id_and_measure.split(',')[1] -%}
-    {%- if measurement == 'altitude' -%}
-      {%- do yaxis_alt.append(1) -%}
-    {%- elif measurement == 'boolean' -%}
-      {%- do yaxis_boolean.append(1) -%}
-    {%- elif measurement == 'co2' -%}
-      {%- do yaxis_co2.append(1) -%}
-    {%- elif measurement in ['cpu_load_1m',
-                             'cpu_load_5m',
-                             'cpu_load_15m'] -%}
-      {%- do yaxis_cpu_load.append(1) -%}
-    {%- elif measurement == 'disk_space' -%}
-      {%- do yaxis_disk_space.append(1) -%}
-    {%- elif measurement == 'duty_cycle' -%}
-      {%- do yaxis_duty_cycle.append(1) -%}
-    {%- elif measurement == 'edge' -%}
-      {%- do yaxis_edge.append(1) -%}
-    {%- elif measurement == 'frequency' -%}
-      {%- do yaxis_frequency.append(1) -%}
-    {%- elif measurement == 'humidity' -%}
-      {%- do yaxis_hum.append(1) -%}
-    {%- elif measurement == 'humidity_ratio' -%}
-      {%- do yaxis_humidity_ratio.append(1) -%}
-    {%- elif measurement == 'lux' -%}
-      {%- do yaxis_lux.append(1) -%}
-    {%- elif measurement == 'moisture' -%}
-      {%- do yaxis_moisture.append(1) -%}
-    {%- elif measurement == 'ph' -%}
-      {%- do yaxis_ph.append(1) -%}
-    {%- elif measurement == 'pressure' -%}
-      {%- do yaxis_press.append(1) -%}
-    {%- elif measurement == 'pulse_width' -%}
-      {%- do yaxis_pulse_width.append(1) -%}
-    {%- elif measurement == 'rpm' -%}
-      {%- do yaxis_rpm.append(1) -%}
-    {%- elif measurement == 'specific_enthalpy' -%}
-      {%- do yaxis_specific_enthalpy.append(1) -%}
-    {%- elif measurement == 'specific_volume' -%}
-      {%- do yaxis_specific_volume.append(1) -%}
-    {%- elif measurement in ['temperature',
-                             'temperature_object',
-                             'temperature_die',
-                             'dewpoint',] -%}
-      {%- do yaxis_temp.append(1) -%}
-    {%- elif measurement == 'voltage' -%}
-      {%- do yaxis_volts.append(1) -%}
-    {%- else -%}
-      {%- do yaxis_math.append(each_math.unique_id) -%}
-    {%- endif -%}
-  {%- endfor -%}
-{%- endfor %}
-
-{# Determine what y-axes are needed for PID controllers #}
-{%- for each_pid in pid -%}
-  {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id.split(',')[0] -%}
-    {%- set pid_measurement = each_graph_pid_id.split(',')[1] -%}
-    {%- if pid_measurement == 'setpoint' %}
-
-      {%- for each_sensor in sensor if each_sensor.unique_id == each_pid.measurement.split(',')[0] -%}
-        {%- set measurement = each_pid.measurement.split(',')[1] -%}
-        {%- if measurement == 'altitude' -%}
-          {%- do yaxis_alt.append(1) -%}
-        {%- elif measurement == 'boolean' -%}
-          {%- do yaxis_boolean.append(1) -%}
-        {%- elif measurement == 'co2' -%}
-          {%- do yaxis_co2.append(1) -%}
-        {%- elif measurement in ['cpu_load_1m',
-                                 'cpu_load_5m',
-                                 'cpu_load_15m'] -%}
-          {%- do yaxis_cpu_load.append(1) -%}
-        {%- elif measurement == 'disk_space' -%}
-          {%- do yaxis_disk_space.append(1) -%}
-        {%- elif measurement == 'duty_cycle' -%}
-          {%- do yaxis_duty_cycle.append(1) -%}
-        {%- elif measurement == 'edge' -%}
-          {%- do yaxis_edge.append(1) -%}
-        {%- elif measurement == 'frequency' -%}
-          {%- do yaxis_frequency.append(1) -%}
-        {%- elif measurement == 'humidity' -%}
-          {%- do yaxis_hum.append(1) -%}
-        {%- elif measurement == 'humidity_ratio' -%}
-          {%- do yaxis_humidity_ratio.append(1) -%}
-        {%- elif measurement == 'lux' -%}
-          {%- do yaxis_lux.append(1) -%}
-        {%- elif measurement == 'moisture' -%}
-          {%- do yaxis_moisture.append(1) -%}
-        {%- elif measurement == 'ph' -%}
-          {%- do yaxis_ph.append(1) -%}
-        {%- elif measurement == 'pressure' -%}
-          {%- do yaxis_press.append(1) -%}
-        {%- elif measurement == 'pulse_width' -%}
-          {%- do yaxis_pulse_width.append(1) -%}
-        {%- elif measurement == 'rpm' -%}
-          {%- do yaxis_rpm.append(1) -%}
-        {%- elif measurement == 'specific_enthalpy' -%}
-          {%- do yaxis_specific_enthalpy.append(1) -%}
-        {%- elif measurement == 'specific_volume' -%}
-          {%- do yaxis_specific_volume.append(1) -%}
-        {%- elif measurement in ['temperature',
-                                 'temperature_object',
-                                 'temperature_die',
-                                 'dewpoint',] -%}
-          {%- do yaxis_temp.append(1) -%}
-        {%- elif measurement == 'voltage' -%}
-          {%- do yaxis_volts.append(1) -%}
-        {%- elif sensor_measurement == each_sensor.adc_measure -%}
-          {%- do yaxis_adc.append(each_sensor.adc_measure) -%}
-        {% elif each_sensor.device == 'LinuxCommand' and each_sensor.cmd_measurement not in yaxis_command -%}
-          {%- do yaxis_command.append(each_sensor.cmd_measurement) -%}
-        {%- endif -%}
-      {%- endfor -%}
-
-      {%- for each_math in math if each_math.unique_id == each_pid.measurement.split(',')[0] -%}
-        {%- set measurement = each_pid.measurement.split(',')[1] -%}
-        {%- if measurement == 'altitude' -%}
-          {%- do yaxis_alt.append(1) -%}
-        {%- elif measurement == 'boolean' -%}
-          {%- do yaxis_boolean.append(1) -%}
-        {%- elif measurement == 'co2' -%}
-          {%- do yaxis_co2.append(1) -%}
-        {%- elif measurement in ['cpu_load_1m',
-                                 'cpu_load_5m',
-                                 'cpu_load_15m'] -%}
-          {%- do yaxis_cpu_load.append(1) -%}
-        {%- elif measurement == 'disk_space' -%}
-          {%- do yaxis_disk_space.append(1) -%}
-        {%- elif measurement == 'duty_cycle' -%}
-          {%- do yaxis_duty_cycle.append(1) -%}
-        {%- elif measurement == 'edge' -%}
-          {%- do yaxis_edge.append(1) -%}
-        {%- elif measurement == 'frequency' -%}
-          {%- do yaxis_frequency.append(1) -%}
-        {%- elif measurement == 'humidity' -%}
-          {%- do yaxis_hum.append(1) -%}
-        {%- elif measurement == 'humidity_ratio' -%}
-          {%- do yaxis_humidity_ratio.append(1) -%}
-        {%- elif measurement == 'lux' -%}
-          {%- do yaxis_lux.append(1) -%}
-        {%- elif measurement == 'moisture' -%}
-          {%- do yaxis_moisture.append(1) -%}
-        {%- elif measurement == 'ph' -%}
-          {%- do yaxis_ph.append(1) -%}
-        {%- elif measurement == 'pressure' -%}
-          {%- do yaxis_press.append(1) -%}
-        {%- elif measurement == 'pulse_width' -%}
-          {%- do yaxis_pulse_width.append(1) -%}
-        {%- elif measurement == 'rpm' -%}
-          {%- do yaxis_rpm.append(1) -%}
-        {%- elif measurement == 'specific_enthalpy' -%}
-          {%- do yaxis_specific_enthalpy.append(1) -%}
-        {%- elif measurement == 'specific_volume' -%}
-          {%- do yaxis_specific_volume.append(1) -%}
-        {%- elif measurement in ['temperature',
-                                 'temperature_object',
-                                 'temperature_die',
-                                 'dewpoint',] -%}
-          {%- do yaxis_temp.append(1) -%}
-        {%- elif measurement == 'voltage' -%}
-          {%- do yaxis_volts.append(1) -%}
-        {%- else -%}
-      {%- do yaxis_pid.append(each_math.unique_id) -%}
-        {%- endif -%}
-      {%- endfor -%}
-
-    {% elif pid_measurement == 'pid_output' %}
-      {%- do yaxis_relay.append(1) -%}
-    {% elif pid_measurement == 'duty_cycle' %}
-      {%- do yaxis_duty_cycle.append(1) -%}
-    {% endif %}
-  {%- endfor -%}
-{%- endfor -%}
-
-{# Determine if a y-axes is needed for the output controller #}
-{%- for each_relay in relay -%}
-  {%- for each_graph_relay_id in graph_relay_ids if each_relay.unique_id == each_graph_relay_id.split(',')[0] -%}
-    {%- set output = each_graph_relay_id.split(',')[1] -%}
-    {% if output == 'duration_sec' %}
-      {%- do yaxis_relay.append(1) -%}
-    {% elif output == 'duty_cycle' %}
-      {%- do yaxis_duty_cycle.append(1) -%}
-    {% endif %}
-  {%- endfor -%}
-{%- endfor -%}
 
   chart_graph[{{chart_number}}] = new Highcharts.StockChart({
     chart : {
@@ -290,11 +16,11 @@
         load: function () {
           {% set count_series = [] -%}
 
-          {% for each_sensor in sensor -%}
-            {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id == each_id_and_measure.split(',')[0] %}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration*60}});
+          {% for each_input in input -%}
+            {%- for each_id_and_measure in graph_sensor_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
+          getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_input.unique_id}}', {{each_graph.x_axis_duration*60}});
           {% if each_graph.enable_auto_refresh %}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_sensor.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}});
+          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_input.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}});
           {% endif %}
               {%- do count_series.append(1) %}
             {%- endfor -%}
@@ -310,11 +36,11 @@
             {%- endfor -%}
           {%- endfor -%}
 
-          {%- for each_relay in relay -%}
-            {%- for each_graph_relay_id in graph_relay_ids if each_relay.unique_id == each_graph_relay_id.split(',')[0] %}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_relay.unique_id}}', {{each_graph.x_axis_duration*60}});
+          {%- for each_output in output -%}
+            {%- for each_graph_relay_id in graph_output_ids if each_output.unique_id == each_graph_relay_id.split(',')[0] %}
+          getPastData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_graph.x_axis_duration*60}});
           {% if each_graph.enable_auto_refresh %}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_relay.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}});
+          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}});
           {% endif %}
               {%- do count_series.append(1) %}
             {%- endfor -%}
@@ -353,385 +79,21 @@
     },
 
     yAxis: [
-    {%- if yaxis_relay -%}
+    {% for each_axis_meas in y_axes[each_graph.id] %}
       {
         {% if each_graph.enable_manual_y_axis %}
         min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
         {% endif %}
         title: {
-          text: '{{_('Output Duration')}} (sec)'
+          text: '{{dict_measurements[each_axis_meas]['name']}}{% if dict_measurements[each_axis_meas]['unit'] != '' %} ({{dict_measurements[each_axis_meas]['unit']}}){% endif %}'
         },
         labels: {
           format: '{value}'
         },
         opposite: false,
-        id: 'relay'
+        id: '{{dict_measurements[each_axis_meas]['meas']}}'
       },
-    {%- endif -%}
-    {%- if yaxis_alt -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Altitude')}} (m)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'altitude'
-      },
-    {%- endif -%}
-    {%- if yaxis_boolean -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Boolean')}}'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'boolean'
-      },
-    {%- endif -%}
-    {%- if yaxis_cpu_load -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('CPU Load')}}'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'cpu_load'
-      },
-    {%- endif -%}
-    {%- if yaxis_co2 -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: 'CO<sub>2</sub> (ppmv)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'co2'
-      },
-    {%- endif -%}
-    {%- if yaxis_disk_space -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('MegaBytes')}} (MB)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'disk_space'
-      },
-    {%- endif -%}
-    {%- if yaxis_duty_cycle -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Duty Cycle')}} (%)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'duty_cycle'
-      },
-    {%- endif -%}
-    {%- if yaxis_edge -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Edge')}}'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'edge'
-      },
-    {%- endif -%}
-    {%- if yaxis_frequency -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Frequency')}} (Hz)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'frequency'
-      },
-    {%- endif -%}
-    {%- if yaxis_hum -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Relative Humidity')}} (%)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'humidity'
-      },
-    {%- endif -%}
-    {%- if yaxis_humidity_ratio -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Relative Humidity Ratio')}} (kg/kg)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'humidity_ratio'
-      },
-    {%- endif -%}
-    {%- if yaxis_lux -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Luminosity')}} (lx)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'lux'
-      },
-    {%- endif -%}
-    {%- if yaxis_moisture -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Moisture')}}'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'moisture'
-      },
-    {%- endif -%}
-    {%- if yaxis_ph -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('pH')}}'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'ph'
-      },
-    {%- endif -%}
-    {%- if yaxis_press -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Pressure')}} (Pa)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'pressure'
-      },
-    {%- endif -%}
-    {%- if yaxis_pulse_width -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Pulse Width')}} (µs)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'pulse_width'
-      },
-    {%- endif -%}
-    {%- if yaxis_rpm -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Revolutions Per Minute')}} (RPM)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'rpm'
-      },
-    {%- endif -%}
-    {%- if yaxis_specific_enthalpy -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Specific Enthalpy')}} (kJ/kg)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'specific_enthalpy'
-      },
-    {%- endif -%}
-    {%- if yaxis_specific_volume -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Specific Volume')}} (m^3/kg)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'specific_volume'
-      },
-    {%- endif -%}
-    {%- if yaxis_temp -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Temperature')}} (°C)'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'temperature'
-      },
-    {%- endif -%}
-    {%- if yaxis_volts -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{_('Voltage')}}'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: 'voltage'
-      },
-    {%- endif -%}
-    {%- for each_adc_measure in yaxis_adc -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{each_adc_measure}}'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: '{{each_adc_measure}}'
-      },
-    {%- endfor -%}
-    {%- for each_math_measure in yaxis_math -%}
-      {% for each_math in math if each_math_measure == each_math.unique_id %}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{each_math.measure}} ({{each_math.measure_units}})'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: '{{each_math.measure}}'
-      },
-      {% endfor %}
-    {%- endfor -%}
-    {%- for each_math_measure in yaxis_pid -%}
-      {% for each_math in math if each_math_measure == each_math.unique_id %}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{each_math.measure}} ({{each_math.measure_units}})'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: '{{each_math.measure}}'
-      },
-      {% endfor %}
-    {%- endfor -%}
-    {%- for each_cmd_measure in yaxis_command -%}
-      {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
-        {% endif %}
-        title: {
-          text: '{{each_cmd_measure}} ({{dict_measurements[each_cmd_measure]['unit']}})'
-        },
-        labels: {
-          format: '{value}'
-        },
-        opposite: false,
-        id: '{{each_cmd_measure}}'
-      },
-    {%- endfor -%}
+    {% endfor %}
     ],
 
     exporting: {
@@ -803,32 +165,32 @@
     },
 
     series: [
-    {% for each_sensor in sensor -%}
-      {%- for each_id_and_measure in graph_sensor_ids if each_sensor.unique_id == each_id_and_measure.split(',')[0] -%}
+    {% for each_input in input -%}
+      {%- for each_id_and_measure in graph_sensor_ids if each_input.unique_id == each_id_and_measure.split(',')[0] -%}
 
-        {% if each_sensor.device == 'LinuxCommand' %}
+        {% if each_input.device == 'LinuxCommand' %}
           {
-            name: '{{each_sensor.name}} {{each_sensor.cmd_measurement}} ({{each_sensor.cmd_measurement_units}})',
+            name: '{{each_input.name}} {{each_input.cmd_measurement}} ({{each_input.cmd_measurement_units}})',
             type: 'line',
             tooltip: {
-              {% if each_sensor.cmd_measurement == 'temperature' %}
+              {% if each_input.cmd_measurement == 'temperature' %}
               pointFormatter: function () {
                 return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
               },
               {% else %}
-              valueSuffix: ' {{each_sensor.cmd_measurement_units}}',
+              valueSuffix: ' {{each_input.cmd_measurement_units}}',
               valueDecimals: 2
               {% endif %}
             },
-            yAxis: '{{each_sensor.cmd_measurement}}',
+            yAxis: '{{each_input.cmd_measurement}}',
             data: []
           },
         {% endif %}
 
-        {%- for each_measurement in each_sensor.measurements.split(',') -%}
+        {%- for each_measurement in each_input.measurements.split(',') -%}
           {%- if each_measurement == each_id_and_measure.split(',')[1] -%}
             {
-              name: '{{each_sensor.name}} {{measurement_units[each_measurement]['name']}} ({{measurement_units[each_measurement]['unit']}})',
+              name: '{{each_input.name}} {{measurement_units[each_measurement]['name']}}{% if dict_measurements[each_measurement]['unit'] != '' %} ({{measurement_units[each_measurement]['unit']}}){% endif %}',
               {% if measurement_units[each_measurement]['meas'] == 'edge' %}
               type: 'column',
               {% else %}
@@ -847,15 +209,15 @@
               yAxis: '{{measurement_units[each_measurement]['meas']}}',
               data: []
             },
-          {%- elif each_sensor.adc_measure == each_id_and_measure.split(',')[1] -%}
+          {%- elif each_input.adc_measure == each_id_and_measure.split(',')[1] -%}
             {
-              name: '{{each_sensor.name}} {{each_sensor.adc_measure}}',
+              name: '{{each_input.name}} {{each_input.adc_measure}}',
               type: 'line',
               tooltip: {
-                valueSuffix: ' {{each_sensor.adc_measure_units}}',
+                valueSuffix: ' {{each_input.adc_measure_units}}',
                 valueDecimals: 3
               },
-              yAxis: '{{each_sensor.adc_measure}}',
+              yAxis: '{{each_input.adc_measure}}',
               data: []
             },
           {%- endif -%}
@@ -884,11 +246,11 @@
       {%- endfor -%}
     {% endfor %}
 
-    {%- for each_relay in relay -%}
-      {%- for each_graph_relay_id in graph_relay_ids if each_relay.unique_id == each_graph_relay_id.split(',')[0] -%}
+    {%- for each_output in output -%}
+      {%- for each_graph_relay_id in graph_output_ids if each_output.unique_id == each_graph_relay_id.split(',')[0] -%}
         {% if each_graph_relay_id.split(',')[1] == 'duration_sec' %}
         {
-          name: '{{each_relay.name}}',
+          name: '{{each_output.name}} (sec)',
           type: 'column',
           dataGrouping: {
             approximation: 'low',
@@ -898,12 +260,12 @@
             valueSuffix: ' sec',
             valueDecimals: 2
           },
-          yAxis: 'relay',
+          yAxis: 'duration_sec',
           data: []
         },
         {% elif each_graph_relay_id.split(',')[1] == 'duty_cycle' %}
         {
-          name: '{{each_relay.name}}',
+          name: '{{each_output.name}} (%)',
           type: 'column',
           dataGrouping: {
             approximation: 'low',
@@ -927,8 +289,8 @@
           {% if each_pid.measurement in measurement_units -%}
             {% set suffix = measurement_units[each_pid.measurement]['unit']|safe %}
           {% else -%}
-            {%- for each_sensor in sensor if each_pid.measurement.split(',')[0] == sensor.unique_id and each_sensor.device == 'LinuxCommand' -%}
-              {% set suffix = each_sensor.cmd_measurement_units %}
+            {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and each_input.device == 'LinuxCommand' -%}
+              {% set suffix = each_input.cmd_measurement_units %}
             {%- endfor -%}
           {%- endif %}
         {
@@ -949,7 +311,7 @@
             valueSuffix: ' sec',
             valueDecimals: 2
           },
-          yAxis: 'relay',
+          yAxis: 'duration_sec',
           data: []
         },
         {% elif each_graph_pid_id.split(',')[1] == 'duty_cycle' %}

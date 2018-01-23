@@ -1,3 +1,14 @@
+## 5.5.13 (Unreleased)
+
+### Features
+
+ - Refactor Dashboard code (improve load time, reduce code size)
+
+### Bugfixes
+
+ - Fix inability to change Input Period ([#393](https://github.com/kizniche/mycodo/issues/393))
+
+
 ## 5.5.12 (2018-01-21)
 
 ### Features

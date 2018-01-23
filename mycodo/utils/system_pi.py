@@ -13,16 +13,42 @@ from mycodo.config import INSTALL_DIRECTORY
 logger = logging.getLogger("mycodo.system_pi")
 
 
-def add_custom_measurements(sensor, measurements, measurement_units):
-    """ Returns a dictionary of sensor measurements including custom measurements/units """
-    for each_sensor in sensor:
-        if each_sensor.cmd_measurement and each_sensor.cmd_measurement not in measurement_units:
-            if each_sensor.cmd_measurement and each_sensor.cmd_measurement_units:
-                measurements.update(
-                    {each_sensor.cmd_measurement: {
-                        'unit': each_sensor.cmd_measurement_units,
-                        'name': each_sensor.cmd_measurement}})
-    return measurements
+def add_custom_measurements(inputs, maths, measurement_units):
+    """
+    Returns the measurement dictionary appended with
+    input, ADC, and command measurements/units
+    """
+    return_measurements = measurement_units
+    for each_input in inputs:
+        # Add command measurements/units to measurements dictionary
+        if (each_input.cmd_measurement and
+                each_input.cmd_measurement_units and
+                each_input.cmd_measurement not in measurement_units):
+            return_measurements.update(
+                {each_input.cmd_measurement: {
+                    'meas': each_input.cmd_measurement,
+                    'unit': each_input.cmd_measurement_units,
+                    'name': each_input.cmd_measurement}})
+        # Add ADC measurements/units to measurements dictionary
+        if (each_input.adc_measure and
+                each_input.adc_measure_units and
+                each_input.adc_measure not in measurement_units):
+            return_measurements.update(
+                {each_input.adc_measure: {
+                    'meas': each_input.adc_measure,
+                    'unit': each_input.adc_measure_units,
+                    'name': each_input.adc_measure}})
+    for each_math in maths:
+        # Add Math measurements/units to measurements dictionary
+        if (each_math.measure and
+                each_math.measure_units and
+                each_math.measure not in measurement_units):
+            return_measurements.update(
+                {each_math.measure: {
+                    'meas': each_math.measure,
+                    'unit': each_math.measure_units,
+                    'name': each_math.measure}})
+    return return_measurements
 
 
 def time_between_range(start_time, end_time):

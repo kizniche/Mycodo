@@ -217,15 +217,15 @@ Up/Down | Move a particular sensor up or down in the order displayed.
 Power Output | Select a output that powers the sensor. This enables powering cycling (turn off then on) when the sensor returns 3 consecutive errors to attempt to fix the issue. Transistors may also be used instead of a relay (note: NPN transistors are preferred over PNP for powering sensors).
 Location | Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I<sup>2</sup>C address. and channel if using the TCA9548A I<sup>2</sup>C multiplexer.
 I<sup>2</sup>C Bus | The bus to be used to communicate with the I<sup>2</sup>C address. If you're using an I<sup>2</sup>C multiplexer that provides multiple buses, this allows you to select which bus the sensor is connected to.
-Period | After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.
+Period (seconds) | After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.
 Pre Output | If you require a output to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the output number that will be activated. The output will be activated for a duration defined by the Pre Duration, then once the output turns off, a measurement by the sensor is made.
-Pre Output Duration | This is the duration of time that the Pre Output runs for before the sensor measurement is obtained.
+Pre Output Duration (seconds) | This is the duration of time that the Pre Output runs for before the sensor measurement is obtained.
 Command | A linux command (executed as the user 'mycodo') that the return value becomes the measurement
 Command Measurement | The measured condition (e.g. temperature, humidity, etc.) from the linux command
 Command Units | The units of the measurement condition from the linux command
 Edge | Edge sensors only: Select whether the Rising or Falling (or both) edges of a changing voltage are detected. A number of devices to do this when in-line with a circuit supplying a 3.3-volt input signal to a GPIO, such as simple mechanical switch, a button, a magnet (reed/hall) sensor, a PIR motion detector, and more.
 Bounce Time (ms) | Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly called [debouncing a signal](http://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing). and may be necessary if using a mechanical circuit.
-Reset Period | Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.
+Reset Period (seconds) | Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.
 Multiplexer (MX) | If connected to the TCA9548A I<sup>2</sup>C multiplexer, select what the I<sup>2</sup>C address of the multiplexer is.
 Mx I<sup>2</sup>C Bus | If connected to the TCA9548A I<sup>2</sup>C multiplexer, select the I<sup>2</sup>C bus the multiplexer is connected to.
 Mx Channel | If connected to the TCA9548A I<sup>2</sup>C multiplexer, select the channel of the multiplexer the device is connected to.
@@ -238,6 +238,9 @@ Volts Max | Analog-to-digital converter only: This is similar to the Min option 
 Units Max | Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.
 Weighting | The This is a number between 0 and 1 and indicates how much the old reading affects the new reading.  It defaults to 0 which means the old reading has no effect.  This may be used to smooth the data.
 Pulses Per Rev | The number of pulses for a complete revolution.
+Port | The server port to be queried (Server Port Open input).
+Times to Check | The number of times to attempt to ping a server (Server Ping input).
+Deadline (seconds) | The maximum amount of time to wait for each ping attempt, after which 0 (offline) will be returned (Server Ping input).
 
 ### Math
 
@@ -273,6 +276,7 @@ If a pre-defined measurement is used, the newly-generated value will use that de
 Measurement | Units
 ----------- | -----
 altitude | m
+boolean | None
 co2 | ppmv
 cpu_load_1m | 1 min
 cpu_load_5m | 5 min
@@ -542,6 +546,7 @@ Variable | Description
 ((measure_period)) | The period (seconds) between measurements (input, math, or PID)
 ((measure_linux_command)) | Input measurement: Linux Command return value
 ((measure_altitude)) | Input measurement: altitude
+((measure_boolean)) | Input measurement: boolean
 ((measure_co2)) | Input measurement: CO2
 ((measure_cpu_load_1m)) | Input measurement:  CPU load (1 min)
 ((measure_cpu_load_5m)) | Input measurement: CPU load (5 min)
