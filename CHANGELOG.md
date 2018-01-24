@@ -2,6 +2,7 @@
 
 ### Features
 
+ - Add Input: GPIO State ([#387](https://github.com/kizniche/mycodo/issues/387))
  - Refactor Dashboard code (improve load time, reduce code size)
 
 ### Bugfixes

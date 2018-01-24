@@ -80,6 +80,8 @@ def input_add(form_add_sensor):
             new_sensor.location = '/'
         elif form_add_sensor.input_type.data == 'EDGE':
             new_sensor.measurements = 'edge'
+        elif form_add_sensor.input_type.data == 'GPIO_STATE':
+            new_sensor.measurements = 'gpio_state'
 
         # Signal measuremnt (PWM and RPM)
         elif form_add_sensor.input_type.data == 'SIGNAL_PWM':

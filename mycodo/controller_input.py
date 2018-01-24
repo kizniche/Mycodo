@@ -51,6 +51,7 @@ from mycodo.inputs.chirp import ChirpSensor
 from mycodo.inputs.dht11 import DHT11Sensor
 from mycodo.inputs.dht22 import DHT22Sensor
 from mycodo.inputs.ds18b20 import DS18B20Sensor
+from mycodo.inputs.gpio_state import GPIOState
 from mycodo.inputs.htu21d import HTU21DSensor
 from mycodo.inputs.k30 import K30Sensor
 from mycodo.inputs.linux_command import LinuxCommand
@@ -277,7 +278,7 @@ class InputController(threading.Thread):
         elif self.device == 'BME280':
             self.measure_input = BME280Sensor(self.i2c_address,
                                               self.i2c_bus)
-        elif self.device in ['BMP180']:
+        elif self.device == 'BMP180':
             self.measure_input = BMP180Sensor(self.i2c_bus)
         elif self.device == 'BMP280':
             self.measure_input = BMP280Sensor(self.i2c_address,
@@ -294,6 +295,8 @@ class InputController(threading.Thread):
         elif self.device == 'DHT22':
             self.measure_input = DHT22Sensor(int(self.location),
                                              power=self.power_output_id)
+        elif self.device == 'GPIO_STATE':
+            self.measure_input = GPIOState(int(self.location))
         elif self.device == 'HTU21D':
             self.measure_input = HTU21DSensor(self.i2c_bus)
         elif self.device == 'K30_UART':
