@@ -289,6 +289,8 @@ class ConditionalController(threading.Thread):
         # message based on the edge detection settings.
         elif cond.conditional_type == 'conditional_edge':
             try:
+                GPIO.setmode(GPIO.BCM)
+                GPIO.setup(int(input_dev.pin), GPIO.IN)
                 gpio_state = GPIO.input(int(input_dev.pin))
             except:
                 gpio_state = None
