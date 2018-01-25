@@ -120,6 +120,8 @@ class LCDController(threading.Thread):
             self.list_inputs = MEASUREMENT_UNITS
             self.list_inputs.update(
                 {'sensor_time': {'unit': None, 'name': 'Time'}})
+            self.list_inputs.update(
+                {'pid_time': {'unit': None, 'name': 'Time'}})
 
             # Add custom measurement and units to list
             input_dev = db_retrieve_table_daemon(Input)

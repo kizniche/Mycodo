@@ -1,3 +1,10 @@
+## 5.5.14 (Unreleased)
+
+### Bugfixes
+
+ - Fix display of PID timestamp on LCDs
+
+
 ## 5.5.13 (2018-01-23)
 
 ### Features
