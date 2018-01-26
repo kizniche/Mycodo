@@ -81,9 +81,9 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    {%- if inputs_sorted|length == 0 -%}
+    {%- if inputs_sorted|length == 0 and maths_sorted|length == 0 -%}
     <div>
-      {{_('No Inputs Activated')}}. <a href="/input">Click here</a> to go to the Input page. Read the <a href="/help">Manual</a> to become more familiar with the system and configuration options.
+      {{_('No Data Sources Activated')}}. <a href="/data">Click here</a> to go to the Data page. Read the <a href="/help">Manual</a> to become more familiar with the system and configuration options.
     </div>
     {%- endif -%}
 
