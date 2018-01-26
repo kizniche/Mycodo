@@ -33,7 +33,7 @@ class TimerBase(FlaskForm):
         validators=[DataRequired()]
     )
     relay_id = StringField(lazy_gettext('Output'))
-    create = SubmitField(lazy_gettext('Save'))
+    create = SubmitField(lazy_gettext('Add'))
     modify = SubmitField(lazy_gettext('Save'))
     delete = SubmitField(lazy_gettext('Delete'))
     activate = SubmitField(lazy_gettext('Activate'))

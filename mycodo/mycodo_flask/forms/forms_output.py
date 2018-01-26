@@ -20,9 +20,7 @@ from wtforms.validators import Optional
 class OutputAdd(FlaskForm):
     relay_quantity = IntegerField(lazy_gettext('Quantity'))
     relay_type = StringField(lazy_gettext('Type'))
-    relay_add = SubmitField(lazy_gettext('Add Output Device'))
-    relay_cond_quantity = IntegerField(lazy_gettext('Quantity'))
-    relay_cond_add = SubmitField(lazy_gettext('Add Relay Conditional'))
+    relay_add = SubmitField(lazy_gettext('Add'))
 
 
 class OutputMod(FlaskForm):
