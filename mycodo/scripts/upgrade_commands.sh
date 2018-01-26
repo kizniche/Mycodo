@@ -172,15 +172,15 @@ case "${1:-''}" in
     'update-gpiod')
         printf "\n#### Installing gpiod\n"
         cd ${MYCODO_PATH}/install
-        wget --quiet -P ${MYCODO_PATH}/install abyz.co.uk/rpi/pigpio/pigpio.zip
-        unzip pigpio.zip
+#        wget --quiet -P ${MYCODO_PATH}/install abyz.co.uk/rpi/pigpio/pigpio.zip
+        tar xf pigpio.tar
         cd ${MYCODO_PATH}/install/PIGPIO
         make -j4
         make install
         killall pigpiod || true
         /usr/local/bin/pigpiod -s 1 &
         cd ${MYCODO_PATH}/install
-        rm -rf ./PIGPIO ./pigpio.zip
+        rm -rf ./PIGPIO
     ;;
     'update-influxdb')
         printf "\n#### Ensuring compatible version of influxdb is installed ####\n"

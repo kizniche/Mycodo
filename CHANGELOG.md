@@ -1,8 +1,9 @@
-## 5.5.14 (Unreleased)
+## 5.5.14 (2018-01-25)
 
 ### Bugfixes
 
  - Fix display of PID timestamp on LCDs
+ - Fix missing pigpio.zip (breaks install/upgrade) on remote server (package pigpio.tar with Mycodo)
 
 
 ## 5.5.13 (2018-01-23)
