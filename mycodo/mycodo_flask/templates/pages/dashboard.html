@@ -203,7 +203,7 @@ $(document).ready(function() {
     }, refresh_seconds * 1000);
   }
 
-  function retrieveLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset) {
+  function retrieveLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds) {
     // Build the URL
     // Instruct only to return data since the time of the last received data point
     var url = '';
