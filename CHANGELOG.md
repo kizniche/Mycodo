@@ -1,3 +1,10 @@
+## 5.5.15 (Unreleased)
+
+### Features
+
+ - Add Graph button to manually update graph with new data
+
+
 ## 5.5.14 (2018-01-25)
 
 ### Bugfixes

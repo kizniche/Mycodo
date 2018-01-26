@@ -331,6 +331,38 @@
     ]
   });
 
+  $('#updateData{{chart_number}}').click(function() {
+    {% set count_series = [] -%}
+
+    {% for each_input in input -%}
+      {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
+    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_input.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}});
+        {%- do count_series.append(1) %}
+      {%- endfor -%}
+    {%- endfor -%}
+
+    {% for each_math in math -%}
+      {%- for each_id_and_measure in graph_math_ids if each_math.unique_id == each_id_and_measure.split(',')[0] %}
+    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_math.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}});
+        {%- do count_series.append(1) %}
+      {%- endfor -%}
+    {%- endfor -%}
+
+    {%- for each_output in output -%}
+      {%- for each_graph_relay_id in graph_output_ids if each_output.unique_id == each_graph_relay_id.split(',')[0] %}
+    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}});
+        {%- do count_series.append(1) %}
+      {%- endfor -%}
+    {%- endfor -%}
+
+    {%- for each_pid in pid -%}
+      {%- for each_id_and_measure in graph_pid_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
+    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}});
+        {%- do count_series.append(1) %}
+      {%- endfor -%}
+    {%- endfor -%}
+  });
+
   $('#resetZoom{{chart_number}}').click(function() {
     var chart = $('#container-graph-{{each_graph.id}}').highcharts();
     chart.zoomOut();
