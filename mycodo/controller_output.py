@@ -130,7 +130,7 @@ class OutputController(threading.Thread):
                                   'off',))
                         turn_output_off.start()
 
-                time.sleep(0.1)
+                time.sleep(0.01)
         finally:
             # Turn all outputs off
             for each_output_id in self.output_id:

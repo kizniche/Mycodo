@@ -3,6 +3,7 @@
 ### Features
 
  - Add Graph button to manually update graph with new data
+ - Increase output timing accuracy (0.01 second, previously 0.1 second)
 
 ### Bugfixes
 
