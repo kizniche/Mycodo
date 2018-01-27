@@ -5,6 +5,7 @@
  - Add Graph button to manually update graph with new data
  - Increase output timing accuracy (0.01 second, previously 0.1 second)
  - Improve update speed of graphs
+ - Add Graph option: Enable Graph Shift (used in conjunction with Enable Navbar)
 
 ### Bugfixes
 

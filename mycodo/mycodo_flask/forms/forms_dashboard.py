@@ -81,6 +81,7 @@ class DashboardGraph(FlaskForm):
     enable_navbar = BooleanField(lazy_gettext('Enable Navbar'))
     enable_export = BooleanField(lazy_gettext('Enable Export'))
     enable_range = BooleanField(lazy_gettext('Enable Range Selector'))
+    enable_graph_shift = BooleanField(lazy_gettext('Enable Graph Shift'))
     enable_manual_y_axis = BooleanField(lazy_gettext('Manual Y-Axis Min/Max'))
     y_axis_min = DecimalField(lazy_gettext('Y-Axis Minimum'))
     y_axis_max = DecimalField(lazy_gettext('Y-Axis Maximum'))

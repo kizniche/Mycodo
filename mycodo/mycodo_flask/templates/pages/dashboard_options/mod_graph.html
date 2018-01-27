@@ -173,6 +173,12 @@
           {{form_graph.enable_range.label.text}}
         </label>
       </div>
+      <div class="checkbox" style="padding-right: 1em">
+        <label>
+          <input class="form-check-input" id="enable_graph_shift" name="enable_graph_shift" type="checkbox" value="y"{% if each_graph.enable_graph_shift %} checked{% endif %}>
+          {{form_graph.enable_graph_shift.label.text}}
+        </label>
+      </div>
       <div class="form-check disabled" style="padding-top: 1em">
         <label class="form-check-label">
           <input class="form-check-input" id="colors_custom" name="use_custom_colors" type="checkbox" value="y"{% if each_graph.use_custom_colors %} checked{% endif %}>

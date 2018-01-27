@@ -991,6 +991,7 @@ Enable Title | Show a title of the graph name.
 Enable Navbar | Show a slidable navigation bar at the bottom of the graph.
 Enable Export | Enable a button on the top right of the graph to allow exporting of the currently-displayed data as PNG, JPEG, PDF, SVG, CSV, XLS.
 Enable Range Selector | Show a set of navigation buttons at the top of the graph to quickly change the display duration.
+Enable Graph Shift | If enabled, old data points are removed when new data is added to the graph. Only recommended to enable if Enable Navbar is enabled.
 Enable Custom Colors | Use custom colors for Input, Output, and PID lines. Select the colors with the buttons that appear below this checkbox.
 
 ### Gauges

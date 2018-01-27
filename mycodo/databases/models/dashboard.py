@@ -28,6 +28,7 @@ class Dashboard(CRUDMixin, db.Model):
     enable_title = db.Column(db.Boolean, default=False)  # Show title on graph
     enable_auto_refresh = db.Column(db.Boolean, default=True)  # Automatically update graph
     enable_xaxis_reset = db.Column(db.Boolean, default=True)  # Reset the graph x-axis min/max on update
+    enable_graph_shift = db.Column(db.Boolean, default=False)  # Set HighStock addPoint() shift=true/false
     enable_manual_y_axis = db.Column(db.Boolean, default=True)  # Manual selection of y-axis min/max
 
     # Gauge options
