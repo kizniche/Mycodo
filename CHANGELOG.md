@@ -4,6 +4,10 @@
 
  - Add Graph button to manually update graph with new data
 
+### Miscellaneous
+
+ - Change debug line from GPIO State Input module ([#387](https://github.com/kizniche/mycodo/issues/387))
+
 
 ## 5.5.14 (2018-01-25)
 

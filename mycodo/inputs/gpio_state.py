@@ -49,9 +49,6 @@ class GPIOState(AbstractInput):
     def get_measurement(self):
         """ Gets the GPIO state via RPi.GPIO """
         self._gpio_state = None
-
-        self.logger.error(self.gpio.input(self.pin))
-
         return self.gpio.input(self.pin)
 
     def read(self):
