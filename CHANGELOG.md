@@ -4,10 +4,12 @@
 
  - Add Graph button to manually update graph with new data
  - Increase output timing accuracy (0.01 second, previously 0.1 second)
+ - Improve update speed of graphs
 
 ### Bugfixes
 
  - Fix issue modifying the Conditional Max Age ([#387](https://github.com/kizniche/mycodo/issues/387))
+ - Fix issue with new data on graphs requiring a page refresh to see
 
 ### Miscellaneous
 

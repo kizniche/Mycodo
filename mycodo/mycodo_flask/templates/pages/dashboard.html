@@ -181,7 +181,7 @@ $(document).ready(function() {
             // Push the received data to the graph
             var new_date = new Date(data[i][0]);
             var new_time = new_date.getTime();
-            past_data.push([new_time, data[i][1]])
+            past_data.push([new_time, data[i][1]]);
 
             // Store the epoch time of the last data point received
             if (i === data.length - 1) {
@@ -221,7 +221,7 @@ $(document).ready(function() {
           for (i = 0; i < data.length; i++) {
             var new_date = new Date(data[i][0]);
             var new_time = new_date.getTime();
-            chart_graph[chart_number].series[sensor].addPoint([new_time, data[i][1]], true, true);
+            chart_graph[chart_number].series[sensor].addPoint([new_time, data[i][1]], false, false);
           }
           last_relay_time_mil[update_id] = new_time;
         }
