@@ -4,6 +4,10 @@
 
  - Add Graph button to manually update graph with new data
 
+### Bugfixes
+
+ - Fix issue modifying the Conditional Max Age ([#387](https://github.com/kizniche/mycodo/issues/387))
+
 ### Miscellaneous
 
  - Change debug line from GPIO State Input module ([#387](https://github.com/kizniche/mycodo/issues/387))
