@@ -199,31 +199,29 @@ $(document).ready(function() {
 
   // Redraw a particular chart
   function redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset) {
-    if (chart_number in chart_graph) {
-      chart_graph[chart_number].redraw();
-      if (xaxis_reset) {
-        // Ensure Reset Zoom button resets to the proper start and end times
-        chart_graph[chart_number].xAxis[0].update({min: new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)))}, false);
-        chart_graph[chart_number].xAxis[0].update({max: new Date().getTime()}, false);
-        // Update the new data time frame and redraw the chart
-        chart_graph[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min))), new Date().getTime(), true);
-        chart_graph[chart_number].xAxis[0].isDirty = true;
-      }
+    chart_graph[chart_number].redraw();
+    if (xaxis_reset) {
+      // Ensure Reset Zoom button resets to the proper start and end times
+      chart_graph[chart_number].xAxis[0].update({min: new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)))}, false);
+      chart_graph[chart_number].xAxis[0].update({max: new Date().getTime()}, false);
+      // Update the new data time frame and redraw the chart
+      chart_graph[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min))), new Date().getTime(), true);
+      chart_graph[chart_number].xAxis[0].isDirty = true;
     }
   }
 
   // Retrieve chart data for the period since the last data acquisition (refresh period set by user)
-  function retrieveLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift) {
+  function retrieveLiveData(chart_number, series, measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift) {
     // Build the URL
     // Instruct only to return data since the time of the last received data point
     var url = '';
-    var update_id = chart_number + "-" + sensor + "-" + sensor_measurement + "-" + unique_id;
+    var update_id = chart_number + "-" + series + "-" + measurement + "-" + unique_id;
     if (update_id in last_relay_time_mil) {
       var epoch_mil = (new Date).getTime();
       var past_seconds = Math.floor((epoch_mil - last_relay_time_mil[update_id]) / 1000);
-      url = '/past/' + sensor_measurement + '/' + unique_id + '/' + past_seconds;
+      url = '/past/' + measurement + '/' + unique_id + '/' + past_seconds;
     } else {
-      url = '/past/' + sensor_measurement + '/' + unique_id + '/' + refresh_seconds;
+      url = '/past/' + measurement + '/' + unique_id + '/' + refresh_seconds;
     }
     $.getJSON(url,
       function(data, responseText, jqXHR) {
@@ -231,7 +229,7 @@ $(document).ready(function() {
           for (i = 0; i < data.length; i++) {
             var new_date = new Date(data[i][0]);
             var new_time = new_date.getTime();
-            chart_graph[chart_number].series[sensor].addPoint([new_time, data[i][1]], false, graph_shift);
+            chart_graph[chart_number].series[series].addPoint([new_time, data[i][1]], false, graph_shift);
           }
           last_relay_time_mil[update_id] = new_time;
           redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset);
@@ -241,9 +239,9 @@ $(document).ready(function() {
   }
 
   // Repeat function for retrieveLiveData()
-  function getLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift) {
+  function getLiveData(chart_number, series, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift) {
     setInterval(function () {
-      retrieveLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift);
+      retrieveLiveData(chart_number, series, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift);
     }, refresh_seconds * 1000);
   }
 
