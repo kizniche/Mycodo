@@ -12,6 +12,7 @@
 
  - Fix issue modifying the Conditional Max Age ([#387](https://github.com/kizniche/mycodo/issues/387))
  - Fix issue with new data on graphs requiring a page refresh to see
+ - Fix issue with updating inputs/maths with long periods on the Live page
 
 ### Miscellaneous
 
