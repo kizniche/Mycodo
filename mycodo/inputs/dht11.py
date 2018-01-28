@@ -87,7 +87,6 @@ class DHT11Sensor(AbstractInput):
     def next(self):
         """ Get next measurement reading """
         if self.read():  # raised an error
-            self.logger.error("TEST01: {}, {}, {}".format(self._dew_point, self._humidity, self._temperature))
             raise StopIteration  # required
         return dict(dewpoint=float('{0:.2f}'.format(self._dew_point)),
                     humidity=float("{0:.2f}".format(float(self._humidity))),

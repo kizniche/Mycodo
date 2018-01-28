@@ -3,6 +3,7 @@ import logging
 import time
 
 import fasteners
+import os
 import serial
 from serial import SerialException
 
@@ -15,17 +16,17 @@ class AtlasScientificUART:
     def __init__(self, serial_device, baudrate=9600):
         self.logger = logging.getLogger(
             "mycodo.device.atlas_scientific_uart_{dev}".format(dev=serial_device))
-        self.setup = True
+        self.setup = False
         self.serial_device = serial_device
         try:
             self.ser = serial.Serial(port=serial_device,
                                      baudrate=baudrate,
                                      timeout=0)
+            self.setup = True
         except serial.SerialException as err:
             self.logger.exception(
                 "{cls} raised an exception when initializing: "
                 "{err}".format(cls=type(self).__name__, err=err))
-            self.setup = False
             self.logger.exception('Opening serial')
 
     def read_line(self):
@@ -37,13 +38,13 @@ class AtlasScientificUART:
         line_buffer = []
         while True:
             next_char = self.ser.read(1)
-            if next_char == '':
+            if next_char == b'':
                 break
             line_buffer.append(next_char)
             if (len(line_buffer) >= lsl and
                     line_buffer[-lsl:] == list('\r')):
                 break
-        return ''.join(line_buffer)
+        return b''.join(line_buffer)
 
     def query(self, query_str):
         """ Send command and return reply """
@@ -68,7 +69,9 @@ class AtlasScientificUART:
                 lock.release()
                 return response
             else:
-                self.logger.error("Could not acquire Atlas UART lock")
+                self.logger.error("Could not acquire Atlas UART lock. Breaking lock.")
+
+            os.remove(lock_file_amend)
 
         except Exception as err:
             self.logger.exception(

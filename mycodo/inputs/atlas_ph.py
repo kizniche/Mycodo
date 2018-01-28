@@ -28,7 +28,10 @@ class AtlaspHSensor(AbstractInput):
         self.atlas_sensor_i2c = None
 
         if not testing:
-            self.initialize_sensor()
+            try:
+                self.initialize_sensor()
+            except Exception:
+                self.logger.exception("Exception while initializing sensor")
 
     def __repr__(self):
         """ Representation of object """
@@ -123,7 +126,7 @@ class AtlaspHSensor(AbstractInput):
                             '{val}'.format(val=ph))
             else:
                 self.logger.error('UART device is not set up.'
-                             'Check the log for errors.')
+                                  'Check the log for errors.')
 
         # Read sensor via I2C
         elif self.interface == 'I2C':

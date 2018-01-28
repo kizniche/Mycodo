@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix issue with conditionals not triggering when measurement values are 0 ([#387](https://github.com/kizniche/mycodo/issues/387))
+ - Fix issues with Atlas UART module ([#382](https://github.com/kizniche/mycodo/issues/382))
 
 
 ## 5.5.15 (2018-01-28)

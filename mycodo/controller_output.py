@@ -476,7 +476,7 @@ class OutputController(threading.Thread):
                     self.pwm_output[output_id].hardware_PWM(
                         self.output_pin[output_id],
                         self.pwm_hertz[output_id],
-                        abs(duty_cycle) * 10000)
+                        int(abs(duty_cycle) * 10000))
                 elif self.pwm_library[output_id] == 'pigpio_any':
                     self.pwm_output[output_id].set_PWM_frequency(
                         self.output_pin[output_id],
