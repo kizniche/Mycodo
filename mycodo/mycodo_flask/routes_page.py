@@ -1008,7 +1008,6 @@ def page_data():
     for each_key, each_value in choices_input.items():
         choices.append((each_key, each_value))
     form_mod_math.inputs.choices = choices
-    form_mod_verification.inputs.choices = choices
 
     # Create list of file names from the math_options directory
     # Used in generating the correct options for each math controller

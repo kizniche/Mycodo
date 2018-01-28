@@ -37,8 +37,7 @@ class MathMod(FlaskForm):
         lazy_gettext('Max Age (seconds)'),
         validators=[DataRequired()])
     inputs = SelectMultipleField(
-        lazy_gettext('Inputs'),
-        validators=[DataRequired()])
+        lazy_gettext('Inputs'))
     measure = StringField(
         lazy_gettext('Measurement'),
         validators=[DataRequired()])
@@ -73,13 +72,4 @@ class MathModHumidity(FlaskForm):
 class MathModVerification(FlaskForm):
     max_difference = DecimalField(
         lazy_gettext('Max Difference'),
-        validators=[DataRequired()])
-    inputs = SelectMultipleField(
-        lazy_gettext('Inputs'),
-        validators=[DataRequired()])
-    measure = StringField(
-        lazy_gettext('Measurement'),
-        validators=[DataRequired()])
-    measure_units = StringField(
-        lazy_gettext('Units'),
         validators=[DataRequired()])

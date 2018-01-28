@@ -86,9 +86,7 @@ def math_mod(form_mod_math, form_mod_type=None):
                 "Deactivate Math controller before modifying its "
                 "settings"))
 
-        if not form_mod_type:
-            raise ValueError('form_mod_type is not defined')
-        if not form_mod_type.validate():
+        if form_mod_type and not form_mod_type.validate():
             error.append(gettext("Error in form field(s)"))
             flash_form_errors(form_mod_type)
 
@@ -151,8 +149,6 @@ def math_mod(form_mod_math, form_mod_type=None):
 
         elif mod_math.math_type == 'verification':
             mod_math.max_difference = form_mod_type.max_difference.data
-            mod_math.measure = form_mod_type.measure.data
-            mod_math.measure_units = form_mod_type.measure_units.data
 
         if not error:
             db.session.commit()
