@@ -96,20 +96,28 @@ def math_mod(form_mod_math, form_mod_type=None):
         mod_math.period = form_mod_math.period.data
         mod_math.max_measure_age = form_mod_math.max_measure_age.data
 
+        # Collect inputs and measurement name and units
         if mod_math.math_type in ['average',
+                                  'difference',
                                   'median',
                                   'maximum',
                                   'minimum',
                                   'verification']:
-            if len(form_mod_type.inputs.data) < 2:
+            if len(form_mod_math.inputs.data) < 2:
                 error.append("At least two Inputs must be selected")
-            if form_mod_type.inputs.data:
-                inputs_joined = ";".join(form_mod_type.inputs.data)
+            if form_mod_math.inputs.data:
+                inputs_joined = ";".join(form_mod_math.inputs.data)
                 mod_math.inputs = inputs_joined
             else:
                 mod_math.inputs = ''
-            mod_math.measure = form_mod_type.measure.data
-            mod_math.measure_units = form_mod_type.measure_units.data
+            mod_math.measure = form_mod_math.measure.data
+            mod_math.measure_units = form_mod_math.measure_units.data
+
+        if mod_math.math_type == 'difference':
+            if len(form_mod_math.inputs.data) != 2:
+                error.append("Only two Inputs must be selected")
+            mod_math.difference_reverse_order = form_mod_type.difference_reverse_order.data
+            mod_math.difference_absolute = form_mod_type.difference_absolute.data
 
         elif mod_math.math_type == 'humidity':
             mod_math.dry_bulb_t_id = form_mod_type.dry_bulb_temperature.data.split(',')[0]

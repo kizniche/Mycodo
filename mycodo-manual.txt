@@ -488,6 +488,9 @@ produce a new value that may be used within Mycodo.
   Average    Stores the statistical mean of the selected
              Inputs
 
+  Difference Stores the mathematical difference (value_1 -
+             value_2)
+
   Median     Stores the statistical median from the selected
              Inputs
 
@@ -538,6 +541,13 @@ produce a new value that may be used within Mycodo.
                         measurement, on Graphs. If a pre-defined
                         measurement is used, this field will default to
                         the units associated with that measurement.
+
+  Reverse Equation      For Difference calculations, this will reverse
+                        the equation order, from value_1 - value_2 to
+                        value_2 - value_1.
+
+  Absolute Value        For Difference calculations, this will yield an
+                        absolute value (positive number).
 
   Max Difference        If the difference between any selected Input is
                         greater than this value, no new value will be

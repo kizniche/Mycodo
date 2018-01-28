@@ -4,8 +4,9 @@
 
  - Add Graph button to manually update graph with new data
  - Increase output timing accuracy (0.01 second, previously 0.1 second)
- - Improve update speed of graphs
+ - Improve graph update efficiency
  - Add Graph option: Enable Graph Shift (used in conjunction with Enable Navbar)
+ - Add new Math: Difference ([#395](https://github.com/kizniche/mycodo/issues/395))
 
 ### Bugfixes
 
@@ -14,7 +15,7 @@
 
 ### Miscellaneous
 
- - Change debug line from GPIO State Input module ([#387](https://github.com/kizniche/mycodo/issues/387))
+ - Remove debug line from GPIO State Input module ([#387](https://github.com/kizniche/mycodo/issues/387))
 
 
 ## 5.5.14 (2018-01-25)

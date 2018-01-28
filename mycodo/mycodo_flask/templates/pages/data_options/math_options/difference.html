@@ -1,0 +1,22 @@
+<div style="padding: 0.5em" class="row">
+  {{_('See <a href="/help#pre-defined-measurements" target="_blank">Pre-Defined Measurements</a> for a list of Measurements that may be used. You may also create your own Measurement and Units.')}}
+</div>
+<div style="padding: 0.5em" class="row small-gutters">
+  {% include 'pages/data_options/math_options/form_options/measure_units.html' %}
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <label class="form-check-label" style="padding-top: 1em">
+      <input class="form-check-input" id="enable_navbar" name="difference_reverse_order" type="checkbox" value="y"{% if each_math.difference_reverse_order %} checked{% endif %}>
+      {{form_mod_difference.difference_reverse_order.label.text}}
+    </label>
+  </div>
+  <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+    <label class="form-check-label" style="padding-top: 1em">
+      <input class="form-check-input" id="enable_navbar" name="difference_absolute" type="checkbox" value="y"{% if each_math.difference_absolute %} checked{% endif %}>
+      {{form_mod_difference.difference_absolute.label.text}}
+    </label>
+  </div>
+</div>
+
+<div style="clear: both"></div>
+
+{% include 'pages/data_options/math_options/form_options/inputs.html' %}

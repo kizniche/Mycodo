@@ -996,7 +996,7 @@ def page_data():
 
     form_add_math = forms_math.MathAdd()
     form_mod_math = forms_math.MathMod()
-    form_mod_multi = forms_math.MathModMultiInput()
+    form_mod_difference = forms_math.MathModDifference()
     form_mod_humidity = forms_math.MathModHumidity()
     form_mod_verification = forms_math.MathModVerification()
 
@@ -1007,7 +1007,7 @@ def page_data():
     choices = []
     for each_key, each_value in choices_input.items():
         choices.append((each_key, each_value))
-    form_mod_multi.inputs.choices = choices
+    form_mod_math.inputs.choices = choices
     form_mod_verification.inputs.choices = choices
 
     # Create list of file names from the math_options directory
@@ -1072,10 +1072,12 @@ def page_data():
                 Math.id == form_mod_math.math_id.data).first().math_type
             if math_type == 'humidity':
                 utils_math.math_mod(form_mod_math, form_mod_humidity)
+            elif math_type == 'difference':
+                utils_math.math_mod(form_mod_math, form_mod_difference)
             elif math_type == 'verification':
                 utils_math.math_mod(form_mod_math, form_mod_verification)
             else:
-                utils_math.math_mod(form_mod_math, form_mod_multi)
+                utils_math.math_mod(form_mod_math)
         elif form_mod_math.math_delete.data:
             utils_math.math_del(form_mod_math)
         elif form_mod_math.math_order_up.data:
@@ -1100,7 +1102,7 @@ def page_data():
                            form_mod_input=form_mod_input,
                            form_add_math=form_add_math,
                            form_mod_math=form_mod_math,
-                           form_mod_multi=form_mod_multi,
+                           form_mod_difference=form_mod_difference,
                            form_mod_humidity=form_mod_humidity,
                            form_mod_verification=form_mod_verification,
                            camera=camera,

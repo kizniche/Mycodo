@@ -250,6 +250,7 @@ Math controllers allow one or more Inputs to have math applied to produce a new 
 Type | Description
 --------- | ----------------------------------------------
 Average | Stores the statistical mean of the selected Inputs
+Difference | Stores the mathematical difference (value_1 - value_2)
 Median | Stores the statistical median from the selected Inputs
 Maximum | Stores the largest measurement from the selected Inputs
 Minimum | Stores the smallest measurement from the selected Inputs
@@ -264,6 +265,8 @@ Period (seconds) | The duration of time between calculating and storing a new va
 Max Age (seconds) | The maximum allowed age of the Input measurements. If an Input measurement is older than this period, the calculation is cancelled and the new value is not stored in the database. Consequently, if another controller has a Max Age set and cannot retrieve a current Math value, it will cease functioning. A PID controller, for instance, may stop regulating if there is no new Math value created, preventing the PID controller from continuing to run when it should not.
 Measurement | This is the condition being measured. For instance, if all of the selected measurements are temperature, this should also be temperature. A list of the pre-defined measurements that may be used is below.
 Units | This is the units to display along with the measurement, on Graphs. If a pre-defined measurement is used, this field will default to the units associated with that measurement.
+Reverse Equation | For Difference calculations, this will reverse the equation order, from ```value_1 - value_2``` to ```value_2 - value_1```.
+Absolute Value | For Difference calculations, this will yield an absolute value (positive number).
 Max Difference | If the difference between any selected Input is greater than this value, no new value will be stored in the database.
 Dry-Bulb Temperature | The measurement that will serve as the dry-bulb temperature (this is the warmer of the two temperature measurements)
 Wet-Bulb Temperature | The measurement that will serve as the wet-bulb temperature (this is the colder of the two temperature measurements)

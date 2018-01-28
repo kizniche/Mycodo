@@ -100,8 +100,12 @@ class MathController(threading.Thread):
             self.measure = math.measure
             self.measure_units = math.measure_units
 
-            # Average, Maximum, Minimum variables
+            # Average, Difference, Maximum, Minimum variables
             self.inputs = math.inputs
+
+            # Difference variables
+            self.difference_reverse_order = math.difference_reverse_order
+            self.difference_absolute = math.difference_absolute
 
             # Verification variables
             self.max_difference = math.max_difference
@@ -147,6 +151,25 @@ class MathController(threading.Thread):
                             measure_dict = {
                                 self.measure: float('{0:.4f}'.format(
                                     sum(measure) / float(len(measure))))
+                            }
+                            self.measurements = Measurement(measure_dict)
+                            add_measure_influxdb(self.unique_id, self.measurements)
+                        elif measure:
+                            self.logger.error(measure)
+                        else:
+                            self.error_not_within_max_age()
+
+                    elif self.math_type == 'difference':
+                        success, measure = self.get_measurements_from_str(self.inputs)
+                        if success:
+                            if self.difference_reverse_order:
+                                difference = measure[1] - measure[0]
+                            else:
+                                difference = measure[0] - measure[1]
+                            if self.difference_absolute:
+                                difference = abs(difference)
+                            measure_dict = {
+                                self.measure: float('{0:.4f}'.format(difference))
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)

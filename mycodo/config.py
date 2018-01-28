@@ -200,6 +200,7 @@ INPUTS = [
 
 MATHS = [
     ('average', 'Average'),
+    ('difference', 'Difference'),
     ('median', 'Median'),
     ('maximum', 'Maximum'),
     ('minimum', 'Minimum'),

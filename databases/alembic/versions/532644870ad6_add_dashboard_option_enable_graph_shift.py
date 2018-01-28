@@ -28,8 +28,16 @@ def upgrade():
         '''
     )
 
+    with op.batch_alter_table("math") as batch_op:
+        batch_op.add_column(sa.Column('difference_reverse_order', sa.Boolean))
+        batch_op.add_column(sa.Column('difference_absolute', sa.Boolean))
+
 
 def downgrade():
     with op.batch_alter_table("graph") as batch_op:
         batch_op.drop_column('enable_graph_shift')
+
+    with op.batch_alter_table("math") as batch_op:
+        batch_op.drop_column('difference_reverse_order')
+        batch_op.drop_column('difference_absolute')
 

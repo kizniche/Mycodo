@@ -4,6 +4,7 @@
 #
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
+from wtforms import BooleanField
 from wtforms import DecimalField
 from wtforms import IntegerField
 from wtforms import SelectField
@@ -35,15 +36,6 @@ class MathMod(FlaskForm):
     max_measure_age = IntegerField(
         lazy_gettext('Max Age (seconds)'),
         validators=[DataRequired()])
-    math_mod = SubmitField(lazy_gettext('Save'))
-    math_delete = SubmitField(lazy_gettext('Delete'))
-    math_activate = SubmitField(lazy_gettext('Activate'))
-    math_deactivate = SubmitField(lazy_gettext('Deactivate'))
-    math_order_up = SubmitField(lazy_gettext('Up'))
-    math_order_down = SubmitField(lazy_gettext('Down'))
-
-
-class MathModMultiInput(FlaskForm):
     inputs = SelectMultipleField(
         lazy_gettext('Inputs'),
         validators=[DataRequired()])
@@ -53,6 +45,17 @@ class MathModMultiInput(FlaskForm):
     measure_units = StringField(
         lazy_gettext('Units'),
         validators=[DataRequired()])
+    math_mod = SubmitField(lazy_gettext('Save'))
+    math_delete = SubmitField(lazy_gettext('Delete'))
+    math_activate = SubmitField(lazy_gettext('Activate'))
+    math_deactivate = SubmitField(lazy_gettext('Deactivate'))
+    math_order_up = SubmitField(lazy_gettext('Up'))
+    math_order_down = SubmitField(lazy_gettext('Down'))
+
+
+class MathModDifference(FlaskForm):
+    difference_reverse_order = BooleanField(lazy_gettext('Reverse Equation'))
+    difference_absolute = BooleanField(lazy_gettext('Absolute Value'))
 
 
 class MathModHumidity(FlaskForm):

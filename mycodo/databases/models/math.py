@@ -14,9 +14,13 @@ class Math(CRUDMixin, db.Model):
     math_type = db.Column(db.Text, default=None)
     is_activated = db.Column(db.Boolean, default=False)
     period = db.Column(db.Float, default=15.0)  # Duration between readings
-    max_measure_age = db.Column(db.Integer, default=60.0)
+    max_measure_age = db.Column(db.Integer, default=60)
     measure = db.Column(db.Text, default='Measurement')
     measure_units = db.Column(db.Text, default='unit')
+
+    # Difference options
+    difference_reverse_order = db.Column(db.Boolean, default=False)  # False: var1 - var2 or True: var2 - var1
+    difference_absolute = db.Column(db.Boolean, default=False)
 
     # Verification options
     max_difference = db.Column(db.Float, default=10.0)  # Maximum difference between any measurements
