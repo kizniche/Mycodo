@@ -249,7 +249,7 @@ class ConditionalController(threading.Thread):
             if direction == 'none_found':
                 last_measurement = self.get_last_measurement(
                     device_id, device_measurement, max_age)
-                if not last_measurement:
+                if last_measurement is None:
                     message += " Measurement {meas} for device ID {id} not found in the past" \
                                " {value} seconds.".format(
                         meas=device_measurement,
@@ -264,7 +264,7 @@ class ConditionalController(threading.Thread):
                     device_id,
                     device_measurement,
                     max_age)
-                if not last_measurement:
+                if last_measurement is None:
                     logger_cond.debug("Last measurement not found")
                     return
                 elif ((direction == 'above' and
@@ -606,7 +606,7 @@ class ConditionalController(threading.Thread):
         last_measurement = read_last_influxdb(
             unique_id, measurement, duration_sec=duration_sec)
 
-        if last_measurement:
+        if last_measurement is not None:
             last_value = last_measurement[1]
             return last_value
 

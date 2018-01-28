@@ -1,3 +1,10 @@
+## 5.5.16 (Unreleased)
+
+### Bugfixes
+
+ - Fix issue with conditionals not triggering when measurement values are 0 ([#387](https://github.com/kizniche/mycodo/issues/387))
+
+
 ## 5.5.15 (2018-01-28)
 
 ### Features
