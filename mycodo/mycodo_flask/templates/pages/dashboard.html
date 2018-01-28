@@ -133,7 +133,34 @@ $(document).ready(function() {
   var chart_graph = [];
   var chart_gauge = [];
 
-  // Retrieve the last measurement for gauges
+  // Retrieve initial chart data set from the past (duration set by user)
+  function getPastData(chart_number, sensor, sensor_measurement, unique_id, past_seconds) {
+    var url = '/past/' + sensor_measurement + '/' + unique_id + '/' + past_seconds;
+    var update_id = chart_number + "-" + sensor + "-" + sensor_measurement + "-" + unique_id;
+    $.getJSON(url,
+      function(data, responseText, jqXHR) {
+        if (jqXHR.status !== 204) {
+          var past_data = [];
+          for (i = 0; i < data.length; i++){
+            // Push the received data to the graph
+            var new_date = new Date(data[i][0]);
+            var new_time = new_date.getTime();
+            past_data.push([new_time, data[i][1]]);
+
+            // Store the epoch time of the last data point received
+            if (i === data.length - 1) {
+              last_relay_time_mil[update_id] = new_time;
+            }
+          }
+          chart_graph[chart_number].series[sensor].isDirty = true;
+          chart_graph[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (past_seconds / 60)), new Date().getTime());
+          chart_graph[chart_number].series[sensor].setData(past_data, true, false);
+        }
+      }
+    );
+  }
+
+  // Retrieve the latest/last measurement for gauges
   function getLastData(chart_number, dev_id, measurement, max_measure_age_sec, convert_c) {
     var url = '/last/' + measurement + '/' + dev_id + '/' + max_measure_age_sec.toString();
     $.ajax(url, {
@@ -163,46 +190,29 @@ $(document).ready(function() {
     });
   }
 
+  // Repeat function for getLastData()
   function repeatLastData(chart_number, dev_id, measurement, period_sec, max_measure_age_sec, convert_c) {
     setInterval(function () {
-        getLastData(chart_number, dev_id, measurement, max_measure_age_sec, convert_c)
+      getLastData(chart_number, dev_id, measurement, max_measure_age_sec, convert_c)
     }, period_sec * 1000);
   }
 
-  // Retrieve initial chart data set from the past (duration set by user)
-  function getPastData(chart_number, sensor, sensor_measurement, unique_id, past_seconds) {
-    var url = '/past/' + sensor_measurement + '/' + unique_id + '/' + past_seconds;
-    var update_id = chart_number + "-" + sensor + "-" + sensor_measurement + "-" + unique_id;
-    $.getJSON(url,
-      function(data, responseText, jqXHR) {
-        if (jqXHR.status !== 204) {
-          var past_data = [];
-          for (i = 0; i < data.length; i++){
-            // Push the received data to the graph
-            var new_date = new Date(data[i][0]);
-            var new_time = new_date.getTime();
-            past_data.push([new_time, data[i][1]]);
-
-            // Store the epoch time of the last data point received
-            if (i === data.length - 1) {
-              last_relay_time_mil[update_id] = new_time;
-            }
-          }
-          chart_graph[chart_number].series[sensor].isDirty = true;
-          chart_graph[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (past_seconds / 60)), new Date().getTime());
-          chart_graph[chart_number].series[sensor].setData(past_data, true, false);
-        }
+  // Redraw a particular chart
+  function redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset) {
+    if (chart_number in chart_graph) {
+      chart_graph[chart_number].redraw();
+      if (xaxis_reset) {
+        // Ensure Reset Zoom button resets to the proper start and end times
+        chart_graph[chart_number].xAxis[0].update({min: new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)))}, false);
+        chart_graph[chart_number].xAxis[0].update({max: new Date().getTime()}, false);
+        // Update the new data time frame and redraw the chart
+        chart_graph[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min))), new Date().getTime(), true);
+        chart_graph[chart_number].xAxis[0].isDirty = true;
       }
-    );
+    }
   }
 
   // Retrieve chart data for the period since the last data acquisition (refresh period set by user)
-  function getLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift) {
-    setInterval(function () {
-      retrieveLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, graph_shift);
-    }, refresh_seconds * 1000);
-  }
-
   function retrieveLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift) {
     // Build the URL
     // Instruct only to return data since the time of the last received data point
@@ -221,23 +231,23 @@ $(document).ready(function() {
           for (i = 0; i < data.length; i++) {
             var new_date = new Date(data[i][0]);
             var new_time = new_date.getTime();
-            chart_graph[chart_number].series[sensor].addPoint([new_time, data[i][1]], false, graph_shift);
+            chart_graph[chart_number].series[sensor].addPoint([new_time, data[i][1]], graph_shift, graph_shift);
           }
           last_relay_time_mil[update_id] = new_time;
-        }
-        if (xaxis_reset) {
-            // Ensure Reset Zoom button resets to the proper start and end times
-            chart_graph[chart_number].xAxis[0].update({min: new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)))}, false);
-            chart_graph[chart_number].xAxis[0].update({max: new Date().getTime()}, false);
-            // Update the new data time frame and redraw the chart
-            chart_graph[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min))), new Date().getTime(), true);
-            chart_graph[chart_number].xAxis[0].isDirty = true;
+          redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset);
         }
       }
     );
   }
 
-   // capture image and update the image
+  // Repeat function for retrieveLiveData()
+  function getLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift) {
+    setInterval(function () {
+      retrieveLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, graph_shift);
+    }, refresh_seconds * 1000);
+  }
+
+  // Capture image and update the image
   function get_image_cam(dashboard_id, camera_unique_id, image_type, max_age) {
     var url = '';
     var image_type_str = '';
@@ -293,6 +303,7 @@ $(document).ready(function() {
     });
   }
 
+  // Repeat function for get_image_cam()
   function repeat_get_image_cam(dashboard_id, camera_unique_id, period_sec, image_type, max_age) {
     if (image_type === 'stream') {
       document.getElementById(dashboard_id + "-image-src").src = "/video_feed/" + camera_unique_id;

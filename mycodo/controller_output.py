@@ -299,8 +299,6 @@ class OutputController(threading.Thread):
 
                 # Output is not already on
                 else:
-                    self.output_on_until[output_id] = (
-                            time_now + datetime.timedelta(seconds=abs(duration)))
                     self.output_on_duration[output_id] = True
                     self.output_last_duration[output_id] = duration
                     self.logger.debug(
@@ -310,6 +308,9 @@ class OutputController(threading.Thread):
                             name=self.output_name[output_id],
                             dur=abs(duration)))
                     self.output_switch(output_id, 'on')
+                    self.output_on_until[output_id] = (
+                            datetime.datetime.now() +
+                            datetime.timedelta(seconds=abs(duration)))
 
             # Just turn output on
             elif self.output_type[output_id] in [

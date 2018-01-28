@@ -1753,6 +1753,11 @@ select the plus sign on the top-right of a graph.
                         the graph to quickly change the display
                         duration.
 
+  Enable Graph Shift    If enabled, old data points are removed when
+                        new data is added to the graph. Only
+                        recommended to enable if Enable Navbar is
+                        enabled.
+
   Enable Custom Colors  Use custom colors for Input, Output, and PID
                         lines. Select the colors with the buttons that
                         appear below this checkbox.
