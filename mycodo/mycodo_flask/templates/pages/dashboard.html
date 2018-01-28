@@ -231,7 +231,7 @@ $(document).ready(function() {
           for (i = 0; i < data.length; i++) {
             var new_date = new Date(data[i][0]);
             var new_time = new_date.getTime();
-            chart_graph[chart_number].series[sensor].addPoint([new_time, data[i][1]], graph_shift, graph_shift);
+            chart_graph[chart_number].series[sensor].addPoint([new_time, data[i][1]], false, graph_shift);
           }
           last_relay_time_mil[update_id] = new_time;
           redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset);
@@ -243,7 +243,7 @@ $(document).ready(function() {
   // Repeat function for retrieveLiveData()
   function getLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift) {
     setInterval(function () {
-      retrieveLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, graph_shift);
+      retrieveLiveData(chart_number, sensor, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift);
     }, refresh_seconds * 1000);
   }
 
