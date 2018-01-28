@@ -45,6 +45,7 @@
 ### Bugfixes
 
  - Fix inability to change Input Period ([#393](https://github.com/kizniche/mycodo/issues/393))
+ - Fix issue with settings Output PWM duty cycles
  - Fix Exception while reading the GPIO pin of Edge Conditional ([#387](https://github.com/kizniche/mycodo/issues/387))
 
 ### Miscellaneous
