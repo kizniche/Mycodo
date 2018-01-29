@@ -2,6 +2,13 @@
 
 ### Bugfixes
 
+ - Move pigpiod from cron to systemd service to improve reliability ([#388](https://github.com/kizniche/mycodo/issues/388))
+
+
+## 5.5.16 (2018-01-28)
+
+### Bugfixes
+
  - Fix issue with conditionals not triggering when measurement values are 0 ([#387](https://github.com/kizniche/mycodo/issues/387))
  - Fix issue with settings Output PWM duty cycles
  - Fix issues with Atlas UART module ([#382](https://github.com/kizniche/mycodo/issues/382))

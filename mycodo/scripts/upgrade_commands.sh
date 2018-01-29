@@ -164,7 +164,6 @@ case "${1:-''}" in
     'update-cron')
         printf "\n#### Updating Mycodo crontab entry\n"
         /bin/bash ${MYCODO_PATH}/install/crontab.sh mycodo --remove
-        /bin/bash ${MYCODO_PATH}/install/crontab.sh mycodo
         printf "\n#### Updating Mycodo restart monitor crontab entry\n"
         /bin/bash ${MYCODO_PATH}/install/crontab.sh restart_daemon --remove
         /bin/bash ${MYCODO_PATH}/install/crontab.sh restart_daemon
@@ -181,6 +180,12 @@ case "${1:-''}" in
         /usr/local/bin/pigpiod -s 1 &
         cd ${MYCODO_PATH}/install
         rm -rf ./PIGPIO
+
+        printf "\n#### Enabling pigpiod startup script\n"
+        systemctl disable pigpiod.service
+        rm -rf /etc/systemd/system/pigpiod.service
+        systemctl enable ${MYCODO_PATH}/install/pigpiod.service
+        service pigpiod restart
     ;;
     'update-influxdb')
         printf "\n#### Ensuring compatible version of influxdb is installed ####\n"

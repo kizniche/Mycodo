@@ -1,0 +1,12 @@
+[Unit]
+Description=pigpiod service
+
+[Service]
+Type=forking
+ExecStart=/usr/local/bin/pigpiod -s 1
+ExecStop=killall pigpiod
+ExecReload=/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+Alias=pigpiod.service
