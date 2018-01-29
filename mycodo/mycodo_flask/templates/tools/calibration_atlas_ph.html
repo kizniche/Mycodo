@@ -26,7 +26,7 @@ function startTimer() {
   document.getElementById("timer").style.display = "none";
 
   {% if stage in [2, 3, 4] -%}
-    document.getElementById("ph_status").innerHTML = "{{_('Latest pH measurement')}}: <{{_('Please wait')}}>";
+    document.getElementById("ph_status").innerHTML = "{{_('Latest pH measurement')}}: <{{_('<Please wait>')}}>";
     document.getElementById("ph_status").style.display = "inline-block";
     ph_status();
     var refreshIntervalId = setInterval(function () {
@@ -40,7 +40,7 @@ function startTimer() {
     document.getElementById(notifier).innerHTML = str;
   }
   function toMinuteAndSecond(x) {
-    return "{{_('Please wait for sensor to equilibrate')}}: " + x + "{{_('seconds')}}";
+    return "{{_('Please wait for sensor to equilibrate')}}: " + x + " {{_('seconds')}}";
   }
   function setTimer(remain, actions) {
     (function countdown() {
@@ -133,7 +133,7 @@ function startTimer() {
     <p>{{_('Insert the probe into the pH %(ph)s solution, then click Ready', ph='7.0')}}</p>
     <form method="post" action="/calibration_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=3)}}
-    <div style="display: none" id="ph_status"></div>
+    <div style="display: none" id="ph_status">&lt;Please wait&gt;</div>
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
       <div id="proceed_stage_2">
@@ -164,7 +164,7 @@ function startTimer() {
     <p>{{_('Insert the probe into the pH %(ph)s solution, then click Ready', ph='4.0')}}</p>
     <form method="post" action="/calibration_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=4)}}
-    <div style="display: none" id="ph_status"></div>
+    <div style="display: none" id="ph_status">&lt;Please wait&gt;</div>
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
       <div id="proceed_stage_2">
@@ -195,7 +195,7 @@ function startTimer() {
     <p>{{_('Insert the probe into the pH %(ph)s solution, then click Ready', ph='10.0')}}</p>
     <form method="post" action="/calibration_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=5)}}
-    <div style="display: none" id="ph_status"></div>
+    <div style="display: none" id="ph_status">&lt;Please wait&gt;</div>
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
       <div id="proceed_stage_2">

@@ -5,6 +5,7 @@
  - Fix issue with conditionals not triggering when measurement values are 0 ([#387](https://github.com/kizniche/mycodo/issues/387))
  - Fix issue with settings Output PWM duty cycles
  - Fix issues with Atlas UART module ([#382](https://github.com/kizniche/mycodo/issues/382))
+ - Fix issues with calibrating the Atlas pH sensor ([#382](https://github.com/kizniche/mycodo/issues/382))
 
 
 ## 5.5.15 (2018-01-28)

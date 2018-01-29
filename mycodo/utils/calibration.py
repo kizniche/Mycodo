@@ -82,6 +82,8 @@ class AtlasScientificCommand:
         elif command == 'continuous':
             if self.board_version == 1:
                 err, msg = self.send_command('C')
+            elif self.board_version == 2:
+                err, msg = self.send_command('C,1')
         elif command == 'low':
             if self.board_version == 1:
                 err, msg = self.send_command('F')
@@ -100,6 +102,8 @@ class AtlasScientificCommand:
         elif command == 'end':
             if self.board_version == 1:
                 err, msg = self.send_command('E')
+            elif self.board_version == 2:
+                err, msg = self.send_command('C,0')
         elif custom_cmd:
             err, msg = self.send_command(custom_cmd)
         return err, msg
