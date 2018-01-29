@@ -112,18 +112,33 @@ class AtlaspHSensor(AbstractInput):
                     self.logger.debug(
                         "All Lines: {lines}".format(lines=lines))
 
+                    # 'check probe' indicates an error reading the sensor
                     if 'check probe' in lines:
                         self.logger.error(
                             '"check probe" returned from sensor')
+                    # if a string resembling a float value is returned, this
+                    # is out measurement value
                     elif str_is_float(lines[0]):
                         ph = float(lines[0])
                         self.logger.debug(
                             'Value[0] is float: {val}'.format(val=ph))
                     else:
-                        ph = lines[0]
-                        self.logger.error(
-                            'Value[0] is not float or "check probe": '
-                            '{val}'.format(val=ph))
+                        # During calibration, the sensor is put into
+                        # continuous mode, which causes a return of several
+                        # values in one string. If the return value does
+                        # not represent a float value, it is likely to be a
+                        # string of several values. This parses and returns
+                        # the first value.
+                        if str_is_float(lines[0].split(b'\r')[0]):
+                            ph = lines[0].split(b'\r')[0]
+                        # Lastly, this is called if the return value cannot
+                        # be determined. Watchthe output in the GUI to see
+                        # what it is.
+                        else:
+                            ph = lines[0]
+                            self.logger.error(
+                                'Value[0] is not float or "check probe": '
+                                '{val}'.format(val=ph))
             else:
                 self.logger.error('UART device is not set up.'
                                   'Check the log for errors.')

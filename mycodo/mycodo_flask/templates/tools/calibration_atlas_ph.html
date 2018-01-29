@@ -26,7 +26,7 @@ function startTimer() {
   document.getElementById("timer").style.display = "none";
 
   {% if stage in [2, 3, 4] -%}
-    document.getElementById("ph_status").innerHTML = "{{_('Latest pH measurement')}}: <{{_('<Please wait>')}}>";
+    document.getElementById("ph_status").innerHTML = "{{_('Latest pH measurement')}}: &lt;{{_('Please wait')}}&gt;";
     document.getElementById("ph_status").style.display = "inline-block";
     ph_status();
     var refreshIntervalId = setInterval(function () {
