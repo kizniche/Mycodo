@@ -168,9 +168,9 @@ class SignalPWMInput(AbstractInput):
         self._duty_cycle = None
 
         pi = self.pigpio.pi()
-        if not self.pi.connected:  # Check if pigpiod is running
-            self.logger.error("Could not connect to pigpiod."
-                              "Ensure it is running and try again.")
+        if not pi.connected:  # Check if pigpiod is running
+            logger.error("Could not connect to pigpiod."
+                         "Ensure it is running and try again.")
             return None, None, None
 
         read_pwm = ReadPWM(pi, self.pin, self.pigpio, self.weighting)
