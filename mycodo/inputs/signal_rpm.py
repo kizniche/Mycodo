@@ -128,8 +128,16 @@ class SignalRPMInput(AbstractInput):
         self._rpm = None
 
         pi = self.pigpio.pi()
-        read_rpm = ReadRPM(
-            pi, self.pin, self.pigpio, self.rpm_pulses_per_rev, self.weighting)
+        if not self.pi.connected:  # Check if pigpiod is running
+            self.logger.error("Could not connect to pigpiod."
+                              "Ensure it is running and try again.")
+            return None
+
+        read_rpm = ReadRPM(pi,
+                           self.pin,
+                           self.pigpio,
+                           self.rpm_pulses_per_rev,
+                           self.weighting)
         time.sleep(self.sample_time)
         rpm = read_rpm.RPM()
         read_rpm.cancel()

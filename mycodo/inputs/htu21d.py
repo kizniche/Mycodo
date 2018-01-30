@@ -99,6 +99,11 @@ class HTU21DSensor(AbstractInput):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
+        if not self.pi.connected:  # Check if pigpiod is running
+            self.logger.error("Could not connect to pigpiod."
+                              "Ensure it is running and try again.")
+            return None, None, None
+
         self.htu_reset()
         # wtreg = 0xE6
         # rdreg = 0xE7

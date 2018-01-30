@@ -119,6 +119,11 @@ class DHT11Sensor(AbstractInput):
         self._humidity = None
         self._temperature = None
 
+        if not self.pi.connected:  # Check if pigpiod is running
+            self.logger.error("Could not connect to pigpiod."
+                              "Ensure it is running and try again.")
+            return None, None, None
+
         import pigpio
         self.pigpio = pigpio
 
@@ -182,6 +187,7 @@ class DHT11Sensor(AbstractInput):
         self.temp_temperature = 0
         self.temp_humidity = 0
         self.temp_dew_point = None
+
         try:
             try:
                 self.setup()
