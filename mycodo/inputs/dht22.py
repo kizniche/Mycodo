@@ -145,6 +145,11 @@ class DHT22Sensor(AbstractInput):
         self._humidity = None
         self._temperature = None
 
+        if not self.pi.connected:  # Check if pigpiod is running
+            self.logger.error("Could not connect to pigpiod."
+                              "Ensure it is running and try again.")
+            return None, None, None
+
         # Ensure if the power pin turns off, it is turned back on
         if (self.power_relay_id and
                 not db_retrieve_table_daemon(Output, device_id=self.power_relay_id).is_on()):
@@ -206,34 +211,37 @@ class DHT22Sensor(AbstractInput):
         self.temp_humidity = None
         self.temp_dew_point = None
 
-        self.close()
-        time.sleep(0.2)
+        initialized = False
 
         try:
-            self.setup()
-        except Exception as except_msg:
-            self.logger.exception(
-                'Could not initialize sensor. Check if pigpiod is running. '
-                'Error: {msg}'.format(msg=except_msg))
-
-        time.sleep(0.2)
-
-        try:
-            self.pi.write(self.gpio, pigpio.LOW)
-            time.sleep(0.017)  # 17 ms
-            self.pi.set_mode(self.gpio, pigpio.INPUT)
-            self.pi.set_watchdog(self.gpio, 200)
-            time.sleep(0.2)
-            if (self.temp_humidity is not None and
-                    self.temp_temperature is not None):
-                self.temp_dew_point = dewpoint(
-                    self.temp_temperature, self.temp_humidity)
-        except Exception as e:
-            self.logger.exception(
-                "Exception when taking a reading: {err}".format(
-                    err=e))
-        finally:
             self.close()
+            time.sleep(0.2)
+            self.setup()
+            time.sleep(0.2)
+            initialized = True
+        except Exception as except_msg:
+            self.logger.error(
+                "Could not initialize sensor. Check if it's connected "
+                "properly and pigpiod is running. Error: {msg}".format(
+                    msg=except_msg))
+
+        if initialized:
+            try:
+                self.pi.write(self.gpio, pigpio.LOW)
+                time.sleep(0.017)  # 17 ms
+                self.pi.set_mode(self.gpio, pigpio.INPUT)
+                self.pi.set_watchdog(self.gpio, 200)
+                time.sleep(0.2)
+                if (self.temp_humidity is not None and
+                        self.temp_temperature is not None):
+                    self.temp_dew_point = dewpoint(
+                        self.temp_temperature, self.temp_humidity)
+            except Exception as e:
+                self.logger.exception(
+                    "Exception when taking a reading: {err}".format(
+                        err=e))
+            finally:
+                self.close()
 
     def setup(self):
         """

@@ -1,3 +1,10 @@
+## 5.5.17 (Unreleased)
+
+### Miscellaneous
+
+ - Improve deamon error-handling and Input connectivity ([#388](https://github.com/kizniche/mycodo/issues/388))
+
+
 ## 5.5.16 (2018-01-28)
 
 ### Bugfixes

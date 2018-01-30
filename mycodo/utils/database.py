@@ -3,6 +3,8 @@ import logging
 import time
 from sqlite3 import OperationalError
 
+import sqlalchemy
+
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.utils import session_scope
 
@@ -66,14 +68,19 @@ def db_retrieve_table_daemon(table, entry=None, device_id=None, unique_id=None):
                 new_session.close()
             return return_table
         except OperationalError:
-            if tries == 1:
-                logger.exception(
-                    "Could not read the Mycodo database. "
-                    "Please submit a New Issue at "
-                    "https://github.com/kizniche/Mycodo/issues/new")
-            else:
-                logger.error(
-                    "The Mycodo database is locked. "
-                    "Trying to access again in 1 second...")
-                time.sleep(1)
-            tries -= 1
+            pass
+        except sqlalchemy.exc.OperationalError:
+            pass
+
+        if tries == 1:
+            logger.exception(
+                "Could not read the Mycodo database. "
+                "Please submit a New Issue at "
+                "https://github.com/kizniche/Mycodo/issues/new")
+        else:
+            logger.error(
+                "The Mycodo database is locked. "
+                "Trying to access again in 1 second...")
+
+        time.sleep(1)
+        tries -= 1
