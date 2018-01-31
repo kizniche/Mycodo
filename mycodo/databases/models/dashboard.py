@@ -34,6 +34,7 @@ class Dashboard(CRUDMixin, db.Model):
     # Gauge options
     max_measure_age = db.Column(db.Float, default=120.0)  # Only show measurements if they are younger than this age
     range_colors = db.Column(db.Text, default='')  # Custom hex color values and gauge range
+    enable_timestamp = db.Column(db.Boolean, default=True)  # Show timestamp for displayed gauge value
 
     # Graph and Gauge options
     y_axis_min = db.Column(db.Float, default=None)  # x-axis minimum

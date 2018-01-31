@@ -118,6 +118,7 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.y_axis_min = form_object.y_axis_min.data
         new_graph.y_axis_max = form_object.y_axis_max.data
         new_graph.sensor_ids_measurements = form_object.sensor_ids.data[0]
+        new_graph.enable_timestamp = form_object.enable_timestamp.data
         try:
             if not error:
                 new_graph.save()
@@ -329,6 +330,7 @@ def dashboard_mod(form_base, form_object, request_form):
         mod_graph.y_axis_min = form_object.y_axis_min.data
         mod_graph.y_axis_max = form_object.y_axis_max.data
         mod_graph.max_measure_age = form_object.max_measure_age.data
+        mod_graph.enable_timestamp = form_object.enable_timestamp.data
         if form_object.sensor_ids.data[0]:
             sensor_ids_joined = ";".join(form_object.sensor_ids.data)
             mod_graph.sensor_ids_measurements = sensor_ids_joined

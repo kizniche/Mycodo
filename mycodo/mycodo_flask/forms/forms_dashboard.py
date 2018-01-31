@@ -123,6 +123,7 @@ class DashboardGauge(FlaskForm):
                                  " any new measurements.")
         )]
     )
+    enable_timestamp = BooleanField(lazy_gettext('Show Timestamp'))
 
 
 class DashboardCamera(FlaskForm):
