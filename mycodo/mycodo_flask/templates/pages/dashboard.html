@@ -133,7 +133,7 @@ $(document).ready(function() {
   var chart_graph = [];
   var chart_gauge = [];
 
-  // Retrieve initial chart data set from the past (duration set by user)
+  // Retrieve initial graph data set from the past (duration set by user)
   function getPastData(chart_number, sensor, sensor_measurement, unique_id, past_seconds) {
     var url = '/past/' + sensor_measurement + '/' + unique_id + '/' + past_seconds;
     var update_id = chart_number + "-" + sensor + "-" + sensor_measurement + "-" + unique_id;
@@ -161,7 +161,7 @@ $(document).ready(function() {
   }
 
   // Retrieve the latest/last measurement for gauges
-  function getLastData(chart_number, dev_id, measurement, max_measure_age_sec, convert_c) {
+  function getLastData(chart_number, dev_id, measurement, max_measure_age_sec) {
     var url = '/last/' + measurement + '/' + dev_id + '/' + max_measure_age_sec.toString();
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
@@ -179,8 +179,9 @@ $(document).ready(function() {
           var hours = date.getHours();
           var minutes = "0" + date.getMinutes();
           var seconds = "0" + date.getSeconds();
-          var formattedTime = year + "/" + month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+          var formattedTime = month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
           point.update(measurement);
+          document.getElementById('timestamp-gauge-' + chart_number).innerHTML = formattedTime + ' ';
         }
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -191,9 +192,9 @@ $(document).ready(function() {
   }
 
   // Repeat function for getLastData()
-  function repeatLastData(chart_number, dev_id, measurement, period_sec, max_measure_age_sec, convert_c) {
+  function repeatLastData(chart_number, dev_id, measurement, period_sec, max_measure_age_sec) {
     setInterval(function () {
-      getLastData(chart_number, dev_id, measurement, max_measure_age_sec, convert_c)
+      getLastData(chart_number, dev_id, measurement, max_measure_age_sec)
     }, period_sec * 1000);
   }
 

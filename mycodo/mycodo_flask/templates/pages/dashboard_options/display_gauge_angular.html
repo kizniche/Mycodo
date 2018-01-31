@@ -1,3 +1,4 @@
+{% set measure_name = '' %}
   chart_gauge[{{chart_number}}] = new Highcharts.chart({
     chart: {
       renderTo: 'container-gauge-{{each_graph.id}}',
@@ -10,33 +11,22 @@
         load: function () {
         {% for each_input in input -%}
           {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
-        getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.max_measure_age}}, false);
-        repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}}, false);
-        {%- if not each_input.adc_measure -%}
-          {% set measure_name = measurement_units[graph_input_ids[0].split(',')[1]]['name']|safe %}
-          {% set measure_unit = measurement_units[graph_input_ids[0].split(',')[1]]['unit']|safe %}
-        {%- else -%}
-          {% set measure_name = each_input.adc_measure|safe %}
-          {% set measure_unit = each_input.adc_measure_units|safe %}
-        {% endif %}
+        getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.max_measure_age}});
+        repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}});
           {%- endfor -%}
         {%- endfor -%}
 
         {% for each_math in math -%}
           {%- for each_id_and_measure in graph_input_ids if each_math.unique_id == each_id_and_measure.split(',')[0] %}
-        getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.max_measure_age}}, false);
-        repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}}, false);
-        {% set measure_name = each_math.measure|safe %}
-        {% set measure_unit = each_math.measure_units|safe %}
+        getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.max_measure_age}});
+        repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}});
           {%- endfor -%}
         {%- endfor -%}
 
         {%- for each_pid in pid -%}
           {%- for each_id_and_measure in graph_input_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
-        getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.max_measure_age}}, false);
-        repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}}, false);
-        {% set measure_name = each_id_and_measure.split(',')[1]|safe %}
-        {% set measure_unit = dict_measurements[each_id_and_measure.split(',')[1]]['unit']|safe %}
+        getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.max_measure_age}});
+        repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}});
           {%- endfor -%}
         {%- endfor -%}            }
       },
@@ -103,7 +93,28 @@
     },
 
     series: [{
-        name: '{{measure_name}}',
+        name: '
+        {%- for each_input in input -%}
+          {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
+            {%- if not each_input.adc_measure -%}
+              {{measurement_units[each_id_and_measure.split(',')[1]]['name']|safe}}
+            {%- else -%}
+              {{each_input.adc_measure|safe}}
+            {% endif %}
+          {%- endfor -%}
+        {%- endfor -%}
+
+        {%- for each_math in math -%}
+          {%- for each_id_and_measure in graph_input_ids if each_math.unique_id == each_id_and_measure.split(',')[0] %}
+            {{each_math.measure|safe}}
+          {%- endfor -%}
+        {%- endfor -%}
+
+        {%- for each_pid in pid -%}
+          {%- for each_id_and_measure in graph_input_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
+            {{each_id_and_measure.split(',')[1]|safe}}
+          {%- endfor -%}
+        {%- endfor -%}',
         data: [null],
         dataLabels: {
           style: {"fontSize": "14px"},
@@ -115,7 +126,27 @@
             baseWidth: 5
         },
         tooltip: {
-            valueSuffix: ' {{measure_unit}}'
+            valueSuffix: '{%- for each_input in input -%}
+          {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
+            {%- if not each_input.adc_measure -%}
+              {{' ' + measurement_units[each_id_and_measure.split(',')[1]]['unit']|safe}}
+            {%- else -%}
+              {{' ' + each_input.adc_measure_units|safe}}
+            {% endif %}
+          {%- endfor -%}
+        {%- endfor -%}
+
+        {%- for each_math in math -%}
+          {%- for each_id_and_measure in graph_input_ids if each_math.unique_id == each_id_and_measure.split(',')[0] %}
+            {{' ' + each_math.measure_units|safe}}
+          {%- endfor -%}
+        {%- endfor -%}
+
+        {%- for each_pid in pid -%}
+          {%- for each_id_and_measure in graph_input_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
+            {{' ' + dict_measurements[each_id_and_measure.split(',')[1]]['unit']|safe}}
+          {%- endfor -%}
+        {%- endfor -%}'
         }
     }],
 

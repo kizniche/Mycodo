@@ -1,5 +1,9 @@
 ## 5.5.17 (Unreleased)
 
+### Features
+
+ - Add timestamps to Gauges ([#392](https://github.com/kizniche/mycodo/issues/392))
+
 ### Bugfixes
 
  - Move pigpiod from cron to systemd service to improve reliability ([#388](https://github.com/kizniche/mycodo/issues/388))

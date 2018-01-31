@@ -1,6 +1,6 @@
 <div style="padding-right: 0.5em;">
   <div class="col-sx-12 text-right">
-    <span style="padding-right: 0.5em">[{{'%02d' % each_graph.id}}] {{each_graph.name}}</span>
+    <span style="padding-right: 0.5em"><span id="timestamp-gauge-{{chart_number}}"></span>[{{'%02d' % each_graph.id}}] {{each_graph.name}}</span>
     <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer_gauge{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer_gauge{{chart_number}}">
       <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
     </button>
