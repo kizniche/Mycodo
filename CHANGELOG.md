@@ -2,7 +2,7 @@
 
 ### Features
 
- - Add timestamps to Gauges ([#392](https://github.com/kizniche/mycodo/issues/392))
+ - Add option to show/hide Gauge timestamp ([#392](https://github.com/kizniche/mycodo/issues/392))
 
 ### Bugfixes
 
