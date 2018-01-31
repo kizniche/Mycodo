@@ -1009,6 +1009,7 @@ Refresh (seconds) | The duration between acquisitions of new data to display on 
 Max Age (seconds) | The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.
 Gauge Min | The lowest value of the gauge.
 Gauge Max | The highest value of the gauge.
+Show Timestamp | Show the timestamp of the current gauge measurement.
 
 ### Cameras
 
