@@ -491,6 +491,8 @@ produce a new value that may be used within Mycodo.
   Difference Stores the mathematical difference (value_1 -
              value_2)
 
+  Equation   Stores the calculated value of an equation
+
   Median     Stores the statistical median from the selected
              Inputs
 
@@ -565,6 +567,11 @@ produce a new value that may be used within Mycodo.
                         can be used to calculate the percent relative
                         humidity. If disabled, a default 101325 Pa will
                         be used in the calculation.
+
+  Equation              An equation that will be solved with Python’s
+                        eval() function. Let “x” represent the input
+                        value. Valid equation symbols include: + - * /
+                        ^
   ---------------------------------------------------------------------
 
 Pre-defined Measurements
@@ -1799,6 +1806,9 @@ a speedometer in a car.
   Gauge Min             The lowest value of the gauge.
 
   Gauge Max             The highest value of the gauge.
+
+  Show Timestamp        Show the timestamp of the current gauge
+                        measurement.
   ---------------------------------------------------------------------
 
 Cameras

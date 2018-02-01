@@ -657,22 +657,26 @@
 <td style="text-align: left;">Stores the mathematical difference (value_1 - value_2)</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">Equation</td>
+<td style="text-align: left;">Stores the calculated value of an equation</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">Median</td>
 <td style="text-align: left;">Stores the statistical median from the selected Inputs</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Maximum</td>
 <td style="text-align: left;">Stores the largest measurement from the selected Inputs</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Minimum</td>
 <td style="text-align: left;">Stores the smallest measurement from the selected Inputs</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Humidity</td>
 <td style="text-align: left;">Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Verification</td>
 <td style="text-align: left;">Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected Inputs</td>
 </tr>
@@ -733,6 +737,10 @@
 <tr class="odd">
 <td style="text-align: left;">Pressure</td>
 <td style="text-align: left;">This is an optional pressure measurement that can be used to calculate the percent relative humidity. If disabled, a default 101325 Pa will be used in the calculation.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Equation</td>
+<td style="text-align: left;">An equation that will be solved with Python’s eval() function. Let “x” represent the input value. Valid equation symbols include: + - * / ^</td>
 </tr>
 </tbody>
 </table>
@@ -1997,6 +2005,10 @@
 <tr class="even">
 <td style="text-align: left;">Gauge Max</td>
 <td style="text-align: left;">The highest value of the gauge.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Show Timestamp</td>
+<td style="text-align: left;">Show the timestamp of the current gauge measurement.</td>
 </tr>
 </tbody>
 </table>

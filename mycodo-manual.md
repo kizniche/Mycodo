@@ -251,6 +251,7 @@ Type | Description
 --------- | ----------------------------------------------
 Average | Stores the statistical mean of the selected Inputs
 Difference | Stores the mathematical difference (value_1 - value_2)
+Equation | Stores the calculated value of an equation
 Median | Stores the statistical median from the selected Inputs
 Maximum | Stores the largest measurement from the selected Inputs
 Minimum | Stores the smallest measurement from the selected Inputs
@@ -271,6 +272,7 @@ Max Difference | If the difference between any selected Input is greater than th
 Dry-Bulb Temperature | The measurement that will serve as the dry-bulb temperature (this is the warmer of the two temperature measurements)
 Wet-Bulb Temperature | The measurement that will serve as the wet-bulb temperature (this is the colder of the two temperature measurements)
 Pressure | This is an optional pressure measurement that can be used to calculate the percent relative humidity. If disabled, a default 101325 Pa will be used in the calculation.
+Equation | An equation that will be solved with Python's eval() function. Let "x" represent the input value. Valid equation symbols include: + - * / ^
 
 #### Pre-defined Measurements
 
