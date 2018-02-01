@@ -3,6 +3,7 @@
 ### Features
 
  - Add option to show/hide Gauge timestamp ([#392](https://github.com/kizniche/mycodo/issues/392))
+ - Add new Math: Equation ([#335](https://github.com/kizniche/mycodo/issues/335))
 
 ### Bugfixes
 

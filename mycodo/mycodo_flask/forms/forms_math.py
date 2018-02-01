@@ -57,6 +57,11 @@ class MathModDifference(FlaskForm):
     difference_absolute = BooleanField(lazy_gettext('Absolute Value'))
 
 
+class MathModEquation(FlaskForm):
+    equation_input = StringField(lazy_gettext('Input'))
+    equation = StringField(lazy_gettext('Equation'))
+
+
 class MathModHumidity(FlaskForm):
     dry_bulb_temperature = StringField(
         lazy_gettext('Dry Bulb Temperature'),

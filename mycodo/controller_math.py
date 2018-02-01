@@ -100,12 +100,16 @@ class MathController(threading.Thread):
             self.measure = math.measure
             self.measure_units = math.measure_units
 
-            # Average, Difference, Maximum, Minimum variables
+            # Inputs to calculate with
             self.inputs = math.inputs
 
             # Difference variables
             self.difference_reverse_order = math.difference_reverse_order
             self.difference_absolute = math.difference_absolute
+
+            # Equation variables
+            self.equation_input = math.equation_input
+            self.equation = math.equation
 
             # Verification variables
             self.max_difference = math.max_difference
@@ -178,6 +182,24 @@ class MathController(threading.Thread):
                         else:
                             self.error_not_within_max_age()
 
+                    elif self.math_type == 'equation':
+                        success, measure = self.get_measurements_from_str(self.equation_input)
+                        self.logger.error("TEST00: {}".format(measure))
+                        if success:
+                            replaced_str = self.equation.replace('x', str(measure[0]))
+                            self.logger.error("TEST01: {}".format(replaced_str))
+                            equation_output = eval(replaced_str)
+                            self.logger.error("TEST02: {}".format(equation_output))
+                            measure_dict = {
+                                self.measure: float('{0:.4f}'.format(equation_output))
+                            }
+                            self.measurements = Measurement(measure_dict)
+                            add_measure_influxdb(self.unique_id, self.measurements)
+                        elif measure:
+                            self.logger.error(measure)
+                        else:
+                            self.error_not_within_max_age()
+
                     elif self.math_type == 'median':
                         success, measure = self.get_measurements_from_str(self.inputs)
                         if success:
@@ -218,13 +240,13 @@ class MathController(threading.Thread):
                             self.error_not_within_max_age()
 
                     elif self.math_type == 'verification':
-                        success, measurements = self.get_measurements_from_str(self.inputs)
+                        success, measure = self.get_measurements_from_str(self.inputs)
                         if (success and
-                                max(measurements) - min(measurements) <
+                                max(measure) - min(measure) <
                                 self.max_difference):
                             measure_dict = {
                                 self.measure: float('{0:.4f}'.format(
-                                    sum(measurements) / float(len(measurements))))
+                                    sum(measure) / float(len(measure))))
                             }
                             self.measurements = Measurement(measure_dict)
                             add_measure_influxdb(self.unique_id, self.measurements)

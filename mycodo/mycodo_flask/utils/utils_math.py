@@ -108,6 +108,15 @@ def math_mod(form_mod_math, form_mod_type=None):
                 mod_math.inputs = inputs_joined
             else:
                 mod_math.inputs = ''
+
+        # Set measurement and units
+        if mod_math.math_type in ['average',
+                                  'difference',
+                                  'equation',
+                                  'median',
+                                  'maximum',
+                                  'minimum',
+                                  'verification']:
             mod_math.measure = form_mod_math.measure.data
             mod_math.measure_units = form_mod_math.measure_units.data
 
@@ -116,6 +125,10 @@ def math_mod(form_mod_math, form_mod_type=None):
                 error.append("Only two Inputs must be selected")
             mod_math.difference_reverse_order = form_mod_type.difference_reverse_order.data
             mod_math.difference_absolute = form_mod_type.difference_absolute.data
+
+        if mod_math.math_type == 'equation':
+            mod_math.equation_input = form_mod_type.equation_input.data
+            mod_math.equation = form_mod_type.equation.data
 
         elif mod_math.math_type == 'humidity':
             mod_math.dry_bulb_t_id = form_mod_type.dry_bulb_temperature.data.split(',')[0]

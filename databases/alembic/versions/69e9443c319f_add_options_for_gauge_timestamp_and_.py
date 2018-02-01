@@ -20,6 +20,10 @@ def upgrade():
     with op.batch_alter_table("graph") as batch_op:
         batch_op.add_column(sa.Column('enable_timestamp', sa.Boolean))
 
+    with op.batch_alter_table("math") as batch_op:
+        batch_op.add_column(sa.Column('equation_input', sa.Text))
+        batch_op.add_column(sa.Column('equation', sa.Text))
+
     op.execute(
         '''
         UPDATE graph
@@ -31,3 +35,7 @@ def upgrade():
 def downgrade():
     with op.batch_alter_table("graph") as batch_op:
         batch_op.drop_column('enable_timestamp')
+
+    with op.batch_alter_table("math") as batch_op:
+        batch_op.drop_column('equation_input')
+        batch_op.drop_column('equation')

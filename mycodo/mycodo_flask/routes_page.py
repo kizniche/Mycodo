@@ -997,6 +997,7 @@ def page_data():
     form_add_math = forms_math.MathAdd()
     form_mod_math = forms_math.MathMod()
     form_mod_difference = forms_math.MathModDifference()
+    form_mod_equation = forms_math.MathModEquation()
     form_mod_humidity = forms_math.MathModHumidity()
     form_mod_verification = forms_math.MathModVerification()
 
@@ -1073,6 +1074,8 @@ def page_data():
                 utils_math.math_mod(form_mod_math, form_mod_humidity)
             elif math_type == 'difference':
                 utils_math.math_mod(form_mod_math, form_mod_difference)
+            elif math_type == 'equation':
+                utils_math.math_mod(form_mod_math, form_mod_equation)
             elif math_type == 'verification':
                 utils_math.math_mod(form_mod_math, form_mod_verification)
             else:
@@ -1102,6 +1105,7 @@ def page_data():
                            form_add_math=form_add_math,
                            form_mod_math=form_mod_math,
                            form_mod_difference=form_mod_difference,
+                           form_mod_equation=form_mod_equation,
                            form_mod_humidity=form_mod_humidity,
                            form_mod_verification=form_mod_verification,
                            camera=camera,
