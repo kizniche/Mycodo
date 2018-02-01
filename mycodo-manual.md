@@ -444,6 +444,7 @@ Pause | When paused, the PID will not turn on the associated outputs, and settin
 Hold | When held, the PID will turn on the associated outputs, and settings can be changed without losing current PID output values.
 Resume | Resume a PID controller from being held or paused.
 Setpoint | This is the specific point you would like the environment to be regaulted at. For example, if you would like the humidity regulated to 60%, enter 60.
+Band (+/- Setpoint) | If set to a non-0 value, the setpoint will become a band, which will be between the band_max=setpoint+band and band_min=setpoint-band. If Raising, the PID will raise to the band_max, then wait until the condition falls to the band_min to resume regulation. If Lowering, the PID will lower to the band_min, then wait until the condition rises to the band_max to resume regulating. If set to Both, regulation will only occur until the condition is within the band.
 Direction | This is the direction that you wish to regulate. For example, if you only require the temperature to be raised, set this to "Up," but if you require regulation up and down, set this to "Both."
 Period | This is the duration between when the PID acquires a measurement, the PID is updated, and the output is modulated.
 Max Age | The time (in seconds) that the sensor measurement age is required to be less than. If the measurement is not younger than this age, the measurement is thrown out and the PID will not actuate the output. This is a safety measure to ensure the PID is only using recent measurements.
