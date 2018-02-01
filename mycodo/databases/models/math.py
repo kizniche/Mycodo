@@ -22,6 +22,10 @@ class Math(CRUDMixin, db.Model):
     difference_reverse_order = db.Column(db.Boolean, default=False)  # False: var1 - var2 or True: var2 - var1
     difference_absolute = db.Column(db.Boolean, default=False)
 
+    # Equation
+    equation_input = db.Column(db.Text, default='')
+    equation = db.Column(db.Text, default='x*1')
+
     # Verification options
     max_difference = db.Column(db.Float, default=10.0)  # Maximum difference between any measurements
 

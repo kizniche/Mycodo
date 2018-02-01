@@ -11,7 +11,7 @@
       $.ajax(url, {
         success: function(data, responseText, jqXHR) {
           if (jqXHR.status === 204) {
-            document.getElementById(sensor_id + "-" + sensor_measurement + "-time").innerHTML = "No Data Last " + period.toString() + "m";
+            document.getElementById(sensor_id + "-" + sensor_measurement + "-time").innerHTML = "No Data Last " + period.toString() + " sec";
             document.getElementById(sensor_id + "-" + sensor_measurement + "-value").innerHTML = "0";
           }
           else {
