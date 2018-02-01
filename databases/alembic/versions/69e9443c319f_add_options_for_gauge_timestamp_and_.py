@@ -1,4 +1,4 @@
-"""Add options for gauge timestamp
+"""Add options for gauge timestamp and math equation and PID hysteresis
 
 Revision ID: 69e9443c319f
 Revises: 532644870ad6
@@ -20,10 +20,6 @@ def upgrade():
     with op.batch_alter_table("graph") as batch_op:
         batch_op.add_column(sa.Column('enable_timestamp', sa.Boolean))
 
-    with op.batch_alter_table("math") as batch_op:
-        batch_op.add_column(sa.Column('equation_input', sa.Text))
-        batch_op.add_column(sa.Column('equation', sa.Text))
-
     op.execute(
         '''
         UPDATE graph
@@ -31,10 +27,27 @@ def upgrade():
         '''
     )
 
+    with op.batch_alter_table("pid") as batch_op:
+        batch_op.add_column(sa.Column('band', sa.Float))
+
+    op.execute(
+        '''
+        UPDATE pid
+        SET band=0
+        '''
+    )
+
+    with op.batch_alter_table("math") as batch_op:
+        batch_op.add_column(sa.Column('equation_input', sa.Text))
+        batch_op.add_column(sa.Column('equation', sa.Text))
+
 
 def downgrade():
     with op.batch_alter_table("graph") as batch_op:
         batch_op.drop_column('enable_timestamp')
+
+    with op.batch_alter_table("pid") as batch_op:
+        batch_op.drop_column('band')
 
     with op.batch_alter_table("math") as batch_op:
         batch_op.drop_column('equation_input')

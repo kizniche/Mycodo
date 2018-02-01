@@ -55,6 +55,7 @@ class PIDModBase(FlaskForm):
             max=1000000
         )]
     )
+    band = DecimalField(lazy_gettext('Band (+/- Setpoint)'))
     k_p = DecimalField(
         lazy_gettext('Kp Gain'),
         validators=[validators.NumberRange(

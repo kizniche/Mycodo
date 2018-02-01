@@ -19,8 +19,9 @@ class PID(CRUDMixin, db.Model):
     period = db.Column(db.Float, default=30.0)
     max_measure_age = db.Column(db.Float, default=120.0)
     measurement = db.Column(db.Text, default='')  # What condition is the controller regulating?
-    direction = db.Column(db.Text, default='Raise')  # Direction of regulation (raise, lower, both)
+    direction = db.Column(db.Text, default='raise')  # Direction of regulation (raise, lower, both)
     setpoint = db.Column(db.Float, default=30.0)  # PID setpoint
+    band = db.Column(db.Float, default=0)  # PID hysteresis band
     method_id = db.Column(db.Integer, db.ForeignKey('method.id'), default=None)
     method_start_time = db.Column(db.Text, default=None)
     method_end_time = db.Column(db.Text, default=None)

@@ -137,7 +137,13 @@ MEASUREMENT_UNITS = {
         'meas': 'rpm', 'unit': 'rpm'},
     'setpoint': {
         'name': lazy_gettext('Setpoint'),
-        'meas': 'setpoint', 'unit': u''},
+        'meas': 'setpoint', 'unit': ''},
+    'setpoint_band_min': {
+        'name': lazy_gettext('Band Min'),
+        'meas': 'setpoint_band_min', 'unit': ''},
+    'setpoint_band_max': {
+        'name': lazy_gettext('Band Max'),
+        'meas': 'setpoint_band_max', 'unit': ''},
     'specific_enthalpy': {
         'name': lazy_gettext('Specific Enthalpy'),
         'meas': 'specific_enthalpy', 'unit': 'kJ/kg'},

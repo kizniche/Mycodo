@@ -99,7 +99,6 @@ class PIDController(threading.Thread):
         self.P_value = None
         self.I_value = None
         self.D_value = None
-        self.set_point = 0.0
         self.lower_seconds_on = 0.0
         self.raise_seconds_on = 0.0
         self.lower_duty_cycle = 0.0
@@ -129,8 +128,13 @@ class PIDController(threading.Thread):
         self.integrator_max = None
         self.period = None
         self.max_measure_age = None
-        self.default_set_point = None
-        self.set_point = None
+        self.default_setpoint = None
+        self.setpoint = None
+
+        # Hysteresis options
+        self.band = None
+        self.below_band_min = None  # Indicate the current value has fallen below the band min
+        self.above_band_max = None  # Indicate the current value has risen above the band max
 
         self.dev_unique_id = None
         self.input_duration = None
@@ -240,16 +244,33 @@ class PIDController(threading.Thread):
                                 if ended:
                                     self.method_start_act = 'Ended'
                                 if setpoint is not None:
-                                    self.set_point = setpoint
+                                    self.setpoint = setpoint
                                 else:
-                                    self.set_point = self.default_set_point
+                                    self.setpoint = self.default_setpoint
 
                             write_setpoint_db = threading.Thread(
                                 target=write_influxdb_value,
                                 args=(self.pid_unique_id,
                                       'setpoint',
-                                      self.set_point,))
+                                      self.setpoint,))
                             write_setpoint_db.start()
+
+                            if self.band:
+                                band_min = self.setpoint - self.band
+                                write_setpoint_db = threading.Thread(
+                                    target=write_influxdb_value,
+                                    args=(self.pid_unique_id,
+                                          'setpoint_band_min',
+                                          band_min,))
+                                write_setpoint_db.start()
+
+                                band_max = self.setpoint + self.band
+                                write_setpoint_db = threading.Thread(
+                                    target=write_influxdb_value,
+                                    args=(self.pid_unique_id,
+                                          'setpoint_band_max',
+                                          band_max,))
+                                write_setpoint_db.start()
 
                             # Update PID and get control variable
                             self.control_variable = self.update_pid_output(
@@ -297,8 +318,9 @@ class PIDController(threading.Thread):
         self.integrator_max = pid.integrator_max
         self.period = pid.period
         self.max_measure_age = pid.max_measure_age
-        self.default_set_point = pid.setpoint
-        self.set_point = pid.setpoint
+        self.default_setpoint = pid.setpoint
+        self.setpoint = pid.setpoint
+        self.band = pid.band
 
         dev_unique_id = pid.measurement.split(',')[0]
         self.measurement = pid.measurement.split(',')[1]
@@ -336,7 +358,37 @@ class PIDController(threading.Thread):
             measured condition by the input)
         :type current_value: float
         """
-        self.error = self.set_point - current_value
+        setpoint = self.setpoint
+
+        # Determine if hysteresis is enabled and if the PID should be applied
+        if self.band:
+            band_min = self.setpoint - self.band
+            band_max = self.setpoint + self.band
+            if self.direction == 'raise':
+                setpoint = band_max
+                if current_value < band_max and self.below_band_min:
+                    pass  # Apply the PID
+                elif current_value < band_max and not self.below_band_min:
+                    return 0
+                elif current_value > band_max:
+                    self.below_band_min = False
+                    return 0
+            elif self.direction == 'lower':
+                setpoint = band_min
+                if current_value > band_min and self.above_band_max:
+                    pass  # Apply the PID
+                elif current_value > band_min and not self.above_band_max:
+                    return 0
+                elif current_value < band_min:
+                    self.above_band_max = False
+                    return 0
+            elif self.direction == 'both':
+                if current_value < band_min or current_value > band_max:
+                    pass  # Apply the PID
+                else:
+                    return 0
+
+        self.error = setpoint - current_value
 
         # Calculate P-value
         self.P_value = self.Kp * self.error
@@ -451,7 +503,7 @@ class PIDController(threading.Thread):
                         self.logger.debug(
                             "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output "
                             "{id} to {dc:.1f}%".format(
-                                sp=self.set_point,
+                                sp=self.setpoint,
                                 cv=self.control_variable,
                                 id=self.raise_output_id,
                                 dc=self.raise_duty_cycle))
@@ -483,7 +535,7 @@ class PIDController(threading.Thread):
                             self.logger.debug(
                                 "Setpoint: {sp} Output: {cv} to output "
                                 "{id}".format(
-                                    sp=self.set_point,
+                                    sp=self.setpoint,
                                     cv=self.control_variable,
                                     id=self.raise_output_id))
                             self.control.relay_on(
@@ -530,7 +582,7 @@ class PIDController(threading.Thread):
                         self.logger.debug(
                             "Setpoint: {sp}, Control Variable: {cv}, "
                             "Output: PWM output {id} to {dc:.1f}%".format(
-                                sp=self.set_point,
+                                sp=self.setpoint,
                                 cv=self.control_variable,
                                 id=self.lower_output_id,
                                 dc=self.lower_duty_cycle))
@@ -563,7 +615,7 @@ class PIDController(threading.Thread):
                             # Activate lower_output for a duration
                             self.logger.debug("Setpoint: {sp} Output: {cv} to "
                                               "output {id}".format(
-                                                sp=self.set_point,
+                                                sp=self.setpoint,
                                                 cv=self.control_variable,
                                                 id=self.lower_output_id))
                             self.control.relay_on(
@@ -625,9 +677,9 @@ class PIDController(threading.Thread):
         self.logger.info("Resume")
         return "success"
 
-    def set_setpoint(self, set_point):
+    def set_setpoint(self, setpoint):
         """ Initilize the setpoint of PID """
-        self.set_point = set_point
+        self.setpoint = setpoint
         self.integrator = 0
         self.derivator = 0
 
@@ -652,7 +704,7 @@ class PIDController(threading.Thread):
         self.Kd = d
 
     def get_setpoint(self):
-        return self.set_point
+        return self.setpoint
 
     def get_error(self):
         return self.error

@@ -59,6 +59,7 @@ def pid_mod(form_mod_pid_base,
     mod_pid.period = form_mod_pid_base.period.data
     mod_pid.max_measure_age = form_mod_pid_base.max_measure_age.data
     mod_pid.setpoint = form_mod_pid_base.setpoint.data
+    mod_pid.band = form_mod_pid_base.band.data
     mod_pid.p = form_mod_pid_base.k_p.data
     mod_pid.i = form_mod_pid_base.k_i.data
     mod_pid.d = form_mod_pid_base.k_d.data

@@ -4,6 +4,7 @@
 
  - Add option to show/hide Gauge timestamp ([#392](https://github.com/kizniche/mycodo/issues/392))
  - Add new Math: Equation ([#335](https://github.com/kizniche/mycodo/issues/335))
+ - Add PID control hysteresis ([#398](https://github.com/kizniche/mycodo/issues/398))
 
 ### Bugfixes
 
