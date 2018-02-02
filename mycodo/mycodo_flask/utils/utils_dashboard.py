@@ -465,8 +465,8 @@ def graph_y_axes(dict_measurements):
                                 if 'duration_sec' not in y_axes[each_graph.id]:
                                     y_axes[each_graph.id].append('duration_sec')
 
-                            # Find the y-axis the setpoint applies to
-                            elif measurement == 'setpoint':
+                            # Find the y-axis the setpoint or bands apply to
+                            elif measurement in ['setpoint', 'setpoint_band_min', 'setpoint_band_max']:
                                 for each_input in input_dev:
                                     if each_input.unique_id == each_device.measurement.split(',')[0]:
                                         pid_measurement = each_device.measurement.split(',')[1]
