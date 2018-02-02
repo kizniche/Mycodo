@@ -184,12 +184,9 @@ class MathController(threading.Thread):
 
                     elif self.math_type == 'equation':
                         success, measure = self.get_measurements_from_str(self.equation_input)
-                        self.logger.error("TEST00: {}".format(measure))
                         if success:
                             replaced_str = self.equation.replace('x', str(measure[0]))
-                            self.logger.error("TEST01: {}".format(replaced_str))
                             equation_output = eval(replaced_str)
-                            self.logger.error("TEST02: {}".format(equation_output))
                             measure_dict = {
                                 self.measure: float('{0:.4f}'.format(equation_output))
                             }
