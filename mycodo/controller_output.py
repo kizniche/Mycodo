@@ -264,7 +264,7 @@ class OutputController(threading.Thread):
                     # Write the duration the output was ON to the
                     # database at the timestamp it turned ON
                     if time_on > 0:
-                        # Make sure the recorded value is recorded negatieve
+                        # Make sure the recorded value is recorded negative
                         # if instructed to do so
                         if self.output_last_duration[output_id] < 0:
                             duration_on = float(-time_on)
