@@ -133,8 +133,8 @@ class PIDController(threading.Thread):
 
         # Hysteresis options
         self.band = None
-        self.below_band_min = None  # Indicate the current value has fallen below the band min
-        self.above_band_max = None  # Indicate the current value has risen above the band max
+        self.allow_raising = True
+        self.allow_lowering = True
 
         self.dev_unique_id = None
         self.input_duration = None
@@ -364,29 +364,42 @@ class PIDController(threading.Thread):
         if self.band:
             band_min = self.setpoint - self.band
             band_max = self.setpoint + self.band
+
             if self.direction == 'raise':
                 setpoint = band_max
-                if current_value < band_max and self.below_band_min:
+                if current_value < band_min:
+                    self.allow_raising = True
                     pass  # Apply the PID
-                elif current_value < band_max and not self.below_band_min:
-                    return 0
+                elif band_min < current_value < band_max and self.allow_raising:
+                    pass  # Apply the PID
+                elif current_value < band_max and not self.allow_raising:
+                    return 0  # Restrict the PID
                 elif current_value > band_max:
-                    self.below_band_min = False
-                    return 0
+                    self.allow_raising = False
+                    return 0  # Restrict the PID
+
             elif self.direction == 'lower':
                 setpoint = band_min
-                if current_value > band_min and self.above_band_max:
+                if current_value > band_max:
+                    self.allow_lowering = True
                     pass  # Apply the PID
-                elif current_value > band_min and not self.above_band_max:
-                    return 0
+                elif band_min < current_value < band_max and self.allow_lowering:
+                    pass  # Apply the PID
+                elif current_value > band_min and not self.allow_lowering:
+                    return 0  # Restrict the PID
                 elif current_value < band_min:
-                    self.above_band_max = False
-                    return 0
+                    self.allow_lowering = False
+                    return 0  # Restrict the PID
+
             elif self.direction == 'both':
-                if current_value < band_min or current_value > band_max:
+                if current_value < band_min:
+                    setpoint = band_min
+                    pass  # Apply the PID
+                elif current_value > band_max:
+                    setpoint = band_max
                     pass  # Apply the PID
                 else:
-                    return 0
+                    return 0  # Restrict the PID
 
         self.error = setpoint - current_value
 

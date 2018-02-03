@@ -883,6 +883,18 @@ resumes operation.
                         you would like the humidity regulated to 60%,
                         enter 60.
 
+  Band (+/- Setpoint)   If set to a non-0 value, the setpoint will
+                        become a band, which will be between the
+                        band_max=setpoint+band and
+                        band_min=setpoint-band. If Raising, the PID
+                        will raise to the band_max, then wait until the
+                        condition falls to the band_min to resume
+                        regulation. If Lowering, the PID will lower to
+                        the band_min, then wait until the condition
+                        rises to the band_max to resume regulating. If
+                        set to Both, regulation will only occur until
+                        the condition is within the band.
+
   Direction             This is the direction that you wish to
                         regulate. For example, if you only require the
                         temperature to be raised, set this to “Up,” but

@@ -1092,58 +1092,62 @@
 <td style="text-align: left;">This is the specific point you would like the environment to be regaulted at. For example, if you would like the humidity regulated to 60%, enter 60.</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">Band (+/- Setpoint)</td>
+<td style="text-align: left;">If set to a non-0 value, the setpoint will become a band, which will be between the band_max=setpoint+band and band_min=setpoint-band. If Raising, the PID will raise to the band_max, then wait until the condition falls to the band_min to resume regulation. If Lowering, the PID will lower to the band_min, then wait until the condition rises to the band_max to resume regulating. If set to Both, regulation will only occur until the condition is within the band.</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">Direction</td>
 <td style="text-align: left;">This is the direction that you wish to regulate. For example, if you only require the temperature to be raised, set this to “Up,” but if you require regulation up and down, set this to “Both.”</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Period</td>
 <td style="text-align: left;">This is the duration between when the PID acquires a measurement, the PID is updated, and the output is modulated.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Max Age</td>
 <td style="text-align: left;">The time (in seconds) that the sensor measurement age is required to be less than. If the measurement is not younger than this age, the measurement is thrown out and the PID will not actuate the output. This is a safety measure to ensure the PID is only using recent measurements.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Raise Output</td>
 <td style="text-align: left;">This is the output that will cause the particular environmental condition to rise. In the case of raising the temperature, this may be a heating pad or coil.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Min Duration (raise)</td>
 <td style="text-align: left;">This is the minimum that the PID output must be before the Up Output turns on. If the PID output exceeds this minimum, the Up Output will turn on for the PID output number of seconds.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Max Duration (raise)</td>
 <td style="text-align: left;">This is the maximum duration the Up Output is allowed to turn on for. If the PID output exceeds this number, the Up Output will turn on for no greater than this duration of time.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Lower Output</td>
 <td style="text-align: left;">This is the output that will cause the particular environmental condition to lower. In the case of lowering the CO<sub>2</sub>, this may be an exhaust fan.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Min Duration (lower)</td>
 <td style="text-align: left;">This is the minimum that the PID output must be before the Down Output turns on. If the PID output exceeds this minimum, the Down Output will turn on for the PID output number of seconds.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Max Duration (lower)</td>
 <td style="text-align: left;">This is the maximum duration the Down Output is allowed to turn on for. if the PID output exceeds this number, the Down Output will turn on for no greater than this duration of time.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">K<sub>P</sub></td>
 <td style="text-align: left;">Proportional coefficient (non-negative). Accounts for present values of the error. For example, if the error is large and positive, the control output will also be large and positive.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">K<sub>I</sub></td>
 <td style="text-align: left;">Integral coefficient (non-negative). Accounts for past values of the error. For example, if the current output is not sufficiently strong, the integral of the error will accumulate over time, and the controller will respond by applying a stronger action.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">K<sub>D</sub></td>
 <td style="text-align: left;">Derivative coefficient (non-negative). Accounts for predicted future values of the error, based on its current rate of change.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Integrator Min</td>
 <td style="text-align: left;">The minimum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Integrator Max</td>
 <td style="text-align: left;">The maximum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)</td>
 </tr>
