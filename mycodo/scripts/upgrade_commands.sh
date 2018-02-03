@@ -180,10 +180,10 @@ case "${1:-''}" in
         rm -rf ./PIGPIO
     ;;
     'update-gpiod')
-        printf "\n#### Removing current pigpiod startup script\n"
+        printf "\n#### Disabling installed pigpiod startup script\n"
         systemctl disable pigpiod.service
-        printf "#### Reenabling pigpiod startup script\n"
         rm -rf /etc/systemd/system/pigpiod.service
+        printf "#### Enabling current pigpiod startup script\n"
         systemctl enable ${MYCODO_PATH}/install/pigpiod.service
         service pigpiod restart
     ;;
@@ -221,18 +221,19 @@ case "${1:-''}" in
         done
     ;;
     'update-logrotate')
-        printf "\n#### Installing logrotate script\n"
+        printf "\n#### Installing logrotate scripts\n"
         if [ -e /etc/cron.daily/logrotate ]; then
-            printf "#### logrotate moved to cron.daily\n"
+            printf "#### logrotate execution moved from cron.daily to cron.hourly\n"
             mv -f /etc/cron.daily/logrotate /etc/cron.hourly/
         fi
         cp -f ${MYCODO_PATH}/install/logrotate_mycodo /etc/logrotate.d/mycodo
-        printf "#### logrotate script installed\n"
+        printf "#### Mycodo logrotate script installed\n"
     ;;
     'update-mycodo-startup-script')
-        printf "\n#### Enabling mycodo startup script\n"
+        printf "\n#### Disabling installed mycodo startup script\n"
         systemctl disable mycodo.service
         rm -rf /etc/systemd/system/mycodo.service
+        printf "#### Enabling current mycodo startup script\n"
         systemctl enable ${MYCODO_PATH}/install/mycodo.service
     ;;
     'update-packages')
