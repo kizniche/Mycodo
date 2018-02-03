@@ -1302,7 +1302,7 @@ def dict_custom_colors():
 
             if each_graph.relay_ids:
                 index = 0
-                for each_set in each_graph.relay_ids.split(','):
+                for each_set in each_graph.relay_ids.split(';'):
                     output_unique_id = each_set.split(',')[0]
                     output = Output.query.filter_by(
                         unique_id=output_unique_id).first()

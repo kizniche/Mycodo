@@ -398,7 +398,7 @@ class PIDController(threading.Thread):
 
         return pid_value
 
-    def check_hysteresis(self, current_value):
+    def check_hysteresis(self, measure):
         """
         Determine if hysteresis is enabled and if the PID should be applied
 
@@ -406,63 +406,56 @@ class PIDController(threading.Thread):
             restrict the PID
         :rtype: float or None
 
-        :param current_value: The input, or process, variable (the actual
-            measured condition by the input)
-        :type current_value: float
+        :param measure: The PID input (or process) variable
+        :type measure: float
         """
         if self.band == 0:
+            # If band is disabled, return setpoint
             return self.setpoint
 
         band_min = self.setpoint - self.band
         band_max = self.setpoint + self.band
 
         if self.direction == 'raise':
-            setpoint = band_max
-            if current_value < band_min:
+            if (measure < band_min or
+                    (band_min < measure < band_max and self.allow_raising)):
                 self.allow_raising = True
+                setpoint = band_max  # New setpoint
                 return setpoint  # Apply the PID
-            elif band_min < current_value < band_max and self.allow_raising:
-                return setpoint  # Apply the PID
-            elif current_value < band_max and not self.allow_raising:
-                return None  # Restrict the PID
-            elif current_value > band_max:
+            elif measure > band_max:
                 self.allow_raising = False
-                return None  # Restrict the PID
+            return None  # Restrict the PID
 
         elif self.direction == 'lower':
-            setpoint = band_min
-            if current_value > band_max:
+            if (measure > band_max or
+                    (band_min < measure < band_max and self.allow_lowering)):
                 self.allow_lowering = True
+                setpoint = band_min  # New setpoint
                 return setpoint  # Apply the PID
-            elif band_min < current_value < band_max and self.allow_lowering:
-                return setpoint  # Apply the PID
-            elif current_value > band_min and not self.allow_lowering:
-                return None  # Restrict the PID
-            elif current_value < band_min:
+            elif measure < band_min:
                 self.allow_lowering = False
-                return None  # Restrict the PID
+            return None  # Restrict the PID
 
         elif self.direction == 'both':
-            if current_value < band_min:
-                # Reset integrator and derivator upon direction switch
+            if measure < band_min:
+                setpoint = band_min  # New setpoint
                 if not self.allow_raising:
+                    # Reset integrator and derivator upon direction switch
                     self.integrator = 0.0
                     self.derivator = 0.0
                     self.allow_raising = True
                     self.allow_lowering = False
-                return band_min  # Apply the PID
-
-            elif current_value > band_max:
-                # Reset integrator and derivator upon direction switch
+            elif measure > band_max:
+                setpoint = band_max  # New setpoint
                 if not self.allow_lowering:
+                    # Reset integrator and derivator upon direction switch
                     self.integrator = 0.0
                     self.derivator = 0.0
                     self.allow_raising = False
                     self.allow_lowering = True
-                return band_max  # Apply the PID
-
             else:
                 return None  # Restrict the PID
+            return setpoint  # Apply the PID
 
     def get_last_measurement(self):
         """

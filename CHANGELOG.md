@@ -12,6 +12,7 @@
  - Move pigpiod from cron to systemd service to improve reliability ([#388](https://github.com/kizniche/mycodo/issues/388))
  - Improve deamon error-handling and Input connectivity ([#388](https://github.com/kizniche/mycodo/issues/388))
  - Fix Mycodo service timeout ([#379](https://github.com/kizniche/mycodo/issues/379))
+ - Fix display of Graph custom colors
 
 
 ## 5.5.16 (2018-01-28)
