@@ -358,48 +358,13 @@ class PIDController(threading.Thread):
             measured condition by the input)
         :type current_value: float
         """
-        setpoint = self.setpoint
-
         # Determine if hysteresis is enabled and if the PID should be applied
-        if self.band:
-            band_min = self.setpoint - self.band
-            band_max = self.setpoint + self.band
+        setpoint = self.check_hysteresis(current_value)
 
-            if self.direction == 'raise':
-                setpoint = band_max
-                if current_value < band_min:
-                    self.allow_raising = True
-                    pass  # Apply the PID
-                elif band_min < current_value < band_max and self.allow_raising:
-                    pass  # Apply the PID
-                elif current_value < band_max and not self.allow_raising:
-                    return 0  # Restrict the PID
-                elif current_value > band_max:
-                    self.allow_raising = False
-                    return 0  # Restrict the PID
-
-            elif self.direction == 'lower':
-                setpoint = band_min
-                if current_value > band_max:
-                    self.allow_lowering = True
-                    pass  # Apply the PID
-                elif band_min < current_value < band_max and self.allow_lowering:
-                    pass  # Apply the PID
-                elif current_value > band_min and not self.allow_lowering:
-                    return 0  # Restrict the PID
-                elif current_value < band_min:
-                    self.allow_lowering = False
-                    return 0  # Restrict the PID
-
-            elif self.direction == 'both':
-                if current_value < band_min:
-                    setpoint = band_min
-                    pass  # Apply the PID
-                elif current_value > band_max:
-                    setpoint = band_max
-                    pass  # Apply the PID
-                else:
-                    return 0  # Restrict the PID
+        if setpoint is None:
+            # Prevent PID variables form being manipulated and
+            # restrict PID from operating.
+            return 0
 
         self.error = setpoint - current_value
 
@@ -432,6 +397,60 @@ class PIDController(threading.Thread):
         pid_value = self.P_value + self.I_value + self.D_value
 
         return pid_value
+
+    def check_hysteresis(self, current_value):
+        """
+        Determine if hysteresis is enabled and if the PID should be applied
+
+        :return: float if the setpoint if the PID should be applied, None to
+            restrict the PID
+        :rtype: float or None
+
+        :param current_value: The input, or process, variable (the actual
+            measured condition by the input)
+        :type current_value: float
+        """
+        if self.band == 0:
+            return self.setpoint
+
+        band_min = self.setpoint - self.band
+        band_max = self.setpoint + self.band
+
+        if self.direction == 'raise':
+            setpoint = band_max
+            if current_value < band_min:
+                self.allow_raising = True
+                return setpoint  # Apply the PID
+            elif band_min < current_value < band_max and self.allow_raising:
+                return setpoint  # Apply the PID
+            elif current_value < band_max and not self.allow_raising:
+                return None  # Restrict the PID
+            elif current_value > band_max:
+                self.allow_raising = False
+                return None  # Restrict the PID
+
+        elif self.direction == 'lower':
+            setpoint = band_min
+            if current_value > band_max:
+                self.allow_lowering = True
+                return setpoint  # Apply the PID
+            elif band_min < current_value < band_max and self.allow_lowering:
+                return setpoint  # Apply the PID
+            elif current_value > band_min and not self.allow_lowering:
+                return None  # Restrict the PID
+            elif current_value < band_min:
+                self.allow_lowering = False
+                return None  # Restrict the PID
+
+        elif self.direction == 'both':
+            if current_value < band_min:
+                setpoint = band_min
+                return setpoint  # Apply the PID
+            elif current_value > band_max:
+                setpoint = band_max
+                return setpoint  # Apply the PID
+            else:
+                return None  # Restrict the PID
 
     def get_last_measurement(self):
         """

@@ -1,11 +1,14 @@
 [Unit]
 Description=pigpiod service
+After=syslog.target
 
 [Service]
 Type=forking
 ExecStart=/usr/local/bin/pigpiod -s 1
 ExecStop=killall pigpiod
 ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=5s
 
 [Install]
 WantedBy=multi-user.target

@@ -55,6 +55,8 @@ ${INSTALL_CMD} setup-virtualenv
 
 ${INSTALL_CMD} update-pip3
 
+${INSTALL_CMD} install-gpiod
+
 ${INSTALL_CMD} update-gpiod
 
 ${INSTALL_CMD} update-wiringpi

@@ -5,11 +5,13 @@
  - Add option to show/hide Gauge timestamp ([#392](https://github.com/kizniche/mycodo/issues/392))
  - Add new Math: Equation ([#335](https://github.com/kizniche/mycodo/issues/335))
  - Add PID control hysteresis ([#398](https://github.com/kizniche/mycodo/issues/398))
+ - Automatically restart pigpiod when it fails
 
 ### Bugfixes
 
  - Move pigpiod from cron to systemd service to improve reliability ([#388](https://github.com/kizniche/mycodo/issues/388))
  - Improve deamon error-handling and Input connectivity ([#388](https://github.com/kizniche/mycodo/issues/388))
+ - Fix Mycodo service timeout ([#379](https://github.com/kizniche/mycodo/issues/379))
 
 
 ## 5.5.16 (2018-01-28)

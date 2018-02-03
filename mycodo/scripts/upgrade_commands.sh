@@ -168,7 +168,7 @@ case "${1:-''}" in
         /bin/bash ${MYCODO_PATH}/install/crontab.sh restart_daemon --remove
         /bin/bash ${MYCODO_PATH}/install/crontab.sh restart_daemon
     ;;
-    'update-gpiod')
+    'install-gpiod')
         printf "\n#### Installing gpiod\n"
         cd ${MYCODO_PATH}/install
         # wget --quiet -P ${MYCODO_PATH}/install abyz.co.uk/rpi/pigpio/pigpio.zip
@@ -178,9 +178,11 @@ case "${1:-''}" in
         make install
         cd ${MYCODO_PATH}/install
         rm -rf ./PIGPIO
-
-        printf "\n#### Enabling pigpiod startup script\n"
+    ;;
+    'update-gpiod')
+        printf "\n#### Removing current pigpiod startup script\n"
         systemctl disable pigpiod.service
+        printf "#### Reenabling pigpiod startup script\n"
         rm -rf /etc/systemd/system/pigpiod.service
         systemctl enable ${MYCODO_PATH}/install/pigpiod.service
         service pigpiod restart
