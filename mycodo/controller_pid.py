@@ -133,8 +133,8 @@ class PIDController(threading.Thread):
 
         # Hysteresis options
         self.band = None
-        self.allow_raising = True
-        self.allow_lowering = True
+        self.allow_raising = False
+        self.allow_lowering = False
 
         self.dev_unique_id = None
         self.input_duration = None
@@ -444,11 +444,23 @@ class PIDController(threading.Thread):
 
         elif self.direction == 'both':
             if current_value < band_min:
-                setpoint = band_min
-                return setpoint  # Apply the PID
+                # Reset integrator and derivator upon direction switch
+                if not self.allow_raising:
+                    self.integrator = 0.0
+                    self.derivator = 0.0
+                    self.allow_raising = True
+                    self.allow_lowering = False
+                return band_min  # Apply the PID
+
             elif current_value > band_max:
-                setpoint = band_max
-                return setpoint  # Apply the PID
+                # Reset integrator and derivator upon direction switch
+                if not self.allow_lowering:
+                    self.integrator = 0.0
+                    self.derivator = 0.0
+                    self.allow_raising = False
+                    self.allow_lowering = True
+                return band_max  # Apply the PID
+
             else:
                 return None  # Restrict the PID
 
