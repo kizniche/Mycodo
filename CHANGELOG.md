@@ -1,3 +1,10 @@
+## 5.5.18 (Unreleased)
+
+### Bugfixes
+
+ - Fix reloading of asynchronous graphs ([#399](https://github.com/kizniche/mycodo/issues/399))
+
+
 ## 5.5.17 (2018-02-03)
 
 ### Features

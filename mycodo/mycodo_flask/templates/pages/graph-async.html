@@ -86,7 +86,7 @@ $(function () {
     }
 
     function afterSetExtremes(e) {
-      var url = '/async/{{selected_measure}}/{{selected_unique_id}}/' + Math.round(e.min)/1000 + '/' + Math.round(e.max)/1000;
+      var url = '/async/{{selected_measure}}/{{selected_id}}/' + Math.round(e.min)/1000 + '/' + Math.round(e.max)/1000;
       console.log(url);
       $.getJSON(url,
         function(data, responseText, jqXHR) {
