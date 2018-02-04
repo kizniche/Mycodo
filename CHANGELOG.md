@@ -4,6 +4,7 @@
 
  - Allow multiple data series on asynchronous graph ([#399](https://github.com/kizniche/mycodo/issues/399))
  - Add Outputs to Asynchronous Graphs ([#399](https://github.com/kizniche/mycodo/issues/399))
+ - Add PIDs to Asynchronous Graphs ([#399](https://github.com/kizniche/mycodo/issues/399))
  - Preserve Asynchronous Graph selections after form submissions ([#399](https://github.com/kizniche/mycodo/issues/399))
 
 ### Bugfixes

@@ -411,6 +411,7 @@ def page_graph_async():
     input_dev = Input.query.all()
     math = Math.query.all()
     output = Output.query.all()
+    pid = PID.query.all()
 
     # Add custom measurement and units to list (From linux command input)
     dict_measurements = add_custom_measurements(
@@ -419,6 +420,7 @@ def page_graph_async():
     input_choices = utils_general.choices_inputs(input_dev)
     math_choices = utils_general.choices_maths(math)
     output_choices = utils_general.choices_outputs(output)
+    pid_choices = utils_general.choices_pids(pid)
 
     selected_ids_measures = None
 
@@ -434,9 +436,11 @@ def page_graph_async():
                            input=input_dev,
                            math=math,
                            output=output,
+                           pid=pid,
                            input_choices=input_choices,
                            math_choices=math_choices,
                            output_choices=output_choices,
+                           pid_choices=pid_choices,
                            selected_ids_measures=selected_ids_measures,
                            y_axes=y_axes)
 
