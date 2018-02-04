@@ -2,7 +2,7 @@
 
 ## Environmental Regulation System
 
-### Latest version: 5.5.16 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade) [![DOI](https://zenodo.org/badge/30382555.svg)](https://zenodo.org/badge/latestdoi/30382555)
+### Latest version: 5.5.17 [![Build Status](https://travis-ci.org/kizniche/Mycodo.svg?branch=master)](https://travis-ci.org/kizniche/Mycodo) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80)](https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade) [![DOI](https://zenodo.org/badge/30382555.svg)](https://zenodo.org/badge/latestdoi/30382555)
 
 #### [Mycodo Manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md) ([PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt))
 
@@ -15,7 +15,7 @@ The system comprises a backend (daemon) and a frontend (user interface). The bac
 #### Languages
 
   - Complete: [Español (Spanish)](#espa%C3%B1ol-spanish)
-  - Partial: [Français (French)](#fran%C3%A7ais-french), [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
+  - Partial: [Français (French)](#fran%C3%A7ais-french)
   - Change language under Configure -> Language
 
 ## Table of Contents
@@ -196,7 +196,7 @@ This software includes third party open source software components: Discrete PID
 
 ## Languages
 
-Mycodo has been translated (to varying degrees) to [Spanish (Español)](#espa%C3%B1ol-spanish), [French (Français)](#fran%C3%A7ais-french), and [Korean (한국어)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean). By default, mycodo will display the default language set by your browser. You may also force a language in the settings at ```[Gear Icon]``` -> ```Configure``` -> ```General``` -> ```Language```
+Mycodo has been translated (to varying degrees) to [Spanish (Español)](#espa%C3%B1ol-spanish) and [French (Français)](#fran%C3%A7ais-french) (partially). By default, mycodo will display the default language set by your browser. You may also force a language in the settings at ```[Gear Icon]``` -> ```Configure``` -> ```General``` -> ```Language```
 
 ### Español (Spanish)
 
@@ -213,15 +213,6 @@ Mycodo est un système de surveillance à distance et de régulation automatisé
 Le système de base coordonne un ensemble divers de réponses aux mesures de capteurs, y compris des actions telles que l'enregistrement de caméra, les notifications par courrier électronique, l'activation / désactivation de relais, la régulation avec contrôle PID, et plus encore.
 
 Mycodo a été utilisé pour cultiver des champignons gourmands, cultiver des plantes, cultiver des micro-organismes, entretenir l'homéostasie du rucher des abeilles, incuber les œufs de serpent et les jeunes animaux, vieillir les fromages, fermenter les aliments, entretenir les systèmes aquatiques et plus encore.
-
-### 한국어 (Korean)
-
-Mycodo는 환경 조건을 조절하는 데 중점을 둔 원격 모니터링 및 자동화 된 규제 시스템입니다. Raspberry Pi (버전 Zero, 1, 2, 3)를 실행하기 위해 제작되었으며 설치 및 작동이 쉽도록 설계되었습니다.
-
-핵심 시스템은 카메라 기록, 전자 메일 알림, 릴레이 활성화 / 비활성화, PID 제어 규정 등과 같은 조치를 포함하여 센서 측정에 대한 다양한 응답을 조정합니다.
-
-Mycodo는 미식가 버섯을 재배하고, 식물을 재배하고, 미생물을 배양하고, 꿀벌 양봉장의 항상성을 유지하고, 뱀의 달걀과 어린 동물을 키우고, 치즈를 생산하고, 발효 식품을 만들고, 수생 시스템을 유지하는 데 사용되었습니다.
-
 
 ## From the Wiki
 

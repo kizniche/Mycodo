@@ -9,7 +9,7 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '5.5.16'
+MYCODO_VERSION = '5.5.17'
 ALEMBIC_VERSION = '69e9443c319f'
 
 #  FORCE_UPGRADE_MASTER
@@ -20,8 +20,7 @@ FORCE_UPGRADE_MASTER = False
 LANGUAGES = {
     'en': 'English',
     'fr': 'Français (French)',
-    'es': 'Español (Spanish)',
-    'ko': '한국어 (Korean)'
+    'es': 'Español (Spanish)'
 }
 
 # Measurements for each sensor/device

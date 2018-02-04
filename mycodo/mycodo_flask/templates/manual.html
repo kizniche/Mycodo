@@ -1093,7 +1093,7 @@
 </tr>
 <tr class="even">
 <td style="text-align: left;">Band (+/- Setpoint)</td>
-<td style="text-align: left;">If set to a non-0 value, the setpoint will become a band, which will be between the band_max=setpoint+band and band_min=setpoint-band. If Raising, the PID will raise to the band_max, then wait until the condition falls to the band_min to resume regulation. If Lowering, the PID will lower to the band_min, then wait until the condition rises to the band_max to resume regulating. If set to Both, regulation will only occur until the condition is within the band.</td>
+<td style="text-align: left;">Hysteresis option. If set to a non-0 value, the setpoint will become a band, which will be between the band_max=setpoint+band and band_min=setpoint-band. If Raising, the PID will raise above band_max, then wait until the condition falls below band_min to resume regulation. If Lowering, the PID will lower below band_min, then wait until the condition rises above band_max to resume regulating. If set to Both, regulation will only occur to the outside min and max of the band, and cease when within the band. Set to 0 to disable Hysteresis.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Direction</td>
