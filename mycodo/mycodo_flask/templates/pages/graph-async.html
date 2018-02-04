@@ -26,6 +26,10 @@
 
     <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph.</p>
 
+  {% if selected_ids_measures %}
+    <div id="container" style="height: 600px; min-width: 300px"></div>
+  {% endif %}
+
     <form method="post" action="/graph-async">
     <div class="form-inline">
       <div class="form-group">
@@ -48,10 +52,6 @@
     </form>
 
   </div>
-
-  {% if selected_ids_measures %}
-    <div id="container" style="height: 500px; min-width: 300px"></div>
-  {% endif %}
 
   {% if selected_ids_measures %}
   <script>
