@@ -481,3 +481,57 @@ def graph_y_axes(dict_measurements):
                                 if measure_short not in y_axes[each_graph.id]:
                                     y_axes[each_graph.id].append(measure_short)
     return y_axes
+
+
+def graph_y_axes_async(dict_measurements, ids_measures):
+    """ Determine which y-axes to use for each Graph """
+    if ids_measures == None:
+        return
+
+    y_axes = []
+
+    input_dev = Input.query.all()
+    math = Math.query.all()
+    output = Output.query.all()
+    pid = PID.query.all()
+
+    devices_list = [input_dev, math, output, pid]
+
+    # Iterate through device tables
+    for all_devices in devices_list:
+
+        # Iterate through each set of ID and measurement of the dashboard element
+        for each_id_measure in ids_measures:
+            if len(each_id_measure.split(',')) == 2:
+
+                unique_id = each_id_measure.split(',')[0]
+                measurement = each_id_measure.split(',')[1]
+
+                # Iterate through each device entry
+                for each_device in all_devices:
+
+                    # If the ID saved to the dashboard element matches the table entry ID
+                    if each_device.unique_id == unique_id:
+
+                        # Add duration_sec
+                        # TODO: rename 'pid_output' to 'duration_sec'
+                        if measurement == 'pid_output':
+                            if 'duration_sec' not in y_axes:
+                                y_axes.append('duration_sec')
+
+                        # Find the y-axis the setpoint or bands apply to
+                        elif measurement in ['setpoint', 'setpoint_band_min', 'setpoint_band_max']:
+                            for each_input in input_dev:
+                                if each_input.unique_id == each_device.measurement.split(',')[0]:
+                                    pid_measurement = each_device.measurement.split(',')[1]
+                                    if pid_measurement in dict_measurements:
+                                        measure_short = dict_measurements[pid_measurement]['meas']
+                                        if measure_short not in y_axes:
+                                            y_axes.append(measure_short)
+
+                        # Append all other measurements if they don't already exist
+                        elif measurement in dict_measurements:
+                            measure_short = dict_measurements[measurement]['meas']
+                            if measure_short not in y_axes:
+                                y_axes.append(measure_short)
+    return y_axes

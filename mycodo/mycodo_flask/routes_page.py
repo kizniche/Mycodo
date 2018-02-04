@@ -410,20 +410,35 @@ def page_graph_async():
     """ Generate graphs using asynchronous data retrieval """
     input_dev = Input.query.all()
     math = Math.query.all()
+    output = Output.query.all()
+
+    # Add custom measurement and units to list (From linux command input)
+    dict_measurements = add_custom_measurements(
+        input_dev, math, MEASUREMENT_UNITS)
 
     input_choices = utils_general.choices_inputs(input_dev)
     math_choices = utils_general.choices_maths(math)
+    output_choices = utils_general.choices_outputs(output)
 
     selected_ids_measures = None
 
     if request.method == 'POST':
         selected_ids_measures = request.form.getlist('selected_measure')
 
+    # Generage a dictionary of lists of y-axes
+    y_axes = utils_dashboard.graph_y_axes_async(dict_measurements,
+                                                selected_ids_measures)
+
     return render_template('pages/graph-async.html',
+                           dict_measurements=dict_measurements,
                            input=input_dev,
+                           math=math,
+                           output=output,
                            input_choices=input_choices,
                            math_choices=math_choices,
-                           selected_ids_measures=selected_ids_measures)
+                           output_choices=output_choices,
+                           selected_ids_measures=selected_ids_measures,
+                           y_axes=y_axes)
 
 
 @blueprint.route('/help', methods=('GET', 'POST'))
