@@ -36,7 +36,6 @@ The system comprises a backend (daemon) and a frontend (user interface). The bac
 
 - [Español (Spanish)](#espa%C3%B1ol-spanish)
 - [Français (French)](#fran%C3%A7ais-french)
-- [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)
 
 [From the Wiki](#from-the-wiki)
  - [Backup and Restore](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore)
