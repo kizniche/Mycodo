@@ -414,19 +414,16 @@ def page_graph_async():
     input_choices = utils_general.choices_inputs(input_dev)
     math_choices = utils_general.choices_maths(math)
 
-    selected_id = None
-    selected_measure = None
+    selected_ids_measures = None
 
     if request.method == 'POST':
-        selected_id = request.form['selected_measure'].split(",")[0]
-        selected_measure = request.form['selected_measure'].split(",")[1]
+        selected_ids_measures = request.form.getlist('selected_measure')
 
     return render_template('pages/graph-async.html',
                            input=input_dev,
                            input_choices=input_choices,
                            math_choices=math_choices,
-                           selected_id=selected_id,
-                           selected_measure=selected_measure)
+                           selected_ids_measures=selected_ids_measures)
 
 
 @blueprint.route('/help', methods=('GET', 'POST'))

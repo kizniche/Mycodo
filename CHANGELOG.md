@@ -1,5 +1,9 @@
 ## 5.5.18 (Unreleased)
 
+### Features
+
+ - Allow multiple data series on asynchronous graph ([#399](https://github.com/kizniche/mycodo/issues/399))
+
 ### Bugfixes
 
  - Fix reloading of asynchronous graphs ([#399](https://github.com/kizniche/mycodo/issues/399))

@@ -29,7 +29,7 @@
     <form method="post" action="/graph-async">
     <div class="form-inline">
       <div class="form-group">
-        <select class="form-control" id="selected_measure" name="selected_measure">
+        <select class="form-control" id="selected_measure" name="selected_measure" size="{{input_choices|length+math_choices|length}}" multiple>
         {% for each_choice, value in input_choices.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
         {% endfor -%}
@@ -46,13 +46,11 @@
 
   </div>
 
-  {% if selected_measure %}
+  {% if selected_ids_measures %}
     <div id="container" style="height: 500px; min-width: 300px"></div>
   {% endif %}
 
-  </div>
-
-  {% if selected_measure %}
+  {% if selected_ids_measures %}
   <script>
 
 Highcharts.setOptions({
@@ -64,130 +62,157 @@ Highcharts.setOptions({
   }
 });
 
-$(function () {
-    var chart = new Array();
+$(document).ready(function() {
+    console.log("TEST00");
+    var id_measure = [
+    {% for each_id_meas in selected_ids_measures %}
+    {
+      id: '{{each_id_meas.split(',')[0]}}',
+      measure: '{{each_id_meas.split(',')[1]}}'
+    },
+    {% endfor %}
+    ];
+    var chart = [];
 
-    function getPastData(sensor_measurement, sensor_id) {
+    function getPastData(chart_number, series, sensor_id, sensor_measurement) {
       var url = '/async/' + sensor_measurement + '/' + sensor_id + '/0/0';
       $.getJSON(url,
         function(data, responseText, jqXHR) {
-          if (jqXHR.status != 204) {
+          if (jqXHR.status !== 204) {
             var past_data = [];
             for (i = 0; i < data.length; i++) {
               var new_date = new Date(data[i][0]);
               var new_time = new_date.getTime();
               past_data.push([new_time, data[i][1]]);
             }
+            console.log("TEST04");
             past_data.push([new Date().getTime(), null]);
-            return past_data
+            chart[chart_number].series[series].setData(past_data, true, false);
+            console.log("TEST02 " + sensor_measurement);
           }
         }
       );
     }
 
     function afterSetExtremes(e) {
-      var url = '/async/{{selected_measure}}/{{selected_id}}/' + Math.round(e.min)/1000 + '/' + Math.round(e.max)/1000;
-      console.log(url);
-      $.getJSON(url,
-        function(data, responseText, jqXHR) {
-          if (jqXHR.status != 204) {
-            var new_data = [];
-            for (i = 0; i < data.length; i++){
-              var new_date = new Date(data[i][0]);
-              var new_time = new_date.getTime();
-              new_data.push([new_time, data[i][1]]);
+      var min = null;
+      var max = null;
+      if (e.xAxis == null) {
+        min = e.min;
+        max = e.max;
+      } else {
+        min = e.xAxis[0].min;
+        max = e.xAxis[0].max;
+      }
+      for (var each_series in id_measure) {
+        var url = '/async/' + id_measure[each_series]['measure'] + '/' + id_measure[each_series]['id'] + '/' + Math.round(min) / 1000 + '/' + Math.round(max) / 1000;
+        console.log("TEST03 " + each_series + " " + url);
+        $.getJSON(url,
+          function (data, responseText, jqXHR) {
+            if (jqXHR.status !== 204) {
+              var new_data = [];
+              for (i = 0; i < data.length; i++) {
+                var new_date = new Date(data[i][0]);
+                var new_time = new_date.getTime();
+                new_data.push([new_time, data[i][1]]);
+              }
             }
+            chart[0].series[each_series].setData(new_data);
+            chart[0].hideLoading();
           }
-          chart[0].series[0].setData(new_data);
-          chart[0].hideLoading();
-        }
-      );
+        );
+      }
     }
 
-    var url = '/async/{{selected_measure}}/{{selected_id}}/0/0';
-    $.getJSON(url, function (data_raw) {
+    // create the chart
+    chart[0] = new Highcharts.StockChart({
+        chart: {
+          renderTo: 'container',
+          zoomType: 'x',
+          events: {
+            load: function () {
+              console.log("TEST01");
+              {% set count_series = [] -%}
+              {% for each_id_meas in selected_ids_measures %}
+      getPastData(0, {{count_series|count}}, '{{each_id_meas.split(',')[0]}}', '{{each_id_meas.split(',')[1]}}');
+                {%- do count_series.append(1) %}
+              {% endfor %}
+            },
+            selection: afterSetExtremes
+          }
+        },
 
-      var data = [];
-      for (i = 0; i < data_raw.length; i++) {
-        var new_date = new Date(data_raw[i][0]);
-        var new_time = new_date.getTime();
-        data.push([new_time, data_raw[i][1]]);
-      }
-      data.push([new Date().getTime(), null]);
+        scrollbar: {
+          liveRedraw: false
+        },
 
-      // create the chart
-      chart[0] = new Highcharts.StockChart({
-          chart: {
-              renderTo: 'container',
-              zoomType: 'x'
-          },
+        // subtitle: {
+        //     text: 'Display many data points'
+        // },
 
-          navigator: {
-              adaptToUpdatedData: false,
-              series: {
-                  data: data
+        rangeSelector: {
+            buttons: [{
+                type: 'hour',
+                count: 1,
+                text: '1h'
+            }, {
+                type: 'day',
+                count: 1,
+                text: '1d'
+            }, {
+                type: 'month',
+                count: 1,
+                text: '1m'
+            }, {
+                type: 'year',
+                count: 1,
+                text: '1y'
+            }, {
+                type: 'all',
+                text: 'All'
+            }],
+            inputEnabled: false, // it supports only days
+            selected: 4 // all
+        },
+
+        xAxis: {
+          events: {
+            setExtremes: function(e) {
+              if (typeof(e.rangeSelectorButton) !== 'undefined' || e.trigger === 'navigator')
+              {
+                afterSetExtremes(e);
               }
+            }
           },
+          minRange: 1800 * 1000 // 30 minutes
+        },
 
-          scrollbar: {
-              liveRedraw: false
+        yAxis: [
+        {% for each_id_meas in selected_ids_measures %}
+          {
+            title: {
+              text: 'A {{each_id_meas.split(',')[0]}} {{each_id_meas.split(',')[1]}}'
+            },
+            labels: {
+              format: '{value}'
+            },
+            opposite: false,
+            id: '{{each_id_meas.split(',')[1]}}'
           },
+        {% endfor %}
+        ],
 
-          title: {
-              text: 'Asynchronous loading of {{selected_measure}} data from Input ID {{selected_id}}'
+        series: [
+          {% for each_id_meas in selected_ids_measures -%}
+          {
+            name: 'B {{each_id_meas.split(',')[0]}} {{each_id_meas.split(',')[1]}}',
+            type: 'line',
+            yAxis: '{{each_id_meas.split(',')[1]}}',
+            data: []
           },
-
-          // subtitle: {
-          //     text: 'Display many data points'
-          // },
-
-          rangeSelector: {
-              buttons: [{
-                  type: 'hour',
-                  count: 1,
-                  text: '1h'
-              }, {
-                  type: 'day',
-                  count: 1,
-                  text: '1d'
-              }, {
-                  type: 'month',
-                  count: 1,
-                  text: '1m'
-              }, {
-                  type: 'year',
-                  count: 1,
-                  text: '1y'
-              }, {
-                  type: 'all',
-                  text: 'All'
-              }],
-              inputEnabled: false, // it supports only days
-              selected: 4 // all
-          },
-
-          xAxis: {
-              events: {
-                  afterSetExtremes: afterSetExtremes
-              },
-              minRange: 1800 * 1000 // 30 minutes
-          },
-
-          yAxis: {
-              floor: 0
-          },
-
-          series: [{
-              data: data,
-              tooltip: {
-                  valueDecimals: 3
-              },
-              dataGrouping: {
-                  enabled: false
-              }
-          }]
-      });
-  });
+        {% endfor %}
+        ]
+    });
 });
 </script>
 {% endif %}

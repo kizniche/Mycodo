@@ -134,9 +134,9 @@ $(document).ready(function() {
   var chart_gauge = [];
 
   // Retrieve initial graph data set from the past (duration set by user)
-  function getPastData(chart_number, sensor, sensor_measurement, unique_id, past_seconds) {
+  function getPastData(chart_number, series, sensor_measurement, unique_id, past_seconds) {
     var url = '/past/' + sensor_measurement + '/' + unique_id + '/' + past_seconds;
-    var update_id = chart_number + "-" + sensor + "-" + sensor_measurement + "-" + unique_id;
+    var update_id = chart_number + "-" + series + "-" + sensor_measurement + "-" + unique_id;
     $.getJSON(url,
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
@@ -152,9 +152,9 @@ $(document).ready(function() {
               last_relay_time_mil[update_id] = new_time;
             }
           }
-          chart_graph[chart_number].series[sensor].isDirty = true;
+          chart_graph[chart_number].series[series].isDirty = true;
           chart_graph[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (past_seconds / 60)), new Date().getTime());
-          chart_graph[chart_number].series[sensor].setData(past_data, true, false);
+          chart_graph[chart_number].series[series].setData(past_data, true, false);
         }
       }
     );
