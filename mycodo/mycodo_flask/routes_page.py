@@ -422,7 +422,7 @@ def page_graph_async():
     output_choices = utils_general.choices_outputs(output)
     pid_choices = utils_general.choices_pids(pid)
 
-    selected_ids_measures = None
+    selected_ids_measures = []
 
     if request.method == 'POST':
         selected_ids_measures = request.form.getlist('selected_measure')

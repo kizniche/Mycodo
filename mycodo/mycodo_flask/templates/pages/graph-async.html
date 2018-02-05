@@ -228,6 +228,10 @@ $(document).ready(function() {
           {
             name: '{{each_input.name}} {{each_id_meas.split(',')[1]}}',
             type: 'line',
+            tooltip: {
+              valueSuffix: ' {{dict_measurements[each_id_meas.split(',')[1]]['unit']}}',
+              valueDecimals: 3
+            },
             yAxis: '{{dict_measurements[each_id_meas.split(',')[1]]['meas']}}',
             data: []
           },
