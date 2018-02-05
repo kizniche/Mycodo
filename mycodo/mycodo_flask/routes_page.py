@@ -423,8 +423,24 @@ def page_graph_async():
     pid_choices = utils_general.choices_pids(pid)
 
     selected_ids_measures = []
+    start_time_epoch = 0
 
     if request.method == 'POST':
+        seconds = 0
+        if request.form['submit'] == 'All Data':
+            pass
+        elif request.form['submit'] == 'Year':
+            seconds = 31556952
+        elif request.form['submit'] == 'Month':
+            seconds = 2629746
+        elif request.form['submit'] == 'Week':
+            seconds = 604800
+        elif request.form['submit'] == 'Day':
+            seconds = 86400
+
+        if seconds:
+            start_time_epoch = (datetime.datetime.now() -
+                                datetime.timedelta(seconds=seconds)).strftime('%s')
         selected_ids_measures = request.form.getlist('selected_measure')
 
     # Generage a dictionary of lists of y-axes
@@ -432,7 +448,9 @@ def page_graph_async():
                                                 selected_ids_measures)
 
     return render_template('pages/graph-async.html',
+                           start_time_epoch=start_time_epoch,
                            dict_measurements=dict_measurements,
+                           measurement_units=MEASUREMENT_UNITS,
                            input=input_dev,
                            math=math,
                            output=output,

@@ -350,6 +350,29 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
         first_point = raw_data['series'][0]['values'][0][0]
         end = datetime.datetime.utcnow()
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+    # Set the time frame to the past start epoch to now
+    elif start_seconds != '0' and end_seconds == '0':
+        start = datetime.datetime.utcfromtimestamp(float(start_seconds))
+        start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        end = datetime.datetime.utcnow()
+        end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        query_str = query_string(
+            measurement, unique_id,
+            value='COUNT', start_str=start_str, end_str=end_str)
+        if query_str == 1:
+            return '', 204
+        raw_data = dbcon.query(query_str).raw
+
+        count_points = raw_data['series'][0]['values'][0][1]
+        # Get the timestamp of the first point in the past year
+        query_str = query_string(
+            measurement, unique_id,
+            start_str=start_str, end_str=end_str, limit=1)
+        if query_str == 1:
+            return '', 204
+        raw_data = dbcon.query(query_str).raw
+
+        first_point = raw_data['series'][0]['values'][0][0]
     else:
         start = datetime.datetime.utcfromtimestamp(float(start_seconds))
         start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')

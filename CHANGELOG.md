@@ -1,3 +1,10 @@
+## 5.5.19 (Unreleased)
+
+### Features
+
+ - Add Asynchronous Graph options for duration of data to display (All or past year, month, week, day)
+
+
 ## 5.5.18 (2018-02-04)
 
 ### Features
