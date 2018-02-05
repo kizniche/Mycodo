@@ -30,6 +30,7 @@ class Dashboard(CRUDMixin, db.Model):
     enable_xaxis_reset = db.Column(db.Boolean, default=True)  # Reset the graph x-axis min/max on update
     enable_graph_shift = db.Column(db.Boolean, default=False)  # Set HighStock addPoint() shift=true/false
     enable_manual_y_axis = db.Column(db.Boolean, default=True)  # Manual selection of y-axis min/max
+    custom_yaxes = db.Column(db.Text, default='')  # Custom minimum and maximum y-axes
 
     # Gauge options
     max_measure_age = db.Column(db.Float, default=120.0)  # Only show measurements if they are younger than this age

@@ -202,9 +202,41 @@ def dashboard_mod(form_base, form_object, request_form):
         for each_color in sorted_list:
             short_list.append(each_color[1])
         sorted_colors_string = ",".join(short_list)
-        mod_graph.custom_colors = sorted_colors_string
 
+        mod_graph.custom_colors = sorted_colors_string
         mod_graph.use_custom_colors = form_object.use_custom_colors.data
+
+        # Get variable number of yaxis min/max inputs, turn into CSV string
+        f = request_form
+        yaxes = {}
+        for key in f.keys():
+            if 'custom_yaxis_name_' in key:
+                for value in f.getlist(key):
+                    if key[18:] not in yaxes:
+                        yaxes[key[18:]] = {}
+                    yaxes[key[18:]]['name'] = value
+            if 'custom_yaxis_min_' in key:
+                for value in f.getlist(key):
+                    if key[17:] not in yaxes:
+                        yaxes[key[17:]] = {}
+                    yaxes[key[17:]]['minimum'] = value
+            if 'custom_yaxis_max_' in key:
+                for value in f.getlist(key):
+                    if key[17:] not in yaxes:
+                        yaxes[key[17:]] = {}
+                    yaxes[key[17:]]['maximum'] = value
+        yaxes_sorted = {}
+        for each_yaxis, yaxis_type in yaxes.items():
+            yaxes_sorted[yaxis_type['name']] = {}
+            yaxes_sorted[yaxis_type['name']]['minimum'] = yaxis_type['minimum']
+            yaxes_sorted[yaxis_type['name']]['maximum'] = yaxis_type['maximum']
+        yaxes_list = []
+        for each_yaxis, yaxis_type in yaxes_sorted.items():
+            yaxes_list.append('{},{},{}'.format(each_yaxis, yaxis_type['minimum'], yaxis_type['maximum']))
+        yaxes_string = ';'.join(yaxes_list)
+
+        mod_graph.custom_yaxes = yaxes_string
+        mod_graph.enable_manual_y_axis = form_object.enable_manual_y_axis.data
 
         if form_object.math_ids.data:
             math_ids_joined = ";".join(form_object.math_ids.data)
@@ -241,9 +273,6 @@ def dashboard_mod(form_base, form_object, request_form):
         mod_graph.enable_export = form_object.enable_export.data
         mod_graph.enable_rangeselect = form_object.enable_range.data
         mod_graph.enable_graph_shift = form_object.enable_graph_shift.data
-        mod_graph.enable_manual_y_axis = form_object.enable_manual_y_axis.data
-        mod_graph.y_axis_min = form_object.y_axis_min.data
-        mod_graph.y_axis_max = form_object.y_axis_max.data
 
     # If a gauge type is changed, the color format must change
     elif (form_base.dashboard_type.data == 'gauge' and
@@ -401,10 +430,7 @@ def dashboard_reorder(dashboard_id, display_order, direction):
 
 def graph_error_check(form, error):
     """Determine if there are any errors in the graph form"""
-    if (form.enable_manual_y_axis.data and
-            (form.y_axis_min.data is None or
-             form.y_axis_max.data is None)):
-        error.append("If Manual Y-Axis is selected, Minimum and Maximum must be set")
+    # Error checks go here
     return error
 
 
@@ -431,15 +457,15 @@ def graph_y_axes(dict_measurements):
     for each_graph in graph:
 
         # Iterate through device tables
-        for all_devices in devices_list:
+        for each_device in devices_list:
 
-            if all_devices == input_dev:
+            if each_device == input_dev:
                 ids_and_measures = each_graph.sensor_ids_measurements.split(';')
-            elif all_devices == math:
+            elif each_device == math:
                 ids_and_measures = each_graph.math_ids.split(';')
-            elif all_devices == output:
+            elif each_device == output:
                 ids_and_measures = each_graph.relay_ids.split(';')
-            elif all_devices == pid:
+            elif each_device == pid:
                 ids_and_measures = each_graph.pid_ids.split(';')
             else:
                 ids_and_measures = []
@@ -454,11 +480,12 @@ def graph_y_axes(dict_measurements):
                     unique_id = each_id_measure.split(',')[0]
                     measurement = each_id_measure.split(',')[1]
 
-                    y_axes[each_graph.id] = check_func(all_devices,
+                    y_axes[each_graph.id] = check_func(each_device,
                                                        unique_id,
                                                        y_axes[each_graph.id],
                                                        measurement,
-                                                       dict_measurements)
+                                                       dict_measurements,
+                                                       input_dev)
 
     return y_axes
 
@@ -478,7 +505,7 @@ def graph_y_axes_async(dict_measurements, ids_measures):
     devices_list = [input_dev, math, output, pid]
 
     # Iterate through device tables
-    for all_devices in devices_list:
+    for each_device in devices_list:
 
         # Iterate through each set of ID and measurement of the dashboard element
         for each_id_measure in ids_measures:
@@ -488,20 +515,21 @@ def graph_y_axes_async(dict_measurements, ids_measures):
                 measurement = each_id_measure.split(',')[1]
 
                 # Iterate through each device entry
-                for each_device in all_devices:
+                for each_device_entry in each_device:
 
                     # If the ID saved to the dashboard element matches the table entry ID
-                    if each_device.unique_id == unique_id:
+                    if each_device_entry.unique_id == unique_id:
 
-                        y_axes = check_func(all_devices,
+                        y_axes = check_func(each_device,
                                             unique_id,
                                             y_axes,
                                             measurement,
-                                            dict_measurements)
+                                            dict_measurements,
+                                            input_dev)
 
     return y_axes
 
-def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements):
+def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, input_dev):
     """
     Generate a list of y-axes for Live and Asynchronous Graphs
     :param all_devices: A list of Input, Math, Output, and PID SQL objects
@@ -509,6 +537,7 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements):
     :param y_axes: empty list to populate
     :param measurement:
     :param dict_measurements:
+    :param input_dev:
     :return: None
     """
     # Iterate through each device entry
@@ -525,7 +554,7 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements):
 
             # Find the y-axis the setpoint or bands apply to
             elif measurement in ['setpoint', 'setpoint_band_min', 'setpoint_band_max']:
-                for each_input in all_devices[0]:  # all_devices[0] is Input SQL object
+                for each_input in input_dev:
                     if each_input.unique_id == each_device.measurement.split(',')[0]:
                         pid_measurement = each_device.measurement.split(',')[1]
                         if pid_measurement in dict_measurements:

@@ -2,6 +2,7 @@
 
 ### Features
 
+ - Enable custom minimum/maximum to be set for any y-axis ([#335](https://github.com/kizniche/mycodo/issues/335))
  - Add Asynchronous Graph options for duration of data to display (All or past year, month, week, day)
 
 ### Bugfixes

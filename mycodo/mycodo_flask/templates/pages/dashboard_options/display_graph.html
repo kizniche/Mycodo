@@ -81,8 +81,8 @@
     yAxis: [
     {% for each_axis_meas in y_axes[each_graph.id] %}
       {
-        {% if each_graph.enable_manual_y_axis %}
-        min: {{each_graph.y_axis_min}}, max: {{each_graph.y_axis_max}},
+        {% if each_graph.enable_manual_y_axis and not (custom_yaxes[each_graph.id][dict_measurements[each_axis_meas]['meas']]['minimum'] == '0' and custom_yaxes[each_graph.id][dict_measurements[each_axis_meas]['meas']]['maximum'] == '0') %}
+        min: {{custom_yaxes[each_graph.id][dict_measurements[each_axis_meas]['meas']]['minimum']}}, max: {{custom_yaxes[each_graph.id][dict_measurements[each_axis_meas]['meas']]['maximum']}},
         {% endif %}
         title: {
           text: '{{dict_measurements[each_axis_meas]['name']}}{% if dict_measurements[each_axis_meas]['unit'] != '' %} ({{dict_measurements[each_axis_meas]['unit']}}){% endif %}'

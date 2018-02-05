@@ -301,9 +301,6 @@ def page_dashboard():
     dict_measurements = add_custom_measurements(
         input_dev, math, MEASUREMENT_UNITS)
 
-    # Generage a dictionary of lists of y-axes for each graph/gauge
-    y_axes = utils_dashboard.graph_y_axes(dict_measurements)
-
     # Add multi-select values as form choices, for validation
     form_graph.math_ids.choices = []
     form_graph.pid_ids.choices = []
@@ -344,6 +341,11 @@ def page_dashboard():
             colors_gauge.update({each_graph.id: total})
     except IndexError:
         flash("Colors Index Error", "error")
+
+    # Generate a dictionary of lists of y-axes for each graph/gauge
+    y_axes = utils_dashboard.graph_y_axes(dict_measurements)
+
+    custom_yaxes = dict_custom_yaxes_min_max(graph, y_axes)
 
     # Detect which form on the page was submitted
     if request.method == 'POST':
@@ -387,6 +389,7 @@ def page_dashboard():
                            choices_math=choices_math,
                            choices_output=choices_output,
                            choices_pid=choices_pid,
+                           custom_yaxes=custom_yaxes,
                            graph=graph,
                            math=math,
                            pid=pid,
@@ -1381,6 +1384,24 @@ def dict_custom_colors():
         pass
 
     return color_count
+
+
+def dict_custom_yaxes_min_max(graph, yaxes):
+    dict_yaxes = {}
+    for each_graph in graph:
+        dict_yaxes[each_graph.id] = {}
+
+        for each_yaxis in yaxes[each_graph.id]:
+            dict_yaxes[each_graph.id][each_yaxis] = {}
+            dict_yaxes[each_graph.id][each_yaxis]['minimum'] = 0
+            dict_yaxes[each_graph.id][each_yaxis]['maximum'] = 0
+
+            for each_custom_yaxis in each_graph.custom_yaxes.split(';'):
+                if each_custom_yaxis.split(',')[0] == each_yaxis:
+                    dict_yaxes[each_graph.id][each_yaxis]['minimum'] = each_custom_yaxis.split(',')[1]
+                    dict_yaxes[each_graph.id][each_yaxis]['maximum'] = each_custom_yaxis.split(',')[2]
+
+    return dict_yaxes
 
 
 def gen(camera):
