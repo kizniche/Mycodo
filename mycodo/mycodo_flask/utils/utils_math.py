@@ -132,22 +132,27 @@ def math_mod(form_mod_math, form_mod_type=None):
 
         elif mod_math.math_type == 'humidity':
             mod_math.dry_bulb_t_id = form_mod_type.dry_bulb_temperature.data.split(',')[0]
+            mod_math.dry_bulb_t_measure = form_mod_type.dry_bulb_temperature.data.split(',')[1]
             dbt_input = Input.query.filter(
                 Input.unique_id == mod_math.dry_bulb_t_id).first()
             dbt_math = Input.query.filter(
                 Math.unique_id == mod_math.dry_bulb_t_id).first()
-            if (not dbt_input and not dbt_math) and 'temperature' not in dbt_input.measurements:
-                error.append("Invalid dry-bulb temperature selection")
-            mod_math.dry_bulb_t_measure = form_mod_type.dry_bulb_temperature.data.split(',')[1]
+            if not dbt_input and not dbt_math:
+                error.append("Invalid dry-bulb temperature selection: Must be a valid Input or Math")
+            if 'temperature' not in mod_math.dry_bulb_t_measure:
+                error.append("Invalid dry-bulb temperature selection: Must be a temperature measurement")
 
             mod_math.wet_bulb_t_id = form_mod_type.wet_bulb_temperature.data.split(',')[0]
+            mod_math.wet_bulb_t_measure = form_mod_type.wet_bulb_temperature.data.split(',')[1]
             wbt_input = Input.query.filter(
                 Input.unique_id == mod_math.wet_bulb_t_id).first()
             wbt_math = Input.query.filter(
                 Math.unique_id == mod_math.wet_bulb_t_id).first()
-            if (not wbt_input and not wbt_math) and 'temperature' not in wbt_input.measurements:
-                error.append("Invalid wet-bulb temperature selection")
-            mod_math.wet_bulb_t_measure = form_mod_type.wet_bulb_temperature.data.split(',')[1]
+            if not wbt_input and not wbt_math:
+                error.append("Invalid wet-bulb temperature selection: Must be a valid Input or Math")
+            if 'temperature' not in mod_math.wet_bulb_t_measure:
+                error.append("Invalid wet-bulb temperature selection: Must be a temperature measurement")
+
 
             if form_mod_type.pressure.data:
                 mod_math.pressure_pa_id = form_mod_type.pressure.data.split(',')[0]

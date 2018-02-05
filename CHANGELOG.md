@@ -4,6 +4,10 @@
 
  - Add Asynchronous Graph options for duration of data to display (All or past year, month, week, day)
 
+### Bugfixes
+
+ - Fix saving Math Humidity options ([#400](https://github.com/kizniche/mycodo/issues/400))
+
 
 ## 5.5.18 (2018-02-04)
 

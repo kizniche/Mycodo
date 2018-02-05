@@ -11,7 +11,7 @@
         <option value="{{each_choice}}"{%- if each_math.dry_bulb_t_id == each_choice.split(',')[0] and each_math.dry_bulb_t_measure == each_choice.split(',')[1] %} selected{%- endif -%}>{{value}}</option>
         {% endfor -%}
         {% for each_choice, value in choices_math.items() -%}
-        <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
+        <option value="{{each_choice}}"{%- if each_math.dry_bulb_t_id == each_choice.split(',')[0] and each_math.dry_bulb_t_measure == each_choice.split(',')[1] %} selected{%- endif -%}>{{value}}</option>
         {% endfor -%}
       {% else %}
         <option value="">{{_('None Available')}}</option>
