@@ -176,65 +176,21 @@ def dashboard_mod(form_base, form_object, request_form):
         controller=gettext("Dashboard"))
     error = []
 
-    def is_rgb_color(color_hex):
-        return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
-
     mod_graph = Dashboard.query.filter(
         Dashboard.id == form_base.dashboard_id.data).first()
     mod_graph.name = form_base.name.data
 
     # Graph Mod
     if form_base.dashboard_type.data == 'graph':
-
         error = graph_error_check(form_object, error)
 
-        # Get variable number of color inputs, turn into CSV string
-        colors = {}
-        short_list = []
-        f = request_form
-        for key in f.keys():
-            if 'color_number' in key:
-                for value in f.getlist(key):
-                    if not is_rgb_color(value):
-                        error.append("Invalid hex color value")
-                    colors[key[12:]] = value
-        sorted_list = [(k, colors[k]) for k in sorted(colors)]
-        for each_color in sorted_list:
-            short_list.append(each_color[1])
-        sorted_colors_string = ",".join(short_list)
-
+        # Generate color option string from form inputs
+        sorted_colors_string, error = custom_colors_graph_str(request_form, error)
         mod_graph.custom_colors = sorted_colors_string
         mod_graph.use_custom_colors = form_object.use_custom_colors.data
 
-        # Get variable number of yaxis min/max inputs, turn into CSV string
-        f = request_form
-        yaxes = {}
-        for key in f.keys():
-            if 'custom_yaxis_name_' in key:
-                for value in f.getlist(key):
-                    if key[18:] not in yaxes:
-                        yaxes[key[18:]] = {}
-                    yaxes[key[18:]]['name'] = value
-            if 'custom_yaxis_min_' in key:
-                for value in f.getlist(key):
-                    if key[17:] not in yaxes:
-                        yaxes[key[17:]] = {}
-                    yaxes[key[17:]]['minimum'] = value
-            if 'custom_yaxis_max_' in key:
-                for value in f.getlist(key):
-                    if key[17:] not in yaxes:
-                        yaxes[key[17:]] = {}
-                    yaxes[key[17:]]['maximum'] = value
-        yaxes_sorted = {}
-        for each_yaxis, yaxis_type in yaxes.items():
-            yaxes_sorted[yaxis_type['name']] = {}
-            yaxes_sorted[yaxis_type['name']]['minimum'] = yaxis_type['minimum']
-            yaxes_sorted[yaxis_type['name']]['maximum'] = yaxis_type['maximum']
-        yaxes_list = []
-        for each_yaxis, yaxis_type in yaxes_sorted.items():
-            yaxes_list.append('{},{},{}'.format(each_yaxis, yaxis_type['minimum'], yaxis_type['maximum']))
-        yaxes_string = ';'.join(yaxes_list)
-
+        # Generate y-axis option string from form inputs
+        yaxes_string = custom_yaxes_str_from_form(request_form)
         mod_graph.custom_yaxes = yaxes_string
         mod_graph.enable_manual_y_axis = form_object.enable_manual_y_axis.data
         mod_graph.enable_align_ticks = form_object.enable_align_ticks.data
@@ -292,68 +248,9 @@ def dashboard_mod(form_base, form_object, request_form):
 
         error = gauge_error_check(form_object, error)
 
-        colors_hex = {}
-        f = request_form
-        sorted_colors_string = ""
-
-        if form_object.gauge_type.data == 'gauge_angular':
-            # Combine all color form inputs to dictionary
-            for key in f.keys():
-                if ('color_hex_number' in key or
-                        'color_low_number' in key or
-                        'color_high_number' in key):
-                    if int(key[17:]) not in colors_hex:
-                        colors_hex[int(key[17:])] = {}
-                if 'color_hex_number' in key:
-                    for value in f.getlist(key):
-                        if not is_rgb_color(value):
-                            error.append("Invalid hex color value")
-                        colors_hex[int(key[17:])]['hex'] = value
-                elif 'color_low_number' in key:
-                    for value in f.getlist(key):
-                        colors_hex[int(key[17:])]['low'] = value
-                elif 'color_high_number' in key:
-                    for value in f.getlist(key):
-                        colors_hex[int(key[17:])]['high'] = value
-
-        elif form_object.gauge_type.data == 'gauge_solid':
-            # Combine all color form inputs to dictionary
-            for key in f.keys():
-                if ('color_hex_number' in key or
-                        'color_stop_number' in key):
-                    if int(key[17:]) not in colors_hex:
-                        colors_hex[int(key[17:])] = {}
-                if 'color_hex_number' in key:
-                    for value in f.getlist(key):
-                        if not is_rgb_color(value):
-                            error.append("Invalid hex color value")
-                        colors_hex[int(key[17:])]['hex'] = value
-                elif 'color_stop_number' in key:
-                    for value in f.getlist(key):
-                        colors_hex[int(key[17:])]['stop'] = value
-
-        # Build string of colors and associated gauge values
-        for i, _ in enumerate(colors_hex):
-            try:
-                if form_object.gauge_type.data == 'gauge_angular':
-                    sorted_colors_string += "{},{},{}".format(
-                        colors_hex[i]['low'],
-                        colors_hex[i]['high'],
-                        colors_hex[i]['hex'])
-                elif form_object.gauge_type.data == 'gauge_solid':
-                    try:
-                        if 0 > colors_hex[i]['stop'] > 1:
-                            error.append("Color stops must be between 0 and 1")
-                        sorted_colors_string += "{},{}".format(
-                            colors_hex[i]['stop'],
-                            colors_hex[i]['hex'])
-                    except Exception:
-                        sorted_colors_string += "0,{}".format(
-                            colors_hex[i]['hex'])
-                if i < len(colors_hex) - 1:
-                    sorted_colors_string += ";"
-            except Exception as err_msg:
-                error.append(err_msg)
+        # Generate color option string from form inputs
+        sorted_colors_string, error = custom_colors_gauge_str(
+            request_form, form_object.gauge_type.data, error)
 
         mod_graph.range_colors = sorted_colors_string
         mod_graph.width = form_object.width.data
@@ -572,3 +469,137 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
                     y_axes.append(measure_short)
 
     return y_axes
+
+
+def custom_colors_gauge_str(form, gauge_type, error):
+    """
+    Get variable number of gauge color inputs, turn into CSV string
+    :param form:
+    :param gauge_type:
+    :param error:
+    :return:
+    """
+    sorted_colors_string = ''
+    colors_hex = {}
+    if gauge_type == 'gauge_angular':
+        # Combine all color form inputs to dictionary
+        for key in form.keys():
+            if ('color_hex_number' in key or
+                    'color_low_number' in key or
+                    'color_high_number' in key):
+                if int(key[17:]) not in colors_hex:
+                    colors_hex[int(key[17:])] = {}
+            if 'color_hex_number' in key:
+                for value in form.getlist(key):
+                    if not is_rgb_color(value):
+                        error.append('Invalid hex color value')
+                    colors_hex[int(key[17:])]['hex'] = value
+            elif 'color_low_number' in key:
+                for value in form.getlist(key):
+                    colors_hex[int(key[17:])]['low'] = value
+            elif 'color_high_number' in key:
+                for value in form.getlist(key):
+                    colors_hex[int(key[17:])]['high'] = value
+
+    elif gauge_type == 'gauge_solid':
+        # Combine all color form inputs to dictionary
+        for key in form.keys():
+            if ('color_hex_number' in key or
+                    'color_stop_number' in key):
+                if int(key[17:]) not in colors_hex:
+                    colors_hex[int(key[17:])] = {}
+            if 'color_hex_number' in key:
+                for value in form.getlist(key):
+                    if not is_rgb_color(value):
+                        error.append("Invalid hex color value")
+                    colors_hex[int(key[17:])]['hex'] = value
+            elif 'color_stop_number' in key:
+                for value in form.getlist(key):
+                    colors_hex[int(key[17:])]['stop'] = value
+
+    # Build string of colors and associated gauge values
+    for i, _ in enumerate(colors_hex):
+        try:
+            if gauge_type == 'gauge_angular':
+                sorted_colors_string += "{},{},{}".format(
+                    colors_hex[i]['low'],
+                    colors_hex[i]['high'],
+                    colors_hex[i]['hex'])
+            elif gauge_type == 'gauge_solid':
+                try:
+                    if 0 > colors_hex[i]['stop'] > 1:
+                        error.append("Color stops must be between 0 and 1")
+                    sorted_colors_string += "{},{}".format(
+                        colors_hex[i]['stop'],
+                        colors_hex[i]['hex'])
+                except Exception:
+                    sorted_colors_string += "0,{}".format(
+                        colors_hex[i]['hex'])
+            if i < len(colors_hex) - 1:
+                sorted_colors_string += ";"
+        except Exception as err_msg:
+            error.append(err_msg)
+    return sorted_colors_string, error
+
+
+def custom_colors_graph_str(form, error):
+    """
+    Get variable number of graph color inputs, turn into CSV string
+    :param request_form:
+    :return:
+    """
+    colors = {}
+    short_list = []
+    for key in form.keys():
+        if 'color_number' in key:
+            for value in form.getlist(key):
+                if not is_rgb_color(value):
+                    error.append("Invalid hex color value")
+                colors[key[12:]] = value
+    sorted_list = [(k, colors[k]) for k in sorted(colors)]
+    for each_color in sorted_list:
+        short_list.append(each_color[1])
+    return ','.join(short_list), error
+
+
+def custom_yaxes_str_from_form(form):
+    """
+    Parse several yaxis min/max inputs and turn them into CSV string to
+    save in the database
+    :param request_form: UI form submitted by mycodo
+    :return: string of CSV data sets separated by ';'
+    """
+    # Find custom y-axis options from the form inputs
+    yaxes = {}
+    for key in form.keys():
+        if 'custom_yaxis_name_' in key:
+            for value in form.getlist(key):
+                if key[18:] not in yaxes:
+                    yaxes[key[18:]] = {}
+                yaxes[key[18:]]['name'] = value
+        if 'custom_yaxis_min_' in key:
+            for value in form.getlist(key):
+                if key[17:] not in yaxes:
+                    yaxes[key[17:]] = {}
+                yaxes[key[17:]]['minimum'] = value
+        if 'custom_yaxis_max_' in key:
+            for value in form.getlist(key):
+                if key[17:] not in yaxes:
+                    yaxes[key[17:]] = {}
+                yaxes[key[17:]]['maximum'] = value
+    # Create a dictionary from the parsed form options
+    yaxes_sorted = {}
+    for each_yaxis, yaxis_type in yaxes.items():
+        yaxes_sorted[yaxis_type['name']] = {}
+        yaxes_sorted[yaxis_type['name']]['minimum'] = yaxis_type['minimum']
+        yaxes_sorted[yaxis_type['name']]['maximum'] = yaxis_type['maximum']
+    # Create a list of CSV sets in the format 'measure, minimum, maximum'
+    yaxes_list = []
+    for each_yaxis, yaxis_type in yaxes_sorted.items():
+        yaxes_list.append('{},{},{}'.format(each_yaxis, yaxis_type['minimum'], yaxis_type['maximum']))
+    # Join the list of CSV sets with ';'
+    return ';'.join(yaxes_list)
+
+
+def is_rgb_color(color_hex):
+    return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))

@@ -1279,8 +1279,9 @@ def page_usage_reports():
 
 def dict_custom_colors():
     """
-    Generate lists of custom colors from CSV strings saved in the database.
-    If custom colors aren't already saved, fill in with a default palette.
+    Generate a dictionary of custom colors from CSV strings saved in the
+    database. If custom colors aren't already saved, fill in with a default
+    palette.
 
     :return: dictionary of graph_ids and lists of custom colors
     """
@@ -1388,7 +1389,12 @@ def dict_custom_colors():
 
 
 def dict_custom_yaxes_min_max(graph, yaxes):
-    """ Generate a dictionary of the y-axis minimum and maximum for each graph """
+    """
+    Generate a dictionary of the y-axis minimum and maximum for each graph
+    :param graph: iterable SQL object of all graph entries
+    :param yaxes: list of y-axis measurements
+    :return: dictionary of minimum and maximum y-axis values for each graph
+    """
     dict_yaxes = {}
     for each_graph in graph:
         dict_yaxes[each_graph.id] = {}
