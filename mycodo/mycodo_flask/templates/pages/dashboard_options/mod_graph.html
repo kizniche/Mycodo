@@ -186,6 +186,12 @@
           {{form_graph.enable_manual_y_axis.label.text}}
         </label>
       </div>
+      <div class="form-group">
+        <label class="form-check-label">
+          <input class="form-check-input" id="enable_start_on_tick" name="enable_start_on_tick" type="checkbox" value="y"{% if each_graph.enable_start_on_tick %} checked{% endif %}>
+          {{form_graph.enable_start_on_tick.label.text}}
+        </label>
+      </div>
       {% for each_yaxis in y_axes[each_graph.id] %}
       <div class="form-check">
         {% set index = '{0:0>2}'.format(loop.index) %}

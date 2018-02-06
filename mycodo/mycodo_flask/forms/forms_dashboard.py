@@ -83,6 +83,7 @@ class DashboardGraph(FlaskForm):
     enable_range = BooleanField(lazy_gettext('Enable Range Selector'))
     enable_graph_shift = BooleanField(lazy_gettext('Enable Graph Shift'))
     enable_manual_y_axis = BooleanField(lazy_gettext('Enable Manual Y-Axis Min/Max'))
+    enable_start_on_tick = BooleanField(lazy_gettext('Enable Y-Axis Start On Tick'))
     use_custom_colors = BooleanField(lazy_gettext('Enable Custom Colors'))
 
 
