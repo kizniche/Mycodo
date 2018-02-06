@@ -1347,8 +1347,8 @@ def dict_custom_colors():
                     math = Math.query.filter_by(
                         unique_id=math_unique_id).first()
                     if (index < len(each_graph.math_ids.split(';')) and
-                            len(colors) > index):
-                        color = colors[index]
+                            len(colors) > index_sum + index):
+                        color = colors[index_sum + index]
                     else:
                         color = '#FF00AA'
                     if math is not None:
@@ -1368,7 +1368,7 @@ def dict_custom_colors():
                         unique_id=output_unique_id).first()
                     if (index < len(each_graph.relay_ids.split(',')) and
                             len(colors) > index_sum + index):
-                        color = colors[index_sum+index]
+                        color = colors[index_sum + index]
                     else:
                         color = '#FF00AA'
                     if output is not None:
@@ -1389,7 +1389,7 @@ def dict_custom_colors():
                         unique_id=pid_unique_id).first()
                     if (index < len(each_graph.pid_ids.split(';')) and
                             len(colors) > index_sum + index):
-                        color = colors[index_sum+index]
+                        color = colors[index_sum + index]
                     else:
                         color = '#FF00AA'
                     if pid is not None:
