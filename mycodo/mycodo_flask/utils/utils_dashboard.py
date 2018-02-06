@@ -80,8 +80,6 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.enable_export = form_object.enable_export.data
         new_graph.enable_graph_shift = form_object.enable_graph_shift.data
         new_graph.enable_manual_y_axis = form_object.enable_manual_y_axis.data
-        new_graph.y_axis_min = form_object.y_axis_min.data
-        new_graph.y_axis_max = form_object.y_axis_max.data
 
         try:
             if not error:
