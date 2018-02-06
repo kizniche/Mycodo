@@ -1339,6 +1339,27 @@ def dict_custom_colors():
                         index += 1
                 index_sum += index
 
+            if each_graph.math_ids:
+                index = 0
+                for each_set in each_graph.math_ids.split(';'):
+                    math_unique_id = each_set.split(',')[0]
+                    math_measure = each_set.split(',')[1]
+                    math = Math.query.filter_by(
+                        unique_id=math_unique_id).first()
+                    if (index < len(each_graph.math_ids.split(';')) and
+                            len(colors) > index):
+                        color = colors[index]
+                    else:
+                        color = '#FF00AA'
+                    if math is not None:
+                        total.append({
+                            'unique_id': math_unique_id,
+                            'name': math.name,
+                            'measure': math_measure,
+                            'color': color})
+                        index += 1
+                index_sum += index
+
             if each_graph.relay_ids:
                 index = 0
                 for each_set in each_graph.relay_ids.split(';'):

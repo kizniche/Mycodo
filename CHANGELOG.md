@@ -8,6 +8,7 @@
 ### Bugfixes
 
  - Fix saving Math Humidity options ([#400](https://github.com/kizniche/mycodo/issues/400))
+ - Add ability to set custom Graph colors for Math measurements
 
 
 ## 5.5.18 (2018-02-04)
