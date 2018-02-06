@@ -1757,14 +1757,6 @@ select the plus sign on the top-right of a graph.
   Refresh (seconds)     The duration between acquisitions of new data
                         to display on the graph.
 
-  Manual Y-Axis Min/Max Set the minimum and maximum y-axis of all
-                        measurements of a particular graph to Y-Axis
-                        Minimum and Y-Axis Maximum.
-
-  Y-Axis Minimum        The minimum value of all y-axes on the graph.
-
-  Y-Axis Maximum        The maximum value of all y-axes on the graph.
-
   Inputs/Outputs/PIDs   The Inputs, Outputs, and PIDs to display on the
                         graph.
 
@@ -1792,6 +1784,20 @@ select the plus sign on the top-right of a graph.
   Enable Custom Colors  Use custom colors for Input, Output, and PID
                         lines. Select the colors with the buttons that
                         appear below this checkbox.
+
+  Enable Manual Y-Axis  Set the minimum and maximum y-axes of a
+  Min/Max               particular graph. Set both the minimum and
+                        maximum to 0 to disable for a particular
+                        y-axis.
+
+  Enable Y-Axis Align   Align the ticks of several y-axes of the same
+  Ticks                 graph.
+
+  Enable Y-Axis Start   Start all y-axes of a graph on the same tick.
+  On Tick               
+
+  Enable Y-Axis End On  End all y-axes of a graph on the same tick.
+  Tick                  
   ---------------------------------------------------------------------
 
 Gauges

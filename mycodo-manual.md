@@ -996,7 +996,11 @@ Enable Export | Enable a button on the top right of the graph to allow exporting
 Enable Range Selector | Show a set of navigation buttons at the top of the graph to quickly change the display duration.
 Enable Graph Shift | If enabled, old data points are removed when new data is added to the graph. Only recommended to enable if Enable Navbar is enabled.
 Enable Custom Colors | Use custom colors for Input, Output, and PID lines. Select the colors with the buttons that appear below this checkbox.
-Manual Y-Axis Min/Max | Set the minimum and maximum y-axes of a particular graph. Set both the minimum and maximum to 0 to disable for a particular y-axis.
+Enable Manual Y-Axis Min/Max | Set the minimum and maximum y-axes of a particular graph. Set both the minimum and maximum to 0 to disable for a particular y-axis.
+Enable Y-Axis Align Ticks | Align the ticks of several y-axes of the same graph.
+Enable Y-Axis Start On Tick | Start all y-axes of a graph on the same tick.
+Enable Y-Axis End On Tick  | End all y-axes of a graph on the same tick.
+
 
 ### Gauges
 
