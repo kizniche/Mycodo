@@ -345,6 +345,7 @@ def page_dashboard():
     # Generate a dictionary of lists of y-axes for each graph/gauge
     y_axes = utils_dashboard.graph_y_axes(dict_measurements)
 
+    # Generate a dictionary of each graph's y-axis minimum and maximum
     custom_yaxes = dict_custom_yaxes_min_max(graph, y_axes)
 
     # Detect which form on the page was submitted
@@ -1387,6 +1388,7 @@ def dict_custom_colors():
 
 
 def dict_custom_yaxes_min_max(graph, yaxes):
+    """ Generate a dictionary of the y-axis minimum and maximum for each graph """
     dict_yaxes = {}
     for each_graph in graph:
         dict_yaxes[each_graph.id] = {}
