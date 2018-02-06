@@ -1391,15 +1391,16 @@ def dict_custom_yaxes_min_max(graph, yaxes):
     for each_graph in graph:
         dict_yaxes[each_graph.id] = {}
 
-        for each_yaxis in yaxes[each_graph.id]:
-            dict_yaxes[each_graph.id][each_yaxis] = {}
-            dict_yaxes[each_graph.id][each_yaxis]['minimum'] = 0
-            dict_yaxes[each_graph.id][each_yaxis]['maximum'] = 0
+        if each_graph.id in yaxes:
+            for each_yaxis in yaxes[each_graph.id]:
+                dict_yaxes[each_graph.id][each_yaxis] = {}
+                dict_yaxes[each_graph.id][each_yaxis]['minimum'] = 0
+                dict_yaxes[each_graph.id][each_yaxis]['maximum'] = 0
 
-            for each_custom_yaxis in each_graph.custom_yaxes.split(';'):
-                if each_custom_yaxis.split(',')[0] == each_yaxis:
-                    dict_yaxes[each_graph.id][each_yaxis]['minimum'] = each_custom_yaxis.split(',')[1]
-                    dict_yaxes[each_graph.id][each_yaxis]['maximum'] = each_custom_yaxis.split(',')[2]
+                for each_custom_yaxis in each_graph.custom_yaxes.split(';'):
+                    if each_custom_yaxis.split(',')[0] == each_yaxis:
+                        dict_yaxes[each_graph.id][each_yaxis]['minimum'] = each_custom_yaxis.split(',')[1]
+                        dict_yaxes[each_graph.id][each_yaxis]['maximum'] = each_custom_yaxis.split(',')[2]
 
     return dict_yaxes
 
