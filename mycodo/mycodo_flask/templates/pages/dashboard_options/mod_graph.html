@@ -188,8 +188,20 @@
       </div>
       <div class="form-group">
         <label class="form-check-label">
+          <input class="form-check-input" id="enable_align_ticks" name="enable_align_ticks" type="checkbox" value="y"{% if each_graph.enable_align_ticks %} checked{% endif %}>
+          {{form_graph.enable_align_ticks.label.text}}
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="form-check-label">
           <input class="form-check-input" id="enable_start_on_tick" name="enable_start_on_tick" type="checkbox" value="y"{% if each_graph.enable_start_on_tick %} checked{% endif %}>
           {{form_graph.enable_start_on_tick.label.text}}
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="form-check-label">
+          <input class="form-check-input" id="enable_end_on_tick" name="enable_end_on_tick" type="checkbox" value="y"{% if each_graph.enable_end_on_tick %} checked{% endif %}>
+          {{form_graph.enable_end_on_tick.label.text}}
         </label>
       </div>
       {% for each_yaxis in y_axes[each_graph.id] %}

@@ -237,7 +237,9 @@ def dashboard_mod(form_base, form_object, request_form):
 
         mod_graph.custom_yaxes = yaxes_string
         mod_graph.enable_manual_y_axis = form_object.enable_manual_y_axis.data
+        mod_graph.enable_align_ticks = form_object.enable_align_ticks.data
         mod_graph.enable_start_on_tick = form_object.enable_start_on_tick.data
+        mod_graph.enable_end_on_tick = form_object.enable_end_on_tick.data
 
         if form_object.math_ids.data:
             math_ids_joined = ";".join(form_object.math_ids.data)

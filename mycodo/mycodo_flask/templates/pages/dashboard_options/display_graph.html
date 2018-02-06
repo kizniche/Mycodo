@@ -6,6 +6,7 @@
     chart : {
       renderTo: 'container-graph-{{each_graph.id}}',
       zoomType: 'x',
+      alignTicks: {% if each_graph.enable_align_ticks %}true{% else %}false{% endif %},
       resetZoomButton: {
         theme: {
           display: 'none'
@@ -87,6 +88,7 @@
         min: {{custom_yaxes[each_graph.id][dict_measurements[each_axis_meas]['meas']]['minimum']}},
         max: {{custom_yaxes[each_graph.id][dict_measurements[each_axis_meas]['meas']]['maximum']}},
         startOnTick: {% if each_graph.enable_start_on_tick %}true{% else %}false{% endif %},
+        endOnTick: {% if each_graph.enable_end_on_tick %}true{% else %}false{% endif %},
         {% endif %}
         title: {
           text: '{{dict_measurements[each_axis_meas]['name']}}{% if dict_measurements[each_axis_meas]['unit'] != '' %} ({{dict_measurements[each_axis_meas]['unit']}}){% endif %}'

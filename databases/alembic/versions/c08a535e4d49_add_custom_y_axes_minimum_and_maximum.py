@@ -19,7 +19,9 @@ depends_on = None
 def upgrade():
     with op.batch_alter_table("graph") as batch_op:
         batch_op.add_column(sa.Column('custom_yaxes', sa.Text))
+        batch_op.add_column(sa.Column('enable_align_ticks', sa.Boolean))
         batch_op.add_column(sa.Column('enable_start_on_tick', sa.Boolean))
+        batch_op.add_column(sa.Column('enable_end_on_tick', sa.Boolean))
 
     op.execute(
         '''
@@ -31,7 +33,21 @@ def upgrade():
     op.execute(
         '''
         UPDATE graph
+        SET enable_align_ticks=1
+        '''
+    )
+
+    op.execute(
+        '''
+        UPDATE graph
         SET enable_start_on_tick=1
+        '''
+    )
+
+    op.execute(
+        '''
+        UPDATE graph
+        SET enable_end_on_tick=1
         '''
     )
 
@@ -39,4 +55,6 @@ def upgrade():
 def downgrade():
     with op.batch_alter_table("graph") as batch_op:
         batch_op.drop_column('custom_yaxes')
+        batch_op.drop_column('enable_align_ticks')
         batch_op.drop_column('enable_start_on_tick')
+        batch_op.drop_column('enable_end_on_tick')
