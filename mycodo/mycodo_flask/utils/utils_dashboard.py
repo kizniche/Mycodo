@@ -572,29 +572,26 @@ def custom_yaxes_str_from_form(form):
     for key in form.keys():
         if 'custom_yaxis_name_' in key:
             for value in form.getlist(key):
-                if key[18:] not in yaxes:
-                    yaxes[key[18:]] = {}
-                yaxes[key[18:]]['name'] = value
+                unique_number = key[18:]
+                if unique_number not in yaxes:
+                    yaxes[unique_number] = {}
+                yaxes[unique_number]['name'] = value
         if 'custom_yaxis_min_' in key:
             for value in form.getlist(key):
-                if key[17:] not in yaxes:
-                    yaxes[key[17:]] = {}
-                yaxes[key[17:]]['minimum'] = value
+                unique_number = key[17:]
+                if unique_number not in yaxes:
+                    yaxes[unique_number] = {}
+                yaxes[unique_number]['minimum'] = value
         if 'custom_yaxis_max_' in key:
             for value in form.getlist(key):
-                if key[17:] not in yaxes:
-                    yaxes[key[17:]] = {}
-                yaxes[key[17:]]['maximum'] = value
-    # Create a dictionary from the parsed form options
-    yaxes_sorted = {}
-    for each_yaxis, yaxis_type in yaxes.items():
-        yaxes_sorted[yaxis_type['name']] = {}
-        yaxes_sorted[yaxis_type['name']]['minimum'] = yaxis_type['minimum']
-        yaxes_sorted[yaxis_type['name']]['maximum'] = yaxis_type['maximum']
+                unique_number = key[17:]
+                if unique_number not in yaxes:
+                    yaxes[unique_number] = {}
+                yaxes[unique_number]['maximum'] = value
     # Create a list of CSV sets in the format 'measure, minimum, maximum'
     yaxes_list = []
-    for each_yaxis, yaxis_type in yaxes_sorted.items():
-        yaxes_list.append('{},{},{}'.format(each_yaxis, yaxis_type['minimum'], yaxis_type['maximum']))
+    for each_yaxis, yaxis_type in yaxes.items():
+        yaxes_list.append('{},{},{}'.format(yaxis_type['name'], yaxis_type['minimum'], yaxis_type['maximum']))
     # Join the list of CSV sets with ';'
     return ';'.join(yaxes_list)
 
