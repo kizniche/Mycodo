@@ -21,8 +21,6 @@ ${INSTALL_CMD} update-swap-size
 
 ${INSTALL_CMD} setup-virtualenv
 
-${INSTALL_CMD} install-pigpiod
-
 ${INSTALL_CMD} update-pigpiod
 
 ${INSTALL_CMD} update-wiringpi

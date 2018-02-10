@@ -208,8 +208,9 @@ case "${1:-''}" in
             GPIOD_SAMPLE_RATE=5
         fi
 
+        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh disable-gpiod
+
         if [ "$GPIOD_SAMPLE_RATE" -ne "99" ]; then
-            /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh disable-gpiod
             if [ "$GPIOD_SAMPLE_RATE" -eq "1" ]; then
                /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-gpiod-low
             elif [ "$GPIOD_SAMPLE_RATE" -eq "5" ]; then
