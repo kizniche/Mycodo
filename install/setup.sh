@@ -57,7 +57,7 @@ ${INSTALL_CMD} update-pip3
 
 ${INSTALL_CMD} install-gpiod
 
-${INSTALL_CMD} update-gpiod
+${INSTALL_CMD} enable-gpiod-low
 
 ${INSTALL_CMD} update-wiringpi
 

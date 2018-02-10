@@ -37,6 +37,7 @@ Configuration Settings
 -   Output Usage Settings
 -   Users
 -   User Roles
+-   Pi Settings
 -   Alert Settings
 -   Camera Settings
 
@@ -1636,6 +1637,24 @@ Methods, PIDs, Outputs, Inputs, and Timers.
 
 2The View Stats permission protects the viewing of usage statistics and
 the System Info and Output Usage pages.
+
+
+Pi Settings
+
+Pi settings configure parts of the linux system that Mycodo runs on.
+
+  ---------------------------------------------------------------------
+  Setting               Description
+  --------------------- -----------------------------------------------
+  Enable/Disable        These are system interfaces that can be enabled
+  Feature               and disabled from the web UI via the
+                        raspi-config command.
+
+  pigpiod Sample Rate   This is the sample rate the pigpiod service
+                        will operate at. The lower number enables
+                        faster PWM frequencies, but may significantly
+                        increase processor load on the Pi Zeros.
+  ---------------------------------------------------------------------
 
 
 Alert Settings

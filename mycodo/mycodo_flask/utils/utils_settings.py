@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import subprocess
 
 import bcrypt
 import flask_login
@@ -23,6 +24,7 @@ from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.send_data import send_email
+from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.utils import test_password
 from mycodo.utils.utils import test_username
 
@@ -260,6 +262,117 @@ def settings_general_mod(form):
         flash_success_errors(error, action, url_for('routes_settings.settings_general'))
     else:
         flash_form_errors(form)
+
+
+def settings_pi_mod(form):
+    """
+    Change Pi Settings
+    Commands found at
+    https://github.com/raspberrypi-ui/rc_gui/blob/master/src/rc_gui.c
+    """
+    error = []
+    status = None
+    action_str = None
+
+    if form.enable_i2c.data:
+        _, _, status = cmd_output("raspi-config nonint do_i2c 0")
+        action_str = "Enable I2C"
+    elif form.disable_i2c.data:
+        _, _, status = cmd_output("raspi-config nonint do_i2c 1")
+        action_str = "Disable I2C"
+    elif form.enable_one_wire.data:
+        _, _, status = cmd_output("raspi-config nonint do_onewire 0")
+        action_str = "Enable 1-Wire"
+    elif form.disable_one_wire.data:
+        _, _, status = cmd_output("raspi-config nonint do_onewire 1")
+        action_str = "Disable 1-Wire"
+    elif form.enable_serial.data:
+        _, _, status = cmd_output("raspi-config nonint do_serial 0")
+        action_str = "Enable Serial"
+    elif form.disable_serial.data:
+        _, _, status = cmd_output("raspi-config nonint do_serial 1")
+        action_str = "Disable Serial"
+    elif form.enable_spi.data:
+        _, _, status = cmd_output("raspi-config nonint do_spi 0")
+        action_str = "Enable SPI"
+    elif form.disable_spi.data:
+        _, _, status = cmd_output("raspi-config nonint do_spi 1")
+        action_str = "Disable SPI"
+    elif form.enable_ssh.data:
+        _, _, status = cmd_output("raspi-config nonint do_ssh 0")
+        action_str = "Enable SSH"
+    elif form.disable_ssh.data:
+        _, _, status = cmd_output("raspi-config nonint do_ssh 1")
+        action_str = "Disable SSH"
+    elif form.enable_pi_camera.data:
+        _, _, status = cmd_output("raspi-config nonint do_camera 0")
+        action_str = "Enable Pi Camera"
+    elif form.disable_pi_camera.data:
+        _, _, status = cmd_output("raspi-config nonint do_camera 1")
+        action_str = "Disable Pi Camera"
+    elif form.change_hostname.data:
+        _, _, status = cmd_output(
+            "raspi-config nonint do_hostname {host}".format(
+                host=form.hostname.data))
+        action_str = "Change Hostname to '{host}'".format(
+            host=form.hostname.data)
+    elif form.change_pigpiod_sample_rate.data:
+        if form.pigpiod_sample_rate.data not in [1, 5]:
+            error.append("pigpiod sample rate must be either 1 ms or 5 ms")
+        else:
+            # Check current sample rate
+            current_sample_rate = None
+            if (os.path.exists('/etc/systemd/system/pigpiod.service') or
+                    os.path.exists('/etc/systemd/system/pigpiod_low.service')):
+                current_sample_rate = 1
+            elif os.path.exists('/etc/systemd/system/pigpiod_high.service'):
+                current_sample_rate = 5
+
+            # Stop the Mycodo daemon
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper daemon_stop" \
+                  " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
+                pth=INSTALL_DIRECTORY)
+            p1 = subprocess.Popen(cmd, shell=True)
+            p1.wait()
+
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper disable_pigpiod" \
+                  " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
+                pth=INSTALL_DIRECTORY)
+            p2 = subprocess.Popen(cmd, shell=True)
+            p2.wait()
+
+            # Change sample rate to 1 ms
+            if form.pigpiod_sample_rate.data == 1:
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper enable_pigpiod_low" \
+                      " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
+                    pth=INSTALL_DIRECTORY)
+                p3 = subprocess.Popen(cmd, shell=True)
+                p3.wait()
+
+            # Change sample rate to 5 ms
+            elif form.pigpiod_sample_rate.data == 5:
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper enable_pigpiod_high" \
+                      " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
+                    pth=INSTALL_DIRECTORY)
+                p5 = subprocess.Popen(cmd, shell=True)
+                p5.wait()
+
+            # Start the Mycodo daemon
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper daemon_start" \
+                  " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
+                pth=INSTALL_DIRECTORY)
+            p6 = subprocess.Popen(cmd, shell=True)
+            p6.wait()
+
+    if status:
+        error.append("Unknown error executing command to {action}".format(
+            action=action_str))
+
+    action = '{controller}: {action}'.format(
+        controller=gettext("Pi Settings"),
+        action=action_str)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_pi'))
 
 
 def settings_alert_mod(form_mod_alert):

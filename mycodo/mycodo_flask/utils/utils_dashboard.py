@@ -567,7 +567,7 @@ def custom_yaxes_str_from_form(form):
     :param request_form: UI form submitted by mycodo
     :return: string of CSV data sets separated by ';'
     """
-    # Find custom y-axis options from the form inputs
+    # Parse custom y-axis options from the UI form
     yaxes = {}
     for key in form.keys():
         if 'custom_yaxis_name_' in key:
@@ -588,7 +588,7 @@ def custom_yaxes_str_from_form(form):
                 if unique_number not in yaxes:
                     yaxes[unique_number] = {}
                 yaxes[unique_number]['maximum'] = value
-    # Create a list of CSV sets in the format 'measure, minimum, maximum'
+    # Create a list of CSV sets in the format 'y-axis, minimum, maximum'
     yaxes_list = []
     for each_yaxis, yaxis_type in yaxes.items():
         yaxes_list.append('{},{},{}'.format(yaxis_type['name'], yaxis_type['minimum'], yaxis_type['maximum']))
@@ -597,4 +597,9 @@ def custom_yaxes_str_from_form(form):
 
 
 def is_rgb_color(color_hex):
+    """
+    Check if string is a hex color value for the web UI
+    :param color_hex: string to check if it represents a hex color value
+    :return: bool
+    """
     return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))

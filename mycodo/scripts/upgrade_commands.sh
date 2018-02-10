@@ -168,8 +168,8 @@ case "${1:-''}" in
         /bin/bash ${MYCODO_PATH}/install/crontab.sh restart_daemon --remove
         /bin/bash ${MYCODO_PATH}/install/crontab.sh restart_daemon
     ;;
-    'install-gpiod')
-        printf "\n#### Installing gpiod\n"
+    'install-pigpiod')
+        printf "\n#### Installing pigpiod\n"
         cd ${MYCODO_PATH}/install
         # wget --quiet -P ${MYCODO_PATH}/install abyz.co.uk/rpi/pigpio/pigpio.zip
         tar xf pigpio.tar
@@ -179,13 +179,46 @@ case "${1:-''}" in
         cd ${MYCODO_PATH}/install
         rm -rf ./PIGPIO
     ;;
-    'update-gpiod')
+    'disable-pigpiod')
         printf "\n#### Disabling installed pigpiod startup script\n"
+        service pigpiod stop
         systemctl disable pigpiod.service
         rm -rf /etc/systemd/system/pigpiod.service
-        printf "#### Enabling current pigpiod startup script\n"
-        systemctl enable ${MYCODO_PATH}/install/pigpiod.service
+        systemctl disable pigpiod_low.service
+        rm -rf /etc/systemd/system/pigpiod_low.service
+        systemctl disable pigpiod_high.service
+        rm -rf /etc/systemd/system/pigpiod_high.service
+    ;;
+    'enable-pigpiod-low')
+        printf "\n#### Enabling pigpiod startup script (1 ms sample rate)\n"
+        systemctl enable ${MYCODO_PATH}/install/pigpiod_low.service
         service pigpiod restart
+    ;;
+    'enable-pigpiod-high')
+        printf "\n#### Enabling pigpiod startup script (5 ms sample rate)\n"
+        systemctl enable ${MYCODO_PATH}/install/pigpiod_high.service
+        service pigpiod restart
+    ;;
+    'update-pigpiod')
+        printf "\n#### Checking which pigpiod startup script is being used\n"
+        GPIOD_SAMPLE_RATE=99
+        if [ -e /etc/systemd/system/pigpiod_low.service ]; then
+            GPIOD_SAMPLE_RATE=1
+        elif [ -e /etc/systemd/system/pigpiod_high.service ]; then
+            GPIOD_SAMPLE_RATE=5
+        fi
+
+        if [ "$GPIOD_SAMPLE_RATE" -ne "99" ]; then
+            /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh disable-gpiod
+            if [ "$GPIOD_SAMPLE_RATE" -eq "1" ]; then
+               /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-gpiod-low
+            elif [ "$GPIOD_SAMPLE_RATE" -eq "5" ]; then
+               /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-gpiod-high
+            fi
+        else
+            printf "#### Could not determine pgiod sample rate. Setting up pigpiod with 1 ms sample rate\n"
+            /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-gpiod-low
+        fi
     ;;
     'update-influxdb')
         printf "\n#### Ensuring compatible version of influxdb is installed ####\n"

@@ -231,3 +231,22 @@ class UserMod(FlaskForm):
     theme = StringField(lazy_gettext('Theme'))
     save = SubmitField(lazy_gettext('Save'))
     delete = SubmitField(lazy_gettext('Delete'))
+
+
+class SettingsPi(FlaskForm):
+    enable_i2c = SubmitField(lazy_gettext('Enable I2C'))
+    disable_i2c = SubmitField(lazy_gettext('Disable I2C'))
+    enable_one_wire = SubmitField(lazy_gettext('Enable 1-Wire'))
+    disable_one_wire = SubmitField(lazy_gettext('Disable 1-Wire'))
+    enable_serial = SubmitField(lazy_gettext('Enable Serial'))
+    disable_serial = SubmitField(lazy_gettext('Disable Serial'))
+    enable_spi = SubmitField(lazy_gettext('Enable SPI'))
+    disable_spi = SubmitField(lazy_gettext('Disable SPI'))
+    enable_ssh = SubmitField(lazy_gettext('Enable SSH'))
+    disable_ssh = SubmitField(lazy_gettext('Disable SSH'))
+    enable_pi_camera = SubmitField(lazy_gettext('Enable Pi Camera'))
+    disable_pi_camera = SubmitField(lazy_gettext('Disable Pi Camera'))
+    hostname = StringField(lazy_gettext('Hostname'))
+    change_hostname = SubmitField(lazy_gettext('Change Hostname'))
+    pigpiod_sample_rate = IntegerField(lazy_gettext('pigpiod Sample Rate'))
+    change_pigpiod_sample_rate = SubmitField(lazy_gettext('Set Sample Rate'))

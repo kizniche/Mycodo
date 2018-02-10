@@ -35,6 +35,7 @@ Table of Contents
    - [Output Usage Settings](#output-usage-settings)
    - [Users](#users)
    - [User Roles](#user-roles)
+   - [Pi Settings](#pi-settings)
    - [Alert Settings](#alert-settings)
    - [Camera Settings](#camera-settings)
 
@@ -924,6 +925,16 @@ Four roles are provided by default, but custom roles may be created.
 <sup>1</sup>The ```Edit Controllers``` permission protects the editing of Graphs, LCDs, Methods, PIDs, Outputs, Inputs, and Timers.
 
 <sup>2</sup>The ```View Stats``` permission protects the viewing of usage statistics and the System Info and Output Usage pages.
+
+Pi Settings
+-----------
+
+Pi settings configure parts of the linux system that Mycodo runs on.
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Enable/Disable Feature | These are system interfaces that can be enabled and disabled from the web UI via the ```raspi-config``` command.
+pigpiod Sample Rate | This is the sample rate the pigpiod service will operate at. The lower number enables faster PWM frequencies, but may significantly increase processor load on the Pi Zeros.
 
 Alert Settings
 --------------

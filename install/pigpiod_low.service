@@ -1,5 +1,5 @@
 [Unit]
-Description=pigpiod service
+Description=pigpiod service (low latency)
 After=syslog.target
 
 [Service]

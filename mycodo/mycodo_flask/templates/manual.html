@@ -365,6 +365,7 @@
 <li><a href="#output-usage-settings">Output Usage Settings</a></li>
 <li><a href="#users">Users</a></li>
 <li><a href="#user-roles">User Roles</a></li>
+<li><a href="#pi-settings">Pi Settings</a></li>
 <li><a href="#alert-settings">Alert Settings</a></li>
 <li><a href="#camera-settings">Camera Settings</a></li>
 </ul>
@@ -1785,6 +1786,30 @@
 </table>
 <p><sup>1</sup>The <code>Edit Controllers</code> permission protects the editing of Graphs, LCDs, Methods, PIDs, Outputs, Inputs, and Timers.</p>
 <p><sup>2</sup>The <code>View Stats</code> permission protects the viewing of usage statistics and the System Info and Output Usage pages.</p>
+<h2 id="pi-settings">Pi Settings</h2>
+<p>Pi settings configure parts of the linux system that Mycodo runs on.</p>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Enable/Disable Feature</td>
+<td style="text-align: left;">These are system interfaces that can be enabled and disabled from the web UI via the <code>raspi-config</code> command.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pigpiod Sample Rate</td>
+<td style="text-align: left;">This is the sample rate the pigpiod service will operate at. The lower number enables faster PWM frequencies, but may significantly increase processor load on the Pi Zeros.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="alert-settings">Alert Settings</h2>
 <p>Alert settings set up the credentials for sending email notifications.</p>
 <table style="width:94%;">

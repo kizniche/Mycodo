@@ -1,5 +1,11 @@
 ## 5.5.20 (Unreleased)
 
+### Features
+
+ - Add new configuration section: Pi Settings
+ - Add to Pi Settings: common ```raspi-config``` options
+ - Add to Pi Settings: select pigpiod sample rate ([#386](https://github.com/kizniche/mycodo/issues/386))
+
 ### Bugfixes
 
  - Add ability to set custom Graph colors for Math measurements

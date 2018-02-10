@@ -4,6 +4,7 @@ import logging
 
 import flask_login
 import operator
+import os
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -23,6 +24,7 @@ from mycodo.mycodo_flask.forms import forms_settings
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_settings
+from mycodo.utils.system_pi import cmd_output
 
 logger = logging.getLogger('mycodo.mycodo_flask.settings')
 
@@ -167,3 +169,54 @@ def settings_users():
                            form_add_user=form_add_user,
                            form_mod_user=form_mod_user,
                            form_user_roles=form_user_roles)
+
+@blueprint.route('/settings/pi', methods=('GET', 'POST'))
+@flask_login.login_required
+def settings_pi():
+    """ Display general settings """
+    if not utils_general.user_has_permission('view_settings'):
+        return redirect(url_for('routes_general.home'))
+
+    misc = Misc.query.first()
+    form_settings_pi = forms_settings.SettingsPi()
+
+    pi_settings = get_raspi_config_settings()
+
+    pigpiod_sample_rate = None
+    if os.path.exists('/etc/systemd/system/pigpiod_low.service'):
+        pigpiod_sample_rate = 1
+    elif os.path.exists('/etc/systemd/system/pigpiod_high.service'):
+        pigpiod_sample_rate = 5
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_settings'):
+            return redirect(url_for('routes_general.home'))
+
+        form_name = request.form['form-name']
+        if form_name == 'Pi':
+            utils_settings.settings_pi_mod(form_settings_pi)
+        return redirect(url_for('routes_settings.settings_pi'))
+
+    return render_template('settings/pi.html',
+                           misc=misc,
+                           pi_settings=pi_settings,
+                           pigpiod_sample_rate=pigpiod_sample_rate,
+                           form_settings_pi=form_settings_pi)
+
+def get_raspi_config_settings():
+    settings = {}
+    i2c_status, _, _ = cmd_output("raspi-config nonint get_i2c")
+    settings['i2c_enabled'] = not bool(int(i2c_status))
+    ssh_status, _, _ = cmd_output("raspi-config nonint get_ssh")
+    settings['ssh_enabled'] = not bool(int(ssh_status))
+    cam_status, _, _ = cmd_output("raspi-config nonint get_camera")
+    settings['pi_camera_enabled'] = not bool(int(cam_status))
+    one_wire_status, _, _ = cmd_output("raspi-config nonint get_onewire")
+    settings['one_wire_enabled'] = not bool(int(one_wire_status))
+    serial_status, _, _ = cmd_output("raspi-config nonint get_serial")
+    settings['serial_enabled'] = not bool(int(serial_status))
+    spi_status, _, _ = cmd_output("raspi-config nonint get_spi")
+    settings['spi_enabled'] = not bool(int(spi_status))
+    hostname_out, _, _ = cmd_output("raspi-config nonint get_hostname")
+    settings['hostname'] = hostname_out.decode("utf-8")
+    return settings

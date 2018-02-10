@@ -792,10 +792,13 @@ class OutputController(threading.Thread):
                     self.pwm_output[output_id].hardware_PWM(
                         self.output_pin[output_id], self.pwm_hertz[output_id], 0)
                 elif self.pwm_library[output_id] == 'pigpio_any':
-                    self.pwm_output[output_id].set_PWM_frequency(
-                        self.output_pin[output_id], self.pwm_hertz[output_id])
-                    self.pwm_output[output_id].set_PWM_dutycycle(
-                        self.output_pin[output_id], 0)
+                    if self.pwm_output[output_id].connected:
+                        self.pwm_output[output_id].set_PWM_frequency(
+                            self.output_pin[output_id], self.pwm_hertz[output_id])
+                        self.pwm_output[output_id].set_PWM_dutycycle(
+                            self.output_pin[output_id], 0)
+                    else:
+                        self.logger.error("Cound not connect to pigpiod")
                 self.pwm_state[output_id] = None
                 self.logger.info("PWM {id} setup on pin {pin}".format(
                     id=output_id, pin=self.output_pin[output_id]))
