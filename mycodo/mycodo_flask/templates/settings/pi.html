@@ -122,7 +122,7 @@
         </select>
       </div>
       <div class="col-xs-6 col-sm-3">
-        {{form_settings_pi.change_pigpiod_sample_rate(class_='btn btn-default')}}
+        {{form_settings_pi.change_pigpiod_sample_rate(class_='btn btn-default',**{'onclick':'return confirm("Changing the sample rate of pigpiod requires restarting both pigpiod and the mycodo daemon. Please confirm this is what you wish to do.")'})}}
       </div>
     </div>
 
