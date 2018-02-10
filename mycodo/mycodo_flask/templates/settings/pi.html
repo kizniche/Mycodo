@@ -9,20 +9,16 @@
   <!-- Route: /settings/pi -->
   <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/help#pi-settings" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a> {{_('Pi Settings')}}</h3>
 
-  <div style="padding: 1em 0">
-    Changing any of these settings may require a system reboot before they take effect.
-  </div>
-
   <form class="form-horizontal" method="post" action="/settings/pi">
     <input type="hidden" name="form-name" value="Pi">
     {{form_settings_pi.csrf_token}}
 
-    <div class="row" style="padding: 1em 0">
+    <div class="row small-gutters" style="padding: 1em 0">
       <div class="col-xs-12">
-        The following settings are configured through the non-interactive version of raspi-config:
+        The following settings are configured through the non-interactive version of raspi-config. Changes here often require a system reboot before they take effect, which may be executed from the menu at the top-right (Configuration -> Restart System).
       </div>
     </div>
-    <div class="row">
+    <div class="row small-gutters">
       <div class="col-xs-6 col-sm-5 col-md-3">
         I<sup>2</sup>C Enabled: {{pi_settings['i2c_enabled']}}
       </div>
@@ -34,7 +30,7 @@
         {% endif %}
       </div>
     </div>
-    <div class="row">
+    <div class="row small-gutters">
       <div class="col-xs-6 col-sm-5 col-md-3">
         1-Wire Enabled: {{pi_settings['one_wire_enabled']}}
       </div>
@@ -46,7 +42,7 @@
         {% endif %}
       </div>
     </div>
-    <div class="row">
+    <div class="row small-gutters">
       <div class="col-xs-6 col-sm-5 col-md-3">
         Serial Enabled: {{pi_settings['serial_enabled']}}
       </div>
@@ -58,7 +54,7 @@
         {% endif %}
       </div>
     </div>
-    <div class="row">
+    <div class="row small-gutters">
       <div class="col-xs-6 col-sm-5 col-md-3">
         SPI Enabled: {{pi_settings['spi_enabled']}}
       </div>
@@ -70,7 +66,7 @@
         {% endif %}
       </div>
     </div>
-    <div class="row">
+    <div class="row small-gutters">
       <div class="col-xs-6 col-sm-5 col-md-3">
         SSH Enabled: {{pi_settings['ssh_enabled']}}
       </div>
@@ -82,7 +78,7 @@
         {% endif %}
       </div>
     </div>
-    <div class="row">
+    <div class="row small-gutters">
       <div class="col-xs-6 col-sm-5 col-md-3">
         Pi Camera Enabled: {{pi_settings['pi_camera_enabled']}}
       </div>
@@ -94,7 +90,7 @@
         {% endif %}
       </div>
     </div>
-    <div class="row">
+    <div class="row small-gutters">
       <div class="col-xs-6 col-sm-5 col-md-3">
         {{form_settings_pi.hostname(class_='form-control', value=pi_settings['hostname'])}}
       </div>
@@ -103,17 +99,17 @@
       </div>
     </div>
 
-    <div class="row" style="padding: 2em 0 0.5em 0">
+    <div class="row small-gutters" style="padding: 2em 0 0.5em 0">
       <div class="col-xs-12">
         The following settings are service options:
       </div>
     </div>
-    <div class="row">
+    <div class="row small-gutters">
       <div class="col-xs-12">
         {{form_settings_pi.pigpiod_sample_rate.label(class_='control-label')}}
       </div>
     </div>
-    <div class="row">
+    <div class="row small-gutters">
       <div class="col-xs-6 col-sm-5  col-md-3">
         <select class="form-control" id="pigpiod_sample_rate" name="pigpiod_sample_rate" title="" data-original-title="Select a sample rate in milliseconds for pigpiod">
           <option value=""></option>
