@@ -317,17 +317,12 @@ def settings_pi_mod(form):
         action_str = "Change Hostname to '{host}'".format(
             host=form.hostname.data)
     elif form.change_pigpiod_sample_rate.data:
-        if form.pigpiod_sample_rate.data not in [1, 5]:
-            error.append("pigpiod sample rate must be either 1 ms or 5 ms")
+        if form.pigpiod_sample_rate.data not in [1, 5, 999]:
+            error.append(
+                "Valid pigpiod options: Disable, 1 ms, or 5 ms. "
+                "Invalid option: {op}".format(
+                    op=form.pigpiod_sample_rate.data))
         else:
-            # Check current sample rate
-            current_sample_rate = None
-            if (os.path.exists('/etc/systemd/system/pigpiod.service') or
-                    os.path.exists('/etc/systemd/system/pigpiod_low.service')):
-                current_sample_rate = 1
-            elif os.path.exists('/etc/systemd/system/pigpiod_high.service'):
-                current_sample_rate = 5
-
             # Stop the Mycodo daemon
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper daemon_stop" \
                   " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
@@ -335,13 +330,14 @@ def settings_pi_mod(form):
             p1 = subprocess.Popen(cmd, shell=True)
             p1.wait()
 
+            # Disable pigpiod
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper disable_pigpiod" \
                   " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
                 pth=INSTALL_DIRECTORY)
             p2 = subprocess.Popen(cmd, shell=True)
             p2.wait()
 
-            # Change sample rate to 1 ms
+            # Install pigpiod (sample rate of 1 ms)
             if form.pigpiod_sample_rate.data == 1:
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper enable_pigpiod_low" \
                       " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
@@ -349,13 +345,17 @@ def settings_pi_mod(form):
                 p3 = subprocess.Popen(cmd, shell=True)
                 p3.wait()
 
-            # Change sample rate to 5 ms
+            # Install pigpiod (sample rate of 5 ms)
             elif form.pigpiod_sample_rate.data == 5:
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper enable_pigpiod_high" \
                       " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
                     pth=INSTALL_DIRECTORY)
                 p5 = subprocess.Popen(cmd, shell=True)
                 p5.wait()
+
+            # Don't install pigpiod (user selected disable)
+            elif form.pigpiod_sample_rate.data == 999:
+                pass
 
             # Start the Mycodo daemon
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper daemon_start" \

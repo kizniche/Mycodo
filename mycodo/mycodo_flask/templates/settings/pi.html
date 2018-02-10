@@ -113,6 +113,7 @@
       <div class="col-xs-6 col-sm-5  col-md-3">
         <select class="form-control" id="pigpiod_sample_rate" name="pigpiod_sample_rate" title="" data-original-title="Select a sample rate in milliseconds for pigpiod">
           <option value=""></option>
+          <option value="999"{% if pigpiod_sample_rate == 999 %} selected{% endif %}>Disable pigpiod</option>
           <option value="1"{% if pigpiod_sample_rate == 1 %} selected{% endif %}>1 ms (faster)</option>
           <option value="5"{% if pigpiod_sample_rate == 5 %} selected{% endif %}>5 ms (slower)</option>
         </select>

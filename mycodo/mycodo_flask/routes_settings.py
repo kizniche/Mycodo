@@ -182,11 +182,13 @@ def settings_pi():
 
     pi_settings = get_raspi_config_settings()
 
-    pigpiod_sample_rate = None
+    pigpiod_sample_rate = 999
     if os.path.exists('/etc/systemd/system/pigpiod_low.service'):
         pigpiod_sample_rate = 1
     elif os.path.exists('/etc/systemd/system/pigpiod_high.service'):
         pigpiod_sample_rate = 5
+    elif os.path.exists('/etc/systemd/system/pigpiod.service'):
+        pigpiod_sample_rate = 1
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_settings'):
