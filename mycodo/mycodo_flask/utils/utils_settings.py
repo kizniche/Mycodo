@@ -5,6 +5,7 @@ import subprocess
 import bcrypt
 import flask_login
 import os
+import re
 import sqlalchemy
 from flask import flash
 from flask import redirect
@@ -311,9 +312,17 @@ def settings_pi_mod(form):
         _, _, status = cmd_output("raspi-config nonint do_camera 1")
         action_str = "Disable Pi Camera"
     elif form.change_hostname.data:
-        _, _, status = cmd_output(
-            "raspi-config nonint do_hostname {host}".format(
-                host=form.hostname.data))
+        if is_valid_hostname(form.hostname.data):
+            _, _, status = cmd_output(
+                "raspi-config nonint do_hostname {host}".format(
+                    host=form.hostname.data))
+        else:
+            error.append(
+                "Invalid hostname. Hostnames are composed of series of "
+                "labels concatenated with dots, as are all domain names. "
+                "Hostnames must be 1 to 63 characters and may contain only "
+                "the ASCII letters 'a' through 'z' (in a case-insensitive "
+                "manner), the digits '0' through '9', and the hyphen ('-').")
         action_str = "Change Hostname to '{host}'".format(
             host=form.hostname.data)
     elif form.change_pigpiod_sample_rate.data:
@@ -526,3 +535,12 @@ def camera_del(form_camera):
             error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_settings.settings_camera'))
+
+
+def is_valid_hostname(hostname):
+    if len(hostname) > 255:
+        return False
+    if hostname[-1] == ".":
+        hostname = hostname[:-1] # strip exactly one dot from the right, if present
+    allowed = re.compile("(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
+    return all(allowed.match(x) for x in hostname.split("."))
