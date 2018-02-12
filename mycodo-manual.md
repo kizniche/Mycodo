@@ -931,10 +931,12 @@ Pi Settings
 
 Pi settings configure parts of the linux system that Mycodo runs on.
 
+pigpiod is required if you wish to use PWM Outputs, as well as PWM, RPM, DHT22, DHT11, HTU21D Inputs.
+
 Setting | Description
 -------------------- | ----------------------------------------------
 Enable/Disable Feature | These are system interfaces that can be enabled and disabled from the web UI via the ```raspi-config``` command.
-pigpiod Sample Rate | This is the sample rate the pigpiod service will operate at. The lower number enables faster PWM frequencies, but may significantly increase processor load on the Pi Zeros.
+pigpiod Sample Rate | This is the sample rate the pigpiod service will operate at. The lower number enables faster PWM frequencies, but may significantly increase processor load on the Pi Zeros. pigpiod may als be disabled completely if it's not required (see note, above).
 
 Alert Settings
 --------------

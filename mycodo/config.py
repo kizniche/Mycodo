@@ -9,7 +9,7 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '5.5.19'
+MYCODO_VERSION = '5.5.20'
 ALEMBIC_VERSION = 'def4bf9c6f84'
 
 #  FORCE_UPGRADE_MASTER
