@@ -1788,6 +1788,7 @@
 <p><sup>2</sup>The <code>View Stats</code> permission protects the viewing of usage statistics and the System Info and Output Usage pages.</p>
 <h2 id="pi-settings">Pi Settings</h2>
 <p>Pi settings configure parts of the linux system that Mycodo runs on.</p>
+<p>pigpiod is required if you wish to use PWM Outputs, as well as PWM, RPM, DHT22, DHT11, HTU21D Inputs.</p>
 <table style="width:94%;">
 <colgroup>
 <col style="width: 29%"></col>
@@ -1806,7 +1807,7 @@
 </tr>
 <tr class="even">
 <td style="text-align: left;">pigpiod Sample Rate</td>
-<td style="text-align: left;">This is the sample rate the pigpiod service will operate at. The lower number enables faster PWM frequencies, but may significantly increase processor load on the Pi Zeros.</td>
+<td style="text-align: left;">This is the sample rate the pigpiod service will operate at. The lower number enables faster PWM frequencies, but may significantly increase processor load on the Pi Zeros. pigpiod may als be disabled completely if it’s not required (see note, above).</td>
 </tr>
 </tbody>
 </table>

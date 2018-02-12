@@ -208,17 +208,17 @@ case "${1:-''}" in
             GPIOD_SAMPLE_RATE=5
         fi
 
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh disable-gpiod
+        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh disable-pigpiod
 
         if [ "$GPIOD_SAMPLE_RATE" -ne "99" ]; then
             if [ "$GPIOD_SAMPLE_RATE" -eq "1" ]; then
-               /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-gpiod-low
+               /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-low
             elif [ "$GPIOD_SAMPLE_RATE" -eq "5" ]; then
-               /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-gpiod-high
+               /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-high
             fi
         else
             printf "#### Could not determine pgiod sample rate. Setting up pigpiod with 1 ms sample rate\n"
-            /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-gpiod-low
+            /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-low
         fi
     ;;
     'update-influxdb')
