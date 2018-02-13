@@ -1,8 +1,9 @@
-## 5.5.21 (Unreleased)
+## 5.5.21 (2018-02-13)
 
 ### Bugfixes
 
  - Add error-handling of DS18B20 communication error ([#404](https://github.com/kizniche/mycodo/issues/404))
+ - Fix setup abort from unmet pigpiod dependency ([#406](https://github.com/kizniche/mycodo/issues/406))
 
 
 ## 5.5.20 (2018-02-11)
