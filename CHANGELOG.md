@@ -1,3 +1,10 @@
+## 5.5.21 (Unreleased)
+
+### Bugfixes
+
+ - Add error-handling of DS18B20 communication error ([#404](https://github.com/kizniche/mycodo/issues/404))
+
+
 ## 5.5.20 (2018-02-11)
 
 ### Features
