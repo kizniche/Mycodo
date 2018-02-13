@@ -144,9 +144,6 @@ class MathController(threading.Thread):
                         time.sleep(0.1)
 
                 if self.is_activated and time.time() > self.timer:
-                    # Ensure the timer ends in the future
-                    while time.time() > self.timer:
-                        self.timer = self.timer + self.period
 
                     # If PID is active, retrieve input measurement and update PID output
                     if self.math_type == 'average':
@@ -285,6 +282,12 @@ class MathController(threading.Thread):
 
                             percent_relative_humidity = psypi[2] * 100
 
+                            # Ensure percent humidity stays within 0 - 100 % range
+                            if percent_relative_humidity > 100:
+                                percent_relative_humidity = 100
+                            elif percent_relative_humidity < 0:
+                                percent_relative_humidity = 0
+
                             # Dry bulb temperature: psypi[0])
                             # Wet bulb temperature: psypi[5])
 
@@ -297,6 +300,10 @@ class MathController(threading.Thread):
                             add_measure_influxdb(self.unique_id, self.measurements)
                         else:
                             self.error_not_within_max_age()
+
+                    # Ensure the next timer ends in the future
+                    while time.time() > self.timer:
+                        self.timer += self.period
 
                 time.sleep(0.1)
 
@@ -328,10 +335,10 @@ class MathController(threading.Thread):
                 else:
                     measurements.append(last_measurement[1])
             return True, measurements
-        except ConnectionRefusedError:
-            return False, "Influxdb: ConnectionRefusedError"
         except urllib3.exceptions.NewConnectionError:
             return False, "Influxdb: urllib3.exceptions.NewConnectionError"
+        except Exception as msg:
+            return False, "Influxdb: Unknown Error: {err}".format(err=msg)
 
     def get_measurements_from_id(self, measure_id, measure_name):
         measurement = read_last_influxdb(

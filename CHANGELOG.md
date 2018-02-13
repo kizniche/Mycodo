@@ -1,3 +1,10 @@
+## 5.5.22 (Unreleased)
+
+### Bugfixes
+
+ - Add checks to ensure Humidity Math only returns 0% - 100% humidity
+
+
 ## 5.5.21 (2018-02-13)
 
 ### Bugfixes
