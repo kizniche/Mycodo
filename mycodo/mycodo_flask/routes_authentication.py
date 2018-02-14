@@ -236,7 +236,7 @@ def newremote():
 
     if user:
         if User().check_password(
-                pass_word, user.password_hash) == user.password_hash:
+                pass_word, user.password_hash).decode('utf-8') == user.password_hash:
             try:
                 with open('/var/mycodo-root/mycodo/mycodo_flask/ssl_certs/cert.pem', 'r') as cert:
                     certificate_data = cert.read()
@@ -244,8 +244,7 @@ def newremote():
                 certificate_data = None
             return jsonify(status=0,
                            error_msg=None,
-                           hash="{hash}".format(
-                               hash=user.password_hash),
+                           hash=user.password_hash,
                            certificate=certificate_data)
     return jsonify(status=1,
                    error_msg="Unable to authenticate with user and password.",
@@ -257,7 +256,7 @@ def newremote():
 @flask_login.login_required
 def remote_auth():
     """Checks authentication for remote admin"""
-    return "0"
+    return "authenticated"
 
 
 @blueprint.route('/remote_get_inputs/')

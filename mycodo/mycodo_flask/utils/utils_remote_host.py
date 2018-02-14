@@ -17,6 +17,7 @@ from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
+from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import list_to_csv
 
@@ -41,8 +42,7 @@ def remote_log_in(address, user, password_hash):
         # Require all certificate data matches stored certificate, except hostname
         ssl_cert_file = '{path}/{file}'.format(
             path=STORED_SSL_CERTIFICATE_PATH,
-            file='{add}_cert.pem'.format(
-                add=address))
+            file='{add}_cert.pem'.format(add=address))
         http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED',
                                    ca_certs=ssl_cert_file,
                                    assert_hostname=False)
@@ -78,8 +78,7 @@ def remote_host_page(address, headers, page):
         # Require certificate data matches stored certificate, except hostname
         ssl_cert_file = '{path}/{file}'.format(
             path=STORED_SSL_CERTIFICATE_PATH,
-            file='{add}_cert.pem'.format(
-                add=address))
+            file='{add}_cert.pem'.format(add=address))
         http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED',
                                    ca_certs=ssl_cert_file,
                                    assert_hostname=False)
@@ -88,7 +87,7 @@ def remote_host_page(address, headers, page):
         logged_in_url = 'https://{add}/{page}/'.format(add=address, page=page)
         logged_in_page = http.request('GET', logged_in_url, headers=headers)
 
-        return 0, logged_in_page.data
+        return 0, logged_in_page.data.decode('utf-8')
     except Exception as e:
         logger.exception(
             "'remote_host_auth_page' raised an exception: {err}".format(err=e))
@@ -131,10 +130,10 @@ def remote_host_add(form_setup, display_order):
                 return 1
 
             # Write remote certificate to file
+            assure_path_exists(STORED_SSL_CERTIFICATE_PATH)
             public_key = '{path}/{file}'.format(
                 path=STORED_SSL_CERTIFICATE_PATH,
-                file='{add}_cert.pem'.format(
-                add=form_setup.host.data))
+                file='{add}_cert.pem'.format(add=form_setup.host.data))
             file_handler = open(public_key, 'w')
             file_handler.write(pw_check['certificate'])
             file_handler.close()

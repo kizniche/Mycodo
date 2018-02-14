@@ -4,6 +4,7 @@
 
  - Add checks to ensure Humidity Math only returns 0% - 100% humidity
  - Prevent opposing relays from being turned off in PID Controllers ([#402](https://github.com/kizniche/mycodo/issues/402))
+ - Fix adding and viewing hosts in Remote Admin ([#377](https://github.com/kizniche/mycodo/issues/377))
 
 
 ## 5.5.21 (2018-02-13)
