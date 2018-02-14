@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Add checks to ensure Humidity Math only returns 0% - 100% humidity
+ - Prevent opposing relays from being turned off in PID Controllers ([#402](https://github.com/kizniche/mycodo/issues/402))
 
 
 ## 5.5.21 (2018-02-13)

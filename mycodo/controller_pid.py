@@ -518,12 +518,6 @@ class PIDController(threading.Thread):
             if self.direction in ['raise', 'both'] and self.raise_output_id:
 
                 if self.control_variable > 0:
-                    # Turn off lower_output if active, because we're now raising
-                    if (self.direction == 'both' and
-                            self.lower_output_id and
-                            self.control.relay_state(self.lower_output_id) != 'off'):
-                        self.control.relay_off(self.lower_output_id)
-
                     # Determine if the output should be PWM or a duration
                     if self.raise_output_type == 'pwm':
                         self.raise_duty_cycle = float("{0:.1f}".format(
@@ -587,8 +581,6 @@ class PIDController(threading.Thread):
                     if self.raise_output_type == 'pwm':
                         self.control.relay_on(self.raise_output_id,
                                               duty_cycle=0)
-                    else:
-                        self.control.relay_off(self.raise_output_id)
 
             #
             # PID control variable is negative, indicating a desire to lower
@@ -597,12 +589,6 @@ class PIDController(threading.Thread):
             if self.direction in ['lower', 'both'] and self.lower_output_id:
 
                 if self.control_variable < 0:
-                    # Turn off raise_output if active, because we're now raising
-                    if (self.direction == 'both' and
-                            self.raise_output_id and
-                            self.control.relay_state(self.raise_output_id) != 'off'):
-                        self.control.relay_off(self.raise_output_id)
-
                     # Determine if the output should be PWM or a duration
                     if self.lower_output_type == 'pwm':
                         self.lower_duty_cycle = float("{0:.1f}".format(
@@ -667,8 +653,6 @@ class PIDController(threading.Thread):
                     if self.lower_output_type == 'pwm':
                         self.control.relay_on(self.lower_output_id,
                                               duty_cycle=0)
-                    else:
-                        self.control.relay_off(self.lower_output_id)
 
         else:
             if self.direction in ['raise', 'both'] and self.raise_output_id:
