@@ -47,19 +47,25 @@ class DS18B20Sensor(AbstractInput):
         return self._temperature
 
     def get_measurement(self):
-        """ Gets the DS18B20's temperature in Celsius by reading the temp file and div by 1000"""
+        """ Gets the DS18B20's temperature in Celsius """
         self._temperature = None
         temperature = None
         n = 2
         for i in range(n):
             try:
                 temperature = self.sensor.get_temperature()
+                break
             except Exception as e:
                 if i == n:
                     logger.exception(
                         "{cls} raised an exception when taking a reading: "
                         "{err}".format(cls=type(self).__name__, err=e))
                 time.sleep(1)
+
+        # 85 degrees indicates an issue communicating with the sensor
+        if temperature == 85:
+            return None
+
         return temperature
 
     def read(self):
@@ -70,11 +76,6 @@ class DS18B20Sensor(AbstractInput):
         """
         try:
             self._temperature = self.get_measurement()
-
-            # 85 degrees indicates an issue communicating with the sensor
-            if self._temperature == 85:
-                return 1
-
             if self._temperature is not None:
                 return  # success - no errors
         except Exception as e:
