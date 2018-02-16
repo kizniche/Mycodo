@@ -71,7 +71,7 @@ class DS18B20Sensor(AbstractInput):
         try:
             self._temperature = self.get_measurement()
 
-            # 85 degrees indicates a communication issue the sensor
+            # 85 degrees indicates an issue communicating with the sensor
             if self._temperature == 85:
                 return 1
 
