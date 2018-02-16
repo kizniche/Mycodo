@@ -4,6 +4,7 @@ import logging
 import threading
 from uuid import UUID
 
+import requests
 from influxdb import InfluxDBClient
 
 from mycodo.config import INFLUXDB_DATABASE
@@ -138,7 +139,11 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
     else:
         query = query_string(measure_type, device_id, value='LAST')
 
-    last_measurement = client.query(query).raw
+    try:
+        last_measurement = client.query(query).raw
+    except requests.exceptions.ConnectionError:
+        logger.debug("Failed to establish a new influxdb connection. Ensure influxdb is running.")
+        last_measurement = None
 
     if last_measurement:
         try:

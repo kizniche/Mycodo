@@ -6,6 +6,7 @@
  - Prevent opposing relays from being turned off in PID Controllers ([#402](https://github.com/kizniche/mycodo/issues/402))
  - Fix adding and viewing hosts in Remote Admin ([#377](https://github.com/kizniche/mycodo/issues/377))
  - Fix error-handling of DS18B20 communication error ([#404](https://github.com/kizniche/mycodo/issues/404))
+ - Add error-handling for influxdb queries ([#405](https://github.com/kizniche/mycodo/issues/405))
 
 
 ## 5.5.21 (2018-02-13)
