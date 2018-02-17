@@ -155,7 +155,8 @@ class DashboardOutput(FlaskForm):
     )
     font_em_value = DecimalField(lazy_gettext('Value Font Size (em)'))
     font_em_timestamp = DecimalField(lazy_gettext('TS Font Size (em)'))
-    enable_output_controls = BooleanField(lazy_gettext('Enable Output Controls'))
+    enable_output_controls = BooleanField(lazy_gettext('Feature Output Controls'))
+
 
 class DashboardCamera(FlaskForm):
     camera_id = StringField(lazy_gettext('Camera'))

@@ -27,13 +27,13 @@
     <div class="form-group">
       {{form_output.max_measure_age.label(class_='control-label')}}
       <div>
-        {{form_output.max_measure_age(class_='form-control', value=120)}}
+        {{form_output.max_measure_age(class_='form-control', value=3600)}}
       </div>
     </div>
     <div class="form-group">
       {{form_output.refresh_duration.label(class_='control-label')}}
       <div>
-        {{form_output.refresh_duration(class_='form-control', value=30)}}
+        {{form_output.refresh_duration(class_='form-control', value=15)}}
       </div>
     </div>
     <div class="form-group">
@@ -50,7 +50,7 @@
     </div>
     <div class="checkbox" style="padding-right: 1em">
       <label>
-        {{form_output.enable_output_controls(class_='form-control', value='y', checked=True)}}
+        {{form_output.enable_output_controls(class_='form-control')}}
         {{form_output.enable_output_controls.label.text}}
       </label>
     </div>

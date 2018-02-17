@@ -98,8 +98,7 @@ def dashboard_add(form_base, form_object, display_order):
             error.append(except_msg)
 
     # Gauge
-    elif (form_base.dashboard_type.data == 'gauge' and
-          form_object.sensor_ids.data):
+    elif form_base.dashboard_type.data == 'gauge':
 
         error = gauge_error_check(form_object, error)
 
@@ -135,8 +134,9 @@ def dashboard_add(form_base, form_object, display_order):
             error.append(except_msg)
 
     # Output
-    elif (form_base.dashboard_type.data == 'output' and
-          form_object.output_id.data):
+    elif form_base.dashboard_type.data == 'output':
+
+        error = output_error_check(form_object, error)
 
         new_graph.graph_type = 'output'
         new_graph.width = form_object.width.data
@@ -380,8 +380,15 @@ def graph_error_check(form, error):
 
 def gauge_error_check(form, error):
     """Determine if there are any errors in the gauge form"""
-    if not form.sensor_ids.data[0]:
+    if not form.sensor_ids.data:
         error.append("A valid Measurement must be selected")
+    return error
+
+
+def output_error_check(form, error):
+    """Determine if there are any errors in the gauge form"""
+    if form.output_id.data == '':
+        error.append("A valid Output must be selected")
     return error
 
 

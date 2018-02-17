@@ -134,7 +134,7 @@ function modOutput(btn_val) {
       type: 'GET',
       url: '/output_mod_unique_id/' + btn_val,
       success: function(data) {
-          toastr['success']("Output " + btn_val.split("/")[0] + ": " + data);
+          toastr['success']("Output " + data);
       },
       error: function(data) {
           toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
