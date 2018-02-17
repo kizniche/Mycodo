@@ -1,11 +1,11 @@
 <form method="post" action="/dashboard">
   <div class="form-inline">
     {{form_base.csrf_token}}
-    <input type="hidden" name="dashboard_type" value="output">
+    <input type="hidden" name="dashboard_type" value="measurement">
     <div class="form-group">
       {{form_base.name.label(class_='control-label')}}
       <div>
-        {{form_base.name(class_='form-control', value=_('Output Name'))}}
+        {{form_base.name(class_='form-control', value=_('Measurement Name'))}}
       </div>
     </div>
     <div class="form-group">
@@ -13,7 +13,7 @@
       <div>
         <select class="form-control" id="width" name="width">
           {% for n in range(1, 13) %}
-            <option value="{{n}}"{% if n == 4 %} selected{% endif %}>{{n}}/12</option>
+            <option value="{{n}}"{% if n == 3 %} selected{% endif %}>{{n}}/12</option>
           {% endfor %}
         </select>
       </div>
@@ -21,13 +21,13 @@
     <div class="form-group">
       {{form_base.height.label(class_='control-label')}}
       <div>
-        {{form_base.height(class_='form-control', value=200)}}
+        {{form_base.height(class_='form-control', value=150)}}
       </div>
     </div>
     <div class="form-group">
-      {{form_output.max_measure_age.label(class_='control-label')}}
+      {{form_measurement.max_measure_age.label(class_='control-label')}}
       <div>
-        {{form_output.max_measure_age(class_='form-control', value=3600)}}
+        {{form_measurement.max_measure_age(class_='form-control', value=3600)}}
       </div>
     </div>
     <div class="form-group">
@@ -37,33 +37,33 @@
       </div>
     </div>
     <div class="form-group">
-      {{form_output.font_em_value.label(class_='control-label')}}
+      {{form_measurement.font_em_value.label(class_='control-label')}}
       <div>
-        {{form_output.font_em_value(class_='form-control', value=3)}}
+        {{form_measurement.font_em_value(class_='form-control', value=3)}}
       </div>
     </div>
     <div class="form-group">
-      {{form_output.font_em_timestamp.label(class_='control-label')}}
+      {{form_measurement.font_em_timestamp.label(class_='control-label')}}
       <div>
-        {{form_output.font_em_timestamp(class_='form-control', value=2)}}
+        {{form_measurement.font_em_timestamp(class_='form-control', value=2)}}
       </div>
-    </div>
-    <div class="checkbox" style="padding-right: 1em">
-      <label>
-        {{form_output.enable_output_controls(class_='form-control')}}
-        {{form_output.enable_output_controls.label.text}}
-      </label>
     </div>
 
     <div style="clear: both"></div>
 
     <div class="form-group">
-      {{form_output.output_id.label(class_='control-label')}}
+      {{form_measurement.measurement_id.label(class_='control-label')}}
       <div>
-        <select class="form-control" id="output_id" name="output_id" style="width: 100%;">
-        {% if choices_output %}
+        <select class="form-control" id="measurement_id" name="measurement_id" style="width: 100%;">
+        {% if choices_input or choices_math or choices_pid %}
           <option value="">{{_('Select One')}}</option>
-          {% for each_choice, value in choices_output.items() -%}
+          {% for each_choice, value in choices_input.items() -%}
+          <option value="{{each_choice}}">{{value}}</option>
+          {% endfor -%}
+          {% for each_choice, value in choices_math.items() -%}
+          <option value="{{each_choice}}">{{value}}</option>
+          {% endfor -%}
+          {% for each_choice, value in choices_pid.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
           {% endfor -%}
         {% else %}

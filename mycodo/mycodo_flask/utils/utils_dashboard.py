@@ -48,9 +48,9 @@ def dashboard_add(form_base, form_object, display_order):
     if (form_base.dashboard_type.data == 'graph' and
             (form_base.name.data and
              form_object.width.data and
-             form_object.height.data and
+             form_base.height.data and
              form_object.xaxis_duration.data and
-             form_object.refresh_duration.data)):
+             form_base.refresh_duration.data)):
 
         error = graph_error_check(form_object, error)
 
@@ -68,10 +68,10 @@ def dashboard_add(form_base, form_object, display_order):
         if form_object.sensor_ids.data:
             sensor_ids_joined = ";".join(form_object.sensor_ids.data)
             new_graph.sensor_ids_measurements = sensor_ids_joined
-        new_graph.width = form_object.width.data
-        new_graph.height = form_object.height.data
+        new_graph.width = form_base.width.data
+        new_graph.height = form_base.height.data
         new_graph.x_axis_duration = form_object.xaxis_duration.data
-        new_graph.refresh_duration = form_object.refresh_duration.data
+        new_graph.refresh_duration = form_base.refresh_duration.data
         new_graph.enable_auto_refresh = form_object.enable_auto_refresh.data
         new_graph.enable_xaxis_reset = form_object.enable_xaxis_reset.data
         new_graph.enable_title = form_object.enable_title.data
@@ -108,10 +108,10 @@ def dashboard_add(form_base, form_object, display_order):
             new_graph.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
         elif form_object.gauge_type.data == 'gauge_angular':
             new_graph.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
-        new_graph.width = form_object.width.data
-        new_graph.height = form_object.height.data
+        new_graph.width = form_base.width.data
+        new_graph.height = form_base.height.data
         new_graph.max_measure_age = form_object.max_measure_age.data
-        new_graph.refresh_duration = form_object.refresh_duration.data
+        new_graph.refresh_duration = form_base.refresh_duration.data
         new_graph.y_axis_min = form_object.y_axis_min.data
         new_graph.y_axis_max = form_object.y_axis_max.data
         new_graph.sensor_ids_measurements = form_object.sensor_ids.data
@@ -133,16 +133,46 @@ def dashboard_add(form_base, form_object, display_order):
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
 
+    # Measurement
+    elif form_base.dashboard_type.data == 'measurement':
+
+        error = measurement_error_check(form_object, error)
+
+        new_graph.graph_type = 'measurement'
+        new_graph.width = form_base.width.data
+        new_graph.height = form_base.height.data
+        new_graph.max_measure_age = form_object.max_measure_age.data
+        new_graph.refresh_duration = form_base.refresh_duration.data
+        new_graph.font_em_value = form_object.font_em_value.data
+        new_graph.font_em_timestamp = form_object.font_em_timestamp.data
+        new_graph.sensor_ids_measurements = form_object.measurement_id.data
+
+        try:
+            if not error:
+                new_graph.save()
+                flash(gettext(
+                    "Measurement with ID %(id)s successfully added",
+                    id=new_graph.id),
+                    "success")
+
+                DisplayOrder.query.first().graph = add_display_order(
+                    display_order, new_graph.id)
+                db.session.commit()
+        except sqlalchemy.exc.OperationalError as except_msg:
+            error.append(except_msg)
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            error.append(except_msg)
+
     # Output
     elif form_base.dashboard_type.data == 'output':
 
         error = output_error_check(form_object, error)
 
         new_graph.graph_type = 'output'
-        new_graph.width = form_object.width.data
-        new_graph.height = form_object.height.data
+        new_graph.width = form_base.width.data
+        new_graph.height = form_base.height.data
         new_graph.max_measure_age = form_object.max_measure_age.data
-        new_graph.refresh_duration = form_object.refresh_duration.data
+        new_graph.refresh_duration = form_base.refresh_duration.data
         new_graph.font_em_value = form_object.font_em_value.data
         new_graph.font_em_timestamp = form_object.font_em_timestamp.data
         new_graph.enable_output_controls = form_object.enable_output_controls.data
@@ -169,9 +199,9 @@ def dashboard_add(form_base, form_object, display_order):
           form_object.camera_id.data):
 
         new_graph.graph_type = form_base.dashboard_type.data
-        new_graph.width = form_object.width.data
-        new_graph.height = form_object.height.data
-        new_graph.refresh_duration = form_object.refresh_duration.data
+        new_graph.width = form_base.width.data
+        new_graph.height = form_base.height.data
+        new_graph.refresh_duration = form_base.refresh_duration.data
         new_graph.camera_max_age = form_object.camera_max_age.data
         new_graph.camera_id = form_object.camera_id.data
         new_graph.camera_image_type = form_object.camera_image_type.data
@@ -212,6 +242,7 @@ def dashboard_mod(form_base, form_object, request_form):
 
     # Graph Mod
     if form_base.dashboard_type.data == 'graph':
+
         error = graph_error_check(form_object, error)
 
         # Generate color option string from form inputs
@@ -251,10 +282,10 @@ def dashboard_mod(form_base, form_object, request_form):
         else:
             mod_graph.sensor_ids_measurements = ''
 
-        mod_graph.width = form_object.width.data
-        mod_graph.height = form_object.height.data
+        mod_graph.width = form_base.width.data
+        mod_graph.height = form_base.height.data
         mod_graph.x_axis_duration = form_object.xaxis_duration.data
-        mod_graph.refresh_duration = form_object.refresh_duration.data
+        mod_graph.refresh_duration = form_base.refresh_duration.data
         mod_graph.enable_auto_refresh = form_object.enable_auto_refresh.data
         mod_graph.enable_xaxis_reset = form_object.enable_xaxis_reset.data
         mod_graph.enable_title = form_object.enable_title.data
@@ -283,9 +314,9 @@ def dashboard_mod(form_base, form_object, request_form):
             request_form, form_object.gauge_type.data, error)
 
         mod_graph.range_colors = sorted_colors_string
-        mod_graph.width = form_object.width.data
-        mod_graph.height = form_object.height.data
-        mod_graph.refresh_duration = form_object.refresh_duration.data
+        mod_graph.width = form_base.width.data
+        mod_graph.height = form_base.height.data
+        mod_graph.refresh_duration = form_base.refresh_duration.data
         mod_graph.y_axis_min = form_object.y_axis_min.data
         mod_graph.y_axis_max = form_object.y_axis_max.data
         mod_graph.max_measure_age = form_object.max_measure_age.data
@@ -295,26 +326,40 @@ def dashboard_mod(form_base, form_object, request_form):
         else:
             error.append("A valid Measurement must be selected")
 
+    # Measurement Mod
+    elif form_base.dashboard_type.data == 'measurement':
+
+        error = measurement_error_check(form_object, error)
+
+        mod_graph.width = form_base.width.data
+        mod_graph.height = form_base.height.data
+        mod_graph.refresh_duration = form_base.refresh_duration.data
+        mod_graph.max_measure_age = form_object.max_measure_age.data
+        mod_graph.font_em_value = form_object.font_em_value.data
+        mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
+        if form_object.measurement_id.data:
+            mod_graph.sensor_ids_measurements = form_object.measurement_id.data
+
     # Output Mod
     elif form_base.dashboard_type.data == 'output':
 
-        mod_graph.width = form_object.width.data
-        mod_graph.height = form_object.height.data
-        mod_graph.refresh_duration = form_object.refresh_duration.data
+        error = output_error_check(form_object, error)
+
+        mod_graph.width = form_base.width.data
+        mod_graph.height = form_base.height.data
+        mod_graph.refresh_duration = form_base.refresh_duration.data
         mod_graph.max_measure_age = form_object.max_measure_age.data
         mod_graph.font_em_value = form_object.font_em_value.data
         mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
         mod_graph.enable_output_controls = form_object.enable_output_controls.data
         if form_object.output_id.data:
             mod_graph.output_ids = form_object.output_id.data
-        else:
-            error.append("A valid Output must be selected")
 
     # Camera Mod
     elif form_base.dashboard_type.data == 'camera':
-        mod_graph.width = form_object.width.data
-        mod_graph.height = form_object.height.data
-        mod_graph.refresh_duration = form_object.refresh_duration.data
+        mod_graph.width = form_base.width.data
+        mod_graph.height = form_base.height.data
+        mod_graph.refresh_duration = form_base.refresh_duration.data
         mod_graph.camera_max_age = form_object.camera_max_age.data
         mod_graph.camera_id = form_object.camera_id.data
         mod_graph.camera_image_type = form_object.camera_image_type.data
@@ -381,6 +426,13 @@ def graph_error_check(form, error):
 def gauge_error_check(form, error):
     """Determine if there are any errors in the gauge form"""
     if not form.sensor_ids.data:
+        error.append("A valid Measurement must be selected")
+    return error
+
+
+def measurement_error_check(form, error):
+    """Determine if there are any errors in the gauge form"""
+    if form.measurement_id.data == '':
         error.append("A valid Measurement must be selected")
     return error
 

@@ -25,6 +25,7 @@ class DashboardBase(FlaskForm):
             ('', lazy_gettext('Select a Dashboard Object')),
             ('graph', lazy_gettext('Graph')),
             ('gauge', lazy_gettext('Gauge')),
+            ('measurement', lazy_gettext('Measurement')),
             ('output', lazy_gettext('Output')),
             ('camera', lazy_gettext('Camera')),
         ],
@@ -34,18 +35,6 @@ class DashboardBase(FlaskForm):
         lazy_gettext('Name'),
         validators=[DataRequired()]
     )
-    create = SubmitField(lazy_gettext('Create'))
-    modify = SubmitField(lazy_gettext('Save'))
-    delete = SubmitField(lazy_gettext('Delete'))
-    order_up = SubmitField(lazy_gettext('Up'))
-    order_down = SubmitField(lazy_gettext('Down'))
-
-
-class DashboardGraph(FlaskForm):
-    math_ids = SelectMultipleField(lazy_gettext('Maths'))
-    pid_ids = SelectMultipleField(lazy_gettext('PIDs'))
-    relay_ids = SelectMultipleField(lazy_gettext('Outputs'))
-    sensor_ids = SelectMultipleField(lazy_gettext('Inputs'))
     width = IntegerField(
         lazy_gettext('Width'),
         validators=[validators.NumberRange(
@@ -60,20 +49,32 @@ class DashboardGraph(FlaskForm):
             max=10000
         )]
     )
+    refresh_duration = IntegerField(
+        lazy_gettext('Refresh (seconds)'),
+        validators=[validators.NumberRange(
+            min=1,
+            message=lazy_gettext("Number of seconds to wait between acquiring"
+                                 " any new measurements.")
+        )]
+    )
+    create = SubmitField(lazy_gettext('Create'))
+    modify = SubmitField(lazy_gettext('Save'))
+    delete = SubmitField(lazy_gettext('Delete'))
+    order_up = SubmitField(lazy_gettext('Up'))
+    order_down = SubmitField(lazy_gettext('Down'))
+
+
+class DashboardGraph(FlaskForm):
+    math_ids = SelectMultipleField(lazy_gettext('Maths'))
+    pid_ids = SelectMultipleField(lazy_gettext('PIDs'))
+    relay_ids = SelectMultipleField(lazy_gettext('Outputs'))
+    sensor_ids = SelectMultipleField(lazy_gettext('Inputs'))
     xaxis_duration = DecimalField(
         lazy_gettext('X-Axis (minutes)'),
         validators=[validators.NumberRange(
             min=0.1,
             message=lazy_gettext("Number of minutes to display of past "
                                  "measurements.")
-        )]
-    )
-    refresh_duration = DecimalField(
-        lazy_gettext('Period (seconds)'),
-        validators=[validators.NumberRange(
-            min=0.2,
-            message=lazy_gettext("Number of seconds to wait between acquiring"
-                                 " any new measurements.")
         )]
     )
     enable_auto_refresh = BooleanField(lazy_gettext('Enable Auto Refresh'))
@@ -100,59 +101,22 @@ class DashboardGauge(FlaskForm):
         validators=[DataRequired()]
     )
     sensor_ids = StringField(lazy_gettext('Measurement'))
-    width = IntegerField(
-        lazy_gettext('Width'),
-        validators=[validators.NumberRange(
-            min=1,
-            max=12
-        )]
-    )
-    height = IntegerField(
-        lazy_gettext('Height (pixels)'),
-        validators=[validators.NumberRange(
-            min=100,
-            max=10000
-        )]
-    )
     y_axis_min = DecimalField(lazy_gettext('Gauge Min'))
     y_axis_max = DecimalField(lazy_gettext('Gauge Max'))
     max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
-    refresh_duration = DecimalField(
-        lazy_gettext('Refresh (seconds)'),
-        validators=[validators.NumberRange(
-            min=1,
-            message=lazy_gettext("Number of seconds to wait between acquiring"
-                                 " any new measurements.")
-        )]
-    )
     enable_timestamp = BooleanField(lazy_gettext('Show Timestamp'))
+
+
+class DashboardMeasurement(FlaskForm):
+    measurement_id = StringField(lazy_gettext('Measurement'))
+    max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
+    font_em_value = DecimalField(lazy_gettext('Value Font Size (em)'))
+    font_em_timestamp = DecimalField(lazy_gettext('TS Font Size (em)'))
 
 
 class DashboardOutput(FlaskForm):
     output_id = StringField(lazy_gettext('Output'))
-    width = IntegerField(
-        lazy_gettext('Width'),
-        validators=[validators.NumberRange(
-            min=1,
-            max=12
-        )]
-    )
-    height = IntegerField(
-        lazy_gettext('Height (pixels)'),
-        validators=[validators.NumberRange(
-            min=100,
-            max=10000
-        )]
-    )
     max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
-    refresh_duration = DecimalField(
-        lazy_gettext('Refresh (seconds)'),
-        validators=[validators.NumberRange(
-            min=1,
-            message=lazy_gettext("Number of seconds to wait between acquiring"
-                                 " any new measurements.")
-        )]
-    )
     font_em_value = DecimalField(lazy_gettext('Value Font Size (em)'))
     font_em_timestamp = DecimalField(lazy_gettext('TS Font Size (em)'))
     enable_output_controls = BooleanField(lazy_gettext('Feature Output Controls'))
@@ -160,27 +124,5 @@ class DashboardOutput(FlaskForm):
 
 class DashboardCamera(FlaskForm):
     camera_id = StringField(lazy_gettext('Camera'))
-    width = IntegerField(
-        lazy_gettext('Width'),
-        validators=[validators.NumberRange(
-            min=1,
-            max=12
-        )]
-    )
-    height = IntegerField(
-        lazy_gettext('Height (pixels)'),
-        validators=[validators.NumberRange(
-            min=100,
-            max=10000
-        )]
-    )
-    refresh_duration = IntegerField(
-        lazy_gettext('Refresh (seconds)'),
-        validators=[validators.NumberRange(
-            min=1,
-            message=lazy_gettext("Number of seconds to wait between acquiring"
-                                 " any new measurements.")
-        )]
-    )
     camera_image_type = StringField(lazy_gettext('Image Display Type'))
     camera_max_age = IntegerField(lazy_gettext('Max Age (seconds)'))

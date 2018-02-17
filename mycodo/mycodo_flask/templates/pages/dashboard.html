@@ -61,6 +61,10 @@
 
         {% include 'pages/dashboard_options/mod_gauge.html' %}
 
+      {% elif each_graph.graph_type == 'measurement' %}
+
+        {% include 'pages/dashboard_options/mod_measurement.html' %}
+
       {% elif each_graph.graph_type == 'output' %}
 
         {% include 'pages/dashboard_options/mod_output.html' %}
@@ -98,6 +102,10 @@
 
     <div class="add_dashboard_object" style="display: none" id="gauge">
      {% include 'pages/dashboard_options/add_gauge.html' %}
+    </div>
+
+    <div class="add_dashboard_object" style="display: none" id="measurement">
+     {% include 'pages/dashboard_options/add_measurement.html' %}
     </div>
 
     <div class="add_dashboard_object" style="display: none" id="output">
@@ -257,7 +265,7 @@ $(document).ready(function() {
           if (measure_type === "gauge") {
             var null_point = chart_gauge[chart_number].series[0].points[0];
             null_point.update(null);
-          } else if (measure_type === "output") {
+          } else if (measure_type in ['output', 'measurement']) {
             document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
             document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
           }
@@ -284,6 +292,9 @@ $(document).ready(function() {
             } else if (measurement_name === 'duty_cycle') {
               units = ' %';
             }
+            document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(1) + units;
+          } else if (measure_type === "measurement") {
+            var units = '';
             document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(1) + units;
           }
 
@@ -439,6 +450,8 @@ $(document).ready(function() {
         {% include 'pages/dashboard_options/display_gauge_solid.html' %}
       {% elif each_graph.graph_type == 'gauge_angular' %}
         {% include 'pages/dashboard_options/display_gauge_angular.html' %}
+      {% elif each_graph.graph_type == 'measurement' %}
+        {% include 'pages/dashboard_options/display_measurement.html' %}
       {% elif each_graph.graph_type == 'output' %}
         {% include 'pages/dashboard_options/display_output.html' %}
       {% elif each_graph.graph_type == 'camera' %}

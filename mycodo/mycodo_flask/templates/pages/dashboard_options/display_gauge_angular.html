@@ -112,7 +112,7 @@
 
         {%- for each_pid in pid -%}
           {%- for each_id_and_measure in graph_input_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
-            {{each_id_and_measure.split(',')[1]|safe}}
+            {{measurement_units[each_id_and_measure.split(',')[1]]['name']|safe}}
           {%- endfor -%}
         {%- endfor -%}',
         data: [null],
