@@ -17,7 +17,8 @@ class Dashboard(CRUDMixin, db.Model):
     # Graph options
     pid_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
     relay_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
-    math_ids = db.Column(db.Text, default='')  # store IDs to display
+    math_ids = db.Column(db.Text, default='')  # store Math IDs to display
+
     sensor_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
     x_axis_duration = db.Column(db.Float, default=1440)  # X-axis duration (in minutes)
     use_custom_colors = db.Column(db.Boolean, default=False)  # Enable custom colors of graph series
@@ -43,6 +44,12 @@ class Dashboard(CRUDMixin, db.Model):
     # Graph and Gauge options
     y_axis_min = db.Column(db.Float, default=None)  # x-axis minimum
     y_axis_max = db.Column(db.Float, default=None)  # x-axis maximum
+
+    # Output options
+    output_ids = db.Column(db.Text, default='')  # store Output IDs to display
+    font_em_value = db.Column(db.Float, default=1.0)  # Font size of value
+    font_em_timestamp = db.Column(db.Float, default=1.0)  # Font size of timestamp
+    enable_output_controls = db.Column(db.Boolean, default=True)  # Show output controls on dashboard element
 
     # Camera options
     camera_id = db.Column(db.Text, default='')  # store camera ID to display

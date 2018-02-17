@@ -1,0 +1,163 @@
+<div style="padding-right: 0.5em;">
+  <div class="col-sx-12 text-right">
+    <span style="padding-right: 0.5em">[{{'%02d' % each_graph.id}}] {{each_graph.name}}</span>
+    <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer_output{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer_output{{chart_number}}">
+      <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
+    </button>
+  </div>
+</div>
+
+{% set is_pwm = [] -%}
+{% for each_output in output if each_output.unique_id == each_graph.output_ids.split(',')[0] and each_output.relay_type == 'pwm' %}
+  {%- do is_pwm.append(1) %}
+{% endfor %}
+
+<div class="pause-background" id="container-output-{{chart_number}}" style="height: {{each_graph.height}}px; text-align: center">
+  <span style="font-size: {{each_graph.font_em_value}}em" id="value-{{chart_number}}"></span>
+  <br/><span style="font-size: {{each_graph.font_em_timestamp}}em" id="timestamp-{{chart_number}}"></span>
+
+  {% if each_graph.enable_output_controls %}
+
+  <div class="clearfix" style="padding-top: 1em">
+    <div class="col-xs-12 small-gutters">
+      <div class="col-xs-4 small-gutters" id="text-output-state-{{chart_number}}"></div>
+      {% if not is_pwm -%}
+      <div class="col-xs-4 small-gutters">
+        <input class="form-control btn btn-default turn_on" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{_('On')}}">
+      </div>
+      {%- endif %}
+      <div class="col-xs-4 small-gutters">
+        <input class="form-control btn btn-default turn_off" id="turn_off" name="{{each_graph.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{_('Off')}}">
+      </div>
+    </div>
+
+    {% if not is_pwm %}
+
+    <div class="col-xs-12 small-gutters">
+      <div class="col-xs-4 small-gutters">
+        <label class='control-label'>{{_('Seconds')}}</label>
+      </div>
+      <div class="col-xs-4 small-gutters">
+        <input class="form-control" id="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Turn this relay on for a specific number of seconds (used to test relay)" type="text" value="">
+      </div>
+      <div class="col-xs-4 small-gutters">
+        <input class="form-control btn btn-default sec_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Turn On')}}">
+      </div>
+    </div>
+
+    {% else %}
+
+    <div class="col-xs-12 small-gutters">
+      <div class="col-xs-4 small-gutters">
+        <label class='control-label'>{{_('Duty Cycle')}} (%)</label>
+      </div>
+      <div class="col-xs-4 small-gutters">
+        <input class="form-control" id="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="text" value="">
+      </div>
+      <div class="col-xs-4 small-gutters">
+        <input class="form-control btn btn-default duty_cycle_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('Turn On')}}">
+      </div>
+    </div>
+
+    {% endif %}
+
+  </div>
+
+  {% endif %}
+
+</div>
+
+<div class="collapse" id="collapseContainer_output{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
+
+  <form method="post" action="/dashboard">
+    {{form_base.csrf_token}}
+    {{form_base.dashboard_id(value=each_graph.id)}}
+    <input type="hidden" name="dashboard_type" value="output">
+    <div class="form-inline">
+      <div class="form-group">
+        {{form_base.name.label(class_='control-label')}}
+        <div>
+          {{form_base.name(class_='form-control', value=each_graph.name, **{'title':_('A name to distinguish this from others')})}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_output.output_id.label(class_='control-label')}}
+        <div>
+          <select class="form-control" id="output_id" name="output_id" style="width: 100%;">
+          {% if choices_output %}
+            <option value="">{{_('Select One')}}</option>
+            {% for each_choice, value in choices_output.items() -%}
+              <option value="{{each_choice}}" {% if each_graph.output_ids == each_choice %}selected{% endif %}>{{value}}</option>
+            {% endfor -%}
+          {% else %}
+            <option value="">{{_('None Available')}}</option>
+          {% endif %}
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_output.width.label(class_='control-label')}}
+        <div>
+          <select class="form-control" id="width" name="width">
+            {% for n in range(1, 13) %}
+              <option value="{{n}}"{% if n == each_graph.width %} selected{% endif %}>{{n}}/12</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_output.height.label(class_='control-label')}}
+        <div>
+          {{form_output.height(class_='form-control', value=each_graph.height)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_output.max_measure_age.label(class_='control-label')}}
+        <div>
+          {{form_output.max_measure_age(class_='form-control', value=each_graph.max_measure_age)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_output.refresh_duration.label(class_='control-label')}}
+        <div>
+          {{form_output.refresh_duration(class_='form-control', value=each_graph.refresh_duration)}}
+        </div>
+      </div>
+     <div class="form-group">
+        {{form_output.font_em_value.label(class_='control-label')}}
+        <div>
+          {{form_output.font_em_value(class_='form-control', value=each_graph.font_em_value)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_output.font_em_timestamp.label(class_='control-label')}}
+        <div>
+          {{form_output.font_em_timestamp(class_='form-control', value=each_graph.font_em_timestamp)}}
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-check-label">
+          <input class="form-check-input" id="enable_output_controls" name="enable_output_controls" type="checkbox" value="y"{% if each_graph.enable_output_controls %} checked{% endif %}>
+          {{form_output.enable_output_controls.label.text}}
+        </label>
+      </div>
+    </div>
+
+    <div class="form-inline">
+      <div class="form-group">
+        {{form_base.modify(class_='form-control btn btn-default')}}
+      </div>
+    </div>
+
+    <div class="form-inline" style="padding-top: 1em;">
+      <div class="form-group">
+        {{form_base.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      </div>
+      <div class="form-group">
+        Reorder:
+        {{form_base.order_up(class_='form-control btn btn-default')}}
+        {{form_base.order_down(class_='form-control btn btn-default')}}
+      </div>
+    </div>
+  </form>
+</div>

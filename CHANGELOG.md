@@ -1,5 +1,9 @@
 ## 5.5.22 (Unreleased)
 
+### Features
+
+ - Add Dashboard element: Output ([#346](https://github.com/kizniche/mycodo/issues/346))
+
 ### Bugfixes
 
  - Add checks to ensure Humidity Math only returns 0% - 100% humidity

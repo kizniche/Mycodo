@@ -1,0 +1,6 @@
+
+  getLastData({{chart_number}}, '{{each_graph.output_ids.split(',')[0]}}', '{{each_graph.output_ids.split(',')[1]}}', 'output', {{each_graph.max_measure_age}});
+  repeatLastData({{chart_number}}, '{{each_graph.output_ids.split(',')[0]}}', '{{each_graph.output_ids.split(',')[1]}}', 'output', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}});
+
+  getGPIOState({{chart_number}}, '{{each_graph.output_ids.split(',')[0]}}');
+  repeatGPIOState({{chart_number}}, '{{each_graph.output_ids.split(',')[0]}}', {{each_graph.refresh_duration}});

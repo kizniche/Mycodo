@@ -115,13 +115,44 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.refresh_duration = form_object.refresh_duration.data
         new_graph.y_axis_min = form_object.y_axis_min.data
         new_graph.y_axis_max = form_object.y_axis_max.data
-        new_graph.sensor_ids_measurements = form_object.sensor_ids.data[0]
+        new_graph.sensor_ids_measurements = form_object.sensor_ids.data
         new_graph.enable_timestamp = form_object.enable_timestamp.data
+
         try:
             if not error:
                 new_graph.save()
                 flash(gettext(
                     "Gauge with ID %(id)s successfully added",
+                    id=new_graph.id),
+                    "success")
+
+                DisplayOrder.query.first().graph = add_display_order(
+                    display_order, new_graph.id)
+                db.session.commit()
+        except sqlalchemy.exc.OperationalError as except_msg:
+            error.append(except_msg)
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            error.append(except_msg)
+
+    # Output
+    elif (form_base.dashboard_type.data == 'output' and
+          form_object.output_id.data):
+
+        new_graph.graph_type = 'output'
+        new_graph.width = form_object.width.data
+        new_graph.height = form_object.height.data
+        new_graph.max_measure_age = form_object.max_measure_age.data
+        new_graph.refresh_duration = form_object.refresh_duration.data
+        new_graph.font_em_value = form_object.font_em_value.data
+        new_graph.font_em_timestamp = form_object.font_em_timestamp.data
+        new_graph.enable_output_controls = form_object.enable_output_controls.data
+        new_graph.output_ids = form_object.output_id.data
+
+        try:
+            if not error:
+                new_graph.save()
+                flash(gettext(
+                    "Output with ID %(id)s successfully added",
                     id=new_graph.id),
                     "success")
 
@@ -144,6 +175,7 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.camera_max_age = form_object.camera_max_age.data
         new_graph.camera_id = form_object.camera_id.data
         new_graph.camera_image_type = form_object.camera_image_type.data
+
         try:
             if not error:
                 new_graph.save()
@@ -258,11 +290,25 @@ def dashboard_mod(form_base, form_object, request_form):
         mod_graph.y_axis_max = form_object.y_axis_max.data
         mod_graph.max_measure_age = form_object.max_measure_age.data
         mod_graph.enable_timestamp = form_object.enable_timestamp.data
-        if form_object.sensor_ids.data[0]:
-            sensor_ids_joined = ";".join(form_object.sensor_ids.data)
-            mod_graph.sensor_ids_measurements = sensor_ids_joined
+        if form_object.sensor_ids.data:
+            mod_graph.sensor_ids_measurements = form_object.sensor_ids.data
         else:
             error.append("A valid Measurement must be selected")
+
+    # Output Mod
+    elif form_base.dashboard_type.data == 'output':
+
+        mod_graph.width = form_object.width.data
+        mod_graph.height = form_object.height.data
+        mod_graph.refresh_duration = form_object.refresh_duration.data
+        mod_graph.max_measure_age = form_object.max_measure_age.data
+        mod_graph.font_em_value = form_object.font_em_value.data
+        mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
+        mod_graph.enable_output_controls = form_object.enable_output_controls.data
+        if form_object.output_id.data:
+            mod_graph.output_ids = form_object.output_id.data
+        else:
+            error.append("A valid Output must be selected")
 
     # Camera Mod
     elif form_base.dashboard_type.data == 'camera':

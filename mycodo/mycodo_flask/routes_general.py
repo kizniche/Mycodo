@@ -184,6 +184,33 @@ def gpio_state():
     return jsonify(state)
 
 
+@blueprint.route('/gpiostate_unique_id/<unique_id>')
+@flask_login.login_required
+def gpio_state_unique_id(unique_id):
+    """Return the GPIO state, for dashboard output """
+    output = Output.query.filter(
+                Output.unique_id == unique_id).first()
+    daemon_control = DaemonControl()
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+
+    if output.relay_type == 'wired' and output.pin and -1 < output.pin < 40:
+        GPIO.setup(output.pin, GPIO.OUT)
+        if GPIO.input(output.pin) == output.trigger:
+            state = 'on'
+        else:
+            state = 'off'
+    elif (output.relay_type == 'command' or
+            (output.relay_type in ['pwm', 'wireless_433MHz_pi_switch'] and
+             output.pin and
+             -1 < output.pin < 40)):
+        state = daemon_control.relay_state(output.id)
+    else:
+        state = None
+
+    return jsonify(state)
+
+
 @blueprint.route('/dl/<dl_type>/<path:filename>')
 @flask_login.login_required
 def download_file(dl_type, filename):
@@ -452,7 +479,7 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
 @blueprint.route('/output_mod/<output_id>/<state>/<out_type>/<amount>')
 @flask_login.login_required
 def output_mod(output_id, state, out_type, amount):
-    """Manipulate output"""
+    """ Manipulate output (using non-unique ID) """
     if not utils_general.user_has_permission('edit_controllers'):
         return 'Insufficient user permissions to manipulate outputs'
 
@@ -463,6 +490,24 @@ def output_mod(output_id, state, out_type, amount):
     elif (state == 'on' and out_type == 'pwm' and
               (str_is_float(amount) and float(amount) >= 0)):
         return daemon.relay_on(int(output_id), state, duty_cycle=float(amount))
+
+
+@blueprint.route('/output_mod_unique_id/<unique_id>/<state>/<out_type>/<amount>')
+@flask_login.login_required
+def output_mod_unique_id(unique_id, state, out_type, amount):
+    """ Manipulate output (using unique ID) """
+    if not utils_general.user_has_permission('edit_controllers'):
+        return 'Insufficient user permissions to manipulate outputs'
+
+    output = Output.query.filter(Output.unique_id == unique_id).first()
+
+    daemon = DaemonControl()
+    if (state in ['on', 'off'] and out_type == 'sec' and
+            (str_is_float(amount) and float(amount) >= 0)):
+        return daemon.output_on_off(output.id, state, float(amount))
+    elif (state == 'on' and out_type == 'pwm' and
+              (str_is_float(amount) and float(amount) >= 0)):
+        return daemon.relay_on(output.id, state, duty_cycle=float(amount))
 
 
 @blueprint.route('/daemonactive')

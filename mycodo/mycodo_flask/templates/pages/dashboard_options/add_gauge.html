@@ -61,8 +61,8 @@
       {{form_gauge.sensor_ids.label(class_='control-label')}}
       <div>
         <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;">
-          <option value="">{{_('Select One')}}</option>
         {% if choices_input or choices_math or choices_pid %}
+          <option value="">{{_('Select One')}}</option>
           {% for each_choice, value in choices_input.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
           {% endfor -%}

@@ -15,9 +15,13 @@
   <script src="/static/js/modules/export-csv.js"></script>
   <script src="/static/js/modules/jspdf.min.js"></script>
   <script src="/static/js/modules/highcharts-export-clientside.js"></script>
+
   {% if current_user.theme in dark_themes %}
     <script src="/static/js/dark-unica.js"></script>
   {% endif %}
+
+  <link href="/static/css/toastr.min.css" rel="stylesheet"/>
+  <script src="/static/js/toastr.min.js"></script>
 
 {% endblock %}
 
@@ -57,6 +61,10 @@
 
         {% include 'pages/dashboard_options/mod_gauge.html' %}
 
+      {% elif each_graph.graph_type == 'output' %}
+
+        {% include 'pages/dashboard_options/mod_output.html' %}
+
       {% elif each_graph.graph_type == 'camera' %}
 
         {% include 'pages/dashboard_options/mod_camera.html' %}
@@ -92,6 +100,10 @@
      {% include 'pages/dashboard_options/add_gauge.html' %}
     </div>
 
+    <div class="add_dashboard_object" style="display: none" id="output">
+     {% include 'pages/dashboard_options/add_output.html' %}
+    </div>
+
     <div class="add_dashboard_object" style="display: none" id="camera">
      {% include 'pages/dashboard_options/add_camera.html' %}
     </div>
@@ -117,6 +129,48 @@ $('#dashboard_type').on('change', function () {
   }
 });
 
+function modOutput(btn_val) {
+  $.ajax({
+      type: 'GET',
+      url: '/output_mod_unique_id/' + btn_val,
+      success: function(data) {
+          toastr['success']("Output " + btn_val.split("/")[0] + ": " + data);
+      },
+      error: function(data) {
+          toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
+      }
+  });
+}
+
+$(document).ready(function() {
+  $('.turn_on').click(function() {
+    var btn_val = this.name;
+    var id = btn_val.split('/')[0];
+    toastr['info']('Command sent to turn output On');
+    modOutput(btn_val);
+  });
+  $('.turn_off').click(function() {
+    var btn_val = this.name;
+    var id = btn_val.split('/')[0];
+    toastr['info']('Command sent to turn output Off');
+    modOutput(btn_val);
+  });
+  $('.sec_on_amt').click(function() {
+    var btn_val = this.name;
+    var id = btn_val.split('/')[0];
+    var sec = $('#sec_on_amt_' + id).val();
+    toastr['info']('Command sent to turn output On for ' + sec + ' seconds');
+    modOutput(btn_val + sec);
+  });
+  $('.duty_cycle_on_amt').click(function() {
+    var btn_val = this.name;
+    var id = btn_val.split('/')[0];
+    var dc = $('#duty_cycle_on_amt_' + id).val();
+    toastr['info']('Command sent to turn output On with a duty cycle of ' + dc + '%');
+    modOutput(btn_val + dc);
+  });
+});
+
 Highcharts.setOptions({
   global: {
     useUTC: false
@@ -132,6 +186,40 @@ var last_relay_time_mil = {};
 $(document).ready(function() {
   var chart_graph = [];
   var chart_gauge = [];
+
+  function getGPIOState(chart_number, unique_id) {
+    var url = '/gpiostate_unique_id/' + unique_id;
+    $.getJSON(url,
+      function(state, responseText, jqXHR) {
+        if (jqXHR.status !== 204) {
+          if (state !== null) {
+            document.getElementById("container-output-" + chart_number).className = "active-background";
+            if (state !== 'off') {
+              if (state === 'on') {
+                document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('Active')}}';
+              } else {
+                document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('Active')}} (' + state.toFixed(1) + '%)';
+              }
+            }
+            else {
+              document.getElementById("container-output-" + chart_number).className = "inactive-background";
+              document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('Inactive')}}';
+            }
+          }
+        }
+        else {
+          document.getElementById("container-output-" + chart_number).className = "pause-background";
+          document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('No Connection')}}';
+        }
+      }
+    );
+  }
+
+  function repeatGPIOState(chart_number, unique_id, refresh_duration) {
+    setInterval(function () {
+      getGPIOState(chart_number, unique_id);
+    }, refresh_duration * 1000);  // Refresh duration in milliseconds
+  }
 
   // Retrieve initial graph data set from the past (duration set by user)
   function getPastData(chart_number, series, sensor_measurement, unique_id, past_seconds) {
@@ -160,14 +248,19 @@ $(document).ready(function() {
     );
   }
 
-  // Retrieve the latest/last measurement for gauges
-  function getLastData(chart_number, dev_id, measurement, max_measure_age_sec) {
-    var url = '/last/' + measurement + '/' + dev_id + '/' + max_measure_age_sec.toString();
+  // Retrieve the latest/last measurement for gauges/outputs
+  function getLastData(chart_number, dev_id, measurement_name, measure_type, max_measure_age_sec) {
+    var url = '/last/' + measurement_name + '/' + dev_id + '/' + max_measure_age_sec.toString();
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
-        var point = chart_gauge[chart_number].series[0].points[0];
         if (jqXHR.status === 204) {
-          point.update(null);
+          if (measure_type === "gauge") {
+            var null_point = chart_gauge[chart_number].series[0].points[0];
+            null_point.update(null);
+          } else if (measure_type === "output") {
+            document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
+            document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
+          }
         }
         else {
           var time = data[0];
@@ -180,8 +273,21 @@ $(document).ready(function() {
           var minutes = "0" + date.getMinutes();
           var seconds = "0" + date.getSeconds();
           var formattedTime = month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-          point.update(measurement);
-          document.getElementById('timestamp-gauge-' + chart_number).innerHTML = formattedTime + ' ';
+
+          if (measure_type === "gauge") {
+            var new_point = chart_gauge[chart_number].series[0].points[0];
+            new_point.update(measurement);
+          } else if (measure_type === "output") {
+            var units = '';
+            if (measurement_name === 'duration_sec') {
+              units = ' sec';
+            } else if (measurement_name === 'duty_cycle') {
+              units = ' %';
+            }
+            document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(1) + units;
+          }
+
+          document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime + ' ';
         }
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -192,9 +298,9 @@ $(document).ready(function() {
   }
 
   // Repeat function for getLastData()
-  function repeatLastData(chart_number, dev_id, measurement, period_sec, max_measure_age_sec) {
+  function repeatLastData(chart_number, dev_id, measurement, measure_type, period_sec, max_measure_age_sec) {
     setInterval(function () {
-      getLastData(chart_number, dev_id, measurement, max_measure_age_sec)
+      getLastData(chart_number, dev_id, measurement, measure_type, max_measure_age_sec)
     }, period_sec * 1000);
   }
 
@@ -333,6 +439,8 @@ $(document).ready(function() {
         {% include 'pages/dashboard_options/display_gauge_solid.html' %}
       {% elif each_graph.graph_type == 'gauge_angular' %}
         {% include 'pages/dashboard_options/display_gauge_angular.html' %}
+      {% elif each_graph.graph_type == 'output' %}
+        {% include 'pages/dashboard_options/display_output.html' %}
       {% elif each_graph.graph_type == 'camera' %}
         {% include 'pages/dashboard_options/display_camera.html' %}
       {% endif %}
