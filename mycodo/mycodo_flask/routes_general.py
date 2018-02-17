@@ -211,6 +211,13 @@ def gpio_state_unique_id(unique_id):
     return jsonify(state)
 
 
+@blueprint.route('/time')
+@flask_login.login_required
+def get_time():
+    """ Return the current time """
+    return jsonify(datetime.datetime.now().strftime('%m/%d %H:%M'))
+
+
 @blueprint.route('/dl/<dl_type>/<path:filename>')
 @flask_login.login_required
 def download_file(dl_type, filename):

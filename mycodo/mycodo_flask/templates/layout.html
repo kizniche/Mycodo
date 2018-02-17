@@ -40,7 +40,7 @@
     })(document,window.navigator,'standalone');
   </script>
 
-  <title>{{host}}{% block title %}{% endblock %} - Mycodo {{mycodo_version}}</title>
+  <title>{{host}} - {% block title %}{% endblock %} - Mycodo {{mycodo_version}}</title>
 
   <link rel="stylesheet" href="/static/css/font-awesome.min.css">
 
@@ -101,6 +101,29 @@
     }, {% if active_page == "update" -%}5000{% else -%}60000{%- endif -%});
   }
   initiate_daemon_status();
+
+
+  function getTime() {
+    var url = '/time';
+    $.getJSON(url,
+      function(time, responseText, jqXHR) {
+        if (jqXHR.status !== 204) {
+          document.getElementById("time-update").innerHTML = time;
+        }
+        else {
+          document.getElementById("time-update" + chart_number).innerHTML = '{{_('No Connection')}}';
+        }
+      }
+    );
+  }
+  function repeatgetTime() {
+    setInterval(function () {
+      getTime();
+    }, 60000);  // Refresh duration in milliseconds
+  }
+  getTime();
+  repeatgetTime();
+
   </script>
   {% if not hide_tooltips %}
   <script>
@@ -132,7 +155,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" id="daemon-status" data-toggle="tooltip" data-placement="bottom" href="{{url_for('routes_page.page_info')}}" style="text-align: center; padding: 0 15px; padding-top: 2px !important; font-size: 14px; font-weight: bold;{%- if daemon_status == "alive" -%} /*noinspection CssOverwrittenProperties*/color: #4E9258{%- else -%} /*noinspection CssOverwrittenProperties*/color: #F70D1A{%- endif -%}" title="{%- if daemon_status == "alive" -%}{{_('Daemon is Running')}}{%- else -%}{{_('Daemon is Not Running')}}{%- endif -%}">{{host}}<br>Mycodo {{mycodo_version}}</a>
+          <a class="navbar-brand" id="daemon-status" data-toggle="tooltip" data-placement="bottom" href="{{url_for('routes_page.page_info')}}" style="text-align: center; padding: 0 15px; padding-top: 2px !important; font-size: 14px; font-weight: bold;{%- if daemon_status == "alive" -%} /*noinspection CssOverwrittenProperties*/color: #4E9258{%- else -%} /*noinspection CssOverwrittenProperties*/color: #F70D1A{%- endif -%}" title="{%- if daemon_status == "alive" -%}{{_('Daemon is Running')}}{%- else -%}{{_('Daemon is Not Running')}}{%- endif -%}">{{host}} - {{mycodo_version}}<br><span id="time-update"></span></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
