@@ -276,6 +276,8 @@ class PIDController(threading.Thread):
                             self.control_variable = self.update_pid_output(
                                 self.last_measurement)
 
+                            self.write_pid_values()
+
                     # If PID is active or on hold, activate outputs
                     if ((self.is_activated and not self.is_paused) or
                             (self.is_activated and self.is_held)):
@@ -397,6 +399,28 @@ class PIDController(threading.Thread):
         pid_value = self.P_value + self.I_value + self.D_value
 
         return pid_value
+
+    def write_pid_values(self):
+        write_setpoint_db = threading.Thread(
+            target=write_influxdb_value,
+            args=(self.pid_unique_id,
+                  'pid_p_value',
+                  self.P_value,))
+        write_setpoint_db.start()
+
+        write_setpoint_db = threading.Thread(
+            target=write_influxdb_value,
+            args=(self.pid_unique_id,
+                  'pid_i_value',
+                  self.I_value,))
+        write_setpoint_db.start()
+
+        write_setpoint_db = threading.Thread(
+            target=write_influxdb_value,
+            args=(self.pid_unique_id,
+                  'pid_d_value',
+                  self.D_value,))
+        write_setpoint_db.start()
 
     def check_hysteresis(self, measure):
         """

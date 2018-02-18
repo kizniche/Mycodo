@@ -47,7 +47,7 @@ def dashboard_add(form_base, form_object, display_order):
     # Graph
     if (form_base.dashboard_type.data == 'graph' and
             (form_base.name.data and
-             form_object.width.data and
+             form_base.width.data and
              form_base.height.data and
              form_object.xaxis_duration.data and
              form_base.refresh_duration.data)):

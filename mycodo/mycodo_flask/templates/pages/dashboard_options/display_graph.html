@@ -342,6 +342,39 @@
           yAxis: '{{each_pid.measurement.split(',')[1]}}',
           data: []
         },
+        {% elif each_graph_pid_id.split(',')[1] == 'pid_p_value' %}
+        {
+          name: '{{each_pid.name}} P-Value',
+          type: 'line',
+          tooltip: {
+            valueSuffix: '',
+            valueDecimals: 2
+          },
+          yAxis: 'pid_value',
+          data: []
+        },
+        {% elif each_graph_pid_id.split(',')[1] == 'pid_i_value' %}
+        {
+          name: '{{each_pid.name}} I-Value',
+          type: 'line',
+          tooltip: {
+            valueSuffix: '',
+            valueDecimals: 2
+          },
+          yAxis: 'pid_value',
+          data: []
+        },
+        {% elif each_graph_pid_id.split(',')[1] == 'pid_d_value' %}
+        {
+          name: '{{each_pid.name}} D-Value',
+          type: 'line',
+          tooltip: {
+            valueSuffix: '',
+            valueDecimals: 2
+          },
+          yAxis: 'pid_value',
+          data: []
+        },
         {% elif each_graph_pid_id.split(',')[1] == 'pid_output' %}
         {
           name: '{{each_pid.name}} {{_('Output')}} {{_('Duration')}}',

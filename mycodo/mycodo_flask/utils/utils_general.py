@@ -215,6 +215,18 @@ def choices_pids(pid):
         display = '[PID {id:02d}] {name} (Band Max)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
+        value = '{id},pid_p_value'.format(id=each_pid.unique_id)
+        display = '[PID {id:02d}] {name} (P-Value)'.format(
+            id=each_pid.id, name=each_pid.name)
+        choices.update({value: display})
+        value = '{id},pid_i_value'.format(id=each_pid.unique_id)
+        display = '[PID {id:02d}] {name} (I-Value)'.format(
+            id=each_pid.id, name=each_pid.name)
+        choices.update({value: display})
+        value = '{id},pid_d_value'.format(id=each_pid.unique_id)
+        display = '[PID {id:02d}] {name} (D-Value)'.format(
+            id=each_pid.id, name=each_pid.name)
+        choices.update({value: display})
         value = '{id},pid_output'.format(id=each_pid.unique_id)
         display = '[PID {id:02d}] {name} (Output Duration)'.format(
             id=each_pid.id, name=each_pid.name)

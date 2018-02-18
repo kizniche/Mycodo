@@ -122,6 +122,18 @@ MEASUREMENT_UNITS = {
     'ph': {
         'name': lazy_gettext('pH'),
         'meas': 'ph', 'unit': 'pH'},
+    'pid_value': {
+        'name': lazy_gettext('PID Values'),
+        'meas': 'pid_value', 'unit': ''},
+    'pid_p_value': {
+        'name': lazy_gettext('PID P-Value'),
+        'meas': 'pid_value', 'unit': ''},
+    'pid_i_value': {
+        'name': lazy_gettext('PID I-Value'),
+        'meas': 'pid_value', 'unit': ''},
+    'pid_d_value': {
+        'name': lazy_gettext('PID D-Value'),
+        'meas': 'pid_value', 'unit': ''},
     'pid_output': {
         'name': lazy_gettext('PID Output'),
         'meas': 'pid_output', 'unit': 'sec'},

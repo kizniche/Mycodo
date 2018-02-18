@@ -111,14 +111,14 @@ class DashboardMeasurement(FlaskForm):
     measurement_id = StringField(lazy_gettext('Measurement'))
     max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
     font_em_value = DecimalField(lazy_gettext('Value Font Size (em)'))
-    font_em_timestamp = DecimalField(lazy_gettext('TS Font Size (em)'))
+    font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font Size (em)'))
 
 
 class DashboardOutput(FlaskForm):
     output_id = StringField(lazy_gettext('Output'))
     max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
     font_em_value = DecimalField(lazy_gettext('Value Font Size (em)'))
-    font_em_timestamp = DecimalField(lazy_gettext('TS Font Size (em)'))
+    font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font Size (em)'))
     enable_output_controls = BooleanField(lazy_gettext('Feature Output Controls'))
 
 

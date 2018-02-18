@@ -2,6 +2,7 @@
 
 ### Features
 
+ - Add PID-Values to Graphs ([#346](https://github.com/kizniche/mycodo/issues/346))
  - Add Dashboard element: Measurement ([#346](https://github.com/kizniche/mycodo/issues/346))
  - Add Dashboard element: Output ([#346](https://github.com/kizniche/mycodo/issues/346))
  - Add system date and time to menu

@@ -265,7 +265,7 @@ $(document).ready(function() {
           if (measure_type === "gauge") {
             var null_point = chart_gauge[chart_number].series[0].points[0];
             null_point.update(null);
-          } else if (measure_type in ['output', 'measurement']) {
+          } else if (['output', 'measurement'].indexOf(measure_type) >= 0) {
             document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
             document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
           }
@@ -281,12 +281,12 @@ $(document).ready(function() {
           var minutes = "0" + date.getMinutes();
           var seconds = "0" + date.getSeconds();
           var formattedTime = month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+          var units = '';
 
           if (measure_type === "gauge") {
             var new_point = chart_gauge[chart_number].series[0].points[0];
             new_point.update(measurement);
           } else if (measure_type === "output") {
-            var units = '';
             if (measurement_name === 'duration_sec') {
               units = ' sec';
             } else if (measurement_name === 'duty_cycle') {
@@ -294,7 +294,6 @@ $(document).ready(function() {
             }
             document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(1) + units;
           } else if (measure_type === "measurement") {
-            var units = '';
             document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(1) + units;
           }
 
