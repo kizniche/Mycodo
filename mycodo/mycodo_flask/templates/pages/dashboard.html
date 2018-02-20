@@ -342,7 +342,7 @@ $(document).ready(function() {
     }, period_sec * 1000);
   }
 
-  function print_pid_value(data, name, chart_number, decimal_places) {
+  function print_pid_value(data, name, chart_number, decimal_places, units) {
     if (data[name][0] && document.getElementById(name + '-timestamp-' + chart_number)) {
       document.getElementById(name + '-timestamp-' + chart_number).innerHTML = epoch_to_timestamp(data[name][0]);
     } else if (document.getElementById(name + '-timestamp-' + chart_number)) {
@@ -350,8 +350,7 @@ $(document).ready(function() {
     }
     if (data[name][1] && document.getElementById(name + '-' + chart_number)) {
       var value = parseFloat(data[name][1]).toFixed(decimal_places);
-      var value_units = '';
-      document.getElementById(name + '-' + chart_number).innerHTML = value + value_units;
+      document.getElementById(name + '-' + chart_number).innerHTML = value + units;
     } else if (document.getElementById(name + '-' + chart_number)) {
       document.getElementById(name + '-' + chart_number).innerHTML = 'NO DATA';
     }
@@ -370,7 +369,7 @@ $(document).ready(function() {
   }
 
   // Retrieve the latest/last measurement for gauges/outputs
-  function getLastDataPID(chart_number, dev_id, max_measure_age_sec, decimal_places) {
+  function getLastDataPID(chart_number, dev_id, max_measure_age_sec, decimal_places, units) {
     var url = '/last_pid/' + dev_id + '/' + max_measure_age_sec.toString();
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
@@ -380,21 +379,21 @@ $(document).ready(function() {
         else {
           if (data['activated']) {
             document.getElementById('container-pid-' + chart_number).className = "active-background";
-            print_pid_value(data, 'setpoint', chart_number, decimal_places);
-            print_pid_value(data, 'actual', chart_number, decimal_places);
-            print_pid_value(data, 'pid_p_value', chart_number, 1);
-            print_pid_value(data, 'pid_i_value', chart_number, 1);
-            print_pid_value(data, 'pid_d_value', chart_number, 1);
-            print_pid_value(data, 'pid_output', chart_number, 1);
+            print_pid_value(data, 'setpoint', chart_number, decimal_places, ' ' + units);
+            print_pid_value(data, 'actual', chart_number, decimal_places, ' ' + units);
+            print_pid_value(data, 'pid_p_value', chart_number, 1, '');
+            print_pid_value(data, 'pid_i_value', chart_number, 1, '');
+            print_pid_value(data, 'pid_d_value', chart_number, 1, '');
+            print_pid_value(data, 'pid_output', chart_number, 1, '');
           } else {
             document.getElementById('container-pid-' + chart_number).className = "inactive-background";
             document.getElementById('setpoint-' + chart_number).innerHTML = 'INACTIVE';
             document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'INACTIVE';
-            document.getElementById('pid_p_value-' + chart_number).innerHTML = '0.0';
-            document.getElementById('pid_i_value-' + chart_number).innerHTML = '0.0';
-            document.getElementById('pid_d_value-' + chart_number).innerHTML = '0.0';
-            document.getElementById('pid_output-' + chart_number).innerHTML = '0.0';
-            print_pid_value(data, 'actual', chart_number, decimal_places);
+            document.getElementById('pid_p_value-' + chart_number).innerHTML = '0';
+            document.getElementById('pid_i_value-' + chart_number).innerHTML = '0';
+            document.getElementById('pid_d_value-' + chart_number).innerHTML = '0';
+            document.getElementById('pid_output-' + chart_number).innerHTML = '0';
+            print_pid_value(data, 'actual', chart_number, decimal_places, ' ' + units);
           }
         }
       },
@@ -405,9 +404,9 @@ $(document).ready(function() {
   }
 
   // Repeat function for getLastData()
-  function repeatLastDataPID(chart_number, dev_id, period_sec, max_measure_age_sec, decimal_places) {
+  function repeatLastDataPID(chart_number, dev_id, period_sec, max_measure_age_sec, decimal_places, units) {
     setInterval(function () {
-      getLastDataPID(chart_number, dev_id, max_measure_age_sec, decimal_places)
+      getLastDataPID(chart_number, dev_id, max_measure_age_sec, decimal_places, units)
     }, period_sec * 1000);
   }
 
