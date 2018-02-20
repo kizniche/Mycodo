@@ -357,7 +357,7 @@ $(document).ready(function() {
     }
   }
 
-  function print_pid_error() {
+  function print_pid_error(chart_number) {
     document.getElementById('container-pid-' + chart_number).className = "pause-background";
     document.getElementById('setpoint-' + chart_number).innerHTML = 'ERROR';
     document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'ERROR';
@@ -375,24 +375,31 @@ $(document).ready(function() {
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status === 204) {
-          print_pid_error();
+          print_pid_error(chart_number);
         }
         else {
           if (data['activated']) {
             document.getElementById('container-pid-' + chart_number).className = "active-background";
+            print_pid_value(data, 'setpoint', chart_number, decimal_places);
+            print_pid_value(data, 'actual', chart_number, decimal_places);
+            print_pid_value(data, 'pid_p_value', chart_number, 1);
+            print_pid_value(data, 'pid_i_value', chart_number, 1);
+            print_pid_value(data, 'pid_d_value', chart_number, 1);
+            print_pid_value(data, 'pid_output', chart_number, 1);
           } else {
             document.getElementById('container-pid-' + chart_number).className = "inactive-background";
+            document.getElementById('setpoint-' + chart_number).innerHTML = 'INACTIVE';
+            document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'INACTIVE';
+            document.getElementById('pid_p_value-' + chart_number).innerHTML = '0.0';
+            document.getElementById('pid_i_value-' + chart_number).innerHTML = '0.0';
+            document.getElementById('pid_d_value-' + chart_number).innerHTML = '0.0';
+            document.getElementById('pid_output-' + chart_number).innerHTML = '0.0';
+            print_pid_value(data, 'actual', chart_number, decimal_places);
           }
-          print_pid_value(data, 'setpoint', chart_number, decimal_places);
-          print_pid_value(data, 'actual', chart_number, decimal_places);
-          print_pid_value(data, 'pid_p_value', chart_number, 1);
-          print_pid_value(data, 'pid_i_value', chart_number, 1);
-          print_pid_value(data, 'pid_d_value', chart_number, 1);
-          print_pid_value(data, 'pid_output', chart_number, 1);
         }
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {
-        print_pid_error();
+        print_pid_error(chart_number);
       }
     });
   }
