@@ -1918,8 +1918,6 @@
 <h1 id="miscellaneous">Miscellaneous</h1>
 <h2 id="dashboard">Dashboard</h2>
 <p>The dashboard is where you can add pieces of data for easy viewing. It is highly customizable and provides an easy way to see exactly what data you want to see on one screen.</p>
-<h3 id="graphs">Graphs</h3>
-<p>A graphical data display that is useful for viewing data sets spanning relatively short periods of time (hours/days/weeks). Select a time frame to view data and continually updating data from new sensor measurements. Multiple graphs can be created on one page that enables a dashboard to be created of graphed sensor data. Each graph may have one or more data from inputs, outputs, or PIDs rendered onto it. To edit graph options, select the plus sign on the top-right of a graph.</p>
 <table style="width:94%;">
 <colgroup>
 <col style="width: 29%"></col>
@@ -1940,6 +1938,23 @@
 <td style="text-align: left;">Height (pixels)</td>
 <td style="text-align: left;">The height of the dashboard object.</td>
 </tr>
+</tbody>
+</table>
+<p>Specific options for each Dashboard element are below.</p>
+<h3 id="graphs">Graphs</h3>
+<p>A graphical data display that is useful for viewing data sets spanning relatively short periods of time (hours/days/weeks). Select a time frame to view data and continually updating data from new sensor measurements. Multiple graphs can be created on one page that enables a dashboard to be created of graphed sensor data. Each graph may have one or more data from inputs, outputs, or PIDs rendered onto it. To edit graph options, select the plus sign on the top-right of a graph.</p>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
 <tr class="odd">
 <td style="text-align: left;">x-Axis (minutes)</td>
 <td style="text-align: left;">The duration to display on the x-axis of the graph.</td>
@@ -2017,14 +2032,6 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Width</td>
-<td style="text-align: left;">The width of the dashboard object on the page, in 1/12th increments. Multiple dashboard object can share the sme row if their combined fraction doesn’t exceed 12/12.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Height (pixels)</td>
-<td style="text-align: left;">The height of the dashboard object.</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">Refresh (seconds)</td>
 <td style="text-align: left;">The duration between acquisitions of new data to display on the graph.</td>
 </tr>
@@ -2061,14 +2068,6 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Width</td>
-<td style="text-align: left;">The width of the dashboard object on the page, in 1/12th increments. Multiple dashboard object can share the sme row if their combined fraction doesn’t exceed 12/12.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Height (pixels)</td>
-<td style="text-align: left;">The height of the dashboard object.</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">Refresh (seconds)</td>
 <td style="text-align: left;">The duration between acquisitions of new data to display on the graph.</td>
 </tr>
@@ -2095,6 +2094,115 @@
 <tr class="odd">
 <td style="text-align: left;">Add Timestamp</td>
 <td style="text-align: left;">Append a timestamp to the image.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="measurement">Measurement</h3>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Refresh (seconds)</td>
+<td style="text-align: left;">The duration between acquisitions of new data to display on the graph.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Max Age (seconds)</td>
+<td style="text-align: left;">The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Value Font Size (em)</td>
+<td style="text-align: left;">The font size of the measurement value in em.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Timestamp Font Size (em)</td>
+<td style="text-align: left;">The font size of the timestamp value in em.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Measurement</td>
+<td style="text-align: left;">The device to display information about.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="output-1">Output</h3>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Refresh (seconds)</td>
+<td style="text-align: left;">The duration between acquisitions of new data to display on the graph.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Max Age (seconds)</td>
+<td style="text-align: left;">The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Value Font Size (em)</td>
+<td style="text-align: left;">The font size of the output value in em.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Timestamp Font Size (em)</td>
+<td style="text-align: left;">The font size of the timestamp value in em.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Feature Output Controls</td>
+<td style="text-align: left;">Display buttons to turn On and Off the relay from the dashboard element.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Output</td>
+<td style="text-align: left;">The output to display information about.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pid-control">PID Control</h3>
+<table style="width:94%;">
+<colgroup>
+<col style="width: 29%"></col>
+<col style="width: 65%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Refresh (seconds)</td>
+<td style="text-align: left;">The duration between acquisitions of new data to display on the graph.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Max Age (seconds)</td>
+<td style="text-align: left;">The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Value Font Size (em)</td>
+<td style="text-align: left;">The font size of the measurement value in em.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Timestamp Font Size (em)</td>
+<td style="text-align: left;">The font size of the timestamp value in em.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PID</td>
+<td style="text-align: left;">The PID to display information about.</td>
 </tr>
 </tbody>
 </table>

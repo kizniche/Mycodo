@@ -1,11 +1,9 @@
-## 5.5.22 (Unreleased)
+## 5.5.22 (2018-02-19)
 
 ### Features
 
  - Add PID-Values to Graphs ([#346](https://github.com/kizniche/mycodo/issues/346))
- - Add Dashboard element: Measurement ([#346](https://github.com/kizniche/mycodo/issues/346))
- - Add Dashboard element: Output ([#346](https://github.com/kizniche/mycodo/issues/346))
- - Add Dashboard element: PID Control ([#346](https://github.com/kizniche/mycodo/issues/346))
+ - Add Dashboard elements: Measurement, Output, PID Control ([#346](https://github.com/kizniche/mycodo/issues/346))
  - Add system date and time to menu
 
 ### Bugfixes

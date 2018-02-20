@@ -984,6 +984,13 @@ Dashboard
 
 The dashboard is where you can add pieces of data for easy viewing. It is highly customizable and provides an easy way to see exactly what data you want to see on one screen.
 
+Setting | Description
+-------------------- | ----------------------------------------------
+Width | The width of the dashboard object on the page, in 1/12th increments. Multiple dashboard object can share the sme row if their combined fraction doesn't exceed 12/12.
+Height (pixels) | The height of the dashboard object.
+
+Specific options for each Dashboard element are below.
+
 ### Graphs
 
 A graphical data display that is useful for viewing data sets spanning
@@ -996,8 +1003,6 @@ select the plus sign on the top-right of a graph.
 
 Setting | Description
 -------------------- | ----------------------------------------------
-Width | The width of the dashboard object on the page, in 1/12th increments. Multiple dashboard object can share the sme row if their combined fraction doesn't exceed 12/12.
-Height (pixels) | The height of the dashboard object.
 x-Axis (minutes) | The duration to display on the x-axis of the graph.
 Enable Auto Refresh | Automatically refresh the data on the graph Refresh Period.
 Refresh (seconds) | The duration between acquisitions of new data to display on the graph.
@@ -1021,8 +1026,6 @@ Gauges are visual objects that allow one to quickly see what the latest measurem
 
 Setting | Description
 -------------------- | ----------------------------------------------
-Width | The width of the dashboard object on the page, in 1/12th increments. Multiple dashboard object can share the sme row if their combined fraction doesn't exceed 12/12.
-Height (pixels) | The height of the dashboard object.
 Refresh (seconds) | The duration between acquisitions of new data to display on the graph.
 Max Age (seconds) | The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.
 Gauge Min | The lowest value of the gauge.
@@ -1035,8 +1038,6 @@ Cameras may be added to keep a continuous view on areas.
 
 Setting | Description
 -------------------- | ----------------------------------------------
-Width | The width of the dashboard object on the page, in 1/12th increments. Multiple dashboard object can share the sme row if their combined fraction doesn't exceed 12/12.
-Height (pixels) | The height of the dashboard object.
 Refresh (seconds) | The duration between acquisitions of new data to display on the graph.
 Max Age (seconds) | The maximum allowed age of the image timestamp before a "No Recent Image" message is returned.
 Acquire Image (and save new file) | Acquire a new images and save the previous image.
@@ -1044,6 +1045,37 @@ Acquire Image (and erase last file) | Acquire a new image but erase the previous
 Display Live Video Stream | Automatically start a video stream and display it.
 Display Latest Timelapse Image | Display the latest timelapse image that exists.
 Add Timestamp | Append a timestamp to the image.
+
+### Measurement
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Refresh (seconds) | The duration between acquisitions of new data to display on the graph.
+Max Age (seconds) | The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.
+Value Font Size (em) | The font size of the measurement value in em.
+Timestamp Font Size (em) | The font size of the timestamp value in em.
+Measurement | The device to display information about.
+
+### Output
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Refresh (seconds) | The duration between acquisitions of new data to display on the graph.
+Max Age (seconds) | The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.
+Value Font Size (em) | The font size of the output value in em.
+Timestamp Font Size (em) | The font size of the timestamp value in em.
+Feature Output Controls | Display buttons to turn On and Off the relay from the dashboard element.
+Output | The output to display information about.
+
+### PID Control
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Refresh (seconds) | The duration between acquisitions of new data to display on the graph.
+Max Age (seconds) | The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.
+Value Font Size (em) | The font size of the measurement value in em.
+Timestamp Font Size (em) | The font size of the timestamp value in em.
+PID | The PID to display information about.
 
 
 Live Measurements

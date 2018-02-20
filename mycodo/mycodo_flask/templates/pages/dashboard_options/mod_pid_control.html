@@ -7,15 +7,21 @@
   </div>
 </div>
 
-<div class="pause-background" id="container-pid-{{chart_number}}" style="height: {{each_graph.height}}px; text-align: center">
-  <div style="font-size: {{each_graph.font_em_value}}em">
-    Set: <span id="setpoint-{{chart_number}}"></span>
+<div class="pause-background" id="container-pid-{{chart_number}}" style="height: {{each_graph.height}}px">
+  <div class="clearfix" style="padding-top: 1em">
+    <div class="col-xs-12 col-md-6 small-gutters" style="text-align: center">
+      <div style="font-size: {{each_graph.font_em_value}}em">
+        Set: <span id="setpoint-{{chart_number}}"></span>
+      </div>
+      <span style="font-size: {{each_graph.font_em_timestamp}}em" id="setpoint-timestamp-{{chart_number}}"></span>
+    </div>
+    <div class="col-xs-12 col-md-6 small-gutters" style="text-align: center">
+      <div style="font-size: {{each_graph.font_em_value}}em">
+        Now: <span id="actual-{{chart_number}}"></span>
+      </div>
+      <span style="font-size: {{each_graph.font_em_timestamp}}em" id="actual-timestamp-{{chart_number}}"></span>
+    </div>
   </div>
-  <span style="font-size: {{each_graph.font_em_timestamp}}em" id="setpoint-timestamp-{{chart_number}}"></span>
-  <div style="font-size: {{each_graph.font_em_value}}em">
-    Now: <span id="actual-{{chart_number}}"></span>
-  </div>
-  <span style="font-size: {{each_graph.font_em_timestamp}}em" id="actual-timestamp-{{chart_number}}"></span>
 
   <div class="clearfix" style="padding-top: 1em">
     <div class="col-xs-12 small-gutters">
