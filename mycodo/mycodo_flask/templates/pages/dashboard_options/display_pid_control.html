@@ -1,7 +1,7 @@
 
   {%- for each_pid in pid -%}
     {%- if each_pid.unique_id == each_graph.pid_ids.split(',')[0] %}
-  getLastDataPID({{chart_number}}, '{{each_graph.pid_ids}}', {{each_graph.max_measure_age}});
-  repeatLastDataPID({{chart_number}}, '{{each_graph.pid_ids}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}});
+  getLastDataPID({{chart_number}}, '{{each_graph.pid_ids}}', {{each_graph.max_measure_age}}, {{each_graph.decimal_places}});
+  repeatLastDataPID({{chart_number}}, '{{each_graph.pid_ids}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}}, {{each_graph.decimal_places}});
     {%- endif -%}
   {%- endfor -%}

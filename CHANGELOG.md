@@ -1,3 +1,11 @@
+## 5.5.22 (Unreleased)
+
+### Features
+
+ - Add option to set decimal places on Dashboard elements ([#346](https://github.com/kizniche/mycodo/issues/346))
+ - Add option to show detailed PID information on Dashboard element ([#346](https://github.com/kizniche/mycodo/issues/346))
+
+
 ## 5.5.22 (2018-02-19)
 
 ### Features

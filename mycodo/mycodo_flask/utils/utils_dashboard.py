@@ -112,6 +112,7 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.refresh_duration = form_base.refresh_duration.data
         new_graph.font_em_value = form_object.font_em_value.data
         new_graph.font_em_timestamp = form_object.font_em_timestamp.data
+        new_graph.decimal_places = form_object.decimal_places.data
         new_graph.sensor_ids_measurements = form_object.measurement_id.data
 
     # Output
@@ -127,6 +128,7 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.font_em_value = form_object.font_em_value.data
         new_graph.font_em_timestamp = form_object.font_em_timestamp.data
         new_graph.enable_output_controls = form_object.enable_output_controls.data
+        new_graph.decimal_places = form_object.decimal_places.data
         new_graph.output_ids = form_object.output_id.data
 
     # PID Control
@@ -141,7 +143,8 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.refresh_duration = form_base.refresh_duration.data
         new_graph.font_em_value = form_object.font_em_value.data
         new_graph.font_em_timestamp = form_object.font_em_timestamp.data
-        new_graph.enable_output_controls = form_object.enable_output_controls.data
+        new_graph.decimal_places = form_object.decimal_places.data
+        new_graph.enable_pid_info = form_object.enable_pid_info.data
         new_graph.pid_ids = form_object.pid_id.data
 
     # Camera
@@ -285,6 +288,7 @@ def dashboard_mod(form_base, form_object, request_form):
         mod_graph.max_measure_age = form_object.max_measure_age.data
         mod_graph.font_em_value = form_object.font_em_value.data
         mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
+        mod_graph.decimal_places = form_object.decimal_places.data
         if form_object.measurement_id.data:
             mod_graph.sensor_ids_measurements = form_object.measurement_id.data
 
@@ -298,6 +302,7 @@ def dashboard_mod(form_base, form_object, request_form):
         mod_graph.max_measure_age = form_object.max_measure_age.data
         mod_graph.font_em_value = form_object.font_em_value.data
         mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
+        mod_graph.decimal_places = form_object.decimal_places.data
         mod_graph.enable_output_controls = form_object.enable_output_controls.data
         if form_object.output_id.data:
             mod_graph.output_ids = form_object.output_id.data
@@ -305,16 +310,17 @@ def dashboard_mod(form_base, form_object, request_form):
     # PID Control Mod
     elif form_base.dashboard_type.data == 'pid_control':
 
-            error = pid_error_check(form_object, error)
-            mod_graph.width = form_base.width.data
-            mod_graph.height = form_base.height.data
-            mod_graph.refresh_duration = form_base.refresh_duration.data
-            mod_graph.max_measure_age = form_object.max_measure_age.data
-            mod_graph.font_em_value = form_object.font_em_value.data
-            mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
-            mod_graph.enable_output_controls = form_object.enable_output_controls.data
-            if form_object.pid_id.data:
-                mod_graph.pid_ids = form_object.pid_id.data
+        error = pid_error_check(form_object, error)
+        mod_graph.width = form_base.width.data
+        mod_graph.height = form_base.height.data
+        mod_graph.refresh_duration = form_base.refresh_duration.data
+        mod_graph.max_measure_age = form_object.max_measure_age.data
+        mod_graph.font_em_value = form_object.font_em_value.data
+        mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
+        mod_graph.decimal_places = form_object.decimal_places.data
+        mod_graph.enable_pid_info = form_object.enable_pid_info.data
+        if form_object.pid_id.data:
+            mod_graph.pid_ids = form_object.pid_id.data
 
     # Camera Mod
     elif form_base.dashboard_type.data == 'camera':

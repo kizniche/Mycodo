@@ -48,6 +48,18 @@
         {{form_pid.font_em_timestamp(class_='form-control', value=0.9)}}
       </div>
     </div>
+    <div class="form-group">
+      {{form_pid.decimal_places.label(class_='control-label')}}
+      <div>
+        {{form_pid.decimal_places(class_='form-control', value=1)}}
+      </div>
+    </div>
+    <div class="checkbox" style="padding-right: 1em">
+      <label>
+        {{form_pid.enable_pid_info(class_='form-control', value='y', checked=True)}}
+        {{form_pid.enable_pid_info.label.text}}
+      </label>
+    </div>
 
     <div style="clear: both"></div>
 

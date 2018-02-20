@@ -289,7 +289,10 @@ $(document).ready(function() {
   }
 
   // Retrieve the latest/last measurement for gauges/outputs
-  function getLastData(chart_number, dev_id, measurement_name, measure_type, max_measure_age_sec) {
+  function getLastData(chart_number, dev_id, measurement_name, measure_type, max_measure_age_sec, decimal_places) {
+    if (decimal_places === null) {
+      decimal_places = 1;
+    }
     var url = '/last/' + measurement_name + '/' + dev_id + '/' + max_measure_age_sec.toString();
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
@@ -318,7 +321,7 @@ $(document).ready(function() {
                 units = ' %';
               }
             }
-            document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(1) + units;
+            document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(decimal_places) + units;
           }
           document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
         }
@@ -333,23 +336,46 @@ $(document).ready(function() {
   }
 
   // Repeat function for getLastData()
-  function repeatLastData(chart_number, dev_id, measurement, measure_type, period_sec, max_measure_age_sec) {
+  function repeatLastData(chart_number, dev_id, measurement, measure_type, period_sec, max_measure_age_sec, decimal_places) {
     setInterval(function () {
-      getLastData(chart_number, dev_id, measurement, measure_type, max_measure_age_sec)
+      getLastData(chart_number, dev_id, measurement, measure_type, max_measure_age_sec, decimal_places)
     }, period_sec * 1000);
   }
 
+  function print_pid_value(data, name, chart_number, decimal_places) {
+    if (data[name][0] && document.getElementById(name + '-timestamp-' + chart_number)) {
+      document.getElementById(name + '-timestamp-' + chart_number).innerHTML = epoch_to_timestamp(data[name][0]);
+    } else if (document.getElementById(name + '-timestamp-' + chart_number)) {
+      document.getElementById(name + '-timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
+    }
+    if (data[name][1] && document.getElementById(name + '-' + chart_number)) {
+      var value = parseFloat(data[name][1]).toFixed(decimal_places);
+      var value_units = '';
+      document.getElementById(name + '-' + chart_number).innerHTML = value + value_units;
+    } else if (document.getElementById(name + '-' + chart_number)) {
+      document.getElementById(name + '-' + chart_number).innerHTML = 'NO DATA';
+    }
+  }
+
+  function print_pid_error() {
+    document.getElementById('container-pid-' + chart_number).className = "pause-background";
+    document.getElementById('setpoint-' + chart_number).innerHTML = 'ERROR';
+    document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'ERROR';
+    document.getElementById('pid_p_value-' + chart_number).innerHTML = 'ERROR';
+    document.getElementById('pid_i_value-' + chart_number).innerHTML = 'ERROR';
+    document.getElementById('pid_d_value-' + chart_number).innerHTML = 'ERROR';
+    document.getElementById('pid_output-' + chart_number).innerHTML = 'ERROR';
+    document.getElementById('actual-' + chart_number).innerHTML = 'ERROR';
+    document.getElementById('actual-timestamp-' + chart_number).innerHTML = 'ERROR';
+  }
+
   // Retrieve the latest/last measurement for gauges/outputs
-  function getLastDataPID(chart_number, dev_id, max_measure_age_sec) {
+  function getLastDataPID(chart_number, dev_id, max_measure_age_sec, decimal_places) {
     var url = '/last_pid/' + dev_id + '/' + max_measure_age_sec.toString();
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status === 204) {
-          document.getElementById('container-pid-' + chart_number).className = "pause-background";
-          document.getElementById('setpoint-' + chart_number).innerHTML = 'ERROR';
-          document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'ERROR';
-          document.getElementById('actual-' + chart_number).innerHTML = 'ERROR';
-          document.getElementById('actual-timestamp-' + chart_number).innerHTML = 'ERROR';
+          print_pid_error();
         }
         else {
           if (data['activated']) {
@@ -357,44 +383,24 @@ $(document).ready(function() {
           } else {
             document.getElementById('container-pid-' + chart_number).className = "inactive-background";
           }
-
-          if (data['setpoint'][0]) {
-            var setpoint_time = epoch_to_timestamp(data['setpoint'][0]);
-            var setpoint = parseFloat(data['setpoint'][1]).toFixed(1);
-            var setpoint_units = '';
-            document.getElementById('setpoint-' + chart_number).innerHTML = setpoint + setpoint_units;
-            document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = setpoint_time;
-          } else {
-            document.getElementById('setpoint-' + chart_number).innerHTML = 'NO DATA';
-            document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
-          }
-
-          if (data['actual'][0]) {
-            var actual_time = epoch_to_timestamp(data['actual'][0]);
-            var actual = parseFloat(data['actual'][1]).toFixed(1);
-            var actual_units = '';
-            document.getElementById('actual-' + chart_number).innerHTML = actual + actual_units;
-            document.getElementById('actual-timestamp-' + chart_number).innerHTML = actual_time;
-          } else {
-            document.getElementById('actual-' + chart_number).innerHTML = 'NO DATA';
-            document.getElementById('actual-timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
-          }
+          print_pid_value(data, 'setpoint', chart_number, decimal_places);
+          print_pid_value(data, 'actual', chart_number, decimal_places);
+          print_pid_value(data, 'pid_p_value', chart_number, 1);
+          print_pid_value(data, 'pid_i_value', chart_number, 1);
+          print_pid_value(data, 'pid_d_value', chart_number, 1);
+          print_pid_value(data, 'pid_output', chart_number, 1);
         }
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {
-        document.getElementById('container-pid-' + chart_number).className = "pause-background";
-        document.getElementById('setpoint-' + chart_number).innerHTML = 'ERROR';
-        document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'ERROR';
-        document.getElementById('actual-' + chart_number).innerHTML = 'ERROR';
-        document.getElementById('actual-timestamp-' + chart_number).innerHTML = 'ERROR';
+        print_pid_error();
       }
     });
   }
 
   // Repeat function for getLastData()
-  function repeatLastDataPID(chart_number, dev_id, period_sec, max_measure_age_sec) {
+  function repeatLastDataPID(chart_number, dev_id, period_sec, max_measure_age_sec, decimal_places) {
     setInterval(function () {
-      getLastDataPID(chart_number, dev_id, max_measure_age_sec)
+      getLastDataPID(chart_number, dev_id, max_measure_age_sec, decimal_places)
     }, period_sec * 1000);
   }
 

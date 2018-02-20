@@ -50,7 +50,7 @@ class DashboardBase(FlaskForm):
             max=10000
         )]
     )
-    refresh_duration = IntegerField(
+    refresh_duration = DecimalField(
         lazy_gettext('Refresh (seconds)'),
         validators=[validators.NumberRange(
             min=1,
@@ -113,6 +113,7 @@ class DashboardMeasurement(FlaskForm):
     max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
     font_em_value = DecimalField(lazy_gettext('Value Font Size (em)'))
     font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font Size (em)'))
+    decimal_places = IntegerField(lazy_gettext('Decimal Places'))
 
 
 class DashboardOutput(FlaskForm):
@@ -120,6 +121,7 @@ class DashboardOutput(FlaskForm):
     max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
     font_em_value = DecimalField(lazy_gettext('Value Font Size (em)'))
     font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font Size (em)'))
+    decimal_places = IntegerField(lazy_gettext('Decimal Places'))
     enable_output_controls = BooleanField(lazy_gettext('Feature Output Controls'))
 
 
@@ -128,7 +130,9 @@ class DashboardPIDControl(FlaskForm):
     max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
     font_em_value = DecimalField(lazy_gettext('Value Font Size (em)'))
     font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font Size (em)'))
-    enable_output_controls = BooleanField(lazy_gettext('Feature Output Controls'))
+    camera_max_age = IntegerField(lazy_gettext('Max Age (seconds)'))
+    decimal_places = IntegerField(lazy_gettext('Decimal Places'))
+    enable_pid_info = BooleanField(lazy_gettext('Show PID Information'))
 
 
 class DashboardCamera(FlaskForm):

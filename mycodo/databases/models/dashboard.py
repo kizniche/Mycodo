@@ -35,6 +35,7 @@ class Dashboard(CRUDMixin, db.Model):
     enable_end_on_tick = db.Column(db.Boolean, default=True)  # Enable HighCharts endOnTick
     enable_align_ticks = db.Column(db.Boolean, default=True)  # Enable HighCharts alignTicks
     custom_yaxes = db.Column(db.Text, default='')  # Custom minimum and maximum y-axes
+    decimal_places = db.Column(db.Integer, default=1)  # Number of decimal places for displayed value
 
     # Gauge options
     max_measure_age = db.Column(db.Float, default=120.0)  # Only show measurements if they are younger than this age
@@ -50,6 +51,9 @@ class Dashboard(CRUDMixin, db.Model):
     font_em_value = db.Column(db.Float, default=1.0)  # Font size of value
     font_em_timestamp = db.Column(db.Float, default=1.0)  # Font size of timestamp
     enable_output_controls = db.Column(db.Boolean, default=True)  # Show output controls on dashboard element
+
+    # PID options
+    enable_pid_info = db.Column(db.Boolean, default=True)  # Display detailed information about the PID
 
     # Camera options
     camera_id = db.Column(db.Text, default='')  # store camera ID to display

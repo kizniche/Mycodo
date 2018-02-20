@@ -576,7 +576,7 @@ def return_point_timestamp(measure, dev_id, period):
         measure, dev_id, value='LAST',
         past_sec=period)
     if query_str == 1:
-        [None, None]
+        return [None, None]
 
     try:
         raw_data = dbcon.query(query_str).raw
@@ -608,6 +608,10 @@ def last_data_pid(input_id, input_period):
         live_data = {
             'activated': pid.is_activated,
             'setpoint': return_point_timestamp('setpoint', input_id, input_period),
+            'pid_p_value': return_point_timestamp('pid_p_value', input_id, input_period),
+            'pid_i_value': return_point_timestamp('pid_i_value', input_id, input_period),
+            'pid_d_value': return_point_timestamp('pid_d_value', input_id, input_period),
+            'pid_output': return_point_timestamp('pid_output', input_id, input_period),
             'actual': return_point_timestamp(measure_type, measure_id, input_period)
         }
         return jsonify(live_data)

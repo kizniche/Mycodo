@@ -1,6 +1,6 @@
 <div style="padding-right: 0.5em;">
   <div class="col-sx-12 text-right">
-    <span id="text-output-state-{{chart_number}}"></span> <span style="padding-right: 0.5em">[{{'%02d' % each_graph.id}}] {{each_graph.name}}</span>
+    <span id="text-output-state-{{chart_number}}"></span> <span style="padding-right: 0.5em">{{each_graph.name}} [{{'%02d' % each_graph.id}}]</span>
     <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer_output{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer_output{{chart_number}}">
       <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
     </button>
@@ -108,6 +108,12 @@
         {{form_measurement.font_em_timestamp.label(class_='control-label')}}
         <div>
           {{form_measurement.font_em_timestamp(class_='form-control', value=each_graph.font_em_timestamp)}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_measurement.decimal_places.label(class_='control-label')}}
+        <div>
+          {{form_measurement.decimal_places(class_='form-control', value=each_graph.decimal_places)}}
         </div>
       </div>
     </div>
