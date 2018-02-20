@@ -35,6 +35,7 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.databases.models import Output
+from mycodo.databases.models import PID
 from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.routes_authentication import clear_cookie_auth
@@ -560,3 +561,82 @@ def computer_command(action):
         flash("System command '{cmd}' raised and error: "
               "{err}".format(cmd=action, err=e), "error")
         return redirect(url_for('routes_general.home'))
+
+
+#
+# PID Dashboard object routes
+#
+
+def return_point_timestamp(measure, dev_id, period):
+    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
+    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
+    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
+    dbcon = influx_db.connection
+    query_str = query_string(
+        measure, dev_id, value='LAST',
+        past_sec=period)
+    if query_str == 1:
+        [None, None]
+
+    try:
+        raw_data = dbcon.query(query_str).raw
+        number = len(raw_data['series'][0]['values'])
+        time_raw = raw_data['series'][0]['values'][number - 1][0]
+        value = raw_data['series'][0]['values'][number - 1][1]
+        value = '{:.3f}'.format(float(value))
+        # Convert date-time to epoch (potential bottleneck for data)
+        dt = date_parse(time_raw)
+        timestamp = calendar.timegm(dt.timetuple()) * 1000
+        return [timestamp, value]
+    except KeyError:
+        return [None, None]
+    except Exception as e:
+        return [None, None]
+
+@blueprint.route('/last_pid/<input_id>/<input_period>')
+@flask_login.login_required
+def last_data_pid(input_id, input_period):
+    """Return the most recent time and value from influxdb"""
+    if not str_is_float(input_period):
+        return '', 204
+
+    try:
+        pid = PID.query.filter(PID.unique_id == input_id).first()
+        measure_id = pid.measurement.split(',')[0]
+        measure_type = pid.measurement.split(',')[1]
+
+        live_data = {
+            'activated': pid.is_activated,
+            'setpoint': return_point_timestamp('setpoint', input_id, input_period),
+            'actual': return_point_timestamp(measure_type, measure_id, input_period)
+        }
+        return jsonify(live_data)
+    except KeyError:
+        logger.debug("No Data returned form influxdb")
+        return '', 204
+    except Exception as e:
+        logger.exception("URL for 'last_pid' raised and error: "
+                         "{err}".format(err=e))
+        return '', 204
+
+
+@blueprint.route('/pid_mod_unique_id/<unique_id>/<state>')
+@flask_login.login_required
+def pid_mod_unique_id(unique_id, state):
+    """ Manipulate output (using unique ID) """
+    if not utils_general.user_has_permission('edit_controllers'):
+        return 'Insufficient user permissions to manipulate PID'
+
+    pid = PID.query.filter(PID.unique_id == unique_id).first()
+
+    daemon = DaemonControl()
+    if state == 'activate_pid':
+        pid.is_activated = True
+        pid.save()
+        return_val, return_str = daemon.controller_activate('PID', pid.id)
+        return return_str
+    elif state == 'deactivate_pid':
+        pid.is_activated = False
+        pid.save()
+        return_val, return_str = daemon.controller_deactivate('PID', pid.id)
+        return return_str

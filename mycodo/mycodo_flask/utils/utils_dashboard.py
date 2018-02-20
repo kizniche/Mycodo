@@ -40,6 +40,7 @@ def dashboard_add(form_base, form_object, display_order):
         action=gettext("Add"),
         controller=gettext("Dashboard"))
     error = []
+    dashboard_type = ''
 
     new_graph = Dashboard()
     new_graph.name = form_base.name.data
@@ -52,10 +53,9 @@ def dashboard_add(form_base, form_object, display_order):
              form_object.xaxis_duration.data and
              form_base.refresh_duration.data)):
 
+        dashboard_type = 'Graph'
         error = graph_error_check(form_object, error)
-
         new_graph.graph_type = form_base.dashboard_type.data
-
         if form_object.math_ids.data:
             math_ids_joined = ";".join(form_object.math_ids.data)
             new_graph.math_ids = math_ids_joined
@@ -81,29 +81,12 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.enable_graph_shift = form_object.enable_graph_shift.data
         new_graph.enable_manual_y_axis = form_object.enable_manual_y_axis.data
 
-        try:
-            if not error:
-                new_graph.save()
-                flash(gettext(
-                    "Graph with ID %(id)s successfully added",
-                    id=new_graph.id),
-                    "success")
-
-                DisplayOrder.query.first().graph = add_display_order(
-                    display_order, new_graph.id)
-                db.session.commit()
-        except sqlalchemy.exc.OperationalError as except_msg:
-            error.append(except_msg)
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            error.append(except_msg)
-
     # Gauge
     elif form_base.dashboard_type.data == 'gauge':
 
+        dashboard_type = 'Gauge'
         error = gauge_error_check(form_object, error)
-
         new_graph.graph_type = form_object.gauge_type.data
-
         if form_object.gauge_type.data == 'gauge_solid':
             new_graph.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
         elif form_object.gauge_type.data == 'gauge_angular':
@@ -117,27 +100,11 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.sensor_ids_measurements = form_object.sensor_ids.data
         new_graph.enable_timestamp = form_object.enable_timestamp.data
 
-        try:
-            if not error:
-                new_graph.save()
-                flash(gettext(
-                    "Gauge with ID %(id)s successfully added",
-                    id=new_graph.id),
-                    "success")
-
-                DisplayOrder.query.first().graph = add_display_order(
-                    display_order, new_graph.id)
-                db.session.commit()
-        except sqlalchemy.exc.OperationalError as except_msg:
-            error.append(except_msg)
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            error.append(except_msg)
-
     # Measurement
     elif form_base.dashboard_type.data == 'measurement':
 
+        dashboard_type = 'Measurement'
         error = measurement_error_check(form_object, error)
-
         new_graph.graph_type = 'measurement'
         new_graph.width = form_base.width.data
         new_graph.height = form_base.height.data
@@ -147,27 +114,11 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.font_em_timestamp = form_object.font_em_timestamp.data
         new_graph.sensor_ids_measurements = form_object.measurement_id.data
 
-        try:
-            if not error:
-                new_graph.save()
-                flash(gettext(
-                    "Measurement with ID %(id)s successfully added",
-                    id=new_graph.id),
-                    "success")
-
-                DisplayOrder.query.first().graph = add_display_order(
-                    display_order, new_graph.id)
-                db.session.commit()
-        except sqlalchemy.exc.OperationalError as except_msg:
-            error.append(except_msg)
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            error.append(except_msg)
-
     # Output
     elif form_base.dashboard_type.data == 'output':
 
+        dashboard_type = 'Output'
         error = output_error_check(form_object, error)
-
         new_graph.graph_type = 'output'
         new_graph.width = form_base.width.data
         new_graph.height = form_base.height.data
@@ -178,26 +129,26 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.enable_output_controls = form_object.enable_output_controls.data
         new_graph.output_ids = form_object.output_id.data
 
-        try:
-            if not error:
-                new_graph.save()
-                flash(gettext(
-                    "Output with ID %(id)s successfully added",
-                    id=new_graph.id),
-                    "success")
+    # PID Control
+    elif form_base.dashboard_type.data == 'pid_control':
 
-                DisplayOrder.query.first().graph = add_display_order(
-                    display_order, new_graph.id)
-                db.session.commit()
-        except sqlalchemy.exc.OperationalError as except_msg:
-            error.append(except_msg)
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            error.append(except_msg)
+        dashboard_type = 'PID Control'
+        error = pid_error_check(form_object, error)
+        new_graph.graph_type = 'pid_control'
+        new_graph.width = form_base.width.data
+        new_graph.height = form_base.height.data
+        new_graph.max_measure_age = form_object.max_measure_age.data
+        new_graph.refresh_duration = form_base.refresh_duration.data
+        new_graph.font_em_value = form_object.font_em_value.data
+        new_graph.font_em_timestamp = form_object.font_em_timestamp.data
+        new_graph.enable_output_controls = form_object.enable_output_controls.data
+        new_graph.pid_ids = form_object.pid_id.data
 
     # Camera
     elif (form_base.dashboard_type.data == 'camera' and
           form_object.camera_id.data):
 
+        dashboard_type = 'Camera'
         new_graph.graph_type = form_base.dashboard_type.data
         new_graph.width = form_base.width.data
         new_graph.height = form_base.height.data
@@ -205,26 +156,24 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.camera_max_age = form_object.camera_max_age.data
         new_graph.camera_id = form_object.camera_id.data
         new_graph.camera_image_type = form_object.camera_image_type.data
-
-        try:
-            if not error:
-                new_graph.save()
-                flash(gettext(
-                    "Camera with ID %(id)s successfully added",
-                    id=new_graph.id),
-                    "success")
-
-                DisplayOrder.query.first().graph = add_display_order(
-                    display_order, new_graph.id)
-                db.session.commit()
-        except sqlalchemy.exc.OperationalError as except_msg:
-            error.append(except_msg)
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            error.append(except_msg)
-
     else:
         flash_form_errors(form_base)
         return
+
+    try:
+        if not error:
+            new_graph.save()
+            flash(gettext(
+                "{dev} with ID %(id)s successfully added".format(dev=dashboard_type),
+                id=new_graph.id),
+                "success")
+            DisplayOrder.query.first().graph = add_display_order(
+                display_order, new_graph.id)
+            db.session.commit()
+    except sqlalchemy.exc.OperationalError as except_msg:
+        error.append(except_msg)
+    except sqlalchemy.exc.IntegrityError as except_msg:
+        error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
 
@@ -330,7 +279,6 @@ def dashboard_mod(form_base, form_object, request_form):
     elif form_base.dashboard_type.data == 'measurement':
 
         error = measurement_error_check(form_object, error)
-
         mod_graph.width = form_base.width.data
         mod_graph.height = form_base.height.data
         mod_graph.refresh_duration = form_base.refresh_duration.data
@@ -344,7 +292,6 @@ def dashboard_mod(form_base, form_object, request_form):
     elif form_base.dashboard_type.data == 'output':
 
         error = output_error_check(form_object, error)
-
         mod_graph.width = form_base.width.data
         mod_graph.height = form_base.height.data
         mod_graph.refresh_duration = form_base.refresh_duration.data
@@ -354,6 +301,20 @@ def dashboard_mod(form_base, form_object, request_form):
         mod_graph.enable_output_controls = form_object.enable_output_controls.data
         if form_object.output_id.data:
             mod_graph.output_ids = form_object.output_id.data
+
+    # PID Control Mod
+    elif form_base.dashboard_type.data == 'pid_control':
+
+            error = pid_error_check(form_object, error)
+            mod_graph.width = form_base.width.data
+            mod_graph.height = form_base.height.data
+            mod_graph.refresh_duration = form_base.refresh_duration.data
+            mod_graph.max_measure_age = form_object.max_measure_age.data
+            mod_graph.font_em_value = form_object.font_em_value.data
+            mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
+            mod_graph.enable_output_controls = form_object.enable_output_controls.data
+            if form_object.pid_id.data:
+                mod_graph.pid_ids = form_object.pid_id.data
 
     # Camera Mod
     elif form_base.dashboard_type.data == 'camera':
@@ -441,6 +402,13 @@ def output_error_check(form, error):
     """Determine if there are any errors in the gauge form"""
     if form.output_id.data == '':
         error.append("A valid Output must be selected")
+    return error
+
+
+def pid_error_check(form, error):
+    """Determine if there are any errors in the gauge form"""
+    if form.pid_id.data == '':
+        error.append("A valid PID Controller must be selected")
     return error
 
 

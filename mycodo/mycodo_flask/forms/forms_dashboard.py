@@ -27,6 +27,7 @@ class DashboardBase(FlaskForm):
             ('gauge', lazy_gettext('Gauge')),
             ('measurement', lazy_gettext('Measurement')),
             ('output', lazy_gettext('Output')),
+            ('pid_control', lazy_gettext('PID Control')),
             ('camera', lazy_gettext('Camera')),
         ],
         validators=[DataRequired()]
@@ -116,6 +117,14 @@ class DashboardMeasurement(FlaskForm):
 
 class DashboardOutput(FlaskForm):
     output_id = StringField(lazy_gettext('Output'))
+    max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
+    font_em_value = DecimalField(lazy_gettext('Value Font Size (em)'))
+    font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font Size (em)'))
+    enable_output_controls = BooleanField(lazy_gettext('Feature Output Controls'))
+
+
+class DashboardPIDControl(FlaskForm):
+    pid_id = StringField(lazy_gettext('PID'))
     max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
     font_em_value = DecimalField(lazy_gettext('Value Font Size (em)'))
     font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font Size (em)'))

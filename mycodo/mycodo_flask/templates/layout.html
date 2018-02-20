@@ -61,14 +61,12 @@
   <link href="/static/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
   <link href="/static/css/navbar-fixed-top.css" rel="stylesheet">
-
   <link href="/static/css/custom.css" rel="stylesheet">
-
   <script src="/static/js/ie-emulation-modes-warning.js"></script>
-
   <script src="/static/js/jquery-3.1.1.min.js"></script>
   <script>
-  function check_daemon_active() {
+
+  function check_daemon_status() {
     var url = '/daemonactive';
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
@@ -94,16 +92,15 @@
       cache: false
     });
   }
-  function initiate_daemon_status() {
+
+  function repeat_check_daemon_status() {
     setInterval(function () {
       // Update after every 30 seconds
-      check_daemon_active();
+      check_daemon_status();
     }, {% if active_page == "update" -%}5000{% else -%}60000{%- endif -%});
   }
-  initiate_daemon_status();
 
-
-  function getTime() {
+  function get_time() {
     var url = '/time';
     $.getJSON(url,
       function(time, responseText, jqXHR) {
@@ -116,29 +113,30 @@
       }
     );
   }
-  function repeatgetTime() {
+
+  function repeat_get_time() {
     setInterval(function () {
-      getTime();
+      get_time();
     }, 60000);  // Refresh duration in milliseconds
   }
-  getTime();
-  repeatgetTime();
 
-  </script>
+  $(document).ready(function(){
+    check_daemon_status();
+    repeat_check_daemon_status();
+    get_time();
+    repeat_get_time();
+  });
+
   {% if not hide_tooltips %}
-  <script>
     $(document).ready(function(){
       $('input[title]').tooltip({placement:'top'});
       $('.form-dropdown').dropdown();
       $('.form-dropdown').tooltip();
-    })
-    $(document).ready(function(){
-      $('select[title]').tooltip({placement:'top'});
-      $('.form-dropdown').dropdown();
-      $('.form-dropdown').tooltip();
-    })
-  </script>
+    });
   {% endif %}
+
+  </script>
+
   {% block head %}{% endblock %}
   </head>
   <body>
@@ -239,7 +237,7 @@
     <script src="/static/js/ie10-viewport-bug-workaround.js"></script>
     <script>
     $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip();
+      $('[data-toggle="tooltip"]').tooltip();
     });
     </script>
   </body>

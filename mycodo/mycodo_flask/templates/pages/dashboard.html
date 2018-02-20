@@ -54,23 +54,16 @@
       {% endfor %}
 
       {% if each_graph.graph_type == 'graph' %}
-
         {% include 'pages/dashboard_options/mod_graph.html' %}
-
       {% elif each_graph.graph_type in ['gauge_angular', 'gauge_solid'] %}
-
         {% include 'pages/dashboard_options/mod_gauge.html' %}
-
       {% elif each_graph.graph_type == 'measurement' %}
-
         {% include 'pages/dashboard_options/mod_measurement.html' %}
-
       {% elif each_graph.graph_type == 'output' %}
-
         {% include 'pages/dashboard_options/mod_output.html' %}
-
+      {% elif each_graph.graph_type == 'pid_control' %}
+        {% include 'pages/dashboard_options/mod_pid_control.html' %}
       {% elif each_graph.graph_type == 'camera' %}
-
         {% include 'pages/dashboard_options/mod_camera.html' %}
 
       {% endif %}
@@ -95,23 +88,21 @@
         </div>
       </div>
     </div>
-
     <div class="add_dashboard_object" style="display: none" id="graph">
      {% include 'pages/dashboard_options/add_graph.html' %}
     </div>
-
     <div class="add_dashboard_object" style="display: none" id="gauge">
      {% include 'pages/dashboard_options/add_gauge.html' %}
     </div>
-
     <div class="add_dashboard_object" style="display: none" id="measurement">
      {% include 'pages/dashboard_options/add_measurement.html' %}
     </div>
-
     <div class="add_dashboard_object" style="display: none" id="output">
      {% include 'pages/dashboard_options/add_output.html' %}
     </div>
-
+    <div class="add_dashboard_object" style="display: none" id="pid_control">
+     {% include 'pages/dashboard_options/add_pid_control.html' %}
+    </div>
     <div class="add_dashboard_object" style="display: none" id="camera">
      {% include 'pages/dashboard_options/add_camera.html' %}
     </div>
@@ -120,6 +111,7 @@
 </div>
 
 <script>
+
 $('.collapse').on('show.bs.collapse', function(){
   $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
 }).on('hide.bs.collapse', function(){
@@ -176,6 +168,34 @@ $(document).ready(function() {
     var dc = $('#duty_cycle_on_amt_' + id).val();
     toastr['info']('Command sent to turn output On with a duty cycle of ' + dc + '%');
     modOutput(btn_val + dc);
+  });
+});
+
+function modPID(btn_val) {
+  $.ajax({
+      type: 'GET',
+      url: '/pid_mod_unique_id/' + btn_val,
+      success: function(data) {
+          toastr['success']("PID " + data);
+      },
+      error: function(data) {
+          toastr['error']("PID " + btn_val.split("/")[0] + ": " + data);
+      }
+  });
+}
+
+$(document).ready(function() {
+  $('.activate_pid').click(function() {
+    var btn_val = this.name;
+    var id = btn_val.split('/')[0];
+    toastr['info']('Command sent to Activate PID');
+    modPID(btn_val);
+  });
+  $('.deactivate_pid').click(function() {
+    var btn_val = this.name;
+    var id = btn_val.split('/')[0];
+    toastr['info']('Command sent to Deactivate PID');
+    modPID(btn_val);
   });
 });
 
@@ -256,6 +276,18 @@ $(document).ready(function() {
     );
   }
 
+  // Return timestamp from epoch
+  function epoch_to_timestamp(epoch) {
+    var date = new Date(parseFloat(epoch));
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var hours = date.getHours();
+    var minutes = "0" + date.getMinutes();
+    var seconds = "0" + date.getSeconds();
+    return month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+  }
+
   // Retrieve the latest/last measurement for gauges/outputs
   function getLastData(chart_number, dev_id, measurement_name, measure_type, max_measure_age_sec) {
     var url = '/last/' + measurement_name + '/' + dev_id + '/' + max_measure_age_sec.toString();
@@ -265,44 +297,37 @@ $(document).ready(function() {
           if (measure_type === "gauge") {
             var null_point = chart_gauge[chart_number].series[0].points[0];
             null_point.update(null);
-          } else if (['output', 'measurement'].indexOf(measure_type) >= 0) {
+          } else if (['measurement', 'output', 'pid_control'].indexOf(measure_type) >= 0) {
             document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
             document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
           }
         }
         else {
-          var time = data[0];
+          var formattedTime = epoch_to_timestamp(data[0]);
           var measurement = data[1];
-          var date = new Date(parseFloat(time));
-          var year = date.getFullYear();
-          var month = date.getMonth() + 1;
-          var day = date.getDate();
-          var hours = date.getHours();
-          var minutes = "0" + date.getMinutes();
-          var seconds = "0" + date.getSeconds();
-          var formattedTime = month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
           var units = '';
 
           if (measure_type === "gauge") {
             var new_point = chart_gauge[chart_number].series[0].points[0];
             new_point.update(measurement);
-          } else if (measure_type === "output") {
-            if (measurement_name === 'duration_sec') {
-              units = ' sec';
-            } else if (measurement_name === 'duty_cycle') {
-              units = ' %';
+          } else {
+            if (measure_type === "output") {
+              if (measurement_name === 'duration_sec') {
+                units = ' sec';
+              } else if (measurement_name === 'duty_cycle') {
+                units = ' %';
+              }
             }
             document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(1) + units;
-          } else if (measure_type === "measurement") {
-            document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(1) + units;
           }
-
-          document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime + ' ';
+          document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
         }
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {
-        var point = chart_gauge[chart_number].series[0].points[0];
-        point.update(null);
+        if (measure_type === "gauge") {
+          var point = chart_gauge[chart_number].series[0].points[0];
+          point.update(null);
+        }
       }
     });
   }
@@ -311,6 +336,65 @@ $(document).ready(function() {
   function repeatLastData(chart_number, dev_id, measurement, measure_type, period_sec, max_measure_age_sec) {
     setInterval(function () {
       getLastData(chart_number, dev_id, measurement, measure_type, max_measure_age_sec)
+    }, period_sec * 1000);
+  }
+
+  // Retrieve the latest/last measurement for gauges/outputs
+  function getLastDataPID(chart_number, dev_id, max_measure_age_sec) {
+    var url = '/last_pid/' + dev_id + '/' + max_measure_age_sec.toString();
+    $.ajax(url, {
+      success: function(data, responseText, jqXHR) {
+        if (jqXHR.status === 204) {
+          document.getElementById('container-pid-' + chart_number).className = "pause-background";
+          document.getElementById('setpoint-' + chart_number).innerHTML = 'ERROR';
+          document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'ERROR';
+          document.getElementById('actual-' + chart_number).innerHTML = 'ERROR';
+          document.getElementById('actual-timestamp-' + chart_number).innerHTML = 'ERROR';
+        }
+        else {
+          if (data['activated']) {
+            document.getElementById('container-pid-' + chart_number).className = "active-background";
+          } else {
+            document.getElementById('container-pid-' + chart_number).className = "inactive-background";
+          }
+
+          if (data['setpoint'][0]) {
+            var setpoint_time = epoch_to_timestamp(data['setpoint'][0]);
+            var setpoint = parseFloat(data['setpoint'][1]).toFixed(1);
+            var setpoint_units = '';
+            document.getElementById('setpoint-' + chart_number).innerHTML = setpoint + setpoint_units;
+            document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = setpoint_time;
+          } else {
+            document.getElementById('setpoint-' + chart_number).innerHTML = 'NO DATA';
+            document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
+          }
+
+          if (data['actual'][0]) {
+            var actual_time = epoch_to_timestamp(data['actual'][0]);
+            var actual = parseFloat(data['actual'][1]).toFixed(1);
+            var actual_units = '';
+            document.getElementById('actual-' + chart_number).innerHTML = actual + actual_units;
+            document.getElementById('actual-timestamp-' + chart_number).innerHTML = actual_time;
+          } else {
+            document.getElementById('actual-' + chart_number).innerHTML = 'NO DATA';
+            document.getElementById('actual-timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
+          }
+        }
+      },
+      error: function(XMLHttpRequest, textStatus, errorThrown) {
+        document.getElementById('container-pid-' + chart_number).className = "pause-background";
+        document.getElementById('setpoint-' + chart_number).innerHTML = 'ERROR';
+        document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'ERROR';
+        document.getElementById('actual-' + chart_number).innerHTML = 'ERROR';
+        document.getElementById('actual-timestamp-' + chart_number).innerHTML = 'ERROR';
+      }
+    });
+  }
+
+  // Repeat function for getLastData()
+  function repeatLastDataPID(chart_number, dev_id, period_sec, max_measure_age_sec) {
+    setInterval(function () {
+      getLastDataPID(chart_number, dev_id, max_measure_age_sec)
     }, period_sec * 1000);
   }
 
@@ -453,6 +537,8 @@ $(document).ready(function() {
         {% include 'pages/dashboard_options/display_measurement.html' %}
       {% elif each_graph.graph_type == 'output' %}
         {% include 'pages/dashboard_options/display_output.html' %}
+      {% elif each_graph.graph_type == 'pid_control' %}
+        {% include 'pages/dashboard_options/display_pid_control.html' %}
       {% elif each_graph.graph_type == 'camera' %}
         {% include 'pages/dashboard_options/display_camera.html' %}
       {% endif %}

@@ -280,6 +280,7 @@ def page_dashboard():
     form_gauge = forms_dashboard.DashboardGauge()
     form_measurement = forms_dashboard.DashboardMeasurement()
     form_output = forms_dashboard.DashboardOutput()
+    form_pid = forms_dashboard.DashboardPIDControl()
 
     # Retrieve the order to display graphs
     display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
@@ -366,6 +367,8 @@ def page_dashboard():
                 form_dashboard_object = form_measurement
             elif form_base.dashboard_type.data == 'output':
                 form_dashboard_object = form_output
+            elif form_base.dashboard_type.data == 'pid_control':
+                form_dashboard_object = form_pid
             elif form_base.dashboard_type.data == 'camera':
                 form_dashboard_object = form_camera
             else:
@@ -413,6 +416,7 @@ def page_dashboard():
                            form_gauge=form_gauge,
                            form_measurement=form_measurement,
                            form_output=form_output,
+                           form_pid=form_pid,
                            y_axes=y_axes)
 
 
