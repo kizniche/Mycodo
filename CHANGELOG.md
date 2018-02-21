@@ -5,7 +5,7 @@
  - Add option to set decimal places on Dashboard elements ([#346](https://github.com/kizniche/mycodo/issues/346))
  - Add option to show detailed PID information on Dashboard element ([#346](https://github.com/kizniche/mycodo/issues/346))
  - Add units to PID Dashboard element ([#346](https://github.com/kizniche/mycodo/issues/346))
- - Add Farenheight conversion to gauges ([#137](https://github.com/kizniche/mycodo/issues/137))
+ - Add Fahrenheit conversion to gauges ([#137](https://github.com/kizniche/mycodo/issues/137))
 
 ### Bugfixes
 
