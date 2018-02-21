@@ -8,6 +8,7 @@
 </div>
 
 <div id="container-output-{{chart_number}}" style="height: {{each_graph.height}}px; text-align: center">
+
   <span style="font-size: {{each_graph.font_em_value}}em" id="value-{{chart_number}}"></span>
   <br/><span style="font-size: {{each_graph.font_em_timestamp}}em">
   {%- for each_input in input -%}
@@ -15,14 +16,14 @@
       {%- if not each_input.adc_measure -%}
         {{measurement_units[each_graph.sensor_ids_measurements.split(',')[1]]['name']|safe}} ({{measurement_units[each_graph.sensor_ids_measurements.split(',')[1]]['unit']|safe}})
       {%- else -%}
-        {{each_input.adc_measure|safe}} {{each_input.adc_measure_units|safe}}
+        {{each_input.adc_measure|safe}} ({{each_input.adc_measure_units|safe}})
       {% endif %}
     {%- endif -%}
   {%- endfor -%}
 
   {%- for each_math in math -%}
     {%- if each_math.unique_id == each_graph.sensor_ids_measurements.split(',')[0] %}
-      {{each_math.measure|safe}} ({{each_math.measure_units|safe}})
+      {{dict_measurements[each_graph.sensor_ids_measurements.split(',')[1]]['name']|safe}} ({{each_math.measure_units|safe}})
     {%- endif -%}
   {%- endfor -%}
 

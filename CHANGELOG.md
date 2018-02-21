@@ -10,6 +10,7 @@
 ### Bugfixes
 
  - Allow disabled pigpiod to persist after upgrades ([#386](https://github.com/kizniche/mycodo/issues/386))
+ - Fix display of Math measurement/units of Measurement Dashboard element
 
 
 ## 5.5.22 (2018-02-19)
