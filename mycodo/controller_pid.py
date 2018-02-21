@@ -142,6 +142,8 @@ class PIDController(threading.Thread):
         self.raise_output_type = None
         self.lower_output_type = None
 
+        self.first_start = True
+
         self.initialize_values()
 
         self.timer = t.time() + self.period
@@ -390,6 +392,11 @@ class PIDController(threading.Thread):
         #         self.integrator = -self.period / self.Ki
 
         self.I_value = self.integrator * self.Ki
+
+        # Prevent large initial D-value
+        if self.first_start:
+            self.derivator = self.error
+            self.first_start = False
 
         # Calculate D-value
         self.D_value = self.Kd * (self.error - self.derivator)
