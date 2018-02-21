@@ -7,6 +7,10 @@
  - Add units to PID Dashboard element ([#346](https://github.com/kizniche/mycodo/issues/346))
  - Add Farenheight conversion to gauges ([#137](https://github.com/kizniche/mycodo/issues/137))
 
+### Bugfixes
+
+ - Allow disabled pigpiod to persist after upgrades ([#386](https://github.com/kizniche/mycodo/issues/386))
+
 
 ## 5.5.22 (2018-02-19)
 

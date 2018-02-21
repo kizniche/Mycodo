@@ -364,7 +364,11 @@ def settings_pi_mod(form):
 
             # Don't install pigpiod (user selected disable)
             elif form.pigpiod_sample_rate.data == 999:
-                pass
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper enable_pigpiod_disabled" \
+                      " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
+                    pth=INSTALL_DIRECTORY)
+                p5 = subprocess.Popen(cmd, shell=True)
+                p5.wait()
 
             # Start the Mycodo daemon
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper daemon_start" \

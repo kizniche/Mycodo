@@ -188,6 +188,7 @@ case "${1:-''}" in
         rm -rf /etc/systemd/system/pigpiod_low.service
         systemctl disable pigpiod_high.service
         rm -rf /etc/systemd/system/pigpiod_high.service
+        rm -rf /etc/systemd/system/pigpiod_disabled.service
     ;;
     'enable-pigpiod-low')
         printf "\n#### Enabling pigpiod startup script (1 ms sample rate)\n"
@@ -199,6 +200,10 @@ case "${1:-''}" in
         systemctl enable ${MYCODO_PATH}/install/pigpiod_high.service
         service pigpiod restart
     ;;
+    'enable-pigpiod-disabled')
+        printf "\n#### pigpiod has been disabled. It can be enabled in the web UI configuration\n"
+        touch /etc/systemd/system/pigpiod_disabled.service
+    ;;
     'update-pigpiod')
         printf "\n#### Checking which pigpiod startup script is being used\n"
         GPIOD_SAMPLE_RATE=99
@@ -206,16 +211,18 @@ case "${1:-''}" in
             GPIOD_SAMPLE_RATE=1
         elif [ -e /etc/systemd/system/pigpiod_high.service ]; then
             GPIOD_SAMPLE_RATE=5
+        elif [ -e /etc/systemd/system/pigpiod_disabled.service ]; then
+            GPIOD_SAMPLE_RATE=100
         fi
 
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh disable-pigpiod
 
-        if [ "$GPIOD_SAMPLE_RATE" -ne "99" ]; then
-            if [ "$GPIOD_SAMPLE_RATE" -eq "1" ]; then
-               /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-low
-            elif [ "$GPIOD_SAMPLE_RATE" -eq "5" ]; then
-               /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-high
-            fi
+        if [ "$GPIOD_SAMPLE_RATE" -eq "1" ]; then
+            /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-low
+        elif [ "$GPIOD_SAMPLE_RATE" -eq "5" ]; then
+            /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-high
+        elif [ "$GPIOD_SAMPLE_RATE" -eq "100" ]; then
+            /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-disabled
         else
             printf "#### Could not determine pgiod sample rate. Setting up pigpiod with 1 ms sample rate\n"
             /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-low
