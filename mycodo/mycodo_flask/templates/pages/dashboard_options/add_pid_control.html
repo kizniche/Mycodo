@@ -13,7 +13,7 @@
       <div>
         <select class="form-control" id="width" name="width">
           {% for n in range(1, 13) %}
-            <option value="{{n}}"{% if n == 3 %} selected{% endif %}>{{n}}/12</option>
+            <option value="{{n}}"{% if n == 4 %} selected{% endif %}>{{n}}/12</option>
           {% endfor %}
         </select>
       </div>
@@ -45,7 +45,7 @@
     <div class="form-group">
       {{form_pid.font_em_timestamp.label(class_='control-label')}}
       <div>
-        {{form_pid.font_em_timestamp(class_='form-control', value=0.9)}}
+        {{form_pid.font_em_timestamp(class_='form-control', value=1)}}
       </div>
     </div>
     <div class="form-group">

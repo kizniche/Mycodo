@@ -48,6 +48,16 @@
 
 <div class="collapse" id="collapseContainer_output{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
 
+  {% if not each_graph.enable_pid_info %}
+  <div class="clearfix" style="padding-top: 0.7em">
+    <div class="col-xs-12 small-gutters" style="text-align: center">
+    {% for each_pid in pid if each_pid.unique_id == each_graph.pid_ids %}
+    (P: <span id="pid_p_value-{{chart_number}}"></span>) + (I: <span id="pid_i_value-{{chart_number}}"></span>) + (D: <span id="pid_d_value-{{chart_number}}"></span>) = Out: <span id="pid_output-{{chart_number}}"></span>
+    {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
   <form method="post" action="/dashboard">
     {{form_base.csrf_token}}
     {{form_base.dashboard_id(value=each_graph.id)}}

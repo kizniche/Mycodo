@@ -1054,6 +1054,7 @@ Refresh (seconds) | The duration between acquisitions of new data to display on 
 Max Age (seconds) | The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.
 Value Font Size (em) | The font size of the measurement value in em.
 Timestamp Font Size (em) | The font size of the timestamp value in em.
+Decimal Places | The number of digits to display to the right of the decimal.
 Measurement | The device to display information about.
 
 ### Output
@@ -1064,6 +1065,7 @@ Refresh (seconds) | The duration between acquisitions of new data to display on 
 Max Age (seconds) | The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.
 Value Font Size (em) | The font size of the output value in em.
 Timestamp Font Size (em) | The font size of the timestamp value in em.
+Decimal Places | The number of digits to display to the right of the decimal.
 Feature Output Controls | Display buttons to turn On and Off the relay from the dashboard element.
 Output | The output to display information about.
 
@@ -1075,6 +1077,8 @@ Refresh (seconds) | The duration between acquisitions of new data to display on 
 Max Age (seconds) | The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.
 Value Font Size (em) | The font size of the measurement value in em.
 Timestamp Font Size (em) | The font size of the timestamp value in em.
+Decimal Places | The number of digits to display to the right of the decimal.
+Show PID Information | Show extra PID information on the dashboard element.
 PID | The PID to display information about.
 
 

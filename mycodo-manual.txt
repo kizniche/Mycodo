@@ -1899,6 +1899,9 @@ Measurement
   Timestamp Font Size   The font size of the timestamp value in em.
   (em)                  
 
+  Decimal Places        The number of digits to display to the right of
+                        the decimal.
+
   Measurement           The device to display information about.
   ---------------------------------------------------------------------
 
@@ -1918,6 +1921,9 @@ Output
 
   Timestamp Font Size   The font size of the timestamp value in em.
   (em)                  
+
+  Decimal Places        The number of digits to display to the right of
+                        the decimal.
 
   Feature Output        Display buttons to turn On and Off the relay
   Controls              from the dashboard element.
@@ -1941,6 +1947,12 @@ PID Control
 
   Timestamp Font Size   The font size of the timestamp value in em.
   (em)                  
+
+  Decimal Places        The number of digits to display to the right of
+                        the decimal.
+
+  Show PID Information  Show extra PID information on the dashboard
+                        element.
 
   PID                   The PID to display information about.
   ---------------------------------------------------------------------
