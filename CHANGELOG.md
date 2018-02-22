@@ -12,6 +12,7 @@
  - Allow disabled pigpiod to persist after upgrades ([#386](https://github.com/kizniche/mycodo/issues/386))
  - Fix display of Math measurement/units of Measurement Dashboard element
  - Prevent a large D-value the the first cycle after a PID is activated
+ - Handle TypeErrors for Humidity Math controller
 
 
 ## 5.5.22 (2018-02-19)

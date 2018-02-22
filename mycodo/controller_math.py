@@ -276,9 +276,12 @@ class MathController(threading.Thread):
                             dbt_kelvin = celsius_to_kelvin(float(dry_bulb_t[1]))
                             wbt_kelvin = celsius_to_kelvin(float(wet_bulb_t[1]))
 
-                            psypi = SI.state("DBT", dbt_kelvin,
-                                             "WBT", wbt_kelvin,
-                                             pressure_pa)
+                            try:
+                                psypi = SI.state("DBT", dbt_kelvin,
+                                                 "WBT", wbt_kelvin,
+                                                 pressure_pa)
+                            except TypeError as err:
+                                self.logger.error("TypeError: {msg}".format(msg=err))
 
                             percent_relative_humidity = psypi[2] * 100
 
