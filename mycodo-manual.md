@@ -251,7 +251,7 @@ Math controllers allow one or more Inputs to have math applied to produce a new 
 Type | Description
 --------- | ----------------------------------------------
 Average (Multiple Measurements) | Stores the statistical mean of multiple selected measurements.
-Average (Multiple Measurements) | Stores the statistical mean of one selected measurement over a duration of time determined by the Max Age (seconds) option.
+Average (Single Measurement) | Stores the statistical mean of one selected measurement over a duration of time determined by the Max Age (seconds) option.
 Difference | Stores the mathematical difference (value_1 - value_2).
 Equation | Stores the calculated value of an equation.
 Median | Stores the statistical median from the selected measurements.
