@@ -111,6 +111,7 @@ def math_mod(form_mod_math, form_mod_type=None):
 
         # Set measurement and units
         if mod_math.math_type in ['average',
+                                  'average_single',
                                   'difference',
                                   'equation',
                                   'median',
@@ -119,6 +120,9 @@ def math_mod(form_mod_math, form_mod_type=None):
                                   'verification']:
             mod_math.measure = form_mod_math.measure.data
             mod_math.measure_units = form_mod_math.measure_units.data
+
+        if mod_math.math_type == 'average_single':
+            mod_math.inputs = form_mod_type.average_input.data
 
         if mod_math.math_type == 'difference':
             if len(form_mod_math.inputs.data) != 2:

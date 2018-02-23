@@ -38,7 +38,9 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measure_influxdb
 from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.influx import read_past_influxdb
 from mycodo.utils.system_pi import celsius_to_kelvin
+from mycodo.config import MEASUREMENT_INTEGERS
 
 
 class Measurement:
@@ -145,7 +147,6 @@ class MathController(threading.Thread):
 
                 if self.is_activated and time.time() > self.timer:
 
-                    # If PID is active, retrieve input measurement and update PID output
                     if self.math_type == 'average':
                         success, measure = self.get_measurements_from_str(self.inputs)
                         if success:
@@ -159,6 +160,37 @@ class MathController(threading.Thread):
                             self.logger.error(measure)
                         else:
                             self.error_not_within_max_age()
+
+                    elif self.math_type == 'average_single':
+                        device_id = self.inputs.split(',')[0]
+                        measurement = self.inputs.split(',')[1]
+                        try:
+                            last_measurements = read_past_influxdb(
+                                device_id,
+                                measurement,
+                                self.max_measure_age)
+
+                            if last_measurements:
+                                measure_list = []
+                                for each_set in last_measurements:
+                                    if len(each_set) == 2:
+                                        measure_list.append(each_set[1])
+                                average = sum(measure_list) / float(len(measure_list))
+
+                                if self.measure in MEASUREMENT_INTEGERS:
+                                    measure_dict = {
+                                        self.measure: int(average)
+                                    }
+                                else:
+                                    measure_dict = {
+                                        self.measure: float('{0:.4f}'.format(average))
+                                    }
+                                self.measurements = Measurement(measure_dict)
+                                add_measure_influxdb(self.unique_id, self.measurements)
+                            else:
+                                self.error_not_within_max_age()
+                        except Exception as msg:
+                            self.logger.error("average_single Error: {err}".format(err=msg))
 
                     elif self.math_type == 'difference':
                         success, measure = self.get_measurements_from_str(self.inputs)

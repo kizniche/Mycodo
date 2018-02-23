@@ -112,6 +112,18 @@ def query_string(measurement, unique_id, value=None,
     return query
 
 
+def read_past_influxdb(device_id, measurement, past_seconds):
+    client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
+                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE)
+    query_str = query_string(
+        measurement, device_id, past_sec=past_seconds)
+    if query_str == 1:
+        return '', 204
+    raw_data = client.query(query_str).raw
+    if raw_data:
+        return raw_data['series'][0]['values']
+
+
 def read_last_influxdb(device_id, measure_type, duration_sec=None):
     """
     Query Influxdb for the last entry.

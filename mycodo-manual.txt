@@ -486,31 +486,38 @@ produce a new value that may be used within Mycodo.
   ----------------------------------------------------------
   Type       Description
   ---------- -----------------------------------------------
-  Average    Stores the statistical mean of the selected
-             Inputs
+  Average    Stores the statistical mean of multiple
+  (Multiple  selected measurements.
+  Measuremen 
+  ts)        
+
+  Average    Stores the statistical mean of one selected
+  (Multiple  measurement over a duration of time determined
+  Measuremen by the Max Age (seconds) option.
+  ts)        
 
   Difference Stores the mathematical difference (value_1 -
-             value_2)
+             value_2).
 
-  Equation   Stores the calculated value of an equation
+  Equation   Stores the calculated value of an equation.
 
   Median     Stores the statistical median from the selected
-             Inputs
+             measurements.
 
   Maximum    Stores the largest measurement from the
-             selected Inputs
+             selected measurements.
 
   Minimum    Stores the smallest measurement from the
-             selected Inputs
+             selected measurements.
 
   Humidity   Calculates and stores the percent relative
              humidity from the dry-bulb and wet-bulb
-             temperatures, and optional pressure
+             temperatures, and optional pressure.
 
   Verificati Ensures the greatest difference between any
   on         selected Inputs is less than Max Difference,
              and if so, stores the average of the selected
-             Inputs
+             measurements.
   ----------------------------------------------------------
 
   ---------------------------------------------------------------------

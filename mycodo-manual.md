@@ -250,14 +250,15 @@ Math controllers allow one or more Inputs to have math applied to produce a new 
 
 Type | Description
 --------- | ----------------------------------------------
-Average | Stores the statistical mean of the selected Inputs
-Difference | Stores the mathematical difference (value_1 - value_2)
-Equation | Stores the calculated value of an equation
-Median | Stores the statistical median from the selected Inputs
-Maximum | Stores the largest measurement from the selected Inputs
-Minimum | Stores the smallest measurement from the selected Inputs
-Humidity | Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure
-Verification | Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected Inputs
+Average (Multiple Measurements) | Stores the statistical mean of multiple selected measurements.
+Average (Multiple Measurements) | Stores the statistical mean of one selected measurement over a duration of time determined by the Max Age (seconds) option.
+Difference | Stores the mathematical difference (value_1 - value_2).
+Equation | Stores the calculated value of an equation.
+Median | Stores the statistical median from the selected measurements.
+Maximum | Stores the largest measurement from the selected measurements.
+Minimum | Stores the smallest measurement from the selected measurements.
+Humidity | Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure.
+Verification | Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected measurements.
 
 
 Setting | Description
