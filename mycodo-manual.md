@@ -1607,7 +1607,9 @@ Analog to Digital Converters
 #### Specifications
 
  - Interface: SPI
- - 8 channels of 10-bit analog inputs
+ - 8 channels
+ - 10-bit resolution
+ - 0 - 3.3 volt measurements
 
 ### MCP342x
 
