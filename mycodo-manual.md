@@ -111,6 +111,7 @@ Table of Contents
 [Analog to Digital Converters](#analog-to-digital-converters)
 
    - [ADS1x15](#ads1x15)
+   - [MCP3008](#mcp3008)
    - [MCP342x](#mcp342x)
 
 [Diagrams](#diagrams)
