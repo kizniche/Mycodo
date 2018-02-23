@@ -12,10 +12,10 @@
       {% if choices_input or choices_math %}
         <option value=""></option>
         {% for each_choice, value in choices_input.items() -%}
-        <option value="{{each_choice}}"{%- if each_math.average_input and each_choice|string in each_math.average_input %} selected{%- endif -%}>{{value}}</option>
+        <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
         {% endfor -%}
         {% for each_choice, value in choices_math.items() -%}
-        <option value="{{each_choice}}"{%- if each_math.average_input and each_choice|string in each_math.average_input %} selected{%- endif -%}>{{value}}</option>
+        <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
         {% endfor -%}
       {% else %}
         <option value="">{{_('None Available')}}</option>
