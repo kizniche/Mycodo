@@ -46,6 +46,14 @@ class InputMod(FlaskForm):
     cmd_command = StringField(lazy_gettext('Command'))
     cmd_measurement = StringField(lazy_gettext('Measurement'))
     cmd_measurement_units = StringField(lazy_gettext('Unit'))
+
+    # SPI Communication
+    pin_clock = IntegerField(lazy_gettext('Clock Pin'))
+    pin_cs = IntegerField(lazy_gettext('CS Pin'))
+    pin_mosi = IntegerField(lazy_gettext('MOSI Pin'))
+    pin_miso = IntegerField(lazy_gettext('MISO Pin'))
+
+    # ADC
     adc_channel = IntegerField(lazy_gettext('Channel'))
     adc_gain = IntegerField(lazy_gettext('Gain'))
     adc_resolution = IntegerField(lazy_gettext('Resolution'))
@@ -56,6 +64,7 @@ class InputMod(FlaskForm):
     adc_units_min = DecimalField(lazy_gettext('Units Min'))
     adc_units_max = DecimalField(lazy_gettext('Units Max'))
     adc_inverse_unit_scale = BooleanField(lazy_gettext('Inverse Unit Scale'))
+
     switch_edge = StringField(lazy_gettext('Edge'))
     switch_bounce_time = IntegerField(lazy_gettext('Bounce Time (ms)'))
     switch_reset_period = IntegerField(lazy_gettext('Reset Period'))

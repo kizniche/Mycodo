@@ -10,7 +10,7 @@ import os
 from flask_babel import lazy_gettext
 
 MYCODO_VERSION = '5.5.23'
-ALEMBIC_VERSION = '1031452acfc9'
+ALEMBIC_VERSION = 'ba31c9ef6eab'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -48,6 +48,7 @@ MEASUREMENTS = {
     'MH_Z16_I2C': ['co2'],
     'MH_Z16_UART': ['co2'],
     'MH_Z19_UART': ['co2'],
+    'MCP3008': ['voltage'],
     'MCP342x': ['voltage'],
     'RPi': ['temperature'],
     'RPiCPULoad': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m'],
@@ -194,6 +195,7 @@ INPUTS = [
     ('SERVER_PING', 'Server Ping'),
     ('SERVER_PORT_OPEN', 'Server Port Open'),
     ('ADS1x15', 'Analog-to-Digital Converter: ADS1x15'),
+    ('MCP3008', 'Analog-to-Digital Converter: MCP3008'),
     ('MCP342x', 'Analog-to-Digital Converter: MCP342x'),
     ('K30_UART', 'CO2: K30 (UART)'),
     ('MH_Z16_I2C', 'CO2: MH-Z16 (I2C)'),

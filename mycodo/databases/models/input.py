@@ -28,6 +28,12 @@ class Input(CRUDMixin, db.Model):
     resolution = db.Column(db.Integer, default=0)
     sensitivity = db.Column(db.Integer, default=0)
 
+    # Communication (SPI)
+    pin_clock = db.Column(db.Integer, default=None)
+    pin_cs = db.Column(db.Integer, default=None)
+    pin_mosi = db.Column(db.Integer, default=None)
+    pin_miso = db.Column(db.Integer, default=None)
+
     # Multiplexer options
     multiplexer_address = db.Column(db.Text, default=None)
     multiplexer_bus = db.Column(db.Integer, default=1)

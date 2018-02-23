@@ -33,16 +33,16 @@ logger = logging.getLogger(__name__)
 # Input manipulation
 #
 
-def input_add(form_add_sensor):
+def input_add(form_add):
     action = '{action} {controller}'.format(
         action=gettext("Add"),
         controller=gettext("Input"))
     error = []
 
-    if form_add_sensor.validate():
+    if form_add.validate():
         new_sensor = Input()
-        new_sensor.device = form_add_sensor.input_type.data
-        new_sensor.name = '{name} Input'.format(name=form_add_sensor.input_type.data)
+        new_sensor.device = form_add.input_type.data
+        new_sensor.name = '{name} Input'.format(name=form_add.input_type.data)
         if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
             new_sensor.i2c_bus = 1
             new_sensor.multiplexer_bus = 1
@@ -51,54 +51,54 @@ def input_add(form_add_sensor):
             new_sensor.multiplexer_bus = 0
 
         # Linux command as sensor
-        if form_add_sensor.input_type.data == 'LinuxCommand':
+        if form_add.input_type.data == 'LinuxCommand':
             new_sensor.cmd_command = 'shuf -i 50-70 -n 1'
             new_sensor.cmd_measurement = 'Condition'
             new_sensor.cmd_measurement_units = 'unit'
 
         # Server is up or down
-        elif form_add_sensor.input_type.data in ['SERVER_PING',
+        elif form_add.input_type.data in ['SERVER_PING',
                                                  'SERVER_PORT_OPEN']:
             new_sensor.measurements = 'boolean'
             new_sensor.location = '127.0.0.1'
             new_sensor.period = 3600
 
         # Process monitors
-        elif form_add_sensor.input_type.data == 'MYCODO_RAM':
+        elif form_add.input_type.data == 'MYCODO_RAM':
             new_sensor.measurements = 'disk_space'
             new_sensor.location = 'Mycodo_daemon'
-        elif form_add_sensor.input_type.data == 'RPi':
+        elif form_add.input_type.data == 'RPi':
             new_sensor.measurements = 'temperature'
             new_sensor.location = 'RPi'
-        elif form_add_sensor.input_type.data == 'RPiCPULoad':
+        elif form_add.input_type.data == 'RPiCPULoad':
             new_sensor.measurements = 'cpu_load_1m,' \
                                       'cpu_load_5m,' \
                                       'cpu_load_15m'
             new_sensor.location = 'RPi'
-        elif form_add_sensor.input_type.data == 'RPiFreeSpace':
+        elif form_add.input_type.data == 'RPiFreeSpace':
             new_sensor.measurements = 'disk_space'
             new_sensor.location = '/'
-        elif form_add_sensor.input_type.data == 'EDGE':
+        elif form_add.input_type.data == 'EDGE':
             new_sensor.measurements = 'edge'
-        elif form_add_sensor.input_type.data == 'GPIO_STATE':
+        elif form_add.input_type.data == 'GPIO_STATE':
             new_sensor.measurements = 'gpio_state'
 
         # Signal measuremnt (PWM and RPM)
-        elif form_add_sensor.input_type.data == 'SIGNAL_PWM':
+        elif form_add.input_type.data == 'SIGNAL_PWM':
             new_sensor.measurements = 'frequency,pulse_width,duty_cycle'
-        elif form_add_sensor.input_type.data == 'SIGNAL_RPM':
+        elif form_add.input_type.data == 'SIGNAL_RPM':
             new_sensor.measurements = 'rpm'
 
         # Environmental Inputs
         # Temperature
-        elif form_add_sensor.input_type.data in ['ATLAS_PT1000_I2C',
+        elif form_add.input_type.data in ['ATLAS_PT1000_I2C',
                                                  'ATLAS_PT1000_UART',
                                                  'DS18B20', 'TMP006']:
             new_sensor.measurements = 'temperature'
-            if form_add_sensor.input_type.data == 'ATLAS_PT1000_I2C':
+            if form_add.input_type.data == 'ATLAS_PT1000_I2C':
                 new_sensor.interface = 'I2C'
                 new_sensor.location = '0x66'
-            elif form_add_sensor.input_type.data == 'ATLAS_PT1000_UART':
+            elif form_add.input_type.data == 'ATLAS_PT1000_UART':
                 new_sensor.location = 'Tx/Rx'
                 new_sensor.interface = 'UART'
                 new_sensor.baud_rate = 9600
@@ -106,34 +106,34 @@ def input_add(form_add_sensor):
                     new_sensor.device_loc = "/dev/ttyS0"
                 else:
                     new_sensor.device_loc = "/dev/ttyAMA0"
-            elif form_add_sensor.input_type.data == 'TMP006':
+            elif form_add.input_type.data == 'TMP006':
                 new_sensor.measurements = 'temperature_object,' \
                                           'temperature_die'
                 new_sensor.location = '0x40'
 
         # Temperature/Humidity
-        elif form_add_sensor.input_type.data in ['AM2315', 'DHT11',
+        elif form_add.input_type.data in ['AM2315', 'DHT11',
                                                  'DHT22', 'HTU21D',
                                                  'SHT1x_7x', 'SHT2x']:
             new_sensor.measurements = 'temperature,humidity,dewpoint'
-            if form_add_sensor.input_type.data == 'AM2315':
+            if form_add.input_type.data == 'AM2315':
                 new_sensor.location = '0x5c'
-            elif form_add_sensor.input_type.data == 'HTU21D':
+            elif form_add.input_type.data == 'HTU21D':
                 new_sensor.location = '0x40'
-            elif form_add_sensor.input_type.data == 'SHT2x':
+            elif form_add.input_type.data == 'SHT2x':
                 new_sensor.location = '0x40'
 
         # Chirp moisture sensor
-        elif form_add_sensor.input_type.data == 'CHIRP':
+        elif form_add.input_type.data == 'CHIRP':
             new_sensor.measurements = 'lux,moisture,temperature'
             new_sensor.location = '0x20'
 
         # CO2
-        elif form_add_sensor.input_type.data == 'MH_Z16_I2C':
+        elif form_add.input_type.data == 'MH_Z16_I2C':
             new_sensor.measurements = 'co2'
             new_sensor.location = '0x63'
             new_sensor.interface = 'I2C'
-        elif form_add_sensor.input_type.data in ['K30_UART',
+        elif form_add.input_type.data in ['K30_UART',
                                                  'MH_Z16_UART',
                                                  'MH_Z19_UART']:
             new_sensor.measurements = 'co2'
@@ -146,11 +146,11 @@ def input_add(form_add_sensor):
                 new_sensor.device_loc = "/dev/ttyAMA0"
 
         # pH
-        elif form_add_sensor.input_type.data == 'ATLAS_PH_I2C':
+        elif form_add.input_type.data == 'ATLAS_PH_I2C':
             new_sensor.measurements = 'ph'
             new_sensor.location = '0x63'
             new_sensor.interface = 'I2C'
-        elif form_add_sensor.input_type.data == 'ATLAS_PH_UART':
+        elif form_add.input_type.data == 'ATLAS_PH_UART':
             new_sensor.measurements = 'ph'
             new_sensor.location = 'Tx/Rx'
             new_sensor.interface = 'UART'
@@ -161,42 +161,51 @@ def input_add(form_add_sensor):
                 new_sensor.device_loc = "/dev/ttyAMA0"
 
         # Pressure
-        elif form_add_sensor.input_type.data in ['BME280',
+        elif form_add.input_type.data in ['BME280',
                                                  'BMP180',
                                                  'BMP280']:
-            if form_add_sensor.input_type.data == 'BME280':
+            if form_add.input_type.data == 'BME280':
                 new_sensor.measurements = 'temperature,humidity,' \
                                           'dewpoint,pressure,altitude'
                 new_sensor.location = '0x76'
-            elif form_add_sensor.input_type.data in ['BMP180', 'BMP280']:
+            elif form_add.input_type.data in ['BMP180', 'BMP280']:
                 new_sensor.measurements = 'temperature,pressure,altitude'
                 new_sensor.location = '0x77'
 
         # Light
-        elif form_add_sensor.input_type.data in ['BH1750',
+        elif form_add.input_type.data in ['BH1750',
                                                  'TSL2561',
                                                  'TSL2591']:
             new_sensor.measurements = 'lux'
-            if form_add_sensor.input_type.data == 'BH1750':
+            if form_add.input_type.data == 'BH1750':
                 new_sensor.location = '0x23'
                 new_sensor.resolution = 0  # 0=Low, 1=High, 2=High2
                 new_sensor.sensitivity = 69
-            elif form_add_sensor.input_type.data == 'TSL2561':
+            elif form_add.input_type.data == 'TSL2561':
                 new_sensor.location = '0x39'
-            elif form_add_sensor.input_type.data == 'TSL2591':
+            elif form_add.input_type.data == 'TSL2591':
                 new_sensor.location = '0x29'
 
         # Analog to Digital Converters
-        elif form_add_sensor.input_type.data in ['ADS1x15', 'MCP342x']:
+        elif form_add.input_type.data in ['ADS1x15',
+                                                 'MCP342x',
+                                                 'MCP3008']:
             new_sensor.measurements = 'voltage'
-            if form_add_sensor.input_type.data == 'ADS1x15':
+            if form_add.input_type.data == 'ADS1x15':
                 new_sensor.location = '0x48'
                 new_sensor.adc_volts_min = -4.096
                 new_sensor.adc_volts_max = 4.096
-            elif form_add_sensor.input_type.data == 'MCP342x':
+            elif form_add.input_type.data == 'MCP342x':
                 new_sensor.location = '0x68'
                 new_sensor.adc_volts_min = -2.048
                 new_sensor.adc_volts_max = 2.048
+            elif form_add.input_type.data == 'MCP3008':
+                new_sensor.pin_clock = 18
+                new_sensor.pin_cs = 25
+                new_sensor.pin_mosi = 24
+                new_sensor.pin_miso = 23
+                new_sensor.adc_volts_min = 0
+                new_sensor.adc_volts_max = 3.3
 
         try:
             new_sensor.save()
@@ -209,7 +218,7 @@ def input_add(form_add_sensor):
 
             flash(gettext(
                 "%(type)s Input with ID %(id)s (%(uuid)s) successfully added",
-                type=form_add_sensor.input_type.data,
+                type=form_add.input_type.data,
                 id=new_sensor.id,
                 uuid=new_sensor.unique_id),
                   "success")
@@ -219,10 +228,10 @@ def input_add(form_add_sensor):
             error.append(except_msg)
         flash_success_errors(error, action, url_for('routes_page.page_data'))
     else:
-        flash_form_errors(form_add_sensor)
+        flash_form_errors(form_add)
 
 
-def input_mod(form_mod_sensor):
+def input_mod(form_mod):
     action = '{action} {controller}'.format(
         action=gettext("Modify"),
         controller=gettext("Input"))
@@ -230,86 +239,90 @@ def input_mod(form_mod_sensor):
 
     try:
         mod_sensor = Input.query.filter(
-            Input.id == form_mod_sensor.input_id.data).first()
+            Input.id == form_mod.input_id.data).first()
 
         if mod_sensor.is_activated:
             error.append(gettext(
                 "Deactivate sensor controller before modifying its "
                 "settings"))
         if (mod_sensor.device == 'AM2315' and
-                form_mod_sensor.period.data < 7):
+                form_mod.period.data < 7):
             error.append(gettext(
                 "Choose a Read Period equal to or greater than 7. The "
                 "AM2315 may become unresponsive if the period is "
                 "below 7."))
         if (mod_sensor.device != 'EDGE' and
                 (mod_sensor.pre_relay_duration and
-                 form_mod_sensor.period.data < mod_sensor.pre_relay_duration)):
+                 form_mod.period.data < mod_sensor.pre_relay_duration)):
             error.append(gettext(
                 "The Read Period cannot be less than the Pre Output "
                 "Duration"))
-        if (form_mod_sensor.device_loc.data and
-                not os.path.exists(form_mod_sensor.device_loc.data)):
+        if (form_mod.device_loc.data and
+                not os.path.exists(form_mod.device_loc.data)):
             error.append(gettext(
                 "Invalid device or improper permissions to read device"))
 
         if not error:
-            mod_sensor.name = form_mod_sensor.name.data
-            mod_sensor.i2c_bus = form_mod_sensor.i2c_bus.data
-            if form_mod_sensor.location.data:
-                mod_sensor.location = form_mod_sensor.location.data
-            if form_mod_sensor.power_relay_id.data:
-                mod_sensor.power_relay_id = form_mod_sensor.power_relay_id.data
+            mod_sensor.name = form_mod.name.data
+            mod_sensor.i2c_bus = form_mod.i2c_bus.data
+            if form_mod.location.data:
+                mod_sensor.location = form_mod.location.data
+            if form_mod.power_relay_id.data:
+                mod_sensor.power_relay_id = form_mod.power_relay_id.data
             else:
                 mod_sensor.power_relay_id = None
-            if form_mod_sensor.baud_rate.data:
-                mod_sensor.baud_rate = form_mod_sensor.baud_rate.data
-            if form_mod_sensor.device_loc.data:
-                mod_sensor.device_loc = form_mod_sensor.device_loc.data
-            if form_mod_sensor.pre_relay_id.data:
-                mod_sensor.pre_relay_id = form_mod_sensor.pre_relay_id.data
+            if form_mod.baud_rate.data:
+                mod_sensor.baud_rate = form_mod.baud_rate.data
+            if form_mod.device_loc.data:
+                mod_sensor.device_loc = form_mod.device_loc.data
+            if form_mod.pre_relay_id.data:
+                mod_sensor.pre_relay_id = form_mod.pre_relay_id.data
             else:
                 mod_sensor.pre_relay_id = None
-            mod_sensor.pre_relay_duration = form_mod_sensor.pre_relay_duration.data
-            mod_sensor.period = form_mod_sensor.period.data
-            mod_sensor.resolution = form_mod_sensor.resolution.data
-            mod_sensor.sensitivity = form_mod_sensor.sensitivity.data
-            mod_sensor.calibrate_sensor_measure = form_mod_sensor.calibrate_sensor_measure.data
-            mod_sensor.cmd_command = form_mod_sensor.cmd_command.data
-            mod_sensor.cmd_measurement = form_mod_sensor.cmd_measurement.data
-            mod_sensor.cmd_measurement_units = form_mod_sensor.cmd_measurement_units.data
+            mod_sensor.pre_relay_duration = form_mod.pre_relay_duration.data
+            mod_sensor.period = form_mod.period.data
+            mod_sensor.resolution = form_mod.resolution.data
+            mod_sensor.sensitivity = form_mod.sensitivity.data
+            mod_sensor.calibrate_sensor_measure = form_mod.calibrate_sensor_measure.data
+            mod_sensor.cmd_command = form_mod.cmd_command.data
+            mod_sensor.cmd_measurement = form_mod.cmd_measurement.data
+            mod_sensor.cmd_measurement_units = form_mod.cmd_measurement_units.data
             # Multiplexer options
-            mod_sensor.multiplexer_address = form_mod_sensor.multiplexer_address.data
-            mod_sensor.multiplexer_bus = form_mod_sensor.multiplexer_bus.data
-            mod_sensor.multiplexer_channel = form_mod_sensor.multiplexer_channel.data
+            mod_sensor.multiplexer_address = form_mod.multiplexer_address.data
+            mod_sensor.multiplexer_bus = form_mod.multiplexer_bus.data
+            mod_sensor.multiplexer_channel = form_mod.multiplexer_channel.data
             # ADC options
-            mod_sensor.adc_channel = form_mod_sensor.adc_channel.data
-            mod_sensor.adc_gain = form_mod_sensor.adc_gain.data
-            mod_sensor.adc_resolution = form_mod_sensor.adc_resolution.data
-            mod_sensor.adc_measure = form_mod_sensor.adc_measurement.data.replace(" ", "_")
-            mod_sensor.adc_measure_units = form_mod_sensor.adc_measurement_units.data
-            mod_sensor.adc_volts_min = form_mod_sensor.adc_volts_min.data
-            mod_sensor.adc_volts_max = form_mod_sensor.adc_volts_max.data
-            mod_sensor.adc_units_min = form_mod_sensor.adc_units_min.data
-            mod_sensor.adc_units_max = form_mod_sensor.adc_units_max.data
-            mod_sensor.adc_inverse_unit_scale = form_mod_sensor.adc_inverse_unit_scale.data
+            mod_sensor.pin_clock = form_mod.pin_clock.data
+            mod_sensor.pin_cs = form_mod.pin_cs.data
+            mod_sensor.pin_mosi = form_mod.pin_mosi.data
+            mod_sensor.pin_miso = form_mod.pin_miso.data
+            mod_sensor.adc_channel = form_mod.adc_channel.data
+            mod_sensor.adc_gain = form_mod.adc_gain.data
+            mod_sensor.adc_resolution = form_mod.adc_resolution.data
+            mod_sensor.adc_measure = form_mod.adc_measurement.data.replace(" ", "_")
+            mod_sensor.adc_measure_units = form_mod.adc_measurement_units.data
+            mod_sensor.adc_volts_min = form_mod.adc_volts_min.data
+            mod_sensor.adc_volts_max = form_mod.adc_volts_max.data
+            mod_sensor.adc_units_min = form_mod.adc_units_min.data
+            mod_sensor.adc_units_max = form_mod.adc_units_max.data
+            mod_sensor.adc_inverse_unit_scale = form_mod.adc_inverse_unit_scale.data
             # Switch options
-            mod_sensor.switch_edge = form_mod_sensor.switch_edge.data
-            mod_sensor.switch_bouncetime = form_mod_sensor.switch_bounce_time.data
-            mod_sensor.switch_reset_period = form_mod_sensor.switch_reset_period.data
+            mod_sensor.switch_edge = form_mod.switch_edge.data
+            mod_sensor.switch_bouncetime = form_mod.switch_bounce_time.data
+            mod_sensor.switch_reset_period = form_mod.switch_reset_period.data
             # PWM and RPM options
-            mod_sensor.weighting = form_mod_sensor.weighting.data
-            mod_sensor.rpm_pulses_per_rev = form_mod_sensor.rpm_pulses_per_rev.data
-            mod_sensor.sample_time = form_mod_sensor.sample_time.data
+            mod_sensor.weighting = form_mod.weighting.data
+            mod_sensor.rpm_pulses_per_rev = form_mod.rpm_pulses_per_rev.data
+            mod_sensor.sample_time = form_mod.sample_time.data
             # Server options
-            mod_sensor.port = form_mod_sensor.port.data
-            mod_sensor.times_check = form_mod_sensor.times_check.data
-            mod_sensor.deadline = form_mod_sensor.deadline.data
+            mod_sensor.port = form_mod.port.data
+            mod_sensor.times_check = form_mod.times_check.data
+            mod_sensor.deadline = form_mod.deadline.data
             # SHT sensor options
-            if form_mod_sensor.sht_clock_pin.data:
-                mod_sensor.sht_clock_pin = form_mod_sensor.sht_clock_pin.data
-            if form_mod_sensor.sht_voltage.data:
-                mod_sensor.sht_voltage = form_mod_sensor.sht_voltage.data
+            if form_mod.sht_clock_pin.data:
+                mod_sensor.sht_clock_pin = form_mod.sht_clock_pin.data
+            if form_mod.sht_voltage.data:
+                mod_sensor.sht_voltage = form_mod.sht_voltage.data
             db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
@@ -317,13 +330,13 @@ def input_mod(form_mod_sensor):
     flash_success_errors(error, action, url_for('routes_page.page_data'))
 
 
-def input_del(form_mod_sensor):
+def input_del(form_mod):
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
         controller=gettext("Input"))
     error = []
 
-    input_id = form_mod_sensor.input_id.data
+    input_id = form_mod.input_id.data
 
     try:
         input_dev = Input.query.filter(
@@ -365,8 +378,8 @@ def input_reorder(input_id, display_order, direction):
     flash_success_errors(error, action, url_for('routes_page.page_data'))
 
 
-def input_activate(form_mod_sensor):
-    input_id = form_mod_sensor.input_id.data
+def input_activate(form_mod):
+    input_id = form_mod.input_id.data
     input_dev = Input.query.filter(Input.id == input_id).first()
     if (input_dev.device != 'LinuxCommand' and
             not input_dev.location and
@@ -381,8 +394,8 @@ def input_activate(form_mod_sensor):
     controller_activate_deactivate('activate', 'Input',  input_id)
 
 
-def input_deactivate(form_mod_sensor):
-    input_id = form_mod_sensor.input_id.data
+def input_deactivate(form_mod):
+    input_id = form_mod.input_id.data
     input_deactivate_associated_controllers(input_id)
     controller_activate_deactivate('deactivate', 'Input', input_id)
 

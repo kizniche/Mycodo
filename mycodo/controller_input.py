@@ -38,6 +38,7 @@ from mycodo.databases.models import Input
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
 from mycodo.devices.ads1x15 import ADS1x15Read
+from mycodo.devices.mcp3008 import MCP3008Read
 from mycodo.devices.mcp342x import MCP342xRead
 from mycodo.devices.tca9548a import TCA9548A
 from mycodo.inputs.am2315 import AM2315Sensor

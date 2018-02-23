@@ -63,6 +63,7 @@ Table of Contents
    - [I<sup>2</sup>C](#i2c)
    - [Edge Detection](#edge-detection)
    - [I<sup>2</sup>C Multiplexers](#i2c-multiplexers)
+   - [Analog-to-digital Converters](#analog-to-digital-converters)
 
 [Device Specific Information](#device-specific-information)
 
@@ -232,6 +233,10 @@ Mx I<sup>2</sup>C Bus | If connected to the TCA9548A I<sup>2</sup>C multiplexer,
 Mx Channel | If connected to the TCA9548A I<sup>2</sup>C multiplexer, select the channel of the multiplexer the device is connected to.
 Measurement | Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if the resistance of a photocell is being measured through a voltage divider, this measurement would be "light".
 Units | Analog-to-digital converter only: This is the unit of the measurement. With the above example of "light" as the measurement, the unit may be "lux" or "intensity".
+Clock Pin | The GPIO (using BCM numbering) connected to the Clock pin of the ADC
+CS Pin | The GPIO (using BCM numbering) connected to the CS pin of the ADC
+MISO Pin | The GPIO (using BCM numbering) connected to the MISO pin of the ADC
+MOSI Pin | The GPIO (using BCM numbering) connected to the MOSI pin of the ADC
 Channel | Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.
 Gain | Analog-to-digital converter only: set the gain when acquiring the measurement.
 Volts Min | Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to "0.2".
@@ -1260,14 +1265,6 @@ I<sup>2</sup>C
 
 The I<sup>2</sup>C interface should be enabled with `raspi-config`.
 
-**Analog to Digital Converters**
-
-An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A [voltage divider](https://learn.sparkfun.com/tutorials/voltage-dividers) may be necessary to attain your desired range.
-
-> [ADS1x15](#ads1x15): Analog-to-digital converter [link](https://www.adafruit.com/product/1085)
-
-> [MCP342x](#mcp342x): Analog-to-digital converter [link](http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316))
-
 **Sensors**
 
 > [AM2315](#am2315): Relative humidity, temperature [link](https://github.com/lexruee/tentacle_pi)
@@ -1307,6 +1304,18 @@ All devices that connected to the Raspberry Pi by the I<sup>2</sup>C bus need to
 Note: The TCA9548A/PCA9548A can be set up in two ways. Either by A) connecting the multiplexer to an already-existing I<sup>2</sup>C bus and configuring each device manually in Mycodo, or B) (the easier and safer option) creating a dtoverlay to produce a new I<sup>2</sup>C bus device for each multiplexer channel. Method A can be used with the multiplexer options already existing in Mycodo, however option B benefits by allowing the linux driver to handle channel switching and being able to see every device on every bus at once in Mycodo's System Information page. To enable option B, visit [GPIO-pca9548](https://github.com/Theoi-Meteoroi/GPIO-pca9548) to get the code and latest install instructions. If successfully set up, there will be 8 new I<sup>2</sup>C busses on the ```Config -> System Information``` page.
 
 > TCA9545A: I<sup>2</sup>C Bus Multiplexer [link](http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/) (I<sup>2</sup>C): This board works a little differently than the TCA9548A, above. This board actually creates 4 new I<sup>2</sup>C busses, each with their own selectable voltage, either 3.3 or 5.0 volts. Instructions to enable the Device Tree Overlay are at [https://github.com/camrex/i2c-mux-pca9545a](https://github.com/camrex/i2c-mux-pca9545a). Nothing else needs to be done in Mycodo after that except to select the correct I<sup>2</sup>C bus when configuring a sensor.
+
+
+Analog-to-Digital Converters
+----------------------------
+
+An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A [voltage divider](https://learn.sparkfun.com/tutorials/voltage-dividers) may be necessary to attain your desired range.
+
+> [ADS1x15](#ads1x15): Analog-to-digital converter [link](https://www.adafruit.com/product/1085)
+
+> [MCP3008](#mcp3008): Analog-to-digital converter [link](https://www.adafruit.com/product/856)
+
+> [MCP342x](#mcp342x): Analog-to-digital converter [link](http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316))
 
 
 Device Specific Information
@@ -1592,6 +1601,13 @@ Analog to Digital Converters
  - Power: 2.0V to 5.5V
  - Sample Rate: 1015: 128SPS to 3.3kSPS, 1115: 8SPS to 860SPS
  - Resolution: 1015: 12-bit, 1115: 16-bit
+
+### MCP3008
+
+#### Specifications
+
+ - Interface: SPI
+ - 8 channels of 10-bit analog inputs
 
 ### MCP342x
 

@@ -1,3 +1,10 @@
+## 5.5.24 (Unreleased)
+
+### Features
+
+ - Add new Input: MCP3008 Analog-to-Digital Converter ([#409](https://github.com/kizniche/mycodo/issues/409))
+
+
 ## 5.5.23 (2018-02-23)
 
 ### Features

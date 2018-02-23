@@ -41,6 +41,7 @@ aosong  # Replaces tentacle_pi
 Adafruit_ADS1x15
 Adafruit_BMP
 Adafruit_GPIO
+Adafruit_MCP3008
 Adafruit_TMP
 MCP342x == 0.3.3
 picamera == 1.13
