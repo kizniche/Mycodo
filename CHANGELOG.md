@@ -6,6 +6,7 @@
  - Add option to show detailed PID information on Dashboard element ([#346](https://github.com/kizniche/mycodo/issues/346))
  - Add units to PID Dashboard element ([#346](https://github.com/kizniche/mycodo/issues/346))
  - Add Fahrenheit conversion to gauges ([#137](https://github.com/kizniche/mycodo/issues/137))
+ - Add new Math: Average (Single Measurement) ([#335](https://github.com/kizniche/mycodo/issues/335))
 
 ### Bugfixes
 

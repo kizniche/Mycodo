@@ -175,6 +175,11 @@ MEASUREMENT_UNITS = {
         'meas': 'voltage', 'unit': 'volts'}
 }
 
+# Measurements that must be stured in influxdb as an integer instead of a float
+MEASUREMENT_INTEGERS = [
+    'pressure'
+]
+
 # Inputs and description
 INPUTS = [
     ('RPi', 'Raspberry Pi: CPU Temperature'),
@@ -216,7 +221,8 @@ INPUTS = [
 ]
 
 MATHS = [
-    ('average', 'Average'),
+    ('average', 'Average (Multiple Measurements)'),
+    ('average_single', 'Average (Single Measurement)'),
     ('difference', 'Difference'),
     ('equation', 'Equation'),
     ('median', 'Median'),
