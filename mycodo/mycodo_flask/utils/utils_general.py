@@ -12,7 +12,7 @@ from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.config import ADC_DEVICES
+from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import MEASUREMENTS
 from mycodo.config import MEASUREMENT_UNITS
 from mycodo.config import PATH_CAMERAS
@@ -150,7 +150,7 @@ def choices_inputs(inputs):
                     meas=MEASUREMENT_UNITS[each_measurement]['name'])
                 choices.update({value: display})
             # Display custom converted units for ADCs
-            if each_input.device in ADC_DEVICES:
+            if each_input.device in LIST_DEVICES_ADC:
                 value = '{id},{meas}'.format(
                     id=each_input.unique_id,
                     meas=each_input.adc_measure)

@@ -64,13 +64,6 @@ MEASUREMENTS = {
     'TSL2591': ['lux']
 }
 
-# Analog-to-Digital Controllers
-ADC_DEVICES = [
-    'ADS1x15',
-    'MCP3008',
-    'MCP342x'
-]
-
 # Unit abbreviation for each measurement
 MEASUREMENT_UNITS = {
     'altitude': {
@@ -183,11 +176,6 @@ MEASUREMENT_UNITS = {
         'meas': 'voltage', 'unit': 'volts'}
 }
 
-# Measurements that must be stured in influxdb as an integer instead of a float
-MEASUREMENT_INTEGERS = [
-    'pressure'
-]
-
 # Inputs and description
 INPUTS = [
     ('RPi', 'Raspberry Pi: CPU Temperature'),
@@ -246,6 +234,11 @@ CALIBRATION_DEVICES = [
     ('calibration_atlas_ph', 'Atlas Scientific pH sensor')
 ]
 
+# Measurements that must be stured in influxdb as an integer instead of a float
+MEASUREMENT_INTEGERS = [
+    'pressure'
+]
+
 # Devices that have a default address that doesn't change
 # Used to determine whether or not to present the option to change address
 DEVICES_DEFAULT_LOCATION = [
@@ -259,6 +252,13 @@ DEVICES_DEFAULT_LOCATION = [
     'RPiCPULoad',
     'TSL2591',
     'mycodo_ram'
+]
+
+# Analog-to-Digital Controllers
+LIST_DEVICES_ADC = [
+    'ADS1x15',
+    'MCP3008',
+    'MCP342x'
 ]
 
 # Devices that use I2C to communicate

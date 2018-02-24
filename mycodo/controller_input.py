@@ -32,7 +32,7 @@ import RPi.GPIO as GPIO
 import fasteners
 import requests
 
-from mycodo.config import ADC_DEVICES
+from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import LIST_DEVICES_I2C
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
@@ -226,7 +226,7 @@ class InputController(threading.Thread):
             self.lock_multiplexer()
 
         # Set up analog-to-digital converter
-        if self.device in ADC_DEVICES:
+        if self.device in LIST_DEVICES_ADC:
             self.adc_lock_file = "/var/lock/mycodo_adc_bus{bus}_0x{i2c:02X}.pid".format(
                 bus=self.i2c_bus, i2c=self.i2c_address)
 
@@ -247,7 +247,7 @@ class InputController(threading.Thread):
         self.device_recognized = True
 
         # Set up inputs or devices
-        if self.device in ['EDGE'] + ADC_DEVICES:
+        if self.device in ['EDGE'] + LIST_DEVICES_ADC:
             self.measure_input = None
         elif self.device == 'MYCODO_RAM':
             self.measure_input = MycodoRam()
@@ -671,6 +671,6 @@ class InputController(threading.Thread):
 
     def stop_controller(self):
         self.thread_shutdown_timer = timeit.default_timer()
-        if self.device not in ['EDGE'] + ADC_DEVICES:
+        if self.device not in ['EDGE'] + LIST_DEVICES_ADC:
             self.measure_input.stop_sensor()
         self.running = False

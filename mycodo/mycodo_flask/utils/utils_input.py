@@ -9,7 +9,7 @@ from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.config import ADC_DEVICES
+from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import DEVICES_DEFAULT_LOCATION
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
@@ -185,7 +185,7 @@ def input_add(form_add):
                 new_sensor.location = '0x29'
 
         # Analog to Digital Converters
-        elif form_add.input_type.data in ADC_DEVICES:
+        elif form_add.input_type.data in LIST_DEVICES_ADC:
             new_sensor.measurements = 'voltage'
             if form_add.input_type.data == 'ADS1x15':
                 new_sensor.location = '0x48'

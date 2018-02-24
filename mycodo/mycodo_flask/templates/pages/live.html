@@ -129,7 +129,7 @@
                 <b><span id="{{each_input.unique_id}}-{{each_measure}}-value">0.0</span> {% if each_measure != '' %}{{measurement_units[each_measure]['unit']}}{% endif %}</b> | <span id="{{each_input.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
               {% endif %}
             {% endfor %}
-            {%- if each_input.device in ADC_DEVICES %}
+            {%- if each_input.device in LIST_DEVICES_ADC %}
               <b><span id="{{each_input.unique_id}}-{{each_input.adc_measure}}-value">0.0</span> {{each_input.adc_measure_units}} {{each_input.adc_measure}}</b> | <span id="{{each_input.unique_id}}-{{each_input.adc_measure}}-time">&lt;{{_('Please wait')}}&gt;</span>
             {% endif %}
             {%- if each_input.device == 'LinuxCommand' %}

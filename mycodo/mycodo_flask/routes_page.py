@@ -20,7 +20,7 @@ from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 
-from mycodo.config import ADC_DEVICES
+from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import CONDITIONAL_ACTIONS
@@ -759,7 +759,7 @@ def page_live():
         output_type[each_output.id] = each_output.relay_type
 
     return render_template('pages/live.html',
-                           ADC_DEVICES=ADC_DEVICES,
+                           LIST_DEVICES_ADC=LIST_DEVICES_ADC,
                            measurement_units=MEASUREMENT_UNITS,
                            math=math,
                            method=method,
