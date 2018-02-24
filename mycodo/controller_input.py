@@ -194,8 +194,12 @@ class InputController(threading.Thread):
 
         # Set up analog-to-digital converter
         if self.device in LIST_DEVICES_ADC:
-            self.adc_lock_file = "/var/lock/mycodo_adc_bus{bus}_0x{i2c:02X}.pid".format(
-                bus=self.i2c_bus, i2c=self.i2c_address)
+            if self.device in ['ADS1x15', 'MCP342x']:
+                self.adc_lock_file = "/var/lock/mycodo_adc_bus{bus}_0x{i2c:02X}.pid".format(
+                    bus=self.i2c_bus, i2c=self.i2c_address)
+            elif self.device == 'MCP3008':
+                self.adc_lock_file = "/var/lock/mycodo_adc_uart-{clock}-{cs}-{miso}-{mosi}".format(
+                    clock=self.pin_clock, cs=self.pin_cs, miso=self.pin_miso, mosi=self.pin_mosi)
 
             if self.device == 'ADS1x15' and self.location:
                 from mycodo.devices.ads1x15 import ADS1x15Read
