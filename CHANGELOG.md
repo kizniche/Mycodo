@@ -1,3 +1,10 @@
+## 5.6.0 (Unreleased)
+
+### Features
+
+ - Make Python modules conditionally imported (controller_input.py) ([#412](https://github.com/kizniche/mycodo/issues/412))
+
+
 ## 5.5.24 (2018-02-24)
 
 ### Features
