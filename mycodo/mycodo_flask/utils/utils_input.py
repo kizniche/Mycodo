@@ -377,15 +377,22 @@ def input_reorder(input_id, display_order, direction):
 def input_activate(form_mod):
     input_id = form_mod.input_id.data
     input_dev = Input.query.filter(Input.id == input_id).first()
-    if (input_dev.device != 'LinuxCommand' and
+    if input_dev.device == 'MCP3008':
+        if None in [form_mod.pin_clock.data,
+                    form_mod.pin_cs.data,
+                    form_mod.pin_mosi.data,
+                    form_mod.pin_miso.data]:
+            flash("Cannot activate without SPI pins set.", "error")
+            return redirect(url_for('routes_page.page_data'))
+    elif (input_dev.device == 'LinuxCommand' and
+          input_dev.cmd_command is ''):
+        flash("Cannot activate Input without a command set.", "error")
+        return redirect(url_for('routes_page.page_data'))
+    elif (input_dev.device != 'LinuxCommand' and
             not input_dev.location and
             input_dev.device not in DEVICES_DEFAULT_LOCATION):
         flash("Cannot activate Input without the GPIO/I2C Address/Port "
               "to communicate with it set.", "error")
-        return redirect(url_for('routes_page.page_data'))
-    elif (input_dev.device == 'LinuxCommand' and
-          input_dev.cmd_command is ''):
-        flash("Cannot activate Input without a command set.", "error")
         return redirect(url_for('routes_page.page_data'))
     controller_activate_deactivate('activate', 'Input',  input_id)
 
