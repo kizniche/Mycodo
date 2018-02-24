@@ -9,7 +9,7 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '5.5.23'
+MYCODO_VERSION = '5.5.24'
 ALEMBIC_VERSION = 'ba31c9ef6eab'
 
 #  FORCE_UPGRADE_MASTER
@@ -23,7 +23,7 @@ LANGUAGES = {
     'es': 'Español (Spanish)'
 }
 
-# Measurements for each sensor/device
+# Measurements for each device
 MEASUREMENTS = {
     'MYCODO_RAM': ['disk_space'],
     'ADS1x15': ['voltage'],
@@ -64,7 +64,7 @@ MEASUREMENTS = {
     'TSL2591': ['lux']
 }
 
-# Unit abbreviation for each measurement
+# Measurement information
 MEASUREMENT_UNITS = {
     'altitude': {
         'name': lazy_gettext('Altitude'),
@@ -217,6 +217,7 @@ INPUTS = [
     ('SHT2x', 'Temperature/Humidity: SHT 21/25')
 ]
 
+# Math controllers
 MATHS = [
     ('average', 'Average (Multiple Measurements)'),
     ('average_single', 'Average (Single Measurement)'),
@@ -229,7 +230,7 @@ MATHS = [
     ('verification', 'Verification')
 ]
 
-# Sensors and description
+# Calibration
 CALIBRATION_DEVICES = [
     ('calibration_atlas_ph', 'Atlas Scientific pH sensor')
 ]
@@ -254,7 +255,7 @@ DEVICES_DEFAULT_LOCATION = [
     'mycodo_ram'
 ]
 
-# Analog-to-Digital Controllers
+# Analog-to-Digital Converters
 LIST_DEVICES_ADC = [
     'ADS1x15',
     'MCP3008',

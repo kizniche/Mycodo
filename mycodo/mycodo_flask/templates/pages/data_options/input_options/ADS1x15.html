@@ -16,10 +16,9 @@
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_channel" name="adc_channel" title="{{_('The channel of the analog to digital converter.')}}">
       <option value=""></option>
-      <option value="0"{% if each_input.adc_channel == 0 %} selected{% endif %}>Channel 1</option>
-      <option value="1"{% if each_input.adc_channel == 1 %} selected{% endif %}>Channel 2</option>
-      <option value="2"{% if each_input.adc_channel == 2 %} selected{% endif %}>Channel 3</option>
-      <option value="3"{% if each_input.adc_channel == 3 %} selected{% endif %}>Channel 4</option>
+      {% for n in range(4) %}
+      <option value="{{n}}"{% if each_input.adc_channel == n %} selected{% endif %}>Channel {{n}}</option>
+      {% endfor %}
     </select>
   </div>
 </div>
