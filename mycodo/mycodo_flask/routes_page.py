@@ -669,7 +669,10 @@ def page_lcd():
         if each_input.cmd_measurement and each_input.cmd_measurement not in MEASUREMENTS:
             if each_input.cmd_measurement and each_input.cmd_measurement_units:
                 measurements.update(
-                    {'LinuxCommand': [each_input.cmd_measurement]})
+                    {'LinuxCommand': {
+                        'pip-dependencies': [],
+                        'measure': [each_input.cmd_measurement]
+                    }})
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
@@ -949,7 +952,6 @@ def page_function():
                            input=input_dev,
                            lcd=lcd,
                            math=math,
-                           measurements=MEASUREMENTS,
                            method=method,
                            output=output,
                            pid=pid,
@@ -1176,7 +1178,6 @@ def page_data():
                            ds18b20_sensors=ds18b20_inputs,
                            lcd=lcd,
                            list_devices_i2c=list_devices_i2c,
-                           measurements=MEASUREMENTS,
                            multiplexer_addresses=multiplexer_addresses,
                            multiplexer_channels=multiplexer_channels)
 

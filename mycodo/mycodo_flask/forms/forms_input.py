@@ -15,12 +15,12 @@ from wtforms import validators
 from wtforms import widgets
 from wtforms.validators import DataRequired
 
-from mycodo.config import INPUTS
+from mycodo.config import DEVICES
 
 
 class InputAdd(FlaskForm):
     input_type = SelectField(
-        choices=INPUTS,
+        choices=DEVICES,
         validators=[DataRequired()]
     )
     input_add = SubmitField(lazy_gettext('Add Input'))

@@ -11,7 +11,7 @@ from flask.blueprints import Blueprint
 from flask_babel import gettext
 from sqlalchemy import or_
 
-from mycodo.config import INPUTS
+from mycodo.config import DEVICES
 from mycodo.databases.models import Input
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
@@ -96,7 +96,7 @@ def calibration_atlas_ph():
             flash('Input not found: {}'.format(
                 form_ph_calibrate.selected_sensor_id.data), 'error')
         else:
-            for each_input in INPUTS:
+            for each_input in DEVICES:
                 if selected_input.device == each_input[0]:
                     input_device_name = each_input[1]
 
@@ -106,7 +106,7 @@ def calibration_atlas_ph():
             (next_stage is not None and next_stage > 1)):
         selected_input = Input.query.filter_by(
             unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
-        for each_input in INPUTS:
+        for each_input in DEVICES:
             if selected_input.device == each_input[0]:
                 input_device_name = each_input[1]
 

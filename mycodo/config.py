@@ -23,45 +23,161 @@ LANGUAGES = {
     'es': 'Español (Spanish)'
 }
 
+
+# Devices and descriptions (for Data page)
+DEVICES = [
+    ('RPi', 'Raspberry Pi: CPU Temperature'),
+    ('RPiCPULoad', 'Raspberry Pi: CPU Load'),
+    ('RPiFreeSpace', 'Raspberry Pi: Free Disk Space'),
+    ('GPIO_STATE', 'Raspberry Pi GPIO: State Detection'),
+    ('EDGE', 'Raspberry Pi GPIO: Edge Detection'),
+    ('SIGNAL_PWM', 'Raspberry Pi GPIO: Pulse-Width Modulation (PWM)'),
+    ('SIGNAL_RPM', 'Raspberry Pi GPIO: Revolutions Per Minute (RPM)'),
+    ('MYCODO_RAM', 'Mycodo: Daemon RAM Usage'),
+    ('LinuxCommand', 'Linux Command'),
+    ('SERVER_PING', 'Server Ping'),
+    ('SERVER_PORT_OPEN', 'Server Port Open'),
+    ('ADS1x15', 'Analog-to-Digital Converter: ADS1x15'),
+    ('MCP3008', 'Analog-to-Digital Converter: MCP3008'),
+    ('MCP342x', 'Analog-to-Digital Converter: MCP342x'),
+    ('K30_UART', 'CO2: K30 (UART)'),
+    ('MH_Z16_I2C', 'CO2: MH-Z16 (I2C)'),
+    ('MH_Z16_UART', 'CO2: MH-Z16 (UART)'),
+    ('MH_Z19_UART', 'CO2: MH-Z19 (UART)'),
+    ('BH1750', 'Luminance: BH1750'),
+    ('TSL2561', 'Luminance: TSL2561'),
+    ('TSL2591', 'Luminance: TSL2591'),
+    ('CHIRP', 'Moisture: Chirp'),
+    ('ATLAS_PH_I2C', 'pH: Atlas Scientific (I2C)'),
+    ('ATLAS_PH_UART', 'pH: Atlas Scientific (UART)'),
+    ('BME280', 'Pressure/Temperature/Humidity: BME 280'),
+    ('BMP180', 'Pressure/Temperature: BMP 180/085'),
+    ('BMP280', 'Pressure/Temperature: BMP 280'),
+    ('DS18B20', 'Temperature: DS18B20'),
+    ('ATLAS_PT1000_I2C', 'Temperature: Atlas Scientific PT-1000 (I2C)'),
+    ('ATLAS_PT1000_UART', 'Temperature: Atlas Scientific PT-1000 (UART)'),
+    ('TMP006', 'Temperature (Contactless): TMP 006/007'),
+    ('AM2315', 'Temperature/Humidity: AM2315'),
+    ('DHT11', 'Temperature/Humidity: DHT11'),
+    ('DHT22', 'Temperature/Humidity: DHT22'),
+    ('HTU21D', 'Temperature/Humidity: HTU21D'),
+    ('SHT1x_7x', 'Temperature/Humidity: SHT 10/11/15/71/75'),
+    ('SHT2x', 'Temperature/Humidity: SHT 21/25')
+]
+
 # Measurements for each device
 MEASUREMENTS = {
-    'MYCODO_RAM': ['disk_space'],
-    'ADS1x15': ['voltage'],
-    'AM2315': ['dewpoint', 'humidity', 'temperature'],
-    'ATLAS_PH_I2C': ['ph'],
-    'ATLAS_PH_UART': ['ph'],
-    'ATLAS_PT1000_I2C': ['temperature'],
-    'ATLAS_PT1000_UART': ['temperature'],
-    'BH1750': ['lux'],
-    'BME280': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature'],
-    'BMP': ['altitude', 'pressure', 'temperature'],
-    'BMP180': ['altitude', 'pressure', 'temperature'],
-    'BMP280': ['altitude', 'pressure', 'temperature'],
-    'CHIRP': ['lux', 'moisture', 'temperature'],
-    'DHT11': ['dewpoint', 'humidity', 'temperature'],
-    'DHT22': ['dewpoint', 'humidity', 'temperature'],
-    'DS18B20': ['temperature'],
-    'EDGE': ['edge'],
-    'GPIO_STATE': ['gpio_state'],
-    'HTU21D': ['dewpoint', 'humidity', 'temperature'],
-    'K30_UART': ['co2'],
-    'MH_Z16_I2C': ['co2'],
-    'MH_Z16_UART': ['co2'],
-    'MH_Z19_UART': ['co2'],
-    'MCP3008': ['voltage'],
-    'MCP342x': ['voltage'],
-    'RPi': ['temperature'],
-    'RPiCPULoad': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m'],
-    'RPiFreeSpace': ['disk_space'],
-    'SERVER_PING': ['boolean'],
-    'SERVER_PORT_OPEN': ['boolean'],
-    'SHT1x_7x': ['dewpoint', 'humidity', 'temperature'],
-    'SHT2x': ['dewpoint', 'humidity', 'temperature'],
-    'SIGNAL_PWM': ['frequency', 'pulse_width', 'duty_cycle'],
-    'SIGNAL_RPM': ['rpm'],
-    'TMP006': ['temperature_object', 'temperature_die'],
-    'TSL2561': ['lux'],
-    'TSL2591': ['lux']
+    'MYCODO_RAM': {
+        'pip-dependencies': [],
+        'measure': ['disk_space']},
+    'ADS1x15': {
+        'pip-dependencies': ['Adafruit_ADS1x15'],
+        'measure': ['voltage']},
+    'AM2315': {
+        'pip-dependencies': ['quick2wire-api'],
+        'measure': ['dewpoint', 'humidity', 'temperature']},
+    'ATLAS_PH_I2C': {
+        'pip-dependencies': ['io'],
+        'measure': ['ph']},
+    'ATLAS_PH_UART': {
+        'pip-dependencies': ['serial'],
+        'measure': ['ph']},
+    'ATLAS_PT1000_I2C': {
+        'pip-dependencies': ['io'],
+        'measure': ['temperature']},
+    'ATLAS_PT1000_UART': {
+        'pip-dependencies': ['serial'],
+        'measure': ['temperature']},
+    'BH1750': {
+        'pip-dependencies': ['smbus'],
+        'measure': ['lux']},
+    'BME280': {
+        'pip-dependencies': ['adafruit-bme280'],
+        'measure': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature']},
+    'BMP': {  # TODO: Remove in next major version. BMP180 replaced this name
+        'pip-dependencies': ['Adafruit_BMP'],
+        'measure': ['altitude', 'pressure', 'temperature']},
+    'BMP180': {
+        'pip-dependencies': ['Adafruit_BMP'],
+        'measure': ['altitude', 'pressure', 'temperature']},
+    'BMP280': {
+        'pip-dependencies': ['Adafruit_GPIO'],
+        'measure': ['altitude', 'pressure', 'temperature']},
+    'CHIRP': {
+        'pip-dependencies': ['smbus'],
+        'measure': ['lux', 'moisture', 'temperature']},
+    'DHT11': {
+        'pip-dependencies': ['pigpio'],
+        'measure': ['dewpoint', 'humidity', 'temperature']},
+    'DHT22': {
+        'pip-dependencies': ['pigpio'],
+        'measure': ['dewpoint', 'humidity', 'temperature']},
+    'DS18B20': {
+        'pip-dependencies': ['w1thermsensor'],
+        'measure': ['temperature']},
+    'EDGE': {
+        'pip-dependencies': ['RPi.GPIO'],
+        'measure': ['edge']},
+    'GPIO_STATE': {
+        'pip-dependencies': ['RPi.GPIO'],
+        'measure': ['gpio_state']},
+    'HTU21D': {
+        'pip-dependencies': ['pigpio'],
+        'measure': ['dewpoint', 'humidity', 'temperature']},
+    'K30_UART': {
+        'pip-dependencies': ['serial'],
+        'measure': ['co2']},
+    'MH_Z16_I2C': {
+        'pip-dependencies': ['smbus'],
+        'measure': ['co2']},
+    'MH_Z16_UART': {
+        'pip-dependencies': ['serial'],
+        'measure': ['co2']},
+    'MH_Z19_UART': {
+        'pip-dependencies': ['serial'],
+        'measure': ['co2']},
+    'MCP3008': {
+        'pip-dependencies': ['Adafruit_MCP3008'],
+        'measure': ['voltage']},
+    'MCP342x': {
+        'pip-dependencies': ['MCP342x'],
+        'measure': ['voltage']},
+    'RPi': {
+        'pip-dependencies': [],
+        'measure': ['temperature']},
+    'RPiCPULoad': {
+        'pip-dependencies': [],
+        'measure': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m']},
+    'RPiFreeSpace': {
+        'pip-dependencies': [],
+        'measure': ['disk_space']},
+    'SERVER_PING': {
+        'pip-dependencies': [],
+        'measure': ['boolean']},
+    'SERVER_PORT_OPEN': {
+        'pip-dependencies': [],
+        'measure': ['boolean']},
+    'SHT1x_7x': {
+        'pip-dependencies': ['sht_sensor'],
+        'measure': ['dewpoint', 'humidity', 'temperature']},
+    'SHT2x': {
+        'pip-dependencies': ['smbus'],
+        'measure': ['dewpoint', 'humidity', 'temperature']},
+    'SIGNAL_PWM': {
+        'pip-dependencies': ['pigpio'],
+        'measure': ['frequency','pulse_width', 'duty_cycle']},
+    'SIGNAL_RPM': {
+        'pip-dependencies': ['pigpio'],
+        'measure': ['rpm']},
+    'TMP006': {
+        'pip-dependencies': ['Adafruit_TMP'],
+        'measure': ['temperature_object', 'temperature_die']},
+    'TSL2561': {
+        'pip-dependencies': ['tsl2561'],
+        'measure': ['lux']},
+    'TSL2591': {
+        'pip-dependencies': ['tsl2591'],
+        'measure': ['lux']}
 }
 
 # Measurement information
@@ -175,47 +291,6 @@ MEASUREMENT_UNITS = {
         'name': lazy_gettext('Voltage'),
         'meas': 'voltage', 'unit': 'volts'}
 }
-
-# Inputs and description
-INPUTS = [
-    ('RPi', 'Raspberry Pi: CPU Temperature'),
-    ('RPiCPULoad', 'Raspberry Pi: CPU Load'),
-    ('RPiFreeSpace', 'Raspberry Pi: Free Disk Space'),
-    ('GPIO_STATE', 'Raspberry Pi GPIO: State Detection'),
-    ('EDGE', 'Raspberry Pi GPIO: Edge Detection'),
-    ('SIGNAL_PWM', 'Raspberry Pi GPIO: Pulse-Width Modulation (PWM)'),
-    ('SIGNAL_RPM', 'Raspberry Pi GPIO: Revolutions Per Minute (RPM)'),
-    ('MYCODO_RAM', 'Mycodo: Daemon RAM Usage'),
-    ('LinuxCommand', 'Linux Command'),
-    ('SERVER_PING', 'Server Ping'),
-    ('SERVER_PORT_OPEN', 'Server Port Open'),
-    ('ADS1x15', 'Analog-to-Digital Converter: ADS1x15'),
-    ('MCP3008', 'Analog-to-Digital Converter: MCP3008'),
-    ('MCP342x', 'Analog-to-Digital Converter: MCP342x'),
-    ('K30_UART', 'CO2: K30 (UART)'),
-    ('MH_Z16_I2C', 'CO2: MH-Z16 (I2C)'),
-    ('MH_Z16_UART', 'CO2: MH-Z16 (UART)'),
-    ('MH_Z19_UART', 'CO2: MH-Z19 (UART)'),
-    ('BH1750', 'Luminance: BH1750'),
-    ('TSL2561', 'Luminance: TSL2561'),
-    ('TSL2591', 'Luminance: TSL2591'),
-    ('CHIRP', 'Moisture: Chirp'),
-    ('ATLAS_PH_I2C', 'pH: Atlas Scientific (I2C)'),
-    ('ATLAS_PH_UART', 'pH: Atlas Scientific (UART)'),
-    ('BME280', 'Pressure/Temperature/Humidity: BME 280'),
-    ('BMP180', 'Pressure/Temperature: BMP 180/085'),
-    ('BMP280', 'Pressure/Temperature: BMP 280'),
-    ('DS18B20', 'Temperature: DS18B20'),
-    ('ATLAS_PT1000_I2C', 'Temperature: Atlas Scientific PT-1000 (I2C)'),
-    ('ATLAS_PT1000_UART', 'Temperature: Atlas Scientific PT-1000 (UART)'),
-    ('TMP006', 'Temperature (Contactless): TMP 006/007'),
-    ('AM2315', 'Temperature/Humidity: AM2315'),
-    ('DHT11', 'Temperature/Humidity: DHT11'),
-    ('DHT22', 'Temperature/Humidity: DHT22'),
-    ('HTU21D', 'Temperature/Humidity: HTU21D'),
-    ('SHT1x_7x', 'Temperature/Humidity: SHT 10/11/15/71/75'),
-    ('SHT2x', 'Temperature/Humidity: SHT 21/25')
-]
 
 # Math controllers
 MATHS = [

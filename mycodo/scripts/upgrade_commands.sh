@@ -311,6 +311,15 @@ case "${1:-''}" in
             ${MYCODO_PATH}/env/bin/pip3 install --upgrade -r ${MYCODO_PATH}/install/requirements.txt
         fi
     ;;
+    'update-pip3-package-am2315')
+        printf "\n#### Installing pip requirements from requirements.txt\n"
+        if [ ! -d ${MYCODO_PATH}/env ]; then
+            printf "\n## Error: Virtualenv doesn't exist. Create with $0 setup-virtualenv\n"
+        else
+            ${MYCODO_PATH}/env/bin/pip3 install --upgrade pip setuptools
+            ${MYCODO_PATH}/env/bin/pip3 install --upgrade -r ${MYCODO_PATH}/install/requirements.txt
+        fi
+    ;;
     'update-swap-size')
         printf "\n#### Checking if swap size is 100 MB and needs to be changed to 512 MB\n"
         if grep -q "CONF_SWAPSIZE=100" "/etc/dphys-swapfile"; then

@@ -41,9 +41,8 @@ class MHZ16Sensor(AbstractInput):
         self.interface = interface
 
         if not testing:
-            import serial
-            import smbus
             if self.interface == 'UART':
+                import serial
                 self.logger = logging.getLogger(
                     "mycodo.inputs.mh_z16.{dev}".format(dev=device_loc.replace('/', '')))
                 # Check if device is valid
@@ -63,6 +62,7 @@ class MHZ16Sensor(AbstractInput):
                             dev=device_loc))
 
             elif self.interface == 'I2C':
+                import smbus
                 self.logger = logging.getLogger(
                     "mycodo.inputs.mh_z16.{dev}".format(dev=i2c_address))
                 self.cmd_measure = [0xFF, 0x01, 0x9C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63]
