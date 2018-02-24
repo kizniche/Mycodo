@@ -65,6 +65,7 @@ Device Interfaces
 -   I2C
 -   Edge Detection
 -   I2C Multiplexers
+-   Analog-to-digital Converters
 
 Device Specific Information
 
@@ -112,6 +113,7 @@ Luminosity Sensors
 Analog to Digital Converters
 
 -   ADS1x15
+-   MCP3008
 -   MCP342x
 
 Diagrams
@@ -427,6 +429,18 @@ the measurement database to be used throughout the Mycodo system.
                         of “light” as the measurement, the unit may be
                         “lux” or “intensity”.
 
+  Clock Pin             The GPIO (using BCM numbering) connected to the
+                        Clock pin of the ADC
+
+  CS Pin                The GPIO (using BCM numbering) connected to the
+                        CS pin of the ADC
+
+  MISO Pin              The GPIO (using BCM numbering) connected to the
+                        MISO pin of the ADC
+
+  MOSI Pin              The GPIO (using BCM numbering) connected to the
+                        MOSI pin of the ADC
+
   Channel               Analog-to-digital converter only: This is the
                         channel to obtain the voltage measurement from
                         the ADC.
@@ -492,9 +506,9 @@ produce a new value that may be used within Mycodo.
   ts)        
 
   Average    Stores the statistical mean of one selected
-  (Multiple  measurement over a duration of time determined
+  (Single    measurement over a duration of time determined
   Measuremen by the Max Age (seconds) option.
-  ts)        
+  t)         
 
   Difference Stores the mathematical difference (value_1 -
              value_2).
@@ -2208,16 +2222,6 @@ I2C
 
 The I2C interface should be enabled with raspi-config.
 
-ANALOG TO DIGITAL CONVERTERS
-
-An analog to digital converter (ADC) allows the use of any analog sensor
-that outputs a variable voltage. A voltage divider may be necessary to
-attain your desired range.
-
-  ADS1x15: Analog-to-digital converter link
-
-  MCP342x: Analog-to-digital converter link
-
 SENSORS
 
   AM2315: Relative humidity, temperature link
@@ -2293,6 +2297,19 @@ the Config -> System Information page.
   https://github.com/camrex/i2c-mux-pca9545a. Nothing else needs to be
   done in Mycodo after that except to select the correct I2C bus when
   configuring a sensor.
+
+
+Analog-to-Digital Converters
+
+An analog to digital converter (ADC) allows the use of any analog sensor
+that outputs a variable voltage. A voltage divider may be necessary to
+attain your desired range.
+
+  ADS1x15: Analog-to-digital converter link
+
+  MCP3008: Analog-to-digital converter link
+
+  MCP342x: Analog-to-digital converter link
 
 
 
@@ -2605,6 +2622,15 @@ Specifications
 -   Power: 2.0V to 5.5V
 -   Sample Rate: 1015: 128SPS to 3.3kSPS, 1115: 8SPS to 860SPS
 -   Resolution: 1015: 12-bit, 1115: 16-bit
+
+MCP3008
+
+Specifications
+
+-   Interface: SPI
+-   8 channels
+-   10-bit resolution
+-   0 - 3.3 volt measurements
 
 MCP342x
 

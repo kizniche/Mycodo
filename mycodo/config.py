@@ -64,6 +64,13 @@ MEASUREMENTS = {
     'TSL2591': ['lux']
 }
 
+# Analog-to-Digital Controllers
+ADC_DEVICES = [
+    'ADS1x15',
+    'MCP3008',
+    'MCP342x'
+]
+
 # Unit abbreviation for each measurement
 MEASUREMENT_UNITS = {
     'altitude': {

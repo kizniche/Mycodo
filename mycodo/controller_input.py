@@ -32,6 +32,7 @@ import RPi.GPIO as GPIO
 import fasteners
 import requests
 
+from mycodo.config import ADC_DEVICES
 from mycodo.config import LIST_DEVICES_I2C
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
@@ -142,6 +143,10 @@ class InputController(threading.Thread):
         self.mux_address_raw = input_dev.multiplexer_address
         self.mux_bus = input_dev.multiplexer_bus
         self.mux_chan = input_dev.multiplexer_channel
+        self.pin_clock = input_dev.pin_clock
+        self.pin_cs = input_dev.pin_cs
+        self.pin_mosi = input_dev.pin_mosi
+        self.pin_miso = input_dev.pin_miso
         self.adc_chan = input_dev.adc_channel
         self.adc_gain = input_dev.adc_gain
         self.adc_resolution = input_dev.adc_resolution
@@ -221,14 +226,18 @@ class InputController(threading.Thread):
             self.lock_multiplexer()
 
         # Set up analog-to-digital converter
-        if self.device in ['ADS1x15', 'MCP342x'] and self.location:
+        if self.device in ADC_DEVICES:
             self.adc_lock_file = "/var/lock/mycodo_adc_bus{bus}_0x{i2c:02X}.pid".format(
                 bus=self.i2c_bus, i2c=self.i2c_address)
 
-            if self.device == 'ADS1x15':
+            if self.device == 'ADS1x15' and self.location:
                 self.adc = ADS1x15Read(self.i2c_address, self.i2c_bus,
                                        self.adc_chan, self.adc_gain)
-            elif self.device == 'MCP342x':
+            elif self.device == 'MCP3008':
+                self.adc = MCP3008Read(self.pin_clock, self.pin_cs,
+                                       self.pin_miso, self.pin_mosi,
+                                       self.adc_chan)
+            elif self.device == 'MCP342x' and self.location:
                 self.adc = MCP342xRead(self.i2c_address, self.i2c_bus,
                                        self.adc_chan, self.adc_gain,
                                        self.adc_resolution)
@@ -238,7 +247,7 @@ class InputController(threading.Thread):
         self.device_recognized = True
 
         # Set up inputs or devices
-        if self.device in ['EDGE', 'ADS1x15', 'MCP342x']:
+        if self.device in ['EDGE'] + ADC_DEVICES:
             self.measure_input = None
         elif self.device == 'MYCODO_RAM':
             self.measure_input = MycodoRam()
@@ -662,6 +671,6 @@ class InputController(threading.Thread):
 
     def stop_controller(self):
         self.thread_shutdown_timer = timeit.default_timer()
-        if self.device not in ['EDGE', 'ADS1x15', 'MCP342x']:
+        if self.device not in ['EDGE'] + ADC_DEVICES:
             self.measure_input.stop_sensor()
         self.running = False

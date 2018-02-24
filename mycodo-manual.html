@@ -393,6 +393,7 @@
 <li><a href="#i2c">I<sup>2</sup>C</a></li>
 <li><a href="#edge-detection">Edge Detection</a></li>
 <li><a href="#i2c-multiplexers">I<sup>2</sup>C Multiplexers</a></li>
+<li><a href="#analog-to-digital-converters">Analog-to-digital Converters</a></li>
 </ul>
 <p><a href="#device-specific-information">Device Specific Information</a></p>
 <p><a href="#lcd-displays">LCD Displays</a></p>
@@ -438,6 +439,7 @@
 <p><a href="#analog-to-digital-converters">Analog to Digital Converters</a></p>
 <ul>
 <li><a href="#ads1x15">ADS1x15</a></li>
+<li><a href="#mcp3008">MCP3008</a></li>
 <li><a href="#mcp342x">MCP342x</a></li>
 </ul>
 <p><a href="#diagrams">Diagrams</a></p>
@@ -594,6 +596,22 @@
 <td style="text-align: left;">Analog-to-digital converter only: This is the unit of the measurement. With the above example of “light” as the measurement, the unit may be “lux” or “intensity”.</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">Clock Pin</td>
+<td style="text-align: left;">The GPIO (using BCM numbering) connected to the Clock pin of the ADC</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CS Pin</td>
+<td style="text-align: left;">The GPIO (using BCM numbering) connected to the CS pin of the ADC</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MISO Pin</td>
+<td style="text-align: left;">The GPIO (using BCM numbering) connected to the MISO pin of the ADC</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MOSI Pin</td>
+<td style="text-align: left;">The GPIO (using BCM numbering) connected to the MOSI pin of the ADC</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">Channel</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.</td>
 </tr>
@@ -654,7 +672,7 @@
 <td style="text-align: left;">Stores the statistical mean of multiple selected measurements.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Average (Multiple Measurements)</td>
+<td style="text-align: left;">Average (Single Measurement)</td>
 <td style="text-align: left;">Stores the statistical mean of one selected measurement over a duration of time determined by the Max Age (seconds) option.</td>
 </tr>
 <tr class="odd">
@@ -2341,14 +2359,6 @@ sudo service mycodoflask restart</code></pre>
 <p>Find the line “enable_uart=0” and change it to “enable_uart=1”, then reboot.</p>
 <h2 id="i2c">I<sup>2</sup>C</h2>
 <p>The I<sup>2</sup>C interface should be enabled with <code>raspi-config</code>.</p>
-<p><strong>Analog to Digital Converters</strong></p>
-<p>An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A <a href="https://learn.sparkfun.com/tutorials/voltage-dividers">voltage divider</a> may be necessary to attain your desired range.</p>
-<blockquote>
-<p><a href="#ads1x15">ADS1x15</a>: Analog-to-digital converter <a href="https://www.adafruit.com/product/1085">link</a></p>
-</blockquote>
-<blockquote>
-<p><a href="#mcp342x">MCP342x</a>: Analog-to-digital converter <a href="http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)">link</a></p>
-</blockquote>
 <p><strong>Sensors</strong></p>
 <blockquote>
 <p><a href="#am2315">AM2315</a>: Relative humidity, temperature <a href="https://github.com/lexruee/tentacle_pi">link</a></p>
@@ -2391,6 +2401,17 @@ sudo service mycodoflask restart</code></pre>
 <p>Note: The TCA9548A/PCA9548A can be set up in two ways. Either by A) connecting the multiplexer to an already-existing I<sup>2</sup>C bus and configuring each device manually in Mycodo, or B) (the easier and safer option) creating a dtoverlay to produce a new I<sup>2</sup>C bus device for each multiplexer channel. Method A can be used with the multiplexer options already existing in Mycodo, however option B benefits by allowing the linux driver to handle channel switching and being able to see every device on every bus at once in Mycodo’s System Information page. To enable option B, visit <a href="https://github.com/Theoi-Meteoroi/GPIO-pca9548">GPIO-pca9548</a> to get the code and latest install instructions. If successfully set up, there will be 8 new I<sup>2</sup>C busses on the <code>Config -&gt; System Information</code> page.</p>
 <blockquote>
 <p>TCA9545A: I<sup>2</sup>C Bus Multiplexer <a href="http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/">link</a> (I<sup>2</sup>C): This board works a little differently than the TCA9548A, above. This board actually creates 4 new I<sup>2</sup>C busses, each with their own selectable voltage, either 3.3 or 5.0 volts. Instructions to enable the Device Tree Overlay are at <a href="https://github.com/camrex/i2c-mux-pca9545a" class="uri">https://github.com/camrex/i2c-mux-pca9545a</a>. Nothing else needs to be done in Mycodo after that except to select the correct I<sup>2</sup>C bus when configuring a sensor.</p>
+</blockquote>
+<h2 id="analog-to-digital-converters">Analog-to-Digital Converters</h2>
+<p>An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A <a href="https://learn.sparkfun.com/tutorials/voltage-dividers">voltage divider</a> may be necessary to attain your desired range.</p>
+<blockquote>
+<p><a href="#ads1x15">ADS1x15</a>: Analog-to-digital converter <a href="https://www.adafruit.com/product/1085">link</a></p>
+</blockquote>
+<blockquote>
+<p><a href="#mcp3008">MCP3008</a>: Analog-to-digital converter <a href="https://www.adafruit.com/product/856">link</a></p>
+</blockquote>
+<blockquote>
+<p><a href="#mcp342x">MCP342x</a>: Analog-to-digital converter <a href="http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)">link</a></p>
 </blockquote>
 <h1 id="device-specific-information">Device Specific Information</h1>
 <h2 id="lcd-displays">LCD Displays</h2>
@@ -2581,7 +2602,7 @@ sudo service mycodoflask restart</code></pre>
 <li>Vin: 3V and a low supply</li>
 <li>Max current: 0.6mA.</li>
 </ul>
-<h2 id="analog-to-digital-converters">Analog to Digital Converters</h2>
+<h2 id="analog-to-digital-converters-1">Analog to Digital Converters</h2>
 <h3 id="ads1x15">ADS1x15</h3>
 <p>(ADS1015, ADS1115)</p>
 <h4 id="specifications-16">Specifications</h4>
@@ -2593,9 +2614,17 @@ sudo service mycodoflask restart</code></pre>
 <li>Sample Rate: 1015: 128SPS to 3.3kSPS, 1115: 8SPS to 860SPS</li>
 <li>Resolution: 1015: 12-bit, 1115: 16-bit</li>
 </ul>
+<h3 id="mcp3008">MCP3008</h3>
+<h4 id="specifications-17">Specifications</h4>
+<ul>
+<li>Interface: SPI</li>
+<li>8 channels</li>
+<li>10-bit resolution</li>
+<li>0 - 3.3 volt measurements</li>
+</ul>
 <h3 id="mcp342x">MCP342x</h3>
 <p>(MCP3422, MCP3423, MCP3424, MCP3426, MCP3427, MCP3428)</p>
-<h4 id="specifications-17">Specifications</h4>
+<h4 id="specifications-18">Specifications</h4>
 <ul>
 <li>Interface: I<sup>2</sup>C</li>
 <li>I<sup>2</sup>C 7-bit addresses 0x68 - 0x6F</li>
