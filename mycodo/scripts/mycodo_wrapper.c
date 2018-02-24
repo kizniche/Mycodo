@@ -98,6 +98,18 @@ int main(int argc, char *argv[]) {
 			sprintf(cmd, "chown -R influxdb.influxdb /var/lib/influxdb/data");
 			system(cmd);
 
+		} else if (strcmp(argv[1], "initialize") == 0) {
+
+            char path[255];
+            strncpy(path, argv[0], sizeof(path));
+            dirname(path);
+
+			char updateScript[255];
+			strncpy(updateScript, "/bin/bash ", sizeof(updateScript));
+			strncat(updateScript, path, sizeof(updateScript));
+			strncat(updateScript, "/upgrade_commands.sh initialize", sizeof(updateScript));
+			system(updateScript);
+
 		} else if (strcmp(argv[1], "upgrade") == 0) {
 
             char path[255];

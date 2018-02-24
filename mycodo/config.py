@@ -74,7 +74,7 @@ MEASUREMENTS = {
         'py-dependencies': ['Adafruit_ADS1x15'],
         'measure': ['voltage']},
     'AM2315': {
-        'py-dependencies': ['quick2wire-api'],
+        'py-dependencies': ['quick2wire.i2c'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'ATLAS_PH_I2C': {
         'py-dependencies': ['io'],
@@ -92,7 +92,7 @@ MEASUREMENTS = {
         'py-dependencies': ['smbus'],
         'measure': ['lux']},
     'BME280': {
-        'py-dependencies': ['adafruit-bme280'],
+        'py-dependencies': ['Adafruit_BME280'],
         'measure': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature']},
     'BMP': {  # TODO: Remove in next major version. BMP180 replaced this name
         'py-dependencies': ['Adafruit_BMP'],

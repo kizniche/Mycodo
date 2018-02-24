@@ -311,13 +311,13 @@ case "${1:-''}" in
             ${MYCODO_PATH}/env/bin/pip3 install --upgrade -r ${MYCODO_PATH}/install/requirements.txt
         fi
     ;;
-    'update-pip3-package-am2315')
-        printf "\n#### Installing pip requirements from requirements.txt\n"
+    'install-pip-dependency')
+        printf "\n#### Installing ${2} with pip\n"
         if [ ! -d ${MYCODO_PATH}/env ]; then
-            printf "\n## Error: Virtualenv doesn't exist. Create with $0 setup-virtualenv\n"
+            printf "\n## Error: Virtualenv doesn't exist.\n"
+            /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
         else
-            ${MYCODO_PATH}/env/bin/pip3 install --upgrade pip setuptools
-            ${MYCODO_PATH}/env/bin/pip3 install --upgrade -r ${MYCODO_PATH}/install/requirements.txt
+            ${MYCODO_PATH}/env/bin/pip3 install --upgrade ${2}
         fi
     ;;
     'update-swap-size')

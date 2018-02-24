@@ -22,11 +22,10 @@
       <li>{{each_dep}}</li>
     {% endfor %}
     </ul>
-  {% endif %}
 
     <p>To install these dependencies, click the Install button below and wait for the install to complete before attempting to add the device again.</p>
 
-    <form method="post" action="/timer">
+    <form method="post" action="/dependencies/0">
       {{form_dependencies.csrf_token}}
       {{form_dependencies.device(class_='form-control', value=device)}}
       <div class="row">
@@ -35,6 +34,35 @@
         </div>
       </div>
     </form>
+  {% endif %}
+
+    {% if dep_tally %}
+    <div style="padding-top:1.5em">
+      <p>All unmet dependencies and the devices that require them:</p>
+
+    {% for each_dep, devices in dep_tally.items() %}
+      <div>
+        {{each_dep}}: ({%- for each_device in devices %}{{each_device}}{% if not loop.last %} ,{% endif %}{% endfor %})
+      </div>
+    {% endfor %}
+
+    </div>
+    {% endif %}
+
+    <div style="padding-top:1.5em">
+    {% if device_status %}
+      <p>All devices with unmet dependencies:</p>
+
+    {% for each_device, dependencies in device_status.items() if dependencies %}
+      <div>
+        {{each_device}}: {{dependencies}}
+      </div>
+    {% endfor %}
+
+    {% else %}
+      All dependencies for all devices have been met
+    {% endif %}
+    </div>
 
   </div>
 
