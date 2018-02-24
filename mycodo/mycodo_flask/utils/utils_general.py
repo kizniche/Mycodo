@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import glob
+import importlib
 import logging
 from collections import OrderedDict
 from datetime import datetime
@@ -447,3 +448,16 @@ def get_camera_image_info():
 
     return (latest_img_still_ts, latest_img_still,
             latest_img_tl_ts, latest_img_tl)
+
+
+def check_dependencies(device_type):
+    unmet_deps = []
+    if device_type in MEASUREMENTS:
+        for each_device, each_dict in MEASUREMENTS[device_type].items():
+            if each_device == 'py-dependencies':
+                for each_dep in each_dict:
+                    module = importlib.util.find_spec(each_dep)
+                    if module is None:
+                        unmet_deps.append(each_dep)
+
+    return unmet_deps

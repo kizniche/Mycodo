@@ -68,115 +68,115 @@ DEVICES = [
 # Measurements for each device
 MEASUREMENTS = {
     'MYCODO_RAM': {
-        'pip-dependencies': [],
+        'py-dependencies': [],
         'measure': ['disk_space']},
     'ADS1x15': {
-        'pip-dependencies': ['Adafruit_ADS1x15'],
+        'py-dependencies': ['Adafruit_ADS1x15'],
         'measure': ['voltage']},
     'AM2315': {
-        'pip-dependencies': ['quick2wire-api'],
+        'py-dependencies': ['quick2wire-api'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'ATLAS_PH_I2C': {
-        'pip-dependencies': ['io'],
+        'py-dependencies': ['io'],
         'measure': ['ph']},
     'ATLAS_PH_UART': {
-        'pip-dependencies': ['serial'],
+        'py-dependencies': ['serial'],
         'measure': ['ph']},
     'ATLAS_PT1000_I2C': {
-        'pip-dependencies': ['io'],
+        'py-dependencies': ['io'],
         'measure': ['temperature']},
     'ATLAS_PT1000_UART': {
-        'pip-dependencies': ['serial'],
+        'py-dependencies': ['serial'],
         'measure': ['temperature']},
     'BH1750': {
-        'pip-dependencies': ['smbus'],
+        'py-dependencies': ['smbus'],
         'measure': ['lux']},
     'BME280': {
-        'pip-dependencies': ['adafruit-bme280'],
+        'py-dependencies': ['adafruit-bme280'],
         'measure': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature']},
     'BMP': {  # TODO: Remove in next major version. BMP180 replaced this name
-        'pip-dependencies': ['Adafruit_BMP'],
+        'py-dependencies': ['Adafruit_BMP'],
         'measure': ['altitude', 'pressure', 'temperature']},
     'BMP180': {
-        'pip-dependencies': ['Adafruit_BMP'],
+        'py-dependencies': ['Adafruit_BMP'],
         'measure': ['altitude', 'pressure', 'temperature']},
     'BMP280': {
-        'pip-dependencies': ['Adafruit_GPIO'],
+        'py-dependencies': ['Adafruit_GPIO'],
         'measure': ['altitude', 'pressure', 'temperature']},
     'CHIRP': {
-        'pip-dependencies': ['smbus'],
+        'py-dependencies': ['smbus'],
         'measure': ['lux', 'moisture', 'temperature']},
     'DHT11': {
-        'pip-dependencies': ['pigpio'],
+        'py-dependencies': ['pigpio'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'DHT22': {
-        'pip-dependencies': ['pigpio'],
+        'py-dependencies': ['pigpio'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'DS18B20': {
-        'pip-dependencies': ['w1thermsensor'],
+        'py-dependencies': ['w1thermsensor'],
         'measure': ['temperature']},
     'EDGE': {
-        'pip-dependencies': ['RPi.GPIO'],
+        'py-dependencies': ['RPi.GPIO'],
         'measure': ['edge']},
     'GPIO_STATE': {
-        'pip-dependencies': ['RPi.GPIO'],
+        'py-dependencies': ['RPi.GPIO'],
         'measure': ['gpio_state']},
     'HTU21D': {
-        'pip-dependencies': ['pigpio'],
+        'py-dependencies': ['pigpio'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'K30_UART': {
-        'pip-dependencies': ['serial'],
+        'py-dependencies': ['serial'],
         'measure': ['co2']},
     'MH_Z16_I2C': {
-        'pip-dependencies': ['smbus'],
+        'py-dependencies': ['smbus'],
         'measure': ['co2']},
     'MH_Z16_UART': {
-        'pip-dependencies': ['serial'],
+        'py-dependencies': ['serial'],
         'measure': ['co2']},
     'MH_Z19_UART': {
-        'pip-dependencies': ['serial'],
+        'py-dependencies': ['serial'],
         'measure': ['co2']},
     'MCP3008': {
-        'pip-dependencies': ['Adafruit_MCP3008'],
+        'py-dependencies': ['Adafruit_MCP3008'],
         'measure': ['voltage']},
     'MCP342x': {
-        'pip-dependencies': ['MCP342x'],
+        'py-dependencies': ['MCP342x'],
         'measure': ['voltage']},
     'RPi': {
-        'pip-dependencies': [],
+        'py-dependencies': [],
         'measure': ['temperature']},
     'RPiCPULoad': {
-        'pip-dependencies': [],
+        'py-dependencies': [],
         'measure': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m']},
     'RPiFreeSpace': {
-        'pip-dependencies': [],
+        'py-dependencies': [],
         'measure': ['disk_space']},
     'SERVER_PING': {
-        'pip-dependencies': [],
+        'py-dependencies': [],
         'measure': ['boolean']},
     'SERVER_PORT_OPEN': {
-        'pip-dependencies': [],
+        'py-dependencies': [],
         'measure': ['boolean']},
     'SHT1x_7x': {
-        'pip-dependencies': ['sht_sensor'],
+        'py-dependencies': ['sht_sensor'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'SHT2x': {
-        'pip-dependencies': ['smbus'],
+        'py-dependencies': ['smbus'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'SIGNAL_PWM': {
-        'pip-dependencies': ['pigpio'],
+        'py-dependencies': ['pigpio'],
         'measure': ['frequency','pulse_width', 'duty_cycle']},
     'SIGNAL_RPM': {
-        'pip-dependencies': ['pigpio'],
+        'py-dependencies': ['pigpio'],
         'measure': ['rpm']},
     'TMP006': {
-        'pip-dependencies': ['Adafruit_TMP'],
+        'py-dependencies': ['Adafruit_TMP'],
         'measure': ['temperature_object', 'temperature_die']},
     'TSL2561': {
-        'pip-dependencies': ['tsl2561'],
+        'py-dependencies': ['tsl2561'],
         'measure': ['lux']},
     'TSL2591': {
-        'pip-dependencies': ['tsl2591'],
+        'py-dependencies': ['tsl2591'],
         'measure': ['lux']}
 }
 

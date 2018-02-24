@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# forms_graph.py - Graph Flask Forms
+# forms_dashboard.py - Dashboard Flask Forms
 #
 
 from flask_babel import lazy_gettext

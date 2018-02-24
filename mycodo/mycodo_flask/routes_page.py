@@ -20,7 +20,6 @@ from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 
-from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import CONDITIONAL_ACTIONS
@@ -31,6 +30,7 @@ from mycodo.config import HTTP_ACCESS_LOG_FILE
 from mycodo.config import HTTP_ERROR_LOG_FILE
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import KEEPUP_LOG_FILE
+from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import LIST_DEVICES_I2C
 from mycodo.config import LOGIN_LOG_FILE
 from mycodo.config import MEASUREMENTS
@@ -42,8 +42,8 @@ from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalActions
-from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Dashboard
+from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
@@ -59,8 +59,9 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_client import daemon_active
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_conditional
-from mycodo.mycodo_flask.forms import forms_function
 from mycodo.mycodo_flask.forms import forms_dashboard
+from mycodo.mycodo_flask.forms import forms_dependencies
+from mycodo.mycodo_flask.forms import forms_function
 from mycodo.mycodo_flask.forms import forms_input
 from mycodo.mycodo_flask.forms import forms_lcd
 from mycodo.mycodo_flask.forms import forms_math
@@ -70,10 +71,10 @@ from mycodo.mycodo_flask.forms import forms_pid
 from mycodo.mycodo_flask.forms import forms_timer
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_conditional
+from mycodo.mycodo_flask.utils import utils_dashboard
 from mycodo.mycodo_flask.utils import utils_export
 from mycodo.mycodo_flask.utils import utils_function
 from mycodo.mycodo_flask.utils import utils_general
-from mycodo.mycodo_flask.utils import utils_dashboard
 from mycodo.mycodo_flask.utils import utils_input
 from mycodo.mycodo_flask.utils import utils_lcd
 from mycodo.mycodo_flask.utils import utils_math
@@ -1012,6 +1013,19 @@ def page_output():
                            relay=output,
                            relay_templates=output_templates,
                            user=user)
+
+
+@blueprint.route('/dependencies/<device>', methods=('GET', 'POST'))
+@flask_login.login_required
+def page_dependencies(device):
+    """ Display Dependency page """
+    form_dependencies = forms_dependencies.Dependencies()
+    unmet_dependencies = utils_general.check_dependencies(device)
+
+    return render_template('pages/dependencies.html',
+                           device=device,
+                           form_dependencies=form_dependencies,
+                           unmet_dependencies=unmet_dependencies)
 
 
 @blueprint.route('/data', methods=('GET', 'POST'))

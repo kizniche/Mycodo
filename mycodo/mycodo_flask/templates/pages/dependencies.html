@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% set active_page = "dependencies" %}
+{% set help_page = ["dependencies", _('Dependencies')] %}
+
+{% block title %} - {{_('Dependencies')}}{% endblock %}
+
+{% block head %}{% endblock %}
+
+{%- block body %}
+  <!-- Route: /dependencies -->
+  <div class="container">
+    {% include 'flash_messages.html' %}
+
+    <h4>{{_('Dependencies')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <p>{{_('')}}</p>
+
+  {% if unmet_dependencies %}
+    <p>There were unmet dependencies encountered when adding the following device: {{device}}</p>
+    <p>The Unmet dependencies are the following python modules:</p>
+     <ul>
+    {% for each_dep in unmet_dependencies %}
+      <li>{{each_dep}}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+
+    <p>To install these dependencies, click the Install button below and wait for the install to complete before attempting to add the device again.</p>
+
+    <form method="post" action="/timer">
+      {{form_dependencies.csrf_token}}
+      {{form_dependencies.device(class_='form-control', value=device)}}
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-3">
+          {{form_dependencies.install(class_='form-control btn btn-default')}}
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+{% endblock -%}

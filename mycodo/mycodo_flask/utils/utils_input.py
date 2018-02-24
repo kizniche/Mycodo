@@ -9,8 +9,8 @@ from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import DEVICES_DEFAULT_LOCATION
+from mycodo.config import LIST_DEVICES_ADC
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import PID
@@ -21,6 +21,7 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
+from mycodo.mycodo_flask.utils.utils_general import check_dependencies
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import list_to_csv
 
@@ -30,6 +31,7 @@ logger = logging.getLogger(__name__)
 #
 # Input manipulation
 #
+
 
 def input_add(form_add):
     action = '{action} {controller}'.format(
@@ -48,6 +50,12 @@ def input_add(form_add):
             new_sensor.i2c_bus = 0
             new_sensor.multiplexer_bus = 0
 
+        unmet_deps = check_dependencies(form_add.input_type.data)
+        if unmet_deps:
+            return redirect('/dependencies/{dev}'.format(dev=form_add.input_type.data))
+            # error.append("Unmet dependencies: {dep}".format(
+            #     dep=unmet_deps))
+
         # Linux command as sensor
         if form_add.input_type.data == 'LinuxCommand':
             new_sensor.cmd_command = 'shuf -i 50-70 -n 1'
@@ -56,7 +64,7 @@ def input_add(form_add):
 
         # Server is up or down
         elif form_add.input_type.data in ['SERVER_PING',
-                                                 'SERVER_PORT_OPEN']:
+                                          'SERVER_PORT_OPEN']:
             new_sensor.measurements = 'boolean'
             new_sensor.location = '127.0.0.1'
             new_sensor.period = 3600
@@ -90,8 +98,8 @@ def input_add(form_add):
         # Environmental Inputs
         # Temperature
         elif form_add.input_type.data in ['ATLAS_PT1000_I2C',
-                                                 'ATLAS_PT1000_UART',
-                                                 'DS18B20', 'TMP006']:
+                                          'ATLAS_PT1000_UART',
+                                          'DS18B20', 'TMP006']:
             new_sensor.measurements = 'temperature'
             if form_add.input_type.data == 'ATLAS_PT1000_I2C':
                 new_sensor.interface = 'I2C'
@@ -111,8 +119,8 @@ def input_add(form_add):
 
         # Temperature/Humidity
         elif form_add.input_type.data in ['AM2315', 'DHT11',
-                                                 'DHT22', 'HTU21D',
-                                                 'SHT1x_7x', 'SHT2x']:
+                                          'DHT22', 'HTU21D',
+                                          'SHT1x_7x', 'SHT2x']:
             new_sensor.measurements = 'temperature,humidity,dewpoint'
             if form_add.input_type.data == 'AM2315':
                 new_sensor.location = '0x5c'
@@ -132,8 +140,8 @@ def input_add(form_add):
             new_sensor.location = '0x63'
             new_sensor.interface = 'I2C'
         elif form_add.input_type.data in ['K30_UART',
-                                                 'MH_Z16_UART',
-                                                 'MH_Z19_UART']:
+                                          'MH_Z16_UART',
+                                          'MH_Z19_UART']:
             new_sensor.measurements = 'co2'
             new_sensor.location = 'Tx/Rx'
             new_sensor.interface = 'UART'
@@ -160,8 +168,8 @@ def input_add(form_add):
 
         # Pressure
         elif form_add.input_type.data in ['BME280',
-                                                 'BMP180',
-                                                 'BMP280']:
+                                          'BMP180',
+                                          'BMP280']:
             if form_add.input_type.data == 'BME280':
                 new_sensor.measurements = 'temperature,humidity,' \
                                           'dewpoint,pressure,altitude'
@@ -172,8 +180,8 @@ def input_add(form_add):
 
         # Light
         elif form_add.input_type.data in ['BH1750',
-                                                 'TSL2561',
-                                                 'TSL2591']:
+                                          'TSL2561',
+                                          'TSL2591']:
             new_sensor.measurements = 'lux'
             if form_add.input_type.data == 'BH1750':
                 new_sensor.location = '0x23'
@@ -204,24 +212,26 @@ def input_add(form_add):
                 new_sensor.adc_volts_max = 3.3
 
         try:
-            new_sensor.save()
+            if not error:
+                new_sensor.save()
 
-            display_order = csv_to_list_of_int(
-                DisplayOrder.query.first().sensor)
-            DisplayOrder.query.first().sensor = add_display_order(
-                display_order, new_sensor.id)
-            db.session.commit()
+                display_order = csv_to_list_of_int(
+                    DisplayOrder.query.first().sensor)
+                DisplayOrder.query.first().sensor = add_display_order(
+                    display_order, new_sensor.id)
+                db.session.commit()
 
-            flash(gettext(
-                "%(type)s Input with ID %(id)s (%(uuid)s) successfully added",
-                type=form_add.input_type.data,
-                id=new_sensor.id,
-                uuid=new_sensor.unique_id),
-                  "success")
+                flash(gettext(
+                    "%(type)s Input with ID %(id)s (%(uuid)s) successfully added",
+                    type=form_add.input_type.data,
+                    id=new_sensor.id,
+                    uuid=new_sensor.unique_id),
+                      "success")
         except sqlalchemy.exc.OperationalError as except_msg:
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
+
         flash_success_errors(error, action, url_for('routes_page.page_data'))
     else:
         flash_form_errors(form_add)
