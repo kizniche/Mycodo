@@ -196,10 +196,10 @@ def input_add(form_add):
                 new_sensor.adc_volts_min = -2.048
                 new_sensor.adc_volts_max = 2.048
             elif form_add.input_type.data == 'MCP3008':
-                new_sensor.pin_clock = 18
-                new_sensor.pin_cs = 25
-                new_sensor.pin_mosi = 24
-                new_sensor.pin_miso = 23
+                new_sensor.pin_clock = 11
+                new_sensor.pin_cs = 8
+                new_sensor.pin_mosi = 10
+                new_sensor.pin_miso = 9
                 new_sensor.adc_volts_min = 0
                 new_sensor.adc_volts_max = 3.3
 
