@@ -23,6 +23,67 @@ if [ $exitstatus != 0 ]; then
     exit 1
 fi
 
+NOW=$(date +"%m-%d-%Y %H:%M:%S")
+printf "### Mycodo installation initiated at $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
+
+clear
+LICENSE=$(whiptail --title "Mycodo Installer: License Agreement" \
+                   --backtitle "Mycodo" \
+                   --yesno "Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nMycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with Mycodo. If not, see gnu.org/licenses\n\nDo you agree to the license terms?" \
+                   20 68 \
+                   3>&1 1>&2 2>&3)
+
+exitstatus=$?
+if [ $exitstatus != 0 ]; then
+    echo "Mycodo install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
+    exit
+fi
+
+clear
+INSTALL_TYPE=$(whiptail --title "Mycodo Installer: Install Type" \
+                        --backtitle "Mycodo" \
+                        --notags \
+                        --menu "\nSelect the Install Type:\n\nFull: Install all dependencies\nMinimal: Install a minimal set of dependencies\nCustom: Select which dependencies to install\n\nIf unsure, choose 'Full Install'" \
+                        20 68 3 \
+                        "full" "Full Install (recommended)" \
+                        "minimal" "Minimal Install" \
+                        "custom" "Custom Install" \
+                        3>&1 1>&2 2>&3)
+exitstatus=$?
+if [ $exitstatus != 0 ]; then
+    echo "Mycodo install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
+    exit
+fi
+printf "\nInstall Type: $INSTALL_TYPE\n" >>${LOG_LOCATION} 2>&1
+
+if [ "$INSTALL_TYPE" == "custom" ]; then
+    clear
+    DEP_STATUS=$(whiptail --title "Mycodo Install: Custom" \
+                          --backtitle "Mycodo" \
+                          --notags \
+                          --checklist "Dependencies to Install" \
+                          20 68 13 \
+                          'Adafruit_ADS1x15' "Adafruit_ADS1x15" off \
+                          'Adafruit_BME280' "Adafruit_BME280" off \
+                          'Adafruit_BMP' "Adafruit_BMP" off \
+                          'Adafruit_GPIO' "Adafruit_GPIO" off \
+                          'Adafruit_MCP3008' "Adafruit_MCP3008" off \
+                          'Adafruit_TMP' "Adafruit_TMP" off \
+                          'MCP342x' "MCP342x" off \
+                          'pigpio' "pigpio" off \
+                          'quick2wire' "quick2wire" off \
+                          'sht_sensor' "sht_sensor" off \
+                          'tsl2561' "tsl2561" off \
+                          'tsl2591' "tsl2591" off \
+                          'w1thermsensor' "w1thermsensor" off \
+                          3>&1 1>&2 2>&3)
+    exitstatus=$?
+    if [ $exitstatus != 0 ]; then
+        echo "Mycodo install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
+        exit
+    fi
+fi
+
 abort()
 {
     printf "
@@ -47,67 +108,6 @@ ${INSTALL_DIRECTORY}/install/setup.log
 trap 'abort' 0
 
 set -e
-
-NOW=$(date +"%m-%d-%Y %H:%M:%S")
-printf "### Mycodo installation initiated at $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
-
-clear
-LICENSE=$(whiptail --title "Mycodo Installer: License Agreement" \
-                   --backtitle "Mycodo" \
-                   --yesno "Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nMycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with Mycodo. If not, see gnu.org/licenses\n\nDo you agree to the license terms?" \
-                   20 68 \
-                   3>&1 1>&2 2>&3)
-
-exitstatus=$?
-if [ $exitstatus != 0 ]; then
-    echo "Install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
-    exit
-fi
-
-clear
-INSTALL_TYPE=$(whiptail --title "Mycodo Installer: Install Type" \
-                        --backtitle "Mycodo" \
-                        --notags \
-                        --menu "\nSelect the Install Type:\n\nFull: Install all dependencies\nMinimal: Install a minimal set of dependencies\nCustom: Select which dependencies to install\n\nIf unsure, choose 'Full Install'" \
-                        20 68 3 \
-                        "full" "Full Install (recommended)" \
-                        "minimal" "Minimal Install" \
-                        "custom" "Custom Install" \
-                        3>&1 1>&2 2>&3)
-exitstatus=$?
-if [ $exitstatus != 0 ]; then
-    echo "Install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
-    exit
-fi
-printf "\nInstall Type: $INSTALL_TYPE\n" >>${LOG_LOCATION} 2>&1
-
-if [ "$INSTALL_TYPE" == "custom" ]; then
-    clear
-    INSTALL_DEP=$(whiptail --title "Mycodo Install: Custom" \
-                           --backtitle "Mycodo" \
-                           --notags \
-                           --checklist "Dependencies to Install" \
-                           20 68 13 \
-                           'Adafruit_ADS1x15' "Adafruit_ADS1x15" off \
-                           'Adafruit_BME280' "Adafruit_BME280" off \
-                           'Adafruit_BMP' "Adafruit_BMP" off \
-                           'Adafruit_GPIO' "Adafruit_GPIO" off \
-                           'Adafruit_MCP3008' "Adafruit_MCP3008" off \
-                           'Adafruit_TMP' "Adafruit_TMP" off \
-                           'MCP342x' "MCP342x" off \
-                           'pigpio' "pigpio" off \
-                           'quick2wire' "quick2wire" off \
-                           'sht_sensor' "sht_sensor" off \
-                           'tsl2561' "tsl2561" off \
-                           'tsl2591' "tsl2591" off \
-                           'w1thermsensor' "w1thermsensor" off \
-                           3>&1 1>&2 2>&3)
-    exitstatus=$?
-    if [ $exitstatus != 0 ]; then
-        echo "Install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
-        exit
-    fi
-fi
 
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
 printf "### Mycodo installation began at $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
@@ -138,9 +138,9 @@ printf "### Mycodo installation began at $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_CMD} update-pip3-packages >>${LOG_LOCATION} 2>&1
 
     if [ "$INSTALL_TYPE" == "minimal" ]; then
-        printf '\n### Minimal install selected. No more dependencies to install.'
+        printf '\n### Minimal install selected. No more dependencies to install.' >>${LOG_LOCATION} 2>&1
     elif [ "$INSTALL_TYPE" == "custom" ]; then
-        printf '\n### Installing custom-selected dependencies'
+        printf '\n### Installing custom-selected dependencies' >>${LOG_LOCATION} 2>&1
         echo -e "XXX\n40\nInstalling custom python packages in virtualenv... \nXXX"
         for option in $INSTALL_DEP
         do
@@ -229,7 +229,7 @@ printf "### Mycodo installation began at $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
     echo -e "XXX\n99\nStarting the Mycodo daemon... \nXXX"
     ${INSTALL_CMD} restart-daemon >>${LOG_LOCATION} 2>&1
 
-} | whiptail --gauge "Installing Mycodo. Please wait..." 6 55 0
+} | whiptail --backtitle "Mycodo Install" --gauge "Installing Mycodo. Please wait..." 6 55 0
 
 trap : 0
 
