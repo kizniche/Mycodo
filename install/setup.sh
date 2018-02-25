@@ -109,12 +109,18 @@ trap 'abort' 0
 
 set -e
 
-SECONDS=0
-
-NOW=$(date)
-printf "### Mycodo installation began $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
-
 {
+    echo -e "XXX\n0\nSit back... \nXXX"
+    sleep 5
+    echo -e "XXX\n1\nOr grab a coffee... \nXXX"
+    sleep 5
+    echo -e "XXX\n2\nThis may take a while... \nXXX"
+    sleep 5
+
+    SECONDS=0
+    NOW=$(date)
+    printf "#### Mycodo installation began $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
+
     echo -e "XXX\n4\nChecking swap size... \nXXX"
     ${INSTALL_CMD} update-swap-size >>${LOG_LOCATION} 2>&1
 
@@ -140,11 +146,11 @@ printf "### Mycodo installation began $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_CMD} update-pip3-packages >>${LOG_LOCATION} 2>&1
 
     if [ "$INSTALL_TYPE" == "minimal" ]; then
-        printf '\n### Minimal install selected. No more dependencies to install.' >>${LOG_LOCATION} 2>&1
+        printf '\n#### Minimal install selected. No more dependencies to install.' >>${LOG_LOCATION} 2>&1
     elif [ "$INSTALL_TYPE" == "custom" ]; then
-        printf '\n### Installing custom-selected dependencies' >>${LOG_LOCATION} 2>&1
+        printf '\n#### Installing custom-selected dependencies' >>${LOG_LOCATION} 2>&1
         echo -e "XXX\n40\nInstalling custom python packages in virtualenv... \nXXX"
-        for option in $INSTALL_DEP
+        for option in $DEP_STATUS
         do
             option="${option%\"}"
             option="${option#\"}"
@@ -242,10 +248,10 @@ if [[ -z ${IP} ]]; then
 fi
 
 CURRENT_DATE=$(date)
-printf "### Mycodo Installer finished ${CURRENT_DATE}\n" 2>&1 | tee -a ${LOG_LOCATION}
+printf "#### Mycodo Installer finished ${CURRENT_DATE}\n" 2>&1 | tee -a ${LOG_LOCATION}
 
 duration=$SECONDS
-printf "### Total install time: $(($duration / 60)) minutes and $(($duration % 60)) seconds\n" 2>&1 | tee -a ${LOG_LOCATION}
+printf "#### Total install time: $(($duration / 60)) minutes and $(($duration % 60)) seconds\n" 2>&1 | tee -a ${LOG_LOCATION}
 
 printf "
 ************************************
